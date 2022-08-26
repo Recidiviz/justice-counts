@@ -6,6 +6,19 @@ __pycache__/
 # C extensions
 *.so
 
+# Emacs files
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Vim backup files
+*.sw[op]
+
 # Distribution / packaging
 .Python
 build/
@@ -127,3 +140,18 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#pytest
+.pytest_cache/
+
+# Mac
+.DS_Store
+
+# Typescript
+**/node_modules
+.yalc
+yalc.lock
+*.tsbuildinfo
+
+# ESLint Cache
+.eslintcache
