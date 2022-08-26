@@ -1,6 +1,6 @@
 ---
 name: General Task
-about: Track a general task that needs to be completed.
+about: Track a general task that needs to be completed
 title: ''
 labels: ''
 assignees: ''
