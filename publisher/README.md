@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# justice-counts
-Technical infrastructure for the Justice Counts initiative
-=======
 # Justice Counts Control Panel: Frontend
 
 Welcome to the Justice Counts Control Panel - a tool that allows agencies to report Justice Counts metrics.
@@ -32,4 +28,3 @@ To run the app locally, you need to spin up both the backend and frontend simult
    yarn test
    yarn lint
    ```
->>>>>>> 47b3a8316fb088dc90672a36eefb3e8feb4385c1
