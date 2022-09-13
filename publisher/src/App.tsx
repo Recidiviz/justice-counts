@@ -26,6 +26,7 @@ import Header from "./components/Header";
 import { MetricsView } from "./components/MetricsView";
 import CreateReports from "./components/Reports/CreateReport";
 import ReportDataEntry from "./components/Reports/ReportDataEntry";
+import ReviewMetrics from "./components/ReviewMetrics/ReviewMetrics";
 import AccountSettings from "./pages/AccountSettings";
 import Reports from "./pages/Reports";
 
@@ -47,6 +48,7 @@ const App: React.FC = (): ReactElement => {
           <Route path="/settings" element={<AccountSettings />} />
           <Route path="/metrics" element={<MetricsView />} />
           <Route path="/upload" element={<DataUpload />} />
+          <Route path="/review_metrics" element={<ReviewMetrics />} />
         </Routes>
       </PageWrapper>
     </>
