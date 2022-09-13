@@ -19,7 +19,11 @@ import { when } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 
-import { DatapointsGroupedByAggregateAndDisaggregations } from "../../shared/types";
+import {
+  DatapointsGroupedByAggregateAndDisaggregations,
+  DatapointValue,
+  DataVizAggregateName,
+} from "../../shared/types";
 import { useStore } from "../../stores";
 import {
   formatDateShort,
@@ -94,16 +98,19 @@ const ReviewMetrics: React.FC = observer(() => {
       return map;
     }, {} as { [key: string]: number });
 
-    const aggregateRowData: (number | undefined)[] = new Array(
+    const aggregateRowData: DatapointValue[] = new Array(
       startDates.length
     ).fill(undefined);
     datapoints.aggregate.forEach((dp) => {
-      aggregateRowData[startDatesIndexLookup[dp.start_date]] = (
-        dp as any
-      ).Total;
+      aggregateRowData[startDatesIndexLookup[dp.start_date]] =
+        dp[DataVizAggregateName];
     });
 
-    const disaggregationRowData: any = {};
+    const disaggregationRowData: {
+      [disaggregation: string]: {
+        [dimension: string]: DatapointValue[];
+      };
+    } = {};
     Object.entries(datapoints.disaggregations).forEach(
       ([disaggregation, entry]) => {
         if (!disaggregationRowData[disaggregation]) {
@@ -126,14 +133,16 @@ const ReviewMetrics: React.FC = observer(() => {
     return (
       <DatapointsTableContainer>
         <DatapointsTableNamesContainer>
-          <DatapointsTableNamesRow>Total</DatapointsTableNamesRow>
+          <DatapointsTableNamesRow>
+            {DataVizAggregateName}
+          </DatapointsTableNamesRow>
           {Object.entries(disaggregationRowData).map(
-            ([disaggregation, dimension]: any[]) => (
+            ([disaggregation, dimension]) => (
               <>
                 <DatapointsTableNamesDivider>
                   {disaggregation}
                 </DatapointsTableNamesDivider>
-                {Object.entries(dimension).map(([dimensionName, value]) => (
+                {Object.keys(dimension).map((dimensionName) => (
                   <DatapointsTableNamesRow>
                     {dimensionName}
                   </DatapointsTableNamesRow>
@@ -156,22 +165,20 @@ const ReviewMetrics: React.FC = observer(() => {
                 <DatapointsTableDetailsCell>{value}</DatapointsTableDetailsCell>
               ))}
             </DatapointsTableDetailsRow>
-            {Object.entries(disaggregationRowData).map(
-              ([disaggregation, dimension]: any[]) => (
-                <>
-                  <DatapointsTableDetailsDivider />
-                  {Object.values(dimension).map((values: any) => (
-                    <DatapointsTableDetailsRow>
-                      {values.map((value: any) => (
-                        <DatapointsTableDetailsCell>
-                          {value}
-                        </DatapointsTableDetailsCell>
-                      ))}
-                    </DatapointsTableDetailsRow>
-                  ))}
-                </>
-              )
-            )}
+            {Object.values(disaggregationRowData).map((dimension) => (
+              <>
+                <DatapointsTableDetailsDivider />
+                {Object.values(dimension).map((values) => (
+                  <DatapointsTableDetailsRow>
+                    {values.map((value) => (
+                      <DatapointsTableDetailsCell>
+                        {value}
+                      </DatapointsTableDetailsCell>
+                    ))}
+                  </DatapointsTableDetailsRow>
+                ))}
+              </>
+            ))}
           </DatapointsTableDetailsTable>
         </DatapointsTableDetailsContainer>
       </DatapointsTableContainer>
