@@ -75,23 +75,25 @@ const ReviewMetrics: React.FC = observer(() => {
     datapoints: DatapointsGroupedByAggregateAndDisaggregations,
     index: number
   ) => {
+    const startDates = getStartDates(datapoints);
     return (
       <SectionContainer key={metricName}>
         <SectionTitleContainer>
           <SectionTitleNumber>{index + 1}</SectionTitleNumber>
           <SectionTitle>{metricName}</SectionTitle>
-          <SectionTitleMonths>4 months</SectionTitleMonths>
+          <SectionTitleMonths>
+            {startDates.length} month{startDates.length !== 1 ? "s" : ""}
+          </SectionTitleMonths>
         </SectionTitleContainer>
-        {renderDatapointsTable(datapoints)}
+        {renderDatapointsTable(datapoints, startDates)}
       </SectionContainer>
     );
   };
 
   const renderDatapointsTable = (
-    datapoints: DatapointsGroupedByAggregateAndDisaggregations
+    datapoints: DatapointsGroupedByAggregateAndDisaggregations,
+    startDates: string[]
   ) => {
-    const startDates = getStartDates(datapoints);
-
     const startDatesIndexLookup = startDates.reduce((map, current, idx) => {
       map[current] = idx; /* eslint-disable-line no-param-reassign */
       return map;
