@@ -29,6 +29,7 @@ import {
   formatDateShort,
   getDatapointDimensions,
   getStartDates,
+  sortDatapointDimensions,
 } from "../DataViz/utils";
 import {
   Container,
@@ -100,7 +101,7 @@ const ReviewMetrics: React.FC = observer(() => {
 
     const aggregateRowData: DatapointValue[] = new Array(
       startDates.length
-    ).fill(undefined);
+    ).fill(null);
     datapoints.aggregate.forEach((dp) => {
       aggregateRowData[startDatesIndexLookup[dp.start_date]] =
         dp[DataVizAggregateName];
@@ -142,11 +143,13 @@ const ReviewMetrics: React.FC = observer(() => {
                 <DatapointsTableNamesDivider>
                   {disaggregation}
                 </DatapointsTableNamesDivider>
-                {Object.keys(dimension).map((dimensionName) => (
-                  <DatapointsTableNamesRow>
-                    {dimensionName}
-                  </DatapointsTableNamesRow>
-                ))}
+                {Object.keys(dimension)
+                  .sort(sortDatapointDimensions)
+                  .map((dimensionName) => (
+                    <DatapointsTableNamesRow>
+                      {dimensionName}
+                    </DatapointsTableNamesRow>
+                  ))}
               </>
             )
           )}
@@ -168,15 +171,17 @@ const ReviewMetrics: React.FC = observer(() => {
             {Object.values(disaggregationRowData).map((dimension) => (
               <>
                 <DatapointsTableDetailsDivider />
-                {Object.values(dimension).map((values) => (
-                  <DatapointsTableDetailsRow>
-                    {values.map((value) => (
-                      <DatapointsTableDetailsCell>
-                        {value}
-                      </DatapointsTableDetailsCell>
-                    ))}
-                  </DatapointsTableDetailsRow>
-                ))}
+                {Object.entries(dimension)
+                  .sort(([a], [b]) => sortDatapointDimensions(a, b))
+                  .map(([, values]) => (
+                    <DatapointsTableDetailsRow>
+                      {values.map((value) => (
+                        <DatapointsTableDetailsCell>
+                          {value}
+                        </DatapointsTableDetailsCell>
+                      ))}
+                    </DatapointsTableDetailsRow>
+                  ))}
               </>
             ))}
           </DatapointsTableDetailsTable>
