@@ -311,7 +311,7 @@ const DataEntryForm: React.FC<{
                             reportID={reportID}
                             currentIndex={index}
                             reportMetrics={reportMetrics}
-                            metric={reportMetrics[index]}
+                            metric={metric}
                             updateFieldDescription={updateFieldDescription}
                             disabled={isPublished || hasVersionConflict}
                           />
