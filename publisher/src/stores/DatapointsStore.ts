@@ -48,6 +48,14 @@ class DatapointsStore {
     this.loading = true;
   }
 
+  get metricKeyToDisplayName(): { [metricKey: string]: string | null } {
+    const mapping: { [metricKey: string]: string | null } = {};
+    this.rawDatapoints.forEach((dp) => {
+      mapping[dp.metric_definition_key] = dp.metric_display_name;
+    });
+    return mapping;
+  }
+
   /**
    * Transforms raw data from the server into Datapoints keyed by metric,
    * grouped by aggregate values and disaggregations.

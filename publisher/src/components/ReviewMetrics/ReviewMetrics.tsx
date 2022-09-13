@@ -71,16 +71,17 @@ const ReviewMetrics: React.FC = observer(() => {
   );
 
   const renderSection = (
-    metricName: string,
+    metricKey: string,
     datapoints: DatapointsGroupedByAggregateAndDisaggregations,
     index: number
   ) => {
     const startDates = getStartDates(datapoints);
+    const metricDisplayName = datapointsStore.metricKeyToDisplayName[metricKey];
     return (
-      <SectionContainer key={metricName}>
+      <SectionContainer key={metricKey}>
         <SectionTitleContainer>
           <SectionTitleNumber>{index + 1}</SectionTitleNumber>
-          <SectionTitle>{metricName}</SectionTitle>
+          <SectionTitle>{metricDisplayName}</SectionTitle>
           <SectionTitleMonths>
             {startDates.length} month{startDates.length !== 1 ? "s" : ""}
           </SectionTitleMonths>
