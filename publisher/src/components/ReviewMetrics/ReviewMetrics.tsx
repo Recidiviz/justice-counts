@@ -78,7 +78,7 @@ const ReviewMetrics: React.FC = observer(() => {
     return (
       <SectionContainer key={metricName}>
         <SectionTitleContainer>
-          <SectionTitleNumber>{index}</SectionTitleNumber>
+          <SectionTitleNumber>{index + 1}</SectionTitleNumber>
           <SectionTitle>{metricName}</SectionTitle>
           <SectionTitleMonths>4 months</SectionTitleMonths>
         </SectionTitleContainer>
