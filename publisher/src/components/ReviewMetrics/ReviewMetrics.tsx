@@ -65,11 +65,6 @@ const ReviewMetrics: React.FC = observer(() => {
     []
   );
 
-  console.log(
-    "datapointsStore.datapointsByMetric",
-    datapointsStore.datapointsByMetric
-  );
-
   const renderSection = (
     metricName: string,
     datapoints: DatapointsGroupedByAggregateAndDisaggregations,
