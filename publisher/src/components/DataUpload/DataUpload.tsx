@@ -126,13 +126,14 @@ export const DataUpload: React.FC = observer(() => {
       }
 
       setUploadError(false);
+
+      /** (TODO(#15195): Placeholder - toast will be removed and this should navigate to the confirmation component */
       showToast(
         "File uploaded successfully and is pending processing by a Justice Counts administrator.",
         true,
         undefined,
         3500
       );
-      /** Placeholder - this should navigate to the confirmation component */
       navigate("/");
     }
   };
@@ -153,7 +154,21 @@ export const DataUpload: React.FC = observer(() => {
   }
 
   const renderCurrentUploadStep = (): JSX.Element => {
-    if (selectedFile) {
+    /**
+     * There are ~3 steps in the upload phase before
+     * reaching the metrics confirmation page.
+     *
+     * Step 1: Upload File
+     * Trigger: no selected file and no upload error(s)/warnings(s) present in server response
+     *
+     * Step 2: System Selection (only for agencies with multiple systems)
+     * Trigger: file selected AND no system selected
+     *
+     * Step 3: Upload Errors/Warnings
+     * Trigger: upload error(s)/warnings(s) present in server response
+     */
+
+    if (selectedFile && !selectedSystem) {
       /** System Selection Step (for multi-system users) */
       return (
         <SystemSelection
