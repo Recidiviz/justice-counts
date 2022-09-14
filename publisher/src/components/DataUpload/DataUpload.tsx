@@ -55,7 +55,7 @@ export type UploadedFile = {
 export type ErrorsAndWarnings = {
   errorCount: number;
   warningCount: number;
-  errors: {}[];
+  errors: Record<string, unknown>[];
 };
 
 /**
@@ -282,7 +282,7 @@ export const DataUpload: React.FC = observer(() => {
     }
 
     /** Upload Error/Warnings Step */
-    if (errorsAndWarnings?.errorCount || errorsAndWarnings?.warningCount) {
+    if (errorsAndWarnings?.errors.length) {
       return (
         <UploadErrorsWarnings
           errorsAndWarnings={errorsAndWarnings}
