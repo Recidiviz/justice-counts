@@ -355,6 +355,10 @@ export const UserPromptWrapper = styled.div`
 
 export const UserPromptTitle = styled.div`
   ${typography.sizeCSS.title};
+
+  span {
+    color: ${palette.solid.red};
+  }
 `;
 
 export const UserPromptDescription = styled.div`

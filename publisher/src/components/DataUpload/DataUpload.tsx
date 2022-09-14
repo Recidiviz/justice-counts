@@ -68,6 +68,12 @@ export type UploadedFile = {
   status: UploadedFileStatus | null;
 };
 
+export type ErrorsAndWarnings = {
+  errorCount: number;
+  warningCount: number;
+  errors: {}[];
+};
+
 /**
  * The systems in EXCLUDED_SYSTEMS are sub-systems of the SUPERVISION system,
  * and should not render a separate template & instructions.
@@ -100,6 +106,8 @@ export const DataUpload: React.FC = observer(() => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [uploadError, setUploadError] = useState<boolean>(false);
+  const [errorsAndWarnings, setErrorsAndWarnings] =
+    useState<ErrorsAndWarnings>();
   const [selectedFile, setSelectedFile] = useState<File>();
   const [selectedSystem, setSelectedSystem] = useState<
     AgencySystems | undefined
@@ -125,6 +133,12 @@ export const DataUpload: React.FC = observer(() => {
         return showToast("Failed to upload. Please try again.", false, "red");
       }
 
+      const data = await response?.json();
+      const errors = handleUploadErrors(data.metrics);
+      setErrorsAndWarnings(errors);
+
+      if (errors.errorCount) return setUploadError(true);
+
       setUploadError(false);
 
       /** (TODO(#15195): Placeholder - toast will be removed and this should navigate to the confirmation component */
@@ -134,8 +148,30 @@ export const DataUpload: React.FC = observer(() => {
         undefined,
         3500
       );
-      navigate("/");
+      // navigate("/");
     }
+  };
+
+  const handleUploadErrors = (metrics: any) => {
+    const errors = metrics.reduce(
+      (acc, metric) => [...acc, ...metric.sheets],
+      []
+    );
+    const errorCount = errors.reduce(
+      (acc, sheet) => {
+        sheet.messages.forEach((msg) => {
+          if (msg.type === "ERROR") acc.errorCount += 1;
+          if (msg.type === "WARNING") acc.warningCount += 1;
+        });
+        return acc;
+      },
+      {
+        errorCount: 0,
+        warningCount: 0,
+      }
+    );
+
+    return { errors, ...errorCount };
   };
 
   const handleSystemSelection = (file: File, system: AgencySystems) => {
@@ -181,73 +217,16 @@ export const DataUpload: React.FC = observer(() => {
 
     /** Upload Error/Warnings Step */
     if (uploadError) {
-      /** This object is temporary for the purpose of displaying each UI state */
-      const mockErrors = [
-        {
-          metricTitle: "Releases",
-          errorsAndWarnings: [
-            {
-              type: "error",
-              errorTitle: "Breakdown not recognized",
-              errorDescription: "Label Not Recognized",
-            },
-            {
-              type: "error",
-              errorTitle: "Breakdown not recognized",
-              errorDescription: "Label Not Recognized",
-            },
-            {
-              type: "error",
-              errorTitle: "Breakdown not recognized",
-              errorDescription: "Label Not Recognized",
-            },
-            {
-              type: "warning",
-              errorTitle: "Breakdown not recognized",
-              errorDescription: "Label Not Recognized",
-            },
-          ],
-        },
-        {
-          metricTitle: "Admissions",
-          errorsAndWarnings: [
-            {
-              type: "error",
-              errorTitle: "Missing value",
-              errorDescription: "August 2022: Total",
-              additionalInfo:
-                "The total value for Admissions will be shown as the sum of the breakdowns.",
-            },
-            {
-              type: "error",
-              errorTitle: "Breakdown not recognized",
-              errorDescription: "Label Not Recognized",
-            },
-            {
-              type: "error",
-              errorTitle: "Breakdown not recognized",
-              errorDescription: "Label Not Recognized",
-            },
-            {
-              type: "warning",
-              errorTitle: "Breakdown not recognized",
-              errorDescription: "Label Not Recognized",
-            },
-          ],
-        },
-      ];
-
       const systemFileName =
         selectedSystem && systemToTemplateSpreadsheetFileName[selectedSystem];
 
       return (
         <UserPromptContainer>
           <UserPromptWrapper>
-            <FileName error>
-              <ErrorIcon />
-              File Name.xls
-            </FileName>
-            <UserPromptTitle>Uh oh, we found 4 errors.</UserPromptTitle>
+            <UserPromptTitle>
+              Uh oh, we found <span>{errorsAndWarnings?.errorCount}</span>{" "}
+              errors.
+            </UserPromptTitle>
             <UserPromptDescription>
               We ran into a few discrepancies between the uploaded data and the
               Justice Counts format for the{" "}
@@ -271,30 +250,28 @@ export const DataUpload: React.FC = observer(() => {
             </ButtonWrapper>
 
             <UserPromptErrorContainer>
-              {mockErrors.map((item) => (
-                <UserPromptError key={item.metricTitle}>
-                  <MetricTitle>{item.metricTitle}</MetricTitle>
+              {errorsAndWarnings?.errors.map((sheet: any) => (
+                <UserPromptError key={sheet.display_name}>
+                  <MetricTitle>{sheet.display_name}</MetricTitle>
 
-                  {item.errorsAndWarnings?.map((errorItem) => (
-                    <Fragment key={errorItem.errorDescription}>
+                  {sheet.messages?.map((message: any) => (
+                    <Fragment key={message.title + message.description}>
                       <ErrorIconWrapper>
-                        {errorItem.type === "error" ? (
+                        {message.type === "ERROR" ? (
                           <ErrorIcon />
                         ) : (
                           <WarningIcon />
                         )}
 
                         <ErrorMessageWrapper>
-                          <ErrorMessageTitle>
-                            {errorItem.errorTitle}
-                          </ErrorMessageTitle>
+                          <ErrorMessageTitle>{message.title}</ErrorMessageTitle>
                           <ErrorMessageDescription>
-                            {errorItem.errorDescription}
+                            {message.subtitle}
                           </ErrorMessageDescription>
                         </ErrorMessageWrapper>
                       </ErrorIconWrapper>
                       <ErrorAdditionalInfo>
-                        {errorItem.additionalInfo}
+                        {message.description}
                       </ErrorAdditionalInfo>
                     </Fragment>
                   ))}
