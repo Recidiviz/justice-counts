@@ -16,13 +16,13 @@
 // =============================================================================
 
 import React, { Fragment } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as ErrorIcon } from "../assets/error-icon.svg";
 import { ReactComponent as WarningIcon } from "../assets/warning-icon.svg";
 import {
   Button,
-  ButtonWrapper,
   ErrorAdditionalInfo,
   ErrorIconWrapper,
   ErrorMessageDescription,
@@ -31,6 +31,7 @@ import {
   ErrorsAndWarnings,
   MetricTitle,
   systemToTemplateSpreadsheetFileName,
+  UploadErrorButtonWrapper,
   UserPromptContainer,
   UserPromptDescription,
   UserPromptError,
@@ -51,33 +52,59 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
   setErrorsAndWarnings,
   selectedSystem,
 }) => {
+  const navigate = useNavigate();
   const systemFileName =
     selectedSystem && systemToTemplateSpreadsheetFileName[selectedSystem];
+  const hasWarningsOnly =
+    errorsAndWarnings.warningCount && !errorsAndWarnings.errorCount;
 
   return (
     <UserPromptContainer>
       <UserPromptWrapper>
-        <UserPromptTitle>
-          Uh oh, we found <span>{errorsAndWarnings?.errorCount}</span> errors.
-        </UserPromptTitle>
+        {hasWarningsOnly ? (
+          <>
+            <UserPromptTitle>Warning title.</UserPromptTitle>
+            <UserPromptDescription>
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quaerat
+              quasi placeat maxime error esse sapiente similique beatae fugit id
+              provident eligendi ad fugiat iure tempora a vitae, incidunt ea
+              accusamus.
+            </UserPromptDescription>
+          </>
+        ) : (
+          <>
+            <UserPromptTitle>
+              Uh oh, we found <span>{errorsAndWarnings?.errorCount}</span>{" "}
+              errors.
+            </UserPromptTitle>
+            <UserPromptDescription>
+              We ran into a few discrepancies between the uploaded data and the
+              Justice Counts format for the{" "}
+              <span>
+                <a
+                  href={`./assets/${systemFileName}`}
+                  download={systemFileName}
+                >
+                  {selectedSystem &&
+                    removeSnakeCase(selectedSystem).toLowerCase()}
+                </a>
+              </span>{" "}
+              system. To continue, please resolve the errors in your file and
+              reupload.
+            </UserPromptDescription>
+          </>
+        )}
 
-        <UserPromptDescription>
-          We ran into a few discrepancies between the uploaded data and the
-          Justice Counts format for the{" "}
-          <span>
-            <a href={`./assets/${systemFileName}`} download={systemFileName}>
-              {selectedSystem && removeSnakeCase(selectedSystem).toLowerCase()}
-            </a>
-          </span>{" "}
-          system. To continue, please resolve the errors in your file and
-          reupload.
-        </UserPromptDescription>
-
-        <ButtonWrapper>
-          <Button type="blue" onClick={() => setErrorsAndWarnings(undefined)}>
+        <UploadErrorButtonWrapper>
+          <Button onClick={() => setErrorsAndWarnings(undefined)}>
             New Upload
           </Button>
-        </ButtonWrapper>
+
+          {/* (TODO(#15195): Placeholder - this should navigate to the confirmation component */}
+          {hasWarningsOnly && (
+            <Button onClick={() => navigate("/")}>Continue</Button>
+          )}
+        </UploadErrorButtonWrapper>
 
         <UserPromptErrorContainer>
           {errorsAndWarnings?.errors.map((sheet: any) => (

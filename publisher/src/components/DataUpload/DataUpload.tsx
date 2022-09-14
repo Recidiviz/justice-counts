@@ -116,11 +116,96 @@ export const DataUpload: React.FC = observer(() => {
       }
 
       const data = await response?.json();
-      const errors = handleUploadErrors(data.metrics);
-      setErrorsAndWarnings(errors);
+      const mockData = JSON.parse(`{
+        "metrics": [
+          {
+            "datapoints": [],
+            "display_name": "Total Arrests",
+            "key": "LAW_ENFORCEMENT_ARRESTS_global/gender/restricted,global/race_and_ethnicity,metric/law_enforcement/reported_crime/type",
+            "sheets": [
+              {
+                "display_name": "Arrests",
+                "messages": [
+                  {
+                    "description": "There should only be a single row containing data for arrests in 6/2021.",
+                    "subtitle": "6/2021",
+                    "title": "Too Many Rows",
+                    "type": "WARNING"
+                  }
+                ],
+                "sheet_name": "arrests"
+              },
+              {
+                "display_name": "Arrests By Race",
+                "messages": [
+                  {
+                    "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
+                    "subtitle": "race/ethnicity",
+                    "title": "Missing Column",
+                    "type": "WARNING"
+                  },
+                  {
+                    "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
+                    "subtitle": "race/ethnicity",
+                    "title": "Missing Column",
+                    "type": "WARNING"
+                  },
+                  {
+                    "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
+                    "subtitle": "race/ethnicity",
+                    "title": "Missing Column",
+                    "type": "WARNING"
+                  }
+                ],
+                "sheet_name": "arrests_by_race"
+              }
+            ]
+          },
+          {
+            "datapoints": [],
+            "display_name": "Different Metric",
+            "key": "LAW_ENFORCEMENT_ARRESTS_global/gender/restricted,global/race_and_ethnicity,metric/law_enforcement/reported_crime/type",
+            "sheets": [
+              {
+                "display_name": "Different Metric Arrests",
+                "messages": [
+                  {
+                    "description": "There should only be a single row containing data for arrests in 6/2021.",
+                    "subtitle": "6/2021",
+                    "title": "Too Many Rows",
+                    "type": "ERROR"
+                  }
+                ],
+                "sheet_name": "arrests"
+              },
+              {
+                "display_name": "Different Metric Arrests By Race",
+                "messages": [
+                  {
+                    "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
+                    "subtitle": "race/ethnicity",
+                    "title": "Missing Column",
+                    "type": "WARNING"
+                  },
+                  {
+                    "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
+                    "subtitle": "race/ethnicity",
+                    "title": "Missing Column",
+                    "type": "WARNING"
+                  }
+                ],
+                "sheet_name": "arrests_by_race"
+              }
+            ]
+          }
+        ],
+        "upload_errors": []
+      }`);
+      const sheetErrors = handleUploadErrors(mockData.metrics);
+      setErrorsAndWarnings(sheetErrors);
       setIsLoading(false);
 
-      if (errors.errorCount) return;
+      if (sheetErrors.errors.length) return;
 
       /** (TODO(#15195): Placeholder - toast will be removed and this should navigate to the confirmation component */
       showToast(
@@ -197,7 +282,7 @@ export const DataUpload: React.FC = observer(() => {
     }
 
     /** Upload Error/Warnings Step */
-    if (errorsAndWarnings?.errorCount) {
+    if (errorsAndWarnings?.errorCount || errorsAndWarnings?.warningCount) {
       return (
         <UploadErrorsWarnings
           errorsAndWarnings={errorsAndWarnings}
@@ -220,13 +305,19 @@ export const DataUpload: React.FC = observer(() => {
 
   return (
     <DataUploadContainer>
-      <DataUploadHeader transparent={!selectedFile}>
+      <DataUploadHeader
+        transparent={!selectedFile && !errorsAndWarnings?.errors.length}
+      >
         <LogoContainer onClick={() => navigate("/")}>
           <Logo src={logoImg} alt="" />
         </LogoContainer>
 
         <Button
-          type={selectedFile ? "red" : "light-border"}
+          type={
+            selectedFile || errorsAndWarnings?.errors.length
+              ? "red"
+              : "light-border"
+          }
           onClick={() => navigate(-1)}
         >
           Cancel

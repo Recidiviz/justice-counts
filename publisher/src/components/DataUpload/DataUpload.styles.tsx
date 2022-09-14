@@ -34,7 +34,8 @@ const ROW_HEIGHT = 42;
 export const DataUploadContainer = styled.div`
   width: 100%;
   height: 100%;
-  position: absolute;
+  position: fixed;
+  overflow-y: scroll;
   top: 0;
   z-index: 5;
   background: ${palette.solid.white};
@@ -149,6 +150,30 @@ export const ButtonWrapper = styled.div`
   flex-wrap: wrap;
   gap: 10px;
   margin: 13px 0;
+`;
+
+export const UploadErrorButtonWrapper = styled(ButtonWrapper)`
+  width: 100%;
+  justify-content: space-between;
+
+  div:not(:last-child) {
+    background: transparent;
+    border: 1px solid ${palette.highlight.grey4};
+    border-radius: 4px;
+
+    &:hover {
+      background: ${palette.highlight.grey2};
+    }
+  }
+
+  div:last-child {
+    background: ${palette.solid.blue};
+    color: ${palette.solid.white};
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
 `;
 
 export type ButtonTypes =
