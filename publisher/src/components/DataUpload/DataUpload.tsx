@@ -173,8 +173,7 @@ export const DataUpload: React.FC = observer(() => {
 
   const renderCurrentUploadStep = (): JSX.Element => {
     /**
-     * There are ~3 steps in the upload phase before
-     * reaching the metrics confirmation page.
+     * There are ~3 steps in the upload phase before reaching the metrics confirmation page.
      *
      * Step 1: Upload File
      * Trigger: no selected file and no upload error(s)/warnings(s) present in server response
