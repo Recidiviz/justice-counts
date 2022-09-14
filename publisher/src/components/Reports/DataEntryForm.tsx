@@ -309,8 +309,6 @@ const DataEntryForm: React.FC<{
                         {metric.disaggregations.length > 0 && (
                           <TabbedDisaggregations
                             reportID={reportID}
-                            currentIndex={index}
-                            reportMetrics={reportMetrics}
                             metric={metric}
                             updateFieldDescription={updateFieldDescription}
                             disabled={isPublished || hasVersionConflict}
