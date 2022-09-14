@@ -126,20 +126,18 @@ export const DataUpload: React.FC = observer(() => {
       formData.append("agency_id", userStore.currentAgencyId.toString());
 
       const response = await reportStore.uploadExcelSpreadsheet(formData);
-      setIsLoading(false);
 
       if (response instanceof Error) {
-        setUploadError(true);
+        setIsLoading(false);
         return showToast("Failed to upload. Please try again.", false, "red");
       }
 
       const data = await response?.json();
       const errors = handleUploadErrors(data.metrics);
       setErrorsAndWarnings(errors);
+      setIsLoading(false);
 
-      if (errors.errorCount) return setUploadError(true);
-
-      setUploadError(false);
+      if (errors.errorCount) return;
 
       /** (TODO(#15195): Placeholder - toast will be removed and this should navigate to the confirmation component */
       showToast(
@@ -216,7 +214,7 @@ export const DataUpload: React.FC = observer(() => {
     }
 
     /** Upload Error/Warnings Step */
-    if (uploadError) {
+    if (errorsAndWarnings?.errorCount) {
       const systemFileName =
         selectedSystem && systemToTemplateSpreadsheetFileName[selectedSystem];
 
@@ -244,7 +242,10 @@ export const DataUpload: React.FC = observer(() => {
             </UserPromptDescription>
 
             <ButtonWrapper>
-              <Button type="blue" onClick={() => setUploadError(false)}>
+              <Button
+                type="blue"
+                onClick={() => setErrorsAndWarnings(undefined)}
+              >
                 New Upload
               </Button>
             </ButtonWrapper>
