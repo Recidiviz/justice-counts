@@ -15,7 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { makeAutoObservable, runInAction } from "mobx";
+import {
+  IReactionDisposer,
+  makeAutoObservable,
+  reaction,
+  runInAction,
+} from "mobx";
 
 import {
   DatapointsByMetric,
@@ -38,6 +43,8 @@ class DatapointsStore {
 
   loading: boolean;
 
+  disposers: IReactionDisposer[] = [];
+
   constructor(userStore: UserStore, api: API) {
     makeAutoObservable(this);
 
@@ -46,6 +53,21 @@ class DatapointsStore {
     this.rawDatapoints = [];
     this.dimensionNamesByMetricAndDisaggregation = {};
     this.loading = true;
+
+    this.disposers.push(
+      reaction(
+        () => this.userStore.currentAgencyId,
+        (currentAgencyId, previousAgencyId) => {
+          if (previousAgencyId !== undefined) {
+            this.resetState();
+          }
+        }
+      )
+    );
+  }
+
+  deconstructor() {
+    this.disposers.forEach((disposer) => disposer());
   }
 
   /**

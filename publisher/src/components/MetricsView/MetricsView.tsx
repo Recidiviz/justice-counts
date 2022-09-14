@@ -775,7 +775,6 @@ export const MetricsView: React.FC = observer(() => {
         () => userStore.userInfoLoaded,
         async () => {
           fetchAndSetReportSettings();
-
           datapointsStore.getDatapoints();
           setActiveMetricFilter(
             removeSnakeCase(userStore.currentAgency?.systems[0] as string)
@@ -793,11 +792,10 @@ export const MetricsView: React.FC = observer(() => {
       reaction(
         () => userStore.currentAgencyId,
         async (currentAgencyId, previousAgencyId) => {
-          // prevents us from calling getReportOverviews twice on initial load
+          // prevents us from calling getDatapoints twice on initial load
           if (previousAgencyId !== undefined) {
             setIsLoading(true);
             fetchAndSetReportSettings();
-            datapointsStore.resetState();
             await datapointsStore.getDatapoints();
             setActiveMetricFilter(
               removeSnakeCase(userStore.currentAgency?.systems[0] as string)
