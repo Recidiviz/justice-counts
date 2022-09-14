@@ -34,19 +34,10 @@ import {
 
 export const TabbedDisaggregations: React.FC<{
   metric: MetricType;
-  reportMetrics: MetricType[];
   reportID: number;
-  currentIndex: number;
   disabled?: boolean;
   updateFieldDescription: (title?: string, description?: string) => void;
-}> = ({
-  metric,
-  reportMetrics,
-  reportID,
-  currentIndex,
-  disabled,
-  updateFieldDescription,
-}) => {
+}> = ({ metric, reportID, disabled, updateFieldDescription }) => {
   const [activeDisaggregation, setActiveDisaggregation] = useState<{
     [metricKey: string]: {
       disaggregationKey: string;
@@ -99,21 +90,21 @@ export const TabbedDisaggregations: React.FC<{
     let inputFoundInUpdate = false;
     let inputFoundFromLastSave = false;
 
-    reportMetrics[currentIndex]?.disaggregations[
-      disaggregationIndex
-    ]?.dimensions?.forEach((dimension) => {
-      const updatedDimensionValue =
-        formStore.disaggregations[reportID]?.[metric.key]?.[
-          disaggregationKey
-        ]?.[dimension.key]?.value;
+    metric?.disaggregations[disaggregationIndex]?.dimensions?.forEach(
+      (dimension) => {
+        const updatedDimensionValue =
+          formStore.disaggregations[reportID]?.[metric.key]?.[
+            disaggregationKey
+          ]?.[dimension.key]?.value;
 
-      if (
-        dimension.value &&
-        !inputFoundFromLastSave &&
-        updatedDimensionValue !== ""
-      )
-        inputFoundFromLastSave = true;
-    });
+        if (
+          dimension.value &&
+          !inputFoundFromLastSave &&
+          updatedDimensionValue !== ""
+        )
+          inputFoundFromLastSave = true;
+      }
+    );
 
     if (
       formStore.disaggregations[reportID]?.[metric.key]?.[disaggregationKey]
@@ -225,7 +216,7 @@ export const TabbedDisaggregations: React.FC<{
       </TabsRow>
 
       <TabDisplay>
-        {reportMetrics[currentIndex].disaggregations[
+        {metric.disaggregations[
           activeDisaggregation[metric.key]?.disaggregationIndex || 0
         ]?.dimensions.map((dimension, dimensionIndex) => {
           const activeDisaggregationOrZerothIndex =
