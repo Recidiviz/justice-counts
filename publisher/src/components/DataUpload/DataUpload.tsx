@@ -16,39 +16,23 @@
 // =============================================================================
 
 import { observer } from "mobx-react-lite";
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { AgencySystems } from "../../shared/types";
 import { useStore } from "../../stores";
-import { removeSnakeCase } from "../../utils";
-import { ReactComponent as ErrorIcon } from "../assets/error-icon.svg";
 import logoImg from "../assets/jc-logo-vector.png";
-import { ReactComponent as WarningIcon } from "../assets/warning-icon.svg";
 import { Logo, LogoContainer } from "../Header";
 import { Loading } from "../Loading";
 import { showToast } from "../Toast";
 import {
   Button,
-  ButtonWrapper,
   DataUploadContainer,
   DataUploadHeader,
-  ErrorAdditionalInfo,
-  ErrorIconWrapper,
-  ErrorMessageDescription,
-  ErrorMessageTitle,
-  ErrorMessageWrapper,
-  FileName,
-  MetricTitle,
   SystemSelection,
   UploadFile,
-  UserPromptContainer,
-  UserPromptDescription,
-  UserPromptError,
-  UserPromptErrorContainer,
-  UserPromptTitle,
-  UserPromptWrapper,
 } from ".";
+import { UploadErrorsWarnings } from "./UploadErrorsWarnings";
 
 export type UploadedFileStatus = "UPLOADED" | "INGESTED" | "ERRORED";
 
@@ -105,7 +89,6 @@ export const DataUpload: React.FC = observer(() => {
     ) || [];
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [uploadError, setUploadError] = useState<boolean>(false);
   const [errorsAndWarnings, setErrorsAndWarnings] =
     useState<ErrorsAndWarnings>();
   const [selectedFile, setSelectedFile] = useState<File>();
@@ -150,14 +133,15 @@ export const DataUpload: React.FC = observer(() => {
     }
   };
 
+  // eslint-disable @typescript-eslint/no-explicit-any
   const handleUploadErrors = (metrics: any) => {
     const errors = metrics.reduce(
-      (acc, metric) => [...acc, ...metric.sheets],
+      (acc: any, metric: any) => [...acc, ...metric.sheets],
       []
     );
     const errorCount = errors.reduce(
-      (acc, sheet) => {
-        sheet.messages.forEach((msg) => {
+      (acc: any, sheet: any) => {
+        sheet.messages.forEach((msg: any) => {
           if (msg.type === "ERROR") acc.errorCount += 1;
           if (msg.type === "WARNING") acc.warningCount += 1;
         });
@@ -215,72 +199,12 @@ export const DataUpload: React.FC = observer(() => {
 
     /** Upload Error/Warnings Step */
     if (errorsAndWarnings?.errorCount) {
-      const systemFileName =
-        selectedSystem && systemToTemplateSpreadsheetFileName[selectedSystem];
-
       return (
-        <UserPromptContainer>
-          <UserPromptWrapper>
-            <UserPromptTitle>
-              Uh oh, we found <span>{errorsAndWarnings?.errorCount}</span>{" "}
-              errors.
-            </UserPromptTitle>
-            <UserPromptDescription>
-              We ran into a few discrepancies between the uploaded data and the
-              Justice Counts format for the{" "}
-              <span>
-                <a
-                  href={`./assets/${systemFileName}`}
-                  download={systemFileName}
-                >
-                  {selectedSystem &&
-                    removeSnakeCase(selectedSystem).toLowerCase()}
-                </a>
-              </span>{" "}
-              system. To continue, please resolve the errors in your file and
-              reupload.
-            </UserPromptDescription>
-
-            <ButtonWrapper>
-              <Button
-                type="blue"
-                onClick={() => setErrorsAndWarnings(undefined)}
-              >
-                New Upload
-              </Button>
-            </ButtonWrapper>
-
-            <UserPromptErrorContainer>
-              {errorsAndWarnings?.errors.map((sheet: any) => (
-                <UserPromptError key={sheet.display_name}>
-                  <MetricTitle>{sheet.display_name}</MetricTitle>
-
-                  {sheet.messages?.map((message: any) => (
-                    <Fragment key={message.title + message.description}>
-                      <ErrorIconWrapper>
-                        {message.type === "ERROR" ? (
-                          <ErrorIcon />
-                        ) : (
-                          <WarningIcon />
-                        )}
-
-                        <ErrorMessageWrapper>
-                          <ErrorMessageTitle>{message.title}</ErrorMessageTitle>
-                          <ErrorMessageDescription>
-                            {message.subtitle}
-                          </ErrorMessageDescription>
-                        </ErrorMessageWrapper>
-                      </ErrorIconWrapper>
-                      <ErrorAdditionalInfo>
-                        {message.description}
-                      </ErrorAdditionalInfo>
-                    </Fragment>
-                  ))}
-                </UserPromptError>
-              ))}
-            </UserPromptErrorContainer>
-          </UserPromptWrapper>
-        </UserPromptContainer>
+        <UploadErrorsWarnings
+          errorsAndWarnings={errorsAndWarnings}
+          setErrorsAndWarnings={setErrorsAndWarnings}
+          selectedSystem={selectedSystem}
+        />
       );
     }
 
