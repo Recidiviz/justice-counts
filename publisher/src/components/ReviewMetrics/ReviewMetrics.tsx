@@ -95,19 +95,32 @@ const ReviewMetrics: React.FC = observer(() => {
     datapoints: DatapointsGroupedByAggregateAndDisaggregations,
     startDates: string[]
   ) => {
+    /**
+     * The Datapoints Table is made up of a few parts:
+     * - Column of disaggregations and dimensions that remains in place as
+     *   the rest of the table scrolls horizontally
+     * - HTML table containing:
+     *   - a table header row of report start dates, each date represents a column title
+     *   - a table row of the aggregate values, each value corresponds with the date column it is reported in
+     *   - empty table rows used to space apart different disaggregations
+     *   - table rows for each dimension, each value corresponds with the date column it is reported in
+     */
+
+    // create a mapping from start date to the column index the start date is located in for fast lookup
     const startDatesIndexLookup = startDates.reduce((map, current, idx) => {
       map[current] = idx; /* eslint-disable-line no-param-reassign */
       return map;
     }, {} as { [key: string]: number });
 
-    const aggregateRowData: DatapointValue[] = new Array(
-      startDates.length
-    ).fill(null);
+    // Create array of aggregate values, each value indexed with their corresponding date column
+    const aggregateRowData: DatapointValue[] = [];
     datapoints.aggregate.forEach((dp) => {
       aggregateRowData[startDatesIndexLookup[dp.start_date]] =
         dp[DataVizAggregateName];
     });
 
+    // create map of disaggregations and dimensions, each dimension containing array of values,
+    // each value indexed with their corresponding date column
     const disaggregationRowData: {
       [disaggregation: string]: {
         [dimension: string]: DatapointValue[];
