@@ -188,7 +188,13 @@ export const GeneralInstructions: React.FC<
         our end to easily upload this data into our platform.
       </p>
 
-      <h3>Templates</h3>
+      <h3>Examples</h3>
+
+      <p>
+        Example spreadsheets can be found below. We suggest that you download
+        the example and review it, and then read the instructions below for more
+        details.
+      </p>
 
       <ButtonWrapper>
         {systems.map((system) => {
@@ -213,11 +219,6 @@ export const GeneralInstructions: React.FC<
         })}
       </ButtonWrapper>
 
-      <p>
-        Complete, downloadable spreadsheet templates can be found above. We
-        suggest that you download the template and review it, and then read the
-        description below for more detail.
-      </p>
       <h2>High-Level Summary</h2>
       <p>
         In this section, we provide instructions applicable to all agencies. In
@@ -249,7 +250,7 @@ export const GeneralInstructions: React.FC<
       </p>
       <p>
         We require that each sheet is given a standard name.{" "}
-        <b>Refer to your template file for the valid sheet names.</b>
+        <b>Refer to your example file for the valid sheet names.</b>
       </p>
       <p>
         All sheets will have columns for <i>year</i> and <i>value</i>. Monthly
@@ -326,14 +327,14 @@ export const GeneralInstructions: React.FC<
       <p>
         We require that each sheet and column is given a standard name.{" "}
         <b>
-          Refer to your template file for the name of the new sheet, the name of
+          Refer to your example file for the name of the new sheet, the name of
           the new column for category names, and the valid values for this
           column.
         </b>
       </p>
       <p>
         <b>
-          Please only provide valid category names (as seen in your template
+          Please only provide valid category names (as seen in your example
           file) in the new column.{" "}
         </b>
         If your agency categorizes the metric differently, group any unmatched
