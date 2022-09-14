@@ -154,7 +154,7 @@ export const DataUpload: React.FC = observer(() => {
                     "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
                     "subtitle": "race/ethnicity",
                     "title": "Missing Column",
-                    "type": "WARNING"
+                    "type": "ERROR"
                   }
                 ],
                 "sheet_name": "arrests_by_race"

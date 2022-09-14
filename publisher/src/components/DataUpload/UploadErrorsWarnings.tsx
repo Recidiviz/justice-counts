@@ -74,8 +74,8 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
         ) : (
           <>
             <UserPromptTitle>
-              Uh oh, we found <span>{errorsAndWarnings?.errorCount}</span>{" "}
-              errors.
+              Uh oh, we found <span>{errorsAndWarnings?.errorCount}</span> error
+              {errorsAndWarnings?.errorCount > 1 ? "s" : ""}.
             </UserPromptTitle>
             <UserPromptDescription>
               We ran into a few discrepancies between the uploaded data and the
