@@ -46,11 +46,13 @@ type UploadErrorsWarningsProps = {
     value: React.SetStateAction<ErrorsAndWarnings | undefined>
   ) => void;
   selectedSystem: string | undefined;
+  resetToNewUpload: () => void;
 };
 export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
   errorsAndWarnings,
   setErrorsAndWarnings,
   selectedSystem,
+  resetToNewUpload,
 }) => {
   const navigate = useNavigate();
   const systemFileName =
@@ -96,9 +98,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
         )}
 
         <UploadErrorButtonWrapper>
-          <Button onClick={() => setErrorsAndWarnings(undefined)}>
-            New Upload
-          </Button>
+          <Button onClick={resetToNewUpload}>New Upload</Button>
 
           {/* (TODO(#15195): Placeholder - this should navigate to the confirmation component */}
           {hasWarningsOnly && (

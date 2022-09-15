@@ -248,6 +248,12 @@ export const DataUpload: React.FC = observer(() => {
     setSelectedFile(undefined);
   };
 
+  const resetToNewUpload = () => {
+    setErrorsAndWarnings(undefined);
+    setSelectedFile(undefined);
+    setSelectedSystem(userSystems.length === 1 ? userSystems[0] : undefined);
+  };
+
   if (isLoading) {
     return (
       <DataUploadContainer>
@@ -288,6 +294,7 @@ export const DataUpload: React.FC = observer(() => {
           errorsAndWarnings={errorsAndWarnings}
           setErrorsAndWarnings={setErrorsAndWarnings}
           selectedSystem={selectedSystem}
+          resetToNewUpload={resetToNewUpload}
         />
       );
     }
