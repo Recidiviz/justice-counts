@@ -32,7 +32,12 @@ import {
   SystemSelection,
   UploadFile,
 } from ".";
-import { UploadErrorsWarnings } from "./UploadErrorsWarnings";
+import {
+  MetricErrors,
+  MetricErrorsWarnings,
+  PreIngestErrors,
+  UploadErrorsWarnings,
+} from "./UploadErrorsWarnings";
 
 export type UploadedFileStatus = "UPLOADED" | "INGESTED" | "ERRORED";
 
@@ -50,30 +55,6 @@ export type UploadedFile = {
   uploaded_by: string;
   system: AgencySystems;
   status: UploadedFileStatus | null;
-};
-
-export type ErrorWarningMessage = {
-  title: string;
-  subtitle: string;
-  description: string;
-  type: "ERROR" | "WARNING";
-};
-
-export type MetricErrors = {
-  display_name: string;
-  sheet_name: string;
-  messages: ErrorWarningMessage[];
-};
-
-export type MetricErrorsWarnings = {
-  errorCount: number;
-  warningCount: number;
-  metricErrors: MetricErrors[];
-};
-
-export type PreIngestErrors = {
-  errorCount: number;
-  messages: ErrorWarningMessage[];
 };
 
 /**
@@ -134,94 +115,8 @@ export const DataUpload: React.FC = observer(() => {
         return showToast("Failed to upload. Please try again.", false, "red");
       }
 
-      const data = await response?.json();
-      const mockData = JSON.parse(`{
-        "metrics": [
-          {
-            "datapoints": [],
-            "display_name": "Total Arrests",
-            "key": "LAW_ENFORCEMENT_ARRESTS_global/gender/restricted,global/race_and_ethnicity,metric/law_enforcement/reported_crime/type",
-            "sheets": [
-              {
-                "display_name": "Arrests",
-                "messages": [
-                  {
-                    "description": "There should only be a single row containing data for arrests in 6/2021.",
-                    "subtitle": "6/2021",
-                    "title": "Too Many Rows",
-                    "type": "WARNING"
-                  }
-                ],
-                "sheet_name": "arrests"
-              },
-              {
-                "display_name": "Arrests By Race",
-                "messages": [
-                  {
-                    "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
-                    "subtitle": "race/ethnicity",
-                    "title": "Missing Column",
-                    "type": "WARNING"
-                  },
-                  {
-                    "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
-                    "subtitle": "race/ethnicity",
-                    "title": "Missing Column",
-                    "type": "WARNING"
-                  },
-                  {
-                    "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
-                    "subtitle": "race/ethnicity",
-                    "title": "Missing Column",
-                    "type": "WARNING"
-                  }
-                ],
-                "sheet_name": "arrests_by_race"
-              }
-            ]
-          },
-          {
-            "datapoints": [],
-            "display_name": "Different Metric",
-            "key": "LAW_ENFORCEMENT_ARRESTS_global/gender/restricted,global/race_and_ethnicity,metric/law_enforcement/reported_crime/type",
-            "sheets": [
-              {
-                "display_name": "Different Metric Arrests",
-                "messages": [
-                  {
-                    "description": "There should only be a single row containing data for arrests in 6/2021.",
-                    "subtitle": "6/2021",
-                    "title": "Too Many Rows",
-                    "type": "WARNING"
-                  }
-                ],
-                "sheet_name": "arrests"
-              },
-              {
-                "display_name": "Different Metric Arrests By Race",
-                "messages": [
-                  {
-                    "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
-                    "subtitle": "race/ethnicity",
-                    "title": "Missing Column",
-                    "type": "WARNING"
-                  },
-                  {
-                    "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
-                    "subtitle": "race/ethnicity",
-                    "title": "Missing Column",
-                    "type": "WARNING"
-                  }
-                ],
-                "sheet_name": "arrests_by_race"
-              }
-            ]
-          }
-        ],
-        "upload_errors": []
-      }`);
-
       /** Handle Pre-Ingest Errors and Metric Errors */
+      const data = await response?.json();
       const errors = handleUploadErrors(
         data.metrics,
         data.upload_errors?.length ? data.upload_errors : undefined

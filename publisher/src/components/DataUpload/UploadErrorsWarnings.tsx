@@ -28,9 +28,7 @@ import {
   ErrorMessageDescription,
   ErrorMessageTitle,
   ErrorMessageWrapper,
-  MetricErrorsWarnings,
   MetricTitle,
-  PreIngestErrors,
   systemToTemplateSpreadsheetFileName,
   UploadErrorButtonWrapper,
   UserPromptContainer,
@@ -40,6 +38,30 @@ import {
   UserPromptTitle,
   UserPromptWrapper,
 } from ".";
+
+export type ErrorWarningMessage = {
+  title: string;
+  subtitle: string;
+  description: string;
+  type: "ERROR" | "WARNING";
+};
+
+export type MetricErrors = {
+  display_name: string;
+  sheet_name: string;
+  messages: ErrorWarningMessage[];
+};
+
+export type MetricErrorsWarnings = {
+  errorCount: number;
+  warningCount: number;
+  metricErrors: MetricErrors[];
+};
+
+export type PreIngestErrors = {
+  errorCount: number;
+  messages: ErrorWarningMessage[];
+};
 
 type UploadErrorsWarningsProps = {
   errorsAndWarnings: MetricErrorsWarnings | PreIngestErrors;
