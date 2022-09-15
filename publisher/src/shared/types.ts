@@ -238,8 +238,10 @@ export interface Datapoint {
   // dataVizMissingData is used to render the missing data bar if there are no values reported for that time range
   dataVizMissingData: number;
   // the value here should really be number | null but Typescript doesn't allow for this easily
-  [dimensionOrAggregatedTotal: string]: string | number | null;
+  [dimensionOrAggregatedTotal: string]: DatapointValue;
 }
+
+export type DatapointValue = string | number | null;
 
 export interface DatapointsGroupedByAggregateAndDisaggregations {
   aggregate: Datapoint[];
