@@ -140,6 +140,8 @@ export const DatapointsTableDetailsContainer = styled.div`
   overflow-x: scroll;
 `;
 export const DatapointsTableDetailsTable = styled.table``;
+export const DatapointsTableDetailsRowHead = styled.thead``;
+export const DatapointsTableDetailsRowBody = styled.tbody``;
 export const DatapointsTableDetailsRow = styled.tr``;
 export const DatapointsTableDetailsRowHeader = styled.th`
   ${typography.sizeCSS.small}

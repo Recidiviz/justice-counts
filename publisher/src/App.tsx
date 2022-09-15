@@ -48,7 +48,7 @@ const App: React.FC = (): ReactElement => {
           <Route path="/settings" element={<AccountSettings />} />
           <Route path="/metrics" element={<MetricsView />} />
           <Route path="/upload" element={<DataUpload />} />
-          <Route path="/review_metrics" element={<ReviewMetrics />} />
+          <Route path="/review-metrics" element={<ReviewMetrics />} />
         </Routes>
       </PageWrapper>
     </>
