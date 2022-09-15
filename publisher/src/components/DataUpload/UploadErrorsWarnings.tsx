@@ -42,15 +42,11 @@ import {
 
 type UploadErrorsWarningsProps = {
   errorsAndWarnings: ErrorsAndWarnings;
-  setErrorsAndWarnings: (
-    value: React.SetStateAction<ErrorsAndWarnings | undefined>
-  ) => void;
   selectedSystem: string | undefined;
   resetToNewUpload: () => void;
 };
 export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
   errorsAndWarnings,
-  setErrorsAndWarnings,
   selectedSystem,
   resetToNewUpload,
 }) => {
@@ -58,7 +54,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
   const systemFileName =
     selectedSystem && systemToTemplateSpreadsheetFileName[selectedSystem];
   const hasWarningsOnly =
-    errorsAndWarnings.warningCount && !errorsAndWarnings.errorCount;
+    !!errorsAndWarnings.warningCount && !errorsAndWarnings.errorCount;
 
   return (
     <UserPromptContainer>
@@ -111,23 +107,44 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
             <UserPromptError key={sheet.display_name}>
               <MetricTitle>{sheet.display_name}</MetricTitle>
 
-              {sheet.messages?.map((message: any) => (
-                <Fragment key={message.title + message.description}>
+              {!sheet.display_name && (
+                <Fragment key={sheet.title + sheet.description}>
                   <ErrorIconWrapper>
-                    {message.type === "ERROR" ? <ErrorIcon /> : <WarningIcon />}
+                    {sheet.type === "ERROR" ? <ErrorIcon /> : <WarningIcon />}
 
                     <ErrorMessageWrapper>
-                      <ErrorMessageTitle>{message.title}</ErrorMessageTitle>
+                      <ErrorMessageTitle>{sheet.title}</ErrorMessageTitle>
                       <ErrorMessageDescription>
-                        {message.subtitle}
+                        {sheet.subtitle}
                       </ErrorMessageDescription>
                     </ErrorMessageWrapper>
                   </ErrorIconWrapper>
-                  <ErrorAdditionalInfo>
-                    {message.description}
-                  </ErrorAdditionalInfo>
+                  <ErrorAdditionalInfo>{sheet.description}</ErrorAdditionalInfo>
                 </Fragment>
-              ))}
+              )}
+
+              {sheet.display_name &&
+                sheet.messages?.map((message: any) => (
+                  <Fragment key={message.title + message.description}>
+                    <ErrorIconWrapper>
+                      {message.type === "ERROR" ? (
+                        <ErrorIcon />
+                      ) : (
+                        <WarningIcon />
+                      )}
+
+                      <ErrorMessageWrapper>
+                        <ErrorMessageTitle>{message.title}</ErrorMessageTitle>
+                        <ErrorMessageDescription>
+                          {message.subtitle}
+                        </ErrorMessageDescription>
+                      </ErrorMessageWrapper>
+                    </ErrorIconWrapper>
+                    <ErrorAdditionalInfo>
+                      {message.description}
+                    </ErrorAdditionalInfo>
+                  </Fragment>
+                ))}
             </UserPromptError>
           ))}
         </UserPromptErrorContainer>
