@@ -141,8 +141,6 @@ const Reports: React.FC = () => {
         async (currentAgencyId, previousAgencyId) => {
           // prevents us from calling getReportOverviews twice on initial load
           if (previousAgencyId !== undefined) {
-            reportStore.resetState();
-            datapointsStore.resetState();
             const result = await reportStore.getReportOverviews();
             if (result instanceof Error) {
               setLoadingError(result.message);

@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 
 import NoAuthConfigErrorPage from "../components/Error/NoAuthConfigErrorPage";
 import rootStore from "./RootStore";
@@ -27,6 +27,22 @@ const StoreContext = React.createContext<typeof rootStore | undefined>(
 export const StoreProvider: React.FC<React.ReactNode> = ({
   children,
 }): React.ReactElement => {
+  useEffect(
+    () =>
+      // return disposer
+      rootStore.reportStore.deconstructor,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
+  useEffect(
+    () =>
+      // return disposer
+      rootStore.datapointsStore.deconstructor,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
   if (window.APP_CONFIG) {
     return (
       <StoreContext.Provider value={rootStore}>

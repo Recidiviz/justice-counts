@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { runInAction } from "mobx";
+import { reaction, runInAction } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -121,6 +121,22 @@ const DataEntryForm: React.FC<{
 
   const isPublished =
     reportStore.reportOverviews[reportID].status === "PUBLISHED";
+
+  // if the user switches agencies while on this page, navigate back to the reports page.
+  useEffect(
+    () =>
+      // return disposer so it is cleaned up if it never runs
+      reaction(
+        () => userStore.currentAgencyId,
+        async (currentAgencyId, previousAgencyId) => {
+          if (previousAgencyId !== undefined) {
+            navigate("/", { replace: true });
+          }
+        }
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [userStore]
+  );
 
   useEffect(
     () => {
