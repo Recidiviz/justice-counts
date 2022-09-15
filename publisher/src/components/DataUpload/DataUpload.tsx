@@ -139,7 +139,7 @@ export const DataUpload: React.FC = observer(() => {
         undefined,
         3500
       );
-      // navigate("/");
+      navigate("/");
     }
   };
 
