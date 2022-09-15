@@ -52,10 +52,28 @@ export type UploadedFile = {
   status: UploadedFileStatus | null;
 };
 
-export type ErrorsAndWarnings = {
+export type ErrorWarningMessage = {
+  title: string;
+  subtitle: string;
+  description: string;
+  type: "ERROR" | "WARNING";
+};
+
+export type MetricErrors = {
+  display_name: string;
+  sheet_name: string;
+  messages: ErrorWarningMessage[];
+};
+
+export type MetricErrorsWarnings = {
   errorCount: number;
   warningCount: number;
-  errors: Record<string, unknown>[];
+  metricErrors: MetricErrors[];
+};
+
+export type PreIngestErrors = {
+  errorCount: number;
+  messages: ErrorWarningMessage[];
 };
 
 /**
@@ -89,8 +107,9 @@ export const DataUpload: React.FC = observer(() => {
     ) || [];
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errorsAndWarnings, setErrorsAndWarnings] =
-    useState<ErrorsAndWarnings>();
+  const [errorsAndWarnings, setErrorsAndWarnings] = useState<
+    MetricErrorsWarnings | PreIngestErrors
+  >();
   const [selectedFile, setSelectedFile] = useState<File>();
   const [selectedSystem, setSelectedSystem] = useState<
     AgencySystems | undefined
@@ -116,101 +135,109 @@ export const DataUpload: React.FC = observer(() => {
       }
 
       const data = await response?.json();
-      // const mockData = JSON.parse(`{
-      //   "metrics": [
-      //     {
-      //       "datapoints": [],
-      //       "display_name": "Total Arrests",
-      //       "key": "LAW_ENFORCEMENT_ARRESTS_global/gender/restricted,global/race_and_ethnicity,metric/law_enforcement/reported_crime/type",
-      //       "sheets": [
-      //         {
-      //           "display_name": "Arrests",
-      //           "messages": [
-      //             {
-      //               "description": "There should only be a single row containing data for arrests in 6/2021.",
-      //               "subtitle": "6/2021",
-      //               "title": "Too Many Rows",
-      //               "type": "WARNING"
-      //             }
-      //           ],
-      //           "sheet_name": "arrests"
-      //         },
-      //         {
-      //           "display_name": "Arrests By Race",
-      //           "messages": [
-      //             {
-      //               "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
-      //               "subtitle": "race/ethnicity",
-      //               "title": "Missing Column",
-      //               "type": "WARNING"
-      //             },
-      //             {
-      //               "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
-      //               "subtitle": "race/ethnicity",
-      //               "title": "Missing Column",
-      //               "type": "WARNING"
-      //             },
-      //             {
-      //               "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
-      //               "subtitle": "race/ethnicity",
-      //               "title": "Missing Column",
-      //               "type": "ERROR"
-      //             }
-      //           ],
-      //           "sheet_name": "arrests_by_race"
-      //         }
-      //       ]
-      //     },
-      //     {
-      //       "datapoints": [],
-      //       "display_name": "Different Metric",
-      //       "key": "LAW_ENFORCEMENT_ARRESTS_global/gender/restricted,global/race_and_ethnicity,metric/law_enforcement/reported_crime/type",
-      //       "sheets": [
-      //         {
-      //           "display_name": "Different Metric Arrests",
-      //           "messages": [
-      //             {
-      //               "description": "There should only be a single row containing data for arrests in 6/2021.",
-      //               "subtitle": "6/2021",
-      //               "title": "Too Many Rows",
-      //               "type": "ERROR"
-      //             }
-      //           ],
-      //           "sheet_name": "arrests"
-      //         },
-      //         {
-      //           "display_name": "Different Metric Arrests By Race",
-      //           "messages": [
-      //             {
-      //               "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
-      //               "subtitle": "race/ethnicity",
-      //               "title": "Missing Column",
-      //               "type": "WARNING"
-      //             },
-      //             {
-      //               "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
-      //               "subtitle": "race/ethnicity",
-      //               "title": "Missing Column",
-      //               "type": "WARNING"
-      //             }
-      //           ],
-      //           "sheet_name": "arrests_by_race"
-      //         }
-      //       ]
-      //     }
-      //   ],
-      //   "upload_errors": []
-      // }`);
-      const sheetErrors = handleUploadErrors(
+      const mockData = JSON.parse(`{
+        "metrics": [
+          {
+            "datapoints": [],
+            "display_name": "Total Arrests",
+            "key": "LAW_ENFORCEMENT_ARRESTS_global/gender/restricted,global/race_and_ethnicity,metric/law_enforcement/reported_crime/type",
+            "sheets": [
+              {
+                "display_name": "Arrests",
+                "messages": [
+                  {
+                    "description": "There should only be a single row containing data for arrests in 6/2021.",
+                    "subtitle": "6/2021",
+                    "title": "Too Many Rows",
+                    "type": "WARNING"
+                  }
+                ],
+                "sheet_name": "arrests"
+              },
+              {
+                "display_name": "Arrests By Race",
+                "messages": [
+                  {
+                    "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
+                    "subtitle": "race/ethnicity",
+                    "title": "Missing Column",
+                    "type": "WARNING"
+                  },
+                  {
+                    "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
+                    "subtitle": "race/ethnicity",
+                    "title": "Missing Column",
+                    "type": "WARNING"
+                  },
+                  {
+                    "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
+                    "subtitle": "race/ethnicity",
+                    "title": "Missing Column",
+                    "type": "WARNING"
+                  }
+                ],
+                "sheet_name": "arrests_by_race"
+              }
+            ]
+          },
+          {
+            "datapoints": [],
+            "display_name": "Different Metric",
+            "key": "LAW_ENFORCEMENT_ARRESTS_global/gender/restricted,global/race_and_ethnicity,metric/law_enforcement/reported_crime/type",
+            "sheets": [
+              {
+                "display_name": "Different Metric Arrests",
+                "messages": [
+                  {
+                    "description": "There should only be a single row containing data for arrests in 6/2021.",
+                    "subtitle": "6/2021",
+                    "title": "Too Many Rows",
+                    "type": "WARNING"
+                  }
+                ],
+                "sheet_name": "arrests"
+              },
+              {
+                "display_name": "Different Metric Arrests By Race",
+                "messages": [
+                  {
+                    "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
+                    "subtitle": "race/ethnicity",
+                    "title": "Missing Column",
+                    "type": "WARNING"
+                  },
+                  {
+                    "description": "We expected the following column race/ethnicity to be found in the sheet arrests_by_race. Only the following rows were found in the sheet: ['year', 'month', 'value'].",
+                    "subtitle": "race/ethnicity",
+                    "title": "Missing Column",
+                    "type": "WARNING"
+                  }
+                ],
+                "sheet_name": "arrests_by_race"
+              }
+            ]
+          }
+        ],
+        "upload_errors": []
+      }`);
+
+      /** Handle Pre-Ingest Errors and Metric Errors */
+      const errors = handleUploadErrors(
         data.metrics,
-        data.upload_errors.length ? data.upload_errors : undefined
+        data.upload_errors?.length ? data.upload_errors : undefined
       );
-      setErrorsAndWarnings(sheetErrors);
       setIsLoading(false);
 
-      if (sheetErrors.errors.length) return;
+      if (
+        errors.errorCount ||
+        ("warningCount" in errors && errors.warningCount)
+      ) {
+        return setErrorsAndWarnings(errors);
+      }
 
+      /** Successful Upload - Proceed To Confirmation Page */
       /** (TODO(#15195): Placeholder - toast will be removed and this should navigate to the confirmation component */
+
       showToast(
         "File uploaded successfully and is pending processing by a Justice Counts administrator.",
         true,
@@ -221,23 +248,30 @@ export const DataUpload: React.FC = observer(() => {
     }
   };
 
-  // eslint-disable @typescript-eslint/no-explicit-any
-  const handleUploadErrors = (metrics: any, uploadErrors?: any) => {
-    if (uploadErrors) {
+  const handleUploadErrors = (
+    metrics: {
+      datapoints: [];
+      display_name: string;
+      key: string;
+      sheets: MetricErrors[];
+      upload_errors: PreIngestErrors["messages"];
+    }[],
+    preIngestErrorMessages?: PreIngestErrors["messages"]
+  ): MetricErrorsWarnings | PreIngestErrors => {
+    if (preIngestErrorMessages) {
       return {
-        errorCount: uploadErrors.length,
-        warningCount: 0,
-        errors: uploadErrors,
+        errorCount: preIngestErrorMessages.length,
+        messages: preIngestErrorMessages,
       };
     }
 
-    const errors = metrics.reduce(
-      (acc: any, metric: any) => [...acc, ...metric.sheets],
-      []
+    const metricErrors = metrics.reduce(
+      (acc, metric) => [...acc, ...metric.sheets],
+      [] as MetricErrors[]
     );
-    const errorCount = errors.reduce(
-      (acc: any, sheet: any) => {
-        sheet.messages.forEach((msg: any) => {
+    const errorWarningCount = metricErrors.reduce(
+      (acc, sheet) => {
+        sheet.messages.forEach((msg) => {
           if (msg.type === "ERROR") acc.errorCount += 1;
           if (msg.type === "WARNING") acc.warningCount += 1;
         });
@@ -249,7 +283,7 @@ export const DataUpload: React.FC = observer(() => {
       }
     );
 
-    return { errors, ...errorCount };
+    return { metricErrors, ...errorWarningCount };
   };
 
   const handleSystemSelection = (file: File, system: AgencySystems) => {
@@ -299,7 +333,7 @@ export const DataUpload: React.FC = observer(() => {
     }
 
     /** Upload Error/Warnings Step */
-    if (errorsAndWarnings?.errors.length) {
+    if (errorsAndWarnings) {
       return (
         <UploadErrorsWarnings
           errorsAndWarnings={errorsAndWarnings}
@@ -322,19 +356,13 @@ export const DataUpload: React.FC = observer(() => {
 
   return (
     <DataUploadContainer>
-      <DataUploadHeader
-        transparent={!selectedFile && !errorsAndWarnings?.errors.length}
-      >
+      <DataUploadHeader transparent={!selectedFile && !errorsAndWarnings}>
         <LogoContainer onClick={() => navigate("/")}>
           <Logo src={logoImg} alt="" />
         </LogoContainer>
 
         <Button
-          type={
-            selectedFile || errorsAndWarnings?.errors.length
-              ? "red"
-              : "light-border"
-          }
+          type={selectedFile || errorsAndWarnings ? "red" : "light-border"}
           onClick={() => navigate(-1)}
         >
           Cancel
