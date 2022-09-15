@@ -104,7 +104,9 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
     if ("metricErrors" in errorsAndWarnings) {
       return errorsAndWarnings.metricErrors.map((sheet) => (
         <UserPromptError key={sheet.display_name}>
-          <MetricTitle>{sheet.display_name}</MetricTitle>
+          <MetricTitle>
+            {sheet.display_name} <span>{sheet.sheet_name}</span>
+          </MetricTitle>
 
           {sheet.display_name &&
             sheet.messages?.map((message) => (

@@ -406,8 +406,19 @@ export const UserPromptError = styled.div`
 
 export const MetricTitle = styled.div`
   ${typography.sizeCSS.large};
+  display: flex;
+  align-items: center;
   border-top: 1px solid ${palette.highlight.grey4};
   padding: 16px 0;
+
+  span {
+    ${typography.sizeCSS.normal};
+    color: ${palette.highlight.grey9};
+    padding: 2px 10px;
+    border: 1px solid ${palette.highlight.grey5};
+    border-radius: 2px;
+    margin-left: 10px;
+  }
 `;
 
 export const ErrorIconWrapper = styled.div`
