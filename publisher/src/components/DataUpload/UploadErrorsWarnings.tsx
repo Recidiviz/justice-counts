@@ -143,10 +143,19 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
             </UserPromptTitle>
             <UserPromptDescription>
               We ran into a few discrepancies between the uploaded data and the
-              Justice Counts format for the X system, but we did our best to
-              resolve them. Please review the warnings and determine if it is
-              safe to proceed. If not, resolve the warnings in your file and
-              reupload.
+              Justice Counts format for the{" "}
+              <span>
+                <a
+                  href={`./assets/${systemFileName}`}
+                  download={systemFileName}
+                >
+                  {selectedSystem &&
+                    removeSnakeCase(selectedSystem).toLowerCase()}
+                </a>
+              </span>{" "}
+              system, but we did our best to resolve them. Please review the
+              warnings and determine if it is safe to proceed. If not, resolve
+              the warnings in your file and reupload.
             </UserPromptDescription>
           </>
         ) : (
