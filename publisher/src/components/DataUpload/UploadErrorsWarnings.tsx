@@ -29,6 +29,8 @@ import {
   ErrorMessageTitle,
   ErrorMessageWrapper,
   MetricTitle,
+  OrangeText,
+  RedText,
   systemToTemplateSpreadsheetFileName,
   UploadErrorButtonWrapper,
   UserPromptContainer,
@@ -135,18 +137,25 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
         {/* Error/Warning Header */}
         {hasWarningsOnly ? (
           <>
-            <UserPromptTitle>Warning title.</UserPromptTitle>
+            <UserPromptTitle>
+              We found{" "}
+              <OrangeText>{errorsAndWarnings?.warningCount}</OrangeText> warning
+              {errorsAndWarnings?.warningCount > 1 ? "s" : ""}, but you can
+              still proceed.
+            </UserPromptTitle>
             <UserPromptDescription>
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quaerat
-              quasi placeat maxime error esse sapiente similique beatae fugit id
-              provident eligendi ad fugiat iure tempora a vitae, incidunt ea
-              accusamus.
+              We ran into a few discrepancies between the uploaded data and the
+              Justice Counts format for the X system, but we did our best to
+              resolve them. Please review the warnings and determine if it is
+              safe to proceed. If not, resolve the warnings in your file and
+              reupload.
             </UserPromptDescription>
           </>
         ) : (
           <>
             <UserPromptTitle>
-              Uh oh, we found <span>{errorsAndWarnings?.errorCount}</span> error
+              Uh oh, we found <RedText>{errorsAndWarnings?.errorCount}</RedText>{" "}
+              error
               {errorsAndWarnings?.errorCount > 1 ? "s" : ""}.
             </UserPromptTitle>
             <UserPromptDescription>

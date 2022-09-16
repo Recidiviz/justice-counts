@@ -521,3 +521,11 @@ export const ExtendedLabelCell = styled(LabelCell)`
     flex: 4 1 auto;
   }
 `;
+
+export const RedText = styled.span`
+  color: ${palette.solid.red};
+`;
+
+export const OrangeText = styled.span`
+  color: ${palette.solid.orange};
+`;

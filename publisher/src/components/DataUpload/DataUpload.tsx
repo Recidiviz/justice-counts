@@ -115,9 +115,9 @@ export const DataUpload: React.FC = observer(() => {
         return showToast("Failed to upload. Please try again.", false, "red");
       }
 
-      /** Handle Pre-Ingest Errors and Metric Errors */
+      /** Errors and/or Warnings Encountered During Upload -- Show Interstitial instead of Confirmation Page */
       const data = await response?.json();
-      const errors = handleUploadErrors(
+      const errors = processUploadErrors(
         data.metrics,
         data.upload_errors?.length ? data.upload_errors : undefined
       );
@@ -132,7 +132,6 @@ export const DataUpload: React.FC = observer(() => {
 
       /** Successful Upload - Proceed To Confirmation Page */
       /** (TODO(#15195): Placeholder - toast will be removed and this should navigate to the confirmation component */
-
       showToast(
         "File uploaded successfully and is pending processing by a Justice Counts administrator.",
         true,
@@ -143,7 +142,7 @@ export const DataUpload: React.FC = observer(() => {
     }
   };
 
-  const handleUploadErrors = (
+  const processUploadErrors = (
     metrics: {
       datapoints: [];
       display_name: string;
