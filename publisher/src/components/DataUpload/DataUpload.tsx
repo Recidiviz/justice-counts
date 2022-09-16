@@ -33,9 +33,9 @@ import {
   UploadFile,
 } from ".";
 import {
+  ErrorsWarnings,
+  ErrorWarningMessage,
   MetricErrors,
-  MetricErrorsWarnings,
-  PreIngestErrors,
   UploadErrorsWarnings,
 } from "./UploadErrorsWarnings";
 
@@ -88,9 +88,7 @@ export const DataUpload: React.FC = observer(() => {
     ) || [];
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errorsAndWarnings, setErrorsAndWarnings] = useState<
-    MetricErrorsWarnings | PreIngestErrors
-  >();
+  const [errorsAndWarnings, setErrorsAndWarnings] = useState<ErrorsWarnings>();
   const [selectedFile, setSelectedFile] = useState<File>();
   const [selectedSystem, setSelectedSystem] = useState<
     AgencySystems | undefined
@@ -117,9 +115,10 @@ export const DataUpload: React.FC = observer(() => {
 
       /** Errors and/or Warnings Encountered During Upload -- Show Interstitial instead of Confirmation Page */
       const data = await response?.json();
+
       const errors = processUploadErrors(
         data.metrics,
-        data.upload_errors?.length ? data.upload_errors : undefined
+        data.pre_ingest_errors?.length ? data.pre_ingest_errors : undefined
       );
       setIsLoading(false);
 
@@ -148,17 +147,10 @@ export const DataUpload: React.FC = observer(() => {
       display_name: string;
       key: string;
       sheets: MetricErrors[];
-      upload_errors: PreIngestErrors["messages"];
+      pre_ingest_errors: ErrorWarningMessage[];
     }[],
-    preIngestErrorMessages?: PreIngestErrors["messages"]
-  ): MetricErrorsWarnings | PreIngestErrors => {
-    if (preIngestErrorMessages) {
-      return {
-        errorCount: preIngestErrorMessages.length,
-        messages: preIngestErrorMessages,
-      };
-    }
-
+    preIngestErrorMessages?: ErrorWarningMessage[]
+  ) => {
     const metricErrors = metrics.reduce(
       (acc, metric) => [...acc, ...metric.sheets],
       [] as MetricErrors[]
@@ -176,6 +168,15 @@ export const DataUpload: React.FC = observer(() => {
         warningCount: 0,
       }
     );
+
+    if (preIngestErrorMessages) {
+      errorWarningCount.errorCount += preIngestErrorMessages.length;
+      return {
+        metricErrors,
+        ...errorWarningCount,
+        preIngestErrors: preIngestErrorMessages,
+      };
+    }
 
     return { metricErrors, ...errorWarningCount };
   };

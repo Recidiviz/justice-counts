@@ -54,19 +54,15 @@ export type MetricErrors = {
   messages: ErrorWarningMessage[];
 };
 
-export type MetricErrorsWarnings = {
+export type ErrorsWarnings = {
   errorCount: number;
   warningCount: number;
   metricErrors: MetricErrors[];
-};
-
-export type PreIngestErrors = {
-  errorCount: number;
-  messages: ErrorWarningMessage[];
+  preIngestErrors?: ErrorWarningMessage[];
 };
 
 type UploadErrorsWarningsProps = {
-  errorsAndWarnings: MetricErrorsWarnings | PreIngestErrors;
+  errorsAndWarnings: ErrorsWarnings;
   selectedSystem: string | undefined;
   resetToNewUpload: () => void;
 };
@@ -84,51 +80,53 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
     !errorsAndWarnings.errorCount;
 
   const renderMessages = () => {
-    if ("messages" in errorsAndWarnings) {
-      return errorsAndWarnings.messages.map((message) => (
-        <UserPromptError key={message.title + message.description}>
-          <MetricTitle />
-          <ErrorIconWrapper>
-            {message.type === "ERROR" ? <ErrorIcon /> : <WarningIcon />}
+    return (
+      <>
+        {errorsAndWarnings.metricErrors.map((sheet) => (
+          <UserPromptError key={sheet.display_name}>
+            <MetricTitle>
+              {sheet.display_name} <span>{sheet.sheet_name}</span>
+            </MetricTitle>
 
-            <ErrorMessageWrapper>
-              <ErrorMessageTitle>{message.title}</ErrorMessageTitle>
-              <ErrorMessageDescription>
-                {message.subtitle}
-              </ErrorMessageDescription>
-            </ErrorMessageWrapper>
-          </ErrorIconWrapper>
-          <ErrorAdditionalInfo>{message.description}</ErrorAdditionalInfo>
-        </UserPromptError>
-      ));
-    }
+            {sheet.display_name &&
+              sheet.messages?.map((message) => (
+                <Fragment key={message.title + message.description}>
+                  <ErrorIconWrapper>
+                    {message.type === "ERROR" ? <ErrorIcon /> : <WarningIcon />}
 
-    if ("metricErrors" in errorsAndWarnings) {
-      return errorsAndWarnings.metricErrors.map((sheet) => (
-        <UserPromptError key={sheet.display_name}>
-          <MetricTitle>
-            {sheet.display_name} <span>{sheet.sheet_name}</span>
-          </MetricTitle>
+                    <ErrorMessageWrapper>
+                      <ErrorMessageTitle>{message.title}</ErrorMessageTitle>
+                      <ErrorMessageDescription>
+                        {message.subtitle}
+                      </ErrorMessageDescription>
+                    </ErrorMessageWrapper>
+                  </ErrorIconWrapper>
+                  <ErrorAdditionalInfo>
+                    {message.description}
+                  </ErrorAdditionalInfo>
+                </Fragment>
+              ))}
+          </UserPromptError>
+        ))}
 
-          {sheet.display_name &&
-            sheet.messages?.map((message) => (
-              <Fragment key={message.title + message.description}>
-                <ErrorIconWrapper>
-                  {message.type === "ERROR" ? <ErrorIcon /> : <WarningIcon />}
+        {errorsAndWarnings.preIngestErrors?.map((message) => (
+          <UserPromptError key={message.title + message.description}>
+            <MetricTitle />
+            <ErrorIconWrapper>
+              {message.type === "ERROR" ? <ErrorIcon /> : <WarningIcon />}
 
-                  <ErrorMessageWrapper>
-                    <ErrorMessageTitle>{message.title}</ErrorMessageTitle>
-                    <ErrorMessageDescription>
-                      {message.subtitle}
-                    </ErrorMessageDescription>
-                  </ErrorMessageWrapper>
-                </ErrorIconWrapper>
-                <ErrorAdditionalInfo>{message.description}</ErrorAdditionalInfo>
-              </Fragment>
-            ))}
-        </UserPromptError>
-      ));
-    }
+              <ErrorMessageWrapper>
+                <ErrorMessageTitle>{message.title}</ErrorMessageTitle>
+                <ErrorMessageDescription>
+                  {message.subtitle}
+                </ErrorMessageDescription>
+              </ErrorMessageWrapper>
+            </ErrorIconWrapper>
+            <ErrorAdditionalInfo>{message.description}</ErrorAdditionalInfo>
+          </UserPromptError>
+        ))}
+      </>
+    );
   };
 
   return (
