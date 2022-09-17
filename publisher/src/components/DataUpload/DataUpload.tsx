@@ -204,7 +204,7 @@ export const DataUpload: React.FC = observer(() => {
 
   const renderCurrentUploadStep = (): JSX.Element => {
     /**
-     * There are ~3 steps in the upload phase before reaching the metrics confirmation page.
+     * There are ~4 steps in the upload phase before reaching the metrics confirmation page.
      *
      * Step 1: Upload File
      * Trigger: no selected file and no upload error(s)/warnings(s) present in server response
@@ -212,8 +212,13 @@ export const DataUpload: React.FC = observer(() => {
      * Step 2: System Selection (only for agencies with multiple systems)
      * Trigger: file selected AND no system selected
      *
+     * Once a file and system have been selected, a loading page renders that will resolve into Step 3 or Step 4.
+     *
      * Step 3: Upload Errors/Warnings
      * Trigger: upload error(s)/warnings(s) present in server response
+     *
+     * Step 4: Navigate to Confirmation Page
+     * Trigger: file selected AND system selected AND no errors
      */
 
     if (selectedFile && !selectedSystem) {
