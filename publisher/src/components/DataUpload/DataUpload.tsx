@@ -16,39 +16,28 @@
 // =============================================================================
 
 import { observer } from "mobx-react-lite";
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { AgencySystems } from "../../shared/types";
 import { useStore } from "../../stores";
-import { removeSnakeCase } from "../../utils";
-import { ReactComponent as ErrorIcon } from "../assets/error-icon.svg";
 import logoImg from "../assets/jc-logo-vector.png";
-import { ReactComponent as WarningIcon } from "../assets/warning-icon.svg";
 import { Logo, LogoContainer } from "../Header";
 import { Loading } from "../Loading";
 import { showToast } from "../Toast";
 import {
   Button,
-  ButtonWrapper,
   DataUploadContainer,
   DataUploadHeader,
-  ErrorAdditionalInfo,
-  ErrorIconWrapper,
-  ErrorMessageDescription,
-  ErrorMessageTitle,
-  ErrorMessageWrapper,
-  FileName,
-  MetricTitle,
   SystemSelection,
   UploadFile,
-  UserPromptContainer,
-  UserPromptDescription,
-  UserPromptError,
-  UserPromptErrorContainer,
-  UserPromptTitle,
-  UserPromptWrapper,
 } from ".";
+import {
+  ErrorsWarnings,
+  ErrorWarningMessage,
+  MetricErrors,
+  UploadErrorsWarnings,
+} from "./UploadErrorsWarnings";
 
 export type UploadedFileStatus = "UPLOADED" | "INGESTED" | "ERRORED";
 
@@ -99,7 +88,7 @@ export const DataUpload: React.FC = observer(() => {
     ) || [];
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [uploadError, setUploadError] = useState<boolean>(false);
+  const [errorsAndWarnings, setErrorsAndWarnings] = useState<ErrorsWarnings>();
   const [selectedFile, setSelectedFile] = useState<File>();
   const [selectedSystem, setSelectedSystem] = useState<
     AgencySystems | undefined
@@ -118,23 +107,78 @@ export const DataUpload: React.FC = observer(() => {
       formData.append("agency_id", userStore.currentAgencyId.toString());
 
       const response = await reportStore.uploadExcelSpreadsheet(formData);
-      setIsLoading(false);
 
       if (response instanceof Error) {
-        setUploadError(true);
+        setIsLoading(false);
         return showToast("Failed to upload. Please try again.", false, "red");
       }
 
-      setUploadError(false);
+      /** Errors and/or Warnings Encountered During Upload -- Show Interstitial instead of Confirmation Page */
+      const data = await response?.json();
+
+      const errors = processUploadErrors(
+        data.metrics,
+        data.pre_ingest_errors?.length ? data.pre_ingest_errors : undefined
+      );
+      setIsLoading(false);
+
+      if (
+        errors.errorCount ||
+        ("warningCount" in errors && errors.warningCount)
+      ) {
+        return setErrorsAndWarnings(errors);
+      }
+
+      /** Successful Upload - Proceed To Confirmation Page */
+      /** (TODO(#15195): Placeholder - toast will be removed and this should navigate to the confirmation component */
       showToast(
         "File uploaded successfully and is pending processing by a Justice Counts administrator.",
         true,
         undefined,
         3500
       );
-      /** Placeholder - this should navigate to the confirmation component */
       navigate("/");
     }
+  };
+
+  const processUploadErrors = (
+    metrics: {
+      datapoints: [];
+      display_name: string;
+      key: string;
+      sheets: MetricErrors[];
+      pre_ingest_errors: ErrorWarningMessage[];
+    }[],
+    preIngestErrorMessages?: ErrorWarningMessage[]
+  ) => {
+    const metricErrors = metrics.reduce(
+      (acc, metric) => [...acc, ...metric.sheets],
+      [] as MetricErrors[]
+    );
+    const errorWarningCount = metricErrors.reduce(
+      (acc, sheet) => {
+        sheet.messages.forEach((msg) => {
+          if (msg.type === "ERROR") acc.errorCount += 1;
+          if (msg.type === "WARNING") acc.warningCount += 1;
+        });
+        return acc;
+      },
+      {
+        errorCount: 0,
+        warningCount: 0,
+      }
+    );
+
+    if (preIngestErrorMessages) {
+      errorWarningCount.errorCount += preIngestErrorMessages.length;
+      return {
+        metricErrors,
+        ...errorWarningCount,
+        preIngestErrors: preIngestErrorMessages,
+      };
+    }
+
+    return { metricErrors, ...errorWarningCount };
   };
 
   const handleSystemSelection = (file: File, system: AgencySystems) => {
@@ -142,6 +186,12 @@ export const DataUpload: React.FC = observer(() => {
     setSelectedSystem(system);
     handleFileUpload(file, system);
     setSelectedFile(undefined);
+  };
+
+  const resetToNewUpload = () => {
+    setErrorsAndWarnings(undefined);
+    setSelectedFile(undefined);
+    setSelectedSystem(userSystems.length === 1 ? userSystems[0] : undefined);
   };
 
   if (isLoading) {
@@ -153,7 +203,25 @@ export const DataUpload: React.FC = observer(() => {
   }
 
   const renderCurrentUploadStep = (): JSX.Element => {
-    if (selectedFile) {
+    /**
+     * There are ~4 steps in the upload phase before reaching the metrics confirmation page.
+     *
+     * Step 1: Upload File
+     * Trigger: no selected file and no upload error(s)/warnings(s) present in server response
+     *
+     * Step 2: System Selection (only for agencies with multiple systems)
+     * Trigger: file selected AND no system selected
+     *
+     * Once a file and system have been selected, a loading page renders that will resolve into Step 3 or Step 4.
+     *
+     * Step 3: Upload Errors/Warnings
+     * Trigger: upload error(s)/warnings(s) present in server response
+     *
+     * Step 4: Navigate to Confirmation Page
+     * Trigger: file selected AND system selected AND no errors
+     */
+
+    if (selectedFile && !selectedSystem) {
       /** System Selection Step (for multi-system users) */
       return (
         <SystemSelection
@@ -165,129 +233,13 @@ export const DataUpload: React.FC = observer(() => {
     }
 
     /** Upload Error/Warnings Step */
-    if (uploadError) {
-      /** This object is temporary for the purpose of displaying each UI state */
-      const mockErrors = [
-        {
-          metricTitle: "Releases",
-          errorsAndWarnings: [
-            {
-              type: "error",
-              errorTitle: "Breakdown not recognized",
-              errorDescription: "Label Not Recognized",
-            },
-            {
-              type: "error",
-              errorTitle: "Breakdown not recognized",
-              errorDescription: "Label Not Recognized",
-            },
-            {
-              type: "error",
-              errorTitle: "Breakdown not recognized",
-              errorDescription: "Label Not Recognized",
-            },
-            {
-              type: "warning",
-              errorTitle: "Breakdown not recognized",
-              errorDescription: "Label Not Recognized",
-            },
-          ],
-        },
-        {
-          metricTitle: "Admissions",
-          errorsAndWarnings: [
-            {
-              type: "error",
-              errorTitle: "Missing value",
-              errorDescription: "August 2022: Total",
-              additionalInfo:
-                "The total value for Admissions will be shown as the sum of the breakdowns.",
-            },
-            {
-              type: "error",
-              errorTitle: "Breakdown not recognized",
-              errorDescription: "Label Not Recognized",
-            },
-            {
-              type: "error",
-              errorTitle: "Breakdown not recognized",
-              errorDescription: "Label Not Recognized",
-            },
-            {
-              type: "warning",
-              errorTitle: "Breakdown not recognized",
-              errorDescription: "Label Not Recognized",
-            },
-          ],
-        },
-      ];
-
-      const systemFileName =
-        selectedSystem && systemToTemplateSpreadsheetFileName[selectedSystem];
-
+    if (errorsAndWarnings) {
       return (
-        <UserPromptContainer>
-          <UserPromptWrapper>
-            <FileName error>
-              <ErrorIcon />
-              File Name.xls
-            </FileName>
-            <UserPromptTitle>Uh oh, we found 4 errors.</UserPromptTitle>
-            <UserPromptDescription>
-              We ran into a few discrepancies between the uploaded data and the
-              Justice Counts format for the{" "}
-              <span>
-                <a
-                  href={`./assets/${systemFileName}`}
-                  download={systemFileName}
-                >
-                  {selectedSystem &&
-                    removeSnakeCase(selectedSystem).toLowerCase()}
-                </a>
-              </span>{" "}
-              system. To continue, please resolve the errors in your file and
-              reupload.
-            </UserPromptDescription>
-
-            <ButtonWrapper>
-              <Button type="blue" onClick={() => setUploadError(false)}>
-                New Upload
-              </Button>
-            </ButtonWrapper>
-
-            <UserPromptErrorContainer>
-              {mockErrors.map((item) => (
-                <UserPromptError key={item.metricTitle}>
-                  <MetricTitle>{item.metricTitle}</MetricTitle>
-
-                  {item.errorsAndWarnings?.map((errorItem) => (
-                    <Fragment key={errorItem.errorDescription}>
-                      <ErrorIconWrapper>
-                        {errorItem.type === "error" ? (
-                          <ErrorIcon />
-                        ) : (
-                          <WarningIcon />
-                        )}
-
-                        <ErrorMessageWrapper>
-                          <ErrorMessageTitle>
-                            {errorItem.errorTitle}
-                          </ErrorMessageTitle>
-                          <ErrorMessageDescription>
-                            {errorItem.errorDescription}
-                          </ErrorMessageDescription>
-                        </ErrorMessageWrapper>
-                      </ErrorIconWrapper>
-                      <ErrorAdditionalInfo>
-                        {errorItem.additionalInfo}
-                      </ErrorAdditionalInfo>
-                    </Fragment>
-                  ))}
-                </UserPromptError>
-              ))}
-            </UserPromptErrorContainer>
-          </UserPromptWrapper>
-        </UserPromptContainer>
+        <UploadErrorsWarnings
+          errorsAndWarnings={errorsAndWarnings}
+          selectedSystem={selectedSystem}
+          resetToNewUpload={resetToNewUpload}
+        />
       );
     }
 
@@ -304,13 +256,13 @@ export const DataUpload: React.FC = observer(() => {
 
   return (
     <DataUploadContainer>
-      <DataUploadHeader transparent={!selectedFile}>
+      <DataUploadHeader transparent={!selectedFile && !errorsAndWarnings}>
         <LogoContainer onClick={() => navigate("/")}>
           <Logo src={logoImg} alt="" />
         </LogoContainer>
 
         <Button
-          type={selectedFile ? "red" : "light-border"}
+          type={selectedFile || errorsAndWarnings ? "red" : "light-border"}
           onClick={() => navigate(-1)}
         >
           Cancel

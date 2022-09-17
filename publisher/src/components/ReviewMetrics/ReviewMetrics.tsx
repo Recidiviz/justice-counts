@@ -20,7 +20,6 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 
 import {
-  Datapoint,
   DatapointsGroupedByAggregateAndDisaggregations,
   DatapointValue,
   DataVizAggregateName,
