@@ -16,21 +16,16 @@
 // =============================================================================
 
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { DatapointValue, DataVizAggregateName } from "../../shared/types";
 import {
-  DatapointsGroupedByAggregateAndDisaggregations,
-  DatapointValue,
-  DataVizAggregateName,
-  RawDatapoint,
-} from "../../shared/types";
-import { UploadedMetric, UploadedMetrics } from "../DataUpload/types";
-import {
-  formatDateShort,
-  getDatapointDimensions,
-  sortDatapointDimensions,
-} from "../DataViz/utils";
+  DataUploadDatapoint,
+  UploadedMetric,
+  UploadedMetrics,
+} from "../DataUpload/types";
+import { formatDateShort, sortDatapointDimensions } from "../DataViz/utils";
 import {
   Container,
   DatapointsTableContainer,
@@ -59,13 +54,18 @@ import {
 const ReviewMetrics: React.FC = observer(() => {
   const location = useLocation();
   const navigate = useNavigate();
-  console.log("location.state", location.state);
+
+  useEffect(() => {
+    if (!location.state?.metrics) {
+      // no metrics in passed in navigation state, redirect to home page
+      navigate("/", { replace: true });
+    }
+  });
 
   if (!location.state?.metrics) {
-    // no metrics in passed in navigation state, redirect to home page
-    navigate("/");
     return null;
   }
+
   const { metrics }: UploadedMetrics = location.state;
 
   const renderSection = (metric: UploadedMetric, index: number) => {
@@ -89,7 +89,7 @@ const ReviewMetrics: React.FC = observer(() => {
   };
 
   const renderDatapointsTable = (
-    datapoints: RawDatapoint[],
+    datapoints: DataUploadDatapoint[],
     startDates: string[]
   ) => {
     /**

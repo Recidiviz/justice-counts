@@ -20,8 +20,13 @@ import { RawDatapoint } from "../../shared/types";
 export interface UploadedMetrics {
   metrics: UploadedMetric[];
 }
+
+export interface DataUploadDatapoint extends RawDatapoint {
+  old_value: string | null;
+}
+
 export interface UploadedMetric {
-  datapoints: RawDatapoint[];
+  datapoints: DataUploadDatapoint[];
   display_name: string;
   key: string;
   sheets: {
