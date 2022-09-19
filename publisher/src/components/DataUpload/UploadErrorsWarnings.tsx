@@ -40,26 +40,7 @@ import {
   UserPromptTitle,
   UserPromptWrapper,
 } from ".";
-
-export type ErrorWarningMessage = {
-  title: string;
-  subtitle: string;
-  description: string;
-  type: "ERROR" | "WARNING";
-};
-
-export type MetricErrors = {
-  display_name: string;
-  sheet_name: string;
-  messages: ErrorWarningMessage[];
-};
-
-export type ErrorsWarnings = {
-  errorCount: number;
-  warningCount: number;
-  metricErrors: MetricErrors[];
-  preIngestErrors?: ErrorWarningMessage[];
-};
+import { ErrorsWarnings } from "./types";
 
 type UploadErrorsWarningsProps = {
   errorsAndWarnings: ErrorsWarnings;

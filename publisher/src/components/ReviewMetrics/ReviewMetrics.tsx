@@ -15,20 +15,20 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { when } from "mobx";
 import { observer } from "mobx-react-lite";
-import React, { useEffect } from "react";
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import {
   DatapointsGroupedByAggregateAndDisaggregations,
   DatapointValue,
   DataVizAggregateName,
+  RawDatapoint,
 } from "../../shared/types";
-import { useStore } from "../../stores";
+import { UploadedMetric, UploadedMetrics } from "../DataUpload/types";
 import {
   formatDateShort,
   getDatapointDimensions,
-  getStartDates,
   sortDatapointDimensions,
 } from "../DataViz/utils";
 import {
@@ -57,44 +57,39 @@ import {
 } from "./ReviewMetrics.styles";
 
 const ReviewMetrics: React.FC = observer(() => {
-  const { userStore, datapointsStore } = useStore();
+  const location = useLocation();
+  const navigate = useNavigate();
+  console.log("location.state", location.state);
 
-  useEffect(
-    () =>
-      // return when's disposer so it is cleaned up if it never runs
-      when(
-        () => userStore.userInfoLoaded,
-        () => {
-          datapointsStore.getDatapoints();
-        }
-      ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  if (!location.state?.metrics) {
+    // no metrics in passed in navigation state, redirect to home page
+    navigate("/");
+    return null;
+  }
+  const { metrics }: UploadedMetrics = location.state;
 
-  const renderSection = (
-    metricKey: string,
-    datapoints: DatapointsGroupedByAggregateAndDisaggregations,
-    index: number
-  ) => {
-    const startDates = getStartDates(datapoints);
-    const metricDisplayName = datapointsStore.metricKeyToDisplayName[metricKey];
+  const renderSection = (metric: UploadedMetric, index: number) => {
+    const startDates = Array.from(
+      new Set(metric.datapoints.map((dp) => dp.start_date))
+    ).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
     return (
-      <SectionContainer key={metricKey}>
+      <SectionContainer key={metric.key}>
         <SectionTitleContainer>
           <SectionTitleNumber>{index + 1}</SectionTitleNumber>
-          <SectionTitle>{metricDisplayName}</SectionTitle>
+          <SectionTitle>{metric.display_name}</SectionTitle>
           <SectionTitleMonths>
-            {startDates.length} month{startDates.length !== 1 ? "s" : ""}
+            {startDates.length}{" "}
+            {metric.datapoints[0].frequency === "ANNUAL" ? "year" : "month"}
+            {startDates.length !== 1 ? "s" : ""}
           </SectionTitleMonths>
         </SectionTitleContainer>
-        {renderDatapointsTable(datapoints, startDates)}
+        {renderDatapointsTable(metric.datapoints, startDates)}
       </SectionContainer>
     );
   };
 
   const renderDatapointsTable = (
-    datapoints: DatapointsGroupedByAggregateAndDisaggregations,
+    datapoints: RawDatapoint[],
     startDates: string[]
   ) => {
     /**
@@ -108,44 +103,45 @@ const ReviewMetrics: React.FC = observer(() => {
      *   - table rows for each dimension, each value corresponds with the date column it is reported in
      */
 
-    // create a mapping from start date to the column index the start date is located in for fast lookup
+    // // create a mapping from start date to the column index the start date is located in for fast lookup
     const startDatesIndexLookup = startDates.reduce((map, current, idx) => {
       map[current] = idx; /* eslint-disable-line no-param-reassign */
       return map;
     }, {} as { [key: string]: number });
 
-    // Create array of aggregate values, each value indexed with their corresponding date column
+    // // Create array of aggregate values, each value indexed with their corresponding date column
     const aggregateRowData: DatapointValue[] = [];
-    datapoints.aggregate.forEach((dp) => {
-      aggregateRowData[startDatesIndexLookup[dp.start_date]] =
-        dp[DataVizAggregateName];
-    });
 
-    // create map of disaggregations and dimensions, each dimension containing array of values,
-    // each value indexed with their corresponding date column
+    // // Create map of disaggregations and dimensions, each dimension containing array of values,
+    // // each value indexed with their corresponding date column
     const disaggregationRowData: {
       [disaggregation: string]: {
         [dimension: string]: DatapointValue[];
       };
     } = {};
-    Object.entries(datapoints.disaggregations).forEach(
-      ([disaggregation, entry]) => {
-        if (!disaggregationRowData[disaggregation]) {
-          disaggregationRowData[disaggregation] = {};
+    datapoints.forEach((dp) => {
+      if (dp.value !== null) {
+        if (dp.disaggregation_display_name && dp.dimension_display_name) {
+          if (!disaggregationRowData[dp.disaggregation_display_name]) {
+            disaggregationRowData[dp.disaggregation_display_name] = {};
+          }
+          if (
+            !disaggregationRowData[dp.disaggregation_display_name][
+              dp.dimension_display_name
+            ]
+          ) {
+            disaggregationRowData[dp.disaggregation_display_name][
+              dp.dimension_display_name
+            ] = [];
+          }
+          disaggregationRowData[dp.disaggregation_display_name][
+            dp.dimension_display_name
+          ][startDatesIndexLookup[dp.start_date]] = dp.value;
+        } else {
+          aggregateRowData[startDatesIndexLookup[dp.start_date]] = dp.value;
         }
-        Object.values(entry).forEach((datapoint) => {
-          const dimensions = getDatapointDimensions(datapoint);
-          Object.entries(dimensions).forEach(([dimension, value]) => {
-            if (!disaggregationRowData[disaggregation][dimension]) {
-              disaggregationRowData[disaggregation][dimension] = [];
-            }
-            disaggregationRowData[disaggregation][dimension][
-              startDatesIndexLookup[datapoint.start_date]
-            ] = value;
-          });
-        });
       }
-    );
+    });
 
     return (
       <DatapointsTableContainer>
@@ -221,9 +217,7 @@ const ReviewMetrics: React.FC = observer(() => {
     <Container>
       <MainPanel>
         <Heading>
-          Review{" "}
-          <span>{Object.keys(datapointsStore.datapointsByMetric).length}</span>{" "}
-          Metrics
+          Review <span>{metrics.length}</span> Metrics
         </Heading>
         <Subheading>
           Before publishing, take a moment to review the changes. If you believe
@@ -233,11 +227,12 @@ const ReviewMetrics: React.FC = observer(() => {
           </a>
         </Subheading>
         <Divider />
-        {Object.entries(datapointsStore.datapointsByMetric).map(
-          ([metricName, datapoints], idx) => {
-            return renderSection(metricName, datapoints, idx);
+        {metrics.map((metric, idx) => {
+          if (metric.datapoints.length > 0) {
+            return renderSection(metric, idx);
           }
-        )}
+          return null;
+        })}
       </MainPanel>
     </Container>
   );

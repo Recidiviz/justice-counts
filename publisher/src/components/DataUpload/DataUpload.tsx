@@ -32,12 +32,8 @@ import {
   SystemSelection,
   UploadFile,
 } from ".";
-import {
-  ErrorsWarnings,
-  ErrorWarningMessage,
-  MetricErrors,
-  UploadErrorsWarnings,
-} from "./UploadErrorsWarnings";
+import { ErrorsWarnings, ErrorWarningMessage, MetricErrors } from "./types";
+import { UploadErrorsWarnings } from "./UploadErrorsWarnings";
 
 export type UploadedFileStatus = "UPLOADED" | "INGESTED" | "ERRORED";
 
@@ -129,15 +125,9 @@ export const DataUpload: React.FC = observer(() => {
         return setErrorsAndWarnings(errors);
       }
 
-      /** Successful Upload - Proceed To Confirmation Page */
-      /** (TODO(#15195): Placeholder - toast will be removed and this should navigate to the confirmation component */
-      showToast(
-        "File uploaded successfully and is pending processing by a Justice Counts administrator.",
-        true,
-        undefined,
-        3500
-      );
-      navigate("/");
+      navigate("/review-metrics", {
+        state: data,
+      });
     }
   };
 
