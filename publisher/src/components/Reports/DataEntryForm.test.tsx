@@ -219,7 +219,6 @@ test("expect empty value in metric field to add field error when there is a valu
   );
 
   const labels = await screen.findAllByLabelText("Total Staff");
-  console.log(labels[0]);
   fireEvent.change(labels[0], { target: { value: "" } });
 
   expect(
