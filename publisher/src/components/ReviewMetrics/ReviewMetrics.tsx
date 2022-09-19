@@ -223,7 +223,7 @@ const ReviewMetrics: React.FC = observer(() => {
         </LogoContainer>
 
         <Button type="blue" onClick={() => navigate(-1)}>
-          Save and Exit
+          Close
         </Button>
       </DataUploadHeader>
       <MainPanel>
@@ -231,8 +231,8 @@ const ReviewMetrics: React.FC = observer(() => {
           Review <span>{metrics.length}</span> Metrics
         </Heading>
         <Subheading>
-          Before publishing, take a moment to review the changes. If you believe
-          there is an error, please contact the Justice Counts team via{" "}
+          Take a moment to review the changes. If you believe there is an error,
+          please contact the Justice Counts team via{" "}
           <a href="mailto:support@justice-counts.org">
             support@justicecounts.org
           </a>
