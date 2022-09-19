@@ -54,17 +54,14 @@ export const Subheading = styled.div`
   }
 `;
 
-export const Divider = styled.div`
-  margin-top: 24px;
-  border: 0.5px solid ${palette.highlight.grey4};
-`;
-
 export const SectionContainer = styled.div`
-  margin-top: 16px;
+  margin-top: 32px;
+  padding-top: 16px;
   display: flex;
   align-items: center;
   justify-content: stretch;
   flex-direction: column;
+  border-top: 1px solid ${palette.highlight.grey3};
 `;
 
 export const SectionTitleContainer = styled.div`
@@ -118,7 +115,7 @@ export const DatapointsTableNamesContainer = styled.div`
   width: 240px;
   min-width: 240px;
   padding-top: 34px;
-  border-right: 1px solid ${palette.highlight.grey5};
+  border-right: 1px solid ${palette.highlight.grey3};
 `;
 export const DatapointsTableNamesRow = styled.div`
   padding-bottom: 8px;

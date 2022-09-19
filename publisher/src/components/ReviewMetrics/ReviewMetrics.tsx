@@ -43,7 +43,6 @@ import {
   DatapointsTableNamesContainer,
   DatapointsTableNamesDivider,
   DatapointsTableNamesRow,
-  Divider,
   Heading,
   MainPanel,
   SectionContainer,
@@ -238,7 +237,6 @@ const ReviewMetrics: React.FC = observer(() => {
             support@justicecounts.org
           </a>
         </Subheading>
-        <Divider />
         {metrics.map((metric, idx) => {
           if (metric.datapoints.length > 0) {
             return renderSection(metric, idx);
