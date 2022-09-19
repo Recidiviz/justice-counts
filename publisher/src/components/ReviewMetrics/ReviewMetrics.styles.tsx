@@ -17,13 +17,12 @@
 
 import styled from "styled-components/macro";
 
-import { palette, typography } from "../GlobalStyles";
+import { DataUploadContainer } from "../DataUpload";
+import { HEADER_BAR_HEIGHT, palette, typography } from "../GlobalStyles";
 
 export const MAIN_PANEL_MAX_WIDTH = 864;
 
-export const Container = styled.div`
-  width: 100%;
-  height: 100%;
+export const Container = styled(DataUploadContainer)`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -32,7 +31,8 @@ export const Container = styled.div`
 export const MainPanel = styled.div`
   width: 100%;
   max-width: ${MAIN_PANEL_MAX_WIDTH}px;
-  margin-top: 56px;
+  margin-top: ${56 + HEADER_BAR_HEIGHT}px;
+  margin-bottom: 128px;
 `;
 
 export const Heading = styled.div`
@@ -118,6 +118,7 @@ export const DatapointsTableNamesContainer = styled.div`
   width: 240px;
   min-width: 240px;
   padding-top: 34px;
+  border-right: 1px solid ${palette.highlight.grey5};
 `;
 export const DatapointsTableNamesRow = styled.div`
   padding-bottom: 8px;
@@ -146,6 +147,7 @@ export const DatapointsTableDetailsRow = styled.tr``;
 export const DatapointsTableDetailsRowHeader = styled.th`
   ${typography.sizeCSS.small}
   padding-bottom: 16px;
+  text-align: center;
 `;
 export const DatapointsTableDetailsCell = styled.td`
   padding-left: 32px;
@@ -153,6 +155,7 @@ export const DatapointsTableDetailsCell = styled.td`
   padding-bottom: 8px;
   font-size: 18px;
   font-weight: 400;
+  text-align: center;
 `;
 export const DatapointsTableDetailsDivider = styled.tr`
   height: 32px;

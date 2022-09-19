@@ -20,12 +20,15 @@ import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { DatapointValue, DataVizAggregateName } from "../../shared/types";
+import logoImg from "../assets/jc-logo-vector.png";
+import { Button, DataUploadHeader } from "../DataUpload/DataUpload.styles";
 import {
   DataUploadDatapoint,
   UploadedMetric,
   UploadedMetrics,
 } from "../DataUpload/types";
 import { formatDateShort, sortDatapointDimensions } from "../DataViz/utils";
+import { Logo, LogoContainer } from "../Header";
 import {
   Container,
   DatapointsTableContainer,
@@ -56,17 +59,17 @@ const ReviewMetrics: React.FC = observer(() => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!location.state?.metrics) {
+    if (!location.state?.metrics as UploadedMetrics | false) {
       // no metrics in passed in navigation state, redirect to home page
       navigate("/", { replace: true });
     }
   });
 
-  if (!location.state?.metrics) {
+  if (!location.state?.metrics as UploadedMetrics | false) {
     return null;
   }
 
-  const { metrics }: UploadedMetrics = location.state;
+  const { metrics }: UploadedMetrics = location.state as UploadedMetrics;
 
   const renderSection = (metric: UploadedMetric, index: number) => {
     const startDates = Array.from(
@@ -215,6 +218,15 @@ const ReviewMetrics: React.FC = observer(() => {
 
   return (
     <Container>
+      <DataUploadHeader transparent={false}>
+        <LogoContainer onClick={() => navigate("/")}>
+          <Logo src={logoImg} alt="" />
+        </LogoContainer>
+
+        <Button type="blue" onClick={() => navigate(-1)}>
+          Save and Exit
+        </Button>
+      </DataUploadHeader>
       <MainPanel>
         <Heading>
           Review <span>{metrics.length}</span> Metrics

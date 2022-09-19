@@ -19,7 +19,6 @@ import { mapValues, pickBy } from "lodash";
 
 import {
   Datapoint,
-  DatapointsGroupedByAggregateAndDisaggregations,
   DatapointsViewSetting,
   DataVizAggregateName,
   DataVizTimeRange,

@@ -127,6 +127,7 @@ export const DataUpload: React.FC = observer(() => {
 
       navigate("/review-metrics", {
         state: data,
+        replace: true,
       });
     }
   };
