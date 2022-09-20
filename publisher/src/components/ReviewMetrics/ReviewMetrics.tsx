@@ -106,9 +106,6 @@ const ReviewMetrics: React.FC = observer(() => {
     }, {} as { [key: string]: number });
 
     metric.datapoints.forEach((dp) => {
-      if (dp.old_value !== null) {
-        overwrittenValuesCount += 1;
-      }
       if (dp.disaggregation_display_name && dp.dimension_display_name) {
         if (!disaggregationRowData[dp.disaggregation_display_name]) {
           disaggregationRowData[dp.disaggregation_display_name] = {};
@@ -122,11 +119,23 @@ const ReviewMetrics: React.FC = observer(() => {
             dp.dimension_display_name
           ] = [];
         }
-        disaggregationRowData[dp.disaggregation_display_name][
-          dp.dimension_display_name
-        ][startDatesIndexLookup[dp.start_date]] = dp;
-      } else {
+        if (
+          !disaggregationRowData[dp.disaggregation_display_name][
+            dp.dimension_display_name
+          ][startDatesIndexLookup[dp.start_date]]
+        ) {
+          disaggregationRowData[dp.disaggregation_display_name][
+            dp.dimension_display_name
+          ][startDatesIndexLookup[dp.start_date]] = dp;
+          if (dp.old_value !== null) {
+            overwrittenValuesCount += 1;
+          }
+        }
+      } else if (!aggregateRowData[startDatesIndexLookup[dp.start_date]]) {
         aggregateRowData[startDatesIndexLookup[dp.start_date]] = dp;
+        if (dp.old_value !== null) {
+          overwrittenValuesCount += 1;
+        }
       }
     });
 
@@ -137,7 +146,7 @@ const ReviewMetrics: React.FC = observer(() => {
           <SectionTitle>{metric.display_name}</SectionTitle>
           {overwrittenValuesCount > 0 && (
             <SectionTitleOverwrites>
-              * {overwrittenValuesCount} Overwrite
+              * {overwrittenValuesCount} Overwritten Value
               {overwrittenValuesCount !== 1 ? "s" : ""}
             </SectionTitleOverwrites>
           )}
@@ -274,10 +283,7 @@ const ReviewMetrics: React.FC = observer(() => {
           </a>
         </Subheading>
         {filteredMetrics.map((metric, idx) => {
-          if (metric.datapoints.length > 0) {
-            return renderSection(metric, idx);
-          }
-          return null;
+          return renderSection(metric, idx);
         })}
       </MainPanel>
     </Container>
