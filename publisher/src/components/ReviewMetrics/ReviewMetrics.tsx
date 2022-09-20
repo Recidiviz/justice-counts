@@ -84,8 +84,12 @@ const ReviewMetrics: React.FC = observer(() => {
   const { metrics } = location.state as UploadedMetrics;
 
   const renderSection = (metric: UploadedMetric, index: number) => {
+    const filteredDatapoints = metric.datapoints.filter(
+      (dp) => dp.value !== null
+    );
+
     const startDates = Array.from(
-      new Set(metric.datapoints.map((dp) => dp.start_date))
+      new Set(filteredDatapoints.map((dp) => dp.start_date))
     ).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
 
     // keep track of count of overwritten values
@@ -104,30 +108,28 @@ const ReviewMetrics: React.FC = observer(() => {
       return map;
     }, {} as { [key: string]: number });
 
-    metric.datapoints.forEach((dp) => {
-      if (dp.value !== null) {
-        if (dp.old_value === null) {
-          overwrittenValuesCount += 1;
+    filteredDatapoints.forEach((dp) => {
+      if (dp.old_value !== null) {
+        overwrittenValuesCount += 1;
+      }
+      if (dp.disaggregation_display_name && dp.dimension_display_name) {
+        if (!disaggregationRowData[dp.disaggregation_display_name]) {
+          disaggregationRowData[dp.disaggregation_display_name] = {};
         }
-        if (dp.disaggregation_display_name && dp.dimension_display_name) {
-          if (!disaggregationRowData[dp.disaggregation_display_name]) {
-            disaggregationRowData[dp.disaggregation_display_name] = {};
-          }
-          if (
-            !disaggregationRowData[dp.disaggregation_display_name][
-              dp.dimension_display_name
-            ]
-          ) {
-            disaggregationRowData[dp.disaggregation_display_name][
-              dp.dimension_display_name
-            ] = [];
-          }
+        if (
+          !disaggregationRowData[dp.disaggregation_display_name][
+            dp.dimension_display_name
+          ]
+        ) {
           disaggregationRowData[dp.disaggregation_display_name][
             dp.dimension_display_name
-          ][startDatesIndexLookup[dp.start_date]] = dp;
-        } else {
-          aggregateRowData[startDatesIndexLookup[dp.start_date]] = dp;
+          ] = [];
         }
+        disaggregationRowData[dp.disaggregation_display_name][
+          dp.dimension_display_name
+        ][startDatesIndexLookup[dp.start_date]] = dp;
+      } else {
+        aggregateRowData[startDatesIndexLookup[dp.start_date]] = dp;
       }
     });
 
@@ -144,7 +146,7 @@ const ReviewMetrics: React.FC = observer(() => {
           )}
           <SectionTitleMonths>
             {startDates.length}{" "}
-            {metric.datapoints[0].frequency === "ANNUAL" ? "year" : "month"}
+            {filteredDatapoints?.[0].frequency === "ANNUAL" ? "year" : "month"}
             {startDates.length !== 1 ? "s" : ""}
           </SectionTitleMonths>
         </SectionTitleContainer>
@@ -214,7 +216,7 @@ const ReviewMetrics: React.FC = observer(() => {
                   // eslint-disable-next-line react/no-array-index-key
                   <DatapointsTableDetailsCell key={index}>
                     {dp.value}
-                    {dp.old_value == null ? <OrangeText>*</OrangeText> : ""}
+                    {dp.old_value !== null ? <OrangeText>*</OrangeText> : ""}
                   </DatapointsTableDetailsCell>
                 ))}
               </DatapointsTableDetailsRow>
@@ -230,7 +232,7 @@ const ReviewMetrics: React.FC = observer(() => {
                             // eslint-disable-next-line react/no-array-index-key
                             <DatapointsTableDetailsCell key={index}>
                               {dp.value}
-                              {dp.old_value == null ? (
+                              {dp.old_value !== null ? (
                                 <OrangeText>*</OrangeText>
                               ) : (
                                 ""
