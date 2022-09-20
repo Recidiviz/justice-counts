@@ -26,11 +26,7 @@ import {
   DataUploadHeader,
   OrangeText,
 } from "../DataUpload/DataUpload.styles";
-import {
-  DataUploadDatapoint,
-  DataUploadResponseBody,
-  UploadedMetric,
-} from "../DataUpload/types";
+import { DataUploadDatapoint, UploadedMetric } from "../DataUpload/types";
 import { formatDateShort, sortDatapointDimensions } from "../DataViz/utils";
 import { Logo, LogoContainer } from "../Header";
 import {
