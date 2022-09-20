@@ -19,14 +19,14 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { DataVizAggregateName } from "../../shared/types";
+import { DataVizAggregateName, RawDatapoint } from "../../shared/types";
 import logoImg from "../assets/jc-logo-vector.png";
 import {
   Button,
   DataUploadHeader,
   OrangeText,
 } from "../DataUpload/DataUpload.styles";
-import { DataUploadDatapoint, UploadedMetric } from "../DataUpload/types";
+import { UploadedMetric } from "../DataUpload/types";
 import { formatDateShort, sortDatapointDimensions } from "../DataViz/utils";
 import { Logo, LogoContainer } from "../Header";
 import {
@@ -54,11 +54,11 @@ import {
   Subheading,
 } from "./ReviewMetrics.styles";
 
-type AggregationRowData = DataUploadDatapoint[];
+type AggregationRowData = RawDatapoint[];
 
 type DisaggregationRowData = {
   [disaggregation: string]: {
-    [dimension: string]: DataUploadDatapoint[];
+    [dimension: string]: RawDatapoint[];
   };
 };
 
