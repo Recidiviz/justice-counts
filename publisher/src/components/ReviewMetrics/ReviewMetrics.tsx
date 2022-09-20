@@ -21,7 +21,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { DatapointValue, DataVizAggregateName } from "../../shared/types";
 import logoImg from "../assets/jc-logo-vector.png";
-import { Button, DataUploadHeader } from "../DataUpload/DataUpload.styles";
+import {
+  Button,
+  DataUploadHeader,
+  OrangeText,
+} from "../DataUpload/DataUpload.styles";
 import {
   DataUploadDatapoint,
   UploadedMetric,
@@ -50,8 +54,17 @@ import {
   SectionTitleContainer,
   SectionTitleMonths,
   SectionTitleNumber,
+  SectionTitleOverwrites,
   Subheading,
 } from "./ReviewMetrics.styles";
+
+type AggregationRowData = DataUploadDatapoint[];
+
+type DisaggregationRowData = {
+  [disaggregation: string]: {
+    [dimension: string]: DataUploadDatapoint[];
+  };
+};
 
 const ReviewMetrics: React.FC = observer(() => {
   const location = useLocation();
@@ -68,61 +81,34 @@ const ReviewMetrics: React.FC = observer(() => {
     return null;
   }
 
-  const { metrics }: UploadedMetrics = location.state as UploadedMetrics;
+  const { metrics } = location.state as UploadedMetrics;
 
   const renderSection = (metric: UploadedMetric, index: number) => {
     const startDates = Array.from(
       new Set(metric.datapoints.map((dp) => dp.start_date))
     ).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-    return (
-      <SectionContainer key={metric.key}>
-        <SectionTitleContainer>
-          <SectionTitleNumber>{index + 1}</SectionTitleNumber>
-          <SectionTitle>{metric.display_name}</SectionTitle>
-          <SectionTitleMonths>
-            {startDates.length}{" "}
-            {metric.datapoints[0].frequency === "ANNUAL" ? "year" : "month"}
-            {startDates.length !== 1 ? "s" : ""}
-          </SectionTitleMonths>
-        </SectionTitleContainer>
-        {renderDatapointsTable(metric.datapoints, startDates)}
-      </SectionContainer>
-    );
-  };
 
-  const renderDatapointsTable = (
-    datapoints: DataUploadDatapoint[],
-    startDates: string[]
-  ) => {
-    /**
-     * The Datapoints Table is made up of a few parts:
-     * - Column of disaggregations and dimensions that remains in place as
-     *   the rest of the table scrolls horizontally
-     * - HTML table containing:
-     *   - a table header row of report start dates, each date represents a column title
-     *   - a table row of the aggregate values, each value corresponds with the date column it is reported in
-     *   - empty table rows used to space apart different disaggregations
-     *   - table rows for each dimension, each value corresponds with the date column it is reported in
-     */
+    // keep track of count of overwritten values
+    let overwrittenValuesCount = 0;
 
-    // // create a mapping from start date to the column index the start date is located in for fast lookup
+    // Create array of aggregate values, each value indexed with their corresponding date column
+    const aggregateRowData: AggregationRowData = [];
+
+    // Create map of disaggregations and dimensions, each dimension containing array of values,
+    // each value indexed with their corresponding date column
+    const disaggregationRowData: DisaggregationRowData = {};
+
+    // create a mapping from start date to the column index the start date is located in for fast lookup
     const startDatesIndexLookup = startDates.reduce((map, current, idx) => {
       map[current] = idx; /* eslint-disable-line no-param-reassign */
       return map;
     }, {} as { [key: string]: number });
 
-    // // Create array of aggregate values, each value indexed with their corresponding date column
-    const aggregateRowData: DatapointValue[] = [];
-
-    // // Create map of disaggregations and dimensions, each dimension containing array of values,
-    // // each value indexed with their corresponding date column
-    const disaggregationRowData: {
-      [disaggregation: string]: {
-        [dimension: string]: DatapointValue[];
-      };
-    } = {};
-    datapoints.forEach((dp) => {
+    metric.datapoints.forEach((dp) => {
       if (dp.value !== null) {
+        if (dp.old_value === null) {
+          overwrittenValuesCount += 1;
+        }
         if (dp.disaggregation_display_name && dp.dimension_display_name) {
           if (!disaggregationRowData[dp.disaggregation_display_name]) {
             disaggregationRowData[dp.disaggregation_display_name] = {};
@@ -138,12 +124,54 @@ const ReviewMetrics: React.FC = observer(() => {
           }
           disaggregationRowData[dp.disaggregation_display_name][
             dp.dimension_display_name
-          ][startDatesIndexLookup[dp.start_date]] = dp.value;
+          ][startDatesIndexLookup[dp.start_date]] = dp;
         } else {
-          aggregateRowData[startDatesIndexLookup[dp.start_date]] = dp.value;
+          aggregateRowData[startDatesIndexLookup[dp.start_date]] = dp;
         }
       }
     });
+
+    return (
+      <SectionContainer key={metric.key}>
+        <SectionTitleContainer>
+          <SectionTitleNumber>{index + 1}</SectionTitleNumber>
+          <SectionTitle>{metric.display_name}</SectionTitle>
+          {overwrittenValuesCount > 0 && (
+            <SectionTitleOverwrites>
+              * {overwrittenValuesCount} Overwrite
+              {overwrittenValuesCount !== 1 ? "s" : ""}
+            </SectionTitleOverwrites>
+          )}
+          <SectionTitleMonths>
+            {startDates.length}{" "}
+            {metric.datapoints[0].frequency === "ANNUAL" ? "year" : "month"}
+            {startDates.length !== 1 ? "s" : ""}
+          </SectionTitleMonths>
+        </SectionTitleContainer>
+        {renderDatapointsTable(
+          aggregateRowData,
+          disaggregationRowData,
+          startDates
+        )}
+      </SectionContainer>
+    );
+  };
+
+  const renderDatapointsTable = (
+    aggregateRowData: AggregationRowData,
+    disaggregationRowData: DisaggregationRowData,
+    startDates: string[]
+  ) => {
+    /**
+     * The Datapoints Table is made up of a few parts:
+     * - Column of disaggregations and dimensions that remains in place as
+     *   the rest of the table scrolls horizontally
+     * - HTML table containing:
+     *   - a table header row of report start dates, each date represents a column title
+     *   - a table row of the aggregate values, each value corresponds with the date column it is reported in
+     *   - empty table rows used to space apart different disaggregations
+     *   - table rows for each dimension, each value corresponds with the date column it is reported in
+     */
 
     return (
       <DatapointsTableContainer>
@@ -181,11 +209,12 @@ const ReviewMetrics: React.FC = observer(() => {
             </DatapointsTableDetailsRowHead>
             <DatapointsTableDetailsRowBody>
               <DatapointsTableDetailsRow>
-                {aggregateRowData.map((value, index) => (
+                {aggregateRowData.map((dp, index) => (
                   // row data could be null, so no distinct key given in that case
                   // eslint-disable-next-line react/no-array-index-key
                   <DatapointsTableDetailsCell key={index}>
-                    {value}
+                    {dp.value}
+                    {dp.old_value == null ? <OrangeText>*</OrangeText> : ""}
                   </DatapointsTableDetailsCell>
                 ))}
               </DatapointsTableDetailsRow>
@@ -195,12 +224,17 @@ const ReviewMetrics: React.FC = observer(() => {
                     <DatapointsTableDetailsDivider />
                     {Object.entries(dimension)
                       .sort(([a], [b]) => sortDatapointDimensions(a, b))
-                      .map(([key, values]) => (
+                      .map(([key, dps]) => (
                         <DatapointsTableDetailsRow key={key}>
-                          {values.map((value, index) => (
+                          {dps.map((dp, index) => (
                             // eslint-disable-next-line react/no-array-index-key
                             <DatapointsTableDetailsCell key={index}>
-                              {value}
+                              {dp.value}
+                              {dp.old_value == null ? (
+                                <OrangeText>*</OrangeText>
+                              ) : (
+                                ""
+                              )}
                             </DatapointsTableDetailsCell>
                           ))}
                         </DatapointsTableDetailsRow>

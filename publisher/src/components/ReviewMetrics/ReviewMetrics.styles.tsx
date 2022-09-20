@@ -104,6 +104,10 @@ export const SectionTitleMonths = styled.div`
   white-space: nowrap;
 `;
 
+export const SectionTitleOverwrites = styled(SectionTitleMonths)`
+  background-color: ${palette.solid.orange};
+`;
+
 export const DatapointsTableContainer = styled.div`
   margin-top: 16px;
   width: 100%;
