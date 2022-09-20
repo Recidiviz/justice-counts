@@ -77,15 +77,16 @@ const ReviewMetrics: React.FC = observer(() => {
     return null;
   }
 
-  const metrics = location.state as UploadedMetric[];
+  const filteredMetrics = (location.state as UploadedMetric[])
+    .map((metric) => ({
+      ...metric,
+      datapoints: metric.datapoints.filter((dp) => dp.value !== null),
+    }))
+    .filter((metric) => metric.datapoints.length > 0);
 
   const renderSection = (metric: UploadedMetric, index: number) => {
-    const filteredDatapoints = metric.datapoints.filter(
-      (dp) => dp.value !== null
-    );
-
     const startDates = Array.from(
-      new Set(filteredDatapoints.map((dp) => dp.start_date))
+      new Set(metric.datapoints.map((dp) => dp.start_date))
     ).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
 
     // keep track of count of overwritten values
@@ -104,7 +105,7 @@ const ReviewMetrics: React.FC = observer(() => {
       return map;
     }, {} as { [key: string]: number });
 
-    filteredDatapoints.forEach((dp) => {
+    metric.datapoints.forEach((dp) => {
       if (dp.old_value !== null) {
         overwrittenValuesCount += 1;
       }
@@ -142,7 +143,7 @@ const ReviewMetrics: React.FC = observer(() => {
           )}
           <SectionTitleMonths>
             {startDates.length}{" "}
-            {filteredDatapoints?.[0].frequency === "ANNUAL" ? "year" : "month"}
+            {metric.datapoints?.[0].frequency === "ANNUAL" ? "year" : "month"}
             {startDates.length !== 1 ? "s" : ""}
           </SectionTitleMonths>
         </SectionTitleContainer>
@@ -263,7 +264,7 @@ const ReviewMetrics: React.FC = observer(() => {
       </DataUploadHeader>
       <MainPanel>
         <Heading>
-          Review <span>{metrics.length}</span> Metrics
+          Review <span>{filteredMetrics.length}</span> Metrics
         </Heading>
         <Subheading>
           Take a moment to review the changes. If you believe there is an error,
@@ -272,7 +273,7 @@ const ReviewMetrics: React.FC = observer(() => {
             support@justicecounts.org
           </a>
         </Subheading>
-        {metrics.map((metric, idx) => {
+        {filteredMetrics.map((metric, idx) => {
           if (metric.datapoints.length > 0) {
             return renderSection(metric, idx);
           }
