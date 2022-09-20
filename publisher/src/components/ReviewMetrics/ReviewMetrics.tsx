@@ -71,13 +71,13 @@ const ReviewMetrics: React.FC = observer(() => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!location.state?.metrics as UploadedMetrics | false) {
+    if (!(location.state as UploadedMetrics | null)?.metrics) {
       // no metrics in passed in navigation state, redirect to home page
       navigate("/", { replace: true });
     }
   });
 
-  if (!location.state?.metrics as UploadedMetrics | false) {
+  if (!(location.state as UploadedMetrics | null)?.metrics) {
     return null;
   }
 
