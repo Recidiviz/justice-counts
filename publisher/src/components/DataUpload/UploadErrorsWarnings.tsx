@@ -40,30 +40,29 @@ import {
   UserPromptTitle,
   UserPromptWrapper,
 } from ".";
-import { ErrorsWarnings } from "./types";
+import { ErrorsWarningsMetrics } from "./types";
 
 type UploadErrorsWarningsProps = {
-  errorsAndWarnings: ErrorsWarnings;
+  errorsWarningsMetrics: ErrorsWarningsMetrics;
   selectedSystem: string | undefined;
   resetToNewUpload: () => void;
 };
 export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
-  errorsAndWarnings,
+  errorsWarningsMetrics,
   selectedSystem,
   resetToNewUpload,
 }) => {
+  const { errorCount, warningCount, metrics, metricErrors, preIngestErrors } =
+    errorsWarningsMetrics;
   const navigate = useNavigate();
   const systemFileName =
     selectedSystem && systemToTemplateSpreadsheetFileName[selectedSystem];
-  const hasWarningsOnly =
-    "warningCount" in errorsAndWarnings &&
-    !!errorsAndWarnings.warningCount &&
-    !errorsAndWarnings.errorCount;
+  const hasWarningsOnly = !!warningCount && !errorCount;
 
   const renderMessages = () => {
     return (
       <>
-        {errorsAndWarnings.metricErrors.map((sheet) => (
+        {metricErrors.map((sheet) => (
           <UserPromptError key={sheet.display_name}>
             <MetricTitle>
               {sheet.display_name} <span>{sheet.sheet_name}</span>
@@ -90,7 +89,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
           </UserPromptError>
         ))}
 
-        {errorsAndWarnings.preIngestErrors?.map((message) => (
+        {preIngestErrors?.map((message) => (
           <UserPromptError key={message.title + message.description}>
             <MetricTitle />
             <ErrorIconWrapper>
@@ -117,10 +116,8 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
         {hasWarningsOnly ? (
           <>
             <UserPromptTitle>
-              We found{" "}
-              <OrangeText>{errorsAndWarnings?.warningCount}</OrangeText> warning
-              {errorsAndWarnings?.warningCount > 1 ? "s" : ""}, but you can
-              still proceed.
+              We found <OrangeText>{warningCount}</OrangeText> warning
+              {warningCount > 1 ? "s" : ""}, but you can still proceed.
             </UserPromptTitle>
             <UserPromptDescription>
               We ran into a few discrepancies between the uploaded data and the
@@ -142,9 +139,8 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
         ) : (
           <>
             <UserPromptTitle>
-              Uh oh, we found <RedText>{errorsAndWarnings?.errorCount}</RedText>{" "}
-              error
-              {errorsAndWarnings?.errorCount > 1 ? "s" : ""}.
+              Uh oh, we found <RedText>{errorCount}</RedText> error
+              {errorCount > 1 ? "s" : ""}.
             </UserPromptTitle>
             <UserPromptDescription>
               We ran into a few discrepancies between the uploaded data and the
@@ -170,7 +166,16 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
 
           {/* (TODO(#15195): Placeholder - this should navigate to the confirmation component */}
           {hasWarningsOnly && (
-            <Button onClick={() => navigate("/")}>Continue</Button>
+            <Button
+              onClick={() =>
+                navigate("/review-metrics", {
+                  state: metrics,
+                  replace: true,
+                })
+              }
+            >
+              Continue
+            </Button>
           )}
         </UploadErrorButtonWrapper>
 

@@ -17,8 +17,9 @@
 
 import { RawDatapoint } from "../../shared/types";
 
-export interface UploadedMetrics {
+export interface DataUploadResponseBody {
   metrics: UploadedMetric[];
+  pre_ingest_errors?: ErrorWarningMessage[];
 }
 
 export interface DataUploadDatapoint extends RawDatapoint {
@@ -29,11 +30,7 @@ export interface UploadedMetric {
   datapoints: DataUploadDatapoint[];
   display_name: string;
   key: string;
-  sheets: {
-    display_name: string;
-    sheet_name: string;
-    messages: ErrorWarningMessage[];
-  }[];
+  sheets: MetricErrors[];
 }
 export type ErrorWarningMessage = {
   title: string;
@@ -48,9 +45,10 @@ export type MetricErrors = {
   messages: ErrorWarningMessage[];
 };
 
-export type ErrorsWarnings = {
+export type ErrorsWarningsMetrics = {
   errorCount: number;
   warningCount: number;
+  metrics: UploadedMetric[];
   metricErrors: MetricErrors[];
   preIngestErrors?: ErrorWarningMessage[];
 };

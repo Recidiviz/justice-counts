@@ -28,8 +28,8 @@ import {
 } from "../DataUpload/DataUpload.styles";
 import {
   DataUploadDatapoint,
+  DataUploadResponseBody,
   UploadedMetric,
-  UploadedMetrics,
 } from "../DataUpload/types";
 import { formatDateShort, sortDatapointDimensions } from "../DataViz/utils";
 import { Logo, LogoContainer } from "../Header";
@@ -71,17 +71,17 @@ const ReviewMetrics: React.FC = observer(() => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!(location.state as UploadedMetrics | null)?.metrics) {
+    if (!(location.state as UploadedMetric[] | null)) {
       // no metrics in passed in navigation state, redirect to home page
       navigate("/", { replace: true });
     }
   });
 
-  if (!(location.state as UploadedMetrics | null)?.metrics) {
+  if (!(location.state as UploadedMetric[] | null)) {
     return null;
   }
 
-  const { metrics } = location.state as UploadedMetrics;
+  const metrics = location.state as UploadedMetric[];
 
   const renderSection = (metric: UploadedMetric, index: number) => {
     const filteredDatapoints = metric.datapoints.filter(
