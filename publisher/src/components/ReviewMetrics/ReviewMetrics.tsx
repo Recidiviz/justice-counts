@@ -259,6 +259,9 @@ const ReviewMetrics: React.FC = observer(() => {
         <Button type="blue" onClick={() => navigate(-1)}>
           Close
         </Button>
+        {
+          // TODO(#24): Add Publish button to publish multiple reports at once
+        }
       </DataUploadHeader>
       <MainPanel>
         <Heading>
