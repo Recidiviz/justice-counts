@@ -19,7 +19,7 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { DatapointValue, DataVizAggregateName } from "../../shared/types";
+import { DataVizAggregateName } from "../../shared/types";
 import logoImg from "../assets/jc-logo-vector.png";
 import {
   Button,
