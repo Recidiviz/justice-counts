@@ -19,7 +19,6 @@ import { mapValues, pickBy } from "lodash";
 
 import {
   Datapoint,
-  DatapointsGroupedByAggregateAndDisaggregations,
   DatapointsViewSetting,
   DataVizAggregateName,
   DataVizTimeRange,
@@ -333,23 +332,6 @@ export const getLatestDateFormatted = (
     return `${!isAnnual ? `${month} ` : ""}${year}`;
   }
   return "N/A";
-};
-
-export const getStartDates = (
-  data: DatapointsGroupedByAggregateAndDisaggregations
-) => {
-  const startDateSet = new Set<string>();
-  data.aggregate.forEach((dp) => {
-    startDateSet.add(dp.start_date);
-  });
-  Object.values(data.disaggregations).forEach((datapointsKeyedByStartDate) => {
-    Object.keys(datapointsKeyedByStartDate).forEach((startDate) => {
-      startDateSet.add(startDate);
-    });
-  });
-  return Array.from(startDateSet).sort((a, b) => {
-    return +new Date(a) - +new Date(b);
-  });
 };
 
 export const formatDateShort = (dateStr: string) => {

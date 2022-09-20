@@ -33,11 +33,11 @@ import {
   UploadFile,
 } from ".";
 import {
-  ErrorsWarnings,
-  ErrorWarningMessage,
+  DataUploadResponseBody,
+  ErrorsWarningsMetrics,
   MetricErrors,
-  UploadErrorsWarnings,
-} from "./UploadErrorsWarnings";
+} from "./types";
+import { UploadErrorsWarnings } from "./UploadErrorsWarnings";
 
 export type UploadedFileStatus = "UPLOADED" | "INGESTED" | "ERRORED";
 
@@ -88,7 +88,8 @@ export const DataUpload: React.FC = observer(() => {
     ) || [];
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errorsAndWarnings, setErrorsAndWarnings] = useState<ErrorsWarnings>();
+  const [errorsWarningsMetrics, setErrorsWarningsMetrics] =
+    useState<ErrorsWarningsMetrics>();
   const [selectedFile, setSelectedFile] = useState<File>();
   const [selectedSystem, setSelectedSystem] = useState<
     AgencySystems | undefined
@@ -116,42 +117,27 @@ export const DataUpload: React.FC = observer(() => {
       /** Errors and/or Warnings Encountered During Upload -- Show Interstitial instead of Confirmation Page */
       const data = await response?.json();
 
-      const errors = processUploadErrors(
-        data.metrics,
-        data.pre_ingest_errors?.length ? data.pre_ingest_errors : undefined
-      );
+      const errorsWarningsAndMetrics = processUploadResponseBody(data);
       setIsLoading(false);
 
       if (
-        errors.errorCount ||
-        ("warningCount" in errors && errors.warningCount)
+        errorsWarningsAndMetrics.errorCount ||
+        errorsWarningsAndMetrics.warningCount
       ) {
-        return setErrorsAndWarnings(errors);
+        return setErrorsWarningsMetrics(errorsWarningsAndMetrics);
       }
 
-      /** Successful Upload - Proceed To Confirmation Page */
-      /** (TODO(#15195): Placeholder - toast will be removed and this should navigate to the confirmation component */
-      showToast(
-        "File uploaded successfully and is pending processing by a Justice Counts administrator.",
-        true,
-        undefined,
-        3500
-      );
-      navigate("/");
+      navigate("/review-metrics", {
+        state: data.metrics,
+        replace: true,
+      });
     }
   };
 
-  const processUploadErrors = (
-    metrics: {
-      datapoints: [];
-      display_name: string;
-      key: string;
-      sheets: MetricErrors[];
-      pre_ingest_errors: ErrorWarningMessage[];
-    }[],
-    preIngestErrorMessages?: ErrorWarningMessage[]
-  ) => {
-    const metricErrors = metrics.reduce(
+  const processUploadResponseBody = (
+    data: DataUploadResponseBody
+  ): ErrorsWarningsMetrics => {
+    const metricErrors = data.metrics.reduce(
       (acc, metric) => [...acc, ...metric.sheets],
       [] as MetricErrors[]
     );
@@ -169,16 +155,17 @@ export const DataUpload: React.FC = observer(() => {
       }
     );
 
-    if (preIngestErrorMessages) {
-      errorWarningCount.errorCount += preIngestErrorMessages.length;
+    if (data.pre_ingest_errors) {
+      errorWarningCount.errorCount += data.pre_ingest_errors.length;
       return {
         metricErrors,
         ...errorWarningCount,
-        preIngestErrors: preIngestErrorMessages,
+        metrics: data.metrics,
+        preIngestErrors: data.pre_ingest_errors,
       };
     }
 
-    return { metricErrors, ...errorWarningCount };
+    return { metricErrors, ...errorWarningCount, metrics: data.metrics };
   };
 
   const handleSystemSelection = (file: File, system: AgencySystems) => {
@@ -189,7 +176,7 @@ export const DataUpload: React.FC = observer(() => {
   };
 
   const resetToNewUpload = () => {
-    setErrorsAndWarnings(undefined);
+    setErrorsWarningsMetrics(undefined);
     setSelectedFile(undefined);
     setSelectedSystem(userSystems.length === 1 ? userSystems[0] : undefined);
   };
@@ -233,10 +220,10 @@ export const DataUpload: React.FC = observer(() => {
     }
 
     /** Upload Error/Warnings Step */
-    if (errorsAndWarnings) {
+    if (errorsWarningsMetrics) {
       return (
         <UploadErrorsWarnings
-          errorsAndWarnings={errorsAndWarnings}
+          errorsWarningsMetrics={errorsWarningsMetrics}
           selectedSystem={selectedSystem}
           resetToNewUpload={resetToNewUpload}
         />
@@ -256,13 +243,13 @@ export const DataUpload: React.FC = observer(() => {
 
   return (
     <DataUploadContainer>
-      <DataUploadHeader transparent={!selectedFile && !errorsAndWarnings}>
+      <DataUploadHeader transparent={!selectedFile && !errorsWarningsMetrics}>
         <LogoContainer onClick={() => navigate("/")}>
           <Logo src={logoImg} alt="" />
         </LogoContainer>
 
         <Button
-          type={selectedFile || errorsAndWarnings ? "red" : "light-border"}
+          type={selectedFile || errorsWarningsMetrics ? "red" : "light-border"}
           onClick={() => navigate(-1)}
         >
           Cancel
