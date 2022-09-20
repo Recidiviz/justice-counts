@@ -19,8 +19,11 @@ import { debounce, memoize } from "lodash";
 
 import { MetricContext } from "../shared/types";
 
-export const isPositiveNumber = (value: string) => {
-  return (value.trim() !== "" && Number(value) === 0) || Number(value) > 0;
+export const isPositiveNumber = (value: string | number) => {
+  if (typeof value === "string") {
+    return (value.trim() !== "" && Number(value) === 0) || Number(value) > 0;
+  }
+  return value >= 0;
 };
 
 /**

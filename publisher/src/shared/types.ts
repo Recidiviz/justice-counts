@@ -211,7 +211,8 @@ export interface RawDatapoint {
   metric_display_name: string | null;
   disaggregation_display_name: string | null;
   dimension_display_name: string | null;
-  value: string;
+  value: string | number;
+  old_value: string | number;
   is_published: boolean;
   frequency: ReportFrequency;
 }

@@ -22,12 +22,8 @@ export interface DataUploadResponseBody {
   pre_ingest_errors?: ErrorWarningMessage[];
 }
 
-export interface DataUploadDatapoint extends RawDatapoint {
-  old_value: string | null;
-}
-
 export interface UploadedMetric {
-  datapoints: DataUploadDatapoint[];
+  datapoints: RawDatapoint[];
   display_name: string;
   key: string;
   sheets: MetricErrors[];
