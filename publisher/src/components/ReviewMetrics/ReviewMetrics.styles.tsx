@@ -167,7 +167,7 @@ export const DatapointsTableDetailsContainerOverlayLeftGradient = styled.div`
     rgb(255, 255, 255, 1),
     rgb(255, 255, 255, 0)
   );
-  width: 16px;
+  width: 32px;
   height: 100%;
 `;
 export const DatapointsTableDetailsContainerOverlayRightGradient = styled.div`
@@ -176,7 +176,7 @@ export const DatapointsTableDetailsContainerOverlayRightGradient = styled.div`
     rgb(255, 255, 255, 0),
     rgb(255, 255, 255, 1)
   );
-  width: 16px;
+  width: 32px;
   height: 100%;
   position: absolute;
   top: 0;
@@ -184,7 +184,7 @@ export const DatapointsTableDetailsContainerOverlayRightGradient = styled.div`
 `;
 export const DatapointsTableDetailsTable = styled.table`
   border-collapse: collapse;
-  margin: 0 16px;
+  margin: 0 32px;
 `;
 export const DatapointsTableDetailsRowHead = styled.thead``;
 export const DatapointsTableDetailsRowBody = styled.tbody``;
