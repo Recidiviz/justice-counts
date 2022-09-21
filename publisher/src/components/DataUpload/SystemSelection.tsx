@@ -21,12 +21,12 @@ import { AgencySystems } from "../../shared/types";
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as CheckIcon } from "../assets/check-icon.svg";
 import {
+  Container,
   FileName,
   SelectSystemOptions,
   SystemName,
-  UserPromptContainer,
-  UserPromptTitle,
-  UserPromptWrapper,
+  Title,
+  Wrapper,
 } from ".";
 
 type SystemSelectionProps = {
@@ -41,13 +41,13 @@ export const SystemSelection: React.FC<SystemSelectionProps> = ({
   handleSystemSelection,
 }) => {
   return (
-    <UserPromptContainer>
-      <UserPromptWrapper>
+    <Container>
+      <Wrapper>
         <FileName>
           <CheckIcon />
           {selectedFile.name}
         </FileName>
-        <UserPromptTitle>Which system is this data for?</UserPromptTitle>
+        <Title>Which system is this data for?</Title>
 
         <SelectSystemOptions>
           {userSystems.map((system) => (
@@ -60,7 +60,7 @@ export const SystemSelection: React.FC<SystemSelectionProps> = ({
             </SystemName>
           ))}
         </SelectSystemOptions>
-      </UserPromptWrapper>
-    </UserPromptContainer>
+      </Wrapper>
+    </Container>
   );
 };

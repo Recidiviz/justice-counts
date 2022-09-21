@@ -14,7 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-import { DropdownMenuItem, DropdownToggle } from "@recidiviz/design-system";
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownToggle,
+} from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
 import { HEADER_BAR_HEIGHT, palette, typography } from "../GlobalStyles";
@@ -88,6 +92,11 @@ export const ExtendedDropdownToggle = styled(DropdownToggle)<{
   &:focus {
     color: ${palette.solid.darkgrey};
   }
+`;
+
+export const ExtendedDropdownMenu = styled(DropdownMenu)`
+  max-height: 50vh;
+  overflow-y: scroll;
 `;
 
 export const ExtendedDropdownMenuItem = styled(DropdownMenuItem)<{

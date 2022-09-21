@@ -20,25 +20,28 @@ import { useNavigate } from "react-router-dom";
 
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as ErrorIcon } from "../assets/error-icon.svg";
+import checkIcon from "../assets/status-check-icon.png";
 import { ReactComponent as WarningIcon } from "../assets/warning-icon.svg";
 import {
+  BlueText,
   Button,
-  ErrorAdditionalInfo,
-  ErrorIconWrapper,
-  ErrorMessageDescription,
-  ErrorMessageTitle,
-  ErrorMessageWrapper,
+  CheckIcon,
+  Container,
+  ErrorWarningButtonWrapper,
+  ErrorWarningDescription,
+  IconWrapper,
+  Message,
+  MessageBody,
+  MessageDescription,
+  MessagesContainer,
+  MessageSubtitle,
+  MessageTitle,
   MetricTitle,
-  OrangeText,
   RedText,
+  SectionHeader,
   systemToTemplateSpreadsheetFileName,
-  UploadErrorButtonWrapper,
-  UserPromptContainer,
-  UserPromptDescription,
-  UserPromptError,
-  UserPromptErrorContainer,
-  UserPromptTitle,
-  UserPromptWrapper,
+  Title,
+  Wrapper,
 } from ".";
 import { ErrorsWarningsMetrics } from "./types";
 
@@ -52,115 +55,182 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
   selectedSystem,
   resetToNewUpload,
 }) => {
-  const { errorCount, warningCount, metrics, metricErrors, preIngestErrors } =
+  const { metrics, errorSheetsAndSuccessfulMetrics, preIngestErrors } =
     errorsWarningsMetrics;
   const navigate = useNavigate();
   const systemFileName =
     selectedSystem && systemToTemplateSpreadsheetFileName[selectedSystem];
-  const hasWarningsOnly = !!warningCount && !errorCount;
+  const successCount = errorSheetsAndSuccessfulMetrics.successfulMetrics.length;
+  /** If there are pre-ingest errors, include them in the error count */
+  const errorCount = preIngestErrors
+    ? errorSheetsAndSuccessfulMetrics.errorSheets.length +
+      preIngestErrors?.length
+    : errorSheetsAndSuccessfulMetrics.errorSheets.length;
 
   const renderMessages = () => {
     return (
       <>
-        {metricErrors.map((sheet) => (
-          <UserPromptError key={sheet.display_name}>
-            <MetricTitle>
-              {sheet.display_name} <span>{sheet.sheet_name}</span>
-            </MetricTitle>
+        {/* Errors */}
+        {errorCount > 0 && (
+          <>
+            <SectionHeader>Errors</SectionHeader>
+            {errorSheetsAndSuccessfulMetrics.errorSheets.map((sheet) => (
+              <Message key={sheet.display_name + sheet.sheet_name}>
+                <MetricTitle>
+                  {sheet.display_name} <span>{sheet.sheet_name}</span>
+                </MetricTitle>
 
-            {sheet.display_name &&
-              sheet.messages?.map((message) => (
-                <Fragment key={message.title + message.description}>
-                  <ErrorIconWrapper>
-                    {message.type === "ERROR" ? <ErrorIcon /> : <WarningIcon />}
+                {sheet.display_name &&
+                  sheet.messages.map((message) => (
+                    <Fragment key={message.title + message.description}>
+                      <IconWrapper>
+                        {message.type === "ERROR" ? (
+                          <ErrorIcon />
+                        ) : (
+                          <WarningIcon />
+                        )}
 
-                    <ErrorMessageWrapper>
-                      <ErrorMessageTitle>{message.title}</ErrorMessageTitle>
-                      <ErrorMessageDescription>
-                        {message.subtitle}
-                      </ErrorMessageDescription>
-                    </ErrorMessageWrapper>
-                  </ErrorIconWrapper>
-                  <ErrorAdditionalInfo>
-                    {message.description}
-                  </ErrorAdditionalInfo>
-                </Fragment>
-              ))}
-          </UserPromptError>
-        ))}
+                        <MessageBody>
+                          <MessageTitle>{message.title}</MessageTitle>
+                          <MessageSubtitle>{message.subtitle}</MessageSubtitle>
+                        </MessageBody>
+                      </IconWrapper>
+                      <MessageDescription>
+                        {message.description}
+                      </MessageDescription>
+                    </Fragment>
+                  ))}
+              </Message>
+            ))}
 
-        {preIngestErrors?.map((message) => (
-          <UserPromptError key={message.title + message.description}>
-            <MetricTitle />
-            <ErrorIconWrapper>
-              {message.type === "ERROR" ? <ErrorIcon /> : <WarningIcon />}
+            {preIngestErrors && preIngestErrors.length > 0 && (
+              <Message>
+                <MetricTitle>Other</MetricTitle>
+                {preIngestErrors.map((message) => (
+                  <Fragment key={message.title + message.description}>
+                    <IconWrapper>
+                      {message.type === "ERROR" ? (
+                        <ErrorIcon />
+                      ) : (
+                        <WarningIcon />
+                      )}
 
-              <ErrorMessageWrapper>
-                <ErrorMessageTitle>{message.title}</ErrorMessageTitle>
-                <ErrorMessageDescription>
-                  {message.subtitle}
-                </ErrorMessageDescription>
-              </ErrorMessageWrapper>
-            </ErrorIconWrapper>
-            <ErrorAdditionalInfo>{message.description}</ErrorAdditionalInfo>
-          </UserPromptError>
-        ))}
+                      <MessageBody>
+                        <MessageTitle>{message.title}</MessageTitle>
+                        <MessageSubtitle>{message.subtitle}</MessageSubtitle>
+                      </MessageBody>
+                    </IconWrapper>
+                    <MessageDescription>
+                      {message.description}
+                    </MessageDescription>
+                  </Fragment>
+                ))}
+              </Message>
+            )}
+          </>
+        )}
+
+        {/* Successful Metrics */}
+        {successCount > 0 && (
+          <>
+            <SectionHeader>Successes</SectionHeader>
+            {errorSheetsAndSuccessfulMetrics.successfulMetrics.map((metric) => (
+              <Message key={metric.key}>
+                <MetricTitle>
+                  <CheckIcon src={checkIcon} alt="" />
+                  {metric.display_name}
+                </MetricTitle>
+
+                {metric.sheets.map((sheet) => (
+                  <Fragment key={sheet.display_name + sheet.sheet_name}>
+                    {sheet.messages.map((message) => (
+                      <Fragment key={message.title + message.description}>
+                        <IconWrapper>
+                          {message.type === "ERROR" ? (
+                            <ErrorIcon />
+                          ) : (
+                            <WarningIcon />
+                          )}
+
+                          <MessageBody>
+                            <MessageTitle>{message.title}</MessageTitle>
+                            <MessageSubtitle>
+                              {message.subtitle}
+                            </MessageSubtitle>
+                          </MessageBody>
+                        </IconWrapper>
+                        <MessageDescription>
+                          {message.description}
+                        </MessageDescription>
+                      </Fragment>
+                    ))}
+                  </Fragment>
+                ))}
+              </Message>
+            ))}
+          </>
+        )}
+      </>
+    );
+  };
+
+  const renderErrorWarningTitle = () => {
+    return (
+      <>
+        {errorCount === 0 && (
+          <>
+            <BlueText>{successCount}</BlueText> metric
+            {successCount === 0 || successCount > 1 ? "s" : ""} were uploaded
+            successfully.
+          </>
+        )}
+        {errorCount > 0 && (
+          <>
+            We found <RedText>{errorCount}</RedText> error
+            {errorCount > 1 ? "s" : ""}, and <BlueText>{successCount}</BlueText>{" "}
+            metric
+            {successCount === 0 || successCount > 1 ? "s" : ""} were uploaded
+            successfully.
+          </>
+        )}
+      </>
+    );
+  };
+
+  const renderErrorWarningDescription = () => {
+    return (
+      <>
+        We ran into a few discrepancies between the uploaded data and the
+        Justice Counts format for the{" "}
+        <span>
+          {selectedSystem && removeSnakeCase(selectedSystem).toLowerCase()}
+        </span>{" "}
+        system (
+        <a href={`./assets/${systemFileName}`} download={systemFileName}>
+          download example
+        </a>
+        )
+        {errorCount > 0
+          ? `. To continue, please resolve the errors in your file and
+              reupload.`
+          : `, but we did our best to resolve them. Please review the
+          warnings and determine if it is safe to proceed. If not,
+          resolve the warnings in your file and reupload.`}
       </>
     );
   };
 
   return (
-    <UserPromptContainer>
-      <UserPromptWrapper>
+    <Container>
+      <Wrapper>
         {/* Error/Warning Header */}
-        {hasWarningsOnly ? (
-          <>
-            <UserPromptTitle>
-              We found <OrangeText>{warningCount}</OrangeText> warning
-              {warningCount > 1 ? "s" : ""}, but you can still proceed.
-            </UserPromptTitle>
-            <UserPromptDescription>
-              We ran into a few discrepancies between the uploaded data and the
-              Justice Counts format for the{" "}
-              <span>
-                <a
-                  href={`./assets/${systemFileName}`}
-                  download={systemFileName}
-                >
-                  {selectedSystem &&
-                    removeSnakeCase(selectedSystem).toLowerCase()}
-                </a>
-              </span>{" "}
-              system, but we did our best to resolve them. Please review the
-              warnings and determine if it is safe to proceed. If not, resolve
-              the warnings in your file and reupload.
-            </UserPromptDescription>
-          </>
-        ) : (
-          <>
-            <UserPromptTitle>
-              Uh oh, we found <RedText>{errorCount}</RedText> error
-              {errorCount > 1 ? "s" : ""}.
-            </UserPromptTitle>
-            <UserPromptDescription>
-              We ran into a few discrepancies between the uploaded data and the
-              Justice Counts format for the{" "}
-              <span>
-                <a
-                  href={`./assets/${systemFileName}`}
-                  download={systemFileName}
-                >
-                  {selectedSystem &&
-                    removeSnakeCase(selectedSystem).toLowerCase()}
-                </a>
-              </span>{" "}
-              system.
-            </UserPromptDescription>
-          </>
-        )}
+        <Title>{renderErrorWarningTitle()}</Title>
+        <ErrorWarningDescription>
+          {renderErrorWarningDescription()}
+        </ErrorWarningDescription>
 
         {/* Action Button(s) */}
-        <UploadErrorButtonWrapper>
+        <ErrorWarningButtonWrapper>
           <Button onClick={resetToNewUpload}>New Upload</Button>
 
           <Button
@@ -171,13 +241,13 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
               })
             }
           >
-            Continue
+            Review
           </Button>
-        </UploadErrorButtonWrapper>
+        </ErrorWarningButtonWrapper>
 
         {/* Messages */}
-        <UserPromptErrorContainer>{renderMessages()}</UserPromptErrorContainer>
-      </UserPromptWrapper>
-    </UserPromptContainer>
+        <MessagesContainer>{renderMessages()}</MessagesContainer>
+      </Wrapper>
+    </Container>
   );
 };

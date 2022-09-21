@@ -153,7 +153,7 @@ export const ButtonWrapper = styled.div`
   margin: 13px 0;
 `;
 
-export const UploadErrorButtonWrapper = styled(ButtonWrapper)`
+export const ErrorWarningButtonWrapper = styled(ButtonWrapper)`
   width: 100%;
   justify-content: space-between;
 
@@ -258,7 +258,7 @@ export const Button = styled.div<{ type?: ButtonTypes }>`
   }
 `;
 
-export const DownloadTemplateBox = styled.div`
+export const DownloadTemplateBox = styled.a`
   ${typography.sizeCSS.normal};
   display: flex;
   align-items: center;
@@ -270,7 +270,15 @@ export const DownloadTemplateBox = styled.div`
   border: 1px solid ${palette.highlight.grey4};
   border-radius: 4px;
 
-  a {
+  &:hover {
+    background: ${palette.highlight.grey1};
+  }
+`;
+
+export const DownloadTemplateSystem = styled.div`
+  color: ${palette.solid.darkgrey};
+
+  span {
     ${typography.sizeCSS.small};
     display: block;
     width: fit-content;
@@ -360,7 +368,7 @@ export const DragDropContainer = styled.div<{ dragging?: boolean }>`
   color: ${palette.solid.white};
 `;
 
-export const UserPromptContainer = styled.div`
+export const Container = styled.div`
   width: 100%;
   min-height: 100%;
   display: flex;
@@ -370,7 +378,7 @@ export const UserPromptContainer = styled.div`
   padding-bottom: 80px;
 `;
 
-export const UserPromptWrapper = styled.div`
+export const Wrapper = styled.div`
   width: 100%;
   max-width: 50%;
   display: flex;
@@ -379,11 +387,11 @@ export const UserPromptWrapper = styled.div`
   align-items: flex-start;
 `;
 
-export const UserPromptTitle = styled.div`
+export const Title = styled.div`
   ${typography.sizeCSS.title};
 `;
 
-export const UserPromptDescription = styled.div`
+export const ErrorWarningDescription = styled.div`
   ${typography.sizeCSS.medium};
   margin: 8px 0;
 
@@ -392,13 +400,20 @@ export const UserPromptDescription = styled.div`
   }
 `;
 
-export const UserPromptErrorContainer = styled.div`
+export const MessagesContainer = styled.div`
   width: 100%;
   margin-top: 19px;
 `;
 
-export const UserPromptError = styled.div`
-  margin-bottom: 40px;
+export const Message = styled.div``;
+
+export const SectionHeader = styled.div`
+  ${typography.sizeCSS.title};
+  margin: 10px 0;
+
+  &:not(:first-child) {
+    margin: 40px 0 10px 0;
+  }
 `;
 
 export const MetricTitle = styled.div`
@@ -418,12 +433,12 @@ export const MetricTitle = styled.div`
   }
 `;
 
-export const ErrorIconWrapper = styled.div`
+export const IconWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 5px;
 `;
-export const ErrorMessageWrapper = styled.div`
+export const MessageBody = styled.div`
   ${typography.sizeCSS.medium};
   width: 100%;
   display: flex;
@@ -431,15 +446,15 @@ export const ErrorMessageWrapper = styled.div`
   align-items: center;
 `;
 
-export const ErrorMessageTitle = styled.div`
+export const MessageTitle = styled.div`
   display: block;
 `;
 
-export const ErrorMessageDescription = styled.div`
+export const MessageSubtitle = styled.div`
   display: block;
 `;
 
-export const ErrorAdditionalInfo = styled.div`
+export const MessageDescription = styled.div`
   ${typography.sizeCSS.normal};
   margin: 8px 0 13px 0;
 `;
@@ -529,4 +544,33 @@ export const OrangeText = styled.span`
 
 export const StrikethroughText = styled.span`
   text-decoration: line-through;
+`;
+
+export const BlueText = styled.span`
+  color: ${palette.solid.blue};
+`;
+
+export const DataUploadLoading = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const LoadingHeader = styled.div`
+  ${typography.sizeCSS.large};
+  display: flex;
+  margin: 20px 0 5px 0;
+  gap: 3px;
+`;
+
+export const LoadingSubheader = styled.div`
+  ${typography.sizeCSS.normal};
+`;
+
+export const CheckIcon = styled.img`
+  width: 16px;
+  margin-right: 5px;
 `;

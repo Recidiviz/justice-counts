@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-import { Dropdown, DropdownMenu } from "@recidiviz/design-system";
+import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -23,6 +23,7 @@ import { Permission } from "../../shared/types";
 import { useStore } from "../../stores";
 import { Button } from "../DataUpload";
 import {
+  ExtendedDropdownMenu,
   ExtendedDropdownMenuItem,
   ExtendedDropdownToggle,
   MenuContainer,
@@ -126,7 +127,7 @@ const Menu = () => {
             <ExtendedDropdownToggle kind="borderless">
               Agencies
             </ExtendedDropdownToggle>
-            <DropdownMenu alignment="right">
+            <ExtendedDropdownMenu alignment="right">
               {userStore.userAgencies?.map((agency) => {
                 return (
                   <ExtendedDropdownMenuItem
@@ -140,7 +141,7 @@ const Menu = () => {
                   </ExtendedDropdownMenuItem>
                 );
               })}
-            </DropdownMenu>
+            </ExtendedDropdownMenu>
           </Dropdown>
         </MenuItem>
       )}
