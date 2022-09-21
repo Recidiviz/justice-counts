@@ -255,10 +255,7 @@ const ReviewMetrics: React.FC = observer(() => {
     }
     return (
       <DatapointsTableDetailsCell key={key}>
-        {parseFloat(
-          (typeof value === "string" ? parseFloat(value) : value).toFixed(2)
-        )}
-        {/* {value} */}
+        {value}
         {oldValue !== null ? <OrangeText>*</OrangeText> : ""}
       </DatapointsTableDetailsCell>
     );
