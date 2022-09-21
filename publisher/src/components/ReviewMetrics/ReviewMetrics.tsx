@@ -217,14 +217,10 @@ const ReviewMetrics: React.FC = observer(() => {
             </DatapointsTableDetailsRowHead>
             <DatapointsTableDetailsRowBody>
               <DatapointsTableDetailsRow>
-                {aggregateRowData.map((dp, index) => (
+                {aggregateRowData.map((dp, index) =>
                   // row data could be null, so no distinct key given in that case
-                  // eslint-disable-next-line react/no-array-index-key
-                  <DatapointsTableDetailsCell key={index}>
-                    {dp.value}
-                    {dp.old_value !== null ? <OrangeText>*</OrangeText> : ""}
-                  </DatapointsTableDetailsCell>
-                ))}
+                  renderDatapointsValue(index, dp.value, dp.old_value)
+                )}
               </DatapointsTableDetailsRow>
               {Object.entries(disaggregationRowData).map(
                 ([disaggregation, dimension]) => (
@@ -234,17 +230,9 @@ const ReviewMetrics: React.FC = observer(() => {
                       .sort(([a], [b]) => sortDatapointDimensions(a, b))
                       .map(([key, dps]) => (
                         <DatapointsTableDetailsRow key={key}>
-                          {dps.map((dp, index) => (
-                            // eslint-disable-next-line react/no-array-index-key
-                            <DatapointsTableDetailsCell key={index}>
-                              {dp.value}
-                              {dp.old_value !== null ? (
-                                <OrangeText>*</OrangeText>
-                              ) : (
-                                ""
-                              )}
-                            </DatapointsTableDetailsCell>
-                          ))}
+                          {dps.map((dp, index) =>
+                            renderDatapointsValue(index, dp.value, dp.old_value)
+                          )}
                         </DatapointsTableDetailsRow>
                       ))}
                   </React.Fragment>
@@ -254,6 +242,22 @@ const ReviewMetrics: React.FC = observer(() => {
           </DatapointsTableDetailsTable>
         </DatapointsTableDetailsContainer>
       </DatapointsTableContainer>
+    );
+  };
+
+  const renderDatapointsValue = (
+    key: React.Key,
+    value: string | number | null,
+    oldValue: string | number | null
+  ) => {
+    if (value === null) {
+      return null;
+    }
+    return (
+      <DatapointsTableDetailsCell key={key}>
+        {(typeof value === "string" ? parseFloat(value) : value).toFixed(2)}
+        {oldValue !== null ? <OrangeText>*</OrangeText> : ""}
+      </DatapointsTableDetailsCell>
     );
   };
 
