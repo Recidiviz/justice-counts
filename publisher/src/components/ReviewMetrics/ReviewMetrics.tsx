@@ -40,9 +40,11 @@ import {
   DatapointsTableDetailsRowHead,
   DatapointsTableDetailsRowHeader,
   DatapointsTableDetailsTable,
+  DatapointsTableNamesCell,
   DatapointsTableNamesContainer,
   DatapointsTableNamesDivider,
   DatapointsTableNamesRow,
+  DatapointsTableNamesTable,
   Heading,
   MainPanel,
   SectionContainer,
@@ -184,25 +186,31 @@ const ReviewMetrics: React.FC = observer(() => {
     return (
       <DatapointsTableContainer>
         <DatapointsTableNamesContainer>
-          <DatapointsTableNamesRow>
-            {DataVizAggregateName}
-          </DatapointsTableNamesRow>
-          {Object.entries(disaggregationRowData).map(
-            ([disaggregation, dimension]) => (
-              <React.Fragment key={disaggregation}>
-                <DatapointsTableNamesDivider>
-                  {disaggregation}
-                </DatapointsTableNamesDivider>
-                {Object.keys(dimension)
-                  .sort(sortDatapointDimensions)
-                  .map((dimensionName) => (
-                    <DatapointsTableNamesRow key={dimensionName}>
-                      {dimensionName}
-                    </DatapointsTableNamesRow>
-                  ))}
-              </React.Fragment>
-            )
-          )}
+          <DatapointsTableNamesTable>
+            <DatapointsTableNamesRow>
+              <DatapointsTableNamesCell>
+                {DataVizAggregateName}
+              </DatapointsTableNamesCell>
+            </DatapointsTableNamesRow>
+            {Object.entries(disaggregationRowData).map(
+              ([disaggregation, dimension]) => (
+                <React.Fragment key={disaggregation}>
+                  <DatapointsTableNamesDivider>
+                    {disaggregation}
+                  </DatapointsTableNamesDivider>
+                  {Object.keys(dimension)
+                    .sort(sortDatapointDimensions)
+                    .map((dimensionName) => (
+                      <DatapointsTableNamesRow key={dimensionName}>
+                        <DatapointsTableNamesCell>
+                          {dimensionName}
+                        </DatapointsTableNamesCell>
+                      </DatapointsTableNamesRow>
+                    ))}
+                </React.Fragment>
+              )
+            )}
+          </DatapointsTableNamesTable>
         </DatapointsTableNamesContainer>
         <DatapointsTableDetailsContainer>
           <DatapointsTableDetailsTable>

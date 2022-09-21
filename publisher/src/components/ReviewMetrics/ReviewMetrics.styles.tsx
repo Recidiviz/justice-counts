@@ -121,18 +121,24 @@ export const DatapointsTableNamesContainer = styled.div`
   padding-top: 34px;
   border-right: 1px solid ${palette.highlight.grey3};
 `;
-export const DatapointsTableNamesRow = styled.div`
+
+export const DatapointsTableNamesTable = styled.table``;
+
+export const DatapointsTableNamesRow = styled.tr``;
+
+export const DatapointsTableNamesCell = styled.td`
   padding-bottom: 8px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 18px;
   font-weight: 400;
+  max-width: 232px;
 `;
 export const DatapointsTableNamesDivider = styled.div`
   ${typography.sizeCSS.small}
-  padding-top: 8px;
-  padding-bottom: 16px;
+  padding-top: 4px;
+  padding-bottom: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
