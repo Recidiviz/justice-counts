@@ -255,7 +255,10 @@ const ReviewMetrics: React.FC = observer(() => {
     }
     return (
       <DatapointsTableDetailsCell key={key}>
-        {(typeof value === "string" ? parseFloat(value) : value).toFixed(2)}
+        {parseFloat(
+          (typeof value === "string" ? parseFloat(value) : value).toFixed(2)
+        )}
+        {/* {value} */}
         {oldValue !== null ? <OrangeText>*</OrangeText> : ""}
       </DatapointsTableDetailsCell>
     );
@@ -277,11 +280,12 @@ const ReviewMetrics: React.FC = observer(() => {
       </DataUploadHeader>
       <MainPanel>
         <Heading>
-          Review <span>{filteredMetrics.length}</span> Metrics
+          Review <span>{filteredMetrics.length}</span> Uploaded Metrics
         </Heading>
         <Subheading>
-          Take a moment to review the changes. If you believe there is an error,
-          please contact the Justice Counts team via{" "}
+          Your data has been successfully uploaded. Take a moment to review the
+          changes. If you believe there is an error, please contact the Justice
+          Counts team via{" "}
           <a href="mailto:support@justice-counts.org">
             support@justicecounts.org
           </a>

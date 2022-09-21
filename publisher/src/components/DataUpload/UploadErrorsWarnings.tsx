@@ -154,8 +154,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
                     removeSnakeCase(selectedSystem).toLowerCase()}
                 </a>
               </span>{" "}
-              system. To continue, please resolve the errors in your file and
-              reupload.
+              system.
             </UserPromptDescription>
           </>
         )}
@@ -164,19 +163,16 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
         <UploadErrorButtonWrapper>
           <Button onClick={resetToNewUpload}>New Upload</Button>
 
-          {/* (TODO(#15195): Placeholder - this should navigate to the confirmation component */}
-          {hasWarningsOnly && (
-            <Button
-              onClick={() =>
-                navigate("/review-metrics", {
-                  state: metrics,
-                  replace: true,
-                })
-              }
-            >
-              Continue
-            </Button>
-          )}
+          <Button
+            onClick={() =>
+              navigate("/review-metrics", {
+                state: metrics,
+                replace: true,
+              })
+            }
+          >
+            Continue
+          </Button>
         </UploadErrorButtonWrapper>
 
         {/* Messages */}
