@@ -277,15 +277,27 @@ const ReviewMetrics: React.FC = observer(() => {
       </DataUploadHeader>
       <MainPanel>
         <Heading>
-          Review <span>{filteredMetrics.length}</span> Uploaded Metrics
+          {filteredMetrics.length > 0 ? (
+            <>
+              Review <span>{filteredMetrics.length}</span> Uploaded Metrics
+            </>
+          ) : (
+            "No Metrics to Review"
+          )}
         </Heading>
         <Subheading>
-          Your data has been successfully uploaded. Take a moment to review the
-          changes. If you believe there is an error, please contact the Justice
-          Counts team via{" "}
-          <a href="mailto:support@justice-counts.org">
-            support@justicecounts.org
-          </a>
+          {filteredMetrics.length > 0 ? (
+            <>
+              Your data has been successfully uploaded. Take a moment to review
+              the changes. If you believe there is an error, please contact the
+              Justice Counts team via{" "}
+              <a href="mailto:support@justice-counts.org">
+                support@justicecounts.org
+              </a>
+            </>
+          ) : (
+            "Uploaded file contains no metrics to review."
+          )}
         </Subheading>
         {filteredMetrics.map((metric, idx) => {
           return renderSection(metric, idx);
