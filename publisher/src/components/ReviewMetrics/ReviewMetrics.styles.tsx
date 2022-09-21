@@ -118,27 +118,30 @@ export const DatapointsTableContainer = styled.div`
 export const DatapointsTableNamesContainer = styled.div`
   width: 240px;
   min-width: 240px;
-  padding-top: 34px;
-  border-right: 1px solid ${palette.highlight.grey3};
+  padding-top: 33px;
 `;
 
-export const DatapointsTableNamesTable = styled.table``;
+export const DatapointsTableNamesTable = styled.table`
+  border-collapse: collapse;
+`;
 
 export const DatapointsTableNamesRow = styled.tr``;
 
 export const DatapointsTableNamesCell = styled.td`
-  padding-bottom: 8px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 18px;
   font-weight: 400;
   max-width: 232px;
+  height: 32px;
 `;
-export const DatapointsTableNamesDivider = styled.div`
+export const DatapointsTableNamesDivider = styled.td`
   ${typography.sizeCSS.small}
-  padding-top: 4px;
-  padding-bottom: 12px;
+  padding-top: 8px;
+  padding-bottom: 8px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -147,23 +150,31 @@ export const DatapointsTableNamesDivider = styled.div`
 export const DatapointsTableDetailsContainer = styled.div`
   overflow-x: scroll;
 `;
-export const DatapointsTableDetailsTable = styled.table``;
+export const DatapointsTableDetailsTable = styled.table`
+  border-collapse: collapse;
+`;
 export const DatapointsTableDetailsRowHead = styled.thead``;
 export const DatapointsTableDetailsRowBody = styled.tbody``;
 export const DatapointsTableDetailsRow = styled.tr``;
 export const DatapointsTableDetailsRowHeader = styled.th`
   ${typography.sizeCSS.small}
-  padding-bottom: 16px;
+  padding-bottom: 8px;
+  padding-top: 8px;
   text-align: center;
+  border: 1px solid ${palette.highlight.grey3};
 `;
 export const DatapointsTableDetailsCell = styled.td`
   padding-left: 32px;
   padding-right: 32px;
-  padding-bottom: 8px;
+  padding-bottom: 4px;
+  padding-top: 4px;
   font-size: 18px;
+  height: 32px;
   font-weight: 400;
   text-align: center;
+  border: 1px solid ${palette.highlight.grey3};
 `;
 export const DatapointsTableDetailsDivider = styled.tr`
   height: 32px;
+  border: 1px solid ${palette.highlight.grey3};
 `;

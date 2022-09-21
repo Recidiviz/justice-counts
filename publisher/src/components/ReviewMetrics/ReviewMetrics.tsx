@@ -195,9 +195,11 @@ const ReviewMetrics: React.FC = observer(() => {
             {Object.entries(disaggregationRowData).map(
               ([disaggregation, dimension]) => (
                 <React.Fragment key={disaggregation}>
-                  <DatapointsTableNamesDivider>
-                    {disaggregation}
-                  </DatapointsTableNamesDivider>
+                  <DatapointsTableNamesRow>
+                    <DatapointsTableNamesDivider>
+                      {disaggregation}
+                    </DatapointsTableNamesDivider>
+                  </DatapointsTableNamesRow>
                   {Object.keys(dimension)
                     .sort(sortDatapointDimensions)
                     .map((dimensionName) => (
