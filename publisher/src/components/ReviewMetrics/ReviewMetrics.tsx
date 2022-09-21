@@ -106,9 +106,6 @@ const ReviewMetrics: React.FC = observer(() => {
     }, {} as { [key: string]: number });
 
     metric.datapoints.forEach((dp) => {
-      if (dp.old_value !== null) {
-        overwrittenValuesCount += 1;
-      }
       if (dp.disaggregation_display_name && dp.dimension_display_name) {
         if (!disaggregationRowData[dp.disaggregation_display_name]) {
           disaggregationRowData[dp.disaggregation_display_name] = {};
@@ -122,11 +119,23 @@ const ReviewMetrics: React.FC = observer(() => {
             dp.dimension_display_name
           ] = [];
         }
-        disaggregationRowData[dp.disaggregation_display_name][
-          dp.dimension_display_name
-        ][startDatesIndexLookup[dp.start_date]] = dp;
-      } else {
+        if (
+          !disaggregationRowData[dp.disaggregation_display_name][
+            dp.dimension_display_name
+          ][startDatesIndexLookup[dp.start_date]]
+        ) {
+          disaggregationRowData[dp.disaggregation_display_name][
+            dp.dimension_display_name
+          ][startDatesIndexLookup[dp.start_date]] = dp;
+          if (dp.old_value !== null) {
+            overwrittenValuesCount += 1;
+          }
+        }
+      } else if (!aggregateRowData[startDatesIndexLookup[dp.start_date]]) {
         aggregateRowData[startDatesIndexLookup[dp.start_date]] = dp;
+        if (dp.old_value !== null) {
+          overwrittenValuesCount += 1;
+        }
       }
     });
 
@@ -137,7 +146,7 @@ const ReviewMetrics: React.FC = observer(() => {
           <SectionTitle>{metric.display_name}</SectionTitle>
           {overwrittenValuesCount > 0 && (
             <SectionTitleOverwrites>
-              * {overwrittenValuesCount} Overwrite
+              * {overwrittenValuesCount} Overwritten Value
               {overwrittenValuesCount !== 1 ? "s" : ""}
             </SectionTitleOverwrites>
           )}
@@ -208,14 +217,10 @@ const ReviewMetrics: React.FC = observer(() => {
             </DatapointsTableDetailsRowHead>
             <DatapointsTableDetailsRowBody>
               <DatapointsTableDetailsRow>
-                {aggregateRowData.map((dp, index) => (
+                {aggregateRowData.map((dp, index) =>
                   // row data could be null, so no distinct key given in that case
-                  // eslint-disable-next-line react/no-array-index-key
-                  <DatapointsTableDetailsCell key={index}>
-                    {dp.value}
-                    {dp.old_value !== null ? <OrangeText>*</OrangeText> : ""}
-                  </DatapointsTableDetailsCell>
-                ))}
+                  renderDatapointsValue(index, dp.value, dp.old_value)
+                )}
               </DatapointsTableDetailsRow>
               {Object.entries(disaggregationRowData).map(
                 ([disaggregation, dimension]) => (
@@ -225,17 +230,9 @@ const ReviewMetrics: React.FC = observer(() => {
                       .sort(([a], [b]) => sortDatapointDimensions(a, b))
                       .map(([key, dps]) => (
                         <DatapointsTableDetailsRow key={key}>
-                          {dps.map((dp, index) => (
-                            // eslint-disable-next-line react/no-array-index-key
-                            <DatapointsTableDetailsCell key={index}>
-                              {dp.value}
-                              {dp.old_value !== null ? (
-                                <OrangeText>*</OrangeText>
-                              ) : (
-                                ""
-                              )}
-                            </DatapointsTableDetailsCell>
-                          ))}
+                          {dps.map((dp, index) =>
+                            renderDatapointsValue(index, dp.value, dp.old_value)
+                          )}
                         </DatapointsTableDetailsRow>
                       ))}
                   </React.Fragment>
@@ -245,6 +242,22 @@ const ReviewMetrics: React.FC = observer(() => {
           </DatapointsTableDetailsTable>
         </DatapointsTableDetailsContainer>
       </DatapointsTableContainer>
+    );
+  };
+
+  const renderDatapointsValue = (
+    key: React.Key,
+    value: string | number | null,
+    oldValue: string | number | null
+  ) => {
+    if (value === null) {
+      return null;
+    }
+    return (
+      <DatapointsTableDetailsCell key={key}>
+        {value}
+        {oldValue !== null ? <OrangeText>*</OrangeText> : ""}
+      </DatapointsTableDetailsCell>
     );
   };
 
@@ -264,20 +277,30 @@ const ReviewMetrics: React.FC = observer(() => {
       </DataUploadHeader>
       <MainPanel>
         <Heading>
-          Review <span>{filteredMetrics.length}</span> Metrics
+          {filteredMetrics.length > 0 ? (
+            <>
+              Review <span>{filteredMetrics.length}</span> Uploaded Metrics
+            </>
+          ) : (
+            "No Metrics to Review"
+          )}
         </Heading>
         <Subheading>
-          Take a moment to review the changes. If you believe there is an error,
-          please contact the Justice Counts team via{" "}
-          <a href="mailto:support@justice-counts.org">
-            support@justicecounts.org
-          </a>
+          {filteredMetrics.length > 0 ? (
+            <>
+              Your data has been successfully uploaded. Take a moment to review
+              the changes. If you believe there is an error, please contact the
+              Justice Counts team via{" "}
+              <a href="mailto:support@justice-counts.org">
+                support@justicecounts.org
+              </a>
+            </>
+          ) : (
+            "Uploaded file contains no metrics to review."
+          )}
         </Subheading>
         {filteredMetrics.map((metric, idx) => {
-          if (metric.datapoints.length > 0) {
-            return renderSection(metric, idx);
-          }
-          return null;
+          return renderSection(metric, idx);
         })}
       </MainPanel>
     </Container>
