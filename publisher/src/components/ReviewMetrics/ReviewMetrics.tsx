@@ -34,6 +34,10 @@ import {
   DatapointsTableContainer,
   DatapointsTableDetailsCell,
   DatapointsTableDetailsContainer,
+  DatapointsTableDetailsContainerOverlay,
+  DatapointsTableDetailsContainerOverlayLeftGradient,
+  DatapointsTableDetailsContainerOverlayRightGradient,
+  DatapointsTableDetailScrollContainer,
   DatapointsTableDetailsDivider,
   DatapointsTableDetailsRow,
   DatapointsTableDetailsRowBody,
@@ -215,41 +219,51 @@ const ReviewMetrics: React.FC = observer(() => {
           </DatapointsTableNamesTable>
         </DatapointsTableNamesContainer>
         <DatapointsTableDetailsContainer>
-          <DatapointsTableDetailsTable>
-            <DatapointsTableDetailsRowHead>
-              <DatapointsTableDetailsRow>
-                {startDates.map((date) => (
-                  <DatapointsTableDetailsRowHeader key={date}>
-                    {formatDateShort(date)}
-                  </DatapointsTableDetailsRowHeader>
-                ))}
-              </DatapointsTableDetailsRow>
-            </DatapointsTableDetailsRowHead>
-            <DatapointsTableDetailsRowBody>
-              <DatapointsTableDetailsRow>
-                {aggregateRowData.map((dp, index) =>
-                  // row data could be null, so no distinct key given in that case
-                  renderDatapointsValue(index, dp.value, dp.old_value)
+          <DatapointsTableDetailScrollContainer>
+            <DatapointsTableDetailsTable>
+              <DatapointsTableDetailsRowHead>
+                <DatapointsTableDetailsRow>
+                  {startDates.map((date) => (
+                    <DatapointsTableDetailsRowHeader key={date}>
+                      {formatDateShort(date)}
+                    </DatapointsTableDetailsRowHeader>
+                  ))}
+                </DatapointsTableDetailsRow>
+              </DatapointsTableDetailsRowHead>
+              <DatapointsTableDetailsRowBody>
+                <DatapointsTableDetailsRow>
+                  {aggregateRowData.map((dp, index) =>
+                    // row data could be null, so no distinct key given in that case
+                    renderDatapointsValue(index, dp.value, dp.old_value)
+                  )}
+                </DatapointsTableDetailsRow>
+                {Object.entries(disaggregationRowData).map(
+                  ([disaggregation, dimension]) => (
+                    <React.Fragment key={disaggregation}>
+                      <DatapointsTableDetailsDivider />
+                      {Object.entries(dimension)
+                        .sort(([a], [b]) => sortDatapointDimensions(a, b))
+                        .map(([key, dps]) => (
+                          <DatapointsTableDetailsRow key={key}>
+                            {dps.map((dp, index) =>
+                              renderDatapointsValue(
+                                index,
+                                dp.value,
+                                dp.old_value
+                              )
+                            )}
+                          </DatapointsTableDetailsRow>
+                        ))}
+                    </React.Fragment>
+                  )
                 )}
-              </DatapointsTableDetailsRow>
-              {Object.entries(disaggregationRowData).map(
-                ([disaggregation, dimension]) => (
-                  <React.Fragment key={disaggregation}>
-                    <DatapointsTableDetailsDivider />
-                    {Object.entries(dimension)
-                      .sort(([a], [b]) => sortDatapointDimensions(a, b))
-                      .map(([key, dps]) => (
-                        <DatapointsTableDetailsRow key={key}>
-                          {dps.map((dp, index) =>
-                            renderDatapointsValue(index, dp.value, dp.old_value)
-                          )}
-                        </DatapointsTableDetailsRow>
-                      ))}
-                  </React.Fragment>
-                )
-              )}
-            </DatapointsTableDetailsRowBody>
-          </DatapointsTableDetailsTable>
+              </DatapointsTableDetailsRowBody>
+            </DatapointsTableDetailsTable>
+          </DatapointsTableDetailScrollContainer>
+          <DatapointsTableDetailsContainerOverlay>
+            <DatapointsTableDetailsContainerOverlayLeftGradient />
+            <DatapointsTableDetailsContainerOverlayRightGradient />
+          </DatapointsTableDetailsContainerOverlay>
         </DatapointsTableDetailsContainer>
       </DatapointsTableContainer>
     );

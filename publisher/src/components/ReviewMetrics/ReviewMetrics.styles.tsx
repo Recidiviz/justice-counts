@@ -148,10 +148,43 @@ export const DatapointsTableNamesDivider = styled.td`
 `;
 
 export const DatapointsTableDetailsContainer = styled.div`
+  position: relative;
+  display: flex;
+  max-width: 624px;
+`;
+export const DatapointsTableDetailScrollContainer = styled.div`
   overflow-x: scroll;
+`;
+export const DatapointsTableDetailsContainerOverlay = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+`;
+export const DatapointsTableDetailsContainerOverlayLeftGradient = styled.div`
+  background: linear-gradient(
+    0.25turn,
+    rgb(255, 255, 255, 1),
+    rgb(255, 255, 255, 0)
+  );
+  width: 16px;
+  height: 100%;
+`;
+export const DatapointsTableDetailsContainerOverlayRightGradient = styled.div`
+  background: linear-gradient(
+    0.25turn,
+    rgb(255, 255, 255, 0),
+    rgb(255, 255, 255, 1)
+  );
+  width: 16px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
 `;
 export const DatapointsTableDetailsTable = styled.table`
   border-collapse: collapse;
+  margin: 0 16px;
 `;
 export const DatapointsTableDetailsRowHead = styled.thead``;
 export const DatapointsTableDetailsRowBody = styled.tbody``;
