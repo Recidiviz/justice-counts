@@ -290,7 +290,7 @@ const ReviewMetrics: React.FC = observer(() => {
     //     </DatapointsTableDetailsCell>
     //   );
     // }
-    if (oldValue !== value) {
+    if (oldValue !== null && oldValue !== value) {
       return (
         <DatapointsTableDetailsCell key={key}>
           <StrikethroughText>{oldValue}</StrikethroughText>
