@@ -526,3 +526,7 @@ export const RedText = styled.span`
 export const OrangeText = styled.span`
   color: ${palette.solid.orange};
 `;
+
+export const StrikethroughText = styled.span`
+  text-decoration: line-through;
+`;

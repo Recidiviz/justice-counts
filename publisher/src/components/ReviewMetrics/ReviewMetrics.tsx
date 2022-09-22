@@ -25,6 +25,7 @@ import {
   Button,
   DataUploadHeader,
   OrangeText,
+  StrikethroughText,
 } from "../DataUpload/DataUpload.styles";
 import { UploadedMetric } from "../DataUpload/types";
 import { formatDateShort, sortDatapointDimensions } from "../DataViz/utils";
@@ -280,11 +281,27 @@ const ReviewMetrics: React.FC = observer(() => {
     value: string | number | null,
     oldValue: string | number | null
   ) => {
+    // Uncomment this for special treatment when a datapoint is newly added
+    // as opposed to returning the same value
+    // if (oldValue === null && value !== null) {
+    //   return (
+    //     <DatapointsTableDetailsCell key={key}>
+    //       {value} NEW
+    //     </DatapointsTableDetailsCell>
+    //   );
+    // }
+    if (oldValue !== value) {
+      return (
+        <DatapointsTableDetailsCell key={key}>
+          <StrikethroughText>{oldValue}</StrikethroughText>
+          {` ➞ `}
+          {value}
+          <OrangeText>*</OrangeText>
+        </DatapointsTableDetailsCell>
+      );
+    }
     return (
-      <DatapointsTableDetailsCell key={key}>
-        {value}
-        {oldValue !== null ? <OrangeText>*</OrangeText> : ""}
-      </DatapointsTableDetailsCell>
+      <DatapointsTableDetailsCell key={key}>{value}</DatapointsTableDetailsCell>
     );
   };
 
