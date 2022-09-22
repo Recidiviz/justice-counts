@@ -207,6 +207,7 @@ export const DatapointsTableDetailsCell = styled.td`
   font-weight: 400;
   text-align: center;
   border: 1px solid ${palette.highlight.grey3};
+  white-space: nowrap;
 `;
 export const DatapointsTableDetailsDivider = styled.tr`
   height: 32px;
