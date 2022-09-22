@@ -19,32 +19,47 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 
-import {
-  Button,
-  GoBack,
-  TextInput,
-  Title,
-  TitleWrapper,
-} from "../components/Forms";
+import { Button, TextInput, Title, TitleWrapper } from "../components/Forms";
+import { typography } from "../components/GlobalStyles";
 import { useStore } from "../stores";
 
-const AccountSettingsPage = styled.div`
+const SettingsContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding: 39px 24px 0 24px;
 `;
 
-const SettingsFormPanel = styled.div`
-  width: 644px;
-`;
+const SettingsFormPanel = styled.div``;
 
 const ButtonWrapper = styled.div`
   display: flex;
   flex: 1 1 auto;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 10px;
+`;
+
+const InputWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+
+  div {
+    width: 100%;
+  }
+`;
+
+const SettingsFormUploadedFilesWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+`;
+
+const SettingsTitle = styled.div`
+  ${typography.sizeCSS.headline}
+  display: flex;
+  flex: 1 1 auto;
 `;
 
 const AccountSettings = () => {
@@ -53,46 +68,48 @@ const AccountSettings = () => {
   const [email, setEmail] = React.useState<string>(userStore?.email || "");
   const [name, setName] = React.useState<string>(userStore?.name || "");
   return (
-    <AccountSettingsPage>
-      <GoBack
-        style={{ position: "absolute", top: 100, left: 20 }}
-        onClick={() => navigate(-1)}
-      />
-      <SettingsFormPanel>
-        <TitleWrapper underlined>
-          <Title>Settings</Title>
-        </TitleWrapper>
+    <SettingsContainer>
+      <SettingsTitle>Settings</SettingsTitle>
 
-        <TextInput
-          label="Full Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <TextInput
-          label="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+      <SettingsFormUploadedFilesWrapper>
+        <SettingsFormPanel>
+          <TitleWrapper>
+            <Title>Account</Title>
+          </TitleWrapper>
 
-        <ButtonWrapper>
-          <Button
-            onClick={() => {
-              navigate(-1);
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={() => {
-              userStore.updateUserNameAndEmail(name, email);
-              navigate(-1);
-            }}
-          >
-            Save & Close
-          </Button>
-        </ButtonWrapper>
-      </SettingsFormPanel>
-    </AccountSettingsPage>
+          <InputWrapper>
+            <TextInput
+              label="Full Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <TextInput
+              label="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </InputWrapper>
+
+          <ButtonWrapper>
+            <Button
+              onClick={() => {
+                navigate(-1);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                userStore.updateUserNameAndEmail(name, email);
+                navigate(-1);
+              }}
+            >
+              Save & Close
+            </Button>
+          </ButtonWrapper>
+        </SettingsFormPanel>
+      </SettingsFormUploadedFilesWrapper>
+    </SettingsContainer>
   );
 };
 
