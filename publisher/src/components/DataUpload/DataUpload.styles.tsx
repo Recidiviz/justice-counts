@@ -55,6 +55,7 @@ export const DataUploadContainer = styled.div`
 
 export const DataUploadHeader = styled.div<{ transparent?: boolean }>`
   width: 100%;
+  z-index: 1;
   height: ${HEADER_BAR_HEIGHT}px;
   display: flex;
   justify-content: space-between;

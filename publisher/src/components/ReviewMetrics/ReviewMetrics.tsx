@@ -34,15 +34,21 @@ import {
   DatapointsTableContainer,
   DatapointsTableDetailsCell,
   DatapointsTableDetailsContainer,
+  DatapointsTableDetailsContainerOverlay,
+  DatapointsTableDetailsContainerOverlayLeftGradient,
+  DatapointsTableDetailsContainerOverlayRightGradient,
+  DatapointsTableDetailScrollContainer,
   DatapointsTableDetailsDivider,
   DatapointsTableDetailsRow,
   DatapointsTableDetailsRowBody,
   DatapointsTableDetailsRowHead,
   DatapointsTableDetailsRowHeader,
   DatapointsTableDetailsTable,
+  DatapointsTableNamesCell,
   DatapointsTableNamesContainer,
   DatapointsTableNamesDivider,
   DatapointsTableNamesRow,
+  DatapointsTableNamesTable,
   Heading,
   MainPanel,
   SectionContainer,
@@ -54,11 +60,11 @@ import {
   Subheading,
 } from "./ReviewMetrics.styles";
 
-type AggregationRowData = RawDatapoint[];
+type AggregationRowData = (RawDatapoint | undefined)[];
 
 type DisaggregationRowData = {
   [disaggregation: string]: {
-    [dimension: string]: RawDatapoint[];
+    [dimension: string]: (RawDatapoint | undefined)[];
   };
 };
 
@@ -93,7 +99,9 @@ const ReviewMetrics: React.FC = observer(() => {
     let overwrittenValuesCount = 0;
 
     // Create array of aggregate values, each value indexed with their corresponding date column
-    const aggregateRowData: AggregationRowData = [];
+    const aggregateRowData: AggregationRowData = new Array(
+      startDates.length
+    ).fill(undefined);
 
     // Create map of disaggregations and dimensions, each dimension containing array of values,
     // each value indexed with their corresponding date column
@@ -117,7 +125,7 @@ const ReviewMetrics: React.FC = observer(() => {
         ) {
           disaggregationRowData[dp.disaggregation_display_name][
             dp.dimension_display_name
-          ] = [];
+          ] = new Array(startDates.length).fill(undefined);
         }
         if (
           !disaggregationRowData[dp.disaggregation_display_name][
@@ -184,62 +192,84 @@ const ReviewMetrics: React.FC = observer(() => {
     return (
       <DatapointsTableContainer>
         <DatapointsTableNamesContainer>
-          <DatapointsTableNamesRow>
-            {DataVizAggregateName}
-          </DatapointsTableNamesRow>
-          {Object.entries(disaggregationRowData).map(
-            ([disaggregation, dimension]) => (
-              <React.Fragment key={disaggregation}>
-                <DatapointsTableNamesDivider>
-                  {disaggregation}
-                </DatapointsTableNamesDivider>
-                {Object.keys(dimension)
-                  .sort(sortDatapointDimensions)
-                  .map((dimensionName) => (
-                    <DatapointsTableNamesRow key={dimensionName}>
-                      {dimensionName}
-                    </DatapointsTableNamesRow>
-                  ))}
-              </React.Fragment>
-            )
-          )}
+          <DatapointsTableNamesTable>
+            <DatapointsTableNamesRow>
+              <DatapointsTableNamesCell>
+                {DataVizAggregateName}
+              </DatapointsTableNamesCell>
+            </DatapointsTableNamesRow>
+            {Object.entries(disaggregationRowData).map(
+              ([disaggregation, dimension]) => (
+                <React.Fragment key={disaggregation}>
+                  <DatapointsTableNamesRow>
+                    <DatapointsTableNamesDivider>
+                      {disaggregation}
+                    </DatapointsTableNamesDivider>
+                  </DatapointsTableNamesRow>
+                  {Object.keys(dimension)
+                    .sort(sortDatapointDimensions)
+                    .map((dimensionName) => (
+                      <DatapointsTableNamesRow key={dimensionName}>
+                        <DatapointsTableNamesCell>
+                          {dimensionName}
+                        </DatapointsTableNamesCell>
+                      </DatapointsTableNamesRow>
+                    ))}
+                </React.Fragment>
+              )
+            )}
+          </DatapointsTableNamesTable>
         </DatapointsTableNamesContainer>
         <DatapointsTableDetailsContainer>
-          <DatapointsTableDetailsTable>
-            <DatapointsTableDetailsRowHead>
-              <DatapointsTableDetailsRow>
-                {startDates.map((date) => (
-                  <DatapointsTableDetailsRowHeader key={date}>
-                    {formatDateShort(date)}
-                  </DatapointsTableDetailsRowHeader>
-                ))}
-              </DatapointsTableDetailsRow>
-            </DatapointsTableDetailsRowHead>
-            <DatapointsTableDetailsRowBody>
-              <DatapointsTableDetailsRow>
-                {aggregateRowData.map((dp, index) =>
-                  // row data could be null, so no distinct key given in that case
-                  renderDatapointsValue(index, dp.value, dp.old_value)
+          <DatapointsTableDetailScrollContainer>
+            <DatapointsTableDetailsTable>
+              <DatapointsTableDetailsRowHead>
+                <DatapointsTableDetailsRow>
+                  {startDates.map((date) => (
+                    <DatapointsTableDetailsRowHeader key={date}>
+                      {formatDateShort(date)}
+                    </DatapointsTableDetailsRowHeader>
+                  ))}
+                </DatapointsTableDetailsRow>
+              </DatapointsTableDetailsRowHead>
+              <DatapointsTableDetailsRowBody>
+                <DatapointsTableDetailsRow>
+                  {aggregateRowData.map((dp, index) =>
+                    // row data could be null, so no distinct key given in that case
+                    dp === undefined
+                      ? renderDatapointsValue(index, null, null)
+                      : renderDatapointsValue(index, dp.value, dp.old_value)
+                  )}
+                </DatapointsTableDetailsRow>
+                {Object.entries(disaggregationRowData).map(
+                  ([disaggregation, dimension]) => (
+                    <React.Fragment key={disaggregation}>
+                      <DatapointsTableDetailsDivider />
+                      {Object.entries(dimension)
+                        .sort(([a], [b]) => sortDatapointDimensions(a, b))
+                        .map(([key, dps]) => (
+                          <DatapointsTableDetailsRow key={key}>
+                            {dps.map((dp, index) =>
+                              dp === undefined
+                                ? renderDatapointsValue(index, null, null)
+                                : renderDatapointsValue(
+                                    index,
+                                    dp.value,
+                                    dp.old_value
+                                  )
+                            )}
+                          </DatapointsTableDetailsRow>
+                        ))}
+                    </React.Fragment>
+                  )
                 )}
-              </DatapointsTableDetailsRow>
-              {Object.entries(disaggregationRowData).map(
-                ([disaggregation, dimension]) => (
-                  <React.Fragment key={disaggregation}>
-                    <DatapointsTableDetailsDivider />
-                    {Object.entries(dimension)
-                      .sort(([a], [b]) => sortDatapointDimensions(a, b))
-                      .map(([key, dps]) => (
-                        <DatapointsTableDetailsRow key={key}>
-                          {dps.map((dp, index) =>
-                            renderDatapointsValue(index, dp.value, dp.old_value)
-                          )}
-                        </DatapointsTableDetailsRow>
-                      ))}
-                  </React.Fragment>
-                )
-              )}
-            </DatapointsTableDetailsRowBody>
-          </DatapointsTableDetailsTable>
+              </DatapointsTableDetailsRowBody>
+            </DatapointsTableDetailsTable>
+          </DatapointsTableDetailScrollContainer>
+          <DatapointsTableDetailsContainerOverlay>
+            <DatapointsTableDetailsContainerOverlayLeftGradient />
+            <DatapointsTableDetailsContainerOverlayRightGradient />
+          </DatapointsTableDetailsContainerOverlay>
         </DatapointsTableDetailsContainer>
       </DatapointsTableContainer>
     );
@@ -250,9 +280,6 @@ const ReviewMetrics: React.FC = observer(() => {
     value: string | number | null,
     oldValue: string | number | null
   ) => {
-    if (value === null) {
-      return null;
-    }
     return (
       <DatapointsTableDetailsCell key={key}>
         {value}
