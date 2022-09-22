@@ -55,7 +55,7 @@ export const Subheading = styled.div`
 `;
 
 export const SectionContainer = styled.div`
-  margin-top: 32px;
+  margin-top: 22px;
   padding-top: 16px;
   display: flex;
   align-items: center;
@@ -154,6 +154,7 @@ export const DatapointsTableDetailsContainer = styled.div`
 `;
 export const DatapointsTableDetailScrollContainer = styled.div`
   overflow-x: scroll;
+  padding-bottom: 10px;
 `;
 export const DatapointsTableDetailsContainerOverlay = styled.div`
   position: absolute;

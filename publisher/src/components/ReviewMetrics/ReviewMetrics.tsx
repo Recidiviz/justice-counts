@@ -60,11 +60,11 @@ import {
   Subheading,
 } from "./ReviewMetrics.styles";
 
-type AggregationRowData = RawDatapoint[];
+type AggregationRowData = (RawDatapoint | undefined)[];
 
 type DisaggregationRowData = {
   [disaggregation: string]: {
-    [dimension: string]: RawDatapoint[];
+    [dimension: string]: (RawDatapoint | undefined)[];
   };
 };
 
@@ -99,7 +99,9 @@ const ReviewMetrics: React.FC = observer(() => {
     let overwrittenValuesCount = 0;
 
     // Create array of aggregate values, each value indexed with their corresponding date column
-    const aggregateRowData: AggregationRowData = [];
+    const aggregateRowData: AggregationRowData = new Array(
+      startDates.length
+    ).fill(undefined);
 
     // Create map of disaggregations and dimensions, each dimension containing array of values,
     // each value indexed with their corresponding date column
@@ -123,7 +125,7 @@ const ReviewMetrics: React.FC = observer(() => {
         ) {
           disaggregationRowData[dp.disaggregation_display_name][
             dp.dimension_display_name
-          ] = [];
+          ] = new Array(startDates.length).fill(undefined);
         }
         if (
           !disaggregationRowData[dp.disaggregation_display_name][
@@ -234,7 +236,9 @@ const ReviewMetrics: React.FC = observer(() => {
                 <DatapointsTableDetailsRow>
                   {aggregateRowData.map((dp, index) =>
                     // row data could be null, so no distinct key given in that case
-                    renderDatapointsValue(index, dp.value, dp.old_value)
+                    dp === undefined
+                      ? renderDatapointsValue(index, null, null)
+                      : renderDatapointsValue(index, dp.value, dp.old_value)
                   )}
                 </DatapointsTableDetailsRow>
                 {Object.entries(disaggregationRowData).map(
@@ -246,11 +250,13 @@ const ReviewMetrics: React.FC = observer(() => {
                         .map(([key, dps]) => (
                           <DatapointsTableDetailsRow key={key}>
                             {dps.map((dp, index) =>
-                              renderDatapointsValue(
-                                index,
-                                dp.value,
-                                dp.old_value
-                              )
+                              dp === undefined
+                                ? renderDatapointsValue(index, null, null)
+                                : renderDatapointsValue(
+                                    index,
+                                    dp.value,
+                                    dp.old_value
+                                  )
                             )}
                           </DatapointsTableDetailsRow>
                         ))}
@@ -274,9 +280,6 @@ const ReviewMetrics: React.FC = observer(() => {
     value: string | number | null,
     oldValue: string | number | null
   ) => {
-    if (value === null) {
-      return null;
-    }
     return (
       <DatapointsTableDetailsCell key={key}>
         {value}
