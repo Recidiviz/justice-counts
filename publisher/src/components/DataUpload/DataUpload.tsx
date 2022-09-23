@@ -16,19 +16,22 @@
 // =============================================================================
 
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { AgencySystems } from "../../shared/types";
 import { useStore } from "../../stores";
 import logoImg from "../assets/jc-logo-vector.png";
 import { Logo, LogoContainer } from "../Header";
-import { Loading } from "../Loading";
+import { Loader } from "../Loading";
 import { showToast } from "../Toast";
 import {
   Button,
   DataUploadContainer,
   DataUploadHeader,
+  DataUploadLoading,
+  LoadingHeader,
+  LoadingSubheader,
   SystemSelection,
   UploadFile,
 } from ".";
@@ -36,6 +39,7 @@ import {
   DataUploadResponseBody,
   ErrorsWarningsMetrics,
   MetricErrors,
+  UploadedMetric,
 } from "./types";
 import { UploadErrorsWarnings } from "./UploadErrorsWarnings";
 
@@ -82,6 +86,7 @@ export const systemToTemplateSpreadsheetFileName: { [system: string]: string } =
 export const DataUpload: React.FC = observer(() => {
   const { userStore, reportStore } = useStore();
   const navigate = useNavigate();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const userSystems =
     userStore.currentAgency?.systems.filter(
       (system) => !EXCLUDED_SYSTEMS.includes(system)
@@ -93,7 +98,7 @@ export const DataUpload: React.FC = observer(() => {
   const [selectedFile, setSelectedFile] = useState<File>();
   const [selectedSystem, setSelectedSystem] = useState<
     AgencySystems | undefined
-  >(userSystems.length === 1 ? userSystems[0] : undefined);
+  >();
 
   const handleFileUpload = async (
     file: File,
@@ -118,12 +123,15 @@ export const DataUpload: React.FC = observer(() => {
       const data = await response?.json();
 
       const errorsWarningsAndMetrics = processUploadResponseBody(data);
+      const hasErrorsOrWarnings =
+        (errorsWarningsAndMetrics.preIngestErrors &&
+          errorsWarningsAndMetrics.preIngestErrors.length > 0) ||
+        errorsWarningsAndMetrics.errorSheetsAndSuccessfulMetrics.errorSheets
+          .length > 0 ||
+        errorsWarningsAndMetrics.errorSheetsAndSuccessfulMetrics.hasWarnings;
       setIsLoading(false);
 
-      if (
-        errorsWarningsAndMetrics.errorCount ||
-        errorsWarningsAndMetrics.warningCount
-      ) {
+      if (hasErrorsOrWarnings) {
         return setErrorsWarningsMetrics(errorsWarningsAndMetrics);
       }
 
@@ -137,35 +145,56 @@ export const DataUpload: React.FC = observer(() => {
   const processUploadResponseBody = (
     data: DataUploadResponseBody
   ): ErrorsWarningsMetrics => {
-    const metricErrors = data.metrics.reduce(
-      (acc, metric) => [...acc, ...metric.sheets],
-      [] as MetricErrors[]
-    );
-    const errorWarningCount = metricErrors.reduce(
-      (acc, sheet) => {
-        sheet.messages.forEach((msg) => {
-          if (msg.type === "ERROR") acc.errorCount += 1;
-          if (msg.type === "WARNING") acc.warningCount += 1;
+    const errorSheetsAndSuccessfulMetrics = data.metrics.reduce(
+      (acc, metric) => {
+        /**
+         * Peek into the `messages` array to look for any error messages within
+         * the sheet and return `true` if no errors are found
+         */
+        const noErrorsInCurrentSheet =
+          metric.sheets.filter(
+            (sheet) =>
+              sheet.messages.filter((msg) => msg.type === "ERROR").length > 0
+          ).length === 0;
+
+        if (metric.sheets.length === 0 || noErrorsInCurrentSheet) {
+          acc.successfulMetrics.push(metric);
+        }
+
+        metric.sheets.forEach((sheet) => {
+          sheet.messages.forEach((message) => {
+            if (message.type === "ERROR") {
+              acc.errorSheets.push(sheet);
+            }
+            if (message.type === "WARNING" && acc.hasWarnings === false) {
+              acc.hasWarnings = true;
+            }
+          });
         });
+
         return acc;
       },
       {
-        errorCount: 0,
-        warningCount: 0,
+        successfulMetrics: [] as UploadedMetric[],
+        errorSheets: [] as MetricErrors[],
+        hasWarnings: false,
       }
     );
 
+    /**
+     * Pre-Ingest errors: errors that are not associated with a metric.
+     * @example: user uploads an excel file that contains a sheet not associated
+     * with a metric.
+     */
     if (data.pre_ingest_errors) {
-      errorWarningCount.errorCount += data.pre_ingest_errors.length;
       return {
-        metricErrors,
-        ...errorWarningCount,
+        errorSheetsAndSuccessfulMetrics,
         metrics: data.metrics,
         preIngestErrors: data.pre_ingest_errors,
       };
     }
 
-    return { metricErrors, ...errorWarningCount, metrics: data.metrics };
+    return { errorSheetsAndSuccessfulMetrics, metrics: data.metrics };
   };
 
   const handleSystemSelection = (file: File, system: AgencySystems) => {
@@ -180,14 +209,6 @@ export const DataUpload: React.FC = observer(() => {
     setSelectedFile(undefined);
     setSelectedSystem(userSystems.length === 1 ? userSystems[0] : undefined);
   };
-
-  if (isLoading) {
-    return (
-      <DataUploadContainer>
-        <Loading />
-      </DataUploadContainer>
-    );
-  }
 
   const renderCurrentUploadStep = (): JSX.Element => {
     /**
@@ -240,6 +261,22 @@ export const DataUpload: React.FC = observer(() => {
       />
     );
   };
+
+  useEffect(() => {
+    setSelectedSystem(userSystems.length === 1 ? userSystems[0] : undefined);
+  }, [userSystems]);
+
+  if (isLoading) {
+    return (
+      <DataUploadContainer>
+        <DataUploadLoading>
+          <Loader />
+          <LoadingHeader>We are processing your data...</LoadingHeader>
+          <LoadingSubheader>This might take a few minutes.</LoadingSubheader>
+        </DataUploadLoading>
+      </DataUploadContainer>
+    );
+  }
 
   return (
     <DataUploadContainer>

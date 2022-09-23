@@ -22,6 +22,7 @@ import { ReactComponent as SpreadsheetIcon } from "../assets/microsoft-excel-ico
 import {
   ButtonWrapper,
   DownloadTemplateBox,
+  DownloadTemplateSystem,
   systemToTemplateSpreadsheetFileName,
 } from ".";
 
@@ -202,18 +203,17 @@ export const GeneralInstructions: React.FC<
           const systemFileName = systemToTemplateSpreadsheetFileName[system];
 
           return (
-            <DownloadTemplateBox key={system}>
+            <DownloadTemplateBox
+              key={system}
+              href={`./assets/${systemFileName}`}
+              download={systemFileName}
+            >
               <SpreadsheetIcon />
 
-              <span>
+              <DownloadTemplateSystem>
                 {systemName}
-                <a
-                  href={`./assets/${systemFileName}`}
-                  download={systemFileName}
-                >
-                  Download
-                </a>
-              </span>
+                <span>Download</span>
+              </DownloadTemplateSystem>
             </DownloadTemplateBox>
           );
         })}

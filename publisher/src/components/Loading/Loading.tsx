@@ -40,7 +40,7 @@ const loadingSpriteAnimation = keyframes`
   }
 `;
 
-const Loader = styled.div`
+export const Loader = styled.div`
   height: ${loaderWidth}px;
   width: ${loaderWidth}px;
   background-image: url(${sprite});

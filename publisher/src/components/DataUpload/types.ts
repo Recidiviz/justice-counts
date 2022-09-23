@@ -42,9 +42,11 @@ export type MetricErrors = {
 };
 
 export type ErrorsWarningsMetrics = {
-  errorCount: number;
-  warningCount: number;
   metrics: UploadedMetric[];
-  metricErrors: MetricErrors[];
+  errorSheetsAndSuccessfulMetrics: {
+    successfulMetrics: UploadedMetric[];
+    errorSheets: MetricErrors[];
+    hasWarnings: boolean;
+  };
   preIngestErrors?: ErrorWarningMessage[];
 };
