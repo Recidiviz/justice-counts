@@ -546,6 +546,12 @@ export const ExtendedCell = styled(Cell)`
   &:nth-child(2) {
     flex: 3 1 auto;
   }
+
+  @media only screen and (max-width: 1050px) {
+    &:not(:first-child, :last-child) {
+      display: none;
+    }
+  }
 `;
 
 export const ExtendedLabelCell = styled(LabelCell)`
@@ -554,6 +560,12 @@ export const ExtendedLabelCell = styled(LabelCell)`
   }
   &:nth-child(2) {
     flex: 3 1 auto;
+  }
+
+  @media only screen and (max-width: 1050px) {
+    &:not(:first-child, :last-child) {
+      display: none;
+    }
   }
 `;
 

@@ -36,6 +36,11 @@ const SettingsContainer = styled.div`
   padding: 39px 24px 0 24px;
   position: fixed;
   overflow-y: scroll;
+
+  @media only screen and (max-width: 1050px) {
+    width: unset;
+    flex-direction: column;
+  }
 `;
 
 const SettingsFormPanel = styled.div``;
