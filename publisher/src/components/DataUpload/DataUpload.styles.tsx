@@ -29,8 +29,6 @@ import {
   Table,
 } from "../Reports";
 
-const ROW_HEIGHT = 42;
-
 export const DataUploadContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -311,14 +309,14 @@ export const Icon = styled.img<{ grayscale?: boolean }>`
   ${({ grayscale }) => grayscale && `filter: grayscale(1);`}
 `;
 
-export const ModalLoadingWrapper = styled.div`
-  div {
-    height: 100%;
-    top: 25%;
-  }
+export const UploadedFilesLoading = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
 `;
 
-export const ModalErrorWrapper = styled.div`
+export const UploadedFilesError = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 25px;
@@ -336,16 +334,22 @@ export const ActionsContainer = styled.div`
   justify-content: flex-end;
   align-items: center;
   background: ${palette.solid.offwhite};
-  gap: 10px;
-  padding-left: 20px;
+  padding: 0 20px;
   position: absolute;
-  right: 22px;
+  right: 0;
   z-index: 3;
-  width: 25vw;
+  width: 30vw;
 `;
 
 export const ActionButton = styled.div<{ red?: boolean }>`
+  white-space: nowrap;
+  background: ${palette.solid.offwhite};
   color: ${({ red }) => (red ? palette.solid.red : palette.solid.blue)};
+
+  &:not(:last-child) {
+    margin-right: 10px;
+  }
+
   &:hover {
     color: ${palette.solid.darkgrey};
   }
@@ -497,13 +501,18 @@ export const ConfirmationPageContainer = styled.div`
 `;
 
 export const UploadedFilesContainer = styled.div`
-  height: 100%;
-  padding: ${ROW_HEIGHT}px 0;
+  max-height: 50vh;
   overflow-y: scroll;
+`;
+
+export const UploadedFilesWrapper = styled.div`
+  margin-top: 50px;
 `;
 
 export const UploadedFilesTable = styled(Table)`
   padding: unset;
+  max-height: 40vh;
+  overflow-y: scroll;
 `;
 
 export const ExtendedTabbedBar = styled(TabbedBar)`
@@ -514,23 +523,35 @@ export const ExtendedRow = styled(Row)`
   color: ${({ selected }) => selected && palette.highlight.grey9};
   position: relative;
   transition: unset;
+  padding-left: 0;
+  padding-right: 8px;
 `;
 
 export const ExtendedLabelRow = styled(LabelRow)`
-  position: fixed;
+  position: sticky;
+  top: 0;
   background: ${palette.solid.white};
-  z-index: 1;
+  z-index: 5;
+  padding-left: 0;
+  padding-right: 8px;
 `;
 
 export const ExtendedCell = styled(Cell)`
   &:first-child {
-    flex: 4 1 auto;
+    flex: 3 1 auto;
+  }
+
+  &:nth-child(2) {
+    flex: 3 1 auto;
   }
 `;
 
 export const ExtendedLabelCell = styled(LabelCell)`
   &:first-child {
-    flex: 4 1 auto;
+    flex: 3 1 auto;
+  }
+  &:nth-child(2) {
+    flex: 3 1 auto;
   }
 `;
 

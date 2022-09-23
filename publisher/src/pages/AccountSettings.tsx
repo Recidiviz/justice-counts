@@ -19,6 +19,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 
+import { UploadedFiles, UploadedFilesWrapper } from "../components/DataUpload";
 import { Button, TextInput, Title, TitleWrapper } from "../components/Forms";
 import { typography } from "../components/GlobalStyles";
 import { useStore } from "../stores";
@@ -30,6 +31,8 @@ const SettingsContainer = styled.div`
   justify-content: center;
   align-items: flex-start;
   padding: 39px 24px 0 24px;
+  position: fixed;
+  overflow-y: scroll;
 `;
 
 const SettingsFormPanel = styled.div``;
@@ -53,7 +56,7 @@ const InputWrapper = styled.div`
 const SettingsFormUploadedFilesWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1 1 auto;
+  flex: 3 1 auto;
 `;
 
 const SettingsTitle = styled.div`
@@ -79,11 +82,13 @@ const AccountSettings = () => {
 
           <InputWrapper>
             <TextInput
+              persistLabel
               label="Full Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
             <TextInput
+              persistLabel
               label="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -108,6 +113,13 @@ const AccountSettings = () => {
             </Button>
           </ButtonWrapper>
         </SettingsFormPanel>
+
+        <UploadedFilesWrapper>
+          <TitleWrapper>
+            <Title>Uploaded Files</Title>
+          </TitleWrapper>
+          <UploadedFiles />
+        </UploadedFilesWrapper>
       </SettingsFormUploadedFilesWrapper>
     </SettingsContainer>
   );
