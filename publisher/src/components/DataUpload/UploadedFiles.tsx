@@ -108,7 +108,7 @@ export const UploadedFileRow: React.FC<{
     } = fileRowDetails;
 
     useEffect(() => {
-      setRowHovered(false);
+      if (rowHovered) setRowHovered(false);
     }, [fileRowDetails]);
 
     return (
@@ -245,9 +245,7 @@ export const UploadedFiles: React.FC = observer(() => {
     }
 
     return setUploadedFiles((prev) => {
-      const filteredFiles = prev.filter(
-        (file) => (file as UploadedFile).id !== spreadsheetID
-      );
+      const filteredFiles = prev.filter((file) => file.id !== spreadsheetID);
 
       return filteredFiles;
     });

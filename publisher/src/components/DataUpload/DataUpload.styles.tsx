@@ -18,6 +18,7 @@
 import styled from "styled-components/macro";
 
 import { rem } from "../../utils";
+import { OpacityGradient } from "../Forms";
 import { HEADER_BAR_HEIGHT, palette, typography } from "../GlobalStyles";
 import {
   Cell,
@@ -506,12 +507,14 @@ export const UploadedFilesContainer = styled.div`
 
 export const UploadedFilesWrapper = styled.div`
   margin-top: 50px;
+  position: relative;
 `;
 
 export const UploadedFilesTable = styled(Table)`
   padding: unset;
   max-height: 40vh;
   overflow-y: scroll;
+  padding-bottom: 50px;
 `;
 
 export const ExtendedTabbedBar = styled(TabbedBar)`
@@ -593,4 +596,9 @@ export const LoadingSubheader = styled.div`
 export const CheckIcon = styled.img`
   width: 16px;
   margin-right: 5px;
+`;
+
+export const ExtendedOpacityGradient = styled(OpacityGradient)`
+  height: 50px;
+  position: absolute;
 `;

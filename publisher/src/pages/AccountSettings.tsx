@@ -19,8 +19,18 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 
-import { UploadedFiles, UploadedFilesWrapper } from "../components/DataUpload";
-import { Button, TextInput, Title, TitleWrapper } from "../components/Forms";
+import {
+  ExtendedOpacityGradient,
+  UploadedFiles,
+  UploadedFilesWrapper,
+} from "../components/DataUpload";
+import {
+  Button,
+  OpacityGradient,
+  TextInput,
+  Title,
+  TitleWrapper,
+} from "../components/Forms";
 import { typography } from "../components/GlobalStyles";
 import { useStore } from "../stores";
 
@@ -98,18 +108,10 @@ const AccountSettings = () => {
           <ButtonWrapper>
             <Button
               onClick={() => {
-                navigate(-1);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={() => {
                 userStore.updateUserNameAndEmail(name, email);
-                navigate(-1);
               }}
             >
-              Save & Close
+              Save
             </Button>
           </ButtonWrapper>
         </SettingsFormPanel>
@@ -119,6 +121,7 @@ const AccountSettings = () => {
             <Title>Uploaded Files</Title>
           </TitleWrapper>
           <UploadedFiles />
+          <ExtendedOpacityGradient />
         </UploadedFilesWrapper>
       </SettingsFormUploadedFilesWrapper>
     </SettingsContainer>
