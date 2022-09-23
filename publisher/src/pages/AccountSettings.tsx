@@ -16,7 +16,6 @@
 // =============================================================================
 
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import {
@@ -24,13 +23,7 @@ import {
   UploadedFiles,
   UploadedFilesWrapper,
 } from "../components/DataUpload";
-import {
-  Button,
-  OpacityGradient,
-  TextInput,
-  Title,
-  TitleWrapper,
-} from "../components/Forms";
+import { Button, TextInput, Title, TitleWrapper } from "../components/Forms";
 import { typography } from "../components/GlobalStyles";
 import { useStore } from "../stores";
 
@@ -77,7 +70,6 @@ const SettingsTitle = styled.div`
 
 const AccountSettings = () => {
   const { userStore } = useStore();
-  const navigate = useNavigate();
   const [email, setEmail] = React.useState<string>(userStore?.email || "");
   const [name, setName] = React.useState<string>(userStore?.name || "");
   return (

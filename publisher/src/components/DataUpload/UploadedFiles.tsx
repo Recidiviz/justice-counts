@@ -107,9 +107,13 @@ export const UploadedFileRow: React.FC<{
       uploadedBy,
     } = fileRowDetails;
 
-    useEffect(() => {
-      if (rowHovered) setRowHovered(false);
-    }, [fileRowDetails]);
+    useEffect(
+      () => {
+        if (rowHovered) setRowHovered(false);
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [fileRowDetails]
+    );
 
     return (
       <ExtendedRow

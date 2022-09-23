@@ -47,7 +47,7 @@ export const Input = styled.input<InputProps>`
   resize: none;
   height: ${({ multiline }) => (multiline ? "200px;" : "71px;")};
   padding: ${({ persistLabel }) =>
-    persistLabel ? "42px 16px 16px 16px" : "16px 55px 10px 16px"}};
+    persistLabel ? "42px 55px 16px 16px" : "16px 55px 10px 16px"}};
   background: ${({ value, error, notReporting }) => {
     if (error) {
       return palette.highlight.red;
