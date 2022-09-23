@@ -107,6 +107,10 @@ export const UploadedFileRow: React.FC<{
       uploadedBy,
     } = fileRowDetails;
 
+    useEffect(() => {
+      setRowHovered(false);
+    }, [fileRowDetails]);
+
     return (
       <ExtendedRow
         selected={selected}
@@ -134,7 +138,7 @@ export const UploadedFileRow: React.FC<{
         </ExtendedCell>
 
         {/* Date Ingested */}
-        <ExtendedCell>
+        <ExtendedCell capitalize>
           <span>{dateIngested}</span>
         </ExtendedCell>
 
@@ -172,8 +176,8 @@ export const UploadedFileRow: React.FC<{
           </ActionsContainer>
         )}
 
-        {/* System */}
         <ExtendedCell capitalize>
+          {/* System */}
           <span>{system}</span>
         </ExtendedCell>
       </ExtendedRow>
@@ -193,10 +197,6 @@ export const UploadedFiles: React.FC = observer(() => {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
-
-  const isUploadedFile = (file: UploadedFile): file is UploadedFile => {
-    return (file as UploadedFile).id !== undefined;
-  };
 
   const uploadStatusColorMapping: BadgeColorMapping = {
     UPLOADED: "ORANGE",
@@ -263,16 +263,24 @@ export const UploadedFiles: React.FC = observer(() => {
       return showToast(response.message, false, "red");
     }
 
-    return setUploadedFiles((prev) => {
-      const updatedFilesList = prev.map((file) => {
-        if (isUploadedFile(file) && file.id === spreadsheetID) {
-          return { ...file, status };
-        }
-        return file;
-      });
+    return fetchListOfUploadedFiles();
+  };
 
-      return updatedFilesList;
-    });
+  const fetchListOfUploadedFiles = async () => {
+    const response = (await reportStore.getUploadedFilesList()) as
+      | Response
+      | Error;
+
+    setIsLoading(false);
+
+    if (response instanceof Error) {
+      return setFetchError(true);
+    }
+
+    setFetchError(false);
+
+    const listOfFiles = (await response.json()) as UploadedFile[];
+    setUploadedFiles(listOfFiles);
   };
 
   useEffect(
@@ -281,20 +289,7 @@ export const UploadedFiles: React.FC = observer(() => {
       when(
         () => userStore.userInfoLoaded,
         async () => {
-          const response = (await reportStore.getUploadedFilesList()) as
-            | Response
-            | Error;
-
-          setIsLoading(false);
-
-          if (response instanceof Error) {
-            return setFetchError(true);
-          }
-
-          setFetchError(false);
-
-          const listOfFiles = (await response.json()) as UploadedFile[];
-          setUploadedFiles(listOfFiles);
+          fetchListOfUploadedFiles();
         }
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps

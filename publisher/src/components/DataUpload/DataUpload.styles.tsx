@@ -338,7 +338,6 @@ export const ActionsContainer = styled.div`
   position: absolute;
   right: 0;
   z-index: 3;
-  width: 30vw;
 `;
 
 export const ActionButton = styled.div<{ red?: boolean }>`
