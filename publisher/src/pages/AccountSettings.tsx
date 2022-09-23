@@ -77,6 +77,7 @@ const AccountSettings = () => {
   const { userStore } = useStore();
   const [email, setEmail] = React.useState<string>(userStore?.email || "");
   const [name, setName] = React.useState<string>(userStore?.name || "");
+
   return (
     <SettingsContainer>
       <SettingsTitle>Settings</SettingsTitle>
@@ -117,6 +118,7 @@ const AccountSettings = () => {
           <TitleWrapper>
             <Title>Uploaded Files</Title>
           </TitleWrapper>
+
           <UploadedFiles />
           <ExtendedOpacityGradient />
         </UploadedFilesWrapper>
