@@ -208,7 +208,7 @@ class UserStore {
     try {
       const response = (await this.api.request({
         path: "/api/users",
-        method: "PUT",
+        method: "PATCH",
         body: {
           onboarding_topics_completed: {
             ...this.onboardingTopicsCompleted,
