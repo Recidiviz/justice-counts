@@ -46,7 +46,7 @@ const SettingsContainer = styled.div`
 
 const SettingsFormPanel = styled.div``;
 
-const Form = styled.form`
+const InputWrapper = styled.div`
   display: flex;
   gap: 10px;
 
@@ -93,7 +93,7 @@ const AccountSettings = () => {
             <Title>Account</Title>
           </TitleWrapper>
 
-          <Form>
+          <InputWrapper>
             <TextInput
               persistLabel
               label="Full Name"
@@ -112,7 +112,7 @@ const AccountSettings = () => {
                 debouncedSave(undefined, e.target.value);
               }}
             />
-          </Form>
+          </InputWrapper>
         </SettingsFormPanel>
 
         <UploadedFilesWrapper>
