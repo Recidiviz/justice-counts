@@ -15,15 +15,16 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { when } from "mobx";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Permission } from "../../shared/types";
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
 import downloadIcon from "../assets/download-icon.png";
 import { Badge, BadgeColorMapping, BadgeColors } from "../Badge";
-import { Loading } from "../Loading";
+import { Loader } from "../Loading";
 import { showToast } from "../Toast";
 import {
   ActionButton,
@@ -33,11 +34,10 @@ import {
   ExtendedLabelCell,
   ExtendedLabelRow,
   ExtendedRow,
-  ModalErrorWrapper,
-  ModalLoadingWrapper,
   UploadedFile,
-  UploadedFileAttempt,
   UploadedFilesContainer,
+  UploadedFilesError,
+  UploadedFilesLoading,
   UploadedFilesTable,
   UploadedFileStatus,
 } from ".";
@@ -107,6 +107,14 @@ export const UploadedFileRow: React.FC<{
       uploadedBy,
     } = fileRowDetails;
 
+    useEffect(
+      () => {
+        if (rowHovered) setRowHovered(false);
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [fileRowDetails]
+    );
+
     return (
       <ExtendedRow
         selected={selected}
@@ -128,17 +136,14 @@ export const UploadedFileRow: React.FC<{
 
         {/* Date Uploaded */}
         <ExtendedCell capitalize>
-          <span>{dateUploaded}</span>
+          <span>
+            {uploadedBy} / {dateUploaded}
+          </span>
         </ExtendedCell>
 
         {/* Date Ingested */}
-        <ExtendedCell>
-          <span>{dateIngested}</span>
-        </ExtendedCell>
-
-        {/* System */}
         <ExtendedCell capitalize>
-          <span>{system}</span>
+          <span>{dateIngested}</span>
         </ExtendedCell>
 
         {rowHovered && id && (
@@ -174,35 +179,28 @@ export const UploadedFileRow: React.FC<{
             </ActionButton>
           </ActionsContainer>
         )}
-        {/* Uploaded By */}
-        <ExtendedCell>{uploadedBy}</ExtendedCell>
+
+        <ExtendedCell capitalize>
+          {/* System */}
+          <span>{system}</span>
+        </ExtendedCell>
       </ExtendedRow>
     );
   }
 );
 
-export const UploadedFiles: React.FC<{
-  isLoading: boolean;
-  fetchError: boolean;
-  uploadedFiles: (UploadedFile | UploadedFileAttempt)[];
-  setUploadedFiles: React.Dispatch<
-    React.SetStateAction<(UploadedFileAttempt | UploadedFile)[]>
-  >;
-}> = observer(({ isLoading, fetchError, uploadedFiles, setUploadedFiles }) => {
-  const { reportStore } = useStore();
+export const UploadedFiles: React.FC = observer(() => {
+  const { reportStore, userStore } = useStore();
   const dataUploadColumnTitles = [
     "Filename",
-    "Date Uploaded",
-    "Date Ingested",
+    "Uploaded",
+    "Processed",
     "System",
-    "Uploaded By",
   ];
 
-  const isUploadedFile = (
-    file: UploadedFile | UploadedFileAttempt
-  ): file is UploadedFile => {
-    return (file as UploadedFile).id !== undefined;
-  };
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
   const uploadStatusColorMapping: BadgeColorMapping = {
     UPLOADED: "ORANGE",
@@ -217,43 +215,29 @@ export const UploadedFiles: React.FC<{
     return status;
   };
 
-  const getFileRowDetails = (file: UploadedFile | UploadedFileAttempt) => {
+  const getFileRowDetails = (file: UploadedFile) => {
     const fileStatus = file.status && translateBackendFileStatus(file.status);
 
-    if (isUploadedFile(file)) {
-      const formatDate = (timestamp: number) =>
-        Intl.DateTimeFormat("en-US", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        }).format(timestamp);
+    const formatDate = (timestamp: number) =>
+      Intl.DateTimeFormat("en-US", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      }).format(timestamp);
 
-      return {
-        key: `${file.name}-${file.id}`,
-        id: file.id,
-        selected: !file.status,
-        name: file.name,
-        badgeColor: file.status
-          ? uploadStatusColorMapping[file.status]
-          : "ORANGE",
-        badgeText: fileStatus?.toLowerCase() || "Uploading",
-        dateUploaded: formatDate(file.uploaded_at),
-        dateIngested: file.ingested_at ? formatDate(file.ingested_at) : "--",
-        system: removeSnakeCase(file.system).toLowerCase(),
-        uploadedBy: file.uploaded_by,
-      };
-    }
     return {
-      key: `${file.name}-${file.upload_attempt_timestamp}`,
-      selected: false,
+      key: `${file.name}-${file.id}`,
+      id: file.id,
+      selected: !file.status,
       name: file.name,
       badgeColor: file.status
         ? uploadStatusColorMapping[file.status]
         : "ORANGE",
       badgeText: fileStatus?.toLowerCase() || "Uploading",
-      dateUploaded: "--",
-      dateIngested: "--",
-      uploadedBy: "--",
+      dateUploaded: formatDate(file.uploaded_at),
+      dateIngested: file.ingested_at ? formatDate(file.ingested_at) : "--",
+      system: removeSnakeCase(file.system).toLowerCase(),
+      uploadedBy: file.uploaded_by,
     };
   };
 
@@ -265,9 +249,7 @@ export const UploadedFiles: React.FC<{
     }
 
     return setUploadedFiles((prev) => {
-      const filteredFiles = prev.filter(
-        (file) => (file as UploadedFile).id !== spreadsheetID
-      );
+      const filteredFiles = prev.filter((file) => file.id !== spreadsheetID);
 
       return filteredFiles;
     });
@@ -283,43 +265,63 @@ export const UploadedFiles: React.FC<{
       return showToast(response.message, false, "red");
     }
 
-    return setUploadedFiles((prev) => {
-      const updatedFilesList = prev.map((file) => {
-        if (isUploadedFile(file) && file.id === spreadsheetID) {
-          return { ...file, status };
-        }
-        return file;
-      });
-
-      return updatedFilesList;
-    });
+    return fetchListOfUploadedFiles();
   };
+
+  const fetchListOfUploadedFiles = async () => {
+    const response = (await reportStore.getUploadedFilesList()) as
+      | Response
+      | Error;
+
+    setIsLoading(false);
+
+    if (response instanceof Error) {
+      return setFetchError(true);
+    }
+
+    setFetchError(false);
+
+    const listOfFiles = (await response.json()) as UploadedFile[];
+    setUploadedFiles(listOfFiles);
+  };
+
+  useEffect(
+    () =>
+      // return when's disposer so it is cleaned up if it never runs
+      when(
+        () => userStore.userInfoLoaded,
+        async () => {
+          fetchListOfUploadedFiles();
+        }
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   if (isLoading) {
     return (
-      <ModalLoadingWrapper>
-        <Loading />
-      </ModalLoadingWrapper>
+      <UploadedFilesLoading>
+        <Loader />
+      </UploadedFilesLoading>
     );
   }
 
   if (fetchError) {
     return (
-      <ModalErrorWrapper>
+      <UploadedFilesError>
         Failed to retrieve uploaded files. Please refresh and try again.
-      </ModalErrorWrapper>
+      </UploadedFilesError>
     );
   }
 
   return (
     <UploadedFilesContainer>
+      <ExtendedLabelRow>
+        {dataUploadColumnTitles.map((title) => (
+          <ExtendedLabelCell key={title}>{title}</ExtendedLabelCell>
+        ))}
+      </ExtendedLabelRow>
       <UploadedFilesTable>
-        <ExtendedLabelRow>
-          {dataUploadColumnTitles.map((title) => (
-            <ExtendedLabelCell key={title}>{title}</ExtendedLabelCell>
-          ))}
-        </ExtendedLabelRow>
-
         {uploadedFiles.map((fileDetails) => {
           const fileRowDetails = getFileRowDetails(fileDetails);
 
