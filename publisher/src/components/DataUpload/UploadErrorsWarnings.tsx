@@ -105,7 +105,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
 
             {preIngestErrors && preIngestErrors.length > 0 && (
               <Message>
-                <MetricTitle>Invalid Sheetnames</MetricTitle>
+                <MetricTitle>Other</MetricTitle>
                 {preIngestErrors.map((message) => (
                   <Fragment key={message.title + message.description}>
                     <IconWrapper>
