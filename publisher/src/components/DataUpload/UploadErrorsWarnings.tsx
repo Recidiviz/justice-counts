@@ -61,10 +61,10 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
   const navigate = useNavigate();
   const systemFileName =
     selectedSystem && systemToTemplateSpreadsheetFileName[selectedSystem];
-  const successCount =
+  const successfulMetricsCount =
     errorsWarningsAndSuccessfulMetrics.successfulMetrics.length;
   /** If there are non-metric errors, include them in the error count */
-  const errorCount = nonMetricErrors
+  const errorWarningMetricsCount = nonMetricErrors
     ? errorsWarningsAndSuccessfulMetrics.errorWarningMetrics.length +
       nonMetricErrors?.length
     : errorsWarningsAndSuccessfulMetrics.errorWarningMetrics.length;
@@ -73,9 +73,9 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
     return (
       <>
         {/* Errors */}
-        {errorCount > 0 && (
+        {errorWarningMetricsCount > 0 && (
           <>
-            <SectionHeader>Errors</SectionHeader>
+            <SectionHeader>Errors/Warnings</SectionHeader>
             {errorsWarningsAndSuccessfulMetrics.errorWarningMetrics.map(
               (metric) => (
                 <Message key={metric.display_name}>
@@ -142,7 +142,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
         )}
 
         {/* Successful Metrics */}
-        {successCount > 0 && (
+        {successfulMetricsCount > 0 && (
           <>
             <SectionHeader>Successes</SectionHeader>
             {errorsWarningsAndSuccessfulMetrics.successfulMetrics.map(
@@ -164,20 +164,24 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
   const renderErrorWarningTitle = () => {
     return (
       <>
-        {errorCount === 0 && (
+        {errorWarningMetricsCount === 0 && (
           <>
-            <BlueText>{successCount}</BlueText> metric
-            {successCount === 0 || successCount > 1 ? "s" : ""} were uploaded
-            successfully.
+            <BlueText>{successfulMetricsCount}</BlueText> metric
+            {successfulMetricsCount === 0 || successfulMetricsCount > 1
+              ? "s"
+              : ""}{" "}
+            were uploaded successfully.
           </>
         )}
-        {errorCount > 0 && (
+        {errorWarningMetricsCount > 0 && (
           <>
-            <RedText>{errorCount}</RedText> metric
-            {errorCount > 1 ? "s" : ""} require your attention, and{" "}
-            <BlueText>{successCount}</BlueText> metric
-            {successCount === 0 || successCount > 1 ? "s" : ""} were uploaded
-            successfully.
+            <RedText>{errorWarningMetricsCount}</RedText> metric
+            {errorWarningMetricsCount > 1 ? "s" : ""} require your attention,
+            and <BlueText>{successfulMetricsCount}</BlueText> metric
+            {successfulMetricsCount === 0 || successfulMetricsCount > 1
+              ? "s"
+              : ""}{" "}
+            were uploaded successfully.
           </>
         )}
       </>
@@ -197,7 +201,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
           download example
         </a>
         )
-        {errorCount > 0
+        {errorWarningMetricsCount > 0
           ? `. To continue, please resolve the errors in your file and
               reupload.`
           : `, but we did our best to resolve them. Please review the
