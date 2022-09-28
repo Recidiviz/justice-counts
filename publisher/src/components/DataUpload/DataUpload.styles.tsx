@@ -409,7 +409,9 @@ export const MessagesContainer = styled.div`
   margin-top: 19px;
 `;
 
-export const Message = styled.div``;
+export const Message = styled.div`
+  border-top: 1px solid ${palette.highlight.grey4};
+`;
 
 export const SectionHeader = styled.div`
   ${typography.sizeCSS.title};
@@ -424,7 +426,6 @@ export const MetricTitle = styled.div`
   ${typography.sizeCSS.large};
   display: flex;
   align-items: center;
-  border-top: 1px solid ${palette.highlight.grey4};
   padding: 16px 0;
 `;
 

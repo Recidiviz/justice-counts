@@ -91,7 +91,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
                         )}
 
                         {sheet.messages?.map((message) => (
-                          <>
+                          <Fragment key={message.title + message.description}>
                             <IconWrapper>
                               {message.type === "ERROR" ? (
                                 <ErrorIcon />
@@ -109,7 +109,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
                             <MessageDescription>
                               {message.description}
                             </MessageDescription>
-                          </>
+                          </Fragment>
                         ))}
                       </Fragment>
                     ))}
@@ -119,7 +119,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
 
             {nonMetricErrors && nonMetricErrors.length > 0 && (
               <Message>
-                <MetricTitle>Invalid Sheetnames</MetricTitle>
+                <SheetTitle />
                 {nonMetricErrors.map((message) => (
                   <Fragment key={message.title + message.description}>
                     <IconWrapper>
