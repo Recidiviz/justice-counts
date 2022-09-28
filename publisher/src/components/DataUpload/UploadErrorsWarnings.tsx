@@ -39,6 +39,7 @@ import {
   MetricTitle,
   RedText,
   SectionHeader,
+  SheetTitle,
   systemToTemplateSpreadsheetFileName,
   Title,
   Wrapper,
@@ -55,17 +56,18 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
   selectedSystem,
   resetToNewUpload,
 }) => {
-  const { metrics, errorSheetsAndSuccessfulMetrics, preIngestErrors } =
+  const { metrics, errorsWarningsAndSuccessfulMetrics, nonMetricErrors } =
     errorsWarningsMetrics;
   const navigate = useNavigate();
   const systemFileName =
     selectedSystem && systemToTemplateSpreadsheetFileName[selectedSystem];
-  const successCount = errorSheetsAndSuccessfulMetrics.successfulMetrics.length;
+  const successCount =
+    errorsWarningsAndSuccessfulMetrics.successfulMetrics.length;
   /** If there are pre-ingest errors, include them in the error count */
-  const errorCount = preIngestErrors
-    ? errorSheetsAndSuccessfulMetrics.errorSheets.length +
-      preIngestErrors?.length
-    : errorSheetsAndSuccessfulMetrics.errorSheets.length;
+  const errorCount = nonMetricErrors
+    ? errorsWarningsAndSuccessfulMetrics.errorWarningMetrics.length +
+      nonMetricErrors?.length
+    : errorsWarningsAndSuccessfulMetrics.errorWarningMetrics.length;
 
   const renderMessages = () => {
     return (
@@ -74,39 +76,49 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
         {errorCount > 0 && (
           <>
             <SectionHeader>Errors</SectionHeader>
-            {errorSheetsAndSuccessfulMetrics.errorSheets.map((sheet) => (
-              <Message key={sheet.display_name + sheet.sheet_name}>
-                <MetricTitle>
-                  {sheet.display_name} <span>{sheet.sheet_name}</span>
-                </MetricTitle>
+            {errorsWarningsAndSuccessfulMetrics.errorWarningMetrics.map(
+              (metric) => (
+                <Message key={metric.display_name}>
+                  <MetricTitle>{metric.display_name}</MetricTitle>
 
-                {sheet.display_name &&
-                  sheet.messages.map((message) => (
-                    <Fragment key={message.title + message.description}>
-                      <IconWrapper>
-                        {message.type === "ERROR" ? (
-                          <ErrorIcon />
-                        ) : (
-                          <WarningIcon />
-                        )}
+                  {metric.display_name &&
+                    metric.metric_errors.map((sheet) => (
+                      <Fragment key={sheet.display_name}>
+                        <SheetTitle>
+                          {sheet.display_name} <span>{sheet.sheet_name}</span>
+                        </SheetTitle>
 
-                        <MessageBody>
-                          <MessageTitle>{message.title}</MessageTitle>
-                          <MessageSubtitle>{message.subtitle}</MessageSubtitle>
-                        </MessageBody>
-                      </IconWrapper>
-                      <MessageDescription>
-                        {message.description}
-                      </MessageDescription>
-                    </Fragment>
-                  ))}
-              </Message>
-            ))}
+                        {sheet.messages?.map((message) => (
+                          <>
+                            <IconWrapper>
+                              {message.type === "ERROR" ? (
+                                <ErrorIcon />
+                              ) : (
+                                <WarningIcon />
+                              )}
 
-            {preIngestErrors && preIngestErrors.length > 0 && (
+                              <MessageBody>
+                                <MessageTitle>{message.title}</MessageTitle>
+                                <MessageSubtitle>
+                                  {message.subtitle}
+                                </MessageSubtitle>
+                              </MessageBody>
+                            </IconWrapper>
+                            <MessageDescription>
+                              {message.description}
+                            </MessageDescription>
+                          </>
+                        ))}
+                      </Fragment>
+                    ))}
+                </Message>
+              )
+            )}
+
+            {nonMetricErrors && nonMetricErrors.length > 0 && (
               <Message>
-                <MetricTitle>Other</MetricTitle>
-                {preIngestErrors.map((message) => (
+                <MetricTitle>Invalid Sheetnames</MetricTitle>
+                {nonMetricErrors.map((message) => (
                   <Fragment key={message.title + message.description}>
                     <IconWrapper>
                       {message.type === "ERROR" ? (
@@ -134,40 +146,16 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
         {successCount > 0 && (
           <>
             <SectionHeader>Successes</SectionHeader>
-            {errorSheetsAndSuccessfulMetrics.successfulMetrics.map((metric) => (
-              <Message key={metric.key}>
-                <MetricTitle>
-                  <CheckIcon src={checkIcon} alt="" />
-                  {metric.display_name}
-                </MetricTitle>
-
-                {metric.sheets.map((sheet) => (
-                  <Fragment key={sheet.display_name + sheet.sheet_name}>
-                    {sheet.messages.map((message) => (
-                      <Fragment key={message.title + message.description}>
-                        <IconWrapper>
-                          {message.type === "ERROR" ? (
-                            <ErrorIcon />
-                          ) : (
-                            <WarningIcon />
-                          )}
-
-                          <MessageBody>
-                            <MessageTitle>{message.title}</MessageTitle>
-                            <MessageSubtitle>
-                              {message.subtitle}
-                            </MessageSubtitle>
-                          </MessageBody>
-                        </IconWrapper>
-                        <MessageDescription>
-                          {message.description}
-                        </MessageDescription>
-                      </Fragment>
-                    ))}
-                  </Fragment>
-                ))}
-              </Message>
-            ))}
+            {errorsWarningsAndSuccessfulMetrics.successfulMetrics.map(
+              (metric) => (
+                <Message key={metric.key}>
+                  <MetricTitle>
+                    <CheckIcon src={checkIcon} alt="" />
+                    {metric.display_name}
+                  </MetricTitle>
+                </Message>
+              )
+            )}
           </>
         )}
       </>

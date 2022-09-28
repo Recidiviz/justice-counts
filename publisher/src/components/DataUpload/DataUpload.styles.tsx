@@ -426,6 +426,12 @@ export const MetricTitle = styled.div`
   align-items: center;
   border-top: 1px solid ${palette.highlight.grey4};
   padding: 16px 0;
+`;
+
+export const SheetTitle = styled.div`
+  ${typography.sizeCSS.medium};
+  font-size: ${rem("22px")};
+  padding: 0px 0 16px 0;
 
   span {
     ${typography.sizeCSS.normal};
