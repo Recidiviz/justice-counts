@@ -166,7 +166,7 @@ export const DataUpload: React.FC = observer(() => {
      * @example: user uploads an excel file that contains a sheet not associated
      * with a metric.
      */
-    if (data.non_metric_errors) {
+    if (data.non_metric_errors && data.non_metric_errors.length > 0) {
       return {
         errorsWarningsAndSuccessfulMetrics,
         metrics: data.metrics,
