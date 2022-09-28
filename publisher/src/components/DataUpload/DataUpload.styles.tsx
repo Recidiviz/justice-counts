@@ -440,7 +440,6 @@ export const SheetTitle = styled.div`
     padding: 2px 10px;
     border: 1px solid ${palette.highlight.grey5};
     border-radius: 2px;
-    margin-left: 10px;
   }
 `;
 
@@ -449,12 +448,18 @@ export const IconWrapper = styled.div`
   align-items: center;
   gap: 5px;
 `;
+
 export const MessageBody = styled.div`
   ${typography.sizeCSS.medium};
   width: 100%;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  gap: 5px;
+
+  svg {
+    position: relative;
+    top: 12px;
+  }
 `;
 
 export const MessageTitle = styled.div`
@@ -467,6 +472,7 @@ export const MessageSubtitle = styled.div`
 
 export const MessageDescription = styled.div`
   ${typography.sizeCSS.normal};
+  width: 100%;
   margin: 8px 0 13px 0;
 `;
 
