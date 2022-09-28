@@ -15,7 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
+import { debounce as _debounce } from "lodash";
+import React, { useRef } from "react";
 import styled from "styled-components/macro";
 
 import {
@@ -23,7 +24,7 @@ import {
   UploadedFiles,
   UploadedFilesWrapper,
 } from "../components/DataUpload";
-import { Button, TextInput, Title, TitleWrapper } from "../components/Forms";
+import { TextInput, Title, TitleWrapper } from "../components/Forms";
 import { typography } from "../components/GlobalStyles";
 import { useStore } from "../stores";
 
@@ -44,13 +45,6 @@ const SettingsContainer = styled.div`
 `;
 
 const SettingsFormPanel = styled.div``;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  flex: 1 1 auto;
-  justify-content: flex-end;
-  gap: 10px;
-`;
 
 const InputWrapper = styled.div`
   display: flex;
@@ -78,6 +72,17 @@ const AccountSettings = () => {
   const [email, setEmail] = React.useState<string>(userStore?.email || "");
   const [name, setName] = React.useState<string>(userStore?.name || "");
 
+  const saveNameEmailChange = (nameUpdate?: string, emailUpdate?: string) => {
+    if (nameUpdate) {
+      return userStore.updateUserNameAndEmail(nameUpdate, email);
+    }
+    if (emailUpdate) {
+      return userStore.updateUserNameAndEmail(name, emailUpdate);
+    }
+  };
+
+  const debouncedSave = useRef(_debounce(saveNameEmailChange, 1500)).current;
+
   return (
     <SettingsContainer>
       <SettingsTitle>Settings</SettingsTitle>
@@ -93,25 +98,21 @@ const AccountSettings = () => {
               persistLabel
               label="Full Name"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                debouncedSave(e.target.value, undefined);
+              }}
             />
             <TextInput
               persistLabel
               label="Email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                debouncedSave(undefined, e.target.value);
+              }}
             />
           </InputWrapper>
-
-          <ButtonWrapper>
-            <Button
-              onClick={() => {
-                userStore.updateUserNameAndEmail(name, email);
-              }}
-            >
-              Save
-            </Button>
-          </ButtonWrapper>
         </SettingsFormPanel>
 
         <UploadedFilesWrapper>
