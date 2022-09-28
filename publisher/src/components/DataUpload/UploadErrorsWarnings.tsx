@@ -63,7 +63,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
     selectedSystem && systemToTemplateSpreadsheetFileName[selectedSystem];
   const successCount =
     errorsWarningsAndSuccessfulMetrics.successfulMetrics.length;
-  /** If there are pre-ingest errors, include them in the error count */
+  /** If there are non-metric errors, include them in the error count */
   const errorCount = nonMetricErrors
     ? errorsWarningsAndSuccessfulMetrics.errorWarningMetrics.length +
       nonMetricErrors?.length
@@ -84,9 +84,11 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
                   {metric.display_name &&
                     metric.metric_errors.map((sheet) => (
                       <Fragment key={sheet.display_name}>
-                        <SheetTitle>
-                          {sheet.display_name} <span>{sheet.sheet_name}</span>
-                        </SheetTitle>
+                        {sheet.display_name && (
+                          <SheetTitle>
+                            {sheet.display_name} <span>{sheet.sheet_name}</span>
+                          </SheetTitle>
+                        )}
 
                         {sheet.messages?.map((message) => (
                           <>
@@ -174,9 +176,9 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
         )}
         {errorCount > 0 && (
           <>
-            We found <RedText>{errorCount}</RedText> error
-            {errorCount > 1 ? "s" : ""}, and <BlueText>{successCount}</BlueText>{" "}
-            metric
+            <RedText>{errorCount}</RedText> metric
+            {errorCount > 1 ? "s" : ""} require your attention, and{" "}
+            <BlueText>{successCount}</BlueText> metric
             {successCount === 0 || successCount > 1 ? "s" : ""} were uploaded
             successfully.
           </>
