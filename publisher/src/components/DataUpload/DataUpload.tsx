@@ -126,7 +126,9 @@ export const DataUpload: React.FC = observer(() => {
         (errorsWarningsAndMetrics.nonMetricErrors &&
           errorsWarningsAndMetrics.nonMetricErrors.length > 0) ||
         errorsWarningsAndMetrics.errorsWarningsAndSuccessfulMetrics
-          .errorWarningMetrics.length > 0;
+          .errorWarningMetrics.length > 0 ||
+        errorsWarningsAndMetrics.errorsWarningsAndSuccessfulMetrics.hasWarnings;
+
       setIsLoading(false);
 
       if (hasErrorsOrWarnings) {
@@ -153,6 +155,18 @@ export const DataUpload: React.FC = observer(() => {
         const isSuccessfulMetric =
           metric.metric_errors.length === 0 || noSheetErrorsFound;
 
+        /**
+         * If there are no errors and only warnings, we still want to show the
+         * error/warning page so users can review the warnings (that now appear in the success section).
+         */
+        metric.metric_errors.forEach((sheet) =>
+          sheet.messages.forEach((msg) => {
+            if (msg.type === "WARNING" && !acc.hasWarnings) {
+              acc.hasWarnings = true;
+            }
+          })
+        );
+
         if (isSuccessfulMetric) {
           acc.successfulMetrics.push(metric);
         } else {
@@ -164,6 +178,7 @@ export const DataUpload: React.FC = observer(() => {
       {
         successfulMetrics: [] as UploadedMetric[],
         errorWarningMetrics: [] as UploadedMetric[],
+        hasWarnings: false,
       }
     );
 

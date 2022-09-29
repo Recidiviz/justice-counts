@@ -47,6 +47,7 @@ export type ErrorsWarningsMetrics = {
   errorsWarningsAndSuccessfulMetrics: {
     successfulMetrics: UploadedMetric[];
     errorWarningMetrics: UploadedMetric[];
+    hasWarnings: boolean;
   };
   nonMetricErrors?: ErrorWarningMessage[];
 };
