@@ -81,38 +81,37 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
                 <Message key={metric.display_name}>
                   <MetricTitle>{metric.display_name}</MetricTitle>
 
-                  {metric.display_name &&
-                    metric.metric_errors.map((sheet) => (
-                      <Fragment key={sheet.display_name}>
-                        {sheet.display_name && (
-                          <SheetTitle>
-                            <span>{sheet.sheet_name}</span>
-                          </SheetTitle>
-                        )}
+                  {metric.metric_errors.map((sheet) => (
+                    <Fragment key={sheet.display_name}>
+                      {sheet.display_name && (
+                        <SheetTitle>
+                          <span>{sheet.sheet_name}</span>
+                        </SheetTitle>
+                      )}
 
-                        {sheet.messages?.map((message) => (
-                          <Fragment key={message.title + message.description}>
-                            <IconWrapper>
-                              {message.type === "ERROR" ? (
-                                <ErrorIcon />
-                              ) : (
-                                <WarningIcon />
-                              )}
+                      {sheet.messages?.map((message) => (
+                        <Fragment key={message.title + message.description}>
+                          <IconWrapper>
+                            {message.type === "ERROR" ? (
+                              <ErrorIcon />
+                            ) : (
+                              <WarningIcon />
+                            )}
 
-                              <MessageBody>
-                                <MessageTitle>{message.title}</MessageTitle>
-                                <MessageSubtitle>
-                                  {message.subtitle}
-                                </MessageSubtitle>
-                              </MessageBody>
-                            </IconWrapper>
-                            <MessageDescription>
-                              {message.description}
-                            </MessageDescription>
-                          </Fragment>
-                        ))}
-                      </Fragment>
-                    ))}
+                            <MessageBody>
+                              <MessageTitle>{message.title}</MessageTitle>
+                              <MessageSubtitle>
+                                {message.subtitle}
+                              </MessageSubtitle>
+                            </MessageBody>
+                          </IconWrapper>
+                          <MessageDescription>
+                            {message.description}
+                          </MessageDescription>
+                        </Fragment>
+                      ))}
+                    </Fragment>
+                  ))}
                 </Message>
               )
             )}
