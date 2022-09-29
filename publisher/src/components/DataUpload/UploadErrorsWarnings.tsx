@@ -72,6 +72,10 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
       nonMetricErrors?.length
     : errorsWarningsAndSuccessfulMetrics.errorWarningMetrics.length;
 
+  /**
+   * Metric-Level errors contain a null value for `display_name` and `sheet_name`
+   * because they are associated with the overall metric and not a specific excel sheet.
+   */
   const sortMetricLevelErrorsBeforeSheetLevelErrors = (a: MetricErrors) =>
     !a.display_name ? -1 : 1;
   const sortErrorsBeforeWarnings = (a: ErrorWarningMessage) =>
