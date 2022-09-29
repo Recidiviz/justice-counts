@@ -119,7 +119,7 @@ export const DataUpload: React.FC = observer(() => {
       }
 
       /** Errors and/or Warnings Encountered During Upload -- Show Interstitial instead of Confirmation Page */
-      const data = await response?.json();
+      const data: DataUploadResponseBody = await response?.json();
 
       const errorsWarningsAndMetrics = processUploadResponseBody(data);
       const hasErrorsOrWarnings =

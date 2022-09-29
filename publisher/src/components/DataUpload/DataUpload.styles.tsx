@@ -433,14 +433,6 @@ export const SheetTitle = styled.div`
   ${typography.sizeCSS.medium};
   font-size: ${rem("22px")};
   padding: 0px 0 16px 0;
-
-  span {
-    ${typography.sizeCSS.normal};
-    color: ${palette.highlight.grey9};
-    padding: 2px 10px;
-    border: 1px solid ${palette.highlight.grey5};
-    border-radius: 2px;
-  }
 `;
 
 export const IconWrapper = styled.div`
@@ -464,6 +456,14 @@ export const MessageBody = styled.div`
 
 export const MessageTitle = styled.div`
   display: block;
+
+  span {
+    ${typography.sizeCSS.normal};
+    color: ${palette.highlight.grey9};
+    padding: 2px 10px;
+    border: 1px solid ${palette.highlight.grey5};
+    border-radius: 2px;
+  }
 `;
 
 export const MessageSubtitle = styled.div`

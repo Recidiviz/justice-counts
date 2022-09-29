@@ -39,7 +39,6 @@ import {
   MetricTitle,
   RedText,
   SectionHeader,
-  SheetTitle,
   systemToTemplateSpreadsheetFileName,
   Title,
   Wrapper,
@@ -75,7 +74,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
         {/* Errors */}
         {errorWarningMetricsCount > 0 && (
           <>
-            <SectionHeader>Errors/Warnings</SectionHeader>
+            <SectionHeader>Alerts</SectionHeader>
             {errorsWarningsAndSuccessfulMetrics.errorWarningMetrics.map(
               (metric) => (
                 <Message key={metric.display_name}>
@@ -83,12 +82,6 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
 
                   {metric.metric_errors.map((sheet) => (
                     <Fragment key={sheet.display_name}>
-                      {sheet.display_name && (
-                        <SheetTitle>
-                          <span>{sheet.sheet_name}</span>
-                        </SheetTitle>
-                      )}
-
                       {sheet.messages?.map((message) => (
                         <Fragment key={message.title + message.description}>
                           <IconWrapper>
@@ -99,7 +92,12 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
                             )}
 
                             <MessageBody>
-                              <MessageTitle>{message.title}</MessageTitle>
+                              <MessageTitle>
+                                {message.title}{" "}
+                                {sheet.display_name && (
+                                  <span>{sheet.sheet_name}</span>
+                                )}
+                              </MessageTitle>
                               <MessageSubtitle>
                                 {message.subtitle}
                               </MessageSubtitle>
