@@ -145,7 +145,13 @@ export const DataUpload: React.FC = observer(() => {
   ): ErrorsWarningsMetrics => {
     const errorsWarningsAndSuccessfulMetrics = data.metrics.reduce(
       (acc, metric) => {
-        const isSuccessfulMetric = metric.metric_errors.length === 0;
+        const noSheetErrorsFound =
+          metric.metric_errors.filter(
+            (sheet) =>
+              sheet.messages.filter((msg) => msg.type === "ERROR")?.length > 0
+          ).length === 0;
+        const isSuccessfulMetric =
+          metric.metric_errors.length === 0 || noSheetErrorsFound;
 
         if (isSuccessfulMetric) {
           acc.successfulMetrics.push(metric);

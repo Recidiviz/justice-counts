@@ -43,7 +43,11 @@ import {
   Title,
   Wrapper,
 } from ".";
-import { ErrorsWarningsMetrics } from "./types";
+import {
+  ErrorsWarningsMetrics,
+  ErrorWarningMessage,
+  MetricErrors,
+} from "./types";
 
 type UploadErrorsWarningsProps = {
   errorsWarningsMetrics: ErrorsWarningsMetrics;
@@ -68,6 +72,11 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
       nonMetricErrors?.length
     : errorsWarningsAndSuccessfulMetrics.errorWarningMetrics.length;
 
+  const sortMetricLevelErrorsBeforeSheetLevelErrors = (a: MetricErrors) =>
+    !a.display_name ? -1 : 1;
+  const sortErrorsBeforeWarnings = (a: ErrorWarningMessage) =>
+    a.type === "ERROR" ? -1 : 1;
+
   const renderMessages = () => {
     return (
       <>
@@ -80,36 +89,40 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
                 <Message key={metric.display_name}>
                   <MetricTitle>{metric.display_name}</MetricTitle>
 
-                  {metric.metric_errors.map((sheet) => (
-                    <Fragment key={sheet.display_name}>
-                      {sheet.messages?.map((message) => (
-                        <Fragment key={message.title + message.description}>
-                          <IconWrapper>
-                            {message.type === "ERROR" ? (
-                              <ErrorIcon />
-                            ) : (
-                              <WarningIcon />
-                            )}
-
-                            <MessageBody>
-                              <MessageTitle>
-                                {message.title}{" "}
-                                {sheet.display_name && (
-                                  <span>{sheet.sheet_name}</span>
+                  {metric.metric_errors
+                    .sort(sortMetricLevelErrorsBeforeSheetLevelErrors)
+                    .map((sheet) => (
+                      <Fragment key={sheet.display_name}>
+                        {sheet.messages
+                          ?.sort(sortErrorsBeforeWarnings)
+                          .map((message) => (
+                            <Fragment key={message.title + message.description}>
+                              <IconWrapper>
+                                {message.type === "ERROR" ? (
+                                  <ErrorIcon />
+                                ) : (
+                                  <WarningIcon />
                                 )}
-                              </MessageTitle>
-                              <MessageSubtitle>
-                                {message.subtitle}
-                              </MessageSubtitle>
-                            </MessageBody>
-                          </IconWrapper>
-                          <MessageDescription>
-                            {message.description}
-                          </MessageDescription>
-                        </Fragment>
-                      ))}
-                    </Fragment>
-                  ))}
+
+                                <MessageBody>
+                                  <MessageTitle>
+                                    {message.title}{" "}
+                                    {sheet.display_name && (
+                                      <span>{sheet.sheet_name}</span>
+                                    )}
+                                  </MessageTitle>
+                                  <MessageSubtitle>
+                                    {message.subtitle}
+                                  </MessageSubtitle>
+                                </MessageBody>
+                              </IconWrapper>
+                              <MessageDescription>
+                                {message.description}
+                              </MessageDescription>
+                            </Fragment>
+                          ))}
+                      </Fragment>
+                    ))}
                 </Message>
               )
             )}
@@ -149,6 +162,32 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
                     <CheckIcon src={checkIcon} alt="" />
                     {metric.display_name}
                   </MetricTitle>
+
+                  {metric.metric_errors.map((sheet) => (
+                    <Fragment key={sheet.display_name + sheet.sheet_name}>
+                      {sheet.messages.map((message) => (
+                        <Fragment key={message.title + message.description}>
+                          <IconWrapper>
+                            {message.type === "ERROR" ? (
+                              <ErrorIcon />
+                            ) : (
+                              <WarningIcon />
+                            )}
+
+                            <MessageBody>
+                              <MessageTitle>{message.title}</MessageTitle>
+                              <MessageSubtitle>
+                                {message.subtitle}
+                              </MessageSubtitle>
+                            </MessageBody>
+                          </IconWrapper>
+                          <MessageDescription>
+                            {message.description}
+                          </MessageDescription>
+                        </Fragment>
+                      ))}
+                    </Fragment>
+                  ))}
                 </Message>
               )
             )}
