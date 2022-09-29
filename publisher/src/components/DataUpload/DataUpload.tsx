@@ -275,7 +275,7 @@ export const DataUpload: React.FC = observer(() => {
           type={selectedFile || errorsWarningsMetrics ? "red" : "light-border"}
           onClick={() => navigate(-1)}
         >
-          Cancel
+          {selectedFile || errorsWarningsMetrics ? "Close" : "Cancel"}
         </Button>
       </DataUploadHeader>
 
