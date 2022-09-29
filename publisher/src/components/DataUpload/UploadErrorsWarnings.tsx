@@ -216,12 +216,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
         {errorWarningMetricsCount > 0 && (
           <>
             <RedText>{errorWarningMetricsCount}</RedText> metric
-            {errorWarningMetricsCount > 1 ? "s" : ""} require your attention,
-            and <BlueText>{successfulMetricsCount}</BlueText> metric
-            {successfulMetricsCount === 0 || successfulMetricsCount > 1
-              ? "s"
-              : ""}{" "}
-            were uploaded successfully.
+            {errorWarningMetricsCount > 1 ? "s" : ""} require your attention.
           </>
         )}
       </>
