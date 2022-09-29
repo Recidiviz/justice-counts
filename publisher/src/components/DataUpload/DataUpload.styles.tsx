@@ -409,7 +409,9 @@ export const MessagesContainer = styled.div`
   margin-top: 19px;
 `;
 
-export const Message = styled.div``;
+export const Message = styled.div`
+  border-top: 1px solid ${palette.highlight.grey4};
+`;
 
 export const SectionHeader = styled.div`
   ${typography.sizeCSS.title};
@@ -424,17 +426,13 @@ export const MetricTitle = styled.div`
   ${typography.sizeCSS.large};
   display: flex;
   align-items: center;
-  border-top: 1px solid ${palette.highlight.grey4};
   padding: 16px 0;
+`;
 
-  span {
-    ${typography.sizeCSS.normal};
-    color: ${palette.highlight.grey9};
-    padding: 2px 10px;
-    border: 1px solid ${palette.highlight.grey5};
-    border-radius: 2px;
-    margin-left: 10px;
-  }
+export const SheetTitle = styled.div`
+  ${typography.sizeCSS.medium};
+  font-size: ${rem("22px")};
+  padding: 0px 0 16px 0;
 `;
 
 export const IconWrapper = styled.div`
@@ -442,16 +440,30 @@ export const IconWrapper = styled.div`
   align-items: center;
   gap: 5px;
 `;
+
 export const MessageBody = styled.div`
   ${typography.sizeCSS.medium};
   width: 100%;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  gap: 5px;
+
+  svg {
+    position: relative;
+    top: 12px;
+  }
 `;
 
 export const MessageTitle = styled.div`
   display: block;
+
+  span {
+    ${typography.sizeCSS.normal};
+    color: ${palette.highlight.grey9};
+    padding: 2px 10px;
+    border: 1px solid ${palette.highlight.grey5};
+    border-radius: 2px;
+  }
 `;
 
 export const MessageSubtitle = styled.div`
@@ -460,6 +472,7 @@ export const MessageSubtitle = styled.div`
 
 export const MessageDescription = styled.div`
   ${typography.sizeCSS.normal};
+  width: 100%;
   margin: 8px 0 13px 0;
 `;
 

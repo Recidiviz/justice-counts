@@ -19,15 +19,16 @@ import { RawDatapoint } from "../../shared/types";
 
 export interface DataUploadResponseBody {
   metrics: UploadedMetric[];
-  pre_ingest_errors?: ErrorWarningMessage[];
+  non_metric_errors?: ErrorWarningMessage[];
 }
 
 export interface UploadedMetric {
   datapoints: RawDatapoint[];
   display_name: string;
   key: string;
-  sheets: MetricErrors[];
+  metric_errors: MetricErrors[];
 }
+
 export type ErrorWarningMessage = {
   title: string;
   subtitle: string;
@@ -43,10 +44,10 @@ export type MetricErrors = {
 
 export type ErrorsWarningsMetrics = {
   metrics: UploadedMetric[];
-  errorSheetsAndSuccessfulMetrics: {
+  errorsWarningsAndSuccessfulMetrics: {
     successfulMetrics: UploadedMetric[];
-    errorSheets: MetricErrors[];
+    errorWarningMetrics: UploadedMetric[];
     hasWarnings: boolean;
   };
-  preIngestErrors?: ErrorWarningMessage[];
+  nonMetricErrors?: ErrorWarningMessage[];
 };

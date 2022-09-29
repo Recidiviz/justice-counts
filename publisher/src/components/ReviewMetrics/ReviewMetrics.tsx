@@ -332,9 +332,9 @@ const ReviewMetrics: React.FC = observer(() => {
         <Subheading>
           {filteredMetrics.length > 0 ? (
             <>
-              Your data has been successfully uploaded. Take a moment to review
-              the changes. If you believe there is an error, please contact the
-              Justice Counts team via{" "}
+              The following data has been successfully uploaded. Take a moment
+              to review the changes. If you believe there is an error, please
+              contact the Justice Counts team via{" "}
               <a href="mailto:support@justice-counts.org">
                 support@justicecounts.org
               </a>

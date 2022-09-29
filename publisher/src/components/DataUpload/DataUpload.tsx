@@ -38,7 +38,6 @@ import {
 import {
   DataUploadResponseBody,
   ErrorsWarningsMetrics,
-  MetricErrors,
   UploadedMetric,
 } from "./types";
 import { UploadErrorsWarnings } from "./UploadErrorsWarnings";
@@ -120,15 +119,16 @@ export const DataUpload: React.FC = observer(() => {
       }
 
       /** Errors and/or Warnings Encountered During Upload -- Show Interstitial instead of Confirmation Page */
-      const data = await response?.json();
+      const data: DataUploadResponseBody = await response?.json();
 
       const errorsWarningsAndMetrics = processUploadResponseBody(data);
       const hasErrorsOrWarnings =
-        (errorsWarningsAndMetrics.preIngestErrors &&
-          errorsWarningsAndMetrics.preIngestErrors.length > 0) ||
-        errorsWarningsAndMetrics.errorSheetsAndSuccessfulMetrics.errorSheets
-          .length > 0 ||
-        errorsWarningsAndMetrics.errorSheetsAndSuccessfulMetrics.hasWarnings;
+        (errorsWarningsAndMetrics.nonMetricErrors &&
+          errorsWarningsAndMetrics.nonMetricErrors.length > 0) ||
+        errorsWarningsAndMetrics.errorsWarningsAndSuccessfulMetrics
+          .errorWarningMetrics.length > 0 ||
+        errorsWarningsAndMetrics.errorsWarningsAndSuccessfulMetrics.hasWarnings;
+
       setIsLoading(false);
 
       if (hasErrorsOrWarnings) {
@@ -145,56 +145,57 @@ export const DataUpload: React.FC = observer(() => {
   const processUploadResponseBody = (
     data: DataUploadResponseBody
   ): ErrorsWarningsMetrics => {
-    const errorSheetsAndSuccessfulMetrics = data.metrics.reduce(
+    const errorsWarningsAndSuccessfulMetrics = data.metrics.reduce(
       (acc, metric) => {
-        /**
-         * Peek into the `messages` array to look for any error messages within
-         * the sheet and return `true` if no errors are found
-         */
-        const noErrorsInCurrentSheet =
-          metric.sheets.filter(
+        const noSheetErrorsFound =
+          metric.metric_errors.filter(
             (sheet) =>
-              sheet.messages.filter((msg) => msg.type === "ERROR").length > 0
+              sheet.messages.filter((msg) => msg.type === "ERROR")?.length > 0
           ).length === 0;
+        const isSuccessfulMetric =
+          metric.metric_errors.length === 0 || noSheetErrorsFound;
 
-        if (metric.sheets.length === 0 || noErrorsInCurrentSheet) {
-          acc.successfulMetrics.push(metric);
-        }
-
-        metric.sheets.forEach((sheet) => {
-          sheet.messages.forEach((message) => {
-            if (message.type === "ERROR") {
-              acc.errorSheets.push(sheet);
-            }
-            if (message.type === "WARNING" && acc.hasWarnings === false) {
+        /**
+         * If there are no errors and only warnings, we still want to show the
+         * error/warning page so users can review the warnings (that now appear in the success section).
+         */
+        metric.metric_errors.forEach((sheet) =>
+          sheet.messages.forEach((msg) => {
+            if (msg.type === "WARNING" && !acc.hasWarnings) {
               acc.hasWarnings = true;
             }
-          });
-        });
+          })
+        );
+
+        if (isSuccessfulMetric) {
+          acc.successfulMetrics.push(metric);
+        } else {
+          acc.errorWarningMetrics.push(metric);
+        }
 
         return acc;
       },
       {
         successfulMetrics: [] as UploadedMetric[],
-        errorSheets: [] as MetricErrors[],
+        errorWarningMetrics: [] as UploadedMetric[],
         hasWarnings: false,
       }
     );
 
     /**
-     * Pre-Ingest errors: errors that are not associated with a metric.
+     * Non-metric errors: errors that are not associated with a metric.
      * @example: user uploads an excel file that contains a sheet not associated
      * with a metric.
      */
-    if (data.pre_ingest_errors) {
+    if (data.non_metric_errors && data.non_metric_errors.length > 0) {
       return {
-        errorSheetsAndSuccessfulMetrics,
+        errorsWarningsAndSuccessfulMetrics,
         metrics: data.metrics,
-        preIngestErrors: data.pre_ingest_errors,
+        nonMetricErrors: data.non_metric_errors,
       };
     }
 
-    return { errorSheetsAndSuccessfulMetrics, metrics: data.metrics };
+    return { errorsWarningsAndSuccessfulMetrics, metrics: data.metrics };
   };
 
   const handleSystemSelection = (file: File, system: AgencySystems) => {
@@ -289,7 +290,7 @@ export const DataUpload: React.FC = observer(() => {
           type={selectedFile || errorsWarningsMetrics ? "red" : "light-border"}
           onClick={() => navigate(-1)}
         >
-          Cancel
+          {selectedFile || errorsWarningsMetrics ? "Close" : "Cancel"}
         </Button>
       </DataUploadHeader>
 
