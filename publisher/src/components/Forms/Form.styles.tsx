@@ -213,6 +213,8 @@ export const TabDisplay = styled.div`
 `;
 
 export const DisaggregationInputWrapper = styled.div`
+  width: 49%;
+
   label {
     width: 100%;
     padding-right: 60px;
