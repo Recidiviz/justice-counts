@@ -451,9 +451,7 @@ const OnboardingSessionView = ({
             Your feedback helps us to make this product even easier to use. If
             you have questions, requests, or any other feedback, please email us
             at{" "}
-            <a href="mailto:support@justice-counts.org">
-              support@justice-counts.org
-            </a>{" "}
+            <a href="mailto:humphrey@recidiviz.org">humphrey@recidiviz.org</a>{" "}
             and we’ll be happy to get back to you.
           </p>
         </>
@@ -468,10 +466,7 @@ const OnboardingSessionView = ({
         <>
           <p>
             If you have any questions, email the Justice Counts team at{" "}
-            <a href="mailto:support@justice-counts.org">
-              support@justice-counts.org
-            </a>
-            .
+            <a href="mailto:humphrey@recidiviz.org">humphrey@recidiviz.org</a>.
           </p>
         </>
       ),
@@ -551,10 +546,7 @@ const OnboardingSessionView = ({
         <>
           <p>
             If you have any questions, email the Justice Counts team at{" "}
-            <a href="mailto:support@justice-counts.org">
-              support@justice-counts.org
-            </a>
-            .
+            <a href="mailto:humphrey@recidiviz.org">humphrey@recidiviz.org</a>.
           </p>
         </>
       ),
