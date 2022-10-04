@@ -160,7 +160,7 @@ const Menu = () => {
 
       <MenuItem buttonPadding>
         <Button type="blue" onClick={() => navigate("/upload")}>
-          Add Data
+          Upload Data
         </Button>
       </MenuItem>
     </MenuContainer>
