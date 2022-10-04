@@ -279,9 +279,9 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
         {errorCount > 0 && successfulMetricsCount === 0 && (
           <>
             We ran into a few discrepancies between the uploaded data and the
-            Justice Counts format for the {renderSystemNameAndTemplate()} could
-            not be resolved. Before continuing, we strongly recommend that you
-            resolve the errors in your file and reupload. Otherwise, click
+            Justice Counts format for the {renderSystemNameAndTemplate()} that
+            could not be resolved. Before continuing, we strongly recommend that
+            you resolve the errors in your file and reupload. Otherwise, click
             Continue to view the data that was successfully saved.{" "}
           </>
         )}
