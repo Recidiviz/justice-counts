@@ -21,7 +21,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { Permission } from "../../shared/types";
 import { useStore } from "../../stores";
-import { ReactComponent as UploadIcon } from "../assets/cloud-upload-icon.svg";
 import { Button } from "../DataUpload";
 import {
   ExtendedDropdownMenu,
@@ -160,12 +159,7 @@ const Menu = () => {
       </MenuItem>
 
       <MenuItem buttonPadding>
-        <Button
-          type="blue"
-          onClick={() => navigate("/upload")}
-          style={{ gap: 7 }}
-        >
-          <UploadIcon />
+        <Button type="blue" onClick={() => navigate("/upload")}>
           Upload Data
         </Button>
       </MenuItem>
