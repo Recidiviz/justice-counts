@@ -67,7 +67,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
   const successfulMetricsCount =
     errorsWarningsAndSuccessfulMetrics.successfulMetrics.length;
   /** If there are non-metric errors, include them in the error count */
-  const errorWarningMetricsCount = nonMetricErrors
+  const errorCount = nonMetricErrors
     ? errorsWarningsAndSuccessfulMetrics.errorWarningMetrics.length +
       nonMetricErrors?.length
     : errorsWarningsAndSuccessfulMetrics.errorWarningMetrics.length;
@@ -85,7 +85,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
     return (
       <>
         {/* Errors */}
-        {errorWarningMetricsCount > 0 && (
+        {errorCount > 0 && (
           <>
             <SectionHeader>Alerts</SectionHeader>
             {errorsWarningsAndSuccessfulMetrics.errorWarningMetrics.map(
@@ -158,7 +158,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
         {/* Successful Metrics */}
         {successfulMetricsCount > 0 && (
           <>
-            <SectionHeader>Successes</SectionHeader>
+            <SectionHeader>Saved Metrics</SectionHeader>
             {errorsWarningsAndSuccessfulMetrics.successfulMetrics.map(
               (metric) => (
                 <Message key={metric.key}>
@@ -204,30 +204,50 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
   const renderErrorWarningTitle = () => {
     return (
       <>
-        {errorWarningMetricsCount === 0 && (
+        {/* Case 1: Only Warnings (which means all metrics were successfully ingested) */}
+        {errorCount === 0 && successfulMetricsCount > 0 && (
           <>
             <BlueText>{successfulMetricsCount}</BlueText> metric
             {successfulMetricsCount === 0 || successfulMetricsCount > 1
               ? "s"
               : ""}{" "}
-            were uploaded successfully.
+            were saved successfully{" "}
+            {errorsWarningsAndSuccessfulMetrics.hasWarnings &&
+              "(with warnings)"}
+            .
           </>
         )}
-        {errorWarningMetricsCount > 0 && (
+
+        {/* Case 2: Has Errors Only */}
+        {errorCount > 0 && successfulMetricsCount === 0 && (
           <>
-            <RedText>{errorWarningMetricsCount}</RedText> metric
-            {errorWarningMetricsCount > 1 ? "s" : ""} require your attention.
+            We encountered <RedText>{errorCount}</RedText> error
+            {errorCount > 1 ? "s" : ""}.
+          </>
+        )}
+
+        {/* Case 3: Has Errors and Successes */}
+        {errorCount > 0 && successfulMetricsCount > 0 && (
+          <>
+            We encountered <RedText>{errorCount}</RedText> error
+            {errorCount > 1 ? "s" : ""}, and{" "}
+            <BlueText>{successfulMetricsCount}</BlueText> metric
+            {successfulMetricsCount === 0 || successfulMetricsCount > 1
+              ? "s"
+              : ""}{" "}
+            were saved successfully{" "}
+            {errorsWarningsAndSuccessfulMetrics.hasWarnings &&
+              "(with warnings)"}
+            .
           </>
         )}
       </>
     );
   };
 
-  const renderErrorWarningDescription = () => {
+  const renderSystemNameAndTemplate = () => {
     return (
       <>
-        We ran into a few discrepancies between the uploaded data and the
-        Justice Counts format for the{" "}
         <span>
           {selectedSystem && removeSnakeCase(selectedSystem).toLowerCase()}
         </span>{" "}
@@ -236,12 +256,47 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
           download example
         </a>
         )
-        {errorWarningMetricsCount > 0
-          ? `. To continue, please resolve the errors in your file and
-              reupload.`
-          : `, but we did our best to resolve them. Please review the
-          warnings and determine if it is safe to proceed. If not,
-          resolve the warnings in your file and reupload.`}
+      </>
+    );
+  };
+
+  const renderErrorWarningDescription = () => {
+    return (
+      <>
+        {/* Case 1: Only Warnings (which means all metrics were successfully ingested) */}
+        {errorCount === 0 && successfulMetricsCount > 0 && (
+          <>
+            Your data was successfully saved to Justice Counts. We ran into a
+            few discrepancies between the uploaded data and the Justice Counts
+            format for the {renderSystemNameAndTemplate()}, but we did our best
+            to resolve them. Please review the warnings below; if needed,
+            resolve the warnings in your file and reupload. Otherwise, click
+            Continue to view the data.
+          </>
+        )}
+
+        {/* Case 2: Has Errors Only */}
+        {errorCount > 0 && successfulMetricsCount === 0 && (
+          <>
+            We ran into a few discrepancies between the uploaded data and the
+            Justice Counts format for the {renderSystemNameAndTemplate()} that
+            could not be resolved. Before continuing, we strongly recommend that
+            you resolve the errors in your file and reupload. Otherwise, click
+            Continue to view the data that was successfully saved.{" "}
+          </>
+        )}
+
+        {/* Case 3: Has Errors and Successes */}
+        {errorCount > 0 && successfulMetricsCount > 0 && (
+          <>
+            Some data was successfully saved, but a few discrepancies between
+            the uploaded data and the Justice Counts format for the{" "}
+            {renderSystemNameAndTemplate()} could not be resolved. Before
+            continuing, we strongly recommend that you resolve the errors in
+            your file and reupload. Otherwise, click Continue to view the data
+            that was successfully saved.{" "}
+          </>
+        )}
       </>
     );
   };
@@ -267,7 +322,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
               })
             }
           >
-            Review
+            Continue
           </Button>
         </ErrorWarningButtonWrapper>
 
