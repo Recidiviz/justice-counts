@@ -17,34 +17,52 @@
 
 import styled from "styled-components/macro";
 
-import { typography } from "../GlobalStyles";
+import { palette, typography } from "../GlobalStyles";
 
 export const SettingsContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: center;
   align-items: flex-start;
   padding: 39px 24px 0 24px;
   position: fixed;
   overflow-y: scroll;
-
-  @media only screen and (max-width: 1050px) {
-    width: unset;
-    flex-direction: column;
-  }
 `;
 
-export const SettingsFormUploadedFilesWrapper = styled.div`
+export const ContentDisplay = styled.div`
+  max-height: 90%;
   display: flex;
   flex-direction: column;
-  flex: 3 1 auto;
+  justify-content: flex-start;
+  flex: 10 10 auto;
+  overflow-y: scroll;
 `;
 
-export const SettingsTitle = styled.div`
+export const SettingsMenuContainer = styled.div`
   ${typography.sizeCSS.headline}
+  width: fit-content;
   display: flex;
-  flex: 1 1 auto;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 24px;
+  margin-right: 24px;
+`;
+
+export const MenuItem = styled.div<{ selected?: boolean }>`
+  ${typography.sizeCSS.large}
+  width: fit-content;
+  padding-bottom: 4px;
+  color: ${({ selected }) =>
+    selected ? palette.solid.darkgrey : palette.highlight.grey10};
+  border-bottom: 2px solid
+    ${({ selected }) => (selected ? palette.solid.blue : `transparent`)};
+  transition: color 0.2s ease;
+
+  &:hover {
+    cursor: pointer;
+    color: ${({ selected }) => !selected && palette.solid.darkgrey};
+  }
 `;
 
 export const SettingsFormPanel = styled.div``;
