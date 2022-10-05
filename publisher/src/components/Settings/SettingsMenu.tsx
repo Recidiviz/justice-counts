@@ -15,6 +15,26 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./AccountSettings";
-export * from "./Settings.styles";
-export * from "./SettingsMenu";
+import React from "react";
+
+import { MenuOptions, menuOptions } from "../../pages/Settings";
+import { MenuItem, SettingsMenuContainer } from "./Settings.styles";
+
+export const SettingsMenu: React.FC<{
+  activeMenuItem: MenuOptions;
+  goToMenuItem: (destination: MenuOptions) => void;
+}> = ({ activeMenuItem, goToMenuItem }) => {
+  return (
+    <SettingsMenuContainer>
+      {menuOptions.map((option) => (
+        <MenuItem
+          key={option}
+          selected={option === activeMenuItem}
+          onClick={() => goToMenuItem(option)}
+        >
+          {option}
+        </MenuItem>
+      ))}
+    </SettingsMenuContainer>
+  );
+};

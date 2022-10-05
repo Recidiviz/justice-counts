@@ -15,38 +15,38 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
+import React, { useState } from "react";
 
-import {
-  ExtendedOpacityGradient,
-  UploadedFiles,
-  UploadedFilesWrapper,
-} from "../components/DataUpload";
-import { Title, TitleWrapper } from "../components/Forms";
+import { UploadedFiles } from "../components/DataUpload";
 import {
   AccountSettings,
+  ContentDisplay,
   SettingsContainer,
-  SettingsFormUploadedFilesWrapper,
-  SettingsTitle,
+  SettingsMenu,
 } from "../components/Settings";
 
+export const menuOptions = ["Account Settings", "Uploaded Files"] as const;
+export type MenuOptions = typeof menuOptions[number];
+
 const Settings = () => {
+  const [activeMenuItem, setActiveMenuItem] = useState<MenuOptions>(
+    menuOptions[0]
+  );
+
+  const goToMenuItem = (destination: MenuOptions) =>
+    setActiveMenuItem(destination);
+
   return (
     <SettingsContainer>
-      <SettingsTitle>Settings</SettingsTitle>
+      <SettingsMenu
+        activeMenuItem={activeMenuItem}
+        goToMenuItem={goToMenuItem}
+      />
 
-      <SettingsFormUploadedFilesWrapper>
-        <AccountSettings />
-
-        <UploadedFilesWrapper>
-          <TitleWrapper>
-            <Title>Uploaded Files</Title>
-          </TitleWrapper>
-
-          <UploadedFiles />
-          <ExtendedOpacityGradient />
-        </UploadedFilesWrapper>
-      </SettingsFormUploadedFilesWrapper>
+      <ContentDisplay>
+        {activeMenuItem === "Account Settings" && <AccountSettings />}
+        {activeMenuItem === "Uploaded Files" && <UploadedFiles />}
+      </ContentDisplay>
     </SettingsContainer>
   );
 };

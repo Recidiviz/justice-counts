@@ -24,6 +24,7 @@ import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
 import downloadIcon from "../assets/download-icon.png";
 import { Badge, BadgeColorMapping, BadgeColors } from "../Badge";
+import { Title, TitleWrapper } from "../Forms";
 import { Loader } from "../Loading";
 import { showToast } from "../Toast";
 import {
@@ -33,6 +34,7 @@ import {
   ExtendedCell,
   ExtendedLabelCell,
   ExtendedLabelRow,
+  ExtendedOpacityGradient,
   ExtendedRow,
   UploadedFile,
   UploadedFilesContainer,
@@ -40,6 +42,7 @@ import {
   UploadedFilesLoading,
   UploadedFilesTable,
   UploadedFileStatus,
+  UploadedFilesWrapper,
 } from ".";
 
 export const UploadedFileRow: React.FC<{
@@ -315,26 +318,35 @@ export const UploadedFiles: React.FC = observer(() => {
   }
 
   return (
-    <UploadedFilesContainer>
-      <ExtendedLabelRow>
-        {dataUploadColumnTitles.map((title) => (
-          <ExtendedLabelCell key={title}>{title}</ExtendedLabelCell>
-        ))}
-      </ExtendedLabelRow>
-      <UploadedFilesTable>
-        {uploadedFiles.map((fileDetails) => {
-          const fileRowDetails = getFileRowDetails(fileDetails);
+    <UploadedFilesWrapper>
+      <TitleWrapper>
+        <Title>Uploaded Files</Title>
+      </TitleWrapper>
 
-          return (
-            <UploadedFileRow
-              key={fileRowDetails.key}
-              fileRowDetails={fileRowDetails}
-              deleteUploadedFile={deleteUploadedFile}
-              updateUploadedFileStatus={updateUploadedFileStatus}
-            />
-          );
-        })}
-      </UploadedFilesTable>
-    </UploadedFilesContainer>
+      <UploadedFilesContainer>
+        <ExtendedLabelRow>
+          {dataUploadColumnTitles.map((title) => (
+            <ExtendedLabelCell key={title}>{title}</ExtendedLabelCell>
+          ))}
+        </ExtendedLabelRow>
+
+        <UploadedFilesTable>
+          {uploadedFiles.map((fileDetails) => {
+            const fileRowDetails = getFileRowDetails(fileDetails);
+
+            return (
+              <UploadedFileRow
+                key={fileRowDetails.key}
+                fileRowDetails={fileRowDetails}
+                deleteUploadedFile={deleteUploadedFile}
+                updateUploadedFileStatus={updateUploadedFileStatus}
+              />
+            );
+          })}
+        </UploadedFilesTable>
+      </UploadedFilesContainer>
+
+      <ExtendedOpacityGradient />
+    </UploadedFilesWrapper>
   );
 });
