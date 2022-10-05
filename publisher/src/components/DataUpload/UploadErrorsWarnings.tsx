@@ -211,9 +211,9 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
             {successfulMetricsCount === 0 || successfulMetricsCount > 1
               ? "s"
               : ""}{" "}
-            were saved successfully{" "}
+            were saved successfully
             {errorsWarningsAndSuccessfulMetrics.hasWarnings &&
-              "(with warnings)"}
+              " (with warnings)"}
             .
           </>
         )}
@@ -235,9 +235,9 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
             {successfulMetricsCount === 0 || successfulMetricsCount > 1
               ? "s"
               : ""}{" "}
-            were saved successfully{" "}
+            were saved successfully
             {errorsWarningsAndSuccessfulMetrics.hasWarnings &&
-              "(with warnings)"}
+              " (with warnings)"}
             .
           </>
         )}
