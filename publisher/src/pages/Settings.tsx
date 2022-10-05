@@ -25,7 +25,7 @@ import {
   SettingsMenu,
 } from "../components/Settings";
 
-export const menuOptions = ["Account Settings", "Uploaded Files"] as const;
+export const menuOptions = ["Your Account", "Uploaded Files"] as const;
 export type MenuOptions = typeof menuOptions[number];
 
 const Settings = () => {
@@ -44,7 +44,7 @@ const Settings = () => {
       />
 
       <ContentDisplay>
-        {activeMenuItem === "Account Settings" && <AccountSettings />}
+        {activeMenuItem === "Your Account" && <AccountSettings />}
         {activeMenuItem === "Uploaded Files" && <UploadedFiles />}
       </ContentDisplay>
     </SettingsContainer>
