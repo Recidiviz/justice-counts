@@ -1,0 +1,17 @@
+{
+  "name": "@justice-counts/common",
+  "version": "0.1.0",
+  "description": "Shared Justice Counts front-end code",
+  "private": true,
+  "author": "Recidiviz <team@recidiviz.org>",
+  "license": "GNU General Public License v3",
+  "dependencies": {
+    "react": "^17.0.2",
+    "typescript": "^4.4.2"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@recidiviz/eslint-config"
+    ]
+  }
+}
