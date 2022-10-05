@@ -46,7 +46,7 @@ export const SettingsMenuContainer = styled.div`
   flex-direction: column;
   gap: 16px;
   padding: 16px 24px;
-  margin-right: 24px;
+  margin-right: 100px;
 `;
 
 export const MenuItem = styled.div<{ selected?: boolean }>`
