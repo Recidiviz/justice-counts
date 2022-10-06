@@ -33,7 +33,6 @@ export const MetricsViewControlPanel = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin-top: 29px;
 `;
 
 export const PanelContainerLeft = styled.div`
@@ -334,23 +333,6 @@ export const StickyHeader = styled.div`
   top: 0;
   background: ${palette.solid.white};
   margin-bottom: 29px;
-`;
-
-export const BackToMetrics = styled.div`
-  color: ${palette.solid.blue};
-  transition: 0.2s ease;
-  margin-bottom: 24px;
-
-  &:hover {
-    cursor: pointer;
-    opacity: 0.85;
-  }
-`;
-
-export const MetricConfigurationDisplay = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
 `;
 
 export const BackToMetrics = styled.div`
