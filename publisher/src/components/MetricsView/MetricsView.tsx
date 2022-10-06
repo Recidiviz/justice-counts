@@ -833,6 +833,7 @@ export const MetricsView: React.FC = observer(() => {
             !activeMetricKey &&
             Object.values(filteredMetricSettings).map((metric) => (
               <MetricBox
+                key={metric.key}
                 metricKey={metric.key}
                 displayName={metric.display_name}
                 frequency={metric.frequency as ReportFrequency}
