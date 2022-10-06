@@ -33,7 +33,6 @@ export const MetricsViewControlPanel = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin-top: 29px;
 `;
 
 export const PanelContainerLeft = styled.div`
@@ -333,6 +332,7 @@ export const StickyHeader = styled.div`
   position: sticky;
   top: 0;
   background: ${palette.solid.white};
+  margin-bottom: 29px;
 `;
 
 export const BackToMetrics = styled.div`
