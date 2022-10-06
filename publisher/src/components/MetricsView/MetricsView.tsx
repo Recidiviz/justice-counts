@@ -69,6 +69,7 @@ import {
   PanelContainerRight,
   RadioButtonGroupWrapper,
   Slider,
+  StickyHeader,
   Subheader,
   ToggleSwitch,
   ToggleSwitchInput,
@@ -115,11 +116,6 @@ type MetricBoxProps = {
   setActiveMetricKey: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const reportFrequencyBadgeColors: BadgeColorMapping = {
-  ANNUAL: "ORANGE",
-  MONTHLY: "GREEN",
-};
-
 const MetricBox: React.FC<MetricBoxProps> = ({
   metricKey,
   displayName,
@@ -133,23 +129,14 @@ const MetricBox: React.FC<MetricBoxProps> = ({
     <MetricBoxContainer
       onClick={() => setActiveMetricKey(metricKey)}
       enabled={enabled}
-      selected={metricKey === activeMetricKey}
     >
-      <MetricNameBadgeToggleWrapper>
-        <MetricNameBadgeWrapper>
-          <MetricName>{displayName}</MetricName>
-          <Badge
-            color={reportFrequencyBadgeColors[frequency]}
-            disabled={!enabled}
-          >
-            {frequency}
-          </Badge>
-        </MetricNameBadgeWrapper>
-
-        {!enabled && <NotReportedIcon noTooltip />}
-      </MetricNameBadgeToggleWrapper>
-
+      <MetricName>{displayName}</MetricName>
       <MetricDescription>{description}</MetricDescription>
+      <MetricNameBadgeWrapper>
+        <Badge color={!enabled ? "GREY" : "GREEN"} disabled={!enabled} noMargin>
+          {frequency}
+        </Badge>
+      </MetricNameBadgeWrapper>
     </MetricBoxContainer>
   );
 };
@@ -834,56 +821,58 @@ export const MetricsView: React.FC = observer(() => {
   return (
     <>
       <MetricsViewContainer>
-        <PageTitle>Metrics</PageTitle>
-
-        <TabbedBar>
-          <TabbedOptions>
-            {userStore.currentAgency?.systems.map((filterOption) => (
-              <TabbedItem
-                key={filterOption}
-                selected={activeMetricFilter === removeSnakeCase(filterOption)}
-                onClick={() =>
-                  setActiveMetricFilter(removeSnakeCase(filterOption))
-                }
-                capitalize
-              >
-                {removeSnakeCase(filterOption.toLowerCase())}
-              </TabbedItem>
-            ))}
-          </TabbedOptions>
-        </TabbedBar>
+        <StickyHeader>
+          <TabbedBar noPadding>
+            <TabbedOptions>
+              {userStore.currentAgency?.systems.map((filterOption) => (
+                <TabbedItem
+                  key={filterOption}
+                  selected={
+                    activeMetricFilter === removeSnakeCase(filterOption)
+                  }
+                  onClick={() =>
+                    setActiveMetricFilter(removeSnakeCase(filterOption))
+                  }
+                  capitalize
+                >
+                  {removeSnakeCase(filterOption.toLowerCase())}
+                </TabbedItem>
+              ))}
+            </TabbedOptions>
+          </TabbedBar>
+        </StickyHeader>
 
         <MetricsViewControlPanel>
           {/* List Of Metrics */}
-          <PanelContainerLeft>
-            {filteredMetricSettings &&
-              Object.values(filteredMetricSettings).map((metric) => (
-                <MetricBoxWrapper
-                  key={metric.key}
-                  onClick={() => {
-                    if (configPanelRef.current) {
-                      configPanelRef.current.scrollTo({
-                        top: 0,
-                        behavior: "smooth",
-                      });
-                    }
-                  }}
-                >
-                  <MetricBox
-                    metricKey={metric.key}
-                    displayName={metric.display_name}
-                    frequency={metric.frequency as ReportFrequency}
-                    description={metric.description}
-                    enabled={metric.enabled}
-                    activeMetricKey={activeMetricKey}
-                    setActiveMetricKey={setActiveMetricKey}
-                  />
-                </MetricBoxWrapper>
-              ))}
-          </PanelContainerLeft>
+          {/* <PanelContainerLeft> */}
+          {filteredMetricSettings &&
+            Object.values(filteredMetricSettings).map((metric) => (
+              <MetricBoxWrapper
+                key={metric.key}
+                onClick={() => {
+                  if (configPanelRef.current) {
+                    configPanelRef.current.scrollTo({
+                      top: 0,
+                      behavior: "smooth",
+                    });
+                  }
+                }}
+              >
+                <MetricBox
+                  metricKey={metric.key}
+                  displayName={metric.display_name}
+                  frequency={metric.frequency as ReportFrequency}
+                  description={metric.description}
+                  enabled={metric.enabled}
+                  activeMetricKey={activeMetricKey}
+                  setActiveMetricKey={setActiveMetricKey}
+                />
+              </MetricBoxWrapper>
+            ))}
+          {/* </PanelContainerLeft> */}
 
           {/* Data | Configuration | Context */}
-          <PanelContainerRight ref={configPanelRef}>
+          {/* <PanelContainerRight ref={configPanelRef}>
             <ActiveMetricSettingHeader>
               <MetricNameBadgeWrapper>
                 <MetricName isTitle>
@@ -921,15 +910,15 @@ export const MetricsView: React.FC = observer(() => {
                   ))}
                 </TabbedOptions>
               </TabbedBar>
-            </ActiveMetricSettingHeader>
+            </ActiveMetricSettingHeader> */}
 
-            {/* Data */}
-            {activeConfigSection === "Data" && (
+          {/* Data */}
+          {/* {activeConfigSection === "Data" && (
               <DatapointsView metric={activeMetricKey} />
-            )}
+            )} */}
 
-            {/* Configuration */}
-            {activeConfigSection === "Configuration" && (
+          {/* Configuration */}
+          {/* {activeConfigSection === "Configuration" && (
               <MetricDetailsDisplay>
                 <MetricConfiguration
                   activeMetricKey={activeMetricKey}
@@ -937,10 +926,10 @@ export const MetricsView: React.FC = observer(() => {
                   saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
                 />
               </MetricDetailsDisplay>
-            )}
+            )} */}
 
-            {/* Context */}
-            {activeConfigSection === "Context" && (
+          {/* Context */}
+          {/* {activeConfigSection === "Context" && (
               <MetricDetailsDisplay>
                 <MetricContextConfiguration
                   metricKey={activeMetricKey}
@@ -949,7 +938,7 @@ export const MetricsView: React.FC = observer(() => {
                 />
               </MetricDetailsDisplay>
             )}
-          </PanelContainerRight>
+          </PanelContainerRight> */}
         </MetricsViewControlPanel>
       </MetricsViewContainer>
     </>

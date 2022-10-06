@@ -18,6 +18,7 @@
 import React, { useState } from "react";
 
 import { UploadedFiles } from "../components/DataUpload";
+import { MetricsView } from "../components/MetricsView";
 import {
   AccountSettings,
   ContentDisplay,
@@ -25,7 +26,11 @@ import {
   SettingsMenu,
 } from "../components/Settings";
 
-export const menuOptions = ["Your Account", "Uploaded Files"] as const;
+export const menuOptions = [
+  "Your Account",
+  "Uploaded Files",
+  "Metric Configuration",
+] as const;
 export type MenuOptions = typeof menuOptions[number];
 
 const Settings = () => {
@@ -46,6 +51,7 @@ const Settings = () => {
       <ContentDisplay>
         {activeMenuItem === "Your Account" && <AccountSettings />}
         {activeMenuItem === "Uploaded Files" && <UploadedFiles />}
+        {activeMenuItem === "Metric Configuration" && <MetricsView />}
       </ContentDisplay>
     </SettingsContainer>
   );

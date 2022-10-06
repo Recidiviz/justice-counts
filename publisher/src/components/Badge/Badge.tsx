@@ -28,11 +28,13 @@ export type BadgeProps = {
   color: BadgeColors;
   disabled?: boolean;
   loading?: boolean;
+  noMargin?: boolean;
 };
 
 export const BadgeElement = styled.div<{
   color?: BadgeColors;
   disabled?: boolean;
+  noMargin?: boolean;
 }>`
   height: 24px;
   display: flex;
@@ -55,21 +57,22 @@ export const BadgeElement = styled.div<{
   }};
   color: ${palette.solid.white};
   padding: 4px 8px;
-  margin-left: 10px;
   font-size: 0.65rem;
   font-weight: 600;
   white-space: nowrap;
   text-transform: capitalize;
+  ${({ noMargin }) => !noMargin && `margin-left: 10px;`};
 `;
 
 export const Badge: React.FC<BadgeProps> = ({
   color,
   disabled,
   loading,
+  noMargin,
   children,
 }) => {
   return (
-    <BadgeElement color={color} disabled={disabled}>
+    <BadgeElement color={color} disabled={disabled} noMargin={noMargin}>
       {children}
       {loading && <MiniLoader />}
     </BadgeElement>
