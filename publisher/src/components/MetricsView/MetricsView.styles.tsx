@@ -352,3 +352,20 @@ export const MetricConfigurationDisplay = styled.div`
   flex-direction: column;
   align-items: flex-start;
 `;
+
+export const BackToMetrics = styled.div`
+  color: ${palette.solid.blue};
+  transition: 0.2s ease;
+  margin-bottom: 24px;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.85;
+  }
+`;
+
+export const MetricConfigurationDisplay = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
