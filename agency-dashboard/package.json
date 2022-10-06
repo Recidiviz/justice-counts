@@ -1,9 +1,8 @@
 {
-  "name": "agency-dashboard",
+  "name": "@justice-counts/agency-dashboard",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@craco/craco": "^6.4.5",
     "@justice-counts/common": "*",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -19,14 +18,15 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
-    "eject": "craco eject"
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-scripts eject",
+    "lint": "tsc && eslint '**/*.{ts,tsx}' --max-warnings 0"
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
+      "@recidiviz/eslint-config",
       "react-app/jest"
     ]
   },
@@ -41,5 +41,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "devDependencies": {
+    "customize-cra": "^1.0.0",
+    "react-app-rewired": "^2.2.1"
+  },
+  "config-overrides-path": "../config-overrides.js"
 }
