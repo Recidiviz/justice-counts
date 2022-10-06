@@ -60,16 +60,17 @@ type MetricBoxContainerProps = {
 };
 
 export const MetricBoxContainer = styled.div<MetricBoxContainerProps>`
-  width: 100%;
   height: 197px;
+  max-width: 50%;
   display: flex;
+  flex: 1 1 50%;
   flex-direction: column;
   justify-content: space-between;
   border: 1px solid ${palette.highlight.grey2};
   padding: 27px 24px;
   transition: 0.2s ease;
   color: ${({ enabled }) =>
-    enabled ? palette.solid.darkgrey : palette.highlight.grey7};
+    enabled ? palette.solid.darkgrey : palette.highlight.grey10};
 
   &:hover {
     cursor: pointer;
@@ -79,8 +80,6 @@ export const MetricBoxContainer = styled.div<MetricBoxContainerProps>`
 
 export const MetricBoxWrapper = styled.div`
   display: flex;
-  max-width: 50%;
-  flex: 1 1 50%;
 `;
 
 export const ActiveMetricSettingHeader = styled.div`
@@ -121,7 +120,7 @@ export const MetricDescription = styled.div`
 export const MetricDetailsDisplay = styled.div`
   width: 100%;
   overflow-y: scroll;
-  padding: 24px 15px 0 15px;
+  padding: 24px 0;
 `;
 
 export const MetricOnOffWrapper = styled.div`
@@ -334,4 +333,21 @@ export const StickyHeader = styled.div`
   position: sticky;
   top: 0;
   background: ${palette.solid.white};
+`;
+
+export const BackToMetrics = styled.div`
+  color: ${palette.solid.blue};
+  transition: 0.2s ease;
+  margin-bottom: 24px;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.85;
+  }
+`;
+
+export const MetricConfigurationDisplay = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 `;

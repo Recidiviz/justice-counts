@@ -42,7 +42,7 @@ export const BadgeElement = styled.div<{
   align-items: center;
   background: ${({ color, disabled }) => {
     if (color === "GREY" || disabled) {
-      return palette.highlight.grey9;
+      return palette.highlight.grey8;
     }
     if (color === "RED") {
       return palette.solid.red;
