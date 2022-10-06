@@ -15,10 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
 import { BinaryRadioGroupWrapper } from "../Forms";
-import { palette, typography } from "../GlobalStyles";
 
 export const MetricsViewContainer = styled.div`
   width: 100%;

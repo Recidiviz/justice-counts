@@ -15,9 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Metric as MetricType } from "@justice-counts/common/types";
 import React, { useEffect, useState } from "react";
 
-import { Metric as MetricType } from "../../shared/types";
 import { useStore } from "../../stores";
 import successIcon from "../assets/status-check-icon.png";
 import errorIcon from "../assets/status-error-icon.png";

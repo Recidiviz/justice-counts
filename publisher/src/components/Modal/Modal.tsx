@@ -15,10 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  HEADER_BAR_HEIGHT,
+  palette,
+} from "@justice-counts/common/components/GlobalStyles";
 import React, { useEffect, useState } from "react";
 import styled, { css, keyframes } from "styled-components/macro";
-
-import { HEADER_BAR_HEIGHT, palette } from "../GlobalStyles";
 
 const ModalContainer = styled.div`
   width: 100vw;

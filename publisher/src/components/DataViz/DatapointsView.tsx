@@ -15,17 +15,18 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { observer } from "mobx-react-lite";
-import React, { useEffect } from "react";
-
+import BarChart from "@justice-counts/common/components/DataViz/BarChart";
+import Legend from "@justice-counts/common/components/DataViz/Legend";
 import {
   DatapointsGroupedByAggregateAndDisaggregations,
   DatapointsViewSetting,
   DataVizAggregateName,
   DataVizTimeRangesMap,
-} from "../../shared/types";
+} from "@justice-counts/common/types";
+import { observer } from "mobx-react-lite";
+import React, { useEffect } from "react";
+
 import { useStore } from "../../stores";
-import BarChart from "./BarChart";
 import {
   DatapointsViewContainer,
   DatapointsViewControlsContainer,
@@ -33,7 +34,6 @@ import {
   MetricInsight,
   MetricInsightsRow,
 } from "./DatapointsView.styles";
-import Legend from "./Legend";
 import {
   filterByTimeRange,
   filterNullDatapoints,

@@ -16,6 +16,10 @@
 // =============================================================================
 
 import {
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
+import {
   Dropdown,
   DropdownMenu,
   DropdownToggle,
@@ -23,7 +27,6 @@ import {
 import React from "react";
 import styled from "styled-components/macro";
 
-import { palette, typography } from "../GlobalStyles";
 import { ExtendedDropdownMenuItem } from "../Menu/Menu.styles";
 
 export const DatapointsViewContainer = styled.div`

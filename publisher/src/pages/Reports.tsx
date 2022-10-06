@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Permission, ReportOverview } from "@justice-counts/common/types";
 import { reaction, when } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useState } from "react";
@@ -45,7 +46,6 @@ import {
   TabbedOptions,
   Table,
 } from "../components/Reports";
-import { Permission, ReportOverview } from "../shared/types";
 import { useStore } from "../stores";
 import {
   normalizeString,

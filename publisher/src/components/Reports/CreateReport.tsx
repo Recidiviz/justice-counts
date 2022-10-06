@@ -15,12 +15,19 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
+import {
+  CreateReportFormValuesType,
+  ReportOverview,
+} from "@justice-counts/common/types";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import { trackReportCreated } from "../../analytics";
-import { CreateReportFormValuesType, ReportOverview } from "../../shared/types";
 import { useStore } from "../../stores";
 import { monthsByName, printDateRangeFromMonthYear } from "../../utils";
 import {
@@ -38,7 +45,6 @@ import {
   TitleWrapper,
 } from "../Forms";
 import { Dropdown } from "../Forms/Dropdown";
-import { palette, typography } from "../GlobalStyles";
 import { showToast } from "../Toast";
 import {
   PublishButton,

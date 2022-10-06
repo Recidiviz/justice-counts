@@ -15,12 +15,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
 import React, { useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components/macro";
 
 import { useStore } from "../../stores";
 import logo from "../assets/jc-logo-vector-onboarding.png";
-import { palette, typography } from "../GlobalStyles";
 import {
   DATA_ENTRY_WIDTH,
   ONE_PANEL_MAX_WIDTH,

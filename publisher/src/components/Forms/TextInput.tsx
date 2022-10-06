@@ -15,15 +15,18 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
+import { FormError } from "@justice-counts/common/types";
 import React, { InputHTMLAttributes, useState } from "react";
 import styled from "styled-components/macro";
 
-import { FormError } from "../../shared/types";
 import { rem } from "../../utils";
 import infoRedIcon from "../assets/info-red-icon.png";
 import statusCheckIcon from "../assets/status-check-icon.png";
 import statusErrorIcon from "../assets/status-error-icon.png";
-import { palette, typography } from "../GlobalStyles";
 import { NotReportedIcon } from ".";
 
 export const InputWrapper = styled.div`

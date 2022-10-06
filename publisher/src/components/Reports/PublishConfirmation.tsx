@@ -15,23 +15,23 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { palette } from "@justice-counts/common/components/GlobalStyles";
+import {
+  MetricContextWithErrors,
+  MetricDisaggregationDimensionsWithErrors,
+  MetricDisaggregationsWithErrors,
+  MetricWithErrors,
+} from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import { trackReportPublished } from "../../analytics";
-import {
-  MetricContextWithErrors,
-  MetricDisaggregationDimensionsWithErrors,
-  MetricDisaggregationsWithErrors,
-  MetricWithErrors,
-} from "../../shared/types";
 import { useStore } from "../../stores";
 import { printReportTitle, rem } from "../../utils";
 import errorIcon from "../assets/status-error-icon.png";
 import { Button } from "../Forms";
-import { palette } from "../GlobalStyles";
 import { showToast } from "../Toast";
 import { PublishButton } from "./ReportDataEntry.styles";
 

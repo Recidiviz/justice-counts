@@ -15,10 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  HEADER_BAR_HEIGHT,
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
 import { DataUploadContainer } from "../DataUpload";
-import { HEADER_BAR_HEIGHT, palette, typography } from "../GlobalStyles";
 
 export const MAIN_PANEL_MAX_WIDTH = 864;
 

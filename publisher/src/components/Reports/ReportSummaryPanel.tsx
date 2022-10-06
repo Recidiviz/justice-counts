@@ -15,12 +15,16 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
+import { Metric } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 
-import { Metric } from "../../shared/types";
 import { useStore } from "../../stores";
 import {
   printCommaSeparatedList,
@@ -35,7 +39,6 @@ import {
   PreTitle,
   Title,
 } from "../Forms";
-import { palette, typography } from "../GlobalStyles";
 import HelperText from "./HelperText";
 import {
   BREAKPOINT_HEIGHT,

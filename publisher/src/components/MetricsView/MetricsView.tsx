@@ -15,12 +15,16 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  AgencySystems,
+  FormError,
+  ReportFrequency,
+} from "@justice-counts/common/types";
 import { debounce as _debounce } from "lodash";
 import { reaction, when } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
 
-import { AgencySystems, FormError, ReportFrequency } from "../../shared/types";
 import { useStore } from "../../stores";
 import {
   isPositiveNumber,

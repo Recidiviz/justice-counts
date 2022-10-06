@@ -19,7 +19,7 @@ import React from "react";
 import { TooltipProps as RechartsTooltipProps } from "recharts";
 import styled from "styled-components/macro";
 
-import { Datapoint } from "../../shared/types";
+import { Datapoint } from "../../types";
 import { formatNumberInput } from "../../utils";
 import { palette, typography } from "../GlobalStyles";
 import { LegendColor } from "./Legend";

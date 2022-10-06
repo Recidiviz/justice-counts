@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { palette } from "@justice-counts/common/components/GlobalStyles";
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
@@ -22,7 +23,6 @@ import { createGlobalStyle } from "styled-components/macro";
 
 import App from "./App";
 import AuthWall from "./components/Auth";
-import { palette } from "./components/GlobalStyles";
 import { StoreProvider } from "./stores";
 
 // load analytics

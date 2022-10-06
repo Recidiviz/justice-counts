@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
+import { UserAgency } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction, when } from "mobx";
 import { makePersistable } from "mobx-persist-store";
 
 import { APP_METADATA_CLAIM, AuthStore } from "../components/Auth";
 import { showToast } from "../components/Toast";
-import { UserAgency } from "../shared/types";
 import API from "./API";
 
 type UserSettingsRequestBody = {
