@@ -1,7 +1,9 @@
-import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
+
 import { SharedComponent } from "@justice-counts/common/components/";
+import React from "react";
+
+import logo from "./logo.svg";
 
 function App() {
   return (
