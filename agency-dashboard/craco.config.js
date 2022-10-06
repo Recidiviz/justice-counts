@@ -1,10 +1,6 @@
-const path = require("path");
 const { getLoader, loaderByName } = require("@craco/craco");
-const absolutePath = path.join(__dirname, "../components");
 module.exports = {
   webpack: {
-    alias: {},
-    plugins: [],
     configure: (webpackConfig, { env, paths }) => {
       const { isFound, match } = getLoader(
         webpackConfig,
@@ -14,7 +10,7 @@ module.exports = {
         const include = Array.isArray(match.loader.include)
           ? match.loader.include
           : [match.loader.include];
-        match.loader.include = include.concat[absolutePath];
+        match.loader.include = include.concat["../common"]; // compile shared library code
       }
       return webpackConfig;
     },
