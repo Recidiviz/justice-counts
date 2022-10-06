@@ -33,6 +33,7 @@ export const MetricsViewControlPanel = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  margin-top: 29px;
 `;
 
 export const PanelContainerLeft = styled.div`
