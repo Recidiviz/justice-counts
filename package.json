@@ -1,0 +1,9 @@
+{
+  "name": "@justice-counts/root",
+  "private": true,
+  "workspaces": [
+    "agency-dashboard",
+    "common",
+    "publisher"
+  ]
+}

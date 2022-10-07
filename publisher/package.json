@@ -1,5 +1,5 @@
 {
-  "name": "recidiviz-justice-counts-control-panel",
+  "name": "@justice-counts/publisher",
   "version": "0.1.0",
   "description": "A tool that allows agencies to report Justice Counts metrics",
   "private": true,
@@ -7,6 +7,7 @@
   "license": "GNU General Public License v3",
   "dependencies": {
     "@auth0/auth0-react": "^1.9.0",
+    "@justice-counts/common": "*",
     "@recidiviz/design-system": "^2.7.0",
     "@testing-library/dom": "^8.11.3",
     "@testing-library/jest-dom": "^5.14.1",
@@ -30,11 +31,11 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "dev": "react-scripts start",
-    "build": "react-scripts build",
-    "lint": "tsc && eslint '**/*.{ts,tsx}' --max-warnings 0",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-scripts eject",
+    "lint": "tsc && eslint '**/*.{ts,tsx}' --max-warnings 0"
   },
   "eslintConfig": {
     "extends": [
@@ -79,6 +80,7 @@
     "autoprefixer": "^10.0.2",
     "babel-eslint": "^10.1.0",
     "babel-plugin-import": "^1.13.3",
+    "customize-cra": "^1.0.0",
     "eslint": "^8.11.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.5.0",
@@ -94,11 +96,13 @@
     "jest-fetch-mock": "^3.0.3",
     "postcss": "^8.1.0",
     "prettier": "^2.6.0",
+    "react-app-rewired": "^2.2.1",
     "react-modal": "^3.14.4"
   },
   "jest": {
     "moduleNameMapper": {
       "^d3-(.*)$": "d3-$1/dist/d3-$1"
     }
-  }
+  },
+  "config-overrides-path": "../config-overrides.js"
 }
