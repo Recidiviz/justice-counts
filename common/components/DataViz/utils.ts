@@ -15,14 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { mapValues, pickBy } from "lodash";
+
 import {
   Datapoint,
   DatapointsViewSetting,
   DataVizAggregateName,
   DataVizTimeRange,
-} from "@justice-counts/common/types";
-import { mapValues, pickBy } from "lodash";
-
+} from "../../types";
 import { formatNumberInput } from "../../utils";
 
 export const thirtyOneDaysInSeconds = 2678400000;

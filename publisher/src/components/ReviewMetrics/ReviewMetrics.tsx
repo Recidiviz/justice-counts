@@ -15,11 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  DataVizAggregateName,
+  RawDatapoint,
+} from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { DataVizAggregateName, RawDatapoint } from "../../shared/types";
 import logoImg from "../assets/jc-logo-vector.png";
 import {
   Button,

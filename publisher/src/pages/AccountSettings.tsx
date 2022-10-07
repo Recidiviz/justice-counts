@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { typography } from "@justice-counts/common/components/GlobalStyles";
 import { debounce as _debounce } from "lodash";
 import React, { useRef } from "react";
 import styled from "styled-components/macro";
@@ -25,7 +26,6 @@ import {
   UploadedFilesWrapper,
 } from "../components/DataUpload";
 import { TextInput, Title, TitleWrapper } from "../components/Forms";
-import { typography } from "../components/GlobalStyles";
 import { useStore } from "../stores";
 
 const SettingsContainer = styled.div`

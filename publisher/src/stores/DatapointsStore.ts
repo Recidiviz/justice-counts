@@ -16,18 +16,18 @@
 // =============================================================================
 
 import {
+  DatapointsByMetric,
+  DataVizAggregateName,
+  DimensionNamesByMetricAndDisaggregation,
+  RawDatapoint,
+} from "@justice-counts/common/types";
+import {
   IReactionDisposer,
   makeAutoObservable,
   reaction,
   runInAction,
 } from "mobx";
 
-import {
-  DatapointsByMetric,
-  DataVizAggregateName,
-  DimensionNamesByMetricAndDisaggregation,
-  RawDatapoint,
-} from "../shared/types";
 import { isPositiveNumber } from "../utils";
 import API from "./API";
 import UserStore from "./UserStore";

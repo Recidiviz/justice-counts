@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { RawDatapoint } from "../../shared/types";
+import { RawDatapoint } from "@justice-counts/common/types";
 
 export interface DataUploadResponseBody {
   metrics: UploadedMetric[];

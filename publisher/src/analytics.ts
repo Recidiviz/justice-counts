@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { UpdatedMetricsValues, UserAgency } from "./shared/types";
+import { UpdatedMetricsValues, UserAgency } from "@justice-counts/common/types";
 
 const TEST_SENDING_ANALYTICS = false; // used for testing sending analytics in development
 const LOG_ANALYTICS = false; // used for logging analytics being sent

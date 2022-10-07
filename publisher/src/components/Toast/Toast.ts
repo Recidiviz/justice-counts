@@ -15,8 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  HEADER_BAR_HEIGHT,
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
+
 import checkIconWhite from "../assets/status-check-white-icon.png";
-import { HEADER_BAR_HEIGHT, palette, typography } from "../GlobalStyles";
 
 type ToastColor = "blue" | "red" | "grey";
 

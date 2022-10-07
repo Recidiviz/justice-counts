@@ -15,10 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { palette } from "@justice-counts/common/components/GlobalStyles";
 import React, { useState } from "react";
 import styled from "styled-components/macro";
-
-import { palette } from "../components/GlobalStyles";
 
 const PreviewButton = styled.button<{ open?: boolean }>`
   height: 80px;

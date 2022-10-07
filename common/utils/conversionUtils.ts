@@ -15,41 +15,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import {
-  HEADER_BAR_HEIGHT,
-  palette,
-} from "@justice-counts/common/components/GlobalStyles";
-import styled from "styled-components/macro";
+/**
+ * Converts pixel to rem based on a root `font-size` of 16px.
+ *
+ * @param px - pixel value as "24px"
+ * @param root (optional) - change conversion from a default root `font-size` of 16px
+ * @returns rem value as string
+ */
 
-export const HeaderBar = styled.header`
-  width: 100%;
-  height: ${HEADER_BAR_HEIGHT}px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  z-index: 3;
-  background: ${palette.solid.white};
-  padding: 16px 0;
-`;
-
-export const LogoContainer = styled.div`
-  height: ${HEADER_BAR_HEIGHT}px;
-  width: ${HEADER_BAR_HEIGHT}px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: ${palette.solid.green};
-  transition: 0.3s ease;
-
-  &:hover {
-    cursor: pointer;
-    opacity: 0.9;
-  }
-`;
-
-export const Logo = styled.img`
-  width: 48px;
-  height: 48px;
-`;
+export const rem = (px: string, root?: number) => {
+  const pxAsNumber = Number(px.replace("px", ""));
+  return `${pxAsNumber / (root || 16)}rem`;
+};

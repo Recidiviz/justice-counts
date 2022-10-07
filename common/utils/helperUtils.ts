@@ -15,8 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { MetricContext } from "@justice-counts/common/types";
 import { debounce, memoize } from "lodash";
+
+import { MetricContext } from "../types";
 
 export const isPositiveNumber = (value: string | number) => {
   if (typeof value === "string") {

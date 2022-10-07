@@ -16,6 +16,13 @@
 // =============================================================================
 
 import {
+  Metric,
+  Report,
+  ReportOverview,
+  ReportStatus,
+  UpdatedMetricsValues,
+} from "@justice-counts/common/types";
+import {
   IReactionDisposer,
   makeAutoObservable,
   reaction,
@@ -24,13 +31,6 @@ import {
 
 import { UploadedFileStatus } from "../components/DataUpload";
 import { MetricSettings } from "../components/MetricsView";
-import {
-  Metric,
-  Report,
-  ReportOverview,
-  ReportStatus,
-  UpdatedMetricsValues,
-} from "../shared/types";
 import { groupBy } from "../utils/helperUtils";
 import API from "./API";
 import UserStore from "./UserStore";

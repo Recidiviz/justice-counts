@@ -15,13 +15,17 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 import {
+  HEADER_BAR_HEIGHT,
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
+import {
   DropdownMenu,
   DropdownMenuItem,
   DropdownToggle,
 } from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
-import { HEADER_BAR_HEIGHT, palette, typography } from "../GlobalStyles";
 import { ONE_PANEL_MAX_WIDTH } from "../Reports/ReportDataEntry.styles";
 
 export const MenuContainer = styled.nav`

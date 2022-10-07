@@ -15,8 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { makeAutoObservable } from "mobx";
-
 import {
   FormError,
   FormStoreContextValues,
@@ -24,7 +22,9 @@ import {
   FormStoreMetricValues,
   Metric,
   UpdatedMetricsValues,
-} from "../shared/types";
+} from "@justice-counts/common/types";
+import { makeAutoObservable } from "mobx";
+
 import {
   isPositiveNumber,
   normalizeToString,

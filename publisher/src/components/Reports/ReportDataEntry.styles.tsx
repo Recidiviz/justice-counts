@@ -15,10 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
 import React from "react";
 import styled from "styled-components/macro";
-
-import { palette, typography } from "../GlobalStyles";
 
 export const SIDE_PANEL_WIDTH = 360;
 export const DATA_ENTRY_WIDTH = 644;

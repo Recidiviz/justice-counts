@@ -15,12 +15,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
 import React from "react";
 import styled from "styled-components/macro";
 
 import { useStore } from "../../stores/StoreProvider";
 import logo from "../assets/jc-logo-green-vector.png";
-import { palette, typography } from "../GlobalStyles";
 
 export const PageContainer = styled.div`
   display: flex;

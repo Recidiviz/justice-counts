@@ -15,12 +15,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import notReportedIcon from "../assets/not-reported-icon.png";
-import { palette, typography } from "../GlobalStyles";
 import { TWO_PANEL_MAX_WIDTH } from "../Reports/ReportDataEntry.styles";
 
 export const NotReportedIconWrapper = styled.div<{

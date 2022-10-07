@@ -15,9 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { AgencySystems } from "@justice-counts/common/types";
 import React from "react";
 
-import { AgencySystems } from "../../shared/types";
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as CheckIcon } from "../assets/check-icon.svg";
 import {

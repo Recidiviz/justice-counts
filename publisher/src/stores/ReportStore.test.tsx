@@ -15,13 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { ReportOverview } from "@justice-counts/common/types";
 import { render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
 import React from "react";
 
 import mockJSON from "../mocks/reportOverviews.json";
 import Reports from "../pages/Reports";
-import { ReportOverview } from "../shared/types";
 import { rootStore, StoreProvider } from ".";
 
 const mockUnorderedReportsMap: { [reportID: string]: ReportOverview } = {};

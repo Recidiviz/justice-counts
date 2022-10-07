@@ -15,11 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { AgencySystems } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { AgencySystems } from "../../shared/types";
 import { useStore } from "../../stores";
 import logoImg from "../assets/jc-logo-vector.png";
 import { Logo, LogoContainer } from "../Header";

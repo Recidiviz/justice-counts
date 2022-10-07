@@ -15,12 +15,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/macro";
 
 import closeIcon from "../assets/dark-close-icon.png";
 import { ReactComponent as Logo } from "../assets/jc-logo-vector.svg";
-import { palette, typography } from "../GlobalStyles";
 import { ONE_PANEL_MAX_WIDTH } from "../Reports/ReportDataEntry.styles";
 import { OnboardingBackdropContainer, OnboardingContainer } from "./Onboarding";
 

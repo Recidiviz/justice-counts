@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { ReportFrequency } from "@justice-counts/common/types";
+import { ReportFrequency } from "../types";
 
 export const monthsByName = [
   "January",

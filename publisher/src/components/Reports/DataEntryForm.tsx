@@ -15,6 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  HEADER_BAR_HEIGHT,
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
 import { reaction, runInAction } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useRef, useState } from "react";
@@ -50,7 +55,6 @@ import {
   TabbedDisaggregations,
   Title,
 } from "../Forms";
-import { HEADER_BAR_HEIGHT, palette, typography } from "../GlobalStyles";
 import { Onboarding, OnboardingDataEntrySummary } from "../Onboarding";
 import { showToast } from "../Toast";
 import {

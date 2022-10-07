@@ -27,7 +27,7 @@ import {
 } from "recharts";
 import styled from "styled-components/macro";
 
-import { Datapoint } from "../../shared/types";
+import { Datapoint } from "../../types";
 import { rem } from "../../utils";
 import { palette } from "../GlobalStyles";
 import Tooltip from "./Tooltip";

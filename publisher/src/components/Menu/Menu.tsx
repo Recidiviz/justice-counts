@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
+import { Permission } from "@justice-counts/common/types";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { Permission } from "../../shared/types";
 import { useStore } from "../../stores";
 import { Button } from "../DataUpload";
 import {
