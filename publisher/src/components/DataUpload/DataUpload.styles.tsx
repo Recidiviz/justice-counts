@@ -513,19 +513,14 @@ export const ConfirmationPageContainer = styled.div`
   align-items: center;
 `;
 
-export const UploadedFilesContainer = styled.div`
-  max-height: 50vh;
-  overflow-y: scroll;
-`;
+export const UploadedFilesContainer = styled.div``;
 
 export const UploadedFilesWrapper = styled.div`
-  margin-top: 50px;
   position: relative;
 `;
 
 export const UploadedFilesTable = styled(Table)`
   padding: unset;
-  max-height: 40vh;
   overflow-y: scroll;
   padding-bottom: 50px;
 `;

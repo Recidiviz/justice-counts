@@ -23,12 +23,11 @@ import { trackNavigation } from "./analytics";
 import { DataUpload } from "./components/DataUpload";
 import { PageWrapper } from "./components/Forms";
 import Header from "./components/Header";
-import { MetricsView } from "./components/MetricsView";
 import CreateReports from "./components/Reports/CreateReport";
 import ReportDataEntry from "./components/Reports/ReportDataEntry";
 import ReviewMetrics from "./components/ReviewMetrics/ReviewMetrics";
-import AccountSettings from "./pages/AccountSettings";
 import Reports from "./pages/Reports";
+import Settings from "./pages/Settings";
 
 const App: React.FC = (): ReactElement => {
   const location = useLocation();
@@ -45,8 +44,7 @@ const App: React.FC = (): ReactElement => {
           <Route path="/" element={<Reports />} />
           <Route path="/reports/create" element={<CreateReports />} />
           <Route path="/reports/:id" element={<ReportDataEntry />} />
-          <Route path="/settings" element={<AccountSettings />} />
-          <Route path="/metrics" element={<MetricsView />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/upload" element={<DataUpload />} />
           <Route path="/review-metrics" element={<ReviewMetrics />} />
         </Routes>
