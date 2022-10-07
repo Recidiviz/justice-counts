@@ -16,6 +16,7 @@
 // =============================================================================
 
 import React, { useState } from "react";
+import { Route, Routes } from "react-router-dom";
 
 import { UploadedFiles } from "../components/DataUpload";
 import { MetricConfiguration } from "../components/MetricConfiguration";
@@ -26,12 +27,12 @@ import {
   SettingsMenu,
 } from "../components/Settings";
 
-export const menuOptions = [
-  "Your Account",
-  "Uploaded Files",
-  "Metric Configuration",
-] as const;
-export type MenuOptions = typeof menuOptions[number];
+export const menuOptions = {
+  "Your Account": "/settings/account",
+  "Uploaded Files": "/settings/uploaded-files",
+  "Metric Configuration": "/settings/metric-config",
+};
+// export type MenuOptions = typeof menuOptions[number];
 
 export type ListOfMetricsForNavigation = {
   key: string;
@@ -39,24 +40,19 @@ export type ListOfMetricsForNavigation = {
 };
 
 const Settings = () => {
-  const [activeMenuItem, setActiveMenuItem] = useState<MenuOptions>(
-    menuOptions[0]
-  );
-
-  const goToMenuItem = (destination: MenuOptions) =>
-    setActiveMenuItem(destination);
+  /** State specific to Metrics Configuration & Settings Menu */
 
   return (
     <SettingsContainer>
-      <SettingsMenu
-        activeMenuItem={activeMenuItem}
-        goToMenuItem={goToMenuItem}
-      />
+      <SettingsMenu />
 
       <ContentDisplay>
-        {activeMenuItem === "Your Account" && <AccountSettings />}
-        {activeMenuItem === "Uploaded Files" && <UploadedFiles />}
-        {activeMenuItem === "Metric Configuration" && <MetricConfiguration />}
+        <Routes>
+          <Route path="/" element={<AccountSettings />} />
+          <Route path="/account" element={<AccountSettings />} />
+          <Route path="/uploaded-files" element={<UploadedFiles />} />
+          <Route path="/metric-config" element={<MetricConfiguration />} />
+        </Routes>
       </ContentDisplay>
     </SettingsContainer>
   );

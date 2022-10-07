@@ -29,6 +29,7 @@ export const SettingsContainer = styled.div`
   align-items: flex-start;
   padding: 48px 24px 0 24px;
   position: fixed;
+  overflow-y: scroll;
 `;
 
 export const ContentDisplay = styled.div`
@@ -37,6 +38,7 @@ export const ContentDisplay = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   flex: 10 10 auto;
+  overflow-y: scroll;
 `;
 
 export const SettingsMenuContainer = styled.div`
@@ -46,7 +48,7 @@ export const SettingsMenuContainer = styled.div`
   flex: 0 0 auto;
   flex-direction: column;
   gap: 16px;
-  margin-right: 70px;
+  margin-right: 100px;
 `;
 
 export const MenuItem = styled.div<{ selected?: boolean }>`
