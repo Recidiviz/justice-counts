@@ -40,6 +40,7 @@ import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { showToast } from "../Toast";
 import {
   BackToMetrics,
+  BreakdownHeader,
   Dimension,
   DimensionTitle,
   DimensionTitleWrapper,
@@ -48,6 +49,7 @@ import {
   DisaggregationName,
   Header,
   Label,
+  Metric,
   MetricBoxContainer,
   MetricConfigurationContainer,
   MetricConfigurationDisplay,
@@ -151,9 +153,25 @@ const MetricConfiguration: React.FC<MetricConfigurationProps> = ({
   metricSettings,
   saveAndUpdateMetricSettings,
 }): JSX.Element => {
+  const [activeDisaggregation, setActiveDisaggregation] = useState(
+    metricSettings[activeMetricKey]?.disaggregations?.[0]
+  );
   const metricDisplayName = metricSettings[activeMetricKey]?.display_name;
   const metricEnabled = Boolean(metricSettings[activeMetricKey]?.enabled);
 
+  useEffect(
+    () => {
+      const updatedDisaggregation = metricSettings[
+        activeMetricKey
+      ]?.disaggregations?.find(
+        (disaggregation) => disaggregation.key === activeDisaggregation.key
+      );
+
+      if (updatedDisaggregation) setActiveDisaggregation(updatedDisaggregation);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [metricSettings]
+  );
   return (
     <MetricConfigurationContainer>
       <MetricOnOffWrapper>
@@ -197,106 +215,124 @@ const MetricConfiguration: React.FC<MetricConfigurationProps> = ({
         </RadioButtonGroupWrapper>
       </MetricOnOffWrapper>
 
-      <MetricDisaggregations enabled={metricEnabled}>
-        {metricSettings[activeMetricKey]?.disaggregations.length > 0 && (
-          <>
-            <Header>Breakdowns</Header>
-            <Subheader>
-              Turning any of these breakdowns “Off” means that they will not
-              appear on automatically generated reports from here on out. You
-              can change this later.
-            </Subheader>
-          </>
-        )}
+      {metricSettings[activeMetricKey]?.disaggregations.length > 0 && (
+        <MetricDisaggregations enabled={metricEnabled}>
+          <BreakdownHeader>Breakdowns</BreakdownHeader>
+          <Subheader>
+            Mark (using the checkmark) each of the breakdowns below that your
+            agency will be able to report. Click the arrow to edit the
+            definition for each metric.
+          </Subheader>
 
-        {metricSettings[activeMetricKey]?.disaggregations?.map(
-          (disaggregation) => {
-            return (
-              <Disaggregation key={disaggregation.key}>
-                <DisaggregationHeader>
-                  <DisaggregationName enabled={disaggregation.enabled}>
-                    {disaggregation.display_name}
-                  </DisaggregationName>
-
-                  <ToggleSwitchWrapper>
-                    <ToggleSwitchLabel switchedOn={disaggregation.enabled} />
-                    <ToggleSwitch>
-                      <ToggleSwitchInput
-                        type="checkbox"
-                        checked={disaggregation.enabled}
-                        onChange={() =>
-                          saveAndUpdateMetricSettings("DISAGGREGATION", {
-                            key: activeMetricKey,
-                            disaggregations: [
-                              {
-                                key: disaggregation.key,
-                                enabled: !disaggregation.enabled,
-                              },
-                            ],
-                          })
-                        }
-                      />
-                      <Slider />
-                    </ToggleSwitch>
-                  </ToggleSwitchWrapper>
-                </DisaggregationHeader>
-
-                {disaggregation?.dimensions.map((dimension) => {
-                  return (
-                    <Dimension
-                      key={dimension.key}
-                      enabled={!metricEnabled || disaggregation.enabled}
+          <TabbedBar noPadding>
+            <TabbedOptions>
+              {metricSettings[activeMetricKey]?.disaggregations?.map(
+                (disaggregation) => (
+                  <TabbedItem
+                    key={disaggregation.key}
+                    onClick={() => setActiveDisaggregation(disaggregation)}
+                    selected={disaggregation.key === activeDisaggregation.key}
+                    capitalize
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
                     >
-                      <DimensionTitleWrapper>
-                        <DimensionTitle
-                          enabled={disaggregation.enabled && dimension.enabled}
-                        >
-                          {dimension.label}
-                        </DimensionTitle>
-                      </DimensionTitleWrapper>
-
+                      <span style={{ paddingRight: 50 }}>
+                        {removeSnakeCase(
+                          disaggregation.display_name.toLowerCase()
+                        )}
+                      </span>
                       <ToggleSwitchWrapper>
                         <ToggleSwitchLabel
-                          switchedOn={
-                            disaggregation.enabled && dimension.enabled
-                          }
+                          switchedOn={disaggregation.enabled}
                         />
                         <ToggleSwitch>
                           <ToggleSwitchInput
                             type="checkbox"
-                            checked={
-                              disaggregation.enabled && dimension.enabled
+                            checked={disaggregation.enabled}
+                            onChange={() =>
+                              saveAndUpdateMetricSettings("DISAGGREGATION", {
+                                key: activeMetricKey,
+                                disaggregations: [
+                                  {
+                                    key: disaggregation.key,
+                                    enabled: !disaggregation.enabled,
+                                  },
+                                ],
+                              })
                             }
-                            onChange={() => {
-                              if (disaggregation.enabled) {
-                                saveAndUpdateMetricSettings("DIMENSION", {
-                                  key: activeMetricKey,
-                                  disaggregations: [
-                                    {
-                                      key: disaggregation.key,
-                                      dimensions: [
-                                        {
-                                          key: dimension.key,
-                                          enabled: !dimension.enabled,
-                                        },
-                                      ],
-                                    },
-                                  ],
-                                });
-                              }
-                            }}
                           />
                           <Slider />
                         </ToggleSwitch>
                       </ToggleSwitchWrapper>
-                    </Dimension>
-                  );
-                })}
-              </Disaggregation>
-            );
-          }
-        )}
-      </MetricDisaggregations>
+                    </div>
+                  </TabbedItem>
+                )
+              )}
+            </TabbedOptions>
+          </TabbedBar>
+
+          <Disaggregation>
+            {activeDisaggregation?.dimensions.map((dimension) => {
+              return (
+                <Dimension
+                  key={dimension.key}
+                  enabled={!metricEnabled || activeDisaggregation.enabled}
+                >
+                  <DimensionTitleWrapper>
+                    <DimensionTitle
+                      enabled={
+                        activeDisaggregation.enabled && dimension.enabled
+                      }
+                    >
+                      {dimension.label}
+                    </DimensionTitle>
+                  </DimensionTitleWrapper>
+
+                  <ToggleSwitchWrapper>
+                    <ToggleSwitchLabel
+                      switchedOn={
+                        activeDisaggregation.enabled && dimension.enabled
+                      }
+                    />
+                    <ToggleSwitch>
+                      <ToggleSwitchInput
+                        type="checkbox"
+                        checked={
+                          activeDisaggregation.enabled && dimension.enabled
+                        }
+                        onChange={() => {
+                          if (activeDisaggregation.enabled) {
+                            saveAndUpdateMetricSettings("DIMENSION", {
+                              key: activeMetricKey,
+                              disaggregations: [
+                                {
+                                  key: activeDisaggregation.key,
+                                  dimensions: [
+                                    {
+                                      key: dimension.key,
+                                      enabled: !dimension.enabled,
+                                    },
+                                  ],
+                                },
+                              ],
+                            });
+                          }
+                        }}
+                      />
+                      <Slider />
+                    </ToggleSwitch>
+                  </ToggleSwitchWrapper>
+                </Dimension>
+              );
+            })}
+          </Disaggregation>
+        </MetricDisaggregations>
+      )}
     </MetricConfigurationContainer>
   );
 };
@@ -851,9 +887,14 @@ export const MetricsView: React.FC = observer(() => {
                 ← Back to Metrics
               </BackToMetrics>
 
-              <MetricName isTitle>
-                {metricSettings[activeMetricKey]?.display_name}
-              </MetricName>
+              <Metric>
+                <MetricName isTitle>
+                  {metricSettings[activeMetricKey]?.display_name}
+                </MetricName>
+                <Badge color="GREEN" noMargin>
+                  {metricSettings[activeMetricKey]?.frequency}
+                </Badge>
+              </Metric>
 
               <MetricDetailsDisplay>
                 <MetricConfiguration
@@ -861,11 +902,11 @@ export const MetricsView: React.FC = observer(() => {
                   metricSettings={metricSettings}
                   saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
                 />
-                <MetricContextConfiguration
+                {/* <MetricContextConfiguration
                   metricKey={activeMetricKey}
                   contexts={metricSettings[activeMetricKey]?.contexts}
                   saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
-                />
+                /> */}
               </MetricDetailsDisplay>
             </MetricConfigurationDisplay>
           )}

@@ -99,6 +99,28 @@ export const MetricNameBadgeWrapper = styled.div`
   align-items: center;
 `;
 
+export const Metric = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  border-bottom: 1px solid ${palette.solid.darkgrey};
+  padding-bottom: 8px;
+  padding-right: 50px;
+  position: relative;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:hover:after {
+    content: "➝";
+    position: absolute;
+    ${typography.sizeCSS.title}
+    right: 0;
+  }
+`;
+
 type MetricNameProps = { isTitle?: boolean };
 
 export const MetricName = styled.div<MetricNameProps>`
@@ -123,17 +145,21 @@ export const MetricDetailsDisplay = styled.div`
 `;
 
 export const MetricOnOffWrapper = styled.div`
-  margin-bottom: 49px;
+  margin-bottom: 24px;
 `;
 
 export const Header = styled.div`
   ${typography.sizeCSS.medium};
-  margin-bottom: 16px;
+  margin-bottom: 8px;
+`;
+
+export const BreakdownHeader = styled(Header)`
+  padding-top: 24px;
+  border-top: 1px solid ${palette.highlight.grey5};
 `;
 
 export const Subheader = styled.div`
   ${typography.sizeCSS.normal};
-  color: ${palette.highlight.grey9};
   margin-bottom: 9px;
 `;
 
@@ -187,7 +213,7 @@ export const Dimension = styled.div<{ enabled?: boolean }>`
   align-items: center;
   justify-content: space-between;
   padding: 8px 0;
-  border-bottom: 1px dashed ${palette.highlight.grey9};
+  border-bottom: 1px solid ${palette.highlight.grey4};
   position: relative;
 
   &:last-child {

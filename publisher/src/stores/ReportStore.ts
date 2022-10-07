@@ -23,7 +23,7 @@ import {
 } from "mobx";
 
 import { UploadedFileStatus } from "../components/DataUpload";
-import { MetricSettings } from "../components/MetricsView";
+import { MetricSettings } from "../components/MetricConfiguration";
 import {
   Metric,
   Report,

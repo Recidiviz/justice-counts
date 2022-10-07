@@ -18,7 +18,7 @@
 import React, { useState } from "react";
 
 import { UploadedFiles } from "../components/DataUpload";
-import { MetricsView } from "../components/MetricsView";
+import { MetricsView } from "../components/MetricConfiguration";
 import {
   AccountSettings,
   ContentDisplay,

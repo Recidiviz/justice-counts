@@ -88,9 +88,8 @@ export const RadioButtonLabel = styled.label<{
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${palette.highlight.grey1};
   padding: 16px 24px;
-  border: 1px solid ${palette.highlight.grey3};
+  border: 1px solid ${palette.highlight.grey4};
   border-radius: 2px;
   transition: 0.2s ease;
 
