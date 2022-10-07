@@ -31,6 +31,7 @@ export const MetricsViewControlPanel = styled.div`
   height: calc(100% - 170px);
   width: 100%;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
 `;
 
@@ -55,33 +56,29 @@ export const PanelContainerRight = styled.div`
 
 type MetricBoxContainerProps = {
   enabled?: boolean;
-  selected?: boolean;
 };
 
 export const MetricBoxContainer = styled.div<MetricBoxContainerProps>`
+  height: 197px;
+  max-width: 50%;
   display: flex;
+  flex: 1 1 50%;
   flex-direction: column;
-  border: 1px solid
-    ${({ selected }) =>
-      selected ? palette.solid.blue : palette.highlight.grey2};
-  border-radius: 12px;
-  padding: 15px;
-  margin-bottom: 11px;
+  justify-content: space-between;
+  border: 1px solid ${palette.highlight.grey2};
+  padding: 27px 24px;
   transition: 0.2s ease;
   color: ${({ enabled }) =>
-    enabled ? palette.solid.darkgrey : palette.highlight.grey7};
-  ${({ selected }) =>
-    selected && `box-shadow: 0px 4px 10px ${palette.highlight.blue};`}
+    enabled ? palette.solid.darkgrey : palette.highlight.grey10};
 
   &:hover {
     cursor: pointer;
-    ${({ selected }) =>
-      !selected && `border: 1px solid ${palette.highlight.lightblue2}`};
+    border: 1px solid ${palette.solid.blue};
   }
 `;
 
 export const MetricBoxWrapper = styled.div`
-  display: block;
+  display: flex;
 `;
 
 export const ActiveMetricSettingHeader = styled.div`
@@ -106,12 +103,13 @@ type MetricNameProps = { isTitle?: boolean };
 
 export const MetricName = styled.div<MetricNameProps>`
   ${({ isTitle }) =>
-    isTitle ? typography.sizeCSS.title : typography.sizeCSS.medium}
+    isTitle ? typography.sizeCSS.title : typography.sizeCSS.large}
 `;
 
 export const MetricDescription = styled.div`
   ${typography.sizeCSS.normal}
-  color: ${palette.highlight.grey9};
+  height: 100%;
+  margin: 11px 0;
 
   @media only screen and (max-width: 1000px) {
     ${typography.sizeCSS.small}
@@ -121,7 +119,7 @@ export const MetricDescription = styled.div`
 export const MetricDetailsDisplay = styled.div`
   width: 100%;
   overflow-y: scroll;
-  padding: 24px 15px 0 15px;
+  padding: 24px 0;
 `;
 
 export const MetricOnOffWrapper = styled.div`
@@ -327,4 +325,29 @@ export const MetricSettingsDisplayError = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 50px;
+`;
+
+export const StickyHeader = styled.div`
+  width: 100%;
+  position: sticky;
+  top: 0;
+  background: ${palette.solid.white};
+  margin-bottom: 29px;
+`;
+
+export const BackToMetrics = styled.div`
+  color: ${palette.solid.blue};
+  transition: 0.2s ease;
+  margin-bottom: 24px;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.85;
+  }
+`;
+
+export const MetricConfigurationDisplay = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 `;
