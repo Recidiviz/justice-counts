@@ -88,6 +88,7 @@ export const DatapointsViewControlsContainer = styled.div`
   display: flex;
   flex-direction: row;
   border-bottom: 1px solid ${palette.highlight.grey9};
+  border-top: 1px solid ${palette.highlight.grey9};
 `;
 
 const DatapointsViewDropdown = styled(Dropdown)`

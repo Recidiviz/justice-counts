@@ -64,7 +64,7 @@ export const TabbedItem = styled.div<{
   padding: 24px 0 16px 0;
   margin-right: 20px;
   color: ${({ selected }) =>
-    selected ? palette.solid.darkgrey : palette.highlight.grey9};
+    selected ? palette.solid.blue : palette.highlight.grey9};
   border-bottom: ${({ selected }) =>
     selected ? `3px solid ${palette.solid.blue}` : `3px solid transparent`};
   transition: color 0.3s ease;
@@ -72,7 +72,7 @@ export const TabbedItem = styled.div<{
 
   &:hover {
     cursor: pointer;
-    color: ${palette.solid.darkgrey};
+    color: ${palette.solid.blue};
   }
 `;
 
