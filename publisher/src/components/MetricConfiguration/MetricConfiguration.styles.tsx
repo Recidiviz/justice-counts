@@ -455,7 +455,7 @@ export const NoDefinitionsSelected = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  padding: 111px 59px;
+  padding: 59px;
   border: 1px solid ${palette.highlight.grey5};
   color: ${palette.highlight.grey12};
   text-align: center;

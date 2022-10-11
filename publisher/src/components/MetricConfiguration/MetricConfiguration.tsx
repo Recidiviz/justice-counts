@@ -852,7 +852,7 @@ export const MetricsView: React.FC = observer(() => {
                     }
                     capitalize
                   >
-                    <span>{removeSnakeCase(filterOption.toLowerCase())}</span>
+                    {removeSnakeCase(filterOption.toLowerCase())}
                   </TabbedItem>
                 ))}
               </TabbedOptions>
