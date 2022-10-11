@@ -432,4 +432,31 @@ export const MetricConfigurationDisplay = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  flex: 1 1 50%;
+`;
+
+export const MetricConfigurationWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 126px;
+`;
+
+export const DefinitionsDisplay = styled.div`
+  display: flex;
+  flex: 1 1 50%;
+  padding-top: 44px;
+`;
+
+export const NoDefinitionsSelected = styled.div`
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 111px 59px;
+  border: 1px solid ${palette.highlight.grey5};
+  color: ${palette.highlight.grey12};
+  text-align: center;
 `;

@@ -27,6 +27,7 @@ import {
   removeCommaSpaceAndTrim,
   removeSnakeCase,
 } from "../../utils";
+import { ReactComponent as GearsIcon } from "../assets/gears-icon.svg";
 import blueCheck from "../assets/status-check-icon.png";
 import { Badge } from "../Badge";
 import {
@@ -45,6 +46,7 @@ import {
   BreakdownHeader,
   Checkbox,
   CheckboxWrapper,
+  DefinitionsDisplay,
   Dimension,
   DimensionTitle,
   DimensionTitleWrapper,
@@ -56,6 +58,7 @@ import {
   MetricBoxContainer,
   MetricConfigurationContainer,
   MetricConfigurationDisplay,
+  MetricConfigurationWrapper,
   MetricContextContainer,
   MetricContextItem,
   MetricDescription,
@@ -67,6 +70,7 @@ import {
   MetricsViewContainer,
   MetricsViewControlPanel,
   MultipleChoiceWrapper,
+  NoDefinitionsSelected,
   RadioButtonGroupWrapper,
   StickyHeader,
   Subheader,
@@ -873,33 +877,43 @@ export const MetricsView: React.FC = observer(() => {
 
           {/* Metric Configuration */}
           {activeMetricKey && (
-            <MetricConfigurationDisplay>
-              <BackToMetrics onClick={() => setActiveMetricKey("")}>
-                ← Back to Metrics
-              </BackToMetrics>
+            <MetricConfigurationWrapper>
+              <MetricConfigurationDisplay>
+                <BackToMetrics onClick={() => setActiveMetricKey("")}>
+                  ← Back to Metrics
+                </BackToMetrics>
 
-              <Metric>
-                <MetricName isTitle>
-                  {metricSettings[activeMetricKey]?.display_name}
-                </MetricName>
-                <Badge color="GREEN" noMargin>
-                  {metricSettings[activeMetricKey]?.frequency}
-                </Badge>
-              </Metric>
+                <Metric>
+                  <MetricName isTitle>
+                    {metricSettings[activeMetricKey]?.display_name}
+                  </MetricName>
+                  <Badge color="GREEN" noMargin>
+                    {metricSettings[activeMetricKey]?.frequency}
+                  </Badge>
+                </Metric>
 
-              <MetricDetailsDisplay>
-                <MetricConfiguration
-                  activeMetricKey={activeMetricKey}
-                  metricSettings={metricSettings}
-                  saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
-                />
-                {/* <MetricContextConfiguration
+                <MetricDetailsDisplay>
+                  <MetricConfiguration
+                    activeMetricKey={activeMetricKey}
+                    metricSettings={metricSettings}
+                    saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
+                  />
+                  {/* <MetricContextConfiguration
                   metricKey={activeMetricKey}
                   contexts={metricSettings[activeMetricKey]?.contexts}
                   saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
                 /> */}
-              </MetricDetailsDisplay>
-            </MetricConfigurationDisplay>
+                </MetricDetailsDisplay>
+              </MetricConfigurationDisplay>
+
+              <DefinitionsDisplay>
+                <NoDefinitionsSelected>
+                  <GearsIcon />
+                  Choose the Annual or Monthly reporting frequency to edit the
+                  definitions and context.
+                </NoDefinitionsSelected>
+              </DefinitionsDisplay>
+            </MetricConfigurationWrapper>
           )}
         </MetricsViewControlPanel>
       </MetricsViewContainer>
