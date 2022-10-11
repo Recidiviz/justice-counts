@@ -27,6 +27,7 @@ import {
   removeCommaSpaceAndTrim,
   removeSnakeCase,
 } from "../../utils";
+import blueCheck from "../assets/status-check-icon.png";
 import { Badge } from "../Badge";
 import {
   BinaryRadioButton,
@@ -40,13 +41,15 @@ import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { showToast } from "../Toast";
 import {
   BackToMetrics,
+  BlueCheckIcon,
   BreakdownHeader,
+  Checkbox,
+  CheckboxWrapper,
   Dimension,
   DimensionTitle,
   DimensionTitleWrapper,
   Disaggregation,
-  DisaggregationHeader,
-  DisaggregationName,
+  DisaggregationTab,
   Header,
   Label,
   Metric,
@@ -65,13 +68,8 @@ import {
   MetricsViewControlPanel,
   MultipleChoiceWrapper,
   RadioButtonGroupWrapper,
-  Slider,
   StickyHeader,
   Subheader,
-  ToggleSwitch,
-  ToggleSwitchInput,
-  ToggleSwitchLabel,
-  ToggleSwitchWrapper,
 } from ".";
 
 type MetricsViewMetric = {
@@ -234,42 +232,36 @@ const MetricConfiguration: React.FC<MetricConfigurationProps> = ({
                     selected={disaggregation.key === activeDisaggregation.key}
                     capitalize
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <span style={{ paddingRight: 50 }}>
+                    <DisaggregationTab>
+                      <span>
                         {removeSnakeCase(
                           disaggregation.display_name.toLowerCase()
                         )}
                       </span>
-                      <ToggleSwitchWrapper>
-                        <ToggleSwitchLabel
-                          switchedOn={disaggregation.enabled}
+
+                      <CheckboxWrapper>
+                        <Checkbox
+                          type="checkbox"
+                          checked={disaggregation.enabled}
+                          onChange={() =>
+                            saveAndUpdateMetricSettings("DISAGGREGATION", {
+                              key: activeMetricKey,
+                              disaggregations: [
+                                {
+                                  key: disaggregation.key,
+                                  enabled: !disaggregation.enabled,
+                                },
+                              ],
+                            })
+                          }
                         />
-                        <ToggleSwitch>
-                          <ToggleSwitchInput
-                            type="checkbox"
-                            checked={disaggregation.enabled}
-                            onChange={() =>
-                              saveAndUpdateMetricSettings("DISAGGREGATION", {
-                                key: activeMetricKey,
-                                disaggregations: [
-                                  {
-                                    key: disaggregation.key,
-                                    enabled: !disaggregation.enabled,
-                                  },
-                                ],
-                              })
-                            }
-                          />
-                          <Slider />
-                        </ToggleSwitch>
-                      </ToggleSwitchWrapper>
-                    </div>
+                        <BlueCheckIcon
+                          src={blueCheck}
+                          alt=""
+                          enabled={disaggregation.enabled}
+                        />
+                      </CheckboxWrapper>
+                    </DisaggregationTab>
                   </TabbedItem>
                 )
               )}
@@ -283,6 +275,40 @@ const MetricConfiguration: React.FC<MetricConfigurationProps> = ({
                   key={dimension.key}
                   enabled={!metricEnabled || activeDisaggregation.enabled}
                 >
+                  <CheckboxWrapper>
+                    <Checkbox
+                      type="checkbox"
+                      checked={
+                        activeDisaggregation.enabled && dimension.enabled
+                      }
+                      onChange={() => {
+                        if (activeDisaggregation.enabled) {
+                          saveAndUpdateMetricSettings("DIMENSION", {
+                            key: activeMetricKey,
+                            disaggregations: [
+                              {
+                                key: activeDisaggregation.key,
+                                dimensions: [
+                                  {
+                                    key: dimension.key,
+                                    enabled: !dimension.enabled,
+                                  },
+                                ],
+                              },
+                            ],
+                          });
+                        }
+                      }}
+                    />
+                    <BlueCheckIcon
+                      src={blueCheck}
+                      alt=""
+                      enabled={
+                        activeDisaggregation.enabled && dimension.enabled
+                      }
+                    />
+                  </CheckboxWrapper>
+
                   <DimensionTitleWrapper>
                     <DimensionTitle
                       enabled={
@@ -292,41 +318,6 @@ const MetricConfiguration: React.FC<MetricConfigurationProps> = ({
                       {dimension.label}
                     </DimensionTitle>
                   </DimensionTitleWrapper>
-
-                  <ToggleSwitchWrapper>
-                    <ToggleSwitchLabel
-                      switchedOn={
-                        activeDisaggregation.enabled && dimension.enabled
-                      }
-                    />
-                    <ToggleSwitch>
-                      <ToggleSwitchInput
-                        type="checkbox"
-                        checked={
-                          activeDisaggregation.enabled && dimension.enabled
-                        }
-                        onChange={() => {
-                          if (activeDisaggregation.enabled) {
-                            saveAndUpdateMetricSettings("DIMENSION", {
-                              key: activeMetricKey,
-                              disaggregations: [
-                                {
-                                  key: activeDisaggregation.key,
-                                  dimensions: [
-                                    {
-                                      key: dimension.key,
-                                      enabled: !dimension.enabled,
-                                    },
-                                  ],
-                                },
-                              ],
-                            });
-                          }
-                        }}
-                      />
-                      <Slider />
-                    </ToggleSwitch>
-                  </ToggleSwitchWrapper>
                 </Dimension>
               );
             })}
