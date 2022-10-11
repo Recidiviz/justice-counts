@@ -356,6 +356,8 @@ type MetricContextConfigurationProps = {
   ) => void;
 };
 
+// TODO(#73) Plug into the Definitions panel once implemented
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const MetricContextConfiguration: React.FC<MetricContextConfigurationProps> = ({
   metricKey,
   contexts,
@@ -850,7 +852,7 @@ export const MetricsView: React.FC = observer(() => {
                     }
                     capitalize
                   >
-                    {removeSnakeCase(filterOption.toLowerCase())}
+                    <span>{removeSnakeCase(filterOption.toLowerCase())}</span>
                   </TabbedItem>
                 ))}
               </TabbedOptions>
