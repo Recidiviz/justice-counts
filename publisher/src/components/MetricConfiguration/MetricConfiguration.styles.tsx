@@ -59,7 +59,7 @@ type MetricBoxContainerProps = {
 };
 
 export const MetricBoxContainer = styled.div<MetricBoxContainerProps>`
-  height: 197px;
+  min-height: 150px;
   max-width: 50%;
   display: flex;
   flex: 1 1 50%;

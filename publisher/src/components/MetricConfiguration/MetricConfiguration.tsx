@@ -142,7 +142,7 @@ const MetricBox: React.FC<MetricBoxProps> = ({
 
 type MetricConfigurationProps = {
   activeMetricKey: string;
-  metricSettings: { [key: string]: MetricsViewMetric };
+  filteredMetricSettings: { [key: string]: MetricsViewMetric };
   saveAndUpdateMetricSettings: (
     typeOfUpdate: "METRIC" | "DISAGGREGATION" | "DIMENSION" | "CONTEXT",
     updatedSetting: MetricSettings,
@@ -152,18 +152,21 @@ type MetricConfigurationProps = {
 
 const MetricConfiguration: React.FC<MetricConfigurationProps> = ({
   activeMetricKey,
-  metricSettings,
+  filteredMetricSettings,
   saveAndUpdateMetricSettings,
 }): JSX.Element => {
   const [activeDisaggregation, setActiveDisaggregation] = useState(
-    metricSettings[activeMetricKey]?.disaggregations?.[0]
+    filteredMetricSettings[activeMetricKey]?.disaggregations?.[0]
   );
-  const metricDisplayName = metricSettings[activeMetricKey]?.display_name;
-  const metricEnabled = Boolean(metricSettings[activeMetricKey]?.enabled);
+  const metricDisplayName =
+    filteredMetricSettings[activeMetricKey]?.display_name;
+  const metricEnabled = Boolean(
+    filteredMetricSettings[activeMetricKey]?.enabled
+  );
 
   useEffect(
     () => {
-      const updatedDisaggregation = metricSettings[
+      const updatedDisaggregation = filteredMetricSettings[
         activeMetricKey
       ]?.disaggregations?.find(
         (disaggregation) => disaggregation.key === activeDisaggregation.key
@@ -172,7 +175,7 @@ const MetricConfiguration: React.FC<MetricConfigurationProps> = ({
       if (updatedDisaggregation) setActiveDisaggregation(updatedDisaggregation);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [metricSettings]
+    [filteredMetricSettings]
   );
   return (
     <MetricConfigurationContainer>
@@ -217,7 +220,7 @@ const MetricConfiguration: React.FC<MetricConfigurationProps> = ({
         </RadioButtonGroupWrapper>
       </MetricOnOffWrapper>
 
-      {metricSettings[activeMetricKey]?.disaggregations.length > 0 && (
+      {filteredMetricSettings[activeMetricKey]?.disaggregations.length > 0 && (
         <MetricDisaggregations enabled={metricEnabled}>
           <BreakdownHeader>Breakdowns</BreakdownHeader>
           <Subheader>
@@ -228,7 +231,7 @@ const MetricConfiguration: React.FC<MetricConfigurationProps> = ({
 
           <TabbedBar noPadding>
             <TabbedOptions>
-              {metricSettings[activeMetricKey]?.disaggregations?.map(
+              {filteredMetricSettings[activeMetricKey]?.disaggregations?.map(
                 (disaggregation) => (
                   <TabbedItem
                     key={disaggregation.key}
@@ -546,6 +549,10 @@ export type MetricSettings = {
   }[];
 };
 
+type MetricSettingsObj = {
+  [key: string]: MetricsViewMetric;
+};
+
 export const MetricsView: React.FC = observer(() => {
   const { reportStore, userStore, datapointsStore } = useStore();
 
@@ -558,9 +565,18 @@ export const MetricsView: React.FC = observer(() => {
   const [metricSettings, setMetricSettings] = useState<{
     [key: string]: MetricsViewMetric;
   }>({});
-  const [filteredMetricSettings, setFilteredMetricSettings] = useState<{
-    [key: string]: MetricsViewMetric;
-  }>({});
+
+  const filteredMetricSettings: MetricSettingsObj = Object.values(
+    metricSettings
+  )
+    .filter(
+      (metric) =>
+        metric.system.toLowerCase() === activeMetricFilter?.toLowerCase()
+    )
+    ?.reduce((res: MetricSettingsObj, metric) => {
+      res[metric.key] = metric;
+      return res;
+    }, {});
 
   const updateMetricSettings = (
     typeOfUpdate: MetricSettingsUpdateOptions,
@@ -810,22 +826,6 @@ export const MetricsView: React.FC = observer(() => {
     [userStore]
   );
 
-  useEffect(() => {
-    const filteredMetricKeyToMetricMap: { [key: string]: MetricsViewMetric } =
-      {};
-
-    Object.values(metricSettings)
-      .filter(
-        (metric) =>
-          metric.system.toLowerCase() === activeMetricFilter?.toLowerCase()
-      )
-      ?.forEach((metric) => {
-        filteredMetricKeyToMetricMap[metric.key] = metric;
-      });
-
-    return setFilteredMetricSettings(filteredMetricKeyToMetricMap);
-  }, [metricSettings, activeMetricFilter]);
-
   if (isLoading) {
     return <Loading />;
   }
@@ -897,7 +897,7 @@ export const MetricsView: React.FC = observer(() => {
                 <MetricDetailsDisplay>
                   <MetricConfiguration
                     activeMetricKey={activeMetricKey}
-                    metricSettings={metricSettings}
+                    filteredMetricSettings={filteredMetricSettings}
                     saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
                   />
                   {/* <MetricContextConfiguration
