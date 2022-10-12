@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { ReportOverview } from "@justice-counts/common/types";
-import { render, screen, act } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
 import React from "react";
 

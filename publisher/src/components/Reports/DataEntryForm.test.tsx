@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { fireEvent, render, screen, act } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
 import React from "react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -39,8 +39,8 @@ test("display loading when no reports are loaded", async () => {
       <ReportDataEntry />
     </StoreProvider>
   );
+  const loading = screen.getByTestId("loading");
   await act(async () => {
-    const loading = screen.getByTestId("loading");
     expect(loading).toBeInTheDocument();
   });
   expect.hasAssertions();
