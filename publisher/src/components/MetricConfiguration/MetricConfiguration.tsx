@@ -27,7 +27,6 @@ import {
   removeCommaSpaceAndTrim,
   removeSnakeCase,
 } from "../../utils";
-import { ReactComponent as GearsIcon } from "../assets/gears-icon.svg";
 import blueCheck from "../assets/status-check-icon.png";
 import { Badge } from "../Badge";
 import {
@@ -46,7 +45,6 @@ import {
   BreakdownHeader,
   Checkbox,
   CheckboxWrapper,
-  DefinitionsDisplay,
   Dimension,
   DimensionTitle,
   DimensionTitleWrapper,
@@ -61,6 +59,7 @@ import {
   MetricConfigurationWrapper,
   MetricContextContainer,
   MetricContextItem,
+  MetricDefinitions,
   MetricDescription,
   MetricDetailsDisplay,
   MetricDisaggregations,
@@ -76,7 +75,7 @@ import {
   Subheader,
 } from ".";
 
-type MetricsViewMetric = {
+export type MetricsViewMetric = {
   key: string;
   display_name: string;
   description: string;
@@ -908,13 +907,10 @@ export const MetricsView: React.FC = observer(() => {
                 </MetricDetailsDisplay>
               </MetricConfigurationDisplay>
 
-              <DefinitionsDisplay>
-                <NoDefinitionsSelected>
-                  <GearsIcon />
-                  Choose the Annual or Monthly reporting frequency to edit the
-                  definitions and context.
-                </NoDefinitionsSelected>
-              </DefinitionsDisplay>
+              <MetricDefinitions
+                activeMetricKey={activeMetricKey}
+                filteredMetricSettings={filteredMetricSettings}
+              />
             </MetricConfigurationWrapper>
           )}
         </MetricsViewControlPanel>

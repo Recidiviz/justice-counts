@@ -17,7 +17,7 @@
 
 import styled from "styled-components/macro";
 
-import { BinaryRadioGroupWrapper } from "../Forms";
+import { BinaryRadioGroupWrapper, Button } from "../Forms";
 import { palette, typography } from "../GlobalStyles";
 
 export const MetricsViewContainer = styled.div`
@@ -442,10 +442,93 @@ export const MetricConfigurationWrapper = styled.div`
   gap: 126px;
 `;
 
-export const DefinitionsDisplay = styled.div`
+export const DefinitionsDisplayContainer = styled.div`
   display: flex;
   flex: 1 1 50%;
-  padding-top: 44px;
+  padding-top: 48px;
+`;
+
+export const DefinitionsDisplay = styled.div`
+  width: 100%;
+`;
+
+export const DefinitionsTitle = styled.div`
+  ${typography.sizeCSS.large}
+  margin-bottom: 24px;
+`;
+
+export const DefinitionsSubTitle = styled.div`
+  ${typography.sizeCSS.medium}
+  margin-bottom: 16px;
+`;
+
+export const DefinitionsDescription = styled.div`
+  ${typography.sizeCSS.normal}
+  margin-bottom: 32px;
+
+  span {
+    display: block;
+    color: ${palette.solid.orange};
+  }
+`;
+
+export const RevertToDefaultButton = styled(Button)`
+  ${typography.sizeCSS.normal}
+  background: ${palette.solid.white};
+  height: unset;
+  padding: 9px 0;
+`;
+
+export const Definitions = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+`;
+
+export const DefinitionItem = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const DefinitionDisplayName = styled.div`
+  ${typography.sizeCSS.medium}
+`;
+
+export const DefinitionSelection = styled.div`
+  display: flex;
+  gap: 4px;
+`;
+
+export const DefinitionMiniButton = styled(RevertToDefaultButton)<{
+  selected?: boolean;
+}>`
+  width: unset;
+  padding: 9px 16px;
+
+  ${({ selected }) =>
+    selected &&
+    `
+      color: ${palette.solid.white};
+      background: ${palette.highlight.grey9};
+      
+      &:hover {
+        background: ${palette.highlight.grey9};
+        opacity: 0.9;
+      }
+
+      &:nth-child(3) {
+        background: ${palette.solid.blue};
+
+        &:hover {
+        opacity: 0.9;
+        }
+      }
+
+
+  `};
 `;
 
 export const NoDefinitionsSelected = styled.div`

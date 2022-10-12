@@ -17,3 +17,4 @@
 
 export * from "./MetricConfiguration";
 export * from "./MetricConfiguration.styles";
+export * from "./MetricDefinitions";
