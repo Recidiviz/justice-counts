@@ -15,6 +15,34 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { createGlobalStyle } from "styled-components/macro";
+import { palette } from "./Palette";
+
+export const GlobalStyle = createGlobalStyle`
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body, #root {
+    height: 100%;
+  }
+
+  body {
+    width: 100%;
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    background-color: ${palette.solid.white};
+    color: ${palette.solid.darkgrey};
+  }
+
+  input, textarea {
+    font-family: "Inter", sans-serif;
+  }
+`;
+
 export * from "./constants";
 export * from "./Palette";
 export * from "./Typography";

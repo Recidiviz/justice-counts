@@ -18,10 +18,11 @@
 import styled from "styled-components/macro";
 
 export const Container = styled.div`
+  height: 100%;
   width: 100%;
-  min-height: 100%;
+  position: absolute;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  justify-content: stretch;
+  align-items: stretch;
 `;

@@ -269,10 +269,12 @@ export const DataVizTimeRangesMap: { [key: string]: DataVizTimeRange } = {
 
 export type DatapointsViewSetting = "Count" | "Percentage";
 
+export interface DimensionNamesByDisaggregation {
+  [disaggregation: string]: string[];
+}
+
 export interface DimensionNamesByMetricAndDisaggregation {
-  [metric: string]: {
-    [disaggregation: string]: string[];
-  };
+  [metric: string]: DimensionNamesByDisaggregation;
 }
 
 export const DataVizAggregateName = "Total";

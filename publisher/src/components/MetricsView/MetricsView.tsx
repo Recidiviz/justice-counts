@@ -32,7 +32,7 @@ import {
   removeSnakeCase,
 } from "../../utils";
 import { Badge, BadgeColorMapping } from "../Badge";
-import DatapointsView from "../DataViz/DatapointsView";
+import ConnectedDatapointsView from "../DataViz/ConnectedDatapointsView";
 import {
   BinaryRadioButton,
   BinaryRadioGroupClearButton,
@@ -929,7 +929,7 @@ export const MetricsView: React.FC = observer(() => {
 
             {/* Data */}
             {activeConfigSection === "Data" && (
-              <DatapointsView metric={activeMetricKey} />
+              <ConnectedDatapointsView metric={activeMetricKey} />
             )}
 
             {/* Configuration */}

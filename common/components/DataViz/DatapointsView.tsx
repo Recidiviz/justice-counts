@@ -22,11 +22,10 @@ import {
   DatapointsViewSetting,
   DataVizAggregateName,
   DataVizTimeRangesMap,
+  DimensionNamesByDisaggregation,
 } from "@justice-counts/common/types";
-import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 
-import { useStore } from "../../stores";
 import {
   DatapointsViewContainer,
   DatapointsViewControlsContainer,
@@ -46,10 +45,13 @@ import {
 
 const noDisaggregationOption = "None";
 
-const DatapointsView: React.FC<{
-  metric: string;
-}> = ({ metric }) => {
-  const { datapointsStore } = useStore();
+export const DatapointsView: React.FC<{
+  datapointsGroupedByAggregateAndDisaggregations: DatapointsGroupedByAggregateAndDisaggregations;
+  dimensionNamesByDisaggregation: DimensionNamesByDisaggregation;
+}> = ({
+  datapointsGroupedByAggregateAndDisaggregations,
+  dimensionNamesByDisaggregation,
+}) => {
   const [selectedTimeRange, setSelectedTimeRange] =
     React.useState<string>("All");
   const [selectedDisaggregation, setSelectedDisaggregation] =
@@ -57,28 +59,22 @@ const DatapointsView: React.FC<{
   const [datapointsViewSetting, setDatapointsViewSetting] =
     React.useState<DatapointsViewSetting>("Count");
 
-  const datapointsForMetric = datapointsStore.datapointsByMetric[
-    metric
-  ] as DatapointsGroupedByAggregateAndDisaggregations;
   const data =
     (selectedDisaggregation !== noDisaggregationOption &&
       Object.values(
-        datapointsForMetric.disaggregations[selectedDisaggregation] || {}
+        datapointsGroupedByAggregateAndDisaggregations.disaggregations[
+          selectedDisaggregation
+        ] || {}
       )) ||
-    datapointsForMetric?.aggregate ||
+    datapointsGroupedByAggregateAndDisaggregations?.aggregate ||
     [];
   const isAnnual = data[0]?.frequency === "ANNUAL";
-  const disaggregationOptions = Object.keys(
-    datapointsStore.dimensionNamesByMetricAndDisaggregation[metric] || {}
-  );
+  const disaggregations = Object.keys(dimensionNamesByDisaggregation);
+  const disaggregationOptions = [...disaggregations];
   disaggregationOptions.unshift(noDisaggregationOption);
   const dimensionNames =
     selectedDisaggregation !== noDisaggregationOption
-      ? (
-          datapointsStore.dimensionNamesByMetricAndDisaggregation[metric]?.[
-            selectedDisaggregation
-          ] || []
-        )
+      ? (dimensionNamesByDisaggregation[selectedDisaggregation] || [])
           .slice() // Must use slice() before sorting a MobX observableArray
           .sort(sortDatapointDimensions)
       : [DataVizAggregateName];
@@ -97,7 +93,7 @@ const DatapointsView: React.FC<{
       setDatapointsViewSetting("Count");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [metric]);
+  }, [datapointsGroupedByAggregateAndDisaggregations]);
 
   const renderChartForMetric = () => {
     return (
@@ -166,7 +162,7 @@ const DatapointsView: React.FC<{
   const renderMetricInsightsRow = () => {
     const dataSelectedInTimeRange = filterNullDatapoints(
       filterByTimeRange(
-        datapointsForMetric?.aggregate || [],
+        datapointsGroupedByAggregateAndDisaggregations?.aggregate || [],
         selectedTimeRangeValue
       )
     );
@@ -194,5 +190,3 @@ const DatapointsView: React.FC<{
     </DatapointsViewContainer>
   );
 };
-
-export default observer(DatapointsView);
