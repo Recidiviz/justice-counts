@@ -50,3 +50,6 @@ jobs:
       - name: Yarn test (publisher)
         working-directory: ./publisher
         run: yarn test
+      - name: Yarn test (agency-dashboard)
+        working-directory: ./agency-dashboard
+        run: yarn test
