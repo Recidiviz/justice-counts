@@ -15,10 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import {
-  GlobalStyle,
-  palette,
-} from "@justice-counts/common/components/GlobalStyles";
+import { GlobalStyle } from "@justice-counts/common/components/GlobalStyles";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";

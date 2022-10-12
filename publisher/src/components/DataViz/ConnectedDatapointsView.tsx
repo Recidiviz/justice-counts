@@ -17,7 +17,6 @@
 
 import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
 import { DatapointsGroupedByAggregateAndDisaggregations } from "@justice-counts/common/types";
-import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
 import React from "react";
 
