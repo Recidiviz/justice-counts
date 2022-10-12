@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import { runInAction } from "mobx";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
@@ -43,20 +43,22 @@ test("displayed created reports", async () => {
     </StoreProvider>
   );
 
-  await runInAction(() => {
-    rootStore.reportStore.reportOverviews = {
-      0: {
-        id: 0,
-        agency_id: 0,
-        month: 11,
-        year: 2022,
-        frequency: "MONTHLY",
-        last_modified_at: null,
-        last_modified_at_timestamp: null,
-        editors: ["Editor #1"],
-        status: "NOT_STARTED",
-      },
-    };
+  await act(async () => {
+    await runInAction(() => {
+      rootStore.reportStore.reportOverviews = {
+        0: {
+          id: 0,
+          agency_id: 0,
+          month: 11,
+          year: 2022,
+          frequency: "MONTHLY",
+          last_modified_at: null,
+          last_modified_at_timestamp: null,
+          editors: ["Editor #1"],
+          status: "NOT_STARTED",
+        },
+      };
+    });
   });
 
   const jan2022 = screen.getByText(/November 2022/i);
@@ -65,18 +67,20 @@ test("displayed created reports", async () => {
   expect(jan2022).toBeInTheDocument();
   expect(editor1).toBeInTheDocument();
 
-  await runInAction(() => {
-    rootStore.reportStore.reportOverviews[1] = {
-      id: 1,
-      agency_id: 0,
-      month: 11,
-      year: 2020,
-      frequency: "ANNUAL",
-      last_modified_at: null,
-      last_modified_at_timestamp: null,
-      editors: ["Editor #2"],
-      status: "NOT_STARTED",
-    };
+  await act(async () => {
+    await runInAction(() => {
+      rootStore.reportStore.reportOverviews[1] = {
+        id: 1,
+        agency_id: 0,
+        month: 11,
+        year: 2020,
+        frequency: "ANNUAL",
+        last_modified_at: null,
+        last_modified_at_timestamp: null,
+        editors: ["Editor #2"],
+        status: "NOT_STARTED",
+      };
+    });
   });
 
   const annualReport2020 = screen.getByText(/Annual Report 2020/i);
@@ -89,7 +93,7 @@ test("displayed created reports", async () => {
 });
 
 describe("test create report button", () => {
-  test("created reports button should not be displayed if user does not have permission", () => {
+  test("created reports button should not be displayed if user does not have permission", async () => {
     render(
       <StoreProvider>
         <BrowserRouter>
@@ -98,8 +102,10 @@ describe("test create report button", () => {
       </StoreProvider>
     );
 
-    runInAction(() => {
-      rootStore.userStore.permissions = [""];
+    await act(async () => {
+      runInAction(() => {
+        rootStore.userStore.permissions = [""];
+      });
     });
 
     const selectButton = screen.queryByText(/Select/i);
@@ -109,7 +115,7 @@ describe("test create report button", () => {
     expect(createNewReportButton).not.toBeInTheDocument();
   });
 
-  test("created reports button should be displayed if user has permission", () => {
+  test("created reports button should be displayed if user has permission", async () => {
     render(
       <StoreProvider>
         <BrowserRouter>
@@ -118,8 +124,10 @@ describe("test create report button", () => {
       </StoreProvider>
     );
 
-    runInAction(() => {
-      rootStore.userStore.permissions = ["recidiviz_admin"];
+    await act(async () => {
+      runInAction(() => {
+        rootStore.userStore.permissions = ["recidiviz_admin"];
+      });
     });
 
     const selectButton = screen.queryByText(/Select/i);
