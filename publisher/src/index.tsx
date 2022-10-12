@@ -17,7 +17,7 @@
 
 import { palette } from "@justice-counts/common/components/GlobalStyles";
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { createGlobalStyle } from "styled-components/macro";
 
@@ -109,16 +109,27 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-ReactDOM.render(
-  <React.StrictMode>
-    <StoreProvider>
-      <GlobalStyle />
-      <AuthWall>
+const rootContainer = document.getElementById("root");
+
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const root = createRoot(rootContainer!); // "!"" is required for use with TypeScript
+
+root.render(
+  <StoreProvider>
+    <GlobalStyle />
+    <AuthWall>
+      {/** Moved StrictMode to not mount, unmount, and remount AuthWall on the first render
+       * since this causes authStore.authenticate to be called twice in rapid succession,
+       * which triggers an Auth0 403 error.
+       * See https://reactjs.org/blog/2022/03/08/react-18-upgrade-guide.html#updates-to-strict-mode
+       * for more info
+       */}
+
+      <React.StrictMode>
         <BrowserRouter>
           <App />
         </BrowserRouter>
-      </AuthWall>
-    </StoreProvider>
-  </React.StrictMode>,
-  document.getElementById("root")
+      </React.StrictMode>
+    </AuthWall>
+  </StoreProvider>
 );

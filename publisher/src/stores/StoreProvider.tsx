@@ -24,7 +24,7 @@ const StoreContext = React.createContext<typeof rootStore | undefined>(
   undefined
 );
 
-export const StoreProvider: React.FC<React.ReactNode> = ({
+export const StoreProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }): React.ReactElement => {
   useEffect(

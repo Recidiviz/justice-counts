@@ -72,9 +72,9 @@ class ReportStore {
     );
   }
 
-  deconstructor() {
+  deconstructor = () => {
     this.disposers.forEach((disposer) => disposer());
-  }
+  };
 
   get reportOverviewList(): ReportOverview[] {
     return Object.values(this.reportOverviews).sort((a, b) => {

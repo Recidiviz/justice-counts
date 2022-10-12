@@ -66,9 +66,9 @@ class DatapointsStore {
     );
   }
 
-  deconstructor() {
+  deconstructor = () => {
     this.disposers.forEach((disposer) => disposer());
-  }
+  };
 
   get metricKeyToDisplayName(): { [metricKey: string]: string | null } {
     const mapping: { [metricKey: string]: string | null } = {};
