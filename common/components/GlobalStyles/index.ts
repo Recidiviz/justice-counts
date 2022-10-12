@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { createGlobalStyle } from "styled-components/macro";
+
 import { palette } from "./Palette";
 
 export const GlobalStyle = createGlobalStyle`
