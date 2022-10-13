@@ -63,12 +63,8 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
     "Yes",
   ];
 
-  /** TODO(#82): Uncomment `definitionToDisplay` */
-  //   const definitionToDisplay =
-  //     activeDimension || filteredMetricSettings[activeMetricKey];
-
-  /** TODO(#82): Replace mocks when GET & POST are implemented */
-  /** Mocks To Be Replaced */
+  /** TODO(#82): Remove mocks when GET & POST are implemented */
+  /** Mocks To Be Removed */
   const generateMockDefinitions = ():
     | MetricConfigurationMetricDimension
     | MetricConfigurationMetric => {
@@ -122,7 +118,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [activeMetricKey, activeDimension]
   );
-  /** End of Mocks To Be Replaced */
+  /** End of Mocks To Be Removed */
 
   return (
     <DefinitionsDisplayContainer>

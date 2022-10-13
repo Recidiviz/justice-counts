@@ -504,6 +504,7 @@ export const DefinitionItem = styled.div`
 
 export const DefinitionDisplayName = styled.div`
   ${typography.sizeCSS.medium}
+  margin-right: 8px;
 `;
 
 export const DefinitionSelection = styled.div`
