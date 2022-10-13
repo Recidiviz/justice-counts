@@ -15,5 +15,5 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./MetricsView";
-export * from "./MetricsView.styles";
+export * from "./MetricConfiguration";
+export * from "./MetricConfiguration.styles";

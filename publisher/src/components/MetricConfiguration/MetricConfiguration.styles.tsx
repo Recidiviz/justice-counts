@@ -59,7 +59,7 @@ type MetricBoxContainerProps = {
 };
 
 export const MetricBoxContainer = styled.div<MetricBoxContainerProps>`
-  height: 197px;
+  min-height: 150px;
   max-width: 50%;
   display: flex;
   flex: 1 1 50%;
@@ -99,6 +99,28 @@ export const MetricNameBadgeWrapper = styled.div`
   align-items: center;
 `;
 
+export const Metric = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  border-bottom: 1px solid ${palette.solid.darkgrey};
+  padding-bottom: 8px;
+  padding-right: 50px;
+  position: relative;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:hover:after {
+    content: "➝";
+    position: absolute;
+    ${typography.sizeCSS.title}
+    right: 0;
+  }
+`;
+
 type MetricNameProps = { isTitle?: boolean };
 
 export const MetricName = styled.div<MetricNameProps>`
@@ -123,17 +145,21 @@ export const MetricDetailsDisplay = styled.div`
 `;
 
 export const MetricOnOffWrapper = styled.div`
-  margin-bottom: 49px;
+  margin-bottom: 24px;
 `;
 
 export const Header = styled.div`
   ${typography.sizeCSS.medium};
-  margin-bottom: 16px;
+  margin-bottom: 8px;
+`;
+
+export const BreakdownHeader = styled(Header)`
+  padding-top: 24px;
+  border-top: 1px solid ${palette.highlight.grey5};
 `;
 
 export const Subheader = styled.div`
   ${typography.sizeCSS.normal};
-  color: ${palette.highlight.grey9};
   margin-bottom: 9px;
 `;
 
@@ -181,14 +207,35 @@ export const DisaggregationName = styled.div<{ enabled?: boolean }>`
     enabled ? palette.solid.darkgrey : palette.highlight.grey8};
 `;
 
+export const DisaggregationTab = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  span {
+    padding-right: 8px;
+  }
+`;
+
 export const Dimension = styled.div<{ enabled?: boolean }>`
   ${typography.sizeCSS.medium};
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px dashed ${palette.highlight.grey9};
+  gap: 12px;
+  padding: 15px 0;
+  border-bottom: 1px solid ${palette.highlight.grey4};
   position: relative;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:hover::before {
+    content: "➝";
+    position: absolute;
+    right: 0;
+    ${typography.sizeCSS.title}
+  }
 
   &:last-child {
     border-bottom: none;
@@ -218,6 +265,41 @@ export const DimensionTitle = styled.div<{ enabled?: boolean }>`
   display: block;
   color: ${({ enabled }) =>
     enabled ? palette.solid.darkgrey : palette.highlight.grey8};
+`;
+
+export const CheckboxWrapper = styled.div`
+  display: flex;
+  position: relative;
+`;
+
+export const Checkbox = styled.input`
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border: 1px solid ${palette.highlight.grey6};
+  border-radius: 100%;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:checked {
+    border: 1px solid transparent;
+  }
+
+  &:checked + img {
+    display: block;
+  }
+`;
+
+export const BlueCheckIcon = styled.img<{ enabled?: boolean }>`
+  width: 20px;
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
 `;
 
 export const MetricConfigurationContainer = styled.div`
@@ -350,4 +432,31 @@ export const MetricConfigurationDisplay = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  flex: 1 1 50%;
+`;
+
+export const MetricConfigurationWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 126px;
+`;
+
+export const DefinitionsDisplay = styled.div`
+  display: flex;
+  flex: 1 1 50%;
+  padding-top: 44px;
+`;
+
+export const NoDefinitionsSelected = styled.div`
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 59px;
+  border: 1px solid ${palette.highlight.grey5};
+  color: ${palette.highlight.grey12};
+  text-align: center;
 `;
