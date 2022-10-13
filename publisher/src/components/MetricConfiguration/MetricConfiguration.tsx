@@ -572,9 +572,7 @@ export const MetricsView: React.FC = observer(() => {
   );
   const [activeMetricKey, setActiveMetricKey] = useState<string>("");
   const [activeDimension, setActiveDimension] =
-    useState<
-      MetricConfigurationMetric["disaggregations"][0]["dimensions"][0]
-    >();
+    useState<MetricConfigurationMetricDimension>();
   const [metricSettings, setMetricSettings] = useState<{
     [key: string]: MetricConfigurationMetric;
   }>({});
