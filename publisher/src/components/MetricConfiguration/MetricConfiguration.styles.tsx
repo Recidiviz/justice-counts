@@ -25,6 +25,7 @@ export const MetricsViewContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  overflow: hidden;
 `;
 
 export const MetricsViewControlPanel = styled.div`
@@ -33,6 +34,7 @@ export const MetricsViewControlPanel = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  overflow-y: scroll;
 `;
 
 export const PanelContainerLeft = styled.div`
@@ -141,7 +143,7 @@ export const MetricDescription = styled.div`
 export const MetricDetailsDisplay = styled.div`
   width: 100%;
   overflow-y: scroll;
-  padding: 24px 0;
+  padding: 24px 12px 24px 0;
 `;
 
 export const MetricOnOffWrapper = styled.div`
@@ -436,10 +438,12 @@ export const MetricConfigurationDisplay = styled.div`
 `;
 
 export const MetricConfigurationWrapper = styled.div`
+  height: 85vh;
   width: 100%;
   display: flex;
   justify-content: space-between;
   gap: 126px;
+  overflow-y: hidden;
 `;
 
 export const DefinitionsDisplayContainer = styled.div`
@@ -447,6 +451,8 @@ export const DefinitionsDisplayContainer = styled.div`
   flex-direction: column;
   flex: 1 1 55%;
   padding-top: 48px;
+  padding-right: 12px;
+  overflow-y: scroll;
 `;
 
 export const DefinitionsDisplay = styled.div`
