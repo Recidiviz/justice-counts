@@ -124,7 +124,7 @@ type MetricBoxProps = {
   frequency: ReportFrequency;
   description: string;
   enabled?: boolean;
-  setActiveMetricKey: React.Dispatch<React.SetStateAction<string>>;
+  setActiveMetricKey: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 const MetricBox: React.FC<MetricBoxProps> = ({
@@ -570,7 +570,7 @@ export const MetricsView: React.FC = observer(() => {
   const [loadingError, setLoadingError] = useState<string | undefined>(
     undefined
   );
-  const [activeMetricKey, setActiveMetricKey] = useState<string>("");
+  const [activeMetricKey, setActiveMetricKey] = useState<string | undefined>();
   const [activeDimension, setActiveDimension] =
     useState<MetricConfigurationMetricDimension>();
   const [metricSettings, setMetricSettings] = useState<{
@@ -895,7 +895,7 @@ export const MetricsView: React.FC = observer(() => {
               <MetricConfigurationDisplay>
                 <BackToMetrics
                   onClick={() => {
-                    setActiveMetricKey("");
+                    setActiveMetricKey(undefined);
                     setActiveDimension(undefined);
                   }}
                 >
