@@ -74,7 +74,6 @@ import {
   MetricsViewContainer,
   MetricsViewControlPanel,
   MultipleChoiceWrapper,
-  NoDefinitionsSelected,
   RadioButtonGroupWrapper,
   StickyHeader,
   Subheader,

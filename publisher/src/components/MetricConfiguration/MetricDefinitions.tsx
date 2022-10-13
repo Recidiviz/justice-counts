@@ -18,7 +18,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 
 import { MetricContext } from "../../shared/types";
-import { ReactComponent as GearsIcon } from "../assets/gears-icon.svg";
 import {
   DefinitionDisplayName,
   DefinitionItem,
@@ -36,7 +35,6 @@ import {
   MetricContextConfiguration,
   MetricSettings,
   MetricSettingsUpdateOptions,
-  NoDefinitionsSelected,
   RevertToDefaultButton,
 } from ".";
 
@@ -74,7 +72,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
   const generateMockDefinitions = ():
     | MetricConfigurationMetricDimension
     | MetricConfigurationMetric => {
-    const definition:
+    const dimensionOrMetric:
       | MetricConfigurationMetricDimension
       | MetricConfigurationMetric =
       activeDimension || filteredMetricSettings[activeMetricKey];
@@ -82,36 +80,36 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
     const mockSettings = Array.from({ length: 10 }, (_, i) => ({
       key: `SETTING ${i}`,
       label: `Includes/Excludes Q#${i + 1} for ${
-        "display_name" in definition
-          ? definition.display_name
-          : definition.label
+        "display_name" in dimensionOrMetric
+          ? dimensionOrMetric.display_name
+          : dimensionOrMetric.label
       }?`,
       included: selectionOptions[i % 3],
       default: selectionOptions[i % 3],
     }));
 
-    return { ...definition, settings: mockSettings };
+    return { ...dimensionOrMetric, settings: mockSettings };
   };
 
-  const initialDefinitionToDisplay = generateMockDefinitions();
+  const initialDefinitionsToDisplay = generateMockDefinitions();
 
-  const [mockDefinitionToDisplay, setMockDefinitionToDisplay] = useState<
+  const [mockDefinitionsToDisplay, setMockDefinitionsToDisplay] = useState<
     MetricConfigurationMetricDimension | MetricConfigurationMetric
-  >(initialDefinitionToDisplay);
+  >(initialDefinitionsToDisplay);
 
   const mockUpdateSelection = (
     key: string,
     selection: MetricConfigurationSettingsOptions
   ) => {
-    setMockDefinitionToDisplay((prev) => {
+    setMockDefinitionsToDisplay((prev) => {
       return {
         ...prev,
-        settings: prev.settings.map((item) => {
-          if (item.key === key) {
-            return { ...item, included: selection };
+        settings: prev.settings.map((setting) => {
+          if (setting.key === key) {
+            return { ...setting, included: selection };
           }
 
-          return item;
+          return setting;
         }),
       };
     });
@@ -119,7 +117,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
 
   useEffect(
     () => {
-      setMockDefinitionToDisplay(initialDefinitionToDisplay);
+      setMockDefinitionsToDisplay(initialDefinitionsToDisplay);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [activeMetricKey, activeDimension]
@@ -130,9 +128,9 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
     <DefinitionsDisplayContainer>
       <DefinitionsDisplay>
         <DefinitionsTitle>
-          {"display_name" in mockDefinitionToDisplay
-            ? mockDefinitionToDisplay.display_name
-            : mockDefinitionToDisplay.label}
+          {"display_name" in mockDefinitionsToDisplay
+            ? mockDefinitionsToDisplay.display_name
+            : mockDefinitionsToDisplay.label}
         </DefinitionsTitle>
         <DefinitionsSubTitle>Definitions</DefinitionsSubTitle>
         <DefinitionsDescription>
@@ -144,13 +142,15 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
         </DefinitionsDescription>
 
         <RevertToDefaultButton
-          onClick={() => setMockDefinitionToDisplay(initialDefinitionToDisplay)}
+          onClick={() =>
+            setMockDefinitionsToDisplay(initialDefinitionsToDisplay)
+          }
         >
           Revert to Default Definition
         </RevertToDefaultButton>
 
         <Definitions>
-          {mockDefinitionToDisplay?.settings.map((item) => (
+          {mockDefinitionsToDisplay?.settings.map((item) => (
             <DefinitionItem>
               <DefinitionDisplayName>{item.label}</DefinitionDisplayName>
 
