@@ -107,7 +107,7 @@ export interface MetricContext {
   display_name: string | null | undefined;
   reporting_note: string | null | undefined;
   required: boolean;
-  type: "TEXT" | "NUMBER" | "MULTIPLE_CHOICE";
+  type: "TEXT" | "NUMBER" | "MULTIPLE_CHOICE" | "BOOLEAN";
   value: string | number | boolean | null | undefined;
   multiple_choice_options: string[];
 }

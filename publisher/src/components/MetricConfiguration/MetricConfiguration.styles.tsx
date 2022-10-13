@@ -432,7 +432,7 @@ export const MetricConfigurationDisplay = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  flex: 1 1 50%;
+  flex: 1 1 45%;
 `;
 
 export const MetricConfigurationWrapper = styled.div`
@@ -444,7 +444,8 @@ export const MetricConfigurationWrapper = styled.div`
 
 export const DefinitionsDisplayContainer = styled.div`
   display: flex;
-  flex: 1 1 50%;
+  flex-direction: column;
+  flex: 1 1 55%;
   padding-top: 48px;
 `;
 
@@ -484,6 +485,7 @@ export const Definitions = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 16px;
+  margin-bottom: 32px;
 `;
 
 export const DefinitionItem = styled.div`
@@ -491,6 +493,7 @@ export const DefinitionItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 6px;
 `;
 
 export const DefinitionDisplayName = styled.div`
@@ -513,7 +516,7 @@ export const DefinitionMiniButton = styled(RevertToDefaultButton)<{
     `
       color: ${palette.solid.white};
       background: ${palette.highlight.grey9};
-      
+
       &:hover {
         background: ${palette.highlight.grey9};
         opacity: 0.9;
