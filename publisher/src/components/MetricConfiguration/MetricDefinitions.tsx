@@ -146,16 +146,16 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
         </RevertToDefaultButton>
 
         <Definitions>
-          {mockDefinitionsToDisplay?.settings.map((item) => (
-            <DefinitionItem>
-              <DefinitionDisplayName>{item.label}</DefinitionDisplayName>
+          {mockDefinitionsToDisplay?.settings.map((setting) => (
+            <DefinitionItem key={setting.key}>
+              <DefinitionDisplayName>{setting.label}</DefinitionDisplayName>
 
               <DefinitionSelection>
                 {selectionOptions.map((option) => (
                   <Fragment key={option}>
                     <DefinitionMiniButton
-                      selected={item.included === option}
-                      onClick={() => mockUpdateSelection(item.key, option)}
+                      selected={setting.included === option}
+                      onClick={() => mockUpdateSelection(setting.key, option)}
                     >
                       {option}
                     </DefinitionMiniButton>
