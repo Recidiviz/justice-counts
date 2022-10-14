@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-import "./index.css";
 
+import { GlobalStyle } from "@justice-counts/common/components/GlobalStyles";
 import React from "react";
 import ReactDOM from "react-dom/client";
 
@@ -26,6 +26,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
+    <GlobalStyle />
     <App />
   </React.StrictMode>
 );

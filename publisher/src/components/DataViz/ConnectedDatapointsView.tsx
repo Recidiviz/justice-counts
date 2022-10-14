@@ -14,13 +14,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-import { render, screen } from "@testing-library/react";
+
+import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
+import { DatapointsGroupedByAggregateAndDisaggregations } from "@justice-counts/common/types";
+import { observer } from "mobx-react-lite";
 import React from "react";
 
-import App from "./App";
+import { useStore } from "../../stores";
 
-test("renders dashboard", () => {
-  render(<App />);
-  const linkElement = screen.getByText(/Date Range/i);
-  expect(linkElement).toBeInTheDocument();
-});
+const ConnectedDatapointsView: React.FC<{
+  metric: string;
+}> = ({ metric }) => {
+  const { datapointsStore } = useStore();
+  const datapointsForMetric =
+    datapointsStore.datapointsByMetric[metric] ||
+    ({} as DatapointsGroupedByAggregateAndDisaggregations);
+
+  return (
+    <DatapointsView
+      datapointsGroupedByAggregateAndDisaggregations={datapointsForMetric}
+      dimensionNamesByDisaggregation={
+        datapointsStore.dimensionNamesByMetricAndDisaggregation[metric] || {}
+      }
+    />
+  );
+};
+
+export default observer(ConnectedDatapointsView);

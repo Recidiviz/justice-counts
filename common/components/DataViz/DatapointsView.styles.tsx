@@ -22,12 +22,60 @@ import {
 import {
   Dropdown,
   DropdownMenu,
+  DropdownMenuItem,
   DropdownToggle,
 } from "@recidiviz/design-system";
 import React from "react";
 import styled from "styled-components/macro";
 
-import { ExtendedDropdownMenuItem } from "../Menu/Menu.styles";
+export const ExtendedDropdownMenuItem = styled(DropdownMenuItem)<{
+  highlight?: boolean;
+  noPadding?: boolean;
+}>`
+  min-width: 264px;
+  display: flex;
+  align-items: center;
+  font-family: ${typography.family};
+  ${typography.sizeCSS.normal}
+  color: ${({ highlight }) =>
+    highlight ? palette.solid.red : palette.solid.darkgrey};
+  height: auto;
+  padding: 0;
+  gap: 8px;
+
+  ${({ noPadding }) =>
+    !noPadding &&
+    `  
+      padding: 16px;
+      
+      &:first-child {
+        padding: 10px 16px 16px 16px;
+      }
+      
+      &:last-child {
+        padding: 16px 16px 10px 16px;
+      }
+    `}
+
+  &:not(:last-child) {
+    border-bottom: 1px solid ${palette.solid.offwhite};
+  }
+
+  &:focus {
+    background-color: transparent;
+    color: ${({ highlight }) =>
+      highlight ? palette.solid.red : palette.solid.darkgrey};
+  }
+
+  &:hover {
+    color: ${palette.solid.blue};
+    background-color: transparent;
+
+    svg path {
+      stroke: ${palette.solid.blue};
+    }
+  }
+`;
 
 export const DatapointsViewContainer = styled.div`
   display: flex;

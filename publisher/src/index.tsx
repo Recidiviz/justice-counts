@@ -15,11 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { palette } from "@justice-counts/common/components/GlobalStyles";
+import { GlobalStyle } from "@justice-counts/common/components/GlobalStyles";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import { createGlobalStyle } from "styled-components/macro";
 
 import App from "./App";
 import AuthWall from "./components/Auth";
@@ -83,31 +82,6 @@ if (!analytics.initialize) {
     analytics.page();
   }
 }
-
-const GlobalStyle = createGlobalStyle`
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
-  html, body, #root {
-    height: 100%;
-  }
-
-  body {
-    width: 100%;
-    font-family: "Inter", sans-serif;
-    font-weight: 500;
-    font-size: 16px;
-    background-color: ${palette.solid.white};
-    color: ${palette.solid.darkgrey};
-  }
-
-  input, textarea {
-    font-family: "Inter", sans-serif;
-  }
-`;
 
 const rootContainer = document.getElementById("root");
 
