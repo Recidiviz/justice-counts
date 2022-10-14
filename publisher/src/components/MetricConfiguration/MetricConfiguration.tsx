@@ -603,6 +603,7 @@ export const MetricsView: React.FC<{
       return res;
     }, {});
 
+  /** Updates shared state `listOfMetrics` so the SettingsMenu component can render the metric navigation */
   useEffect(
     () => {
       const listOfMetricsForMetricNavigation = Object.values(

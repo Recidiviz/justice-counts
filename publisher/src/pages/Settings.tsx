@@ -42,12 +42,14 @@ const Settings = () => {
   const [activeMenuItem, setActiveMenuItem] = useState<MenuOptions>(
     menuOptions[0]
   );
-  const [listOfMetrics, setListOfMetrics] =
-    useState<ListOfMetricsForNavigation[]>();
-  const [activeMetricKey, setActiveMetricKey] = useState<string | undefined>();
 
   const goToMenuItem = (destination: MenuOptions) =>
     setActiveMenuItem(destination);
+
+  /** State specific to Metrics Configuration & Settings Menu */
+  const [listOfMetrics, setListOfMetrics] =
+    useState<ListOfMetricsForNavigation[]>();
+  const [activeMetricKey, setActiveMetricKey] = useState<string | undefined>();
 
   return (
     <SettingsContainer>

@@ -59,6 +59,8 @@ export const SettingsMenu: React.FC<{
             {option}
           </MenuItem>
 
+          {/* Metrics Navigation (appears when a metric has been 
+              selected and allows users to toggle between metrics) */}
           {option === "Metric Configuration" &&
             activeMenuItem === "Metric Configuration" &&
             activeMetricKey &&
