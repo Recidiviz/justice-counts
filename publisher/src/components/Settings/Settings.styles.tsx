@@ -77,20 +77,7 @@ export const InputWrapper = styled.div`
   }
 `;
 
-export const MetricsListContainer = styled.div`
-  div {
-    ${typography.sizeCSS.normal}
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    position: relative;
-    text-decoration: none;
-    margin-bottom: 2px;
-    border-radius: 2px;
-    transition: 0.2s ease;
-  }
-`;
+export const MetricsListContainer = styled.div``;
 
 export const MetricsListItem = styled(MetricDisplayName)`
   ${typography.sizeCSS.normal}

@@ -200,14 +200,6 @@ const MetricConfiguration: React.FC<MetricConfigurationProps> = ({
     [activeMetricKey]
   );
 
-  useEffect(
-    () => {
-      // console.log("activeDisaggregation", activeDisaggregation);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeMetricKey]
-  );
-
   return (
     <MetricConfigurationContainer>
       <MetricOnOffWrapper>
