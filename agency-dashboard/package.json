@@ -45,7 +45,13 @@
   },
   "devDependencies": {
     "customize-cra": "^1.0.0",
-    "react-app-rewired": "^2.2.1"
+    "react-app-rewired": "^2.2.1",
+    "resize-observer-polyfill": "^1.5.1"
   },
-  "config-overrides-path": "../config-overrides.js"
+  "config-overrides-path": "../config-overrides.js",
+  "jest": {
+    "moduleNameMapper": {
+      "^d3-(.*)$": "d3-$1/dist/d3-$1"
+    }
+  }
 }

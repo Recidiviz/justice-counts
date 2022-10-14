@@ -15,3 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 import "@testing-library/jest-dom";
+
+global.ResizeObserver = require("resize-observer-polyfill");
+
+// polyfill for when running jest tests
+/* eslint-disable no-extend-native */
+if (typeof String.prototype.replaceAll === "undefined") {
+  String.prototype.replaceAll = function (match, replace) {
+    return this.replace(new RegExp(match, "g"), () => replace as string);
+  };
+}
+/* eslint-enable no-extend-native */

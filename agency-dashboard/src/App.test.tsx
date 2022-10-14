@@ -19,8 +19,8 @@ import React from "react";
 
 import App from "./App";
 
-test("renders learn react link", () => {
+test("renders dashboard", () => {
   render(<App />);
-  const linkElement = screen.getByText(/Hello/i);
+  const linkElement = screen.getByText(/Date Range/i);
   expect(linkElement).toBeInTheDocument();
 });
