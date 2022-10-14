@@ -17,8 +17,6 @@
 
 import React from "react";
 
-export const SharedComponent = () => (
-  <div style={{ background: "red", color: "white" }}>
-    I'm a shared component!
-  </div>
-);
+import { Container } from "./DashboardView.styles";
+
+export const DashboardView = () => <Container>Hello</Container>;

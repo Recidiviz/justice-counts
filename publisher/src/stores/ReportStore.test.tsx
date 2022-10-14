@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { ReportOverview } from "@justice-counts/common/types";
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
 import React from "react";
 
@@ -72,10 +72,12 @@ test("no reports to display", async () => {
     </StoreProvider>
   );
 
-  runInAction(() => {
-    rootStore.userStore.userInfoLoaded = true;
-    rootStore.reportStore.loadingOverview = false;
-    rootStore.reportStore.reportOverviews = {};
+  await act(async () => {
+    runInAction(() => {
+      rootStore.userStore.userInfoLoaded = true;
+      rootStore.reportStore.loadingOverview = false;
+      rootStore.reportStore.reportOverviews = {};
+    });
   });
 
   const noReportsLoaded = await screen.findByText(/No reports to display./i);
@@ -90,9 +92,11 @@ test("displayed reports", async () => {
     </StoreProvider>
   );
 
-  runInAction(() => {
-    rootStore.reportStore.loadingOverview = false;
-    rootStore.reportStore.reportOverviews = mockUnorderedReportsMap;
+  await act(async () => {
+    runInAction(() => {
+      rootStore.reportStore.loadingOverview = false;
+      rootStore.reportStore.reportOverviews = mockUnorderedReportsMap;
+    });
   });
 
   // Arbitrary report dates included in mockJSON

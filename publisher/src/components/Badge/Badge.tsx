@@ -62,7 +62,7 @@ export const BadgeElement = styled.div<{
   text-transform: capitalize;
 `;
 
-export const Badge: React.FC<BadgeProps> = ({
+export const Badge: React.FC<React.PropsWithChildren<BadgeProps>> = ({
   color,
   disabled,
   loading,

@@ -55,7 +55,10 @@ export class AuthStore {
   }
 
   private get auth0Client(): Promise<Auth0Client> {
-    return createAuth0Client(this.authSettings as Auth0ClientOptions);
+    if (!this.authClient) {
+      return createAuth0Client(this.authSettings as Auth0ClientOptions);
+    }
+    return Promise.resolve(this.authClient);
   }
 
   async authenticate(): Promise<void> {
