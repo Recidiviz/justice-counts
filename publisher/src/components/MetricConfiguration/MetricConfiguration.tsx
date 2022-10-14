@@ -20,6 +20,7 @@ import { reaction, when } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
 
+import { ListOfMetricsForNavigation } from "../../pages/Settings";
 import {
   AgencySystems,
   FormError,
@@ -181,17 +182,32 @@ const MetricConfiguration: React.FC<MetricConfigurationProps> = ({
 
   useEffect(
     () => {
-      const updatedDisaggregation = filteredMetricSettings[
-        activeMetricKey
-      ]?.disaggregations?.find(
-        (disaggregation) => disaggregation.key === activeDisaggregation.key
-      );
+      const updatedDisaggregation =
+        activeDisaggregation &&
+        filteredMetricSettings[activeMetricKey]?.disaggregations?.find(
+          (disaggregation) => disaggregation.key === activeDisaggregation.key
+        );
 
-      if (updatedDisaggregation) setActiveDisaggregation(updatedDisaggregation);
+      setActiveDimension(undefined);
+
+      if (updatedDisaggregation)
+        return setActiveDisaggregation(updatedDisaggregation);
+      setActiveDisaggregation(
+        filteredMetricSettings[activeMetricKey].disaggregations[0]
+      );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [filteredMetricSettings]
+    [activeMetricKey]
   );
+
+  useEffect(
+    () => {
+      // console.log("activeDisaggregation", activeDisaggregation);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [activeMetricKey]
+  );
+
   return (
     <MetricConfigurationContainer>
       <MetricOnOffWrapper>
@@ -246,50 +262,51 @@ const MetricConfiguration: React.FC<MetricConfigurationProps> = ({
 
           <TabbedBar noPadding>
             <TabbedOptions>
-              {filteredMetricSettings[activeMetricKey]?.disaggregations?.map(
-                (disaggregation) => (
-                  <TabbedItem
-                    key={disaggregation.key}
-                    onClick={() => {
-                      setActiveDimension(disaggregation.dimensions[0]);
-                      setActiveDisaggregation(disaggregation);
-                    }}
-                    selected={disaggregation.key === activeDisaggregation.key}
-                    capitalize
-                  >
-                    <DisaggregationTab>
-                      <span>
-                        {removeSnakeCase(
-                          disaggregation.display_name.toLowerCase()
-                        )}
-                      </span>
+              {activeDisaggregation &&
+                filteredMetricSettings[activeMetricKey]?.disaggregations?.map(
+                  (disaggregation) => (
+                    <TabbedItem
+                      key={disaggregation.key}
+                      onClick={() => {
+                        setActiveDimension(disaggregation.dimensions[0]);
+                        setActiveDisaggregation(disaggregation);
+                      }}
+                      selected={disaggregation.key === activeDisaggregation.key}
+                      capitalize
+                    >
+                      <DisaggregationTab>
+                        <span>
+                          {removeSnakeCase(
+                            disaggregation.display_name.toLowerCase()
+                          )}
+                        </span>
 
-                      <CheckboxWrapper>
-                        <Checkbox
-                          type="checkbox"
-                          checked={disaggregation.enabled}
-                          onChange={() =>
-                            saveAndUpdateMetricSettings("DISAGGREGATION", {
-                              key: activeMetricKey,
-                              disaggregations: [
-                                {
-                                  key: disaggregation.key,
-                                  enabled: !disaggregation.enabled,
-                                },
-                              ],
-                            })
-                          }
-                        />
-                        <BlueCheckIcon
-                          src={blueCheck}
-                          alt=""
-                          enabled={disaggregation.enabled}
-                        />
-                      </CheckboxWrapper>
-                    </DisaggregationTab>
-                  </TabbedItem>
-                )
-              )}
+                        <CheckboxWrapper>
+                          <Checkbox
+                            type="checkbox"
+                            checked={disaggregation.enabled}
+                            onChange={() =>
+                              saveAndUpdateMetricSettings("DISAGGREGATION", {
+                                key: activeMetricKey,
+                                disaggregations: [
+                                  {
+                                    key: disaggregation.key,
+                                    enabled: !disaggregation.enabled,
+                                  },
+                                ],
+                              })
+                            }
+                          />
+                          <BlueCheckIcon
+                            src={blueCheck}
+                            alt=""
+                            enabled={disaggregation.enabled}
+                          />
+                        </CheckboxWrapper>
+                      </DisaggregationTab>
+                    </TabbedItem>
+                  )
+                )}
             </TabbedOptions>
           </TabbedBar>
 
@@ -562,7 +579,13 @@ type MetricSettingsObj = {
   [key: string]: MetricConfigurationMetric;
 };
 
-export const MetricsView: React.FC = observer(() => {
+export const MetricsView: React.FC<{
+  activeMetricKey: string | undefined;
+  setActiveMetricKey: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setListOfMetrics: React.Dispatch<
+    React.SetStateAction<ListOfMetricsForNavigation[] | undefined>
+  >;
+}> = observer(({ activeMetricKey, setActiveMetricKey, setListOfMetrics }) => {
   const { reportStore, userStore, datapointsStore } = useStore();
 
   const [activeMetricFilter, setActiveMetricFilter] = useState<string>();
@@ -570,7 +593,6 @@ export const MetricsView: React.FC = observer(() => {
   const [loadingError, setLoadingError] = useState<string | undefined>(
     undefined
   );
-  const [activeMetricKey, setActiveMetricKey] = useState<string | undefined>();
   const [activeDimension, setActiveDimension] =
     useState<MetricConfigurationMetricDimension>();
   const [metricSettings, setMetricSettings] = useState<{
@@ -588,6 +610,23 @@ export const MetricsView: React.FC = observer(() => {
       res[metric.key] = metric;
       return res;
     }, {});
+
+  useEffect(
+    () => {
+      const listOfMetricsForMetricNavigation = Object.values(
+        filteredMetricSettings
+      ).map((metric) => {
+        return {
+          key: metric.key,
+          display_name: metric.display_name,
+        };
+      });
+
+      setListOfMetrics(listOfMetricsForMetricNavigation);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [filteredMetricSettings]
+  );
 
   const updateMetricSettings = (
     typeOfUpdate: MetricSettingsUpdateOptions,

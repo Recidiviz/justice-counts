@@ -33,10 +33,18 @@ export const menuOptions = [
 ] as const;
 export type MenuOptions = typeof menuOptions[number];
 
+export type ListOfMetricsForNavigation = {
+  key: string;
+  display_name: string;
+};
+
 const Settings = () => {
   const [activeMenuItem, setActiveMenuItem] = useState<MenuOptions>(
     menuOptions[0]
   );
+  const [listOfMetrics, setListOfMetrics] =
+    useState<ListOfMetricsForNavigation[]>();
+  const [activeMetricKey, setActiveMetricKey] = useState<string | undefined>();
 
   const goToMenuItem = (destination: MenuOptions) =>
     setActiveMenuItem(destination);
@@ -46,12 +54,21 @@ const Settings = () => {
       <SettingsMenu
         activeMenuItem={activeMenuItem}
         goToMenuItem={goToMenuItem}
+        activeMetricKey={activeMetricKey}
+        setActiveMetricKey={setActiveMetricKey}
+        listOfMetrics={listOfMetrics}
       />
 
       <ContentDisplay>
         {activeMenuItem === "Your Account" && <AccountSettings />}
         {activeMenuItem === "Uploaded Files" && <UploadedFiles />}
-        {activeMenuItem === "Metric Configuration" && <MetricsView />}
+        {activeMenuItem === "Metric Configuration" && (
+          <MetricsView
+            activeMetricKey={activeMetricKey}
+            setActiveMetricKey={setActiveMetricKey}
+            setListOfMetrics={setListOfMetrics}
+          />
+        )}
       </ContentDisplay>
     </SettingsContainer>
   );
