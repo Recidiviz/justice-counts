@@ -15,24 +15,18 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { GlobalStyle } from "@justice-counts/common/components/GlobalStyles";
-import React from "react";
-import ReactDOM from "react-dom/client";
+// According to https://github.com/microsoft/TypeScript/issues/33128#issuecomment-748937504,
+// this line is needed in order to turn this from a script into a module in order
+// to allow the interface definition to be extended.
+export {};
 
-import App from "./App";
-import AuthWall from "./Auth/AuthWall";
-import { StoreProvider } from "./stores/StoreProvider";
+declare global {
+  interface Window {
+    // values added from `app_public_config.js`
+    APP_CONFIG: Record<string, string>;
+    SEGMENT_KEY: string;
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
-root.render(
-  <StoreProvider>
-    <AuthWall>
-      <React.StrictMode>
-        <GlobalStyle />
-        <App />
-      </React.StrictMode>
-    </AuthWall>
-  </StoreProvider>
-);
+    // Segment's analytics.js
+    analytics: SegmentAnalytics.AnalyticsJS;
+  }
+}

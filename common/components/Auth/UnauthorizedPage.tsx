@@ -15,24 +15,32 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { GlobalStyle } from "@justice-counts/common/components/GlobalStyles";
+import {
+  Button,
+  ErrorPage,
+  Link as TypographyLink,
+} from "@recidiviz/design-system";
 import React from "react";
-import ReactDOM from "react-dom/client";
 
-import App from "./App";
-import AuthWall from "./Auth/AuthWall";
-import { StoreProvider } from "./stores/StoreProvider";
+const UnauthorizedPage: React.FC<{
+  logoutUser: () => Promise<void | undefined>;
+}> = ({ logoutUser }) => {
+  return (
+    <ErrorPage headerText="Thank you for your interest in Recidiviz.">
+      <p>
+        This page is currently unavailable for your account. Please reach out to{" "}
+        <TypographyLink href="mailto:feedback@recidiviz.org?subject=Access to Recidiviz app">
+          Recidiviz Support
+        </TypographyLink>{" "}
+        with any questions.
+      </p>
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
-root.render(
-  <StoreProvider>
-    <AuthWall>
-      <React.StrictMode>
-        <GlobalStyle />
-        <App />
-      </React.StrictMode>
-    </AuthWall>
-  </StoreProvider>
-);
+      {/* Optional: takes user back to login screen */}
+      <Button onClick={logoutUser} style={{ marginTop: 20 }}>
+        Logout
+      </Button>
+    </ErrorPage>
+  );
+};
+
+export default UnauthorizedPage;

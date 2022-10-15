@@ -15,24 +15,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { GlobalStyle } from "@justice-counts/common/components/GlobalStyles";
-import React from "react";
-import ReactDOM from "react-dom/client";
+const { createProxyMiddleware } = require("http-proxy-middleware");
 
-import App from "./App";
-import AuthWall from "./Auth/AuthWall";
-import { StoreProvider } from "./stores/StoreProvider";
-
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
-root.render(
-  <StoreProvider>
-    <AuthWall>
-      <React.StrictMode>
-        <GlobalStyle />
-        <App />
-      </React.StrictMode>
-    </AuthWall>
-  </StoreProvider>
-);
+module.exports = function (app) {
+  app.use(
+    ["/auth", "/api", "/app_public_config.js"],
+    createProxyMiddleware({
+      //   target: process.env.REACT_APP_PROXY_HOST,
+      target: "http://localhost:5001",
+      changeOrigin: true,
+    })
+  );
+};

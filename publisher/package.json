@@ -15,7 +15,7 @@
     "lodash.pickby": "^4.6.0",
     "mobx": "^6.4.2",
     "mobx-persist-store": "^1.0.6",
-    "mobx-react-lite": "^3.3.0",
+    "mobx-react-lite": "^3.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-is": "^18.2.0",

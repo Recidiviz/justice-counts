@@ -22,7 +22,6 @@ import {
 import React from "react";
 import styled from "styled-components/macro";
 
-import { useStore } from "../../stores/StoreProvider";
 import logo from "../assets/jc-logo-green-vector.png";
 
 export const PageContainer = styled.div`
@@ -83,10 +82,9 @@ export const VerificationLogoutButton = styled.button`
   }
 `;
 
-const VerificationPage = () => {
-  const { authStore } = useStore();
-  const handleLogout = () => authStore.logoutUser();
-
+const VerificationPage: React.FC<{
+  logoutUser: () => Promise<void | undefined>;
+}> = ({ logoutUser }) => {
   return (
     <PageContainer>
       <ContentContainer>
@@ -118,7 +116,7 @@ const VerificationPage = () => {
           </p>
         </ParagraphContainer>
 
-        <VerificationLogoutButton onClick={handleLogout}>
+        <VerificationLogoutButton onClick={logoutUser}>
           Logout
         </VerificationLogoutButton>
       </ContentContainer>

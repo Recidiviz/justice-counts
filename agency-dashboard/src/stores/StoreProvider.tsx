@@ -15,34 +15,34 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import {
-  Button,
-  ErrorPage,
-  Link as TypographyLink,
-} from "@recidiviz/design-system";
-import React from "react";
+import NoAuthConfigErrorPage from "@justice-counts/common/components/Error/NoAuthConfigErrorPage";
+import React, { useContext } from "react";
 
-import { useStore } from "../../stores/StoreProvider";
+import rootStore from "./RootStore";
 
-const UnauthorizedPage = () => {
-  const { authStore } = useStore();
+const StoreContext = React.createContext<typeof rootStore | undefined>(
+  undefined
+);
 
-  return (
-    <ErrorPage headerText="Thank you for your interest in Recidiviz.">
-      <p>
-        This page is currently unavailable for your account. Please reach out to{" "}
-        <TypographyLink href="mailto:feedback@recidiviz.org?subject=Access to Recidiviz app">
-          Recidiviz Support
-        </TypographyLink>{" "}
-        with any questions.
-      </p>
-
-      {/* Optional: takes user back to login screen */}
-      <Button onClick={authStore.logoutUser} style={{ marginTop: 20 }}>
-        Logout
-      </Button>
-    </ErrorPage>
-  );
+export const StoreProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}): React.ReactElement => {
+  if (window.APP_CONFIG) {
+    return (
+      <StoreContext.Provider value={rootStore}>
+        {children}
+      </StoreContext.Provider>
+    );
+  }
+  return <NoAuthConfigErrorPage />;
 };
 
-export default UnauthorizedPage;
+export function useStore(): typeof rootStore {
+  const context = useContext(StoreContext);
+
+  if (context === undefined) {
+    throw new Error("useStore must be used within a StoreProvider");
+  }
+
+  return context;
+}

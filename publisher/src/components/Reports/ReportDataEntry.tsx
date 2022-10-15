@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Loading } from "@justice-counts/common/components/Loading";
 import { Report } from "@justice-counts/common/types";
 import { when } from "mobx";
 import { observer } from "mobx-react-lite";
@@ -25,7 +26,6 @@ import { trackReportUnpublished } from "../../analytics";
 import { useStore } from "../../stores";
 import { printReportTitle } from "../../utils";
 import { PageWrapper } from "../Forms";
-import { Loading } from "../Loading";
 import { showToast } from "../Toast";
 import DataEntryForm from "./DataEntryForm";
 import PublishConfirmation from "./PublishConfirmation";

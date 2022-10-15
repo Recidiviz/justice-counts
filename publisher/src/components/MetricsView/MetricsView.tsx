@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Loading } from "@justice-counts/common/components/Loading";
 import {
   AgencySystems,
   FormError,
@@ -41,7 +42,6 @@ import {
   NotReportedIcon,
   TextInput,
 } from "../Forms";
-import { Loading } from "../Loading";
 import { PageTitle, TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { showToast } from "../Toast";
 import {

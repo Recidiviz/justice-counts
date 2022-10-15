@@ -15,9 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import NoAuthConfigErrorPage from "@justice-counts/common/components/Error/NoAuthConfigErrorPage";
 import React, { useContext, useEffect } from "react";
 
-import NoAuthConfigErrorPage from "../components/Error/NoAuthConfigErrorPage";
 import rootStore from "./RootStore";
 
 const StoreContext = React.createContext<typeof rootStore | undefined>(

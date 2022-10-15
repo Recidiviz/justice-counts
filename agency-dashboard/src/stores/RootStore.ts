@@ -14,25 +14,37 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
+import { Auth0ClientOptions } from "@auth0/auth0-spa-js";
 
-import { GlobalStyle } from "@justice-counts/common/components/GlobalStyles";
-import React from "react";
-import ReactDOM from "react-dom/client";
+import API from "./API";
+import AuthStore from "./AuthStore";
 
-import App from "./App";
-import AuthWall from "./Auth/AuthWall";
-import { StoreProvider } from "./stores/StoreProvider";
+const getAuthSettings = (): Auth0ClientOptions | undefined => {
+  if (window.APP_CONFIG) {
+    return {
+      domain: window.APP_CONFIG.domain,
+      client_id: window.APP_CONFIG.clientId,
+      redirect_uri: window.location.origin,
+      audience: window.APP_CONFIG.audience,
+      useRefreshTokens: true,
+    };
+  }
+  return undefined;
+};
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
-root.render(
-  <StoreProvider>
-    <AuthWall>
-      <React.StrictMode>
-        <GlobalStyle />
-        <App />
-      </React.StrictMode>
-    </AuthWall>
-  </StoreProvider>
-);
+class RootStore {
+  authStore: AuthStore;
+
+  api: API;
+
+  constructor() {
+    this.authStore = new AuthStore({
+      authSettings: getAuthSettings(),
+    });
+    this.api = new API(this.authStore);
+  }
+}
+
+export default new RootStore();
+
+export type { RootStore };

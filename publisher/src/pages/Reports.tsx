@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Loading } from "@justice-counts/common/components/Loading";
 import { Permission, ReportOverview } from "@justice-counts/common/types";
 import { reaction, when } from "mobx";
 import { observer } from "mobx-react-lite";
@@ -23,7 +24,6 @@ import { useNavigate } from "react-router-dom";
 
 import checkmarkIcon from "../components/assets/status-check-icon.png";
 import { Badge, BadgeColorMapping } from "../components/Badge";
-import { Loading } from "../components/Loading";
 import { Onboarding } from "../components/Onboarding";
 import {
   AdditionalEditorsTooltip,
