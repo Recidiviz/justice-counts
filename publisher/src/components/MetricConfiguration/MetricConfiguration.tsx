@@ -390,20 +390,20 @@ export const MetricConfiguration: React.FC<{
     []
   );
 
-  // reload report overviews when the current agency ID changes
+  // reload metric overviews when the current agency ID changes
   useEffect(
     () =>
       // return disposer so it is cleaned up if it never runs
       reaction(
         () => userStore.currentAgencyId,
         async (currentAgencyId, previousAgencyId) => {
-          // prevents us from calling getDatapoints twice on initial load
           if (previousAgencyId !== undefined) {
             setIsLoading(true);
             fetchAndSetReportSettings();
             setActiveMetricFilter(
               removeSnakeCase(userStore.currentAgency?.systems[0] as string)
             );
+            setActiveMetricKey(undefined);
           }
         }
       ),

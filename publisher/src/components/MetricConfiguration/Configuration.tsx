@@ -81,7 +81,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = ({
       if (updatedDisaggregation)
         return setActiveDisaggregation(updatedDisaggregation);
       setActiveDisaggregation(
-        filteredMetricSettings[activeMetricKey].disaggregations[0]
+        filteredMetricSettings[activeMetricKey]?.disaggregations?.[0]
       );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
