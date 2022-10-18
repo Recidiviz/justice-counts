@@ -17,6 +17,7 @@
 
 import React, { useEffect, useState } from "react";
 
+import { Metric, MetricDisaggregationDimensions } from "../../shared/types";
 import { removeSnakeCase } from "../../utils";
 import blueCheck from "../assets/status-check-icon.png";
 import { BinaryRadioButton } from "../Forms";
@@ -33,8 +34,8 @@ import {
   DisaggregationTab,
   Header,
   MetricConfigurationContainer,
-  MetricConfigurationMetric,
-  MetricConfigurationMetricDimension,
+  // MetricConfigurationMetric,
+  // MetricConfigurationMetricDimension,
   MetricDisaggregations,
   MetricOnOffWrapper,
   MetricSettings,
@@ -44,14 +45,14 @@ import {
 
 type MetricConfigurationProps = {
   activeMetricKey: string;
-  filteredMetricSettings: { [key: string]: MetricConfigurationMetric };
+  filteredMetricSettings: { [key: string]: Metric };
   saveAndUpdateMetricSettings: (
     typeOfUpdate: "METRIC" | "DISAGGREGATION" | "DIMENSION" | "CONTEXT",
     updatedSetting: MetricSettings,
     debounce?: boolean
   ) => void;
   setActiveDimension: React.Dispatch<
-    React.SetStateAction<MetricConfigurationMetricDimension | undefined>
+    React.SetStateAction<MetricDisaggregationDimensions | undefined>
   >;
 };
 

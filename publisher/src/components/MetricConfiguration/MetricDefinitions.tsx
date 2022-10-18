@@ -17,7 +17,12 @@
 
 import React, { Fragment, useEffect, useState } from "react";
 
-import { MetricContext } from "../../shared/types";
+import {
+  Metric,
+  MetricConfigurationSettingsOptions,
+  MetricContext,
+  MetricDisaggregationDimensions,
+} from "../../shared/types";
 import {
   ContextConfiguration,
   DefinitionDisplayName,
@@ -30,9 +35,6 @@ import {
   DefinitionSelection,
   DefinitionsSubTitle,
   DefinitionsTitle,
-  MetricConfigurationMetric,
-  MetricConfigurationMetricDimension,
-  MetricConfigurationSettingsOptions,
   MetricSettings,
   MetricSettingsUpdateOptions,
   RevertToDefaultButton,
@@ -40,8 +42,8 @@ import {
 
 type MetricDefinitionsProps = {
   activeMetricKey: string;
-  filteredMetricSettings: { [key: string]: MetricConfigurationMetric };
-  activeDimension?: MetricConfigurationMetricDimension | undefined;
+  filteredMetricSettings: { [key: string]: Metric };
+  activeDimension?: MetricDisaggregationDimensions | undefined;
   contexts: MetricContext[];
   saveAndUpdateMetricSettings: (
     typeOfUpdate: MetricSettingsUpdateOptions,
@@ -66,11 +68,9 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
   /** TODO(#82): Remove mocks when GET & POST are implemented */
   /** Mocks To Be Removed */
   const generateMockDefinitions = ():
-    | MetricConfigurationMetricDimension
-    | MetricConfigurationMetric => {
-    const dimensionOrMetric:
-      | MetricConfigurationMetricDimension
-      | MetricConfigurationMetric =
+    | MetricDisaggregationDimensions
+    | Metric => {
+    const dimensionOrMetric: MetricDisaggregationDimensions | Metric =
       activeDimension || filteredMetricSettings[activeMetricKey];
 
     const mockSettings = dimensionOrMetric
@@ -92,7 +92,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
   const initialDefinitionsToDisplay = generateMockDefinitions();
 
   const [mockDefinitionsToDisplay, setMockDefinitionsToDisplay] = useState<
-    MetricConfigurationMetricDimension | MetricConfigurationMetric
+    MetricDisaggregationDimensions | Metric
   >(initialDefinitionsToDisplay);
 
   const mockUpdateSelection = (
@@ -102,7 +102,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
     setMockDefinitionsToDisplay((prev) => {
       return {
         ...prev,
-        settings: prev.settings.map((setting) => {
+        settings: prev.settings?.map((setting) => {
           if (setting.key === key) {
             return { ...setting, included: selection };
           }
@@ -148,7 +148,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
         </RevertToDefaultButton>
 
         <Definitions>
-          {mockDefinitionsToDisplay?.settings.map((setting) => (
+          {mockDefinitionsToDisplay?.settings?.map((setting) => (
             <DefinitionItem key={setting.key}>
               <DefinitionDisplayName>{setting.label}</DefinitionDisplayName>
 

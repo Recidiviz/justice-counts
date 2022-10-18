@@ -30,14 +30,12 @@ import {
   Label,
   MetricContextContainer,
   MetricContextItem,
+  MetricSettings,
+  MetricSettingsUpdateOptions,
   MultipleChoiceWrapper,
   RadioButtonGroupWrapper,
   Subheader,
 } from ".";
-import {
-  MetricSettings,
-  MetricSettingsUpdateOptions,
-} from "./MetricConfiguration";
 
 type MetricContextConfigurationProps = {
   metricKey: string;

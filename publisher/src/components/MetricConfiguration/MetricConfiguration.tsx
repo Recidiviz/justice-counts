@@ -22,8 +22,8 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { ListOfMetricsForNavigation } from "../../pages/Settings";
 import {
-  AgencySystems,
-  MetricContext,
+  Metric as MetricType,
+  MetricDisaggregationDimensions,
   ReportFrequency,
 } from "../../shared/types";
 import { useStore } from "../../stores";
@@ -46,45 +46,6 @@ import {
   MetricsViewControlPanel,
   StickyHeader,
 } from ".";
-
-export type MetricConfigurationSettingsOptions = "Yes" | "No" | "N/A";
-
-export type MetricConfigurationSettings = {
-  key: string;
-  label: string;
-  included: MetricConfigurationSettingsOptions;
-  default: MetricConfigurationSettingsOptions;
-};
-
-export type MetricConfigurationMetricDimension = {
-  key: string;
-  label: string;
-  value: string | number | boolean | null | undefined;
-  reporting_note: string;
-  enabled?: boolean;
-  settings: MetricConfigurationSettings[];
-};
-
-export type MetricConfigurationMetricDisaggregation = {
-  key: string;
-  display_name: string;
-  dimensions: MetricConfigurationMetricDimension[];
-  required: boolean;
-  helper_text: string | null | undefined;
-  enabled?: boolean;
-};
-
-export type MetricConfigurationMetric = {
-  key: string;
-  display_name: string;
-  description: string;
-  frequency: string;
-  enabled: boolean;
-  system: AgencySystems;
-  contexts: MetricContext[];
-  disaggregations: MetricConfigurationMetricDisaggregation[];
-  settings: MetricConfigurationSettings[];
-};
 
 export type MetricSettingsUpdateOptions =
   | "METRIC"
@@ -110,7 +71,7 @@ export type MetricSettings = {
 };
 
 type MetricSettingsObj = {
-  [key: string]: MetricConfigurationMetric;
+  [key: string]: MetricType;
 };
 
 export const MetricConfiguration: React.FC<{
@@ -126,9 +87,9 @@ export const MetricConfiguration: React.FC<{
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingError, setLoadingError] = useState<string>();
   const [activeDimension, setActiveDimension] =
-    useState<MetricConfigurationMetricDimension>();
+    useState<MetricDisaggregationDimensions>();
   const [metricSettings, setMetricSettings] = useState<{
-    [key: string]: MetricConfigurationMetric;
+    [key: string]: MetricType;
   }>({});
 
   const filteredMetricSettings: MetricSettingsObj = Object.values(
@@ -360,10 +321,8 @@ export const MetricConfiguration: React.FC<{
       return setLoadingError(response.message);
     }
 
-    const reportSettings =
-      (await response.json()) as MetricConfigurationMetric[];
-    const metricKeyToMetricMap: { [key: string]: MetricConfigurationMetric } =
-      {};
+    const reportSettings = (await response.json()) as MetricType[];
+    const metricKeyToMetricMap: { [key: string]: MetricType } = {};
 
     reportSettings?.forEach((metric) => {
       metricKeyToMetricMap[metric.key] = metric;
