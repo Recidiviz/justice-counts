@@ -78,14 +78,18 @@ export const Configuration: React.FC<MetricConfigurationProps> = ({
           (disaggregation) => disaggregation.key === activeDisaggregation.key
         );
 
-      setActiveDimension(undefined);
-
       if (updatedDisaggregation)
         return setActiveDisaggregation(updatedDisaggregation);
       setActiveDisaggregation(
         filteredMetricSettings[activeMetricKey].disaggregations[0]
       );
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [filteredMetricSettings]
+  );
+
+  useEffect(
+    () => setActiveDimension(undefined),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [activeMetricKey]
   );
