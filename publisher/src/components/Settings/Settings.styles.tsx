@@ -18,6 +18,7 @@
 import styled from "styled-components/macro";
 
 import { palette, typography } from "../GlobalStyles";
+import { MetricDisplayName } from "../Reports/ReportSummaryPanel";
 
 export const SettingsContainer = styled.div`
   width: 100%;
@@ -73,5 +74,19 @@ export const InputWrapper = styled.div`
 
   div {
     width: 100%;
+  }
+`;
+
+export const MetricsListContainer = styled.div``;
+
+export const MetricsListItem = styled(MetricDisplayName)`
+  ${typography.sizeCSS.normal}
+  width: fit-content;
+  color: ${({ activeSection }) =>
+    activeSection ? palette.solid.darkgrey : palette.highlight.grey8};
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.solid.darkgrey};
   }
 `;

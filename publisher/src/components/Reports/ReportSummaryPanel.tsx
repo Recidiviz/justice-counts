@@ -111,7 +111,7 @@ const ReportSummarySection = styled.a`
   }
 `;
 
-const MetricDisplayName = styled.div<{
+export const MetricDisplayName = styled.div<{
   activeSection?: boolean;
 }>`
   ${({ activeSection }) =>
