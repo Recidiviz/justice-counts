@@ -15,25 +15,68 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
+import React, { Fragment } from "react";
 
-import { MenuOptions, menuOptions } from "../../pages/Settings";
-import { MenuItem, SettingsMenuContainer } from "./Settings.styles";
+import {
+  ListOfMetricsForNavigation,
+  MenuOptions,
+  menuOptions,
+} from "../../pages/Settings";
+import {
+  MenuItem,
+  MetricsListContainer,
+  MetricsListItem,
+  SettingsMenuContainer,
+} from ".";
 
 export const SettingsMenu: React.FC<{
   activeMenuItem: MenuOptions;
   goToMenuItem: (destination: MenuOptions) => void;
-}> = ({ activeMenuItem, goToMenuItem }) => {
+  activeMetricKey: string | undefined;
+  setActiveMetricKey: React.Dispatch<React.SetStateAction<string | undefined>>;
+  listOfMetrics: ListOfMetricsForNavigation[] | undefined;
+}> = ({
+  activeMenuItem,
+  goToMenuItem,
+  activeMetricKey,
+  setActiveMetricKey,
+  listOfMetrics,
+}) => {
   return (
     <SettingsMenuContainer>
       {menuOptions.map((option) => (
-        <MenuItem
-          key={option}
-          selected={option === activeMenuItem}
-          onClick={() => goToMenuItem(option)}
-        >
-          {option}
-        </MenuItem>
+        <Fragment key={option}>
+          <MenuItem
+            selected={option === activeMenuItem}
+            onClick={() => {
+              goToMenuItem(option);
+
+              if (option === "Metric Configuration") {
+                setActiveMetricKey(undefined);
+              }
+            }}
+          >
+            {option}
+          </MenuItem>
+
+          {/* Metrics Navigation (appears when a metric has been 
+              selected and allows users to toggle between metrics) */}
+          {option === "Metric Configuration" &&
+            activeMenuItem === "Metric Configuration" &&
+            activeMetricKey &&
+            listOfMetrics && (
+              <MetricsListContainer>
+                {listOfMetrics.map((metric) => (
+                  <MetricsListItem
+                    activeSection={metric.key === activeMetricKey}
+                    onClick={() => setActiveMetricKey(metric.key)}
+                  >
+                    {metric.display_name}
+                  </MetricsListItem>
+                ))}
+              </MetricsListContainer>
+            )}
+        </Fragment>
       ))}
     </SettingsMenuContainer>
   );

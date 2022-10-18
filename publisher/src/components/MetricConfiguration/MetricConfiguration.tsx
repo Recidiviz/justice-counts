@@ -20,14 +20,19 @@ import { reaction, when } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
 
-import { AgencySystems, FormError, ReportFrequency } from "../../shared/types";
+import { ListOfMetricsForNavigation } from "../../pages/Settings";
+import {
+  AgencySystems,
+  FormError,
+  MetricContext,
+  ReportFrequency,
+} from "../../shared/types";
 import { useStore } from "../../stores";
 import {
   isPositiveNumber,
   removeCommaSpaceAndTrim,
   removeSnakeCase,
 } from "../../utils";
-import { ReactComponent as GearsIcon } from "../assets/gears-icon.svg";
 import blueCheck from "../assets/status-check-icon.png";
 import { Badge } from "../Badge";
 import {
@@ -46,7 +51,6 @@ import {
   BreakdownHeader,
   Checkbox,
   CheckboxWrapper,
-  DefinitionsDisplay,
   Dimension,
   DimensionTitle,
   DimensionTitleWrapper,
@@ -61,6 +65,7 @@ import {
   MetricConfigurationWrapper,
   MetricContextContainer,
   MetricContextItem,
+  MetricDefinitions,
   MetricDescription,
   MetricDetailsDisplay,
   MetricDisaggregations,
@@ -70,39 +75,48 @@ import {
   MetricsViewContainer,
   MetricsViewControlPanel,
   MultipleChoiceWrapper,
-  NoDefinitionsSelected,
   RadioButtonGroupWrapper,
   StickyHeader,
   Subheader,
 } from ".";
 
-type MetricsViewMetric = {
+export type MetricConfigurationSettingsOptions = "Yes" | "No" | "N/A";
+
+export type MetricConfigurationSettings = {
+  key: string;
+  label: string;
+  included: MetricConfigurationSettingsOptions;
+  default: MetricConfigurationSettingsOptions;
+};
+
+export type MetricConfigurationMetricDimension = {
+  key: string;
+  label: string;
+  value: string | number | boolean | null | undefined;
+  reporting_note: string;
+  enabled?: boolean;
+  settings: MetricConfigurationSettings[];
+};
+
+export type MetricConfigurationMetricDisaggregation = {
+  key: string;
+  display_name: string;
+  dimensions: MetricConfigurationMetricDimension[];
+  required: boolean;
+  helper_text: string | null | undefined;
+  enabled?: boolean;
+};
+
+export type MetricConfigurationMetric = {
   key: string;
   display_name: string;
   description: string;
   frequency: string;
   enabled: boolean;
   system: AgencySystems;
-  contexts: {
-    key: string;
-    display_name: string;
-    reporting_note: string;
-    required: boolean;
-    type: string;
-    value: string | null;
-    multiple_choice_options?: string[];
-  }[];
-  disaggregations: {
-    key: string;
-    display_name: string;
-    enabled: boolean;
-    dimensions: {
-      key: string;
-      label: string;
-      reporting_note: string;
-      enabled: boolean;
-    }[];
-  }[];
+  contexts: MetricContext[];
+  disaggregations: MetricConfigurationMetricDisaggregation[];
+  settings: MetricConfigurationSettings[];
 };
 
 type MetricBoxProps = {
@@ -111,8 +125,7 @@ type MetricBoxProps = {
   frequency: ReportFrequency;
   description: string;
   enabled?: boolean;
-  activeMetricKey: string;
-  setActiveMetricKey: React.Dispatch<React.SetStateAction<string>>;
+  setActiveMetricKey: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 const MetricBox: React.FC<MetricBoxProps> = ({
@@ -121,7 +134,6 @@ const MetricBox: React.FC<MetricBoxProps> = ({
   frequency,
   description,
   enabled,
-  activeMetricKey,
   setActiveMetricKey,
 }): JSX.Element => {
   return (
@@ -142,18 +154,22 @@ const MetricBox: React.FC<MetricBoxProps> = ({
 
 type MetricConfigurationProps = {
   activeMetricKey: string;
-  filteredMetricSettings: { [key: string]: MetricsViewMetric };
+  filteredMetricSettings: { [key: string]: MetricConfigurationMetric };
   saveAndUpdateMetricSettings: (
     typeOfUpdate: "METRIC" | "DISAGGREGATION" | "DIMENSION" | "CONTEXT",
     updatedSetting: MetricSettings,
     debounce?: boolean
   ) => void;
+  setActiveDimension: React.Dispatch<
+    React.SetStateAction<MetricConfigurationMetricDimension | undefined>
+  >;
 };
 
 const MetricConfiguration: React.FC<MetricConfigurationProps> = ({
   activeMetricKey,
   filteredMetricSettings,
   saveAndUpdateMetricSettings,
+  setActiveDimension,
 }): JSX.Element => {
   const [activeDisaggregation, setActiveDisaggregation] = useState(
     filteredMetricSettings[activeMetricKey]?.disaggregations?.[0]
@@ -166,17 +182,24 @@ const MetricConfiguration: React.FC<MetricConfigurationProps> = ({
 
   useEffect(
     () => {
-      const updatedDisaggregation = filteredMetricSettings[
-        activeMetricKey
-      ]?.disaggregations?.find(
-        (disaggregation) => disaggregation.key === activeDisaggregation.key
-      );
+      const updatedDisaggregation =
+        activeDisaggregation &&
+        filteredMetricSettings[activeMetricKey]?.disaggregations?.find(
+          (disaggregation) => disaggregation.key === activeDisaggregation.key
+        );
 
-      if (updatedDisaggregation) setActiveDisaggregation(updatedDisaggregation);
+      setActiveDimension(undefined);
+
+      if (updatedDisaggregation)
+        return setActiveDisaggregation(updatedDisaggregation);
+      setActiveDisaggregation(
+        filteredMetricSettings[activeMetricKey].disaggregations[0]
+      );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [filteredMetricSettings]
+    [activeMetricKey]
   );
+
   return (
     <MetricConfigurationContainer>
       <MetricOnOffWrapper>
@@ -231,47 +254,51 @@ const MetricConfiguration: React.FC<MetricConfigurationProps> = ({
 
           <TabbedBar noPadding>
             <TabbedOptions>
-              {filteredMetricSettings[activeMetricKey]?.disaggregations?.map(
-                (disaggregation) => (
-                  <TabbedItem
-                    key={disaggregation.key}
-                    onClick={() => setActiveDisaggregation(disaggregation)}
-                    selected={disaggregation.key === activeDisaggregation.key}
-                    capitalize
-                  >
-                    <DisaggregationTab>
-                      <span>
-                        {removeSnakeCase(
-                          disaggregation.display_name.toLowerCase()
-                        )}
-                      </span>
+              {activeDisaggregation &&
+                filteredMetricSettings[activeMetricKey]?.disaggregations?.map(
+                  (disaggregation) => (
+                    <TabbedItem
+                      key={disaggregation.key}
+                      onClick={() => {
+                        setActiveDimension(disaggregation.dimensions[0]);
+                        setActiveDisaggregation(disaggregation);
+                      }}
+                      selected={disaggregation.key === activeDisaggregation.key}
+                      capitalize
+                    >
+                      <DisaggregationTab>
+                        <span>
+                          {removeSnakeCase(
+                            disaggregation.display_name.toLowerCase()
+                          )}
+                        </span>
 
-                      <CheckboxWrapper>
-                        <Checkbox
-                          type="checkbox"
-                          checked={disaggregation.enabled}
-                          onChange={() =>
-                            saveAndUpdateMetricSettings("DISAGGREGATION", {
-                              key: activeMetricKey,
-                              disaggregations: [
-                                {
-                                  key: disaggregation.key,
-                                  enabled: !disaggregation.enabled,
-                                },
-                              ],
-                            })
-                          }
-                        />
-                        <BlueCheckIcon
-                          src={blueCheck}
-                          alt=""
-                          enabled={disaggregation.enabled}
-                        />
-                      </CheckboxWrapper>
-                    </DisaggregationTab>
-                  </TabbedItem>
-                )
-              )}
+                        <CheckboxWrapper>
+                          <Checkbox
+                            type="checkbox"
+                            checked={disaggregation.enabled}
+                            onChange={() =>
+                              saveAndUpdateMetricSettings("DISAGGREGATION", {
+                                key: activeMetricKey,
+                                disaggregations: [
+                                  {
+                                    key: disaggregation.key,
+                                    enabled: !disaggregation.enabled,
+                                  },
+                                ],
+                              })
+                            }
+                          />
+                          <BlueCheckIcon
+                            src={blueCheck}
+                            alt=""
+                            enabled={disaggregation.enabled}
+                          />
+                        </CheckboxWrapper>
+                      </DisaggregationTab>
+                    </TabbedItem>
+                  )
+                )}
             </TabbedOptions>
           </TabbedBar>
 
@@ -281,6 +308,7 @@ const MetricConfiguration: React.FC<MetricConfigurationProps> = ({
                 <Dimension
                   key={dimension.key}
                   enabled={!metricEnabled || activeDisaggregation.enabled}
+                  onClick={() => setActiveDimension(dimension)}
                 >
                   <CheckboxWrapper>
                     <Checkbox
@@ -335,7 +363,7 @@ const MetricConfiguration: React.FC<MetricConfigurationProps> = ({
   );
 };
 
-type MetricSettingsUpdateOptions =
+export type MetricSettingsUpdateOptions =
   | "METRIC"
   | "DISAGGREGATION"
   | "DIMENSION"
@@ -343,15 +371,7 @@ type MetricSettingsUpdateOptions =
 
 type MetricContextConfigurationProps = {
   metricKey: string;
-  contexts: {
-    key: string;
-    display_name: string;
-    reporting_note: string;
-    required: boolean;
-    type: string;
-    value: string | null;
-    multiple_choice_options?: string[];
-  }[];
+  contexts: MetricContext[];
   saveAndUpdateMetricSettings: (
     typeOfUpdate: MetricSettingsUpdateOptions,
     updatedSetting: MetricSettings,
@@ -361,11 +381,9 @@ type MetricContextConfigurationProps = {
 
 // TODO(#73) Plug into the Definitions panel once implemented
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const MetricContextConfiguration: React.FC<MetricContextConfigurationProps> = ({
-  metricKey,
-  contexts,
-  saveAndUpdateMetricSettings,
-}) => {
+export const MetricContextConfiguration: React.FC<
+  MetricContextConfigurationProps
+> = ({ metricKey, contexts, saveAndUpdateMetricSettings }) => {
   const [contextErrors, setContextErrors] = useState<{
     [key: string]: FormError;
   }>();
@@ -396,7 +414,7 @@ const MetricContextConfiguration: React.FC<MetricContextConfigurationProps> = ({
     if (contexts) {
       contexts.forEach((context) => {
         if (context.type === "NUMBER") {
-          contextNumberValidation(context.key, context.value || "");
+          contextNumberValidation(context.key, (context.value || "") as string);
         }
       });
     }
@@ -466,7 +484,7 @@ const MetricContextConfiguration: React.FC<MetricContextConfigurationProps> = ({
                 name={context.key}
                 id={context.key}
                 label=""
-                value={context.value || ""}
+                value={(context.value || "") as string}
                 multiline={context.type === "TEXT"}
                 error={contextErrors?.[context.key]}
                 onChange={(e) => {
@@ -550,10 +568,16 @@ export type MetricSettings = {
 };
 
 type MetricSettingsObj = {
-  [key: string]: MetricsViewMetric;
+  [key: string]: MetricConfigurationMetric;
 };
 
-export const MetricsView: React.FC = observer(() => {
+export const MetricsView: React.FC<{
+  activeMetricKey: string | undefined;
+  setActiveMetricKey: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setListOfMetrics: React.Dispatch<
+    React.SetStateAction<ListOfMetricsForNavigation[] | undefined>
+  >;
+}> = observer(({ activeMetricKey, setActiveMetricKey, setListOfMetrics }) => {
   const { reportStore, userStore, datapointsStore } = useStore();
 
   const [activeMetricFilter, setActiveMetricFilter] = useState<string>();
@@ -561,9 +585,10 @@ export const MetricsView: React.FC = observer(() => {
   const [loadingError, setLoadingError] = useState<string | undefined>(
     undefined
   );
-  const [activeMetricKey, setActiveMetricKey] = useState<string>("");
+  const [activeDimension, setActiveDimension] =
+    useState<MetricConfigurationMetricDimension>();
   const [metricSettings, setMetricSettings] = useState<{
-    [key: string]: MetricsViewMetric;
+    [key: string]: MetricConfigurationMetric;
   }>({});
 
   const filteredMetricSettings: MetricSettingsObj = Object.values(
@@ -577,6 +602,24 @@ export const MetricsView: React.FC = observer(() => {
       res[metric.key] = metric;
       return res;
     }, {});
+
+  /** Updates shared state `listOfMetrics` so the SettingsMenu component can render the metric navigation */
+  useEffect(
+    () => {
+      const listOfMetricsForMetricNavigation = Object.values(
+        filteredMetricSettings
+      ).map((metric) => {
+        return {
+          key: metric.key,
+          display_name: metric.display_name,
+        };
+      });
+
+      setListOfMetrics(listOfMetricsForMetricNavigation);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [filteredMetricSettings]
+  );
 
   const updateMetricSettings = (
     typeOfUpdate: MetricSettingsUpdateOptions,
@@ -777,8 +820,10 @@ export const MetricsView: React.FC = observer(() => {
       return setLoadingError(response.message);
     }
 
-    const reportSettings = (await response.json()) as MetricsViewMetric[];
-    const metricKeyToMetricMap: { [key: string]: MetricsViewMetric } = {};
+    const reportSettings =
+      (await response.json()) as MetricConfigurationMetric[];
+    const metricKeyToMetricMap: { [key: string]: MetricConfigurationMetric } =
+      {};
 
     reportSettings?.forEach((metric) => {
       metricKeyToMetricMap[metric.key] = metric;
@@ -872,7 +917,6 @@ export const MetricsView: React.FC = observer(() => {
                 frequency={metric.frequency as ReportFrequency}
                 description={metric.description}
                 enabled={metric.enabled}
-                activeMetricKey={activeMetricKey}
                 setActiveMetricKey={setActiveMetricKey}
               />
             ))}
@@ -881,11 +925,16 @@ export const MetricsView: React.FC = observer(() => {
           {activeMetricKey && (
             <MetricConfigurationWrapper>
               <MetricConfigurationDisplay>
-                <BackToMetrics onClick={() => setActiveMetricKey("")}>
+                <BackToMetrics
+                  onClick={() => {
+                    setActiveMetricKey(undefined);
+                    setActiveDimension(undefined);
+                  }}
+                >
                   ← Back to Metrics
                 </BackToMetrics>
 
-                <Metric>
+                <Metric onClick={() => setActiveDimension(undefined)}>
                   <MetricName isTitle>
                     {metricSettings[activeMetricKey]?.display_name}
                   </MetricName>
@@ -899,22 +948,19 @@ export const MetricsView: React.FC = observer(() => {
                     activeMetricKey={activeMetricKey}
                     filteredMetricSettings={filteredMetricSettings}
                     saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
+                    setActiveDimension={setActiveDimension}
                   />
-                  {/* <MetricContextConfiguration
-                  metricKey={activeMetricKey}
-                  contexts={metricSettings[activeMetricKey]?.contexts}
-                  saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
-                /> */}
                 </MetricDetailsDisplay>
               </MetricConfigurationDisplay>
 
-              <DefinitionsDisplay>
-                <NoDefinitionsSelected>
-                  <GearsIcon />
-                  Choose the Annual or Monthly reporting frequency to edit the
-                  definitions and context.
-                </NoDefinitionsSelected>
-              </DefinitionsDisplay>
+              {/* Metric/Dimension Definitions (Includes/Excludes) */}
+              <MetricDefinitions
+                activeMetricKey={activeMetricKey}
+                filteredMetricSettings={filteredMetricSettings}
+                activeDimension={activeDimension}
+                contexts={metricSettings[activeMetricKey]?.contexts}
+                saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
+              />
             </MetricConfigurationWrapper>
           )}
         </MetricsViewControlPanel>
