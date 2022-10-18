@@ -23,61 +23,28 @@ import React, { useEffect, useRef, useState } from "react";
 import { ListOfMetricsForNavigation } from "../../pages/Settings";
 import {
   AgencySystems,
-  FormError,
   MetricContext,
   ReportFrequency,
 } from "../../shared/types";
 import { useStore } from "../../stores";
-import {
-  isPositiveNumber,
-  removeCommaSpaceAndTrim,
-  removeSnakeCase,
-} from "../../utils";
-import blueCheck from "../assets/status-check-icon.png";
+import { removeSnakeCase } from "../../utils";
 import { Badge } from "../Badge";
-import {
-  BinaryRadioButton,
-  BinaryRadioGroupClearButton,
-  BinaryRadioGroupContainer,
-  BinaryRadioGroupQuestion,
-  TextInput,
-} from "../Forms";
 import { Loading } from "../Loading";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { showToast } from "../Toast";
 import {
   BackToMetrics,
-  BlueCheckIcon,
-  BreakdownHeader,
-  Checkbox,
-  CheckboxWrapper,
-  Dimension,
-  DimensionTitle,
-  DimensionTitleWrapper,
-  Disaggregation,
-  DisaggregationTab,
-  Header,
-  Label,
+  Configuration,
   Metric,
-  MetricBoxContainer,
-  MetricConfigurationContainer,
+  MetricBox,
   MetricConfigurationDisplay,
   MetricConfigurationWrapper,
-  MetricContextContainer,
-  MetricContextItem,
   MetricDefinitions,
-  MetricDescription,
   MetricDetailsDisplay,
-  MetricDisaggregations,
   MetricName,
-  MetricNameBadgeWrapper,
-  MetricOnOffWrapper,
   MetricsViewContainer,
   MetricsViewControlPanel,
-  MultipleChoiceWrapper,
-  RadioButtonGroupWrapper,
   StickyHeader,
-  Subheader,
 } from ".";
 
 export type MetricConfigurationSettingsOptions = "Yes" | "No" | "N/A";
@@ -119,436 +86,11 @@ export type MetricConfigurationMetric = {
   settings: MetricConfigurationSettings[];
 };
 
-type MetricBoxProps = {
-  metricKey: string;
-  displayName: string;
-  frequency: ReportFrequency;
-  description: string;
-  enabled?: boolean;
-  setActiveMetricKey: React.Dispatch<React.SetStateAction<string | undefined>>;
-};
-
-const MetricBox: React.FC<MetricBoxProps> = ({
-  metricKey,
-  displayName,
-  frequency,
-  description,
-  enabled,
-  setActiveMetricKey,
-}): JSX.Element => {
-  return (
-    <MetricBoxContainer
-      onClick={() => setActiveMetricKey(metricKey)}
-      enabled={enabled}
-    >
-      <MetricName>{displayName}</MetricName>
-      <MetricDescription>{description}</MetricDescription>
-      <MetricNameBadgeWrapper>
-        <Badge color={!enabled ? "GREY" : "GREEN"} disabled={!enabled} noMargin>
-          {!enabled ? "Inactive" : frequency.toLowerCase()}
-        </Badge>
-      </MetricNameBadgeWrapper>
-    </MetricBoxContainer>
-  );
-};
-
-type MetricConfigurationProps = {
-  activeMetricKey: string;
-  filteredMetricSettings: { [key: string]: MetricConfigurationMetric };
-  saveAndUpdateMetricSettings: (
-    typeOfUpdate: "METRIC" | "DISAGGREGATION" | "DIMENSION" | "CONTEXT",
-    updatedSetting: MetricSettings,
-    debounce?: boolean
-  ) => void;
-  setActiveDimension: React.Dispatch<
-    React.SetStateAction<MetricConfigurationMetricDimension | undefined>
-  >;
-};
-
-const MetricConfiguration: React.FC<MetricConfigurationProps> = ({
-  activeMetricKey,
-  filteredMetricSettings,
-  saveAndUpdateMetricSettings,
-  setActiveDimension,
-}): JSX.Element => {
-  const [activeDisaggregation, setActiveDisaggregation] = useState(
-    filteredMetricSettings[activeMetricKey]?.disaggregations?.[0]
-  );
-  const metricDisplayName =
-    filteredMetricSettings[activeMetricKey]?.display_name;
-  const metricEnabled = Boolean(
-    filteredMetricSettings[activeMetricKey]?.enabled
-  );
-
-  useEffect(
-    () => {
-      const updatedDisaggregation =
-        activeDisaggregation &&
-        filteredMetricSettings[activeMetricKey]?.disaggregations?.find(
-          (disaggregation) => disaggregation.key === activeDisaggregation.key
-        );
-
-      setActiveDimension(undefined);
-
-      if (updatedDisaggregation)
-        return setActiveDisaggregation(updatedDisaggregation);
-      setActiveDisaggregation(
-        filteredMetricSettings[activeMetricKey].disaggregations[0]
-      );
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeMetricKey]
-  );
-
-  return (
-    <MetricConfigurationContainer>
-      <MetricOnOffWrapper>
-        <Header>
-          Are you currently able to report any part of this metric?
-        </Header>
-        <Subheader>
-          Answering “No” means that {metricDisplayName} will not appear on
-          automatically generated reports from here on out. You can change this
-          later.
-        </Subheader>
-        <RadioButtonGroupWrapper>
-          <BinaryRadioButton
-            type="radio"
-            id="yes"
-            name="metric-config"
-            label="Yes"
-            value="yes"
-            checked={metricEnabled}
-            onChange={() =>
-              saveAndUpdateMetricSettings("METRIC", {
-                key: activeMetricKey,
-                enabled: true,
-              })
-            }
-          />
-          <BinaryRadioButton
-            type="radio"
-            id="no"
-            name="metric-config"
-            label="No"
-            value="no"
-            checked={!metricEnabled}
-            onChange={() =>
-              saveAndUpdateMetricSettings("METRIC", {
-                key: activeMetricKey,
-                enabled: false,
-              })
-            }
-          />
-        </RadioButtonGroupWrapper>
-      </MetricOnOffWrapper>
-
-      {filteredMetricSettings[activeMetricKey]?.disaggregations.length > 0 && (
-        <MetricDisaggregations enabled={metricEnabled}>
-          <BreakdownHeader>Breakdowns</BreakdownHeader>
-          <Subheader>
-            Mark (using the checkmark) each of the breakdowns below that your
-            agency will be able to report. Click the arrow to edit the
-            definition for each metric.
-          </Subheader>
-
-          <TabbedBar noPadding>
-            <TabbedOptions>
-              {activeDisaggregation &&
-                filteredMetricSettings[activeMetricKey]?.disaggregations?.map(
-                  (disaggregation) => (
-                    <TabbedItem
-                      key={disaggregation.key}
-                      onClick={() => {
-                        setActiveDimension(disaggregation.dimensions[0]);
-                        setActiveDisaggregation(disaggregation);
-                      }}
-                      selected={disaggregation.key === activeDisaggregation.key}
-                      capitalize
-                    >
-                      <DisaggregationTab>
-                        <span>
-                          {removeSnakeCase(
-                            disaggregation.display_name.toLowerCase()
-                          )}
-                        </span>
-
-                        <CheckboxWrapper>
-                          <Checkbox
-                            type="checkbox"
-                            checked={disaggregation.enabled}
-                            onChange={() =>
-                              saveAndUpdateMetricSettings("DISAGGREGATION", {
-                                key: activeMetricKey,
-                                disaggregations: [
-                                  {
-                                    key: disaggregation.key,
-                                    enabled: !disaggregation.enabled,
-                                  },
-                                ],
-                              })
-                            }
-                          />
-                          <BlueCheckIcon
-                            src={blueCheck}
-                            alt=""
-                            enabled={disaggregation.enabled}
-                          />
-                        </CheckboxWrapper>
-                      </DisaggregationTab>
-                    </TabbedItem>
-                  )
-                )}
-            </TabbedOptions>
-          </TabbedBar>
-
-          <Disaggregation>
-            {activeDisaggregation?.dimensions.map((dimension) => {
-              return (
-                <Dimension
-                  key={dimension.key}
-                  enabled={!metricEnabled || activeDisaggregation.enabled}
-                  onClick={() => setActiveDimension(dimension)}
-                >
-                  <CheckboxWrapper>
-                    <Checkbox
-                      type="checkbox"
-                      checked={
-                        activeDisaggregation.enabled && dimension.enabled
-                      }
-                      onChange={() => {
-                        if (activeDisaggregation.enabled) {
-                          saveAndUpdateMetricSettings("DIMENSION", {
-                            key: activeMetricKey,
-                            disaggregations: [
-                              {
-                                key: activeDisaggregation.key,
-                                dimensions: [
-                                  {
-                                    key: dimension.key,
-                                    enabled: !dimension.enabled,
-                                  },
-                                ],
-                              },
-                            ],
-                          });
-                        }
-                      }}
-                    />
-                    <BlueCheckIcon
-                      src={blueCheck}
-                      alt=""
-                      enabled={
-                        activeDisaggregation.enabled && dimension.enabled
-                      }
-                    />
-                  </CheckboxWrapper>
-
-                  <DimensionTitleWrapper>
-                    <DimensionTitle
-                      enabled={
-                        activeDisaggregation.enabled && dimension.enabled
-                      }
-                    >
-                      {dimension.label}
-                    </DimensionTitle>
-                  </DimensionTitleWrapper>
-                </Dimension>
-              );
-            })}
-          </Disaggregation>
-        </MetricDisaggregations>
-      )}
-    </MetricConfigurationContainer>
-  );
-};
-
 export type MetricSettingsUpdateOptions =
   | "METRIC"
   | "DISAGGREGATION"
   | "DIMENSION"
   | "CONTEXT";
-
-type MetricContextConfigurationProps = {
-  metricKey: string;
-  contexts: MetricContext[];
-  saveAndUpdateMetricSettings: (
-    typeOfUpdate: MetricSettingsUpdateOptions,
-    updatedSetting: MetricSettings,
-    debounce?: boolean
-  ) => void;
-};
-
-// TODO(#73) Plug into the Definitions panel once implemented
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const MetricContextConfiguration: React.FC<
-  MetricContextConfigurationProps
-> = ({ metricKey, contexts, saveAndUpdateMetricSettings }) => {
-  const [contextErrors, setContextErrors] = useState<{
-    [key: string]: FormError;
-  }>();
-
-  const contextNumberValidation = (key: string, value: string) => {
-    const cleanValue = removeCommaSpaceAndTrim(value);
-
-    if (!isPositiveNumber(cleanValue) && cleanValue !== "") {
-      setContextErrors({
-        [key]: {
-          message: "Please enter a valid number.",
-        },
-      });
-
-      return false;
-    }
-
-    setContextErrors((prev) => {
-      const otherContextErrors = { ...prev };
-      delete otherContextErrors[key];
-
-      return otherContextErrors;
-    });
-    return true;
-  };
-
-  useEffect(() => {
-    if (contexts) {
-      contexts.forEach((context) => {
-        if (context.type === "NUMBER") {
-          contextNumberValidation(context.key, (context.value || "") as string);
-        }
-      });
-    }
-  }, [contexts]);
-
-  return (
-    <MetricContextContainer>
-      <Subheader>
-        Anything entered here will appear as the default value for all reports.
-        If you are entering data for a particular month, you can still replace
-        this as necessary.
-      </Subheader>
-
-      {contexts?.map((context) => (
-        <MetricContextItem key={context.key}>
-          {context.type === "BOOLEAN" && (
-            <>
-              <Label noBottomMargin>{context.display_name}</Label>
-              <RadioButtonGroupWrapper>
-                <BinaryRadioButton
-                  type="radio"
-                  id={`${context.key}-yes`}
-                  name={context.key}
-                  label="Yes"
-                  value="yes"
-                  checked={context.value === "yes"}
-                  onChange={() =>
-                    saveAndUpdateMetricSettings("CONTEXT", {
-                      key: metricKey,
-                      contexts: [{ key: context.key, value: "yes" }],
-                    })
-                  }
-                />
-                <BinaryRadioButton
-                  type="radio"
-                  id={`${context.key}-no`}
-                  name={context.key}
-                  label="No"
-                  value="no"
-                  checked={context.value === "no"}
-                  onChange={() =>
-                    saveAndUpdateMetricSettings("CONTEXT", {
-                      key: metricKey,
-                      contexts: [{ key: context.key, value: "no" }],
-                    })
-                  }
-                />
-              </RadioButtonGroupWrapper>
-              <BinaryRadioGroupClearButton
-                onClick={() =>
-                  saveAndUpdateMetricSettings("CONTEXT", {
-                    key: metricKey,
-                    contexts: [{ key: context.key, value: "" }],
-                  })
-                }
-              >
-                Clear Input
-              </BinaryRadioGroupClearButton>
-            </>
-          )}
-
-          {(context.type === "TEXT" || context.type === "NUMBER") && (
-            <>
-              <Label>{context.display_name}</Label>
-              <TextInput
-                type="text"
-                name={context.key}
-                id={context.key}
-                label=""
-                value={(context.value || "") as string}
-                multiline={context.type === "TEXT"}
-                error={contextErrors?.[context.key]}
-                onChange={(e) => {
-                  if (context.type === "NUMBER") {
-                    contextNumberValidation(context.key, e.currentTarget.value);
-                  }
-
-                  saveAndUpdateMetricSettings(
-                    "CONTEXT",
-                    {
-                      key: metricKey,
-                      contexts: [
-                        { key: context.key, value: e.currentTarget.value },
-                      ],
-                    },
-                    true
-                  );
-                }}
-              />
-            </>
-          )}
-
-          {context.type === "MULTIPLE_CHOICE" && (
-            <BinaryRadioGroupContainer key={context.key}>
-              <BinaryRadioGroupQuestion>
-                {context.display_name}
-              </BinaryRadioGroupQuestion>
-
-              <MultipleChoiceWrapper>
-                {context.multiple_choice_options?.map((option) => (
-                  <BinaryRadioButton
-                    type="radio"
-                    key={option}
-                    id={`${context.key}-${option}`}
-                    name={`${context.key}`}
-                    label={option}
-                    value={option}
-                    checked={context.value === option}
-                    onChange={() =>
-                      saveAndUpdateMetricSettings("CONTEXT", {
-                        key: metricKey,
-                        contexts: [{ key: context.key, value: option }],
-                      })
-                    }
-                  />
-                ))}
-              </MultipleChoiceWrapper>
-              <BinaryRadioGroupClearButton
-                onClick={() =>
-                  saveAndUpdateMetricSettings("CONTEXT", {
-                    key: metricKey,
-                    contexts: [{ key: context.key, value: "" }],
-                  })
-                }
-              >
-                Clear Input
-              </BinaryRadioGroupClearButton>
-            </BinaryRadioGroupContainer>
-          )}
-        </MetricContextItem>
-      ))}
-    </MetricContextContainer>
-  );
-};
 
 export type MetricSettings = {
   key: string;
@@ -571,14 +113,14 @@ type MetricSettingsObj = {
   [key: string]: MetricConfigurationMetric;
 };
 
-export const MetricsView: React.FC<{
+export const MetricConfiguration: React.FC<{
   activeMetricKey: string | undefined;
   setActiveMetricKey: React.Dispatch<React.SetStateAction<string | undefined>>;
   setListOfMetrics: React.Dispatch<
     React.SetStateAction<ListOfMetricsForNavigation[] | undefined>
   >;
 }> = observer(({ activeMetricKey, setActiveMetricKey, setListOfMetrics }) => {
-  const { reportStore, userStore, datapointsStore } = useStore();
+  const { reportStore, userStore } = useStore();
 
   const [activeMetricFilter, setActiveMetricFilter] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -839,7 +381,6 @@ export const MetricsView: React.FC<{
         () => userStore.userInfoLoaded,
         async () => {
           fetchAndSetReportSettings();
-          datapointsStore.getDatapoints();
           setActiveMetricFilter(
             removeSnakeCase(userStore.currentAgency?.systems[0] as string)
           );
@@ -860,7 +401,6 @@ export const MetricsView: React.FC<{
           if (previousAgencyId !== undefined) {
             setIsLoading(true);
             fetchAndSetReportSettings();
-            await datapointsStore.getDatapoints();
             setActiveMetricFilter(
               removeSnakeCase(userStore.currentAgency?.systems[0] as string)
             );
@@ -944,7 +484,7 @@ export const MetricsView: React.FC<{
                 </Metric>
 
                 <MetricDetailsDisplay>
-                  <MetricConfiguration
+                  <Configuration
                     activeMetricKey={activeMetricKey}
                     filteredMetricSettings={filteredMetricSettings}
                     saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}

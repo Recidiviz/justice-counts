@@ -18,7 +18,7 @@
 import React, { useState } from "react";
 
 import { UploadedFiles } from "../components/DataUpload";
-import { MetricsView } from "../components/MetricConfiguration";
+import { MetricConfiguration } from "../components/MetricConfiguration";
 import {
   AccountSettings,
   ContentDisplay,
@@ -65,7 +65,7 @@ const Settings = () => {
         {activeMenuItem === "Your Account" && <AccountSettings />}
         {activeMenuItem === "Uploaded Files" && <UploadedFiles />}
         {activeMenuItem === "Metric Configuration" && (
-          <MetricsView
+          <MetricConfiguration
             activeMetricKey={activeMetricKey}
             setActiveMetricKey={setActiveMetricKey}
             setListOfMetrics={setListOfMetrics}

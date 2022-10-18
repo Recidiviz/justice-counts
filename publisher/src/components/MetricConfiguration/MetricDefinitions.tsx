@@ -19,6 +19,7 @@ import React, { Fragment, useEffect, useState } from "react";
 
 import { MetricContext } from "../../shared/types";
 import {
+  ContextConfiguration,
   DefinitionDisplayName,
   DefinitionItem,
   DefinitionMiniButton,
@@ -32,7 +33,6 @@ import {
   MetricConfigurationMetric,
   MetricConfigurationMetricDimension,
   MetricConfigurationSettingsOptions,
-  MetricContextConfiguration,
   MetricSettings,
   MetricSettingsUpdateOptions,
   RevertToDefaultButton,
@@ -171,7 +171,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
 
       {/* Additional Context (only appears on overall metric settings and not individual dimension settings) */}
       {!activeDimension && (
-        <MetricContextConfiguration
+        <ContextConfiguration
           metricKey={activeMetricKey}
           contexts={contexts}
           saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
