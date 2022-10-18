@@ -73,21 +73,20 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
     const dimensionOrMetric: MetricDisaggregationDimensions | Metric =
       activeDimension || filteredMetricSettings[activeMetricKey];
 
-    // const mockSettings = dimensionOrMetric
-    //   ? Array.from({ length: 10 }, (_, i) => ({
-    //       key: `SETTING ${i}`,
-    //       label: `Includes/Excludes Q#${i + 1} for ${
-    //         "display_name" in dimensionOrMetric
-    //           ? dimensionOrMetric.display_name
-    //           : dimensionOrMetric.label
-    //       }?`,
-    //       included: selectionOptions[i % 3],
-    //       default: selectionOptions[i % 3],
-    //     }))
-    //   : [];
+    const mockSettings = dimensionOrMetric
+      ? Array.from({ length: 10 }, (_, i) => ({
+          key: `SETTING ${i}`,
+          label: `Includes/Excludes Q#${i + 1} for ${
+            "display_name" in dimensionOrMetric
+              ? dimensionOrMetric.display_name
+              : dimensionOrMetric.label
+          }?`,
+          included: selectionOptions[i % 3],
+          default: selectionOptions[i % 3],
+        }))
+      : [];
 
-    // return { ...dimensionOrMetric, settings: mockSettings };
-    return { ...dimensionOrMetric };
+    return { ...dimensionOrMetric, settings: mockSettings };
   };
 
   const initialDefinitionsToDisplay = generateMockDefinitions();
