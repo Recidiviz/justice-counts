@@ -34,8 +34,6 @@ import {
   DisaggregationTab,
   Header,
   MetricConfigurationContainer,
-  // MetricConfigurationMetric,
-  // MetricConfigurationMetricDimension,
   MetricDisaggregations,
   MetricOnOffWrapper,
   MetricSettings,
