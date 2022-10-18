@@ -124,9 +124,7 @@ export const MetricConfiguration: React.FC<{
 
   const [activeMetricFilter, setActiveMetricFilter] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [loadingError, setLoadingError] = useState<string | undefined>(
-    undefined
-  );
+  const [loadingError, setLoadingError] = useState<string>();
   const [activeDimension, setActiveDimension] =
     useState<MetricConfigurationMetricDimension>();
   const [metricSettings, setMetricSettings] = useState<{
