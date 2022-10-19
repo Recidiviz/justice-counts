@@ -22,7 +22,6 @@ import { MetricDisplayName } from "../Reports/ReportSummaryPanel";
 
 export const SettingsContainer = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   align-items: flex-start;
   padding: 39px 24px 0 24px;
@@ -31,7 +30,7 @@ export const SettingsContainer = styled.div`
 `;
 
 export const ContentDisplay = styled.div`
-  max-height: 90%;
+  height: 89vh;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

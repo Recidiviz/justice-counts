@@ -29,7 +29,7 @@ export const MetricsViewContainer = styled.div`
 `;
 
 export const MetricsViewControlPanel = styled.div`
-  height: calc(100% - 170px);
+  height: 100%;
   width: 100%;
   display: flex;
   flex-wrap: wrap;
@@ -438,7 +438,7 @@ export const MetricConfigurationDisplay = styled.div`
 `;
 
 export const MetricConfigurationWrapper = styled.div`
-  height: 85vh;
+  height: 100%;
   width: 100%;
   display: flex;
   justify-content: space-between;
