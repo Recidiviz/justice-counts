@@ -79,6 +79,15 @@ export const MetricBoxContainer = styled.div<MetricBoxContainerProps>`
   }
 `;
 
+export const MetricViewBoxContainer = styled(MetricBoxContainer)<{
+  selected?: boolean;
+}>`
+  max-width: 100%;
+  min-height: 50px;
+  border: ${({ selected }) => selected && `1px solid ${palette.solid.blue}`};
+  margin-bottom: 5px;
+`;
+
 export const MetricBoxWrapper = styled.div`
   display: flex;
 `;

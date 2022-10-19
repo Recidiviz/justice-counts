@@ -23,6 +23,7 @@ import { trackNavigation } from "./analytics";
 import { DataUpload } from "./components/DataUpload";
 import { PageWrapper } from "./components/Forms";
 import Header from "./components/Header";
+import { MetricsView } from "./components/MetricConfiguration/MetricsView";
 import CreateReports from "./components/Reports/CreateReport";
 import ReportDataEntry from "./components/Reports/ReportDataEntry";
 import ReviewMetrics from "./components/ReviewMetrics/ReviewMetrics";
@@ -42,6 +43,7 @@ const App: React.FC = (): ReactElement => {
 
         <Routes>
           <Route path="/" element={<Reports />} />
+          <Route path="/data" element={<MetricsView />} />
           <Route path="/reports/create" element={<CreateReports />} />
           <Route path="/reports/:id" element={<ReportDataEntry />} />
           <Route path="/settings" element={<Settings />} />

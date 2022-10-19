@@ -37,6 +37,7 @@ enum MenuItems {
   LearnMore = "LEARN MORE",
   Settings = "SETTINGS",
   Agencies = "AGENCIES",
+  Data = "DATA",
 }
 
 const Menu = () => {
@@ -76,6 +77,8 @@ const Menu = () => {
       setActiveMenuItem(MenuItems.CreateReport);
     } else if (location.pathname === "/settings") {
       setActiveMenuItem(MenuItems.Settings);
+    } else if (location.pathname === "/data") {
+      setActiveMenuItem(MenuItems.Data);
     } else {
       setActiveMenuItem(undefined);
     }
@@ -95,6 +98,14 @@ const Menu = () => {
         active={activeMenuItem === MenuItems.Reports}
       >
         Reports
+      </MenuItem>
+
+      {/* Data (Visualizations) */}
+      <MenuItem
+        onClick={() => navigate("/data")}
+        active={activeMenuItem === MenuItems.Data}
+      >
+        Data
       </MenuItem>
 
       {/* Learn More */}
