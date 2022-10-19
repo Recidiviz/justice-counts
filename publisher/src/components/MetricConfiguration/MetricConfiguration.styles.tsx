@@ -37,6 +37,12 @@ export const MetricsViewControlPanel = styled.div`
   overflow-y: scroll;
 `;
 
+export const MetricsViewControlPanelOverflowHidden = styled(
+  MetricsViewControlPanel
+)`
+  overflow-y: hidden;
+`;
+
 export const PanelContainerLeft = styled.div`
   width: 35%;
   height: 100%;

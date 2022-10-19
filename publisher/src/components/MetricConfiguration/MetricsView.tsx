@@ -36,7 +36,7 @@ import {
   MetricNameBadgeWrapper,
   MetricSettingsObj,
   MetricsViewContainer,
-  MetricsViewControlPanel,
+  MetricsViewControlPanelOverflowHidden,
   MetricViewBoxContainer,
   PanelContainerLeft,
   PanelContainerRight,
@@ -215,7 +215,7 @@ export const MetricsView: React.FC = observer(() => {
           </TabbedOptions>
         </TabbedBar>
 
-        <MetricsViewControlPanel>
+        <MetricsViewControlPanelOverflowHidden>
           {/* List Of Metrics */}
           <PanelContainerLeft>
             {filteredMetricSettings &&
@@ -258,7 +258,7 @@ export const MetricsView: React.FC = observer(() => {
 
             <ConnectedDatapointsView metric={activeMetricKey} />
           </PanelContainerRight>
-        </MetricsViewControlPanel>
+        </MetricsViewControlPanelOverflowHidden>
       </MetricsViewContainer>
     </>
   );
