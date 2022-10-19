@@ -60,6 +60,7 @@ export const PanelContainerRight = styled.div`
   display: flex;
   position: relative;
   flex-direction: column;
+  overflow-y: scroll;
 `;
 
 type MetricBoxContainerProps = {
@@ -103,6 +104,7 @@ export const ActiveMetricSettingHeader = styled.div`
   z-index: 1;
   background: ${palette.solid.white};
   padding: 10px 15px 0 15px;
+  margin-bottom: 20px;
 `;
 
 export const MetricNameBadgeToggleWrapper = styled.div`
