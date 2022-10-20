@@ -68,6 +68,7 @@ export const SettingsMenu: React.FC<{
               <MetricsListContainer>
                 {listOfMetrics.map((metric) => (
                   <MetricsListItem
+                    key={metric.key}
                     activeSection={metric.key === activeMetricKey}
                     onClick={() => setActiveMetricKey(metric.key)}
                   >

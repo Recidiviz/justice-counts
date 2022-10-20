@@ -17,8 +17,14 @@
 
 import React, { Fragment, useEffect, useState } from "react";
 
-import { MetricContext } from "../../shared/types";
 import {
+  Metric,
+  MetricConfigurationSettingsOptions,
+  MetricContext,
+  MetricDisaggregationDimensions,
+} from "../../shared/types";
+import {
+  ContextConfiguration,
   DefinitionDisplayName,
   DefinitionItem,
   DefinitionMiniButton,
@@ -29,10 +35,6 @@ import {
   DefinitionSelection,
   DefinitionsSubTitle,
   DefinitionsTitle,
-  MetricConfigurationMetric,
-  MetricConfigurationMetricDimension,
-  MetricConfigurationSettingsOptions,
-  MetricContextConfiguration,
   MetricSettings,
   MetricSettingsUpdateOptions,
   RevertToDefaultButton,
@@ -40,8 +42,8 @@ import {
 
 type MetricDefinitionsProps = {
   activeMetricKey: string;
-  filteredMetricSettings: { [key: string]: MetricConfigurationMetric };
-  activeDimension?: MetricConfigurationMetricDimension | undefined;
+  filteredMetricSettings: { [key: string]: Metric };
+  activeDimension?: MetricDisaggregationDimensions | undefined;
   contexts: MetricContext[];
   saveAndUpdateMetricSettings: (
     typeOfUpdate: MetricSettingsUpdateOptions,
@@ -66,11 +68,9 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
   /** TODO(#82): Remove mocks when GET & POST are implemented */
   /** Mocks To Be Removed */
   const generateMockDefinitions = ():
-    | MetricConfigurationMetricDimension
-    | MetricConfigurationMetric => {
-    const dimensionOrMetric:
-      | MetricConfigurationMetricDimension
-      | MetricConfigurationMetric =
+    | MetricDisaggregationDimensions
+    | Metric => {
+    const dimensionOrMetric: MetricDisaggregationDimensions | Metric =
       activeDimension || filteredMetricSettings[activeMetricKey];
 
     const mockSettings = dimensionOrMetric
@@ -92,7 +92,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
   const initialDefinitionsToDisplay = generateMockDefinitions();
 
   const [mockDefinitionsToDisplay, setMockDefinitionsToDisplay] = useState<
-    MetricConfigurationMetricDimension | MetricConfigurationMetric
+    MetricDisaggregationDimensions | Metric
   >(initialDefinitionsToDisplay);
 
   const mockUpdateSelection = (
@@ -102,7 +102,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
     setMockDefinitionsToDisplay((prev) => {
       return {
         ...prev,
-        settings: prev.settings.map((setting) => {
+        settings: prev.settings?.map((setting) => {
           if (setting.key === key) {
             return { ...setting, included: selection };
           }
@@ -130,52 +130,70 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
             ? mockDefinitionsToDisplay.display_name
             : mockDefinitionsToDisplay.label}
         </DefinitionsTitle>
-        <DefinitionsSubTitle>Definitions</DefinitionsSubTitle>
-        <DefinitionsDescription>
-          Indicate which of the following categories your agency considers to be
-          part of this metric or breakdown.
-          <span>
-            You are NOT required to gather data for these specific categories.
-          </span>
-        </DefinitionsDescription>
 
-        <RevertToDefaultButton
-          onClick={() =>
-            setMockDefinitionsToDisplay(initialDefinitionsToDisplay)
-          }
-        >
-          Revert to Default Definition
-        </RevertToDefaultButton>
+        {mockDefinitionsToDisplay?.settings?.length && (
+          <>
+            <DefinitionsSubTitle>Definitions</DefinitionsSubTitle>
+            <DefinitionsDescription>
+              Indicate which of the following categories your agency considers
+              to be part of this metric or breakdown.
+              <span>
+                You are NOT required to gather data for these specific
+                categories.
+              </span>
+            </DefinitionsDescription>
 
-        <Definitions>
-          {mockDefinitionsToDisplay?.settings.map((setting) => (
-            <DefinitionItem key={setting.key}>
-              <DefinitionDisplayName>{setting.label}</DefinitionDisplayName>
+            <RevertToDefaultButton
+              onClick={() =>
+                setMockDefinitionsToDisplay(initialDefinitionsToDisplay)
+              }
+            >
+              Revert to Default Definition
+            </RevertToDefaultButton>
 
-              <DefinitionSelection>
-                {selectionOptions.map((option) => (
-                  <Fragment key={option}>
-                    <DefinitionMiniButton
-                      selected={setting.included === option}
-                      onClick={() => mockUpdateSelection(setting.key, option)}
-                    >
-                      {option}
-                    </DefinitionMiniButton>
-                  </Fragment>
-                ))}
-              </DefinitionSelection>
-            </DefinitionItem>
-          ))}
-        </Definitions>
+            <Definitions>
+              {mockDefinitionsToDisplay?.settings?.map((setting) => (
+                <DefinitionItem key={setting.key}>
+                  <DefinitionDisplayName>{setting.label}</DefinitionDisplayName>
+
+                  <DefinitionSelection>
+                    {selectionOptions.map((option) => (
+                      <Fragment key={option}>
+                        <DefinitionMiniButton
+                          selected={setting.included === option}
+                          onClick={() =>
+                            mockUpdateSelection(setting.key, option)
+                          }
+                        >
+                          {option}
+                        </DefinitionMiniButton>
+                      </Fragment>
+                    ))}
+                  </DefinitionSelection>
+                </DefinitionItem>
+              ))}
+            </Definitions>
+          </>
+        )}
+
+        {/* Display when user is viewing a dimension & there are no settings available */}
+        {!mockDefinitionsToDisplay?.settings?.length && activeDimension && (
+          <DefinitionsSubTitle>
+            This breakdown has no customizations available yet.
+          </DefinitionsSubTitle>
+        )}
       </DefinitionsDisplay>
 
       {/* Additional Context (only appears on overall metric settings and not individual dimension settings) */}
       {!activeDimension && (
-        <MetricContextConfiguration
-          metricKey={activeMetricKey}
-          contexts={contexts}
-          saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
-        />
+        <>
+          <DefinitionsSubTitle>Context</DefinitionsSubTitle>
+          <ContextConfiguration
+            metricKey={activeMetricKey}
+            contexts={contexts}
+            saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
+          />
+        </>
       )}
     </DefinitionsDisplayContainer>
   );
