@@ -37,6 +37,12 @@ export const MetricsViewControlPanel = styled.div`
   overflow-y: scroll;
 `;
 
+export const MetricsViewControlPanelOverflowHidden = styled(
+  MetricsViewControlPanel
+)`
+  overflow-y: hidden;
+`;
+
 export const PanelContainerLeft = styled.div`
   width: 35%;
   height: 100%;
@@ -54,6 +60,7 @@ export const PanelContainerRight = styled.div`
   display: flex;
   position: relative;
   flex-direction: column;
+  overflow-y: scroll;
 `;
 
 type MetricBoxContainerProps = {
@@ -79,6 +86,15 @@ export const MetricBoxContainer = styled.div<MetricBoxContainerProps>`
   }
 `;
 
+export const MetricViewBoxContainer = styled(MetricBoxContainer)<{
+  selected?: boolean;
+}>`
+  max-width: 100%;
+  min-height: 50px;
+  border: ${({ selected }) => selected && `1px solid ${palette.solid.blue}`};
+  margin-bottom: 5px;
+`;
+
 export const MetricBoxWrapper = styled.div`
   display: flex;
 `;
@@ -88,6 +104,7 @@ export const ActiveMetricSettingHeader = styled.div`
   z-index: 1;
   background: ${palette.solid.white};
   padding: 10px 15px 0 15px;
+  margin-bottom: 20px;
 `;
 
 export const MetricNameBadgeToggleWrapper = styled.div`

@@ -70,7 +70,7 @@ export type MetricSettings = {
   }[];
 };
 
-type MetricSettingsObj = {
+export type MetricSettingsObj = {
   [key: string]: MetricType;
 };
 
