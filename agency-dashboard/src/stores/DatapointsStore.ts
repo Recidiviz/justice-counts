@@ -21,54 +21,24 @@ import {
   DimensionNamesByMetricAndDisaggregation,
   RawDatapoint,
 } from "@justice-counts/common/types";
-import {
-  IReactionDisposer,
-  makeAutoObservable,
-  reaction,
-  runInAction,
-} from "mobx";
+import { isPositiveNumber } from "@justice-counts/common/utils";
+import { makeAutoObservable, runInAction } from "mobx";
 
-import { isPositiveNumber } from "../utils";
-import API from "./API";
-import UserStore from "./UserStore";
+import { request } from "../utils/networking";
 
 class DatapointsStore {
-  userStore: UserStore;
-
-  api: API;
-
   rawDatapoints: RawDatapoint[];
 
   dimensionNamesByMetricAndDisaggregation: DimensionNamesByMetricAndDisaggregation;
 
   loading: boolean;
 
-  disposers: IReactionDisposer[] = [];
-
-  constructor(userStore: UserStore, api: API) {
+  constructor() {
     makeAutoObservable(this);
-
-    this.api = api;
-    this.userStore = userStore;
     this.rawDatapoints = [];
     this.dimensionNamesByMetricAndDisaggregation = {};
     this.loading = true;
-
-    this.disposers.push(
-      reaction(
-        () => this.userStore.currentAgencyId,
-        (currentAgencyId, previousAgencyId) => {
-          if (previousAgencyId !== undefined) {
-            this.resetState();
-          }
-        }
-      )
-    );
   }
-
-  deconstructor = () => {
-    this.disposers.forEach((disposer) => disposer());
-  };
 
   get metricKeyToDisplayName(): { [metricKey: string]: string | null } {
     const mapping: { [metricKey: string]: string | null } = {};
@@ -139,19 +109,10 @@ class DatapointsStore {
     }, {});
   }
 
-  async getDatapoints(): Promise<void | Error> {
+  async getDatapoints(agencyId: number): Promise<void | Error> {
     try {
-      const { currentAgency } = this.userStore;
-      if (currentAgency === undefined) {
-        // If user is not attached to an agency,
-        // no need to bother trying to load this data.
-        runInAction(() => {
-          this.loading = false;
-        });
-        return;
-      }
-      const response = (await this.api.request({
-        path: `/api/agencies/${currentAgency.id}/datapoints`,
+      const response = (await request({
+        path: `/api/agencies/${agencyId}/published_datapoints`,
         method: "GET",
       })) as Response;
       if (response.status === 200) {

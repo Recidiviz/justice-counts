@@ -15,19 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { typography } from "@justice-counts/common/components/GlobalStyles";
-import styled from "styled-components/macro";
-
-export const Container = styled.div`
-  height: 800px;
-  width: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  align-items: stretch;
-`;
-
-export const MetricTitle = styled.div`
-  ${typography.sizeCSS.title}
-`;
+export * from "./DatapointsStore";
+export { default as rootStore } from "./RootStore";
+export * from "./StoreProvider";

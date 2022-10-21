@@ -15,62 +15,47 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { Container, MetricTitle } from "./DashboardView.styles";
+import { MetricCategory } from "./AgencyOverview.styles";
 import { useStore } from "./stores";
 
-const DashboardView = () => {
+const AgencyOverview = () => {
   const navigate = useNavigate();
   const params = useParams();
   const agencyId = Number(params.id);
   const { datapointsStore } = useStore();
-
-  const { search } = useLocation();
-  const query = new URLSearchParams(search);
-  const metric = query.get("metric");
   useEffect(() => {
     datapointsStore.getDatapoints(agencyId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (
-    !metric ||
-    (!datapointsStore.loading && !datapointsStore.datapointsByMetric[metric])
-  ) {
-    navigate(`/agency/${agencyId}`);
-    return null;
-  }
-
-  const metrics = Object.keys(datapointsStore.datapointsByMetric);
-
   if (datapointsStore.loading) {
     return <>Loading...</>;
   }
 
+  const metrics = Object.keys(datapointsStore.datapointsByMetric);
   if (metrics.length === 0) {
     return <>No published metrics.</>;
   }
+
   return (
     <>
-      <Container key={metric}>
-        <MetricTitle>
+      Click on a metric to view chart:
+      {Object.keys(datapointsStore.datapointsByMetric).map((metric) => (
+        <MetricCategory
+          key={metric}
+          onClick={() => {
+            navigate(`/agency/${agencyId}/dashboard?metric=${metric}`);
+          }}
+        >
           {datapointsStore.metricKeyToDisplayName[metric]}
-        </MetricTitle>
-        <DatapointsView
-          datapointsGroupedByAggregateAndDisaggregations={
-            datapointsStore.datapointsByMetric[metric]
-          }
-          dimensionNamesByDisaggregation={
-            datapointsStore.dimensionNamesByMetricAndDisaggregation[metric]
-          }
-        />
-      </Container>
+        </MetricCategory>
+      ))}
     </>
   );
 };
 
-export default observer(DashboardView);
+export default observer(AgencyOverview);
