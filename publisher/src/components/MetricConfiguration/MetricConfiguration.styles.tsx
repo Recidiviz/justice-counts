@@ -118,25 +118,34 @@ export const MetricNameBadgeWrapper = styled.div`
   align-items: center;
 `;
 
-export const Metric = styled.div`
+export const Metric = styled.div<{ inView: boolean }>`
   width: 100%;
   display: flex;
   gap: 20px;
   align-items: center;
+  justify-content: flex-start;
   border-bottom: 1px solid ${palette.solid.darkgrey};
-  padding-bottom: 8px;
-  padding-right: 50px;
+  padding: 12px;
   position: relative;
+  background: ${({ inView }) =>
+    inView ? palette.highlight.lightblue1 : `none`};
 
   &:hover {
+    background: ${palette.highlight.grey1};
     cursor: pointer;
   }
 
-  &:hover:after {
-    content: "➝";
+  svg {
     position: absolute;
-    ${typography.sizeCSS.title}
-    right: 0;
+    opacity: ${({ inView }) => (inView ? `1` : `0`)};
+    right: ${({ inView }) => (inView ? `13px` : `-20px`)};
+    transition: opacity 0.2s ease, right 0.3s ease;
+  }
+
+  &:hover svg {
+    display: block;
+    right: 13px;
+    opacity: 1;
   }
 `;
 
@@ -236,24 +245,33 @@ export const DisaggregationTab = styled.div`
   }
 `;
 
-export const Dimension = styled.div<{ enabled?: boolean }>`
+export const Dimension = styled.div<{ enabled?: boolean; inView?: boolean }>`
   ${typography.sizeCSS.medium};
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 15px 0;
+  padding: 17px 10px;
   border-bottom: 1px solid ${palette.highlight.grey4};
   position: relative;
+  background: ${({ inView }) =>
+    inView ? palette.highlight.lightblue1 : `none`};
 
   &:hover {
+    background: ${palette.highlight.grey1};
     cursor: pointer;
   }
 
-  &:hover::before {
-    content: "➝";
+  svg {
     position: absolute;
-    right: 0;
-    ${typography.sizeCSS.title}
+    opacity: ${({ inView }) => (inView ? `1` : `0`)};
+    right: ${({ inView }) => (inView ? `13px` : `-20px`)};
+    transition: opacity 0.2s ease, right 0.3s ease;
+  }
+
+  &:hover svg {
+    display: block;
+    right: 13px;
+    opacity: 1;
   }
 
   &:last-child {

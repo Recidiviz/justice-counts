@@ -23,6 +23,7 @@ import {
   MetricDisaggregations as MetricDisaggregationsType,
 } from "../../shared/types";
 import { removeSnakeCase } from "../../utils";
+import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import blueCheck from "../assets/status-check-icon.png";
 import { BinaryRadioButton } from "../Forms";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
@@ -48,6 +49,7 @@ import {
 type MetricConfigurationProps = {
   activeMetricKey: string;
   filteredMetricSettings: { [key: string]: Metric };
+  activeDimension: MetricDisaggregationDimensions | undefined;
   activeDisaggregation: MetricDisaggregationsType | undefined;
   setActiveDisaggregation: React.Dispatch<
     React.SetStateAction<MetricDisaggregationsType | undefined>
@@ -65,6 +67,7 @@ type MetricConfigurationProps = {
 export const Configuration: React.FC<MetricConfigurationProps> = ({
   activeMetricKey,
   filteredMetricSettings,
+  activeDimension,
   activeDisaggregation,
   setActiveDisaggregation,
   saveAndUpdateMetricSettings,
@@ -208,6 +211,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = ({
                 <Dimension
                   key={dimension.key}
                   enabled={!metricEnabled || activeDisaggregation.enabled}
+                  inView={dimension.key === activeDimension?.key}
                   onClick={() => setActiveDimension(dimension)}
                 >
                   <CheckboxWrapper>
@@ -252,6 +256,8 @@ export const Configuration: React.FC<MetricConfigurationProps> = ({
                     >
                       {dimension.label}
                     </DimensionTitle>
+
+                    <RightArrowIcon />
                   </DimensionTitleWrapper>
                 </Dimension>
               );

@@ -30,6 +30,7 @@ import {
 } from "../../shared/types";
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
+import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import { Badge } from "../Badge";
 import { Loading } from "../Loading";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
@@ -547,19 +548,24 @@ export const MetricConfiguration: React.FC<{
                   ← Back to Metrics
                 </BackToMetrics>
 
-                <Metric onClick={() => setActiveDimension(undefined)}>
+                <Metric
+                  onClick={() => setActiveDimension(undefined)}
+                  inView={!activeDimension}
+                >
                   <MetricName isTitle>
                     {metricSettings[activeMetricKey]?.display_name}
                   </MetricName>
                   <Badge color="GREEN" noMargin>
                     {metricSettings[activeMetricKey]?.frequency?.toLowerCase()}
                   </Badge>
+                  <RightArrowIcon />
                 </Metric>
 
                 <MetricDetailsDisplay>
                   <Configuration
                     activeMetricKey={activeMetricKey}
                     filteredMetricSettings={filteredMetricSettings}
+                    activeDimension={activeDimension}
                     activeDisaggregation={activeDisaggregation}
                     setActiveDisaggregation={setActiveDisaggregation}
                     saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
