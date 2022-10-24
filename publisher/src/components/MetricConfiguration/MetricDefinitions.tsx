@@ -79,12 +79,18 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
   const activeSettings = isMetricSettings(activeDimensionOrMetric)
     ? activeMetric.settings
     : activeDimension?.settings;
+  const defaultSettings = activeSettings?.map((setting) => ({
+    ...setting,
+    included: setting.default,
+  }));
 
   const revertToDefaultValues = () => {
-    const defaultSettings = activeSettings?.map((setting) => ({
-      ...setting,
-      included: setting.default,
-    }));
+    if (isMetricSettings(activeDimensionOrMetric)) {
+      return saveAndUpdateMetricSettings("METRIC_SETTING", {
+        key: activeMetricKey,
+        settings: defaultSettings,
+      });
+    }
 
     if (activeDisaggregation && activeDimension) {
       saveAndUpdateMetricSettings("DIMENSION_SETTING", {

@@ -161,19 +161,29 @@ export const MetricConfiguration: React.FC<{
       }
 
       if (typeOfUpdate === "METRIC_SETTING") {
+        let updatedSettingsArray;
+
+        if (
+          prev[metricKey].settings?.length === updatedSetting.settings?.length
+        ) {
+          updatedSettingsArray = updatedSetting.settings;
+        } else {
+          updatedSettingsArray = prev[metricKey].settings?.map((setting) => {
+            if (setting.key === updatedSetting.settings?.[0].key) {
+              return {
+                ...setting,
+                included: updatedSetting.settings[0].included,
+              };
+            }
+            return setting;
+          });
+        }
+
         return {
           ...prev,
           [updatedSetting.key]: {
             ...prev[metricKey],
-            settings: prev[metricKey].settings?.map((setting) => {
-              if (setting.key === updatedSetting.settings?.[0].key) {
-                return {
-                  ...setting,
-                  included: updatedSetting.settings[0].included,
-                };
-              }
-              return setting;
-            }),
+            settings: updatedSettingsArray,
           },
         };
       }
