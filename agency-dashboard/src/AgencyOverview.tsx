@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { showToast } from "@justice-counts/common/components/Toast";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -27,8 +28,16 @@ const AgencyOverview = () => {
   const params = useParams();
   const agencyId = Number(params.id);
   const { datapointsStore } = useStore();
+
+  const fetchDatapoints = async () => {
+    try {
+      await datapointsStore.getDatapoints(agencyId);
+    } catch (error) {
+      showToast("Error fetching data.", false, "red", 4000);
+    }
+  };
   useEffect(() => {
-    datapointsStore.getDatapoints(agencyId);
+    fetchDatapoints();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -44,16 +53,18 @@ const AgencyOverview = () => {
   return (
     <>
       Click on a metric to view chart:
-      {Object.keys(datapointsStore.datapointsByMetric).map((metric) => (
-        <MetricCategory
-          key={metric}
-          onClick={() => {
-            navigate(`/agency/${agencyId}/dashboard?metric=${metric}`);
-          }}
-        >
-          {datapointsStore.metricKeyToDisplayName[metric]}
-        </MetricCategory>
-      ))}
+      {Object.keys(datapointsStore.dimensionNamesByMetricAndDisaggregation).map(
+        (metricKey) => (
+          <MetricCategory
+            key={metricKey}
+            onClick={() => {
+              navigate(`/agency/${agencyId}/dashboard?metric=${metricKey}`);
+            }}
+          >
+            {datapointsStore.metricKeyToDisplayName[metricKey] || metricKey}
+          </MetricCategory>
+        )
+      )}
     </>
   );
 };

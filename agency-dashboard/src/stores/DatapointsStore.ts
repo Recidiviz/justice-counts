@@ -133,7 +133,7 @@ class DatapointsStore {
       runInAction(() => {
         this.loading = false;
       });
-      if (error instanceof Error) return new Error(error.message);
+      throw error;
     }
   }
 

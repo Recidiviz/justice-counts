@@ -31,41 +31,37 @@ const DashboardView = () => {
 
   const { search } = useLocation();
   const query = new URLSearchParams(search);
-  const metric = query.get("metric");
+  const metricKey = query.get("metric");
   useEffect(() => {
     datapointsStore.getDatapoints(agencyId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (
-    !metric ||
-    (!datapointsStore.loading && !datapointsStore.datapointsByMetric[metric])
+    !metricKey ||
+    (!datapointsStore.loading &&
+      !datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey])
   ) {
     navigate(`/agency/${agencyId}`);
     return null;
   }
 
-  const metrics = Object.keys(datapointsStore.datapointsByMetric);
-
   if (datapointsStore.loading) {
     return <>Loading...</>;
   }
 
-  if (metrics.length === 0) {
-    return <>No published metrics.</>;
-  }
   return (
     <>
-      <Container key={metric}>
+      <Container key={metricKey}>
         <MetricTitle>
-          {datapointsStore.metricKeyToDisplayName[metric]}
+          {datapointsStore.metricKeyToDisplayName[metricKey] || metricKey}
         </MetricTitle>
         <DatapointsView
           datapointsGroupedByAggregateAndDisaggregations={
-            datapointsStore.datapointsByMetric[metric]
+            datapointsStore.datapointsByMetric[metricKey]
           }
           dimensionNamesByDisaggregation={
-            datapointsStore.dimensionNamesByMetricAndDisaggregation[metric]
+            datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey]
           }
         />
       </Container>
