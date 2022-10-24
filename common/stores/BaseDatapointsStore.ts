@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import BaseDatapointsStore from "@justice-counts/common/stores/BaseDatapointsStore";
 import {
   DatapointsByMetric,
   DataVizAggregateName,
@@ -23,11 +22,15 @@ import {
   RawDatapoint,
 } from "@justice-counts/common/types";
 import { isPositiveNumber } from "@justice-counts/common/utils";
-import { makeObservable, override, runInAction } from "mobx";
+import {
+  action,
+  computed,
+  makeObservable,
+  observable,
+  runInAction,
+} from "mobx";
 
-import { request } from "../utils/networking";
-
-class DatapointsStore extends BaseDatapointsStore {
+abstract class DatapointsStore {
   rawDatapoints: RawDatapoint[];
 
   dimensionNamesByMetricAndDisaggregation: DimensionNamesByMetricAndDisaggregation;
@@ -35,9 +38,14 @@ class DatapointsStore extends BaseDatapointsStore {
   loading: boolean;
 
   constructor() {
-    super();
     makeObservable(this, {
-      getDatapoints: override,
+      rawDatapoints: observable,
+      dimensionNamesByMetricAndDisaggregation: observable,
+      loading: observable,
+      metricKeyToDisplayName: computed,
+      datapointsByMetric: computed,
+      getDatapoints: action,
+      resetState: action,
     });
     this.rawDatapoints = [];
     this.dimensionNamesByMetricAndDisaggregation = {};
@@ -114,31 +122,7 @@ class DatapointsStore extends BaseDatapointsStore {
   }
 
   async getDatapoints(agencyId: number): Promise<void | Error> {
-    try {
-      const response = (await request({
-        path: `/api/agencies/${agencyId}/published_datapoints`,
-        method: "GET",
-      })) as Response;
-      if (response.status === 200) {
-        const result = await response.json();
-        runInAction(() => {
-          this.rawDatapoints = result.datapoints;
-          this.dimensionNamesByMetricAndDisaggregation =
-            result.dimension_names_by_metric_and_disaggregation;
-        });
-      } else {
-        const error = await response.json();
-        throw new Error(error.description);
-      }
-      runInAction(() => {
-        this.loading = false;
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.loading = false;
-      });
-      throw error;
-    }
+    return Promise.reject("getDatapoints not implemented");
   }
 
   resetState() {
