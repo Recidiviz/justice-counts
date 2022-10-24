@@ -143,7 +143,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
               }
               onMouseLeave={() => setShowDefaultSettings(false)}
             >
-              Revert to Default Definition
+              Choose Default Definition
             </RevertToDefaultButton>
 
             <Definitions>
