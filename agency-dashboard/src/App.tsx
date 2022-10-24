@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
 import { Route, Routes } from "react-router-dom";
 
 import AgencyOverview from "./AgencyOverview";
