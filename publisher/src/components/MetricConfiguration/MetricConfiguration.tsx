@@ -493,28 +493,30 @@ export const MetricConfiguration: React.FC<{
   return (
     <>
       <MetricsViewContainer>
-        {!activeMetricKey && (
-          <StickyHeader>
-            <TabbedBar noPadding>
-              <TabbedOptions>
-                {userStore.currentAgency?.systems.map((filterOption) => (
-                  <TabbedItem
-                    key={filterOption}
-                    selected={
-                      activeMetricFilter === removeSnakeCase(filterOption)
-                    }
-                    onClick={() =>
-                      setActiveMetricFilter(removeSnakeCase(filterOption))
-                    }
-                    capitalize
-                  >
-                    {removeSnakeCase(filterOption.toLowerCase())}
-                  </TabbedItem>
-                ))}
-              </TabbedOptions>
-            </TabbedBar>
-          </StickyHeader>
-        )}
+        {!activeMetricKey &&
+          userStore.currentAgency?.systems &&
+          userStore.currentAgency?.systems?.length > 1 && (
+            <StickyHeader>
+              <TabbedBar noPadding>
+                <TabbedOptions>
+                  {userStore.currentAgency?.systems.map((filterOption) => (
+                    <TabbedItem
+                      key={filterOption}
+                      selected={
+                        activeMetricFilter === removeSnakeCase(filterOption)
+                      }
+                      onClick={() =>
+                        setActiveMetricFilter(removeSnakeCase(filterOption))
+                      }
+                      capitalize
+                    >
+                      {removeSnakeCase(filterOption.toLowerCase())}
+                    </TabbedItem>
+                  ))}
+                </TabbedOptions>
+              </TabbedBar>
+            </StickyHeader>
+          )}
 
         <MetricsViewControlPanel>
           {/* List Of Metrics */}
