@@ -576,11 +576,8 @@ export const DefinitionMiniButton = styled(RevertToDefaultButton)<{
 
   `};
 
-  ${({ showDefault, selected }) => {
-    if (showDefault && !selected) {
-      return `color: ${palette.highlight.grey4}`;
-    }
-  }};
+  ${({ showDefault, selected }) =>
+    showDefault && !selected && `color: ${palette.highlight.grey4};`};
 `;
 
 export const NoDefinitionsSelected = styled.div`
