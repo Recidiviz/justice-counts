@@ -15,19 +15,28 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { typography } from "@justice-counts/common/components/GlobalStyles";
-import styled from "styled-components/macro";
+import React, { useContext } from "react";
 
-export const Container = styled.div`
-  height: 800px;
-  width: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  align-items: stretch;
-`;
+import rootStore from "./RootStore";
 
-export const MetricTitle = styled.div`
-  ${typography.sizeCSS.title}
-`;
+const StoreContext = React.createContext<typeof rootStore | undefined>(
+  undefined
+);
+
+export const StoreProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}): React.ReactElement => {
+  return (
+    <StoreContext.Provider value={rootStore}>{children}</StoreContext.Provider>
+  );
+};
+
+export function useStore(): typeof rootStore {
+  const context = useContext(StoreContext);
+
+  if (context === undefined) {
+    throw new Error("useStore must be used within a StoreProvider");
+  }
+
+  return context;
+}

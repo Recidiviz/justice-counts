@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { showToast } from "@justice-counts/common/components/Toast";
 import { AgencySystems } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -24,7 +25,6 @@ import { useStore } from "../../stores";
 import logoImg from "../assets/jc-logo-vector.png";
 import { Logo, LogoContainer } from "../Header";
 import { Loader } from "../Loading";
-import { showToast } from "../Toast";
 import {
   Button,
   DataUploadContainer,

@@ -20,6 +20,7 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
+import { showToast } from "@justice-counts/common/components/Toast";
 import { reaction, runInAction } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useRef, useState } from "react";
@@ -56,7 +57,6 @@ import {
   Title,
 } from "../Forms";
 import { Onboarding, OnboardingDataEntrySummary } from "../Onboarding";
-import { showToast } from "../Toast";
 import {
   AdditionalContextInput,
   BinaryRadioButtonInputs,

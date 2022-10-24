@@ -15,19 +15,21 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { typography } from "@justice-counts/common/components/GlobalStyles";
+import { palette } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-export const Container = styled.div`
-  height: 800px;
+export const MetricCategory = styled.div`
+  height: 100px;
   width: 100%;
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: stretch;
-  align-items: stretch;
-`;
+  justify-content: center;
+  align-items: center;
+  color: ${palette.solid.blue};
 
-export const MetricTitle = styled.div`
-  ${typography.sizeCSS.title}
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
 `;

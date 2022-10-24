@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { palette } from "@justice-counts/common/components/GlobalStyles";
+import { showToast } from "@justice-counts/common/components/Toast";
 import {
   MetricContextWithErrors,
   MetricDisaggregationDimensionsWithErrors,
@@ -32,7 +33,6 @@ import { useStore } from "../../stores";
 import { printReportTitle, rem } from "../../utils";
 import errorIcon from "../assets/status-error-icon.png";
 import { Button } from "../Forms";
-import { showToast } from "../Toast";
 import { PublishButton } from "./ReportDataEntry.styles";
 
 const CONTAINER_WIDTH = 912;

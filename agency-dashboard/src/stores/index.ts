@@ -14,13 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-import { render, screen } from "@testing-library/react";
-import React from "react";
 
-import App from "./App";
-
-test("renders dashboard", () => {
-  render(<App />);
-  const linkElement = screen.getByText(/Date Range/i);
-  expect(linkElement).toBeInTheDocument();
-});
+export * from "./DatapointsStore";
+export { default as rootStore } from "./RootStore";
+export * from "./StoreProvider";

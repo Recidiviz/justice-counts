@@ -15,19 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { typography } from "@justice-counts/common/components/GlobalStyles";
-import styled from "styled-components/macro";
+const { createProxyMiddleware } = require("http-proxy-middleware");
 
-export const Container = styled.div`
-  height: 800px;
-  width: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  align-items: stretch;
-`;
-
-export const MetricTitle = styled.div`
-  ${typography.sizeCSS.title}
-`;
+module.exports = function (app) {
+  app.use(
+    ["/api"],
+    createProxyMiddleware({
+      target: process.env.REACT_APP_PROXY_HOST,
+      changeOrigin: true,
+    })
+  );
+};

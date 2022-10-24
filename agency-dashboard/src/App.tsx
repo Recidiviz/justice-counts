@@ -16,11 +16,18 @@
 // =============================================================================
 
 import React from "react";
+import { Route, Routes } from "react-router-dom";
 
-import { DashboardView } from "./DashboardView";
+import AgencyOverview from "./AgencyOverview";
+import DashboardView from "./DashboardView";
 
 function App() {
-  return <DashboardView />;
+  return (
+    <Routes>
+      <Route path="/agency/:id" element={<AgencyOverview />} />
+      <Route path="/agency/:id/dashboard" element={<DashboardView />} />
+    </Routes>
+  );
 }
 
 export default App;

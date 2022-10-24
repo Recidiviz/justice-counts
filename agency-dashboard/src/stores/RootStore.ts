@@ -14,7 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
+import DatapointsStore from "./DatapointsStore";
 
-export * from "./conversionUtils";
-export * from "./dateUtils";
-export * from "./helperUtils";
+class RootStore {
+  datapointsStore: DatapointsStore;
+
+  constructor() {
+    this.datapointsStore = new DatapointsStore();
+  }
+}
+
+export default new RootStore();
+
+export type { RootStore };
