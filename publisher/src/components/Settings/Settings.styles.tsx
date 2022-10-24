@@ -24,7 +24,7 @@ export const SettingsContainer = styled.div`
   width: 100%;
   display: flex;
   align-items: flex-start;
-  padding: 39px 24px 0 24px;
+  padding: 48px 24px 0 24px;
   position: fixed;
   overflow-y: scroll;
 `;
@@ -45,7 +45,6 @@ export const SettingsMenuContainer = styled.div`
   flex: 0 0 auto;
   flex-direction: column;
   gap: 16px;
-  padding: 16px 24px;
   margin-right: 100px;
 `;
 
