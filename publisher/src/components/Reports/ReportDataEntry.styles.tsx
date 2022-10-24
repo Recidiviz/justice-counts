@@ -23,6 +23,7 @@ import React from "react";
 import styled from "styled-components/macro";
 
 export const SIDE_PANEL_WIDTH = 360;
+export const CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH = 295;
 export const DATA_ENTRY_WIDTH = 644;
 export const SIDE_PANEL_HORIZONTAL_PADDING = 24;
 export const TWO_PANEL_MAX_WIDTH = DATA_ENTRY_WIDTH + SIDE_PANEL_WIDTH * 2; // data entry panel (644) + side panels (360 * 2) (each side panel includes 24px left and right padding)

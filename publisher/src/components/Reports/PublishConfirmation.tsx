@@ -15,7 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { palette } from "@justice-counts/common/components/GlobalStyles";
+import {
+  HEADER_BAR_HEIGHT,
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
 import {
   MetricContextWithErrors,
   MetricDisaggregationDimensionsWithErrors,
@@ -23,160 +27,182 @@ import {
   MetricWithErrors,
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import { trackReportPublished } from "../../analytics";
 import { useStore } from "../../stores";
-import { printReportTitle, rem } from "../../utils";
+import FormStore from "../../stores/FormStore";
+import { printReportTitle } from "../../utils";
+import logoImg from "../assets/jc-logo-vector.png";
 import errorIcon from "../assets/status-error-icon.png";
-import { Button } from "../Forms";
+import { Button, DataUploadHeader } from "../DataUpload";
+import { Logo, LogoContainer } from "../Header";
+import {
+  Heading,
+  MAIN_PANEL_MAX_WIDTH,
+  MainPanel,
+  SectionTitle,
+  SectionTitleNumber,
+  Subheading,
+} from "../ReviewMetrics/ReviewMetrics.styles";
 import { showToast } from "../Toast";
-import { PublishButton } from "./ReportDataEntry.styles";
+import { CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH } from "./ReportDataEntry.styles";
 
-const CONTAINER_WIDTH = 912;
 const CONTAINER_HORIZONTAL_PADDING = 24;
 
+const ConfirmationDialogueHeader = styled(DataUploadHeader)`
+  z-index: 5;
+`;
+
+const ConfirmationButtonsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+`;
+
+const PublishConfirmButton = styled(Button)<{ disabled: boolean }>`
+  padding-right: 22px;
+  padding-left: 22px;
+  background-color: ${({ disabled }) =>
+    disabled ? palette.highlight.grey5 : palette.solid.green};
+  color: ${palette.solid.white};
+
+  &:hover {
+    cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+    opacity: ${({ disabled }) => (disabled ? 1 : 0.9)};
+    background-color: ${({ disabled }) =>
+      disabled ? palette.highlight.grey5 : palette.solid.green};
+  }
+
+  &::after {
+    content: "Publish";
+  }
+`;
+
 const ConfirmationDialogueWrapper = styled.div`
-  width: 100vw;
-  height: 100vh;
   background: ${palette.solid.white};
+  display: flex;
+  justify-content: center;
   position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 2;
-  padding: 80px 0;
+  top: ${HEADER_BAR_HEIGHT}px;
   overflow: scroll;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const ConfirmHeaderContainer = styled.div`
-  background: white;
+  height: 100vh;
   width: 100%;
-  position: fixed;
-  background: white;
-  top: 0px;
-  z-index: 1;
-  padding-top: 88px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding-left: ${CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH}px;
+  padding-right: ${CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH}px;
+  z-index: 4;
+
+  @media only screen and (max-width: ${CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH *
+      2 +
+    MAIN_PANEL_MAX_WIDTH}px) {
+    padding-right: ${CONTAINER_HORIZONTAL_PADDING}px;
+    justify-content: start;
+  }
+
+  @media only screen and (max-width: ${CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH +
+    MAIN_PANEL_MAX_WIDTH +
+    CONTAINER_HORIZONTAL_PADDING * 2}px) {
+    padding-left: ${CONTAINER_HORIZONTAL_PADDING}px;
+    justify-content: center;
+  }
 `;
 
-const ConfirmHeader = styled.div`
-  max-width: ${CONTAINER_WIDTH}px;
-  padding: 0 ${CONTAINER_HORIZONTAL_PADDING}px;
-`;
-
-const ConfirmationDialogue = styled.div`
-  max-width: ${CONTAINER_WIDTH}px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  padding: 0 ${CONTAINER_HORIZONTAL_PADDING}px;
-  padding-top: 176px;
-`;
-
-const ConfirmationTitle = styled.div`
-  font-size: ${rem("64px")};
-  font-weight: 500;
-  line-height: 64px;
-  letter-spacing: -0.02em;
-`;
-
-const ConfirmationSubTitle = styled.div`
-  flex: 1;
-  margin-right: 16px;
-  font-size: ${rem("15px")};
-  line-height: 24px;
-  font-weight: 500;
+const MetricsPreviewWrapper = styled(MainPanel)`
+  margin-top: 56px;
 `;
 
 const Metric = styled.div`
   display: flex;
+  flex-direction: column;
   flex: 1 1 auto;
   justify-content: space-between;
-  border-top: 2px solid ${palette.solid.darkgrey};
-  margin-bottom: 40px;
+  border-top: 1px solid ${palette.highlight.grey3};
+  padding-top: 16px;
+  margin-top: 32px;
 
-  @media only screen and (max-width: ${CONTAINER_WIDTH +
-    CONTAINER_HORIZONTAL_PADDING * 2}px) {
-    flex-direction: column;
-    border-top: 0;
+  &:last-child {
+    padding-bottom: ${HEADER_BAR_HEIGHT + 128}px;
   }
 `;
 
-const MetricOverviewWrapper = styled.div`
-  flex: 0 1 330px;
+const MetricHeader = styled.div<{ hasValue: boolean }>`
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  color: ${({ hasValue }) =>
+    hasValue ? palette.solid.darkgrey : palette.highlight.grey8};
+`;
 
-  @media only screen and (max-width: ${CONTAINER_WIDTH +
-    CONTAINER_HORIZONTAL_PADDING * 2}px) {
-    flex: 0 1 auto;
+const MetricTitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const MetricTitle = styled(SectionTitle)`
+  &:hover {
+    cursor: pointer;
   }
+`;
+
+const MetricTitleNumber = styled(SectionTitleNumber)<{ hasError: boolean }>`
+  background-color: ${({ hasError }) =>
+    hasError ? palette.solid.red : palette.solid.blue};
+`;
+
+const MetricValue = styled.div`
+  ${typography.sizeCSS.title}
 `;
 
 const MetricDetailWrapper = styled.div`
-  flex: 0 1 534px;
+  flex: 0 1 auto;
   display: flex;
   flex-direction: column;
   justify-content: stretch;
 
-  @media only screen and (max-width: ${CONTAINER_WIDTH +
+  @media only screen and (max-width: ${MAIN_PANEL_MAX_WIDTH +
     CONTAINER_HORIZONTAL_PADDING * 2}px) {
     flex: 0 1 auto;
   }
 `;
 
-const MetricValueLabel = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  padding-bottom: 16px;
-  align-items: center;
-  font-size: ${rem("18px")};
-  line-height: 24px;
-  font-weight: 700;
-
-  @media only screen and (max-width: ${CONTAINER_WIDTH +
-    CONTAINER_HORIZONTAL_PADDING * 2}px) {
-    border-bottom: 1px solid ${palette.solid.darkgrey};
-  }
-`;
-
-const MetricValue = styled.div<{ missing?: boolean; error?: boolean }>`
-  margin-top: 8px;
-  font-size: ${rem("32px")};
-  line-height: 1.5;
-  letter-spacing: -0.01em;
-  color: ${({ missing, error }) =>
-    error ? palette.solid.red : missing && palette.highlight.grey8};
+const MetricSubTitleContainer = styled.div`
+  ${typography.sizeCSS.small}
+  margin-bottom: 16px;
+  margin-top: 16px;
 `;
 
 const Breakdown = styled.div<{ missing?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: stretch;
-  border-bottom: 1px dashed ${palette.solid.darkgrey};
-  padding: 4px 0;
-  font-size: ${rem("15px")};
-  line-height: 24px;
+  font-size: 18px;
+  line-height: 18px;
   font-weight: 500;
 `;
 
-const DisaggregationBreakdown = styled(Breakdown)`
-  &:first-child {
-    padding-top: 0;
-  }
+const DisaggregationBreakdown = styled(Breakdown)<{ error?: boolean }>`
+  color: ${({ error }) => (error ? palette.solid.red : palette.solid.darkgrey)};
 
-  &:last-child {
-    margin-bottom: 24px;
+  &:hover {
+    cursor: pointer;
   }
+`;
+
+const DisaggregationBreakdownContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &:hover ${DisaggregationBreakdown}:not(:hover) {
+    opacity: 0.5;
+  }
+`;
+
+const BreakdownLabelContainer = styled.div`
+  display: flex;
 `;
 
 const BreakdownLabel = styled.div`
@@ -189,136 +215,21 @@ const BreakdownValue = styled.div<{ missing?: boolean; error?: boolean }>`
   flex: 1;
   justify-content: flex-end;
   font-style: ${({ missing }) => missing && "italic"};
-  color: ${({ missing, error }) =>
-    error ? palette.solid.red : missing && palette.highlight.grey8};
+  color: ${({ error }) =>
+    error ? palette.solid.red : palette.highlight.grey8};
 `;
 
 const ContextContainer = styled(Breakdown)<{ verticalOnly?: boolean }>`
-  border-bottom: 1px solid ${palette.solid.darkgrey};
-  padding: 8px 0;
-
   flex-direction: ${({ verticalOnly }) => (verticalOnly ? "column" : "row")};
 
-  @media only screen and (max-width: ${CONTAINER_WIDTH +
+  @media only screen and (max-width: ${MAIN_PANEL_MAX_WIDTH +
     CONTAINER_HORIZONTAL_PADDING * 2}px) {
     flex-direction: column;
   }
 `;
 
-const ContextTitle = styled(BreakdownLabel)`
-  font-weight: 700;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-`;
-
 const ContextValue = styled(BreakdownValue)`
   justify-content: flex-start;
-`;
-
-const ButtonContainer = styled.div`
-  padding: 16px 0;
-  display: flex;
-  flex: 1 1 auto;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 2px solid ${palette.solid.darkgrey};
-
-  @media only screen and (max-width: ${CONTAINER_WIDTH +
-    CONTAINER_HORIZONTAL_PADDING * 2}px) {
-    border-bottom: 1px solid ${palette.solid.darkgrey};
-  }
-`;
-
-const PublishConfirmButton = styled(Button)`
-  margin-right: 8px;
-  flex: 1;
-`;
-
-const TopPublishConfirmButton = styled(PublishConfirmButton)`
-  flex: 0 0 207px;
-
-  @media only screen and (max-width: ${CONTAINER_WIDTH +
-    CONTAINER_HORIZONTAL_PADDING * 2}px) {
-    display: none;
-  }
-`;
-
-const PublishConfirmPublishButton = styled(PublishButton)`
-  flex: 1;
-
-  &::after {
-    content: "Publish Data";
-  }
-`;
-
-const TopPublishConfirmPublishButton = styled(PublishConfirmPublishButton)`
-  flex: 0 0 207px;
-
-  @media only screen and (max-width: ${CONTAINER_WIDTH +
-    CONTAINER_HORIZONTAL_PADDING * 2}px) {
-    display: none;
-  }
-`;
-
-const DisaggregationContainer = styled.div`
-  font-weight: 700;
-  font-size: ${rem("15px")};
-  margin-top: 16px;
-  border-bottom: 1px solid ${palette.solid.darkgrey};
-`;
-
-const DisaggregationTitleContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 16px;
-`;
-
-const LabelLeft = styled.div`
-  display: inline;
-`;
-
-const BreakdownContainer = styled.div`
-  padding-left: 20px;
-  margin-top: 8px;
-  border-left: 1px solid ${palette.solid.darkgrey};
-`;
-
-const DropdownArrowContainer = styled.div<{ collapsed?: boolean }>`
-  width: 16px;
-  height: 16px;
-  border-radius: 8px;
-  background: ${({ collapsed }) =>
-    collapsed ? palette.highlight.grey2 : palette.highlight.lightblue2};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 4px;
-  flex-shrink: 0;
-
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-const DropdownArrow = styled.div<{ collapsed?: boolean }>`
-  width: 6px;
-  height: 6px;
-  border: none;
-  border-bottom: 2px solid
-    ${({ collapsed }) => (collapsed ? palette.solid.grey : palette.solid.blue)};
-  border-right: 2px solid
-    ${({ collapsed }) => (collapsed ? palette.solid.grey : palette.solid.blue)};
-  transform: rotate(45deg) translate(-1px, -1px);
-  transform: rotate(${({ collapsed }) => (collapsed ? 225 : 45)}deg)
-    translate(-1px, -1px);
-`;
-
-const ContextDropdownArrowContainer = styled(DropdownArrowContainer)`
-  margin-top: 3px;
 `;
 
 const ErrorImg = styled.img`
@@ -327,117 +238,86 @@ const ErrorImg = styled.img`
   height: 16px;
 `;
 
-const InnerErrorImg = styled(ErrorImg)`
+const BreakdownErrorImg = styled(ErrorImg)`
   transform: translate(0, 2px);
 `;
 
-const MobileButtonContainer = styled.div`
-  background: ${palette.solid.white};
-  position: fixed;
-  bottom: 0;
-  display: none;
-  justify-content: space-between;
-  width: 100%;
-  padding: 0 ${CONTAINER_HORIZONTAL_PADDING}px 8px;
-
-  @media only screen and (max-width: ${CONTAINER_WIDTH +
-    CONTAINER_HORIZONTAL_PADDING * 2}px) {
-    display: flex;
-  }
+const ContextErrorImg = styled(ErrorImg)`
+  width: 12px;
+  height: 12px;
+  transform: translate(0, 1px);
 `;
 
 const Disaggregation: React.FC<{
   disaggregation: MetricDisaggregationsWithErrors;
 }> = ({ disaggregation }) => {
-  const [collapsed, setCollapsed] = React.useState<boolean>(false);
   const { display_name: displayName, dimensions } = disaggregation;
-  const hasError = !!dimensions.find(
-    (dim: MetricDisaggregationDimensionsWithErrors) => dim.error
-  );
   return (
-    <DisaggregationContainer>
-      <DisaggregationTitleContainer>
-        <LabelLeft>
-          {displayName}
-          {hasError && <InnerErrorImg src={errorIcon} alt="" />}
-        </LabelLeft>
-        <DropdownArrowContainer
-          collapsed={collapsed}
-          onClick={() => setCollapsed(!collapsed)}
-        >
-          <DropdownArrow collapsed={collapsed} />
-        </DropdownArrowContainer>
-      </DisaggregationTitleContainer>
-      {dimensions.length > 0 && !collapsed && (
-        <BreakdownContainer>
-          {dimensions.map(
-            (dimension: MetricDisaggregationDimensionsWithErrors) => {
-              return (
-                <Fragment key={dimension.key}>
-                  <DisaggregationBreakdown missing={!dimension.value}>
-                    <BreakdownLabel>{dimension.label}</BreakdownLabel>
-                    <BreakdownValue
-                      missing={!dimension.value}
-                      error={!!dimension.error}
-                    >
-                      {dimension.value?.toLocaleString("en-US") ||
-                        "Not Reported"}
-                    </BreakdownValue>
-                  </DisaggregationBreakdown>
-                </Fragment>
-              );
-            }
-          )}
-        </BreakdownContainer>
-      )}
-    </DisaggregationContainer>
+    <>
+      <MetricSubTitleContainer>{displayName}</MetricSubTitleContainer>
+      <DisaggregationBreakdownContainer>
+        {dimensions.map(
+          (dimension: MetricDisaggregationDimensionsWithErrors) => {
+            return (
+              <DisaggregationBreakdown
+                key={dimension.key}
+                error={!!dimension.error}
+              >
+                <BreakdownLabelContainer>
+                  <BreakdownLabel>{dimension.label}</BreakdownLabel>
+                  {!!dimension.error && (
+                    <BreakdownErrorImg src={errorIcon} alt="" />
+                  )}
+                </BreakdownLabelContainer>
+                <BreakdownValue
+                  missing={!dimension.value}
+                  error={!!dimension.error}
+                >
+                  {dimension.value?.toLocaleString("en-US") || "--"}
+                </BreakdownValue>
+              </DisaggregationBreakdown>
+            );
+          }
+        )}
+      </DisaggregationBreakdownContainer>
+    </>
   );
 };
 
 const Context: React.FC<{ context: MetricContextWithErrors }> = ({
   context,
 }) => {
-  const [collapsed, setCollapsed] = React.useState<boolean>(false);
-  const hasError = !!context.error;
+  const hasError = !!context.error && context.required;
   return (
     <ContextContainer verticalOnly>
-      <ContextTitle>
-        <LabelLeft>
-          {context.display_name}
-          {hasError && <InnerErrorImg src={errorIcon} alt="" />}
-        </LabelLeft>
-        <ContextDropdownArrowContainer
-          collapsed={collapsed}
-          onClick={() => setCollapsed(!collapsed)}
-        >
-          <DropdownArrow collapsed={collapsed} />
-        </ContextDropdownArrowContainer>
-      </ContextTitle>
-      {!collapsed && (
-        <ContextValue missing={!context.value} error={!!context.error}>
-          {context.value?.toLocaleString("en-US") || "Not Reported"}
-        </ContextValue>
-      )}
+      <MetricSubTitleContainer>
+        {context.display_name}
+        {hasError && <ContextErrorImg src={errorIcon} alt="" />}
+      </MetricSubTitleContainer>
+
+      <ContextValue missing={!context.value} error={hasError}>
+        {context.value?.toLocaleString("en-US") || "Not Reported"}
+      </ContextValue>
     </ContextContainer>
   );
 };
 
 const MetricsDisplay: React.FC<{
   metric: MetricWithErrors;
-}> = ({ metric }) => {
-  const hasError = !!metric.error;
+  metricHasError: boolean;
+  index: number;
+}> = ({ metric, metricHasError, index }) => {
   return (
-    <Metric>
-      <MetricOverviewWrapper>
-        {/* Overall Metric Value */}
-        <MetricValue missing={!metric.value} error={hasError}>
-          {metric.value?.toLocaleString("en-US") || "Not Reported"}
-        </MetricValue>
-        <MetricValueLabel>
-          {metric.label}
-          {hasError && <ErrorImg src={errorIcon} alt="" />}
-        </MetricValueLabel>
-      </MetricOverviewWrapper>
+    <Metric id={metric.key}>
+      <MetricHeader hasValue={!!metric.value}>
+        <MetricTitleWrapper>
+          <MetricTitleNumber hasError={metricHasError}>
+            {index + 1}
+          </MetricTitleNumber>
+          <MetricTitle>{metric.display_name}</MetricTitle>
+        </MetricTitleWrapper>
+        <MetricValue>{metric.value || "Not Reported"}</MetricValue>
+      </MetricHeader>
 
       <MetricDetailWrapper>
         {/* Disaggregations > Dimensions */}
@@ -462,9 +342,9 @@ const MetricsDisplay: React.FC<{
 };
 
 const PublishConfirmation: React.FC<{
-  toggleConfirmationDialogue: () => void;
   reportID: number;
-}> = ({ toggleConfirmationDialogue, reportID }) => {
+  checkMetricForErrors: (metricKey: string, formStore: FormStore) => boolean;
+}> = ({ reportID, checkMetricForErrors }) => {
   const [isPublishable, setIsPublishable] = useState(false);
   const [metricsPreview, setMetricsPreview] = useState<MetricWithErrors[]>();
   const { formStore, reportStore, userStore } = useStore();
@@ -517,50 +397,55 @@ const PublishConfirmation: React.FC<{
     setIsPublishable(publishable);
   }, [formStore, reportID]);
 
-  /** Prevent body from scrolling when this dialog is open */
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, []);
-
   return (
-    <ConfirmationDialogueWrapper>
-      <ConfirmHeaderContainer>
-        <ConfirmHeader>
-          <ConfirmationTitle>Review</ConfirmationTitle>
-          <ButtonContainer>
-            <ConfirmationSubTitle>
-              Take a moment to review the numbers that will be published. Click
-              the arrows to show the data for any disaggregations.
-            </ConfirmationSubTitle>
-            <TopPublishConfirmButton onClick={toggleConfirmationDialogue}>
-              Back to Data Entry
-            </TopPublishConfirmButton>
-            <TopPublishConfirmPublishButton
-              onClick={publishReport}
-              disabled={!isPublishable}
-            />
-          </ButtonContainer>
-        </ConfirmHeader>
-      </ConfirmHeaderContainer>
-      <ConfirmationDialogue>
-        {metricsPreview &&
-          metricsPreview.map((metric) => {
-            return <MetricsDisplay key={metric.key} metric={metric} />;
-          })}
-      </ConfirmationDialogue>
-      <MobileButtonContainer>
-        <PublishConfirmButton onClick={toggleConfirmationDialogue}>
-          Back to Data Entry
-        </PublishConfirmButton>
-        <PublishConfirmPublishButton
-          onClick={publishReport}
-          disabled={!isPublishable}
-        />
-      </MobileButtonContainer>
-    </ConfirmationDialogueWrapper>
+    <>
+      <ConfirmationDialogueHeader transparent={false}>
+        <LogoContainer onClick={() => navigate("/")}>
+          <Logo src={logoImg} alt="" />
+        </LogoContainer>
+
+        <ConfirmationButtonsContainer>
+          <Button type="border" onClick={() => navigate(-1)}>
+            Exit without Publishing
+          </Button>
+          <PublishConfirmButton
+            onClick={publishReport}
+            disabled={!isPublishable}
+          />
+        </ConfirmationButtonsContainer>
+      </ConfirmationDialogueHeader>
+      <ConfirmationDialogueWrapper>
+        <MetricsPreviewWrapper>
+          <Heading>
+            {metricsPreview && (
+              <>
+                Review <span>{metricsPreview.length}</span> Metrics
+              </>
+            )}
+          </Heading>
+          <Subheading>
+            {metricsPreview && (
+              <>
+                Before publishing, take a moment to review the changes. You must
+                resolve any errors before publishing; otherwise, you can save
+                this report and return at another time.
+              </>
+            )}
+          </Subheading>
+          {metricsPreview &&
+            metricsPreview.map((metric, i) => {
+              return (
+                <MetricsDisplay
+                  key={metric.key}
+                  metric={metric}
+                  metricHasError={checkMetricForErrors(metric.key, formStore)}
+                  index={i}
+                />
+              );
+            })}
+        </MetricsPreviewWrapper>
+      </ConfirmationDialogueWrapper>
+    </>
   );
 };
 

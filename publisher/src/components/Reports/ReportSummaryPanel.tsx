@@ -26,6 +26,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import { useStore } from "../../stores";
+import FormStore from "../../stores/FormStore";
 import {
   printCommaSeparatedList,
   printDateRangeFromMonthYear,
@@ -95,7 +96,7 @@ export const ReportSummaryProgressIndicatorWrapper = styled.div`
   }
 `;
 
-const ReportSummarySection = styled.a`
+export const ReportSummarySection = styled.a`
   ${typography.sizeCSS.normal}
   height: 24px;
   display: flex;
@@ -128,7 +129,7 @@ const MetricDisplayName = styled.div<{
   text-overflow: ellipsis;
 `;
 
-const ReportStatusIcon = styled.div<{
+export const ReportStatusIcon = styled.div<{
   metricHasError?: boolean;
   metricHasEntries?: boolean;
 }>`
@@ -244,11 +245,13 @@ const ReportSummaryPanel: React.FC<{
   activeMetric: string;
   fieldDescription?: FieldDescriptionProps;
   toggleConfirmationDialogue: () => void;
+  checkMetricForErrors: (metricKey: string, formStore: FormStore) => boolean;
 }> = ({
   reportID,
   activeMetric,
   fieldDescription,
   toggleConfirmationDialogue,
+  checkMetricForErrors,
 }) => {
   const navigate = useNavigate();
   const { formStore, reportStore, userStore } = useStore();
@@ -260,38 +263,6 @@ const ReportSummaryPanel: React.FC<{
     frequency,
     status,
   } = reportStore.reportOverviews[reportID];
-
-  const checkMetricForErrorsInUpdatedValues = (metricKey: string) => {
-    let foundErrors = false;
-
-    if (formStore.metricsValues[reportID]?.[metricKey]?.error) {
-      foundErrors = true;
-    }
-
-    if (formStore.disaggregations[reportID]?.[metricKey]) {
-      Object.values(formStore.disaggregations[reportID][metricKey]).forEach(
-        (disaggregation) => {
-          Object.values(disaggregation).forEach((dimension) => {
-            if (dimension.error) {
-              foundErrors = true;
-            }
-          });
-        }
-      );
-    }
-
-    if (formStore.contexts[reportID]?.[metricKey]) {
-      Object.values(formStore.contexts[reportID][metricKey]).forEach(
-        (context) => {
-          if (context.error) {
-            foundErrors = true;
-          }
-        }
-      );
-    }
-
-    return foundErrors;
-  };
 
   const metricsBySystem = reportStore.reportMetricsBySystem[reportID];
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;
@@ -326,9 +297,7 @@ const ReportSummaryPanel: React.FC<{
                 <MetricsSectionTitle>{system}</MetricsSectionTitle>
               ) : null}
               {enabledMetrics.map((metric) => {
-                const foundErrors = checkMetricForErrorsInUpdatedValues(
-                  metric.key
-                );
+                const foundErrors = checkMetricForErrors(metric.key, formStore);
 
                 return (
                   <ReportStatusIconComponent
