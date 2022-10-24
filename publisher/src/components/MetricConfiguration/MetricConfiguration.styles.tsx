@@ -459,7 +459,6 @@ export const MetricConfigurationWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  gap: 126px;
   overflow-y: hidden;
 `;
 
@@ -469,6 +468,7 @@ export const DefinitionsDisplayContainer = styled.div`
   flex: 1 1 55%;
   padding-top: 48px;
   padding-right: 12px;
+  padding-left: 126px;
   overflow-y: scroll;
 `;
 
