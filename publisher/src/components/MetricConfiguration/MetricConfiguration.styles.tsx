@@ -549,6 +549,7 @@ export const DefinitionSelection = styled.div`
 
 export const DefinitionMiniButton = styled(RevertToDefaultButton)<{
   selected?: boolean;
+  showDefault?: boolean;
 }>`
   width: unset;
   padding: 9px 16px;
@@ -574,6 +575,12 @@ export const DefinitionMiniButton = styled(RevertToDefaultButton)<{
 
 
   `};
+
+  ${({ showDefault, selected }) => {
+    if (showDefault && !selected) {
+      return `color: ${palette.highlight.grey4}`;
+    }
+  }};
 `;
 
 export const NoDefinitionsSelected = styled.div`

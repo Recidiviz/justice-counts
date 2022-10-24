@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 
 import {
   Metric,
@@ -62,6 +62,8 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
   contexts,
   saveAndUpdateMetricSettings,
 }) => {
+  const [showDefaultSettings, setShowDefaultSettings] = useState(false);
+
   const selectionOptions: MetricConfigurationSettingsOptions[] = [
     "N/A",
     "No",
@@ -131,65 +133,84 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
               </span>
             </DefinitionsDescription>
 
-            <RevertToDefaultButton onClick={revertToDefaultValues}>
+            <RevertToDefaultButton
+              onClick={() => {
+                setShowDefaultSettings(false);
+                revertToDefaultValues();
+              }}
+              onMouseEnter={() =>
+                !showDefaultSettings && setShowDefaultSettings(true)
+              }
+              onMouseLeave={() => setShowDefaultSettings(false)}
+            >
               Revert to Default Definition
             </RevertToDefaultButton>
 
             <Definitions>
-              {activeSettings?.map((setting) => (
-                <DefinitionItem key={setting.key}>
-                  <DefinitionDisplayName>{setting.label}</DefinitionDisplayName>
+              {(showDefaultSettings ? defaultSettings : activeSettings)?.map(
+                (setting) => (
+                  <DefinitionItem key={setting.key}>
+                    <DefinitionDisplayName>
+                      {setting.label}
+                    </DefinitionDisplayName>
 
-                  <DefinitionSelection>
-                    {selectionOptions.map((option) => (
-                      <Fragment key={option}>
-                        <DefinitionMiniButton
-                          selected={setting.included === option}
-                          onClick={() => {
-                            if (isMetricSettings(activeDimensionOrMetric)) {
-                              return saveAndUpdateMetricSettings(
-                                "METRIC_SETTING",
-                                {
-                                  key: activeMetricKey,
-                                  settings: [{ ...setting, included: option }],
-                                }
-                              );
-                            }
-
-                            const activeDimensionKey =
-                              activeDimensionOrMetric.key;
-
-                            return (
-                              activeDisaggregation &&
-                              saveAndUpdateMetricSettings("DIMENSION_SETTING", {
-                                key: activeMetricKey,
-                                disaggregations: [
+                    <DefinitionSelection>
+                      {selectionOptions.map((option) => (
+                        <Fragment key={option}>
+                          <DefinitionMiniButton
+                            selected={setting.included === option}
+                            showDefault={showDefaultSettings}
+                            onClick={() => {
+                              if (isMetricSettings(activeDimensionOrMetric)) {
+                                return saveAndUpdateMetricSettings(
+                                  "METRIC_SETTING",
                                   {
-                                    key: activeDisaggregation.key,
-                                    dimensions: [
+                                    key: activeMetricKey,
+                                    settings: [
+                                      { ...setting, included: option },
+                                    ],
+                                  }
+                                );
+                              }
+
+                              const activeDimensionKey =
+                                activeDimensionOrMetric.key;
+
+                              return (
+                                activeDisaggregation &&
+                                saveAndUpdateMetricSettings(
+                                  "DIMENSION_SETTING",
+                                  {
+                                    key: activeMetricKey,
+                                    disaggregations: [
                                       {
-                                        key: activeDimensionKey,
-                                        settings: [
+                                        key: activeDisaggregation.key,
+                                        dimensions: [
                                           {
-                                            ...setting,
-                                            included: option,
+                                            key: activeDimensionKey,
+                                            settings: [
+                                              {
+                                                ...setting,
+                                                included: option,
+                                              },
+                                            ],
                                           },
                                         ],
                                       },
                                     ],
-                                  },
-                                ],
-                              })
-                            );
-                          }}
-                        >
-                          {option}
-                        </DefinitionMiniButton>
-                      </Fragment>
-                    ))}
-                  </DefinitionSelection>
-                </DefinitionItem>
-              ))}
+                                  }
+                                )
+                              );
+                            }}
+                          >
+                            {option}
+                          </DefinitionMiniButton>
+                        </Fragment>
+                      ))}
+                    </DefinitionSelection>
+                  </DefinitionItem>
+                )
+              )}
             </Definitions>
           </>
         )}
