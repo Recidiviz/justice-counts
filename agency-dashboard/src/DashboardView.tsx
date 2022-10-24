@@ -37,12 +37,23 @@ const DashboardView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (
+      metricKey &&
+      !datapointsStore.loading &&
+      !datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey]
+    ) {
+      navigate(`/agency/${agencyId}`);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [datapointsStore.loading]);
+
   if (
     !metricKey ||
     (!datapointsStore.loading &&
       !datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey])
   ) {
-    navigate(`/agency/${agencyId}`);
     return null;
   }
 
