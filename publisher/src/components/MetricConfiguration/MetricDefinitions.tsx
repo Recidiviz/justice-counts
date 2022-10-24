@@ -15,13 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment } from "react";
 
 import {
   Metric,
   MetricConfigurationSettingsOptions,
   MetricContext,
   MetricDisaggregationDimensions,
+  MetricDisaggregations,
 } from "../../shared/types";
 import {
   ContextConfiguration,
@@ -42,8 +43,9 @@ import {
 
 type MetricDefinitionsProps = {
   activeMetricKey: string;
-  filteredMetricSettings: { [key: string]: Metric };
+  activeMetric: Metric;
   activeDimension?: MetricDisaggregationDimensions | undefined;
+  activeDisaggregation: MetricDisaggregations | undefined;
   contexts: MetricContext[];
   saveAndUpdateMetricSettings: (
     typeOfUpdate: MetricSettingsUpdateOptions,
@@ -54,8 +56,9 @@ type MetricDefinitionsProps = {
 
 export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
   activeMetricKey,
-  filteredMetricSettings,
+  activeMetric,
   activeDimension,
+  activeDisaggregation,
   contexts,
   saveAndUpdateMetricSettings,
 }) => {
@@ -64,74 +67,29 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
     "No",
     "Yes",
   ];
+  const activeDimensionOrMetric: MetricDisaggregationDimensions | Metric =
+    activeDimension || activeMetric;
 
-  /** TODO(#82): Remove mocks when GET & POST are implemented */
-  /** Mocks To Be Removed */
-  const generateMockDefinitions = ():
-    | MetricDisaggregationDimensions
-    | Metric => {
-    const dimensionOrMetric: MetricDisaggregationDimensions | Metric =
-      activeDimension || filteredMetricSettings[activeMetricKey];
-
-    const mockSettings = dimensionOrMetric
-      ? Array.from({ length: 10 }, (_, i) => ({
-          key: `SETTING ${i}`,
-          label: `Includes/Excludes Q#${i + 1} for ${
-            "display_name" in dimensionOrMetric
-              ? dimensionOrMetric.display_name
-              : dimensionOrMetric.label
-          }?`,
-          included: selectionOptions[i % 3],
-          default: selectionOptions[i % 3],
-        }))
-      : [];
-
-    return { ...dimensionOrMetric, settings: mockSettings };
+  const isMetricSettings = (
+    dimensionOrMetric: MetricDisaggregationDimensions | Metric
+  ): dimensionOrMetric is Metric => {
+    return (dimensionOrMetric as Metric).display_name !== undefined;
   };
 
-  const initialDefinitionsToDisplay = generateMockDefinitions();
-
-  const [mockDefinitionsToDisplay, setMockDefinitionsToDisplay] = useState<
-    MetricDisaggregationDimensions | Metric
-  >(initialDefinitionsToDisplay);
-
-  const mockUpdateSelection = (
-    key: string,
-    selection: MetricConfigurationSettingsOptions
-  ) => {
-    setMockDefinitionsToDisplay((prev) => {
-      return {
-        ...prev,
-        settings: prev.settings?.map((setting) => {
-          if (setting.key === key) {
-            return { ...setting, included: selection };
-          }
-
-          return setting;
-        }),
-      };
-    });
-  };
-
-  useEffect(
-    () => {
-      setMockDefinitionsToDisplay(initialDefinitionsToDisplay);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeMetricKey, activeDimension]
-  );
-  /** End of Mocks To Be Removed */
+  const activeSettings = isMetricSettings(activeDimensionOrMetric)
+    ? activeMetric.settings
+    : activeDimension?.settings;
 
   return (
     <DefinitionsDisplayContainer>
       <DefinitionsDisplay>
         <DefinitionsTitle>
-          {"display_name" in mockDefinitionsToDisplay
-            ? mockDefinitionsToDisplay.display_name
-            : mockDefinitionsToDisplay.label}
+          {isMetricSettings(activeDimensionOrMetric)
+            ? activeDimensionOrMetric.display_name
+            : activeDimensionOrMetric.label}
         </DefinitionsTitle>
 
-        {mockDefinitionsToDisplay?.settings?.length && (
+        {Boolean(activeSettings?.length) && (
           <>
             <DefinitionsSubTitle>Definitions</DefinitionsSubTitle>
             <DefinitionsDescription>
@@ -143,16 +101,12 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
               </span>
             </DefinitionsDescription>
 
-            <RevertToDefaultButton
-              onClick={() =>
-                setMockDefinitionsToDisplay(initialDefinitionsToDisplay)
-              }
-            >
+            <RevertToDefaultButton>
               Revert to Default Definition
             </RevertToDefaultButton>
 
             <Definitions>
-              {mockDefinitionsToDisplay?.settings?.map((setting) => (
+              {activeSettings?.map((setting) => (
                 <DefinitionItem key={setting.key}>
                   <DefinitionDisplayName>{setting.label}</DefinitionDisplayName>
 
@@ -161,9 +115,43 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
                       <Fragment key={option}>
                         <DefinitionMiniButton
                           selected={setting.included === option}
-                          onClick={() =>
-                            mockUpdateSelection(setting.key, option)
-                          }
+                          onClick={() => {
+                            if (isMetricSettings(activeDimensionOrMetric)) {
+                              return saveAndUpdateMetricSettings(
+                                "METRIC_SETTING",
+                                {
+                                  key: activeMetricKey,
+                                  settings: [{ ...setting, included: option }],
+                                }
+                              );
+                            }
+
+                            const activeDimensionKey =
+                              activeDimensionOrMetric.key;
+
+                            return (
+                              activeDisaggregation &&
+                              saveAndUpdateMetricSettings("DIMENSION_SETTING", {
+                                key: activeMetricKey,
+                                disaggregations: [
+                                  {
+                                    key: activeDisaggregation.key,
+                                    dimensions: [
+                                      {
+                                        key: activeDimensionKey,
+                                        settings: [
+                                          {
+                                            ...setting,
+                                            included: option,
+                                          },
+                                        ],
+                                      },
+                                    ],
+                                  },
+                                ],
+                              })
+                            );
+                          }}
                         >
                           {option}
                         </DefinitionMiniButton>
@@ -177,7 +165,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
         )}
 
         {/* Display when user is viewing a dimension & there are no settings available */}
-        {!mockDefinitionsToDisplay?.settings?.length && activeDimension && (
+        {!activeSettings?.length && activeDimension && (
           <DefinitionsSubTitle>
             This breakdown has no customizations available yet.
           </DefinitionsSubTitle>

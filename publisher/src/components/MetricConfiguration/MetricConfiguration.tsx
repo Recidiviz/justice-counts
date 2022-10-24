@@ -23,7 +23,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { ListOfMetricsForNavigation } from "../../pages/Settings";
 import {
   Metric as MetricType,
+  MetricConfigurationSettings,
   MetricDisaggregationDimensions,
+  MetricDisaggregations,
   ReportFrequency,
 } from "../../shared/types";
 import { useStore } from "../../stores";
@@ -51,11 +53,14 @@ export type MetricSettingsUpdateOptions =
   | "METRIC"
   | "DISAGGREGATION"
   | "DIMENSION"
-  | "CONTEXT";
+  | "CONTEXT"
+  | "METRIC_SETTING"
+  | "DIMENSION_SETTING";
 
 export type MetricSettings = {
   key: string;
   enabled?: boolean;
+  settings?: MetricConfigurationSettings[];
   contexts?: {
     key: string;
     value: string;
@@ -65,7 +70,8 @@ export type MetricSettings = {
     enabled?: boolean;
     dimensions?: {
       key: string;
-      enabled: boolean;
+      enabled?: boolean;
+      settings?: MetricConfigurationSettings[];
     }[];
   }[];
 };
@@ -83,14 +89,14 @@ export const MetricConfiguration: React.FC<{
 }> = observer(({ activeMetricKey, setActiveMetricKey, setListOfMetrics }) => {
   const { reportStore, userStore } = useStore();
 
-  const [activeMetricFilter, setActiveMetricFilter] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingError, setLoadingError] = useState<string>();
-  const [activeDimension, setActiveDimension] =
-    useState<MetricDisaggregationDimensions>();
+  const [activeMetricFilter, setActiveMetricFilter] = useState<string>();
   const [metricSettings, setMetricSettings] = useState<{
     [key: string]: MetricType;
   }>({});
+  const [activeDimension, setActiveDimension] =
+    useState<MetricDisaggregationDimensions>();
 
   const filteredMetricSettings: MetricSettingsObj = Object.values(
     metricSettings
@@ -104,9 +110,12 @@ export const MetricConfiguration: React.FC<{
       return res;
     }, {});
 
-  /** Updates shared state `listOfMetrics` so the SettingsMenu component can render the metric navigation */
+  const [activeDisaggregation, setActiveDisaggregation] =
+    useState<MetricDisaggregations>();
+
   useEffect(
     () => {
+      /** Updates shared state `listOfMetrics` so the SettingsMenu component can render the metric navigation */
       const listOfMetricsForMetricNavigation = Object.values(
         filteredMetricSettings
       ).map((metric) => {
@@ -117,6 +126,18 @@ export const MetricConfiguration: React.FC<{
       });
 
       setListOfMetrics(listOfMetricsForMetricNavigation);
+
+      // Update activeDimension when settings are updated
+      if (activeDimension && activeMetricKey) {
+        return setActiveDimension((prev) => {
+          return filteredMetricSettings[activeMetricKey].disaggregations
+            .find(
+              (disaggregation) =>
+                disaggregation.key === activeDisaggregation?.key
+            )
+            ?.dimensions.find((dimension) => dimension.key === prev?.key);
+        });
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [filteredMetricSettings]
@@ -135,6 +156,24 @@ export const MetricConfiguration: React.FC<{
           [updatedSetting.key]: {
             ...prev[metricKey],
             enabled: Boolean(updatedSetting.enabled),
+          },
+        };
+      }
+
+      if (typeOfUpdate === "METRIC_SETTING") {
+        return {
+          ...prev,
+          [updatedSetting.key]: {
+            ...prev[metricKey],
+            settings: prev[metricKey].settings?.map((setting) => {
+              if (setting.key === updatedSetting.settings?.[0].key) {
+                return {
+                  ...setting,
+                  included: updatedSetting.settings[0].included,
+                };
+              }
+              return setting;
+            }),
           },
         };
       }
@@ -240,6 +279,59 @@ export const MetricConfiguration: React.FC<{
                         updatedSetting.disaggregations?.[0].dimensions?.[0]
                           .enabled
                       ),
+                    };
+                  }
+                  return dimension;
+                }),
+              };
+            }
+            return disaggregation;
+          }
+        );
+
+        return {
+          ...prev,
+          [updatedSetting.key]: {
+            ...prev[metricKey],
+            disaggregations: updatedDisaggregations,
+          },
+        };
+      }
+
+      if (typeOfUpdate === "DIMENSION_SETTING") {
+        const updatedDisaggregations = prev[metricKey].disaggregations.map(
+          (disaggregation) => {
+            if (
+              disaggregation.key === updatedSetting.disaggregations?.[0].key
+            ) {
+              return {
+                ...disaggregation,
+                dimensions: disaggregation.dimensions.map((dimension) => {
+                  if (
+                    dimension.key ===
+                    updatedSetting.disaggregations?.[0].dimensions?.[0].key
+                  ) {
+                    const updatedSettingsArray = dimension.settings?.map(
+                      (setting) => {
+                        if (
+                          setting.key ===
+                          updatedSetting.disaggregations?.[0].dimensions?.[0]
+                            .settings?.[0].key
+                        ) {
+                          return {
+                            ...setting,
+                            included:
+                              updatedSetting.disaggregations?.[0]
+                                .dimensions?.[0].settings[0].included,
+                          };
+                        }
+                        return setting;
+                      }
+                    );
+
+                    return {
+                      ...dimension,
+                      settings: updatedSettingsArray,
                     };
                   }
                   return dimension;
@@ -444,6 +536,8 @@ export const MetricConfiguration: React.FC<{
                   <Configuration
                     activeMetricKey={activeMetricKey}
                     filteredMetricSettings={filteredMetricSettings}
+                    activeDisaggregation={activeDisaggregation}
+                    setActiveDisaggregation={setActiveDisaggregation}
                     saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
                     setActiveDimension={setActiveDimension}
                   />
@@ -453,8 +547,9 @@ export const MetricConfiguration: React.FC<{
               {/* Metric/Dimension Definitions (Includes/Excludes) */}
               <MetricDefinitions
                 activeMetricKey={activeMetricKey}
-                filteredMetricSettings={filteredMetricSettings}
+                activeMetric={filteredMetricSettings[activeMetricKey]}
                 activeDimension={activeDimension}
+                activeDisaggregation={activeDisaggregation}
                 contexts={metricSettings[activeMetricKey]?.contexts}
                 saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
               />

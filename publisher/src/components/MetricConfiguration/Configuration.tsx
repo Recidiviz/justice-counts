@@ -15,9 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
-import { Metric, MetricDisaggregationDimensions } from "../../shared/types";
+import {
+  Metric,
+  MetricDisaggregationDimensions,
+  MetricDisaggregations as MetricDisaggregationsType,
+} from "../../shared/types";
 import { removeSnakeCase } from "../../utils";
 import blueCheck from "../assets/status-check-icon.png";
 import { BinaryRadioButton } from "../Forms";
@@ -44,6 +48,10 @@ import {
 type MetricConfigurationProps = {
   activeMetricKey: string;
   filteredMetricSettings: { [key: string]: Metric };
+  activeDisaggregation: MetricDisaggregationsType | undefined;
+  setActiveDisaggregation: React.Dispatch<
+    React.SetStateAction<MetricDisaggregationsType | undefined>
+  >;
   saveAndUpdateMetricSettings: (
     typeOfUpdate: "METRIC" | "DISAGGREGATION" | "DIMENSION" | "CONTEXT",
     updatedSetting: MetricSettings,
@@ -57,12 +65,11 @@ type MetricConfigurationProps = {
 export const Configuration: React.FC<MetricConfigurationProps> = ({
   activeMetricKey,
   filteredMetricSettings,
+  activeDisaggregation,
+  setActiveDisaggregation,
   saveAndUpdateMetricSettings,
   setActiveDimension,
 }): JSX.Element => {
-  const [activeDisaggregation, setActiveDisaggregation] = useState(
-    filteredMetricSettings[activeMetricKey]?.disaggregations?.[0]
-  );
   const metricDisplayName =
     filteredMetricSettings[activeMetricKey]?.display_name;
   const metricEnabled = Boolean(
