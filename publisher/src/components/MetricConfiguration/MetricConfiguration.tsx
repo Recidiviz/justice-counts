@@ -552,7 +552,7 @@ export const MetricConfiguration: React.FC<{
                     {metricSettings[activeMetricKey]?.display_name}
                   </MetricName>
                   <Badge color="GREEN" noMargin>
-                    {metricSettings[activeMetricKey]?.frequency}
+                    {metricSettings[activeMetricKey]?.frequency?.toLowerCase()}
                   </Badge>
                 </Metric>
 
