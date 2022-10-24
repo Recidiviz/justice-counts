@@ -80,6 +80,30 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
     ? activeMetric.settings
     : activeDimension?.settings;
 
+  const revertToDefaultValues = () => {
+    const defaultSettings = activeSettings?.map((setting) => ({
+      ...setting,
+      included: setting.default,
+    }));
+
+    if (activeDisaggregation && activeDimension) {
+      saveAndUpdateMetricSettings("DIMENSION_SETTING", {
+        key: activeMetricKey,
+        disaggregations: [
+          {
+            key: activeDisaggregation.key,
+            dimensions: [
+              {
+                key: activeDimension.key,
+                settings: defaultSettings,
+              },
+            ],
+          },
+        ],
+      });
+    }
+  };
+
   return (
     <DefinitionsDisplayContainer>
       <DefinitionsDisplay>
@@ -101,7 +125,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
               </span>
             </DefinitionsDescription>
 
-            <RevertToDefaultButton>
+            <RevertToDefaultButton onClick={revertToDefaultValues}>
               Revert to Default Definition
             </RevertToDefaultButton>
 

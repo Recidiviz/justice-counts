@@ -311,23 +311,35 @@ export const MetricConfiguration: React.FC<{
                     dimension.key ===
                     updatedSetting.disaggregations?.[0].dimensions?.[0].key
                   ) {
-                    const updatedSettingsArray = dimension.settings?.map(
-                      (setting) => {
-                        if (
-                          setting.key ===
-                          updatedSetting.disaggregations?.[0].dimensions?.[0]
-                            .settings?.[0].key
-                        ) {
-                          return {
-                            ...setting,
-                            included:
-                              updatedSetting.disaggregations?.[0]
-                                .dimensions?.[0].settings[0].included,
-                          };
+                    let updatedSettingsArray;
+
+                    if (
+                      dimension.settings?.length ===
+                      updatedSetting.disaggregations?.[0].dimensions?.[0]
+                        .settings?.length
+                    ) {
+                      updatedSettingsArray =
+                        updatedSetting.disaggregations?.[0].dimensions?.[0]
+                          .settings;
+                    } else {
+                      updatedSettingsArray = dimension.settings?.map(
+                        (setting) => {
+                          if (
+                            setting.key ===
+                            updatedSetting.disaggregations?.[0].dimensions?.[0]
+                              .settings?.[0].key
+                          ) {
+                            return {
+                              ...setting,
+                              included:
+                                updatedSetting.disaggregations?.[0]
+                                  .dimensions?.[0].settings[0].included,
+                            };
+                          }
+                          return setting;
                         }
-                        return setting;
-                      }
-                    );
+                      );
+                    }
 
                     return {
                       ...dimension,
