@@ -127,7 +127,7 @@ export const MetricConfiguration: React.FC<{
 
       setListOfMetrics(listOfMetricsForMetricNavigation);
 
-      // Update activeDimension when settings are updated
+      /** Update activeDimension when settings are updated */
       if (activeDimension && activeMetricKey) {
         return setActiveDimension((prev) => {
           return filteredMetricSettings[activeMetricKey].disaggregations
