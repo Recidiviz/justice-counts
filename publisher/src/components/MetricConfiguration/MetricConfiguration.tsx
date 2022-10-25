@@ -312,55 +312,55 @@ export const MetricConfiguration: React.FC<{
         const updatedDisaggregations = prev[metricKey].disaggregations.map(
           (disaggregation) => {
             if (
-              disaggregation.key === updatedSetting.disaggregations?.[0].key
+              disaggregation.key !== updatedSetting.disaggregations?.[0].key
             ) {
-              return {
-                ...disaggregation,
-                dimensions: disaggregation.dimensions.map((dimension) => {
-                  if (
-                    dimension.key ===
-                    updatedSetting.disaggregations?.[0].dimensions?.[0].key
-                  ) {
-                    let updatedSettingsArray;
-
-                    if (
-                      dimension.settings?.length ===
-                      updatedSetting.disaggregations?.[0].dimensions?.[0]
-                        .settings?.length
-                    ) {
-                      updatedSettingsArray =
-                        updatedSetting.disaggregations?.[0].dimensions?.[0]
-                          .settings;
-                    } else {
-                      updatedSettingsArray = dimension.settings?.map(
-                        (setting) => {
-                          if (
-                            setting.key ===
-                            updatedSetting.disaggregations?.[0].dimensions?.[0]
-                              .settings?.[0].key
-                          ) {
-                            return {
-                              ...setting,
-                              included:
-                                updatedSetting.disaggregations?.[0]
-                                  .dimensions?.[0].settings[0].included,
-                            };
-                          }
-                          return setting;
-                        }
-                      );
-                    }
-
-                    return {
-                      ...dimension,
-                      settings: updatedSettingsArray,
-                    };
-                  }
-                  return dimension;
-                }),
-              };
+              return disaggregation;
             }
-            return disaggregation;
+
+            return {
+              ...disaggregation,
+              dimensions: disaggregation.dimensions.map((dimension) => {
+                if (
+                  dimension.key !==
+                  updatedSetting.disaggregations?.[0].dimensions?.[0].key
+                ) {
+                  return dimension;
+                }
+
+                let updatedSettingsArray;
+
+                if (
+                  dimension.settings?.length ===
+                  updatedSetting.disaggregations?.[0].dimensions?.[0].settings
+                    ?.length
+                ) {
+                  updatedSettingsArray =
+                    updatedSetting.disaggregations?.[0].dimensions?.[0]
+                      .settings;
+                } else {
+                  updatedSettingsArray = dimension.settings?.map((setting) => {
+                    if (
+                      setting.key !==
+                      updatedSetting.disaggregations?.[0].dimensions?.[0]
+                        .settings?.[0].key
+                    ) {
+                      return setting;
+                    }
+                    return {
+                      ...setting,
+                      included:
+                        updatedSetting.disaggregations?.[0].dimensions?.[0]
+                          .settings[0].included,
+                    };
+                  });
+                }
+
+                return {
+                  ...dimension,
+                  settings: updatedSettingsArray,
+                };
+              }),
+            };
           }
         );
 
