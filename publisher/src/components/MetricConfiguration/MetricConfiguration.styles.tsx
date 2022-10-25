@@ -209,6 +209,8 @@ export const MetricDisaggregations = styled.div<{ enabled?: boolean }>`
         height: 100%;
         width: 100%;
         top: 0;
+        left: 0;
+        z-index: 2;
         opacity: 0.5;
       }
     `}
@@ -288,6 +290,7 @@ export const Dimension = styled.div<{ enabled?: boolean; inView?: boolean }>`
         height: 100%;
         width: 100%;
         top: 0;
+        left: 0;
         opacity: 0.5;
       }
     `}
@@ -307,7 +310,7 @@ export const DimensionTitle = styled.div<{ enabled?: boolean }>`
 export const CheckboxWrapper = styled.div`
   display: flex;
   position: relative;
-  z-index: 2;
+  z-index: 1;
 `;
 
 export const Checkbox = styled.input`
