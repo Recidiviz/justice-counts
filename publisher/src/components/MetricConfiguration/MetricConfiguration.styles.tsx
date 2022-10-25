@@ -20,12 +20,18 @@ import styled from "styled-components/macro";
 import { BinaryRadioGroupWrapper, Button } from "../Forms";
 import { palette, typography } from "../GlobalStyles";
 
+const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
+
 export const MetricsViewContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   overflow: hidden;
+
+  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
+    overflow: unset;
+  }
 `;
 
 export const MetricsViewControlPanel = styled.div`
@@ -35,6 +41,12 @@ export const MetricsViewControlPanel = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   overflow-y: scroll;
+
+  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: unset;
+  }
 `;
 
 export const MetricsViewControlPanelOverflowHidden = styled(
@@ -63,6 +75,13 @@ export const PanelContainerRight = styled.div`
   overflow-y: scroll;
 `;
 
+export const MetricBoxBottomPaddingContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  padding-bottom: 100px;
+  overflow-y: scroll;
+`;
+
 type MetricBoxContainerProps = {
   enabled?: boolean;
 };
@@ -83,6 +102,12 @@ export const MetricBoxContainer = styled.div<MetricBoxContainerProps>`
   &:hover {
     cursor: pointer;
     border: 1px solid ${palette.solid.blue};
+  }
+
+  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
+    width: 100%;
+    max-width: unset;
+    flex: unset;
   }
 `;
 
@@ -169,7 +194,12 @@ export const MetricDescription = styled.div`
 export const MetricDetailsDisplay = styled.div`
   width: 100%;
   overflow-y: scroll;
-  padding: 24px 12px 24px 0;
+  padding: 24px 12px 50px 0;
+
+  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
+    overflow-y: unset;
+    padding: 24px 12px 10px 0;
+  }
 `;
 
 export const MetricOnOffWrapper = styled.div`
@@ -479,16 +509,25 @@ export const MetricConfigurationWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   overflow-y: hidden;
+
+  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
+    flex-direction: column;
+  }
 `;
 
 export const DefinitionsDisplayContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1 1 55%;
-  padding-top: 48px;
-  padding-right: 12px;
-  padding-left: 126px;
+  padding: 48px 12px 50px 126px;
   overflow-y: scroll;
+
+  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
+    border-top: 1px solid ${palette.highlight.grey3};
+    padding: 30px 0 50px 0;
+    overflow-y: unset;
+    margin-right: 12px;
+  }
 `;
 
 export const DefinitionsDisplay = styled.div`
