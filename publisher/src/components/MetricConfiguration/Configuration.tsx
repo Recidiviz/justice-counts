@@ -221,22 +221,20 @@ export const Configuration: React.FC<MetricConfigurationProps> = ({
                         activeDisaggregation.enabled && dimension.enabled
                       }
                       onChange={() => {
-                        if (activeDisaggregation.enabled) {
-                          saveAndUpdateMetricSettings("DIMENSION", {
-                            key: activeMetricKey,
-                            disaggregations: [
-                              {
-                                key: activeDisaggregation.key,
-                                dimensions: [
-                                  {
-                                    key: dimension.key,
-                                    enabled: !dimension.enabled,
-                                  },
-                                ],
-                              },
-                            ],
-                          });
-                        }
+                        saveAndUpdateMetricSettings("DIMENSION", {
+                          key: activeMetricKey,
+                          disaggregations: [
+                            {
+                              key: activeDisaggregation.key,
+                              dimensions: [
+                                {
+                                  key: dimension.key,
+                                  enabled: !dimension.enabled,
+                                },
+                              ],
+                            },
+                          ],
+                        });
                       }}
                     />
                     <BlueCheckIcon

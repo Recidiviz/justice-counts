@@ -40,6 +40,7 @@ import {
   Configuration,
   Metric,
   MetricBox,
+  MetricBoxBottomPaddingContainer,
   MetricConfigurationDisplay,
   MetricConfigurationWrapper,
   MetricDefinitions,
@@ -279,6 +280,7 @@ export const MetricConfiguration: React.FC<{
 
               return {
                 ...disaggregation,
+                enabled: true,
                 dimensions: disaggregation.dimensions.map((dimension) => {
                   if (
                     dimension.key ===
@@ -521,19 +523,21 @@ export const MetricConfiguration: React.FC<{
 
         <MetricsViewControlPanel>
           {/* List Of Metrics */}
-          {filteredMetricSettings &&
-            !activeMetricKey &&
-            Object.values(filteredMetricSettings).map((metric) => (
-              <MetricBox
-                key={metric.key}
-                metricKey={metric.key}
-                displayName={metric.display_name}
-                frequency={metric.frequency as ReportFrequency}
-                description={metric.description}
-                enabled={metric.enabled}
-                setActiveMetricKey={setActiveMetricKey}
-              />
-            ))}
+          {filteredMetricSettings && !activeMetricKey && (
+            <MetricBoxBottomPaddingContainer>
+              {Object.values(filteredMetricSettings).map((metric) => (
+                <MetricBox
+                  key={metric.key}
+                  metricKey={metric.key}
+                  displayName={metric.display_name}
+                  frequency={metric.frequency as ReportFrequency}
+                  description={metric.description}
+                  enabled={metric.enabled}
+                  setActiveMetricKey={setActiveMetricKey}
+                />
+              ))}
+            </MetricBoxBottomPaddingContainer>
+          )}
 
           {/* Metric Configuration */}
           {activeMetricKey && (
