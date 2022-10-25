@@ -20,12 +20,18 @@ import styled from "styled-components/macro";
 import { BinaryRadioGroupWrapper, Button } from "../Forms";
 import { palette, typography } from "../GlobalStyles";
 
+const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
+
 export const MetricsViewContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   overflow: hidden;
+
+  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
+    overflow: unset;
+  }
 `;
 
 export const MetricsViewControlPanel = styled.div`
@@ -35,6 +41,12 @@ export const MetricsViewControlPanel = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   overflow-y: scroll;
+
+  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: unset;
+  }
 `;
 
 export const MetricsViewControlPanelOverflowHidden = styled(
@@ -63,6 +75,13 @@ export const PanelContainerRight = styled.div`
   overflow-y: scroll;
 `;
 
+export const MetricBoxBottomPaddingContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  padding-bottom: 100px;
+  overflow-y: scroll;
+`;
+
 type MetricBoxContainerProps = {
   enabled?: boolean;
 };
@@ -83,6 +102,12 @@ export const MetricBoxContainer = styled.div<MetricBoxContainerProps>`
   &:hover {
     cursor: pointer;
     border: 1px solid ${palette.solid.blue};
+  }
+
+  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
+    width: 100%;
+    max-width: unset;
+    flex: unset;
   }
 `;
 
@@ -118,25 +143,34 @@ export const MetricNameBadgeWrapper = styled.div`
   align-items: center;
 `;
 
-export const Metric = styled.div`
+export const Metric = styled.div<{ inView: boolean }>`
   width: 100%;
   display: flex;
   gap: 20px;
   align-items: center;
+  justify-content: flex-start;
   border-bottom: 1px solid ${palette.solid.darkgrey};
-  padding-bottom: 8px;
-  padding-right: 50px;
+  padding: 12px;
   position: relative;
+  background: ${({ inView }) =>
+    inView ? palette.highlight.lightblue1 : `none`};
 
   &:hover {
+    background: ${palette.highlight.grey1};
     cursor: pointer;
   }
 
-  &:hover:after {
-    content: "➝";
+  svg {
     position: absolute;
-    ${typography.sizeCSS.title}
-    right: 0;
+    opacity: ${({ inView }) => (inView ? `1` : `0`)};
+    right: ${({ inView }) => (inView ? `13px` : `-20px`)};
+    transition: opacity 0.2s ease, right 0.3s ease;
+  }
+
+  &:hover svg {
+    display: block;
+    right: 13px;
+    opacity: 1;
   }
 `;
 
@@ -160,7 +194,12 @@ export const MetricDescription = styled.div`
 export const MetricDetailsDisplay = styled.div`
   width: 100%;
   overflow-y: scroll;
-  padding: 24px 12px 24px 0;
+  padding: 24px 12px 50px 0;
+
+  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
+    overflow-y: unset;
+    padding: 24px 12px 10px 0;
+  }
 `;
 
 export const MetricOnOffWrapper = styled.div`
@@ -200,6 +239,8 @@ export const MetricDisaggregations = styled.div<{ enabled?: boolean }>`
         height: 100%;
         width: 100%;
         top: 0;
+        left: 0;
+        z-index: 2;
         opacity: 0.5;
       }
     `}
@@ -236,24 +277,33 @@ export const DisaggregationTab = styled.div`
   }
 `;
 
-export const Dimension = styled.div<{ enabled?: boolean }>`
+export const Dimension = styled.div<{ enabled?: boolean; inView?: boolean }>`
   ${typography.sizeCSS.medium};
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 15px 0;
+  padding: 17px 10px;
   border-bottom: 1px solid ${palette.highlight.grey4};
   position: relative;
+  background: ${({ inView }) =>
+    inView ? palette.highlight.lightblue1 : `none`};
 
   &:hover {
+    background: ${palette.highlight.grey1};
     cursor: pointer;
   }
 
-  &:hover::before {
-    content: "➝";
+  svg {
     position: absolute;
-    right: 0;
-    ${typography.sizeCSS.title}
+    opacity: ${({ inView }) => (inView ? `1` : `0`)};
+    right: ${({ inView }) => (inView ? `13px` : `-20px`)};
+    transition: opacity 0.2s ease, right 0.3s ease;
+  }
+
+  &:hover svg {
+    display: block;
+    right: 13px;
+    opacity: 1;
   }
 
   &:last-child {
@@ -270,6 +320,7 @@ export const Dimension = styled.div<{ enabled?: boolean }>`
         height: 100%;
         width: 100%;
         top: 0;
+        left: 0;
         opacity: 0.5;
       }
     `}
@@ -289,6 +340,7 @@ export const DimensionTitle = styled.div<{ enabled?: boolean }>`
 export const CheckboxWrapper = styled.div`
   display: flex;
   position: relative;
+  z-index: 1;
 `;
 
 export const Checkbox = styled.input`
@@ -460,16 +512,25 @@ export const MetricConfigurationWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   overflow-y: hidden;
+
+  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
+    flex-direction: column;
+  }
 `;
 
 export const DefinitionsDisplayContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1 1 55%;
-  padding-top: 48px;
-  padding-right: 12px;
-  padding-left: 126px;
+  padding: 48px 12px 50px 126px;
   overflow-y: scroll;
+
+  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
+    border-top: 1px solid ${palette.highlight.grey3};
+    padding: 30px 0 50px 0;
+    overflow-y: unset;
+    margin-right: 12px;
+  }
 `;
 
 export const DefinitionsDisplay = styled.div`
@@ -531,6 +592,7 @@ export const DefinitionSelection = styled.div`
 
 export const DefinitionMiniButton = styled(RevertToDefaultButton)<{
   selected?: boolean;
+  showDefault?: boolean;
 }>`
   width: unset;
   padding: 9px 16px;
@@ -556,6 +618,9 @@ export const DefinitionMiniButton = styled(RevertToDefaultButton)<{
 
 
   `};
+
+  ${({ showDefault, selected }) =>
+    showDefault && !selected && `color: ${palette.highlight.grey4};`};
 `;
 
 export const NoDefinitionsSelected = styled.div`
