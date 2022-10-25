@@ -279,6 +279,7 @@ export const MetricConfiguration: React.FC<{
 
               return {
                 ...disaggregation,
+                enabled: true,
                 dimensions: disaggregation.dimensions.map((dimension) => {
                   if (
                     dimension.key ===

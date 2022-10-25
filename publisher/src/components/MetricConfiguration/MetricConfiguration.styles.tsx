@@ -307,6 +307,7 @@ export const DimensionTitle = styled.div<{ enabled?: boolean }>`
 export const CheckboxWrapper = styled.div`
   display: flex;
   position: relative;
+  z-index: 2;
 `;
 
 export const Checkbox = styled.input`
