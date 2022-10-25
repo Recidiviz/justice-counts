@@ -30,6 +30,7 @@ import {
 } from "../../shared/types";
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
+import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import { Badge } from "../Badge";
 import { Loading } from "../Loading";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
@@ -39,6 +40,7 @@ import {
   Configuration,
   Metric,
   MetricBox,
+  MetricBoxBottomPaddingContainer,
   MetricConfigurationDisplay,
   MetricConfigurationWrapper,
   MetricDefinitions,
@@ -278,6 +280,7 @@ export const MetricConfiguration: React.FC<{
 
               return {
                 ...disaggregation,
+                enabled: true,
                 dimensions: disaggregation.dimensions.map((dimension) => {
                   if (
                     dimension.key ===
@@ -493,44 +496,48 @@ export const MetricConfiguration: React.FC<{
   return (
     <>
       <MetricsViewContainer>
-        {!activeMetricKey && (
-          <StickyHeader>
-            <TabbedBar noPadding>
-              <TabbedOptions>
-                {userStore.currentAgency?.systems.map((filterOption) => (
-                  <TabbedItem
-                    key={filterOption}
-                    selected={
-                      activeMetricFilter === removeSnakeCase(filterOption)
-                    }
-                    onClick={() =>
-                      setActiveMetricFilter(removeSnakeCase(filterOption))
-                    }
-                    capitalize
-                  >
-                    {removeSnakeCase(filterOption.toLowerCase())}
-                  </TabbedItem>
-                ))}
-              </TabbedOptions>
-            </TabbedBar>
-          </StickyHeader>
-        )}
+        {!activeMetricKey &&
+          userStore.currentAgency?.systems &&
+          userStore.currentAgency?.systems?.length > 1 && (
+            <StickyHeader>
+              <TabbedBar noPadding>
+                <TabbedOptions>
+                  {userStore.currentAgency?.systems.map((filterOption) => (
+                    <TabbedItem
+                      key={filterOption}
+                      selected={
+                        activeMetricFilter === removeSnakeCase(filterOption)
+                      }
+                      onClick={() =>
+                        setActiveMetricFilter(removeSnakeCase(filterOption))
+                      }
+                      capitalize
+                    >
+                      {removeSnakeCase(filterOption.toLowerCase())}
+                    </TabbedItem>
+                  ))}
+                </TabbedOptions>
+              </TabbedBar>
+            </StickyHeader>
+          )}
 
         <MetricsViewControlPanel>
           {/* List Of Metrics */}
-          {filteredMetricSettings &&
-            !activeMetricKey &&
-            Object.values(filteredMetricSettings).map((metric) => (
-              <MetricBox
-                key={metric.key}
-                metricKey={metric.key}
-                displayName={metric.display_name}
-                frequency={metric.frequency as ReportFrequency}
-                description={metric.description}
-                enabled={metric.enabled}
-                setActiveMetricKey={setActiveMetricKey}
-              />
-            ))}
+          {filteredMetricSettings && !activeMetricKey && (
+            <MetricBoxBottomPaddingContainer>
+              {Object.values(filteredMetricSettings).map((metric) => (
+                <MetricBox
+                  key={metric.key}
+                  metricKey={metric.key}
+                  displayName={metric.display_name}
+                  frequency={metric.frequency as ReportFrequency}
+                  description={metric.description}
+                  enabled={metric.enabled}
+                  setActiveMetricKey={setActiveMetricKey}
+                />
+              ))}
+            </MetricBoxBottomPaddingContainer>
+          )}
 
           {/* Metric Configuration */}
           {activeMetricKey && (
@@ -545,19 +552,24 @@ export const MetricConfiguration: React.FC<{
                   ← Back to Metrics
                 </BackToMetrics>
 
-                <Metric onClick={() => setActiveDimension(undefined)}>
+                <Metric
+                  onClick={() => setActiveDimension(undefined)}
+                  inView={!activeDimension}
+                >
                   <MetricName isTitle>
                     {metricSettings[activeMetricKey]?.display_name}
                   </MetricName>
                   <Badge color="GREEN" noMargin>
-                    {metricSettings[activeMetricKey]?.frequency}
+                    {metricSettings[activeMetricKey]?.frequency?.toLowerCase()}
                   </Badge>
+                  <RightArrowIcon />
                 </Metric>
 
                 <MetricDetailsDisplay>
                   <Configuration
                     activeMetricKey={activeMetricKey}
                     filteredMetricSettings={filteredMetricSettings}
+                    activeDimension={activeDimension}
                     activeDisaggregation={activeDisaggregation}
                     setActiveDisaggregation={setActiveDisaggregation}
                     saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
