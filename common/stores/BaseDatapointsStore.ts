@@ -121,9 +121,7 @@ abstract class DatapointsStore {
     }, {});
   }
 
-  async getDatapoints(agencyId: number): Promise<void | Error> {
-    return Promise.reject("getDatapoints not implemented");
-  }
+  abstract getDatapoints(agencyId: number): Promise<void | Error>;
 
   resetState() {
     // reset the state
