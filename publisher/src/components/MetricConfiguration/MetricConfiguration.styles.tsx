@@ -380,6 +380,12 @@ export const MetricConfigurationContainer = styled.div`
 
 export const MetricContextContainer = styled.div`
   display: block;
+  border-top: 1px solid ${palette.highlight.grey3};
+`;
+
+export const MetricContextHeader = styled.div`
+  ${typography.sizeCSS.large};
+  margin: 40px 0 20px 0;
 `;
 
 export const MetricContextItem = styled.div`
@@ -579,12 +585,12 @@ export const DefinitionItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 12px;
 `;
 
 export const DefinitionDisplayName = styled.div`
   ${typography.sizeCSS.medium}
-  margin-right: 8px;
+  margin-right: 20px;
 `;
 
 export const DefinitionSelection = styled.div`
@@ -598,6 +604,7 @@ export const DefinitionMiniButton = styled(RevertToDefaultButton)<{
 }>`
   width: unset;
   padding: 9px 16px;
+  transition: color 0.2s ease;
 
   ${({ selected }) =>
     selected &&
