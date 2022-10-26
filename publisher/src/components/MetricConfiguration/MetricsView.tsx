@@ -15,15 +15,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Metric, ReportFrequency } from "@justice-counts/common/types";
 import { reaction, when } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 
-import { Metric, ReportFrequency } from "../../shared/types";
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
 import { Badge, BadgeColorMapping } from "../Badge";
-import ConnectedDatapointsView from "../DataViz/DatapointsView";
+import ConnectedDatapointsView from "../DataViz/ConnectedDatapointsView";
 import { NotReportedIcon } from "../Forms";
 import { Loading } from "../Loading";
 import { PageTitle, TabbedBar, TabbedItem, TabbedOptions } from "../Reports";

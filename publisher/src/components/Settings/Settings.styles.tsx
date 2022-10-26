@@ -15,9 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-import { palette, typography } from "../GlobalStyles";
 import { MetricDisplayName } from "../Reports/ReportSummaryPanel";
 
 export const SettingsContainer = styled.div`

@@ -15,13 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React, { useEffect } from "react";
-
 import {
   Metric,
   MetricDisaggregationDimensions,
   MetricDisaggregations as MetricDisaggregationsType,
-} from "../../shared/types";
+} from "@justice-counts/common/types";
+import React, { useEffect } from "react";
+
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import blueCheck from "../assets/status-check-icon.png";

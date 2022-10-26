@@ -15,15 +15,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React, { Fragment, useState } from "react";
-
 import {
   Metric,
   MetricConfigurationSettingsOptions,
   MetricContext,
   MetricDisaggregationDimensions,
   MetricDisaggregations,
-} from "../../shared/types";
+} from "@justice-counts/common/types";
+import React, { Fragment, useState } from "react";
+
 import {
   ContextConfiguration,
   DefinitionDisplayName,

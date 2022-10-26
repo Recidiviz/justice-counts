@@ -15,26 +15,26 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { debounce as _debounce } from "lodash";
-import { reaction, when } from "mobx";
-import { observer } from "mobx-react-lite";
-import React, { useEffect, useRef, useState } from "react";
-
-import { ListOfMetricsForNavigation } from "../../pages/Settings";
+import { showToast } from "@justice-counts/common/components/Toast";
 import {
   Metric as MetricType,
   MetricConfigurationSettings,
   MetricDisaggregationDimensions,
   MetricDisaggregations,
   ReportFrequency,
-} from "../../shared/types";
+} from "@justice-counts/common/types";
+import { debounce as _debounce } from "lodash";
+import { reaction, when } from "mobx";
+import { observer } from "mobx-react-lite";
+import React, { useEffect, useRef, useState } from "react";
+
+import { ListOfMetricsForNavigation } from "../../pages/Settings";
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import { Badge } from "../Badge";
 import { Loading } from "../Loading";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
-import { showToast } from "../Toast";
 import {
   BackToMetrics,
   Configuration,

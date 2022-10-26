@@ -15,9 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { FormError, MetricContext } from "@justice-counts/common/types";
 import React, { useEffect, useState } from "react";
 
-import { FormError, MetricContext } from "../../shared/types";
 import { isPositiveNumber, removeCommaSpaceAndTrim } from "../../utils";
 import {
   BinaryRadioButton,
