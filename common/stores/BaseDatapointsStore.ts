@@ -124,7 +124,6 @@ abstract class DatapointsStore {
   abstract getDatapoints(agencyId: number): Promise<void | Error>;
 
   resetState() {
-    // reset the state
     runInAction(() => {
       this.rawDatapoints = [];
       this.loading = true;
