@@ -521,12 +521,12 @@ export const UploadedFilesContainer = styled.div``;
 
 export const UploadedFilesWrapper = styled.div`
   position: relative;
+  overflow-y: scroll;
 `;
 
 export const UploadedFilesTable = styled(Table)`
   padding: unset;
-  overflow-y: scroll;
-  padding-bottom: 50px;
+  padding-bottom: 100px;
 `;
 
 export const ExtendedTabbedBar = styled(TabbedBar)`
@@ -624,5 +624,6 @@ export const CheckIcon = styled.img`
 
 export const ExtendedOpacityGradient = styled(OpacityGradient)`
   height: 50px;
-  position: absolute;
+  position: fixed;
+  bottom: 0;
 `;

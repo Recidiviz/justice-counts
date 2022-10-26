@@ -26,15 +26,12 @@ import { BinaryRadioGroupWrapper, Button } from "../Forms";
 const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
 
 export const MetricsViewContainer = styled.div`
+  height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  overflow: hidden;
-
-  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
-    overflow: unset;
-  }
+  overflow-y: hidden;
 `;
 
 export const MetricsViewControlPanel = styled.div`
@@ -43,7 +40,6 @@ export const MetricsViewControlPanel = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  overflow-y: scroll;
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
     flex-direction: column;
@@ -79,6 +75,7 @@ export const PanelContainerRight = styled.div`
 `;
 
 export const MetricBoxBottomPaddingContainer = styled.div`
+  height: 100%;
   display: flex;
   flex-wrap: wrap;
   padding-bottom: 100px;
@@ -518,6 +515,7 @@ export const MetricConfigurationWrapper = styled.div`
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
     flex-direction: column;
+    overflow-y: scroll;
   }
 `;
 
