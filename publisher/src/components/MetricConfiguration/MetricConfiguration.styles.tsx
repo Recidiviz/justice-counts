@@ -150,7 +150,7 @@ export const Metric = styled.div<{ inView: boolean }>`
   align-items: center;
   justify-content: flex-start;
   border-bottom: 1px solid ${palette.solid.darkgrey};
-  padding: 12px;
+  padding: 12px 50px 12px 12px;
   position: relative;
   background: ${({ inView }) =>
     inView ? palette.highlight.lightblue1 : `none`};
@@ -177,8 +177,9 @@ export const Metric = styled.div<{ inView: boolean }>`
 type MetricNameProps = { isTitle?: boolean };
 
 export const MetricName = styled.div<MetricNameProps>`
-  ${({ isTitle }) =>
-    isTitle ? typography.sizeCSS.title : typography.sizeCSS.large}
+  ${typography.sizeCSS.large}
+  ${({ isTitle }) => isTitle && `font-size: 1.6rem;`}
+  padding: 10px 0;
 `;
 
 export const MetricDescription = styled.div`
@@ -523,7 +524,7 @@ export const DefinitionsDisplayContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1 1 55%;
-  padding: 48px 12px 50px 126px;
+  padding: 48px 12px 50px 70px;
   overflow-y: scroll;
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
