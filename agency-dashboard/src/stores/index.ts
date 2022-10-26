@@ -15,6 +15,5 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./DatapointsStore";
 export { default as rootStore } from "./RootStore";
 export * from "./StoreProvider";
