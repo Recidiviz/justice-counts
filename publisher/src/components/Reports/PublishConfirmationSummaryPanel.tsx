@@ -76,9 +76,9 @@ const PublishConfirmationSummaryPanel: React.FC<{
 
           return (
             <React.Fragment key={system}>
-              {showMetricSectionTitles ? (
+              {showMetricSectionTitles && (
                 <MetricsSectionTitle>{system}</MetricsSectionTitle>
-              ) : null}
+              )}
               {enabledMetrics.map((metric) => {
                 const foundErrors = checkMetricForErrors(metric.key, formStore);
 

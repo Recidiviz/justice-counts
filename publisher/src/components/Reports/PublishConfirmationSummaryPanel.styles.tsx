@@ -51,6 +51,7 @@ export const ConfirmationSummaryProgressIndicatorWrapper = styled(
   ReportSummaryProgressIndicatorWrapper
 )`
   margin-top: 0;
+  height: calc(100vh - ${HEADER_BAR_HEIGHT}px);
 `;
 
 export const ConfirmationSummarySection = styled(ReportSummarySection)`
