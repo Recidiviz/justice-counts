@@ -20,11 +20,9 @@
     "react-dom": "^18.2.0",
     "react-is": "^18.2.0",
     "react-router-dom": "^6",
-    "react-scripts": "5.0.0",
     "recharts": "^2.1.13",
     "styled-components": "^5.3.6",
-    "typescript": "^4.4.2",
-    "web-vitals": "^2.1.0"
+    "typescript": "^4.4.2"
   },
   "scripts": {
     "dev": "react-app-rewired start",
@@ -97,7 +95,8 @@
     "postcss": "^8.1.0",
     "prettier": "^2.6.0",
     "react-app-rewired": "^2.2.1",
-    "react-modal": "^3.14.4"
+    "react-modal": "^3.14.4",
+    "react-scripts": "5.0.1"
   },
   "jest": {
     "moduleNameMapper": {

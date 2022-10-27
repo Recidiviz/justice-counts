@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { showToast } from "@justice-counts/common/components/Toast";
 import { Report } from "@justice-counts/common/types";
 import { when } from "mobx";
 import { observer } from "mobx-react-lite";
@@ -27,7 +28,6 @@ import FormStore from "../../stores/FormStore";
 import { printReportTitle } from "../../utils";
 import { PageWrapper } from "../Forms";
 import { Loading } from "../Loading";
-import { showToast } from "../Toast";
 import DataEntryForm from "./DataEntryForm";
 import PublishConfirmation from "./PublishConfirmation";
 import PublishConfirmationSummaryPanel from "./PublishConfirmationSummaryPanel";

@@ -21,7 +21,7 @@ import {
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 
-import checkIconWhite from "../assets/status-check-white-icon.png";
+import checkIconWhite from "../../assets/status-check-white-icon.png";
 
 type ToastColor = "blue" | "red" | "grey";
 

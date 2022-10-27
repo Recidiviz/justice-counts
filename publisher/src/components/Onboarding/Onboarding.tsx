@@ -19,6 +19,7 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
+import { showToast } from "@justice-counts/common/components/Toast";
 import React, { useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components/macro";
 
@@ -30,7 +31,6 @@ import {
   SIDE_PANEL_WIDTH,
   TWO_PANEL_MAX_WIDTH,
 } from "../Reports/ReportDataEntry.styles";
-import { showToast } from "../Toast";
 
 export const OnboardingContainer = styled.div`
   width: 100vw;

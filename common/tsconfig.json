@@ -1,0 +1,4 @@
+{
+  "extends": "@recidiviz/tsconfig/react",
+  "include": ["index.d.ts"] /// <-- Like this!!
+}

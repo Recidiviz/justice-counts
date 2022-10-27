@@ -15,19 +15,16 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { typography } from "@justice-counts/common/components/GlobalStyles";
-import styled from "styled-components/macro";
+import DatapointsStore from "./DatapointsStore";
 
-export const Container = styled.div`
-  height: 800px;
-  width: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  align-items: stretch;
-`;
+class RootStore {
+  datapointsStore: DatapointsStore;
 
-export const MetricTitle = styled.div`
-  ${typography.sizeCSS.title}
-`;
+  constructor() {
+    this.datapointsStore = new DatapointsStore();
+  }
+}
+
+export default new RootStore();
+
+export type { RootStore };

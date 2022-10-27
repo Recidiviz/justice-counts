@@ -15,12 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { showToast } from "@justice-counts/common/components/Toast";
 import { AgencySystems } from "@justice-counts/common/types";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as FileIcon } from "../assets/file-icon.svg";
-import { showToast } from "../Toast";
 import {
   DragDropContainer,
   GeneralInstructions,

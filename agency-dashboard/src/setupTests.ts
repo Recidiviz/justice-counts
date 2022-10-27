@@ -16,6 +16,10 @@
 // =============================================================================
 import "@testing-library/jest-dom";
 
+import { enableFetchMocks } from "jest-fetch-mock";
+
+enableFetchMocks();
+
 global.ResizeObserver = require("resize-observer-polyfill");
 
 // polyfill for when running jest tests

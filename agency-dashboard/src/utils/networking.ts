@@ -15,19 +15,32 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { typography } from "@justice-counts/common/components/GlobalStyles";
-import styled from "styled-components/macro";
+interface RequestProps {
+  path: string;
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+  body?: FormData | Record<string, unknown>;
+}
 
-export const Container = styled.div`
-  height: 800px;
-  width: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  align-items: stretch;
-`;
+export const request = async ({
+  path,
+  method,
+  body,
+}: RequestProps): Promise<Body | Response | string> => {
+  // Files are sent as FormData and not JSON
+  const jsonOrFormDataBody =
+    body instanceof FormData ? body : JSON.stringify(body);
 
-export const MetricTitle = styled.div`
-  ${typography.sizeCSS.title}
-`;
+  const headers: HeadersInit = {};
+
+  if (!(body instanceof FormData)) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  const response = await fetch(path, {
+    body: method !== "GET" ? jsonOrFormDataBody : null,
+    method,
+    headers,
+  });
+
+  return response;
+};

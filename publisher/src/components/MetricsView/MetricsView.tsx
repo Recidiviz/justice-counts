@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { showToast } from "@justice-counts/common/components/Toast";
 import {
   AgencySystems,
   FormError,
@@ -43,7 +44,6 @@ import {
 } from "../Forms";
 import { Loading } from "../Loading";
 import { PageTitle, TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
-import { showToast } from "../Toast";
 import {
   ActiveMetricSettingHeader,
   Dimension,

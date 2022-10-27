@@ -14,13 +14,29 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-import { render, screen } from "@testing-library/react";
-import React from "react";
 
-import App from "./App";
+import React, { useContext } from "react";
 
-test("renders dashboard", () => {
-  render(<App />);
-  const linkElement = screen.getByText(/Date Range/i);
-  expect(linkElement).toBeInTheDocument();
-});
+import rootStore from "./RootStore";
+
+const StoreContext = React.createContext<typeof rootStore | undefined>(
+  undefined
+);
+
+export const StoreProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}): React.ReactElement => {
+  return (
+    <StoreContext.Provider value={rootStore}>{children}</StoreContext.Provider>
+  );
+};
+
+export function useStore(): typeof rootStore {
+  const context = useContext(StoreContext);
+
+  if (context === undefined) {
+    throw new Error("useStore must be used within a StoreProvider");
+  }
+
+  return context;
+}

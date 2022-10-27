@@ -53,3 +53,6 @@ jobs:
       - name: Yarn test (agency-dashboard)
         working-directory: ./agency-dashboard
         run: yarn test
+      - name: Yarn test (common)
+        working-directory: ./common
+        run: yarn test

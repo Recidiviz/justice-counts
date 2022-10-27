@@ -15,11 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { showToast } from "@justice-counts/common/components/Toast";
 import { makeAutoObservable, runInAction, when } from "mobx";
 
 import { trackLoadTime, trackNetworkError } from "../analytics";
 import { AuthStore } from "../components/Auth";
-import { showToast } from "../components/Toast";
 
 export interface RequestProps {
   path: string;

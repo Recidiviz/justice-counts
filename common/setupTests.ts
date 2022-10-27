@@ -15,19 +15,17 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { typography } from "@justice-counts/common/components/GlobalStyles";
-import styled from "styled-components/macro";
+// jest-dom adds custom jest matchers for asserting on DOM nodes.
+// allows you to do things like:
+// expect(element).toHaveTextContent(/react/i)
+// learn more: https://github.com/testing-library/jest-dom
+import "@testing-library/jest-dom";
 
-export const Container = styled.div`
-  height: 800px;
-  width: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  align-items: stretch;
-`;
-
-export const MetricTitle = styled.div`
-  ${typography.sizeCSS.title}
-`;
+// polyfill for when running jest tests
+/* eslint-disable no-extend-native */
+if (typeof String.prototype.replaceAll === "undefined") {
+  String.prototype.replaceAll = function (match, replace) {
+    return this.replace(new RegExp(match, "g"), () => replace as string);
+  };
+}
+/* eslint-enable no-extend-native */
