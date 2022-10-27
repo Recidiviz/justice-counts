@@ -26,15 +26,12 @@ import { BinaryRadioGroupWrapper, Button } from "../Forms";
 const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
 
 export const MetricsViewContainer = styled.div`
+  height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  overflow: hidden;
-
-  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
-    overflow: unset;
-  }
+  overflow-y: hidden;
 `;
 
 export const MetricsViewControlPanel = styled.div`
@@ -43,7 +40,6 @@ export const MetricsViewControlPanel = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  overflow-y: scroll;
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
     flex-direction: column;
@@ -79,6 +75,7 @@ export const PanelContainerRight = styled.div`
 `;
 
 export const MetricBoxBottomPaddingContainer = styled.div`
+  height: 100%;
   display: flex;
   flex-wrap: wrap;
   padding-bottom: 100px;
@@ -153,7 +150,7 @@ export const Metric = styled.div<{ inView: boolean }>`
   align-items: center;
   justify-content: flex-start;
   border-bottom: 1px solid ${palette.solid.darkgrey};
-  padding: 12px;
+  padding: 12px 50px 12px 12px;
   position: relative;
   background: ${({ inView }) =>
     inView ? palette.highlight.lightblue1 : `none`};
@@ -180,8 +177,9 @@ export const Metric = styled.div<{ inView: boolean }>`
 type MetricNameProps = { isTitle?: boolean };
 
 export const MetricName = styled.div<MetricNameProps>`
-  ${({ isTitle }) =>
-    isTitle ? typography.sizeCSS.title : typography.sizeCSS.large}
+  ${typography.sizeCSS.large}
+  ${({ isTitle }) => isTitle && `font-size: 1.6rem;`}
+  padding: 10px 0;
 `;
 
 export const MetricDescription = styled.div`
@@ -382,6 +380,12 @@ export const MetricConfigurationContainer = styled.div`
 
 export const MetricContextContainer = styled.div`
   display: block;
+  border-top: 1px solid ${palette.highlight.grey3};
+`;
+
+export const MetricContextHeader = styled.div`
+  ${typography.sizeCSS.large};
+  margin: 40px 0 20px 0;
 `;
 
 export const MetricContextItem = styled.div`
@@ -518,6 +522,7 @@ export const MetricConfigurationWrapper = styled.div`
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
     flex-direction: column;
+    overflow-y: scroll;
   }
 `;
 
@@ -525,7 +530,7 @@ export const DefinitionsDisplayContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1 1 55%;
-  padding: 48px 12px 50px 126px;
+  padding: 48px 12px 50px 70px;
   overflow-y: scroll;
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
@@ -580,12 +585,12 @@ export const DefinitionItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 12px;
 `;
 
 export const DefinitionDisplayName = styled.div`
   ${typography.sizeCSS.medium}
-  margin-right: 8px;
+  margin-right: 20px;
 `;
 
 export const DefinitionSelection = styled.div`
@@ -599,6 +604,7 @@ export const DefinitionMiniButton = styled(RevertToDefaultButton)<{
 }>`
   width: unset;
   padding: 9px 16px;
+  transition: color 0.2s ease;
 
   ${({ selected }) =>
     selected &&

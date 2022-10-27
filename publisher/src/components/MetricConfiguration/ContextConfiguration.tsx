@@ -29,6 +29,7 @@ import {
 import {
   Label,
   MetricContextContainer,
+  MetricContextHeader,
   MetricContextItem,
   MetricSettings,
   MetricSettingsUpdateOptions,
@@ -88,6 +89,7 @@ export const ContextConfiguration: React.FC<
 
   return (
     <MetricContextContainer>
+      <MetricContextHeader>Context</MetricContextHeader>
       <Subheader>
         Anything entered here will appear as the default value for all reports.
         If you are entering data for a particular month, you can still replace

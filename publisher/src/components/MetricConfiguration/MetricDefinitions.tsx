@@ -218,21 +218,18 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
         {/* Display when user is viewing a dimension & there are no settings available */}
         {!activeSettings?.length && activeDimension && (
           <DefinitionsSubTitle>
-            This breakdown has no customizations available yet.
+            Technical Definitions are not available for this metric yet.
           </DefinitionsSubTitle>
         )}
       </DefinitionsDisplay>
 
       {/* Additional Context (only appears on overall metric settings and not individual dimension settings) */}
       {!activeDimension && (
-        <>
-          <DefinitionsSubTitle>Context</DefinitionsSubTitle>
-          <ContextConfiguration
-            metricKey={activeMetricKey}
-            contexts={contexts}
-            saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
-          />
-        </>
+        <ContextConfiguration
+          metricKey={activeMetricKey}
+          contexts={contexts}
+          saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
+        />
       )}
     </DefinitionsDisplayContainer>
   );
