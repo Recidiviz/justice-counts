@@ -31,7 +31,6 @@ import FormStore from "../../stores/FormStore";
 import { printReportTitle } from "../../utils";
 import logoImg from "../assets/jc-logo-vector.png";
 import errorIcon from "../assets/status-error-icon.png";
-import { Button } from "../DataUpload";
 import { Logo, LogoContainer } from "../Header";
 import { Heading, Subheading } from "../ReviewMetrics/ReviewMetrics.styles";
 import { showToast } from "../Toast";
@@ -42,6 +41,7 @@ import {
   BreakdownValue,
   ConfirmationButtonsContainer,
   ConfirmationDialogueHeader,
+  ConfirmationDialogueTopBarButton,
   ConfirmationDialogueWrapper,
   ContextContainer,
   ContextErrorImg,
@@ -125,8 +125,11 @@ const MetricsDisplay: React.FC<{
   const [isExpanded, setIsExpanded] = useState(true);
 
   return (
-    <Metric id={metric.key} onClick={() => setIsExpanded(!isExpanded)}>
-      <MetricHeader hasValue={!!metric.value}>
+    <Metric id={metric.key}>
+      <MetricHeader
+        hasValue={!!metric.value}
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
         <MetricTitleWrapper>
           <MetricTitleNumber hasError={metricHasError}>
             {index + 1}
@@ -167,7 +170,8 @@ const MetricsDisplay: React.FC<{
 const PublishConfirmation: React.FC<{
   reportID: number;
   checkMetricForErrors: (metricKey: string, formStore: FormStore) => boolean;
-}> = ({ reportID, checkMetricForErrors }) => {
+  toggleConfirmationDialogue: () => void;
+}> = ({ reportID, checkMetricForErrors, toggleConfirmationDialogue }) => {
   const [isPublishable, setIsPublishable] = useState(false);
   const [metricsPreview, setMetricsPreview] = useState<MetricWithErrors[]>();
   const { formStore, reportStore, userStore } = useStore();
@@ -228,9 +232,18 @@ const PublishConfirmation: React.FC<{
         </LogoContainer>
 
         <ConfirmationButtonsContainer>
-          <Button type="border" onClick={() => navigate(-1)}>
+          <ConfirmationDialogueTopBarButton
+            type="border"
+            onClick={toggleConfirmationDialogue}
+          >
+            Back to data entry
+          </ConfirmationDialogueTopBarButton>
+          <ConfirmationDialogueTopBarButton
+            type="border"
+            onClick={() => navigate(-1)}
+          >
             Exit without Publishing
-          </Button>
+          </ConfirmationDialogueTopBarButton>
           <PublishConfirmButton
             onClick={publishReport}
             disabled={!isPublishable}

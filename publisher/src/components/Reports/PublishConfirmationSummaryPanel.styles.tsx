@@ -21,7 +21,6 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-import { GoBack } from "../Forms";
 import { MAIN_PANEL_MAX_WIDTH } from "../ReviewMetrics/ReviewMetrics.styles";
 import {
   CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH,
@@ -51,7 +50,7 @@ export const ConfirmationSummaryWrapper = styled(ReportSummaryWrapper)`
 export const ConfirmationSummaryProgressIndicatorWrapper = styled(
   ReportSummaryProgressIndicatorWrapper
 )`
-  margin-top: 10px;
+  margin-top: 0;
 `;
 
 export const ConfirmationSummarySection = styled(ReportSummarySection)`
@@ -63,10 +62,4 @@ export const MetricDisplayName = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
-
-export const GoBackToDataEntryLink = styled(GoBack)`
-  &::after {
-    content: "← Back to Data Entry";
-  }
 `;

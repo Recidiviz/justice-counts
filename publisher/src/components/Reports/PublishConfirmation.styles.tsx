@@ -68,6 +68,10 @@ export const PublishConfirmButton = styled(Button)<{ disabled: boolean }>`
   }
 `;
 
+export const ConfirmationDialogueTopBarButton = styled(Button)`
+  white-space: nowrap;
+`;
+
 export const ConfirmationDialogueWrapper = styled.div`
   background: ${palette.solid.white};
   display: flex;

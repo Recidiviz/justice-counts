@@ -171,12 +171,12 @@ const ReportDataEntry = () => {
         <>
           <PublishConfirmationSummaryPanel
             reportID={reportID}
-            toggleConfirmationDialogue={toggleConfirmationDialogue}
             checkMetricForErrors={checkMetricForErrors}
           />
           <PublishConfirmation
             reportID={reportID}
             checkMetricForErrors={checkMetricForErrors}
+            toggleConfirmationDialogue={toggleConfirmationDialogue}
           />
         </>
       ) : (

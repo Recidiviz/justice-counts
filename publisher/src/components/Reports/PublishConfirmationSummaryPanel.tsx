@@ -23,12 +23,11 @@ import { useStore } from "../../stores";
 import FormStore from "../../stores/FormStore";
 import checkIcon from "../assets/check-icon.svg";
 import errorIcon from "../assets/status-error-icon.png";
-import { MetricsSectionTitle, PreTitle } from "../Forms";
+import { MetricsSectionTitle } from "../Forms";
 import {
   ConfirmationSummaryProgressIndicatorWrapper,
   ConfirmationSummarySection,
   ConfirmationSummaryWrapper,
-  GoBackToDataEntryLink,
   MetricDisplayName,
 } from "./PublishConfirmationSummaryPanel.styles";
 import { ReportStatusIcon } from "./ReportSummaryPanel";
@@ -62,9 +61,8 @@ const ReportStatusIconComponent: React.FC<{
 
 const PublishConfirmationSummaryPanel: React.FC<{
   reportID: number;
-  toggleConfirmationDialogue: () => void;
   checkMetricForErrors: (metricKey: string, formStore: FormStore) => boolean;
-}> = ({ reportID, toggleConfirmationDialogue, checkMetricForErrors }) => {
+}> = ({ reportID, checkMetricForErrors }) => {
   const { formStore, reportStore } = useStore();
 
   const metricsBySystem = reportStore.reportMetricsBySystem[reportID];
@@ -72,10 +70,6 @@ const PublishConfirmationSummaryPanel: React.FC<{
 
   return (
     <ConfirmationSummaryWrapper>
-      <PreTitle>
-        <GoBackToDataEntryLink onClick={toggleConfirmationDialogue} />
-      </PreTitle>
-
       <ConfirmationSummaryProgressIndicatorWrapper>
         {Object.entries(metricsBySystem).map(([system, metrics]) => {
           const enabledMetrics = metrics.filter((metric) => metric.enabled);
