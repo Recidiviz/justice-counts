@@ -35,7 +35,6 @@ import {
   SIDE_PANEL_HORIZONTAL_PADDING,
 } from "./ReportDataEntry.styles";
 import {
-  NotReportedHeader,
   ReportStatusIcon,
   ReportSummaryProgressIndicatorWrapper,
   ReportSummarySection,
@@ -122,20 +121,7 @@ const PublishConfirmationSummaryPanel: React.FC<{
 
       <ConfirmationSummaryProgressIndicatorWrapper>
         {Object.entries(metricsBySystem).map(([system, metrics]) => {
-          const { enabledMetrics, disabledMetrics } = metrics.reduce<{
-            enabledMetrics: Metric[];
-            disabledMetrics: Metric[];
-          }>(
-            (acc, currentMetric) => {
-              if (currentMetric.enabled) {
-                acc.enabledMetrics.push(currentMetric);
-              } else {
-                acc.disabledMetrics.push(currentMetric);
-              }
-              return acc;
-            },
-            { enabledMetrics: [], disabledMetrics: [] }
-          );
+          const enabledMetrics = metrics.filter((metric) => metric.enabled);
 
           return (
             <React.Fragment key={system}>
@@ -152,20 +138,6 @@ const PublishConfirmationSummaryPanel: React.FC<{
                     metricHasValidInput={Boolean(
                       formStore.metricsValues?.[reportID]?.[metric.key]?.value
                     )}
-                    metric={metric}
-                  />
-                );
-              })}
-
-              {disabledMetrics.length > 0 && (
-                <NotReportedHeader>Not Reported</NotReportedHeader>
-              )}
-              {disabledMetrics.map((metric) => {
-                return (
-                  <ReportStatusIconComponent
-                    key={metric.key}
-                    metricHasError={false}
-                    metricHasValidInput={false}
                     metric={metric}
                   />
                 );
