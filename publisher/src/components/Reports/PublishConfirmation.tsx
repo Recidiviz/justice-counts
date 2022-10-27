@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { showToast } from "@justice-counts/common/components/Toast";
 import {
   MetricContextWithErrors,
   MetricDisaggregationDimensionsWithErrors,
@@ -33,7 +34,6 @@ import logoImg from "../assets/jc-logo-vector.png";
 import errorIcon from "../assets/status-error-icon.png";
 import { Logo, LogoContainer } from "../Header";
 import { Heading, Subheading } from "../ReviewMetrics/ReviewMetrics.styles";
-import { showToast } from "../Toast";
 import {
   BreakdownErrorImg,
   BreakdownLabel,
