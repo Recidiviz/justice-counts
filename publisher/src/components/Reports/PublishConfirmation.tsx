@@ -137,7 +137,9 @@ const MetricsDisplay: React.FC<{
             {!isExpanded && <VerticalLine />}
           </MetricCollapseSignWrapper>
         </MetricTitleWrapper>
-        <MetricValue>{metric.value || "Not Reported"}</MetricValue>
+        <MetricValue>
+          {metric.value?.toLocaleString("en-US") || "Not Reported"}
+        </MetricValue>
       </MetricHeader>
 
       <MetricDetailWrapper isExpanded={isExpanded}>
