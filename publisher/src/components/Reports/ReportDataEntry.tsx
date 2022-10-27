@@ -24,11 +24,13 @@ import { useParams } from "react-router-dom";
 
 import { trackReportUnpublished } from "../../analytics";
 import { useStore } from "../../stores";
+import FormStore from "../../stores/FormStore";
 import { printReportTitle } from "../../utils";
 import { PageWrapper } from "../Forms";
 import { Loading } from "../Loading";
 import DataEntryForm from "./DataEntryForm";
 import PublishConfirmation from "./PublishConfirmation";
+import PublishConfirmationSummaryPanel from "./PublishConfirmationSummaryPanel";
 import PublishDataPanel from "./PublishDataPanel";
 import { FieldDescriptionProps } from "./ReportDataEntry.styles";
 import ReportSummaryPanel from "./ReportSummaryPanel";
@@ -84,6 +86,38 @@ const ReportDataEntry = () => {
     }
   };
 
+  const checkMetricForErrors = (metricKey: string, formStore: FormStore) => {
+    let foundErrors = false;
+
+    if (formStore.metricsValues[reportID]?.[metricKey]?.error) {
+      foundErrors = true;
+    }
+
+    if (formStore.disaggregations[reportID]?.[metricKey]) {
+      Object.values(formStore.disaggregations[reportID][metricKey]).forEach(
+        (disaggregation) => {
+          Object.values(disaggregation).forEach((dimension) => {
+            if (dimension.error) {
+              foundErrors = true;
+            }
+          });
+        }
+      );
+    }
+
+    if (formStore.contexts[reportID]?.[metricKey]) {
+      Object.values(formStore.contexts[reportID][metricKey]).forEach(
+        (context) => {
+          if (context.error) {
+            foundErrors = true;
+          }
+        }
+      );
+    }
+
+    return foundErrors;
+  };
+
   useEffect(
     () =>
       // return when's disposer so it is cleaned up if it never runs
@@ -133,30 +167,41 @@ const ReportDataEntry = () => {
 
   return (
     <>
-      <ReportSummaryPanel
-        reportID={reportID}
-        activeMetric={activeMetric}
-        fieldDescription={fieldDescription}
-        toggleConfirmationDialogue={toggleConfirmationDialogue}
-      />
-      <DataEntryForm
-        reportID={reportID}
-        updateActiveMetric={updateActiveMetric}
-        updateFieldDescription={updateFieldDescription}
-        toggleConfirmationDialogue={toggleConfirmationDialogue}
-      />
-      <PublishDataPanel
-        reportID={reportID}
-        activeMetric={activeMetric}
-        fieldDescription={fieldDescription}
-        toggleConfirmationDialogue={toggleConfirmationDialogue}
-        isPublished={reportOverview.status === "PUBLISHED"}
-      />
-      {showConfirmation && (
-        <PublishConfirmation
-          toggleConfirmationDialogue={toggleConfirmationDialogue}
-          reportID={reportID}
-        />
+      {showConfirmation ? (
+        <>
+          <PublishConfirmationSummaryPanel
+            reportID={reportID}
+            checkMetricForErrors={checkMetricForErrors}
+          />
+          <PublishConfirmation
+            reportID={reportID}
+            checkMetricForErrors={checkMetricForErrors}
+            toggleConfirmationDialogue={toggleConfirmationDialogue}
+          />
+        </>
+      ) : (
+        <>
+          <ReportSummaryPanel
+            reportID={reportID}
+            activeMetric={activeMetric}
+            fieldDescription={fieldDescription}
+            toggleConfirmationDialogue={toggleConfirmationDialogue}
+            checkMetricForErrors={checkMetricForErrors}
+          />
+          <DataEntryForm
+            reportID={reportID}
+            updateActiveMetric={updateActiveMetric}
+            updateFieldDescription={updateFieldDescription}
+            toggleConfirmationDialogue={toggleConfirmationDialogue}
+          />
+          <PublishDataPanel
+            reportID={reportID}
+            activeMetric={activeMetric}
+            fieldDescription={fieldDescription}
+            toggleConfirmationDialogue={toggleConfirmationDialogue}
+            isPublished={reportOverview.status === "PUBLISHED"}
+          />
+        </>
       )}
     </>
   );
