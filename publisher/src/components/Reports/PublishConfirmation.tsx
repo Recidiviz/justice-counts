@@ -113,6 +113,34 @@ const MetricsPreviewWrapper = styled(MainPanel)`
   margin-top: 56px;
 `;
 
+const MetricCollapseSignWrapper = styled.div`
+  width: 16px;
+  height: 16px;
+  position: relative;
+  margin-left: 10px;
+  display: none;
+
+  &:hover {
+    display: block;
+  }
+`;
+
+const HorizontalLine = styled.div`
+  width: 100%;
+  position: absolute;
+  top: 7px;
+  border: 1px solid ${palette.solid.darkgrey};
+  border-radius: 2px;
+`;
+
+const VerticalLine = styled.div`
+  height: 100%;
+  position: absolute;
+  left: 7px;
+  border: 1px solid ${palette.solid.darkgrey};
+  border-radius: 2px;
+`;
+
 const Metric = styled.div`
   display: flex;
   flex-direction: column;
@@ -125,6 +153,10 @@ const Metric = styled.div`
   &:last-child {
     padding-bottom: ${HEADER_BAR_HEIGHT + 128}px;
   }
+
+  &:hover ${MetricCollapseSignWrapper}:not(:hover) {
+    display: block;
+  }
 `;
 
 const MetricHeader = styled.div<{ hasValue: boolean }>`
@@ -134,6 +166,10 @@ const MetricHeader = styled.div<{ hasValue: boolean }>`
   align-items: center;
   color: ${({ hasValue }) =>
     hasValue ? palette.solid.darkgrey : palette.highlight.grey8};
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const MetricTitleWrapper = styled.div`
@@ -156,7 +192,7 @@ const MetricValue = styled.div`
   ${typography.sizeCSS.title}
 `;
 
-const MetricDetailWrapper = styled.div`
+const MetricDetailWrapper = styled.div<{ isExpanded: boolean }>`
   flex: 0 1 auto;
   display: flex;
   flex-direction: column;
@@ -166,6 +202,8 @@ const MetricDetailWrapper = styled.div`
     CONTAINER_HORIZONTAL_PADDING * 2}px) {
     flex: 0 1 auto;
   }
+
+  display: ${({ isExpanded }) => (isExpanded ? "block" : "none")};
 `;
 
 const MetricSubTitleContainer = styled.div`
@@ -185,10 +223,6 @@ const Breakdown = styled.div<{ missing?: boolean }>`
 
 const DisaggregationBreakdown = styled(Breakdown)<{ error?: boolean }>`
   color: ${({ error }) => (error ? palette.solid.red : palette.solid.darkgrey)};
-
-  &:hover {
-    cursor: pointer;
-  }
 `;
 
 const DisaggregationBreakdownContainer = styled.div`
@@ -307,19 +341,25 @@ const MetricsDisplay: React.FC<{
   metricHasError: boolean;
   index: number;
 }> = ({ metric, metricHasError, index }) => {
+  const [isExpanded, setIsExpanded] = useState(true);
+
   return (
-    <Metric id={metric.key}>
+    <Metric id={metric.key} onClick={() => setIsExpanded(!isExpanded)}>
       <MetricHeader hasValue={!!metric.value}>
         <MetricTitleWrapper>
           <MetricTitleNumber hasError={metricHasError}>
             {index + 1}
           </MetricTitleNumber>
           <MetricTitle>{metric.display_name}</MetricTitle>
+          <MetricCollapseSignWrapper>
+            <HorizontalLine />
+            {!isExpanded && <VerticalLine />}
+          </MetricCollapseSignWrapper>
         </MetricTitleWrapper>
         <MetricValue>{metric.value || "Not Reported"}</MetricValue>
       </MetricHeader>
 
-      <MetricDetailWrapper>
+      <MetricDetailWrapper isExpanded={isExpanded}>
         {/* Disaggregations > Dimensions */}
         {metric.disaggregations.length > 0 &&
           metric.disaggregations.map((disaggregation) => {
@@ -435,12 +475,14 @@ const PublishConfirmation: React.FC<{
           {metricsPreview &&
             metricsPreview.map((metric, i) => {
               return (
-                <MetricsDisplay
-                  key={metric.key}
-                  metric={metric}
-                  metricHasError={checkMetricForErrors(metric.key, formStore)}
-                  index={i}
-                />
+                metric.enabled && (
+                  <MetricsDisplay
+                    key={metric.key}
+                    metric={metric}
+                    metricHasError={checkMetricForErrors(metric.key, formStore)}
+                    index={i}
+                  />
+                )
               );
             })}
         </MetricsPreviewWrapper>
