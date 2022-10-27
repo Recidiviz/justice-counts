@@ -30,7 +30,7 @@ import {
 } from "mobx";
 
 import { UploadedFileStatus } from "../components/DataUpload";
-import { MetricSettings } from "../components/MetricsView";
+import { MetricSettings } from "../components/MetricConfiguration";
 import { groupBy } from "../utils/helperUtils";
 import API from "./API";
 import UserStore from "./UserStore";

@@ -37,7 +37,7 @@ enum MenuItems {
   LearnMore = "LEARN MORE",
   Settings = "SETTINGS",
   Agencies = "AGENCIES",
-  Metrics = "METRICS",
+  Data = "DATA",
 }
 
 const Menu = () => {
@@ -77,8 +77,8 @@ const Menu = () => {
       setActiveMenuItem(MenuItems.CreateReport);
     } else if (location.pathname === "/settings") {
       setActiveMenuItem(MenuItems.Settings);
-    } else if (location.pathname === "/metrics") {
-      setActiveMenuItem(MenuItems.Metrics);
+    } else if (location.pathname === "/data") {
+      setActiveMenuItem(MenuItems.Data);
     } else {
       setActiveMenuItem(undefined);
     }
@@ -92,20 +92,20 @@ const Menu = () => {
           `Welcome, ${userStore.nameOrEmail} at ${userStore.currentAgency.name}`}
       </WelcomeUser>
 
-      {/* Metrics View */}
-      <MenuItem
-        onClick={() => navigate("/metrics")}
-        active={activeMenuItem === MenuItems.Metrics}
-      >
-        Metrics
-      </MenuItem>
-
       {/* Reports */}
       <MenuItem
         onClick={() => navigate("/")}
         active={activeMenuItem === MenuItems.Reports}
       >
         Reports
+      </MenuItem>
+
+      {/* Data (Visualizations) */}
+      <MenuItem
+        onClick={() => navigate("/data")}
+        active={activeMenuItem === MenuItems.Data}
+      >
+        Data
       </MenuItem>
 
       {/* Learn More */}

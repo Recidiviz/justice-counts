@@ -24,9 +24,9 @@ import { Loading } from "../Loading";
 import UnauthorizedPage from "./UnauthorizedPage";
 import VerificationPage from "./VerificationPage";
 
-const AuthWall: React.FC<React.PropsWithChildren> = ({
-  children,
-}): React.ReactElement | null => {
+const AuthWall: React.FC<
+  React.PropsWithChildren<{ children?: React.ReactNode }>
+> = ({ children }): React.ReactElement | null => {
   const { authStore } = useStore();
 
   useEffect(

@@ -81,6 +81,15 @@ export type MetricDisaggregationDimensionsWithErrors =
     error?: string;
   };
 
+export type MetricConfigurationSettingsOptions = "Yes" | "No" | "N/A";
+
+export type MetricConfigurationSettings = {
+  key: string;
+  label: string;
+  included: MetricConfigurationSettingsOptions;
+  default: MetricConfigurationSettingsOptions;
+};
+
 export interface Metric {
   key: string;
   system: AgencySystems;
@@ -95,6 +104,8 @@ export interface Metric {
   contexts: MetricContext[];
   disaggregations: MetricDisaggregations[];
   enabled?: boolean;
+  settings?: MetricConfigurationSettings[];
+  frequency?: ReportFrequency;
 }
 
 export interface MetricDefinition {
@@ -107,7 +118,7 @@ export interface MetricContext {
   display_name: string | null | undefined;
   reporting_note: string | null | undefined;
   required: boolean;
-  type: "TEXT" | "NUMBER" | "MULTIPLE_CHOICE";
+  type: "TEXT" | "NUMBER" | "MULTIPLE_CHOICE" | "BOOLEAN";
   value: string | number | boolean | null | undefined;
   multiple_choice_options: string[];
 }
@@ -127,6 +138,8 @@ export interface MetricDisaggregationDimensions {
   value: string | number | boolean | null | undefined;
   reporting_note: string;
   enabled?: boolean;
+  settings?: MetricConfigurationSettings[];
+  display_name?: string;
 }
 
 export interface CreateReportFormValuesType extends Record<string, unknown> {
