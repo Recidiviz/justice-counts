@@ -15,66 +15,23 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import {
-  HEADER_BAR_HEIGHT,
-  palette,
-} from "@justice-counts/common/components/GlobalStyles";
 import { Metric } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import styled from "styled-components/macro";
 
 import { useStore } from "../../stores";
 import FormStore from "../../stores/FormStore";
 import checkIcon from "../assets/check-icon.svg";
 import errorIcon from "../assets/status-error-icon.png";
-import { GoBack, MetricsSectionTitle, PreTitle } from "../Forms";
-import { MAIN_PANEL_MAX_WIDTH } from "../ReviewMetrics/ReviewMetrics.styles";
+import { MetricsSectionTitle, PreTitle } from "../Forms";
 import {
-  CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH,
-  SIDE_PANEL_HORIZONTAL_PADDING,
-} from "./ReportDataEntry.styles";
-import {
-  ReportStatusIcon,
-  ReportSummaryProgressIndicatorWrapper,
-  ReportSummarySection,
-  ReportSummaryWrapper,
-} from "./ReportSummaryPanel";
-
-const ConfirmationSummaryWrapper = styled(ReportSummaryWrapper)`
-  width: ${CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH}px;
-  padding-top: ${56 + HEADER_BAR_HEIGHT}px;
-  z-index: 5;
-
-  @media only screen and (max-width: ${CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH +
-    +MAIN_PANEL_MAX_WIDTH +
-    SIDE_PANEL_HORIZONTAL_PADDING * 2}px) {
-    display: none;
-  }
-`;
-
-const ConfirmationSummaryProgressIndicatorWrapper = styled(
-  ReportSummaryProgressIndicatorWrapper
-)`
-  margin-top: 10px;
-`;
-
-const ConfirmationSummarySection = styled(ReportSummarySection)`
-  color: ${palette.solid.darkgrey};
-`;
-
-const MetricDisplayName = styled.div`
-  max-width: 238px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-const GoBackToDataEntryLink = styled(GoBack)`
-  &::after {
-    content: "← Back to Data Entry";
-  }
-`;
+  ConfirmationSummaryProgressIndicatorWrapper,
+  ConfirmationSummarySection,
+  ConfirmationSummaryWrapper,
+  GoBackToDataEntryLink,
+  MetricDisplayName,
+} from "./PublishConfirmationSummaryPanel.styles";
+import { ReportStatusIcon } from "./ReportSummaryPanel";
 
 const ReportStatusIconComponent: React.FC<{
   metricHasValidInput: boolean;
