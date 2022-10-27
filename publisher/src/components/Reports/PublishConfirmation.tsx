@@ -135,7 +135,7 @@ const MetricsDisplay: React.FC<{
             {index + 1}
           </MetricTitleNumber>
           <MetricTitle>{metric.display_name}</MetricTitle>
-          <MetricCollapseSignWrapper>
+          <MetricCollapseSignWrapper isExpanded={isExpanded}>
             <HorizontalLine />
             {!isExpanded && <VerticalLine />}
           </MetricCollapseSignWrapper>

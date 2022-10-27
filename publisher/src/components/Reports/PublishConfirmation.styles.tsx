@@ -100,12 +100,12 @@ export const MetricsPreviewWrapper = styled(MainPanel)`
   margin-top: 56px;
 `;
 
-export const MetricCollapseSignWrapper = styled.div`
+export const MetricCollapseSignWrapper = styled.div<{ isExpanded: boolean }>`
   width: 16px;
   height: 16px;
   position: relative;
   margin-left: 10px;
-  display: none;
+  display: ${({ isExpanded }) => (isExpanded ? "none" : "block")};
 
   &:hover {
     display: block;
