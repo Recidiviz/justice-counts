@@ -241,8 +241,7 @@ export const BreakdownValue = styled.div<{
   flex: 1;
   justify-content: flex-end;
   font-style: ${({ missing }) => missing && "italic"};
-  color: ${({ error }) =>
-    error ? palette.solid.red : palette.highlight.grey8};
+  color: ${({ error }) => (error ? palette.solid.red : palette.solid.darkgrey)};
 `;
 
 export const ContextContainer = styled(Breakdown)<{ verticalOnly?: boolean }>`
