@@ -90,7 +90,7 @@ export const MetricConfiguration: React.FC<{
     React.SetStateAction<ListOfMetricsForNavigation[] | undefined>
   >;
 }> = observer(({ activeMetricKey, setActiveMetricKey, setListOfMetrics }) => {
-  const { reportStore, userStore } = useStore();
+  const { reportStore, userStore, metricConfigStore } = useStore();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingError, setLoadingError] = useState<string>();
@@ -429,6 +429,31 @@ export const MetricConfiguration: React.FC<{
   };
 
   const fetchAndSetReportSettings = async () => {
+    await metricConfigStore.getMetricSettings();
+    const { metrics } = metricConfigStore;
+    console.log("metrics", JSON.stringify(metrics, null, 2));
+
+    const { metricDefinitionSettings } = metricConfigStore;
+    console.log(
+      "metricDefinitionSettings",
+      JSON.stringify(metricDefinitionSettings, null, 2)
+    );
+
+    const { contexts } = metricConfigStore;
+    console.log("contexts", JSON.stringify(contexts, null, 2));
+
+    const { disaggregations } = metricConfigStore;
+    console.log("disaggregations", JSON.stringify(disaggregations, null, 2));
+
+    const { dimensions } = metricConfigStore;
+    console.log("dimensions", JSON.stringify(dimensions, null, 2));
+
+    const { dimensionDefinitionSettings } = metricConfigStore;
+    console.log(
+      "dimensionDefinitionSettings",
+      JSON.stringify(dimensionDefinitionSettings, null, 2)
+    );
+
     const response = (await reportStore.getReportSettings()) as
       | Response
       | Error;

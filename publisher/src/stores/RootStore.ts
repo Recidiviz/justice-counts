@@ -20,6 +20,7 @@ import { AuthStore } from "../components/Auth";
 import API from "./API";
 import DatapointsStore from "./DatapointsStore";
 import FormStore from "./FormStore";
+import MetricConfigStore from "./MetricConfigStore";
 import ReportStore from "./ReportStore";
 import UserStore from "./UserStore";
 
@@ -49,6 +50,8 @@ class RootStore {
 
   datapointsStore: DatapointsStore;
 
+  metricConfigStore: MetricConfigStore;
+
   constructor() {
     this.authStore = new AuthStore({
       authSettings: getAuthSettings(),
@@ -58,6 +61,7 @@ class RootStore {
     this.reportStore = new ReportStore(this.userStore, this.api);
     this.formStore = new FormStore(this.reportStore);
     this.datapointsStore = new DatapointsStore(this.userStore, this.api);
+    this.metricConfigStore = new MetricConfigStore(this.userStore, this.api);
   }
 }
 
