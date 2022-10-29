@@ -180,17 +180,11 @@ class MetricConfigStore {
       throw new Error("There was an issue retrieving the metric settings.");
     }
 
-    // should we load the response into this store's properties here?
-    // or separate function?
     const metrics = await response.json();
 
     this.initializeMetricConfigStoreValues(metrics);
   }
 
-  // save update to backend -
-  // (each method above can use this method to not only update
-  // their respective store properties, but to also package it
-  // into the data structure desired by the backend before sending
   async saveMetricSettings(updatedMetricSettings: MetricSettings[]) {
     const { currentAgency } = this.userStore;
 
@@ -213,7 +207,6 @@ class MetricConfigStore {
     return response;
   }
 
-  // update metric enabled/disabled
   updateMetricStatus(
     system: string,
     metricKey: string,
@@ -236,7 +229,6 @@ class MetricConfigStore {
     //      will have to be wrapped in a runInAction, I think?
   }
 
-  // update metric definition settings
   updateMetricDefinitionSetting(
     system: string,
     metricKey: string,
@@ -261,7 +253,6 @@ class MetricConfigStore {
     // send update to backend?
   }
 
-  // update disaggregation enabled/disabled
   updateDisaggregationStatus(
     system: string,
     metricKey: string,
@@ -287,7 +278,6 @@ class MetricConfigStore {
     // send update to backend?
   }
 
-  // update dimension enabled/disabled
   updateDimensionStatus(
     system: string,
     metricKey: string,
@@ -317,7 +307,6 @@ class MetricConfigStore {
     // send update to backend?
   }
 
-  // update dimension definition settings
   updateDimensionDefinitionSetting(
     system: string,
     metricKey: string,
@@ -364,7 +353,6 @@ class MetricConfigStore {
     // send update to backend?
   }
 
-  // update context value
   updateContextValue(
     system: string,
     metricKey: string,
@@ -389,8 +377,6 @@ class MetricConfigStore {
     // transform into backend-desired structure?
     // will need to separate out the saving so that it can be debounced
 
-    // validation & error handling for "NUMBER" type context value
-    // OK to do this step at the end since we save all values
     if (contextType === "NUMBER") {
       const cleanValue = removeCommaSpaceAndTrim(value as string);
 
