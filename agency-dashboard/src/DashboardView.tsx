@@ -65,13 +65,8 @@ const DashboardView = () => {
   };
 
   const downloadFeedData = async (queryStr: string) => {
-    const result = (await request({
-      path: `/feed/${agencyId}${queryStr}`,
-      method: "GET",
-    })) as Response;
-    const blob = await result.blob();
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = `/feed/${agencyId}${queryStr}`;
     a.setAttribute("download", "data.txt");
     a.click();
   };
