@@ -21,7 +21,7 @@ import {
   MetricConfigurationSettingsOptions,
   MetricContext,
 } from "@justice-counts/common/types";
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 
 import { MetricSettings } from "../components/MetricConfiguration";
 import { isPositiveNumber, removeCommaSpaceAndTrim } from "../utils";
@@ -32,6 +32,8 @@ class MetricConfigStore {
   userStore: UserStore;
 
   api: API;
+
+  activeMetricKey: string | undefined;
 
   metrics: {
     [systemMetricKey: string]: {
@@ -91,6 +93,7 @@ class MetricConfigStore {
 
     this.api = api;
     this.userStore = userStore;
+    this.activeMetricKey = undefined;
     this.metrics = {};
     this.metricDefinitionSettings = {};
     this.disaggregations = {};
@@ -103,63 +106,9 @@ class MetricConfigStore {
     return `${system}-${metricKey}`;
   }
 
-  initializeMetricConfigStoreValues(metrics: Metric[]) {
-    metrics.forEach((metric) => {
-      this.updateMetricStatus(
-        metric.system,
-        metric.key,
-        metric.enabled as boolean
-      );
-
-      metric.settings?.forEach((setting) => {
-        this.updateMetricDefinitionSetting(
-          metric.system,
-          metric.key,
-          setting.key,
-          setting.included
-        );
-      });
-
-      metric.disaggregations.forEach((disaggregation) => {
-        this.updateDisaggregationStatus(
-          metric.system,
-          metric.key,
-          disaggregation.key,
-          disaggregation.enabled as boolean
-        );
-
-        disaggregation.dimensions.forEach((dimension) => {
-          this.updateDimensionStatus(
-            metric.system,
-            metric.key,
-            disaggregation.key,
-            dimension.key,
-            dimension.enabled as boolean
-          );
-
-          dimension.settings?.forEach((setting) => {
-            this.updateDimensionDefinitionSetting(
-              metric.system,
-              metric.key,
-              disaggregation.key,
-              dimension.key,
-              setting.key,
-              setting.included
-            );
-          });
-        });
-      });
-
-      metric.contexts.forEach((context) => {
-        this.updateContextValue(
-          metric.system,
-          metric.key,
-          context.key,
-          context.type,
-          context.value
-        );
-      });
-    });
+  static splitSystemMetricKey(systemMetricKey: string) {
+    const [system, metricKey] = systemMetricKey.split("-");
+    return { system, metricKey };
   }
 
   async getMetricSettings() {
@@ -180,9 +129,7 @@ class MetricConfigStore {
       throw new Error("There was an issue retrieving the metric settings.");
     }
 
-    const metrics = await response.json();
-
-    this.initializeMetricConfigStoreValues(metrics);
+    return response;
   }
 
   async saveMetricSettings(updatedMetricSettings: MetricSettings[]) {
@@ -207,7 +154,77 @@ class MetricConfigStore {
     return response;
   }
 
-  updateMetricStatus(
+  async initializeMetricConfigStoreValues() {
+    const response = await this.getMetricSettings();
+    const metrics: Metric[] = await response.json();
+
+    runInAction(() => {
+      metrics.forEach((metric) => {
+        /** Initialize Metrics Status (Enabled/Disabled) */
+        this.updateMetricEnabledStatus(
+          metric.system,
+          metric.key,
+          metric.enabled as boolean
+        );
+
+        metric.settings?.forEach((setting) => {
+          /** Initialize Metrics Definition Settings (Included/Excluded) */
+          this.updateMetricDefinitionSetting(
+            metric.system,
+            metric.key,
+            setting.key,
+            setting.included
+          );
+        });
+
+        metric.disaggregations.forEach((disaggregation) => {
+          /** Initialize Disaggregation Status (Enabled/Disabled) */
+          this.updateDisaggregationEnabledStatus(
+            metric.system,
+            metric.key,
+            disaggregation.key,
+            disaggregation.enabled as boolean
+          );
+
+          disaggregation.dimensions.forEach((dimension) => {
+            /** Initialize Dimension Status (Enabled/Disabled) */
+            this.updateDimensionEnabledStatus(
+              metric.system,
+              metric.key,
+              disaggregation.key,
+              dimension.key,
+              dimension.enabled as boolean
+            );
+
+            dimension.settings?.forEach((setting) => {
+              /** Initialize Dimension Definition Settings (Included/Excluded) */
+              this.updateDimensionDefinitionSetting(
+                metric.system,
+                metric.key,
+                disaggregation.key,
+                dimension.key,
+                setting.key,
+                setting.included
+              );
+            });
+          });
+        });
+
+        metric.contexts.forEach((context) => {
+          /** Initialize Context Values */
+          this.updateContextValue(
+            metric.system,
+            metric.key,
+            context.key,
+            context.type,
+            context.value
+          );
+        });
+      });
+    });
+  }
+
+  updateMetricEnabledStatus(
     system: string,
     metricKey: string,
     enabledStatus: boolean
@@ -217,16 +234,19 @@ class MetricConfigStore {
       system
     );
 
+    /** Initialize nested object for quick lookup and update and reduce re-renders */
     if (!this.metrics[systemMetricKey]) {
       this.metrics[systemMetricKey] = {};
     }
 
+    /** Update value */
     this.metrics[systemMetricKey].enabled = enabledStatus;
 
-    // transform into backend-desired structure?
-    // send update to backend?
-    // consideration: will make this function async and then the updates
-    //      will have to be wrapped in a runInAction, I think?
+    /** Return an object in the desired backend data structure for saving purposes */
+    return {
+      key: metricKey,
+      enabled: enabledStatus,
+    };
   }
 
   updateMetricDefinitionSetting(
@@ -240,6 +260,7 @@ class MetricConfigStore {
       system
     );
 
+    /** Initialize nested objects for quick lookup and update and reduce re-renders */
     if (!this.metricDefinitionSettings[systemMetricKey]) {
       this.metricDefinitionSettings[systemMetricKey] = {};
     }
@@ -247,13 +268,18 @@ class MetricConfigStore {
       this.metricDefinitionSettings[systemMetricKey][settingKey] = {};
     }
 
+    /** Update value */
     this.metricDefinitionSettings[systemMetricKey][settingKey].included =
       settingValue;
-    // transform into backend-desired structure?
-    // send update to backend?
+
+    /** Return an object in the desired backend data structure for saving purposes */
+    return {
+      key: metricKey,
+      setting: [{ key: settingKey, included: settingValue }],
+    };
   }
 
-  updateDisaggregationStatus(
+  updateDisaggregationEnabledStatus(
     system: string,
     metricKey: string,
     disaggregationKey: string,
@@ -264,6 +290,7 @@ class MetricConfigStore {
       system
     );
 
+    /** Initialize nested objects for quick lookup and update and reduce re-renders */
     if (!this.disaggregations[systemMetricKey]) {
       this.disaggregations[systemMetricKey] = {};
     }
@@ -271,14 +298,23 @@ class MetricConfigStore {
       this.disaggregations[systemMetricKey][disaggregationKey] = {};
     }
 
+    /** Update value */
     this.disaggregations[systemMetricKey][disaggregationKey].enabled =
       enabledStatus;
 
-    // transform into backend-desired structure?
-    // send update to backend?
+    /** Return an object in the desired backend data structure for saving purposes */
+    return {
+      key: metricKey,
+      disaggregations: [
+        {
+          key: disaggregationKey,
+          enabled: enabledStatus,
+        },
+      ],
+    };
   }
 
-  updateDimensionStatus(
+  updateDimensionEnabledStatus(
     system: string,
     metricKey: string,
     disaggregationKey: string,
@@ -290,6 +326,7 @@ class MetricConfigStore {
       system
     );
 
+    /** Initialize nested objects for quick lookup and update and reduce re-renders */
     if (!this.dimensions[systemMetricKey]) {
       this.dimensions[systemMetricKey] = {};
     }
@@ -300,11 +337,25 @@ class MetricConfigStore {
       this.dimensions[systemMetricKey][disaggregationKey][dimensionKey] = {};
     }
 
+    /** Update value */
     this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].enabled =
       enabledStatus;
 
-    // transform into backend-desired structure?
-    // send update to backend?
+    /** Return an object in the desired backend data structure for saving purposes */
+    return {
+      key: metricKey,
+      disaggregations: [
+        {
+          key: disaggregationKey,
+          dimensions: [
+            {
+              key: dimensionKey,
+              enabled: enabledStatus,
+            },
+          ],
+        },
+      ],
+    };
   }
 
   updateDimensionDefinitionSetting(
@@ -320,6 +371,7 @@ class MetricConfigStore {
       system
     );
 
+    /** Initialize nested objects for quick lookup and update and reduce re-renders */
     if (!this.dimensionDefinitionSettings[systemMetricKey]) {
       this.dimensionDefinitionSettings[systemMetricKey] = {};
     }
@@ -345,12 +397,31 @@ class MetricConfigStore {
       ][settingKey] = {};
     }
 
+    /** Update value */
     this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
       dimensionKey
     ][settingKey].included = settingValue;
 
-    // transform into backend-desired structure?
-    // send update to backend?
+    /** Return an object in the desired backend data structure for saving purposes */
+    return {
+      key: metricKey,
+      disaggregations: [
+        {
+          key: disaggregationKey,
+          dimensions: [
+            {
+              key: dimensionKey,
+              settings: [
+                {
+                  key: settingKey,
+                  included: settingValue,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
   }
 
   updateContextValue(
@@ -365,6 +436,7 @@ class MetricConfigStore {
       system
     );
 
+    /** Initialize nested objects for quick lookup and update and reduce re-renders */
     if (!this.contexts[systemMetricKey]) {
       this.contexts[systemMetricKey] = {};
     }
@@ -372,11 +444,10 @@ class MetricConfigStore {
       this.contexts[systemMetricKey][contextKey] = {};
     }
 
+    /** Update value */
     this.contexts[systemMetricKey][contextKey].value = value;
 
-    // transform into backend-desired structure?
-    // will need to separate out the saving so that it can be debounced
-
+    /** Context Validation for NUMBER type contexts */
     if (contextType === "NUMBER") {
       const cleanValue = removeCommaSpaceAndTrim(value as string);
 
@@ -391,6 +462,12 @@ class MetricConfigStore {
         delete this.contexts[systemMetricKey][contextKey].error;
       }
     }
+
+    /** Return an object in the desired backend data structure for saving purposes */
+    return {
+      key: metricKey,
+      contexts: [{ key: contextKey, value }],
+    };
   }
 }
 
