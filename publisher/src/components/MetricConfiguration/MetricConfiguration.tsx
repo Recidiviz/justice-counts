@@ -41,6 +41,7 @@ import {
   Metric,
   MetricBox,
   MetricBoxBottomPaddingContainer,
+  MetricBoxContainerWrapper,
   MetricConfigurationDisplay,
   MetricConfigurationWrapper,
   MetricDefinitions,
@@ -525,17 +526,19 @@ export const MetricConfiguration: React.FC<{
           {/* List Of Metrics */}
           {filteredMetricSettings && !activeMetricKey && (
             <MetricBoxBottomPaddingContainer>
-              {Object.values(filteredMetricSettings).map((metric) => (
-                <MetricBox
-                  key={metric.key}
-                  metricKey={metric.key}
-                  displayName={metric.display_name}
-                  frequency={metric.frequency as ReportFrequency}
-                  description={metric.description}
-                  enabled={metric.enabled}
-                  setActiveMetricKey={setActiveMetricKey}
-                />
-              ))}
+              <MetricBoxContainerWrapper>
+                {Object.values(filteredMetricSettings).map((metric) => (
+                  <MetricBox
+                    key={metric.key}
+                    metricKey={metric.key}
+                    displayName={metric.display_name}
+                    frequency={metric.frequency as ReportFrequency}
+                    description={metric.description}
+                    enabled={metric.enabled}
+                    setActiveMetricKey={setActiveMetricKey}
+                  />
+                ))}
+              </MetricBoxContainerWrapper>
             </MetricBoxBottomPaddingContainer>
           )}
 

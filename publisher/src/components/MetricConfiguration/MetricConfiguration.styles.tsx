@@ -76,9 +76,8 @@ export const PanelContainerRight = styled.div`
 
 export const MetricBoxBottomPaddingContainer = styled.div`
   height: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  padding-bottom: 100px;
+  width: 100%;
+  padding-bottom: 150px;
   overflow-y: scroll;
 `;
 
@@ -109,6 +108,11 @@ export const MetricBoxContainer = styled.div<MetricBoxContainerProps>`
     max-width: unset;
     flex: unset;
   }
+`;
+
+export const MetricBoxContainerWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
 `;
 
 export const MetricViewBoxContainer = styled(MetricBoxContainer)<{
