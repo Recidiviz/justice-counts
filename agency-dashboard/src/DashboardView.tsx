@@ -64,10 +64,10 @@ const DashboardView = () => {
     return text;
   };
 
-  const downloadFeedData = async (queryStr: string) => {
+  const downloadFeedData = async (queryStr: string, filename: string) => {
     var a = document.createElement("a");
     a.href = `/feed/${agencyId}${queryStr}`;
-    a.setAttribute("download", "data.txt");
+    a.setAttribute("download", `${filename}.txt`);
     a.click();
   };
 
@@ -78,7 +78,7 @@ const DashboardView = () => {
     const lines = feedOverview.match(regex);
 
     lines?.forEach((line) => {
-      downloadFeedData(`?${line.split("?")[1]}`);
+      downloadFeedData(`?${line.split("?")[1]}`, line.split(",")[1]);
     });
   };
 
