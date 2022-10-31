@@ -17,7 +17,7 @@
 
 import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
 import { observer } from "mobx-react-lite";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { Container, MetricTitle } from "./DashboardView.styles";

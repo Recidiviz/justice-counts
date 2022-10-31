@@ -17,7 +17,7 @@
 
 import { showToast } from "@justice-counts/common/components/Toast";
 import { observer } from "mobx-react-lite";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { MetricCategory } from "./AgencyOverview.styles";

@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 import { render, screen } from "@testing-library/react";
-import React from "react";
 import { MemoryRouter } from "react-router-dom";
 
 import DashboardView from "./DashboardView";
