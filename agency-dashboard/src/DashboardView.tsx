@@ -65,7 +65,7 @@ const DashboardView = () => {
   };
 
   const downloadFeedData = async (queryStr: string, filename: string) => {
-    var a = document.createElement("a");
+    const a = document.createElement("a");
     a.href = `/feed/${agencyId}${queryStr}`;
     a.setAttribute("download", `${filename}.txt`);
     a.click();
