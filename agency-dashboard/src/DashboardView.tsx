@@ -20,8 +20,14 @@ import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { Container, MetricTitle } from "./DashboardView.styles";
+import {
+  Container,
+  DownloadFeedButton,
+  DownloadFeedButtonContainer,
+  MetricTitle,
+} from "./DashboardView.styles";
 import { useStore } from "./stores";
+import { request } from "./utils/networking";
 
 const DashboardView = () => {
   const navigate = useNavigate();
@@ -49,6 +55,38 @@ const DashboardView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datapointsStore.loading]);
 
+  const fetchDataFeedOverview = async () => {
+    const result = (await request({
+      path: `/feed/${agencyId}`,
+      method: "GET",
+    })) as Response;
+    const text = await result.text();
+    return text;
+  };
+
+  const downloadFeedData = async (queryStr: string) => {
+    const result = (await request({
+      path: `/feed/${agencyId}${queryStr}`,
+      method: "GET",
+    })) as Response;
+    const blob = await result.blob();
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.setAttribute("download", "data.txt");
+    a.click();
+  };
+
+  const downloadData = async () => {
+    const feedOverview = await fetchDataFeedOverview();
+    const metricStr = metricKey?.split("_").join(".*");
+    const regex = new RegExp(`^.*${metricStr}.*$`, "gim");
+    const lines = feedOverview.match(regex);
+
+    lines?.forEach((line) => {
+      downloadFeedData(`?${line.split("?")[1]}`);
+    });
+  };
+
   if (
     !metricKey ||
     (!datapointsStore.loading &&
@@ -67,6 +105,11 @@ const DashboardView = () => {
         <MetricTitle>
           {datapointsStore.metricKeyToDisplayName[metricKey] || metricKey}
         </MetricTitle>
+        <DownloadFeedButtonContainer>
+          <DownloadFeedButton onClick={downloadData}>
+            Download
+          </DownloadFeedButton>
+        </DownloadFeedButtonContainer>
         <DatapointsView
           datapointsGroupedByAggregateAndDisaggregations={
             datapointsStore.datapointsByMetric[metricKey]

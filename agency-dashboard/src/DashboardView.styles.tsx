@@ -31,3 +31,12 @@ export const Container = styled.div`
 export const MetricTitle = styled.div`
   ${typography.sizeCSS.title}
 `;
+
+export const DownloadFeedButtonContainer = styled.div`
+  ${typography.sizeCSS.medium}
+`;
+
+export const DownloadFeedButton = styled.button`
+  ${typography.sizeCSS.medium}
+  padding: 8px;
+`;
