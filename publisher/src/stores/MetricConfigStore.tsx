@@ -61,6 +61,9 @@ class MetricConfigStore {
       [contextKey: string]: {
         value?: MetricContext["value"];
         error?: FormError;
+        display_name?: string;
+        type?: MetricContext["type"];
+        multiple_choice_options?: string[];
       };
     };
   };
@@ -272,7 +275,12 @@ class MetricConfigStore {
             metric.key,
             context.key,
             context.type,
-            context.value
+            context.value,
+            {
+              display_name: context.display_name as string,
+              type: context.type,
+              multiple_choice_options: context.multiple_choice_options,
+            }
           );
         });
       });
@@ -547,7 +555,8 @@ class MetricConfigStore {
     metricKey: string,
     contextKey: string,
     contextType: MetricContext["type"],
-    value: MetricContext["value"]
+    value: MetricContext["value"],
+    metadata?: { [key: string]: string | string[] | MetricContext["type"] }
   ) {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       metricKey,
@@ -562,6 +571,16 @@ class MetricConfigStore {
       this.contexts[systemMetricKey][contextKey] = {};
     }
 
+    /** If provided, add metadata required for rendering */
+    if (metadata) {
+      this.contexts[systemMetricKey][contextKey].display_name =
+        metadata.display_name as string;
+      this.contexts[systemMetricKey][contextKey].type =
+        metadata.type as MetricContext["type"];
+      this.contexts[systemMetricKey][contextKey].multiple_choice_options =
+        metadata.multiple_choice_options as string[];
+    }
+
     /** Update value */
     this.contexts[systemMetricKey][contextKey].value = value;
 
@@ -573,10 +592,7 @@ class MetricConfigStore {
         this.contexts[systemMetricKey][contextKey].error = {
           message: "Please enter a valid number.",
         };
-        return;
-      }
-
-      if (this.contexts[systemMetricKey][contextKey].error) {
+      } else if (this.contexts[systemMetricKey][contextKey].error) {
         delete this.contexts[systemMetricKey][contextKey].error;
       }
     }

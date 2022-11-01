@@ -68,7 +68,6 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     saveAndUpdateMetricSettings,
   }): JSX.Element => {
     const { metricConfigStore } = useStore();
-
     const { activeMetricKey } = metricConfigStore;
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       metricConfigStore.activeMetricKey as string,

@@ -36,182 +36,233 @@ import {
   RadioButtonGroupWrapper,
   Subheader,
 } from ".";
+import { observer } from "mobx-react-lite";
+import MetricConfigStore from "../../stores/MetricConfigStore";
+import { useStore } from "../../stores";
 
 type MetricContextConfigurationProps = {
-  metricKey: string;
-  contexts: MetricContext[];
   saveAndUpdateMetricSettings: (
     updatedSetting: MetricSettings,
     debounce?: boolean
   ) => void;
 };
 
-export const ContextConfiguration: React.FC<
-  MetricContextConfigurationProps
-> = ({ metricKey, contexts, saveAndUpdateMetricSettings }) => {
-  const [contextErrors, setContextErrors] = useState<{
-    [key: string]: FormError;
-  }>();
+export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
+  observer(({ saveAndUpdateMetricSettings }) => {
+    // const [contextErrors, setContextErrors] = useState<{
+    //   [key: string]: FormError;
+    // }>();
 
-  const contextNumberValidation = (key: string, value: string) => {
-    const cleanValue = removeCommaSpaceAndTrim(value);
+    // const contextNumberValidation = (key: string, value: string) => {
+    //   const cleanValue = removeCommaSpaceAndTrim(value);
 
-    if (!isPositiveNumber(cleanValue) && cleanValue !== "") {
-      setContextErrors({
-        [key]: {
-          message: "Please enter a valid number.",
-        },
-      });
+    //   if (!isPositiveNumber(cleanValue) && cleanValue !== "") {
+    //     setContextErrors({
+    //       [key]: {
+    //         message: "Please enter a valid number.",
+    //       },
+    //     });
 
-      return false;
-    }
+    //     return false;
+    //   }
 
-    setContextErrors((prev) => {
-      const otherContextErrors = { ...prev };
-      delete otherContextErrors[key];
+    //   setContextErrors((prev) => {
+    //     const otherContextErrors = { ...prev };
+    //     delete otherContextErrors[key];
 
-      return otherContextErrors;
-    });
-    return true;
-  };
+    //     return otherContextErrors;
+    //   });
+    //   return true;
+    // };
 
-  useEffect(() => {
-    if (contexts) {
-      contexts.forEach((context) => {
-        if (context.type === "NUMBER") {
-          contextNumberValidation(context.key, (context.value || "") as string);
-        }
-      });
-    }
-  }, [contexts]);
+    // useEffect(() => {
+    //   if (contexts) {
+    //     contexts.forEach((context) => {
+    //       if (context.type === "NUMBER") {
+    //         contextNumberValidation(context.key, (context.value || "") as string);
+    //       }
+    //     });
+    //   }
+    // }, [contexts]);
+    const { metricConfigStore } = useStore();
+    const { activeMetricKey } = metricConfigStore;
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      activeMetricKey as string,
+      metricConfigStore.activeSystem as string
+    );
+    const activeContextKeys =
+      (metricConfigStore.contexts[systemMetricKey] &&
+        Object.keys(metricConfigStore.contexts[systemMetricKey])) ||
+      [];
 
-  return (
-    <MetricContextContainer>
-      <MetricContextHeader>Context</MetricContextHeader>
-      <Subheader>
-        Anything entered here will appear as the default value for all reports.
-        If you are entering data for a particular month, you can still replace
-        this as necessary.
-      </Subheader>
+    return (
+      <MetricContextContainer>
+        <MetricContextHeader>Context</MetricContextHeader>
+        <Subheader>
+          Anything entered here will appear as the default value for all
+          reports. If you are entering data for a particular month, you can
+          still replace this as necessary.
+        </Subheader>
 
-      {contexts?.map((context) => (
-        <MetricContextItem key={context.key}>
-          {context.type === "BOOLEAN" && (
-            <>
-              <Label noBottomMargin>{context.display_name}</Label>
-              <RadioButtonGroupWrapper>
-                <BinaryRadioButton
-                  type="radio"
-                  id={`${context.key}-yes`}
-                  name={context.key}
-                  label="Yes"
-                  value="yes"
-                  checked={context.value === "yes"}
-                  onChange={() =>
-                    saveAndUpdateMetricSettings({
-                      key: metricKey,
-                      contexts: [{ key: context.key, value: "yes" }],
-                    })
-                  }
-                />
-                <BinaryRadioButton
-                  type="radio"
-                  id={`${context.key}-no`}
-                  name={context.key}
-                  label="No"
-                  value="no"
-                  checked={context.value === "no"}
-                  onChange={() =>
-                    saveAndUpdateMetricSettings({
-                      key: metricKey,
-                      contexts: [{ key: context.key, value: "no" }],
-                    })
-                  }
-                />
-              </RadioButtonGroupWrapper>
-              <BinaryRadioGroupClearButton
-                onClick={() =>
-                  saveAndUpdateMetricSettings({
-                    key: metricKey,
-                    contexts: [{ key: context.key, value: "" }],
-                  })
-                }
-              >
-                Clear Input
-              </BinaryRadioGroupClearButton>
-            </>
-          )}
+        {activeContextKeys.map((contextKey) => {
+          const currentContext =
+            metricConfigStore.contexts[systemMetricKey][contextKey];
 
-          {(context.type === "TEXT" || context.type === "NUMBER") && (
-            <>
-              <Label>{context.display_name}</Label>
-              <TextInput
-                type="text"
-                name={context.key}
-                id={context.key}
-                label=""
-                value={(context.value || "") as string}
-                multiline={context.type === "TEXT"}
-                error={contextErrors?.[context.key]}
-                onChange={(e) => {
-                  if (context.type === "NUMBER") {
-                    contextNumberValidation(context.key, e.currentTarget.value);
-                  }
+          return (
+            <MetricContextItem key={contextKey}>
+              {currentContext.type === "BOOLEAN" && (
+                <>
+                  <Label noBottomMargin>{currentContext.display_name}</Label>
+                  <RadioButtonGroupWrapper>
+                    <BinaryRadioButton
+                      type="radio"
+                      id={`${contextKey}-yes`}
+                      name={contextKey}
+                      label="Yes"
+                      value="yes"
+                      checked={currentContext.value === "yes"}
+                      onChange={() => {
+                        // saveAndUpdateMetricSettings({
+                        //   key: metricKey,
+                        //   contexts: [{ key: contextKey, value: "yes" }],
+                        // });
 
-                  saveAndUpdateMetricSettings(
-                    {
-                      key: metricKey,
-                      contexts: [
-                        { key: context.key, value: e.currentTarget.value },
-                      ],
-                    },
-                    true
-                  );
-                }}
-              />
-            </>
-          )}
+                        const updatedSetting =
+                          metricConfigStore.updateContextValue(
+                            metricConfigStore.activeSystem as string,
+                            metricConfigStore.activeMetricKey as string,
+                            contextKey,
+                            currentContext.type as MetricContext["type"],
+                            "yes"
+                          );
+                        saveAndUpdateMetricSettings(updatedSetting);
+                      }}
+                    />
+                    <BinaryRadioButton
+                      type="radio"
+                      id={`${contextKey}-no`}
+                      name={contextKey}
+                      label="No"
+                      value="no"
+                      checked={currentContext.value === "no"}
+                      onChange={() => {
+                        const updatedSetting =
+                          metricConfigStore.updateContextValue(
+                            metricConfigStore.activeSystem as string,
+                            metricConfigStore.activeMetricKey as string,
+                            contextKey,
+                            currentContext.type as MetricContext["type"],
+                            "no"
+                          );
+                        saveAndUpdateMetricSettings(updatedSetting);
+                      }}
+                    />
+                  </RadioButtonGroupWrapper>
+                  <BinaryRadioGroupClearButton
+                    onClick={() => {
+                      const updatedSetting =
+                        metricConfigStore.updateContextValue(
+                          metricConfigStore.activeSystem as string,
+                          metricConfigStore.activeMetricKey as string,
+                          contextKey,
+                          currentContext.type as MetricContext["type"],
+                          ""
+                        );
+                      saveAndUpdateMetricSettings(updatedSetting);
+                    }}
+                  >
+                    Clear Input
+                  </BinaryRadioGroupClearButton>
+                </>
+              )}
 
-          {context.type === "MULTIPLE_CHOICE" && (
-            <BinaryRadioGroupContainer key={context.key}>
-              <BinaryRadioGroupQuestion>
-                {context.display_name}
-              </BinaryRadioGroupQuestion>
-
-              <MultipleChoiceWrapper>
-                {context.multiple_choice_options?.map((option) => (
-                  <BinaryRadioButton
-                    type="radio"
-                    key={option}
-                    id={`${context.key}-${option}`}
-                    name={`${context.key}`}
-                    label={option}
-                    value={option}
-                    checked={context.value === option}
-                    onChange={() =>
-                      saveAndUpdateMetricSettings({
-                        key: metricKey,
-                        contexts: [{ key: context.key, value: option }],
-                      })
-                    }
+              {(currentContext.type === "TEXT" ||
+                currentContext.type === "NUMBER") && (
+                <>
+                  <Label>{currentContext.display_name}</Label>
+                  <TextInput
+                    type="text"
+                    name={contextKey}
+                    id={contextKey}
+                    label=""
+                    value={(currentContext.value || "") as string}
+                    multiline={currentContext.type === "TEXT"}
+                    error={currentContext.error}
+                    onChange={(e) => {
+                      const updatedSetting =
+                        metricConfigStore.updateContextValue(
+                          metricConfigStore.activeSystem as string,
+                          metricConfigStore.activeMetricKey as string,
+                          contextKey,
+                          currentContext.type as MetricContext["type"],
+                          e.currentTarget.value
+                        );
+                      saveAndUpdateMetricSettings(updatedSetting, true);
+                    }}
                   />
-                ))}
-              </MultipleChoiceWrapper>
+                </>
+              )}
 
-              <BinaryRadioGroupClearButton
-                onClick={() =>
-                  saveAndUpdateMetricSettings({
-                    key: metricKey,
-                    contexts: [{ key: context.key, value: "" }],
-                  })
-                }
-              >
-                Clear Input
-              </BinaryRadioGroupClearButton>
-            </BinaryRadioGroupContainer>
-          )}
-        </MetricContextItem>
-      ))}
-    </MetricContextContainer>
-  );
-};
+              {currentContext.type === "MULTIPLE_CHOICE" && (
+                <BinaryRadioGroupContainer key={contextKey}>
+                  <BinaryRadioGroupQuestion>
+                    {currentContext.display_name}
+                  </BinaryRadioGroupQuestion>
+
+                  <MultipleChoiceWrapper>
+                    {currentContext.multiple_choice_options?.map((option) => (
+                      <BinaryRadioButton
+                        type="radio"
+                        key={option}
+                        id={`${contextKey}-${option}`}
+                        name={`${contextKey}`}
+                        label={option}
+                        value={option}
+                        checked={currentContext.value === option}
+                        onChange={() => {
+                          // saveAndUpdateMetricSettings({
+                          //   key: metricKey,
+                          //   contexts: [{ key: contextKey, value: option }],
+                          // });
+
+                          const updatedSetting =
+                            metricConfigStore.updateContextValue(
+                              metricConfigStore.activeSystem as string,
+                              metricConfigStore.activeMetricKey as string,
+                              contextKey,
+                              currentContext.type as MetricContext["type"],
+                              option
+                            );
+                          saveAndUpdateMetricSettings(updatedSetting);
+                        }}
+                      />
+                    ))}
+                  </MultipleChoiceWrapper>
+
+                  <BinaryRadioGroupClearButton
+                    onClick={() => {
+                      // saveAndUpdateMetricSettings({
+                      //   key: metricKey,
+                      //   contexts: [{ key: contextKey, value: "" }],
+                      // });
+                      const updatedSetting =
+                        metricConfigStore.updateContextValue(
+                          metricConfigStore.activeSystem as string,
+                          metricConfigStore.activeMetricKey as string,
+                          contextKey,
+                          currentContext.type as MetricContext["type"],
+                          ""
+                        );
+                      saveAndUpdateMetricSettings(updatedSetting);
+                    }}
+                  >
+                    Clear Input
+                  </BinaryRadioGroupClearButton>
+                </BinaryRadioGroupContainer>
+              )}
+            </MetricContextItem>
+          );
+        })}
+      </MetricContextContainer>
+    );
+  });

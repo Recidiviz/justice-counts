@@ -18,6 +18,7 @@
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
   MetricConfigurationSettings,
+  MetricContext,
   ReportFrequency,
 } from "@justice-counts/common/types";
 import { debounce as _debounce } from "lodash";
@@ -55,7 +56,7 @@ export type MetricSettings = {
   settings?: MetricConfigurationSettings[];
   contexts?: {
     key: string;
-    value: string;
+    value: MetricContext["value"];
   }[];
   disaggregations?: {
     key: string;
@@ -240,21 +241,12 @@ export const MetricConfiguration: React.FC<{}> = observer(() => {
                 </MetricDetailsDisplay>
               </MetricConfigurationDisplay>
 
-              {/* Metric/Dimension Definitions (Includes/Excludes) */}
-              {/* <MetricDefinitions
-                activeMetricKey={metricConfigStore.activeMetricKey}
-                activeMetric={
-                  // filteredMetricSettings[metricConfigStore.activeMetricKey]
-                  {}
-                }
+              {/* Metric/Dimension Definitions (Includes/Excludes) & Context */}
+              <MetricDefinitions
                 activeDimensionKey={activeDimensionKey}
                 activeDisaggregationKey={activeDisaggregationKey}
-                contexts={
-                  // metricSettings[metricConfigStore.activeMetricKey]?.contexts
-                  {}
-                }
                 saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
-              /> */}
+              />
             </MetricConfigurationWrapper>
           )}
         </MetricsViewControlPanel>

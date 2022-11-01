@@ -41,11 +41,8 @@ import {
 } from ".";
 
 type MetricDefinitionsProps = {
-  activeMetricKey: string;
-  activeMetric: Metric;
-  activeDimension?: MetricDisaggregationDimensions | undefined;
-  activeDisaggregation: MetricDisaggregations | undefined;
-  contexts: MetricContext[];
+  activeDimensionKey: string | undefined;
+  activeDisaggregationKey: string | undefined;
   saveAndUpdateMetricSettings: (
     updatedSetting: MetricSettings,
     debounce?: boolean
@@ -53,11 +50,8 @@ type MetricDefinitionsProps = {
 };
 
 export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
-  activeMetricKey,
-  activeMetric,
-  activeDimension,
-  activeDisaggregation,
-  contexts,
+  activeDimensionKey,
+  activeDisaggregationKey,
   saveAndUpdateMetricSettings,
 }) => {
   const [showDefaultSettings, setShowDefaultSettings] = useState(false);
@@ -214,13 +208,11 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
       </DefinitionsDisplay>
 
       {/* Additional Context (only appears on overall metric settings and not individual dimension settings) */}
-      {/* {!activeDimension && (
+      {!activeDimension && (
         <ContextConfiguration
-          metricKey={activeMetricKey}
-          contexts={contexts}
           saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
         />
-      )} */}
+      )}
     </DefinitionsDisplayContainer>
   );
 };
