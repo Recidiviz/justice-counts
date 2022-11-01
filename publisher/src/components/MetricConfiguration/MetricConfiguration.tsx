@@ -69,7 +69,7 @@ export type MetricSettings = {
   }[];
 };
 
-export const MetricConfiguration: React.FC<{}> = observer(() => {
+export const MetricConfiguration: React.FC = observer(() => {
   const { userStore, metricConfigStore } = useStore();
   const currentSystemMetricKey = MetricConfigStore.getSystemMetricKey(
     metricConfigStore.activeMetricKey || "",

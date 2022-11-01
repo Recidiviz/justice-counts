@@ -15,10 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { FormError, MetricContext } from "@justice-counts/common/types";
-import React, { useEffect, useState } from "react";
+import { MetricContext } from "@justice-counts/common/types";
+import { observer } from "mobx-react-lite";
+import React from "react";
 
-import { isPositiveNumber, removeCommaSpaceAndTrim } from "../../utils";
+import { useStore } from "../../stores";
+import MetricConfigStore from "../../stores/MetricConfigStore";
 import {
   BinaryRadioButton,
   BinaryRadioGroupClearButton,
@@ -36,9 +38,6 @@ import {
   RadioButtonGroupWrapper,
   Subheader,
 } from ".";
-import { observer } from "mobx-react-lite";
-import MetricConfigStore from "../../stores/MetricConfigStore";
-import { useStore } from "../../stores";
 
 type MetricContextConfigurationProps = {
   saveAndUpdateMetricSettings: (
@@ -49,42 +48,8 @@ type MetricContextConfigurationProps = {
 
 export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
   observer(({ saveAndUpdateMetricSettings }) => {
-    // const [contextErrors, setContextErrors] = useState<{
-    //   [key: string]: FormError;
-    // }>();
-
-    // const contextNumberValidation = (key: string, value: string) => {
-    //   const cleanValue = removeCommaSpaceAndTrim(value);
-
-    //   if (!isPositiveNumber(cleanValue) && cleanValue !== "") {
-    //     setContextErrors({
-    //       [key]: {
-    //         message: "Please enter a valid number.",
-    //       },
-    //     });
-
-    //     return false;
-    //   }
-
-    //   setContextErrors((prev) => {
-    //     const otherContextErrors = { ...prev };
-    //     delete otherContextErrors[key];
-
-    //     return otherContextErrors;
-    //   });
-    //   return true;
-    // };
-
-    // useEffect(() => {
-    //   if (contexts) {
-    //     contexts.forEach((context) => {
-    //       if (context.type === "NUMBER") {
-    //         contextNumberValidation(context.key, (context.value || "") as string);
-    //       }
-    //     });
-    //   }
-    // }, [contexts]);
     const { metricConfigStore } = useStore();
+
     const { activeMetricKey } = metricConfigStore;
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       activeMetricKey as string,
@@ -122,11 +87,6 @@ export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
                       value="yes"
                       checked={currentContext.value === "yes"}
                       onChange={() => {
-                        // saveAndUpdateMetricSettings({
-                        //   key: metricKey,
-                        //   contexts: [{ key: contextKey, value: "yes" }],
-                        // });
-
                         const updatedSetting =
                           metricConfigStore.updateContextValue(
                             metricConfigStore.activeSystem as string,
@@ -220,11 +180,6 @@ export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
                         value={option}
                         checked={currentContext.value === option}
                         onChange={() => {
-                          // saveAndUpdateMetricSettings({
-                          //   key: metricKey,
-                          //   contexts: [{ key: contextKey, value: option }],
-                          // });
-
                           const updatedSetting =
                             metricConfigStore.updateContextValue(
                               metricConfigStore.activeSystem as string,
@@ -241,10 +196,6 @@ export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
 
                   <BinaryRadioGroupClearButton
                     onClick={() => {
-                      // saveAndUpdateMetricSettings({
-                      //   key: metricKey,
-                      //   contexts: [{ key: contextKey, value: "" }],
-                      // });
                       const updatedSetting =
                         metricConfigStore.updateContextValue(
                           metricConfigStore.activeSystem as string,
