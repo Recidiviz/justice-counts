@@ -37,7 +37,6 @@ import {
   DefinitionsSubTitle,
   DefinitionsTitle,
   MetricSettings,
-  MetricSettingsUpdateOptions,
   RevertToDefaultButton,
 } from ".";
 
@@ -48,7 +47,6 @@ type MetricDefinitionsProps = {
   activeDisaggregation: MetricDisaggregations | undefined;
   contexts: MetricContext[];
   saveAndUpdateMetricSettings: (
-    typeOfUpdate: MetricSettingsUpdateOptions,
     updatedSetting: MetricSettings,
     debounce?: boolean
   ) => void;
@@ -75,7 +73,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
   const isMetricSettings = (
     dimensionOrMetric: MetricDisaggregationDimensions | Metric
   ): dimensionOrMetric is Metric => {
-    return (dimensionOrMetric as Metric).display_name !== undefined;
+    return (dimensionOrMetric as Metric)?.display_name !== undefined;
   };
 
   const activeSettings = isMetricSettings(activeDimensionOrMetric)
@@ -88,14 +86,14 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
 
   const revertToDefaultValues = () => {
     if (isMetricSettings(activeDimensionOrMetric)) {
-      return saveAndUpdateMetricSettings("METRIC_SETTING", {
+      return saveAndUpdateMetricSettings({
         key: activeMetricKey,
         settings: defaultSettings,
       });
     }
 
     if (activeDisaggregation && activeDimension) {
-      saveAndUpdateMetricSettings("DIMENSION_SETTING", {
+      saveAndUpdateMetricSettings({
         key: activeMetricKey,
         disaggregations: [
           {
@@ -117,8 +115,8 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
       <DefinitionsDisplay>
         <DefinitionsTitle>
           {isMetricSettings(activeDimensionOrMetric)
-            ? activeDimensionOrMetric.display_name
-            : activeDimensionOrMetric.label}
+            ? activeDimensionOrMetric?.display_name
+            : activeDimensionOrMetric?.label}
         </DefinitionsTitle>
 
         {Boolean(activeSettings?.length) && (
@@ -162,15 +160,10 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
                             showDefault={showDefaultSettings}
                             onClick={() => {
                               if (isMetricSettings(activeDimensionOrMetric)) {
-                                return saveAndUpdateMetricSettings(
-                                  "METRIC_SETTING",
-                                  {
-                                    key: activeMetricKey,
-                                    settings: [
-                                      { ...setting, included: option },
-                                    ],
-                                  }
-                                );
+                                return saveAndUpdateMetricSettings({
+                                  key: activeMetricKey,
+                                  settings: [{ ...setting, included: option }],
+                                });
                               }
 
                               const activeDimensionKey =
@@ -178,28 +171,25 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
 
                               return (
                                 activeDisaggregation &&
-                                saveAndUpdateMetricSettings(
-                                  "DIMENSION_SETTING",
-                                  {
-                                    key: activeMetricKey,
-                                    disaggregations: [
-                                      {
-                                        key: activeDisaggregation.key,
-                                        dimensions: [
-                                          {
-                                            key: activeDimensionKey,
-                                            settings: [
-                                              {
-                                                ...setting,
-                                                included: option,
-                                              },
-                                            ],
-                                          },
-                                        ],
-                                      },
-                                    ],
-                                  }
-                                )
+                                saveAndUpdateMetricSettings({
+                                  key: activeMetricKey,
+                                  disaggregations: [
+                                    {
+                                      key: activeDisaggregation.key,
+                                      dimensions: [
+                                        {
+                                          key: activeDimensionKey,
+                                          settings: [
+                                            {
+                                              ...setting,
+                                              included: option,
+                                            },
+                                          ],
+                                        },
+                                      ],
+                                    },
+                                  ],
+                                })
                               );
                             }}
                           >
@@ -224,13 +214,13 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
       </DefinitionsDisplay>
 
       {/* Additional Context (only appears on overall metric settings and not individual dimension settings) */}
-      {!activeDimension && (
+      {/* {!activeDimension && (
         <ContextConfiguration
           metricKey={activeMetricKey}
           contexts={contexts}
           saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
         />
-      )}
+      )} */}
     </DefinitionsDisplayContainer>
   );
 };

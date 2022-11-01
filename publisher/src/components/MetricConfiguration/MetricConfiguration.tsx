@@ -17,10 +17,7 @@
 
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
-  Metric as MetricType,
   MetricConfigurationSettings,
-  MetricDisaggregationDimensions,
-  MetricDisaggregations,
   ReportFrequency,
 } from "@justice-counts/common/types";
 import { debounce as _debounce } from "lodash";
@@ -28,8 +25,8 @@ import { reaction, when } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
 
-import { ListOfMetricsForNavigation } from "../../pages/Settings";
 import { useStore } from "../../stores";
+import MetricConfigStore from "../../stores/MetricConfigStore";
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import { Badge } from "../Badge";
@@ -52,14 +49,6 @@ import {
   StickyHeader,
 } from ".";
 
-export type MetricSettingsUpdateOptions =
-  | "METRIC"
-  | "DISAGGREGATION"
-  | "DIMENSION"
-  | "CONTEXT"
-  | "METRIC_SETTING"
-  | "DIMENSION_SETTING";
-
 export type MetricSettings = {
   key: string;
   enabled?: boolean;
@@ -79,330 +68,21 @@ export type MetricSettings = {
   }[];
 };
 
-export type MetricSettingsObj = {
-  [key: string]: MetricType;
-};
-
-export const MetricConfiguration: React.FC<{
-  activeMetricKey: string | undefined;
-  setActiveMetricKey: React.Dispatch<React.SetStateAction<string | undefined>>;
-  setListOfMetrics: React.Dispatch<
-    React.SetStateAction<ListOfMetricsForNavigation[] | undefined>
-  >;
-}> = observer(({ activeMetricKey, setActiveMetricKey, setListOfMetrics }) => {
-  const { reportStore, userStore } = useStore();
+export const MetricConfiguration: React.FC<{}> = observer(() => {
+  const { userStore, metricConfigStore } = useStore();
+  const currentSystemMetricKey = MetricConfigStore.getSystemMetricKey(
+    metricConfigStore.activeMetricKey || "",
+    metricConfigStore.activeSystem || ""
+  );
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingError, setLoadingError] = useState<string>();
-  const [activeMetricFilter, setActiveMetricFilter] = useState<string>();
-  const [metricSettings, setMetricSettings] = useState<{
-    [key: string]: MetricType;
-  }>({});
-  const [activeDimension, setActiveDimension] =
-    useState<MetricDisaggregationDimensions>();
-
-  const filteredMetricSettings: MetricSettingsObj = Object.values(
-    metricSettings
-  )
-    .filter(
-      (metric) =>
-        metric.system.toLowerCase() === activeMetricFilter?.toLowerCase()
-    )
-    ?.reduce((res: MetricSettingsObj, metric) => {
-      res[metric.key] = metric;
-      return res;
-    }, {});
-
-  const [activeDisaggregation, setActiveDisaggregation] =
-    useState<MetricDisaggregations>();
-
-  useEffect(
-    () => {
-      /** Updates shared state `listOfMetrics` so the SettingsMenu component can render the metric navigation */
-      const listOfMetricsForMetricNavigation = Object.values(
-        filteredMetricSettings
-      ).map((metric) => {
-        return {
-          key: metric.key,
-          display_name: metric.display_name,
-        };
-      });
-
-      setListOfMetrics(listOfMetricsForMetricNavigation);
-
-      /** Update activeDimension when settings are updated */
-      if (activeDimension && activeMetricKey) {
-        return setActiveDimension((prev) => {
-          return filteredMetricSettings[activeMetricKey].disaggregations
-            .find(
-              (disaggregation) =>
-                disaggregation.key === activeDisaggregation?.key
-            )
-            ?.dimensions.find((dimension) => dimension.key === prev?.key);
-        });
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [filteredMetricSettings]
-  );
-
-  const updateMetricSettings = (
-    typeOfUpdate: MetricSettingsUpdateOptions,
-    updatedSetting: MetricSettings
-  ) => {
-    setMetricSettings((prev) => {
-      const metricKey = updatedSetting.key;
-
-      if (typeOfUpdate === "METRIC") {
-        return {
-          ...prev,
-          [updatedSetting.key]: {
-            ...prev[metricKey],
-            enabled: Boolean(updatedSetting.enabled),
-          },
-        };
-      }
-
-      if (typeOfUpdate === "METRIC_SETTING") {
-        let updatedSettingsArray;
-
-        if (
-          prev[metricKey].settings?.length === updatedSetting.settings?.length
-        ) {
-          updatedSettingsArray = updatedSetting.settings;
-        } else {
-          updatedSettingsArray = prev[metricKey].settings?.map((setting) => {
-            if (setting.key === updatedSetting.settings?.[0].key) {
-              return {
-                ...setting,
-                included: updatedSetting.settings[0].included,
-              };
-            }
-            return setting;
-          });
-        }
-
-        return {
-          ...prev,
-          [updatedSetting.key]: {
-            ...prev[metricKey],
-            settings: updatedSettingsArray,
-          },
-        };
-      }
-
-      if (typeOfUpdate === "DISAGGREGATION") {
-        const updatedDisaggregations = prev[metricKey].disaggregations.map(
-          (disaggregation) => {
-            /** Quick Note: for now, all updates happen one at a time thus leaving
-             * one item in the disaggregations/dimensions/contexts arrays that will
-             * be updated at any one time. We can update this in the future to handle
-             * updating multiple settings at one time if necessary.
-             */
-            if (
-              disaggregation.key === updatedSetting.disaggregations?.[0].key
-            ) {
-              /**
-               * When disaggregation is switched off, all dimensions are disabled.
-               * When disaggregation is switched on, all dimensions are enabled.
-               */
-              if (!updatedSetting.disaggregations?.[0].enabled) {
-                return {
-                  ...disaggregation,
-                  enabled: false,
-                  dimensions: disaggregation.dimensions.map((dimension) => {
-                    return {
-                      ...dimension,
-                      enabled: false,
-                    };
-                  }),
-                };
-              }
-              return {
-                ...disaggregation,
-                enabled: Boolean(updatedSetting.disaggregations?.[0].enabled),
-                dimensions: disaggregation.dimensions.map((dimension) => {
-                  return {
-                    ...dimension,
-                    enabled: true,
-                  };
-                }),
-              };
-            }
-            return disaggregation;
-          }
-        );
-
-        return {
-          ...prev,
-          [updatedSetting.key]: {
-            ...prev[metricKey],
-            disaggregations: updatedDisaggregations,
-          },
-        };
-      }
-
-      if (typeOfUpdate === "DIMENSION") {
-        const updatedDisaggregations = prev[metricKey].disaggregations.map(
-          (disaggregation) => {
-            if (
-              disaggregation.key === updatedSetting.disaggregations?.[0].key
-            ) {
-              const lastDimensionDisabled =
-                disaggregation.dimensions.filter(
-                  (dimension) => dimension.enabled
-                )?.length === 1;
-
-              /** Disable disaggregation when last dimension toggle is switched off */
-              if (
-                !updatedSetting.disaggregations?.[0].dimensions?.[0].enabled &&
-                lastDimensionDisabled
-              ) {
-                return {
-                  ...disaggregation,
-                  enabled: false,
-                  dimensions: disaggregation.dimensions.map((dimension) => {
-                    if (
-                      dimension.key ===
-                      updatedSetting.disaggregations?.[0].dimensions?.[0].key
-                    ) {
-                      return {
-                        ...dimension,
-                        enabled: Boolean(
-                          updatedSetting.disaggregations?.[0].dimensions?.[0]
-                            .enabled
-                        ),
-                      };
-                    }
-                    return dimension;
-                  }),
-                };
-              }
-
-              return {
-                ...disaggregation,
-                enabled: true,
-                dimensions: disaggregation.dimensions.map((dimension) => {
-                  if (
-                    dimension.key ===
-                    updatedSetting.disaggregations?.[0].dimensions?.[0].key
-                  ) {
-                    return {
-                      ...dimension,
-                      enabled: Boolean(
-                        updatedSetting.disaggregations?.[0].dimensions?.[0]
-                          .enabled
-                      ),
-                    };
-                  }
-                  return dimension;
-                }),
-              };
-            }
-            return disaggregation;
-          }
-        );
-
-        return {
-          ...prev,
-          [updatedSetting.key]: {
-            ...prev[metricKey],
-            disaggregations: updatedDisaggregations,
-          },
-        };
-      }
-
-      if (typeOfUpdate === "DIMENSION_SETTING") {
-        const updatedDisaggregations = prev[metricKey].disaggregations.map(
-          (disaggregation) => {
-            if (
-              disaggregation.key !== updatedSetting.disaggregations?.[0].key
-            ) {
-              return disaggregation;
-            }
-
-            return {
-              ...disaggregation,
-              dimensions: disaggregation.dimensions.map((dimension) => {
-                if (
-                  dimension.key !==
-                  updatedSetting.disaggregations?.[0].dimensions?.[0].key
-                ) {
-                  return dimension;
-                }
-
-                let updatedSettingsArray;
-
-                if (
-                  dimension.settings?.length ===
-                  updatedSetting.disaggregations?.[0].dimensions?.[0].settings
-                    ?.length
-                ) {
-                  updatedSettingsArray =
-                    updatedSetting.disaggregations?.[0].dimensions?.[0]
-                      .settings;
-                } else {
-                  updatedSettingsArray = dimension.settings?.map((setting) => {
-                    if (
-                      setting.key !==
-                      updatedSetting.disaggregations?.[0].dimensions?.[0]
-                        .settings?.[0].key
-                    ) {
-                      return setting;
-                    }
-                    return {
-                      ...setting,
-                      included:
-                        updatedSetting.disaggregations?.[0].dimensions?.[0]
-                          .settings[0].included,
-                    };
-                  });
-                }
-
-                return {
-                  ...dimension,
-                  settings: updatedSettingsArray,
-                };
-              }),
-            };
-          }
-        );
-
-        return {
-          ...prev,
-          [updatedSetting.key]: {
-            ...prev[metricKey],
-            disaggregations: updatedDisaggregations,
-          },
-        };
-      }
-
-      if (typeOfUpdate === "CONTEXT") {
-        const updatedContext = prev[metricKey].contexts.map((context) => {
-          if (context.key === updatedSetting.contexts?.[0].key) {
-            return {
-              ...context,
-              value: updatedSetting.contexts?.[0].value,
-            };
-          }
-          return context;
-        });
-
-        return {
-          ...prev,
-          [updatedSetting.key]: {
-            ...prev[metricKey],
-            contexts: updatedContext,
-          },
-        };
-      }
-
-      return prev;
-    });
-  };
+  const [activeDimensionKey, setActiveDimensionKey] = useState<string>();
+  const [activeDisaggregationKey, setActiveDisaggregationKey] =
+    useState<string>();
 
   const saveMetricSettings = async (updatedSetting: MetricSettings) => {
-    const response = (await reportStore.updateReportSettings([
+    const response = (await metricConfigStore.saveMetricSettings([
       updatedSetting,
     ])) as Response;
 
@@ -416,37 +96,14 @@ export const MetricConfiguration: React.FC<{
   const debouncedSave = useRef(_debounce(saveMetricSettings, 1500)).current;
 
   const saveAndUpdateMetricSettings = (
-    typeOfUpdate: MetricSettingsUpdateOptions,
     updatedSetting: MetricSettings,
     debounce?: boolean
   ) => {
-    updateMetricSettings(typeOfUpdate, updatedSetting);
     if (debounce) {
       debouncedSave(updatedSetting);
     } else {
       saveMetricSettings(updatedSetting);
     }
-  };
-
-  const fetchAndSetReportSettings = async () => {
-    const response = (await reportStore.getReportSettings()) as
-      | Response
-      | Error;
-
-    setIsLoading(false);
-
-    if (response instanceof Error) {
-      return setLoadingError(response.message);
-    }
-
-    const reportSettings = (await response.json()) as MetricType[];
-    const metricKeyToMetricMap: { [key: string]: MetricType } = {};
-
-    reportSettings?.forEach((metric) => {
-      metricKeyToMetricMap[metric.key] = metric;
-    });
-
-    setMetricSettings(metricKeyToMetricMap);
   };
 
   useEffect(
@@ -455,9 +112,10 @@ export const MetricConfiguration: React.FC<{
       when(
         () => userStore.userInfoLoaded,
         async () => {
-          fetchAndSetReportSettings();
-          setActiveMetricFilter(
-            removeSnakeCase(userStore.currentAgency?.systems[0] as string)
+          await metricConfigStore.initializeMetricConfigStoreValues();
+          setIsLoading(false);
+          metricConfigStore.updateActiveSystem(
+            userStore.currentAgency?.systems[0]
           );
         }
       ),
@@ -474,11 +132,12 @@ export const MetricConfiguration: React.FC<{
         async (currentAgencyId, previousAgencyId) => {
           if (previousAgencyId !== undefined) {
             setIsLoading(true);
-            fetchAndSetReportSettings();
-            setActiveMetricFilter(
-              removeSnakeCase(userStore.currentAgency?.systems[0] as string)
+            await metricConfigStore.initializeMetricConfigStoreValues();
+            setIsLoading(false);
+            metricConfigStore.updateActiveSystem(
+              userStore.currentAgency?.systems[0]
             );
-            setActiveMetricKey(undefined);
+            metricConfigStore.updateActiveMetricKey(undefined);
           }
         }
       ),
@@ -497,7 +156,8 @@ export const MetricConfiguration: React.FC<{
   return (
     <>
       <MetricsViewContainer>
-        {!activeMetricKey &&
+        {/* System Tabs (for multi-system agencies) */}
+        {!metricConfigStore.activeMetricKey &&
           userStore.currentAgency?.systems &&
           userStore.currentAgency?.systems?.length > 1 && (
             <StickyHeader>
@@ -506,11 +166,9 @@ export const MetricConfiguration: React.FC<{
                   {userStore.currentAgency?.systems.map((filterOption) => (
                     <TabbedItem
                       key={filterOption}
-                      selected={
-                        activeMetricFilter === removeSnakeCase(filterOption)
-                      }
+                      selected={metricConfigStore.activeSystem === filterOption}
                       onClick={() =>
-                        setActiveMetricFilter(removeSnakeCase(filterOption))
+                        metricConfigStore.updateActiveSystem(filterOption)
                       }
                       capitalize
                     >
@@ -524,72 +182,79 @@ export const MetricConfiguration: React.FC<{
 
         <MetricsViewControlPanel>
           {/* List Of Metrics */}
-          {filteredMetricSettings && !activeMetricKey && (
+          {!metricConfigStore.activeMetricKey && (
             <MetricBoxBottomPaddingContainer>
               <MetricBoxContainerWrapper>
-                {Object.values(filteredMetricSettings).map((metric) => (
-                  <MetricBox
-                    key={metric.key}
-                    metricKey={metric.key}
-                    displayName={metric.display_name}
-                    frequency={metric.frequency as ReportFrequency}
-                    description={metric.description}
-                    enabled={metric.enabled}
-                    setActiveMetricKey={setActiveMetricKey}
-                  />
-                ))}
+                {metricConfigStore
+                  .getMetricsBySystem(metricConfigStore.activeSystem)
+                  ?.map(({ key, metric }) => (
+                    <MetricBox
+                      key={key}
+                      metricKey={key}
+                      displayName={metric.label as string}
+                      frequency={metric.frequency as ReportFrequency}
+                      description={metric.description as string}
+                      enabled={metric.enabled}
+                    />
+                  ))}
               </MetricBoxContainerWrapper>
             </MetricBoxBottomPaddingContainer>
           )}
 
-          {/* Metric Configuration */}
-          {activeMetricKey && (
+          {metricConfigStore.activeMetricKey && (
             <MetricConfigurationWrapper>
+              {/* Metric Configuration */}
               <MetricConfigurationDisplay>
                 <BackToMetrics
                   onClick={() => {
-                    setActiveMetricKey(undefined);
-                    setActiveDimension(undefined);
+                    metricConfigStore.updateActiveMetricKey(undefined);
+                    setActiveDimensionKey(undefined);
                   }}
                 >
                   ← Back to Metrics
                 </BackToMetrics>
 
                 <Metric
-                  onClick={() => setActiveDimension(undefined)}
-                  inView={!activeDimension}
+                  onClick={() => setActiveDimensionKey(undefined)}
+                  inView={!activeDimensionKey}
                 >
                   <MetricName isTitle>
-                    {metricSettings[activeMetricKey]?.display_name}
+                    {metricConfigStore.metrics[currentSystemMetricKey]?.label}
                   </MetricName>
                   <Badge color="GREEN" noMargin>
-                    {metricSettings[activeMetricKey]?.frequency?.toLowerCase()}
+                    {metricConfigStore.metrics[
+                      currentSystemMetricKey
+                    ]?.frequency?.toLowerCase()}
                   </Badge>
                   <RightArrowIcon />
                 </Metric>
 
                 <MetricDetailsDisplay>
                   <Configuration
-                    activeMetricKey={activeMetricKey}
-                    filteredMetricSettings={filteredMetricSettings}
-                    activeDimension={activeDimension}
-                    activeDisaggregation={activeDisaggregation}
-                    setActiveDisaggregation={setActiveDisaggregation}
+                    activeDimensionKey={activeDimensionKey}
+                    setActiveDimensionKey={setActiveDimensionKey}
+                    activeDisaggregationKey={activeDisaggregationKey}
+                    setActiveDisaggregationKey={setActiveDisaggregationKey}
                     saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
-                    setActiveDimension={setActiveDimension}
                   />
                 </MetricDetailsDisplay>
               </MetricConfigurationDisplay>
 
               {/* Metric/Dimension Definitions (Includes/Excludes) */}
-              <MetricDefinitions
-                activeMetricKey={activeMetricKey}
-                activeMetric={filteredMetricSettings[activeMetricKey]}
-                activeDimension={activeDimension}
-                activeDisaggregation={activeDisaggregation}
-                contexts={metricSettings[activeMetricKey]?.contexts}
+              {/* <MetricDefinitions
+                activeMetricKey={metricConfigStore.activeMetricKey}
+                activeMetric={
+                  // filteredMetricSettings[metricConfigStore.activeMetricKey]
+                  {}
+                }
+                activeDimensionKey={activeDimensionKey}
+                activeDisaggregationKey={activeDisaggregationKey}
+                contexts={
+                  // metricSettings[metricConfigStore.activeMetricKey]?.contexts
+                  {}
+                }
                 saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
-              />
+              /> */}
             </MetricConfigurationWrapper>
           )}
         </MetricsViewControlPanel>

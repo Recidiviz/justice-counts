@@ -32,7 +32,6 @@ import {
   MetricContextHeader,
   MetricContextItem,
   MetricSettings,
-  MetricSettingsUpdateOptions,
   MultipleChoiceWrapper,
   RadioButtonGroupWrapper,
   Subheader,
@@ -42,7 +41,6 @@ type MetricContextConfigurationProps = {
   metricKey: string;
   contexts: MetricContext[];
   saveAndUpdateMetricSettings: (
-    typeOfUpdate: MetricSettingsUpdateOptions,
     updatedSetting: MetricSettings,
     debounce?: boolean
   ) => void;
@@ -110,7 +108,7 @@ export const ContextConfiguration: React.FC<
                   value="yes"
                   checked={context.value === "yes"}
                   onChange={() =>
-                    saveAndUpdateMetricSettings("CONTEXT", {
+                    saveAndUpdateMetricSettings({
                       key: metricKey,
                       contexts: [{ key: context.key, value: "yes" }],
                     })
@@ -124,7 +122,7 @@ export const ContextConfiguration: React.FC<
                   value="no"
                   checked={context.value === "no"}
                   onChange={() =>
-                    saveAndUpdateMetricSettings("CONTEXT", {
+                    saveAndUpdateMetricSettings({
                       key: metricKey,
                       contexts: [{ key: context.key, value: "no" }],
                     })
@@ -133,7 +131,7 @@ export const ContextConfiguration: React.FC<
               </RadioButtonGroupWrapper>
               <BinaryRadioGroupClearButton
                 onClick={() =>
-                  saveAndUpdateMetricSettings("CONTEXT", {
+                  saveAndUpdateMetricSettings({
                     key: metricKey,
                     contexts: [{ key: context.key, value: "" }],
                   })
@@ -161,7 +159,6 @@ export const ContextConfiguration: React.FC<
                   }
 
                   saveAndUpdateMetricSettings(
-                    "CONTEXT",
                     {
                       key: metricKey,
                       contexts: [
@@ -192,7 +189,7 @@ export const ContextConfiguration: React.FC<
                     value={option}
                     checked={context.value === option}
                     onChange={() =>
-                      saveAndUpdateMetricSettings("CONTEXT", {
+                      saveAndUpdateMetricSettings({
                         key: metricKey,
                         contexts: [{ key: context.key, value: option }],
                       })
@@ -203,7 +200,7 @@ export const ContextConfiguration: React.FC<
 
               <BinaryRadioGroupClearButton
                 onClick={() =>
-                  saveAndUpdateMetricSettings("CONTEXT", {
+                  saveAndUpdateMetricSettings({
                     key: metricKey,
                     contexts: [{ key: context.key, value: "" }],
                   })

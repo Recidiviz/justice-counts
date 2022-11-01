@@ -16,10 +16,12 @@
 // =============================================================================
 
 import {
+  AgencySystems,
   FormError,
   Metric,
   MetricConfigurationSettingsOptions,
   MetricContext,
+  ReportFrequency,
 } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction } from "mobx";
 
@@ -35,9 +37,14 @@ class MetricConfigStore {
 
   activeMetricKey: string | undefined;
 
+  activeSystem: AgencySystems | undefined;
+
   metrics: {
     [systemMetricKey: string]: {
       enabled?: boolean;
+      label?: Metric["label"];
+      description?: Metric["description"];
+      frequency?: Metric["frequency"];
     };
   };
 
@@ -62,6 +69,7 @@ class MetricConfigStore {
     [systemMetricKey: string]: {
       [disaggregationKey: string]: {
         enabled?: boolean;
+        display_name?: string;
       };
     };
   };
@@ -71,6 +79,7 @@ class MetricConfigStore {
       [disaggregationKey: string]: {
         [dimensionKey: string]: {
           enabled?: boolean;
+          label?: Metric["label"];
         };
       };
     };
@@ -103,12 +112,48 @@ class MetricConfigStore {
   }
 
   static getSystemMetricKey(metricKey: string, system: string) {
-    return `${system}-${metricKey}`;
+    return `${system.toUpperCase()}-${metricKey}`;
   }
 
   static splitSystemMetricKey(systemMetricKey: string) {
     const [system, metricKey] = systemMetricKey.split("-");
     return { system, metricKey };
+  }
+
+  updateActiveSystem(systemName: AgencySystems | undefined) {
+    this.activeSystem = systemName;
+  }
+
+  updateActiveMetricKey(metricKey: string | undefined) {
+    this.activeMetricKey = metricKey;
+  }
+
+  getMetricsBySystem(systemName: AgencySystems | undefined) {
+    if (systemName) {
+      const metrics = Object.entries(this.metrics).reduce(
+        (filteredMetrics, [systemMetricKey, metric]) => {
+          const { system, metricKey } =
+            MetricConfigStore.splitSystemMetricKey(systemMetricKey);
+
+          if (system.toLowerCase() === systemName.toLowerCase()) {
+            filteredMetrics.push({ key: metricKey, metric });
+          }
+
+          return filteredMetrics;
+        },
+        [] as {
+          key: string;
+          metric: {
+            enabled?: boolean;
+            label?: Metric["label"];
+            description?: Metric["description"];
+            frequency?: Metric["frequency"];
+          };
+        }[]
+      );
+
+      return metrics;
+    }
   }
 
   async getMetricSettings() {
@@ -161,17 +206,24 @@ class MetricConfigStore {
 
     runInAction(() => {
       metrics.forEach((metric) => {
+        const normalizedMetricSystemName = metric.system.replaceAll(" ", "_");
+
         /** Initialize Metrics Status (Enabled/Disabled) */
         this.updateMetricEnabledStatus(
-          metric.system,
+          normalizedMetricSystemName,
           metric.key,
-          metric.enabled as boolean
+          metric.enabled as boolean,
+          {
+            label: metric.label,
+            description: metric.description,
+            frequency: metric.frequency || "",
+          }
         );
 
         metric.settings?.forEach((setting) => {
           /** Initialize Metrics Definition Settings (Included/Excluded) */
           this.updateMetricDefinitionSetting(
-            metric.system,
+            normalizedMetricSystemName,
             metric.key,
             setting.key,
             setting.included
@@ -181,26 +233,28 @@ class MetricConfigStore {
         metric.disaggregations.forEach((disaggregation) => {
           /** Initialize Disaggregation Status (Enabled/Disabled) */
           this.updateDisaggregationEnabledStatus(
-            metric.system,
+            normalizedMetricSystemName,
             metric.key,
             disaggregation.key,
-            disaggregation.enabled as boolean
+            disaggregation.enabled as boolean,
+            { display_name: disaggregation.display_name }
           );
 
           disaggregation.dimensions.forEach((dimension) => {
             /** Initialize Dimension Status (Enabled/Disabled) */
             this.updateDimensionEnabledStatus(
-              metric.system,
+              normalizedMetricSystemName,
               metric.key,
               disaggregation.key,
               dimension.key,
-              dimension.enabled as boolean
+              dimension.enabled as boolean,
+              { label: dimension.label }
             );
 
             dimension.settings?.forEach((setting) => {
               /** Initialize Dimension Definition Settings (Included/Excluded) */
               this.updateDimensionDefinitionSetting(
-                metric.system,
+                normalizedMetricSystemName,
                 metric.key,
                 disaggregation.key,
                 dimension.key,
@@ -214,7 +268,7 @@ class MetricConfigStore {
         metric.contexts.forEach((context) => {
           /** Initialize Context Values */
           this.updateContextValue(
-            metric.system,
+            normalizedMetricSystemName,
             metric.key,
             context.key,
             context.type,
@@ -228,7 +282,8 @@ class MetricConfigStore {
   updateMetricEnabledStatus(
     system: string,
     metricKey: string,
-    enabledStatus: boolean
+    enabledStatus: boolean,
+    metadata?: { [key: string]: string }
   ) {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       metricKey,
@@ -238,6 +293,14 @@ class MetricConfigStore {
     /** Initialize nested object for quick lookup and update and reduce re-renders */
     if (!this.metrics[systemMetricKey]) {
       this.metrics[systemMetricKey] = {};
+    }
+
+    /** If provided, add metadata required for rendering */
+    if (metadata) {
+      this.metrics[systemMetricKey].label = metadata.label;
+      this.metrics[systemMetricKey].description = metadata.description;
+      this.metrics[systemMetricKey].frequency =
+        metadata.frequency as ReportFrequency;
     }
 
     /** Update value */
@@ -284,7 +347,8 @@ class MetricConfigStore {
     system: string,
     metricKey: string,
     disaggregationKey: string,
-    enabledStatus: boolean
+    enabledStatus: boolean,
+    metadata?: { [key: string]: string }
   ) {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       metricKey,
@@ -297,6 +361,26 @@ class MetricConfigStore {
     }
     if (!this.disaggregations[systemMetricKey][disaggregationKey]) {
       this.disaggregations[systemMetricKey][disaggregationKey] = {};
+    }
+
+    /** If provided, add metadata required for rendering */
+    if (metadata) {
+      this.disaggregations[systemMetricKey][disaggregationKey].display_name =
+        metadata.display_name;
+    }
+
+    /**
+     * When a disaggregation is disabled, all dimensions are disabled.
+     * When a disaggregation is enabled, all dimensions are enabled.
+     */
+    if (!metadata && this.dimensions[systemMetricKey]?.[disaggregationKey]) {
+      Object.keys(this.dimensions[systemMetricKey][disaggregationKey]).forEach(
+        (dimensionKey) => {
+          this.dimensions[systemMetricKey][disaggregationKey][
+            dimensionKey
+          ].enabled = enabledStatus;
+        }
+      );
     }
 
     /** Update value */
@@ -320,7 +404,8 @@ class MetricConfigStore {
     metricKey: string,
     disaggregationKey: string,
     dimensionKey: string,
-    enabledStatus: boolean
+    enabledStatus: boolean,
+    metadata?: { [key: string]: string }
   ) {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       metricKey,
@@ -336,6 +421,38 @@ class MetricConfigStore {
     }
     if (!this.dimensions[systemMetricKey][disaggregationKey][dimensionKey]) {
       this.dimensions[systemMetricKey][disaggregationKey][dimensionKey] = {};
+    }
+
+    /** If provided, add metadata required for rendering */
+    if (metadata) {
+      this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].label =
+        metadata.label;
+    }
+
+    /**
+     * When last dimension is disabled, the disaggregation is disabled
+     * When all dimensions are off, and one dimension is re-enabled, the disaggregation is enabled
+     */
+
+    if (!metadata) {
+      const isLastDimensionDisabled =
+        enabledStatus === false &&
+        Object.values(
+          this.dimensions[systemMetricKey][disaggregationKey]
+        ).filter((dimension) => dimension.enabled)?.length === 1;
+      const isDisaggregationDisabledAndOneDimensionReEnabled =
+        enabledStatus === true &&
+        this.disaggregations[systemMetricKey][disaggregationKey].enabled ===
+          false;
+
+      if (isLastDimensionDisabled) {
+        this.disaggregations[systemMetricKey][disaggregationKey].enabled =
+          false;
+      }
+
+      if (isDisaggregationDisabledAndOneDimensionReEnabled) {
+        this.disaggregations[systemMetricKey][disaggregationKey].enabled = true;
+      }
     }
 
     /** Update value */
