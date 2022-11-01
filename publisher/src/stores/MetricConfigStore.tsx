@@ -51,7 +51,9 @@ class MetricConfigStore {
   metricDefinitionSettings: {
     [systemMetricKey: string]: {
       [settingKey: string]: {
-        included?: "N/A" | "No" | "Yes";
+        included?: MetricConfigurationSettingsOptions;
+        default?: MetricConfigurationSettingsOptions;
+        label?: string;
       };
     };
   };
@@ -93,7 +95,9 @@ class MetricConfigStore {
       [disaggregationKey: string]: {
         [dimensionKey: string]: {
           [settingKey: string]: {
-            included?: "N/A" | "No" | "Yes";
+            included?: MetricConfigurationSettingsOptions;
+            default?: MetricConfigurationSettingsOptions;
+            label?: string;
           };
         };
       };
@@ -114,7 +118,7 @@ class MetricConfigStore {
     this.contexts = {};
   }
 
-  static getSystemMetricKey(metricKey: string, system: string) {
+  static getSystemMetricKey(system: string, metricKey: string) {
     return `${system.toUpperCase()}-${metricKey}`;
   }
 
@@ -205,86 +209,92 @@ class MetricConfigStore {
   }
 
   async initializeMetricConfigStoreValues() {
-    const metrics = await this.getMetricSettings();
+    try {
+      const metrics = await this.getMetricSettings();
 
-    runInAction(() => {
-      metrics.forEach((metric) => {
-        const normalizedMetricSystemName = metric.system.replaceAll(" ", "_");
+      runInAction(() => {
+        metrics.forEach((metric) => {
+          const normalizedMetricSystemName = metric.system.replaceAll(" ", "_");
 
-        /** Initialize Metrics Status (Enabled/Disabled) */
-        this.updateMetricEnabledStatus(
-          normalizedMetricSystemName,
-          metric.key,
-          metric.enabled as boolean,
-          {
-            label: metric.label,
-            description: metric.description,
-            frequency: metric.frequency || "",
-          }
-        );
-
-        metric.settings?.forEach((setting) => {
-          /** Initialize Metrics Definition Settings (Included/Excluded) */
-          this.updateMetricDefinitionSetting(
+          /** Initialize Metrics Status (Enabled/Disabled) */
+          this.updateMetricEnabledStatus(
             normalizedMetricSystemName,
             metric.key,
-            setting.key,
-            setting.included
-          );
-        });
-
-        metric.disaggregations.forEach((disaggregation) => {
-          /** Initialize Disaggregation Status (Enabled/Disabled) */
-          this.updateDisaggregationEnabledStatus(
-            normalizedMetricSystemName,
-            metric.key,
-            disaggregation.key,
-            disaggregation.enabled as boolean,
-            { display_name: disaggregation.display_name }
+            metric.enabled as boolean,
+            {
+              label: metric.label,
+              description: metric.description,
+              frequency: metric.frequency || "",
+            }
           );
 
-          disaggregation.dimensions.forEach((dimension) => {
-            /** Initialize Dimension Status (Enabled/Disabled) */
-            this.updateDimensionEnabledStatus(
+          metric.settings?.forEach((setting) => {
+            /** Initialize Metrics Definition Settings (Included/Excluded) */
+            this.updateMetricDefinitionSetting(
+              normalizedMetricSystemName,
+              metric.key,
+              setting.key,
+              setting.included,
+              { label: setting.label, default: setting.default }
+            );
+          });
+
+          metric.disaggregations.forEach((disaggregation) => {
+            /** Initialize Disaggregation Status (Enabled/Disabled) */
+            this.updateDisaggregationEnabledStatus(
               normalizedMetricSystemName,
               metric.key,
               disaggregation.key,
-              dimension.key,
-              dimension.enabled as boolean,
-              { label: dimension.label }
+              disaggregation.enabled as boolean,
+              { display_name: disaggregation.display_name }
             );
 
-            dimension.settings?.forEach((setting) => {
-              /** Initialize Dimension Definition Settings (Included/Excluded) */
-              this.updateDimensionDefinitionSetting(
+            disaggregation.dimensions.forEach((dimension) => {
+              /** Initialize Dimension Status (Enabled/Disabled) */
+              this.updateDimensionEnabledStatus(
                 normalizedMetricSystemName,
                 metric.key,
                 disaggregation.key,
                 dimension.key,
-                setting.key,
-                setting.included
+                dimension.enabled as boolean,
+                { label: dimension.label }
               );
+
+              dimension.settings?.forEach((setting) => {
+                /** Initialize Dimension Definition Settings (Included/Excluded) */
+                this.updateDimensionDefinitionSetting(
+                  normalizedMetricSystemName,
+                  metric.key,
+                  disaggregation.key,
+                  dimension.key,
+                  setting.key,
+                  setting.included,
+                  { label: setting.label, default: setting.default }
+                );
+              });
             });
           });
-        });
 
-        metric.contexts.forEach((context) => {
-          /** Initialize Context Values */
-          this.updateContextValue(
-            normalizedMetricSystemName,
-            metric.key,
-            context.key,
-            context.type,
-            context.value,
-            {
-              display_name: context.display_name as string,
-              type: context.type,
-              multiple_choice_options: context.multiple_choice_options,
-            }
-          );
+          metric.contexts.forEach((context) => {
+            /** Initialize Context Values */
+            this.updateContextValue(
+              normalizedMetricSystemName,
+              metric.key,
+              context.key,
+              context.type,
+              context.value,
+              {
+                display_name: context.display_name as string,
+                type: context.type,
+                multiple_choice_options: context.multiple_choice_options,
+              }
+            );
+          });
         });
       });
-    });
+    } catch (error) {
+      return new Error(error as string);
+    }
   }
 
   updateMetricEnabledStatus(
@@ -294,8 +304,8 @@ class MetricConfigStore {
     metadata?: { [key: string]: string }
   ) {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
-      metricKey,
-      system
+      system,
+      metricKey
     );
 
     /** Initialize nested object for quick lookup and update and reduce re-renders */
@@ -325,11 +335,12 @@ class MetricConfigStore {
     system: string,
     metricKey: string,
     settingKey: string,
-    settingValue: MetricConfigurationSettingsOptions
+    settingValue: MetricConfigurationSettingsOptions,
+    metadata?: { [key: string]: string }
   ) {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
-      metricKey,
-      system
+      system,
+      metricKey
     );
 
     /** Initialize nested objects for quick lookup and update and reduce re-renders */
@@ -340,6 +351,14 @@ class MetricConfigStore {
       this.metricDefinitionSettings[systemMetricKey][settingKey] = {};
     }
 
+    /** If provided, add metadata required for rendering */
+    if (metadata) {
+      this.metricDefinitionSettings[systemMetricKey][settingKey].label =
+        metadata.label;
+      this.metricDefinitionSettings[systemMetricKey][settingKey].default =
+        metadata.default as MetricConfigurationSettingsOptions;
+    }
+
     /** Update value */
     this.metricDefinitionSettings[systemMetricKey][settingKey].included =
       settingValue;
@@ -347,7 +366,7 @@ class MetricConfigStore {
     /** Return an object in the desired backend data structure for saving purposes */
     return {
       key: metricKey,
-      setting: [{ key: settingKey, included: settingValue }],
+      settings: [{ key: settingKey, included: settingValue }],
     };
   }
 
@@ -359,8 +378,8 @@ class MetricConfigStore {
     metadata?: { [key: string]: string }
   ) {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
-      metricKey,
-      system
+      system,
+      metricKey
     );
 
     /** Initialize nested objects for quick lookup and update and reduce re-renders */
@@ -416,8 +435,8 @@ class MetricConfigStore {
     metadata?: { [key: string]: string }
   ) {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
-      metricKey,
-      system
+      system,
+      metricKey
     );
 
     /** Initialize nested objects for quick lookup and update and reduce re-renders */
@@ -490,11 +509,12 @@ class MetricConfigStore {
     disaggregationKey: string,
     dimensionKey: string,
     settingKey: string,
-    settingValue: MetricConfigurationSettingsOptions
+    settingValue: MetricConfigurationSettingsOptions,
+    metadata?: { [key: string]: string }
   ) {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
-      metricKey,
-      system
+      system,
+      metricKey
     );
 
     /** Initialize nested objects for quick lookup and update and reduce re-renders */
@@ -521,6 +541,17 @@ class MetricConfigStore {
       this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
         dimensionKey
       ][settingKey] = {};
+    }
+
+    /** If provided, add metadata required for rendering */
+    if (metadata) {
+      this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
+        dimensionKey
+      ][settingKey].label = metadata.label;
+      this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
+        dimensionKey
+      ][settingKey].default =
+        metadata.default as MetricConfigurationSettingsOptions;
     }
 
     /** Update value */
@@ -559,8 +590,8 @@ class MetricConfigStore {
     metadata?: { [key: string]: string | string[] | MetricContext["type"] }
   ) {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
-      metricKey,
-      system
+      system,
+      metricKey
     );
 
     /** Initialize nested objects for quick lookup and update and reduce re-renders */

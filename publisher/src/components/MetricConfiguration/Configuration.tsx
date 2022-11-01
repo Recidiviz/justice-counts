@@ -70,8 +70,8 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     const { metricConfigStore } = useStore();
     const { activeMetricKey } = metricConfigStore;
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
-      metricConfigStore.activeMetricKey as string,
-      metricConfigStore.activeSystem as string
+      metricConfigStore.activeSystem as string,
+      metricConfigStore.activeMetricKey as string
     );
     const metricDisplayName = metricConfigStore.metrics[systemMetricKey]?.label;
     const metricEnabled = Boolean(

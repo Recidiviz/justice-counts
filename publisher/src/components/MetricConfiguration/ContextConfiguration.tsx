@@ -52,8 +52,8 @@ export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
 
     const { activeMetricKey } = metricConfigStore;
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
-      activeMetricKey as string,
-      metricConfigStore.activeSystem as string
+      metricConfigStore.activeSystem as string,
+      activeMetricKey as string
     );
     const activeContextKeys =
       (metricConfigStore.contexts[systemMetricKey] &&

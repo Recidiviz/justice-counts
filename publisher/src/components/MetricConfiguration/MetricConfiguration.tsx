@@ -17,7 +17,7 @@
 
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
-  MetricConfigurationSettings,
+  MetricConfigurationSettingsOptions,
   MetricContext,
   ReportFrequency,
 } from "@justice-counts/common/types";
@@ -53,7 +53,7 @@ import {
 export type MetricSettings = {
   key: string;
   enabled?: boolean;
-  settings?: MetricConfigurationSettings[];
+  settings?: { key: string; included: MetricConfigurationSettingsOptions }[];
   contexts?: {
     key: string;
     value: MetricContext["value"];
@@ -64,7 +64,10 @@ export type MetricSettings = {
     dimensions?: {
       key: string;
       enabled?: boolean;
-      settings?: MetricConfigurationSettings[];
+      settings?: {
+        key: string;
+        included: MetricConfigurationSettingsOptions;
+      }[];
     }[];
   }[];
 };
@@ -72,8 +75,8 @@ export type MetricSettings = {
 export const MetricConfiguration: React.FC = observer(() => {
   const { userStore, metricConfigStore } = useStore();
   const currentSystemMetricKey = MetricConfigStore.getSystemMetricKey(
-    metricConfigStore.activeMetricKey || "",
-    metricConfigStore.activeSystem || ""
+    metricConfigStore.activeSystem || "",
+    metricConfigStore.activeMetricKey || ""
   );
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -113,7 +116,13 @@ export const MetricConfiguration: React.FC = observer(() => {
       when(
         () => userStore.userInfoLoaded,
         async () => {
-          await metricConfigStore.initializeMetricConfigStoreValues();
+          const response =
+            await metricConfigStore.initializeMetricConfigStoreValues();
+
+          if (response instanceof Error) {
+            return setLoadingError(response.message);
+          }
+
           setIsLoading(false);
           metricConfigStore.updateActiveSystem(
             userStore.currentAgency?.systems[0]
@@ -133,7 +142,14 @@ export const MetricConfiguration: React.FC = observer(() => {
         async (currentAgencyId, previousAgencyId) => {
           if (previousAgencyId !== undefined) {
             setIsLoading(true);
-            await metricConfigStore.initializeMetricConfigStoreValues();
+
+            const response =
+              await metricConfigStore.initializeMetricConfigStoreValues();
+
+            if (response instanceof Error) {
+              return setLoadingError(response.message);
+            }
+
             setIsLoading(false);
             metricConfigStore.updateActiveSystem(
               userStore.currentAgency?.systems[0]
