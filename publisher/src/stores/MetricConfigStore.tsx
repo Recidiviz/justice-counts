@@ -129,7 +129,9 @@ class MetricConfigStore {
       throw new Error("There was an issue retrieving the metric settings.");
     }
 
-    return response;
+    const metrics: Metric[] = await response.json();
+
+    return metrics;
   }
 
   async saveMetricSettings(updatedMetricSettings: MetricSettings[]) {
@@ -155,8 +157,7 @@ class MetricConfigStore {
   }
 
   async initializeMetricConfigStoreValues() {
-    const response = await this.getMetricSettings();
-    const metrics: Metric[] = await response.json();
+    const metrics = await this.getMetricSettings();
 
     runInAction(() => {
       metrics.forEach((metric) => {
