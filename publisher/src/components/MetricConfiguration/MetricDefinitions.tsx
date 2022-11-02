@@ -101,6 +101,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
     const [showDefaultSettings, setShowDefaultSettings] = useState(false);
 
     const revertToAndSaveDefaultValues = () => {
+      /** Create array of default settings and update settings (to default value) in the store */
       const defaultSettings = activeSettingsKeys.map((settingKey) => {
         let currentSettingDefaultValue;
 
@@ -134,11 +135,9 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
         );
 
         return { key: settingKey, included: currentSettingDefaultValue };
-      }) as {
-        key: string;
-        included: MetricConfigurationSettingsOptions;
-      }[];
+      }) as MetricSettings["settings"];
 
+      /** Save default settings array */
       if (isMetricDefinitionSettings) {
         const updatedSetting = {
           key: activeMetricKey as string,
@@ -183,6 +182,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                 </span>
               </DefinitionsDescription>
 
+              {/* Revert To Default Definition Settings */}
               <RevertToDefaultButton
                 onClick={() => {
                   setShowDefaultSettings(false);
@@ -196,6 +196,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                 Choose Default Definition
               </RevertToDefaultButton>
 
+              {/* Definition Settings (Includes/Excludes) */}
               <Definitions>
                 {activeSettingsKeys?.map((settingKey) => {
                   const currentSetting = (

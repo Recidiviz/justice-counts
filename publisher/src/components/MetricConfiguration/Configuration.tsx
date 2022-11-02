@@ -87,6 +87,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       Object.keys(
         dimensions[systemMetricKey][activeDisaggregationKey]
       )) as string[];
+
     const metricDisplayName = metrics[systemMetricKey]?.label;
 
     const metricEnabled = Boolean(metrics[systemMetricKey]?.enabled);
