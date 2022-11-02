@@ -160,12 +160,8 @@ describe("test data entry form", () => {
     const metricDescription = screen.getAllByText(
       "Measures the number of full-time staff employed by the agency."
     )[0];
-    const context = screen.getAllByText(
-      "Does this include programmatic or medical staff?"
-    )[0];
     expect(displayName).toBeInTheDocument();
     expect(metricDescription).toBeInTheDocument();
-    expect(context).toBeInTheDocument();
 
     expect.hasAssertions();
   });
