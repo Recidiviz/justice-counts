@@ -85,7 +85,7 @@ const TopBarCloseHelpButtonContainer = styled.div<{
   right: 24px;
   display: flex;
   height: ${HEADER_BAR_HEIGHT - 1}px;
-  width: 50%;
+  width: calc(100% - 24px - ${HEADER_BAR_HEIGHT}px);
   padding-top: 10px;
   padding-bottom: 9px;
   flex-direction: row;
