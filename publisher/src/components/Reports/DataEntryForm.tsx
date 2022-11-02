@@ -59,13 +59,13 @@ const DataEntryTopBar = styled(DataUploadHeader)`
   z-index: 2;
 `;
 
-const TopBarButtonsContainer = styled.div<{ showOnboarding: boolean }>`
+const TopBarButtonsContainer = styled.div<{ showDataEntryHelpPage: boolean }>`
   display: flex;
   flex-direction: row;
   gap: 8px;
   transition: opacity 400ms ease-in;
 
-  opacity: ${({ showOnboarding }) => (showOnboarding ? 0 : 1)};
+  opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 0 : 1)};
 `;
 
 const DataEntryReviewButton = styled(Button)`
@@ -77,7 +77,9 @@ const DataEntryReviewButton = styled(Button)`
   }
 `;
 
-const TopBarCloseHelpButtonContainer = styled.div<{ showOnboarding: boolean }>`
+const TopBarCloseHelpButtonContainer = styled.div<{
+  showDataEntryHelpPage: boolean;
+}>`
   position: absolute;
   top: 0;
   right: 24px;
@@ -92,10 +94,10 @@ const TopBarCloseHelpButtonContainer = styled.div<{ showOnboarding: boolean }>`
   transition: background-color 400ms ease-in;
   transition: opacity 400ms ease-in;
 
-  z-index: ${({ showOnboarding }) => (showOnboarding ? 1 : -1)};
-  opacity: ${({ showOnboarding }) => (showOnboarding ? 1 : 0)};
-  background-color: ${({ showOnboarding }) =>
-    showOnboarding ? palette.solid.white : "transparent"};
+  z-index: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 1 : -1)};
+  opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 1 : 0)};
+  background-color: ${({ showDataEntryHelpPage }) =>
+    showDataEntryHelpPage ? palette.solid.white : "transparent"};
 `;
 
 const DataEntryForm: React.FC<{
@@ -267,13 +269,15 @@ const DataEntryForm: React.FC<{
           <Logo src={logoImg} alt="" />
         </LogoContainer>
 
-        <TopBarCloseHelpButtonContainer showOnboarding={showDataEntryHelpPage}>
+        <TopBarCloseHelpButtonContainer
+          showDataEntryHelpPage={showDataEntryHelpPage}
+        >
           <Button type="red" onClick={() => setShowDataEntryHelpPage(false)}>
             Close Help
           </Button>
         </TopBarCloseHelpButtonContainer>
 
-        <TopBarButtonsContainer showOnboarding={showDataEntryHelpPage}>
+        <TopBarButtonsContainer showDataEntryHelpPage={showDataEntryHelpPage}>
           <Button type="border" onClick={() => setShowDataEntryHelpPage(true)}>
             Need Help?
           </Button>
@@ -287,7 +291,7 @@ const DataEntryForm: React.FC<{
         </TopBarButtonsContainer>
       </DataEntryTopBar>
 
-      <FormWrapper showOnboarding={showDataEntryHelpPage}>
+      <FormWrapper showDataEntryHelpPage={showDataEntryHelpPage}>
         <Form
           onChange={(e) => {
             // When the form has changed, check the changed element for a `data-metric-key`

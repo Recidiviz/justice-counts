@@ -47,7 +47,9 @@ import {
   TWO_PANEL_MAX_WIDTH,
 } from "./ReportDataEntry.styles";
 
-export const ReportSummaryWrapper = styled.div<{ showOnboarding?: boolean }>`
+export const ReportSummaryWrapper = styled.div<{
+  showDataEntryHelpPage?: boolean;
+}>`
   width: ${SIDE_PANEL_WIDTH}px;
   height: 100%;
   position: fixed;
@@ -59,7 +61,7 @@ export const ReportSummaryWrapper = styled.div<{ showOnboarding?: boolean }>`
   background: ${palette.solid.white};
   transition: opacity 300ms ease-in;
 
-  opacity: ${({ showOnboarding }) => (showOnboarding ? 0.5 : 1)};
+  opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 0.5 : 1)};
 
   @media only screen and (max-width: ${ONE_PANEL_MAX_WIDTH}px) {
     display: none;
@@ -245,7 +247,7 @@ const ReportSummaryPanel: React.FC<{
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;
 
   return (
-    <ReportSummaryWrapper showOnboarding={showDataEntryHelpPage}>
+    <ReportSummaryWrapper showDataEntryHelpPage={showDataEntryHelpPage}>
       <Title>Report Summary</Title>
 
       <ReportSummaryProgressIndicatorWrapper>

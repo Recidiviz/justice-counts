@@ -41,7 +41,7 @@ export const PageWrapper = styled.div`
   background: ${palette.solid.white};
 `;
 
-export const FormWrapper = styled.div<{ showOnboarding?: boolean }>`
+export const FormWrapper = styled.div<{ showDataEntryHelpPage?: boolean }>`
   flex: 0 1 ${DATA_ENTRY_WIDTH}px;
   max-width: ${DATA_ENTRY_WIDTH}px;
   display: flex;
@@ -49,7 +49,7 @@ export const FormWrapper = styled.div<{ showOnboarding?: boolean }>`
   margin: 32px 360px 50px 360px;
   transition: opacity 300ms ease-in;
 
-  opacity: ${({ showOnboarding }) => (showOnboarding ? 0.5 : 1)};
+  opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 0.5 : 1)};
 
   @media only screen and (max-width: ${TWO_PANEL_MAX_WIDTH}px) {
     margin: 32px 24px 50px 360px;
