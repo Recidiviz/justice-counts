@@ -207,7 +207,7 @@ export const TabItem = styled.div<{ active?: boolean; enabled?: boolean }>`
   &:hover {
     cursor: pointer;
     color: ${({ enabled, active }) =>
-      !enabled && !active && palette.solid.darkgrey};
+      !active && (enabled ? palette.solid.blue : palette.solid.darkgrey)};
   }
 `;
 

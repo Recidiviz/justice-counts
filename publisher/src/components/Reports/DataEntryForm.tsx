@@ -381,7 +381,8 @@ const DataEntryForm: React.FC<{
                     <DisabledMetricsInfoWrapper>
                       {displayDisabledMetricsNames}{" "}
                       {disabledMetricsNames.length > 1 ? "are all" : "is"}{" "}
-                      associated with your agency’s operations, but have been
+                      associated with your agency’s operations, but{" "}
+                      {disabledMetricsNames.length > 1 ? "have" : "has"} been
                       disabled. If you believe this is incorrect, go to{" "}
                       <DisabledMetricsInfoLink
                         onClick={() =>
@@ -390,7 +391,8 @@ const DataEntryForm: React.FC<{
                       >
                         Metric Configuration
                       </DisabledMetricsInfoLink>{" "}
-                      to re-enable them.
+                      to re-enable{" "}
+                      {disabledMetricsNames.length > 1 ? "them" : "it"}.
                     </DisabledMetricsInfoWrapper>
                   )}
                 </Fragment>

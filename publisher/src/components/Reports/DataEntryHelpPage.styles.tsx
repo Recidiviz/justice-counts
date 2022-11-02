@@ -83,9 +83,10 @@ export const DataEntryOnboardingListItem = styled(DataEntryOnboardingText)`
   font-weight: 700;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  white-space: nowrap;
 
   span {
+    white-space: normal;
     font-weight: 500;
     margin-left: 8px;
   }
@@ -98,6 +99,7 @@ export const ListMarker = styled.div`
   border: 3px solid black;
   border-radius: 3px;
   margin-right: 10px;
+  margin-top: 9px;
 `;
 
 export const DataEntryOnboardingLink = styled.span`
