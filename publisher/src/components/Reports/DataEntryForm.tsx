@@ -56,7 +56,7 @@ import { MetricTextInput } from "./DataEntryFormComponents";
 import DataEntryHelpPage from "./DataEntryHelpPage";
 
 const DataEntryTopBar = styled(DataUploadHeader)`
-  z-index: 2;
+  z-index: 3;
 `;
 
 const TopBarButtonsContainer = styled.div<{ showDataEntryHelpPage: boolean }>`
