@@ -470,7 +470,6 @@ class MetricConfigStore {
      * When last dimension is disabled, the disaggregation is disabled
      * When all dimensions are off, and one dimension is re-enabled, the disaggregation is enabled
      */
-
     if (!metadata) {
       const isLastDimensionDisabled =
         enabledStatus === false &&

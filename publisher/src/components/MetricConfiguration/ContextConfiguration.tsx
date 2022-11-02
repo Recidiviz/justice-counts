@@ -15,9 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { DebouncedFunc } from "lodash";
+import { debounce } from "lodash";
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useRef } from "react";
 
 import { useStore } from "../../stores";
 import {
@@ -40,13 +40,10 @@ import {
 
 type MetricContextConfigurationProps = {
   saveUpdatedMetricSettings: (updatedSetting: MetricSettings) => void;
-  debouncedSave: DebouncedFunc<
-    (updatedSetting: MetricSettings) => Promise<void>
-  >;
 };
 
 export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
-  observer(({ saveUpdatedMetricSettings, debouncedSave }) => {
+  observer(({ saveUpdatedMetricSettings }) => {
     const { metricConfigStore } = useStore();
     const {
       activeMetricKey,
@@ -60,6 +57,10 @@ export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
     const activeContextKeys =
       (contexts[systemMetricKey] && Object.keys(contexts[systemMetricKey])) ||
       [];
+
+    const debouncedSave = useRef(
+      debounce(saveUpdatedMetricSettings, 1500)
+    ).current;
 
     return (
       <MetricContextContainer>

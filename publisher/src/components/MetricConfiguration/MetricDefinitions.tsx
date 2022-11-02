@@ -16,7 +16,6 @@
 // =============================================================================
 
 import { MetricConfigurationSettingsOptions } from "@justice-counts/common/types";
-import { DebouncedFunc } from "lodash";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useState } from "react";
 
@@ -41,9 +40,6 @@ type MetricDefinitionsProps = {
   activeDimensionKey: string | undefined;
   activeDisaggregationKey: string | undefined;
   saveUpdatedMetricSettings: (updatedSetting: MetricSettings) => void;
-  debouncedSave: DebouncedFunc<
-    (updatedSetting: MetricSettings) => Promise<void>
-  >;
 };
 
 export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
@@ -51,7 +47,6 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
     activeDimensionKey,
     activeDisaggregationKey,
     saveUpdatedMetricSettings,
-    debouncedSave,
   }) => {
     const { metricConfigStore } = useStore();
     const {
@@ -283,7 +278,6 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
         {!activeDimensionKey && (
           <ContextConfiguration
             saveUpdatedMetricSettings={saveUpdatedMetricSettings}
-            debouncedSave={debouncedSave}
           />
         )}
       </DefinitionsDisplayContainer>

@@ -21,10 +21,9 @@ import {
   MetricContext,
   ReportFrequency,
 } from "@justice-counts/common/types";
-import { debounce as _debounce } from "lodash";
 import { reaction, when } from "mobx";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
@@ -101,10 +100,6 @@ export const MetricConfiguration: React.FC = observer(() => {
       showToast(`Failed to save.`, true, "red", 4000);
     }
   };
-
-  const debouncedSave = useRef(
-    _debounce(saveUpdatedMetricSettings, 1500)
-  ).current;
 
   useEffect(
     () =>
@@ -241,7 +236,6 @@ export const MetricConfiguration: React.FC = observer(() => {
                 activeDimensionKey={activeDimensionKey}
                 activeDisaggregationKey={activeDisaggregationKey}
                 saveUpdatedMetricSettings={saveUpdatedMetricSettings}
-                debouncedSave={debouncedSave}
               />
             </MetricConfigurationWrapper>
           )}
