@@ -15,12 +15,17 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  HEADER_BAR_HEIGHT,
+  palette,
+} from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { Report } from "@justice-counts/common/types";
 import { when } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import styled from "styled-components/macro";
 
 import { trackReportUnpublished } from "../../analytics";
 import { useStore } from "../../stores";
@@ -35,6 +40,17 @@ import PublishDataPanel from "./PublishDataPanel";
 import { FieldDescriptionProps } from "./ReportDataEntry.styles";
 import ReportSummaryPanel from "./ReportSummaryPanel";
 
+const ReportDataEntryWrapper = styled.div`
+  z-index: 4;
+  height: fit-content;
+  background-color: ${palette.solid.white};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -${HEADER_BAR_HEIGHT}px;
+  padding-top: ${HEADER_BAR_HEIGHT}px;
+`;
+
 const ReportDataEntry = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingError, setLoadingError] = useState<string | undefined>(
@@ -45,6 +61,7 @@ const ReportDataEntry = () => {
     FieldDescriptionProps | undefined
   >(undefined);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showDataEntryHelpPage, setShowDataEntryHelpPage] = useState(false);
   const { reportStore, userStore } = useStore();
   const params = useParams();
   const reportID = Number(params.id);
@@ -166,7 +183,7 @@ const ReportDataEntry = () => {
   }
 
   return (
-    <>
+    <ReportDataEntryWrapper>
       {showConfirmation ? (
         <>
           <PublishConfirmationSummaryPanel
@@ -184,26 +201,26 @@ const ReportDataEntry = () => {
           <ReportSummaryPanel
             reportID={reportID}
             activeMetric={activeMetric}
-            fieldDescription={fieldDescription}
-            toggleConfirmationDialogue={toggleConfirmationDialogue}
             checkMetricForErrors={checkMetricForErrors}
+            showDataEntryHelpPage={showDataEntryHelpPage}
+            fieldDescription={fieldDescription}
           />
           <DataEntryForm
             reportID={reportID}
             updateActiveMetric={updateActiveMetric}
             updateFieldDescription={updateFieldDescription}
             toggleConfirmationDialogue={toggleConfirmationDialogue}
+            showDataEntryHelpPage={showDataEntryHelpPage}
+            setShowDataEntryHelpPage={setShowDataEntryHelpPage}
           />
           <PublishDataPanel
             reportID={reportID}
             activeMetric={activeMetric}
             fieldDescription={fieldDescription}
-            toggleConfirmationDialogue={toggleConfirmationDialogue}
-            isPublished={reportOverview.status === "PUBLISHED"}
           />
         </>
       )}
-    </>
+    </ReportDataEntryWrapper>
   );
 };
 

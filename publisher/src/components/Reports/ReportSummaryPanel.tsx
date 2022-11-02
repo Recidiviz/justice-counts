@@ -16,13 +16,13 @@
 // =============================================================================
 
 import {
+  HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import { Metric } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import { useStore } from "../../stores";
@@ -34,34 +34,32 @@ import {
 } from "../../utils";
 import successIcon from "../assets/status-check-icon.png";
 import errorIcon from "../assets/status-error-icon.png";
-import {
-  GoBackToReportsOverviewLink,
-  MetricsSectionTitle,
-  PreTitle,
-  Title,
-} from "../Forms";
+import { MetricsSectionTitle, Title } from "../Forms";
+import { MetricsListItem } from "../Settings";
 import HelperText from "./HelperText";
 import {
   BREAKPOINT_HEIGHT,
   FieldDescription,
   FieldDescriptionProps,
   ONE_PANEL_MAX_WIDTH,
-  PublishButton,
   SIDE_PANEL_HORIZONTAL_PADDING,
   SIDE_PANEL_WIDTH,
   TWO_PANEL_MAX_WIDTH,
 } from "./ReportDataEntry.styles";
 
-export const ReportSummaryWrapper = styled.div`
+export const ReportSummaryWrapper = styled.div<{ showOnboarding?: boolean }>`
   width: ${SIDE_PANEL_WIDTH}px;
   height: 100%;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1;
-  padding: 96px ${SIDE_PANEL_HORIZONTAL_PADDING}px 0
+  padding: ${HEADER_BAR_HEIGHT + 31}px ${SIDE_PANEL_HORIZONTAL_PADDING}px 0
     ${SIDE_PANEL_HORIZONTAL_PADDING}px;
   background: ${palette.solid.white};
+  transition: opacity 300ms ease-in;
+
+  opacity: ${({ showOnboarding }) => (showOnboarding ? 0.5 : 1)};
 
   @media only screen and (max-width: ${ONE_PANEL_MAX_WIDTH}px) {
     display: none;
@@ -71,7 +69,7 @@ export const ReportSummaryWrapper = styled.div`
 const PUBLISH_CONFIRMATION_BUTTON_HEIGHT_AND_PADDING = 128;
 
 export const ReportSummaryProgressIndicatorWrapper = styled.div`
-  margin-top: 28px;
+  margin-top: 16px;
   height: 37vh;
   overflow-y: scroll;
 
@@ -115,18 +113,10 @@ export const ReportSummarySection = styled.a`
   }
 `;
 
-export const MetricDisplayName = styled.div<{
-  activeSection?: boolean;
-}>`
-  ${({ activeSection }) =>
-    activeSection && `color: ${palette.solid.darkgrey};`};
+export const MetricDisplayName = styled(MetricsListItem)`
   border-bottom: 2px solid
     ${({ activeSection }) =>
       activeSection ? palette.solid.blue : `transparent`};
-  max-width: 238px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 `;
 
 export const ReportStatusIcon = styled.div<{
@@ -150,13 +140,6 @@ export const ReportStatusIcon = styled.div<{
   }};
   color: white;
   border: 1px solid ${palette.highlight.grey4};
-`;
-
-export const NotReportedHeader = styled.div`
-  ${typography.sizeCSS.normal}
-  color: ${palette.highlight.grey8};
-  margin-top: 16px;
-  margin-bottom: 2px;
 `;
 
 export const EditDetails = styled.div`
@@ -204,10 +187,6 @@ const PublishContainer = styled.div`
   }
 `;
 
-const LeftPublishButton = styled(PublishButton)`
-  margin-top: 24px;
-`;
-
 const ReportStatusIconComponent: React.FC<{
   metricHasValidInput: boolean;
   metricHasError: boolean;
@@ -243,17 +222,16 @@ const ReportStatusIconComponent: React.FC<{
 const ReportSummaryPanel: React.FC<{
   reportID: number;
   activeMetric: string;
-  fieldDescription?: FieldDescriptionProps;
-  toggleConfirmationDialogue: () => void;
   checkMetricForErrors: (metricKey: string, formStore: FormStore) => boolean;
+  showDataEntryHelpPage: boolean;
+  fieldDescription?: FieldDescriptionProps;
 }> = ({
   reportID,
   activeMetric,
-  fieldDescription,
-  toggleConfirmationDialogue,
   checkMetricForErrors,
+  showDataEntryHelpPage,
+  fieldDescription,
 }) => {
-  const navigate = useNavigate();
   const { formStore, reportStore, userStore } = useStore();
   const {
     editors,
@@ -261,35 +239,18 @@ const ReportSummaryPanel: React.FC<{
     month,
     year,
     frequency,
-    status,
   } = reportStore.reportOverviews[reportID];
 
   const metricsBySystem = reportStore.reportMetricsBySystem[reportID];
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;
 
   return (
-    <ReportSummaryWrapper>
-      <PreTitle>
-        <GoBackToReportsOverviewLink onClick={() => navigate("/")} />
-      </PreTitle>
+    <ReportSummaryWrapper showOnboarding={showDataEntryHelpPage}>
       <Title>Report Summary</Title>
 
       <ReportSummaryProgressIndicatorWrapper>
         {Object.entries(metricsBySystem).map(([system, metrics]) => {
-          const { enabledMetrics, disabledMetrics } = metrics.reduce<{
-            enabledMetrics: Metric[];
-            disabledMetrics: Metric[];
-          }>(
-            (acc, currentMetric) => {
-              if (currentMetric.enabled) {
-                acc.enabledMetrics.push(currentMetric);
-              } else {
-                acc.disabledMetrics.push(currentMetric);
-              }
-              return acc;
-            },
-            { enabledMetrics: [], disabledMetrics: [] }
-          );
+          const enabledMetrics = metrics.filter((metric) => metric.enabled);
 
           return (
             <React.Fragment key={system}>
@@ -307,22 +268,6 @@ const ReportSummaryPanel: React.FC<{
                     metricHasValidInput={Boolean(
                       formStore.metricsValues?.[reportID]?.[metric.key]?.value
                     )}
-                    metric={metric}
-                  />
-                );
-              })}
-
-              {/* Metrics Not Reported */}
-              {disabledMetrics.length > 0 && (
-                <NotReportedHeader>Not Reported</NotReportedHeader>
-              )}
-              {disabledMetrics.map((metric) => {
-                return (
-                  <ReportStatusIconComponent
-                    key={metric.key}
-                    activeMetric={activeMetric}
-                    metricHasError={false}
-                    metricHasValidInput={false}
                     metric={metric}
                   />
                 );
@@ -369,13 +314,6 @@ const ReportSummaryPanel: React.FC<{
         {fieldDescription && (
           <FieldDescription fieldDescription={fieldDescription} />
         )}
-        <LeftPublishButton
-          isPublished={status === "PUBLISHED"}
-          onClick={() => {
-            /** Should trigger a confirmation dialogue before submitting */
-            toggleConfirmationDialogue();
-          }}
-        />
       </PublishContainer>
     </ReportSummaryWrapper>
   );

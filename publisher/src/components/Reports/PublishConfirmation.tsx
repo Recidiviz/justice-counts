@@ -32,6 +32,7 @@ import FormStore from "../../stores/FormStore";
 import { printReportTitle } from "../../utils";
 import logoImg from "../assets/jc-logo-vector.png";
 import errorIcon from "../assets/status-error-icon.png";
+import { DataUploadHeader } from "../DataUpload";
 import { Logo, LogoContainer } from "../Header";
 import { Heading, Subheading } from "../ReviewMetrics/ReviewMetrics.styles";
 import {
@@ -40,7 +41,6 @@ import {
   BreakdownLabelContainer,
   BreakdownValue,
   ConfirmationButtonsContainer,
-  ConfirmationDialogueHeader,
   ConfirmationDialogueTopBarButton,
   ConfirmationDialogueWrapper,
   ContextContainer,
@@ -226,7 +226,7 @@ const PublishConfirmation: React.FC<{
 
   return (
     <>
-      <ConfirmationDialogueHeader transparent={false}>
+      <DataUploadHeader transparent={false}>
         <LogoContainer onClick={() => navigate("/")}>
           <Logo src={logoImg} alt="" />
         </LogoContainer>
@@ -249,7 +249,7 @@ const PublishConfirmation: React.FC<{
             disabled={!isPublishable}
           />
         </ConfirmationButtonsContainer>
-      </ConfirmationDialogueHeader>
+      </DataUploadHeader>
       <ConfirmationDialogueWrapper>
         <MetricsPreviewWrapper>
           <Heading>

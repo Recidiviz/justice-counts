@@ -16,6 +16,7 @@
 // =============================================================================
 
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import { UploadedFiles } from "../components/DataUpload";
 import { MetricConfiguration } from "../components/MetricConfiguration";
@@ -39,8 +40,9 @@ export type ListOfMetricsForNavigation = {
 };
 
 const Settings = () => {
+  const { state } = useLocation();
   const [activeMenuItem, setActiveMenuItem] = useState<MenuOptions>(
-    menuOptions[0]
+    state?.settingsMenuOption || menuOptions[0]
   );
 
   const goToMenuItem = (destination: MenuOptions) =>

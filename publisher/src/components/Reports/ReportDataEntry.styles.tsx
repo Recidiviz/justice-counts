@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -39,7 +40,7 @@ export const PublishDataWrapper = styled.div`
   top: 0;
   right: 0;
   z-index: 1;
-  padding: 112px ${SIDE_PANEL_HORIZONTAL_PADDING}px 0
+  padding: ${HEADER_BAR_HEIGHT + 31}px ${SIDE_PANEL_HORIZONTAL_PADDING}px 0
     ${SIDE_PANEL_HORIZONTAL_PADDING}px;
   height: 100%;
 

@@ -185,6 +185,7 @@ export const TabbedDisaggregations: React.FC<{
                 activeDisaggregation[metric.key]?.disaggregationKey ===
                   disaggregation.key
               }
+              enabled={disaggregation.enabled}
               onClick={() =>
                 updateActiveDisaggregationTab(
                   metric.key,

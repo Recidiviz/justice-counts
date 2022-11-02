@@ -22,7 +22,7 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-import { Button, DataUploadHeader } from "../DataUpload";
+import { Button } from "../DataUpload";
 import {
   MAIN_PANEL_MAX_WIDTH,
   MainPanel,
@@ -38,10 +38,6 @@ const MAIN_PANEL_AND_ONE_SIDE_PANEL_MIN_WIDTH =
   CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH +
   MAIN_PANEL_MAX_WIDTH +
   CONTAINER_HORIZONTAL_PADDING * 2;
-
-export const ConfirmationDialogueHeader = styled(DataUploadHeader)`
-  z-index: 5;
-`;
 
 export const ConfirmationButtonsContainer = styled.div`
   display: flex;
@@ -83,7 +79,6 @@ export const ConfirmationDialogueWrapper = styled.div`
   width: 100%;
   padding-left: ${CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH}px;
   padding-right: ${CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH}px;
-  z-index: 4;
 
   @media only screen and (max-width: ${MAIN_PANEL_AND_TWO_SIDE_PANELS_MIN_WIDTH}px) {
     padding-right: ${CONTAINER_HORIZONTAL_PADDING}px;
