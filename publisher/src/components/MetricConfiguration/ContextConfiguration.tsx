@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { DebouncedFunc } from "lodash";
 import { observer } from "mobx-react-lite";
 import React from "react";
 
@@ -38,14 +39,14 @@ import {
 } from ".";
 
 type MetricContextConfigurationProps = {
-  saveAndUpdateMetricSettings: (
-    updatedSetting: MetricSettings,
-    debounce?: boolean
-  ) => void;
+  saveUpdatedMetricSettings: (updatedSetting: MetricSettings) => void;
+  debouncedSave: DebouncedFunc<
+    (updatedSetting: MetricSettings) => Promise<void>
+  >;
 };
 
 export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
-  observer(({ saveAndUpdateMetricSettings }) => {
+  observer(({ saveUpdatedMetricSettings, debouncedSave }) => {
     const { metricConfigStore } = useStore();
     const {
       activeMetricKey,
@@ -94,7 +95,7 @@ export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
                           currentContext.type,
                           "yes"
                         );
-                        saveAndUpdateMetricSettings(updatedSetting);
+                        saveUpdatedMetricSettings(updatedSetting);
                       }}
                     />
                     <BinaryRadioButton
@@ -112,7 +113,7 @@ export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
                           currentContext.type,
                           "no"
                         );
-                        saveAndUpdateMetricSettings(updatedSetting);
+                        saveUpdatedMetricSettings(updatedSetting);
                       }}
                     />
                   </RadioButtonGroupWrapper>
@@ -125,7 +126,7 @@ export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
                         currentContext.type,
                         ""
                       );
-                      saveAndUpdateMetricSettings(updatedSetting);
+                      saveUpdatedMetricSettings(updatedSetting);
                     }}
                   >
                     Clear Input
@@ -154,7 +155,7 @@ export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
                         currentContext.type,
                         e.currentTarget.value
                       );
-                      saveAndUpdateMetricSettings(updatedSetting, true);
+                      debouncedSave(updatedSetting);
                     }}
                   />
                 </>
@@ -185,7 +186,7 @@ export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
                             currentContext.type,
                             option
                           );
-                          saveAndUpdateMetricSettings(updatedSetting);
+                          saveUpdatedMetricSettings(updatedSetting);
                         }}
                       />
                     ))}
@@ -200,7 +201,7 @@ export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
                         currentContext.type,
                         ""
                       );
-                      saveAndUpdateMetricSettings(updatedSetting);
+                      saveUpdatedMetricSettings(updatedSetting);
                     }}
                   >
                     Clear Input

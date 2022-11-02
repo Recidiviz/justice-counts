@@ -110,6 +110,7 @@ class MetricConfigStore {
     this.api = api;
     this.userStore = userStore;
     this.activeMetricKey = undefined;
+    this.activeSystem = undefined;
     this.metrics = {};
     this.metricDefinitionSettings = {};
     this.disaggregations = {};
@@ -130,19 +131,19 @@ class MetricConfigStore {
     return { system, metricKey };
   }
 
-  getActiveSystemMetricKey(): string {
+  getActiveSystemMetricKey = (): string => {
     return `${this.activeSystem?.toUpperCase()}-${this.activeMetricKey}`;
-  }
+  };
 
-  updateActiveSystem(systemName: AgencySystems | undefined) {
+  updateActiveSystem = (systemName: AgencySystems | undefined) => {
     this.activeSystem = systemName;
-  }
+  };
 
-  updateActiveMetricKey(metricKey: string | undefined) {
+  updateActiveMetricKey = (metricKey: string | undefined) => {
     this.activeMetricKey = metricKey;
-  }
+  };
 
-  getMetricsBySystem(systemName: AgencySystems | undefined) {
+  getMetricsBySystem = (systemName: AgencySystems | undefined) => {
     if (systemName) {
       const metrics = Object.entries(this.metrics).reduce(
         (filteredMetrics, [systemMetricKey, metric]) => {
@@ -168,9 +169,9 @@ class MetricConfigStore {
 
       return metrics;
     }
-  }
+  };
 
-  async getMetricSettings(): Promise<Metric[]> {
+  getMetricSettings = async (): Promise<Metric[]> => {
     const { currentAgency } = this.userStore;
 
     if (currentAgency === undefined) {
@@ -191,11 +192,11 @@ class MetricConfigStore {
     const metrics: Metric[] = await response.json();
 
     return metrics;
-  }
+  };
 
-  async saveMetricSettings(
+  saveMetricSettings = async (
     updatedMetricSettings: MetricSettings[]
-  ): Promise<Response> {
+  ): Promise<Response> => {
     const { currentAgency } = this.userStore;
 
     if (currentAgency === undefined) {
@@ -215,9 +216,9 @@ class MetricConfigStore {
     }
 
     return response;
-  }
+  };
 
-  async initializeMetricConfigStoreValues(): Promise<void | Error> {
+  initializeMetricConfigStoreValues = async (): Promise<void | Error> => {
     try {
       const metrics = await this.getMetricSettings();
 
@@ -304,14 +305,14 @@ class MetricConfigStore {
     } catch (error) {
       return new Error(error as string);
     }
-  }
+  };
 
-  updateMetricEnabledStatus(
+  updateMetricEnabledStatus = (
     system: string,
     metricKey: string,
     enabledStatus: boolean,
     metadata?: { [key: string]: string }
-  ): MetricSettings {
+  ): MetricSettings => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
       metricKey
@@ -338,15 +339,15 @@ class MetricConfigStore {
       key: metricKey,
       enabled: enabledStatus,
     };
-  }
+  };
 
-  updateMetricDefinitionSetting(
+  updateMetricDefinitionSetting = (
     system: string,
     metricKey: string,
     settingKey: string,
     settingValue: MetricConfigurationSettingsOptions,
     metadata?: { [key: string]: string }
-  ): MetricSettings {
+  ): MetricSettings => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
       metricKey
@@ -377,15 +378,15 @@ class MetricConfigStore {
       key: metricKey,
       settings: [{ key: settingKey, included: settingValue }],
     };
-  }
+  };
 
-  updateDisaggregationEnabledStatus(
+  updateDisaggregationEnabledStatus = (
     system: string,
     metricKey: string,
     disaggregationKey: string,
     enabledStatus: boolean,
     metadata?: { [key: string]: string }
-  ): MetricSettings {
+  ): MetricSettings => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
       metricKey
@@ -433,16 +434,16 @@ class MetricConfigStore {
         },
       ],
     };
-  }
+  };
 
-  updateDimensionEnabledStatus(
+  updateDimensionEnabledStatus = (
     system: string,
     metricKey: string,
     disaggregationKey: string,
     dimensionKey: string,
     enabledStatus: boolean,
     metadata?: { [key: string]: string }
-  ): MetricSettings {
+  ): MetricSettings => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
       metricKey
@@ -510,9 +511,9 @@ class MetricConfigStore {
         },
       ],
     };
-  }
+  };
 
-  updateDimensionDefinitionSetting(
+  updateDimensionDefinitionSetting = (
     system: string,
     metricKey: string,
     disaggregationKey: string,
@@ -520,7 +521,7 @@ class MetricConfigStore {
     settingKey: string,
     settingValue: MetricConfigurationSettingsOptions,
     metadata?: { [key: string]: string }
-  ): MetricSettings {
+  ): MetricSettings => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
       metricKey
@@ -588,16 +589,16 @@ class MetricConfigStore {
         },
       ],
     };
-  }
+  };
 
-  updateContextValue(
+  updateContextValue = (
     system: string,
     metricKey: string,
     contextKey: string,
     contextType: MetricContext["type"] | undefined,
     value: MetricContext["value"],
     metadata?: { [key: string]: string | string[] | MetricContext["type"] }
-  ): MetricSettings {
+  ): MetricSettings => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
       metricKey
@@ -625,7 +626,7 @@ class MetricConfigStore {
     this.contexts[systemMetricKey][contextKey].value = value;
 
     /** Context Validation for NUMBER type contexts */
-    if (contextType === "NUMBER") {
+    if (contextType === "NUMBER" && value) {
       const cleanValue = removeCommaSpaceAndTrim(value as string);
 
       if (!isPositiveNumber(cleanValue) && cleanValue !== "") {
@@ -642,7 +643,7 @@ class MetricConfigStore {
       key: metricKey,
       contexts: [{ key: contextKey, value }],
     };
-  }
+  };
 }
 
 export default MetricConfigStore;

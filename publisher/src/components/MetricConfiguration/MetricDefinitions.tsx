@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { MetricConfigurationSettingsOptions } from "@justice-counts/common/types";
+import { DebouncedFunc } from "lodash";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useState } from "react";
 
@@ -40,17 +41,18 @@ import {
 type MetricDefinitionsProps = {
   activeDimensionKey: string | undefined;
   activeDisaggregationKey: string | undefined;
-  saveAndUpdateMetricSettings: (
-    updatedSetting: MetricSettings,
-    debounce?: boolean
-  ) => void;
+  saveUpdatedMetricSettings: (updatedSetting: MetricSettings) => void;
+  debouncedSave: DebouncedFunc<
+    (updatedSetting: MetricSettings) => Promise<void>
+  >;
 };
 
 export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
   ({
     activeDimensionKey,
     activeDisaggregationKey,
-    saveAndUpdateMetricSettings,
+    saveUpdatedMetricSettings,
+    debouncedSave,
   }) => {
     const { metricConfigStore } = useStore();
 
@@ -138,13 +140,13 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
       }[];
 
       if (isMetricDefinitionSettings) {
-        return saveAndUpdateMetricSettings({
+        return saveUpdatedMetricSettings({
           key: metricConfigStore.activeMetricKey as string,
           settings: defaultSettings,
         });
       }
 
-      saveAndUpdateMetricSettings({
+      saveUpdatedMetricSettings({
         key: metricConfigStore.activeMetricKey as string,
         disaggregations: [
           {
@@ -237,7 +239,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                                       settingKey,
                                       option
                                     );
-                                  return saveAndUpdateMetricSettings(
+                                  return saveUpdatedMetricSettings(
                                     updatedSettings
                                   );
                                 }
@@ -251,7 +253,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                                     settingKey,
                                     option
                                   );
-                                saveAndUpdateMetricSettings(updatedSettings);
+                                saveUpdatedMetricSettings(updatedSettings);
                               }}
                             >
                               {option}
@@ -277,7 +279,8 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
         {/* Additional Context (only appears on overall metric settings and not individual dimension settings) */}
         {!activeDimensionKey && (
           <ContextConfiguration
-            saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
+            saveUpdatedMetricSettings={saveUpdatedMetricSettings}
+            debouncedSave={debouncedSave}
           />
         )}
       </DefinitionsDisplayContainer>

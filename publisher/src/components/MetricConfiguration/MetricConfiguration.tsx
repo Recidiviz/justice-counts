@@ -27,7 +27,6 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
 
 import { useStore } from "../../stores";
-import MetricConfigStore from "../../stores/MetricConfigStore";
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import { Badge } from "../Badge";
@@ -74,22 +73,28 @@ export type MetricSettings = {
 
 export const MetricConfiguration: React.FC = observer(() => {
   const { userStore, metricConfigStore } = useStore();
-  const currentSystemMetricKey = MetricConfigStore.getSystemMetricKey(
-    metricConfigStore.activeSystem || "",
-    metricConfigStore.activeMetricKey || ""
-  );
+  const {
+    activeMetricKey,
+    activeSystem,
+    metrics,
+    initializeMetricConfigStoreValues,
+    getActiveSystemMetricKey,
+    getMetricsBySystem,
+    updateActiveSystem,
+    updateActiveMetricKey,
+    saveMetricSettings,
+  } = metricConfigStore;
+
+  const systemMetricKey = getActiveSystemMetricKey();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [loadingError, setLoadingError] = useState<string>();
+  const [loadingErrorMessage, setLoadingErrorMessage] = useState<string>();
   const [activeDimensionKey, setActiveDimensionKey] = useState<string>();
   const [activeDisaggregationKey, setActiveDisaggregationKey] =
     useState<string>();
 
-  const saveMetricSettings = async (updatedSetting: MetricSettings) => {
-    const response = (await metricConfigStore.saveMetricSettings([
-      updatedSetting,
-    ])) as Response;
-
+  const saveUpdatedMetricSettings = async (updatedSetting: MetricSettings) => {
+    const response = (await saveMetricSettings([updatedSetting])) as Response;
     if (response.status === 200) {
       showToast(`Settings saved.`, true, "grey", 4000);
     } else {
@@ -97,18 +102,9 @@ export const MetricConfiguration: React.FC = observer(() => {
     }
   };
 
-  const debouncedSave = useRef(_debounce(saveMetricSettings, 1500)).current;
-
-  const saveAndUpdateMetricSettings = (
-    updatedSetting: MetricSettings,
-    debounce?: boolean
-  ) => {
-    if (debounce) {
-      debouncedSave(updatedSetting);
-    } else {
-      saveMetricSettings(updatedSetting);
-    }
-  };
+  const debouncedSave = useRef(
+    _debounce(saveUpdatedMetricSettings, 1500)
+  ).current;
 
   useEffect(
     () =>
@@ -116,17 +112,12 @@ export const MetricConfiguration: React.FC = observer(() => {
       when(
         () => userStore.userInfoLoaded,
         async () => {
-          const response =
-            await metricConfigStore.initializeMetricConfigStoreValues();
-
+          const response = await initializeMetricConfigStoreValues();
           if (response instanceof Error) {
-            return setLoadingError(response.message);
+            return setLoadingErrorMessage(response.message);
           }
-
           setIsLoading(false);
-          metricConfigStore.updateActiveSystem(
-            userStore.currentAgency?.systems[0]
-          );
+          updateActiveSystem(userStore.currentAgency?.systems[0]);
         }
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -139,22 +130,16 @@ export const MetricConfiguration: React.FC = observer(() => {
       // return disposer so it is cleaned up if it never runs
       reaction(
         () => userStore.currentAgencyId,
-        async (currentAgencyId, previousAgencyId) => {
+        async (_, previousAgencyId) => {
           if (previousAgencyId !== undefined) {
             setIsLoading(true);
-
-            const response =
-              await metricConfigStore.initializeMetricConfigStoreValues();
-
+            const response = await initializeMetricConfigStoreValues();
             if (response instanceof Error) {
-              return setLoadingError(response.message);
+              return setLoadingErrorMessage(response.message);
             }
-
             setIsLoading(false);
-            metricConfigStore.updateActiveSystem(
-              userStore.currentAgency?.systems[0]
-            );
-            metricConfigStore.updateActiveMetricKey(undefined);
+            updateActiveSystem(userStore.currentAgency?.systems[0]);
+            updateActiveMetricKey(undefined);
           }
         }
       ),
@@ -166,15 +151,15 @@ export const MetricConfiguration: React.FC = observer(() => {
     return <Loading />;
   }
 
-  if (loadingError) {
-    return <div>Error: {loadingError}</div>;
+  if (loadingErrorMessage) {
+    return <div>Error: {loadingErrorMessage}</div>;
   }
 
   return (
     <>
       <MetricsViewContainer>
         {/* System Tabs (for multi-system agencies) */}
-        {!metricConfigStore.activeMetricKey &&
+        {!activeMetricKey &&
           userStore.currentAgency?.systems &&
           userStore.currentAgency?.systems?.length > 1 && (
             <StickyHeader>
@@ -183,10 +168,8 @@ export const MetricConfiguration: React.FC = observer(() => {
                   {userStore.currentAgency?.systems.map((filterOption) => (
                     <TabbedItem
                       key={filterOption}
-                      selected={metricConfigStore.activeSystem === filterOption}
-                      onClick={() =>
-                        metricConfigStore.updateActiveSystem(filterOption)
-                      }
+                      selected={activeSystem === filterOption}
+                      onClick={() => updateActiveSystem(filterOption)}
                       capitalize
                     >
                       {removeSnakeCase(filterOption.toLowerCase())}
@@ -199,32 +182,30 @@ export const MetricConfiguration: React.FC = observer(() => {
 
         <MetricsViewControlPanel>
           {/* List Of Metrics */}
-          {!metricConfigStore.activeMetricKey && (
+          {!activeMetricKey && (
             <MetricBoxBottomPaddingContainer>
               <MetricBoxContainerWrapper>
-                {metricConfigStore
-                  .getMetricsBySystem(metricConfigStore.activeSystem)
-                  ?.map(({ key, metric }) => (
-                    <MetricBox
-                      key={key}
-                      metricKey={key}
-                      displayName={metric.label as string}
-                      frequency={metric.frequency as ReportFrequency}
-                      description={metric.description as string}
-                      enabled={metric.enabled}
-                    />
-                  ))}
+                {getMetricsBySystem(activeSystem)?.map(({ key, metric }) => (
+                  <MetricBox
+                    key={key}
+                    metricKey={key}
+                    displayName={metric.label as string}
+                    frequency={metric.frequency as ReportFrequency}
+                    description={metric.description as string}
+                    enabled={metric.enabled}
+                  />
+                ))}
               </MetricBoxContainerWrapper>
             </MetricBoxBottomPaddingContainer>
           )}
 
-          {metricConfigStore.activeMetricKey && (
+          {activeMetricKey && (
             <MetricConfigurationWrapper>
               {/* Metric Configuration */}
               <MetricConfigurationDisplay>
                 <BackToMetrics
                   onClick={() => {
-                    metricConfigStore.updateActiveMetricKey(undefined);
+                    updateActiveMetricKey(undefined);
                     setActiveDimensionKey(undefined);
                   }}
                 >
@@ -236,12 +217,10 @@ export const MetricConfiguration: React.FC = observer(() => {
                   inView={!activeDimensionKey}
                 >
                   <MetricName isTitle>
-                    {metricConfigStore.metrics[currentSystemMetricKey]?.label}
+                    {metrics[systemMetricKey]?.label}
                   </MetricName>
                   <Badge color="GREEN" noMargin>
-                    {metricConfigStore.metrics[
-                      currentSystemMetricKey
-                    ]?.frequency?.toLowerCase()}
+                    {metrics[systemMetricKey]?.frequency?.toLowerCase()}
                   </Badge>
                   <RightArrowIcon />
                 </Metric>
@@ -252,7 +231,7 @@ export const MetricConfiguration: React.FC = observer(() => {
                     setActiveDimensionKey={setActiveDimensionKey}
                     activeDisaggregationKey={activeDisaggregationKey}
                     setActiveDisaggregationKey={setActiveDisaggregationKey}
-                    saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
+                    saveUpdatedMetricSettings={saveUpdatedMetricSettings}
                   />
                 </MetricDetailsDisplay>
               </MetricConfigurationDisplay>
@@ -261,7 +240,8 @@ export const MetricConfiguration: React.FC = observer(() => {
               <MetricDefinitions
                 activeDimensionKey={activeDimensionKey}
                 activeDisaggregationKey={activeDisaggregationKey}
-                saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
+                saveUpdatedMetricSettings={saveUpdatedMetricSettings}
+                debouncedSave={debouncedSave}
               />
             </MetricConfigurationWrapper>
           )}
