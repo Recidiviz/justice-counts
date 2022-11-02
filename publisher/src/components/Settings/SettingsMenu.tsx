@@ -32,6 +32,12 @@ export const SettingsMenu: React.FC<{
   goToMenuItem: (destination: MenuOptions) => void;
 }> = observer(({ activeMenuItem, goToMenuItem }) => {
   const { metricConfigStore } = useStore();
+  const {
+    activeMetricKey,
+    activeSystem,
+    getMetricsBySystem,
+    updateActiveMetricKey,
+  } = metricConfigStore;
 
   return (
     <SettingsMenuContainer>
@@ -43,7 +49,7 @@ export const SettingsMenu: React.FC<{
               goToMenuItem(option);
 
               if (option === "Metric Configuration") {
-                metricConfigStore.updateActiveMetricKey(undefined);
+                updateActiveMetricKey(undefined);
               }
             }}
           >
@@ -54,25 +60,19 @@ export const SettingsMenu: React.FC<{
               selected and allows users to toggle between metrics) */}
           {option === "Metric Configuration" &&
             activeMenuItem === "Metric Configuration" &&
-            metricConfigStore.activeMetricKey && (
+            activeMetricKey && (
               <MetricsListContainer>
-                {metricConfigStore
-                  .getMetricsBySystem(metricConfigStore.activeSystem)
-                  ?.map(({ key, metric }) => {
-                    return (
-                      <MetricsListItem
-                        key={key}
-                        activeSection={
-                          key === metricConfigStore.activeMetricKey
-                        }
-                        onClick={() =>
-                          metricConfigStore.updateActiveMetricKey(key)
-                        }
-                      >
-                        {metric.label}
-                      </MetricsListItem>
-                    );
-                  })}
+                {getMetricsBySystem(activeSystem)?.map(({ key, metric }) => {
+                  return (
+                    <MetricsListItem
+                      key={key}
+                      activeSection={key === activeMetricKey}
+                      onClick={() => updateActiveMetricKey(key)}
+                    >
+                      {metric.label}
+                    </MetricsListItem>
+                  );
+                })}
               </MetricsListContainer>
             )}
         </Fragment>

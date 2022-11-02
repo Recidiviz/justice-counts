@@ -45,10 +45,11 @@ export const MetricBox: React.FC<MetricBoxProps> = observer(
     enabled,
   }): JSX.Element => {
     const { metricConfigStore } = useStore();
+    const { updateActiveMetricKey } = metricConfigStore;
 
     return (
       <MetricBoxContainer
-        onClick={() => metricConfigStore.updateActiveMetricKey(metricKey)}
+        onClick={() => updateActiveMetricKey(metricKey)}
         enabled={enabled}
       >
         <MetricName>{displayName}</MetricName>
