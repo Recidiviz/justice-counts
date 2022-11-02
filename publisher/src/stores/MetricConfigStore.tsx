@@ -127,6 +127,10 @@ class MetricConfigStore {
     return { system, metricKey };
   }
 
+  getActiveSystemMetricKey() {
+    return `${this.activeSystem?.toUpperCase()}-${this.activeMetricKey}`;
+  }
+
   updateActiveSystem(systemName: AgencySystems | undefined) {
     this.activeSystem = systemName;
   }
@@ -585,7 +589,7 @@ class MetricConfigStore {
     system: string,
     metricKey: string,
     contextKey: string,
-    contextType: MetricContext["type"],
+    contextType: MetricContext["type"] | undefined,
     value: MetricContext["value"],
     metadata?: { [key: string]: string | string[] | MetricContext["type"] }
   ) {

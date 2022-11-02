@@ -15,12 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { MetricContext } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React from "react";
 
 import { useStore } from "../../stores";
-import MetricConfigStore from "../../stores/MetricConfigStore";
 import {
   BinaryRadioButton,
   BinaryRadioGroupClearButton,
@@ -49,15 +47,17 @@ type MetricContextConfigurationProps = {
 export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
   observer(({ saveAndUpdateMetricSettings }) => {
     const { metricConfigStore } = useStore();
+    const {
+      activeMetricKey,
+      activeSystem,
+      contexts,
+      updateContextValue,
+      getActiveSystemMetricKey,
+    } = metricConfigStore;
 
-    const { activeMetricKey } = metricConfigStore;
-    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
-      metricConfigStore.activeSystem as string,
-      activeMetricKey as string
-    );
+    const systemMetricKey = getActiveSystemMetricKey();
     const activeContextKeys =
-      (metricConfigStore.contexts[systemMetricKey] &&
-        Object.keys(metricConfigStore.contexts[systemMetricKey])) ||
+      (contexts[systemMetricKey] && Object.keys(contexts[systemMetricKey])) ||
       [];
 
     return (
@@ -70,11 +70,11 @@ export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
         </Subheader>
 
         {activeContextKeys.map((contextKey) => {
-          const currentContext =
-            metricConfigStore.contexts[systemMetricKey][contextKey];
+          const currentContext = contexts[systemMetricKey][contextKey];
 
           return (
             <MetricContextItem key={contextKey}>
+              {/* Binary Context Questions */}
               {currentContext.type === "BOOLEAN" && (
                 <>
                   <Label noBottomMargin>{currentContext.display_name}</Label>
@@ -87,14 +87,13 @@ export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
                       value="yes"
                       checked={currentContext.value === "yes"}
                       onChange={() => {
-                        const updatedSetting =
-                          metricConfigStore.updateContextValue(
-                            metricConfigStore.activeSystem as string,
-                            metricConfigStore.activeMetricKey as string,
-                            contextKey,
-                            currentContext.type as MetricContext["type"],
-                            "yes"
-                          );
+                        const updatedSetting = updateContextValue(
+                          activeSystem as string,
+                          activeMetricKey as string,
+                          contextKey,
+                          currentContext.type,
+                          "yes"
+                        );
                         saveAndUpdateMetricSettings(updatedSetting);
                       }}
                     />
@@ -106,28 +105,26 @@ export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
                       value="no"
                       checked={currentContext.value === "no"}
                       onChange={() => {
-                        const updatedSetting =
-                          metricConfigStore.updateContextValue(
-                            metricConfigStore.activeSystem as string,
-                            metricConfigStore.activeMetricKey as string,
-                            contextKey,
-                            currentContext.type as MetricContext["type"],
-                            "no"
-                          );
+                        const updatedSetting = updateContextValue(
+                          activeSystem as string,
+                          activeMetricKey as string,
+                          contextKey,
+                          currentContext.type,
+                          "no"
+                        );
                         saveAndUpdateMetricSettings(updatedSetting);
                       }}
                     />
                   </RadioButtonGroupWrapper>
                   <BinaryRadioGroupClearButton
                     onClick={() => {
-                      const updatedSetting =
-                        metricConfigStore.updateContextValue(
-                          metricConfigStore.activeSystem as string,
-                          metricConfigStore.activeMetricKey as string,
-                          contextKey,
-                          currentContext.type as MetricContext["type"],
-                          ""
-                        );
+                      const updatedSetting = updateContextValue(
+                        activeSystem as string,
+                        activeMetricKey as string,
+                        contextKey,
+                        currentContext.type,
+                        ""
+                      );
                       saveAndUpdateMetricSettings(updatedSetting);
                     }}
                   >
@@ -136,6 +133,7 @@ export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
                 </>
               )}
 
+              {/* Text Field Context Questions */}
               {(currentContext.type === "TEXT" ||
                 currentContext.type === "NUMBER") && (
                 <>
@@ -149,20 +147,20 @@ export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
                     multiline={currentContext.type === "TEXT"}
                     error={currentContext.error}
                     onChange={(e) => {
-                      const updatedSetting =
-                        metricConfigStore.updateContextValue(
-                          metricConfigStore.activeSystem as string,
-                          metricConfigStore.activeMetricKey as string,
-                          contextKey,
-                          currentContext.type as MetricContext["type"],
-                          e.currentTarget.value
-                        );
+                      const updatedSetting = updateContextValue(
+                        activeSystem as string,
+                        activeMetricKey as string,
+                        contextKey,
+                        currentContext.type,
+                        e.currentTarget.value
+                      );
                       saveAndUpdateMetricSettings(updatedSetting, true);
                     }}
                   />
                 </>
               )}
 
+              {/* Multiple Choice Context Questions */}
               {currentContext.type === "MULTIPLE_CHOICE" && (
                 <BinaryRadioGroupContainer key={contextKey}>
                   <BinaryRadioGroupQuestion>
@@ -180,14 +178,13 @@ export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
                         value={option}
                         checked={currentContext.value === option}
                         onChange={() => {
-                          const updatedSetting =
-                            metricConfigStore.updateContextValue(
-                              metricConfigStore.activeSystem as string,
-                              metricConfigStore.activeMetricKey as string,
-                              contextKey,
-                              currentContext.type as MetricContext["type"],
-                              option
-                            );
+                          const updatedSetting = updateContextValue(
+                            activeSystem as string,
+                            activeMetricKey as string,
+                            contextKey,
+                            currentContext.type,
+                            option
+                          );
                           saveAndUpdateMetricSettings(updatedSetting);
                         }}
                       />
@@ -196,14 +193,13 @@ export const ContextConfiguration: React.FC<MetricContextConfigurationProps> =
 
                   <BinaryRadioGroupClearButton
                     onClick={() => {
-                      const updatedSetting =
-                        metricConfigStore.updateContextValue(
-                          metricConfigStore.activeSystem as string,
-                          metricConfigStore.activeMetricKey as string,
-                          contextKey,
-                          currentContext.type as MetricContext["type"],
-                          ""
-                        );
+                      const updatedSetting = updateContextValue(
+                        activeSystem as string,
+                        activeMetricKey as string,
+                        contextKey,
+                        currentContext.type,
+                        ""
+                      );
                       saveAndUpdateMetricSettings(updatedSetting);
                     }}
                   >
