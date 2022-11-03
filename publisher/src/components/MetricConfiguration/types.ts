@@ -17,7 +17,7 @@
 
 import { MetricContext } from "@justice-counts/common/types";
 
-export const metricConfigurationSettingsOptions = ["Yes", "No", "N/A"] as const;
+export const metricConfigurationSettingsOptions = ["N/A", "No", "Yes"] as const;
 export type MetricConfigurationSettingsOptions =
   typeof metricConfigurationSettingsOptions[number];
 
