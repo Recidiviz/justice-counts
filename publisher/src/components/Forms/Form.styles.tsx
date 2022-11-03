@@ -50,6 +50,8 @@ export const FormWrapper = styled.div<{ showDataEntryHelpPage?: boolean }>`
   transition: opacity 300ms ease-in;
 
   opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 0.5 : 1)};
+  pointer-events: ${({ showDataEntryHelpPage }) =>
+    showDataEntryHelpPage ? "none" : "auto"};
 
   @media only screen and (max-width: ${TWO_PANEL_MAX_WIDTH}px) {
     margin: 32px 24px 50px 360px;

@@ -62,6 +62,8 @@ export const ReportSummaryWrapper = styled.div<{
   transition: opacity 300ms ease-in;
 
   opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 0.5 : 1)};
+  pointer-events: ${({ showDataEntryHelpPage }) =>
+    showDataEntryHelpPage ? "none" : "auto"};
 
   @media only screen and (max-width: ${ONE_PANEL_MAX_WIDTH}px) {
     display: none;

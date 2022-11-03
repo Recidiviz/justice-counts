@@ -28,7 +28,7 @@ import {
   TWO_PANEL_MAX_WIDTH,
 } from "./ReportDataEntry.styles";
 
-export const DataEntryOnboardingWrapper = styled.div<{
+export const DataEntryHelpPageWrapper = styled.div<{
   showOnboarding: boolean;
 }>`
   position: fixed;
@@ -42,7 +42,7 @@ export const DataEntryOnboardingWrapper = styled.div<{
   transition: left 500ms ease-out;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 25px;
 
   left: ${({ showOnboarding }) => (showOnboarding ? "50%" : "100%")};
 
@@ -58,19 +58,20 @@ export const DataEntryOnboardingWrapper = styled.div<{
   }
 `;
 
-export const DataEntryOnboardingTitle = styled.div`
+export const DataEntryHelpPageTitle = styled.div`
   ${typography.sizeCSS.title}
 `;
 
-export const DataEntryOnboardingSubTitle = styled.div`
+export const DataEntryHelpPageSubTitle = styled.div`
   ${typography.sizeCSS.large}
+  line-height: 30px;
 
   span {
     color: ${palette.solid.blue};
   }
 `;
 
-export const DataEntryOnboardingText = styled.div`
+export const DataEntryHelpPageText = styled.div`
   ${typography.sizeCSS.medium}
 
   a {
@@ -79,7 +80,7 @@ export const DataEntryOnboardingText = styled.div`
   }
 `;
 
-export const DataEntryOnboardingListItem = styled(DataEntryOnboardingText)`
+export const DataEntryHelpPageListItem = styled(DataEntryHelpPageText)`
   font-weight: 700;
   display: flex;
   flex-direction: row;
@@ -88,7 +89,7 @@ export const DataEntryOnboardingListItem = styled(DataEntryOnboardingText)`
   span {
     white-space: normal;
     font-weight: 500;
-    margin-left: 8px;
+    margin-left: 6px;
   }
 `;
 
@@ -98,16 +99,15 @@ export const ListMarker = styled.div`
   background-color: black;
   border: 3px solid black;
   border-radius: 3px;
-  margin-right: 10px;
-  margin-top: 9px;
+  margin: 9px 8px 0 8px;
 `;
 
-export const DataEntryOnboardingLink = styled.span`
+export const DataEntryHelpPageLink = styled.span`
   color: ${palette.solid.blue};
   cursor: pointer;
 `;
 
-export const DataEntryOnboardingDivider = styled.div`
+export const DataEntryHelpPageDivider = styled.div`
   width: 100%;
   border: 1px solid rgba(0, 0, 0, 0.4);
 `;
