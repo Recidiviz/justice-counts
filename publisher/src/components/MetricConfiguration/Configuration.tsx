@@ -123,11 +123,11 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               checked={metricEnabled}
               onChange={() => {
                 const updatedSetting = updateMetricEnabledStatus(
-                  activeSystem as string,
+                  activeSystem,
                   activeMetricKey as string,
                   true
                 );
-                saveMetricSettings(updatedSetting);
+                if (updatedSetting) saveMetricSettings(updatedSetting);
               }}
             />
             <BinaryRadioButton
@@ -139,11 +139,11 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               checked={!metricEnabled}
               onChange={() => {
                 const updatedSetting = updateMetricEnabledStatus(
-                  activeSystem as string,
+                  activeSystem,
                   activeMetricKey as string,
                   false
                 );
-                saveMetricSettings(updatedSetting);
+                if (updatedSetting) saveMetricSettings(updatedSetting);
               }}
             />
           </RadioButtonGroupWrapper>
@@ -197,12 +197,13 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                             onChange={() => {
                               const updatedSetting =
                                 updateDisaggregationEnabledStatus(
-                                  activeSystem as string,
-                                  activeMetricKey as string,
+                                  activeSystem,
+                                  activeMetricKey,
                                   disaggregationKey,
                                   !currentDisaggregation.enabled
                                 );
-                              saveMetricSettings(updatedSetting);
+                              if (updatedSetting)
+                                saveMetricSettings(updatedSetting);
                             }}
                           />
                           <BlueCheckIcon
@@ -222,13 +223,11 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               {/* Dimension Fields (Enable/Disable) */}
               {activeDimensionKeys?.map((dimensionKey) => {
                 const currentDisaggregation =
-                  disaggregations[systemMetricKey][
-                    activeDisaggregationKey as string
-                  ];
+                  disaggregations[systemMetricKey][activeDisaggregationKey];
                 const currentDimension =
-                  dimensions[systemMetricKey][
-                    activeDisaggregationKey as string
-                  ][dimensionKey];
+                  dimensions[systemMetricKey][activeDisaggregationKey][
+                    dimensionKey
+                  ];
 
                 return (
                   <Dimension
@@ -246,13 +245,14 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                         }
                         onChange={() => {
                           const updatedSetting = updateDimensionEnabledStatus(
-                            activeSystem as string,
-                            activeMetricKey as string,
-                            activeDisaggregationKey as string,
+                            activeSystem,
+                            activeMetricKey,
+                            activeDisaggregationKey,
                             dimensionKey,
                             !currentDimension.enabled
                           );
-                          saveMetricSettings(updatedSetting);
+                          if (updatedSetting)
+                            saveMetricSettings(updatedSetting);
                         }}
                       />
                       <BlueCheckIcon

@@ -227,7 +227,10 @@ class MetricConfigStore {
 
       runInAction(() => {
         metrics.forEach((metric) => {
-          const normalizedMetricSystemName = metric.system.replaceAll(" ", "_");
+          const normalizedMetricSystemName = metric.system.replaceAll(
+            " ",
+            "_"
+          ) as AgencySystems;
 
           /** Initialize Metrics Status (Enabled/Disabled) */
           this.updateMetricEnabledStatus(
@@ -311,11 +314,13 @@ class MetricConfigStore {
   };
 
   updateMetricEnabledStatus = (
-    system: string,
-    metricKey: string,
+    system: AgencySystems | undefined,
+    metricKey: string | undefined,
     enabledStatus: boolean,
     metadata?: { [key: string]: string }
-  ): MetricSettings => {
+  ): MetricSettings | undefined => {
+    if (!system || !metricKey) return;
+
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
       metricKey
@@ -345,12 +350,14 @@ class MetricConfigStore {
   };
 
   updateMetricDefinitionSetting = (
-    system: string,
-    metricKey: string,
+    system: AgencySystems | undefined,
+    metricKey: string | undefined,
     settingKey: string,
     settingValue: MetricConfigurationSettingsOptions,
     metadata?: { [key: string]: string }
-  ): MetricSettings => {
+  ): MetricSettings | undefined => {
+    if (!system || !metricKey) return;
+
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
       metricKey
@@ -384,12 +391,14 @@ class MetricConfigStore {
   };
 
   updateDisaggregationEnabledStatus = (
-    system: string,
-    metricKey: string,
+    system: AgencySystems | undefined,
+    metricKey: string | undefined,
     disaggregationKey: string,
     enabledStatus: boolean,
     metadata?: { [key: string]: string }
-  ): MetricSettings => {
+  ): MetricSettings | undefined => {
+    if (!system || !metricKey) return;
+
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
       metricKey
@@ -440,13 +449,15 @@ class MetricConfigStore {
   };
 
   updateDimensionEnabledStatus = (
-    system: string,
-    metricKey: string,
+    system: AgencySystems | undefined,
+    metricKey: string | undefined,
     disaggregationKey: string,
     dimensionKey: string,
     enabledStatus: boolean,
     metadata?: { [key: string]: string }
-  ): MetricSettings => {
+  ): MetricSettings | undefined => {
+    if (!system || !metricKey) return;
+
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
       metricKey
@@ -516,14 +527,16 @@ class MetricConfigStore {
   };
 
   updateDimensionDefinitionSetting = (
-    system: string,
-    metricKey: string,
+    system: AgencySystems | undefined,
+    metricKey: string | undefined,
     disaggregationKey: string,
     dimensionKey: string,
     settingKey: string,
     settingValue: MetricConfigurationSettingsOptions,
     metadata?: { [key: string]: string }
-  ): MetricSettings => {
+  ): MetricSettings | undefined => {
+    if (!system || !metricKey) return;
+
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
       metricKey
@@ -594,13 +607,15 @@ class MetricConfigStore {
   };
 
   updateContextValue = (
-    system: string,
-    metricKey: string,
+    system: AgencySystems | undefined,
+    metricKey: string | undefined,
     contextKey: string,
     contextType: MetricContext["type"] | undefined,
     value: MetricContext["value"],
     metadata?: { [key: string]: string | string[] | MetricContext["type"] }
-  ): MetricSettings => {
+  ): MetricSettings | undefined => {
+    if (!system || !metricKey) return;
+
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
       metricKey
