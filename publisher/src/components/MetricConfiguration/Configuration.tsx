@@ -150,7 +150,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
         </MetricOnOffWrapper>
 
         {/* Breakdowns */}
-        {activeDisaggregationKey && (
+        {activeDisaggregationKey && activeDisaggregationKeys?.length > 0 && (
           <MetricDisaggregations enabled={metricEnabled}>
             <BreakdownHeader>Breakdowns</BreakdownHeader>
             <Subheader>
