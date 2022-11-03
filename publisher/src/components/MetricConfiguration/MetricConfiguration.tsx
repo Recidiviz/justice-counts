@@ -16,11 +16,7 @@
 // =============================================================================
 
 import { showToast } from "@justice-counts/common/components/Toast";
-import {
-  MetricConfigurationSettingsOptions,
-  MetricContext,
-  ReportFrequency,
-} from "@justice-counts/common/types";
+import { ReportFrequency } from "@justice-counts/common/types";
 import { reaction, when } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -43,32 +39,11 @@ import {
   MetricDefinitions,
   MetricDetailsDisplay,
   MetricName,
+  MetricSettings,
   MetricsViewContainer,
   MetricsViewControlPanel,
   StickyHeader,
 } from ".";
-
-export type MetricSettings = {
-  key: string;
-  enabled?: boolean;
-  settings?: { key: string; included: MetricConfigurationSettingsOptions }[];
-  contexts?: {
-    key: string;
-    value: MetricContext["value"];
-  }[];
-  disaggregations?: {
-    key: string;
-    enabled?: boolean;
-    dimensions?: {
-      key: string;
-      enabled?: boolean;
-      settings?: {
-        key: string;
-        included: MetricConfigurationSettingsOptions;
-      }[];
-    }[];
-  }[];
-};
 
 export const MetricConfiguration: React.FC = observer(() => {
   const { userStore, metricConfigStore } = useStore();
@@ -101,18 +76,22 @@ export const MetricConfiguration: React.FC = observer(() => {
     }
   };
 
+  const initializeMetricConfiguration = async () => {
+    const response = await initializeMetricConfigStoreValues();
+    if (response instanceof Error) {
+      return setLoadingErrorMessage(response.message);
+    }
+    setIsLoading(false);
+    updateActiveSystem(userStore.currentAgency?.systems[0]);
+  };
+
   useEffect(
     () =>
       // return when's disposer so it is cleaned up if it never runs
       when(
         () => userStore.userInfoLoaded,
         async () => {
-          const response = await initializeMetricConfigStoreValues();
-          if (response instanceof Error) {
-            return setLoadingErrorMessage(response.message);
-          }
-          setIsLoading(false);
-          updateActiveSystem(userStore.currentAgency?.systems[0]);
+          await initializeMetricConfiguration();
         }
       ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -128,12 +107,7 @@ export const MetricConfiguration: React.FC = observer(() => {
         async (_, previousAgencyId) => {
           if (previousAgencyId !== undefined) {
             setIsLoading(true);
-            const response = await initializeMetricConfigStoreValues();
-            if (response instanceof Error) {
-              return setLoadingErrorMessage(response.message);
-            }
-            setIsLoading(false);
-            updateActiveSystem(userStore.currentAgency?.systems[0]);
+            await initializeMetricConfiguration();
             updateActiveMetricKey(undefined);
           }
         }
