@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { MetricConfigurationSettingsOptions } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useState } from "react";
 
@@ -32,6 +31,8 @@ import {
   DefinitionSelection,
   DefinitionsSubTitle,
   DefinitionsTitle,
+  MetricConfigurationSettingsOptions,
+  metricConfigurationSettingsOptions,
   MetricSettings,
   RevertToDefaultButton,
 } from ".";
@@ -87,12 +88,6 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
     const activeSettingsKeys = isMetricDefinitionSettings
       ? metricDefinitionSettingsKeys
       : dimensionDefinitionSettingsKeys;
-
-    const selectionOptions: MetricConfigurationSettingsOptions[] = [
-      "N/A",
-      "No",
-      "Yes",
-    ];
 
     const [showDefaultSettings, setShowDefaultSettings] = useState(false);
 
@@ -216,7 +211,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                       </DefinitionDisplayName>
 
                       <DefinitionSelection>
-                        {selectionOptions.map((option) => (
+                        {metricConfigurationSettingsOptions.map((option) => (
                           <Fragment key={option}>
                             <DefinitionMiniButton
                               selected={

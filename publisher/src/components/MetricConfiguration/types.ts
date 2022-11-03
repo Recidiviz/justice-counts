@@ -15,10 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import {
-  MetricConfigurationSettingsOptions,
-  MetricContext,
-} from "@justice-counts/common/types";
+import { MetricContext } from "@justice-counts/common/types";
+
+export const metricConfigurationSettingsOptions = ["Yes", "No", "N/A"] as const;
+export type MetricConfigurationSettingsOptions =
+  typeof metricConfigurationSettingsOptions[number];
 
 export type MetricSettings = {
   key: string;

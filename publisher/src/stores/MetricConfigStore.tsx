@@ -20,13 +20,15 @@ import {
   AgencySystems,
   FormError,
   Metric,
-  MetricConfigurationSettingsOptions,
   MetricContext,
   ReportFrequency,
 } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction } from "mobx";
 
-import { MetricSettings } from "../components/MetricConfiguration";
+import {
+  MetricConfigurationSettingsOptions,
+  MetricSettings,
+} from "../components/MetricConfiguration";
 import { isPositiveNumber, removeCommaSpaceAndTrim } from "../utils";
 import API from "./API";
 import UserStore from "./UserStore";
