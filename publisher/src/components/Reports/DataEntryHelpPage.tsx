@@ -22,6 +22,7 @@ import {
   DataEntryHelpPageDivider,
   DataEntryHelpPageLink,
   DataEntryHelpPageListItem,
+  DataEntryHelpPageListItemText,
   DataEntryHelpPageSubTitle,
   DataEntryHelpPageText,
   DataEntryHelpPageTitle,
@@ -51,16 +52,18 @@ const DataEntryHelpPage: React.FC<{ showDataEntryHelpPage: boolean }> = ({
         Each metric is composed of three components:
         <DataEntryHelpPageListItem>
           <ListMarker />
-          Primary Value:{" "}
-          <span>The top-level value associated with the metric.</span>
+          <DataEntryHelpPageListItemText>
+            <strong>Primary Value: </strong>
+            The top-level value associated with the metric.
+          </DataEntryHelpPageListItemText>
         </DataEntryHelpPageListItem>
         <DataEntryHelpPageListItem>
           <ListMarker />
-          Breakdowns:{" "}
-          <span>
+          <DataEntryHelpPageListItemText>
+            <strong>Breakdowns: </strong>
             Subdivisions of the primary value (e.g., staff types, race, gender,
             etc).
-          </span>
+          </DataEntryHelpPageListItemText>
         </DataEntryHelpPageListItem>
       </DataEntryHelpPageText>
       <DataEntryHelpPageText>

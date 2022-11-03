@@ -81,15 +81,13 @@ export const DataEntryHelpPageText = styled.div`
 `;
 
 export const DataEntryHelpPageListItem = styled(DataEntryHelpPageText)`
-  font-weight: 700;
   display: flex;
   flex-direction: row;
-  white-space: nowrap;
+`;
 
-  span {
-    white-space: normal;
-    font-weight: 500;
-    margin-left: 6px;
+export const DataEntryHelpPageListItemText = styled.div`
+  strong {
+    margin-right: 2px;
   }
 `;
 
