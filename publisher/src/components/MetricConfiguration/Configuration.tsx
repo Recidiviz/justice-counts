@@ -82,11 +82,11 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       disaggregations[systemMetricKey] &&
       Object.keys(disaggregations[systemMetricKey]);
 
-    const activeDimensionKeys = (activeDisaggregationKey &&
-      dimensions[systemMetricKey]?.[activeDisaggregationKey] &&
-      Object.keys(
-        dimensions[systemMetricKey][activeDisaggregationKey]
-      )) as string[];
+    const activeDimensionKeys =
+      activeDisaggregationKey &&
+      dimensions[systemMetricKey]?.[activeDisaggregationKey]
+        ? Object.keys(dimensions[systemMetricKey][activeDisaggregationKey])
+        : [];
 
     const metricDisplayName = metrics[systemMetricKey]?.label;
 
