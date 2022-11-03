@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { showToast } from "@justice-counts/common/components/Toast";
 import { ReportFrequency } from "@justice-counts/common/types";
 import { reaction, when } from "mobx";
 import { observer } from "mobx-react-lite";
@@ -39,7 +38,6 @@ import {
   MetricDefinitions,
   MetricDetailsDisplay,
   MetricName,
-  MetricSettings,
   MetricsViewContainer,
   MetricsViewControlPanel,
   StickyHeader,
@@ -56,7 +54,6 @@ export const MetricConfiguration: React.FC = observer(() => {
     getMetricsBySystem,
     updateActiveSystem,
     updateActiveMetricKey,
-    saveMetricSettings,
   } = metricConfigStore;
 
   const systemMetricKey = getActiveSystemMetricKey();
@@ -66,15 +63,6 @@ export const MetricConfiguration: React.FC = observer(() => {
   const [activeDimensionKey, setActiveDimensionKey] = useState<string>();
   const [activeDisaggregationKey, setActiveDisaggregationKey] =
     useState<string>();
-
-  const saveUpdatedMetricSettings = async (updatedSetting: MetricSettings) => {
-    const response = (await saveMetricSettings([updatedSetting])) as Response;
-    if (response.status === 200) {
-      showToast(`Settings saved.`, true, "grey", 4000);
-    } else {
-      showToast(`Failed to save.`, true, "red", 4000);
-    }
-  };
 
   const initializeMetricConfiguration = async () => {
     const response = await initializeMetricConfigStoreValues();
@@ -200,7 +188,6 @@ export const MetricConfiguration: React.FC = observer(() => {
                     setActiveDimensionKey={setActiveDimensionKey}
                     activeDisaggregationKey={activeDisaggregationKey}
                     setActiveDisaggregationKey={setActiveDisaggregationKey}
-                    saveUpdatedMetricSettings={saveUpdatedMetricSettings}
                   />
                 </MetricDetailsDisplay>
               </MetricConfigurationDisplay>
@@ -209,7 +196,6 @@ export const MetricConfiguration: React.FC = observer(() => {
               <MetricDefinitions
                 activeDimensionKey={activeDimensionKey}
                 activeDisaggregationKey={activeDisaggregationKey}
-                saveUpdatedMetricSettings={saveUpdatedMetricSettings}
               />
             </MetricConfigurationWrapper>
           )}

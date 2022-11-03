@@ -39,15 +39,10 @@ import {
 type MetricDefinitionsProps = {
   activeDimensionKey: string | undefined;
   activeDisaggregationKey: string | undefined;
-  saveUpdatedMetricSettings: (updatedSetting: MetricSettings) => void;
 };
 
 export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
-  ({
-    activeDimensionKey,
-    activeDisaggregationKey,
-    saveUpdatedMetricSettings,
-  }) => {
+  ({ activeDimensionKey, activeDisaggregationKey }) => {
     const { metricConfigStore } = useStore();
     const {
       activeMetricKey,
@@ -59,6 +54,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
       getActiveSystemMetricKey,
       updateMetricDefinitionSetting,
       updateDimensionDefinitionSetting,
+      saveMetricSettings,
     } = metricConfigStore;
 
     const systemMetricKey = getActiveSystemMetricKey();
@@ -143,7 +139,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
           key: activeMetricKey as string,
           settings: defaultSettings,
         };
-        return saveUpdatedMetricSettings(updatedSetting);
+        return saveMetricSettings(updatedSetting);
       }
 
       const updatedSetting = {
@@ -160,7 +156,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
           },
         ],
       };
-      saveUpdatedMetricSettings(updatedSetting);
+      saveMetricSettings(updatedSetting);
     };
 
     return (
@@ -238,9 +234,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                                       settingKey,
                                       option
                                     );
-                                  return saveUpdatedMetricSettings(
-                                    updatedSettings
-                                  );
+                                  return saveMetricSettings(updatedSettings);
                                 }
 
                                 const updatedSettings =
@@ -252,7 +246,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                                     settingKey,
                                     option
                                   );
-                                saveUpdatedMetricSettings(updatedSettings);
+                                saveMetricSettings(updatedSettings);
                               }}
                             >
                               {option}
@@ -276,11 +270,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
         </DefinitionsDisplay>
 
         {/* Additional Context (only appears on overall metric settings and not individual dimension settings) */}
-        {!activeDimensionKey && (
-          <ContextConfiguration
-            saveUpdatedMetricSettings={saveUpdatedMetricSettings}
-          />
-        )}
+        {!activeDimensionKey && <ContextConfiguration />}
       </DefinitionsDisplayContainer>
     );
   }

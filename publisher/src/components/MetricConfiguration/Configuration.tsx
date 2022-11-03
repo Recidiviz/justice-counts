@@ -38,7 +38,6 @@ import {
   MetricConfigurationContainer,
   MetricDisaggregations,
   MetricOnOffWrapper,
-  MetricSettings,
   RadioButtonGroupWrapper,
   Subheader,
 } from ".";
@@ -52,7 +51,6 @@ type MetricConfigurationProps = {
   setActiveDisaggregationKey: React.Dispatch<
     React.SetStateAction<string | undefined>
   >;
-  saveUpdatedMetricSettings: (updatedSetting: MetricSettings) => void;
 };
 
 export const Configuration: React.FC<MetricConfigurationProps> = observer(
@@ -61,7 +59,6 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     setActiveDimensionKey,
     activeDisaggregationKey,
     setActiveDisaggregationKey,
-    saveUpdatedMetricSettings,
   }): JSX.Element => {
     const { metricConfigStore } = useStore();
     const {
@@ -74,6 +71,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       updateMetricEnabledStatus,
       updateDisaggregationEnabledStatus,
       updateDimensionEnabledStatus,
+      saveMetricSettings,
     } = metricConfigStore;
 
     const systemMetricKey = getActiveSystemMetricKey();
@@ -129,7 +127,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   activeMetricKey as string,
                   true
                 );
-                saveUpdatedMetricSettings(updatedSetting);
+                saveMetricSettings(updatedSetting);
               }}
             />
             <BinaryRadioButton
@@ -145,7 +143,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   activeMetricKey as string,
                   false
                 );
-                saveUpdatedMetricSettings(updatedSetting);
+                saveMetricSettings(updatedSetting);
               }}
             />
           </RadioButtonGroupWrapper>
@@ -204,7 +202,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                                   disaggregationKey,
                                   !currentDisaggregation.enabled
                                 );
-                              saveUpdatedMetricSettings(updatedSetting);
+                              saveMetricSettings(updatedSetting);
                             }}
                           />
                           <BlueCheckIcon
@@ -254,7 +252,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                             dimensionKey,
                             !currentDimension.enabled
                           );
-                          saveUpdatedMetricSettings(updatedSetting);
+                          saveMetricSettings(updatedSetting);
                         }}
                       />
                       <BlueCheckIcon

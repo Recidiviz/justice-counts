@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { showToast } from "@justice-counts/common/components/Toast";
 import {
   AgencySystems,
   FormError,
@@ -195,7 +196,7 @@ class MetricConfigStore {
   };
 
   saveMetricSettings = async (
-    updatedMetricSettings: MetricSettings[]
+    updatedMetricSettings: MetricSettings
   ): Promise<Response> => {
     const { currentAgency } = this.userStore;
 
@@ -207,14 +208,16 @@ class MetricConfigStore {
 
     const response = (await this.api.request({
       path: `/api/agencies/${currentAgency.id}/metrics`,
-      body: { metrics: updatedMetricSettings },
+      body: { metrics: [updatedMetricSettings] },
       method: "PUT",
     })) as Response;
 
     if (response.status !== 200) {
+      showToast(`Failed to save.`, true, "red", 4000);
       throw new Error("There was an issue updating the metric settings.");
     }
 
+    showToast(`Settings saved.`, true, "grey", 4000);
     return response;
   };
 
