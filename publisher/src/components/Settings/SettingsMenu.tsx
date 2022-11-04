@@ -15,13 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { observer } from "mobx-react-lite";
 import React, { Fragment } from "react";
 
-import {
-  ListOfMetricsForNavigation,
-  MenuOptions,
-  menuOptions,
-} from "../../pages/Settings";
+import { MenuOptions, menuOptions } from "../../pages/Settings";
+import { useStore } from "../../stores";
 import {
   MenuItem,
   MetricsListContainer,
@@ -32,16 +30,15 @@ import {
 export const SettingsMenu: React.FC<{
   activeMenuItem: MenuOptions;
   goToMenuItem: (destination: MenuOptions) => void;
-  activeMetricKey: string | undefined;
-  setActiveMetricKey: React.Dispatch<React.SetStateAction<string | undefined>>;
-  listOfMetrics: ListOfMetricsForNavigation[] | undefined;
-}> = ({
-  activeMenuItem,
-  goToMenuItem,
-  activeMetricKey,
-  setActiveMetricKey,
-  listOfMetrics,
-}) => {
+}> = observer(({ activeMenuItem, goToMenuItem }) => {
+  const { metricConfigStore } = useStore();
+  const {
+    activeMetricKey,
+    activeSystem,
+    getMetricsBySystem,
+    updateActiveMetricKey,
+  } = metricConfigStore;
+
   return (
     <SettingsMenuContainer>
       {menuOptions.map((option) => (
@@ -52,7 +49,7 @@ export const SettingsMenu: React.FC<{
               goToMenuItem(option);
 
               if (option === "Metric Configuration") {
-                setActiveMetricKey(undefined);
+                updateActiveMetricKey(undefined);
               }
             }}
           >
@@ -63,22 +60,23 @@ export const SettingsMenu: React.FC<{
               selected and allows users to toggle between metrics) */}
           {option === "Metric Configuration" &&
             activeMenuItem === "Metric Configuration" &&
-            activeMetricKey &&
-            listOfMetrics && (
+            activeMetricKey && (
               <MetricsListContainer>
-                {listOfMetrics.map((metric) => (
-                  <MetricsListItem
-                    key={metric.key}
-                    activeSection={metric.key === activeMetricKey}
-                    onClick={() => setActiveMetricKey(metric.key)}
-                  >
-                    {metric.display_name}
-                  </MetricsListItem>
-                ))}
+                {getMetricsBySystem(activeSystem)?.map(({ key, metric }) => {
+                  return (
+                    <MetricsListItem
+                      key={key}
+                      activeSection={key === activeMetricKey}
+                      onClick={() => updateActiveMetricKey(key)}
+                    >
+                      {metric.label}
+                    </MetricsListItem>
+                  );
+                })}
               </MetricsListContainer>
             )}
         </Fragment>
       ))}
     </SettingsMenuContainer>
   );
-};
+});

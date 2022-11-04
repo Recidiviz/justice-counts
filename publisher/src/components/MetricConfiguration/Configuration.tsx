@@ -15,13 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import {
-  Metric,
-  MetricDisaggregationDimensions,
-  MetricDisaggregations as MetricDisaggregationsType,
-} from "@justice-counts/common/types";
+import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 
+import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import blueCheck from "../assets/status-check-icon.png";
@@ -41,228 +38,258 @@ import {
   MetricConfigurationContainer,
   MetricDisaggregations,
   MetricOnOffWrapper,
-  MetricSettings,
   RadioButtonGroupWrapper,
   Subheader,
 } from ".";
 
 type MetricConfigurationProps = {
-  activeMetricKey: string;
-  filteredMetricSettings: { [key: string]: Metric };
-  activeDimension: MetricDisaggregationDimensions | undefined;
-  activeDisaggregation: MetricDisaggregationsType | undefined;
-  setActiveDisaggregation: React.Dispatch<
-    React.SetStateAction<MetricDisaggregationsType | undefined>
+  activeDimensionKey: string | undefined;
+  setActiveDimensionKey: React.Dispatch<
+    React.SetStateAction<string | undefined>
   >;
-  saveAndUpdateMetricSettings: (
-    typeOfUpdate: "METRIC" | "DISAGGREGATION" | "DIMENSION" | "CONTEXT",
-    updatedSetting: MetricSettings,
-    debounce?: boolean
-  ) => void;
-  setActiveDimension: React.Dispatch<
-    React.SetStateAction<MetricDisaggregationDimensions | undefined>
+  activeDisaggregationKey: string | undefined;
+  setActiveDisaggregationKey: React.Dispatch<
+    React.SetStateAction<string | undefined>
   >;
 };
 
-export const Configuration: React.FC<MetricConfigurationProps> = ({
-  activeMetricKey,
-  filteredMetricSettings,
-  activeDimension,
-  activeDisaggregation,
-  setActiveDisaggregation,
-  saveAndUpdateMetricSettings,
-  setActiveDimension,
-}): JSX.Element => {
-  const metricDisplayName =
-    filteredMetricSettings[activeMetricKey]?.display_name;
-  const metricEnabled = Boolean(
-    filteredMetricSettings[activeMetricKey]?.enabled
-  );
+export const Configuration: React.FC<MetricConfigurationProps> = observer(
+  ({
+    activeDimensionKey,
+    setActiveDimensionKey,
+    activeDisaggregationKey,
+    setActiveDisaggregationKey,
+  }): JSX.Element => {
+    const { metricConfigStore } = useStore();
+    const {
+      activeSystem,
+      activeMetricKey,
+      metrics,
+      disaggregations,
+      dimensions,
+      getActiveSystemMetricKey,
+      updateMetricEnabledStatus,
+      updateDisaggregationEnabledStatus,
+      updateDimensionEnabledStatus,
+      saveMetricSettings,
+    } = metricConfigStore;
 
-  useEffect(
-    () => {
-      const updatedDisaggregation =
-        activeDisaggregation &&
-        filteredMetricSettings[activeMetricKey]?.disaggregations?.find(
-          (disaggregation) => disaggregation.key === activeDisaggregation.key
-        );
+    const systemMetricKey = getActiveSystemMetricKey();
 
-      if (updatedDisaggregation)
-        return setActiveDisaggregation(updatedDisaggregation);
-      setActiveDisaggregation(
-        filteredMetricSettings[activeMetricKey]?.disaggregations?.[0]
-      );
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [filteredMetricSettings]
-  );
+    const activeDisaggregationKeys =
+      disaggregations[systemMetricKey] &&
+      Object.keys(disaggregations[systemMetricKey]);
 
-  useEffect(
-    () => setActiveDimension(undefined),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeMetricKey]
-  );
+    const activeDimensionKeys =
+      activeDisaggregationKey &&
+      dimensions[systemMetricKey]?.[activeDisaggregationKey]
+        ? Object.keys(dimensions[systemMetricKey][activeDisaggregationKey])
+        : [];
 
-  return (
-    <MetricConfigurationContainer>
-      <MetricOnOffWrapper>
-        <Header>
-          Are you currently able to report any part of this metric?
-        </Header>
-        <Subheader>
-          Answering “No” means that {metricDisplayName} will not appear on
-          automatically generated reports from here on out. You can change this
-          later.
-        </Subheader>
-        <RadioButtonGroupWrapper>
-          <BinaryRadioButton
-            type="radio"
-            id="yes"
-            name="metric-config"
-            label="Yes"
-            value="yes"
-            checked={metricEnabled}
-            onChange={() =>
-              saveAndUpdateMetricSettings("METRIC", {
-                key: activeMetricKey,
-                enabled: true,
-              })
-            }
-          />
-          <BinaryRadioButton
-            type="radio"
-            id="no"
-            name="metric-config"
-            label="No"
-            value="no"
-            checked={!metricEnabled}
-            onChange={() =>
-              saveAndUpdateMetricSettings("METRIC", {
-                key: activeMetricKey,
-                enabled: false,
-              })
-            }
-          />
-        </RadioButtonGroupWrapper>
-      </MetricOnOffWrapper>
+    const metricDisplayName = metrics[systemMetricKey]?.label;
 
-      {filteredMetricSettings[activeMetricKey]?.disaggregations.length > 0 && (
-        <MetricDisaggregations enabled={metricEnabled}>
-          <BreakdownHeader>Breakdowns</BreakdownHeader>
+    const metricEnabled = Boolean(metrics[systemMetricKey]?.enabled);
+
+    useEffect(
+      () => {
+        if (activeDisaggregationKeys)
+          setActiveDisaggregationKey(activeDisaggregationKeys[0]);
+        setActiveDimensionKey(undefined);
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [systemMetricKey]
+    );
+
+    return (
+      <MetricConfigurationContainer>
+        {/* Metric (Enable/Disable) */}
+        <MetricOnOffWrapper>
+          <Header>
+            Are you currently able to report any part of this metric?
+          </Header>
           <Subheader>
-            Mark (using the checkmark) each of the breakdowns below that your
-            agency will be able to report. Click the arrow to edit the
-            definition for each metric.
+            Answering “No” means that {metricDisplayName} will not appear on
+            automatically generated reports from here on out. You can change
+            this later.
           </Subheader>
 
-          <TabbedBar noPadding>
-            <TabbedOptions>
-              {activeDisaggregation &&
-                filteredMetricSettings[activeMetricKey]?.disaggregations?.map(
-                  (disaggregation) => (
+          <RadioButtonGroupWrapper>
+            <BinaryRadioButton
+              type="radio"
+              id="yes"
+              name="metric-config"
+              label="Yes"
+              value="yes"
+              checked={metricEnabled}
+              onChange={() => {
+                if (activeSystem && activeMetricKey) {
+                  const updatedSetting = updateMetricEnabledStatus(
+                    activeSystem,
+                    activeMetricKey,
+                    true
+                  );
+                  saveMetricSettings(updatedSetting);
+                }
+              }}
+            />
+            <BinaryRadioButton
+              type="radio"
+              id="no"
+              name="metric-config"
+              label="No"
+              value="no"
+              checked={!metricEnabled}
+              onChange={() => {
+                if (activeSystem && activeMetricKey) {
+                  const updatedSetting = updateMetricEnabledStatus(
+                    activeSystem,
+                    activeMetricKey,
+                    false
+                  );
+                  saveMetricSettings(updatedSetting);
+                }
+              }}
+            />
+          </RadioButtonGroupWrapper>
+        </MetricOnOffWrapper>
+
+        {/* Breakdowns */}
+        {activeDisaggregationKey && activeDisaggregationKeys?.length > 0 && (
+          <MetricDisaggregations enabled={metricEnabled}>
+            <BreakdownHeader>Breakdowns</BreakdownHeader>
+            <Subheader>
+              Mark (using the checkmark) each of the breakdowns below that your
+              agency will be able to report. Click the arrow to edit the
+              definition for each metric.
+            </Subheader>
+
+            {/* Disaggregations (Enable/Disable) */}
+            <TabbedBar noPadding>
+              <TabbedOptions>
+                {activeDisaggregationKeys?.map((disaggregationKey) => {
+                  const currentDisaggregation =
+                    disaggregations[systemMetricKey][disaggregationKey];
+
+                  return (
                     <TabbedItem
-                      key={disaggregation.key}
+                      key={disaggregationKey}
                       onClick={() => {
-                        setActiveDimension(disaggregation.dimensions[0]);
-                        setActiveDisaggregation(disaggregation);
+                        setActiveDisaggregationKey(disaggregationKey);
+
+                        /** Open first dimension when disaggregation tab is clicked */
+                        const [firstDimensionKey] = Object.keys(
+                          dimensions[systemMetricKey][disaggregationKey]
+                        );
+                        setActiveDimensionKey(firstDimensionKey);
                       }}
-                      selected={disaggregation.key === activeDisaggregation.key}
+                      selected={disaggregationKey === activeDisaggregationKey}
                       capitalize
                     >
                       <DisaggregationTab>
                         <span>
                           {removeSnakeCase(
-                            disaggregation.display_name.toLowerCase()
+                            (
+                              currentDisaggregation.display_name as string
+                            ).toLowerCase()
                           )}
                         </span>
 
                         <CheckboxWrapper>
                           <Checkbox
                             type="checkbox"
-                            checked={disaggregation.enabled}
-                            onChange={() =>
-                              saveAndUpdateMetricSettings("DISAGGREGATION", {
-                                key: activeMetricKey,
-                                disaggregations: [
-                                  {
-                                    key: disaggregation.key,
-                                    enabled: !disaggregation.enabled,
-                                  },
-                                ],
-                              })
-                            }
+                            checked={currentDisaggregation.enabled}
+                            onChange={() => {
+                              if (activeSystem && activeMetricKey) {
+                                const updatedSetting =
+                                  updateDisaggregationEnabledStatus(
+                                    activeSystem,
+                                    activeMetricKey,
+                                    disaggregationKey,
+                                    !currentDisaggregation.enabled
+                                  );
+                                saveMetricSettings(updatedSetting);
+                              }
+                            }}
                           />
                           <BlueCheckIcon
                             src={blueCheck}
                             alt=""
-                            enabled={disaggregation.enabled}
+                            enabled={currentDisaggregation.enabled}
                           />
                         </CheckboxWrapper>
                       </DisaggregationTab>
                     </TabbedItem>
-                  )
-                )}
-            </TabbedOptions>
-          </TabbedBar>
+                  );
+                })}
+              </TabbedOptions>
+            </TabbedBar>
 
-          <Disaggregation>
-            {activeDisaggregation?.dimensions.map((dimension) => {
-              return (
-                <Dimension
-                  key={dimension.key}
-                  enabled={!metricEnabled || activeDisaggregation.enabled}
-                  inView={dimension.key === activeDimension?.key}
-                  onClick={() => setActiveDimension(dimension)}
-                >
-                  <CheckboxWrapper>
-                    <Checkbox
-                      type="checkbox"
-                      checked={
-                        activeDisaggregation.enabled && dimension.enabled
-                      }
-                      onChange={() => {
-                        saveAndUpdateMetricSettings("DIMENSION", {
-                          key: activeMetricKey,
-                          disaggregations: [
-                            {
-                              key: activeDisaggregation.key,
-                              dimensions: [
-                                {
-                                  key: dimension.key,
-                                  enabled: !dimension.enabled,
-                                },
-                              ],
-                            },
-                          ],
-                        });
-                      }}
-                    />
-                    <BlueCheckIcon
-                      src={blueCheck}
-                      alt=""
-                      enabled={
-                        activeDisaggregation.enabled && dimension.enabled
-                      }
-                    />
-                  </CheckboxWrapper>
+            <Disaggregation>
+              {/* Dimension Fields (Enable/Disable) */}
+              {activeDimensionKeys?.map((dimensionKey) => {
+                const currentDisaggregation =
+                  disaggregations[systemMetricKey][activeDisaggregationKey];
+                const currentDimension =
+                  dimensions[systemMetricKey][activeDisaggregationKey][
+                    dimensionKey
+                  ];
 
-                  <DimensionTitleWrapper>
-                    <DimensionTitle
-                      enabled={
-                        activeDisaggregation.enabled && dimension.enabled
-                      }
-                    >
-                      {dimension.label}
-                    </DimensionTitle>
+                return (
+                  <Dimension
+                    key={dimensionKey}
+                    enabled={!metricEnabled || currentDisaggregation.enabled}
+                    inView={dimensionKey === activeDimensionKey}
+                    onClick={() => setActiveDimensionKey(dimensionKey)}
+                  >
+                    <CheckboxWrapper>
+                      <Checkbox
+                        type="checkbox"
+                        checked={
+                          currentDisaggregation.enabled &&
+                          currentDimension.enabled
+                        }
+                        onChange={() => {
+                          if (activeSystem && activeMetricKey) {
+                            const updatedSetting = updateDimensionEnabledStatus(
+                              activeSystem,
+                              activeMetricKey,
+                              activeDisaggregationKey,
+                              dimensionKey,
+                              !currentDimension.enabled
+                            );
+                            saveMetricSettings(updatedSetting);
+                          }
+                        }}
+                      />
+                      <BlueCheckIcon
+                        src={blueCheck}
+                        alt=""
+                        enabled={
+                          currentDisaggregation.enabled &&
+                          currentDimension.enabled
+                        }
+                      />
+                    </CheckboxWrapper>
 
-                    <RightArrowIcon />
-                  </DimensionTitleWrapper>
-                </Dimension>
-              );
-            })}
-          </Disaggregation>
-        </MetricDisaggregations>
-      )}
-    </MetricConfigurationContainer>
-  );
-};
+                    <DimensionTitleWrapper>
+                      <DimensionTitle
+                        enabled={
+                          currentDisaggregation.enabled &&
+                          currentDimension.enabled
+                        }
+                      >
+                        {currentDimension.label}
+                      </DimensionTitle>
+
+                      <RightArrowIcon />
+                    </DimensionTitleWrapper>
+                  </Dimension>
+                );
+              })}
+            </Disaggregation>
+          </MetricDisaggregations>
+        )}
+      </MetricConfigurationContainer>
+    );
+  }
+);

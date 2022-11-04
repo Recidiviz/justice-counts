@@ -34,13 +34,16 @@ import {
   MetricName,
   MetricNameBadgeToggleWrapper,
   MetricNameBadgeWrapper,
-  MetricSettingsObj,
   MetricsViewContainer,
   MetricsViewControlPanelOverflowHidden,
   MetricViewBoxContainer,
   PanelContainerLeft,
   PanelContainerRight,
 } from ".";
+
+type MetricSettingsObj = {
+  [key: string]: Metric;
+};
 
 type MetricBoxProps = {
   metricKey: string;

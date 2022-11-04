@@ -15,10 +15,30 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./Configuration";
-export * from "./ContextConfiguration";
-export * from "./MetricBox";
-export * from "./MetricConfiguration";
-export * from "./MetricConfiguration.styles";
-export * from "./MetricDefinitions";
-export * from "./types";
+import { MetricContext } from "@justice-counts/common/types";
+
+export const metricConfigurationSettingsOptions = ["N/A", "No", "Yes"] as const;
+export type MetricConfigurationSettingsOptions =
+  typeof metricConfigurationSettingsOptions[number];
+
+export type MetricSettings = {
+  key: string;
+  enabled?: boolean;
+  settings?: { key: string; included: MetricConfigurationSettingsOptions }[];
+  contexts?: {
+    key: string;
+    value: MetricContext["value"];
+  }[];
+  disaggregations?: {
+    key: string;
+    enabled?: boolean;
+    dimensions?: {
+      key: string;
+      enabled?: boolean;
+      settings?: {
+        key: string;
+        included: MetricConfigurationSettingsOptions;
+      }[];
+    }[];
+  }[];
+};
