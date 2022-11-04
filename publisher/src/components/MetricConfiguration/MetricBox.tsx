@@ -16,8 +16,10 @@
 // =============================================================================
 
 import { ReportFrequency } from "@justice-counts/common/types";
+import { observer } from "mobx-react-lite";
 import React from "react";
 
+import { useStore } from "../../stores";
 import { Badge } from "../Badge";
 import {
   MetricBoxContainer,
@@ -32,29 +34,36 @@ type MetricBoxProps = {
   frequency: ReportFrequency;
   description: string;
   enabled?: boolean;
-  setActiveMetricKey: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
-export const MetricBox: React.FC<MetricBoxProps> = ({
-  metricKey,
-  displayName,
-  frequency,
-  description,
-  enabled,
-  setActiveMetricKey,
-}): JSX.Element => {
-  return (
-    <MetricBoxContainer
-      onClick={() => setActiveMetricKey(metricKey)}
-      enabled={enabled}
-    >
-      <MetricName>{displayName}</MetricName>
-      <MetricDescription>{description}</MetricDescription>
-      <MetricNameBadgeWrapper>
-        <Badge color={!enabled ? "GREY" : "GREEN"} disabled={!enabled} noMargin>
-          {!enabled ? "Inactive" : frequency.toLowerCase()}
-        </Badge>
-      </MetricNameBadgeWrapper>
-    </MetricBoxContainer>
-  );
-};
+export const MetricBox: React.FC<MetricBoxProps> = observer(
+  ({
+    metricKey,
+    displayName,
+    frequency,
+    description,
+    enabled,
+  }): JSX.Element => {
+    const { metricConfigStore } = useStore();
+    const { updateActiveMetricKey } = metricConfigStore;
+
+    return (
+      <MetricBoxContainer
+        onClick={() => updateActiveMetricKey(metricKey)}
+        enabled={enabled}
+      >
+        <MetricName>{displayName}</MetricName>
+        <MetricDescription>{description}</MetricDescription>
+        <MetricNameBadgeWrapper>
+          <Badge
+            color={!enabled ? "GREY" : "GREEN"}
+            disabled={!enabled}
+            noMargin
+          >
+            {!enabled ? "Inactive" : frequency.toLowerCase()}
+          </Badge>
+        </MetricNameBadgeWrapper>
+      </MetricBoxContainer>
+    );
+  }
+);

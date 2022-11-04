@@ -15,15 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import {
-  Metric,
-  MetricConfigurationSettingsOptions,
-  MetricContext,
-  MetricDisaggregationDimensions,
-  MetricDisaggregations,
-} from "@justice-counts/common/types";
+import { observer } from "mobx-react-lite";
 import React, { Fragment, useState } from "react";
 
+import { useStore } from "../../stores";
 import {
   ContextConfiguration,
   DefinitionDisplayName,
@@ -36,201 +31,246 @@ import {
   DefinitionSelection,
   DefinitionsSubTitle,
   DefinitionsTitle,
+  MetricConfigurationSettingsOptions,
+  metricConfigurationSettingsOptions,
   MetricSettings,
-  MetricSettingsUpdateOptions,
   RevertToDefaultButton,
 } from ".";
 
 type MetricDefinitionsProps = {
-  activeMetricKey: string;
-  activeMetric: Metric;
-  activeDimension?: MetricDisaggregationDimensions | undefined;
-  activeDisaggregation: MetricDisaggregations | undefined;
-  contexts: MetricContext[];
-  saveAndUpdateMetricSettings: (
-    typeOfUpdate: MetricSettingsUpdateOptions,
-    updatedSetting: MetricSettings,
-    debounce?: boolean
-  ) => void;
+  activeDimensionKey: string | undefined;
+  activeDisaggregationKey: string | undefined;
 };
 
-export const MetricDefinitions: React.FC<MetricDefinitionsProps> = ({
-  activeMetricKey,
-  activeMetric,
-  activeDimension,
-  activeDisaggregation,
-  contexts,
-  saveAndUpdateMetricSettings,
-}) => {
-  const [showDefaultSettings, setShowDefaultSettings] = useState(false);
+export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
+  ({ activeDimensionKey, activeDisaggregationKey }) => {
+    const { metricConfigStore } = useStore();
+    const {
+      activeMetricKey,
+      activeSystem,
+      metrics,
+      metricDefinitionSettings,
+      dimensions,
+      dimensionDefinitionSettings,
+      getActiveSystemMetricKey,
+      updateMetricDefinitionSetting,
+      updateDimensionDefinitionSetting,
+      saveMetricSettings,
+    } = metricConfigStore;
 
-  const selectionOptions: MetricConfigurationSettingsOptions[] = [
-    "N/A",
-    "No",
-    "Yes",
-  ];
-  const activeDimensionOrMetric: MetricDisaggregationDimensions | Metric =
-    activeDimension || activeMetric;
+    const systemMetricKey = getActiveSystemMetricKey();
 
-  const isMetricSettings = (
-    dimensionOrMetric: MetricDisaggregationDimensions | Metric
-  ): dimensionOrMetric is Metric => {
-    return (dimensionOrMetric as Metric).display_name !== undefined;
-  };
+    const isMetricDefinitionSettings = !activeDimensionKey;
 
-  const activeSettings = isMetricSettings(activeDimensionOrMetric)
-    ? activeMetric.settings
-    : activeDimension?.settings;
-  const defaultSettings = activeSettings?.map((setting) => ({
-    ...setting,
-    included: setting.default,
-  }));
+    const activeMetricOrDimensionDisplayName = isMetricDefinitionSettings
+      ? metrics[systemMetricKey]?.label
+      : activeDimensionKey &&
+        activeDisaggregationKey &&
+        dimensions[systemMetricKey]?.[activeDisaggregationKey]?.[
+          activeDimensionKey
+        ]?.label;
 
-  const revertToDefaultValues = () => {
-    if (isMetricSettings(activeDimensionOrMetric)) {
-      return saveAndUpdateMetricSettings("METRIC_SETTING", {
-        key: activeMetricKey,
-        settings: defaultSettings,
-      });
-    }
+    const metricDefinitionSettingsKeys =
+      metricDefinitionSettings[systemMetricKey] &&
+      Object.keys(metricDefinitionSettings[systemMetricKey]);
 
-    if (activeDisaggregation && activeDimension) {
-      saveAndUpdateMetricSettings("DIMENSION_SETTING", {
-        key: activeMetricKey,
-        disaggregations: [
-          {
-            key: activeDisaggregation.key,
-            dimensions: [
-              {
-                key: activeDimension.key,
-                settings: defaultSettings,
-              },
-            ],
-          },
-        ],
-      });
-    }
-  };
+    const dimensionDefinitionSettingsKeys = (activeDisaggregationKey &&
+      activeDimensionKey &&
+      dimensionDefinitionSettings[systemMetricKey]?.[activeDisaggregationKey]?.[
+        activeDimensionKey
+      ] &&
+      Object.keys(
+        dimensionDefinitionSettings[systemMetricKey][activeDisaggregationKey][
+          activeDimensionKey
+        ]
+      )) as string[];
 
-  return (
-    <DefinitionsDisplayContainer>
-      <DefinitionsDisplay>
-        <DefinitionsTitle>
-          {isMetricSettings(activeDimensionOrMetric)
-            ? activeDimensionOrMetric.display_name
-            : activeDimensionOrMetric.label}
-        </DefinitionsTitle>
+    const activeSettingsKeys = isMetricDefinitionSettings
+      ? metricDefinitionSettingsKeys
+      : dimensionDefinitionSettingsKeys;
 
-        {Boolean(activeSettings?.length) && (
-          <>
-            <DefinitionsSubTitle>Definitions</DefinitionsSubTitle>
-            <DefinitionsDescription>
-              Indicate which of the following categories your agency considers
-              to be part of this metric or breakdown.
-              <span>
-                You are NOT required to gather data for these specific
-                categories.
-              </span>
-            </DefinitionsDescription>
+    const [showDefaultSettings, setShowDefaultSettings] = useState(false);
 
-            <RevertToDefaultButton
-              onClick={() => {
-                setShowDefaultSettings(false);
-                revertToDefaultValues();
-              }}
-              onMouseEnter={() =>
-                !showDefaultSettings && setShowDefaultSettings(true)
-              }
-              onMouseLeave={() => setShowDefaultSettings(false)}
-            >
-              Choose Default Definition
-            </RevertToDefaultButton>
+    const revertToAndSaveDefaultValues = () => {
+      if (activeSystem && activeMetricKey) {
+        /** Create array of default settings and update settings (to default value) in the store */
+        const defaultSettings = activeSettingsKeys.map((settingKey) => {
+          let currentSettingDefaultValue;
 
-            <Definitions>
-              {(showDefaultSettings ? defaultSettings : activeSettings)?.map(
-                (setting) => (
-                  <DefinitionItem key={setting.key}>
-                    <DefinitionDisplayName>
-                      {setting.label}
-                    </DefinitionDisplayName>
+          if (isMetricDefinitionSettings) {
+            currentSettingDefaultValue =
+              metricDefinitionSettings[systemMetricKey][settingKey].default;
 
-                    <DefinitionSelection>
-                      {selectionOptions.map((option) => (
-                        <Fragment key={option}>
-                          <DefinitionMiniButton
-                            selected={setting.included === option}
-                            showDefault={showDefaultSettings}
-                            onClick={() => {
-                              if (isMetricSettings(activeDimensionOrMetric)) {
-                                return saveAndUpdateMetricSettings(
-                                  "METRIC_SETTING",
-                                  {
-                                    key: activeMetricKey,
-                                    settings: [
-                                      { ...setting, included: option },
-                                    ],
-                                  }
-                                );
+            updateMetricDefinitionSetting(
+              activeSystem,
+              activeMetricKey,
+              settingKey,
+              currentSettingDefaultValue as MetricConfigurationSettingsOptions
+            );
+
+            return { key: settingKey, included: currentSettingDefaultValue };
+          }
+
+          currentSettingDefaultValue =
+            activeDisaggregationKey &&
+            dimensionDefinitionSettings[systemMetricKey][
+              activeDisaggregationKey
+            ][activeDimensionKey][settingKey].default;
+
+          updateDimensionDefinitionSetting(
+            activeSystem,
+            activeMetricKey,
+            activeDisaggregationKey as string,
+            activeDimensionKey,
+            settingKey,
+            currentSettingDefaultValue as MetricConfigurationSettingsOptions
+          );
+
+          return { key: settingKey, included: currentSettingDefaultValue };
+        }) as MetricSettings["settings"];
+
+        /** Save default settings array */
+        if (isMetricDefinitionSettings) {
+          const updatedSetting = {
+            key: activeMetricKey as string,
+            settings: defaultSettings,
+          };
+          return saveMetricSettings(updatedSetting);
+        }
+
+        const updatedSetting = {
+          key: activeMetricKey as string,
+          disaggregations: [
+            {
+              key: activeDisaggregationKey as string,
+              dimensions: [
+                {
+                  key: activeDimensionKey,
+                  settings: defaultSettings,
+                },
+              ],
+            },
+          ],
+        };
+        saveMetricSettings(updatedSetting);
+      }
+    };
+
+    return (
+      <DefinitionsDisplayContainer>
+        <DefinitionsDisplay>
+          <DefinitionsTitle>
+            {activeMetricOrDimensionDisplayName}
+          </DefinitionsTitle>
+
+          {Boolean(activeSettingsKeys?.length) && (
+            <>
+              <DefinitionsSubTitle>Definitions</DefinitionsSubTitle>
+              <DefinitionsDescription>
+                Indicate which of the following categories your agency considers
+                to be part of this metric or breakdown.
+                <span>
+                  You are NOT required to gather data for these specific
+                  categories.
+                </span>
+              </DefinitionsDescription>
+
+              {/* Revert To Default Definition Settings */}
+              <RevertToDefaultButton
+                onClick={() => {
+                  setShowDefaultSettings(false);
+                  revertToAndSaveDefaultValues();
+                }}
+                onMouseEnter={() =>
+                  !showDefaultSettings && setShowDefaultSettings(true)
+                }
+                onMouseLeave={() => setShowDefaultSettings(false)}
+              >
+                Choose Default Definition
+              </RevertToDefaultButton>
+
+              {/* Definition Settings (Includes/Excludes) */}
+              <Definitions>
+                {activeSettingsKeys?.map((settingKey) => {
+                  const currentSetting = (
+                    isMetricDefinitionSettings
+                      ? metricDefinitionSettings[systemMetricKey][settingKey]
+                      : activeDisaggregationKey &&
+                        activeDimensionKey &&
+                        dimensionDefinitionSettings[systemMetricKey][
+                          activeDisaggregationKey
+                        ][activeDimensionKey][settingKey]
+                  ) as {
+                    included?: MetricConfigurationSettingsOptions | undefined;
+                    default?: MetricConfigurationSettingsOptions | undefined;
+                    label?: string | undefined;
+                  };
+
+                  return (
+                    <DefinitionItem key={settingKey}>
+                      <DefinitionDisplayName>
+                        {currentSetting.label}
+                      </DefinitionDisplayName>
+
+                      <DefinitionSelection>
+                        {metricConfigurationSettingsOptions.map((option) => (
+                          <Fragment key={option}>
+                            <DefinitionMiniButton
+                              selected={
+                                showDefaultSettings
+                                  ? currentSetting.default === option
+                                  : currentSetting.included === option
                               }
-
-                              const activeDimensionKey =
-                                activeDimensionOrMetric.key;
-
-                              return (
-                                activeDisaggregation &&
-                                saveAndUpdateMetricSettings(
-                                  "DIMENSION_SETTING",
-                                  {
-                                    key: activeMetricKey,
-                                    disaggregations: [
-                                      {
-                                        key: activeDisaggregation.key,
-                                        dimensions: [
-                                          {
-                                            key: activeDimensionKey,
-                                            settings: [
-                                              {
-                                                ...setting,
-                                                included: option,
-                                              },
-                                            ],
-                                          },
-                                        ],
-                                      },
-                                    ],
+                              showDefault={showDefaultSettings}
+                              onClick={() => {
+                                if (activeSystem && activeMetricKey) {
+                                  if (isMetricDefinitionSettings) {
+                                    const updatedSetting =
+                                      updateMetricDefinitionSetting(
+                                        activeSystem,
+                                        activeMetricKey,
+                                        settingKey,
+                                        option
+                                      );
+                                    return saveMetricSettings(updatedSetting);
                                   }
-                                )
-                              );
-                            }}
-                          >
-                            {option}
-                          </DefinitionMiniButton>
-                        </Fragment>
-                      ))}
-                    </DefinitionSelection>
-                  </DefinitionItem>
-                )
-              )}
-            </Definitions>
-          </>
-        )}
 
-        {/* Display when user is viewing a dimension & there are no settings available */}
-        {!activeSettings?.length && activeDimension && (
-          <DefinitionsSubTitle>
-            Technical Definitions are not available for this metric yet.
-          </DefinitionsSubTitle>
-        )}
-      </DefinitionsDisplay>
+                                  const updatedSetting =
+                                    updateDimensionDefinitionSetting(
+                                      activeSystem,
+                                      activeMetricKey,
+                                      activeDisaggregationKey as string,
+                                      activeDimensionKey,
+                                      settingKey,
+                                      option
+                                    );
+                                  saveMetricSettings(updatedSetting);
+                                }
+                              }}
+                            >
+                              {option}
+                            </DefinitionMiniButton>
+                          </Fragment>
+                        ))}
+                      </DefinitionSelection>
+                    </DefinitionItem>
+                  );
+                })}
+              </Definitions>
+            </>
+          )}
 
-      {/* Additional Context (only appears on overall metric settings and not individual dimension settings) */}
-      {!activeDimension && (
-        <ContextConfiguration
-          metricKey={activeMetricKey}
-          contexts={contexts}
-          saveAndUpdateMetricSettings={saveAndUpdateMetricSettings}
-        />
-      )}
-    </DefinitionsDisplayContainer>
-  );
-};
+          {/* Display when user is viewing a dimension & there are no settings available */}
+          {!activeSettingsKeys?.length && activeDimensionKey && (
+            <DefinitionsSubTitle>
+              Technical Definitions are not available for this metric yet.
+            </DefinitionsSubTitle>
+          )}
+        </DefinitionsDisplay>
+
+        {/* Additional Context (only appears on overall metric settings and not individual dimension settings) */}
+        {!activeDimensionKey && <ContextConfiguration />}
+      </DefinitionsDisplayContainer>
+    );
+  }
+);
