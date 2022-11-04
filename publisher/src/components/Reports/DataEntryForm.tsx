@@ -411,7 +411,10 @@ const DataEntryForm: React.FC<{
             />
           )}
       </FormWrapper>
-      <DataEntryHelpPage showDataEntryHelpPage={showDataEntryHelpPage} />
+      <DataEntryHelpPage
+        showDataEntryHelpPage={showDataEntryHelpPage}
+        closeHelpPage={() => setShowDataEntryHelpPage(false)}
+      />
     </>
   );
 };

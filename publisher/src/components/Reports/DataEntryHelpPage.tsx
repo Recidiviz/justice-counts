@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -30,13 +30,25 @@ import {
   ListMarker,
 } from "./DataEntryHelpPage.styles";
 
-const DataEntryHelpPage: React.FC<{ showDataEntryHelpPage: boolean }> = ({
-  showDataEntryHelpPage,
-}) => {
+const DataEntryHelpPage: React.FC<{
+  showDataEntryHelpPage: boolean;
+  closeHelpPage: () => void;
+}> = ({ showDataEntryHelpPage, closeHelpPage }) => {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (showDataEntryHelpPage) {
+      document.getElementById("data-entry-help-page")?.focus();
+    }
+  }, [showDataEntryHelpPage]);
+
   return (
-    <DataEntryHelpPageWrapper showOnboarding={showDataEntryHelpPage}>
+    <DataEntryHelpPageWrapper
+      id="data-entry-help-page"
+      tabIndex={-1}
+      showOnboarding={showDataEntryHelpPage}
+      onBlur={closeHelpPage}
+    >
       <DataEntryHelpPageTitle>
         How to Use the Data Entry View
       </DataEntryHelpPageTitle>

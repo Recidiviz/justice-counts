@@ -43,6 +43,7 @@ export const DataEntryHelpPageWrapper = styled.div<{
   display: flex;
   flex-direction: column;
   gap: 25px;
+  outline: none;
 
   left: ${({ showOnboarding }) => (showOnboarding ? "50%" : "100%")};
 
