@@ -229,6 +229,10 @@ export const DisaggregationHasInputIndicator = styled.div<{
   border: 1px solid ${palette.highlight.grey4};
   ${({ active, hasInput, error }) =>
     !active && (hasInput || error) && `border: none; opacity: 0.3;`}
+
+  ${TabItem}:hover & {
+    opacity: 1;
+  }
 `;
 
 export const TabDisplay = styled.div`
