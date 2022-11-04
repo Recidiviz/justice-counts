@@ -81,14 +81,16 @@ export const ContextConfiguration: React.FC = observer(() => {
                     value="yes"
                     checked={currentContext.value === "yes"}
                     onChange={() => {
-                      const updatedSetting = updateContextValue(
-                        activeSystem,
-                        activeMetricKey,
-                        contextKey,
-                        currentContext.type,
-                        "yes"
-                      );
-                      if (updatedSetting) saveMetricSettings(updatedSetting);
+                      if (activeSystem && activeMetricKey) {
+                        const updatedSetting = updateContextValue(
+                          activeSystem,
+                          activeMetricKey,
+                          contextKey,
+                          currentContext.type,
+                          "yes"
+                        );
+                        saveMetricSettings(updatedSetting);
+                      }
                     }}
                   />
                   <BinaryRadioButton
@@ -99,27 +101,31 @@ export const ContextConfiguration: React.FC = observer(() => {
                     value="no"
                     checked={currentContext.value === "no"}
                     onChange={() => {
-                      const updatedSetting = updateContextValue(
-                        activeSystem,
-                        activeMetricKey,
-                        contextKey,
-                        currentContext.type,
-                        "no"
-                      );
-                      if (updatedSetting) saveMetricSettings(updatedSetting);
+                      if (activeSystem && activeMetricKey) {
+                        const updatedSetting = updateContextValue(
+                          activeSystem,
+                          activeMetricKey,
+                          contextKey,
+                          currentContext.type,
+                          "no"
+                        );
+                        saveMetricSettings(updatedSetting);
+                      }
                     }}
                   />
                 </RadioButtonGroupWrapper>
                 <BinaryRadioGroupClearButton
                   onClick={() => {
-                    const updatedSetting = updateContextValue(
-                      activeSystem,
-                      activeMetricKey,
-                      contextKey,
-                      currentContext.type,
-                      ""
-                    );
-                    if (updatedSetting) saveMetricSettings(updatedSetting);
+                    if (activeSystem && activeMetricKey) {
+                      const updatedSetting = updateContextValue(
+                        activeSystem,
+                        activeMetricKey,
+                        contextKey,
+                        currentContext.type,
+                        ""
+                      );
+                      saveMetricSettings(updatedSetting);
+                    }
                   }}
                 >
                   Clear Input
@@ -141,14 +147,16 @@ export const ContextConfiguration: React.FC = observer(() => {
                   multiline={currentContext.type === "TEXT"}
                   error={currentContext.error}
                   onChange={(e) => {
-                    const updatedSetting = updateContextValue(
-                      activeSystem,
-                      activeMetricKey,
-                      contextKey,
-                      currentContext.type,
-                      e.currentTarget.value
-                    );
-                    if (updatedSetting) debouncedSave(updatedSetting);
+                    if (activeSystem && activeMetricKey) {
+                      const updatedSetting = updateContextValue(
+                        activeSystem,
+                        activeMetricKey,
+                        contextKey,
+                        currentContext.type,
+                        e.currentTarget.value
+                      );
+                      debouncedSave(updatedSetting);
+                    }
                   }}
                 />
               </>
@@ -172,14 +180,16 @@ export const ContextConfiguration: React.FC = observer(() => {
                       value={option}
                       checked={currentContext.value === option}
                       onChange={() => {
-                        const updatedSetting = updateContextValue(
-                          activeSystem,
-                          activeMetricKey,
-                          contextKey,
-                          currentContext.type,
-                          option
-                        );
-                        if (updatedSetting) saveMetricSettings(updatedSetting);
+                        if (activeSystem && activeMetricKey) {
+                          const updatedSetting = updateContextValue(
+                            activeSystem,
+                            activeMetricKey,
+                            contextKey,
+                            currentContext.type,
+                            option
+                          );
+                          saveMetricSettings(updatedSetting);
+                        }
                       }}
                     />
                   ))}
@@ -187,14 +197,16 @@ export const ContextConfiguration: React.FC = observer(() => {
 
                 <BinaryRadioGroupClearButton
                   onClick={() => {
-                    const updatedSetting = updateContextValue(
-                      activeSystem,
-                      activeMetricKey,
-                      contextKey,
-                      currentContext.type,
-                      ""
-                    );
-                    if (updatedSetting) saveMetricSettings(updatedSetting);
+                    if (activeSystem && activeMetricKey) {
+                      const updatedSetting = updateContextValue(
+                        activeSystem,
+                        activeMetricKey,
+                        contextKey,
+                        currentContext.type,
+                        ""
+                      );
+                      saveMetricSettings(updatedSetting);
+                    }
                   }}
                 >
                   Clear Input

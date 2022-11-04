@@ -92,66 +92,68 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
     const [showDefaultSettings, setShowDefaultSettings] = useState(false);
 
     const revertToAndSaveDefaultValues = () => {
-      /** Create array of default settings and update settings (to default value) in the store */
-      const defaultSettings = activeSettingsKeys.map((settingKey) => {
-        let currentSettingDefaultValue;
+      if (activeSystem && activeMetricKey) {
+        /** Create array of default settings and update settings (to default value) in the store */
+        const defaultSettings = activeSettingsKeys.map((settingKey) => {
+          let currentSettingDefaultValue;
 
-        if (isMetricDefinitionSettings) {
+          if (isMetricDefinitionSettings) {
+            currentSettingDefaultValue =
+              metricDefinitionSettings[systemMetricKey][settingKey].default;
+
+            updateMetricDefinitionSetting(
+              activeSystem,
+              activeMetricKey,
+              settingKey,
+              currentSettingDefaultValue as MetricConfigurationSettingsOptions
+            );
+
+            return { key: settingKey, included: currentSettingDefaultValue };
+          }
+
           currentSettingDefaultValue =
-            metricDefinitionSettings[systemMetricKey][settingKey].default;
+            activeDisaggregationKey &&
+            dimensionDefinitionSettings[systemMetricKey][
+              activeDisaggregationKey
+            ][activeDimensionKey][settingKey].default;
 
-          updateMetricDefinitionSetting(
+          updateDimensionDefinitionSetting(
             activeSystem,
             activeMetricKey,
+            activeDisaggregationKey as string,
+            activeDimensionKey,
             settingKey,
             currentSettingDefaultValue as MetricConfigurationSettingsOptions
           );
 
           return { key: settingKey, included: currentSettingDefaultValue };
+        }) as MetricSettings["settings"];
+
+        /** Save default settings array */
+        if (isMetricDefinitionSettings) {
+          const updatedSetting = {
+            key: activeMetricKey as string,
+            settings: defaultSettings,
+          };
+          return saveMetricSettings(updatedSetting);
         }
 
-        currentSettingDefaultValue =
-          activeDisaggregationKey &&
-          dimensionDefinitionSettings[systemMetricKey][activeDisaggregationKey][
-            activeDimensionKey
-          ][settingKey].default;
-
-        updateDimensionDefinitionSetting(
-          activeSystem,
-          activeMetricKey,
-          activeDisaggregationKey as string,
-          activeDimensionKey,
-          settingKey,
-          currentSettingDefaultValue as MetricConfigurationSettingsOptions
-        );
-
-        return { key: settingKey, included: currentSettingDefaultValue };
-      }) as MetricSettings["settings"];
-
-      /** Save default settings array */
-      if (isMetricDefinitionSettings) {
         const updatedSetting = {
           key: activeMetricKey as string,
-          settings: defaultSettings,
+          disaggregations: [
+            {
+              key: activeDisaggregationKey as string,
+              dimensions: [
+                {
+                  key: activeDimensionKey,
+                  settings: defaultSettings,
+                },
+              ],
+            },
+          ],
         };
-        return saveMetricSettings(updatedSetting);
+        saveMetricSettings(updatedSetting);
       }
-
-      const updatedSetting = {
-        key: activeMetricKey as string,
-        disaggregations: [
-          {
-            key: activeDisaggregationKey as string,
-            dimensions: [
-              {
-                key: activeDimensionKey,
-                settings: defaultSettings,
-              },
-            ],
-          },
-        ],
-      };
-      saveMetricSettings(updatedSetting);
     };
 
     return (
@@ -221,31 +223,29 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                               }
                               showDefault={showDefaultSettings}
                               onClick={() => {
-                                if (isMetricDefinitionSettings) {
+                                if (activeSystem && activeMetricKey) {
+                                  if (isMetricDefinitionSettings) {
+                                    const updatedSetting =
+                                      updateMetricDefinitionSetting(
+                                        activeSystem,
+                                        activeMetricKey,
+                                        settingKey,
+                                        option
+                                      );
+                                    return saveMetricSettings(updatedSetting);
+                                  }
+
                                   const updatedSetting =
-                                    updateMetricDefinitionSetting(
+                                    updateDimensionDefinitionSetting(
                                       activeSystem,
                                       activeMetricKey,
+                                      activeDisaggregationKey as string,
+                                      activeDimensionKey,
                                       settingKey,
                                       option
                                     );
-                                  return (
-                                    updatedSetting &&
-                                    saveMetricSettings(updatedSetting)
-                                  );
-                                }
-
-                                const updatedSetting =
-                                  updateDimensionDefinitionSetting(
-                                    activeSystem,
-                                    activeMetricKey,
-                                    activeDisaggregationKey as string,
-                                    activeDimensionKey,
-                                    settingKey,
-                                    option
-                                  );
-                                if (updatedSetting)
                                   saveMetricSettings(updatedSetting);
+                                }
                               }}
                             >
                               {option}

@@ -122,12 +122,14 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               value="yes"
               checked={metricEnabled}
               onChange={() => {
-                const updatedSetting = updateMetricEnabledStatus(
-                  activeSystem,
-                  activeMetricKey as string,
-                  true
-                );
-                if (updatedSetting) saveMetricSettings(updatedSetting);
+                if (activeSystem && activeMetricKey) {
+                  const updatedSetting = updateMetricEnabledStatus(
+                    activeSystem,
+                    activeMetricKey,
+                    true
+                  );
+                  saveMetricSettings(updatedSetting);
+                }
               }}
             />
             <BinaryRadioButton
@@ -138,12 +140,14 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               value="no"
               checked={!metricEnabled}
               onChange={() => {
-                const updatedSetting = updateMetricEnabledStatus(
-                  activeSystem,
-                  activeMetricKey as string,
-                  false
-                );
-                if (updatedSetting) saveMetricSettings(updatedSetting);
+                if (activeSystem && activeMetricKey) {
+                  const updatedSetting = updateMetricEnabledStatus(
+                    activeSystem,
+                    activeMetricKey,
+                    false
+                  );
+                  saveMetricSettings(updatedSetting);
+                }
               }}
             />
           </RadioButtonGroupWrapper>
@@ -195,15 +199,16 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                             type="checkbox"
                             checked={currentDisaggregation.enabled}
                             onChange={() => {
-                              const updatedSetting =
-                                updateDisaggregationEnabledStatus(
-                                  activeSystem,
-                                  activeMetricKey,
-                                  disaggregationKey,
-                                  !currentDisaggregation.enabled
-                                );
-                              if (updatedSetting)
+                              if (activeSystem && activeMetricKey) {
+                                const updatedSetting =
+                                  updateDisaggregationEnabledStatus(
+                                    activeSystem,
+                                    activeMetricKey,
+                                    disaggregationKey,
+                                    !currentDisaggregation.enabled
+                                  );
                                 saveMetricSettings(updatedSetting);
+                              }
                             }}
                           />
                           <BlueCheckIcon
@@ -244,15 +249,16 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                           currentDimension.enabled
                         }
                         onChange={() => {
-                          const updatedSetting = updateDimensionEnabledStatus(
-                            activeSystem,
-                            activeMetricKey,
-                            activeDisaggregationKey,
-                            dimensionKey,
-                            !currentDimension.enabled
-                          );
-                          if (updatedSetting)
+                          if (activeSystem && activeMetricKey) {
+                            const updatedSetting = updateDimensionEnabledStatus(
+                              activeSystem,
+                              activeMetricKey,
+                              activeDisaggregationKey,
+                              dimensionKey,
+                              !currentDimension.enabled
+                            );
                             saveMetricSettings(updatedSetting);
+                          }
                         }}
                       />
                       <BlueCheckIcon
