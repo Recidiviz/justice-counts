@@ -38,6 +38,8 @@ import {
   MetricConfigurationContainer,
   MetricDisaggregations,
   MetricOnOffWrapper,
+  RaceEthnicities,
+  RaceEthnicitiesBreakdown,
   RadioButtonGroupWrapper,
   Subheader,
 } from ".";
@@ -226,66 +228,71 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
 
             <Disaggregation>
               {/* Dimension Fields (Enable/Disable) */}
-              {activeDimensionKeys?.map((dimensionKey) => {
-                const currentDisaggregation =
-                  disaggregations[systemMetricKey][activeDisaggregationKey];
-                const currentDimension =
-                  dimensions[systemMetricKey][activeDisaggregationKey][
-                    dimensionKey
-                  ];
+              {activeDisaggregationKey === "global/race_and_ethnicity" ? (
+                <RaceEthnicitiesBreakdown />
+              ) : (
+                activeDimensionKeys?.map((dimensionKey) => {
+                  const currentDisaggregation =
+                    disaggregations[systemMetricKey][activeDisaggregationKey];
+                  const currentDimension =
+                    dimensions[systemMetricKey][activeDisaggregationKey][
+                      dimensionKey
+                    ];
 
-                return (
-                  <Dimension
-                    key={dimensionKey}
-                    enabled={!metricEnabled || currentDisaggregation.enabled}
-                    inView={dimensionKey === activeDimensionKey}
-                    onClick={() => setActiveDimensionKey(dimensionKey)}
-                  >
-                    <CheckboxWrapper>
-                      <Checkbox
-                        type="checkbox"
-                        checked={
-                          currentDisaggregation.enabled &&
-                          currentDimension.enabled
-                        }
-                        onChange={() => {
-                          if (activeSystem && activeMetricKey) {
-                            const updatedSetting = updateDimensionEnabledStatus(
-                              activeSystem,
-                              activeMetricKey,
-                              activeDisaggregationKey,
-                              dimensionKey,
-                              !currentDimension.enabled
-                            );
-                            saveMetricSettings(updatedSetting);
+                  return (
+                    <Dimension
+                      key={dimensionKey}
+                      enabled={!metricEnabled || currentDisaggregation.enabled}
+                      inView={dimensionKey === activeDimensionKey}
+                      onClick={() => setActiveDimensionKey(dimensionKey)}
+                    >
+                      <CheckboxWrapper>
+                        <Checkbox
+                          type="checkbox"
+                          checked={
+                            currentDisaggregation.enabled &&
+                            currentDimension.enabled
                           }
-                        }}
-                      />
-                      <BlueCheckIcon
-                        src={blueCheck}
-                        alt=""
-                        enabled={
-                          currentDisaggregation.enabled &&
-                          currentDimension.enabled
-                        }
-                      />
-                    </CheckboxWrapper>
+                          onChange={() => {
+                            if (activeSystem && activeMetricKey) {
+                              const updatedSetting =
+                                updateDimensionEnabledStatus(
+                                  activeSystem,
+                                  activeMetricKey,
+                                  activeDisaggregationKey,
+                                  dimensionKey,
+                                  !currentDimension.enabled
+                                );
+                              saveMetricSettings(updatedSetting);
+                            }
+                          }}
+                        />
+                        <BlueCheckIcon
+                          src={blueCheck}
+                          alt=""
+                          enabled={
+                            currentDisaggregation.enabled &&
+                            currentDimension.enabled
+                          }
+                        />
+                      </CheckboxWrapper>
 
-                    <DimensionTitleWrapper>
-                      <DimensionTitle
-                        enabled={
-                          currentDisaggregation.enabled &&
-                          currentDimension.enabled
-                        }
-                      >
-                        {currentDimension.label}
-                      </DimensionTitle>
+                      <DimensionTitleWrapper>
+                        <DimensionTitle
+                          enabled={
+                            currentDisaggregation.enabled &&
+                            currentDimension.enabled
+                          }
+                        >
+                          {currentDimension.label}
+                        </DimensionTitle>
 
-                      <RightArrowIcon />
-                    </DimensionTitleWrapper>
-                  </Dimension>
-                );
-              })}
+                        <RightArrowIcon />
+                      </DimensionTitleWrapper>
+                    </Dimension>
+                  );
+                })
+              )}
             </Disaggregation>
           </MetricDisaggregations>
         )}

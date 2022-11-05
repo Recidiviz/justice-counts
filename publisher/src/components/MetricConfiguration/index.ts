@@ -21,4 +21,5 @@ export * from "./MetricBox";
 export * from "./MetricConfiguration";
 export * from "./MetricConfiguration.styles";
 export * from "./MetricDefinitions";
+export * from "./RaceEthnicities";
 export * from "./types";
