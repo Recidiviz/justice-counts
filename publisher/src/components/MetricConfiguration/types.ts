@@ -21,6 +21,18 @@ export const metricConfigurationSettingsOptions = ["N/A", "No", "Yes"] as const;
 export type MetricConfigurationSettingsOptions =
   typeof metricConfigurationSettingsOptions[number];
 
+export const races = [
+  "American Indian / Alaskan",
+  "Asian",
+  "Black",
+  "Native Hawaiian / Pacific Islander",
+  "White",
+  "More than one race",
+  "Other",
+  "Unknown",
+] as const;
+export type Races = typeof races[number];
+
 export type MetricSettings = {
   key: string;
   enabled?: boolean;
