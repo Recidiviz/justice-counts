@@ -15,8 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { observer } from "mobx-react-lite";
 import React from "react";
 
+import { useStore } from "../../stores";
 import { BinaryRadioButton } from "../Forms";
 import {
   Header,
@@ -27,7 +29,7 @@ import {
   RaceEthnicitiesDescription,
   RaceEthnicitiesDisplay,
   RaceEthnicitiesTitle,
-  races,
+  raceEthnicityGridStates,
   RaceSelection,
   RaceSelectionButton,
   RadioButtonGroupWrapper,
@@ -35,7 +37,48 @@ import {
   Subheader,
 } from ".";
 
-export const RaceEthnicitiesForm = () => {
+export const RaceEthnicitiesForm = observer(() => {
+  const { metricConfigStore } = useStore();
+  const {
+    ethnicitiesByRace,
+    updateAllRaceEthnicitiesToDefaultState,
+    updateRaceDimensions,
+    saveMetricSettings,
+  } = metricConfigStore;
+  const ethnicitiesByRaceArray = Object.entries(ethnicitiesByRace);
+
+  const canSpecifyEthnicity =
+    ethnicitiesByRaceArray.filter(([_, ethnicities]) => {
+      /** At least one Race where all three Ethnicities are enabled */
+      return (
+        ethnicities.Hispanic.enabled &&
+        ethnicities["Not Hispanic"].enabled &&
+        ethnicities["Unknown Ethnicity"].enabled
+      );
+    }).length > 0;
+
+  const specifiesHispanicAsRace =
+    ethnicitiesByRaceArray.filter(([race, ethnicities]) => {
+      /** Unknown Race has both Hispanic and Not Hispanic enabled */
+      return (
+        race === "Unknown" &&
+        ethnicities.Hispanic.enabled &&
+        ethnicities["Not Hispanic"].enabled
+      );
+    }).length > 0;
+
+  const determineCurrentState = () => {
+    if (canSpecifyEthnicity) {
+      return "CAN_SPECIFY_ETHNICITY";
+    }
+    if (specifiesHispanicAsRace) {
+      return "NO_ETHNICITY_HISPANIC_AS_RACE";
+    }
+    return "NO_ETHNICITY_HISPANIC_NOT_SPECIFIED";
+  };
+
+  const currentState = determineCurrentState();
+
   return (
     <RaceEthnicitiesContainer>
       <RaceEthnicitiesDisplay>
@@ -58,17 +101,35 @@ export const RaceEthnicitiesForm = () => {
           <RadioButtonGroupWrapper>
             <BinaryRadioButton
               type="radio"
-              id="metric-config-specify-ethnicity-yes"
-              name="metric-config-specify-ethnicity"
+              id="specify-ethnicity-yes"
+              name="specify-ethnicity"
               label="Yes"
               value="yes"
+              checked={canSpecifyEthnicity}
+              onChange={() => {
+                const updatedDimensions =
+                  updateAllRaceEthnicitiesToDefaultState(
+                    "CAN_SPECIFY_ETHNICITY",
+                    raceEthnicityGridStates
+                  );
+                saveMetricSettings(updatedDimensions);
+              }}
             />
             <BinaryRadioButton
               type="radio"
-              id="metric-config-specify-ethnicity-no"
-              name="metric-config-specify-ethnicity"
+              id="specify-ethnicity-no"
+              name="specify-ethnicity"
               label="No"
               value="no"
+              checked={!canSpecifyEthnicity}
+              onChange={() => {
+                const updatedDimensions =
+                  updateAllRaceEthnicitiesToDefaultState(
+                    "NO_ETHNICITY_HISPANIC_AS_RACE",
+                    raceEthnicityGridStates
+                  );
+                saveMetricSettings(updatedDimensions);
+              }}
             />
           </RadioButtonGroupWrapper>
         </SpecifyEthnicityWrapper>
@@ -82,17 +143,109 @@ export const RaceEthnicitiesForm = () => {
         </Subheader>
 
         <RaceContainer>
-          {races.map((race) => (
-            <Race key={race}>
-              <RaceDisplayName>{race}</RaceDisplayName>
+          {/* Hispanic/Latino as Race (if user cannot specify ethnicity) */}
+          {!canSpecifyEthnicity && (
+            <Race>
+              <RaceDisplayName>Hispanic/Latino</RaceDisplayName>
               <RaceSelection>
-                <RaceSelectionButton>No</RaceSelectionButton>
-                <RaceSelectionButton>Yes</RaceSelectionButton>
+                <RaceSelectionButton
+                  selected={!specifiesHispanicAsRace}
+                  onClick={() => {
+                    const updatedDimensions =
+                      updateAllRaceEthnicitiesToDefaultState(
+                        "NO_ETHNICITY_HISPANIC_NOT_SPECIFIED",
+                        raceEthnicityGridStates
+                      );
+                    saveMetricSettings(updatedDimensions);
+                  }}
+                >
+                  No
+                </RaceSelectionButton>
+                <RaceSelectionButton
+                  selected={specifiesHispanicAsRace}
+                  onClick={() => {
+                    const updatedDimensions =
+                      updateAllRaceEthnicitiesToDefaultState(
+                        "NO_ETHNICITY_HISPANIC_AS_RACE",
+                        raceEthnicityGridStates
+                      );
+                    saveMetricSettings(updatedDimensions);
+                  }}
+                >
+                  Yes
+                </RaceSelectionButton>
               </RaceSelection>
             </Race>
-          ))}
+          )}
+
+          {/* Races (Enable/Disable) */}
+          {Object.entries(ethnicitiesByRace).map(([race, ethnicities]) => {
+            const raceEnabled = Boolean(
+              Object.values(ethnicities).find((ethnicity) => ethnicity.enabled)
+            );
+
+            return (
+              <Race key={race}>
+                <RaceDisplayName>{race}</RaceDisplayName>
+                <RaceSelection>
+                  <RaceSelectionButton
+                    selected={!raceEnabled}
+                    onClick={() => {
+                      let switchedGridStateUpdatedDimensions;
+                      /**
+                       * When Unknown Race is disabled in NO_ETHNICITY_HISPANIC_AS_RACE state, we automatically switch
+                       * to the NO_ETHNICITY_HISPANIC_NOT_SPECIFIED state because the Unknown Race (Hispanic/Latino Ethnicity)
+                       * dimension is the only dimension an agency can specify their numbers for Hispanic/Latino as a Race (while
+                       * in the NO_ETHNICITY_HISPANIC_AS_RACE state).
+                       */
+                      if (
+                        race === "Unknown" &&
+                        currentState === "NO_ETHNICITY_HISPANIC_AS_RACE"
+                      ) {
+                        switchedGridStateUpdatedDimensions =
+                          updateAllRaceEthnicitiesToDefaultState(
+                            "NO_ETHNICITY_HISPANIC_NOT_SPECIFIED",
+                            raceEthnicityGridStates
+                          );
+                      }
+
+                      const updatedDimensions = updateRaceDimensions(
+                        race,
+                        false,
+                        currentState,
+                        raceEthnicityGridStates
+                      );
+
+                      if (switchedGridStateUpdatedDimensions) {
+                        return saveMetricSettings(
+                          switchedGridStateUpdatedDimensions
+                        );
+                      }
+                      saveMetricSettings(updatedDimensions);
+                    }}
+                  >
+                    No
+                  </RaceSelectionButton>
+                  <RaceSelectionButton
+                    selected={raceEnabled}
+                    onClick={() => {
+                      const updatedDimensions = updateRaceDimensions(
+                        race,
+                        true,
+                        currentState,
+                        raceEthnicityGridStates
+                      );
+                      saveMetricSettings(updatedDimensions);
+                    }}
+                  >
+                    Yes
+                  </RaceSelectionButton>
+                </RaceSelection>
+              </Race>
+            );
+          })}
         </RaceContainer>
       </RaceEthnicitiesDisplay>
     </RaceEthnicitiesContainer>
   );
-};
+});

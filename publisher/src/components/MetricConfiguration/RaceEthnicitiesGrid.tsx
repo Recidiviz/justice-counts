@@ -15,8 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { observer } from "mobx-react-lite";
 import React from "react";
 
+import { useStore } from "../../stores";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import {
   CalloutBox,
@@ -32,10 +34,12 @@ import {
   RaceEthnicitiesBreakdownContainer,
   RaceEthnicitiesRow,
   RaceEthnicitiesTable,
-  races,
 } from ".";
 
-export const RaceEthnicitiesGrid = () => {
+export const RaceEthnicitiesGrid: React.FC = observer(() => {
+  const { metricConfigStore } = useStore();
+  const { ethnicitiesByRace } = metricConfigStore;
+
   return (
     <RaceEthnicitiesBreakdownContainer>
       <CalloutBox>
@@ -43,7 +47,6 @@ export const RaceEthnicitiesGrid = () => {
           Answer the questions on the <span>Race and Ethnicity</span> form; the
           grid below will reflect your responses.
         </Description>
-
         <RightArrowIcon />
       </CalloutBox>
 
@@ -60,17 +63,20 @@ export const RaceEthnicitiesGrid = () => {
       </GridHeaderContainer>
 
       <RaceEthnicitiesTable>
-        {races.map((race, index) => (
+        {Object.entries(ethnicitiesByRace).map(([race, ethnicities]) => (
           <RaceEthnicitiesRow key={race}>
             <RaceCell>{race}</RaceCell>
             <EthnicitiesRow>
-              <EthnicityCell enabled={index % 1 === 0} />
-              <EthnicityCell />
-              <EthnicityCell />
+              {Object.values(ethnicities).map((ethnicity) => (
+                <EthnicityCell
+                  key={ethnicity.key}
+                  enabled={ethnicity.enabled}
+                />
+              ))}
             </EthnicitiesRow>
           </RaceEthnicitiesRow>
         ))}
       </RaceEthnicitiesTable>
     </RaceEthnicitiesBreakdownContainer>
   );
-};
+});

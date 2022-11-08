@@ -38,6 +38,7 @@ import {
   MetricConfigurationContainer,
   MetricDisaggregations,
   MetricOnOffWrapper,
+  RACE_ETHNICITY_DISAGGREGATION_KEY,
   RaceEthnicitiesGrid,
   RadioButtonGroupWrapper,
   Subheader,
@@ -227,7 +228,8 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
 
             <Disaggregation>
               {/* Dimension Fields (Enable/Disable) */}
-              {activeDisaggregationKey === "global/race_and_ethnicity" ? (
+              {/* Race & Ethnicities Grid (when active disaggregation is Race / Ethnicity) */}
+              {activeDisaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY ? (
                 <RaceEthnicitiesGrid />
               ) : (
                 activeDimensionKeys?.map((dimensionKey) => {
