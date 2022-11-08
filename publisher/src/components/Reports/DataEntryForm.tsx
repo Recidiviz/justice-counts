@@ -18,7 +18,6 @@
 import {
   HEADER_BAR_HEIGHT,
   palette,
-  typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { reaction, runInAction } from "mobx";
@@ -32,77 +31,73 @@ import {
   trackAutosaveTriggered,
   trackReportNotStartedToDraft,
 } from "../../analytics";
+import { menuOptions } from "../../pages/Settings";
 import { useStore } from "../../stores";
 import { memoizeDebounce, printReportTitle } from "../../utils";
+import logoImg from "../assets/jc-logo-vector.png";
+import { Button, DataUploadHeader } from "../DataUpload";
 import {
-  BinaryRadioGroupClearButton,
-  BinaryRadioGroupContainer,
-  BinaryRadioGroupQuestion,
-  BinaryRadioGroupWrapper,
-  ErrorWithTooltip,
+  DataEntryFormTitle,
+  DisabledMetricsInfoLink,
+  DisabledMetricsInfoWrapper,
   Form,
   FormWrapper,
-  GoBackToReportsOverviewLink,
   Metric,
   MetricSectionSubTitle,
   MetricSectionTitle,
   MetricSectionTitleWrapper,
   MetricSystemTitle,
-  NotReportedIcon,
-  OnePanelBackLinkContainer,
-  OpacityGradient,
   PreTitle,
-  RequiredChip,
   TabbedDisaggregations,
-  Title,
 } from "../Forms";
-import { Onboarding, OnboardingDataEntrySummary } from "../Onboarding";
-import {
-  AdditionalContextInput,
-  BinaryRadioButtonInputs,
-  MetricTextInput,
-} from "./DataEntryFormComponents";
-import {
-  DATA_ENTRY_WIDTH,
-  ONE_PANEL_MAX_WIDTH,
-  PublishButton,
-  SIDE_PANEL_HORIZONTAL_PADDING,
-} from "./ReportDataEntry.styles";
+import { Logo, LogoContainer } from "../Header";
+import { Onboarding } from "../Onboarding";
+import { MetricTextInput } from "./DataEntryFormComponents";
+import DataEntryHelpPage from "./DataEntryHelpPage";
 
-const DataEntryFormPublishButtonContainer = styled.div`
-  position: fixed;
-  display: flex;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 0 ${SIDE_PANEL_HORIZONTAL_PADDING}px;
-  justify-content: center;
-  padding: 0 24px 8px;
-  background: ${palette.solid.white};
+const DataEntryTopBar = styled(DataUploadHeader)`
+  z-index: 3;
 `;
 
-const DataEntryFormPublishButton = styled(PublishButton)`
-  display: none;
-  @media only screen and (max-width: ${ONE_PANEL_MAX_WIDTH}px) {
-    display: block;
-    flex: 0 1 ${DATA_ENTRY_WIDTH}px;
+const TopBarButtonsContainer = styled.div<{ showDataEntryHelpPage: boolean }>`
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  transition: opacity 400ms ease-in;
+
+  opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 0 : 1)};
+`;
+
+const DataEntryReviewButton = styled(Button)`
+  padding-right: 22px;
+  padding-left: 22px;
+
+  &::after {
+    content: "Review";
   }
 `;
 
-const DataEntryFormRequiredChip = styled(RequiredChip)`
-  margin-right: 16px;
-`;
-
-const DataEntryFormErrorWithTooltipContainer = styled.div`
+const TopBarCloseHelpButtonContainer = styled.div<{
+  showDataEntryHelpPage: boolean;
+}>`
   position: absolute;
-  width: 100%;
-  top: 70px;
-`;
+  top: 0;
+  right: 24px;
+  display: flex;
+  height: ${HEADER_BAR_HEIGHT - 1}px;
+  width: calc(100% - 24px - ${HEADER_BAR_HEIGHT}px);
+  padding-top: 10px;
+  padding-bottom: 9px;
+  flex-direction: row;
+  justify-content: flex-end;
 
-const AdditionalContextLabel = styled.div`
-  ${typography.sizeCSS.medium}
-  margin-top: 40px;
-  margin-bottom: 16px;
+  transition: background-color 400ms ease-in;
+  transition: opacity 400ms ease-in;
+
+  z-index: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 1 : -1)};
+  opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 1 : 0)};
+  background-color: ${({ showDataEntryHelpPage }) =>
+    showDataEntryHelpPage ? palette.solid.white : "transparent"};
 `;
 
 const DataEntryForm: React.FC<{
@@ -110,11 +105,15 @@ const DataEntryForm: React.FC<{
   updateFieldDescription: (title?: string, description?: string) => void;
   updateActiveMetric: (metricKey: string) => void;
   toggleConfirmationDialogue: () => void;
+  showDataEntryHelpPage: boolean;
+  setShowDataEntryHelpPage: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({
   reportID,
   updateFieldDescription,
   updateActiveMetric,
   toggleConfirmationDialogue,
+  showDataEntryHelpPage,
+  setShowDataEntryHelpPage,
 }) => {
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [hasVersionConflict, setHasVersionConflict] = useState(false);
@@ -125,6 +124,7 @@ const DataEntryForm: React.FC<{
 
   const isPublished =
     reportStore.reportOverviews[reportID].status === "PUBLISHED";
+  const navigateState = { settingsMenuOption: menuOptions[2] };
 
   // if the user switches agencies while on this page, navigate back to the reports page.
   useEffect(
@@ -249,6 +249,10 @@ const DataEntryForm: React.FC<{
     []
   );
 
+  useEffect(() => {
+    document.body.style.overflow = showDataEntryHelpPage ? "hidden" : "unset";
+  }, [showDataEntryHelpPage]);
+
   const reportOverview = reportStore.reportOverviews[reportID];
   const reportMetrics = reportStore.reportMetrics[reportID];
   const metricsBySystem = reportStore.reportMetricsBySystem[reportID];
@@ -259,209 +263,159 @@ const DataEntryForm: React.FC<{
   }
 
   return (
-    <FormWrapper>
-      <Form
-        onChange={(e) => {
-          // When the form has changed, check the changed element for a `data-metric-key`
-          // data attribute. If present, pass to the `debouncedSave` function, which will
-          // then only save that metric. If not present, `metricKey` will be undefined,
-          // in which case `debouncedSave` will save all metrics.
-          const target = e.target as HTMLFormElement;
-          const metricKey = target.getAttribute("data-metric-key") ?? undefined;
-          debouncedSave(metricKey);
-        }}
-      >
-        {/* Form Title */}
-        <OnePanelBackLinkContainer>
-          <GoBackToReportsOverviewLink onClick={() => navigate("/")} />
-        </OnePanelBackLinkContainer>
-        <PreTitle>Enter Data</PreTitle>
-        <Title scrolled={scrolled} sticky>
-          {reportOverview &&
-            printReportTitle(
-              reportOverview.month,
-              reportOverview.year,
-              reportOverview.frequency
-            )}
-        </Title>
+    <>
+      <DataEntryTopBar>
+        <LogoContainer onClick={() => navigate("/")}>
+          <Logo src={logoImg} alt="" />
+        </LogoContainer>
 
-        {/* Metrics */}
-        {Object.entries(metricsBySystem).map(
-          ([system, metrics], systemIndex) => {
-            return (
-              <Fragment key={system}>
-                {showMetricSectionTitles && (
-                  <MetricSystemTitle firstTitle={systemIndex === 0}>
-                    {system}
-                  </MetricSystemTitle>
-                )}
+        <TopBarCloseHelpButtonContainer
+          showDataEntryHelpPage={showDataEntryHelpPage}
+        >
+          <Button type="red" onClick={() => setShowDataEntryHelpPage(false)}>
+            Close Help
+          </Button>
+        </TopBarCloseHelpButtonContainer>
 
-                {metrics.map((metric, index) => (
-                  <Metric
-                    key={metric.key}
-                    id={metric.key}
-                    ref={(e: HTMLDivElement) =>
-                      metric.enabled && metricsRef.current?.push(e)
-                    }
-                    notReporting={!metric.enabled}
-                  >
-                    <MetricSectionTitleWrapper>
-                      <MetricSectionTitle notReporting={!metric.enabled}>
-                        {metric.display_name}
-                      </MetricSectionTitle>
-                      {!metric.enabled && <NotReportedIcon />}
-                    </MetricSectionTitleWrapper>
-                    <MetricSectionSubTitle>
-                      {metric.description}
-                    </MetricSectionSubTitle>
+        <TopBarButtonsContainer showDataEntryHelpPage={showDataEntryHelpPage}>
+          <Button type="border" onClick={() => setShowDataEntryHelpPage(true)}>
+            Need Help?
+          </Button>
+          <Button type="border" onClick={() => navigate("/")}>
+            Save as Draft
+          </Button>
+          <DataEntryReviewButton
+            type="blue"
+            onClick={toggleConfirmationDialogue}
+          />
+        </TopBarButtonsContainer>
+      </DataEntryTopBar>
 
-                    {metric.enabled && (
-                      <>
-                        {/* Metric Value */}
-                        <MetricTextInput
+      <FormWrapper showDataEntryHelpPage={showDataEntryHelpPage}>
+        <Form
+          onChange={(e) => {
+            // When the form has changed, check the changed element for a `data-metric-key`
+            // data attribute. If present, pass to the `debouncedSave` function, which will
+            // then only save that metric. If not present, `metricKey` will be undefined,
+            // in which case `debouncedSave` will save all metrics.
+            const target = e.target as HTMLFormElement;
+            const metricKey =
+              target.getAttribute("data-metric-key") ?? undefined;
+            debouncedSave(metricKey);
+          }}
+        >
+          {/* Form Title */}
+          <PreTitle>Enter Data</PreTitle>
+          <DataEntryFormTitle scrolled={scrolled} sticky>
+            {reportOverview &&
+              printReportTitle(
+                reportOverview.month,
+                reportOverview.year,
+                reportOverview.frequency
+              )}
+          </DataEntryFormTitle>
+
+          {/* Metrics */}
+          {Object.entries(metricsBySystem).map(
+            ([system, metrics], systemIndex) => {
+              const enabledMetrics = metrics.filter((metric) => metric.enabled);
+
+              const disabledMetrics = metrics.filter(
+                (metric) => !metric.enabled
+              );
+              const disabledMetricsNames = disabledMetrics.map(
+                (metric, index) =>
+                  disabledMetrics.length > 1 &&
+                  index === disabledMetrics.length - 1
+                    ? `and ${metric.display_name}`
+                    : metric.display_name
+              );
+              const displayDisabledMetricsNames =
+                disabledMetricsNames.length > 2
+                  ? disabledMetricsNames.join(", ")
+                  : disabledMetricsNames.join(" ");
+
+              return (
+                <Fragment key={system}>
+                  {showMetricSectionTitles && (
+                    <MetricSystemTitle firstTitle={systemIndex === 0}>
+                      {system}
+                    </MetricSystemTitle>
+                  )}
+
+                  {enabledMetrics.map((metric, index) => (
+                    <Metric
+                      key={metric.key}
+                      id={metric.key}
+                      ref={(e: HTMLDivElement) => metricsRef.current?.push(e)}
+                    >
+                      <MetricSectionTitleWrapper>
+                        <MetricSectionTitle>
+                          {metric.display_name}
+                        </MetricSectionTitle>
+                      </MetricSectionTitleWrapper>
+                      <MetricSectionSubTitle>
+                        {metric.description}
+                      </MetricSectionSubTitle>
+
+                      {/* Metric Value */}
+                      <MetricTextInput
+                        reportID={reportID}
+                        metric={metric}
+                        autoFocus={index === 0 && systemIndex === 0}
+                        disabled={isPublished || hasVersionConflict}
+                      />
+
+                      {/* Disaggregations */}
+                      {metric.disaggregations.length > 0 && (
+                        <TabbedDisaggregations
                           reportID={reportID}
                           metric={metric}
-                          autoFocus={index === 0 && systemIndex === 0}
+                          updateFieldDescription={updateFieldDescription}
                           disabled={isPublished || hasVersionConflict}
                         />
+                      )}
+                    </Metric>
+                  ))}
+                  {disabledMetrics.length > 0 && (
+                    <DisabledMetricsInfoWrapper>
+                      {displayDisabledMetricsNames}{" "}
+                      {disabledMetricsNames.length > 1 ? "are all" : "is"}{" "}
+                      associated with your agency’s operations, but{" "}
+                      {disabledMetricsNames.length > 1 ? "have" : "has"} been
+                      disabled. If you believe this is incorrect, go to{" "}
+                      <DisabledMetricsInfoLink
+                        onClick={() =>
+                          navigate("/settings", { state: navigateState })
+                        }
+                      >
+                        Metric Configuration
+                      </DisabledMetricsInfoLink>{" "}
+                      to re-enable{" "}
+                      {disabledMetricsNames.length > 1 ? "them" : "it"}.
+                    </DisabledMetricsInfoWrapper>
+                  )}
+                </Fragment>
+              );
+            }
+          )}
+        </Form>
 
-                        {/* Disaggregations */}
-                        {metric.disaggregations.length > 0 && (
-                          <TabbedDisaggregations
-                            reportID={reportID}
-                            metric={metric}
-                            updateFieldDescription={updateFieldDescription}
-                            disabled={isPublished || hasVersionConflict}
-                          />
-                        )}
+        {/* Onboarding */}
 
-                        {/* Contexts */}
-                        {/* TODO(#13314): display multiple choice options as drop down if there are >2 options */}
-                        {metric.contexts.length > 0 &&
-                          metric.contexts.map((context, contextIndex) => {
-                            if (context.type === "MULTIPLE_CHOICE") {
-                              const contextError =
-                                formStore.contexts?.[reportID]?.[metric.key]?.[
-                                  context.key
-                                ]?.error;
-                              return (
-                                <BinaryRadioGroupContainer key={context.key}>
-                                  <BinaryRadioGroupQuestion>
-                                    {context.required && (
-                                      <DataEntryFormRequiredChip />
-                                    )}
-                                    {context.display_name}
-                                  </BinaryRadioGroupQuestion>
-
-                                  <BinaryRadioGroupWrapper>
-                                    <BinaryRadioButtonInputs
-                                      reportID={reportID}
-                                      metric={metric}
-                                      context={context}
-                                      contextIndex={contextIndex}
-                                      options={context.multiple_choice_options}
-                                      disabled={
-                                        isPublished || hasVersionConflict
-                                      }
-                                    />
-                                  </BinaryRadioGroupWrapper>
-                                  <BinaryRadioGroupClearButton
-                                    onClick={() => {
-                                      if (
-                                        !isPublished &&
-                                        !hasVersionConflict &&
-                                        (formStore.contexts?.[reportID]?.[
-                                          metric.key
-                                        ]?.[context.key]?.value ||
-                                          context.value)
-                                      ) {
-                                        formStore.resetBinaryInput(
-                                          reportID,
-                                          metric.key,
-                                          context.key,
-                                          context.required
-                                        );
-                                        showToast(
-                                          "Saving...",
-                                          false,
-                                          "grey",
-                                          undefined,
-                                          true
-                                        );
-                                        debouncedSave(metric.key);
-                                      }
-                                    }}
-                                    disabled={isPublished || hasVersionConflict}
-                                  >
-                                    Clear Input
-                                  </BinaryRadioGroupClearButton>
-
-                                  {/* Error */}
-                                  {contextError && (
-                                    <DataEntryFormErrorWithTooltipContainer>
-                                      <ErrorWithTooltip error={contextError} />
-                                    </DataEntryFormErrorWithTooltipContainer>
-                                  )}
-                                </BinaryRadioGroupContainer>
-                              );
-                            }
-                            return (
-                              <Fragment key={context.key}>
-                                <AdditionalContextLabel>
-                                  {context.display_name}
-                                </AdditionalContextLabel>
-                                <AdditionalContextInput
-                                  reportID={reportID}
-                                  metric={metric}
-                                  context={context}
-                                  contextIndex={contextIndex}
-                                  updateFieldDescription={() =>
-                                    updateFieldDescription(
-                                      context.display_name as string,
-                                      context.reporting_note as string
-                                    )
-                                  }
-                                  clearFieldDescription={() =>
-                                    updateFieldDescription(undefined)
-                                  }
-                                  disabled={isPublished || hasVersionConflict}
-                                />
-                              </Fragment>
-                            );
-                          })}
-                      </>
-                    )}
-                  </Metric>
-                ))}
-              </Fragment>
-            );
-          }
-        )}
-        <DataEntryFormPublishButtonContainer>
-          <DataEntryFormPublishButton
-            onClick={(e) => {
-              /** Should trigger a confirmation dialogue before submitting */
-              e.preventDefault();
-              toggleConfirmationDialogue();
-            }}
-            isPublished={isPublished || hasVersionConflict}
-          />
-        </DataEntryFormPublishButtonContainer>
-        <OpacityGradient />
-      </Form>
-
-      {/* Onboarding */}
-
-      {userStore.onboardingTopicsCompleted?.dataentryview === false &&
-        showOnboarding && (
-          <Onboarding
-            setShowOnboarding={setShowOnboarding}
-            topic="dataentryview"
-          />
-        )}
-
-      <OnboardingDataEntrySummary />
-    </FormWrapper>
+        {userStore.onboardingTopicsCompleted?.dataentryview === false &&
+          showOnboarding && (
+            <Onboarding
+              setShowOnboarding={setShowOnboarding}
+              topic="dataentryview"
+            />
+          )}
+      </FormWrapper>
+      <DataEntryHelpPage
+        showDataEntryHelpPage={showDataEntryHelpPage}
+        closeHelpPage={() => setShowDataEntryHelpPage(false)}
+      />
+    </>
   );
 };
 

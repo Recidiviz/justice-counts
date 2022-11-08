@@ -41,11 +41,17 @@ export const PageWrapper = styled.div`
   background: ${palette.solid.white};
 `;
 
-export const FormWrapper = styled.div`
+export const FormWrapper = styled.div<{ showDataEntryHelpPage?: boolean }>`
   flex: 0 1 ${DATA_ENTRY_WIDTH}px;
+  max-width: ${DATA_ENTRY_WIDTH}px;
   display: flex;
   flex-direction: column;
   margin: 32px 360px 50px 360px;
+  transition: opacity 300ms ease-in;
+
+  opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 0.5 : 1)};
+  pointer-events: ${({ showDataEntryHelpPage }) =>
+    showDataEntryHelpPage ? "none" : "auto"};
 
   @media only screen and (max-width: ${TWO_PANEL_MAX_WIDTH}px) {
     margin: 32px 24px 50px 360px;
@@ -120,10 +126,13 @@ export const Title = styled.h1<{ scrolled?: boolean; sticky?: boolean }>`
   `}
 `;
 
+export const DataEntryFormTitle = styled(Title)`
+  ${({ scrolled }) => scrolled && `padding-top: 42px;`}
+`;
+
 export const Metric = styled.div<{ notReporting?: boolean }>`
-  margin-top: -6.5em;
-  padding-top: 6.5em;
-  margin-bottom: ${({ notReporting }) => (notReporting ? `50px` : `194px`)};
+  margin-top: -8em;
+  padding-top: 8em;
 `;
 
 export const MetricSectionTitleWrapper = styled.div`
@@ -160,6 +169,20 @@ export const MetricSectionSubTitle = styled.div`
   margin-bottom: 16px;
 `;
 
+export const DisabledMetricsInfoWrapper = styled.div`
+  ${typography.sizeCSS.normal}
+  color: ${palette.highlight.grey8};
+  padding-top: 10px;
+  margin-top: 1px;
+  border-top: 1px solid ${palette.highlight.grey9};
+`;
+
+export const DisabledMetricsInfoLink = styled.span`
+  color: ${palette.solid.blue};
+  opacity: 0.5;
+  cursor: pointer;
+`;
+
 export const DisaggregationTabsContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -172,7 +195,7 @@ export const TabsRow = styled.div`
   border-bottom: 1px solid ${palette.solid.darkgrey};
 `;
 
-export const TabItem = styled.div<{ active?: boolean }>`
+export const TabItem = styled.div<{ active?: boolean; enabled?: boolean }>`
   ${typography.sizeCSS.normal}
   display: flex;
   margin-right: 32px;
@@ -185,7 +208,8 @@ export const TabItem = styled.div<{ active?: boolean }>`
 
   &:hover {
     cursor: pointer;
-    color: ${palette.solid.blue};
+    color: ${({ enabled, active }) =>
+      !active && (enabled ? palette.solid.blue : palette.solid.darkgrey)};
   }
 `;
 
@@ -207,6 +231,10 @@ export const DisaggregationHasInputIndicator = styled.div<{
     !active &&
     (hasInput || error) &&
     `border: none; filter: grayscale(1) opacity(0.3);`}
+
+  ${TabItem}:hover & {
+    filter: none;
+  }
 `;
 
 export const TabDisplay = styled.div`

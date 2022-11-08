@@ -20,8 +20,10 @@ import {
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 
+import { menuOptions } from "../../pages/Settings";
 import { useStore } from "../../stores";
 import {
   BREAKPOINT_HEIGHT,
@@ -31,7 +33,6 @@ import {
 const HelperTextContainer = styled.div`
   height: 70vh;
   overflow-y: scroll;
-  margin-top: 24px;
   ${typography.sizeCSS.normal}
 
   &::-webkit-scrollbar {
@@ -79,6 +80,14 @@ const HelperTextTitle = styled.div`
   margin-bottom: 10px;
 `;
 
+const HelperTextLink = styled.span`
+  color: ${palette.solid.blue};
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
 const HelperTextContent = styled.div`
   color: ${palette.highlight.grey10};
   margin-bottom: 28px;
@@ -105,12 +114,14 @@ const HelperText: React.FC<{
   reportID: number;
   activeMetric: string;
 }> = ({ reportID, activeMetric }): JSX.Element | null => {
+  const navigate = useNavigate();
   const { reportStore } = useStore();
   const currentMetric = reportStore.reportMetrics[reportID].find(
     (metric) => metric.key === activeMetric
   );
+  const navigateState = { settingsMenuOption: menuOptions[2] };
 
-  if (currentMetric === undefined) return null;
+  if (!currentMetric) return null;
 
   return (
     <HelperTextContainer>
@@ -140,6 +151,18 @@ const HelperText: React.FC<{
           <HelperTextContent>{currentMetric.reporting_note}</HelperTextContent>
         </HelperTextSection>
       )}
+
+      <HelperTextSection>
+        <HelperTextTitle>
+          Additional context can be viewed and entered via the{" "}
+          <HelperTextLink
+            onClick={() => navigate("/settings", { state: navigateState })}
+          >
+            Metric Configuration
+          </HelperTextLink>{" "}
+          page in Settings.
+        </HelperTextTitle>
+      </HelperTextSection>
     </HelperTextContainer>
   );
 };

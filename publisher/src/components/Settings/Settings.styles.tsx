@@ -21,8 +21,6 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-import { MetricDisplayName } from "../Reports/ReportSummaryPanel";
-
 export const SettingsContainer = styled.div`
   width: 100%;
   display: flex;
@@ -78,11 +76,15 @@ export const InputWrapper = styled.div`
 
 export const MetricsListContainer = styled.div``;
 
-export const MetricsListItem = styled(MetricDisplayName)`
+export const MetricsListItem = styled.div<{ activeSection?: boolean }>`
   ${typography.sizeCSS.normal}
   width: fit-content;
   color: ${({ activeSection }) =>
     activeSection ? palette.solid.darkgrey : palette.highlight.grey8};
+  max-width: 238px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   &:hover {
     cursor: pointer;

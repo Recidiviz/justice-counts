@@ -18,12 +18,10 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
 
-import { Title } from "../Forms";
 import HelperText from "./HelperText";
 import {
   FieldDescription,
   FieldDescriptionProps,
-  PublishButton,
   PublishDataWrapper,
 } from "./ReportDataEntry.styles";
 
@@ -31,25 +29,10 @@ const PublishDataPanel: React.FC<{
   reportID: number;
   activeMetric: string;
   fieldDescription?: FieldDescriptionProps;
-  toggleConfirmationDialogue: () => void;
-  isPublished?: boolean;
-}> = ({
-  reportID,
-  activeMetric,
-  fieldDescription,
-  toggleConfirmationDialogue,
-  isPublished,
-}) => {
+}> = ({ reportID, activeMetric, fieldDescription }) => {
   return (
     <>
       <PublishDataWrapper>
-        <Title>
-          <PublishButton
-            isPublished={isPublished}
-            onClick={() => toggleConfirmationDialogue()}
-          />
-        </Title>
-
         {/* Metric Description, Definitions and Reporting Notes */}
         <HelperText reportID={reportID} activeMetric={activeMetric} />
 

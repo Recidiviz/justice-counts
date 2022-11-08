@@ -19,12 +19,14 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import notReportedIcon from "../assets/not-reported-icon.png";
 import { TWO_PANEL_MAX_WIDTH } from "../Reports/ReportDataEntry.styles";
+import { TabItem } from "./Form.styles";
+import { InputWrapper } from "./TextInput";
 
 export const NotReportedIconWrapper = styled.div<{
   size?: number;
@@ -50,6 +52,14 @@ export const NotReportedIconImg = styled.img<{
         cursor: pointer;
     }
   `};
+
+  ${TabItem}:hover & {
+    opacity: 1;
+  }
+
+  ${InputWrapper}:hover & {
+    opacity: 1;
+  }
 `;
 
 export const NotReportedIconTooltip = styled.div`
@@ -72,6 +82,7 @@ export const NotReportedIconTooltip = styled.div`
 export const NotReportedIconTooltipHoverArea = styled.div<{
   size?: number;
 }>`
+  display: none;
   position: absolute;
   top: 0px;
   left: -1px;
@@ -79,6 +90,14 @@ export const NotReportedIconTooltipHoverArea = styled.div<{
   height: 200px;
   padding-top: ${({ size }) => (size ? size + 5 : 27)}px;
   padding-left: ${({ size }) => (size ? size + 5 : 27)}px;
+
+  ${TabItem}:hover & {
+    display: block;
+  }
+
+  ${InputWrapper}:hover & {
+    display: block;
+  }
 `;
 
 export const MetricsViewLink = styled.span`
@@ -95,12 +114,7 @@ export const NotReportedIcon: React.FC<{
   lighter?: boolean;
   noTooltip?: boolean;
 }> = ({ size, lighter, noTooltip }) => {
-  const [tooltipIsVisible, setTooltipIsVisible] = useState(false);
   const navigate = useNavigate();
-
-  const hideTooltip = () => setTooltipIsVisible(false);
-  const showTooltip = () => setTooltipIsVisible(true);
-
   return (
     <NotReportedIconWrapper size={size}>
       <NotReportedIconImg
@@ -109,12 +123,11 @@ export const NotReportedIcon: React.FC<{
         size={size}
         lighter={lighter}
         hasTooltip={!noTooltip}
-        onMouseEnter={showTooltip}
       />
-      {tooltipIsVisible && !noTooltip && (
-        <NotReportedIconTooltipHoverArea size={size} onMouseLeave={hideTooltip}>
+      {!noTooltip && (
+        <NotReportedIconTooltipHoverArea size={size}>
           <NotReportedIconTooltip>
-            This has been disabled by an admin because the data is unavailable.{" "}
+            This has been disabled by an admin because the data is unavailable.
             If you have the data for this, consider changing the configuration
             in the{" "}
             <MetricsViewLink onClick={() => navigate("/settings")}>
