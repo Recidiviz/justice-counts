@@ -15,6 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  Badge,
+  BadgeColorMapping,
+  BadgeColors,
+} from "@justice-counts/common/components/Badge";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { Permission } from "@justice-counts/common/types";
 import { when } from "mobx";
@@ -24,7 +29,6 @@ import React, { useEffect, useState } from "react";
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
 import downloadIcon from "../assets/download-icon.png";
-import { Badge, BadgeColorMapping, BadgeColors } from "../Badge";
 import { Title, TitleWrapper } from "../Forms";
 import { Loader } from "../Loading";
 import {

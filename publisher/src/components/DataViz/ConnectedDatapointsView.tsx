@@ -16,7 +16,10 @@
 // =============================================================================
 
 import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
-import { DatapointsGroupedByAggregateAndDisaggregations } from "@justice-counts/common/types";
+import {
+  DatapointsGroupedByAggregateAndDisaggregations,
+  ReportFrequency,
+} from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React from "react";
 
@@ -24,7 +27,9 @@ import { useStore } from "../../stores";
 
 const ConnectedDatapointsView: React.FC<{
   metric: string;
-}> = ({ metric }) => {
+  metricName: string;
+  metricFrequency?: ReportFrequency;
+}> = ({ metric, metricName, metricFrequency }) => {
   const { datapointsStore } = useStore();
   const datapointsForMetric =
     datapointsStore.datapointsByMetric[metric] ||
@@ -36,6 +41,8 @@ const ConnectedDatapointsView: React.FC<{
       dimensionNamesByDisaggregation={
         datapointsStore.dimensionNamesByMetricAndDisaggregation[metric] || {}
       }
+      metricName={metricName}
+      metricFrequency={metricFrequency}
     />
   );
 };

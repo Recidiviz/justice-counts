@@ -74,6 +74,21 @@ export const PanelContainerRight = styled.div`
   overflow-y: scroll;
 `;
 
+export const PanelRightTopButtonsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  margin: 24px 0 4px 15px;
+`;
+
+export const PanelRightTopButton = styled.div`
+  ${typography.sizeCSS.normal}
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+`;
+
 export const MetricBoxBottomPaddingContainer = styled.div`
   height: 100%;
   width: 100%;

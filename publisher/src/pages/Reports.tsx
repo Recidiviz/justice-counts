@@ -15,6 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  Badge,
+  BadgeColorMapping,
+} from "@justice-counts/common/components/Badge";
 import { Permission, ReportOverview } from "@justice-counts/common/types";
 import { reaction, when } from "mobx";
 import { observer } from "mobx-react-lite";
@@ -22,7 +26,6 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import checkmarkIcon from "../components/assets/status-check-icon.png";
-import { Badge, BadgeColorMapping } from "../components/Badge";
 import { Loading } from "../components/Loading";
 import { Onboarding } from "../components/Onboarding";
 import {

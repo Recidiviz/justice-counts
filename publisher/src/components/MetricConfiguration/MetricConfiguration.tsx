@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Badge } from "@justice-counts/common/components/Badge";
 import { ReportFrequency } from "@justice-counts/common/types";
 import { reaction, when } from "mobx";
 import { observer } from "mobx-react-lite";
@@ -23,7 +24,6 @@ import React, { useEffect, useState } from "react";
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
-import { Badge } from "../Badge";
 import { Loading } from "../Loading";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import {

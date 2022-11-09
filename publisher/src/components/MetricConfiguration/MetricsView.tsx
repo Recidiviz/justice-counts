@@ -15,20 +15,20 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Metric, ReportFrequency } from "@justice-counts/common/types";
+import { Metric } from "@justice-counts/common/types";
 import { reaction, when } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
-import { Badge, BadgeColorMapping } from "../Badge";
+import { ReactComponent as GoToMetricConfig } from "../assets/goto-metric-configuration-icon.svg";
+import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-data-table-icon.svg";
 import ConnectedDatapointsView from "../DataViz/ConnectedDatapointsView";
 import { NotReportedIcon } from "../Forms";
 import { Loading } from "../Loading";
-import { PageTitle, TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
+import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import {
-  ActiveMetricSettingHeader,
   MetricBoxWrapper,
   MetricDescription,
   MetricName,
@@ -39,6 +39,8 @@ import {
   MetricViewBoxContainer,
   PanelContainerLeft,
   PanelContainerRight,
+  PanelRightTopButton,
+  PanelRightTopButtonsContainer,
 } from ".";
 
 type MetricSettingsObj = {
@@ -48,22 +50,15 @@ type MetricSettingsObj = {
 type MetricBoxProps = {
   metricKey: string;
   displayName: string;
-  frequency: ReportFrequency;
   description: string;
   enabled?: boolean;
   activeMetricKey: string;
   setActiveMetricKey: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const reportFrequencyBadgeColors: BadgeColorMapping = {
-  ANNUAL: "ORANGE",
-  MONTHLY: "GREEN",
-};
-
 const MetricBox: React.FC<MetricBoxProps> = ({
   metricKey,
   displayName,
-  frequency,
   description,
   enabled,
   activeMetricKey,
@@ -78,12 +73,6 @@ const MetricBox: React.FC<MetricBoxProps> = ({
       <MetricNameBadgeToggleWrapper>
         <MetricNameBadgeWrapper>
           <MetricName>{displayName}</MetricName>
-          <Badge
-            color={reportFrequencyBadgeColors[frequency]}
-            disabled={!enabled}
-          >
-            {frequency}
-          </Badge>
         </MetricNameBadgeWrapper>
 
         {!enabled && <NotReportedIcon noTooltip />}
@@ -199,24 +188,22 @@ export const MetricsView: React.FC = observer(() => {
   return (
     <>
       <MetricsViewContainer>
-        <PageTitle>Metrics</PageTitle>
-
-        <TabbedBar>
-          <TabbedOptions>
-            {userStore.currentAgency?.systems.map((filterOption) => (
-              <TabbedItem
-                key={filterOption}
-                selected={activeMetricFilter === removeSnakeCase(filterOption)}
-                onClick={() =>
-                  setActiveMetricFilter(removeSnakeCase(filterOption))
-                }
-                capitalize
-              >
-                {removeSnakeCase(filterOption.toLowerCase())}
-              </TabbedItem>
-            ))}
-          </TabbedOptions>
-        </TabbedBar>
+        {/* <TabbedBar> */}
+        {/*  <TabbedOptions> */}
+        {/*    {userStore.currentAgency?.systems.map((filterOption) => ( */}
+        {/*      <TabbedItem */}
+        {/*        key={filterOption} */}
+        {/*        selected={activeMetricFilter === removeSnakeCase(filterOption)} */}
+        {/*        onClick={() => */}
+        {/*          setActiveMetricFilter(removeSnakeCase(filterOption)) */}
+        {/*        } */}
+        {/*        capitalize */}
+        {/*      > */}
+        {/*        {removeSnakeCase(filterOption.toLowerCase())} */}
+        {/*      </TabbedItem> */}
+        {/*    ))} */}
+        {/*  </TabbedOptions> */}
+        {/* </TabbedBar> */}
 
         <MetricsViewControlPanelOverflowHidden>
           {/* List Of Metrics */}
@@ -227,7 +214,6 @@ export const MetricsView: React.FC = observer(() => {
                   <MetricBox
                     metricKey={metric.key}
                     displayName={metric.display_name}
-                    frequency={metric.frequency as ReportFrequency}
                     description={metric.description}
                     enabled={metric.enabled}
                     activeMetricKey={activeMetricKey}
@@ -239,27 +225,23 @@ export const MetricsView: React.FC = observer(() => {
 
           {/* Data Visualization */}
           <PanelContainerRight>
-            <ActiveMetricSettingHeader>
-              <MetricNameBadgeWrapper>
-                <MetricName isTitle>
-                  {filteredMetricSettings[activeMetricKey]?.display_name}
-                </MetricName>
-                {filteredMetricSettings[activeMetricKey]?.frequency && (
-                  <Badge
-                    color={
-                      reportFrequencyBadgeColors[
-                        filteredMetricSettings[activeMetricKey]
-                          .frequency as ReportFrequency
-                      ]
-                    }
-                  >
-                    {filteredMetricSettings[activeMetricKey].frequency}
-                  </Badge>
-                )}
-              </MetricNameBadgeWrapper>
-            </ActiveMetricSettingHeader>
-
-            <ConnectedDatapointsView metric={activeMetricKey} />
+            <PanelRightTopButtonsContainer>
+              <PanelRightTopButton>
+                <SwitchToDataTableIcon />
+                Switch to Data Table
+              </PanelRightTopButton>
+              <PanelRightTopButton>
+                <GoToMetricConfig />
+                Go to Metric Configuration
+              </PanelRightTopButton>
+            </PanelRightTopButtonsContainer>
+            <ConnectedDatapointsView
+              metric={activeMetricKey}
+              metricName={filteredMetricSettings[activeMetricKey]?.display_name}
+              metricFrequency={
+                filteredMetricSettings[activeMetricKey]?.frequency
+              }
+            />
           </PanelContainerRight>
         </MetricsViewControlPanelOverflowHidden>
       </MetricsViewContainer>

@@ -28,6 +28,23 @@ import {
 import React from "react";
 import styled from "styled-components/macro";
 
+export const MetricHeaderWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 9px;
+`;
+
+export const MetricTitleWrapper = styled.div`
+  display: flex;
+  gap: 18px;
+  align-items: center;
+`;
+
+export const MetricTitle = styled.div`
+  ${typography.sizeCSS.title}
+`;
+
 export const ExtendedDropdownMenuItem = styled(DropdownMenuItem)<{
   highlight?: boolean;
   noPadding?: boolean;
@@ -216,8 +233,6 @@ export const DatapointsViewControlsDropdown: React.FC<
 export const MetricInsightsRow = styled.div`
   display: flex;
   flex-direction: row;
-  margin-top: 16px;
-  margin-bottom: 16px;
 `;
 
 const MetricInsightContainer = styled.div`
@@ -225,18 +240,18 @@ const MetricInsightContainer = styled.div`
 
   &:last-child {
     margin-right: 0;
-    text-align: right;
     margin-left: auto;
   }
 `;
 
 const MetricInsightTitle = styled.div`
-  ${typography.sizeCSS.small}
-  margin-bottom: 8px;
+  ${typography.sizeCSS.normal}
 `;
 
 const MetricInsightValue = styled.div`
-  ${typography.sizeCSS.large}
+  ${typography.sizeCSS.title}
+  line-height: 32px;
+  margin-bottom: 4px;
 `;
 
 interface MetricInsightProps {
@@ -249,7 +264,7 @@ export const MetricInsight: React.FC<MetricInsightProps> = ({
   value,
 }) => (
   <MetricInsightContainer>
-    <MetricInsightTitle>{title}</MetricInsightTitle>
     <MetricInsightValue>{value}</MetricInsightValue>
+    <MetricInsightTitle>{title}</MetricInsightTitle>
   </MetricInsightContainer>
 );

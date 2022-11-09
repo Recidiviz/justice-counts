@@ -15,10 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 import { palette } from "@justice-counts/common/components/GlobalStyles";
+import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import React from "react";
 import styled from "styled-components/macro";
-
-import { MiniLoader } from "../Loading/MiniLoader";
 
 export type BadgeColors = "RED" | "GREEN" | "ORANGE" | "GREY";
 

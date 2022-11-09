@@ -23,15 +23,20 @@ import {
   DataVizAggregateName,
   DataVizTimeRangesMap,
   DimensionNamesByDisaggregation,
+  ReportFrequency,
 } from "@justice-counts/common/types";
 import React, { useEffect } from "react";
 
+import { Badge, BadgeColorMapping } from "../Badge";
 import {
   DatapointsViewContainer,
   DatapointsViewControlsContainer,
   DatapointsViewControlsDropdown,
+  MetricHeaderWrapper,
   MetricInsight,
   MetricInsightsRow,
+  MetricTitle,
+  MetricTitleWrapper,
 } from "./DatapointsView.styles";
 import {
   filterByTimeRange,
@@ -45,12 +50,21 @@ import {
 
 const noDisaggregationOption = "None";
 
+const reportFrequencyBadgeColors: BadgeColorMapping = {
+  ANNUAL: "ORANGE",
+  MONTHLY: "GREEN",
+};
+
 export const DatapointsView: React.FC<{
   datapointsGroupedByAggregateAndDisaggregations: DatapointsGroupedByAggregateAndDisaggregations;
   dimensionNamesByDisaggregation: DimensionNamesByDisaggregation;
+  metricName: string;
+  metricFrequency?: ReportFrequency;
 }> = ({
   datapointsGroupedByAggregateAndDisaggregations,
   dimensionNamesByDisaggregation,
+  metricName,
+  metricFrequency,
 }) => {
   const [selectedTimeRange, setSelectedTimeRange] =
     React.useState<string>("All");
@@ -94,6 +108,24 @@ export const DatapointsView: React.FC<{
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datapointsGroupedByAggregateAndDisaggregations]);
+
+  const renderMetricTitle = () => {
+    return (
+      <MetricTitleWrapper>
+        <MetricTitle>{metricName}</MetricTitle>
+        {metricFrequency && (
+          <Badge
+            color={
+              reportFrequencyBadgeColors[metricFrequency as ReportFrequency]
+            }
+            noMargin
+          >
+            {metricFrequency}
+          </Badge>
+        )}
+      </MetricTitleWrapper>
+    );
+  };
 
   const renderChartForMetric = () => {
     return (
@@ -171,7 +203,7 @@ export const DatapointsView: React.FC<{
 
     return (
       <MetricInsightsRow>
-        <MetricInsight title="% Total Change" value={percentChange} />
+        <MetricInsight title="Year-to-Year" value={percentChange} />
         <MetricInsight title="Avg. Total Value" value={avgValue} />
         <MetricInsight
           title="Most Recent"
@@ -183,8 +215,11 @@ export const DatapointsView: React.FC<{
 
   return (
     <DatapointsViewContainer>
+      <MetricHeaderWrapper>
+        {renderMetricTitle()}
+        {renderMetricInsightsRow()}
+      </MetricHeaderWrapper>
       {renderDataVizControls()}
-      {renderMetricInsightsRow()}
       {renderChartForMetric()}
       {renderLegend()}
     </DatapointsViewContainer>
