@@ -26,14 +26,14 @@ import React from "react";
 import styled from "styled-components/macro";
 
 export const Container = styled.div`
-  height: 800px;
+  height: 100%;
   width: 100%;
   position: relative;
   display: flex;
   flex-direction: row;
   justify-content: stretch;
   align-items: stretch;
-  margin-top: 64px;
+  padding-top: 64px;
 `;
 
 export const LeftPanel = styled.div`
