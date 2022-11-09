@@ -21,6 +21,7 @@ import React, { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import {
+  AllMetricsButton,
   Container,
   LeftPanel,
   LeftPanelBackButton,
@@ -32,6 +33,7 @@ import {
   MetricOverviewTitle,
   MetricTitle,
   RightPanel,
+  RightPanelTopContainer,
 } from "./DashboardView.styles";
 import { HeaderBar } from "./Header/HeaderBar";
 import { useStore } from "./stores";
@@ -94,6 +96,9 @@ const DashboardView = () => {
         </MetricOverviewActionsContainer>
       </LeftPanel>
       <RightPanel>
+        <RightPanelTopContainer>
+          <AllMetricsButton metricsCount={4} />
+        </RightPanelTopContainer>
         <DatapointsView
           datapointsGroupedByAggregateAndDisaggregations={
             datapointsStore.datapointsByMetric[metricKey]

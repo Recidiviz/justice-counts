@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { ReactComponent as DownloadIcon } from "@justice-counts/common/assets/download-icon.svg";
+import { ReactComponent as GridIcon } from "@justice-counts/common/assets/grid-icon.svg";
 import { ReactComponent as InfoIcon } from "@justice-counts/common/assets/info-icon.svg";
 import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share-icon.svg";
 import {
@@ -49,6 +50,12 @@ export const RightPanel = styled.div`
   display: flex;
   flex-grow: 1;
   flex-direction: column;
+  align-items: stretch;
+`;
+
+export const RightPanelTopContainer = styled.div`
+  display: flex;
+  flex-direction: row;
 `;
 
 export const LeftPanelBackButton = styled.div`
@@ -89,7 +96,7 @@ export const MetricOverviewActionsContainer = styled.div`
   margin-top: 24px;
 `;
 
-export const MetricOverviewActionButtonContainer = styled.div`
+const MetricOverviewActionButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -109,7 +116,7 @@ export const MetricOverviewActionButtonContainer = styled.div`
   }
 `;
 
-export const MetricOverviewActionButtonText = styled.div`
+const MetricOverviewActionButtonText = styled.div`
   ${typography.sizeCSS.normal}
   margin-left: 8px;
 `;
@@ -135,4 +142,64 @@ export const MetricOverviewActionInfoButton = () => (
     <InfoIcon />
     <MetricOverviewActionButtonText>Learn More</MetricOverviewActionButtonText>
   </MetricOverviewActionButtonContainer>
+);
+
+const AllMetricsButtonContainer = styled.div`
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.solid.blue};
+  }
+
+  &:hover path {
+    fill: ${palette.solid.blue};
+  }
+`;
+
+const AllMetricsButtonText = styled.div`
+  ${typography.sizeCSS.normal}
+  margin-left: 8px;
+  margin-right: 8px;
+`;
+
+const AllMetricsButtonCountContainer = styled.div`
+  background: ${palette.solid.blue};
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 8px;
+  gap: 8px;
+
+  width: 25px;
+  height: 20px;
+  border-radius: 24px;
+
+  ${typography.sizeCSS.small}
+  font-size: 13px;
+`;
+
+export const AllMetricsButton = ({
+  metricsCount,
+}: {
+  metricsCount: number;
+}) => (
+  <AllMetricsButtonContainer>
+    <GridIcon />
+    <AllMetricsButtonText>All Metrics</AllMetricsButtonText>
+
+    <AllMetricsButtonCountContainer>
+      {metricsCount}
+    </AllMetricsButtonCountContainer>
+  </AllMetricsButtonContainer>
 );
