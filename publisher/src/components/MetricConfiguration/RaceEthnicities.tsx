@@ -20,7 +20,6 @@ import React from "react";
 import { BinaryRadioButton } from "../Forms";
 import {
   Header,
-  MetricOnOffWrapper,
   Race,
   RaceContainer,
   RaceDisplayName,
@@ -32,6 +31,7 @@ import {
   RaceSelection,
   RaceSelectionButton,
   RadioButtonGroupWrapper,
+  SpecifyEthnicityWrapper,
   Subheader,
 } from ".";
 
@@ -48,7 +48,7 @@ export const RaceEthnicities = () => {
           breakdown.
         </RaceEthnicitiesDescription>
 
-        <MetricOnOffWrapper style={{ marginBottom: "35px" }}>
+        <SpecifyEthnicityWrapper>
           <Header>
             Does your case management system allow you to specify an
             individual’s <strong>ethnicity</strong> (Hispanic, Non-Hispanic, or
@@ -71,7 +71,7 @@ export const RaceEthnicities = () => {
               value="no"
             />
           </RadioButtonGroupWrapper>
-        </MetricOnOffWrapper>
+        </SpecifyEthnicityWrapper>
 
         <Header>
           Which of the following categories does that case management system

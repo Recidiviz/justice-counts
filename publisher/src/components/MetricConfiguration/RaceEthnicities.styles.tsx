@@ -31,6 +31,7 @@ import {
   DefinitionsDisplayContainer,
   DefinitionSelection,
   DefinitionsTitle,
+  MetricOnOffWrapper,
 } from ".";
 
 export const RaceEthnicitiesBreakdownContainer = styled.div`
@@ -126,6 +127,10 @@ export const EthnicityCell = styled.div<{ visible?: boolean }>`
   border-radius: 50%;
   border: 1px solid ${palette.highlight.grey4};
   ${({ visible }) => visible && `background: ${palette.solid.blue};`}
+`;
+
+export const SpecifyEthnicityWrapper = styled(MetricOnOffWrapper)`
+  margin-bottom: 35px;
 `;
 
 export const RaceEthnicitiesContainer = styled(DefinitionsDisplayContainer)``;
