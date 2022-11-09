@@ -62,17 +62,6 @@ export const RaceEthnicities = () => {
               name="metric-config-specify-ethnicity"
               label="Yes"
               value="yes"
-              // checked={metricEnabled}
-              // onChange={() => {
-              //   if (activeSystem && activeMetricKey) {
-              //     const updatedSetting = updateMetricEnabledStatus(
-              //       activeSystem,
-              //       activeMetricKey,
-              //       true
-              //     );
-              //     saveMetricSettings(updatedSetting);
-              //   }
-              // }}
             />
             <BinaryRadioButton
               type="radio"
@@ -80,17 +69,6 @@ export const RaceEthnicities = () => {
               name="metric-config-specify-ethnicity"
               label="No"
               value="no"
-              // checked={!metricEnabled}
-              // onChange={() => {
-              //   if (activeSystem && activeMetricKey) {
-              //     const updatedSetting = updateMetricEnabledStatus(
-              //       activeSystem,
-              //       activeMetricKey,
-              //       false
-              //     );
-              //     saveMetricSettings(updatedSetting);
-              //   }
-              // }}
             />
           </RadioButtonGroupWrapper>
         </MetricOnOffWrapper>

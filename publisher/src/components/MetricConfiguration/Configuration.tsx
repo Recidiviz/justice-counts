@@ -38,7 +38,6 @@ import {
   MetricConfigurationContainer,
   MetricDisaggregations,
   MetricOnOffWrapper,
-  RaceEthnicities,
   RaceEthnicitiesBreakdown,
   RadioButtonGroupWrapper,
   Subheader,
