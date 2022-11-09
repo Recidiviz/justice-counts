@@ -17,10 +17,22 @@
 
 import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { Container, MetricTitle } from "./DashboardView.styles";
+import {
+  Container,
+  LeftPanel,
+  LeftPanelBackButton,
+  MetricOverviewActionDownloadButton,
+  MetricOverviewActionInfoButton,
+  MetricOverviewActionsContainer,
+  MetricOverviewActionShareButton,
+  MetricOverviewContent,
+  MetricOverviewTitle,
+  MetricTitle,
+  RightPanel,
+} from "./DashboardView.styles";
 import { HeaderBar } from "./Header/HeaderBar";
 import { useStore } from "./stores";
 
@@ -65,17 +77,32 @@ const DashboardView = () => {
   return (
     <Container key={metricKey}>
       <HeaderBar />
-      <MetricTitle>
-        {datapointsStore.metricKeyToDisplayName[metricKey] || metricKey}
-      </MetricTitle>
-      <DatapointsView
-        datapointsGroupedByAggregateAndDisaggregations={
-          datapointsStore.datapointsByMetric[metricKey]
-        }
-        dimensionNamesByDisaggregation={
-          datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey]
-        }
-      />
+      <LeftPanel>
+        <LeftPanelBackButton>← Clackamas County Jail</LeftPanelBackButton>
+        <MetricTitle>
+          {datapointsStore.metricKeyToDisplayName[metricKey] || metricKey}
+        </MetricTitle>
+        <MetricOverviewTitle />
+        <MetricOverviewContent>
+          Measures the number of individuals with at least one parole violation
+          during the reporting period.
+        </MetricOverviewContent>
+        <MetricOverviewActionsContainer>
+          <MetricOverviewActionShareButton />
+          <MetricOverviewActionDownloadButton />
+          <MetricOverviewActionInfoButton />
+        </MetricOverviewActionsContainer>
+      </LeftPanel>
+      <RightPanel>
+        <DatapointsView
+          datapointsGroupedByAggregateAndDisaggregations={
+            datapointsStore.datapointsByMetric[metricKey]
+          }
+          dimensionNamesByDisaggregation={
+            datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey]
+          }
+        />
+      </RightPanel>
     </Container>
   );
 };

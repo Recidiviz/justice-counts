@@ -81,7 +81,6 @@ export const HeaderButton = styled.div`
   &:hover {
     cursor: pointer;
     color: ${palette.solid.blue};
-    fill: ${palette.solid.blue};
   }
 
   &:hover rect {

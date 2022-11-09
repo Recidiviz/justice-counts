@@ -15,7 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { typography } from "@justice-counts/common/components/GlobalStyles";
+import { ReactComponent as DownloadIcon } from "@justice-counts/common/assets/download-icon.svg";
+import { ReactComponent as InfoIcon } from "@justice-counts/common/assets/info-icon.svg";
+import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share-icon.svg";
+import {
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
+import React from "react";
 import styled from "styled-components/macro";
 
 export const Container = styled.div`
@@ -23,11 +30,109 @@ export const Container = styled.div`
   width: 100%;
   position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: stretch;
   align-items: stretch;
+  margin-top: 64px;
+`;
+
+export const LeftPanel = styled.div`
+  margin-top: 16px;
+  margin-left: 24px;
+  margin-right: 24px;
+  width: 424px;
+  min-width: 424px;
+  margin-right: 126px;
+`;
+
+export const RightPanel = styled.div`
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+`;
+
+export const LeftPanelBackButton = styled.div`
+  ${typography.sizeCSS.normal}
+  float: left;
+  padding-top: 8px;
+  padding-right: 8px;
+  padding-bottom: 8px;
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.solid.blue};
+  }
 `;
 
 export const MetricTitle = styled.div`
-  ${typography.sizeCSS.title}
+  ${typography.sizeCSS.headline}
+  margin-top: 86px;
 `;
+
+export const MetricOverviewTitle = styled.div`
+  ${typography.sizeCSS.large}
+  margin-top: 48px;
+
+  &::after {
+    content: "Metric Overview";
+  }
+`;
+
+export const MetricOverviewContent = styled.div`
+  ${typography.sizeCSS.medium}
+  margin-top: 16px;
+`;
+
+export const MetricOverviewActionsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-top: 24px;
+`;
+
+export const MetricOverviewActionButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px;
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.solid.blue};
+  }
+
+  &:hover path {
+    stroke: ${palette.solid.blue};
+  }
+
+  &:first-child {
+    padding-left: 0px;
+  }
+`;
+
+export const MetricOverviewActionButtonText = styled.div`
+  ${typography.sizeCSS.normal}
+  margin-left: 8px;
+`;
+
+export const MetricOverviewActionShareButton = () => (
+  <MetricOverviewActionButtonContainer>
+    <ShareIcon />
+    <MetricOverviewActionButtonText>Share</MetricOverviewActionButtonText>
+  </MetricOverviewActionButtonContainer>
+);
+
+export const MetricOverviewActionDownloadButton = () => (
+  <MetricOverviewActionButtonContainer>
+    <DownloadIcon />
+    <MetricOverviewActionButtonText>
+      Download Data
+    </MetricOverviewActionButtonText>
+  </MetricOverviewActionButtonContainer>
+);
+
+export const MetricOverviewActionInfoButton = () => (
+  <MetricOverviewActionButtonContainer>
+    <InfoIcon />
+    <MetricOverviewActionButtonText>Learn More</MetricOverviewActionButtonText>
+  </MetricOverviewActionButtonContainer>
+);
