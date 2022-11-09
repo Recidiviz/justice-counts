@@ -133,6 +133,15 @@ class DatapointsStore extends BaseDatapointsStore {
       runInAction(() => {
         this.loading = false;
       });
+
+      const response2 = (await request({
+        path: `/api/agencies/${agencyId}/published_data`,
+        method: "GET",
+      })) as Response;
+      if (response2.status === 200) {
+        const result = await response2.json();
+        console.log("got response", result);
+      }
     } catch (error) {
       runInAction(() => {
         this.loading = false;

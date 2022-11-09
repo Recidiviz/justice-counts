@@ -21,6 +21,7 @@ import { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { Container, MetricTitle } from "./DashboardView.styles";
+import { HeaderBar } from "./Header/HeaderBar";
 import { useStore } from "./stores";
 
 const DashboardView = () => {
@@ -62,21 +63,20 @@ const DashboardView = () => {
   }
 
   return (
-    <>
-      <Container key={metricKey}>
-        <MetricTitle>
-          {datapointsStore.metricKeyToDisplayName[metricKey] || metricKey}
-        </MetricTitle>
-        <DatapointsView
-          datapointsGroupedByAggregateAndDisaggregations={
-            datapointsStore.datapointsByMetric[metricKey]
-          }
-          dimensionNamesByDisaggregation={
-            datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey]
-          }
-        />
-      </Container>
-    </>
+    <Container key={metricKey}>
+      <HeaderBar />
+      <MetricTitle>
+        {datapointsStore.metricKeyToDisplayName[metricKey] || metricKey}
+      </MetricTitle>
+      <DatapointsView
+        datapointsGroupedByAggregateAndDisaggregations={
+          datapointsStore.datapointsByMetric[metricKey]
+        }
+        dimensionNamesByDisaggregation={
+          datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey]
+        }
+      />
+    </Container>
   );
 };
 
