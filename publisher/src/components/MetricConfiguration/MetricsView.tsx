@@ -25,62 +25,24 @@ import { removeSnakeCase } from "../../utils";
 import { ReactComponent as GoToMetricConfig } from "../assets/goto-metric-configuration-icon.svg";
 import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-data-table-icon.svg";
 import ConnectedDatapointsView from "../DataViz/ConnectedDatapointsView";
-import { NotReportedIcon } from "../Forms";
 import { Loading } from "../Loading";
-import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import {
-  MetricBoxWrapper,
-  MetricDescription,
-  MetricName,
-  MetricNameBadgeToggleWrapper,
-  MetricNameBadgeWrapper,
+  MetricItem,
+  MetricsItemsContainer,
   MetricsViewContainer,
   MetricsViewControlPanelOverflowHidden,
-  MetricViewBoxContainer,
   PanelContainerLeft,
   PanelContainerRight,
   PanelRightTopButton,
   PanelRightTopButtonsContainer,
+  SystemName,
+  SystemNameContainer,
+  SystemNamePlusSign,
+  SystemsContainer,
 } from ".";
 
 type MetricSettingsObj = {
   [key: string]: Metric;
-};
-
-type MetricBoxProps = {
-  metricKey: string;
-  displayName: string;
-  description: string;
-  enabled?: boolean;
-  activeMetricKey: string;
-  setActiveMetricKey: React.Dispatch<React.SetStateAction<string>>;
-};
-
-const MetricBox: React.FC<MetricBoxProps> = ({
-  metricKey,
-  displayName,
-  description,
-  enabled,
-  activeMetricKey,
-  setActiveMetricKey,
-}): JSX.Element => {
-  return (
-    <MetricViewBoxContainer
-      onClick={() => setActiveMetricKey(metricKey)}
-      enabled={enabled}
-      selected={metricKey === activeMetricKey}
-    >
-      <MetricNameBadgeToggleWrapper>
-        <MetricNameBadgeWrapper>
-          <MetricName>{displayName}</MetricName>
-        </MetricNameBadgeWrapper>
-
-        {!enabled && <NotReportedIcon noTooltip />}
-      </MetricNameBadgeToggleWrapper>
-
-      <MetricDescription>{description}</MetricDescription>
-    </MetricViewBoxContainer>
-  );
 };
 
 export const MetricsView: React.FC = observer(() => {
@@ -122,9 +84,11 @@ export const MetricsView: React.FC = observer(() => {
     const reportSettings = (await response.json()) as Metric[];
     const metricKeyToMetricMap: { [key: string]: Metric } = {};
 
-    reportSettings?.forEach((metric) => {
-      metricKeyToMetricMap[metric.key] = metric;
-    });
+    reportSettings
+      ?.filter((metric) => metric.enabled)
+      .forEach((metric) => {
+        metricKeyToMetricMap[metric.key] = metric;
+      });
 
     setMetricSettings(metricKeyToMetricMap);
     setActiveMetricKey(Object.keys(metricKeyToMetricMap)[0]);
@@ -190,37 +154,65 @@ export const MetricsView: React.FC = observer(() => {
       <MetricsViewContainer>
         {/* <TabbedBar> */}
         {/*  <TabbedOptions> */}
-        {/*    {userStore.currentAgency?.systems.map((filterOption) => ( */}
-        {/*      <TabbedItem */}
-        {/*        key={filterOption} */}
-        {/*        selected={activeMetricFilter === removeSnakeCase(filterOption)} */}
-        {/*        onClick={() => */}
-        {/*          setActiveMetricFilter(removeSnakeCase(filterOption)) */}
-        {/*        } */}
-        {/*        capitalize */}
-        {/*      > */}
-        {/*        {removeSnakeCase(filterOption.toLowerCase())} */}
-        {/*      </TabbedItem> */}
-        {/*    ))} */}
+        {/* {userStore.currentAgency?.systems.map((filterOption) => ( */}
+        {/*  <TabbedItem */}
+        {/*    key={filterOption} */}
+        {/*    selected={activeMetricFilter === removeSnakeCase(filterOption)} */}
+        {/*    onClick={() => */}
+        {/*      setActiveMetricFilter(removeSnakeCase(filterOption)) */}
+        {/*    } */}
+        {/*    capitalize */}
+        {/*  > */}
+        {/*    {removeSnakeCase(filterOption.toLowerCase())} */}
+        {/*  </TabbedItem> */}
+        {/* ))} */}
         {/*  </TabbedOptions> */}
         {/* </TabbedBar> */}
 
         <MetricsViewControlPanelOverflowHidden>
           {/* List Of Metrics */}
           <PanelContainerLeft>
-            {filteredMetricSettings &&
-              Object.values(filteredMetricSettings).map((metric) => (
-                <MetricBoxWrapper key={metric.key}>
-                  <MetricBox
-                    metricKey={metric.key}
-                    displayName={metric.display_name}
-                    description={metric.description}
-                    enabled={metric.enabled}
-                    activeMetricKey={activeMetricKey}
-                    setActiveMetricKey={setActiveMetricKey}
-                  />
-                </MetricBoxWrapper>
+            <SystemsContainer>
+              {userStore.currentAgency?.systems.map((filterOption) => (
+                <React.Fragment key={filterOption}>
+                  <SystemNameContainer
+                    isSystemActive={
+                      activeMetricFilter === removeSnakeCase(filterOption)
+                    }
+                    onClick={() =>
+                      setActiveMetricFilter(removeSnakeCase(filterOption))
+                    }
+                  >
+                    <SystemName>
+                      {removeSnakeCase(filterOption.toLowerCase())}
+                    </SystemName>
+                    <SystemNamePlusSign
+                      isSystemActive={
+                        activeMetricFilter === removeSnakeCase(filterOption)
+                      }
+                    />
+                  </SystemNameContainer>
+                  <MetricsItemsContainer
+                    isSystemActive={
+                      activeMetricFilter === removeSnakeCase(filterOption)
+                    }
+                  >
+                    {filteredMetricSettings &&
+                      Object.values(filteredMetricSettings)
+                        .filter((metric) => metric.enabled)
+                        .map((metric) => (
+                          <MetricItem
+                            key={metric.key}
+                            selected={activeMetricKey === metric.key}
+                            onClick={() => setActiveMetricKey(metric.key)}
+                          >
+                            {metric.display_name}
+                          </MetricItem>
+                        ))}
+                  </MetricsItemsContainer>
+                </React.Fragment>
               ))}
+            </SystemsContainer>
           </PanelContainerLeft>
 
           {/* Data Visualization */}

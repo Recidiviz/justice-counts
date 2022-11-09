@@ -22,6 +22,7 @@ import {
 import styled from "styled-components/macro";
 
 import { BinaryRadioGroupWrapper, Button } from "../Forms";
+import { MenuItem } from "../Settings";
 
 const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
 
@@ -42,7 +43,6 @@ export const MetricsViewControlPanel = styled.div`
   justify-content: space-between;
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
-    flex-direction: column;
     flex-wrap: nowrap;
     justify-content: unset;
   }
@@ -58,11 +58,66 @@ export const PanelContainerLeft = styled.div`
   width: 35%;
   height: 100%;
   overflow: scroll;
-  padding: 10px 15px 0 15px;
+  padding: 46px 24px 0 24px;
 
   @media only screen and (max-width: 1000px) {
     margin-right: 50px;
   }
+`;
+
+export const SystemsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+export const SystemNameContainer = styled.div<{ isSystemActive: boolean }>`
+  ${typography.sizeCSS.normal}
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border-bottom: 2px solid ${palette.solid.darkgrey};
+  width: 314px;
+  padding-bottom: 8px;
+  color: ${({ isSystemActive }) =>
+    isSystemActive ? palette.solid.darkgrey : palette.highlight.grey7};
+
+  &:hover {
+    cursor: ${({ isSystemActive }) => (isSystemActive ? "auto" : "pointer")};
+    color: ${palette.solid.darkgrey};
+  }
+`;
+
+export const SystemName = styled.span`
+  white-space: nowrap;
+  text-transform: capitalize;
+`;
+
+export const SystemNamePlusSign = styled.span<{ isSystemActive: boolean }>`
+  display: none;
+
+  &::after {
+    content: "+";
+  }
+
+  ${SystemNameContainer}:hover && {
+    display: ${({ isSystemActive }) => (isSystemActive ? "none" : "block")};
+  }
+`;
+
+export const MetricsItemsContainer = styled.div<{ isSystemActive: boolean }>`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 13px;
+  padding-bottom: 13px;
+
+  ${({ isSystemActive }) => !isSystemActive && "display: none"}
+`;
+
+export const MetricItem = styled(MenuItem)`
+  color: ${({ selected }) =>
+    selected ? palette.solid.darkgrey : palette.highlight.grey7};
 `;
 
 export const PanelContainerRight = styled.div`
@@ -128,33 +183,6 @@ export const MetricBoxContainer = styled.div<MetricBoxContainerProps>`
 export const MetricBoxContainerWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
-`;
-
-export const MetricViewBoxContainer = styled(MetricBoxContainer)<{
-  selected?: boolean;
-}>`
-  max-width: 100%;
-  min-height: 50px;
-  border: ${({ selected }) => selected && `1px solid ${palette.solid.blue}`};
-  margin-bottom: 5px;
-`;
-
-export const MetricBoxWrapper = styled.div`
-  display: flex;
-`;
-
-export const ActiveMetricSettingHeader = styled.div`
-  position: relative;
-  z-index: 1;
-  background: ${palette.solid.white};
-  padding: 10px 15px 0 15px;
-  margin-bottom: 20px;
-`;
-
-export const MetricNameBadgeToggleWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
 `;
 
 export const MetricNameBadgeWrapper = styled.div`
