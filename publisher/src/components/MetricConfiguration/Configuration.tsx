@@ -161,7 +161,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
             <Subheader>
               Mark (using the checkmark) each of the breakdowns below that your
               agency will be able to report. Click the arrow to edit the
-              definition for each metric.
+              definition for each breakdown.
             </Subheader>
 
             {/* Disaggregations (Enable/Disable) */}

@@ -43,7 +43,7 @@ export const CalloutBox = styled.div`
   height: 100%;
   display: flex;
   align-items: center;
-  padding: 20px;
+  padding: 20px 60px 20px 20px;
   margin-bottom: 27px;
   border-radius: 2px;
   border: 1px solid ${palette.solid.blue};

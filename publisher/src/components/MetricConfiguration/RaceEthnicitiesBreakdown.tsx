@@ -40,9 +40,8 @@ export const RaceEthnicitiesBreakdown = () => {
     <RaceEthnicitiesBreakdownContainer>
       <CalloutBox>
         <Description>
-          Answer the questions on the <span>Race and Ethnicity</span> form to
-          fill out the grid below; afterwards, you can make manual adjustments
-          as necessary.
+          Answer the questions on the <span>Race and Ethnicity</span> form; the
+          grid below will reflect your responses.
         </Description>
 
         <RightArrowIcon />
