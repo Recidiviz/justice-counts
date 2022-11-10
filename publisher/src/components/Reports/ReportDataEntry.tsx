@@ -29,7 +29,6 @@ import styled from "styled-components/macro";
 
 import { trackReportUnpublished } from "../../analytics";
 import { useStore } from "../../stores";
-import FormStore from "../../stores/FormStore";
 import { printReportTitle } from "../../utils";
 import { PageWrapper } from "../Forms";
 import { Loading } from "../Loading";
@@ -62,7 +61,7 @@ const ReportDataEntry = () => {
   >(undefined);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showDataEntryHelpPage, setShowDataEntryHelpPage] = useState(false);
-  const { reportStore, userStore } = useStore();
+  const { formStore, reportStore, userStore } = useStore();
   const params = useParams();
   const reportID = Number(params.id);
   const reportOverview = reportStore.reportOverviews[reportID] as Report;
@@ -103,7 +102,7 @@ const ReportDataEntry = () => {
     }
   };
 
-  const checkMetricForErrors = (metricKey: string, formStore: FormStore) => {
+  const checkMetricForErrors = (metricKey: string) => {
     let foundErrors = false;
 
     if (formStore.metricsValues[reportID]?.[metricKey]?.error) {
@@ -154,6 +153,13 @@ const ReportDataEntry = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
+
+  useEffect(() => {
+    /** Runs validation of previously saved inputs on load */
+    if (reportMetrics) {
+      formStore.validatePreviouslySavedInputs(reportID);
+    }
+  }, [reportMetrics]);
 
   const updateActiveMetric = (metricKey: string) => setActiveMetric(metricKey);
   const updateFieldDescription = (title?: string, description?: string) => {
