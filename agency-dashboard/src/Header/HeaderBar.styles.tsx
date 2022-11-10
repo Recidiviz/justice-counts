@@ -20,6 +20,7 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
+import React from "react";
 import styled from "styled-components/macro";
 
 export const HeaderBarContainer = styled.header`
@@ -91,3 +92,27 @@ export const HeaderButton = styled.div`
     padding-right: 24px;
   }
 `;
+
+const AboutModalContainer = styled.div`
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: ${palette.solid.green};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const AboutModalInnerContainer = styled.div`
+  flex-basis: 864px;
+  flex-grow: 0;
+  flex-shrink: 1;
+`;
+
+export const AboutModal = ({ closeModal }: { closeModal: () => void }) => (
+  <AboutModalContainer>
+    <AboutModalInnerContainer>Clackamas County Jail</AboutModalInnerContainer>
+  </AboutModalContainer>
+);
