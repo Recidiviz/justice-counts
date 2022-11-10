@@ -35,7 +35,7 @@ import {
   races,
 } from ".";
 
-export const RaceEthnicitiesBreakdown = () => {
+export const RaceEthnicitiesGrid = () => {
   return (
     <RaceEthnicitiesBreakdownContainer>
       <CalloutBox>
@@ -64,7 +64,7 @@ export const RaceEthnicitiesBreakdown = () => {
           <RaceEthnicitiesRow key={race}>
             <RaceCell>{race}</RaceCell>
             <EthnicitiesRow>
-              <EthnicityCell visible={index % 1 === 0} />
+              <EthnicityCell enabled={index % 1 === 0} />
               <EthnicityCell />
               <EthnicityCell />
             </EthnicitiesRow>

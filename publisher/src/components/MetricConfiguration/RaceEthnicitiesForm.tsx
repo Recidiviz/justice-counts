@@ -35,7 +35,7 @@ import {
   Subheader,
 } from ".";
 
-export const RaceEthnicities = () => {
+export const RaceEthnicitiesForm = () => {
   return (
     <RaceEthnicitiesContainer>
       <RaceEthnicitiesDisplay>

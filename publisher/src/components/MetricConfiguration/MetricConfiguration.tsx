@@ -40,7 +40,7 @@ import {
   MetricName,
   MetricsViewContainer,
   MetricsViewControlPanel,
-  RaceEthnicities,
+  RaceEthnicitiesForm,
   StickyHeader,
 } from ".";
 
@@ -196,7 +196,7 @@ export const MetricConfiguration: React.FC = observer(() => {
               {/* Metric/Dimension Definitions (Includes/Excludes) & Context */}
               {activeDisaggregationKey === "global/race_and_ethnicity" &&
               activeDimensionKey ? (
-                <RaceEthnicities />
+                <RaceEthnicitiesForm />
               ) : (
                 <MetricDefinitions
                   activeDimensionKey={activeDimensionKey}

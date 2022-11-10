@@ -121,12 +121,12 @@ export const EthnicitiesRow = styled.div`
   margin-right: 17px;
   gap: 60px;
 `;
-export const EthnicityCell = styled.div<{ visible?: boolean }>`
+export const EthnicityCell = styled.div<{ enabled?: boolean }>`
   width: 20px;
   height: 20px;
   border-radius: 50%;
   border: 1px solid ${palette.highlight.grey4};
-  ${({ visible }) => visible && `background: ${palette.solid.blue};`}
+  ${({ enabled }) => enabled && `background: ${palette.solid.blue};`}
 `;
 
 export const SpecifyEthnicityWrapper = styled(MetricOnOffWrapper)`
