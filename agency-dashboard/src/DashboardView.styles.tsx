@@ -15,15 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { ReactComponent as DownloadIcon } from "@justice-counts/common/assets/download-icon.svg";
-import { ReactComponent as GridIcon } from "@justice-counts/common/assets/grid-icon.svg";
-import { ReactComponent as InfoIcon } from "@justice-counts/common/assets/info-icon.svg";
-import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share-icon.svg";
 import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import React from "react";
 import styled from "styled-components/macro";
 
 export const Container = styled.div`
@@ -96,7 +91,7 @@ export const MetricOverviewActionsContainer = styled.div`
   margin-top: 24px;
 `;
 
-const MetricOverviewActionButtonContainer = styled.div`
+export const MetricOverviewActionButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -116,35 +111,12 @@ const MetricOverviewActionButtonContainer = styled.div`
   }
 `;
 
-const MetricOverviewActionButtonText = styled.div`
+export const MetricOverviewActionButtonText = styled.div`
   ${typography.sizeCSS.normal}
   margin-left: 8px;
 `;
 
-export const MetricOverviewActionShareButton = () => (
-  <MetricOverviewActionButtonContainer>
-    <ShareIcon />
-    <MetricOverviewActionButtonText>Share</MetricOverviewActionButtonText>
-  </MetricOverviewActionButtonContainer>
-);
-
-export const MetricOverviewActionDownloadButton = () => (
-  <MetricOverviewActionButtonContainer>
-    <DownloadIcon />
-    <MetricOverviewActionButtonText>
-      Download Data
-    </MetricOverviewActionButtonText>
-  </MetricOverviewActionButtonContainer>
-);
-
-export const MetricOverviewActionInfoButton = () => (
-  <MetricOverviewActionButtonContainer>
-    <InfoIcon />
-    <MetricOverviewActionButtonText>Learn More</MetricOverviewActionButtonText>
-  </MetricOverviewActionButtonContainer>
-);
-
-const AllMetricsButtonContainer = styled.div`
+export const AllMetricsButtonContainer = styled.div`
   padding-left: 16px;
   padding-right: 16px;
   padding-top: 8px;
@@ -165,13 +137,13 @@ const AllMetricsButtonContainer = styled.div`
   }
 `;
 
-const AllMetricsButtonText = styled.div`
+export const AllMetricsButtonText = styled.div`
   ${typography.sizeCSS.normal}
   margin-left: 8px;
   margin-right: 8px;
 `;
 
-const AllMetricsButtonCountContainer = styled.div`
+export const AllMetricsButtonCountContainer = styled.div`
   background: ${palette.solid.blue};
   color: white;
   display: flex;
@@ -188,18 +160,3 @@ const AllMetricsButtonCountContainer = styled.div`
   ${typography.sizeCSS.small}
   font-size: 13px;
 `;
-
-export const AllMetricsButton = ({
-  metricsCount,
-}: {
-  metricsCount: number;
-}) => (
-  <AllMetricsButtonContainer>
-    <GridIcon />
-    <AllMetricsButtonText>All Metrics</AllMetricsButtonText>
-
-    <AllMetricsButtonCountContainer>
-      {metricsCount}
-    </AllMetricsButtonCountContainer>
-  </AllMetricsButtonContainer>
-);
