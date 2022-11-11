@@ -159,6 +159,7 @@ const ReportDataEntry = () => {
     if (reportMetrics) {
       formStore.validatePreviouslySavedInputs(reportID);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportMetrics]);
 
   const updateActiveMetric = (metricKey: string) => setActiveMetric(metricKey);
