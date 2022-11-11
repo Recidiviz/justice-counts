@@ -28,7 +28,6 @@ import { useNavigate } from "react-router-dom";
 
 import { trackReportPublished } from "../../analytics";
 import { useStore } from "../../stores";
-import FormStore from "../../stores/FormStore";
 import { printReportTitle } from "../../utils";
 import logoImg from "../assets/jc-logo-vector.png";
 import errorIcon from "../assets/status-error-icon.png";
@@ -169,7 +168,7 @@ const MetricsDisplay: React.FC<{
 
 const PublishConfirmation: React.FC<{
   reportID: number;
-  checkMetricForErrors: (metricKey: string, formStore: FormStore) => boolean;
+  checkMetricForErrors: (metricKey: string) => boolean;
   toggleConfirmationDialogue: () => void;
 }> = ({ reportID, checkMetricForErrors, toggleConfirmationDialogue }) => {
   const [isPublishable, setIsPublishable] = useState(false);
@@ -275,7 +274,7 @@ const PublishConfirmation: React.FC<{
                   <MetricsDisplay
                     key={metric.key}
                     metric={metric}
-                    metricHasError={checkMetricForErrors(metric.key, formStore)}
+                    metricHasError={checkMetricForErrors(metric.key)}
                     index={i}
                   />
                 )

@@ -179,11 +179,6 @@ const DataEntryForm: React.FC<{
     []
   );
 
-  useEffect(() => {
-    /** Runs validation of previously saved inputs on load */
-    formStore.validatePreviouslySavedInputs(reportID);
-  }, [formStore, reportID]);
-
   const saveUpdatedMetrics = async (metricKey?: string | undefined) => {
     const updatedMetrics = formStore.reportUpdatedValuesForBackend(
       reportID,
