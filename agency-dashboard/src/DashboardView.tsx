@@ -43,14 +43,14 @@ import {
 import { HeaderBar } from "./Header/HeaderBar";
 import { useStore } from "./stores";
 
-export const MetricOverviewActionShareButton = () => (
+const MetricOverviewActionShareButton = () => (
   <MetricOverviewActionButtonContainer>
     <ShareIcon />
     <MetricOverviewActionButtonText>Share</MetricOverviewActionButtonText>
   </MetricOverviewActionButtonContainer>
 );
 
-export const MetricOverviewActionDownloadButton = () => (
+const MetricOverviewActionDownloadButton = () => (
   <MetricOverviewActionButtonContainer>
     <DownloadIcon />
     <MetricOverviewActionButtonText>
@@ -59,18 +59,14 @@ export const MetricOverviewActionDownloadButton = () => (
   </MetricOverviewActionButtonContainer>
 );
 
-export const MetricOverviewActionInfoButton = () => (
+const MetricOverviewActionInfoButton = () => (
   <MetricOverviewActionButtonContainer>
     <InfoIcon />
     <MetricOverviewActionButtonText>Learn More</MetricOverviewActionButtonText>
   </MetricOverviewActionButtonContainer>
 );
 
-export const AllMetricsButton = ({
-  metricsCount,
-}: {
-  metricsCount: number;
-}) => (
+const AllMetricsButton = ({ metricsCount }: { metricsCount: number }) => (
   <AllMetricsButtonContainer>
     <GridIcon />
     <AllMetricsButtonText>All Metrics</AllMetricsButtonText>
