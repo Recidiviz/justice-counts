@@ -219,7 +219,8 @@ const PublishConfirmation: React.FC<{
   useEffect(() => {
     const { metrics, isPublishable: publishable } =
       formStore.validateAndGetAllMetricFormValues(reportID);
-    setMetricsPreview(metrics);
+    const enabledMetrics = metrics.filter((metric) => metric.enabled);
+    setMetricsPreview(enabledMetrics);
     setIsPublishable(publishable);
   }, [formStore, reportID]);
 
@@ -250,25 +251,17 @@ const PublishConfirmation: React.FC<{
         </ConfirmationButtonsContainer>
       </DataUploadHeader>
       <ConfirmationDialogueWrapper>
-        <MetricsPreviewWrapper>
-          <Heading>
-            {metricsPreview && (
-              <>
-                Review <span>{metricsPreview.length}</span> Metrics
-              </>
-            )}
-          </Heading>
-          <Subheading>
-            {metricsPreview && (
-              <>
-                Before publishing, take a moment to review the changes. You must
-                resolve any errors before publishing; otherwise, you can save
-                this report and return at another time.
-              </>
-            )}
-          </Subheading>
-          {metricsPreview &&
-            metricsPreview.map((metric, i) => {
+        {metricsPreview && (
+          <MetricsPreviewWrapper>
+            <Heading>
+              Review <span>{metricsPreview.length}</span> Metrics
+            </Heading>
+            <Subheading>
+              Before publishing, take a moment to review the changes. You must
+              resolve any errors before publishing; otherwise, you can save this
+              report and return at another time.
+            </Subheading>
+            {metricsPreview.map((metric, i) => {
               return (
                 metric.enabled && (
                   <MetricsDisplay
@@ -280,7 +273,8 @@ const PublishConfirmation: React.FC<{
                 )
               );
             })}
-        </MetricsPreviewWrapper>
+          </MetricsPreviewWrapper>
+        )}
       </ConfirmationDialogueWrapper>
     </>
   );
