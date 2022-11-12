@@ -16,7 +16,6 @@
 // =============================================================================
 
 import logo from "@justice-counts/common/assets/jc-logo-vector.png";
-import { ReactComponent as MenuIcon } from "@justice-counts/common/assets/menu-icon.svg";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -44,12 +43,9 @@ export const HeaderBar = () => {
       <LogoContainer onClick={() => navigate("/")}>
         <Logo src={logo} alt="" />
       </LogoContainer>
-      <HeaderTitle>Justice Counts</HeaderTitle>
+      <HeaderTitle>Justice Counts + Clackamas County Jail</HeaderTitle>
       <HeaderButtonsContainer>
         <HeaderButton onClick={toggleShowAboutModal}>About</HeaderButton>
-        <HeaderButton>
-          <MenuIcon />
-        </HeaderButton>
       </HeaderButtonsContainer>
     </HeaderBarContainer>
   );

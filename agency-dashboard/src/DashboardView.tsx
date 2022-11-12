@@ -18,19 +18,22 @@
 import { ReactComponent as DownloadIcon } from "@justice-counts/common/assets/download-icon.svg";
 import { ReactComponent as GridIcon } from "@justice-counts/common/assets/grid-icon.svg";
 import { ReactComponent as InfoIcon } from "@justice-counts/common/assets/info-icon.svg";
+import { ReactComponent as LeftArrowIcon } from "@justice-counts/common/assets/left-arrow-icon.svg";
 import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share-icon.svg";
 import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
+import { ExtendedDropdownMenuItem } from "@justice-counts/common/components/DataViz/DatapointsView.styles";
+import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import {
-  AllMetricsButtonContainer,
-  AllMetricsButtonCountContainer,
+  AllMetricsButtonContainer as SelectMetricButtonContainer,
   AllMetricsButtonText,
   Container,
+  ExtendedDropdown,
   LeftPanel,
-  LeftPanelBackButton,
+  LeftPanelBackButtonContainer,
   MetricOverviewActionButtonContainer,
   MetricOverviewActionButtonText,
   MetricOverviewActionsContainer,
@@ -43,10 +46,16 @@ import {
 import { HeaderBar } from "./Header/HeaderBar";
 import { useStore } from "./stores";
 
-const MetricOverviewActionShareButton = () => (
+const LeftPanelBackButton = () => (
+  <LeftPanelBackButtonContainer>
+    <LeftArrowIcon />
+  </LeftPanelBackButtonContainer>
+);
+
+const MetricOverviewActionInfoButton = () => (
   <MetricOverviewActionButtonContainer>
-    <ShareIcon />
-    <MetricOverviewActionButtonText>Share</MetricOverviewActionButtonText>
+    <InfoIcon />
+    <MetricOverviewActionButtonText>Learn More</MetricOverviewActionButtonText>
   </MetricOverviewActionButtonContainer>
 );
 
@@ -59,22 +68,41 @@ const MetricOverviewActionDownloadButton = () => (
   </MetricOverviewActionButtonContainer>
 );
 
-const MetricOverviewActionInfoButton = () => (
+const MetricOverviewActionShareButton = () => (
   <MetricOverviewActionButtonContainer>
-    <InfoIcon />
-    <MetricOverviewActionButtonText>Learn More</MetricOverviewActionButtonText>
+    <ShareIcon />
+    <MetricOverviewActionButtonText>Share</MetricOverviewActionButtonText>
   </MetricOverviewActionButtonContainer>
 );
 
-const AllMetricsButton = ({ metricsCount }: { metricsCount: number }) => (
-  <AllMetricsButtonContainer>
+const SelectMetricButton = () => (
+  <SelectMetricButtonContainer>
     <GridIcon />
-    <AllMetricsButtonText>All Metrics</AllMetricsButtonText>
+    <AllMetricsButtonText />
+  </SelectMetricButtonContainer>
+);
 
-    <AllMetricsButtonCountContainer>
-      {metricsCount}
-    </AllMetricsButtonCountContainer>
-  </AllMetricsButtonContainer>
+const SelectMetricButtonDropdown: React.FC<{
+  onSelect: (metricKey: string) => void;
+  options: string[];
+}> = ({ onSelect, options }) => (
+  <ExtendedDropdown>
+    <DropdownToggle>
+      <SelectMetricButton />
+    </DropdownToggle>
+    <DropdownMenu>
+      {options.map((value: any) => (
+        <ExtendedDropdownMenuItem
+          key={value}
+          onClick={() => {
+            onSelect(value);
+          }}
+        >
+          {value}
+        </ExtendedDropdownMenuItem>
+      ))}
+    </DropdownMenu>
+  </ExtendedDropdown>
 );
 
 const DashboardView = () => {
@@ -115,11 +143,15 @@ const DashboardView = () => {
     return <>Loading...</>;
   }
 
+  const metricNames = Object.keys(
+    datapointsStore.dimensionNamesByMetricAndDisaggregation
+  );
+
   return (
     <Container key={metricKey}>
       <HeaderBar />
       <LeftPanel>
-        <LeftPanelBackButton>← Clackamas County Jail</LeftPanelBackButton>
+        <LeftPanelBackButton />
         <MetricTitle>
           {datapointsStore.metricKeyToDisplayName[metricKey] || metricKey}
         </MetricTitle>
@@ -129,14 +161,20 @@ const DashboardView = () => {
           during the reporting period.
         </MetricOverviewContent>
         <MetricOverviewActionsContainer>
-          <MetricOverviewActionShareButton />
-          <MetricOverviewActionDownloadButton />
           <MetricOverviewActionInfoButton />
+          <MetricOverviewActionDownloadButton />
+          <MetricOverviewActionShareButton />
         </MetricOverviewActionsContainer>
       </LeftPanel>
       <RightPanel>
         <RightPanelTopContainer>
-          <AllMetricsButton metricsCount={4} />
+          {/* <SelectMetricButton /> */}
+          <SelectMetricButtonDropdown
+            onSelect={(metricKey) =>
+              navigate(`/agency/${agencyId}/dashboard?metric=${metricKey}`)
+            }
+            options={metricNames}
+          />
         </RightPanelTopContainer>
         <DatapointsView
           datapointsGroupedByAggregateAndDisaggregations={
