@@ -150,6 +150,7 @@ export const AllMetricsButtonContainer = styled.div`
 
 export const AllMetricsButtonText = styled.div`
   ${typography.sizeCSS.normal}
+  font-weight: 400;
 
   &::after {
     content: "Select Metric";

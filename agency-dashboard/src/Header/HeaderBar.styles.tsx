@@ -18,6 +18,7 @@
 import {
   HEADER_BAR_HEIGHT,
   palette,
+  TABLET_WIDTH,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import React from "react";
@@ -93,7 +94,7 @@ export const HeaderButton = styled.div`
   }
 `;
 
-const AboutModalContainer = styled.div`
+export const AboutModalContainer = styled.div`
   position: fixed;
   top: 0;
   bottom: 0;
@@ -101,18 +102,102 @@ const AboutModalContainer = styled.div`
   right: 0;
   background: ${palette.solid.green};
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  justify-content: center;
 `;
 
-const AboutModalInnerContainer = styled.div`
+export const AboutModalInnerContainer = styled.div`
+  position: relative;
   flex-basis: 864px;
   flex-grow: 0;
   flex-shrink: 1;
+  border-top: 1px solid ${palette.highlight.white};
+  padding-top: 24px;
+  margin: 24px;
 `;
 
-export const AboutModal = ({ closeModal }: { closeModal: () => void }) => (
-  <AboutModalContainer>
-    <AboutModalInnerContainer>Clackamas County Jail</AboutModalInnerContainer>
-  </AboutModalContainer>
-);
+export const AboutModalLogo = styled.img`
+  width: 96px;
+  height: 96px;
+`;
+
+export const AboutModalTitle = styled.div`
+  ${typography.sizeCSS.title}
+  font-weight: 400;
+  margin-top: 16px;
+  margin-bottom: 64px;
+  color: ${palette.solid.white};
+`;
+
+export const AboutModalCloseButton = styled.div`
+  ${typography.sizeCSS.medium}
+  font-weight: 400;
+  padding-top: 24px;
+  padding-left: 16px;
+  padding-bottom: 16px;
+  color: ${palette.solid.white};
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.85;
+  }
+`;
+
+export const AboutModalInfoContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  border-top: 1px solid ${palette.highlight.white};
+  color: ${palette.solid.white};
+
+  @media only screen and (max-width: ${TABLET_WIDTH}px) {
+    flex-direction: column;
+  }
+`;
+
+export const AboutModalInfoSection = styled.div`
+  margin-top: 24px;
+  margin-right: 24px;
+`;
+
+export const AboutModalInfoTitle = styled.div`
+  ${typography.sizeCSS.large}
+  font-weight: 400;
+  margin-bottom: 16px;
+`;
+
+export const AboutModalInfoBody = styled.div`
+  ${typography.sizeCSS.medium}
+  font-weight: 400;
+  margin-bottom: 24px;
+`;
+
+export const AboutModalButtonsContainer = styled.div`
+  display: inline-block;
+`;
+
+export const AboutModalInfoButton = styled.div`
+  ${typography.sizeCSS.medium}
+  font-weight: 400;
+  border: 1px solid ${palette.highlight.white2};
+  border-radius: 99px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  float: left;
+  margin-right: 2px;
+  margin-top: 2px;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.85;
+  }
+`;
