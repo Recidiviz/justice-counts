@@ -170,8 +170,8 @@ const DashboardView = () => {
         <RightPanelTopContainer>
           {/* <SelectMetricButton /> */}
           <SelectMetricButtonDropdown
-            onSelect={(metricKey) =>
-              navigate(`/agency/${agencyId}/dashboard?metric=${metricKey}`)
+            onSelect={(metric) =>
+              navigate(`/agency/${agencyId}/dashboard?metric=${metric}`)
             }
             options={metricNames}
           />
