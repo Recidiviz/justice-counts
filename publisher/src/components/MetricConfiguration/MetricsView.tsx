@@ -23,10 +23,15 @@ import React, { useEffect, useState } from "react";
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as GoToMetricConfig } from "../assets/goto-metric-configuration-icon.svg";
+import { ReactComponent as SwitchToChartIcon } from "../assets/switch-to-chart-icon.svg";
 import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-data-table-icon.svg";
 import ConnectedDatapointsView from "../DataViz/ConnectedDatapointsView";
 import { Loading } from "../Loading";
 import {
+  ChartView,
+  DisclaimerContainer,
+  DisclaimerText,
+  DisclaimerTitle,
   MetricItem,
   MetricsItemsContainer,
   MetricsViewContainer,
@@ -57,6 +62,7 @@ export const MetricsView: React.FC = observer(() => {
   const [metricSettings, setMetricSettings] = useState<{
     [key: string]: Metric;
   }>({});
+  const [dataView, setDataView] = useState<ChartView>(ChartView.Chart);
 
   const filteredMetricSettings: MetricSettingsObj = Object.values(
     metricSettings
@@ -152,23 +158,6 @@ export const MetricsView: React.FC = observer(() => {
   return (
     <>
       <MetricsViewContainer>
-        {/* <TabbedBar> */}
-        {/*  <TabbedOptions> */}
-        {/* {userStore.currentAgency?.systems.map((filterOption) => ( */}
-        {/*  <TabbedItem */}
-        {/*    key={filterOption} */}
-        {/*    selected={activeMetricFilter === removeSnakeCase(filterOption)} */}
-        {/*    onClick={() => */}
-        {/*      setActiveMetricFilter(removeSnakeCase(filterOption)) */}
-        {/*    } */}
-        {/*    capitalize */}
-        {/*  > */}
-        {/*    {removeSnakeCase(filterOption.toLowerCase())} */}
-        {/*  </TabbedItem> */}
-        {/* ))} */}
-        {/*  </TabbedOptions> */}
-        {/* </TabbedBar> */}
-
         <MetricsViewControlPanelOverflowHidden>
           {/* List Of Metrics */}
           <PanelContainerLeft>
@@ -213,15 +202,36 @@ export const MetricsView: React.FC = observer(() => {
                 </React.Fragment>
               ))}
             </SystemsContainer>
+            <DisclaimerContainer>
+              <DisclaimerTitle>Note</DisclaimerTitle>
+              <DisclaimerText>
+                These metrics are those that your agency has indicated are
+                available to be shared. If you believe this does not accurately
+                reflect your data sharing capabilities, please go to{" "}
+                <span>Metric Configuration</span> to adjust.
+              </DisclaimerText>
+            </DisclaimerContainer>
           </PanelContainerLeft>
 
           {/* Data Visualization */}
           <PanelContainerRight>
             <PanelRightTopButtonsContainer>
-              <PanelRightTopButton>
-                <SwitchToDataTableIcon />
-                Switch to Data Table
-              </PanelRightTopButton>
+              {dataView === ChartView.Chart && (
+                <PanelRightTopButton
+                  onClick={() => setDataView(ChartView.Table)}
+                >
+                  <SwitchToDataTableIcon />
+                  Switch to Data Table
+                </PanelRightTopButton>
+              )}
+              {dataView === ChartView.Table && (
+                <PanelRightTopButton
+                  onClick={() => setDataView(ChartView.Chart)}
+                >
+                  <SwitchToChartIcon />
+                  Switch to Chart
+                </PanelRightTopButton>
+              )}
               <PanelRightTopButton>
                 <GoToMetricConfig />
                 Go to Metric Configuration
@@ -233,6 +243,7 @@ export const MetricsView: React.FC = observer(() => {
               metricFrequency={
                 filteredMetricSettings[activeMetricKey]?.frequency
               }
+              dataView={dataView}
             />
           </PanelContainerRight>
         </MetricsViewControlPanelOverflowHidden>

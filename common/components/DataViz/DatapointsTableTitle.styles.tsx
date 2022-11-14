@@ -15,35 +15,17 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { MetricContext } from "@justice-counts/common/types";
+import styled from "styled-components/macro";
 
-export const metricConfigurationSettingsOptions = ["N/A", "No", "Yes"] as const;
-export type MetricConfigurationSettingsOptions =
-  typeof metricConfigurationSettingsOptions[number];
+import { typography } from "../GlobalStyles";
 
-export type MetricSettings = {
-  key: string;
-  enabled?: boolean;
-  settings?: { key: string; included: MetricConfigurationSettingsOptions }[];
-  contexts?: {
-    key: string;
-    value: MetricContext["value"];
-  }[];
-  disaggregations?: {
-    key: string;
-    enabled?: boolean;
-    dimensions?: {
-      key: string;
-      enabled?: boolean;
-      settings?: {
-        key: string;
-        included: MetricConfigurationSettingsOptions;
-      }[];
-    }[];
-  }[];
-};
+export const MetricTitleWrapper = styled.div`
+  display: flex;
+  gap: 18px;
+  align-items: center;
+`;
 
-export enum ChartView {
-  Chart = "CHART",
-  Table = "TABLE",
-}
+export const MetricTitle = styled.div`
+  ${typography.sizeCSS.title}
+  white-space: nowrap;
+`;

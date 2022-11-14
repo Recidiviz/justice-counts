@@ -27,7 +27,7 @@ import {
 } from "@justice-counts/common/types";
 import React, { useEffect } from "react";
 
-import { Badge, BadgeColorMapping } from "../Badge";
+import { DatapointsTableTitle } from "./DatapointsTableTitle";
 import {
   DatapointsViewContainer,
   DatapointsViewControlsContainer,
@@ -35,8 +35,6 @@ import {
   MetricHeaderWrapper,
   MetricInsight,
   MetricInsightsRow,
-  MetricTitle,
-  MetricTitleWrapper,
 } from "./DatapointsView.styles";
 import {
   filterByTimeRange,
@@ -49,11 +47,6 @@ import {
 } from "./utils";
 
 const noDisaggregationOption = "None";
-
-const reportFrequencyBadgeColors: BadgeColorMapping = {
-  ANNUAL: "ORANGE",
-  MONTHLY: "GREEN",
-};
 
 export const DatapointsView: React.FC<{
   datapointsGroupedByAggregateAndDisaggregations: DatapointsGroupedByAggregateAndDisaggregations;
@@ -108,24 +101,6 @@ export const DatapointsView: React.FC<{
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datapointsGroupedByAggregateAndDisaggregations]);
-
-  const renderMetricTitle = () => {
-    return (
-      <MetricTitleWrapper>
-        <MetricTitle>{metricName}</MetricTitle>
-        {metricFrequency && (
-          <Badge
-            color={
-              reportFrequencyBadgeColors[metricFrequency as ReportFrequency]
-            }
-            noMargin
-          >
-            {metricFrequency}
-          </Badge>
-        )}
-      </MetricTitleWrapper>
-    );
-  };
 
   const renderChartForMetric = () => {
     return (
@@ -216,7 +191,10 @@ export const DatapointsView: React.FC<{
   return (
     <DatapointsViewContainer>
       <MetricHeaderWrapper>
-        {renderMetricTitle()}
+        <DatapointsTableTitle
+          metricName={metricName}
+          metricFrequency={metricFrequency}
+        />
         {renderMetricInsightsRow()}
       </MetricHeaderWrapper>
       {renderDataVizControls()}

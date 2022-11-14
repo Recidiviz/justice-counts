@@ -15,35 +15,54 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
 import {
   DatapointsGroupedByAggregateAndDisaggregations,
+  RawDatapoint,
   ReportFrequency,
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React from "react";
 
 import { useStore } from "../../stores";
+import { ChartView } from "../MetricConfiguration";
 
 const ConnectedDatapointsView: React.FC<{
   metric: string;
   metricName: string;
   metricFrequency?: ReportFrequency;
-}> = ({ metric, metricName, metricFrequency }) => {
+  dataView: ChartView;
+}> = ({ metric, metricName, metricFrequency, dataView }) => {
   const { datapointsStore } = useStore();
   const datapointsForMetric =
     datapointsStore.datapointsByMetric[metric] ||
     ({} as DatapointsGroupedByAggregateAndDisaggregations);
+  const rawDatapointsForMetric =
+    datapointsStore.rawDatapointsByMetric[metric] || ([] as RawDatapoint[]);
 
   return (
-    <DatapointsView
-      datapointsGroupedByAggregateAndDisaggregations={datapointsForMetric}
-      dimensionNamesByDisaggregation={
-        datapointsStore.dimensionNamesByMetricAndDisaggregation[metric] || {}
-      }
-      metricName={metricName}
-      metricFrequency={metricFrequency}
-    />
+    <>
+      {dataView === ChartView.Chart && (
+        <DatapointsView
+          datapointsGroupedByAggregateAndDisaggregations={datapointsForMetric}
+          dimensionNamesByDisaggregation={
+            datapointsStore.dimensionNamesByMetricAndDisaggregation[metric] ||
+            {}
+          }
+          metricName={metricName}
+          metricFrequency={metricFrequency}
+        />
+      )}
+      {dataView === ChartView.Table && (
+        <DatapointsTableView
+          datapoints={rawDatapointsForMetric}
+          useDataPageStyles
+          metricName={metricName}
+          metricFrequency={metricFrequency}
+        />
+      )}
+    </>
   );
 };
 

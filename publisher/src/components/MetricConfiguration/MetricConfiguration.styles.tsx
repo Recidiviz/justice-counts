@@ -25,6 +25,7 @@ import { BinaryRadioGroupWrapper, Button } from "../Forms";
 import { MenuItem } from "../Settings";
 
 const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
+const INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH = 314;
 
 export const MetricsViewContainer = styled.div`
   height: 100%;
@@ -39,11 +40,10 @@ export const MetricsViewControlPanel = styled.div`
   height: 100%;
   width: 100%;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: space-between;
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
-    flex-wrap: nowrap;
     justify-content: unset;
   }
 `;
@@ -51,33 +51,34 @@ export const MetricsViewControlPanel = styled.div`
 export const MetricsViewControlPanelOverflowHidden = styled(
   MetricsViewControlPanel
 )`
-  overflow-y: hidden;
+  flex-wrap: nowrap;
 `;
 
 export const PanelContainerLeft = styled.div`
   width: 35%;
   height: 100%;
-  overflow: scroll;
-  padding: 46px 24px 0 24px;
-
-  @media only screen and (max-width: 1000px) {
-    margin-right: 50px;
-  }
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 46px 0 0 24px;
+  margin-right: 95px;
 `;
 
 export const SystemsContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  overflow-y: scroll;
 `;
 
 export const SystemNameContainer = styled.div<{ isSystemActive: boolean }>`
   ${typography.sizeCSS.normal}
+  width: ${INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH}px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   border-bottom: 2px solid ${palette.solid.darkgrey};
-  width: 314px;
   padding-bottom: 8px;
   color: ${({ isSystemActive }) =>
     isSystemActive ? palette.solid.darkgrey : palette.highlight.grey7};
@@ -109,15 +110,44 @@ export const MetricsItemsContainer = styled.div<{ isSystemActive: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-top: 13px;
-  padding-bottom: 13px;
+  padding: 13px 0;
 
   ${({ isSystemActive }) => !isSystemActive && "display: none"}
 `;
 
 export const MetricItem = styled(MenuItem)`
+  width: fit-content;
+  max-width: ${INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH}px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   color: ${({ selected }) =>
     selected ? palette.solid.darkgrey : palette.highlight.grey7};
+
+  &:hover {
+    max-width: fit-content;
+  }
+`;
+
+export const DisclaimerContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 37px;
+  width: ${INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH}px;
+  height: 200px;
+`;
+
+export const DisclaimerTitle = styled.div`
+  ${typography.sizeCSS.small}
+`;
+
+export const DisclaimerText = styled.div`
+  ${typography.sizeCSS.normal}
+
+  span {
+    color: ${palette.solid.blue};
+  }
 `;
 
 export const PanelContainerRight = styled.div`

@@ -15,35 +15,32 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { MetricContext } from "@justice-counts/common/types";
+import React from "react";
 
-export const metricConfigurationSettingsOptions = ["N/A", "No", "Yes"] as const;
-export type MetricConfigurationSettingsOptions =
-  typeof metricConfigurationSettingsOptions[number];
+import { ReportFrequency } from "../../types";
+import { Badge, BadgeColorMapping } from "../Badge";
+import { MetricTitle, MetricTitleWrapper } from "./DatapointsTableTitle.styles";
 
-export type MetricSettings = {
-  key: string;
-  enabled?: boolean;
-  settings?: { key: string; included: MetricConfigurationSettingsOptions }[];
-  contexts?: {
-    key: string;
-    value: MetricContext["value"];
-  }[];
-  disaggregations?: {
-    key: string;
-    enabled?: boolean;
-    dimensions?: {
-      key: string;
-      enabled?: boolean;
-      settings?: {
-        key: string;
-        included: MetricConfigurationSettingsOptions;
-      }[];
-    }[];
-  }[];
+const reportFrequencyBadgeColors: BadgeColorMapping = {
+  ANNUAL: "ORANGE",
+  MONTHLY: "GREEN",
 };
 
-export enum ChartView {
-  Chart = "CHART",
-  Table = "TABLE",
-}
+export const DatapointsTableTitle: React.FC<{
+  metricName: string;
+  metricFrequency?: string;
+}> = ({ metricName, metricFrequency }) => {
+  return (
+    <MetricTitleWrapper>
+      <MetricTitle>{metricName}</MetricTitle>
+      {metricFrequency && (
+        <Badge
+          color={reportFrequencyBadgeColors[metricFrequency as ReportFrequency]}
+          noMargin
+        >
+          {metricFrequency}
+        </Badge>
+      )}
+    </MetricTitleWrapper>
+  );
+};

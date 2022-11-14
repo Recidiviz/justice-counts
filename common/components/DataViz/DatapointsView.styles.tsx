@@ -32,17 +32,9 @@ export const MetricHeaderWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  height: 58px;
   margin-bottom: 9px;
-`;
-
-export const MetricTitleWrapper = styled.div`
-  display: flex;
-  gap: 18px;
-  align-items: center;
-`;
-
-export const MetricTitle = styled.div`
-  ${typography.sizeCSS.title}
+  white-space: nowrap;
 `;
 
 export const ExtendedDropdownMenuItem = styled(DropdownMenuItem)<{
@@ -233,6 +225,10 @@ export const DatapointsViewControlsDropdown: React.FC<
 export const MetricInsightsRow = styled.div`
   display: flex;
   flex-direction: row;
+
+  @media only screen and (max-width: 1300px) {
+    display: none;
+  }
 `;
 
 const MetricInsightContainer = styled.div`

@@ -20,6 +20,7 @@ import {
   DataVizAggregateName,
   DimensionNamesByMetricAndDisaggregation,
   RawDatapoint,
+  RawDatapointsByMetric,
 } from "@justice-counts/common/types";
 import { isPositiveNumber } from "@justice-counts/common/utils";
 import {
@@ -117,6 +118,18 @@ abstract class DatapointsStore {
           dataVizMissingData: 0,
         };
       }
+      return res;
+    }, {});
+  }
+
+  get rawDatapointsByMetric(): RawDatapointsByMetric {
+    return this.rawDatapoints.reduce((res: RawDatapointsByMetric, dp) => {
+      if (!res[dp.metric_definition_key]) {
+        res[dp.metric_definition_key] = [dp];
+      } else {
+        res[dp.metric_definition_key].push(dp);
+      }
+
       return res;
     }, {});
   }
