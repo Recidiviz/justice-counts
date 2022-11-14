@@ -91,7 +91,7 @@ const SelectMetricButtonDropdown: React.FC<{
       <SelectMetricButton />
     </DropdownToggle>
     <DropdownMenu>
-      {options.map((value: any) => (
+      {options.map((value) => (
         <ExtendedDropdownMenuItem
           key={value}
           onClick={() => {

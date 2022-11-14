@@ -15,23 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { ReactComponent as CloseIcon } from "@justice-counts/common/assets/close-icon.svg";
 import logo from "@justice-counts/common/assets/jc-logo-vector.png";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { AboutModal } from "./AboutModal";
 import {
-  AboutModalButtonsContainer,
-  AboutModalCloseButton,
-  AboutModalContainer,
-  AboutModalInfoBody,
-  AboutModalInfoButton,
-  AboutModalInfoContainer,
-  AboutModalInfoSection,
-  AboutModalInfoTitle,
-  AboutModalInnerContainer,
-  AboutModalLogo,
-  AboutModalTitle,
   HeaderBarContainer,
   HeaderButton,
   HeaderButtonsContainer,
@@ -39,45 +28,6 @@ import {
   Logo,
   LogoContainer,
 } from "./HeaderBar.styles";
-
-export const AboutModal = ({ closeModal }: { closeModal: () => void }) => (
-  <AboutModalContainer>
-    <AboutModalInnerContainer>
-      <AboutModalLogo src={logo} alt="" />
-      <AboutModalTitle>Justice Counts</AboutModalTitle>
-      <AboutModalCloseButton onClick={closeModal}>
-        Close
-        <CloseIcon />
-      </AboutModalCloseButton>
-      <AboutModalInfoContainer>
-        <AboutModalInfoSection>
-          <AboutModalInfoTitle>Clackamas County Jail</AboutModalInfoTitle>
-          <AboutModalInfoBody>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor
-            lectus lectus non sit justo. Massa, volutpat, diam maecenas risus.
-            Magna est neque tellus, ut in.
-          </AboutModalInfoBody>
-          <AboutModalButtonsContainer>
-            <AboutModalInfoButton>Agency Website</AboutModalInfoButton>
-          </AboutModalButtonsContainer>
-        </AboutModalInfoSection>
-        <AboutModalInfoSection>
-          <AboutModalInfoTitle>What is Justice Counts?</AboutModalInfoTitle>
-          <AboutModalInfoBody>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor
-            lectus lectus non sit justo. Massa, volutpat, diam maecenas risus.
-            Magna est neque tellus, ut in.
-          </AboutModalInfoBody>
-          <AboutModalButtonsContainer>
-            <AboutModalInfoButton>Website</AboutModalInfoButton>
-            <AboutModalInfoButton>Twitter</AboutModalInfoButton>
-            <AboutModalInfoButton>Contact</AboutModalInfoButton>
-          </AboutModalButtonsContainer>
-        </AboutModalInfoSection>
-      </AboutModalInfoContainer>
-    </AboutModalInnerContainer>
-  </AboutModalContainer>
-);
 
 export const HeaderBar = () => {
   const navigate = useNavigate();
