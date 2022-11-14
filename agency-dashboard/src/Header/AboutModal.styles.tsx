@@ -31,8 +31,9 @@ export const AboutModalContainer = styled.div`
   background: ${palette.solid.green};
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: left;
   justify-content: center;
+  overflow-y: scroll;
 `;
 
 export const AboutModalInnerContainer = styled.div`
@@ -42,7 +43,14 @@ export const AboutModalInnerContainer = styled.div`
   flex-shrink: 1;
   border-top: 1px solid ${palette.highlight.white};
   padding-top: 24px;
-  margin: 24px;
+  margin-left: 24px;
+  margin-right: 24px;
+  margin-bottom: 24px;
+  margin-top: 128px;
+
+  @media only screen and (max-width: ${TABLET_WIDTH}px) {
+    margin-top: 24px;
+  }
 `;
 
 export const AboutModalLogo = styled.img`
