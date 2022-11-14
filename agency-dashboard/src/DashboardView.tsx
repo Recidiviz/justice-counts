@@ -15,13 +15,67 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { ReactComponent as DownloadIcon } from "@justice-counts/common/assets/download-icon.svg";
+import { ReactComponent as GridIcon } from "@justice-counts/common/assets/grid-icon.svg";
+import { ReactComponent as InfoIcon } from "@justice-counts/common/assets/info-icon.svg";
+import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share-icon.svg";
 import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { Container, MetricTitle } from "./DashboardView.styles";
+import {
+  AllMetricsButtonContainer,
+  AllMetricsButtonCountContainer,
+  AllMetricsButtonText,
+  Container,
+  LeftPanel,
+  LeftPanelBackButton,
+  MetricOverviewActionButtonContainer,
+  MetricOverviewActionButtonText,
+  MetricOverviewActionsContainer,
+  MetricOverviewContent,
+  MetricOverviewTitle,
+  MetricTitle,
+  RightPanel,
+  RightPanelTopContainer,
+} from "./DashboardView.styles";
+import { HeaderBar } from "./Header/HeaderBar";
 import { useStore } from "./stores";
+
+const MetricOverviewActionShareButton = () => (
+  <MetricOverviewActionButtonContainer>
+    <ShareIcon />
+    <MetricOverviewActionButtonText>Share</MetricOverviewActionButtonText>
+  </MetricOverviewActionButtonContainer>
+);
+
+const MetricOverviewActionDownloadButton = () => (
+  <MetricOverviewActionButtonContainer>
+    <DownloadIcon />
+    <MetricOverviewActionButtonText>
+      Download Data
+    </MetricOverviewActionButtonText>
+  </MetricOverviewActionButtonContainer>
+);
+
+const MetricOverviewActionInfoButton = () => (
+  <MetricOverviewActionButtonContainer>
+    <InfoIcon />
+    <MetricOverviewActionButtonText>Learn More</MetricOverviewActionButtonText>
+  </MetricOverviewActionButtonContainer>
+);
+
+const AllMetricsButton = ({ metricsCount }: { metricsCount: number }) => (
+  <AllMetricsButtonContainer>
+    <GridIcon />
+    <AllMetricsButtonText>All Metrics</AllMetricsButtonText>
+
+    <AllMetricsButtonCountContainer>
+      {metricsCount}
+    </AllMetricsButtonCountContainer>
+  </AllMetricsButtonContainer>
+);
 
 const DashboardView = () => {
   const navigate = useNavigate();
@@ -62,11 +116,28 @@ const DashboardView = () => {
   }
 
   return (
-    <>
-      <Container key={metricKey}>
+    <Container key={metricKey}>
+      <HeaderBar />
+      <LeftPanel>
+        <LeftPanelBackButton>← Clackamas County Jail</LeftPanelBackButton>
         <MetricTitle>
           {datapointsStore.metricKeyToDisplayName[metricKey] || metricKey}
         </MetricTitle>
+        <MetricOverviewTitle />
+        <MetricOverviewContent>
+          Measures the number of individuals with at least one parole violation
+          during the reporting period.
+        </MetricOverviewContent>
+        <MetricOverviewActionsContainer>
+          <MetricOverviewActionShareButton />
+          <MetricOverviewActionDownloadButton />
+          <MetricOverviewActionInfoButton />
+        </MetricOverviewActionsContainer>
+      </LeftPanel>
+      <RightPanel>
+        <RightPanelTopContainer>
+          <AllMetricsButton metricsCount={4} />
+        </RightPanelTopContainer>
         <DatapointsView
           datapointsGroupedByAggregateAndDisaggregations={
             datapointsStore.datapointsByMetric[metricKey]
@@ -75,8 +146,8 @@ const DashboardView = () => {
             datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey]
           }
         />
-      </Container>
-    </>
+      </RightPanel>
+    </Container>
   );
 };
 
