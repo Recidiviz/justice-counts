@@ -15,12 +15,17 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Metric as MetricType } from "@justice-counts/common/types";
+import {
+  Metric as MetricType,
+  MetricDisaggregationDimensions,
+  MetricDisaggregations,
+} from "@justice-counts/common/types";
 import React, { useEffect, useState } from "react";
 
 import { useStore } from "../../stores";
 import successIcon from "../assets/status-check-icon.png";
 import errorIcon from "../assets/status-error-icon.png";
+import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "../MetricConfiguration";
 import { DisaggregationDimensionTextInput } from "../Reports/DataEntryFormComponents";
 import {
   DisaggregationHasInputIndicator,
@@ -168,6 +173,89 @@ export const TabbedDisaggregations: React.FC<{
     return <></>;
   };
 
+  const activeDisaggregationOrZerothIndex =
+    activeDisaggregation[metric.key]?.disaggregationIndex || 0;
+
+  const renderCategorizedRaceEthnicityDimensions = () => {
+    const raceEthnicityDisaggregation = metric.disaggregations.find(
+      (x) => x.key === RACE_ETHNICITY_DISAGGREGATION_KEY
+    ) as MetricDisaggregations;
+    const groupedDimensions =
+      raceEthnicityDisaggregation?.dimensions.reduce(
+        (acc, dimension) => {
+          if (dimension.key.includes("/ Hispanic")) {
+            acc.Hispanic.push(dimension);
+          }
+          if (dimension.key.includes("/ Not Hispanic")) {
+            acc["Not Hispanic"].push(dimension);
+          }
+          if (dimension.key.includes("/ Unknown Ethnicity")) {
+            acc["Unknown Ethnicity"].push(dimension);
+          }
+
+          return acc;
+        },
+        {
+          Hispanic: [],
+          "Not Hispanic": [],
+          "Unknown Ethnicity": [],
+        } as { [key: string]: MetricDisaggregationDimensions[] }
+      ) || {};
+
+    return (
+      <>
+        {Object.entries(groupedDimensions).map(([ethnicity, dimensions]) => (
+          <>
+            <div
+              style={{ display: "block", width: "100%", marginBottom: "20px" }}
+            >
+              {ethnicity}
+            </div>
+
+            {dimensions.map((dimension, dimensionIndex) => {
+              if (!dimension.enabled) return;
+              return (
+                <DisaggregationInputWrapper
+                  key={dimension.key}
+                  onChange={() =>
+                    searchDimensionsForInput(
+                      RACE_ETHNICITY_DISAGGREGATION_KEY,
+                      activeDisaggregationOrZerothIndex
+                    )
+                  }
+                >
+                  <DisaggregationDimensionTextInput
+                    reportID={reportID}
+                    key={dimension.key + dimension.reporting_note}
+                    metric={metric}
+                    dimension={dimension}
+                    disaggregation={raceEthnicityDisaggregation}
+                    disaggregationIndex={activeDisaggregationOrZerothIndex}
+                    dimensionIndex={dimensionIndex}
+                    updateFieldDescription={() =>
+                      updateFieldDescription(
+                        dimension.label,
+                        dimension.reporting_note
+                      )
+                    }
+                    disabled={
+                      disabled ||
+                      !raceEthnicityDisaggregation.enabled ||
+                      !dimension.enabled
+                    }
+                    clearFieldDescription={() =>
+                      updateFieldDescription(undefined)
+                    }
+                  />
+                </DisaggregationInputWrapper>
+              );
+            })}
+          </>
+        ))}
+      </>
+    );
+  };
+
   return (
     <DisaggregationTabsContainer>
       <TabsRow>
@@ -217,46 +305,49 @@ export const TabbedDisaggregations: React.FC<{
       </TabsRow>
 
       <TabDisplay>
-        {metric.disaggregations[
-          activeDisaggregation[metric.key]?.disaggregationIndex || 0
-        ]?.dimensions.map((dimension, dimensionIndex) => {
-          const activeDisaggregationOrZerothIndex =
-            activeDisaggregation[metric.key]?.disaggregationIndex || 0;
-          const disaggregation =
-            metric.disaggregations[activeDisaggregationOrZerothIndex];
+        {metric.disaggregations[activeDisaggregationOrZerothIndex].key ===
+        RACE_ETHNICITY_DISAGGREGATION_KEY
+          ? renderCategorizedRaceEthnicityDimensions()
+          : metric.disaggregations[
+              activeDisaggregationOrZerothIndex
+            ]?.dimensions.map((dimension, dimensionIndex) => {
+              const disaggregation =
+                metric.disaggregations[activeDisaggregationOrZerothIndex];
 
-          return (
-            <DisaggregationInputWrapper
-              key={dimension.key}
-              onChange={() =>
-                searchDimensionsForInput(
-                  disaggregation.key,
-                  activeDisaggregationOrZerothIndex
-                )
-              }
-            >
-              <DisaggregationDimensionTextInput
-                reportID={reportID}
-                key={dimension.key + dimension.reporting_note}
-                metric={metric}
-                dimension={dimension}
-                disaggregation={disaggregation}
-                disaggregationIndex={activeDisaggregationOrZerothIndex}
-                dimensionIndex={dimensionIndex}
-                updateFieldDescription={() =>
-                  updateFieldDescription(
-                    dimension.label,
-                    dimension.reporting_note
-                  )
-                }
-                disabled={
-                  disabled || !disaggregation.enabled || !dimension.enabled
-                }
-                clearFieldDescription={() => updateFieldDescription(undefined)}
-              />
-            </DisaggregationInputWrapper>
-          );
-        })}
+              return (
+                <DisaggregationInputWrapper
+                  key={dimension.key}
+                  onChange={() =>
+                    searchDimensionsForInput(
+                      disaggregation.key,
+                      activeDisaggregationOrZerothIndex
+                    )
+                  }
+                >
+                  <DisaggregationDimensionTextInput
+                    reportID={reportID}
+                    key={dimension.key + dimension.reporting_note}
+                    metric={metric}
+                    dimension={dimension}
+                    disaggregation={disaggregation}
+                    disaggregationIndex={activeDisaggregationOrZerothIndex}
+                    dimensionIndex={dimensionIndex}
+                    updateFieldDescription={() =>
+                      updateFieldDescription(
+                        dimension.label,
+                        dimension.reporting_note
+                      )
+                    }
+                    disabled={
+                      disabled || !disaggregation.enabled || !dimension.enabled
+                    }
+                    clearFieldDescription={() =>
+                      updateFieldDescription(undefined)
+                    }
+                  />
+                </DisaggregationInputWrapper>
+              );
+            })}
       </TabDisplay>
     </DisaggregationTabsContainer>
   );
