@@ -51,7 +51,7 @@ const noDisaggregationOption = "None";
 export const DatapointsView: React.FC<{
   datapointsGroupedByAggregateAndDisaggregations: DatapointsGroupedByAggregateAndDisaggregations;
   dimensionNamesByDisaggregation: DimensionNamesByDisaggregation;
-  metricName: string;
+  metricName?: string;
   metricFrequency?: ReportFrequency;
 }> = ({
   datapointsGroupedByAggregateAndDisaggregations,
@@ -190,13 +190,15 @@ export const DatapointsView: React.FC<{
 
   return (
     <DatapointsViewContainer>
-      <MetricHeaderWrapper>
-        <DatapointsTableTitle
-          metricName={metricName}
-          metricFrequency={metricFrequency}
-        />
-        {renderMetricInsightsRow()}
-      </MetricHeaderWrapper>
+      {metricName && (
+        <MetricHeaderWrapper>
+          <DatapointsTableTitle
+            metricName={metricName}
+            metricFrequency={metricFrequency}
+          />
+          {renderMetricInsightsRow()}
+        </MetricHeaderWrapper>
+      )}
       {renderDataVizControls()}
       {renderChartForMetric()}
       {renderLegend()}
