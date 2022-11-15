@@ -140,6 +140,8 @@ export interface MetricDisaggregationDimensions {
   enabled?: boolean;
   settings?: MetricConfigurationSettings[];
   display_name?: string;
+  race?: string;
+  ethnicity?: string;
 }
 
 export interface CreateReportFormValuesType extends Record<string, unknown> {
