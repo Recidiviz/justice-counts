@@ -690,10 +690,12 @@ class MetricConfigStore {
       this.activeSystem,
       this.activeMetricKey
     );
-    const dimensions = Object.values(
-      this.dimensions[systemMetricKey][RACE_ETHNICITY_DISAGGREGATION_KEY]
-    ) as UpdatedDimension[];
-    const ethnicitiesByRaceMap = dimensions.reduce(
+    const raceEthnicitiesDimensions =
+      this.dimensions[systemMetricKey][RACE_ETHNICITY_DISAGGREGATION_KEY];
+    const dimensions =
+      raceEthnicitiesDimensions &&
+      (Object.values(raceEthnicitiesDimensions) as UpdatedDimension[]);
+    const ethnicitiesByRaceMap = dimensions?.reduce(
       (acc, dimension) => {
         acc[dimension.race] = {
           ...acc[dimension.race],
@@ -709,7 +711,7 @@ class MetricConfigStore {
       }
     );
 
-    return ethnicitiesByRaceMap;
+    return ethnicitiesByRaceMap || {};
   }
 
   updateAllRaceEthnicitiesToDefaultState = (
@@ -736,6 +738,18 @@ class MetricConfigStore {
     if (unknownRaceDisabled && state === "NO_ETHNICITY_HISPANIC_AS_RACE") {
       this.ethnicitiesByRace.Unknown.Hispanic.enabled = true;
       this.ethnicitiesByRace.Unknown["Not Hispanic"].enabled = true;
+      updatedDimensions.push(
+        ...[
+          {
+            ...this.ethnicitiesByRace.Unknown.Hispanic,
+            enabled: true,
+          },
+          {
+            ...this.ethnicitiesByRace.Unknown["Not Hispanic"],
+            enabled: true,
+          },
+        ]
+      );
       sanitizedState = state;
     }
 

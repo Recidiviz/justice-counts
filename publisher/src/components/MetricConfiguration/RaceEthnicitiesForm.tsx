@@ -217,6 +217,10 @@ export const RaceEthnicitiesForm = observer(() => {
                       );
 
                       if (switchedGridStateUpdatedDimensions) {
+                        /** Add the updated dimension from disabling the Unknown race to the switchedGridStateUpdatedDimensions */
+                        switchedGridStateUpdatedDimensions.disaggregations[0].dimensions.push(
+                          ...updatedDimensions.disaggregations[0].dimensions
+                        );
                         return saveMetricSettings(
                           switchedGridStateUpdatedDimensions
                         );
