@@ -84,6 +84,7 @@ interface DisaggregationDimensionTextInputProps extends MetricTextInputProps {
   dimension: MetricDisaggregationDimensions;
   dimensionIndex: number;
   disabled?: boolean;
+  customLabel?: string;
 }
 
 export const DisaggregationDimensionTextInput = observer(
@@ -97,6 +98,7 @@ export const DisaggregationDimensionTextInput = observer(
     updateFieldDescription,
     clearFieldDescription,
     disabled,
+    customLabel,
   }: DisaggregationDimensionTextInputProps) => {
     const { formStore } = useStore();
     const { disaggregations, updateDisaggregationDimensionValue } = formStore;
@@ -117,7 +119,7 @@ export const DisaggregationDimensionTextInput = observer(
     return (
       <TextInput
         key={dimension.key}
-        label={dimension.label}
+        label={customLabel || dimension.label}
         error={
           disaggregations?.[reportID]?.[metric.key]?.[disaggregation.key]?.[
             dimension.key

@@ -229,6 +229,7 @@ export const TabbedDisaggregations: React.FC<{
                     key={dimension.key + dimension.reporting_note}
                     metric={metric}
                     dimension={dimension}
+                    customLabel={dimension.race}
                     disaggregation={raceEthnicityDisaggregation}
                     disaggregationIndex={activeDisaggregationOrZerothIndex}
                     dimensionIndex={dimensionIndex}
