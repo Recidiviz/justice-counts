@@ -66,7 +66,7 @@ export const AboutModal: React.FC<{ closeModal: () => void }> = ({
           <AboutModalButtonsContainer>
             <AboutModalInfoButton>Website</AboutModalInfoButton>
             <AboutModalInfoButton>Twitter</AboutModalInfoButton>
-            <AboutModalInfoButton>Website</AboutModalInfoButton>
+            <AboutModalInfoButton>Contact</AboutModalInfoButton>
           </AboutModalButtonsContainer>
         </AboutModalInfoSection>
       </AboutModalInfoContainer>

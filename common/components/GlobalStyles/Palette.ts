@@ -46,8 +46,8 @@ export const palette = {
     grey10: `rgba(23, 28, 43, 0.7)`,
     grey11: `rgba(23, 28, 43, 0.8)`,
     grey12: `rgba(23, 28, 43, 0.9)`,
-    white: `rgba(255,255,255, 0.5)`,
-    white2: `rgba(255,255,255, 0.2)`,
+    white1: `rgba(255,255,255, 0.2)`,
+    white2: `rgba(255,255,255, 0.5)`,
   },
   dataViz: {
     bar1: "#133158",

@@ -30,7 +30,6 @@ export const AboutModalContainer = styled.div`
   right: 0;
   background: ${palette.solid.green};
   display: flex;
-  flex-direction: row;
   align-items: left;
   justify-content: center;
   overflow-y: scroll;
@@ -38,15 +37,10 @@ export const AboutModalContainer = styled.div`
 
 export const AboutModalInnerContainer = styled.div`
   position: relative;
-  flex-basis: 864px;
-  flex-grow: 0;
-  flex-shrink: 1;
-  border-top: 1px solid ${palette.highlight.white};
+  flex: 0 1 864px;
+  border-top: 1px solid ${palette.highlight.white2};
   padding-top: 24px;
-  margin-left: 24px;
-  margin-right: 24px;
-  margin-bottom: 24px;
-  margin-top: 128px;
+  margin: 128px 24px 24px 24px;
 
   @media only screen and (max-width: ${TABLET_WIDTH}px) {
     margin-top: 24px;
@@ -69,15 +63,12 @@ export const AboutModalTitle = styled.div`
 export const AboutModalCloseButton = styled.div`
   ${typography.sizeCSS.medium}
   font-weight: 400;
-  padding-top: 24px;
-  padding-left: 16px;
-  padding-bottom: 16px;
+  padding: 24px 0px 16px 16px;
   color: ${palette.solid.white};
   position: absolute;
   top: 0;
   right: 0;
   display: flex;
-  flex-direction: row;
   gap: 8px;
   align-items: center;
 
@@ -89,8 +80,7 @@ export const AboutModalCloseButton = styled.div`
 
 export const AboutModalInfoContainer = styled.div`
   display: flex;
-  flex-direction: row;
-  border-top: 1px solid ${palette.highlight.white};
+  border-top: 1px solid ${palette.highlight.white2};
   color: ${palette.solid.white};
 
   @media only screen and (max-width: ${TABLET_WIDTH}px) {
@@ -122,12 +112,9 @@ export const AboutModalButtonsContainer = styled.div`
 export const AboutModalInfoButton = styled.div`
   ${typography.sizeCSS.medium}
   font-weight: 400;
-  border: 1px solid ${palette.highlight.white2};
+  border: 1px solid ${palette.highlight.white1};
   border-radius: 99px;
-  padding-left: 16px;
-  padding-right: 16px;
-  padding-top: 8px;
-  padding-bottom: 8px;
+  padding: 8px; 16px;
   float: left;
   margin-right: 2px;
   margin-top: 2px;

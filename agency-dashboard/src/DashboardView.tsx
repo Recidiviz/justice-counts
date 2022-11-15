@@ -168,7 +168,6 @@ const DashboardView = () => {
       </LeftPanel>
       <RightPanel>
         <RightPanelTopContainer>
-          {/* <SelectMetricButton /> */}
           <SelectMetricButtonDropdown
             onSelect={(metric) =>
               navigate(`/agency/${agencyId}/dashboard?metric=${metric}`)

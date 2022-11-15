@@ -27,7 +27,6 @@ export const Container = styled.div`
   width: 100%;
   position: relative;
   display: flex;
-  flex-direction: row;
   justify-content: stretch;
   align-items: stretch;
   padding-top: 64px;
@@ -51,7 +50,6 @@ export const RightPanel = styled.div`
 
 export const RightPanelTopContainer = styled.div`
   display: flex;
-  flex-direction: row;
 `;
 
 export const LeftPanelBackButtonContainer = styled.div`
@@ -61,7 +59,6 @@ export const LeftPanelBackButtonContainer = styled.div`
   padding-right: 8px;
   padding-bottom: 8px;
   display: flex;
-  flex-direction: row;
   align-items: center;
   gap: 8px;
 
@@ -100,13 +97,11 @@ export const MetricOverviewContent = styled.div`
 
 export const MetricOverviewActionsContainer = styled.div`
   display: flex;
-  flex-direction: row;
   margin-top: 24px;
 `;
 
 export const MetricOverviewActionButtonContainer = styled.div`
   display: flex;
-  flex-direction: row;
   align-items: center;
   padding: 8px;
 
@@ -135,7 +130,6 @@ export const AllMetricsButtonContainer = styled.div`
   padding-top: 8px;
   padding-bottom: 8px;
   display: flex;
-  flex-direction: row;
   align-items: center;
   border-radius: 2px;
   background: ${palette.solid.blue};

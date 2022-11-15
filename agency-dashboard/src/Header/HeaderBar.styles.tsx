@@ -63,12 +63,10 @@ export const HeaderTitle = styled.div`
 
 export const HeaderButtonsContainer = styled.div`
   display: flex;
-  flex-direction: row;
 `;
 
 export const HeaderButton = styled.div`
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
   height: 64px;
