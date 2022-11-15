@@ -144,10 +144,11 @@ export const DisclaimerTitle = styled.div`
 
 export const DisclaimerText = styled.div`
   ${typography.sizeCSS.normal}
+`;
 
-  span {
-    color: ${palette.solid.blue};
-  }
+export const DisclaimerLink = styled.span`
+  color: ${palette.solid.blue};
+  cursor: pointer;
 `;
 
 export const PanelContainerRight = styled.div`

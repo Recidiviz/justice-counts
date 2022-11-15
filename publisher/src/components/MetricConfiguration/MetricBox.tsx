@@ -19,8 +19,13 @@ import { Badge } from "@justice-counts/common/components/Badge";
 import { ReportFrequency } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import {
+  getSettingsSearchParams,
+  SettingsSearchParams,
+} from "../Settings/types";
 import {
   MetricBoxContainer,
   MetricDescription,
@@ -44,14 +49,23 @@ export const MetricBox: React.FC<MetricBoxProps> = observer(
     description,
     enabled,
   }): JSX.Element => {
+    const [searchParams, setSearchParams] = useSearchParams();
     const { metricConfigStore } = useStore();
     const { updateActiveMetricKey } = metricConfigStore;
 
+    const settingsSearchParams = getSettingsSearchParams(searchParams);
+
+    const handleMetricBoxClick = () => {
+      updateActiveMetricKey(metricKey);
+      const params: SettingsSearchParams = {
+        ...settingsSearchParams,
+        metric: metricKey,
+      };
+      setSearchParams(params);
+    };
+
     return (
-      <MetricBoxContainer
-        onClick={() => updateActiveMetricKey(metricKey)}
-        enabled={enabled}
-      >
+      <MetricBoxContainer onClick={handleMetricBoxClick} enabled={enabled}>
         <MetricName>{displayName}</MetricName>
         <MetricDescription>{description}</MetricDescription>
         <MetricNameBadgeWrapper>

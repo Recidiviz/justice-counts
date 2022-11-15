@@ -15,10 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Metric } from "@justice-counts/common/types";
+import { AgencySystems, Metric } from "@justice-counts/common/types";
 import { reaction, when } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
+import { createSearchParams, useNavigate } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
@@ -27,9 +28,11 @@ import { ReactComponent as SwitchToChartIcon } from "../assets/switch-to-chart-i
 import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-data-table-icon.svg";
 import ConnectedDatapointsView from "../DataViz/ConnectedDatapointsView";
 import { Loading } from "../Loading";
+import { SettingsSearchParams } from "../Settings/types";
 import {
   ChartView,
   DisclaimerContainer,
+  DisclaimerLink,
   DisclaimerText,
   DisclaimerTitle,
   MetricItem,
@@ -51,6 +54,7 @@ type MetricSettingsObj = {
 };
 
 export const MetricsView: React.FC = observer(() => {
+  const navigate = useNavigate();
   const { reportStore, userStore, datapointsStore } = useStore();
 
   const [activeMetricFilter, setActiveMetricFilter] = useState<string>();
@@ -208,7 +212,21 @@ export const MetricsView: React.FC = observer(() => {
                 These metrics are those that your agency has indicated are
                 available to be shared. If you believe this does not accurately
                 reflect your data sharing capabilities, please go to{" "}
-                <span>Metric Configuration</span> to adjust.
+                <DisclaimerLink
+                  onClick={() => {
+                    const params: SettingsSearchParams = {
+                      system: activeMetricFilter as AgencySystems,
+                      metric: activeMetricKey,
+                    };
+                    navigate({
+                      pathname: "/settings/metric-config",
+                      search: `?${createSearchParams(params)}`,
+                    });
+                  }}
+                >
+                  Metric Configuration
+                </DisclaimerLink>{" "}
+                to adjust.
               </DisclaimerText>
             </DisclaimerContainer>
           </PanelContainerLeft>
@@ -232,7 +250,18 @@ export const MetricsView: React.FC = observer(() => {
                   Switch to Chart
                 </PanelRightTopButton>
               )}
-              <PanelRightTopButton>
+              <PanelRightTopButton
+                onClick={() => {
+                  const params: SettingsSearchParams = {
+                    system: activeMetricFilter as AgencySystems,
+                    metric: activeMetricKey,
+                  };
+                  navigate({
+                    pathname: "/settings/metric-config",
+                    search: `?${createSearchParams(params)}`,
+                  });
+                }}
+              >
                 <GoToMetricConfig />
                 Go to Metric Configuration
               </PanelRightTopButton>

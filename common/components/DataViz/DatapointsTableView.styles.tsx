@@ -27,6 +27,7 @@ export const DatapointsTableNamesContainer = styled.div`
 export const DatapointsTableNamesTable = styled.table`
   border-collapse: collapse;
 `;
+export const DatapointsTableNamesTableBody = styled.tbody``;
 export const DatapointsTableNamesRow = styled.tr``;
 export const DatapointsTableNamesCell = styled.td`
   padding-top: 4px;

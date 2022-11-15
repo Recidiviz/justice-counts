@@ -17,8 +17,9 @@
 
 import { observer } from "mobx-react-lite";
 import React, { Fragment } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
-import { MenuOptions, menuOptions } from "../../pages/Settings";
+import { menuOptions } from "../../pages/Settings";
 import { useStore } from "../../stores";
 import {
   MenuItem,
@@ -26,11 +27,12 @@ import {
   MetricsListItem,
   SettingsMenuContainer,
 } from ".";
+import { getSettingsSearchParams, SettingsSearchParams } from "./types";
 
-export const SettingsMenu: React.FC<{
-  activeMenuItem: MenuOptions;
-  goToMenuItem: (destination: MenuOptions) => void;
-}> = observer(({ activeMenuItem, goToMenuItem }) => {
+export const SettingsMenu: React.FC = observer(() => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
   const { metricConfigStore } = useStore();
   const {
     activeMetricKey,
@@ -39,27 +41,38 @@ export const SettingsMenu: React.FC<{
     updateActiveMetricKey,
   } = metricConfigStore;
 
+  const settingsSearchParams = getSettingsSearchParams(searchParams);
+
+  const handleMetricListItemClick = (metricKey: string) => {
+    const params: SettingsSearchParams = {
+      ...settingsSearchParams,
+      metric: metricKey,
+    };
+    setSearchParams(params);
+    updateActiveMetricKey(metricKey);
+  };
+
   return (
     <SettingsMenuContainer>
-      {menuOptions.map((option) => (
-        <Fragment key={option}>
+      {Object.entries(menuOptions).map(([displayName, path]) => (
+        <Fragment key={path}>
           <MenuItem
-            selected={option === activeMenuItem}
+            selected={location.pathname === path}
             onClick={() => {
-              goToMenuItem(option);
+              navigate(path);
 
-              if (option === "Metric Configuration") {
-                updateActiveMetricKey(undefined);
+              if (location.pathname === "/settings/metric-config") {
+                updateActiveMetricKey(settingsSearchParams.metric);
               }
             }}
           >
-            {option}
+            {displayName}
           </MenuItem>
 
           {/* Metrics Navigation (appears when a metric has been 
               selected and allows users to toggle between metrics) */}
-          {option === "Metric Configuration" &&
-            activeMenuItem === "Metric Configuration" &&
+          {location.pathname === "/settings/metric-config" &&
+            path === "/settings/metric-config" &&
             activeMetricKey && (
               <MetricsListContainer>
                 {getMetricsBySystem(activeSystem)?.map(({ key, metric }) => {
@@ -67,7 +80,7 @@ export const SettingsMenu: React.FC<{
                     <MetricsListItem
                       key={key}
                       activeSection={key === activeMetricKey}
-                      onClick={() => updateActiveMetricKey(key)}
+                      onClick={() => handleMetricListItemClick(key)}
                     >
                       {metric.label}
                     </MetricsListItem>

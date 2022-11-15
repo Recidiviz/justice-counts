@@ -42,6 +42,7 @@ import {
   DatapointsTableNamesDivider,
   DatapointsTableNamesRow,
   DatapointsTableNamesTable,
+  DatapointsTableNamesTableBody,
   DatapointsTableViewTitleWrapper,
   OrangeText,
   StrikethroughText,
@@ -155,31 +156,33 @@ export const DatapointsTableView: React.FC<{
       <DatapointsTableContainer useDataPageStyles={useDataPageStyles}>
         <DatapointsTableNamesContainer>
           <DatapointsTableNamesTable>
-            <DatapointsTableNamesRow>
-              <DatapointsTableNamesCell>
-                {DataVizAggregateName}
-              </DatapointsTableNamesCell>
-            </DatapointsTableNamesRow>
-            {Object.entries(disaggregationRowData).map(
-              ([disaggregation, dimension]) => (
-                <React.Fragment key={disaggregation}>
-                  <DatapointsTableNamesRow>
-                    <DatapointsTableNamesDivider>
-                      {disaggregation}
-                    </DatapointsTableNamesDivider>
-                  </DatapointsTableNamesRow>
-                  {Object.keys(dimension)
-                    .sort(sortDatapointDimensions)
-                    .map((dimensionName) => (
-                      <DatapointsTableNamesRow key={dimensionName}>
-                        <DatapointsTableNamesCell>
-                          {dimensionName}
-                        </DatapointsTableNamesCell>
-                      </DatapointsTableNamesRow>
-                    ))}
-                </React.Fragment>
-              )
-            )}
+            <DatapointsTableNamesTableBody>
+              <DatapointsTableNamesRow>
+                <DatapointsTableNamesCell>
+                  {DataVizAggregateName}
+                </DatapointsTableNamesCell>
+              </DatapointsTableNamesRow>
+              {Object.entries(disaggregationRowData).map(
+                ([disaggregation, dimension]) => (
+                  <React.Fragment key={disaggregation}>
+                    <DatapointsTableNamesRow>
+                      <DatapointsTableNamesDivider>
+                        {disaggregation}
+                      </DatapointsTableNamesDivider>
+                    </DatapointsTableNamesRow>
+                    {Object.keys(dimension)
+                      .sort(sortDatapointDimensions)
+                      .map((dimensionName) => (
+                        <DatapointsTableNamesRow key={dimensionName}>
+                          <DatapointsTableNamesCell>
+                            {dimensionName}
+                          </DatapointsTableNamesCell>
+                        </DatapointsTableNamesRow>
+                      ))}
+                  </React.Fragment>
+                )
+              )}
+            </DatapointsTableNamesTableBody>
           </DatapointsTableNamesTable>
         </DatapointsTableNamesContainer>
         <DatapointsTableDetailsContainer useDataPageStyles={useDataPageStyles}>
