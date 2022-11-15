@@ -318,8 +318,8 @@ class FormStore {
     required: boolean,
     reportID: number,
     metricKey: string,
-    key1?: string,
-    key2?: string
+    disaggregationKey?: string,
+    dimensionKey?: string
   ) => {
     const cleanValue = removeCommaSpaceAndTrim(value);
     const isRequiredButEmpty = required && cleanValue === "";
@@ -335,10 +335,10 @@ class FormStore {
        * Disaggregation Dimension: key1 && key2
        */
       if (operation === "ADD") {
-        if (key1 && key2) {
-          this.disaggregations[reportID][metricKey][key1][key2].error = error;
-        } else if (key1 && !key2) {
-          this.contexts[reportID][metricKey][key1].error = error;
+        if (disaggregationKey && dimensionKey) {
+          this.disaggregations[reportID][metricKey][disaggregationKey][
+            dimensionKey
+          ].error = error;
         } else {
           this.metricsValues[reportID][metricKey].error = error;
         }
@@ -347,10 +347,10 @@ class FormStore {
         this.metricsValues[reportID][metricKey].error = error;
       }
       if (operation === "DELETE") {
-        if (key1 && key2) {
-          delete this.disaggregations[reportID][metricKey][key1][key2].error;
-        } else if (key1 && !key2) {
-          delete this.contexts[reportID][metricKey][key1].error;
+        if (disaggregationKey && dimensionKey) {
+          delete this.disaggregations[reportID][metricKey][disaggregationKey][
+            dimensionKey
+          ].error;
         } else {
           delete this.metricsValues[reportID][metricKey].error;
         }
@@ -361,18 +361,14 @@ class FormStore {
       if (this.metricsValues?.[reportID]?.[metricKey]?.error)
         delete this.metricsValues[reportID][metricKey].error;
 
-      if (this.contexts?.[reportID]?.[metricKey])
-        Object.keys(this.contexts[reportID][metricKey]).forEach(
-          (contextKey) => {
-            delete this.contexts[reportID][metricKey][contextKey].error;
-          }
-        );
-
       updateFieldErrorMessage("DELETE");
       return;
     }
 
-    if (key1 && !this.metricsValues?.[reportID]?.[metricKey]?.value) {
+    if (
+      disaggregationKey &&
+      !this.metricsValues?.[reportID]?.[metricKey]?.value
+    ) {
       if (!this.metricsValues[reportID]) {
         this.metricsValues[reportID] = {};
       }
