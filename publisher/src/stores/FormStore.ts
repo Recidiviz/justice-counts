@@ -329,11 +329,6 @@ class FormStore {
       operation: "ADD" | "DELETE" | "ADD TO METRIC",
       error?: FormError
     ) => {
-      /**
-       * Overall metric: !key1 && !key2
-       * Context: key1 && !key2
-       * Disaggregation Dimension: key1 && key2
-       */
       if (operation === "ADD") {
         if (disaggregationKey && dimensionKey) {
           this.disaggregations[reportID][metricKey][disaggregationKey][
