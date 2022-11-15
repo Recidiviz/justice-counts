@@ -16,12 +16,11 @@
 // =============================================================================
 
 import logo from "@justice-counts/common/assets/jc-logo-vector.png";
-import { ReactComponent as MenuIcon } from "@justice-counts/common/assets/menu-icon.svg";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { AboutModal } from "./AboutModal";
 import {
-  AboutModal,
   HeaderBarContainer,
   HeaderButton,
   HeaderButtonsContainer,
@@ -32,24 +31,25 @@ import {
 
 export const HeaderBar = () => {
   const navigate = useNavigate();
-  const [showAboutModal, setShowAboutModal] = useState<boolean>(false);
+  const [aboutModalVisible, setAboutModalVisible] = useState<boolean>(false);
 
-  const toggleShowAboutModal = () => {
-    setShowAboutModal((prev) => !prev);
+  const showAboutModal = () => {
+    setAboutModalVisible(true);
+  };
+
+  const hideAboutModal = () => {
+    setAboutModalVisible(false);
   };
 
   return (
     <HeaderBarContainer>
-      {showAboutModal && <AboutModal closeModal={toggleShowAboutModal} />}
+      {aboutModalVisible && <AboutModal closeModal={hideAboutModal} />}
       <LogoContainer onClick={() => navigate("/")}>
         <Logo src={logo} alt="" />
       </LogoContainer>
-      <HeaderTitle>Justice Counts</HeaderTitle>
+      <HeaderTitle>Justice Counts + Clackamas County Jail</HeaderTitle>
       <HeaderButtonsContainer>
-        <HeaderButton onClick={toggleShowAboutModal}>About</HeaderButton>
-        <HeaderButton>
-          <MenuIcon />
-        </HeaderButton>
+        <HeaderButton onClick={showAboutModal}>About</HeaderButton>
       </HeaderButtonsContainer>
     </HeaderBarContainer>
   );

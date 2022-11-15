@@ -71,6 +71,7 @@ test("renders 'No reported data for this metric.' state", async () => {
     </StoreProvider>
   );
 
-  const textElement = await screen.findByText(/LAW_ENFORCEMENT_ARRESTS/i);
-  expect(textElement).toBeInTheDocument();
+  const textElements = await screen.findAllByText(/LAW_ENFORCEMENT_ARRESTS/i);
+  expect(textElements[0]).toBeInTheDocument();
+  expect(textElements[1]).toBeInTheDocument();
 });

@@ -19,6 +19,7 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
+import { Dropdown } from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
 export const Container = styled.div`
@@ -26,7 +27,6 @@ export const Container = styled.div`
   width: 100%;
   position: relative;
   display: flex;
-  flex-direction: row;
   justify-content: stretch;
   align-items: stretch;
   padding-top: 64px;
@@ -50,19 +50,29 @@ export const RightPanel = styled.div`
 
 export const RightPanelTopContainer = styled.div`
   display: flex;
-  flex-direction: row;
 `;
 
-export const LeftPanelBackButton = styled.div`
+export const LeftPanelBackButtonContainer = styled.div`
   ${typography.sizeCSS.normal}
   float: left;
   padding-top: 8px;
   padding-right: 8px;
   padding-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
   &:hover {
     cursor: pointer;
     color: ${palette.solid.blue};
+  }
+
+  &:hover path {
+    fill: ${palette.solid.blue};
+  }
+
+  &::after {
+    content: "Agency Overview";
   }
 `;
 
@@ -87,13 +97,11 @@ export const MetricOverviewContent = styled.div`
 
 export const MetricOverviewActionsContainer = styled.div`
   display: flex;
-  flex-direction: row;
   margin-top: 24px;
 `;
 
 export const MetricOverviewActionButtonContainer = styled.div`
   display: flex;
-  flex-direction: row;
   align-items: center;
   padding: 8px;
 
@@ -121,42 +129,39 @@ export const AllMetricsButtonContainer = styled.div`
   padding-right: 16px;
   padding-top: 8px;
   padding-bottom: 8px;
-  margin-top: 8px;
-  margin-bottom: 8px;
   display: flex;
-  flex-direction: row;
   align-items: center;
+  border-radius: 2px;
+  background: ${palette.solid.blue};
+  gap: 8px;
+  color: ${palette.solid.white};
 
   &:hover {
     cursor: pointer;
-    color: ${palette.solid.blue};
-  }
-
-  &:hover path {
-    fill: ${palette.solid.blue};
+    background: ${palette.solid.darkblue};
   }
 `;
 
 export const AllMetricsButtonText = styled.div`
   ${typography.sizeCSS.normal}
-  margin-left: 8px;
-  margin-right: 8px;
+  font-weight: 400;
+
+  &::after {
+    content: "Select Metric";
+  }
 `;
 
-export const AllMetricsButtonCountContainer = styled.div`
-  background: ${palette.solid.blue};
-  color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 0px 8px;
-  gap: 8px;
-
-  width: 25px;
-  height: 20px;
-  border-radius: 24px;
-
-  ${typography.sizeCSS.small}
-  font-size: 13px;
+export const ExtendedDropdown = styled(Dropdown)`
+  & > button {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-left: 15px;
+    transition-duration: 0ms;
+    background: none;
+    padding: 0;
+    border: none;
+  }
+  &:hover > button {
+    background: none;
+  }
 `;
