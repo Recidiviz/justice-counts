@@ -47,6 +47,8 @@ export type UpdatedDimension = {
   key: string;
   label: string;
   enabled: boolean;
+  race: Races;
+  ethnicity: Ethnicities;
 };
 
 export type UpdatedDisaggregation = {
@@ -69,5 +71,9 @@ export const races = [
 ] as const;
 export type Races = typeof races[number];
 
-export const ethnicities = ["Hispanic", "Not Hispanic", "Unknown Ethnicity"];
+export const ethnicities = [
+  "Hispanic",
+  "Not Hispanic",
+  "Unknown Ethnicity",
+] as const;
 export type Ethnicities = typeof ethnicities[number];

@@ -26,11 +26,13 @@ import {
 import { makeAutoObservable, runInAction } from "mobx";
 
 import {
+  Ethnicities,
   ethnicities,
   MetricConfigurationSettingsOptions,
   MetricSettings,
   RACE_ETHNICITY_DISAGGREGATION_KEY,
   RaceEthnicitiesGridStates,
+  Races,
   StateKeys,
   UpdatedDimension,
   UpdatedDisaggregation,
@@ -95,6 +97,8 @@ class MetricConfigStore {
           enabled?: boolean;
           label?: string;
           key?: string;
+          race?: Races;
+          ethnicity?: Ethnicities;
         };
       };
     };
@@ -275,6 +279,16 @@ class MetricConfigStore {
             );
 
             disaggregation.dimensions.forEach((dimension) => {
+              const dimensionMetadata =
+                disaggregation.key === RACE_ETHNICITY_DISAGGREGATION_KEY
+                  ? {
+                      label: dimension.label,
+                      key: dimension.key,
+                      race: dimension.race,
+                      ethnicity: dimension.ethnicity,
+                    }
+                  : { label: dimension.label, key: dimension.key };
+
               /** Initialize Dimension Status (Enabled/Disabled) */
               this.updateDimensionEnabledStatus(
                 normalizedMetricSystemName,
@@ -282,7 +296,7 @@ class MetricConfigStore {
                 disaggregation.key,
                 dimension.key,
                 dimension.enabled as boolean,
-                { label: dimension.label, key: dimension.key }
+                dimensionMetadata
               );
 
               dimension.settings?.forEach((setting) => {
@@ -457,7 +471,7 @@ class MetricConfigStore {
     disaggregationKey: string,
     dimensionKey: string,
     enabledStatus: boolean,
-    metadata?: { [key: string]: string }
+    metadata?: { [key: string]: string | undefined }
   ): MetricSettings => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
@@ -481,6 +495,14 @@ class MetricConfigStore {
         metadata.label;
       this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].key =
         metadata.key;
+
+      if (disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY) {
+        this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].race =
+          metadata.race as Races;
+        this.dimensions[systemMetricKey][disaggregationKey][
+          dimensionKey
+        ].ethnicity = metadata.ethnicity as Ethnicities;
+      }
     }
 
     /**
@@ -673,13 +695,9 @@ class MetricConfigStore {
     ) as UpdatedDimension[];
     const ethnicitiesByRaceMap = dimensions.reduce(
       (acc, dimension) => {
-        /** Dimension keys are `Race / Ethnicity` or `Race Description 1 / Race Description 2 / Ethnicity` */
-        const [ethnicity, ...race] = dimension.key.split(" / ").reverse();
-        const normalizedRace = race.reverse().join(" / ");
-
-        acc[normalizedRace] = {
-          ...acc[normalizedRace],
-          [ethnicity]: dimension,
+        acc[dimension.race] = {
+          ...acc[dimension.race],
+          [dimension.ethnicity]: dimension,
         };
 
         return acc;
