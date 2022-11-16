@@ -87,8 +87,8 @@ export const DatapointsViewContainer = styled.div`
 export const DatapointsViewControlsContainer = styled.div`
   display: flex;
   flex-direction: row;
-  border-bottom: 1px solid ${palette.highlight.grey9};
-  border-top: 1px solid ${palette.highlight.grey9};
+  flex-grow: 1;
+  border: 1px solid ${palette.highlight.grey9};
 `;
 
 const DatapointsViewDropdown = styled(Dropdown)`
@@ -253,3 +253,51 @@ export const MetricInsight: React.FC<MetricInsightProps> = ({
     <MetricInsightValue>{value}</MetricInsightValue>
   </MetricInsightContainer>
 );
+
+export const DatapointsViewControlsRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+`;
+
+export const SelectMetricsButtonContainer = styled.div`
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  display: flex;
+  align-items: center;
+  border-radius: 2px;
+  background: ${palette.solid.blue};
+  gap: 8px;
+  color: ${palette.solid.white};
+
+  &:hover {
+    cursor: pointer;
+    background: ${palette.solid.darkblue};
+  }
+`;
+
+export const SelectMetricsButtonText = styled.div`
+  ${typography.sizeCSS.normal}
+  font-weight: 400;
+
+  &::after {
+    content: "Select Metric";
+  }
+`;
+
+export const ExtendedDropdown = styled(Dropdown)`
+  & > button {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    transition-duration: 0ms;
+    background: none;
+    padding: 0;
+    border: none;
+  }
+  &:hover > button {
+    background: none;
+  }
+`;

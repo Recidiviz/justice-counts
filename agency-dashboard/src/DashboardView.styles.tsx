@@ -79,15 +79,8 @@ export const LeftPanelBackButtonContainer = styled.div`
 export const MetricTitle = styled.div`
   ${typography.sizeCSS.headline}
   margin-top: 86px;
-`;
-
-export const MetricOverviewTitle = styled.div`
-  ${typography.sizeCSS.large}
-  margin-top: 48px;
-
-  &::after {
-    content: "Metric Overview";
-  }
+  hyphens: auto;
+  overflow-wrap: break-word;
 `;
 
 export const MetricOverviewContent = styled.div`
@@ -122,46 +115,4 @@ export const MetricOverviewActionButtonContainer = styled.div`
 export const MetricOverviewActionButtonText = styled.div`
   ${typography.sizeCSS.normal}
   margin-left: 8px;
-`;
-
-export const AllMetricsButtonContainer = styled.div`
-  padding-left: 16px;
-  padding-right: 16px;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  display: flex;
-  align-items: center;
-  border-radius: 2px;
-  background: ${palette.solid.blue};
-  gap: 8px;
-  color: ${palette.solid.white};
-
-  &:hover {
-    cursor: pointer;
-    background: ${palette.solid.darkblue};
-  }
-`;
-
-export const AllMetricsButtonText = styled.div`
-  ${typography.sizeCSS.normal}
-  font-weight: 400;
-
-  &::after {
-    content: "Select Metric";
-  }
-`;
-
-export const ExtendedDropdown = styled(Dropdown)`
-  & > button {
-    margin-top: 8px;
-    margin-bottom: 8px;
-    margin-left: 15px;
-    transition-duration: 0ms;
-    background: none;
-    padding: 0;
-    border: none;
-  }
-  &:hover > button {
-    background: none;
-  }
 `;

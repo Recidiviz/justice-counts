@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { ReactComponent as GridIcon } from "@justice-counts/common/assets/grid-icon.svg";
 import BarChart from "@justice-counts/common/components/DataViz/BarChart";
 import Legend from "@justice-counts/common/components/DataViz/Legend";
 import {
@@ -24,14 +25,20 @@ import {
   DataVizTimeRangesMap,
   DimensionNamesByDisaggregation,
 } from "@justice-counts/common/types";
+import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
 import React, { useEffect } from "react";
 
 import {
   DatapointsViewContainer,
   DatapointsViewControlsContainer,
   DatapointsViewControlsDropdown,
+  DatapointsViewControlsRow,
+  ExtendedDropdown,
+  ExtendedDropdownMenuItem,
   MetricInsight,
   MetricInsightsRow,
+  SelectMetricsButtonContainer,
+  SelectMetricsButtonText,
 } from "./DatapointsView.styles";
 import {
   filterByTimeRange,
@@ -45,12 +52,46 @@ import {
 
 const noDisaggregationOption = "None";
 
+const SelectMetricButton = () => (
+  <SelectMetricsButtonContainer>
+    <GridIcon />
+    <SelectMetricsButtonText />
+  </SelectMetricsButtonContainer>
+);
+
+const SelectMetricButtonDropdown: React.FC<{
+  onSelect: (metricKey: string) => void;
+  options: string[];
+}> = ({ onSelect, options }) => (
+  <ExtendedDropdown>
+    <DropdownToggle>
+      <SelectMetricButton />
+    </DropdownToggle>
+    <DropdownMenu>
+      {options.map((value) => (
+        <ExtendedDropdownMenuItem
+          key={value}
+          onClick={() => {
+            onSelect(value);
+          }}
+        >
+          {value}
+        </ExtendedDropdownMenuItem>
+      ))}
+    </DropdownMenu>
+  </ExtendedDropdown>
+);
+
 export const DatapointsView: React.FC<{
   datapointsGroupedByAggregateAndDisaggregations: DatapointsGroupedByAggregateAndDisaggregations;
   dimensionNamesByDisaggregation: DimensionNamesByDisaggregation;
+  metricNames: string[];
+  onMetricsSelect: (metric: string) => void;
 }> = ({
   datapointsGroupedByAggregateAndDisaggregations,
   dimensionNamesByDisaggregation,
+  metricNames,
+  onMetricsSelect,
 }) => {
   const [selectedTimeRange, setSelectedTimeRange] =
     React.useState<string>("All");
@@ -183,8 +224,14 @@ export const DatapointsView: React.FC<{
 
   return (
     <DatapointsViewContainer>
-      {renderDataVizControls()}
-      {renderMetricInsightsRow()}
+      <DatapointsViewControlsRow>
+        <SelectMetricButtonDropdown
+          options={metricNames}
+          onSelect={onMetricsSelect}
+        />
+        {renderDataVizControls()}
+        {renderMetricInsightsRow()}
+      </DatapointsViewControlsRow>
       {renderChartForMetric()}
       {renderLegend()}
     </DatapointsViewContainer>
