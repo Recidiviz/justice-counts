@@ -622,7 +622,7 @@ export const DefinitionMiniButton = styled(RevertToDefaultButton)<{
         opacity: 0.9;
       }
 
-      &:nth-child(3) {
+      &:last-child {
         background: ${palette.solid.blue};
 
         &:hover {
