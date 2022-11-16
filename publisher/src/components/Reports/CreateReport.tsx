@@ -155,8 +155,12 @@ const CreateReport = () => {
         trackReportCreated(report.id, agency);
         return;
       }
-      if (response.status === 400) {
-        const responseJson = await response.json();
+      const responseJson = await response.json();
+      if (
+        responseJson.description.includes(
+          "A report of that date range has already been created."
+        )
+      ) {
         showToast(responseJson.description, false, "red");
         return;
       }
