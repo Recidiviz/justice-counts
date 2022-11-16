@@ -51,6 +51,7 @@ import {
   normalizeString,
   printCommaSeparatedList,
   printElapsedDaysMonthsYearsSinceDate,
+  printReportFrequency,
   printReportTitle,
   removeSnakeCase,
 } from "../utils";
@@ -217,7 +218,9 @@ const Reports: React.FC = () => {
                   </Cell>
 
                   {/* Status */}
-                  <Cell capitalize>{report.frequency.toLowerCase()}</Cell>
+                  <Cell capitalize>
+                    {printReportFrequency(report.month, report.frequency)}
+                  </Cell>
 
                   {/* Editors */}
                   <Cell
