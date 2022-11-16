@@ -16,7 +16,7 @@
 // =============================================================================
 
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 import { UploadedFiles } from "../components/DataUpload";
 import { MetricConfiguration } from "../components/MetricConfiguration";
@@ -45,7 +45,7 @@ const Settings = () => {
 
       <ContentDisplay>
         <Routes>
-          <Route path="/" element={<AccountSettings />} />
+          <Route path="/" element={<Navigate to="account" />} />
           <Route path="/account" element={<AccountSettings />} />
           <Route path="/uploaded-files" element={<UploadedFiles />} />
           <Route path="/metric-config" element={<MetricConfiguration />} />
