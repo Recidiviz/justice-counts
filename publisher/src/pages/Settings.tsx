@@ -45,7 +45,7 @@ const Settings = () => {
 
       <ContentDisplay>
         <Routes>
-          <Route path="/" element={<Navigate to="account" />} />
+          <Route path="/" element={<Navigate to="account" replace />} />
           <Route path="/account" element={<AccountSettings />} />
           <Route path="/uploaded-files" element={<UploadedFiles />} />
           <Route path="/metric-config" element={<MetricConfiguration />} />
