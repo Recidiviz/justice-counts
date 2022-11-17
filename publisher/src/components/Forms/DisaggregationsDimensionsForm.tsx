@@ -128,6 +128,37 @@ export const DisaggregationsDimensionsForm: React.FC<{
     return <></>;
   };
 
+  const renderDimension = ({
+    dimension,
+  }: {
+    dimension: MetricDisaggregationDimensions;
+  }) => {
+    return (
+      <DisaggregationInputWrapper
+        key={dimension.key}
+        onChange={() =>
+          updateDisaggregationHasInput(activeDisaggregationObj.key)
+        }
+      >
+        <DisaggregationDimensionTextInput
+          reportID={reportID}
+          key={dimension.key + dimension.reporting_note}
+          metric={metric}
+          dimension={dimension}
+          customLabel={dimension.race}
+          disaggregation={activeDisaggregationObj}
+          updateFieldDescription={() =>
+            updateFieldDescription(dimension.label, dimension.reporting_note)
+          }
+          disabled={
+            disabled || !activeDisaggregationObj.enabled || !dimension.enabled
+          }
+          clearFieldDescription={() => updateFieldDescription(undefined)}
+        />
+      </DisaggregationInputWrapper>
+    );
+  };
+
   const renderCategorizedRaceEthnicityDimensions = () => {
     const raceEthnicityDisaggregation = metric.disaggregations.find(
       (disaggregation) =>
@@ -167,42 +198,10 @@ export const DisaggregationsDimensionsForm: React.FC<{
             {dimensions.length > 0 && (
               <EthnicityHeader>{ethnicity}</EthnicityHeader>
             )}
-
-            {dimensions.map((dimension) => {
-              return <Dimension dimension={dimension} key={dimension.key} />;
-            })}
+            {dimensions.map((dimension) => renderDimension({ dimension }))}
           </Fragment>
         ))}
       </>
-    );
-  };
-
-  const Dimension: React.FC<{ dimension: MetricDisaggregationDimensions }> = ({
-    dimension,
-  }) => {
-    return (
-      <DisaggregationInputWrapper
-        key={dimension.key}
-        onChange={() =>
-          updateDisaggregationHasInput(activeDisaggregationObj.key)
-        }
-      >
-        <DisaggregationDimensionTextInput
-          reportID={reportID}
-          key={dimension.key + dimension.reporting_note}
-          metric={metric}
-          dimension={dimension}
-          customLabel={dimension.race}
-          disaggregation={activeDisaggregationObj}
-          updateFieldDescription={() =>
-            updateFieldDescription(dimension.label, dimension.reporting_note)
-          }
-          disabled={
-            disabled || !activeDisaggregationObj.enabled || !dimension.enabled
-          }
-          clearFieldDescription={() => updateFieldDescription(undefined)}
-        />
-      </DisaggregationInputWrapper>
     );
   };
 
@@ -260,7 +259,7 @@ export const DisaggregationsDimensionsForm: React.FC<{
         {activeDisaggregationObj?.key === RACE_ETHNICITY_DISAGGREGATION_KEY
           ? renderCategorizedRaceEthnicityDimensions()
           : activeDisaggregationObj?.dimensions.map((dimension) => {
-              return <Dimension dimension={dimension} key={dimension.key} />;
+              return renderDimension({ dimension });
             })}
       </TabDisplay>
     </DisaggregationTabsContainer>
