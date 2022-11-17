@@ -155,7 +155,7 @@ export const TabbedDisaggregations: React.FC<{
     );
   };
 
-  const renderCategorizedRaceEthnicityDimensions = () => {
+  const renderRaceEthnicityDimensionsGroupedByEthnicity = () => {
     const raceEthnicityDisaggregation = metric.disaggregations.find(
       (disaggregation) =>
         disaggregation.key === RACE_ETHNICITY_DISAGGREGATION_KEY
@@ -252,7 +252,7 @@ export const TabbedDisaggregations: React.FC<{
       {/* Dimensions */}
       <TabDisplay>
         {activeDisaggregationObj?.key === RACE_ETHNICITY_DISAGGREGATION_KEY
-          ? renderCategorizedRaceEthnicityDimensions()
+          ? renderRaceEthnicityDimensionsGroupedByEthnicity()
           : activeDisaggregationObj?.dimensions.map((dimension) => {
               return renderDimension({ dimension });
             })}
