@@ -162,9 +162,9 @@ const DashboardView = () => {
           during the reporting period.
         </MetricOverviewContent>
         <MetricOverviewActionsContainer>
-          <MetricOverviewActionInfoButton />
-          <MetricOverviewActionDownloadButton />
           <MetricOverviewActionShareButton />
+          <MetricOverviewActionDownloadButton />
+          <MetricOverviewActionInfoButton />
         </MetricOverviewActionsContainer>
       </LeftPanel>
       <RightPanel>
@@ -190,9 +190,9 @@ const DashboardView = () => {
           during the reporting period.
         </RightPanelMetricOverviewContent>
         <RightPanelMetricOverviewActionsContainer>
-          <MetricOverviewActionInfoButton />
-          <MetricOverviewActionDownloadButton />
           <MetricOverviewActionShareButton />
+          <MetricOverviewActionDownloadButton />
+          <MetricOverviewActionInfoButton />
         </RightPanelMetricOverviewActionsContainer>
       </RightPanel>
     </Container>

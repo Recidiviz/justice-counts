@@ -18,6 +18,7 @@
 import {
   HEADER_BAR_HEIGHT,
   palette,
+  TABLET_WIDTH,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
@@ -59,6 +60,10 @@ export const Logo = styled.img`
 export const HeaderTitle = styled.div`
   flex-grow: 1;
   padding-left: 16px;
+
+  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+    display: none;
+  }
 `;
 
 export const HeaderButtonsContainer = styled.div`

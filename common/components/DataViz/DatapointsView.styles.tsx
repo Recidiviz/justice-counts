@@ -17,6 +17,7 @@
 
 import {
   palette,
+  TABLET_WIDTH,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import {
@@ -218,6 +219,10 @@ export const MetricInsightsRow = styled.div`
   flex-direction: row;
   margin-top: 16px;
   margin-bottom: 16px;
+
+  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+    flex-direction: column;
+  }
 `;
 
 const MetricInsightContainer = styled.div`
@@ -227,6 +232,16 @@ const MetricInsightContainer = styled.div`
     margin-right: 0;
     text-align: right;
     margin-left: auto;
+  }
+
+  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+    text-align: left;
+    margin-bottom: 16px;
+
+    &:last-child {
+      text-align: left;
+      margin-left: 0;
+    }
   }
 `;
 
@@ -259,6 +274,10 @@ export const DatapointsViewControlsRow = styled.div`
   flex-direction: row;
   align-items: center;
   gap: 24px;
+
+  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+    display: none;
+  }
 `;
 
 export const SelectMetricsButtonContainer = styled.div`

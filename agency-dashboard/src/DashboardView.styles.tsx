@@ -18,6 +18,7 @@
 import {
   COMMON_DESKTOP_WIDTH,
   palette,
+  TABLET_WIDTH,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
@@ -53,6 +54,11 @@ export const RightPanel = styled.div`
   height: 100%;
   padding-left: 24px;
   padding-right: 24px;
+
+  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
 `;
 
 export const BackButtonContainer = styled.div`
@@ -100,10 +106,19 @@ export const RightPanelMetricTitle = styled(MetricTitle)`
   @media only screen and (min-width: ${COMMON_DESKTOP_WIDTH}px) {
     display: none;
   }
+
+  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+    ${typography.sizeCSS.title}
+    margin-bottom: 16px;
+  }
 `;
 
 export const MetricOverviewContent = styled.div`
   ${typography.sizeCSS.medium}
+
+  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+    ${typography.sizeCSS.normal}
+  }
 `;
 
 export const RightPanelMetricOverviewContent = styled(MetricOverviewContent)`
@@ -125,6 +140,11 @@ export const RightPanelMetricOverviewActionsContainer = styled(
   @media only screen and (min-width: ${COMMON_DESKTOP_WIDTH}px) {
     display: none;
   }
+
+  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+    flex-direction: column;
+    padding-bottom: 24px;
+  }
 `;
 
 export const MetricOverviewActionButtonContainer = styled.div`
@@ -142,6 +162,10 @@ export const MetricOverviewActionButtonContainer = styled.div`
   }
 
   &:first-child {
+    padding-left: 0px;
+  }
+
+  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
     padding-left: 0px;
   }
 `;
