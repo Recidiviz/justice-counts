@@ -314,3 +314,8 @@ export const OpacityGradient = styled.div`
     display: none;
   }
 `;
+
+export const EthnicityHeader = styled.div`
+  width: 100%;
+  margin-bottom: 20px;
+`;
