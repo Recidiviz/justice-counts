@@ -38,7 +38,7 @@ import {
   TabsRow,
 } from ".";
 
-export const DisaggregationsDimensionsForm: React.FC<{
+export const TabbedDisaggregations: React.FC<{
   metric: MetricType;
   reportID: number;
   disabled?: boolean;

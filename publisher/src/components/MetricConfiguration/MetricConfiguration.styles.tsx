@@ -21,7 +21,7 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-import { BinaryRadioGroupWrapper, Button } from "../Forms";
+import { BinaryRadioGroupWrapper } from "../Forms";
 
 const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
 

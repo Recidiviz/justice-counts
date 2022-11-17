@@ -40,7 +40,6 @@ import {
   DataEntryFormTitle,
   DisabledMetricsInfoLink,
   DisabledMetricsInfoWrapper,
-  DisaggregationsDimensionsForm,
   Form,
   FormWrapper,
   Metric,
@@ -49,6 +48,7 @@ import {
   MetricSectionTitleWrapper,
   MetricSystemTitle,
   PreTitle,
+  TabbedDisaggregations,
 } from "../Forms";
 import { Logo, LogoContainer } from "../Header";
 import { Onboarding } from "../Onboarding";
@@ -363,7 +363,7 @@ const DataEntryForm: React.FC<{
 
                       {/* Disaggregations & Dimensions */}
                       {metric.disaggregations.length > 0 && (
-                        <DisaggregationsDimensionsForm
+                        <TabbedDisaggregations
                           reportID={reportID}
                           metric={metric}
                           updateFieldDescription={updateFieldDescription}
