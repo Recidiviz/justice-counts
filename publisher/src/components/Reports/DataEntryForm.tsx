@@ -40,6 +40,7 @@ import {
   DataEntryFormTitle,
   DisabledMetricsInfoLink,
   DisabledMetricsInfoWrapper,
+  DisaggregationsDimensionsForm,
   Form,
   FormWrapper,
   Metric,
@@ -48,7 +49,6 @@ import {
   MetricSectionTitleWrapper,
   MetricSystemTitle,
   PreTitle,
-  TabbedDisaggregations,
 } from "../Forms";
 import { Logo, LogoContainer } from "../Header";
 import { Onboarding } from "../Onboarding";
@@ -361,9 +361,9 @@ const DataEntryForm: React.FC<{
                         disabled={isPublished || hasVersionConflict}
                       />
 
-                      {/* Disaggregations */}
+                      {/* Disaggregations & Dimensions */}
                       {metric.disaggregations.length > 0 && (
-                        <TabbedDisaggregations
+                        <DisaggregationsDimensionsForm
                           reportID={reportID}
                           metric={metric}
                           updateFieldDescription={updateFieldDescription}
@@ -397,7 +397,6 @@ const DataEntryForm: React.FC<{
         </Form>
 
         {/* Onboarding */}
-
         {userStore.onboardingTopicsCompleted?.dataentryview === false &&
           showOnboarding && (
             <Onboarding

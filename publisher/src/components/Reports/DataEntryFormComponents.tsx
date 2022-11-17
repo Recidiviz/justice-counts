@@ -80,9 +80,7 @@ export const MetricTextInput = observer(
 
 interface DisaggregationDimensionTextInputProps extends MetricTextInputProps {
   disaggregation: MetricDisaggregations;
-  disaggregationIndex: number;
   dimension: MetricDisaggregationDimensions;
-  dimensionIndex: number;
   disabled?: boolean;
   customLabel?: string;
 }
@@ -93,8 +91,6 @@ export const DisaggregationDimensionTextInput = observer(
     metric,
     dimension,
     disaggregation,
-    disaggregationIndex,
-    dimensionIndex,
     updateFieldDescription,
     clearFieldDescription,
     disabled,
@@ -140,11 +136,7 @@ export const DisaggregationDimensionTextInput = observer(
                   dimension.key
                 ].value
               )
-            : formatNumberInput(
-                metric.disaggregations?.[disaggregationIndex]?.dimensions?.[
-                  dimensionIndex
-                ]?.value?.toString()
-              ) || ""
+            : formatNumberInput(dimension.value?.toString()) || ""
         }
         persistLabel
         placeholder="Enter value"
