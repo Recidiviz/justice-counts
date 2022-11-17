@@ -280,6 +280,32 @@ export const DatapointsViewControlsRow = styled.div`
   }
 `;
 
+export const MobileFiltersRow = styled.div`
+  display: none;
+
+  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+    display: flex;
+    border-top: 1px solid ${palette.highlight.grey9};
+    padding-top: 8px;
+  }
+`;
+
+export const MobileFiltersButton = styled.div`
+  ${typography.sizeCSS.small}
+  padding: 4px 10px;
+  border: 1px solid ${palette.highlight.grey4};
+  border-radius: 24px;
+
+  &::after {
+    content: "▾ Filters";
+  }
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
+`;
+
 export const SelectMetricsButtonContainer = styled.div`
   padding-left: 16px;
   padding-right: 16px;
@@ -304,6 +330,38 @@ export const SelectMetricsButtonText = styled.div`
 
   &::after {
     content: "Select Metric";
+  }
+`;
+
+export const MobileSelectMetricsButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  path {
+    fill: ${palette.solid.darkgrey};
+  }
+  position: fixed;
+  bottom: 24px;
+  justify-content: center;
+  left: 0;
+  right: 0;
+
+  @media only screen and (min-width: ${TABLET_WIDTH}px) {
+    display: none;
+  }
+`;
+
+export const MobileSelectMetricsButton = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border: 1px solid ${palette.highlight.grey4};
+  border-radius: 24px;
+  background: ${palette.solid.white};
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.8;
   }
 `;
 

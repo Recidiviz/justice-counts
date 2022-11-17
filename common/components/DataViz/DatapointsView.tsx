@@ -37,6 +37,10 @@ import {
   ExtendedDropdownMenuItem,
   MetricInsight,
   MetricInsightsRow,
+  MobileFiltersButton,
+  MobileFiltersRow,
+  MobileSelectMetricsButton,
+  MobileSelectMetricsButtonContainer,
   SelectMetricsButtonContainer,
   SelectMetricsButtonText,
 } from "./DatapointsView.styles";
@@ -234,9 +238,18 @@ export const DatapointsView: React.FC<{
         />
         {renderDataVizControls()}
       </DatapointsViewControlsRow>
+      <MobileFiltersRow>
+        <MobileFiltersButton />
+      </MobileFiltersRow>
       {renderChartForMetric()}
       {renderMetricInsightsRow()}
       {renderLegend()}
+      <MobileSelectMetricsButtonContainer>
+        <MobileSelectMetricsButton>
+          <GridIcon />
+          <SelectMetricsButtonText />
+        </MobileSelectMetricsButton>
+      </MobileSelectMetricsButtonContainer>
     </DatapointsViewContainer>
   );
 };
