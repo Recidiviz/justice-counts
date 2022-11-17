@@ -16,10 +16,10 @@
 // =============================================================================
 
 import {
+  COMMON_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import { Dropdown } from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
 export const Container = styled.div`
@@ -33,12 +33,15 @@ export const Container = styled.div`
 `;
 
 export const LeftPanel = styled.div`
-  margin-top: 16px;
   margin-left: 24px;
   margin-right: 24px;
   width: 424px;
   min-width: 424px;
   margin-right: 126px;
+
+  @media only screen and (max-width: ${COMMON_DESKTOP_WIDTH - 1}px) {
+    display: none;
+  }
 `;
 
 export const RightPanel = styled.div`
@@ -47,14 +50,18 @@ export const RightPanel = styled.div`
   flex-direction: column;
   align-items: stretch;
   width: calc(100% - 574px);
+  height: 100%;
+  padding-left: 24px;
+  padding-right: 24px;
 `;
 
-export const LeftPanelBackButtonContainer = styled.div`
+export const BackButtonContainer = styled.div`
   ${typography.sizeCSS.normal}
-  float: left;
+  // float: left;
   padding-top: 8px;
   padding-right: 8px;
   padding-bottom: 8px;
+  margin-top: 16px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -73,21 +80,51 @@ export const LeftPanelBackButtonContainer = styled.div`
   }
 `;
 
+export const RightPanelBackButtonContainer = styled(BackButtonContainer)`
+  @media only screen and (min-width: ${COMMON_DESKTOP_WIDTH}px) {
+    display: none;
+  }
+`;
+
 export const MetricTitle = styled.div`
   ${typography.sizeCSS.headline}
-  margin-top: 86px;
+  margin-top: 36px;
+  margin-bottom: 16px;
   hyphens: auto;
   overflow-wrap: break-word;
 `;
 
+export const RightPanelMetricTitle = styled(MetricTitle)`
+  margin-bottom: 40px;
+
+  @media only screen and (min-width: ${COMMON_DESKTOP_WIDTH}px) {
+    display: none;
+  }
+`;
+
 export const MetricOverviewContent = styled.div`
   ${typography.sizeCSS.medium}
+`;
+
+export const RightPanelMetricOverviewContent = styled(MetricOverviewContent)`
   margin-top: 16px;
+
+  @media only screen and (min-width: ${COMMON_DESKTOP_WIDTH}px) {
+    display: none;
+  }
 `;
 
 export const MetricOverviewActionsContainer = styled.div`
   display: flex;
   margin-top: 24px;
+`;
+
+export const RightPanelMetricOverviewActionsContainer = styled(
+  MetricOverviewActionsContainer
+)`
+  @media only screen and (min-width: ${COMMON_DESKTOP_WIDTH}px) {
+    display: none;
+  }
 `;
 
 export const MetricOverviewActionButtonContainer = styled.div`

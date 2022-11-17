@@ -29,19 +29,22 @@ import styled from "styled-components/macro";
 
 import { Datapoint } from "../../types";
 import { rem } from "../../utils";
-import { palette } from "../GlobalStyles";
+import { COMMON_DESKTOP_WIDTH, palette } from "../GlobalStyles";
 import Tooltip from "./Tooltip";
 import { splitUtcString } from "./utils";
 
 const MAX_BAR_SIZE = 150;
 
 const ChartContainer = styled.div`
-  display: flex;
-  flex-grow: 1;
-  justify-content: center;
-  align-items: center;
   width: 100%;
-  height: calc(100% - 214px);
+
+  @media only screen and (min-width: ${COMMON_DESKTOP_WIDTH}px) {
+    height: calc(100% - 214px);
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 const NoReportedData = styled.div`
@@ -131,7 +134,13 @@ const ResponsiveBarChart: React.FC<{
   data: Datapoint[];
   dimensionNames: string[];
   percentageView?: boolean;
-}> = ({ data, dimensionNames, percentageView = false }) => {
+  resizeHeight?: boolean;
+}> = ({
+  data,
+  dimensionNames,
+  percentageView = false,
+  resizeHeight = false,
+}) => {
   const isAnnual = data[0]?.frequency === "ANNUAL";
   const renderBarDefinitions = () => {
     // each Recharts Bar component defines a category type in the stacked bar chart
@@ -159,9 +168,19 @@ const ResponsiveBarChart: React.FC<{
     return barDefinitions;
   };
 
+  const responsiveContainerProps = resizeHeight
+    ? {
+        width: "100%",
+        height: "100%",
+      }
+    : {
+        width: "100%",
+        height: 500,
+      };
+
   return (
     <ChartContainer>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer {...responsiveContainerProps}>
         <BarChartComponent
           data={data}
           barGap={0}

@@ -87,11 +87,13 @@ export const DatapointsView: React.FC<{
   dimensionNamesByDisaggregation: DimensionNamesByDisaggregation;
   metricNames: string[];
   onMetricsSelect: (metric: string) => void;
+  resizeHeight?: boolean;
 }> = ({
   datapointsGroupedByAggregateAndDisaggregations,
   dimensionNamesByDisaggregation,
   metricNames,
   onMetricsSelect,
+  resizeHeight = false,
 }) => {
   const [selectedTimeRange, setSelectedTimeRange] =
     React.useState<string>("All");
@@ -148,6 +150,7 @@ export const DatapointsView: React.FC<{
         percentageView={
           !!selectedDisaggregation && datapointsViewSetting === "Percentage"
         }
+        resizeHeight={resizeHeight}
       />
     );
   };

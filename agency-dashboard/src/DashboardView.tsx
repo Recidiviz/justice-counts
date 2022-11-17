@@ -20,28 +20,44 @@ import { ReactComponent as InfoIcon } from "@justice-counts/common/assets/info-i
 import { ReactComponent as LeftArrowIcon } from "@justice-counts/common/assets/left-arrow-icon.svg";
 import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share-icon.svg";
 import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
+import { COMMON_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { observer } from "mobx-react-lite";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import {
+  BackButtonContainer,
   Container,
   LeftPanel,
-  LeftPanelBackButtonContainer,
   MetricOverviewActionButtonContainer,
   MetricOverviewActionButtonText,
   MetricOverviewActionsContainer,
   MetricOverviewContent,
   MetricTitle,
   RightPanel,
+  RightPanelBackButtonContainer,
+  RightPanelMetricOverviewActionsContainer,
+  RightPanelMetricOverviewContent,
+  RightPanelMetricTitle,
 } from "./DashboardView.styles";
 import { HeaderBar } from "./Header/HeaderBar";
 import { useStore } from "./stores";
 
-const LeftPanelBackButton = () => (
-  <LeftPanelBackButtonContainer>
+const getWidth = () =>
+  window.innerWidth ||
+  document.documentElement.clientWidth ||
+  document.body.clientWidth;
+
+const BackButton = () => (
+  <BackButtonContainer>
     <LeftArrowIcon />
-  </LeftPanelBackButtonContainer>
+  </BackButtonContainer>
+);
+
+const RightPanelBackButton = () => (
+  <RightPanelBackButtonContainer>
+    <LeftArrowIcon />
+  </RightPanelBackButtonContainer>
 );
 
 const MetricOverviewActionInfoButton = () => (
@@ -68,6 +84,8 @@ const MetricOverviewActionShareButton = () => (
 );
 
 const DashboardView = () => {
+  const [shouldResizeChartHeight, setShouldResizeChartHeight] =
+    useState<boolean>(getWidth() >= COMMON_DESKTOP_WIDTH);
   const navigate = useNavigate();
   const params = useParams();
   const agencyId = Number(params.id);
@@ -93,6 +111,28 @@ const DashboardView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datapointsStore.loading]);
 
+  useEffect(() => {
+    const resizeListener = () => {
+      // change width from the state object
+      if (shouldResizeChartHeight && getWidth() < COMMON_DESKTOP_WIDTH) {
+        setShouldResizeChartHeight(false);
+      } else if (
+        shouldResizeChartHeight &&
+        getWidth() >= COMMON_DESKTOP_WIDTH
+      ) {
+        setShouldResizeChartHeight(true);
+      }
+    };
+    // set resize listener
+    window.addEventListener("resize", resizeListener);
+
+    // clean up function
+    return () => {
+      // remove resize listener
+      window.removeEventListener("resize", resizeListener);
+    };
+  }, []);
+
   if (
     !metricKey ||
     (!datapointsStore.loading &&
@@ -113,7 +153,7 @@ const DashboardView = () => {
     <Container key={metricKey}>
       <HeaderBar />
       <LeftPanel>
-        <LeftPanelBackButton />
+        <BackButton />
         <MetricTitle>
           {datapointsStore.metricKeyToDisplayName[metricKey] || metricKey}
         </MetricTitle>
@@ -128,6 +168,10 @@ const DashboardView = () => {
         </MetricOverviewActionsContainer>
       </LeftPanel>
       <RightPanel>
+        <RightPanelBackButton />
+        <RightPanelMetricTitle>
+          {datapointsStore.metricKeyToDisplayName[metricKey] || metricKey}
+        </RightPanelMetricTitle>
         <DatapointsView
           datapointsGroupedByAggregateAndDisaggregations={
             datapointsStore.datapointsByMetric[metricKey]
@@ -139,7 +183,17 @@ const DashboardView = () => {
           onMetricsSelect={(metric) =>
             navigate(`/agency/${agencyId}/dashboard?metric=${metric}`)
           }
+          resizeHeight={shouldResizeChartHeight}
         />
+        <RightPanelMetricOverviewContent>
+          Measures the number of individuals with at least one parole violation
+          during the reporting period.
+        </RightPanelMetricOverviewContent>
+        <RightPanelMetricOverviewActionsContainer>
+          <MetricOverviewActionInfoButton />
+          <MetricOverviewActionDownloadButton />
+          <MetricOverviewActionShareButton />
+        </RightPanelMetricOverviewActionsContainer>
       </RightPanel>
     </Container>
   );
