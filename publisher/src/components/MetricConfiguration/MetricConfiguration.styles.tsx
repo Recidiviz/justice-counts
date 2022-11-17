@@ -569,11 +569,21 @@ export const DefinitionsDescription = styled.div`
   }
 `;
 
-export const RevertToDefaultButton = styled(Button)`
+export const RevertToDefaultButton = styled.div`
   ${typography.sizeCSS.normal}
+  width: 314px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background: ${palette.solid.white};
-  height: unset;
+  border: 1px solid ${palette.highlight.grey3};
+  border-radius: 2px;
   padding: 9px 0;
+
+  &:hover {
+    cursor: pointer;
+    background: ${palette.highlight.grey2};
+  }
 `;
 
 export const Definitions = styled.div`
