@@ -46,10 +46,7 @@ export const RightPanel = styled.div`
   flex-grow: 1;
   flex-direction: column;
   align-items: stretch;
-`;
-
-export const RightPanelTopContainer = styled.div`
-  display: flex;
+  width: calc(100% - 574px);
 `;
 
 export const LeftPanelBackButtonContainer = styled.div`

@@ -40,6 +40,7 @@ const ChartContainer = styled.div`
   flex-grow: 1;
   justify-content: center;
   align-items: center;
+  width: 100%;
 `;
 
 const NoReportedData = styled.div`

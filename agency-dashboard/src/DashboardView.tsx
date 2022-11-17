@@ -34,7 +34,6 @@ import {
   MetricOverviewContent,
   MetricTitle,
   RightPanel,
-  // RightPanelTopContainer,
 } from "./DashboardView.styles";
 import { HeaderBar } from "./Header/HeaderBar";
 import { useStore } from "./stores";
@@ -129,8 +128,6 @@ const DashboardView = () => {
         </MetricOverviewActionsContainer>
       </LeftPanel>
       <RightPanel>
-        {/* <RightPanelTopContainer>
-        </RightPanelTopContainer> */}
         <DatapointsView
           datapointsGroupedByAggregateAndDisaggregations={
             datapointsStore.datapointsByMetric[metricKey]
