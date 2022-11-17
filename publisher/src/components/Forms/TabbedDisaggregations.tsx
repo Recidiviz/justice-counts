@@ -77,17 +77,13 @@ export const TabbedDisaggregations: React.FC<{
 
   const updateDisaggregationHasInput = (disaggregationKey: string) => {
     const currentDisaggregationDimensions =
-      formStore.disaggregations[reportID]?.[metric.key]?.[disaggregationKey] ||
-      metric?.disaggregations.find(
-        (disaggregation) => disaggregation.key === disaggregationKey
-      )?.dimensions;
+      formStore.disaggregations[reportID]?.[metric.key]?.[disaggregationKey];
     const hasInput = Boolean(
       currentDisaggregationDimensions &&
         Object.values(currentDisaggregationDimensions).find(
           (dimension) => dimension.value
         )
     );
-
     setDisaggregationHasInput((prev) => {
       return {
         ...prev,
@@ -207,11 +203,10 @@ export const TabbedDisaggregations: React.FC<{
 
   /** Determine whether each disaggregation has a dimension input on load (from saved values) */
   useEffect(
-    () => {
+    () =>
       metric.disaggregations.forEach((disaggregation) => {
         updateDisaggregationHasInput(disaggregation.key);
-      });
-    },
+      }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
@@ -222,7 +217,7 @@ export const TabbedDisaggregations: React.FC<{
       <TabsRow>
         {metric.disaggregations.map((disaggregation, index) => {
           const hasErrors = hasDimensionErrors(metric.key, disaggregation.key);
-          const isOnloadDefaultOrActiveDisaggregationTab =
+          const isDefaultFirstOrActiveDisaggregationTab =
             (!activeDisaggregation[metric.key]?.disaggregationKey &&
               index === 0) ||
             activeDisaggregation[metric.key]?.disaggregationKey ===
@@ -231,7 +226,7 @@ export const TabbedDisaggregations: React.FC<{
           return (
             <TabItem
               key={disaggregation.key}
-              active={isOnloadDefaultOrActiveDisaggregationTab}
+              active={isDefaultFirstOrActiveDisaggregationTab}
               enabled={disaggregation.enabled}
               onClick={() =>
                 updateActiveDisaggregationTab(metric.key, disaggregation.key)
@@ -239,7 +234,7 @@ export const TabbedDisaggregations: React.FC<{
             >
               {disaggregation.display_name}
               <DisaggregationHasInputIndicator
-                active={isOnloadDefaultOrActiveDisaggregationTab}
+                active={isDefaultFirstOrActiveDisaggregationTab}
                 error={hasErrors}
                 hasInput={disaggregationHasInput[disaggregation.key]}
               >
