@@ -82,6 +82,7 @@ export const DatapointsViewContainer = styled.div`
   flex-direction: column;
   flex-grow: 1;
   padding: 0 15px 0 15px;
+  height: 100%;
 `;
 
 export const DatapointsViewControlsContainer = styled.div`

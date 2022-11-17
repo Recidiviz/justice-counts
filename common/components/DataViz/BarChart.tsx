@@ -41,6 +41,7 @@ const ChartContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
+  height: calc(100% - 214px);
 `;
 
 const NoReportedData = styled.div`

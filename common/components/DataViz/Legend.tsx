@@ -20,16 +20,13 @@ import styled from "styled-components/macro";
 
 import { palette } from "../GlobalStyles";
 
-const EmptyLegendContainer = styled.div`
+const LegendContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
   margin-bottom: 20px;
   height: 50px;
-`;
-
-const LegendContainer = styled(EmptyLegendContainer)`
   border-top: 1px solid rgba(23, 28, 43, 0.6);
   padding: 16px 0;
   border-bottom: 1px solid rgba(23, 28, 43, 0.6);
@@ -72,7 +69,7 @@ const Legend: React.FC<{
     );
   }
 
-  return <EmptyLegendContainer />;
+  return null;
 };
 
 export default Legend;

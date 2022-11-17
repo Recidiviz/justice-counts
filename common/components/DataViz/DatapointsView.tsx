@@ -230,9 +230,9 @@ export const DatapointsView: React.FC<{
           onSelect={onMetricsSelect}
         />
         {renderDataVizControls()}
-        {renderMetricInsightsRow()}
       </DatapointsViewControlsRow>
       {renderChartForMetric()}
+      {renderMetricInsightsRow()}
       {renderLegend()}
     </DatapointsViewContainer>
   );
