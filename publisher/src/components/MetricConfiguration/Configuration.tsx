@@ -239,42 +239,43 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                       dimensionKey
                     ];
 
-                return (
-                  <Dimension
-                    key={dimensionKey}
-                    enabled={!metricEnabled || currentDisaggregation.enabled}
-                    inView={dimensionKey === activeDimensionKey}
-                    onClick={() => setActiveDimensionKey(dimensionKey)}
-                  >
-                    <CheckboxWrapper>
-                      <Checkbox
-                        type="checkbox"
-                        checked={
-                          currentDisaggregation.enabled &&
-                          currentDimension.enabled
-                        }
-                        onChange={() => {
-                          if (systemSearchParam && metricSearchParam) {
-                            const updatedSetting = updateDimensionEnabledStatus(
-                              systemSearchParam,
-                              metricSearchParam,
-                              activeDisaggregationKey,
-                              dimensionKey,
-                              !currentDimension.enabled
-                            );
-                            saveMetricSettings(updatedSetting);
+                  return (
+                    <Dimension
+                      key={dimensionKey}
+                      enabled={!metricEnabled || currentDisaggregation.enabled}
+                      inView={dimensionKey === activeDimensionKey}
+                      onClick={() => setActiveDimensionKey(dimensionKey)}
+                    >
+                      <CheckboxWrapper>
+                        <Checkbox
+                          type="checkbox"
+                          checked={
+                            currentDisaggregation.enabled &&
+                            currentDimension.enabled
                           }
-                        }}
-                      />
-                      <BlueCheckIcon
-                        src={blueCheck}
-                        alt=""
-                        enabled={
-                          currentDisaggregation.enabled &&
-                          currentDimension.enabled
-                        }
-                      />
-                    </CheckboxWrapper>
+                          onChange={() => {
+                            if (systemSearchParam && metricSearchParam) {
+                              const updatedSetting =
+                                updateDimensionEnabledStatus(
+                                  systemSearchParam,
+                                  metricSearchParam,
+                                  activeDisaggregationKey,
+                                  dimensionKey,
+                                  !currentDimension.enabled
+                                );
+                              saveMetricSettings(updatedSetting);
+                            }
+                          }}
+                        />
+                        <BlueCheckIcon
+                          src={blueCheck}
+                          alt=""
+                          enabled={
+                            currentDisaggregation.enabled &&
+                            currentDimension.enabled
+                          }
+                        />
+                      </CheckboxWrapper>
 
                       <DimensionTitleWrapper>
                         <DimensionTitle

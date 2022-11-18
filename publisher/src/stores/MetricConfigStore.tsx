@@ -46,6 +46,10 @@ class MetricConfigStore {
 
   api: API;
 
+  activeSystem: AgencySystems | undefined;
+
+  activeMetricKey: string | undefined;
+
   metrics: {
     [systemMetricKey: string]: {
       enabled?: boolean;
@@ -120,6 +124,8 @@ class MetricConfigStore {
     this.api = api;
     this.userStore = userStore;
     this.metrics = {};
+    this.activeSystem = undefined;
+    this.activeMetricKey = undefined;
     this.metricDefinitionSettings = {};
     this.disaggregations = {};
     this.dimensions = {};
