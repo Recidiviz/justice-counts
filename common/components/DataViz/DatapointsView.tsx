@@ -41,6 +41,7 @@ import {
   MobileFiltersRow,
   MobileSelectMetricsButton,
   MobileSelectMetricsButtonContainer,
+  MobileSelectMetricsModalContainer,
   SelectMetricsButtonContainer,
   SelectMetricsButtonText,
 } from "./DatapointsView.styles";
@@ -105,6 +106,8 @@ export const DatapointsView: React.FC<{
     React.useState<string>(noDisaggregationOption);
   const [datapointsViewSetting, setDatapointsViewSetting] =
     React.useState<DatapointsViewSetting>("Count");
+  const [mobileSelectMetricsVisible, setMobileSelectMetricsVisible] =
+    React.useState<boolean>(false);
 
   const data =
     (selectedDisaggregation !== noDisaggregationOption &&
@@ -255,11 +258,28 @@ export const DatapointsView: React.FC<{
       {renderMetricInsightsRow()}
       {renderLegend()}
       <MobileSelectMetricsButtonContainer>
-        <MobileSelectMetricsButton>
+        <MobileSelectMetricsButton
+          onClick={() => setMobileSelectMetricsVisible(true)}
+        >
           <GridIcon />
           <SelectMetricsButtonText />
         </MobileSelectMetricsButton>
       </MobileSelectMetricsButtonContainer>
+      {mobileSelectMetricsVisible && (
+        <MobileSelectMetricsModalContainer>
+          {/* <MobileSelectMetricsModalTopRow>
+            <MobileSelectMetricsModalCloseButton
+              onClick={() => setMobileSelectMetricsVisible(false)}
+            />
+          </MobileSelectMetricsModalTopRow>
+          <MobileSelectMetricsModalAgencyTitle>
+            Clackamas County Jail
+          </MobileSelectMetricsModalAgencyTitle>
+          <MobileSelectMetricsModalMetricsTitle>
+            {`${5} Metrics Available`}
+          </MobileSelectMetricsModalAgencyTitle> */}
+        </MobileSelectMetricsModalContainer>
+      )}
     </DatapointsViewContainer>
   );
 };

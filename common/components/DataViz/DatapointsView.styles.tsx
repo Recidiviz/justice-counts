@@ -344,6 +344,7 @@ export const MobileSelectMetricsButtonContainer = styled.div`
   justify-content: center;
   left: 0;
   right: 0;
+  pointer-events: none;
 
   @media only screen and (min-width: ${TABLET_WIDTH}px) {
     display: none;
@@ -351,6 +352,7 @@ export const MobileSelectMetricsButtonContainer = styled.div`
 `;
 
 export const MobileSelectMetricsButton = styled.div`
+  pointer-events: auto;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -377,4 +379,16 @@ export const ExtendedDropdown = styled(Dropdown)`
   &:hover > button {
     background: none;
   }
+`;
+
+export const MobileSelectMetricsModalContainer = styled.div`
+  z-index: 3;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: ${palette.solid.blue};
+  color: ${palette.solid.white};
+  overflow-y: auto;
 `;

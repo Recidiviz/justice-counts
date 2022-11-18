@@ -63,7 +63,6 @@ export const RightPanel = styled.div`
 
 export const BackButtonContainer = styled.div`
   ${typography.sizeCSS.normal}
-  // float: left;
   padding-top: 8px;
   padding-right: 8px;
   padding-bottom: 8px;
@@ -132,6 +131,7 @@ export const RightPanelMetricOverviewContent = styled(MetricOverviewContent)`
 export const MetricOverviewActionsContainer = styled.div`
   display: flex;
   margin-top: 24px;
+  padding-bottom: 32px;
 `;
 
 export const RightPanelMetricOverviewActionsContainer = styled(
@@ -143,7 +143,7 @@ export const RightPanelMetricOverviewActionsContainer = styled(
 
   @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
     flex-direction: column;
-    padding-bottom: 24px;
+    padding-bottom: 64px;
   }
 `;
 
