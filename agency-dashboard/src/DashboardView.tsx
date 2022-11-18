@@ -117,7 +117,7 @@ const DashboardView = () => {
       if (shouldResizeChartHeight && getWidth() < COMMON_DESKTOP_WIDTH) {
         setShouldResizeChartHeight(false);
       } else if (
-        shouldResizeChartHeight &&
+        !shouldResizeChartHeight &&
         getWidth() >= COMMON_DESKTOP_WIDTH
       ) {
         setShouldResizeChartHeight(true);
@@ -131,7 +131,7 @@ const DashboardView = () => {
       // remove resize listener
       window.removeEventListener("resize", resizeListener);
     };
-  }, []);
+  }, [shouldResizeChartHeight]);
 
   if (
     !metricKey ||
