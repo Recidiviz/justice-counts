@@ -27,7 +27,7 @@ import {
   SettingsMenu,
 } from "../components/Settings";
 
-export const menuOptions = {
+export const settingsMenuPaths = {
   "Your Account": "/settings/account",
   "Uploaded Files": "/settings/uploaded-files",
   "Metric Configuration": "/settings/metric-config",

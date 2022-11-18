@@ -17,7 +17,13 @@
 
 import { AgencySystems } from "@justice-counts/common/types";
 
-export type SettingsSearchParams = {
-  system?: AgencySystems;
-  metric?: string;
+import { SettingsSearchParams } from "./types";
+
+export const getSettingsSearchParams = (
+  params: URLSearchParams
+): SettingsSearchParams => {
+  const system = (params.get("system") as AgencySystems) || undefined;
+  const metric = params.get("metric") || undefined;
+
+  return { system, metric };
 };

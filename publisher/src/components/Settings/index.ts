@@ -18,3 +18,5 @@
 export * from "./AccountSettings";
 export * from "./Settings.styles";
 export * from "./SettingsMenu";
+export * from "./types";
+export * from "./utils";

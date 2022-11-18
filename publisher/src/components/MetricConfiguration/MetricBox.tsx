@@ -22,10 +22,7 @@ import React from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import {
-  getSettingsSearchParams,
-  SettingsSearchParams,
-} from "../Settings/types";
+import { getSettingsSearchParams, SettingsSearchParams } from "../Settings";
 import {
   MetricBoxContainer,
   MetricDescription,

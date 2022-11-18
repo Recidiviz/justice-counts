@@ -27,10 +27,7 @@ import { removeSnakeCase } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import { Loading } from "../Loading";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
-import {
-  getSettingsSearchParams,
-  SettingsSearchParams,
-} from "../Settings/types";
+import { getSettingsSearchParams, SettingsSearchParams } from "../Settings";
 import {
   BackToMetrics,
   Configuration,

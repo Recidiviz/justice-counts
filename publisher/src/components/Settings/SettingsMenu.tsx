@@ -19,15 +19,16 @@ import { observer } from "mobx-react-lite";
 import React, { Fragment } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
-import { menuOptions } from "../../pages/Settings";
+import { settingsMenuPaths } from "../../pages/Settings";
 import { useStore } from "../../stores";
 import {
+  getSettingsSearchParams,
   MenuItem,
   MetricsListContainer,
   MetricsListItem,
   SettingsMenuContainer,
+  SettingsSearchParams,
 } from ".";
-import { getSettingsSearchParams, SettingsSearchParams } from "./types";
 
 export const SettingsMenu: React.FC = observer(() => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -54,7 +55,7 @@ export const SettingsMenu: React.FC = observer(() => {
 
   return (
     <SettingsMenuContainer>
-      {Object.entries(menuOptions).map(([displayName, path]) => (
+      {Object.entries(settingsMenuPaths).map(([displayName, path]) => (
         <Fragment key={path}>
           <MenuItem
             selected={location.pathname === path}
