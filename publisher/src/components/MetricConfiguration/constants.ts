@@ -15,5 +15,4 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export const HEADER_BAR_HEIGHT = 64;
-export const TABLET_WIDTH = 834;
+export const RACE_ETHNICITY_DISAGGREGATION_KEY = "global/race_and_ethnicity";

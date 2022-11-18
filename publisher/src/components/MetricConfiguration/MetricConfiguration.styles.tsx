@@ -689,6 +689,7 @@ export const DefinitionMiniButton = styled(RevertToDefaultButton)<{
   showDefault?: boolean;
 }>`
   width: unset;
+  min-width: 60px;
   padding: 9px 16px;
   transition: color 0.2s ease;
 
@@ -703,7 +704,7 @@ export const DefinitionMiniButton = styled(RevertToDefaultButton)<{
         opacity: 0.9;
       }
 
-      &:nth-child(3) {
+      &:last-child {
         background: ${palette.solid.blue};
 
         &:hover {

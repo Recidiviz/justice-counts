@@ -26,7 +26,6 @@ import React from "react";
 import styled from "styled-components/macro";
 
 import { useStore } from "../../stores";
-import FormStore from "../../stores/FormStore";
 import {
   printCommaSeparatedList,
   printDateRangeFromMonthYear,
@@ -226,7 +225,7 @@ const ReportStatusIconComponent: React.FC<{
 const ReportSummaryPanel: React.FC<{
   reportID: number;
   activeMetric: string;
-  checkMetricForErrors: (metricKey: string, formStore: FormStore) => boolean;
+  checkMetricForErrors: (metricKey: string) => boolean;
   showDataEntryHelpPage: boolean;
   fieldDescription?: FieldDescriptionProps;
 }> = ({
@@ -262,7 +261,7 @@ const ReportSummaryPanel: React.FC<{
                 <MetricsSectionTitle>{system}</MetricsSectionTitle>
               ) : null}
               {enabledMetrics.map((metric) => {
-                const foundErrors = checkMetricForErrors(metric.key, formStore);
+                const foundErrors = checkMetricForErrors(metric.key);
 
                 return (
                   <ReportStatusIconComponent

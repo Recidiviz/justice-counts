@@ -43,6 +43,41 @@ export type MetricSettings = {
   }[];
 };
 
+export type UpdatedDimension = {
+  key: string;
+  label: string;
+  enabled: boolean;
+  race: Races;
+  ethnicity: Ethnicities;
+};
+
+export type UpdatedDisaggregation = {
+  key: string;
+  disaggregations: {
+    key: string;
+    dimensions: UpdatedDimension[];
+  }[];
+};
+
+export const races = [
+  "American Indian / Alaskan Native",
+  "Asian",
+  "Black",
+  "Native Hawaiian / Pacific Islander",
+  "White",
+  "More than one race",
+  "Other",
+  "Unknown",
+] as const;
+export type Races = typeof races[number];
+
+export const ethnicities = [
+  "Hispanic",
+  "Not Hispanic",
+  "Unknown Ethnicity",
+] as const;
+export type Ethnicities = typeof ethnicities[number];
+
 export enum ChartView {
   Chart = "CHART",
   Table = "TABLE",

@@ -44,8 +44,9 @@ export const printDateAsMonthYear = (month: number, year: number): string => {
 };
 
 /**
- * @returns either "Annual Report [YEAR]" or "[MONTH] [YEAR]" as a string depending on frequency
- * @example "Annual Report 2022" or "March 2022"
+ * @returns either "Annual Report CY[YEAR]", "Annual Report FY[YEAR]-[YEAR+1]" or "[MONTH] [YEAR]"
+ * as a string depending on frequency.
+ * @example "Annual Report CY2022" "Annual Report FY2022-2023" or "March 2022"
  */
 export const printReportTitle = (
   month: number,
@@ -53,10 +54,31 @@ export const printReportTitle = (
   frequency: ReportFrequency
 ): string => {
   if (frequency === "ANNUAL") {
-    return `Annual Report ${year}`;
+    if (month === 1) {
+      // CY stands for Calendar Year
+      return `Annual Report CY${year}`;
+    }
+    // FY stands for Fiscal Year
+    return `Annual Report FY${year}-${year + 1}`;
   }
 
   return printDateAsMonthYear(month, year);
+};
+
+/**
+ * @returns either "Annual", "Annual ([MONTH])" or "Monthly"
+ * as a string depending on frequency
+ * @example "Annual" "Annual (October)" or "March 2022"
+ */
+export const printReportFrequency = (
+  month: number,
+  frequency: ReportFrequency
+): string => {
+  if (frequency === "ANNUAL" && month !== 1) {
+    return `${frequency.toLowerCase()} (${monthsByName[month - 1]})`;
+  }
+
+  return frequency.toLowerCase();
 };
 
 /**

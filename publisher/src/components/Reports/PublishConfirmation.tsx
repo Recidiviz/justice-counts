@@ -28,7 +28,6 @@ import { useNavigate } from "react-router-dom";
 
 import { trackReportPublished } from "../../analytics";
 import { useStore } from "../../stores";
-import FormStore from "../../stores/FormStore";
 import { printReportTitle } from "../../utils";
 import logoImg from "../assets/jc-logo-vector.png";
 import errorIcon from "../assets/status-error-icon.png";
@@ -169,7 +168,7 @@ const MetricsDisplay: React.FC<{
 
 const PublishConfirmation: React.FC<{
   reportID: number;
-  checkMetricForErrors: (metricKey: string, formStore: FormStore) => boolean;
+  checkMetricForErrors: (metricKey: string) => boolean;
   toggleConfirmationDialogue: () => void;
 }> = ({ reportID, checkMetricForErrors, toggleConfirmationDialogue }) => {
   const [isPublishable, setIsPublishable] = useState(false);
@@ -220,7 +219,8 @@ const PublishConfirmation: React.FC<{
   useEffect(() => {
     const { metrics, isPublishable: publishable } =
       formStore.validateAndGetAllMetricFormValues(reportID);
-    setMetricsPreview(metrics);
+    const enabledMetrics = metrics.filter((metric) => metric.enabled);
+    setMetricsPreview(enabledMetrics);
     setIsPublishable(publishable);
   }, [formStore, reportID]);
 
@@ -251,37 +251,30 @@ const PublishConfirmation: React.FC<{
         </ConfirmationButtonsContainer>
       </DataUploadHeader>
       <ConfirmationDialogueWrapper>
-        <MetricsPreviewWrapper>
-          <Heading>
-            {metricsPreview && (
-              <>
-                Review <span>{metricsPreview.length}</span> Metrics
-              </>
-            )}
-          </Heading>
-          <Subheading>
-            {metricsPreview && (
-              <>
-                Before publishing, take a moment to review the changes. You must
-                resolve any errors before publishing; otherwise, you can save
-                this report and return at another time.
-              </>
-            )}
-          </Subheading>
-          {metricsPreview &&
-            metricsPreview.map((metric, i) => {
+        {metricsPreview && (
+          <MetricsPreviewWrapper>
+            <Heading>
+              Review <span>{metricsPreview.length}</span> Metrics
+            </Heading>
+            <Subheading>
+              Before publishing, take a moment to review the changes. You must
+              resolve any errors before publishing; otherwise, you can save this
+              report and return at another time.
+            </Subheading>
+            {metricsPreview.map((metric, i) => {
               return (
                 metric.enabled && (
                   <MetricsDisplay
                     key={metric.key}
                     metric={metric}
-                    metricHasError={checkMetricForErrors(metric.key, formStore)}
+                    metricHasError={checkMetricForErrors(metric.key)}
                     index={i}
                   />
                 )
               );
             })}
-        </MetricsPreviewWrapper>
+          </MetricsPreviewWrapper>
+        )}
       </ConfirmationDialogueWrapper>
     </>
   );

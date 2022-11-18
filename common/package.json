@@ -7,10 +7,10 @@
   "license": "GNU General Public License v3",
   "dependencies": {
     "@justice-counts/common": "*",
-    "@recidiviz/design-system": "^2.7.0",
+    "@recidiviz/design-system": "^4.1.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
+    "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^27.5.2",
     "@types/lodash": "^4.14.186",
     "@types/node": "^16.11.64",

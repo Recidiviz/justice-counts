@@ -20,7 +20,6 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 
 import { useStore } from "../../stores";
-import FormStore from "../../stores/FormStore";
 import checkIcon from "../assets/check-icon.svg";
 import errorIcon from "../assets/status-error-icon.png";
 import { MetricsSectionTitle } from "../Forms";
@@ -61,7 +60,7 @@ const ReportStatusIconComponent: React.FC<{
 
 const PublishConfirmationSummaryPanel: React.FC<{
   reportID: number;
-  checkMetricForErrors: (metricKey: string, formStore: FormStore) => boolean;
+  checkMetricForErrors: (metricKey: string) => boolean;
 }> = ({ reportID, checkMetricForErrors }) => {
   const { formStore, reportStore } = useStore();
 
@@ -80,7 +79,7 @@ const PublishConfirmationSummaryPanel: React.FC<{
                 <MetricsSectionTitle>{system}</MetricsSectionTitle>
               )}
               {enabledMetrics.map((metric) => {
-                const foundErrors = checkMetricForErrors(metric.key, formStore);
+                const foundErrors = checkMetricForErrors(metric.key);
 
                 return (
                   <ReportStatusIconComponent

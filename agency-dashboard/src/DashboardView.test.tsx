@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 import { render, screen } from "@testing-library/react";
+import React from "react";
 import { MemoryRouter } from "react-router-dom";
 
 import DashboardView from "./DashboardView";
@@ -71,6 +72,7 @@ test("renders 'No reported data for this metric.' state", async () => {
     </StoreProvider>
   );
 
-  const textElement = await screen.findByText(/LAW_ENFORCEMENT_ARRESTS/i);
-  expect(textElement).toBeInTheDocument();
+  const textElements = await screen.findAllByText(/LAW_ENFORCEMENT_ARRESTS/i);
+  expect(textElements[0]).toBeInTheDocument();
+  expect(textElements[1]).toBeInTheDocument();
 });

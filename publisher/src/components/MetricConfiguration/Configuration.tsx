@@ -39,6 +39,8 @@ import {
   MetricConfigurationContainer,
   MetricDisaggregations,
   MetricOnOffWrapper,
+  RACE_ETHNICITY_DISAGGREGATION_KEY,
+  RaceEthnicitiesGrid,
   RadioButtonGroupWrapper,
   Subheader,
 } from ".";
@@ -159,7 +161,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
             <Subheader>
               Mark (using the checkmark) each of the breakdowns below that your
               agency will be able to report. Click the arrow to edit the
-              definition for each metric.
+              definition for each breakdown.
             </Subheader>
 
             {/* Disaggregations (Enable/Disable) */}
@@ -225,13 +227,17 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
 
             <Disaggregation>
               {/* Dimension Fields (Enable/Disable) */}
-              {activeDimensionKeys?.map((dimensionKey) => {
-                const currentDisaggregation =
-                  disaggregations[systemMetricKey][activeDisaggregationKey];
-                const currentDimension =
-                  dimensions[systemMetricKey][activeDisaggregationKey][
-                    dimensionKey
-                  ];
+              {/* Race & Ethnicities Grid (when active disaggregation is Race / Ethnicity) */}
+              {activeDisaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY ? (
+                <RaceEthnicitiesGrid />
+              ) : (
+                activeDimensionKeys?.map((dimensionKey) => {
+                  const currentDisaggregation =
+                    disaggregations[systemMetricKey][activeDisaggregationKey];
+                  const currentDimension =
+                    dimensions[systemMetricKey][activeDisaggregationKey][
+                      dimensionKey
+                    ];
 
                 return (
                   <Dimension
@@ -270,21 +276,22 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                       />
                     </CheckboxWrapper>
 
-                    <DimensionTitleWrapper>
-                      <DimensionTitle
-                        enabled={
-                          currentDisaggregation.enabled &&
-                          currentDimension.enabled
-                        }
-                      >
-                        {currentDimension.label}
-                      </DimensionTitle>
+                      <DimensionTitleWrapper>
+                        <DimensionTitle
+                          enabled={
+                            currentDisaggregation.enabled &&
+                            currentDimension.enabled
+                          }
+                        >
+                          {currentDimension.label}
+                        </DimensionTitle>
 
-                      <RightArrowIcon />
-                    </DimensionTitleWrapper>
-                  </Dimension>
-                );
-              })}
+                        <RightArrowIcon />
+                      </DimensionTitleWrapper>
+                    </Dimension>
+                  );
+                })
+              )}
             </Disaggregation>
           </MetricDisaggregations>
         )}

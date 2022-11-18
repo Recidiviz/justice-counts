@@ -102,7 +102,9 @@ test("displayed reports", async () => {
   // Arbitrary report dates included in mockJSON
   const april2022 = await screen.findByText(/April 2022/i);
   const december2020 = await screen.findByText(/December 2020/i);
-  const annualReport2019 = await screen.findByText(/Annual Report 2019/i);
+  const annualReport2019 = await screen.findByText(
+    /Annual Report FY2019-2020/i
+  );
   expect(april2022).toBeInTheDocument();
   expect(december2020).toBeInTheDocument();
   expect(annualReport2019).toBeInTheDocument();
