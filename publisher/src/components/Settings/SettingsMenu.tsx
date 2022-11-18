@@ -17,35 +17,34 @@
 
 import { observer } from "mobx-react-lite";
 import React, { Fragment } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { settingsMenuPaths } from "../../pages/Settings";
 import { useStore } from "../../stores";
 import {
-  getSettingsSearchParams,
   MenuItem,
   MetricsListContainer,
   MetricsListItem,
   SettingsMenuContainer,
-  SettingsSearchParams,
+  useSettingsSearchParams,
 } from ".";
 
 export const SettingsMenu: React.FC = observer(() => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [settingsSearchParams, setSettingsSearchParams] =
+    useSettingsSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
   const { metricConfigStore } = useStore();
   const { getMetricsBySystem } = metricConfigStore;
 
   const { system: systemSearchParam, metric: metricSearchParam } =
-    getSettingsSearchParams(searchParams);
+    settingsSearchParams;
 
   const handleMetricListItemClick = (metricKey: string) => {
-    const params: SettingsSearchParams = {
+    setSettingsSearchParams({
       system: systemSearchParam,
       metric: metricKey,
-    };
-    setSearchParams(params);
+    });
   };
 
   return (

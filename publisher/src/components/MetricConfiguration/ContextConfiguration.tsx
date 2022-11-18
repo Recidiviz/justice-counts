@@ -18,7 +18,6 @@
 import { debounce } from "lodash";
 import { observer } from "mobx-react-lite";
 import React, { useRef } from "react";
-import { useSearchParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import {
@@ -28,7 +27,7 @@ import {
   BinaryRadioGroupQuestion,
   TextInput,
 } from "../Forms";
-import { getActiveSystemMetricKey, getSettingsSearchParams } from "../Settings";
+import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   Label,
   MetricContextContainer,
@@ -40,17 +39,14 @@ import {
 } from ".";
 
 export const ContextConfiguration: React.FC = observer(() => {
-  const [searchParams] = useSearchParams();
+  const [settingsSearchParams] = useSettingsSearchParams();
   const { metricConfigStore } = useStore();
   const { contexts, updateContextValue, saveMetricSettings } =
     metricConfigStore;
 
   const { system: systemSearchParam, metric: metricSearchParam } =
-    getSettingsSearchParams(searchParams);
-  const systemMetricKey = getActiveSystemMetricKey({
-    system: systemSearchParam,
-    metric: metricSearchParam,
-  });
+    settingsSearchParams;
+  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const activeContextKeys =
     (contexts[systemMetricKey] && Object.keys(contexts[systemMetricKey])) || [];
 

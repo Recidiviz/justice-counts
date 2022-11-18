@@ -20,18 +20,13 @@ import { AgencySystems, ReportFrequency } from "@justice-counts/common/types";
 import { reaction, when } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import { Loading } from "../Loading";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
-import {
-  getActiveSystemMetricKey,
-  getSettingsSearchParams,
-  SettingsSearchParams,
-} from "../Settings";
+import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   BackToMetrics,
   Configuration,
@@ -50,17 +45,15 @@ import {
 } from ".";
 
 export const MetricConfiguration: React.FC = observer(() => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [settingsSearchParams, setSettingsSearchParams] =
+    useSettingsSearchParams();
   const { userStore, metricConfigStore } = useStore();
   const { metrics, initializeMetricConfigStoreValues, getMetricsBySystem } =
     metricConfigStore;
 
   const { system: systemSearchParam, metric: metricSearchParam } =
-    getSettingsSearchParams(searchParams);
-  const systemMetricKey = getActiveSystemMetricKey({
-    system: systemSearchParam,
-    metric: metricSearchParam,
-  });
+    settingsSearchParams;
+  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingErrorMessage, setLoadingErrorMessage] = useState<string>();
@@ -85,10 +78,9 @@ export const MetricConfiguration: React.FC = observer(() => {
           (system) => system === systemSearchParam
         );
       if (!isUrlSystemParamInCurrentAgencySystems) {
-        const params: SettingsSearchParams = {
+        setSettingsSearchParams({
           system: userStore.currentAgency?.systems[0],
-        };
-        setSearchParams(params);
+        });
         return;
       }
     }
@@ -105,24 +97,22 @@ export const MetricConfiguration: React.FC = observer(() => {
         systemToCheckMetrics
       )?.find((metric) => metric.key === metricSearchParam);
       if (!isUrlMetricParamInCurrentSystem) {
-        setSearchParams({});
+        setSettingsSearchParams({});
         return;
       }
     }
 
     if (!systemSearchParam) {
-      const params: SettingsSearchParams = {
+      setSettingsSearchParams({
         system: userStore.currentAgency?.systems[0],
-      };
-      setSearchParams(params);
+      });
     }
   };
 
   const handleSystemClick = (option: AgencySystems) => {
-    const params: SettingsSearchParams = {
+    setSettingsSearchParams({
       system: option,
-    };
-    setSearchParams(params);
+    });
   };
 
   useEffect(
@@ -215,10 +205,7 @@ export const MetricConfiguration: React.FC = observer(() => {
               <MetricConfigurationDisplay>
                 <BackToMetrics
                   onClick={() => {
-                    const params: SettingsSearchParams = {
-                      system: systemSearchParam,
-                    };
-                    setSearchParams(params);
+                    setSettingsSearchParams({ system: systemSearchParam });
                     setActiveDimensionKey(undefined);
                   }}
                 >

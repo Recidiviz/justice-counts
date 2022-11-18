@@ -16,6 +16,7 @@
 // =============================================================================
 
 export * from "./AccountSettings";
+export * from "./hooks";
 export * from "./Settings.styles";
 export * from "./SettingsMenu";
 export * from "./types";

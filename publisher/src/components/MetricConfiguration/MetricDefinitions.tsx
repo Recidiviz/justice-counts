@@ -17,10 +17,9 @@
 
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { getActiveSystemMetricKey, getSettingsSearchParams } from "../Settings";
+import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   ContextConfiguration,
   DefinitionDisplayName,
@@ -46,7 +45,7 @@ type MetricDefinitionsProps = {
 
 export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
   ({ activeDimensionKey, activeDisaggregationKey }) => {
-    const [searchParams] = useSearchParams();
+    const [settingsSearchParams] = useSettingsSearchParams();
     const { metricConfigStore } = useStore();
     const {
       metrics,
@@ -59,11 +58,8 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
     } = metricConfigStore;
 
     const { system: systemSearchParam, metric: metricSearchParam } =
-      getSettingsSearchParams(searchParams);
-    const systemMetricKey = getActiveSystemMetricKey({
-      system: systemSearchParam,
-      metric: metricSearchParam,
-    });
+      settingsSearchParams;
+    const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
 
     const isMetricDefinitionSettings = !activeDimensionKey;
 

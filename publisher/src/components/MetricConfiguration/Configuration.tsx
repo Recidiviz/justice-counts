@@ -17,7 +17,6 @@
 
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
@@ -25,7 +24,7 @@ import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import blueCheck from "../assets/status-check-icon.png";
 import { BinaryRadioButton } from "../Forms";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
-import { getActiveSystemMetricKey, getSettingsSearchParams } from "../Settings";
+import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   BlueCheckIcon,
   BreakdownHeader,
@@ -62,7 +61,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     activeDisaggregationKey,
     setActiveDisaggregationKey,
   }): JSX.Element => {
-    const [searchParams] = useSearchParams();
+    const [settingsSearchParams] = useSettingsSearchParams();
     const { metricConfigStore } = useStore();
     const {
       metrics,
@@ -75,11 +74,8 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     } = metricConfigStore;
 
     const { system: systemSearchParam, metric: metricSearchParam } =
-      getSettingsSearchParams(searchParams);
-    const systemMetricKey = getActiveSystemMetricKey({
-      system: systemSearchParam,
-      metric: metricSearchParam,
-    });
+      settingsSearchParams;
+    const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
     const activeDisaggregationKeys =
       disaggregations[systemMetricKey] &&
       Object.keys(disaggregations[systemMetricKey]);
