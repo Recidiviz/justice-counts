@@ -78,12 +78,26 @@ export const TabbedDisaggregations: React.FC<{
   const updateDisaggregationHasInput = (disaggregationKey: string) => {
     const currentDisaggregationDimensions =
       formStore.disaggregations[reportID]?.[metric.key]?.[disaggregationKey];
-    const hasInput = Boolean(
-      currentDisaggregationDimensions &&
-        Object.values(currentDisaggregationDimensions).find(
-          (dimension) => dimension.value
-        )
-    );
+    /** Special handling for Race/Ethnicity disaggregation: only check for input on enabled dimensions */
+    const hasInput =
+      disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY
+        ? Boolean(
+            metric.disaggregations
+              .find(
+                (disaggregation) => disaggregation.key === disaggregationKey
+              )
+              ?.dimensions.find(
+                (dimension) =>
+                  dimension.enabled &&
+                  currentDisaggregationDimensions?.[dimension.key]?.value
+              )
+          )
+        : Boolean(
+            currentDisaggregationDimensions &&
+              Object.values(currentDisaggregationDimensions).find(
+                (dimension) => dimension.value
+              )
+          );
     setDisaggregationHasInput((prev) => {
       return {
         ...prev,
