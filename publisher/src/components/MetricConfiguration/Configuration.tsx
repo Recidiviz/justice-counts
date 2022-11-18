@@ -17,6 +17,7 @@
 
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
@@ -24,6 +25,7 @@ import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import blueCheck from "../assets/status-check-icon.png";
 import { BinaryRadioButton } from "../Forms";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
+import { getActiveSystemMetricKey, getSettingsSearchParams } from "../Settings";
 import {
   BlueCheckIcon,
   BreakdownHeader,
@@ -60,26 +62,27 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     activeDisaggregationKey,
     setActiveDisaggregationKey,
   }): JSX.Element => {
+    const [searchParams] = useSearchParams();
     const { metricConfigStore } = useStore();
     const {
-      activeSystem,
-      activeMetricKey,
       metrics,
       disaggregations,
       dimensions,
-      getActiveSystemMetricKey,
       updateMetricEnabledStatus,
       updateDisaggregationEnabledStatus,
       updateDimensionEnabledStatus,
       saveMetricSettings,
     } = metricConfigStore;
 
-    const systemMetricKey = getActiveSystemMetricKey();
-
+    const { system: systemSearchParam, metric: metricSearchParam } =
+      getSettingsSearchParams(searchParams);
+    const systemMetricKey = getActiveSystemMetricKey({
+      system: systemSearchParam,
+      metric: metricSearchParam,
+    });
     const activeDisaggregationKeys =
       disaggregations[systemMetricKey] &&
       Object.keys(disaggregations[systemMetricKey]);
-
     const activeDimensionKeys =
       activeDisaggregationKey &&
       dimensions[systemMetricKey]?.[activeDisaggregationKey]
@@ -122,10 +125,10 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               value="yes"
               checked={metricEnabled}
               onChange={() => {
-                if (activeSystem && activeMetricKey) {
+                if (systemSearchParam && metricSearchParam) {
                   const updatedSetting = updateMetricEnabledStatus(
-                    activeSystem,
-                    activeMetricKey,
+                    systemSearchParam,
+                    metricSearchParam,
                     true
                   );
                   saveMetricSettings(updatedSetting);
@@ -140,10 +143,10 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               value="no"
               checked={!metricEnabled}
               onChange={() => {
-                if (activeSystem && activeMetricKey) {
+                if (systemSearchParam && metricSearchParam) {
                   const updatedSetting = updateMetricEnabledStatus(
-                    activeSystem,
-                    activeMetricKey,
+                    systemSearchParam,
+                    metricSearchParam,
                     false
                   );
                   saveMetricSettings(updatedSetting);
@@ -199,11 +202,11 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                             type="checkbox"
                             checked={currentDisaggregation.enabled}
                             onChange={() => {
-                              if (activeSystem && activeMetricKey) {
+                              if (systemSearchParam && metricSearchParam) {
                                 const updatedSetting =
                                   updateDisaggregationEnabledStatus(
-                                    activeSystem,
-                                    activeMetricKey,
+                                    systemSearchParam,
+                                    metricSearchParam,
                                     disaggregationKey,
                                     !currentDisaggregation.enabled
                                   );
@@ -249,10 +252,10 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                           currentDimension.enabled
                         }
                         onChange={() => {
-                          if (activeSystem && activeMetricKey) {
+                          if (systemSearchParam && metricSearchParam) {
                             const updatedSetting = updateDimensionEnabledStatus(
-                              activeSystem,
-                              activeMetricKey,
+                              systemSearchParam,
+                              metricSearchParam,
                               activeDisaggregationKey,
                               dimensionKey,
                               !currentDimension.enabled

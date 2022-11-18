@@ -38,10 +38,6 @@ class MetricConfigStore {
 
   api: API;
 
-  activeMetricKey: string | undefined;
-
-  activeSystem: AgencySystems | undefined;
-
   metrics: {
     [systemMetricKey: string]: {
       enabled?: boolean;
@@ -112,8 +108,6 @@ class MetricConfigStore {
 
     this.api = api;
     this.userStore = userStore;
-    this.activeMetricKey = undefined;
-    this.activeSystem = undefined;
     this.metrics = {};
     this.metricDefinitionSettings = {};
     this.disaggregations = {};
@@ -133,18 +127,6 @@ class MetricConfigStore {
     const [system, metricKey] = systemMetricKey.split("-");
     return { system, metricKey };
   }
-
-  getActiveSystemMetricKey = (): string => {
-    return `${this.activeSystem?.toUpperCase()}-${this.activeMetricKey}`;
-  };
-
-  updateActiveSystem = (systemName: AgencySystems | undefined) => {
-    this.activeSystem = systemName;
-  };
-
-  updateActiveMetricKey = (metricKey: string | undefined) => {
-    this.activeMetricKey = metricKey;
-  };
 
   getMetricsBySystem = (systemName: AgencySystems | undefined) => {
     if (systemName) {

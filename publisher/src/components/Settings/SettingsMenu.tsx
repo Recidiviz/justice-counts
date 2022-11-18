@@ -35,22 +35,17 @@ export const SettingsMenu: React.FC = observer(() => {
   const location = useLocation();
   const navigate = useNavigate();
   const { metricConfigStore } = useStore();
-  const {
-    activeMetricKey,
-    activeSystem,
-    getMetricsBySystem,
-    updateActiveMetricKey,
-  } = metricConfigStore;
+  const { getMetricsBySystem } = metricConfigStore;
 
-  const settingsSearchParams = getSettingsSearchParams(searchParams);
+  const { system: systemSearchParam, metric: metricSearchParam } =
+    getSettingsSearchParams(searchParams);
 
   const handleMetricListItemClick = (metricKey: string) => {
     const params: SettingsSearchParams = {
-      ...settingsSearchParams,
+      system: systemSearchParam,
       metric: metricKey,
     };
     setSearchParams(params);
-    updateActiveMetricKey(metricKey);
   };
 
   return (
@@ -61,10 +56,6 @@ export const SettingsMenu: React.FC = observer(() => {
             selected={location.pathname === path}
             onClick={() => {
               navigate(path);
-
-              if (location.pathname === "/settings/metric-config") {
-                updateActiveMetricKey(settingsSearchParams.metric);
-              }
             }}
           >
             {displayName}
@@ -74,19 +65,21 @@ export const SettingsMenu: React.FC = observer(() => {
               selected and allows users to toggle between metrics) */}
           {location.pathname === "/settings/metric-config" &&
             path === "/settings/metric-config" &&
-            activeMetricKey && (
+            metricSearchParam && (
               <MetricsListContainer>
-                {getMetricsBySystem(activeSystem)?.map(({ key, metric }) => {
-                  return (
-                    <MetricsListItem
-                      key={key}
-                      activeSection={key === activeMetricKey}
-                      onClick={() => handleMetricListItemClick(key)}
-                    >
-                      {metric.label}
-                    </MetricsListItem>
-                  );
-                })}
+                {getMetricsBySystem(systemSearchParam)?.map(
+                  ({ key, metric }) => {
+                    return (
+                      <MetricsListItem
+                        key={key}
+                        activeSection={key === metricSearchParam}
+                        onClick={() => handleMetricListItemClick(key)}
+                      >
+                        {metric.label}
+                      </MetricsListItem>
+                    );
+                  }
+                )}
               </MetricsListContainer>
             )}
         </Fragment>

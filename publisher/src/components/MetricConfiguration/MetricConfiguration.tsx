@@ -27,7 +27,11 @@ import { removeSnakeCase } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import { Loading } from "../Loading";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
-import { getSettingsSearchParams, SettingsSearchParams } from "../Settings";
+import {
+  getActiveSystemMetricKey,
+  getSettingsSearchParams,
+  SettingsSearchParams,
+} from "../Settings";
 import {
   BackToMetrics,
   Configuration,
@@ -48,20 +52,15 @@ import {
 export const MetricConfiguration: React.FC = observer(() => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { userStore, metricConfigStore } = useStore();
-  const {
-    activeMetricKey,
-    activeSystem,
-    metrics,
-    initializeMetricConfigStoreValues,
-    getActiveSystemMetricKey,
-    getMetricsBySystem,
-    updateActiveSystem,
-    updateActiveMetricKey,
-  } = metricConfigStore;
+  const { metrics, initializeMetricConfigStoreValues, getMetricsBySystem } =
+    metricConfigStore;
 
   const { system: systemSearchParam, metric: metricSearchParam } =
     getSettingsSearchParams(searchParams);
-  const systemMetricKey = getActiveSystemMetricKey();
+  const systemMetricKey = getActiveSystemMetricKey({
+    system: systemSearchParam,
+    metric: metricSearchParam,
+  });
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingErrorMessage, setLoadingErrorMessage] = useState<string>();
@@ -79,26 +78,20 @@ export const MetricConfiguration: React.FC = observer(() => {
     // since it is not possible to switch agency using link params
     // have to check if system param from url is present in current agency
     // if not then clear system and metric url params
+    // TODO after #149 task is done have to refactor that
     if (systemSearchParam && userStore.currentAgency?.systems) {
       const isUrlSystemParamInCurrentAgencySystems =
         !!userStore.currentAgency?.systems.find(
           (system) => system === systemSearchParam
         );
-      if (isUrlSystemParamInCurrentAgencySystems) {
-        updateActiveSystem(systemSearchParam);
-      } else {
+      if (!isUrlSystemParamInCurrentAgencySystems) {
         const params: SettingsSearchParams = {
           system: userStore.currentAgency?.systems[0],
         };
         setSearchParams(params);
-        updateActiveMetricKey(undefined);
-        updateActiveSystem(userStore.currentAgency?.systems[0]);
         return;
       }
-    } else {
-      updateActiveSystem(userStore.currentAgency?.systems[0]);
     }
-    // updateActiveSystem(systemParam || userStore.currentAgency?.systems[0]);
 
     if (metricSearchParam) {
       const isUrlSystemParamInCurrentAgencySystems =
@@ -111,17 +104,11 @@ export const MetricConfiguration: React.FC = observer(() => {
       const isUrlMetricParamInCurrentSystem = !!getMetricsBySystem(
         systemToCheckMetrics
       )?.find((metric) => metric.key === metricSearchParam);
-      if (isUrlMetricParamInCurrentSystem) {
-        updateActiveMetricKey(metricSearchParam);
-      } else {
+      if (!isUrlMetricParamInCurrentSystem) {
         setSearchParams({});
-        updateActiveMetricKey(undefined);
         return;
       }
-    } else {
-      updateActiveMetricKey(undefined);
     }
-    // updateActiveMetricKey(metricParam);
 
     if (!systemSearchParam) {
       const params: SettingsSearchParams = {
@@ -132,7 +119,6 @@ export const MetricConfiguration: React.FC = observer(() => {
   };
 
   const handleSystemClick = (option: AgencySystems) => {
-    updateActiveSystem(option);
     const params: SettingsSearchParams = {
       system: option,
     };
@@ -181,7 +167,7 @@ export const MetricConfiguration: React.FC = observer(() => {
     <>
       <MetricsViewContainer>
         {/* System Tabs (for multi-system agencies) */}
-        {!activeMetricKey &&
+        {!metricSearchParam &&
           userStore.currentAgency?.systems &&
           userStore.currentAgency?.systems?.length > 1 && (
             <StickyHeader>
@@ -190,7 +176,7 @@ export const MetricConfiguration: React.FC = observer(() => {
                   {userStore.currentAgency?.systems.map((filterOption) => (
                     <TabbedItem
                       key={filterOption}
-                      selected={activeSystem === filterOption}
+                      selected={systemSearchParam === filterOption}
                       onClick={() => handleSystemClick(filterOption)}
                       capitalize
                     >
@@ -204,24 +190,26 @@ export const MetricConfiguration: React.FC = observer(() => {
 
         <MetricsViewControlPanel>
           {/* List Of Metrics */}
-          {!activeMetricKey && (
+          {!metricSearchParam && (
             <MetricBoxBottomPaddingContainer>
               <MetricBoxContainerWrapper>
-                {getMetricsBySystem(activeSystem)?.map(({ key, metric }) => (
-                  <MetricBox
-                    key={key}
-                    metricKey={key}
-                    displayName={metric.label as string}
-                    frequency={metric.frequency as ReportFrequency}
-                    description={metric.description as string}
-                    enabled={metric.enabled}
-                  />
-                ))}
+                {getMetricsBySystem(systemSearchParam)?.map(
+                  ({ key, metric }) => (
+                    <MetricBox
+                      key={key}
+                      metricKey={key}
+                      displayName={metric.label as string}
+                      frequency={metric.frequency as ReportFrequency}
+                      description={metric.description as string}
+                      enabled={metric.enabled}
+                    />
+                  )
+                )}
               </MetricBoxContainerWrapper>
             </MetricBoxBottomPaddingContainer>
           )}
 
-          {activeMetricKey && (
+          {metricSearchParam && (
             <MetricConfigurationWrapper>
               {/* Metric Configuration */}
               <MetricConfigurationDisplay>
@@ -231,7 +219,6 @@ export const MetricConfiguration: React.FC = observer(() => {
                       system: systemSearchParam,
                     };
                     setSearchParams(params);
-                    updateActiveMetricKey(undefined);
                     setActiveDimensionKey(undefined);
                   }}
                 >

@@ -21,7 +21,6 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 import { useSearchParams } from "react-router-dom";
 
-import { useStore } from "../../stores";
 import { getSettingsSearchParams, SettingsSearchParams } from "../Settings";
 import {
   MetricBoxContainer,
@@ -47,13 +46,9 @@ export const MetricBox: React.FC<MetricBoxProps> = observer(
     enabled,
   }): JSX.Element => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const { metricConfigStore } = useStore();
-    const { updateActiveMetricKey } = metricConfigStore;
-
     const settingsSearchParams = getSettingsSearchParams(searchParams);
 
     const handleMetricBoxClick = () => {
-      updateActiveMetricKey(metricKey);
       const params: SettingsSearchParams = {
         ...settingsSearchParams,
         metric: metricKey,

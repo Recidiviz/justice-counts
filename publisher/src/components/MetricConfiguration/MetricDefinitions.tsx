@@ -17,8 +17,10 @@
 
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { getActiveSystemMetricKey, getSettingsSearchParams } from "../Settings";
 import {
   ContextConfiguration,
   DefinitionDisplayName,
@@ -44,21 +46,24 @@ type MetricDefinitionsProps = {
 
 export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
   ({ activeDimensionKey, activeDisaggregationKey }) => {
+    const [searchParams] = useSearchParams();
     const { metricConfigStore } = useStore();
     const {
-      activeMetricKey,
-      activeSystem,
       metrics,
       metricDefinitionSettings,
       dimensions,
       dimensionDefinitionSettings,
-      getActiveSystemMetricKey,
       updateMetricDefinitionSetting,
       updateDimensionDefinitionSetting,
       saveMetricSettings,
     } = metricConfigStore;
 
-    const systemMetricKey = getActiveSystemMetricKey();
+    const { system: systemSearchParam, metric: metricSearchParam } =
+      getSettingsSearchParams(searchParams);
+    const systemMetricKey = getActiveSystemMetricKey({
+      system: systemSearchParam,
+      metric: metricSearchParam,
+    });
 
     const isMetricDefinitionSettings = !activeDimensionKey;
 
@@ -92,7 +97,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
     const [showDefaultSettings, setShowDefaultSettings] = useState(false);
 
     const revertToAndSaveDefaultValues = () => {
-      if (activeSystem && activeMetricKey) {
+      if (systemSearchParam && metricSearchParam) {
         /** Create array of default settings and update settings (to default value) in the store */
         const defaultSettings = activeSettingsKeys.map((settingKey) => {
           let currentSettingDefaultValue;
@@ -102,8 +107,8 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
               metricDefinitionSettings[systemMetricKey][settingKey].default;
 
             updateMetricDefinitionSetting(
-              activeSystem,
-              activeMetricKey,
+              systemSearchParam,
+              metricSearchParam,
               settingKey,
               currentSettingDefaultValue as MetricConfigurationSettingsOptions
             );
@@ -118,8 +123,8 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
             ][activeDimensionKey][settingKey].default;
 
           updateDimensionDefinitionSetting(
-            activeSystem,
-            activeMetricKey,
+            systemSearchParam,
+            metricSearchParam,
             activeDisaggregationKey as string,
             activeDimensionKey,
             settingKey,
@@ -132,14 +137,14 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
         /** Save default settings array */
         if (isMetricDefinitionSettings) {
           const updatedSetting = {
-            key: activeMetricKey as string,
+            key: metricSearchParam as string,
             settings: defaultSettings,
           };
           return saveMetricSettings(updatedSetting);
         }
 
         const updatedSetting = {
-          key: activeMetricKey as string,
+          key: metricSearchParam as string,
           disaggregations: [
             {
               key: activeDisaggregationKey as string,
@@ -223,12 +228,12 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                               }
                               showDefault={showDefaultSettings}
                               onClick={() => {
-                                if (activeSystem && activeMetricKey) {
+                                if (systemSearchParam && metricSearchParam) {
                                   if (isMetricDefinitionSettings) {
                                     const updatedSetting =
                                       updateMetricDefinitionSetting(
-                                        activeSystem,
-                                        activeMetricKey,
+                                        systemSearchParam,
+                                        metricSearchParam,
                                         settingKey,
                                         option
                                       );
@@ -237,8 +242,8 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
 
                                   const updatedSetting =
                                     updateDimensionDefinitionSetting(
-                                      activeSystem,
-                                      activeMetricKey,
+                                      systemSearchParam,
+                                      metricSearchParam,
                                       activeDisaggregationKey as string,
                                       activeDimensionKey,
                                       settingKey,

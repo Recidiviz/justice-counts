@@ -27,3 +27,10 @@ export const getSettingsSearchParams = (
 
   return { system, metric };
 };
+
+export const getActiveSystemMetricKey = ({
+  system,
+  metric,
+}: SettingsSearchParams): string => {
+  return `${system?.toUpperCase()}-${metric}`;
+};
