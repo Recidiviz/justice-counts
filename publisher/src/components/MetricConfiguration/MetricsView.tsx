@@ -151,6 +151,13 @@ export const MetricsView: React.FC = observer(() => {
     [activeMetricFilter]
   );
 
+  useEffect(() => {
+    if (!datapointsStore.datapointsByMetric[activeMetricKey]) {
+      setDataView(ChartView.Chart);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeMetricKey]);
+
   if (isLoading) {
     return <Loading />;
   }
@@ -216,7 +223,6 @@ export const MetricsView: React.FC = observer(() => {
                   onClick={() => {
                     const params: SettingsSearchParams = {
                       system: activeMetricFilter as AgencySystems,
-                      metric: activeMetricKey,
                     };
                     navigate({
                       pathname: "/settings/metric-config",
@@ -234,14 +240,15 @@ export const MetricsView: React.FC = observer(() => {
           {/* Data Visualization */}
           <PanelContainerRight>
             <PanelRightTopButtonsContainer>
-              {dataView === ChartView.Chart && (
-                <PanelRightTopButton
-                  onClick={() => setDataView(ChartView.Table)}
-                >
-                  <SwitchToDataTableIcon />
-                  Switch to Data Table
-                </PanelRightTopButton>
-              )}
+              {dataView === ChartView.Chart &&
+                !!datapointsStore.datapointsByMetric[activeMetricKey] && (
+                  <PanelRightTopButton
+                    onClick={() => setDataView(ChartView.Table)}
+                  >
+                    <SwitchToDataTableIcon />
+                    Switch to Data Table
+                  </PanelRightTopButton>
+                )}
               {dataView === ChartView.Table && (
                 <PanelRightTopButton
                   onClick={() => setDataView(ChartView.Chart)}

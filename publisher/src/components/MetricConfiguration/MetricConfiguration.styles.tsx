@@ -55,7 +55,8 @@ export const MetricsViewControlPanelOverflowHidden = styled(
 `;
 
 export const PanelContainerLeft = styled.div`
-  width: 35%;
+  width: 25%;
+  min-width: calc(314px + 24px + 50px);
   height: 100%;
   overflow-y: scroll;
   display: flex;
@@ -70,6 +71,7 @@ export const SystemsContainer = styled.div`
   flex-direction: column;
   gap: 10px;
   overflow-y: scroll;
+  overflow-x: hidden;
 `;
 
 export const SystemNameContainer = styled.div<{ isSystemActive: boolean }>`
@@ -80,12 +82,10 @@ export const SystemNameContainer = styled.div<{ isSystemActive: boolean }>`
   justify-content: space-between;
   border-bottom: 2px solid ${palette.solid.darkgrey};
   padding-bottom: 8px;
-  color: ${({ isSystemActive }) =>
-    isSystemActive ? palette.solid.darkgrey : palette.highlight.grey7};
+  color: ${palette.solid.darkgrey};
 
   &:hover {
     cursor: ${({ isSystemActive }) => (isSystemActive ? "auto" : "pointer")};
-    color: ${palette.solid.darkgrey};
   }
 `;
 
@@ -152,7 +152,7 @@ export const DisclaimerLink = styled.span`
 `;
 
 export const PanelContainerRight = styled.div`
-  width: 65%;
+  width: 75%;
   height: 100%;
   display: flex;
   position: relative;
@@ -164,7 +164,12 @@ export const PanelRightTopButtonsContainer = styled.div`
   display: flex;
   flex-direction: row;
   gap: 16px;
-  margin: 24px 0 4px 15px;
+  height: 50px;
+  padding: 24px 0 4px 15px;
+  position: sticky;
+  top: 0;
+  background-color: ${palette.solid.white};
+  z-index: 2;
 `;
 
 export const PanelRightTopButton = styled.div`
@@ -173,6 +178,10 @@ export const PanelRightTopButton = styled.div`
   align-items: center;
   gap: 4px;
   cursor: pointer;
+
+  &:hover {
+    opacity: 0.5;
+  }
 `;
 
 export const MetricBoxBottomPaddingContainer = styled.div`

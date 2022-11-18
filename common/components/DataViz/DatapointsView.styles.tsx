@@ -93,6 +93,13 @@ export const DatapointsViewContainer = styled.div`
   padding: 0 15px 0 15px;
 `;
 
+export const DatapointsViewHeaderWrapper = styled.div`
+  position: sticky;
+  top: 50px;
+  background-color: ${palette.solid.white};
+  z-index: 2;
+`;
+
 export const DatapointsViewControlsContainer = styled.div`
   display: flex;
   flex-direction: row;

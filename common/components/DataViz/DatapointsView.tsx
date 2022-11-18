@@ -32,6 +32,7 @@ import {
   DatapointsViewContainer,
   DatapointsViewControlsContainer,
   DatapointsViewControlsDropdown,
+  DatapointsViewHeaderWrapper,
   MetricHeaderWrapper,
   MetricInsight,
   MetricInsightsRow,
@@ -175,31 +176,34 @@ export const DatapointsView: React.FC<{
     );
     const percentChange = getPercentChangeOverTime(dataSelectedInTimeRange);
     const avgValue = getAverageTotalValue(dataSelectedInTimeRange, isAnnual);
+    const mostRecentValue = getLatestDateFormatted(
+      dataSelectedInTimeRange,
+      isAnnual
+    );
 
     return (
       <MetricInsightsRow>
         <MetricInsight title="Year-to-Year" value={percentChange} />
         <MetricInsight title="Avg. Total Value" value={avgValue} />
-        <MetricInsight
-          title="Most Recent"
-          value={getLatestDateFormatted(dataSelectedInTimeRange, isAnnual)}
-        />
+        <MetricInsight title="Most Recent" value={mostRecentValue} />
       </MetricInsightsRow>
     );
   };
 
   return (
     <DatapointsViewContainer>
-      {metricName && (
-        <MetricHeaderWrapper>
-          <DatapointsTableTitle
-            metricName={metricName}
-            metricFrequency={metricFrequency}
-          />
-          {renderMetricInsightsRow()}
-        </MetricHeaderWrapper>
-      )}
-      {renderDataVizControls()}
+      <DatapointsViewHeaderWrapper>
+        {metricName && (
+          <MetricHeaderWrapper>
+            <DatapointsTableTitle
+              metricName={metricName}
+              metricFrequency={metricFrequency}
+            />
+            {data.length > 0 && renderMetricInsightsRow()}
+          </MetricHeaderWrapper>
+        )}
+        {renderDataVizControls()}
+      </DatapointsViewHeaderWrapper>
       {renderChartForMetric()}
       {renderLegend()}
     </DatapointsViewContainer>
