@@ -48,14 +48,14 @@ const getWidth = () =>
   document.documentElement.clientWidth ||
   document.body.clientWidth;
 
-const BackButton = () => (
-  <BackButtonContainer>
+const BackButton = ({ onClick }: { onClick: () => void }) => (
+  <BackButtonContainer onClick={onClick}>
     <LeftArrowIcon />
   </BackButtonContainer>
 );
 
-const RightPanelBackButton = () => (
-  <RightPanelBackButtonContainer>
+const RightPanelBackButton = ({ onClick }: { onClick: () => void }) => (
+  <RightPanelBackButtonContainer onClick={onClick}>
     <LeftArrowIcon />
   </RightPanelBackButtonContainer>
 );
@@ -153,7 +153,7 @@ const DashboardView = () => {
     <Container key={metricKey}>
       <HeaderBar />
       <LeftPanel>
-        <BackButton />
+        <BackButton onClick={() => navigate(`/agency/${agencyId}`)} />
         <MetricTitle>
           {datapointsStore.metricKeyToDisplayName[metricKey] || metricKey}
         </MetricTitle>
@@ -168,7 +168,7 @@ const DashboardView = () => {
         </MetricOverviewActionsContainer>
       </LeftPanel>
       <RightPanel>
-        <RightPanelBackButton />
+        <RightPanelBackButton onClick={() => navigate(`/agency/${agencyId}`)} />
         <RightPanelMetricTitle>
           {datapointsStore.metricKeyToDisplayName[metricKey] || metricKey}
         </RightPanelMetricTitle>

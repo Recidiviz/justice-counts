@@ -142,6 +142,16 @@ export const DatapointsView: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datapointsGroupedByAggregateAndDisaggregations]);
 
+  /** Prevent body from scrolling when modal is open */
+  useEffect(() => {
+    if (mobileSelectMetricsVisible) {
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [mobileSelectMetricsVisible]);
+
   const renderChartForMetric = () => {
     return (
       <BarChart
