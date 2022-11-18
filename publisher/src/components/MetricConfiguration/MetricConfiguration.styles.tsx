@@ -56,14 +56,13 @@ export const MetricsViewControlPanelOverflowHidden = styled(
 
 export const PanelContainerLeft = styled.div`
   width: 25%;
-  min-width: calc(314px + 24px + 50px);
+  min-width: calc(314px + 24px + 95px);
   height: 100%;
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 46px 0 0 24px;
-  margin-right: 95px;
 `;
 
 export const SystemsContainer = styled.div`
