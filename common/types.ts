@@ -106,6 +106,7 @@ export interface Metric {
   enabled?: boolean;
   settings?: MetricConfigurationSettings[];
   frequency?: ReportFrequency;
+  custom_frequency?: ReportFrequency;
 }
 
 export interface MetricDefinition {

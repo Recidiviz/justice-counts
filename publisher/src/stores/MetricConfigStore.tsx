@@ -56,6 +56,7 @@ class MetricConfigStore {
       label?: string;
       description?: Metric["description"];
       frequency?: Metric["frequency"];
+      customFrequency?: Metric["custom_frequency"];
     };
   };
 
@@ -165,6 +166,7 @@ class MetricConfigStore {
             label?: string;
             description?: Metric["description"];
             frequency?: Metric["frequency"];
+            customFrequency?: Metric["custom_frequency"];
           };
         }[]
       );
@@ -242,6 +244,7 @@ class MetricConfigStore {
               label: metric.label,
               description: metric.description,
               frequency: metric.frequency || "",
+              customFrequency: metric.custom_frequency || "",
             }
           );
 
@@ -346,6 +349,8 @@ class MetricConfigStore {
       this.metrics[systemMetricKey].description = metadata.description;
       this.metrics[systemMetricKey].frequency =
         metadata.frequency as ReportFrequency;
+      this.metrics[systemMetricKey].customFrequency =
+        metadata.customFrequency as ReportFrequency;
     }
 
     /** Update value */
