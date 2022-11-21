@@ -80,7 +80,7 @@ test("no reports to display", async () => {
     });
   });
 
-  const noReportsLoaded = await screen.findByText(/No reports to display./i);
+  const noReportsLoaded = await screen.findByText(/No records to display./i);
   expect(noReportsLoaded).toBeInTheDocument();
   expect.hasAssertions();
 });
@@ -103,7 +103,7 @@ test("displayed reports", async () => {
   const april2022 = await screen.findByText(/April 2022/i);
   const december2020 = await screen.findByText(/December 2020/i);
   const annualReport2019 = await screen.findByText(
-    /Annual Report FY2019-2020/i
+    /Annual Record FY2019-2020/i
   );
   expect(april2022).toBeInTheDocument();
   expect(december2020).toBeInTheDocument();

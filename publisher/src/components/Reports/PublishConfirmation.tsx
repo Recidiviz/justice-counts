@@ -32,6 +32,7 @@ import { printReportTitle } from "../../utils";
 import logoImg from "../assets/jc-logo-vector.png";
 import errorIcon from "../assets/status-error-icon.png";
 import { DataUploadHeader } from "../DataUpload";
+import { REPORT_LOWERCASE, REPORTED_CAPITALIZED } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
 import { Heading, Subheading } from "../ReviewMetrics/ReviewMetrics.styles";
 import {
@@ -110,7 +111,8 @@ const Context: React.FC<{ context: MetricContextWithErrors }> = ({
       </MetricSubTitleContainer>
 
       <ContextValue missing={!context.value} error={hasError}>
-        {context.value?.toLocaleString("en-US") || "Not Reported"}
+        {context.value?.toLocaleString("en-US") ||
+          `Not ${REPORTED_CAPITALIZED}`}
       </ContextValue>
     </ContextContainer>
   );
@@ -140,7 +142,8 @@ const MetricsDisplay: React.FC<{
           </MetricCollapseSignWrapper>
         </MetricTitleWrapper>
         <MetricValue>
-          {metric.value?.toLocaleString("en-US") || "Not Reported"}
+          {metric.value?.toLocaleString("en-US") ||
+            `Not ${REPORTED_CAPITALIZED}`}
         </MetricValue>
       </MetricHeader>
 
@@ -196,7 +199,7 @@ const PublishConfirmation: React.FC<{
             reportStore.reportOverviews[reportID].month,
             reportStore.reportOverviews[reportID].year,
             reportStore.reportOverviews[reportID].frequency
-          )} report!`,
+          )} ${REPORT_LOWERCASE}!`,
           true
         );
         const agencyID = reportStore.reportOverviews[reportID]?.agency_id;
@@ -208,7 +211,7 @@ const PublishConfirmation: React.FC<{
             reportStore.reportOverviews[reportID].month,
             reportStore.reportOverviews[reportID].year,
             reportStore.reportOverviews[reportID].frequency
-          )} report!`,
+          )} ${REPORT_LOWERCASE}!`,
           false
         );
         setIsPublishable(true);
@@ -259,7 +262,7 @@ const PublishConfirmation: React.FC<{
             <Subheading>
               Before publishing, take a moment to review the changes. You must
               resolve any errors before publishing; otherwise, you can save this
-              report and return at another time.
+              {REPORT_LOWERCASE} and return at another time.
             </Subheading>
             {metricsPreview.map((metric, i) => {
               return (

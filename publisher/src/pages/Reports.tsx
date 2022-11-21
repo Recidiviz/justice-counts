@@ -26,6 +26,11 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import checkmarkIcon from "../components/assets/status-check-icon.png";
+import {
+  REPORT_PERIOD_CAPITALIZED,
+  REPORTS_CAPITALIZED,
+  REPORTS_LOWERCASE,
+} from "../components/Global/constants";
 import { Loading } from "../components/Loading";
 import { Onboarding } from "../components/Onboarding";
 import {
@@ -60,14 +65,14 @@ import {
 } from "../utils";
 
 enum ReportStatusFilterOption {
-  AllReports = "All Reports",
+  AllReports = "All Records",
   Draft = "Draft",
   Published = "Published",
   NotStarted = "Not_Started",
 }
 
 const reportListColumnTitles = [
-  "Report Period",
+  REPORT_PERIOD_CAPITALIZED,
   "Frequency",
   "Editors",
   "Last Modified",
@@ -83,7 +88,9 @@ const Reports: React.FC = () => {
   );
   const [showAdditionalEditorsTooltip, setShowAdditionalEditorsTooltip] =
     useState<number>();
-  const [reportsFilter, setReportsFilter] = useState<string>("allreports");
+  const [reportsFilter, setReportsFilter] = useState<string>(
+    `all${REPORTS_LOWERCASE}`
+  );
   const [selectionMode, setSelectionMode] = useState(false);
   const [reportsToDelete, setReportsToDelete] = useState<number[]>([]);
 
@@ -157,7 +164,7 @@ const Reports: React.FC = () => {
 
   const filteredReportsMemoized = React.useMemo(
     () =>
-      reportsFilter === "allreports"
+      reportsFilter === `all${REPORTS_LOWERCASE}`
         ? reportStore.reportOverviewList
         : reportStore.reportOverviewList.filter(
             (report) => normalizeString(report.status) === reportsFilter
@@ -188,7 +195,7 @@ const Reports: React.FC = () => {
                 <Row
                   onClick={() => {
                     if (!selectionMode) {
-                      navigate(`/reports/${report.id}`);
+                      navigate(`/${REPORTS_LOWERCASE}/${report.id}`);
                     } else {
                       addOrRemoveReportToDelete(report.id);
                     }
@@ -279,7 +286,7 @@ const Reports: React.FC = () => {
           <NoReportsDisplay>
             {userHasNoAgency
               ? "It looks like no agency is tied to this account. Please reach out to the Justice Counts team for assistance."
-              : "No reports to display."}
+              : `No ${REPORTS_LOWERCASE} to display.`}
           </NoReportsDisplay>
         )}
       </>
@@ -289,7 +296,7 @@ const Reports: React.FC = () => {
   return (
     <>
       <ReportsHeader>
-        <PageTitle>Reports</PageTitle>
+        <PageTitle>{REPORTS_CAPITALIZED}</PageTitle>
 
         {/* Filter Reports By */}
         <TabbedBar>
@@ -317,7 +324,7 @@ const Reports: React.FC = () => {
                         Select <ReportActionsSelectIcon />
                       </ReportActionsItem>
                       <ReportActionsItem
-                        onClick={() => navigate("/reports/create")}
+                        onClick={() => navigate(`/${REPORTS_LOWERCASE}/create`)}
                       >
                         New <ReportActionsNewIcon />
                       </ReportActionsItem>

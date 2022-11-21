@@ -1,6 +1,6 @@
 # Justice Counts Publisher: Frontend
 
-Welcome to the Justice Counts Publisher - a tool that allows agencies to report Justice Counts metrics.
+Welcome to the Justice Counts Publisher - a tool that allows agencies to record Justice Counts metrics.
 
 The frontend of this application, which lives in this directory, was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), written in [TypeScript](https://www.typescriptlang.org/docs), and authenticated via [Auth0](https://auth0.com/). The backend of the application lives in the [`recidiviz-data`](https://github.com/Recidiviz/recidiviz-data) Github repo in the [`justice_counts/control_panel`](https://github.com/Recidiviz/recidiviz-data/tree/main/recidiviz/justice_counts/control_panel) directory.
 

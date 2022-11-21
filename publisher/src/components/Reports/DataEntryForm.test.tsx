@@ -21,6 +21,7 @@ import React from "react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
 import { rootStore, StoreProvider } from "../../stores";
+import { REPORTS_LOWERCASE } from "../Global/constants";
 import ReportDataEntry from "./ReportDataEntry";
 
 beforeEach(() => {
@@ -144,9 +145,12 @@ describe("test data entry form", () => {
   test("displays data entry form based on reports", async () => {
     render(
       <StoreProvider>
-        <MemoryRouter initialEntries={["/reports/0"]}>
+        <MemoryRouter initialEntries={[`/${REPORTS_LOWERCASE}/0`]}>
           <Routes>
-            <Route path="/reports/:id" element={<ReportDataEntry />} />
+            <Route
+              path={`/${REPORTS_LOWERCASE}/:id`}
+              element={<ReportDataEntry />}
+            />
           </Routes>{" "}
         </MemoryRouter>
       </StoreProvider>
@@ -170,9 +174,12 @@ describe("test data entry form", () => {
 test("expect positive number value to not add field error (formErrors should be an empty object)", async () => {
   render(
     <StoreProvider>
-      <MemoryRouter initialEntries={["/reports/0"]}>
+      <MemoryRouter initialEntries={[`/${REPORTS_LOWERCASE}/0`]}>
         <Routes>
-          <Route path="/reports/:id" element={<ReportDataEntry />} />
+          <Route
+            path={`/${REPORTS_LOWERCASE}/:id`}
+            element={<ReportDataEntry />}
+          />
         </Routes>
       </MemoryRouter>
     </StoreProvider>
@@ -188,9 +195,12 @@ test("expect positive number value to not add field error (formErrors should be 
 test("expect negative number value to add field error (formErrors should contain an error property for the field)", async () => {
   render(
     <StoreProvider>
-      <MemoryRouter initialEntries={["/reports/0"]}>
+      <MemoryRouter initialEntries={[`/${REPORTS_LOWERCASE}/0`]}>
         <Routes>
-          <Route path="/reports/:id" element={<ReportDataEntry />} />
+          <Route
+            path={`/${REPORTS_LOWERCASE}/:id`}
+            element={<ReportDataEntry />}
+          />
         </Routes>
       </MemoryRouter>
     </StoreProvider>
@@ -206,9 +216,12 @@ test("expect negative number value to add field error (formErrors should contain
 test("expect empty value in metric field to add field error when there is a value in other fields such as contexts", async () => {
   render(
     <StoreProvider>
-      <MemoryRouter initialEntries={["/reports/0"]}>
+      <MemoryRouter initialEntries={[`/${REPORTS_LOWERCASE}/0`]}>
         <Routes>
-          <Route path="/reports/:id" element={<ReportDataEntry />} />
+          <Route
+            path={`/${REPORTS_LOWERCASE}/:id`}
+            element={<ReportDataEntry />}
+          />
         </Routes>
       </MemoryRouter>
     </StoreProvider>

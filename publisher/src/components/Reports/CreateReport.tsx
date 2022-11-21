@@ -47,6 +47,12 @@ import {
 } from "../Forms";
 import { Dropdown } from "../Forms/Dropdown";
 import {
+  REPORT_CAPITALIZED,
+  REPORT_LOWERCASE,
+  REPORTING_LOWERCASE,
+  REPORTS_LOWERCASE,
+} from "../Global/constants";
+import {
   PublishButton,
   PublishDataWrapper,
   TWO_PANEL_MAX_WIDTH,
@@ -78,7 +84,7 @@ const BoldFont = styled.span`
 
 const CreateButton = styled(PublishButton)`
   &::after {
-    content: "Create Report";
+    content: "${`Create ${REPORT_CAPITALIZED}`}";
   }
 `;
 
@@ -147,7 +153,7 @@ const CreateReport = () => {
     if (response && response instanceof Response) {
       if (response.status === 200) {
         navigate("/");
-        showToast("The report was successfully created", true);
+        showToast(`The ${REPORT_LOWERCASE} was successfully created`, true);
         const report = (await response.json()) as ReportOverview;
         const agency = userStore.userAgencies?.find(
           (a) => a.id === report.agency_id
@@ -161,11 +167,15 @@ const CreateReport = () => {
           "A report of that date range has already been created."
         )
       ) {
-        showToast(responseJson.description, false, "red");
+        showToast(
+          responseJson.description.replace("report", REPORT_LOWERCASE),
+          false,
+          "red"
+        );
         return;
       }
     }
-    showToast("Error creating report", false, "red");
+    showToast(`Error creating ${REPORT_LOWERCASE}`, false, "red");
   };
 
   const { frequency, month, year, annualStartMonth, isRecurring } =
@@ -188,13 +198,17 @@ const CreateReport = () => {
           <OnePanelBackLinkContainer>
             <GoBackToReportsOverviewLink onClick={() => navigate("/")} />
           </OnePanelBackLinkContainer>
-          <PreTitle>Create Report</PreTitle>
-          <Title>New Report</Title>
+          <PreTitle>Create {REPORT_CAPITALIZED}</PreTitle>
+          <Title>New {REPORT_CAPITALIZED}</Title>
           <TitleWrapper underlined>
-            <MetricSectionTitle>Report Parameters</MetricSectionTitle>
+            <MetricSectionTitle>
+              {REPORT_CAPITALIZED} Parameters
+            </MetricSectionTitle>
             <MetricSectionSubTitle />
           </TitleWrapper>
-          <Heading>What reporting frequency is this report?</Heading>
+          <Heading>
+            What {REPORTING_LOWERCASE} frequency is this {REPORT_LOWERCASE}?
+          </Heading>
           <BinaryRadioGroupWrapper>
             <BinaryRadioButton
               type="radio"
@@ -218,7 +232,7 @@ const CreateReport = () => {
           {createReportFormValues.frequency === "ANNUAL" && (
             <>
               <Heading>
-                What year standard do you use for annual reports?
+                What year standard do you use for annual {REPORTS_LOWERCASE}?
               </Heading>
               <BinaryRadioGroupWrapper>
                 <BinaryRadioButton
@@ -266,7 +280,7 @@ const CreateReport = () => {
         </BinaryRadioGroupContainer> */}
           {createReportFormValues.isRecurring === false && (
             <>
-              <Heading>When should this report start?</Heading>
+              <Heading>When should this {REPORT_LOWERCASE} start?</Heading>
               <BinaryRadioGroupWrapper>
                 {createReportFormValues.frequency === "MONTHLY" && (
                   <Dropdown onChange={updateMonth} value={month}>
@@ -295,8 +309,8 @@ const CreateReport = () => {
             </>
           )}
           <CreateReportInfoContainer>
-            The <BoldFont>{isRecurring ? `recurring` : ``}</BoldFont> report
-            will be created for{` `}
+            The <BoldFont>{isRecurring ? `recurring` : ``}</BoldFont>{" "}
+            {REPORT_LOWERCASE} will be created for{` `}
             <BoldFont>
               {printDateRangeFromMonthYear(
                 frequency === "ANNUAL" ? annualStartMonth : month,

@@ -28,6 +28,7 @@ import {
   TextInput,
 } from "../Forms";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
+import { REPORTS_LOWERCASE2 } from "../Global/constants";
 import {
   Label,
   MetricContextContainer,
@@ -56,9 +57,9 @@ export const ContextConfiguration: React.FC = observer(() => {
     <MetricContextContainer>
       <MetricContextHeader>Context</MetricContextHeader>
       <Subheader>
-        Anything entered here will appear as the default value for all reports.
-        If you are entering data for a particular month, you can still replace
-        this as necessary.
+        Anything entered here will appear as the default value for all{" "}
+        {REPORTS_LOWERCASE2}. If you are entering data for a particular month,
+        you can still replace this as necessary.
       </Subheader>
 
       {activeContextKeys.map((contextKey) => {

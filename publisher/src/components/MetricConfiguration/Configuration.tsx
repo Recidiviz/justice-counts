@@ -23,6 +23,7 @@ import { removeSnakeCase } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import blueCheck from "../assets/status-check-icon.png";
 import { BinaryRadioButton } from "../Forms";
+import { REPORT_VERB_LOWERCASE, REPORTS_LOWERCASE2 } from "../Global/constants";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
@@ -106,12 +107,12 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
         {/* Metric (Enable/Disable) */}
         <MetricOnOffWrapper>
           <Header>
-            Are you currently able to report any part of this metric?
+            Are you currently able to {REPORT_VERB_LOWERCASE} any part of this
+            metric?
           </Header>
           <Subheader>
-            Answering “No” means that {metricDisplayName} will not appear on
-            automatically generated reports from here on out. You can change
-            this later.
+            Answering “No” means that {metricDisplayName} will not appear on{" "}
+            {REPORTS_LOWERCASE2} from here on out. You can change this later.
           </Subheader>
 
           <RadioButtonGroupWrapper>
@@ -160,8 +161,8 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
             <BreakdownHeader>Breakdowns</BreakdownHeader>
             <Subheader>
               Mark (using the checkmark) each of the breakdowns below that your
-              agency will be able to report. Click the arrow to edit the
-              definition for each breakdown.
+              agency will be able to {REPORT_VERB_LOWERCASE}. Click the arrow to
+              edit the definition for each breakdown.
             </Subheader>
 
             {/* Disaggregations (Enable/Disable) */}

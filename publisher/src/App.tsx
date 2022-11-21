@@ -22,6 +22,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import { trackNavigation } from "./analytics";
 import { DataUpload } from "./components/DataUpload";
 import { PageWrapper } from "./components/Forms";
+import { REPORTS_LOWERCASE } from "./components/Global/constants";
 import Header from "./components/Header";
 import { MetricsView } from "./components/MetricConfiguration/MetricsView";
 import CreateReports from "./components/Reports/CreateReport";
@@ -44,8 +45,14 @@ const App: React.FC = (): ReactElement => {
         <Routes>
           <Route path="/" element={<Reports />} />
           <Route path="/data" element={<MetricsView />} />
-          <Route path="/reports/create" element={<CreateReports />} />
-          <Route path="/reports/:id" element={<ReportDataEntry />} />
+          <Route
+            path={`/${REPORTS_LOWERCASE}/create`}
+            element={<CreateReports />}
+          />
+          <Route
+            path={`/${REPORTS_LOWERCASE}/:id`}
+            element={<ReportDataEntry />}
+          />
           <Route path="/settings/*" element={<Settings />} />
           <Route path="/upload" element={<DataUpload />} />
           <Route path="/review-metrics" element={<ReviewMetrics />} />

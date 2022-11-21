@@ -24,6 +24,12 @@ import styled from "styled-components/macro";
 
 import closeIcon from "../assets/dark-close-icon.png";
 import { ReactComponent as Logo } from "../assets/jc-logo-vector.svg";
+import {
+  REPORT_LOWERCASE,
+  REPORTING_PERIOD_LOWERCASE,
+  REPORTS_CAPITALIZED,
+  REPORTS_LOWERCASE,
+} from "../Global/constants";
 import { ONE_PANEL_MAX_WIDTH } from "../Reports/ReportDataEntry.styles";
 import { OnboardingBackdropContainer, OnboardingContainer } from "./Onboarding";
 
@@ -163,8 +169,9 @@ export const OnboardingDataEntrySummary: React.FC = () => {
 
             <h1>Entering Data</h1>
             <p>
-              The purpose of this view is to enter data for a given reporting
-              period. You can access all reports from the Reports View.{" "}
+              The purpose of this view is to enter data for a given{" "}
+              {REPORTING_PERIOD_LOWERCASE}. You can access all{" "}
+              {REPORTS_LOWERCASE} from the {REPORTS_CAPITALIZED} View.{" "}
             </p>
 
             <span>
@@ -201,10 +208,10 @@ export const OnboardingDataEntrySummary: React.FC = () => {
             <p>
               Clicking this button will first take you to a page to review the
               numbers that you have entered before publishing. Publishing the
-              data will mark the report as “Published” in the Reports View and
-              the underlying data will be made available to the public via
-              Justice Counts publishing channels* (public dashboard, data feed,
-              etc).
+              data will mark the {REPORT_LOWERCASE} as “Published” in the{" "}
+              {REPORTS_CAPITALIZED} View and the underlying data will be made
+              available to the public via Justice Counts publishing channels*
+              (public dashboard, data feed, etc).
             </p>
             <p>
               *<strong>NOTE</strong>: At this stage, data will just be marked as

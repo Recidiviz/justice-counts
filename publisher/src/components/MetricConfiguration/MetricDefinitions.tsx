@@ -20,6 +20,7 @@ import React, { Fragment, useState } from "react";
 
 import { useStore } from "../../stores";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
+import { REPORT_VERB_LOWERCASE } from "../Global/constants";
 import {
   ContextConfiguration,
   DefinitionDisplayName,
@@ -171,8 +172,8 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                 Indicate which of the following categories your agency considers
                 to be part of this metric or breakdown.
                 <span>
-                  You are NOT required to gather data for these specific
-                  categories.
+                  You are NOT required to {REPORT_VERB_LOWERCASE} data for these
+                  specific categories.
                 </span>
               </DefinitionsDescription>
 

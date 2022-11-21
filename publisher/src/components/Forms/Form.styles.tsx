@@ -22,6 +22,7 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
+import { REPORTS_CAPITALIZED } from "../Global/constants";
 import {
   DATA_ENTRY_WIDTH,
   ONE_PANEL_MAX_WIDTH,
@@ -297,7 +298,7 @@ export const GoBack = styled.a`
 
 export const GoBackToReportsOverviewLink = styled(GoBack)`
   &::after {
-    content: "← Back to Reports Overview";
+    content: "${`← Back to ${REPORTS_CAPITALIZED} Overview`}";
   }
 `;
 

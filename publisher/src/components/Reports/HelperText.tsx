@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import { useStore } from "../../stores";
+import { REPORTING_CAPITALIZED } from "../Global/constants";
 import {
   BREAKPOINT_HEIGHT,
   TWO_PANEL_MAX_WIDTH,
@@ -145,7 +146,7 @@ const HelperText: React.FC<{
 
       {currentMetric.reporting_note && (
         <HelperTextSection>
-          <HelperTextTitle>Reporting Note</HelperTextTitle>
+          <HelperTextTitle>{REPORTING_CAPITALIZED} Note</HelperTextTitle>
           <HelperTextContent>{currentMetric.reporting_note}</HelperTextContent>
         </HelperTextSection>
       )}
