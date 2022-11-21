@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { ReactComponent as GridIcon } from "@justice-counts/common/assets/grid-icon.svg";
 import BarChart from "@justice-counts/common/components/DataViz/BarChart";
 import Legend from "@justice-counts/common/components/DataViz/Legend";
 import {
@@ -24,14 +25,25 @@ import {
   DataVizTimeRangesMap,
   DimensionNamesByDisaggregation,
 } from "@justice-counts/common/types";
+import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
 import React, { useEffect } from "react";
 
 import {
   DatapointsViewContainer,
   DatapointsViewControlsContainer,
   DatapointsViewControlsDropdown,
+  DatapointsViewControlsRow,
+  ExtendedDropdown,
+  ExtendedDropdownMenuItem,
   MetricInsight,
   MetricInsightsRow,
+  MobileFiltersButton,
+  MobileFiltersRow,
+  MobileSelectMetricsButton,
+  MobileSelectMetricsButtonContainer,
+  MobileSelectMetricsModalContainer,
+  SelectMetricsButtonContainer,
+  SelectMetricsButtonText,
 } from "./DatapointsView.styles";
 import {
   filterByTimeRange,
@@ -45,12 +57,50 @@ import {
 
 const noDisaggregationOption = "None";
 
+const SelectMetricButton = () => (
+  <SelectMetricsButtonContainer>
+    <GridIcon />
+    <SelectMetricsButtonText />
+  </SelectMetricsButtonContainer>
+);
+
+const SelectMetricButtonDropdown: React.FC<{
+  onSelect?: (metricKey: string) => void;
+  options?: string[];
+}> = ({ onSelect, options }) => (
+  <ExtendedDropdown>
+    <DropdownToggle>
+      <SelectMetricButton />
+    </DropdownToggle>
+    <DropdownMenu>
+      {options?.map((value) => (
+        <ExtendedDropdownMenuItem
+          key={value}
+          onClick={() => {
+            if (onSelect) {
+              onSelect(value);
+            }
+          }}
+        >
+          {value}
+        </ExtendedDropdownMenuItem>
+      ))}
+    </DropdownMenu>
+  </ExtendedDropdown>
+);
+
 export const DatapointsView: React.FC<{
   datapointsGroupedByAggregateAndDisaggregations: DatapointsGroupedByAggregateAndDisaggregations;
   dimensionNamesByDisaggregation: DimensionNamesByDisaggregation;
+  metricNames?: string[];
+  onMetricsSelect?: (metric: string) => void;
+  resizeHeight?: boolean;
 }> = ({
   datapointsGroupedByAggregateAndDisaggregations,
   dimensionNamesByDisaggregation,
+  metricNames,
+  onMetricsSelect,
+  resizeHeight = false,
 }) => {
   const [selectedTimeRange, setSelectedTimeRange] =
     React.useState<string>("All");
@@ -58,6 +108,8 @@ export const DatapointsView: React.FC<{
     React.useState<string>(noDisaggregationOption);
   const [datapointsViewSetting, setDatapointsViewSetting] =
     React.useState<DatapointsViewSetting>("Count");
+  const [mobileSelectMetricsVisible, setMobileSelectMetricsVisible] =
+    React.useState<boolean>(false);
 
   const data =
     (selectedDisaggregation !== noDisaggregationOption &&
@@ -95,6 +147,16 @@ export const DatapointsView: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datapointsGroupedByAggregateAndDisaggregations]);
 
+  /** Prevent body from scrolling when modal is open */
+  useEffect(() => {
+    if (mobileSelectMetricsVisible) {
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [mobileSelectMetricsVisible]);
+
   const renderChartForMetric = () => {
     return (
       <BarChart
@@ -107,6 +169,7 @@ export const DatapointsView: React.FC<{
         percentageView={
           !!selectedDisaggregation && datapointsViewSetting === "Percentage"
         }
+        resizeHeight={resizeHeight}
       />
     );
   };
@@ -183,10 +246,28 @@ export const DatapointsView: React.FC<{
 
   return (
     <DatapointsViewContainer>
-      {renderDataVizControls()}
-      {renderMetricInsightsRow()}
+      <DatapointsViewControlsRow>
+        <SelectMetricButtonDropdown
+          options={metricNames}
+          onSelect={onMetricsSelect}
+        />
+        {renderDataVizControls()}
+      </DatapointsViewControlsRow>
+      <MobileFiltersRow>
+        <MobileFiltersButton />
+      </MobileFiltersRow>
       {renderChartForMetric()}
+      {renderMetricInsightsRow()}
       {renderLegend()}
+      <MobileSelectMetricsButtonContainer>
+        <MobileSelectMetricsButton
+          onClick={() => setMobileSelectMetricsVisible(true)}
+        >
+          <GridIcon />
+          <SelectMetricsButtonText />
+        </MobileSelectMetricsButton>
+      </MobileSelectMetricsButtonContainer>
+      {mobileSelectMetricsVisible && <MobileSelectMetricsModalContainer />}
     </DatapointsViewContainer>
   );
 };

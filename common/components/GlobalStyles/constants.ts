@@ -17,3 +17,4 @@
 
 export const HEADER_BAR_HEIGHT = 64;
 export const TABLET_WIDTH = 834;
+export const COMMON_DESKTOP_WIDTH = 1366;

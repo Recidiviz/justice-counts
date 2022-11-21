@@ -17,6 +17,7 @@
 
 import {
   palette,
+  TABLET_WIDTH,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import {
@@ -81,14 +82,14 @@ export const DatapointsViewContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  padding: 0 15px 0 15px;
+  height: 100%;
 `;
 
 export const DatapointsViewControlsContainer = styled.div`
   display: flex;
   flex-direction: row;
-  border-bottom: 1px solid ${palette.highlight.grey9};
-  border-top: 1px solid ${palette.highlight.grey9};
+  flex-grow: 1;
+  border: 1px solid ${palette.highlight.grey9};
 `;
 
 const DatapointsViewDropdown = styled(Dropdown)`
@@ -218,6 +219,10 @@ export const MetricInsightsRow = styled.div`
   flex-direction: row;
   margin-top: 16px;
   margin-bottom: 16px;
+
+  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+    flex-direction: column;
+  }
 `;
 
 const MetricInsightContainer = styled.div`
@@ -227,6 +232,16 @@ const MetricInsightContainer = styled.div`
     margin-right: 0;
     text-align: right;
     margin-left: auto;
+  }
+
+  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+    text-align: left;
+    margin-bottom: 16px;
+
+    &:last-child {
+      text-align: left;
+      margin-left: 0;
+    }
   }
 `;
 
@@ -253,3 +268,127 @@ export const MetricInsight: React.FC<MetricInsightProps> = ({
     <MetricInsightValue>{value}</MetricInsightValue>
   </MetricInsightContainer>
 );
+
+export const DatapointsViewControlsRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+
+  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+    display: none;
+  }
+`;
+
+export const MobileFiltersRow = styled.div`
+  display: none;
+
+  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+    display: flex;
+    border-top: 1px solid ${palette.highlight.grey9};
+    padding-top: 8px;
+  }
+`;
+
+export const MobileFiltersButton = styled.div`
+  ${typography.sizeCSS.small}
+  padding: 4px 10px;
+  border: 1px solid ${palette.highlight.grey4};
+  border-radius: 24px;
+
+  &::after {
+    content: "▾ Filters";
+  }
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
+`;
+
+export const SelectMetricsButtonContainer = styled.div`
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  display: flex;
+  align-items: center;
+  border-radius: 2px;
+  background: ${palette.solid.blue};
+  gap: 8px;
+  color: ${palette.solid.white};
+
+  &:hover {
+    cursor: pointer;
+    background: ${palette.solid.darkblue};
+  }
+`;
+
+export const SelectMetricsButtonText = styled.div`
+  ${typography.sizeCSS.normal}
+  font-weight: 400;
+
+  &::after {
+    content: "Select Metric";
+  }
+`;
+
+export const MobileSelectMetricsButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  path {
+    fill: ${palette.solid.darkgrey};
+  }
+  position: fixed;
+  bottom: 24px;
+  justify-content: center;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+
+  @media only screen and (min-width: ${TABLET_WIDTH}px) {
+    display: none;
+  }
+`;
+
+export const MobileSelectMetricsButton = styled.div`
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border: 1px solid ${palette.highlight.grey4};
+  border-radius: 24px;
+  background: ${palette.solid.white};
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
+`;
+
+export const ExtendedDropdown = styled(Dropdown)`
+  & > button {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    transition-duration: 0ms;
+    background: none;
+    padding: 0;
+    border: none;
+  }
+  &:hover > button {
+    background: none;
+  }
+`;
+
+export const MobileSelectMetricsModalContainer = styled.div`
+  z-index: 3;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: ${palette.solid.blue};
+  color: ${palette.solid.white};
+  overflow-y: auto;
+`;
