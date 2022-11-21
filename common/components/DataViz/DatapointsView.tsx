@@ -65,19 +65,19 @@ const SelectMetricButton = () => (
 );
 
 const SelectMetricButtonDropdown: React.FC<{
-  onSelect: (metricKey: string) => void;
-  options: string[];
+  onSelect?: (metricKey: string) => void;
+  options?: string[];
 }> = ({ onSelect, options }) => (
   <ExtendedDropdown>
     <DropdownToggle>
       <SelectMetricButton />
     </DropdownToggle>
     <DropdownMenu>
-      {options.map((value) => (
+      {options?.map((value) => (
         <ExtendedDropdownMenuItem
           key={value}
           onClick={() => {
-            onSelect(value);
+            onSelect && onSelect(value);
           }}
         >
           {value}
@@ -90,8 +90,8 @@ const SelectMetricButtonDropdown: React.FC<{
 export const DatapointsView: React.FC<{
   datapointsGroupedByAggregateAndDisaggregations: DatapointsGroupedByAggregateAndDisaggregations;
   dimensionNamesByDisaggregation: DimensionNamesByDisaggregation;
-  metricNames: string[];
-  onMetricsSelect: (metric: string) => void;
+  metricNames?: string[];
+  onMetricsSelect?: (metric: string) => void;
   resizeHeight?: boolean;
 }> = ({
   datapointsGroupedByAggregateAndDisaggregations,
