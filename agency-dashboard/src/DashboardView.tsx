@@ -43,7 +43,7 @@ import {
 import { HeaderBar } from "./Header/HeaderBar";
 import { useStore } from "./stores";
 
-const getWidth = () =>
+const getScreenWidth = () =>
   window.innerWidth ||
   document.documentElement.clientWidth ||
   document.body.clientWidth;
@@ -85,7 +85,7 @@ const MetricOverviewActionShareButton = () => (
 
 const DashboardView = () => {
   const [shouldResizeChartHeight, setShouldResizeChartHeight] =
-    useState<boolean>(getWidth() >= COMMON_DESKTOP_WIDTH);
+    useState<boolean>(getScreenWidth() >= COMMON_DESKTOP_WIDTH);
   const navigate = useNavigate();
   const params = useParams();
   const agencyId = Number(params.id);
@@ -114,11 +114,11 @@ const DashboardView = () => {
   useEffect(() => {
     const resizeListener = () => {
       // change width from the state object
-      if (shouldResizeChartHeight && getWidth() < COMMON_DESKTOP_WIDTH) {
+      if (shouldResizeChartHeight && getScreenWidth() < COMMON_DESKTOP_WIDTH) {
         setShouldResizeChartHeight(false);
       } else if (
         !shouldResizeChartHeight &&
-        getWidth() >= COMMON_DESKTOP_WIDTH
+        getScreenWidth() >= COMMON_DESKTOP_WIDTH
       ) {
         setShouldResizeChartHeight(true);
       }

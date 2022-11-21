@@ -265,21 +265,7 @@ export const DatapointsView: React.FC<{
           <SelectMetricsButtonText />
         </MobileSelectMetricsButton>
       </MobileSelectMetricsButtonContainer>
-      {mobileSelectMetricsVisible && (
-        <MobileSelectMetricsModalContainer>
-          {/* <MobileSelectMetricsModalTopRow>
-            <MobileSelectMetricsModalCloseButton
-              onClick={() => setMobileSelectMetricsVisible(false)}
-            />
-          </MobileSelectMetricsModalTopRow>
-          <MobileSelectMetricsModalAgencyTitle>
-            Clackamas County Jail
-          </MobileSelectMetricsModalAgencyTitle>
-          <MobileSelectMetricsModalMetricsTitle>
-            {`${5} Metrics Available`}
-          </MobileSelectMetricsModalAgencyTitle> */}
-        </MobileSelectMetricsModalContainer>
-      )}
+      {mobileSelectMetricsVisible && <MobileSelectMetricsModalContainer />}
     </DatapointsViewContainer>
   );
 };
