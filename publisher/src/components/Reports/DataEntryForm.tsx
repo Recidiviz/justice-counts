@@ -361,7 +361,7 @@ const DataEntryForm: React.FC<{
                         disabled={isPublished || hasVersionConflict}
                       />
 
-                      {/* Disaggregations */}
+                      {/* Disaggregations & Dimensions */}
                       {metric.disaggregations.length > 0 && (
                         <TabbedDisaggregations
                           reportID={reportID}
@@ -397,7 +397,6 @@ const DataEntryForm: React.FC<{
         </Form>
 
         {/* Onboarding */}
-
         {userStore.onboardingTopicsCompleted?.dataentryview === false &&
           showOnboarding && (
             <Onboarding
