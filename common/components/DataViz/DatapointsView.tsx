@@ -77,7 +77,9 @@ const SelectMetricButtonDropdown: React.FC<{
         <ExtendedDropdownMenuItem
           key={value}
           onClick={() => {
-            onSelect && onSelect(value);
+            if (onSelect) {
+              onSelect(value);
+            }
           }}
         >
           {value}
