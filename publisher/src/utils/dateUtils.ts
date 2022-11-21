@@ -74,7 +74,7 @@ export const printReportFrequency = (
   month: number,
   frequency: ReportFrequency
 ): string => {
-  if (frequency === "ANNUAL" && month !== 1) {
+  if (frequency === "ANNUAL") {
     return `${frequency.toLowerCase()} (${monthsByName[month - 1]})`;
   }
 
