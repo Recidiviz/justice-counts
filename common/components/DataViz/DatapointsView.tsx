@@ -103,6 +103,12 @@ export const DatapointsView: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datapointsGroupedByAggregateAndDisaggregations]);
 
+  useEffect(() => {
+    if (selectedDisaggregation === noDisaggregationOption) {
+      setDatapointsViewSetting("Count");
+    }
+  }, [selectedDisaggregation]);
+
   const renderChartForMetric = () => {
     return (
       <BarChart
