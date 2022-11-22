@@ -686,7 +686,6 @@ class MetricConfigStore {
           ...acc[dimension.race],
           [dimension.ethnicity]: dimension,
         };
-
         return acc;
       },
       {} as {
@@ -718,7 +717,6 @@ class MetricConfigStore {
       state === "NO_ETHNICITY_HISPANIC_AS_RACE" && unknownRaceDisabled
         ? "NO_ETHNICITY_HISPANIC_NOT_SPECIFIED"
         : state;
-    const updatedDimensions = [] as UpdatedDimension[];
 
     /**
      * When Unknown Race dimensions are disabled AND user is switching to NO_ETHNICITY_HISPANIC_AS_RACE state,
@@ -727,18 +725,6 @@ class MetricConfigStore {
     if (unknownRaceDisabled && state === "NO_ETHNICITY_HISPANIC_AS_RACE") {
       ethnicitiesByRace.Unknown.Hispanic.enabled = true;
       ethnicitiesByRace.Unknown["Not Hispanic"].enabled = true;
-      updatedDimensions.push(
-        ...[
-          {
-            ...ethnicitiesByRace.Unknown.Hispanic,
-            enabled: true,
-          },
-          {
-            ...ethnicitiesByRace.Unknown["Not Hispanic"],
-            enabled: true,
-          },
-        ]
-      );
       sanitizedState = state;
     }
 
@@ -770,21 +756,22 @@ class MetricConfigStore {
           ethnicitiesByRace[race][ethnicity].key,
           gridStates[sanitizedState][race][ethnicity]
         );
-
-        updatedDimensions.push({
-          ...ethnicitiesByRace[race][ethnicity],
-          enabled: gridStates[sanitizedState][race][ethnicity],
-        });
       });
     });
 
-    /** Return array of dimensions that were updated */
+    const raceEthnicitiesDimensions =
+      this.dimensions[systemMetricKey][RACE_ETHNICITY_DISAGGREGATION_KEY];
+    const dimensions =
+      raceEthnicitiesDimensions &&
+      (Object.values(raceEthnicitiesDimensions) as UpdatedDimension[]);
+
+    /** Return an object w/ all dimensions in the desired backend data structure for saving purposes */
     return {
       key: metricKey,
       disaggregations: [
         {
           key: RACE_ETHNICITY_DISAGGREGATION_KEY,
-          dimensions: updatedDimensions,
+          dimensions,
         },
       ],
     };
@@ -799,7 +786,6 @@ class MetricConfigStore {
     metricKey: string
   ): UpdatedDisaggregation => {
     const ethnicitiesByRace = this.getEthnicitiesByRace(system, metricKey);
-    const updatedDimensions = [] as UpdatedDimension[];
 
     ethnicities.forEach((ethnicity) => {
       /** No update if intended update matches the current state (e.g. enabling an already enabled dimension) */
@@ -819,17 +805,25 @@ class MetricConfigStore {
         ethnicitiesByRace[race][ethnicity].key,
         enabled
       );
-
-      updatedDimensions.push(ethnicitiesByRace[race][ethnicity]);
     });
 
-    /** Return array of dimensions that were updated */
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
+    const raceEthnicitiesDimensions =
+      this.dimensions[systemMetricKey][RACE_ETHNICITY_DISAGGREGATION_KEY];
+    const dimensions =
+      raceEthnicitiesDimensions &&
+      (Object.values(raceEthnicitiesDimensions) as UpdatedDimension[]);
+
+    /** Return an object w/ all dimensions in the desired backend data structure for saving purposes */
     return {
       key: metricKey,
       disaggregations: [
         {
           key: RACE_ETHNICITY_DISAGGREGATION_KEY,
-          dimensions: updatedDimensions,
+          dimensions,
         },
       ],
     };
