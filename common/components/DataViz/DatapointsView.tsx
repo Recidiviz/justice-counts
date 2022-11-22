@@ -293,7 +293,6 @@ export const DatapointsView: React.FC<{
         <MobileFiltersButton />
       </MobileFiltersRow>
       {renderChartForMetric()}
-      {/* {renderMetricInsightsRow()} */}
       {renderLegend()}
       <MobileSelectMetricsButtonContainer>
         <MobileSelectMetricsButton
