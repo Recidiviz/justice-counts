@@ -392,3 +392,40 @@ export const MobileSelectMetricsModalContainer = styled.div`
   color: ${palette.solid.white};
   overflow-y: auto;
 `;
+
+export const MobileSelectMetricsModalInnerContainer = styled.div`
+  padding: 24px;
+`;
+
+export const MobileSelectMetricsAgency = styled.div`
+  ${typography.sizeCSS.medium}
+  color: ${palette.solid.white};
+`;
+
+export const MobileSelectMetricsTitle = styled.div`
+  ${typography.sizeCSS.title}
+  color: ${palette.solid.white};
+`;
+
+export const MobileSelectMetricsOption = styled.div`
+  ${typography.sizeCSS.medium}
+  color: ${palette.solid.white};
+`;
+
+export const ModalCloseButton = styled.div`
+  ${typography.sizeCSS.medium}
+  font-weight: 400;
+  padding: 24px 0px 16px 16px;
+  color: ${palette.solid.white};
+  position: absolute;
+  top: 0;
+  right: 24px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.85;
+  }
+`;

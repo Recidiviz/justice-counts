@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { ReactComponent as CloseIcon } from "@justice-counts/common/assets/close-icon.svg";
 import { ReactComponent as GridIcon } from "@justice-counts/common/assets/grid-icon.svg";
 import BarChart from "@justice-counts/common/components/DataViz/BarChart";
 import Legend from "@justice-counts/common/components/DataViz/Legend";
@@ -35,22 +36,23 @@ import {
   DatapointsViewControlsRow,
   ExtendedDropdown,
   ExtendedDropdownMenuItem,
-  MetricInsight,
-  MetricInsightsRow,
   MobileFiltersButton,
   MobileFiltersRow,
+  MobileSelectMetricsAgency,
   MobileSelectMetricsButton,
   MobileSelectMetricsButtonContainer,
   MobileSelectMetricsModalContainer,
+  MobileSelectMetricsModalInnerContainer,
+  MobileSelectMetricsOption,
+  MobileSelectMetricsTitle,
+  ModalCloseButton,
   SelectMetricsButtonContainer,
   SelectMetricsButtonText,
 } from "./DatapointsView.styles";
+import { MetricInsights } from "./MetricInsights";
 import {
   filterByTimeRange,
   filterNullDatapoints,
-  getAverageTotalValue,
-  getLatestDateFormatted,
-  getPercentChangeOverTime,
   sortDatapointDimensions,
   transformData,
 } from "./utils";
@@ -229,19 +231,8 @@ export const DatapointsView: React.FC<{
         selectedTimeRangeValue
       )
     );
-    const percentChange = getPercentChangeOverTime(dataSelectedInTimeRange);
-    const avgValue = getAverageTotalValue(dataSelectedInTimeRange, isAnnual);
 
-    return (
-      <MetricInsightsRow>
-        <MetricInsight title="% Total Change" value={percentChange} />
-        <MetricInsight title="Avg. Total Value" value={avgValue} />
-        <MetricInsight
-          title="Most Recent"
-          value={getLatestDateFormatted(dataSelectedInTimeRange, isAnnual)}
-        />
-      </MetricInsightsRow>
-    );
+    return <MetricInsights datapoints={dataSelectedInTimeRange} />;
   };
 
   return (
@@ -267,7 +258,27 @@ export const DatapointsView: React.FC<{
           <SelectMetricsButtonText />
         </MobileSelectMetricsButton>
       </MobileSelectMetricsButtonContainer>
-      {mobileSelectMetricsVisible && <MobileSelectMetricsModalContainer />}
+      {mobileSelectMetricsVisible && (
+        <MobileSelectMetricsModalContainer>
+          <MobileSelectMetricsModalInnerContainer>
+            <ModalCloseButton
+              onClick={() => setMobileSelectMetricsVisible(false)}
+            >
+              Close
+              <CloseIcon />
+            </ModalCloseButton>
+            <MobileSelectMetricsAgency>
+              Clackamas County Jail
+            </MobileSelectMetricsAgency>
+            <MobileSelectMetricsTitle>
+              5 Metrics Available
+            </MobileSelectMetricsTitle>
+            {metricNames?.map((metric) => (
+              <MobileSelectMetricsOption>{metric}</MobileSelectMetricsOption>
+            ))}
+          </MobileSelectMetricsModalInnerContainer>
+        </MobileSelectMetricsModalContainer>
+      )}
     </DatapointsViewContainer>
   );
 };
