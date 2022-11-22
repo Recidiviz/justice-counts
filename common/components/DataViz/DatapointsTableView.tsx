@@ -22,7 +22,6 @@ import {
   RawDatapoint,
   ReportFrequency,
 } from "../../types";
-import { DatapointsTableTitle } from "./DatapointsTableTitle";
 import {
   DatapointsTableBottomBorder,
   DatapointsTableContainer,
@@ -47,6 +46,7 @@ import {
   OrangeText,
   StrikethroughText,
 } from "./DatapointsTableView.styles";
+import { DatapointsTitle } from "./DatapointsTitle";
 import { formatDateShort, sortDatapointDimensions } from "./utils";
 
 type AggregationRowData = (RawDatapoint | undefined)[];
@@ -135,7 +135,7 @@ export const DatapointsTableView: React.FC<{
     <>
       {metricName && (
         <DatapointsTableViewTitleWrapper>
-          <DatapointsTableTitle
+          <DatapointsTitle
             metricName={metricName}
             metricFrequency={metricFrequency}
           />

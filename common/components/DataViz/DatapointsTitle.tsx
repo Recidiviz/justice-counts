@@ -15,32 +15,49 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { ReportFrequency } from "../../types";
 import { Badge, BadgeColorMapping } from "../Badge";
-import { MetricTitle, MetricTitleWrapper } from "./DatapointsTableTitle.styles";
+import {
+  MetricTitle,
+  MetricTitleWrapper,
+  MetricTitleWrapperGradient,
+} from "./DatapointsTitle.styles";
 
 const reportFrequencyBadgeColors: BadgeColorMapping = {
   ANNUAL: "ORANGE",
   MONTHLY: "GREEN",
 };
 
-export const DatapointsTableTitle: React.FC<{
+export const DatapointsTitle: React.FC<{
   metricName: string;
   metricFrequency?: string;
-}> = ({ metricName, metricFrequency }) => {
+  insights?: string;
+}> = ({ metricName, metricFrequency, insights }) => {
+  const [titleWidth, setTitleWidth] = useState<number>(0);
+  const titleRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (titleRef.current) setTitleWidth(titleRef.current.offsetWidth);
+  }, [metricName]);
+
   return (
     <MetricTitleWrapper>
-      <MetricTitle>{metricName}</MetricTitle>
-      {metricFrequency && (
-        <Badge
-          color={reportFrequencyBadgeColors[metricFrequency as ReportFrequency]}
-          noMargin
-        >
-          {metricFrequency}
-        </Badge>
-      )}
+      <MetricTitle ref={titleRef} titleWidth={titleWidth} title={insights}>
+        {metricName}
+        {metricFrequency && (
+          <Badge
+            color={
+              reportFrequencyBadgeColors[metricFrequency as ReportFrequency]
+            }
+            noMargin
+          >
+            {metricFrequency}
+          </Badge>
+        )}
+      </MetricTitle>
+      {titleWidth > 700 && <MetricTitleWrapperGradient />}
     </MetricTitleWrapper>
   );
 };

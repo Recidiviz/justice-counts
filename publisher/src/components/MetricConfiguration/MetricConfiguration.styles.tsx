@@ -152,11 +152,13 @@ export const DisclaimerLink = styled.span`
 
 export const PanelContainerRight = styled.div`
   width: 75%;
+  min-width: 730px;
   height: 100%;
   display: flex;
   position: relative;
   flex-direction: column;
   overflow-y: scroll;
+  overflow-x: scroll;
 `;
 
 export const PanelRightTopButtonsContainer = styled.div`

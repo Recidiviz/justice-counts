@@ -25,9 +25,9 @@ import {
   DimensionNamesByDisaggregation,
   ReportFrequency,
 } from "@justice-counts/common/types";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
-import { DatapointsTableTitle } from "./DatapointsTableTitle";
+import { DatapointsTitle } from "./DatapointsTitle";
 import {
   DatapointsViewContainer,
   DatapointsViewControlsContainer,
@@ -66,6 +66,8 @@ export const DatapointsView: React.FC<{
     React.useState<string>(noDisaggregationOption);
   const [datapointsViewSetting, setDatapointsViewSetting] =
     React.useState<DatapointsViewSetting>("Count");
+  const [insightsWidth, setInsightsWidth] = React.useState(0);
+  const insightsRef = useRef<HTMLDivElement | null>(null);
 
   const data =
     (selectedDisaggregation !== noDisaggregationOption &&
@@ -108,6 +110,10 @@ export const DatapointsView: React.FC<{
       setDatapointsViewSetting("Count");
     }
   }, [selectedDisaggregation]);
+
+  useEffect(() => {
+    if (insightsRef.current) setInsightsWidth(insightsRef.current.offsetWidth);
+  }, [metricName]);
 
   const renderChartForMetric = () => {
     return (
@@ -173,22 +179,25 @@ export const DatapointsView: React.FC<{
     );
   };
 
-  const renderMetricInsightsRow = () => {
-    const dataSelectedInTimeRange = filterNullDatapoints(
-      filterByTimeRange(
-        datapointsGroupedByAggregateAndDisaggregations?.aggregate || [],
-        selectedTimeRangeValue
-      )
-    );
-    const percentChange = getPercentChangeOverTime(dataSelectedInTimeRange);
-    const avgValue = getAverageTotalValue(dataSelectedInTimeRange, isAnnual);
-    const mostRecentValue = getLatestDateFormatted(
-      dataSelectedInTimeRange,
-      isAnnual
-    );
+  // insights data
+  const dataSelectedInTimeRange = filterNullDatapoints(
+    filterByTimeRange(
+      datapointsGroupedByAggregateAndDisaggregations?.aggregate || [],
+      selectedTimeRangeValue
+    )
+  );
+  const percentChange = getPercentChangeOverTime(dataSelectedInTimeRange);
+  const avgValue = getAverageTotalValue(dataSelectedInTimeRange, isAnnual);
+  const mostRecentValue = getLatestDateFormatted(
+    dataSelectedInTimeRange,
+    isAnnual
+  );
 
+  const chartViewInsightsInfo = `Year-to-Year: ${percentChange},\nAvg. Total Value: ${avgValue},\nMost Recent: ${mostRecentValue}`;
+
+  const renderMetricInsightsRow = () => {
     return (
-      <MetricInsightsRow>
+      <MetricInsightsRow ref={insightsRef} selfWidth={insightsWidth}>
         <MetricInsight title="Year-to-Year" value={percentChange} />
         <MetricInsight title="Avg. Total Value" value={avgValue} />
         <MetricInsight title="Most Recent" value={mostRecentValue} />
@@ -201,9 +210,10 @@ export const DatapointsView: React.FC<{
       <DatapointsViewHeaderWrapper>
         {metricName && (
           <MetricHeaderWrapper>
-            <DatapointsTableTitle
+            <DatapointsTitle
               metricName={metricName}
               metricFrequency={metricFrequency}
+              insights={chartViewInsightsInfo}
             />
             {data.length > 0 && renderMetricInsightsRow()}
           </MetricHeaderWrapper>
