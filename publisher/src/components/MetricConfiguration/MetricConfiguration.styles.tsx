@@ -159,6 +159,7 @@ export const PanelContainerRight = styled.div`
   flex-direction: column;
   overflow-y: scroll;
   overflow-x: scroll;
+  padding-right: 24px;
 `;
 
 export const PanelRightTopButtonsContainer = styled.div`
@@ -166,7 +167,7 @@ export const PanelRightTopButtonsContainer = styled.div`
   flex-direction: row;
   gap: 16px;
   height: 50px;
-  padding: 24px 0 4px 15px;
+  padding: 24px 0 4px 0px;
   position: sticky;
   top: 0;
   background-color: ${palette.solid.white};

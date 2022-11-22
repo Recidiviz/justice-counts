@@ -20,7 +20,6 @@ import styled from "styled-components/macro";
 import { palette, typography } from "../GlobalStyles";
 
 export const DatapointsTableViewTitleWrapper = styled.div`
-  margin: 0 15px;
   padding: 5px 0 14px 0;
   border-bottom: 1px solid ${palette.highlight.grey9};
   position: sticky;

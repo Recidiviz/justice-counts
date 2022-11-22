@@ -69,21 +69,19 @@ const SelectMetricButton = () => (
 );
 
 const SelectMetricButtonDropdown: React.FC<{
-  onSelect?: (metricKey: string) => void;
-  options?: string[];
+  onSelect: (metricKey: string) => void;
+  options: string[];
 }> = ({ onSelect, options }) => (
   <ExtendedDropdown>
     <DropdownToggle>
       <SelectMetricButton />
     </DropdownToggle>
     <DropdownMenu>
-      {options?.map((value) => (
+      {options.map((value) => (
         <ExtendedDropdownMenuItem
           key={value}
           onClick={() => {
-            if (onSelect) {
-              onSelect(value);
-            }
+            onSelect(value);
           }}
         >
           {value}
@@ -283,10 +281,12 @@ export const DatapointsView: React.FC<{
         {/* {renderDataVizControls()} */}
       </DatapointsViewHeaderWrapper>
       <DatapointsViewControlsRow>
-        <SelectMetricButtonDropdown
-          options={metricNames}
-          onSelect={onMetricsSelect}
-        />
+        {metricNames && onMetricsSelect && (
+          <SelectMetricButtonDropdown
+            options={metricNames}
+            onSelect={onMetricsSelect}
+          />
+        )}
         {renderDataVizControls()}
       </DatapointsViewControlsRow>
       <MobileFiltersRow>
