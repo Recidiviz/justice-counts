@@ -21,7 +21,7 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-import { BinaryRadioGroupWrapper, Button } from "../Forms";
+import { BinaryRadioGroupWrapper } from "../Forms";
 import { MenuItem } from "../Settings";
 
 const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
@@ -653,11 +653,21 @@ export const DefinitionsDescription = styled.div`
   }
 `;
 
-export const RevertToDefaultButton = styled(Button)`
+export const RevertToDefaultButton = styled.div`
   ${typography.sizeCSS.normal}
+  width: 314px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background: ${palette.solid.white};
-  height: unset;
+  border: 1px solid ${palette.highlight.grey3};
+  border-radius: 2px;
   padding: 9px 0;
+
+  &:hover {
+    cursor: pointer;
+    background: ${palette.highlight.grey2};
+  }
 `;
 
 export const Definitions = styled.div`

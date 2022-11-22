@@ -16,7 +16,7 @@
 // =============================================================================
 
 import logo from "@justice-counts/common/assets/jc-logo-vector.png";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { AboutModal } from "./AboutModal";
@@ -40,6 +40,16 @@ export const HeaderBar = () => {
   const hideAboutModal = () => {
     setAboutModalVisible(false);
   };
+
+  /** Prevent body from scrolling when modal is open */
+  useEffect(() => {
+    if (aboutModalVisible) {
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [aboutModalVisible]);
 
   return (
     <HeaderBarContainer>
