@@ -98,14 +98,14 @@ export const DatapointsViewHeaderWrapper = styled.div`
   top: 50px;
   background-color: ${palette.solid.white};
   z-index: 2;
-  margin-bottom: 16px;
 `;
 
 export const DatapointsViewControlsContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-grow: 1;
-  border: 1px solid ${palette.highlight.grey9};
+  border-top: 1px solid ${palette.highlight.grey9};
+  border-bottom: 1px solid ${palette.highlight.grey9};
 `;
 
 const DatapointsViewDropdown = styled(Dropdown)`
@@ -234,18 +234,12 @@ export const MetricInsightsRow = styled.div<{ selfWidth: number }>`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  margin-top: 16px;
-  margin-bottom: 16px;
 
   ${({
     selfWidth,
   }) => `@media only screen and (max-width: calc(1148px + ${selfWidth}px)) {
     display: none;
   }`}
-
-  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
-    flex-direction: column;
-  }
 `;
 
 const MetricInsightContainer = styled.div`
