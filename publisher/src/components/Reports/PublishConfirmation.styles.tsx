@@ -20,7 +20,7 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import styled from "styled-components/macro";
+import styled, { css } from "styled-components/macro";
 
 import { Button } from "../DataUpload";
 import {
@@ -190,10 +190,16 @@ export const MetricDetailWrapper = styled.div<{ isExpanded: boolean }>`
   display: ${({ isExpanded }) => (isExpanded ? "block" : "none")};
 `;
 
-export const MetricSubTitleContainer = styled.div`
+export const MetricSubTitleContainer = styled.div<{ secondary?: boolean }>`
   ${typography.sizeCSS.small}
   margin-bottom: 16px;
   margin-top: 16px;
+  ${({ secondary }) =>
+    secondary &&
+    css`
+      color: ${palette.highlight.grey7};
+      margin-bottom: 8px;
+    `}
 `;
 
 export const Breakdown = styled.div<{ missing?: boolean }>`
