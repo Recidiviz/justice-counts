@@ -19,7 +19,7 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import styled from "styled-components/macro";
+import styled, { css } from "styled-components/macro";
 
 import {
   DefinitionDisplayName,
@@ -34,8 +34,26 @@ import {
   MetricOnOffWrapper,
 } from ".";
 
-export const RaceEthnicitiesBreakdownContainer = styled.div`
+export const RaceEthnicitiesBreakdownContainer = styled.div<{
+  disaggregationEnabled?: boolean;
+}>`
   padding-top: 14px;
+  position: relative;
+
+  ${({ disaggregationEnabled }) =>
+    !disaggregationEnabled &&
+    css`
+      &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background: ${palette.solid.white};
+        opacity: 0.5;
+      }
+    `}
 `;
 
 export const CalloutBox = styled.div`
