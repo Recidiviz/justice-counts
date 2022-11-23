@@ -27,8 +27,8 @@ import {
   BinaryRadioGroupQuestion,
   TextInput,
 } from "../Forms";
-import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import { REPORTS_LOWERCASE2 } from "../Global/constants";
+import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   Label,
   MetricContextContainer,

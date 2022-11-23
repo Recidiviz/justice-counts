@@ -19,8 +19,8 @@ import { observer } from "mobx-react-lite";
 import React, { Fragment, useState } from "react";
 
 import { useStore } from "../../stores";
-import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import { REPORT_VERB_LOWERCASE } from "../Global/constants";
+import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   ContextConfiguration,
   DefinitionDisplayName,
