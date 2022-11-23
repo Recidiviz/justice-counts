@@ -20,6 +20,7 @@ import { ReactComponent as InfoIcon } from "@justice-counts/common/assets/info-i
 import { ReactComponent as LeftArrowIcon } from "@justice-counts/common/assets/left-arrow-icon.svg";
 import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share-icon.svg";
 import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
+import { MetricInsights } from "@justice-counts/common/components/DataViz/MetricInsights";
 import { COMMON_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -84,8 +85,9 @@ const MetricOverviewActionShareButton = () => (
 );
 
 const DashboardView = () => {
-  const [shouldResizeChartHeight, setShouldResizeChartHeight] =
-    useState<boolean>(getScreenWidth() >= COMMON_DESKTOP_WIDTH);
+  const [isDesktopWidth, setIsDesktopWidth] = useState<boolean>(
+    getScreenWidth() >= COMMON_DESKTOP_WIDTH
+  );
   const navigate = useNavigate();
   const params = useParams();
   const agencyId = Number(params.id);
@@ -114,13 +116,10 @@ const DashboardView = () => {
   useEffect(() => {
     const resizeListener = () => {
       // change width from the state object
-      if (shouldResizeChartHeight && getScreenWidth() < COMMON_DESKTOP_WIDTH) {
-        setShouldResizeChartHeight(false);
-      } else if (
-        !shouldResizeChartHeight &&
-        getScreenWidth() >= COMMON_DESKTOP_WIDTH
-      ) {
-        setShouldResizeChartHeight(true);
+      if (isDesktopWidth && getScreenWidth() < COMMON_DESKTOP_WIDTH) {
+        setIsDesktopWidth(false);
+      } else if (!isDesktopWidth && getScreenWidth() >= COMMON_DESKTOP_WIDTH) {
+        setIsDesktopWidth(true);
       }
     };
     // set resize listener
@@ -131,7 +130,7 @@ const DashboardView = () => {
       // remove resize listener
       window.removeEventListener("resize", resizeListener);
     };
-  }, [shouldResizeChartHeight]);
+  }, [isDesktopWidth]);
 
   if (
     !metricKey ||
@@ -149,14 +148,19 @@ const DashboardView = () => {
     datapointsStore.dimensionNamesByMetricAndDisaggregation
   );
 
+  const metricName =
+    datapointsStore.metricKeyToDisplayName[metricKey] || metricKey;
+
+  const datapoints =
+    datapointsStore.datapointsByMetric[metricKey]?.aggregate || [];
+
   return (
     <Container key={metricKey}>
       <HeaderBar />
       <LeftPanel>
         <BackButton onClick={() => navigate(`/agency/${agencyId}`)} />
-        <MetricTitle>
-          {datapointsStore.metricKeyToDisplayName[metricKey] || metricKey}
-        </MetricTitle>
+        <MetricTitle>{metricName}</MetricTitle>
+        <MetricInsights datapoints={datapoints} />
         <MetricOverviewContent>
           Measures the number of individuals with at least one parole violation
           during the reporting period.
@@ -169,9 +173,7 @@ const DashboardView = () => {
       </LeftPanel>
       <RightPanel>
         <RightPanelBackButton onClick={() => navigate(`/agency/${agencyId}`)} />
-        <RightPanelMetricTitle>
-          {datapointsStore.metricKeyToDisplayName[metricKey] || metricKey}
-        </RightPanelMetricTitle>
+        <RightPanelMetricTitle>{metricName}</RightPanelMetricTitle>
         <DatapointsView
           datapointsGroupedByAggregateAndDisaggregations={
             datapointsStore.datapointsByMetric[metricKey]
@@ -183,7 +185,8 @@ const DashboardView = () => {
           onMetricsSelect={(metric) =>
             navigate(`/agency/${agencyId}/dashboard?metric=${metric}`)
           }
-          resizeHeight={shouldResizeChartHeight}
+          showBottomMetricInsights={!isDesktopWidth}
+          resizeHeight={isDesktopWidth}
         />
         <RightPanelMetricOverviewContent>
           Measures the number of individuals with at least one parole violation

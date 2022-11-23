@@ -93,13 +93,13 @@ export const RightPanelBackButtonContainer = styled(BackButtonContainer)`
 export const MetricTitle = styled.div`
   ${typography.sizeCSS.headline}
   margin-top: 36px;
-  margin-bottom: 16px;
+  margin-bottom: 40px;
   hyphens: auto;
   overflow-wrap: break-word;
 `;
 
 export const RightPanelMetricTitle = styled(MetricTitle)`
-  margin-bottom: 40px;
+  margin-bottom: 24px;
 
   @media only screen and (min-width: ${COMMON_DESKTOP_WIDTH}px) {
     display: none;
@@ -113,6 +113,7 @@ export const RightPanelMetricTitle = styled(MetricTitle)`
 
 export const MetricOverviewContent = styled.div`
   ${typography.sizeCSS.medium}
+  margin-top: 36px;
 
   @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
     ${typography.sizeCSS.normal}

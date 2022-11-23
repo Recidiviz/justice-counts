@@ -104,8 +104,7 @@ export const DatapointsViewControlsContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-grow: 1;
-  border-top: 1px solid ${palette.highlight.grey9};
-  border-bottom: 1px solid ${palette.highlight.grey9};
+  border: 1px solid ${palette.highlight.grey9};
 `;
 
 const DatapointsViewDropdown = styled(Dropdown)`
@@ -137,14 +136,19 @@ const DatapointsViewDropdownToggleContainer = styled(DropdownToggle)`
   text-align: start;
 
   &:hover {
-    color: ${palette.solid.blue};
+    color: ${palette.solid.darkgrey};
+  }
+
+  &[aria-expanded="true"] {
+    color: ${palette.solid.darkgrey};
   }
 `;
 const DatapointsViewDropdownToggleSelection = styled.div`
-  height: 64px;
-  padding: 32px 32px 0px 8px;
+  height: 40px;
+  padding-top: 7px;
+  padding-left: 22px;
   width: 100%;
-  ${typography.sizeCSS.large}
+  ${typography.sizeCSS.normal}
   color: ${palette.solid.darkgrey};
   line-height: 1.6rem;
   text-overflow: ellipsis;
@@ -158,17 +162,16 @@ const DatapointsViewDropdownToggleSelection = styled.div`
   }
 `;
 const DatapointsViewDropdownToggleTitle = styled.div`
-  padding: 8px 8px 0;
   position: absolute;
   ${typography.sizeCSS.small}
   pointer-events: none;
-  top: 0;
+  top: -20px;
   left: 0;
 `;
 
 const DatapointsViewDropdownToggleArrow = styled.div`
-  bottom: 0;
-  right: 0;
+  top: 2px;
+  left: -7px;
   position: absolute;
   font-size: 6px;
   transform: rotate(45deg);
@@ -230,16 +233,9 @@ export const DatapointsViewControlsDropdown: React.FC<
   </DatapointsViewDropdown>
 );
 
-export const MetricInsightsRow = styled.div<{ selfWidth: number }>`
+export const MetricInsightsRow = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
-
-  ${({
-    selfWidth,
-  }) => `@media only screen and (max-width: calc(1148px + ${selfWidth}px)) {
-    display: none;
-  }`}
 `;
 
 const MetricInsightContainer = styled.div`
@@ -285,11 +281,16 @@ export const MetricInsight: React.FC<MetricInsightProps> = ({
   </MetricInsightContainer>
 );
 
+export const BottomMetricInsightsContainer = styled.div`
+  margin: 24px 0;
+`;
+
 export const DatapointsViewControlsRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 24px;
+  margin-top: 32px;
 
   @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
     display: none;
@@ -323,10 +324,9 @@ export const MobileFiltersButton = styled.div`
 `;
 
 export const SelectMetricsButtonContainer = styled.div`
+  height: 40px;
   padding-left: 16px;
   padding-right: 16px;
-  padding-top: 8px;
-  padding-bottom: 8px;
   display: flex;
   align-items: center;
   border-radius: 2px;
