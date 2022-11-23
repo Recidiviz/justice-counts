@@ -19,6 +19,13 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
+  REPORT_LOWERCASE,
+  REPORTING_LOWERCASE,
+  REPORTING_PERIOD_LOWERCASE,
+  REPORTS_CAPITALIZED,
+  REPORTS_LOWERCASE,
+} from "../Global/constants";
+import {
   DataEntryHelpPageDivider,
   DataEntryHelpPageLink,
   DataEntryHelpPageListItem,
@@ -53,10 +60,11 @@ const DataEntryHelpPage: React.FC<{
         How to Use the Data Entry View
       </DataEntryHelpPageTitle>
       <DataEntryHelpPageSubTitle>
-        The purpose of this page is to enter data for a given reporting period.
-        (You can access all reports from the{" "}
+        The purpose of this page is to enter data for a given{" "}
+        {REPORTING_PERIOD_LOWERCASE}. (You can access all {REPORTS_LOWERCASE}{" "}
+        from the{" "}
         <DataEntryHelpPageLink onClick={() => navigate("/")}>
-          Reports
+          {REPORTS_CAPITALIZED}
         </DataEntryHelpPageLink>{" "}
         page.)
       </DataEntryHelpPageSubTitle>
@@ -81,7 +89,8 @@ const DataEntryHelpPage: React.FC<{
       <DataEntryHelpPageText>
         We’ve also included additional descriptions and definitions on the
         right-side panel, including the definition of the metric, definitions
-        for any terms, and reporting on how the metric should be calculated.
+        for any terms, and {REPORTING_LOWERCASE} on how the metric should be
+        calculated.
       </DataEntryHelpPageText>
       <DataEntryHelpPageSubTitle>
         Whenever you have finished entering data, you can click the Review
@@ -90,8 +99,8 @@ const DataEntryHelpPage: React.FC<{
       <DataEntryHelpPageText>
         Clicking this button will first take you to a page to review the numbers
         that you have entered before publishing. Publishing the data will mark
-        the report as “Published” in the Reports View and the underlying data
-        will be accessible to the public.
+        the {REPORT_LOWERCASE} as “Published” in the {REPORTS_CAPITALIZED} View
+        and the underlying data will be accessible to the public.
       </DataEntryHelpPageText>
       <DataEntryHelpPageText>
         After publishing the data, you can always go back to edit the data that

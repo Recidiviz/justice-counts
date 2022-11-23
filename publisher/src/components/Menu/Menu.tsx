@@ -22,6 +22,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { Button } from "../DataUpload";
+import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
 import {
   ExtendedDropdownMenu,
   ExtendedDropdownMenuItem,
@@ -32,8 +33,8 @@ import {
 } from ".";
 
 enum MenuItems {
-  Reports = "REPORTS",
-  CreateReport = "CREATE REPORT",
+  Reports = "RECORDS",
+  CreateReport = "CREATE RECORD",
   LearnMore = "LEARN MORE",
   Settings = "SETTINGS",
   Agencies = "AGENCIES",
@@ -73,7 +74,7 @@ const Menu = () => {
   useEffect(() => {
     if (location.pathname === "/") {
       setActiveMenuItem(MenuItems.Reports);
-    } else if (location.pathname === "/reports/create") {
+    } else if (location.pathname === `/${REPORTS_LOWERCASE}/create`) {
       setActiveMenuItem(MenuItems.CreateReport);
     } else if (location.pathname === "/settings") {
       setActiveMenuItem(MenuItems.Settings);
@@ -97,7 +98,7 @@ const Menu = () => {
         onClick={() => navigate("/")}
         active={activeMenuItem === MenuItems.Reports}
       >
-        Reports
+        {REPORTS_CAPITALIZED}
       </MenuItem>
 
       {/* Data (Visualizations) */}

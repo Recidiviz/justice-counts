@@ -30,6 +30,10 @@ import {
 } from "mobx";
 
 import { UploadedFileStatus } from "../components/DataUpload";
+import {
+  REPORT_LOWERCASE,
+  REPORTS_LOWERCASE,
+} from "../components/Global/constants";
 import { MetricSettings } from "../components/MetricConfiguration";
 import { groupBy } from "../utils/helperUtils";
 import API from "./API";
@@ -139,7 +143,9 @@ class ReportStore {
       })) as Response;
 
       if (response.status !== 200) {
-        throw new Error("There was an issue getting this report.");
+        throw new Error(
+          `There was an issue getting this ${REPORT_LOWERCASE} .`
+        );
       }
 
       const report = (await response.json()) as Report;
@@ -222,7 +228,9 @@ class ReportStore {
       })) as Response;
 
       if (response.status !== 200) {
-        throw new Error("There was an issue deleting these reports.");
+        throw new Error(
+          `There was an issue deleting these ${REPORTS_LOWERCASE}.`
+        );
       }
 
       runInAction(() => {
@@ -252,7 +260,9 @@ class ReportStore {
       })) as Response;
 
       if (response.status !== 200) {
-        throw new Error("There was an issue retrieving the report settings.");
+        throw new Error(
+          `There was an issue retrieving the ${REPORT_LOWERCASE} settings.`
+        );
       }
 
       return response;
@@ -280,7 +290,9 @@ class ReportStore {
       })) as Response;
 
       if (response.status !== 200) {
-        throw new Error("There was an issue updating the report settings.");
+        throw new Error(
+          `There was an issue updating the ${REPORT_LOWERCASE} settings.`
+        );
       }
 
       return response;

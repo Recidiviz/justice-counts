@@ -31,6 +31,7 @@ import { trackReportUnpublished } from "../../analytics";
 import { useStore } from "../../stores";
 import { printReportTitle } from "../../utils";
 import { PageWrapper } from "../Forms";
+import { REPORT_LOWERCASE } from "../Global/constants";
 import { Loading } from "../Loading";
 import DataEntryForm from "./DataEntryForm";
 import PublishConfirmation from "./PublishConfirmation";
@@ -79,7 +80,7 @@ const ReportDataEntry = () => {
             reportStore.reportOverviews[reportID].month,
             reportStore.reportOverviews[reportID].year,
             reportStore.reportOverviews[reportID].frequency
-          )} report has been unpublished and editing is enabled.`,
+          )} ${REPORT_LOWERCASE} has been unpublished and editing is enabled.`,
           true,
           undefined,
           4000
@@ -93,7 +94,7 @@ const ReportDataEntry = () => {
             reportStore.reportOverviews[reportID].month,
             reportStore.reportOverviews[reportID].year,
             reportStore.reportOverviews[reportID].frequency
-          )} report!`,
+          )} ${REPORT_LOWERCASE}!`,
           false
         );
       }

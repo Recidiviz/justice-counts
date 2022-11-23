@@ -83,7 +83,7 @@ test("displayed created reports", async () => {
     });
   });
 
-  const annualReport2020 = screen.getByText(/Annual Report FY2020-2021/i);
+  const annualReport2020 = screen.getByText(/Annual Record FY2020-2021/i);
   const editor2 = screen.getByText(/Editor #2/i);
 
   expect(annualReport2020).toBeInTheDocument();

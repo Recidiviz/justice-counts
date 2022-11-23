@@ -34,6 +34,7 @@ import {
 import successIcon from "../assets/status-check-icon.png";
 import errorIcon from "../assets/status-error-icon.png";
 import { MetricsSectionTitle, Title } from "../Forms";
+import { REPORT_CAPITALIZED } from "../Global/constants";
 import { MetricsListItem } from "../Settings";
 import HelperText from "./HelperText";
 import {
@@ -249,7 +250,7 @@ const ReportSummaryPanel: React.FC<{
 
   return (
     <ReportSummaryWrapper showDataEntryHelpPage={showDataEntryHelpPage}>
-      <Title>Report Summary</Title>
+      <Title>{REPORT_CAPITALIZED} Summary</Title>
 
       <ReportSummaryProgressIndicatorWrapper>
         {Object.entries(metricsBySystem).map(([system, metrics]) => {

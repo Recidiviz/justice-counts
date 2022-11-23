@@ -17,6 +17,8 @@
 
 import { ReportFrequency } from "@justice-counts/common/types";
 
+import { REPORT_CAPITALIZED } from "../components/Global/constants";
+
 export const monthsByName = [
   "January",
   "February",
@@ -44,9 +46,9 @@ export const printDateAsMonthYear = (month: number, year: number): string => {
 };
 
 /**
- * @returns either "Annual Report CY[YEAR]", "Annual Report FY[YEAR]-[YEAR+1]" or "[MONTH] [YEAR]"
+ * @returns either "Annual Record CY[YEAR]", "Annual Record FY[YEAR]-[YEAR+1]" or "[MONTH] [YEAR]"
  * as a string depending on frequency.
- * @example "Annual Report CY2022" "Annual Report FY2022-2023" or "March 2022"
+ * @example "Annual Record CY2022" "Annual Record FY2022-2023" or "March 2022"
  */
 export const printReportTitle = (
   month: number,
@@ -56,10 +58,10 @@ export const printReportTitle = (
   if (frequency === "ANNUAL") {
     if (month === 1) {
       // CY stands for Calendar Year
-      return `Annual Report CY${year}`;
+      return `Annual ${REPORT_CAPITALIZED} CY${year}`;
     }
     // FY stands for Fiscal Year
-    return `Annual Report FY${year}-${year + 1}`;
+    return `Annual ${REPORT_CAPITALIZED} FY${year}-${year + 1}`;
   }
 
   return printDateAsMonthYear(month, year);

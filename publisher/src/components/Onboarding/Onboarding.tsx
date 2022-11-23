@@ -26,6 +26,12 @@ import styled, { keyframes } from "styled-components/macro";
 import { useStore } from "../../stores";
 import logo from "../assets/jc-logo-vector-onboarding.png";
 import {
+  REPORT_CAPITALIZED,
+  REPORT_LOWERCASE,
+  REPORTS_CAPITALIZED,
+  REPORTS_LOWERCASE,
+} from "../Global/constants";
+import {
   DATA_ENTRY_WIDTH,
   ONE_PANEL_MAX_WIDTH,
   SIDE_PANEL_WIDTH,
@@ -406,13 +412,14 @@ const OnboardingSessionView = ({
   const reportsViewSections: OnboardingSections[] = [
     {
       order: 1,
-      title: "Reports View",
+      title: `${REPORTS_CAPITALIZED} View`,
       html: (
         <>
           <p>
-            Every month, we’ll generate new <strong>Reports</strong> on this
-            homepage. As a member of this agency’s Justice Counts team, you’ll
-            be able to add data for the{" "}
+            Every month, we’ll generate new{" "}
+            <strong>{REPORTS_CAPITALIZED}</strong> on this homepage. As a member
+            of this agency’s Justice Counts team, you’ll be able to add data for
+            the{" "}
             <a
               href="https://justicecounts.csgjusticecenter.org/metrics/justice-counts-metrics/"
               rel="noreferrer noopener"
@@ -420,7 +427,8 @@ const OnboardingSessionView = ({
             >
               <strong>Justice Counts Metrics</strong>
             </a>{" "}
-            via these reports whenever the relevant data is ready on your end.
+            via these {REPORTS_LOWERCASE} whenever the relevant data is ready on
+            your end.
           </p>
         </>
       ),
@@ -503,13 +511,14 @@ const OnboardingSessionView = ({
     },
     {
       order: 2,
-      title: "Report Summary",
+      title: `${REPORT_CAPITALIZED} Summary`,
       html: (
         <>
           <p>
-            The metrics associated with each report are listed in the Report
-            Summary. Checkmarks indicate that all inputs are valid; X’s indicate
-            that there is an error with one of the inputs.
+            The metrics associated with each {REPORT_LOWERCASE} are listed in
+            the {REPORT_CAPITALIZED} Summary. Checkmarks indicate that all
+            inputs are valid; X’s indicate that there is an error with one of
+            the inputs.
           </p>
           <br />
           <p>
