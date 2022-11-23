@@ -15,86 +15,46 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Metric, ReportFrequency } from "@justice-counts/common/types";
+import { AgencySystems, Metric } from "@justice-counts/common/types";
 import { reaction, when } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
+import { createSearchParams, useNavigate } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
-import { Badge, BadgeColorMapping } from "../Badge";
+import { ReactComponent as GoToMetricConfig } from "../assets/goto-metric-configuration-icon.svg";
+import { ReactComponent as SwitchToChartIcon } from "../assets/switch-to-chart-icon.svg";
+import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-data-table-icon.svg";
 import ConnectedDatapointsView from "../DataViz/ConnectedDatapointsView";
-import { NotReportedIcon } from "../Forms";
 import { Loading } from "../Loading";
-import { PageTitle, TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
+import { SettingsSearchParams } from "../Settings/types";
 import {
-  ActiveMetricSettingHeader,
-  MetricBoxWrapper,
-  MetricDescription,
-  MetricName,
-  MetricNameBadgeToggleWrapper,
-  MetricNameBadgeWrapper,
+  ChartView,
+  DisclaimerContainer,
+  DisclaimerLink,
+  DisclaimerText,
+  DisclaimerTitle,
+  MetricItem,
+  MetricsItemsContainer,
   MetricsViewContainer,
   MetricsViewControlPanelOverflowHidden,
-  MetricViewBoxContainer,
   PanelContainerLeft,
   PanelContainerRight,
+  PanelRightTopButton,
+  PanelRightTopButtonsContainer,
+  SystemName,
+  SystemNameContainer,
+  SystemNamePlusSign,
+  SystemsContainer,
 } from ".";
 
 type MetricSettingsObj = {
   [key: string]: Metric;
 };
 
-type MetricBoxProps = {
-  metricKey: string;
-  displayName: string;
-  frequency: ReportFrequency;
-  description: string;
-  enabled?: boolean;
-  activeMetricKey: string;
-  setActiveMetricKey: React.Dispatch<React.SetStateAction<string>>;
-};
-
-const reportFrequencyBadgeColors: BadgeColorMapping = {
-  ANNUAL: "ORANGE",
-  MONTHLY: "GREEN",
-};
-
-const MetricBox: React.FC<MetricBoxProps> = ({
-  metricKey,
-  displayName,
-  frequency,
-  description,
-  enabled,
-  activeMetricKey,
-  setActiveMetricKey,
-}): JSX.Element => {
-  return (
-    <MetricViewBoxContainer
-      onClick={() => setActiveMetricKey(metricKey)}
-      enabled={enabled}
-      selected={metricKey === activeMetricKey}
-    >
-      <MetricNameBadgeToggleWrapper>
-        <MetricNameBadgeWrapper>
-          <MetricName>{displayName}</MetricName>
-          <Badge
-            color={reportFrequencyBadgeColors[frequency]}
-            disabled={!enabled}
-          >
-            {frequency}
-          </Badge>
-        </MetricNameBadgeWrapper>
-
-        {!enabled && <NotReportedIcon noTooltip />}
-      </MetricNameBadgeToggleWrapper>
-
-      <MetricDescription>{description}</MetricDescription>
-    </MetricViewBoxContainer>
-  );
-};
-
 export const MetricsView: React.FC = observer(() => {
+  const navigate = useNavigate();
   const { reportStore, userStore, datapointsStore } = useStore();
 
   const [activeMetricFilter, setActiveMetricFilter] = useState<string>();
@@ -106,6 +66,7 @@ export const MetricsView: React.FC = observer(() => {
   const [metricSettings, setMetricSettings] = useState<{
     [key: string]: Metric;
   }>({});
+  const [dataView, setDataView] = useState<ChartView>(ChartView.Chart);
 
   const filteredMetricSettings: MetricSettingsObj = Object.values(
     metricSettings
@@ -133,9 +94,11 @@ export const MetricsView: React.FC = observer(() => {
     const reportSettings = (await response.json()) as Metric[];
     const metricKeyToMetricMap: { [key: string]: Metric } = {};
 
-    reportSettings?.forEach((metric) => {
-      metricKeyToMetricMap[metric.key] = metric;
-    });
+    reportSettings
+      ?.filter((metric) => metric.enabled)
+      .forEach((metric) => {
+        metricKeyToMetricMap[metric.key] = metric;
+      });
 
     setMetricSettings(metricKeyToMetricMap);
     setActiveMetricKey(Object.keys(metricKeyToMetricMap)[0]);
@@ -188,6 +151,13 @@ export const MetricsView: React.FC = observer(() => {
     [activeMetricFilter]
   );
 
+  useEffect(() => {
+    if (!datapointsStore.datapointsByMetric[activeMetricKey]) {
+      setDataView(ChartView.Chart);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeMetricKey]);
+
   if (isLoading) {
     return <Loading />;
   }
@@ -199,67 +169,118 @@ export const MetricsView: React.FC = observer(() => {
   return (
     <>
       <MetricsViewContainer>
-        <PageTitle>Metrics</PageTitle>
-
-        <TabbedBar>
-          <TabbedOptions>
-            {userStore.currentAgency?.systems.map((filterOption) => (
-              <TabbedItem
-                key={filterOption}
-                selected={activeMetricFilter === removeSnakeCase(filterOption)}
-                onClick={() =>
-                  setActiveMetricFilter(removeSnakeCase(filterOption))
-                }
-                capitalize
-              >
-                {removeSnakeCase(filterOption.toLowerCase())}
-              </TabbedItem>
-            ))}
-          </TabbedOptions>
-        </TabbedBar>
-
         <MetricsViewControlPanelOverflowHidden>
           {/* List Of Metrics */}
           <PanelContainerLeft>
-            {filteredMetricSettings &&
-              Object.values(filteredMetricSettings).map((metric) => (
-                <MetricBoxWrapper key={metric.key}>
-                  <MetricBox
-                    metricKey={metric.key}
-                    displayName={metric.display_name}
-                    frequency={metric.frequency as ReportFrequency}
-                    description={metric.description}
-                    enabled={metric.enabled}
-                    activeMetricKey={activeMetricKey}
-                    setActiveMetricKey={setActiveMetricKey}
-                  />
-                </MetricBoxWrapper>
+            <SystemsContainer>
+              {userStore.currentAgency?.systems.map((filterOption) => (
+                <React.Fragment key={filterOption}>
+                  <SystemNameContainer
+                    isSystemActive={
+                      activeMetricFilter === removeSnakeCase(filterOption)
+                    }
+                    onClick={() =>
+                      setActiveMetricFilter(removeSnakeCase(filterOption))
+                    }
+                  >
+                    <SystemName>
+                      {removeSnakeCase(filterOption.toLowerCase())}
+                    </SystemName>
+                    <SystemNamePlusSign
+                      isSystemActive={
+                        activeMetricFilter === removeSnakeCase(filterOption)
+                      }
+                    />
+                  </SystemNameContainer>
+                  <MetricsItemsContainer
+                    isSystemActive={
+                      activeMetricFilter === removeSnakeCase(filterOption)
+                    }
+                  >
+                    {filteredMetricSettings &&
+                      Object.values(filteredMetricSettings)
+                        .filter((metric) => metric.enabled)
+                        .map((metric) => (
+                          <MetricItem
+                            key={metric.key}
+                            selected={activeMetricKey === metric.key}
+                            onClick={() => setActiveMetricKey(metric.key)}
+                          >
+                            {metric.display_name}
+                          </MetricItem>
+                        ))}
+                  </MetricsItemsContainer>
+                </React.Fragment>
               ))}
+            </SystemsContainer>
+            <DisclaimerContainer>
+              <DisclaimerTitle>Note</DisclaimerTitle>
+              <DisclaimerText>
+                These metrics are those that your agency has indicated are
+                available to be shared. If you believe this does not accurately
+                reflect your data sharing capabilities, please go to{" "}
+                <DisclaimerLink
+                  onClick={() => {
+                    const params: SettingsSearchParams = {
+                      system: activeMetricFilter as AgencySystems,
+                    };
+                    navigate({
+                      pathname: "/settings/metric-config",
+                      search: `?${createSearchParams(params)}`,
+                    });
+                  }}
+                >
+                  Metric Configuration
+                </DisclaimerLink>{" "}
+                to adjust.
+              </DisclaimerText>
+            </DisclaimerContainer>
           </PanelContainerLeft>
 
           {/* Data Visualization */}
           <PanelContainerRight>
-            <ActiveMetricSettingHeader>
-              <MetricNameBadgeWrapper>
-                <MetricName isTitle>
-                  {filteredMetricSettings[activeMetricKey]?.display_name}
-                </MetricName>
-                {filteredMetricSettings[activeMetricKey]?.frequency && (
-                  <Badge
-                    color={
-                      reportFrequencyBadgeColors[
-                        filteredMetricSettings[activeMetricKey]
-                          .frequency as ReportFrequency
-                      ]
-                    }
+            <PanelRightTopButtonsContainer>
+              {dataView === ChartView.Chart &&
+                !!datapointsStore.datapointsByMetric[activeMetricKey] && (
+                  <PanelRightTopButton
+                    onClick={() => setDataView(ChartView.Table)}
                   >
-                    {filteredMetricSettings[activeMetricKey].frequency}
-                  </Badge>
+                    <SwitchToDataTableIcon />
+                    Switch to Data Table
+                  </PanelRightTopButton>
                 )}
-              </MetricNameBadgeWrapper>
-            </ActiveMetricSettingHeader>
-
-            <ConnectedDatapointsView metric={activeMetricKey} />
+              {dataView === ChartView.Table && (
+                <PanelRightTopButton
+                  onClick={() => setDataView(ChartView.Chart)}
+                >
+                  <SwitchToChartIcon />
+                  Switch to Chart
+                </PanelRightTopButton>
+              )}
+              <PanelRightTopButton
+                onClick={() => {
+                  const params: SettingsSearchParams = {
+                    system: activeMetricFilter as AgencySystems,
+                    metric: activeMetricKey,
+                  };
+                  navigate({
+                    pathname: "/settings/metric-config",
+                    search: `?${createSearchParams(params)}`,
+                  });
+                }}
+              >
+                <GoToMetricConfig />
+                Go to Metric Configuration
+              </PanelRightTopButton>
+            </PanelRightTopButtonsContainer>
+            <ConnectedDatapointsView
+              metric={activeMetricKey}
+              metricName={filteredMetricSettings[activeMetricKey]?.display_name}
+              metricFrequency={
+                filteredMetricSettings[activeMetricKey]?.frequency
+              }
+              dataView={dataView}
+            />
           </PanelContainerRight>
         </MetricsViewControlPanelOverflowHidden>
       </MetricsViewContainer>

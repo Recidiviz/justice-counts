@@ -15,9 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./AccountSettings";
-export * from "./hooks";
-export * from "./Settings.styles";
-export * from "./SettingsMenu";
-export * from "./types";
-export * from "./utils";
+import { SettingsSearchParams } from "./types";
+
+export const getActiveSystemMetricKey = ({
+  system,
+  metric,
+}: SettingsSearchParams): string => {
+  return `${system?.toUpperCase()}-${metric}`;
+};

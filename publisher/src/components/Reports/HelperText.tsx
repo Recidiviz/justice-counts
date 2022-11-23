@@ -23,7 +23,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 
-import { menuOptions } from "../../pages/Settings";
 import { useStore } from "../../stores";
 import {
   BREAKPOINT_HEIGHT,
@@ -119,7 +118,6 @@ const HelperText: React.FC<{
   const currentMetric = reportStore.reportMetrics[reportID].find(
     (metric) => metric.key === activeMetric
   );
-  const navigateState = { settingsMenuOption: menuOptions[2] };
 
   if (!currentMetric) return null;
 
@@ -155,9 +153,7 @@ const HelperText: React.FC<{
       <HelperTextSection>
         <HelperTextTitle>
           Additional context can be viewed and entered via the{" "}
-          <HelperTextLink
-            onClick={() => navigate("/settings", { state: navigateState })}
-          >
+          <HelperTextLink onClick={() => navigate("/settings/metric-config")}>
             Metric Configuration
           </HelperTextLink>{" "}
           page in Settings.

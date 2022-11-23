@@ -24,17 +24,21 @@ import {
   DataVizAggregateName,
   DataVizTimeRangesMap,
   DimensionNamesByDisaggregation,
+  ReportFrequency,
 } from "@justice-counts/common/types";
 import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
+import { DatapointsTitle } from "./DatapointsTitle";
 import {
   DatapointsViewContainer,
   DatapointsViewControlsContainer,
   DatapointsViewControlsDropdown,
   DatapointsViewControlsRow,
+  DatapointsViewHeaderWrapper,
   ExtendedDropdown,
   ExtendedDropdownMenuItem,
+  MetricHeaderWrapper,
   MetricInsight,
   MetricInsightsRow,
   MobileFiltersButton,
@@ -65,21 +69,19 @@ const SelectMetricButton = () => (
 );
 
 const SelectMetricButtonDropdown: React.FC<{
-  onSelect?: (metricKey: string) => void;
-  options?: string[];
+  onSelect: (metricKey: string) => void;
+  options: string[];
 }> = ({ onSelect, options }) => (
   <ExtendedDropdown>
     <DropdownToggle>
       <SelectMetricButton />
     </DropdownToggle>
     <DropdownMenu>
-      {options?.map((value) => (
+      {options.map((value) => (
         <ExtendedDropdownMenuItem
           key={value}
           onClick={() => {
-            if (onSelect) {
-              onSelect(value);
-            }
+            onSelect(value);
           }}
         >
           {value}
@@ -92,12 +94,16 @@ const SelectMetricButtonDropdown: React.FC<{
 export const DatapointsView: React.FC<{
   datapointsGroupedByAggregateAndDisaggregations: DatapointsGroupedByAggregateAndDisaggregations;
   dimensionNamesByDisaggregation: DimensionNamesByDisaggregation;
+  metricName?: string;
+  metricFrequency?: ReportFrequency;
   metricNames?: string[];
   onMetricsSelect?: (metric: string) => void;
   resizeHeight?: boolean;
 }> = ({
   datapointsGroupedByAggregateAndDisaggregations,
   dimensionNamesByDisaggregation,
+  metricName,
+  metricFrequency,
   metricNames,
   onMetricsSelect,
   resizeHeight = false,
@@ -108,6 +114,8 @@ export const DatapointsView: React.FC<{
     React.useState<string>(noDisaggregationOption);
   const [datapointsViewSetting, setDatapointsViewSetting] =
     React.useState<DatapointsViewSetting>("Count");
+  const [insightsWidth, setInsightsWidth] = React.useState(0);
+  const insightsRef = useRef<HTMLDivElement | null>(null);
   const [mobileSelectMetricsVisible, setMobileSelectMetricsVisible] =
     React.useState<boolean>(false);
 
@@ -147,6 +155,15 @@ export const DatapointsView: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datapointsGroupedByAggregateAndDisaggregations]);
 
+  useEffect(() => {
+    if (selectedDisaggregation === noDisaggregationOption) {
+      setDatapointsViewSetting("Count");
+    }
+  }, [selectedDisaggregation]);
+
+  useEffect(() => {
+    if (insightsRef.current) setInsightsWidth(insightsRef.current.offsetWidth);
+  }, [metricName]);
   /** Prevent body from scrolling when modal is open */
   useEffect(() => {
     if (mobileSelectMetricsVisible) {
@@ -222,42 +239,60 @@ export const DatapointsView: React.FC<{
     );
   };
 
-  const renderMetricInsightsRow = () => {
-    const dataSelectedInTimeRange = filterNullDatapoints(
-      filterByTimeRange(
-        datapointsGroupedByAggregateAndDisaggregations?.aggregate || [],
-        selectedTimeRangeValue
-      )
-    );
-    const percentChange = getPercentChangeOverTime(dataSelectedInTimeRange);
-    const avgValue = getAverageTotalValue(dataSelectedInTimeRange, isAnnual);
+  // insights data
+  const dataSelectedInTimeRange = filterNullDatapoints(
+    filterByTimeRange(
+      datapointsGroupedByAggregateAndDisaggregations?.aggregate || [],
+      selectedTimeRangeValue
+    )
+  );
+  const percentChange = getPercentChangeOverTime(dataSelectedInTimeRange);
+  const avgValue = getAverageTotalValue(dataSelectedInTimeRange, isAnnual);
+  const mostRecentValue = getLatestDateFormatted(
+    dataSelectedInTimeRange,
+    isAnnual
+  );
 
+  const chartViewInsightsInfo = `Year-to-Year: ${percentChange},\nAvg. Total Value: ${avgValue},\nMost Recent: ${mostRecentValue}`;
+
+  const renderMetricInsightsRow = () => {
     return (
-      <MetricInsightsRow>
-        <MetricInsight title="% Total Change" value={percentChange} />
+      <MetricInsightsRow ref={insightsRef} selfWidth={insightsWidth}>
+        <MetricInsight title="Year-to-Year" value={percentChange} />
         <MetricInsight title="Avg. Total Value" value={avgValue} />
-        <MetricInsight
-          title="Most Recent"
-          value={getLatestDateFormatted(dataSelectedInTimeRange, isAnnual)}
-        />
+        <MetricInsight title="Most Recent" value={mostRecentValue} />
       </MetricInsightsRow>
     );
   };
 
   return (
     <DatapointsViewContainer>
+      <DatapointsViewHeaderWrapper>
+        {metricName && (
+          <MetricHeaderWrapper>
+            <DatapointsTitle
+              metricName={metricName}
+              metricFrequency={metricFrequency}
+              insights={chartViewInsightsInfo}
+            />
+            {data.length > 0 && renderMetricInsightsRow()}
+          </MetricHeaderWrapper>
+        )}
+        {/* {renderDataVizControls()} */}
+      </DatapointsViewHeaderWrapper>
       <DatapointsViewControlsRow>
-        <SelectMetricButtonDropdown
-          options={metricNames}
-          onSelect={onMetricsSelect}
-        />
+        {metricNames && onMetricsSelect && (
+          <SelectMetricButtonDropdown
+            options={metricNames}
+            onSelect={onMetricsSelect}
+          />
+        )}
         {renderDataVizControls()}
       </DatapointsViewControlsRow>
       <MobileFiltersRow>
         <MobileFiltersButton />
       </MobileFiltersRow>
       {renderChartForMetric()}
-      {renderMetricInsightsRow()}
       {renderLegend()}
       <MobileSelectMetricsButtonContainer>
         <MobileSelectMetricsButton

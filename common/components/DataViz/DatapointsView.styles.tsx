@@ -29,6 +29,15 @@ import {
 import React from "react";
 import styled from "styled-components/macro";
 
+export const MetricHeaderWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 58px;
+  margin-bottom: 9px;
+  white-space: nowrap;
+`;
+
 export const ExtendedDropdownMenuItem = styled(DropdownMenuItem)<{
   highlight?: boolean;
   noPadding?: boolean;
@@ -82,14 +91,21 @@ export const DatapointsViewContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  height: 100%;
+`;
+
+export const DatapointsViewHeaderWrapper = styled.div`
+  position: sticky;
+  top: 50px;
+  background-color: ${palette.solid.white};
+  z-index: 2;
 `;
 
 export const DatapointsViewControlsContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-grow: 1;
-  border: 1px solid ${palette.highlight.grey9};
+  border-top: 1px solid ${palette.highlight.grey9};
+  border-bottom: 1px solid ${palette.highlight.grey9};
 `;
 
 const DatapointsViewDropdown = styled(Dropdown)`
@@ -214,15 +230,16 @@ export const DatapointsViewControlsDropdown: React.FC<
   </DatapointsViewDropdown>
 );
 
-export const MetricInsightsRow = styled.div`
+export const MetricInsightsRow = styled.div<{ selfWidth: number }>`
   display: flex;
   flex-direction: row;
-  margin-top: 16px;
-  margin-bottom: 16px;
+  justify-content: flex-end;
 
-  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
-    flex-direction: column;
-  }
+  ${({
+    selfWidth,
+  }) => `@media only screen and (max-width: calc(1148px + ${selfWidth}px)) {
+    display: none;
+  }`}
 `;
 
 const MetricInsightContainer = styled.div`
@@ -230,8 +247,6 @@ const MetricInsightContainer = styled.div`
 
   &:last-child {
     margin-right: 0;
-    text-align: right;
-    margin-left: auto;
   }
 
   @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
@@ -246,12 +261,13 @@ const MetricInsightContainer = styled.div`
 `;
 
 const MetricInsightTitle = styled.div`
-  ${typography.sizeCSS.small}
-  margin-bottom: 8px;
+  ${typography.sizeCSS.normal}
 `;
 
 const MetricInsightValue = styled.div`
-  ${typography.sizeCSS.large}
+  ${typography.sizeCSS.title}
+  line-height: 32px;
+  margin-bottom: 4px;
 `;
 
 interface MetricInsightProps {
@@ -264,8 +280,8 @@ export const MetricInsight: React.FC<MetricInsightProps> = ({
   value,
 }) => (
   <MetricInsightContainer>
-    <MetricInsightTitle>{title}</MetricInsightTitle>
     <MetricInsightValue>{value}</MetricInsightValue>
+    <MetricInsightTitle>{title}</MetricInsightTitle>
   </MetricInsightContainer>
 );
 

@@ -15,8 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import React from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 import { UploadedFiles } from "../components/DataUpload";
 import { MetricConfiguration } from "../components/MetricConfiguration";
@@ -27,12 +27,11 @@ import {
   SettingsMenu,
 } from "../components/Settings";
 
-export const menuOptions = [
-  "Your Account",
-  "Uploaded Files",
-  "Metric Configuration",
-] as const;
-export type MenuOptions = typeof menuOptions[number];
+export const settingsMenuPaths = {
+  "Your Account": "/settings/account",
+  "Uploaded Files": "/settings/uploaded-files",
+  "Metric Configuration": "/settings/metric-config",
+};
 
 export type ListOfMetricsForNavigation = {
   key: string;
@@ -40,25 +39,17 @@ export type ListOfMetricsForNavigation = {
 };
 
 const Settings = () => {
-  const { state } = useLocation();
-  const [activeMenuItem, setActiveMenuItem] = useState<MenuOptions>(
-    state?.settingsMenuOption || menuOptions[0]
-  );
-
-  const goToMenuItem = (destination: MenuOptions) =>
-    setActiveMenuItem(destination);
-
   return (
     <SettingsContainer>
-      <SettingsMenu
-        activeMenuItem={activeMenuItem}
-        goToMenuItem={goToMenuItem}
-      />
+      <SettingsMenu />
 
       <ContentDisplay>
-        {activeMenuItem === "Your Account" && <AccountSettings />}
-        {activeMenuItem === "Uploaded Files" && <UploadedFiles />}
-        {activeMenuItem === "Metric Configuration" && <MetricConfiguration />}
+        <Routes>
+          <Route path="/" element={<Navigate to="account" replace />} />
+          <Route path="/account" element={<AccountSettings />} />
+          <Route path="/uploaded-files" element={<UploadedFiles />} />
+          <Route path="/metric-config" element={<MetricConfiguration />} />
+        </Routes>
       </ContentDisplay>
     </SettingsContainer>
   );

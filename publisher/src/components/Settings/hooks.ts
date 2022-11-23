@@ -15,9 +15,30 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./AccountSettings";
-export * from "./hooks";
-export * from "./Settings.styles";
-export * from "./SettingsMenu";
-export * from "./types";
-export * from "./utils";
+import { AgencySystems } from "@justice-counts/common/types";
+import { useSearchParams } from "react-router-dom";
+
+import { SettingsSearchParams } from "./types";
+
+const getSettingsSearchParams = (
+  params: URLSearchParams
+): SettingsSearchParams => {
+  const system = (params.get("system") as AgencySystems) || undefined;
+  const metric = params.get("metric") || undefined;
+
+  return { system, metric };
+};
+
+export const useSettingsSearchParams = (): [
+  SettingsSearchParams,
+  (params: SettingsSearchParams) => void
+] => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const settingsSearchParams = getSettingsSearchParams(searchParams);
+  const setSettingsSearchParams = (params: SettingsSearchParams) => {
+    setSearchParams(params);
+  };
+
+  return [settingsSearchParams, setSettingsSearchParams];
+};

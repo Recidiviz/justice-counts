@@ -39,7 +39,7 @@ const ChartContainer = styled.div`
   width: 100%;
 
   @media only screen and (min-width: ${COMMON_DESKTOP_WIDTH}px) {
-    height: calc(100% - 214px);
+    max-height: calc(100% - 220px);
     display: flex;
     flex-grow: 1;
     justify-content: center;

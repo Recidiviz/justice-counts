@@ -27,6 +27,7 @@ import {
   BinaryRadioGroupQuestion,
   TextInput,
 } from "../Forms";
+import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   Label,
   MetricContextContainer,
@@ -38,17 +39,14 @@ import {
 } from ".";
 
 export const ContextConfiguration: React.FC = observer(() => {
+  const [settingsSearchParams] = useSettingsSearchParams();
   const { metricConfigStore } = useStore();
-  const {
-    activeMetricKey,
-    activeSystem,
-    contexts,
-    updateContextValue,
-    getActiveSystemMetricKey,
-    saveMetricSettings,
-  } = metricConfigStore;
+  const { contexts, updateContextValue, saveMetricSettings } =
+    metricConfigStore;
 
-  const systemMetricKey = getActiveSystemMetricKey();
+  const { system: systemSearchParam, metric: metricSearchParam } =
+    settingsSearchParams;
+  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const activeContextKeys =
     (contexts[systemMetricKey] && Object.keys(contexts[systemMetricKey])) || [];
 
@@ -81,10 +79,10 @@ export const ContextConfiguration: React.FC = observer(() => {
                     value="yes"
                     checked={currentContext.value === "yes"}
                     onChange={() => {
-                      if (activeSystem && activeMetricKey) {
+                      if (systemSearchParam && metricSearchParam) {
                         const updatedSetting = updateContextValue(
-                          activeSystem,
-                          activeMetricKey,
+                          systemSearchParam,
+                          metricSearchParam,
                           contextKey,
                           currentContext.type,
                           "yes"
@@ -101,10 +99,10 @@ export const ContextConfiguration: React.FC = observer(() => {
                     value="no"
                     checked={currentContext.value === "no"}
                     onChange={() => {
-                      if (activeSystem && activeMetricKey) {
+                      if (systemSearchParam && metricSearchParam) {
                         const updatedSetting = updateContextValue(
-                          activeSystem,
-                          activeMetricKey,
+                          systemSearchParam,
+                          metricSearchParam,
                           contextKey,
                           currentContext.type,
                           "no"
@@ -116,10 +114,10 @@ export const ContextConfiguration: React.FC = observer(() => {
                 </RadioButtonGroupWrapper>
                 <BinaryRadioGroupClearButton
                   onClick={() => {
-                    if (activeSystem && activeMetricKey) {
+                    if (systemSearchParam && metricSearchParam) {
                       const updatedSetting = updateContextValue(
-                        activeSystem,
-                        activeMetricKey,
+                        systemSearchParam,
+                        metricSearchParam,
                         contextKey,
                         currentContext.type,
                         ""
@@ -147,10 +145,10 @@ export const ContextConfiguration: React.FC = observer(() => {
                   multiline={currentContext.type === "TEXT"}
                   error={currentContext.error}
                   onChange={(e) => {
-                    if (activeSystem && activeMetricKey) {
+                    if (systemSearchParam && metricSearchParam) {
                       const updatedSetting = updateContextValue(
-                        activeSystem,
-                        activeMetricKey,
+                        systemSearchParam,
+                        metricSearchParam,
                         contextKey,
                         currentContext.type,
                         e.currentTarget.value
@@ -180,10 +178,10 @@ export const ContextConfiguration: React.FC = observer(() => {
                       value={option}
                       checked={currentContext.value === option}
                       onChange={() => {
-                        if (activeSystem && activeMetricKey) {
+                        if (systemSearchParam && metricSearchParam) {
                           const updatedSetting = updateContextValue(
-                            activeSystem,
-                            activeMetricKey,
+                            systemSearchParam,
+                            metricSearchParam,
                             contextKey,
                             currentContext.type,
                             option
@@ -197,10 +195,10 @@ export const ContextConfiguration: React.FC = observer(() => {
 
                 <BinaryRadioGroupClearButton
                   onClick={() => {
-                    if (activeSystem && activeMetricKey) {
+                    if (systemSearchParam && metricSearchParam) {
                       const updatedSetting = updateContextValue(
-                        activeSystem,
-                        activeMetricKey,
+                        systemSearchParam,
+                        metricSearchParam,
                         contextKey,
                         currentContext.type,
                         ""

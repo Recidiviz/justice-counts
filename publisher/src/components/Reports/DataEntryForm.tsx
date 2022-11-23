@@ -31,7 +31,6 @@ import {
   trackAutosaveTriggered,
   trackReportNotStartedToDraft,
 } from "../../analytics";
-import { menuOptions } from "../../pages/Settings";
 import { useStore } from "../../stores";
 import { memoizeDebounce, printReportTitle } from "../../utils";
 import logoImg from "../assets/jc-logo-vector.png";
@@ -124,7 +123,6 @@ const DataEntryForm: React.FC<{
 
   const isPublished =
     reportStore.reportOverviews[reportID].status === "PUBLISHED";
-  const navigateState = { settingsMenuOption: menuOptions[2] };
 
   // if the user switches agencies while on this page, navigate back to the reports page.
   useEffect(
@@ -380,9 +378,7 @@ const DataEntryForm: React.FC<{
                       {disabledMetricsNames.length > 1 ? "have" : "has"} been
                       disabled. If you believe this is incorrect, go to{" "}
                       <DisabledMetricsInfoLink
-                        onClick={() =>
-                          navigate("/settings", { state: navigateState })
-                        }
+                        onClick={() => navigate("/settings/metric-config")}
                       >
                         Metric Configuration
                       </DisabledMetricsInfoLink>{" "}

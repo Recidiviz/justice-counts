@@ -15,7 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { ReportFrequency } from "@justice-counts/common/types";
+import { Badge } from "@justice-counts/common/components/Badge";
+import { AgencySystems, ReportFrequency } from "@justice-counts/common/types";
 import { reaction, when } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -23,9 +24,9 @@ import React, { useEffect, useState } from "react";
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
-import { Badge } from "../Badge";
 import { Loading } from "../Loading";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
+import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   BackToMetrics,
   Configuration,
@@ -46,19 +47,15 @@ import {
 } from ".";
 
 export const MetricConfiguration: React.FC = observer(() => {
+  const [settingsSearchParams, setSettingsSearchParams] =
+    useSettingsSearchParams();
   const { userStore, metricConfigStore } = useStore();
-  const {
-    activeMetricKey,
-    activeSystem,
-    metrics,
-    initializeMetricConfigStoreValues,
-    getActiveSystemMetricKey,
-    getMetricsBySystem,
-    updateActiveSystem,
-    updateActiveMetricKey,
-  } = metricConfigStore;
+  const { metrics, initializeMetricConfigStoreValues, getMetricsBySystem } =
+    metricConfigStore;
 
-  const systemMetricKey = getActiveSystemMetricKey();
+  const { system: systemSearchParam, metric: metricSearchParam } =
+    settingsSearchParams;
+  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingErrorMessage, setLoadingErrorMessage] = useState<string>();
@@ -72,7 +69,52 @@ export const MetricConfiguration: React.FC = observer(() => {
       return setLoadingErrorMessage(response.message);
     }
     setIsLoading(false);
-    updateActiveSystem(userStore.currentAgency?.systems[0]);
+    // this check is for case when link is external
+    // since it is not possible to switch agency using link params
+    // have to check if system param from url is present in current agency
+    // if not then clear system and metric url params
+    // TODO after #149 task is done have to refactor that
+    if (systemSearchParam && userStore.currentAgency?.systems) {
+      const isUrlSystemParamInCurrentAgencySystems =
+        !!userStore.currentAgency?.systems.find(
+          (system) => system === systemSearchParam
+        );
+      if (!isUrlSystemParamInCurrentAgencySystems) {
+        setSettingsSearchParams({
+          system: userStore.currentAgency?.systems[0],
+        });
+        return;
+      }
+    }
+
+    if (metricSearchParam) {
+      const isUrlSystemParamInCurrentAgencySystems =
+        !!userStore.currentAgency?.systems.find(
+          (system) => system === systemSearchParam
+        );
+      const systemToCheckMetrics = isUrlSystemParamInCurrentAgencySystems
+        ? systemSearchParam
+        : userStore.currentAgency?.systems[0];
+      const isUrlMetricParamInCurrentSystem = !!getMetricsBySystem(
+        systemToCheckMetrics
+      )?.find((metric) => metric.key === metricSearchParam);
+      if (!isUrlMetricParamInCurrentSystem) {
+        setSettingsSearchParams({});
+        return;
+      }
+    }
+
+    if (!systemSearchParam) {
+      setSettingsSearchParams({
+        system: userStore.currentAgency?.systems[0],
+      });
+    }
+  };
+
+  const handleSystemClick = (option: AgencySystems) => {
+    setSettingsSearchParams({
+      system: option,
+    });
   };
 
   useEffect(
@@ -98,7 +140,6 @@ export const MetricConfiguration: React.FC = observer(() => {
           if (previousAgencyId !== undefined) {
             setIsLoading(true);
             await initializeMetricConfiguration();
-            updateActiveMetricKey(undefined);
           }
         }
       ),
@@ -118,7 +159,7 @@ export const MetricConfiguration: React.FC = observer(() => {
     <>
       <MetricsViewContainer>
         {/* System Tabs (for multi-system agencies) */}
-        {!activeMetricKey &&
+        {!metricSearchParam &&
           userStore.currentAgency?.systems &&
           userStore.currentAgency?.systems?.length > 1 && (
             <StickyHeader>
@@ -127,8 +168,8 @@ export const MetricConfiguration: React.FC = observer(() => {
                   {userStore.currentAgency?.systems.map((filterOption) => (
                     <TabbedItem
                       key={filterOption}
-                      selected={activeSystem === filterOption}
-                      onClick={() => updateActiveSystem(filterOption)}
+                      selected={systemSearchParam === filterOption}
+                      onClick={() => handleSystemClick(filterOption)}
                       capitalize
                     >
                       {removeSnakeCase(filterOption.toLowerCase())}
@@ -141,30 +182,32 @@ export const MetricConfiguration: React.FC = observer(() => {
 
         <MetricsViewControlPanel>
           {/* List Of Metrics */}
-          {!activeMetricKey && (
+          {!metricSearchParam && (
             <MetricBoxBottomPaddingContainer>
               <MetricBoxContainerWrapper>
-                {getMetricsBySystem(activeSystem)?.map(({ key, metric }) => (
-                  <MetricBox
-                    key={key}
-                    metricKey={key}
-                    displayName={metric.label as string}
-                    frequency={metric.frequency as ReportFrequency}
-                    description={metric.description as string}
-                    enabled={metric.enabled}
-                  />
-                ))}
+                {getMetricsBySystem(systemSearchParam)?.map(
+                  ({ key, metric }) => (
+                    <MetricBox
+                      key={key}
+                      metricKey={key}
+                      displayName={metric.label as string}
+                      frequency={metric.frequency as ReportFrequency}
+                      description={metric.description as string}
+                      enabled={metric.enabled}
+                    />
+                  )
+                )}
               </MetricBoxContainerWrapper>
             </MetricBoxBottomPaddingContainer>
           )}
 
-          {activeMetricKey && (
+          {metricSearchParam && (
             <MetricConfigurationWrapper>
               {/* Metric Configuration */}
               <MetricConfigurationDisplay>
                 <BackToMetrics
                   onClick={() => {
-                    updateActiveMetricKey(undefined);
+                    setSettingsSearchParams({ system: systemSearchParam });
                     setActiveDimensionKey(undefined);
                   }}
                 >

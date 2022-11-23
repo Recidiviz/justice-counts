@@ -272,6 +272,10 @@ export interface DatapointsByMetric {
   [metricKey: string]: DatapointsGroupedByAggregateAndDisaggregations;
 }
 
+export interface RawDatapointsByMetric {
+  [metricKey: string]: RawDatapoint[];
+}
+
 export type DataVizTimeRange = 0 | 6 | 12 | 60 | 120;
 
 export const DataVizTimeRangesMap: { [key: string]: DataVizTimeRange } = {

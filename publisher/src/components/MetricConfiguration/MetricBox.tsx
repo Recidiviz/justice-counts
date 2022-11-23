@@ -15,12 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Badge } from "@justice-counts/common/components/Badge";
 import { ReportFrequency } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React from "react";
 
-import { useStore } from "../../stores";
-import { Badge } from "../Badge";
+import { useSettingsSearchParams } from "../Settings";
 import {
   MetricBoxContainer,
   MetricDescription,
@@ -44,14 +44,15 @@ export const MetricBox: React.FC<MetricBoxProps> = observer(
     description,
     enabled,
   }): JSX.Element => {
-    const { metricConfigStore } = useStore();
-    const { updateActiveMetricKey } = metricConfigStore;
+    const [settingsSearchParams, setSettingsSearchParams] =
+      useSettingsSearchParams();
+
+    const handleMetricBoxClick = () => {
+      setSettingsSearchParams({ ...settingsSearchParams, metric: metricKey });
+    };
 
     return (
-      <MetricBoxContainer
-        onClick={() => updateActiveMetricKey(metricKey)}
-        enabled={enabled}
-      >
+      <MetricBoxContainer onClick={handleMetricBoxClick} enabled={enabled}>
         <MetricName>{displayName}</MetricName>
         <MetricDescription>{description}</MetricDescription>
         <MetricNameBadgeWrapper>

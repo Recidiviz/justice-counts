@@ -77,3 +77,8 @@ export const ethnicities = [
   "Unknown Ethnicity",
 ] as const;
 export type Ethnicities = typeof ethnicities[number];
+
+export enum ChartView {
+  Chart = "CHART",
+  Table = "TABLE",
+}

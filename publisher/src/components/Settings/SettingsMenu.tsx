@@ -17,62 +17,68 @@
 
 import { observer } from "mobx-react-lite";
 import React, { Fragment } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import { MenuOptions, menuOptions } from "../../pages/Settings";
+import { settingsMenuPaths } from "../../pages/Settings";
 import { useStore } from "../../stores";
 import {
   MenuItem,
   MetricsListContainer,
   MetricsListItem,
   SettingsMenuContainer,
+  useSettingsSearchParams,
 } from ".";
 
-export const SettingsMenu: React.FC<{
-  activeMenuItem: MenuOptions;
-  goToMenuItem: (destination: MenuOptions) => void;
-}> = observer(({ activeMenuItem, goToMenuItem }) => {
+export const SettingsMenu: React.FC = observer(() => {
+  const [settingsSearchParams, setSettingsSearchParams] =
+    useSettingsSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
   const { metricConfigStore } = useStore();
-  const {
-    activeMetricKey,
-    activeSystem,
-    getMetricsBySystem,
-    updateActiveMetricKey,
-  } = metricConfigStore;
+  const { getMetricsBySystem } = metricConfigStore;
+
+  const { system: systemSearchParam, metric: metricSearchParam } =
+    settingsSearchParams;
+
+  const handleMetricListItemClick = (metricKey: string) => {
+    setSettingsSearchParams({
+      system: systemSearchParam,
+      metric: metricKey,
+    });
+  };
 
   return (
     <SettingsMenuContainer>
-      {menuOptions.map((option) => (
-        <Fragment key={option}>
+      {Object.entries(settingsMenuPaths).map(([displayName, path]) => (
+        <Fragment key={path}>
           <MenuItem
-            selected={option === activeMenuItem}
+            selected={location.pathname === path}
             onClick={() => {
-              goToMenuItem(option);
-
-              if (option === "Metric Configuration") {
-                updateActiveMetricKey(undefined);
-              }
+              navigate(path);
             }}
           >
-            {option}
+            {displayName}
           </MenuItem>
 
           {/* Metrics Navigation (appears when a metric has been 
               selected and allows users to toggle between metrics) */}
-          {option === "Metric Configuration" &&
-            activeMenuItem === "Metric Configuration" &&
-            activeMetricKey && (
+          {location.pathname === "/settings/metric-config" &&
+            path === "/settings/metric-config" &&
+            metricSearchParam && (
               <MetricsListContainer>
-                {getMetricsBySystem(activeSystem)?.map(({ key, metric }) => {
-                  return (
-                    <MetricsListItem
-                      key={key}
-                      activeSection={key === activeMetricKey}
-                      onClick={() => updateActiveMetricKey(key)}
-                    >
-                      {metric.label}
-                    </MetricsListItem>
-                  );
-                })}
+                {getMetricsBySystem(systemSearchParam)?.map(
+                  ({ key, metric }) => {
+                    return (
+                      <MetricsListItem
+                        key={key}
+                        activeSection={key === metricSearchParam}
+                        onClick={() => handleMetricListItemClick(key)}
+                      >
+                        {metric.label}
+                      </MetricsListItem>
+                    );
+                  }
+                )}
               </MetricsListContainer>
             )}
         </Fragment>

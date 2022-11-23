@@ -51,7 +51,6 @@ export const RightPanel = styled.div`
   flex-direction: column;
   align-items: stretch;
   width: calc(100% - 574px);
-  height: 100%;
   padding-left: 24px;
   padding-right: 24px;
 
