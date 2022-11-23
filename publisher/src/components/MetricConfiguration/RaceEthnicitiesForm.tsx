@@ -135,7 +135,7 @@ export const RaceEthnicitiesForm = observer(() => {
         </SpecifyEthnicityWrapper>
 
         <Header>
-          Which of the following categories does that case management system
+          Which of the following categories does your case management system
           capture for race?
         </Header>
         <Subheader>
