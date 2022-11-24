@@ -17,7 +17,10 @@
 
 import React from "react";
 import { Datapoint } from "../../types";
-import { MetricInsight, MetricInsightsRow } from "./DatapointsView.styles";
+import {
+  MetricInsight,
+  MetricInsightsContainer,
+} from "./DatapointsView.styles";
 import {
   getAverageTotalValue,
   getLatestDateFormatted,
@@ -32,10 +35,10 @@ export const MetricInsights: React.FC<{
   const avgValue = getAverageTotalValue(datapoints, isAnnual);
   const mostRecentValue = getLatestDateFormatted(datapoints, isAnnual);
   return (
-    <MetricInsightsRow>
+    <MetricInsightsContainer>
       <MetricInsight title="Year-to-Year" value={percentChange} />
       <MetricInsight title="Avg. Total Value" value={avgValue} />
       <MetricInsight title="Most Recent" value={mostRecentValue} />
-    </MetricInsightsRow>
+    </MetricInsightsContainer>
   );
 };

@@ -233,9 +233,13 @@ export const DatapointsViewControlsDropdown: React.FC<
   </DatapointsViewDropdown>
 );
 
-export const MetricInsightsRow = styled.div`
+export const MetricInsightsContainer = styled.div`
   display: flex;
   flex-direction: row;
+
+  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+    flex-direction: column;
+  }
 `;
 
 const MetricInsightContainer = styled.div`
