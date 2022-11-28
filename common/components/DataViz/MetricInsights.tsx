@@ -16,6 +16,7 @@
 // =============================================================================
 
 import React from "react";
+
 import { Datapoint } from "../../types";
 import {
   MetricInsight,
