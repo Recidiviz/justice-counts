@@ -230,7 +230,13 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               {/* Dimension Fields (Enable/Disable) */}
               {/* Race & Ethnicities Grid (when active disaggregation is Race / Ethnicity) */}
               {activeDisaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY ? (
-                <RaceEthnicitiesGrid />
+                <RaceEthnicitiesGrid
+                  disaggregationEnabled={Boolean(
+                    disaggregations[systemMetricKey][
+                      RACE_ETHNICITY_DISAGGREGATION_KEY
+                    ]?.enabled
+                  )}
+                />
               ) : (
                 activeDimensionKeys?.map((dimensionKey) => {
                   const currentDisaggregation =

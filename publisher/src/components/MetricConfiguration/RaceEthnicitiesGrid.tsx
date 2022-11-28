@@ -36,47 +36,50 @@ import {
   RaceEthnicitiesTable,
 } from ".";
 
-export const RaceEthnicitiesGrid: React.FC = observer(() => {
-  const { metricConfigStore } = useStore();
-  const { ethnicitiesByRace } = metricConfigStore;
+export const RaceEthnicitiesGrid: React.FC<{ disaggregationEnabled: boolean }> =
+  observer(({ disaggregationEnabled }) => {
+    const { metricConfigStore } = useStore();
+    const { ethnicitiesByRace } = metricConfigStore;
 
-  return (
-    <RaceEthnicitiesBreakdownContainer>
-      <CalloutBox>
-        <Description>
-          Answer the questions on the <span>Race and Ethnicity</span> form; the
-          grid below will reflect your responses.
-        </Description>
-        <RightArrowIcon />
-      </CalloutBox>
+    return (
+      <RaceEthnicitiesBreakdownContainer
+        disaggregationEnabled={disaggregationEnabled}
+      >
+        <CalloutBox>
+          <Description>
+            Answer the questions on the <span>Race and Ethnicity</span> form;
+            the grid below will reflect your responses.
+          </Description>
+          <RightArrowIcon />
+        </CalloutBox>
 
-      <GridHeaderContainer>
-        <GridRaceHeader>Race</GridRaceHeader>
-        <GridEthnicitiesHeader>
-          <EthnicityLabel>
-            Ethnicity <RightArrowIcon />
-          </EthnicityLabel>
-          <Ethnicity>Hispanic</Ethnicity>
-          <Ethnicity>Not Hispanic</Ethnicity>
-          <Ethnicity>Unknown</Ethnicity>
-        </GridEthnicitiesHeader>
-      </GridHeaderContainer>
+        <GridHeaderContainer>
+          <GridRaceHeader>Race</GridRaceHeader>
+          <GridEthnicitiesHeader>
+            <EthnicityLabel>
+              Ethnicity <RightArrowIcon />
+            </EthnicityLabel>
+            <Ethnicity>Hispanic</Ethnicity>
+            <Ethnicity>Not Hispanic</Ethnicity>
+            <Ethnicity>Unknown</Ethnicity>
+          </GridEthnicitiesHeader>
+        </GridHeaderContainer>
 
-      <RaceEthnicitiesTable>
-        {Object.entries(ethnicitiesByRace).map(([race, ethnicities]) => (
-          <RaceEthnicitiesRow key={race}>
-            <RaceCell>{race}</RaceCell>
-            <EthnicitiesRow>
-              {Object.values(ethnicities).map((ethnicity) => (
-                <EthnicityCell
-                  key={ethnicity.key}
-                  enabled={ethnicity.enabled}
-                />
-              ))}
-            </EthnicitiesRow>
-          </RaceEthnicitiesRow>
-        ))}
-      </RaceEthnicitiesTable>
-    </RaceEthnicitiesBreakdownContainer>
-  );
-});
+        <RaceEthnicitiesTable>
+          {Object.entries(ethnicitiesByRace).map(([race, ethnicities]) => (
+            <RaceEthnicitiesRow key={race}>
+              <RaceCell>{race}</RaceCell>
+              <EthnicitiesRow>
+                {Object.values(ethnicities).map((ethnicity) => (
+                  <EthnicityCell
+                    key={ethnicity.key}
+                    enabled={ethnicity.enabled}
+                  />
+                ))}
+              </EthnicitiesRow>
+            </RaceEthnicitiesRow>
+          ))}
+        </RaceEthnicitiesTable>
+      </RaceEthnicitiesBreakdownContainer>
+    );
+  });
