@@ -32,6 +32,7 @@ type MetricBoxProps = {
   metricKey: string;
   displayName: string;
   frequency: ReportFrequency;
+  customFrequency: ReportFrequency;
   description: string;
   enabled?: boolean;
 };
@@ -41,6 +42,7 @@ export const MetricBox: React.FC<MetricBoxProps> = observer(
     metricKey,
     displayName,
     frequency,
+    customFrequency,
     description,
     enabled,
   }): JSX.Element => {
@@ -50,7 +52,9 @@ export const MetricBox: React.FC<MetricBoxProps> = observer(
     const handleMetricBoxClick = () => {
       setSettingsSearchParams({ ...settingsSearchParams, metric: metricKey });
     };
-
+    const displayFrequency = customFrequency
+      ? customFrequency.toLowerCase()
+      : frequency.toLowerCase();
     return (
       <MetricBoxContainer onClick={handleMetricBoxClick} enabled={enabled}>
         <MetricName>{displayName}</MetricName>
@@ -61,7 +65,7 @@ export const MetricBox: React.FC<MetricBoxProps> = observer(
             disabled={!enabled}
             noMargin
           >
-            {!enabled ? "Inactive" : frequency.toLowerCase()}
+            {!enabled ? "Inactive" : displayFrequency}
           </Badge>
         </MetricNameBadgeWrapper>
       </MetricBoxContainer>
