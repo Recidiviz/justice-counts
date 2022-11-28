@@ -27,10 +27,11 @@ import {
   ReportFrequency,
 } from "@justice-counts/common/types";
 import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 
 import { DatapointsTitle } from "./DatapointsTitle";
 import {
+  BottomMetricInsightsContainer,
   DatapointsViewContainer,
   DatapointsViewControlsContainer,
   DatapointsViewControlsDropdown,
@@ -39,8 +40,6 @@ import {
   ExtendedDropdown,
   ExtendedDropdownMenuItem,
   MetricHeaderWrapper,
-  MetricInsight,
-  MetricInsightsRow,
   MobileFiltersButton,
   MobileFiltersRow,
   MobileSelectMetricsButton,
@@ -49,6 +48,7 @@ import {
   SelectMetricsButtonContainer,
   SelectMetricsButtonText,
 } from "./DatapointsView.styles";
+import { MetricInsights } from "./MetricInsights";
 import {
   filterByTimeRange,
   filterNullDatapoints,
@@ -98,6 +98,7 @@ export const DatapointsView: React.FC<{
   metricFrequency?: ReportFrequency;
   metricNames?: string[];
   onMetricsSelect?: (metric: string) => void;
+  showBottomMetricInsights?: boolean;
   resizeHeight?: boolean;
 }> = ({
   datapointsGroupedByAggregateAndDisaggregations,
@@ -106,6 +107,7 @@ export const DatapointsView: React.FC<{
   metricFrequency,
   metricNames,
   onMetricsSelect,
+  showBottomMetricInsights = false,
   resizeHeight = false,
 }) => {
   const [selectedTimeRange, setSelectedTimeRange] =
@@ -114,8 +116,6 @@ export const DatapointsView: React.FC<{
     React.useState<string>(noDisaggregationOption);
   const [datapointsViewSetting, setDatapointsViewSetting] =
     React.useState<DatapointsViewSetting>("Count");
-  const [insightsWidth, setInsightsWidth] = React.useState(0);
-  const insightsRef = useRef<HTMLDivElement | null>(null);
   const [mobileSelectMetricsVisible, setMobileSelectMetricsVisible] =
     React.useState<boolean>(false);
 
@@ -161,9 +161,6 @@ export const DatapointsView: React.FC<{
     }
   }, [selectedDisaggregation]);
 
-  useEffect(() => {
-    if (insightsRef.current) setInsightsWidth(insightsRef.current.offsetWidth);
-  }, [metricName]);
   /** Prevent body from scrolling when modal is open */
   useEffect(() => {
     if (mobileSelectMetricsVisible) {
@@ -255,16 +252,6 @@ export const DatapointsView: React.FC<{
 
   const chartViewInsightsInfo = `Year-to-Year: ${percentChange},\nAvg. Total Value: ${avgValue},\nMost Recent: ${mostRecentValue}`;
 
-  const renderMetricInsightsRow = () => {
-    return (
-      <MetricInsightsRow ref={insightsRef} selfWidth={insightsWidth}>
-        <MetricInsight title="Year-to-Year" value={percentChange} />
-        <MetricInsight title="Avg. Total Value" value={avgValue} />
-        <MetricInsight title="Most Recent" value={mostRecentValue} />
-      </MetricInsightsRow>
-    );
-  };
-
   return (
     <DatapointsViewContainer>
       <DatapointsViewHeaderWrapper>
@@ -275,10 +262,11 @@ export const DatapointsView: React.FC<{
               metricFrequency={metricFrequency}
               insights={chartViewInsightsInfo}
             />
-            {data.length > 0 && renderMetricInsightsRow()}
+            {data.length > 0 && (
+              <MetricInsights datapoints={dataSelectedInTimeRange} />
+            )}
           </MetricHeaderWrapper>
         )}
-        {/* {renderDataVizControls()} */}
       </DatapointsViewHeaderWrapper>
       <DatapointsViewControlsRow>
         {metricNames && onMetricsSelect && (
@@ -294,6 +282,11 @@ export const DatapointsView: React.FC<{
       </MobileFiltersRow>
       {renderChartForMetric()}
       {renderLegend()}
+      {showBottomMetricInsights && (
+        <BottomMetricInsightsContainer>
+          <MetricInsights datapoints={dataSelectedInTimeRange} />
+        </BottomMetricInsightsContainer>
+      )}
       <MobileSelectMetricsButtonContainer>
         <MobileSelectMetricsButton
           onClick={() => setMobileSelectMetricsVisible(true)}
