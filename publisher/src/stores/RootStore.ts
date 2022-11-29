@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 import { Auth0ClientOptions } from "@auth0/auth0-spa-js";
+import DataVizStore from "@justice-counts/common/stores/DataVizStore";
 
 import { AuthStore } from "../components/Auth";
 import API from "./API";
@@ -50,6 +51,8 @@ class RootStore {
 
   datapointsStore: DatapointsStore;
 
+  dataVizStore: DataVizStore;
+
   metricConfigStore: MetricConfigStore;
 
   constructor() {
@@ -61,6 +64,7 @@ class RootStore {
     this.reportStore = new ReportStore(this.userStore, this.api);
     this.formStore = new FormStore(this.reportStore);
     this.datapointsStore = new DatapointsStore(this.userStore, this.api);
+    this.dataVizStore = new DataVizStore(this.datapointsStore);
     this.metricConfigStore = new MetricConfigStore(this.userStore, this.api);
   }
 }

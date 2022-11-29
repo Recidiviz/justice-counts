@@ -59,7 +59,7 @@ import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 
-import { useStore } from "./stores";
+import DataVizStore from "../../stores/DataVizStore";
 
 const noDisaggregationOption = "None";
 
@@ -97,6 +97,7 @@ const DatapointsView: React.FC<{
   metricKey: string;
   datapointsGroupedByAggregateAndDisaggregations: DatapointsGroupedByAggregateAndDisaggregations;
   dimensionNamesByDisaggregation: DimensionNamesByDisaggregation;
+  dataVizStore: DataVizStore;
   metricName?: string;
   metricFrequency?: ReportFrequency;
   metricNames?: string[];
@@ -107,6 +108,7 @@ const DatapointsView: React.FC<{
   metricKey,
   datapointsGroupedByAggregateAndDisaggregations,
   dimensionNamesByDisaggregation,
+  dataVizStore,
   metricName,
   metricFrequency,
   metricNames,
@@ -114,7 +116,6 @@ const DatapointsView: React.FC<{
   showBottomMetricInsights = false,
   resizeHeight = false,
 }) => {
-  const { dataVizStore } = useStore();
   const {
     timeRange,
     disaggregation,

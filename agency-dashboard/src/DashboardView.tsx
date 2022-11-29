@@ -19,6 +19,7 @@ import { ReactComponent as DownloadIcon } from "@justice-counts/common/assets/do
 import { ReactComponent as InfoIcon } from "@justice-counts/common/assets/info-icon.svg";
 import { ReactComponent as LeftArrowIcon } from "@justice-counts/common/assets/left-arrow-icon.svg";
 import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share-icon.svg";
+import DatapointsView from "@justice-counts/common/components/DataViz/DatapointsView";
 import { MetricInsights } from "@justice-counts/common/components/DataViz/MetricInsights";
 import {
   filterByTimeRange,
@@ -45,7 +46,6 @@ import {
   RightPanelMetricOverviewContent,
   RightPanelMetricTitle,
 } from "./DashboardView.styles";
-import DatapointsView from "./DatapointsView";
 import { HeaderBar } from "./Header/HeaderBar";
 import { useStore } from "./stores";
 
@@ -187,6 +187,7 @@ const DashboardView = () => {
           dimensionNamesByDisaggregation={
             datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey]
           }
+          dataVizStore={dataVizStore}
           metricNames={metricNames}
           onMetricsSelect={(metric) =>
             navigate(`/agency/${agencyId}/dashboard?metric=${metric}`)
