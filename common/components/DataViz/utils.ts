@@ -19,7 +19,7 @@ import { mapValues, pickBy } from "lodash";
 
 import {
   Datapoint,
-  DatapointsViewSetting,
+  DataVizViewSetting,
   DataVizAggregateName,
   DataVizTimeRange,
 } from "../../types";
@@ -253,30 +253,6 @@ export const fillTimeGapsBetweenDatapoints = (
   }
 
   return dataWithGapDatapoints;
-};
-
-export const transformData = (
-  d: Datapoint[],
-  monthsAgo: DataVizTimeRange,
-  datapointsViewSetting: DatapointsViewSetting
-) => {
-  let transformedData = [...d];
-
-  if (transformedData.length === 0) {
-    return transformedData;
-  }
-
-  // filter by time range
-  transformedData = filterByTimeRange(transformedData, monthsAgo);
-
-  transformedData = filterNullDatapoints(transformedData);
-
-  // format data into percentages for percentage view
-  if (datapointsViewSetting === "Percentage") {
-    transformedData = transformToRelativePerchanges(transformedData);
-  }
-
-  return fillTimeGapsBetweenDatapoints(transformedData, monthsAgo);
 };
 
 // get insights from data

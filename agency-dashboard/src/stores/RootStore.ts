@@ -15,13 +15,18 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import DataVizStore from "@justice-counts/common/stores/DataVizStore";
+
 import DatapointsStore from "./DatapointsStore";
 
 class RootStore {
   datapointsStore: DatapointsStore;
 
+  dataVizStore: DataVizStore;
+
   constructor() {
     this.datapointsStore = new DatapointsStore();
+    this.dataVizStore = new DataVizStore(this.datapointsStore);
   }
 }
 

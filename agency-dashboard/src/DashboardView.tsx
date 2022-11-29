@@ -19,9 +19,13 @@ import { ReactComponent as DownloadIcon } from "@justice-counts/common/assets/do
 import { ReactComponent as InfoIcon } from "@justice-counts/common/assets/info-icon.svg";
 import { ReactComponent as LeftArrowIcon } from "@justice-counts/common/assets/left-arrow-icon.svg";
 import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share-icon.svg";
-import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
 import { MetricInsights } from "@justice-counts/common/components/DataViz/MetricInsights";
+import {
+  filterByTimeRange,
+  filterNullDatapoints,
+} from "@justice-counts/common/components/DataViz/utils";
 import { COMMON_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import { DataVizTimeRangesMap } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -41,6 +45,7 @@ import {
   RightPanelMetricOverviewContent,
   RightPanelMetricTitle,
 } from "./DashboardView.styles";
+import DatapointsView from "./DatapointsView";
 import { HeaderBar } from "./Header/HeaderBar";
 import { useStore } from "./stores";
 
@@ -91,7 +96,7 @@ const DashboardView = () => {
   const navigate = useNavigate();
   const params = useParams();
   const agencyId = Number(params.id);
-  const { datapointsStore } = useStore();
+  const { datapointsStore, dataVizStore } = useStore();
 
   const { search } = useLocation();
   const query = new URLSearchParams(search);
@@ -151,8 +156,8 @@ const DashboardView = () => {
   const metricName =
     datapointsStore.metricKeyToDisplayName[metricKey] || metricKey;
 
-  const datapoints =
-    datapointsStore.datapointsByMetric[metricKey]?.aggregate || [];
+  const filteredAggregateData =
+    dataVizStore.getFilteredAggregateDatapoints(metricKey);
 
   return (
     <Container key={metricKey}>
@@ -160,7 +165,7 @@ const DashboardView = () => {
       <LeftPanel>
         <BackButton onClick={() => navigate(`/agency/${agencyId}`)} />
         <MetricTitle>{metricName}</MetricTitle>
-        <MetricInsights datapoints={datapoints} />
+        <MetricInsights datapoints={filteredAggregateData} />
         <MetricOverviewContent>
           Measures the number of individuals with at least one parole violation
           during the reporting period.
@@ -175,6 +180,7 @@ const DashboardView = () => {
         <RightPanelBackButton onClick={() => navigate(`/agency/${agencyId}`)} />
         <RightPanelMetricTitle>{metricName}</RightPanelMetricTitle>
         <DatapointsView
+          metricKey={metricKey}
           datapointsGroupedByAggregateAndDisaggregations={
             datapointsStore.datapointsByMetric[metricKey]
           }

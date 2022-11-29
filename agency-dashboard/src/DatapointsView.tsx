@@ -17,19 +17,7 @@
 
 import { ReactComponent as GridIcon } from "@justice-counts/common/assets/grid-icon.svg";
 import BarChart from "@justice-counts/common/components/DataViz/BarChart";
-import Legend from "@justice-counts/common/components/DataViz/Legend";
-import {
-  DatapointsGroupedByAggregateAndDisaggregations,
-  DatapointsViewSetting,
-  DataVizAggregateName,
-  DataVizTimeRangesMap,
-  DimensionNamesByDisaggregation,
-  ReportFrequency,
-} from "@justice-counts/common/types";
-import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
-import React, { useEffect } from "react";
-
-import { DatapointsTitle } from "./DatapointsTitle";
+import { DatapointsTitle } from "@justice-counts/common/components/DataViz/DatapointsTitle";
 import {
   BottomMetricInsightsContainer,
   DatapointsViewContainer,
@@ -47,8 +35,9 @@ import {
   MobileSelectMetricsModalContainer,
   SelectMetricsButtonContainer,
   SelectMetricsButtonText,
-} from "./DatapointsView.styles";
-import { MetricInsights } from "./MetricInsights";
+} from "@justice-counts/common/components/DataViz/DatapointsView.styles";
+import Legend from "@justice-counts/common/components/DataViz/Legend";
+import { MetricInsights } from "@justice-counts/common/components/DataViz/MetricInsights";
 import {
   filterByTimeRange,
   filterNullDatapoints,
@@ -56,8 +45,21 @@ import {
   getLatestDateFormatted,
   getPercentChangeOverTime,
   sortDatapointDimensions,
-  transformData,
-} from "./utils";
+} from "@justice-counts/common/components/DataViz/utils";
+import {
+  DatapointsGroupedByAggregateAndDisaggregations,
+  DataVizAggregateName,
+  DataVizTimeRangeDisplayName,
+  DataVizTimeRangesMap,
+  DataVizViewSetting,
+  DimensionNamesByDisaggregation,
+  ReportFrequency,
+} from "@justice-counts/common/types";
+import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
+import { observer } from "mobx-react-lite";
+import React, { useEffect } from "react";
+
+import { useStore } from "./stores";
 
 const noDisaggregationOption = "None";
 
@@ -91,7 +93,8 @@ const SelectMetricButtonDropdown: React.FC<{
   </ExtendedDropdown>
 );
 
-export const DatapointsView: React.FC<{
+const DatapointsView: React.FC<{
+  metricKey: string;
   datapointsGroupedByAggregateAndDisaggregations: DatapointsGroupedByAggregateAndDisaggregations;
   dimensionNamesByDisaggregation: DimensionNamesByDisaggregation;
   metricName?: string;
@@ -101,6 +104,7 @@ export const DatapointsView: React.FC<{
   showBottomMetricInsights?: boolean;
   resizeHeight?: boolean;
 }> = ({
+  metricKey,
   datapointsGroupedByAggregateAndDisaggregations,
   dimensionNamesByDisaggregation,
   metricName,
@@ -110,56 +114,53 @@ export const DatapointsView: React.FC<{
   showBottomMetricInsights = false,
   resizeHeight = false,
 }) => {
-  const [selectedTimeRange, setSelectedTimeRange] =
-    React.useState<string>("All");
-  const [selectedDisaggregation, setSelectedDisaggregation] =
-    React.useState<string>(noDisaggregationOption);
-  const [datapointsViewSetting, setDatapointsViewSetting] =
-    React.useState<DatapointsViewSetting>("Count");
+  const { dataVizStore } = useStore();
+  const {
+    timeRange,
+    disaggregation,
+    viewSetting,
+    getFilteredDatapoints,
+    setTimeRange,
+    setDisaggregation,
+    setViewSetting,
+  } = dataVizStore;
+
   const [mobileSelectMetricsVisible, setMobileSelectMetricsVisible] =
     React.useState<boolean>(false);
 
-  const data =
-    (selectedDisaggregation !== noDisaggregationOption &&
-      Object.values(
-        datapointsGroupedByAggregateAndDisaggregations.disaggregations[
-          selectedDisaggregation
-        ] || {}
-      )) ||
-    datapointsGroupedByAggregateAndDisaggregations?.aggregate ||
-    [];
+  const data = getFilteredDatapoints(metricKey);
   const isAnnual = data[0]?.frequency === "ANNUAL";
   const disaggregations = Object.keys(dimensionNamesByDisaggregation);
   const disaggregationOptions = [...disaggregations];
   disaggregationOptions.unshift(noDisaggregationOption);
   const dimensionNames =
-    selectedDisaggregation !== noDisaggregationOption
-      ? (dimensionNamesByDisaggregation[selectedDisaggregation] || [])
+    disaggregation !== noDisaggregationOption
+      ? (dimensionNamesByDisaggregation[disaggregation] || [])
           .slice() // Must use slice() before sorting a MobX observableArray
           .sort(sortDatapointDimensions)
       : [DataVizAggregateName];
 
-  const selectedTimeRangeValue = DataVizTimeRangesMap[selectedTimeRange];
+  const selectedTimeRangeValue = DataVizTimeRangesMap[timeRange];
 
   useEffect(() => {
     if (isAnnual && selectedTimeRangeValue === 6) {
-      setSelectedTimeRange("All");
+      setTimeRange("All");
     }
-    if (!disaggregationOptions.includes(selectedDisaggregation)) {
-      setSelectedDisaggregation(noDisaggregationOption);
-      setDatapointsViewSetting("Count");
+    if (!disaggregationOptions.includes(disaggregation)) {
+      setDisaggregation(noDisaggregationOption);
+      setViewSetting("Count");
     }
-    if (selectedDisaggregation === noDisaggregationOption) {
-      setDatapointsViewSetting("Count");
+    if (disaggregation === noDisaggregationOption) {
+      setViewSetting("Count");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datapointsGroupedByAggregateAndDisaggregations]);
 
   useEffect(() => {
-    if (selectedDisaggregation === noDisaggregationOption) {
-      setDatapointsViewSetting("Count");
+    if (disaggregation === noDisaggregationOption) {
+      setViewSetting("Count");
     }
-  }, [selectedDisaggregation]);
+  }, [disaggregation]);
 
   /** Prevent body from scrolling when modal is open */
   useEffect(() => {
@@ -174,22 +175,16 @@ export const DatapointsView: React.FC<{
   const renderChartForMetric = () => {
     return (
       <BarChart
-        data={transformData(
-          data,
-          selectedTimeRangeValue,
-          datapointsViewSetting
-        )}
+        data={data}
         dimensionNames={dimensionNames}
-        percentageView={
-          !!selectedDisaggregation && datapointsViewSetting === "Percentage"
-        }
+        percentageView={!!disaggregation && viewSetting === "Percentage"}
         resizeHeight={resizeHeight}
       />
     );
   };
 
   const renderLegend = () => {
-    if (selectedDisaggregation !== noDisaggregationOption) {
+    if (disaggregation !== noDisaggregationOption) {
       return <Legend names={dimensionNames} />;
     }
     return <Legend />;
@@ -200,7 +195,7 @@ export const DatapointsView: React.FC<{
       <DatapointsViewControlsContainer>
         <DatapointsViewControlsDropdown
           title="Date Range"
-          selectedValue={selectedTimeRange}
+          selectedValue={timeRange}
           options={
             isAnnual
               ? Object.keys(DataVizTimeRangesMap).filter(
@@ -209,26 +204,26 @@ export const DatapointsView: React.FC<{
               : Object.keys(DataVizTimeRangesMap)
           }
           onSelect={(key) => {
-            setSelectedTimeRange(key);
+            setTimeRange(key as DataVizTimeRangeDisplayName);
           }}
         />
         {disaggregationOptions.length > 1 && (
           <DatapointsViewControlsDropdown
             title="Disaggregation"
-            selectedValue={selectedDisaggregation}
+            selectedValue={disaggregation}
             options={disaggregationOptions}
             onSelect={(key) => {
-              setSelectedDisaggregation(key);
+              setDisaggregation(key);
             }}
           />
         )}
-        {selectedDisaggregation !== noDisaggregationOption && (
+        {disaggregation !== noDisaggregationOption && (
           <DatapointsViewControlsDropdown
             title="View"
-            selectedValue={datapointsViewSetting}
+            selectedValue={viewSetting}
             options={["Count", "Percentage"]}
             onSelect={(key) => {
-              setDatapointsViewSetting(key as DatapointsViewSetting);
+              setViewSetting(key as DataVizViewSetting);
             }}
           />
         )}
@@ -299,3 +294,5 @@ export const DatapointsView: React.FC<{
     </DatapointsViewContainer>
   );
 };
+
+export default observer(DatapointsView);

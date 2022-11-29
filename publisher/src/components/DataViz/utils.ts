@@ -17,7 +17,7 @@
 
 import {
   Datapoint,
-  DatapointsViewSetting,
+  DataVizViewSetting,
   DataVizAggregateName,
   DataVizTimeRange,
 } from "@justice-counts/common/types";
@@ -258,7 +258,7 @@ export const fillTimeGapsBetweenDatapoints = (
 export const transformData = (
   d: Datapoint[],
   monthsAgo: DataVizTimeRange,
-  datapointsViewSetting: DatapointsViewSetting
+  dataVizViewSetting: DataVizViewSetting
 ) => {
   let transformedData = [...d];
 
@@ -272,7 +272,7 @@ export const transformData = (
   transformedData = filterNullDatapoints(transformedData);
 
   // format data into percentages for percentage view
-  if (datapointsViewSetting === "Percentage") {
+  if (dataVizViewSetting === "Percentage") {
     transformedData = transformToRelativePerchanges(transformedData);
   }
 
