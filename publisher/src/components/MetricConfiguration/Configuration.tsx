@@ -236,6 +236,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                       RACE_ETHNICITY_DISAGGREGATION_KEY
                     ]?.enabled
                   )}
+                  onClick={() => setActiveDimensionKey(activeDimensionKeys[0])}
                 />
               ) : (
                 activeDimensionKeys?.map((dimensionKey) => {
