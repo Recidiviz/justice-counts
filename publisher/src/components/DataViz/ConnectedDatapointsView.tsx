@@ -35,11 +35,13 @@ const ConnectedDatapointsView: React.FC<{
   dataView: ChartView;
 }> = ({ metric, metricName, metricFrequency, dataView }) => {
   const { datapointsStore, dataVizStore } = useStore();
-  const datapointsForMetric =
-    datapointsStore.datapointsByMetric[metric] ||
-    ({} as DatapointsGroupedByAggregateAndDisaggregations);
-  const rawDatapointsForMetric =
-    datapointsStore.rawDatapointsByMetric[metric] || ([] as RawDatapoint[]);
+  const datapointsForMetric: DatapointsGroupedByAggregateAndDisaggregations =
+    datapointsStore.datapointsByMetric[metric] || {
+      disaggregations: {},
+      aggregate: [],
+    };
+  const rawDatapointsForMetric: RawDatapoint[] =
+    datapointsStore.rawDatapointsByMetric[metric] || [];
 
   return (
     <>
