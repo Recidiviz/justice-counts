@@ -28,7 +28,6 @@ import { Loading } from "../Loading";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
-  BackToMetrics,
   Configuration,
   Metric,
   MetricBox,
@@ -208,15 +207,6 @@ export const MetricConfiguration: React.FC = observer(() => {
             <MetricConfigurationWrapper>
               {/* Metric Configuration */}
               <MetricConfigurationDisplay>
-                <BackToMetrics
-                  onClick={() => {
-                    setSettingsSearchParams({ system: systemSearchParam });
-                    setActiveDimensionKey(undefined);
-                  }}
-                >
-                  ← Back to Metrics
-                </BackToMetrics>
-
                 <Metric
                   onClick={() => setActiveDimensionKey(undefined)}
                   inView={!activeDimensionKey}
