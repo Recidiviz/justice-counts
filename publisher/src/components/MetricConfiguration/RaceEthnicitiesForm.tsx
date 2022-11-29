@@ -20,6 +20,7 @@ import React from "react";
 
 import { useStore } from "../../stores";
 import { BinaryRadioButton } from "../Forms";
+import { useSettingsSearchParams } from "../Settings";
 import {
   Header,
   Race,
@@ -38,13 +39,21 @@ import {
 } from ".";
 
 export const RaceEthnicitiesForm = observer(() => {
+  const [settingsSearchParams] = useSettingsSearchParams();
   const { metricConfigStore } = useStore();
   const {
-    ethnicitiesByRace,
+    getEthnicitiesByRace,
     updateAllRaceEthnicitiesToDefaultState,
     updateRaceDimensions,
     saveMetricSettings,
   } = metricConfigStore;
+  const { system: systemSearchParam, metric: metricSearchParam } =
+    settingsSearchParams;
+  const ethnicitiesByRace =
+    (systemSearchParam &&
+      metricSearchParam &&
+      getEthnicitiesByRace(systemSearchParam, metricSearchParam)) ||
+    {};
   const ethnicitiesByRaceArray = Object.entries(ethnicitiesByRace);
 
   const canSpecifyEthnicity =
@@ -107,10 +116,13 @@ export const RaceEthnicitiesForm = observer(() => {
               value="yes"
               checked={canSpecifyEthnicity}
               onChange={() => {
+                if (!systemSearchParam || !metricSearchParam) return;
                 const updatedDimensions =
                   updateAllRaceEthnicitiesToDefaultState(
                     "CAN_SPECIFY_ETHNICITY",
-                    raceEthnicityGridStates
+                    raceEthnicityGridStates,
+                    systemSearchParam,
+                    metricSearchParam
                   );
                 saveMetricSettings(updatedDimensions);
               }}
@@ -123,10 +135,13 @@ export const RaceEthnicitiesForm = observer(() => {
               value="no"
               checked={!canSpecifyEthnicity}
               onChange={() => {
+                if (!systemSearchParam || !metricSearchParam) return;
                 const updatedDimensions =
                   updateAllRaceEthnicitiesToDefaultState(
                     "NO_ETHNICITY_HISPANIC_AS_RACE",
-                    raceEthnicityGridStates
+                    raceEthnicityGridStates,
+                    systemSearchParam,
+                    metricSearchParam
                   );
                 saveMetricSettings(updatedDimensions);
               }}
@@ -151,10 +166,13 @@ export const RaceEthnicitiesForm = observer(() => {
                 <RaceSelectionButton
                   selected={!specifiesHispanicAsRace}
                   onClick={() => {
+                    if (!systemSearchParam || !metricSearchParam) return;
                     const updatedDimensions =
                       updateAllRaceEthnicitiesToDefaultState(
                         "NO_ETHNICITY_HISPANIC_NOT_SPECIFIED",
-                        raceEthnicityGridStates
+                        raceEthnicityGridStates,
+                        systemSearchParam,
+                        metricSearchParam
                       );
                     saveMetricSettings(updatedDimensions);
                   }}
@@ -164,10 +182,13 @@ export const RaceEthnicitiesForm = observer(() => {
                 <RaceSelectionButton
                   selected={specifiesHispanicAsRace}
                   onClick={() => {
+                    if (!systemSearchParam || !metricSearchParam) return;
                     const updatedDimensions =
                       updateAllRaceEthnicitiesToDefaultState(
                         "NO_ETHNICITY_HISPANIC_AS_RACE",
-                        raceEthnicityGridStates
+                        raceEthnicityGridStates,
+                        systemSearchParam,
+                        metricSearchParam
                       );
                     saveMetricSettings(updatedDimensions);
                   }}
@@ -191,6 +212,7 @@ export const RaceEthnicitiesForm = observer(() => {
                   <RaceSelectionButton
                     selected={!raceEnabled}
                     onClick={() => {
+                      if (!systemSearchParam || !metricSearchParam) return;
                       let switchedGridStateUpdatedDimensions;
                       /**
                        * When Unknown Race is disabled in NO_ETHNICITY_HISPANIC_AS_RACE state, we automatically switch
@@ -205,7 +227,9 @@ export const RaceEthnicitiesForm = observer(() => {
                         switchedGridStateUpdatedDimensions =
                           updateAllRaceEthnicitiesToDefaultState(
                             "NO_ETHNICITY_HISPANIC_NOT_SPECIFIED",
-                            raceEthnicityGridStates
+                            raceEthnicityGridStates,
+                            systemSearchParam,
+                            metricSearchParam
                           );
                       }
 
@@ -213,7 +237,9 @@ export const RaceEthnicitiesForm = observer(() => {
                         race,
                         false,
                         currentState,
-                        raceEthnicityGridStates
+                        raceEthnicityGridStates,
+                        systemSearchParam,
+                        metricSearchParam
                       );
 
                       if (switchedGridStateUpdatedDimensions) {
@@ -233,11 +259,14 @@ export const RaceEthnicitiesForm = observer(() => {
                   <RaceSelectionButton
                     selected={raceEnabled}
                     onClick={() => {
+                      if (!systemSearchParam || !metricSearchParam) return;
                       const updatedDimensions = updateRaceDimensions(
                         race,
                         true,
                         currentState,
-                        raceEthnicityGridStates
+                        raceEthnicityGridStates,
+                        systemSearchParam,
+                        metricSearchParam
                       );
                       saveMetricSettings(updatedDimensions);
                     }}

@@ -20,6 +20,7 @@ import React from "react";
 
 import { useStore } from "../../stores";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
+import { useSettingsSearchParams } from "../Settings";
 import {
   CalloutBox,
   Description,
@@ -40,8 +41,17 @@ export const RaceEthnicitiesGrid: React.FC<{
   disaggregationEnabled: boolean;
   onClick: () => void;
 }> = observer(({ disaggregationEnabled, onClick }) => {
+  const [settingsSearchParams] = useSettingsSearchParams();
   const { metricConfigStore } = useStore();
-  const { ethnicitiesByRace } = metricConfigStore;
+  const { getEthnicitiesByRace } = metricConfigStore;
+
+  const { system: systemSearchParam, metric: metricSearchParam } =
+    settingsSearchParams;
+  const ethnicitiesByRace =
+    (systemSearchParam &&
+      metricSearchParam &&
+      getEthnicitiesByRace(systemSearchParam, metricSearchParam)) ||
+    {};
 
   return (
     <RaceEthnicitiesBreakdownContainer
