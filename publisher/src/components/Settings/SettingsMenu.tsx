@@ -54,6 +54,9 @@ export const SettingsMenu: React.FC = observer(() => {
           <MenuItem
             selected={location.pathname === path}
             onClick={() => {
+              if (path === "/settings/metric-config") {
+                return navigate(`${path}?system=${systemSearchParam}`);
+              }
               navigate(path);
             }}
           >
