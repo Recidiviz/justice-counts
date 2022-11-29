@@ -93,7 +93,7 @@ const SelectMetricButtonDropdown: React.FC<{
   </ExtendedDropdown>
 );
 
-const DatapointsView: React.FC<{
+const DatapointsViewUnobserved: React.FC<{
   metricKey: string;
   datapointsGroupedByAggregateAndDisaggregations: DatapointsGroupedByAggregateAndDisaggregations;
   dimensionNamesByDisaggregation: DimensionNamesByDisaggregation;
@@ -296,4 +296,4 @@ const DatapointsView: React.FC<{
   );
 };
 
-export default observer(DatapointsView);
+export const DatapointsView = observer(DatapointsViewUnobserved);

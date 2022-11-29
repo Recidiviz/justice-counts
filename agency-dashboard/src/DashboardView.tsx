@@ -19,7 +19,7 @@ import { ReactComponent as DownloadIcon } from "@justice-counts/common/assets/do
 import { ReactComponent as InfoIcon } from "@justice-counts/common/assets/info-icon.svg";
 import { ReactComponent as LeftArrowIcon } from "@justice-counts/common/assets/left-arrow-icon.svg";
 import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share-icon.svg";
-import DatapointsView from "@justice-counts/common/components/DataViz/DatapointsView";
+import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
 import { MetricInsights } from "@justice-counts/common/components/DataViz/MetricInsights";
 import {
   filterByTimeRange,

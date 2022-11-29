@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
-import DatapointsView from "@justice-counts/common/components/DataViz/DatapointsView";
+import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
 import {
   DatapointsGroupedByAggregateAndDisaggregations,
   RawDatapoint,
