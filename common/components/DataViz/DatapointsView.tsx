@@ -114,6 +114,7 @@ const DatapointsViewUnobserved: React.FC<{
     disaggregation,
     viewSetting,
     getFilteredDatapoints,
+    getFilteredAggregateDatapoints,
     setTimeRange,
     setDisaggregation,
     setViewSetting,
@@ -226,8 +227,7 @@ const DatapointsViewUnobserved: React.FC<{
     );
   };
 
-  const filteredAggregateData =
-    dataVizStore.getFilteredAggregateDatapoints(metricKey);
+  const filteredAggregateData = getFilteredAggregateDatapoints(metricKey);
 
   return (
     <DatapointsViewContainer>
