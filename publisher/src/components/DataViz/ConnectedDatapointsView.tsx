@@ -45,7 +45,6 @@ const ConnectedDatapointsView: React.FC<{
     <>
       {dataView === ChartView.Chart && (
         <DatapointsView
-          metricKey={metric}
           datapointsGroupedByAggregateAndDisaggregations={datapointsForMetric}
           dimensionNamesByDisaggregation={
             datapointsStore.dimensionNamesByMetricAndDisaggregation[metric] ||

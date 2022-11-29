@@ -38,7 +38,11 @@ import {
 } from "@justice-counts/common/components/DataViz/DatapointsView.styles";
 import Legend from "@justice-counts/common/components/DataViz/Legend";
 import { MetricInsights } from "@justice-counts/common/components/DataViz/MetricInsights";
-import { sortDatapointDimensions } from "@justice-counts/common/components/DataViz/utils";
+import {
+  sortDatapointDimensions,
+  transformDataForBarChart,
+  transformDataForMetricInsights,
+} from "@justice-counts/common/components/DataViz/utils";
 import {
   DatapointsGroupedByAggregateAndDisaggregations,
   DataVizAggregateName,
@@ -46,6 +50,7 @@ import {
   DataVizTimeRangesMap,
   DataVizViewSetting,
   DimensionNamesByDisaggregation,
+  NoDisaggregationOption,
   ReportFrequency,
 } from "@justice-counts/common/types";
 import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
@@ -87,7 +92,6 @@ const SelectMetricButtonDropdown: React.FC<{
 );
 
 const DatapointsViewUnobserved: React.FC<{
-  metricKey: string;
   datapointsGroupedByAggregateAndDisaggregations: DatapointsGroupedByAggregateAndDisaggregations;
   dimensionNamesByDisaggregation: DimensionNamesByDisaggregation;
   dataVizStore: DataVizStore;
@@ -98,7 +102,6 @@ const DatapointsViewUnobserved: React.FC<{
   showBottomMetricInsights?: boolean;
   resizeHeight?: boolean;
 }> = ({
-  metricKey,
   datapointsGroupedByAggregateAndDisaggregations,
   dimensionNamesByDisaggregation,
   dataVizStore,
@@ -113,8 +116,6 @@ const DatapointsViewUnobserved: React.FC<{
     timeRange,
     disaggregation,
     viewSetting,
-    getFilteredDatapoints,
-    getFilteredAggregateDatapoints,
     setTimeRange,
     setDisaggregation,
     setViewSetting,
@@ -123,8 +124,15 @@ const DatapointsViewUnobserved: React.FC<{
   const [mobileSelectMetricsVisible, setMobileSelectMetricsVisible] =
     React.useState<boolean>(false);
 
-  const data = getFilteredDatapoints(metricKey);
-  const isAnnual = data[0]?.frequency === "ANNUAL";
+  const selectedData =
+    (disaggregation !== NoDisaggregationOption &&
+      Object.values(
+        datapointsGroupedByAggregateAndDisaggregations.disaggregations[
+          disaggregation
+        ] || {}
+      )) ||
+    datapointsGroupedByAggregateAndDisaggregations.aggregate;
+  const isAnnual = selectedData[0]?.frequency === "ANNUAL";
   const disaggregations = Object.keys(dimensionNamesByDisaggregation);
   const disaggregationOptions = [...disaggregations];
   disaggregationOptions.unshift(noDisaggregationOption);
@@ -171,7 +179,11 @@ const DatapointsViewUnobserved: React.FC<{
   const renderChartForMetric = () => {
     return (
       <BarChart
-        data={data}
+        data={transformDataForBarChart(
+          selectedData,
+          selectedTimeRangeValue,
+          viewSetting
+        )}
         dimensionNames={dimensionNames}
         percentageView={!!disaggregation && viewSetting === "Percentage"}
         resizeHeight={resizeHeight}
@@ -227,7 +239,10 @@ const DatapointsViewUnobserved: React.FC<{
     );
   };
 
-  const filteredAggregateData = getFilteredAggregateDatapoints(metricKey);
+  const filteredAggregateData = transformDataForMetricInsights(
+    datapointsGroupedByAggregateAndDisaggregations.aggregate,
+    selectedTimeRangeValue
+  );
 
   return (
     <DatapointsViewContainer>
@@ -238,7 +253,7 @@ const DatapointsViewUnobserved: React.FC<{
               metricName={metricName}
               metricFrequency={metricFrequency}
             />
-            {data.length > 0 && (
+            {selectedData.length > 0 && (
               <MetricInsights datapoints={filteredAggregateData} />
             )}
           </MetricHeaderWrapper>

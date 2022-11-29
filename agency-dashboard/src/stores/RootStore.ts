@@ -26,7 +26,7 @@ class RootStore {
 
   constructor() {
     this.datapointsStore = new DatapointsStore();
-    this.dataVizStore = new DataVizStore(this.datapointsStore);
+    this.dataVizStore = new DataVizStore();
   }
 }
 

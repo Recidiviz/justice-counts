@@ -16,72 +16,25 @@
 // =============================================================================
 
 import {
-  Datapoint,
   DataVizTimeRangeDisplayName,
-  DataVizTimeRangesMap,
   DataVizViewSetting,
   NoDisaggregationOption,
 } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction } from "mobx";
 
-import {
-  filterByTimeRange,
-  filterNullDatapoints,
-  transformToRelativePerchanges,
-} from "../components/DataViz/utils";
-import BaseDatapointsStore from "./BaseDatapointsStore";
-
 class DataVizStore {
-  datapointsStore: BaseDatapointsStore;
-
   timeRange: DataVizTimeRangeDisplayName;
 
   disaggregation: string;
 
   viewSetting: DataVizViewSetting;
 
-  constructor(datapointsStore: BaseDatapointsStore) {
+  constructor() {
     makeAutoObservable(this);
-    this.datapointsStore = datapointsStore;
     this.timeRange = "All";
     this.disaggregation = NoDisaggregationOption;
     this.viewSetting = "Count";
   }
-
-  getFilteredDatapoints = (metricKey: string): Datapoint[] => {
-    const dataForMetric = this.datapointsStore.datapointsByMetric[metricKey];
-
-    let filteredData =
-      (this.disaggregation !== NoDisaggregationOption &&
-        Object.values(
-          dataForMetric.disaggregations[this.disaggregation] || {}
-        )) ||
-      dataForMetric?.aggregate ||
-      [];
-
-    filteredData = filterByTimeRange(
-      filteredData,
-      DataVizTimeRangesMap[this.timeRange]
-    );
-
-    // format data into percentages for percentage view
-    if (this.viewSetting === "Percentage") {
-      filteredData = transformToRelativePerchanges(filteredData);
-    }
-
-    return filterNullDatapoints(filteredData);
-  };
-
-  getFilteredAggregateDatapoints = (metricKey: string): Datapoint[] => {
-    const data = this.datapointsStore.datapointsByMetric[metricKey];
-
-    const dataFilteredByTimeRange = filterByTimeRange(
-      data?.aggregate || [],
-      DataVizTimeRangesMap[this.timeRange]
-    );
-
-    return filterNullDatapoints(dataFilteredByTimeRange);
-  };
 
   setTimeRange = (timeRange: DataVizTimeRangeDisplayName) => {
     runInAction(() => {

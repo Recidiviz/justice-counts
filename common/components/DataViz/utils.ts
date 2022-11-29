@@ -17,7 +17,12 @@
 
 import { mapValues, pickBy } from "lodash";
 
-import { Datapoint, DataVizAggregateName, DataVizTimeRange } from "../../types";
+import {
+  Datapoint,
+  DataVizAggregateName,
+  DataVizTimeRange,
+  DataVizViewSetting,
+} from "../../types";
 import { formatNumberInput } from "../../utils";
 
 export const thirtyOneDaysInSeconds = 2678400000;
@@ -248,6 +253,39 @@ export const fillTimeGapsBetweenDatapoints = (
   }
 
   return dataWithGapDatapoints;
+};
+
+// transforms data into the right display format for the data viz chart
+export const transformDataForBarChart = (
+  datapoints: Datapoint[],
+  monthsAgo: DataVizTimeRange,
+  dataVizViewSetting: DataVizViewSetting
+) => {
+  if (datapoints.length === 0) {
+    return datapoints;
+  }
+
+  // filter by time range
+  let transformedData = filterByTimeRange(datapoints, monthsAgo);
+
+  transformedData = filterNullDatapoints(transformedData);
+
+  // format data into percentages for percentage view
+  if (dataVizViewSetting === "Percentage") {
+    transformedData = transformToRelativePerchanges(transformedData);
+  }
+
+  return fillTimeGapsBetweenDatapoints(transformedData, monthsAgo);
+};
+
+export const transformDataForMetricInsights = (
+  datapoints: Datapoint[],
+  monthsAgo: DataVizTimeRange
+) => {
+  if (datapoints.length === 0) {
+    return datapoints;
+  }
+  return filterNullDatapoints(filterByTimeRange(datapoints, monthsAgo));
 };
 
 // get insights from data

@@ -64,7 +64,7 @@ class RootStore {
     this.reportStore = new ReportStore(this.userStore, this.api);
     this.formStore = new FormStore(this.reportStore);
     this.datapointsStore = new DatapointsStore(this.userStore, this.api);
-    this.dataVizStore = new DataVizStore(this.datapointsStore);
+    this.dataVizStore = new DataVizStore();
     this.metricConfigStore = new MetricConfigStore(this.userStore, this.api);
   }
 }
