@@ -24,7 +24,7 @@ import {
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { trackReportPublished } from "../../analytics";
 import { useStore } from "../../stores";
@@ -177,6 +177,7 @@ const PublishConfirmation: React.FC<{
   const [isPublishable, setIsPublishable] = useState(false);
   const [metricsPreview, setMetricsPreview] = useState<MetricWithErrors[]>();
   const { formStore, reportStore, userStore } = useStore();
+  const { agencyId } = useParams();
   const navigate = useNavigate();
 
   const publishReport = async () => {
@@ -230,7 +231,7 @@ const PublishConfirmation: React.FC<{
   return (
     <>
       <DataUploadHeader transparent={false}>
-        <LogoContainer onClick={() => navigate("/")}>
+        <LogoContainer onClick={() => navigate(`/agency/${agencyId}/reports`)}>
           <Logo src={logoImg} alt="" />
         </LogoContainer>
 
@@ -243,7 +244,7 @@ const PublishConfirmation: React.FC<{
           </ConfirmationDialogueTopBarButton>
           <ConfirmationDialogueTopBarButton
             type="border"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(`/agency/${agencyId}/reports`)}
           >
             Exit without Publishing
           </ConfirmationDialogueTopBarButton>

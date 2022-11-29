@@ -15,14 +15,4 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { SettingsSearchParams } from "./types";
-
-export const getActiveSystemMetricKey = ({
-  system,
-  metric,
-}: SettingsSearchParams): string => {
-  return `${system?.toUpperCase()}-${metric}`;
-};
-
-export const getSettingsMenuItemFromLocation = (location: string) =>
-  location.split("/").slice(-1).join();
+export * from "./Router";

@@ -17,6 +17,7 @@
 
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { REPORT_VERB_LOWERCASE } from "../Global/constants";
@@ -46,6 +47,7 @@ type MetricDefinitionsProps = {
 
 export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
   ({ activeDimensionKey, activeDisaggregationKey }) => {
+    const { agencyId } = useParams();
     const [settingsSearchParams] = useSettingsSearchParams();
     const { metricConfigStore } = useStore();
     const {
@@ -137,7 +139,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
             key: metricSearchParam as string,
             settings: defaultSettings,
           };
-          return saveMetricSettings(updatedSetting);
+          return saveMetricSettings(updatedSetting, agencyId);
         }
 
         const updatedSetting = {
@@ -154,7 +156,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
             },
           ],
         };
-        saveMetricSettings(updatedSetting);
+        saveMetricSettings(updatedSetting, agencyId);
       }
     };
 
@@ -234,7 +236,10 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                                         settingKey,
                                         option
                                       );
-                                    return saveMetricSettings(updatedSetting);
+                                    return saveMetricSettings(
+                                      updatedSetting,
+                                      agencyId
+                                    );
                                   }
 
                                   const updatedSetting =
@@ -246,7 +251,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                                       settingKey,
                                       option
                                     );
-                                  saveMetricSettings(updatedSetting);
+                                  saveMetricSettings(updatedSetting, agencyId);
                                 }
                               }}
                             >

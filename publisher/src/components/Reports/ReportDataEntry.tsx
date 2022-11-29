@@ -21,10 +21,9 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { Report } from "@justice-counts/common/types";
-import { when } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import { trackReportUnpublished } from "../../analytics";
@@ -52,7 +51,6 @@ const ReportDataEntryWrapper = styled.div`
 `;
 
 const ReportDataEntry = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingError, setLoadingError] = useState<string | undefined>(
     undefined
   );
@@ -63,10 +61,12 @@ const ReportDataEntry = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showDataEntryHelpPage, setShowDataEntryHelpPage] = useState(false);
   const { formStore, reportStore, userStore } = useStore();
-  const params = useParams();
-  const reportID = Number(params.id);
+  const { agencyId, id } = useParams();
+  const navigate = useNavigate();
+  const reportID = Number(id);
   const reportOverview = reportStore.reportOverviews[reportID] as Report;
   const reportMetrics = reportStore.reportMetrics[reportID];
+
   const toggleConfirmationDialogue = async () => {
     if (reportOverview.status === "PUBLISHED") {
       const response = (await reportStore.updateReport(
@@ -135,25 +135,22 @@ const ReportDataEntry = () => {
     return foundErrors;
   };
 
-  useEffect(
-    () =>
-      // return when's disposer so it is cleaned up if it never runs
-      when(
-        () => userStore.userInfoLoaded,
-        async () => {
-          const result = await reportStore.getReport(reportID);
-          if (result instanceof Error) {
-            setLoadingError(result.message);
-          }
-          userStore.setCurrentAgencyId(
-            reportStore.reportOverviews[reportID]?.agency_id
-          );
-          setIsLoading(false);
-        }
-      ),
+  useEffect(() => {
+    // in case user type (change) agency inside url by hand
+    if (!reportStore.reportOverviews[reportID]) {
+      navigate(`/agency/${agencyId}/reports`);
+      return;
+    }
+    const initialize = async () => {
+      return reportStore.getReport(reportID);
+    };
+
+    const result = initialize();
+    if (result instanceof Error) {
+      setLoadingError(result.message);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  }, []);
 
   useEffect(() => {
     /** Runs validation of previously saved inputs on load */
@@ -178,7 +175,7 @@ const ReportDataEntry = () => {
       updateActiveMetric(firstEnabledMetric.key); // open to the first enabled metric by default
   }, [reportMetrics, reportID]);
 
-  if (isLoading) {
+  if (reportStore.loadingReportData) {
     return (
       <PageWrapper>
         <Loading />
@@ -186,7 +183,7 @@ const ReportDataEntry = () => {
     );
   }
 
-  if (!reportMetrics || !reportOverview) {
+  if (loadingError) {
     return <PageWrapper>Error: {loadingError}</PageWrapper>;
   }
 

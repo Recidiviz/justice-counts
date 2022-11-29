@@ -22,9 +22,9 @@ import {
 } from "@justice-counts/common/components/Badge";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { Permission } from "@justice-counts/common/types";
-import { when } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
@@ -197,7 +197,8 @@ export const UploadedFileRow: React.FC<{
 );
 
 export const UploadedFiles: React.FC = observer(() => {
-  const { reportStore, userStore } = useStore();
+  const { agencyId } = useParams();
+  const { reportStore } = useStore();
   const dataUploadColumnTitles = [
     "Filename",
     "Uploaded",
@@ -276,7 +277,7 @@ export const UploadedFiles: React.FC = observer(() => {
   };
 
   const fetchListOfUploadedFiles = async () => {
-    const response = (await reportStore.getUploadedFilesList()) as
+    const response = (await reportStore.getUploadedFilesList(agencyId)) as
       | Response
       | Error;
 
@@ -293,14 +294,9 @@ export const UploadedFiles: React.FC = observer(() => {
   };
 
   useEffect(
-    () =>
-      // return when's disposer so it is cleaned up if it never runs
-      when(
-        () => userStore.userInfoLoaded,
-        async () => {
-          fetchListOfUploadedFiles();
-        }
-      ),
+    () => {
+      fetchListOfUploadedFiles();
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );

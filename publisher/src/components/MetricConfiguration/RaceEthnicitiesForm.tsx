@@ -17,6 +17,7 @@
 
 import { observer } from "mobx-react-lite";
 import React from "react";
+import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { BinaryRadioButton } from "../Forms";
@@ -38,6 +39,7 @@ import {
 } from ".";
 
 export const RaceEthnicitiesForm = observer(() => {
+  const { agencyId } = useParams();
   const { metricConfigStore } = useStore();
   const {
     ethnicitiesByRace,
@@ -112,7 +114,7 @@ export const RaceEthnicitiesForm = observer(() => {
                     "CAN_SPECIFY_ETHNICITY",
                     raceEthnicityGridStates
                   );
-                saveMetricSettings(updatedDimensions);
+                saveMetricSettings(updatedDimensions, agencyId);
               }}
             />
             <BinaryRadioButton
@@ -128,7 +130,7 @@ export const RaceEthnicitiesForm = observer(() => {
                     "NO_ETHNICITY_HISPANIC_AS_RACE",
                     raceEthnicityGridStates
                   );
-                saveMetricSettings(updatedDimensions);
+                saveMetricSettings(updatedDimensions, agencyId);
               }}
             />
           </RadioButtonGroupWrapper>
@@ -156,7 +158,7 @@ export const RaceEthnicitiesForm = observer(() => {
                         "NO_ETHNICITY_HISPANIC_NOT_SPECIFIED",
                         raceEthnicityGridStates
                       );
-                    saveMetricSettings(updatedDimensions);
+                    saveMetricSettings(updatedDimensions, agencyId);
                   }}
                 >
                   No
@@ -169,7 +171,7 @@ export const RaceEthnicitiesForm = observer(() => {
                         "NO_ETHNICITY_HISPANIC_AS_RACE",
                         raceEthnicityGridStates
                       );
-                    saveMetricSettings(updatedDimensions);
+                    saveMetricSettings(updatedDimensions, agencyId);
                   }}
                 >
                   Yes
@@ -222,10 +224,11 @@ export const RaceEthnicitiesForm = observer(() => {
                           ...updatedDimensions.disaggregations[0].dimensions
                         );
                         return saveMetricSettings(
-                          switchedGridStateUpdatedDimensions
+                          switchedGridStateUpdatedDimensions,
+                          agencyId
                         );
                       }
-                      saveMetricSettings(updatedDimensions);
+                      saveMetricSettings(updatedDimensions, agencyId);
                     }}
                   >
                     No
@@ -239,7 +242,7 @@ export const RaceEthnicitiesForm = observer(() => {
                         currentState,
                         raceEthnicityGridStates
                       );
-                      saveMetricSettings(updatedDimensions);
+                      saveMetricSettings(updatedDimensions, agencyId);
                     }}
                   >
                     Yes

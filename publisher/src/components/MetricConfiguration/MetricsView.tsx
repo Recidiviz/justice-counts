@@ -15,20 +15,18 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystems, Metric } from "@justice-counts/common/types";
-import { reaction, when } from "mobx";
+import { AgencySystems } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
-import { createSearchParams, useNavigate } from "react-router-dom";
+import { createSearchParams, useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { removeSnakeCase } from "../../utils";
 import { ReactComponent as GoToMetricConfig } from "../assets/goto-metric-configuration-icon.svg";
 import { ReactComponent as SwitchToChartIcon } from "../assets/switch-to-chart-icon.svg";
 import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-data-table-icon.svg";
 import ConnectedDatapointsView from "../DataViz/ConnectedDatapointsView";
 import { Loading } from "../Loading";
-import { SettingsSearchParams } from "../Settings/types";
+import { useSettingsSearchParams } from "../Settings";
 import {
   ChartView,
   DisclaimerContainer,
@@ -49,122 +47,105 @@ import {
   SystemsContainer,
 } from ".";
 
-type MetricSettingsObj = {
-  [key: string]: Metric;
-};
-
 export const MetricsView: React.FC = observer(() => {
   const navigate = useNavigate();
   const { reportStore, userStore, datapointsStore } = useStore();
+  const { agencyId } = useParams();
+  const { metricsBySystem } = reportStore;
 
-  const [activeMetricFilter, setActiveMetricFilter] = useState<string>();
+  const [settingsSearchParams, setSettingsSearchParams] =
+    useSettingsSearchParams();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingError, setLoadingError] = useState<string | undefined>(
     undefined
   );
-  const [activeMetricKey, setActiveMetricKey] = useState<string>("");
-  const [metricSettings, setMetricSettings] = useState<{
-    [key: string]: Metric;
-  }>({});
   const [dataView, setDataView] = useState<ChartView>(ChartView.Chart);
 
-  const filteredMetricSettings: MetricSettingsObj = Object.values(
-    metricSettings
-  )
-    .filter(
-      (metric) =>
-        metric.system.toLowerCase() === activeMetricFilter?.toLowerCase()
-    )
-    ?.reduce((res: MetricSettingsObj, metric) => {
-      res[metric.key] = metric;
-      return res;
-    }, {});
+  const { system: systemSearchParam, metric: metricSearchParam } =
+    settingsSearchParams;
 
-  const fetchAndSetReportSettings = async () => {
-    const response = (await reportStore.getReportSettings()) as
-      | Response
-      | Error;
-
-    setIsLoading(false);
-
-    if (response instanceof Error) {
-      return setLoadingError(response.message);
+  const initDataPageMetrics = async () => {
+    const result = await reportStore.initializeReportSettings(agencyId);
+    if (result instanceof Error) {
+      setIsLoading(false);
+      return setLoadingError(result.message);
     }
 
-    const reportSettings = (await response.json()) as Metric[];
-    const metricKeyToMetricMap: { [key: string]: Metric } = {};
+    const currentAgency = userStore.getCurrentAgency(agencyId);
+    const defaultSystemSearchParam = Object.keys(result)[0]
+      .toUpperCase()
+      .replace(" ", "_") as AgencySystems;
+    const defaultMetricSearchParam = Object.values(result)[0][0].key;
 
-    reportSettings
-      ?.filter((metric) => metric.enabled)
-      .forEach((metric) => {
-        metricKeyToMetricMap[metric.key] = metric;
+    // same logic as in metric config page, the only difference is
+    // there should always be metric search param
+    // -------------------------------------------
+    // Maybe instead of checking system and metric belongings better to show
+    // some kind of message that this system/metric does not belong to agency/system
+    // and propose user to reload page with default system for given agency
+    if (systemSearchParam && currentAgency?.systems) {
+      const isUrlSystemParamInCurrentAgencySystems =
+        !!currentAgency.systems.find((system) => system === systemSearchParam);
+      if (!isUrlSystemParamInCurrentAgencySystems) {
+        setSettingsSearchParams({
+          system: defaultSystemSearchParam,
+          metric: defaultMetricSearchParam,
+        });
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    if (metricSearchParam) {
+      const isUrlMetricParamInCurrentSystem = !!reportStore
+        .getMetricsBySystem(systemSearchParam)
+        ?.find((metric) => metric.key === metricSearchParam);
+      if (!isUrlMetricParamInCurrentSystem) {
+        setSettingsSearchParams({
+          system: defaultSystemSearchParam,
+          metric: defaultMetricSearchParam,
+        });
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    if (!systemSearchParam) {
+      setSettingsSearchParams({
+        system: defaultSystemSearchParam,
+        metric: defaultMetricSearchParam,
       });
-
-    setMetricSettings(metricKeyToMetricMap);
-    setActiveMetricKey(Object.keys(metricKeyToMetricMap)[0]);
+    }
+    setIsLoading(false);
   };
 
-  useEffect(
-    () =>
-      // return when's disposer so it is cleaned up if it never runs
-      when(
-        () => userStore.userInfoLoaded,
-        async () => {
-          fetchAndSetReportSettings();
-          datapointsStore.getDatapoints();
-          setActiveMetricFilter(
-            removeSnakeCase(userStore.currentAgency?.systems[0] as string)
-          );
-        }
-      ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
-
-  // reload report overviews when the current agency ID changes
-  useEffect(
-    () =>
-      // return disposer so it is cleaned up if it never runs
-      reaction(
-        () => userStore.currentAgencyId,
-        async (currentAgencyId, previousAgencyId) => {
-          // prevents us from calling getDatapoints twice on initial load
-          if (previousAgencyId !== undefined) {
-            setIsLoading(true);
-            fetchAndSetReportSettings();
-            await datapointsStore.getDatapoints();
-            setActiveMetricFilter(
-              removeSnakeCase(userStore.currentAgency?.systems[0] as string)
-            );
-          }
-        }
-      ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [userStore]
-  );
-
-  useEffect(
-    () => {
-      setActiveMetricKey(Object.keys(filteredMetricSettings)[0]);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeMetricFilter]
-  );
-
   useEffect(() => {
-    if (!datapointsStore.datapointsByMetric[activeMetricKey]) {
-      setDataView(ChartView.Chart);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeMetricKey]);
+    datapointsStore.resetState();
+    const initialize = async () => {
+      setIsLoading(true);
+      await datapointsStore.getDatapoints(agencyId);
+      await initDataPageMetrics();
+    };
 
-  if (isLoading) {
+    initialize();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [agencyId]);
+
+  if (isLoading || !systemSearchParam || !metricSearchParam) {
     return <Loading />;
   }
 
-  if (!metricSettings[activeMetricKey]) {
+  if (loadingError) {
     return <div>Error: {loadingError}</div>;
   }
+
+  const metricName =
+    metricsBySystem[systemSearchParam].find(
+      (metric) => metric.key === metricSearchParam
+    )?.display_name || "";
+  const metricFrequency = metricsBySystem[systemSearchParam]?.find(
+    (metric) => metric.key === metricSearchParam
+  )?.frequency;
 
   return (
     <>
@@ -173,42 +154,50 @@ export const MetricsView: React.FC = observer(() => {
           {/* List Of Metrics */}
           <PanelContainerLeft>
             <SystemsContainer>
-              {userStore.currentAgency?.systems.map((filterOption) => (
-                <React.Fragment key={filterOption}>
-                  <SystemNameContainer
-                    isSystemActive={
-                      activeMetricFilter === removeSnakeCase(filterOption)
-                    }
-                    onClick={() =>
-                      setActiveMetricFilter(removeSnakeCase(filterOption))
-                    }
-                  >
-                    <SystemName>
-                      {removeSnakeCase(filterOption.toLowerCase())}
-                    </SystemName>
-                    <SystemNamePlusSign
-                      isSystemActive={
-                        activeMetricFilter === removeSnakeCase(filterOption)
-                      }
-                    />
-                  </SystemNameContainer>
+              {Object.entries(metricsBySystem).map(([system, metrics]) => (
+                <React.Fragment key={system}>
+                  {metrics.filter((metric) => metric.enabled).length > 0 ? (
+                    <SystemNameContainer
+                      isSystemActive={system === systemSearchParam}
+                      onClick={() => {
+                        setSettingsSearchParams({
+                          system: system as AgencySystems,
+                          metric: metricsBySystem[system][0].key,
+                        });
+                      }}
+                    >
+                      <SystemName>{metrics[0].system}</SystemName>
+                      <SystemNamePlusSign
+                        isSystemActive={system === systemSearchParam}
+                      />
+                    </SystemNameContainer>
+                  ) : (
+                    <SystemNameContainer isSystemActive={false}>
+                      <SystemName>
+                        {metrics[0].system} (No enabled metrics)
+                      </SystemName>
+                    </SystemNameContainer>
+                  )}
+
                   <MetricsItemsContainer
-                    isSystemActive={
-                      activeMetricFilter === removeSnakeCase(filterOption)
-                    }
+                    isSystemActive={system === systemSearchParam}
                   >
-                    {filteredMetricSettings &&
-                      Object.values(filteredMetricSettings)
-                        .filter((metric) => metric.enabled)
-                        .map((metric) => (
-                          <MetricItem
-                            key={metric.key}
-                            selected={activeMetricKey === metric.key}
-                            onClick={() => setActiveMetricKey(metric.key)}
-                          >
-                            {metric.display_name}
-                          </MetricItem>
-                        ))}
+                    {metrics
+                      .filter((metric) => metric.enabled)
+                      .map((metric) => (
+                        <MetricItem
+                          key={metric.key}
+                          selected={metricSearchParam === metric.key}
+                          onClick={() =>
+                            setSettingsSearchParams({
+                              system: system as AgencySystems,
+                              metric: metric.key,
+                            })
+                          }
+                        >
+                          {metric.display_name}
+                        </MetricItem>
+                      ))}
                   </MetricsItemsContainer>
                 </React.Fragment>
               ))}
@@ -221,13 +210,7 @@ export const MetricsView: React.FC = observer(() => {
                 reflect your data sharing capabilities, please go to{" "}
                 <DisclaimerLink
                   onClick={() => {
-                    const params: SettingsSearchParams = {
-                      system: activeMetricFilter as AgencySystems,
-                    };
-                    navigate({
-                      pathname: "/settings/metric-config",
-                      search: `?${createSearchParams(params)}`,
-                    });
+                    navigate("../settings/metric-config");
                   }}
                 >
                   Metric Configuration
@@ -241,7 +224,7 @@ export const MetricsView: React.FC = observer(() => {
           <PanelContainerRight>
             <PanelRightTopButtonsContainer>
               {dataView === ChartView.Chart &&
-                !!datapointsStore.datapointsByMetric[activeMetricKey] && (
+                !!datapointsStore.datapointsByMetric[metricSearchParam] && (
                   <PanelRightTopButton
                     onClick={() => setDataView(ChartView.Table)}
                   >
@@ -259,13 +242,9 @@ export const MetricsView: React.FC = observer(() => {
               )}
               <PanelRightTopButton
                 onClick={() => {
-                  const params: SettingsSearchParams = {
-                    system: activeMetricFilter as AgencySystems,
-                    metric: activeMetricKey,
-                  };
                   navigate({
-                    pathname: "/settings/metric-config",
-                    search: `?${createSearchParams(params)}`,
+                    pathname: "../settings/metric-config",
+                    search: `?${createSearchParams(settingsSearchParams)}`,
                   });
                 }}
               >
@@ -274,11 +253,9 @@ export const MetricsView: React.FC = observer(() => {
               </PanelRightTopButton>
             </PanelRightTopButtonsContainer>
             <ConnectedDatapointsView
-              metric={activeMetricKey}
-              metricName={filteredMetricSettings[activeMetricKey]?.display_name}
-              metricFrequency={
-                filteredMetricSettings[activeMetricKey]?.frequency
-              }
+              metric={metricSearchParam}
+              metricName={metricName}
+              metricFrequency={metricFrequency}
               dataView={dataView}
             />
           </PanelContainerRight>

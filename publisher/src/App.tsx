@@ -17,48 +17,56 @@
 
 import { observer } from "mobx-react-lite";
 import React, { ReactElement, useEffect } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 import { trackNavigation } from "./analytics";
-import { DataUpload } from "./components/DataUpload";
 import { PageWrapper } from "./components/Forms";
-import { REPORTS_LOWERCASE } from "./components/Global/constants";
-import Header from "./components/Header";
-import { MetricsView } from "./components/MetricConfiguration/MetricsView";
-import CreateReports from "./components/Reports/CreateReport";
-import ReportDataEntry from "./components/Reports/ReportDataEntry";
-import ReviewMetrics from "./components/ReviewMetrics/ReviewMetrics";
-import Reports from "./pages/Reports";
-import Settings from "./pages/Settings";
+import { Loading } from "./components/Loading";
+import { NoAgencies } from "./pages/NoAgencies";
+import { Router } from "./router";
+import { useStore } from "./stores";
 
 const App: React.FC = (): ReactElement => {
   const location = useLocation();
+  const { userStore } = useStore();
   useEffect(() => {
     trackNavigation(location.pathname + location.search);
   }, [location]);
 
-  return (
-    <>
+  if (!userStore.userInfoLoaded)
+    return (
       <PageWrapper>
-        <Header />
-
-        <Routes>
-          <Route path="/" element={<Reports />} />
-          <Route path="/data" element={<MetricsView />} />
-          <Route
-            path={`/${REPORTS_LOWERCASE}/create`}
-            element={<CreateReports />}
-          />
-          <Route
-            path={`/${REPORTS_LOWERCASE}/:id`}
-            element={<ReportDataEntry />}
-          />
-          <Route path="/settings/*" element={<Settings />} />
-          <Route path="/upload" element={<DataUpload />} />
-          <Route path="/review-metrics" element={<ReviewMetrics />} />
-        </Routes>
+        <Loading />
       </PageWrapper>
-    </>
+    );
+
+  // using this variable to indicate whether user has any agencies
+  // if true then depending on url either we
+  // go to report page with initial agency (example entering site by homepage)
+  // or we go to route associated with specific agency (like external url with specific page and maybe search params)
+  // if false then we just show user page that there are no associated agencies
+  // if user has agencies but route is out of pattern /agency/:agencyId then redirect to /agency/:initialAgencyId/reports
+  const initialAgency = userStore.getInitialAgencyId();
+
+  return (
+    <PageWrapper>
+      {initialAgency ? (
+        <Routes>
+          <Route
+            path="/"
+            element={<Navigate to={`/agency/${initialAgency}/reports`} />}
+          />
+          <Route path="/agency/:agencyId/*" element={<Router />} />
+          {/* TBD how to treat random routes */}
+          <Route
+            path="*"
+            element={<Navigate to={`/agency/${initialAgency}/reports`} />}
+          />
+        </Routes>
+      ) : (
+        <NoAgencies />
+      )}
+    </PageWrapper>
   );
 };
 

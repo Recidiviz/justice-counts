@@ -134,7 +134,7 @@ abstract class DatapointsStore {
     }, {});
   }
 
-  abstract getDatapoints(agencyId: number): Promise<void | Error>;
+  abstract getDatapoints(agencyId: string): Promise<void | Error>;
 
   resetState() {
     runInAction(() => {

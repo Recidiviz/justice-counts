@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import { ReportFrequency } from "../../types";
 import { Badge, BadgeColorMapping } from "../Badge";
@@ -36,11 +36,14 @@ export const DatapointsTitle: React.FC<{
   insights?: string;
 }> = ({ metricName, metricFrequency, insights }) => {
   const [titleWidth, setTitleWidth] = useState<number>(0);
-  const titleRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    if (titleRef.current) setTitleWidth(titleRef.current.offsetWidth);
-  }, [metricName]);
+  const titleRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (node !== null) setTitleWidth(node.clientWidth);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [metricName]
+  );
 
   return (
     <MetricTitleWrapper>

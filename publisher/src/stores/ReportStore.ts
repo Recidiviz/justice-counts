@@ -16,18 +16,14 @@
 // =============================================================================
 
 import {
+  AgencySystems,
   Metric,
   Report,
   ReportOverview,
   ReportStatus,
   UpdatedMetricsValues,
 } from "@justice-counts/common/types";
-import {
-  IReactionDisposer,
-  makeAutoObservable,
-  reaction,
-  runInAction,
-} from "mobx";
+import { IReactionDisposer, makeAutoObservable, runInAction } from "mobx";
 
 import { UploadedFileStatus } from "../components/DataUpload";
 import {
@@ -35,7 +31,7 @@ import {
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
 import { MetricSettings } from "../components/MetricConfiguration";
-import { groupBy } from "../utils/helperUtils";
+import { groupBy } from "../utils";
 import API from "./API";
 import UserStore from "./UserStore";
 
@@ -50,7 +46,11 @@ class ReportStore {
 
   reportMetricsBySystem: { [reportID: string]: { [system: string]: Metric[] } }; // key by report ID, then by system
 
+  metricsBySystem: { [system: string]: Metric[] }; // key by system
+
   loadingOverview: boolean;
+
+  loadingReportData: boolean;
 
   disposers: IReactionDisposer[] = [];
 
@@ -62,18 +62,9 @@ class ReportStore {
     this.reportOverviews = {};
     this.reportMetrics = {};
     this.reportMetricsBySystem = {};
+    this.metricsBySystem = {};
     this.loadingOverview = true;
-
-    this.disposers.push(
-      reaction(
-        () => this.userStore.currentAgencyId,
-        (currentAgencyId, previousAgencyId) => {
-          if (previousAgencyId !== undefined) {
-            this.resetState();
-          }
-        }
-      )
-    );
+    this.loadingReportData = true;
   }
 
   deconstructor = () => {
@@ -98,9 +89,11 @@ class ReportStore {
     });
   }
 
-  async getReportOverviews(): Promise<void | Error> {
+  async getReportOverviews(
+    agencyId: string | undefined
+  ): Promise<void | Error> {
     try {
-      const { currentAgency } = this.userStore;
+      const currentAgency = this.userStore.getCurrentAgency(agencyId);
       if (currentAgency === undefined) {
         // If user is not attached to an agency,
         // no need to bother trying to load reports.
@@ -161,14 +154,19 @@ class ReportStore {
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
+    } finally {
+      runInAction(() => {
+        this.loadingReportData = false;
+      });
     }
   }
 
   async createReport(
-    body: Record<string, unknown>
+    body: Record<string, unknown>,
+    agencyId: string | undefined
   ): Promise<Response | Error | undefined> {
     try {
-      const { currentAgency } = this.userStore;
+      const currentAgency = this.userStore.getCurrentAgency(agencyId);
 
       if (currentAgency === undefined) {
         throw new Error(
@@ -218,7 +216,8 @@ class ReportStore {
   }
 
   async deleteReports(
-    reportIDs: number[]
+    reportIDs: number[],
+    currentAgencyId: string
   ): Promise<Response | Error | undefined> {
     try {
       const response = (await this.api.request({
@@ -235,7 +234,7 @@ class ReportStore {
 
       runInAction(() => {
         this.resetState();
-        this.getReportOverviews();
+        this.getReportOverviews(currentAgencyId);
       });
 
       return response;
@@ -244,38 +243,59 @@ class ReportStore {
     }
   }
 
-  async getReportSettings(): Promise<Response | Error | undefined> {
-    try {
-      const { currentAgency } = this.userStore;
+  initializeReportSettings = async (
+    agencyId: string | undefined
+  ): Promise<{ [system: string]: Metric[] } | Error> => {
+    const currentAgency = this.userStore.getCurrentAgency(agencyId);
 
-      if (currentAgency === undefined) {
-        throw new Error(
-          "Either invalid user/agency information or no user or agency information initialized."
-        );
-      }
-
-      const response = (await this.api.request({
-        path: `/api/agencies/${currentAgency.id}/metrics`,
-        method: "GET",
-      })) as Response;
-
-      if (response.status !== 200) {
-        throw new Error(
-          `There was an issue retrieving the ${REPORT_LOWERCASE} settings.`
-        );
-      }
-
-      return response;
-    } catch (error) {
-      if (error instanceof Error) return new Error(error.message);
+    if (currentAgency === undefined) {
+      throw new Error(
+        "Either invalid user/agency information or no user or agency information initialized."
+      );
     }
-  }
+
+    const response = (await this.api.request({
+      path: `/api/agencies/${currentAgency.id}/metrics`,
+      method: "GET",
+    })) as Response;
+
+    if (response.status !== 200) {
+      throw new Error(
+        `There was an issue retrieving the ${REPORT_LOWERCASE} settings.`
+      );
+    }
+
+    const metrics = (await response.json()) as Metric[];
+    const metricsBySystem = metrics.reduce((acc, metric) => {
+      const systemKey = metric.system.toUpperCase().replaceAll(" ", "_");
+      if (!acc[systemKey]) {
+        acc[systemKey] = [];
+        acc[systemKey].push(metric);
+      } else {
+        acc[systemKey].push(metric);
+      }
+      return acc;
+    }, {} as { [system: string]: Metric[] });
+
+    runInAction(() => {
+      this.metricsBySystem = metricsBySystem;
+    });
+
+    return metricsBySystem;
+  };
+
+  getMetricsBySystem = (system: AgencySystems | undefined) => {
+    if (system) {
+      return this.metricsBySystem[system];
+    }
+  };
 
   async updateReportSettings(
-    updatedMetricSettings: MetricSettings[]
+    updatedMetricSettings: MetricSettings[],
+    agencyId: string | undefined
   ): Promise<Response | Error | undefined> {
     try {
-      const { currentAgency } = this.userStore;
+      const currentAgency = this.userStore.getCurrentAgency(agencyId);
 
       if (currentAgency === undefined) {
         throw new Error(
@@ -301,8 +321,10 @@ class ReportStore {
     }
   }
 
-  async getUploadedFilesList(): Promise<Response | Error | undefined> {
-    const { currentAgency } = this.userStore;
+  async getUploadedFilesList(
+    agencyId: string | undefined
+  ): Promise<Response | Error | undefined> {
+    const currentAgency = this.userStore.getCurrentAgency(agencyId);
 
     if (currentAgency === undefined) {
       return new Error(
@@ -403,7 +425,9 @@ class ReportStore {
       this.reportOverviews = {};
       this.reportMetrics = {};
       this.reportMetricsBySystem = {};
+      this.metricsBySystem = {};
       this.loadingOverview = true;
+      this.loadingReportData = true;
     });
   }
 }

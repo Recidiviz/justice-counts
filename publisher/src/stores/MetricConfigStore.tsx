@@ -173,8 +173,10 @@ class MetricConfigStore {
     }
   };
 
-  getMetricSettings = async (): Promise<Metric[]> => {
-    const { currentAgency } = this.userStore;
+  getMetricSettings = async (
+    agencyId: string | undefined
+  ): Promise<Metric[]> => {
+    const currentAgency = this.userStore.getCurrentAgency(agencyId);
 
     if (currentAgency === undefined) {
       throw new Error(
@@ -197,9 +199,10 @@ class MetricConfigStore {
   };
 
   saveMetricSettings = async (
-    updatedMetricSettings: MetricSettings
+    updatedMetricSettings: MetricSettings,
+    agencyId: string | undefined
   ): Promise<Response> => {
-    const { currentAgency } = this.userStore;
+    const currentAgency = this.userStore.getCurrentAgency(agencyId);
 
     if (currentAgency === undefined) {
       throw new Error(
@@ -222,9 +225,11 @@ class MetricConfigStore {
     return response;
   };
 
-  initializeMetricConfigStoreValues = async (): Promise<void | Error> => {
+  initializeMetricConfigStoreValues = async (
+    agencyId: string | undefined
+  ): Promise<void | Error> => {
     try {
-      const metrics = await this.getMetricSettings();
+      const metrics = await this.getMetricSettings(agencyId);
 
       runInAction(() => {
         metrics.forEach((metric) => {

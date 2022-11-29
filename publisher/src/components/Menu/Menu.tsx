@@ -18,7 +18,7 @@ import { Permission } from "@justice-counts/common/types";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { Button } from "../DataUpload";
@@ -46,8 +46,11 @@ const Menu = () => {
     MenuItems.Reports
   );
   const { authStore, api, userStore } = useStore();
+  const { agencyId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const pathWithoutAgency = location.pathname.split("/").slice(3).join("/");
 
   const logout = async (): Promise<void | string> => {
     try {
@@ -72,30 +75,33 @@ const Menu = () => {
   };
 
   useEffect(() => {
-    if (location.pathname === "/") {
+    if (pathWithoutAgency === "reports") {
       setActiveMenuItem(MenuItems.Reports);
-    } else if (location.pathname === `/${REPORTS_LOWERCASE}/create`) {
+    } else if (location.pathname === `${REPORTS_LOWERCASE}/create`) {
       setActiveMenuItem(MenuItems.CreateReport);
-    } else if (location.pathname === "/settings") {
+    } else if (pathWithoutAgency === "settings") {
       setActiveMenuItem(MenuItems.Settings);
-    } else if (location.pathname === "/data") {
+    } else if (pathWithoutAgency === "data") {
       setActiveMenuItem(MenuItems.Data);
     } else {
       setActiveMenuItem(undefined);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
+
+  const currentAgency = userStore.getCurrentAgency(agencyId);
 
   return (
     <MenuContainer>
       <WelcomeUser>
         {userStore.nameOrEmail &&
-          userStore.currentAgency?.name &&
-          `Welcome, ${userStore.nameOrEmail} at ${userStore.currentAgency.name}`}
+          currentAgency?.name &&
+          `Welcome, ${userStore.nameOrEmail} at ${currentAgency.name}`}
       </WelcomeUser>
 
       {/* Reports */}
       <MenuItem
-        onClick={() => navigate("/")}
+        onClick={() => navigate("reports")}
         active={activeMenuItem === MenuItems.Reports}
       >
         {REPORTS_CAPITALIZED}
@@ -103,7 +109,7 @@ const Menu = () => {
 
       {/* Data (Visualizations) */}
       <MenuItem
-        onClick={() => navigate("/data")}
+        onClick={() => navigate("data")}
         active={activeMenuItem === MenuItems.Data}
       >
         Data
@@ -134,9 +140,10 @@ const Menu = () => {
                   <ExtendedDropdownMenuItem
                     key={agency.id}
                     onClick={() => {
-                      userStore.setCurrentAgencyId(agency.id);
+                      // userStore.setCurrentAgencyId(agency.id);
+                      navigate(`/agency/${agency.id}/${pathWithoutAgency}`);
                     }}
-                    highlight={userStore.currentAgency?.id === agency.id}
+                    highlight={agency.id === currentAgency?.id}
                   >
                     {agency.name}
                   </ExtendedDropdownMenuItem>
@@ -149,7 +156,7 @@ const Menu = () => {
 
       {/* Settings */}
       <MenuItem
-        onClick={() => navigate("/settings")}
+        onClick={() => navigate("settings")}
         active={activeMenuItem === MenuItems.Settings}
       >
         Settings
@@ -160,7 +167,7 @@ const Menu = () => {
       </MenuItem>
 
       <MenuItem buttonPadding>
-        <Button type="blue" onClick={() => navigate("/upload")}>
+        <Button type="blue" onClick={() => navigate("upload")}>
           Upload Data
         </Button>
       </MenuItem>

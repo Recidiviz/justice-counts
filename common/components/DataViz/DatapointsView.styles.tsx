@@ -232,13 +232,16 @@ export const DatapointsViewControlsDropdown: React.FC<
 
 export const MetricInsightsRow = styled.div<{ selfWidth: number }>`
   display: flex;
+  visibility: visible;
   flex-direction: row;
   justify-content: flex-end;
 
   ${({
     selfWidth,
   }) => `@media only screen and (max-width: calc(1148px + ${selfWidth}px)) {
-    display: none;
+    visibility: hidden;
+    position: absolute;
+    z-index: -1;
   }`}
 `;
 

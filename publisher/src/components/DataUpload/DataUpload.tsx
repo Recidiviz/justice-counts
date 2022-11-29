@@ -18,8 +18,8 @@
 import { showToast } from "@justice-counts/common/components/Toast";
 import { AgencySystems } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import logoImg from "../assets/jc-logo-vector.png";
@@ -84,12 +84,17 @@ export const systemToTemplateSpreadsheetFileName: { [system: string]: string } =
 
 export const DataUpload: React.FC = observer(() => {
   const { userStore, reportStore } = useStore();
+  const { agencyId } = useParams();
   const navigate = useNavigate();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const userSystems =
-    userStore.currentAgency?.systems.filter(
-      (system) => !EXCLUDED_SYSTEMS.includes(system)
-    ) || [];
+  const currentAgency = userStore.getCurrentAgency(agencyId);
+
+  const userSystems = useMemo(() => {
+    return currentAgency
+      ? currentAgency.systems.filter(
+          (system) => !EXCLUDED_SYSTEMS.includes(system)
+        )
+      : [];
+  }, [currentAgency]);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorsWarningsMetrics, setErrorsWarningsMetrics] =
@@ -103,13 +108,13 @@ export const DataUpload: React.FC = observer(() => {
     file: File,
     system: AgencySystems
   ): Promise<void> => {
-    if (file && system && userStore.currentAgencyId) {
+    if (file && system && agencyId) {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("name", file.name);
       formData.append("system", system);
       formData.append("ingest_on_upload", "True");
-      formData.append("agency_id", userStore.currentAgencyId.toString());
+      formData.append("agency_id", agencyId);
 
       const response = await reportStore.uploadExcelSpreadsheet(formData);
 
@@ -135,7 +140,7 @@ export const DataUpload: React.FC = observer(() => {
         return setErrorsWarningsMetrics(errorsWarningsAndMetrics);
       }
 
-      navigate("/review-metrics", {
+      navigate("review-metrics", {
         state: data.metrics,
         replace: true,
       });

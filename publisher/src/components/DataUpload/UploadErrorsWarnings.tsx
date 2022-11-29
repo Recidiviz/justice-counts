@@ -316,7 +316,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
 
           <Button
             onClick={() =>
-              navigate("/review-metrics", {
+              navigate("review-metrics", {
                 state: metrics,
                 replace: true,
               })

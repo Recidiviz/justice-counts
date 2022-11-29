@@ -25,7 +25,7 @@ import {
   ReportOverview,
 } from "@justice-counts/common/types";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import { trackReportCreated } from "../../analytics";
@@ -108,6 +108,7 @@ const initialCreateReportFormValues: CreateReportFormValuesType = {
 
 const CreateReport = () => {
   const { reportStore, userStore } = useStore();
+  const { agencyId } = useParams();
   const navigate = useNavigate();
   const [createReportFormValues, setCreateReportFormValues] = useState(
     initialCreateReportFormValues
@@ -144,12 +145,15 @@ const CreateReport = () => {
   const createNewReport = async () => {
     const { frequency, month, year, annualStartMonth, isRecurring } =
       createReportFormValues;
-    const response = await reportStore.createReport({
-      frequency,
-      month: frequency === "ANNUAL" ? annualStartMonth : month,
-      is_recurring: isRecurring,
-      year: isRecurring ? new Date(Date.now()).getFullYear() : year,
-    });
+    const response = await reportStore.createReport(
+      {
+        frequency,
+        month: frequency === "ANNUAL" ? annualStartMonth : month,
+        is_recurring: isRecurring,
+        year: isRecurring ? new Date(Date.now()).getFullYear() : year,
+      },
+      agencyId
+    );
     if (response && response instanceof Response) {
       if (response.status === 200) {
         navigate("/");

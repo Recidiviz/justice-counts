@@ -18,6 +18,7 @@
 import { debounce } from "lodash";
 import { observer } from "mobx-react-lite";
 import React, { useRef } from "react";
+import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import {
@@ -40,6 +41,7 @@ import {
 } from ".";
 
 export const ContextConfiguration: React.FC = observer(() => {
+  const { agencyId } = useParams();
   const [settingsSearchParams] = useSettingsSearchParams();
   const { metricConfigStore } = useStore();
   const { contexts, updateContextValue, saveMetricSettings } =
@@ -88,7 +90,7 @@ export const ContextConfiguration: React.FC = observer(() => {
                           currentContext.type,
                           "yes"
                         );
-                        saveMetricSettings(updatedSetting);
+                        saveMetricSettings(updatedSetting, agencyId);
                       }
                     }}
                   />
@@ -108,7 +110,7 @@ export const ContextConfiguration: React.FC = observer(() => {
                           currentContext.type,
                           "no"
                         );
-                        saveMetricSettings(updatedSetting);
+                        saveMetricSettings(updatedSetting, agencyId);
                       }
                     }}
                   />
@@ -123,7 +125,7 @@ export const ContextConfiguration: React.FC = observer(() => {
                         currentContext.type,
                         ""
                       );
-                      saveMetricSettings(updatedSetting);
+                      saveMetricSettings(updatedSetting, agencyId);
                     }
                   }}
                 >
@@ -154,7 +156,7 @@ export const ContextConfiguration: React.FC = observer(() => {
                         currentContext.type,
                         e.currentTarget.value
                       );
-                      debouncedSave(updatedSetting);
+                      debouncedSave(updatedSetting, agencyId);
                     }
                   }}
                 />
@@ -187,7 +189,7 @@ export const ContextConfiguration: React.FC = observer(() => {
                             currentContext.type,
                             option
                           );
-                          saveMetricSettings(updatedSetting);
+                          saveMetricSettings(updatedSetting, agencyId);
                         }
                       }}
                     />
@@ -204,7 +206,7 @@ export const ContextConfiguration: React.FC = observer(() => {
                         currentContext.type,
                         ""
                       );
-                      saveMetricSettings(updatedSetting);
+                      saveMetricSettings(updatedSetting, agencyId);
                     }
                   }}
                 >
