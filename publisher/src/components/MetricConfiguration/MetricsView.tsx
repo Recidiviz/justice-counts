@@ -123,7 +123,7 @@ export const MetricsView: React.FC = observer(() => {
     datapointsStore.resetState();
     const initialize = async () => {
       setIsLoading(true);
-      await datapointsStore.getDatapoints(agencyId);
+      await datapointsStore.getDatapoints(Number(agencyId));
       await initDataPageMetrics();
     };
 
