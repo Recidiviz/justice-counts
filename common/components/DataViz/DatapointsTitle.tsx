@@ -33,8 +33,7 @@ const reportFrequencyBadgeColors: BadgeColorMapping = {
 export const DatapointsTitle: React.FC<{
   metricName: string;
   metricFrequency?: string;
-  insights?: string;
-}> = ({ metricName, metricFrequency, insights }) => {
+}> = ({ metricName, metricFrequency }) => {
   const [titleWidth, setTitleWidth] = useState<number>(0);
   const titleRef = useRef<HTMLDivElement | null>(null);
 
@@ -44,7 +43,7 @@ export const DatapointsTitle: React.FC<{
 
   return (
     <MetricTitleWrapper>
-      <MetricTitle ref={titleRef} titleWidth={titleWidth} title={insights}>
+      <MetricTitle ref={titleRef} titleWidth={titleWidth}>
         {metricName}
         {metricFrequency && (
           <Badge

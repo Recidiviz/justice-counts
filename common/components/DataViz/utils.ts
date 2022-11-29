@@ -17,12 +17,7 @@
 
 import { mapValues, pickBy } from "lodash";
 
-import {
-  Datapoint,
-  DataVizViewSetting,
-  DataVizAggregateName,
-  DataVizTimeRange,
-} from "../../types";
+import { Datapoint, DataVizAggregateName, DataVizTimeRange } from "../../types";
 import { formatNumberInput } from "../../utils";
 
 export const thirtyOneDaysInSeconds = 2678400000;

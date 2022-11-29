@@ -38,14 +38,7 @@ import {
 } from "@justice-counts/common/components/DataViz/DatapointsView.styles";
 import Legend from "@justice-counts/common/components/DataViz/Legend";
 import { MetricInsights } from "@justice-counts/common/components/DataViz/MetricInsights";
-import {
-  filterByTimeRange,
-  filterNullDatapoints,
-  getAverageTotalValue,
-  getLatestDateFormatted,
-  getPercentChangeOverTime,
-  sortDatapointDimensions,
-} from "@justice-counts/common/components/DataViz/utils";
+import { sortDatapointDimensions } from "@justice-counts/common/components/DataViz/utils";
 import {
   DatapointsGroupedByAggregateAndDisaggregations,
   DataVizAggregateName,
@@ -161,6 +154,7 @@ const DatapointsViewUnobserved: React.FC<{
     if (disaggregation === noDisaggregationOption) {
       setViewSetting("Count");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [disaggregation]);
 
   /** Prevent body from scrolling when modal is open */
@@ -232,21 +226,8 @@ const DatapointsViewUnobserved: React.FC<{
     );
   };
 
-  // insights data
-  const dataSelectedInTimeRange = filterNullDatapoints(
-    filterByTimeRange(
-      datapointsGroupedByAggregateAndDisaggregations?.aggregate || [],
-      selectedTimeRangeValue
-    )
-  );
-  const percentChange = getPercentChangeOverTime(dataSelectedInTimeRange);
-  const avgValue = getAverageTotalValue(dataSelectedInTimeRange, isAnnual);
-  const mostRecentValue = getLatestDateFormatted(
-    dataSelectedInTimeRange,
-    isAnnual
-  );
-
-  const chartViewInsightsInfo = `Year-to-Year: ${percentChange},\nAvg. Total Value: ${avgValue},\nMost Recent: ${mostRecentValue}`;
+  const filteredAggregateData =
+    dataVizStore.getFilteredAggregateDatapoints(metricKey);
 
   return (
     <DatapointsViewContainer>
@@ -256,10 +237,9 @@ const DatapointsViewUnobserved: React.FC<{
             <DatapointsTitle
               metricName={metricName}
               metricFrequency={metricFrequency}
-              insights={chartViewInsightsInfo}
             />
             {data.length > 0 && (
-              <MetricInsights datapoints={dataSelectedInTimeRange} />
+              <MetricInsights datapoints={filteredAggregateData} />
             )}
           </MetricHeaderWrapper>
         )}
@@ -280,7 +260,7 @@ const DatapointsViewUnobserved: React.FC<{
       {renderLegend()}
       {showBottomMetricInsights && (
         <BottomMetricInsightsContainer>
-          <MetricInsights datapoints={dataSelectedInTimeRange} />
+          <MetricInsights datapoints={filteredAggregateData} />
         </BottomMetricInsightsContainer>
       )}
       <MobileSelectMetricsButtonContainer>

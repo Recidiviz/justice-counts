@@ -16,13 +16,14 @@
 // =============================================================================
 
 import {
-  DataVizViewSetting,
-  DataVizTimeRangeDisplayName,
-  NoDisaggregationOption,
   Datapoint,
+  DataVizTimeRangeDisplayName,
   DataVizTimeRangesMap,
+  DataVizViewSetting,
+  NoDisaggregationOption,
 } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction } from "mobx";
+
 import {
   filterByTimeRange,
   filterNullDatapoints,

@@ -17,9 +17,9 @@
 
 import {
   Datapoint,
-  DataVizViewSetting,
   DataVizAggregateName,
   DataVizTimeRange,
+  DataVizViewSetting,
 } from "@justice-counts/common/types";
 import { mapValues, pickBy } from "lodash";
 

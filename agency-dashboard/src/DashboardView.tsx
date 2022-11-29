@@ -21,12 +21,7 @@ import { ReactComponent as LeftArrowIcon } from "@justice-counts/common/assets/l
 import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share-icon.svg";
 import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
 import { MetricInsights } from "@justice-counts/common/components/DataViz/MetricInsights";
-import {
-  filterByTimeRange,
-  filterNullDatapoints,
-} from "@justice-counts/common/components/DataViz/utils";
 import { COMMON_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
-import { DataVizTimeRangesMap } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
