@@ -92,8 +92,8 @@ const SelectMetricButtonDropdown: React.FC<{
 );
 
 const DatapointsViewUnobserved: React.FC<{
-  datapointsGroupedByAggregateAndDisaggregations: DatapointsGroupedByAggregateAndDisaggregations;
-  dimensionNamesByDisaggregation: DimensionNamesByDisaggregation;
+  datapointsGroupedByAggregateAndDisaggregations?: DatapointsGroupedByAggregateAndDisaggregations;
+  dimensionNamesByDisaggregation?: DimensionNamesByDisaggregation;
   dataVizStore: DataVizStore;
   metricName?: string;
   metricFrequency?: ReportFrequency;
@@ -127,18 +127,19 @@ const DatapointsViewUnobserved: React.FC<{
   const selectedData =
     (disaggregation !== NoDisaggregationOption &&
       Object.values(
-        datapointsGroupedByAggregateAndDisaggregations.disaggregations[
+        datapointsGroupedByAggregateAndDisaggregations?.disaggregations[
           disaggregation
         ] || {}
       )) ||
-    datapointsGroupedByAggregateAndDisaggregations.aggregate;
+    datapointsGroupedByAggregateAndDisaggregations?.aggregate ||
+    [];
   const isAnnual = selectedData[0]?.frequency === "ANNUAL";
-  const disaggregations = Object.keys(dimensionNamesByDisaggregation);
+  const disaggregations = Object.keys(dimensionNamesByDisaggregation || {});
   const disaggregationOptions = [...disaggregations];
   disaggregationOptions.unshift(noDisaggregationOption);
   const dimensionNames =
     disaggregation !== noDisaggregationOption
-      ? (dimensionNamesByDisaggregation[disaggregation] || [])
+      ? (dimensionNamesByDisaggregation?.[disaggregation] || [])
           .slice() // Must use slice() before sorting a MobX observableArray
           .sort(sortDatapointDimensions)
       : [DataVizAggregateName];
@@ -240,7 +241,7 @@ const DatapointsViewUnobserved: React.FC<{
   };
 
   const filteredAggregateData = transformDataForMetricInsights(
-    datapointsGroupedByAggregateAndDisaggregations.aggregate,
+    datapointsGroupedByAggregateAndDisaggregations?.aggregate || [],
     selectedTimeRangeValue
   );
 

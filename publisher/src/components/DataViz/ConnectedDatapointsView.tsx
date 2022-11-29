@@ -17,11 +17,7 @@
 
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
-import {
-  DatapointsGroupedByAggregateAndDisaggregations,
-  RawDatapoint,
-  ReportFrequency,
-} from "@justice-counts/common/types";
+import { ReportFrequency } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React from "react";
 
@@ -35,13 +31,8 @@ const ConnectedDatapointsView: React.FC<{
   dataView: ChartView;
 }> = ({ metric, metricName, metricFrequency, dataView }) => {
   const { datapointsStore, dataVizStore } = useStore();
-  const datapointsForMetric: DatapointsGroupedByAggregateAndDisaggregations =
-    datapointsStore.datapointsByMetric[metric] || {
-      disaggregations: {},
-      aggregate: [],
-    };
-  const rawDatapointsForMetric: RawDatapoint[] =
-    datapointsStore.rawDatapointsByMetric[metric] || [];
+  const datapointsForMetric = datapointsStore.datapointsByMetric[metric];
+  const rawDatapointsForMetric = datapointsStore.rawDatapointsByMetric[metric];
 
   return (
     <>
@@ -49,8 +40,7 @@ const ConnectedDatapointsView: React.FC<{
         <DatapointsView
           datapointsGroupedByAggregateAndDisaggregations={datapointsForMetric}
           dimensionNamesByDisaggregation={
-            datapointsStore.dimensionNamesByMetricAndDisaggregation[metric] ||
-            {}
+            datapointsStore.dimensionNamesByMetricAndDisaggregation[metric]
           }
           dataVizStore={dataVizStore}
           metricName={metricName}
