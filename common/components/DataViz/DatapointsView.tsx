@@ -54,10 +54,7 @@ import {
   ReportFrequency,
 } from "@justice-counts/common/types";
 import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
-import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
-
-import DataVizStore from "../../stores/DataVizStore";
 
 const noDisaggregationOption = "None";
 
@@ -91,10 +88,15 @@ const SelectMetricButtonDropdown: React.FC<{
   </ExtendedDropdown>
 );
 
-const DatapointsViewUnobserved: React.FC<{
+export const DatapointsView: React.FC<{
   datapointsGroupedByAggregateAndDisaggregations?: DatapointsGroupedByAggregateAndDisaggregations;
   dimensionNamesByDisaggregation?: DimensionNamesByDisaggregation;
-  dataVizStore: DataVizStore;
+  timeRange: DataVizTimeRangeDisplayName;
+  disaggregation: string;
+  viewSetting: DataVizViewSetting;
+  setTimeRange: (timeRange: DataVizTimeRangeDisplayName) => void;
+  setDisaggregation: (disaggregation: string) => void;
+  setViewSetting: (viewSetting: DataVizViewSetting) => void;
   metricName?: string;
   metricFrequency?: ReportFrequency;
   metricNames?: string[];
@@ -104,7 +106,12 @@ const DatapointsViewUnobserved: React.FC<{
 }> = ({
   datapointsGroupedByAggregateAndDisaggregations,
   dimensionNamesByDisaggregation,
-  dataVizStore,
+  timeRange,
+  disaggregation,
+  viewSetting,
+  setTimeRange,
+  setDisaggregation,
+  setViewSetting,
   metricName,
   metricFrequency,
   metricNames,
@@ -112,15 +119,6 @@ const DatapointsViewUnobserved: React.FC<{
   showBottomMetricInsights = false,
   resizeHeight = false,
 }) => {
-  const {
-    timeRange,
-    disaggregation,
-    viewSetting,
-    setTimeRange,
-    setDisaggregation,
-    setViewSetting,
-  } = dataVizStore;
-
   const [mobileSelectMetricsVisible, setMobileSelectMetricsVisible] =
     React.useState<boolean>(false);
 
@@ -291,5 +289,3 @@ const DatapointsViewUnobserved: React.FC<{
     </DatapointsViewContainer>
   );
 };
-
-export const DatapointsView = observer(DatapointsViewUnobserved);

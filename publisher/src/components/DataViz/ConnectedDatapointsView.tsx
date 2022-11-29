@@ -31,8 +31,18 @@ const ConnectedDatapointsView: React.FC<{
   dataView: ChartView;
 }> = ({ metric, metricName, metricFrequency, dataView }) => {
   const { datapointsStore, dataVizStore } = useStore();
+
   const datapointsForMetric = datapointsStore.datapointsByMetric[metric];
   const rawDatapointsForMetric = datapointsStore.rawDatapointsByMetric[metric];
+
+  const {
+    timeRange,
+    disaggregation,
+    viewSetting,
+    setTimeRange,
+    setDisaggregation,
+    setViewSetting,
+  } = dataVizStore;
 
   return (
     <>
@@ -42,7 +52,12 @@ const ConnectedDatapointsView: React.FC<{
           dimensionNamesByDisaggregation={
             datapointsStore.dimensionNamesByMetricAndDisaggregation[metric]
           }
-          dataVizStore={dataVizStore}
+          timeRange={timeRange}
+          disaggregation={disaggregation}
+          viewSetting={viewSetting}
+          setTimeRange={setTimeRange}
+          setDisaggregation={setDisaggregation}
+          setViewSetting={setViewSetting}
           metricName={metricName}
           metricFrequency={metricFrequency}
           resizeHeight

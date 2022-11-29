@@ -95,6 +95,15 @@ const DashboardView = () => {
   const agencyId = Number(params.id);
   const { datapointsStore, dataVizStore } = useStore();
 
+  const {
+    timeRange,
+    disaggregation,
+    viewSetting,
+    setTimeRange,
+    setDisaggregation,
+    setViewSetting,
+  } = dataVizStore;
+
   const { search } = useLocation();
   const query = new URLSearchParams(search);
   const metricKey = query.get("metric");
@@ -185,7 +194,12 @@ const DashboardView = () => {
           dimensionNamesByDisaggregation={
             datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey]
           }
-          dataVizStore={dataVizStore}
+          timeRange={timeRange}
+          disaggregation={disaggregation}
+          viewSetting={viewSetting}
+          setTimeRange={setTimeRange}
+          setDisaggregation={setDisaggregation}
+          setViewSetting={setViewSetting}
           metricNames={metricNames}
           onMetricsSelect={(metric) =>
             navigate(`/agency/${agencyId}/dashboard?metric=${metric}`)
