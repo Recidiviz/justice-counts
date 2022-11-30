@@ -46,9 +46,9 @@ import {
 import {
   DatapointsGroupedByAggregateAndDisaggregations,
   DataVizAggregateName,
+  DataVizCountOrPercentageView,
   DataVizTimeRangeDisplayName,
   DataVizTimeRangesMap,
-  DataVizCountOrPercentageView,
   DimensionNamesByDisaggregation,
   NoDisaggregationOption,
   ReportFrequency,

@@ -20,8 +20,8 @@ import { mapValues, pickBy } from "lodash";
 import {
   Datapoint,
   DataVizAggregateName,
-  DataVizTimeRange,
   DataVizCountOrPercentageView,
+  DataVizTimeRange,
 } from "../../types";
 import { formatNumberInput } from "../../utils";
 

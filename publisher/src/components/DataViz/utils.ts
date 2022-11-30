@@ -18,8 +18,8 @@
 import {
   Datapoint,
   DataVizAggregateName,
-  DataVizTimeRange,
   DataVizCountOrPercentageView,
+  DataVizTimeRange,
 } from "@justice-counts/common/types";
 import { mapValues, pickBy } from "lodash";
 

@@ -16,8 +16,8 @@
 // =============================================================================
 
 import {
-  DataVizTimeRangeDisplayName,
   DataVizCountOrPercentageView,
+  DataVizTimeRangeDisplayName,
   NoDisaggregationOption,
 } from "@justice-counts/common/types";
 import { makeAutoObservable } from "mobx";
