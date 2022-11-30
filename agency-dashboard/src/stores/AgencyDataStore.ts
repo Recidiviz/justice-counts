@@ -39,8 +39,8 @@ class AgencyDataStore {
     return mapping;
   }
 
-  get metricDisplayNameToKey(): { [displayName: string]: string | null } {
-    const mapping: { [displayName: string]: string | null } = {};
+  get metricDisplayNameToKey(): { [displayName: string]: string } {
+    const mapping: { [displayName: string]: string } = {};
     this.metrics.forEach((metric) => {
       mapping[metric.display_name] = metric.key;
     });
