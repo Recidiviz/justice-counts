@@ -15,7 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { MetricContext } from "@justice-counts/common/types";
+import {
+  Metric,
+  MetricContext,
+  ReportFrequency,
+} from "@justice-counts/common/types";
 
 export const metricConfigurationSettingsOptions = ["N/A", "No", "Yes"] as const;
 export type MetricConfigurationSettingsOptions =
@@ -82,3 +86,18 @@ export enum ChartView {
   Chart = "CHART",
   Table = "TABLE",
 }
+
+export type MetricInfo = {
+  enabled?: boolean;
+  label?: string;
+  description?: Metric["description"];
+  defaultFrequency?: ReportFrequency;
+  customFrequency?: Metric["custom_frequency"];
+  startingMonth?: Metric["starting_month"];
+};
+
+export type ReportFrequencyUpdate = {
+  defaultFrequency?: ReportFrequency;
+  customFrequency?: ReportFrequency;
+  startingMonth?: number | null;
+};
