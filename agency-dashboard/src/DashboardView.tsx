@@ -23,6 +23,7 @@ import { DatapointsView } from "@justice-counts/common/components/DataViz/Datapo
 import { MetricInsights } from "@justice-counts/common/components/DataViz/MetricInsights";
 import { transformDataForMetricInsights } from "@justice-counts/common/components/DataViz/utils";
 import { COMMON_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import { showToast } from "@justice-counts/common/components/Toast";
 import { DataVizTimeRangesMap } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -107,9 +108,18 @@ const DashboardView = () => {
   const { search } = useLocation();
   const query = new URLSearchParams(search);
   const metricKey = query.get("metric");
+
+  const fetchData = async () => {
+    try {
+      await datapointsStore.getDatapoints(agencyId);
+      await agencyDataStore.fetchAgencyData(agencyId);
+    } catch (error) {
+      showToast("Error fetching data.", false, "red", 4000);
+    }
+  };
+
   useEffect(() => {
-    agencyDataStore.fetchAgencyData(agencyId);
-    datapointsStore.getDatapoints(agencyId);
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

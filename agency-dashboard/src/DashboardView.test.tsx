@@ -51,15 +51,19 @@ beforeEach(() => {
 // });
 
 test("renders 'No reported data for this metric.' state", async () => {
-  fetchMock.mockResponseOnce(
-    JSON.stringify({
-      datapoints: [{}],
-      dimension_names_by_metric_and_disaggregation: {
-        LAW_ENFORCEMENT_ARRESTS: {},
-        LAW_ENFORCEMENT_BUDGET: {},
-        LAW_ENFORCEMENT_CALLS_FOR_SERVICE: {},
-      },
-    })
+  fetchMock.mockResponses(
+    [
+      JSON.stringify({
+        datapoints: [{}],
+        dimension_names_by_metric_and_disaggregation: {
+          LAW_ENFORCEMENT_ARRESTS: {},
+          LAW_ENFORCEMENT_BUDGET: {},
+          LAW_ENFORCEMENT_CALLS_FOR_SERVICE: {},
+        },
+      }),
+      {},
+    ],
+    [JSON.stringify([]), {}]
   );
 
   render(

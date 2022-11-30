@@ -29,7 +29,7 @@ const AgencyOverview = () => {
   const agencyId = Number(params.id);
   const { agencyDataStore, datapointsStore } = useStore();
 
-  const fetchDatapoints = async () => {
+  const fetchData = async () => {
     try {
       await datapointsStore.getDatapoints(agencyId);
       await agencyDataStore.fetchAgencyData(agencyId);
@@ -38,7 +38,7 @@ const AgencyOverview = () => {
     }
   };
   useEffect(() => {
-    fetchDatapoints();
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
