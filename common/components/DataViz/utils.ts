@@ -266,9 +266,7 @@ export const transformDataForBarChart = (
   }
 
   // filter by time range
-  let transformedData = filterByTimeRange(datapoints, monthsAgo);
-
-  transformedData = filterNullDatapoints(transformedData);
+  let transformedData = transformDataForMetricInsights(datapoints, monthsAgo);
 
   // format data into percentages for percentage view
   if (dataVizViewSetting === "Percentage") {
@@ -288,7 +286,7 @@ export const transformDataForMetricInsights = (
   return filterNullDatapoints(filterByTimeRange(datapoints, monthsAgo));
 };
 
-// get insights from data
+// get insights from transformed data
 
 export const getPercentChangeOverTime = (data: Datapoint[]) => {
   if (data.length > 0) {
