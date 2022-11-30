@@ -37,11 +37,11 @@ const ConnectedDatapointsView: React.FC<{
 
   const {
     timeRange,
-    disaggregation,
-    viewSetting,
+    disaggregationName,
+    countOrPercentageView,
     setTimeRange,
-    setDisaggregation,
-    setViewSetting,
+    setDisaggregationName,
+    setCountOrPercentageView,
   } = dataVizStore;
 
   return (
@@ -53,11 +53,11 @@ const ConnectedDatapointsView: React.FC<{
             datapointsStore.dimensionNamesByMetricAndDisaggregation[metric]
           }
           timeRange={timeRange}
-          disaggregation={disaggregation}
-          viewSetting={viewSetting}
+          disaggregationName={disaggregationName}
+          countOrPercentageView={countOrPercentageView}
           setTimeRange={setTimeRange}
-          setDisaggregation={setDisaggregation}
-          setViewSetting={setViewSetting}
+          setDisaggregationName={setDisaggregationName}
+          setCountOrPercentageView={setCountOrPercentageView}
           metricName={metricName}
           metricFrequency={metricFrequency}
           resizeHeight

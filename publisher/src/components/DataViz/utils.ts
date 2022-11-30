@@ -19,7 +19,7 @@ import {
   Datapoint,
   DataVizAggregateName,
   DataVizTimeRange,
-  DataVizViewSetting,
+  DataVizCountOrPercentageView,
 } from "@justice-counts/common/types";
 import { mapValues, pickBy } from "lodash";
 
@@ -258,7 +258,7 @@ export const fillTimeGapsBetweenDatapoints = (
 export const transformData = (
   d: Datapoint[],
   monthsAgo: DataVizTimeRange,
-  dataVizViewSetting: DataVizViewSetting
+  dataVizViewSetting: DataVizCountOrPercentageView
 ) => {
   let transformedData = [...d];
 

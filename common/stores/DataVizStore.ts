@@ -17,41 +17,35 @@
 
 import {
   DataVizTimeRangeDisplayName,
-  DataVizViewSetting,
+  DataVizCountOrPercentageView,
   NoDisaggregationOption,
 } from "@justice-counts/common/types";
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable } from "mobx";
 
 class DataVizStore {
   timeRange: DataVizTimeRangeDisplayName;
 
-  disaggregation: string;
+  disaggregationName: string;
 
-  viewSetting: DataVizViewSetting;
+  countOrPercentageView: DataVizCountOrPercentageView;
 
   constructor() {
     makeAutoObservable(this);
     this.timeRange = "All";
-    this.disaggregation = NoDisaggregationOption;
-    this.viewSetting = "Count";
+    this.disaggregationName = NoDisaggregationOption;
+    this.countOrPercentageView = "Count";
   }
 
   setTimeRange = (timeRange: DataVizTimeRangeDisplayName) => {
-    runInAction(() => {
-      this.timeRange = timeRange;
-    });
+    this.timeRange = timeRange;
   };
 
-  setDisaggregation = (disaggregation: string) => {
-    runInAction(() => {
-      this.disaggregation = disaggregation;
-    });
+  setDisaggregationName = (disaggregation: string) => {
+    this.disaggregationName = disaggregation;
   };
 
-  setViewSetting = (viewSetting: DataVizViewSetting) => {
-    runInAction(() => {
-      this.viewSetting = viewSetting;
-    });
+  setCountOrPercentageView = (viewSetting: DataVizCountOrPercentageView) => {
+    this.countOrPercentageView = viewSetting;
   };
 }
 

@@ -48,7 +48,7 @@ import {
   DataVizAggregateName,
   DataVizTimeRangeDisplayName,
   DataVizTimeRangesMap,
-  DataVizViewSetting,
+  DataVizCountOrPercentageView,
   DimensionNamesByDisaggregation,
   NoDisaggregationOption,
   ReportFrequency,
@@ -92,11 +92,11 @@ export const DatapointsView: React.FC<{
   datapointsGroupedByAggregateAndDisaggregations?: DatapointsGroupedByAggregateAndDisaggregations;
   dimensionNamesByDisaggregation?: DimensionNamesByDisaggregation;
   timeRange: DataVizTimeRangeDisplayName;
-  disaggregation: string;
-  viewSetting: DataVizViewSetting;
+  disaggregationName: string;
+  countOrPercentageView: DataVizCountOrPercentageView;
   setTimeRange: (timeRange: DataVizTimeRangeDisplayName) => void;
-  setDisaggregation: (disaggregation: string) => void;
-  setViewSetting: (viewSetting: DataVizViewSetting) => void;
+  setDisaggregationName: (disaggregation: string) => void;
+  setCountOrPercentageView: (viewSetting: DataVizCountOrPercentageView) => void;
   metricName?: string;
   metricFrequency?: ReportFrequency;
   metricNames?: string[];
@@ -107,11 +107,11 @@ export const DatapointsView: React.FC<{
   datapointsGroupedByAggregateAndDisaggregations,
   dimensionNamesByDisaggregation,
   timeRange,
-  disaggregation,
-  viewSetting,
+  disaggregationName,
+  countOrPercentageView,
   setTimeRange,
-  setDisaggregation,
-  setViewSetting,
+  setDisaggregationName,
+  setCountOrPercentageView,
   metricName,
   metricFrequency,
   metricNames,
@@ -123,10 +123,10 @@ export const DatapointsView: React.FC<{
     React.useState<boolean>(false);
 
   const selectedData =
-    (disaggregation !== NoDisaggregationOption &&
+    (disaggregationName !== NoDisaggregationOption &&
       Object.values(
         datapointsGroupedByAggregateAndDisaggregations?.disaggregations[
-          disaggregation
+          disaggregationName
         ] || {}
       )) ||
     datapointsGroupedByAggregateAndDisaggregations?.aggregate ||
@@ -136,8 +136,8 @@ export const DatapointsView: React.FC<{
   const disaggregationOptions = [...disaggregations];
   disaggregationOptions.unshift(noDisaggregationOption);
   const dimensionNames =
-    disaggregation !== noDisaggregationOption
-      ? (dimensionNamesByDisaggregation?.[disaggregation] || [])
+    disaggregationName !== noDisaggregationOption
+      ? (dimensionNamesByDisaggregation?.[disaggregationName] || [])
           .slice() // Must use slice() before sorting a MobX observableArray
           .sort(sortDatapointDimensions)
       : [DataVizAggregateName];
@@ -148,22 +148,22 @@ export const DatapointsView: React.FC<{
     if (isAnnual && selectedTimeRangeValue === 6) {
       setTimeRange("All");
     }
-    if (!disaggregationOptions.includes(disaggregation)) {
-      setDisaggregation(noDisaggregationOption);
-      setViewSetting("Count");
+    if (!disaggregationOptions.includes(disaggregationName)) {
+      setDisaggregationName(noDisaggregationOption);
+      setCountOrPercentageView("Count");
     }
-    if (disaggregation === noDisaggregationOption) {
-      setViewSetting("Count");
+    if (disaggregationName === noDisaggregationOption) {
+      setCountOrPercentageView("Count");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datapointsGroupedByAggregateAndDisaggregations]);
 
   useEffect(() => {
-    if (disaggregation === noDisaggregationOption) {
-      setViewSetting("Count");
+    if (disaggregationName === noDisaggregationOption) {
+      setCountOrPercentageView("Count");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [disaggregation]);
+  }, [disaggregationName]);
 
   /** Prevent body from scrolling when modal is open */
   useEffect(() => {
@@ -181,17 +181,19 @@ export const DatapointsView: React.FC<{
         data={transformDataForBarChart(
           selectedData,
           selectedTimeRangeValue,
-          viewSetting
+          countOrPercentageView
         )}
         dimensionNames={dimensionNames}
-        percentageView={!!disaggregation && viewSetting === "Percentage"}
+        percentageView={
+          !!disaggregationName && countOrPercentageView === "Percentage"
+        }
         resizeHeight={resizeHeight}
       />
     );
   };
 
   const renderLegend = () => {
-    if (disaggregation !== noDisaggregationOption) {
+    if (disaggregationName !== noDisaggregationOption) {
       return <Legend names={dimensionNames} />;
     }
     return <Legend />;
@@ -217,20 +219,20 @@ export const DatapointsView: React.FC<{
         {disaggregationOptions.length > 1 && (
           <DatapointsViewControlsDropdown
             title="Disaggregation"
-            selectedValue={disaggregation}
+            selectedValue={disaggregationName}
             options={disaggregationOptions}
             onSelect={(key) => {
-              setDisaggregation(key);
+              setDisaggregationName(key);
             }}
           />
         )}
-        {disaggregation !== noDisaggregationOption && (
+        {disaggregationName !== noDisaggregationOption && (
           <DatapointsViewControlsDropdown
             title="View"
-            selectedValue={viewSetting}
+            selectedValue={countOrPercentageView}
             options={["Count", "Percentage"]}
             onSelect={(key) => {
-              setViewSetting(key as DataVizViewSetting);
+              setCountOrPercentageView(key as DataVizCountOrPercentageView);
             }}
           />
         )}

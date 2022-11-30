@@ -21,7 +21,7 @@ import {
   Datapoint,
   DataVizAggregateName,
   DataVizTimeRange,
-  DataVizViewSetting,
+  DataVizCountOrPercentageView,
 } from "../../types";
 import { formatNumberInput } from "../../utils";
 
@@ -259,7 +259,7 @@ export const fillTimeGapsBetweenDatapoints = (
 export const transformDataForBarChart = (
   datapoints: Datapoint[],
   monthsAgo: DataVizTimeRange,
-  dataVizViewSetting: DataVizViewSetting
+  dataVizViewSetting: DataVizCountOrPercentageView
 ) => {
   if (datapoints.length === 0) {
     return datapoints;

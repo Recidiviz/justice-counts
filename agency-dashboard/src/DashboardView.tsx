@@ -97,11 +97,11 @@ const DashboardView = () => {
 
   const {
     timeRange,
-    disaggregation,
-    viewSetting,
+    disaggregationName,
+    countOrPercentageView,
     setTimeRange,
-    setDisaggregation,
-    setViewSetting,
+    setDisaggregationName,
+    setCountOrPercentageView,
   } = dataVizStore;
 
   const { search } = useLocation();
@@ -195,11 +195,11 @@ const DashboardView = () => {
             datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey]
           }
           timeRange={timeRange}
-          disaggregation={disaggregation}
-          viewSetting={viewSetting}
+          disaggregationName={disaggregationName}
+          countOrPercentageView={countOrPercentageView}
           setTimeRange={setTimeRange}
-          setDisaggregation={setDisaggregation}
-          setViewSetting={setViewSetting}
+          setDisaggregationName={setDisaggregationName}
+          setCountOrPercentageView={setCountOrPercentageView}
           metricNames={metricNames}
           onMetricsSelect={(metric) =>
             navigate(`/agency/${agencyId}/dashboard?metric=${metric}`)
