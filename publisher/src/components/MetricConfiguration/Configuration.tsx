@@ -158,6 +158,47 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               }}
             />
           </RadioButtonGroupWrapper>
+
+          <Header>What is the starting month for this metric?</Header>
+
+          <RadioButtonGroupWrapper>
+            <BinaryRadioButton
+              type="radio"
+              id="metric-config-calendar-year"
+              name="metric-config"
+              label="Calendar Year (Jan)"
+              value="Calendar Year (Jan)"
+              checked={metricEnabled}
+              onChange={() => {
+                if (systemSearchParam && metricSearchParam) {
+                  const updatedSetting = updateMetricEnabledStatus(
+                    systemSearchParam,
+                    metricSearchParam,
+                    true
+                  );
+                  saveMetricSettings(updatedSetting);
+                }
+              }}
+            />
+            <BinaryRadioButton
+              type="radio"
+              id="metric-config-fiscal-year"
+              name="metric-config"
+              label="Fiscal Year (Jun)"
+              value="Fiscal Year (Jun)"
+              checked={!metricEnabled}
+              onChange={() => {
+                if (systemSearchParam && metricSearchParam) {
+                  const updatedSetting = updateMetricEnabledStatus(
+                    systemSearchParam,
+                    metricSearchParam,
+                    false
+                  );
+                  saveMetricSettings(updatedSetting);
+                }
+              }}
+            />
+          </RadioButtonGroupWrapper>
         </MetricOnOffWrapper>
 
         {/* Breakdowns */}
