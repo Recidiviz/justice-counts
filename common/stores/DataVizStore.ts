@@ -15,21 +15,38 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import DataVizStore from "@justice-counts/common/stores/DataVizStore";
+import {
+  DataVizCountOrPercentageView,
+  DataVizTimeRangeDisplayName,
+  NoDisaggregationOption,
+} from "@justice-counts/common/types";
+import { makeAutoObservable } from "mobx";
 
-import DatapointsStore from "./DatapointsStore";
+class DataVizStore {
+  timeRange: DataVizTimeRangeDisplayName;
 
-class RootStore {
-  datapointsStore: DatapointsStore;
+  disaggregationName: string;
 
-  dataVizStore: DataVizStore;
+  countOrPercentageView: DataVizCountOrPercentageView;
 
   constructor() {
-    this.datapointsStore = new DatapointsStore();
-    this.dataVizStore = new DataVizStore();
+    makeAutoObservable(this);
+    this.timeRange = "All";
+    this.disaggregationName = NoDisaggregationOption;
+    this.countOrPercentageView = "Count";
   }
+
+  setTimeRange = (timeRange: DataVizTimeRangeDisplayName) => {
+    this.timeRange = timeRange;
+  };
+
+  setDisaggregationName = (disaggregation: string) => {
+    this.disaggregationName = disaggregation;
+  };
+
+  setCountOrPercentageView = (viewSetting: DataVizCountOrPercentageView) => {
+    this.countOrPercentageView = viewSetting;
+  };
 }
 
-export default new RootStore();
-
-export type { RootStore };
+export default DataVizStore;

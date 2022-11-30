@@ -279,7 +279,16 @@ export interface RawDatapointsByMetric {
 
 export type DataVizTimeRange = 0 | 6 | 12 | 60 | 120;
 
-export const DataVizTimeRangesMap: { [key: string]: DataVizTimeRange } = {
+export type DataVizTimeRangeDisplayName =
+  | "All"
+  | "6 Months Ago"
+  | "1 Year Ago"
+  | "5 Years Ago"
+  | "10 Years Ago";
+
+export const DataVizTimeRangesMap: {
+  [key in DataVizTimeRangeDisplayName]: DataVizTimeRange;
+} = {
   All: 0,
   "6 Months Ago": 6,
   "1 Year Ago": 12,
@@ -287,7 +296,7 @@ export const DataVizTimeRangesMap: { [key: string]: DataVizTimeRange } = {
   "10 Years Ago": 120,
 };
 
-export type DatapointsViewSetting = "Count" | "Percentage";
+export type DataVizCountOrPercentageView = "Count" | "Percentage";
 
 export interface DimensionNamesByDisaggregation {
   [disaggregation: string]: string[];
@@ -298,3 +307,5 @@ export interface DimensionNamesByMetricAndDisaggregation {
 }
 
 export const DataVizAggregateName = "Total";
+
+export const NoDisaggregationOption = "None";

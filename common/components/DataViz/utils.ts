@@ -19,8 +19,8 @@ import { mapValues, pickBy } from "lodash";
 
 import {
   Datapoint,
-  DatapointsViewSetting,
   DataVizAggregateName,
+  DataVizCountOrPercentageView,
   DataVizTimeRange,
 } from "../../types";
 import { formatNumberInput } from "../../utils";
@@ -255,31 +255,38 @@ export const fillTimeGapsBetweenDatapoints = (
   return dataWithGapDatapoints;
 };
 
-export const transformData = (
-  d: Datapoint[],
+// transforms data into the right display format for the data viz chart
+export const transformDataForBarChart = (
+  datapoints: Datapoint[],
   monthsAgo: DataVizTimeRange,
-  datapointsViewSetting: DatapointsViewSetting
+  dataVizViewSetting: DataVizCountOrPercentageView
 ) => {
-  let transformedData = [...d];
-
-  if (transformedData.length === 0) {
-    return transformedData;
+  if (datapoints.length === 0) {
+    return datapoints;
   }
 
   // filter by time range
-  transformedData = filterByTimeRange(transformedData, monthsAgo);
-
-  transformedData = filterNullDatapoints(transformedData);
+  let transformedData = transformDataForMetricInsights(datapoints, monthsAgo);
 
   // format data into percentages for percentage view
-  if (datapointsViewSetting === "Percentage") {
+  if (dataVizViewSetting === "Percentage") {
     transformedData = transformToRelativePerchanges(transformedData);
   }
 
   return fillTimeGapsBetweenDatapoints(transformedData, monthsAgo);
 };
 
-// get insights from data
+export const transformDataForMetricInsights = (
+  datapoints: Datapoint[],
+  monthsAgo: DataVizTimeRange
+) => {
+  if (datapoints.length === 0) {
+    return datapoints;
+  }
+  return filterNullDatapoints(filterByTimeRange(datapoints, monthsAgo));
+};
+
+// get insights from transformed data
 
 export const getPercentChangeOverTime = (data: Datapoint[]) => {
   if (data.length > 0) {

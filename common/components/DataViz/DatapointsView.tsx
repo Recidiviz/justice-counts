@@ -17,19 +17,7 @@
 
 import { ReactComponent as GridIcon } from "@justice-counts/common/assets/grid-icon.svg";
 import BarChart from "@justice-counts/common/components/DataViz/BarChart";
-import Legend from "@justice-counts/common/components/DataViz/Legend";
-import {
-  DatapointsGroupedByAggregateAndDisaggregations,
-  DatapointsViewSetting,
-  DataVizAggregateName,
-  DataVizTimeRangesMap,
-  DimensionNamesByDisaggregation,
-  ReportFrequency,
-} from "@justice-counts/common/types";
-import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
-import React, { useEffect } from "react";
-
-import { DatapointsTitle } from "./DatapointsTitle";
+import { DatapointsTitle } from "@justice-counts/common/components/DataViz/DatapointsTitle";
 import {
   BottomMetricInsightsContainer,
   DatapointsViewContainer,
@@ -47,17 +35,26 @@ import {
   MobileSelectMetricsModalContainer,
   SelectMetricsButtonContainer,
   SelectMetricsButtonText,
-} from "./DatapointsView.styles";
-import { MetricInsights } from "./MetricInsights";
+} from "@justice-counts/common/components/DataViz/DatapointsView.styles";
+import Legend from "@justice-counts/common/components/DataViz/Legend";
+import { MetricInsights } from "@justice-counts/common/components/DataViz/MetricInsights";
 import {
-  filterByTimeRange,
-  filterNullDatapoints,
-  getAverageTotalValue,
-  getLatestDateFormatted,
-  getPercentChangeOverTime,
   sortDatapointDimensions,
-  transformData,
-} from "./utils";
+  transformDataForBarChart,
+  transformDataForMetricInsights,
+} from "@justice-counts/common/components/DataViz/utils";
+import {
+  DatapointsGroupedByAggregateAndDisaggregations,
+  DataVizAggregateName,
+  DataVizCountOrPercentageView,
+  DataVizTimeRangeDisplayName,
+  DataVizTimeRangesMap,
+  DimensionNamesByDisaggregation,
+  NoDisaggregationOption,
+  ReportFrequency,
+} from "@justice-counts/common/types";
+import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
+import React, { useEffect } from "react";
 
 const noDisaggregationOption = "None";
 
@@ -92,8 +89,14 @@ const SelectMetricButtonDropdown: React.FC<{
 );
 
 export const DatapointsView: React.FC<{
-  datapointsGroupedByAggregateAndDisaggregations: DatapointsGroupedByAggregateAndDisaggregations;
-  dimensionNamesByDisaggregation: DimensionNamesByDisaggregation;
+  datapointsGroupedByAggregateAndDisaggregations?: DatapointsGroupedByAggregateAndDisaggregations;
+  dimensionNamesByDisaggregation?: DimensionNamesByDisaggregation;
+  timeRange: DataVizTimeRangeDisplayName;
+  disaggregationName: string;
+  countOrPercentageView: DataVizCountOrPercentageView;
+  setTimeRange: (timeRange: DataVizTimeRangeDisplayName) => void;
+  setDisaggregationName: (disaggregation: string) => void;
+  setCountOrPercentageView: (viewSetting: DataVizCountOrPercentageView) => void;
   metricName?: string;
   metricFrequency?: ReportFrequency;
   metricNames?: string[];
@@ -103,6 +106,12 @@ export const DatapointsView: React.FC<{
 }> = ({
   datapointsGroupedByAggregateAndDisaggregations,
   dimensionNamesByDisaggregation,
+  timeRange,
+  disaggregationName,
+  countOrPercentageView,
+  setTimeRange,
+  setDisaggregationName,
+  setCountOrPercentageView,
   metricName,
   metricFrequency,
   metricNames,
@@ -110,56 +119,51 @@ export const DatapointsView: React.FC<{
   showBottomMetricInsights = false,
   resizeHeight = false,
 }) => {
-  const [selectedTimeRange, setSelectedTimeRange] =
-    React.useState<string>("All");
-  const [selectedDisaggregation, setSelectedDisaggregation] =
-    React.useState<string>(noDisaggregationOption);
-  const [datapointsViewSetting, setDatapointsViewSetting] =
-    React.useState<DatapointsViewSetting>("Count");
   const [mobileSelectMetricsVisible, setMobileSelectMetricsVisible] =
     React.useState<boolean>(false);
 
-  const data =
-    (selectedDisaggregation !== noDisaggregationOption &&
+  const selectedData =
+    (disaggregationName !== NoDisaggregationOption &&
       Object.values(
-        datapointsGroupedByAggregateAndDisaggregations.disaggregations[
-          selectedDisaggregation
+        datapointsGroupedByAggregateAndDisaggregations?.disaggregations[
+          disaggregationName
         ] || {}
       )) ||
     datapointsGroupedByAggregateAndDisaggregations?.aggregate ||
     [];
-  const isAnnual = data[0]?.frequency === "ANNUAL";
-  const disaggregations = Object.keys(dimensionNamesByDisaggregation);
+  const isAnnual = selectedData[0]?.frequency === "ANNUAL";
+  const disaggregations = Object.keys(dimensionNamesByDisaggregation || {});
   const disaggregationOptions = [...disaggregations];
   disaggregationOptions.unshift(noDisaggregationOption);
   const dimensionNames =
-    selectedDisaggregation !== noDisaggregationOption
-      ? (dimensionNamesByDisaggregation[selectedDisaggregation] || [])
+    disaggregationName !== noDisaggregationOption
+      ? (dimensionNamesByDisaggregation?.[disaggregationName] || [])
           .slice() // Must use slice() before sorting a MobX observableArray
           .sort(sortDatapointDimensions)
       : [DataVizAggregateName];
 
-  const selectedTimeRangeValue = DataVizTimeRangesMap[selectedTimeRange];
+  const selectedTimeRangeValue = DataVizTimeRangesMap[timeRange];
 
   useEffect(() => {
     if (isAnnual && selectedTimeRangeValue === 6) {
-      setSelectedTimeRange("All");
+      setTimeRange("All");
     }
-    if (!disaggregationOptions.includes(selectedDisaggregation)) {
-      setSelectedDisaggregation(noDisaggregationOption);
-      setDatapointsViewSetting("Count");
+    if (!disaggregationOptions.includes(disaggregationName)) {
+      setDisaggregationName(noDisaggregationOption);
+      setCountOrPercentageView("Count");
     }
-    if (selectedDisaggregation === noDisaggregationOption) {
-      setDatapointsViewSetting("Count");
+    if (disaggregationName === noDisaggregationOption) {
+      setCountOrPercentageView("Count");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datapointsGroupedByAggregateAndDisaggregations]);
 
   useEffect(() => {
-    if (selectedDisaggregation === noDisaggregationOption) {
-      setDatapointsViewSetting("Count");
+    if (disaggregationName === noDisaggregationOption) {
+      setCountOrPercentageView("Count");
     }
-  }, [selectedDisaggregation]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [disaggregationName]);
 
   /** Prevent body from scrolling when modal is open */
   useEffect(() => {
@@ -174,14 +178,14 @@ export const DatapointsView: React.FC<{
   const renderChartForMetric = () => {
     return (
       <BarChart
-        data={transformData(
-          data,
+        data={transformDataForBarChart(
+          selectedData,
           selectedTimeRangeValue,
-          datapointsViewSetting
+          countOrPercentageView
         )}
         dimensionNames={dimensionNames}
         percentageView={
-          !!selectedDisaggregation && datapointsViewSetting === "Percentage"
+          !!disaggregationName && countOrPercentageView === "Percentage"
         }
         resizeHeight={resizeHeight}
       />
@@ -189,7 +193,7 @@ export const DatapointsView: React.FC<{
   };
 
   const renderLegend = () => {
-    if (selectedDisaggregation !== noDisaggregationOption) {
+    if (disaggregationName !== noDisaggregationOption) {
       return <Legend names={dimensionNames} />;
     }
     return <Legend />;
@@ -200,7 +204,7 @@ export const DatapointsView: React.FC<{
       <DatapointsViewControlsContainer>
         <DatapointsViewControlsDropdown
           title="Date Range"
-          selectedValue={selectedTimeRange}
+          selectedValue={timeRange}
           options={
             isAnnual
               ? Object.keys(DataVizTimeRangesMap).filter(
@@ -209,26 +213,26 @@ export const DatapointsView: React.FC<{
               : Object.keys(DataVizTimeRangesMap)
           }
           onSelect={(key) => {
-            setSelectedTimeRange(key);
+            setTimeRange(key as DataVizTimeRangeDisplayName);
           }}
         />
         {disaggregationOptions.length > 1 && (
           <DatapointsViewControlsDropdown
             title="Disaggregation"
-            selectedValue={selectedDisaggregation}
+            selectedValue={disaggregationName}
             options={disaggregationOptions}
             onSelect={(key) => {
-              setSelectedDisaggregation(key);
+              setDisaggregationName(key);
             }}
           />
         )}
-        {selectedDisaggregation !== noDisaggregationOption && (
+        {disaggregationName !== noDisaggregationOption && (
           <DatapointsViewControlsDropdown
             title="View"
-            selectedValue={datapointsViewSetting}
+            selectedValue={countOrPercentageView}
             options={["Count", "Percentage"]}
             onSelect={(key) => {
-              setDatapointsViewSetting(key as DatapointsViewSetting);
+              setCountOrPercentageView(key as DataVizCountOrPercentageView);
             }}
           />
         )}
@@ -236,21 +240,10 @@ export const DatapointsView: React.FC<{
     );
   };
 
-  // insights data
-  const dataSelectedInTimeRange = filterNullDatapoints(
-    filterByTimeRange(
-      datapointsGroupedByAggregateAndDisaggregations?.aggregate || [],
-      selectedTimeRangeValue
-    )
+  const filteredAggregateData = transformDataForMetricInsights(
+    datapointsGroupedByAggregateAndDisaggregations?.aggregate || [],
+    selectedTimeRangeValue
   );
-  const percentChange = getPercentChangeOverTime(dataSelectedInTimeRange);
-  const avgValue = getAverageTotalValue(dataSelectedInTimeRange, isAnnual);
-  const mostRecentValue = getLatestDateFormatted(
-    dataSelectedInTimeRange,
-    isAnnual
-  );
-
-  const chartViewInsightsInfo = `Year-to-Year: ${percentChange},\nAvg. Total Value: ${avgValue},\nMost Recent: ${mostRecentValue}`;
 
   return (
     <DatapointsViewContainer>
@@ -260,10 +253,9 @@ export const DatapointsView: React.FC<{
             <DatapointsTitle
               metricName={metricName}
               metricFrequency={metricFrequency}
-              insights={chartViewInsightsInfo}
             />
-            {data.length > 0 && (
-              <MetricInsights datapoints={dataSelectedInTimeRange} />
+            {selectedData.length > 0 && (
+              <MetricInsights datapoints={filteredAggregateData} />
             )}
           </MetricHeaderWrapper>
         )}
@@ -284,7 +276,7 @@ export const DatapointsView: React.FC<{
       {renderLegend()}
       {showBottomMetricInsights && (
         <BottomMetricInsightsContainer>
-          <MetricInsights datapoints={dataSelectedInTimeRange} />
+          <MetricInsights datapoints={filteredAggregateData} />
         </BottomMetricInsightsContainer>
       )}
       <MobileSelectMetricsButtonContainer>

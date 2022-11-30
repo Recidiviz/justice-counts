@@ -22,7 +22,7 @@ import {
   filterNullDatapoints,
   incrementMonth,
   incrementYear,
-  transformData,
+  transformDataForBarChart,
   transformToRelativePerchanges,
 } from "./utils";
 
@@ -2059,8 +2059,8 @@ describe("fillTimeGapsBetweenDatapoints", () => {
 
 describe("transformData", () => {
   test("putting it all together", () => {
-    expect(transformData(testDatapoints5, 60, "Percentage")).toStrictEqual(
-      testDatapoints5Transformed
-    );
+    expect(
+      transformDataForBarChart(testDatapoints5, 60, "Percentage")
+    ).toStrictEqual(testDatapoints5Transformed);
   });
 });
