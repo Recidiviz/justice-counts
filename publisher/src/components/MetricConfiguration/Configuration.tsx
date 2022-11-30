@@ -23,7 +23,7 @@ import { removeSnakeCase } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import blueCheck from "../assets/status-check-icon.png";
 import { BinaryRadioButton } from "../Forms";
-import { REPORT_VERB_LOWERCASE, REPORTS_LOWERCASE2 } from "../Global/constants";
+import { REPORT_VERB_LOWERCASE } from "../Global/constants";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
@@ -88,8 +88,6 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
         ? Object.keys(dimensions[systemMetricKey][activeDisaggregationKey])
         : [];
 
-    const metricDisplayName = metrics[systemMetricKey]?.label;
-
     const metricEnabled = Boolean(metrics[systemMetricKey]?.enabled);
 
     useEffect(
@@ -108,20 +106,16 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
         <MetricOnOffWrapper>
           <Header>
             Are you currently able to {REPORT_VERB_LOWERCASE} any part of this
-            metric?
+            metric? If so, at what frequency?
           </Header>
-          <Subheader>
-            Answering “No” means that {metricDisplayName} will not appear on{" "}
-            {REPORTS_LOWERCASE2} from here on out. You can change this later.
-          </Subheader>
 
           <RadioButtonGroupWrapper>
             <BinaryRadioButton
               type="radio"
-              id="yes"
+              id="metric-config-not-available"
               name="metric-config"
-              label="Yes"
-              value="yes"
+              label="Not Available"
+              value="Not Available"
               checked={metricEnabled}
               onChange={() => {
                 if (systemSearchParam && metricSearchParam) {
@@ -136,10 +130,10 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
             />
             <BinaryRadioButton
               type="radio"
-              id="no"
+              id="metric-config-monthly"
               name="metric-config"
-              label="No"
-              value="no"
+              label="Monthly"
+              value="Monthly"
               checked={!metricEnabled}
               onChange={() => {
                 if (systemSearchParam && metricSearchParam) {
@@ -150,6 +144,17 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   );
                   saveMetricSettings(updatedSetting);
                 }
+              }}
+            />
+            <BinaryRadioButton
+              type="radio"
+              id="metric-config-annual"
+              name="metric-config"
+              label="Annual"
+              value="Annual"
+              checked={!metricEnabled}
+              onChange={() => {
+                console.log("hi");
               }}
             />
           </RadioButtonGroupWrapper>
