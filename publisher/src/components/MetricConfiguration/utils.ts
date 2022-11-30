@@ -35,10 +35,10 @@ export const sortRaces = (
     }
   ]
 ) => {
-  if (b === "More than one race" && a === "Other") {
+  if (b === "More than one race" && (a === "Other" || a === "Unknown")) {
     return 0;
   }
-  if (b === "More than one race" && a !== "Unknown" && a !== "Other") {
+  if (b === "More than one race" && a !== "Other" && a !== "Unknown") {
     return -1;
   }
   return 1;
