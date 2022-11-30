@@ -188,7 +188,6 @@ class MetricConfigStore {
     }
 
     const metrics: Metric[] = await response.json();
-
     return metrics;
   };
 

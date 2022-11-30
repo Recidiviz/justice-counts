@@ -15,31 +15,48 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import BaseDatapointsStore from "@justice-counts/common/stores/BaseDatapointsStore";
-import { makeObservable, override, runInAction } from "mobx";
+import { Metric } from "@justice-counts/common/types";
+import { makeAutoObservable, runInAction } from "mobx";
 
 import { request } from "../utils/networking";
 
-class DatapointsStore extends BaseDatapointsStore {
+class AgencyDataStore {
+  metrics: Metric[];
+
+  loading: boolean;
+
   constructor() {
-    super();
-    makeObservable(this, {
-      getDatapoints: override,
-    });
+    makeAutoObservable(this);
+    this.metrics = [];
+    this.loading = true;
   }
 
-  async getDatapoints(agencyId: number): Promise<void | Error> {
+  get metricKeyToDisplayName(): { [metricKey: string]: string | null } {
+    const mapping: { [metricKey: string]: string | null } = {};
+    this.metrics.forEach((metric) => {
+      mapping[metric.key] = metric.display_name;
+    });
+    return mapping;
+  }
+
+  get metricDisplayNameToKey(): { [displayName: string]: string | null } {
+    const mapping: { [displayName: string]: string | null } = {};
+    this.metrics.forEach((metric) => {
+      mapping[metric.display_name] = metric.key;
+    });
+    return mapping;
+  }
+
+  async fetchAgencyData(agencyId: number): Promise<void | Error> {
     try {
       const response = (await request({
-        path: `/api/agencies/${agencyId}/published_datapoints`,
+        path: `/api/agencies/${agencyId}/published_data`,
         method: "GET",
       })) as Response;
       if (response.status === 200) {
         const result = await response.json();
         runInAction(() => {
-          this.rawDatapoints = result.datapoints;
-          this.dimensionNamesByMetricAndDisaggregation =
-            result.dimension_names_by_metric_and_disaggregation;
+          this.metrics = result;
         });
       } else {
         const error = await response.json();
@@ -59,10 +76,10 @@ class DatapointsStore extends BaseDatapointsStore {
   resetState() {
     // reset the state
     runInAction(() => {
-      this.rawDatapoints = [];
+      this.metrics = [];
       this.loading = true;
     });
   }
 }
 
-export default DatapointsStore;
+export default AgencyDataStore;

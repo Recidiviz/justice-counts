@@ -93,7 +93,7 @@ const DashboardView = () => {
   const navigate = useNavigate();
   const params = useParams();
   const agencyId = Number(params.id);
-  const { datapointsStore, dataVizStore } = useStore();
+  const { agencyDataStore, datapointsStore, dataVizStore } = useStore();
 
   const {
     timeRange,
@@ -108,6 +108,7 @@ const DashboardView = () => {
   const query = new URLSearchParams(search);
   const metricKey = query.get("metric");
   useEffect(() => {
+    agencyDataStore.fetchAgencyData(agencyId);
     datapointsStore.getDatapoints(agencyId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -155,12 +156,12 @@ const DashboardView = () => {
     return <>Loading...</>;
   }
 
-  const metricNames = Object.keys(
-    datapointsStore.dimensionNamesByMetricAndDisaggregation
+  const metricNames = agencyDataStore.metrics.map(
+    (metric) => metric.display_name
   );
 
   const metricName =
-    datapointsStore.metricKeyToDisplayName[metricKey] || metricKey;
+    agencyDataStore.metricKeyToDisplayName[metricKey] || metricKey;
 
   const filteredAggregateData = transformDataForMetricInsights(
     datapointsStore.datapointsByMetric[metricKey]?.aggregate || [],
@@ -201,9 +202,13 @@ const DashboardView = () => {
           setDisaggregationName={setDisaggregationName}
           setCountOrPercentageView={setCountOrPercentageView}
           metricNames={metricNames}
-          onMetricsSelect={(metric) =>
-            navigate(`/agency/${agencyId}/dashboard?metric=${metric}`)
-          }
+          onMetricsSelect={(selectedMetricName) => {
+            const mKey =
+              agencyDataStore.metricDisplayNameToKey[selectedMetricName];
+            if (mKey) {
+              navigate(`/agency/${agencyId}/dashboard?metric=${mKey}`);
+            }
+          }}
           showBottomMetricInsights={!isDesktopWidth}
           resizeHeight={isDesktopWidth}
         />

@@ -27,11 +27,12 @@ const AgencyOverview = () => {
   const navigate = useNavigate();
   const params = useParams();
   const agencyId = Number(params.id);
-  const { datapointsStore } = useStore();
+  const { agencyDataStore, datapointsStore } = useStore();
 
   const fetchDatapoints = async () => {
     try {
       await datapointsStore.getDatapoints(agencyId);
+      await agencyDataStore.fetchAgencyData(agencyId);
     } catch (error) {
       showToast("Error fetching data.", false, "red", 4000);
     }
@@ -61,7 +62,7 @@ const AgencyOverview = () => {
               navigate(`/agency/${agencyId}/dashboard?metric=${metricKey}`);
             }}
           >
-            {datapointsStore.metricKeyToDisplayName[metricKey] || metricKey}
+            {agencyDataStore.metricKeyToDisplayName[metricKey] || metricKey}
           </MetricCategory>
         )
       )}
