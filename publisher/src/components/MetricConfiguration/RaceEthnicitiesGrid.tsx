@@ -35,6 +35,7 @@ import {
   RaceEthnicitiesBreakdownContainer,
   RaceEthnicitiesRow,
   RaceEthnicitiesTable,
+  sortRaces,
 } from ".";
 
 export const RaceEthnicitiesGrid: React.FC<{
@@ -78,19 +79,21 @@ export const RaceEthnicitiesGrid: React.FC<{
       </GridHeaderContainer>
 
       <RaceEthnicitiesTable>
-        {Object.entries(ethnicitiesByRace).map(([race, ethnicities]) => (
-          <RaceEthnicitiesRow key={race}>
-            <RaceCell>{race}</RaceCell>
-            <EthnicitiesRow>
-              {Object.values(ethnicities).map((ethnicity) => (
-                <EthnicityCell
-                  key={ethnicity.key}
-                  enabled={ethnicity.enabled}
-                />
-              ))}
-            </EthnicitiesRow>
-          </RaceEthnicitiesRow>
-        ))}
+        {Object.entries(ethnicitiesByRace)
+          .sort(sortRaces)
+          .map(([race, ethnicities]) => (
+            <RaceEthnicitiesRow key={race}>
+              <RaceCell>{race}</RaceCell>
+              <EthnicitiesRow>
+                {Object.values(ethnicities).map((ethnicity) => (
+                  <EthnicityCell
+                    key={ethnicity.key}
+                    enabled={ethnicity.enabled}
+                  />
+                ))}
+              </EthnicitiesRow>
+            </RaceEthnicitiesRow>
+          ))}
       </RaceEthnicitiesTable>
     </RaceEthnicitiesBreakdownContainer>
   );

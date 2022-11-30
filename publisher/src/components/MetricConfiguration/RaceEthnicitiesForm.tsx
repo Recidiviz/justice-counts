@@ -34,6 +34,7 @@ import {
   raceEthnicityGridStates,
   RaceSelection,
   RadioButtonGroupWrapper,
+  sortRaces,
   SpecifyEthnicityWrapper,
   Subheader,
 } from ".";
@@ -214,83 +215,87 @@ export const RaceEthnicitiesForm = observer(() => {
           )}
 
           {/* Races (Enable/Disable) */}
-          {Object.entries(ethnicitiesByRace).map(([race, ethnicities]) => {
-            const raceEnabled = Boolean(
-              Object.values(ethnicities).find((ethnicity) => ethnicity.enabled)
-            );
+          {Object.entries(ethnicitiesByRace)
+            .sort(sortRaces)
+            .map(([race, ethnicities]) => {
+              const raceEnabled = Boolean(
+                Object.values(ethnicities).find(
+                  (ethnicity) => ethnicity.enabled
+                )
+              );
 
-            return (
-              <Race key={race}>
-                <RaceDisplayName>{race}</RaceDisplayName>
-                <RaceSelection>
-                  <RadioButtonGroupWrapper>
-                    <BinaryRadioButton
-                      type="radio"
-                      id={`${race}-no`}
-                      name={`${race}`}
-                      label="No"
-                      value="no"
-                      checked={!raceEnabled}
-                      lastOptionBlue
-                      buttonSize="small"
-                      onChange={() => {
-                        if (!systemSearchParam || !metricSearchParam) return;
-                        /**
-                         * When Unknown Race is disabled in NO_ETHNICITY_HISPANIC_AS_RACE state, we automatically switch
-                         * to the NO_ETHNICITY_HISPANIC_NOT_SPECIFIED state because the Unknown Race (Hispanic/Latino Ethnicity)
-                         * dimension is the only dimension an agency can specify their numbers for Hispanic/Latino as a Race (while
-                         * in the NO_ETHNICITY_HISPANIC_AS_RACE state).
-                         */
-                        if (
-                          race === "Unknown" &&
-                          currentState === "NO_ETHNICITY_HISPANIC_AS_RACE"
-                        ) {
-                          updateAllRaceEthnicitiesToDefaultState(
-                            "NO_ETHNICITY_HISPANIC_NOT_SPECIFIED",
+              return (
+                <Race key={race}>
+                  <RaceDisplayName>{race}</RaceDisplayName>
+                  <RaceSelection>
+                    <RadioButtonGroupWrapper>
+                      <BinaryRadioButton
+                        type="radio"
+                        id={`${race}-no`}
+                        name={`${race}`}
+                        label="No"
+                        value="no"
+                        checked={!raceEnabled}
+                        lastOptionBlue
+                        buttonSize="small"
+                        onChange={() => {
+                          if (!systemSearchParam || !metricSearchParam) return;
+                          /**
+                           * When Unknown Race is disabled in NO_ETHNICITY_HISPANIC_AS_RACE state, we automatically switch
+                           * to the NO_ETHNICITY_HISPANIC_NOT_SPECIFIED state because the Unknown Race (Hispanic/Latino Ethnicity)
+                           * dimension is the only dimension an agency can specify their numbers for Hispanic/Latino as a Race (while
+                           * in the NO_ETHNICITY_HISPANIC_AS_RACE state).
+                           */
+                          if (
+                            race === "Unknown" &&
+                            currentState === "NO_ETHNICITY_HISPANIC_AS_RACE"
+                          ) {
+                            updateAllRaceEthnicitiesToDefaultState(
+                              "NO_ETHNICITY_HISPANIC_NOT_SPECIFIED",
+                              raceEthnicityGridStates,
+                              systemSearchParam,
+                              metricSearchParam
+                            );
+                          }
+
+                          const updatedDimensions = updateRaceDimensions(
+                            race,
+                            false,
+                            currentState,
                             raceEthnicityGridStates,
                             systemSearchParam,
                             metricSearchParam
                           );
-                        }
-
-                        const updatedDimensions = updateRaceDimensions(
-                          race,
-                          false,
-                          currentState,
-                          raceEthnicityGridStates,
-                          systemSearchParam,
-                          metricSearchParam
-                        );
-                        debouncedSave(updatedDimensions);
-                      }}
-                    />
-                    <BinaryRadioButton
-                      type="radio"
-                      id={`${race}-yes`}
-                      name={`${race}`}
-                      label="Yes"
-                      value="yes"
-                      checked={raceEnabled}
-                      lastOptionBlue
-                      buttonSize="small"
-                      onChange={() => {
-                        if (!systemSearchParam || !metricSearchParam) return;
-                        const updatedDimensions = updateRaceDimensions(
-                          race,
-                          true,
-                          currentState,
-                          raceEthnicityGridStates,
-                          systemSearchParam,
-                          metricSearchParam
-                        );
-                        debouncedSave(updatedDimensions);
-                      }}
-                    />
-                  </RadioButtonGroupWrapper>
-                </RaceSelection>
-              </Race>
-            );
-          })}
+                          debouncedSave(updatedDimensions);
+                        }}
+                      />
+                      <BinaryRadioButton
+                        type="radio"
+                        id={`${race}-yes`}
+                        name={`${race}`}
+                        label="Yes"
+                        value="yes"
+                        checked={raceEnabled}
+                        lastOptionBlue
+                        buttonSize="small"
+                        onChange={() => {
+                          if (!systemSearchParam || !metricSearchParam) return;
+                          const updatedDimensions = updateRaceDimensions(
+                            race,
+                            true,
+                            currentState,
+                            raceEthnicityGridStates,
+                            systemSearchParam,
+                            metricSearchParam
+                          );
+                          debouncedSave(updatedDimensions);
+                        }}
+                      />
+                    </RadioButtonGroupWrapper>
+                  </RaceSelection>
+                </Race>
+              );
+            })}
         </RaceContainer>
       </RaceEthnicitiesDisplay>
     </RaceEthnicitiesContainer>
