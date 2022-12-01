@@ -34,6 +34,17 @@ export const SINGLE_COLUMN_MAX_WIDTH =
   DATA_ENTRY_WIDTH + SIDE_PANEL_HORIZONTAL_PADDING * 2; // data entry panel (644) + left and right padding (24 * 2)
 export const BREAKPOINT_HEIGHT = 750;
 
+export const ReportDataEntryWrapper = styled.div`
+  z-index: 4;
+  height: fit-content;
+  background-color: ${palette.solid.white};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -${HEADER_BAR_HEIGHT}px;
+  padding-top: ${HEADER_BAR_HEIGHT}px;
+`;
+
 export const PublishDataWrapper = styled.div`
   width: ${SIDE_PANEL_WIDTH}px;
   position: fixed;

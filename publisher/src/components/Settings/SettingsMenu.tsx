@@ -21,8 +21,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { settingsMenuPaths } from "../../pages/Settings";
 import { useStore } from "../../stores";
+import { removeAgencyFromPath } from "../../utils";
 import {
-  getSettingsMenuItemFromLocation,
   MenuItem,
   MetricsListContainer,
   MetricsListItem,
@@ -53,9 +53,7 @@ export const SettingsMenu: React.FC = observer(() => {
       {Object.entries(settingsMenuPaths).map(([displayName, path]) => (
         <Fragment key={path}>
           <MenuItem
-            selected={
-              getSettingsMenuItemFromLocation(location.pathname) === path
-            }
+            selected={removeAgencyFromPath(location.pathname) === path}
             onClick={() => {
               navigate(path);
             }}

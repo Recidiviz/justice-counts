@@ -35,6 +35,7 @@ const Wrapper = styled.div`
 
 const Title = styled.div`
   ${typography.sizeCSS.large};
+  margin-bottom: 15px;
 `;
 
 const HomepageLinkWrapper = styled.div`
@@ -47,15 +48,18 @@ const HomepageLink = styled.span`
 `;
 
 // TODO need figma design for this page
-export const InvalidAgency = () => {
+export const NotFound: React.FC<{
+  title: string;
+  pathname: string;
+}> = ({ title, pathname }) => {
   const navigate = useNavigate();
 
   return (
     <Wrapper>
-      <Title>Agency with given ID is not tied to this account.</Title>{" "}
+      <Title>{title}</Title>{" "}
       <HomepageLinkWrapper>
-        Go back to{" "}
-        <HomepageLink onClick={() => navigate("/")}>homepage</HomepageLink>
+        Go to{" "}
+        <HomepageLink onClick={() => navigate(pathname)}>homepage</HomepageLink>
       </HomepageLinkWrapper>
     </Wrapper>
   );

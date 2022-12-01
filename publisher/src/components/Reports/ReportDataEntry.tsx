@@ -15,40 +15,26 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import {
-  HEADER_BAR_HEIGHT,
-  palette,
-} from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { Report } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import styled from "styled-components/macro";
+import { useParams } from "react-router-dom";
 
 import { trackReportUnpublished } from "../../analytics";
+import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
 import { printReportTitle } from "../../utils";
 import { PageWrapper } from "../Forms";
-import { REPORT_LOWERCASE } from "../Global/constants";
+import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 import { Loading } from "../Loading";
 import DataEntryForm from "./DataEntryForm";
-import PublishConfirmation from "./PublishConfirmation";
-import PublishConfirmationSummaryPanel from "./PublishConfirmationSummaryPanel";
 import PublishDataPanel from "./PublishDataPanel";
-import { FieldDescriptionProps } from "./ReportDataEntry.styles";
+import {
+  FieldDescriptionProps,
+  ReportDataEntryWrapper,
+} from "./ReportDataEntry.styles";
 import ReportSummaryPanel from "./ReportSummaryPanel";
-
-const ReportDataEntryWrapper = styled.div`
-  z-index: 4;
-  height: fit-content;
-  background-color: ${palette.solid.white};
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: -${HEADER_BAR_HEIGHT}px;
-  padding-top: ${HEADER_BAR_HEIGHT}px;
-`;
 
 const ReportDataEntry = () => {
   const [loadingError, setLoadingError] = useState<string | undefined>(
@@ -58,16 +44,14 @@ const ReportDataEntry = () => {
   const [fieldDescription, setFieldDescription] = useState<
     FieldDescriptionProps | undefined
   >(undefined);
-  const [showConfirmation, setShowConfirmation] = useState(false);
   const [showDataEntryHelpPage, setShowDataEntryHelpPage] = useState(false);
   const { formStore, reportStore, userStore } = useStore();
   const { agencyId, id } = useParams();
-  const navigate = useNavigate();
   const reportID = Number(id);
   const reportOverview = reportStore.reportOverviews[reportID] as Report;
   const reportMetrics = reportStore.reportMetrics[reportID];
 
-  const toggleConfirmationDialogue = async () => {
+  const convertReportToDraft = async () => {
     if (reportOverview.status === "PUBLISHED") {
       const response = (await reportStore.updateReport(
         reportID,
@@ -86,7 +70,7 @@ const ReportDataEntry = () => {
           4000
         );
         const agencyID = reportStore.reportOverviews[reportID]?.agency_id;
-        const agency = userStore.userAgencies?.find((a) => a.id === agencyID);
+        const agency = userStore.userAgenciesById[agencyID];
         trackReportUnpublished(reportID, agency);
       } else {
         showToast(
@@ -98,57 +82,18 @@ const ReportDataEntry = () => {
           false
         );
       }
-    } else {
-      setShowConfirmation(!showConfirmation);
     }
-  };
-
-  const checkMetricForErrors = (metricKey: string) => {
-    let foundErrors = false;
-
-    if (formStore.metricsValues[reportID]?.[metricKey]?.error) {
-      foundErrors = true;
-    }
-
-    if (formStore.disaggregations[reportID]?.[metricKey]) {
-      Object.values(formStore.disaggregations[reportID][metricKey]).forEach(
-        (disaggregation) => {
-          Object.values(disaggregation).forEach((dimension) => {
-            if (dimension.error) {
-              foundErrors = true;
-            }
-          });
-        }
-      );
-    }
-
-    if (formStore.contexts[reportID]?.[metricKey]) {
-      Object.values(formStore.contexts[reportID][metricKey]).forEach(
-        (context) => {
-          if (context.error) {
-            foundErrors = true;
-          }
-        }
-      );
-    }
-
-    return foundErrors;
   };
 
   useEffect(() => {
-    // in case user type (change) agency inside url by hand
-    if (!reportStore.reportOverviews[reportID]) {
-      navigate(`/agency/${agencyId}/reports`);
-      return;
-    }
     const initialize = async () => {
-      return reportStore.getReport(reportID);
+      const result = await reportStore.getReport(reportID);
+      if (result instanceof Error) {
+        setLoadingError(result.message);
+      }
     };
 
-    const result = initialize();
-    if (result instanceof Error) {
-      setLoadingError(result.message);
-    }
+    initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -187,44 +132,36 @@ const ReportDataEntry = () => {
     return <PageWrapper>Error: {loadingError}</PageWrapper>;
   }
 
+  if (reportStore.reportOverviews[reportID].agency_id !== Number(agencyId)) {
+    return (
+      <NotFound
+        title={`Report ${reportID} not found.`}
+        pathname={`/agency/${agencyId}/${REPORTS_LOWERCASE}`}
+      />
+    );
+  }
+
   return (
     <ReportDataEntryWrapper>
-      {showConfirmation ? (
-        <>
-          <PublishConfirmationSummaryPanel
-            reportID={reportID}
-            checkMetricForErrors={checkMetricForErrors}
-          />
-          <PublishConfirmation
-            reportID={reportID}
-            checkMetricForErrors={checkMetricForErrors}
-            toggleConfirmationDialogue={toggleConfirmationDialogue}
-          />
-        </>
-      ) : (
-        <>
-          <ReportSummaryPanel
-            reportID={reportID}
-            activeMetric={activeMetric}
-            checkMetricForErrors={checkMetricForErrors}
-            showDataEntryHelpPage={showDataEntryHelpPage}
-            fieldDescription={fieldDescription}
-          />
-          <DataEntryForm
-            reportID={reportID}
-            updateActiveMetric={updateActiveMetric}
-            updateFieldDescription={updateFieldDescription}
-            toggleConfirmationDialogue={toggleConfirmationDialogue}
-            showDataEntryHelpPage={showDataEntryHelpPage}
-            setShowDataEntryHelpPage={setShowDataEntryHelpPage}
-          />
-          <PublishDataPanel
-            reportID={reportID}
-            activeMetric={activeMetric}
-            fieldDescription={fieldDescription}
-          />
-        </>
-      )}
+      <ReportSummaryPanel
+        reportID={reportID}
+        activeMetric={activeMetric}
+        showDataEntryHelpPage={showDataEntryHelpPage}
+        fieldDescription={fieldDescription}
+      />
+      <DataEntryForm
+        reportID={reportID}
+        updateActiveMetric={updateActiveMetric}
+        updateFieldDescription={updateFieldDescription}
+        convertReportToDraft={convertReportToDraft}
+        showDataEntryHelpPage={showDataEntryHelpPage}
+        setShowDataEntryHelpPage={setShowDataEntryHelpPage}
+      />
+      <PublishDataPanel
+        reportID={reportID}
+        activeMetric={activeMetric}
+        fieldDescription={fieldDescription}
+      />
     </ReportDataEntryWrapper>
   );
 };

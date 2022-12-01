@@ -93,7 +93,7 @@ export const MetricConfiguration: React.FC = observer(() => {
         systemSearchParam
       )?.find((metric) => metric.key === metricSearchParam);
       if (!isUrlMetricParamInCurrentSystem) {
-        setSettingsSearchParams({ system: currentAgency?.systems[0] });
+        setSettingsSearchParams({ system: systemSearchParam });
         setIsLoading(false);
         return;
       }

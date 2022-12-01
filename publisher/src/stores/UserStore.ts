@@ -35,6 +35,8 @@ class UserStore {
 
   userAgencies: UserAgency[] | undefined;
 
+  userAgenciesById: { [agencyId: string]: UserAgency };
+
   userInfoLoaded: boolean;
 
   onboardingTopicsCompleted: { [topic: string]: boolean } | undefined;
@@ -48,6 +50,7 @@ class UserStore {
     this.api = api;
     this.auth0UserID = this.authStore.user?.id;
     this.userAgencies = undefined;
+    this.userAgenciesById = {};
     this.userInfoLoaded = false;
     this.onboardingTopicsCompleted = undefined;
     this.permissions = [];
@@ -133,9 +136,7 @@ class UserStore {
 
   getCurrentAgency(agencyId: string | undefined): UserAgency | undefined {
     if (agencyId) {
-      return this.userAgencies?.find(
-        (agency) => agency.id.toString() === agencyId
-      );
+      return this.userAgenciesById[agencyId];
     }
     return undefined;
   }
@@ -164,6 +165,13 @@ class UserStore {
       const { agencies: userAgencies, permissions } = await response.json();
       runInAction(() => {
         this.userAgencies = userAgencies;
+        this.userAgenciesById = userAgencies.reduce(
+          (map: { [agencyId: string]: UserAgency }, agency: UserAgency) => ({
+            ...map,
+            [agency.id]: agency,
+          }),
+          {}
+        );
         this.permissions = permissions;
         this.onboardingTopicsCompleted = this.authStore.user?.[
           APP_METADATA_CLAIM

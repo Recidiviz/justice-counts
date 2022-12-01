@@ -130,13 +130,13 @@ const Reports: React.FC = () => {
   useEffect(() => {
     const initialize = async () => {
       reportStore.resetState();
-      return reportStore.getReportOverviews(agencyId);
+      const result = await reportStore.getReportOverviews(agencyId);
+      if (result instanceof Error) {
+        setLoadingError(result.message);
+      }
     };
 
-    const result = initialize();
-    if (result instanceof Error) {
-      setLoadingError(result.message);
-    }
+    initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyId]);
 

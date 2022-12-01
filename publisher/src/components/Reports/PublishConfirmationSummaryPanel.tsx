@@ -23,6 +23,7 @@ import { useStore } from "../../stores";
 import checkIcon from "../assets/check-icon.svg";
 import errorIcon from "../assets/status-error-icon.png";
 import { MetricsSectionTitle } from "../Forms";
+import { useCheckMetricForErrors } from "./hooks";
 import {
   ConfirmationSummaryProgressIndicatorWrapper,
   ConfirmationSummarySection,
@@ -60,9 +61,9 @@ const ReportStatusIconComponent: React.FC<{
 
 const PublishConfirmationSummaryPanel: React.FC<{
   reportID: number;
-  checkMetricForErrors: (metricKey: string) => boolean;
-}> = ({ reportID, checkMetricForErrors }) => {
+}> = ({ reportID }) => {
   const { formStore, reportStore } = useStore();
+  const checkMetricForErrors = useCheckMetricForErrors(reportID);
 
   const metricsBySystem = reportStore.reportMetricsBySystem[reportID];
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;

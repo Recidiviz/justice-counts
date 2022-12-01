@@ -21,6 +21,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { removeAgencyFromPath } from "../../utils";
 import { Button } from "../DataUpload";
 import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
 import {
@@ -50,7 +51,7 @@ const Menu = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const pathWithoutAgency = location.pathname.split("/").slice(3).join("/");
+  const pathWithoutAgency = removeAgencyFromPath(location.pathname);
 
   const logout = async (): Promise<void | string> => {
     try {
@@ -75,7 +76,7 @@ const Menu = () => {
   };
 
   useEffect(() => {
-    if (pathWithoutAgency === "reports") {
+    if (pathWithoutAgency === REPORTS_LOWERCASE) {
       setActiveMenuItem(MenuItems.Reports);
     } else if (location.pathname === `${REPORTS_LOWERCASE}/create`) {
       setActiveMenuItem(MenuItems.CreateReport);
@@ -101,7 +102,7 @@ const Menu = () => {
 
       {/* Reports */}
       <MenuItem
-        onClick={() => navigate("reports")}
+        onClick={() => navigate(REPORTS_LOWERCASE)}
         active={activeMenuItem === MenuItems.Reports}
       >
         {REPORTS_CAPITALIZED}
@@ -140,7 +141,6 @@ const Menu = () => {
                   <ExtendedDropdownMenuItem
                     key={agency.id}
                     onClick={() => {
-                      // userStore.setCurrentAgencyId(agency.id);
                       navigate(`/agency/${agency.id}/${pathWithoutAgency}`);
                     }}
                     highlight={agency.id === currentAgency?.id}

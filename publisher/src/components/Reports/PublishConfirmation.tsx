@@ -32,9 +32,14 @@ import { printReportTitle } from "../../utils";
 import logoImg from "../assets/jc-logo-vector.png";
 import errorIcon from "../assets/status-error-icon.png";
 import { DataUploadHeader } from "../DataUpload";
-import { REPORT_LOWERCASE, REPORTED_CAPITALIZED } from "../Global/constants";
+import {
+  REPORT_LOWERCASE,
+  REPORTED_CAPITALIZED,
+  REPORTS_LOWERCASE,
+} from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
 import { Heading, Subheading } from "../ReviewMetrics/ReviewMetrics.styles";
+import { useCheckMetricForErrors } from "./hooks";
 import {
   BreakdownErrorImg,
   BreakdownLabel,
@@ -169,16 +174,13 @@ const MetricsDisplay: React.FC<{
   );
 };
 
-const PublishConfirmation: React.FC<{
-  reportID: number;
-  checkMetricForErrors: (metricKey: string) => boolean;
-  toggleConfirmationDialogue: () => void;
-}> = ({ reportID, checkMetricForErrors, toggleConfirmationDialogue }) => {
+const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
   const [isPublishable, setIsPublishable] = useState(false);
   const [metricsPreview, setMetricsPreview] = useState<MetricWithErrors[]>();
   const { formStore, reportStore, userStore } = useStore();
   const { agencyId } = useParams();
   const navigate = useNavigate();
+  const checkMetricForErrors = useCheckMetricForErrors(reportID);
 
   const publishReport = async () => {
     if (isPublishable) {
@@ -194,7 +196,7 @@ const PublishConfirmation: React.FC<{
       )) as Response;
 
       if (response.status === 200) {
-        navigate("/");
+        navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`);
         showToast(
           `Congratulations! You published the ${printReportTitle(
             reportStore.reportOverviews[reportID].month,
@@ -204,7 +206,7 @@ const PublishConfirmation: React.FC<{
           true
         );
         const agencyID = reportStore.reportOverviews[reportID]?.agency_id;
-        const agency = userStore.userAgencies?.find((a) => a.id === agencyID);
+        const agency = userStore.userAgenciesById[agencyID];
         trackReportPublished(reportID, finalMetricsToPublish, agency);
       } else {
         showToast(
@@ -231,20 +233,22 @@ const PublishConfirmation: React.FC<{
   return (
     <>
       <DataUploadHeader transparent={false}>
-        <LogoContainer onClick={() => navigate(`/agency/${agencyId}/reports`)}>
+        <LogoContainer
+          onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
+        >
           <Logo src={logoImg} alt="" />
         </LogoContainer>
 
         <ConfirmationButtonsContainer>
           <ConfirmationDialogueTopBarButton
             type="border"
-            onClick={toggleConfirmationDialogue}
+            onClick={() => navigate(-1)}
           >
             Back to data entry
           </ConfirmationDialogueTopBarButton>
           <ConfirmationDialogueTopBarButton
             type="border"
-            onClick={() => navigate(`/agency/${agencyId}/reports`)}
+            onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
           >
             Exit without Publishing
           </ConfirmationDialogueTopBarButton>

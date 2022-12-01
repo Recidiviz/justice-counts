@@ -23,6 +23,3 @@ export const getActiveSystemMetricKey = ({
 }: SettingsSearchParams): string => {
   return `${system?.toUpperCase()}-${metric}`;
 };
-
-export const getSettingsMenuItemFromLocation = (location: string) =>
-  location.split("/").slice(-1).join();

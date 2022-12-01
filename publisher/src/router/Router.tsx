@@ -19,12 +19,14 @@ import React from "react";
 import { Navigate, Route, Routes, useParams } from "react-router-dom";
 
 import { DataUpload } from "../components/DataUpload";
+import { REPORTS_LOWERCASE } from "../components/Global/constants";
 import Header from "../components/Header";
 import { MetricsView } from "../components/MetricConfiguration/MetricsView";
 import CreateReport from "../components/Reports/CreateReport";
 import ReportDataEntry from "../components/Reports/ReportDataEntry";
+import ReviewReportDataEntry from "../components/Reports/ReviewReportDataEntry";
 import ReviewMetrics from "../components/ReviewMetrics/ReviewMetrics";
-import { InvalidAgency } from "../pages/InvalidAgency";
+import { NotFound } from "../pages/NotFound";
 import Reports from "../pages/Reports";
 import Settings from "../pages/Settings";
 import { useStore } from "../stores";
@@ -45,19 +47,32 @@ export const Router = () => {
 
       {isAgencyIdInUserAgencies ? (
         <Routes>
-          <Route path="/" element={<Navigate to="reports" />} />
-          <Route path="/reports" element={<Reports />} />
+          <Route path="/" element={<Navigate to={`${REPORTS_LOWERCASE}`} />} />
+          <Route path={`/${REPORTS_LOWERCASE}`} element={<Reports />} />
           <Route path="/data" element={<MetricsView />} />
-          <Route path="/reports/create" element={<CreateReport />} />
-          <Route path="/reports/:id" element={<ReportDataEntry />} />
+          <Route
+            path={`/${REPORTS_LOWERCASE}/create`}
+            element={<CreateReport />}
+          />
+          <Route
+            path={`/${REPORTS_LOWERCASE}/:id`}
+            element={<ReportDataEntry />}
+          />
+          <Route
+            path={`/${REPORTS_LOWERCASE}/:id/review`}
+            element={<ReviewReportDataEntry />}
+          />
           <Route path="/settings/*" element={<Settings />} />
           <Route path="/upload" element={<DataUpload />} />
           <Route path="/upload/review-metrics" element={<ReviewMetrics />} />
           {/* TBD how to treat random routes */}
-          <Route path="*" element={<Navigate to="reports" />} />
+          <Route path="*" element={<Navigate to={`${REPORTS_LOWERCASE}`} />} />
         </Routes>
       ) : (
-        <InvalidAgency />
+        <NotFound
+          title="Agency with given ID is not tied to this account."
+          pathname="/"
+        />
       )}
     </>
   );

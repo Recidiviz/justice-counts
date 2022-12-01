@@ -21,6 +21,7 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 import { trackNavigation } from "./analytics";
 import { PageWrapper } from "./components/Forms";
+import { REPORTS_LOWERCASE } from "./components/Global/constants";
 import { Loading } from "./components/Loading";
 import { NoAgencies } from "./pages/NoAgencies";
 import { Router } from "./router";
@@ -54,13 +55,17 @@ const App: React.FC = (): ReactElement => {
         <Routes>
           <Route
             path="/"
-            element={<Navigate to={`/agency/${initialAgency}/reports`} />}
+            element={
+              <Navigate to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`} />
+            }
           />
           <Route path="/agency/:agencyId/*" element={<Router />} />
           {/* TBD how to treat random routes */}
           <Route
             path="*"
-            element={<Navigate to={`/agency/${initialAgency}/reports`} />}
+            element={
+              <Navigate to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`} />
+            }
           />
         </Routes>
       ) : (

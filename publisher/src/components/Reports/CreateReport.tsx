@@ -156,12 +156,10 @@ const CreateReport = () => {
     );
     if (response && response instanceof Response) {
       if (response.status === 200) {
-        navigate("/");
+        navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`);
         showToast(`The ${REPORT_LOWERCASE} was successfully created`, true);
         const report = (await response.json()) as ReportOverview;
-        const agency = userStore.userAgencies?.find(
-          (a) => a.id === report.agency_id
-        );
+        const agency = userStore.userAgenciesById[report.agency_id];
         trackReportCreated(report.id, agency);
         return;
       }
@@ -190,7 +188,9 @@ const CreateReport = () => {
       {/* Create Report Details Panel */}
       <ReportSummaryWrapper>
         <PreTitle>
-          <GoBackToReportsOverviewLink onClick={() => navigate("/")} />
+          <GoBackToReportsOverviewLink
+            onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
+          />
         </PreTitle>
         {/* <Title>Report Details</Title> */}
       </ReportSummaryWrapper>
@@ -200,7 +200,11 @@ const CreateReport = () => {
         <Form>
           {/* Form Title */}
           <OnePanelBackLinkContainer>
-            <GoBackToReportsOverviewLink onClick={() => navigate("/")} />
+            <GoBackToReportsOverviewLink
+              onClick={() =>
+                navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)
+              }
+            />
           </OnePanelBackLinkContainer>
           <PreTitle>Create {REPORT_CAPITALIZED}</PreTitle>
           <Title>New {REPORT_CAPITALIZED}</Title>

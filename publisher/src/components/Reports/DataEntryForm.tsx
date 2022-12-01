@@ -20,6 +20,7 @@ import {
   palette,
 } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
+import { Report } from "@justice-counts/common/types";
 import { runInAction } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useRef, useState } from "react";
@@ -49,6 +50,7 @@ import {
   PreTitle,
   TabbedDisaggregations,
 } from "../Forms";
+import { REPORTS_LOWERCASE } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
 import { Onboarding } from "../Onboarding";
 import { MetricTextInput } from "./DataEntryFormComponents";
@@ -67,13 +69,9 @@ const TopBarButtonsContainer = styled.div<{ showDataEntryHelpPage: boolean }>`
   opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 0 : 1)};
 `;
 
-const DataEntryReviewButton = styled(Button)`
+const DataEntryTopBarButton = styled(Button)`
   padding-right: 22px;
   padding-left: 22px;
-
-  &::after {
-    content: "Review";
-  }
 `;
 
 const TopBarCloseHelpButtonContainer = styled.div<{
@@ -103,14 +101,14 @@ const DataEntryForm: React.FC<{
   reportID: number;
   updateFieldDescription: (title?: string, description?: string) => void;
   updateActiveMetric: (metricKey: string) => void;
-  toggleConfirmationDialogue: () => void;
+  convertReportToDraft: () => void;
   showDataEntryHelpPage: boolean;
   setShowDataEntryHelpPage: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({
   reportID,
   updateFieldDescription,
   updateActiveMetric,
-  toggleConfirmationDialogue,
+  convertReportToDraft,
   showDataEntryHelpPage,
   setShowDataEntryHelpPage,
 }) => {
@@ -231,7 +229,7 @@ const DataEntryForm: React.FC<{
     document.body.style.overflow = showDataEntryHelpPage ? "hidden" : "unset";
   }, [showDataEntryHelpPage]);
 
-  const reportOverview = reportStore.reportOverviews[reportID];
+  const reportOverview = reportStore.reportOverviews[reportID] as Report;
   const reportMetrics = reportStore.reportMetrics[reportID];
   const metricsBySystem = reportStore.reportMetricsBySystem[reportID];
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;
@@ -243,7 +241,9 @@ const DataEntryForm: React.FC<{
   return (
     <>
       <DataEntryTopBar>
-        <LogoContainer onClick={() => navigate(`/agency/${agencyId}/reports`)}>
+        <LogoContainer
+          onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
+        >
           <Logo src={logoImg} alt="" />
         </LogoContainer>
 
@@ -261,14 +261,22 @@ const DataEntryForm: React.FC<{
           </Button>
           <Button
             type="border"
-            onClick={() => navigate(`/agency/${agencyId}/reports`)}
+            onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
           >
             Save as Draft
           </Button>
-          <DataEntryReviewButton
-            type="blue"
-            onClick={toggleConfirmationDialogue}
-          />
+          {reportOverview.status === "PUBLISHED" ? (
+            <DataEntryTopBarButton type="blue" onClick={convertReportToDraft}>
+              Unpublish and Edit
+            </DataEntryTopBarButton>
+          ) : (
+            <DataEntryTopBarButton
+              type="blue"
+              onClick={() => navigate("review")}
+            >
+              Review
+            </DataEntryTopBarButton>
+          )}
         </TopBarButtonsContainer>
       </DataEntryTopBar>
 

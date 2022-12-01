@@ -23,6 +23,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import logoImg from "../assets/jc-logo-vector.png";
+import { REPORTS_LOWERCASE } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
 import { Loader } from "../Loading";
 import {
@@ -287,7 +288,9 @@ export const DataUpload: React.FC = observer(() => {
   return (
     <DataUploadContainer>
       <DataUploadHeader transparent={!selectedFile && !errorsWarningsMetrics}>
-        <LogoContainer onClick={() => navigate("/")}>
+        <LogoContainer
+          onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
+        >
           <Logo src={logoImg} alt="" />
         </LogoContainer>
 
