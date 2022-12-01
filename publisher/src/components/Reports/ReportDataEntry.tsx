@@ -128,7 +128,7 @@ const ReportDataEntry = () => {
     );
   }
 
-  if (loadingError) {
+  if (loadingError || !reportStore.reportOverviews[reportID]) {
     return <PageWrapper>Error: {loadingError}</PageWrapper>;
   }
 

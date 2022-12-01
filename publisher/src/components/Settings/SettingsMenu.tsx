@@ -53,7 +53,9 @@ export const SettingsMenu: React.FC = observer(() => {
       {Object.entries(settingsMenuPaths).map(([displayName, path]) => (
         <Fragment key={path}>
           <MenuItem
-            selected={removeAgencyFromPath(location.pathname) === path}
+            selected={
+              removeAgencyFromPath(location.pathname) === `settings/${path}`
+            }
             onClick={() => {
               navigate(path);
             }}
@@ -63,8 +65,9 @@ export const SettingsMenu: React.FC = observer(() => {
 
           {/* Metrics Navigation (appears when a metric has been 
               selected and allows users to toggle between metrics) */}
-          {location.pathname === "settings/metric-config" &&
-            path === "settings/metric-config" &&
+          {removeAgencyFromPath(location.pathname) ===
+            "settings/metric-config" &&
+            path === "metric-config" &&
             metricSearchParam && (
               <MetricsListContainer>
                 {getMetricsBySystem(systemSearchParam)?.map(
