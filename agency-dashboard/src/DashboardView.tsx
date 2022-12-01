@@ -94,7 +94,7 @@ const DashboardView = () => {
   const navigate = useNavigate();
   const params = useParams();
   const agencyId = Number(params.id);
-  const { agencyDataStore, datapointsStore, dataVizStore } = useStore();
+  const { agencyDataStore, dataVizStore } = useStore();
 
   const {
     timeRange,
@@ -111,7 +111,6 @@ const DashboardView = () => {
 
   const fetchData = async () => {
     try {
-      await datapointsStore.getDatapoints(agencyId);
       await agencyDataStore.fetchAgencyData(agencyId);
     } catch (error) {
       showToast("Error fetching data.", false, "red", 4000);
@@ -126,14 +125,14 @@ const DashboardView = () => {
   useEffect(() => {
     if (
       metricKey &&
-      !datapointsStore.loading &&
-      !datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey]
+      !agencyDataStore.loading &&
+      !agencyDataStore.dimensionNamesByMetricAndDisaggregation[metricKey]
     ) {
       navigate(`/agency/${agencyId}`);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [datapointsStore.loading]);
+  }, [agencyDataStore.loading]);
 
   useEffect(() => {
     const resizeListener = () => {
@@ -156,13 +155,13 @@ const DashboardView = () => {
 
   if (
     !metricKey ||
-    (!datapointsStore.loading &&
-      !datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey])
+    (!agencyDataStore.loading &&
+      !agencyDataStore.dimensionNamesByMetricAndDisaggregation[metricKey])
   ) {
     return null;
   }
 
-  if (datapointsStore.loading) {
+  if (agencyDataStore.loading) {
     return <>Loading...</>;
   }
 
@@ -174,7 +173,7 @@ const DashboardView = () => {
     agencyDataStore.metricKeyToDisplayName[metricKey] || metricKey;
 
   const filteredAggregateData = transformDataForMetricInsights(
-    datapointsStore.datapointsByMetric[metricKey]?.aggregate || [],
+    agencyDataStore.datapointsByMetric[metricKey]?.aggregate || [],
     DataVizTimeRangesMap[dataVizStore.timeRange]
   );
 
@@ -200,10 +199,10 @@ const DashboardView = () => {
         <RightPanelMetricTitle>{metricName}</RightPanelMetricTitle>
         <DatapointsView
           datapointsGroupedByAggregateAndDisaggregations={
-            datapointsStore.datapointsByMetric[metricKey]
+            agencyDataStore.datapointsByMetric[metricKey]
           }
           dimensionNamesByDisaggregation={
-            datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey]
+            agencyDataStore.dimensionNamesByMetricAndDisaggregation[metricKey]
           }
           timeRange={timeRange}
           disaggregationName={disaggregationName}
