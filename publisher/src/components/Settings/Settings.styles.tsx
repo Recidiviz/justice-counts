@@ -85,6 +85,9 @@ export const MetricsListItem = styled.div<{ activeSection?: boolean }>`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  border-bottom: 2px solid
+    ${({ activeSection }) =>
+      activeSection ? palette.solid.blue : `transparent`};
 
   &:hover {
     cursor: pointer;

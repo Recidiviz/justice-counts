@@ -15,16 +15,31 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./Configuration";
-export * from "./constants";
-export * from "./ContextConfiguration";
-export * from "./MetricBox";
-export * from "./MetricConfiguration";
-export * from "./MetricConfiguration.styles";
-export * from "./MetricDefinitions";
-export * from "./RaceEthnicities.styles";
-export * from "./RaceEthnicitiesForm";
-export * from "./RaceEthnicitiesGrid";
-export * from "./RaceEthnicitiesGridStates";
-export * from "./types";
-export * from "./utils";
+import { UpdatedDimension } from ".";
+
+/**
+ * Sort Races from an `ethnicitiesByRace` object entries array in the following order:
+ * 'American Indian / Alaskan Native', 'Asian', 'Black', 'Native Hawaiian / Pacific Islander', 'White', 'More than one race', 'Other', 'Unknown'
+ */
+export const sortRaces = (
+  [a, _]: [
+    string,
+    {
+      [ethnicity: string]: UpdatedDimension;
+    }
+  ],
+  [b, __]: [
+    string,
+    {
+      [ethnicity: string]: UpdatedDimension;
+    }
+  ]
+) => {
+  if (b === "More than one race" && (a === "Other" || a === "Unknown")) {
+    return 0;
+  }
+  if (b === "More than one race" && a !== "Other" && a !== "Unknown") {
+    return -1;
+  }
+  return 1;
+};
