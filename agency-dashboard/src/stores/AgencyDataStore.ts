@@ -120,9 +120,7 @@ class AgencyDataStore {
       result[metric.key] = {};
       metric.disaggregations.forEach((disaggregation) => {
         result[metric.key][disaggregation.display_name] =
-          disaggregation.dimensions.map(
-            (dimension) => dimension.label
-          ) as string[];
+          disaggregation.dimensions.map((dimension) => dimension.label);
       });
     });
     return result;
