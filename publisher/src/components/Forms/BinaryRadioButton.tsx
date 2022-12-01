@@ -33,6 +33,10 @@ export const BinaryRadioGroupWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  div {
+    flex: 1;
+  }
 `;
 
 export const BinaryRadioGroupQuestion = styled.div`

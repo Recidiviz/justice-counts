@@ -15,8 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
+import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
+import styled from "styled-components/macro";
 
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
@@ -24,6 +30,7 @@ import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import blueCheck from "../assets/status-check-icon.png";
 import { BinaryRadioButton } from "../Forms";
 import { REPORT_VERB_LOWERCASE } from "../Global/constants";
+import { ExtendedDropdownMenu, ExtendedDropdownMenuItem } from "../Menu";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
@@ -36,6 +43,7 @@ import {
   DimensionTitleWrapper,
   Disaggregation,
   DisaggregationTab,
+  DropdownButton,
   Header,
   MetricConfigurationContainer,
   MetricDisaggregations,
@@ -56,6 +64,19 @@ type MetricConfigurationProps = {
     React.SetStateAction<string | undefined>
   >;
 };
+
+const Something = styled.div`
+  ${typography.sizeCSS.medium}
+  width: 100%;
+  height: 56px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 24px;
+  border: 1px solid ${palette.highlight.grey4};
+  border-radius: 2px;
+  transition: 0.2s ease;
+`;
 
 export const Configuration: React.FC<MetricConfigurationProps> = observer(
   ({
@@ -198,6 +219,18 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                 }
               }}
             />
+            <Dropdown>
+              <DropdownButton kind="borderless">[I] Agencies</DropdownButton>
+              <ExtendedDropdownMenu alignment="right">
+                <ExtendedDropdownMenuItem
+                  // key={agency.id}
+                  onClick={() => {}}
+                  // highlight={userStore.currentAgency?.id === agency.id}
+                >
+                  Hi
+                </ExtendedDropdownMenuItem>
+              </ExtendedDropdownMenu>
+            </Dropdown>
           </RadioButtonGroupWrapper>
         </MetricOnOffWrapper>
 

@@ -19,6 +19,7 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
+import { DropdownToggle } from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
 import { BinaryRadioGroupWrapper } from "../Forms";
@@ -295,11 +296,19 @@ export const MetricDetailsDisplay = styled.div`
 
 export const MetricOnOffWrapper = styled.div`
   margin-bottom: 24px;
+
+  label {
+    ${typography.sizeCSS.normal};
+  }
 `;
 
 export const Header = styled.div`
   ${typography.sizeCSS.medium};
   margin-bottom: 8px;
+
+  &:not(:first-child) {
+    margin-top: 27px;
+  }
 `;
 
 export const BreakdownHeader = styled(Header)`
@@ -745,4 +754,35 @@ export const NoDefinitionsSelected = styled.div`
   border: 1px solid ${palette.highlight.grey5};
   color: ${palette.highlight.grey12};
   text-align: center;
+`;
+
+export const DropdownButton = styled(DropdownToggle)`
+  ${typography.sizeCSS.normal}
+  font-family: ${typography.family};
+  width: 100%;
+  height: 56px;
+  min-height: unset;
+  border: 1px solid ${palette.highlight.grey4} !important;
+  border-radius: 2px;
+  transition: 0.2s ease;
+  color: ${palette.solid.darkgrey};
+  margin-top: 15px;
+
+  &[aria-expanded="true"] {
+    background-color: ${palette.solid.blue};
+    color: ${palette.solid.white};
+  }
+
+  &[aria-expanded="true"]:hover {
+    background-color: ${palette.solid.darkblue};
+  }
+
+  &[aria-expanded="false"]:hover {
+    color: ${palette.solid.darkgrey};
+    background-color: ${palette.highlight.grey2};
+  }
+
+  &:focus {
+    color: ${palette.solid.darkgrey};
+  }
 `;
