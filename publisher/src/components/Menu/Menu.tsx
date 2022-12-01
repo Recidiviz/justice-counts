@@ -17,7 +17,7 @@
 import { Permission } from "@justice-counts/common/types";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
@@ -33,19 +33,7 @@ import {
   WelcomeUser,
 } from ".";
 
-enum MenuItems {
-  Reports = "RECORDS",
-  CreateReport = "CREATE RECORD",
-  LearnMore = "LEARN MORE",
-  Settings = "SETTINGS",
-  Agencies = "AGENCIES",
-  Data = "DATA",
-}
-
 const Menu = () => {
-  const [activeMenuItem, setActiveMenuItem] = useState<MenuItems | undefined>(
-    MenuItems.Reports
-  );
   const { authStore, api, userStore } = useStore();
   const { agencyId } = useParams();
   const navigate = useNavigate();
@@ -75,21 +63,6 @@ const Menu = () => {
     }
   };
 
-  useEffect(() => {
-    if (pathWithoutAgency === REPORTS_LOWERCASE) {
-      setActiveMenuItem(MenuItems.Reports);
-    } else if (location.pathname === `${REPORTS_LOWERCASE}/create`) {
-      setActiveMenuItem(MenuItems.CreateReport);
-    } else if (pathWithoutAgency === "settings") {
-      setActiveMenuItem(MenuItems.Settings);
-    } else if (pathWithoutAgency === "data") {
-      setActiveMenuItem(MenuItems.Data);
-    } else {
-      setActiveMenuItem(undefined);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location]);
-
   const currentAgency = userStore.getCurrentAgency(agencyId);
 
   return (
@@ -103,7 +76,7 @@ const Menu = () => {
       {/* Reports */}
       <MenuItem
         onClick={() => navigate(REPORTS_LOWERCASE)}
-        active={activeMenuItem === MenuItems.Reports}
+        active={pathWithoutAgency === REPORTS_LOWERCASE}
       >
         {REPORTS_CAPITALIZED}
       </MenuItem>
@@ -111,13 +84,13 @@ const Menu = () => {
       {/* Data (Visualizations) */}
       <MenuItem
         onClick={() => navigate("data")}
-        active={activeMenuItem === MenuItems.Data}
+        active={pathWithoutAgency === "data"}
       >
         Data
       </MenuItem>
 
       {/* Learn More */}
-      <MenuItem active={activeMenuItem === MenuItems.LearnMore}>
+      <MenuItem>
         <a
           href="https://justicecounts.csgjusticecenter.org/"
           target="_blank"
@@ -130,7 +103,7 @@ const Menu = () => {
       {/* Agencies Dropdown */}
       {(userStore.permissions.includes(Permission.RECIDIVIZ_ADMIN) ||
         userStore.permissions.includes(Permission.SWITCH_AGENCIES)) && (
-        <MenuItem active={activeMenuItem === MenuItems.Agencies}>
+        <MenuItem>
           <Dropdown>
             <ExtendedDropdownToggle kind="borderless">
               Agencies
@@ -157,7 +130,7 @@ const Menu = () => {
       {/* Settings */}
       <MenuItem
         onClick={() => navigate("settings")}
-        active={activeMenuItem === MenuItems.Settings}
+        active={pathWithoutAgency.startsWith("settings")}
       >
         Settings
       </MenuItem>
