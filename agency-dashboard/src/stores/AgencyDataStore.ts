@@ -21,7 +21,7 @@ import {
   Metric,
 } from "@justice-counts/common/types";
 import { isPositiveNumber } from "@justice-counts/common/utils";
-import { makeAutoObservable, runInAction, toJS } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 
 import { request } from "../utils/networking";
 
