@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -189,7 +190,7 @@ const OnboardingModal = styled.div<{
       return `
         bottom: calc(100% - ${modalHeight}px - 113px);
         left: calc(100% - 552px);
-        top: 64px;
+        top: ${HEADER_BAR_HEIGHT}px;
         right: ${SIDE_PANEL_WIDTH}px;
       `;
     }
