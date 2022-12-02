@@ -333,7 +333,7 @@ const PublishConfirmation: React.FC<{
             </Heading>
             <Subheading>
               Before publishing, take a moment to review the changes. You must
-              resolve any errors before publishing; otherwise, you can save this
+              resolve any errors before publishing; otherwise, you can save this{" "}
               {REPORT_LOWERCASE} and return at another time.
             </Subheading>
             {metricsPreview.map((metric, i) => {
