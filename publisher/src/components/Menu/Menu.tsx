@@ -63,7 +63,7 @@ const Menu = () => {
     }
   };
 
-  const currentAgency = userStore.getCurrentAgency(agencyId);
+  const currentAgency = userStore.getAgency(agencyId);
 
   return (
     <MenuContainer>

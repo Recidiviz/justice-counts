@@ -176,7 +176,7 @@ class MetricConfigStore {
   getMetricSettings = async (
     agencyId: string | undefined
   ): Promise<Metric[]> => {
-    const currentAgency = this.userStore.getCurrentAgency(agencyId);
+    const currentAgency = this.userStore.getAgency(agencyId);
 
     if (currentAgency === undefined) {
       throw new Error(
@@ -202,7 +202,7 @@ class MetricConfigStore {
     updatedMetricSettings: MetricSettings,
     agencyId: string | undefined
   ): Promise<Response> => {
-    const currentAgency = this.userStore.getCurrentAgency(agencyId);
+    const currentAgency = this.userStore.getAgency(agencyId);
 
     if (currentAgency === undefined) {
       throw new Error(

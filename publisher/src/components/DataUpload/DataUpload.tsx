@@ -87,7 +87,7 @@ export const DataUpload: React.FC = observer(() => {
   const { userStore, reportStore } = useStore();
   const { agencyId } = useParams();
   const navigate = useNavigate();
-  const currentAgency = userStore.getCurrentAgency(agencyId);
+  const currentAgency = userStore.getAgency(agencyId);
 
   const userSystems = useMemo(() => {
     return currentAgency

@@ -134,7 +134,7 @@ class UserStore {
     return undefined;
   }
 
-  getCurrentAgency(agencyId: string | undefined): UserAgency | undefined {
+  getAgency(agencyId: string | undefined): UserAgency | undefined {
     if (agencyId) {
       return this.userAgenciesById[agencyId];
     }

@@ -67,7 +67,7 @@ class DatapointsStore extends BaseDatapointsStore {
 
   async getDatapoints(agencyId: number | undefined): Promise<void | Error> {
     try {
-      const currentAgency = this.userStore.getCurrentAgency(String(agencyId));
+      const currentAgency = this.userStore.getAgency(String(agencyId));
       if (currentAgency === undefined) {
         // If user is not attached to an agency,
         // no need to bother trying to load this data.

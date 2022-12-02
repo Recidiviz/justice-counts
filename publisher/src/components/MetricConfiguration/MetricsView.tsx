@@ -71,7 +71,7 @@ export const MetricsView: React.FC = observer(() => {
       return setLoadingError(result.message);
     }
 
-    const currentAgency = userStore.getCurrentAgency(agencyId);
+    const currentAgency = userStore.getAgency(agencyId);
     const defaultSystemSearchParam = Object.keys(result)[0]
       .toUpperCase()
       .replace(" ", "_") as AgencySystems;

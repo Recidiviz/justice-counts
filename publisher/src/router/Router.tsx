@@ -39,7 +39,7 @@ export const Router = () => {
   // if not then show placeholder (InvalidAgency page) from which you can go to homepage
   // e.g. reports page with initial available user agency
   // or maybe display some text since header is available and user can pick available agency
-  const isAgencyIdInUserAgencies = userStore.getCurrentAgency(agencyId);
+  const isAgencyIdInUserAgencies = userStore.getAgency(agencyId);
 
   return (
     <>

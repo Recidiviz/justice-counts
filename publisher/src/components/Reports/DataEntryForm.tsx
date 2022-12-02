@@ -183,7 +183,7 @@ const DataEntryForm: React.FC<{
       showToast("Saved", false, "grey");
       if (oldStatus === "NOT_STARTED" && status === "DRAFT") {
         const agencyID = reportStore.reportOverviews[reportID]?.agency_id;
-        const agency = userStore.getCurrentAgency(agencyID.toString());
+        const agency = userStore.getAgency(agencyID.toString());
         trackReportNotStartedToDraft(reportID, agency);
       }
     } else {

@@ -93,7 +93,7 @@ class ReportStore {
     agencyId: string | undefined
   ): Promise<void | Error> {
     try {
-      const currentAgency = this.userStore.getCurrentAgency(agencyId);
+      const currentAgency = this.userStore.getAgency(agencyId);
       if (currentAgency === undefined) {
         // If user is not attached to an agency,
         // no need to bother trying to load reports.
@@ -166,7 +166,7 @@ class ReportStore {
     agencyId: string | undefined
   ): Promise<Response | Error | undefined> {
     try {
-      const currentAgency = this.userStore.getCurrentAgency(agencyId);
+      const currentAgency = this.userStore.getAgency(agencyId);
 
       if (currentAgency === undefined) {
         throw new Error(
@@ -246,7 +246,7 @@ class ReportStore {
   initializeReportSettings = async (
     agencyId: string | undefined
   ): Promise<{ [system: string]: Metric[] } | Error> => {
-    const currentAgency = this.userStore.getCurrentAgency(agencyId);
+    const currentAgency = this.userStore.getAgency(agencyId);
 
     if (currentAgency === undefined) {
       throw new Error(
@@ -295,7 +295,7 @@ class ReportStore {
     agencyId: string | undefined
   ): Promise<Response | Error | undefined> {
     try {
-      const currentAgency = this.userStore.getCurrentAgency(agencyId);
+      const currentAgency = this.userStore.getAgency(agencyId);
 
       if (currentAgency === undefined) {
         throw new Error(
@@ -324,7 +324,7 @@ class ReportStore {
   async getUploadedFilesList(
     agencyId: string | undefined
   ): Promise<Response | Error | undefined> {
-    const currentAgency = this.userStore.getCurrentAgency(agencyId);
+    const currentAgency = this.userStore.getAgency(agencyId);
 
     if (currentAgency === undefined) {
       return new Error(

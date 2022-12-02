@@ -70,7 +70,7 @@ export const MetricConfiguration: React.FC = observer(() => {
       return setLoadingErrorMessage(response.message);
     }
 
-    const currentAgency = userStore.getCurrentAgency(agencyId);
+    const currentAgency = userStore.getAgency(agencyId);
 
     // now when agency is in the url we still have to check external link
     // with system and metric search params in it if they belong to agency
@@ -132,7 +132,7 @@ export const MetricConfiguration: React.FC = observer(() => {
     return <div>Error: {loadingErrorMessage}</div>;
   }
 
-  const currentAgency = userStore.getCurrentAgency(agencyId);
+  const currentAgency = userStore.getAgency(agencyId);
 
   return (
     <>

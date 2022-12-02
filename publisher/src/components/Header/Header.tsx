@@ -29,7 +29,7 @@ const Header = () => {
   const navigate = useNavigate();
   const { userStore } = useStore();
 
-  const isAgencyValid = !!userStore.getCurrentAgency(agencyId);
+  const isAgencyValid = !!userStore.getAgency(agencyId);
 
   return (
     <HeaderBar>
