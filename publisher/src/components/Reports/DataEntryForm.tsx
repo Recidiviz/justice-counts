@@ -67,12 +67,14 @@ const TopBarButtonsContainer = styled.div<{ showDataEntryHelpPage: boolean }>`
   opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 0 : 1)};
 `;
 
-const DataEntryReviewButton = styled(Button)`
+const DataEntryReviewButton = styled(Button)<{
+  isPublished?: boolean;
+}>`
   padding-right: 22px;
   padding-left: 22px;
 
   &::after {
-    content: "Review";
+    content: ${({ isPublished }) => (isPublished ? "'Unpublish'" : "'Review'")};
   }
 `;
 
@@ -280,6 +282,7 @@ const DataEntryForm: React.FC<{
           <DataEntryReviewButton
             type="blue"
             onClick={toggleConfirmationDialogue}
+            isPublished={isPublished}
           />
         </TopBarButtonsContainer>
       </DataEntryTopBar>

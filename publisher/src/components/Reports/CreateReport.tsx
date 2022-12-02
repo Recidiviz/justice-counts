@@ -53,7 +53,6 @@ import {
   REPORTS_LOWERCASE,
 } from "../Global/constants";
 import {
-  PublishButton,
   PublishDataWrapper,
   TWO_PANEL_MAX_WIDTH,
 } from "./ReportDataEntry.styles";
@@ -82,7 +81,30 @@ const BoldFont = styled.span`
   font-weight: 700;
 `;
 
-const CreateButton = styled(PublishButton)`
+const CreateButton = styled.button<{
+  disabled?: boolean;
+}>`
+  ${typography.sizeCSS.medium}
+  width: 315px;
+  height: 56px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: ${({ disabled }) => (disabled ? "none" : palette.solid.blue)};
+  color: ${({ disabled }) =>
+    disabled ? palette.highlight.grey8 : palette.solid.white};
+  border: 1px solid
+    ${({ disabled }) =>
+      disabled ? palette.highlight.grey3 : palette.highlight.grey3};
+  border-radius: 2px;
+  transition: 0.2s ease;
+
+  &:hover {
+    cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+    background: ${({ disabled }) =>
+      disabled ? "none" : palette.solid.darkblue};
+  }
+
   &::after {
     content: "${`Create ${REPORT_CAPITALIZED}`}";
   }
