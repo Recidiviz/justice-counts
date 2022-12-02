@@ -25,42 +25,27 @@ beforeEach(() => {
   fetchMock.resetMocks();
 });
 
-// test("renders loading state", () => {
-//   fetchMock.mockResponseOnce(
-//     JSON.stringify({
-//       datapoints: [{}],
-//       dimension_names_by_metric_and_disaggregation: {
-//         LAW_ENFORCEMENT_ARRESTS: {},
-//         LAW_ENFORCEMENT_BUDGET: {},
-//         LAW_ENFORCEMENT_CALLS_FOR_SERVICE: {},
-//       },
-//     })
-//   );
-
-//   render(
-//     <StoreProvider>
-//       <MemoryRouter
-//         initialEntries={["/agency/1/dashboard?metric=LAW_ENFORCEMENT_ARRESTS"]}
-//       >
-//         <DashboardView />
-//       </MemoryRouter>
-//     </StoreProvider>
-//   );
-//   const loadingElement = screen.getByText(/Loading.../i);
-//   expect(loadingElement).toBeInTheDocument();
-// });
-
 test("renders 'No reported data for this metric.' state", async () => {
-  fetchMock.mockResponseOnce(
-    JSON.stringify({
-      datapoints: [{}],
-      dimension_names_by_metric_and_disaggregation: {
-        LAW_ENFORCEMENT_ARRESTS: {},
-        LAW_ENFORCEMENT_BUDGET: {},
-        LAW_ENFORCEMENT_CALLS_FOR_SERVICE: {},
+  fetchMock.mockResponses([
+    JSON.stringify([
+      {
+        key: "LAW_ENFORCEMENT_ARRESTS",
+        display_name: "Total Arrests",
+        disaggregations: [],
       },
-    })
-  );
+      {
+        key: "LAW_ENFORCEMENT_BUDGET",
+        display_name: "Annual Budget",
+        disaggregations: [],
+      },
+      {
+        key: "LAW_ENFORCEMENT_CALLS_FOR_SERVICE",
+        display_name: "Calls for Service",
+        disaggregations: [],
+      },
+    ]),
+    {},
+  ]);
 
   render(
     <StoreProvider>
@@ -72,7 +57,7 @@ test("renders 'No reported data for this metric.' state", async () => {
     </StoreProvider>
   );
 
-  const textElements = await screen.findAllByText(/LAW_ENFORCEMENT_ARRESTS/i);
+  const textElements = await screen.findAllByText(/Total Arrests/i);
   expect(textElements[0]).toBeInTheDocument();
   expect(textElements[1]).toBeInTheDocument();
 });

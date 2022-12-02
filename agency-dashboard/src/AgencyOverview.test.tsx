@@ -25,56 +25,24 @@ beforeEach(() => {
   fetchMock.resetMocks();
 });
 
-// test("renders loading state", () => {
-//   fetchMock.mockResponseOnce(
-//     JSON.stringify({
-//       datapoints: [],
-//       dimension_names_by_metric_and_disaggregation: {},
-//     })
-//   );
-
-//   render(
-//     <StoreProvider>
-//       <MemoryRouter initialEntries={["/agency/1"]}>
-//         <AgencyOverview />
-//       </MemoryRouter>
-//     </StoreProvider>
-//   );
-//   const loadingElement = screen.getByText(/Loading.../i);
-//   expect(loadingElement).toBeInTheDocument();
-// });
-
-test("renders 'No published metrics' state", async () => {
-  fetchMock.mockResponseOnce(
-    JSON.stringify({
-      datapoints: [],
-      dimension_names_by_metric_and_disaggregation: {},
-    })
-  );
-
-  render(
-    <StoreProvider>
-      <MemoryRouter initialEntries={["/agency/1"]}>
-        <AgencyOverview />
-      </MemoryRouter>
-    </StoreProvider>
-  );
-
-  const textElement = await screen.findByText(/No published metrics./i);
-  expect(textElement).toBeInTheDocument();
-});
-
 test("renders list of metrics", async () => {
-  fetchMock.mockResponseOnce(
-    JSON.stringify({
-      datapoints: [{}],
-      dimension_names_by_metric_and_disaggregation: {
-        LAW_ENFORCEMENT_ARRESTS: {},
-        LAW_ENFORCEMENT_BUDGET: {},
-        LAW_ENFORCEMENT_CALLS_FOR_SERVICE: {},
+  fetchMock.mockResponses([
+    JSON.stringify([
+      {
+        key: "LAW_ENFORCEMENT_ARRESTS",
+        display_name: "Total Arrests",
       },
-    })
-  );
+      {
+        key: "LAW_ENFORCEMENT_BUDGET",
+        display_name: "Annual Budget",
+      },
+      {
+        key: "LAW_ENFORCEMENT_CALLS_FOR_SERVICE",
+        display_name: "Calls for Service",
+      },
+    ]),
+    {},
+  ]);
 
   render(
     <StoreProvider>
@@ -83,16 +51,16 @@ test("renders list of metrics", async () => {
       </MemoryRouter>
     </StoreProvider>
   );
-  const textElement1 = await screen.findByText(
+  const textElementClickOnAMetricToViewChart = await screen.findByText(
     /Click on a metric to view chart:/i
   );
-  expect(textElement1).toBeInTheDocument();
-  const textElement2 = await screen.findByText(/LAW_ENFORCEMENT_ARRESTS/i);
-  expect(textElement2).toBeInTheDocument();
-  const textElement3 = await screen.findByText(/LAW_ENFORCEMENT_BUDGET/i);
-  expect(textElement3).toBeInTheDocument();
-  const textElement4 = await screen.findByText(
-    /LAW_ENFORCEMENT_CALLS_FOR_SERVICE/i
+  expect(textElementClickOnAMetricToViewChart).toBeInTheDocument();
+  const textElementTotalArrests = await screen.findByText(/Total Arrests/i);
+  expect(textElementTotalArrests).toBeInTheDocument();
+  const textElementAnnualBudget = await screen.findByText(/Annual Budget/i);
+  expect(textElementAnnualBudget).toBeInTheDocument();
+  const textElementCallsForService = await screen.findByText(
+    /Calls for Service/i
   );
-  expect(textElement4).toBeInTheDocument();
+  expect(textElementCallsForService).toBeInTheDocument();
 });

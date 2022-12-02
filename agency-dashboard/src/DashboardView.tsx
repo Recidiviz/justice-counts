@@ -23,6 +23,7 @@ import { DatapointsView } from "@justice-counts/common/components/DataViz/Datapo
 import { MetricInsights } from "@justice-counts/common/components/DataViz/MetricInsights";
 import { transformDataForMetricInsights } from "@justice-counts/common/components/DataViz/utils";
 import { COMMON_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import { showToast } from "@justice-counts/common/components/Toast";
 import { DataVizTimeRangesMap } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -93,7 +94,7 @@ const DashboardView = () => {
   const navigate = useNavigate();
   const params = useParams();
   const agencyId = Number(params.id);
-  const { datapointsStore, dataVizStore } = useStore();
+  const { agencyDataStore, dataVizStore } = useStore();
 
   const {
     timeRange,
@@ -107,22 +108,30 @@ const DashboardView = () => {
   const { search } = useLocation();
   const query = new URLSearchParams(search);
   const metricKey = query.get("metric");
+
   useEffect(() => {
-    datapointsStore.getDatapoints(agencyId);
+    const fetchData = async () => {
+      try {
+        await agencyDataStore.fetchAgencyData(agencyId);
+      } catch (error) {
+        showToast("Error fetching data.", false, "red", 4000);
+      }
+    };
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (
       metricKey &&
-      !datapointsStore.loading &&
-      !datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey]
+      !agencyDataStore.loading &&
+      !agencyDataStore.dimensionNamesByMetricAndDisaggregation[metricKey]
     ) {
       navigate(`/agency/${agencyId}`);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [datapointsStore.loading]);
+  }, [agencyDataStore.loading]);
 
   useEffect(() => {
     const resizeListener = () => {
@@ -145,25 +154,25 @@ const DashboardView = () => {
 
   if (
     !metricKey ||
-    (!datapointsStore.loading &&
-      !datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey])
+    (!agencyDataStore.loading &&
+      !agencyDataStore.dimensionNamesByMetricAndDisaggregation[metricKey])
   ) {
     return null;
   }
 
-  if (datapointsStore.loading) {
+  if (agencyDataStore.loading) {
     return <>Loading...</>;
   }
 
-  const metricNames = Object.keys(
-    datapointsStore.dimensionNamesByMetricAndDisaggregation
+  const metricNames = agencyDataStore.metrics.map(
+    (metric) => metric.display_name
   );
 
   const metricName =
-    datapointsStore.metricKeyToDisplayName[metricKey] || metricKey;
+    agencyDataStore.metricKeyToDisplayName[metricKey] || metricKey;
 
   const filteredAggregateData = transformDataForMetricInsights(
-    datapointsStore.datapointsByMetric[metricKey]?.aggregate || [],
+    agencyDataStore.datapointsByMetric[metricKey]?.aggregate || [],
     DataVizTimeRangesMap[dataVizStore.timeRange]
   );
 
@@ -189,10 +198,10 @@ const DashboardView = () => {
         <RightPanelMetricTitle>{metricName}</RightPanelMetricTitle>
         <DatapointsView
           datapointsGroupedByAggregateAndDisaggregations={
-            datapointsStore.datapointsByMetric[metricKey]
+            agencyDataStore.datapointsByMetric[metricKey]
           }
           dimensionNamesByDisaggregation={
-            datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey]
+            agencyDataStore.dimensionNamesByMetricAndDisaggregation[metricKey]
           }
           timeRange={timeRange}
           disaggregationName={disaggregationName}
@@ -201,9 +210,15 @@ const DashboardView = () => {
           setDisaggregationName={setDisaggregationName}
           setCountOrPercentageView={setCountOrPercentageView}
           metricNames={metricNames}
-          onMetricsSelect={(metric) =>
-            navigate(`/agency/${agencyId}/dashboard?metric=${metric}`)
-          }
+          onMetricsSelect={(selectedMetricName) => {
+            const selectedMetricKey =
+              agencyDataStore.metricDisplayNameToKey[selectedMetricName];
+            if (selectedMetricKey) {
+              navigate(
+                `/agency/${agencyId}/dashboard?metric=${selectedMetricKey}`
+              );
+            }
+          }}
           showBottomMetricInsights={!isDesktopWidth}
           resizeHeight={isDesktopWidth}
         />

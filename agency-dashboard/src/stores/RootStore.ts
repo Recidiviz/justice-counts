@@ -17,15 +17,15 @@
 
 import DataVizStore from "@justice-counts/common/stores/DataVizStore";
 
-import DatapointsStore from "./DatapointsStore";
+import AgencyDataStore from "./AgencyDataStore";
 
 class RootStore {
-  datapointsStore: DatapointsStore;
+  agencyDataStore: AgencyDataStore;
 
   dataVizStore: DataVizStore;
 
   constructor() {
-    this.datapointsStore = new DatapointsStore();
+    this.agencyDataStore = new AgencyDataStore();
     this.dataVizStore = new DataVizStore();
   }
 }
