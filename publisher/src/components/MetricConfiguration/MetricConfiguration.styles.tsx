@@ -756,7 +756,7 @@ export const NoDefinitionsSelected = styled.div`
   text-align: center;
 `;
 
-export const DropdownButton = styled(DropdownToggle)`
+export const DropdownButton = styled(DropdownToggle)<{ checked?: boolean }>`
   ${typography.sizeCSS.normal}
   font-family: ${typography.family};
   width: 100%;
@@ -767,6 +767,13 @@ export const DropdownButton = styled(DropdownToggle)`
   transition: 0.2s ease;
   color: ${palette.solid.darkgrey};
   margin-top: 15px;
+
+  ${({ checked }) =>
+    checked &&
+    `
+      background-color: ${palette.solid.blue} !important;
+      color: ${palette.solid.white} !important;
+    `}
 
   &[aria-expanded="true"] {
     background-color: ${palette.solid.blue};

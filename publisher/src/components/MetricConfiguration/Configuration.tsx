@@ -15,17 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import {
-  palette,
-  typography,
-} from "@justice-counts/common/components/GlobalStyles";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
-import React, { useEffect } from "react";
-import styled from "styled-components/macro";
+import React, { useEffect, useState } from "react";
 
 import { useStore } from "../../stores";
-import { removeSnakeCase } from "../../utils";
+import { monthsByName, removeSnakeCase } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import blueCheck from "../assets/status-check-icon.png";
 import { BinaryRadioButton } from "../Forms";
@@ -65,19 +60,6 @@ type MetricConfigurationProps = {
   >;
 };
 
-const Something = styled.div`
-  ${typography.sizeCSS.medium}
-  width: 100%;
-  height: 56px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 16px 24px;
-  border: 1px solid ${palette.highlight.grey4};
-  border-radius: 2px;
-  transition: 0.2s ease;
-`;
-
 export const Configuration: React.FC<MetricConfigurationProps> = observer(
   ({
     activeDimensionKey,
@@ -96,6 +78,10 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       updateDimensionEnabledStatus,
       saveMetricSettings,
     } = metricConfigStore;
+
+    const [frequency, setFrequency] = useState<string>();
+    const [startingMonth, setStartingMonth] = useState<string>();
+    const [customMonth, setCustomMonth] = useState<string>();
 
     const { system: systemSearchParam, metric: metricSearchParam } =
       settingsSearchParams;
@@ -137,13 +123,13 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               name="metric-config"
               label="Not Available"
               value="Not Available"
-              checked={metricEnabled}
+              checked={!metricEnabled}
               onChange={() => {
                 if (systemSearchParam && metricSearchParam) {
                   const updatedSetting = updateMetricEnabledStatus(
                     systemSearchParam,
                     metricSearchParam,
-                    true
+                    false
                   );
                   saveMetricSettings(updatedSetting);
                 }
@@ -155,43 +141,10 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               name="metric-config"
               label="Monthly"
               value="Monthly"
-              checked={!metricEnabled}
+              checked={metricEnabled && frequency === "MONTHLY"}
               onChange={() => {
-                if (systemSearchParam && metricSearchParam) {
-                  const updatedSetting = updateMetricEnabledStatus(
-                    systemSearchParam,
-                    metricSearchParam,
-                    false
-                  );
-                  saveMetricSettings(updatedSetting);
-                }
-              }}
-            />
-            <BinaryRadioButton
-              type="radio"
-              id="metric-config-annual"
-              name="metric-config"
-              label="Annual"
-              value="Annual"
-              checked={!metricEnabled}
-              onChange={() => {
-                console.log("hi");
-              }}
-            />
-          </RadioButtonGroupWrapper>
-
-          <Header>What is the starting month for this metric?</Header>
-
-          <RadioButtonGroupWrapper>
-            <BinaryRadioButton
-              type="radio"
-              id="metric-config-calendar-year"
-              name="metric-config"
-              label="Calendar Year (Jan)"
-              value="Calendar Year (Jan)"
-              checked={metricEnabled}
-              onChange={() => {
-                if (systemSearchParam && metricSearchParam) {
+                setFrequency("MONTHLY");
+                if (systemSearchParam && metricSearchParam && !metricEnabled) {
                   const updatedSetting = updateMetricEnabledStatus(
                     systemSearchParam,
                     metricSearchParam,
@@ -203,35 +156,86 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
             />
             <BinaryRadioButton
               type="radio"
-              id="metric-config-fiscal-year"
+              id="metric-config-annual"
               name="metric-config"
-              label="Fiscal Year (Jun)"
-              value="Fiscal Year (Jun)"
-              checked={!metricEnabled}
+              label="Annual"
+              value="Annual"
+              checked={metricEnabled && frequency === "ANNUAL"}
               onChange={() => {
-                if (systemSearchParam && metricSearchParam) {
+                setFrequency("ANNUAL");
+                if (systemSearchParam && metricSearchParam && !metricEnabled) {
                   const updatedSetting = updateMetricEnabledStatus(
                     systemSearchParam,
                     metricSearchParam,
-                    false
+                    true
                   );
                   saveMetricSettings(updatedSetting);
                 }
               }}
             />
-            <Dropdown>
-              <DropdownButton kind="borderless">[I] Agencies</DropdownButton>
-              <ExtendedDropdownMenu alignment="right">
-                <ExtendedDropdownMenuItem
-                  // key={agency.id}
-                  onClick={() => {}}
-                  // highlight={userStore.currentAgency?.id === agency.id}
-                >
-                  Hi
-                </ExtendedDropdownMenuItem>
-              </ExtendedDropdownMenu>
-            </Dropdown>
           </RadioButtonGroupWrapper>
+
+          {metricEnabled && frequency === "ANNUAL" && (
+            <>
+              <Header>What is the starting month for this metric?</Header>
+              <RadioButtonGroupWrapper>
+                <BinaryRadioButton
+                  type="radio"
+                  id="metric-config-calendar-year"
+                  name="metric-config-frequency"
+                  label="Calendar Year (Jan)"
+                  value="Calendar Year (Jan)"
+                  checked={
+                    metricEnabled && startingMonth === "JANUARY" && !customMonth
+                  }
+                  onChange={() => {
+                    setStartingMonth("JANUARY");
+                    setCustomMonth(undefined);
+                  }}
+                />
+                <BinaryRadioButton
+                  type="radio"
+                  id="metric-config-fiscal-year"
+                  name="metric-config-frequency"
+                  label="Fiscal Year (Jun)"
+                  value="Fiscal Year (Jun)"
+                  checked={
+                    metricEnabled && startingMonth === "JUNE" && !customMonth
+                  }
+                  onChange={() => {
+                    setStartingMonth("JUNE");
+                    setCustomMonth(undefined);
+                  }}
+                />
+                <Dropdown>
+                  <DropdownButton
+                    kind="borderless"
+                    checked={Boolean(
+                      customMonth &&
+                        customMonth !== "JUNE" &&
+                        customMonth !== "JANUARY"
+                    )}
+                  >
+                    {customMonth || `[I] Other...`}
+                  </DropdownButton>
+                  <ExtendedDropdownMenu alignment="right">
+                    {monthsByName.map((month) => (
+                      <ExtendedDropdownMenuItem
+                        // key={agency.id}
+                        onClick={() => {
+                          setStartingMonth(month);
+                          setCustomMonth(month);
+                        }}
+                        // highlight={userStore.currentAgency?.id === agency.id}
+                      >
+                        {month}
+                      </ExtendedDropdownMenuItem>
+                    ))}
+                  </ExtendedDropdownMenu>
+                </Dropdown>
+              </RadioButtonGroupWrapper>
+            </>
+          )}
         </MetricOnOffWrapper>
 
         {/* Breakdowns */}
