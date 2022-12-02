@@ -66,7 +66,7 @@ export const CalloutBox = styled.div`
   border-radius: 2px;
   border: 1px solid ${palette.solid.blue};
   box-shadow: 0px 2px 4px rgba(0, 115, 229, 0.25);
-  transition: box-shadow 0.3s ease;
+  transition: 0.2s ease;
 
   svg {
     position: absolute;
@@ -75,7 +75,7 @@ export const CalloutBox = styled.div`
 
   &:hover {
     cursor: pointer;
-    box-shadow: 0px 0px 0px rgba(0, 115, 229, 0.25);
+    background-color: ${palette.highlight.blue};
   }
 `;
 
