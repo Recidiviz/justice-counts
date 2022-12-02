@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -188,8 +189,8 @@ const OnboardingModal = styled.div<{
     if (position === "publishdata") {
       return `
         bottom: calc(100% - ${modalHeight}px - 113px);
-        left: calc(100% - 532px - ${SIDE_PANEL_WIDTH}px);
-        top: 113px;
+        left: calc(100% - 552px);
+        top: 64px;
         right: ${SIDE_PANEL_WIDTH}px;
       `;
     }
@@ -308,7 +309,7 @@ const OnboardingFadedContainer = styled.div<OnboardingFadedContainerProps>`
   background: ${palette.solid.white};
   opacity: 0.7;
   position: absolute;
-  top: 0;
+  top: ${HEADER_BAR_HEIGHT}px;
   ${({ position }) => {
     if (position === "left") {
       return `
