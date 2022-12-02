@@ -441,12 +441,10 @@ const OnboardingSessionView = ({
       html: (
         <>
           <p>
-            If you need to edit your name or email, click on your name and
-            access your Settings in the dropdown.
-          </p>
-          <p>
-            Admins can also use these settings to add new team members to
-            Publisher.
+            You can view and edit your agency’s Justice Counts metrics in the{" "}
+            <strong>Settings</strong> page, accessible from the menu bar at the
+            top of the screen. You can also change your display name and email
+            from this page.
           </p>
         </>
       ),
@@ -537,19 +535,19 @@ const OnboardingSessionView = ({
     },
     {
       order: 3,
-      title: "Publish your data",
+      title: "Review and Publish",
       html: (
         <>
           <p>
-            Whenever you’re ready, you can publish your data with this button.
-            Don’t worry – you’ll still have a chance to review all the data
-            before it goes live*, and you can still edit the data even after
-            it’s been published.
+            Whenever you’re ready, you can review and publish your data with
+            this button. Even after publishing, you can still edit the data by
+            clicking this button again, which will revert this Record back to
+            Draft mode.
           </p>
           <br />
           <p>
-            *<strong>NOTE</strong>: At this stage, data will just be marked as
-            published and will not be live just yet.
+            *<strong>NOTE</strong>: At this stage, data will only be marked as
+            published and will not be available for public access.
           </p>
         </>
       ),
