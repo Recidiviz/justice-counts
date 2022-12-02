@@ -29,14 +29,14 @@ const AgencyOverview = () => {
   const agencyId = Number(params.id);
   const { agencyDataStore } = useStore();
 
-  const fetchData = async () => {
-    try {
-      await agencyDataStore.fetchAgencyData(agencyId);
-    } catch (error) {
-      showToast("Error fetching data.", false, "red", 4000);
-    }
-  };
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await agencyDataStore.fetchAgencyData(agencyId);
+      } catch (error) {
+        showToast("Error fetching data.", false, "red", 4000);
+      }
+    };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

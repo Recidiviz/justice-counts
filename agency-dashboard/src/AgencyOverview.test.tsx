@@ -51,14 +51,16 @@ test("renders list of metrics", async () => {
       </MemoryRouter>
     </StoreProvider>
   );
-  const textElement1 = await screen.findByText(
+  const textElementClickOnAMetricToViewChart = await screen.findByText(
     /Click on a metric to view chart:/i
   );
-  expect(textElement1).toBeInTheDocument();
-  const textElement2 = await screen.findByText(/Total Arrests/i);
-  expect(textElement2).toBeInTheDocument();
-  const textElement3 = await screen.findByText(/Annual Budget/i);
-  expect(textElement3).toBeInTheDocument();
-  const textElement4 = await screen.findByText(/Calls for Service/i);
-  expect(textElement4).toBeInTheDocument();
+  expect(textElementClickOnAMetricToViewChart).toBeInTheDocument();
+  const textElementTotalArrests = await screen.findByText(/Total Arrests/i);
+  expect(textElementTotalArrests).toBeInTheDocument();
+  const textElementAnnualBudget = await screen.findByText(/Annual Budget/i);
+  expect(textElementAnnualBudget).toBeInTheDocument();
+  const textElementCallsForService = await screen.findByText(
+    /Calls for Service/i
+  );
+  expect(textElementCallsForService).toBeInTheDocument();
 });

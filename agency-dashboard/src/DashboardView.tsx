@@ -109,15 +109,14 @@ const DashboardView = () => {
   const query = new URLSearchParams(search);
   const metricKey = query.get("metric");
 
-  const fetchData = async () => {
-    try {
-      await agencyDataStore.fetchAgencyData(agencyId);
-    } catch (error) {
-      showToast("Error fetching data.", false, "red", 4000);
-    }
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await agencyDataStore.fetchAgencyData(agencyId);
+      } catch (error) {
+        showToast("Error fetching data.", false, "red", 4000);
+      }
+    };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -212,10 +211,12 @@ const DashboardView = () => {
           setCountOrPercentageView={setCountOrPercentageView}
           metricNames={metricNames}
           onMetricsSelect={(selectedMetricName) => {
-            const mKey =
+            const selectedMetricKey =
               agencyDataStore.metricDisplayNameToKey[selectedMetricName];
-            if (mKey) {
-              navigate(`/agency/${agencyId}/dashboard?metric=${mKey}`);
+            if (selectedMetricKey) {
+              navigate(
+                `/agency/${agencyId}/dashboard?metric=${selectedMetricKey}`
+              );
             }
           }}
           showBottomMetricInsights={!isDesktopWidth}
