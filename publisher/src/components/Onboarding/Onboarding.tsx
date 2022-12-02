@@ -189,8 +189,8 @@ const OnboardingModal = styled.div<{
     if (position === "publishdata") {
       return `
         bottom: calc(100% - ${modalHeight}px - 113px);
-        left: calc(100% - 552px);
-        top: 64px;
+        left: calc(100% - 532px - ${SIDE_PANEL_WIDTH}px);
+        top: 113px;
         right: ${SIDE_PANEL_WIDTH}px;
       `;
     }
