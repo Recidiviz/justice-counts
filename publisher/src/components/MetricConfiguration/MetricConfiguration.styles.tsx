@@ -619,7 +619,7 @@ export const DefinitionsDisplayContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1 1 55%;
-  padding: 48px 12px 50px 70px;
+  padding: 18px 12px 50px 70px;
   overflow-y: scroll;
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
