@@ -245,7 +245,8 @@ export const Metric = styled.div<{ inView: boolean }>`
     inView ? palette.highlight.lightblue1 : `none`};
 
   &:hover {
-    background: ${palette.highlight.grey1};
+    background: ${({ inView }) =>
+      inView ? palette.highlight.lightblue1 : palette.highlight.grey1};
     cursor: pointer;
   }
 
@@ -379,7 +380,8 @@ export const Dimension = styled.div<{ enabled?: boolean; inView?: boolean }>`
     inView ? palette.highlight.lightblue1 : `none`};
 
   &:hover {
-    background: ${palette.highlight.grey1};
+    background: ${({ inView }) =>
+      inView ? palette.highlight.lightblue1 : palette.highlight.grey1};
     cursor: pointer;
   }
 
