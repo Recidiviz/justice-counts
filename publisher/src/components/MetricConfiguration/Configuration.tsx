@@ -17,7 +17,7 @@
 
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { useStore } from "../../stores";
 import { monthsByName, removeSnakeCase } from "../../utils";
@@ -79,16 +79,15 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       saveMetricSettings,
     } = metricConfigStore;
 
-    const [frequency, setFrequency] = useState<string>();
-    const [startingMonth, setStartingMonth] = useState<string>();
-    const [customMonth, setCustomMonth] = useState<string>();
-
     const { system: systemSearchParam, metric: metricSearchParam } =
       settingsSearchParams;
+
     const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
+
     const activeDisaggregationKeys =
       disaggregations[systemMetricKey] &&
       Object.keys(disaggregations[systemMetricKey]);
+
     const activeDimensionKeys =
       activeDisaggregationKey &&
       dimensions[systemMetricKey]?.[activeDisaggregationKey]
@@ -96,6 +95,24 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
         : [];
 
     const metricEnabled = Boolean(metrics[systemMetricKey]?.enabled);
+    const frequency2 = metrics[systemMetricKey]?.frequency;
+    const customFrequency2 = metrics[systemMetricKey]?.customFrequency;
+    const startingMonth2 = metrics[systemMetricKey]?.startingMonth;
+
+    const [mockFrequency, setMockFrequency] = useState<{
+      frequency: string;
+      customFrequency: string;
+      startingMonth: number | null;
+    }>({
+      frequency: "MONTHLY",
+      customFrequency: "",
+      startingMonth: null,
+    });
+
+    const customOrDefaultFrequency = useMemo(
+      () => mockFrequency.customFrequency || mockFrequency.frequency,
+      [mockFrequency]
+    );
 
     useEffect(
       () => {
@@ -106,6 +123,8 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [systemMetricKey]
     );
+
+    useEffect(() => console.log(mockFrequency), [mockFrequency]);
 
     return (
       <MetricConfigurationContainer>
@@ -141,9 +160,13 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               name="metric-config"
               label="Monthly"
               value="Monthly"
-              checked={metricEnabled && frequency === "MONTHLY"}
+              checked={metricEnabled && customOrDefaultFrequency === "MONTHLY"}
               onChange={() => {
-                setFrequency("MONTHLY");
+                setMockFrequency((prev) => ({
+                  ...prev,
+                  customFrequency: "MONTHLY",
+                  startingMonth: null,
+                }));
                 if (systemSearchParam && metricSearchParam && !metricEnabled) {
                   const updatedSetting = updateMetricEnabledStatus(
                     systemSearchParam,
@@ -160,9 +183,12 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               name="metric-config"
               label="Annual"
               value="Annual"
-              checked={metricEnabled && frequency === "ANNUAL"}
+              checked={metricEnabled && customOrDefaultFrequency === "ANNUAL"}
               onChange={() => {
-                setFrequency("ANNUAL");
+                setMockFrequency((prev) => ({
+                  ...prev,
+                  customFrequency: "ANNUAL",
+                }));
                 if (systemSearchParam && metricSearchParam && !metricEnabled) {
                   const updatedSetting = updateMetricEnabledStatus(
                     systemSearchParam,
@@ -175,7 +201,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
             />
           </RadioButtonGroupWrapper>
 
-          {metricEnabled && frequency === "ANNUAL" && (
+          {metricEnabled && customOrDefaultFrequency === "ANNUAL" && (
             <>
               <Header>What is the starting month for this metric?</Header>
               <RadioButtonGroupWrapper>
@@ -185,12 +211,12 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   name="metric-config-frequency"
                   label="Calendar Year (Jan)"
                   value="Calendar Year (Jan)"
-                  checked={
-                    metricEnabled && startingMonth === "JANUARY" && !customMonth
-                  }
+                  checked={metricEnabled && mockFrequency.startingMonth === 0}
                   onChange={() => {
-                    setStartingMonth("JANUARY");
-                    setCustomMonth(undefined);
+                    setMockFrequency((prev) => ({
+                      ...prev,
+                      startingMonth: 0,
+                    }));
                   }}
                 />
                 <BinaryRadioButton
@@ -199,38 +225,50 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   name="metric-config-frequency"
                   label="Fiscal Year (Jun)"
                   value="Fiscal Year (Jun)"
-                  checked={
-                    metricEnabled && startingMonth === "JUNE" && !customMonth
-                  }
+                  checked={metricEnabled && mockFrequency.startingMonth === 5}
                   onChange={() => {
-                    setStartingMonth("JUNE");
-                    setCustomMonth(undefined);
+                    setMockFrequency((prev) => ({
+                      ...prev,
+                      startingMonth: 5,
+                    }));
                   }}
                 />
                 <Dropdown>
                   <DropdownButton
                     kind="borderless"
                     checked={Boolean(
-                      customMonth &&
-                        customMonth !== "JUNE" &&
-                        customMonth !== "JANUARY"
+                      mockFrequency.startingMonth !== null &&
+                        mockFrequency.startingMonth !== 0 &&
+                        mockFrequency.startingMonth !== 5
                     )}
                   >
-                    {customMonth || `[I] Other...`}
+                    {(mockFrequency.startingMonth !== null &&
+                      mockFrequency.startingMonth !== 0 &&
+                      mockFrequency.startingMonth !== 5 &&
+                      monthsByName[mockFrequency.startingMonth]) ||
+                      `[I] Other...`}
                   </DropdownButton>
                   <ExtendedDropdownMenu alignment="right">
-                    {monthsByName.map((month) => (
-                      <ExtendedDropdownMenuItem
-                        // key={agency.id}
-                        onClick={() => {
-                          setStartingMonth(month);
-                          setCustomMonth(month);
-                        }}
-                        // highlight={userStore.currentAgency?.id === agency.id}
-                      >
-                        {month}
-                      </ExtendedDropdownMenuItem>
-                    ))}
+                    {monthsByName
+                      .filter((month) => !["January", "June"].includes(month))
+                      .map((month) => (
+                        <ExtendedDropdownMenuItem
+                          key={month}
+                          onClick={() => {
+                            const monthNumber = monthsByName.indexOf(month);
+                            setMockFrequency((prev) => ({
+                              ...prev,
+                              startingMonth: monthNumber,
+                            }));
+                          }}
+                          highlight={
+                            monthsByName.indexOf(month) ===
+                            mockFrequency.startingMonth
+                          }
+                        >
+                          {month}
+                        </ExtendedDropdownMenuItem>
+                      ))}
                   </ExtendedDropdownMenu>
                 </Dropdown>
               </RadioButtonGroupWrapper>

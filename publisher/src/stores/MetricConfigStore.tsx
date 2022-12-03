@@ -53,6 +53,7 @@ class MetricConfigStore {
       description?: Metric["description"];
       frequency?: Metric["frequency"];
       customFrequency?: Metric["custom_frequency"];
+      startingMonth?: Metric["starting_month"];
     };
   };
 
@@ -238,6 +239,7 @@ class MetricConfigStore {
               description: metric.description,
               frequency: metric.frequency || "",
               customFrequency: metric.custom_frequency || "",
+              startingMonth: Number(metric.starting_month),
             }
           );
 
@@ -324,7 +326,7 @@ class MetricConfigStore {
     system: AgencySystems,
     metricKey: string,
     enabledStatus: boolean,
-    metadata?: { [key: string]: string }
+    metadata?: { [key: string]: string | number | null }
   ): MetricSettings => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
@@ -338,12 +340,15 @@ class MetricConfigStore {
 
     /** If provided, add metadata required for rendering */
     if (metadata) {
-      this.metrics[systemMetricKey].label = metadata.label;
-      this.metrics[systemMetricKey].description = metadata.description;
+      this.metrics[systemMetricKey].label = metadata.label as string;
+      this.metrics[systemMetricKey].description =
+        metadata.description as string;
       this.metrics[systemMetricKey].frequency =
         metadata.frequency as ReportFrequency;
       this.metrics[systemMetricKey].customFrequency =
         metadata.customFrequency as ReportFrequency;
+      this.metrics[systemMetricKey].startingMonth =
+        metadata.startingMonth as number;
     }
 
     /** Update value */
