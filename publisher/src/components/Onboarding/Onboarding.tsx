@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -308,7 +309,7 @@ const OnboardingFadedContainer = styled.div<OnboardingFadedContainerProps>`
   background: ${palette.solid.white};
   opacity: 0.7;
   position: absolute;
-  top: 0;
+  top: ${HEADER_BAR_HEIGHT}px;
   ${({ position }) => {
     if (position === "left") {
       return `

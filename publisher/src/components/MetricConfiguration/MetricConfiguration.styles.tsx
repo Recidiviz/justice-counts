@@ -245,7 +245,8 @@ export const Metric = styled.div<{ inView: boolean }>`
     inView ? palette.highlight.lightblue1 : `none`};
 
   &:hover {
-    background: ${palette.highlight.grey1};
+    background: ${({ inView }) =>
+      inView ? palette.highlight.lightblue1 : palette.highlight.grey1};
     cursor: pointer;
   }
 
@@ -379,7 +380,8 @@ export const Dimension = styled.div<{ enabled?: boolean; inView?: boolean }>`
     inView ? palette.highlight.lightblue1 : `none`};
 
   &:hover {
-    background: ${palette.highlight.grey1};
+    background: ${({ inView }) =>
+      inView ? palette.highlight.lightblue1 : palette.highlight.grey1};
     cursor: pointer;
   }
 
@@ -619,7 +621,7 @@ export const DefinitionsDisplayContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1 1 55%;
-  padding: 48px 12px 50px 70px;
+  padding: 18px 12px 50px 70px;
   overflow-y: scroll;
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {

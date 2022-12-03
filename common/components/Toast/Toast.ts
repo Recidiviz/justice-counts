@@ -78,7 +78,7 @@ export const showToast = (
   }
   toastElement.style.cssText = `
       width: auto;
-      height: ${HEADER_BAR_HEIGHT}px;
+      height: ${HEADER_BAR_HEIGHT - 1}px;
       display: flex;
       align-items: center;
       background: ${toastBackgroundColor};
