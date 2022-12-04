@@ -159,7 +159,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
     };
 
     return (
-      <DefinitionsDisplayContainer>
+      <DefinitionsDisplayContainer enabled={metrics[systemMetricKey]?.enabled}>
         <DefinitionsDisplay>
           <DefinitionsTitle>
             {activeMetricOrDimensionDisplayName}

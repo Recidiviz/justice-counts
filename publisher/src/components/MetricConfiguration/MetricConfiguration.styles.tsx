@@ -626,12 +626,26 @@ export const MetricConfigurationWrapper = styled.div`
   }
 `;
 
-export const DefinitionsDisplayContainer = styled.div`
+export const DefinitionsDisplayContainer = styled.div<{ enabled?: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1 1 55%;
   padding: 18px 12px 50px 70px;
   overflow-y: scroll;
+
+  ${({ enabled }) =>
+    !enabled &&
+    `
+      &:after {
+        content: "";
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        background: ${palette.solid.white};
+        opacity: 0.7;
+      }
+  `}
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
     border-top: 1px solid ${palette.highlight.grey3};
