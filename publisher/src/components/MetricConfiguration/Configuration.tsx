@@ -76,6 +76,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       updateMetricEnabledStatus,
       updateDisaggregationEnabledStatus,
       updateDimensionEnabledStatus,
+      updateMetricReportFrequency,
       saveMetricSettings,
     } = metricConfigStore;
 
@@ -95,29 +96,12 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
         : [];
 
     const metricEnabled = Boolean(metrics[systemMetricKey]?.enabled);
-    const frequency2 = metrics[systemMetricKey]?.frequency;
-    const customFrequency2 = metrics[systemMetricKey]?.customFrequency;
-    const startingMonth2 = metrics[systemMetricKey]?.startingMonth;
-
-    const [mockFrequency, setMockFrequency] = useState<{
-      frequency: string;
-      customFrequency: string;
-      startingMonth: number | null;
-    }>({
-      frequency: "MONTHLY",
-      customFrequency: "",
-      startingMonth: null,
-    });
-
-    const customOrDefaultFrequency = useMemo(
-      () => mockFrequency.customFrequency || mockFrequency.frequency,
-      [mockFrequency]
-    );
-
+    const frequency = metrics[systemMetricKey]?.frequency;
+    const customFrequency = metrics[systemMetricKey]?.customFrequency;
+    const startingMonth = metrics[systemMetricKey]?.startingMonth;
+    const customOrDefaultFrequency = customFrequency || frequency;
     const startingMonthNotJanuaryJune =
-      mockFrequency.startingMonth !== null &&
-      mockFrequency.startingMonth !== 0 &&
-      mockFrequency.startingMonth !== 5;
+      startingMonth !== null && startingMonth !== 0 && startingMonth !== 5;
 
     useEffect(
       () => {
@@ -128,8 +112,6 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [systemMetricKey]
     );
-
-    useEffect(() => console.log(mockFrequency), [mockFrequency]);
 
     return (
       <MetricConfigurationContainer>
@@ -167,12 +149,15 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               value="Monthly"
               checked={metricEnabled && customOrDefaultFrequency === "MONTHLY"}
               onChange={() => {
-                setMockFrequency((prev) => ({
-                  ...prev,
-                  customFrequency: "MONTHLY",
-                  startingMonth: null,
-                }));
-                if (systemSearchParam && metricSearchParam && !metricEnabled) {
+                if (systemSearchParam && metricSearchParam) {
+                  updateMetricReportFrequency(
+                    systemSearchParam,
+                    metricSearchParam,
+                    {
+                      customFrequency: "MONTHLY",
+                      startingMonth: null,
+                    }
+                  );
                   const updatedSetting = updateMetricEnabledStatus(
                     systemSearchParam,
                     metricSearchParam,
@@ -190,11 +175,15 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               value="Annual"
               checked={metricEnabled && customOrDefaultFrequency === "ANNUAL"}
               onChange={() => {
-                setMockFrequency((prev) => ({
-                  ...prev,
-                  customFrequency: "ANNUAL",
-                }));
-                if (systemSearchParam && metricSearchParam && !metricEnabled) {
+                if (systemSearchParam && metricSearchParam) {
+                  updateMetricReportFrequency(
+                    systemSearchParam,
+                    metricSearchParam,
+                    {
+                      customFrequency: "ANNUAL",
+                      startingMonth: null,
+                    }
+                  );
                   const updatedSetting = updateMetricEnabledStatus(
                     systemSearchParam,
                     metricSearchParam,
@@ -216,12 +205,15 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   name="metric-config-frequency"
                   label="Calendar Year (Jan)"
                   value="Calendar Year (Jan)"
-                  checked={metricEnabled && mockFrequency.startingMonth === 0}
+                  checked={metricEnabled && startingMonth === 0}
                   onChange={() => {
-                    setMockFrequency((prev) => ({
-                      ...prev,
-                      startingMonth: 0,
-                    }));
+                    if (systemSearchParam && metricSearchParam) {
+                      updateMetricReportFrequency(
+                        systemSearchParam,
+                        metricSearchParam,
+                        { startingMonth: 0 }
+                      );
+                    }
                   }}
                 />
                 <BinaryRadioButton
@@ -230,12 +222,15 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   name="metric-config-frequency"
                   label="Fiscal Year (Jun)"
                   value="Fiscal Year (Jun)"
-                  checked={metricEnabled && mockFrequency.startingMonth === 5}
+                  checked={metricEnabled && startingMonth === 5}
                   onChange={() => {
-                    setMockFrequency((prev) => ({
-                      ...prev,
-                      startingMonth: 5,
-                    }));
+                    if (systemSearchParam && metricSearchParam) {
+                      updateMetricReportFrequency(
+                        systemSearchParam,
+                        metricSearchParam,
+                        { startingMonth: 5 }
+                      );
+                    }
                   }}
                 />
                 <Dropdown>
@@ -244,7 +239,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     checked={startingMonthNotJanuaryJune}
                   >
                     {(startingMonthNotJanuaryJune &&
-                      monthsByName[mockFrequency.startingMonth as number]) ||
+                      monthsByName[startingMonth as number]) ||
                       `[I] Other...`}
                   </DropdownButton>
                   <ExtendedDropdownMenu alignment="right">
@@ -255,14 +250,16 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                           key={month}
                           onClick={() => {
                             const monthNumber = monthsByName.indexOf(month);
-                            setMockFrequency((prev) => ({
-                              ...prev,
-                              startingMonth: monthNumber,
-                            }));
+                            if (systemSearchParam && metricSearchParam) {
+                              updateMetricReportFrequency(
+                                systemSearchParam,
+                                metricSearchParam,
+                                { startingMonth: monthNumber }
+                              );
+                            }
                           }}
                           highlight={
-                            monthsByName.indexOf(month) ===
-                            mockFrequency.startingMonth
+                            monthsByName.indexOf(month) === startingMonth
                           }
                         >
                           {month}
