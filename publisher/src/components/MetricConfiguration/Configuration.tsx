@@ -114,6 +114,11 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       [mockFrequency]
     );
 
+    const startingMonthNotJanuaryJune =
+      mockFrequency.startingMonth !== null &&
+      mockFrequency.startingMonth !== 0 &&
+      mockFrequency.startingMonth !== 5;
+
     useEffect(
       () => {
         if (activeDisaggregationKeys)
@@ -236,16 +241,10 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                 <Dropdown>
                   <DropdownButton
                     kind="borderless"
-                    checked={Boolean(
-                      mockFrequency.startingMonth !== null &&
-                        mockFrequency.startingMonth !== 0 &&
-                        mockFrequency.startingMonth !== 5
-                    )}
+                    checked={startingMonthNotJanuaryJune}
                   >
-                    {(mockFrequency.startingMonth !== null &&
-                      mockFrequency.startingMonth !== 0 &&
-                      mockFrequency.startingMonth !== 5 &&
-                      monthsByName[mockFrequency.startingMonth]) ||
+                    {(startingMonthNotJanuaryJune &&
+                      monthsByName[mockFrequency.startingMonth as number]) ||
                       `[I] Other...`}
                   </DropdownButton>
                   <ExtendedDropdownMenu alignment="right">
