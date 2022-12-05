@@ -347,8 +347,9 @@ class MetricConfigStore {
         metadata.frequency as ReportFrequency;
       this.metrics[systemMetricKey].customFrequency =
         metadata.customFrequency as ReportFrequency;
-      this.metrics[systemMetricKey].startingMonth =
-        metadata.startingMonth as number;
+      this.metrics[systemMetricKey].startingMonth = metadata.startingMonth as
+        | number
+        | null;
     }
 
     /** Update value */
@@ -395,6 +396,7 @@ class MetricConfigStore {
       this.updateMetricEnabledStatus(system, metricKey, true);
     }
 
+    /** Return an object in the desired backend data structure for saving purposes */
     return {
       key: metricKey,
       enabled: reenableMetric || this.metrics[systemMetricKey].enabled,
