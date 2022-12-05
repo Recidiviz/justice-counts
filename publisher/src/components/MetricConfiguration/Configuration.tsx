@@ -173,11 +173,6 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     frequencyUpdate,
                     !metricEnabled
                   );
-                  // const updatedSetting = updateMetricEnabledStatus(
-                  //   systemSearchParam,
-                  //   metricSearchParam,
-                  //   true
-                  // );
                   saveMetricSettings(updatedSetting);
                 }
               }}
@@ -205,11 +200,6 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     frequencyUpdate,
                     !metricEnabled
                   );
-                  // const updatedSetting = updateMetricEnabledStatus(
-                  //   systemSearchParam,
-                  //   metricSearchParam,
-                  //   true
-                  // );
                   saveMetricSettings(updatedSetting);
                 }
               }}
