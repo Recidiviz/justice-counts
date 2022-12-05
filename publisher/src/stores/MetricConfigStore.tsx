@@ -391,6 +391,9 @@ class MetricConfigStore {
     if (update.startingMonth !== undefined) {
       this.metrics[systemMetricKey].startingMonth = update.startingMonth;
     }
+    if (reenableMetric) {
+      this.updateMetricEnabledStatus(system, metricKey, true);
+    }
 
     return {
       key: metricKey,
