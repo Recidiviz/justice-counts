@@ -102,17 +102,17 @@ class ReportStore {
           allReports.forEach((report: ReportOverview) => {
             this.reportOverviews[report.id] = report;
           });
-          this.loadingOverview = false;
         });
       } else {
         const error = await response.json();
         throw new Error(error.description);
       }
     } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    } finally {
       runInAction(() => {
         this.loadingOverview = false;
       });
-      if (error instanceof Error) return new Error(error.message);
     }
   }
 
@@ -151,7 +151,7 @@ class ReportStore {
 
   async createReport(
     body: Record<string, unknown>,
-    agencyId: string
+    agencyId: number
   ): Promise<Response | Error | undefined> {
     try {
       const response = (await this.api.request({
