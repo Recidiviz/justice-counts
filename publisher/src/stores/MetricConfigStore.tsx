@@ -237,9 +237,9 @@ class MetricConfigStore {
             {
               label: metric.label,
               description: metric.description,
-              frequency: metric.frequency || "",
+              frequency: metric.frequency as ReportFrequency,
               customFrequency: metric.custom_frequency || "",
-              startingMonth: metric.starting_month,
+              startingMonth: metric.starting_month as number | null,
             }
           );
 
@@ -326,7 +326,7 @@ class MetricConfigStore {
     system: AgencySystems,
     metricKey: string,
     enabledStatus: boolean,
-    metadata?: { [key: string]: string | number | null | undefined }
+    metadata?: { [key: string]: string | number | null }
   ): MetricSettings => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
