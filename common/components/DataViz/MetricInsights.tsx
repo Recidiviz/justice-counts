@@ -21,6 +21,7 @@ import { Datapoint } from "../../types";
 import {
   MetricInsight,
   MetricInsightsContainer,
+  MetricInsightsInnerContainer,
 } from "./DatapointsView.styles";
 import {
   getAverageTotalValue,
@@ -37,9 +38,11 @@ export const MetricInsights: React.FC<{
   const mostRecentValue = getLatestDateFormatted(datapoints, isAnnual);
   return (
     <MetricInsightsContainer>
-      <MetricInsight title="Year-to-Year" value={percentChange} />
-      <MetricInsight title="Avg. Total Value" value={avgValue} />
-      <MetricInsight title="Most Recent" value={mostRecentValue} />
+      <MetricInsightsInnerContainer>
+        <MetricInsight title="Year-to-Year" value={percentChange} />
+        <MetricInsight title="Avg. Total Value" value={avgValue} />
+        <MetricInsight title="Most Recent" value={mostRecentValue} />
+      </MetricInsightsInnerContainer>
     </MetricInsightsContainer>
   );
 };

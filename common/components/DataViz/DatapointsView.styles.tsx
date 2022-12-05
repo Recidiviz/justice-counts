@@ -235,6 +235,12 @@ export const DatapointsViewControlsDropdown: React.FC<
 
 export const MetricInsightsContainer = styled.div`
   display: flex;
+  flex-flow: column wrap;
+  overflow: hidden;
+`;
+
+export const MetricInsightsInnerContainer = styled.div`
+  display: flex;
   flex-direction: row;
 
   @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {

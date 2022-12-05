@@ -29,8 +29,8 @@ const leftAutoscroll = (moveRange: number) => keyframes`
 
 export const MetricTitleWrapper = styled.div`
   display: flex;
-  width: 700px;
-  min-width: 700px;
+  flex-shrink: 0;
+  margin-right: 16px;
   align-items: center;
   white-space: nowrap;
   overflow: hidden;
