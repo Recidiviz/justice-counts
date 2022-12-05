@@ -206,7 +206,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
             />
           </RadioButtonGroupWrapper>
 
-          {/** Starting Month */}
+          {/** Select Starting Month */}
           {metricEnabled && customOrDefaultFrequency === "ANNUAL" && (
             <>
               <Header>What is the starting month for this metric?</Header>
