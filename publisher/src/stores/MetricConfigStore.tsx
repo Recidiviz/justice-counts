@@ -52,8 +52,8 @@ class MetricConfigStore {
       label?: string;
       description?: Metric["description"];
       frequency?: Metric["frequency"];
-      customFrequency?: Metric["custom_frequency"];
-      startingMonth?: Metric["starting_month"];
+      customFrequency?: Metric["custom_frequency"] | string;
+      startingMonth?: Metric["starting_month"] | null;
     };
   };
 
@@ -161,7 +161,7 @@ class MetricConfigStore {
             label?: string;
             description?: Metric["description"];
             frequency?: Metric["frequency"];
-            customFrequency?: Metric["custom_frequency"];
+            customFrequency?: Metric["custom_frequency"] | string;
           };
         }[]
       );
@@ -366,9 +366,10 @@ class MetricConfigStore {
     metricKey: string,
     update: {
       frequency?: ReportFrequency;
-      customFrequency?: ReportFrequency;
+      customFrequency?: ReportFrequency | string;
       startingMonth?: number | null;
-    }
+    },
+    reenableMetric?: boolean
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
@@ -384,12 +385,20 @@ class MetricConfigStore {
     if (update.frequency) {
       this.metrics[systemMetricKey].frequency = update.frequency;
     }
-    if (update.customFrequency) {
+    if (update.customFrequency !== undefined) {
       this.metrics[systemMetricKey].customFrequency = update.customFrequency;
     }
-    if (update.startingMonth !== null) {
+    if (update.startingMonth !== undefined) {
       this.metrics[systemMetricKey].startingMonth = update.startingMonth;
     }
+
+    return {
+      key: metricKey,
+      enabled: reenableMetric || this.metrics[systemMetricKey].enabled,
+      frequency: update.frequency,
+      custom_frequency: update.customFrequency,
+      startingMonth: update.startingMonth,
+    };
   };
 
   updateMetricDefinitionSetting = (

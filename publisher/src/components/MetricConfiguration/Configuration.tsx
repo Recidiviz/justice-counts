@@ -17,7 +17,7 @@
 
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect } from "react";
 
 import { useStore } from "../../stores";
 import { monthsByName, removeSnakeCase } from "../../utils";
@@ -103,6 +103,12 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     const startingMonthNotJanuaryJune =
       startingMonth !== null && startingMonth !== 0 && startingMonth !== 5;
 
+    console.table({
+      frequency,
+      customFrequency,
+      startingMonth,
+      customOrDefaultFrequency,
+    });
     useEffect(
       () => {
         if (activeDisaggregationKeys)
@@ -115,7 +121,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
 
     return (
       <MetricConfigurationContainer>
-        {/* Metric (Enable/Disable) */}
+        {/* Metric (Enable/Disable) & Frequency */}
         <MetricOnOffWrapper>
           <Header>
             Are you currently able to {REPORT_VERB_LOWERCASE} any part of this
@@ -150,19 +156,28 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               checked={metricEnabled && customOrDefaultFrequency === "MONTHLY"}
               onChange={() => {
                 if (systemSearchParam && metricSearchParam) {
-                  updateMetricReportFrequency(
-                    systemSearchParam,
-                    metricSearchParam,
+                  const frequencyUpdate =
+                    // frequency === "MONTHLY"
+                    //   ? {
+                    //       customFrequency: "",
+                    //       startingMonth: null,
+                    //     }
+                    //   :
                     {
                       customFrequency: "MONTHLY",
                       startingMonth: null,
-                    }
-                  );
-                  const updatedSetting = updateMetricEnabledStatus(
+                    };
+                  const updatedSetting = updateMetricReportFrequency(
                     systemSearchParam,
                     metricSearchParam,
-                    true
+                    frequencyUpdate,
+                    !metricEnabled
                   );
+                  // const updatedSetting = updateMetricEnabledStatus(
+                  //   systemSearchParam,
+                  //   metricSearchParam,
+                  //   true
+                  // );
                   saveMetricSettings(updatedSetting);
                 }
               }}
@@ -176,25 +191,32 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               checked={metricEnabled && customOrDefaultFrequency === "ANNUAL"}
               onChange={() => {
                 if (systemSearchParam && metricSearchParam) {
-                  updateMetricReportFrequency(
-                    systemSearchParam,
-                    metricSearchParam,
+                  const frequencyUpdate =
+                    // frequency === "ANNUAL"
+                    //   ? { customFrequency: "", startingMonth: null }
+                    //   :
                     {
                       customFrequency: "ANNUAL",
                       startingMonth: null,
-                    }
-                  );
-                  const updatedSetting = updateMetricEnabledStatus(
+                    };
+                  const updatedSetting = updateMetricReportFrequency(
                     systemSearchParam,
                     metricSearchParam,
-                    true
+                    frequencyUpdate,
+                    !metricEnabled
                   );
+                  // const updatedSetting = updateMetricEnabledStatus(
+                  //   systemSearchParam,
+                  //   metricSearchParam,
+                  //   true
+                  // );
                   saveMetricSettings(updatedSetting);
                 }
               }}
             />
           </RadioButtonGroupWrapper>
 
+          {/** Starting Month */}
           {metricEnabled && customOrDefaultFrequency === "ANNUAL" && (
             <>
               <Header>What is the starting month for this metric?</Header>
@@ -208,11 +230,12 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   checked={metricEnabled && startingMonth === 0}
                   onChange={() => {
                     if (systemSearchParam && metricSearchParam) {
-                      updateMetricReportFrequency(
+                      const updatedSetting = updateMetricReportFrequency(
                         systemSearchParam,
                         metricSearchParam,
                         { startingMonth: 0 }
                       );
+                      saveMetricSettings(updatedSetting);
                     }
                   }}
                 />
@@ -225,11 +248,12 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   checked={metricEnabled && startingMonth === 5}
                   onChange={() => {
                     if (systemSearchParam && metricSearchParam) {
-                      updateMetricReportFrequency(
+                      const updatedSetting = updateMetricReportFrequency(
                         systemSearchParam,
                         metricSearchParam,
                         { startingMonth: 5 }
                       );
+                      saveMetricSettings(updatedSetting);
                     }
                   }}
                 />
@@ -251,11 +275,13 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                           onClick={() => {
                             const monthNumber = monthsByName.indexOf(month);
                             if (systemSearchParam && metricSearchParam) {
-                              updateMetricReportFrequency(
-                                systemSearchParam,
-                                metricSearchParam,
-                                { startingMonth: monthNumber }
-                              );
+                              const updatedSetting =
+                                updateMetricReportFrequency(
+                                  systemSearchParam,
+                                  metricSearchParam,
+                                  { startingMonth: monthNumber }
+                                );
+                              saveMetricSettings(updatedSetting);
                             }
                           }}
                           highlight={
