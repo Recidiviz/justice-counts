@@ -101,6 +101,7 @@ export const ExtendedDropdownToggle = styled(DropdownToggle)<{
 export const ExtendedDropdownMenu = styled(DropdownMenu)`
   max-height: 50vh;
   overflow-y: scroll;
+  z-index: 10;
 `;
 
 export const ExtendedDropdownMenuItem = styled(DropdownMenuItem)<{

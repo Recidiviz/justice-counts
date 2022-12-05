@@ -400,7 +400,7 @@ class MetricConfigStore {
       enabled: reenableMetric || this.metrics[systemMetricKey].enabled,
       frequency: update.frequency,
       custom_frequency: update.customFrequency,
-      startingMonth: update.startingMonth,
+      starting_month: update.startingMonth,
     };
   };
 
