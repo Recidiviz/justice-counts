@@ -632,6 +632,7 @@ export const DefinitionsDisplayContainer = styled.div<{ enabled?: boolean }>`
   flex: 1 1 55%;
   padding: 18px 12px 50px 70px;
   overflow-y: scroll;
+  position: relative;
 
   ${({ enabled }) =>
     !enabled &&
