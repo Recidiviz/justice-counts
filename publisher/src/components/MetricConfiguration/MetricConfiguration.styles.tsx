@@ -284,6 +284,7 @@ export const MetricDescription = styled.div`
 `;
 
 export const MetricDetailsDisplay = styled.div`
+  height: 100%;
   width: 100%;
   overflow-y: scroll;
   padding: 24px 12px 50px 0;
@@ -478,9 +479,24 @@ export const MetricConfigurationContainer = styled.div`
   display: block;
 `;
 
-export const MetricContextContainer = styled.div`
+export const MetricContextContainer = styled.div<{ enabled?: boolean }>`
   display: block;
   border-top: 1px solid ${palette.highlight.grey3};
+  position: relative;
+
+  ${({ enabled }) =>
+    !enabled &&
+    `
+      &:after {
+        content: "";
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        background: ${palette.solid.white};
+        opacity: 0.7;
+      }
+  `}
 `;
 
 export const MetricContextHeader = styled.div`
@@ -626,12 +642,24 @@ export const MetricConfigurationWrapper = styled.div`
   }
 `;
 
-export const DefinitionsDisplayContainer = styled.div<{ enabled?: boolean }>`
+export const DefinitionsDisplayContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1 1 55%;
   padding: 18px 12px 50px 70px;
   overflow-y: scroll;
+  position: relative;
+
+  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
+    border-top: 1px solid ${palette.highlight.grey3};
+    padding: 30px 0 50px 0;
+    overflow-y: unset;
+    margin-right: 12px;
+  }
+`;
+
+export const DefinitionsDisplay = styled.div<{ enabled?: boolean }>`
+  width: 100%;
   position: relative;
 
   ${({ enabled }) =>
@@ -647,17 +675,6 @@ export const DefinitionsDisplayContainer = styled.div<{ enabled?: boolean }>`
         opacity: 0.7;
       }
   `}
-
-  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
-    border-top: 1px solid ${palette.highlight.grey3};
-    padding: 30px 0 50px 0;
-    overflow-y: unset;
-    margin-right: 12px;
-  }
-`;
-
-export const DefinitionsDisplay = styled.div`
-  width: 100%;
 `;
 
 export const DefinitionsTitle = styled.div`

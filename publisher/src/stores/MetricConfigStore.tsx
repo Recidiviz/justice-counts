@@ -725,7 +725,7 @@ class MetricConfigStore {
       metricKey
     );
     const raceEthnicitiesDimensions =
-      this.dimensions[systemMetricKey][RACE_ETHNICITY_DISAGGREGATION_KEY];
+      this.dimensions[systemMetricKey]?.[RACE_ETHNICITY_DISAGGREGATION_KEY];
     const dimensions =
       raceEthnicitiesDimensions &&
       (Object.values(raceEthnicitiesDimensions) as UpdatedDimension[]);
@@ -785,8 +785,9 @@ class MetricConfigStore {
         )
       );
       const disaggregationIsEnabled =
-        this.disaggregations[systemMetricKey][RACE_ETHNICITY_DISAGGREGATION_KEY]
-          .enabled;
+        this.disaggregations[systemMetricKey]?.[
+          RACE_ETHNICITY_DISAGGREGATION_KEY
+        ].enabled;
 
       /** If the Race is disabled, keep it disabled */
       if (!raceIsEnabled && disaggregationIsEnabled) return;
@@ -809,7 +810,7 @@ class MetricConfigStore {
     });
 
     const raceEthnicitiesDimensions =
-      this.dimensions[systemMetricKey][RACE_ETHNICITY_DISAGGREGATION_KEY];
+      this.dimensions[systemMetricKey]?.[RACE_ETHNICITY_DISAGGREGATION_KEY];
     const dimensions =
       raceEthnicitiesDimensions &&
       (Object.values(raceEthnicitiesDimensions) as UpdatedDimension[]);
@@ -861,7 +862,7 @@ class MetricConfigStore {
       metricKey
     );
     const raceEthnicitiesDimensions =
-      this.dimensions[systemMetricKey][RACE_ETHNICITY_DISAGGREGATION_KEY];
+      this.dimensions[systemMetricKey]?.[RACE_ETHNICITY_DISAGGREGATION_KEY];
     const dimensions =
       raceEthnicitiesDimensions &&
       (Object.values(raceEthnicitiesDimensions) as UpdatedDimension[]);
