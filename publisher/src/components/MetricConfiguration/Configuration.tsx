@@ -101,14 +101,14 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     const startingMonth = metrics[systemMetricKey]?.startingMonth;
     const customOrDefaultFrequency = customFrequency || frequency;
     const startingMonthNotJanuaryJune =
-      startingMonth !== null && startingMonth !== 0 && startingMonth !== 5;
+      startingMonth !== null && startingMonth !== 1 && startingMonth !== 6;
 
-    console.table({
-      frequency,
-      customFrequency,
-      startingMonth,
-      customOrDefaultFrequency,
-    });
+    // console.table({
+    //   frequency,
+    //   customFrequency,
+    //   startingMonth,
+    //   customOrDefaultFrequency,
+    // });
     useEffect(
       () => {
         if (activeDisaggregationKeys)
@@ -192,7 +192,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     //   :
                     {
                       customFrequency: "ANNUAL",
-                      startingMonth: null,
+                      startingMonth: 1,
                     };
                   const updatedSetting = updateMetricReportFrequency(
                     systemSearchParam,
@@ -217,13 +217,13 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   name="metric-config-frequency"
                   label="Calendar Year (Jan)"
                   value="Calendar Year (Jan)"
-                  checked={metricEnabled && startingMonth === 0}
+                  checked={metricEnabled && startingMonth === 1}
                   onChange={() => {
                     if (systemSearchParam && metricSearchParam) {
                       const updatedSetting = updateMetricReportFrequency(
                         systemSearchParam,
                         metricSearchParam,
-                        { startingMonth: 0 }
+                        { startingMonth: 1 }
                       );
                       saveMetricSettings(updatedSetting);
                     }
@@ -235,13 +235,13 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   name="metric-config-frequency"
                   label="Fiscal Year (Jun)"
                   value="Fiscal Year (Jun)"
-                  checked={metricEnabled && startingMonth === 5}
+                  checked={metricEnabled && startingMonth === 6}
                   onChange={() => {
                     if (systemSearchParam && metricSearchParam) {
                       const updatedSetting = updateMetricReportFrequency(
                         systemSearchParam,
                         metricSearchParam,
-                        { startingMonth: 5 }
+                        { startingMonth: 6 }
                       );
                       saveMetricSettings(updatedSetting);
                     }
@@ -253,34 +253,35 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     checked={startingMonthNotJanuaryJune}
                   >
                     {(startingMonthNotJanuaryJune &&
-                      monthsByName[startingMonth as number]) ||
-                      `[I] Other...`}
+                      startingMonth &&
+                      monthsByName[startingMonth - 1]) ||
+                      `[Icon] Other...`}
                   </DropdownButton>
                   <ExtendedDropdownMenu alignment="right">
                     {monthsByName
                       .filter((month) => !["January", "June"].includes(month))
-                      .map((month) => (
-                        <ExtendedDropdownMenuItem
-                          key={month}
-                          onClick={() => {
-                            const monthNumber = monthsByName.indexOf(month);
-                            if (systemSearchParam && metricSearchParam) {
-                              const updatedSetting =
-                                updateMetricReportFrequency(
-                                  systemSearchParam,
-                                  metricSearchParam,
-                                  { startingMonth: monthNumber }
-                                );
-                              saveMetricSettings(updatedSetting);
-                            }
-                          }}
-                          highlight={
-                            monthsByName.indexOf(month) === startingMonth
-                          }
-                        >
-                          {month}
-                        </ExtendedDropdownMenuItem>
-                      ))}
+                      .map((month) => {
+                        const monthNumber = monthsByName.indexOf(month) + 1;
+                        return (
+                          <ExtendedDropdownMenuItem
+                            key={month}
+                            onClick={() => {
+                              if (systemSearchParam && metricSearchParam) {
+                                const updatedSetting =
+                                  updateMetricReportFrequency(
+                                    systemSearchParam,
+                                    metricSearchParam,
+                                    { startingMonth: monthNumber }
+                                  );
+                                saveMetricSettings(updatedSetting);
+                              }
+                            }}
+                            highlight={monthNumber === startingMonth}
+                          >
+                            {month}
+                          </ExtendedDropdownMenuItem>
+                        );
+                      })}
                   </ExtendedDropdownMenu>
                 </Dropdown>
               </RadioButtonGroupWrapper>
