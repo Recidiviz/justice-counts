@@ -277,7 +277,8 @@ export const UploadedFiles: React.FC = observer(() => {
   };
 
   const fetchListOfUploadedFiles = async () => {
-    const response = (await reportStore.getUploadedFilesList(agencyId)) as
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const response = (await reportStore.getUploadedFilesList(agencyId!)) as
       | Response
       | Error;
 

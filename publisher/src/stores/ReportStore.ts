@@ -89,36 +89,24 @@ class ReportStore {
     });
   }
 
-  async getReportOverviews(
-    agencyId: string | undefined
-  ): Promise<void | Error> {
+  async getReportOverviews(agencyId: string): Promise<void | Error> {
     try {
-      const currentAgency = this.userStore.getAgency(agencyId);
-      if (currentAgency === undefined) {
-        // If user is not attached to an agency,
-        // no need to bother trying to load reports.
+      const response = (await this.api.request({
+        path: `/api/agencies/${agencyId}/reports`,
+        method: "GET",
+      })) as Response;
+      if (response.status === 200) {
+        const allReports = await response.json();
+
         runInAction(() => {
+          allReports.forEach((report: ReportOverview) => {
+            this.reportOverviews[report.id] = report;
+          });
           this.loadingOverview = false;
         });
-      }
-      if (currentAgency !== undefined) {
-        const response = (await this.api.request({
-          path: `/api/agencies/${currentAgency.id}/reports`,
-          method: "GET",
-        })) as Response;
-        if (response.status === 200) {
-          const allReports = await response.json();
-
-          runInAction(() => {
-            allReports.forEach((report: ReportOverview) => {
-              this.reportOverviews[report.id] = report;
-            });
-            this.loadingOverview = false;
-          });
-        } else {
-          const error = await response.json();
-          throw new Error(error.description);
-        }
+      } else {
+        const error = await response.json();
+        throw new Error(error.description);
       }
     } catch (error) {
       runInAction(() => {
@@ -163,21 +151,13 @@ class ReportStore {
 
   async createReport(
     body: Record<string, unknown>,
-    agencyId: string | undefined
+    agencyId: string
   ): Promise<Response | Error | undefined> {
     try {
-      const currentAgency = this.userStore.getAgency(agencyId);
-
-      if (currentAgency === undefined) {
-        throw new Error(
-          "Either invalid user/agency information or no user or agency information initialized."
-        );
-      }
-
       const response = (await this.api.request({
         path: "/api/reports",
         method: "POST",
-        body: { agency_id: currentAgency.id, ...body },
+        body: { agency_id: agencyId, ...body },
       })) as Response;
 
       return response;
@@ -244,18 +224,10 @@ class ReportStore {
   }
 
   initializeReportSettings = async (
-    agencyId: string | undefined
+    agencyId: string
   ): Promise<{ [system: string]: Metric[] } | Error> => {
-    const currentAgency = this.userStore.getAgency(agencyId);
-
-    if (currentAgency === undefined) {
-      throw new Error(
-        "Either invalid user/agency information or no user or agency information initialized."
-      );
-    }
-
     const response = (await this.api.request({
-      path: `/api/agencies/${currentAgency.id}/metrics`,
+      path: `/api/agencies/${agencyId}/metrics`,
       method: "GET",
     })) as Response;
 
@@ -292,19 +264,11 @@ class ReportStore {
 
   async updateReportSettings(
     updatedMetricSettings: MetricSettings[],
-    agencyId: string | undefined
+    agencyId: string
   ): Promise<Response | Error | undefined> {
     try {
-      const currentAgency = this.userStore.getAgency(agencyId);
-
-      if (currentAgency === undefined) {
-        throw new Error(
-          "Either invalid user/agency information or no user or agency information initialized."
-        );
-      }
-
       const response = (await this.api.request({
-        path: `/api/agencies/${currentAgency.id}/metrics`,
+        path: `/api/agencies/${agencyId}/metrics`,
         body: { metrics: updatedMetricSettings },
         method: "PUT",
       })) as Response;
@@ -322,18 +286,10 @@ class ReportStore {
   }
 
   async getUploadedFilesList(
-    agencyId: string | undefined
+    agencyId: string
   ): Promise<Response | Error | undefined> {
-    const currentAgency = this.userStore.getAgency(agencyId);
-
-    if (currentAgency === undefined) {
-      return new Error(
-        "Either invalid user/agency information or no user or agency information initialized."
-      );
-    }
-
     const response = (await this.api.request({
-      path: `/api/agencies/${currentAgency.id}/spreadsheets`,
+      path: `/api/agencies/${agencyId}/spreadsheets`,
       method: "GET",
     })) as Response;
 

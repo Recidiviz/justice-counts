@@ -130,7 +130,8 @@ const Reports: React.FC = () => {
   useEffect(() => {
     const initialize = async () => {
       reportStore.resetState();
-      const result = await reportStore.getReportOverviews(agencyId);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const result = await reportStore.getReportOverviews(agencyId!);
       if (result instanceof Error) {
         setLoadingError(result.message);
       }

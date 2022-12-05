@@ -139,7 +139,8 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
             key: metricSearchParam as string,
             settings: defaultSettings,
           };
-          return saveMetricSettings(updatedSetting, agencyId);
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          return saveMetricSettings(updatedSetting, agencyId!);
         }
 
         const updatedSetting = {
@@ -156,7 +157,8 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
             },
           ],
         };
-        saveMetricSettings(updatedSetting, agencyId);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        saveMetricSettings(updatedSetting, agencyId!);
       }
     };
 
@@ -238,7 +240,8 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                                       );
                                     return saveMetricSettings(
                                       updatedSetting,
-                                      agencyId
+                                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                                      agencyId!
                                     );
                                   }
 
@@ -251,7 +254,8 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                                       settingKey,
                                       option
                                     );
-                                  saveMetricSettings(updatedSetting, agencyId);
+                                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                                  saveMetricSettings(updatedSetting, agencyId!);
                                 }
                               }}
                             >

@@ -99,10 +99,11 @@ export const NoAgencies = () => {
         </LogoBlock>
         <TitleBlock>No agency has been connected to this account.</TitleBlock>
         <InfoBlock>
-          Please reach out to{" "}
-          <SupportLink href="mailto:humphrey@recidiviz.org?subject=Account has no agencies">
-            Justice Counts Support.
-          </SupportLink>
+          Please email the Justice Counts team at{" "}
+          <SupportLink href="mailto:justice-counts-support@csg.org?subject=Account has no agencies">
+            justice-counts-support@csg.org
+          </SupportLink>{" "}
+          for support.
         </InfoBlock>
       </Content>
     </Wrapper>

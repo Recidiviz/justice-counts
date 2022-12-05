@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { Badge } from "@justice-counts/common/components/Badge";
+import { showToast } from "@justice-counts/common/components/Toast";
 import { AgencySystems, ReportFrequency } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -65,7 +66,8 @@ export const MetricConfiguration: React.FC = observer(() => {
     useState<string>();
 
   const initializeMetricConfiguration = async () => {
-    const response = await initializeMetricConfigStoreValues(agencyId);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const response = await initializeMetricConfigStoreValues(agencyId!);
     if (response instanceof Error) {
       return setLoadingErrorMessage(response.message);
     }
@@ -82,6 +84,12 @@ export const MetricConfiguration: React.FC = observer(() => {
       if (!isUrlSystemParamInCurrentAgencySystems) {
         setSettingsSearchParams({ system: currentAgency?.systems[0] });
         setIsLoading(false);
+        showToast(
+          `System "${systemSearchParam}" does not exist in "${currentAgency?.name}" agency.`,
+          false,
+          "red",
+          5000
+        );
         return;
       }
     }
@@ -95,6 +103,12 @@ export const MetricConfiguration: React.FC = observer(() => {
       if (!isUrlMetricParamInCurrentSystem) {
         setSettingsSearchParams({ system: systemSearchParam });
         setIsLoading(false);
+        showToast(
+          `Metric "${metricSearchParam}" does not exist in "${systemSearchParam}" system.`,
+          false,
+          "red",
+          5000
+        );
         return;
       }
     }

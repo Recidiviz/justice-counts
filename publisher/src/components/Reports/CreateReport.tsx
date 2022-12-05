@@ -152,7 +152,8 @@ const CreateReport = () => {
         is_recurring: isRecurring,
         year: isRecurring ? new Date(Date.now()).getFullYear() : year,
       },
-      agencyId
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      agencyId!
     );
     if (response && response instanceof Response) {
       if (response.status === 200) {

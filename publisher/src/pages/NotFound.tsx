@@ -58,8 +58,8 @@ export const NotFound: React.FC<{
     <Wrapper>
       <Title>{title}</Title>{" "}
       <HomepageLinkWrapper>
-        Go to{" "}
-        <HomepageLink onClick={() => navigate(pathname)}>homepage</HomepageLink>
+        Go back{" "}
+        <HomepageLink onClick={() => navigate(pathname)}>home</HomepageLink>.
       </HomepageLinkWrapper>
     </Wrapper>
   );

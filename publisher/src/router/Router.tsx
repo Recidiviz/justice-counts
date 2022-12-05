@@ -65,7 +65,6 @@ export const Router = () => {
           <Route path="/settings/*" element={<Settings />} />
           <Route path="/upload" element={<DataUpload />} />
           <Route path="/upload/review-metrics" element={<ReviewMetrics />} />
-          {/* TBD how to treat random routes */}
           <Route path="*" element={<Navigate to={`${REPORTS_LOWERCASE}`} />} />
         </Routes>
       ) : (

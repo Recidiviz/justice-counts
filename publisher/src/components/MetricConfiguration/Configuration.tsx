@@ -132,7 +132,8 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     metricSearchParam,
                     true
                   );
-                  saveMetricSettings(updatedSetting, agencyId);
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  saveMetricSettings(updatedSetting, agencyId!);
                 }
               }}
             />
@@ -150,7 +151,8 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     metricSearchParam,
                     false
                   );
-                  saveMetricSettings(updatedSetting, agencyId);
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  saveMetricSettings(updatedSetting, agencyId!);
                 }
               }}
             />
@@ -211,7 +213,8 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                                     disaggregationKey,
                                     !currentDisaggregation.enabled
                                   );
-                                saveMetricSettings(updatedSetting, agencyId);
+                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                                saveMetricSettings(updatedSetting, agencyId!);
                               }
                             }}
                           />
@@ -266,7 +269,8 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                                   dimensionKey,
                                   !currentDimension.enabled
                                 );
-                              saveMetricSettings(updatedSetting, agencyId);
+                              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                              saveMetricSettings(updatedSetting, agencyId!);
                             }
                           }}
                         />

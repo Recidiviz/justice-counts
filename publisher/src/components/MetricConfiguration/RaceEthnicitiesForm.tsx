@@ -114,7 +114,8 @@ export const RaceEthnicitiesForm = observer(() => {
                     "CAN_SPECIFY_ETHNICITY",
                     raceEthnicityGridStates
                   );
-                saveMetricSettings(updatedDimensions, agencyId);
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                saveMetricSettings(updatedDimensions, agencyId!);
               }}
             />
             <BinaryRadioButton
@@ -130,7 +131,8 @@ export const RaceEthnicitiesForm = observer(() => {
                     "NO_ETHNICITY_HISPANIC_AS_RACE",
                     raceEthnicityGridStates
                   );
-                saveMetricSettings(updatedDimensions, agencyId);
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                saveMetricSettings(updatedDimensions, agencyId!);
               }}
             />
           </RadioButtonGroupWrapper>
@@ -158,7 +160,8 @@ export const RaceEthnicitiesForm = observer(() => {
                         "NO_ETHNICITY_HISPANIC_NOT_SPECIFIED",
                         raceEthnicityGridStates
                       );
-                    saveMetricSettings(updatedDimensions, agencyId);
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    saveMetricSettings(updatedDimensions, agencyId!);
                   }}
                 >
                   No
@@ -171,7 +174,8 @@ export const RaceEthnicitiesForm = observer(() => {
                         "NO_ETHNICITY_HISPANIC_AS_RACE",
                         raceEthnicityGridStates
                       );
-                    saveMetricSettings(updatedDimensions, agencyId);
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    saveMetricSettings(updatedDimensions, agencyId!);
                   }}
                 >
                   Yes
@@ -225,10 +229,12 @@ export const RaceEthnicitiesForm = observer(() => {
                         );
                         return saveMetricSettings(
                           switchedGridStateUpdatedDimensions,
-                          agencyId
+                          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                          agencyId!
                         );
                       }
-                      saveMetricSettings(updatedDimensions, agencyId);
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      saveMetricSettings(updatedDimensions, agencyId!);
                     }}
                   >
                     No
@@ -242,7 +248,8 @@ export const RaceEthnicitiesForm = observer(() => {
                         currentState,
                         raceEthnicityGridStates
                       );
-                      saveMetricSettings(updatedDimensions, agencyId);
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      saveMetricSettings(updatedDimensions, agencyId!);
                     }}
                   >
                     Yes

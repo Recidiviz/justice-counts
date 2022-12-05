@@ -60,7 +60,6 @@ const App: React.FC = (): ReactElement => {
             }
           />
           <Route path="/agency/:agencyId/*" element={<Router />} />
-          {/* TBD how to treat random routes */}
           <Route
             path="*"
             element={

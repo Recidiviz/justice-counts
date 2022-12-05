@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { showToast } from "@justice-counts/common/components/Toast";
 import { AgencySystems } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -65,7 +66,8 @@ export const MetricsView: React.FC = observer(() => {
     settingsSearchParams;
 
   const initDataPageMetrics = async () => {
-    const result = await reportStore.initializeReportSettings(agencyId);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const result = await reportStore.initializeReportSettings(agencyId!);
     if (result instanceof Error) {
       setIsLoading(false);
       return setLoadingError(result.message);
@@ -92,6 +94,12 @@ export const MetricsView: React.FC = observer(() => {
           metric: defaultMetricSearchParam,
         });
         setIsLoading(false);
+        showToast(
+          `System "${systemSearchParam}" does not exist in "${currentAgency?.name}" agency.`,
+          false,
+          "red",
+          5000
+        );
         return;
       }
     }
@@ -106,6 +114,12 @@ export const MetricsView: React.FC = observer(() => {
           metric: defaultMetricSearchParam,
         });
         setIsLoading(false);
+        showToast(
+          `Metric "${metricSearchParam}" does not exist in "${systemSearchParam}" system.`,
+          false,
+          "red",
+          5000
+        );
         return;
       }
     }
