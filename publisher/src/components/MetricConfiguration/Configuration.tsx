@@ -21,6 +21,8 @@ import React, { useEffect } from "react";
 
 import { useStore } from "../../stores";
 import { monthsByName, removeSnakeCase } from "../../utils";
+import { ReactComponent as CalendarIconDark } from "../assets/calendar-icon-dark.svg";
+import { ReactComponent as CalendarIconLight } from "../assets/calendar-icon-light.svg";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import blueCheck from "../assets/status-check-icon.png";
 import { BinaryRadioButton } from "../Forms";
@@ -103,12 +105,6 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     const startingMonthNotJanuaryJune =
       startingMonth !== null && startingMonth !== 1 && startingMonth !== 6;
 
-    // console.table({
-    //   frequency,
-    //   customFrequency,
-    //   startingMonth,
-    //   customOrDefaultFrequency,
-    // });
     useEffect(
       () => {
         if (activeDisaggregationKeys)
@@ -156,17 +152,10 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               checked={metricEnabled && customOrDefaultFrequency === "MONTHLY"}
               onChange={() => {
                 if (systemSearchParam && metricSearchParam) {
-                  const frequencyUpdate =
-                    // frequency === "MONTHLY"
-                    //   ? {
-                    //       customFrequency: "",
-                    //       startingMonth: null,
-                    //     }
-                    //   :
-                    {
-                      customFrequency: "MONTHLY",
-                      startingMonth: null,
-                    };
+                  const frequencyUpdate = {
+                    customFrequency: "MONTHLY",
+                    startingMonth: null,
+                  };
                   const updatedSetting = updateMetricReportFrequency(
                     systemSearchParam,
                     metricSearchParam,
@@ -186,14 +175,10 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               checked={metricEnabled && customOrDefaultFrequency === "ANNUAL"}
               onChange={() => {
                 if (systemSearchParam && metricSearchParam) {
-                  const frequencyUpdate =
-                    // frequency === "ANNUAL"
-                    //   ? { customFrequency: "", startingMonth: null }
-                    //   :
-                    {
-                      customFrequency: "ANNUAL",
-                      startingMonth: 1,
-                    };
+                  const frequencyUpdate = {
+                    customFrequency: "ANNUAL",
+                    startingMonth: 1,
+                  };
                   const updatedSetting = updateMetricReportFrequency(
                     systemSearchParam,
                     metricSearchParam,
@@ -252,10 +237,15 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     kind="borderless"
                     checked={startingMonthNotJanuaryJune}
                   >
+                    {startingMonthNotJanuaryJune ? (
+                      <CalendarIconLight />
+                    ) : (
+                      <CalendarIconDark />
+                    )}
                     {(startingMonthNotJanuaryJune &&
                       startingMonth &&
                       monthsByName[startingMonth - 1]) ||
-                      `[Icon] Other...`}
+                      `Other...`}
                   </DropdownButton>
                   <ExtendedDropdownMenu alignment="right">
                     {monthsByName

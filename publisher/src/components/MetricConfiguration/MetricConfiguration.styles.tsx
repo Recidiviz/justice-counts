@@ -27,6 +27,17 @@ import { MenuItem } from "../Settings";
 
 const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
 const INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH = 314;
+const baseDisabledFadedOverlayCSS = `
+  &:after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    background: ${palette.solid.white};
+    opacity: 0.7;
+  }
+`;
 
 export const MetricsViewContainer = styled.div`
   height: 100%;
@@ -484,19 +495,7 @@ export const MetricContextContainer = styled.div<{ enabled?: boolean }>`
   border-top: 1px solid ${palette.highlight.grey3};
   position: relative;
 
-  ${({ enabled }) =>
-    !enabled &&
-    `
-      &:after {
-        content: "";
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        background: ${palette.solid.white};
-        opacity: 0.7;
-      }
-  `}
+  ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
 `;
 
 export const MetricContextHeader = styled.div`
@@ -662,19 +661,7 @@ export const DefinitionsDisplay = styled.div<{ enabled?: boolean }>`
   width: 100%;
   position: relative;
 
-  ${({ enabled }) =>
-    !enabled &&
-    `
-      &:after {
-        content: "";
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        background: ${palette.solid.white};
-        opacity: 0.7;
-      }
-  `}
+  ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
 `;
 
 export const DefinitionsTitle = styled.div`
@@ -767,8 +754,6 @@ export const DefinitionMiniButton = styled(RevertToDefaultButton)<{
         opacity: 0.9;
         }
       }
-
-
   `};
 
   ${({ showDefault, selected }) =>
@@ -791,6 +776,8 @@ export const NoDefinitionsSelected = styled.div`
 export const DropdownButton = styled(DropdownToggle)<{ checked?: boolean }>`
   ${typography.sizeCSS.normal}
   font-family: ${typography.family};
+  display: flex;
+  gap: 10px;
   width: 100%;
   height: 56px;
   min-height: unset;
@@ -808,12 +795,7 @@ export const DropdownButton = styled(DropdownToggle)<{ checked?: boolean }>`
     `}
 
   &[aria-expanded="true"] {
-    background-color: ${palette.solid.blue};
-    color: ${palette.solid.white};
-  }
-
-  &[aria-expanded="true"]:hover {
-    background-color: ${palette.solid.darkblue};
+    color: ${palette.solid.darkgrey};
   }
 
   &[aria-expanded="false"]:hover {
