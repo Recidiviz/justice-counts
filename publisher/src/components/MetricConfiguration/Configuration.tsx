@@ -208,7 +208,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                       const updatedSetting = updateMetricReportFrequency(
                         systemSearchParam,
                         metricSearchParam,
-                        { startingMonth: 1 }
+                        { customFrequency: "ANNUAL", startingMonth: 1 }
                       );
                       saveMetricSettings(updatedSetting);
                     }
@@ -226,7 +226,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                       const updatedSetting = updateMetricReportFrequency(
                         systemSearchParam,
                         metricSearchParam,
-                        { startingMonth: 6 }
+                        { customFrequency: "ANNUAL", startingMonth: 6 }
                       );
                       saveMetricSettings(updatedSetting);
                     }
@@ -261,7 +261,10 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                                   updateMetricReportFrequency(
                                     systemSearchParam,
                                     metricSearchParam,
-                                    { startingMonth: monthNumber }
+                                    {
+                                      customFrequency: "ANNUAL",
+                                      startingMonth: monthNumber,
+                                    }
                                   );
                                 saveMetricSettings(updatedSetting);
                               }
