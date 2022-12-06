@@ -16,10 +16,11 @@
 // =============================================================================
 
 import { Badge } from "@justice-counts/common/components/Badge";
+import { showToast } from "@justice-counts/common/components/Toast";
 import { AgencySystems, ReportFrequency } from "@justice-counts/common/types";
-import { reaction, when } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
@@ -49,6 +50,7 @@ export const MetricConfiguration: React.FC = observer(() => {
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
   const { userStore, metricConfigStore } = useStore();
+  const { agencyId } = useParams();
   const { metrics, initializeMetricConfigStoreValues, getMetricsBySystem } =
     metricConfigStore;
 
@@ -63,51 +65,60 @@ export const MetricConfiguration: React.FC = observer(() => {
     useState<string>();
 
   const initializeMetricConfiguration = async () => {
-    const response = await initializeMetricConfigStoreValues();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const response = await initializeMetricConfigStoreValues(agencyId!);
     if (response instanceof Error) {
       return setLoadingErrorMessage(response.message);
     }
-    setIsLoading(false);
-    // this check is for case when link is external
-    // since it is not possible to switch agency using link params
-    // have to check if system param from url is present in current agency
-    // if not then clear system and metric url params
-    // TODO after #149 task is done have to refactor that
-    if (systemSearchParam && userStore.currentAgency?.systems) {
+
+    const currentAgency = userStore.getAgency(agencyId);
+
+    // now when agency is in the url we still have to check external link
+    // with system and metric search params in it if they belong to agency
+    // (system to agency and metric to system)
+    // if system in agency, go further, if not change system to 1st one in agency
+    if (systemSearchParam && currentAgency?.systems) {
       const isUrlSystemParamInCurrentAgencySystems =
-        !!userStore.currentAgency?.systems.find(
-          (system) => system === systemSearchParam
-        );
+        !!currentAgency?.systems.find((system) => system === systemSearchParam);
       if (!isUrlSystemParamInCurrentAgencySystems) {
-        setSettingsSearchParams({
-          system: userStore.currentAgency?.systems[0],
-        });
+        setSettingsSearchParams({ system: currentAgency?.systems[0] });
+        setIsLoading(false);
+        showToast(
+          `System "${systemSearchParam}" does not exist in "${currentAgency?.name}" agency.`,
+          false,
+          "red",
+          5000
+        );
         return;
       }
     }
 
+    // if system in agency go here and check if metric in system
+    // if not change system to first in agency
     if (metricSearchParam) {
-      const isUrlSystemParamInCurrentAgencySystems =
-        !!userStore.currentAgency?.systems.find(
-          (system) => system === systemSearchParam
-        );
-      const systemToCheckMetrics = isUrlSystemParamInCurrentAgencySystems
-        ? systemSearchParam
-        : userStore.currentAgency?.systems[0];
       const isUrlMetricParamInCurrentSystem = !!getMetricsBySystem(
-        systemToCheckMetrics
+        systemSearchParam
       )?.find((metric) => metric.key === metricSearchParam);
       if (!isUrlMetricParamInCurrentSystem) {
-        setSettingsSearchParams({});
+        setSettingsSearchParams({ system: systemSearchParam });
+        setIsLoading(false);
+        showToast(
+          `Metric "${metricSearchParam}" does not exist in "${systemSearchParam}" system.`,
+          false,
+          "red",
+          5000
+        );
         return;
       }
     }
 
+    // if user just go to metric config page set system to 1st one in agency
     if (!systemSearchParam) {
       setSettingsSearchParams({
-        system: userStore.currentAgency?.systems[0],
+        system: currentAgency?.systems[0],
       });
     }
+    setIsLoading(false);
   };
 
   const handleSystemClick = (option: AgencySystems) => {
@@ -116,35 +127,15 @@ export const MetricConfiguration: React.FC = observer(() => {
     });
   };
 
-  useEffect(
-    () =>
-      // return when's disposer so it is cleaned up if it never runs
-      when(
-        () => userStore.userInfoLoaded,
-        async () => {
-          await initializeMetricConfiguration();
-        }
-      ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  useEffect(() => {
+    const initialize = async () => {
+      setIsLoading(true);
+      await initializeMetricConfiguration();
+    };
 
-  // reload metric overviews when the current agency ID changes
-  useEffect(
-    () =>
-      // return disposer so it is cleaned up if it never runs
-      reaction(
-        () => userStore.currentAgencyId,
-        async (_, previousAgencyId) => {
-          if (previousAgencyId !== undefined) {
-            setIsLoading(true);
-            await initializeMetricConfiguration();
-          }
-        }
-      ),
+    initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [userStore]
-  );
+  }, [agencyId]);
 
   if (isLoading) {
     return <Loading />;
@@ -154,17 +145,19 @@ export const MetricConfiguration: React.FC = observer(() => {
     return <div>Error: {loadingErrorMessage}</div>;
   }
 
+  const currentAgency = userStore.getAgency(agencyId);
+
   return (
     <>
       <MetricsViewContainer>
         {/* System Tabs (for multi-system agencies) */}
         {!metricSearchParam &&
-          userStore.currentAgency?.systems &&
-          userStore.currentAgency?.systems?.length > 1 && (
+          currentAgency?.systems &&
+          currentAgency?.systems?.length > 1 && (
             <StickyHeader>
               <TabbedBar noPadding>
                 <TabbedOptions>
-                  {userStore.currentAgency?.systems.map((filterOption) => (
+                  {currentAgency?.systems.map((filterOption) => (
                     <TabbedItem
                       key={filterOption}
                       selected={systemSearchParam === filterOption}

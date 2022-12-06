@@ -20,10 +20,11 @@ import {
   palette,
 } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
-import { reaction, runInAction } from "mobx";
+import { Report } from "@justice-counts/common/types";
+import { runInAction } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import {
@@ -49,6 +50,7 @@ import {
   PreTitle,
   TabbedDisaggregations,
 } from "../Forms";
+import { REPORTS_LOWERCASE } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
 import { Onboarding } from "../Onboarding";
 import { MetricTextInput } from "./DataEntryFormComponents";
@@ -67,15 +69,9 @@ const TopBarButtonsContainer = styled.div<{ showDataEntryHelpPage: boolean }>`
   opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 0 : 1)};
 `;
 
-const DataEntryReviewButton = styled(Button)<{
-  isPublished?: boolean;
-}>`
+const DataEntryTopBarButton = styled(Button)`
   padding-right: 22px;
   padding-left: 22px;
-
-  &::after {
-    content: ${({ isPublished }) => (isPublished ? "'Unpublish'" : "'Review'")};
-  }
 `;
 
 const TopBarCloseHelpButtonContainer = styled.div<{
@@ -105,14 +101,14 @@ const DataEntryForm: React.FC<{
   reportID: number;
   updateFieldDescription: (title?: string, description?: string) => void;
   updateActiveMetric: (metricKey: string) => void;
-  toggleConfirmationDialogue: () => void;
+  convertReportToDraft: () => void;
   showDataEntryHelpPage: boolean;
   setShowDataEntryHelpPage: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({
   reportID,
   updateFieldDescription,
   updateActiveMetric,
-  toggleConfirmationDialogue,
+  convertReportToDraft,
   showDataEntryHelpPage,
   setShowDataEntryHelpPage,
 }) => {
@@ -121,26 +117,11 @@ const DataEntryForm: React.FC<{
   const [scrolled, setScrolled] = useState(false);
   const metricsRef = useRef<HTMLDivElement[]>([]);
   const { formStore, reportStore, userStore } = useStore();
+  const { agencyId } = useParams();
   const navigate = useNavigate();
 
   const isPublished =
     reportStore.reportOverviews[reportID].status === "PUBLISHED";
-
-  // if the user switches agencies while on this page, navigate back to the reports page.
-  useEffect(
-    () =>
-      // return disposer so it is cleaned up if it never runs
-      reaction(
-        () => userStore.currentAgencyId,
-        async (currentAgencyId, previousAgencyId) => {
-          if (previousAgencyId !== undefined) {
-            navigate("/", { replace: true });
-          }
-        }
-      ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [userStore]
-  );
 
   useEffect(
     () => {
@@ -202,7 +183,7 @@ const DataEntryForm: React.FC<{
       showToast("Saved", false, "grey");
       if (oldStatus === "NOT_STARTED" && status === "DRAFT") {
         const agencyID = reportStore.reportOverviews[reportID]?.agency_id;
-        const agency = userStore.userAgencies?.find((a) => a.id === agencyID);
+        const agency = userStore.getAgency(agencyID.toString());
         trackReportNotStartedToDraft(reportID, agency);
       }
     } else {
@@ -248,7 +229,7 @@ const DataEntryForm: React.FC<{
     document.body.style.overflow = showDataEntryHelpPage ? "hidden" : "unset";
   }, [showDataEntryHelpPage]);
 
-  const reportOverview = reportStore.reportOverviews[reportID];
+  const reportOverview = reportStore.reportOverviews[reportID] as Report;
   const reportMetrics = reportStore.reportMetrics[reportID];
   const metricsBySystem = reportStore.reportMetricsBySystem[reportID];
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;
@@ -260,7 +241,9 @@ const DataEntryForm: React.FC<{
   return (
     <>
       <DataEntryTopBar>
-        <LogoContainer onClick={() => navigate("/")}>
+        <LogoContainer
+          onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
+        >
           <Logo src={logoImg} alt="" />
         </LogoContainer>
 
@@ -276,14 +259,24 @@ const DataEntryForm: React.FC<{
           <Button type="border" onClick={() => setShowDataEntryHelpPage(true)}>
             Need Help?
           </Button>
-          <Button type="border" onClick={() => navigate("/")}>
+          <Button
+            type="border"
+            onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
+          >
             Save as Draft
           </Button>
-          <DataEntryReviewButton
-            type="blue"
-            onClick={toggleConfirmationDialogue}
-            isPublished={isPublished}
-          />
+          {reportOverview.status === "PUBLISHED" ? (
+            <DataEntryTopBarButton type="blue" onClick={convertReportToDraft}>
+              Unpublish and Edit
+            </DataEntryTopBarButton>
+          ) : (
+            <DataEntryTopBarButton
+              type="blue"
+              onClick={() => navigate("review")}
+            >
+              Review
+            </DataEntryTopBarButton>
+          )}
         </TopBarButtonsContainer>
       </DataEntryTopBar>
 

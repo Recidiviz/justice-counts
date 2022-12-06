@@ -15,37 +15,4 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
-
-import { useStore } from "../../stores";
-import logo from "../assets/jc-logo-vector.png";
-import { REPORTS_LOWERCASE } from "../Global/constants";
-import Menu from "../Menu";
-import { HeaderBar, Logo, LogoContainer } from ".";
-
-const Header = () => {
-  const { agencyId } = useParams();
-  const navigate = useNavigate();
-  const { userStore } = useStore();
-
-  const isAgencyValid = !!userStore.getAgency(agencyId);
-
-  return (
-    <HeaderBar>
-      <LogoContainer
-        onClick={() =>
-          navigate(
-            isAgencyValid ? `/agency/${agencyId}/${REPORTS_LOWERCASE}` : "/"
-          )
-        }
-      >
-        <Logo src={logo} alt="" />
-      </LogoContainer>
-
-      <Menu />
-    </HeaderBar>
-  );
-};
-
-export default Header;
+export * from "./Router";

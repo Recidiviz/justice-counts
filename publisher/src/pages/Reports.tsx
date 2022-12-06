@@ -20,10 +20,9 @@ import {
   BadgeColorMapping,
 } from "@justice-counts/common/components/Badge";
 import { Permission, ReportOverview } from "@justice-counts/common/types";
-import { reaction, when } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import checkmarkIcon from "../components/assets/status-check-icon.png";
 import {
@@ -79,7 +78,8 @@ const reportListColumnTitles = [
 ];
 
 const Reports: React.FC = () => {
-  const { reportStore, userStore, datapointsStore } = useStore();
+  const { reportStore, userStore } = useStore();
+  const { agencyId } = useParams<string>();
   const navigate = useNavigate();
 
   const [showOnboarding, setShowOnboarding] = useState(true);
@@ -127,40 +127,19 @@ const Reports: React.FC = () => {
     }
   };
 
-  // load report overviews after the /api/users request returns successfully
-  useEffect(
-    () =>
-      // return when's disposer so it is cleaned up if it never runs
-      when(
-        () => userStore.userInfoLoaded,
-        async () => {
-          const result = await reportStore.getReportOverviews();
-          if (result instanceof Error) {
-            setLoadingError(result.message);
-          }
-        }
-      ),
-    [reportStore, userStore]
-  );
+  useEffect(() => {
+    const initialize = async () => {
+      reportStore.resetState();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const result = await reportStore.getReportOverviews(agencyId!);
+      if (result instanceof Error) {
+        setLoadingError(result.message);
+      }
+    };
 
-  // reload report overviews when the current agency ID changes
-  useEffect(
-    () =>
-      // return disposer so it is cleaned up if it never runs
-      reaction(
-        () => userStore.currentAgencyId,
-        async (currentAgencyId, previousAgencyId) => {
-          // prevents us from calling getReportOverviews twice on initial load
-          if (previousAgencyId !== undefined) {
-            const result = await reportStore.getReportOverviews();
-            if (result instanceof Error) {
-              setLoadingError(result.message);
-            }
-          }
-        }
-      ),
-    [reportStore, userStore, datapointsStore]
-  );
+    initialize();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [agencyId]);
 
   const filteredReportsMemoized = React.useMemo(
     () =>
@@ -172,7 +151,7 @@ const Reports: React.FC = () => {
     [reportStore.reportOverviewList, reportsFilter]
   );
 
-  const renderReports = (userHasNoAgency: boolean) => {
+  const renderReports = () => {
     if (reportStore.loadingOverview) {
       return <Loading />;
     }
@@ -195,7 +174,7 @@ const Reports: React.FC = () => {
                 <Row
                   onClick={() => {
                     if (!selectionMode) {
-                      navigate(`/${REPORTS_LOWERCASE}/${report.id}`);
+                      navigate(`${report.id}`);
                     } else {
                       addOrRemoveReportToDelete(report.id);
                     }
@@ -284,9 +263,7 @@ const Reports: React.FC = () => {
           )
         ) : (
           <NoReportsDisplay>
-            {userHasNoAgency
-              ? "It looks like no agency is tied to this account. Please reach out to the Justice Counts team for assistance."
-              : `No ${REPORTS_LOWERCASE} to display.`}
+            No {REPORTS_LOWERCASE} to display.
           </NoReportsDisplay>
         )}
       </>
@@ -323,9 +300,7 @@ const Reports: React.FC = () => {
                       <ReportActionsItem onClick={enterSelectionMode}>
                         Select <ReportActionsSelectIcon />
                       </ReportActionsItem>
-                      <ReportActionsItem
-                        onClick={() => navigate(`/${REPORTS_LOWERCASE}/create`)}
-                      >
+                      <ReportActionsItem onClick={() => navigate("create")}>
                         New <ReportActionsNewIcon />
                       </ReportActionsItem>
                     </>
@@ -337,7 +312,11 @@ const Reports: React.FC = () => {
                         disabled={reportsToDelete.length === 0}
                         onClick={() => {
                           if (reportsToDelete.length > 0) {
-                            reportStore.deleteReports(reportsToDelete);
+                            reportStore.deleteReports(
+                              reportsToDelete,
+                              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                              agencyId!
+                            );
                             exitSelectionMode();
                             clearAllReportsToDelete();
                           }
@@ -373,7 +352,7 @@ const Reports: React.FC = () => {
       </ReportsHeader>
 
       {/* Reports List Table */}
-      <Table>{renderReports(userStore.userAgencies?.length === 0)}</Table>
+      <Table>{renderReports()}</Table>
 
       {/* Onboarding */}
       {userStore.onboardingTopicsCompleted?.reportsview === false &&

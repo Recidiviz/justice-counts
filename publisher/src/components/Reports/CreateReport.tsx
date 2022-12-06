@@ -25,7 +25,7 @@ import {
   ReportOverview,
 } from "@justice-counts/common/types";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import { trackReportCreated } from "../../analytics";
@@ -130,6 +130,7 @@ const initialCreateReportFormValues: CreateReportFormValuesType = {
 
 const CreateReport = () => {
   const { reportStore, userStore } = useStore();
+  const { agencyId } = useParams();
   const navigate = useNavigate();
   const [createReportFormValues, setCreateReportFormValues] = useState(
     initialCreateReportFormValues
@@ -166,20 +167,22 @@ const CreateReport = () => {
   const createNewReport = async () => {
     const { frequency, month, year, annualStartMonth, isRecurring } =
       createReportFormValues;
-    const response = await reportStore.createReport({
-      frequency,
-      month: frequency === "ANNUAL" ? annualStartMonth : month,
-      is_recurring: isRecurring,
-      year: isRecurring ? new Date(Date.now()).getFullYear() : year,
-    });
+    const response = await reportStore.createReport(
+      {
+        frequency,
+        month: frequency === "ANNUAL" ? annualStartMonth : month,
+        is_recurring: isRecurring,
+        year: isRecurring ? new Date(Date.now()).getFullYear() : year,
+      },
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      Number(agencyId!)
+    );
     if (response && response instanceof Response) {
       if (response.status === 200) {
-        navigate("/");
+        navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`);
         showToast(`The ${REPORT_LOWERCASE} was successfully created`, true);
         const report = (await response.json()) as ReportOverview;
-        const agency = userStore.userAgencies?.find(
-          (a) => a.id === report.agency_id
-        );
+        const agency = userStore.userAgenciesById[report.agency_id];
         trackReportCreated(report.id, agency);
         return;
       }
@@ -208,7 +211,9 @@ const CreateReport = () => {
       {/* Create Report Details Panel */}
       <ReportSummaryWrapper>
         <PreTitle>
-          <GoBackToReportsOverviewLink onClick={() => navigate("/")} />
+          <GoBackToReportsOverviewLink
+            onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
+          />
         </PreTitle>
         {/* <Title>Report Details</Title> */}
       </ReportSummaryWrapper>
@@ -218,7 +223,11 @@ const CreateReport = () => {
         <Form>
           {/* Form Title */}
           <OnePanelBackLinkContainer>
-            <GoBackToReportsOverviewLink onClick={() => navigate("/")} />
+            <GoBackToReportsOverviewLink
+              onClick={() =>
+                navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)
+              }
+            />
           </OnePanelBackLinkContainer>
           <PreTitle>Create {REPORT_CAPITALIZED}</PreTitle>
           <Title>New {REPORT_CAPITALIZED}</Title>

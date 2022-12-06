@@ -233,19 +233,19 @@ export const DatapointsViewControlsDropdown: React.FC<
   </DatapointsViewDropdown>
 );
 
-export const MetricInsightsContainer = styled.div`
+export const MetricInsightsContainer = styled.div<{ selfWidth: number }>`
   display: flex;
-  flex-flow: column wrap;
-  overflow: hidden;
-`;
-
-export const MetricInsightsInnerContainer = styled.div`
-  display: flex;
+  visibility: visible;
   flex-direction: row;
+  justify-content: flex-end;
 
-  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
-    flex-direction: column;
-  }
+  ${({
+    selfWidth,
+  }) => `@media only screen and (max-width: calc(1148px + ${selfWidth}px)) {
+    visibility: hidden;
+    position: absolute;
+    z-index: -1;
+  }`}
 `;
 
 const MetricInsightContainer = styled.div`

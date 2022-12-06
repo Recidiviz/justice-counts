@@ -33,6 +33,7 @@ jest.mock("react-router-dom", () => ({
 
 beforeEach(() => {
   rootStore.reportStore.reportOverviews = {};
+  rootStore.reportStore.getReportOverviews = () => Promise.resolve();
   rootStore.reportStore.loadingOverview = false;
 });
 
@@ -44,7 +45,8 @@ test("displayed created reports", async () => {
   );
 
   await act(async () => {
-    await runInAction(() => {
+    runInAction(() => {
+      rootStore.reportStore.loadingOverview = false;
       rootStore.reportStore.reportOverviews = {
         0: {
           id: 0,
@@ -61,10 +63,10 @@ test("displayed created reports", async () => {
     });
   });
 
-  const jan2022 = screen.getByText(/November 2022/i);
+  const nov2022 = screen.getByText(/November 2022/i);
   const editor1 = screen.getByText(/Editor #1/i);
 
-  expect(jan2022).toBeInTheDocument();
+  expect(nov2022).toBeInTheDocument();
   expect(editor1).toBeInTheDocument();
 
   await act(async () => {

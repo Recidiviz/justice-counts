@@ -17,6 +17,7 @@
 
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
@@ -64,6 +65,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     activeDisaggregationKey,
     setActiveDisaggregationKey,
   }): JSX.Element => {
+    const { agencyId } = useParams();
     const [settingsSearchParams] = useSettingsSearchParams();
     const { metricConfigStore } = useStore();
     const {
@@ -130,7 +132,8 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     metricSearchParam,
                     true
                   );
-                  saveMetricSettings(updatedSetting);
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  saveMetricSettings(updatedSetting, agencyId!);
                 }
               }}
             />
@@ -148,7 +151,8 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     metricSearchParam,
                     false
                   );
-                  saveMetricSettings(updatedSetting);
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  saveMetricSettings(updatedSetting, agencyId!);
                 }
               }}
             />
@@ -209,7 +213,8 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                                     disaggregationKey,
                                     !currentDisaggregation.enabled
                                   );
-                                saveMetricSettings(updatedSetting);
+                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                                saveMetricSettings(updatedSetting, agencyId!);
                               }
                             }}
                           />
@@ -271,7 +276,8 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                                   dimensionKey,
                                   !currentDimension.enabled
                                 );
-                              saveMetricSettings(updatedSetting);
+                              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                              saveMetricSettings(updatedSetting, agencyId!);
                             }
                           }}
                         />

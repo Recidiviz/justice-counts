@@ -169,17 +169,9 @@ class MetricConfigStore {
     }
   };
 
-  getMetricSettings = async (): Promise<Metric[]> => {
-    const { currentAgency } = this.userStore;
-
-    if (currentAgency === undefined) {
-      throw new Error(
-        "Either invalid user/agency information or no user or agency information initialized."
-      );
-    }
-
+  getMetricSettings = async (agencyId: string): Promise<Metric[]> => {
     const response = (await this.api.request({
-      path: `/api/agencies/${currentAgency.id}/metrics`,
+      path: `/api/agencies/${agencyId}/metrics`,
       method: "GET",
     })) as Response;
 
@@ -192,18 +184,11 @@ class MetricConfigStore {
   };
 
   saveMetricSettings = async (
-    updatedMetricSettings: MetricSettings
+    updatedMetricSettings: MetricSettings,
+    agencyId: string
   ): Promise<Response> => {
-    const { currentAgency } = this.userStore;
-
-    if (currentAgency === undefined) {
-      throw new Error(
-        "Either invalid user/agency information or no user or agency information initialized."
-      );
-    }
-
     const response = (await this.api.request({
-      path: `/api/agencies/${currentAgency.id}/metrics`,
+      path: `/api/agencies/${agencyId}/metrics`,
       body: { metrics: [updatedMetricSettings] },
       method: "PUT",
     })) as Response;
@@ -217,9 +202,11 @@ class MetricConfigStore {
     return response;
   };
 
-  initializeMetricConfigStoreValues = async (): Promise<void | Error> => {
+  initializeMetricConfigStoreValues = async (
+    agencyId: string
+  ): Promise<void | Error> => {
     try {
-      const metrics = await this.getMetricSettings();
+      const metrics = await this.getMetricSettings(agencyId);
 
       runInAction(() => {
         metrics.forEach((metric) => {

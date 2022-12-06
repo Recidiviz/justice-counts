@@ -15,13 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
+import React, { useCallback } from "react";
 
 import { Datapoint } from "../../types";
 import {
   MetricInsight,
   MetricInsightsContainer,
-  MetricInsightsInnerContainer,
 } from "./DatapointsView.styles";
 import {
   getAverageTotalValue,
@@ -36,13 +35,24 @@ export const MetricInsights: React.FC<{
   const percentChange = getPercentChangeOverTime(datapoints);
   const avgValue = getAverageTotalValue(datapoints, isAnnual);
   const mostRecentValue = getLatestDateFormatted(datapoints, isAnnual);
+
+  const [insightsWidth, setInsightsWidth] = React.useState<number>(0);
+
+  const insightsRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (node !== null) {
+        setInsightsWidth(node.clientWidth);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [percentChange, avgValue, mostRecentValue]
+  );
+
   return (
-    <MetricInsightsContainer>
-      <MetricInsightsInnerContainer>
-        <MetricInsight title="Year-to-Year" value={percentChange} />
-        <MetricInsight title="Avg. Total Value" value={avgValue} />
-        <MetricInsight title="Most Recent" value={mostRecentValue} />
-      </MetricInsightsInnerContainer>
+    <MetricInsightsContainer ref={insightsRef} selfWidth={insightsWidth}>
+      <MetricInsight title="Year-to-Year" value={percentChange} />
+      <MetricInsight title="Avg. Total Value" value={avgValue} />
+      <MetricInsight title="Most Recent" value={mostRecentValue} />
     </MetricInsightsContainer>
   );
 };

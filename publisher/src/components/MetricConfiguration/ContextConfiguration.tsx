@@ -18,6 +18,7 @@
 import { debounce } from "lodash";
 import { observer } from "mobx-react-lite";
 import React, { useRef } from "react";
+import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import {
@@ -38,6 +39,7 @@ import {
 } from ".";
 
 export const ContextConfiguration: React.FC = observer(() => {
+  const { agencyId } = useParams();
   const [settingsSearchParams] = useSettingsSearchParams();
   const { metricConfigStore } = useStore();
   const { contexts, updateContextValue, saveMetricSettings } =
@@ -81,7 +83,8 @@ export const ContextConfiguration: React.FC = observer(() => {
                           currentContext.type,
                           "yes"
                         );
-                        saveMetricSettings(updatedSetting);
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        saveMetricSettings(updatedSetting, agencyId!);
                       }
                     }}
                   />
@@ -101,7 +104,8 @@ export const ContextConfiguration: React.FC = observer(() => {
                           currentContext.type,
                           "no"
                         );
-                        saveMetricSettings(updatedSetting);
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        saveMetricSettings(updatedSetting, agencyId!);
                       }
                     }}
                   />
@@ -116,7 +120,8 @@ export const ContextConfiguration: React.FC = observer(() => {
                         currentContext.type,
                         ""
                       );
-                      saveMetricSettings(updatedSetting);
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      saveMetricSettings(updatedSetting, agencyId!);
                     }
                   }}
                 >
@@ -147,7 +152,8 @@ export const ContextConfiguration: React.FC = observer(() => {
                         currentContext.type,
                         e.currentTarget.value
                       );
-                      debouncedSave(updatedSetting);
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      debouncedSave(updatedSetting, agencyId!);
                     }
                   }}
                 />
@@ -180,7 +186,8 @@ export const ContextConfiguration: React.FC = observer(() => {
                             currentContext.type,
                             option
                           );
-                          saveMetricSettings(updatedSetting);
+                          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                          saveMetricSettings(updatedSetting, agencyId!);
                         }
                       }}
                     />
@@ -197,7 +204,8 @@ export const ContextConfiguration: React.FC = observer(() => {
                         currentContext.type,
                         ""
                       );
-                      saveMetricSettings(updatedSetting);
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      saveMetricSettings(updatedSetting, agencyId!);
                     }
                   }}
                 >

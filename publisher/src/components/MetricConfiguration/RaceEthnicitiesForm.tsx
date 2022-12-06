@@ -18,6 +18,7 @@
 import { debounce } from "lodash";
 import { observer } from "mobx-react-lite";
 import React, { useRef } from "react";
+import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { BinaryRadioButton } from "../Forms";
@@ -40,6 +41,7 @@ import {
 } from ".";
 
 export const RaceEthnicitiesForm = observer(() => {
+  const { agencyId } = useParams();
   const [settingsSearchParams] = useSettingsSearchParams();
   const { metricConfigStore } = useStore();
   const {
@@ -127,7 +129,8 @@ export const RaceEthnicitiesForm = observer(() => {
                     systemSearchParam,
                     metricSearchParam
                   );
-                debouncedSave(updatedDimensions);
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                debouncedSave(updatedDimensions, agencyId!);
               }}
             />
             <BinaryRadioButton
@@ -146,7 +149,8 @@ export const RaceEthnicitiesForm = observer(() => {
                     systemSearchParam,
                     metricSearchParam
                   );
-                debouncedSave(updatedDimensions);
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                debouncedSave(updatedDimensions, agencyId!);
               }}
             />
           </RadioButtonGroupWrapper>
@@ -185,7 +189,8 @@ export const RaceEthnicitiesForm = observer(() => {
                           systemSearchParam,
                           metricSearchParam
                         );
-                      debouncedSave(updatedDimensions);
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      debouncedSave(updatedDimensions, agencyId!);
                     }}
                   />
                   <BinaryRadioButton
@@ -206,7 +211,8 @@ export const RaceEthnicitiesForm = observer(() => {
                           systemSearchParam,
                           metricSearchParam
                         );
-                      debouncedSave(updatedDimensions);
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      debouncedSave(updatedDimensions, agencyId!);
                     }}
                   />
                 </RadioButtonGroupWrapper>
@@ -266,7 +272,8 @@ export const RaceEthnicitiesForm = observer(() => {
                             systemSearchParam,
                             metricSearchParam
                           );
-                          debouncedSave(updatedDimensions);
+                          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                          debouncedSave(updatedDimensions, agencyId!);
                         }}
                       />
                       <BinaryRadioButton
@@ -288,7 +295,8 @@ export const RaceEthnicitiesForm = observer(() => {
                             systemSearchParam,
                             metricSearchParam
                           );
-                          debouncedSave(updatedDimensions);
+                          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                          debouncedSave(updatedDimensions, agencyId!);
                         }}
                       />
                     </RadioButtonGroupWrapper>

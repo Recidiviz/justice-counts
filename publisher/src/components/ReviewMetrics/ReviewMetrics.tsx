@@ -18,11 +18,12 @@
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import logoImg from "../assets/jc-logo-vector.png";
 import { Button, DataUploadHeader } from "../DataUpload";
 import { UploadedMetric } from "../DataUpload/types";
+import { REPORTS_LOWERCASE } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
 import {
   Container,
@@ -38,13 +39,14 @@ import {
 } from "./ReviewMetrics.styles";
 
 const ReviewMetrics: React.FC = observer(() => {
+  const { agencyId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!(location.state as UploadedMetric[] | null)) {
       // no metrics in passed in navigation state, redirect to home page
-      navigate("/", { replace: true });
+      navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`, { replace: true });
     }
   });
 
@@ -98,7 +100,9 @@ const ReviewMetrics: React.FC = observer(() => {
   return (
     <Container>
       <DataUploadHeader transparent={false}>
-        <LogoContainer onClick={() => navigate("/")}>
+        <LogoContainer
+          onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
+        >
           <Logo src={logoImg} alt="" />
         </LogoContainer>
 

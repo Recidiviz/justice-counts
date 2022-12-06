@@ -21,6 +21,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { settingsMenuPaths } from "../../pages/Settings";
 import { useStore } from "../../stores";
+import { removeAgencyFromPath } from "../../utils";
 import {
   MenuItem,
   MetricsListContainer,
@@ -52,7 +53,9 @@ export const SettingsMenu: React.FC = observer(() => {
       {Object.entries(settingsMenuPaths).map(([displayName, path]) => (
         <Fragment key={path}>
           <MenuItem
-            selected={location.pathname === path}
+            selected={
+              removeAgencyFromPath(location.pathname) === `settings/${path}`
+            }
             onClick={() => {
               if (path === "/settings/metric-config") {
                 return navigate(`${path}?system=${systemSearchParam}`);
@@ -65,8 +68,9 @@ export const SettingsMenu: React.FC = observer(() => {
 
           {/* Metrics Navigation (appears when a metric has been 
               selected and allows users to toggle between metrics) */}
-          {location.pathname === "/settings/metric-config" &&
-            path === "/settings/metric-config" &&
+          {removeAgencyFromPath(location.pathname) ===
+            "settings/metric-config" &&
+            path === "metric-config" &&
             metricSearchParam && (
               <MetricsListContainer>
                 {getMetricsBySystem(systemSearchParam)?.map(

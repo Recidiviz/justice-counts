@@ -17,7 +17,6 @@
 import { showToast } from "@justice-counts/common/components/Toast";
 import { UserAgency } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction, when } from "mobx";
-import { makePersistable } from "mobx-persist-store";
 
 import { APP_METADATA_CLAIM, AuthStore } from "../components/Auth";
 import API from "./API";
@@ -26,6 +25,7 @@ type UserSettingsRequestBody = {
   name: string | null;
   email: string | null;
 };
+
 class UserStore {
   authStore: AuthStore;
 
@@ -35,30 +35,25 @@ class UserStore {
 
   userAgencies: UserAgency[] | undefined;
 
+  userAgenciesById: { [agencyId: string]: UserAgency };
+
   userInfoLoaded: boolean;
 
   onboardingTopicsCompleted: { [topic: string]: boolean } | undefined;
 
   permissions: string[];
 
-  currentAgencyId: number | undefined;
-
   constructor(authStore: AuthStore, api: API) {
     makeAutoObservable(this);
-    makePersistable(this, {
-      name: "UserStore",
-      properties: ["currentAgencyId"],
-      storage: window.localStorage,
-    });
 
     this.authStore = authStore;
     this.api = api;
     this.auth0UserID = this.authStore.user?.id;
     this.userAgencies = undefined;
+    this.userAgenciesById = {};
     this.userInfoLoaded = false;
     this.onboardingTopicsCompleted = undefined;
     this.permissions = [];
-    this.currentAgencyId = undefined;
 
     when(
       () => api.isSessionInitialized,
@@ -118,7 +113,7 @@ class UserStore {
         }
       }
     } catch (error) {
-      let errorMessage = "";
+      let errorMessage;
       if (error instanceof Error) {
         errorMessage = error.message;
       } else {
@@ -131,23 +126,17 @@ class UserStore {
   }
 
   getInitialAgencyId(): number | undefined {
-    // this.currentAgencyId is persisted in the user's localStorage.
-    // First, try to retrieve the persisted value
-    if (this.currentAgencyId !== undefined) {
-      const currentAgency = this.userAgencies?.find(
-        (agency) => agency.id === this.currentAgencyId
-      );
-      // if the agency exists, set current agency to the persisted value
-      if (currentAgency) {
-        return this.currentAgencyId;
-      }
-    }
-    // if the agency does not exist, or there is no persisted currentAgencyId value,
-    // just set the current agency id to the first agency in the array of user agencies
     if (this.userAgencies && this.userAgencies.length > 0) {
       // attempting to access 0 index in the empty array leads to the mobx warning "[mobx] Out of bounds read: 0"
       // so check the length of the array before accessing
       return this.userAgencies[0].id;
+    }
+    return undefined;
+  }
+
+  getAgency(agencyId: string | undefined): UserAgency | undefined {
+    if (agencyId) {
+      return this.userAgenciesById[agencyId];
     }
     return undefined;
   }
@@ -164,18 +153,6 @@ class UserStore {
     return this.name || this.email;
   }
 
-  get currentAgency(): UserAgency | undefined {
-    return this.userAgencies?.find(
-      (agency) => agency.id === this.currentAgencyId
-    );
-  }
-
-  setCurrentAgencyId(agencyId: number | undefined) {
-    runInAction(() => {
-      this.currentAgencyId = agencyId;
-    });
-  }
-
   async updateAndRetrieveUserPermissionsAndAgencies() {
     try {
       const response = (await this.api.request({
@@ -188,9 +165,14 @@ class UserStore {
       const { agencies: userAgencies, permissions } = await response.json();
       runInAction(() => {
         this.userAgencies = userAgencies;
+        this.userAgenciesById = userAgencies.reduce(
+          (map: { [agencyId: string]: UserAgency }, agency: UserAgency) => ({
+            ...map,
+            [agency.id]: agency,
+          }),
+          {}
+        );
         this.permissions = permissions;
-        this.currentAgencyId = this.getInitialAgencyId();
-        this.userInfoLoaded = true;
         this.onboardingTopicsCompleted = this.authStore.user?.[
           APP_METADATA_CLAIM
         ]?.onboarding_topics_completed || {
@@ -201,6 +183,10 @@ class UserStore {
     } catch (error) {
       if (error instanceof Error) return error.message;
       return String(error);
+    } finally {
+      runInAction(() => {
+        this.userInfoLoaded = true;
+      });
     }
   }
 

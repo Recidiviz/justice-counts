@@ -222,3 +222,13 @@ export function memoizeDebounce<F extends (...args: any[]) => any>(
 
   return wrappedFunction as unknown as MemoizeDebouncedFunction<F>;
 }
+
+/**
+ * remove agency part (/agency/agencyId/) from location pathname
+ * this is used in menu and settings components
+ * @param location
+ */
+export function removeAgencyFromPath(location: string) {
+  const agencyRegex = /\/agency\/\d+\//i;
+  return location.replace(agencyRegex, "");
+}

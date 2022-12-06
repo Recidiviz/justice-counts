@@ -37,9 +37,10 @@ const MAX_BAR_SIZE = 150;
 
 const ChartContainer = styled.div`
   width: 100%;
+  height: 100%;
+  max-height: calc(100% - 220px);
 
   @media only screen and (min-width: ${COMMON_DESKTOP_WIDTH}px) {
-    max-height: calc(100% - 220px);
     display: flex;
     flex-grow: 1;
     justify-content: center;

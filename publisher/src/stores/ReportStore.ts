@@ -16,18 +16,14 @@
 // =============================================================================
 
 import {
+  AgencySystems,
   Metric,
   Report,
   ReportOverview,
   ReportStatus,
   UpdatedMetricsValues,
 } from "@justice-counts/common/types";
-import {
-  IReactionDisposer,
-  makeAutoObservable,
-  reaction,
-  runInAction,
-} from "mobx";
+import { IReactionDisposer, makeAutoObservable, runInAction } from "mobx";
 
 import { UploadedFileStatus } from "../components/DataUpload";
 import {
@@ -35,7 +31,7 @@ import {
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
 import { MetricSettings } from "../components/MetricConfiguration";
-import { groupBy } from "../utils/helperUtils";
+import { groupBy } from "../utils";
 import API from "./API";
 import UserStore from "./UserStore";
 
@@ -50,7 +46,11 @@ class ReportStore {
 
   reportMetricsBySystem: { [reportID: string]: { [system: string]: Metric[] } }; // key by report ID, then by system
 
+  metricsBySystem: { [system: string]: Metric[] }; // key by system
+
   loadingOverview: boolean;
+
+  loadingReportData: boolean;
 
   disposers: IReactionDisposer[] = [];
 
@@ -62,18 +62,9 @@ class ReportStore {
     this.reportOverviews = {};
     this.reportMetrics = {};
     this.reportMetricsBySystem = {};
+    this.metricsBySystem = {};
     this.loadingOverview = true;
-
-    this.disposers.push(
-      reaction(
-        () => this.userStore.currentAgencyId,
-        (currentAgencyId, previousAgencyId) => {
-          if (previousAgencyId !== undefined) {
-            this.resetState();
-          }
-        }
-      )
-    );
+    this.loadingReportData = true;
   }
 
   deconstructor = () => {
@@ -98,40 +89,30 @@ class ReportStore {
     });
   }
 
-  async getReportOverviews(): Promise<void | Error> {
+  async getReportOverviews(agencyId: string): Promise<void | Error> {
     try {
-      const { currentAgency } = this.userStore;
-      if (currentAgency === undefined) {
-        // If user is not attached to an agency,
-        // no need to bother trying to load reports.
-        runInAction(() => {
-          this.loadingOverview = false;
-        });
-      }
-      if (currentAgency !== undefined) {
-        const response = (await this.api.request({
-          path: `/api/agencies/${currentAgency.id}/reports`,
-          method: "GET",
-        })) as Response;
-        if (response.status === 200) {
-          const allReports = await response.json();
+      const response = (await this.api.request({
+        path: `/api/agencies/${agencyId}/reports`,
+        method: "GET",
+      })) as Response;
+      if (response.status === 200) {
+        const allReports = await response.json();
 
-          runInAction(() => {
-            allReports.forEach((report: ReportOverview) => {
-              this.reportOverviews[report.id] = report;
-            });
-            this.loadingOverview = false;
+        runInAction(() => {
+          allReports.forEach((report: ReportOverview) => {
+            this.reportOverviews[report.id] = report;
           });
-        } else {
-          const error = await response.json();
-          throw new Error(error.description);
-        }
+        });
+      } else {
+        const error = await response.json();
+        throw new Error(error.description);
       }
     } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    } finally {
       runInAction(() => {
         this.loadingOverview = false;
       });
-      if (error instanceof Error) return new Error(error.message);
     }
   }
 
@@ -161,25 +142,22 @@ class ReportStore {
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
+    } finally {
+      runInAction(() => {
+        this.loadingReportData = false;
+      });
     }
   }
 
   async createReport(
-    body: Record<string, unknown>
+    body: Record<string, unknown>,
+    agencyId: number
   ): Promise<Response | Error | undefined> {
     try {
-      const { currentAgency } = this.userStore;
-
-      if (currentAgency === undefined) {
-        throw new Error(
-          "Either invalid user/agency information or no user or agency information initialized."
-        );
-      }
-
       const response = (await this.api.request({
         path: "/api/reports",
         method: "POST",
-        body: { agency_id: currentAgency.id, ...body },
+        body: { agency_id: agencyId, ...body },
       })) as Response;
 
       return response;
@@ -218,7 +196,8 @@ class ReportStore {
   }
 
   async deleteReports(
-    reportIDs: number[]
+    reportIDs: number[],
+    currentAgencyId: string
   ): Promise<Response | Error | undefined> {
     try {
       const response = (await this.api.request({
@@ -235,7 +214,7 @@ class ReportStore {
 
       runInAction(() => {
         this.resetState();
-        this.getReportOverviews();
+        this.getReportOverviews(currentAgencyId);
       });
 
       return response;
@@ -244,47 +223,52 @@ class ReportStore {
     }
   }
 
-  async getReportSettings(): Promise<Response | Error | undefined> {
-    try {
-      const { currentAgency } = this.userStore;
+  initializeReportSettings = async (
+    agencyId: string
+  ): Promise<{ [system: string]: Metric[] } | Error> => {
+    const response = (await this.api.request({
+      path: `/api/agencies/${agencyId}/metrics`,
+      method: "GET",
+    })) as Response;
 
-      if (currentAgency === undefined) {
-        throw new Error(
-          "Either invalid user/agency information or no user or agency information initialized."
-        );
-      }
-
-      const response = (await this.api.request({
-        path: `/api/agencies/${currentAgency.id}/metrics`,
-        method: "GET",
-      })) as Response;
-
-      if (response.status !== 200) {
-        throw new Error(
-          `There was an issue retrieving the ${REPORT_LOWERCASE} settings.`
-        );
-      }
-
-      return response;
-    } catch (error) {
-      if (error instanceof Error) return new Error(error.message);
+    if (response.status !== 200) {
+      throw new Error(
+        `There was an issue retrieving the ${REPORT_LOWERCASE} settings.`
+      );
     }
-  }
+
+    const metrics = (await response.json()) as Metric[];
+    const metricsBySystem = metrics.reduce((acc, metric) => {
+      const systemKey = metric.system.toUpperCase().replaceAll(" ", "_");
+      if (!acc[systemKey]) {
+        acc[systemKey] = [];
+        acc[systemKey].push(metric);
+      } else {
+        acc[systemKey].push(metric);
+      }
+      return acc;
+    }, {} as { [system: string]: Metric[] });
+
+    runInAction(() => {
+      this.metricsBySystem = metricsBySystem;
+    });
+
+    return metricsBySystem;
+  };
+
+  getMetricsBySystem = (system: AgencySystems | undefined) => {
+    if (system) {
+      return this.metricsBySystem[system];
+    }
+  };
 
   async updateReportSettings(
-    updatedMetricSettings: MetricSettings[]
+    updatedMetricSettings: MetricSettings[],
+    agencyId: string
   ): Promise<Response | Error | undefined> {
     try {
-      const { currentAgency } = this.userStore;
-
-      if (currentAgency === undefined) {
-        throw new Error(
-          "Either invalid user/agency information or no user or agency information initialized."
-        );
-      }
-
       const response = (await this.api.request({
-        path: `/api/agencies/${currentAgency.id}/metrics`,
+        path: `/api/agencies/${agencyId}/metrics`,
         body: { metrics: updatedMetricSettings },
         method: "PUT",
       })) as Response;
@@ -301,17 +285,11 @@ class ReportStore {
     }
   }
 
-  async getUploadedFilesList(): Promise<Response | Error | undefined> {
-    const { currentAgency } = this.userStore;
-
-    if (currentAgency === undefined) {
-      return new Error(
-        "Either invalid user/agency information or no user or agency information initialized."
-      );
-    }
-
+  async getUploadedFilesList(
+    agencyId: string
+  ): Promise<Response | Error | undefined> {
     const response = (await this.api.request({
-      path: `/api/agencies/${currentAgency.id}/spreadsheets`,
+      path: `/api/agencies/${agencyId}/spreadsheets`,
       method: "GET",
     })) as Response;
 
@@ -403,7 +381,9 @@ class ReportStore {
       this.reportOverviews = {};
       this.reportMetrics = {};
       this.reportMetricsBySystem = {};
+      this.metricsBySystem = {};
       this.loadingOverview = true;
+      this.loadingReportData = true;
     });
   }
 }

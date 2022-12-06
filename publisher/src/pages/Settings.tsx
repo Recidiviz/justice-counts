@@ -28,9 +28,9 @@ import {
 } from "../components/Settings";
 
 export const settingsMenuPaths = {
-  "Your Account": "/settings/account",
-  "Uploaded Files": "/settings/uploaded-files",
-  "Metric Configuration": "/settings/metric-config",
+  "Your Account": "account",
+  "Uploaded Files": "uploaded-files",
+  "Metric Configuration": "metric-config",
 };
 
 export type ListOfMetricsForNavigation = {
@@ -49,6 +49,7 @@ const Settings = () => {
           <Route path="/account" element={<AccountSettings />} />
           <Route path="/uploaded-files" element={<UploadedFiles />} />
           <Route path="/metric-config" element={<MetricConfiguration />} />
+          <Route path="*" element={<Navigate to="account" />} />
         </Routes>
       </ContentDisplay>
     </SettingsContainer>

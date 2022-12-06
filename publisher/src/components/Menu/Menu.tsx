@@ -17,10 +17,11 @@
 import { Permission } from "@justice-counts/common/types";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { removeAgencyFromPath } from "../../utils";
 import { Button } from "../DataUpload";
 import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
 import {
@@ -32,22 +33,13 @@ import {
   WelcomeUser,
 } from ".";
 
-enum MenuItems {
-  Reports = "RECORDS",
-  CreateReport = "CREATE RECORD",
-  LearnMore = "LEARN MORE",
-  Settings = "SETTINGS",
-  Agencies = "AGENCIES",
-  Data = "DATA",
-}
-
 const Menu = () => {
-  const [activeMenuItem, setActiveMenuItem] = useState<MenuItems | undefined>(
-    MenuItems.Reports
-  );
   const { authStore, api, userStore } = useStore();
+  const { agencyId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const pathWithoutAgency = removeAgencyFromPath(location.pathname);
 
   const logout = async (): Promise<void | string> => {
     try {
@@ -71,46 +63,34 @@ const Menu = () => {
     }
   };
 
-  useEffect(() => {
-    if (location.pathname === "/") {
-      setActiveMenuItem(MenuItems.Reports);
-    } else if (location.pathname === `/${REPORTS_LOWERCASE}/create`) {
-      setActiveMenuItem(MenuItems.CreateReport);
-    } else if (location.pathname === "/settings") {
-      setActiveMenuItem(MenuItems.Settings);
-    } else if (location.pathname === "/data") {
-      setActiveMenuItem(MenuItems.Data);
-    } else {
-      setActiveMenuItem(undefined);
-    }
-  }, [location]);
+  const currentAgency = userStore.getAgency(agencyId);
 
   return (
     <MenuContainer>
       <WelcomeUser>
         {userStore.nameOrEmail &&
-          userStore.currentAgency?.name &&
-          `Welcome, ${userStore.nameOrEmail} at ${userStore.currentAgency.name}`}
+          currentAgency?.name &&
+          `Welcome, ${userStore.nameOrEmail} at ${currentAgency.name}`}
       </WelcomeUser>
 
       {/* Reports */}
       <MenuItem
-        onClick={() => navigate("/")}
-        active={activeMenuItem === MenuItems.Reports}
+        onClick={() => navigate(REPORTS_LOWERCASE)}
+        active={pathWithoutAgency === REPORTS_LOWERCASE}
       >
         {REPORTS_CAPITALIZED}
       </MenuItem>
 
       {/* Data (Visualizations) */}
       <MenuItem
-        onClick={() => navigate("/data")}
-        active={activeMenuItem === MenuItems.Data}
+        onClick={() => navigate("data")}
+        active={pathWithoutAgency === "data"}
       >
         Data
       </MenuItem>
 
       {/* Learn More */}
-      <MenuItem active={activeMenuItem === MenuItems.LearnMore}>
+      <MenuItem>
         <a
           href="https://justicecounts.csgjusticecenter.org/"
           target="_blank"
@@ -123,7 +103,7 @@ const Menu = () => {
       {/* Agencies Dropdown */}
       {(userStore.permissions.includes(Permission.RECIDIVIZ_ADMIN) ||
         userStore.permissions.includes(Permission.SWITCH_AGENCIES)) && (
-        <MenuItem active={activeMenuItem === MenuItems.Agencies}>
+        <MenuItem>
           <Dropdown>
             <ExtendedDropdownToggle kind="borderless">
               Agencies
@@ -134,9 +114,9 @@ const Menu = () => {
                   <ExtendedDropdownMenuItem
                     key={agency.id}
                     onClick={() => {
-                      userStore.setCurrentAgencyId(agency.id);
+                      navigate(`/agency/${agency.id}/${pathWithoutAgency}`);
                     }}
-                    highlight={userStore.currentAgency?.id === agency.id}
+                    highlight={agency.id === currentAgency?.id}
                   >
                     {agency.name}
                   </ExtendedDropdownMenuItem>
@@ -149,8 +129,8 @@ const Menu = () => {
 
       {/* Settings */}
       <MenuItem
-        onClick={() => navigate("/settings")}
-        active={activeMenuItem === MenuItems.Settings}
+        onClick={() => navigate("settings")}
+        active={pathWithoutAgency.startsWith("settings")}
       >
         Settings
       </MenuItem>
@@ -160,7 +140,7 @@ const Menu = () => {
       </MenuItem>
 
       <MenuItem buttonPadding>
-        <Button type="blue" onClick={() => navigate("/upload")}>
+        <Button type="blue" onClick={() => navigate("upload")}>
           Upload Data
         </Button>
       </MenuItem>

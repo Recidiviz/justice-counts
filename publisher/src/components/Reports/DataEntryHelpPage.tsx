@@ -16,7 +16,7 @@
 // =============================================================================
 
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import {
   REPORT_LOWERCASE,
@@ -41,6 +41,7 @@ const DataEntryHelpPage: React.FC<{
   showDataEntryHelpPage: boolean;
   closeHelpPage: () => void;
 }> = ({ showDataEntryHelpPage, closeHelpPage }) => {
+  const { agencyId } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,7 +64,9 @@ const DataEntryHelpPage: React.FC<{
         The purpose of this page is to enter data for a given{" "}
         {REPORTING_PERIOD_LOWERCASE}. (You can access all {REPORTS_LOWERCASE}{" "}
         from the{" "}
-        <DataEntryHelpPageLink onClick={() => navigate("/")}>
+        <DataEntryHelpPageLink
+          onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
+        >
           {REPORTS_CAPITALIZED}
         </DataEntryHelpPageLink>{" "}
         page.)

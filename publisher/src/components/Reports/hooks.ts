@@ -15,37 +15,40 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
-
 import { useStore } from "../../stores";
-import logo from "../assets/jc-logo-vector.png";
-import { REPORTS_LOWERCASE } from "../Global/constants";
-import Menu from "../Menu";
-import { HeaderBar, Logo, LogoContainer } from ".";
 
-const Header = () => {
-  const { agencyId } = useParams();
-  const navigate = useNavigate();
-  const { userStore } = useStore();
+export const useCheckMetricForErrors = (reportID: number) => {
+  const { formStore } = useStore();
 
-  const isAgencyValid = !!userStore.getAgency(agencyId);
+  return (metricKey: string) => {
+    let foundErrors = false;
 
-  return (
-    <HeaderBar>
-      <LogoContainer
-        onClick={() =>
-          navigate(
-            isAgencyValid ? `/agency/${agencyId}/${REPORTS_LOWERCASE}` : "/"
-          )
+    if (formStore.metricsValues[reportID]?.[metricKey]?.error) {
+      foundErrors = true;
+    }
+
+    if (formStore.disaggregations[reportID]?.[metricKey]) {
+      Object.values(formStore.disaggregations[reportID][metricKey]).forEach(
+        (disaggregation) => {
+          Object.values(disaggregation).forEach((dimension) => {
+            if (dimension.error) {
+              foundErrors = true;
+            }
+          });
         }
-      >
-        <Logo src={logo} alt="" />
-      </LogoContainer>
+      );
+    }
 
-      <Menu />
-    </HeaderBar>
-  );
+    if (formStore.contexts[reportID]?.[metricKey]) {
+      Object.values(formStore.contexts[reportID][metricKey]).forEach(
+        (context) => {
+          if (context.error) {
+            foundErrors = true;
+          }
+        }
+      );
+    }
+
+    return foundErrors;
+  };
 };
-
-export default Header;

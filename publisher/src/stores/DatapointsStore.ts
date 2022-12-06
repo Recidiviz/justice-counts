@@ -21,7 +21,6 @@ import {
   makeObservable,
   observable,
   override,
-  reaction,
   runInAction,
 } from "mobx";
 
@@ -47,36 +46,19 @@ class DatapointsStore extends BaseDatapointsStore {
 
     this.api = api;
     this.userStore = userStore;
-
-    this.disposers.push(
-      reaction(
-        () => this.userStore.currentAgencyId,
-        (currentAgencyId, previousAgencyId) => {
-          if (previousAgencyId !== undefined) {
-            this.resetState();
-          }
-        }
-      )
-    );
+    this.rawDatapoints = [];
+    this.dimensionNamesByMetricAndDisaggregation = {};
+    this.loading = true;
   }
 
   deconstructor = () => {
     this.disposers.forEach((disposer) => disposer());
   };
 
-  async getDatapoints(): Promise<void | Error> {
+  async getDatapoints(agencyId: number): Promise<void | Error> {
     try {
-      const { currentAgency } = this.userStore;
-      if (currentAgency === undefined) {
-        // If user is not attached to an agency,
-        // no need to bother trying to load this data.
-        runInAction(() => {
-          this.loading = false;
-        });
-        return;
-      }
       const response = (await this.api.request({
-        path: `/api/agencies/${currentAgency.id}/datapoints`,
+        path: `/api/agencies/${agencyId}/datapoints`,
         method: "GET",
       })) as Response;
       if (response.status === 200) {

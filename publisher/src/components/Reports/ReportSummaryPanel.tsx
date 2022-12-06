@@ -37,6 +37,7 @@ import { MetricsSectionTitle, Title } from "../Forms";
 import { REPORT_CAPITALIZED } from "../Global/constants";
 import { MetricsListItem } from "../Settings";
 import HelperText from "./HelperText";
+import { useCheckMetricForErrors } from "./hooks";
 import {
   BREAKPOINT_HEIGHT,
   FieldDescription,
@@ -226,17 +227,11 @@ const ReportStatusIconComponent: React.FC<{
 const ReportSummaryPanel: React.FC<{
   reportID: number;
   activeMetric: string;
-  checkMetricForErrors: (metricKey: string) => boolean;
   showDataEntryHelpPage: boolean;
   fieldDescription?: FieldDescriptionProps;
-}> = ({
-  reportID,
-  activeMetric,
-  checkMetricForErrors,
-  showDataEntryHelpPage,
-  fieldDescription,
-}) => {
+}> = ({ reportID, activeMetric, showDataEntryHelpPage, fieldDescription }) => {
   const { formStore, reportStore, userStore } = useStore();
+  const checkMetricForErrors = useCheckMetricForErrors(reportID);
   const {
     editors,
     last_modified_at: lastModifiedAt,
