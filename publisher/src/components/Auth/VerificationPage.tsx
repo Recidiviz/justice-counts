@@ -111,7 +111,7 @@ const VerificationPage = () => {
           <p>
             If you have reached this page by mistake, please try to log in
             again. If you are still having trouble, please reach out to{" "}
-            <JusticeCountsSupportLink href="mailto:humphrey@recidiviz.org?subject=Trouble logging into Justice Counts Publisher Control Panel">
+            <JusticeCountsSupportLink href="mailto:justice-counts-support@csg.org?subject=Trouble logging into Justice Counts Publisher Control Panel">
               Justice Counts Support
             </JusticeCountsSupportLink>
             .

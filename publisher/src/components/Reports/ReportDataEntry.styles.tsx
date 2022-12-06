@@ -60,37 +60,6 @@ export const PublishDataWrapper = styled.div`
   }
 `;
 
-export const PublishButton = styled.button<{
-  disabled?: boolean;
-  isPublished?: boolean;
-}>`
-  ${typography.sizeCSS.medium}
-  width: 315px;
-  height: 56px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: ${({ disabled }) => (disabled ? "none" : palette.solid.blue)};
-  color: ${({ disabled }) =>
-    disabled ? palette.highlight.grey8 : palette.solid.white};
-  border: 1px solid
-    ${({ disabled }) =>
-      disabled ? palette.highlight.grey3 : palette.highlight.grey3};
-  border-radius: 2px;
-  transition: 0.2s ease;
-
-  &:hover {
-    cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
-    background: ${({ disabled }) =>
-      disabled ? "none" : palette.solid.darkblue};
-  }
-
-  &::after {
-    content: ${({ isPublished }) =>
-      isPublished ? "'Unpublish and Edit'" : "'Review and Publish'"};
-  }
-`;
-
 export const FieldDescriptionTitle = styled.div`
   margin-bottom: 10px;
   color: ${palette.solid.darkgrey};

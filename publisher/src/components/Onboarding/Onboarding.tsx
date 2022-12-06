@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -188,8 +189,8 @@ const OnboardingModal = styled.div<{
     if (position === "publishdata") {
       return `
         bottom: calc(100% - ${modalHeight}px - 113px);
-        left: calc(100% - 532px - ${SIDE_PANEL_WIDTH}px);
-        top: 113px;
+        left: calc(100% - 552px);
+        top: ${HEADER_BAR_HEIGHT}px;
         right: ${SIDE_PANEL_WIDTH}px;
       `;
     }
@@ -308,7 +309,7 @@ const OnboardingFadedContainer = styled.div<OnboardingFadedContainerProps>`
   background: ${palette.solid.white};
   opacity: 0.7;
   position: absolute;
-  top: 0;
+  top: ${HEADER_BAR_HEIGHT}px;
   ${({ position }) => {
     if (position === "left") {
       return `
@@ -441,12 +442,10 @@ const OnboardingSessionView = ({
       html: (
         <>
           <p>
-            If you need to edit your name or email, click on your name and
-            access your Settings in the dropdown.
-          </p>
-          <p>
-            Admins can also use these settings to add new team members to
-            Publisher.
+            You can view and edit your agency’s Justice Counts metrics in the{" "}
+            <strong>Settings</strong> page, accessible from the menu bar at the
+            top of the screen. You can also change your display name and email
+            from this page.
           </p>
         </>
       ),
@@ -462,7 +461,9 @@ const OnboardingSessionView = ({
             Your feedback helps us to make this product even easier to use. If
             you have questions, requests, or any other feedback, please email us
             at{" "}
-            <a href="mailto:humphrey@recidiviz.org">humphrey@recidiviz.org</a>{" "}
+            <a href="mailto:justice-counts-support@csg.org">
+              justice-counts-support@csg.org
+            </a>{" "}
             and we’ll be happy to get back to you.
           </p>
         </>
@@ -477,7 +478,10 @@ const OnboardingSessionView = ({
         <>
           <p>
             If you have any questions, email the Justice Counts team at{" "}
-            <a href="mailto:humphrey@recidiviz.org">humphrey@recidiviz.org</a>.
+            <a href="mailto:justice-counts-support@csg.org">
+              justice-counts-support@csg.org
+            </a>
+            .
           </p>
         </>
       ),
@@ -532,19 +536,19 @@ const OnboardingSessionView = ({
     },
     {
       order: 3,
-      title: "Publish your data",
+      title: "Review and Publish",
       html: (
         <>
           <p>
-            Whenever you’re ready, you can publish your data with this button.
-            Don’t worry – you’ll still have a chance to review all the data
-            before it goes live*, and you can still edit the data even after
-            it’s been published.
+            Whenever you’re ready, you can review and publish your data with
+            this button. Even after publishing, you can still edit the data by
+            clicking this button again, which will revert this Record back to
+            Draft mode.
           </p>
           <br />
           <p>
-            *<strong>NOTE</strong>: At this stage, data will just be marked as
-            published and will not be live just yet.
+            *<strong>NOTE</strong>: At this stage, data will only be marked as
+            published and will not be available for public access.
           </p>
         </>
       ),
@@ -558,7 +562,10 @@ const OnboardingSessionView = ({
         <>
           <p>
             If you have any questions, email the Justice Counts team at{" "}
-            <a href="mailto:humphrey@recidiviz.org">humphrey@recidiviz.org</a>.
+            <a href="mailto:justice-counts-support@csg.org">
+              justice-counts-support@csg.org
+            </a>
+            .
           </p>
         </>
       ),

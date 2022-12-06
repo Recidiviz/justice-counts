@@ -18,6 +18,7 @@
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
   MetricContextWithErrors,
+  MetricDisaggregationDimensions,
   MetricDisaggregationDimensionsWithErrors,
   MetricDisaggregationsWithErrors,
   MetricWithErrors,
@@ -38,6 +39,7 @@ import {
   REPORTS_LOWERCASE,
 } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
+import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "../MetricConfiguration";
 import { Heading, Subheading } from "../ReviewMetrics/ReviewMetrics.styles";
 import { useCheckMetricForErrors } from "./hooks";
 import {
@@ -68,38 +70,108 @@ import {
   VerticalLine,
 } from "./PublishConfirmation.styles";
 
+const RaceEthnicitiesGroupedByEthnicity: React.FC<{
+  dimensions: MetricDisaggregationDimensions[] &
+    MetricDisaggregationDimensionsWithErrors[];
+}> = ({ dimensions }) => {
+  const dimensionsGroupedByEthnicity =
+    dimensions.reduce(
+      (acc, dimension) => {
+        if (dimension.ethnicity === "Hispanic") {
+          acc.Hispanic.push(dimension);
+        }
+        if (dimension.ethnicity === "Not Hispanic") {
+          acc["Not Hispanic"].push(dimension);
+        }
+        if (dimension.ethnicity === "Unknown Ethnicity") {
+          acc["Unknown Ethnicity"].push(dimension);
+        }
+        return acc;
+      },
+      {
+        Hispanic: [],
+        "Not Hispanic": [],
+        "Unknown Ethnicity": [],
+      } as { [key: string]: MetricDisaggregationDimensionsWithErrors[] }
+    ) || {};
+  const dimensionsGroupedByEthnicityEntries = Object.entries(
+    dimensionsGroupedByEthnicity
+  );
+
+  return (
+    <>
+      {dimensionsGroupedByEthnicityEntries.map(
+        ([ethnicity, groupedDimensions]) => (
+          <>
+            <MetricSubTitleContainer secondary>
+              {ethnicity}
+            </MetricSubTitleContainer>
+            <DisaggregationBreakdownContainer>
+              {groupedDimensions.map((dimension) => (
+                <DisaggregationBreakdown
+                  key={dimension.key}
+                  error={!!dimension.error}
+                >
+                  <BreakdownLabelContainer>
+                    <BreakdownLabel>{dimension.race}</BreakdownLabel>
+                    {!!dimension.error && (
+                      <BreakdownErrorImg src={errorIcon} alt="" />
+                    )}
+                  </BreakdownLabelContainer>
+                  <BreakdownValue
+                    missing={!dimension.value}
+                    error={!!dimension.error}
+                  >
+                    {dimension.value?.toLocaleString("en-US") || "--"}
+                  </BreakdownValue>
+                </DisaggregationBreakdown>
+              ))}
+            </DisaggregationBreakdownContainer>
+          </>
+        )
+      )}
+    </>
+  );
+};
+
 const Disaggregation: React.FC<{
   disaggregation: MetricDisaggregationsWithErrors;
 }> = ({ disaggregation }) => {
   const { display_name: displayName, dimensions } = disaggregation;
+
   return (
     <>
       <MetricSubTitleContainer>{displayName}</MetricSubTitleContainer>
-      <DisaggregationBreakdownContainer>
-        {dimensions.map(
-          (dimension: MetricDisaggregationDimensionsWithErrors) => {
-            return (
-              <DisaggregationBreakdown
-                key={dimension.key}
-                error={!!dimension.error}
-              >
-                <BreakdownLabelContainer>
-                  <BreakdownLabel>{dimension.label}</BreakdownLabel>
-                  {!!dimension.error && (
-                    <BreakdownErrorImg src={errorIcon} alt="" />
-                  )}
-                </BreakdownLabelContainer>
-                <BreakdownValue
-                  missing={!dimension.value}
+
+      {disaggregation.key === RACE_ETHNICITY_DISAGGREGATION_KEY ? (
+        <RaceEthnicitiesGroupedByEthnicity dimensions={dimensions} />
+      ) : (
+        <DisaggregationBreakdownContainer>
+          {dimensions.map(
+            (dimension: MetricDisaggregationDimensionsWithErrors) => {
+              return (
+                <DisaggregationBreakdown
+                  key={dimension.key}
                   error={!!dimension.error}
                 >
-                  {dimension.value?.toLocaleString("en-US") || "--"}
-                </BreakdownValue>
-              </DisaggregationBreakdown>
-            );
-          }
-        )}
-      </DisaggregationBreakdownContainer>
+                  <BreakdownLabelContainer>
+                    <BreakdownLabel>{dimension.label}</BreakdownLabel>
+                    {!!dimension.error && (
+                      <BreakdownErrorImg src={errorIcon} alt="" />
+                    )}
+                  </BreakdownLabelContainer>
+                  <BreakdownValue
+                    missing={!dimension.value}
+                    error={!!dimension.error}
+                  >
+                    {dimension.value?.toLocaleString("en-US") || "--"}
+                  </BreakdownValue>
+                </DisaggregationBreakdown>
+              );
+            }
+          )}
+        </DisaggregationBreakdownContainer>
+      )}
     </>
   );
 };
@@ -266,7 +338,7 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
             </Heading>
             <Subheading>
               Before publishing, take a moment to review the changes. You must
-              resolve any errors before publishing; otherwise, you can save this
+              resolve any errors before publishing; otherwise, you can save this{" "}
               {REPORT_LOWERCASE} and return at another time.
             </Subheading>
             {metricsPreview.map((metric, i) => {

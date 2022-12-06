@@ -28,7 +28,6 @@ import {
   BinaryRadioGroupQuestion,
   TextInput,
 } from "../Forms";
-import { REPORTS_LOWERCASE2 } from "../Global/constants";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   Label,
@@ -37,7 +36,6 @@ import {
   MetricContextItem,
   MultipleChoiceWrapper,
   RadioButtonGroupWrapper,
-  Subheader,
 } from ".";
 
 export const ContextConfiguration: React.FC = observer(() => {
@@ -58,11 +56,6 @@ export const ContextConfiguration: React.FC = observer(() => {
   return (
     <MetricContextContainer>
       <MetricContextHeader>Context</MetricContextHeader>
-      <Subheader>
-        Anything entered here will appear as the default value for all{" "}
-        {REPORTS_LOWERCASE2}. If you are entering data for a particular month,
-        you can still replace this as necessary.
-      </Subheader>
 
       {activeContextKeys.map((contextKey) => {
         const currentContext = contexts[systemMetricKey][contextKey];

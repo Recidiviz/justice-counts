@@ -20,7 +20,11 @@ import { ReactComponent as InfoIcon } from "@justice-counts/common/assets/info-i
 import { ReactComponent as LeftArrowIcon } from "@justice-counts/common/assets/left-arrow-icon.svg";
 import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share-icon.svg";
 import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
+import { MetricInsights } from "@justice-counts/common/components/DataViz/MetricInsights";
+import { transformDataForMetricInsights } from "@justice-counts/common/components/DataViz/utils";
 import { COMMON_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import { showToast } from "@justice-counts/common/components/Toast";
+import { DataVizTimeRangesMap } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -84,43 +88,58 @@ const MetricOverviewActionShareButton = () => (
 );
 
 const DashboardView = () => {
-  const [shouldResizeChartHeight, setShouldResizeChartHeight] =
-    useState<boolean>(getScreenWidth() >= COMMON_DESKTOP_WIDTH);
+  const [isDesktopWidth, setIsDesktopWidth] = useState<boolean>(
+    getScreenWidth() >= COMMON_DESKTOP_WIDTH
+  );
   const navigate = useNavigate();
   const params = useParams();
   const agencyId = Number(params.id);
-  const { datapointsStore } = useStore();
+  const { agencyDataStore, dataVizStore } = useStore();
+
+  const {
+    timeRange,
+    disaggregationName,
+    countOrPercentageView,
+    setTimeRange,
+    setDisaggregationName,
+    setCountOrPercentageView,
+  } = dataVizStore;
 
   const { search } = useLocation();
   const query = new URLSearchParams(search);
   const metricKey = query.get("metric");
+
   useEffect(() => {
-    datapointsStore.getDatapoints(agencyId);
+    const fetchData = async () => {
+      try {
+        await agencyDataStore.fetchAgencyData(agencyId);
+      } catch (error) {
+        showToast("Error fetching data.", false, "red", 4000);
+      }
+    };
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (
       metricKey &&
-      !datapointsStore.loading &&
-      !datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey]
+      !agencyDataStore.loading &&
+      !agencyDataStore.dimensionNamesByMetricAndDisaggregation[metricKey]
     ) {
       navigate(`/agency/${agencyId}`);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [datapointsStore.loading]);
+  }, [agencyDataStore.loading]);
 
   useEffect(() => {
     const resizeListener = () => {
       // change width from the state object
-      if (shouldResizeChartHeight && getScreenWidth() < COMMON_DESKTOP_WIDTH) {
-        setShouldResizeChartHeight(false);
-      } else if (
-        !shouldResizeChartHeight &&
-        getScreenWidth() >= COMMON_DESKTOP_WIDTH
-      ) {
-        setShouldResizeChartHeight(true);
+      if (isDesktopWidth && getScreenWidth() < COMMON_DESKTOP_WIDTH) {
+        setIsDesktopWidth(false);
+      } else if (!isDesktopWidth && getScreenWidth() >= COMMON_DESKTOP_WIDTH) {
+        setIsDesktopWidth(true);
       }
     };
     // set resize listener
@@ -131,22 +150,30 @@ const DashboardView = () => {
       // remove resize listener
       window.removeEventListener("resize", resizeListener);
     };
-  }, [shouldResizeChartHeight]);
+  }, [isDesktopWidth]);
 
   if (
     !metricKey ||
-    (!datapointsStore.loading &&
-      !datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey])
+    (!agencyDataStore.loading &&
+      !agencyDataStore.dimensionNamesByMetricAndDisaggregation[metricKey])
   ) {
     return null;
   }
 
-  if (datapointsStore.loading) {
+  if (agencyDataStore.loading) {
     return <>Loading...</>;
   }
 
-  const metricNames = Object.keys(
-    datapointsStore.dimensionNamesByMetricAndDisaggregation
+  const metricNames = agencyDataStore.metrics.map(
+    (metric) => metric.display_name
+  );
+
+  const metricName =
+    agencyDataStore.metricKeyToDisplayName[metricKey] || metricKey;
+
+  const filteredAggregateData = transformDataForMetricInsights(
+    agencyDataStore.datapointsByMetric[metricKey]?.aggregate || [],
+    DataVizTimeRangesMap[dataVizStore.timeRange]
   );
 
   return (
@@ -154,9 +181,8 @@ const DashboardView = () => {
       <HeaderBar />
       <LeftPanel>
         <BackButton onClick={() => navigate(`/agency/${agencyId}`)} />
-        <MetricTitle>
-          {datapointsStore.metricKeyToDisplayName[metricKey] || metricKey}
-        </MetricTitle>
+        <MetricTitle>{metricName}</MetricTitle>
+        <MetricInsights datapoints={filteredAggregateData} />
         <MetricOverviewContent>
           Measures the number of individuals with at least one parole violation
           during the reporting period.
@@ -169,21 +195,32 @@ const DashboardView = () => {
       </LeftPanel>
       <RightPanel>
         <RightPanelBackButton onClick={() => navigate(`/agency/${agencyId}`)} />
-        <RightPanelMetricTitle>
-          {datapointsStore.metricKeyToDisplayName[metricKey] || metricKey}
-        </RightPanelMetricTitle>
+        <RightPanelMetricTitle>{metricName}</RightPanelMetricTitle>
         <DatapointsView
           datapointsGroupedByAggregateAndDisaggregations={
-            datapointsStore.datapointsByMetric[metricKey]
+            agencyDataStore.datapointsByMetric[metricKey]
           }
           dimensionNamesByDisaggregation={
-            datapointsStore.dimensionNamesByMetricAndDisaggregation[metricKey]
+            agencyDataStore.dimensionNamesByMetricAndDisaggregation[metricKey]
           }
+          timeRange={timeRange}
+          disaggregationName={disaggregationName}
+          countOrPercentageView={countOrPercentageView}
+          setTimeRange={setTimeRange}
+          setDisaggregationName={setDisaggregationName}
+          setCountOrPercentageView={setCountOrPercentageView}
           metricNames={metricNames}
-          onMetricsSelect={(metric) =>
-            navigate(`/agency/${agencyId}/dashboard?metric=${metric}`)
-          }
-          resizeHeight={shouldResizeChartHeight}
+          onMetricsSelect={(selectedMetricName) => {
+            const selectedMetricKey =
+              agencyDataStore.metricDisplayNameToKey[selectedMetricName];
+            if (selectedMetricKey) {
+              navigate(
+                `/agency/${agencyId}/dashboard?metric=${selectedMetricKey}`
+              );
+            }
+          }}
+          showBottomMetricInsights={!isDesktopWidth}
+          resizeHeight={isDesktopWidth}
         />
         <RightPanelMetricOverviewContent>
           Measures the number of individuals with at least one parole violation

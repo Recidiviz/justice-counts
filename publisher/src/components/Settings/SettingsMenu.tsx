@@ -57,6 +57,9 @@ export const SettingsMenu: React.FC = observer(() => {
               removeAgencyFromPath(location.pathname) === `settings/${path}`
             }
             onClick={() => {
+              if (path === "/settings/metric-config") {
+                return navigate(`${path}?system=${systemSearchParam}`);
+              }
               navigate(path);
             }}
           >

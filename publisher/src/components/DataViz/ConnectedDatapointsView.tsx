@@ -17,11 +17,7 @@
 
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
-import {
-  DatapointsGroupedByAggregateAndDisaggregations,
-  RawDatapoint,
-  ReportFrequency,
-} from "@justice-counts/common/types";
+import { ReportFrequency } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React from "react";
 
@@ -34,12 +30,19 @@ const ConnectedDatapointsView: React.FC<{
   metricFrequency?: ReportFrequency;
   dataView: ChartView;
 }> = ({ metric, metricName, metricFrequency, dataView }) => {
-  const { datapointsStore } = useStore();
-  const datapointsForMetric =
-    datapointsStore.datapointsByMetric[metric] ||
-    ({} as DatapointsGroupedByAggregateAndDisaggregations);
-  const rawDatapointsForMetric =
-    datapointsStore.rawDatapointsByMetric[metric] || ([] as RawDatapoint[]);
+  const { datapointsStore, dataVizStore } = useStore();
+
+  const datapointsForMetric = datapointsStore.datapointsByMetric[metric];
+  const rawDatapointsForMetric = datapointsStore.rawDatapointsByMetric[metric];
+
+  const {
+    timeRange,
+    disaggregationName,
+    countOrPercentageView,
+    setTimeRange,
+    setDisaggregationName,
+    setCountOrPercentageView,
+  } = dataVizStore;
 
   return (
     <>
@@ -47,9 +50,14 @@ const ConnectedDatapointsView: React.FC<{
         <DatapointsView
           datapointsGroupedByAggregateAndDisaggregations={datapointsForMetric}
           dimensionNamesByDisaggregation={
-            datapointsStore.dimensionNamesByMetricAndDisaggregation[metric] ||
-            {}
+            datapointsStore.dimensionNamesByMetricAndDisaggregation[metric]
           }
+          timeRange={timeRange}
+          disaggregationName={disaggregationName}
+          countOrPercentageView={countOrPercentageView}
+          setTimeRange={setTimeRange}
+          setDisaggregationName={setDisaggregationName}
+          setCountOrPercentageView={setCountOrPercentageView}
           metricName={metricName}
           metricFrequency={metricFrequency}
           resizeHeight

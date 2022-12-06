@@ -81,6 +81,7 @@ beforeEach(() => {
               ],
               required: false,
               helper_text: "Break down the metric by NIBRS offense types.",
+              should_sum_to_total: false,
             },
           ],
         },

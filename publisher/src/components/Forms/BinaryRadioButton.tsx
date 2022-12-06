@@ -20,7 +20,7 @@ import {
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import React, { InputHTMLAttributes } from "react";
-import styled from "styled-components/macro";
+import styled, { css } from "styled-components/macro";
 
 export const BinaryRadioGroupContainer = styled.div`
   display: flex;
@@ -43,7 +43,7 @@ export const BinaryRadioGroupQuestion = styled.div`
   color: ${palette.solid.darkgrey};
 `;
 
-export const RadioButtonWrapper = styled.div`
+export const RadioButtonWrapper = styled.div<{ lastOptionBlue?: boolean }>`
   display: flex;
   flex: 1 1 0;
   margin: 15px 0 0 0;
@@ -51,6 +51,22 @@ export const RadioButtonWrapper = styled.div`
   &:first-child {
     margin: 15px 10px 0 0;
   }
+
+  ${({ lastOptionBlue }) =>
+    lastOptionBlue &&
+    css`
+      margin: 0;
+
+      &:first-child {
+        margin: 0px 10px 0 0;
+      }
+
+      &:first-child input:checked + label {
+        background-color: ${palette.highlight.grey9};
+        border-color: unset;
+        color: ${palette.solid.white};
+      }
+    `}
 `;
 
 export const RadioButtonElement = styled.input<{
@@ -83,6 +99,7 @@ export const RadioButtonElement = styled.input<{
 
 export const RadioButtonLabel = styled.label<{
   disabled?: boolean;
+  buttonSize?: string;
 }>`
   ${typography.sizeCSS.medium}
   width: 100%;
@@ -100,6 +117,16 @@ export const RadioButtonLabel = styled.label<{
     background-color: ${({ disabled }) =>
       disabled ? "none" : palette.highlight.grey2};
   }
+
+  ${({ buttonSize }) =>
+    buttonSize === "small" &&
+    css`
+      ${typography.sizeCSS.normal}
+      width: unset;
+      height: unset;
+      min-width: 60px;
+      padding: 9px 16px;
+    `}
 `;
 
 export const BinaryRadioGroupClearButton = styled.div<{
@@ -119,6 +146,8 @@ interface RadioButtonProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   context?: string;
   metricKey?: string;
+  buttonSize?: string;
+  lastOptionBlue?: boolean;
 }
 
 /** Single radio button in the style of a regular button */
@@ -127,16 +156,22 @@ export const BinaryRadioButton: React.FC<RadioButtonProps> = ({
   context,
   metricKey,
   disabled,
+  buttonSize,
+  lastOptionBlue,
   ...props
 }): JSX.Element => {
   return (
-    <RadioButtonWrapper>
+    <RadioButtonWrapper lastOptionBlue={lastOptionBlue}>
       <RadioButtonElement
         disabled={disabled}
         {...props}
         data-metric-key={metricKey}
       />
-      <RadioButtonLabel disabled={disabled} htmlFor={props.id}>
+      <RadioButtonLabel
+        disabled={disabled}
+        buttonSize={buttonSize}
+        htmlFor={props.id}
+      >
         {label}
       </RadioButtonLabel>
     </RadioButtonWrapper>

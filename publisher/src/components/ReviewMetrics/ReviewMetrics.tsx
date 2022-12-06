@@ -129,7 +129,9 @@ const ReviewMetrics: React.FC = observer(() => {
               The following data has been successfully uploaded. Take a moment
               to review the changes. If you believe there is an error, please
               contact the Justice Counts team via{" "}
-              <a href="mailto:humphrey@recidiviz.org">humphrey@recidiviz.org</a>
+              <a href="mailto:justice-counts-support@csg.org">
+                justice-counts-support@csg.org
+              </a>
               .
             </>
           ) : (

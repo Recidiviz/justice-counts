@@ -93,6 +93,8 @@ export type MetricConfigurationSettings = {
 export interface Metric {
   key: string;
   system: AgencySystems;
+  custom_frequency?: ReportFrequency;
+  datapoints?: RawDatapoint[];
   display_name: string;
   description: string;
   reporting_note: string;
@@ -105,6 +107,7 @@ export interface Metric {
   disaggregations: MetricDisaggregations[];
   enabled?: boolean;
   settings?: MetricConfigurationSettings[];
+  starting_month?: number;
   frequency?: ReportFrequency;
 }
 
@@ -130,6 +133,7 @@ export interface MetricDisaggregations {
   required: boolean;
   helper_text: string | null | undefined;
   enabled?: boolean;
+  should_sum_to_total: boolean;
 }
 
 export interface MetricDisaggregationDimensions {
@@ -142,6 +146,7 @@ export interface MetricDisaggregationDimensions {
   display_name?: string;
   race?: string;
   ethnicity?: string;
+  datapoints?: RawDatapoint[];
 }
 
 export interface CreateReportFormValuesType extends Record<string, unknown> {
@@ -278,7 +283,16 @@ export interface RawDatapointsByMetric {
 
 export type DataVizTimeRange = 0 | 6 | 12 | 60 | 120;
 
-export const DataVizTimeRangesMap: { [key: string]: DataVizTimeRange } = {
+export type DataVizTimeRangeDisplayName =
+  | "All"
+  | "6 Months Ago"
+  | "1 Year Ago"
+  | "5 Years Ago"
+  | "10 Years Ago";
+
+export const DataVizTimeRangesMap: {
+  [key in DataVizTimeRangeDisplayName]: DataVizTimeRange;
+} = {
   All: 0,
   "6 Months Ago": 6,
   "1 Year Ago": 12,
@@ -286,7 +300,7 @@ export const DataVizTimeRangesMap: { [key: string]: DataVizTimeRange } = {
   "10 Years Ago": 120,
 };
 
-export type DatapointsViewSetting = "Count" | "Percentage";
+export type DataVizCountOrPercentageView = "Count" | "Percentage";
 
 export interface DimensionNamesByDisaggregation {
   [disaggregation: string]: string[];
@@ -297,3 +311,5 @@ export interface DimensionNamesByMetricAndDisaggregation {
 }
 
 export const DataVizAggregateName = "Total";
+
+export const NoDisaggregationOption = "None";

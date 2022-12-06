@@ -17,10 +17,6 @@
 
 import BaseDatapointsStore from "@justice-counts/common/stores/BaseDatapointsStore";
 import {
-  DimensionNamesByMetricAndDisaggregation,
-  RawDatapoint,
-} from "@justice-counts/common/types";
-import {
   IReactionDisposer,
   makeObservable,
   observable,
@@ -35,12 +31,6 @@ class DatapointsStore extends BaseDatapointsStore {
   userStore: UserStore;
 
   api: API;
-
-  rawDatapoints: RawDatapoint[];
-
-  dimensionNamesByMetricAndDisaggregation: DimensionNamesByMetricAndDisaggregation;
-
-  loading: boolean;
 
   disposers: IReactionDisposer[] = [];
 

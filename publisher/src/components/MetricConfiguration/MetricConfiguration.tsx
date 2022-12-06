@@ -29,7 +29,6 @@ import { Loading } from "../Loading";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
-  BackToMetrics,
   Configuration,
   Metric,
   MetricBox,
@@ -185,6 +184,9 @@ export const MetricConfiguration: React.FC = observer(() => {
                       metricKey={key}
                       displayName={metric.label as string}
                       frequency={metric.frequency as ReportFrequency}
+                      customFrequency={
+                        metric.customFrequency as ReportFrequency
+                      }
                       description={metric.description as string}
                       enabled={metric.enabled}
                     />
@@ -198,15 +200,6 @@ export const MetricConfiguration: React.FC = observer(() => {
             <MetricConfigurationWrapper>
               {/* Metric Configuration */}
               <MetricConfigurationDisplay>
-                <BackToMetrics
-                  onClick={() => {
-                    setSettingsSearchParams({ system: systemSearchParam });
-                    setActiveDimensionKey(undefined);
-                  }}
-                >
-                  ← Back to Metrics
-                </BackToMetrics>
-
                 <Metric
                   onClick={() => setActiveDimensionKey(undefined)}
                   inView={!activeDimensionKey}
@@ -215,7 +208,11 @@ export const MetricConfiguration: React.FC = observer(() => {
                     {metrics[systemMetricKey]?.label}
                   </MetricName>
                   <Badge color="GREEN" noMargin>
-                    {metrics[systemMetricKey]?.frequency?.toLowerCase()}
+                    {metrics[systemMetricKey]?.customFrequency
+                      ? metrics[
+                          systemMetricKey
+                        ]?.customFrequency?.toLocaleLowerCase()
+                      : metrics[systemMetricKey]?.frequency?.toLowerCase()}
                   </Badge>
                   <RightArrowIcon />
                 </Metric>

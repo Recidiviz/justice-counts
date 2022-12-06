@@ -20,6 +20,7 @@ import React from "react";
 
 import { useStore } from "../../stores";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
+import { useSettingsSearchParams } from "../Settings";
 import {
   CalloutBox,
   Description,
@@ -34,15 +35,30 @@ import {
   RaceEthnicitiesBreakdownContainer,
   RaceEthnicitiesRow,
   RaceEthnicitiesTable,
+  sortRaces,
 } from ".";
 
-export const RaceEthnicitiesGrid: React.FC = observer(() => {
+export const RaceEthnicitiesGrid: React.FC<{
+  disaggregationEnabled: boolean;
+  onClick: () => void;
+}> = observer(({ disaggregationEnabled, onClick }) => {
+  const [settingsSearchParams] = useSettingsSearchParams();
   const { metricConfigStore } = useStore();
-  const { ethnicitiesByRace } = metricConfigStore;
+  const { getEthnicitiesByRace } = metricConfigStore;
+
+  const { system: systemSearchParam, metric: metricSearchParam } =
+    settingsSearchParams;
+  const ethnicitiesByRace =
+    (systemSearchParam &&
+      metricSearchParam &&
+      getEthnicitiesByRace(systemSearchParam, metricSearchParam)) ||
+    {};
 
   return (
-    <RaceEthnicitiesBreakdownContainer>
-      <CalloutBox>
+    <RaceEthnicitiesBreakdownContainer
+      disaggregationEnabled={disaggregationEnabled}
+    >
+      <CalloutBox onClick={onClick}>
         <Description>
           Answer the questions on the <span>Race and Ethnicity</span> form; the
           grid below will reflect your responses.
@@ -63,19 +79,21 @@ export const RaceEthnicitiesGrid: React.FC = observer(() => {
       </GridHeaderContainer>
 
       <RaceEthnicitiesTable>
-        {Object.entries(ethnicitiesByRace).map(([race, ethnicities]) => (
-          <RaceEthnicitiesRow key={race}>
-            <RaceCell>{race}</RaceCell>
-            <EthnicitiesRow>
-              {Object.values(ethnicities).map((ethnicity) => (
-                <EthnicityCell
-                  key={ethnicity.key}
-                  enabled={ethnicity.enabled}
-                />
-              ))}
-            </EthnicitiesRow>
-          </RaceEthnicitiesRow>
-        ))}
+        {Object.entries(ethnicitiesByRace)
+          .sort(sortRaces)
+          .map(([race, ethnicities]) => (
+            <RaceEthnicitiesRow key={race}>
+              <RaceCell>{race}</RaceCell>
+              <EthnicitiesRow>
+                {Object.values(ethnicities).map((ethnicity) => (
+                  <EthnicityCell
+                    key={ethnicity.key}
+                    enabled={ethnicity.enabled}
+                  />
+                ))}
+              </EthnicitiesRow>
+            </RaceEthnicitiesRow>
+          ))}
       </RaceEthnicitiesTable>
     </RaceEthnicitiesBreakdownContainer>
   );

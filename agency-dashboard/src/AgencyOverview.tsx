@@ -27,44 +27,37 @@ const AgencyOverview = () => {
   const navigate = useNavigate();
   const params = useParams();
   const agencyId = Number(params.id);
-  const { datapointsStore } = useStore();
+  const { agencyDataStore } = useStore();
 
-  const fetchDatapoints = async () => {
-    try {
-      await datapointsStore.getDatapoints(agencyId);
-    } catch (error) {
-      showToast("Error fetching data.", false, "red", 4000);
-    }
-  };
   useEffect(() => {
-    fetchDatapoints();
+    const fetchData = async () => {
+      try {
+        await agencyDataStore.fetchAgencyData(agencyId);
+      } catch (error) {
+        showToast("Error fetching data.", false, "red", 4000);
+      }
+    };
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (datapointsStore.loading) {
+  if (agencyDataStore.loading) {
     return <>Loading...</>;
-  }
-
-  const metrics = Object.keys(datapointsStore.datapointsByMetric);
-  if (metrics.length === 0) {
-    return <>No published metrics.</>;
   }
 
   return (
     <>
       Click on a metric to view chart:
-      {Object.keys(datapointsStore.dimensionNamesByMetricAndDisaggregation).map(
-        (metricKey) => (
-          <MetricCategory
-            key={metricKey}
-            onClick={() => {
-              navigate(`/agency/${agencyId}/dashboard?metric=${metricKey}`);
-            }}
-          >
-            {datapointsStore.metricKeyToDisplayName[metricKey] || metricKey}
-          </MetricCategory>
-        )
-      )}
+      {agencyDataStore.metrics.map((metric) => (
+        <MetricCategory
+          key={metric.key}
+          onClick={() => {
+            navigate(`/agency/${agencyId}/dashboard?metric=${metric.key}`);
+          }}
+        >
+          {agencyDataStore.metricKeyToDisplayName[metric.key] || metric.key}
+        </MetricCategory>
+      ))}
     </>
   );
 };
