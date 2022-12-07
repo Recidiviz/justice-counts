@@ -98,10 +98,10 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
         : [];
 
     const metricEnabled = Boolean(metrics[systemMetricKey]?.enabled);
-    const frequency = metrics[systemMetricKey]?.frequency;
+    const defaultFrequency = metrics[systemMetricKey]?.defaultFrequency;
     const customFrequency = metrics[systemMetricKey]?.customFrequency;
     const startingMonth = metrics[systemMetricKey]?.startingMonth;
-    const customOrDefaultFrequency = customFrequency || frequency;
+    const customOrDefaultFrequency = customFrequency || defaultFrequency;
     const startingMonthNotJanuaryJune =
       startingMonth !== null && startingMonth !== 1 && startingMonth !== 6;
 

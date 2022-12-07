@@ -51,7 +51,7 @@ class MetricConfigStore {
       enabled?: boolean;
       label?: string;
       description?: Metric["description"];
-      frequency?: Metric["frequency"];
+      defaultFrequency?: Metric["frequency"];
       customFrequency?: Metric["custom_frequency"] | string;
       startingMonth?: Metric["starting_month"] | null;
     };
@@ -160,7 +160,7 @@ class MetricConfigStore {
             enabled?: boolean;
             label?: string;
             description?: Metric["description"];
-            frequency?: Metric["frequency"];
+            defaultFrequency?: Metric["frequency"];
             customFrequency?: Metric["custom_frequency"] | string;
           };
         }[]
@@ -343,7 +343,7 @@ class MetricConfigStore {
       this.metrics[systemMetricKey].label = metadata.label as string;
       this.metrics[systemMetricKey].description =
         metadata.description as string;
-      this.metrics[systemMetricKey].frequency =
+      this.metrics[systemMetricKey].defaultFrequency =
         metadata.frequency as ReportFrequency;
       this.metrics[systemMetricKey].customFrequency =
         metadata.customFrequency as ReportFrequency;
@@ -366,7 +366,7 @@ class MetricConfigStore {
     system: AgencySystems,
     metricKey: string,
     update: {
-      frequency?: ReportFrequency;
+      defaultFrequency?: ReportFrequency;
       customFrequency?: ReportFrequency | string;
       startingMonth?: number | null;
     },
@@ -383,8 +383,8 @@ class MetricConfigStore {
     }
 
     /** Update value */
-    if (update.frequency) {
-      this.metrics[systemMetricKey].frequency = update.frequency;
+    if (update.defaultFrequency) {
+      this.metrics[systemMetricKey].defaultFrequency = update.defaultFrequency;
     }
     if (update.customFrequency !== undefined) {
       this.metrics[systemMetricKey].customFrequency = update.customFrequency;
@@ -400,7 +400,7 @@ class MetricConfigStore {
     return {
       key: metricKey,
       enabled: reenableMetric || this.metrics[systemMetricKey].enabled,
-      frequency: update.frequency,
+      frequency: update.defaultFrequency,
       custom_frequency: update.customFrequency,
       starting_month: update.startingMonth,
     };

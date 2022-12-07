@@ -190,7 +190,7 @@ export const MetricConfiguration: React.FC = observer(() => {
                       key={key}
                       metricKey={key}
                       displayName={metric.label as string}
-                      frequency={metric.frequency as ReportFrequency}
+                      frequency={metric.defaultFrequency as ReportFrequency}
                       customFrequency={
                         metric.customFrequency as ReportFrequency
                       }
@@ -219,7 +219,9 @@ export const MetricConfiguration: React.FC = observer(() => {
                       ? metrics[
                           systemMetricKey
                         ]?.customFrequency?.toLocaleLowerCase()
-                      : metrics[systemMetricKey]?.frequency?.toLowerCase()}
+                      : metrics[
+                          systemMetricKey
+                        ]?.defaultFrequency?.toLowerCase()}
                   </Badge>
                   <RightArrowIcon />
                 </Metric>
