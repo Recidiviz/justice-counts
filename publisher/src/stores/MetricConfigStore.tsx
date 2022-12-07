@@ -369,8 +369,7 @@ class MetricConfigStore {
       defaultFrequency?: ReportFrequency;
       customFrequency?: ReportFrequency | string;
       startingMonth?: number | null;
-    },
-    reenableMetric?: boolean
+    }
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
@@ -392,14 +391,13 @@ class MetricConfigStore {
     if (update.startingMonth !== undefined) {
       this.metrics[systemMetricKey].startingMonth = update.startingMonth;
     }
-    if (reenableMetric) {
-      this.updateMetricEnabledStatus(system, metricKey, true);
-    }
+
+    this.updateMetricEnabledStatus(system, metricKey, true);
 
     /** Return an object in the desired backend data structure for saving purposes */
     return {
       key: metricKey,
-      enabled: reenableMetric || this.metrics[systemMetricKey].enabled,
+      enabled: true,
       frequency: update.defaultFrequency,
       custom_frequency: update.customFrequency,
       starting_month: update.startingMonth,
