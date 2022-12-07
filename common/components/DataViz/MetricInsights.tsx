@@ -30,7 +30,8 @@ import {
 
 export const MetricInsights: React.FC<{
   datapoints: Datapoint[];
-}> = ({ datapoints }) => {
+  enableHideByWidth?: boolean;
+}> = ({ datapoints, enableHideByWidth = false }) => {
   const isAnnual = datapoints[0]?.frequency === "ANNUAL";
   const percentChange = getPercentChangeOverTime(datapoints);
   const avgValue = getAverageTotalValue(datapoints, isAnnual);
@@ -49,7 +50,11 @@ export const MetricInsights: React.FC<{
   );
 
   return (
-    <MetricInsightsContainer ref={insightsRef} selfWidth={insightsWidth}>
+    <MetricInsightsContainer
+      ref={insightsRef}
+      selfWidth={insightsWidth}
+      enableHideByWidth={enableHideByWidth}
+    >
       <MetricInsight title="Year-to-Year" value={percentChange} />
       <MetricInsight title="Avg. Total Value" value={avgValue} />
       <MetricInsight title="Most Recent" value={mostRecentValue} />
