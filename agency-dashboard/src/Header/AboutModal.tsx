@@ -33,9 +33,10 @@ import {
   AboutModalTitle,
 } from "./AboutModal.styles";
 
-export const AboutModal: React.FC<{ closeModal: () => void }> = ({
-  closeModal,
-}) => (
+export const AboutModal: React.FC<{
+  closeModal: () => void;
+  agencyName: string;
+}> = ({ closeModal, agencyName }) => (
   <AboutModalContainer>
     <AboutModalInnerContainer>
       <AboutModalLogo src={logo} alt="" />
@@ -46,7 +47,7 @@ export const AboutModal: React.FC<{ closeModal: () => void }> = ({
       </AboutModalCloseButton>
       <AboutModalInfoContainer>
         <AboutModalInfoSection>
-          <AboutModalInfoTitle>Clackamas County Jail</AboutModalInfoTitle>
+          <AboutModalInfoTitle>{agencyName}</AboutModalInfoTitle>
           <AboutModalInfoBody>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor
             lectus lectus non sit justo. Massa, volutpat, diam maecenas risus.
