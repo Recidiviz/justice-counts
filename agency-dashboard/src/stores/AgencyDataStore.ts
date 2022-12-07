@@ -36,10 +36,10 @@ class AgencyDataStore {
     this.loading = true;
   }
 
-  get metricKeyToDisplayName(): { [metricKey: string]: string | null } {
-    const mapping: { [metricKey: string]: string | null } = {};
+  get metricsByKey(): { [metricKey: string]: Metric } {
+    const mapping: { [metricKey: string]: Metric } = {};
     this.metrics.forEach((metric) => {
-      mapping[metric.key] = metric.display_name;
+      mapping[metric.key] = metric;
     });
     return mapping;
   }

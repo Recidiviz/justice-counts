@@ -255,7 +255,10 @@ export const DatapointsView: React.FC<{
               metricFrequency={metricFrequency}
             />
             {selectedData.length > 0 && (
-              <MetricInsights datapoints={filteredAggregateData} />
+              <MetricInsights
+                datapoints={filteredAggregateData}
+                enableHideByWidth
+              />
             )}
           </MetricHeaderWrapper>
         )}
