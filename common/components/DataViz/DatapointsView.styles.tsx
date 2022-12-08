@@ -233,15 +233,17 @@ export const DatapointsViewControlsDropdown: React.FC<
   </DatapointsViewDropdown>
 );
 
-export const MetricInsightsContainer = styled.div<{ selfWidth: number }>`
+export const MetricInsightsContainer = styled.div<{
+  selfWidth: number;
+  enableHideByWidth: boolean;
+}>`
   display: flex;
   visibility: visible;
   flex-direction: row;
-  justify-content: flex-end;
 
-  ${({
-    selfWidth,
-  }) => `@media only screen and (max-width: calc(1148px + ${selfWidth}px)) {
+  ${({ selfWidth, enableHideByWidth }) =>
+    enableHideByWidth &&
+    `@media only screen and (max-width: calc(1148px + ${selfWidth}px)) {
     visibility: hidden;
     position: absolute;
     z-index: -1;

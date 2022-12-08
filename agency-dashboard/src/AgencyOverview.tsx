@@ -55,7 +55,7 @@ const AgencyOverview = () => {
             navigate(`/agency/${agencyId}/dashboard?metric=${metric.key}`);
           }}
         >
-          {agencyDataStore.metricKeyToDisplayName[metric.key] || metric.key}
+          {agencyDataStore.metricsByKey[metric.key]?.display_name || metric.key}
         </MetricCategory>
       ))}
     </>

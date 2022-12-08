@@ -169,7 +169,7 @@ const DashboardView = () => {
   );
 
   const metricName =
-    agencyDataStore.metricKeyToDisplayName[metricKey] || metricKey;
+    agencyDataStore.metricsByKey[metricKey]?.display_name || metricKey;
 
   const filteredAggregateData = transformDataForMetricInsights(
     agencyDataStore.datapointsByMetric[metricKey]?.aggregate || [],
@@ -184,8 +184,7 @@ const DashboardView = () => {
         <MetricTitle>{metricName}</MetricTitle>
         <MetricInsights datapoints={filteredAggregateData} />
         <MetricOverviewContent>
-          Measures the number of individuals with at least one parole violation
-          during the reporting period.
+          {agencyDataStore.metricsByKey[metricKey]?.description}
         </MetricOverviewContent>
         <MetricOverviewActionsContainer>
           <MetricOverviewActionShareButton />
@@ -223,8 +222,7 @@ const DashboardView = () => {
           resizeHeight={isDesktopWidth}
         />
         <RightPanelMetricOverviewContent>
-          Measures the number of individuals with at least one parole violation
-          during the reporting period.
+          {agencyDataStore.metricsByKey[metricKey]?.description}
         </RightPanelMetricOverviewContent>
         <RightPanelMetricOverviewActionsContainer>
           <MetricOverviewActionShareButton />
