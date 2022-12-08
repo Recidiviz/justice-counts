@@ -29,10 +29,12 @@ import {
   Ethnicities,
   ethnicities,
   MetricConfigurationSettingsOptions,
+  MetricInfo,
   MetricSettings,
   RACE_ETHNICITY_DISAGGREGATION_KEY,
   RaceEthnicitiesGridStates,
   Races,
+  ReportFrequencyUpdate,
   StateKeys,
   UpdatedDimension,
   UpdatedDisaggregation,
@@ -51,8 +53,9 @@ class MetricConfigStore {
       enabled?: boolean;
       label?: string;
       description?: Metric["description"];
-      frequency?: Metric["frequency"];
+      defaultFrequency?: ReportFrequency;
       customFrequency?: Metric["custom_frequency"];
+      startingMonth?: Metric["starting_month"] | null;
     };
   };
 
@@ -159,7 +162,7 @@ class MetricConfigStore {
             enabled?: boolean;
             label?: string;
             description?: Metric["description"];
-            frequency?: Metric["frequency"];
+            defaultFrequency?: ReportFrequency;
             customFrequency?: Metric["custom_frequency"];
           };
         }[]
@@ -223,8 +226,9 @@ class MetricConfigStore {
             {
               label: metric.label,
               description: metric.description,
-              frequency: metric.frequency || "",
-              customFrequency: metric.custom_frequency || "",
+              defaultFrequency: metric.frequency,
+              customFrequency: metric.custom_frequency,
+              startingMonth: metric.starting_month,
             }
           );
 
@@ -311,7 +315,7 @@ class MetricConfigStore {
     system: AgencySystems,
     metricKey: string,
     enabledStatus: boolean,
-    metadata?: { [key: string]: string }
+    metadata?: MetricInfo
   ): MetricSettings => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
@@ -327,10 +331,10 @@ class MetricConfigStore {
     if (metadata) {
       this.metrics[systemMetricKey].label = metadata.label;
       this.metrics[systemMetricKey].description = metadata.description;
-      this.metrics[systemMetricKey].frequency =
-        metadata.frequency as ReportFrequency;
-      this.metrics[systemMetricKey].customFrequency =
-        metadata.customFrequency as ReportFrequency;
+      this.metrics[systemMetricKey].defaultFrequency =
+        metadata.defaultFrequency;
+      this.metrics[systemMetricKey].customFrequency = metadata.customFrequency;
+      this.metrics[systemMetricKey].startingMonth = metadata.startingMonth;
     }
 
     /** Update value */
@@ -340,6 +344,37 @@ class MetricConfigStore {
     return {
       key: metricKey,
       enabled: enabledStatus,
+    };
+  };
+
+  updateMetricReportFrequency = (
+    system: AgencySystems,
+    metricKey: string,
+    update: ReportFrequencyUpdate
+  ) => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
+
+    /** Initialize nested object for quick lookup and update and reduce re-renders */
+    if (!this.metrics[systemMetricKey]) {
+      this.metrics[systemMetricKey] = {};
+    }
+
+    /** Update values */
+    this.metrics[systemMetricKey].defaultFrequency = update.defaultFrequency;
+    this.metrics[systemMetricKey].customFrequency = update.customFrequency;
+    this.metrics[systemMetricKey].startingMonth = update.startingMonth;
+    this.updateMetricEnabledStatus(system, metricKey, true);
+
+    /** Return an object in the desired backend data structure for saving purposes */
+    return {
+      key: metricKey,
+      enabled: true,
+      frequency: update.defaultFrequency,
+      custom_frequency: update.customFrequency,
+      starting_month: update.startingMonth,
     };
   };
 
@@ -662,7 +697,7 @@ class MetricConfigStore {
       metricKey
     );
     const raceEthnicitiesDimensions =
-      this.dimensions[systemMetricKey][RACE_ETHNICITY_DISAGGREGATION_KEY];
+      this.dimensions[systemMetricKey]?.[RACE_ETHNICITY_DISAGGREGATION_KEY];
     const dimensions =
       raceEthnicitiesDimensions &&
       (Object.values(raceEthnicitiesDimensions) as UpdatedDimension[]);
@@ -722,8 +757,9 @@ class MetricConfigStore {
         )
       );
       const disaggregationIsEnabled =
-        this.disaggregations[systemMetricKey][RACE_ETHNICITY_DISAGGREGATION_KEY]
-          .enabled;
+        this.disaggregations[systemMetricKey]?.[
+          RACE_ETHNICITY_DISAGGREGATION_KEY
+        ].enabled;
 
       /** If the Race is disabled, keep it disabled */
       if (!raceIsEnabled && disaggregationIsEnabled) return;
@@ -746,7 +782,7 @@ class MetricConfigStore {
     });
 
     const raceEthnicitiesDimensions =
-      this.dimensions[systemMetricKey][RACE_ETHNICITY_DISAGGREGATION_KEY];
+      this.dimensions[systemMetricKey]?.[RACE_ETHNICITY_DISAGGREGATION_KEY];
     const dimensions =
       raceEthnicitiesDimensions &&
       (Object.values(raceEthnicitiesDimensions) as UpdatedDimension[]);
@@ -798,7 +834,7 @@ class MetricConfigStore {
       metricKey
     );
     const raceEthnicitiesDimensions =
-      this.dimensions[systemMetricKey][RACE_ETHNICITY_DISAGGREGATION_KEY];
+      this.dimensions[systemMetricKey]?.[RACE_ETHNICITY_DISAGGREGATION_KEY];
     const dimensions =
       raceEthnicitiesDimensions &&
       (Object.values(raceEthnicitiesDimensions) as UpdatedDimension[]);

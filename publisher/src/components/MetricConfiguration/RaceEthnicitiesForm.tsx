@@ -22,7 +22,7 @@ import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { BinaryRadioButton } from "../Forms";
-import { useSettingsSearchParams } from "../Settings";
+import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   Header,
   Race,
@@ -45,18 +45,24 @@ export const RaceEthnicitiesForm = observer(() => {
   const [settingsSearchParams] = useSettingsSearchParams();
   const { metricConfigStore } = useStore();
   const {
+    metrics,
     getEthnicitiesByRace,
     updateAllRaceEthnicitiesToDefaultState,
     updateRaceDimensions,
     saveMetricSettings,
   } = metricConfigStore;
+
   const { system: systemSearchParam, metric: metricSearchParam } =
     settingsSearchParams;
+
+  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
+
   const ethnicitiesByRace =
     (systemSearchParam &&
       metricSearchParam &&
       getEthnicitiesByRace(systemSearchParam, metricSearchParam)) ||
     {};
+
   const ethnicitiesByRaceArray = Object.entries(ethnicitiesByRace);
 
   const canSpecifyEthnicity =
@@ -95,7 +101,7 @@ export const RaceEthnicitiesForm = observer(() => {
 
   return (
     <RaceEthnicitiesContainer>
-      <RaceEthnicitiesDisplay>
+      <RaceEthnicitiesDisplay enabled={metrics[systemMetricKey]?.enabled}>
         <RaceEthnicitiesTitle>Race and Ethnicity</RaceEthnicitiesTitle>
 
         <RaceEthnicitiesDescription>
