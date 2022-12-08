@@ -41,20 +41,22 @@ import { isPositiveNumber, removeCommaSpaceAndTrim } from "../utils";
 import API from "./API";
 import UserStore from "./UserStore";
 
+export interface MetricInfo {
+  enabled?: boolean;
+  label?: string;
+  description?: Metric["description"];
+  defaultFrequency?: Metric["frequency"];
+  customFrequency?: Metric["custom_frequency"];
+  startingMonth?: Metric["starting_month"];
+}
+
 class MetricConfigStore {
   userStore: UserStore;
 
   api: API;
 
   metrics: {
-    [systemMetricKey: string]: {
-      enabled?: boolean;
-      label?: string;
-      description?: Metric["description"];
-      defaultFrequency?: Metric["frequency"];
-      customFrequency?: Metric["custom_frequency"] | string;
-      startingMonth?: Metric["starting_month"] | null;
-    };
+    [systemMetricKey: string]: MetricInfo;
   };
 
   metricDefinitionSettings: {
@@ -161,7 +163,7 @@ class MetricConfigStore {
             label?: string;
             description?: Metric["description"];
             defaultFrequency?: Metric["frequency"];
-            customFrequency?: Metric["custom_frequency"] | string;
+            customFrequency?: Metric["custom_frequency"];
           };
         }[]
       );
@@ -237,9 +239,9 @@ class MetricConfigStore {
             {
               label: metric.label,
               description: metric.description,
-              frequency: metric.frequency as ReportFrequency,
-              customFrequency: metric.custom_frequency || "",
-              startingMonth: metric.starting_month as number | null,
+              defaultFrequency: metric.frequency,
+              customFrequency: metric.custom_frequency,
+              startingMonth: metric.starting_month,
             }
           );
 
@@ -322,11 +324,34 @@ class MetricConfigStore {
     }
   };
 
+  initializeMetric = (
+    system: AgencySystems,
+    metricKey: string,
+    metadata: MetricInfo
+  ) => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
+
+    /** Initialize nested object for quick lookup and update and reduce re-renders */
+    if (!this.metrics[systemMetricKey]) {
+      this.metrics[systemMetricKey] = {};
+    }
+
+    /** Add metadata required for rendering */
+    this.metrics[systemMetricKey].label = metadata.label;
+    this.metrics[systemMetricKey].description = metadata.description;
+    this.metrics[systemMetricKey].defaultFrequency = metadata.defaultFrequency;
+    this.metrics[systemMetricKey].customFrequency = metadata.customFrequency;
+    this.metrics[systemMetricKey].startingMonth = metadata.startingMonth;
+  };
+
   updateMetricEnabledStatus = (
     system: AgencySystems,
     metricKey: string,
     enabledStatus: boolean,
-    metadata?: { [key: string]: string | number | null }
+    metadata?: MetricInfo
   ): MetricSettings => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
@@ -340,16 +365,12 @@ class MetricConfigStore {
 
     /** If provided, add metadata required for rendering */
     if (metadata) {
-      this.metrics[systemMetricKey].label = metadata.label as string;
-      this.metrics[systemMetricKey].description =
-        metadata.description as string;
+      this.metrics[systemMetricKey].label = metadata.label;
+      this.metrics[systemMetricKey].description = metadata.description;
       this.metrics[systemMetricKey].defaultFrequency =
-        metadata.frequency as ReportFrequency;
-      this.metrics[systemMetricKey].customFrequency =
-        metadata.customFrequency as ReportFrequency;
-      this.metrics[systemMetricKey].startingMonth = metadata.startingMonth as
-        | number
-        | null;
+        metadata.defaultFrequency;
+      this.metrics[systemMetricKey].customFrequency = metadata.customFrequency;
+      this.metrics[systemMetricKey].startingMonth;
     }
 
     /** Update value */
@@ -365,11 +386,7 @@ class MetricConfigStore {
   updateMetricReportFrequency = (
     system: AgencySystems,
     metricKey: string,
-    update: {
-      defaultFrequency?: ReportFrequency;
-      customFrequency?: ReportFrequency | string;
-      startingMonth?: number | null;
-    }
+    update: MetricInfo
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
