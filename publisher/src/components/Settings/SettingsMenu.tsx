@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { observer } from "mobx-react-lite";
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { settingsMenuPaths } from "../../pages/Settings";
@@ -24,22 +24,39 @@ import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
 import {
   MenuItem,
-  MetricsListContainer,
-  MetricsListItem,
   SettingsMenuContainer,
+  SubMenuListContainer,
+  SubMenuListItem,
   useSettingsSearchParams,
 } from ".";
+
+const agencySettingsMenuItems = [
+  { label: "Basic Information", id: "basic-info" },
+  { label: "Team Management", id: "team-management" },
+  { label: "Supervision Setup", id: "supervision-setup" },
+  { label: "Jurisdiction", id: "jurisdiction" },
+];
 
 export const SettingsMenu: React.FC = observer(() => {
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { metricConfigStore } = useStore();
+  const { metricConfigStore, agencyStore } = useStore();
   const { getMetricsBySystem } = metricConfigStore;
+
+  const [activeAgencyMenuSubItem, setActiveAgencyMenuSubItem] = useState(
+    agencySettingsMenuItems[0].label
+  );
 
   const { system: systemSearchParam, metric: metricSearchParam } =
     settingsSearchParams;
+
+  const menuItems = agencyStore.isAgencySupervision
+    ? agencySettingsMenuItems
+    : agencySettingsMenuItems.filter(
+        (item) => item.label !== "Supervision Setup"
+      );
 
   const handleMetricListItemClick = (metricKey: string) => {
     setSettingsSearchParams({
@@ -57,8 +74,12 @@ export const SettingsMenu: React.FC = observer(() => {
               removeAgencyFromPath(location.pathname) === `settings/${path}`
             }
             onClick={() => {
-              if (path === "/settings/metric-config") {
-                return navigate(`${path}?system=${systemSearchParam}`);
+              if (path === "metric-config") {
+                return navigate(
+                  systemSearchParam
+                    ? `${path}?system=${systemSearchParam}`
+                    : path
+                );
               }
               navigate(path);
             }}
@@ -72,21 +93,41 @@ export const SettingsMenu: React.FC = observer(() => {
             "settings/metric-config" &&
             path === "metric-config" &&
             metricSearchParam && (
-              <MetricsListContainer>
+              <SubMenuListContainer>
                 {getMetricsBySystem(systemSearchParam)?.map(
                   ({ key, metric }) => {
                     return (
-                      <MetricsListItem
+                      <SubMenuListItem
                         key={key}
                         activeSection={key === metricSearchParam}
                         onClick={() => handleMetricListItemClick(key)}
                       >
                         {metric.label}
-                      </MetricsListItem>
+                      </SubMenuListItem>
                     );
                   }
                 )}
-              </MetricsListContainer>
+              </SubMenuListContainer>
+            )}
+          {removeAgencyFromPath(location.pathname) ===
+            "settings/agency-settings" &&
+            path === "agency-settings" && (
+              <SubMenuListContainer>
+                {menuItems.map(({ label, id }) => (
+                  <SubMenuListItem
+                    key={id}
+                    activeSection={label === activeAgencyMenuSubItem}
+                    onClick={() => {
+                      setActiveAgencyMenuSubItem(label);
+                      document
+                        .getElementById(id)
+                        ?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                  >
+                    {label}
+                  </SubMenuListItem>
+                ))}
+              </SubMenuListContainer>
             )}
         </Fragment>
       ))}

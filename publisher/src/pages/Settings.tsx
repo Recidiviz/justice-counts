@@ -22,6 +22,7 @@ import { UploadedFiles } from "../components/DataUpload";
 import { MetricConfiguration } from "../components/MetricConfiguration";
 import {
   AccountSettings,
+  AgencySettings,
   ContentDisplay,
   SettingsContainer,
   SettingsMenu,
@@ -29,6 +30,7 @@ import {
 
 export const settingsMenuPaths = {
   "Your Account": "account",
+  "Agency Settings": "agency-settings",
   "Uploaded Files": "uploaded-files",
   "Metric Configuration": "metric-config",
 };
@@ -47,6 +49,7 @@ const Settings = () => {
         <Routes>
           <Route path="/" element={<Navigate to="account" replace />} />
           <Route path="/account" element={<AccountSettings />} />
+          <Route path="/agency-settings" element={<AgencySettings />} />
           <Route path="/uploaded-files" element={<UploadedFiles />} />
           <Route path="/metric-config" element={<MetricConfiguration />} />
           <Route path="*" element={<Navigate to="account" />} />

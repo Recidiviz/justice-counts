@@ -45,6 +45,7 @@ export const SettingsMenuContainer = styled.div`
   flex-direction: column;
   gap: 16px;
   margin-right: 70px;
+  z-index: 2;
 `;
 
 export const MenuItem = styled.div<{ selected?: boolean }>`
@@ -74,9 +75,9 @@ export const InputWrapper = styled.div`
   }
 `;
 
-export const MetricsListContainer = styled.div``;
+export const SubMenuListContainer = styled.div``;
 
-export const MetricsListItem = styled.div<{ activeSection?: boolean }>`
+export const SubMenuListItem = styled.div<{ activeSection?: boolean }>`
   ${typography.sizeCSS.normal}
   width: fit-content;
   color: ${({ activeSection }) =>

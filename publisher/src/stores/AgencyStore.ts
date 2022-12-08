@@ -1,0 +1,150 @@
+// Recidiviz - a data platform for criminal justice reform
+// Copyright (C) 2022 Recidiviz, Inc.
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+// =============================================================================
+
+import { showToast } from "@justice-counts/common/components/Toast";
+import { AgencySystems, UserAgency } from "@justice-counts/common/types";
+import { makeAutoObservable, runInAction } from "mobx";
+
+import API from "./API";
+import UserStore from "./UserStore";
+
+type AgencySettings = {
+  settings: [{ setting_type: "PURPOSE_AND_FUNCTIONS"; value: string }];
+};
+
+class AgencyStore {
+  userStore: UserStore;
+
+  api: API;
+
+  currentAgency: UserAgency | undefined;
+
+  currentAgencySystems: AgencySystems[] | undefined;
+
+  isAgencySupervision: boolean | undefined;
+
+  agencyDescription: string;
+
+  loadingSettings: boolean;
+
+  constructor(userStore: UserStore, api: API) {
+    makeAutoObservable(this);
+
+    this.userStore = userStore;
+    this.api = api;
+    this.currentAgency = undefined;
+    this.currentAgencySystems = undefined;
+    this.isAgencySupervision = undefined;
+    this.agencyDescription = "";
+    this.loadingSettings = true;
+  }
+
+  initCurrentUserAgency = async (agencyId: string) => {
+    await this.getPurposeAndFunctions(agencyId);
+    const agency = this.userStore.getAgency(agencyId);
+
+    runInAction(() => {
+      this.currentAgency = agency;
+      this.currentAgencySystems = agency?.systems;
+      this.isAgencySupervision = !!agency?.systems.find(
+        (system) => system === "SUPERVISION"
+      );
+      this.loadingSettings = false;
+    });
+  };
+
+  async getPurposeAndFunctions(agencyId: string): Promise<void | Error> {
+    try {
+      const response = (await this.api.request({
+        path: `/api/agencies/${agencyId}`,
+        method: "GET",
+      })) as Response;
+
+      if (response.status !== 200) {
+        throw new Error("There was an issue getting agency description.");
+      }
+
+      const description = (await response.json()) as AgencySettings;
+      runInAction(() => {
+        this.agencyDescription = description.settings[0].value;
+      });
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
+  savePurposeAndFunctions = async (
+    settings: AgencySettings,
+    agencyId: string
+  ): Promise<Response> => {
+    const response = (await this.api.request({
+      path: `/api/agencies/${agencyId}`,
+      body: settings,
+      method: "PATCH",
+    })) as Response;
+
+    if (response.status !== 200) {
+      showToast(`Failed to save.`, true, "red", 4000);
+      throw new Error("There was an issue updating purpose and functions.");
+    }
+
+    showToast(`Settings saved.`, true, "grey", 4000);
+    return response;
+  };
+
+  updatePurposeAndFunctions = (text: string): AgencySettings => {
+    this.agencyDescription = text;
+
+    return {
+      settings: [{ setting_type: "PURPOSE_AND_FUNCTIONS", value: text }],
+    };
+  };
+
+  updateAgencySystems = async (
+    systems: AgencySystems[],
+    agencyId: string
+  ): Promise<void> => {
+    const response = (await this.api.request({
+      path: `/api/agencies/${agencyId}`,
+      body: { systems },
+      method: "PATCH",
+    })) as Response;
+
+    if (response.status !== 200) {
+      showToast(`Failed to save.`, true, "red", 4000);
+      throw new Error("There was an issue updating purpose and functions.");
+    }
+
+    runInAction(() => {
+      this.currentAgencySystems = systems;
+    });
+    showToast(`Settings saved.`, true, "grey", 4000);
+  };
+
+  resetState = () => {
+    // reset the state when switching agencies
+    runInAction(() => {
+      this.currentAgency = undefined;
+      this.currentAgencySystems = undefined;
+      this.isAgencySupervision = undefined;
+      this.agencyDescription = "";
+      this.loadingSettings = true;
+    });
+  };
+}
+
+export default AgencyStore;
