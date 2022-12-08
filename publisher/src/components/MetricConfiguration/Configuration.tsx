@@ -165,6 +165,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     metricSearchParam,
                     frequencyUpdate
                   );
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   saveMetricSettings(updatedSetting, agencyId!);
                 }
               }}
@@ -187,6 +188,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     metricSearchParam,
                     frequencyUpdate
                   );
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   saveMetricSettings(updatedSetting, agencyId!);
                 }
               }}
@@ -212,6 +214,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                         metricSearchParam,
                         { customFrequency: "ANNUAL", startingMonth: 1 }
                       );
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                       saveMetricSettings(updatedSetting, agencyId!);
                     }
                   }}
@@ -230,6 +233,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                         metricSearchParam,
                         { customFrequency: "ANNUAL", startingMonth: 6 }
                       );
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                       saveMetricSettings(updatedSetting, agencyId!);
                     }
                   }}
@@ -268,6 +272,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                                       startingMonth: monthNumber,
                                     }
                                   );
+                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                                 saveMetricSettings(updatedSetting, agencyId!);
                               }
                             }}
