@@ -37,6 +37,7 @@ export interface UserAgency {
   id: number;
   fips_county_code: string;
   state_code: string;
+  state: string;
   system: AgencySystems;
   systems: AgencySystems[];
 }

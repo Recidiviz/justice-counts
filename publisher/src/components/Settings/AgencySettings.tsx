@@ -135,7 +135,7 @@ export const AgencySettings: React.FC = observer(() => {
           </AgencySettingsInfoRow>
           {/* state_code property will be replaced with state */}
           <AgencySettingsInfoRow>
-            State <span>{currentAgency?.state_code}</span>
+            State <span>{currentAgency?.state}</span>
           </AgencySettingsInfoRow>
           <BasicInfoTextAreaLabel htmlFor="basic-info-description">
             Briefly describe your agency’s purpose and functions (150 words or
