@@ -33,6 +33,10 @@ export const BinaryRadioGroupWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  div {
+    flex: 1;
+  }
 `;
 
 export const BinaryRadioGroupQuestion = styled.div`
@@ -48,7 +52,7 @@ export const RadioButtonWrapper = styled.div<{ lastOptionBlue?: boolean }>`
   flex: 1 1 0;
   margin: 15px 0 0 0;
 
-  &:first-child {
+  &:not(:last-child) {
     margin: 15px 10px 0 0;
   }
 

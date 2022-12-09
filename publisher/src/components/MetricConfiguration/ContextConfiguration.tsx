@@ -42,7 +42,7 @@ export const ContextConfiguration: React.FC = observer(() => {
   const { agencyId } = useParams();
   const [settingsSearchParams] = useSettingsSearchParams();
   const { metricConfigStore } = useStore();
-  const { contexts, updateContextValue, saveMetricSettings } =
+  const { metrics, contexts, updateContextValue, saveMetricSettings } =
     metricConfigStore;
 
   const { system: systemSearchParam, metric: metricSearchParam } =
@@ -54,7 +54,7 @@ export const ContextConfiguration: React.FC = observer(() => {
   const debouncedSave = useRef(debounce(saveMetricSettings, 1500)).current;
 
   return (
-    <MetricContextContainer>
+    <MetricContextContainer enabled={metrics[systemMetricKey]?.enabled}>
       <MetricContextHeader>Context</MetricContextHeader>
 
       {activeContextKeys.map((contextKey) => {

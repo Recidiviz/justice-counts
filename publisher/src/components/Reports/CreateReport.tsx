@@ -45,7 +45,7 @@ import {
   Title,
   TitleWrapper,
 } from "../Forms";
-import { Dropdown } from "../Forms/Dropdown";
+import { Dropdown, DropdownWrapper } from "../Forms/Dropdown";
 import {
   REPORT_CAPITALIZED,
   REPORT_LOWERCASE,
@@ -312,7 +312,7 @@ const CreateReport = () => {
           {createReportFormValues.isRecurring === false && (
             <>
               <Heading>When should this {REPORT_LOWERCASE} start?</Heading>
-              <BinaryRadioGroupWrapper>
+              <DropdownWrapper>
                 {createReportFormValues.frequency === "MONTHLY" && (
                   <Dropdown onChange={updateMonth} value={month}>
                     {monthsByName.map((m, i) => {
@@ -336,7 +336,7 @@ const CreateReport = () => {
                     }
                   )}
                 </Dropdown>
-              </BinaryRadioGroupWrapper>
+              </DropdownWrapper>
             </>
           )}
           <CreateReportInfoContainer>

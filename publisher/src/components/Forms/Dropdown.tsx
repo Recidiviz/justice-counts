@@ -30,6 +30,13 @@ const DropdownContainer = styled.div`
   }
 `;
 
+export const DropdownWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 const DropdownSelection = styled.select`
   ${typography.sizeCSS.large}
   height: 71px;
@@ -72,6 +79,7 @@ const DropdownArrow = styled.div`
   border-bottom: 4px solid ${palette.solid.blue};
   border-right: 4px solid ${palette.solid.blue};
   transform: rotate(45deg) translate(-1px, -1px);
+  flex: none;
 `;
 
 interface DropdownProps extends SelectHTMLAttributes<HTMLSelectElement> {

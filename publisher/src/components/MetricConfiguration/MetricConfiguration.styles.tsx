@@ -19,6 +19,7 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
+import { DropdownToggle } from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
 import { BinaryRadioGroupWrapper } from "../Forms";
@@ -26,6 +27,17 @@ import { MenuItem } from "../Settings";
 
 const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
 const INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH = 314;
+const baseDisabledFadedOverlayCSS = `
+  &:after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    background: ${palette.solid.white};
+    opacity: 0.7;
+  }
+`;
 
 export const MetricsViewContainer = styled.div`
   height: 100%;
@@ -283,6 +295,7 @@ export const MetricDescription = styled.div`
 `;
 
 export const MetricDetailsDisplay = styled.div`
+  height: 100%;
   width: 100%;
   overflow-y: scroll;
   padding: 24px 12px 50px 0;
@@ -295,11 +308,19 @@ export const MetricDetailsDisplay = styled.div`
 
 export const MetricOnOffWrapper = styled.div`
   margin-bottom: 24px;
+
+  label {
+    ${typography.sizeCSS.normal};
+  }
 `;
 
 export const Header = styled.div`
   ${typography.sizeCSS.medium};
   margin-bottom: 8px;
+
+  &:not(:first-child) {
+    margin-top: 27px;
+  }
 `;
 
 export const BreakdownHeader = styled(Header)`
@@ -469,9 +490,12 @@ export const MetricConfigurationContainer = styled.div`
   display: block;
 `;
 
-export const MetricContextContainer = styled.div`
+export const MetricContextContainer = styled.div<{ enabled?: boolean }>`
   display: block;
   border-top: 1px solid ${palette.highlight.grey3};
+  position: relative;
+
+  ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
 `;
 
 export const MetricContextHeader = styled.div`
@@ -623,6 +647,7 @@ export const DefinitionsDisplayContainer = styled.div`
   flex: 1 1 55%;
   padding: 18px 12px 50px 70px;
   overflow-y: scroll;
+  position: relative;
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
     border-top: 1px solid ${palette.highlight.grey3};
@@ -632,8 +657,11 @@ export const DefinitionsDisplayContainer = styled.div`
   }
 `;
 
-export const DefinitionsDisplay = styled.div`
+export const DefinitionsDisplay = styled.div<{ enabled?: boolean }>`
   width: 100%;
+  position: relative;
+
+  ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
 `;
 
 export const DefinitionsTitle = styled.div`
@@ -726,8 +754,6 @@ export const DefinitionMiniButton = styled(RevertToDefaultButton)<{
         opacity: 0.9;
         }
       }
-
-
   `};
 
   ${({ showDefault, selected }) =>
@@ -745,4 +771,39 @@ export const NoDefinitionsSelected = styled.div`
   border: 1px solid ${palette.highlight.grey5};
   color: ${palette.highlight.grey12};
   text-align: center;
+`;
+
+export const DropdownButton = styled(DropdownToggle)<{ checked?: boolean }>`
+  ${typography.sizeCSS.normal}
+  font-family: ${typography.family};
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  height: 56px;
+  min-height: unset;
+  border: 1px solid ${palette.highlight.grey4} !important;
+  border-radius: 2px;
+  transition: 0.2s ease;
+  color: ${palette.solid.darkgrey};
+  margin-top: 15px;
+
+  ${({ checked }) =>
+    checked &&
+    `
+      background-color: ${palette.solid.blue} !important;
+      color: ${palette.solid.white} !important;
+    `}
+
+  &[aria-expanded="true"] {
+    color: ${palette.solid.darkgrey};
+  }
+
+  &[aria-expanded="false"]:hover {
+    color: ${palette.solid.darkgrey};
+    background-color: ${palette.highlight.grey2};
+  }
+
+  &:focus {
+    color: ${palette.solid.darkgrey};
+  }
 `;

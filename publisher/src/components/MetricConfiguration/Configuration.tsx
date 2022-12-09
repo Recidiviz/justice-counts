@@ -15,16 +15,20 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { removeSnakeCase } from "../../utils";
+import { monthsByName, removeSnakeCase } from "../../utils";
+import { ReactComponent as CalendarIconDark } from "../assets/calendar-icon-dark.svg";
+import { ReactComponent as CalendarIconLight } from "../assets/calendar-icon-light.svg";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import blueCheck from "../assets/status-check-icon.png";
 import { BinaryRadioButton } from "../Forms";
-import { REPORT_VERB_LOWERCASE, REPORTS_LOWERCASE2 } from "../Global/constants";
+import { REPORT_VERB_LOWERCASE } from "../Global/constants";
+import { ExtendedDropdownMenu, ExtendedDropdownMenuItem } from "../Menu";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
@@ -37,6 +41,7 @@ import {
   DimensionTitleWrapper,
   Disaggregation,
   DisaggregationTab,
+  DropdownButton,
   Header,
   MetricConfigurationContainer,
   MetricDisaggregations,
@@ -44,6 +49,7 @@ import {
   RACE_ETHNICITY_DISAGGREGATION_KEY,
   RaceEthnicitiesGrid,
   RadioButtonGroupWrapper,
+  ReportFrequencyUpdate,
   Subheader,
 } from ".";
 
@@ -75,24 +81,32 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       updateMetricEnabledStatus,
       updateDisaggregationEnabledStatus,
       updateDimensionEnabledStatus,
+      updateMetricReportFrequency,
       saveMetricSettings,
     } = metricConfigStore;
 
     const { system: systemSearchParam, metric: metricSearchParam } =
       settingsSearchParams;
+
     const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
+
     const activeDisaggregationKeys =
       disaggregations[systemMetricKey] &&
       Object.keys(disaggregations[systemMetricKey]);
+
     const activeDimensionKeys =
       activeDisaggregationKey &&
       dimensions[systemMetricKey]?.[activeDisaggregationKey]
         ? Object.keys(dimensions[systemMetricKey][activeDisaggregationKey])
         : [];
 
-    const metricDisplayName = metrics[systemMetricKey]?.label;
-
     const metricEnabled = Boolean(metrics[systemMetricKey]?.enabled);
+    const defaultFrequency = metrics[systemMetricKey]?.defaultFrequency;
+    const customFrequency = metrics[systemMetricKey]?.customFrequency;
+    const startingMonth = metrics[systemMetricKey]?.startingMonth;
+    const customOrDefaultFrequency = customFrequency || defaultFrequency;
+    const startingMonthNotJanuaryJune =
+      startingMonth !== null && startingMonth !== 1 && startingMonth !== 6;
 
     useEffect(
       () => {
@@ -106,43 +120,20 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
 
     return (
       <MetricConfigurationContainer>
-        {/* Metric (Enable/Disable) */}
+        {/* Metric (Enable/Disable) & Frequency */}
         <MetricOnOffWrapper>
           <Header>
             Are you currently able to {REPORT_VERB_LOWERCASE} any part of this
-            metric?
+            metric? If so, at what frequency?
           </Header>
-          <Subheader>
-            Answering “No” means that {metricDisplayName} will not appear on{" "}
-            {REPORTS_LOWERCASE2} from here on out. You can change this later.
-          </Subheader>
 
           <RadioButtonGroupWrapper>
             <BinaryRadioButton
               type="radio"
-              id="yes"
+              id="metric-config-not-available"
               name="metric-config"
-              label="Yes"
-              value="yes"
-              checked={metricEnabled}
-              onChange={() => {
-                if (systemSearchParam && metricSearchParam) {
-                  const updatedSetting = updateMetricEnabledStatus(
-                    systemSearchParam,
-                    metricSearchParam,
-                    true
-                  );
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  saveMetricSettings(updatedSetting, agencyId!);
-                }
-              }}
-            />
-            <BinaryRadioButton
-              type="radio"
-              id="no"
-              name="metric-config"
-              label="No"
-              value="no"
+              label="Not Available"
+              value="Not Available"
               checked={!metricEnabled}
               onChange={() => {
                 if (systemSearchParam && metricSearchParam) {
@@ -156,7 +147,146 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                 }
               }}
             />
+            <BinaryRadioButton
+              type="radio"
+              id="metric-config-monthly"
+              name="metric-config"
+              label="Monthly"
+              value="Monthly"
+              checked={metricEnabled && customOrDefaultFrequency === "MONTHLY"}
+              onChange={() => {
+                if (systemSearchParam && metricSearchParam) {
+                  const frequencyUpdate: ReportFrequencyUpdate = {
+                    customFrequency: "MONTHLY",
+                    startingMonth: null,
+                  };
+                  const updatedSetting = updateMetricReportFrequency(
+                    systemSearchParam,
+                    metricSearchParam,
+                    frequencyUpdate
+                  );
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  saveMetricSettings(updatedSetting, agencyId!);
+                }
+              }}
+            />
+            <BinaryRadioButton
+              type="radio"
+              id="metric-config-annual"
+              name="metric-config"
+              label="Annual"
+              value="Annual"
+              checked={metricEnabled && customOrDefaultFrequency === "ANNUAL"}
+              onChange={() => {
+                if (systemSearchParam && metricSearchParam) {
+                  const frequencyUpdate: ReportFrequencyUpdate = {
+                    customFrequency: "ANNUAL",
+                    startingMonth: 1,
+                  };
+                  const updatedSetting = updateMetricReportFrequency(
+                    systemSearchParam,
+                    metricSearchParam,
+                    frequencyUpdate
+                  );
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  saveMetricSettings(updatedSetting, agencyId!);
+                }
+              }}
+            />
           </RadioButtonGroupWrapper>
+
+          {/** Select Starting Month */}
+          {metricEnabled && customOrDefaultFrequency === "ANNUAL" && (
+            <>
+              <Header>What is the starting month for this metric?</Header>
+              <RadioButtonGroupWrapper>
+                <BinaryRadioButton
+                  type="radio"
+                  id="metric-config-calendar-year"
+                  name="metric-config-frequency"
+                  label="Calendar Year (Jan)"
+                  value="Calendar Year (Jan)"
+                  checked={metricEnabled && startingMonth === 1}
+                  onChange={() => {
+                    if (systemSearchParam && metricSearchParam) {
+                      const updatedSetting = updateMetricReportFrequency(
+                        systemSearchParam,
+                        metricSearchParam,
+                        { customFrequency: "ANNUAL", startingMonth: 1 }
+                      );
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      saveMetricSettings(updatedSetting, agencyId!);
+                    }
+                  }}
+                />
+                <BinaryRadioButton
+                  type="radio"
+                  id="metric-config-fiscal-year"
+                  name="metric-config-frequency"
+                  label="Fiscal Year (Jun)"
+                  value="Fiscal Year (Jun)"
+                  checked={metricEnabled && startingMonth === 6}
+                  onChange={() => {
+                    if (systemSearchParam && metricSearchParam) {
+                      const updatedSetting = updateMetricReportFrequency(
+                        systemSearchParam,
+                        metricSearchParam,
+                        { customFrequency: "ANNUAL", startingMonth: 6 }
+                      );
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      saveMetricSettings(updatedSetting, agencyId!);
+                    }
+                  }}
+                />
+                <Dropdown>
+                  <DropdownButton
+                    kind="borderless"
+                    checked={startingMonthNotJanuaryJune}
+                  >
+                    {startingMonthNotJanuaryJune ? (
+                      <CalendarIconLight />
+                    ) : (
+                      <CalendarIconDark />
+                    )}
+                    {(startingMonthNotJanuaryJune &&
+                      startingMonth &&
+                      monthsByName[startingMonth - 1]) ||
+                      `Other...`}
+                  </DropdownButton>
+                  <ExtendedDropdownMenu alignment="right">
+                    {monthsByName
+                      .filter((month) => !["January", "June"].includes(month))
+                      .map((month) => {
+                        const monthNumber = monthsByName.indexOf(month) + 1;
+                        return (
+                          <ExtendedDropdownMenuItem
+                            key={month}
+                            onClick={() => {
+                              if (systemSearchParam && metricSearchParam) {
+                                const updatedSetting =
+                                  updateMetricReportFrequency(
+                                    systemSearchParam,
+                                    metricSearchParam,
+                                    {
+                                      customFrequency: "ANNUAL",
+                                      startingMonth: monthNumber,
+                                    }
+                                  );
+                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                                saveMetricSettings(updatedSetting, agencyId!);
+                              }
+                            }}
+                            highlight={monthNumber === startingMonth}
+                          >
+                            {month}
+                          </ExtendedDropdownMenuItem>
+                        );
+                      })}
+                  </ExtendedDropdownMenu>
+                </Dropdown>
+              </RadioButtonGroupWrapper>
+            </>
+          )}
         </MetricOnOffWrapper>
 
         {/* Breakdowns */}
