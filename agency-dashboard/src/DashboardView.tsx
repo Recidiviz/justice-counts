@@ -45,6 +45,7 @@ import {
   RightPanelMetricTitle,
 } from "./DashboardView.styles";
 import { HeaderBar } from "./Header/HeaderBar";
+import { LearnMoreModal } from "./LearnMoreModal";
 import { useStore } from "./stores";
 
 const getScreenWidth = () =>
@@ -64,8 +65,12 @@ const RightPanelBackButton = ({ onClick }: { onClick: () => void }) => (
   </RightPanelBackButtonContainer>
 );
 
-const MetricOverviewActionInfoButton = () => (
-  <MetricOverviewActionButtonContainer>
+const MetricOverviewActionInfoButton = ({
+  onClick,
+}: {
+  onClick: () => void;
+}) => (
+  <MetricOverviewActionButtonContainer onClick={onClick}>
     <InfoIcon />
     <MetricOverviewActionButtonText>Learn More</MetricOverviewActionButtonText>
   </MetricOverviewActionButtonContainer>
@@ -91,10 +96,22 @@ const DashboardView = () => {
   const [isDesktopWidth, setIsDesktopWidth] = useState<boolean>(
     getScreenWidth() >= COMMON_DESKTOP_WIDTH
   );
+  const [learnMoreModalVisible, setLearnMoreModalVisible] =
+    useState<boolean>(false);
   const navigate = useNavigate();
   const params = useParams();
   const agencyId = Number(params.id);
   const { agencyDataStore, dataVizStore } = useStore();
+
+  /** Prevent body from scrolling when modal is open */
+  useEffect(() => {
+    if (learnMoreModalVisible) {
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [learnMoreModalVisible]);
 
   const {
     timeRange,
@@ -189,7 +206,9 @@ const DashboardView = () => {
         <MetricOverviewActionsContainer>
           <MetricOverviewActionShareButton />
           <MetricOverviewActionDownloadButton />
-          <MetricOverviewActionInfoButton />
+          <MetricOverviewActionInfoButton
+            onClick={() => setLearnMoreModalVisible(true)}
+          />
         </MetricOverviewActionsContainer>
       </LeftPanel>
       <RightPanel>
@@ -227,9 +246,17 @@ const DashboardView = () => {
         <RightPanelMetricOverviewActionsContainer>
           <MetricOverviewActionShareButton />
           <MetricOverviewActionDownloadButton />
-          <MetricOverviewActionInfoButton />
+          <MetricOverviewActionInfoButton
+            onClick={() => setLearnMoreModalVisible(true)}
+          />
         </RightPanelMetricOverviewActionsContainer>
       </RightPanel>
+      {learnMoreModalVisible && (
+        <LearnMoreModal
+          closeModal={() => setLearnMoreModalVisible(false)}
+          metricKey={metricKey}
+        />
+      )}
     </Container>
   );
 };
