@@ -105,8 +105,8 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     const customFrequency = metrics[systemMetricKey]?.customFrequency;
     const startingMonth = metrics[systemMetricKey]?.startingMonth;
     const customOrDefaultFrequency = customFrequency || defaultFrequency;
-    const startingMonthNotJanuaryJune =
-      startingMonth !== null && startingMonth !== 1 && startingMonth !== 6;
+    const startingMonthNotJanuaryJuly =
+      startingMonth !== null && startingMonth !== 1 && startingMonth !== 7;
 
     useEffect(
       () => {
@@ -223,15 +223,15 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   type="radio"
                   id="metric-config-fiscal-year"
                   name="metric-config-frequency"
-                  label="Fiscal Year (Jun)"
-                  value="Fiscal Year (Jun)"
-                  checked={metricEnabled && startingMonth === 6}
+                  label="Fiscal Year (Jul)"
+                  value="Fiscal Year (Jul)"
+                  checked={metricEnabled && startingMonth === 7}
                   onChange={() => {
                     if (systemSearchParam && metricSearchParam) {
                       const updatedSetting = updateMetricReportFrequency(
                         systemSearchParam,
                         metricSearchParam,
-                        { customFrequency: "ANNUAL", startingMonth: 6 }
+                        { customFrequency: "ANNUAL", startingMonth: 7 }
                       );
                       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                       saveMetricSettings(updatedSetting, agencyId!);
@@ -241,21 +241,21 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                 <Dropdown>
                   <DropdownButton
                     kind="borderless"
-                    checked={startingMonthNotJanuaryJune}
+                    checked={startingMonthNotJanuaryJuly}
                   >
-                    {startingMonthNotJanuaryJune ? (
+                    {startingMonthNotJanuaryJuly ? (
                       <CalendarIconLight />
                     ) : (
                       <CalendarIconDark />
                     )}
-                    {(startingMonthNotJanuaryJune &&
+                    {(startingMonthNotJanuaryJuly &&
                       startingMonth &&
                       monthsByName[startingMonth - 1]) ||
                       `Other...`}
                   </DropdownButton>
                   <ExtendedDropdownMenu alignment="right">
                     {monthsByName
-                      .filter((month) => !["January", "June"].includes(month))
+                      .filter((month) => !["January", "July"].includes(month))
                       .map((month) => {
                         const monthNumber = monthsByName.indexOf(month) + 1;
                         return (
