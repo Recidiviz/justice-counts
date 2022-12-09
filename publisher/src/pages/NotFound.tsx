@@ -86,6 +86,7 @@ export const NotFound: React.FC<{
   const { userStore } = useStore();
 
   const isAgencyValid = !!userStore.getAgency(agencyId);
+  const defaultAgency = userStore.getInitialAgencyId();
 
   return (
     <Wrapper>
@@ -103,7 +104,9 @@ export const NotFound: React.FC<{
       <HomeButton
         onClick={() =>
           navigate(
-            isAgencyValid ? `/agency/${agencyId}/${REPORTS_LOWERCASE}` : "/"
+            `/agency/${
+              isAgencyValid ? agencyId : defaultAgency
+            }/${REPORTS_LOWERCASE}`
           )
         }
       >
