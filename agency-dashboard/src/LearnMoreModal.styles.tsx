@@ -36,9 +36,9 @@ export const LearnMoreModalContainer = styled.div`
   z-index: 3;
 `;
 
-export const LearnMoreModalInnerContainer = styled.div`
+export const LearnMoreModalScrollContainer = styled.div`
   position: relative;
-  flex: 0 1 864px;
+  flex: 0 1 744px;
   border-top: 1px solid ${palette.highlight.white2};
   padding-top: 24px;
   margin: 32px 24px 24px 24px;
@@ -46,6 +46,11 @@ export const LearnMoreModalInnerContainer = styled.div`
   @media only screen and (max-width: ${TABLET_WIDTH}px) {
     margin-top: 24px;
   }
+`;
+
+export const LearnMoreModalInnerContainer = styled.div`
+  position: relative;
+  max-width: 644px;
 `;
 
 export const LearnMoreModalCloseButton = styled.div`
@@ -74,7 +79,7 @@ export const LearnMoreModalCloseButton = styled.div`
 
 export const LearnMoreModalAgencyName = styled.div`
   ${typography.sizeCSS.normal}
-  padding-top: 32px;
+  padding-top: 2px;
 `;
 export const LearnMoreModalMetricName = styled.div`
   ${typography.sizeCSS.title}

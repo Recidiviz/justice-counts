@@ -25,6 +25,7 @@ import {
   LearnMoreModalInnerContainer,
   LearnMoreModalMetricName,
   LearnMoreModalParagraph,
+  LearnMoreModalScrollContainer,
   LearnMoreModalSectionTitle,
 } from "./LearnMoreModal.styles";
 import { useStore } from "./stores";
@@ -40,37 +41,41 @@ export const LearnMoreModal: React.FC<{
   }
   return (
     <LearnMoreModalContainer>
-      <LearnMoreModalInnerContainer>
+      <LearnMoreModalScrollContainer>
         <LearnMoreModalCloseButton onClick={closeModal}>
           Close
           <CloseIcon />
         </LearnMoreModalCloseButton>
-        <LearnMoreModalAgencyName>
-          {agencyDataStore.agency?.name}
-        </LearnMoreModalAgencyName>
-        <LearnMoreModalMetricName>
-          {metric.display_name}
-        </LearnMoreModalMetricName>
-        <LearnMoreModalParagraph>{metric.description}</LearnMoreModalParagraph>
-        <LearnMoreModalSectionTitle>Definitions</LearnMoreModalSectionTitle>
-        {metric.definitions.map((definition) => (
+        <LearnMoreModalInnerContainer>
+          <LearnMoreModalAgencyName>
+            {agencyDataStore.agency?.name}
+          </LearnMoreModalAgencyName>
+          <LearnMoreModalMetricName>
+            {metric.display_name}
+          </LearnMoreModalMetricName>
           <LearnMoreModalParagraph>
-            {`${definition.term}: ${definition.definition}`}
+            {metric.description}
           </LearnMoreModalParagraph>
-        ))}
-        <LearnMoreModalSectionTitle>Contexts</LearnMoreModalSectionTitle>
-        {metric.contexts.map((context) => (
-          <LearnMoreModalParagraph>
-            {`${context.display_name}: ${context.value}`}
-          </LearnMoreModalParagraph>
-        ))}
-        <LearnMoreModalSectionTitle>Settings</LearnMoreModalSectionTitle>
-        {metric.settings?.map((setting) => (
-          <LearnMoreModalParagraph>
-            {`${setting.label}: ${setting.included}`}
-          </LearnMoreModalParagraph>
-        ))}
-      </LearnMoreModalInnerContainer>
+          <LearnMoreModalSectionTitle>Definitions</LearnMoreModalSectionTitle>
+          {metric.definitions.map((definition) => (
+            <LearnMoreModalParagraph>
+              {`${definition.term}: ${definition.definition}`}
+            </LearnMoreModalParagraph>
+          ))}
+          <LearnMoreModalSectionTitle>Contexts</LearnMoreModalSectionTitle>
+          {metric.contexts.map((context) => (
+            <LearnMoreModalParagraph>
+              {`${context.display_name}: ${context.value}`}
+            </LearnMoreModalParagraph>
+          ))}
+          <LearnMoreModalSectionTitle>Settings</LearnMoreModalSectionTitle>
+          {metric.settings?.map((setting) => (
+            <LearnMoreModalParagraph>
+              {`${setting.label}: ${setting.included}`}
+            </LearnMoreModalParagraph>
+          ))}
+        </LearnMoreModalInnerContainer>
+      </LearnMoreModalScrollContainer>
     </LearnMoreModalContainer>
   );
 };
