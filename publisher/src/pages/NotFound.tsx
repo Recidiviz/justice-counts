@@ -56,7 +56,7 @@ const Text = styled.div`
   a {
     ${typography.sizeCSS.medium};
     text-decoration: none;
-    color: ${palette.solid.darkgrey};
+    color: ${palette.solid.blue};
   }
 `;
 
