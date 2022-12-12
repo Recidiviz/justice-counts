@@ -22,7 +22,6 @@ import { useParams } from "react-router-dom";
 import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
 import { PageWrapper } from "../Forms";
-import { REPORTS_LOWERCASE } from "../Global/constants";
 import { Loading } from "../Loading";
 import PublishConfirmation from "./PublishConfirmation";
 import PublishConfirmationSummaryPanel from "./PublishConfirmationSummaryPanel";
@@ -65,12 +64,7 @@ const ReviewReportDataEntry = () => {
   if (
     reportStore.reportOverviews[reportID].agency_id !== Number(params.agencyId)
   ) {
-    return (
-      <NotFound
-        title={`Report ${reportID} not found.`}
-        pathname={`/agency/${params.agencyId}/${REPORTS_LOWERCASE}`}
-      />
-    );
+    return <NotFound />;
   }
 
   return (
