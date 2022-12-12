@@ -45,7 +45,7 @@ import useAutosizeTextArea from "./hooks";
 import { agencyTeam } from "./mocks";
 import { normalizeSystem, removeExcessSpaces } from "./utils";
 
-const supervisionAgencySystems = [
+const supervisionAgencySystems: { label: string; value: AgencySystems }[] = [
   { label: "Parole", value: "PAROLE" },
   {
     label: "Probation",
@@ -63,9 +63,8 @@ export const AgencySettings: React.FC = observer(() => {
     isAgencySupervision,
     agencyDescription,
     loadingSettings,
-    updatePurposeAndFunctions,
-    updateAgencySystems,
-    savePurposeAndFunctions,
+    updateAgencySettings,
+    saveAgencySettings,
     resetState,
   } = agencyStore;
 
@@ -74,18 +73,14 @@ export const AgencySettings: React.FC = observer(() => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   useAutosizeTextArea(textAreaRef.current, agencyDescription);
 
-  const debouncedSave = useRef(debounce(savePurposeAndFunctions, 2500)).current;
-
-  const handleSystemToggle = (systemToToggle: AgencySystems) => {
-    if (currentAgencySystems) {
-      const systems = currentAgencySystems.includes(systemToToggle)
-        ? currentAgencySystems.filter((system) => system !== systemToToggle)
-        : currentAgencySystems.concat(systemToToggle);
-
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      updateAgencySystems(systems, agencyId!);
-    }
+  const systemsToSave = (systemToToggle: AgencySystems): AgencySystems[] => {
+    if (!currentAgencySystems) return [systemToToggle];
+    return currentAgencySystems.includes(systemToToggle)
+      ? currentAgencySystems.filter((system) => system !== systemToToggle)
+      : currentAgencySystems.concat(systemToToggle);
   };
+
+  const debouncedSave = useRef(debounce(saveAgencySettings, 1500)).current;
 
   const wordsCount = agencyDescription
     ? removeExcessSpaces(agencyDescription).split(" ").length
@@ -144,9 +139,12 @@ export const AgencySettings: React.FC = observer(() => {
           <BasicInfoTextArea
             id="basic-info-description"
             onChange={(e) => {
-              const updateText = updatePurposeAndFunctions(e.target.value);
+              const settings = updateAgencySettings(
+                e.target.value,
+                currentAgencySystems
+              );
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              debouncedSave(updateText, agencyId!);
+              debouncedSave(settings, agencyId!);
             }}
             onKeyPress={(e) => {
               if (wordsCount >= 150 && e.key !== "Backspace") {
@@ -197,7 +195,15 @@ export const AgencySettings: React.FC = observer(() => {
                     checked={currentAgencySystems?.includes(
                       value as AgencySystems
                     )}
-                    onChange={() => handleSystemToggle(value as AgencySystems)}
+                    onChange={() => {
+                      const systems = systemsToSave(value);
+                      const settings = updateAgencySettings(
+                        agencyDescription,
+                        systems
+                      );
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      debouncedSave(settings, agencyId!);
+                    }}
                   />
                   <BlueCheckIcon src={blueCheck} alt="" enabled />
                 </CheckboxWrapper>

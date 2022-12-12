@@ -28,12 +28,12 @@ import {
   SettingsMenu,
 } from "../components/Settings";
 
-export const settingsMenuPaths = {
-  "Your Account": "account",
-  "Agency Settings": "agency-settings",
-  "Uploaded Files": "uploaded-files",
-  "Metric Configuration": "metric-config",
-};
+export const settingsMenuPaths = [
+  { displayLabel: "Your Account", path: "account" },
+  { displayLabel: "Agency Settings", path: "agency-settings" },
+  { displayLabel: "Uploaded Files", path: "uploaded-files" },
+  { displayLabel: "Metric Configuration", path: "metric-config" },
+];
 
 export type ListOfMetricsForNavigation = {
   key: string;

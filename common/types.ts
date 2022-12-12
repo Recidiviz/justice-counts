@@ -30,7 +30,9 @@ export type AgencySystems =
   | "SUPERVISION"
   | "PAROLE"
   | "PROBATION"
-  | "POST_RELEASE";
+  | "POST_RELEASE"
+  | "PRETRIAL_SUPERVISION"
+  | "OTHER_SUPERVISION";
 
 export interface UserAgency {
   name: string;

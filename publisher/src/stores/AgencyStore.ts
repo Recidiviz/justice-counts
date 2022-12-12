@@ -24,6 +24,7 @@ import UserStore from "./UserStore";
 
 type AgencySettings = {
   settings: [{ setting_type: "PURPOSE_AND_FUNCTIONS"; value: string }];
+  systems: AgencySystems[] | undefined;
 };
 
 class AgencyStore {
@@ -87,10 +88,10 @@ class AgencyStore {
     }
   }
 
-  savePurposeAndFunctions = async (
+  saveAgencySettings = async (
     settings: AgencySettings,
     agencyId: string
-  ): Promise<Response> => {
+  ): Promise<void> => {
     const response = (await this.api.request({
       path: `/api/agencies/${agencyId}`,
       body: settings,
@@ -103,36 +104,19 @@ class AgencyStore {
     }
 
     showToast(`Settings saved.`, true, "grey", 4000);
-    return response;
   };
 
-  updatePurposeAndFunctions = (text: string): AgencySettings => {
+  updateAgencySettings = (
+    text: string,
+    systems: AgencySystems[] | undefined
+  ): AgencySettings => {
     this.agencyDescription = text;
+    this.currentAgencySystems = systems;
 
     return {
       settings: [{ setting_type: "PURPOSE_AND_FUNCTIONS", value: text }],
+      systems,
     };
-  };
-
-  updateAgencySystems = async (
-    systems: AgencySystems[],
-    agencyId: string
-  ): Promise<void> => {
-    const response = (await this.api.request({
-      path: `/api/agencies/${agencyId}`,
-      body: { systems },
-      method: "PATCH",
-    })) as Response;
-
-    if (response.status !== 200) {
-      showToast(`Failed to save.`, true, "red", 4000);
-      throw new Error("There was an issue updating purpose and functions.");
-    }
-
-    runInAction(() => {
-      this.currentAgencySystems = systems;
-    });
-    showToast(`Settings saved.`, true, "grey", 4000);
   };
 
   resetState = () => {
