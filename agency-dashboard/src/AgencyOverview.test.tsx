@@ -27,20 +27,25 @@ beforeEach(() => {
 
 test("renders list of metrics", async () => {
   fetchMock.mockResponses([
-    JSON.stringify([
-      {
-        key: "LAW_ENFORCEMENT_ARRESTS",
-        display_name: "Total Arrests",
+    JSON.stringify({
+      agency: {
+        name: "Test Agency",
       },
-      {
-        key: "LAW_ENFORCEMENT_BUDGET",
-        display_name: "Annual Budget",
-      },
-      {
-        key: "LAW_ENFORCEMENT_CALLS_FOR_SERVICE",
-        display_name: "Calls for Service",
-      },
-    ]),
+      metrics: [
+        {
+          key: "LAW_ENFORCEMENT_ARRESTS",
+          display_name: "Total Arrests",
+        },
+        {
+          key: "LAW_ENFORCEMENT_BUDGET",
+          display_name: "Annual Budget",
+        },
+        {
+          key: "LAW_ENFORCEMENT_CALLS_FOR_SERVICE",
+          display_name: "Calls for Service",
+        },
+      ],
+    }),
     {},
   ]);
 

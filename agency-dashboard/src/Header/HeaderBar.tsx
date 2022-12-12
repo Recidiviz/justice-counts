@@ -19,6 +19,7 @@ import logo from "@justice-counts/common/assets/jc-logo-vector.png";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { useStore } from "../stores";
 import { AboutModal } from "./AboutModal";
 import {
   HeaderBarContainer,
@@ -30,6 +31,7 @@ import {
 } from "./HeaderBar.styles";
 
 export const HeaderBar = () => {
+  const { agencyDataStore } = useStore();
   const navigate = useNavigate();
   const [aboutModalVisible, setAboutModalVisible] = useState<boolean>(false);
 
@@ -53,11 +55,20 @@ export const HeaderBar = () => {
 
   return (
     <HeaderBarContainer>
-      {aboutModalVisible && <AboutModal closeModal={hideAboutModal} />}
+      {aboutModalVisible && (
+        <AboutModal
+          closeModal={hideAboutModal}
+          agencyName={agencyDataStore.agency?.name || ""}
+        />
+      )}
       <LogoContainer onClick={() => navigate("/")}>
         <Logo src={logo} alt="" />
       </LogoContainer>
-      <HeaderTitle>Justice Counts + Clackamas County Jail</HeaderTitle>
+      <HeaderTitle>
+        {`Justice Counts${
+          agencyDataStore.agency?.name && ` + ${agencyDataStore.agency?.name}`
+        }`}
+      </HeaderTitle>
       <HeaderButtonsContainer>
         <HeaderButton onClick={showAboutModal}>About</HeaderButton>
       </HeaderButtonsContainer>

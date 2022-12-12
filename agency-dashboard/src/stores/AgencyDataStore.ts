@@ -19,6 +19,7 @@ import {
   DatapointsByMetric,
   DataVizAggregateName,
   Metric,
+  UserAgency,
 } from "@justice-counts/common/types";
 import { isPositiveNumber } from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
@@ -26,6 +27,8 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { request } from "../utils/networking";
 
 class AgencyDataStore {
+  agency: UserAgency | undefined;
+
   metrics: Metric[];
 
   loading: boolean;
@@ -135,7 +138,8 @@ class AgencyDataStore {
       if (response.status === 200) {
         const result = await response.json();
         runInAction(() => {
-          this.metrics = result;
+          this.agency = result.agency;
+          this.metrics = result.metrics;
         });
       } else {
         const error = await response.json();
