@@ -68,10 +68,7 @@ export const Router = () => {
           <Route path="*" element={<Navigate to={`${REPORTS_LOWERCASE}`} />} />
         </Routes>
       ) : (
-        <NotFound
-          title="Agency with given ID is not tied to this account."
-          pathname="/"
-        />
+        <NotFound />
       )}
     </>
   );

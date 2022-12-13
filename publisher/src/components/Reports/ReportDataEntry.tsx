@@ -26,7 +26,7 @@ import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
 import { printReportTitle } from "../../utils";
 import { PageWrapper } from "../Forms";
-import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
+import { REPORT_LOWERCASE } from "../Global/constants";
 import { Loading } from "../Loading";
 import DataEntryForm from "./DataEntryForm";
 import PublishDataPanel from "./PublishDataPanel";
@@ -133,12 +133,7 @@ const ReportDataEntry = () => {
   }
 
   if (reportStore.reportOverviews[reportID].agency_id !== Number(agencyId)) {
-    return (
-      <NotFound
-        title={`Report ${reportID} not found.`}
-        pathname={`/agency/${agencyId}/${REPORTS_LOWERCASE}`}
-      />
-    );
+    return <NotFound />;
   }
 
   return (

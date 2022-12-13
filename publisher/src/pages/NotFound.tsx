@@ -20,47 +20,95 @@ import {
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components/macro";
+
+import { REPORTS_LOWERCASE } from "../components/Global/constants";
+import { useStore } from "../stores";
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  gap: 48px;
+  justify-content: center;
   align-items: center;
-  margin-top: 50px;
   width: 100%;
-  max-width: 650px;
+  max-width: 500px;
 `;
 
 const Title = styled.div`
+  ${typography.sizeCSS.headline};
+`;
+
+const Text = styled.div`
   ${typography.sizeCSS.large};
-  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  span {
+    ${typography.sizeCSS.medium};
+  }
+
+  a {
+    ${typography.sizeCSS.medium};
+    text-decoration: none;
+    color: ${palette.solid.blue};
+  }
 `;
 
-const HomepageLinkWrapper = styled.div`
-  ${typography.sizeCSS.medium};
-`;
-
-const HomepageLink = styled.span`
-  color: ${palette.solid.blue};
+const HomeButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 326px;
+  height: 40px;
+  border-radius: 2px;
   cursor: pointer;
+  background-color: ${palette.solid.blue};
+  color: ${palette.solid.white};
+
+  &:hover {
+    opacity: 0.8;
+  }
 `;
 
 // TODO need figma design for this page
-export const NotFound: React.FC<{
-  title: string;
-  pathname: string;
-}> = ({ title, pathname }) => {
+export const NotFound: React.FC = () => {
+  const { agencyId } = useParams();
   const navigate = useNavigate();
+  const { userStore } = useStore();
+
+  const isAgencyValid = !!userStore.getAgency(agencyId);
+  const defaultAgency = userStore.getInitialAgencyId();
 
   return (
     <Wrapper>
-      <Title>{title}</Title>{" "}
-      <HomepageLinkWrapper>
-        Go back{" "}
-        <HomepageLink onClick={() => navigate(pathname)}>home</HomepageLink>.
-      </HomepageLinkWrapper>
+      <Title>Page Not Found</Title>
+      <Text>
+        Error 404
+        <span>
+          The page you are looking for seems to be missing. Send us an email and
+          we’ll help you find it.
+        </span>
+        <a href="mailto:justice-counts-support@csg.org">
+          justice-counts-support@csg.org
+        </a>
+      </Text>
+      <HomeButton
+        onClick={() =>
+          navigate(
+            `/agency/${
+              isAgencyValid ? agencyId : defaultAgency
+            }/${REPORTS_LOWERCASE}`
+          )
+        }
+      >
+        Home
+      </HomeButton>
     </Wrapper>
   );
 };

@@ -30,13 +30,16 @@ const Header = () => {
   const { userStore } = useStore();
 
   const isAgencyValid = !!userStore.getAgency(agencyId);
+  const defaultAgency = userStore.getInitialAgencyId();
 
   return (
     <HeaderBar>
       <LogoContainer
         onClick={() =>
           navigate(
-            isAgencyValid ? `/agency/${agencyId}/${REPORTS_LOWERCASE}` : "/"
+            `/agency/${
+              isAgencyValid ? agencyId : defaultAgency
+            }/${REPORTS_LOWERCASE}`
           )
         }
       >
