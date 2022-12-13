@@ -47,7 +47,6 @@ export const AgencySettingsContent = styled.div`
   height: fit-content;
   flex-direction: column;
   gap: 50px;
-  overflow-y: scroll;
 `;
 
 export const AgencySettingsBlock = styled.div`
@@ -76,12 +75,14 @@ export const AgencySettingsInfoRow = styled.div`
   border-top: 1px solid #dcdddf;
   display: flex;
   flex-direction: row;
+  gap: 60px;
   justify-content: space-between;
   align-items: center;
   ${typography.sizeCSS.medium};
 
   span {
     ${typography.sizeCSS.normal};
+    text-align: end;
   }
 `;
 

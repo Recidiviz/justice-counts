@@ -64,7 +64,7 @@ export const SettingsMenu: React.FC = observer(() => {
   )
     ? settingsMenuPaths
     : settingsMenuPaths.filter(
-        (menuPath) => menuPath.path === "agency-settings"
+        (menuPath) => menuPath.path !== "agency-settings"
       );
 
   const handleMetricListItemClick = (metricKey: string) => {

@@ -31,8 +31,6 @@ class UserStore {
 
   api: API;
 
-  auth0UserID: string | undefined;
-
   userAgencies: UserAgency[] | undefined;
 
   userAgenciesById: { [agencyId: string]: UserAgency };
@@ -48,7 +46,6 @@ class UserStore {
 
     this.authStore = authStore;
     this.api = api;
-    this.auth0UserID = this.authStore.user?.id;
     this.userAgencies = undefined;
     this.userAgenciesById = {};
     this.userInfoLoaded = false;
@@ -147,6 +144,10 @@ class UserStore {
 
   get email(): string | undefined {
     return this.authStore.user?.email;
+  }
+
+  get auth0UserID(): string | undefined {
+    return this.authStore.user?.sub;
   }
 
   get nameOrEmail(): string | undefined {

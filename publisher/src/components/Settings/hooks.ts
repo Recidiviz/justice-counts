@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { SettingsSearchParams } from "./types";
@@ -34,21 +33,3 @@ export const useSettingsSearchParams = (): [
 
   return [settingsSearchParams, setSettingsSearchParams];
 };
-
-const useAutosizeTextArea = (
-  textAreaRef: HTMLTextAreaElement | null,
-  value: string
-) => {
-  useEffect(() => {
-    if (textAreaRef) {
-      // eslint-disable-next-line no-param-reassign
-      textAreaRef.style.height = "0px";
-      const { scrollHeight } = textAreaRef;
-
-      // eslint-disable-next-line no-param-reassign
-      textAreaRef.style.height = `${scrollHeight}px`;
-    }
-  }, [textAreaRef, value]);
-};
-
-export default useAutosizeTextArea;

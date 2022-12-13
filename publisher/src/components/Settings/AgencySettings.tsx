@@ -41,9 +41,7 @@ import {
   BasicInfoTextAreaWordCounter,
   SupervisionSystemRow,
 } from "./AgencySettings.styles";
-import useAutosizeTextArea from "./hooks";
-import { agencyTeam } from "./mocks";
-import { normalizeSystem, removeExcessSpaces } from "./utils";
+import { normalizeSystem } from "./utils";
 
 const supervisionAgencySystems: { label: string; value: AgencySystems }[] = [
   { label: "Parole", value: "PAROLE" },
@@ -56,7 +54,7 @@ const supervisionAgencySystems: { label: string; value: AgencySystems }[] = [
 ];
 
 export const AgencySettings: React.FC = observer(() => {
-  const { agencyStore } = useStore();
+  const { agencyStore, userStore } = useStore();
   const {
     currentAgency,
     currentAgencySystems,
@@ -71,7 +69,6 @@ export const AgencySettings: React.FC = observer(() => {
   const { agencyId } = useParams();
 
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
-  useAutosizeTextArea(textAreaRef.current, settings.PURPOSE_AND_FUNCTIONS);
 
   const systemsToSave = (systemToToggle: AgencySystems): AgencySystems[] => {
     if (!currentAgencySystems) return [systemToToggle];
@@ -82,9 +79,11 @@ export const AgencySettings: React.FC = observer(() => {
 
   const debouncedSave = useRef(debounce(saveAgencySettings, 1500)).current;
 
-  const wordsCount = settings.PURPOSE_AND_FUNCTIONS
-    ? removeExcessSpaces(settings.PURPOSE_AND_FUNCTIONS).split(" ").length
-    : 0;
+  const agencyTeam = userStore
+    .getAgency(agencyId)
+    ?.team.filter((member) => member.auth0_user_id !== userStore.auth0UserID);
+
+  const charactersCount = settings.PURPOSE_AND_FUNCTIONS.length;
 
   useEffect(() => {
     const initialize = async () => {
@@ -96,6 +95,17 @@ export const AgencySettings: React.FC = observer(() => {
     initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyId]);
+
+  useEffect(() => {
+    if (textAreaRef.current) {
+      // eslint-disable-next-line no-param-reassign
+      textAreaRef.current.style.height = "0px";
+      const { scrollHeight } = textAreaRef.current;
+
+      // eslint-disable-next-line no-param-reassign
+      textAreaRef.current.style.height = `${Number(scrollHeight) + 1}px`;
+    }
+  }, [settings.PURPOSE_AND_FUNCTIONS]);
 
   if (loadingSettings)
     return (
@@ -128,13 +138,12 @@ export const AgencySettings: React.FC = observer(() => {
                 .join(", ")}
             </span>
           </AgencySettingsInfoRow>
-          {/* state_code property will be replaced with state */}
           <AgencySettingsInfoRow>
             State <span>{currentAgency?.state}</span>
           </AgencySettingsInfoRow>
           <BasicInfoTextAreaLabel htmlFor="basic-info-description">
-            Briefly describe your agency’s purpose and functions (150 words or
-            less).
+            Briefly describe your agency’s purpose and functions (750 characters
+            or less).
           </BasicInfoTextAreaLabel>
           <BasicInfoTextArea
             id="basic-info-description"
@@ -146,18 +155,14 @@ export const AgencySettings: React.FC = observer(() => {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               debouncedSave(updatedSettings, agencyId!);
             }}
-            onKeyPress={(e) => {
-              if (wordsCount >= 150 && e.key !== "Backspace") {
-                e.preventDefault();
-              }
-            }}
             placeholder="Type here..."
             ref={textAreaRef}
             rows={1}
             value={settings.PURPOSE_AND_FUNCTIONS}
+            maxLength={750}
           />
-          <BasicInfoTextAreaWordCounter isRed={wordsCount > 150}>
-            {wordsCount}/150 words
+          <BasicInfoTextAreaWordCounter isRed={charactersCount >= 750}>
+            {charactersCount}/750 characters
           </BasicInfoTextAreaWordCounter>
         </AgencySettingsBlock>
         <AgencySettingsBlock id="team-management">
@@ -171,10 +176,11 @@ export const AgencySettings: React.FC = observer(() => {
             </a>
             .
           </AgencySettingsBlockDescription>
-          {agencyTeam.map(({ name, email }) => (
-            <AgencySettingsInfoRow key={name + email}>
+          {agencyTeam?.map(({ name }) => (
+            <AgencySettingsInfoRow key={name}>
               {name}
-              <span>{email}</span>
+              {/* email is mocked */}
+              <span>{`${name}@doc1.wa.gov`}</span>
             </AgencySettingsInfoRow>
           ))}
         </AgencySettingsBlock>
@@ -184,7 +190,7 @@ export const AgencySettings: React.FC = observer(() => {
               Supervision Populations
             </AgencySettingsBlockTitle>
             <AgencySettingsBlockDescription>
-              Check the supervision popluations your agency is both responsible
+              Check the supervision populations your agency is both responsible
               for AND can disaggregate your data by.
             </AgencySettingsBlockDescription>
             {supervisionAgencySystems.map(({ label, value }) => (
