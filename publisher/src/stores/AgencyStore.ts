@@ -19,12 +19,12 @@ import { showToast } from "@justice-counts/common/components/Toast";
 import { AgencySystems, UserAgency } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction } from "mobx";
 
-import { SettingType } from "../components/Settings";
+import { AgencySettingType } from "../components/Settings";
 import API from "./API";
 import UserStore from "./UserStore";
 
 type AgencySettings = {
-  settings: [{ setting_type: SettingType; value: string }];
+  settings: [{ setting_type: AgencySettingType; value: string }];
   systems: AgencySystems[] | undefined;
 };
 
@@ -40,7 +40,7 @@ class AgencyStore {
   isAgencySupervision: boolean | undefined;
 
   // might change "string" in future if/when there will be more than one setting
-  settings: Record<SettingType, string>;
+  settings: Record<AgencySettingType, string>;
 
   loadingSettings: boolean;
 
