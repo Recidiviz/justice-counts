@@ -61,7 +61,7 @@ export const AgencySettings: React.FC = observer(() => {
     currentAgency,
     currentAgencySystems,
     isAgencySupervision,
-    agencyDescription,
+    settings,
     loadingSettings,
     updateAgencySettings,
     saveAgencySettings,
@@ -71,7 +71,7 @@ export const AgencySettings: React.FC = observer(() => {
   const { agencyId } = useParams();
 
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
-  useAutosizeTextArea(textAreaRef.current, agencyDescription);
+  useAutosizeTextArea(textAreaRef.current, settings.PURPOSE_AND_FUNCTIONS);
 
   const systemsToSave = (systemToToggle: AgencySystems): AgencySystems[] => {
     if (!currentAgencySystems) return [systemToToggle];
@@ -82,8 +82,8 @@ export const AgencySettings: React.FC = observer(() => {
 
   const debouncedSave = useRef(debounce(saveAgencySettings, 1500)).current;
 
-  const wordsCount = agencyDescription
-    ? removeExcessSpaces(agencyDescription).split(" ").length
+  const wordsCount = settings.PURPOSE_AND_FUNCTIONS
+    ? removeExcessSpaces(settings.PURPOSE_AND_FUNCTIONS).split(" ").length
     : 0;
 
   useEffect(() => {
@@ -139,12 +139,12 @@ export const AgencySettings: React.FC = observer(() => {
           <BasicInfoTextArea
             id="basic-info-description"
             onChange={(e) => {
-              const settings = updateAgencySettings(
+              const updatedSettings = updateAgencySettings(
                 e.target.value,
                 currentAgencySystems
               );
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              debouncedSave(settings, agencyId!);
+              debouncedSave(updatedSettings, agencyId!);
             }}
             onKeyPress={(e) => {
               if (wordsCount >= 150 && e.key !== "Backspace") {
@@ -154,7 +154,7 @@ export const AgencySettings: React.FC = observer(() => {
             placeholder="Type here..."
             ref={textAreaRef}
             rows={1}
-            value={agencyDescription}
+            value={settings.PURPOSE_AND_FUNCTIONS}
           />
           <BasicInfoTextAreaWordCounter isRed={wordsCount > 150}>
             {wordsCount}/150 words
@@ -197,12 +197,12 @@ export const AgencySettings: React.FC = observer(() => {
                     )}
                     onChange={() => {
                       const systems = systemsToSave(value);
-                      const settings = updateAgencySettings(
-                        agencyDescription,
+                      const updatedSettings = updateAgencySettings(
+                        settings.PURPOSE_AND_FUNCTIONS,
                         systems
                       );
                       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      debouncedSave(settings, agencyId!);
+                      debouncedSave(updatedSettings, agencyId!);
                     }}
                   />
                   <BlueCheckIcon src={blueCheck} alt="" enabled />

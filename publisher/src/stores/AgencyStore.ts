@@ -19,11 +19,12 @@ import { showToast } from "@justice-counts/common/components/Toast";
 import { AgencySystems, UserAgency } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction } from "mobx";
 
+import { SettingType } from "../components/Settings";
 import API from "./API";
 import UserStore from "./UserStore";
 
 type AgencySettings = {
-  settings: [{ setting_type: "PURPOSE_AND_FUNCTIONS"; value: string }];
+  settings: [{ setting_type: SettingType; value: string }];
   systems: AgencySystems[] | undefined;
 };
 
@@ -38,7 +39,8 @@ class AgencyStore {
 
   isAgencySupervision: boolean | undefined;
 
-  agencyDescription: string;
+  // might change "string" in future if/when there will be more than one setting
+  settings: Record<SettingType, string>;
 
   loadingSettings: boolean;
 
@@ -50,7 +52,7 @@ class AgencyStore {
     this.currentAgency = undefined;
     this.currentAgencySystems = undefined;
     this.isAgencySupervision = undefined;
-    this.agencyDescription = "";
+    this.settings = { PURPOSE_AND_FUNCTIONS: "" };
     this.loadingSettings = true;
   }
 
@@ -79,9 +81,12 @@ class AgencyStore {
         throw new Error("There was an issue getting agency description.");
       }
 
-      const description = (await response.json()) as AgencySettings;
+      const agencySettings = (await response.json()) as AgencySettings;
       runInAction(() => {
-        this.agencyDescription = description.settings[0].value;
+        this.settings.PURPOSE_AND_FUNCTIONS =
+          agencySettings.settings.find(
+            (setting) => setting.setting_type === "PURPOSE_AND_FUNCTIONS"
+          )?.value || "";
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
@@ -110,7 +115,7 @@ class AgencyStore {
     text: string,
     systems: AgencySystems[] | undefined
   ): AgencySettings => {
-    this.agencyDescription = text;
+    this.settings.PURPOSE_AND_FUNCTIONS = text;
     this.currentAgencySystems = systems;
 
     return {
@@ -125,7 +130,7 @@ class AgencyStore {
       this.currentAgency = undefined;
       this.currentAgencySystems = undefined;
       this.isAgencySupervision = undefined;
-      this.agencyDescription = "";
+      this.settings = { PURPOSE_AND_FUNCTIONS: "" };
       this.loadingSettings = true;
     });
   };

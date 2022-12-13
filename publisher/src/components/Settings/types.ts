@@ -21,3 +21,6 @@ export type SettingsSearchParams = {
   system?: AgencySystems;
   metric?: string;
 };
+
+// might add settings names here in future
+export type SettingType = "PURPOSE_AND_FUNCTIONS";
