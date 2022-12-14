@@ -113,6 +113,11 @@ export const ShareBarContainer = styled.div`
   align-items: flex-start;
   gap: 8px;
   flex-shrink: 1;
+
+  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 `;
 
 export const ShareBarURLBox = styled.input`
@@ -134,7 +139,6 @@ export const ShareBarButton = styled.div`
   padding: 9px 16px;
   height: 48px;
   ${typography.sizeCSS.normal}
-  width: 100px;
   background: ${palette.solid.blue};
   color: ${palette.solid.white};
   border-radius: 2px;
