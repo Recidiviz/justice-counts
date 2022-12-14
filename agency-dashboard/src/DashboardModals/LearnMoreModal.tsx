@@ -18,17 +18,17 @@
 import { ReactComponent as CloseIcon } from "@justice-counts/common/assets/close-icon.svg";
 import React from "react";
 
+import { useStore } from "../stores";
 import {
-  LearnMoreModalAgencyName,
-  LearnMoreModalCloseButton,
-  LearnMoreModalContainer,
-  LearnMoreModalInnerContainer,
-  LearnMoreModalMetricName,
-  LearnMoreModalParagraph,
-  LearnMoreModalScrollContainer,
-  LearnMoreModalSectionTitle,
-} from "./LearnMoreModal.styles";
-import { useStore } from "./stores";
+  ModalCloseButton,
+  ModalContainer,
+  ModalInnerContainer,
+  ModalParagraph,
+  ModalScrollContainer,
+  ModalSectionTitle,
+  ModalSubtitle,
+  ModalTitle,
+} from "./DashboardModal.styles";
 
 export const LearnMoreModal: React.FC<{
   closeModal: () => void;
@@ -43,56 +43,46 @@ export const LearnMoreModal: React.FC<{
     (context) => context.key === "ADDITIONAL_CONTEXT"
   )?.value;
   return (
-    <LearnMoreModalContainer>
-      <LearnMoreModalScrollContainer>
-        <LearnMoreModalCloseButton onClick={closeModal}>
+    <ModalContainer>
+      <ModalScrollContainer>
+        <ModalCloseButton onClick={closeModal}>
           Close
           <CloseIcon />
-        </LearnMoreModalCloseButton>
-        <LearnMoreModalInnerContainer>
-          <LearnMoreModalAgencyName>
-            {agencyDataStore.agency?.name}
-          </LearnMoreModalAgencyName>
-          <LearnMoreModalMetricName>
-            {metric.display_name}
-          </LearnMoreModalMetricName>
-          <LearnMoreModalParagraph>
-            {metric.description}
-          </LearnMoreModalParagraph>
+        </ModalCloseButton>
+        <ModalInnerContainer>
+          <ModalSubtitle>{agencyDataStore.agency?.name}</ModalSubtitle>
+          <ModalTitle>{metric.display_name}</ModalTitle>
+          <ModalParagraph>{metric.description}</ModalParagraph>
           {metric.definitions.length > 0 && (
             <>
-              <LearnMoreModalSectionTitle>
-                Definitions
-              </LearnMoreModalSectionTitle>
+              <ModalSectionTitle>Definitions</ModalSectionTitle>
               {metric.definitions.map((definition) => (
-                <LearnMoreModalParagraph>
+                <ModalParagraph>
                   <span>{definition.term}</span>
                   {`: ${definition.definition}`}
-                </LearnMoreModalParagraph>
+                </ModalParagraph>
               ))}
             </>
           )}
           {additionalContext && (
             <>
-              <LearnMoreModalSectionTitle>Context</LearnMoreModalSectionTitle>
-              <LearnMoreModalParagraph>
-                {additionalContext}
-              </LearnMoreModalParagraph>
+              <ModalSectionTitle>Context</ModalSectionTitle>
+              <ModalParagraph>{additionalContext}</ModalParagraph>
             </>
           )}
           {metric.settings && metric.settings.length > 0 && (
             <>
-              <LearnMoreModalSectionTitle>Settings</LearnMoreModalSectionTitle>
+              <ModalSectionTitle>Settings</ModalSectionTitle>
               {metric.settings.map((setting) => (
-                <LearnMoreModalParagraph>
+                <ModalParagraph>
                   <span>{setting.label}</span>
                   {`: ${setting.included}`}
-                </LearnMoreModalParagraph>
+                </ModalParagraph>
               ))}
             </>
           )}
-        </LearnMoreModalInnerContainer>
-      </LearnMoreModalScrollContainer>
-    </LearnMoreModalContainer>
+        </ModalInnerContainer>
+      </ModalScrollContainer>
+    </ModalContainer>
   );
 };

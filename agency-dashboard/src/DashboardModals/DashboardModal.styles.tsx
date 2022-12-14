@@ -22,7 +22,7 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-export const LearnMoreModalContainer = styled.div`
+export const ModalContainer = styled.div`
   position: fixed;
   top: 0;
   bottom: 0;
@@ -36,7 +36,7 @@ export const LearnMoreModalContainer = styled.div`
   z-index: 3;
 `;
 
-export const LearnMoreModalScrollContainer = styled.div`
+export const ModalScrollContainer = styled.div`
   position: relative;
   flex: 0 1 744px;
   border-top: 1px solid ${palette.highlight.white2};
@@ -48,12 +48,12 @@ export const LearnMoreModalScrollContainer = styled.div`
   }
 `;
 
-export const LearnMoreModalInnerContainer = styled.div`
+export const ModalInnerContainer = styled.div`
   position: relative;
   max-width: 644px;
 `;
 
-export const LearnMoreModalCloseButton = styled.div`
+export const ModalCloseButton = styled.div`
   ${typography.sizeCSS.medium}
   font-weight: 400;
   padding: 24px 0px 16px 16px;
@@ -64,11 +64,10 @@ export const LearnMoreModalCloseButton = styled.div`
   display: flex;
   gap: 8px;
   align-items: center;
+  z-index: 4;
 
-  svg {
-    path {
-      fill: ${palette.solid.darkgrey};
-    }
+  svg > path {
+    fill: ${palette.solid.darkgrey};
   }
 
   &:hover {
@@ -77,20 +76,20 @@ export const LearnMoreModalCloseButton = styled.div`
   }
 `;
 
-export const LearnMoreModalAgencyName = styled.div`
+export const ModalSubtitle = styled.div`
   ${typography.sizeCSS.normal}
   padding-top: 2px;
 `;
-export const LearnMoreModalMetricName = styled.div`
+export const ModalTitle = styled.div`
   ${typography.sizeCSS.title}
   padding-top: 8px;
   padding-bottom: 8px;
 `;
-export const LearnMoreModalSectionTitle = styled.div`
+export const ModalSectionTitle = styled.div`
   ${typography.sizeCSS.large}
   padding-top: 32px;
 `;
-export const LearnMoreModalParagraph = styled.div`
+export const ModalParagraph = styled.div`
   ${typography.sizeCSS.medium}
   padding-top: 16px;
 
@@ -102,7 +101,66 @@ export const LearnMoreModalParagraph = styled.div`
     padding-bottom: 24px;
   }
 `;
-export const LearnMoreModalBottomSpacing = styled.div`
+export const ModalBottomSpacing = styled.div`
   ${typography.sizeCSS.medium}
   padding-top: 16px;
+`;
+
+export const ShareBarContainer = styled.div`
+  margin-top: 24px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  flex-shrink: 1;
+`;
+
+export const ShareBarURLBox = styled.input`
+  background: ${palette.highlight.grey1};
+  border: none;
+  color: ${palette.highlight.grey10};
+  border-radius: 2px;
+  height: 48px;
+  text-overflow: ellipsis;
+  padding: 14px 16px;
+  flex: 1;
+  ${typography.sizeCSS.normal}
+`;
+
+export const ShareBarButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 9px 16px;
+  height: 48px;
+  ${typography.sizeCSS.normal}
+  width: 100px;
+  background: ${palette.solid.blue};
+  color: ${palette.solid.white};
+  border-radius: 2px;
+
+  &:hover {
+    cursor: pointer;
+    background: ${palette.solid.darkblue};
+  }
+`;
+
+export const EmptySelectionCircle = styled.div`
+  width: 16px;
+  height: 16px;
+  border: 1px solid ${palette.highlight.grey4};
+  border-radius: 50%;
+  margin-right: 8px;
+`;
+
+export const ShareCurrentViewContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 8px;
+  ${typography.sizeCSS.normal}
+`;
+
+export const ShareCurrentViewText = styled.div`
+  ${typography.sizeCSS.normal}
 `;
