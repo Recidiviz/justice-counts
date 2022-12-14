@@ -57,10 +57,10 @@ export const AgencySettings: React.FC = observer(() => {
   const { agencyStore, userStore } = useStore();
   const {
     currentAgency,
-    currentAgencySystems,
-    isAgencySupervision,
     settings,
     loadingSettings,
+    currentAgencySystems,
+    isAgencySupervision,
     updateAgencySettings,
     saveAgencySettings,
     resetState,

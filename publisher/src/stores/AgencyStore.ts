@@ -35,11 +35,6 @@ class AgencyStore {
 
   currentAgency: UserAgency | undefined;
 
-  currentAgencySystems: AgencySystems[] | undefined;
-
-  isAgencySupervision: boolean | undefined;
-
-  // might change "string" in future if/when there will be more than one setting
   settings: Record<AgencySettingType, string>;
 
   loadingSettings: boolean;
@@ -50,27 +45,31 @@ class AgencyStore {
     this.userStore = userStore;
     this.api = api;
     this.currentAgency = undefined;
-    this.currentAgencySystems = undefined;
-    this.isAgencySupervision = undefined;
     this.settings = { PURPOSE_AND_FUNCTIONS: "" };
     this.loadingSettings = true;
   }
 
+  get currentAgencySystems(): AgencySystems[] | undefined {
+    return this.currentAgency?.systems;
+  }
+
+  get isAgencySupervision(): boolean {
+    return !!this.currentAgency?.systems.find(
+      (system) => system === "SUPERVISION"
+    );
+  }
+
   initCurrentUserAgency = async (agencyId: string) => {
-    await this.getPurposeAndFunctions(agencyId);
+    await this.getAgencySettings(agencyId);
     const agency = this.userStore.getAgency(agencyId);
 
     runInAction(() => {
       this.currentAgency = agency;
-      this.currentAgencySystems = agency?.systems;
-      this.isAgencySupervision = !!agency?.systems.find(
-        (system) => system === "SUPERVISION"
-      );
       this.loadingSettings = false;
     });
   };
 
-  async getPurposeAndFunctions(agencyId: string): Promise<void | Error> {
+  async getAgencySettings(agencyId: string): Promise<void | Error> {
     try {
       const response = (await this.api.request({
         path: `/api/agencies/${agencyId}`,
@@ -116,7 +115,9 @@ class AgencyStore {
     systems: AgencySystems[] | undefined
   ): AgencySettings => {
     this.settings.PURPOSE_AND_FUNCTIONS = text;
-    this.currentAgencySystems = systems;
+    if (this.currentAgency && systems) {
+      this.currentAgency.systems = systems;
+    }
 
     return {
       settings: [{ setting_type: "PURPOSE_AND_FUNCTIONS", value: text }],
@@ -128,8 +129,6 @@ class AgencyStore {
     // reset the state when switching agencies
     runInAction(() => {
       this.currentAgency = undefined;
-      this.currentAgencySystems = undefined;
-      this.isAgencySupervision = undefined;
       this.settings = { PURPOSE_AND_FUNCTIONS: "" };
       this.loadingSettings = true;
     });
