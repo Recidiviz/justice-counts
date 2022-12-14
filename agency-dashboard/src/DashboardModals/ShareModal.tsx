@@ -17,10 +17,9 @@
 
 import { ReactComponent as CloseIcon } from "@justice-counts/common/assets/close-icon.svg";
 import { showToast } from "@justice-counts/common/components/Toast";
-import React, { useState } from "react";
+import React from "react";
 
 import {
-  // EmptySelectionCircle,
   ModalCloseButton,
   ModalContainer,
   ModalInnerContainer,
@@ -30,13 +29,11 @@ import {
   ShareBarButton,
   ShareBarContainer,
   ShareBarURLBox,
-  // ShareCurrentViewContainer,
 } from "./DashboardModal.styles";
 
 export const ShareModal: React.FC<{
   closeModal: () => void;
 }> = ({ closeModal }) => {
-  const [shareCurrentView, setShareCurrentView] = useState<boolean>(false);
   return (
     <ModalContainer>
       <ModalScrollContainer>
@@ -61,10 +58,6 @@ export const ShareModal: React.FC<{
               Copy URL
             </ShareBarButton>
           </ShareBarContainer>
-          {/* <ShareCurrentViewContainer>
-            <EmptySelectionCircle />
-            Share Current View
-          </ShareCurrentViewContainer> */}
         </ModalInnerContainer>
       </ModalScrollContainer>
     </ModalContainer>
