@@ -20,7 +20,17 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { MetricCategory } from "./AgencyOverview.styles";
+import {
+  AgencyOverviewWrapper,
+  AgencyTitle,
+  CategorizedMetricsContainer,
+  CategoryTitle,
+  Description,
+  MetricsCount,
+  MetricsViewContainer,
+  PageTitle,
+} from "./AgencyOverview.styles";
+import { HeaderBar } from "./Header/HeaderBar";
 import { useStore } from "./stores";
 
 const AgencyOverview = () => {
@@ -28,6 +38,8 @@ const AgencyOverview = () => {
   const params = useParams();
   const agencyId = Number(params.id);
   const { agencyDataStore } = useStore();
+
+  // onClick={() => {navigate(`/agency/${agencyId}/dashboard?metric=${metric.key}`);}}
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,19 +57,36 @@ const AgencyOverview = () => {
     return <>Loading...</>;
   }
 
+  const metricsCount = agencyDataStore.metrics.length;
+  const availableMetricsCount = Object.values(
+    agencyDataStore.datapointsByMetric
+  ).filter((datapoints) => datapoints.aggregate.length > 0).length;
+
+  console.log(agencyDataStore.metricsByCategory);
+
   return (
     <>
-      Click on a metric to view chart:
-      {agencyDataStore.metrics.map((metric) => (
-        <MetricCategory
-          key={metric.key}
-          onClick={() => {
-            navigate(`/agency/${agencyId}/dashboard?metric=${metric.key}`);
-          }}
-        >
-          {agencyDataStore.metricsByKey[metric.key]?.display_name || metric.key}
-        </MetricCategory>
-      ))}
+      <HeaderBar />
+      <AgencyOverviewWrapper>
+        <PageTitle>Justice Counts</PageTitle>
+        <AgencyTitle>{agencyDataStore.agency?.name}</AgencyTitle>
+        <Description>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vel
+          tempor nisi. Fusce efficitur dignissim augue vitae interdum. Fusce
+          volutpat mi at imperdiet semper. Learn More
+        </Description>
+        <MetricsCount>
+          <span>
+            {availableMetricsCount} out of {metricsCount}
+          </span>{" "}
+          Metrics Available
+        </MetricsCount>
+        <MetricsViewContainer>
+          <CategorizedMetricsContainer>
+            <CategoryTitle>Some title</CategoryTitle>
+          </CategorizedMetricsContainer>
+        </MetricsViewContainer>
+      </AgencyOverviewWrapper>
     </>
   );
 };

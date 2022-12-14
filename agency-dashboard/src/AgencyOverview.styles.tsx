@@ -15,8 +15,102 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { palette } from "@justice-counts/common/components/GlobalStyles";
+import {
+  HEADER_BAR_HEIGHT,
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
+
+const METRIC_BLOCK_DESKTOP_WIDTH = 280;
+
+export const AgencyOverviewWrapper = styled.div`
+  max-width: ${METRIC_BLOCK_DESKTOP_WIDTH * 4}px;
+  margin: ${HEADER_BAR_HEIGHT + 14}px auto;
+  display: flex;
+  flex-direction: column;
+
+  @media only screen and (max-width: ${METRIC_BLOCK_DESKTOP_WIDTH * 2}px) {
+    max-width: 320px;
+    padding: 0 17px 0 8px;
+  }
+`;
+
+export const PageTitle = styled.div`
+  ${typography.sizeCSS.medium};
+  margin-bottom: 24px;
+
+  @media only screen and (max-width: ${METRIC_BLOCK_DESKTOP_WIDTH * 2}px) {
+    ${typography.sizeCSS.normal};
+    margin-bottom: 16px;
+  }
+`;
+
+export const AgencyTitle = styled.div`
+  ${typography.sizeCSS.headline};
+  margin-bottom: 24px;
+
+  @media only screen and (max-width: ${METRIC_BLOCK_DESKTOP_WIDTH * 2}px) {
+    ${typography.sizeCSS.title};
+    line-height: 38px;
+    margin-bottom: 16px;
+  }
+`;
+
+export const Description = styled.div`
+  max-width: 424px;
+  ${typography.sizeCSS.normal};
+  margin-bottom: 32px;
+`;
+
+export const MetricsCount = styled.div`
+  ${typography.sizeCSS.title};
+  margin-bottom: 32px;
+
+  span {
+    color: ${palette.solid.blue};
+  }
+
+  @media only screen and (max-width: ${METRIC_BLOCK_DESKTOP_WIDTH * 2}px) {
+    ${typography.sizeCSS.medium};
+  }
+`;
+
+export const MetricsViewContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+`;
+
+export const CategorizedMetricsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @media only screen and (max-width: ${METRIC_BLOCK_DESKTOP_WIDTH * 2}px) {
+    margin-bottom: 9px;
+  }
+`;
+
+export const CategoryTitle = styled.div`
+  ${typography.sizeCSS.medium}
+  margin-bottom: 16px;
+
+  @media only screen and (max-width: ${METRIC_BLOCK_DESKTOP_WIDTH * 2}px) {
+    ${typography.sizeCSS.small};
+    color: ${palette.highlight.grey9};
+    margin-bottom: 9px;
+  }
+`;
+
+export const MetricsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+
+  @media only screen and (max-width: ${METRIC_BLOCK_DESKTOP_WIDTH * 2}px) {
+    margin-bottom: column;
+  }
+`;
 
 export const MetricCategory = styled.div`
   height: 100px;
