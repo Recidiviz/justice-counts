@@ -57,7 +57,7 @@ export const LearnMoreModal: React.FC<{
             <>
               <ModalSectionTitle>Definitions</ModalSectionTitle>
               {metric.definitions.map((definition) => (
-                <ModalParagraph>
+                <ModalParagraph key={definition.term}>
                   <span>{definition.term}</span>
                   {`: ${definition.definition}`}
                 </ModalParagraph>
