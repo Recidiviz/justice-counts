@@ -81,7 +81,8 @@ export const AgencySettings: React.FC = observer(() => {
 
   const agencyTeam = userStore
     .getAgency(agencyId)
-    ?.team.filter((member) => member.auth0_user_id !== userStore.auth0UserID);
+    ?.team.filter((member) => member.auth0_user_id !== userStore.auth0UserID)
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   const charactersCount = settings.PURPOSE_AND_FUNCTIONS.length;
 
