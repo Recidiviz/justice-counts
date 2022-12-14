@@ -94,6 +94,10 @@ export const LearnMoreModalParagraph = styled.div`
   ${typography.sizeCSS.medium}
   padding-top: 16px;
 
+  span {
+    font-weight: 700;
+  }
+
   &:last-child {
     padding-bottom: 24px;
   }

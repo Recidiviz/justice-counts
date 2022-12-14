@@ -39,6 +39,9 @@ export const LearnMoreModal: React.FC<{
   if (!metric) {
     return null;
   }
+  const additionalContext = metric.contexts.find(
+    (context) => context.key === "ADDITIONAL_CONTEXT"
+  )?.value;
   return (
     <LearnMoreModalContainer>
       <LearnMoreModalScrollContainer>
@@ -56,24 +59,38 @@ export const LearnMoreModal: React.FC<{
           <LearnMoreModalParagraph>
             {metric.description}
           </LearnMoreModalParagraph>
-          <LearnMoreModalSectionTitle>Definitions</LearnMoreModalSectionTitle>
-          {metric.definitions.map((definition) => (
-            <LearnMoreModalParagraph>
-              {`${definition.term}: ${definition.definition}`}
-            </LearnMoreModalParagraph>
-          ))}
-          <LearnMoreModalSectionTitle>Contexts</LearnMoreModalSectionTitle>
-          {metric.contexts.map((context) => (
-            <LearnMoreModalParagraph>
-              {`${context.display_name}: ${context.value}`}
-            </LearnMoreModalParagraph>
-          ))}
-          <LearnMoreModalSectionTitle>Settings</LearnMoreModalSectionTitle>
-          {metric.settings?.map((setting) => (
-            <LearnMoreModalParagraph>
-              {`${setting.label}: ${setting.included}`}
-            </LearnMoreModalParagraph>
-          ))}
+          {metric.definitions.length > 0 && (
+            <>
+              <LearnMoreModalSectionTitle>
+                Definitions
+              </LearnMoreModalSectionTitle>
+              {metric.definitions.map((definition) => (
+                <LearnMoreModalParagraph>
+                  <span>{definition.term}</span>
+                  {`: ${definition.definition}`}
+                </LearnMoreModalParagraph>
+              ))}
+            </>
+          )}
+          {additionalContext && (
+            <>
+              <LearnMoreModalSectionTitle>Context</LearnMoreModalSectionTitle>
+              <LearnMoreModalParagraph>
+                {additionalContext}
+              </LearnMoreModalParagraph>
+            </>
+          )}
+          {metric.settings && metric.settings.length > 0 && (
+            <>
+              <LearnMoreModalSectionTitle>Settings</LearnMoreModalSectionTitle>
+              {metric.settings.map((setting) => (
+                <LearnMoreModalParagraph>
+                  <span>{setting.label}</span>
+                  {`: ${setting.included}`}
+                </LearnMoreModalParagraph>
+              ))}
+            </>
+          )}
         </LearnMoreModalInnerContainer>
       </LearnMoreModalScrollContainer>
     </LearnMoreModalContainer>
