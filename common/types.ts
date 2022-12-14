@@ -39,6 +39,14 @@ export type AgencyTeam = {
   name: string;
 };
 
+export const SupervisionSystems: AgencySystems[] = [
+  "SUPERVISION",
+  "PAROLE",
+  "PROBATION",
+  "POST_RELEASE",
+  "OTHER_SUPERVISION",
+];
+
 export interface UserAgency {
   name: string;
   id: number;
@@ -118,6 +126,7 @@ export interface Metric {
   settings?: MetricConfigurationSettings[];
   starting_month?: number;
   frequency?: ReportFrequency;
+  disaggregated_by_supervision_subsystems?: boolean;
 }
 
 export interface MetricDefinition {

@@ -93,7 +93,8 @@ export type MetricInfo = {
   description?: Metric["description"];
   defaultFrequency?: ReportFrequency;
   customFrequency?: Metric["custom_frequency"];
-  startingMonth?: Metric["starting_month"];
+  startingMonth?: Metric["starting_month"] | null;
+  disaggregatedBySupervisionSubsystems?: boolean;
 };
 
 export type ReportFrequencyUpdate = {

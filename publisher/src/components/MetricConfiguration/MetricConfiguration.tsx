@@ -17,7 +17,12 @@
 
 import { Badge } from "@justice-counts/common/components/Badge";
 import { showToast } from "@justice-counts/common/components/Toast";
-import { AgencySystems, ReportFrequency } from "@justice-counts/common/types";
+import {
+  AgencySystems,
+  ReportFrequency,
+  SupervisionSystems,
+} from "@justice-counts/common/types";
+import { printCommaSeparatedList } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -29,6 +34,7 @@ import { Loading } from "../Loading";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
+  CapitalizedSpan,
   Configuration,
   Metric,
   MetricBox,
@@ -146,6 +152,12 @@ export const MetricConfiguration: React.FC = observer(() => {
   }
 
   const currentAgency = userStore.getAgency(agencyId);
+  const supervisionSubsystems = currentAgency?.systems
+    .filter(
+      (system) =>
+        SupervisionSystems.includes(system) && system !== "SUPERVISION"
+    )
+    .map((system) => system.toLowerCase());
 
   return (
     <>
@@ -192,6 +204,35 @@ export const MetricConfiguration: React.FC = observer(() => {
                     />
                   )
                 )}
+
+                {/* Message for when there are no metrics in the SUPERVISION system (e.g. subsystems are disaggregated into their respective tab(s))  */}
+                {systemSearchParam === "SUPERVISION" &&
+                  getMetricsBySystem(systemSearchParam)?.length === 0 &&
+                  supervisionSubsystems && (
+                    <div>
+                      The metrics for Supervision are now disaggregated and
+                      moved to the{" "}
+                      <CapitalizedSpan>
+                        {printCommaSeparatedList(supervisionSubsystems)}{" "}
+                      </CapitalizedSpan>{" "}
+                      tabs.
+                    </div>
+                  )}
+
+                {/* Message for when there are no metrics in a Supervision subsystem (e.g. subsystems are combined under the Supervision tab) */}
+                {systemSearchParam &&
+                  supervisionSubsystems?.includes(
+                    systemSearchParam?.toLowerCase()
+                  ) &&
+                  getMetricsBySystem(systemSearchParam)?.length === 0 && (
+                    <div>
+                      The metrics for{" "}
+                      <CapitalizedSpan>
+                        {removeSnakeCase(systemSearchParam.toLowerCase())}
+                      </CapitalizedSpan>{" "}
+                      are combined and can be found in the Supervision tab.
+                    </div>
+                  )}
               </MetricBoxContainerWrapper>
             </MetricBoxBottomPaddingContainer>
           )}

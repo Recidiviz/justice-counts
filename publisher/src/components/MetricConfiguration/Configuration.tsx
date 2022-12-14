@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { SupervisionSystems } from "@justice-counts/common/types";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
@@ -46,6 +47,7 @@ import {
   MetricConfigurationContainer,
   MetricDisaggregations,
   MetricOnOffWrapper,
+  PromptWrapper,
   RACE_ETHNICITY_DISAGGREGATION_KEY,
   RaceEthnicitiesGrid,
   RadioButtonGroupWrapper,
@@ -82,6 +84,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       updateDisaggregationEnabledStatus,
       updateDimensionEnabledStatus,
       updateMetricReportFrequency,
+      updateDisaggregatedBySupervisionSubsystems,
       saveMetricSettings,
     } = metricConfigStore;
 
@@ -100,10 +103,13 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
         ? Object.keys(dimensions[systemMetricKey][activeDisaggregationKey])
         : [];
 
+    const {
+      defaultFrequency,
+      customFrequency,
+      startingMonth,
+      disaggregatedBySupervisionSubsystems,
+    } = metrics[systemMetricKey];
     const metricEnabled = Boolean(metrics[systemMetricKey]?.enabled);
-    const defaultFrequency = metrics[systemMetricKey]?.defaultFrequency;
-    const customFrequency = metrics[systemMetricKey]?.customFrequency;
-    const startingMonth = metrics[systemMetricKey]?.startingMonth;
     const customOrDefaultFrequency = customFrequency || defaultFrequency;
     const startingMonthNotJanuaryJuly =
       startingMonth !== null && startingMonth !== 1 && startingMonth !== 7;
@@ -286,6 +292,66 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                 </Dropdown>
               </RadioButtonGroupWrapper>
             </>
+          )}
+
+          {/* Supervision Systems ONLY */}
+          {systemSearchParam && SupervisionSystems.includes(systemSearchParam) && (
+            <PromptWrapper>
+              <Header>
+                For which supervision populations can you report this metric?
+              </Header>
+              <Subheader>
+                {/* TODO(#231) Add link to Agency Settings */}
+                <p>
+                  Disaggregations include the populations you selected in Agency
+                  Settings.
+                </p>
+                <p>Probation, Parole, and Dual Supervision.</p>
+              </Subheader>
+
+              <RadioButtonGroupWrapper>
+                <BinaryRadioButton
+                  type="radio"
+                  id="supervision-subsystem-combined"
+                  name="supervision-subsystem"
+                  label="All Populations / Combined"
+                  value="All Populations / Combined"
+                  onChange={() => {
+                    if (systemSearchParam && metricSearchParam) {
+                      const updatedSetting =
+                        updateDisaggregatedBySupervisionSubsystems(
+                          systemSearchParam,
+                          metricSearchParam,
+                          false
+                        );
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      saveMetricSettings(updatedSetting, agencyId!);
+                    }
+                  }}
+                  defaultChecked={!disaggregatedBySupervisionSubsystems}
+                />
+                <BinaryRadioButton
+                  type="radio"
+                  id="supervision-subsystem-disaggregated"
+                  name="supervision-subsystem"
+                  label="Disaggregated"
+                  value="Disaggregated"
+                  onChange={() => {
+                    if (systemSearchParam && metricSearchParam) {
+                      const updatedSetting =
+                        updateDisaggregatedBySupervisionSubsystems(
+                          systemSearchParam,
+                          metricSearchParam,
+                          true
+                        );
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      saveMetricSettings(updatedSetting, agencyId!);
+                    }
+                  }}
+                  defaultChecked={disaggregatedBySupervisionSubsystems}
+                />
+              </RadioButtonGroupWrapper>
+            </PromptWrapper>
           )}
         </MetricOnOffWrapper>
 
