@@ -15,7 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { SupervisionSystems } from "@justice-counts/common/types";
+import { showToast } from "@justice-counts/common/components/Toast";
+import {
+  AgencySystems,
+  SupervisionSystems,
+} from "@justice-counts/common/types";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
@@ -55,6 +59,7 @@ import {
   ReportFrequencyUpdate,
   Subheader,
 } from ".";
+import { printCommaSeparatedList } from "@justice-counts/common/utils";
 
 type MetricConfigurationProps = {
   activeDimensionKey: string | undefined;
@@ -65,6 +70,7 @@ type MetricConfigurationProps = {
   setActiveDisaggregationKey: React.Dispatch<
     React.SetStateAction<string | undefined>
   >;
+  supervisionSubsystems?: string[];
 };
 
 export const Configuration: React.FC<MetricConfigurationProps> = observer(
@@ -73,6 +79,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     setActiveDimensionKey,
     activeDisaggregationKey,
     setActiveDisaggregationKey,
+    supervisionSubsystems,
   }): JSX.Element => {
     const { agencyId } = useParams();
     const [settingsSearchParams] = useSettingsSearchParams();
@@ -330,8 +337,27 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                         );
                       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                       saveMetricSettings(updatedSetting, agencyId!);
-                      navigate("../metric-config");
-                      window.location.reload();
+
+                      setTimeout(
+                        () =>
+                          showToast(
+                            `${removeSnakeCase(
+                              metricSearchParam
+                            )} is being moved to the ${
+                              supervisionSubsystems &&
+                              printCommaSeparatedList(
+                                supervisionSubsystems.map((system) =>
+                                  system.toUpperCase()
+                                )
+                              )
+                            } systems. Redirecting to the Metric Configuration home page.`
+                          ),
+                        1000
+                      );
+                      setTimeout(() => {
+                        navigate("../metric-config?system=SUPERVISION");
+                        window.location.reload();
+                      }, 4000);
                     }
                   }}
                   defaultChecked={!disaggregatedBySupervisionSubsystems}
@@ -352,8 +378,27 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                         );
                       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                       saveMetricSettings(updatedSetting, agencyId!);
-                      navigate("../metric-config");
-                      window.location.reload();
+
+                      setTimeout(
+                        () =>
+                          showToast(
+                            `${removeSnakeCase(
+                              metricSearchParam
+                            )} is being moved to the ${
+                              supervisionSubsystems &&
+                              printCommaSeparatedList(
+                                supervisionSubsystems.map((system) =>
+                                  system.toUpperCase()
+                                )
+                              )
+                            } systems. Redirecting to the Metric Configuration home page.`
+                          ),
+                        1000
+                      );
+                      setTimeout(() => {
+                        navigate("../metric-config?system=SUPERVISION");
+                        window.location.reload();
+                      }, 4000);
                     }
                   }}
                   defaultChecked={disaggregatedBySupervisionSubsystems}
