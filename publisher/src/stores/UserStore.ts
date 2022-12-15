@@ -161,6 +161,7 @@ class UserStore {
         method: "PUT",
         body: {
           name: this.name,
+          email: this.email,
         },
       })) as Response;
       const { agencies: userAgencies, permissions } = await response.json();
