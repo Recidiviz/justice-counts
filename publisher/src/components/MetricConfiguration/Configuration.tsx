@@ -20,6 +20,7 @@ import {
   AgencySystems,
   SupervisionSystems,
 } from "@justice-counts/common/types";
+import { printCommaSeparatedList } from "@justice-counts/common/utils";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
@@ -59,7 +60,6 @@ import {
   ReportFrequencyUpdate,
   Subheader,
 } from ".";
-import { printCommaSeparatedList } from "@justice-counts/common/utils";
 
 type MetricConfigurationProps = {
   activeDimensionKey: string | undefined;
@@ -122,6 +122,11 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     const customOrDefaultFrequency = customFrequency || defaultFrequency;
     const startingMonthNotJanuaryJuly =
       startingMonth !== null && startingMonth !== 1 && startingMonth !== 7;
+
+    const normalizedSupervisionSubsystems =
+      supervisionSubsystems?.map((system) => {
+        return system.charAt(0).toUpperCase() + system.slice(1);
+      }) || [];
 
     useEffect(
       () => {
@@ -343,14 +348,9 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                           showToast(
                             `${removeSnakeCase(
                               metricSearchParam
-                            )} is being moved to the ${
-                              supervisionSubsystems &&
-                              printCommaSeparatedList(
-                                supervisionSubsystems.map((system) =>
-                                  system.toUpperCase()
-                                )
-                              )
-                            } systems. Redirecting to the Metric Configuration home page.`
+                            )} is being moved to the ${printCommaSeparatedList(
+                              normalizedSupervisionSubsystems
+                            )} systems. Redirecting to the Metric Configuration home page.`
                           ),
                         1000
                       );
@@ -384,14 +384,9 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                           showToast(
                             `${removeSnakeCase(
                               metricSearchParam
-                            )} is being moved to the ${
-                              supervisionSubsystems &&
-                              printCommaSeparatedList(
-                                supervisionSubsystems.map((system) =>
-                                  system.toUpperCase()
-                                )
-                              )
-                            } systems. Redirecting to the Metric Configuration home page.`
+                            )} is being moved to the ${printCommaSeparatedList(
+                              normalizedSupervisionSubsystems
+                            )} systems. Redirecting to the Metric Configuration home page.`
                           ),
                         1000
                       );
