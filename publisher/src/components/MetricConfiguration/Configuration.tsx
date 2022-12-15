@@ -330,6 +330,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                         );
                       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                       saveMetricSettings(updatedSetting, agencyId!);
+                      window.location.reload();
                     }
                   }}
                   defaultChecked={!disaggregatedBySupervisionSubsystems}
@@ -350,6 +351,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                         );
                       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                       saveMetricSettings(updatedSetting, agencyId!);
+                      window.location.reload();
                     }
                   }}
                   defaultChecked={disaggregatedBySupervisionSubsystems}
