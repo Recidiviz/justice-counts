@@ -330,6 +330,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                         );
                       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                       saveMetricSettings(updatedSetting, agencyId!);
+                      navigate("../metric-config");
                       window.location.reload();
                     }
                   }}
@@ -351,6 +352,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                         );
                       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                       saveMetricSettings(updatedSetting, agencyId!);
+                      navigate("../metric-config");
                       window.location.reload();
                     }
                   }}
