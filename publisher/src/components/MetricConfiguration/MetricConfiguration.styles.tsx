@@ -815,3 +815,11 @@ export const PromptWrapper = styled.div`
 export const CapitalizedSpan = styled.span`
   text-transform: capitalize;
 `;
+
+export const BlueLinkSpan = styled.span`
+  color: ${palette.solid.blue};
+
+  &:hover {
+    cursor: pointer;
+  }
+`;

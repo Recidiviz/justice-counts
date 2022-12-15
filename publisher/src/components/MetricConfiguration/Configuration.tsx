@@ -19,7 +19,7 @@ import { SupervisionSystems } from "@justice-counts/common/types";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { monthsByName, removeSnakeCase } from "../../utils";
@@ -34,6 +34,7 @@ import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   BlueCheckIcon,
+  BlueLinkSpan,
   BreakdownHeader,
   Checkbox,
   CheckboxWrapper,
@@ -75,6 +76,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
   }): JSX.Element => {
     const { agencyId } = useParams();
     const [settingsSearchParams] = useSettingsSearchParams();
+    const navigate = useNavigate();
     const { metricConfigStore } = useStore();
     const {
       metrics,
@@ -303,8 +305,11 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               <Subheader>
                 {/* TODO(#231) Add link to Agency Settings */}
                 <p>
-                  Disaggregations include the populations you selected in Agency
-                  Settings.
+                  Disaggregations include the populations you selected in{" "}
+                  <BlueLinkSpan onClick={() => navigate("../agency-settings")}>
+                    Agency Settings
+                  </BlueLinkSpan>
+                  .
                 </p>
                 <p>Probation, Parole, and Dual Supervision.</p>
               </Subheader>
