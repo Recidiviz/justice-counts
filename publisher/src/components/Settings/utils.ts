@@ -15,6 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { AgencySystems } from "@justice-counts/common/types";
+
 import { SettingsSearchParams } from "./types";
 
 export const getActiveSystemMetricKey = ({
@@ -23,3 +25,22 @@ export const getActiveSystemMetricKey = ({
 }: SettingsSearchParams): string => {
   return `${system?.toUpperCase()}-${metric}`;
 };
+
+export const getSettingsSearchParams = (
+  params: URLSearchParams
+): SettingsSearchParams => {
+  const system = (params.get("system") as AgencySystems) || undefined;
+  const metric = params.get("metric") || undefined;
+
+  return { system, metric };
+};
+
+export const normalizeSystem = (system: string) => {
+  return system
+    .split("_")
+    .map((systemPart) => systemPart[0] + systemPart.substring(1).toLowerCase())
+    .join(" ");
+};
+
+export const removeExcessSpaces = (text: string) =>
+  text.trim().replace(/  +/g, " ");

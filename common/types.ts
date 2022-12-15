@@ -30,15 +30,24 @@ export type AgencySystems =
   | "SUPERVISION"
   | "PAROLE"
   | "PROBATION"
-  | "POST_RELEASE";
+  | "POST_RELEASE"
+  | "PRETRIAL_SUPERVISION"
+  | "OTHER_SUPERVISION";
+
+export type AgencyTeam = {
+  auth0_user_id: string;
+  name: string;
+};
 
 export interface UserAgency {
   name: string;
   id: number;
   fips_county_code: string;
   state_code: string;
+  state: string;
   system: AgencySystems;
   systems: AgencySystems[];
+  team: AgencyTeam[];
 }
 
 export type ReportFrequency = "MONTHLY" | "ANNUAL";
@@ -187,6 +196,7 @@ export interface FormReport {
 export interface FormStoreMetricValue {
   [metricKey: string]: { value?: string; error?: FormError };
 }
+
 export interface FormStoreMetricValues {
   [reportID: string]: FormStoreMetricValue;
 }
@@ -194,6 +204,7 @@ export interface FormStoreMetricValues {
 export interface FormStoreContextValue {
   [metricKey: string]: FormContexts;
 }
+
 export interface FormStoreContextValues {
   [reportID: string]: FormStoreContextValue;
 }
@@ -201,6 +212,7 @@ export interface FormStoreContextValues {
 export interface FormStoreDisaggregationValue {
   [metricKey: string]: FormDisaggregations;
 }
+
 export interface FormStoreDisaggregationValues {
   [reportID: string]: FormStoreDisaggregationValue;
 }
@@ -258,6 +270,7 @@ export interface Datapoint {
   frequency: ReportFrequency;
   // dataVizMissingData is used to render the missing data bar if there are no values reported for that time range
   dataVizMissingData: number;
+
   // the value here should really be number | null but Typescript doesn't allow for this easily
   [dimensionOrAggregatedTotal: string]: DatapointValue;
 }
