@@ -296,14 +296,13 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
             </>
           )}
 
-          {/* Supervision Systems ONLY */}
+          {/* Supervision Subsystem Disaggregation Selection (Supervision Systems ONLY) */}
           {systemSearchParam && SupervisionSystems.includes(systemSearchParam) && (
             <PromptWrapper>
               <Header>
                 For which supervision populations can you report this metric?
               </Header>
               <Subheader>
-                {/* TODO(#231) Add link to Agency Settings */}
                 <p>
                   Disaggregations include the populations you selected in{" "}
                   <BlueLinkSpan onClick={() => navigate("../agency-settings")}>
