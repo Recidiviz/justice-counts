@@ -329,6 +329,10 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   ({printCommaSeparatedList(normalizedSupervisionSubsystems)}
                   ).
                 </p>
+                <p>
+                  NOTE: Changing this option will refresh the page to reflect
+                  the changes.
+                </p>
               </Subheader>
 
               <RadioButtonGroupWrapper>
