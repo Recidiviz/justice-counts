@@ -19,6 +19,7 @@ import { ReactComponent as CloseIcon } from "@justice-counts/common/assets/close
 import { showToast } from "@justice-counts/common/components/Toast";
 import React from "react";
 
+import { Button, Input } from "../primitives/styles";
 import {
   ModalCloseButton,
   ModalContainer,
@@ -26,9 +27,7 @@ import {
   ModalParagraph,
   ModalScrollContainer,
   ModalTitle,
-  ShareBarButton,
   ShareBarContainer,
-  ShareBarURLBox,
 } from "./DashboardModal.styles";
 
 export const ShareModal: React.FC<{
@@ -48,15 +47,15 @@ export const ShareModal: React.FC<{
             nunc lacus diam varius varius enim risus.
           </ModalParagraph>
           <ShareBarContainer>
-            <ShareBarURLBox readOnly value={window.location.href} />
-            <ShareBarButton
+            <Input readOnly value={window.location.href} />
+            <Button
               onClick={() => {
                 navigator.clipboard.writeText(window.location.href);
                 showToast("Copied!", false, "blue", 2500, false, false);
               }}
             >
               Copy URL
-            </ShareBarButton>
+            </Button>
           </ShareBarContainer>
         </ModalInnerContainer>
       </ModalScrollContainer>

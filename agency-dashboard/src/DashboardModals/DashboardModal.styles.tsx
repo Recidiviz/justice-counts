@@ -120,43 +120,6 @@ export const ShareBarContainer = styled.div`
   }
 `;
 
-export const ShareBarURLBox = styled.input`
-  background: ${palette.highlight.grey1};
-  border: none;
-  color: ${palette.highlight.grey10};
-  border-radius: 2px;
-  height: 48px;
-  text-overflow: ellipsis;
-  padding: 14px 16px;
-  flex: 1;
-  ${typography.sizeCSS.normal}
-`;
-
-export const ShareBarButton = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 9px 16px;
-  height: 48px;
-  ${typography.sizeCSS.normal}
-  background: ${palette.solid.blue};
-  color: ${palette.solid.white};
-  border-radius: 2px;
-
-  &:hover {
-    cursor: pointer;
-    background: ${palette.solid.darkblue};
-  }
-`;
-
-export const EmptySelectionCircle = styled.div`
-  width: 16px;
-  height: 16px;
-  border: 1px solid ${palette.highlight.grey4};
-  border-radius: 50%;
-  margin-right: 8px;
-`;
-
 export const ShareCurrentViewContainer = styled.div`
   display: flex;
   flex-direction: row;
