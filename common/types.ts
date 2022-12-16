@@ -110,7 +110,10 @@ export type MetricConfigurationSettings = {
 
 export interface Metric {
   key: string;
-  system: AgencySystems;
+  system: {
+    key: AgencySystems;
+    display_name: string;
+  };
   custom_frequency?: ReportFrequency;
   datapoints?: RawDatapoint[];
   display_name: string;
@@ -123,6 +126,7 @@ export interface Metric {
   definitions: MetricDefinition[];
   contexts: MetricContext[];
   disaggregations: MetricDisaggregations[];
+  filenames: string[];
   enabled?: boolean;
   settings?: MetricConfigurationSettings[];
   starting_month?: number;
