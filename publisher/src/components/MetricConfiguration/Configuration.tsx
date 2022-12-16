@@ -164,11 +164,14 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         saveMetricSettings(updatedSetting, agencyId!);
 
-        setTimeout(() => showToast(toastMessage), 1000);
+        setTimeout(
+          () => showToast(toastMessage, undefined, undefined, 5000),
+          1000
+        );
         setTimeout(() => {
           navigate("../metric-config");
           window.location.reload();
-        }, 4000);
+        }, 5000);
       }
     };
 
