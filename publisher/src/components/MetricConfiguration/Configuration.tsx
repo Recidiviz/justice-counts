@@ -122,6 +122,15 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
 
     const normalizedSupervisionSubsystems =
       supervisionSubsystems?.map((system) => {
+        const systemName = removeSnakeCase(system).split(" ");
+
+        /** For capitalizing multi-word system names (e.g OTHER SUPERVISION) */
+        if (systemName.length > 1) {
+          const capitalizedSystemName = systemName.map(
+            (name) => name.charAt(0).toUpperCase() + name.slice(1)
+          );
+          return capitalizedSystemName.join(" ");
+        }
         return system.charAt(0).toUpperCase() + system.slice(1);
       }) || [];
 
@@ -316,10 +325,10 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   Disaggregations include the populations you selected in{" "}
                   <BlueLinkSpan onClick={() => navigate("../agency-settings")}>
                     Agency Settings
-                  </BlueLinkSpan>
-                  .
+                  </BlueLinkSpan>{" "}
+                  ({printCommaSeparatedList(normalizedSupervisionSubsystems)}
+                  ).
                 </p>
-                <p>Probation, Parole, and Dual Supervision.</p>
               </Subheader>
 
               <RadioButtonGroupWrapper>
