@@ -15,31 +15,44 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import placeholderGraph from "@justice-counts/common/assets/graph-white.png";
+import arrow from "@justice-counts/common/assets/left-arrow-icon.svg";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { DatapointsGroupedByAggregateAndDisaggregations } from "../../common/types";
 import {
   AgencyOverviewWrapper,
   AgencyTitle,
   CategorizedMetricsContainer,
   CategoryTitle,
   Description,
+  MetricBox,
+  MetricBoxContentContainer,
+  MetricBoxFooter,
+  MetricBoxGraphContainer,
+  MetricBoxGraphImage,
+  MetricBoxGraphLastUpdate,
+  MetricBoxTitle,
+  MetricsContainer,
   MetricsCount,
   MetricsViewContainer,
   PageTitle,
 } from "./AgencyOverview.styles";
 import { HeaderBar } from "./Header/HeaderBar";
+import { useMaxMetricBoxesInRow } from "./hooks";
 import { useStore } from "./stores";
+
+// onClick={() => {navigate(`/agency/${agencyId}/dashboard?metric=${metric.key}`);}}
 
 const AgencyOverview = () => {
   const navigate = useNavigate();
   const params = useParams();
   const agencyId = Number(params.id);
   const { agencyDataStore } = useStore();
-
-  // onClick={() => {navigate(`/agency/${agencyId}/dashboard?metric=${metric.key}`);}}
+  const maxMetricsInRow = useMaxMetricBoxesInRow();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,16 +66,23 @@ const AgencyOverview = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (agencyDataStore.loading) {
-    return <>Loading...</>;
-  }
-
   const metricsCount = agencyDataStore.metrics.length;
   const availableMetricsCount = Object.values(
     agencyDataStore.datapointsByMetric
   ).filter((datapoints) => datapoints.aggregate.length > 0).length;
 
-  console.log(agencyDataStore.metricsByCategory);
+  const getPublishCount = (
+    datapoint: DatapointsGroupedByAggregateAndDisaggregations
+  ): string => {
+    if (!datapoint.aggregate.length) {
+      return "No Data";
+    }
+    const { frequency } = datapoint.aggregate[0];
+    const count = datapoint.aggregate.length;
+    return frequency === "ANNUAL"
+      ? `${count} ${count > 1 ? "Years" : "Year"}`
+      : `${count} ${count > 1 ? "Months" : "Month"}`;
+  };
 
   return (
     <>
@@ -82,9 +102,62 @@ const AgencyOverview = () => {
           Metrics Available
         </MetricsCount>
         <MetricsViewContainer>
-          <CategorizedMetricsContainer>
-            <CategoryTitle>Some title</CategoryTitle>
-          </CategorizedMetricsContainer>
+          {Object.entries(agencyDataStore.metricsByCategory).map(
+            ([category, metrics]) => (
+              <CategorizedMetricsContainer key={category}>
+                <CategoryTitle>{category}</CategoryTitle>
+                <MetricsContainer
+                  maxMetricsInRow={
+                    maxMetricsInRow >= 4 || maxMetricsInRow > metrics.length
+                      ? metrics.length
+                      : maxMetricsInRow
+                  }
+                >
+                  {metrics.map((metric) => {
+                    const isPublished =
+                      getPublishCount(
+                        agencyDataStore.datapointsByMetric[metric.key]
+                      ) !== "No Data";
+                    const publishCount = getPublishCount(
+                      agencyDataStore.datapointsByMetric[metric.key]
+                    );
+                    return (
+                      <MetricBox
+                        key={metric.key}
+                        isPublished={isPublished}
+                        onClick={() => {
+                          navigate(
+                            `/agency/${agencyId}/dashboard?metric=${metric.key}`
+                          );
+                        }}
+                      >
+                        <MetricBoxTitle isPublished={isPublished}>
+                          {metric.display_name}
+                        </MetricBoxTitle>
+                        <MetricBoxContentContainer>
+                          {isPublished && (
+                            <MetricBoxGraphContainer>
+                              <MetricBoxGraphImage
+                                src={placeholderGraph}
+                                alt=""
+                              />
+                              <MetricBoxGraphLastUpdate>
+                                Last Updated: 01/01/2022
+                              </MetricBoxGraphLastUpdate>
+                            </MetricBoxGraphContainer>
+                          )}
+                          <MetricBoxFooter isPublished={isPublished}>
+                            {publishCount}{" "}
+                            {isPublished && <img src={arrow} alt="" />}
+                          </MetricBoxFooter>
+                        </MetricBoxContentContainer>
+                      </MetricBox>
+                    );
+                  })}
+                </MetricsContainer>
+              </CategorizedMetricsContainer>
+            )
+          )}
         </MetricsViewContainer>
       </AgencyOverviewWrapper>
     </>
