@@ -45,8 +45,6 @@ import { HeaderBar } from "./Header/HeaderBar";
 import { useMaxMetricBoxesInRow } from "./hooks";
 import { useStore } from "./stores";
 
-// onClick={() => {navigate(`/agency/${agencyId}/dashboard?metric=${metric.key}`);}}
-
 const AgencyOverview = () => {
   const navigate = useNavigate();
   const params = useParams();

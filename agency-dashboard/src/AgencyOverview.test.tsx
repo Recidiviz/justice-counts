@@ -35,14 +35,68 @@ test("renders list of metrics", async () => {
         {
           key: "LAW_ENFORCEMENT_ARRESTS",
           display_name: "Total Arrests",
+          category: "CAPACITY_AND_COST",
+          datapoints: [
+            {
+              dimension_display_name: null,
+              disaggregation_display_name: null,
+              end_date: "Sun, 01 Jan 2023 00:00:00 GMT",
+              frequency: "ANNUAL",
+              id: 24627,
+              is_published: true,
+              metric_definition_key: "LAW_ENFORCEMENT_ARRESTS",
+              metric_display_name: "Annual Budget",
+              old_value: null,
+              report_id: 3092,
+              start_date: "Sat, 01 Jan 2022 00:00:00 GMT",
+              value: 45.0,
+            },
+          ],
+          disaggregations: [],
         },
         {
           key: "LAW_ENFORCEMENT_BUDGET",
           display_name: "Annual Budget",
+          category: "CAPACITY_AND_COST",
+          datapoints: [
+            {
+              dimension_display_name: null,
+              disaggregation_display_name: null,
+              end_date: "Sun, 01 Jan 2023 00:00:00 GMT",
+              frequency: "ANNUAL",
+              id: 24627,
+              is_published: true,
+              metric_definition_key: "LAW_ENFORCEMENT_BUDGET",
+              metric_display_name: "Annual Budget",
+              old_value: null,
+              report_id: 3092,
+              start_date: "Sat, 01 Jan 2022 00:00:00 GMT",
+              value: 45.0,
+            },
+          ],
+          disaggregations: [],
         },
         {
           key: "LAW_ENFORCEMENT_CALLS_FOR_SERVICE",
           display_name: "Calls for Service",
+          category: "CAPACITY_AND_COST",
+          datapoints: [
+            {
+              dimension_display_name: null,
+              disaggregation_display_name: null,
+              end_date: "Sun, 01 Jan 2023 00:00:00 GMT",
+              frequency: "ANNUAL",
+              id: 24627,
+              is_published: true,
+              metric_definition_key: "LAW_ENFORCEMENT_CALLS_FOR_SERVICE",
+              metric_display_name: "Annual Budget",
+              old_value: null,
+              report_id: 3092,
+              start_date: "Sat, 01 Jan 2022 00:00:00 GMT",
+              value: 45.0,
+            },
+          ],
+          disaggregations: [],
         },
       ],
     }),
@@ -56,10 +110,6 @@ test("renders list of metrics", async () => {
       </MemoryRouter>
     </StoreProvider>
   );
-  const textElementClickOnAMetricToViewChart = await screen.findByText(
-    /Click on a metric to view chart:/i
-  );
-  expect(textElementClickOnAMetricToViewChart).toBeInTheDocument();
   const textElementTotalArrests = await screen.findByText(/Total Arrests/i);
   expect(textElementTotalArrests).toBeInTheDocument();
   const textElementAnnualBudget = await screen.findByText(/Annual Budget/i);
