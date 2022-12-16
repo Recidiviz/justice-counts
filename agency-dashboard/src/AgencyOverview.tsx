@@ -43,6 +43,7 @@ import {
 } from "./AgencyOverview.styles";
 import { HeaderBar } from "./Header/HeaderBar";
 import { useMaxMetricBoxesInRow } from "./hooks";
+import { Loading } from "./Loading";
 import { useStore } from "./stores";
 
 const AgencyOverview = () => {
@@ -51,6 +52,48 @@ const AgencyOverview = () => {
   const agencyId = Number(params.id);
   const { agencyDataStore } = useStore();
   const maxMetricsInRow = useMaxMetricBoxesInRow();
+
+  const metricsCount = agencyDataStore.metrics.length;
+  const availableMetricsCount = Object.values(
+    agencyDataStore.datapointsByMetric
+  ).filter((datapoints) => datapoints.aggregate.length > 0).length;
+
+  const handleNavigate = (isPublished: boolean, metricKey: string) => {
+    if (isPublished) {
+      navigate(`/agency/${agencyId}/dashboard?metric=${metricKey}`);
+    }
+  };
+
+  const getPublishCount = (
+    datapoint: DatapointsGroupedByAggregateAndDisaggregations
+  ): string => {
+    if (!datapoint.aggregate.length) {
+      return "No Data";
+    }
+
+    let result = "";
+
+    const monthlyPublishes = datapoint.aggregate.filter(
+      (aggregation) => aggregation.frequency === "MONTHLY"
+    );
+    const yearlyPublishes = datapoint.aggregate.filter(
+      (aggregation) => aggregation.frequency === "ANNUAL"
+    );
+
+    if (monthlyPublishes.length > 0) {
+      result = `${monthlyPublishes.length} ${
+        monthlyPublishes.length > 1 ? "Months" : "Month"
+      } `;
+    }
+
+    if (yearlyPublishes.length > 0) {
+      result += `${yearlyPublishes.length} ${
+        yearlyPublishes.length > 1 ? "Years" : "Year"
+      }`;
+    }
+
+    return result;
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,23 +107,9 @@ const AgencyOverview = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const metricsCount = agencyDataStore.metrics.length;
-  const availableMetricsCount = Object.values(
-    agencyDataStore.datapointsByMetric
-  ).filter((datapoints) => datapoints.aggregate.length > 0).length;
-
-  const getPublishCount = (
-    datapoint: DatapointsGroupedByAggregateAndDisaggregations
-  ): string => {
-    if (!datapoint.aggregate.length) {
-      return "No Data";
-    }
-    const { frequency } = datapoint.aggregate[0];
-    const count = datapoint.aggregate.length;
-    return frequency === "ANNUAL"
-      ? `${count} ${count > 1 ? "Years" : "Year"}`
-      : `${count} ${count > 1 ? "Months" : "Month"}`;
-  };
+  if (agencyDataStore.loading) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -123,11 +152,7 @@ const AgencyOverview = () => {
                       <MetricBox
                         key={metric.key}
                         isPublished={isPublished}
-                        onClick={() => {
-                          navigate(
-                            `/agency/${agencyId}/dashboard?metric=${metric.key}`
-                          );
-                        }}
+                        onClick={() => handleNavigate(isPublished, metric.key)}
                       >
                         <MetricBoxTitle isPublished={isPublished}>
                           {metric.display_name}
