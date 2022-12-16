@@ -22,7 +22,6 @@ import {
   ReportFrequency,
   SupervisionSystems,
 } from "@justice-counts/common/types";
-import { printCommaSeparatedList } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -34,7 +33,6 @@ import { Loading } from "../Loading";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
-  CapitalizedSpan,
   Configuration,
   Metric,
   MetricBox,
