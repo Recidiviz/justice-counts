@@ -30,7 +30,8 @@ export const showToast = (
   check = false,
   color: ToastColor = "blue",
   timeout = 2500,
-  preventOverride?: boolean
+  preventOverride = false,
+  positionNextToIcon = true // in the Publisher app, there is an icon with 65px width at the top left corner of the screen
 ) => {
   const animationTransform = [{ maxWidth: "0px" }, { maxWidth: "100%" }];
   const animationTransformReverse = [
@@ -59,7 +60,7 @@ export const showToast = (
   toastElementWrapper.style.cssText = `
       position: fixed;
       top: 0;
-      left: 65px;
+      left: ${positionNextToIcon ? 65 : 0}px;
       z-index: 100;
       overflow: hidden;
     `;
