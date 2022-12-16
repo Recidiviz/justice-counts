@@ -16,10 +16,7 @@
 // =============================================================================
 
 import { showToast } from "@justice-counts/common/components/Toast";
-import {
-  AgencySystems,
-  SupervisionSystems,
-} from "@justice-counts/common/types";
+import { SupervisionSystems } from "@justice-counts/common/types";
 import { printCommaSeparatedList } from "@justice-counts/common/utils";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
