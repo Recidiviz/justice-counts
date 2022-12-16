@@ -44,6 +44,7 @@ export const SupervisionSystems: AgencySystems[] = [
   "PAROLE",
   "PROBATION",
   "POST_RELEASE",
+  "PRETRIAL_SUPERVISION",
   "OTHER_SUPERVISION",
 ];
 
