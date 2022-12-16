@@ -144,6 +144,34 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       [systemMetricKey]
     );
 
+    const handleSupervisionDisaggregationSelection = (status: boolean) => {
+      if (systemSearchParam && metricSearchParam) {
+        const updatedSetting = updateDisaggregatedBySupervisionSubsystems(
+          systemSearchParam,
+          metricSearchParam,
+          status
+        );
+        const toastMessage = status
+          ? `${removeSnakeCase(
+              metricSearchParam
+            )} is being moved to the ${printCommaSeparatedList(
+              normalizedSupervisionSubsystems
+            )} systems. Redirecting to the Metric Configuration home page.`
+          : `${removeSnakeCase(
+              metricSearchParam
+            )} is being moved to the Supervision system. Redirecting to the Metric Configuration home page.`;
+
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        saveMetricSettings(updatedSetting, agencyId!);
+
+        setTimeout(() => showToast(toastMessage), 1000);
+        setTimeout(() => {
+          navigate("../metric-config");
+          window.location.reload();
+        }, 4000);
+      }
+    };
+
     return (
       <MetricConfigurationContainer>
         {/* Metric (Enable/Disable) & Frequency */}
@@ -342,34 +370,9 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   name="supervision-subsystem"
                   label="All Populations / Combined"
                   value="All Populations / Combined"
-                  onChange={() => {
-                    if (systemSearchParam && metricSearchParam) {
-                      const updatedSetting =
-                        updateDisaggregatedBySupervisionSubsystems(
-                          systemSearchParam,
-                          metricSearchParam,
-                          false
-                        );
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      saveMetricSettings(updatedSetting, agencyId!);
-
-                      setTimeout(
-                        () =>
-                          showToast(
-                            `${removeSnakeCase(
-                              metricSearchParam
-                            )} is being moved to the ${printCommaSeparatedList(
-                              normalizedSupervisionSubsystems
-                            )} systems. Redirecting to the Metric Configuration home page.`
-                          ),
-                        1000
-                      );
-                      setTimeout(() => {
-                        navigate("../metric-config?system=SUPERVISION");
-                        window.location.reload();
-                      }, 4000);
-                    }
-                  }}
+                  onChange={() =>
+                    handleSupervisionDisaggregationSelection(false)
+                  }
                   defaultChecked={!disaggregatedBySupervisionSubsystems}
                 />
                 <BinaryRadioButton
@@ -378,34 +381,9 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   name="supervision-subsystem"
                   label="Disaggregated"
                   value="Disaggregated"
-                  onChange={() => {
-                    if (systemSearchParam && metricSearchParam) {
-                      const updatedSetting =
-                        updateDisaggregatedBySupervisionSubsystems(
-                          systemSearchParam,
-                          metricSearchParam,
-                          true
-                        );
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      saveMetricSettings(updatedSetting, agencyId!);
-
-                      setTimeout(
-                        () =>
-                          showToast(
-                            `${removeSnakeCase(
-                              metricSearchParam
-                            )} is being moved to the ${printCommaSeparatedList(
-                              normalizedSupervisionSubsystems
-                            )} systems. Redirecting to the Metric Configuration home page.`
-                          ),
-                        1000
-                      );
-                      setTimeout(() => {
-                        navigate("../metric-config?system=SUPERVISION");
-                        window.location.reload();
-                      }, 4000);
-                    }
-                  }}
+                  onChange={() =>
+                    handleSupervisionDisaggregationSelection(true)
+                  }
                   defaultChecked={disaggregatedBySupervisionSubsystems}
                 />
               </RadioButtonGroupWrapper>

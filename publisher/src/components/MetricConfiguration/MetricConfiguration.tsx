@@ -169,16 +169,20 @@ export const MetricConfiguration: React.FC = observer(() => {
             <StickyHeader>
               <TabbedBar noPadding>
                 <TabbedOptions>
-                  {currentAgency?.systems.map((filterOption) => (
-                    <TabbedItem
-                      key={filterOption}
-                      selected={systemSearchParam === filterOption}
-                      onClick={() => handleSystemClick(filterOption)}
-                      capitalize
-                    >
-                      {removeSnakeCase(filterOption.toLowerCase())}
-                    </TabbedItem>
-                  ))}
+                  {currentAgency?.systems
+                    .filter(
+                      (system) => getMetricsBySystem(system)?.length !== 0
+                    )
+                    .map((filterOption) => (
+                      <TabbedItem
+                        key={filterOption}
+                        selected={systemSearchParam === filterOption}
+                        onClick={() => handleSystemClick(filterOption)}
+                        capitalize
+                      >
+                        {removeSnakeCase(filterOption.toLowerCase())}
+                      </TabbedItem>
+                    ))}
                 </TabbedOptions>
               </TabbedBar>
             </StickyHeader>
@@ -204,35 +208,6 @@ export const MetricConfiguration: React.FC = observer(() => {
                     />
                   )
                 )}
-
-                {/* Message for when there are no metrics in the SUPERVISION system (e.g. subsystems are disaggregated into their respective tab(s))  */}
-                {systemSearchParam === "SUPERVISION" &&
-                  getMetricsBySystem(systemSearchParam)?.length === 0 &&
-                  supervisionSubsystems && (
-                    <div>
-                      The metrics for Supervision are now disaggregated and
-                      moved to the{" "}
-                      <CapitalizedSpan>
-                        {printCommaSeparatedList(supervisionSubsystems)}{" "}
-                      </CapitalizedSpan>{" "}
-                      tabs.
-                    </div>
-                  )}
-
-                {/* Message for when there are no metrics in a Supervision subsystem (e.g. subsystems are combined under the Supervision tab) */}
-                {systemSearchParam &&
-                  supervisionSubsystems?.includes(
-                    systemSearchParam?.toLowerCase()
-                  ) &&
-                  getMetricsBySystem(systemSearchParam)?.length === 0 && (
-                    <div>
-                      The metrics for{" "}
-                      <CapitalizedSpan>
-                        {removeSnakeCase(systemSearchParam.toLowerCase())}
-                      </CapitalizedSpan>{" "}
-                      are combined and can be found in the Supervision tab.
-                    </div>
-                  )}
               </MetricBoxContainerWrapper>
             </MetricBoxBottomPaddingContainer>
           )}
