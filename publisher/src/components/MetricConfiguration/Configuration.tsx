@@ -120,7 +120,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     const startingMonthNotJanuaryJuly =
       startingMonth !== null && startingMonth !== 1 && startingMonth !== 7;
 
-    const normalizedSupervisionSubsystems =
+    const capitalizedSupervisionSubsystems =
       supervisionSubsystems?.map((system) => {
         const systemName = removeSnakeCase(system).split(" ");
 
@@ -155,7 +155,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
           ? `${removeSnakeCase(
               metricSearchParam
             )} is being moved to the ${printCommaSeparatedList(
-              normalizedSupervisionSubsystems
+              capitalizedSupervisionSubsystems
             )} systems. Redirecting to the Metric Configuration home page.`
           : `${removeSnakeCase(
               metricSearchParam
@@ -354,7 +354,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   <BlueLinkSpan onClick={() => navigate("../agency-settings")}>
                     Agency Settings
                   </BlueLinkSpan>{" "}
-                  ({printCommaSeparatedList(normalizedSupervisionSubsystems)}
+                  ({printCommaSeparatedList(capitalizedSupervisionSubsystems)}
                   ).
                 </p>
                 <p>
