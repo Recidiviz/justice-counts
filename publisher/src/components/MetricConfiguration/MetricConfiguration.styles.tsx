@@ -807,3 +807,19 @@ export const DropdownButton = styled(DropdownToggle)<{ checked?: boolean }>`
     color: ${palette.solid.darkgrey};
   }
 `;
+
+export const PromptWrapper = styled.div`
+  margin-top: 35px;
+`;
+
+export const CapitalizedSpan = styled.span`
+  text-transform: capitalize;
+`;
+
+export const BlueLinkSpan = styled.span`
+  color: ${palette.solid.blue};
+
+  &:hover {
+    cursor: pointer;
+  }
+`;

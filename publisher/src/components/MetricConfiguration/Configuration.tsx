@@ -15,10 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { showToast } from "@justice-counts/common/components/Toast";
+import { SupervisionSystems } from "@justice-counts/common/types";
+import { printCommaSeparatedList } from "@justice-counts/common/utils";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { monthsByName, removeSnakeCase } from "../../utils";
@@ -33,6 +36,7 @@ import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   BlueCheckIcon,
+  BlueLinkSpan,
   BreakdownHeader,
   Checkbox,
   CheckboxWrapper,
@@ -46,6 +50,7 @@ import {
   MetricConfigurationContainer,
   MetricDisaggregations,
   MetricOnOffWrapper,
+  PromptWrapper,
   RACE_ETHNICITY_DISAGGREGATION_KEY,
   RaceEthnicitiesGrid,
   RadioButtonGroupWrapper,
@@ -62,6 +67,7 @@ type MetricConfigurationProps = {
   setActiveDisaggregationKey: React.Dispatch<
     React.SetStateAction<string | undefined>
   >;
+  supervisionSubsystems?: string[];
 };
 
 export const Configuration: React.FC<MetricConfigurationProps> = observer(
@@ -70,9 +76,11 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     setActiveDimensionKey,
     activeDisaggregationKey,
     setActiveDisaggregationKey,
+    supervisionSubsystems,
   }): JSX.Element => {
     const { agencyId } = useParams();
     const [settingsSearchParams] = useSettingsSearchParams();
+    const navigate = useNavigate();
     const { metricConfigStore } = useStore();
     const {
       metrics,
@@ -82,6 +90,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       updateDisaggregationEnabledStatus,
       updateDimensionEnabledStatus,
       updateMetricReportFrequency,
+      updateDisaggregatedBySupervisionSubsystems,
       saveMetricSettings,
     } = metricConfigStore;
 
@@ -100,13 +109,30 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
         ? Object.keys(dimensions[systemMetricKey][activeDisaggregationKey])
         : [];
 
+    const {
+      defaultFrequency,
+      customFrequency,
+      startingMonth,
+      disaggregatedBySupervisionSubsystems,
+    } = metrics[systemMetricKey];
     const metricEnabled = Boolean(metrics[systemMetricKey]?.enabled);
-    const defaultFrequency = metrics[systemMetricKey]?.defaultFrequency;
-    const customFrequency = metrics[systemMetricKey]?.customFrequency;
-    const startingMonth = metrics[systemMetricKey]?.startingMonth;
     const customOrDefaultFrequency = customFrequency || defaultFrequency;
     const startingMonthNotJanuaryJuly =
       startingMonth !== null && startingMonth !== 1 && startingMonth !== 7;
+
+    const capitalizedSupervisionSubsystems =
+      supervisionSubsystems?.map((system) => {
+        const systemName = removeSnakeCase(system).split(" ");
+
+        /** For capitalizing multi-word system names (e.g OTHER SUPERVISION) */
+        if (systemName.length > 1) {
+          const capitalizedSystemName = systemName.map(
+            (name) => name.charAt(0).toUpperCase() + name.slice(1)
+          );
+          return capitalizedSystemName.join(" ");
+        }
+        return system.charAt(0).toUpperCase() + system.slice(1);
+      }) || [];
 
     useEffect(
       () => {
@@ -117,6 +143,37 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [systemMetricKey]
     );
+
+    const handleSupervisionDisaggregationSelection = (status: boolean) => {
+      if (systemSearchParam && metricSearchParam) {
+        const updatedSetting = updateDisaggregatedBySupervisionSubsystems(
+          systemSearchParam,
+          metricSearchParam,
+          status
+        );
+        const toastMessage = status
+          ? `${removeSnakeCase(
+              metricSearchParam
+            )} is being moved to the ${printCommaSeparatedList(
+              capitalizedSupervisionSubsystems
+            )} systems. Redirecting to the Metric Configuration home page.`
+          : `${removeSnakeCase(
+              metricSearchParam
+            )} is being moved to the Supervision system. Redirecting to the Metric Configuration home page.`;
+
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        saveMetricSettings(updatedSetting, agencyId!);
+
+        setTimeout(
+          () => showToast(toastMessage, undefined, undefined, 5000),
+          1000
+        );
+        setTimeout(() => {
+          navigate("../metric-config");
+          window.location.reload();
+        }, 5000);
+      }
+    };
 
     return (
       <MetricConfigurationContainer>
@@ -286,6 +343,54 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                 </Dropdown>
               </RadioButtonGroupWrapper>
             </>
+          )}
+
+          {/* Supervision Subsystem Disaggregation Selection (Supervision Systems ONLY) */}
+          {systemSearchParam && SupervisionSystems.includes(systemSearchParam) && (
+            <PromptWrapper>
+              <Header>
+                For which supervision populations can you report this metric?
+              </Header>
+              <Subheader>
+                <p>
+                  Disaggregations include the populations you selected in{" "}
+                  <BlueLinkSpan onClick={() => navigate("../agency-settings")}>
+                    Agency Settings
+                  </BlueLinkSpan>{" "}
+                  ({printCommaSeparatedList(capitalizedSupervisionSubsystems)}
+                  ).
+                </p>
+                <p>
+                  NOTE: Changing this option will refresh the page to reflect
+                  the changes.
+                </p>
+              </Subheader>
+
+              <RadioButtonGroupWrapper>
+                <BinaryRadioButton
+                  type="radio"
+                  id="supervision-subsystem-combined"
+                  name="supervision-subsystem"
+                  label="All Populations / Combined"
+                  value="All Populations / Combined"
+                  onChange={() =>
+                    handleSupervisionDisaggregationSelection(false)
+                  }
+                  defaultChecked={!disaggregatedBySupervisionSubsystems}
+                />
+                <BinaryRadioButton
+                  type="radio"
+                  id="supervision-subsystem-disaggregated"
+                  name="supervision-subsystem"
+                  label="Disaggregated"
+                  value="Disaggregated"
+                  onChange={() =>
+                    handleSupervisionDisaggregationSelection(true)
+                  }
+                  defaultChecked={disaggregatedBySupervisionSubsystems}
+                />
+              </RadioButtonGroupWrapper>
+            </PromptWrapper>
           )}
         </MetricOnOffWrapper>
 

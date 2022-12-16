@@ -49,14 +49,7 @@ class MetricConfigStore {
   api: API;
 
   metrics: {
-    [systemMetricKey: string]: {
-      enabled?: boolean;
-      label?: string;
-      description?: Metric["description"];
-      defaultFrequency?: ReportFrequency;
-      customFrequency?: Metric["custom_frequency"];
-      startingMonth?: Metric["starting_month"] | null;
-    };
+    [systemMetricKey: string]: MetricInfo;
   };
 
   metricDefinitionSettings: {
@@ -229,6 +222,8 @@ class MetricConfigStore {
               defaultFrequency: metric.frequency,
               customFrequency: metric.custom_frequency,
               startingMonth: metric.starting_month,
+              disaggregatedBySupervisionSubsystems:
+                metric.disaggregated_by_supervision_subsystems,
             }
           );
 
@@ -335,6 +330,8 @@ class MetricConfigStore {
         metadata.defaultFrequency;
       this.metrics[systemMetricKey].customFrequency = metadata.customFrequency;
       this.metrics[systemMetricKey].startingMonth = metadata.startingMonth;
+      this.metrics[systemMetricKey].disaggregatedBySupervisionSubsystems =
+        metadata.disaggregatedBySupervisionSubsystems;
     }
 
     /** Update value */
@@ -375,6 +372,27 @@ class MetricConfigStore {
       frequency: update.defaultFrequency,
       custom_frequency: update.customFrequency,
       starting_month: update.startingMonth,
+    };
+  };
+
+  /** Allows a supervision agency to specify whether or not a metric is reported as disaggregated by supervision subsystems */
+  updateDisaggregatedBySupervisionSubsystems = (
+    system: AgencySystems,
+    metricKey: string,
+    status: boolean
+  ) => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
+
+    /** Update values */
+    this.metrics[systemMetricKey].disaggregatedBySupervisionSubsystems = status;
+
+    /** Return an object in the desired backend data structure for saving purposes */
+    return {
+      key: metricKey,
+      disaggregated_by_supervision_subsystems: status,
     };
   };
 

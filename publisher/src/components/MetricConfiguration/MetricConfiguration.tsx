@@ -17,7 +17,11 @@
 
 import { Badge } from "@justice-counts/common/components/Badge";
 import { showToast } from "@justice-counts/common/components/Toast";
-import { AgencySystems, ReportFrequency } from "@justice-counts/common/types";
+import {
+  AgencySystems,
+  ReportFrequency,
+  SupervisionSystems,
+} from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -146,6 +150,12 @@ export const MetricConfiguration: React.FC = observer(() => {
   }
 
   const currentAgency = userStore.getAgency(agencyId);
+  const supervisionSubsystems = currentAgency?.systems
+    .filter(
+      (system) =>
+        SupervisionSystems.includes(system) && system !== "SUPERVISION"
+    )
+    .map((system) => system.toLowerCase());
 
   return (
     <>
@@ -157,16 +167,20 @@ export const MetricConfiguration: React.FC = observer(() => {
             <StickyHeader>
               <TabbedBar noPadding>
                 <TabbedOptions>
-                  {currentAgency?.systems.map((filterOption) => (
-                    <TabbedItem
-                      key={filterOption}
-                      selected={systemSearchParam === filterOption}
-                      onClick={() => handleSystemClick(filterOption)}
-                      capitalize
-                    >
-                      {removeSnakeCase(filterOption.toLowerCase())}
-                    </TabbedItem>
-                  ))}
+                  {currentAgency?.systems
+                    .filter(
+                      (system) => getMetricsBySystem(system)?.length !== 0
+                    )
+                    .map((filterOption) => (
+                      <TabbedItem
+                        key={filterOption}
+                        selected={systemSearchParam === filterOption}
+                        onClick={() => handleSystemClick(filterOption)}
+                        capitalize
+                      >
+                        {removeSnakeCase(filterOption.toLowerCase())}
+                      </TabbedItem>
+                    ))}
                 </TabbedOptions>
               </TabbedBar>
             </StickyHeader>
@@ -225,6 +239,7 @@ export const MetricConfiguration: React.FC = observer(() => {
                     setActiveDimensionKey={setActiveDimensionKey}
                     activeDisaggregationKey={activeDisaggregationKey}
                     setActiveDisaggregationKey={setActiveDisaggregationKey}
+                    supervisionSubsystems={supervisionSubsystems}
                   />
                 </MetricDetailsDisplay>
               </MetricConfigurationDisplay>
