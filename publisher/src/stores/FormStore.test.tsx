@@ -41,7 +41,10 @@ beforeEach(() => {
       0: [
         {
           key: "PROSECUTION_STAFF",
-          system: "LAW_ENFORCEMENT",
+          system: {
+            key: "LAW_ENFORCEMENT",
+            display_name: "Law Enforcement",
+          },
           display_name: "Staff",
           description:
             "Measures the number of full-time staff employed by the agency.",
@@ -50,6 +53,7 @@ beforeEach(() => {
           unit: "people",
           category: "CAPACITY_AND_COST",
           label: "Total Staff",
+          filenames: ["total_staff"],
           definitions: [
             {
               term: "full-time staff",

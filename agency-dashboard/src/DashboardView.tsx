@@ -77,8 +77,12 @@ const MetricOverviewActionInfoButton = ({
   </MetricOverviewActionButtonContainer>
 );
 
-const MetricOverviewActionDownloadButton = () => (
-  <MetricOverviewActionButtonContainer>
+const MetricOverviewActionDownloadButton = ({
+  onClick,
+}: {
+  onClick: () => void;
+}) => (
+  <MetricOverviewActionButtonContainer onClick={onClick}>
     <DownloadIcon />
     <MetricOverviewActionButtonText>
       Download Data
@@ -199,6 +203,22 @@ const DashboardView = () => {
     DataVizTimeRangesMap[dataVizStore.timeRange]
   );
 
+  const downloadFeedData = async (system: string, filename: string) => {
+    const a = document.createElement("a");
+    a.href = `/feed/${agencyId}?system=${system}&metric=${filename}`;
+    a.setAttribute("download", `${filename}.txt`);
+    a.click();
+  };
+
+  const downloadMetricData = () => {
+    const metric = agencyDataStore.metricsByKey[metricKey];
+    if (metric) {
+      metric.filenames.forEach((fileName) => {
+        downloadFeedData(metric.system.key, fileName);
+      });
+    }
+  };
+
   return (
     <Container key={metricKey}>
       <HeaderBar />
@@ -213,7 +233,7 @@ const DashboardView = () => {
           <MetricOverviewActionShareButton
             onClick={() => setShareModalVisible(true)}
           />
-          <MetricOverviewActionDownloadButton />
+          <MetricOverviewActionDownloadButton onClick={downloadMetricData} />
           <MetricOverviewActionInfoButton
             onClick={() => setLearnMoreModalVisible(true)}
           />
@@ -255,7 +275,7 @@ const DashboardView = () => {
           <MetricOverviewActionShareButton
             onClick={() => setShareModalVisible(true)}
           />
-          <MetricOverviewActionDownloadButton />
+          <MetricOverviewActionDownloadButton onClick={downloadMetricData} />
           <MetricOverviewActionInfoButton
             onClick={() => setLearnMoreModalVisible(true)}
           />

@@ -206,14 +206,9 @@ class MetricConfigStore {
 
       runInAction(() => {
         metrics.forEach((metric) => {
-          const normalizedMetricSystemName = metric.system.replaceAll(
-            " ",
-            "_"
-          ) as AgencySystems;
-
           /** Initialize Metrics Status (Enabled/Disabled) */
           this.updateMetricEnabledStatus(
-            normalizedMetricSystemName,
+            metric.system.key,
             metric.key,
             metric.enabled as boolean,
             {
@@ -230,7 +225,7 @@ class MetricConfigStore {
           metric.settings?.forEach((setting) => {
             /** Initialize Metrics Definition Settings (Included/Excluded) */
             this.updateMetricDefinitionSetting(
-              normalizedMetricSystemName,
+              metric.system.key,
               metric.key,
               setting.key,
               setting.included,
@@ -241,7 +236,7 @@ class MetricConfigStore {
           metric.disaggregations.forEach((disaggregation) => {
             /** Initialize Disaggregation Status (Enabled/Disabled) */
             this.updateDisaggregationEnabledStatus(
-              normalizedMetricSystemName,
+              metric.system.key,
               metric.key,
               disaggregation.key,
               disaggregation.enabled as boolean,
@@ -261,7 +256,7 @@ class MetricConfigStore {
 
               /** Initialize Dimension Status (Enabled/Disabled) */
               this.updateDimensionEnabledStatus(
-                normalizedMetricSystemName,
+                metric.system.key,
                 metric.key,
                 disaggregation.key,
                 dimension.key,
@@ -272,7 +267,7 @@ class MetricConfigStore {
               dimension.settings?.forEach((setting) => {
                 /** Initialize Dimension Definition Settings (Included/Excluded) */
                 this.updateDimensionDefinitionSetting(
-                  normalizedMetricSystemName,
+                  metric.system.key,
                   metric.key,
                   disaggregation.key,
                   dimension.key,
@@ -287,7 +282,7 @@ class MetricConfigStore {
           metric.contexts.forEach((context) => {
             /** Initialize Context Values */
             this.updateContextValue(
-              normalizedMetricSystemName,
+              metric.system.key,
               metric.key,
               context.key,
               context.type,

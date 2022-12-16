@@ -134,7 +134,7 @@ class ReportStore {
 
       runInAction(() => {
         this.reportOverviews[reportID] = overview;
-        const metricsBySystem = groupBy(metrics, (metric) => metric.system);
+        const metricsBySystem = groupBy(metrics, (metric) => metric.system.key);
         this.reportMetricsBySystem[reportID] = metricsBySystem;
         // ensure that the order of the metrics in reportMetricsBySystem
         // matches the order of the metrics in reportMetrics
@@ -239,7 +239,7 @@ class ReportStore {
 
     const metrics = (await response.json()) as Metric[];
     const metricsBySystem = metrics.reduce((acc, metric) => {
-      const systemKey = metric.system.toUpperCase().replaceAll(" ", "_");
+      const systemKey = metric.system.key;
       if (!acc[systemKey]) {
         acc[systemKey] = [];
         acc[systemKey].push(metric);
