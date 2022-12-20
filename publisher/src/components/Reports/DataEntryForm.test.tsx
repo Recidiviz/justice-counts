@@ -90,7 +90,10 @@ describe("test data entry form", () => {
         "Law Enforcement": [
           {
             key: "PROSECUTION_STAFF",
-            system: "LAW_ENFORCEMENT",
+            system: {
+              key: "LAW_ENFORCEMENT",
+              display_name: "Law Enforcement",
+            },
             display_name: "Staff",
             description:
               "Measures the number of full-time staff employed by the agency.",
@@ -100,6 +103,7 @@ describe("test data entry form", () => {
             category: "CAPACITY_AND_COST",
             label: "Total Staff",
             enabled: true,
+            filenames: ["total_staff"],
             definitions: [
               {
                 term: "full-time staff",

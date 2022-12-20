@@ -35,7 +35,7 @@ import successIcon from "../assets/status-check-icon.png";
 import errorIcon from "../assets/status-error-icon.png";
 import { MetricsSectionTitle, Title } from "../Forms";
 import { REPORT_CAPITALIZED } from "../Global/constants";
-import { MetricsListItem } from "../Settings";
+import { SubMenuListItem } from "../Settings";
 import HelperText from "./HelperText";
 import { useCheckMetricForErrors } from "./hooks";
 import {
@@ -118,7 +118,7 @@ export const ReportSummarySection = styled.a`
   }
 `;
 
-export const MetricDisplayName = styled(MetricsListItem)`
+export const MetricDisplayName = styled(SubMenuListItem)`
   border-bottom: 2px solid
     ${({ activeSection }) =>
       activeSection ? palette.solid.blue : `transparent`};

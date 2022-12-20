@@ -180,7 +180,7 @@ export const MetricsView: React.FC = observer(() => {
                         });
                       }}
                     >
-                      <SystemName>{metrics[0].system}</SystemName>
+                      <SystemName>{metrics[0].system.display_name}</SystemName>
                       <SystemNamePlusSign
                         isSystemActive={system === systemSearchParam}
                       />
@@ -188,7 +188,7 @@ export const MetricsView: React.FC = observer(() => {
                   ) : (
                     <SystemNameContainer isSystemActive={false}>
                       <SystemName>
-                        {metrics[0].system} (No enabled metrics)
+                        {metrics[0].system.display_name} (No enabled metrics)
                       </SystemName>
                     </SystemNameContainer>
                   )}

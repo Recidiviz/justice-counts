@@ -15,12 +15,37 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystems } from "@justice-counts/common/types";
+import {
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
+import styled from "styled-components/macro";
 
-export type SettingsSearchParams = {
-  system?: AgencySystems;
-  metric?: string;
-};
+export const Input = styled.input`
+  background: ${palette.highlight.grey1};
+  border: none;
+  color: ${palette.highlight.grey10};
+  border-radius: 2px;
+  height: 48px;
+  text-overflow: ellipsis;
+  padding: 14px 16px;
+  flex: 1;
+  ${typography.sizeCSS.normal}
+`;
 
-// might add settings names here in future
-export type AgencySettingType = "PURPOSE_AND_FUNCTIONS";
+export const Button = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 9px 16px;
+  height: 48px;
+  ${typography.sizeCSS.normal}
+  background: ${palette.solid.blue};
+  color: ${palette.solid.white};
+  border-radius: 2px;
+
+  &:hover {
+    cursor: pointer;
+    background: ${palette.solid.darkblue};
+  }
+`;

@@ -15,12 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystems } from "@justice-counts/common/types";
-
-export type SettingsSearchParams = {
-  system?: AgencySystems;
-  metric?: string;
-};
-
-// might add settings names here in future
-export type AgencySettingType = "PURPOSE_AND_FUNCTIONS";
+export const agencyTeam = [
+  { name: "Jerry Steinfield", email: "jerry@doc1.wa.gov" },
+  { name: "Andrea Chang", email: "andrea@doc1.wa.gov" },
+  { name: "Deborah Franklin", email: "deborah@doc1.wa.gov" },
+];

@@ -15,19 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystems } from "@justice-counts/common/types";
 import { useSearchParams } from "react-router-dom";
 
 import { SettingsSearchParams } from "./types";
-
-const getSettingsSearchParams = (
-  params: URLSearchParams
-): SettingsSearchParams => {
-  const system = (params.get("system") as AgencySystems) || undefined;
-  const metric = params.get("metric") || undefined;
-
-  return { system, metric };
-};
+import { getSettingsSearchParams } from "./utils";
 
 export const useSettingsSearchParams = (): [
   SettingsSearchParams,

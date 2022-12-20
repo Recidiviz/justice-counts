@@ -17,7 +17,7 @@
 
 import logo from "@justice-counts/common/assets/jc-logo-vector.png";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../stores";
 import { AboutModal } from "./AboutModal";
@@ -33,6 +33,8 @@ import {
 export const HeaderBar: React.FC<{ showTitle?: boolean }> = ({ showTitle }) => {
   const { agencyDataStore } = useStore();
   const navigate = useNavigate();
+  const params = useParams();
+  const agencyId = Number(params.id);
   const [aboutModalVisible, setAboutModalVisible] = useState<boolean>(false);
 
   const showAboutModal = () => {
@@ -61,7 +63,7 @@ export const HeaderBar: React.FC<{ showTitle?: boolean }> = ({ showTitle }) => {
           agencyName={agencyDataStore.agency?.name || ""}
         />
       )}
-      <LogoContainer onClick={() => navigate("/")}>
+      <LogoContainer onClick={() => navigate(`/agency/${agencyId}`)}>
         <Logo src={logo} alt="" />
       </LogoContainer>
       {showTitle && (

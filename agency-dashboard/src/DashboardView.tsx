@@ -29,6 +29,8 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
+import { LearnMoreModal } from "./DashboardModals/LearnMoreModal";
+import { ShareModal } from "./DashboardModals/ShareModal";
 import {
   BackButtonContainer,
   Container,
@@ -64,15 +66,23 @@ const RightPanelBackButton = ({ onClick }: { onClick: () => void }) => (
   </RightPanelBackButtonContainer>
 );
 
-const MetricOverviewActionInfoButton = () => (
-  <MetricOverviewActionButtonContainer>
+const MetricOverviewActionInfoButton = ({
+  onClick,
+}: {
+  onClick: () => void;
+}) => (
+  <MetricOverviewActionButtonContainer onClick={onClick}>
     <InfoIcon />
     <MetricOverviewActionButtonText>Learn More</MetricOverviewActionButtonText>
   </MetricOverviewActionButtonContainer>
 );
 
-const MetricOverviewActionDownloadButton = () => (
-  <MetricOverviewActionButtonContainer>
+const MetricOverviewActionDownloadButton = ({
+  onClick,
+}: {
+  onClick: () => void;
+}) => (
+  <MetricOverviewActionButtonContainer onClick={onClick}>
     <DownloadIcon />
     <MetricOverviewActionButtonText>
       Download Data
@@ -80,8 +90,12 @@ const MetricOverviewActionDownloadButton = () => (
   </MetricOverviewActionButtonContainer>
 );
 
-const MetricOverviewActionShareButton = () => (
-  <MetricOverviewActionButtonContainer>
+const MetricOverviewActionShareButton = ({
+  onClick,
+}: {
+  onClick: () => void;
+}) => (
+  <MetricOverviewActionButtonContainer onClick={onClick}>
     <ShareIcon />
     <MetricOverviewActionButtonText>Share</MetricOverviewActionButtonText>
   </MetricOverviewActionButtonContainer>
@@ -91,10 +105,23 @@ const DashboardView = () => {
   const [isDesktopWidth, setIsDesktopWidth] = useState<boolean>(
     getScreenWidth() >= COMMON_DESKTOP_WIDTH
   );
+  const [shareModalVisible, setShareModalVisible] = useState<boolean>(false);
+  const [learnMoreModalVisible, setLearnMoreModalVisible] =
+    useState<boolean>(false);
   const navigate = useNavigate();
   const params = useParams();
   const agencyId = Number(params.id);
   const { agencyDataStore, dataVizStore } = useStore();
+
+  /** Prevent body from scrolling when modal is open */
+  useEffect(() => {
+    if (shareModalVisible || learnMoreModalVisible) {
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [shareModalVisible, learnMoreModalVisible]);
 
   const {
     timeRange,
@@ -176,6 +203,22 @@ const DashboardView = () => {
     DataVizTimeRangesMap[dataVizStore.timeRange]
   );
 
+  const downloadFeedData = async (system: string, filename: string) => {
+    const a = document.createElement("a");
+    a.href = `/feed/${agencyId}?system=${system}&metric=${filename}`;
+    a.setAttribute("download", `${filename}.txt`);
+    a.click();
+  };
+
+  const downloadMetricData = () => {
+    const metric = agencyDataStore.metricsByKey[metricKey];
+    if (metric) {
+      metric.filenames.forEach((fileName) => {
+        downloadFeedData(metric.system.key, fileName);
+      });
+    }
+  };
+
   return (
     <Container key={metricKey}>
       <HeaderBar showTitle />
@@ -187,9 +230,13 @@ const DashboardView = () => {
           {agencyDataStore.metricsByKey[metricKey]?.description}
         </MetricOverviewContent>
         <MetricOverviewActionsContainer>
-          <MetricOverviewActionShareButton />
-          <MetricOverviewActionDownloadButton />
-          <MetricOverviewActionInfoButton />
+          <MetricOverviewActionShareButton
+            onClick={() => setShareModalVisible(true)}
+          />
+          <MetricOverviewActionDownloadButton onClick={downloadMetricData} />
+          <MetricOverviewActionInfoButton
+            onClick={() => setLearnMoreModalVisible(true)}
+          />
         </MetricOverviewActionsContainer>
       </LeftPanel>
       <RightPanel>
@@ -225,11 +272,24 @@ const DashboardView = () => {
           {agencyDataStore.metricsByKey[metricKey]?.description}
         </RightPanelMetricOverviewContent>
         <RightPanelMetricOverviewActionsContainer>
-          <MetricOverviewActionShareButton />
-          <MetricOverviewActionDownloadButton />
-          <MetricOverviewActionInfoButton />
+          <MetricOverviewActionShareButton
+            onClick={() => setShareModalVisible(true)}
+          />
+          <MetricOverviewActionDownloadButton onClick={downloadMetricData} />
+          <MetricOverviewActionInfoButton
+            onClick={() => setLearnMoreModalVisible(true)}
+          />
         </RightPanelMetricOverviewActionsContainer>
       </RightPanel>
+      {shareModalVisible && (
+        <ShareModal closeModal={() => setShareModalVisible(false)} />
+      )}
+      {learnMoreModalVisible && (
+        <LearnMoreModal
+          closeModal={() => setLearnMoreModalVisible(false)}
+          metricKey={metricKey}
+        />
+      )}
     </Container>
   );
 };

@@ -49,14 +49,7 @@ class MetricConfigStore {
   api: API;
 
   metrics: {
-    [systemMetricKey: string]: {
-      enabled?: boolean;
-      label?: string;
-      description?: Metric["description"];
-      defaultFrequency?: ReportFrequency;
-      customFrequency?: Metric["custom_frequency"];
-      startingMonth?: Metric["starting_month"] | null;
-    };
+    [systemMetricKey: string]: MetricInfo;
   };
 
   metricDefinitionSettings: {
@@ -213,14 +206,9 @@ class MetricConfigStore {
 
       runInAction(() => {
         metrics.forEach((metric) => {
-          const normalizedMetricSystemName = metric.system.replaceAll(
-            " ",
-            "_"
-          ) as AgencySystems;
-
           /** Initialize Metrics Status (Enabled/Disabled) */
           this.updateMetricEnabledStatus(
-            normalizedMetricSystemName,
+            metric.system.key,
             metric.key,
             metric.enabled as boolean,
             {
@@ -229,13 +217,15 @@ class MetricConfigStore {
               defaultFrequency: metric.frequency,
               customFrequency: metric.custom_frequency,
               startingMonth: metric.starting_month,
+              disaggregatedBySupervisionSubsystems:
+                metric.disaggregated_by_supervision_subsystems,
             }
           );
 
           metric.settings?.forEach((setting) => {
             /** Initialize Metrics Definition Settings (Included/Excluded) */
             this.updateMetricDefinitionSetting(
-              normalizedMetricSystemName,
+              metric.system.key,
               metric.key,
               setting.key,
               setting.included,
@@ -246,7 +236,7 @@ class MetricConfigStore {
           metric.disaggregations.forEach((disaggregation) => {
             /** Initialize Disaggregation Status (Enabled/Disabled) */
             this.updateDisaggregationEnabledStatus(
-              normalizedMetricSystemName,
+              metric.system.key,
               metric.key,
               disaggregation.key,
               disaggregation.enabled as boolean,
@@ -266,7 +256,7 @@ class MetricConfigStore {
 
               /** Initialize Dimension Status (Enabled/Disabled) */
               this.updateDimensionEnabledStatus(
-                normalizedMetricSystemName,
+                metric.system.key,
                 metric.key,
                 disaggregation.key,
                 dimension.key,
@@ -277,7 +267,7 @@ class MetricConfigStore {
               dimension.settings?.forEach((setting) => {
                 /** Initialize Dimension Definition Settings (Included/Excluded) */
                 this.updateDimensionDefinitionSetting(
-                  normalizedMetricSystemName,
+                  metric.system.key,
                   metric.key,
                   disaggregation.key,
                   dimension.key,
@@ -292,7 +282,7 @@ class MetricConfigStore {
           metric.contexts.forEach((context) => {
             /** Initialize Context Values */
             this.updateContextValue(
-              normalizedMetricSystemName,
+              metric.system.key,
               metric.key,
               context.key,
               context.type,
@@ -335,6 +325,8 @@ class MetricConfigStore {
         metadata.defaultFrequency;
       this.metrics[systemMetricKey].customFrequency = metadata.customFrequency;
       this.metrics[systemMetricKey].startingMonth = metadata.startingMonth;
+      this.metrics[systemMetricKey].disaggregatedBySupervisionSubsystems =
+        metadata.disaggregatedBySupervisionSubsystems;
     }
 
     /** Update value */
@@ -375,6 +367,27 @@ class MetricConfigStore {
       frequency: update.defaultFrequency,
       custom_frequency: update.customFrequency,
       starting_month: update.startingMonth,
+    };
+  };
+
+  /** Allows a supervision agency to specify whether or not a metric is reported as disaggregated by supervision subsystems */
+  updateDisaggregatedBySupervisionSubsystems = (
+    system: AgencySystems,
+    metricKey: string,
+    status: boolean
+  ) => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
+
+    /** Update values */
+    this.metrics[systemMetricKey].disaggregatedBySupervisionSubsystems = status;
+
+    /** Return an object in the desired backend data structure for saving purposes */
+    return {
+      key: metricKey,
+      disaggregated_by_supervision_subsystems: status,
     };
   };
 
