@@ -25,7 +25,7 @@ import styled from "styled-components/macro";
 export const METRIC_BOX_DESKTOP_WIDTH = 280;
 
 export const AgencyOverviewWrapper = styled.div`
-  max-width: ${METRIC_BOX_DESKTOP_WIDTH * 4 + 48}px;
+  max-width: ${METRIC_BOX_DESKTOP_WIDTH * 4 + 48 + 1}px;
   margin: ${HEADER_BAR_HEIGHT + 14}px auto;
   display: flex;
   flex-direction: column;
