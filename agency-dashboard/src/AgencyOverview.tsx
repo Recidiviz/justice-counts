@@ -46,6 +46,15 @@ import { useMaxMetricBoxesInRow } from "./hooks";
 import { Loading } from "./Loading";
 import { useStore } from "./stores";
 
+const orderedCategories = [
+  "Capacity and Cost",
+  "Populations",
+  "Operations and Dynamics",
+  "Public Safety",
+  "Equity",
+  "Fairness",
+];
+
 const AgencyOverview = () => {
   const navigate = useNavigate();
   const params = useParams();
@@ -129,58 +138,63 @@ const AgencyOverview = () => {
           Metrics Available
         </MetricsCount>
         <MetricsViewContainer>
-          {Object.entries(agencyDataStore.metricsByCategory).map(
-            ([category, metrics]) => (
-              <CategorizedMetricsContainer key={category}>
-                <CategoryTitle>{category}</CategoryTitle>
-                <MetricsContainer
-                  maxMetricsInRow={
-                    maxMetricsInRow >= 4 || maxMetricsInRow > metrics.length
-                      ? metrics.length
-                      : maxMetricsInRow
-                  }
-                >
-                  {metrics.map((metric) => {
-                    const isPublished =
-                      getPublishCount(
+          {orderedCategories.map((category) => {
+            const metrics = agencyDataStore.metricsByCategory[category];
+            return (
+              !!metrics && (
+                <CategorizedMetricsContainer key={category}>
+                  <CategoryTitle>{category}</CategoryTitle>
+                  <MetricsContainer
+                    maxMetricsInRow={
+                      maxMetricsInRow >= 4 || maxMetricsInRow > metrics.length
+                        ? metrics.length
+                        : maxMetricsInRow
+                    }
+                  >
+                    {metrics.map((metric) => {
+                      const isPublished =
+                        getPublishCount(
+                          agencyDataStore.datapointsByMetric[metric.key]
+                        ) !== "No Data";
+                      const publishCount = getPublishCount(
                         agencyDataStore.datapointsByMetric[metric.key]
-                      ) !== "No Data";
-                    const publishCount = getPublishCount(
-                      agencyDataStore.datapointsByMetric[metric.key]
-                    );
-                    return (
-                      <MetricBox
-                        key={metric.key}
-                        isPublished={isPublished}
-                        onClick={() => handleNavigate(isPublished, metric.key)}
-                      >
-                        <MetricBoxTitle isPublished={isPublished}>
-                          {metric.display_name}
-                        </MetricBoxTitle>
-                        <MetricBoxContentContainer>
-                          {isPublished && (
-                            <MetricBoxGraphContainer>
-                              <MetricBoxGraphImage
-                                src={placeholderGraph}
-                                alt=""
-                              />
-                              <MetricBoxGraphLastUpdate>
-                                Last Updated: 01/01/2022
-                              </MetricBoxGraphLastUpdate>
-                            </MetricBoxGraphContainer>
-                          )}
-                          <MetricBoxFooter isPublished={isPublished}>
-                            {publishCount}{" "}
-                            {isPublished && <img src={arrow} alt="" />}
-                          </MetricBoxFooter>
-                        </MetricBoxContentContainer>
-                      </MetricBox>
-                    );
-                  })}
-                </MetricsContainer>
-              </CategorizedMetricsContainer>
-            )
-          )}
+                      );
+                      return (
+                        <MetricBox
+                          key={metric.key}
+                          isPublished={isPublished}
+                          onClick={() =>
+                            handleNavigate(isPublished, metric.key)
+                          }
+                        >
+                          <MetricBoxTitle isPublished={isPublished}>
+                            {metric.display_name}
+                          </MetricBoxTitle>
+                          <MetricBoxContentContainer>
+                            {isPublished && (
+                              <MetricBoxGraphContainer>
+                                <MetricBoxGraphImage
+                                  src={placeholderGraph}
+                                  alt=""
+                                />
+                                <MetricBoxGraphLastUpdate>
+                                  Last Updated: 01/01/2022
+                                </MetricBoxGraphLastUpdate>
+                              </MetricBoxGraphContainer>
+                            )}
+                            <MetricBoxFooter isPublished={isPublished}>
+                              {publishCount}{" "}
+                              {isPublished && <img src={arrow} alt="" />}
+                            </MetricBoxFooter>
+                          </MetricBoxContentContainer>
+                        </MetricBox>
+                      );
+                    })}
+                  </MetricsContainer>
+                </CategorizedMetricsContainer>
+              )
+            );
+          })}
         </MetricsViewContainer>
       </AgencyOverviewWrapper>
     </>

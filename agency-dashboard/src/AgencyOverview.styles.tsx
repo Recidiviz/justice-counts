@@ -32,7 +32,7 @@ export const AgencyOverviewWrapper = styled.div`
   padding: 0 24px 73px 24px;
 
   @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
-    max-width: 320px;
+    max-width: 100%;
     padding: 0 17px 50px 8px;
   }
 `;
@@ -113,6 +113,7 @@ export const MetricsContainer = styled.div<{ maxMetricsInRow: number }>`
   border-top: 1px solid ${palette.highlight.grey3};
 
   @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
+    max-width: 100%;
     flex-direction: column;
     border-left: none;
     border-top: none;
@@ -120,10 +121,10 @@ export const MetricsContainer = styled.div<{ maxMetricsInRow: number }>`
 `;
 
 export const MetricBox = styled.div<{ isPublished: boolean }>`
-  width: 280px;
-  max-width: 280px;
+  width: ${METRIC_BOX_DESKTOP_WIDTH}px;
+  max-width: ${METRIC_BOX_DESKTOP_WIDTH}px;
   height: 352px;
-  padding: 5px 14px 14px 14px;
+  padding: 10px 14px 14px 14px;
   border-right: 1px solid ${palette.highlight.grey3};
   border-bottom: 1px solid ${palette.highlight.grey3};
 
@@ -144,6 +145,8 @@ export const MetricBox = styled.div<{ isPublished: boolean }>`
   }`}
 
   @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
+    width: 100%;
+    max-width: 100%;
     border-right: none;
     border-bottom: none;
 
@@ -168,10 +171,13 @@ export const MetricBox = styled.div<{ isPublished: boolean }>`
 
 export const MetricBoxTitle = styled.div<{ isPublished: boolean }>`
   ${typography.sizeCSS.title};
+  line-height: 38px;
   color: ${({ isPublished }) => !isPublished && palette.highlight.grey8};
+  text-overflow: ellipsis;
+  overflow: hidden;
 
   @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
-    width: 135px;
+    width: 70%;
     ${typography.sizeCSS.medium};
   }
 `;
