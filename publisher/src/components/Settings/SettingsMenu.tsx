@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Permission } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -43,7 +42,7 @@ export const SettingsMenu: React.FC = observer(() => {
     useSettingsSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { metricConfigStore, agencyStore, userStore } = useStore();
+  const { metricConfigStore, agencyStore } = useStore();
   const { getMetricsBySystem } = metricConfigStore;
 
   const [activeAgencyMenuSubItem, setActiveAgencyMenuSubItem] = useState(
@@ -59,14 +58,6 @@ export const SettingsMenu: React.FC = observer(() => {
         (item) => item.label !== "Supervision Setup"
       );
 
-  const settingsMenuPathItems = userStore.permissions.includes(
-    Permission.RECIDIVIZ_ADMIN
-  )
-    ? settingsMenuPaths
-    : settingsMenuPaths.filter(
-        (menuPath) => menuPath.path !== "agency-settings"
-      );
-
   const handleMetricListItemClick = (metricKey: string) => {
     setSettingsSearchParams({
       system: systemSearchParam,
@@ -76,7 +67,7 @@ export const SettingsMenu: React.FC = observer(() => {
 
   return (
     <SettingsMenuContainer>
-      {settingsMenuPathItems.map(({ displayLabel, path }) => (
+      {settingsMenuPaths.map(({ displayLabel, path }) => (
         <Fragment key={path}>
           <MenuItem
             selected={
@@ -120,7 +111,8 @@ export const SettingsMenu: React.FC = observer(() => {
             )}
           {removeAgencyFromPath(location.pathname) ===
             "settings/agency-settings" &&
-            path === "agency-settings" && (
+            path === "agency-settings" &&
+            !agencyStore.loadingSettings && (
               <SubMenuListContainer>
                 {menuItems.map(({ label, id }) => (
                   <SubMenuListItem
