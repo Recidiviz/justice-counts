@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystems } from "@justice-counts/common/types";
+import { AgencySystems, Permission } from "@justice-counts/common/types";
 import { debounce } from "lodash";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef } from "react";
@@ -78,6 +78,8 @@ export const AgencySettings: React.FC = observer(() => {
   };
 
   const debouncedSave = useRef(debounce(saveAgencySettings, 1500)).current;
+
+  const isAdmin = userStore.permissions.includes(Permission.RECIDIVIZ_ADMIN);
 
   const agencyTeam = userStore
     .getAgency(agencyId)
@@ -166,25 +168,27 @@ export const AgencySettings: React.FC = observer(() => {
             {charactersCount}/750 characters
           </BasicInfoTextAreaWordCounter>
         </AgencySettingsBlock>
-        <AgencySettingsBlock id="team-management">
-          <AgencySettingsBlockTitle>Team Management</AgencySettingsBlockTitle>
-          <AgencySettingsBlockDescription>
-            These are the other people at your agency who have accounts on
-            Publisher. If there is someone you work with who you think should be
-            on Publisher, contact the Justice Counts team at{" "}
-            <a href="mailto:justice-counts-support@csg.org">
-              justice-counts-support@csg.org
-            </a>
-            .
-          </AgencySettingsBlockDescription>
-          {agencyTeam?.map(({ name }) => (
-            <AgencySettingsInfoRow key={name}>
-              {name}
-              {/* email is mocked */}
-              <span>{`${name}@doc1.wa.gov`}</span>
-            </AgencySettingsInfoRow>
-          ))}
-        </AgencySettingsBlock>
+        {isAdmin && (
+          <AgencySettingsBlock id="team-management">
+            <AgencySettingsBlockTitle>Team Management</AgencySettingsBlockTitle>
+            <AgencySettingsBlockDescription>
+              These are the other people at your agency who have accounts on
+              Publisher. If there is someone you work with who you think should
+              be on Publisher, contact the Justice Counts team at{" "}
+              <a href="mailto:justice-counts-support@csg.org">
+                justice-counts-support@csg.org
+              </a>
+              .
+            </AgencySettingsBlockDescription>
+            {agencyTeam?.map(({ name }) => (
+              <AgencySettingsInfoRow key={name}>
+                {name}
+                {/* email is mocked */}
+                <span>{`${name}@doc1.wa.gov`}</span>
+              </AgencySettingsInfoRow>
+            ))}
+          </AgencySettingsBlock>
+        )}
         {isAgencySupervision && (
           <AgencySettingsBlock id="supervision-setup">
             <AgencySettingsBlockTitle>
@@ -219,14 +223,16 @@ export const AgencySettings: React.FC = observer(() => {
             ))}
           </AgencySettingsBlock>
         )}
-        <AgencySettingsBlock id="jurisdiction">
-          <AgencySettingsBlockTitle>Jurisdictions</AgencySettingsBlockTitle>
-          <AgencySettingsBlockDescription>
-            Select the appropriate geographic area that corresponds with your
-            agency. You can indicate multiple cities, counties, states, or other
-            census areas that fall within your agency’s jurisdiction.
-          </AgencySettingsBlockDescription>
-        </AgencySettingsBlock>
+        {isAdmin && (
+          <AgencySettingsBlock id="jurisdiction">
+            <AgencySettingsBlockTitle>Jurisdictions</AgencySettingsBlockTitle>
+            <AgencySettingsBlockDescription>
+              Select the appropriate geographic area that corresponds with your
+              agency. You can indicate multiple cities, counties, states, or
+              other census areas that fall within your agency’s jurisdiction.
+            </AgencySettingsBlockDescription>
+          </AgencySettingsBlock>
+        )}
       </AgencySettingsContent>
     </AgencySettingsWrapper>
   );
