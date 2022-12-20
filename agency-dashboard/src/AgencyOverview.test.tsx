@@ -35,7 +35,7 @@ test("renders list of metrics", async () => {
         {
           key: "LAW_ENFORCEMENT_ARRESTS",
           display_name: "Total Arrests",
-          category: "CAPACITY_AND_COST",
+          category: "Capacity and Cost",
           datapoints: [
             {
               dimension_display_name: null,
@@ -57,7 +57,7 @@ test("renders list of metrics", async () => {
         {
           key: "LAW_ENFORCEMENT_BUDGET",
           display_name: "Annual Budget",
-          category: "CAPACITY_AND_COST",
+          category: "Capacity and Cost",
           datapoints: [
             {
               dimension_display_name: null,
@@ -79,7 +79,7 @@ test("renders list of metrics", async () => {
         {
           key: "LAW_ENFORCEMENT_CALLS_FOR_SERVICE",
           display_name: "Calls for Service",
-          category: "CAPACITY_AND_COST",
+          category: "Capacity and Cost",
           datapoints: [
             {
               dimension_display_name: null,
