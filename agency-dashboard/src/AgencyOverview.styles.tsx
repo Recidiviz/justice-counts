@@ -173,7 +173,10 @@ export const MetricBoxTitle = styled.div<{ isPublished: boolean }>`
   ${typography.sizeCSS.title};
   line-height: 38px;
   color: ${({ isPublished }) => !isPublished && palette.highlight.grey8};
-  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
   overflow: hidden;
 
   @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
