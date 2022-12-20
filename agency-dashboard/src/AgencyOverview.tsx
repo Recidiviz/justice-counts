@@ -153,9 +153,8 @@ const AgencyOverview = () => {
                   >
                     {metrics.map((metric) => {
                       const isPublished =
-                        getPublishCount(
-                          agencyDataStore.datapointsByMetric[metric.key]
-                        ) !== "No Data";
+                        agencyDataStore.datapointsByMetric[metric.key].aggregate
+                          .length > 0;
                       const publishCount = getPublishCount(
                         agencyDataStore.datapointsByMetric[metric.key]
                       );
