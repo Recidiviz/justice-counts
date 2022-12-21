@@ -191,8 +191,15 @@ const DashboardView = () => {
     return <>Loading...</>;
   }
 
-  const metricNames = agencyDataStore.metrics.map(
-    (metric) => metric.display_name
+  const metricNamesByCategory = agencyDataStore.metrics.reduce(
+    (acc, metric) => {
+      if (!acc[metric.category]) {
+        acc[metric.category] = []; /* eslint-disable-line no-param-reassign */
+      }
+      acc[metric.category].push(metric.display_name);
+      return acc;
+    },
+    {} as { [key: string]: string[] }
   );
 
   const metricName =
@@ -206,8 +213,9 @@ const DashboardView = () => {
   const downloadFeedData = async (system: string, filename: string) => {
     const a = document.createElement("a");
     a.href = `/feed/${agencyId}?system=${system}&metric=${filename}`;
-    a.setAttribute("download", `${filename}.txt`);
+    a.setAttribute("download", `${filename}.csv`);
     a.click();
+    a.remove();
   };
 
   const downloadMetricData = () => {
@@ -255,7 +263,9 @@ const DashboardView = () => {
           setTimeRange={setTimeRange}
           setDisaggregationName={setDisaggregationName}
           setCountOrPercentageView={setCountOrPercentageView}
-          metricNames={metricNames}
+          metricNamesByCategory={metricNamesByCategory}
+          metricName={metricName}
+          agencyName={agencyDataStore.agency?.name}
           onMetricsSelect={(selectedMetricName) => {
             const selectedMetricKey =
               agencyDataStore.metricDisplayNameToKey[selectedMetricName];

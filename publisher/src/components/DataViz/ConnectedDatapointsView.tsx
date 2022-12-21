@@ -61,6 +61,7 @@ const ConnectedDatapointsView: React.FC<{
           metricName={metricName}
           metricFrequency={metricFrequency}
           resizeHeight
+          showTitle
         />
       )}
       {dataView === ChartView.Table && (

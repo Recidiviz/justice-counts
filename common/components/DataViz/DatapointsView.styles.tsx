@@ -248,6 +248,10 @@ export const MetricInsightsContainer = styled.div<{
     position: absolute;
     z-index: -1;
   }`}
+
+  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+    flex-direction: column;
+  }
 `;
 
 const MetricInsightContainer = styled.div`
@@ -407,16 +411,4 @@ export const ExtendedDropdown = styled(Dropdown)`
   &:hover > button {
     background: none;
   }
-`;
-
-export const MobileSelectMetricsModalContainer = styled.div`
-  z-index: 3;
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: ${palette.solid.blue};
-  color: ${palette.solid.white};
-  overflow-y: auto;
 `;
