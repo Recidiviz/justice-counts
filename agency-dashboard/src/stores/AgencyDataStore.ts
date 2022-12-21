@@ -47,6 +47,19 @@ class AgencyDataStore {
     return mapping;
   }
 
+  get metricsByCategory(): { [metricKey: string]: Metric[] } {
+    const mapping: { [metricKey: string]: Metric[] } = {};
+    this.metrics.forEach((metric) => {
+      if (!mapping[metric.category]) {
+        mapping[metric.category] = [];
+        mapping[metric.category].push(metric);
+      } else {
+        mapping[metric.category].push(metric);
+      }
+    });
+    return mapping;
+  }
+
   get metricDisplayNameToKey(): { [displayName: string]: string } {
     const mapping: { [displayName: string]: string } = {};
     this.metrics.forEach((metric) => {

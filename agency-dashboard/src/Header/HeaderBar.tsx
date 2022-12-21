@@ -30,7 +30,7 @@ import {
   LogoContainer,
 } from "./HeaderBar.styles";
 
-export const HeaderBar = () => {
+export const HeaderBar: React.FC<{ showTitle?: boolean }> = ({ showTitle }) => {
   const { agencyDataStore } = useStore();
   const navigate = useNavigate();
   const params = useParams();
@@ -66,11 +66,13 @@ export const HeaderBar = () => {
       <LogoContainer onClick={() => navigate(`/agency/${agencyId}`)}>
         <Logo src={logo} alt="" />
       </LogoContainer>
-      <HeaderTitle>
-        {`Justice Counts${
-          agencyDataStore.agency?.name && ` + ${agencyDataStore.agency?.name}`
-        }`}
-      </HeaderTitle>
+      {showTitle && (
+        <HeaderTitle>
+          {`Justice Counts${
+            agencyDataStore.agency?.name && ` + ${agencyDataStore.agency?.name}`
+          }`}
+        </HeaderTitle>
+      )}
       <HeaderButtonsContainer>
         <HeaderButton onClick={showAboutModal}>About</HeaderButton>
       </HeaderButtonsContainer>

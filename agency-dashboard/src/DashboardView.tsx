@@ -221,7 +221,7 @@ const DashboardView = () => {
 
   return (
     <Container key={metricKey}>
-      <HeaderBar />
+      <HeaderBar showTitle />
       <LeftPanel>
         <BackButton onClick={() => navigate(`/agency/${agencyId}`)} />
         <MetricTitle>{metricName}</MetricTitle>
