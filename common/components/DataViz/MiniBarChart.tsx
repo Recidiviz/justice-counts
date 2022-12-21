@@ -50,7 +50,9 @@ const MiniBarChart: React.FC<{
         key="dataVizMissingData"
         dataKey="dataVizMissingData"
         stackId="a"
-        fill={`${isMetricHovered ? "url(#hoveredGradient)" : "url(#gradient)"}`}
+        fill={`${
+          isMetricHovered ? "url(#hovered-gradient)" : "url(#gradient)"
+        }`}
         maxBarSize={MAX_BAR_SIZE}
       />
     );
@@ -82,12 +84,12 @@ const MiniBarChart: React.FC<{
             <stop stopColor="rgba(23, 28, 43, 0.1)" offset="100%" />
           </linearGradient>
           <linearGradient
-            key="hoveredGradient"
+            key="hovered-gradient"
             x1="0"
             x2="0"
             y1="0"
             y2="1"
-            id="hoveredGradient"
+            id="hovered-gradient"
           >
             <stop stopColor="rgba(255, 255, 255, 0)" offset="0%" />
             <stop stopColor="rgba(255, 255, 255, 0.7)" offset="100%" />
