@@ -15,14 +15,19 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import placeholderGraph from "@justice-counts/common/assets/graph-white.png";
 import arrow from "@justice-counts/common/assets/left-arrow-icon.svg";
+import MiniBarChart from "@justice-counts/common/components/DataViz/MiniBarChart";
+import { transformDataForBarChart } from "@justice-counts/common/components/DataViz/utils";
 import { showToast } from "@justice-counts/common/components/Toast";
+import {
+  DatapointsGroupedByAggregateAndDisaggregations,
+  DataVizAggregateName,
+  DataVizTimeRangesMap,
+} from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { DatapointsGroupedByAggregateAndDisaggregations } from "../../common/types";
 import {
   AgencyOverviewWrapper,
   AgencyTitle,
@@ -33,12 +38,12 @@ import {
   MetricBoxContentContainer,
   MetricBoxFooter,
   MetricBoxGraphContainer,
-  MetricBoxGraphImage,
   MetricBoxGraphLastUpdate,
   MetricBoxTitle,
   MetricsContainer,
   MetricsCount,
   MetricsViewContainer,
+  MiniChartContainer,
   PageTitle,
 } from "./AgencyOverview.styles";
 import { HeaderBar } from "./Header/HeaderBar";
@@ -61,6 +66,7 @@ const AgencyOverview = () => {
   const agencyId = Number(params.id);
   const { agencyDataStore } = useStore();
   const maxMetricsInRow = useMaxMetricBoxesInRow();
+  const [hoveredMetric, setHoveredMetric] = useState<string | null>(null);
 
   const metricsCount = agencyDataStore.metrics.length;
   const availableMetricsCount = Object.values(
@@ -158,6 +164,9 @@ const AgencyOverview = () => {
                       const publishCount = getPublishCount(
                         agencyDataStore.datapointsByMetric[metric.key]
                       );
+                      const data =
+                        agencyDataStore.datapointsByMetric[metric.key]
+                          .aggregate;
                       return (
                         <MetricBox
                           key={metric.key}
@@ -165,6 +174,8 @@ const AgencyOverview = () => {
                           onClick={() =>
                             handleNavigate(isPublished, metric.key)
                           }
+                          onMouseEnter={() => setHoveredMetric(metric.key)}
+                          onMouseLeave={() => setHoveredMetric(null)}
                         >
                           <MetricBoxTitle isPublished={isPublished}>
                             {metric.display_name}
@@ -172,10 +183,20 @@ const AgencyOverview = () => {
                           <MetricBoxContentContainer>
                             {isPublished && (
                               <MetricBoxGraphContainer>
-                                <MetricBoxGraphImage
-                                  src={placeholderGraph}
-                                  alt=""
-                                />
+                                <MiniChartContainer>
+                                  <MiniBarChart
+                                    data={transformDataForBarChart(
+                                      data,
+                                      DataVizTimeRangesMap.All,
+                                      "Count"
+                                    )}
+                                    dimensionNames={[DataVizAggregateName]}
+                                    isMetricHovered={
+                                      metric.key === hoveredMetric &&
+                                      maxMetricsInRow >= 2
+                                    }
+                                  />
+                                </MiniChartContainer>
                                 <MetricBoxGraphLastUpdate>
                                   {/* change it with actual data in future */}
                                   Last Updated: 01/01/2022
