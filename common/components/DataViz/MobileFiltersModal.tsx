@@ -16,7 +16,6 @@
 // =============================================================================
 
 import { ReactComponent as CloseIcon } from "@justice-counts/common/assets/close-icon.svg";
-import checkIconWhite from "@justice-counts/common/assets/status-check-white-icon.png";
 import React from "react";
 
 import {
@@ -27,10 +26,8 @@ import {
   NoDisaggregationOption,
 } from "../../types";
 import {
-  MobileModalCheckIcon,
   MobileModalCloseButton,
   MobileModalContainer,
-  MobileModalEmptyCheckCircle,
   MobileModalHeader,
   MobileModalInnerContainer,
   MobileModalOption,
@@ -63,6 +60,7 @@ export const MobileFiltersModal: React.FC<{
     <MobileModalContainer>
       <MobileModalInnerContainer>
         <MobileModalCloseButton onClick={closeModal}>
+          Close
           <CloseIcon />
         </MobileModalCloseButton>
         <MobileModalHeader>Filters</MobileModalHeader>
@@ -71,15 +69,10 @@ export const MobileFiltersModal: React.FC<{
         {Object.keys(DataVizTimeRangesMap).map((option) => (
           <MobileModalOption
             key={option}
+            text={option}
             onClick={() => setTimeRange(option as DataVizTimeRangeDisplayName)}
-          >
-            {option}
-            {option === timeRange ? (
-              <MobileModalCheckIcon src={checkIconWhite} />
-            ) : (
-              <MobileModalEmptyCheckCircle />
-            )}
-          </MobileModalOption>
+            checked={option === timeRange}
+          />
         ))}
         {disaggregationOptions.length > 1 && (
           <>
@@ -87,15 +80,10 @@ export const MobileFiltersModal: React.FC<{
             {disaggregationOptions.map((option) => (
               <MobileModalOption
                 key={option}
+                text={option}
                 onClick={() => setDisaggregationName(option)}
-              >
-                {option}
-                {option === disaggregationName ? (
-                  <MobileModalCheckIcon src={checkIconWhite} />
-                ) : (
-                  <MobileModalEmptyCheckCircle />
-                )}
-              </MobileModalOption>
+                checked={option === disaggregationName}
+              />
             ))}
           </>
         )}
@@ -105,15 +93,10 @@ export const MobileFiltersModal: React.FC<{
             {dataVizCountOrPercentageView.map((option) => (
               <MobileModalOption
                 key={option}
+                text={option}
                 onClick={() => setCountOrPercentageView(option)}
-              >
-                {option}
-                {option === countOrPercentageView ? (
-                  <MobileModalCheckIcon src={checkIconWhite} />
-                ) : (
-                  <MobileModalEmptyCheckCircle />
-                )}
-              </MobileModalOption>
+                checked={option === countOrPercentageView}
+              />
             ))}
           </>
         )}

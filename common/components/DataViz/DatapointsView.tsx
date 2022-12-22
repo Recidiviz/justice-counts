@@ -239,7 +239,7 @@ export const DatapointsView: React.FC<{
           <DatapointsViewControlsDropdown
             title="View"
             selectedValue={countOrPercentageView}
-            options={dataVizCountOrPercentageView as unknown as string[]}
+            options={dataVizCountOrPercentageView}
             onSelect={(key) => {
               setCountOrPercentageView(key as DataVizCountOrPercentageView);
             }}
@@ -253,6 +253,15 @@ export const DatapointsView: React.FC<{
     datapointsGroupedByAggregateAndDisaggregations?.aggregate || [],
     selectedTimeRangeValue
   );
+
+  const shouldShowMobileSelectMetricsModal =
+    mobileSelectMetricsVisible &&
+    agencyName &&
+    metricNamesByCategory &&
+    metricName &&
+    onMetricsSelect;
+
+  const shouldShowMobileFiltersModal = mobileFiltersVisible && metricName;
 
   return (
     <DatapointsViewContainer>
@@ -299,20 +308,16 @@ export const DatapointsView: React.FC<{
           <SelectMetricsButtonText />
         </MobileSelectMetricsButton>
       </MobileSelectMetricsButtonContainer>
-      {mobileSelectMetricsVisible &&
-        agencyName &&
-        metricNamesByCategory &&
-        metricName &&
-        onMetricsSelect && (
-          <MobileSelectMetricsModal
-            agencyName={agencyName}
-            selectedMetricName={metricName}
-            metricNamesByCategory={metricNamesByCategory}
-            closeModal={() => setMobileSelectMetricsVisible(false)}
-            onSelectMetric={onMetricsSelect}
-          />
-        )}
-      {mobileFiltersVisible && metricName && (
+      {shouldShowMobileSelectMetricsModal && (
+        <MobileSelectMetricsModal
+          agencyName={agencyName}
+          selectedMetricName={metricName}
+          metricNamesByCategory={metricNamesByCategory}
+          closeModal={() => setMobileSelectMetricsVisible(false)}
+          onSelectMetric={onMetricsSelect}
+        />
+      )}
+      {shouldShowMobileFiltersModal && (
         <MobileFiltersModal
           metricName={metricName}
           disaggregationOptions={disaggregationOptions}

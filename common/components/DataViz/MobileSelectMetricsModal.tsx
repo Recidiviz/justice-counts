@@ -16,14 +16,11 @@
 // =============================================================================
 
 import { ReactComponent as CloseIcon } from "@justice-counts/common/assets/close-icon.svg";
-import checkIconWhite from "@justice-counts/common/assets/status-check-white-icon.png";
 import React from "react";
 
 import {
-  MobileModalCheckIcon,
   MobileModalCloseButton,
   MobileModalContainer,
-  MobileModalEmptyCheckCircle,
   MobileModalHeader,
   MobileModalInnerContainer,
   MobileModalOption,
@@ -67,15 +64,10 @@ export const MobileSelectMetricsModal: React.FC<{
               {metricNames.map((metricName) => (
                 <MobileModalOption
                   key={metricName}
+                  text={metricName}
                   onClick={() => onSelectMetric(metricName)}
-                >
-                  {metricName}
-                  {selectedMetricName === metricName ? (
-                    <MobileModalCheckIcon src={checkIconWhite} />
-                  ) : (
-                    <MobileModalEmptyCheckCircle />
-                  )}
-                </MobileModalOption>
+                  checked={selectedMetricName === metricName}
+                />
               ))}
             </React.Fragment>
           )

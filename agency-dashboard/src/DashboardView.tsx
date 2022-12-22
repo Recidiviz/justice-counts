@@ -194,7 +194,7 @@ const DashboardView = () => {
   const metricNamesByCategory = agencyDataStore.metrics.reduce(
     (acc, metric) => {
       if (!acc[metric.category]) {
-        acc[metric.category] = []; /* eslint-disable-line no-param-reassign */
+        acc[metric.category] = [];
       }
       acc[metric.category].push(metric.display_name);
       return acc;

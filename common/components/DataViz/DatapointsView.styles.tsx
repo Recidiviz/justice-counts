@@ -206,7 +206,7 @@ interface DatapointsViewControlsDropdownProps {
   title: string;
   selectedValue: string;
   onSelect: (value: string) => void;
-  options: string[];
+  options: readonly string[] | string[];
 }
 
 export const DatapointsViewControlsDropdown: React.FC<

@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import checkIconWhite from "@justice-counts/common/assets/status-check-white-icon.png";
 import {
   palette,
   typography,
@@ -54,12 +55,16 @@ export const MobileModalTitle = styled.div`
 `;
 
 export const MobileModalCloseButton = styled.div`
+  ${typography.sizeCSS.medium}
+  font-weight: 400;
   margin: 16px 0px 16px 16px;
   color: ${palette.solid.white};
   position: absolute;
   top: 0;
   right: 0;
   display: flex;
+  gap: 8px;
+  align-items: center;
 
   &:hover {
     cursor: pointer;
@@ -67,22 +72,42 @@ export const MobileModalCloseButton = styled.div`
   }
 `;
 
-export const MobileModalOption = styled.div`
+const MobileModalOptionContainer = styled.div`
   ${typography.sizeCSS.medium}
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 8px 0;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.85;
+  }
 `;
 
-export const MobileModalEmptyCheckCircle = styled.div`
+const MobileModalEmptyCheckCircle = styled.div`
   border: 1px solid ${palette.solid.white};
   border-radius: 24px;
   width: 24px;
   height: 24px;
 `;
 
-export const MobileModalCheckIcon = styled.img`
+const MobileModalCheckIcon = styled.img`
   width: 24px;
   height: 24px;
 `;
+
+export const MobileModalOption: React.FC<{
+  text: string;
+  onClick: () => void;
+  checked: boolean;
+}> = ({ onClick, text, checked }) => (
+  <MobileModalOptionContainer onClick={onClick}>
+    {text}
+    {checked ? (
+      <MobileModalCheckIcon src={checkIconWhite} />
+    ) : (
+      <MobileModalEmptyCheckCircle />
+    )}
+  </MobileModalOptionContainer>
+);
