@@ -32,7 +32,6 @@ import {
   MobileFiltersRow,
   MobileSelectMetricsButton,
   MobileSelectMetricsButtonContainer,
-  MobileSelectMetricsModalContainer,
   SelectMetricsButtonContainer,
   SelectMetricsButtonText,
 } from "@justice-counts/common/components/DataViz/DatapointsView.styles";
@@ -47,6 +46,7 @@ import {
   DatapointsGroupedByAggregateAndDisaggregations,
   DataVizAggregateName,
   DataVizCountOrPercentageView,
+  dataVizCountOrPercentageView,
   DataVizTimeRangeDisplayName,
   DataVizTimeRangesMap,
   DimensionNamesByDisaggregation,
@@ -55,6 +55,9 @@ import {
 } from "@justice-counts/common/types";
 import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
 import React, { useEffect } from "react";
+
+import { MobileFiltersModal } from "./MobileFiltersModal";
+import { MobileSelectMetricsModal } from "./MobileSelectMetricsModal";
 
 const noDisaggregationOption = "None";
 
@@ -97,10 +100,12 @@ export const DatapointsView: React.FC<{
   setTimeRange: (timeRange: DataVizTimeRangeDisplayName) => void;
   setDisaggregationName: (disaggregation: string) => void;
   setCountOrPercentageView: (viewSetting: DataVizCountOrPercentageView) => void;
-  metricName?: string;
+  metricName: string;
   metricFrequency?: ReportFrequency;
-  metricNames?: string[];
+  metricNamesByCategory?: { [key: string]: string[] };
+  agencyName?: string;
   onMetricsSelect?: (metric: string) => void;
+  showTitle?: boolean;
   showBottomMetricInsights?: boolean;
   resizeHeight?: boolean;
 }> = ({
@@ -114,12 +119,16 @@ export const DatapointsView: React.FC<{
   setCountOrPercentageView,
   metricName,
   metricFrequency,
-  metricNames,
+  metricNamesByCategory,
+  agencyName,
   onMetricsSelect,
+  showTitle = false,
   showBottomMetricInsights = false,
   resizeHeight = false,
 }) => {
   const [mobileSelectMetricsVisible, setMobileSelectMetricsVisible] =
+    React.useState<boolean>(false);
+  const [mobileFiltersVisible, setMobileFiltersVisible] =
     React.useState<boolean>(false);
 
   const selectedData =
@@ -167,13 +176,13 @@ export const DatapointsView: React.FC<{
 
   /** Prevent body from scrolling when modal is open */
   useEffect(() => {
-    if (mobileSelectMetricsVisible) {
+    if (mobileSelectMetricsVisible || mobileFiltersVisible) {
       document.body.style.overflow = "hidden";
     }
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [mobileSelectMetricsVisible]);
+  }, [mobileSelectMetricsVisible, mobileFiltersVisible]);
 
   const renderChartForMetric = () => {
     return (
@@ -230,7 +239,7 @@ export const DatapointsView: React.FC<{
           <DatapointsViewControlsDropdown
             title="View"
             selectedValue={countOrPercentageView}
-            options={["Count", "Percentage"]}
+            options={dataVizCountOrPercentageView}
             onSelect={(key) => {
               setCountOrPercentageView(key as DataVizCountOrPercentageView);
             }}
@@ -245,10 +254,19 @@ export const DatapointsView: React.FC<{
     selectedTimeRangeValue
   );
 
+  const shouldShowMobileSelectMetricsModal =
+    mobileSelectMetricsVisible &&
+    agencyName &&
+    metricNamesByCategory &&
+    metricName &&
+    onMetricsSelect;
+
+  const shouldShowMobileFiltersModal = mobileFiltersVisible && metricName;
+
   return (
     <DatapointsViewContainer>
       <DatapointsViewHeaderWrapper>
-        {metricName && (
+        {showTitle && (
           <MetricHeaderWrapper>
             <DatapointsTitle
               metricName={metricName}
@@ -264,16 +282,16 @@ export const DatapointsView: React.FC<{
         )}
       </DatapointsViewHeaderWrapper>
       <DatapointsViewControlsRow>
-        {metricNames && onMetricsSelect && (
+        {metricNamesByCategory && onMetricsSelect && (
           <SelectMetricButtonDropdown
-            options={metricNames}
+            options={Object.values(metricNamesByCategory).flat()}
             onSelect={onMetricsSelect}
           />
         )}
         {renderDataVizControls()}
       </DatapointsViewControlsRow>
       <MobileFiltersRow>
-        <MobileFiltersButton />
+        <MobileFiltersButton onClick={() => setMobileFiltersVisible(true)} />
       </MobileFiltersRow>
       {renderChartForMetric()}
       {renderLegend()}
@@ -290,7 +308,28 @@ export const DatapointsView: React.FC<{
           <SelectMetricsButtonText />
         </MobileSelectMetricsButton>
       </MobileSelectMetricsButtonContainer>
-      {mobileSelectMetricsVisible && <MobileSelectMetricsModalContainer />}
+      {shouldShowMobileSelectMetricsModal && (
+        <MobileSelectMetricsModal
+          agencyName={agencyName}
+          selectedMetricName={metricName}
+          metricNamesByCategory={metricNamesByCategory}
+          closeModal={() => setMobileSelectMetricsVisible(false)}
+          onSelectMetric={onMetricsSelect}
+        />
+      )}
+      {shouldShowMobileFiltersModal && (
+        <MobileFiltersModal
+          metricName={metricName}
+          disaggregationOptions={disaggregationOptions}
+          closeModal={() => setMobileFiltersVisible(false)}
+          timeRange={timeRange}
+          disaggregationName={disaggregationName}
+          countOrPercentageView={countOrPercentageView}
+          setTimeRange={setTimeRange}
+          setDisaggregationName={setDisaggregationName}
+          setCountOrPercentageView={setCountOrPercentageView}
+        />
+      )}
     </DatapointsViewContainer>
   );
 };
