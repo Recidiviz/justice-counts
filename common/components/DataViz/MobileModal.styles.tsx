@@ -20,6 +20,7 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
+import React from "react";
 import styled from "styled-components/macro";
 
 export const MobileModalContainer = styled.div`
