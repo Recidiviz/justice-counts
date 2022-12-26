@@ -327,7 +327,9 @@ export const DataVizTimeRangesMap: {
   "10 Years Ago": 120,
 };
 
-export type DataVizCountOrPercentageView = "Count" | "Percentage";
+export const dataVizCountOrPercentageView = ["Count", "Percentage"] as const;
+export type DataVizCountOrPercentageView =
+  typeof dataVizCountOrPercentageView[number];
 
 export interface DimensionNamesByDisaggregation {
   [disaggregation: string]: string[];
