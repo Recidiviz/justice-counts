@@ -48,30 +48,59 @@ const App: React.FC = (): ReactElement => {
   // if false then we just show user page that there are no associated agencies
   // if user has agencies but route is out of pattern /agency/:agencyId then redirect to /agency/:initialAgencyId/reports
   const initialAgency = userStore.getInitialAgencyId();
+  const hasCompletedOnboarding = false;
 
-  return (
-    <PageWrapper>
-      {initialAgency ? (
+  const renderRoutesBasedOnOnboardingStatus = (): JSX.Element => {
+    if (!hasCompletedOnboarding) {
+      return (
         <Routes>
           <Route
             path="/"
             element={
-              <Navigate to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`} />
+              <Navigate to={`/agency/${initialAgency}/getting-started`} />
             }
           />
           <Route path="/agency/:agencyId/*" element={<Router />} />
           <Route
             path="*"
             element={
-              <Navigate to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`} />
+              <Navigate to={`/agency/${initialAgency}/getting-started`} />
             }
           />
         </Routes>
-      ) : (
-        <NoAgencies />
-      )}
-    </PageWrapper>
-  );
+      );
+    }
+
+    return (
+      <>
+        {initialAgency ? (
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Navigate
+                  to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`}
+                />
+              }
+            />
+            <Route path="/agency/:agencyId/*" element={<Router />} />
+            <Route
+              path="*"
+              element={
+                <Navigate
+                  to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`}
+                />
+              }
+            />
+          </Routes>
+        ) : (
+          <NoAgencies />
+        )}
+      </>
+    );
+  };
+
+  return <PageWrapper>{renderRoutesBasedOnOnboardingStatus()}</PageWrapper>;
 };
 
 export default observer(App);

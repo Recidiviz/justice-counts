@@ -40,36 +40,60 @@ export const Router = () => {
   // e.g. reports page with initial available user agency
   // or maybe display some text since header is available and user can pick available agency
   const isAgencyIdInUserAgencies = userStore.getAgency(agencyId);
+  const hasCompletedOnboarding = false;
+
+  const renderRoutesBasedOnOnboardingStatus = (): JSX.Element => {
+    if (!hasCompletedOnboarding) {
+      return (
+        <Routes>
+          <Route path="/" element={<Navigate to="getting-started" />} />
+          <Route path="/getting-started" element={<DataUpload />} />
+          <Route path="*" element={<Navigate to="getting-started" />} />
+        </Routes>
+      );
+    }
+
+    return (
+      <>
+        {isAgencyIdInUserAgencies ? (
+          <Routes>
+            <Route
+              path="/"
+              element={<Navigate to={`${REPORTS_LOWERCASE}`} />}
+            />
+            <Route path={`/${REPORTS_LOWERCASE}`} element={<Reports />} />
+            <Route path="/data" element={<MetricsView />} />
+            <Route
+              path={`/${REPORTS_LOWERCASE}/create`}
+              element={<CreateReport />}
+            />
+            <Route
+              path={`/${REPORTS_LOWERCASE}/:id`}
+              element={<ReportDataEntry />}
+            />
+            <Route
+              path={`/${REPORTS_LOWERCASE}/:id/review`}
+              element={<ReviewReportDataEntry />}
+            />
+            <Route path="/settings/*" element={<Settings />} />
+            <Route path="/upload" element={<DataUpload />} />
+            <Route path="/upload/review-metrics" element={<ReviewMetrics />} />
+            <Route
+              path="*"
+              element={<Navigate to={`${REPORTS_LOWERCASE}`} />}
+            />
+          </Routes>
+        ) : (
+          <NotFound />
+        )}
+      </>
+    );
+  };
 
   return (
     <>
       <Header />
-
-      {isAgencyIdInUserAgencies ? (
-        <Routes>
-          <Route path="/" element={<Navigate to={`${REPORTS_LOWERCASE}`} />} />
-          <Route path={`/${REPORTS_LOWERCASE}`} element={<Reports />} />
-          <Route path="/data" element={<MetricsView />} />
-          <Route
-            path={`/${REPORTS_LOWERCASE}/create`}
-            element={<CreateReport />}
-          />
-          <Route
-            path={`/${REPORTS_LOWERCASE}/:id`}
-            element={<ReportDataEntry />}
-          />
-          <Route
-            path={`/${REPORTS_LOWERCASE}/:id/review`}
-            element={<ReviewReportDataEntry />}
-          />
-          <Route path="/settings/*" element={<Settings />} />
-          <Route path="/upload" element={<DataUpload />} />
-          <Route path="/upload/review-metrics" element={<ReviewMetrics />} />
-          <Route path="*" element={<Navigate to={`${REPORTS_LOWERCASE}`} />} />
-        </Routes>
-      ) : (
-        <NotFound />
-      )}
+      {renderRoutesBasedOnOnboardingStatus()}
     </>
   );
 };
