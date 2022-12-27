@@ -42,7 +42,7 @@ export const Router = () => {
   // or maybe display some text since header is available and user can pick available agency
   const isAgencyIdInUserAgencies = userStore.getAgency(agencyId);
   // TODO(#249): Move boolean to mobX data store
-  const hasCompletedOnboarding = true;
+  const hasCompletedOnboarding = false;
 
   const renderRoutesBasedOnOnboardingStatus = (): JSX.Element => {
     if (!hasCompletedOnboarding) {

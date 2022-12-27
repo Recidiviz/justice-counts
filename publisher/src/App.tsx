@@ -49,7 +49,7 @@ const App: React.FC = (): ReactElement => {
   // if user has agencies but route is out of pattern /agency/:agencyId then redirect to /agency/:initialAgencyId/reports
   const initialAgency = userStore.getInitialAgencyId();
   // TODO(#249): Move boolean to mobX data store
-  const hasCompletedOnboarding = true;
+  const hasCompletedOnboarding = false;
 
   const renderRoutesBasedOnOnboardingStatus = (): JSX.Element => {
     if (!hasCompletedOnboarding) {

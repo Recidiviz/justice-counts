@@ -15,8 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { observer } from "mobx-react-lite";
 import React from "react";
 
-export const Guidance = () => {
+// import { useStore } from "../../stores";
+
+export const Guidance = observer(() => {
+  //   const { guidanceStore } = useStore();
+
   return <div>Guidance</div>;
-};
+});
