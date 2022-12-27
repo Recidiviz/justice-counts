@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2022 Recidiviz, Inc.
+// Copyright (C) 2023 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -80,7 +80,9 @@ test("no reports to display", async () => {
     });
   });
 
-  const noReportsLoaded = await screen.findByText(/No records to display./i);
+  const noReportsLoaded = await screen.findByText(
+    /No records to display. Create a record?/i
+  );
   expect(noReportsLoaded).toBeInTheDocument();
   expect.hasAssertions();
 });

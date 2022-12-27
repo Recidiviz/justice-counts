@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2022 Recidiviz, Inc.
+// Copyright (C) 2023 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-export const HeaderBar = styled.header`
+export const HeaderBar = styled.header<{ bottomBorder?: boolean }>`
   width: 100%;
   height: ${HEADER_BAR_HEIGHT}px;
   display: flex;
@@ -34,6 +34,9 @@ export const HeaderBar = styled.header`
   z-index: 3;
   background: ${palette.solid.white};
   padding: 16px 0;
+
+  ${({ bottomBorder }) =>
+    bottomBorder && `border-bottom: 1px solid ${palette.highlight.grey3};`}
 `;
 
 export const LogoContainer = styled.div`

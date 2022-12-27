@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2022 Recidiviz, Inc.
+// Copyright (C) 2023 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ import { useStore } from "./stores";
 
 const App: React.FC = (): ReactElement => {
   const location = useLocation();
-  const { userStore } = useStore();
+  const { userStore, guidanceStore } = useStore();
   useEffect(() => {
     trackNavigation(location.pathname + location.search);
   }, [location]);
@@ -49,10 +49,31 @@ const App: React.FC = (): ReactElement => {
   // if false then we just show user page that there are no associated agencies
   // if user has agencies but route is out of pattern /agency/:agencyId then redirect to /agency/:initialAgencyId/reports
   const initialAgency = userStore.getInitialAgencyId();
+  const { hasCompletedOnboarding } = guidanceStore;
 
-  return (
-    <AppWrapper>
-      <PageWrapper>
+  const renderRoutesBasedOnOnboardingStatus = (): JSX.Element => {
+    if (!hasCompletedOnboarding) {
+      return (
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Navigate to={`/agency/${initialAgency}/getting-started`} />
+            }
+          />
+          <Route path="/agency/:agencyId/*" element={<Router />} />
+          <Route
+            path="*"
+            element={
+              <Navigate to={`/agency/${initialAgency}/getting-started`} />
+            }
+          />
+        </Routes>
+      );
+    }
+
+    return (
+      <>
         {initialAgency ? (
           <Routes>
             <Route
@@ -76,7 +97,13 @@ const App: React.FC = (): ReactElement => {
         ) : (
           <NoAgencies />
         )}
-      </PageWrapper>
+      </>
+    );
+  };
+
+  return (
+    <AppWrapper>
+      <PageWrapper>{renderRoutesBasedOnOnboardingStatus()}</PageWrapper>{" "}
       <Footer />
     </AppWrapper>
   );

@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2022 Recidiviz, Inc.
+// Copyright (C) 2023 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ type MetricBoxProps = {
   frequency: ReportFrequency;
   customFrequency: ReportFrequency;
   description: string;
-  enabled?: boolean;
+  enabled?: boolean | null;
 };
 
 export const MetricBox: React.FC<MetricBoxProps> = observer(

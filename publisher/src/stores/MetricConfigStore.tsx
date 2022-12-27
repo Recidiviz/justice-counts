@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2022 Recidiviz, Inc.
+// Copyright (C) 2023 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -50,6 +50,8 @@ class MetricConfigStore {
 
   api: API;
 
+  isInitialized: boolean;
+
   metrics: {
     [systemMetricKey: string]: MetricInfo;
   };
@@ -57,7 +59,7 @@ class MetricConfigStore {
   metricDefinitionSettings: {
     [systemMetricKey: string]: {
       [settingKey: string]: {
-        included?: MetricConfigurationSettingsOptions;
+        included?: MetricConfigurationSettingsOptions | null;
         default?: MetricConfigurationSettingsOptions;
         label?: string;
       };
@@ -89,7 +91,7 @@ class MetricConfigStore {
     [systemMetricKey: string]: {
       [disaggregationKey: string]: {
         [dimensionKey: string]: {
-          enabled?: boolean;
+          enabled?: boolean | null;
           contexts?: { key: string; value: string }[];
           label?: string;
           description?: string;
@@ -116,7 +118,7 @@ class MetricConfigStore {
       [disaggregationKey: string]: {
         [dimensionKey: string]: {
           [settingKey: string]: {
-            included?: MetricConfigurationSettingsOptions;
+            included?: MetricConfigurationSettingsOptions | null;
             default?: MetricConfigurationSettingsOptions;
             label?: string;
           };
@@ -137,6 +139,7 @@ class MetricConfigStore {
     this.dimensionDefinitionSettings = {};
     this.contexts = {};
     this.dimensionContexts = {};
+    this.isInitialized = false;
   }
 
   static getSystemMetricKey(system: string, metricKey: string): string {
@@ -167,7 +170,7 @@ class MetricConfigStore {
         [] as {
           key: string;
           metric: {
-            enabled?: boolean;
+            enabled?: boolean | null;
             label?: string;
             description?: Metric["description"];
             defaultFrequency?: ReportFrequency;
@@ -335,6 +338,7 @@ class MetricConfigStore {
             });
           });
         });
+        this.isInitialized = true;
       });
     } catch (error) {
       return new Error(error as string);
@@ -637,21 +641,27 @@ class MetricConfigStore {
      * When last dimension is disabled, the disaggregation is disabled
      * When all dimensions are off, and one dimension is re-enabled, the disaggregation is enabled
      */
+
     const isLastDimensionDisabled =
       enabledStatus === false &&
       Object.values(this.dimensions[systemMetricKey][disaggregationKey]).filter(
-        (dimension) => dimension.enabled
+        (dimension) => dimension.enabled || dimension.enabled === null
       )?.length === 1;
     const isDisaggregationDisabledAndOneDimensionReEnabled =
       enabledStatus === true &&
       this.disaggregations[systemMetricKey][disaggregationKey].enabled ===
         false;
+    const areAllDimensionslNullAndOneDimensionReEnabled =
+      this.disaggregations[systemMetricKey][disaggregationKey].enabled === null;
 
     if (isLastDimensionDisabled) {
       this.disaggregations[systemMetricKey][disaggregationKey].enabled = false;
     }
 
-    if (isDisaggregationDisabledAndOneDimensionReEnabled) {
+    if (
+      isDisaggregationDisabledAndOneDimensionReEnabled ||
+      areAllDimensionslNullAndOneDimensionReEnabled
+    ) {
       this.disaggregations[systemMetricKey][disaggregationKey].enabled = true;
     }
 
