@@ -36,6 +36,10 @@ export type OnboardingTopicsStatus = {
 };
 
 export const onboardingTopicsMetadata: OnboardingTopicsMetadata = {
+  WELCOME: {
+    topicDisplayName: "Welcome",
+    topicDescription: "Welcome description text here...",
+  },
   AGENCY_SETUP: {
     topicDisplayName: "Agency Setup",
     topicDescription: "Agency Setup description text here...",
