@@ -22,6 +22,7 @@ import {
   OnboardingTopicsMetadata,
   onboardingTopicsMetadata,
   OnboardingTopicsStatus,
+  TopicID,
 } from "../components/Guidance";
 import API from "./API";
 import UserStore from "./UserStore";
@@ -44,7 +45,7 @@ class GuidanceStore {
     this.onboardingTopicsStatus = mockTopicsStatus;
   }
 
-  get hasCompletedOnboarding(): boolean | void {
+  get hasCompletedOnboarding() {
     if (this.onboardingTopicsStatus.length === 0) return;
     const indexOfTopicNotCompleted = this.onboardingTopicsStatus.findIndex(
       (topic) => !topic.topicCompleted
@@ -52,7 +53,7 @@ class GuidanceStore {
     return indexOfTopicNotCompleted < 0;
   }
 
-  get currentTopicID(): string | void {
+  get currentTopicID() {
     if (this.onboardingTopicsStatus.length === 0) return;
     const topicIndex = this.onboardingTopicsStatus.findIndex(
       (topic) => !topic.topicCompleted
@@ -60,6 +61,15 @@ class GuidanceStore {
     if (topicIndex < 0) return;
     return this.onboardingTopicsStatus[topicIndex].topicID;
   }
+
+  updateTopicStatus = (topicID: TopicID, status: boolean) => {
+    this.onboardingTopicsStatus = this.onboardingTopicsStatus.map((topic) => {
+      if (topic.topicID !== topicID) return topic;
+      return { ...topic, topicCompleted: status };
+    });
+
+    return this.onboardingTopicsStatus;
+  };
 }
 
 export default GuidanceStore;

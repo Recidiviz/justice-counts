@@ -18,10 +18,14 @@
 import { observer } from "mobx-react-lite";
 import React from "react";
 
-// import { useStore } from "../../stores";
+import { useStore } from "../../stores";
 
 export const Guidance = observer(() => {
-  //   const { guidanceStore } = useStore();
+  const { guidanceStore } = useStore();
 
-  return <div>Guidance</div>;
+  return (
+    <>
+      <div>Guidance (Current Topic ID: {guidanceStore.currentTopicID})</div>
+    </>
+  );
 });

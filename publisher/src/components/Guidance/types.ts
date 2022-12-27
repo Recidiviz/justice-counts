@@ -16,6 +16,7 @@
 // =============================================================================
 
 export type TopicID =
+  | "WELCOME"
   | "AGENCY_SETUP"
   | "METRIC_CONFIG"
   | "ADD_DATA"
@@ -55,19 +56,23 @@ export const onboardingTopicsMetadata: OnboardingTopicsMetadata = {
 
 export const mockTopicsStatus: OnboardingTopicsStatus[] = [
   {
+    topicID: "WELCOME",
+    topicCompleted: false,
+  },
+  {
     topicID: "AGENCY_SETUP",
-    topicCompleted: true,
+    topicCompleted: false,
   },
   {
     topicID: "METRIC_CONFIG",
-    topicCompleted: true,
+    topicCompleted: false,
   },
   {
     topicID: "ADD_DATA",
-    topicCompleted: true,
+    topicCompleted: false,
   },
   {
     topicID: "PUBLISH_DATA",
-    topicCompleted: true,
+    topicCompleted: false,
   },
 ];
