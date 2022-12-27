@@ -15,41 +15,72 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { observer } from "mobx-react-lite";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { HeaderBar, Logo, LogoContainer, LogoName } from ".";
 import { useStore } from "../../stores";
 import logo from "../assets/jc-logo-vector-new.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
+import { GuidanceMenu, guidancePaths } from "../Guidance";
 import Menu from "../Menu";
-import { HeaderBar, Logo, LogoContainer, LogoName } from ".";
 
-const Header = () => {
+const Header = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
-  const { userStore } = useStore();
+  const { userStore, guidanceStore, authStore, api } = useStore();
+  const { hasCompletedOnboarding } = guidanceStore;
 
   const isAgencyValid = !!userStore.getAgency(agencyId);
   const defaultAgency = userStore.getInitialAgencyId();
 
+  const logout = async (): Promise<void | string> => {
+    try {
+      const response = (await api.request({
+        path: "/auth/logout",
+        method: "POST",
+      })) as Response;
+
+      if (response.status === 200 && authStore) {
+        return authStore.logoutUser();
+      }
+
+      return Promise.reject(
+        new Error(
+          "Something went wrong with clearing auth session or authStore is not initialized."
+        )
+      );
+    } catch (error) {
+      if (error instanceof Error) return error.message;
+      return String(error);
+    }
+  };
+
   return (
-    <HeaderBar>
+    <HeaderBar bottomBorder={!hasCompletedOnboarding}>
       <LogoContainer
         onClick={() =>
-          navigate(
-            `/agency/${
-              isAgencyValid ? agencyId : defaultAgency
-            }/${REPORTS_LOWERCASE}`
-          )
+          hasCompletedOnboarding
+            ? navigate(
+                `/agency/${
+                  isAgencyValid ? agencyId : defaultAgency
+                }/${REPORTS_LOWERCASE}`
+              )
+            : navigate(guidancePaths.home)
         }
       >
         <Logo src={logo} alt="" />
         <LogoName>Justice Counts</LogoName>
       </LogoContainer>
 
-      <Menu />
+      {hasCompletedOnboarding ? (
+        <Menu logout={logout} />
+      ) : (
+        <GuidanceMenu logout={logout} />
+      )}
     </HeaderBar>
   );
-};
+});
 
 export default Header;

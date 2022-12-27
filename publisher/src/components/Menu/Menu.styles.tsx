@@ -64,10 +64,10 @@ export const MenuItem = styled.div<{
   }
 `;
 
-export const WelcomeUser = styled.div`
+export const WelcomeUser = styled.div<{ noRightBorder?: boolean }>`
   color: ${palette.highlight.grey8};
-  border-right: 1px solid black;
   padding-right: 24px;
+  ${({ noRightBorder }) => !noRightBorder && `border-right: 1px solid black;`}
 
   @media only screen and (max-width: ${ONE_PANEL_MAX_WIDTH}px) {
     display: none;

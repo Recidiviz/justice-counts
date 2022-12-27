@@ -23,9 +23,6 @@ import { observer } from "mobx-react-lite";
 import React, { Fragment, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { useStore } from "../../stores";
-import { REPORT_VERB_LOWERCASE } from "../Global/constants";
-import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   BreakdownAvailabilityDescription,
   BreakdownAvailabilityMiniButtonWrapper,
@@ -47,6 +44,9 @@ import {
   RevertToDefaultTextButton,
   RevertToDefaultTextButtonWrapper,
 } from ".";
+import { useStore } from "../../stores";
+import { REPORT_VERB_LOWERCASE } from "../Global/constants";
+import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 
 type MetricDefinitionsProps = {
   activeDimensionKey: string | undefined;

@@ -19,10 +19,6 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { useStore } from "../../stores";
-import { removeAgencyFromPath } from "../../utils";
-import { Button } from "../DataUpload";
-import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
 import {
   ExtendedDropdownMenu,
   ExtendedDropdownMenuItem,
@@ -31,37 +27,20 @@ import {
   MenuItem,
   WelcomeUser,
 } from ".";
+import { useStore } from "../../stores";
+import { removeAgencyFromPath } from "../../utils";
+import { Button } from "../DataUpload";
+import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
 
-const Menu = () => {
-  const { authStore, api, userStore } = useStore();
+const Menu: React.FC<{ logout: () => Promise<void | string> }> = ({
+  logout,
+}) => {
+  const { userStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
   const location = useLocation();
 
   const pathWithoutAgency = removeAgencyFromPath(location.pathname);
-
-  const logout = async (): Promise<void | string> => {
-    try {
-      const response = (await api.request({
-        path: "/auth/logout",
-        method: "POST",
-      })) as Response;
-
-      if (response.status === 200 && authStore) {
-        return authStore.logoutUser();
-      }
-
-      return Promise.reject(
-        new Error(
-          "Something went wrong with clearing auth session or authStore is not initialized."
-        )
-      );
-    } catch (error) {
-      if (error instanceof Error) return error.message;
-      return String(error);
-    }
-  };
-
   const currentAgency = userStore.getAgency(agencyId);
 
   return (

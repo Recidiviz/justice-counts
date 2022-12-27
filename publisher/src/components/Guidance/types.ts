@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { REPORT_LOWERCASE } from "../Global/constants";
+import { REPORTS_LOWERCASE, REPORT_LOWERCASE } from "../Global/constants";
 
 export type TopicID =
   | "WELCOME"
@@ -85,6 +85,13 @@ export const metricConfigurationProgressSteps = [
 
 export type MetricConfigurationProgressSteps =
   typeof metricConfigurationProgressSteps[number];
+
+export const guidancePaths = {
+  home: "getting-started",
+  settings: "settings",
+  records: REPORTS_LOWERCASE,
+  data: "data",
+};
 
 export const mockTopicsStatus: OnboardingTopicsStatuses[] = [
   {

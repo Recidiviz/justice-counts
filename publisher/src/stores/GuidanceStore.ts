@@ -119,8 +119,7 @@ class GuidanceStore {
   };
 
   saveOnboardingTopicsStatuses = async (
-    updatedTopic: OnboardingTopicsStatuses,
-    agencyId: string
+    updatedTopic: OnboardingTopicsStatuses
   ): Promise<Response | Error> => {
     const response = (await this.api.request({
       path: `/api/users/guidance`,

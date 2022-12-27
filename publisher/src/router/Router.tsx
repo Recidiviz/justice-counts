@@ -20,7 +20,7 @@ import { Navigate, Route, Routes, useParams } from "react-router-dom";
 
 import { DataUpload } from "../components/DataUpload";
 import { REPORTS_LOWERCASE } from "../components/Global/constants";
-import { Guidance, GuidanceHeader } from "../components/Guidance";
+import { Guidance } from "../components/Guidance";
 import Header from "../components/Header";
 import { MetricsView } from "../components/MetricConfiguration/MetricsView";
 import CreateReport from "../components/Reports/CreateReport";
@@ -42,95 +42,76 @@ export const Router = () => {
   // or maybe display some text since header is available and user can pick available agency
   const isAgencyIdInUserAgencies = userStore.getAgency(agencyId);
   const { hasCompletedOnboarding, currentTopicID } = guidanceStore;
+  const isPublishDataStep = currentTopicID === "PUBLISH_DATA";
+  const isAddDataOrPublishDataStep =
+    currentTopicID === "ADD_DATA" || isPublishDataStep;
 
-  const renderRoutesBasedOnOnboardingStatus = (): JSX.Element => {
-    if (!hasCompletedOnboarding) {
-      const isPublishDataStep = currentTopicID === "PUBLISH_DATA";
-      const isAddDataOrPublishDataStep =
-        currentTopicID === "ADD_DATA" || isPublishDataStep;
-
-      return (
-        <>
-          <GuidanceHeader />
-          <Routes>
-            <Route path="/" element={<Navigate to="getting-started" />} />
-            <Route path="/getting-started" element={<Guidance />} />
-            {currentTopicID !== "WELCOME" && (
-              <>
-                <Route path="/settings/*" element={<Settings />} />
-                {isAddDataOrPublishDataStep && (
-                  <>
-                    <Route path="/upload/*" element={<DataUpload />} />
-                    <Route
-                      path="/upload/review-metrics"
-                      element={<ReviewMetrics />}
-                    />
-                    <Route
-                      path={`/${REPORTS_LOWERCASE}/*`}
-                      element={<Reports />}
-                    />
-                    <Route
-                      path={`/${REPORTS_LOWERCASE}/create`}
-                      element={<CreateReport />}
-                    />
-                    <Route
-                      path={`/${REPORTS_LOWERCASE}/:id`}
-                      element={<ReportDataEntry />}
-                    />
-                    <Route
-                      path={`/${REPORTS_LOWERCASE}/:id/review`}
-                      element={<ReviewReportDataEntry />}
-                    />
-                  </>
-                )}
-                {isPublishDataStep && (
-                  <Route path="/data" element={<MetricsView />} />
-                )}
-              </>
-            )}
-            <Route path="*" element={<Navigate to="getting-started" />} />
-          </Routes>
-        </>
-      );
-    }
-
-    return (
-      <>
-        <Header />
-        {isAgencyIdInUserAgencies ? (
-          <Routes>
-            <Route
-              path="/"
-              element={<Navigate to={`${REPORTS_LOWERCASE}`} />}
-            />
-            <Route path={`/${REPORTS_LOWERCASE}`} element={<Reports />} />
-            <Route path="/data" element={<MetricsView />} />
-            <Route
-              path={`/${REPORTS_LOWERCASE}/create`}
-              element={<CreateReport />}
-            />
-            <Route
-              path={`/${REPORTS_LOWERCASE}/:id`}
-              element={<ReportDataEntry />}
-            />
-            <Route
-              path={`/${REPORTS_LOWERCASE}/:id/review`}
-              element={<ReviewReportDataEntry />}
-            />
+  return (
+    <>
+      <Header />
+      {isAgencyIdInUserAgencies ? (
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Navigate
+                to={
+                  hasCompletedOnboarding
+                    ? `${REPORTS_LOWERCASE}`
+                    : `getting-started`
+                }
+              />
+            }
+          />
+          <Route path="/getting-started" element={<Guidance />} />
+          {hasCompletedOnboarding ||
+            (!hasCompletedOnboarding && isPublishDataStep && (
+              <Route path="/data" element={<MetricsView />} />
+            ))}
+          {(hasCompletedOnboarding ||
+            (!hasCompletedOnboarding && currentTopicID !== "WELCOME")) && (
             <Route path="/settings/*" element={<Settings />} />
-            <Route path="/upload" element={<DataUpload />} />
-            <Route path="/upload/review-metrics" element={<ReviewMetrics />} />
-            <Route
-              path="*"
-              element={<Navigate to={`${REPORTS_LOWERCASE}`} />}
-            />
-          </Routes>
-        ) : (
-          <NotFound />
-        )}
-      </>
-    );
-  };
+          )}
 
-  return <>{renderRoutesBasedOnOnboardingStatus()}</>;
+          {(hasCompletedOnboarding ||
+            (!hasCompletedOnboarding && isAddDataOrPublishDataStep)) && (
+            <>
+              <Route path={`/${REPORTS_LOWERCASE}`} element={<Reports />} />
+              <Route
+                path={`/${REPORTS_LOWERCASE}/create`}
+                element={<CreateReport />}
+              />
+              <Route
+                path={`/${REPORTS_LOWERCASE}/:id`}
+                element={<ReportDataEntry />}
+              />
+              <Route
+                path={`/${REPORTS_LOWERCASE}/:id/review`}
+                element={<ReviewReportDataEntry />}
+              />
+              <Route path="/upload" element={<DataUpload />} />
+              <Route
+                path="/upload/review-metrics"
+                element={<ReviewMetrics />}
+              />
+            </>
+          )}
+          <Route
+            path="*"
+            element={
+              <Navigate
+                to={
+                  hasCompletedOnboarding
+                    ? `${REPORTS_LOWERCASE}`
+                    : `getting-started`
+                }
+              />
+            }
+          />
+        </Routes>
+      ) : (
+        <NotFound />
+      )}
+    </>
+  );
 };

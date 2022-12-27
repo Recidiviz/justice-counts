@@ -27,12 +27,6 @@ import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { useStore } from "../../stores";
-import MetricConfigStore from "../../stores/MetricConfigStore";
-import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
-import checkmarkIcon from "../assets/status-check-icon.png";
-import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
-import { Loader, Loading } from "../Loading";
 import {
   ActionButton,
   ActionButtonWrapper,
@@ -62,6 +56,12 @@ import {
   TopicDescription,
   TopicTitle,
 } from ".";
+import { useStore } from "../../stores";
+import MetricConfigStore from "../../stores/MetricConfigStore";
+import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
+import checkmarkIcon from "../assets/status-check-icon.png";
+import { REPORTS_LOWERCASE, REPORT_LOWERCASE } from "../Global/constants";
+import { Loader, Loading } from "../Loading";
 
 export const Guidance = observer(() => {
   const navigate = useNavigate();
@@ -128,6 +128,15 @@ export const Guidance = observer(() => {
   ).length;
 
   useEffect(() => {
+    const initOnboardingTopicStatuses = async () => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await guidanceStore.getOnboardingTopicsStatuses(agencyId);
+    };
+
+    initOnboardingTopicStatuses();
+  }, [guidanceStore, agencyId]);
+
+  useEffect(() => {
     const initialize = async () => {
       reportStore.resetState();
       await reportStore.getReportOverviews(agencyId);
@@ -144,22 +153,22 @@ export const Guidance = observer(() => {
         );
 
       if (hasMinimumOneReport) {
-        saveOnboardingTopicsStatuses(
-          { topicID: "ADD_DATA", topicCompleted: true },
-          agencyId
-        );
+        saveOnboardingTopicsStatuses({
+          topicID: "ADD_DATA",
+          topicCompleted: true,
+        });
       }
       if (hasMinimumOnePublishedReport) {
-        saveOnboardingTopicsStatuses(
-          { topicID: "PUBLISH_DATA", topicCompleted: true },
-          agencyId
-        );
+        saveOnboardingTopicsStatuses({
+          topicID: "PUBLISH_DATA",
+          topicCompleted: true,
+        });
       }
       if (totalMetrics > 0 && numberOfMetricsCompleted === totalMetrics) {
-        saveOnboardingTopicsStatuses(
-          { topicID: "METRIC_CONFIG", topicCompleted: true },
-          agencyId
-        );
+        saveOnboardingTopicsStatuses({
+          topicID: "METRIC_CONFIG",
+          topicCompleted: true,
+        });
       }
     };
 
@@ -242,10 +251,10 @@ export const Guidance = observer(() => {
                   onClick={() => {
                     if (currentTopicID) {
                       if (pathToTask) navigate(pathToTask);
-                      saveOnboardingTopicsStatuses(
-                        { topicID: currentTopicID, topicCompleted: true },
-                        agencyId
-                      );
+                      saveOnboardingTopicsStatuses({
+                        topicID: currentTopicID,
+                        topicCompleted: true,
+                      });
                     }
                   }}
                 >
@@ -259,10 +268,10 @@ export const Guidance = observer(() => {
             <SkipButton
               onClick={() => {
                 if (currentTopicID) {
-                  saveOnboardingTopicsStatuses(
-                    { topicID: currentTopicID, topicCompleted: true },
-                    agencyId
-                  );
+                  saveOnboardingTopicsStatuses({
+                    topicID: currentTopicID,
+                    topicCompleted: true,
+                  });
                 }
               }}
             >
