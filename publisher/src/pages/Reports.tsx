@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2022 Recidiviz, Inc.
+// Copyright (C) 2023 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import dropdownArrow from "../components/assets/dropdown-arrow.svg";
 import {
+  REPORT_LOWERCASE,
   REPORT_PERIOD_CAPITALIZED,
   REPORTS_CAPITALIZED,
   REPORTS_LOWERCASE,
@@ -307,7 +308,7 @@ const Reports: React.FC = () => {
           )
         ) : (
           <NoReportsDisplay>
-            No {REPORTS_LOWERCASE} to display.
+            No {REPORTS_LOWERCASE} to display. Create a {REPORT_LOWERCASE}?
           </NoReportsDisplay>
         )}
       </>

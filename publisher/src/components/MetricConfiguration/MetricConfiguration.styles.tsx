@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2022 Recidiviz, Inc.
+// Copyright (C) 2023 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -368,7 +368,7 @@ export const MetricBoxBottomPaddingContainer = styled.div`
 `;
 
 type MetricBoxContainerProps = {
-  enabled?: boolean;
+  enabled?: boolean | null;
 };
 
 export const MetricBoxContainer = styled.div<MetricBoxContainerProps>`
@@ -468,7 +468,7 @@ export const MetricDetailsDisplay = styled.div`
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
     overflow-y: unset;
-    padding: 24px 12px 10px 0;
+    padding: 24px 12px 0px 0;
   }
 `;
 
@@ -517,7 +517,7 @@ export const RadioButtonGroupWrapper = styled(BinaryRadioGroupWrapper)`
   }
 `;
 
-export const TogglableSection = styled.div<{ enabled?: boolean }>`
+export const MetricDisaggregations = styled.div<{ enabled?: boolean | null }>`
   display: block;
   position: relative;
 
@@ -543,15 +543,6 @@ export const Disaggregation = styled.div`
   margin-bottom: 15px;
 `;
 
-export const DisaggregationHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 17px 0;
-  align-items: center;
-
-  border-bottom: 1px solid ${palette.highlight.grey9};
-`;
-
 export const DisaggregationName = styled.div<{ enabled?: boolean }>`
   ${typography.sizeCSS.large};
 
@@ -569,21 +560,39 @@ export const DisaggregationTab = styled.div`
   }
 `;
 
+export const ActionStatusTitle = styled.div<{
+  enabled?: boolean;
+  inView?: boolean;
+}>`
+  ${typography.sizeCSS.normal};
+  transition: 0.5s ease;
+  color: ${({ enabled }) =>
+    enabled ? palette.solid.blue : palette.highlight.grey8};
+  opacity: ${({ inView }) => (inView ? 0 : 1)};
+`;
+
 export const Dimension = styled.div<{ enabled?: boolean; inView?: boolean }>`
   ${typography.sizeCSS.medium};
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 17px 40px 17px 10px;
+  padding: 17px 0;
   border-bottom: 1px solid ${palette.highlight.grey4};
   position: relative;
   background: ${({ inView }) =>
     inView ? palette.highlight.lightblue1 : `none`};
+  transition: padding 0.3s ease;
 
   &:hover {
     background: ${({ inView }) =>
       inView ? palette.highlight.lightblue1 : palette.highlight.grey1};
     cursor: pointer;
+    padding-left: 16px;
+  }
+
+  &:hover ${ActionStatusTitle} {
+    opacity: 0;
+    transition: 0.2s ease;
   }
 
   svg {
@@ -620,14 +629,16 @@ export const Dimension = styled.div<{ enabled?: boolean; inView?: boolean }>`
 `;
 
 export const DimensionTitleWrapper = styled.div`
+  width: 100%;
   display: flex;
+  justify-content: space-between;
   align-items: center;
 `;
 
 export const DimensionTitle = styled.div<{ enabled?: boolean }>`
   display: block;
   color: ${({ enabled }) =>
-    enabled ? palette.solid.darkgrey : palette.highlight.grey8};
+    enabled ? palette.solid.darkgrey : palette.highlight.grey10};
 `;
 
 export const CheckboxWrapper = styled.div`
@@ -670,7 +681,7 @@ export const MetricConfigurationContainer = styled.div`
   display: block;
 `;
 
-export const MetricContextContainer = styled.div<{ enabled?: boolean }>`
+export const MetricContextContainer = styled.div<{ enabled?: boolean | null }>`
   display: block;
   position: relative;
 
@@ -840,10 +851,15 @@ export const DefinitionsDisplayContainer = styled.div`
   }
 `;
 
-export const DefinitionsDisplay = styled.div<{ enabled?: boolean }>`
+export const DefinitionsDisplay = styled.div<{ enabled?: boolean | null }>`
   width: 100%;
   position: relative;
 
+  ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
+`;
+
+export const DefinitionsWrapper = styled.div<{ enabled?: boolean | null }>`
+  position: relative;
   ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
 `;
 
@@ -857,6 +873,8 @@ export const DefinitionsSubTitle = styled.div`
   margin-bottom: 16px;
 `;
 
+export const BreakdownAvailabilitySubTitle = styled(DefinitionsSubTitle)``;
+
 export const DefinitionsDescription = styled.div`
   ${typography.sizeCSS.normal}
   margin-bottom: 32px;
@@ -867,8 +885,8 @@ export const DefinitionsDescription = styled.div`
   }
 `;
 
-export const MetricBreakdownDescription = styled(DefinitionsDescription)`
-  margin-bottom: 20px;
+export const BreakdownAvailabilityDescription = styled(DefinitionsDescription)`
+  margin-bottom: 16px;
 `;
 
 export const RevertToDefaultButton = styled.div`
@@ -888,34 +906,31 @@ export const RevertToDefaultButton = styled.div`
   }
 `;
 
-export const Definitions = styled.div`
+export const RevertToDefaultTextButtonWrapper = styled.div`
   width: 100%;
   display: flex;
-  flex-direction: column;
-  margin-top: 16px;
-  margin-bottom: 32px;
+  justify-content: flex-end;
 `;
 
-export const DefinitionItem = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
+export const RevertToDefaultTextButton = styled.div`
+  ${typography.sizeCSS.normal}
+  color: ${palette.solid.blue};
+  text-align: right;
+  margin-bottom: 16px;
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.solid.darkblue};
+  }
 `;
 
-export const DefinitionDisplayName = styled.div`
-  ${typography.sizeCSS.medium}
-  margin-right: 20px;
-`;
-
-export const DefinitionSelection = styled.div`
+export const MiniButtonWrapper = styled.div`
   display: flex;
   gap: 4px;
 `;
 
-export const DefinitionMiniButton = styled(RevertToDefaultButton)<{
-  selected?: boolean;
+export const MiniButton = styled(RevertToDefaultButton)<{
+  selected?: boolean | null;
   showDefault?: boolean;
 }>`
   width: unset;
@@ -945,6 +960,36 @@ export const DefinitionMiniButton = styled(RevertToDefaultButton)<{
 
   ${({ showDefault, selected }) =>
     showDefault && !selected && `color: ${palette.highlight.grey4};`};
+`;
+
+export const BreakdownAvailabilityMiniButtonWrapper = styled(MiniButtonWrapper)`
+  margin-bottom: 32px;
+`;
+
+export const Definitions = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+  margin-bottom: 16px;
+`;
+
+export const DefinitionItem = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+`;
+
+export const DefinitionDisplayName = styled.div`
+  ${typography.sizeCSS.medium}
+  margin-right: 20px;
+`;
+
+export const DefinitionSelection = styled.div`
+  display: flex;
+  gap: 4px;
 `;
 
 export const NoDefinitionsSelected = styled.div`
@@ -1009,4 +1054,20 @@ export const BlueLinkSpan = styled.span`
   &:hover {
     cursor: pointer;
   }
+`;
+
+export const DisaggregationHeader = styled.div`
+  ${typography.sizeCSS.medium}
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  margin-top: 48px;
+  border-bottom: 1px solid ${palette.highlight.grey5};
+`;
+
+export const AvailableWithCheckWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 7px;
 `;

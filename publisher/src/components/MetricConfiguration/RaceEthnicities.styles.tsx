@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2022 Recidiviz, Inc.
+// Copyright (C) 2023 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@ import { BinaryRadioGroupWrapper } from "../Forms";
 import {
   DefinitionDisplayName,
   DefinitionItem,
-  DefinitionMiniButton,
   Definitions,
   DefinitionsDescription,
   DefinitionsDisplay,
@@ -34,6 +33,7 @@ import {
   DefinitionSelection,
   DefinitionsTitle,
   MetricOnOffWrapper,
+  MiniButton,
 } from ".";
 
 export const RaceEthnicitiesBreakdownContainer = styled.div<{
@@ -175,7 +175,7 @@ export const RaceContainer = styled(Definitions)``;
 export const Race = styled(DefinitionItem)``;
 export const RaceDisplayName = styled(DefinitionDisplayName)``;
 export const RaceSelection = styled(DefinitionSelection)``;
-export const RaceSelectionButton = styled(DefinitionMiniButton)``;
+export const RaceSelectionButton = styled(MiniButton)``;
 export const RaceEthnicityRadioButtonGroupWrapper = styled(
   BinaryRadioGroupWrapper
 )`
