@@ -22,10 +22,25 @@ import { useStore } from "../../stores";
 
 export const Guidance = observer(() => {
   const { guidanceStore } = useStore();
+  const { onboardingTopicsMetadata, currentTopicID, updateTopicStatus } =
+    guidanceStore;
+
+  const currentTopicDisplayName =
+    currentTopicID && onboardingTopicsMetadata[currentTopicID].topicDisplayName;
 
   return (
     <>
-      <div>Guidance (Current Topic ID: {guidanceStore.currentTopicID})</div>
+      <div>
+        Guidance ({currentTopicDisplayName}){" "}
+        <button
+          type="button"
+          onClick={() =>
+            currentTopicID && updateTopicStatus(currentTopicID, true)
+          }
+        >
+          Next
+        </button>
+      </div>
     </>
   );
 });
