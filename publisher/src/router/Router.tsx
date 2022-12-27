@@ -20,6 +20,7 @@ import { Navigate, Route, Routes, useParams } from "react-router-dom";
 
 import { DataUpload } from "../components/DataUpload";
 import { REPORTS_LOWERCASE } from "../components/Global/constants";
+import { Guidance } from "../components/Guidance";
 import Header from "../components/Header";
 import { MetricsView } from "../components/MetricConfiguration/MetricsView";
 import CreateReport from "../components/Reports/CreateReport";
@@ -47,7 +48,7 @@ export const Router = () => {
       return (
         <Routes>
           <Route path="/" element={<Navigate to="getting-started" />} />
-          <Route path="/getting-started" element={<DataUpload />} />
+          <Route path="/getting-started" element={<Guidance />} />
           <Route path="*" element={<Navigate to="getting-started" />} />
         </Routes>
       );
@@ -55,6 +56,7 @@ export const Router = () => {
 
     return (
       <>
+        <Header />
         {isAgencyIdInUserAgencies ? (
           <Routes>
             <Route
@@ -90,10 +92,5 @@ export const Router = () => {
     );
   };
 
-  return (
-    <>
-      <Header />
-      {renderRoutesBasedOnOnboardingStatus()}
-    </>
-  );
+  return <>{renderRoutesBasedOnOnboardingStatus()}</>;
 };
