@@ -41,7 +41,8 @@ export const Router = () => {
   // e.g. reports page with initial available user agency
   // or maybe display some text since header is available and user can pick available agency
   const isAgencyIdInUserAgencies = userStore.getAgency(agencyId);
-  const hasCompletedOnboarding = false;
+  // TODO(#249): Move boolean to mobX data store
+  const hasCompletedOnboarding = true;
 
   const renderRoutesBasedOnOnboardingStatus = (): JSX.Element => {
     if (!hasCompletedOnboarding) {
