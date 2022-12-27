@@ -29,7 +29,7 @@ import { useStore } from "./stores";
 
 const App: React.FC = (): ReactElement => {
   const location = useLocation();
-  const { userStore } = useStore();
+  const { userStore, guidanceStore } = useStore();
   useEffect(() => {
     trackNavigation(location.pathname + location.search);
   }, [location]);
@@ -48,8 +48,7 @@ const App: React.FC = (): ReactElement => {
   // if false then we just show user page that there are no associated agencies
   // if user has agencies but route is out of pattern /agency/:agencyId then redirect to /agency/:initialAgencyId/reports
   const initialAgency = userStore.getInitialAgencyId();
-  // TODO(#249): Move boolean to mobX data store
-  const hasCompletedOnboarding = false;
+  const { hasCompletedOnboarding } = guidanceStore;
 
   const renderRoutesBasedOnOnboardingStatus = (): JSX.Element => {
     if (!hasCompletedOnboarding) {
