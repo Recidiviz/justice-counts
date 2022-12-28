@@ -16,4 +16,5 @@
 // =============================================================================
 
 export * from "./Guidance";
+export * from "./Guidance.styles";
 export * from "./types";
