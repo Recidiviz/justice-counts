@@ -27,11 +27,14 @@ export const Guidance = observer(() => {
 
   const currentTopicDisplayName =
     currentTopicID && onboardingTopicsMetadata[currentTopicID].topicDisplayName;
+  const currentTopicDescription =
+    currentTopicID && onboardingTopicsMetadata[currentTopicID].topicDescription;
 
   return (
     <>
       <div>
-        Guidance ({currentTopicDisplayName}){" "}
+        <p>{currentTopicDisplayName}</p>
+        <p>{currentTopicDescription}</p>
         <button
           type="button"
           onClick={() =>
