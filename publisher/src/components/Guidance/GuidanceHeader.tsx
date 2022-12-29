@@ -16,7 +16,7 @@
 // =============================================================================
 
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import logo from "../assets/jc-logo-vector.png";
 import { HeaderBar, Logo, LogoContainer } from "../Header";
@@ -24,6 +24,10 @@ import { MenuContainer, MenuItem } from "../Menu";
 
 export const GuidanceHeader = () => {
   const navigate = useNavigate();
+  const params = useParams();
+
+  const isHome = params["*"] === "getting-started";
+  const isSettings = params["*"]?.includes("settings");
 
   return (
     <HeaderBar bottomBorder>
@@ -32,7 +36,15 @@ export const GuidanceHeader = () => {
       </LogoContainer>
 
       <MenuContainer>
-        <MenuItem>Get Started</MenuItem>
+        <MenuItem active={isHome} onClick={() => navigate(`/`)}>
+          Get Started
+        </MenuItem>
+        <MenuItem
+          active={isSettings}
+          onClick={() => navigate(`/agency/147/settings`)}
+        >
+          Settings
+        </MenuItem>
       </MenuContainer>
     </HeaderBar>
   );

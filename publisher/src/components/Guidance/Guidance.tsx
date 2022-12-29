@@ -17,6 +17,7 @@
 
 import { observer } from "mobx-react-lite";
 import React from "react";
+import { createSearchParams, useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import {
@@ -67,9 +68,11 @@ export const Guidance = observer(() => {
     );
   };
 
+  const navigate = useNavigate();
+
   return (
     <>
-      <GuidanceHeader />
+      {/* <GuidanceHeader /> */}
       <GuidanceContainer>
         <ContentContainer
           position={
@@ -79,7 +82,10 @@ export const Guidance = observer(() => {
           }
         >
           {renderProgressSteps()}
-          <TopicTitle>{currentTopicDisplayName}</TopicTitle>
+          <TopicTitle onClick={() => navigate(`../settings`)}>
+            {/* <TopicTitle> */}
+            {currentTopicDisplayName}
+          </TopicTitle>
           <TopicDescription>{currentTopicDescription}</TopicDescription>
           <ActionButton
             onClick={() =>

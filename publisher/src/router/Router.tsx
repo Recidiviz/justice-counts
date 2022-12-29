@@ -20,7 +20,7 @@ import { Navigate, Route, Routes, useParams } from "react-router-dom";
 
 import { DataUpload } from "../components/DataUpload";
 import { REPORTS_LOWERCASE } from "../components/Global/constants";
-import { Guidance } from "../components/Guidance";
+import { Guidance, GuidanceHeader } from "../components/Guidance";
 import Header from "../components/Header";
 import { MetricsView } from "../components/MetricConfiguration/MetricsView";
 import CreateReport from "../components/Reports/CreateReport";
@@ -46,11 +46,15 @@ export const Router = () => {
   const renderRoutesBasedOnOnboardingStatus = (): JSX.Element => {
     if (!hasCompletedOnboarding) {
       return (
-        <Routes>
-          <Route path="/" element={<Navigate to="getting-started" />} />
-          <Route path="/getting-started" element={<Guidance />} />
-          <Route path="*" element={<Navigate to="getting-started" />} />
-        </Routes>
+        <>
+          <GuidanceHeader />
+          <Routes>
+            <Route path="/" element={<Navigate to="getting-started" />} />
+            <Route path="/getting-started" element={<Guidance />} />
+            <Route path="/settings/*" element={<Settings />} />
+            {/* <Route path="*" element={<Navigate to="getting-started" />} /> */}
+          </Routes>
+        </>
       );
     }
 
