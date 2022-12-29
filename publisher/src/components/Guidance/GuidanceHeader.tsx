@@ -15,14 +15,19 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { observer } from "mobx-react-lite";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { useStore } from "../../stores";
 import logo from "../assets/jc-logo-vector.png";
 import { HeaderBar, Logo, LogoContainer } from "../Header";
 import { MenuContainer, MenuItem } from "../Menu";
+import { UploadDataButton } from ".";
 
-export const GuidanceHeader = () => {
+export const GuidanceHeader = observer(() => {
+  const { guidanceStore } = useStore();
+  const { currentTopicID } = guidanceStore;
   const navigate = useNavigate();
   const params = useParams();
 
@@ -31,21 +36,32 @@ export const GuidanceHeader = () => {
 
   return (
     <HeaderBar bottomBorder>
-      <LogoContainer onClick={() => navigate(`/`)}>
+      <LogoContainer onClick={() => navigate(`getting-started`)}>
         <Logo src={logo} alt="" />
       </LogoContainer>
 
-      <MenuContainer>
-        <MenuItem active={isHome} onClick={() => navigate(`/`)}>
-          Get Started
-        </MenuItem>
-        <MenuItem
-          active={isSettings}
-          onClick={() => navigate(`/agency/147/settings`)}
-        >
-          Settings
-        </MenuItem>
-      </MenuContainer>
+      {currentTopicID !== "WELCOME" && (
+        <MenuContainer>
+          <MenuItem active={isHome} onClick={() => navigate(`getting-started`)}>
+            Get Started
+          </MenuItem>
+
+          <MenuItem active={isSettings} onClick={() => navigate(`settings`)}>
+            Settings
+          </MenuItem>
+          <MenuItem buttonPadding>
+            <UploadDataButton
+              type={currentTopicID === "ADD_DATA" ? "blue" : "border"}
+              activated={currentTopicID === "ADD_DATA"}
+              onClick={() =>
+                currentTopicID === "ADD_DATA" && navigate("upload")
+              }
+            >
+              Upload Data
+            </UploadDataButton>
+          </MenuItem>
+        </MenuContainer>
+      )}
     </HeaderBar>
   );
-};
+});

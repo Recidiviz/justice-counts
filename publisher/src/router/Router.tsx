@@ -52,7 +52,8 @@ export const Router = () => {
             <Route path="/" element={<Navigate to="getting-started" />} />
             <Route path="/getting-started" element={<Guidance />} />
             <Route path="/settings/*" element={<Settings />} />
-            {/* <Route path="*" element={<Navigate to="getting-started" />} /> */}
+            <Route path="/upload/*" element={<DataUpload />} />
+            <Route path="*" element={<Navigate to="getting-started" />} />
           </Routes>
         </>
       );
