@@ -21,6 +21,8 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
+import { Button } from "../DataUpload";
+
 export const GuidanceContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -107,4 +109,16 @@ export const ProgressStepBubble = styled.div<{ highlight?: boolean }>`
     background: ${palette.solid.blue};
     color: ${palette.solid.white};
   `}
+`;
+
+export const UploadDataButton = styled(Button)<{ activated?: boolean }>`
+  ${({ type }) => type === "border" && `color: ${palette.highlight.grey8};`}
+  ${({ activated }) =>
+    !activated &&
+    `
+        &:hover {
+            cursor: not-allowed;
+            background: none;
+        }
+    `}
 `;
