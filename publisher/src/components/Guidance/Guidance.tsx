@@ -23,6 +23,7 @@ import {
   ActionButton,
   ContentContainer,
   GuidanceContainer,
+  GuidanceHeader,
   ProgressStepBubble,
   ProgressStepsContainer,
   TopicDescription,
@@ -67,25 +68,28 @@ export const Guidance = observer(() => {
   };
 
   return (
-    <GuidanceContainer>
-      <ContentContainer
-        position={
-          currentTopicID === "WELCOME" || currentTopicID === "METRIC_CONFIG"
-            ? "TOPLEFT"
-            : undefined
-        }
-      >
-        {renderProgressSteps()}
-        <TopicTitle>{currentTopicDisplayName}</TopicTitle>
-        <TopicDescription>{currentTopicDescription}</TopicDescription>
-        <ActionButton
-          onClick={() =>
-            currentTopicID && updateTopicStatus(currentTopicID, true)
+    <>
+      <GuidanceHeader />
+      <GuidanceContainer>
+        <ContentContainer
+          position={
+            currentTopicID === "WELCOME" || currentTopicID === "METRIC_CONFIG"
+              ? "TOPLEFT"
+              : undefined
           }
         >
-          Next
-        </ActionButton>
-      </ContentContainer>
-    </GuidanceContainer>
+          {renderProgressSteps()}
+          <TopicTitle>{currentTopicDisplayName}</TopicTitle>
+          <TopicDescription>{currentTopicDescription}</TopicDescription>
+          <ActionButton
+            onClick={() =>
+              currentTopicID && updateTopicStatus(currentTopicID, true)
+            }
+          >
+            Next
+          </ActionButton>
+        </ContentContainer>
+      </GuidanceContainer>
+    </>
   );
 });

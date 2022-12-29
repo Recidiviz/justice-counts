@@ -16,13 +16,10 @@
 // =============================================================================
 
 import {
-  HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
-
-// import { rem } from "../../utils";
 
 export const GuidanceContainer = styled.div`
   width: 100%;

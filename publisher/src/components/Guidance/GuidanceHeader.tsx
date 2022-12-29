@@ -15,7 +15,25 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./Guidance";
-export * from "./Guidance.styles";
-export * from "./GuidanceHeader";
-export * from "./types";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+
+import logo from "../assets/jc-logo-vector.png";
+import { HeaderBar, Logo, LogoContainer } from "../Header";
+import { MenuContainer, MenuItem } from "../Menu";
+
+export const GuidanceHeader = () => {
+  const navigate = useNavigate();
+
+  return (
+    <HeaderBar>
+      <LogoContainer onClick={() => navigate(`/`)}>
+        <Logo src={logo} alt="" />
+      </LogoContainer>
+
+      <MenuContainer>
+        <MenuItem>Get Started</MenuItem>
+      </MenuContainer>
+    </HeaderBar>
+  );
+};
