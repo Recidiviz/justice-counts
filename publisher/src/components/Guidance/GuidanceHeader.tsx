@@ -26,7 +26,7 @@ export const GuidanceHeader = () => {
   const navigate = useNavigate();
 
   return (
-    <HeaderBar>
+    <HeaderBar bottomBorder>
       <LogoContainer onClick={() => navigate(`/`)}>
         <Logo src={logo} alt="" />
       </LogoContainer>
