@@ -38,6 +38,8 @@ export const Guidance = observer(() => {
     currentTopicID && onboardingTopicsMetadata[currentTopicID].topicDisplayName;
   const currentTopicDescription =
     currentTopicID && onboardingTopicsMetadata[currentTopicID].topicDescription;
+  const topLeftPositionedTopic =
+    currentTopicID === "WELCOME" || currentTopicID === "METRIC_CONFIG";
 
   const renderProgressSteps = () => {
     if (currentTopicID === "WELCOME") return;
@@ -50,7 +52,7 @@ export const Guidance = observer(() => {
 
     return (
       <ProgressStepsContainer
-        position={currentTopicID === "METRIC_CONFIG" ? "TOPLEFT" : undefined}
+        position={topLeftPositionedTopic ? "TOPLEFT" : undefined}
       >
         {Array.from({ length: totalNumberOfTopics || 0 }, (_, i) => (
           <ProgressStepBubble
@@ -70,11 +72,7 @@ export const Guidance = observer(() => {
     <>
       <GuidanceContainer>
         <ContentContainer
-          position={
-            currentTopicID === "WELCOME" || currentTopicID === "METRIC_CONFIG"
-              ? "TOPLEFT"
-              : undefined
-          }
+          position={topLeftPositionedTopic ? "TOPLEFT" : undefined}
         >
           {renderProgressSteps()}
           <TopicTitle>{currentTopicDisplayName}</TopicTitle>

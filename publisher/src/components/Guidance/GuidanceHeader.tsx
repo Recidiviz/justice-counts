@@ -33,6 +33,8 @@ export const GuidanceHeader = observer(() => {
 
   const isHome = params["*"] === "getting-started";
   const isSettings = params["*"]?.includes("settings");
+  const isAddDataOrPublishDataStep =
+    currentTopicID === "ADD_DATA" || currentTopicID === "PUBLISH_DATA";
 
   return (
     <HeaderBar bottomBorder>
@@ -51,8 +53,8 @@ export const GuidanceHeader = observer(() => {
           </MenuItem>
           <MenuItem buttonPadding>
             <UploadDataButton
-              type={currentTopicID === "ADD_DATA" ? "blue" : "border"}
-              activated={currentTopicID === "ADD_DATA"}
+              type={isAddDataOrPublishDataStep ? "blue" : "border"}
+              activated={isAddDataOrPublishDataStep}
               onClick={() =>
                 currentTopicID === "ADD_DATA" && navigate("upload")
               }
