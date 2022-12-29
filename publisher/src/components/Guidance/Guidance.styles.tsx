@@ -91,8 +91,13 @@ export const ProgressStepsContainer = styled.div<{ position?: string }>`
 `;
 
 export const ProgressStepBubble = styled.div<{ highlight?: boolean }>`
-  padding: 4px 8px;
-  color: ${palette.solid.darkgrey};
+  ${typography.sizeCSS.small}
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${palette.highlight.grey10};
   border: 1px solid ${palette.highlight.grey4};
   border-radius: 100%;
 
