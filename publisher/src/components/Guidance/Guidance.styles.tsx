@@ -61,6 +61,7 @@ export const TopicDescription = styled.div`
 `;
 
 export const ActionButton = styled.button`
+  ${typography.sizeCSS.medium};
   width: fit-content;
   border: none;
   border-radius: 3px;
@@ -72,6 +73,16 @@ export const ActionButton = styled.button`
   &:hover {
     background: ${palette.solid.darkblue};
     cursor: pointer;
+  }
+`;
+
+export const SkipButton = styled.div`
+  ${typography.sizeCSS.normal};
+  color: ${palette.solid.blue};
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.solid.darkblue};
   }
 `;
 

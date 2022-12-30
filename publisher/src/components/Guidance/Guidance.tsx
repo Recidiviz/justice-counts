@@ -17,6 +17,7 @@
 
 import { observer } from "mobx-react-lite";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import {
@@ -25,19 +26,28 @@ import {
   GuidanceContainer,
   ProgressStepBubble,
   ProgressStepsContainer,
+  SkipButton,
   TopicDescription,
   TopicTitle,
 } from ".";
 
 export const Guidance = observer(() => {
+  const navigate = useNavigate();
   const { guidanceStore } = useStore();
   const { onboardingTopicsMetadata, currentTopicID, updateTopicStatus } =
     guidanceStore;
 
   const currentTopicDisplayName =
-    currentTopicID && onboardingTopicsMetadata[currentTopicID].topicDisplayName;
+    currentTopicID && onboardingTopicsMetadata[currentTopicID].displayName;
   const currentTopicDescription =
-    currentTopicID && onboardingTopicsMetadata[currentTopicID].topicDescription;
+    currentTopicID && onboardingTopicsMetadata[currentTopicID].description;
+  const skippable =
+    currentTopicID && onboardingTopicsMetadata[currentTopicID].skippable;
+  const buttonDisplayName =
+    currentTopicID &&
+    onboardingTopicsMetadata[currentTopicID].buttonDisplayName;
+  const pathToTask =
+    currentTopicID && onboardingTopicsMetadata[currentTopicID].pathToTask;
   const topLeftPositionedTopic =
     currentTopicID === "WELCOME" || currentTopicID === "METRIC_CONFIG";
 
@@ -77,13 +87,28 @@ export const Guidance = observer(() => {
           {renderProgressSteps()}
           <TopicTitle>{currentTopicDisplayName}</TopicTitle>
           <TopicDescription>{currentTopicDescription}</TopicDescription>
+
+          {/* TODO(#) Replace the || "Next" and only display ActionButton if there is a buttonDisplayName property while mocking */}
           <ActionButton
-            onClick={() =>
-              currentTopicID && updateTopicStatus(currentTopicID, true)
-            }
+            onClick={() => {
+              if (currentTopicID) {
+                if (pathToTask) navigate(pathToTask);
+                updateTopicStatus(currentTopicID, true);
+              }
+            }}
           >
-            Next
+            {buttonDisplayName || "Next"}
           </ActionButton>
+
+          {skippable && (
+            <SkipButton
+              onClick={() =>
+                currentTopicID && updateTopicStatus(currentTopicID, true)
+              }
+            >
+              Skip
+            </SkipButton>
+          )}
         </ContentContainer>
       </GuidanceContainer>
     </>
