@@ -55,9 +55,7 @@ export const GuidanceHeader = observer(() => {
             <UploadDataButton
               type={isAddDataOrPublishDataStep ? "blue" : "border"}
               activated={isAddDataOrPublishDataStep}
-              onClick={() =>
-                currentTopicID === "ADD_DATA" && navigate("upload")
-              }
+              onClick={() => isAddDataOrPublishDataStep && navigate("upload")}
             >
               Upload Data
             </UploadDataButton>

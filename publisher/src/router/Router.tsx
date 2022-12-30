@@ -41,18 +41,27 @@ export const Router = () => {
   // e.g. reports page with initial available user agency
   // or maybe display some text since header is available and user can pick available agency
   const isAgencyIdInUserAgencies = userStore.getAgency(agencyId);
-  const { hasCompletedOnboarding } = guidanceStore;
+  const { hasCompletedOnboarding, currentTopicID } = guidanceStore;
 
   const renderRoutesBasedOnOnboardingStatus = (): JSX.Element => {
     if (!hasCompletedOnboarding) {
+      const isAddDataOrPublishDataStep =
+        currentTopicID === "ADD_DATA" || currentTopicID === "PUBLISH_DATA";
+
       return (
         <>
           <GuidanceHeader />
           <Routes>
             <Route path="/" element={<Navigate to="getting-started" />} />
             <Route path="/getting-started" element={<Guidance />} />
-            <Route path="/settings/*" element={<Settings />} />
-            <Route path="/upload/*" element={<DataUpload />} />
+            {currentTopicID !== "WELCOME" && (
+              <>
+                <Route path="/settings/*" element={<Settings />} />
+                {isAddDataOrPublishDataStep && (
+                  <Route path="/upload/*" element={<DataUpload />} />
+                )}
+              </>
+            )}
             <Route path="*" element={<Navigate to="getting-started" />} />
           </Routes>
         </>
