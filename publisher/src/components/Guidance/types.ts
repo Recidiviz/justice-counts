@@ -71,7 +71,7 @@ export const onboardingTopicsMetadata: OnboardingTopicsMetadata = {
 export const mockTopicsStatus: OnboardingTopicsStatus[] = [
   {
     topicID: "WELCOME",
-    topicCompleted: true,
+    topicCompleted: false,
   },
   {
     topicID: "AGENCY_SETUP",
