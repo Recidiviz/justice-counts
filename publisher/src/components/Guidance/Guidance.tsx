@@ -38,7 +38,6 @@ export const Guidance = observer(() => {
   const { guidanceStore, reportStore } = useStore();
   const { onboardingTopicsMetadata, currentTopicID, updateTopicStatus } =
     guidanceStore;
-  const { reportOverviews, getReportOverviews, resetState } = reportStore;
 
   const currentTopicDisplayName =
     currentTopicID && onboardingTopicsMetadata[currentTopicID].displayName;
@@ -56,12 +55,12 @@ export const Guidance = observer(() => {
 
   useEffect(() => {
     const initialize = async () => {
-      resetState();
+      reportStore.resetState();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await getReportOverviews(agencyId!);
+      await reportStore.getReportOverviews(agencyId!);
       const hasMinimumOneReport =
         currentTopicID === "ADD_DATA" &&
-        Object.keys(reportOverviews).length > 0;
+        Object.keys(reportStore.reportOverviews).length > 0;
 
       if (hasMinimumOneReport) {
         /* TODO(#) Enable this to check during the ADD_DATA whether or not a user has atleast one draft (if so, then the topic is complete) */
