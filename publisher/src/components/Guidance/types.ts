@@ -68,6 +68,16 @@ export const onboardingTopicsMetadata: OnboardingTopicsMetadata = {
   },
 };
 
+export const metricConfigurationProgressSteps = [
+  "Confirm metric availability",
+  "Confirm metric definition",
+  "Confirm breakdowns",
+  "Confirm breakdown definitions",
+] as const;
+
+export type MetricConfigurationProgressSteps =
+  typeof metricConfigurationProgressSteps[number];
+
 export const mockTopicsStatus: OnboardingTopicsStatus[] = [
   {
     topicID: "WELCOME",

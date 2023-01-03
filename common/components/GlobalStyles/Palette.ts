@@ -27,6 +27,7 @@ export const palette = {
     darkgrey: `rgba(23, 28, 43, 1)`,
     white: `rgba(255,255,255, 1)`,
     offwhite: `rgba(239, 244, 245, 1)`,
+    black: `rgba(14, 17, 26, 1)`,
   },
   highlight: {
     red: `rgba(221, 18, 18, 0.05)`,

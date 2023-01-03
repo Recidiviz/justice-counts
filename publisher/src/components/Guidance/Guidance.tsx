@@ -36,18 +36,23 @@ import {
   ActionButton,
   ActionButtonWrapper,
   CheckIcon,
+  CheckIconWrapper,
   ConfiguredMetricIndicatorTitle,
   ContentContainer,
   GuidanceContainer,
   Metric,
+  metricConfigurationProgressSteps,
   MetricContentContainer,
   MetricListContainer,
   MetricName,
   MetricStatus,
   Progress,
   ProgressBarContainer,
+  ProgressItemName,
+  ProgressItemWrapper,
   ProgressStepBubble,
   ProgressStepsContainer,
+  ProgressTooltipContainer,
   ReportsOverviewContainer,
   ReportsOverviewItemWrapper,
   ReportTitle,
@@ -113,7 +118,17 @@ export const Guidance = observer(() => {
   };
 
   const calculateOverallMetricProgress = (systemMetricKey: string) => {
-    let completionPercentage = 0;
+    interface MyType extends Record<string, boolean | number> {
+      completionPercentage: number;
+    }
+
+    const metricConfigurationProgressStepsTracker: MyType = {
+      ...Object.fromEntries(
+        metricConfigurationProgressSteps.map((step) => [step, false])
+      ),
+      completionPercentage: 0,
+    };
+
     const {
       metrics,
       dimensions,
@@ -122,13 +137,17 @@ export const Guidance = observer(() => {
     } = metricConfigStore;
 
     /** Confirm the metric’s availability/frequency */
-    if (metrics[systemMetricKey].enabled !== null) {
-      completionPercentage += 25;
+    if (metrics[systemMetricKey].enabled === false) {
+      metricConfigurationProgressStepsTracker["Confirm metric availability"] =
+        true;
+      metricConfigurationProgressStepsTracker.completionPercentage = 100;
+      return metricConfigurationProgressStepsTracker;
     }
 
-    if (metrics[systemMetricKey].enabled === false) {
-      completionPercentage = 100;
-      return completionPercentage;
+    if (metrics[systemMetricKey].enabled !== null) {
+      metricConfigurationProgressStepsTracker["Confirm metric availability"] =
+        true;
+      metricConfigurationProgressStepsTracker.completionPercentage += 25;
     }
 
     /** Confirm metric definitions */
@@ -142,48 +161,65 @@ export const Guidance = observer(() => {
       metricDefinitionsCompleted ||
       !metricDefinitionSettings[systemMetricKey]
     ) {
-      completionPercentage += 25;
+      metricConfigurationProgressStepsTracker["Confirm metric definition"] =
+        true;
+      metricConfigurationProgressStepsTracker.completionPercentage += 25;
     }
 
     /** Confirm breakdown availability */
     const disaggregationValues =
       dimensions[systemMetricKey] && Object.values(dimensions[systemMetricKey]);
-    const dimensionsCompleted =
-      disaggregationValues?.filter(
-        (disaggregation) =>
-          Object.values(disaggregation).filter(
-            (dimension) => dimension.enabled === null
-          ).length === 0
-      ).length === disaggregationValues?.length;
+    const nullDimensions = [];
+    const disabledDimensionKeys = [];
 
-    if (dimensionsCompleted) {
-      completionPercentage += 25;
+    disaggregationValues?.forEach((disaggregation) => {
+      Object.values(disaggregation).forEach((dimension) => {
+        if (dimension.enabled === null) nullDimensions.push(dimension);
+        if (dimension.enabled === false)
+          disabledDimensionKeys.push(dimension.key);
+      });
+    });
+
+    if (nullDimensions.length === 0) {
+      metricConfigurationProgressStepsTracker["Confirm breakdowns"] = true;
+      metricConfigurationProgressStepsTracker.completionPercentage += 25;
     }
 
     /** Confirm breakdown definitions */
-    const dimensionDefinitionSettingsValues =
+    const dimensionDefinitionSettingsDisaggregationKeys =
       dimensionDefinitionSettings[systemMetricKey] &&
-      Object.values(dimensionDefinitionSettings[systemMetricKey]);
-    const dimensionDefinitionsCompleted =
-      dimensionDefinitionSettingsValues?.filter(
-        (dimension) =>
-          Object.values(dimension).filter(
-            (definition) => definition.enabled === null
-          ).length === 0
-      ).length === dimensionDefinitionSettingsValues?.length;
+      Object.keys(dimensionDefinitionSettings[systemMetricKey]);
+    const dimensionDefinitionSettingsValues = [];
 
-    if (
-      dimensionDefinitionsCompleted ||
-      !dimensionDefinitionSettings[systemMetricKey]
-    ) {
-      completionPercentage += 25;
+    dimensionDefinitionSettingsDisaggregationKeys &&
+      dimensionDefinitionSettingsDisaggregationKeys.forEach(
+        (disaggregationKey) => {
+          Object.entries(
+            dimensionDefinitionSettings[systemMetricKey][disaggregationKey]
+          ).forEach(([dimensionKey, dimension]) => {
+            if (disabledDimensionKeys.includes(dimensionKey)) return;
+            dimensionDefinitionSettingsValues.push(Object.values(dimension));
+          });
+        }
+      );
+
+    const dimensionDefinitionSettingsValuesFlattened =
+      dimensionDefinitionSettingsValues.flat();
+    const nullDimensionDefinitionSettings =
+      dimensionDefinitionSettingsValuesFlattened.filter(
+        (setting) => setting.included === null
+      );
+
+    if (nullDimensionDefinitionSettings.length === 0) {
+      metricConfigurationProgressStepsTracker["Confirm breakdown definitions"] =
+        true;
+      metricConfigurationProgressStepsTracker.completionPercentage += 25;
     }
-
-    return completionPercentage;
+    return metricConfigurationProgressStepsTracker;
   };
 
   const numberOfMetricsCompleted = metricsEntries.filter(
-    ([key]) => calculateOverallMetricProgress(key) === 100
+    ([key]) => calculateOverallMetricProgress(key).completionPercentage === 100
   ).length;
 
   useEffect(() => {
@@ -322,7 +358,7 @@ export const Guidance = observer(() => {
             </ConfiguredMetricIndicatorTitle>
             <MetricListContainer>
               {metricsEntries.map(([key, metric]) => {
-                const metricCompletionPercentage =
+                const metricCompletionProgress =
                   calculateOverallMetricProgress(key);
                 const { system, metricKey } =
                   MetricConfigStore.splitSystemMetricKey(key);
@@ -338,23 +374,38 @@ export const Guidance = observer(() => {
                     >
                       <MetricName>{metric.label}</MetricName>
                       <MetricStatus greyText={metric.enabled === false}>
-                        {metricCompletionPercentage === 100 &&
+                        {metricCompletionProgress.completionPercentage ===
+                          100 &&
                           metric.enabled && (
                             <CheckIcon src={checkmarkIcon} alt="" />
                           )}
                         {metric.enabled === false && "Unavailable"}
-                        {metricCompletionPercentage < 100 &&
+                        {metricCompletionProgress.completionPercentage < 100 &&
                           (metric.enabled || metric.enabled === null) &&
                           "Action Required"}
                       </MetricStatus>
                       <RightArrowIcon />
+
+                      {/* Progress Tooltip */}
+                      <ProgressTooltipContainer>
+                        {metricConfigurationProgressSteps.map((step) => (
+                          <ProgressItemWrapper>
+                            <CheckIconWrapper>
+                              {metricCompletionProgress[step] && (
+                                <CheckIcon src={checkmarkIcon} alt="" />
+                              )}
+                            </CheckIconWrapper>
+                            <ProgressItemName>{step}</ProgressItemName>
+                          </ProgressItemWrapper>
+                        ))}
+                      </ProgressTooltipContainer>
                     </Metric>
                     <ProgressBarContainer>
                       <Progress
                         progress={
                           metric.enabled === false
                             ? 0
-                            : metricCompletionPercentage
+                            : metricCompletionProgress.completionPercentage
                         }
                       />
                     </ProgressBarContainer>

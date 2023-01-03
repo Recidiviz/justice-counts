@@ -278,6 +278,47 @@ export const Progress = styled.div<{ progress: number }>`
   background: ${palette.solid.blue};
 `;
 
+export const CheckIconWrapper = styled.div`
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+`;
+
 export const CheckIcon = styled.img`
   width: 20px;
+`;
+
+export const ProgressTooltipContainer = styled.div`
+  background: ${palette.solid.black};
+  border-radius: 4px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: absolute;
+  right: 0;
+  top: 45px;
+  z-index: 2;
+  opacity: 0;
+  transition: 0.2s ease;
+  pointer-events: none;
+
+  ${Metric}:hover & {
+    opacity: 1;
+  }
+`;
+
+export const ProgressItemWrapper = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: center;
+`;
+
+export const ProgressItemName = styled.div`
+  ${typography.sizeCSS.normal}
+  color: ${palette.solid.white};
 `;
