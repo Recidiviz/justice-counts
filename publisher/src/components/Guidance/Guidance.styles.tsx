@@ -31,8 +31,8 @@ export const GuidanceContainer = styled.div`
   align-items: center;
 `;
 
-export const ContentContainer = styled.div<{ position?: string }>`
-  flex: 1 1;
+export const ContentContainer = styled.div<{ currentTopicID?: string }>`
+  width: 100%;
   max-width: 497px;
   display: flex;
   flex-direction: column;
@@ -40,11 +40,18 @@ export const ContentContainer = styled.div<{ position?: string }>`
   align-items: center;
   gap: 56px;
 
-  ${({ position }) => {
-    if (position === "TOPLEFT") {
+  ${({ currentTopicID }) => {
+    if (currentTopicID === "WELCOME") {
       return `
-            transform: translate(-50%, -30%);
-        `;
+        justify-content: flex-start;
+        margin: 0 500px 150px 0;
+      `;
+    }
+    if (currentTopicID === "METRIC_CONFIG") {
+      return `
+        justify-content: flex-start;
+        margin: 0 150px 150px 0;
+      `;
     }
     return `
         text-align: center;
@@ -143,4 +150,134 @@ export const UploadDataButton = styled(Button)<{ activated?: boolean }>`
             background: none;
         }
     `}
+`;
+
+export const ReportsOverviewContainer = styled.div`
+  width: 100%;
+  max-height: 30vh;
+  height: 30vh;
+  padding: 10px 0;
+  overflow: scroll;
+`;
+
+export const ReportsOverviewItemWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  border-bottom: 1px solid ${palette.solid.darkgrey};
+`;
+
+export const ReportTitle = styled.div`
+  ${typography.sizeCSS.large}
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+export const ReviewPublishLink = styled.div`
+  ${typography.sizeCSS.normal}
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: ${palette.solid.blue};
+
+  svg {
+    width: 14px;
+    path {
+      fill: ${palette.solid.blue};
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.solid.darkblue};
+  }
+`;
+
+export const MetricContentContainer = styled(ContentContainer)`
+  width: 100%;
+  max-width: 550px;
+  margin-bottom: 100px;
+  gap: unset;
+`;
+
+export const Metric = styled.div`
+  width: 100%;
+  padding-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  svg {
+    position: absolute;
+    opacity: 0;
+    right: -20px;
+    transition: opacity 0.2s ease, right 0.3s ease;
+  }
+
+  &:hover svg {
+    display: block;
+    opacity: 1;
+    right: -20px;
+    right: 13px;
+    opacity: 1;
+  }
+`;
+
+export const ConfiguredMetricIndicatorTitle = styled.div`
+  ${typography.sizeCSS.title}
+  width: 100%;
+  text-align: left;
+  margin-bottom: 24px;
+
+  span {
+    color: ${palette.solid.blue};
+  }
+`;
+
+export const MetricListContainer = styled.div`
+  width: 100%;
+`;
+
+export const MetricName = styled.div`
+  ${typography.sizeCSS.large}
+`;
+
+export const MetricStatus = styled.div<{ greyText?: boolean }>`
+  ${typography.sizeCSS.normal}
+  display: flex;
+  align-items: center;
+  color: ${({ greyText }) =>
+    greyText ? palette.highlight.grey10 : palette.solid.blue};
+  opacity: 1;
+  transition: opacity 0.2s ease;
+
+  ${Metric}:hover & {
+    opacity: 0;
+  }
+`;
+
+export const ProgressBarContainer = styled.div`
+  width: 100%;
+  height: 2px;
+  background: ${palette.highlight.grey4};
+  margin-bottom: 16px;
+`;
+
+export const Progress = styled.div<{ progress: number }>`
+  width: ${({ progress }) => progress}%;
+  height: 100%;
+  background: ${palette.solid.blue};
+`;
+
+export const CheckIcon = styled.img`
+  width: 20px;
 `;
