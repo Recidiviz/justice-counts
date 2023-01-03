@@ -60,7 +60,26 @@ export const Router = () => {
                 {isAddDataOrPublishDataStep && (
                   <>
                     <Route path="/upload/*" element={<DataUpload />} />
-                    <Route path="/records/*" element={<Reports />} />
+                    <Route
+                      path="/upload/review-metrics"
+                      element={<ReviewMetrics />}
+                    />
+                    <Route
+                      path={`/${REPORTS_LOWERCASE}/*`}
+                      element={<Reports />}
+                    />
+                    <Route
+                      path={`/${REPORTS_LOWERCASE}/create`}
+                      element={<CreateReport />}
+                    />
+                    <Route
+                      path={`/${REPORTS_LOWERCASE}/:id`}
+                      element={<ReportDataEntry />}
+                    />
+                    <Route
+                      path={`/${REPORTS_LOWERCASE}/:id/review`}
+                      element={<ReviewReportDataEntry />}
+                    />
                   </>
                 )}
               </>
