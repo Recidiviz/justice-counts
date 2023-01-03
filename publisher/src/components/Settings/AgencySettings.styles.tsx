@@ -21,6 +21,7 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled, { css, keyframes } from "styled-components/macro";
 
+// Common
 import searchIcon from "../assets/search-icon.png";
 
 const boxShadowFrames = keyframes`
@@ -105,15 +106,6 @@ export const AgencySettingsBlockSubDescription = styled(
   margin-top: ${({ hasTopMargin }) => (hasTopMargin ? "24px" : "0")};
 `;
 
-export const BasicInfoBlockDescription = styled(AgencySettingsBlockDescription)`
-  margin-bottom: 0;
-
-  a {
-    color: ${palette.solid.blue};
-    text-decoration: none;
-  }
-`;
-
 export const AgencyInfoBlockDescription = styled.div`
   margin-bottom: 16px;
 `;
@@ -134,122 +126,6 @@ export const AgencySettingsInfoRow = styled.div`
     text-align: end;
     color: #5d606b;
   }
-`;
-
-export const BasicInfoRow = styled.div`
-  ${typography.sizeCSS.large};
-  line-height: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 24px;
-
-  span {
-    ${typography.sizeCSS.small};
-  }
-`;
-
-export const InviteMemberContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  height: 48px;
-  margin-bottom: 31px;
-`;
-
-export const InviteMemberInput = styled.input`
-  ${typography.sizeCSS.normal};
-  padding: 16px 13px;
-  background-color: ${palette.highlight.grey1};
-  border: none;
-  border-bottom: 1px solid ${palette.highlight.grey7};
-  min-width: 266px;
-
-  &:focus {
-    outline: none;
-  }
-`;
-
-export const JurisdictionsInput = styled(InviteMemberInput)<{
-  isEmpty: boolean;
-}>`
-  width: 100%;
-  background-image: ${({ isEmpty }) =>
-    isEmpty ? `url(${searchIcon})` : "none"};
-  background-position: left 16px top 50%;
-  background-repeat: no-repeat;
-  margin-bottom: 24px;
-
-  &::placeholder {
-    padding-left: 24px;
-  }
-`;
-
-export const InviteMemberButton = styled.div`
-  ${typography.sizeCSS.normal};
-  background-color: ${palette.solid.blue};
-  color: ${palette.solid.white};
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  width: 100%;
-  border-radius: 2px;
-
-  &:hover {
-    opacity: 0.8;
-  }
-`;
-
-export const TeamMemberEditInfoRow = styled.div`
-  height: 86px;
-  padding: 0 8px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #dcdddf;
-`;
-
-export const TeamMemberInfoContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`;
-
-export const TeamMemberName = styled.div<{ isInvited: boolean }>`
-  ${typography.sizeCSS.medium};
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-  color: ${({ isInvited }) =>
-    isInvited ? palette.highlight.grey9 : palette.solid.darkgrey};
-`;
-
-export const TeamMemberBadge = styled.div<{ isInvited: boolean }>`
-  ${typography.sizeCSS.small};
-  background-color: ${({ isInvited }) =>
-    isInvited ? palette.highlight.grey4 : palette.solid.blue};
-  color: ${({ isInvited }) =>
-    isInvited ? palette.solid.darkgrey : palette.solid.white};
-  width: 54px;
-  height: 24px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const TeamMemberEmail = styled.div`
-  ${typography.sizeCSS.normal};
-  color: #5d606b;
-`;
-
-export const SupervisionSystemRow = styled(AgencySettingsInfoRow)`
-  justify-content: start;
-  gap: 12px;
 `;
 
 export const AgencyInfoTextAreaLabel = styled.label`
@@ -341,6 +217,113 @@ export const FilledButton = styled.div`
   }
 `;
 
+// Basic Info
+export const BasicInfoBlockDescription = styled(AgencySettingsBlockDescription)`
+  margin-bottom: 0;
+
+  a {
+    color: ${palette.solid.blue};
+    text-decoration: none;
+  }
+`;
+
+export const BasicInfoRow = styled.div`
+  ${typography.sizeCSS.large};
+  line-height: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+
+  span {
+    ${typography.sizeCSS.small};
+  }
+`;
+
+// Team
+export const InviteMemberContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  height: 48px;
+  margin-bottom: 31px;
+`;
+
+export const InviteMemberInput = styled.input`
+  ${typography.sizeCSS.normal};
+  padding: 16px 13px;
+  background-color: ${palette.highlight.grey1};
+  border: none;
+  border-bottom: 1px solid ${palette.highlight.grey7};
+  min-width: 266px;
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+export const InviteMemberButton = styled.div`
+  ${typography.sizeCSS.normal};
+  background-color: ${palette.solid.blue};
+  color: ${palette.solid.white};
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 2px;
+
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
+export const TeamMemberEditInfoRow = styled.div`
+  height: 86px;
+  padding: 0 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #dcdddf;
+`;
+
+export const TeamMemberInfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+export const TeamMemberName = styled.div<{ isInvited: boolean }>`
+  ${typography.sizeCSS.medium};
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  color: ${({ isInvited }) =>
+    isInvited ? palette.highlight.grey9 : palette.solid.darkgrey};
+`;
+
+export const TeamMemberBadge = styled.div<{ isInvited: boolean }>`
+  ${typography.sizeCSS.small};
+  background-color: ${({ isInvited }) =>
+    isInvited ? palette.highlight.grey4 : palette.solid.blue};
+  color: ${({ isInvited }) =>
+    isInvited ? palette.solid.darkgrey : palette.solid.white};
+  width: 54px;
+  height: 24px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const TeamMemberEmail = styled.div`
+  ${typography.sizeCSS.normal};
+  color: #5d606b;
+`;
+
 export const RemoveTeamMemberModal = styled.div`
   position: absolute;
   width: calc(100% - 48px);
@@ -392,6 +375,28 @@ export const ConfirmationFilledButton = styled(FilledButton)<{
 
   &:hover {
     opacity: 0.8;
+  }
+`;
+
+// Supervisions
+export const SupervisionSystemRow = styled(AgencySettingsInfoRow)`
+  justify-content: start;
+  gap: 12px;
+`;
+
+// Jurisdictions
+export const JurisdictionsInput = styled(InviteMemberInput)<{
+  isEmpty: boolean;
+}>`
+  width: 100%;
+  background-image: ${({ isEmpty }) =>
+    isEmpty ? `url(${searchIcon})` : "none"};
+  background-position: left 16px top 50%;
+  background-repeat: no-repeat;
+  margin-bottom: 24px;
+
+  &::placeholder {
+    padding-left: 24px;
   }
 `;
 
