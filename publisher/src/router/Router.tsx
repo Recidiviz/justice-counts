@@ -58,7 +58,10 @@ export const Router = () => {
               <>
                 <Route path="/settings/*" element={<Settings />} />
                 {isAddDataOrPublishDataStep && (
-                  <Route path="/upload/*" element={<DataUpload />} />
+                  <>
+                    <Route path="/upload/*" element={<DataUpload />} />
+                    <Route path="/records/*" element={<Reports />} />
+                  </>
                 )}
               </>
             )}

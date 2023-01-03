@@ -33,10 +33,12 @@ export const GuidanceHeader = observer(() => {
   const guidancePaths = {
     home: "getting-started",
     settings: "settings",
+    records: "records",
   };
 
   const isHome = params["*"] === guidancePaths.home;
   const isSettings = params["*"]?.includes(guidancePaths.settings);
+  const isRecords = params["*"]?.includes(guidancePaths.records);
   const isAddDataOrPublishDataStep =
     currentTopicID === "ADD_DATA" || currentTopicID === "PUBLISH_DATA";
 
@@ -55,12 +57,22 @@ export const GuidanceHeader = observer(() => {
             Get Started
           </MenuItem>
 
+          {isAddDataOrPublishDataStep && (
+            <MenuItem
+              active={isRecords}
+              onClick={() => navigate(guidancePaths.records)}
+            >
+              Records
+            </MenuItem>
+          )}
+
           <MenuItem
             active={isSettings}
             onClick={() => navigate(guidancePaths.settings)}
           >
             Settings
           </MenuItem>
+
           <MenuItem buttonPadding>
             <UploadDataButton
               type={isAddDataOrPublishDataStep ? "blue" : "border"}

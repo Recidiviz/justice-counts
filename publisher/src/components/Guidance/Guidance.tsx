@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { useStore } from "../../stores";
 import {
   ActionButton,
+  ActionButtonWrapper,
   ContentContainer,
   GuidanceContainer,
   ProgressStepBubble,
@@ -88,17 +89,36 @@ export const Guidance = observer(() => {
           <TopicTitle>{currentTopicDisplayName}</TopicTitle>
           <TopicDescription>{currentTopicDescription}</TopicDescription>
 
-          {/* TODO(#) Replace the || "Next" and only display ActionButton if there is a buttonDisplayName property while mocking */}
-          <ActionButton
-            onClick={() => {
-              if (currentTopicID) {
-                if (pathToTask) navigate(pathToTask);
-                updateTopicStatus(currentTopicID, true);
-              }
-            }}
-          >
-            {buttonDisplayName || "Next"}
-          </ActionButton>
+          {currentTopicID === "ADD_DATA" ? (
+            <ActionButtonWrapper>
+              <ActionButton
+                kind="primary"
+                onClick={() => navigate("../upload")}
+              >
+                Upload spreadsheet
+              </ActionButton>
+              <ActionButton
+                kind="bordered"
+                onClick={() => navigate("../records")}
+              >
+                Fill out report
+              </ActionButton>
+            </ActionButtonWrapper>
+          ) : (
+            <>
+              {/* TODO(#) Replace the || "Next" and only display ActionButton if there is a buttonDisplayName property while mocking */}
+              <ActionButton
+                onClick={() => {
+                  if (currentTopicID) {
+                    if (pathToTask) navigate(pathToTask);
+                    updateTopicStatus(currentTopicID, true);
+                  }
+                }}
+              >
+                {buttonDisplayName || "Next"}
+              </ActionButton>
+            </>
+          )}
 
           {skippable && (
             <SkipButton
