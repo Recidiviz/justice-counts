@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { observer } from "mobx-react-lite";
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { settingsMenuPaths } from "../../pages/Settings";
@@ -30,33 +30,16 @@ import {
   useSettingsSearchParams,
 } from ".";
 
-const agencySettingsMenuItems = [
-  { label: "Basic Information", id: "basic-info" },
-  { label: "Team Management", id: "team-management" },
-  { label: "Supervision Setup", id: "supervision-setup" },
-  { label: "Jurisdiction", id: "jurisdiction" },
-];
-
 export const SettingsMenu: React.FC = observer(() => {
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { metricConfigStore, agencyStore } = useStore();
+  const { metricConfigStore } = useStore();
   const { getMetricsBySystem } = metricConfigStore;
-
-  const [activeAgencyMenuSubItem, setActiveAgencyMenuSubItem] = useState(
-    agencySettingsMenuItems[0].label
-  );
 
   const { system: systemSearchParam, metric: metricSearchParam } =
     settingsSearchParams;
-
-  const menuItems = agencyStore.isAgencySupervision
-    ? agencySettingsMenuItems
-    : agencySettingsMenuItems.filter(
-        (item) => item.label !== "Supervision Setup"
-      );
 
   const handleMetricListItemClick = (metricKey: string) => {
     setSettingsSearchParams({
@@ -109,27 +92,27 @@ export const SettingsMenu: React.FC = observer(() => {
                 )}
               </SubMenuListContainer>
             )}
-          {removeAgencyFromPath(location.pathname) ===
-            "settings/agency-settings" &&
-            path === "agency-settings" &&
-            !agencyStore.loadingSettings && (
-              <SubMenuListContainer>
-                {menuItems.map(({ label, id }) => (
-                  <SubMenuListItem
-                    key={id}
-                    activeSection={label === activeAgencyMenuSubItem}
-                    onClick={() => {
-                      setActiveAgencyMenuSubItem(label);
-                      document
-                        .getElementById(id)
-                        ?.scrollIntoView({ behavior: "smooth" });
-                    }}
-                  >
-                    {label}
-                  </SubMenuListItem>
-                ))}
-              </SubMenuListContainer>
-            )}
+          {/* {removeAgencyFromPath(location.pathname) === */}
+          {/*  "settings/agency-settings" && */}
+          {/*  path === "agency-settings" && */}
+          {/*  !agencyStore.loadingSettings && ( */}
+          {/*    <SubMenuListContainer> */}
+          {/*      {menuItems.map(({ label, id }) => ( */}
+          {/*        <SubMenuListItem */}
+          {/*          key={id} */}
+          {/*          activeSection={label === activeAgencyMenuSubItem} */}
+          {/*          onClick={() => { */}
+          {/*            setActiveAgencyMenuSubItem(label); */}
+          {/*            document */}
+          {/*              .getElementById(id) */}
+          {/*              ?.scrollIntoView({ behavior: "smooth" }); */}
+          {/*          }} */}
+          {/*        > */}
+          {/*          {label} */}
+          {/*        </SubMenuListItem> */}
+          {/*      ))} */}
+          {/*    </SubMenuListContainer> */}
+          {/*  )} */}
         </Fragment>
       ))}
     </SettingsMenuContainer>
