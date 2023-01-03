@@ -285,7 +285,7 @@ export const Guidance = observer(() => {
                 </ActionButton>
               </ActionButtonWrapper>
               {/* TODO(#268) To be removed entirely from this section - for testing purposes only */}
-              <ActionButton
+              {/* <ActionButton
                 onClick={() => {
                   if (currentTopicID) {
                     updateTopicStatus(currentTopicID, true);
@@ -293,21 +293,23 @@ export const Guidance = observer(() => {
                 }}
               >
                 Mock Topic Completion
-              </ActionButton>
+              </ActionButton> */}
             </>
           ) : (
             <>
               {/* TODO(#268) Replace "Mock Topic Completion" buttons and only display ActionButton if there is a buttonDisplayName property while mocking */}
-              <ActionButton
-                onClick={() => {
-                  if (currentTopicID) {
-                    if (pathToTask) navigate(pathToTask);
-                    updateTopicStatus(currentTopicID, true);
-                  }
-                }}
-              >
-                {buttonDisplayName || "Mock Topic Completion"}
-              </ActionButton>
+              {buttonDisplayName && (
+                <ActionButton
+                  onClick={() => {
+                    if (currentTopicID) {
+                      if (pathToTask) navigate(pathToTask);
+                      updateTopicStatus(currentTopicID, true);
+                    }
+                  }}
+                >
+                  {buttonDisplayName}
+                </ActionButton>
+              )}
             </>
           )}
 
