@@ -16,8 +16,8 @@
 // =============================================================================
 
 import { observer } from "mobx-react-lite";
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import {
@@ -34,9 +34,11 @@ import {
 
 export const Guidance = observer(() => {
   const navigate = useNavigate();
-  const { guidanceStore } = useStore();
+  const { agencyId } = useParams();
+  const { guidanceStore, reportStore } = useStore();
   const { onboardingTopicsMetadata, currentTopicID, updateTopicStatus } =
     guidanceStore;
+  const { reportOverviews, getReportOverviews, resetState } = reportStore;
 
   const currentTopicDisplayName =
     currentTopicID && onboardingTopicsMetadata[currentTopicID].displayName;
@@ -51,6 +53,22 @@ export const Guidance = observer(() => {
     currentTopicID && onboardingTopicsMetadata[currentTopicID].pathToTask;
   const topLeftPositionedTopic =
     currentTopicID === "WELCOME" || currentTopicID === "METRIC_CONFIG";
+
+  useEffect(() => {
+    const initialize = async () => {
+      resetState();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await getReportOverviews(agencyId!);
+      const hasMinimumOneReport =
+        currentTopicID === "ADD_DATA" &&
+        Object.keys(reportOverviews).length > 0;
+
+      if (hasMinimumOneReport) updateTopicStatus(currentTopicID, true);
+    };
+
+    if (currentTopicID === "ADD_DATA") initialize();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [agencyId, currentTopicID]);
 
   const renderProgressSteps = () => {
     if (currentTopicID === "WELCOME") return;
