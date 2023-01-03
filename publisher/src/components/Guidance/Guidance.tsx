@@ -15,11 +15,20 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  Badge,
+  BadgeColorMapping,
+} from "@justice-counts/common/components/Badge";
+import {
+  printReportTitle,
+  removeSnakeCase,
+} from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import {
   ActionButton,
@@ -28,6 +37,10 @@ import {
   GuidanceContainer,
   ProgressStepBubble,
   ProgressStepsContainer,
+  ReportsOverviewContainer,
+  ReportsOverviewItemWrapper,
+  ReportTitle,
+  ReviewPublishLink,
   SkipButton,
   TopicDescription,
   TopicTitle,
@@ -59,17 +72,27 @@ export const Guidance = observer(() => {
       reportStore.resetState();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await reportStore.getReportOverviews(agencyId!);
+      const hasMinimumOneReport =
+        currentTopicID === "ADD_DATA" &&
+        Object.keys(reportStore.reportOverviews).length > 0;
+      const hasMinimumOnePublishedReport =
+        currentTopicID === "PUBLISH_DATA" &&
+        Object.values(reportStore.reportOverviews).find(
+          (report) => report.status === "PUBLISHED"
+        );
+
+      if (hasMinimumOneReport) {
+        /* TODO(#267) Enable this to check during the ADD_DATA step whether or not a user has atleast one draft (if so, then the topic is complete) */
+        // updateTopicStatus("ADD_DATA", true);
+      }
+      if (hasMinimumOnePublishedReport) {
+        /* TODO(#267) Enable this to check during the PUBLISH_DATA step whether or not a user has atleast one published record (if so, then the topic is complete) */
+        // updateTopicStatus("PUBLISH_DATA", true);
+      }
     };
 
-    if (currentTopicID === "ADD_DATA") {
-      const hasMinimumOneReport =
-        Object.keys(reportStore.reportOverviews).length > 0;
-      if (hasMinimumOneReport) {
-        /* TODO(#267) Enable this to check during the ADD_DATA step whether or not a user has atleast one draft (if so, then mark the topic as complete) */
-        // updateTopicStatus(currentTopicID, true);
-      }
+    if (currentTopicID === "ADD_DATA" || currentTopicID === "PUBLISH_DATA")
       initialize();
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyId, currentTopicID]);
 
@@ -100,6 +123,12 @@ export const Guidance = observer(() => {
     );
   };
 
+  const reportStatusBadgeColors: BadgeColorMapping = {
+    DRAFT: "ORANGE",
+    PUBLISHED: "GREEN",
+    NOT_STARTED: "RED",
+  };
+
   return (
     <>
       <GuidanceContainer>
@@ -110,24 +139,71 @@ export const Guidance = observer(() => {
           <TopicTitle>{currentTopicDisplayName}</TopicTitle>
           <TopicDescription>{currentTopicDescription}</TopicDescription>
 
+          {/* Publish Data - Reports Overview */}
+          {currentTopicID === "PUBLISH_DATA" && (
+            <ReportsOverviewContainer>
+              {Object.values(reportStore.reportOverviews).map((report) => (
+                <ReportsOverviewItemWrapper key={report.id}>
+                  <ReportTitle
+                    onClick={() =>
+                      navigate(`../${REPORTS_LOWERCASE}/${report.id}`)
+                    }
+                  >
+                    <span>
+                      {printReportTitle(
+                        report.month,
+                        report.year,
+                        report.frequency
+                      )}
+                    </span>
+                    <Badge color={reportStatusBadgeColors[report.status]}>
+                      {removeSnakeCase(report.status).toLowerCase()}
+                    </Badge>
+                  </ReportTitle>
+                  <ReviewPublishLink
+                    onClick={() =>
+                      navigate(`../${REPORTS_LOWERCASE}/${report.id}/review`)
+                    }
+                  >
+                    Review and publish
+                    <RightArrowIcon />
+                  </ReviewPublishLink>
+                </ReportsOverviewItemWrapper>
+              ))}
+            </ReportsOverviewContainer>
+          )}
+
+          {/* Action Buttons */}
           {currentTopicID === "ADD_DATA" ? (
-            <ActionButtonWrapper>
+            <>
+              <ActionButtonWrapper>
+                <ActionButton
+                  kind="primary"
+                  onClick={() => navigate("../upload")}
+                >
+                  Upload spreadsheet
+                </ActionButton>
+                <ActionButton
+                  kind="bordered"
+                  onClick={() => navigate(`../${REPORTS_LOWERCASE}`)}
+                >
+                  Fill out report
+                </ActionButton>
+              </ActionButtonWrapper>
+              {/* TODO(#268) To be removed entirely from this section - for testing purposes only */}
               <ActionButton
-                kind="primary"
-                onClick={() => navigate("../upload")}
+                onClick={() => {
+                  if (currentTopicID) {
+                    updateTopicStatus(currentTopicID, true);
+                  }
+                }}
               >
-                Upload spreadsheet
+                Mock Topic Completion
               </ActionButton>
-              <ActionButton
-                kind="bordered"
-                onClick={() => navigate(`../${REPORTS_LOWERCASE}`)}
-              >
-                Fill out report
-              </ActionButton>
-            </ActionButtonWrapper>
+            </>
           ) : (
             <>
-              {/* TODO(#268) Replace the || "Next" and only display ActionButton if there is a buttonDisplayName property while mocking */}
+              {/* TODO(#268) Replace "Mock Topic Completion" buttons and only display ActionButton if there is a buttonDisplayName property while mocking */}
               <ActionButton
                 onClick={() => {
                   if (currentTopicID) {
@@ -136,7 +212,7 @@ export const Guidance = observer(() => {
                   }
                 }}
               >
-                {buttonDisplayName || "Next"}
+                {buttonDisplayName || "Mock Topic Completion"}
               </ActionButton>
             </>
           )}

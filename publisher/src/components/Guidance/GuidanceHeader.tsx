@@ -35,13 +35,16 @@ export const GuidanceHeader = observer(() => {
     home: "getting-started",
     settings: "settings",
     records: REPORTS_LOWERCASE,
+    data: "data",
   };
 
   const isHome = params["*"] === guidancePaths.home;
   const isSettings = params["*"]?.includes(guidancePaths.settings);
   const isRecords = params["*"]?.includes(guidancePaths.records);
+  const isDataVizPage = params["*"]?.includes(guidancePaths.data);
+  const isPublishDataStep = currentTopicID === "PUBLISH_DATA";
   const isAddDataOrPublishDataStep =
-    currentTopicID === "ADD_DATA" || currentTopicID === "PUBLISH_DATA";
+    currentTopicID === "ADD_DATA" || isPublishDataStep;
 
   return (
     <HeaderBar bottomBorder>
@@ -64,6 +67,15 @@ export const GuidanceHeader = observer(() => {
               onClick={() => navigate(guidancePaths.records)}
             >
               Records
+            </MenuItem>
+          )}
+
+          {isPublishDataStep && (
+            <MenuItem
+              active={isDataVizPage}
+              onClick={() => navigate(guidancePaths.data)}
+            >
+              Data
             </MenuItem>
           )}
 

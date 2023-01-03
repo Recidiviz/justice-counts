@@ -249,7 +249,7 @@ const MetricsDisplay: React.FC<{
 const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
   const [isPublishable, setIsPublishable] = useState(false);
   const [metricsPreview, setMetricsPreview] = useState<MetricWithErrors[]>();
-  const { formStore, reportStore, userStore } = useStore();
+  const { formStore, reportStore, userStore, guidanceStore } = useStore();
   const { agencyId } = useParams();
   const navigate = useNavigate();
   const checkMetricForErrors = useCheckMetricForErrors(reportID);
@@ -268,6 +268,12 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
       )) as Response;
 
       if (response.status === 200) {
+        // For users who have not completed the onboarding flow and are publishing for the first time.
+        if (
+          guidanceStore.currentTopicID === "PUBLISH_DATA" &&
+          !guidanceStore.hasCompletedOnboarding
+        )
+          guidanceStore.updateTopicStatus("PUBLISH_DATA", true);
         navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`);
         showToast(
           `Congratulations! You published the ${printReportTitle(
@@ -298,6 +304,7 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
     const { metrics, isPublishable: publishable } =
       formStore.validateAndGetAllMetricFormValues(reportID);
     const enabledMetrics = metrics.filter((metric) => metric.enabled);
+
     setMetricsPreview(enabledMetrics);
     setIsPublishable(publishable);
   }, [formStore, reportID]);
