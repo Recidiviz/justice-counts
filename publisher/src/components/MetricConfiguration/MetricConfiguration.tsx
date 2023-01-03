@@ -38,9 +38,9 @@ import {
   MetricBox,
   MetricBoxBottomPaddingContainer,
   MetricBoxContainerWrapper,
+  MetricBreakdownAvailabilityDefinitions,
   MetricConfigurationDisplay,
   MetricConfigurationWrapper,
-  MetricDefinitions,
   MetricDetailsDisplay,
   MetricName,
   MetricsViewContainer,
@@ -237,7 +237,6 @@ export const MetricConfiguration: React.FC = observer(() => {
                   <Configuration
                     activeDimensionKey={activeDimensionKey}
                     setActiveDimensionKey={setActiveDimensionKey}
-                    activeDisaggregationKey={activeDisaggregationKey}
                     setActiveDisaggregationKey={setActiveDisaggregationKey}
                     supervisionSubsystems={supervisionSubsystems}
                   />
@@ -250,7 +249,7 @@ export const MetricConfiguration: React.FC = observer(() => {
               activeDimensionKey ? (
                 <RaceEthnicitiesForm />
               ) : (
-                <MetricDefinitions
+                <MetricBreakdownAvailabilityDefinitions
                   activeDimensionKey={activeDimensionKey}
                   activeDisaggregationKey={activeDisaggregationKey}
                 />

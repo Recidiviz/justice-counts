@@ -20,7 +20,7 @@ import { SupervisionSystems } from "@justice-counts/common/types";
 import { printCommaSeparatedList } from "@justice-counts/common/utils";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
-import React, { useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
@@ -28,28 +28,25 @@ import { monthsByName, removeSnakeCase } from "../../utils";
 import { ReactComponent as CalendarIconDark } from "../assets/calendar-icon-dark.svg";
 import { ReactComponent as CalendarIconLight } from "../assets/calendar-icon-light.svg";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
-import blueCheck from "../assets/status-check-icon.png";
 import { BinaryRadioButton } from "../Forms";
 import { REPORT_VERB_LOWERCASE } from "../Global/constants";
 import { ExtendedDropdownMenu, ExtendedDropdownMenuItem } from "../Menu";
-import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
-  BlueCheckIcon,
+  ActionStatusTitle,
   BlueLinkSpan,
   BreakdownHeader,
-  Checkbox,
-  CheckboxWrapper,
   Dimension,
   DimensionTitle,
   DimensionTitleWrapper,
-  Disaggregation,
-  DisaggregationTab,
+  DisaggregationHeader,
   DropdownButton,
   Header,
   MetricConfigurationContainer,
   MetricDisaggregations,
   MetricOnOffWrapper,
+  MiniButton,
+  MiniButtonWrapper,
   PromptWrapper,
   RACE_ETHNICITY_DISAGGREGATION_KEY,
   RaceEthnicitiesGrid,
@@ -63,7 +60,6 @@ type MetricConfigurationProps = {
   setActiveDimensionKey: React.Dispatch<
     React.SetStateAction<string | undefined>
   >;
-  activeDisaggregationKey: string | undefined;
   setActiveDisaggregationKey: React.Dispatch<
     React.SetStateAction<string | undefined>
   >;
@@ -74,7 +70,6 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
   ({
     activeDimensionKey,
     setActiveDimensionKey,
-    activeDisaggregationKey,
     setActiveDisaggregationKey,
     supervisionSubsystems,
   }): JSX.Element => {
@@ -88,7 +83,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       dimensions,
       updateMetricEnabledStatus,
       updateDisaggregationEnabledStatus,
-      updateDimensionEnabledStatus,
+      // updateDimensionEnabledStatus,
       updateMetricReportFrequency,
       updateDisaggregatedBySupervisionSubsystems,
       saveMetricSettings,
@@ -103,11 +98,11 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       disaggregations[systemMetricKey] &&
       Object.keys(disaggregations[systemMetricKey]);
 
-    const activeDimensionKeys =
-      activeDisaggregationKey &&
-      dimensions[systemMetricKey]?.[activeDisaggregationKey]
-        ? Object.keys(dimensions[systemMetricKey][activeDisaggregationKey])
-        : [];
+    const firstRaceEthnicitiesDimension =
+      dimensions[systemMetricKey]?.[RACE_ETHNICITY_DISAGGREGATION_KEY] &&
+      Object.keys(
+        dimensions[systemMetricKey][RACE_ETHNICITY_DISAGGREGATION_KEY]
+      )[0];
 
     const {
       defaultFrequency,
@@ -115,7 +110,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       startingMonth,
       disaggregatedBySupervisionSubsystems,
     } = metrics[systemMetricKey];
-    const metricEnabled = Boolean(metrics[systemMetricKey]?.enabled);
+    const metricEnabled = metrics[systemMetricKey]?.enabled;
     const customOrDefaultFrequency = customFrequency || defaultFrequency;
     const startingMonthNotJanuaryJuly =
       startingMonth !== null && startingMonth !== 1 && startingMonth !== 7;
@@ -136,8 +131,6 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
 
     useEffect(
       () => {
-        if (activeDisaggregationKeys)
-          setActiveDisaggregationKey(activeDisaggregationKeys[0]);
         setActiveDimensionKey(undefined);
       },
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -175,6 +168,22 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       }
     };
 
+    const handleDisaggregationSelection = (
+      disaggregationKey: string,
+      status: boolean
+    ) => {
+      if (systemSearchParam && metricSearchParam) {
+        const updatedSetting = updateDisaggregationEnabledStatus(
+          systemSearchParam,
+          metricSearchParam,
+          disaggregationKey,
+          status
+        );
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        saveMetricSettings(updatedSetting, agencyId!);
+      }
+    };
+
     return (
       <MetricConfigurationContainer>
         {/* Metric (Enable/Disable) & Frequency */}
@@ -191,7 +200,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               name="metric-config"
               label="Not Available"
               value="Not Available"
-              checked={!metricEnabled}
+              checked={metricEnabled === false}
               onChange={() => {
                 if (systemSearchParam && metricSearchParam) {
                   const updatedSetting = updateMetricEnabledStatus(
@@ -395,7 +404,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
         </MetricOnOffWrapper>
 
         {/* Breakdowns */}
-        {activeDisaggregationKey && activeDisaggregationKeys?.length > 0 && (
+        {activeDisaggregationKeys?.length > 0 && (
           <MetricDisaggregations enabled={metricEnabled}>
             <BreakdownHeader>Breakdowns</BreakdownHeader>
             <Subheader>
@@ -405,144 +414,105 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
             </Subheader>
 
             {/* Disaggregations (Enable/Disable) */}
-            <TabbedBar noPadding>
-              <TabbedOptions>
-                {activeDisaggregationKeys?.map((disaggregationKey) => {
-                  const currentDisaggregation =
-                    disaggregations[systemMetricKey][disaggregationKey];
+            {activeDisaggregationKeys?.map((disaggregationKey) => {
+              const currentDisaggregation =
+                disaggregations[systemMetricKey][disaggregationKey];
+              const currentDimensions = Object.values(
+                dimensions[systemMetricKey][disaggregationKey]
+              );
 
-                  return (
-                    <TabbedItem
-                      key={disaggregationKey}
+              return (
+                <Fragment key={disaggregationKey}>
+                  <DisaggregationHeader>
+                    {currentDisaggregation.display_name}
+                    <MiniButtonWrapper>
+                      <MiniButton
+                        selected={currentDisaggregation.enabled === false}
+                        onClick={() => {
+                          if (
+                            currentDisaggregation.enabled ||
+                            currentDisaggregation.enabled === null
+                          )
+                            handleDisaggregationSelection(
+                              disaggregationKey,
+                              false
+                            );
+                        }}
+                      >
+                        Off
+                      </MiniButton>
+                      <MiniButton
+                        selected={currentDisaggregation.enabled}
+                        onClick={() => {
+                          if (!currentDisaggregation.enabled)
+                            handleDisaggregationSelection(
+                              disaggregationKey,
+                              true
+                            );
+                        }}
+                      >
+                        On
+                      </MiniButton>
+                    </MiniButtonWrapper>
+                  </DisaggregationHeader>
+
+                  {/* Dimensions (Enable/Disable) */}
+                  {disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY ? (
+                    <RaceEthnicitiesGrid
+                      disaggregationEnabled={
+                        currentDisaggregation.enabled === true
+                      }
                       onClick={() => {
-                        setActiveDisaggregationKey(disaggregationKey);
-
-                        /** Open first dimension when disaggregation tab is clicked */
-                        const [firstDimensionKey] = Object.keys(
-                          dimensions[systemMetricKey][disaggregationKey]
+                        setActiveDisaggregationKey(
+                          RACE_ETHNICITY_DISAGGREGATION_KEY
                         );
-                        setActiveDimensionKey(firstDimensionKey);
+                        setActiveDimensionKey(firstRaceEthnicitiesDimension);
                       }}
-                      selected={disaggregationKey === activeDisaggregationKey}
-                      capitalize
-                    >
-                      <DisaggregationTab>
-                        <span>
-                          {removeSnakeCase(
-                            (
-                              currentDisaggregation.display_name as string
-                            ).toLowerCase()
-                          )}
-                        </span>
-
-                        <CheckboxWrapper>
-                          <Checkbox
-                            type="checkbox"
-                            checked={currentDisaggregation.enabled}
-                            onChange={() => {
-                              if (systemSearchParam && metricSearchParam) {
-                                const updatedSetting =
-                                  updateDisaggregationEnabledStatus(
-                                    systemSearchParam,
-                                    metricSearchParam,
-                                    disaggregationKey,
-                                    !currentDisaggregation.enabled
-                                  );
-                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                saveMetricSettings(updatedSetting, agencyId!);
-                              }
-                            }}
-                          />
-                          <BlueCheckIcon
-                            src={blueCheck}
-                            alt=""
-                            enabled={currentDisaggregation.enabled}
-                          />
-                        </CheckboxWrapper>
-                      </DisaggregationTab>
-                    </TabbedItem>
-                  );
-                })}
-              </TabbedOptions>
-            </TabbedBar>
-
-            <Disaggregation>
-              {/* Dimension Fields (Enable/Disable) */}
-              {/* Race & Ethnicities Grid (when active disaggregation is Race / Ethnicity) */}
-              {activeDisaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY ? (
-                <RaceEthnicitiesGrid
-                  disaggregationEnabled={Boolean(
-                    disaggregations[systemMetricKey][
-                      RACE_ETHNICITY_DISAGGREGATION_KEY
-                    ]?.enabled
-                  )}
-                  onClick={() => setActiveDimensionKey(activeDimensionKeys[0])}
-                />
-              ) : (
-                activeDimensionKeys?.map((dimensionKey) => {
-                  const currentDisaggregation =
-                    disaggregations[systemMetricKey][activeDisaggregationKey];
-                  const currentDimension =
-                    dimensions[systemMetricKey][activeDisaggregationKey][
-                      dimensionKey
-                    ];
-
-                  return (
-                    <Dimension
-                      key={dimensionKey}
-                      enabled={!metricEnabled || currentDisaggregation.enabled}
-                      inView={dimensionKey === activeDimensionKey}
-                      onClick={() => setActiveDimensionKey(dimensionKey)}
-                    >
-                      <CheckboxWrapper>
-                        <Checkbox
-                          type="checkbox"
-                          checked={
-                            currentDisaggregation.enabled &&
-                            currentDimension.enabled
-                          }
-                          onChange={() => {
-                            if (systemSearchParam && metricSearchParam) {
-                              const updatedSetting =
-                                updateDimensionEnabledStatus(
-                                  systemSearchParam,
-                                  metricSearchParam,
-                                  activeDisaggregationKey,
-                                  dimensionKey,
-                                  !currentDimension.enabled
-                                );
-                              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                              saveMetricSettings(updatedSetting, agencyId!);
+                    />
+                  ) : (
+                    currentDimensions?.map((dimension) => {
+                      return (
+                        <Fragment key={dimension.key}>
+                          <Dimension
+                            enabled={
+                              !metricEnabled ||
+                              currentDisaggregation.enabled ||
+                              currentDisaggregation.enabled === null
                             }
-                          }}
-                        />
-                        <BlueCheckIcon
-                          src={blueCheck}
-                          alt=""
-                          enabled={
-                            currentDisaggregation.enabled &&
-                            currentDimension.enabled
-                          }
-                        />
-                      </CheckboxWrapper>
-
-                      <DimensionTitleWrapper>
-                        <DimensionTitle
-                          enabled={
-                            currentDisaggregation.enabled &&
-                            currentDimension.enabled
-                          }
-                        >
-                          {currentDimension.label}
-                        </DimensionTitle>
-
-                        <RightArrowIcon />
-                      </DimensionTitleWrapper>
-                    </Dimension>
-                  );
-                })
-              )}
-            </Disaggregation>
+                            inView={dimension.key === activeDimensionKey}
+                            onClick={() => {
+                              setActiveDisaggregationKey(disaggregationKey);
+                              setActiveDimensionKey(dimension.key);
+                            }}
+                          >
+                            <DimensionTitleWrapper>
+                              <DimensionTitle
+                                enabled={currentDisaggregation.enabled}
+                              >
+                                {dimension?.label}
+                              </DimensionTitle>
+                              <ActionStatusTitle
+                                enabled={
+                                  currentDisaggregation.enabled &&
+                                  dimension.enabled === null
+                                }
+                                inView={dimension.key === activeDimensionKey}
+                              >
+                                {dimension.enabled && "Available"}
+                                {dimension.enabled === false && "Unavailable"}
+                                {dimension.enabled === null &&
+                                  "Action Required"}
+                              </ActionStatusTitle>
+                              <RightArrowIcon />
+                            </DimensionTitleWrapper>
+                          </Dimension>
+                        </Fragment>
+                      );
+                    })
+                  )}
+                </Fragment>
+              );
+            })}
           </MetricDisaggregations>
         )}
       </MetricConfigurationContainer>

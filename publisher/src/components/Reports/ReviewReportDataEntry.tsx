@@ -39,6 +39,7 @@ const ReviewReportDataEntry = () => {
   useEffect(() => {
     const initialize = async () => {
       const result = await reportStore.getReport(reportID);
+      formStore.validatePreviouslySavedInputs(reportID);
       if (result instanceof Error) {
         return setLoadingError(result.message);
       }

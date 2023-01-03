@@ -23,10 +23,12 @@ import { useStore } from "../../stores";
 import { REPORT_VERB_LOWERCASE } from "../Global/constants";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
+  BreakdownAvailabilityDescription,
+  BreakdownAvailabilityMiniButtonWrapper,
+  BreakdownAvailabilitySubTitle,
   ContextConfiguration,
   DefinitionDisplayName,
   DefinitionItem,
-  DefinitionMiniButton,
   Definitions,
   DefinitionsDescription,
   DefinitionsDisplay,
@@ -34,10 +36,13 @@ import {
   DefinitionSelection,
   DefinitionsSubTitle,
   DefinitionsTitle,
+  DefinitionsWrapper,
   MetricConfigurationSettingsOptions,
   metricConfigurationSettingsOptions,
   MetricSettings,
-  RevertToDefaultButton,
+  MiniButton,
+  RevertToDefaultTextButton,
+  RevertToDefaultTextButtonWrapper,
 } from ".";
 
 type MetricDefinitionsProps = {
@@ -45,8 +50,8 @@ type MetricDefinitionsProps = {
   activeDisaggregationKey: string | undefined;
 };
 
-export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
-  ({ activeDimensionKey, activeDisaggregationKey }) => {
+export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsProps> =
+  observer(({ activeDimensionKey, activeDisaggregationKey }) => {
     const { agencyId } = useParams();
     const [settingsSearchParams] = useSettingsSearchParams();
     const { metricConfigStore } = useStore();
@@ -57,6 +62,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
       dimensionDefinitionSettings,
       updateMetricDefinitionSetting,
       updateDimensionDefinitionSetting,
+      updateDimensionEnabledStatus,
       saveMetricSettings,
     } = metricConfigStore;
 
@@ -162,6 +168,33 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
       }
     };
 
+    const handleDimensionEnabledStatus = (status: boolean) => {
+      if (
+        systemSearchParam &&
+        metricSearchParam &&
+        activeDisaggregationKey &&
+        activeDimensionKey
+      ) {
+        const updatedSetting = updateDimensionEnabledStatus(
+          systemSearchParam,
+          metricSearchParam,
+          activeDisaggregationKey,
+          activeDimensionKey,
+          status
+        );
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        saveMetricSettings(updatedSetting, agencyId!);
+      }
+    };
+
+    const currentDimension =
+      (activeDisaggregationKey &&
+        activeDimensionKey &&
+        dimensions[systemMetricKey]?.[activeDisaggregationKey]?.[
+          activeDimensionKey
+        ]) ||
+      undefined;
+
     return (
       <DefinitionsDisplayContainer>
         <DefinitionsDisplay enabled={metrics[systemMetricKey]?.enabled}>
@@ -169,8 +202,50 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
             {activeMetricOrDimensionDisplayName}
           </DefinitionsTitle>
 
-          {Boolean(activeSettingsKeys?.length) && (
+          {/* Breakdown Availability */}
+          {activeDimensionKey && (
             <>
+              <BreakdownAvailabilitySubTitle>
+                Confirm breakdown availability
+              </BreakdownAvailabilitySubTitle>
+              <BreakdownAvailabilityDescription>
+                Are you currently able to share any part of this metric?
+              </BreakdownAvailabilityDescription>
+
+              <BreakdownAvailabilityMiniButtonWrapper>
+                <MiniButton
+                  selected={currentDimension?.enabled === false}
+                  onClick={() => {
+                    if (
+                      currentDimension?.enabled ||
+                      currentDimension?.enabled === null
+                    )
+                      handleDimensionEnabledStatus(false);
+                  }}
+                >
+                  Unavailable
+                </MiniButton>
+                <MiniButton
+                  selected={currentDimension?.enabled}
+                  onClick={() => {
+                    if (!currentDimension?.enabled)
+                      handleDimensionEnabledStatus(true);
+                  }}
+                >
+                  Available
+                </MiniButton>
+              </BreakdownAvailabilityMiniButtonWrapper>
+            </>
+          )}
+
+          {Boolean(activeSettingsKeys?.length) && (
+            <DefinitionsWrapper
+              enabled={
+                !metrics[systemMetricKey]?.enabled ||
+                !activeDimensionKey ||
+                (metrics[systemMetricKey]?.enabled && currentDimension?.enabled)
+              }
+            >
               <DefinitionsSubTitle>Definitions</DefinitionsSubTitle>
               <DefinitionsDescription>
                 Indicate which of the following categories your agency considers
@@ -180,20 +255,6 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                   specific categories.
                 </span>
               </DefinitionsDescription>
-
-              {/* Revert To Default Definition Settings */}
-              <RevertToDefaultButton
-                onClick={() => {
-                  setShowDefaultSettings(false);
-                  revertToAndSaveDefaultValues();
-                }}
-                onMouseEnter={() =>
-                  !showDefaultSettings && setShowDefaultSettings(true)
-                }
-                onMouseLeave={() => setShowDefaultSettings(false)}
-              >
-                Choose Default Definition
-              </RevertToDefaultButton>
 
               {/* Definition Settings (Includes/Excludes) */}
               <Definitions>
@@ -221,7 +282,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                       <DefinitionSelection>
                         {metricConfigurationSettingsOptions.map((option) => (
                           <Fragment key={option}>
-                            <DefinitionMiniButton
+                            <MiniButton
                               selected={
                                 showDefaultSettings
                                   ? currentSetting.default === option
@@ -260,7 +321,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                               }}
                             >
                               {option}
-                            </DefinitionMiniButton>
+                            </MiniButton>
                           </Fragment>
                         ))}
                       </DefinitionSelection>
@@ -268,9 +329,24 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                   );
                 })}
               </Definitions>
-            </>
-          )}
 
+              {/* Revert To Default Definition Settings */}
+              <RevertToDefaultTextButtonWrapper>
+                <RevertToDefaultTextButton
+                  onClick={() => {
+                    setShowDefaultSettings(false);
+                    revertToAndSaveDefaultValues();
+                  }}
+                  onMouseEnter={() =>
+                    !showDefaultSettings && setShowDefaultSettings(true)
+                  }
+                  onMouseLeave={() => setShowDefaultSettings(false)}
+                >
+                  Reset to default
+                </RevertToDefaultTextButton>
+              </RevertToDefaultTextButtonWrapper>
+            </DefinitionsWrapper>
+          )}
           {/* Display when user is viewing a dimension & there are no settings available */}
           {!activeSettingsKeys?.length && activeDimensionKey && (
             <DefinitionsSubTitle>
@@ -278,10 +354,8 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
             </DefinitionsSubTitle>
           )}
         </DefinitionsDisplay>
-
         {/* Additional Context (only appears on overall metric settings and not individual dimension settings) */}
         {!activeDimensionKey && <ContextConfiguration />}
       </DefinitionsDisplayContainer>
     );
-  }
-);
+  });

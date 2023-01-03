@@ -85,48 +85,6 @@ export const Guidance = observer(() => {
   const metricsEntries = Object.entries(metricConfigStore.metrics);
   const totalMetrics = metricsEntries.length;
 
-  useEffect(() => {
-    const initialize = async () => {
-      reportStore.resetState();
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await reportStore.getReportOverviews(agencyId!);
-      if (currentTopicID === "METRIC_CONFIG")
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        await metricConfigStore.initializeMetricConfigStoreValues(agencyId!);
-
-      const hasMinimumOneReport =
-        currentTopicID === "ADD_DATA" &&
-        Object.keys(reportStore.reportOverviews).length > 0;
-      const hasMinimumOnePublishedReport =
-        currentTopicID === "PUBLISH_DATA" &&
-        Object.values(reportStore.reportOverviews).find(
-          (report) => report.status === "PUBLISHED"
-        );
-
-      if (hasMinimumOneReport) {
-        /* TODO(#267) Enable this to check during the ADD_DATA step whether or not a user has atleast one draft (if so, then the topic is complete) */
-        // updateTopicStatus("ADD_DATA", true);
-      }
-      if (hasMinimumOnePublishedReport) {
-        /* TODO(#267) Enable this to check during the PUBLISH_DATA step whether or not a user has atleast one published record (if so, then the topic is complete) */
-        // updateTopicStatus("PUBLISH_DATA", true);
-      }
-      if (numberOfMetricsCompleted === totalMetrics) {
-        /* TODO(#267) Enable this to check during the PUBLISH_DATA step whether or not a user has atleast one published record (if so, then the topic is complete) */
-        // updateTopicStatus("METRIC_CONFIG", true);
-      }
-    };
-
-    if (
-      currentTopicID === "ADD_DATA" ||
-      currentTopicID === "PUBLISH_DATA" ||
-      currentTopicID === "METRIC_CONFIG"
-    )
-      initialize();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [agencyId, currentTopicID]);
-
   const renderProgressSteps = () => {
     if (currentTopicID === "WELCOME") return;
 
@@ -166,6 +124,11 @@ export const Guidance = observer(() => {
     /** Confirm the metric’s availability/frequency */
     if (metrics[systemMetricKey].enabled !== null) {
       completionPercentage += 25;
+    }
+
+    if (metrics[systemMetricKey].enabled === false) {
+      completionPercentage = 100;
+      return completionPercentage;
     }
 
     /** Confirm metric definitions */
@@ -222,6 +185,45 @@ export const Guidance = observer(() => {
   const numberOfMetricsCompleted = metricsEntries.filter(
     ([key]) => calculateOverallMetricProgress(key) === 100
   ).length;
+
+  useEffect(() => {
+    const initialize = async () => {
+      reportStore.resetState();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await reportStore.getReportOverviews(agencyId!);
+      if (currentTopicID === "METRIC_CONFIG")
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        await metricConfigStore.initializeMetricConfigStoreValues(agencyId!);
+
+      const hasMinimumOneReport =
+        currentTopicID === "ADD_DATA" &&
+        Object.keys(reportStore.reportOverviews).length > 0;
+      const hasMinimumOnePublishedReport =
+        currentTopicID === "PUBLISH_DATA" &&
+        Object.values(reportStore.reportOverviews).find(
+          (report) => report.status === "PUBLISHED"
+        );
+
+      if (hasMinimumOneReport) {
+        updateTopicStatus("ADD_DATA", true);
+      }
+      if (hasMinimumOnePublishedReport) {
+        updateTopicStatus("PUBLISH_DATA", true);
+      }
+      if (totalMetrics > 0 && numberOfMetricsCompleted === totalMetrics) {
+        updateTopicStatus("METRIC_CONFIG", true);
+      }
+    };
+
+    if (
+      currentTopicID === "ADD_DATA" ||
+      currentTopicID === "PUBLISH_DATA" ||
+      currentTopicID === "METRIC_CONFIG"
+    )
+      initialize();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [agencyId, currentTopicID, numberOfMetricsCompleted]);
 
   return (
     <>
@@ -282,30 +284,21 @@ export const Guidance = observer(() => {
                   Fill out report
                 </ActionButton>
               </ActionButtonWrapper>
-              {/* TODO(#268) To be removed entirely from this section - for testing purposes only */}
-              <ActionButton
-                onClick={() => {
-                  if (currentTopicID) {
-                    updateTopicStatus(currentTopicID, true);
-                  }
-                }}
-              >
-                Mock Topic Completion
-              </ActionButton>
             </>
           ) : (
             <>
-              {/* TODO(#268) Replace "Mock Topic Completion" buttons and only display ActionButton if there is a buttonDisplayName property while mocking */}
-              <ActionButton
-                onClick={() => {
-                  if (currentTopicID) {
-                    if (pathToTask) navigate(pathToTask);
-                    updateTopicStatus(currentTopicID, true);
-                  }
-                }}
-              >
-                {buttonDisplayName || "Mock Topic Completion"}
-              </ActionButton>
+              {buttonDisplayName && (
+                <ActionButton
+                  onClick={() => {
+                    if (currentTopicID) {
+                      if (pathToTask) navigate(pathToTask);
+                      updateTopicStatus(currentTopicID, true);
+                    }
+                  }}
+                >
+                  {buttonDisplayName}
+                </ActionButton>
+              )}
             </>
           )}
 
@@ -351,7 +344,7 @@ export const Guidance = observer(() => {
                           )}
                         {metric.enabled === false && "Unavailable"}
                         {metricCompletionPercentage < 100 &&
-                          metric.enabled &&
+                          (metric.enabled || metric.enabled === null) &&
                           "Action Required"}
                       </MetricStatus>
                       <RightArrowIcon />

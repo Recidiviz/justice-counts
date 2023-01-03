@@ -24,7 +24,6 @@ import styled, { css } from "styled-components/macro";
 import {
   DefinitionDisplayName,
   DefinitionItem,
-  DefinitionMiniButton,
   Definitions,
   DefinitionsDescription,
   DefinitionsDisplay,
@@ -32,6 +31,7 @@ import {
   DefinitionSelection,
   DefinitionsTitle,
   MetricOnOffWrapper,
+  MiniButton,
 } from ".";
 
 export const RaceEthnicitiesBreakdownContainer = styled.div<{
@@ -165,4 +165,4 @@ export const RaceContainer = styled(Definitions)``;
 export const Race = styled(DefinitionItem)``;
 export const RaceDisplayName = styled(DefinitionDisplayName)``;
 export const RaceSelection = styled(DefinitionSelection)``;
-export const RaceSelectionButton = styled(DefinitionMiniButton)``;
+export const RaceSelectionButton = styled(MiniButton)``;

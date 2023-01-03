@@ -363,15 +363,6 @@ export const Disaggregation = styled.div`
   margin-bottom: 15px;
 `;
 
-export const DisaggregationHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 17px 0;
-  align-items: center;
-
-  border-bottom: 1px solid ${palette.highlight.grey9};
-`;
-
 export const DisaggregationName = styled.div<{ enabled?: boolean }>`
   ${typography.sizeCSS.large};
 
@@ -389,21 +380,39 @@ export const DisaggregationTab = styled.div`
   }
 `;
 
+export const ActionStatusTitle = styled.div<{
+  enabled?: boolean;
+  inView?: boolean;
+}>`
+  ${typography.sizeCSS.normal};
+  transition: 0.5s ease;
+  color: ${({ enabled }) =>
+    enabled ? palette.solid.blue : palette.highlight.grey8};
+  opacity: ${({ inView }) => (inView ? 0 : 1)};
+`;
+
 export const Dimension = styled.div<{ enabled?: boolean; inView?: boolean }>`
   ${typography.sizeCSS.medium};
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 17px 10px;
+  padding: 17px 0;
   border-bottom: 1px solid ${palette.highlight.grey4};
   position: relative;
   background: ${({ inView }) =>
     inView ? palette.highlight.lightblue1 : `none`};
+  transition: padding 0.3s ease;
 
   &:hover {
     background: ${({ inView }) =>
       inView ? palette.highlight.lightblue1 : palette.highlight.grey1};
     cursor: pointer;
+    padding-left: 16px;
+  }
+
+  &:hover ${ActionStatusTitle} {
+    opacity: 0;
+    transition: 0.2s ease;
   }
 
   svg {
@@ -440,14 +449,16 @@ export const Dimension = styled.div<{ enabled?: boolean; inView?: boolean }>`
 `;
 
 export const DimensionTitleWrapper = styled.div`
+  width: 100%;
   display: flex;
+  justify-content: space-between;
   align-items: center;
 `;
 
 export const DimensionTitle = styled.div<{ enabled?: boolean }>`
   display: block;
   color: ${({ enabled }) =>
-    enabled ? palette.solid.darkgrey : palette.highlight.grey8};
+    enabled ? palette.solid.darkgrey : palette.highlight.grey10};
 `;
 
 export const CheckboxWrapper = styled.div`
@@ -664,6 +675,11 @@ export const DefinitionsDisplay = styled.div<{ enabled?: boolean }>`
   ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
 `;
 
+export const DefinitionsWrapper = styled.div<{ enabled?: boolean }>`
+  position: relative;
+  ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
+`;
+
 export const DefinitionsTitle = styled.div`
   ${typography.sizeCSS.large}
   margin-bottom: 24px;
@@ -674,6 +690,8 @@ export const DefinitionsSubTitle = styled.div`
   margin-bottom: 16px;
 `;
 
+export const BreakdownAvailabilitySubTitle = styled(DefinitionsSubTitle)``;
+
 export const DefinitionsDescription = styled.div`
   ${typography.sizeCSS.normal}
   margin-bottom: 32px;
@@ -682,6 +700,10 @@ export const DefinitionsDescription = styled.div`
     display: block;
     color: ${palette.solid.orange};
   }
+`;
+
+export const BreakdownAvailabilityDescription = styled(DefinitionsDescription)`
+  margin-bottom: 16px;
 `;
 
 export const RevertToDefaultButton = styled.div`
@@ -701,33 +723,30 @@ export const RevertToDefaultButton = styled.div`
   }
 `;
 
-export const Definitions = styled.div`
+export const RevertToDefaultTextButtonWrapper = styled.div`
   width: 100%;
   display: flex;
-  flex-direction: column;
-  margin-top: 16px;
-  margin-bottom: 32px;
+  justify-content: flex-end;
 `;
 
-export const DefinitionItem = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
+export const RevertToDefaultTextButton = styled.div`
+  ${typography.sizeCSS.normal}
+  color: ${palette.solid.blue};
+  text-align: right;
+  margin-bottom: 16px;
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.solid.darkblue};
+  }
 `;
 
-export const DefinitionDisplayName = styled.div`
-  ${typography.sizeCSS.medium}
-  margin-right: 20px;
-`;
-
-export const DefinitionSelection = styled.div`
+export const MiniButtonWrapper = styled.div`
   display: flex;
   gap: 4px;
 `;
 
-export const DefinitionMiniButton = styled(RevertToDefaultButton)<{
+export const MiniButton = styled(RevertToDefaultButton)<{
   selected?: boolean;
   showDefault?: boolean;
 }>`
@@ -758,6 +777,36 @@ export const DefinitionMiniButton = styled(RevertToDefaultButton)<{
 
   ${({ showDefault, selected }) =>
     showDefault && !selected && `color: ${palette.highlight.grey4};`};
+`;
+
+export const BreakdownAvailabilityMiniButtonWrapper = styled(MiniButtonWrapper)`
+  margin-bottom: 32px;
+`;
+
+export const Definitions = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+  margin-bottom: 16px;
+`;
+
+export const DefinitionItem = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+`;
+
+export const DefinitionDisplayName = styled.div`
+  ${typography.sizeCSS.medium}
+  margin-right: 20px;
+`;
+
+export const DefinitionSelection = styled.div`
+  display: flex;
+  gap: 4px;
 `;
 
 export const NoDefinitionsSelected = styled.div`
@@ -822,4 +871,15 @@ export const BlueLinkSpan = styled.span`
   &:hover {
     cursor: pointer;
   }
+`;
+
+export const DisaggregationHeader = styled.div`
+  ${typography.sizeCSS.medium}
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  margin-top: 48px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid ${palette.highlight.grey5};
 `;
