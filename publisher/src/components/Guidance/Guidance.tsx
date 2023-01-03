@@ -111,7 +111,7 @@ export const Guidance = observer(() => {
         /* TODO(#267) Enable this to check during the PUBLISH_DATA step whether or not a user has atleast one published record (if so, then the topic is complete) */
         // updateTopicStatus("PUBLISH_DATA", true);
       }
-      if (numberOfMetricsCompleted === totalMetrics) {
+      if (totalMetrics > 0 && numberOfMetricsCompleted === totalMetrics) {
         /* TODO(#267) Enable this to check during the PUBLISH_DATA step whether or not a user has atleast one published record (if so, then the topic is complete) */
         // updateTopicStatus("METRIC_CONFIG", true);
       }
@@ -166,6 +166,11 @@ export const Guidance = observer(() => {
     /** Confirm the metric’s availability/frequency */
     if (metrics[systemMetricKey].enabled !== null) {
       completionPercentage += 25;
+    }
+
+    if (metrics[systemMetricKey].enabled === false) {
+      completionPercentage = 100;
+      return completionPercentage;
     }
 
     /** Confirm metric definitions */
@@ -350,7 +355,7 @@ export const Guidance = observer(() => {
                           )}
                         {metric.enabled === false && "Unavailable"}
                         {metricCompletionPercentage < 100 &&
-                          metric.enabled &&
+                          (metric.enabled || metric.enabled === null) &&
                           "Action Required"}
                       </MetricStatus>
                       <RightArrowIcon />
