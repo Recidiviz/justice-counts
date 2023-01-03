@@ -63,7 +63,10 @@ export const Guidance = observer(() => {
         currentTopicID === "ADD_DATA" &&
         Object.keys(reportOverviews).length > 0;
 
-      if (hasMinimumOneReport) updateTopicStatus(currentTopicID, true);
+      if (hasMinimumOneReport) {
+        /* TODO(#) Enable this to check during the ADD_DATA whether or not a user has atleast one draft (if so, then the topic is complete) */
+        // updateTopicStatus(currentTopicID, true);
+      }
     };
 
     if (currentTopicID === "ADD_DATA") initialize();
