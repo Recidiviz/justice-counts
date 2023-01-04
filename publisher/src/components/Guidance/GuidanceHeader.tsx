@@ -21,6 +21,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import logo from "../assets/jc-logo-vector.png";
+import { REPORTS_LOWERCASE } from "../Global/constants";
 import { HeaderBar, Logo, LogoContainer } from "../Header";
 import { MenuContainer, MenuItem } from "../Menu";
 import { UploadDataButton } from ".";
@@ -33,6 +34,7 @@ export const GuidanceHeader = observer(() => {
 
   const isHome = params["*"] === "getting-started";
   const isSettings = params["*"]?.includes("settings");
+  const isRecords = params["*"]?.includes(REPORTS_LOWERCASE);
   const isAddDataOrPublishDataStep =
     currentTopicID === "ADD_DATA" || currentTopicID === "PUBLISH_DATA";
 
@@ -48,9 +50,19 @@ export const GuidanceHeader = observer(() => {
             Get Started
           </MenuItem>
 
+          {isAddDataOrPublishDataStep && (
+            <MenuItem
+              active={isRecords}
+              onClick={() => navigate(`${REPORTS_LOWERCASE}`)}
+            >
+              Records
+            </MenuItem>
+          )}
+
           <MenuItem active={isSettings} onClick={() => navigate(`settings`)}>
             Settings
           </MenuItem>
+
           <MenuItem buttonPadding>
             <UploadDataButton
               type={isAddDataOrPublishDataStep ? "blue" : "border"}

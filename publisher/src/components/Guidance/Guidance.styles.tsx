@@ -60,19 +60,30 @@ export const TopicDescription = styled.div`
   ${typography.sizeCSS.medium};
 `;
 
-export const ActionButton = styled.button`
+export const ActionButtonWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+export const ActionButton = styled.button<{ kind?: "primary" | "bordered" }>`
   ${typography.sizeCSS.medium};
   width: fit-content;
-  border: none;
+  border: 1px solid
+    ${({ kind }) =>
+      kind === "bordered" ? palette.highlight.grey4 : palette.solid.blue};
   border-radius: 3px;
   padding: 16px 32px;
-  background: ${palette.solid.blue};
-  color: ${palette.solid.white};
+  background: ${({ kind }) =>
+    kind === "bordered" ? `none` : palette.solid.blue};
+  color: ${({ kind }) =>
+    kind === "bordered" ? palette.solid.darkgrey : palette.solid.white};
   transition: 0.3s ease;
 
   &:hover {
-    background: ${palette.solid.darkblue};
     cursor: pointer;
+    background: ${({ kind }) =>
+      kind === "bordered" ? palette.solid.blue : palette.solid.darkblue};
+    ${({ kind }) => kind === "bordered" && `color: ${palette.solid.white};`}
   }
 `;
 

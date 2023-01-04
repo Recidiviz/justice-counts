@@ -16,12 +16,14 @@
 // =============================================================================
 
 import { observer } from "mobx-react-lite";
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { REPORTS_LOWERCASE } from "../Global/constants";
 import {
   ActionButton,
+  ActionButtonWrapper,
   ContentContainer,
   GuidanceContainer,
   ProgressStepBubble,
@@ -33,7 +35,8 @@ import {
 
 export const Guidance = observer(() => {
   const navigate = useNavigate();
-  const { guidanceStore } = useStore();
+  const { agencyId } = useParams();
+  const { guidanceStore, reportStore } = useStore();
   const { onboardingTopicsMetadata, currentTopicID, updateTopicStatus } =
     guidanceStore;
 
@@ -50,6 +53,25 @@ export const Guidance = observer(() => {
     currentTopicID && onboardingTopicsMetadata[currentTopicID].pathToTask;
   const topLeftPositionedTopic =
     currentTopicID === "WELCOME" || currentTopicID === "METRIC_CONFIG";
+
+  useEffect(() => {
+    const initialize = async () => {
+      reportStore.resetState();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await reportStore.getReportOverviews(agencyId!);
+    };
+
+    if (currentTopicID === "ADD_DATA") {
+      const hasMinimumOneReport =
+        Object.keys(reportStore.reportOverviews).length > 0;
+      if (hasMinimumOneReport) {
+        /* TODO(#267) Enable this to check during the ADD_DATA step whether or not a user has atleast one draft (if so, then mark the topic as complete) */
+        // updateTopicStatus(currentTopicID, true);
+      }
+      initialize();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [agencyId, currentTopicID]);
 
   const renderProgressSteps = () => {
     if (currentTopicID === "WELCOME") return;
@@ -88,17 +110,36 @@ export const Guidance = observer(() => {
           <TopicTitle>{currentTopicDisplayName}</TopicTitle>
           <TopicDescription>{currentTopicDescription}</TopicDescription>
 
-          {/* TODO(#) Replace the || "Next" and only display ActionButton if there is a buttonDisplayName property while mocking */}
-          <ActionButton
-            onClick={() => {
-              if (currentTopicID) {
-                if (pathToTask) navigate(pathToTask);
-                updateTopicStatus(currentTopicID, true);
-              }
-            }}
-          >
-            {buttonDisplayName || "Next"}
-          </ActionButton>
+          {currentTopicID === "ADD_DATA" ? (
+            <ActionButtonWrapper>
+              <ActionButton
+                kind="primary"
+                onClick={() => navigate("../upload")}
+              >
+                Upload spreadsheet
+              </ActionButton>
+              <ActionButton
+                kind="bordered"
+                onClick={() => navigate(`../${REPORTS_LOWERCASE}`)}
+              >
+                Fill out report
+              </ActionButton>
+            </ActionButtonWrapper>
+          ) : (
+            <>
+              {/* TODO(#268) Replace the || "Next" and only display ActionButton if there is a buttonDisplayName property while mocking */}
+              <ActionButton
+                onClick={() => {
+                  if (currentTopicID) {
+                    if (pathToTask) navigate(pathToTask);
+                    updateTopicStatus(currentTopicID, true);
+                  }
+                }}
+              >
+                {buttonDisplayName || "Next"}
+              </ActionButton>
+            </>
+          )}
 
           {skippable && (
             <SkipButton
