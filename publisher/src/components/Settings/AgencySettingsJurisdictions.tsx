@@ -164,7 +164,19 @@ export const AgencySettingsJurisdictions: React.FC<{
             </AgencySettingsBlockSubDescription>
           )}
           {excludedJurisdictionsMock.map(({ type, name, state }) => (
-            <AgencySettingsInfoRow key={name}>
+            <AgencySettingsInfoRow
+              key={name}
+              hasHover
+              onClick={() =>
+                setCheckedJurisdictions(
+                  checkedJurisdictions.includes(name)
+                    ? checkedJurisdictions.filter(
+                        (jurisdiction) => jurisdiction !== name
+                      )
+                    : [...checkedJurisdictions, name]
+                )
+              }
+            >
               {locationName(name, state)}
               <JurisdictionCheckBlock>
                 {type}
@@ -172,15 +184,6 @@ export const AgencySettingsJurisdictions: React.FC<{
                   <Checkbox
                     type="checkbox"
                     checked={checkedJurisdictions.includes(name)}
-                    onChange={() =>
-                      setCheckedJurisdictions(
-                        checkedJurisdictions.includes(name)
-                          ? checkedJurisdictions.filter(
-                              (jurisdiction) => jurisdiction !== name
-                            )
-                          : [...checkedJurisdictions, name]
-                      )
-                    }
                   />
                   <BlueCheckIcon src={blueCheck} alt="" enabled />
                 </CheckboxWrapper>
