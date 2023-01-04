@@ -31,6 +31,7 @@ import {
   TopicDescription,
   TopicTitle,
 } from ".";
+import { REPORTS_LOWERCASE } from "../Global/constants";
 
 export const Guidance = observer(() => {
   const navigate = useNavigate();
@@ -119,7 +120,7 @@ export const Guidance = observer(() => {
               </ActionButton>
               <ActionButton
                 kind="bordered"
-                onClick={() => navigate("../records")}
+                onClick={() => navigate(`../${REPORTS_LOWERCASE}`)}
               >
                 Fill out report
               </ActionButton>
