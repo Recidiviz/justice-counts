@@ -172,7 +172,7 @@ export const AgencySettingsTeamManagement: React.FC<{
               <TransparentButton onClick={closeSetting}>
                 Cancel
               </TransparentButton>
-              <FilledButton onClick={closeSetting}>Done</FilledButton>
+              <FilledButton onClick={closeSetting}>Save</FilledButton>
             </EditModeButtonsContainer>
           ) : (
             <EditModeButtonsContainer>
