@@ -45,8 +45,9 @@ export const Router = () => {
 
   const renderRoutesBasedOnOnboardingStatus = (): JSX.Element => {
     if (!hasCompletedOnboarding) {
+      const isPublishDataStep = currentTopicID === "PUBLISH_DATA";
       const isAddDataOrPublishDataStep =
-        currentTopicID === "ADD_DATA" || currentTopicID === "PUBLISH_DATA";
+        currentTopicID === "ADD_DATA" || isPublishDataStep;
 
       return (
         <>
@@ -81,6 +82,9 @@ export const Router = () => {
                       element={<ReviewReportDataEntry />}
                     />
                   </>
+                )}
+                {isPublishDataStep && (
+                  <Route path="/data" element={<MetricsView />} />
                 )}
               </>
             )}
