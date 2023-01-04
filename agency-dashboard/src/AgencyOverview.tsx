@@ -66,7 +66,9 @@ const AgencyOverview = () => {
   const agencyId = Number(params.id);
   const { agencyDataStore } = useStore();
   const maxMetricsInRow = useMaxMetricBoxesInRow();
-  const [hoveredMetric, setHoveredMetric] = useState<string | null>(null);
+  const [hoveredMetric, setHoveredMetric] = useState<string | undefined>(
+    undefined
+  );
 
   const metricsCount = agencyDataStore.metrics.length;
   const availableMetricsCount = Object.values(
@@ -175,7 +177,7 @@ const AgencyOverview = () => {
                             handleNavigate(isPublished, metric.key)
                           }
                           onMouseEnter={() => setHoveredMetric(metric.key)}
-                          onMouseLeave={() => setHoveredMetric(null)}
+                          onMouseLeave={() => setHoveredMetric(undefined)}
                         >
                           <MetricBoxTitle isPublished={isPublished}>
                             {metric.display_name}
@@ -198,8 +200,10 @@ const AgencyOverview = () => {
                                   />
                                 </MiniChartContainer>
                                 <MetricBoxGraphLastUpdate>
-                                  {/* change it with actual data in future */}
-                                  Last Updated: 01/01/2022
+                                  Last updated{" "}
+                                  {new Date(
+                                    data[data.length - 1].start_date
+                                  ).toLocaleDateString("en-US")}
                                 </MetricBoxGraphLastUpdate>
                               </MetricBoxGraphContainer>
                             )}
