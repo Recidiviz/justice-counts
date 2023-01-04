@@ -58,17 +58,17 @@ export const Guidance = observer(() => {
       reportStore.resetState();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await reportStore.getReportOverviews(agencyId!);
-      const hasMinimumOneReport =
-        currentTopicID === "ADD_DATA" &&
-        Object.keys(reportStore.reportOverviews).length > 0;
-
-      if (hasMinimumOneReport) {
-        /* TODO(#267) Enable this to check during the ADD_DATA whether or not a user has atleast one draft (if so, then the topic is complete) */
-        // updateTopicStatus(currentTopicID, true);
-      }
     };
 
-    if (currentTopicID === "ADD_DATA") initialize();
+    if (currentTopicID === "ADD_DATA") {
+      const hasMinimumOneReport =
+        Object.keys(reportStore.reportOverviews).length > 0;
+      if (hasMinimumOneReport) {
+        /* TODO(#267) Enable this to check during the ADD_DATA step whether or not a user has atleast one draft (if so, then mark the topic as complete) */
+        // updateTopicStatus(currentTopicID, true);
+      }
+      initialize();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyId, currentTopicID]);
 
