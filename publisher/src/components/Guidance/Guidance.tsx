@@ -20,6 +20,7 @@ import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { REPORTS_LOWERCASE } from "../Global/constants";
 import {
   ActionButton,
   ActionButtonWrapper,
@@ -31,7 +32,6 @@ import {
   TopicDescription,
   TopicTitle,
 } from ".";
-import { REPORTS_LOWERCASE } from "../Global/constants";
 
 export const Guidance = observer(() => {
   const navigate = useNavigate();
