@@ -108,7 +108,11 @@ export const AgencySettingsSupervisions: React.FC<{
         for AND can disaggregate your data by.
       </AgencySettingsBlockDescription>
       {supervisionAgencySystems.map(({ label, value }) => (
-        <SupervisionSystemRow key={value}>
+        <SupervisionSystemRow
+          key={value}
+          hasHover={isSettingInEditMode}
+          onClick={() => setSupervisionSystemsToSave(systemsToSave(value))}
+        >
           <CheckboxWrapper>
             <Checkbox
               type="checkbox"
@@ -116,7 +120,6 @@ export const AgencySettingsSupervisions: React.FC<{
                 supervisionSystemsToSave?.includes(value as AgencySystems) ||
                 false
               }
-              onChange={() => setSupervisionSystemsToSave(systemsToSave(value))}
               disabled={!isSettingInEditMode}
             />
             <BlueCheckIcon

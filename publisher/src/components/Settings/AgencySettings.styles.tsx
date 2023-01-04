@@ -110,7 +110,7 @@ export const AgencyInfoBlockDescription = styled.div`
   margin-bottom: 16px;
 `;
 
-export const AgencySettingsInfoRow = styled.div`
+export const AgencySettingsInfoRow = styled.div<{ hasHover?: boolean }>`
   ${typography.sizeCSS.medium};
   padding: 0 8px;
   height: 54px;
@@ -120,6 +120,10 @@ export const AgencySettingsInfoRow = styled.div`
   gap: 60px;
   justify-content: space-between;
   align-items: center;
+
+  ${({ hasHover }) =>
+    hasHover &&
+    `&:hover {cursor: pointer; background-color: ${palette.highlight.grey2}}`}
 
   span {
     ${typography.sizeCSS.normal};
@@ -279,14 +283,26 @@ export const InviteMemberButton = styled.div`
   }
 `;
 
-export const TeamMemberEditInfoRow = styled.div`
+export const TeamMemberEditInfoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-height: 344px;
+  overflow-y: scroll;
+`;
+
+export const TeamMemberEditInfoRow = styled.div<{ hasHover?: boolean }>`
   height: 86px;
+  min-height: 86px;
   padding: 0 8px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #dcdddf;
+
+  ${({ hasHover }) =>
+    hasHover &&
+    `&:hover {cursor: pointer; background-color: ${palette.highlight.grey2}}`}
 `;
 
 export const TeamMemberInfoContainer = styled.div`
@@ -385,18 +401,35 @@ export const SupervisionSystemRow = styled(AgencySettingsInfoRow)`
 `;
 
 // Jurisdictions
-export const JurisdictionsInput = styled(InviteMemberInput)<{
-  isEmpty: boolean;
-}>`
+export const JurisdictionsInputWrapper = styled.div`
+  position: relative;
+`;
+
+export const JurisdictionsInput = styled(InviteMemberInput)`
   width: 100%;
-  background-image: ${({ isEmpty }) =>
-    isEmpty ? `url(${searchIcon})` : "none"};
+  background-image: url(${searchIcon});
   background-position: left 16px top 50%;
   background-repeat: no-repeat;
   margin-bottom: 24px;
+  text-indent: 24px;
+`;
 
-  &::placeholder {
-    padding-left: 24px;
+export const JurisdictionsSearchResult = styled.div`
+  position: absolute;
+  width: 644px;
+  height: 54px;
+  background-color: ${palette.solid.white};
+  color: ${palette.solid.blue};
+  ${typography.sizeCSS.medium};
+  top: 55px;
+  padding: 0 13px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  span {
+    ${typography.sizeCSS.normal};
   }
 `;
 

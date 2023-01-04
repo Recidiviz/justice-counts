@@ -40,6 +40,8 @@ import {
   JurisdictionsEditModeFooter,
   JurisdictionsEditModeFooterLeftBlock,
   JurisdictionsInput,
+  JurisdictionsInputWrapper,
+  JurisdictionsSearchResult,
   TransparentButton,
 } from "./AgencySettings.styles";
 
@@ -64,10 +66,28 @@ export const AgencySettingsJurisdictions: React.FC<{
     removeAnimation,
   } = settingProps;
 
-  const [searchValue, setSearchValue] = useState("");
+  const [inputValue, setInputValue] = useState("");
+  const [searchResult, setSearchResult] = useState<
+    { type: string; name: string; state: string | null } | undefined
+  >(undefined);
   const [checkedJurisdictions, setCheckedJurisdictions] = useState<string[]>(
     []
   );
+
+  const locationName = (name: string, state: string | null) =>
+    `${name}${state ? `, ${state}` : ""}`;
+
+  const getSearchResult = (searchValue: string) => {
+    if (inputValue === "") {
+      setSearchResult(undefined);
+      return;
+    }
+    const data = [...includedJurisdictionsMock, ...excludedJurisdictionsMock];
+    const matchData = data.filter((entry) =>
+      entry.name.toLowerCase().startsWith(searchValue.toLowerCase())
+    )[0];
+    setSearchResult(matchData);
+  };
 
   return (
     <AgencySettingsBlock
@@ -85,35 +105,51 @@ export const AgencySettingsJurisdictions: React.FC<{
             census areas that fall within your agency’s jurisdiction, or the
             ones that are excluded from your agency.
           </AgencySettingsBlockDescription>
-          <JurisdictionsInput
-            isEmpty={!searchValue}
-            placeholder="Type in the name of your jurisdiction (for example, Thurston County)"
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-          />
+          <JurisdictionsInputWrapper>
+            <JurisdictionsInput
+              placeholder="Type in the name of your jurisdiction (for example, Thurston County)"
+              value={inputValue}
+              onChange={(e) => {
+                setInputValue(e.target.value);
+                getSearchResult(e.target.value);
+              }}
+            />
+            {!!inputValue && (
+              <JurisdictionsSearchResult>
+                {searchResult
+                  ? locationName(searchResult.name, searchResult.state)
+                  : "No matches"}
+                {!!searchResult && <span>{searchResult.type}</span>}
+              </JurisdictionsSearchResult>
+            )}
+          </JurisdictionsInputWrapper>
+
           {includedJurisdictionsMock.length > 0 && (
             <AgencySettingsBlockSubDescription>
               Areas included
             </AgencySettingsBlockSubDescription>
           )}
           {includedJurisdictionsMock.map(({ type, name, state }) => (
-            <AgencySettingsInfoRow key={name}>
-              {`${name}${state ? `, ${state}` : ""}`}
+            <AgencySettingsInfoRow
+              key={name}
+              hasHover
+              onClick={() =>
+                setCheckedJurisdictions(
+                  checkedJurisdictions.includes(name)
+                    ? checkedJurisdictions.filter(
+                        (jurisdiction) => jurisdiction !== name
+                      )
+                    : [...checkedJurisdictions, name]
+                )
+              }
+            >
+              {locationName(name, state)}
               <JurisdictionCheckBlock>
                 {type}
                 <CheckboxWrapper>
                   <Checkbox
                     type="checkbox"
                     checked={checkedJurisdictions.includes(name)}
-                    onChange={() =>
-                      setCheckedJurisdictions(
-                        checkedJurisdictions.includes(name)
-                          ? checkedJurisdictions.filter(
-                              (jurisdiction) => jurisdiction !== name
-                            )
-                          : [...checkedJurisdictions, name]
-                      )
-                    }
                   />
                   <BlueCheckIcon src={blueCheck} alt="" enabled />
                 </CheckboxWrapper>
@@ -129,7 +165,7 @@ export const AgencySettingsJurisdictions: React.FC<{
           )}
           {excludedJurisdictionsMock.map(({ type, name, state }) => (
             <AgencySettingsInfoRow key={name}>
-              {`${name}${state ? `, ${state}` : ""}`}
+              {locationName(name, state)}
               <JurisdictionCheckBlock>
                 {type}
                 <CheckboxWrapper>
@@ -195,7 +231,7 @@ export const AgencySettingsJurisdictions: React.FC<{
           )}
           {includedJurisdictionsMock.map(({ type, name, state }) => (
             <AgencySettingsInfoRow key={name}>
-              {`${name}${state ? `, ${state}` : ""}`}
+              {locationName(name, state)}
               <span>{type}</span>
             </AgencySettingsInfoRow>
           ))}
@@ -208,7 +244,7 @@ export const AgencySettingsJurisdictions: React.FC<{
           )}
           {excludedJurisdictionsMock.map(({ type, name, state }) => (
             <AgencySettingsInfoRow key={name}>
-              {`${name}${state ? `, ${state}` : ""}`}
+              {locationName(name, state)}
               <span>{type}</span>
             </AgencySettingsInfoRow>
           ))}

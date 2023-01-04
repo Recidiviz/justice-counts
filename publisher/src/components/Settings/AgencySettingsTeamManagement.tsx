@@ -47,6 +47,7 @@ import {
   RemoveTeamMemberModalLargeText,
   RemoveTeamMemberModalSmallText,
   TeamMemberBadge,
+  TeamMemberEditInfoContainer,
   TeamMemberEditInfoRow,
   TeamMemberEmail,
   TeamMemberInfoContainer,
@@ -126,41 +127,46 @@ export const AgencySettingsTeamManagement: React.FC<{
           <AgencySettingsBlockSubDescription>
             Select people to remove or assign Admin status.
           </AgencySettingsBlockSubDescription>
-          {agencyTeam?.map(({ name }) => (
-            <TeamMemberEditInfoRow key={name}>
-              <TeamMemberInfoContainer>
-                {/* fake isInvited simulation */}
-                <TeamMemberName isInvited={name.startsWith("H")}>
-                  {name}
-                  {(name.startsWith("T") || name.startsWith("H")) && (
-                    <TeamMemberBadge isInvited={name.startsWith("H")}>
-                      {name.startsWith("H") ? "Invited" : "Admin"}
-                    </TeamMemberBadge>
-                  )}
-                </TeamMemberName>
-                {/* email is mocked */}
-                <TeamMemberEmail>{`${name
-                  .toLowerCase()
-                  .replace(" ", "_")}@doc1.wa.gov`}</TeamMemberEmail>
-              </TeamMemberInfoContainer>
-              <CheckboxWrapper>
-                <Checkbox
-                  type="checkbox"
-                  checked={checkedNames.includes(name)}
-                  onChange={() => {
-                    setCheckedNames(
-                      checkedNames.includes(name)
-                        ? checkedNames.filter(
-                            (checkedName) => checkedName !== name
-                          )
-                        : [...checkedNames, name]
-                    );
-                  }}
-                />
-                <BlueCheckIcon src={blueCheck} alt="" enabled />
-              </CheckboxWrapper>
-            </TeamMemberEditInfoRow>
-          ))}
+          <TeamMemberEditInfoContainer>
+            {agencyTeam?.map(({ name }) => (
+              <TeamMemberEditInfoRow
+                key={name}
+                hasHover
+                onClick={() => {
+                  setCheckedNames(
+                    checkedNames.includes(name)
+                      ? checkedNames.filter(
+                          (checkedName) => checkedName !== name
+                        )
+                      : [...checkedNames, name]
+                  );
+                }}
+              >
+                <TeamMemberInfoContainer>
+                  {/* fake isInvited simulation */}
+                  <TeamMemberName isInvited={name.startsWith("H")}>
+                    {name}
+                    {(name.startsWith("T") || name.startsWith("H")) && (
+                      <TeamMemberBadge isInvited={name.startsWith("H")}>
+                        {name.startsWith("H") ? "Invited" : "Admin"}
+                      </TeamMemberBadge>
+                    )}
+                  </TeamMemberName>
+                  {/* email is mocked */}
+                  <TeamMemberEmail>{`${name
+                    .toLowerCase()
+                    .replace(" ", "_")}@doc1.wa.gov`}</TeamMemberEmail>
+                </TeamMemberInfoContainer>
+                <CheckboxWrapper>
+                  <Checkbox
+                    type="checkbox"
+                    checked={checkedNames.includes(name)}
+                  />
+                  <BlueCheckIcon src={blueCheck} alt="" enabled />
+                </CheckboxWrapper>
+              </TeamMemberEditInfoRow>
+            ))}
+          </TeamMemberEditInfoContainer>
           {checkedNames.length === 0 ? (
             <EditModeButtonsContainer>
               <TransparentButton onClick={closeSetting}>
