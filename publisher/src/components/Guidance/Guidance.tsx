@@ -15,11 +15,21 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  Badge,
+  BadgeColorMapping,
+} from "@justice-counts/common/components/Badge";
+import {
+  printReportTitle,
+  removeSnakeCase,
+} from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
+import { REPORTS_LOWERCASE } from "../Global/constants";
 import {
   ActionButton,
   ActionButtonWrapper,
@@ -27,6 +37,10 @@ import {
   GuidanceContainer,
   ProgressStepBubble,
   ProgressStepsContainer,
+  ReportsOverviewContainer,
+  ReportsOverviewItemWrapper,
+  ReportTitle,
+  ReviewPublishLink,
   SkipButton,
   TopicDescription,
   TopicTitle,
@@ -68,7 +82,8 @@ export const Guidance = observer(() => {
       }
     };
 
-    if (currentTopicID === "ADD_DATA") initialize();
+    if (currentTopicID === "ADD_DATA" || currentTopicID === "PUBLISH_DATA")
+      initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyId, currentTopicID]);
 
@@ -99,6 +114,12 @@ export const Guidance = observer(() => {
     );
   };
 
+  const reportStatusBadgeColors: BadgeColorMapping = {
+    DRAFT: "ORANGE",
+    PUBLISHED: "GREEN",
+    NOT_STARTED: "RED",
+  };
+
   return (
     <>
       <GuidanceContainer>
@@ -109,6 +130,41 @@ export const Guidance = observer(() => {
           <TopicTitle>{currentTopicDisplayName}</TopicTitle>
           <TopicDescription>{currentTopicDescription}</TopicDescription>
 
+          {/* Publish Data - Reports Overview */}
+          {currentTopicID === "PUBLISH_DATA" && (
+            <ReportsOverviewContainer>
+              {Object.values(reportStore.reportOverviews).map((report) => (
+                <ReportsOverviewItemWrapper key={report.id}>
+                  <ReportTitle
+                    onClick={() =>
+                      navigate(`../${REPORTS_LOWERCASE}/${report.id}`)
+                    }
+                  >
+                    <span>
+                      {printReportTitle(
+                        report.month,
+                        report.year,
+                        report.frequency
+                      )}
+                    </span>
+                    <Badge color={reportStatusBadgeColors[report.status]}>
+                      {removeSnakeCase(report.status).toLowerCase()}
+                    </Badge>
+                  </ReportTitle>
+                  <ReviewPublishLink
+                    onClick={() =>
+                      navigate(`../${REPORTS_LOWERCASE}/${report.id}/review`)
+                    }
+                  >
+                    Review and publish
+                    <RightArrowIcon />
+                  </ReviewPublishLink>
+                </ReportsOverviewItemWrapper>
+              ))}
+            </ReportsOverviewContainer>
+          )}
+
+          {/* Action Buttons */}
           {currentTopicID === "ADD_DATA" ? (
             <ActionButtonWrapper>
               <ActionButton
@@ -119,7 +175,7 @@ export const Guidance = observer(() => {
               </ActionButton>
               <ActionButton
                 kind="bordered"
-                onClick={() => navigate("../records")}
+                onClick={() => navigate(`../${REPORTS_LOWERCASE}`)}
               >
                 Fill out report
               </ActionButton>
