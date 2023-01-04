@@ -116,7 +116,7 @@ export const AgencySettingsTeamManagement: React.FC<{
       ) : (
         <>
           <AgencySettingsBlockDescription>
-            Invite, remove, or assign people as an admin.
+            Invite users to join your agency on Publisher.
           </AgencySettingsBlockDescription>
           <InviteMemberContainer>
             <InviteMemberInput placeholder="Full Name" />
@@ -124,7 +124,7 @@ export const AgencySettingsTeamManagement: React.FC<{
             <InviteMemberButton>Invite</InviteMemberButton>
           </InviteMemberContainer>
           <AgencySettingsBlockSubDescription>
-            People with access to Publisher
+            Select people to remove or assign Admin status.
           </AgencySettingsBlockSubDescription>
           {agencyTeam?.map(({ name }) => (
             <TeamMemberEditInfoRow key={name}>

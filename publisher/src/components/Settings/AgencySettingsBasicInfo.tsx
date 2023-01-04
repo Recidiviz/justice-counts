@@ -46,7 +46,7 @@ export const AgencySettingsBasicInfo = () => {
           .join(", ")}
       </BasicInfoRow>
       <BasicInfoBlockDescription>
-        *If any of the below looks incorrect, contact the Justice Counts team at{" "}
+        *If any of the above looks incorrect, contact the Justice Counts team at{" "}
         <a href="mailto:justice-counts-support@csg.org">
           justice-counts-support@csg.org
         </a>

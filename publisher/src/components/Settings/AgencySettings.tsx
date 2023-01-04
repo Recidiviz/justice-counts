@@ -53,8 +53,8 @@ export const AgencySettings: React.FC = observer(() => {
   const { agencyStore, userStore } = useStore();
   const { loadingSettings, isAgencySupervision, resetState } = agencyStore;
   const { agencyId } = useParams();
-  const [activeSetting, setActiveSetting] = useState<ActiveSetting | null>(
-    null
+  const [activeSetting, setActiveSetting] = useState<ActiveSetting | undefined>(
+    undefined
   );
   const [showActiveSettingAnimation, setShowActiveSettingAnimation] =
     useState(false);
@@ -70,7 +70,7 @@ export const AgencySettings: React.FC = observer(() => {
     }
   };
   const handleCloseSetting = () => {
-    setActiveSetting(null);
+    setActiveSetting(undefined);
     setShowActiveSettingAnimation(false);
   };
   const generateSettingProps = (settingName: ActiveSetting): SettingProps => ({
