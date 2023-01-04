@@ -20,6 +20,7 @@ import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { REPORTS_LOWERCASE } from "../Global/constants";
 import {
   ActionButton,
   ActionButtonWrapper,
@@ -119,7 +120,7 @@ export const Guidance = observer(() => {
               </ActionButton>
               <ActionButton
                 kind="bordered"
-                onClick={() => navigate("../records")}
+                onClick={() => navigate(`../${REPORTS_LOWERCASE}`)}
               >
                 Fill out report
               </ActionButton>

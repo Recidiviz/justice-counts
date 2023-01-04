@@ -21,6 +21,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import logo from "../assets/jc-logo-vector.png";
+import { REPORTS_LOWERCASE } from "../Global/constants";
 import { HeaderBar, Logo, LogoContainer } from "../Header";
 import { MenuContainer, MenuItem } from "../Menu";
 import { UploadDataButton } from ".";
@@ -33,7 +34,7 @@ export const GuidanceHeader = observer(() => {
   const guidancePaths = {
     home: "getting-started",
     settings: "settings",
-    records: "records",
+    records: REPORTS_LOWERCASE,
   };
 
   const isHome = params["*"] === guidancePaths.home;
