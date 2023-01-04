@@ -63,7 +63,7 @@ export const Guidance = observer(() => {
         Object.keys(reportStore.reportOverviews).length > 0;
 
       if (hasMinimumOneReport) {
-        /* TODO(#) Enable this to check during the ADD_DATA whether or not a user has atleast one draft (if so, then the topic is complete) */
+        /* TODO(#267) Enable this to check during the ADD_DATA whether or not a user has atleast one draft (if so, then the topic is complete) */
         // updateTopicStatus(currentTopicID, true);
       }
     };
@@ -126,7 +126,7 @@ export const Guidance = observer(() => {
             </ActionButtonWrapper>
           ) : (
             <>
-              {/* TODO(#) Replace the || "Next" and only display ActionButton if there is a buttonDisplayName property while mocking */}
+              {/* TODO(#268) Replace the || "Next" and only display ActionButton if there is a buttonDisplayName property while mocking */}
               <ActionButton
                 onClick={() => {
                   if (currentTopicID) {
