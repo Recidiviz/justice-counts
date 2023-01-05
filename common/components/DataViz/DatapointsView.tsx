@@ -140,7 +140,9 @@ export const DatapointsView: React.FC<{
       )) ||
     datapointsGroupedByAggregateAndDisaggregations?.aggregate ||
     [];
-  const isAnnual = selectedData[0]?.frequency === "ANNUAL";
+
+  // all datapoints have annual frequency
+  const isAnnualOnly = !selectedData.find((dp) => dp.frequency === "MONTHLY");
   const disaggregations = Object.keys(dimensionNamesByDisaggregation || {});
   const disaggregationOptions = [...disaggregations];
   disaggregationOptions.unshift(noDisaggregationOption);
@@ -154,7 +156,7 @@ export const DatapointsView: React.FC<{
   const selectedTimeRangeValue = DataVizTimeRangesMap[timeRange];
 
   useEffect(() => {
-    if (isAnnual && selectedTimeRangeValue === 6) {
+    if (isAnnualOnly && selectedTimeRangeValue === 6) {
       setTimeRange("All");
     }
     if (!disaggregationOptions.includes(disaggregationName)) {
@@ -215,7 +217,7 @@ export const DatapointsView: React.FC<{
           title="Date Range"
           selectedValue={timeRange}
           options={
-            isAnnual
+            isAnnualOnly
               ? Object.keys(DataVizTimeRangesMap).filter(
                   (key) => key !== "6 Months Ago"
                 )

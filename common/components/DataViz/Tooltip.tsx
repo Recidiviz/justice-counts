@@ -55,7 +55,6 @@ const TooltipNameWithBottomMargin = styled(TooltipName)`
 
 interface TooltipProps extends RechartsTooltipProps<number, string> {
   percentOnly: boolean;
-  isAnnual: boolean;
   dimensionNames: string[];
 }
 
@@ -64,11 +63,11 @@ const Tooltip: React.FC<TooltipProps> = ({
   payload,
   label,
   percentOnly,
-  isAnnual,
   dimensionNames,
 }) => {
   if (active && payload && payload.length) {
     const [, , month, year] = label ? splitUtcString(label) : [];
+    const datapoint = payload[0].payload as Datapoint;
 
     const renderText = (val: string | number | null, maxValue: number) => {
       if (typeof val !== "number") {
@@ -94,7 +93,6 @@ const Tooltip: React.FC<TooltipProps> = ({
         return null;
       }
 
-      const datapoint = payload[0].payload as Datapoint;
       if (datapoint.dataVizMissingData !== 0) {
         return (
           <TooltipItemContainer>
@@ -125,7 +123,7 @@ const Tooltip: React.FC<TooltipProps> = ({
     return (
       <TooltipContainer>
         <TooltipNameWithBottomMargin>
-          {isAnnual ? year : `${month} ${year}`}
+          {datapoint.frequency === "ANNUAL" ? year : `${month} ${year}`}
         </TooltipNameWithBottomMargin>
         {renderItems()}
       </TooltipContainer>
