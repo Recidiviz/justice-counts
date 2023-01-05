@@ -44,9 +44,9 @@ const ReviewReportDataEntry = () => {
       }
     };
 
-    if (Object.keys(reportStore.reportOverviews).length === 0) {
-      initialize();
-    }
+    // if (Object.keys(reportStore.reportOverviews).length === 0) {
+    initialize();
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

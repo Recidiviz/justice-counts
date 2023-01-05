@@ -148,6 +148,7 @@ export const UploadDataButton = styled(Button)<{ activated?: boolean }>`
 export const ReportsOverviewContainer = styled.div`
   width: 100%;
   max-height: 30vh;
+  height: 30vh;
   padding: 10px 0;
   overflow: scroll;
 `;
