@@ -134,7 +134,7 @@ const DashboardView = () => {
 
   const { search } = useLocation();
   const query = new URLSearchParams(search);
-  const metricKey = query.get("metric");
+  const metricKey = query.get("metric")?.toLocaleUpperCase();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -271,7 +271,7 @@ const DashboardView = () => {
               agencyDataStore.metricDisplayNameToKey[selectedMetricName];
             if (selectedMetricKey) {
               navigate(
-                `/agency/${agencyId}/dashboard?metric=${selectedMetricKey}`
+                `/agency/${agencyId}/dashboard?metric=${selectedMetricKey.toLocaleLowerCase()}`
               );
             }
           }}

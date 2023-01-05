@@ -77,35 +77,43 @@ const AgencyOverview = () => {
 
   const handleNavigate = (isPublished: boolean, metricKey: string) => {
     if (isPublished) {
-      navigate(`/agency/${agencyId}/dashboard?metric=${metricKey}`);
+      navigate(
+        `/agency/${agencyId}/dashboard?metric=${metricKey.toLocaleLowerCase()}`
+      );
     }
   };
 
   const getPublishCount = (
     datapoint: DatapointsGroupedByAggregateAndDisaggregations
   ): string => {
-    if (!datapoint.aggregate.length) {
+    const aggregateWithNonNullValues = datapoint.aggregate.filter(
+      (dp) => dp[DataVizAggregateName] !== null
+    );
+    if (!aggregateWithNonNullValues.length) {
       return "No Data";
     }
 
     let result = "";
 
-    const monthlyPublishes = datapoint.aggregate.filter(
+    const monthlyPublishes = aggregateWithNonNullValues.filter(
       (aggregation) => aggregation.frequency === "MONTHLY"
     );
-    const yearlyPublishes = datapoint.aggregate.filter(
+    const yearlyPublishes = aggregateWithNonNullValues.filter(
       (aggregation) => aggregation.frequency === "ANNUAL"
     );
 
-    if (monthlyPublishes.length > 0) {
-      result = `${monthlyPublishes.length} ${
-        monthlyPublishes.length > 1 ? "Months" : "Month"
-      } `;
+    const yearCount =
+      yearlyPublishes.length + Math.floor(monthlyPublishes.length / 12);
+
+    if (yearCount > 0) {
+      result += `${yearCount} ${yearCount > 1 ? "Years" : "Year"} `;
     }
 
-    if (yearlyPublishes.length > 0) {
-      result += `${yearlyPublishes.length} ${
-        yearlyPublishes.length > 1 ? "Years" : "Year"
+    const remainingMonths = monthlyPublishes.length % 12;
+
+    if (remainingMonths > 0) {
+      result += `${remainingMonths} ${
+        remainingMonths > 1 ? "Months" : "Month"
       }`;
     }
 
@@ -160,9 +168,12 @@ const AgencyOverview = () => {
                     }
                   >
                     {metrics.map((metric) => {
-                      const isPublished =
-                        agencyDataStore.datapointsByMetric[metric.key].aggregate
-                          .length > 0;
+                      const hasNonNullData =
+                        agencyDataStore.datapointsByMetric[
+                          metric.key
+                        ].aggregate.filter(
+                          (dp) => dp[DataVizAggregateName] !== null
+                        ).length > 0;
                       const publishCount = getPublishCount(
                         agencyDataStore.datapointsByMetric[metric.key]
                       );
@@ -172,18 +183,18 @@ const AgencyOverview = () => {
                       return (
                         <MetricBox
                           key={metric.key}
-                          isPublished={isPublished}
+                          isPublished={hasNonNullData}
                           onClick={() =>
-                            handleNavigate(isPublished, metric.key)
+                            handleNavigate(hasNonNullData, metric.key)
                           }
                           onMouseEnter={() => setHoveredMetric(metric.key)}
                           onMouseLeave={() => setHoveredMetric(undefined)}
                         >
-                          <MetricBoxTitle isPublished={isPublished}>
+                          <MetricBoxTitle isPublished={hasNonNullData}>
                             {metric.display_name}
                           </MetricBoxTitle>
                           <MetricBoxContentContainer>
-                            {isPublished && (
+                            {hasNonNullData && (
                               <MetricBoxGraphContainer>
                                 <MiniChartContainer>
                                   <MiniBarChart
@@ -207,9 +218,9 @@ const AgencyOverview = () => {
                                 </MetricBoxGraphLastUpdate>
                               </MetricBoxGraphContainer>
                             )}
-                            <MetricBoxFooter isPublished={isPublished}>
+                            <MetricBoxFooter isPublished={hasNonNullData}>
                               {publishCount}{" "}
-                              {isPublished && <img src={arrow} alt="" />}
+                              {hasNonNullData && <img src={arrow} alt="" />}
                             </MetricBoxFooter>
                           </MetricBoxContentContainer>
                         </MetricBox>

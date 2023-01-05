@@ -51,6 +51,7 @@ export const MobileSelectMetricsModal: React.FC<{
     <MobileModalContainer>
       <MobileModalInnerContainer>
         <MobileModalCloseButton onClick={closeModal}>
+          Close
           <CloseIcon />
         </MobileModalCloseButton>
         <MobileModalHeader>{agencyName}</MobileModalHeader>
