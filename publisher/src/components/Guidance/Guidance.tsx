@@ -75,9 +75,17 @@ export const Guidance = observer(() => {
       const hasMinimumOneReport =
         currentTopicID === "ADD_DATA" &&
         Object.keys(reportStore.reportOverviews).length > 0;
+      const hasMinimumOnePublishedReport =
+        currentTopicID === "PUBLISH_DATA" &&
+        Object.values(reportStore.reportOverviews).find(
+          (report) => report.status === "PUBLISHED"
+        );
 
       if (hasMinimumOneReport) {
         /* TODO(#267) Enable this to check during the ADD_DATA whether or not a user has atleast one draft (if so, then the topic is complete) */
+        // updateTopicStatus(currentTopicID, true);
+      }
+      if (hasMinimumOnePublishedReport) {
         // updateTopicStatus(currentTopicID, true);
       }
     };
