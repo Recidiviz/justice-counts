@@ -71,7 +71,8 @@ const SelectMetricButton = () => (
 const SelectMetricButtonDropdown: React.FC<{
   onSelect: (metricKey: string) => void;
   options: string[];
-}> = ({ onSelect, options }) => (
+  currentMetricName: string;
+}> = ({ onSelect, options, currentMetricName }) => (
   <ExtendedDropdown>
     <DropdownToggle>
       <SelectMetricButton />
@@ -83,6 +84,7 @@ const SelectMetricButtonDropdown: React.FC<{
           onClick={() => {
             onSelect(value);
           }}
+          highlight={currentMetricName === value}
         >
           {value}
         </ExtendedDropdownMenuItem>
@@ -288,6 +290,7 @@ export const DatapointsView: React.FC<{
           <SelectMetricButtonDropdown
             options={Object.values(metricNamesByCategory).flat()}
             onSelect={onMetricsSelect}
+            currentMetricName={metricName}
           />
         )}
         {renderDataVizControls()}
