@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
 import { AgencySystems, Permission } from "@justice-counts/common/types";
 import { debounce } from "lodash";
 import { observer } from "mobx-react-lite";
@@ -22,7 +23,6 @@ import React, { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import blueCheck from "../assets/status-check-icon.png";
 import { Loading } from "../Loading";
 import {
   BlueCheckIcon,

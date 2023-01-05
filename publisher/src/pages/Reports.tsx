@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import checkmarkIcon from "@justice-counts/common/assets/status-check-icon.png";
 import {
   Badge,
   BadgeColorMapping,
@@ -24,7 +25,6 @@ import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import checkmarkIcon from "../components/assets/status-check-icon.png";
 import {
   REPORT_PERIOD_CAPITALIZED,
   REPORTS_CAPITALIZED,

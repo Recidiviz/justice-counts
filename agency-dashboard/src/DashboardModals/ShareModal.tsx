@@ -16,8 +16,9 @@
 // =============================================================================
 
 import { ReactComponent as CloseIcon } from "@justice-counts/common/assets/close-icon.svg";
+import checkIcon from "@justice-counts/common/assets/status-check-icon.png";
 import { showToast } from "@justice-counts/common/components/Toast";
-import React from "react";
+import React, { useState } from "react";
 
 import { Button, Input } from "../primitives/styles";
 import {
@@ -28,11 +29,17 @@ import {
   ModalScrollContainer,
   ModalTitle,
   ShareBarContainer,
+  ShareCheckIcon,
+  ShareCurrentViewContainer,
+  ShareCurrentViewText,
+  ShareEmptyCheckCircle,
 } from "./DashboardModal.styles";
 
 export const ShareModal: React.FC<{
   closeModal: () => void;
 }> = ({ closeModal }) => {
+  const [shareCurrentViewChecked, setShareCurrentViewChecked] =
+    useState<boolean>(true);
   return (
     <ModalContainer>
       <ModalScrollContainer>
@@ -57,6 +64,16 @@ export const ShareModal: React.FC<{
               Copy URL
             </Button>
           </ShareBarContainer>
+          <ShareCurrentViewContainer
+            onClick={() => setShareCurrentViewChecked(!shareCurrentViewChecked)}
+          >
+            {shareCurrentViewChecked ? (
+              <ShareCheckIcon src={checkIcon} />
+            ) : (
+              <ShareEmptyCheckCircle />
+            )}
+            <ShareCurrentViewText>Share current view</ShareCurrentViewText>
+          </ShareCurrentViewContainer>
         </ModalInnerContainer>
       </ModalScrollContainer>
     </ModalContainer>

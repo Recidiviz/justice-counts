@@ -15,12 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import checkIcon from "@justice-counts/common/assets/status-check-icon.png";
 import React, { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as ErrorIcon } from "../assets/error-icon.svg";
-import checkIcon from "../assets/status-check-icon.png";
 import { ReactComponent as WarningIcon } from "../assets/warning-icon.svg";
 import {
   BlueText,

@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { SupervisionSystems } from "@justice-counts/common/types";
 import { printCommaSeparatedList } from "@justice-counts/common/utils";
@@ -28,7 +29,6 @@ import { monthsByName, removeSnakeCase } from "../../utils";
 import { ReactComponent as CalendarIconDark } from "../assets/calendar-icon-dark.svg";
 import { ReactComponent as CalendarIconLight } from "../assets/calendar-icon-light.svg";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
-import blueCheck from "../assets/status-check-icon.png";
 import { BinaryRadioButton } from "../Forms";
 import { REPORT_VERB_LOWERCASE } from "../Global/constants";
 import { ExtendedDropdownMenu, ExtendedDropdownMenuItem } from "../Menu";
