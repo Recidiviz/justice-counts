@@ -131,6 +131,7 @@ const DashboardView = () => {
     setDisaggregationName,
     setCountOrPercentageView,
     setInitialStateFromSearchParams,
+    resetState,
   } = dataVizStore;
 
   const { search } = useLocation();
@@ -139,6 +140,13 @@ const DashboardView = () => {
 
   useEffect(() => {
     setInitialStateFromSearchParams();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [metricKeyParam]);
+
+  useEffect(() => {
+    return () => {
+      resetState();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

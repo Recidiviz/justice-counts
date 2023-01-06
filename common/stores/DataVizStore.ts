@@ -64,15 +64,15 @@ class DataVizStore {
     ) as DataVizTimeRangeDisplayName | null;
     const disaggregationParam = query.get("disaggregation");
     const viewParam = query.get("view") as DataVizCountOrPercentageView | null;
-    if (timeRangeParam) {
-      this.setTimeRange(timeRangeParam);
-    }
-    if (disaggregationParam) {
-      this.setDisaggregationName(disaggregationParam);
-    }
-    if (viewParam) {
-      this.setCountOrPercentageView(viewParam);
-    }
+    this.setTimeRange(timeRangeParam ?? this.timeRange);
+    this.setDisaggregationName(disaggregationParam ?? this.disaggregationName);
+    this.setCountOrPercentageView(viewParam ?? this.countOrPercentageView);
+  };
+
+  resetState = () => {
+    this.timeRange = "All";
+    this.disaggregationName = NoDisaggregationOption;
+    this.countOrPercentageView = "Count";
   };
 }
 
