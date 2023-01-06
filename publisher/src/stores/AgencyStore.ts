@@ -45,7 +45,7 @@ class AgencyStore {
     this.userStore = userStore;
     this.api = api;
     this.currentAgency = undefined;
-    this.settings = { PURPOSE_AND_FUNCTIONS: "" };
+    this.settings = { PURPOSE_AND_FUNCTIONS: "", HOMEPAGE_URL: "" };
     this.loadingSettings = true;
   }
 
@@ -85,6 +85,10 @@ class AgencyStore {
         this.settings.PURPOSE_AND_FUNCTIONS =
           agencySettings.settings.find(
             (setting) => setting.setting_type === "PURPOSE_AND_FUNCTIONS"
+          )?.value || "";
+        this.settings.HOMEPAGE_URL =
+          agencySettings.settings.find(
+            (setting) => setting.setting_type === "HOMEPAGE_URL"
           )?.value || "";
       });
     } catch (error) {
@@ -129,7 +133,7 @@ class AgencyStore {
     // reset the state when switching agencies
     runInAction(() => {
       this.currentAgency = undefined;
-      this.settings = { PURPOSE_AND_FUNCTIONS: "" };
+      this.settings = { PURPOSE_AND_FUNCTIONS: "", HOMEPAGE_URL: "" };
       this.loadingSettings = true;
     });
   };

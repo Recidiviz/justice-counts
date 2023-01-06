@@ -36,7 +36,8 @@ import {
 export const AboutModal: React.FC<{
   closeModal: () => void;
   agencyName: string;
-}> = ({ closeModal, agencyName }) => (
+  agencyUrl: string;
+}> = ({ closeModal, agencyName, agencyUrl }) => (
   <AboutModalContainer>
     <AboutModalInnerContainer>
       <AboutModalLogo src={logo} alt="" />
@@ -53,7 +54,18 @@ export const AboutModal: React.FC<{
             lectus lectus non sit justo. Massa, volutpat, diam maecenas risus.
             Magna est neque tellus, ut in.
           </AboutModalInfoBody>
-          <AboutModalButtonsContainer>
+          <AboutModalButtonsContainer
+            onClick={() => {
+              if (agencyUrl) {
+                window.open(
+                  agencyUrl.match(/^http[s]?:\/\//)
+                    ? agencyUrl
+                    : `http://${agencyUrl}`,
+                  "_blank"
+                );
+              }
+            }}
+          >
             <AboutModalInfoButton>Agency Website</AboutModalInfoButton>
           </AboutModalButtonsContainer>
         </AboutModalInfoSection>

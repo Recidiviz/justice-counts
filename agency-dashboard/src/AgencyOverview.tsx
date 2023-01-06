@@ -127,9 +127,11 @@ const AgencyOverview = () => {
         <PageTitle>Justice Counts</PageTitle>
         <AgencyTitle>{agencyDataStore.agency?.name}</AgencyTitle>
         <Description>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vel
-          tempor nisi. Fusce efficitur dignissim augue vitae interdum. Fusce
-          volutpat mi at imperdiet semper. Learn More
+          {
+            agencyDataStore.agency?.settings.find(
+              (setting) => setting.setting_type === "PURPOSE_AND_FUNCTIONS"
+            )?.value
+          }
         </Description>
         <MetricsCount>
           <span>

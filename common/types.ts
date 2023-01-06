@@ -48,6 +48,12 @@ export const SupervisionSystems: AgencySystems[] = [
   "OTHER_SUPERVISION",
 ];
 
+export interface AgencySetting {
+  setting_type: string;
+  source_id: number;
+  value: string;
+}
+
 export interface UserAgency {
   name: string;
   id: number;
@@ -57,6 +63,7 @@ export interface UserAgency {
   system: AgencySystems;
   systems: AgencySystems[];
   team: AgencyTeam[];
+  settings: AgencySetting[];
 }
 
 export type ReportFrequency = "MONTHLY" | "ANNUAL";
