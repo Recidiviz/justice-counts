@@ -37,6 +37,7 @@ export type AgencySystems =
 export type AgencyTeam = {
   auth0_user_id: string;
   name: string;
+  email: string;
 };
 
 export const SupervisionSystems: AgencySystems[] = [
