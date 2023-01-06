@@ -18,6 +18,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
+import { AgencyTeam } from "../../../../common/types";
 import { useStore } from "../../stores";
 import rightArrow from "../assets/right-arrow.svg";
 import blueCheck from "../assets/status-check-icon.png";
@@ -68,13 +69,75 @@ export const AgencySettingsTeamManagement: React.FC<{
 
   const { agencyId } = useParams();
   const { userStore } = useStore();
-  const [checkedNames, setCheckedNames] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const agencyTeam = userStore
     .getAgency(agencyId)
     ?.team.filter((member) => member.auth0_user_id !== userStore.auth0UserID)
     .sort((a, b) => a.name.localeCompare(b.name));
+
+  // edit mode simulation, transforming team to include status id and email
+  const [team, setTeam] = useState(() =>
+    agencyTeam
+      ? agencyTeam.map((member, index) => {
+          let isInvited = false;
+          let isAdmin = false;
+          if (index % 2 === 0) isInvited = true;
+          if (index % 3 === 0) isAdmin = true;
+
+          return {
+            ...member,
+            id: member.name,
+            email: `${member.name.toLowerCase().replace(" ", "_")}@doc1.wa.gov`,
+            isInvited,
+            isAdmin,
+          };
+        })
+      : []
+  );
+  const [checkedMembersIds, setCheckedMembersIds] = useState<string[]>([]);
+  const [nameValue, setNameValue] = useState("");
+  const [emailValue, setEmailValue] = useState("");
+
+  const handleInvite = (name: string, email: string) => {
+    if (name && email) {
+      const newMember: AgencyTeam & {
+        id: string;
+        email: string;
+        isInvited: boolean;
+        isAdmin: boolean;
+      } = {
+        name,
+        email,
+        id: name,
+        auth0_user_id: "",
+        isInvited: true,
+        isAdmin: false,
+      };
+      setTeam([newMember, ...team]);
+      setNameValue("");
+      setEmailValue("");
+    }
+  };
+  const handleCheckMembers = (memberId: string) => {
+    setCheckedMembersIds(
+      checkedMembersIds.includes(memberId)
+        ? checkedMembersIds.filter((id) => id !== memberId)
+        : [...checkedMembersIds, memberId]
+    );
+  };
+  const handleMakeAdmin = (memberIds: string[]) => {
+    const updatedTeam = team.map((member) =>
+      memberIds.includes(member.id) ? { ...member, isAdmin: true } : member
+    );
+    setTeam(updatedTeam);
+    setCheckedMembersIds([]);
+  };
+  const handleRemoveMembers = (memberIds: string[]) => {
+    setTeam(team.filter((member) => !memberIds.includes(member.id)));
+    setCheckedMembersIds([]);
+    setIsModalOpen(false);
+  };
 
   return (
     <AgencySettingsBlock
@@ -90,21 +153,18 @@ export const AgencySettingsTeamManagement: React.FC<{
             These are the other people at your agency who have accounts on
             Publisher.
           </AgencySettingsBlockDescription>
-          {agencyTeam?.map(({ name }) => (
-            <AgencySettingsInfoRow key={name}>
+          {team?.map(({ name, email, id, isInvited, isAdmin }) => (
+            <AgencySettingsInfoRow key={name + id}>
               {/* fake isInvited simulation */}
-              <TeamMemberName isInvited={name.startsWith("H")}>
+              <TeamMemberName isInvited={isInvited}>
                 {name}
-                {(name.startsWith("T") || name.startsWith("H")) && (
-                  <TeamMemberBadge isInvited={name.startsWith("H")}>
-                    {name.startsWith("H") ? "Invited" : "Admin"}
-                  </TeamMemberBadge>
+                {isAdmin && <TeamMemberBadge isAdmin>Admin</TeamMemberBadge>}
+                {isInvited && (
+                  <TeamMemberBadge isInvited>Invited</TeamMemberBadge>
                 )}
               </TeamMemberName>
               {/* email is mocked */}
-              <span>{`${name
-                .toLowerCase()
-                .replace(" ", "_")}@doc1.wa.gov`}</span>
+              <span>{email}</span>
             </AgencySettingsInfoRow>
           ))}
           <EditButtonContainer>
@@ -120,54 +180,58 @@ export const AgencySettingsTeamManagement: React.FC<{
             Invite users to join your agency on Publisher.
           </AgencySettingsBlockDescription>
           <InviteMemberContainer>
-            <InviteMemberInput placeholder="Full Name" />
-            <InviteMemberInput placeholder="Email" />
-            <InviteMemberButton>Invite</InviteMemberButton>
+            <InviteMemberInput
+              placeholder="Full Name"
+              value={nameValue}
+              onChange={(e) => setNameValue(e.target.value)}
+            />
+            <InviteMemberInput
+              placeholder="Email"
+              value={emailValue}
+              onChange={(e) => setEmailValue(e.target.value)}
+            />
+            <InviteMemberButton
+              onClick={() => handleInvite(nameValue, emailValue)}
+            >
+              Invite
+            </InviteMemberButton>
           </InviteMemberContainer>
           <AgencySettingsBlockSubDescription>
             Select people to remove or assign Admin status.
           </AgencySettingsBlockSubDescription>
           <TeamMemberEditInfoContainer>
-            {agencyTeam?.map(({ name }) => (
+            {team?.map(({ name, email, id, isAdmin, isInvited }) => (
               <TeamMemberEditInfoRow
-                key={name}
+                key={name + id}
                 hasHover
-                onClick={() => {
-                  setCheckedNames(
-                    checkedNames.includes(name)
-                      ? checkedNames.filter(
-                          (checkedName) => checkedName !== name
-                        )
-                      : [...checkedNames, name]
-                  );
-                }}
+                onClick={() => handleCheckMembers(id)}
               >
                 <TeamMemberInfoContainer>
                   {/* fake isInvited simulation */}
-                  <TeamMemberName isInvited={name.startsWith("H")}>
+                  <TeamMemberName isInvited={isInvited}>
                     {name}
-                    {(name.startsWith("T") || name.startsWith("H")) && (
-                      <TeamMemberBadge isInvited={name.startsWith("H")}>
-                        {name.startsWith("H") ? "Invited" : "Admin"}
-                      </TeamMemberBadge>
+                    {isAdmin && (
+                      <TeamMemberBadge isAdmin>Admin</TeamMemberBadge>
+                    )}
+                    {isInvited && (
+                      <TeamMemberBadge isInvited>Invited</TeamMemberBadge>
                     )}
                   </TeamMemberName>
                   {/* email is mocked */}
-                  <TeamMemberEmail>{`${name
-                    .toLowerCase()
-                    .replace(" ", "_")}@doc1.wa.gov`}</TeamMemberEmail>
+                  <TeamMemberEmail>{email}</TeamMemberEmail>
                 </TeamMemberInfoContainer>
                 <CheckboxWrapper>
                   <Checkbox
                     type="checkbox"
-                    checked={checkedNames.includes(name)}
+                    checked={checkedMembersIds.includes(id)}
+                    onChange={() => handleCheckMembers(id)}
                   />
                   <BlueCheckIcon src={blueCheck} alt="" enabled />
                 </CheckboxWrapper>
               </TeamMemberEditInfoRow>
             ))}
           </TeamMemberEditInfoContainer>
-          {checkedNames.length === 0 ? (
+          {checkedMembersIds.length === 0 ? (
             <EditModeButtonsContainer>
               <TransparentButton onClick={closeSetting}>
                 Cancel
@@ -178,11 +242,16 @@ export const AgencySettingsTeamManagement: React.FC<{
             <EditModeButtonsContainer>
               <TransparentButton
                 color="blue"
-                onClick={() => setCheckedNames([])}
+                onClick={() => setCheckedMembersIds([])}
               >
                 Cancel
               </TransparentButton>
-              <TransparentButton color="blue">Make admin</TransparentButton>
+              <TransparentButton
+                color="blue"
+                onClick={() => handleMakeAdmin(checkedMembersIds)}
+              >
+                Make admin
+              </TransparentButton>
               <TransparentButton
                 color="red"
                 onClick={() => setIsModalOpen(true)}
@@ -206,7 +275,10 @@ export const AgencySettingsTeamManagement: React.FC<{
               <ConfirmationFilledButton onClick={() => setIsModalOpen(false)}>
                 Cancel
               </ConfirmationFilledButton>
-              <ConfirmationFilledButton isRed>
+              <ConfirmationFilledButton
+                isRed
+                onClick={() => handleRemoveMembers(checkedMembersIds)}
+              >
                 Remove from agency
               </ConfirmationFilledButton>
             </RemoveTeamMemberModalButtonsContainer>

@@ -322,18 +322,26 @@ export const TeamMemberName = styled.div<{ isInvited: boolean }>`
     isInvited ? palette.highlight.grey9 : palette.solid.darkgrey};
 `;
 
-export const TeamMemberBadge = styled.div<{ isInvited: boolean }>`
+export const TeamMemberBadge = styled.div<{
+  isInvited?: boolean;
+  isAdmin?: boolean;
+}>`
   ${typography.sizeCSS.small};
-  background-color: ${({ isInvited }) =>
-    isInvited ? palette.highlight.grey4 : palette.solid.blue};
-  color: ${({ isInvited }) =>
-    isInvited ? palette.solid.darkgrey : palette.solid.white};
+  display: flex;
   width: 54px;
   height: 24px;
-  display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
+
+  background-color: ${({ isInvited, isAdmin }) => {
+    if (isInvited) return palette.highlight.grey4;
+    if (isAdmin) return palette.solid.blue;
+  }};
+  color: ${({ isInvited, isAdmin }) => {
+    if (isInvited) return palette.solid.darkgrey;
+    if (isAdmin) return palette.solid.white;
+  }};
 `;
 
 export const TeamMemberEmail = styled.div`
