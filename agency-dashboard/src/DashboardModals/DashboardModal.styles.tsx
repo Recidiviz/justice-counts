@@ -129,6 +129,7 @@ export const ShareCurrentViewContainer = styled.div`
   margin-top: 8px;
   gap: 8px;
   align-self: start;
+  user-select: none;
   ${typography.sizeCSS.normal}
 `;
 

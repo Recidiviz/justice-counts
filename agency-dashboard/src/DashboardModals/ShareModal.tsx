@@ -40,6 +40,12 @@ export const ShareModal: React.FC<{
 }> = ({ closeModal }) => {
   const [shareCurrentViewChecked, setShareCurrentViewChecked] =
     useState<boolean>(true);
+
+  const query = new URLSearchParams(window.location.search);
+  const metricKeyParam = query.get("metric");
+  const shareUrl = shareCurrentViewChecked
+    ? window.location.href
+    : `${window.location.origin}${window.location.pathname}?metric=${metricKeyParam}`;
   return (
     <ModalContainer>
       <ModalScrollContainer>
@@ -54,10 +60,10 @@ export const ShareModal: React.FC<{
             nunc lacus diam varius varius enim risus.
           </ModalParagraph>
           <ShareBarContainer>
-            <Input readOnly value={window.location.href} />
+            <Input readOnly value={shareUrl} />
             <Button
               onClick={() => {
-                navigator.clipboard.writeText(window.location.href);
+                navigator.clipboard.writeText(shareUrl);
                 showToast("Copied!", false, "blue", 2500, false, false);
               }}
             >

@@ -163,16 +163,24 @@ export const DatapointsView: React.FC<{
     }
     if (!disaggregationOptions.includes(disaggregationName)) {
       setDisaggregationName(noDisaggregationOption);
-      setCountOrPercentageView("Count");
+      if (countOrPercentageView !== "Count") {
+        setCountOrPercentageView("Count");
+      }
     }
-    if (disaggregationName === noDisaggregationOption) {
+    if (
+      disaggregationName === noDisaggregationOption &&
+      countOrPercentageView !== "Count"
+    ) {
       setCountOrPercentageView("Count");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [datapointsGroupedByAggregateAndDisaggregations]);
 
   useEffect(() => {
-    if (disaggregationName === noDisaggregationOption) {
+    if (
+      disaggregationName === noDisaggregationOption &&
+      countOrPercentageView !== "Count"
+    ) {
       setCountOrPercentageView("Count");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -37,15 +37,42 @@ class DataVizStore {
   }
 
   setTimeRange = (timeRange: DataVizTimeRangeDisplayName) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("time_range", timeRange);
+    window.history.pushState(null, "", url.toString());
     this.timeRange = timeRange;
   };
 
   setDisaggregationName = (disaggregation: string) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("disaggregation", disaggregation);
+    window.history.pushState(null, "", url.toString());
     this.disaggregationName = disaggregation;
   };
 
   setCountOrPercentageView = (viewSetting: DataVizCountOrPercentageView) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("view", viewSetting);
+    window.history.pushState(null, "", url.toString());
     this.countOrPercentageView = viewSetting;
+  };
+
+  setInitialStateFromSearchParams = () => {
+    const query = new URLSearchParams(window.location.search);
+    const timeRangeParam = query.get(
+      "time_range"
+    ) as DataVizTimeRangeDisplayName | null;
+    const disaggregationParam = query.get("disaggregation");
+    const viewParam = query.get("view") as DataVizCountOrPercentageView | null;
+    if (timeRangeParam) {
+      this.setTimeRange(timeRangeParam);
+    }
+    if (disaggregationParam) {
+      this.setDisaggregationName(disaggregationParam);
+    }
+    if (viewParam) {
+      this.setCountOrPercentageView(viewParam);
+    }
   };
 }
 
