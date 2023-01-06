@@ -180,11 +180,10 @@ export const AgencySettings: React.FC = observer(() => {
               </a>
               .
             </AgencySettingsBlockDescription>
-            {agencyTeam?.map(({ name }) => (
+            {agencyTeam?.map(({ name, email }) => (
               <AgencySettingsInfoRow key={name}>
                 {name}
-                {/* email is mocked */}
-                <span>{`${name}@doc1.wa.gov`}</span>
+                <span>{email}</span>
               </AgencySettingsInfoRow>
             ))}
           </AgencySettingsBlock>
