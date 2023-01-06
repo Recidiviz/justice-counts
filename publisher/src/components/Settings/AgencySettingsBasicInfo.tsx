@@ -40,7 +40,11 @@ export const AgencySettingsBasicInfo = () => {
         {currentAgency?.state}
       </BasicInfoRow>
       <BasicInfoRow>
-        <span>Systems</span>
+        <span>
+          {currentAgencySystems && currentAgencySystems.length > 1
+            ? "Systems"
+            : "System"}
+        </span>
         {currentAgencySystems
           ?.map((system) => normalizeSystem(system))
           .join(", ")}

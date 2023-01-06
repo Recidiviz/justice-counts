@@ -42,7 +42,7 @@ export const AgencySettingsDescription: React.FC<{
     isSettingInEditMode,
     openSetting,
     closeSetting,
-    showAnimation,
+    isAnimationShowing,
     removeAnimation,
   } = settingProps;
 
@@ -85,8 +85,8 @@ export const AgencySettingsDescription: React.FC<{
   return (
     <AgencySettingsBlock
       id="description"
-      editMode={isSettingInEditMode}
-      showAnimation={showAnimation}
+      isEditModeActive={isSettingInEditMode}
+      isAnimationShowing={isAnimationShowing}
       onAnimationEnd={removeAnimation}
     >
       <AgencySettingsBlockTitle>Agency Information</AgencySettingsBlockTitle>

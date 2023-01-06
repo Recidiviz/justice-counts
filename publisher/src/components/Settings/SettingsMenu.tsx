@@ -92,27 +92,6 @@ export const SettingsMenu: React.FC = observer(() => {
                 )}
               </SubMenuListContainer>
             )}
-          {/* {removeAgencyFromPath(location.pathname) === */}
-          {/*  "settings/agency-settings" && */}
-          {/*  path === "agency-settings" && */}
-          {/*  !agencyStore.loadingSettings && ( */}
-          {/*    <SubMenuListContainer> */}
-          {/*      {menuItems.map(({ label, id }) => ( */}
-          {/*        <SubMenuListItem */}
-          {/*          key={id} */}
-          {/*          activeSection={label === activeAgencyMenuSubItem} */}
-          {/*          onClick={() => { */}
-          {/*            setActiveAgencyMenuSubItem(label); */}
-          {/*            document */}
-          {/*              .getElementById(id) */}
-          {/*              ?.scrollIntoView({ behavior: "smooth" }); */}
-          {/*          }} */}
-          {/*        > */}
-          {/*          {label} */}
-          {/*        </SubMenuListItem> */}
-          {/*      ))} */}
-          {/*    </SubMenuListContainer> */}
-          {/*  )} */}
         </Fragment>
       ))}
     </SettingsMenuContainer>

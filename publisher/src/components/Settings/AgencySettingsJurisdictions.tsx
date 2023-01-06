@@ -62,7 +62,7 @@ export const AgencySettingsJurisdictions: React.FC<{
     isSettingInEditMode,
     openSetting,
     closeSetting,
-    showAnimation,
+    isAnimationShowing,
     removeAnimation,
   } = settingProps;
 
@@ -92,8 +92,8 @@ export const AgencySettingsJurisdictions: React.FC<{
   return (
     <AgencySettingsBlock
       id="jurisdictions"
-      editMode={isSettingInEditMode}
-      showAnimation={showAnimation}
+      isEditModeActive={isSettingInEditMode}
+      isAnimationShowing={isAnimationShowing}
       onAnimationEnd={removeAnimation}
     >
       <AgencySettingsBlockTitle>Jurisdictions</AgencySettingsBlockTitle>

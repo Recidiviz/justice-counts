@@ -24,6 +24,8 @@ import styled, { css, keyframes } from "styled-components/macro";
 // Common
 import searchIcon from "../assets/search-icon.png";
 
+const AGENCY_SETTINGS_CONTAINER_WIDTH = 732;
+
 const boxShadowFrames = keyframes`
   0% { box-shadow: 0px 2px 20px ${palette.solid.red}; }
   100% { box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.1) }
@@ -34,27 +36,26 @@ const boxShadowAnimation = css`
 `;
 
 // 662px is settings menu width times 2
-// 732px is the width of agency settings container
 export const AgencySettingsWrapper = styled.div`
   position: absolute;
   height: 100%;
   overflow-y: scroll;
   left: 0;
   width: 100vw;
-  min-width: 732px;
+  min-width: ${AGENCY_SETTINGS_CONTAINER_WIDTH}px;
   display: flex;
   justify-content: center;
   padding-bottom: 100px;
   z-index: 1;
 
-  @media only screen and (max-width: calc(662px + 732px)) {
+  @media only screen and (max-width: calc(662px + ${AGENCY_SETTINGS_CONTAINER_WIDTH}px)) {
     margin-left: 331px;
     justify-content: start;
   }
 `;
 
 export const AgencySettingsContent = styled.div`
-  width: 732px;
+  width: ${AGENCY_SETTINGS_CONTAINER_WIDTH}px;
   display: flex;
   height: fit-content;
   flex-direction: column;
@@ -68,8 +69,8 @@ export const AgencySettingsTitle = styled.div`
 
 export const AgencySettingsBlock = styled.div<{
   withBorder?: boolean;
-  editMode?: boolean;
-  showAnimation?: boolean;
+  isEditModeActive?: boolean;
+  isAnimationShowing?: boolean;
 }>`
   position: relative;
   padding 32px 24px;
@@ -80,11 +81,11 @@ export const AgencySettingsBlock = styled.div<{
   width: ${({ withBorder }) =>
     withBorder ? "calc(100% - 88px)" : "calc(100% - 40px)"};
   
-  ${({ editMode }) =>
-    editMode && "box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.1);"};
+  ${({ isEditModeActive }) =>
+    isEditModeActive && "box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.1);"};
     
-  ${({ editMode, showAnimation }) =>
-    editMode && showAnimation && boxShadowAnimation}
+  ${({ isEditModeActive, isAnimationShowing }) =>
+    isEditModeActive && isAnimationShowing && boxShadowAnimation}
 `;
 
 export const AgencySettingsBlockTitle = styled.div`

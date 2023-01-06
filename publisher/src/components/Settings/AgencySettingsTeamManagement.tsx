@@ -62,7 +62,7 @@ export const AgencySettingsTeamManagement: React.FC<{
     isSettingInEditMode,
     openSetting,
     closeSetting,
-    showAnimation,
+    isAnimationShowing,
     removeAnimation,
   } = settingProps;
 
@@ -79,8 +79,8 @@ export const AgencySettingsTeamManagement: React.FC<{
   return (
     <AgencySettingsBlock
       id="team"
-      editMode={isSettingInEditMode}
-      showAnimation={showAnimation}
+      isEditModeActive={isSettingInEditMode}
+      isAnimationShowing={isAnimationShowing}
       onAnimationEnd={removeAnimation}
     >
       <AgencySettingsBlockTitle>Team Management</AgencySettingsBlockTitle>

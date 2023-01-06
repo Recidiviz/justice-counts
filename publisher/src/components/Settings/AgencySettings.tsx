@@ -38,14 +38,14 @@ export enum ActiveSetting {
   Description = "DESCRIPTION",
   Team = "TEAM",
   Supervisions = "SUPERVISIONS",
-  Jurisdictions = "Jurisdictions",
+  Jurisdictions = "JURISDICTIONS",
 }
 
 export type SettingProps = {
   isSettingInEditMode: boolean;
   openSetting: () => void;
   closeSetting: () => void;
-  showAnimation: boolean;
+  isAnimationShowing: boolean;
   removeAnimation: () => void;
 };
 
@@ -56,7 +56,7 @@ export const AgencySettings: React.FC = observer(() => {
   const [activeSetting, setActiveSetting] = useState<ActiveSetting | undefined>(
     undefined
   );
-  const [showActiveSettingAnimation, setShowActiveSettingAnimation] =
+  const [isSettingAnimationActive, setIsSettingAnimationActive] =
     useState(false);
 
   const handleOpenSetting = (setting: ActiveSetting) => {
@@ -64,21 +64,21 @@ export const AgencySettings: React.FC = observer(() => {
       document
         .getElementById(activeSetting.toLowerCase())
         ?.scrollIntoView({ behavior: "smooth" });
-      setShowActiveSettingAnimation(true);
+      setIsSettingAnimationActive(true);
     } else {
       setActiveSetting(setting);
     }
   };
   const handleCloseSetting = () => {
     setActiveSetting(undefined);
-    setShowActiveSettingAnimation(false);
+    setIsSettingAnimationActive(false);
   };
   const generateSettingProps = (settingName: ActiveSetting): SettingProps => ({
     isSettingInEditMode: activeSetting === settingName,
     openSetting: () => handleOpenSetting(settingName),
     closeSetting: handleCloseSetting,
-    showAnimation: showActiveSettingAnimation,
-    removeAnimation: () => setShowActiveSettingAnimation(false),
+    isAnimationShowing: isSettingAnimationActive,
+    removeAnimation: () => setIsSettingAnimationActive(false),
   });
 
   const isAdmin = userStore.permissions.includes(Permission.RECIDIVIZ_ADMIN);
