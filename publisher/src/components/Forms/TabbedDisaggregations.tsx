@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import successIcon from "@justice-counts/common/assets/status-check-icon.png";
 import {
   Metric as MetricType,
   MetricDisaggregationDimensions,
@@ -23,7 +24,6 @@ import {
 import React, { Fragment, useEffect, useState } from "react";
 
 import { useStore } from "../../stores";
-import successIcon from "../assets/status-check-icon.png";
 import errorIcon from "../assets/status-error-icon.png";
 import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "../MetricConfiguration";
 import { DisaggregationDimensionTextInput } from "../Reports/DataEntryFormComponents";

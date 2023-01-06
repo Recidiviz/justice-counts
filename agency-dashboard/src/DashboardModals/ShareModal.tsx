@@ -16,8 +16,9 @@
 // =============================================================================
 
 import { ReactComponent as CloseIcon } from "@justice-counts/common/assets/close-icon.svg";
+import checkIcon from "@justice-counts/common/assets/status-check-icon.png";
 import { showToast } from "@justice-counts/common/components/Toast";
-import React from "react";
+import React, { useState } from "react";
 
 import { Button, Input } from "../primitives/styles";
 import {
@@ -28,11 +29,23 @@ import {
   ModalScrollContainer,
   ModalTitle,
   ShareBarContainer,
+  ShareCheckIcon,
+  ShareCurrentViewContainer,
+  ShareCurrentViewText,
+  ShareEmptyCheckCircle,
 } from "./DashboardModal.styles";
 
 export const ShareModal: React.FC<{
   closeModal: () => void;
 }> = ({ closeModal }) => {
+  const [shareCurrentViewChecked, setShareCurrentViewChecked] =
+    useState<boolean>(true);
+
+  const query = new URLSearchParams(window.location.search);
+  const metricKeyParam = query.get("metric");
+  const shareUrl = shareCurrentViewChecked
+    ? window.location.href
+    : `${window.location.origin}${window.location.pathname}?metric=${metricKeyParam}`;
   return (
     <ModalContainer>
       <ModalScrollContainer>
@@ -47,16 +60,26 @@ export const ShareModal: React.FC<{
             nunc lacus diam varius varius enim risus.
           </ModalParagraph>
           <ShareBarContainer>
-            <Input readOnly value={window.location.href} />
+            <Input readOnly value={shareUrl} />
             <Button
               onClick={() => {
-                navigator.clipboard.writeText(window.location.href);
+                navigator.clipboard.writeText(shareUrl);
                 showToast("Copied!", false, "blue", 2500, false, false);
               }}
             >
               Copy URL
             </Button>
           </ShareBarContainer>
+          <ShareCurrentViewContainer
+            onClick={() => setShareCurrentViewChecked(!shareCurrentViewChecked)}
+          >
+            {shareCurrentViewChecked ? (
+              <ShareCheckIcon src={checkIcon} />
+            ) : (
+              <ShareEmptyCheckCircle />
+            )}
+            <ShareCurrentViewText>Share current view</ShareCurrentViewText>
+          </ShareCurrentViewContainer>
         </ModalInnerContainer>
       </ModalScrollContainer>
     </ModalContainer>

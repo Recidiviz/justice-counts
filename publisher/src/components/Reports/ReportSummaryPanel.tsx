@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import successIcon from "@justice-counts/common/assets/status-check-icon.png";
 import {
   HEADER_BAR_HEIGHT,
   palette,
@@ -31,7 +32,6 @@ import {
   printDateRangeFromMonthYear,
   printElapsedDaysMonthsYearsSinceDate,
 } from "../../utils";
-import successIcon from "../assets/status-check-icon.png";
 import errorIcon from "../assets/status-error-icon.png";
 import { MetricsSectionTitle, Title } from "../Forms";
 import { REPORT_CAPITALIZED } from "../Global/constants";

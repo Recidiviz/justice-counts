@@ -19,7 +19,7 @@ import { DatapointsTableView } from "@justice-counts/common/components/DataViz/D
 import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
 import { ReportFrequency } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useEffect } from "react";
 
 import { useStore } from "../../stores";
 import { ChartView } from "../MetricConfiguration";
@@ -42,7 +42,21 @@ const ConnectedDatapointsView: React.FC<{
     setTimeRange,
     setDisaggregationName,
     setCountOrPercentageView,
+    setInitialStateFromSearchParams,
+    resetState,
   } = dataVizStore;
+
+  useEffect(() => {
+    setInitialStateFromSearchParams();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [metric]);
+
+  useEffect(() => {
+    return () => {
+      resetState();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
