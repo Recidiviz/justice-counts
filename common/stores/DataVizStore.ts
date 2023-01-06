@@ -16,7 +16,9 @@
 // =============================================================================
 
 import {
+  dataVizCountOrPercentageView,
   DataVizCountOrPercentageView,
+  dataVizTimeRangeDisplayName,
   DataVizTimeRangeDisplayName,
   NoDisaggregationOption,
 } from "@justice-counts/common/types";
@@ -64,9 +66,20 @@ class DataVizStore {
     ) as DataVizTimeRangeDisplayName | null;
     const disaggregationParam = query.get("disaggregation");
     const viewParam = query.get("view") as DataVizCountOrPercentageView | null;
-    this.setTimeRange(timeRangeParam ?? this.timeRange);
+    if (
+      timeRangeParam &&
+      dataVizTimeRangeDisplayName.includes(timeRangeParam)
+    ) {
+      this.setTimeRange(timeRangeParam);
+    } else {
+      this.setTimeRange(this.timeRange);
+    }
     this.setDisaggregationName(disaggregationParam ?? this.disaggregationName);
-    this.setCountOrPercentageView(viewParam ?? this.countOrPercentageView);
+    if (viewParam && dataVizCountOrPercentageView.includes(viewParam)) {
+      this.setCountOrPercentageView(viewParam);
+    } else {
+      this.setCountOrPercentageView(this.countOrPercentageView);
+    }
   };
 
   resetState = () => {
