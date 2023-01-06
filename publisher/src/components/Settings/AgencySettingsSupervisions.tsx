@@ -73,12 +73,6 @@ export const AgencySettingsSupervisions: React.FC<{
   const [supervisionSystemsToSave, setSupervisionSystemsToSave] =
     useState(currentAgencySystems);
 
-  const systemsToSave = (systemToToggle: AgencySystems): AgencySystems[] => {
-    if (!supervisionSystemsToSave) return [systemToToggle];
-    return supervisionSystemsToSave.includes(systemToToggle)
-      ? supervisionSystemsToSave.filter((system) => system !== systemToToggle)
-      : supervisionSystemsToSave.concat(systemToToggle);
-  };
   const cancelSupervisionChanges = () => {
     setSupervisionSystemsToSave(currentAgencySystems);
     closeSetting();
@@ -91,6 +85,17 @@ export const AgencySettingsSupervisions: React.FC<{
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     saveAgencySettings(updatedSettings, agencyId!);
     closeSetting();
+  };
+  const systemsToSave = (systemToToggle: AgencySystems): AgencySystems[] => {
+    if (!supervisionSystemsToSave) return [systemToToggle];
+    return supervisionSystemsToSave.includes(systemToToggle)
+      ? supervisionSystemsToSave.filter((system) => system !== systemToToggle)
+      : supervisionSystemsToSave.concat(systemToToggle);
+  };
+  const handleSetSupervisionSystemsToSave = (value: AgencySystems) => {
+    if (isSettingInEditMode) {
+      setSupervisionSystemsToSave(systemsToSave(value));
+    }
   };
 
   return (
@@ -111,7 +116,7 @@ export const AgencySettingsSupervisions: React.FC<{
         <SupervisionSystemRow
           key={value}
           hasHover={isSettingInEditMode}
-          onClick={() => setSupervisionSystemsToSave(systemsToSave(value))}
+          onClick={() => handleSetSupervisionSystemsToSave(value)}
         >
           <CheckboxWrapper>
             <Checkbox
@@ -120,6 +125,7 @@ export const AgencySettingsSupervisions: React.FC<{
                 supervisionSystemsToSave?.includes(value as AgencySystems) ||
                 false
               }
+              onChange={() => handleSetSupervisionSystemsToSave(value)}
               disabled={!isSettingInEditMode}
             />
             <BlueCheckIcon
