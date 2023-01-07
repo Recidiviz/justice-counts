@@ -61,6 +61,11 @@ export const HeaderBar: React.FC<{ showTitle?: boolean }> = ({ showTitle }) => {
         <AboutModal
           closeModal={hideAboutModal}
           agencyName={agencyDataStore.agency?.name || ""}
+          agencyDescription={
+            agencyDataStore.agency?.settings.find(
+              (setting) => setting.setting_type === "PURPOSE_AND_FUNCTIONS"
+            )?.value || ""
+          }
           agencyUrl={
             agencyDataStore.agency?.settings.find(
               (setting) => setting.setting_type === "HOMEPAGE_URL"

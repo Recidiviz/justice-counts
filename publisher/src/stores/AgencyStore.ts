@@ -97,7 +97,7 @@ class AgencyStore {
   }
 
   saveAgencySettings = async (
-    settings: AgencySettings,
+    settings: Partial<AgencySettings>,
     agencyId: string
   ): Promise<void> => {
     const response = (await this.api.request({
@@ -115,16 +115,21 @@ class AgencyStore {
   };
 
   updateAgencySettings = (
-    text: string,
-    systems: AgencySystems[] | undefined
-  ): AgencySettings => {
-    this.settings.PURPOSE_AND_FUNCTIONS = text;
-    if (this.currentAgency && systems) {
-      this.currentAgency.systems = systems;
-    }
+    type: AgencySettingType,
+    text: string
+  ): Partial<AgencySettings> => {
+    this.settings[type] = text;
 
     return {
-      settings: [{ setting_type: "PURPOSE_AND_FUNCTIONS", value: text }],
+      settings: [{ setting_type: type, value: text }],
+    };
+  };
+
+  updateAgencySystems = (systems: AgencySystems[]): Partial<AgencySettings> => {
+    if (this.currentAgency) {
+      this.currentAgency.systems = systems;
+    }
+    return {
       systems,
     };
   };

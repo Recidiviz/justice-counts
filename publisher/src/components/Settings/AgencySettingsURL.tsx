@@ -25,7 +25,6 @@ import {
   AgencyInfoBlockDescription,
   AgencyInfoTextArea,
   AgencyInfoTextAreaLabel,
-  AgencyInfoTextAreaWordCounter,
   AgencySettingsBlock,
   AgencySettingsBlockTitle,
   EditButton,
@@ -35,7 +34,7 @@ import {
   TransparentButton,
 } from "./AgencySettings.styles";
 
-export const AgencySettingsDescription: React.FC<{
+export const AgencySettingsUrl: React.FC<{
   settingProps: SettingProps;
 }> = ({ settingProps }) => {
   const {
@@ -54,18 +53,15 @@ export const AgencySettingsDescription: React.FC<{
     updateAgencySettings,
     saveAgencySettings,
   } = agencyStore;
-  const [infoText, setInfoText] = useState(settings.PURPOSE_AND_FUNCTIONS);
+  const [urlText, setUrlText] = useState(settings.HOMEPAGE_URL);
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const cancelAgencyInfoChanges = () => {
-    setInfoText(settings.PURPOSE_AND_FUNCTIONS);
+    setUrlText(settings.HOMEPAGE_URL);
     closeSetting();
   };
   const saveAgencyInfoChanges = () => {
-    const updatedSettings = updateAgencySettings(
-      "PURPOSE_AND_FUNCTIONS",
-      infoText
-    );
+    const updatedSettings = updateAgencySettings("HOMEPAGE_URL", urlText);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     saveAgencySettings(updatedSettings, agencyId!);
     closeSetting();
@@ -80,34 +76,29 @@ export const AgencySettingsDescription: React.FC<{
       // eslint-disable-next-line no-param-reassign
       textAreaRef.current.style.height = `${Number(scrollHeight) + 1}px`;
     }
-  }, [infoText, isSettingInEditMode]);
+  }, [urlText, isSettingInEditMode]);
 
   return (
     <AgencySettingsBlock
-      id="description"
+      id="homepage_url"
       isEditModeActive={isSettingInEditMode}
       isAnimationShowing={isAnimationShowing}
       onAnimationEnd={removeAnimation}
     >
-      <AgencySettingsBlockTitle>Agency Information</AgencySettingsBlockTitle>
+      <AgencySettingsBlockTitle>Agency Homepage URL</AgencySettingsBlockTitle>
       {isSettingInEditMode ? (
         <>
-          <AgencyInfoTextAreaLabel htmlFor="basic-info-description">
-            Briefly describe your agency’s purpose and functions (750 characters
-            or less).
+          <AgencyInfoTextAreaLabel htmlFor="homepage-url">
+            Link to your agency&apos;s homepage.
           </AgencyInfoTextAreaLabel>
           <AgencyInfoTextArea
-            id="basic-info-description"
-            onChange={(e) => setInfoText(e.target.value)}
+            id="homepage-url"
+            onChange={(e) => setUrlText(e.target.value)}
             placeholder="Type here..."
             ref={textAreaRef}
             rows={1}
-            value={infoText}
-            maxLength={750}
+            value={urlText}
           />
-          <AgencyInfoTextAreaWordCounter isRed={infoText.length >= 750}>
-            {infoText.length}/750 characters
-          </AgencyInfoTextAreaWordCounter>
           <EditModeButtonsContainer noMargin>
             <TransparentButton onClick={cancelAgencyInfoChanges}>
               Cancel
@@ -118,11 +109,11 @@ export const AgencySettingsDescription: React.FC<{
       ) : (
         <>
           <AgencyInfoBlockDescription>
-            {settings.PURPOSE_AND_FUNCTIONS}
+            {settings.HOMEPAGE_URL}
           </AgencyInfoBlockDescription>
           <EditButtonContainer>
             <EditButton onClick={openSetting}>
-              Edit description
+              Edit URL
               <img src={rightArrow} alt="" />
             </EditButton>
           </EditButtonContainer>

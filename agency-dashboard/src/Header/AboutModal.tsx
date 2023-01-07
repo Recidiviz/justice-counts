@@ -36,8 +36,9 @@ import {
 export const AboutModal: React.FC<{
   closeModal: () => void;
   agencyName: string;
+  agencyDescription: string;
   agencyUrl: string;
-}> = ({ closeModal, agencyName, agencyUrl }) => (
+}> = ({ closeModal, agencyName, agencyDescription, agencyUrl }) => (
   <AboutModalContainer>
     <AboutModalInnerContainer>
       <AboutModalLogo src={logo} alt="" />
@@ -49,11 +50,7 @@ export const AboutModal: React.FC<{
       <AboutModalInfoContainer>
         <AboutModalInfoSection>
           <AboutModalInfoTitle>{agencyName}</AboutModalInfoTitle>
-          <AboutModalInfoBody>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor
-            lectus lectus non sit justo. Massa, volutpat, diam maecenas risus.
-            Magna est neque tellus, ut in.
-          </AboutModalInfoBody>
+          <AboutModalInfoBody>{agencyDescription}</AboutModalInfoBody>
           <AboutModalButtonsContainer
             onClick={() => {
               if (agencyUrl) {
