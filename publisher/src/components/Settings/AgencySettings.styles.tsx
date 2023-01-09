@@ -423,19 +423,30 @@ export const JurisdictionsInput = styled(InviteMemberInput)`
   text-indent: 24px;
 `;
 
-export const JurisdictionsSearchResult = styled.div`
+export const JurisdictionsSearchResultContainer = styled.div`
   position: absolute;
+  z-index: 5;
   width: 644px;
-  height: 54px;
+  overflow-y: scroll;
+  max-height: 270px;
   background-color: ${palette.solid.white};
+  top: 55px;
+  display: flex;
+  flex-direction: column;
+  background-color: ${palette.solid.offwhite};
+`;
+
+export const JurisdictionsSearchResult = styled.div<{ hasAction?: boolean }>`
+  width: 100%;
+  min-height: 54px;
   color: ${palette.solid.blue};
   ${typography.sizeCSS.medium};
-  top: 55px;
   padding: 0 13px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  cursor: ${({ hasAction }) => (hasAction ? "pointer" : "default")};
 
   span {
     ${typography.sizeCSS.normal};
