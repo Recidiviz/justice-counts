@@ -92,12 +92,12 @@ export const AgencySettingsUrl: React.FC<{
       {isSettingInEditMode ? (
         <>
           <AgencyInfoTextAreaLabel htmlFor="homepage-url">
-            Link to your agency&apos;s homepage.
+            Provide a link to your agency&apos;s website.
           </AgencyInfoTextAreaLabel>
           <AgencyInfoTextInput
             id="homepage-url"
             onChange={(e) => setUrlText(e.target.value)}
-            placeholder="Type here..."
+            placeholder="URL of agency (e.g., https://doc.iowa.gov/)"
             ref={textAreaRef}
             value={urlText}
           />
