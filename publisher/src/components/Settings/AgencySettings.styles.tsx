@@ -267,20 +267,22 @@ export const InviteMemberInput = styled.input`
   }
 `;
 
-export const InviteMemberButton = styled.div`
+export const InviteMemberButton = styled.div<{ disabled: boolean }>`
   ${typography.sizeCSS.normal};
-  background-color: ${palette.solid.blue};
-  color: ${palette.solid.white};
+  background-color: ${({ disabled }) =>
+    disabled ? palette.highlight.grey8 : palette.solid.blue};
+  color: ${({ disabled }) =>
+    disabled ? palette.solid.darkgrey : palette.solid.white};
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  cursor: ${({ disabled }) => !disabled && "pointer"};
   width: 100%;
   border-radius: 2px;
 
   &:hover {
-    opacity: 0.8;
+    opacity: ${({ disabled }) => !disabled && "0.8"};
   }
 `;
 

@@ -192,6 +192,7 @@ export const AgencySettingsTeamManagement: React.FC<{
             />
             <InviteMemberButton
               onClick={() => handleInvite(nameValue, emailValue)}
+              disabled={!nameValue || !emailValue}
             >
               Invite
             </InviteMemberButton>
