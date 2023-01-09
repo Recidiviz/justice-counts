@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { formatExternalLink } from "@justice-counts/common/components/DataViz/utils";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -23,8 +24,10 @@ import rightArrow from "../assets/right-arrow.svg";
 import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,
+  AgencyInfoLink,
   AgencyInfoTextArea,
   AgencyInfoTextAreaLabel,
+  AgencyInfoTextInput,
   AgencySettingsBlock,
   AgencySettingsBlockTitle,
   EditButton,
@@ -54,7 +57,7 @@ export const AgencySettingsUrl: React.FC<{
     saveAgencySettings,
   } = agencyStore;
   const [urlText, setUrlText] = useState(settings.HOMEPAGE_URL);
-  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+  const textAreaRef = useRef<HTMLInputElement | null>(null);
 
   const cancelAgencyInfoChanges = () => {
     setUrlText(settings.HOMEPAGE_URL);
@@ -91,12 +94,11 @@ export const AgencySettingsUrl: React.FC<{
           <AgencyInfoTextAreaLabel htmlFor="homepage-url">
             Link to your agency&apos;s homepage.
           </AgencyInfoTextAreaLabel>
-          <AgencyInfoTextArea
+          <AgencyInfoTextInput
             id="homepage-url"
             onChange={(e) => setUrlText(e.target.value)}
             placeholder="Type here..."
             ref={textAreaRef}
-            rows={1}
             value={urlText}
           />
           <EditModeButtonsContainer noMargin>
@@ -109,7 +111,12 @@ export const AgencySettingsUrl: React.FC<{
       ) : (
         <>
           <AgencyInfoBlockDescription>
-            {settings.HOMEPAGE_URL}
+            <AgencyInfoLink
+              href={formatExternalLink(settings.HOMEPAGE_URL)}
+              target="_blank"
+            >
+              {settings.HOMEPAGE_URL}
+            </AgencyInfoLink>
           </AgencyInfoBlockDescription>
           <EditButtonContainer>
             <EditButton onClick={openSetting}>

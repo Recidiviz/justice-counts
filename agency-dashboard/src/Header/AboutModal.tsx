@@ -17,6 +17,7 @@
 
 import { ReactComponent as CloseIcon } from "@justice-counts/common/assets/close-icon.svg";
 import logo from "@justice-counts/common/assets/jc-logo-vector.png";
+import { formatExternalLink } from "@justice-counts/common/components/DataViz/utils";
 import React from "react";
 
 import {
@@ -54,12 +55,7 @@ export const AboutModal: React.FC<{
           <AboutModalButtonsContainer
             onClick={() => {
               if (agencyUrl) {
-                window.open(
-                  agencyUrl.match(/^http[s]?:\/\//)
-                    ? agencyUrl
-                    : `http://${agencyUrl}`,
-                  "_blank"
-                );
+                window.open(formatExternalLink(agencyUrl), "_blank");
               }
             }}
           >
