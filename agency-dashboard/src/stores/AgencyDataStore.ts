@@ -73,12 +73,11 @@ class AgencyDataStore {
     [settingType: string]: AgencySetting;
   } {
     const mapping: { [settingType: string]: AgencySetting } = {};
-    if (!this.agency) {
-      return mapping;
+    if (this.agency) {
+      this.agency.settings.forEach((setting: AgencySetting) => {
+        mapping[setting.setting_type] = setting;
+      });
     }
-    this.agency.settings.forEach((setting: AgencySetting) => {
-      mapping[setting.setting_type] = setting;
-    });
     return mapping;
   }
 
