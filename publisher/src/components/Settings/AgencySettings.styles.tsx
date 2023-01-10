@@ -111,6 +111,10 @@ export const AgencyInfoBlockDescription = styled.div`
   margin-bottom: 16px;
 `;
 
+export const AgencyInfoLink = styled.a`
+  color: ${palette.solid.blue};
+`;
+
 export const AgencySettingsInfoRow = styled.div<{ hasHover?: boolean }>`
   ${typography.sizeCSS.medium};
   padding: 0 8px;
@@ -136,6 +140,21 @@ export const AgencySettingsInfoRow = styled.div<{ hasHover?: boolean }>`
 export const AgencyInfoTextAreaLabel = styled.label`
   margin: 16px 0;
   ${typography.sizeCSS.normal};
+`;
+
+export const AgencyInfoTextInput = styled.input`
+  ${typography.sizeCSS.medium};
+  font-size: 20px;
+  padding: 24px 14px;
+  background-color: ${palette.highlight.grey1};
+  border: none;
+  border-bottom: 1px solid ${palette.highlight.grey7};
+  resize: none;
+  margin-bottom: 24px;
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const AgencyInfoTextArea = styled.textarea`

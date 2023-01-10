@@ -64,12 +64,8 @@ export const AgencySettingsSupervisions: React.FC<{
 
   const { agencyId } = useParams();
   const { agencyStore } = useStore();
-  const {
-    settings,
-    currentAgencySystems,
-    updateAgencySettings,
-    saveAgencySettings,
-  } = agencyStore;
+  const { currentAgencySystems, updateAgencySystems, saveAgencySettings } =
+    agencyStore;
   const [supervisionSystemsToSave, setSupervisionSystemsToSave] =
     useState(currentAgencySystems);
 
@@ -78,13 +74,12 @@ export const AgencySettingsSupervisions: React.FC<{
     closeSetting();
   };
   const saveSupervisionChanges = () => {
-    const updatedSettings = updateAgencySettings(
-      settings.PURPOSE_AND_FUNCTIONS,
-      supervisionSystemsToSave
-    );
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    saveAgencySettings(updatedSettings, agencyId!);
-    closeSetting();
+    if (supervisionSystemsToSave) {
+      const updatedSettings = updateAgencySystems(supervisionSystemsToSave);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      saveAgencySettings(updatedSettings, agencyId!);
+      closeSetting();
+    }
   };
   const systemsToSave = (systemToToggle: AgencySystems): AgencySystems[] => {
     if (!supervisionSystemsToSave) return [systemToToggle];

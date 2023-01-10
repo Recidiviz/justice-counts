@@ -33,9 +33,11 @@ import { AgencySettingsDescription } from "./AgencySettingsDescription";
 import { AgencySettingsJurisdictions } from "./AgencySettingsJurisdictions";
 import { AgencySettingsSupervisions } from "./AgencySettingsSupervisions";
 import { AgencySettingsTeamManagement } from "./AgencySettingsTeamManagement";
+import { AgencySettingsUrl } from "./AgencySettingsURL";
 
 export enum ActiveSetting {
   Description = "DESCRIPTION",
+  HomepageUrl = "HOMEPAGE_URL",
   Team = "TEAM",
   Supervisions = "SUPERVISIONS",
   Jurisdictions = "JURISDICTIONS",
@@ -110,6 +112,9 @@ export const AgencySettings: React.FC = observer(() => {
         <AgencySettingsBasicInfo />
         <AgencySettingsDescription
           settingProps={generateSettingProps(ActiveSetting.Description)}
+        />
+        <AgencySettingsUrl
+          settingProps={generateSettingProps(ActiveSetting.HomepageUrl)}
         />
         {isAdmin && (
           <AgencySettingsTeamManagement

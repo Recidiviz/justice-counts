@@ -48,13 +48,28 @@ export const SupervisionSystems: AgencySystems[] = [
   "OTHER_SUPERVISION",
 ];
 
-export interface UserAgency {
-  name: string;
+export type AgencySettingType = "PURPOSE_AND_FUNCTIONS" | "HOMEPAGE_URL";
+
+export interface AgencySetting {
+  setting_type: AgencySettingType;
+  source_id: number;
+  value: string;
+}
+
+export interface PublicUserAgency {
   id: number;
+  name: string;
+  settings: AgencySetting[];
+  systems: AgencySystems[];
+}
+
+export interface UserAgency {
+  id: number;
+  name: string;
   fips_county_code: string;
-  state_code: string;
   state: string;
-  system: AgencySystems;
+  state_code: string;
+  settings: AgencySetting[];
   systems: AgencySystems[];
   team: AgencyTeam[];
 }

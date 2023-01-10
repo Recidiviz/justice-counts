@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  AgencySetting,
   DatapointsByMetric,
   DataVizAggregateName,
   Metric,
@@ -65,6 +66,18 @@ class AgencyDataStore {
     this.metrics.forEach((metric) => {
       mapping[metric.display_name] = metric.key;
     });
+    return mapping;
+  }
+
+  get agencySettingsBySettingType(): {
+    [settingType: string]: AgencySetting;
+  } {
+    const mapping: { [settingType: string]: AgencySetting } = {};
+    if (this.agency) {
+      this.agency.settings.forEach((setting: AgencySetting) => {
+        mapping[setting.setting_type] = setting;
+      });
+    }
     return mapping;
   }
 
