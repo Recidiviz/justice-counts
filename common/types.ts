@@ -56,15 +56,14 @@ export interface AgencySetting {
   value: string;
 }
 
-export interface UserAgency {
+export interface PublicUserAgency {
   id: number;
   name: string;
   settings: AgencySetting[];
   systems: AgencySystems[];
-  team: AgencyTeam[];
 }
 
-export interface PublicUserAgency {
+export interface UserAgency {
   id: number;
   name: string;
   fips_county_code: string;
@@ -72,6 +71,7 @@ export interface PublicUserAgency {
   state_code: string;
   settings: AgencySetting[];
   systems: AgencySystems[];
+  team: AgencyTeam[];
 }
 
 export type ReportFrequency = "MONTHLY" | "ANNUAL";

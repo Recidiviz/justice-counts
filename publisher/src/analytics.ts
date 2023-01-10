@@ -69,9 +69,6 @@ export const trackReportCreated = (
     reportId,
     agencyId: agency?.id,
     agencyName: agency?.name,
-    agencyFips: agency?.fips_county_code,
-    agencyState: agency?.state_code,
-    agencySystem: agency?.system,
     agencySystems: agency?.systems,
   });
 };
@@ -84,9 +81,6 @@ export const trackReportNotStartedToDraft = (
     reportId,
     agencyId: agency?.id,
     agencyName: agency?.name,
-    agencyFips: agency?.fips_county_code,
-    agencyState: agency?.state_code,
-    agencySystem: agency?.system,
     agencySystems: agency?.systems,
   });
 };
@@ -141,9 +135,6 @@ export const trackReportPublished = (
     totalMetricsCount,
     agencyId: agency?.id,
     agencyName: agency?.name,
-    agencyFips: agency?.fips_county_code,
-    agencyState: agency?.state_code,
-    agencySystem: agency?.system,
     agencySystems: agency?.systems,
   });
 };
@@ -156,9 +147,6 @@ export const trackReportUnpublished = (
     reportId,
     agencyId: agency?.id,
     agencyName: agency?.name,
-    agencyFips: agency?.fips_county_code,
-    agencyState: agency?.state_code,
-    agencySystem: agency?.system,
     agencySystems: agency?.systems,
   });
 };
