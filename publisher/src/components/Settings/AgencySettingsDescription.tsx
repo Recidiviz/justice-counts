@@ -48,12 +48,7 @@ export const AgencySettingsDescription: React.FC<{
 
   const { agencyId } = useParams();
   const { agencyStore } = useStore();
-  const {
-    settings,
-    currentAgencySystems,
-    updateAgencySettings,
-    saveAgencySettings,
-  } = agencyStore;
+  const { settings, updateAgencySettings, saveAgencySettings } = agencyStore;
   const [infoText, setInfoText] = useState(settings.PURPOSE_AND_FUNCTIONS);
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 

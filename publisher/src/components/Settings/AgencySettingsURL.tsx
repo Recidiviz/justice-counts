@@ -25,7 +25,6 @@ import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,
   AgencyInfoLink,
-  AgencyInfoTextArea,
   AgencyInfoTextAreaLabel,
   AgencyInfoTextInput,
   AgencySettingsBlock,
@@ -50,12 +49,7 @@ export const AgencySettingsUrl: React.FC<{
 
   const { agencyId } = useParams();
   const { agencyStore } = useStore();
-  const {
-    settings,
-    currentAgencySystems,
-    updateAgencySettings,
-    saveAgencySettings,
-  } = agencyStore;
+  const { settings, updateAgencySettings, saveAgencySettings } = agencyStore;
   const [urlText, setUrlText] = useState(settings.HOMEPAGE_URL);
   const textAreaRef = useRef<HTMLInputElement | null>(null);
 
