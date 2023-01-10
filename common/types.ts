@@ -48,8 +48,10 @@ export const SupervisionSystems: AgencySystems[] = [
   "OTHER_SUPERVISION",
 ];
 
+export type AgencySettingType = "PURPOSE_AND_FUNCTIONS" | "HOMEPAGE_URL";
+
 export interface AgencySetting {
-  setting_type: string;
+  setting_type: AgencySettingType;
   source_id: number;
   value: string;
 }

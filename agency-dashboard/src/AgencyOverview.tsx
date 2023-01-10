@@ -128,9 +128,8 @@ const AgencyOverview = () => {
         <AgencyTitle>{agencyDataStore.agency?.name}</AgencyTitle>
         <Description>
           {
-            agencyDataStore.agency?.settings.find(
-              (setting) => setting.setting_type === "PURPOSE_AND_FUNCTIONS"
-            )?.value
+            agencyDataStore.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS
+              ?.value
           }
         </Description>
         <MetricsCount>
