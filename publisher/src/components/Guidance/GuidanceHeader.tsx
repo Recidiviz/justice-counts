@@ -42,17 +42,23 @@ export const GuidanceHeader = observer(() => {
 
   return (
     <HeaderBar bottomBorder>
-      <LogoContainer onClick={() => navigate(`getting-started`)}>
+      <LogoContainer onClick={() => navigate(guidancePaths.home)}>
         <Logo src={logo} alt="" />
       </LogoContainer>
 
       {currentTopicID !== "WELCOME" && (
         <MenuContainer>
-          <MenuItem active={isHome} onClick={() => navigate(`getting-started`)}>
+          <MenuItem
+            active={isHome}
+            onClick={() => navigate(guidancePaths.home)}
+          >
             Get Started
           </MenuItem>
 
-          <MenuItem active={isSettings} onClick={() => navigate(`settings`)}>
+          <MenuItem
+            active={isSettings}
+            onClick={() => navigate(guidancePaths.settings)}
+          >
             Settings
           </MenuItem>
           <MenuItem buttonPadding>
