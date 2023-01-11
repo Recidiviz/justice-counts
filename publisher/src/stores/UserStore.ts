@@ -154,6 +154,10 @@ class UserStore {
     return this.name || this.email;
   }
 
+  get email_verified(): boolean | undefined {
+    return this.authStore.user?.email_verified;
+  }
+
   async updateAndRetrieveUserPermissionsAndAgencies() {
     try {
       const response = (await this.api.request({
@@ -162,6 +166,7 @@ class UserStore {
         body: {
           name: this.name,
           email: this.email,
+          email_verified: this.email_verified,
         },
       })) as Response;
       const { agencies: userAgencies, permissions } = await response.json();
