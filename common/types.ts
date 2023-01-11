@@ -17,7 +17,7 @@
 
 export enum Permission {
   RECIDIVIZ_ADMIN = "recidiviz_admin",
-  SWITCH_AGENCIES = "switch_agencies",
+  AGENCY_ADMIN = "agency_admin",
 }
 
 export type AgencySystems =
