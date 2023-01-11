@@ -29,7 +29,7 @@ import styled from "styled-components/macro";
 
 import { Datapoint } from "../../types";
 import { rem } from "../../utils";
-import { COMMON_DESKTOP_WIDTH, palette } from "../GlobalStyles";
+import { palette } from "../GlobalStyles";
 import Tooltip from "./Tooltip";
 import { splitUtcString } from "./utils";
 
@@ -39,13 +39,10 @@ const ChartContainer = styled.div`
   width: 100%;
   height: 100%;
   max-height: calc(100% - 220px);
-
-  @media only screen and (min-width: ${COMMON_DESKTOP_WIDTH}px) {
-    display: flex;
-    flex-grow: 1;
-    justify-content: center;
-    align-items: center;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
 `;
 
 const NoReportedData = styled.div`
@@ -142,7 +139,6 @@ const ResponsiveBarChart: React.FC<{
   percentageView = false,
   resizeHeight = false,
 }) => {
-  const isAnnual = data[0]?.frequency === "ANNUAL";
   const renderBarDefinitions = () => {
     // each Recharts Bar component defines a category type in the stacked bar chart
     const barDefinitions = [];
@@ -214,12 +210,14 @@ const ResponsiveBarChart: React.FC<{
             minTickGap={32}
             tick={tickStyle}
             tickLine={false}
-            tickFormatter={(value) => {
+            tickFormatter={(value, index) => {
               if (data.length === 0) {
                 return "";
               }
               const [, , month, year] = splitUtcString(value);
-              return isAnnual ? year : `${month} ${year}`;
+              return data[index].frequency === "ANNUAL"
+                ? year
+                : `${month} ${year}`;
             }}
             tickMargin={12}
           />
@@ -244,7 +242,6 @@ const ResponsiveBarChart: React.FC<{
             content={
               <Tooltip
                 percentOnly={percentageView}
-                isAnnual={isAnnual}
                 dimensionNames={dimensionNames}
               />
             }

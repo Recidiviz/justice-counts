@@ -207,23 +207,17 @@ export const MetricBoxGraphContainer = styled.div`
   }
 `;
 
-// remove border after actual graph implemented
-export const MetricBoxGraphImage = styled.img`
+export const MiniChartContainer = styled.div`
   width: 128px;
   height: 85px;
-  filter: brightness(0) invert(0.8);
 
-  ${MetricBox}:hover & {
-    filter: none;
+  .recharts-wrapper {
+    cursor: pointer !important;
   }
 
   @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
     width: 38px;
     height: 24px;
-
-    ${MetricBox}:hover & {
-      filter: brightness(0) invert(0.8);
-    }
   }
 `;
 

@@ -49,6 +49,8 @@ export const ModalScrollContainer = styled.div`
 `;
 
 export const ModalInnerContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   position: relative;
   max-width: 644px;
 `;
@@ -125,9 +127,24 @@ export const ShareCurrentViewContainer = styled.div`
   flex-direction: row;
   align-items: center;
   margin-top: 8px;
+  gap: 8px;
+  align-self: start;
+  user-select: none;
   ${typography.sizeCSS.normal}
 `;
 
 export const ShareCurrentViewText = styled.div`
   ${typography.sizeCSS.normal}
+`;
+
+export const ShareEmptyCheckCircle = styled.div`
+  border: 1px solid ${palette.highlight.grey4};
+  border-radius: 16px;
+  width: 16px;
+  height: 16px;
+`;
+
+export const ShareCheckIcon = styled.img`
+  width: 16px;
+  height: 16px;
 `;

@@ -152,14 +152,12 @@ export const MetricsView: React.FC = observer(() => {
   if (loadingError) {
     return <div>Error: {loadingError}</div>;
   }
-
-  const metricName =
-    metricsBySystem[systemSearchParam].find(
-      (metric) => metric.key === metricSearchParam
-    )?.display_name || "";
-  const metricFrequency = metricsBySystem[systemSearchParam]?.find(
-    (metric) => metric.key === metricSearchParam
-  )?.frequency;
+  const currentMetric = metricsBySystem[systemSearchParam].find(
+    (m) => m.key === metricSearchParam
+  );
+  const metricName = currentMetric?.display_name || "";
+  const metricFrequency =
+    currentMetric?.custom_frequency || currentMetric?.frequency;
 
   return (
     <>

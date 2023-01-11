@@ -305,7 +305,7 @@ export const DatapointsViewControlsRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 24px;
+  gap: 8px;
   margin-top: 32px;
 
   @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {

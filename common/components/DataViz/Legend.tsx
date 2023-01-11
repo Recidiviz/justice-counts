@@ -26,7 +26,6 @@ const LegendContainer = styled.div`
   align-items: center;
   flex-wrap: wrap;
   margin-bottom: 20px;
-  height: 50px;
   border-top: 1px solid rgba(23, 28, 43, 0.6);
   padding: 16px 0;
   border-bottom: 1px solid rgba(23, 28, 43, 0.6);

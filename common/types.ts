@@ -37,6 +37,7 @@ export type AgencySystems =
 export type AgencyTeam = {
   auth0_user_id: string;
   name: string;
+  email: string;
 };
 
 export const SupervisionSystems: AgencySystems[] = [
@@ -325,12 +326,15 @@ export interface RawDatapointsByMetric {
 
 export type DataVizTimeRange = 0 | 6 | 12 | 60 | 120;
 
+export const dataVizTimeRangeDisplayName = [
+  "All",
+  "6 Months Ago",
+  "1 Year Ago",
+  "5 Years Ago",
+  "10 Years Ago",
+] as const;
 export type DataVizTimeRangeDisplayName =
-  | "All"
-  | "6 Months Ago"
-  | "1 Year Ago"
-  | "5 Years Ago"
-  | "10 Years Ago";
+  typeof dataVizTimeRangeDisplayName[number];
 
 export const DataVizTimeRangesMap: {
   [key in DataVizTimeRangeDisplayName]: DataVizTimeRange;
