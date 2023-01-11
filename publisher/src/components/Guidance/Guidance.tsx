@@ -15,8 +15,32 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { observer } from "mobx-react-lite";
 import React from "react";
 
-export const Guidance = () => {
-  return <div>Guidance</div>;
-};
+import { useStore } from "../../stores";
+
+export const Guidance = observer(() => {
+  const { guidanceStore } = useStore();
+  const { onboardingTopicsMetadata, currentTopicID, updateTopicStatus } =
+    guidanceStore;
+
+  const currentTopicDisplayName =
+    currentTopicID && onboardingTopicsMetadata[currentTopicID].topicDisplayName;
+
+  return (
+    <>
+      <div>
+        Guidance ({currentTopicDisplayName}){" "}
+        <button
+          type="button"
+          onClick={() =>
+            currentTopicID && updateTopicStatus(currentTopicID, true)
+          }
+        >
+          Next
+        </button>
+      </div>
+    </>
+  );
+});
