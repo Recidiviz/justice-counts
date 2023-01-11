@@ -35,8 +35,8 @@ export const GuidanceHeader = observer(() => {
     settings: "settings",
   };
 
-  const isHome = params["*"] === guidancePaths["home"];
-  const isSettings = params["*"]?.includes(guidancePaths["settings"]);
+  const isHome = params["*"] === guidancePaths.home;
+  const isSettings = params["*"]?.includes(guidancePaths.settings);
   const isAddDataOrPublishDataStep =
     currentTopicID === "ADD_DATA" || currentTopicID === "PUBLISH_DATA";
 
