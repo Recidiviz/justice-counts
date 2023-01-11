@@ -17,6 +17,7 @@
 
 import { ReactComponent as CloseIcon } from "@justice-counts/common/assets/close-icon.svg";
 import logo from "@justice-counts/common/assets/jc-logo-vector.png";
+import { formatExternalLink } from "@justice-counts/common/components/DataViz/utils";
 import React from "react";
 
 import {
@@ -36,7 +37,9 @@ import {
 export const AboutModal: React.FC<{
   closeModal: () => void;
   agencyName: string;
-}> = ({ closeModal, agencyName }) => (
+  agencyDescription: string;
+  agencyUrl: string;
+}> = ({ closeModal, agencyName, agencyDescription, agencyUrl }) => (
   <AboutModalContainer>
     <AboutModalInnerContainer>
       <AboutModalLogo src={logo} alt="" />
@@ -48,12 +51,14 @@ export const AboutModal: React.FC<{
       <AboutModalInfoContainer>
         <AboutModalInfoSection>
           <AboutModalInfoTitle>{agencyName}</AboutModalInfoTitle>
-          <AboutModalInfoBody>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Auctor
-            lectus lectus non sit justo. Massa, volutpat, diam maecenas risus.
-            Magna est neque tellus, ut in.
-          </AboutModalInfoBody>
-          <AboutModalButtonsContainer>
+          <AboutModalInfoBody>{agencyDescription}</AboutModalInfoBody>
+          <AboutModalButtonsContainer
+            onClick={() => {
+              if (agencyUrl) {
+                window.open(formatExternalLink(agencyUrl), "_blank");
+              }
+            }}
+          >
             <AboutModalInfoButton>Agency Website</AboutModalInfoButton>
           </AboutModalButtonsContainer>
         </AboutModalInfoSection>

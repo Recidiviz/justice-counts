@@ -45,7 +45,7 @@ class AgencyStore {
     this.userStore = userStore;
     this.api = api;
     this.currentAgency = undefined;
-    this.settings = { PURPOSE_AND_FUNCTIONS: "" };
+    this.settings = { PURPOSE_AND_FUNCTIONS: "", HOMEPAGE_URL: "" };
     this.loadingSettings = true;
   }
 
@@ -86,6 +86,10 @@ class AgencyStore {
           agencySettings.settings.find(
             (setting) => setting.setting_type === "PURPOSE_AND_FUNCTIONS"
           )?.value || "";
+        this.settings.HOMEPAGE_URL =
+          agencySettings.settings.find(
+            (setting) => setting.setting_type === "HOMEPAGE_URL"
+          )?.value || "";
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
@@ -93,7 +97,7 @@ class AgencyStore {
   }
 
   saveAgencySettings = async (
-    settings: AgencySettings,
+    settings: Partial<AgencySettings>,
     agencyId: string
   ): Promise<void> => {
     const response = (await this.api.request({
@@ -111,16 +115,21 @@ class AgencyStore {
   };
 
   updateAgencySettings = (
-    text: string,
-    systems: AgencySystems[] | undefined
-  ): AgencySettings => {
-    this.settings.PURPOSE_AND_FUNCTIONS = text;
-    if (this.currentAgency && systems) {
-      this.currentAgency.systems = systems;
-    }
+    type: AgencySettingType,
+    text: string
+  ): Partial<AgencySettings> => {
+    this.settings[type] = text;
 
     return {
-      settings: [{ setting_type: "PURPOSE_AND_FUNCTIONS", value: text }],
+      settings: [{ setting_type: type, value: text }],
+    };
+  };
+
+  updateAgencySystems = (systems: AgencySystems[]): Partial<AgencySettings> => {
+    if (this.currentAgency) {
+      this.currentAgency.systems = systems;
+    }
+    return {
       systems,
     };
   };
@@ -129,7 +138,7 @@ class AgencyStore {
     // reset the state when switching agencies
     runInAction(() => {
       this.currentAgency = undefined;
-      this.settings = { PURPOSE_AND_FUNCTIONS: "" };
+      this.settings = { PURPOSE_AND_FUNCTIONS: "", HOMEPAGE_URL: "" };
       this.loadingSettings = true;
     });
   };

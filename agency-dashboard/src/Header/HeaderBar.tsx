@@ -61,6 +61,14 @@ export const HeaderBar: React.FC<{ showTitle?: boolean }> = ({ showTitle }) => {
         <AboutModal
           closeModal={hideAboutModal}
           agencyName={agencyDataStore.agency?.name || ""}
+          agencyDescription={
+            agencyDataStore.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS
+              ?.value || ""
+          }
+          agencyUrl={
+            agencyDataStore.agencySettingsBySettingType.HOMEPAGE_URL?.value ||
+            ""
+          }
         />
       )}
       <LogoContainer onClick={() => navigate(`/agency/${agencyId}`)}>
