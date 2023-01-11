@@ -15,6 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { MetricConfigurationSettingsOptions } from "../publisher/src/components/MetricConfiguration";
+
 export enum Permission {
   RECIDIVIZ_ADMIN = "recidiviz_admin",
   SWITCH_AGENCIES = "switch_agencies",
@@ -114,8 +116,6 @@ export type MetricDisaggregationDimensionsWithErrors =
   MetricDisaggregationDimensions & {
     error?: string;
   };
-
-export type MetricConfigurationSettingsOptions = "Yes" | "No" | "N/A";
 
 export type MetricConfigurationSettings = {
   key: string;
