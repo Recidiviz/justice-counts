@@ -46,7 +46,7 @@ class GuidanceStore {
   }
 
   get hasCompletedOnboarding() {
-    if (this.onboardingTopicsStatus.length === 0) return;
+    if (this.onboardingTopicsStatus.length === 0) return false;
     const indexOfTopicNotCompleted = this.onboardingTopicsStatus.findIndex(
       (topic) => !topic.topicCompleted
     );
