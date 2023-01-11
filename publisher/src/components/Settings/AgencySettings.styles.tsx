@@ -500,3 +500,37 @@ export const AddJurisdictionsExclusionsLink = styled.div`
   color: ${palette.solid.blue};
   cursor: pointer;
 `;
+
+export const CancelModalWrapper = styled.div<{ isOpen: boolean }>`
+  display: ${({ isOpen }) => (isOpen ? "flex" : "none")};
+  top: 0;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  z-index: 6;
+`;
+
+export const CancelModalContainer = styled.div`
+  width: ${AGENCY_SETTINGS_CONTAINER_WIDTH - 40}px;
+  padding: 56px 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  text-align: center;
+  ${typography.sizeCSS.large};
+  background-color: ${palette.solid.offwhite};
+  border: 2px solid ${palette.solid.darkgrey};
+`;
+
+export const CancelModalButtonsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+`;
+
+export const CancelModalRedButton = styled(FilledButton)`
+  background-color: ${palette.solid.red};
+`;

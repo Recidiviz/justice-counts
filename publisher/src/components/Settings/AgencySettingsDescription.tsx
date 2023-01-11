@@ -34,6 +34,9 @@ import {
   FilledButton,
   TransparentButton,
 } from "./AgencySettings.styles";
+import { AgencySettingsConfirmModal } from "./AgencySettingsConfirmModal";
+
+const MAX_DESCRIPTION_CHARACTERS = 750;
 
 export const AgencySettingsDescription: React.FC<{
   settingProps: SettingProps;
@@ -41,7 +44,9 @@ export const AgencySettingsDescription: React.FC<{
   const {
     isSettingInEditMode,
     openSetting,
-    closeSetting,
+    removeEditMode,
+    modalConfirmHelper,
+    clearSettingToOpen,
     isAnimationShowing,
     removeAnimation,
   } = settingProps;
@@ -49,21 +54,27 @@ export const AgencySettingsDescription: React.FC<{
   const { agencyId } = useParams();
   const { agencyStore } = useStore();
   const { settings, updateAgencySettings, saveAgencySettings } = agencyStore;
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [infoText, setInfoText] = useState(settings.PURPOSE_AND_FUNCTIONS);
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const cancelAgencyInfoChanges = () => {
-    setInfoText(settings.PURPOSE_AND_FUNCTIONS);
-    closeSetting();
-  };
-  const saveAgencyInfoChanges = () => {
+  const handleSaveClick = () => {
     const updatedSettings = updateAgencySettings(
       "PURPOSE_AND_FUNCTIONS",
       infoText
     );
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     saveAgencySettings(updatedSettings, agencyId!);
-    closeSetting();
+    removeEditMode();
+  };
+  const handleModalConfirm = () => {
+    setInfoText(settings.PURPOSE_AND_FUNCTIONS);
+    setIsConfirmModalOpen(false);
+    modalConfirmHelper();
+  };
+  const handleModalReject = () => {
+    setIsConfirmModalOpen(false);
+    clearSettingToOpen();
   };
 
   useEffect(() => {
@@ -78,51 +89,60 @@ export const AgencySettingsDescription: React.FC<{
   }, [infoText, isSettingInEditMode]);
 
   return (
-    <AgencySettingsBlock
-      id="description"
-      isEditModeActive={isSettingInEditMode}
-      isAnimationShowing={isAnimationShowing}
-      onAnimationEnd={removeAnimation}
-    >
-      <AgencySettingsBlockTitle>Agency Information</AgencySettingsBlockTitle>
-      {isSettingInEditMode ? (
-        <>
-          <AgencyInfoTextAreaLabel htmlFor="basic-info-description">
-            Briefly describe your agency’s purpose and functions (750 characters
-            or less).
-          </AgencyInfoTextAreaLabel>
-          <AgencyInfoTextArea
-            id="basic-info-description"
-            onChange={(e) => setInfoText(e.target.value)}
-            placeholder="Type here..."
-            ref={textAreaRef}
-            rows={1}
-            value={infoText}
-            maxLength={750}
-          />
-          <AgencyInfoTextAreaWordCounter isRed={infoText.length >= 750}>
-            {infoText.length}/750 characters
-          </AgencyInfoTextAreaWordCounter>
-          <EditModeButtonsContainer noMargin>
-            <TransparentButton onClick={cancelAgencyInfoChanges}>
-              Cancel
-            </TransparentButton>
-            <FilledButton onClick={saveAgencyInfoChanges}>Save</FilledButton>
-          </EditModeButtonsContainer>
-        </>
-      ) : (
-        <>
-          <AgencyInfoBlockDescription>
-            {settings.PURPOSE_AND_FUNCTIONS}
-          </AgencyInfoBlockDescription>
-          <EditButtonContainer>
-            <EditButton onClick={openSetting}>
-              Edit description
-              <img src={rightArrow} alt="" />
-            </EditButton>
-          </EditButtonContainer>
-        </>
-      )}
-    </AgencySettingsBlock>
+    <>
+      <AgencySettingsBlock
+        id="description"
+        isEditModeActive={isSettingInEditMode}
+        isAnimationShowing={isAnimationShowing}
+        onAnimationEnd={removeAnimation}
+      >
+        <AgencySettingsBlockTitle>Agency Information</AgencySettingsBlockTitle>
+        {isSettingInEditMode ? (
+          <>
+            <AgencyInfoTextAreaLabel htmlFor="basic-info-description">
+              Briefly describe your agency’s purpose and functions (750
+              characters or less).
+            </AgencyInfoTextAreaLabel>
+            <AgencyInfoTextArea
+              id="basic-info-description"
+              onChange={(e) => setInfoText(e.target.value)}
+              placeholder="Type here..."
+              ref={textAreaRef}
+              rows={1}
+              value={infoText}
+              maxLength={750}
+            />
+            <AgencyInfoTextAreaWordCounter isRed={infoText.length >= 750}>
+              {infoText.length}/{MAX_DESCRIPTION_CHARACTERS} characters
+            </AgencyInfoTextAreaWordCounter>
+            <EditModeButtonsContainer noMargin>
+              <TransparentButton onClick={() => setIsConfirmModalOpen(true)}>
+                Cancel
+              </TransparentButton>
+              <FilledButton onClick={handleSaveClick}>Save</FilledButton>
+            </EditModeButtonsContainer>
+          </>
+        ) : (
+          <>
+            <AgencyInfoBlockDescription>
+              {settings.PURPOSE_AND_FUNCTIONS}
+            </AgencyInfoBlockDescription>
+            <EditButtonContainer>
+              <EditButton
+                onClick={() => openSetting(() => setIsConfirmModalOpen(true))}
+              >
+                Edit description
+                <img src={rightArrow} alt="" />
+              </EditButton>
+            </EditButtonContainer>
+          </>
+        )}
+      </AgencySettingsBlock>
+      <AgencySettingsConfirmModal
+        isModalOpen={isConfirmModalOpen}
+        closeModal={handleModalReject}
+        handleConfirm={handleModalConfirm}
+      />
+    </>
   );
 };

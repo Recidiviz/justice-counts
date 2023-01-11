@@ -40,6 +40,7 @@ import {
   SupervisionSystemRow,
   TransparentButton,
 } from "./AgencySettings.styles";
+import { AgencySettingsConfirmModal } from "./AgencySettingsConfirmModal";
 
 const supervisionAgencySystems: { label: string; value: AgencySystems }[] = [
   { label: "Parole", value: "PAROLE" },
@@ -57,7 +58,9 @@ export const AgencySettingsSupervisions: React.FC<{
   const {
     isSettingInEditMode,
     openSetting,
-    closeSetting,
+    removeEditMode,
+    modalConfirmHelper,
+    clearSettingToOpen,
     isAnimationShowing,
     removeAnimation,
   } = settingProps;
@@ -68,17 +71,24 @@ export const AgencySettingsSupervisions: React.FC<{
     agencyStore;
   const [supervisionSystemsToSave, setSupervisionSystemsToSave] =
     useState(currentAgencySystems);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
-  const cancelSupervisionChanges = () => {
+  const handleModalConfirm = () => {
     setSupervisionSystemsToSave(currentAgencySystems);
-    closeSetting();
+    setIsConfirmModalOpen(false);
+    modalConfirmHelper();
   };
+  const handleModalReject = () => {
+    setIsConfirmModalOpen(false);
+    clearSettingToOpen();
+  };
+
   const saveSupervisionChanges = () => {
     if (supervisionSystemsToSave) {
       const updatedSettings = updateAgencySystems(supervisionSystemsToSave);
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       saveAgencySettings(updatedSettings, agencyId!);
-      closeSetting();
+      removeEditMode();
     }
   };
   const systemsToSave = (systemToToggle: AgencySystems): AgencySystems[] => {
@@ -94,59 +104,68 @@ export const AgencySettingsSupervisions: React.FC<{
   };
 
   return (
-    <AgencySettingsBlock
-      id="supervisions"
-      isEditModeActive={isSettingInEditMode}
-      isAnimationShowing={isAnimationShowing}
-      onAnimationEnd={removeAnimation}
-    >
-      <AgencySettingsBlockTitle>
-        Supervision Populations
-      </AgencySettingsBlockTitle>
-      <AgencySettingsBlockDescription>
-        Below are the supervision populations your agency is both responsible
-        for AND can disaggregate your data by.
-      </AgencySettingsBlockDescription>
-      {supervisionAgencySystems.map(({ label, value }) => (
-        <SupervisionSystemRow
-          key={value}
-          hasHover={isSettingInEditMode}
-          onClick={() => handleSetSupervisionSystemsToSave(value)}
-        >
-          <CheckboxWrapper>
-            <Checkbox
-              type="checkbox"
-              checked={
-                supervisionSystemsToSave?.includes(value as AgencySystems) ||
-                false
-              }
-              onChange={() => handleSetSupervisionSystemsToSave(value)}
-              disabled={!isSettingInEditMode}
-            />
-            <BlueCheckIcon
-              src={isSettingInEditMode ? blueCheck : noBackgroundCheck}
-              alt=""
-              enabled
-            />
-          </CheckboxWrapper>
-          {label}
-        </SupervisionSystemRow>
-      ))}
-      {isSettingInEditMode ? (
-        <EditModeButtonsContainer>
-          <TransparentButton onClick={cancelSupervisionChanges}>
-            Cancel
-          </TransparentButton>
-          <FilledButton onClick={saveSupervisionChanges}>Save</FilledButton>
-        </EditModeButtonsContainer>
-      ) : (
-        <EditButtonContainer>
-          <EditButton onClick={openSetting}>
-            Edit populations
-            <img src={rightArrow} alt="" />
-          </EditButton>
-        </EditButtonContainer>
-      )}
-    </AgencySettingsBlock>
+    <>
+      <AgencySettingsBlock
+        id="supervisions"
+        isEditModeActive={isSettingInEditMode}
+        isAnimationShowing={isAnimationShowing}
+        onAnimationEnd={removeAnimation}
+      >
+        <AgencySettingsBlockTitle>
+          Supervision Populations
+        </AgencySettingsBlockTitle>
+        <AgencySettingsBlockDescription>
+          Below are the supervision populations your agency is both responsible
+          for AND can disaggregate your data by.
+        </AgencySettingsBlockDescription>
+        {supervisionAgencySystems.map(({ label, value }) => (
+          <SupervisionSystemRow
+            key={value}
+            hasHover={isSettingInEditMode}
+            onClick={() => handleSetSupervisionSystemsToSave(value)}
+          >
+            <CheckboxWrapper>
+              <Checkbox
+                type="checkbox"
+                checked={
+                  supervisionSystemsToSave?.includes(value as AgencySystems) ||
+                  false
+                }
+                onChange={() => handleSetSupervisionSystemsToSave(value)}
+                disabled={!isSettingInEditMode}
+              />
+              <BlueCheckIcon
+                src={isSettingInEditMode ? blueCheck : noBackgroundCheck}
+                alt=""
+                enabled
+              />
+            </CheckboxWrapper>
+            {label}
+          </SupervisionSystemRow>
+        ))}
+        {isSettingInEditMode ? (
+          <EditModeButtonsContainer>
+            <TransparentButton onClick={() => setIsConfirmModalOpen(true)}>
+              Cancel
+            </TransparentButton>
+            <FilledButton onClick={saveSupervisionChanges}>Save</FilledButton>
+          </EditModeButtonsContainer>
+        ) : (
+          <EditButtonContainer>
+            <EditButton
+              onClick={() => openSetting(() => setIsConfirmModalOpen(true))}
+            >
+              Edit populations
+              <img src={rightArrow} alt="" />
+            </EditButton>
+          </EditButtonContainer>
+        )}
+      </AgencySettingsBlock>
+      <AgencySettingsConfirmModal
+        isModalOpen={isConfirmModalOpen}
+        closeModal={handleModalReject}
+        handleConfirm={handleModalConfirm}
+      />
+    </>
   );
 };

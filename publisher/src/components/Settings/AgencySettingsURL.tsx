@@ -35,6 +35,7 @@ import {
   FilledButton,
   TransparentButton,
 } from "./AgencySettings.styles";
+import { AgencySettingsConfirmModal } from "./AgencySettingsConfirmModal";
 
 export const AgencySettingsUrl: React.FC<{
   settingProps: SettingProps;
@@ -42,7 +43,9 @@ export const AgencySettingsUrl: React.FC<{
   const {
     isSettingInEditMode,
     openSetting,
-    closeSetting,
+    removeEditMode,
+    modalConfirmHelper,
+    clearSettingToOpen,
     isAnimationShowing,
     removeAnimation,
   } = settingProps;
@@ -50,18 +53,24 @@ export const AgencySettingsUrl: React.FC<{
   const { agencyId } = useParams();
   const { agencyStore } = useStore();
   const { settings, updateAgencySettings, saveAgencySettings } = agencyStore;
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [urlText, setUrlText] = useState(settings.HOMEPAGE_URL);
   const textAreaRef = useRef<HTMLInputElement | null>(null);
 
-  const cancelAgencyInfoChanges = () => {
-    setUrlText(settings.HOMEPAGE_URL);
-    closeSetting();
-  };
-  const saveAgencyInfoChanges = () => {
+  const handleSaveClick = () => {
     const updatedSettings = updateAgencySettings("HOMEPAGE_URL", urlText);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     saveAgencySettings(updatedSettings, agencyId!);
-    closeSetting();
+    removeEditMode();
+  };
+  const handleModalConfirm = () => {
+    setUrlText(settings.HOMEPAGE_URL);
+    setIsConfirmModalOpen(false);
+    modalConfirmHelper();
+  };
+  const handleModalReject = () => {
+    setIsConfirmModalOpen(false);
+    clearSettingToOpen();
   };
 
   useEffect(() => {
@@ -76,50 +85,59 @@ export const AgencySettingsUrl: React.FC<{
   }, [urlText, isSettingInEditMode]);
 
   return (
-    <AgencySettingsBlock
-      id="homepage_url"
-      isEditModeActive={isSettingInEditMode}
-      isAnimationShowing={isAnimationShowing}
-      onAnimationEnd={removeAnimation}
-    >
-      <AgencySettingsBlockTitle>Agency Homepage URL</AgencySettingsBlockTitle>
-      {isSettingInEditMode ? (
-        <>
-          <AgencyInfoTextAreaLabel htmlFor="homepage-url">
-            Provide a link to your agency&apos;s website.
-          </AgencyInfoTextAreaLabel>
-          <AgencyInfoTextInput
-            id="homepage-url"
-            onChange={(e) => setUrlText(e.target.value)}
-            placeholder="URL of agency (e.g., https://doc.iowa.gov/)"
-            ref={textAreaRef}
-            value={urlText}
-          />
-          <EditModeButtonsContainer noMargin>
-            <TransparentButton onClick={cancelAgencyInfoChanges}>
-              Cancel
-            </TransparentButton>
-            <FilledButton onClick={saveAgencyInfoChanges}>Save</FilledButton>
-          </EditModeButtonsContainer>
-        </>
-      ) : (
-        <>
-          <AgencyInfoBlockDescription>
-            <AgencyInfoLink
-              href={formatExternalLink(settings.HOMEPAGE_URL)}
-              target="_blank"
-            >
-              {settings.HOMEPAGE_URL}
-            </AgencyInfoLink>
-          </AgencyInfoBlockDescription>
-          <EditButtonContainer>
-            <EditButton onClick={openSetting}>
-              Edit URL
-              <img src={rightArrow} alt="" />
-            </EditButton>
-          </EditButtonContainer>
-        </>
-      )}
-    </AgencySettingsBlock>
+    <>
+      <AgencySettingsBlock
+        id="homepage_url"
+        isEditModeActive={isSettingInEditMode}
+        isAnimationShowing={isAnimationShowing}
+        onAnimationEnd={removeAnimation}
+      >
+        <AgencySettingsBlockTitle>Agency Homepage URL</AgencySettingsBlockTitle>
+        {isSettingInEditMode ? (
+          <>
+            <AgencyInfoTextAreaLabel htmlFor="homepage-url">
+              Provide a link to your agency&apos;s website.
+            </AgencyInfoTextAreaLabel>
+            <AgencyInfoTextInput
+              id="homepage-url"
+              onChange={(e) => setUrlText(e.target.value)}
+              placeholder="URL of agency (e.g., https://doc.iowa.gov/)"
+              ref={textAreaRef}
+              value={urlText}
+            />
+            <EditModeButtonsContainer noMargin>
+              <TransparentButton onClick={() => setIsConfirmModalOpen(true)}>
+                Cancel
+              </TransparentButton>
+              <FilledButton onClick={handleSaveClick}>Save</FilledButton>
+            </EditModeButtonsContainer>
+          </>
+        ) : (
+          <>
+            <AgencyInfoBlockDescription>
+              <AgencyInfoLink
+                href={formatExternalLink(settings.HOMEPAGE_URL)}
+                target="_blank"
+              >
+                {settings.HOMEPAGE_URL}
+              </AgencyInfoLink>
+            </AgencyInfoBlockDescription>
+            <EditButtonContainer>
+              <EditButton
+                onClick={() => openSetting(() => setIsConfirmModalOpen(true))}
+              >
+                Edit URL
+                <img src={rightArrow} alt="" />
+              </EditButton>
+            </EditButtonContainer>
+          </>
+        )}
+      </AgencySettingsBlock>
+      <AgencySettingsConfirmModal
+        isModalOpen={isConfirmModalOpen}
+        closeModal={handleModalReject}
+        handleConfirm={handleModalConfirm}
+      />
+    </>
   );
 };

@@ -45,8 +45,10 @@ export enum ActiveSetting {
 
 export type SettingProps = {
   isSettingInEditMode: boolean;
-  openSetting: () => void;
-  closeSetting: () => void;
+  openSetting: (openModal: () => void) => void;
+  removeEditMode: () => void;
+  modalConfirmHelper: () => void;
+  clearSettingToOpen: () => void;
   isAnimationShowing: boolean;
   removeAnimation: () => void;
 };
@@ -58,27 +60,43 @@ export const AgencySettings: React.FC = observer(() => {
   const [activeSetting, setActiveSetting] = useState<ActiveSetting | undefined>(
     undefined
   );
+  const [settingToOpen, setSettingToOpen] = useState<ActiveSetting | undefined>(
+    undefined
+  );
   const [isSettingAnimationActive, setIsSettingAnimationActive] =
     useState(false);
 
-  const handleOpenSetting = (setting: ActiveSetting) => {
-    if (activeSetting) {
+  const handleOpenSetting = (setting: ActiveSetting, openModal: () => void) => {
+    if (activeSetting && activeSetting !== ActiveSetting.Team) {
       document
         .getElementById(activeSetting.toLowerCase())
-        ?.scrollIntoView({ behavior: "smooth" });
+        ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
       setIsSettingAnimationActive(true);
+      openModal();
+      setSettingToOpen(setting);
     } else {
       setActiveSetting(setting);
     }
   };
-  const handleCloseSetting = () => {
-    setActiveSetting(undefined);
-    setIsSettingAnimationActive(false);
+  const modalConfirmHelper = () => {
+    if (settingToOpen) {
+      document
+        .getElementById(settingToOpen.toLowerCase())
+        ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      setActiveSetting(settingToOpen);
+      setSettingToOpen(undefined);
+      setIsSettingAnimationActive(false);
+    } else {
+      setActiveSetting(undefined);
+    }
   };
   const generateSettingProps = (settingName: ActiveSetting): SettingProps => ({
     isSettingInEditMode: activeSetting === settingName,
-    openSetting: () => handleOpenSetting(settingName),
-    closeSetting: handleCloseSetting,
+    openSetting: (openModal: () => void) =>
+      handleOpenSetting(settingName, openModal),
+    removeEditMode: () => setActiveSetting(undefined),
+    modalConfirmHelper,
+    clearSettingToOpen: () => setSettingToOpen(undefined),
     isAnimationShowing: isSettingAnimationActive,
     removeAnimation: () => setIsSettingAnimationActive(false),
   });
