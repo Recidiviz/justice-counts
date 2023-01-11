@@ -15,13 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { AgencyTeam } from "../../../../common/types";
 import { useStore } from "../../stores";
 import rightArrow from "../assets/right-arrow.svg";
-import blueCheck from "../assets/status-check-icon.png";
 import {
   BlueCheckIcon,
   Checkbox,
