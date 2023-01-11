@@ -67,8 +67,6 @@ class GuidanceStore {
       if (topic.topicID !== topicID) return topic;
       return { ...topic, topicCompleted: status };
     });
-
-    return this.onboardingTopicsStatus;
   };
 }
 
