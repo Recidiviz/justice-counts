@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Permission } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -101,8 +100,6 @@ export const AgencySettings: React.FC = observer(() => {
     removeAnimation: () => setIsSettingAnimationActive(false),
   });
 
-  const isAdmin = userStore.permissions.includes(Permission.RECIDIVIZ_ADMIN);
-
   useEffect(() => {
     const initialize = async () => {
       resetState();
@@ -134,7 +131,7 @@ export const AgencySettings: React.FC = observer(() => {
         <AgencySettingsUrl
           settingProps={generateSettingProps(ActiveSetting.HomepageUrl)}
         />
-        {isAdmin && (
+        {userStore.isRecidivizAdmin && (
           <AgencySettingsTeamManagement
             settingProps={generateSettingProps(ActiveSetting.Team)}
           />
@@ -144,7 +141,7 @@ export const AgencySettings: React.FC = observer(() => {
             settingProps={generateSettingProps(ActiveSetting.Supervisions)}
           />
         )}
-        {isAdmin && (
+        {userStore.isRecidivizAdmin && (
           <AgencySettingsJurisdictions
             settingProps={generateSettingProps(ActiveSetting.Jurisdictions)}
           />

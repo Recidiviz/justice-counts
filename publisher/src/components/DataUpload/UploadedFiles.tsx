@@ -21,7 +21,6 @@ import {
   BadgeColors,
 } from "@justice-counts/common/components/Badge";
 import { showToast } from "@justice-counts/common/components/Toast";
-import { Permission } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -155,7 +154,7 @@ export const UploadedFileRow: React.FC<{
 
         {rowHovered && id && (
           <ActionsContainer onClick={(e) => e.stopPropagation()}>
-            {userStore.permissions.includes(Permission.RECIDIVIZ_ADMIN) && (
+            {userStore.isRecidivizAdmin && (
               <>
                 {(badgeText === "processed" || badgeText === "error") && (
                   <ActionButton

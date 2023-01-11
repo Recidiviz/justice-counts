@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-import { Permission } from "@justice-counts/common/types";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React from "react";
@@ -101,8 +100,7 @@ const Menu = () => {
       </MenuItem>
 
       {/* Agencies Dropdown */}
-      {(userStore.permissions.includes(Permission.RECIDIVIZ_ADMIN) ||
-        userStore.permissions.includes(Permission.SWITCH_AGENCIES)) && (
+      {userStore.isRecidivizAdmin && (
         <MenuItem>
           <Dropdown>
             <ExtendedDropdownToggle kind="borderless">
