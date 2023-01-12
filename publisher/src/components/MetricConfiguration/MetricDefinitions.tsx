@@ -15,6 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  MetricConfigurationSettingsOptions,
+  metricConfigurationSettingsOptions,
+} from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -34,8 +38,6 @@ import {
   DefinitionSelection,
   DefinitionsSubTitle,
   DefinitionsTitle,
-  MetricConfigurationSettingsOptions,
-  metricConfigurationSettingsOptions,
   MetricSettings,
   RevertToDefaultButton,
 } from ".";

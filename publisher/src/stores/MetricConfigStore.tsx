@@ -20,6 +20,7 @@ import {
   AgencySystems,
   FormError,
   Metric,
+  MetricConfigurationSettingsOptions,
   MetricContext,
   ReportFrequency,
 } from "@justice-counts/common/types";
@@ -28,7 +29,6 @@ import { makeAutoObservable, runInAction } from "mobx";
 import {
   Ethnicities,
   ethnicities,
-  MetricConfigurationSettingsOptions,
   MetricInfo,
   MetricSettings,
   RACE_ETHNICITY_DISAGGREGATION_KEY,
