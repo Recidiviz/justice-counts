@@ -114,6 +114,27 @@ class AgencyStore {
     showToast(`Settings saved.`, true, "grey", 4000);
   };
 
+  inviteUserToAgency = async (body: {
+    agency_id: string;
+    name: string;
+    email: string;
+  }): Promise<void> => {
+    const response = (await this.api.request({
+      path: `/api/users`,
+      body,
+      method: "PATCH",
+    })) as Response;
+
+    if (response.status !== 200) {
+      showToast(`Failed to send invite.`, true, "red", 4000);
+      throw new Error(
+        "There was an issue with sending invite to a new team member."
+      );
+    }
+
+    showToast(`Invite has been sent.`, true, "grey", 4000);
+  };
+
   updateAgencySettings = (
     type: AgencySettingType,
     text: string
