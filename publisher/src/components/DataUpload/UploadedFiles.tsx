@@ -79,7 +79,10 @@ export const UploadedFileRow: React.FC<{
 
       if (response instanceof Error) {
         setIsDownloading(false);
-        return showToast("Failed to download. Please try again.", false, "red");
+        return showToast({
+          message: "Failed to download. Please try again.",
+          color: "red",
+        });
       }
 
       const data = await response?.blob();
@@ -252,7 +255,7 @@ export const UploadedFiles: React.FC = observer(() => {
     const response = await reportStore.deleteUploadedSpreadsheet(spreadsheetID);
 
     if (response instanceof Error) {
-      return showToast(response.message, false, "red");
+      return showToast({ message: response.message, color: "red" });
     }
 
     return setUploadedFiles((prev) => {
@@ -269,7 +272,7 @@ export const UploadedFiles: React.FC = observer(() => {
     const response = await reportStore.updateFileStatus(spreadsheetID, status);
 
     if (response instanceof Error) {
-      return showToast(response.message, false, "red");
+      return showToast({ message: response.message, color: "red" });
     }
 
     return fetchListOfUploadedFiles();

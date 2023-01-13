@@ -269,26 +269,25 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
 
       if (response.status === 200) {
         navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`);
-        showToast(
-          `Congratulations! You published the ${printReportTitle(
+        showToast({
+          message: `Congratulations! You published the ${printReportTitle(
             reportStore.reportOverviews[reportID].month,
             reportStore.reportOverviews[reportID].year,
             reportStore.reportOverviews[reportID].frequency
           )} ${REPORT_LOWERCASE}!`,
-          true
-        );
+          check: true,
+        });
         const agencyID = reportStore.reportOverviews[reportID]?.agency_id;
         const agency = userStore.userAgenciesById[agencyID];
         trackReportPublished(reportID, finalMetricsToPublish, agency);
       } else {
-        showToast(
-          `Something went wrong publishing the ${printReportTitle(
+        showToast({
+          message: `Something went wrong publishing the ${printReportTitle(
             reportStore.reportOverviews[reportID].month,
             reportStore.reportOverviews[reportID].year,
             reportStore.reportOverviews[reportID].frequency
           )} ${REPORT_LOWERCASE}!`,
-          false
-        );
+        });
         setIsPublishable(true);
       }
     }

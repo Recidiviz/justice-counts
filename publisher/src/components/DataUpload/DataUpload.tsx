@@ -121,7 +121,10 @@ export const DataUpload: React.FC = observer(() => {
 
       if (response instanceof Error) {
         setIsLoading(false);
-        return showToast("Failed to upload. Please try again.", false, "red");
+        return showToast({
+          message: "Failed to upload. Please try again.",
+          color: "red",
+        });
       }
 
       /** Errors and/or Warnings Encountered During Upload -- Show Interstitial instead of Confirmation Page */

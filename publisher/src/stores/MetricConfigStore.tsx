@@ -190,11 +190,20 @@ class MetricConfigStore {
     })) as Response;
 
     if (response.status !== 200) {
-      showToast(`Failed to save.`, true, "red", 4000);
+      showToast({
+        message: `Failed to save.`,
+        color: "red",
+        timeout: 4000,
+      });
       throw new Error("There was an issue updating the metric settings.");
     }
 
-    showToast(`Settings saved.`, true, "grey", 4000);
+    showToast({
+      message: `Settings saved.`,
+      check: true,
+      color: "grey",
+      timeout: 4000,
+    });
     return response;
   };
 

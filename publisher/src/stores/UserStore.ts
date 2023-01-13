@@ -83,29 +83,33 @@ class UserStore {
 
       if (response && response instanceof Response) {
         if (response.status === 200 && isNameUpdated && !isEmailUpdated) {
-          showToast(`Name was successfully updated to ${name}.`, true);
+          showToast({
+            message: `Name was successfully updated to ${name}.`,
+            check: true,
+          });
           return;
         }
         if (response.status === 200 && isNameUpdated && isEmailUpdated) {
-          showToast(
-            `Name and email were successfully updated. You will be logged out. Please check your email at ${email} to verify your new email before logging in again.`,
-            /* check  */ true,
-            /* color */ undefined,
-            /* timeout */ 4500
-          );
+          showToast({
+            message: `Name and email were successfully updated. You will be logged out. Please check your email at ${email} to verify your new email before logging in again.`,
+            check: true,
+            timeout: 4500,
+          });
           return;
         }
         if (response.status === 200 && !isNameUpdated && isEmailUpdated) {
-          showToast(
-            `Email was successfully updated. You will be logged out. Please check your email at ${email} to verify your new email before logging in again.`,
-            /* check  */ true,
-            /* color */ undefined,
-            /* timeout */ 4500
-          );
+          showToast({
+            message: `Email was successfully updated. You will be logged out. Please check your email at ${email} to verify your new email before logging in again.`,
+            check: true,
+            timeout: 4500,
+          });
           return;
         }
         if (response.status !== 200) {
-          showToast("Failed to update user details.", false, "red");
+          showToast({
+            message: "Failed to update user details.",
+            color: "red",
+          });
           return;
         }
       }
@@ -117,7 +121,10 @@ class UserStore {
         errorMessage = String(error);
       }
 
-      showToast(`Failed to update user details. ${errorMessage}`, false, "red");
+      showToast({
+        message: `Failed to update user details. ${errorMessage}`,
+        color: "red",
+      });
       return errorMessage;
     }
   }
