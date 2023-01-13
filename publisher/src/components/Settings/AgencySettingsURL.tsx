@@ -48,6 +48,7 @@ export const AgencySettingsUrl: React.FC<{
     clearSettingToOpen,
     isAnimationShowing,
     removeAnimation,
+    allowEdit,
   } = settingProps;
 
   const { agencyId } = useParams();
@@ -122,14 +123,16 @@ export const AgencySettingsUrl: React.FC<{
                 {settings.HOMEPAGE_URL}
               </AgencyInfoLink>
             </AgencyInfoBlockDescription>
-            <EditButtonContainer>
-              <EditButton
-                onClick={() => openSetting(() => setIsConfirmModalOpen(true))}
-              >
-                Edit URL
-                <img src={rightArrow} alt="" />
-              </EditButton>
-            </EditButtonContainer>
+            {allowEdit && (
+              <EditButtonContainer>
+                <EditButton
+                  onClick={() => openSetting(() => setIsConfirmModalOpen(true))}
+                >
+                  Edit URL
+                  <img src={rightArrow} alt="" />
+                </EditButton>
+              </EditButtonContainer>
+            )}
           </>
         )}
       </AgencySettingsBlock>

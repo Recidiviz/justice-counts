@@ -50,6 +50,7 @@ export type SettingProps = {
   clearSettingToOpen: () => void;
   isAnimationShowing: boolean;
   removeAnimation: () => void;
+  allowEdit: boolean;
 };
 
 export const AgencySettings: React.FC = observer(() => {
@@ -98,6 +99,7 @@ export const AgencySettings: React.FC = observer(() => {
     clearSettingToOpen: () => setSettingToOpen(undefined),
     isAnimationShowing: isSettingAnimationActive,
     removeAnimation: () => setIsSettingAnimationActive(false),
+    allowEdit: userStore.isRecidivizAdmin || userStore.isAgencyAdmin,
   });
 
   useEffect(() => {
@@ -131,6 +133,7 @@ export const AgencySettings: React.FC = observer(() => {
         <AgencySettingsUrl
           settingProps={generateSettingProps(ActiveSetting.HomepageUrl)}
         />
+        {/* TODO(#305) Allow all users to see this section once Team Management is finished */}
         {userStore.isRecidivizAdmin && (
           <AgencySettingsTeamManagement
             settingProps={generateSettingProps(ActiveSetting.Team)}
@@ -141,6 +144,7 @@ export const AgencySettings: React.FC = observer(() => {
             settingProps={generateSettingProps(ActiveSetting.Supervisions)}
           />
         )}
+        {/* TODO(#306) Allow all users to see this section once Jurisdictions is finished */}
         {userStore.isRecidivizAdmin && (
           <AgencySettingsJurisdictions
             settingProps={generateSettingProps(ActiveSetting.Jurisdictions)}

@@ -98,6 +98,7 @@ export const AgencySettingsJurisdictions: React.FC<{
     clearSettingToOpen,
     isAnimationShowing,
     removeAnimation,
+    allowEdit,
   } = settingProps;
 
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -339,14 +340,16 @@ export const AgencySettingsJurisdictions: React.FC<{
                 <span>{type}</span>
               </AgencySettingsInfoRow>
             ))}
-            <EditButtonContainer>
-              <EditButton
-                onClick={() => openSetting(() => setIsConfirmModalOpen(true))}
-              >
-                Edit jurisdictions
-                <img src={rightArrow} alt="" />
-              </EditButton>
-            </EditButtonContainer>
+            {allowEdit && (
+              <EditButtonContainer>
+                <EditButton
+                  onClick={() => openSetting(() => setIsConfirmModalOpen(true))}
+                >
+                  Edit jurisdictions
+                  <img src={rightArrow} alt="" />
+                </EditButton>
+              </EditButtonContainer>
+            )}
           </>
         )}
       </AgencySettingsBlock>

@@ -68,6 +68,7 @@ export const AgencySettingsTeamManagement: React.FC<{
     clearSettingToOpen,
     isAnimationShowing,
     removeAnimation,
+    allowEdit,
   } = settingProps;
 
   const { agencyId } = useParams();
@@ -214,15 +215,17 @@ export const AgencySettingsTeamManagement: React.FC<{
                 Invite
               </InviteMemberButton>
             </InviteMemberContainer>
-            <AgencySettingsBlockSubDescription>
-              Select people to remove or assign Admin status.
-            </AgencySettingsBlockSubDescription>
+            {allowEdit && (
+              <AgencySettingsBlockSubDescription>
+                Select people to remove or assign Admin status.
+              </AgencySettingsBlockSubDescription>
+            )}
             <TeamMemberEditInfoContainer>
               {team?.map(({ name, email, id, isAdmin, isInvited }) => (
                 <TeamMemberEditInfoRow
                   key={name + id}
-                  hasHover
-                  onClick={() => handleCheckMembers(id)}
+                  hasHover={allowEdit}
+                  onClick={allowEdit ? () => handleCheckMembers(id) : undefined}
                 >
                   <TeamMemberInfoContainer>
                     {/* fake isInvited simulation */}
@@ -238,14 +241,16 @@ export const AgencySettingsTeamManagement: React.FC<{
                     {/* email is mocked */}
                     <TeamMemberEmail>{email}</TeamMemberEmail>
                   </TeamMemberInfoContainer>
-                  <CheckboxWrapper>
-                    <Checkbox
-                      type="checkbox"
-                      checked={checkedMembersIds.includes(id)}
-                      onChange={() => handleCheckMembers(id)}
-                    />
-                    <BlueCheckIcon src={blueCheck} alt="" enabled />
-                  </CheckboxWrapper>
+                  {allowEdit && (
+                    <CheckboxWrapper>
+                      <Checkbox
+                        type="checkbox"
+                        checked={checkedMembersIds.includes(id)}
+                        onChange={() => handleCheckMembers(id)}
+                      />
+                      <BlueCheckIcon src={blueCheck} alt="" enabled />
+                    </CheckboxWrapper>
+                  )}
                 </TeamMemberEditInfoRow>
               ))}
             </TeamMemberEditInfoContainer>

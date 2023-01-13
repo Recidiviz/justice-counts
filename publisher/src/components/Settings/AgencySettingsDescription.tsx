@@ -49,6 +49,7 @@ export const AgencySettingsDescription: React.FC<{
     clearSettingToOpen,
     isAnimationShowing,
     removeAnimation,
+    allowEdit,
   } = settingProps;
 
   const { agencyId } = useParams();
@@ -127,14 +128,16 @@ export const AgencySettingsDescription: React.FC<{
             <AgencyInfoBlockDescription>
               {settings.PURPOSE_AND_FUNCTIONS}
             </AgencyInfoBlockDescription>
-            <EditButtonContainer>
-              <EditButton
-                onClick={() => openSetting(() => setIsConfirmModalOpen(true))}
-              >
-                Edit description
-                <img src={rightArrow} alt="" />
-              </EditButton>
-            </EditButtonContainer>
+            {allowEdit && (
+              <EditButtonContainer>
+                <EditButton
+                  onClick={() => openSetting(() => setIsConfirmModalOpen(true))}
+                >
+                  Edit description
+                  <img src={rightArrow} alt="" />
+                </EditButton>
+              </EditButtonContainer>
+            )}
           </>
         )}
       </AgencySettingsBlock>
