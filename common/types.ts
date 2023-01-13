@@ -17,7 +17,7 @@
 
 export enum Permission {
   RECIDIVIZ_ADMIN = "recidiviz_admin",
-  SWITCH_AGENCIES = "switch_agencies",
+  AGENCY_ADMIN = "agency_admin",
 }
 
 export type AgencySystems =
@@ -37,6 +37,7 @@ export type AgencySystems =
 export type AgencyTeam = {
   auth0_user_id: string;
   name: string;
+  email: string;
 };
 
 export const SupervisionSystems: AgencySystems[] = [
@@ -48,13 +49,28 @@ export const SupervisionSystems: AgencySystems[] = [
   "OTHER_SUPERVISION",
 ];
 
-export interface UserAgency {
-  name: string;
+export type AgencySettingType = "PURPOSE_AND_FUNCTIONS" | "HOMEPAGE_URL";
+
+export interface AgencySetting {
+  setting_type: AgencySettingType;
+  source_id: number;
+  value: string;
+}
+
+export interface PublicUserAgency {
   id: number;
+  name: string;
+  settings: AgencySetting[];
+  systems: AgencySystems[];
+}
+
+export interface UserAgency {
+  id: number;
+  name: string;
   fips_county_code: string;
-  state_code: string;
   state: string;
-  system: AgencySystems;
+  state_code: string;
+  settings: AgencySetting[];
   systems: AgencySystems[];
   team: AgencyTeam[];
 }
@@ -310,12 +326,15 @@ export interface RawDatapointsByMetric {
 
 export type DataVizTimeRange = 0 | 6 | 12 | 60 | 120;
 
+export const dataVizTimeRangeDisplayName = [
+  "All",
+  "6 Months Ago",
+  "1 Year Ago",
+  "5 Years Ago",
+  "10 Years Ago",
+] as const;
 export type DataVizTimeRangeDisplayName =
-  | "All"
-  | "6 Months Ago"
-  | "1 Year Ago"
-  | "5 Years Ago"
-  | "10 Years Ago";
+  typeof dataVizTimeRangeDisplayName[number];
 
 export const DataVizTimeRangesMap: {
   [key in DataVizTimeRangeDisplayName]: DataVizTimeRange;

@@ -345,3 +345,7 @@ export const formatDateShort = (dateStr: string) => {
   const [, , month, year] = splitUtcString(dateStr);
   return `${abbreviatedMonths.indexOf(month) + 1}/${year}`;
 };
+
+export const formatExternalLink = (url: string) => {
+  return url.match(/^http[s]?:\/\//) ? url : `http://${url}`;
+};

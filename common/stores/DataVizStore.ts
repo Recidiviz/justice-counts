@@ -17,7 +17,9 @@
 
 import {
   DataVizCountOrPercentageView,
+  dataVizCountOrPercentageView,
   DataVizTimeRangeDisplayName,
+  dataVizTimeRangeDisplayName,
   NoDisaggregationOption,
 } from "@justice-counts/common/types";
 import { makeAutoObservable } from "mobx";
@@ -37,15 +39,53 @@ class DataVizStore {
   }
 
   setTimeRange = (timeRange: DataVizTimeRangeDisplayName) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("time_range", timeRange);
+    window.history.pushState(null, "", url.toString());
     this.timeRange = timeRange;
   };
 
   setDisaggregationName = (disaggregation: string) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("disaggregation", disaggregation);
+    window.history.pushState(null, "", url.toString());
     this.disaggregationName = disaggregation;
   };
 
   setCountOrPercentageView = (viewSetting: DataVizCountOrPercentageView) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("view", viewSetting);
+    window.history.pushState(null, "", url.toString());
     this.countOrPercentageView = viewSetting;
+  };
+
+  setInitialStateFromSearchParams = () => {
+    const query = new URLSearchParams(window.location.search);
+    const timeRangeParam = query.get(
+      "time_range"
+    ) as DataVizTimeRangeDisplayName | null;
+    const disaggregationParam = query.get("disaggregation");
+    const viewParam = query.get("view") as DataVizCountOrPercentageView | null;
+    if (
+      timeRangeParam &&
+      dataVizTimeRangeDisplayName.includes(timeRangeParam)
+    ) {
+      this.setTimeRange(timeRangeParam);
+    } else {
+      this.setTimeRange(this.timeRange);
+    }
+    this.setDisaggregationName(disaggregationParam ?? this.disaggregationName);
+    if (viewParam && dataVizCountOrPercentageView.includes(viewParam)) {
+      this.setCountOrPercentageView(viewParam);
+    } else {
+      this.setCountOrPercentageView(this.countOrPercentageView);
+    }
+  };
+
+  resetState = () => {
+    this.timeRange = "All";
+    this.disaggregationName = NoDisaggregationOption;
+    this.countOrPercentageView = "Count";
   };
 }
 

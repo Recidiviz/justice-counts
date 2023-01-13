@@ -15,12 +15,36 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystems } from "@justice-counts/common/types";
+import React from "react";
 
-export type SettingsSearchParams = {
-  system?: AgencySystems;
-  metric?: string;
+import {
+  CancelModalButtonsContainer,
+  CancelModalContainer,
+  CancelModalRedButton,
+  CancelModalWrapper,
+  FilledButton,
+} from "./AgencySettings.styles";
+
+type Props = {
+  isModalOpen: boolean;
+  closeModal: () => void;
+  handleConfirm: () => void;
 };
 
-// might add settings names here in future
-export type AgencySettingType = "PURPOSE_AND_FUNCTIONS" | "HOMEPAGE_URL";
+export const AgencySettingsConfirmModal: React.FC<Props> = ({
+  isModalOpen,
+  closeModal,
+  handleConfirm,
+}) => {
+  return (
+    <CancelModalWrapper isOpen={isModalOpen}>
+      <CancelModalContainer>
+        Are you sure you would like to cancel your changes?
+        <CancelModalButtonsContainer>
+          <CancelModalRedButton onClick={closeModal}>No</CancelModalRedButton>
+          <FilledButton onClick={handleConfirm}>Yes</FilledButton>
+        </CancelModalButtonsContainer>
+      </CancelModalContainer>
+    </CancelModalWrapper>
+  );
+};

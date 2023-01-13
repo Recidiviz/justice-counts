@@ -130,11 +130,25 @@ const DashboardView = () => {
     setTimeRange,
     setDisaggregationName,
     setCountOrPercentageView,
+    setInitialStateFromSearchParams,
+    resetState,
   } = dataVizStore;
 
   const { search } = useLocation();
   const query = new URLSearchParams(search);
-  const metricKey = query.get("metric");
+  const metricKeyParam = query.get("metric")?.toLocaleUpperCase();
+
+  useEffect(() => {
+    setInitialStateFromSearchParams();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [metricKeyParam]);
+
+  useEffect(() => {
+    return () => {
+      resetState();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -150,9 +164,9 @@ const DashboardView = () => {
 
   useEffect(() => {
     if (
-      metricKey &&
+      metricKeyParam &&
       !agencyDataStore.loading &&
-      !agencyDataStore.dimensionNamesByMetricAndDisaggregation[metricKey]
+      !agencyDataStore.dimensionNamesByMetricAndDisaggregation[metricKeyParam]
     ) {
       navigate(`/agency/${agencyId}`);
     }
@@ -180,9 +194,9 @@ const DashboardView = () => {
   }, [isDesktopWidth]);
 
   if (
-    !metricKey ||
+    !metricKeyParam ||
     (!agencyDataStore.loading &&
-      !agencyDataStore.dimensionNamesByMetricAndDisaggregation[metricKey])
+      !agencyDataStore.dimensionNamesByMetricAndDisaggregation[metricKeyParam])
   ) {
     return null;
   }
@@ -203,10 +217,11 @@ const DashboardView = () => {
   );
 
   const metricName =
-    agencyDataStore.metricsByKey[metricKey]?.display_name || metricKey;
+    agencyDataStore.metricsByKey[metricKeyParam]?.display_name ||
+    metricKeyParam;
 
   const filteredAggregateData = transformDataForMetricInsights(
-    agencyDataStore.datapointsByMetric[metricKey]?.aggregate || [],
+    agencyDataStore.datapointsByMetric[metricKeyParam]?.aggregate || [],
     DataVizTimeRangesMap[dataVizStore.timeRange]
   );
 
@@ -219,7 +234,7 @@ const DashboardView = () => {
   };
 
   const downloadMetricData = () => {
-    const metric = agencyDataStore.metricsByKey[metricKey];
+    const metric = agencyDataStore.metricsByKey[metricKeyParam];
     if (metric) {
       metric.filenames.forEach((fileName) => {
         downloadFeedData(metric.system.key, fileName);
@@ -228,14 +243,14 @@ const DashboardView = () => {
   };
 
   return (
-    <Container key={metricKey}>
+    <Container key={metricKeyParam}>
       <HeaderBar showTitle />
       <LeftPanel>
         <BackButton onClick={() => navigate(`/agency/${agencyId}`)} />
         <MetricTitle>{metricName}</MetricTitle>
         <MetricInsights datapoints={filteredAggregateData} />
         <MetricOverviewContent>
-          {agencyDataStore.metricsByKey[metricKey]?.description}
+          {agencyDataStore.metricsByKey[metricKeyParam]?.description}
         </MetricOverviewContent>
         <MetricOverviewActionsContainer>
           <MetricOverviewActionShareButton
@@ -252,10 +267,12 @@ const DashboardView = () => {
         <RightPanelMetricTitle>{metricName}</RightPanelMetricTitle>
         <DatapointsView
           datapointsGroupedByAggregateAndDisaggregations={
-            agencyDataStore.datapointsByMetric[metricKey]
+            agencyDataStore.datapointsByMetric[metricKeyParam]
           }
           dimensionNamesByDisaggregation={
-            agencyDataStore.dimensionNamesByMetricAndDisaggregation[metricKey]
+            agencyDataStore.dimensionNamesByMetricAndDisaggregation[
+              metricKeyParam
+            ]
           }
           timeRange={timeRange}
           disaggregationName={disaggregationName}
@@ -271,7 +288,7 @@ const DashboardView = () => {
               agencyDataStore.metricDisplayNameToKey[selectedMetricName];
             if (selectedMetricKey) {
               navigate(
-                `/agency/${agencyId}/dashboard?metric=${selectedMetricKey}`
+                `/agency/${agencyId}/dashboard?metric=${selectedMetricKey.toLocaleLowerCase()}`
               );
             }
           }}
@@ -279,7 +296,7 @@ const DashboardView = () => {
           resizeHeight={isDesktopWidth}
         />
         <RightPanelMetricOverviewContent>
-          {agencyDataStore.metricsByKey[metricKey]?.description}
+          {agencyDataStore.metricsByKey[metricKeyParam]?.description}
         </RightPanelMetricOverviewContent>
         <RightPanelMetricOverviewActionsContainer>
           <MetricOverviewActionShareButton
@@ -297,7 +314,7 @@ const DashboardView = () => {
       {learnMoreModalVisible && (
         <LearnMoreModal
           closeModal={() => setLearnMoreModalVisible(false)}
-          metricKey={metricKey}
+          metricKey={metricKeyParam}
         />
       )}
     </Container>

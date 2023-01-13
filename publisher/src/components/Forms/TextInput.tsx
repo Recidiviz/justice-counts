@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import statusCheckIcon from "@justice-counts/common/assets/status-check-icon.png";
 import {
   palette,
   typography,
@@ -25,7 +26,6 @@ import styled from "styled-components/macro";
 
 import { rem } from "../../utils";
 import infoRedIcon from "../assets/info-red-icon.png";
-import statusCheckIcon from "../assets/status-check-icon.png";
 import statusErrorIcon from "../assets/status-error-icon.png";
 import { NotReportedIcon } from ".";
 

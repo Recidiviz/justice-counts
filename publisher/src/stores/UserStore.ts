@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 import { showToast } from "@justice-counts/common/components/Toast";
-import { UserAgency } from "@justice-counts/common/types";
+import { Permission, UserAgency } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction, when } from "mobx";
 
 import { APP_METADATA_CLAIM, AuthStore } from "../components/Auth";
@@ -154,6 +154,18 @@ class UserStore {
     return this.name || this.email;
   }
 
+  get email_verified(): boolean | undefined {
+    return this.authStore.user?.email_verified;
+  }
+
+  get isRecidivizAdmin(): boolean {
+    return this.permissions.includes(Permission.RECIDIVIZ_ADMIN);
+  }
+
+  get isAgencyAdmin(): boolean {
+    return this.permissions.includes(Permission.AGENCY_ADMIN);
+  }
+
   async updateAndRetrieveUserPermissionsAndAgencies() {
     try {
       const response = (await this.api.request({
@@ -162,6 +174,7 @@ class UserStore {
         body: {
           name: this.name,
           email: this.email,
+          email_verified: this.email_verified,
         },
       })) as Response;
       const { agencies: userAgencies, permissions } = await response.json();

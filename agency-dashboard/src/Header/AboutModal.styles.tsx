@@ -91,6 +91,7 @@ export const AboutModalInfoContainer = styled.div`
 export const AboutModalInfoSection = styled.div`
   margin-top: 24px;
   margin-right: 24px;
+  flex: 1 1 0;
 `;
 
 export const AboutModalInfoTitle = styled.div`

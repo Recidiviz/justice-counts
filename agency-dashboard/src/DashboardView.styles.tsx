@@ -68,6 +68,7 @@ export const BackButtonContainer = styled.div`
   margin-top: 16px;
   display: flex;
   align-items: center;
+  align-self: flex-start;
   gap: 8px;
 
   &:hover {

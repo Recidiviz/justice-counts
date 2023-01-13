@@ -29,7 +29,10 @@ test("renders list of metrics", async () => {
   fetchMock.mockResponses([
     JSON.stringify({
       agency: {
+        id: 1,
         name: "Test Agency",
+        settings: [],
+        systems: [],
       },
       metrics: [
         {
