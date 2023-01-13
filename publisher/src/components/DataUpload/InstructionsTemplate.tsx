@@ -212,7 +212,7 @@ export const GeneralInstructions: React.FC<
           return (
             <DownloadTemplateBox
               key={system}
-              href={`./assets/${systemFileName}`}
+              href={`/assets/${systemFileName}`}
               download={systemFileName}
             >
               <SpreadsheetIcon />
