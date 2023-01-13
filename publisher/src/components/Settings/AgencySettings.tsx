@@ -133,9 +133,12 @@ export const AgencySettings: React.FC = observer(() => {
         <AgencySettingsUrl
           settingProps={generateSettingProps(ActiveSetting.HomepageUrl)}
         />
-        <AgencySettingsTeamManagement
-          settingProps={generateSettingProps(ActiveSetting.Team)}
-        />
+        {/* TODO(#305) Allow all users to see this section once Team Management is finished */}
+        {userStore.isRecidivizAdmin && (
+          <AgencySettingsTeamManagement
+            settingProps={generateSettingProps(ActiveSetting.Team)}
+          />
+        )}
         {isAgencySupervision && (
           <AgencySettingsSupervisions
             settingProps={generateSettingProps(ActiveSetting.Supervisions)}
