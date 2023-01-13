@@ -292,14 +292,16 @@ const Reports: React.FC = () => {
 
           <TabbedActionsWrapper>
             {/* Admin Only: Manage Reports */}
-            {userStore.isRecidivizAdmin && (
+            {(userStore.isRecidivizAdmin || userStore.isAgencyAdmin) && (
               <>
                 <ReportActions>
                   {!selectionMode && (
                     <>
-                      <ReportActionsItem onClick={enterSelectionMode}>
-                        Select <ReportActionsSelectIcon />
-                      </ReportActionsItem>
+                      {userStore.isRecidivizAdmin && (
+                        <ReportActionsItem onClick={enterSelectionMode}>
+                          Select <ReportActionsSelectIcon />
+                        </ReportActionsItem>
+                      )}
                       <ReportActionsItem onClick={() => navigate("create")}>
                         New <ReportActionsNewIcon />
                       </ReportActionsItem>
