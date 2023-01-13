@@ -212,8 +212,8 @@ export const AgencySettingsTeamManagement: React.FC<{
                   agencyStore.inviteUserToAgency({
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     agency_id: agencyId!,
-                    name: nameValue,
-                    email: emailValue,
+                    invite_name: nameValue,
+                    invite_email: emailValue,
                   })
                 }
                 disabled={!nameValue || !emailValue}

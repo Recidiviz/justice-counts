@@ -116,11 +116,11 @@ class AgencyStore {
 
   inviteUserToAgency = async (body: {
     agency_id: string;
-    name: string;
-    email: string;
+    invite_name: string;
+    invite_email: string;
   }): Promise<void> => {
     const response = (await this.api.request({
-      path: `/api/users`,
+      path: "/api/users",
       body,
       method: "PATCH",
     })) as Response;
