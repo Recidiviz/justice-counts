@@ -144,9 +144,12 @@ export const AgencySettings: React.FC = observer(() => {
             settingProps={generateSettingProps(ActiveSetting.Supervisions)}
           />
         )}
-        <AgencySettingsJurisdictions
-          settingProps={generateSettingProps(ActiveSetting.Jurisdictions)}
-        />
+        {/* TODO(#306) Allow all users to see this section once Jurisdictions is finished */}
+        {userStore.isRecidivizAdmin && (
+          <AgencySettingsJurisdictions
+            settingProps={generateSettingProps(ActiveSetting.Jurisdictions)}
+          />
+        )}
       </AgencySettingsContent>
     </AgencySettingsWrapper>
   );
