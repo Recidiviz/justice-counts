@@ -231,7 +231,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               type="radio"
               id="metric-config-annual"
               name="metric-config"
-              label="Annual"
+              label="Annually"
               value="Annual"
               checked={metricEnabled && customOrDefaultFrequency === "ANNUAL"}
               onChange={() => {
