@@ -88,10 +88,21 @@ class MetricConfigStore {
       [disaggregationKey: string]: {
         [dimensionKey: string]: {
           enabled?: boolean;
+          contexts?: { key: string; value: string }[];
           label?: string;
           key?: string;
           race?: Races;
           ethnicity?: Ethnicities;
+        };
+      };
+    };
+  };
+
+  dimensionContexts: {
+    [systemMetricKey: string]: {
+      [disaggregationKey: string]: {
+        [dimensionKey: string]: {
+          [contextKey: string]: { value?: string; label?: string };
         };
       };
     };
@@ -122,6 +133,7 @@ class MetricConfigStore {
     this.dimensions = {};
     this.dimensionDefinitionSettings = {};
     this.contexts = {};
+    this.dimensionContexts = {};
   }
 
   static getSystemMetricKey(system: string, metricKey: string): string {
@@ -261,7 +273,10 @@ class MetricConfigStore {
                       race: dimension.race,
                       ethnicity: dimension.ethnicity,
                     }
-                  : { label: dimension.label, key: dimension.key };
+                  : {
+                      label: dimension.label,
+                      key: dimension.key,
+                    };
 
               /** Initialize Dimension Status (Enabled/Disabled) */
               this.updateDimensionEnabledStatus(
@@ -272,6 +287,19 @@ class MetricConfigStore {
                 dimension.enabled as boolean,
                 dimensionMetadata
               );
+
+              /** Initialize Dimension Contexts */
+              dimension.contexts?.forEach((context, i) => {
+                this.updateDimensionContexts(
+                  metric.system.key,
+                  metric.key,
+                  disaggregation.key,
+                  dimension.key,
+                  context.key as string,
+                  context.value as string,
+                  context.label
+                );
+              });
 
               dimension.settings?.forEach((setting) => {
                 /** Initialize Dimension Definition Settings (Included/Excluded) */
@@ -345,6 +373,70 @@ class MetricConfigStore {
     return {
       key: metricKey,
       enabled: enabledStatus,
+    };
+  };
+
+  updateDimensionContexts = (
+    system: AgencySystems,
+    metricKey: string,
+    disaggregationKey: string,
+    dimensionKey: string,
+    contextKey: string,
+    value: string,
+    label?: string
+  ) => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
+
+    /** Initialize nested object for quick lookup and update and reduce re-renders */
+    if (!this.dimensionContexts[systemMetricKey]) {
+      this.dimensionContexts[systemMetricKey] = {};
+    }
+    if (!this.dimensionContexts[systemMetricKey][disaggregationKey]) {
+      this.dimensionContexts[systemMetricKey][disaggregationKey] = {};
+    }
+    if (
+      !this.dimensionContexts[systemMetricKey][disaggregationKey][dimensionKey]
+    ) {
+      this.dimensionContexts[systemMetricKey][disaggregationKey][dimensionKey] =
+        {};
+    }
+    if (
+      !this.dimensionContexts[systemMetricKey][disaggregationKey][dimensionKey][
+        contextKey
+      ]
+    ) {
+      this.dimensionContexts[systemMetricKey][disaggregationKey][dimensionKey][
+        contextKey
+      ] = { label };
+    }
+
+    /** Update value */
+    this.dimensionContexts[systemMetricKey][disaggregationKey][dimensionKey][
+      contextKey
+    ].value = value;
+
+    /** Return an object in the desired backend data structure for saving purposes */
+    return {
+      key: metricKey,
+      disaggregations: [
+        {
+          key: disaggregationKey,
+          dimensions: [
+            {
+              key: dimensionKey,
+              contexts: [
+                {
+                  key: contextKey,
+                  value,
+                },
+              ],
+            },
+          ],
+        },
+      ],
     };
   };
 

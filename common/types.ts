@@ -178,11 +178,18 @@ export interface MetricDisaggregations {
   should_sum_to_total: boolean;
 }
 
+export type MetricDimensionContext = {
+  key?: string;
+  value?: string;
+  label?: string;
+};
+
 export interface MetricDisaggregationDimensions {
   key: string;
   label: string;
   value: string | number | boolean | null | undefined;
   reporting_note: string;
+  contexts?: MetricDimensionContext[];
   enabled?: boolean;
   settings?: MetricConfigurationSettings[];
   display_name?: string;

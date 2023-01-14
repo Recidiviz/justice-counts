@@ -38,6 +38,7 @@ import {
   DefinitionSelection,
   DefinitionsSubTitle,
   DefinitionsTitle,
+  DimensionContexts,
   MetricSettings,
   RevertToDefaultButton,
 } from ".";
@@ -57,6 +58,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
       metricDefinitionSettings,
       dimensions,
       dimensionDefinitionSettings,
+      dimensionContexts,
       updateMetricDefinitionSetting,
       updateDimensionDefinitionSetting,
       saveMetricSettings,
@@ -94,6 +96,13 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
     const activeSettingsKeys = isMetricDefinitionSettings
       ? metricDefinitionSettingsKeys
       : dimensionDefinitionSettingsKeys;
+
+    const dimensionContextsMap =
+      activeDisaggregationKey &&
+      activeDimensionKey &&
+      dimensionContexts[systemMetricKey][activeDisaggregationKey]?.[
+        activeDimensionKey
+      ];
 
     const [showDefaultSettings, setShowDefaultSettings] = useState(false);
 
@@ -282,10 +291,21 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
           )}
 
           {/* Display when user is viewing a dimension & there are no settings available */}
-          {!activeSettingsKeys?.length && activeDimensionKey && (
-            <DefinitionsSubTitle>
-              Technical Definitions are not available for this metric yet.
-            </DefinitionsSubTitle>
+          {!activeSettingsKeys?.length &&
+            activeDimensionKey &&
+            !dimensionContextsMap && (
+              <DefinitionsSubTitle>
+                Technical Definitions are not available for this metric yet.
+              </DefinitionsSubTitle>
+            )}
+
+          {/* Display when dimension has additional contexts */}
+          {dimensionContextsMap && (
+            <DimensionContexts
+              dimensionContextsMap={dimensionContextsMap}
+              activeDisaggregationKey={activeDisaggregationKey}
+              activeDimensionKey={activeDimensionKey}
+            />
           )}
         </DefinitionsDisplay>
 
