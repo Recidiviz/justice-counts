@@ -162,6 +162,38 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
       }
     };
 
+    const handleUpdateMetricDefinitionSetting = (
+      settingKey: string,
+      settingValue: MetricConfigurationSettingsOptions
+    ) => {
+      if (systemSearchParam && metricSearchParam) {
+        if (isMetricDefinitionSettings) {
+          const updatedSetting = updateMetricDefinitionSetting(
+            systemSearchParam,
+            metricSearchParam,
+            settingKey,
+            settingValue
+          );
+          return saveMetricSettings(
+            updatedSetting,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            agencyId!
+          );
+        }
+
+        const updatedSetting = updateDimensionDefinitionSetting(
+          systemSearchParam,
+          metricSearchParam,
+          activeDisaggregationKey as string,
+          activeDimensionKey,
+          settingKey,
+          settingValue
+        );
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        saveMetricSettings(updatedSetting, agencyId!);
+      }
+    };
+
     return (
       <DefinitionsDisplayContainer>
         <DefinitionsDisplay enabled={metrics[systemMetricKey]?.enabled}>
@@ -228,36 +260,12 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                                   : currentSetting.included === option
                               }
                               showDefault={showDefaultSettings}
-                              onClick={() => {
-                                if (systemSearchParam && metricSearchParam) {
-                                  if (isMetricDefinitionSettings) {
-                                    const updatedSetting =
-                                      updateMetricDefinitionSetting(
-                                        systemSearchParam,
-                                        metricSearchParam,
-                                        settingKey,
-                                        option
-                                      );
-                                    return saveMetricSettings(
-                                      updatedSetting,
-                                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                      agencyId!
-                                    );
-                                  }
-
-                                  const updatedSetting =
-                                    updateDimensionDefinitionSetting(
-                                      systemSearchParam,
-                                      metricSearchParam,
-                                      activeDisaggregationKey as string,
-                                      activeDimensionKey,
-                                      settingKey,
-                                      option
-                                    );
-                                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                  saveMetricSettings(updatedSetting, agencyId!);
-                                }
-                              }}
+                              onClick={() =>
+                                handleUpdateMetricDefinitionSetting(
+                                  settingKey,
+                                  option
+                                )
+                              }
                             >
                               {option}
                             </DefinitionMiniButton>

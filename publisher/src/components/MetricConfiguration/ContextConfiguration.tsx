@@ -20,6 +20,7 @@ import { observer } from "mobx-react-lite";
 import React, { useRef } from "react";
 import { useParams } from "react-router-dom";
 
+import { MetricContext } from "../../../../common/types";
 import { useStore } from "../../stores";
 import {
   BinaryRadioButton,
@@ -53,6 +54,30 @@ export const ContextConfiguration: React.FC = observer(() => {
 
   const debouncedSave = useRef(debounce(saveMetricSettings, 1500)).current;
 
+  const handleUpdateContextValue = (
+    contextKey: string,
+    contextType: MetricContext["type"] | undefined,
+    value: MetricContext["value"],
+    isDebounceUsed?: boolean
+  ) => {
+    if (systemSearchParam && metricSearchParam) {
+      const updatedSetting = updateContextValue(
+        systemSearchParam,
+        metricSearchParam,
+        contextKey,
+        contextType,
+        value
+      );
+      if (isDebounceUsed) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        debouncedSave(updatedSetting, agencyId!);
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        saveMetricSettings(updatedSetting, agencyId!);
+      }
+    }
+  };
+
   return (
     <MetricContextContainer enabled={metrics[systemMetricKey]?.enabled}>
       <MetricContextHeader>Context</MetricContextHeader>
@@ -74,19 +99,13 @@ export const ContextConfiguration: React.FC = observer(() => {
                     label="Yes"
                     value="yes"
                     checked={currentContext.value === "yes"}
-                    onChange={() => {
-                      if (systemSearchParam && metricSearchParam) {
-                        const updatedSetting = updateContextValue(
-                          systemSearchParam,
-                          metricSearchParam,
-                          contextKey,
-                          currentContext.type,
-                          "yes"
-                        );
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        saveMetricSettings(updatedSetting, agencyId!);
-                      }
-                    }}
+                    onChange={() =>
+                      handleUpdateContextValue(
+                        contextKey,
+                        currentContext.type,
+                        "yes"
+                      )
+                    }
                   />
                   <BinaryRadioButton
                     type="radio"
@@ -95,35 +114,23 @@ export const ContextConfiguration: React.FC = observer(() => {
                     label="No"
                     value="no"
                     checked={currentContext.value === "no"}
-                    onChange={() => {
-                      if (systemSearchParam && metricSearchParam) {
-                        const updatedSetting = updateContextValue(
-                          systemSearchParam,
-                          metricSearchParam,
-                          contextKey,
-                          currentContext.type,
-                          "no"
-                        );
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        saveMetricSettings(updatedSetting, agencyId!);
-                      }
-                    }}
+                    onChange={() =>
+                      handleUpdateContextValue(
+                        contextKey,
+                        currentContext.type,
+                        "no"
+                      )
+                    }
                   />
                 </RadioButtonGroupWrapper>
                 <BinaryRadioGroupClearButton
-                  onClick={() => {
-                    if (systemSearchParam && metricSearchParam) {
-                      const updatedSetting = updateContextValue(
-                        systemSearchParam,
-                        metricSearchParam,
-                        contextKey,
-                        currentContext.type,
-                        ""
-                      );
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      saveMetricSettings(updatedSetting, agencyId!);
-                    }
-                  }}
+                  onClick={() =>
+                    handleUpdateContextValue(
+                      contextKey,
+                      currentContext.type,
+                      ""
+                    )
+                  }
                 >
                   Clear Input
                 </BinaryRadioGroupClearButton>
@@ -143,19 +150,14 @@ export const ContextConfiguration: React.FC = observer(() => {
                   value={(currentContext.value || "") as string}
                   multiline={currentContext.type === "TEXT"}
                   error={currentContext.error}
-                  onChange={(e) => {
-                    if (systemSearchParam && metricSearchParam) {
-                      const updatedSetting = updateContextValue(
-                        systemSearchParam,
-                        metricSearchParam,
-                        contextKey,
-                        currentContext.type,
-                        e.currentTarget.value
-                      );
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      debouncedSave(updatedSetting, agencyId!);
-                    }
-                  }}
+                  onChange={(e) =>
+                    handleUpdateContextValue(
+                      contextKey,
+                      currentContext.type,
+                      e.currentTarget.value,
+                      true
+                    )
+                  }
                 />
               </>
             )}
@@ -177,37 +179,25 @@ export const ContextConfiguration: React.FC = observer(() => {
                       label={option}
                       value={option}
                       checked={currentContext.value === option}
-                      onChange={() => {
-                        if (systemSearchParam && metricSearchParam) {
-                          const updatedSetting = updateContextValue(
-                            systemSearchParam,
-                            metricSearchParam,
-                            contextKey,
-                            currentContext.type,
-                            option
-                          );
-                          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                          saveMetricSettings(updatedSetting, agencyId!);
-                        }
-                      }}
+                      onChange={() =>
+                        handleUpdateContextValue(
+                          contextKey,
+                          currentContext.type,
+                          option
+                        )
+                      }
                     />
                   ))}
                 </MultipleChoiceWrapper>
 
                 <BinaryRadioGroupClearButton
-                  onClick={() => {
-                    if (systemSearchParam && metricSearchParam) {
-                      const updatedSetting = updateContextValue(
-                        systemSearchParam,
-                        metricSearchParam,
-                        contextKey,
-                        currentContext.type,
-                        ""
-                      );
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      saveMetricSettings(updatedSetting, agencyId!);
-                    }
-                  }}
+                  onClick={() =>
+                    handleUpdateContextValue(
+                      contextKey,
+                      currentContext.type,
+                      ""
+                    )
+                  }
                 >
                   Clear Input
                 </BinaryRadioGroupClearButton>

@@ -175,6 +175,66 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       }
     };
 
+    const handleUpdateMetricEnabledStatus = (enabledStatus: boolean) => {
+      if (systemSearchParam && metricSearchParam) {
+        const updatedSetting = updateMetricEnabledStatus(
+          systemSearchParam,
+          metricSearchParam,
+          enabledStatus
+        );
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        saveMetricSettings(updatedSetting, agencyId!);
+      }
+    };
+
+    const handleUpdateMetricReportFrequency = (
+      frequencyUpdate: ReportFrequencyUpdate
+    ) => {
+      if (systemSearchParam && metricSearchParam) {
+        const updatedSetting = updateMetricReportFrequency(
+          systemSearchParam,
+          metricSearchParam,
+          frequencyUpdate
+        );
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        saveMetricSettings(updatedSetting, agencyId!);
+      }
+    };
+
+    const handleUpdateDisaggregationEnabledStatus = (
+      disaggregationKey: string,
+      enabledStatus: boolean
+    ) => {
+      if (systemSearchParam && metricSearchParam) {
+        const updatedSetting = updateDisaggregationEnabledStatus(
+          systemSearchParam,
+          metricSearchParam,
+          disaggregationKey,
+          enabledStatus
+        );
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        saveMetricSettings(updatedSetting, agencyId!);
+      }
+    };
+
+    const handleUpdateDimensionEnabledStatus = (
+      disaggregationKey: string,
+      dimensionKey: string,
+      enabledStatus: boolean
+    ) => {
+      if (systemSearchParam && metricSearchParam) {
+        const updatedSetting = updateDimensionEnabledStatus(
+          systemSearchParam,
+          metricSearchParam,
+          disaggregationKey,
+          dimensionKey,
+          enabledStatus
+        );
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        saveMetricSettings(updatedSetting, agencyId!);
+      }
+    };
+
     return (
       <MetricConfigurationContainer>
         {/* Metric (Enable/Disable) & Frequency */}
@@ -192,17 +252,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               label="Not Available"
               value="Not Available"
               checked={!metricEnabled}
-              onChange={() => {
-                if (systemSearchParam && metricSearchParam) {
-                  const updatedSetting = updateMetricEnabledStatus(
-                    systemSearchParam,
-                    metricSearchParam,
-                    false
-                  );
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  saveMetricSettings(updatedSetting, agencyId!);
-                }
-              }}
+              onChange={() => handleUpdateMetricEnabledStatus(false)}
             />
             <BinaryRadioButton
               type="radio"
@@ -211,21 +261,12 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               label="Monthly"
               value="Monthly"
               checked={metricEnabled && customOrDefaultFrequency === "MONTHLY"}
-              onChange={() => {
-                if (systemSearchParam && metricSearchParam) {
-                  const frequencyUpdate: ReportFrequencyUpdate = {
-                    customFrequency: "MONTHLY",
-                    startingMonth: null,
-                  };
-                  const updatedSetting = updateMetricReportFrequency(
-                    systemSearchParam,
-                    metricSearchParam,
-                    frequencyUpdate
-                  );
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  saveMetricSettings(updatedSetting, agencyId!);
-                }
-              }}
+              onChange={() =>
+                handleUpdateMetricReportFrequency({
+                  customFrequency: "MONTHLY",
+                  startingMonth: null,
+                })
+              }
             />
             <BinaryRadioButton
               type="radio"
@@ -234,21 +275,12 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               label="Annual"
               value="Annual"
               checked={metricEnabled && customOrDefaultFrequency === "ANNUAL"}
-              onChange={() => {
-                if (systemSearchParam && metricSearchParam) {
-                  const frequencyUpdate: ReportFrequencyUpdate = {
-                    customFrequency: "ANNUAL",
-                    startingMonth: 1,
-                  };
-                  const updatedSetting = updateMetricReportFrequency(
-                    systemSearchParam,
-                    metricSearchParam,
-                    frequencyUpdate
-                  );
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  saveMetricSettings(updatedSetting, agencyId!);
-                }
-              }}
+              onChange={() =>
+                handleUpdateMetricReportFrequency({
+                  customFrequency: "ANNUAL",
+                  startingMonth: 1,
+                })
+              }
             />
           </RadioButtonGroupWrapper>
 
@@ -264,17 +296,12 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   label="Calendar Year (Jan)"
                   value="Calendar Year (Jan)"
                   checked={metricEnabled && startingMonth === 1}
-                  onChange={() => {
-                    if (systemSearchParam && metricSearchParam) {
-                      const updatedSetting = updateMetricReportFrequency(
-                        systemSearchParam,
-                        metricSearchParam,
-                        { customFrequency: "ANNUAL", startingMonth: 1 }
-                      );
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      saveMetricSettings(updatedSetting, agencyId!);
-                    }
-                  }}
+                  onChange={() =>
+                    handleUpdateMetricReportFrequency({
+                      customFrequency: "ANNUAL",
+                      startingMonth: 1,
+                    })
+                  }
                 />
                 <BinaryRadioButton
                   type="radio"
@@ -283,17 +310,12 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   label="Fiscal Year (Jul)"
                   value="Fiscal Year (Jul)"
                   checked={metricEnabled && startingMonth === 7}
-                  onChange={() => {
-                    if (systemSearchParam && metricSearchParam) {
-                      const updatedSetting = updateMetricReportFrequency(
-                        systemSearchParam,
-                        metricSearchParam,
-                        { customFrequency: "ANNUAL", startingMonth: 7 }
-                      );
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      saveMetricSettings(updatedSetting, agencyId!);
-                    }
-                  }}
+                  onChange={() =>
+                    handleUpdateMetricReportFrequency({
+                      customFrequency: "ANNUAL",
+                      startingMonth: 7,
+                    })
+                  }
                 />
                 <Dropdown>
                   <DropdownButton
@@ -318,21 +340,12 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                         return (
                           <ExtendedDropdownMenuItem
                             key={month}
-                            onClick={() => {
-                              if (systemSearchParam && metricSearchParam) {
-                                const updatedSetting =
-                                  updateMetricReportFrequency(
-                                    systemSearchParam,
-                                    metricSearchParam,
-                                    {
-                                      customFrequency: "ANNUAL",
-                                      startingMonth: monthNumber,
-                                    }
-                                  );
-                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                saveMetricSettings(updatedSetting, agencyId!);
-                              }
-                            }}
+                            onClick={() =>
+                              handleUpdateMetricReportFrequency({
+                                customFrequency: "ANNUAL",
+                                startingMonth: monthNumber,
+                              })
+                            }
                             highlight={monthNumber === startingMonth}
                           >
                             {month}
@@ -439,19 +452,12 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                           <Checkbox
                             type="checkbox"
                             checked={currentDisaggregation.enabled}
-                            onChange={() => {
-                              if (systemSearchParam && metricSearchParam) {
-                                const updatedSetting =
-                                  updateDisaggregationEnabledStatus(
-                                    systemSearchParam,
-                                    metricSearchParam,
-                                    disaggregationKey,
-                                    !currentDisaggregation.enabled
-                                  );
-                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                saveMetricSettings(updatedSetting, agencyId!);
-                              }
-                            }}
+                            onChange={() =>
+                              handleUpdateDisaggregationEnabledStatus(
+                                disaggregationKey,
+                                !currentDisaggregation.enabled
+                              )
+                            }
                           />
                           <BlueCheckIcon
                             src={blueCheck}
@@ -501,20 +507,13 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                             currentDisaggregation.enabled &&
                             currentDimension.enabled
                           }
-                          onChange={() => {
-                            if (systemSearchParam && metricSearchParam) {
-                              const updatedSetting =
-                                updateDimensionEnabledStatus(
-                                  systemSearchParam,
-                                  metricSearchParam,
-                                  activeDisaggregationKey,
-                                  dimensionKey,
-                                  !currentDimension.enabled
-                                );
-                              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                              saveMetricSettings(updatedSetting, agencyId!);
-                            }
-                          }}
+                          onChange={() =>
+                            handleUpdateDimensionEnabledStatus(
+                              activeDisaggregationKey,
+                              dimensionKey,
+                              !currentDimension.enabled
+                            )
+                          }
                         />
                         <BlueCheckIcon
                           src={blueCheck}
