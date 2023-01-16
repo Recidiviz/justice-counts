@@ -374,7 +374,9 @@ const DataEntryForm: React.FC<{
                       {disabledMetricsNames.length > 1 ? "have" : "has"} been
                       disabled. If you believe this is incorrect, go to{" "}
                       <DisabledMetricsInfoLink
-                        onClick={() => navigate("/settings/metric-config")}
+                        onClick={() =>
+                          navigate(`/agency/${agencyId}/settings/metric-config`)
+                        }
                       >
                         Metric Configuration
                       </DisabledMetricsInfoLink>{" "}
