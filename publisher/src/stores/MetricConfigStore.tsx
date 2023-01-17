@@ -301,17 +301,7 @@ class MetricConfigStore {
     }
   };
 
-  updateMetricEnabledStatus = (
-    system: AgencySystems,
-    metricKey: string,
-    enabledStatus: boolean,
-    metadata?: MetricInfo
-  ): MetricSettings => {
-    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
-      system,
-      metricKey
-    );
-
+  initializeMetric = (systemMetricKey: string, metadata?: MetricInfo) => {
     /** Initialize nested object for quick lookup and update and reduce re-renders */
     if (!this.metrics[systemMetricKey]) {
       this.metrics[systemMetricKey] = {};
@@ -328,6 +318,20 @@ class MetricConfigStore {
       this.metrics[systemMetricKey].disaggregatedBySupervisionSubsystems =
         metadata.disaggregatedBySupervisionSubsystems;
     }
+  };
+
+  updateMetricEnabledStatus = (
+    system: AgencySystems,
+    metricKey: string,
+    enabledStatus: boolean,
+    metadata?: MetricInfo
+  ): MetricSettings => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
+
+    this.initializeMetric(systemMetricKey, metadata);
 
     /** Update value */
     this.metrics[systemMetricKey].enabled = enabledStatus;
@@ -349,10 +353,7 @@ class MetricConfigStore {
       metricKey
     );
 
-    /** Initialize nested object for quick lookup and update and reduce re-renders */
-    if (!this.metrics[systemMetricKey]) {
-      this.metrics[systemMetricKey] = {};
-    }
+    this.initializeMetric(systemMetricKey);
 
     /** Update values */
     this.metrics[systemMetricKey].defaultFrequency = update.defaultFrequency;
@@ -391,18 +392,11 @@ class MetricConfigStore {
     };
   };
 
-  updateMetricDefinitionSetting = (
-    system: AgencySystems,
-    metricKey: string,
+  initializeMetricDefinitionSetting = (
+    systemMetricKey: string,
     settingKey: string,
-    settingValue: MetricConfigurationSettingsOptions,
     metadata?: { [key: string]: string }
-  ): MetricSettings => {
-    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
-      system,
-      metricKey
-    );
-
+  ) => {
     /** Initialize nested objects for quick lookup and update and reduce re-renders */
     if (!this.metricDefinitionSettings[systemMetricKey]) {
       this.metricDefinitionSettings[systemMetricKey] = {};
@@ -418,6 +412,25 @@ class MetricConfigStore {
       this.metricDefinitionSettings[systemMetricKey][settingKey].default =
         metadata.default as MetricConfigurationSettingsOptions;
     }
+  };
+
+  updateMetricDefinitionSetting = (
+    system: AgencySystems,
+    metricKey: string,
+    settingKey: string,
+    settingValue: MetricConfigurationSettingsOptions,
+    metadata?: { [key: string]: string }
+  ): MetricSettings => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
+
+    this.initializeMetricDefinitionSetting(
+      systemMetricKey,
+      settingKey,
+      metadata
+    );
 
     /** Update value */
     this.metricDefinitionSettings[systemMetricKey][settingKey].included =
@@ -428,6 +441,26 @@ class MetricConfigStore {
       key: metricKey,
       settings: [{ key: settingKey, included: settingValue }],
     };
+  };
+
+  initializeDisaggregation = (
+    systemMetricKey: string,
+    disaggregationKey: string,
+    metadata?: { [key: string]: string }
+  ) => {
+    /** Initialize nested objects for quick lookup and update and reduce re-renders */
+    if (!this.disaggregations[systemMetricKey]) {
+      this.disaggregations[systemMetricKey] = {};
+    }
+    if (!this.disaggregations[systemMetricKey][disaggregationKey]) {
+      this.disaggregations[systemMetricKey][disaggregationKey] = {};
+    }
+
+    /** If provided, add metadata required for rendering */
+    if (metadata) {
+      this.disaggregations[systemMetricKey][disaggregationKey].display_name =
+        metadata.display_name;
+    }
   };
 
   updateDisaggregationEnabledStatus = (
@@ -442,19 +475,7 @@ class MetricConfigStore {
       metricKey
     );
 
-    /** Initialize nested objects for quick lookup and update and reduce re-renders */
-    if (!this.disaggregations[systemMetricKey]) {
-      this.disaggregations[systemMetricKey] = {};
-    }
-    if (!this.disaggregations[systemMetricKey][disaggregationKey]) {
-      this.disaggregations[systemMetricKey][disaggregationKey] = {};
-    }
-
-    /** If provided, add metadata required for rendering */
-    if (metadata) {
-      this.disaggregations[systemMetricKey][disaggregationKey].display_name =
-        metadata.display_name;
-    }
+    this.initializeDisaggregation(systemMetricKey, disaggregationKey, metadata);
 
     /**
      * When a disaggregation is disabled, all dimensions are disabled.
@@ -486,19 +507,12 @@ class MetricConfigStore {
     };
   };
 
-  updateDimensionEnabledStatus = (
-    system: AgencySystems,
-    metricKey: string,
+  initializeDimension = (
+    systemMetricKey: string,
     disaggregationKey: string,
     dimensionKey: string,
-    enabledStatus: boolean,
     metadata?: { [key: string]: string | undefined }
-  ): MetricSettings => {
-    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
-      system,
-      metricKey
-    );
-
+  ) => {
     /** Initialize nested objects for quick lookup and update and reduce re-renders */
     if (!this.dimensions[systemMetricKey]) {
       this.dimensions[systemMetricKey] = {};
@@ -525,6 +539,27 @@ class MetricConfigStore {
         ].ethnicity = metadata.ethnicity as Ethnicities;
       }
     }
+  };
+
+  updateDimensionEnabledStatus = (
+    system: AgencySystems,
+    metricKey: string,
+    disaggregationKey: string,
+    dimensionKey: string,
+    enabledStatus: boolean,
+    metadata?: { [key: string]: string | undefined }
+  ): MetricSettings => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
+
+    this.initializeDimension(
+      systemMetricKey,
+      disaggregationKey,
+      dimensionKey,
+      metadata
+    );
 
     /**
      * When last dimension is disabled, the disaggregation is disabled
@@ -572,20 +607,13 @@ class MetricConfigStore {
     };
   };
 
-  updateDimensionDefinitionSetting = (
-    system: AgencySystems,
-    metricKey: string,
+  initializeDimensionDefinitionSetting = (
+    systemMetricKey: string,
     disaggregationKey: string,
     dimensionKey: string,
     settingKey: string,
-    settingValue: MetricConfigurationSettingsOptions,
     metadata?: { [key: string]: string }
-  ): MetricSettings => {
-    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
-      system,
-      metricKey
-    );
-
+  ) => {
     /** Initialize nested objects for quick lookup and update and reduce re-renders */
     if (!this.dimensionDefinitionSettings[systemMetricKey]) {
       this.dimensionDefinitionSettings[systemMetricKey] = {};
@@ -622,6 +650,29 @@ class MetricConfigStore {
       ][settingKey].default =
         metadata.default as MetricConfigurationSettingsOptions;
     }
+  };
+
+  updateDimensionDefinitionSetting = (
+    system: AgencySystems,
+    metricKey: string,
+    disaggregationKey: string,
+    dimensionKey: string,
+    settingKey: string,
+    settingValue: MetricConfigurationSettingsOptions,
+    metadata?: { [key: string]: string }
+  ): MetricSettings => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
+
+    this.initializeDimensionDefinitionSetting(
+      systemMetricKey,
+      disaggregationKey,
+      dimensionKey,
+      settingKey,
+      metadata
+    );
 
     /** Update value */
     this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
@@ -650,19 +701,11 @@ class MetricConfigStore {
     };
   };
 
-  updateContextValue = (
-    system: AgencySystems,
-    metricKey: string,
+  initializeContext = (
+    systemMetricKey: string,
     contextKey: string,
-    contextType: MetricContext["type"] | undefined,
-    value: MetricContext["value"],
     metadata?: { [key: string]: string | string[] | MetricContext["type"] }
-  ): MetricSettings => {
-    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
-      system,
-      metricKey
-    );
-
+  ) => {
     /** Initialize nested objects for quick lookup and update and reduce re-renders */
     if (!this.contexts[systemMetricKey]) {
       this.contexts[systemMetricKey] = {};
@@ -680,6 +723,22 @@ class MetricConfigStore {
       this.contexts[systemMetricKey][contextKey].multiple_choice_options =
         metadata.multiple_choice_options as string[];
     }
+  };
+
+  updateContextValue = (
+    system: AgencySystems,
+    metricKey: string,
+    contextKey: string,
+    contextType: MetricContext["type"] | undefined,
+    value: MetricContext["value"],
+    metadata?: { [key: string]: string | string[] | MetricContext["type"] }
+  ): MetricSettings => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
+
+    this.initializeContext(systemMetricKey, contextKey, metadata);
 
     /** Update value */
     this.contexts[systemMetricKey][contextKey].value = value;
