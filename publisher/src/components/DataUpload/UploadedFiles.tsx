@@ -21,6 +21,7 @@ import {
   BadgeColors,
 } from "@justice-counts/common/components/Badge";
 import { showToast } from "@justice-counts/common/components/Toast";
+import { Permission } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -30,6 +31,7 @@ import { removeSnakeCase } from "../../utils";
 import downloadIcon from "../assets/download-icon.png";
 import { Title, TitleWrapper } from "../Forms";
 import { Loader } from "../Loading";
+import { TeamMemberNameWithBadge } from "../primitives";
 import {
   ActionButton,
   ActionsContainer,
@@ -39,6 +41,7 @@ import {
   ExtendedLabelRow,
   ExtendedOpacityGradient,
   ExtendedRow,
+  UploadedContainer,
   UploadedFile,
   UploadedFilesContainer,
   UploadedFilesError,
@@ -145,9 +148,13 @@ export const UploadedFileRow: React.FC<{
 
         {/* Date Uploaded */}
         <ExtendedCell capitalize>
-          <span>
-            {uploadedBy} / {dateUploaded}
-          </span>
+          <UploadedContainer>
+            <TeamMemberNameWithBadge
+              name={uploadedBy}
+              permission={Permission.AGENCY_ADMIN}
+            />{" "}
+            / {dateUploaded}
+          </UploadedContainer>
         </ExtendedCell>
 
         {/* Date Ingested */}
