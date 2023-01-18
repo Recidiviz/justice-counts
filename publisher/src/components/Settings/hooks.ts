@@ -30,7 +30,9 @@ export const useSettingsSearchParams = (): [
   const { system, metric } = settingsSearchParams;
   const shouldReplace = !system && !metric;
   const setSettingsSearchParams = (params: SettingsSearchParams) => {
-    setSearchParams(params, { replace: shouldReplace });
+    setSearchParams(JSON.parse(JSON.stringify(params).toLowerCase()), {
+      replace: shouldReplace,
+    });
   };
 
   return [settingsSearchParams, setSettingsSearchParams];

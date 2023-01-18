@@ -29,8 +29,9 @@ export const getActiveSystemMetricKey = ({
 export const getSettingsSearchParams = (
   params: URLSearchParams
 ): SettingsSearchParams => {
-  const system = (params.get("system") as AgencySystems) || undefined;
-  const metric = params.get("metric") || undefined;
+  const system =
+    (params.get("system")?.toUpperCase() as AgencySystems) || undefined;
+  const metric = params.get("metric")?.toUpperCase() || undefined;
 
   return { system, metric };
 };
