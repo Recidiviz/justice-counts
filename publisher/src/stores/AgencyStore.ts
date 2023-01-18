@@ -120,9 +120,9 @@ class AgencyStore {
     invite_email: string;
   }): Promise<void> => {
     const response = (await this.api.request({
-      path: "/api/users",
+      path: "/api/users/invite",
       body,
-      method: "PATCH",
+      method: "POST",
     })) as Response;
 
     if (response.status !== 200) {
