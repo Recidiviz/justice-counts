@@ -21,20 +21,22 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import { Metric } from "@justice-counts/common/types";
+import { Metric, Permission } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import styled from "styled-components/macro";
 
 import { useStore } from "../../stores";
 import {
-  printCommaSeparatedList,
   printDateRangeFromMonthYear,
   printElapsedDaysMonthsYearsSinceDate,
 } from "../../utils";
+import agencyAdmin from "../assets/agency-admin.svg";
+import recidivizAdmin from "../assets/recidiviz-admin.svg";
 import errorIcon from "../assets/status-error-icon.png";
 import { MetricsSectionTitle, Title } from "../Forms";
 import { REPORT_CAPITALIZED } from "../Global/constants";
+import { TeamMemberNameWithBadge } from "../primitives";
 import { SubMenuListItem } from "../Settings";
 import HelperText from "./HelperText";
 import { useCheckMetricForErrors } from "./hooks";
@@ -285,7 +287,12 @@ const ReportSummaryPanel: React.FC<{
         <EditDetailsTitle>Editors</EditDetailsTitle>
         <EditDetailsContent>
           {editors.length
-            ? printCommaSeparatedList(editors)
+            ? editors.map((editor) => (
+                <TeamMemberNameWithBadge
+                  name={editor}
+                  permission={Permission.RECIDIVIZ_ADMIN}
+                />
+              ))
             : userStore.nameOrEmail}
         </EditDetailsContent>
 

@@ -20,7 +20,7 @@ import {
   Badge,
   BadgeColorMapping,
 } from "@justice-counts/common/components/Badge";
-import { ReportOverview } from "@justice-counts/common/types";
+import { Permission, ReportOverview } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -32,6 +32,7 @@ import {
 } from "../components/Global/constants";
 import { Loading } from "../components/Loading";
 import { Onboarding } from "../components/Onboarding";
+import { TeamMemberNameWithBadge } from "../components/primitives";
 import {
   AdditionalEditorsTooltip,
   Cell,
@@ -226,7 +227,10 @@ const Reports: React.FC = () => {
                       "-"
                     ) : (
                       <>
-                        <span>{report.editors[0]}</span>
+                        <TeamMemberNameWithBadge
+                          name={report.editors[0]}
+                          permission={Permission.RECIDIVIZ_ADMIN}
+                        />
                         {report.editors.length > 1
                           ? `& ${report.editors.length - 1} other${
                               report.editors.length > 2 ? "s" : ""
