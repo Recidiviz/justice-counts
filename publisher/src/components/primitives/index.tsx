@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-// import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { Permission } from "@justice-counts/common/types";
 import React from "react";
 import styled from "styled-components/macro";
