@@ -57,7 +57,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
       metricDefinitionSettings,
       dimensions,
       dimensionDefinitionSettings,
-      updateMetricDefinitionSetting,
+      updateMetricDefinitionSettingIncluded,
       updateDimensionDefinitionSetting,
       saveMetricSettings,
     } = metricConfigStore;
@@ -107,7 +107,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
             currentSettingDefaultValue =
               metricDefinitionSettings[systemMetricKey][settingKey].default;
 
-            updateMetricDefinitionSetting(
+            updateMetricDefinitionSettingIncluded(
               systemSearchParam,
               metricSearchParam,
               settingKey,
@@ -234,7 +234,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                                 if (systemSearchParam && metricSearchParam) {
                                   if (isMetricDefinitionSettings) {
                                     const updatedSetting =
-                                      updateMetricDefinitionSetting(
+                                      updateMetricDefinitionSettingIncluded(
                                         systemSearchParam,
                                         metricSearchParam,
                                         settingKey,

@@ -20,8 +20,10 @@ import {
   AgencySystems,
   FormError,
   Metric,
+  MetricConfigurationSettings,
   MetricConfigurationSettingsOptions,
   MetricContext,
+  MetricDisaggregations,
   ReportFrequency,
 } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction } from "mobx";
@@ -54,11 +56,7 @@ class MetricConfigStore {
 
   metricDefinitionSettings: {
     [systemMetricKey: string]: {
-      [settingKey: string]: {
-        included?: MetricConfigurationSettingsOptions;
-        default?: MetricConfigurationSettingsOptions;
-        label?: string;
-      };
+      [settingKey: string]: MetricConfigurationSettings;
     };
   };
 
@@ -76,10 +74,10 @@ class MetricConfigStore {
 
   disaggregations: {
     [systemMetricKey: string]: {
-      [disaggregationKey: string]: {
-        enabled?: boolean;
-        display_name?: string;
-      };
+      [disaggregationKey: string]: Pick<
+        MetricDisaggregations,
+        "display_name" | "enabled"
+      >;
     };
   };
 
@@ -207,40 +205,37 @@ class MetricConfigStore {
       runInAction(() => {
         metrics.forEach((metric) => {
           /** Initialize Metrics Status (Enabled/Disabled) */
-          this.updateMetricEnabledStatus(
-            metric.system.key,
-            metric.key,
-            metric.enabled as boolean,
-            {
-              label: metric.label,
-              description: metric.description,
-              defaultFrequency: metric.frequency,
-              customFrequency: metric.custom_frequency,
-              startingMonth: metric.starting_month,
-              disaggregatedBySupervisionSubsystems:
-                metric.disaggregated_by_supervision_subsystems,
-            }
-          );
+          this.initializeMetric(metric.system.key, metric.key, {
+            enabled: metric.enabled,
+            label: metric.label,
+            description: metric.description,
+            defaultFrequency: metric.frequency,
+            customFrequency: metric.custom_frequency,
+            startingMonth: metric.starting_month,
+            disaggregatedBySupervisionSubsystems:
+              metric.disaggregated_by_supervision_subsystems,
+          });
 
           metric.settings?.forEach((setting) => {
             /** Initialize Metrics Definition Settings (Included/Excluded) */
-            this.updateMetricDefinitionSetting(
+            this.initializeMetricDefinitionSetting(
               metric.system.key,
               metric.key,
               setting.key,
-              setting.included,
-              { label: setting.label, default: setting.default }
+              setting
             );
           });
 
           metric.disaggregations.forEach((disaggregation) => {
             /** Initialize Disaggregation Status (Enabled/Disabled) */
-            this.updateDisaggregationEnabledStatus(
+            this.initializeDisaggregations(
               metric.system.key,
               metric.key,
               disaggregation.key,
-              disaggregation.enabled as boolean,
-              { display_name: disaggregation.display_name }
+              {
+                display_name: disaggregation.display_name,
+                enabled: disaggregation.enabled,
+              }
             );
 
             disaggregation.dimensions.forEach((dimension) => {
@@ -301,33 +296,29 @@ class MetricConfigStore {
     }
   };
 
-  updateMetricEnabledStatus = (
+  initializeMetric = (
     system: AgencySystems,
     metricKey: string,
-    enabledStatus: boolean,
-    metadata?: MetricInfo
-  ): MetricSettings => {
+    metric: MetricInfo
+  ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
       metricKey
     );
 
     /** Initialize nested object for quick lookup and update and reduce re-renders */
-    if (!this.metrics[systemMetricKey]) {
-      this.metrics[systemMetricKey] = {};
-    }
+    this.metrics[systemMetricKey] = metric;
+  };
 
-    /** If provided, add metadata required for rendering */
-    if (metadata) {
-      this.metrics[systemMetricKey].label = metadata.label;
-      this.metrics[systemMetricKey].description = metadata.description;
-      this.metrics[systemMetricKey].defaultFrequency =
-        metadata.defaultFrequency;
-      this.metrics[systemMetricKey].customFrequency = metadata.customFrequency;
-      this.metrics[systemMetricKey].startingMonth = metadata.startingMonth;
-      this.metrics[systemMetricKey].disaggregatedBySupervisionSubsystems =
-        metadata.disaggregatedBySupervisionSubsystems;
-    }
+  updateMetricEnabledStatus = (
+    system: AgencySystems,
+    metricKey: string,
+    enabledStatus: boolean
+  ): MetricSettings => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
 
     /** Update value */
     this.metrics[systemMetricKey].enabled = enabledStatus;
@@ -349,16 +340,11 @@ class MetricConfigStore {
       metricKey
     );
 
-    /** Initialize nested object for quick lookup and update and reduce re-renders */
-    if (!this.metrics[systemMetricKey]) {
-      this.metrics[systemMetricKey] = {};
-    }
-
     /** Update values */
     this.metrics[systemMetricKey].defaultFrequency = update.defaultFrequency;
     this.metrics[systemMetricKey].customFrequency = update.customFrequency;
     this.metrics[systemMetricKey].startingMonth = update.startingMonth;
-    this.updateMetricEnabledStatus(system, metricKey, true);
+    this.metrics[systemMetricKey].enabled = true;
 
     /** Return an object in the desired backend data structure for saving purposes */
     return {
@@ -381,7 +367,7 @@ class MetricConfigStore {
       metricKey
     );
 
-    /** Update values */
+    /** Update value */
     this.metrics[systemMetricKey].disaggregatedBySupervisionSubsystems = status;
 
     /** Return an object in the desired backend data structure for saving purposes */
@@ -391,13 +377,12 @@ class MetricConfigStore {
     };
   };
 
-  updateMetricDefinitionSetting = (
+  initializeMetricDefinitionSetting = (
     system: AgencySystems,
     metricKey: string,
     settingKey: string,
-    settingValue: MetricConfigurationSettingsOptions,
-    metadata?: { [key: string]: string }
-  ): MetricSettings => {
+    setting: MetricConfigurationSettings
+  ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
       metricKey
@@ -407,60 +392,62 @@ class MetricConfigStore {
     if (!this.metricDefinitionSettings[systemMetricKey]) {
       this.metricDefinitionSettings[systemMetricKey] = {};
     }
-    if (!this.metricDefinitionSettings[systemMetricKey][settingKey]) {
-      this.metricDefinitionSettings[systemMetricKey][settingKey] = {};
-    }
 
-    /** If provided, add metadata required for rendering */
-    if (metadata) {
-      this.metricDefinitionSettings[systemMetricKey][settingKey].label =
-        metadata.label;
-      this.metricDefinitionSettings[systemMetricKey][settingKey].default =
-        metadata.default as MetricConfigurationSettingsOptions;
-    }
+    this.metricDefinitionSettings[systemMetricKey][settingKey] = setting;
+  };
 
-    /** Update value */
+  updateMetricDefinitionSettingIncluded = (
+    system: AgencySystems,
+    metricKey: string,
+    settingKey: string,
+    included: MetricConfigurationSettingsOptions
+  ): MetricSettings => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
     this.metricDefinitionSettings[systemMetricKey][settingKey].included =
-      settingValue;
+      included;
 
     /** Return an object in the desired backend data structure for saving purposes */
     return {
       key: metricKey,
-      settings: [{ key: settingKey, included: settingValue }],
+      settings: [{ key: settingKey, included }],
     };
   };
 
-  updateDisaggregationEnabledStatus = (
+  initializeDisaggregations = (
     system: AgencySystems,
     metricKey: string,
     disaggregationKey: string,
-    enabledStatus: boolean,
-    metadata?: { [key: string]: string }
-  ): MetricSettings => {
+    metadata: Pick<MetricDisaggregations, "display_name" | "enabled">
+  ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
       metricKey
     );
 
     /** Initialize nested objects for quick lookup and update and reduce re-renders */
-    if (!this.disaggregations[systemMetricKey]) {
-      this.disaggregations[systemMetricKey] = {};
-    }
-    if (!this.disaggregations[systemMetricKey][disaggregationKey]) {
-      this.disaggregations[systemMetricKey][disaggregationKey] = {};
-    }
+    this.disaggregations[systemMetricKey] = {};
+    this.disaggregations[systemMetricKey][disaggregationKey] = metadata;
+  };
 
-    /** If provided, add metadata required for rendering */
-    if (metadata) {
-      this.disaggregations[systemMetricKey][disaggregationKey].display_name =
-        metadata.display_name;
-    }
+  updateDisaggregationEnabledStatus = (
+    system: AgencySystems,
+    metricKey: string,
+    disaggregationKey: string,
+    enabledStatus: boolean
+  ): MetricSettings => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
 
     /**
      * When a disaggregation is disabled, all dimensions are disabled.
      * When a disaggregation is enabled, all dimensions are enabled.
      */
-    if (!metadata && this.dimensions[systemMetricKey]?.[disaggregationKey]) {
+    if (this.dimensions[systemMetricKey]?.[disaggregationKey]) {
       Object.keys(this.dimensions[systemMetricKey][disaggregationKey]).forEach(
         (dimensionKey) => {
           this.dimensions[systemMetricKey][disaggregationKey][
