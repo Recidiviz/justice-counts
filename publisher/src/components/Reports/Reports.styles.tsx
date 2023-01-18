@@ -233,6 +233,7 @@ export const AdditionalEditorsTooltip = styled.div`
   border-radius: 2px;
   text-align: center;
   box-shadow: 2px 2px 8px ${palette.highlight.grey5};
+  display: flex;
 `;
 
 export const NoReportsDisplay = styled.div`
@@ -254,4 +255,15 @@ export const SelectedCheckmark = styled.img`
   width: 16px;
   height: 16px;
   margin-right: 8px;
+`;
+
+export const AndOthersSpan = styled.span`
+  margin-left: 8px;
+`;
+
+export const CommaSpan = styled.span`
+  &::after {
+    content: ",";
+  }
+  margin-right: 2px;
 `;
