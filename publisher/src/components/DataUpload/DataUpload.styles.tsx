@@ -632,3 +632,7 @@ export const UploadedContainer = styled.div`
   display: flex;
   align-items: center;
 `;
+
+export const DateUploaded = styled.span`
+  margin-left: 8px;
+`;

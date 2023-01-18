@@ -15,29 +15,36 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+// import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { Permission } from "@justice-counts/common/types";
 import React from "react";
 import styled from "styled-components/macro";
 
-import agencyAdmin from "../assets/agency-admin.svg";
-import recidivizAdmin from "../assets/recidiviz-admin.svg";
+import { ReactComponent as AgencyAdmin } from "../assets/agency-admin.svg";
+import { ReactComponent as RecidivizAdmin } from "../assets/recidiviz-admin.svg";
 
-export const TeamMemberNameContainer = styled.div`
+export const TeamMemberNameContainer = styled.div<{
+  color?: string;
+}>`
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-right: 8px;
+
+  svg {
+    path {
+      ${({ color }) => (color ? `fill: ${color}` : "")};
+    }
+  }
 `;
 
 export const TeamMemberNameWithBadge: React.FC<{
   name: string;
   permission?: Permission;
-}> = ({ name, permission }) => (
-  <TeamMemberNameContainer>
+  badgeColor?: string;
+}> = ({ name, permission, badgeColor }) => (
+  <TeamMemberNameContainer color={badgeColor}>
     {name}
-    {permission === Permission.RECIDIVIZ_ADMIN && (
-      <img src={recidivizAdmin} alt="" />
-    )}
-    {permission === Permission.AGENCY_ADMIN && <img src={agencyAdmin} alt="" />}
+    {permission === Permission.RECIDIVIZ_ADMIN && <RecidivizAdmin />}
+    {permission === Permission.AGENCY_ADMIN && <AgencyAdmin />}
   </TeamMemberNameContainer>
 );

@@ -35,6 +35,7 @@ import { TeamMemberNameWithBadge } from "../primitives";
 import {
   ActionButton,
   ActionsContainer,
+  DateUploaded,
   DownloadIcon,
   ExtendedCell,
   ExtendedLabelCell,
@@ -152,8 +153,8 @@ export const UploadedFileRow: React.FC<{
             <TeamMemberNameWithBadge
               name={uploadedBy}
               permission={Permission.AGENCY_ADMIN}
-            />{" "}
-            / {dateUploaded}
+            />
+            <DateUploaded>{`/ ${dateUploaded}`}</DateUploaded>
           </UploadedContainer>
         </ExtendedCell>
 

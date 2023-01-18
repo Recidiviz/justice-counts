@@ -31,8 +31,6 @@ import {
   printDateRangeFromMonthYear,
   printElapsedDaysMonthsYearsSinceDate,
 } from "../../utils";
-import agencyAdmin from "../assets/agency-admin.svg";
-import recidivizAdmin from "../assets/recidiviz-admin.svg";
 import errorIcon from "../assets/status-error-icon.png";
 import { MetricsSectionTitle, Title } from "../Forms";
 import { REPORT_CAPITALIZED } from "../Global/constants";
@@ -169,6 +167,7 @@ export const EditDetailsTitle = styled.div`
 `;
 
 export const EditDetailsContent = styled.div`
+  display: flex;
   ${typography.sizeCSS.normal}
   color: ${palette.highlight.grey9};
   margin-bottom: 18px;
@@ -192,6 +191,13 @@ const PublishContainer = styled.div`
   @media only screen and (max-height: ${BREAKPOINT_HEIGHT}px) {
     border: none;
   }
+`;
+
+const CommaSpan = styled.span`
+  &::after {
+    content: ",";
+  }
+  margin-right: 4px;
 `;
 
 const ReportStatusIconComponent: React.FC<{
@@ -287,11 +293,14 @@ const ReportSummaryPanel: React.FC<{
         <EditDetailsTitle>Editors</EditDetailsTitle>
         <EditDetailsContent>
           {editors.length
-            ? editors.map((editor) => (
-                <TeamMemberNameWithBadge
-                  name={editor}
-                  permission={Permission.RECIDIVIZ_ADMIN}
-                />
+            ? editors.map((editor, index) => (
+                <React.Fragment key={editor}>
+                  <TeamMemberNameWithBadge
+                    name={editor}
+                    permission={Permission.RECIDIVIZ_ADMIN}
+                  />
+                  {index < editors.length - 1 && <CommaSpan />}
+                </React.Fragment>
               ))
             : userStore.nameOrEmail}
         </EditDetailsContent>
