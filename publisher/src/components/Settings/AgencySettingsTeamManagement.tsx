@@ -72,7 +72,7 @@ export const AgencySettingsTeamManagement: React.FC<{
   } = settingProps;
 
   const { agencyId } = useParams();
-  const { userStore } = useStore();
+  const { userStore, agencyStore } = useStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
@@ -209,7 +209,14 @@ export const AgencySettingsTeamManagement: React.FC<{
                 onChange={(e) => setEmailValue(e.target.value)}
               />
               <InviteMemberButton
-                onClick={() => handleInvite(nameValue, emailValue)}
+                onClick={() =>
+                  agencyStore.inviteUserToAgency({
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    agency_id: agencyId!,
+                    invite_name: nameValue,
+                    invite_email: emailValue,
+                  })
+                }
                 disabled={!nameValue || !emailValue}
               >
                 Invite
