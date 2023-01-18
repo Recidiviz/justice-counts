@@ -115,7 +115,10 @@ export type MetricDisaggregationDimensionsWithErrors =
     error?: string;
   };
 
-export type MetricConfigurationSettingsOptions = "Yes" | "No" | "N/A";
+export const metricConfigurationSettingsOptions = ["No", "Yes"] as const;
+
+export type MetricConfigurationSettingsOptions =
+  typeof metricConfigurationSettingsOptions[number];
 
 export type MetricConfigurationSettings = {
   key: string;
