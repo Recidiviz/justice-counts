@@ -25,7 +25,7 @@ import styled from "styled-components/macro";
 import { ReactComponent as AgencyAdmin } from "../assets/agency-admin.svg";
 import { ReactComponent as RecidivizAdmin } from "../assets/recidiviz-admin.svg";
 
-const TeamMemberNameContainer = styled.div<{
+const TeamMemberNameContainer = styled.span<{
   color?: string;
 }>`
   display: flex;
@@ -37,6 +37,16 @@ const TeamMemberNameContainer = styled.div<{
       ${({ color }) => (color ? `fill: ${color}` : "")};
     }
   }
+`;
+
+const StyledRecidivizAdmin = styled(RecidivizAdmin)`
+  min-width: 10px;
+  min-height: 16px;
+`;
+
+const StyledAgencyAdmin = styled(AgencyAdmin)`
+  min-width: 10px;
+  min-height: 13px;
 `;
 
 const tooltipStyles = {
@@ -62,9 +72,11 @@ export const TeamMemberNameWithBadge: React.FC<{
     <TeamMemberNameContainer color={badgeColor}>
       {name}
       {permission === Permission.RECIDIVIZ_ADMIN && (
-        <RecidivizAdmin id={badgeId} />
+        <StyledRecidivizAdmin id={badgeId} />
       )}
-      {permission === Permission.AGENCY_ADMIN && <AgencyAdmin id={badgeId} />}
+      {permission === Permission.AGENCY_ADMIN && (
+        <StyledAgencyAdmin id={badgeId} />
+      )}
     </TeamMemberNameContainer>
     {permission === Permission.RECIDIVIZ_ADMIN && (
       <Tooltip

@@ -168,6 +168,7 @@ export const EditDetailsTitle = styled.div`
 
 export const EditDetailsContent = styled.div`
   display: flex;
+  flex-wrap: wrap;
   ${typography.sizeCSS.normal}
   color: ${palette.highlight.grey9};
   margin-bottom: 18px;
