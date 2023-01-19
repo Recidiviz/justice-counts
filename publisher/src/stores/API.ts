@@ -129,11 +129,11 @@ class API {
       if (error instanceof Error) {
         trackNetworkError(path, method, 0, error.message);
         if (error.message.includes("Login required")) {
-          showToast(
-            "Your session has expired. Redirecting you to the login page...",
-            false,
-            "red"
-          );
+          showToast({
+            message:
+              "Your session has expired. Redirecting you to the login page...",
+            color: "red",
+          });
           // Wait before reloading so user has a chance to see the toast
           setTimeout(() => {
             window.location.reload();

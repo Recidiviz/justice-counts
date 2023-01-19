@@ -165,7 +165,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
         saveMetricSettings(updatedSetting, agencyId!);
 
         setTimeout(
-          () => showToast(toastMessage, undefined, undefined, 5000),
+          () => showToast({ message: toastMessage, timeout: 5000 }),
           1000
         );
         setTimeout(() => {

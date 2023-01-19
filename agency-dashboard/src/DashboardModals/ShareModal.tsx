@@ -64,7 +64,12 @@ export const ShareModal: React.FC<{
             <Button
               onClick={() => {
                 navigator.clipboard.writeText(shareUrl);
-                showToast("Copied!", false, "blue", 2500, false, false);
+                showToast({
+                  message: "Copied!",
+                  color: "blue",
+                  timeout: 2500,
+                  positionNextToIcon: false,
+                });
               }}
             >
               Copy URL

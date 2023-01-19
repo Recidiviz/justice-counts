@@ -583,14 +583,12 @@ const OnboardingSessionView = ({
 
   useEffect(() => {
     if (topic === "reportsview") {
-      showToast(
-        "Welcome! Click “Next” in the onboarding boxes to continue.",
-        false,
-        undefined,
-        -1,
-        true
-      );
-      return () => showToast("You're ready to go!", false, undefined, 0, false);
+      showToast({
+        message: "Welcome! Click “Next” in the onboarding boxes to continue.",
+        timeout: -1,
+        preventOverride: true,
+      });
+      return () => showToast({ message: "You're ready to go!", timeout: 0 });
     }
   }, [topic]);
 
@@ -599,7 +597,11 @@ const OnboardingSessionView = ({
       topic === "reportsview" &&
       currentSectionIndex + 1 === currentSections.length
     ) {
-      showToast("You're ready to go!", false, undefined, -1, true);
+      showToast({
+        message: "You're ready to go!",
+        timeout: -1,
+        preventOverride: true,
+      });
     }
   }, [currentSectionIndex, currentSections.length, topic]);
 

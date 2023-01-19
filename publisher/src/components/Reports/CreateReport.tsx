@@ -180,7 +180,10 @@ const CreateReport = () => {
     if (response && response instanceof Response) {
       if (response.status === 200) {
         navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`);
-        showToast(`The ${REPORT_LOWERCASE} was successfully created`, true);
+        showToast({
+          message: `The ${REPORT_LOWERCASE} was successfully created`,
+          check: true,
+        });
         const report = (await response.json()) as ReportOverview;
         const agency = userStore.userAgenciesById[report.agency_id];
         trackReportCreated(report.id, agency);
@@ -192,15 +195,17 @@ const CreateReport = () => {
           "A report of that date range has already been created."
         )
       ) {
-        showToast(
-          responseJson.description.replace("report", REPORT_LOWERCASE),
-          false,
-          "red"
-        );
+        showToast({
+          message: responseJson.description.replace("report", REPORT_LOWERCASE),
+          color: "red",
+        });
         return;
       }
     }
-    showToast(`Error creating ${REPORT_LOWERCASE}`, false, "red");
+    showToast({
+      message: `Error creating ${REPORT_LOWERCASE}`,
+      color: "red",
+    });
   };
 
   const { frequency, month, year, annualStartMonth, isRecurring } =
