@@ -37,6 +37,7 @@ import {
   RadioButtonGroupWrapper,
   sortRaces,
   SpecifyEthnicityWrapper,
+  StateKeys,
   Subheader,
 } from ".";
 
@@ -99,6 +100,51 @@ export const RaceEthnicitiesForm = observer(() => {
 
   const debouncedSave = useRef(debounce(saveMetricSettings, 1000)).current;
 
+  const handleUpdateAllRaceEthnicitiesToDefaultState = (state: StateKeys) => {
+    if (!systemSearchParam || !metricSearchParam) return;
+    const updatedDimensions = updateAllRaceEthnicitiesToDefaultState(
+      state,
+      raceEthnicityGridStates,
+      systemSearchParam,
+      metricSearchParam
+    );
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    debouncedSave(updatedDimensions, agencyId!);
+  };
+
+  const handleUpdateRaceDimensions = (race: string, status: boolean) => {
+    if (!systemSearchParam || !metricSearchParam) return;
+    /**
+     * When Unknown Race is disabled in NO_ETHNICITY_HISPANIC_AS_RACE state, we automatically switch
+     * to the NO_ETHNICITY_HISPANIC_NOT_SPECIFIED state because the Unknown Race (Hispanic/Latino Ethnicity)
+     * dimension is the only dimension an agency can specify their numbers for Hispanic/Latino as a Race (while
+     * in the NO_ETHNICITY_HISPANIC_AS_RACE state).
+     */
+    if (
+      !status &&
+      race === "Unknown" &&
+      currentState === "NO_ETHNICITY_HISPANIC_AS_RACE"
+    ) {
+      updateAllRaceEthnicitiesToDefaultState(
+        "NO_ETHNICITY_HISPANIC_NOT_SPECIFIED",
+        raceEthnicityGridStates,
+        systemSearchParam,
+        metricSearchParam
+      );
+    }
+
+    const updatedDimensions = updateRaceDimensions(
+      race,
+      status,
+      currentState,
+      raceEthnicityGridStates,
+      systemSearchParam,
+      metricSearchParam
+    );
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    debouncedSave(updatedDimensions, agencyId!);
+  };
+
   return (
     <RaceEthnicitiesContainer>
       <RaceEthnicitiesDisplay enabled={metrics[systemMetricKey]?.enabled}>
@@ -126,18 +172,11 @@ export const RaceEthnicitiesForm = observer(() => {
               label="Yes"
               value="yes"
               checked={canSpecifyEthnicity}
-              onChange={() => {
-                if (!systemSearchParam || !metricSearchParam) return;
-                const updatedDimensions =
-                  updateAllRaceEthnicitiesToDefaultState(
-                    "CAN_SPECIFY_ETHNICITY",
-                    raceEthnicityGridStates,
-                    systemSearchParam,
-                    metricSearchParam
-                  );
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                debouncedSave(updatedDimensions, agencyId!);
-              }}
+              onChange={() =>
+                handleUpdateAllRaceEthnicitiesToDefaultState(
+                  "CAN_SPECIFY_ETHNICITY"
+                )
+              }
             />
             <BinaryRadioButton
               type="radio"
@@ -146,18 +185,11 @@ export const RaceEthnicitiesForm = observer(() => {
               label="No"
               value="no"
               checked={!canSpecifyEthnicity}
-              onChange={() => {
-                if (!systemSearchParam || !metricSearchParam) return;
-                const updatedDimensions =
-                  updateAllRaceEthnicitiesToDefaultState(
-                    "NO_ETHNICITY_HISPANIC_AS_RACE",
-                    raceEthnicityGridStates,
-                    systemSearchParam,
-                    metricSearchParam
-                  );
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                debouncedSave(updatedDimensions, agencyId!);
-              }}
+              onChange={() =>
+                handleUpdateAllRaceEthnicitiesToDefaultState(
+                  "NO_ETHNICITY_HISPANIC_AS_RACE"
+                )
+              }
             />
           </RadioButtonGroupWrapper>
         </SpecifyEthnicityWrapper>
@@ -186,18 +218,11 @@ export const RaceEthnicitiesForm = observer(() => {
                     checked={!specifiesHispanicAsRace}
                     lastOptionBlue
                     buttonSize="small"
-                    onChange={() => {
-                      if (!systemSearchParam || !metricSearchParam) return;
-                      const updatedDimensions =
-                        updateAllRaceEthnicitiesToDefaultState(
-                          "NO_ETHNICITY_HISPANIC_NOT_SPECIFIED",
-                          raceEthnicityGridStates,
-                          systemSearchParam,
-                          metricSearchParam
-                        );
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      debouncedSave(updatedDimensions, agencyId!);
-                    }}
+                    onChange={() =>
+                      handleUpdateAllRaceEthnicitiesToDefaultState(
+                        "NO_ETHNICITY_HISPANIC_NOT_SPECIFIED"
+                      )
+                    }
                   />
                   <BinaryRadioButton
                     type="radio"
@@ -208,18 +233,11 @@ export const RaceEthnicitiesForm = observer(() => {
                     checked={specifiesHispanicAsRace}
                     lastOptionBlue
                     buttonSize="small"
-                    onChange={() => {
-                      if (!systemSearchParam || !metricSearchParam) return;
-                      const updatedDimensions =
-                        updateAllRaceEthnicitiesToDefaultState(
-                          "NO_ETHNICITY_HISPANIC_AS_RACE",
-                          raceEthnicityGridStates,
-                          systemSearchParam,
-                          metricSearchParam
-                        );
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      debouncedSave(updatedDimensions, agencyId!);
-                    }}
+                    onChange={() =>
+                      handleUpdateAllRaceEthnicitiesToDefaultState(
+                        "NO_ETHNICITY_HISPANIC_AS_RACE"
+                      )
+                    }
                   />
                 </RadioButtonGroupWrapper>
               </RaceSelection>
@@ -250,37 +268,7 @@ export const RaceEthnicitiesForm = observer(() => {
                         checked={!raceEnabled}
                         lastOptionBlue
                         buttonSize="small"
-                        onChange={() => {
-                          if (!systemSearchParam || !metricSearchParam) return;
-                          /**
-                           * When Unknown Race is disabled in NO_ETHNICITY_HISPANIC_AS_RACE state, we automatically switch
-                           * to the NO_ETHNICITY_HISPANIC_NOT_SPECIFIED state because the Unknown Race (Hispanic/Latino Ethnicity)
-                           * dimension is the only dimension an agency can specify their numbers for Hispanic/Latino as a Race (while
-                           * in the NO_ETHNICITY_HISPANIC_AS_RACE state).
-                           */
-                          if (
-                            race === "Unknown" &&
-                            currentState === "NO_ETHNICITY_HISPANIC_AS_RACE"
-                          ) {
-                            updateAllRaceEthnicitiesToDefaultState(
-                              "NO_ETHNICITY_HISPANIC_NOT_SPECIFIED",
-                              raceEthnicityGridStates,
-                              systemSearchParam,
-                              metricSearchParam
-                            );
-                          }
-
-                          const updatedDimensions = updateRaceDimensions(
-                            race,
-                            false,
-                            currentState,
-                            raceEthnicityGridStates,
-                            systemSearchParam,
-                            metricSearchParam
-                          );
-                          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                          debouncedSave(updatedDimensions, agencyId!);
-                        }}
+                        onChange={() => handleUpdateRaceDimensions(race, false)}
                       />
                       <BinaryRadioButton
                         type="radio"
@@ -291,19 +279,7 @@ export const RaceEthnicitiesForm = observer(() => {
                         checked={raceEnabled}
                         lastOptionBlue
                         buttonSize="small"
-                        onChange={() => {
-                          if (!systemSearchParam || !metricSearchParam) return;
-                          const updatedDimensions = updateRaceDimensions(
-                            race,
-                            true,
-                            currentState,
-                            raceEthnicityGridStates,
-                            systemSearchParam,
-                            metricSearchParam
-                          );
-                          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                          debouncedSave(updatedDimensions, agencyId!);
-                        }}
+                        onChange={() => handleUpdateRaceDimensions(race, true)}
                       />
                     </RadioButtonGroupWrapper>
                   </RaceSelection>
