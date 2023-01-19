@@ -232,6 +232,7 @@ const Reports: React.FC = () => {
                         <TeamMemberNameWithBadge
                           name={report.editors[0]}
                           permission={Permission.RECIDIVIZ_ADMIN}
+                          badgeId={report.id.toString()}
                         />
                         {report.editors.length > 1 ? (
                           <AndOthersSpan>{`& ${
