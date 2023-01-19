@@ -62,6 +62,10 @@ const tooltipStyles = {
   fontWeight: 500,
 };
 
+const NameContainer = styled.span`
+  padding: 0 !important;
+`;
+
 export const TeamMemberNameWithBadge: React.FC<{
   name: string;
   permission?: Permission;
@@ -70,7 +74,7 @@ export const TeamMemberNameWithBadge: React.FC<{
 }> = ({ name, permission, badgeColor, badgeId }) => (
   <>
     <TeamMemberNameContainer color={badgeColor}>
-      {name}
+      <NameContainer>{name}</NameContainer>
       {permission === Permission.RECIDIVIZ_ADMIN && (
         <StyledRecidivizAdmin id={badgeId} />
       )}

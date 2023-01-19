@@ -628,7 +628,7 @@ export const ExtendedOpacityGradient = styled(OpacityGradient)`
   bottom: 0;
 `;
 
-export const UploadedContainer = styled.div`
+export const UploadedContainer = styled.span`
   display: flex;
   align-items: center;
 `;

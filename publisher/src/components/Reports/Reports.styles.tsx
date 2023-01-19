@@ -258,7 +258,7 @@ export const SelectedCheckmark = styled.img`
 `;
 
 export const AndOthersSpan = styled.span`
-  margin-left: 8px;
+  margin-left: 4px;
 `;
 
 export const CommaSpan = styled.span`
