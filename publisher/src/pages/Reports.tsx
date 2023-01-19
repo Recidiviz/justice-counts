@@ -91,7 +91,6 @@ const Reports: React.FC = () => {
   );
   const [showAdditionalEditorsTooltip, setShowAdditionalEditorsTooltip] =
     useState<number>();
-  const [showBadgeTooltip, setShowBadgeTooltip] = useState<number>();
   const [reportsFilter, setReportsFilter] = useState<string>(
     `all${REPORTS_LOWERCASE}`
   );
@@ -257,11 +256,6 @@ const Reports: React.FC = () => {
                                 )}
                               </React.Fragment>
                             ))}
-                          </AdditionalEditorsTooltip>
-                        )}
-                        {showBadgeTooltip === report.id && (
-                          <AdditionalEditorsTooltip>
-                            Admin
                           </AdditionalEditorsTooltip>
                         )}
                       </>
