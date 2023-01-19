@@ -15,14 +15,17 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { Permission } from "@justice-counts/common/types";
+import { rem } from "@justice-counts/common/utils";
 import React from "react";
+import { Tooltip } from "react-tooltip";
 import styled from "styled-components/macro";
 
 import { ReactComponent as AgencyAdmin } from "../assets/agency-admin.svg";
 import { ReactComponent as RecidivizAdmin } from "../assets/recidiviz-admin.svg";
 
-export const TeamMemberNameContainer = styled.div<{
+const TeamMemberNameContainer = styled.div<{
   color?: string;
 }>`
   display: flex;
@@ -36,14 +39,52 @@ export const TeamMemberNameContainer = styled.div<{
   }
 `;
 
+const tooltipStyles = {
+  transition: "opacity 0s ease-out",
+  background: palette.solid.darkgrey,
+  boxShadow: "0px 4px 10px rgba(23, 28, 43, 0.2)",
+  borderRadius: 5,
+  opacity: 1,
+  paddingVertical: 10,
+  paddingHorizontal: 12,
+  fontSize: rem("14px"),
+  lineHeight: rem("22px"),
+  fontWeight: 500,
+};
+
 export const TeamMemberNameWithBadge: React.FC<{
   name: string;
   permission?: Permission;
   badgeColor?: string;
-}> = ({ name, permission, badgeColor }) => (
-  <TeamMemberNameContainer color={badgeColor}>
-    {name}
-    {permission === Permission.RECIDIVIZ_ADMIN && <RecidivizAdmin />}
-    {permission === Permission.AGENCY_ADMIN && <AgencyAdmin />}
-  </TeamMemberNameContainer>
+  badgeId?: string;
+}> = ({ name, permission, badgeColor, badgeId }) => (
+  <>
+    <TeamMemberNameContainer color={badgeColor}>
+      {name}
+      {permission === Permission.RECIDIVIZ_ADMIN && (
+        <RecidivizAdmin id={badgeId} />
+      )}
+      {permission === Permission.AGENCY_ADMIN && <AgencyAdmin id={badgeId} />}
+    </TeamMemberNameContainer>
+    {permission === Permission.RECIDIVIZ_ADMIN && (
+      <Tooltip
+        anchorId={badgeId}
+        content="JC Admin"
+        place="right"
+        noArrow
+        offset={6}
+        style={tooltipStyles}
+      />
+    )}
+    {permission === Permission.AGENCY_ADMIN && (
+      <Tooltip
+        anchorId={badgeId}
+        content="Admin"
+        place="right"
+        noArrow
+        offset={6}
+        style={tooltipStyles}
+      />
+    )}
+  </>
 );

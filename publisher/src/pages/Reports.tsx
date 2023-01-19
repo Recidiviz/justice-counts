@@ -91,6 +91,7 @@ const Reports: React.FC = () => {
   );
   const [showAdditionalEditorsTooltip, setShowAdditionalEditorsTooltip] =
     useState<number>();
+  const [showBadgeTooltip, setShowBadgeTooltip] = useState<number>();
   const [reportsFilter, setReportsFilter] = useState<string>(
     `all${REPORTS_LOWERCASE}`
   );
@@ -232,6 +233,7 @@ const Reports: React.FC = () => {
                         <TeamMemberNameWithBadge
                           name={report.editors[0]}
                           permission={Permission.RECIDIVIZ_ADMIN}
+                          badgeId={report.id.toString()}
                         />
                         {report.editors.length > 1 ? (
                           <AndOthersSpan>{`& ${
@@ -255,6 +257,11 @@ const Reports: React.FC = () => {
                                 )}
                               </React.Fragment>
                             ))}
+                          </AdditionalEditorsTooltip>
+                        )}
+                        {showBadgeTooltip === report.id && (
+                          <AdditionalEditorsTooltip>
+                            Admin
                           </AdditionalEditorsTooltip>
                         )}
                       </>

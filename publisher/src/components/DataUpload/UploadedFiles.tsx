@@ -150,6 +150,7 @@ export const UploadedFileRow: React.FC<{
             <TeamMemberNameWithBadge
               name={uploadedBy}
               permission={Permission.AGENCY_ADMIN}
+              badgeId={id?.toString()}
             />
             <DateUploaded>{`/ ${dateUploaded}`}</DateUploaded>
           </UploadedContainer>

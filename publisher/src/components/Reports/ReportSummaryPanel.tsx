@@ -298,6 +298,7 @@ const ReportSummaryPanel: React.FC<{
                   <TeamMemberNameWithBadge
                     name={editor}
                     permission={Permission.RECIDIVIZ_ADMIN}
+                    badgeId={`${editor}-${index}`}
                   />
                   {index < editors.length - 1 && <CommaSpan />}
                 </React.Fragment>
