@@ -72,7 +72,7 @@ export const AgencySettingsTeamManagement: React.FC<{
   } = settingProps;
 
   const { agencyId } = useParams();
-  const { userStore } = useStore();
+  const { userStore, agencyStore } = useStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
@@ -120,8 +120,14 @@ export const AgencySettingsTeamManagement: React.FC<{
       setTeam([newMember, ...team]);
       setNameValue("");
       setEmailValue("");
+      agencyStore.inviteUserToAgency({
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        invite_name: name!,
+        invite_email: email,
+      });
     }
   };
+
   const handleCheckMembers = (memberId: string) => {
     setCheckedMembersIds(
       checkedMembersIds.includes(memberId)
@@ -139,6 +145,10 @@ export const AgencySettingsTeamManagement: React.FC<{
   const handleRemoveMembers = (memberIds: string[]) => {
     setTeam(team.filter((member) => !memberIds.includes(member.email)));
     setCheckedMembersIds([]);
+    agencyStore.removeUsersFromAgency({
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      emails: memberIds!,
+    });
     setIsModalOpen(false);
   };
   // end simulation

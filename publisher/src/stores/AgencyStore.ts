@@ -143,6 +143,53 @@ class AgencyStore {
     };
   };
 
+  removeUsersFromAgency = async (body: { emails: string[] }): Promise<void> => {
+    const response = (await this.api.request({
+      path: `/api/agencies/${this.currentAgency?.id}/users`,
+      body,
+      method: "DELETE",
+    })) as Response;
+
+    if (response.status !== 200) {
+      showToast({
+        message: `Failed to remove user.`,
+        color: "red",
+        timeout: 4000,
+      });
+      throw new Error("There was an issue with removing the team member.");
+    }
+    showToast({
+      message: `User has been removed.`,
+      color: "grey",
+      timeout: 4000,
+    });
+  };
+
+  inviteUserToAgency = async (body: {
+    invite_name: string;
+    invite_email: string;
+  }): Promise<void> => {
+    const response = (await this.api.request({
+      path: `/api/agencies/${this.currentAgency?.id}/users`,
+      body,
+      method: "POST",
+    })) as Response;
+
+    if (response.status !== 200) {
+      showToast({
+        message: `Failed to invite user.`,
+        color: "red",
+        timeout: 4000,
+      });
+      throw new Error("There was an issue inviting the team member.");
+    }
+    showToast({
+      message: `User has been invited.`,
+      color: "grey",
+      timeout: 4000,
+    });
+  };
+
   resetState = () => {
     // reset the state when switching agencies
     runInAction(() => {
