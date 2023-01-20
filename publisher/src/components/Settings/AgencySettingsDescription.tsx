@@ -34,23 +34,16 @@ import {
   FilledButton,
   TransparentButton,
 } from "./AgencySettings.styles";
-import { AgencySettingsConfirmModal } from "./AgencySettingsConfirmModal";
+import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
 const MAX_DESCRIPTION_CHARACTERS = 750;
+const MIN_TEXT_AREA_HEIGHT = 121;
 
 export const AgencySettingsDescription: React.FC<{
   settingProps: SettingProps;
 }> = ({ settingProps }) => {
-  const {
-    isSettingInEditMode,
-    openSetting,
-    removeEditMode,
-    modalConfirmHelper,
-    clearSettingToOpen,
-    isAnimationShowing,
-    removeAnimation,
-    allowEdit,
-  } = settingProps;
+  const { isSettingInEditMode, openSetting, removeEditMode, allowEdit } =
+    settingProps;
 
   const { agencyId } = useParams();
   const { agencyStore } = useStore();
@@ -68,14 +61,17 @@ export const AgencySettingsDescription: React.FC<{
     saveAgencySettings(updatedSettings, agencyId!);
     removeEditMode();
   };
+  const handleCancelClick = () => {
+    if (settings.PURPOSE_AND_FUNCTIONS === infoText) {
+      removeEditMode();
+    } else {
+      setIsConfirmModalOpen(true);
+    }
+  };
   const handleModalConfirm = () => {
     setInfoText(settings.PURPOSE_AND_FUNCTIONS);
     setIsConfirmModalOpen(false);
-    modalConfirmHelper();
-  };
-  const handleModalReject = () => {
-    setIsConfirmModalOpen(false);
-    clearSettingToOpen();
+    removeEditMode();
   };
 
   useEffect(() => {
@@ -85,67 +81,69 @@ export const AgencySettingsDescription: React.FC<{
       const { scrollHeight } = textAreaRef.current;
 
       // eslint-disable-next-line no-param-reassign
-      textAreaRef.current.style.height = `${Number(scrollHeight) + 1}px`;
+      textAreaRef.current.style.height = `${
+        MIN_TEXT_AREA_HEIGHT > Number(scrollHeight) + 1
+          ? MIN_TEXT_AREA_HEIGHT
+          : Number(scrollHeight) + 1
+      }px`;
     }
   }, [infoText, isSettingInEditMode]);
 
+  if (isSettingInEditMode) {
+    return (
+      <AgencySettingsEditModeModal
+        openCancelModal={handleCancelClick}
+        isConfirmModalOpen={isConfirmModalOpen}
+        closeCancelModal={() => setIsConfirmModalOpen(false)}
+        handleCancelModalConfirm={handleModalConfirm}
+      >
+        <>
+          <AgencySettingsBlockTitle isEditModeActive>
+            Agency Information
+          </AgencySettingsBlockTitle>
+          <AgencyInfoTextAreaLabel htmlFor="basic-info-description">
+            Briefly describe your agency’s purpose and functions. This text will
+            be displayed in the About page of the public-facing dashboard.
+          </AgencyInfoTextAreaLabel>
+          <AgencyInfoTextArea
+            id="basic-info-description"
+            onChange={(e) => setInfoText(e.target.value)}
+            placeholder="Enter agency description..."
+            ref={textAreaRef}
+            rows={1}
+            value={infoText}
+            maxLength={750}
+          />
+          <AgencyInfoTextAreaWordCounter isRed={infoText.length >= 750}>
+            {infoText.length}/{MAX_DESCRIPTION_CHARACTERS} characters
+          </AgencyInfoTextAreaWordCounter>
+          <EditModeButtonsContainer noMargin>
+            <TransparentButton onClick={handleCancelClick}>
+              Cancel
+            </TransparentButton>
+            <FilledButton onClick={handleSaveClick}>Save</FilledButton>
+          </EditModeButtonsContainer>
+        </>
+      </AgencySettingsEditModeModal>
+    );
+  }
+
   return (
     <>
-      <AgencySettingsBlock
-        id="description"
-        isEditModeActive={isSettingInEditMode}
-        isAnimationShowing={isAnimationShowing}
-        onAnimationEnd={removeAnimation}
-      >
+      <AgencySettingsBlock id="description">
         <AgencySettingsBlockTitle>Agency Information</AgencySettingsBlockTitle>
-        {isSettingInEditMode ? (
-          <>
-            <AgencyInfoTextAreaLabel htmlFor="basic-info-description">
-              Briefly describe your agency’s purpose and functions (750
-              characters or less).
-            </AgencyInfoTextAreaLabel>
-            <AgencyInfoTextArea
-              id="basic-info-description"
-              onChange={(e) => setInfoText(e.target.value)}
-              placeholder="Type here..."
-              ref={textAreaRef}
-              rows={1}
-              value={infoText}
-              maxLength={750}
-            />
-            <AgencyInfoTextAreaWordCounter isRed={infoText.length >= 750}>
-              {infoText.length}/{MAX_DESCRIPTION_CHARACTERS} characters
-            </AgencyInfoTextAreaWordCounter>
-            <EditModeButtonsContainer noMargin>
-              <TransparentButton onClick={() => setIsConfirmModalOpen(true)}>
-                Cancel
-              </TransparentButton>
-              <FilledButton onClick={handleSaveClick}>Save</FilledButton>
-            </EditModeButtonsContainer>
-          </>
-        ) : (
-          <>
-            <AgencyInfoBlockDescription>
-              {settings.PURPOSE_AND_FUNCTIONS}
-            </AgencyInfoBlockDescription>
-            {allowEdit && (
-              <EditButtonContainer>
-                <EditButton
-                  onClick={() => openSetting(() => setIsConfirmModalOpen(true))}
-                >
-                  Edit description
-                  <img src={rightArrow} alt="" />
-                </EditButton>
-              </EditButtonContainer>
-            )}
-          </>
+        <AgencyInfoBlockDescription>
+          {settings.PURPOSE_AND_FUNCTIONS}
+        </AgencyInfoBlockDescription>
+        {allowEdit && (
+          <EditButtonContainer>
+            <EditButton onClick={openSetting}>
+              Edit description
+              <img src={rightArrow} alt="" />
+            </EditButton>
+          </EditButtonContainer>
         )}
       </AgencySettingsBlock>
-      <AgencySettingsConfirmModal
-        isModalOpen={isConfirmModalOpen}
-        closeModal={handleModalReject}
-        handleConfirm={handleModalConfirm}
-      />
     </>
   );
 };

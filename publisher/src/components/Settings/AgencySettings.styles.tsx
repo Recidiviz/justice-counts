@@ -19,21 +19,12 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import styled, { css, keyframes } from "styled-components/macro";
+import styled from "styled-components/macro";
 
-// Common
 import searchIcon from "../assets/search-icon.png";
 
+// Common
 const AGENCY_SETTINGS_CONTAINER_WIDTH = 732;
-
-const boxShadowFrames = keyframes`
-  0% { box-shadow: 0px 2px 20px ${palette.solid.red}; }
-  100% { box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.1) }
-`;
-
-const boxShadowAnimation = css`
-  animation: ${boxShadowFrames} 3s ease-out;
-`;
 
 // 662px is settings menu width times 2
 export const AgencySettingsWrapper = styled.div`
@@ -69,8 +60,6 @@ export const AgencySettingsTitle = styled.div`
 
 export const AgencySettingsBlock = styled.div<{
   withBorder?: boolean;
-  isEditModeActive?: boolean;
-  isAnimationShowing?: boolean;
 }>`
   position: relative;
   padding 32px 24px;
@@ -80,17 +69,14 @@ export const AgencySettingsBlock = styled.div<{
   border: ${({ withBorder }) => withBorder && "1px solid #DCDDDF"};
   width: ${({ withBorder }) =>
     withBorder ? "calc(100% - 88px)" : "calc(100% - 40px)"};
-  
-  ${({ isEditModeActive }) =>
-    isEditModeActive && "box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.1);"};
-    
-  ${({ isEditModeActive, isAnimationShowing }) =>
-    isEditModeActive && isAnimationShowing && boxShadowAnimation}
 `;
 
-export const AgencySettingsBlockTitle = styled.div`
+export const AgencySettingsBlockTitle = styled.div<{
+  isEditModeActive?: boolean;
+}>`
   ${typography.sizeCSS.large};
-  margin-bottom: 16px;
+  margin-bottom: ${({ isEditModeActive }) =>
+    isEditModeActive ? "8px" : "16px"};
 `;
 
 export const AgencySettingsBlockDescription = styled.div`
@@ -138,7 +124,7 @@ export const AgencySettingsInfoRow = styled.div<{ hasHover?: boolean }>`
 `;
 
 export const AgencyInfoTextAreaLabel = styled.label`
-  margin: 16px 0;
+  margin-bottom: 16px;
   ${typography.sizeCSS.normal};
 `;
 
@@ -499,38 +485,4 @@ export const JurisdictionsEditModeFooterLeftBlock = styled.div`
 export const AddJurisdictionsExclusionsLink = styled.div`
   color: ${palette.solid.blue};
   cursor: pointer;
-`;
-
-export const CancelModalWrapper = styled.div<{ isOpen: boolean }>`
-  display: ${({ isOpen }) => (isOpen ? "flex" : "none")};
-  top: 0;
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  justify-content: center;
-  align-items: center;
-  z-index: 6;
-`;
-
-export const CancelModalContainer = styled.div`
-  width: ${AGENCY_SETTINGS_CONTAINER_WIDTH - 40}px;
-  padding: 56px 160px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: center;
-  text-align: center;
-  ${typography.sizeCSS.large};
-  background-color: ${palette.solid.offwhite};
-  border: 2px solid ${palette.solid.darkgrey};
-`;
-
-export const CancelModalButtonsContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 16px;
-`;
-
-export const CancelModalRedButton = styled(FilledButton)`
-  background-color: ${palette.solid.red};
 `;

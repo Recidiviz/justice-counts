@@ -16,12 +16,11 @@
 // =============================================================================
 
 import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
+import { AgencySystems } from "@justice-counts/common/types";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { AgencySystems } from "../../../../common/types";
 import { useStore } from "../../stores";
-import noBackgroundCheck from "../assets/no-background-check-icon.svg";
 import rightArrow from "../assets/right-arrow.svg";
 import {
   BlueCheckIcon,
@@ -40,7 +39,7 @@ import {
   SupervisionSystemRow,
   TransparentButton,
 } from "./AgencySettings.styles";
-import { AgencySettingsConfirmModal } from "./AgencySettingsConfirmModal";
+import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
 const supervisionAgencySystems: { label: string; value: AgencySystems }[] = [
   { label: "Parole", value: "PAROLE" },
@@ -55,15 +54,7 @@ const supervisionAgencySystems: { label: string; value: AgencySystems }[] = [
 export const AgencySettingsSupervisions: React.FC<{
   settingProps: SettingProps;
 }> = ({ settingProps }) => {
-  const {
-    isSettingInEditMode,
-    openSetting,
-    removeEditMode,
-    modalConfirmHelper,
-    clearSettingToOpen,
-    isAnimationShowing,
-    removeAnimation,
-  } = settingProps;
+  const { isSettingInEditMode, openSetting, removeEditMode } = settingProps;
 
   const { agencyId } = useParams();
   const { agencyStore } = useStore();
@@ -73,22 +64,34 @@ export const AgencySettingsSupervisions: React.FC<{
     useState(currentAgencySystems);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
-  const handleModalConfirm = () => {
-    setSupervisionSystemsToSave(currentAgencySystems);
-    setIsConfirmModalOpen(false);
-    modalConfirmHelper();
-  };
-  const handleModalReject = () => {
-    setIsConfirmModalOpen(false);
-    clearSettingToOpen();
-  };
+  const systemsToDisplayInReadMode = supervisionAgencySystems.filter((system) =>
+    currentAgencySystems?.includes(system.value)
+  );
 
-  const saveSupervisionChanges = () => {
+  const handleSaveClick = () => {
     if (supervisionSystemsToSave) {
       const updatedSettings = updateAgencySystems(supervisionSystemsToSave);
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       saveAgencySettings(updatedSettings, agencyId!);
       removeEditMode();
+    }
+  };
+  const handleCancelClick = () => {
+    if (systemsHasChanges()) {
+      setIsConfirmModalOpen(true);
+    } else {
+      removeEditMode();
+    }
+  };
+  const handleModalConfirm = () => {
+    setSupervisionSystemsToSave(currentAgencySystems);
+    setIsConfirmModalOpen(false);
+    removeEditMode();
+  };
+
+  const handleSetSupervisionSystemsToSave = (value: AgencySystems) => {
+    if (isSettingInEditMode) {
+      setSupervisionSystemsToSave(systemsToSave(value));
     }
   };
   const systemsToSave = (systemToToggle: AgencySystems): AgencySystems[] => {
@@ -97,20 +100,83 @@ export const AgencySettingsSupervisions: React.FC<{
       ? supervisionSystemsToSave.filter((system) => system !== systemToToggle)
       : supervisionSystemsToSave.concat(systemToToggle);
   };
-  const handleSetSupervisionSystemsToSave = (value: AgencySystems) => {
-    if (isSettingInEditMode) {
-      setSupervisionSystemsToSave(systemsToSave(value));
+  // using Set of concatenated arrays of store systems and local systemsToSave state
+  // since all systems are unique there will never be duplicates so comparing Set size
+  // with currentAgencySystems will tell us is there any changes
+  // this compare method is not ideal but it works for this case
+  const systemsHasChanges = () => {
+    if (!supervisionSystemsToSave && !currentAgencySystems) return false;
+    if (!supervisionSystemsToSave && currentAgencySystems?.length === 0)
+      return false;
+    if (supervisionSystemsToSave?.length === 0 && !currentAgencySystems)
+      return false;
+
+    if (supervisionSystemsToSave?.length !== currentAgencySystems?.length)
+      return true;
+    if (
+      !!supervisionSystemsToSave &&
+      !!currentAgencySystems &&
+      supervisionSystemsToSave?.length === currentAgencySystems?.length
+    ) {
+      const mergedSet = new Set([
+        ...supervisionSystemsToSave,
+        ...currentAgencySystems,
+      ]);
+      return mergedSet.size !== currentAgencySystems.length;
     }
   };
 
+  if (isSettingInEditMode) {
+    return (
+      <AgencySettingsEditModeModal
+        openCancelModal={handleCancelClick}
+        isConfirmModalOpen={isConfirmModalOpen}
+        closeCancelModal={() => setIsConfirmModalOpen(false)}
+        handleCancelModalConfirm={handleModalConfirm}
+      >
+        <>
+          <AgencySettingsBlockTitle isEditModeActive>
+            Supervision Populations
+          </AgencySettingsBlockTitle>
+          <AgencySettingsBlockDescription>
+            Below are the supervision populations your agency is both
+            responsible for AND can disaggregate your data by.
+          </AgencySettingsBlockDescription>
+          {supervisionAgencySystems.map(({ label, value }) => (
+            <SupervisionSystemRow
+              key={value}
+              hasHover={isSettingInEditMode}
+              onClick={() => handleSetSupervisionSystemsToSave(value)}
+            >
+              <CheckboxWrapper>
+                <Checkbox
+                  type="checkbox"
+                  checked={
+                    supervisionSystemsToSave?.includes(
+                      value as AgencySystems
+                    ) || false
+                  }
+                  onChange={() => handleSetSupervisionSystemsToSave(value)}
+                />
+                <BlueCheckIcon src={blueCheck} alt="" enabled />
+              </CheckboxWrapper>
+              {label}
+            </SupervisionSystemRow>
+          ))}
+          <EditModeButtonsContainer>
+            <TransparentButton onClick={handleCancelClick}>
+              Cancel
+            </TransparentButton>
+            <FilledButton onClick={handleSaveClick}>Save</FilledButton>
+          </EditModeButtonsContainer>
+        </>
+      </AgencySettingsEditModeModal>
+    );
+  }
+
   return (
     <>
-      <AgencySettingsBlock
-        id="supervisions"
-        isEditModeActive={isSettingInEditMode}
-        isAnimationShowing={isAnimationShowing}
-        onAnimationEnd={removeAnimation}
-      >
+      <AgencySettingsBlock id="supervisions">
         <AgencySettingsBlockTitle>
           Supervision Populations
         </AgencySettingsBlockTitle>
@@ -118,54 +184,16 @@ export const AgencySettingsSupervisions: React.FC<{
           Below are the supervision populations your agency is both responsible
           for AND can disaggregate your data by.
         </AgencySettingsBlockDescription>
-        {supervisionAgencySystems.map(({ label, value }) => (
-          <SupervisionSystemRow
-            key={value}
-            hasHover={isSettingInEditMode}
-            onClick={() => handleSetSupervisionSystemsToSave(value)}
-          >
-            <CheckboxWrapper>
-              <Checkbox
-                type="checkbox"
-                checked={
-                  supervisionSystemsToSave?.includes(value as AgencySystems) ||
-                  false
-                }
-                onChange={() => handleSetSupervisionSystemsToSave(value)}
-                disabled={!isSettingInEditMode}
-              />
-              <BlueCheckIcon
-                src={isSettingInEditMode ? blueCheck : noBackgroundCheck}
-                alt=""
-                enabled
-              />
-            </CheckboxWrapper>
-            {label}
-          </SupervisionSystemRow>
+        {systemsToDisplayInReadMode.map(({ label, value }) => (
+          <SupervisionSystemRow key={value}>{label}</SupervisionSystemRow>
         ))}
-        {isSettingInEditMode ? (
-          <EditModeButtonsContainer>
-            <TransparentButton onClick={() => setIsConfirmModalOpen(true)}>
-              Cancel
-            </TransparentButton>
-            <FilledButton onClick={saveSupervisionChanges}>Save</FilledButton>
-          </EditModeButtonsContainer>
-        ) : (
-          <EditButtonContainer>
-            <EditButton
-              onClick={() => openSetting(() => setIsConfirmModalOpen(true))}
-            >
-              Edit populations
-              <img src={rightArrow} alt="" />
-            </EditButton>
-          </EditButtonContainer>
-        )}
+        <EditButtonContainer>
+          <EditButton onClick={openSetting}>
+            Edit populations
+            <img src={rightArrow} alt="" />
+          </EditButton>
+        </EditButtonContainer>
       </AgencySettingsBlock>
-      <AgencySettingsConfirmModal
-        isModalOpen={isConfirmModalOpen}
-        closeModal={handleModalReject}
-        handleConfirm={handleModalConfirm}
-      />
     </>
   );
 };

@@ -475,11 +475,6 @@ export const Checkbox = styled.input`
   &:checked + img {
     display: block;
   }
-
-  &:disabled {
-    border: none;
-    cursor: default;
-  }
 `;
 
 export const BlueCheckIcon = styled.img<{ enabled?: boolean }>`

@@ -44,12 +44,8 @@ export enum ActiveSetting {
 
 export type SettingProps = {
   isSettingInEditMode: boolean;
-  openSetting: (openModal: () => void) => void;
+  openSetting: () => void;
   removeEditMode: () => void;
-  modalConfirmHelper: () => void;
-  clearSettingToOpen: () => void;
-  isAnimationShowing: boolean;
-  removeAnimation: () => void;
   allowEdit: boolean;
 };
 
@@ -60,45 +56,11 @@ export const AgencySettings: React.FC = observer(() => {
   const [activeSetting, setActiveSetting] = useState<ActiveSetting | undefined>(
     undefined
   );
-  const [settingToOpen, setSettingToOpen] = useState<ActiveSetting | undefined>(
-    undefined
-  );
-  const [isSettingAnimationActive, setIsSettingAnimationActive] =
-    useState(false);
 
-  const handleOpenSetting = (setting: ActiveSetting, openModal: () => void) => {
-    if (activeSetting && activeSetting !== ActiveSetting.Team) {
-      document
-        .getElementById(activeSetting.toLowerCase())
-        ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      setIsSettingAnimationActive(true);
-      openModal();
-      setSettingToOpen(setting);
-    } else {
-      setActiveSetting(setting);
-    }
-  };
-  const modalConfirmHelper = () => {
-    if (settingToOpen) {
-      document
-        .getElementById(settingToOpen.toLowerCase())
-        ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      setActiveSetting(settingToOpen);
-      setSettingToOpen(undefined);
-      setIsSettingAnimationActive(false);
-    } else {
-      setActiveSetting(undefined);
-    }
-  };
   const generateSettingProps = (settingName: ActiveSetting): SettingProps => ({
     isSettingInEditMode: activeSetting === settingName,
-    openSetting: (openModal: () => void) =>
-      handleOpenSetting(settingName, openModal),
+    openSetting: () => setActiveSetting(settingName),
     removeEditMode: () => setActiveSetting(undefined),
-    modalConfirmHelper,
-    clearSettingToOpen: () => setSettingToOpen(undefined),
-    isAnimationShowing: isSettingAnimationActive,
-    removeAnimation: () => setIsSettingAnimationActive(false),
     allowEdit: userStore.isRecidivizAdmin || userStore.isAgencyAdmin,
   });
 
@@ -113,12 +75,7 @@ export const AgencySettings: React.FC = observer(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyId]);
 
-  if (loadingSettings)
-    return (
-      <AgencySettingsWrapper>
-        <Loading />
-      </AgencySettingsWrapper>
-    );
+  if (loadingSettings) return <Loading />;
 
   return (
     <AgencySettingsWrapper>
@@ -134,11 +91,11 @@ export const AgencySettings: React.FC = observer(() => {
           settingProps={generateSettingProps(ActiveSetting.HomepageUrl)}
         />
         {/* TODO(#305) Allow all users to see this section once Team Management is finished */}
-        {userStore.isRecidivizAdmin && (
-          <AgencySettingsTeamManagement
-            settingProps={generateSettingProps(ActiveSetting.Team)}
-          />
-        )}
+        {/* {userStore.isRecidivizAdmin && ( */}
+        {/*  <AgencySettingsTeamManagement */}
+        {/*    settingProps={generateSettingProps(ActiveSetting.Team)} */}
+        {/*  /> */}
+        {/* )} */}
         {isAgencySupervision && (
           <AgencySettingsSupervisions
             settingProps={generateSettingProps(ActiveSetting.Supervisions)}
