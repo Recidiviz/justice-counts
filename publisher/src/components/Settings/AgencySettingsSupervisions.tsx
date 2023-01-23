@@ -140,8 +140,8 @@ export const AgencySettingsSupervisions: React.FC<{
             Supervision Populations
           </AgencySettingsBlockTitle>
           <AgencySettingsBlockDescription>
-            Below are the supervision populations your agency is both
-            responsible for AND can disaggregate your data by.
+            Select the supervision populations that your agency is responsible
+            for. This enables disaggregating data by selected population types.
           </AgencySettingsBlockDescription>
           {supervisionAgencySystems.map(({ label, value }) => (
             <SupervisionSystemRow
@@ -182,8 +182,8 @@ export const AgencySettingsSupervisions: React.FC<{
           Supervision Populations
         </AgencySettingsBlockTitle>
         <AgencySettingsBlockDescription>
-          Below are the supervision populations your agency is both responsible
-          for AND can disaggregate your data by.
+          These are the supervision populations that your agency is responsible
+          for. This enables disaggregating data by selected population types.
         </AgencySettingsBlockDescription>
         {systemsToDisplayInReadMode.length > 0 ? (
           systemsToDisplayInReadMode.map(({ label, value }) => (

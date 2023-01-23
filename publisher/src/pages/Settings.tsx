@@ -31,6 +31,7 @@ import {
 export const settingsMenuPaths = [
   { displayLabel: "Your Account", path: "account" },
   { displayLabel: "Agency Settings", path: "agency-settings" },
+  { displayLabel: "Team Management", path: "team-management" },
   { displayLabel: "Uploaded Files", path: "uploaded-files" },
   { displayLabel: "Metric Configuration", path: "metric-config" },
 ];
@@ -49,6 +50,7 @@ const Settings = () => {
         <Routes>
           <Route path="/" element={<Navigate to="account" replace />} />
           <Route path="/account" element={<AccountSettings />} />
+          <Route path="/agency-settings" element={<AgencySettings />} />
           <Route path="/agency-settings" element={<AgencySettings />} />
           <Route path="/uploaded-files" element={<UploadedFiles />} />
           <Route path="/metric-config" element={<MetricConfiguration />} />

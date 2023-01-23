@@ -56,6 +56,10 @@ export const AgencySettingsContent = styled.div`
 `;
 
 export const AgencySettingsTitle = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  width: 644px;
   ${typography.sizeCSS.title};
 `;
 

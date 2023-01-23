@@ -80,9 +80,7 @@ export const AgencySettings: React.FC = observer(() => {
   return (
     <AgencySettingsWrapper>
       <AgencySettingsContent>
-        <AgencySettingsBlock>
-          <AgencySettingsTitle>Agency Settings</AgencySettingsTitle>
-        </AgencySettingsBlock>
+        <AgencySettingsTitle>Agency Settings</AgencySettingsTitle>
         <AgencySettingsBasicInfo />
         <AgencySettingsDescription
           settingProps={generateSettingProps(ActiveSetting.Description)}
