@@ -118,12 +118,16 @@ export const AgencySettingsUrl: React.FC<{
       <AgencySettingsBlock id="homepage_url">
         <AgencySettingsBlockTitle>Agency Homepage URL</AgencySettingsBlockTitle>
         <AgencyInfoBlockDescription>
-          <AgencyInfoLink
-            href={formatExternalLink(settings.HOMEPAGE_URL)}
-            target="_blank"
-          >
-            {settings.HOMEPAGE_URL}
-          </AgencyInfoLink>
+          {settings.HOMEPAGE_URL ? (
+            <AgencyInfoLink
+              href={formatExternalLink(settings.HOMEPAGE_URL)}
+              target="_blank"
+            >
+              {settings.HOMEPAGE_URL}
+            </AgencyInfoLink>
+          ) : (
+            "No homepage URL provided."
+          )}
         </AgencyInfoBlockDescription>
         {allowEdit && (
           <EditButtonContainer>

@@ -22,6 +22,7 @@ import {
 import styled from "styled-components/macro";
 
 import searchIcon from "../assets/search-icon.png";
+import { CheckIcon } from "../DataUpload";
 
 // Common
 const AGENCY_SETTINGS_CONTAINER_WIDTH = 732;
@@ -93,8 +94,12 @@ export const AgencySettingsBlockSubDescription = styled(
   margin-top: ${({ hasTopMargin }) => (hasTopMargin ? "24px" : "0")};
 `;
 
-export const AgencyInfoBlockDescription = styled.div`
+export const AgencyInfoBlockDescription = styled.div<{
+  hasTopMargin?: boolean;
+}>`
+  ${typography.sizeCSS.normal};
   margin-bottom: 16px;
+  margin-top: ${({ hasTopMargin }) => hasTopMargin && "24px"};
 `;
 
 export const AgencyInfoLink = styled.a`
@@ -434,29 +439,36 @@ export const JurisdictionsSearchResultContainer = styled.div`
   position: absolute;
   z-index: 5;
   width: 644px;
+  padding: 8px 0;
   overflow-y: scroll;
   max-height: 270px;
   background-color: ${palette.solid.white};
   top: 55px;
   display: flex;
   flex-direction: column;
-  background-color: ${palette.solid.offwhite};
+  box-shadow: 0px 0px 1px rgba(23, 28, 43, 0.1),
+    0px 4px 8px rgba(23, 28, 43, 0.04), 0px 8px 56px rgba(23, 28, 43, 0.1);
 `;
 
 export const JurisdictionsSearchResult = styled.div<{ hasAction?: boolean }>`
   width: 100%;
   min-height: 54px;
-  color: ${palette.solid.blue};
-  ${typography.sizeCSS.medium};
-  padding: 0 13px;
+  ${typography.sizeCSS.normal};
+  padding: 0 16px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   cursor: ${({ hasAction }) => (hasAction ? "pointer" : "default")};
 
-  span {
-    ${typography.sizeCSS.normal};
+  div {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &:hover {
+    background-color: ${palette.solid.offwhite};
   }
 `;
 
@@ -485,4 +497,8 @@ export const JurisdictionsEditModeFooterLeftBlock = styled.div`
 export const AddJurisdictionsExclusionsLink = styled.div`
   color: ${palette.solid.blue};
   cursor: pointer;
+`;
+
+export const AddIcon = styled(CheckIcon)`
+  margin-right: 0;
 `;

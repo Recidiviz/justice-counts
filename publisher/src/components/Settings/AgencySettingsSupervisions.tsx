@@ -29,6 +29,7 @@ import {
 } from "../MetricConfiguration";
 import { SettingProps } from "./AgencySettings";
 import {
+  AgencyInfoBlockDescription,
   AgencySettingsBlock,
   AgencySettingsBlockDescription,
   AgencySettingsBlockTitle,
@@ -184,9 +185,15 @@ export const AgencySettingsSupervisions: React.FC<{
           Below are the supervision populations your agency is both responsible
           for AND can disaggregate your data by.
         </AgencySettingsBlockDescription>
-        {systemsToDisplayInReadMode.map(({ label, value }) => (
-          <SupervisionSystemRow key={value}>{label}</SupervisionSystemRow>
-        ))}
+        {systemsToDisplayInReadMode.length > 0 ? (
+          systemsToDisplayInReadMode.map(({ label, value }) => (
+            <SupervisionSystemRow key={value}>{label}</SupervisionSystemRow>
+          ))
+        ) : (
+          <AgencyInfoBlockDescription hasTopMargin>
+            No supervision populations selected.
+          </AgencyInfoBlockDescription>
+        )}
         <EditButtonContainer>
           <EditButton onClick={openSetting}>
             Edit populations

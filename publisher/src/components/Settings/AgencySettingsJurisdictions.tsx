@@ -15,7 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
+import addIcon from "@justice-counts/common/assets/add-icon.png";
+import blackCheck from "@justice-counts/common/assets/black-check-icon.png";
 import React, { useState } from "react";
 
 import rightArrow from "../assets/right-arrow.svg";
@@ -26,7 +27,9 @@ import {
 } from "../MetricConfiguration";
 import { SettingProps } from "./AgencySettings";
 import {
+  AddIcon,
   AddJurisdictionsExclusionsLink,
+  AgencyInfoBlockDescription,
   AgencySettingsBlock,
   AgencySettingsBlockDescription,
   AgencySettingsBlockSubDescription,
@@ -98,7 +101,6 @@ export const AgencySettingsJurisdictions: React.FC<{
   const [searchResult, setSearchResult] = useState<
     { id: string; type: string; name: string; state: string }[]
   >([]);
-
   const [checkedJurisdictionsIds, setCheckedJurisdictionsIds] = useState<
     string[]
   >([]);
@@ -119,6 +121,7 @@ export const AgencySettingsJurisdictions: React.FC<{
     ...entry,
     id: `${entry.name}${entry.state}`,
   }));
+  const checkedAreas = checkedJurisdictionsIds.length;
 
   const handleSaveClick = () => {
     removeEditMode();
@@ -131,7 +134,6 @@ export const AgencySettingsJurisdictions: React.FC<{
     setIsConfirmModalOpen(false);
     removeEditMode();
   };
-
   const getLocationName = (name: string, state: string | null) =>
     `${name}${state ? `, ${state}` : ""}`;
   const getSearchResult = (searchValue: string) => {
@@ -212,7 +214,9 @@ export const AgencySettingsJurisdictions: React.FC<{
                       }}
                     >
                       {getLocationName(result.name, result.state)}
-                      <span>{result.type}</span>
+                      <div>
+                        {result.type} <AddIcon src={addIcon} alt="" />
+                      </div>
                     </JurisdictionsSearchResult>
                   ))}
                 </JurisdictionsSearchResultContainer>
@@ -239,7 +243,7 @@ export const AgencySettingsJurisdictions: React.FC<{
                     checked={checkedJurisdictionsIds.includes(id)}
                     onChange={() => handleCheckedJurisdictionsIds(id)}
                   />
-                  <BlueCheckIcon src={blueCheck} alt="" enabled />
+                  <BlueCheckIcon src={blackCheck} alt="" enabled />
                 </CheckboxWrapper>
               </JurisdictionCheckBlock>
             </AgencySettingsInfoRow>
@@ -266,7 +270,7 @@ export const AgencySettingsJurisdictions: React.FC<{
                     checked={checkedJurisdictionsIds.includes(id)}
                     onChange={() => handleCheckedJurisdictionsIds(id)}
                   />
-                  <BlueCheckIcon src={blueCheck} alt="" enabled />
+                  <BlueCheckIcon src={blackCheck} alt="" enabled />
                 </CheckboxWrapper>
               </JurisdictionCheckBlock>
             </AgencySettingsInfoRow>
@@ -299,7 +303,9 @@ export const AgencySettingsJurisdictions: React.FC<{
                     handleRemoveJurisdictions(checkedJurisdictionsIds)
                   }
                 >
-                  Remove
+                  {`Remove ${checkedAreas} ${
+                    checkedAreas > 1 ? "areas" : "area"
+                  }`}
                 </TransparentButton>
               </EditModeButtonsContainer>
             )}
@@ -317,6 +323,11 @@ export const AgencySettingsJurisdictions: React.FC<{
         <AgencySettingsBlockDescription>
           The following are within the agency’s jurisdiction.
         </AgencySettingsBlockDescription>
+        {!includedJurisdictions.length && !excludedJurisdictions.length && (
+          <AgencyInfoBlockDescription hasTopMargin>
+            No jurisdictions added.
+          </AgencyInfoBlockDescription>
+        )}
         {includedJurisdictions.length > 0 && (
           <AgencySettingsBlockSubDescription>
             Areas included

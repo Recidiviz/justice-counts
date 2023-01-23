@@ -133,7 +133,7 @@ export const AgencySettingsDescription: React.FC<{
       <AgencySettingsBlock id="description">
         <AgencySettingsBlockTitle>Agency Information</AgencySettingsBlockTitle>
         <AgencyInfoBlockDescription>
-          {settings.PURPOSE_AND_FUNCTIONS}
+          {settings.PURPOSE_AND_FUNCTIONS || "No description added."}
         </AgencyInfoBlockDescription>
         {allowEdit && (
           <EditButtonContainer>
