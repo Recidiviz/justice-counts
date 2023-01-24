@@ -229,9 +229,9 @@ const Reports: React.FC = () => {
                       "-"
                     ) : (
                       <>
+                        {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
                         <TeamMemberNameWithBadge
                           name={report.editors[0]}
-                          permission={Permission.RECIDIVIZ_ADMIN}
                           badgeId={report.id.toString()}
                         />
                         {report.editors.length > 1 ? (
@@ -246,9 +246,9 @@ const Reports: React.FC = () => {
                           <AdditionalEditorsTooltip>
                             {report.editors.map((editor, idx) => (
                               <React.Fragment key={editor}>
+                                {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
                                 <TeamMemberNameWithBadge
                                   name={editor}
-                                  permission={Permission.AGENCY_ADMIN}
                                   badgeColor={palette.solid.white}
                                 />
                                 {idx < report.editors.length - 1 && (

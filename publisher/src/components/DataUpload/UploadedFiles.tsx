@@ -150,9 +150,9 @@ export const UploadedFileRow: React.FC<{
         {/* Date Uploaded */}
         <ExtendedCell capitalize>
           <UploadedContainer>
+            {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
             <TeamMemberNameWithBadge
               name={uploadedBy}
-              permission={Permission.AGENCY_ADMIN}
               badgeId={id?.toString()}
             />
             <DateUploaded>{`/ ${dateUploaded}`}</DateUploaded>

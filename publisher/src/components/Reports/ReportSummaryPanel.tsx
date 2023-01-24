@@ -296,9 +296,9 @@ const ReportSummaryPanel: React.FC<{
           {editors.length
             ? editors.map((editor, index) => (
                 <React.Fragment key={editor}>
+                  {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
                   <TeamMemberNameWithBadge
                     name={editor}
-                    permission={Permission.RECIDIVIZ_ADMIN}
                     badgeId={`${editor}-${index}`}
                   />
                   {index < editors.length - 1 && <CommaSpan />}
