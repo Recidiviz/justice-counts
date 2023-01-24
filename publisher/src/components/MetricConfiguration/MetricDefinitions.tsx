@@ -291,13 +291,14 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
           )}
 
           {/* Display when user is viewing a dimension & there are no settings available */}
-          {!activeSettingsKeys?.length &&
+          {(!activeSettingsKeys?.length &&
             activeDimensionKey &&
-            !dimensionContextsMap && (
+            !dimensionContextsMap) ||
+            (!activeSettingsKeys && (
               <DefinitionsSubTitle>
                 Technical Definitions are not available for this metric yet.
               </DefinitionsSubTitle>
-            )}
+            ))}
 
           {/* Display when dimension has additional contexts */}
           {dimensionContextsMap && (
