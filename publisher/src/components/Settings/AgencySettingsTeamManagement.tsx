@@ -84,18 +84,14 @@ export const AgencySettingsTeamManagement: React.FC<{
   // edit mode simulation, transforming team to include status id and email
   const [team, setTeam] = useState(() =>
     agencyTeam
-      ? agencyTeam.map((member, index) => {
-          let isInvited = false;
-          let isAdmin = false;
-          if (index % 2 === 0) isInvited = true;
-          if (index % 3 === 0) isAdmin = true;
-
+      ? agencyTeam.map((member) => {
           return {
             ...member,
-            id: member.name,
-            email: `${member.name.toLowerCase().replace(" ", "_")}@doc1.wa.gov`,
-            isInvited,
-            isAdmin,
+            id: member.email,
+            name: member.name,
+            email: member.email,
+            isInvited: member.invitation_status === "PENDING",
+            isAdmin: member.role === "ADMIN",
           };
         })
       : []
@@ -114,10 +110,12 @@ export const AgencySettingsTeamManagement: React.FC<{
       } = {
         name,
         email,
-        id: name,
+        id: email,
         auth0_user_id: "",
         isInvited: true,
         isAdmin: false,
+        role: "CONTRIBUTOR",
+        invitation_status: "PENDING",
       };
       setTeam([newMember, ...team]);
       setNameValue("");
@@ -133,13 +131,13 @@ export const AgencySettingsTeamManagement: React.FC<{
   };
   const handleMakeAdmin = (memberIds: string[]) => {
     const updatedTeam = team.map((member) =>
-      memberIds.includes(member.id) ? { ...member, isAdmin: true } : member
+      memberIds.includes(member.email) ? { ...member, isAdmin: true } : member
     );
     setTeam(updatedTeam);
     setCheckedMembersIds([]);
   };
   const handleRemoveMembers = (memberIds: string[]) => {
-    setTeam(team.filter((member) => !memberIds.includes(member.id)));
+    setTeam(team.filter((member) => !memberIds.includes(member.email)));
     setCheckedMembersIds([]);
     setIsModalOpen(false);
   };
@@ -179,7 +177,6 @@ export const AgencySettingsTeamManagement: React.FC<{
                     <TeamMemberBadge isInvited>Invited</TeamMemberBadge>
                   )}
                 </TeamMemberName>
-                {/* email is mocked */}
                 <span>{email}</span>
               </AgencySettingsInfoRow>
             ))}
@@ -228,7 +225,6 @@ export const AgencySettingsTeamManagement: React.FC<{
                   onClick={allowEdit ? () => handleCheckMembers(id) : undefined}
                 >
                   <TeamMemberInfoContainer>
-                    {/* fake isInvited simulation */}
                     <TeamMemberName isInvited={isInvited}>
                       {name}
                       {isAdmin && (
@@ -238,7 +234,6 @@ export const AgencySettingsTeamManagement: React.FC<{
                         <TeamMemberBadge isInvited>Invited</TeamMemberBadge>
                       )}
                     </TeamMemberName>
-                    {/* email is mocked */}
                     <TeamMemberEmail>{email}</TeamMemberEmail>
                   </TeamMemberInfoContainer>
                   {allowEdit && (

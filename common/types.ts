@@ -34,11 +34,13 @@ export type AgencySystems =
   | "PRETRIAL_SUPERVISION"
   | "OTHER_SUPERVISION";
 
-export type AgencyTeam = {
+export interface AgencyTeam {
   auth0_user_id: string;
   name: string;
   email: string;
-};
+  role: string;
+  invitation_status: string;
+}
 
 export const SupervisionSystems: AgencySystems[] = [
   "SUPERVISION",
