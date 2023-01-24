@@ -30,15 +30,18 @@ import { removeSnakeCase } from "../../utils";
 import downloadIcon from "../assets/download-icon.png";
 import { Title, TitleWrapper } from "../Forms";
 import { Loader } from "../Loading";
+import { TeamMemberNameWithBadge } from "../primitives";
 import {
   ActionButton,
   ActionsContainer,
+  DateUploaded,
   DownloadIcon,
   ExtendedCell,
   ExtendedLabelCell,
   ExtendedLabelRow,
   ExtendedOpacityGradient,
   ExtendedRow,
+  UploadedContainer,
   UploadedFile,
   UploadedFilesContainer,
   UploadedFilesError,
@@ -145,9 +148,14 @@ export const UploadedFileRow: React.FC<{
 
         {/* Date Uploaded */}
         <ExtendedCell capitalize>
-          <span>
-            {uploadedBy} / {dateUploaded}
-          </span>
+          <UploadedContainer>
+            {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
+            <TeamMemberNameWithBadge
+              name={uploadedBy}
+              badgeId={id?.toString()}
+            />
+            <DateUploaded>{`/ ${dateUploaded}`}</DateUploaded>
+          </UploadedContainer>
         </ExtendedCell>
 
         {/* Date Ingested */}
