@@ -21,7 +21,7 @@ import {
   BadgeColorMapping,
 } from "@justice-counts/common/components/Badge";
 import { palette } from "@justice-counts/common/components/GlobalStyles";
-import { Permission, ReportOverview } from "@justice-counts/common/types";
+import { ReportOverview } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";

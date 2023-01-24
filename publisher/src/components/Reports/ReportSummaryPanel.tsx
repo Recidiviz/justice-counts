@@ -21,7 +21,7 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import { Metric, Permission } from "@justice-counts/common/types";
+import { Metric } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import styled from "styled-components/macro";
