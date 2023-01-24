@@ -61,6 +61,7 @@ export const AgencySettingsTitle = styled.div`
   justify-content: start;
   width: 644px;
   ${typography.sizeCSS.title};
+  font-weight: 500;
 `;
 
 export const AgencySettingsBlock = styled.div<{
@@ -260,12 +261,26 @@ export const BasicInfoRow = styled.div`
 `;
 
 // Team
+export const TeamManagementBlock = styled(AgencySettingsBlock)`
+  padding-top: 0;
+  padding-bottom: 0;
+`;
+
+export const TeamManagementDescription = styled(AgencyInfoBlockDescription)`
+  margin-bottom: 40px;
+`;
+
+export const TeamManagementSectionTitle = styled.div`
+  ${typography.sizeCSS.medium};
+  margin-bottom: 8px;
+`;
+
 export const InviteMemberContainer = styled.div`
   display: flex;
   flex-direction: row;
   gap: 8px;
   height: 48px;
-  margin-bottom: 31px;
+  margin-bottom: 40px;
 `;
 
 export const InviteMemberInput = styled.input`
@@ -292,6 +307,7 @@ export const InviteMemberButton = styled.div<{ disabled: boolean }>`
   align-items: center;
   justify-content: center;
   cursor: ${({ disabled }) => !disabled && "pointer"};
+  pointer-events: ${({ disabled }) => disabled && "none"};
   width: 100%;
   border-radius: 2px;
 
@@ -300,116 +316,99 @@ export const InviteMemberButton = styled.div<{ disabled: boolean }>`
   }
 `;
 
-export const TeamMemberEditInfoContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  max-height: 344px;
-  overflow-y: scroll;
+export const TeamManagementSectionSubTitle = styled.div`
+  ${typography.sizeCSS.normal};
+  margin-bottom: 16px;
 `;
 
-export const TeamMemberEditInfoRow = styled.div<{ hasHover?: boolean }>`
-  height: 86px;
-  min-height: 86px;
-  padding: 0 8px;
+export const TeamMemberRow = styled.div`
+  width: 100%;
+  height: 32px;
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid ${palette.highlight.grey4};
+`;
+
+export const TeamMemberNameContainer = styled.div`
+  width: 274px;
+  min-width: 274px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  ${typography.sizeCSS.normal};
+`;
+
+export const AdminStatus = styled.div`
+  ${typography.sizeCSS.normal};
+  color: ${palette.solid.green};
+`;
+
+export const InvitedStatus = styled.div`
+  ${typography.sizeCSS.normal};
+  color: ${palette.solid.orange};
+`;
+
+export const TeamMemberNameContainerTitle = styled(TeamMemberNameContainer)`
+  ${typography.sizeCSS.small};
+  color: ${palette.highlight.grey10};
+`;
+
+export const TeamMemberEmailContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #dcdddf;
-
-  ${({ hasHover }) =>
-    hasHover &&
-    `&:hover {cursor: pointer; background-color: ${palette.highlight.grey2}}`}
+  ${typography.sizeCSS.normal};
+  color: ${palette.highlight.grey10};
 `;
 
-export const TeamMemberInfoContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`;
-
-export const TeamMemberName = styled.div<{ isInvited: boolean }>`
-  ${typography.sizeCSS.medium};
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-  color: ${({ isInvited }) =>
-    isInvited ? palette.highlight.grey9 : palette.solid.darkgrey};
-`;
-
-export const TeamMemberBadge = styled.div<{
-  isInvited?: boolean;
-  isAdmin?: boolean;
-}>`
+export const TeamMemberEmailContainerTitle = styled(TeamMemberEmailContainer)`
   ${typography.sizeCSS.small};
+`;
+
+export const EditTeamMemberIconContainer = styled.div`
+  height: 16px;
+  width: 16px;
+  cursor: pointer;
+  position: relative;
   display: flex;
-  width: 54px;
-  height: 24px;
-  flex-direction: row;
   align-items: center;
-  justify-content: center;
-
-  background-color: ${({ isInvited, isAdmin }) => {
-    if (isInvited) return palette.highlight.grey4;
-    if (isAdmin) return palette.solid.blue;
-  }};
-  color: ${({ isInvited, isAdmin }) => {
-    if (isInvited) return palette.solid.darkgrey;
-    if (isAdmin) return palette.solid.white;
-  }};
 `;
 
-export const TeamMemberEmail = styled.div`
-  ${typography.sizeCSS.normal};
-  color: #5d606b;
-`;
-
-export const RemoveTeamMemberModal = styled.div`
+export const EditTeamMemberMenu = styled.div`
   position: absolute;
-  width: calc(100% - 48px);
-  height: calc(100% - 64px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 5;
-`;
-
-export const RemoveTeamMemberModalContent = styled.div`
-  display: flex;
-  width: 100%;
-  height: 100%;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  z-index: 2;
+  top: 16px;
+  right: 0;
+  padding: 9px 0;
   background-color: ${palette.solid.white};
-`;
-
-export const RemoveTeamMemberModalLargeText = styled.div`
-  ${typography.sizeCSS.large};
-  margin-bottom: 16px;
-`;
-
-export const RemoveTeamMemberModalSmallText = styled.div`
-  ${typography.sizeCSS.normal};
-  margin-bottom: 24px;
-`;
-
-export const RemoveTeamMemberModalButtonsContainer = styled.div`
+  box-shadow: 0px 0px 1px rgba(23, 28, 43, 0.1),
+    0px 4px 8px rgba(23, 28, 43, 0.04), 0px 8px 56px rgba(23, 28, 43, 0.1);
+  border-radius: 4px;
   display: flex;
-  flex-direction: row;
-  gap: 8px;
+  flex-direction: column;
+
+  &:focus {
+    outline: none;
+  }
 `;
 
-export const ConfirmationFilledButton = styled(FilledButton)<{
-  isRed?: boolean;
-}>`
+export const EditTeamMemberMenuItem = styled.div`
   ${typography.sizeCSS.normal};
-  color: ${({ isRed }) =>
-    isRed ? palette.solid.white : palette.solid.darkgrey};
-  background-color: ${({ isRed }) =>
-    isRed ? palette.solid.red : palette.solid.white};
-  border: ${({ isRed }) => !isRed && `1px solid ${palette.highlight.grey4}`};
+  white-space: nowrap;
+  padding: 0 16px;
+
+  &:hover {
+    background-color: ${palette.solid.offwhite};
+  }
+`;
+
+export const RemoveTeamMemberButton = styled(FilledButton)`
+  ${typography.sizeCSS.normal};
+  color: ${palette.solid.white};
+  background-color: ${palette.solid.red};
   border-radius: "2px";
   padding: 9px 16px;
   cursor: pointer;

@@ -28,7 +28,7 @@ import { FilledButton, TransparentButton } from "./AgencySettings.styles";
 // z-index 102 to be above all content including edit mode modal
 // also portal this modal as well as edit mode to not deal
 // with effect bubbling in case it is child of edit mode modal
-const CancelModalOuterWrapper = styled.div`
+export const ConfirmModalOuterWrapper = styled.div`
   position: fixed;
   z-index: 102;
   top: 0;
@@ -41,30 +41,30 @@ const CancelModalOuterWrapper = styled.div`
   align-items: center;
 `;
 
-const CancelModalInnerWrapper = styled.div`
+export const ConfirmModalInnerWrapper = styled.div`
   background-color: ${palette.solid.white};
   width: 582px;
   padding: 24px;
   border-radius: 4px;
 `;
 
-const CancelModalContent = styled.div`
+export const ConfirmModalContent = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
 `;
 
-const CancelModalTitle = styled.div`
+const ConfirmModalTitle = styled.div`
   ${typography.sizeCSS.large};
   margin-bottom: 8px;
 `;
 
-const CancelModalText = styled.div`
+const ConfirmModalText = styled.div`
   ${typography.sizeCSS.normal};
   margin-bottom: 24px;
 `;
 
-const CancelModalButtonsContainer = styled.div`
+export const ConfirmModalButtonsContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: end;
@@ -81,20 +81,20 @@ export const AgencySettingsConfirmModal: React.FC<Props> = ({
   handleConfirm,
 }) => {
   const Portal = (
-    <CancelModalOuterWrapper>
-      <CancelModalInnerWrapper>
-        <CancelModalContent>
-          <CancelModalTitle>Unsaved changes</CancelModalTitle>
-          <CancelModalText>
+    <ConfirmModalOuterWrapper>
+      <ConfirmModalInnerWrapper>
+        <ConfirmModalContent>
+          <ConfirmModalTitle>Unsaved changes</ConfirmModalTitle>
+          <ConfirmModalText>
             You have unsaved changes, would like to leave anyway?
-          </CancelModalText>
-          <CancelModalButtonsContainer>
+          </ConfirmModalText>
+          <ConfirmModalButtonsContainer>
             <TransparentButton onClick={closeModal}>Cancel</TransparentButton>
             <FilledButton onClick={handleConfirm}>Okay</FilledButton>
-          </CancelModalButtonsContainer>
-        </CancelModalContent>
-      </CancelModalInnerWrapper>
-    </CancelModalOuterWrapper>
+          </ConfirmModalButtonsContainer>
+        </ConfirmModalContent>
+      </ConfirmModalInnerWrapper>
+    </ConfirmModalOuterWrapper>
   );
 
   return createPortal(Portal, document.body);

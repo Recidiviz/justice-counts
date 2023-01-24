@@ -27,6 +27,7 @@ import {
   SettingsContainer,
   SettingsMenu,
 } from "../components/Settings";
+import { AgencySettingsTeamManagement } from "../components/Settings/AgencySettingsTeamManagement";
 
 export const settingsMenuPaths = [
   { displayLabel: "Your Account", path: "account" },
@@ -51,7 +52,10 @@ const Settings = () => {
           <Route path="/" element={<Navigate to="account" replace />} />
           <Route path="/account" element={<AccountSettings />} />
           <Route path="/agency-settings" element={<AgencySettings />} />
-          <Route path="/team-management" element={<AgencySettings />} />
+          <Route
+            path="/team-management"
+            element={<AgencySettingsTeamManagement />}
+          />
           <Route path="/uploaded-files" element={<UploadedFiles />} />
           <Route path="/metric-config" element={<MetricConfiguration />} />
           <Route path="*" element={<Navigate to="account" />} />

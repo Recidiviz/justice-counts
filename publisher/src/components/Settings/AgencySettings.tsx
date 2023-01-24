@@ -22,7 +22,6 @@ import { useParams } from "react-router-dom";
 import { useStore } from "../../stores";
 import { Loading } from "../Loading";
 import {
-  AgencySettingsBlock,
   AgencySettingsContent,
   AgencySettingsTitle,
   AgencySettingsWrapper,
@@ -31,13 +30,11 @@ import { AgencySettingsBasicInfo } from "./AgencySettingsBasicInfo";
 import { AgencySettingsDescription } from "./AgencySettingsDescription";
 import { AgencySettingsJurisdictions } from "./AgencySettingsJurisdictions";
 import { AgencySettingsSupervisions } from "./AgencySettingsSupervisions";
-import { AgencySettingsTeamManagement } from "./AgencySettingsTeamManagement";
 import { AgencySettingsUrl } from "./AgencySettingsURL";
 
 export enum ActiveSetting {
   Description = "DESCRIPTION",
   HomepageUrl = "HOMEPAGE_URL",
-  Team = "TEAM",
   Supervisions = "SUPERVISIONS",
   Jurisdictions = "JURISDICTIONS",
 }
@@ -88,12 +85,6 @@ export const AgencySettings: React.FC = observer(() => {
         <AgencySettingsUrl
           settingProps={generateSettingProps(ActiveSetting.HomepageUrl)}
         />
-        {/* TODO(#305) Allow all users to see this section once Team Management is finished */}
-        {/* {userStore.isRecidivizAdmin && ( */}
-        {/*  <AgencySettingsTeamManagement */}
-        {/*    settingProps={generateSettingProps(ActiveSetting.Team)} */}
-        {/*  /> */}
-        {/* )} */}
         {isAgencySupervision && (
           <AgencySettingsSupervisions
             settingProps={generateSettingProps(ActiveSetting.Supervisions)}
