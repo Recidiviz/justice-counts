@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+/* eslint-disable camelcase */
 import editIcon from "@justice-counts/common/assets/edit-row-icon.png";
 import { AgencyTeam } from "@justice-counts/common/types";
 import React, { useEffect, useState } from "react";
@@ -171,13 +172,10 @@ export const AgencySettingsTeamManagement = () => {
             <TeamMemberEmailContainerTitle>Email</TeamMemberEmailContainerTitle>
           </TeamMemberRow>
           {team?.map(
-            // eslint-disable-next-line camelcase
             ({ name, email, auth0_user_id, invitation_status, role }) => (
-              // eslint-disable-next-line camelcase
               <TeamMemberRow key={auth0_user_id}>
                 <TeamMemberNameContainer>
                   {name} {role === "ADMIN" && <AdminStatus>Admin</AdminStatus>}{" "}
-                  {/* eslint-disable-next-line camelcase */}
                   {invitation_status === "PENDING" && (
                     <InvitedStatus>Invited</InvitedStatus>
                   )}
@@ -185,17 +183,14 @@ export const AgencySettingsTeamManagement = () => {
                 <TeamMemberEmailContainer>
                   {email}
                   <EditTeamMemberIconContainer
-                    // eslint-disable-next-line camelcase
                     id={auth0_user_id}
                     tabIndex={-1}
                     onClick={() => handleTeamMemberMenuClick(auth0_user_id)}
                     onBlur={() => setTeamMemberEditMenuActiveId(undefined)}
                   >
                     <img src={editIcon} alt="" />
-                    {/* eslint-disable-next-line camelcase */}
                     {teamMemberEditMenuActiveId === auth0_user_id && (
                       <EditTeamMemberMenu onClick={(e) => e.stopPropagation()}>
-                        {/* eslint-disable-next-line camelcase */}
                         {invitation_status === "ACCEPTED" && (
                           <EditTeamMemberMenuItem
                             onClick={() =>
@@ -209,7 +204,6 @@ export const AgencySettingsTeamManagement = () => {
                         <EditTeamMemberMenuItem
                           onClick={() => setIsModalOpen(true)}
                         >
-                          {/* eslint-disable-next-line camelcase */}
                           {invitation_status === "PENDING"
                             ? "Revoke invitation"
                             : "Remove from agency"}
