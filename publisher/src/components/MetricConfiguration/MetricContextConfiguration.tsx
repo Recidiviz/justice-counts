@@ -78,10 +78,11 @@ export const ContextConfiguration: React.FC = observer(() => {
     }
   };
 
+  if (activeContextKeys.length === 0) return null;
+
   return (
     <MetricContextContainer enabled={metrics[systemMetricKey]?.enabled}>
       <MetricContextHeader>Context</MetricContextHeader>
-
       {activeContextKeys.map((contextKey) => {
         const currentContext = contexts[systemMetricKey][contextKey];
 
