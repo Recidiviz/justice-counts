@@ -18,10 +18,12 @@
 /* eslint-disable camelcase */
 import editIcon from "@justice-counts/common/assets/edit-row-icon.png";
 import { AgencyTeam } from "@justice-counts/common/types";
+import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { Loading } from "../Loading";
 import {
   AdminStatus,
   AgencySettingsContent,
@@ -46,22 +48,17 @@ import {
 } from "./AgencySettings.styles";
 import { AgencySettingsTeamManagementConfirmModal } from "./AgencySettingsTeamManagementConfirmModal";
 
-// TODO init on agency change
-export const AgencySettingsTeamManagement = () => {
+export const AgencySettingsTeamManagement = observer(() => {
   const { agencyId } = useParams();
-  const { userStore } = useStore();
+  const { userStore, agencyStore } = useStore();
+  const { loadingSettings, resetState } = agencyStore;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [teamMemberEditMenuActiveId, setTeamMemberEditMenuActiveId] = useState<
     string | undefined
   >(undefined);
 
-  const agencyTeam = userStore
-    .getAgency(agencyId)
-    ?.team.filter((member) => member.auth0_user_id !== userStore.auth0UserID)
-    .sort((a, b) => a.name.localeCompare(b.name));
-
   // simulation of managing team members
-  const [team, setTeam] = useState(agencyTeam);
+  const [team, setTeam] = useState<AgencyTeam[] | undefined>([]);
   const [nameValue, setNameValue] = useState("");
   const [emailValue, setEmailValue] = useState("");
 
@@ -120,6 +117,24 @@ export const AgencySettingsTeamManagement = () => {
       document.getElementById(teamMemberEditMenuActiveId)?.focus();
     }
   }, [teamMemberEditMenuActiveId]);
+
+  useEffect(() => {
+    const initialize = async () => {
+      resetState();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await agencyStore.initCurrentUserAgency(agencyId!);
+      // TODO change that after simulation removal
+      const agencyTeam = agencyStore.currentAgency?.team
+        ?.filter((member) => member.auth0_user_id !== userStore.auth0UserID)
+        .sort((a, b) => a.name.localeCompare(b.name));
+      setTeam(agencyTeam);
+    };
+
+    initialize();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [agencyId]);
+
+  if (loadingSettings) return <Loading />;
 
   if (isModalOpen) {
     return (
@@ -220,4 +235,4 @@ export const AgencySettingsTeamManagement = () => {
       </AgencySettingsContent>
     </AgencySettingsWrapper>
   );
-};
+});
