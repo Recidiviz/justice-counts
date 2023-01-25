@@ -34,15 +34,14 @@ import { useStore } from "../stores";
 
 export const Router = () => {
   const { agencyId } = useParams();
-  const { userStore } = useStore();
+  const { userStore, guidanceStore } = useStore();
 
   // using this to indicate whether user has agency id of which is provided in the url
   // if not then show placeholder (InvalidAgency page) from which you can go to homepage
   // e.g. reports page with initial available user agency
   // or maybe display some text since header is available and user can pick available agency
   const isAgencyIdInUserAgencies = userStore.getAgency(agencyId);
-  // TODO(#249): Move boolean to mobX data store
-  const hasCompletedOnboarding = true;
+  const { hasCompletedOnboarding } = guidanceStore;
 
   const renderRoutesBasedOnOnboardingStatus = (): JSX.Element => {
     if (!hasCompletedOnboarding) {
