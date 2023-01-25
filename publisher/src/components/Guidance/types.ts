@@ -24,9 +24,11 @@ export type TopicID =
 
 export type OnboardingTopicsMetadata = {
   [topicID: string]: {
-    topicDisplayName: string;
-    topicDescription: string;
+    displayName: string;
+    description: string;
     pathToTask?: string;
+    buttonDisplayName?: string;
+    skippable?: boolean;
   };
 };
 
@@ -37,29 +39,32 @@ export type OnboardingTopicsStatus = {
 
 export const onboardingTopicsMetadata: OnboardingTopicsMetadata = {
   WELCOME: {
-    topicDisplayName: "Welcome to the Justice Counts Publisher",
-    topicDescription:
+    displayName: "Welcome to the Justice Counts Publisher",
+    description:
       "Publisher is a web-based service that helps criminal justice agencies share important metrics with the public on a regular basis.",
+    buttonDisplayName: "Get Started",
   },
   AGENCY_SETUP: {
-    topicDisplayName: "Setup your agency",
-    topicDescription:
+    displayName: "Setup your agency",
+    description:
       "Review and enter important information about your agency, such as your jurisdiction, colleagues, and more.",
+    pathToTask: "../settings/agency-settings",
+    buttonDisplayName: "Agency Settings",
+    skippable: true,
   },
   METRIC_CONFIG: {
-    topicDisplayName: "Configure metrics",
-    topicDescription:
+    displayName: "Configure metrics",
+    description:
       "Publisher allows agencies participating in Justice Counts must indicate which of the metrics they can and cannot share at a monthly or annual frequency, as well as the agency-specific definitions of those metrics.",
   },
   ADD_DATA: {
-    topicDisplayName: "Add data",
-    topicDescription:
+    displayName: "Add data",
+    description:
       "You can now upload data to your metrics by filling out a monthly report or by uploading a spreadsheet.",
   },
   PUBLISH_DATA: {
-    topicDisplayName: "Publish your uploaded data",
-    topicDescription:
-      "It looks like you have not published your uploaded data.",
+    displayName: "Publish your uploaded data",
+    description: "It looks like you have not published your uploaded data.",
   },
 };
 
