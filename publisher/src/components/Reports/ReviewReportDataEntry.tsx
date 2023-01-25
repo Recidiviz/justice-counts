@@ -30,7 +30,7 @@ import { ReportDataEntryWrapper } from "./ReportDataEntry.styles";
 const ReviewReportDataEntry = () => {
   const params = useParams();
   const reportID = Number(params.id);
-  const { reportStore } = useStore();
+  const { reportStore, formStore } = useStore();
 
   const [loadingError, setLoadingError] = useState<string | undefined>(
     undefined
@@ -40,13 +40,12 @@ const ReviewReportDataEntry = () => {
     const initialize = async () => {
       const result = await reportStore.getReport(reportID);
       if (result instanceof Error) {
-        setLoadingError(result.message);
+        return setLoadingError(result.message);
       }
+      formStore.validatePreviouslySavedInputs(reportID);
     };
 
-    if (Object.keys(reportStore.reportOverviews).length === 0) {
-      initialize();
-    }
+    initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

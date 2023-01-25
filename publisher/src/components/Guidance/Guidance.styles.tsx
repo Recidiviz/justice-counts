@@ -144,3 +144,48 @@ export const UploadDataButton = styled(Button)<{ activated?: boolean }>`
         }
     `}
 `;
+
+export const ReportsOverviewContainer = styled.div`
+  width: 100%;
+  max-height: 30vh;
+  height: 30vh;
+  padding: 10px 0;
+  overflow-y: scroll;
+`;
+
+export const ReportsOverviewItemWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  border-bottom: 1px solid ${palette.solid.darkgrey};
+`;
+
+export const ReportTitle = styled.div`
+  ${typography.sizeCSS.large}
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+export const ReviewPublishLink = styled.div`
+  ${typography.sizeCSS.normal}
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: ${palette.solid.blue};
+
+  svg {
+    width: 14px;
+    path {
+      fill: ${palette.solid.blue};
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.solid.darkblue};
+  }
+`;
