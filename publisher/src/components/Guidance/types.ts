@@ -37,24 +37,29 @@ export type OnboardingTopicsStatus = {
 
 export const onboardingTopicsMetadata: OnboardingTopicsMetadata = {
   WELCOME: {
-    topicDisplayName: "Welcome",
-    topicDescription: "Welcome description text here...",
+    topicDisplayName: "Welcome to the Justice Counts Publisher",
+    topicDescription:
+      "Publisher is a web-based service that helps criminal justice agencies share important metrics with the public on a regular basis.",
   },
   AGENCY_SETUP: {
-    topicDisplayName: "Agency Setup",
-    topicDescription: "Agency Setup description text here...",
+    topicDisplayName: "Setup your agency",
+    topicDescription:
+      "Review and enter important information about your agency, such as your jurisdiction, colleagues, and more.",
   },
   METRIC_CONFIG: {
-    topicDisplayName: "Configure Metrics",
-    topicDescription: "Configure Metrics description text here...",
+    topicDisplayName: "Configure metrics",
+    topicDescription:
+      "Publisher allows agencies participating in Justice Counts must indicate which of the metrics they can and cannot share at a monthly or annual frequency, as well as the agency-specific definitions of those metrics.",
   },
   ADD_DATA: {
-    topicDisplayName: "Add Data",
-    topicDescription: "Add Data description text here...",
+    topicDisplayName: "Add data",
+    topicDescription:
+      "You can now upload data to your metrics by filling out a monthly report or by uploading a spreadsheet.",
   },
   PUBLISH_DATA: {
-    topicDisplayName: "Publish Data",
-    topicDescription: "Publish Data description text here...",
+    topicDisplayName: "Publish your uploaded data",
+    topicDescription:
+      "It looks like you have not published your uploaded data.",
   },
 };
 

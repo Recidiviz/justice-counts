@@ -19,6 +19,15 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 
 import { useStore } from "../../stores";
+import {
+  ActionButton,
+  ContentContainer,
+  GuidanceContainer,
+  ProgressStepBubble,
+  ProgressStepsContainer,
+  TopicDescription,
+  TopicTitle,
+} from ".";
 
 export const Guidance = observer(() => {
   const { guidanceStore } = useStore();
@@ -27,20 +36,56 @@ export const Guidance = observer(() => {
 
   const currentTopicDisplayName =
     currentTopicID && onboardingTopicsMetadata[currentTopicID].topicDisplayName;
+  const currentTopicDescription =
+    currentTopicID && onboardingTopicsMetadata[currentTopicID].topicDescription;
+  const topLeftPositionedTopic =
+    currentTopicID === "WELCOME" || currentTopicID === "METRIC_CONFIG";
+
+  const renderProgressSteps = () => {
+    if (currentTopicID === "WELCOME") return;
+
+    const onboardingTopicsMetadataKeysExcludingWelcome = Object.keys(
+      onboardingTopicsMetadata
+    ).filter((topic) => topic !== "WELCOME");
+    const totalNumberOfTopics =
+      currentTopicID && onboardingTopicsMetadataKeysExcludingWelcome.length;
+
+    return (
+      <ProgressStepsContainer
+        position={topLeftPositionedTopic ? "TOPLEFT" : undefined}
+      >
+        {Array.from({ length: totalNumberOfTopics || 0 }, (_, i) => (
+          <ProgressStepBubble
+            highlight={
+              currentTopicID === onboardingTopicsMetadataKeysExcludingWelcome[i]
+            }
+            key={i}
+          >
+            {i + 1}
+          </ProgressStepBubble>
+        ))}
+      </ProgressStepsContainer>
+    );
+  };
 
   return (
     <>
-      <div>
-        Guidance ({currentTopicDisplayName}){" "}
-        <button
-          type="button"
-          onClick={() =>
-            currentTopicID && updateTopicStatus(currentTopicID, true)
-          }
+      <GuidanceContainer>
+        <ContentContainer
+          position={topLeftPositionedTopic ? "TOPLEFT" : undefined}
         >
-          Next
-        </button>
-      </div>
+          {renderProgressSteps()}
+          <TopicTitle>{currentTopicDisplayName}</TopicTitle>
+          <TopicDescription>{currentTopicDescription}</TopicDescription>
+          <ActionButton
+            onClick={() =>
+              currentTopicID && updateTopicStatus(currentTopicID, true)
+            }
+          >
+            Next
+          </ActionButton>
+        </ContentContainer>
+      </GuidanceContainer>
     </>
   );
 });

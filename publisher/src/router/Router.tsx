@@ -20,7 +20,7 @@ import { Navigate, Route, Routes, useParams } from "react-router-dom";
 
 import { DataUpload } from "../components/DataUpload";
 import { REPORTS_LOWERCASE } from "../components/Global/constants";
-import { Guidance } from "../components/Guidance";
+import { Guidance, GuidanceHeader } from "../components/Guidance";
 import Header from "../components/Header";
 import { MetricsView } from "../components/MetricConfiguration/MetricsView";
 import CreateReport from "../components/Reports/CreateReport";
@@ -41,16 +41,30 @@ export const Router = () => {
   // e.g. reports page with initial available user agency
   // or maybe display some text since header is available and user can pick available agency
   const isAgencyIdInUserAgencies = userStore.getAgency(agencyId);
-  const { hasCompletedOnboarding } = guidanceStore;
+  const { hasCompletedOnboarding, currentTopicID } = guidanceStore;
 
   const renderRoutesBasedOnOnboardingStatus = (): JSX.Element => {
     if (!hasCompletedOnboarding) {
+      const isAddDataOrPublishDataStep =
+        currentTopicID === "ADD_DATA" || currentTopicID === "PUBLISH_DATA";
+
       return (
-        <Routes>
-          <Route path="/" element={<Navigate to="getting-started" />} />
-          <Route path="/getting-started" element={<Guidance />} />
-          <Route path="*" element={<Navigate to="getting-started" />} />
-        </Routes>
+        <>
+          <GuidanceHeader />
+          <Routes>
+            <Route path="/" element={<Navigate to="getting-started" />} />
+            <Route path="/getting-started" element={<Guidance />} />
+            {currentTopicID !== "WELCOME" && (
+              <>
+                <Route path="/settings/*" element={<Settings />} />
+                {isAddDataOrPublishDataStep && (
+                  <Route path="/upload/*" element={<DataUpload />} />
+                )}
+              </>
+            )}
+            <Route path="*" element={<Navigate to="getting-started" />} />
+          </Routes>
+        </>
       );
     }
 
