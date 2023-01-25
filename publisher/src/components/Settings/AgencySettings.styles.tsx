@@ -115,6 +115,7 @@ export const AgencySettingsInfoRow = styled.div<{ hasHover?: boolean }>`
   ${typography.sizeCSS.medium};
   padding: 0 8px;
   height: 54px;
+  min-height: 54px;
   border-bottom: 1px solid #dcdddf;
   display: flex;
   flex-direction: row;
@@ -473,6 +474,14 @@ export const JurisdictionsSearchResult = styled.div<{ hasAction?: boolean }>`
   &:hover {
     background-color: ${palette.solid.offwhite};
   }
+`;
+
+export const JurisdictionsListArea = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 270px;
+  margin-bottom: 64px;
+  overflow-y: scroll;
 `;
 
 export const JurisdictionCheckBlock = styled.div`

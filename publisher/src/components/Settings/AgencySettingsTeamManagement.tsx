@@ -46,6 +46,7 @@ import {
 } from "./AgencySettings.styles";
 import { AgencySettingsTeamManagementConfirmModal } from "./AgencySettingsTeamManagementConfirmModal";
 
+// TODO init on agency change
 export const AgencySettingsTeamManagement = () => {
   const { agencyId } = useParams();
   const { userStore } = useStore();
