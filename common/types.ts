@@ -39,7 +39,7 @@ export type AgencyTeam = {
   name: string;
   email: string;
   invitation_status: "NOT_SENT" | "PENDING" | "ACCEPTED" | "ERRORED";
-  role: "PENDING" | "ADMIN";
+  role: "CONTRIBUTOR" | "AGENCY_ADMIN" | "RECIDIVIZ_ADMIN";
 };
 
 export const SupervisionSystems: AgencySystems[] = [

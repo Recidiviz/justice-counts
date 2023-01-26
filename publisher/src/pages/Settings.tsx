@@ -36,6 +36,13 @@ export const settingsMenuPaths = [
   { displayLabel: "Uploaded Files", path: "uploaded-files" },
   { displayLabel: "Metric Configuration", path: "metric-config" },
 ];
+// TODO remove that when team management is finished
+export const settingsMenuPathsWithoutTeam = [
+  { displayLabel: "Your Account", path: "account" },
+  { displayLabel: "Agency Settings", path: "agency-settings" },
+  { displayLabel: "Uploaded Files", path: "uploaded-files" },
+  { displayLabel: "Metric Configuration", path: "metric-config" },
+];
 
 export type ListOfMetricsForNavigation = {
   key: string;

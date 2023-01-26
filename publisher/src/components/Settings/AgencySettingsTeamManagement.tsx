@@ -69,7 +69,7 @@ export const AgencySettingsTeamManagement = observer(() => {
         email,
         auth0_user_id: name + email,
         invitation_status: "PENDING",
-        role: "PENDING",
+        role: "CONTRIBUTOR",
       };
       if (team) {
         setTeam([newMember, ...team]);
@@ -85,7 +85,7 @@ export const AgencySettingsTeamManagement = observer(() => {
       setTeam(
         team.map((member) =>
           member.auth0_user_id === id
-            ? { ...member, role: isAdmin ? "PENDING" : "ADMIN" }
+            ? { ...member, role: isAdmin ? "CONTRIBUTOR" : "AGENCY_ADMIN" }
             : member
         )
       );
@@ -104,6 +104,10 @@ export const AgencySettingsTeamManagement = observer(() => {
   };
   // end simulation
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setTeamMemberEditMenuActiveId(undefined);
+  };
   const handleTeamMemberMenuClick = (id: string) => {
     if (teamMemberEditMenuActiveId === id) {
       setTeamMemberEditMenuActiveId(undefined);
@@ -144,7 +148,7 @@ export const AgencySettingsTeamManagement = observer(() => {
             (member) => member.auth0_user_id === teamMemberEditMenuActiveId
           )?.name
         }
-        closeModal={() => setIsModalOpen(false)}
+        closeModal={handleCloseModal}
         handleConfirm={handleRemoveUser}
       />
     );
@@ -191,7 +195,8 @@ export const AgencySettingsTeamManagement = observer(() => {
             ({ name, email, auth0_user_id, invitation_status, role }) => (
               <TeamMemberRow key={auth0_user_id}>
                 <TeamMemberNameContainer>
-                  {name} {role === "ADMIN" && <AdminStatus>Admin</AdminStatus>}{" "}
+                  {name}{" "}
+                  {role === "AGENCY_ADMIN" && <AdminStatus>Admin</AdminStatus>}{" "}
                   {invitation_status === "PENDING" && (
                     <InvitedStatus>Invited</InvitedStatus>
                   )}
@@ -207,13 +212,16 @@ export const AgencySettingsTeamManagement = observer(() => {
                     <img src={editIcon} alt="" />
                     {teamMemberEditMenuActiveId === auth0_user_id && (
                       <EditTeamMemberMenu onClick={(e) => e.stopPropagation()}>
-                        {invitation_status === "ACCEPTED" && (
+                        {invitation_status !== "PENDING" && (
                           <EditTeamMemberMenuItem
                             onClick={() =>
-                              handleAdminStatus(auth0_user_id, role === "ADMIN")
+                              handleAdminStatus(
+                                auth0_user_id,
+                                role === "AGENCY_ADMIN"
+                              )
                             }
                           >
-                            {role === "ADMIN" ? "Remove " : "Grant"} admin
+                            {role === "AGENCY_ADMIN" ? "Remove" : "Grant"} admin
                             status
                           </EditTeamMemberMenuItem>
                         )}

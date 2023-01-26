@@ -15,8 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import addIcon from "@justice-counts/common/assets/add-icon.png";
-import blackCheck from "@justice-counts/common/assets/black-check-icon.png";
+import addIcon from "@justice-counts/common/assets/add-icon.svg";
+import blackCheck from "@justice-counts/common/assets/black-check-icon.svg";
 import React, { useState } from "react";
 
 import rightArrow from "../assets/right-arrow.svg";
