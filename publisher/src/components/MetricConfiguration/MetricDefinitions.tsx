@@ -56,6 +56,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
     const {
       metrics,
       metricDefinitionSettings,
+      contexts,
       dimensions,
       dimensionDefinitionSettings,
       dimensionContexts,
@@ -105,6 +106,14 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
       dimensionContexts[systemMetricKey]?.[activeDisaggregationKey]?.[
         activeDimensionKey
       ];
+
+    const hasMinOneDimensionContext =
+      dimensionContextsMap && Object.values(dimensionContextsMap).length > 0;
+
+    const hasMinOneMetricLevelContext =
+      !activeDimensionKey &&
+      contexts[systemMetricKey] &&
+      Object.values(contexts[systemMetricKey]).length > 0;
 
     const noSettingsAvailable =
       !activeSettingsKeys ||
@@ -301,11 +310,14 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
           )}
 
           {/* Display when user is viewing a dimension & there are no settings available */}
-          {noSettingsAvailable && (
-            <DefinitionsSubTitle>
-              Technical Definitions are not available for this metric yet.
-            </DefinitionsSubTitle>
-          )}
+          {noSettingsAvailable &&
+            !hasMinOneDimensionContext &&
+            !hasMinOneMetricLevelContext && (
+              <DefinitionsSubTitle>
+                Technical Definitions are not available for this{" "}
+                {activeDimensionKey ? "breakdown." : "metric yet."}
+              </DefinitionsSubTitle>
+            )}
 
           {/* Display when dimension has additional contexts */}
           {dimensionContextsMap && (
