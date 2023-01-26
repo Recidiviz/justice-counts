@@ -337,7 +337,7 @@ export const RadioButtonGroupWrapper = styled(BinaryRadioGroupWrapper)`
   display: flex;
 `;
 
-export const MetricDisaggregations = styled.div<{ enabled?: boolean }>`
+export const TogglableSection = styled.div<{ enabled?: boolean }>`
   display: block;
   position: relative;
 
