@@ -33,7 +33,6 @@ import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   Label,
   MetricContextContainer,
-  MetricContextHeader,
   MetricContextItem,
   MultipleChoiceWrapper,
   RadioButtonGroupWrapper,
@@ -82,7 +81,6 @@ export const ContextConfiguration: React.FC = observer(() => {
 
   return (
     <MetricContextContainer enabled={metrics[systemMetricKey]?.enabled}>
-      <MetricContextHeader>Context</MetricContextHeader>
       {activeContextKeys.map((contextKey) => {
         const currentContext = contexts[systemMetricKey][contextKey];
 

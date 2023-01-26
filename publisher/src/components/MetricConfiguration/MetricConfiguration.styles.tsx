@@ -497,7 +497,6 @@ export const MetricConfigurationContainer = styled.div`
 
 export const MetricContextContainer = styled.div<{ enabled?: boolean }>`
   display: block;
-  border-top: 1px solid ${palette.highlight.grey3};
   position: relative;
 
   ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
@@ -508,9 +507,7 @@ export const MetricContextHeader = styled.div`
   margin: 40px 0 20px 0;
 `;
 
-export const MetricContextItem = styled.div`
-  margin-top: 33px;
-`;
+export const MetricContextItem = styled.div``;
 
 export const Label = styled.div<{ noBottomMargin?: boolean }>`
   ${typography.sizeCSS.medium};
