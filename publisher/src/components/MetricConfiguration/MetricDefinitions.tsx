@@ -307,7 +307,8 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
           {/* Display when user is viewing a dimension & there are no settings available */}
           {noSettingsAvailable && !hasMinOneContext && (
             <DefinitionsSubTitle>
-              Technical Definitions are not available for this metric yet.
+              Technical Definitions are not available for this{" "}
+              {activeDimensionKey ? "breakdown." : "metric yet."}
             </DefinitionsSubTitle>
           )}
 
