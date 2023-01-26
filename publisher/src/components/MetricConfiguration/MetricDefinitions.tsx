@@ -108,7 +108,6 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
 
     const hasMinOneContext =
       dimensionContextsMap && Object.values(dimensionContextsMap).length > 0;
-    console.log(hasMinOneContext);
 
     const noSettingsAvailable =
       !activeSettingsKeys ||
