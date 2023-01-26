@@ -118,7 +118,7 @@ class AgencyStore {
     showToast({
       message: `Settings saved.`,
       check: true,
-      color: "grey",
+      color: "blue",
       timeout: 4000,
     });
   };

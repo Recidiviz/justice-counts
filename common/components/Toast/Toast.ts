@@ -117,8 +117,6 @@ export const showToast = (params: ToastParams) => {
   const toastElementWrapper = document.createElement(`div`);
   const toastElement = document.createElement(`div`);
   const checkIcon = document.createElement(`img`);
-  toastElementWrapper.appendChild(toastElement);
-  if (check) toastElement.prepend(checkIcon);
 
   toastElementWrapper.id = "toast";
   toastElementWrapper.style.cssText = wrapperStyles;
@@ -129,6 +127,9 @@ export const showToast = (params: ToastParams) => {
   checkIcon.src = checkIconWhite;
   checkIcon.alt = "";
   checkIcon.style.cssText = checkIconStyles;
+
+  toastElementWrapper.appendChild(toastElement);
+  if (check) toastElement.prepend(checkIcon);
 
   document.body.appendChild(toastElementWrapper);
 

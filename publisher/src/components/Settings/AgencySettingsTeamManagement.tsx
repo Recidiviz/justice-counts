@@ -15,302 +15,232 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
-import React, { useState } from "react";
+/* eslint-disable camelcase */
+import editIcon from "@justice-counts/common/assets/edit-row-icon.png";
+import { AgencyTeam } from "@justice-counts/common/types";
+import { observer } from "mobx-react-lite";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { AgencyTeam } from "../../../../common/types";
 import { useStore } from "../../stores";
-import rightArrow from "../assets/right-arrow.svg";
+import { Loading } from "../Loading";
 import {
-  BlueCheckIcon,
-  Checkbox,
-  CheckboxWrapper,
-} from "../MetricConfiguration";
-import { SettingProps } from "./AgencySettings";
-import {
-  AgencySettingsBlock,
-  AgencySettingsBlockDescription,
-  AgencySettingsBlockSubDescription,
-  AgencySettingsBlockTitle,
-  AgencySettingsInfoRow,
-  ConfirmationFilledButton,
-  EditButton,
-  EditButtonContainer,
-  EditModeButtonsContainer,
-  FilledButton,
+  AdminStatus,
+  AgencySettingsContent,
+  AgencySettingsTitle,
+  AgencySettingsWrapper,
+  EditTeamMemberIconContainer,
+  EditTeamMemberMenu,
+  EditTeamMemberMenuItem,
+  InvitedStatus,
   InviteMemberButton,
   InviteMemberContainer,
   InviteMemberInput,
-  RemoveTeamMemberModal,
-  RemoveTeamMemberModalButtonsContainer,
-  RemoveTeamMemberModalContent,
-  RemoveTeamMemberModalLargeText,
-  RemoveTeamMemberModalSmallText,
-  TeamMemberBadge,
-  TeamMemberEditInfoContainer,
-  TeamMemberEditInfoRow,
-  TeamMemberEmail,
-  TeamMemberInfoContainer,
-  TeamMemberName,
-  TransparentButton,
+  TeamManagementBlock,
+  TeamManagementDescription,
+  TeamManagementSectionSubTitle,
+  TeamManagementSectionTitle,
+  TeamMemberEmailContainer,
+  TeamMemberEmailContainerTitle,
+  TeamMemberNameContainer,
+  TeamMemberNameContainerTitle,
+  TeamMemberRow,
 } from "./AgencySettings.styles";
-import { AgencySettingsConfirmModal } from "./AgencySettingsConfirmModal";
+import { AgencySettingsTeamManagementConfirmModal } from "./AgencySettingsTeamManagementConfirmModal";
 
-export const AgencySettingsTeamManagement: React.FC<{
-  settingProps: SettingProps;
-}> = ({ settingProps }) => {
-  const {
-    isSettingInEditMode,
-    openSetting,
-    removeEditMode,
-    modalConfirmHelper,
-    clearSettingToOpen,
-    isAnimationShowing,
-    removeAnimation,
-    allowEdit,
-  } = settingProps;
-
+export const AgencySettingsTeamManagement = observer(() => {
   const { agencyId } = useParams();
-  const { userStore } = useStore();
+  const { userStore, agencyStore } = useStore();
+  const { loadingSettings, resetState } = agencyStore;
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [teamMemberEditMenuActiveId, setTeamMemberEditMenuActiveId] = useState<
+    string | undefined
+  >(undefined);
 
-  const agencyTeam = userStore
-    .getAgency(agencyId)
-    ?.team.filter((member) => member.auth0_user_id !== userStore.auth0UserID)
-    .sort((a, b) => a.name.localeCompare(b.name));
-
-  // edit mode simulation, transforming team to include status id and email
-  const [team, setTeam] = useState(() =>
-    agencyTeam
-      ? agencyTeam.map((member, index) => {
-          let isInvited = false;
-          let isAdmin = false;
-          if (index % 2 === 0) isInvited = true;
-          if (index % 3 === 0) isAdmin = true;
-
-          return {
-            ...member,
-            id: member.name,
-            email: `${member.name.toLowerCase().replace(" ", "_")}@doc1.wa.gov`,
-            isInvited,
-            isAdmin,
-          };
-        })
-      : []
-  );
-  const [checkedMembersIds, setCheckedMembersIds] = useState<string[]>([]);
+  // simulation of managing team members
+  const [team, setTeam] = useState<AgencyTeam[] | undefined>([]);
   const [nameValue, setNameValue] = useState("");
   const [emailValue, setEmailValue] = useState("");
 
   const handleInvite = (name: string, email: string) => {
     if (name && email) {
-      const newMember: AgencyTeam & {
-        id: string;
-        email: string;
-        isInvited: boolean;
-        isAdmin: boolean;
-      } = {
+      const newMember: AgencyTeam = {
         name,
         email,
-        id: name,
-        auth0_user_id: "",
-        isInvited: true,
-        isAdmin: false,
+        auth0_user_id: name + email,
+        invitation_status: "PENDING",
+        role: "CONTRIBUTOR",
       };
-      setTeam([newMember, ...team]);
+      if (team) {
+        setTeam([newMember, ...team]);
+      } else {
+        setTeam([newMember]);
+      }
       setNameValue("");
       setEmailValue("");
     }
   };
-  const handleCheckMembers = (memberId: string) => {
-    setCheckedMembersIds(
-      checkedMembersIds.includes(memberId)
-        ? checkedMembersIds.filter((id) => id !== memberId)
-        : [...checkedMembersIds, memberId]
-    );
+  const handleAdminStatus = (id: string, isAdmin: boolean) => {
+    if (team) {
+      setTeam(
+        team.map((member) =>
+          member.auth0_user_id === id
+            ? { ...member, role: isAdmin ? "CONTRIBUTOR" : "AGENCY_ADMIN" }
+            : member
+        )
+      );
+    }
+    setTeamMemberEditMenuActiveId(undefined);
   };
-  const handleMakeAdmin = (memberIds: string[]) => {
-    const updatedTeam = team.map((member) =>
-      memberIds.includes(member.id) ? { ...member, isAdmin: true } : member
-    );
-    setTeam(updatedTeam);
-    setCheckedMembersIds([]);
-  };
-  const handleRemoveMembers = (memberIds: string[]) => {
-    setTeam(team.filter((member) => !memberIds.includes(member.id)));
-    setCheckedMembersIds([]);
+  const handleRemoveUser = () => {
+    if (team)
+      setTeam(
+        team.filter(
+          (member) => member.auth0_user_id !== teamMemberEditMenuActiveId
+        )
+      );
+    setTeamMemberEditMenuActiveId(undefined);
     setIsModalOpen(false);
   };
   // end simulation
 
-  const handleModalConfirm = () => {
-    setIsConfirmModalOpen(false);
-    modalConfirmHelper();
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setTeamMemberEditMenuActiveId(undefined);
   };
-  const handleModalReject = () => {
-    setIsConfirmModalOpen(false);
-    clearSettingToOpen();
+  const handleTeamMemberMenuClick = (id: string) => {
+    if (teamMemberEditMenuActiveId === id) {
+      setTeamMemberEditMenuActiveId(undefined);
+    } else {
+      setTeamMemberEditMenuActiveId(id);
+    }
   };
 
-  return (
-    <>
-      <AgencySettingsBlock
-        id="team"
-        isEditModeActive={isSettingInEditMode}
-        isAnimationShowing={isAnimationShowing}
-        onAnimationEnd={removeAnimation}
-      >
-        <AgencySettingsBlockTitle>Team Management</AgencySettingsBlockTitle>
-        {!isSettingInEditMode ? (
-          <>
-            <AgencySettingsBlockDescription>
-              These are the other people at your agency who have accounts on
-              Publisher.
-            </AgencySettingsBlockDescription>
-            {team?.map(({ name, email, id, isInvited, isAdmin }) => (
-              <AgencySettingsInfoRow key={name + id}>
-                {/* fake isInvited simulation */}
-                <TeamMemberName isInvited={isInvited}>
-                  {name}
-                  {isAdmin && <TeamMemberBadge isAdmin>Admin</TeamMemberBadge>}
-                  {isInvited && (
-                    <TeamMemberBadge isInvited>Invited</TeamMemberBadge>
-                  )}
-                </TeamMemberName>
-                {/* email is mocked */}
-                <span>{email}</span>
-              </AgencySettingsInfoRow>
-            ))}
-            <EditButtonContainer>
-              <EditButton
-                onClick={() => openSetting(() => setIsConfirmModalOpen(true))}
-              >
-                Manage members
-                <img src={rightArrow} alt="" />
-              </EditButton>
-            </EditButtonContainer>
-          </>
-        ) : (
-          <>
-            <AgencySettingsBlockDescription>
-              Invite users to join your agency on Publisher.
-            </AgencySettingsBlockDescription>
-            <InviteMemberContainer>
-              <InviteMemberInput
-                placeholder="Full Name"
-                value={nameValue}
-                onChange={(e) => setNameValue(e.target.value)}
-              />
-              <InviteMemberInput
-                placeholder="Email"
-                value={emailValue}
-                onChange={(e) => setEmailValue(e.target.value)}
-              />
-              <InviteMemberButton
-                onClick={() => handleInvite(nameValue, emailValue)}
-                disabled={!nameValue || !emailValue}
-              >
-                Invite
-              </InviteMemberButton>
-            </InviteMemberContainer>
-            {allowEdit && (
-              <AgencySettingsBlockSubDescription>
-                Select people to remove or assign Admin status.
-              </AgencySettingsBlockSubDescription>
-            )}
-            <TeamMemberEditInfoContainer>
-              {team?.map(({ name, email, id, isAdmin, isInvited }) => (
-                <TeamMemberEditInfoRow
-                  key={name + id}
-                  hasHover={allowEdit}
-                  onClick={allowEdit ? () => handleCheckMembers(id) : undefined}
-                >
-                  <TeamMemberInfoContainer>
-                    {/* fake isInvited simulation */}
-                    <TeamMemberName isInvited={isInvited}>
-                      {name}
-                      {isAdmin && (
-                        <TeamMemberBadge isAdmin>Admin</TeamMemberBadge>
-                      )}
-                      {isInvited && (
-                        <TeamMemberBadge isInvited>Invited</TeamMemberBadge>
-                      )}
-                    </TeamMemberName>
-                    {/* email is mocked */}
-                    <TeamMemberEmail>{email}</TeamMemberEmail>
-                  </TeamMemberInfoContainer>
-                  {allowEdit && (
-                    <CheckboxWrapper>
-                      <Checkbox
-                        type="checkbox"
-                        checked={checkedMembersIds.includes(id)}
-                        onChange={() => handleCheckMembers(id)}
-                      />
-                      <BlueCheckIcon src={blueCheck} alt="" enabled />
-                    </CheckboxWrapper>
-                  )}
-                </TeamMemberEditInfoRow>
-              ))}
-            </TeamMemberEditInfoContainer>
-            {checkedMembersIds.length === 0 ? (
-              <EditModeButtonsContainer>
-                <FilledButton onClick={removeEditMode}>Done</FilledButton>
-              </EditModeButtonsContainer>
-            ) : (
-              <EditModeButtonsContainer>
-                <TransparentButton
-                  color="blue"
-                  onClick={() => setCheckedMembersIds([])}
-                >
-                  Cancel
-                </TransparentButton>
-                <TransparentButton
-                  color="blue"
-                  onClick={() => handleMakeAdmin(checkedMembersIds)}
-                >
-                  Make admin
-                </TransparentButton>
-                <TransparentButton
-                  color="red"
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  Remove from agency
-                </TransparentButton>
-              </EditModeButtonsContainer>
-            )}
-          </>
-        )}
-        {isModalOpen && (
-          <RemoveTeamMemberModal>
-            <RemoveTeamMemberModalContent>
-              <RemoveTeamMemberModalLargeText>
-                Are you sure?
-              </RemoveTeamMemberModalLargeText>
-              <RemoveTeamMemberModalSmallText>
-                This action cannot be undone.
-              </RemoveTeamMemberModalSmallText>
-              <RemoveTeamMemberModalButtonsContainer>
-                <ConfirmationFilledButton onClick={() => setIsModalOpen(false)}>
-                  Cancel
-                </ConfirmationFilledButton>
-                <ConfirmationFilledButton
-                  isRed
-                  onClick={() => handleRemoveMembers(checkedMembersIds)}
-                >
-                  Remove from agency
-                </ConfirmationFilledButton>
-              </RemoveTeamMemberModalButtonsContainer>
-            </RemoveTeamMemberModalContent>
-          </RemoveTeamMemberModal>
-        )}
-      </AgencySettingsBlock>
-      <AgencySettingsConfirmModal
-        isModalOpen={isConfirmModalOpen}
-        closeModal={handleModalReject}
-        handleConfirm={handleModalConfirm}
+  useEffect(() => {
+    if (teamMemberEditMenuActiveId) {
+      document.getElementById(teamMemberEditMenuActiveId)?.focus();
+    }
+  }, [teamMemberEditMenuActiveId]);
+
+  useEffect(() => {
+    const initialize = async () => {
+      resetState();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await agencyStore.initCurrentUserAgency(agencyId!);
+      // TODO change that after simulation removal
+      const agencyTeam = agencyStore.currentAgency?.team
+        ?.filter((member) => member.auth0_user_id !== userStore.auth0UserID)
+        .sort((a, b) => a.name.localeCompare(b.name));
+      setTeam(agencyTeam);
+    };
+
+    initialize();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [agencyId]);
+
+  if (loadingSettings) return <Loading />;
+
+  if (isModalOpen) {
+    return (
+      <AgencySettingsTeamManagementConfirmModal
+        userName={
+          team?.find(
+            (member) => member.auth0_user_id === teamMemberEditMenuActiveId
+          )?.name
+        }
+        closeModal={handleCloseModal}
+        handleConfirm={handleRemoveUser}
       />
-    </>
+    );
+  }
+
+  return (
+    <AgencySettingsWrapper>
+      <AgencySettingsContent>
+        <AgencySettingsTitle>Team Management</AgencySettingsTitle>
+        <TeamManagementBlock>
+          <TeamManagementDescription>
+            Manage your agency team by inviting members or assigning admins.
+          </TeamManagementDescription>
+          <TeamManagementSectionTitle>
+            Send invite to colleagues
+          </TeamManagementSectionTitle>
+          <InviteMemberContainer>
+            <InviteMemberInput
+              placeholder="Enter full Name"
+              value={nameValue}
+              onChange={(e) => setNameValue(e.target.value)}
+            />
+            <InviteMemberInput
+              placeholder="Enter email"
+              value={emailValue}
+              onChange={(e) => setEmailValue(e.target.value)}
+            />
+            <InviteMemberButton
+              onClick={() => handleInvite(nameValue, emailValue)}
+              disabled={!nameValue || !emailValue}
+            >
+              Invite
+            </InviteMemberButton>
+          </InviteMemberContainer>
+          <TeamManagementSectionTitle>Manage staff</TeamManagementSectionTitle>
+          <TeamManagementSectionSubTitle>
+            Use “•••” icon to manage or remove members of your team.
+          </TeamManagementSectionSubTitle>
+          <TeamMemberRow>
+            <TeamMemberNameContainerTitle>Name</TeamMemberNameContainerTitle>
+            <TeamMemberEmailContainerTitle>Email</TeamMemberEmailContainerTitle>
+          </TeamMemberRow>
+          {team?.map(
+            ({ name, email, auth0_user_id, invitation_status, role }) => (
+              <TeamMemberRow key={auth0_user_id}>
+                <TeamMemberNameContainer>
+                  {name}{" "}
+                  {role === "AGENCY_ADMIN" && <AdminStatus>Admin</AdminStatus>}{" "}
+                  {invitation_status === "PENDING" && (
+                    <InvitedStatus>Invited</InvitedStatus>
+                  )}
+                </TeamMemberNameContainer>
+                <TeamMemberEmailContainer>
+                  {email}
+                  <EditTeamMemberIconContainer
+                    id={auth0_user_id}
+                    tabIndex={-1}
+                    onClick={() => handleTeamMemberMenuClick(auth0_user_id)}
+                    onBlur={() => setTeamMemberEditMenuActiveId(undefined)}
+                  >
+                    <img src={editIcon} alt="" />
+                    {teamMemberEditMenuActiveId === auth0_user_id && (
+                      <EditTeamMemberMenu onClick={(e) => e.stopPropagation()}>
+                        {invitation_status !== "PENDING" && (
+                          <EditTeamMemberMenuItem
+                            onClick={() =>
+                              handleAdminStatus(
+                                auth0_user_id,
+                                role === "AGENCY_ADMIN"
+                              )
+                            }
+                          >
+                            {role === "AGENCY_ADMIN" ? "Remove" : "Grant"} admin
+                            status
+                          </EditTeamMemberMenuItem>
+                        )}
+                        <EditTeamMemberMenuItem
+                          onClick={() => setIsModalOpen(true)}
+                        >
+                          {invitation_status === "PENDING"
+                            ? "Revoke invitation"
+                            : "Remove from agency"}
+                        </EditTeamMemberMenuItem>
+                      </EditTeamMemberMenu>
+                    )}
+                  </EditTeamMemberIconContainer>
+                </TeamMemberEmailContainer>
+              </TeamMemberRow>
+            )
+          )}
+        </TeamManagementBlock>
+      </AgencySettingsContent>
+    </AgencySettingsWrapper>
   );
-};
+});

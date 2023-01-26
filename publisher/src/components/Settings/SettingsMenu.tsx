@@ -19,7 +19,10 @@ import { observer } from "mobx-react-lite";
 import React, { Fragment } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { settingsMenuPaths } from "../../pages/Settings";
+import {
+  settingsMenuPaths,
+  settingsMenuPathsWithoutTeam,
+} from "../../pages/Settings";
 import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
 import {
@@ -35,7 +38,7 @@ export const SettingsMenu: React.FC = observer(() => {
     useSettingsSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { metricConfigStore } = useStore();
+  const { metricConfigStore, userStore } = useStore();
   const { getMetricsBySystem } = metricConfigStore;
 
   const { system: systemSearchParam, metric: metricSearchParam } =
@@ -48,9 +51,15 @@ export const SettingsMenu: React.FC = observer(() => {
     });
   };
 
+  // TODO remove that when team management is finished
+  const tempSettingsMenuPaths = userStore.isRecidivizAdmin
+    ? settingsMenuPaths
+    : settingsMenuPathsWithoutTeam;
+
   return (
     <SettingsMenuContainer>
-      {settingsMenuPaths.map(({ displayLabel, path }) => (
+      {/* TODO remove that when team management is finished */}
+      {tempSettingsMenuPaths.map(({ displayLabel, path }) => (
         <Fragment key={path}>
           <MenuItem
             selected={

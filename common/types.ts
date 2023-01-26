@@ -38,6 +38,8 @@ export type AgencyTeam = {
   auth0_user_id: string;
   name: string;
   email: string;
+  invitation_status: "NOT_SENT" | "PENDING" | "ACCEPTED" | "ERRORED";
+  role: "CONTRIBUTOR" | "AGENCY_ADMIN" | "RECIDIVIZ_ADMIN";
 };
 
 export const SupervisionSystems: AgencySystems[] = [
