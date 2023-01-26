@@ -106,6 +106,10 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
         activeDimensionKey
       ];
 
+    const hasMinOneContext =
+      dimensionContextsMap && Object.values(dimensionContextsMap).length > 0;
+    console.log(hasMinOneContext);
+
     const noSettingsAvailable =
       !activeSettingsKeys ||
       Boolean(
@@ -301,7 +305,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
           )}
 
           {/* Display when user is viewing a dimension & there are no settings available */}
-          {noSettingsAvailable && (
+          {noSettingsAvailable && !hasMinOneContext && (
             <DefinitionsSubTitle>
               Technical Definitions are not available for this metric yet.
             </DefinitionsSubTitle>
