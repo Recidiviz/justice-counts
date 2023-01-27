@@ -6,7 +6,10 @@
       "month": 4,
       "frequency": "MONTHLY",
       "last_modified_at": "1648771200000",
-      "editors": ["Editor #1", "Editor #2"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" }
+      ],
       "status": "DRAFT"
     },
     {
@@ -15,7 +18,11 @@
       "month": 3,
       "frequency": "MONTHLY",
       "last_modified_at": "1646092800000",
-      "editors": ["Editor #1", "Editor #2", "Editor #3"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" },
+        { "name": "Editor #3", "role": "JUSTICE_COUNTS_ADMIN" }
+      ],
       "status": "DRAFT"
     },
     {
@@ -24,7 +31,7 @@
       "month": 2,
       "frequency": "MONTHLY",
       "last_modified_at": "1643673600000",
-      "editors": ["Editor #3"],
+      "editors": [{ "name": "Editor #3", "role": "JUSTICE_COUNTS_ADMIN" }],
       "status": "PUBLISHED"
     },
     {
@@ -33,7 +40,10 @@
       "month": 1,
       "frequency": "MONTHLY",
       "last_modified_at": "1640995200000",
-      "editors": ["Editor #1", "Editor #2"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" }
+      ],
       "status": "PUBLISHED"
     },
     {
@@ -42,7 +52,12 @@
       "month": 12,
       "frequency": "ANNUAL",
       "last_modified_at": "1640995200000",
-      "editors": ["Editor #1", "Editor #2", "Editor #3", "Editor #4"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" },
+        { "name": "Editor #3", "role": "JUSTICE_COUNTS_ADMIN" },
+        { "name": "Editor #4", "role": "CONTRIBUTOR" }
+      ],
       "status": "PUBLISHED"
     },
     {
@@ -51,7 +66,7 @@
       "month": 12,
       "frequency": "MONTHLY",
       "last_modified_at": "1640995200000",
-      "editors": ["Editor #4"],
+      "editors": [{ "name": "Editor #4", "role": "CONTRIBUTOR" }],
       "status": "PUBLISHED"
     },
     {
@@ -60,7 +75,10 @@
       "month": 11,
       "frequency": "MONTHLY",
       "last_modified_at": "1635724800000",
-      "editors": ["Editor #1", "Editor #2"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" }
+      ],
       "status": "PUBLISHED"
     },
     {
@@ -69,7 +87,11 @@
       "month": 10,
       "frequency": "MONTHLY",
       "last_modified_at": "1633046400000",
-      "editors": ["Editor #1", "Editor #2", "Editor #3"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" },
+        { "name": "Editor #3", "role": "JUSTICE_COUNTS_ADMIN" }
+      ],
       "status": "PUBLISHED"
     },
     {
@@ -78,7 +100,7 @@
       "month": 9,
       "frequency": "MONTHLY",
       "last_modified_at": "1630454400000",
-      "editors": ["Editor #3"],
+      "editors": [{ "name": "Editor #3", "role": "JUSTICE_COUNTS_ADMIN" }],
       "status": "PUBLISHED"
     },
     {
@@ -87,7 +109,10 @@
       "month": 8,
       "frequency": "MONTHLY",
       "last_modified_at": "1627776000000",
-      "editors": ["Editor #1", "Editor #2"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" }
+      ],
       "status": "PUBLISHED"
     },
     {
@@ -105,7 +130,10 @@
       "month": 6,
       "frequency": "MONTHLY",
       "last_modified_at": "1622505600000",
-      "editors": ["Editor #1", "Editor #2"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" }
+      ],
       "status": "DRAFT"
     },
     {
@@ -114,7 +142,11 @@
       "month": 5,
       "frequency": "MONTHLY",
       "last_modified_at": "1619827200000",
-      "editors": ["Editor #1", "Editor #2", "Editor #3"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" },
+        { "name": "Editor #3", "role": "JUSTICE_COUNTS_ADMIN" }
+      ],
       "status": "DRAFT"
     },
     {
@@ -123,7 +155,7 @@
       "month": 4,
       "frequency": "MONTHLY",
       "last_modified_at": "1617235200000",
-      "editors": ["Editor #3"],
+      "editors": [{ "name": "Editor #3", "role": "JUSTICE_COUNTS_ADMIN" }],
       "status": "PUBLISHED"
     },
     {
@@ -132,7 +164,10 @@
       "month": 3,
       "frequency": "MONTHLY",
       "last_modified_at": "1614556800000",
-      "editors": ["Editor #1", "Editor #2"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" }
+      ],
       "status": "PUBLISHED"
     },
     {
@@ -150,7 +185,10 @@
       "month": 1,
       "frequency": "MONTHLY",
       "last_modified_at": "1609459200000",
-      "editors": ["Editor #1", "Editor #2"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" }
+      ],
       "status": "DRAFT"
     },
     {
@@ -177,7 +215,10 @@
       "month": 11,
       "frequency": "MONTHLY",
       "last_modified_at": "1604188800000",
-      "editors": ["Editor #1", "Editor #2"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" }
+      ],
       "status": "DRAFT"
     },
     {
@@ -186,7 +227,11 @@
       "month": 10,
       "frequency": "MONTHLY",
       "last_modified_at": "1601510400000",
-      "editors": ["Editor #1", "Editor #2", "Editor #3"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" },
+        { "name": "Editor #3", "role": "JUSTICE_COUNTS_ADMIN" }
+      ],
       "status": "DRAFT"
     },
     {
@@ -195,7 +240,7 @@
       "month": 9,
       "frequency": "MONTHLY",
       "last_modified_at": "1598918400000",
-      "editors": ["Editor #3"],
+      "editors": [{ "name": "Editor #3", "role": "JUSTICE_COUNTS_ADMIN" }],
       "status": "PUBLISHED"
     },
     {
@@ -204,7 +249,10 @@
       "month": 8,
       "frequency": "MONTHLY",
       "last_modified_at": "1596240000000",
-      "editors": ["Editor #1", "Editor #2"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" }
+      ],
       "status": "PUBLISHED"
     },
     {
@@ -224,7 +272,11 @@
       "month": 3,
       "frequency": "MONTHLY",
       "last_modified_at": "1646092800000",
-      "editors": ["Editor #1", "Editor #2", "Editor #3"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" },
+        { "name": "Editor #3", "role": "JUSTICE_COUNTS_ADMIN" }
+      ],
       "status": "DRAFT"
     },
     {
@@ -233,7 +285,10 @@
       "month": 8,
       "frequency": "MONTHLY",
       "last_modified_at": "1596240000000",
-      "editors": ["Editor #1", "Editor #2"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" }
+      ],
       "status": "PUBLISHED"
     },
     {
@@ -242,7 +297,10 @@
       "month": 1,
       "frequency": "MONTHLY",
       "last_modified_at": "1640995200000",
-      "editors": ["Editor #1", "Editor #2"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" }
+      ],
       "status": "PUBLISHED"
     },
     {
@@ -251,7 +309,7 @@
       "month": 12,
       "frequency": "MONTHLY",
       "last_modified_at": "1640995200000",
-      "editors": ["Editor #4"],
+      "editors": [{ "name": "Editor #4", "role": "CONTRIBUTOR" }],
       "status": "PUBLISHED"
     },
     {
@@ -260,7 +318,10 @@
       "month": 6,
       "frequency": "MONTHLY",
       "last_modified_at": "1622505600000",
-      "editors": ["Editor #1", "Editor #2"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" }
+      ],
       "status": "DRAFT"
     },
     {
@@ -269,7 +330,10 @@
       "month": 11,
       "frequency": "MONTHLY",
       "last_modified_at": "1635724800000",
-      "editors": ["Editor #1", "Editor #2"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" }
+      ],
       "status": "PUBLISHED"
     },
     {
@@ -278,7 +342,10 @@
       "month": 4,
       "frequency": "MONTHLY",
       "last_modified_at": "1648771200000",
-      "editors": ["Editor #1", "Editor #2"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" }
+      ],
       "status": "DRAFT"
     },
     {
@@ -287,7 +354,11 @@
       "month": 10,
       "frequency": "MONTHLY",
       "last_modified_at": "1633046400000",
-      "editors": ["Editor #1", "Editor #2", "Editor #3"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" },
+        { "name": "Editor #3", "role": "JUSTICE_COUNTS_ADMIN" }
+      ],
       "status": "PUBLISHED"
     },
     {
@@ -296,7 +367,10 @@
       "month": 11,
       "frequency": "MONTHLY",
       "last_modified_at": "1604188800000",
-      "editors": ["Editor #1", "Editor #2"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" }
+      ],
       "status": "DRAFT"
     },
     {
@@ -305,7 +379,10 @@
       "month": 8,
       "frequency": "MONTHLY",
       "last_modified_at": "1627776000000",
-      "editors": ["Editor #1", "Editor #2"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" }
+      ],
       "status": "PUBLISHED"
     },
     {
@@ -323,7 +400,11 @@
       "month": 5,
       "frequency": "MONTHLY",
       "last_modified_at": "1619827200000",
-      "editors": ["Editor #1", "Editor #2", "Editor #3"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" },
+        { "name": "Editor #3", "role": "JUSTICE_COUNTS_ADMIN" }
+      ],
       "status": "DRAFT"
     },
     {
@@ -332,7 +413,7 @@
       "month": 4,
       "frequency": "MONTHLY",
       "last_modified_at": "1617235200000",
-      "editors": ["Editor #3"],
+      "editors": [{ "name": "Editor #3", "role": "JUSTICE_COUNTS_ADMIN" }],
       "status": "PUBLISHED"
     },
     {
@@ -341,7 +422,7 @@
       "month": 9,
       "frequency": "MONTHLY",
       "last_modified_at": "1630454400000",
-      "editors": ["Editor #3"],
+      "editors": [{ "name": "Editor #3", "role": "JUSTICE_COUNTS_ADMIN" }],
       "status": "PUBLISHED"
     },
     {
@@ -350,7 +431,10 @@
       "month": 3,
       "frequency": "MONTHLY",
       "last_modified_at": "1614556800000",
-      "editors": ["Editor #1", "Editor #2"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" }
+      ],
       "status": "PUBLISHED"
     },
     {
@@ -368,7 +452,7 @@
       "month": 2,
       "frequency": "MONTHLY",
       "last_modified_at": "1643673600000",
-      "editors": ["Editor #3"],
+      "editors": [{ "name": "Editor #3", "role": "JUSTICE_COUNTS_ADMIN" }],
       "status": "PUBLISHED"
     },
     {
@@ -377,7 +461,10 @@
       "month": 1,
       "frequency": "MONTHLY",
       "last_modified_at": "1609459200000",
-      "editors": ["Editor #1", "Editor #2"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" }
+      ],
       "status": "DRAFT"
     },
     {
@@ -395,7 +482,11 @@
       "month": 10,
       "frequency": "MONTHLY",
       "last_modified_at": "1601510400000",
-      "editors": ["Editor #1", "Editor #2", "Editor #3"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" },
+        { "name": "Editor #3", "role": "JUSTICE_COUNTS_ADMIN" }
+      ],
       "status": "DRAFT"
     },
     {
@@ -404,7 +495,12 @@
       "month": 12,
       "frequency": "ANNUAL",
       "last_modified_at": "1640995200000",
-      "editors": ["Editor #1", "Editor #2", "Editor #3", "Editor #4"],
+      "editors": [
+        { "name": "Editor #1", "role": "AGENCY_ADMIN" },
+        { "name": "Editor #2", "role": "CONTRIBUTOR" },
+        { "name": "Editor #3", "role": "JUSTICE_COUNTS_ADMIN" },
+        { "name": "Editor #4", "role": "CONTRIBUTOR" }
+      ],
       "status": "PUBLISHED"
     },
     {
@@ -413,7 +509,7 @@
       "month": 9,
       "frequency": "MONTHLY",
       "last_modified_at": "1598918400000",
-      "editors": ["Editor #3"],
+      "editors": [{ "name": "Editor #3", "role": "JUSTICE_COUNTS_ADMIN" }],
       "status": "PUBLISHED"
     },
     {
