@@ -363,15 +363,6 @@ export const Disaggregation = styled.div`
   margin-bottom: 15px;
 `;
 
-// export const DisaggregationHeader = styled.div`
-//   display: flex;
-//   justify-content: space-between;
-//   padding: 17px 0;
-//   align-items: center;
-
-//   border-bottom: 1px solid ${palette.highlight.grey9};
-// `;
-
 export const DisaggregationName = styled.div<{ enabled?: boolean }>`
   ${typography.sizeCSS.large};
 

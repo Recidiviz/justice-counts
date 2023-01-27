@@ -237,7 +237,6 @@ export const MetricConfiguration: React.FC = observer(() => {
                   <Configuration
                     activeDimensionKey={activeDimensionKey}
                     setActiveDimensionKey={setActiveDimensionKey}
-                    // activeDisaggregationKey={activeDisaggregationKey}
                     setActiveDisaggregationKey={setActiveDisaggregationKey}
                     supervisionSubsystems={supervisionSubsystems}
                   />
