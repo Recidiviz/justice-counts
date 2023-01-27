@@ -188,14 +188,15 @@ export const Guidance = observer(() => {
     }
 
     /** Confirm breakdown availability */
-    const disaggregationValues = Object.values(dimensions[systemMetricKey]);
+    const disaggregationValues =
+      dimensions[systemMetricKey] && Object.values(dimensions[systemMetricKey]);
     const dimensionsCompleted =
-      disaggregationValues.filter(
+      disaggregationValues?.filter(
         (disaggregation) =>
           Object.values(disaggregation).filter(
             (dimension) => dimension.enabled === null
           ).length === 0
-      ).length === disaggregationValues.length;
+      ).length === disaggregationValues?.length;
 
     if (dimensionsCompleted) {
       completionPercentage += 25;
