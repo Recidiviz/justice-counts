@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { AgencyRole } from "@justice-counts/common/types";
 import { act, render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
 import React from "react";
@@ -56,7 +57,7 @@ test("displayed created reports", async () => {
           frequency: "MONTHLY",
           last_modified_at: null,
           last_modified_at_timestamp: null,
-          editors: ["Editor #1"],
+          editors: [{ name: "Editor #1", role: AgencyRole.CONTRIBUTOR }],
           status: "NOT_STARTED",
         },
       };
@@ -79,7 +80,7 @@ test("displayed created reports", async () => {
         frequency: "ANNUAL",
         last_modified_at: null,
         last_modified_at_timestamp: null,
-        editors: ["Editor #2"],
+        editors: [{ name: "Editor #2", role: AgencyRole.CONTRIBUTOR }],
         status: "NOT_STARTED",
       };
     });
