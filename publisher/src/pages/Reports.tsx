@@ -251,6 +251,7 @@ const Reports: React.FC = () => {
                                 <TeamMemberNameWithBadge
                                   name={editor.name}
                                   badgeColor={palette.solid.white}
+                                  role={editor.role}
                                 />
                                 {idx < report.editors.length - 1 && (
                                   <CommaSpan />
