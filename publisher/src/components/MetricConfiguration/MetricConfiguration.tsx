@@ -20,7 +20,7 @@ import { showToast } from "@justice-counts/common/components/Toast";
 import {
   AgencySystems,
   ReportFrequency,
-  SupervisionSystems,
+  SupervisionSubsystems,
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -148,11 +148,8 @@ export const MetricConfiguration: React.FC = observer(() => {
   }
 
   const currentAgency = userStore.getAgency(agencyId);
-  const supervisionSubsystems = currentAgency?.systems
-    .filter(
-      (system) =>
-        SupervisionSystems.includes(system) && system !== "SUPERVISION"
-    )
+  const enabledSupervisionSubsystems = currentAgency?.systems
+    .filter((system) => SupervisionSubsystems.includes(system))
     .map((system) => system.toLowerCase());
 
   return (
@@ -237,7 +234,7 @@ export const MetricConfiguration: React.FC = observer(() => {
                     setActiveDimensionKey={setActiveDimensionKey}
                     activeDisaggregationKey={activeDisaggregationKey}
                     setActiveDisaggregationKey={setActiveDisaggregationKey}
-                    supervisionSubsystems={supervisionSubsystems}
+                    enabledSupervisionSubsystems={enabledSupervisionSubsystems}
                   />
                 </MetricDetailsDisplay>
               </MetricConfigurationDisplay>
