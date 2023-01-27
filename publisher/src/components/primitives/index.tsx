@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { palette } from "@justice-counts/common/components/GlobalStyles";
-import { AgencyRole, Permission } from "@justice-counts/common/types";
+import { AgencyRole } from "@justice-counts/common/types";
 import { rem } from "@justice-counts/common/utils";
 import React from "react";
 import { Tooltip } from "react-tooltip";

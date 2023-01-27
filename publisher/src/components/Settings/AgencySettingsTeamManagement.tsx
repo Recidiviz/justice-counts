@@ -17,7 +17,7 @@
 
 /* eslint-disable camelcase */
 import editIcon from "@justice-counts/common/assets/edit-row-icon.png";
-import { AgencyTeam } from "@justice-counts/common/types";
+import { AgencyRole, AgencyTeam } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -69,7 +69,7 @@ export const AgencySettingsTeamManagement = observer(() => {
         email,
         auth0_user_id: name + email,
         invitation_status: "PENDING",
-        role: "CONTRIBUTOR",
+        role: AgencyRole.CONTRIBUTOR,
       };
       if (team) {
         setTeam([newMember, ...team]);
@@ -85,7 +85,12 @@ export const AgencySettingsTeamManagement = observer(() => {
       setTeam(
         team.map((member) =>
           member.auth0_user_id === id
-            ? { ...member, role: isAdmin ? "CONTRIBUTOR" : "AGENCY_ADMIN" }
+            ? {
+                ...member,
+                role: isAdmin
+                  ? AgencyRole.CONTRIBUTOR
+                  : AgencyRole.AGENCY_ADMIN,
+              }
             : member
         )
       );
