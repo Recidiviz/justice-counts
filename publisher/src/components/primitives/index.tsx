@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { palette } from "@justice-counts/common/components/GlobalStyles";
-import { Permission } from "@justice-counts/common/types";
+import { AgencyRole, Permission } from "@justice-counts/common/types";
 import { rem } from "@justice-counts/common/utils";
 import React from "react";
 import { Tooltip } from "react-tooltip";
@@ -68,21 +68,19 @@ const NameContainer = styled.span`
 
 export const TeamMemberNameWithBadge: React.FC<{
   name: string;
-  permission?: Permission;
+  role?: AgencyRole;
   badgeColor?: string;
   badgeId?: string;
-}> = ({ name, permission, badgeColor, badgeId }) => (
+}> = ({ name, role, badgeColor, badgeId }) => (
   <>
     <TeamMemberNameContainer color={badgeColor}>
       <NameContainer>{name}</NameContainer>
-      {permission === Permission.RECIDIVIZ_ADMIN && (
+      {role === AgencyRole.JUSTICE_COUNTS_ADMIN && (
         <StyledRecidivizAdmin id={badgeId} />
       )}
-      {permission === Permission.AGENCY_ADMIN && (
-        <StyledAgencyAdmin id={badgeId} />
-      )}
+      {role === AgencyRole.AGENCY_ADMIN && <StyledAgencyAdmin id={badgeId} />}
     </TeamMemberNameContainer>
-    {permission === Permission.RECIDIVIZ_ADMIN && (
+    {role === AgencyRole.JUSTICE_COUNTS_ADMIN && (
       <Tooltip
         anchorId={badgeId}
         content="JC Admin"
@@ -92,7 +90,7 @@ export const TeamMemberNameWithBadge: React.FC<{
         style={tooltipStyles}
       />
     )}
-    {permission === Permission.AGENCY_ADMIN && (
+    {role === AgencyRole.AGENCY_ADMIN && (
       <Tooltip
         anchorId={badgeId}
         content="Admin"

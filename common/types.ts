@@ -20,6 +20,12 @@ export enum Permission {
   AGENCY_ADMIN = "agency_admin",
 }
 
+export enum AgencyRole {
+  JUSTICE_COUNTS_ADMIN = "JUSTICE_COUNTS_ADMIN",
+  AGENCY_ADMIN = "AGENCY_ADMIN",
+  CONTRIBUTOR = "CONTRIBUTOR",
+}
+
 export type AgencySystems =
   | "LAW_ENFORCEMENT"
   | "PROSECUTION"
@@ -39,7 +45,7 @@ export type AgencyTeam = {
   name: string;
   email: string;
   invitation_status: "NOT_SENT" | "PENDING" | "ACCEPTED" | "ERRORED";
-  role: "CONTRIBUTOR" | "AGENCY_ADMIN" | "RECIDIVIZ_ADMIN";
+  role: AgencyRole;
 };
 
 export const SupervisionSystems: AgencySystems[] = [
@@ -81,6 +87,11 @@ export type ReportFrequency = "MONTHLY" | "ANNUAL";
 
 export type ReportStatus = "NOT_STARTED" | "DRAFT" | "PUBLISHED";
 
+export interface ReportEditor {
+  name: string;
+  role: AgencyRole;
+}
+
 export interface ReportOverview {
   id: number;
   agency_id: number;
@@ -90,7 +101,7 @@ export interface ReportOverview {
   last_modified_at: string | null;
   // TODO(#14138): Backend should only send timestamps
   last_modified_at_timestamp: number | null;
-  editors: string[];
+  editors: ReportEditor[];
   status: ReportStatus;
 }
 

@@ -231,8 +231,9 @@ const Reports: React.FC = () => {
                       <>
                         {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
                         <TeamMemberNameWithBadge
-                          name={report.editors[0]}
+                          name={report.editors[0].name}
                           badgeId={report.id.toString()}
+                          role={report.editors[0].role}
                         />
                         {report.editors.length > 1 ? (
                           <AndOthersSpan>{`& ${
@@ -245,10 +246,10 @@ const Reports: React.FC = () => {
                         {showAdditionalEditorsTooltip === report.id && (
                           <AdditionalEditorsTooltip>
                             {report.editors.map((editor, idx) => (
-                              <React.Fragment key={editor}>
+                              <React.Fragment key={editor.name}>
                                 {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
                                 <TeamMemberNameWithBadge
-                                  name={editor}
+                                  name={editor.name}
                                   badgeColor={palette.solid.white}
                                 />
                                 {idx < report.editors.length - 1 && (

@@ -295,11 +295,12 @@ const ReportSummaryPanel: React.FC<{
         <EditDetailsContent>
           {editors.length
             ? editors.map((editor, index) => (
-                <React.Fragment key={editor}>
+                <React.Fragment key={editor.name}>
                   {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
                   <TeamMemberNameWithBadge
-                    name={editor}
+                    name={editor.name}
                     badgeId={`${editor}-${index}`}
+                    role={editor.role}
                   />
                   {index < editors.length - 1 && <CommaSpan />}
                 </React.Fragment>
@@ -311,13 +312,13 @@ const ReportSummaryPanel: React.FC<{
         <EditDetailsContent>
           {editors.length === 1 &&
             !lastModifiedAt &&
-            `Created today by ${editors[0]}`}
+            `Created today by ${editors[0].name}`}
 
           {editors.length >= 1 &&
             lastModifiedAt &&
             `Last modified ${printElapsedDaysMonthsYearsSinceDate(
               lastModifiedAt
-            )} by ${editors[editors.length - 1]}`}
+            )} by ${editors[editors.length - 1].name}`}
 
           {!editors.length && ``}
         </EditDetailsContent>
