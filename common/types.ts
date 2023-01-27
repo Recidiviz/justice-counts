@@ -20,7 +20,7 @@ export enum Permission {
   AGENCY_ADMIN = "agency_admin",
 }
 
-export enum AgencyRole {
+export enum AgencyTeamMemberRole {
   JUSTICE_COUNTS_ADMIN = "JUSTICE_COUNTS_ADMIN",
   AGENCY_ADMIN = "AGENCY_ADMIN",
   CONTRIBUTOR = "CONTRIBUTOR",
@@ -45,7 +45,7 @@ export type AgencyTeam = {
   name: string;
   email: string;
   invitation_status: "NOT_SENT" | "PENDING" | "ACCEPTED" | "ERRORED";
-  role: AgencyRole;
+  role: AgencyTeamMemberRole;
 };
 
 export const SupervisionSystems: AgencySystems[] = [
@@ -89,7 +89,7 @@ export type ReportStatus = "NOT_STARTED" | "DRAFT" | "PUBLISHED";
 
 export interface ReportEditor {
   name: string;
-  role: AgencyRole;
+  role: AgencyTeamMemberRole;
 }
 
 export interface ReportOverview {
