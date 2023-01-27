@@ -34,12 +34,17 @@ export type AgencySystems =
   | "PRETRIAL_SUPERVISION"
   | "OTHER_SUPERVISION";
 
+export type AgencyTeamMemberRole =
+  | "CONTRIBUTOR"
+  | "AGENCY_ADMIN"
+  | "RECIDIVIZ_ADMIN";
+
 export type AgencyTeam = {
   auth0_user_id: string;
   name: string;
   email: string;
   invitation_status: "NOT_SENT" | "PENDING" | "ACCEPTED" | "ERRORED";
-  role: "CONTRIBUTOR" | "AGENCY_ADMIN" | "RECIDIVIZ_ADMIN";
+  role: AgencyTeamMemberRole;
 };
 
 export const SupervisionSystems: AgencySystems[] = [
