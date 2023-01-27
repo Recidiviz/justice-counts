@@ -284,20 +284,9 @@ export const Guidance = observer(() => {
                   Fill out report
                 </ActionButton>
               </ActionButtonWrapper>
-              {/* TODO(#268) To be removed entirely from this section - for testing purposes only */}
-              {/* <ActionButton
-                onClick={() => {
-                  if (currentTopicID) {
-                    updateTopicStatus(currentTopicID, true);
-                  }
-                }}
-              >
-                Mock Topic Completion
-              </ActionButton> */}
             </>
           ) : (
             <>
-              {/* TODO(#268) Replace "Mock Topic Completion" buttons and only display ActionButton if there is a buttonDisplayName property while mocking */}
               {buttonDisplayName && (
                 <ActionButton
                   onClick={() => {
