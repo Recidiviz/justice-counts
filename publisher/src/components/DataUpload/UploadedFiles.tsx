@@ -30,15 +30,18 @@ import { removeSnakeCase } from "../../utils";
 import downloadIcon from "../assets/download-icon.png";
 import { Title, TitleWrapper } from "../Forms";
 import { Loader } from "../Loading";
+import { TeamMemberNameWithBadge } from "../primitives";
 import {
   ActionButton,
   ActionsContainer,
+  DateUploaded,
   DownloadIcon,
   ExtendedCell,
   ExtendedLabelCell,
   ExtendedLabelRow,
   ExtendedOpacityGradient,
   ExtendedRow,
+  UploadedContainer,
   UploadedFile,
   UploadedFilesContainer,
   UploadedFilesError,
@@ -79,7 +82,10 @@ export const UploadedFileRow: React.FC<{
 
       if (response instanceof Error) {
         setIsDownloading(false);
-        return showToast("Failed to download. Please try again.", false, "red");
+        return showToast({
+          message: "Failed to download. Please try again.",
+          color: "red",
+        });
       }
 
       const data = await response?.blob();
@@ -142,9 +148,14 @@ export const UploadedFileRow: React.FC<{
 
         {/* Date Uploaded */}
         <ExtendedCell capitalize>
-          <span>
-            {uploadedBy} / {dateUploaded}
-          </span>
+          <UploadedContainer>
+            {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
+            <TeamMemberNameWithBadge
+              name={uploadedBy}
+              badgeId={id?.toString()}
+            />
+            <DateUploaded>{`/ ${dateUploaded}`}</DateUploaded>
+          </UploadedContainer>
         </ExtendedCell>
 
         {/* Date Ingested */}
@@ -252,7 +263,7 @@ export const UploadedFiles: React.FC = observer(() => {
     const response = await reportStore.deleteUploadedSpreadsheet(spreadsheetID);
 
     if (response instanceof Error) {
-      return showToast(response.message, false, "red");
+      return showToast({ message: response.message, color: "red" });
     }
 
     return setUploadedFiles((prev) => {
@@ -269,7 +280,7 @@ export const UploadedFiles: React.FC = observer(() => {
     const response = await reportStore.updateFileStatus(spreadsheetID, status);
 
     if (response instanceof Error) {
-      return showToast(response.message, false, "red");
+      return showToast({ message: response.message, color: "red" });
     }
 
     return fetchListOfUploadedFiles();

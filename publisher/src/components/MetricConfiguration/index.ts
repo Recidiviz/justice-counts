@@ -17,10 +17,11 @@
 
 export * from "./Configuration";
 export * from "./constants";
-export * from "./ContextConfiguration";
+export * from "./DimensionContexts";
 export * from "./MetricBox";
 export * from "./MetricConfiguration";
 export * from "./MetricConfiguration.styles";
+export * from "./MetricContextConfiguration";
 export * from "./MetricDefinitions";
 export * from "./RaceEthnicities.styles";
 export * from "./RaceEthnicitiesForm";

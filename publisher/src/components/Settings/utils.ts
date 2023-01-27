@@ -29,8 +29,9 @@ export const getActiveSystemMetricKey = ({
 export const getSettingsSearchParams = (
   params: URLSearchParams
 ): SettingsSearchParams => {
-  const system = (params.get("system") as AgencySystems) || undefined;
-  const metric = params.get("metric") || undefined;
+  const system =
+    (params.get("system")?.toUpperCase() as AgencySystems) || undefined;
+  const metric = params.get("metric")?.toUpperCase() || undefined;
 
   return { system, metric };
 };
@@ -41,6 +42,3 @@ export const normalizeSystem = (system: string) => {
     .map((systemPart) => systemPart[0] + systemPart.substring(1).toLowerCase())
     .join(" ");
 };
-
-export const removeExcessSpaces = (text: string) =>
-  text.trim().replace(/  +/g, " ");

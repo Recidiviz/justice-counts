@@ -107,11 +107,20 @@ class AgencyStore {
     })) as Response;
 
     if (response.status !== 200) {
-      showToast(`Failed to save.`, true, "red", 4000);
+      showToast({
+        message: `Failed to save.`,
+        color: "red",
+        timeout: 4000,
+      });
       throw new Error("There was an issue updating purpose and functions.");
     }
 
-    showToast(`Settings saved.`, true, "grey", 4000);
+    showToast({
+      message: `Settings saved.`,
+      check: true,
+      color: "blue",
+      timeout: 4000,
+    });
   };
 
   updateAgencySettings = (

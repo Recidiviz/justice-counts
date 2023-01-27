@@ -23,49 +23,7 @@ import {
 
 import checkIconWhite from "../../assets/status-check-white-icon.png";
 
-type ToastColor = "blue" | "red" | "grey";
-
-export const showToast = (
-  message: string,
-  check = false,
-  color: ToastColor = "blue",
-  timeout = 2500,
-  preventOverride = false,
-  positionNextToIcon = true // in the Publisher app, there is an icon with 65px width at the top left corner of the screen
-) => {
-  const animationTransform = [{ maxWidth: "0px" }, { maxWidth: "100%" }];
-  const animationTransformReverse = [
-    { maxWidth: "700px" },
-    { maxWidth: "0px" },
-  ];
-
-  const activeToast = document.querySelector("#toast");
-
-  if (preventOverride && activeToast?.textContent === message) return;
-
-  if (activeToast) {
-    activeToast.animate(animationTransformReverse, {
-      duration: 600,
-      fill: "forwards",
-      easing: "ease",
-    });
-    document.body.removeChild(activeToast);
-  }
-
-  const toastElementWrapper = document.createElement(`div`);
-  const toastElement = document.createElement(`div`);
-  const checkIcon = document.createElement(`img`);
-  toastElement.innerText = message;
-  toastElementWrapper.id = "toast";
-  toastElementWrapper.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: ${positionNextToIcon ? 65 : 0}px;
-      z-index: 100;
-      overflow: hidden;
-    `;
-  toastElementWrapper.appendChild(toastElement);
-
+const getToastStyles = (color?: ToastColor, positionNextToIcon?: boolean) => {
   let toastBackgroundColor = palette.solid.blue;
   switch (color) {
     case "red":
@@ -77,7 +35,15 @@ export const showToast = (
     default:
       break;
   }
-  toastElement.style.cssText = `
+
+  const wrapperStyles = `
+      position: fixed;    
+      top: 0;
+      left: ${positionNextToIcon ? 65 : 0}px;
+      z-index: 100;
+      overflow: hidden;
+    `;
+  const toastStyles = `
       width: auto;
       height: ${HEADER_BAR_HEIGHT - 1}px;
       display: flex;
@@ -88,32 +54,94 @@ export const showToast = (
       border-radius: 2px;
       white-space: nowrap;
     `;
-  checkIcon.src = checkIconWhite;
-  checkIcon.alt = "";
-  checkIcon.style.cssText = `
+  const checkIconStyles = `
       width: 16px;
       height: 16px;
       margin-right: 8px;
       ${typography.sizeCSS.normal}
     `;
 
+  return { wrapperStyles, toastStyles, checkIconStyles };
+};
+const animationTransform = [{ maxWidth: "0px" }, { maxWidth: "100%" }];
+const animationTransformReverse = [{ maxWidth: "700px" }, { maxWidth: "0px" }];
+const getAnimateProps = (isReverse?: boolean): KeyframeAnimationOptions => ({
+  duration: isReverse ? 600 : 800,
+  fill: "forwards",
+  easing: "ease",
+});
+
+type ToastColor = "blue" | "red" | "grey";
+
+type ToastParams = {
+  message: string;
+  check?: boolean;
+  color?: ToastColor;
+  timeout?: number;
+  preventOverride?: boolean;
+  positionNextToIcon?: boolean;
+};
+
+const defaultToastParams: Omit<ToastParams, "message"> = {
+  check: false,
+  color: "blue",
+  timeout: 2500,
+  preventOverride: false,
+  positionNextToIcon: true, // in the Publisher app, there is an icon with 65px width at the top left corner of the screen
+};
+
+export const showToast = (params: ToastParams) => {
+  const toastParams = { ...defaultToastParams, ...params };
+  const {
+    message,
+    check,
+    color,
+    timeout,
+    preventOverride,
+    positionNextToIcon,
+  } = toastParams;
+  const { wrapperStyles, toastStyles, checkIconStyles } = getToastStyles(
+    color,
+    positionNextToIcon
+  );
+
+  const activeToast = document.querySelector("#toast");
+
+  if (preventOverride && activeToast?.textContent === message) return;
+
+  if (activeToast) {
+    activeToast.animate(animationTransformReverse, getAnimateProps(true));
+    document.body.removeChild(activeToast);
+  }
+
+  const toastElementWrapper = document.createElement(`div`);
+  const toastElement = document.createElement(`div`);
+  const checkIcon = document.createElement(`img`);
+
+  toastElementWrapper.id = "toast";
+  toastElementWrapper.style.cssText = wrapperStyles;
+
+  toastElement.style.cssText = toastStyles;
+  toastElement.innerText = message;
+
+  checkIcon.src = checkIconWhite;
+  checkIcon.alt = "";
+  checkIcon.style.cssText = checkIconStyles;
+
+  toastElementWrapper.appendChild(toastElement);
   if (check) toastElement.prepend(checkIcon);
+
   document.body.appendChild(toastElementWrapper);
 
-  toastElementWrapper.animate(animationTransform, {
-    duration: 800,
-    fill: "forwards",
-    easing: "ease",
-  });
+  toastElementWrapper.animate(animationTransform, getAnimateProps());
 
   // a timeout of -1 keeps the toast from timing out
   if (timeout !== -1) {
     setTimeout(() => {
-      toastElementWrapper.animate(animationTransformReverse, {
-        duration: 600,
-        fill: "forwards",
-        easing: "ease",
-      });
+      toastElementWrapper.animate(
+        animationTransformReverse,
+        getAnimateProps(true)
+      );
       Promise.all(
         toastElementWrapper
           .getAnimations({ subtree: true })

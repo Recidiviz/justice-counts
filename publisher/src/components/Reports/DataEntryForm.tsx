@@ -171,7 +171,12 @@ const DataEntryForm: React.FC<{
         ? "PUBLISHED"
         : "DRAFT";
 
-    showToast("Saving...", false, "grey", -1, true);
+    showToast({
+      message: "Saving...",
+      color: "grey",
+      timeout: -1,
+      preventOverride: true,
+    });
     trackAutosaveTriggered(reportID);
     const response = (await reportStore.updateReport(
       reportID,
@@ -180,7 +185,7 @@ const DataEntryForm: React.FC<{
     )) as Response;
 
     if (response.status === 200) {
-      showToast("Saved", false, "grey");
+      showToast({ message: "Saved", color: "grey" });
       if (oldStatus === "NOT_STARTED" && status === "DRAFT") {
         const agencyID = reportStore.reportOverviews[reportID]?.agency_id;
         const agency = userStore.getAgency(agencyID.toString());
@@ -189,17 +194,17 @@ const DataEntryForm: React.FC<{
     } else {
       const body = await response.json();
       if (body.code === "version_conflict") {
-        showToast(
-          "Someone else has edited the report since you last opened it. Please refresh the page to view the latest changes and continue editing.",
-          false,
-          "red",
-          -1
-        );
+        showToast({
+          message:
+            "Someone else has edited the report since you last opened it. Please refresh the page to view the latest changes and continue editing.",
+          color: "red",
+          timeout: -1,
+        });
         runInAction(() => {
           setHasVersionConflict(true);
         });
       } else {
-        showToast("Failed to save", false, "red");
+        showToast({ message: "Failed to save", color: "red" });
       }
       trackAutosaveFailed(reportID);
     }
@@ -374,7 +379,9 @@ const DataEntryForm: React.FC<{
                       {disabledMetricsNames.length > 1 ? "have" : "has"} been
                       disabled. If you believe this is incorrect, go to{" "}
                       <DisabledMetricsInfoLink
-                        onClick={() => navigate("/settings/metric-config")}
+                        onClick={() =>
+                          navigate(`/agency/${agencyId}/settings/metric-config`)
+                        }
                       >
                         Metric Configuration
                       </DisabledMetricsInfoLink>{" "}

@@ -155,7 +155,11 @@ const DashboardView = () => {
       try {
         await agencyDataStore.fetchAgencyData(agencyId);
       } catch (error) {
-        showToast("Error fetching data.", false, "red", 4000);
+        showToast({
+          message: "Error fetching data.",
+          color: "red",
+          timeout: 4000,
+        });
       }
     };
     fetchData();

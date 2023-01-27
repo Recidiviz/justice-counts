@@ -87,12 +87,11 @@ export const MetricConfiguration: React.FC = observer(() => {
       if (!isUrlSystemParamInCurrentAgencySystems) {
         setSettingsSearchParams({ system: currentAgency?.systems[0] });
         setIsLoading(false);
-        showToast(
-          `System "${systemSearchParam}" does not exist in "${currentAgency?.name}" agency.`,
-          false,
-          "red",
-          5000
-        );
+        showToast({
+          message: `System "${systemSearchParam}" does not exist in "${currentAgency?.name}" agency.`,
+          color: "red",
+          timeout: 5000,
+        });
         return;
       }
     }
@@ -106,12 +105,11 @@ export const MetricConfiguration: React.FC = observer(() => {
       if (!isUrlMetricParamInCurrentSystem) {
         setSettingsSearchParams({ system: systemSearchParam });
         setIsLoading(false);
-        showToast(
-          `Metric "${metricSearchParam}" does not exist in "${systemSearchParam}" system.`,
-          false,
-          "red",
-          5000
-        );
+        showToast({
+          message: `Metric "${metricSearchParam}" does not exist in "${systemSearchParam}" system.`,
+          color: "red",
+          timeout: 5000,
+        });
         return;
       }
     }

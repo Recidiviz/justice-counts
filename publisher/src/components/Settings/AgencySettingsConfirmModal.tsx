@@ -15,36 +15,87 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
-
 import {
-  CancelModalButtonsContainer,
-  CancelModalContainer,
-  CancelModalRedButton,
-  CancelModalWrapper,
-  FilledButton,
-} from "./AgencySettings.styles";
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
+import React from "react";
+import { createPortal } from "react-dom";
+import styled from "styled-components/macro";
+
+import { FilledButton, TransparentButton } from "./AgencySettings.styles";
+
+// z-index 102 to be above all content including edit mode modal
+// also portal this modal as well as edit mode to not deal
+// with effect bubbling in case it is child of edit mode modal
+export const ConfirmModalOuterWrapper = styled.div`
+  position: fixed;
+  z-index: 102;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: ${palette.highlight.grey2};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const ConfirmModalInnerWrapper = styled.div`
+  background-color: ${palette.solid.white};
+  width: 582px;
+  padding: 24px;
+  border-radius: 4px;
+`;
+
+export const ConfirmModalContent = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ConfirmModalTitle = styled.div`
+  ${typography.sizeCSS.large};
+  margin-bottom: 8px;
+`;
+
+const ConfirmModalText = styled.div`
+  ${typography.sizeCSS.normal};
+  margin-bottom: 24px;
+`;
+
+export const ConfirmModalButtonsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  gap: 16px;
+`;
 
 type Props = {
-  isModalOpen: boolean;
   closeModal: () => void;
   handleConfirm: () => void;
 };
 
 export const AgencySettingsConfirmModal: React.FC<Props> = ({
-  isModalOpen,
   closeModal,
   handleConfirm,
 }) => {
-  return (
-    <CancelModalWrapper isOpen={isModalOpen}>
-      <CancelModalContainer>
-        Are you sure you would like to cancel your changes?
-        <CancelModalButtonsContainer>
-          <CancelModalRedButton onClick={closeModal}>No</CancelModalRedButton>
-          <FilledButton onClick={handleConfirm}>Yes</FilledButton>
-        </CancelModalButtonsContainer>
-      </CancelModalContainer>
-    </CancelModalWrapper>
+  const Portal = (
+    <ConfirmModalOuterWrapper>
+      <ConfirmModalInnerWrapper>
+        <ConfirmModalContent>
+          <ConfirmModalTitle>Unsaved changes</ConfirmModalTitle>
+          <ConfirmModalText>
+            You have unsaved changes, would like to leave anyway?
+          </ConfirmModalText>
+          <ConfirmModalButtonsContainer>
+            <TransparentButton onClick={closeModal}>Cancel</TransparentButton>
+            <FilledButton onClick={handleConfirm}>Okay</FilledButton>
+          </ConfirmModalButtonsContainer>
+        </ConfirmModalContent>
+      </ConfirmModalInnerWrapper>
+    </ConfirmModalOuterWrapper>
   );
+
+  return createPortal(Portal, document.body);
 };

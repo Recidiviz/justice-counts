@@ -75,7 +75,7 @@ export const MetricsView: React.FC = observer(() => {
 
     const currentAgency = userStore.getAgency(agencyId);
     const defaultSystemSearchParam = Object.keys(result)[0]
-      .toUpperCase()
+      .toLowerCase()
       .replace(" ", "_") as AgencySystems;
     const defaultMetricSearchParam = Object.values(result)[0][0].key;
 
@@ -94,12 +94,11 @@ export const MetricsView: React.FC = observer(() => {
           metric: defaultMetricSearchParam,
         });
         setIsLoading(false);
-        showToast(
-          `System "${systemSearchParam}" does not exist in "${currentAgency?.name}" agency.`,
-          false,
-          "red",
-          5000
-        );
+        showToast({
+          message: `System "${systemSearchParam}" does not exist in "${currentAgency?.name}" agency.`,
+          color: "red",
+          timeout: 5000,
+        });
         return;
       }
     }
@@ -114,12 +113,11 @@ export const MetricsView: React.FC = observer(() => {
           metric: defaultMetricSearchParam,
         });
         setIsLoading(false);
-        showToast(
-          `Metric "${metricSearchParam}" does not exist in "${systemSearchParam}" system.`,
-          false,
-          "red",
-          5000
-        );
+        showToast({
+          message: `Metric "${metricSearchParam}" does not exist in "${systemSearchParam}" system.`,
+          color: "red",
+          timeout: 5000,
+        });
         return;
       }
     }

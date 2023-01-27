@@ -15,6 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  MetricConfigurationSettingsOptions,
+  metricConfigurationSettingsOptions,
+} from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -34,8 +38,7 @@ import {
   DefinitionSelection,
   DefinitionsSubTitle,
   DefinitionsTitle,
-  MetricConfigurationSettingsOptions,
-  metricConfigurationSettingsOptions,
+  DimensionContexts,
   MetricSettings,
   RevertToDefaultButton,
 } from ".";
@@ -53,8 +56,10 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
     const {
       metrics,
       metricDefinitionSettings,
+      contexts,
       dimensions,
       dimensionDefinitionSettings,
+      dimensionContexts,
       updateMetricDefinitionSetting,
       updateDimensionDefinitionSetting,
       saveMetricSettings,
@@ -92,6 +97,31 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
     const activeSettingsKeys = isMetricDefinitionSettings
       ? metricDefinitionSettingsKeys
       : dimensionDefinitionSettingsKeys;
+
+    const hasActiveDisaggregationAndDimensionKey =
+      activeDisaggregationKey && activeDimensionKey;
+
+    const dimensionContextsMap =
+      hasActiveDisaggregationAndDimensionKey &&
+      dimensionContexts[systemMetricKey]?.[activeDisaggregationKey]?.[
+        activeDimensionKey
+      ];
+
+    const hasMinOneDimensionContext =
+      dimensionContextsMap && Object.values(dimensionContextsMap).length > 0;
+
+    const hasMinOneMetricLevelContext =
+      !activeDimensionKey &&
+      contexts[systemMetricKey] &&
+      Object.values(contexts[systemMetricKey]).length > 0;
+
+    const noSettingsAvailable =
+      !activeSettingsKeys ||
+      Boolean(
+        !activeSettingsKeys?.length &&
+          activeDimensionKey &&
+          !dimensionContextsMap
+      );
 
     const [showDefaultSettings, setShowDefaultSettings] = useState(false);
 
@@ -157,6 +187,38 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
             },
           ],
         };
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        saveMetricSettings(updatedSetting, agencyId!);
+      }
+    };
+
+    const handleUpdateMetricDefinitionSetting = (
+      settingKey: string,
+      settingValue: MetricConfigurationSettingsOptions
+    ) => {
+      if (systemSearchParam && metricSearchParam) {
+        if (isMetricDefinitionSettings) {
+          const updatedSetting = updateMetricDefinitionSetting(
+            systemSearchParam,
+            metricSearchParam,
+            settingKey,
+            settingValue
+          );
+          return saveMetricSettings(
+            updatedSetting,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            agencyId!
+          );
+        }
+
+        const updatedSetting = updateDimensionDefinitionSetting(
+          systemSearchParam,
+          metricSearchParam,
+          activeDisaggregationKey as string,
+          activeDimensionKey,
+          settingKey,
+          settingValue
+        );
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         saveMetricSettings(updatedSetting, agencyId!);
       }
@@ -228,36 +290,12 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
                                   : currentSetting.included === option
                               }
                               showDefault={showDefaultSettings}
-                              onClick={() => {
-                                if (systemSearchParam && metricSearchParam) {
-                                  if (isMetricDefinitionSettings) {
-                                    const updatedSetting =
-                                      updateMetricDefinitionSetting(
-                                        systemSearchParam,
-                                        metricSearchParam,
-                                        settingKey,
-                                        option
-                                      );
-                                    return saveMetricSettings(
-                                      updatedSetting,
-                                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                      agencyId!
-                                    );
-                                  }
-
-                                  const updatedSetting =
-                                    updateDimensionDefinitionSetting(
-                                      systemSearchParam,
-                                      metricSearchParam,
-                                      activeDisaggregationKey as string,
-                                      activeDimensionKey,
-                                      settingKey,
-                                      option
-                                    );
-                                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                                  saveMetricSettings(updatedSetting, agencyId!);
-                                }
-                              }}
+                              onClick={() =>
+                                handleUpdateMetricDefinitionSetting(
+                                  settingKey,
+                                  option
+                                )
+                              }
                             >
                               {option}
                             </DefinitionMiniButton>
@@ -272,10 +310,22 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
           )}
 
           {/* Display when user is viewing a dimension & there are no settings available */}
-          {!activeSettingsKeys?.length && activeDimensionKey && (
-            <DefinitionsSubTitle>
-              Technical Definitions are not available for this metric yet.
-            </DefinitionsSubTitle>
+          {noSettingsAvailable &&
+            !hasMinOneDimensionContext &&
+            !hasMinOneMetricLevelContext && (
+              <DefinitionsSubTitle>
+                Technical Definitions are not available for this{" "}
+                {activeDimensionKey ? "breakdown." : "metric yet."}
+              </DefinitionsSubTitle>
+            )}
+
+          {/* Display when dimension has additional contexts */}
+          {dimensionContextsMap && (
+            <DimensionContexts
+              dimensionContextsMap={dimensionContextsMap}
+              activeDisaggregationKey={activeDisaggregationKey}
+              activeDimensionKey={activeDimensionKey}
+            />
           )}
         </DefinitionsDisplay>
 

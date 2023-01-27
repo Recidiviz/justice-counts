@@ -28,13 +28,13 @@ import styled from "styled-components/macro";
 
 import { useStore } from "../../stores";
 import {
-  printCommaSeparatedList,
   printDateRangeFromMonthYear,
   printElapsedDaysMonthsYearsSinceDate,
 } from "../../utils";
 import errorIcon from "../assets/status-error-icon.png";
 import { MetricsSectionTitle, Title } from "../Forms";
 import { REPORT_CAPITALIZED } from "../Global/constants";
+import { TeamMemberNameWithBadge } from "../primitives";
 import { SubMenuListItem } from "../Settings";
 import HelperText from "./HelperText";
 import { useCheckMetricForErrors } from "./hooks";
@@ -167,6 +167,8 @@ export const EditDetailsTitle = styled.div`
 `;
 
 export const EditDetailsContent = styled.div`
+  display: flex;
+  flex-wrap: wrap;
   ${typography.sizeCSS.normal}
   color: ${palette.highlight.grey9};
   margin-bottom: 18px;
@@ -190,6 +192,13 @@ const PublishContainer = styled.div`
   @media only screen and (max-height: ${BREAKPOINT_HEIGHT}px) {
     border: none;
   }
+`;
+
+const CommaSpan = styled.span`
+  &::after {
+    content: ",";
+  }
+  margin-right: 4px;
 `;
 
 const ReportStatusIconComponent: React.FC<{
@@ -285,7 +294,16 @@ const ReportSummaryPanel: React.FC<{
         <EditDetailsTitle>Editors</EditDetailsTitle>
         <EditDetailsContent>
           {editors.length
-            ? printCommaSeparatedList(editors)
+            ? editors.map((editor, index) => (
+                <React.Fragment key={editor}>
+                  {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
+                  <TeamMemberNameWithBadge
+                    name={editor}
+                    badgeId={`${editor}-${index}`}
+                  />
+                  {index < editors.length - 1 && <CommaSpan />}
+                </React.Fragment>
+              ))
             : userStore.nameOrEmail}
         </EditDetailsContent>
 

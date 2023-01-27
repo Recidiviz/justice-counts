@@ -20,6 +20,7 @@ import {
   Badge,
   BadgeColorMapping,
 } from "@justice-counts/common/components/Badge";
+import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { ReportOverview } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useState } from "react";
@@ -32,9 +33,12 @@ import {
 } from "../components/Global/constants";
 import { Loading } from "../components/Loading";
 import { Onboarding } from "../components/Onboarding";
+import { TeamMemberNameWithBadge } from "../components/primitives";
 import {
   AdditionalEditorsTooltip,
+  AndOthersSpan,
   Cell,
+  CommaSpan,
   EmptySelectionCircle,
   LabelCell,
   LabelRow,
@@ -56,7 +60,6 @@ import {
 import { useStore } from "../stores";
 import {
   normalizeString,
-  printCommaSeparatedList,
   printElapsedDaysMonthsYearsSinceDate,
   printReportFrequency,
   printReportTitle,
@@ -226,16 +229,33 @@ const Reports: React.FC = () => {
                       "-"
                     ) : (
                       <>
-                        <span>{report.editors[0]}</span>
-                        {report.editors.length > 1
-                          ? `& ${report.editors.length - 1} other${
-                              report.editors.length > 2 ? "s" : ""
-                            }`
-                          : ``}
+                        {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
+                        <TeamMemberNameWithBadge
+                          name={report.editors[0]}
+                          badgeId={report.id.toString()}
+                        />
+                        {report.editors.length > 1 ? (
+                          <AndOthersSpan>{`& ${
+                            report.editors.length - 1
+                          } other${
+                            report.editors.length > 2 ? "s" : ""
+                          }`}</AndOthersSpan>
+                        ) : null}
 
                         {showAdditionalEditorsTooltip === report.id && (
                           <AdditionalEditorsTooltip>
-                            {printCommaSeparatedList(report.editors)}
+                            {report.editors.map((editor, idx) => (
+                              <React.Fragment key={editor}>
+                                {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
+                                <TeamMemberNameWithBadge
+                                  name={editor}
+                                  badgeColor={palette.solid.white}
+                                />
+                                {idx < report.editors.length - 1 && (
+                                  <CommaSpan />
+                                )}
+                              </React.Fragment>
+                            ))}
                           </AdditionalEditorsTooltip>
                         )}
                       </>
@@ -292,14 +312,16 @@ const Reports: React.FC = () => {
 
           <TabbedActionsWrapper>
             {/* Admin Only: Manage Reports */}
-            {userStore.isRecidivizAdmin && (
+            {(userStore.isRecidivizAdmin || userStore.isAgencyAdmin) && (
               <>
                 <ReportActions>
                   {!selectionMode && (
                     <>
-                      <ReportActionsItem onClick={enterSelectionMode}>
-                        Select <ReportActionsSelectIcon />
-                      </ReportActionsItem>
+                      {userStore.isRecidivizAdmin && (
+                        <ReportActionsItem onClick={enterSelectionMode}>
+                          Select <ReportActionsSelectIcon />
+                        </ReportActionsItem>
+                      )}
                       <ReportActionsItem onClick={() => navigate("create")}>
                         New <ReportActionsNewIcon />
                       </ReportActionsItem>

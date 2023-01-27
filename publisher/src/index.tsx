@@ -15,6 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import "react-tooltip/dist/react-tooltip.css";
+
 import { GlobalStyle } from "@justice-counts/common/components/GlobalStyles";
 import React from "react";
 import { createRoot } from "react-dom/client";

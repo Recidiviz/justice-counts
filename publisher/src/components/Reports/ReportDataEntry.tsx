@@ -59,28 +59,26 @@ const ReportDataEntry = () => {
         "DRAFT"
       )) as Response;
       if (response.status === 200) {
-        showToast(
-          `The ${printReportTitle(
+        showToast({
+          message: `The ${printReportTitle(
             reportStore.reportOverviews[reportID].month,
             reportStore.reportOverviews[reportID].year,
             reportStore.reportOverviews[reportID].frequency
           )} ${REPORT_LOWERCASE} has been unpublished and editing is enabled.`,
-          true,
-          undefined,
-          4000
-        );
+          check: true,
+          timeout: 4000,
+        });
         const agencyID = reportStore.reportOverviews[reportID]?.agency_id;
         const agency = userStore.userAgenciesById[agencyID];
         trackReportUnpublished(reportID, agency);
       } else {
-        showToast(
-          `Something went wrong unpublishing the ${printReportTitle(
+        showToast({
+          message: `Something went wrong unpublishing the ${printReportTitle(
             reportStore.reportOverviews[reportID].month,
             reportStore.reportOverviews[reportID].year,
             reportStore.reportOverviews[reportID].frequency
           )} ${REPORT_LOWERCASE}!`,
-          false
-        );
+        });
       }
     }
   };

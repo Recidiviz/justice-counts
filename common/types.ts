@@ -38,6 +38,8 @@ export type AgencyTeam = {
   auth0_user_id: string;
   name: string;
   email: string;
+  invitation_status: "NOT_SENT" | "PENDING" | "ACCEPTED" | "ERRORED";
+  role: "CONTRIBUTOR" | "AGENCY_ADMIN" | "RECIDIVIZ_ADMIN";
 };
 
 export const SupervisionSystems: AgencySystems[] = [
@@ -115,7 +117,10 @@ export type MetricDisaggregationDimensionsWithErrors =
     error?: string;
   };
 
-export type MetricConfigurationSettingsOptions = "Yes" | "No" | "N/A";
+export const metricConfigurationSettingsOptions = ["No", "Yes"] as const;
+
+export type MetricConfigurationSettingsOptions =
+  typeof metricConfigurationSettingsOptions[number];
 
 export type MetricConfigurationSettings = {
   key: string;
@@ -175,11 +180,18 @@ export interface MetricDisaggregations {
   should_sum_to_total: boolean;
 }
 
+export type MetricDimensionContext = {
+  key?: string;
+  value?: string;
+  label?: string;
+};
+
 export interface MetricDisaggregationDimensions {
   key: string;
   label: string;
   value: string | number | boolean | null | undefined;
   reporting_note: string;
+  contexts?: MetricDimensionContext[];
   enabled?: boolean;
   settings?: MetricConfigurationSettings[];
   display_name?: string;

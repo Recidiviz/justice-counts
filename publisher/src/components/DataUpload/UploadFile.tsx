@@ -58,12 +58,11 @@ export const UploadFile: React.FC<UploadFileProps> = ({
 
     if (!files) return;
     if (!acceptableFileTypes.includes(files[0].type)) {
-      return showToast(
-        "Invalid file type. Please only upload Excel files.",
-        false,
-        "red",
-        3000
-      );
+      return showToast({
+        message: "Invalid file type. Please only upload Excel files.",
+        color: "red",
+        timeout: 3000,
+      });
     }
 
     setIsLoading(true);
