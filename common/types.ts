@@ -42,8 +42,9 @@ export type AgencyTeam = {
   role: "CONTRIBUTOR" | "AGENCY_ADMIN" | "RECIDIVIZ_ADMIN";
 };
 
-export const SupervisionSystems: AgencySystems[] = [
-  "SUPERVISION",
+export const SupervisionSystem: AgencySystems = "SUPERVISION";
+
+export const SupervisionSubsystems: AgencySystems[] = [
   "PAROLE",
   "PROBATION",
   "POST_RELEASE",

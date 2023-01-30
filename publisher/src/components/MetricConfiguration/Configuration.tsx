@@ -16,8 +16,10 @@
 // =============================================================================
 
 import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
-import { showToast } from "@justice-counts/common/components/Toast";
-import { SupervisionSystems } from "@justice-counts/common/types";
+import {
+  SupervisionSubsystems,
+  SupervisionSystem,
+} from "@justice-counts/common/types";
 import { printCommaSeparatedList } from "@justice-counts/common/utils";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
@@ -48,7 +50,6 @@ import {
   DropdownButton,
   Header,
   MetricConfigurationContainer,
-  MetricDisaggregations,
   MetricOnOffWrapper,
   PromptWrapper,
   RACE_ETHNICITY_DISAGGREGATION_KEY,
@@ -56,6 +57,7 @@ import {
   RadioButtonGroupWrapper,
   ReportFrequencyUpdate,
   Subheader,
+  TogglableSection,
 } from ".";
 
 type MetricConfigurationProps = {
@@ -67,7 +69,7 @@ type MetricConfigurationProps = {
   setActiveDisaggregationKey: React.Dispatch<
     React.SetStateAction<string | undefined>
   >;
-  supervisionSubsystems?: string[];
+  enabledSupervisionSubsystems?: string[];
 };
 
 export const Configuration: React.FC<MetricConfigurationProps> = observer(
@@ -76,7 +78,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     setActiveDimensionKey,
     activeDisaggregationKey,
     setActiveDisaggregationKey,
-    supervisionSubsystems,
+    enabledSupervisionSubsystems,
   }): JSX.Element => {
     const { agencyId } = useParams();
     const [settingsSearchParams] = useSettingsSearchParams();
@@ -92,6 +94,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       updateMetricReportFrequency,
       updateDisaggregatedBySupervisionSubsystems,
       saveMetricSettings,
+      initializeMetricConfigStoreValues,
     } = metricConfigStore;
 
     const { system: systemSearchParam, metric: metricSearchParam } =
@@ -121,7 +124,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       startingMonth !== null && startingMonth !== 1 && startingMonth !== 7;
 
     const capitalizedSupervisionSubsystems =
-      supervisionSubsystems?.map((system) => {
+      enabledSupervisionSubsystems?.map((system) => {
         const systemName = removeSnakeCase(system).split(" ");
 
         /** For capitalizing multi-word system names (e.g OTHER SUPERVISION) */
@@ -144,34 +147,23 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       [systemMetricKey]
     );
 
-    const handleSupervisionDisaggregationSelection = (status: boolean) => {
+    const handleSupervisionDisaggregationSelection = async (
+      status: boolean
+    ) => {
       if (systemSearchParam && metricSearchParam) {
         const updatedSetting = updateDisaggregatedBySupervisionSubsystems(
           systemSearchParam,
           metricSearchParam,
           status
         );
-        const toastMessage = status
-          ? `${removeSnakeCase(
-              metricSearchParam
-            )} is being moved to the ${printCommaSeparatedList(
-              capitalizedSupervisionSubsystems
-            )} systems. Redirecting to the Metric Configuration home page.`
-          : `${removeSnakeCase(
-              metricSearchParam
-            )} is being moved to the Supervision system. Redirecting to the Metric Configuration home page.`;
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        saveMetricSettings(updatedSetting, agencyId!);
+        await saveMetricSettings(updatedSetting, agencyId!);
 
-        setTimeout(
-          () => showToast({ message: toastMessage, timeout: 5000 }),
-          1000
-        );
-        setTimeout(() => {
-          navigate("../metric-config");
-          window.location.reload();
-        }, 5000);
+        // After saving disaggregation selection, re-fetch metric settings
+        // because changing this setting causes other supervision combined / disaggregegated metrics to update
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        initializeMetricConfigStoreValues(agencyId!);
       }
     };
 
@@ -239,177 +231,191 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       <MetricConfigurationContainer>
         {/* Metric (Enable/Disable) & Frequency */}
         <MetricOnOffWrapper>
-          <Header>
-            Are you currently able to {REPORT_VERB_LOWERCASE} any part of this
-            metric? If so, at what frequency?
-          </Header>
+          <TogglableSection
+            enabled={
+              !(
+                (disaggregatedBySupervisionSubsystems === true &&
+                  systemSearchParam === SupervisionSystem) ||
+                (disaggregatedBySupervisionSubsystems === false &&
+                  systemSearchParam &&
+                  SupervisionSubsystems.includes(systemSearchParam))
+              )
+            }
+          >
+            <Header>
+              Are you currently able to {REPORT_VERB_LOWERCASE} any part of this
+              metric? If so, at what frequency?
+            </Header>
 
-          <RadioButtonGroupWrapper>
-            <BinaryRadioButton
-              type="radio"
-              id="metric-config-not-available"
-              name="metric-config"
-              label="Not Available"
-              value="Not Available"
-              checked={!metricEnabled}
-              onChange={() => handleUpdateMetricEnabledStatus(false)}
-            />
-            <BinaryRadioButton
-              type="radio"
-              id="metric-config-monthly"
-              name="metric-config"
-              label="Monthly"
-              value="Monthly"
-              checked={metricEnabled && customOrDefaultFrequency === "MONTHLY"}
-              onChange={() =>
-                handleUpdateMetricReportFrequency({
-                  customFrequency: "MONTHLY",
-                  startingMonth: null,
-                })
-              }
-            />
-            <BinaryRadioButton
-              type="radio"
-              id="metric-config-annual"
-              name="metric-config"
-              label="Annually"
-              value="Annual"
-              checked={metricEnabled && customOrDefaultFrequency === "ANNUAL"}
-              onChange={() =>
-                handleUpdateMetricReportFrequency({
-                  customFrequency: "ANNUAL",
-                  startingMonth: 1,
-                })
-              }
-            />
-          </RadioButtonGroupWrapper>
+            <RadioButtonGroupWrapper>
+              <BinaryRadioButton
+                type="radio"
+                id="metric-config-not-available"
+                name="metric-config"
+                label="Not Available"
+                value="Not Available"
+                checked={!metricEnabled}
+                onChange={() => handleUpdateMetricEnabledStatus(false)}
+              />
+              <BinaryRadioButton
+                type="radio"
+                id="metric-config-monthly"
+                name="metric-config"
+                label="Monthly"
+                value="Monthly"
+                checked={
+                  metricEnabled && customOrDefaultFrequency === "MONTHLY"
+                }
+                onChange={() =>
+                  handleUpdateMetricReportFrequency({
+                    customFrequency: "MONTHLY",
+                    startingMonth: null,
+                  })
+                }
+              />
+              <BinaryRadioButton
+                type="radio"
+                id="metric-config-annual"
+                name="metric-config"
+                label="Annually"
+                value="Annual"
+                checked={metricEnabled && customOrDefaultFrequency === "ANNUAL"}
+                onChange={() =>
+                  handleUpdateMetricReportFrequency({
+                    customFrequency: "ANNUAL",
+                    startingMonth: 1,
+                  })
+                }
+              />
+            </RadioButtonGroupWrapper>
 
-          {/** Select Starting Month */}
-          {metricEnabled && customOrDefaultFrequency === "ANNUAL" && (
-            <>
-              <Header>What is the starting month for this metric?</Header>
-              <RadioButtonGroupWrapper>
-                <BinaryRadioButton
-                  type="radio"
-                  id="metric-config-calendar-year"
-                  name="metric-config-frequency"
-                  label="Calendar Year (Jan)"
-                  value="Calendar Year (Jan)"
-                  checked={metricEnabled && startingMonth === 1}
-                  onChange={() =>
-                    handleUpdateMetricReportFrequency({
-                      customFrequency: "ANNUAL",
-                      startingMonth: 1,
-                    })
-                  }
-                />
-                <BinaryRadioButton
-                  type="radio"
-                  id="metric-config-fiscal-year"
-                  name="metric-config-frequency"
-                  label="Fiscal Year (Jul)"
-                  value="Fiscal Year (Jul)"
-                  checked={metricEnabled && startingMonth === 7}
-                  onChange={() =>
-                    handleUpdateMetricReportFrequency({
-                      customFrequency: "ANNUAL",
-                      startingMonth: 7,
-                    })
-                  }
-                />
-                <Dropdown>
-                  <DropdownButton
-                    kind="borderless"
-                    checked={startingMonthNotJanuaryJuly}
-                  >
-                    {startingMonthNotJanuaryJuly ? (
-                      <CalendarIconLight />
-                    ) : (
-                      <CalendarIconDark />
-                    )}
-                    {(startingMonthNotJanuaryJuly &&
-                      startingMonth &&
-                      monthsByName[startingMonth - 1]) ||
-                      `Other...`}
-                  </DropdownButton>
-                  <ExtendedDropdownMenu alignment="right">
-                    {monthsByName
-                      .filter((month) => !["January", "July"].includes(month))
-                      .map((month) => {
-                        const monthNumber = monthsByName.indexOf(month) + 1;
-                        return (
-                          <ExtendedDropdownMenuItem
-                            key={month}
-                            onClick={() =>
-                              handleUpdateMetricReportFrequency({
-                                customFrequency: "ANNUAL",
-                                startingMonth: monthNumber,
-                              })
-                            }
-                            highlight={monthNumber === startingMonth}
-                          >
-                            {month}
-                          </ExtendedDropdownMenuItem>
-                        );
-                      })}
-                  </ExtendedDropdownMenu>
-                </Dropdown>
-              </RadioButtonGroupWrapper>
-            </>
-          )}
+            {/** Select Starting Month */}
+            {metricEnabled && customOrDefaultFrequency === "ANNUAL" && (
+              <>
+                <Header>What is the starting month for this metric?</Header>
+                <RadioButtonGroupWrapper>
+                  <BinaryRadioButton
+                    type="radio"
+                    id="metric-config-calendar-year"
+                    name="metric-config-frequency"
+                    label="Calendar Year (Jan)"
+                    value="Calendar Year (Jan)"
+                    checked={metricEnabled && startingMonth === 1}
+                    onChange={() =>
+                      handleUpdateMetricReportFrequency({
+                        customFrequency: "ANNUAL",
+                        startingMonth: 1,
+                      })
+                    }
+                  />
+                  <BinaryRadioButton
+                    type="radio"
+                    id="metric-config-fiscal-year"
+                    name="metric-config-frequency"
+                    label="Fiscal Year (Jul)"
+                    value="Fiscal Year (Jul)"
+                    checked={metricEnabled && startingMonth === 7}
+                    onChange={() =>
+                      handleUpdateMetricReportFrequency({
+                        customFrequency: "ANNUAL",
+                        startingMonth: 7,
+                      })
+                    }
+                  />
+                  <Dropdown>
+                    <DropdownButton
+                      kind="borderless"
+                      checked={startingMonthNotJanuaryJuly}
+                    >
+                      {startingMonthNotJanuaryJuly ? (
+                        <CalendarIconLight />
+                      ) : (
+                        <CalendarIconDark />
+                      )}
+                      {(startingMonthNotJanuaryJuly &&
+                        startingMonth &&
+                        monthsByName[startingMonth - 1]) ||
+                        `Other...`}
+                    </DropdownButton>
+                    <ExtendedDropdownMenu alignment="right">
+                      {monthsByName
+                        .filter((month) => !["January", "July"].includes(month))
+                        .map((month) => {
+                          const monthNumber = monthsByName.indexOf(month) + 1;
+                          return (
+                            <ExtendedDropdownMenuItem
+                              key={month}
+                              onClick={() =>
+                                handleUpdateMetricReportFrequency({
+                                  customFrequency: "ANNUAL",
+                                  startingMonth: monthNumber,
+                                })
+                              }
+                              highlight={monthNumber === startingMonth}
+                            >
+                              {month}
+                            </ExtendedDropdownMenuItem>
+                          );
+                        })}
+                    </ExtendedDropdownMenu>
+                  </Dropdown>
+                </RadioButtonGroupWrapper>
+              </>
+            )}
+          </TogglableSection>
 
           {/* Supervision Subsystem Disaggregation Selection (Supervision Systems ONLY) */}
-          {systemSearchParam && SupervisionSystems.includes(systemSearchParam) && (
-            <PromptWrapper>
-              <Header>
-                For which supervision populations can you report this metric?
-              </Header>
-              <Subheader>
-                <p>
-                  Disaggregations include the populations you selected in{" "}
-                  <BlueLinkSpan onClick={() => navigate("../agency-settings")}>
-                    Agency Settings
-                  </BlueLinkSpan>{" "}
-                  ({printCommaSeparatedList(capitalizedSupervisionSubsystems)}
-                  ).
-                </p>
-                <p>
-                  NOTE: Changing this option will refresh the page to reflect
-                  the changes.
-                </p>
-              </Subheader>
+          {systemSearchParam &&
+            (systemSearchParam === SupervisionSystem ||
+              SupervisionSubsystems.includes(systemSearchParam)) && (
+              <PromptWrapper>
+                <Header>
+                  For which supervision populations can you report this metric?
+                </Header>
+                <Subheader>
+                  <p>
+                    Disaggregations include the populations you selected in{" "}
+                    <BlueLinkSpan
+                      onClick={() => navigate("../agency-settings")}
+                    >
+                      Agency Settings
+                    </BlueLinkSpan>{" "}
+                    ({printCommaSeparatedList(capitalizedSupervisionSubsystems)}
+                    ).
+                  </p>
+                </Subheader>
 
-              <RadioButtonGroupWrapper>
-                <BinaryRadioButton
-                  type="radio"
-                  id="supervision-subsystem-combined"
-                  name="supervision-subsystem"
-                  label="All Populations / Combined"
-                  value="All Populations / Combined"
-                  onChange={() =>
-                    handleSupervisionDisaggregationSelection(false)
-                  }
-                  defaultChecked={!disaggregatedBySupervisionSubsystems}
-                />
-                <BinaryRadioButton
-                  type="radio"
-                  id="supervision-subsystem-disaggregated"
-                  name="supervision-subsystem"
-                  label="Disaggregated"
-                  value="Disaggregated"
-                  onChange={() =>
-                    handleSupervisionDisaggregationSelection(true)
-                  }
-                  defaultChecked={disaggregatedBySupervisionSubsystems}
-                />
-              </RadioButtonGroupWrapper>
-            </PromptWrapper>
-          )}
+                <RadioButtonGroupWrapper>
+                  <BinaryRadioButton
+                    type="radio"
+                    id="supervision-subsystem-combined"
+                    name="supervision-subsystem"
+                    label="All Populations / Combined"
+                    value="All Populations / Combined"
+                    onChange={() =>
+                      handleSupervisionDisaggregationSelection(false)
+                    }
+                    defaultChecked={!disaggregatedBySupervisionSubsystems}
+                  />
+                  <BinaryRadioButton
+                    type="radio"
+                    id="supervision-subsystem-disaggregated"
+                    name="supervision-subsystem"
+                    label="Disaggregated"
+                    value="Disaggregated"
+                    onChange={() =>
+                      handleSupervisionDisaggregationSelection(true)
+                    }
+                    defaultChecked={disaggregatedBySupervisionSubsystems}
+                  />
+                </RadioButtonGroupWrapper>
+              </PromptWrapper>
+            )}
         </MetricOnOffWrapper>
 
         {/* Breakdowns */}
         {activeDisaggregationKey && activeDisaggregationKeys?.length > 0 && (
-          <MetricDisaggregations enabled={metricEnabled}>
+          <TogglableSection enabled={metricEnabled}>
             <BreakdownHeader>Breakdowns</BreakdownHeader>
             <Subheader>
               Mark (using the checkmark) each of the breakdowns below that your
@@ -542,7 +548,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                 })
               )}
             </Disaggregation>
-          </MetricDisaggregations>
+          </TogglableSection>
         )}
       </MetricConfigurationContainer>
     );
