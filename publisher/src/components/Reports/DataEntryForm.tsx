@@ -266,7 +266,10 @@ const DataEntryForm: React.FC<{
           </Button>
           <Button
             type="border"
-            onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
+            onClick={() => {
+              saveUpdatedMetrics();
+              navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`);
+            }}
           >
             Save as Draft
           </Button>
