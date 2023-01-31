@@ -206,9 +206,10 @@ const OnboardingModal = styled.div<{
     ${({ position }) => {
       if (position === "reportsummary") {
         return `
-          top: ${HEADER_BAR_HEIGHT}px;
-          right: 10px;
-          left: unset;
+          top: unset;
+          left: calc(100% - 532px - 24px);
+          bottom: 24px;
+          right: 24px;
         `;
       }
     }}
@@ -446,10 +447,10 @@ const OnboardingSessionView = ({
       html: (
         <>
           <p>
-            You can view and edit your agency’s Justice Counts metrics in the{" "}
-            <strong>Settings</strong> page, accessible from the menu bar at the
-            top of the screen. You can also change your display name and email
-            from this page.
+            You can view and edit the Justice Counts metrics your agency is able
+            to record in the <strong>Settings</strong> page, accessible from the
+            menu bar at the top of the screen. You can also change your display
+            name and email from this page.
           </p>
         </>
       ),
