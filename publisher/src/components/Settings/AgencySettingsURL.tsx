@@ -43,28 +43,37 @@ export const AgencySettingsUrl: React.FC<{
   const { isSettingInEditMode, openSetting, removeEditMode, allowEdit } =
     settingProps;
 
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const { agencyStore } = useStore();
-  const { settings, updateAgencySettings, saveAgencySettings } = agencyStore;
+  const { currentAgencySettings, updateAgencySettings, saveAgencySettings } =
+    agencyStore;
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [urlText, setUrlText] = useState(settings.HOMEPAGE_URL);
+  const [urlText, setUrlText] = useState("");
   const textAreaRef = useRef<HTMLInputElement | null>(null);
 
+  const homepageUrlSetting =
+    currentAgencySettings?.find(
+      (setting) => setting.setting_type === "HOMEPAGE_URL"
+    )?.value || "";
+
   const handleSaveClick = () => {
-    const updatedSettings = updateAgencySettings("HOMEPAGE_URL", urlText);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    saveAgencySettings(updatedSettings, agencyId!);
+    const updatedSettings = updateAgencySettings(
+      "HOMEPAGE_URL",
+      urlText,
+      parseInt(agencyId)
+    );
+    saveAgencySettings(updatedSettings, agencyId);
     removeEditMode();
   };
   const handleCancelClick = () => {
-    if (settings.HOMEPAGE_URL === urlText) {
+    if (homepageUrlSetting === urlText) {
       removeEditMode();
     } else {
       setIsConfirmModalOpen(true);
     }
   };
   const handleModalConfirm = () => {
-    setUrlText(settings.HOMEPAGE_URL);
+    setUrlText(homepageUrlSetting || "");
     setIsConfirmModalOpen(false);
     removeEditMode();
   };
@@ -118,12 +127,16 @@ export const AgencySettingsUrl: React.FC<{
       <AgencySettingsBlock id="homepage_url">
         <AgencySettingsBlockTitle>Agency Homepage URL</AgencySettingsBlockTitle>
         <AgencyInfoBlockDescription>
-          {settings.HOMEPAGE_URL ? (
+          {homepageUrlSetting ? (
             <AgencyInfoLink
-              href={formatExternalLink(settings.HOMEPAGE_URL)}
+              href={formatExternalLink(homepageUrlSetting)}
               target="_blank"
             >
-              {settings.HOMEPAGE_URL}
+              {
+                currentAgencySettings?.find(
+                  (setting) => setting.setting_type === "HOMEPAGE_URL"
+                )?.value
+              }
             </AgencyInfoLink>
           ) : (
             "No homepage URL provided."
@@ -131,7 +144,12 @@ export const AgencySettingsUrl: React.FC<{
         </AgencyInfoBlockDescription>
         {allowEdit && (
           <EditButtonContainer>
-            <EditButton onClick={openSetting}>
+            <EditButton
+              onClick={() => {
+                setUrlText(homepageUrlSetting);
+                openSetting();
+              }}
+            >
               Edit URL
               <img src={rightArrow} alt="" />
             </EditButton>

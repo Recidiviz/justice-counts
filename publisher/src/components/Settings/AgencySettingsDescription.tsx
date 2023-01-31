@@ -45,31 +45,37 @@ export const AgencySettingsDescription: React.FC<{
   const { isSettingInEditMode, openSetting, removeEditMode, allowEdit } =
     settingProps;
 
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const { agencyStore } = useStore();
-  const { settings, updateAgencySettings, saveAgencySettings } = agencyStore;
+  const { currentAgencySettings, updateAgencySettings, saveAgencySettings } =
+    agencyStore;
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [infoText, setInfoText] = useState(settings.PURPOSE_AND_FUNCTIONS);
+  const [infoText, setInfoText] = useState("");
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const purposeAndFunctionsSetting =
+    currentAgencySettings?.find(
+      (setting) => setting.setting_type === "PURPOSE_AND_FUNCTIONS"
+    )?.value || "";
 
   const handleSaveClick = () => {
     const updatedSettings = updateAgencySettings(
       "PURPOSE_AND_FUNCTIONS",
-      infoText
+      infoText,
+      parseInt(agencyId)
     );
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    saveAgencySettings(updatedSettings, agencyId!);
+    saveAgencySettings(updatedSettings, agencyId);
     removeEditMode();
   };
   const handleCancelClick = () => {
-    if (settings.PURPOSE_AND_FUNCTIONS === infoText) {
+    if (purposeAndFunctionsSetting === infoText) {
       removeEditMode();
     } else {
       setIsConfirmModalOpen(true);
     }
   };
   const handleModalConfirm = () => {
-    setInfoText(settings.PURPOSE_AND_FUNCTIONS);
+    setInfoText(purposeAndFunctionsSetting || "");
     setIsConfirmModalOpen(false);
     removeEditMode();
   };
@@ -133,11 +139,16 @@ export const AgencySettingsDescription: React.FC<{
       <AgencySettingsBlock id="description">
         <AgencySettingsBlockTitle>Agency Information</AgencySettingsBlockTitle>
         <AgencyInfoBlockDescription>
-          {settings.PURPOSE_AND_FUNCTIONS || "No description added."}
+          {purposeAndFunctionsSetting || "No description added."}
         </AgencyInfoBlockDescription>
         {allowEdit && (
           <EditButtonContainer>
-            <EditButton onClick={openSetting}>
+            <EditButton
+              onClick={() => {
+                setInfoText(purposeAndFunctionsSetting);
+                openSetting();
+              }}
+            >
               Edit description
               <img src={rightArrow} alt="" />
             </EditButton>

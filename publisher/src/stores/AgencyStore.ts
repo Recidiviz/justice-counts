@@ -17,7 +17,8 @@
 
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
-  AgencySystems,
+  AgencySetting,
+  AgencySystems as AgencySystem,
   AgencyTeam,
   AgencyTeamMemberRole,
   UserAgency,
@@ -28,19 +29,12 @@ import { AgencySettingType } from "../components/Settings";
 import API from "./API";
 import UserStore from "./UserStore";
 
-type AgencySettings = {
-  settings: [{ setting_type: AgencySettingType; value: string }];
-  systems: AgencySystems[] | undefined;
-};
-
 class AgencyStore {
   userStore: UserStore;
 
   api: API;
 
   currentAgency: UserAgency | undefined;
-
-  settings: Record<AgencySettingType, string>;
 
   loadingSettings: boolean;
 
@@ -50,16 +44,19 @@ class AgencyStore {
     this.userStore = userStore;
     this.api = api;
     this.currentAgency = undefined;
-    this.settings = { PURPOSE_AND_FUNCTIONS: "", HOMEPAGE_URL: "" };
     this.loadingSettings = true;
   }
 
-  get currentAgencySystems(): AgencySystems[] | undefined {
+  get currentAgencySystems(): AgencySystem[] | undefined {
     return this.currentAgency?.systems;
   }
 
   get currentAgencyTeam(): AgencyTeam[] | undefined {
     return this.currentAgency?.team;
+  }
+
+  get currentAgencySettings(): AgencySetting[] | undefined {
+    return this.currentAgency?.settings;
   }
 
   get isAgencySupervision(): boolean {
@@ -77,45 +74,8 @@ class AgencyStore {
     });
   };
 
-  initCurrentAgencySettings = async (agencyId: string) => {
-    await this.getAgencySettings(agencyId);
-    const agency = this.userStore.getAgency(agencyId);
-
-    runInAction(() => {
-      this.currentAgency = agency;
-      this.loadingSettings = false;
-    });
-  };
-
-  async getAgencySettings(agencyId: string): Promise<void | Error> {
-    try {
-      const response = (await this.api.request({
-        path: `/api/agencies/${agencyId}`,
-        method: "GET",
-      })) as Response;
-
-      if (response.status !== 200) {
-        throw new Error("There was an issue getting agency description.");
-      }
-
-      const agencySettings = (await response.json()) as AgencySettings;
-      runInAction(() => {
-        this.settings.PURPOSE_AND_FUNCTIONS =
-          agencySettings.settings.find(
-            (setting) => setting.setting_type === "PURPOSE_AND_FUNCTIONS"
-          )?.value || "";
-        this.settings.HOMEPAGE_URL =
-          agencySettings.settings.find(
-            (setting) => setting.setting_type === "HOMEPAGE_URL"
-          )?.value || "";
-      });
-    } catch (error) {
-      if (error instanceof Error) return new Error(error.message);
-    }
-  }
-
   saveAgencySettings = async (
-    settings: Partial<AgencySettings>,
+    settings: { settings: AgencySetting[] },
     agencyId: string
   ): Promise<void> => {
     const response = (await this.api.request({
@@ -130,7 +90,7 @@ class AgencyStore {
         color: "red",
         timeout: 4000,
       });
-      throw new Error("There was an issue updating purpose and functions.");
+      throw new Error("There was an issue saving agency settings.");
     }
 
     showToast({
@@ -141,18 +101,54 @@ class AgencyStore {
     });
   };
 
-  updateAgencySettings = (
-    type: AgencySettingType,
-    text: string
-  ): Partial<AgencySettings> => {
-    this.settings[type] = text;
+  saveAgencySystems = async (
+    systems: { systems: AgencySystem[] },
+    agencyId: string
+  ): Promise<void> => {
+    const response = (await this.api.request({
+      path: `/api/agencies/${agencyId}`,
+      body: systems,
+      method: "PATCH",
+    })) as Response;
 
-    return {
-      settings: [{ setting_type: type, value: text }],
-    };
+    if (response.status !== 200) {
+      showToast({
+        message: `Failed to save.`,
+        color: "red",
+        timeout: 4000,
+      });
+      throw new Error("There was an issue updating the agency systems.");
+    }
+
+    showToast({
+      message: `Agency systems saved.`,
+      check: true,
+      color: "blue",
+      timeout: 4000,
+    });
   };
 
-  updateAgencySystems = (systems: AgencySystems[]): Partial<AgencySettings> => {
+  updateAgencySettings = (
+    type: AgencySettingType,
+    text: string,
+    sourceId: number
+  ): { settings: AgencySetting[] } => {
+    const newSettings =
+      this.currentAgencySettings?.map((setting) => {
+        if (setting.setting_type === type) {
+          return { setting_type: type, value: text, source_id: sourceId };
+        }
+        return setting;
+      }) || [];
+    if (this.currentAgency) {
+      this.currentAgency.settings = newSettings;
+    }
+    return { settings: newSettings };
+  };
+
+  updateAgencySystems = (
+    systems: AgencySystem[]
+  ): { systems: AgencySystem[] } => {
     if (this.currentAgency) {
       this.currentAgency.systems = systems;
     }
@@ -280,7 +276,6 @@ class AgencyStore {
     // reset the state when switching agencies
     runInAction(() => {
       this.currentAgency = undefined;
-      this.settings = { PURPOSE_AND_FUNCTIONS: "", HOMEPAGE_URL: "" };
       this.loadingSettings = true;
     });
   };
