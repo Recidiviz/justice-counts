@@ -325,7 +325,7 @@ const OnboardingFadedContainer = styled.div<OnboardingFadedContainerProps>`
     }
     if (position === "center") {
       return `
-        width: ${DATA_ENTRY_WIDTH}px; 
+        width: ${DATA_ENTRY_WIDTH + 20}px; 
       `;
     }
   }};
@@ -355,6 +355,11 @@ const OnboardingFadedContainer = styled.div<OnboardingFadedContainerProps>`
       if (position === "right" || position === "left") {
         return `
           display: none;
+        `;
+      }
+      if (position === "center") {
+        return `
+          margin-left: 0;
         `;
       }
     }};
