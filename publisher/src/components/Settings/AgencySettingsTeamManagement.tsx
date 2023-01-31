@@ -17,7 +17,7 @@
 
 /* eslint-disable camelcase */
 import editIcon from "@justice-counts/common/assets/edit-row-icon.png";
-import { AgencyTeam } from "@justice-counts/common/types";
+import { AgencyTeam, AgencyTeamMemberRole } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -50,88 +50,82 @@ import { AgencySettingsTeamManagementConfirmModal } from "./AgencySettingsTeamMa
 
 export const AgencySettingsTeamManagement = observer(() => {
   const { agencyId } = useParams();
-  const { userStore, agencyStore } = useStore();
+  const { agencyStore, userStore } = useStore();
+  const {
+    currentAgencyTeam,
+    removeAgencyTeamMember,
+    removeAgencyTeamMemberRequest,
+    inviteTeamMember,
+    inviteTeamMemberRequest,
+    changeTeamMemberAdminStatus,
+    changeTeamMemberAdminStatusRequest,
+  } = agencyStore;
   const { loadingSettings, resetState } = agencyStore;
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [teamMemberEditMenuActiveId, setTeamMemberEditMenuActiveId] = useState<
-    string | undefined
-  >(undefined);
-
-  // simulation of managing team members
-  const [team, setTeam] = useState<AgencyTeam[] | undefined>([]);
+  const [teamMemberEditMenuActiveEmail, setTeamMemberEditMenuActiveEmail] =
+    useState<string | undefined>(undefined);
   const [nameValue, setNameValue] = useState("");
   const [emailValue, setEmailValue] = useState("");
 
-  const handleInvite = (name: string, email: string) => {
+  const handleRemoveTeamMember = (email: string) => {
+    removeAgencyTeamMember(email);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    removeAgencyTeamMemberRequest({ email }, agencyId!);
+    setTeamMemberEditMenuActiveEmail(undefined);
+    setIsModalOpen(false);
+  };
+  const handleInviteTeamMamber = (name: string, email: string) => {
     if (name && email) {
-      const newMember: AgencyTeam = {
-        name,
-        email,
-        auth0_user_id: name + email,
-        invitation_status: "PENDING",
-        role: "CONTRIBUTOR",
-      };
-      if (team) {
-        setTeam([newMember, ...team]);
-      } else {
-        setTeam([newMember]);
-      }
+      inviteTeamMember(name, email);
+      inviteTeamMemberRequest(
+        { invite_name: name, invite_email: email },
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        agencyId!
+      );
       setNameValue("");
       setEmailValue("");
     }
   };
-  const handleAdminStatus = (id: string, isAdmin: boolean) => {
-    if (team) {
-      setTeam(
-        team.map((member) =>
-          member.auth0_user_id === id
-            ? { ...member, role: isAdmin ? "CONTRIBUTOR" : "AGENCY_ADMIN" }
-            : member
-        )
-      );
-    }
-    setTeamMemberEditMenuActiveId(undefined);
+  const handleTeamMemberAdminStatus = (
+    email: string,
+    role: AgencyTeamMemberRole
+  ) => {
+    changeTeamMemberAdminStatus(email, role);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    changeTeamMemberAdminStatusRequest({ email, role }, agencyId!);
+    setTeamMemberEditMenuActiveEmail(undefined);
   };
-  const handleRemoveUser = () => {
-    if (team)
-      setTeam(
-        team.filter(
-          (member) => member.auth0_user_id !== teamMemberEditMenuActiveId
-        )
-      );
-    setTeamMemberEditMenuActiveId(undefined);
-    setIsModalOpen(false);
-  };
-  // end simulation
 
+  const handleTeamMemberMenuClick = (email: string) => {
+    if (teamMemberEditMenuActiveEmail === email) {
+      setTeamMemberEditMenuActiveEmail(undefined);
+    } else {
+      setTeamMemberEditMenuActiveEmail(email);
+    }
+  };
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setTeamMemberEditMenuActiveId(undefined);
-  };
-  const handleTeamMemberMenuClick = (id: string) => {
-    if (teamMemberEditMenuActiveId === id) {
-      setTeamMemberEditMenuActiveId(undefined);
-    } else {
-      setTeamMemberEditMenuActiveId(id);
-    }
+    setTeamMemberEditMenuActiveEmail(undefined);
   };
 
+  const sortAgencyTeam = (team: AgencyTeam[]) =>
+    team
+      .filter((member) => member.auth0_user_id !== userStore.auth0UserID)
+      .sort((a, b) => a.name.localeCompare(b.name));
+  const getRemovedUserName = (email: string) =>
+    currentAgencyTeam?.find((member) => member.email === email)?.name || "";
+
   useEffect(() => {
-    if (teamMemberEditMenuActiveId) {
-      document.getElementById(teamMemberEditMenuActiveId)?.focus();
+    if (teamMemberEditMenuActiveEmail) {
+      document.getElementById(teamMemberEditMenuActiveEmail)?.focus();
     }
-  }, [teamMemberEditMenuActiveId]);
+  }, [teamMemberEditMenuActiveEmail]);
 
   useEffect(() => {
     const initialize = async () => {
       resetState();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await agencyStore.initCurrentUserAgency(agencyId!);
-      // TODO change that after simulation removal
-      const agencyTeam = agencyStore.currentAgency?.team
-        ?.filter((member) => member.auth0_user_id !== userStore.auth0UserID)
-        .sort((a, b) => a.name.localeCompare(b.name));
-      setTeam(agencyTeam);
+      agencyStore.initCurrentAgency(agencyId!);
     };
 
     initialize();
@@ -143,13 +137,13 @@ export const AgencySettingsTeamManagement = observer(() => {
   if (isModalOpen) {
     return (
       <AgencySettingsTeamManagementConfirmModal
-        userName={
-          team?.find(
-            (member) => member.auth0_user_id === teamMemberEditMenuActiveId
-          )?.name
-        }
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        userName={getRemovedUserName(teamMemberEditMenuActiveEmail!)}
         closeModal={handleCloseModal}
-        handleConfirm={handleRemoveUser}
+        handleConfirm={() =>
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          handleRemoveTeamMember(teamMemberEditMenuActiveEmail!)
+        }
       />
     );
   }
@@ -167,7 +161,7 @@ export const AgencySettingsTeamManagement = observer(() => {
           </TeamManagementSectionTitle>
           <InviteMemberContainer>
             <InviteMemberInput
-              placeholder="Enter full Name"
+              placeholder="Enter full name"
               value={nameValue}
               onChange={(e) => setNameValue(e.target.value)}
             />
@@ -177,7 +171,7 @@ export const AgencySettingsTeamManagement = observer(() => {
               onChange={(e) => setEmailValue(e.target.value)}
             />
             <InviteMemberButton
-              onClick={() => handleInvite(nameValue, emailValue)}
+              onClick={() => handleInviteTeamMamber(nameValue, emailValue)}
               disabled={!nameValue || !emailValue}
             >
               Invite
@@ -191,54 +185,61 @@ export const AgencySettingsTeamManagement = observer(() => {
             <TeamMemberNameContainerTitle>Name</TeamMemberNameContainerTitle>
             <TeamMemberEmailContainerTitle>Email</TeamMemberEmailContainerTitle>
           </TeamMemberRow>
-          {team?.map(
-            ({ name, email, auth0_user_id, invitation_status, role }) => (
-              <TeamMemberRow key={auth0_user_id}>
-                <TeamMemberNameContainer>
-                  {name}{" "}
-                  {role === "AGENCY_ADMIN" && <AdminStatus>Admin</AdminStatus>}{" "}
-                  {invitation_status === "PENDING" && (
-                    <InvitedStatus>Invited</InvitedStatus>
-                  )}
-                </TeamMemberNameContainer>
-                <TeamMemberEmailContainer>
-                  {email}
-                  <EditTeamMemberIconContainer
-                    id={auth0_user_id}
-                    tabIndex={-1}
-                    onClick={() => handleTeamMemberMenuClick(auth0_user_id)}
-                    onBlur={() => setTeamMemberEditMenuActiveId(undefined)}
-                  >
-                    <img src={editIcon} alt="" />
-                    {teamMemberEditMenuActiveId === auth0_user_id && (
-                      <EditTeamMemberMenu onClick={(e) => e.stopPropagation()}>
-                        {invitation_status !== "PENDING" && (
-                          <EditTeamMemberMenuItem
-                            onClick={() =>
-                              handleAdminStatus(
-                                auth0_user_id,
-                                role === "AGENCY_ADMIN"
-                              )
-                            }
-                          >
-                            {role === "AGENCY_ADMIN" ? "Remove" : "Grant"} admin
-                            status
-                          </EditTeamMemberMenuItem>
-                        )}
-                        <EditTeamMemberMenuItem
-                          onClick={() => setIsModalOpen(true)}
-                        >
-                          {invitation_status === "PENDING"
-                            ? "Revoke invitation"
-                            : "Remove from agency"}
-                        </EditTeamMemberMenuItem>
-                      </EditTeamMemberMenu>
+          {currentAgencyTeam &&
+            sortAgencyTeam(currentAgencyTeam).map(
+              ({ name, email, invitation_status, role }) => (
+                <TeamMemberRow key={email}>
+                  <TeamMemberNameContainer>
+                    {name}{" "}
+                    {role === "AGENCY_ADMIN" && (
+                      <AdminStatus>Admin</AdminStatus>
+                    )}{" "}
+                    {invitation_status === "PENDING" && (
+                      <InvitedStatus>Invited</InvitedStatus>
                     )}
-                  </EditTeamMemberIconContainer>
-                </TeamMemberEmailContainer>
-              </TeamMemberRow>
-            )
-          )}
+                  </TeamMemberNameContainer>
+                  <TeamMemberEmailContainer>
+                    {email}
+                    <EditTeamMemberIconContainer
+                      id={email}
+                      tabIndex={-1}
+                      onClick={() => handleTeamMemberMenuClick(email)}
+                      onBlur={() => setTeamMemberEditMenuActiveEmail(undefined)}
+                    >
+                      <img src={editIcon} alt="" />
+                      {teamMemberEditMenuActiveEmail === email && (
+                        <EditTeamMemberMenu
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {invitation_status !== "PENDING" && (
+                            <EditTeamMemberMenuItem
+                              onClick={() =>
+                                handleTeamMemberAdminStatus(
+                                  email,
+                                  role === "AGENCY_ADMIN"
+                                    ? "CONTRIBUTOR"
+                                    : "AGENCY_ADMIN"
+                                )
+                              }
+                            >
+                              {role === "AGENCY_ADMIN" ? "Remove" : "Grant"}{" "}
+                              admin status
+                            </EditTeamMemberMenuItem>
+                          )}
+                          <EditTeamMemberMenuItem
+                            onClick={() => setIsModalOpen(true)}
+                          >
+                            {invitation_status === "PENDING"
+                              ? "Revoke invitation"
+                              : "Remove from agency"}
+                          </EditTeamMemberMenuItem>
+                        </EditTeamMemberMenu>
+                      )}
+                    </EditTeamMemberIconContainer>
+                  </TeamMemberEmailContainer>
+                </TeamMemberRow>
+              )
+            )}
         </TeamManagementBlock>
       </AgencySettingsContent>
     </AgencySettingsWrapper>
