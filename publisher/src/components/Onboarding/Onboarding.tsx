@@ -202,16 +202,15 @@ const OnboardingModal = styled.div<{
   box-shadow: 0px 4px 10px rgba(53, 83, 98, 0.4);
   animation: ${float} 3s infinite ease-in-out;
 
-  @media only screen and (max-width: ${TWO_PANEL_MAX_WIDTH}px) {
-    ${({ position, modalHeight }) => {
-      if (position === "publishdata") {
+  @media only screen and (max-width: ${ONE_PANEL_MAX_WIDTH}px) {
+    ${({ position }) => {
+      if (position === "reportsummary") {
         return `
-          top: calc(100% - ${modalHeight}px - 28px);
-          right: calc(100% - 532px - ${SIDE_PANEL_WIDTH}px);
-          left: ${SIDE_PANEL_WIDTH}px;
+          top: ${HEADER_BAR_HEIGHT}px;
+          right: 10px;
+          left: unset;
         `;
       }
-      return ``;
     }}
   }
 `;
