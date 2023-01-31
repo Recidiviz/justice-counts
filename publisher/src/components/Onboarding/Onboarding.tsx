@@ -206,6 +206,13 @@ const OnboardingModal = styled.div<{
     ${({ position }) => {
       if (position === "reportsummary") {
         return `
+          &::after {
+            content: "Available on wider screens.";
+            position: absolute;
+            bottom: 23px;
+            font-size: 12px;
+          }
+          
           top: unset;
           left: calc(100% - 532px - 24px);
           bottom: 24px;
