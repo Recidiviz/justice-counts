@@ -301,10 +301,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     label="Calendar Year (Jan)"
                     value="Calendar Year (Jan)"
                     checked={
-                      metricEnabled &&
-                      (startingMonth === 1 ||
-                        (!startingMonth &&
-                          customOrDefaultFrequency === "ANNUAL"))
+                      metricEnabled && (startingMonth === 1 || !startingMonth)
                     }
                     onChange={() =>
                       handleUpdateMetricReportFrequency({
