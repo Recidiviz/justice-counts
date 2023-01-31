@@ -68,7 +68,16 @@ class AgencyStore {
     );
   }
 
-  initCurrentUserAgency = async (agencyId: string) => {
+  initCurrentAgency = (agencyId: string) => {
+    const agency = this.userStore.getAgency(agencyId);
+
+    runInAction(() => {
+      this.currentAgency = agency;
+      this.loadingSettings = false;
+    });
+  };
+
+  initCurrentAgencySettings = async (agencyId: string) => {
     await this.getAgencySettings(agencyId);
     const agency = this.userStore.getAgency(agencyId);
 

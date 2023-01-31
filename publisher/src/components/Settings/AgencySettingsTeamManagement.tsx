@@ -125,7 +125,7 @@ export const AgencySettingsTeamManagement = observer(() => {
     const initialize = async () => {
       resetState();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await agencyStore.initCurrentUserAgency(agencyId!);
+      agencyStore.initCurrentAgency(agencyId!);
     };
 
     initialize();
