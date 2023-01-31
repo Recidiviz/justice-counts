@@ -37,7 +37,7 @@ export const AgencySettingsWrapper = styled.div`
   min-width: ${AGENCY_SETTINGS_CONTAINER_WIDTH}px;
   display: flex;
   justify-content: center;
-  padding-bottom: 100px;
+  padding-bottom: 150px;
   z-index: 1;
 
   @media only screen and (max-width: calc(662px + ${AGENCY_SETTINGS_CONTAINER_WIDTH}px)) {

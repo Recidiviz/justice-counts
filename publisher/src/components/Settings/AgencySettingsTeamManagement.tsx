@@ -161,7 +161,7 @@ export const AgencySettingsTeamManagement = observer(() => {
           </TeamManagementSectionTitle>
           <InviteMemberContainer>
             <InviteMemberInput
-              placeholder="Enter full Name"
+              placeholder="Enter full name"
               value={nameValue}
               onChange={(e) => setNameValue(e.target.value)}
             />
