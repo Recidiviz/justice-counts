@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -39,7 +40,7 @@ import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 const MAX_DESCRIPTION_CHARACTERS = 750;
 const MIN_TEXT_AREA_HEIGHT = 121;
 
-export const AgencySettingsDescription: React.FC<{
+const AgencySettingsDescription: React.FC<{
   settingProps: SettingProps;
 }> = ({ settingProps }) => {
   const { isSettingInEditMode, openSetting, removeEditMode, allowEdit } =
@@ -158,3 +159,5 @@ export const AgencySettingsDescription: React.FC<{
     </>
   );
 };
+
+export default observer(AgencySettingsDescription);

@@ -34,7 +34,7 @@ class AgencyStore {
 
   api: API;
 
-  currentAgency: UserAgency | undefined;
+  currentAgencyId: string | undefined;
 
   loadingSettings: boolean;
 
@@ -43,8 +43,15 @@ class AgencyStore {
 
     this.userStore = userStore;
     this.api = api;
-    this.currentAgency = undefined;
+    this.currentAgencyId = undefined;
     this.loadingSettings = true;
+  }
+
+  get currentAgency(): UserAgency | undefined {
+    if (this.currentAgencyId !== undefined) {
+      return this.userStore.getAgency(this.currentAgencyId);
+    }
+    return undefined;
   }
 
   get currentAgencySystems(): AgencySystem[] | undefined {
@@ -66,13 +73,35 @@ class AgencyStore {
   }
 
   initCurrentAgency = (agencyId: string) => {
-    const agency = this.userStore.getAgency(agencyId);
-
     runInAction(() => {
-      this.currentAgency = agency;
+      this.currentAgencyId = agencyId;
       this.loadingSettings = false;
     });
   };
+
+  async getAgencySettings(agencyId: string): Promise<void | Error> {
+    try {
+      const response = (await this.api.request({
+        path: `/api/agencies/${agencyId}`,
+        method: "GET",
+      })) as Response;
+
+      if (response.status !== 200) {
+        throw new Error("There was an issue getting agency description.");
+      }
+
+      const responseJson = (await response.json()) as {
+        settings: AgencySetting[];
+      };
+      runInAction(() => {
+        if (this.currentAgency) {
+          this.currentAgency.settings = responseJson.settings;
+        }
+      });
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
 
   saveAgencySettings = async (
     settings: { settings: AgencySetting[] },
@@ -275,7 +304,7 @@ class AgencyStore {
   resetState = () => {
     // reset the state when switching agencies
     runInAction(() => {
-      this.currentAgency = undefined;
+      this.currentAgencyId = undefined;
       this.loadingSettings = true;
     });
   };

@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { formatExternalLink } from "@justice-counts/common/components/DataViz/utils";
+import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -37,7 +38,7 @@ import {
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
-export const AgencySettingsUrl: React.FC<{
+const AgencySettingsUrl: React.FC<{
   settingProps: SettingProps;
 }> = ({ settingProps }) => {
   const { isSettingInEditMode, openSetting, removeEditMode, allowEdit } =
@@ -159,3 +160,5 @@ export const AgencySettingsUrl: React.FC<{
     </>
   );
 };
+
+export default observer(AgencySettingsUrl);

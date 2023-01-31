@@ -27,10 +27,10 @@ import {
   AgencySettingsWrapper,
 } from "./AgencySettings.styles";
 import { AgencySettingsBasicInfo } from "./AgencySettingsBasicInfo";
-import { AgencySettingsDescription } from "./AgencySettingsDescription";
+import AgencySettingsDescription from "./AgencySettingsDescription";
 import { AgencySettingsJurisdictions } from "./AgencySettingsJurisdictions";
 import { AgencySettingsSupervisions } from "./AgencySettingsSupervisions";
-import { AgencySettingsUrl } from "./AgencySettingsURL";
+import AgencySettingsUrl from "./AgencySettingsURL";
 
 export enum ActiveSetting {
   Description = "DESCRIPTION",
@@ -64,7 +64,8 @@ export const AgencySettings: React.FC = observer(() => {
   useEffect(() => {
     const initialize = async () => {
       resetState();
-      await agencyStore.initCurrentAgency(agencyId);
+      agencyStore.initCurrentAgency(agencyId);
+      agencyStore.getAgencySettings(agencyId);
     };
 
     initialize();
