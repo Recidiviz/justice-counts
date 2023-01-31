@@ -502,7 +502,9 @@ export const MetricContextHeader = styled.div`
   margin: 40px 0 20px 0;
 `;
 
-export const MetricContextItem = styled.div``;
+export const MetricContextItem = styled.div`
+  margin-bottom: 16px;
+`;
 
 export const Label = styled.div<{ noBottomMargin?: boolean }>`
   ${typography.sizeCSS.medium};

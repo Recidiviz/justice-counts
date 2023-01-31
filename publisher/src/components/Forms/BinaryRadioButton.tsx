@@ -43,7 +43,6 @@ export const BinaryRadioGroupQuestion = styled.div`
   ${typography.sizeCSS.medium}
   display: flex;
   align-items: center;
-  margin-top: 22px;
   color: ${palette.solid.darkgrey};
 `;
 
