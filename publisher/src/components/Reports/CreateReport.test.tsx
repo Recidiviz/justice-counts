@@ -19,7 +19,7 @@ import { AgencyTeamMemberRole } from "@justice-counts/common/types";
 import { act, render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, MemoryRouter, Route, Routes } from "react-router-dom";
 
 import Reports from "../../pages/Reports";
 import { rootStore, StoreProvider } from "../../stores";
@@ -111,7 +111,7 @@ describe("test create report button", () => {
 
     await act(async () => {
       runInAction(() => {
-        rootStore.userStore.permissions = [""];
+        rootStore.userStore.userAgencies = [];
       });
     });
 
@@ -125,15 +125,40 @@ describe("test create report button", () => {
   test("created reports button should be displayed if user has permission", async () => {
     render(
       <StoreProvider>
-        <BrowserRouter>
-          <Reports />
-        </BrowserRouter>
+        <MemoryRouter initialEntries={["/agency/590/reports"]}>
+          <Routes>
+            <Route path="/agency/:agencyId/reports" element={<Reports />} />
+          </Routes>
+        </MemoryRouter>
       </StoreProvider>
     );
 
     await act(async () => {
       runInAction(() => {
-        rootStore.userStore.permissions = ["recidiviz_admin"];
+        rootStore.authStore.user = {
+          name: "Test User",
+          email: "test@email.com",
+        };
+        rootStore.userStore.userAgencies = [
+          {
+            id: 590,
+            name: "Test Agency",
+            fips_county_code: "us_CA",
+            state: "CA",
+            state_code: "CA",
+            settings: [],
+            systems: [],
+            team: [
+              {
+                name: "Test User",
+                auth0_user_id: "0",
+                email: "test@email.com",
+                invitation_status: "ACCEPTED",
+                role: AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN,
+              },
+            ],
+          },
+        ];
       });
     });
 

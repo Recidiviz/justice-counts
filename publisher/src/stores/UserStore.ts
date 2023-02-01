@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 import { showToast } from "@justice-counts/common/components/Toast";
-import { Permission, UserAgency } from "@justice-counts/common/types";
+import { AgencyTeamMemberRole, UserAgency } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction, when } from "mobx";
 
 import { APP_METADATA_CLAIM, AuthStore } from "../components/Auth";
@@ -33,13 +33,9 @@ class UserStore {
 
   userAgencies: UserAgency[] | undefined;
 
-  userAgenciesById: { [agencyId: string]: UserAgency };
-
   userInfoLoaded: boolean;
 
   onboardingTopicsCompleted: { [topic: string]: boolean } | undefined;
-
-  permissions: string[];
 
   constructor(authStore: AuthStore, api: API) {
     makeAutoObservable(this);
@@ -47,10 +43,8 @@ class UserStore {
     this.authStore = authStore;
     this.api = api;
     this.userAgencies = undefined;
-    this.userAgenciesById = {};
     this.userInfoLoaded = false;
     this.onboardingTopicsCompleted = undefined;
-    this.permissions = [];
 
     when(
       () => api.isSessionInitialized,
@@ -138,7 +132,17 @@ class UserStore {
     return undefined;
   }
 
-  getAgency(agencyId: string | undefined): UserAgency | undefined {
+  get userAgenciesById(): { [agencyId: string]: UserAgency } {
+    return (this.userAgencies || []).reduce(
+      (map: { [agencyId: string]: UserAgency }, agency: UserAgency) => ({
+        ...map,
+        [agency.id]: agency,
+      }),
+      {}
+    );
+  }
+
+  getAgency(agencyId: string): UserAgency | undefined {
     if (agencyId) {
       return this.userAgenciesById[agencyId];
     }
@@ -165,12 +169,27 @@ class UserStore {
     return this.authStore.user?.email_verified;
   }
 
-  get isRecidivizAdmin(): boolean {
-    return this.permissions.includes(Permission.RECIDIVIZ_ADMIN);
+  getUserAgencyRole(agencyId: string): AgencyTeamMemberRole | undefined {
+    const userAgency = this.getAgency(agencyId);
+    if (!userAgency) {
+      return undefined;
+    }
+    return userAgency.team.find(
+      (member) => this.email !== undefined && member.email === this.email
+    )?.role;
   }
 
-  get isAgencyAdmin(): boolean {
-    return this.permissions.includes(Permission.AGENCY_ADMIN);
+  isJusticeCountsAdmin(agencyId: string): boolean {
+    return (
+      this.getUserAgencyRole(agencyId) ===
+      AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN
+    );
+  }
+
+  isAgencyAdmin(agencyId: string): boolean {
+    return (
+      this.getUserAgencyRole(agencyId) === AgencyTeamMemberRole.AGENCY_ADMIN
+    );
   }
 
   async updateAndRetrieveUserPermissionsAndAgencies() {
@@ -184,17 +203,9 @@ class UserStore {
           email_verified: this.email_verified,
         },
       })) as Response;
-      const { agencies: userAgencies, permissions } = await response.json();
+      const { agencies: userAgencies } = await response.json();
       runInAction(() => {
         this.userAgencies = userAgencies;
-        this.userAgenciesById = userAgencies.reduce(
-          (map: { [agencyId: string]: UserAgency }, agency: UserAgency) => ({
-            ...map,
-            [agency.id]: agency,
-          }),
-          {}
-        );
-        this.permissions = permissions;
         this.onboardingTopicsCompleted = this.authStore.user?.[
           APP_METADATA_CLAIM
         ]?.onboarding_topics_completed || {

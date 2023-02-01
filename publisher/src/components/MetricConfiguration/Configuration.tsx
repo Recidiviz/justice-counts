@@ -80,7 +80,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     setActiveDisaggregationKey,
     enabledSupervisionSubsystems,
   }): JSX.Element => {
-    const { agencyId } = useParams();
+    const { agencyId } = useParams() as { agencyId: string };
     const [settingsSearchParams] = useSettingsSearchParams();
     const navigate = useNavigate();
     const { metricConfigStore } = useStore();
@@ -157,13 +157,11 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
           status
         );
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        await saveMetricSettings(updatedSetting, agencyId!);
+        await saveMetricSettings(updatedSetting, agencyId);
 
         // After saving disaggregation selection, re-fetch metric settings
         // because changing this setting causes other supervision combined / disaggregegated metrics to update
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        initializeMetricConfigStoreValues(agencyId!);
+        initializeMetricConfigStoreValues(agencyId);
       }
     };
 
@@ -174,8 +172,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
           metricSearchParam,
           enabledStatus
         );
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        saveMetricSettings(updatedSetting, agencyId!);
+        saveMetricSettings(updatedSetting, agencyId);
       }
     };
 
@@ -188,8 +185,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
           metricSearchParam,
           frequencyUpdate
         );
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        saveMetricSettings(updatedSetting, agencyId!);
+        saveMetricSettings(updatedSetting, agencyId);
       }
     };
 
@@ -204,8 +200,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
           disaggregationKey,
           enabledStatus
         );
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        saveMetricSettings(updatedSetting, agencyId!);
+        saveMetricSettings(updatedSetting, agencyId);
       }
     };
 
@@ -222,8 +217,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
           dimensionKey,
           enabledStatus
         );
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        saveMetricSettings(updatedSetting, agencyId!);
+        saveMetricSettings(updatedSetting, agencyId);
       }
     };
 

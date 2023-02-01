@@ -58,7 +58,9 @@ export const AgencySettings: React.FC = observer(() => {
     isSettingInEditMode: activeSetting === settingName,
     openSetting: () => setActiveSetting(settingName),
     removeEditMode: () => setActiveSetting(undefined),
-    allowEdit: userStore.isRecidivizAdmin || userStore.isAgencyAdmin,
+    allowEdit:
+      userStore.isJusticeCountsAdmin(agencyId) ||
+      userStore.isAgencyAdmin(agencyId),
   });
 
   useEffect(() => {
@@ -91,7 +93,7 @@ export const AgencySettings: React.FC = observer(() => {
           />
         )}
         {/* TODO(#306) Allow all users to see this section once Jurisdictions is finished */}
-        {userStore.isRecidivizAdmin && (
+        {userStore.isJusticeCountsAdmin(agencyId) && (
           <AgencySettingsJurisdictions
             settingProps={generateSettingProps(ActiveSetting.Jurisdictions)}
           />

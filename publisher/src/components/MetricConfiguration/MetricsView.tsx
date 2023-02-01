@@ -51,7 +51,7 @@ import {
 export const MetricsView: React.FC = observer(() => {
   const navigate = useNavigate();
   const { reportStore, userStore, datapointsStore } = useStore();
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const { metricsBySystem } = reportStore;
 
   const [settingsSearchParams, setSettingsSearchParams] =
@@ -66,8 +66,7 @@ export const MetricsView: React.FC = observer(() => {
     settingsSearchParams;
 
   const initDataPageMetrics = async () => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const result = await reportStore.initializeReportSettings(agencyId!);
+    const result = await reportStore.initializeReportSettings(agencyId);
     if (result instanceof Error) {
       setIsLoading(false);
       return setLoadingError(result.message);

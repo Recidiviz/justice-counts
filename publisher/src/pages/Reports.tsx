@@ -82,7 +82,7 @@ const reportListColumnTitles = [
 
 const Reports: React.FC = () => {
   const { reportStore, userStore } = useStore();
-  const { agencyId } = useParams<string>();
+  const { agencyId } = useParams<string>() as { agencyId: string };
   const navigate = useNavigate();
 
   const [showOnboarding, setShowOnboarding] = useState(true);
@@ -133,8 +133,7 @@ const Reports: React.FC = () => {
   useEffect(() => {
     const initialize = async () => {
       reportStore.resetState();
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const result = await reportStore.getReportOverviews(agencyId!);
+      const result = await reportStore.getReportOverviews(agencyId);
       if (result instanceof Error) {
         setLoadingError(result.message);
       }
@@ -314,12 +313,13 @@ const Reports: React.FC = () => {
 
           <TabbedActionsWrapper>
             {/* Admin Only: Manage Reports */}
-            {(userStore.isRecidivizAdmin || userStore.isAgencyAdmin) && (
+            {(userStore.isJusticeCountsAdmin(agencyId) ||
+              userStore.isAgencyAdmin(agencyId)) && (
               <>
                 <ReportActions>
                   {!selectionMode && (
                     <>
-                      {userStore.isRecidivizAdmin && (
+                      {userStore.isJusticeCountsAdmin(agencyId) && (
                         <ReportActionsItem onClick={enterSelectionMode}>
                           Select <ReportActionsSelectIcon />
                         </ReportActionsItem>
@@ -338,8 +338,7 @@ const Reports: React.FC = () => {
                           if (reportsToDelete.length > 0) {
                             reportStore.deleteReports(
                               reportsToDelete,
-                              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                              agencyId!
+                              agencyId
                             );
                             exitSelectionMode();
                             clearAllReportsToDelete();

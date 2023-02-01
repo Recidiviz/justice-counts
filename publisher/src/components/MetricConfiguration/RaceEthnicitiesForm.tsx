@@ -42,7 +42,7 @@ import {
 } from ".";
 
 export const RaceEthnicitiesForm = observer(() => {
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const [settingsSearchParams] = useSettingsSearchParams();
   const { metricConfigStore } = useStore();
   const {
@@ -108,8 +108,7 @@ export const RaceEthnicitiesForm = observer(() => {
       systemSearchParam,
       metricSearchParam
     );
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    debouncedSave(updatedDimensions, agencyId!);
+    debouncedSave(updatedDimensions, agencyId);
   };
 
   const handleUpdateRaceDimensions = (race: string, status: boolean) => {
@@ -141,8 +140,7 @@ export const RaceEthnicitiesForm = observer(() => {
       systemSearchParam,
       metricSearchParam
     );
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    debouncedSave(updatedDimensions, agencyId!);
+    debouncedSave(updatedDimensions, agencyId);
   };
 
   return (
