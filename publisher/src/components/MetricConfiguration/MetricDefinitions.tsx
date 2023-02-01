@@ -39,6 +39,7 @@ import {
   DefinitionsSubTitle,
   DefinitionsTitle,
   DimensionContexts,
+  MetricBreakdownDescription,
   MetricSettings,
   RevertToDefaultButton,
 } from ".";
@@ -78,6 +79,13 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
         dimensions[systemMetricKey]?.[activeDisaggregationKey]?.[
           activeDimensionKey
         ]?.label;
+
+    const activeMetricOrDimensionDescription =
+      activeDimensionKey && activeDisaggregationKey
+        ? dimensions[systemMetricKey]?.[activeDisaggregationKey]?.[
+            activeDimensionKey
+          ]?.description
+        : metrics[systemMetricKey]?.description;
 
     const metricDefinitionSettingsKeys =
       metricDefinitionSettings[systemMetricKey] &&
@@ -233,6 +241,10 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
 
           {Boolean(activeSettingsKeys?.length) && (
             <>
+              <MetricBreakdownDescription>
+                {activeMetricOrDimensionDescription}
+              </MetricBreakdownDescription>
+
               <DefinitionsSubTitle>Definitions</DefinitionsSubTitle>
               <DefinitionsDescription>
                 Indicate which of the following categories your agency considers
@@ -313,10 +325,15 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
           {noSettingsAvailable &&
             !hasMinOneDimensionContext &&
             !hasMinOneMetricLevelContext && (
-              <DefinitionsSubTitle>
-                Technical Definitions are not available for this{" "}
-                {activeDimensionKey ? "breakdown." : "metric yet."}
-              </DefinitionsSubTitle>
+              <>
+                <MetricBreakdownDescription>
+                  {activeMetricOrDimensionDescription}
+                </MetricBreakdownDescription>
+                <DefinitionsSubTitle>
+                  Technical Definitions are not available for this{" "}
+                  {activeDimensionKey ? "breakdown." : "metric yet."}
+                </DefinitionsSubTitle>
+              </>
             )}
 
           {/* Display when dimension has additional contexts */}

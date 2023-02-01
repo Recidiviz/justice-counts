@@ -207,6 +207,7 @@ export interface MetricDisaggregationDimensions {
   enabled?: boolean;
   settings?: MetricConfigurationSettings[];
   display_name?: string;
+  description?: string;
   race?: string;
   ethnicity?: string;
   datapoints?: RawDatapoint[];
