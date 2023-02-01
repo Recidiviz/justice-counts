@@ -324,12 +324,10 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
           {noSettingsAvailable &&
             !hasMinOneDimensionContext &&
             !hasMinOneMetricLevelContext && (
-              <>
-                <DefinitionsSubTitle>
-                  Technical Definitions are not available for this{" "}
-                  {activeDimensionKey ? "breakdown." : "metric yet."}
-                </DefinitionsSubTitle>
-              </>
+              <DefinitionsSubTitle>
+                Technical Definitions are not available for this{" "}
+                {activeDimensionKey ? "breakdown." : "metric yet."}
+              </DefinitionsSubTitle>
             )}
 
           {/* Display when dimension has additional contexts */}
