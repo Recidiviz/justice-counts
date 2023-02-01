@@ -394,7 +394,7 @@ export const Dimension = styled.div<{ enabled?: boolean; inView?: boolean }>`
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 17px 10px;
+  padding: 17px 40px 17px 10px;
   border-bottom: 1px solid ${palette.highlight.grey4};
   position: relative;
   background: ${({ inView }) =>
