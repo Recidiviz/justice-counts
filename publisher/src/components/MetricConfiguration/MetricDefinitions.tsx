@@ -238,13 +238,12 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
           <DefinitionsTitle>
             {activeMetricOrDimensionDisplayName}
           </DefinitionsTitle>
+          <MetricBreakdownDescription>
+            {activeMetricOrDimensionDescription}
+          </MetricBreakdownDescription>
 
           {Boolean(activeSettingsKeys?.length) && (
             <>
-              <MetricBreakdownDescription>
-                {activeMetricOrDimensionDescription}
-              </MetricBreakdownDescription>
-
               <DefinitionsSubTitle>Definitions</DefinitionsSubTitle>
               <DefinitionsDescription>
                 Indicate which of the following categories your agency considers
@@ -326,9 +325,6 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
             !hasMinOneDimensionContext &&
             !hasMinOneMetricLevelContext && (
               <>
-                <MetricBreakdownDescription>
-                  {activeMetricOrDimensionDescription}
-                </MetricBreakdownDescription>
                 <DefinitionsSubTitle>
                   Technical Definitions are not available for this{" "}
                   {activeDimensionKey ? "breakdown." : "metric yet."}
