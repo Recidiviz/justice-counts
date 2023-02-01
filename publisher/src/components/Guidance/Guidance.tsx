@@ -24,17 +24,28 @@ import {
   removeSnakeCase,
 } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
-import React, { useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import MetricConfigStore from "../../stores/MetricConfigStore";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
+import checkmarkIcon from "../assets/status-check-icon.png";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import {
   ActionButton,
   ActionButtonWrapper,
+  CheckIcon,
+  ConfiguredMetricIndicatorTitle,
   ContentContainer,
   GuidanceContainer,
+  Metric,
+  MetricContentContainer,
+  MetricListContainer,
+  MetricName,
+  MetricStatus,
+  Progress,
+  ProgressBarContainer,
   ProgressStepBubble,
   ProgressStepsContainer,
   ReportsOverviewContainer,
@@ -49,7 +60,7 @@ import {
 export const Guidance = observer(() => {
   const navigate = useNavigate();
   const { agencyId } = useParams();
-  const { guidanceStore, reportStore } = useStore();
+  const { guidanceStore, metricConfigStore, reportStore } = useStore();
   const { onboardingTopicsMetadata, currentTopicID, updateTopicStatus } =
     guidanceStore;
 
@@ -66,12 +77,23 @@ export const Guidance = observer(() => {
     currentTopicID && onboardingTopicsMetadata[currentTopicID].pathToTask;
   const topLeftPositionedTopic =
     currentTopicID === "WELCOME" || currentTopicID === "METRIC_CONFIG";
+  const reportStatusBadgeColors: BadgeColorMapping = {
+    DRAFT: "ORANGE",
+    PUBLISHED: "GREEN",
+    NOT_STARTED: "RED",
+  };
+  const metricsEntries = Object.entries(metricConfigStore.metrics);
+  const totalMetrics = metricsEntries.length;
 
   useEffect(() => {
     const initialize = async () => {
       reportStore.resetState();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await reportStore.getReportOverviews(agencyId!);
+      if (currentTopicID === "METRIC_CONFIG")
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        await metricConfigStore.initializeMetricConfigStoreValues(agencyId!);
+
       const hasMinimumOneReport =
         currentTopicID === "ADD_DATA" &&
         Object.keys(reportStore.reportOverviews).length > 0;
@@ -89,10 +111,19 @@ export const Guidance = observer(() => {
         /* TODO(#267) Enable this to check during the PUBLISH_DATA step whether or not a user has atleast one published record (if so, then the topic is complete) */
         // updateTopicStatus("PUBLISH_DATA", true);
       }
+      if (numberOfMetricsCompleted === totalMetrics) {
+        /* TODO(#267) Enable this to check during the PUBLISH_DATA step whether or not a user has atleast one published record (if so, then the topic is complete) */
+        // updateTopicStatus("METRIC_CONFIG", true);
+      }
     };
 
-    if (currentTopicID === "ADD_DATA" || currentTopicID === "PUBLISH_DATA")
+    if (
+      currentTopicID === "ADD_DATA" ||
+      currentTopicID === "PUBLISH_DATA" ||
+      currentTopicID === "METRIC_CONFIG"
+    )
       initialize();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyId, currentTopicID]);
 
@@ -103,7 +134,7 @@ export const Guidance = observer(() => {
       onboardingTopicsMetadata
     ).filter((topic) => topic !== "WELCOME");
     const totalNumberOfTopics =
-      currentTopicID && onboardingTopicsMetadataKeysExcludingWelcome.length;
+      onboardingTopicsMetadataKeysExcludingWelcome.length;
 
     return (
       <ProgressStepsContainer
@@ -123,18 +154,79 @@ export const Guidance = observer(() => {
     );
   };
 
-  const reportStatusBadgeColors: BadgeColorMapping = {
-    DRAFT: "ORANGE",
-    PUBLISHED: "GREEN",
-    NOT_STARTED: "RED",
+  const calculateOverallMetricProgress = (systemMetricKey: string) => {
+    let completionPercentage = 0;
+    const {
+      metrics,
+      dimensions,
+      metricDefinitionSettings,
+      dimensionDefinitionSettings,
+    } = metricConfigStore;
+
+    /** Confirm the metric’s availability/frequency */
+    if (metrics[systemMetricKey].enabled !== null) {
+      completionPercentage += 25;
+    }
+
+    /** Confirm metric definitions */
+    const metricDefinitionsCompleted =
+      metricDefinitionSettings[systemMetricKey] &&
+      Object.values(metricDefinitionSettings[systemMetricKey]).filter(
+        (definition) => definition.included === null
+      ).length === 0;
+
+    if (
+      metricDefinitionsCompleted ||
+      !metricDefinitionSettings[systemMetricKey]
+    ) {
+      completionPercentage += 25;
+    }
+
+    /** Confirm breakdown availability */
+    const disaggregationValues =
+      dimensions[systemMetricKey] && Object.values(dimensions[systemMetricKey]);
+    const dimensionsCompleted =
+      disaggregationValues?.filter(
+        (disaggregation) =>
+          Object.values(disaggregation).filter(
+            (dimension) => dimension.enabled === null
+          ).length === 0
+      ).length === disaggregationValues?.length;
+
+    if (dimensionsCompleted) {
+      completionPercentage += 25;
+    }
+
+    /** Confirm breakdown definitions */
+    const dimensionDefinitionSettingsValues =
+      dimensionDefinitionSettings[systemMetricKey] &&
+      Object.values(dimensionDefinitionSettings[systemMetricKey]);
+    const dimensionDefinitionsCompleted =
+      dimensionDefinitionSettingsValues?.filter(
+        (dimension) =>
+          Object.values(dimension).filter(
+            (definition) => definition.enabled === null
+          ).length === 0
+      ).length === dimensionDefinitionSettingsValues?.length;
+
+    if (
+      dimensionDefinitionsCompleted ||
+      !dimensionDefinitionSettings[systemMetricKey]
+    ) {
+      completionPercentage += 25;
+    }
+
+    return completionPercentage;
   };
+
+  const numberOfMetricsCompleted = metricsEntries.filter(
+    ([key]) => calculateOverallMetricProgress(key) === 100
+  ).length;
 
   return (
     <>
       <GuidanceContainer>
-        <ContentContainer
-          position={topLeftPositionedTopic ? "TOPLEFT" : undefined}
-        >
+        <ContentContainer currentTopicID={currentTopicID}>
           {renderProgressSteps()}
           <TopicTitle>{currentTopicDisplayName}</TopicTitle>
           <TopicDescription>{currentTopicDescription}</TopicDescription>
@@ -227,6 +319,58 @@ export const Guidance = observer(() => {
             </SkipButton>
           )}
         </ContentContainer>
+
+        {/* Configure Metrics: Overview List */}
+        {currentTopicID === "METRIC_CONFIG" && (
+          <MetricContentContainer>
+            <ConfiguredMetricIndicatorTitle>
+              <span>{numberOfMetricsCompleted}</span> of {totalMetrics} metrics
+              configured
+            </ConfiguredMetricIndicatorTitle>
+            <MetricListContainer>
+              {metricsEntries.map(([key, metric]) => {
+                const metricCompletionPercentage =
+                  calculateOverallMetricProgress(key);
+                const { system, metricKey } =
+                  MetricConfigStore.splitSystemMetricKey(key);
+
+                return (
+                  <Fragment key={metric.label}>
+                    <Metric
+                      onClick={() =>
+                        navigate(
+                          `../settings/metric-config?system=${system}&metric=${metricKey}`
+                        )
+                      }
+                    >
+                      <MetricName>{metric.label}</MetricName>
+                      <MetricStatus greyText={metric.enabled === false}>
+                        {metricCompletionPercentage === 100 &&
+                          metric.enabled && (
+                            <CheckIcon src={checkmarkIcon} alt="" />
+                          )}
+                        {metric.enabled === false && "Unavailable"}
+                        {metricCompletionPercentage < 100 &&
+                          metric.enabled &&
+                          "Action Required"}
+                      </MetricStatus>
+                      <RightArrowIcon />
+                    </Metric>
+                    <ProgressBarContainer>
+                      <Progress
+                        progress={
+                          metric.enabled === false
+                            ? 0
+                            : metricCompletionPercentage
+                        }
+                      />
+                    </ProgressBarContainer>
+                  </Fragment>
+                );
+              })}
+            </MetricListContainer>
+          </MetricContentContainer>
+        )}
       </GuidanceContainer>
     </>
   );

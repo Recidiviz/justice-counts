@@ -71,11 +71,11 @@ export const onboardingTopicsMetadata: OnboardingTopicsMetadata = {
 export const mockTopicsStatus: OnboardingTopicsStatus[] = [
   {
     topicID: "WELCOME",
-    topicCompleted: false,
+    topicCompleted: true,
   },
   {
     topicID: "AGENCY_SETUP",
-    topicCompleted: false,
+    topicCompleted: true,
   },
   {
     topicID: "METRIC_CONFIG",
