@@ -253,7 +253,7 @@ class AgencyStore {
       auth0_user_id: "",
       name,
       email,
-      role: "CONTRIBUTOR",
+      role: AgencyTeamMemberRole.CONTRIBUTOR,
       invitation_status: "PENDING",
     };
     if (this.currentAgency) {

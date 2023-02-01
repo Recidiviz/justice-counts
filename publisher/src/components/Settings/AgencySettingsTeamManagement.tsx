@@ -216,9 +216,9 @@ export const AgencySettingsTeamManagement = observer(() => {
                               onClick={() =>
                                 handleTeamMemberAdminStatus(
                                   email,
-                                  role === "AGENCY_ADMIN"
-                                    ? "CONTRIBUTOR"
-                                    : "AGENCY_ADMIN"
+                                  role === AgencyTeamMemberRole.AGENCY_ADMIN
+                                    ? AgencyTeamMemberRole.CONTRIBUTOR
+                                    : AgencyTeamMemberRole.AGENCY_ADMIN
                                 )
                               }
                             >

@@ -194,12 +194,6 @@ export const Cell = styled.div<{ capitalize?: boolean }>`
   padding-right: 40px;
   white-space: nowrap;
 
-  span {
-    padding-right: 4px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
   &:first-child {
     flex: 2 1 auto;
   }
@@ -258,12 +252,13 @@ export const SelectedCheckmark = styled.img`
 `;
 
 export const AndOthersSpan = styled.span`
-  margin-left: 4px;
+  margin-left: 8px;
 `;
 
 export const CommaSpan = styled.span`
   &::after {
     content: ",";
   }
+  margin-left: 0px;
   margin-right: 2px;
 `;
