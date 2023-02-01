@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencyRole } from "@justice-counts/common/types";
+import { AgencyTeamMemberRole } from "@justice-counts/common/types";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
 import React from "react";
@@ -82,8 +82,8 @@ describe("test data entry form", () => {
         last_modified_at: "April 12 2022",
         last_modified_at_timestamp: null,
         editors: [
-          { name: "Editor #1", role: AgencyRole.AGENCY_ADMIN },
-          { name: "Editor #2", role: AgencyRole.CONTRIBUTOR },
+          { name: "Editor #1", role: AgencyTeamMemberRole.AGENCY_ADMIN },
+          { name: "Editor #2", role: AgencyTeamMemberRole.CONTRIBUTOR },
         ],
         status: "DRAFT",
       },
