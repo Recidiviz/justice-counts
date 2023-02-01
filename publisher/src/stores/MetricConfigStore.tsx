@@ -90,6 +90,7 @@ class MetricConfigStore {
           enabled?: boolean;
           contexts?: { key: string; value: string }[];
           label?: string;
+          description?: string;
           key?: string;
           race?: Races;
           ethnicity?: Ethnicities;
@@ -270,12 +271,14 @@ class MetricConfigStore {
                   ? {
                       label: dimension.label,
                       key: dimension.key,
+                      description: dimension.description,
                       race: dimension.race,
                       ethnicity: dimension.ethnicity,
                     }
                   : {
                       label: dimension.label,
                       key: dimension.key,
+                      description: dimension.description,
                     };
 
               /** Initialize Dimension Status (Enabled/Disabled) */
@@ -617,6 +620,9 @@ class MetricConfigStore {
         metadata.label;
       this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].key =
         metadata.key;
+      this.dimensions[systemMetricKey][disaggregationKey][
+        dimensionKey
+      ].description = metadata.description;
 
       if (disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY) {
         this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].race =

@@ -683,6 +683,10 @@ export const DefinitionsDescription = styled.div`
   }
 `;
 
+export const MetricBreakdownDescription = styled(DefinitionsDescription)`
+  margin-bottom: 20px;
+`;
+
 export const RevertToDefaultButton = styled.div`
   ${typography.sizeCSS.normal}
   width: 314px;
