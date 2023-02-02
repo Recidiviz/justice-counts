@@ -27,10 +27,10 @@ import {
   AgencySettingsWrapper,
 } from "./AgencySettings.styles";
 import { AgencySettingsBasicInfo } from "./AgencySettingsBasicInfo";
-import { AgencySettingsDescription } from "./AgencySettingsDescription";
+import AgencySettingsDescription from "./AgencySettingsDescription";
 import { AgencySettingsJurisdictions } from "./AgencySettingsJurisdictions";
 import { AgencySettingsSupervisions } from "./AgencySettingsSupervisions";
-import { AgencySettingsUrl } from "./AgencySettingsURL";
+import AgencySettingsUrl from "./AgencySettingsURL";
 
 export enum ActiveSetting {
   Description = "DESCRIPTION",
@@ -49,7 +49,7 @@ export type SettingProps = {
 export const AgencySettings: React.FC = observer(() => {
   const { agencyStore, userStore } = useStore();
   const { loadingSettings, isAgencySupervision, resetState } = agencyStore;
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const [activeSetting, setActiveSetting] = useState<ActiveSetting | undefined>(
     undefined
   );
@@ -64,8 +64,8 @@ export const AgencySettings: React.FC = observer(() => {
   useEffect(() => {
     const initialize = async () => {
       resetState();
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await agencyStore.initCurrentUserAgency(agencyId!);
+      agencyStore.initCurrentAgency(agencyId);
+      agencyStore.getAgencySettings(agencyId);
     };
 
     initialize();

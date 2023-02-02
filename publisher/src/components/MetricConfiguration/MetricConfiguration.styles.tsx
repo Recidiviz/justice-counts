@@ -394,7 +394,7 @@ export const Dimension = styled.div<{ enabled?: boolean; inView?: boolean }>`
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 17px 10px;
+  padding: 17px 40px 17px 10px;
   border-bottom: 1px solid ${palette.highlight.grey4};
   position: relative;
   background: ${({ inView }) =>
@@ -502,7 +502,9 @@ export const MetricContextHeader = styled.div`
   margin: 40px 0 20px 0;
 `;
 
-export const MetricContextItem = styled.div``;
+export const MetricContextItem = styled.div`
+  margin-bottom: 16px;
+`;
 
 export const Label = styled.div<{ noBottomMargin?: boolean }>`
   ${typography.sizeCSS.medium};
@@ -679,6 +681,10 @@ export const DefinitionsDescription = styled.div`
     display: block;
     color: ${palette.solid.orange};
   }
+`;
+
+export const MetricBreakdownDescription = styled(DefinitionsDescription)`
+  margin-bottom: 20px;
 `;
 
 export const RevertToDefaultButton = styled.div`

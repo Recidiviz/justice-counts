@@ -16,26 +16,25 @@
 // =============================================================================
 
 import { showToast } from "@justice-counts/common/components/Toast";
-import { AgencySystems, UserAgency } from "@justice-counts/common/types";
+import {
+  AgencySetting,
+  AgencySystems as AgencySystem,
+  AgencyTeam,
+  AgencyTeamMemberRole,
+  UserAgency,
+} from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction } from "mobx";
 
 import { AgencySettingType } from "../components/Settings";
 import API from "./API";
 import UserStore from "./UserStore";
 
-type AgencySettings = {
-  settings: [{ setting_type: AgencySettingType; value: string }];
-  systems: AgencySystems[] | undefined;
-};
-
 class AgencyStore {
   userStore: UserStore;
 
   api: API;
 
-  currentAgency: UserAgency | undefined;
-
-  settings: Record<AgencySettingType, string>;
+  currentAgencyId: string | undefined;
 
   loadingSettings: boolean;
 
@@ -44,13 +43,27 @@ class AgencyStore {
 
     this.userStore = userStore;
     this.api = api;
-    this.currentAgency = undefined;
-    this.settings = { PURPOSE_AND_FUNCTIONS: "", HOMEPAGE_URL: "" };
+    this.currentAgencyId = undefined;
     this.loadingSettings = true;
   }
 
-  get currentAgencySystems(): AgencySystems[] | undefined {
+  get currentAgency(): UserAgency | undefined {
+    if (this.currentAgencyId !== undefined) {
+      return this.userStore.getAgency(this.currentAgencyId);
+    }
+    return undefined;
+  }
+
+  get currentAgencySystems(): AgencySystem[] | undefined {
     return this.currentAgency?.systems;
+  }
+
+  get currentAgencyTeam(): AgencyTeam[] | undefined {
+    return this.currentAgency?.team;
+  }
+
+  get currentAgencySettings(): AgencySetting[] | undefined {
+    return this.currentAgency?.settings;
   }
 
   get isAgencySupervision(): boolean {
@@ -59,12 +72,9 @@ class AgencyStore {
     );
   }
 
-  initCurrentUserAgency = async (agencyId: string) => {
-    await this.getAgencySettings(agencyId);
-    const agency = this.userStore.getAgency(agencyId);
-
+  initCurrentAgency = (agencyId: string) => {
     runInAction(() => {
-      this.currentAgency = agency;
+      this.currentAgencyId = agencyId;
       this.loadingSettings = false;
     });
   };
@@ -80,16 +90,13 @@ class AgencyStore {
         throw new Error("There was an issue getting agency description.");
       }
 
-      const agencySettings = (await response.json()) as AgencySettings;
+      const responseJson = (await response.json()) as {
+        settings: AgencySetting[];
+      };
       runInAction(() => {
-        this.settings.PURPOSE_AND_FUNCTIONS =
-          agencySettings.settings.find(
-            (setting) => setting.setting_type === "PURPOSE_AND_FUNCTIONS"
-          )?.value || "";
-        this.settings.HOMEPAGE_URL =
-          agencySettings.settings.find(
-            (setting) => setting.setting_type === "HOMEPAGE_URL"
-          )?.value || "";
+        if (this.currentAgency) {
+          this.currentAgency.settings = responseJson.settings;
+        }
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
@@ -97,7 +104,7 @@ class AgencyStore {
   }
 
   saveAgencySettings = async (
-    settings: Partial<AgencySettings>,
+    settings: { settings: AgencySetting[] },
     agencyId: string
   ): Promise<void> => {
     const response = (await this.api.request({
@@ -112,7 +119,7 @@ class AgencyStore {
         color: "red",
         timeout: 4000,
       });
-      throw new Error("There was an issue updating purpose and functions.");
+      throw new Error("There was an issue saving agency settings.");
     }
 
     showToast({
@@ -123,18 +130,54 @@ class AgencyStore {
     });
   };
 
-  updateAgencySettings = (
-    type: AgencySettingType,
-    text: string
-  ): Partial<AgencySettings> => {
-    this.settings[type] = text;
+  saveAgencySystems = async (
+    systems: { systems: AgencySystem[] },
+    agencyId: string
+  ): Promise<void> => {
+    const response = (await this.api.request({
+      path: `/api/agencies/${agencyId}`,
+      body: systems,
+      method: "PATCH",
+    })) as Response;
 
-    return {
-      settings: [{ setting_type: type, value: text }],
-    };
+    if (response.status !== 200) {
+      showToast({
+        message: `Failed to save.`,
+        color: "red",
+        timeout: 4000,
+      });
+      throw new Error("There was an issue updating the agency systems.");
+    }
+
+    showToast({
+      message: `Agency systems saved.`,
+      check: true,
+      color: "blue",
+      timeout: 4000,
+    });
   };
 
-  updateAgencySystems = (systems: AgencySystems[]): Partial<AgencySettings> => {
+  updateAgencySettings = (
+    type: AgencySettingType,
+    text: string,
+    sourceId: number
+  ): { settings: AgencySetting[] } => {
+    const newSettings =
+      this.currentAgencySettings?.map((setting) => {
+        if (setting.setting_type === type) {
+          return { setting_type: type, value: text, source_id: sourceId };
+        }
+        return setting;
+      }) || [];
+    if (this.currentAgency) {
+      this.currentAgency.settings = newSettings;
+    }
+    return { settings: newSettings };
+  };
+
+  updateAgencySystems = (
+    systems: AgencySystem[]
+  ): { systems: AgencySystem[] } => {
     if (this.currentAgency) {
       this.currentAgency.systems = systems;
     }
@@ -143,11 +186,125 @@ class AgencyStore {
     };
   };
 
+  removeAgencyTeamMemberRequest = async (
+    body: { email: string },
+    agencyId: string
+  ): Promise<void> => {
+    const response = (await this.api.request({
+      path: `/api/agencies/${agencyId}/users`,
+      body,
+      method: "DELETE",
+    })) as Response;
+
+    if (response.status !== 200) {
+      showToast({
+        message: "Failed to remove user.",
+        color: "red",
+        timeout: 4000,
+      });
+      throw new Error("There was an issue removing a user.");
+    }
+
+    showToast({
+      message: "User has been removed.",
+      check: true,
+      color: "blue",
+      timeout: 4000,
+    });
+  };
+
+  removeAgencyTeamMember = (email: string) => {
+    if (this.currentAgency) {
+      this.currentAgency.team = this.currentAgency.team.filter(
+        (member) => member.email !== email
+      );
+    }
+  };
+
+  inviteTeamMemberRequest = async (
+    body: { invite_name: string; invite_email: string },
+    agencyId: string
+  ): Promise<void> => {
+    const response = (await this.api.request({
+      path: `/api/agencies/${agencyId}/users`,
+      body,
+      method: "POST",
+    })) as Response;
+
+    if (response.status !== 200) {
+      showToast({
+        message: "Failed to invite user.",
+        color: "red",
+        timeout: 4000,
+      });
+      throw new Error("There was an issue inviting a user.");
+    }
+
+    showToast({
+      message: "User has been invited.",
+      check: true,
+      color: "blue",
+      timeout: 4000,
+    });
+  };
+
+  inviteTeamMember = (name: string, email: string) => {
+    const newTeamMember: AgencyTeam = {
+      auth0_user_id: "",
+      name,
+      email,
+      role: AgencyTeamMemberRole.CONTRIBUTOR,
+      invitation_status: "PENDING",
+    };
+    if (this.currentAgency) {
+      this.currentAgency.team = [newTeamMember, ...this.currentAgency.team];
+    }
+  };
+
+  changeTeamMemberAdminStatusRequest = async (
+    body: { email: string; role: AgencyTeamMemberRole },
+    agencyId: string
+  ): Promise<void> => {
+    const response = (await this.api.request({
+      path: `/api/agencies/${agencyId}/users`,
+      body,
+      method: "PATCH",
+    })) as Response;
+
+    if (response.status !== 200) {
+      showToast({
+        message: "Failed to change team member status.",
+        color: "red",
+        timeout: 4000,
+      });
+      throw new Error("There was an issue changing user's status.");
+    }
+
+    showToast({
+      message: "User's status has been changed.",
+      check: true,
+      color: "blue",
+      timeout: 4000,
+    });
+  };
+
+  changeTeamMemberAdminStatus = (email: string, role: AgencyTeamMemberRole) => {
+    if (this.currentAgency) {
+      this.currentAgency.team = this.currentAgency.team.map((member) =>
+        member.email === email
+          ? {
+              ...member,
+              role,
+            }
+          : member
+      );
+    }
+  };
+
   resetState = () => {
     // reset the state when switching agencies
     runInAction(() => {
-      this.currentAgency = undefined;
-      this.settings = { PURPOSE_AND_FUNCTIONS: "", HOMEPAGE_URL: "" };
+      this.currentAgencyId = undefined;
       this.loadingSettings = true;
     });
   };

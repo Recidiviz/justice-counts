@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { AgencyTeamMemberRole } from "@justice-counts/common/types";
 import { runInAction } from "mobx";
 
 import { rootStore } from ".";
@@ -32,7 +33,10 @@ beforeEach(() => {
         frequency: "MONTHLY",
         last_modified_at: "April 12 2022",
         last_modified_at_timestamp: null,
-        editors: ["Editor #1", "Editor #2"],
+        editors: [
+          { name: "Editor #1", role: AgencyTeamMemberRole.AGENCY_ADMIN },
+          { name: "Editor #2", role: AgencyTeamMemberRole.CONTRIBUTOR },
+        ],
         status: "DRAFT",
       },
     };

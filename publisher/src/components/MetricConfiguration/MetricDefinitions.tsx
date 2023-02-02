@@ -39,6 +39,7 @@ import {
   DefinitionsSubTitle,
   DefinitionsTitle,
   DimensionContexts,
+  MetricBreakdownDescription,
   MetricSettings,
   RevertToDefaultButton,
 } from ".";
@@ -78,6 +79,13 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
         dimensions[systemMetricKey]?.[activeDisaggregationKey]?.[
           activeDimensionKey
         ]?.label;
+
+    const activeMetricOrDimensionDescription =
+      activeDimensionKey && activeDisaggregationKey
+        ? dimensions[systemMetricKey]?.[activeDisaggregationKey]?.[
+            activeDimensionKey
+          ]?.description
+        : metrics[systemMetricKey]?.description;
 
     const metricDefinitionSettingsKeys =
       metricDefinitionSettings[systemMetricKey] &&
@@ -230,6 +238,9 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
           <DefinitionsTitle>
             {activeMetricOrDimensionDisplayName}
           </DefinitionsTitle>
+          <MetricBreakdownDescription>
+            {activeMetricOrDimensionDescription}
+          </MetricBreakdownDescription>
 
           {Boolean(activeSettingsKeys?.length) && (
             <>

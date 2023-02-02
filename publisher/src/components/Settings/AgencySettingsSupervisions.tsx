@@ -57,9 +57,9 @@ export const AgencySettingsSupervisions: React.FC<{
 }> = ({ settingProps }) => {
   const { isSettingInEditMode, openSetting, removeEditMode } = settingProps;
 
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const { agencyStore } = useStore();
-  const { currentAgencySystems, updateAgencySystems, saveAgencySettings } =
+  const { currentAgencySystems, updateAgencySystems, saveAgencySystems } =
     agencyStore;
   const [supervisionSystemsToSave, setSupervisionSystemsToSave] =
     useState(currentAgencySystems);
@@ -71,9 +71,8 @@ export const AgencySettingsSupervisions: React.FC<{
 
   const handleSaveClick = () => {
     if (supervisionSystemsToSave) {
-      const updatedSettings = updateAgencySystems(supervisionSystemsToSave);
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      saveAgencySettings(updatedSettings, agencyId!);
+      const updatedSystems = updateAgencySystems(supervisionSystemsToSave);
+      saveAgencySystems(updatedSystems, agencyId);
       removeEditMode();
     }
   };

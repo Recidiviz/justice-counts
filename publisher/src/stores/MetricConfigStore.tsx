@@ -92,6 +92,7 @@ class MetricConfigStore {
           enabled?: boolean;
           contexts?: { key: string; value: string }[];
           label?: string;
+          description?: string;
           key?: string;
           race?: Races;
           ethnicity?: Ethnicities;
@@ -274,6 +275,7 @@ class MetricConfigStore {
                       label: dimension.label,
                       key: dimension.key,
                       enabled: dimension.enabled,
+                      description: dimension.description,
                       race: dimension.race,
                       ethnicity: dimension.ethnicity,
                     }
@@ -281,6 +283,7 @@ class MetricConfigStore {
                       label: dimension.label,
                       key: dimension.key,
                       enabled: dimension.enabled,
+                      description: dimension.description,
                     };
 
               /** Initialize Dimension Status (Enabled/Disabled) */
@@ -392,7 +395,7 @@ class MetricConfigStore {
     dimensionKey: string,
     dimensionData: Pick<
       MetricDisaggregationDimensions,
-      "label" | "key" | "enabled" | "race" | "ethnicity"
+      "label" | "key" | "enabled" | "race" | "ethnicity" | "description"
     >
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
@@ -409,6 +412,8 @@ class MetricConfigStore {
       dimensionData.label;
     this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].key =
       dimensionData.key;
+    this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].description =
+      dimensionData.description;
     if (disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY) {
       this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].race =
         dimensionData.race as Races;
