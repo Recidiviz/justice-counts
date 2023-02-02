@@ -130,7 +130,6 @@ export const MetricConfiguration: React.FC = observer(() => {
 
   useEffect(() => {
     const initialize = async () => {
-      setIsLoading(true);
       await initializeMetricConfiguration();
     };
 

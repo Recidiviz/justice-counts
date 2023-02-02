@@ -366,7 +366,9 @@ class MetricConfigStore {
     );
 
     /** Initialize nested objects for quick lookup and update and reduce re-renders */
-    this.metricDefinitionSettings[systemMetricKey] = {};
+    if (!this.metricDefinitionSettings[systemMetricKey]) {
+      this.metricDefinitionSettings[systemMetricKey] = {};
+    }
     this.metricDefinitionSettings[systemMetricKey][settingKey] =
       metricDefinitionSettings;
   };
@@ -383,7 +385,9 @@ class MetricConfigStore {
     );
 
     /** Initialize nested objects for quick lookup and update and reduce re-renders */
-    this.disaggregations[systemMetricKey] = {};
+    if (!this.disaggregations[systemMetricKey]) {
+      this.disaggregations[systemMetricKey] = {};
+    }
     this.disaggregations[systemMetricKey][disaggregationKey] =
       disaggregationData;
   };
@@ -404,9 +408,15 @@ class MetricConfigStore {
     );
 
     /** Initialize nested objects for quick lookup and update and reduce re-renders */
-    this.dimensions[systemMetricKey] = {};
-    this.dimensions[systemMetricKey][disaggregationKey] = {};
-    this.dimensions[systemMetricKey][disaggregationKey][dimensionKey] = {};
+    if (!this.dimensions[systemMetricKey]) {
+      this.dimensions[systemMetricKey] = {};
+    }
+    if (!this.dimensions[systemMetricKey][disaggregationKey]) {
+      this.dimensions[systemMetricKey][disaggregationKey] = {};
+    }
+    if (!this.dimensions[systemMetricKey][disaggregationKey][dimensionKey]) {
+      this.dimensions[systemMetricKey][disaggregationKey][dimensionKey] = {};
+    }
 
     this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].label =
       dimensionData.label;
@@ -437,6 +447,21 @@ class MetricConfigStore {
       metricKey
     );
 
+    if (!this.dimensionContexts[systemMetricKey]) {
+      this.dimensionContexts[systemMetricKey] = {};
+    }
+
+    if (!this.dimensionContexts[systemMetricKey][disaggregationKey]) {
+      this.dimensionContexts[systemMetricKey][disaggregationKey] = {};
+    }
+
+    if (
+      !this.dimensionContexts[systemMetricKey][disaggregationKey][dimensionKey]
+    ) {
+      this.dimensionContexts[systemMetricKey][disaggregationKey][dimensionKey] =
+        {};
+    }
+
     this.dimensionContexts[systemMetricKey][disaggregationKey][dimensionKey][
       contextKey
     ] = { label };
@@ -460,7 +485,9 @@ class MetricConfigStore {
     );
 
     /** Initialize nested objects for quick lookup and update and reduce re-renders */
-    this.contexts[systemMetricKey] = {};
+    if (!this.contexts[systemMetricKey]) {
+      this.contexts[systemMetricKey] = {};
+    }
     this.contexts[systemMetricKey][contextKey] = contextData;
   };
 
@@ -701,6 +728,24 @@ class MetricConfigStore {
       system,
       metricKey
     );
+
+    if (!this.dimensionDefinitionSettings[systemMetricKey]) {
+      this.dimensionDefinitionSettings[systemMetricKey] = {};
+    }
+
+    if (!this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey]) {
+      this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey] = {};
+    }
+
+    if (
+      !this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
+        dimensionKey
+      ]
+    ) {
+      this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
+        dimensionKey
+      ] = {};
+    }
 
     this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
       dimensionKey
