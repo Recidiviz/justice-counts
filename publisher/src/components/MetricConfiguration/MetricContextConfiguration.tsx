@@ -39,7 +39,7 @@ import {
 } from ".";
 
 export const ContextConfiguration: React.FC = observer(() => {
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const [settingsSearchParams] = useSettingsSearchParams();
   const { metricConfigStore } = useStore();
   const { metrics, contexts, updateContextValue, saveMetricSettings } =
@@ -68,11 +68,9 @@ export const ContextConfiguration: React.FC = observer(() => {
         value
       );
       if (isDebounceUsed) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        debouncedSave(updatedSetting, agencyId!);
+        debouncedSave(updatedSetting, agencyId);
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        saveMetricSettings(updatedSetting, agencyId!);
+        saveMetricSettings(updatedSetting, agencyId);
       }
     }
   };

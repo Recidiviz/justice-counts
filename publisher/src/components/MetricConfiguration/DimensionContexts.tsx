@@ -35,7 +35,7 @@ type DimensionContextsProps = {
 
 export const DimensionContexts: React.FC<DimensionContextsProps> = observer(
   ({ dimensionContextsMap, activeDisaggregationKey, activeDimensionKey }) => {
-    const { agencyId } = useParams();
+    const { agencyId } = useParams() as { agencyId: string };
     const [settingsSearchParams] = useSettingsSearchParams();
     const { system: systemSearchParam, metric: metricSearchParam } =
       settingsSearchParams;
@@ -58,8 +58,7 @@ export const DimensionContexts: React.FC<DimensionContextsProps> = observer(
           contextKey,
           e.currentTarget.value
         );
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        debouncedSave(updatedSetting, agencyId!);
+        debouncedSave(updatedSetting, agencyId);
       }
     };
     return (

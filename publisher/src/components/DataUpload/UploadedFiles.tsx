@@ -74,6 +74,7 @@ export const UploadedFileRow: React.FC<{
     const { reportStore, userStore } = useStore();
     const [isDownloading, setIsDownloading] = useState(false);
     const [rowHovered, setRowHovered] = useState(false);
+    const { agencyId } = useParams() as { agencyId: string };
 
     const handleDownload = async (spreadsheetID: number, name: string) => {
       setIsDownloading(true);
@@ -165,7 +166,7 @@ export const UploadedFileRow: React.FC<{
 
         {rowHovered && id && (
           <ActionsContainer onClick={(e) => e.stopPropagation()}>
-            {userStore.isRecidivizAdmin && (
+            {userStore.isJusticeCountsAdmin(agencyId) && (
               <>
                 {(badgeText === "processed" || badgeText === "error") && (
                   <ActionButton
@@ -207,7 +208,7 @@ export const UploadedFileRow: React.FC<{
 );
 
 export const UploadedFiles: React.FC = observer(() => {
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const { reportStore } = useStore();
   const dataUploadColumnTitles = [
     "Filename",
@@ -287,8 +288,7 @@ export const UploadedFiles: React.FC = observer(() => {
   };
 
   const fetchListOfUploadedFiles = async () => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const response = (await reportStore.getUploadedFilesList(agencyId!)) as
+    const response = (await reportStore.getUploadedFilesList(agencyId)) as
       | Response
       | Error;
 

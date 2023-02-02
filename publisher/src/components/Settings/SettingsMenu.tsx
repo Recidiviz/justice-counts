@@ -17,7 +17,7 @@
 
 import { observer } from "mobx-react-lite";
 import React, { Fragment } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import {
   settingsMenuPaths,
@@ -36,6 +36,7 @@ import {
 export const SettingsMenu: React.FC = observer(() => {
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const location = useLocation();
   const navigate = useNavigate();
   const { metricConfigStore, userStore } = useStore();
@@ -52,7 +53,7 @@ export const SettingsMenu: React.FC = observer(() => {
   };
 
   // TODO remove that when team management is finished
-  const tempSettingsMenuPaths = userStore.isRecidivizAdmin
+  const tempSettingsMenuPaths = userStore.isJusticeCountsAdmin(agencyId)
     ? settingsMenuPaths
     : settingsMenuPathsWithoutTeam;
 

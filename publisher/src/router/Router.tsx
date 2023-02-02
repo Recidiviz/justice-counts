@@ -32,7 +32,7 @@ import Settings from "../pages/Settings";
 import { useStore } from "../stores";
 
 export const Router = () => {
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const { userStore } = useStore();
 
   // using this to indicate whether user has agency id of which is provided in the url
