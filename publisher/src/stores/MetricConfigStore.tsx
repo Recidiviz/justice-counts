@@ -412,8 +412,9 @@ class MetricConfigStore {
       dimensionData.label;
     this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].key =
       dimensionData.key;
-    this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].description =
-      dimensionData.description;
+    this.dimensions[systemMetricKey][disaggregationKey][
+      dimensionKey
+    ].description = dimensionData.description;
     if (disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY) {
       this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].race =
         dimensionData.race as Races;
