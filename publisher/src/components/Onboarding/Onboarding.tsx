@@ -202,16 +202,23 @@ const OnboardingModal = styled.div<{
   box-shadow: 0px 4px 10px rgba(53, 83, 98, 0.4);
   animation: ${float} 3s infinite ease-in-out;
 
-  @media only screen and (max-width: ${TWO_PANEL_MAX_WIDTH}px) {
-    ${({ position, modalHeight }) => {
-      if (position === "publishdata") {
+  @media only screen and (max-width: ${ONE_PANEL_MAX_WIDTH}px) {
+    ${({ position }) => {
+      if (position === "reportsummary") {
         return `
-          top: calc(100% - ${modalHeight}px - 28px);
-          right: calc(100% - 532px - ${SIDE_PANEL_WIDTH}px);
-          left: ${SIDE_PANEL_WIDTH}px;
+          &::after {
+            content: "Available on wider screens.";
+            position: absolute;
+            bottom: 23px;
+            font-size: 12px;
+          }
+          
+          top: unset;
+          left: calc(100% - 532px - 24px);
+          bottom: 24px;
+          right: 24px;
         `;
       }
-      return ``;
     }}
   }
 `;
@@ -325,7 +332,7 @@ const OnboardingFadedContainer = styled.div<OnboardingFadedContainerProps>`
     }
     if (position === "center") {
       return `
-        width: ${DATA_ENTRY_WIDTH}px; 
+        width: ${DATA_ENTRY_WIDTH + 20}px; 
       `;
     }
   }};
@@ -355,6 +362,11 @@ const OnboardingFadedContainer = styled.div<OnboardingFadedContainerProps>`
       if (position === "right" || position === "left") {
         return `
           display: none;
+        `;
+      }
+      if (position === "center") {
+        return `
+          margin-left: 0;
         `;
       }
     }};
@@ -442,10 +454,10 @@ const OnboardingSessionView = ({
       html: (
         <>
           <p>
-            You can view and edit your agency’s Justice Counts metrics in the{" "}
-            <strong>Settings</strong> page, accessible from the menu bar at the
-            top of the screen. You can also change your display name and email
-            from this page.
+            You can view and edit the Justice Counts metrics your agency is able
+            to record in the <strong>Settings</strong> page, accessible from the
+            menu bar at the top of the screen. You can also change your display
+            name and email from this page.
           </p>
         </>
       ),
