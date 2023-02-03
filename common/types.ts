@@ -58,6 +58,27 @@ export const SupervisionSubsystems: AgencySystems[] = [
   "OTHER_SUPERVISION",
 ];
 
+export type JurisdictionType =
+  | "territory"
+  | "district"
+  | "state"
+  | "county"
+  | "county_subdivision";
+
+export type Jurisdiction = {
+  id: string;
+  area_name: string;
+  state_name: string;
+  state_abbrev: string;
+  state_code: string;
+  fips: string;
+  county_name: string | null;
+  county_code: string | null;
+  county_subdivision: string | null;
+  county_subdivision_code: string | null;
+  type: JurisdictionType;
+};
+
 export type AgencySettingType = "PURPOSE_AND_FUNCTIONS" | "HOMEPAGE_URL";
 
 export interface AgencySetting {

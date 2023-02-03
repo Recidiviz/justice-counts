@@ -476,6 +476,15 @@ export const JurisdictionsSearchResult = styled.div<{ hasAction?: boolean }>`
   }
 `;
 
+export const SeeMoreButton = styled(JurisdictionsSearchResult)`
+  justify-content: center;
+  color: ${palette.solid.blue};
+
+  &:hover {
+    background-color: ${palette.solid.white};
+  }
+`;
+
 export const JurisdictionsListArea = styled.div`
   display: flex;
   flex-direction: column;
