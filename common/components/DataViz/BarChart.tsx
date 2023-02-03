@@ -31,7 +31,7 @@ import { Datapoint } from "../../types";
 import { rem } from "../../utils";
 import { palette } from "../GlobalStyles";
 import Tooltip from "./Tooltip";
-import { splitUtcString } from "./utils";
+import { abbreviatedMonths, splitUtcString } from "./utils";
 
 const MAX_BAR_SIZE = 150;
 
@@ -215,9 +215,21 @@ const ResponsiveBarChart: React.FC<{
                 return "";
               }
               const [, , month, year] = splitUtcString(value);
-              return data[index].frequency === "ANNUAL"
-                ? year
-                : `${month} ${year}`;
+              if (data[index].frequency === "ANNUAL") {
+                const previousMonth =
+                  abbreviatedMonths[
+                    (abbreviatedMonths.findIndex((m) => m === month) + 11) % 12
+                  ];
+                if (previousMonth === "Dec") {
+                  return `${month} ${year} - ${previousMonth} ${parseInt(
+                    year
+                  )}`;
+                }
+                return `${month} ${year} - ${previousMonth} ${
+                  parseInt(year) + 1
+                }`;
+              }
+              return `${month} ${year}`;
             }}
             tickMargin={12}
           />
