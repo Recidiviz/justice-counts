@@ -18,6 +18,7 @@
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
   AgencySystems,
+  AgencyTeamMemberRole,
   SupervisionSubsystems,
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
@@ -60,6 +61,10 @@ export type UploadedFile = {
   uploaded_at: number;
   ingested_at: number;
   uploaded_by: string;
+  uploaded_by_v2: {
+    name: string;
+    role: AgencyTeamMemberRole;
+  };
   system: AgencySystems;
   status: UploadedFileStatus | null;
 };

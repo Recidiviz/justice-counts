@@ -21,7 +21,10 @@ import {
   BadgeColors,
 } from "@justice-counts/common/components/Badge";
 import { showToast } from "@justice-counts/common/components/Toast";
-import { AgencySystems } from "@justice-counts/common/types";
+import {
+  AgencySystems,
+  AgencyTeamMemberRole,
+} from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -62,7 +65,8 @@ export const UploadedFileRow: React.FC<{
     dateUploaded: string;
     dateIngested: string;
     system?: AgencySystems;
-    uploadedBy: string;
+    uploadedByName: string;
+    uploadedByRole: AgencyTeamMemberRole;
   };
   deleteUploadedFile: (spreadsheetID: number) => void;
   updateUploadedFileStatus: (
@@ -117,7 +121,8 @@ export const UploadedFileRow: React.FC<{
       dateUploaded,
       dateIngested,
       system,
-      uploadedBy,
+      uploadedByName,
+      uploadedByRole,
     } = fileRowDetails;
 
     useEffect(
@@ -152,8 +157,9 @@ export const UploadedFileRow: React.FC<{
           <UploadedContainer>
             {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
             <TeamMemberNameWithBadge
-              name={uploadedBy}
+              name={uploadedByName}
               badgeId={id?.toString()}
+              role={uploadedByRole}
             />
             <DateUploaded>{`/ ${dateUploaded}`}</DateUploaded>
           </UploadedContainer>
@@ -260,7 +266,8 @@ export const UploadedFiles: React.FC = observer(() => {
         allUserSystems: currentAgency?.systems,
         hideCombined: true,
       }) as AgencySystems,
-      uploadedBy: file.uploaded_by,
+      uploadedByName: file.uploaded_by_v2.name,
+      uploadedByRole: file.uploaded_by_v2.role,
     };
   };
 
