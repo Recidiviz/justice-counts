@@ -15,7 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { MetricContext } from "@justice-counts/common/types";
+import {
+  AgencySystems,
+  MetricContext,
+  SupervisionSubsystems,
+} from "@justice-counts/common/types";
 import { debounce, memoize } from "lodash";
 
 export const isPositiveNumber = (value: string | number) => {
@@ -232,3 +236,30 @@ export function removeAgencyFromPath(location: string) {
   const agencyRegex = /\/agency\/\d+\//i;
   return location.replace(agencyRegex, "");
 }
+
+/**
+ * Formats system name by removing snakecase and lowercasing
+ *
+ * @note formats SUPERVISION system name to "Supervision (Combined)" if supervision subsystems detected
+ * @param systemName {string} system name
+ * @param allUserSystems {string[]} (optional) a list of all systems a user belongs to
+ * @returns lowercase, non-snakecase string
+ *
+ * @example formatSystemName("SUPERVISION", ["SUPERVISION", "PAROLE", "PROBATION", "POST_RELEASE"]) returns "supervision (combined)"
+ * @example formatSystemName("SUPERVISION", ["SUPERVISION"]) returns "supervision"
+ * @example formatSystemName("COURTS_AND_PRETRIAL") returns "courts and pretrial"
+ */
+export const formatSystemName = (
+  systemName: AgencySystems,
+  allUserSystems?: AgencySystems[]
+) => {
+  if (systemName === "SUPERVISION" && allUserSystems) {
+    const hasSubsystems =
+      allUserSystems.filter((system) => SupervisionSubsystems.includes(system))
+        .length > 0;
+    return hasSubsystems
+      ? `${removeSnakeCase(systemName.toLowerCase())} (combined)`
+      : "supervision";
+  }
+  return removeSnakeCase(systemName.toLowerCase());
+};
