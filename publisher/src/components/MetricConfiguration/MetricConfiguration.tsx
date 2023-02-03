@@ -29,7 +29,7 @@ import { useParams } from "react-router-dom";
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
-import { Loading } from "../Loading";
+import { ContainedLoader } from "../Loading";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
@@ -140,7 +140,7 @@ export const MetricConfiguration: React.FC = observer(() => {
   }, [agencyId]);
 
   if (isLoading) {
-    return <Loading />;
+    return <ContainedLoader />;
   }
 
   if (loadingErrorMessage) {

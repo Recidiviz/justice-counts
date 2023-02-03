@@ -20,7 +20,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { Loading } from "../Loading";
+import { ContainedLoader } from "../Loading";
 import {
   AgencySettingsContent,
   AgencySettingsTitle,
@@ -72,7 +72,7 @@ export const AgencySettings: React.FC = observer(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyId]);
 
-  if (loadingSettings) return <Loading />;
+  if (loadingSettings) return <ContainedLoader />;
 
   return (
     <AgencySettingsWrapper>
