@@ -349,3 +349,18 @@ export const formatDateShort = (dateStr: string) => {
 export const formatExternalLink = (url: string) => {
   return url.match(/^http[s]?:\/\//) ? url : `http://${url}`;
 };
+
+export const getDatapointBarLabel = (datapoint: Datapoint) => {
+  const [, , month, year] = splitUtcString(datapoint.start_date);
+  if (datapoint.frequency === "ANNUAL") {
+    const previousMonth =
+      abbreviatedMonths[
+        (abbreviatedMonths.findIndex((m) => m === month) + 11) % 12
+      ];
+    if (previousMonth === "Dec") {
+      return `${month} ${year} - ${previousMonth} ${parseInt(year)}`;
+    }
+    return `${month} ${year} - ${previousMonth} ${parseInt(year) + 1}`;
+  }
+  return `${month} ${year}`;
+};

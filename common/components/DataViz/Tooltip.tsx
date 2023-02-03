@@ -23,7 +23,12 @@ import { Datapoint } from "../../types";
 import { formatNumberInput } from "../../utils";
 import { palette, typography } from "../GlobalStyles";
 import { LegendColor } from "./Legend";
-import { getSumOfDimensionValues, splitUtcString } from "./utils";
+import {
+  abbreviatedMonths,
+  getDatapointBarLabel,
+  getSumOfDimensionValues,
+  splitUtcString,
+} from "./utils";
 
 const TooltipContainer = styled.div`
   padding: 16px;
@@ -123,7 +128,7 @@ const Tooltip: React.FC<TooltipProps> = ({
     return (
       <TooltipContainer>
         <TooltipNameWithBottomMargin>
-          {datapoint.frequency === "ANNUAL" ? year : `${month} ${year}`}
+          {getDatapointBarLabel(datapoint)}
         </TooltipNameWithBottomMargin>
         {renderItems()}
       </TooltipContainer>

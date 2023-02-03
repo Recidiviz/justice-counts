@@ -31,7 +31,11 @@ import { Datapoint } from "../../types";
 import { rem } from "../../utils";
 import { palette } from "../GlobalStyles";
 import Tooltip from "./Tooltip";
-import { abbreviatedMonths, splitUtcString } from "./utils";
+import {
+  abbreviatedMonths,
+  getDatapointBarLabel,
+  splitUtcString,
+} from "./utils";
 
 const MAX_BAR_SIZE = 150;
 
@@ -210,26 +214,11 @@ const ResponsiveBarChart: React.FC<{
             minTickGap={32}
             tick={tickStyle}
             tickLine={false}
-            tickFormatter={(value, index) => {
+            tickFormatter={(_, index) => {
               if (data.length === 0) {
                 return "";
               }
-              const [, , month, year] = splitUtcString(value);
-              if (data[index].frequency === "ANNUAL") {
-                const previousMonth =
-                  abbreviatedMonths[
-                    (abbreviatedMonths.findIndex((m) => m === month) + 11) % 12
-                  ];
-                if (previousMonth === "Dec") {
-                  return `${month} ${year} - ${previousMonth} ${parseInt(
-                    year
-                  )}`;
-                }
-                return `${month} ${year} - ${previousMonth} ${
-                  parseInt(year) + 1
-                }`;
-              }
-              return `${month} ${year}`;
+              return getDatapointBarLabel(data[index]);
             }}
             tickMargin={12}
           />
