@@ -16,15 +16,13 @@
 // =============================================================================
 
 import { showToast } from "@justice-counts/common/components/Toast";
-import {
-  AgencySystems,
-  SupervisionSubsystems,
-} from "@justice-counts/common/types";
+import { AgencySystems } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { createSearchParams, useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { formatSystemName } from "../../utils";
 import { ReactComponent as GoToMetricConfig } from "../assets/goto-metric-configuration-icon.svg";
 import { ReactComponent as SwitchToChartIcon } from "../assets/switch-to-chart-icon.svg";
 import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-data-table-icon.svg";
@@ -56,6 +54,7 @@ export const MetricsView: React.FC = observer(() => {
   const { reportStore, userStore, datapointsStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
   const { metricsBySystem } = reportStore;
+  const currentAgency = userStore.getAgency(agencyId);
 
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
@@ -75,7 +74,6 @@ export const MetricsView: React.FC = observer(() => {
       return setLoadingError(result.message);
     }
 
-    const currentAgency = userStore.getAgency(agencyId);
     const defaultSystemSearchParam = Object.keys(result)[0]
       .toLowerCase()
       .replace(" ", "_") as AgencySystems;
@@ -158,14 +156,6 @@ export const MetricsView: React.FC = observer(() => {
   const metricName = currentMetric?.display_name || "";
   const metricFrequency =
     currentMetric?.custom_frequency || currentMetric?.frequency;
-  const currentAgency = userStore.getAgency(agencyId);
-  const hasSupervisionWithSubsystems =
-    currentAgency &&
-    currentAgency.systems?.includes("SUPERVISION") &&
-    currentAgency.systems.length > 1 &&
-    currentAgency.systems.filter((system) =>
-      SupervisionSubsystems.includes(system)
-    ).length > 0;
 
   return (
     <>
@@ -187,10 +177,10 @@ export const MetricsView: React.FC = observer(() => {
                       }}
                     >
                       <SystemName>
-                        {metrics[0].system.display_name === "Supervision" &&
-                        hasSupervisionWithSubsystems
-                          ? `${metrics[0].system.display_name} (Combined)`
-                          : metrics[0].system.display_name}
+                        {formatSystemName(
+                          metrics[0].system.key,
+                          currentAgency?.systems
+                        )}
                       </SystemName>
                       <SystemNamePlusSign
                         isSystemActive={system === systemSearchParam}

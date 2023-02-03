@@ -15,11 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Metric } from "@justice-counts/common/types";
+import { AgencySystems, Metric } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React from "react";
+import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { formatSystemName } from "../../utils";
 import checkIcon from "../assets/check-icon.svg";
 import errorIcon from "../assets/status-error-icon.png";
 import { MetricsSectionTitle } from "../Forms";
@@ -62,8 +64,10 @@ const ReportStatusIconComponent: React.FC<{
 const PublishConfirmationSummaryPanel: React.FC<{
   reportID: number;
 }> = ({ reportID }) => {
-  const { formStore, reportStore } = useStore();
+  const { formStore, reportStore, userStore } = useStore();
   const checkMetricForErrors = useCheckMetricForErrors(reportID);
+  const { agencyId } = useParams() as { agencyId: string };
+  const currentAgency = userStore.getAgency(agencyId);
 
   const metricsBySystem = reportStore.reportMetricsBySystem[reportID];
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;
@@ -77,7 +81,12 @@ const PublishConfirmationSummaryPanel: React.FC<{
           return (
             <React.Fragment key={system}>
               {showMetricSectionTitles && (
-                <MetricsSectionTitle>{system}</MetricsSectionTitle>
+                <MetricsSectionTitle>
+                  {formatSystemName(
+                    system as AgencySystems,
+                    currentAgency?.systems
+                  )}
+                </MetricsSectionTitle>
               )}
               {enabledMetrics.map((metric) => {
                 const foundErrors = checkMetricForErrors(metric.key);

@@ -18,12 +18,12 @@
 import React from "react";
 
 import { useStore } from "../../stores";
+import { formatSystemName } from "../../utils";
 import {
   AgencySettingsBlock,
   BasicInfoBlockDescription,
   BasicInfoRow,
 } from "./AgencySettings.styles";
-import { normalizeSystem } from "./utils";
 
 export const AgencySettingsBasicInfo = () => {
   const { agencyStore } = useStore();
@@ -39,14 +39,14 @@ export const AgencySettingsBasicInfo = () => {
         <span>State</span>
         {currentAgency?.state}
       </BasicInfoRow>
-      <BasicInfoRow>
+      <BasicInfoRow capitalize>
         <span>
           {currentAgencySystems && currentAgencySystems.length > 1
             ? "Systems"
             : "System"}
         </span>
         {currentAgencySystems
-          ?.map((system) => normalizeSystem(system))
+          ?.map((system) => formatSystemName(system, currentAgencySystems))
           .join(", ")}
       </BasicInfoRow>
       <BasicInfoBlockDescription>

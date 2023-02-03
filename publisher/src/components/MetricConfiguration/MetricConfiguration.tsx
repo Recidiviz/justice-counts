@@ -27,7 +27,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { removeSnakeCase } from "../../utils";
+import { formatSystemName } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import { Loading } from "../Loading";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
@@ -149,13 +149,6 @@ export const MetricConfiguration: React.FC = observer(() => {
   const enabledSupervisionSubsystems = currentAgency?.systems
     .filter((system) => SupervisionSubsystems.includes(system))
     .map((system) => system.toLowerCase());
-  const hasSupervisionWithSubsystems =
-    currentAgency &&
-    currentAgency.systems?.includes("SUPERVISION") &&
-    currentAgency.systems.length > 1 &&
-    currentAgency.systems.filter((system) =>
-      SupervisionSubsystems.includes(system)
-    ).length > 0;
 
   return (
     <>
@@ -171,20 +164,15 @@ export const MetricConfiguration: React.FC = observer(() => {
                     .filter(
                       (system) => getMetricsBySystem(system)?.length !== 0
                     )
-                    .map((filterOption) => {
+                    .map((system) => {
                       return (
                         <TabbedItem
-                          key={filterOption}
-                          selected={systemSearchParam === filterOption}
-                          onClick={() => handleSystemClick(filterOption)}
+                          key={system}
+                          selected={systemSearchParam === system}
+                          onClick={() => handleSystemClick(system)}
                           capitalize
                         >
-                          {filterOption === "SUPERVISION" &&
-                          hasSupervisionWithSubsystems
-                            ? `${removeSnakeCase(
-                                filterOption.toLowerCase()
-                              )} (Combined)`
-                            : removeSnakeCase(filterOption.toLowerCase())}
+                          {formatSystemName(system, currentAgency?.systems)}
                         </TabbedItem>
                       );
                     })}
