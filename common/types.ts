@@ -34,7 +34,6 @@ export type AgencySystems =
   | "POST_RELEASE"
   | "PRETRIAL_SUPERVISION"
   | "OTHER_SUPERVISION";
-// | "Supervision (Combined)";
 
 export type AgencyTeam = {
   auth0_user_id: string;
