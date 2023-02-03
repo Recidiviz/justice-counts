@@ -16,7 +16,10 @@
 // =============================================================================
 
 import { showToast } from "@justice-counts/common/components/Toast";
-import { AgencySystems } from "@justice-counts/common/types";
+import {
+  AgencySystems,
+  SupervisionSubsystems,
+} from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { createSearchParams, useNavigate, useParams } from "react-router-dom";
@@ -155,6 +158,14 @@ export const MetricsView: React.FC = observer(() => {
   const metricName = currentMetric?.display_name || "";
   const metricFrequency =
     currentMetric?.custom_frequency || currentMetric?.frequency;
+  const currentAgency = userStore.getAgency(agencyId);
+  const hasSupervisionWithSubsystems =
+    currentAgency &&
+    currentAgency.systems?.includes("SUPERVISION") &&
+    currentAgency.systems.length > 1 &&
+    currentAgency.systems.filter((system) =>
+      SupervisionSubsystems.includes(system)
+    ).length > 0;
 
   return (
     <>
@@ -175,7 +186,12 @@ export const MetricsView: React.FC = observer(() => {
                         });
                       }}
                     >
-                      <SystemName>{metrics[0].system.display_name}</SystemName>
+                      <SystemName>
+                        {metrics[0].system.display_name === "Supervision" &&
+                        hasSupervisionWithSubsystems
+                          ? `${metrics[0].system.display_name} (Combined)`
+                          : metrics[0].system.display_name}
+                      </SystemName>
                       <SystemNamePlusSign
                         isSystemActive={system === systemSearchParam}
                       />

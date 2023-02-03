@@ -21,9 +21,10 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import { Metric } from "@justice-counts/common/types";
+import { Metric, SupervisionSubsystems } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import { useStore } from "../../stores";
@@ -240,6 +241,7 @@ const ReportSummaryPanel: React.FC<{
   fieldDescription?: FieldDescriptionProps;
 }> = ({ reportID, activeMetric, showDataEntryHelpPage, fieldDescription }) => {
   const { formStore, reportStore, userStore } = useStore();
+  const { agencyId } = useParams();
   const checkMetricForErrors = useCheckMetricForErrors(reportID);
   const {
     editors,
@@ -251,6 +253,14 @@ const ReportSummaryPanel: React.FC<{
 
   const metricsBySystem = reportStore.reportMetricsBySystem[reportID];
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;
+  const currentAgency = userStore.getAgency(agencyId);
+  const hasSupervisionWithSubsystems =
+    currentAgency &&
+    currentAgency.systems?.includes("SUPERVISION") &&
+    currentAgency.systems.length > 1 &&
+    currentAgency.systems.filter((system) =>
+      SupervisionSubsystems.includes(system)
+    ).length > 0;
 
   return (
     <ReportSummaryWrapper showDataEntryHelpPage={showDataEntryHelpPage}>
@@ -263,7 +273,11 @@ const ReportSummaryPanel: React.FC<{
           return (
             <React.Fragment key={system}>
               {showMetricSectionTitles ? (
-                <MetricsSectionTitle>{system}</MetricsSectionTitle>
+                <MetricsSectionTitle>
+                  {system === "SUPERVISION" && hasSupervisionWithSubsystems
+                    ? `${system} (Combined)`
+                    : system}
+                </MetricsSectionTitle>
               ) : null}
               {enabledMetrics.map((metric) => {
                 const foundErrors = checkMetricForErrors(metric.key);

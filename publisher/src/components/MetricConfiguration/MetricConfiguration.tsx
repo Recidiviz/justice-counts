@@ -149,6 +149,13 @@ export const MetricConfiguration: React.FC = observer(() => {
   const enabledSupervisionSubsystems = currentAgency?.systems
     .filter((system) => SupervisionSubsystems.includes(system))
     .map((system) => system.toLowerCase());
+  const hasSupervisionWithSubsystems =
+    currentAgency &&
+    currentAgency.systems?.includes("SUPERVISION") &&
+    currentAgency.systems.length > 1 &&
+    currentAgency.systems.filter((system) =>
+      SupervisionSubsystems.includes(system)
+    ).length > 0;
 
   return (
     <>
@@ -164,16 +171,23 @@ export const MetricConfiguration: React.FC = observer(() => {
                     .filter(
                       (system) => getMetricsBySystem(system)?.length !== 0
                     )
-                    .map((filterOption) => (
-                      <TabbedItem
-                        key={filterOption}
-                        selected={systemSearchParam === filterOption}
-                        onClick={() => handleSystemClick(filterOption)}
-                        capitalize
-                      >
-                        {removeSnakeCase(filterOption.toLowerCase())}
-                      </TabbedItem>
-                    ))}
+                    .map((filterOption) => {
+                      return (
+                        <TabbedItem
+                          key={filterOption}
+                          selected={systemSearchParam === filterOption}
+                          onClick={() => handleSystemClick(filterOption)}
+                          capitalize
+                        >
+                          {filterOption === "SUPERVISION" &&
+                          hasSupervisionWithSubsystems
+                            ? `${removeSnakeCase(
+                                filterOption.toLowerCase()
+                              )} (Combined)`
+                            : removeSnakeCase(filterOption.toLowerCase())}
+                        </TabbedItem>
+                      );
+                    })}
                 </TabbedOptions>
               </TabbedBar>
             </StickyHeader>
