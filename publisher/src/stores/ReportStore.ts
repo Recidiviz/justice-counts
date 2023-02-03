@@ -202,7 +202,7 @@ class ReportStore {
     try {
       const response = (await this.api.request({
         path: `/api/reports`,
-        body: { report_ids: reportIDs },
+        body: { report_ids: reportIDs, agency_id: parseInt(currentAgencyId) },
         method: "DELETE",
       })) as Response;
 
