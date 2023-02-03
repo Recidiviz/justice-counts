@@ -85,7 +85,7 @@ export const systemToTemplateSpreadsheetFileName: { [system: string]: string } =
 
 export const DataUpload: React.FC = observer(() => {
   const { userStore, reportStore } = useStore();
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
   const currentAgency = userStore.getAgency(agencyId);
 

@@ -34,7 +34,7 @@ import {
 
 const Menu = () => {
   const { authStore, api, userStore } = useStore();
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -100,7 +100,7 @@ const Menu = () => {
       </MenuItem>
 
       {/* Agencies Dropdown */}
-      {userStore.isRecidivizAdmin && (
+      {userStore.isJusticeCountsAdmin(agencyId) && (
         <MenuItem>
           <Dropdown>
             <ExtendedDropdownToggle kind="borderless">

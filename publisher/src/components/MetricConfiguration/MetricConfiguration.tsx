@@ -54,7 +54,7 @@ export const MetricConfiguration: React.FC = observer(() => {
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
   const { userStore, metricConfigStore } = useStore();
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const { metrics, initializeMetricConfigStoreValues, getMetricsBySystem } =
     metricConfigStore;
 
@@ -69,8 +69,7 @@ export const MetricConfiguration: React.FC = observer(() => {
     useState<string>();
 
   const initializeMetricConfiguration = async () => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const response = await initializeMetricConfigStoreValues(agencyId!);
+    const response = await initializeMetricConfigStoreValues(agencyId);
     if (response instanceof Error) {
       return setLoadingErrorMessage(response.message);
     }
@@ -131,7 +130,6 @@ export const MetricConfiguration: React.FC = observer(() => {
 
   useEffect(() => {
     const initialize = async () => {
-      setIsLoading(true);
       await initializeMetricConfiguration();
     };
 

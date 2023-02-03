@@ -49,7 +49,7 @@ import {
 import { AgencySettingsTeamManagementConfirmModal } from "./AgencySettingsTeamManagementConfirmModal";
 
 export const AgencySettingsTeamManagement = observer(() => {
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const { agencyStore, userStore } = useStore();
   const {
     currentAgencyTeam,
@@ -69,8 +69,7 @@ export const AgencySettingsTeamManagement = observer(() => {
 
   const handleRemoveTeamMember = (email: string) => {
     removeAgencyTeamMember(email);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    removeAgencyTeamMemberRequest({ email }, agencyId!);
+    removeAgencyTeamMemberRequest({ email }, agencyId);
     setTeamMemberEditMenuActiveEmail(undefined);
     setIsModalOpen(false);
   };
@@ -79,8 +78,7 @@ export const AgencySettingsTeamManagement = observer(() => {
       inviteTeamMember(name, email);
       inviteTeamMemberRequest(
         { invite_name: name, invite_email: email },
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        agencyId!
+        agencyId
       );
       setNameValue("");
       setEmailValue("");
@@ -91,8 +89,7 @@ export const AgencySettingsTeamManagement = observer(() => {
     role: AgencyTeamMemberRole
   ) => {
     changeTeamMemberAdminStatus(email, role);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    changeTeamMemberAdminStatusRequest({ email, role }, agencyId!);
+    changeTeamMemberAdminStatusRequest({ email, role }, agencyId);
     setTeamMemberEditMenuActiveEmail(undefined);
   };
 
@@ -124,8 +121,7 @@ export const AgencySettingsTeamManagement = observer(() => {
   useEffect(() => {
     const initialize = async () => {
       resetState();
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      agencyStore.initCurrentAgency(agencyId!);
+      agencyStore.initCurrentAgency(agencyId);
     };
 
     initialize();

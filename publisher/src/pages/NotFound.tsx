@@ -78,7 +78,7 @@ const HomeButton = styled.div`
 
 // TODO need figma design for this page
 export const NotFound: React.FC = () => {
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
   const { userStore } = useStore();
 

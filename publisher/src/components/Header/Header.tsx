@@ -25,7 +25,7 @@ import Menu from "../Menu";
 import { HeaderBar, Logo, LogoContainer } from ".";
 
 const Header = () => {
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
   const { userStore } = useStore();
 

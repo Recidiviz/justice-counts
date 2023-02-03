@@ -51,7 +51,7 @@ type MetricDefinitionsProps = {
 
 export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
   ({ activeDimensionKey, activeDisaggregationKey }) => {
-    const { agencyId } = useParams();
+    const { agencyId } = useParams() as { agencyId: string };
     const [settingsSearchParams] = useSettingsSearchParams();
     const { metricConfigStore } = useStore();
     const {
@@ -177,8 +177,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
             key: metricSearchParam as string,
             settings: defaultSettings,
           };
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          return saveMetricSettings(updatedSetting, agencyId!);
+          return saveMetricSettings(updatedSetting, agencyId);
         }
 
         const updatedSetting = {
@@ -195,8 +194,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
             },
           ],
         };
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        saveMetricSettings(updatedSetting, agencyId!);
+        saveMetricSettings(updatedSetting, agencyId);
       }
     };
 
@@ -212,11 +210,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
             settingKey,
             settingValue
           );
-          return saveMetricSettings(
-            updatedSetting,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            agencyId!
-          );
+          return saveMetricSettings(updatedSetting, agencyId);
         }
 
         const updatedSetting = updateDimensionDefinitionSetting(
@@ -227,8 +221,7 @@ export const MetricDefinitions: React.FC<MetricDefinitionsProps> = observer(
           settingKey,
           settingValue
         );
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        saveMetricSettings(updatedSetting, agencyId!);
+        saveMetricSettings(updatedSetting, agencyId);
       }
     };
 

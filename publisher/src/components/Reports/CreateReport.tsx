@@ -130,7 +130,7 @@ const initialCreateReportFormValues: CreateReportFormValuesType = {
 
 const CreateReport = () => {
   const { reportStore, userStore } = useStore();
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
   const [createReportFormValues, setCreateReportFormValues] = useState(
     initialCreateReportFormValues
@@ -174,8 +174,7 @@ const CreateReport = () => {
         is_recurring: isRecurring,
         year: isRecurring ? new Date(Date.now()).getFullYear() : year,
       },
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      Number(agencyId!)
+      Number(agencyId)
     );
     if (response && response instanceof Response) {
       if (response.status === 200) {

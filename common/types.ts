@@ -15,11 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export enum Permission {
-  RECIDIVIZ_ADMIN = "recidiviz_admin",
-  AGENCY_ADMIN = "agency_admin",
-}
-
 export enum AgencyTeamMemberRole {
   JUSTICE_COUNTS_ADMIN = "JUSTICE_COUNTS_ADMIN",
   AGENCY_ADMIN = "AGENCY_ADMIN",
