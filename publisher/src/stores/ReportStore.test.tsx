@@ -92,7 +92,7 @@ test("displayed reports", async () => {
     </StoreProvider>
   );
 
-  await act(() => {
+  await act(async () => {
     runInAction(() => {
       rootStore.reportStore.loadingOverview = false;
       rootStore.reportStore.reportOverviews = mockUnorderedReportsMap;
