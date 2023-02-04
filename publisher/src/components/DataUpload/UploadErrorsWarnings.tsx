@@ -252,7 +252,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
           {selectedSystem && removeSnakeCase(selectedSystem).toLowerCase()}
         </span>{" "}
         system (
-        <a href={`./assets/${systemFileName}`} download={systemFileName}>
+        <a href={`/assets/${systemFileName}`} download={systemFileName}>
           download example
         </a>
         )
