@@ -31,11 +31,7 @@ import { Datapoint } from "../../types";
 import { rem } from "../../utils";
 import { palette } from "../GlobalStyles";
 import Tooltip from "./Tooltip";
-import {
-  abbreviatedMonths,
-  getDatapointBarLabel,
-  splitUtcString,
-} from "./utils";
+import { getDatapointBarLabel } from "./utils";
 
 const MAX_BAR_SIZE = 150;
 
