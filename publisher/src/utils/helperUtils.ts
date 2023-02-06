@@ -241,10 +241,10 @@ export function removeAgencyFromPath(location: string) {
  * Formats system name by removing snakecase and lowercasing
  *
  * @note formats SUPERVISION system name to "Supervision (Combined)" if supervision subsystems detected
- * @param {String} systemName system name
- * @param {Object} options optional additional options for formatting system name (allUserSystems, hideCombined)
- * @param {Array} options.allUserSystems an array of all systems belonging to a user
- * @param {Boolean} options.hideCombined for supervision system w/ subsystems - overrides and suppresses the addition of the word "(combined)" when true
+ * @param {String} systemName - system name
+ * @param {Object} options - (optional) additional options for formatting system name (allUserSystems, hideCombined)
+ * @param {Array} options.allUserSystems - an array of all systems belonging to a user
+ * @param {Boolean} options.hideCombined - for supervision system w/ subsystems - overrides and suppresses the addition of the word "(combined)" when true
  * @returns lowercase, non-snakecase string
  *
  * @examples formatSystemName("SUPERVISION", ["SUPERVISION", "PAROLE", "PROBATION", "POST_RELEASE"]) returns "supervision (combined)"
