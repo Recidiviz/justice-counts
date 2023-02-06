@@ -83,7 +83,6 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       dimensions,
       updateMetricEnabledStatus,
       updateDisaggregationEnabledStatus,
-      // updateDimensionEnabledStatus,
       updateMetricReportFrequency,
       updateDisaggregatedBySupervisionSubsystems,
       saveMetricSettings,
@@ -200,7 +199,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               name="metric-config"
               label="Not Available"
               value="Not Available"
-              checked={metricEnabled === false}
+              checked={Boolean(metricEnabled === false)}
               onChange={() => {
                 if (systemSearchParam && metricSearchParam) {
                   const updatedSetting = updateMetricEnabledStatus(
@@ -219,7 +218,9 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               name="metric-config"
               label="Monthly"
               value="Monthly"
-              checked={metricEnabled && customOrDefaultFrequency === "MONTHLY"}
+              checked={Boolean(
+                metricEnabled && customOrDefaultFrequency === "MONTHLY"
+              )}
               onChange={() => {
                 if (systemSearchParam && metricSearchParam) {
                   const frequencyUpdate: ReportFrequencyUpdate = {
@@ -242,7 +243,9 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               name="metric-config"
               label="Annual"
               value="Annual"
-              checked={metricEnabled && customOrDefaultFrequency === "ANNUAL"}
+              checked={Boolean(
+                metricEnabled && customOrDefaultFrequency === "ANNUAL"
+              )}
               onChange={() => {
                 if (systemSearchParam && metricSearchParam) {
                   const frequencyUpdate: ReportFrequencyUpdate = {
