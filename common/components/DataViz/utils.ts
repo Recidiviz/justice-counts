@@ -352,6 +352,10 @@ export const formatExternalLink = (url: string) => {
 
 export const getDatapointBarLabel = (datapoint: Datapoint) => {
   const [, , month, year] = splitUtcString(datapoint.start_date);
+  if (abbreviatedMonths.findIndex((m) => m === month) === -1) {
+    // something went wrong with finding the previous month, return an error string
+    return `invalid date for start date: ${datapoint.start_date}`;
+  }
   if (datapoint.frequency === "ANNUAL") {
     const previousMonth =
       abbreviatedMonths[

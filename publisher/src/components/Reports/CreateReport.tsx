@@ -169,7 +169,7 @@ const CreateReport = () => {
       createReportFormValues;
     const response = await reportStore.createReport(
       {
-        frequency,
+        frequency: "ANNUAL",
         month: frequency === "ANNUAL" ? annualStartMonth : month,
         is_recurring: isRecurring,
         year: isRecurring ? new Date(Date.now()).getFullYear() : year,
@@ -317,17 +317,15 @@ const CreateReport = () => {
             <>
               <Heading>When should this {REPORT_LOWERCASE} start?</Heading>
               <DropdownWrapper>
-                {createReportFormValues.frequency === "MONTHLY" && (
-                  <Dropdown onChange={updateMonth} value={month}>
-                    {monthsByName.map((m, i) => {
-                      return (
-                        <option key={m} value={i + 1}>
-                          {m}
-                        </option>
-                      );
-                    })}
-                  </Dropdown>
-                )}
+                <Dropdown onChange={updateMonth} value={month}>
+                  {monthsByName.map((m, i) => {
+                    return (
+                      <option key={m} value={i + 1}>
+                        {m}
+                      </option>
+                    );
+                  })}
+                </Dropdown>
 
                 <Dropdown onChange={updateYear} value={year}>
                   {createIntegerRange(1970, new Date().getFullYear() + 1).map(
