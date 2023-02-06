@@ -21,18 +21,20 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import { Metric } from "@justice-counts/common/types";
+import { AgencySystems, Metric } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import { useStore } from "../../stores";
 import {
+  formatSystemName,
   printDateRangeFromMonthYear,
   printElapsedDaysMonthsYearsSinceDate,
 } from "../../utils";
 import errorIcon from "../assets/status-error-icon.png";
-import { MetricsSectionTitle, Title } from "../Forms";
+import { MetricSummarySectionTitle, Title } from "../Forms";
 import { REPORT_CAPITALIZED } from "../Global/constants";
 import { TeamMemberNameWithBadge } from "../primitives";
 import { SubMenuListItem } from "../Settings";
@@ -240,6 +242,8 @@ const ReportSummaryPanel: React.FC<{
   fieldDescription?: FieldDescriptionProps;
 }> = ({ reportID, activeMetric, showDataEntryHelpPage, fieldDescription }) => {
   const { formStore, reportStore, userStore } = useStore();
+  const { agencyId } = useParams() as { agencyId: string };
+  const currentAgency = userStore.getAgency(agencyId);
   const checkMetricForErrors = useCheckMetricForErrors(reportID);
   const {
     editors,
@@ -263,7 +267,11 @@ const ReportSummaryPanel: React.FC<{
           return (
             <React.Fragment key={system}>
               {showMetricSectionTitles ? (
-                <MetricsSectionTitle>{system}</MetricsSectionTitle>
+                <MetricSummarySectionTitle>
+                  {formatSystemName(system as AgencySystems, {
+                    allUserSystems: currentAgency?.systems,
+                  })}
+                </MetricSummarySectionTitle>
               ) : null}
               {enabledMetrics.map((metric) => {
                 const foundErrors = checkMetricForErrors(metric.key);

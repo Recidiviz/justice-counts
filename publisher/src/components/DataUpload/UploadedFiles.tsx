@@ -21,12 +21,13 @@ import {
   BadgeColors,
 } from "@justice-counts/common/components/Badge";
 import { showToast } from "@justice-counts/common/components/Toast";
+import { AgencySystems } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { removeSnakeCase } from "../../utils";
+import { formatSystemName } from "../../utils";
 import downloadIcon from "../assets/download-icon.png";
 import { Title, TitleWrapper } from "../Forms";
 import { ContainedLoader } from "../Loading";
@@ -60,7 +61,7 @@ export const UploadedFileRow: React.FC<{
     badgeText: string;
     dateUploaded: string;
     dateIngested: string;
-    system?: string;
+    system?: AgencySystems;
     uploadedBy: string;
   };
   deleteUploadedFile: (spreadsheetID: number) => void;
@@ -208,7 +209,8 @@ export const UploadedFileRow: React.FC<{
 
 export const UploadedFiles: React.FC = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
-  const { reportStore } = useStore();
+  const { reportStore, userStore } = useStore();
+  const currentAgency = userStore.getAgency(agencyId);
   const dataUploadColumnTitles = [
     "Filename",
     "Uploaded",
@@ -254,7 +256,10 @@ export const UploadedFiles: React.FC = observer(() => {
       badgeText: fileStatus?.toLowerCase() || "Uploading",
       dateUploaded: formatDate(file.uploaded_at),
       dateIngested: file.ingested_at ? formatDate(file.ingested_at) : "--",
-      system: removeSnakeCase(file.system).toLowerCase(),
+      system: formatSystemName(file.system, {
+        allUserSystems: currentAgency?.systems,
+        hideCombined: true,
+      }) as AgencySystems,
       uploadedBy: file.uploaded_by,
     };
   };

@@ -20,7 +20,7 @@ import {
   palette,
 } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
-import { Report } from "@justice-counts/common/types";
+import { AgencySystems, Report } from "@justice-counts/common/types";
 import { runInAction } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useRef, useState } from "react";
@@ -33,7 +33,11 @@ import {
   trackReportNotStartedToDraft,
 } from "../../analytics";
 import { useStore } from "../../stores";
-import { memoizeDebounce, printReportTitle } from "../../utils";
+import {
+  formatSystemName,
+  memoizeDebounce,
+  printReportTitle,
+} from "../../utils";
 import logoImg from "../assets/jc-logo-vector.png";
 import { Button, DataUploadHeader } from "../DataUpload";
 import {
@@ -117,8 +121,9 @@ const DataEntryForm: React.FC<{
   const [scrolled, setScrolled] = useState(false);
   const metricsRef = useRef<HTMLDivElement[]>([]);
   const { formStore, reportStore, userStore } = useStore();
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
+  const currentAgency = userStore.getAgency(agencyId);
 
   const isPublished =
     reportStore.reportOverviews[reportID].status === "PUBLISHED";
@@ -336,7 +341,9 @@ const DataEntryForm: React.FC<{
                 <Fragment key={system}>
                   {showMetricSectionTitles && (
                     <MetricSystemTitle firstTitle={systemIndex === 0}>
-                      {system}
+                      {formatSystemName(system as AgencySystems, {
+                        allUserSystems: currentAgency?.systems,
+                      })}
                     </MetricSystemTitle>
                   )}
 

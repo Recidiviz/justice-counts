@@ -27,7 +27,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { removeSnakeCase } from "../../utils";
+import { formatSystemName } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import { ContainedLoader } from "../Loading";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
@@ -164,16 +164,20 @@ export const MetricConfiguration: React.FC = observer(() => {
                     .filter(
                       (system) => getMetricsBySystem(system)?.length !== 0
                     )
-                    .map((filterOption) => (
-                      <TabbedItem
-                        key={filterOption}
-                        selected={systemSearchParam === filterOption}
-                        onClick={() => handleSystemClick(filterOption)}
-                        capitalize
-                      >
-                        {removeSnakeCase(filterOption.toLowerCase())}
-                      </TabbedItem>
-                    ))}
+                    .map((system) => {
+                      return (
+                        <TabbedItem
+                          key={system}
+                          selected={systemSearchParam === system}
+                          onClick={() => handleSystemClick(system)}
+                          capitalize
+                        >
+                          {formatSystemName(system, {
+                            allUserSystems: currentAgency?.systems,
+                          })}
+                        </TabbedItem>
+                      );
+                    })}
                 </TabbedOptions>
               </TabbedBar>
             </StickyHeader>
