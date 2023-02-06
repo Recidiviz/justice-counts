@@ -67,8 +67,12 @@ export const Guidance = observer(() => {
   const navigate = useNavigate();
   const { agencyId } = useParams();
   const { guidanceStore, metricConfigStore, reportStore } = useStore();
-  const { onboardingTopicsMetadata, currentTopicID, updateTopicStatus } =
-    guidanceStore;
+  const {
+    onboardingTopicsMetadata,
+    currentTopicID,
+    updateTopicStatus,
+    calculateOverallMetricProgress,
+  } = guidanceStore;
 
   const currentTopicDisplayName =
     currentTopicID && onboardingTopicsMetadata[currentTopicID].displayName;
@@ -116,108 +120,6 @@ export const Guidance = observer(() => {
         ))}
       </ProgressStepsContainer>
     );
-  };
-
-  const calculateOverallMetricProgress = (systemMetricKey: string) => {
-    interface MyType extends Record<string, boolean | number> {
-      completionPercentage: number;
-    }
-
-    const metricConfigurationProgressStepsTracker: MyType = {
-      ...Object.fromEntries(
-        metricConfigurationProgressSteps.map((step) => [step, false])
-      ),
-      completionPercentage: 0,
-    };
-
-    const {
-      metrics,
-      dimensions,
-      metricDefinitionSettings,
-      dimensionDefinitionSettings,
-    } = metricConfigStore;
-
-    /** Confirm the metric’s availability/frequency */
-    if (metrics[systemMetricKey].enabled === false) {
-      metricConfigurationProgressStepsTracker["Confirm metric availability"] =
-        true;
-      metricConfigurationProgressStepsTracker.completionPercentage = 100;
-      return metricConfigurationProgressStepsTracker;
-    }
-
-    if (metrics[systemMetricKey].enabled !== null) {
-      metricConfigurationProgressStepsTracker["Confirm metric availability"] =
-        true;
-      metricConfigurationProgressStepsTracker.completionPercentage += 25;
-    }
-
-    /** Confirm metric definitions */
-    const metricDefinitionsCompleted =
-      metricDefinitionSettings[systemMetricKey] &&
-      Object.values(metricDefinitionSettings[systemMetricKey]).filter(
-        (definition) => definition.included === null
-      ).length === 0;
-
-    if (
-      metricDefinitionsCompleted ||
-      !metricDefinitionSettings[systemMetricKey]
-    ) {
-      metricConfigurationProgressStepsTracker["Confirm metric definition"] =
-        true;
-      metricConfigurationProgressStepsTracker.completionPercentage += 25;
-    }
-
-    /** Confirm breakdown availability */
-    const disaggregationValues =
-      dimensions[systemMetricKey] && Object.values(dimensions[systemMetricKey]);
-    const nullDimensions = [];
-    const disabledDimensionKeys: string[] = [];
-
-    disaggregationValues?.forEach((disaggregation) => {
-      Object.values(disaggregation).forEach((dimension) => {
-        if (dimension.enabled === null) nullDimensions.push(dimension);
-        if (dimension.enabled === false && dimension.key)
-          disabledDimensionKeys.push(dimension.key);
-      });
-    });
-
-    if (nullDimensions.length === 0) {
-      metricConfigurationProgressStepsTracker["Confirm breakdowns"] = true;
-      metricConfigurationProgressStepsTracker.completionPercentage += 25;
-    }
-
-    /** Confirm breakdown definitions */
-    const dimensionDefinitionSettingsDisaggregationKeys =
-      dimensionDefinitionSettings[systemMetricKey] &&
-      Object.keys(dimensionDefinitionSettings[systemMetricKey]);
-    const dimensionDefinitionSettingsValues: {
-      included?: MetricConfigurationSettingsOptions;
-      default?: MetricConfigurationSettingsOptions;
-      label?: string;
-    }[] = [];
-
-    dimensionDefinitionSettingsDisaggregationKeys.forEach(
-      (disaggregationKey) => {
-        Object.entries(
-          dimensionDefinitionSettings[systemMetricKey][disaggregationKey]
-        ).forEach(([dimensionKey, dimension]) => {
-          if (disabledDimensionKeys.includes(dimensionKey)) return;
-          dimensionDefinitionSettingsValues.push(...Object.values(dimension));
-        });
-      }
-    );
-
-    const nullDimensionDefinitionSettings =
-      dimensionDefinitionSettingsValues.filter(
-        (setting) => setting.included === null
-      );
-
-    if (nullDimensionDefinitionSettings.length === 0) {
-      metricConfigurationProgressStepsTracker["Confirm breakdown definitions"] =
-        true;
-      metricConfigurationProgressStepsTracker.completionPercentage += 25;
-    }
-    return metricConfigurationProgressStepsTracker;
   };
 
   const numberOfMetricsCompleted = metricsEntries.filter(

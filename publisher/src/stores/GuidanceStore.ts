@@ -15,9 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { MetricConfigurationSettingsOptions } from "@justice-counts/common/types";
 import { makeAutoObservable } from "mobx";
 
 import {
+  metricConfigurationProgressSteps,
   mockTopicsStatus,
   OnboardingTopicsMetadata,
   onboardingTopicsMetadata,
@@ -25,10 +27,13 @@ import {
   TopicID,
 } from "../components/Guidance";
 import API from "./API";
+import MetricConfigStore from "./MetricConfigStore";
 import UserStore from "./UserStore";
 
 class GuidanceStore {
   userStore: UserStore;
+
+  metricConfigStore: MetricConfigStore;
 
   api: API;
 
@@ -36,11 +41,16 @@ class GuidanceStore {
 
   onboardingTopicsStatus: OnboardingTopicsStatus[];
 
-  constructor(userStore: UserStore, api: API) {
+  constructor(
+    userStore: UserStore,
+    metricConfigStore: MetricConfigStore,
+    api: API
+  ) {
     makeAutoObservable(this);
 
     this.api = api;
     this.userStore = userStore;
+    this.metricConfigStore = metricConfigStore;
     this.onboardingTopicsMetadata = onboardingTopicsMetadata;
     this.onboardingTopicsStatus = mockTopicsStatus;
   }
@@ -67,6 +77,109 @@ class GuidanceStore {
       if (topic.topicID !== topicID) return topic;
       return { ...topic, topicCompleted: status };
     });
+  };
+
+  calculateOverallMetricProgress = (systemMetricKey: string) => {
+    interface ProgressStepsTrackerType
+      extends Record<string, boolean | number> {
+      completionPercentage: number;
+    }
+
+    const metricConfigurationProgressStepsTracker: ProgressStepsTrackerType = {
+      ...Object.fromEntries(
+        metricConfigurationProgressSteps.map((step) => [step, false])
+      ),
+      completionPercentage: 0,
+    };
+
+    const {
+      metrics,
+      dimensions,
+      metricDefinitionSettings,
+      dimensionDefinitionSettings,
+    } = this.metricConfigStore;
+
+    /** Confirm the metric’s availability/frequency */
+    if (metrics[systemMetricKey].enabled === false) {
+      metricConfigurationProgressStepsTracker["Confirm metric availability"] =
+        true;
+      metricConfigurationProgressStepsTracker.completionPercentage = 100;
+      return metricConfigurationProgressStepsTracker;
+    }
+
+    if (metrics[systemMetricKey].enabled !== null) {
+      metricConfigurationProgressStepsTracker["Confirm metric availability"] =
+        true;
+      metricConfigurationProgressStepsTracker.completionPercentage += 25;
+    }
+
+    /** Confirm metric definitions */
+    const metricDefinitionsCompleted =
+      metricDefinitionSettings[systemMetricKey] &&
+      Object.values(metricDefinitionSettings[systemMetricKey]).filter(
+        (definition) => definition.included === null
+      ).length === 0;
+
+    if (
+      metricDefinitionsCompleted ||
+      !metricDefinitionSettings[systemMetricKey]
+    ) {
+      metricConfigurationProgressStepsTracker["Confirm metric definition"] =
+        true;
+      metricConfigurationProgressStepsTracker.completionPercentage += 25;
+    }
+
+    /** Confirm breakdown availability */
+    const disaggregationValues =
+      dimensions[systemMetricKey] && Object.values(dimensions[systemMetricKey]);
+    const nullDimensions = [];
+    const disabledDimensionKeys: string[] = [];
+
+    disaggregationValues?.forEach((disaggregation) => {
+      Object.values(disaggregation).forEach((dimension) => {
+        if (dimension.enabled === null) nullDimensions.push(dimension);
+        if (dimension.enabled === false && dimension.key)
+          disabledDimensionKeys.push(dimension.key);
+      });
+    });
+
+    if (nullDimensions.length === 0) {
+      metricConfigurationProgressStepsTracker["Confirm breakdowns"] = true;
+      metricConfigurationProgressStepsTracker.completionPercentage += 25;
+    }
+
+    /** Confirm breakdown definitions */
+    const dimensionDefinitionSettingsDisaggregationKeys =
+      dimensionDefinitionSettings[systemMetricKey] &&
+      Object.keys(dimensionDefinitionSettings[systemMetricKey]);
+    const dimensionDefinitionSettingsValues: {
+      included?: MetricConfigurationSettingsOptions;
+      default?: MetricConfigurationSettingsOptions;
+      label?: string;
+    }[] = [];
+
+    dimensionDefinitionSettingsDisaggregationKeys.forEach(
+      (disaggregationKey) => {
+        Object.entries(
+          dimensionDefinitionSettings[systemMetricKey][disaggregationKey]
+        ).forEach(([dimensionKey, dimension]) => {
+          if (disabledDimensionKeys.includes(dimensionKey)) return;
+          dimensionDefinitionSettingsValues.push(...Object.values(dimension));
+        });
+      }
+    );
+
+    const nullDimensionDefinitionSettings =
+      dimensionDefinitionSettingsValues.filter(
+        (setting) => setting.included === null
+      );
+
+    if (nullDimensionDefinitionSettings.length === 0) {
+      metricConfigurationProgressStepsTracker["Confirm breakdown definitions"] =
+        true;
+      metricConfigurationProgressStepsTracker.completionPercentage += 25;
+    }
+    return metricConfigurationProgressStepsTracker;
   };
 }
 

@@ -28,6 +28,7 @@ import { MenuContainer, MenuItem } from "../Menu";
 import {
   CheckIcon,
   CheckIconWrapper,
+  metricConfigurationProgressSteps,
   ProgressItemName,
   ProgressItemWrapper,
   ProgressTooltipToast,
@@ -70,14 +71,16 @@ export const GuidanceHeader = observer(() => {
             Get Started
           </MenuItem>
           <ProgressTooltipToast>
-            <ProgressItemWrapper key="step">
-              <CheckIconWrapper>
-                {/* {metricCompletionProgress[step] && (
-                    <CheckIcon src={checkmarkIcon} alt="" />
-                  )} */}
-              </CheckIconWrapper>
-              <ProgressItemName>Confirm breakdown definitions</ProgressItemName>
-            </ProgressItemWrapper>
+            {metricConfigurationProgressSteps.map((step) => (
+              <ProgressItemWrapper key={step}>
+                <CheckIconWrapper>
+                  {/* {metricCompletionProgress[step] && ( */}
+                  <CheckIcon src={checkmarkIcon} alt="" />
+                  {/* )} */}
+                </CheckIconWrapper>
+                <ProgressItemName>{step}</ProgressItemName>
+              </ProgressItemWrapper>
+            ))}
           </ProgressTooltipToast>
 
           {isAddDataOrPublishDataStep && (

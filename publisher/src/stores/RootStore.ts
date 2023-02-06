@@ -73,7 +73,11 @@ class RootStore {
     this.dataVizStore = new DataVizStore();
     this.metricConfigStore = new MetricConfigStore(this.userStore, this.api);
     this.agencyStore = new AgencyStore(this.userStore, this.api);
-    this.guidanceStore = new GuidanceStore(this.userStore, this.api);
+    this.guidanceStore = new GuidanceStore(
+      this.userStore,
+      this.metricConfigStore,
+      this.api
+    );
   }
 }
 
