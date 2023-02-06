@@ -33,6 +33,7 @@ export type AgencySystems =
   | "PROBATION"
   | "POST_RELEASE"
   | "PRETRIAL_SUPERVISION"
+  | "DUAL_SUPERVISION"
   | "OTHER_SUPERVISION";
 
 export type AgencyTeam = {
@@ -50,6 +51,7 @@ export const SupervisionSubsystems: AgencySystems[] = [
   "PROBATION",
   "POST_RELEASE",
   "PRETRIAL_SUPERVISION",
+  "DUAL_SUPERVISION",
   "OTHER_SUPERVISION",
 ];
 
