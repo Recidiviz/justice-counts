@@ -168,18 +168,15 @@ class AgencyStore {
     const existingSettingIndex = newSettings.findIndex(
       (setting) => setting.setting_type === type
     );
+    const newSetting = {
+      setting_type: type,
+      value: text,
+      source_id: sourceId,
+    };
     if (existingSettingIndex > -1) {
-      newSettings[existingSettingIndex] = {
-        setting_type: type,
-        value: text,
-        source_id: sourceId,
-      };
+      newSettings[existingSettingIndex] = newSetting;
     } else {
-      newSettings.push({
-        setting_type: type,
-        value: text,
-        source_id: sourceId,
-      });
+      newSettings.push(newSetting);
     }
     if (this.currentAgency) {
       this.currentAgency.settings = newSettings;
