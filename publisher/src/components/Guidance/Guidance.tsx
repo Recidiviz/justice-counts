@@ -19,6 +19,7 @@ import {
   Badge,
   BadgeColorMapping,
 } from "@justice-counts/common/components/Badge";
+import { MetricConfigurationSettingsOptions } from "@justice-counts/common/types";
 import {
   printReportTitle,
   removeSnakeCase,
@@ -170,12 +171,12 @@ export const Guidance = observer(() => {
     const disaggregationValues =
       dimensions[systemMetricKey] && Object.values(dimensions[systemMetricKey]);
     const nullDimensions = [];
-    const disabledDimensionKeys = [];
+    const disabledDimensionKeys: string[] = [];
 
     disaggregationValues?.forEach((disaggregation) => {
       Object.values(disaggregation).forEach((dimension) => {
         if (dimension.enabled === null) nullDimensions.push(dimension);
-        if (dimension.enabled === false)
+        if (dimension.enabled === false && dimension.key)
           disabledDimensionKeys.push(dimension.key);
       });
     });
@@ -189,24 +190,25 @@ export const Guidance = observer(() => {
     const dimensionDefinitionSettingsDisaggregationKeys =
       dimensionDefinitionSettings[systemMetricKey] &&
       Object.keys(dimensionDefinitionSettings[systemMetricKey]);
-    const dimensionDefinitionSettingsValues = [];
+    const dimensionDefinitionSettingsValues: {
+      included?: MetricConfigurationSettingsOptions;
+      default?: MetricConfigurationSettingsOptions;
+      label?: string;
+    }[] = [];
 
-    dimensionDefinitionSettingsDisaggregationKeys &&
-      dimensionDefinitionSettingsDisaggregationKeys.forEach(
-        (disaggregationKey) => {
-          Object.entries(
-            dimensionDefinitionSettings[systemMetricKey][disaggregationKey]
-          ).forEach(([dimensionKey, dimension]) => {
-            if (disabledDimensionKeys.includes(dimensionKey)) return;
-            dimensionDefinitionSettingsValues.push(Object.values(dimension));
-          });
-        }
-      );
+    dimensionDefinitionSettingsDisaggregationKeys.forEach(
+      (disaggregationKey) => {
+        Object.entries(
+          dimensionDefinitionSettings[systemMetricKey][disaggregationKey]
+        ).forEach(([dimensionKey, dimension]) => {
+          if (disabledDimensionKeys.includes(dimensionKey)) return;
+          dimensionDefinitionSettingsValues.push(...Object.values(dimension));
+        });
+      }
+    );
 
-    const dimensionDefinitionSettingsValuesFlattened =
-      dimensionDefinitionSettingsValues.flat();
     const nullDimensionDefinitionSettings =
-      dimensionDefinitionSettingsValuesFlattened.filter(
+      dimensionDefinitionSettingsValues.filter(
         (setting) => setting.included === null
       );
 
