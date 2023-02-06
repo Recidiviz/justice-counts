@@ -23,7 +23,7 @@ import sprite from "../assets/loader-sprite-horizontal.svg";
 const loaderWidth = 144;
 const spriteFrames = 104;
 
-const LoadingWrapper = styled.div`
+const FullPageLoadingWrapper = styled.div`
   height: 100vh;
   width: 100vw;
   display: flex;
@@ -40,6 +40,13 @@ const loadingSpriteAnimation = keyframes`
   }
 `;
 
+export const ContainedLoadingWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+`;
+
 export const Loader = styled.div`
   height: ${loaderWidth}px;
   width: ${loaderWidth}px;
@@ -51,10 +58,18 @@ export const Loader = styled.div`
     alternate;
 `;
 
+export const ContainedLoader = () => {
+  return (
+    <ContainedLoadingWrapper>
+      <Loader />
+    </ContainedLoadingWrapper>
+  );
+};
+
 export const Loading = () => {
   return (
-    <LoadingWrapper>
+    <FullPageLoadingWrapper>
       <Loader data-testid="loading" />
-    </LoadingWrapper>
+    </FullPageLoadingWrapper>
   );
 };

@@ -29,7 +29,7 @@ import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
 import downloadIcon from "../assets/download-icon.png";
 import { Title, TitleWrapper } from "../Forms";
-import { Loader } from "../Loading";
+import { ContainedLoader } from "../Loading";
 import { TeamMemberNameWithBadge } from "../primitives";
 import {
   ActionButton,
@@ -45,7 +45,6 @@ import {
   UploadedFile,
   UploadedFilesContainer,
   UploadedFilesError,
-  UploadedFilesLoading,
   UploadedFilesTable,
   UploadedFileStatus,
   UploadedFilesWrapper,
@@ -313,11 +312,7 @@ export const UploadedFiles: React.FC = observer(() => {
   );
 
   if (isLoading) {
-    return (
-      <UploadedFilesLoading>
-        <Loader />
-      </UploadedFilesLoading>
-    );
+    return <ContainedLoader />;
   }
 
   if (fetchError) {
