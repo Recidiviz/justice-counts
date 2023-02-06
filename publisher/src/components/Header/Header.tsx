@@ -19,10 +19,10 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import logo from "../assets/jc-logo-vector.png";
+import logo from "../assets/jc-logo-vector-new.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import Menu from "../Menu";
-import { HeaderBar, Logo, LogoContainer } from ".";
+import { HeaderBar, Logo, LogoContainer, LogoName } from ".";
 
 const Header = () => {
   const { agencyId } = useParams() as { agencyId: string };
@@ -44,6 +44,7 @@ const Header = () => {
         }
       >
         <Logo src={logo} alt="" />
+        <LogoName>Justice Counts</LogoName>
       </LogoContainer>
 
       <Menu />

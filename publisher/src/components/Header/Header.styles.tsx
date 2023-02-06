@@ -18,6 +18,8 @@
 import {
   HEADER_BAR_HEIGHT,
   palette,
+  TABLET_WIDTH,
+  typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
@@ -36,11 +38,11 @@ export const HeaderBar = styled.header`
 
 export const LogoContainer = styled.div`
   height: ${HEADER_BAR_HEIGHT}px;
-  width: ${HEADER_BAR_HEIGHT}px;
+  width: auto;
   display: flex;
-  justify-content: center;
+  justify-content: start;
+  gap: 24px;
   align-items: center;
-  background: ${palette.solid.green};
   transition: 0.3s ease;
 
   &:hover {
@@ -50,6 +52,15 @@ export const LogoContainer = styled.div`
 `;
 
 export const Logo = styled.img`
-  width: 48px;
-  height: 48px;
+  width: 64px;
+  height: 64px;
+`;
+
+export const LogoName = styled.div`
+  ${typography.sizeCSS.medium};
+  white-space: nowrap;
+
+  @media only screen and (max-width: ${TABLET_WIDTH}px) {
+    display: none;
+  }
 `;
