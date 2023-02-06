@@ -24,7 +24,7 @@ import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import checkIcon from "../assets/check-icon.svg";
 import errorIcon from "../assets/status-error-icon.png";
-import { MetricsSectionTitle } from "../Forms";
+import { MetricSummarySectionTitle } from "../Forms";
 import { useCheckMetricForErrors } from "./hooks";
 import {
   ConfirmationSummaryProgressIndicatorWrapper,
@@ -81,12 +81,12 @@ const PublishConfirmationSummaryPanel: React.FC<{
           return (
             <React.Fragment key={system}>
               {showMetricSectionTitles && (
-                <MetricsSectionTitle>
+                <MetricSummarySectionTitle>
                   {formatSystemName(
                     system as AgencySystems,
                     currentAgency?.systems
                   )}
-                </MetricsSectionTitle>
+                </MetricSummarySectionTitle>
               )}
               {enabledMetrics.map((metric) => {
                 const foundErrors = checkMetricForErrors(metric.key);

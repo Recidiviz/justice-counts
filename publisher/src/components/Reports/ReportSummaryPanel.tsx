@@ -34,7 +34,7 @@ import {
   printElapsedDaysMonthsYearsSinceDate,
 } from "../../utils";
 import errorIcon from "../assets/status-error-icon.png";
-import { MetricsSectionTitle, Title } from "../Forms";
+import { MetricSummarySectionTitle, Title } from "../Forms";
 import { REPORT_CAPITALIZED } from "../Global/constants";
 import { TeamMemberNameWithBadge } from "../primitives";
 import { SubMenuListItem } from "../Settings";
@@ -267,12 +267,12 @@ const ReportSummaryPanel: React.FC<{
           return (
             <React.Fragment key={system}>
               {showMetricSectionTitles ? (
-                <MetricsSectionTitle>
+                <MetricSummarySectionTitle>
                   {formatSystemName(
                     system as AgencySystems,
                     currentAgency?.systems
                   )}
-                </MetricsSectionTitle>
+                </MetricSummarySectionTitle>
               ) : null}
               {enabledMetrics.map((metric) => {
                 const foundErrors = checkMetricForErrors(metric.key);

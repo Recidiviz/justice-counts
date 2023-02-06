@@ -98,7 +98,7 @@ export const OnePanelBackLinkContainer = styled(PreTitle)`
   }
 `;
 
-export const MetricsSectionTitle = styled.div`
+export const MetricSummarySectionTitle = styled.div`
   ${typography.sizeCSS.normal}
   text-transform: capitalize;
   margin-top: 6px;
