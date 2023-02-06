@@ -16,10 +16,11 @@
 // =============================================================================
 
 import {
+  HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import styled from "styled-components/macro";
+import styled, { css } from "styled-components/macro";
 
 import { Button } from "../DataUpload";
 
@@ -292,7 +293,7 @@ export const CheckIcon = styled.img`
   width: 20px;
 `;
 
-export const ProgressTooltipContainer = styled.div`
+const ProgressTooltipStyles = css`
   background: ${palette.solid.black};
   border-radius: 4px;
   padding: 16px;
@@ -303,12 +304,34 @@ export const ProgressTooltipContainer = styled.div`
   right: 0;
   top: 45px;
   z-index: 2;
-  opacity: 0;
   transition: 0.2s ease;
   pointer-events: none;
+`;
+
+export const ProgressTooltipContainer = styled.div`
+  ${ProgressTooltipStyles}
+  opacity: 0;
 
   ${Metric}:hover & {
     opacity: 1;
+  }
+`;
+
+export const ProgressTooltipToast = styled.div`
+  ${ProgressTooltipStyles}
+  right: 150px;
+  top: ${HEADER_BAR_HEIGHT}px;
+  opacity: 1;
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: ${palette.solid.black};
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
   }
 `;
 

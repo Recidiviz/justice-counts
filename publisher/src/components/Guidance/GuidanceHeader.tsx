@@ -21,10 +21,18 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import logo from "../assets/jc-logo-vector.png";
+import checkmarkIcon from "../assets/status-check-icon.png";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { HeaderBar, Logo, LogoContainer } from "../Header";
 import { MenuContainer, MenuItem } from "../Menu";
-import { UploadDataButton } from ".";
+import {
+  CheckIcon,
+  CheckIconWrapper,
+  ProgressItemName,
+  ProgressItemWrapper,
+  ProgressTooltipToast,
+  UploadDataButton,
+} from ".";
 
 export const GuidanceHeader = observer(() => {
   const { guidanceStore } = useStore();
@@ -55,11 +63,22 @@ export const GuidanceHeader = observer(() => {
       {currentTopicID !== "WELCOME" && (
         <MenuContainer>
           <MenuItem
+            style={{ position: "relative" }}
             active={isHome}
             onClick={() => navigate(guidancePaths.home)}
           >
             Get Started
           </MenuItem>
+          <ProgressTooltipToast>
+            <ProgressItemWrapper key="step">
+              <CheckIconWrapper>
+                {/* {metricCompletionProgress[step] && (
+                    <CheckIcon src={checkmarkIcon} alt="" />
+                  )} */}
+              </CheckIconWrapper>
+              <ProgressItemName>Confirm breakdown definitions</ProgressItemName>
+            </ProgressItemWrapper>
+          </ProgressTooltipToast>
 
           {isAddDataOrPublishDataStep && (
             <MenuItem
