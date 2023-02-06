@@ -82,10 +82,9 @@ const PublishConfirmationSummaryPanel: React.FC<{
             <React.Fragment key={system}>
               {showMetricSectionTitles && (
                 <MetricSummarySectionTitle>
-                  {formatSystemName(
-                    system as AgencySystems,
-                    currentAgency?.systems
-                  )}
+                  {formatSystemName(system as AgencySystems, {
+                    allUserSystems: currentAgency?.systems,
+                  })}
                 </MetricSummarySectionTitle>
               )}
               {enabledMetrics.map((metric) => {

@@ -177,10 +177,9 @@ export const MetricsView: React.FC = observer(() => {
                       }}
                     >
                       <SystemName>
-                        {formatSystemName(
-                          metrics[0].system.key,
-                          currentAgency?.systems
-                        )}
+                        {formatSystemName(metrics[0].system.key, {
+                          allUserSystems: currentAgency?.systems,
+                        })}
                       </SystemName>
                       <SystemNamePlusSign
                         isSystemActive={system === systemSearchParam}

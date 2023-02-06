@@ -241,25 +241,38 @@ export function removeAgencyFromPath(location: string) {
  * Formats system name by removing snakecase and lowercasing
  *
  * @note formats SUPERVISION system name to "Supervision (Combined)" if supervision subsystems detected
- * @param systemName {string} system name
- * @param allUserSystems {string[]} (optional) a list of all systems a user belongs to
+ * @param {String} systemName system name
+ * @param {Object} options optional additional options for formatting system name (allUserSystems, hideCombined)
+ * @param {Array} options.allUserSystems an array of all systems belonging to a user
+ * @param {Boolean} options.hideCombined for supervision system w/ subsystems - overrides and suppresses the addition of the word "(combined)" when true
  * @returns lowercase, non-snakecase string
  *
- * @example formatSystemName("SUPERVISION", ["SUPERVISION", "PAROLE", "PROBATION", "POST_RELEASE"]) returns "supervision (combined)"
- * @example formatSystemName("SUPERVISION", ["SUPERVISION"]) returns "supervision"
- * @example formatSystemName("COURTS_AND_PRETRIAL") returns "courts and pretrial"
+ * @examples formatSystemName("SUPERVISION", ["SUPERVISION", "PAROLE", "PROBATION", "POST_RELEASE"]) returns "supervision (combined)"
+ * formatSystemName("SUPERVISION", ["SUPERVISION"]) returns "supervision"
+ * formatSystemName("COURTS_AND_PRETRIAL") returns "courts and pretrial"
  */
+
 export const formatSystemName = (
   systemName: AgencySystems,
-  allUserSystems?: AgencySystems[]
+  options?: FormatSystemNameOptions
 ) => {
-  if (systemName === "SUPERVISION" && allUserSystems) {
+  if (
+    systemName === "SUPERVISION" &&
+    options?.allUserSystems &&
+    !options.hideCombined
+  ) {
     const hasSubsystems =
-      allUserSystems.filter((system) => SupervisionSubsystems.includes(system))
-        .length > 0;
+      options?.allUserSystems.filter((system) =>
+        SupervisionSubsystems.includes(system)
+      ).length > 0;
     return hasSubsystems
       ? `${removeSnakeCase(systemName.toLowerCase())} (combined)`
       : "supervision";
   }
   return removeSnakeCase(systemName.toLowerCase());
+};
+
+type FormatSystemNameOptions = {
+  allUserSystems?: AgencySystems[];
+  hideCombined?: boolean;
 };

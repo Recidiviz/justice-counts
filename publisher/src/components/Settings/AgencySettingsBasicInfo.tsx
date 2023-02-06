@@ -46,7 +46,9 @@ export const AgencySettingsBasicInfo = () => {
             : "System"}
         </span>
         {currentAgencySystems
-          ?.map((system) => formatSystemName(system, currentAgencySystems))
+          ?.map((system) =>
+            formatSystemName(system, { allUserSystems: currentAgencySystems })
+          )
           .join(", ")}
       </BasicInfoRow>
       <BasicInfoBlockDescription>

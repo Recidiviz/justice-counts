@@ -341,10 +341,9 @@ const DataEntryForm: React.FC<{
                 <Fragment key={system}>
                   {showMetricSectionTitles && (
                     <MetricSystemTitle firstTitle={systemIndex === 0}>
-                      {formatSystemName(
-                        system as AgencySystems,
-                        currentAgency?.systems
-                      )}
+                      {formatSystemName(system as AgencySystems, {
+                        allUserSystems: currentAgency?.systems,
+                      })}
                     </MetricSystemTitle>
                   )}
 

@@ -16,10 +16,12 @@
 // =============================================================================
 
 import checkIcon from "@justice-counts/common/assets/status-check-icon.png";
+import { AgencySystems } from "@justice-counts/common/types";
 import React, { Fragment } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { removeSnakeCase } from "../../utils";
+import { useStore } from "../../stores";
+import { formatSystemName } from "../../utils";
 import { ReactComponent as ErrorIcon } from "../assets/error-icon.svg";
 import { ReactComponent as WarningIcon } from "../assets/warning-icon.svg";
 import {
@@ -51,7 +53,7 @@ import {
 
 type UploadErrorsWarningsProps = {
   errorsWarningsMetrics: ErrorsWarningsMetrics;
-  selectedSystem: string | undefined;
+  selectedSystem: AgencySystems | undefined;
   resetToNewUpload: () => void;
 };
 export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
@@ -59,9 +61,13 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
   selectedSystem,
   resetToNewUpload,
 }) => {
+  const navigate = useNavigate();
+  const { agencyId } = useParams() as { agencyId: string };
+  const { userStore } = useStore();
+  const currentAgency = userStore.getAgency(agencyId);
+
   const { metrics, errorsWarningsAndSuccessfulMetrics, nonMetricErrors } =
     errorsWarningsMetrics;
-  const navigate = useNavigate();
   const systemFileName =
     selectedSystem && systemToTemplateSpreadsheetFileName[selectedSystem];
   const successfulMetricsCount =
@@ -249,7 +255,10 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
     return (
       <>
         <span>
-          {selectedSystem && removeSnakeCase(selectedSystem).toLowerCase()}
+          {selectedSystem &&
+            formatSystemName(selectedSystem, {
+              allUserSystems: currentAgency?.systems,
+            })}
         </span>{" "}
         system (
         <a href={`./assets/${systemFileName}`} download={systemFileName}>

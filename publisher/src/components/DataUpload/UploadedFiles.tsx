@@ -257,10 +257,10 @@ export const UploadedFiles: React.FC = observer(() => {
       badgeText: fileStatus?.toLowerCase() || "Uploading",
       dateUploaded: formatDate(file.uploaded_at),
       dateIngested: file.ingested_at ? formatDate(file.ingested_at) : "--",
-      system: formatSystemName(
-        file.system,
-        currentAgency?.systems
-      ) as AgencySystems,
+      system: formatSystemName(file.system, {
+        allUserSystems: currentAgency?.systems,
+        hideCombined: true,
+      }) as AgencySystems,
       uploadedBy: file.uploaded_by,
     };
   };

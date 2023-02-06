@@ -172,7 +172,9 @@ export const MetricConfiguration: React.FC = observer(() => {
                           onClick={() => handleSystemClick(system)}
                           capitalize
                         >
-                          {formatSystemName(system, currentAgency?.systems)}
+                          {formatSystemName(system, {
+                            allUserSystems: currentAgency?.systems,
+                          })}
                         </TabbedItem>
                       );
                     })}
