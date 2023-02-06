@@ -366,7 +366,7 @@ export const Guidance = observer(() => {
                   MetricConfigStore.splitSystemMetricKey(key);
 
                 return (
-                  <Fragment key={metric.label}>
+                  <Fragment key={key}>
                     <Metric
                       onClick={() =>
                         navigate(
@@ -391,7 +391,7 @@ export const Guidance = observer(() => {
                       {/* Progress Tooltip */}
                       <ProgressTooltipContainer>
                         {metricConfigurationProgressSteps.map((step) => (
-                          <ProgressItemWrapper>
+                          <ProgressItemWrapper key={step}>
                             <CheckIconWrapper>
                               {metricCompletionProgress[step] && (
                                 <CheckIcon src={checkmarkIcon} alt="" />
