@@ -26,6 +26,7 @@ import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import Footer from "../components/Footer";
 import {
   REPORT_PERIOD_CAPITALIZED,
   REPORTS_CAPITALIZED,
@@ -287,6 +288,7 @@ const Reports: React.FC = () => {
             No {REPORTS_LOWERCASE} to display.
           </NoReportsDisplay>
         )}
+        <Footer />
       </>
     );
   };
