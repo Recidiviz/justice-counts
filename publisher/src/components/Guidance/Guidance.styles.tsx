@@ -317,11 +317,11 @@ export const ProgressTooltipContainer = styled.div`
   }
 `;
 
-export const ProgressTooltipToast = styled.div`
+export const ProgressTooltipToast = styled.div<{ showToast?: boolean }>`
   ${ProgressTooltipStyles}
   right: 150px;
   top: ${HEADER_BAR_HEIGHT}px;
-  opacity: 1;
+  opacity: ${({ showToast }) => (showToast ? 1 : 0)};
 
   &::after {
     content: "";

@@ -25,6 +25,7 @@ import checkmarkIcon from "../assets/status-check-icon.png";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { HeaderBar, Logo, LogoContainer } from "../Header";
 import { MenuContainer, MenuItem } from "../Menu";
+import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   CheckIcon,
   CheckIconWrapper,
@@ -37,9 +38,11 @@ import {
 
 export const GuidanceHeader = observer(() => {
   const { guidanceStore } = useStore();
+  const { calculateOverallMetricProgress } = guidanceStore;
   const { currentTopicID } = guidanceStore;
   const navigate = useNavigate();
   const params = useParams();
+  const [settingsSearchParams] = useSettingsSearchParams();
   const guidancePaths = {
     home: "getting-started",
     settings: "settings",
@@ -54,6 +57,12 @@ export const GuidanceHeader = observer(() => {
   const isPublishDataStep = currentTopicID === "PUBLISH_DATA";
   const isAddDataOrPublishDataStep =
     currentTopicID === "ADD_DATA" || isPublishDataStep;
+  const isMetricConfigStep = currentTopicID === "METRIC_CONFIG";
+
+  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
+  const hasSystemMetricParams = !systemMetricKey.includes("undefined");
+  const metricCompletionProgress =
+    calculateOverallMetricProgress("systemMetricKey");
 
   return (
     <HeaderBar bottomBorder>
@@ -70,18 +79,22 @@ export const GuidanceHeader = observer(() => {
           >
             Get Started
           </MenuItem>
-          <ProgressTooltipToast>
-            {metricConfigurationProgressSteps.map((step) => (
-              <ProgressItemWrapper key={step}>
-                <CheckIconWrapper>
-                  {/* {metricCompletionProgress[step] && ( */}
-                  <CheckIcon src={checkmarkIcon} alt="" />
-                  {/* )} */}
-                </CheckIconWrapper>
-                <ProgressItemName>{step}</ProgressItemName>
-              </ProgressItemWrapper>
-            ))}
-          </ProgressTooltipToast>
+
+          {/* Metric Configuration Progress Toast */}
+          {isMetricConfigStep && (
+            <ProgressTooltipToast showToast={hasSystemMetricParams}>
+              {metricConfigurationProgressSteps.map((step) => (
+                <ProgressItemWrapper key={step}>
+                  <CheckIconWrapper>
+                    {metricCompletionProgress[step] && (
+                      <CheckIcon src={checkmarkIcon} alt="" />
+                    )}
+                  </CheckIconWrapper>
+                  <ProgressItemName>{step}</ProgressItemName>
+                </ProgressItemWrapper>
+              ))}
+            </ProgressTooltipToast>
+          )}
 
           {isAddDataOrPublishDataStep && (
             <MenuItem

@@ -19,7 +19,6 @@ import {
   Badge,
   BadgeColorMapping,
 } from "@justice-counts/common/components/Badge";
-import { MetricConfigurationSettingsOptions } from "@justice-counts/common/types";
 import {
   printReportTitle,
   removeSnakeCase,

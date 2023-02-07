@@ -100,14 +100,14 @@ class GuidanceStore {
     } = this.metricConfigStore;
 
     /** Confirm the metric’s availability/frequency */
-    if (metrics[systemMetricKey].enabled === false) {
+    if (metrics[systemMetricKey]?.enabled === false) {
       metricConfigurationProgressStepsTracker["Confirm metric availability"] =
         true;
       metricConfigurationProgressStepsTracker.completionPercentage = 100;
       return metricConfigurationProgressStepsTracker;
     }
 
-    if (metrics[systemMetricKey].enabled !== null) {
+    if (metrics[systemMetricKey]?.enabled !== null) {
       metricConfigurationProgressStepsTracker["Confirm metric availability"] =
         true;
       metricConfigurationProgressStepsTracker.completionPercentage += 25;
@@ -158,7 +158,7 @@ class GuidanceStore {
       label?: string;
     }[] = [];
 
-    dimensionDefinitionSettingsDisaggregationKeys.forEach(
+    dimensionDefinitionSettingsDisaggregationKeys?.forEach(
       (disaggregationKey) => {
         Object.entries(
           dimensionDefinitionSettings[systemMetricKey][disaggregationKey]
