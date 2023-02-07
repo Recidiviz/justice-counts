@@ -266,13 +266,13 @@ export const Guidance = observer(() => {
                   calculateOverallMetricProgress(systemMetricKey);
                 const metricCompletionProgressPercentage =
                   calculateMetricCompletionPercentage(systemMetricKey);
-
                 const { system, metricKey } =
                   MetricConfigStore.splitSystemMetricKey(systemMetricKey);
 
                 return (
                   <Fragment key={systemMetricKey}>
                     <Metric
+                      hideTooltip={metric.enabled === false}
                       onClick={() =>
                         navigate(
                           `../settings/metric-config?system=${system}&metric=${metricKey}`
