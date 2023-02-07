@@ -43,7 +43,7 @@ export const nextMonthMap = new Map<string, string>([
   ["Dec", "Jan"],
 ]);
 
-export const abbreviatedMonths = [
+const abbreviatedMonths = [
   "Jan",
   "Feb",
   "Mar",
