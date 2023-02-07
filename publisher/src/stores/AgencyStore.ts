@@ -233,20 +233,28 @@ class AgencyStore {
   inviteTeamMemberRequest = async (
     body: { invite_name: string; invite_email: string },
     agencyId: string
-  ): Promise<void> => {
+  ): Promise<void | Error> => {
     const response = (await this.api.request({
       path: `/api/agencies/${agencyId}/users`,
       body,
       method: "POST",
     })) as Response;
-
     if (response.status !== 200) {
+      const result = await response.json();
+      if (result.code === "user_reinvited_to_agency") {
+        showToast({
+          message: result.description,
+          color: "red",
+          timeout: 4000,
+        });
+        return new Error(result.description);
+      }
       showToast({
         message: "Failed to invite user.",
         color: "red",
         timeout: 4000,
       });
-      throw new Error("There was an issue inviting a user.");
+      return new Error("There was an issue inviting a user.");
     }
 
     showToast({
