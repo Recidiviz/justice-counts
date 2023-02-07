@@ -201,7 +201,7 @@ export const PanelRightTopButton = styled.div`
 export const MetricBoxBottomPaddingContainer = styled.div`
   height: 100%;
   width: 100%;
-  padding-bottom: 150px;
+  padding-bottom: 50px;
   overflow-y: scroll;
 `;
 

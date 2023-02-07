@@ -150,7 +150,7 @@ export const ReportStatusIcon = styled.div<{
 export const EditDetails = styled.div`
   width: 307px;
   position: fixed;
-  bottom: 61px;
+  bottom: 100px;
 
   @media only screen and (max-width: ${TWO_PANEL_MAX_WIDTH}px) {
     display: none;

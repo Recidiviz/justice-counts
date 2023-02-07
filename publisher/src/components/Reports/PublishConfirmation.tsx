@@ -32,7 +32,6 @@ import { useStore } from "../../stores";
 import { printReportTitle } from "../../utils";
 import logoImg from "../assets/jc-logo-vector.png";
 import errorIcon from "../assets/status-error-icon.png";
-import { DataUploadHeader } from "../DataUpload";
 import {
   REPORT_LOWERCASE,
   REPORTED_CAPITALIZED,
@@ -60,12 +59,12 @@ import {
   MetricCollapseSignWrapper,
   MetricDetailWrapper,
   MetricHeader,
-  MetricsPreviewWrapper,
   MetricSubTitleContainer,
   MetricTitle,
   MetricTitleNumber,
   MetricTitleWrapper,
   MetricValue,
+  PublishConfirmationTopBar,
   PublishConfirmButton,
   VerticalLine,
 } from "./PublishConfirmation.styles";
@@ -303,7 +302,7 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
 
   return (
     <>
-      <DataUploadHeader transparent={false}>
+      <PublishConfirmationTopBar transparent={false}>
         <LogoContainer
           onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
         >
@@ -328,10 +327,10 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
             disabled={!isPublishable}
           />
         </ConfirmationButtonsContainer>
-      </DataUploadHeader>
+      </PublishConfirmationTopBar>
       <ConfirmationDialogueWrapper>
         {metricsPreview && (
-          <MetricsPreviewWrapper>
+          <>
             <Heading>
               Review <span>{metricsPreview.length}</span> Metrics
             </Heading>
@@ -352,7 +351,7 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
                 )
               );
             })}
-          </MetricsPreviewWrapper>
+          </>
         )}
       </ConfirmationDialogueWrapper>
     </>

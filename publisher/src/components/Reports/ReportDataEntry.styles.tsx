@@ -36,7 +36,6 @@ export const BREAKPOINT_HEIGHT = 750;
 
 export const ReportDataEntryWrapper = styled.div`
   z-index: 4;
-  height: fit-content;
   background-color: ${palette.solid.white};
   display: flex;
   flex-direction: column;

@@ -22,10 +22,9 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled, { css } from "styled-components/macro";
 
-import { Button } from "../DataUpload";
+import { Button, DataUploadHeader } from "../DataUpload";
 import {
   MAIN_PANEL_MAX_WIDTH,
-  MainPanel,
   SectionTitle,
   SectionTitleNumber,
 } from "../ReviewMetrics/ReviewMetrics.styles";
@@ -38,6 +37,10 @@ const MAIN_PANEL_AND_ONE_SIDE_PANEL_MIN_WIDTH =
   CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH +
   MAIN_PANEL_MAX_WIDTH +
   CONTAINER_HORIZONTAL_PADDING * 2;
+
+export const PublishConfirmationTopBar = styled(DataUploadHeader)`
+  z-index: 4;
+`;
 
 export const ConfirmationButtonsContainer = styled.div`
   display: flex;
@@ -71,14 +74,12 @@ export const ConfirmationDialogueTopBarButton = styled(Button)`
 export const ConfirmationDialogueWrapper = styled.div`
   background: ${palette.solid.white};
   display: flex;
-  justify-content: center;
-  position: fixed;
-  top: ${HEADER_BAR_HEIGHT}px;
-  overflow: scroll;
-  height: 100vh;
+  flex-direction: column;
+  position: relative;
   width: 100%;
   padding-left: ${CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH}px;
   padding-right: ${CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH}px;
+  margin-top: 56px;
 
   @media only screen and (max-width: ${MAIN_PANEL_AND_TWO_SIDE_PANELS_MIN_WIDTH}px) {
     padding-right: ${CONTAINER_HORIZONTAL_PADDING}px;
@@ -89,10 +90,6 @@ export const ConfirmationDialogueWrapper = styled.div`
     padding-left: ${CONTAINER_HORIZONTAL_PADDING}px;
     justify-content: center;
   }
-`;
-
-export const MetricsPreviewWrapper = styled(MainPanel)`
-  margin-top: 56px;
 `;
 
 export const MetricCollapseSignWrapper = styled.div<{ isExpanded: boolean }>`
@@ -128,9 +125,9 @@ export const Metric = styled.div`
   flex-direction: column;
   flex: 1 1 auto;
   justify-content: space-between;
-  border-top: 1px solid ${palette.highlight.grey3};
-  padding-top: 16px;
-  margin-top: 32px;
+
+  padding-top: 72px;
+  margin-top: -24px;
 
   &:last-child {
     padding-bottom: ${HEADER_BAR_HEIGHT + 128}px;
@@ -142,6 +139,8 @@ export const Metric = styled.div`
 `;
 
 export const MetricHeader = styled.div<{ hasValue: boolean }>`
+  padding-top: 16px;
+  border-top: 1px solid ${palette.highlight.grey3};
   display: flex;
   flex-direction: row;
   justify-content: space-between;

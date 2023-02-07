@@ -23,7 +23,7 @@ import styled from "styled-components/macro";
 
 export const FooterWrapper = styled.footer`
   height: 100px;
-  margin-top: auto;
+  z-index: 5;
   width: 100vw;
   display: flex;
   flex-direction: column;

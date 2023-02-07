@@ -40,7 +40,6 @@ import {
   MetricSectionSubTitle,
   MetricSectionTitle,
   OnePanelBackLinkContainer,
-  PageWrapper,
   PreTitle,
   Title,
   TitleWrapper,
@@ -211,7 +210,7 @@ const CreateReport = () => {
     createReportFormValues;
 
   return (
-    <PageWrapper>
+    <>
       {/* Create Report Details Panel */}
       <ReportSummaryWrapper>
         <PreTitle>
@@ -376,7 +375,7 @@ const CreateReport = () => {
           />
         </Title>
       </PublishDataWrapper>
-    </PageWrapper>
+    </>
   );
 };
 
