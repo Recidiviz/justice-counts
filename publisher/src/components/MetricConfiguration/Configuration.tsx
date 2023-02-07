@@ -76,7 +76,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     const { agencyId } = useParams();
     const [settingsSearchParams] = useSettingsSearchParams();
     const navigate = useNavigate();
-    const { metricConfigStore } = useStore();
+    const { metricConfigStore, guidanceStore } = useStore();
     const {
       metrics,
       disaggregations,
@@ -87,6 +87,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       updateDisaggregatedBySupervisionSubsystems,
       saveMetricSettings,
     } = metricConfigStore;
+    const { handleMetricConfigToastDisplay } = guidanceStore;
 
     const { system: systemSearchParam, metric: metricSearchParam } =
       settingsSearchParams;

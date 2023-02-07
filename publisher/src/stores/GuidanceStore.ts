@@ -30,6 +30,9 @@ import API from "./API";
 import MetricConfigStore from "./MetricConfigStore";
 import UserStore from "./UserStore";
 
+interface ProgressStepsTrackerType extends Record<string, boolean | number> {
+  completionPercentage: number;
+}
 class GuidanceStore {
   userStore: UserStore;
 
@@ -40,6 +43,10 @@ class GuidanceStore {
   onboardingTopicsMetadata: OnboardingTopicsMetadata;
 
   onboardingTopicsStatus: OnboardingTopicsStatus[];
+
+  showMetricConfigProgressToast: boolean;
+
+  metricConfigProgressToastInterval: NodeJS.Timer | number;
 
   constructor(
     userStore: UserStore,
@@ -53,6 +60,8 @@ class GuidanceStore {
     this.metricConfigStore = metricConfigStore;
     this.onboardingTopicsMetadata = onboardingTopicsMetadata;
     this.onboardingTopicsStatus = mockTopicsStatus;
+    this.showMetricConfigProgressToast = false;
+    this.metricConfigProgressToastInterval = 0;
   }
 
   get hasCompletedOnboarding() {
@@ -80,11 +89,6 @@ class GuidanceStore {
   };
 
   calculateOverallMetricProgress = (systemMetricKey: string) => {
-    interface ProgressStepsTrackerType
-      extends Record<string, boolean | number> {
-      completionPercentage: number;
-    }
-
     const metricConfigurationProgressStepsTracker: ProgressStepsTrackerType = {
       ...Object.fromEntries(
         metricConfigurationProgressSteps.map((step) => [step, false])
@@ -180,6 +184,17 @@ class GuidanceStore {
       metricConfigurationProgressStepsTracker.completionPercentage += 25;
     }
     return metricConfigurationProgressStepsTracker;
+  };
+
+  handleMetricConfigToastDisplay = () => {
+    this.showMetricConfigProgressToast = true;
+    if (this.metricConfigProgressToastInterval) {
+      clearInterval(this.metricConfigProgressToastInterval);
+    }
+    const interval = setInterval(() => {
+      this.showMetricConfigProgressToast = false;
+    }, 3500);
+    this.metricConfigProgressToastInterval = interval;
   };
 }
 

@@ -38,7 +38,8 @@ import {
 
 export const GuidanceHeader = observer(() => {
   const { guidanceStore } = useStore();
-  const { calculateOverallMetricProgress } = guidanceStore;
+  const { calculateOverallMetricProgress, showMetricConfigProgressToast } =
+    guidanceStore;
   const { currentTopicID } = guidanceStore;
   const navigate = useNavigate();
   const params = useParams();
@@ -62,7 +63,7 @@ export const GuidanceHeader = observer(() => {
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const hasSystemMetricParams = !systemMetricKey.includes("undefined");
   const metricCompletionProgress =
-    calculateOverallMetricProgress("systemMetricKey");
+    calculateOverallMetricProgress(systemMetricKey);
 
   return (
     <HeaderBar bottomBorder>
@@ -81,8 +82,8 @@ export const GuidanceHeader = observer(() => {
           </MenuItem>
 
           {/* Metric Configuration Progress Toast */}
-          {isMetricConfigStep && (
-            <ProgressTooltipToast showToast={hasSystemMetricParams}>
+          {isMetricConfigStep && hasSystemMetricParams && (
+            <ProgressTooltipToast showToast={showMetricConfigProgressToast}>
               {metricConfigurationProgressSteps.map((step) => (
                 <ProgressItemWrapper key={step}>
                   <CheckIconWrapper>
