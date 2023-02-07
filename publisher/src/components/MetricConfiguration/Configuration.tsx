@@ -87,7 +87,12 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       updateDisaggregatedBySupervisionSubsystems,
       saveMetricSettings,
     } = metricConfigStore;
-    const { handleMetricConfigToastDisplay } = guidanceStore;
+    const {
+      metricConfigurationProgressStepsTracker,
+      handleMetricConfigToastDisplay,
+      calculateMetricCompletionPercentage,
+      calculateMetricAvailabilityFrequencyProgress,
+    } = guidanceStore;
 
     const { system: systemSearchParam, metric: metricSearchParam } =
       settingsSearchParams;

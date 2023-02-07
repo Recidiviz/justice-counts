@@ -71,6 +71,7 @@ export const Guidance = observer(() => {
     currentTopicID,
     updateTopicStatus,
     calculateOverallMetricProgress,
+    calculateMetricCompletionPercentage,
   } = guidanceStore;
 
   const currentTopicDisplayName =
@@ -122,7 +123,7 @@ export const Guidance = observer(() => {
   };
 
   const numberOfMetricsCompleted = metricsEntries.filter(
-    ([key]) => calculateOverallMetricProgress(key).completionPercentage === 100
+    ([key]) => calculateMetricCompletionPercentage(key) === 100
   ).length;
 
   useEffect(() => {
@@ -260,14 +261,17 @@ export const Guidance = observer(() => {
               configured
             </ConfiguredMetricIndicatorTitle>
             <MetricListContainer>
-              {metricsEntries.map(([key, metric]) => {
+              {metricsEntries.map(([systemMetricKey, metric]) => {
                 const metricCompletionProgress =
-                  calculateOverallMetricProgress(key);
+                  calculateOverallMetricProgress(systemMetricKey);
+                const metricCompletionProgressPercentage =
+                  calculateMetricCompletionPercentage(systemMetricKey);
+
                 const { system, metricKey } =
-                  MetricConfigStore.splitSystemMetricKey(key);
+                  MetricConfigStore.splitSystemMetricKey(systemMetricKey);
 
                 return (
-                  <Fragment key={key}>
+                  <Fragment key={systemMetricKey}>
                     <Metric
                       onClick={() =>
                         navigate(
@@ -277,13 +281,12 @@ export const Guidance = observer(() => {
                     >
                       <MetricName>{metric.label}</MetricName>
                       <MetricStatus greyText={metric.enabled === false}>
-                        {metricCompletionProgress.completionPercentage ===
-                          100 &&
+                        {metricCompletionProgressPercentage === 100 &&
                           metric.enabled && (
                             <CheckIcon src={checkmarkIcon} alt="" />
                           )}
                         {metric.enabled === false && "Unavailable"}
-                        {metricCompletionProgress.completionPercentage < 100 &&
+                        {metricCompletionProgressPercentage < 100 &&
                           (metric.enabled || metric.enabled === null) &&
                           "Action Required"}
                       </MetricStatus>
@@ -294,7 +297,8 @@ export const Guidance = observer(() => {
                         {metricConfigurationProgressSteps.map((step) => (
                           <ProgressItemWrapper key={step}>
                             <CheckIconWrapper>
-                              {metricCompletionProgress[step] && (
+                              {(metricCompletionProgress[step] === 25 ||
+                                metricCompletionProgress[step] === 100) && (
                                 <CheckIcon src={checkmarkIcon} alt="" />
                               )}
                             </CheckIconWrapper>
@@ -308,7 +312,7 @@ export const Guidance = observer(() => {
                         progress={
                           metric.enabled === false
                             ? 0
-                            : metricCompletionProgress.completionPercentage
+                            : metricCompletionProgressPercentage
                         }
                       />
                     </ProgressBarContainer>
