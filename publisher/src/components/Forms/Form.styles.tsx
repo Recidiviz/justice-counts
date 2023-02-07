@@ -103,8 +103,9 @@ export const OnePanelBackLinkContainer = styled(PreTitle)`
   }
 `;
 
-export const MetricsSectionTitle = styled.div`
+export const MetricSummarySectionTitle = styled.div`
   ${typography.sizeCSS.normal}
+  text-transform: capitalize;
   margin-top: 6px;
   margin-right: 17px;
 `;
@@ -148,6 +149,7 @@ export const MetricSectionTitleWrapper = styled.div`
 
 export const MetricSectionTitle = styled.div<{ notReporting?: boolean }>`
   ${typography.sizeCSS.large}
+  text-transform: capitalize;
   margin-right: 17px;
   margin-top: 32px;
   color: ${({ notReporting }) =>
@@ -162,6 +164,7 @@ export const MetricSystemTitle = styled(MetricSectionTitle)<{
     firstTitle ? `none` : `1px solid ${palette.highlight.grey8}`};
   padding-top: ${({ firstTitle }) => (firstTitle ? `none` : `30px`)};
   width: 100%;
+  text-transform: capitalize;
 
   &:first-child {
     border-top: none;

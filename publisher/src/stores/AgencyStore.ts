@@ -162,13 +162,22 @@ class AgencyStore {
     text: string,
     sourceId: number
   ): { settings: AgencySetting[] } => {
-    const newSettings =
-      this.currentAgencySettings?.map((setting) => {
-        if (setting.setting_type === type) {
-          return { setting_type: type, value: text, source_id: sourceId };
-        }
-        return setting;
-      }) || [];
+    const newSettings = this.currentAgencySettings
+      ? [...this.currentAgencySettings]
+      : [];
+    const existingSettingIndex = newSettings.findIndex(
+      (setting) => setting.setting_type === type
+    );
+    const newSetting = {
+      setting_type: type,
+      value: text,
+      source_id: sourceId,
+    };
+    if (existingSettingIndex > -1) {
+      newSettings[existingSettingIndex] = newSetting;
+    } else {
+      newSettings.push(newSetting);
+    }
     if (this.currentAgency) {
       this.currentAgency.settings = newSettings;
     }

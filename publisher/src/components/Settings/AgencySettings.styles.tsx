@@ -67,10 +67,10 @@ export const AgencySettingsBlock = styled.div<{
   withBorder?: boolean;
 }>`
   position: relative;
-  padding 32px 24px;
+  padding: 32px 24px;
   display: flex;
   flex-direction: column;
-  
+
   border: ${({ withBorder }) => withBorder && "1px solid #DCDDDF"};
   width: ${({ withBorder }) =>
     withBorder ? "calc(100% - 88px)" : "calc(100% - 40px)"};
@@ -247,13 +247,14 @@ export const BasicInfoBlockDescription = styled(AgencySettingsBlockDescription)`
   }
 `;
 
-export const BasicInfoRow = styled.div`
+export const BasicInfoRow = styled.div<{ capitalize?: boolean }>`
   ${typography.sizeCSS.large};
   line-height: 32px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-bottom: 24px;
+  ${({ capitalize }) => capitalize && `text-transform: capitalize;`}
 
   span {
     ${typography.sizeCSS.small};

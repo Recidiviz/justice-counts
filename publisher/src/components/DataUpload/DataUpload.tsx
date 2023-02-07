@@ -16,7 +16,11 @@
 // =============================================================================
 
 import { showToast } from "@justice-counts/common/components/Toast";
-import { AgencySystems } from "@justice-counts/common/types";
+import {
+  AgencySystems,
+  AgencyTeamMemberRole,
+  SupervisionSubsystems,
+} from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -57,18 +61,13 @@ export type UploadedFile = {
   uploaded_at: number;
   ingested_at: number;
   uploaded_by: string;
+  uploaded_by_v2: {
+    name: string;
+    role: AgencyTeamMemberRole;
+  };
   system: AgencySystems;
   status: UploadedFileStatus | null;
 };
-
-/**
- * The systems in EXCLUDED_SYSTEMS are sub-systems of the SUPERVISION system,
- * and should not render a separate template & instructions.
- *
- * Example: if an agency has the following systems ["SUPERVISION", "PAROLE", "PROBATION"],
- * the UI should render a template & instructions for the SUPERVISION system.
- */
-export const EXCLUDED_SYSTEMS = ["PAROLE", "PROBATION", "POST_RELEASE"];
 
 export const systemToTemplateSpreadsheetFileName: { [system: string]: string } =
   {
@@ -89,10 +88,16 @@ export const DataUpload: React.FC = observer(() => {
   const navigate = useNavigate();
   const currentAgency = userStore.getAgency(agencyId);
 
+  /**
+   * Sub-systems of the SUPERVISION system should not render a separate template & instructions.
+   *
+   * Example: if an agency has the following systems ["SUPERVISION", "PAROLE", "PROBATION"],
+   * the UI should render a template & instructions for the SUPERVISION system.
+   */
   const userSystems = useMemo(() => {
     return currentAgency
       ? currentAgency.systems.filter(
-          (system) => !EXCLUDED_SYSTEMS.includes(system)
+          (system) => !SupervisionSubsystems.includes(system)
         )
       : [];
   }, [currentAgency]);

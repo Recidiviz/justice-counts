@@ -21,15 +21,19 @@ import {
   BadgeColors,
 } from "@justice-counts/common/components/Badge";
 import { showToast } from "@justice-counts/common/components/Toast";
+import {
+  AgencySystems,
+  AgencyTeamMemberRole,
+} from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { removeSnakeCase } from "../../utils";
+import { formatSystemName } from "../../utils";
 import downloadIcon from "../assets/download-icon.png";
 import { Title, TitleWrapper } from "../Forms";
-import { Loader } from "../Loading";
+import { ContainedLoader } from "../Loading";
 import { TeamMemberNameWithBadge } from "../primitives";
 import {
   ActionButton,
@@ -45,7 +49,6 @@ import {
   UploadedFile,
   UploadedFilesContainer,
   UploadedFilesError,
-  UploadedFilesLoading,
   UploadedFilesTable,
   UploadedFileStatus,
   UploadedFilesWrapper,
@@ -61,8 +64,9 @@ export const UploadedFileRow: React.FC<{
     badgeText: string;
     dateUploaded: string;
     dateIngested: string;
-    system?: string;
-    uploadedBy: string;
+    system?: AgencySystems;
+    uploadedByName: string;
+    uploadedByRole: AgencyTeamMemberRole;
   };
   deleteUploadedFile: (spreadsheetID: number) => void;
   updateUploadedFileStatus: (
@@ -117,7 +121,8 @@ export const UploadedFileRow: React.FC<{
       dateUploaded,
       dateIngested,
       system,
-      uploadedBy,
+      uploadedByName,
+      uploadedByRole,
     } = fileRowDetails;
 
     useEffect(
@@ -152,8 +157,9 @@ export const UploadedFileRow: React.FC<{
           <UploadedContainer>
             {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
             <TeamMemberNameWithBadge
-              name={uploadedBy}
+              name={uploadedByName}
               badgeId={id?.toString()}
+              role={uploadedByRole}
             />
             <DateUploaded>{`/ ${dateUploaded}`}</DateUploaded>
           </UploadedContainer>
@@ -209,7 +215,8 @@ export const UploadedFileRow: React.FC<{
 
 export const UploadedFiles: React.FC = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
-  const { reportStore } = useStore();
+  const { reportStore, userStore } = useStore();
+  const currentAgency = userStore.getAgency(agencyId);
   const dataUploadColumnTitles = [
     "Filename",
     "Uploaded",
@@ -255,8 +262,12 @@ export const UploadedFiles: React.FC = observer(() => {
       badgeText: fileStatus?.toLowerCase() || "Uploading",
       dateUploaded: formatDate(file.uploaded_at),
       dateIngested: file.ingested_at ? formatDate(file.ingested_at) : "--",
-      system: removeSnakeCase(file.system).toLowerCase(),
-      uploadedBy: file.uploaded_by,
+      system: formatSystemName(file.system, {
+        allUserSystems: currentAgency?.systems,
+        hideCombined: true,
+      }) as AgencySystems,
+      uploadedByName: file.uploaded_by_v2.name,
+      uploadedByRole: file.uploaded_by_v2.role,
     };
   };
 
@@ -313,11 +324,7 @@ export const UploadedFiles: React.FC = observer(() => {
   );
 
   if (isLoading) {
-    return (
-      <UploadedFilesLoading>
-        <Loader />
-      </UploadedFilesLoading>
-    );
+    return <ContainedLoader />;
   }
 
   if (fetchError) {
