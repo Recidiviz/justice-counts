@@ -73,15 +73,17 @@ export const AgencySettingsTeamManagement = observer(() => {
     setTeamMemberEditMenuActiveEmail(undefined);
     setIsModalOpen(false);
   };
-  const handleInviteTeamMamber = (name: string, email: string) => {
+  const handleInviteTeamMamber = async (name: string, email: string) => {
     if (name && email) {
-      inviteTeamMember(name, email);
-      inviteTeamMemberRequest(
+      const result = await inviteTeamMemberRequest(
         { invite_name: name, invite_email: email },
         agencyId
       );
-      setNameValue("");
-      setEmailValue("");
+      if (!(result instanceof Error)) {
+        setNameValue("");
+        setEmailValue("");
+        inviteTeamMember(name, email);
+      }
     }
   };
   const handleTeamMemberAdminStatus = (
