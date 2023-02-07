@@ -205,23 +205,13 @@ const ResponsiveBarChart: React.FC<{
           <CartesianGrid vertical={false} strokeDasharray="1 0" />
           <XAxis
             dataKey={(datapoint) => {
-              // we have to pass in data in the form of a string, otherwise Recharts
-              // returns null values in the tickFormatter
-              return JSON.stringify(datapoint);
+              return getDatapointBarLabel(datapoint);
             }}
             padding={{ left: -0.5, right: -0.5 }}
             interval="preserveEnd"
             minTickGap={32}
             tick={tickStyle}
             tickLine={false}
-            tickFormatter={(value) => {
-              if (data.length === 0) {
-                return "";
-              }
-              // parse the stringified data object from the dataKey param
-              const datapoint = JSON.parse(value);
-              return getDatapointBarLabel(datapoint);
-            }}
             tickMargin={12}
           />
           <YAxis
