@@ -23,6 +23,8 @@ import React from "react";
 import styled from "styled-components/macro";
 
 import logo from "../components/assets/jc-logo-green-vector.png";
+import { VerificationLogoutButton } from "../components/Auth/VerificationPage";
+import { useStore } from "../stores/StoreProvider";
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -30,8 +32,8 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 `;
-
 const Content = styled.div`
   width: 100%;
   max-width: 660px;
@@ -87,6 +89,8 @@ const SupportLink = styled.a`
 `;
 
 export const NoAgencies = () => {
+  const { authStore } = useStore();
+  const handleLogout = () => authStore.logoutUser();
   return (
     <Wrapper>
       <Content>
@@ -105,6 +109,13 @@ export const NoAgencies = () => {
           </SupportLink>{" "}
           for support.
         </InfoBlock>
+
+        <VerificationLogoutButton
+          onClick={handleLogout}
+          style={{ marginTop: 65 }}
+        >
+          Logout
+        </VerificationLogoutButton>
       </Content>
     </Wrapper>
   );

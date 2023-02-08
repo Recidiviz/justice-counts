@@ -31,7 +31,7 @@ import { Datapoint } from "../../types";
 import { rem } from "../../utils";
 import { palette } from "../GlobalStyles";
 import Tooltip from "./Tooltip";
-import { splitUtcString } from "./utils";
+import { getDatapointBarLabel } from "./utils";
 
 const MAX_BAR_SIZE = 150;
 
@@ -204,21 +204,14 @@ const ResponsiveBarChart: React.FC<{
           </defs>
           <CartesianGrid vertical={false} strokeDasharray="1 0" />
           <XAxis
-            dataKey="start_date"
+            dataKey={(datapoint) => {
+              return getDatapointBarLabel(datapoint);
+            }}
             padding={{ left: -0.5, right: -0.5 }}
             interval="preserveEnd"
             minTickGap={32}
             tick={tickStyle}
             tickLine={false}
-            tickFormatter={(value, index) => {
-              if (data.length === 0) {
-                return "";
-              }
-              const [, , month, year] = splitUtcString(value);
-              return data[index].frequency === "ANNUAL"
-                ? year
-                : `${month} ${year}`;
-            }}
             tickMargin={12}
           />
           <YAxis
