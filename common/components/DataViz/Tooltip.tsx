@@ -23,7 +23,7 @@ import { Datapoint } from "../../types";
 import { formatNumberInput } from "../../utils";
 import { palette, typography } from "../GlobalStyles";
 import { LegendColor } from "./Legend";
-import { getSumOfDimensionValues, splitUtcString } from "./utils";
+import { getDatapointBarLabel, getSumOfDimensionValues } from "./utils";
 
 const TooltipContainer = styled.div`
   padding: 16px;
@@ -66,7 +66,6 @@ const Tooltip: React.FC<TooltipProps> = ({
   dimensionNames,
 }) => {
   if (active && payload && payload.length) {
-    const [, , month, year] = label ? splitUtcString(label) : [];
     const datapoint = payload[0].payload as Datapoint;
 
     const renderText = (val: string | number | null, maxValue: number) => {
@@ -123,7 +122,7 @@ const Tooltip: React.FC<TooltipProps> = ({
     return (
       <TooltipContainer>
         <TooltipNameWithBottomMargin>
-          {datapoint.frequency === "ANNUAL" ? year : `${month} ${year}`}
+          {getDatapointBarLabel(datapoint)}
         </TooltipNameWithBottomMargin>
         {renderItems()}
       </TooltipContainer>
