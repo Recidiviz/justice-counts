@@ -203,44 +203,47 @@ export const AgencySettingsTeamManagement = observer(() => {
                   </TeamMemberNameContainer>
                   <TeamMemberEmailContainer>
                     {email}
-                    <EditTeamMemberIconContainer
-                      id={email}
-                      tabIndex={-1}
-                      onClick={() => handleTeamMemberMenuClick(email)}
-                      onBlur={() => setTeamMemberEditMenuActiveEmail(undefined)}
-                    >
-                      <img src={editIcon} alt="" />
-                      {teamMemberEditMenuActiveEmail === email && (
-                        <EditTeamMemberMenu
-                          onClick={(e) => e.stopPropagation()}
+                    {role !== AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN &&
+                      userStore.email !== email && (
+                        <EditTeamMemberIconContainer
+                          id={email}
+                          tabIndex={-1}
+                          onClick={() => handleTeamMemberMenuClick(email)}
+                          onBlur={() =>
+                            setTeamMemberEditMenuActiveEmail(undefined)
+                          }
                         >
-                          {invitation_status !== "PENDING" &&
-                            role !==
-                              AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN && (
+                          <img src={editIcon} alt="" />
+                          {teamMemberEditMenuActiveEmail === email && (
+                            <EditTeamMemberMenu
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {invitation_status !== "PENDING" && (
+                                <EditTeamMemberMenuItem
+                                  onClick={() =>
+                                    handleTeamMemberAdminStatus(
+                                      email,
+                                      role === AgencyTeamMemberRole.AGENCY_ADMIN
+                                        ? AgencyTeamMemberRole.CONTRIBUTOR
+                                        : AgencyTeamMemberRole.AGENCY_ADMIN
+                                    )
+                                  }
+                                >
+                                  {role === "AGENCY_ADMIN" ? "Remove" : "Grant"}{" "}
+                                  admin status
+                                </EditTeamMemberMenuItem>
+                              )}
                               <EditTeamMemberMenuItem
-                                onClick={() =>
-                                  handleTeamMemberAdminStatus(
-                                    email,
-                                    role === AgencyTeamMemberRole.AGENCY_ADMIN
-                                      ? AgencyTeamMemberRole.CONTRIBUTOR
-                                      : AgencyTeamMemberRole.AGENCY_ADMIN
-                                  )
-                                }
+                                onClick={() => setIsModalOpen(true)}
                               >
-                                {role === "AGENCY_ADMIN" ? "Remove" : "Grant"}{" "}
-                                admin status
+                                {invitation_status === "PENDING"
+                                  ? "Revoke invitation"
+                                  : "Remove from agency"}
                               </EditTeamMemberMenuItem>
-                            )}
-                          <EditTeamMemberMenuItem
-                            onClick={() => setIsModalOpen(true)}
-                          >
-                            {invitation_status === "PENDING"
-                              ? "Revoke invitation"
-                              : "Remove from agency"}
-                          </EditTeamMemberMenuItem>
-                        </EditTeamMemberMenu>
+                            </EditTeamMemberMenu>
+                          )}
+                        </EditTeamMemberIconContainer>
                       )}
-                    </EditTeamMemberIconContainer>
                   </TeamMemberEmailContainer>
                 </TeamMemberRow>
               )
