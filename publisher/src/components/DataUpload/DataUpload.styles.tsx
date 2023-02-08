@@ -314,13 +314,6 @@ export const Icon = styled.img<{ grayscale?: boolean }>`
   ${({ grayscale }) => grayscale && `filter: grayscale(1);`}
 `;
 
-export const UploadedFilesLoading = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 50px;
-`;
-
 export const UploadedFilesError = styled.div`
   display: flex;
   justify-content: center;

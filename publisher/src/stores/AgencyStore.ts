@@ -162,13 +162,22 @@ class AgencyStore {
     text: string,
     sourceId: number
   ): { settings: AgencySetting[] } => {
-    const newSettings =
-      this.currentAgencySettings?.map((setting) => {
-        if (setting.setting_type === type) {
-          return { setting_type: type, value: text, source_id: sourceId };
-        }
-        return setting;
-      }) || [];
+    const newSettings = this.currentAgencySettings
+      ? [...this.currentAgencySettings]
+      : [];
+    const existingSettingIndex = newSettings.findIndex(
+      (setting) => setting.setting_type === type
+    );
+    const newSetting = {
+      setting_type: type,
+      value: text,
+      source_id: sourceId,
+    };
+    if (existingSettingIndex > -1) {
+      newSettings[existingSettingIndex] = newSetting;
+    } else {
+      newSettings.push(newSetting);
+    }
     if (this.currentAgency) {
       this.currentAgency.settings = newSettings;
     }
@@ -224,20 +233,28 @@ class AgencyStore {
   inviteTeamMemberRequest = async (
     body: { invite_name: string; invite_email: string },
     agencyId: string
-  ): Promise<void> => {
+  ): Promise<void | Error> => {
     const response = (await this.api.request({
       path: `/api/agencies/${agencyId}/users`,
       body,
       method: "POST",
     })) as Response;
-
     if (response.status !== 200) {
+      const result = await response.json();
+      if (result.code === "user_reinvited_to_agency") {
+        showToast({
+          message: result.description,
+          color: "red",
+          timeout: 4000,
+        });
+        return new Error(result.description);
+      }
       showToast({
         message: "Failed to invite user.",
         color: "red",
         timeout: 4000,
       });
-      throw new Error("There was an issue inviting a user.");
+      return new Error("There was an issue inviting a user.");
     }
 
     showToast({
