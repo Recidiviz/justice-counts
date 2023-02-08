@@ -37,7 +37,8 @@ import {
 export const DataUploadContainer = styled.div`
   width: 100%;
   height: 100%;
-  position: fixed;
+  position: relative;
+  margin-top: -${HEADER_BAR_HEIGHT}px;
   overflow-y: scroll;
   top: 0;
   z-index: 5;
@@ -80,11 +81,10 @@ export const MediumPageTitle = styled(PageTitle)`
 
 export const Instructions = styled.div`
   height: 100%;
-  flex: 1 1 50%;
+  width: 50%;
   padding: 103px;
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
   ${typography.sizeCSS.medium}
 
   h1 {
@@ -355,10 +355,14 @@ export const ActionButton = styled.div<{ red?: boolean }>`
 export const UploadFileContainer = styled.div`
   height: 100%;
   display: flex;
+  position: relative;
 `;
 
 export const DragDropContainer = styled.div<{ dragging?: boolean }>`
-  height: 100%;
+  height: 100vh;
+  position: fixed;
+  right: 0;
+  width: 50%;
   display: flex;
   flex-direction: column;
   flex: 1 1 50%;
@@ -371,7 +375,7 @@ export const DragDropContainer = styled.div<{ dragging?: boolean }>`
 
 export const Container = styled.div`
   width: 100%;
-  min-height: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
