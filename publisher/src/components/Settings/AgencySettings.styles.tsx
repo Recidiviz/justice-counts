@@ -465,12 +465,7 @@ export const JurisdictionsSearchResult = styled.div<{ hasAction?: boolean }>`
   justify-content: space-between;
   align-items: center;
   cursor: ${({ hasAction }) => (hasAction ? "pointer" : "default")};
-
-  div {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
+  text-transform: capitalize;
 
   &:hover {
     background-color: ${palette.solid.offwhite};
@@ -500,6 +495,10 @@ export const JurisdictionsListArea = styled.div`
   height: 270px;
   margin-bottom: 64px;
   overflow-y: scroll;
+`;
+
+export const JurisdictionsInfoRow = styled(AgencySettingsInfoRow)`
+  text-transform: capitalize;
 `;
 
 export const JurisdictionCheckBlock = styled.div`

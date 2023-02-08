@@ -37,7 +37,6 @@ import {
   AgencySettingsBlockDescription,
   AgencySettingsBlockSubDescription,
   AgencySettingsBlockTitle,
-  AgencySettingsInfoRow,
   EditButton,
   EditButtonContainer,
   EditModeButtonsContainer,
@@ -46,6 +45,7 @@ import {
   JurisdictionCheckBlock,
   JurisdictionsEditModeFooter,
   JurisdictionsEditModeFooterLeftBlock,
+  JurisdictionsInfoRow,
   JurisdictionsInput,
   JurisdictionsInputWrapper,
   JurisdictionsListArea,
@@ -235,7 +235,7 @@ export const AgencySettingsJurisdictions: React.FC<{
               </AgencySettingsBlockSubDescription>
               <JurisdictionsListArea>
                 {includedJurisdictions.map(({ id, type, area_name }) => (
-                  <AgencySettingsInfoRow
+                  <JurisdictionsInfoRow
                     key={id}
                     hasHover
                     onClick={() => handleCheckedJurisdictionsIds(id)}
@@ -252,7 +252,7 @@ export const AgencySettingsJurisdictions: React.FC<{
                         <BlueCheckIcon src={blackCheck} alt="" enabled />
                       </CheckboxWrapper>
                     </JurisdictionCheckBlock>
-                  </AgencySettingsInfoRow>
+                  </JurisdictionsInfoRow>
                 ))}
               </JurisdictionsListArea>
             </>
@@ -265,7 +265,7 @@ export const AgencySettingsJurisdictions: React.FC<{
               </AgencySettingsBlockSubDescription>
               <JurisdictionsListArea>
                 {excludedJurisdictions.map(({ id, type, area_name }) => (
-                  <AgencySettingsInfoRow
+                  <JurisdictionsInfoRow
                     key={id}
                     hasHover
                     onClick={() => handleCheckedJurisdictionsIds(id)}
@@ -282,7 +282,7 @@ export const AgencySettingsJurisdictions: React.FC<{
                         <BlueCheckIcon src={blackCheck} alt="" enabled />
                       </CheckboxWrapper>
                     </JurisdictionCheckBlock>
-                  </AgencySettingsInfoRow>
+                  </JurisdictionsInfoRow>
                 ))}
               </JurisdictionsListArea>
             </>
@@ -372,12 +372,12 @@ export const AgencySettingsJurisdictions: React.FC<{
           </AgencySettingsBlockSubDescription>
         )}
         {includedJurisdictions.map(({ id, type, area_name }) => (
-          <AgencySettingsInfoRow key={id}>
+          <JurisdictionsInfoRow key={id}>
             {area_name}
             <JurisdictionAreaType>
               {removeUnderscore(type)}
             </JurisdictionAreaType>
-          </AgencySettingsInfoRow>
+          </JurisdictionsInfoRow>
         ))}
         {excludedJurisdictions.length > 0 && (
           <AgencySettingsBlockSubDescription
@@ -387,12 +387,12 @@ export const AgencySettingsJurisdictions: React.FC<{
           </AgencySettingsBlockSubDescription>
         )}
         {excludedJurisdictions.map(({ id, type, area_name }) => (
-          <AgencySettingsInfoRow key={id}>
+          <JurisdictionsInfoRow key={id}>
             {area_name}
             <JurisdictionAreaType>
               {removeUnderscore(type)}
             </JurisdictionAreaType>
-          </AgencySettingsInfoRow>
+          </JurisdictionsInfoRow>
         ))}
         {allowEdit && (
           <EditButtonContainer>
