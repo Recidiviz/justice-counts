@@ -107,7 +107,13 @@ export const AgencySettingsTeamManagement = observer(() => {
 
   const sortAgencyTeam = (team: AgencyTeam[]) =>
     team
-      .filter((member) => member.auth0_user_id !== userStore.auth0UserID)
+      .filter(
+        (member) =>
+          member.auth0_user_id !== userStore.auth0UserID &&
+          (!userStore.isJusticeCountsAdmin(agencyId)
+            ? member.role !== AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN
+            : true)
+      )
       .sort((a, b) => a.name.localeCompare(b.name));
   const getRemovedUserName = (email: string) =>
     currentAgencyTeam?.find((member) => member.email === email)?.name || "";
@@ -184,12 +190,15 @@ export const AgencySettingsTeamManagement = observer(() => {
           {currentAgencyTeam &&
             sortAgencyTeam(currentAgencyTeam).map(
               ({ name, email, invitation_status, role }) => (
-                <TeamMemberRow key={email}>
+                <TeamMemberRow key={`${name}-${email}`}>
                   <TeamMemberNameContainer>
                     {name}{" "}
+                    {role === "JUSTICE_COUNTS_ADMIN" && (
+                      <AdminStatus>JC Admin </AdminStatus>
+                    )}
                     {role === "AGENCY_ADMIN" && (
-                      <AdminStatus>Admin</AdminStatus>
-                    )}{" "}
+                      <AdminStatus>Admin </AdminStatus>
+                    )}
                     {invitation_status === "PENDING" && (
                       <InvitedStatus>Invited</InvitedStatus>
                     )}
@@ -207,21 +216,23 @@ export const AgencySettingsTeamManagement = observer(() => {
                         <EditTeamMemberMenu
                           onClick={(e) => e.stopPropagation()}
                         >
-                          {invitation_status !== "PENDING" && (
-                            <EditTeamMemberMenuItem
-                              onClick={() =>
-                                handleTeamMemberAdminStatus(
-                                  email,
-                                  role === AgencyTeamMemberRole.AGENCY_ADMIN
-                                    ? AgencyTeamMemberRole.CONTRIBUTOR
-                                    : AgencyTeamMemberRole.AGENCY_ADMIN
-                                )
-                              }
-                            >
-                              {role === "AGENCY_ADMIN" ? "Remove" : "Grant"}{" "}
-                              admin status
-                            </EditTeamMemberMenuItem>
-                          )}
+                          {invitation_status !== "PENDING" &&
+                            role !==
+                              AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN && (
+                              <EditTeamMemberMenuItem
+                                onClick={() =>
+                                  handleTeamMemberAdminStatus(
+                                    email,
+                                    role === AgencyTeamMemberRole.AGENCY_ADMIN
+                                      ? AgencyTeamMemberRole.CONTRIBUTOR
+                                      : AgencyTeamMemberRole.AGENCY_ADMIN
+                                  )
+                                }
+                              >
+                                {role === "AGENCY_ADMIN" ? "Remove" : "Grant"}{" "}
+                                admin status
+                              </EditTeamMemberMenuItem>
+                            )}
                           <EditTeamMemberMenuItem
                             onClick={() => setIsModalOpen(true)}
                           >
