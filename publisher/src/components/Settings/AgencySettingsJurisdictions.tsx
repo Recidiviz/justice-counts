@@ -42,6 +42,7 @@ import {
   EditButtonContainer,
   EditModeButtonsContainer,
   FilledButton,
+  JurisdictionAreaType,
   JurisdictionCheckBlock,
   JurisdictionsEditModeFooter,
   JurisdictionsEditModeFooterLeftBlock,
@@ -55,18 +56,15 @@ import {
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
-const jurisdictionsMap: { [key: string]: Jurisdiction[] } = (
-  jurisdictionsData as Jurisdiction[]
-).reduce((acc, entry) => {
-  const key = entry.area_name[0];
-  if (!acc[key]) {
-    acc[key] = [];
-    acc[key].push(entry);
-  } else {
-    acc[key].push(entry);
-  }
-  return acc;
-}, {} as { [key: string]: Jurisdiction[] });
+const jurisdictions: Jurisdiction[] = (jurisdictionsData as Jurisdiction[]).map(
+  (entry) => ({
+    ...entry,
+    area_name:
+      entry.area_name === entry.state_name
+        ? entry.area_name
+        : `${entry.area_name}, ${entry.state_abbrev}`,
+  })
+);
 
 // whole flow is mocked
 export const AgencySettingsJurisdictions: React.FC<{
@@ -90,7 +88,7 @@ export const AgencySettingsJurisdictions: React.FC<{
     string[]
   >([]);
 
-  const checkedAreas = checkedJurisdictionsIds.length;
+  const checkedAreasCount = checkedJurisdictionsIds.length;
   const hasInclusions = includedJurisdictions.length > 0;
   const hasExclusions = excludedJurisdictions.length > 0;
 
@@ -135,25 +133,9 @@ export const AgencySettingsJurisdictions: React.FC<{
   };
 
   // helpers
-  const getLocationName = (
-    areaName: string,
-    stateName: string,
-    stateAbbrev: string
-  ) => `${areaName}${areaName === stateName ? "" : `, ${stateAbbrev}`}`;
-
   const getSearchResult = (searchValue: string) => {
-    if (searchValue === "") {
-      setSearchResult([]);
-      return;
-    }
-    const jurisdictionsToSearch =
-      jurisdictionsMap[searchValue[0].toUpperCase()];
-    if (searchValue.length === 1) {
-      setSearchResult(jurisdictionsToSearch);
-      return;
-    }
-    const matchedData = jurisdictionsToSearch.filter((entry) =>
-      entry.area_name.toLowerCase().startsWith(searchValue.toLowerCase())
+    const matchedData = jurisdictions.filter((entry) =>
+      entry.area_name.toLowerCase().startsWith(searchValue.toLowerCase().trim())
     );
     const addedJurisdictions = [
       ...includedJurisdictions,
@@ -173,6 +155,12 @@ export const AgencySettingsJurisdictions: React.FC<{
     }
   }, [inputValue]);
 
+  useEffect(() => {
+    if (!isSettingInEditMode) {
+      setInputValue("");
+    }
+  }, [isSettingInEditMode]);
+
   if (isSettingInEditMode) {
     return (
       <AgencySettingsEditModeModal
@@ -188,7 +176,7 @@ export const AgencySettingsJurisdictions: React.FC<{
               : "Jurisdictions"}
           </AgencySettingsBlockTitle>
           <AgencySettingsBlockDescription>
-            Add counties, states, or cities that{" "}
+            Add counties, states, or counties subdivisions that{" "}
             {isExclusionsViewActive && "DO NOT"} correspond with your agency.
           </AgencySettingsBlockDescription>
           <JurisdictionsInputWrapper>
@@ -200,43 +188,43 @@ export const AgencySettingsJurisdictions: React.FC<{
                 getSearchResult(e.target.value);
               }}
             />
-            {!!inputValue && searchResult.length === 0 ? (
-              <JurisdictionsSearchResultContainer>
-                <JurisdictionsSearchResult>
-                  No matches
-                </JurisdictionsSearchResult>
-              </JurisdictionsSearchResultContainer>
-            ) : (
-              <JurisdictionsSearchResultContainer>
-                {searchResult.slice(0, totalSearchResultsShow).map((result) => (
-                  <JurisdictionsSearchResult
-                    key={result.id}
-                    hasAction
-                    onClick={() => handleAddArea(result)}
-                  >
-                    {getLocationName(
-                      result.area_name,
-                      result.state_name,
-                      result.state_abbrev
-                    )}
-                    <div>
-                      {removeUnderscore(result.type)}{" "}
-                      <AddIcon src={addIcon} alt="" />
-                    </div>
+            {!!inputValue &&
+              (searchResult.length === 0 ? (
+                <JurisdictionsSearchResultContainer>
+                  <JurisdictionsSearchResult>
+                    No matches
                   </JurisdictionsSearchResult>
-                ))}
-                {!!inputValue && searchResult.length > totalSearchResultsShow && (
-                  <SeeMoreButton
-                    hasAction
-                    onClick={() =>
-                      setTotalSearchResultsShow(totalSearchResultsShow + 10)
-                    }
-                  >
-                    See more
-                  </SeeMoreButton>
-                )}
-              </JurisdictionsSearchResultContainer>
-            )}
+                </JurisdictionsSearchResultContainer>
+              ) : (
+                <JurisdictionsSearchResultContainer>
+                  {searchResult
+                    .slice(0, totalSearchResultsShow)
+                    .map((result) => (
+                      <JurisdictionsSearchResult
+                        key={result.id}
+                        hasAction
+                        onClick={() => handleAddArea(result)}
+                      >
+                        {result.area_name}
+                        <JurisdictionAreaType>
+                          {removeUnderscore(result.type)}{" "}
+                          <AddIcon src={addIcon} alt="" />
+                        </JurisdictionAreaType>
+                      </JurisdictionsSearchResult>
+                    ))}
+                  {!!inputValue &&
+                    searchResult.length > totalSearchResultsShow && (
+                      <SeeMoreButton
+                        hasAction
+                        onClick={() =>
+                          setTotalSearchResultsShow(totalSearchResultsShow + 10)
+                        }
+                      >
+                        See more
+                      </SeeMoreButton>
+                    )}
+                </JurisdictionsSearchResultContainer>
+              ))}
           </JurisdictionsInputWrapper>
 
           {!isExclusionsViewActive && (
@@ -245,28 +233,26 @@ export const AgencySettingsJurisdictions: React.FC<{
                 Areas included
               </AgencySettingsBlockSubDescription>
               <JurisdictionsListArea>
-                {includedJurisdictions.map(
-                  ({ id, type, area_name, state_name, state_abbrev }) => (
-                    <AgencySettingsInfoRow
-                      key={id}
-                      hasHover
-                      onClick={() => handleCheckedJurisdictionsIds(id)}
-                    >
-                      {getLocationName(area_name, state_name, state_abbrev)}
-                      <JurisdictionCheckBlock>
-                        {removeUnderscore(type)}
-                        <CheckboxWrapper>
-                          <Checkbox
-                            type="checkbox"
-                            checked={checkedJurisdictionsIds.includes(id)}
-                            onChange={() => handleCheckedJurisdictionsIds(id)}
-                          />
-                          <BlueCheckIcon src={blackCheck} alt="" enabled />
-                        </CheckboxWrapper>
-                      </JurisdictionCheckBlock>
-                    </AgencySettingsInfoRow>
-                  )
-                )}
+                {includedJurisdictions.map(({ id, type, area_name }) => (
+                  <AgencySettingsInfoRow
+                    key={id}
+                    hasHover
+                    onClick={() => handleCheckedJurisdictionsIds(id)}
+                  >
+                    {area_name}
+                    <JurisdictionCheckBlock>
+                      {removeUnderscore(type)}
+                      <CheckboxWrapper>
+                        <Checkbox
+                          type="checkbox"
+                          checked={checkedJurisdictionsIds.includes(id)}
+                          onChange={() => handleCheckedJurisdictionsIds(id)}
+                        />
+                        <BlueCheckIcon src={blackCheck} alt="" enabled />
+                      </CheckboxWrapper>
+                    </JurisdictionCheckBlock>
+                  </AgencySettingsInfoRow>
+                ))}
               </JurisdictionsListArea>
             </>
           )}
@@ -277,28 +263,26 @@ export const AgencySettingsJurisdictions: React.FC<{
                 Areas excluded
               </AgencySettingsBlockSubDescription>
               <JurisdictionsListArea>
-                {excludedJurisdictions.map(
-                  ({ id, type, area_name, state_name, state_abbrev }) => (
-                    <AgencySettingsInfoRow
-                      key={id}
-                      hasHover
-                      onClick={() => handleCheckedJurisdictionsIds(id)}
-                    >
-                      {getLocationName(area_name, state_name, state_abbrev)}
-                      <JurisdictionCheckBlock>
-                        {removeUnderscore(type)}
-                        <CheckboxWrapper>
-                          <Checkbox
-                            type="checkbox"
-                            checked={checkedJurisdictionsIds.includes(id)}
-                            onChange={() => handleCheckedJurisdictionsIds(id)}
-                          />
-                          <BlueCheckIcon src={blackCheck} alt="" enabled />
-                        </CheckboxWrapper>
-                      </JurisdictionCheckBlock>
-                    </AgencySettingsInfoRow>
-                  )
-                )}
+                {excludedJurisdictions.map(({ id, type, area_name }) => (
+                  <AgencySettingsInfoRow
+                    key={id}
+                    hasHover
+                    onClick={() => handleCheckedJurisdictionsIds(id)}
+                  >
+                    {area_name}
+                    <JurisdictionCheckBlock>
+                      {removeUnderscore(type)}
+                      <CheckboxWrapper>
+                        <Checkbox
+                          type="checkbox"
+                          checked={checkedJurisdictionsIds.includes(id)}
+                          onChange={() => handleCheckedJurisdictionsIds(id)}
+                        />
+                        <BlueCheckIcon src={blackCheck} alt="" enabled />
+                      </CheckboxWrapper>
+                    </JurisdictionCheckBlock>
+                  </AgencySettingsInfoRow>
+                ))}
               </JurisdictionsListArea>
             </>
           )}
@@ -356,8 +340,8 @@ export const AgencySettingsJurisdictions: React.FC<{
                     handleRemoveJurisdictions(checkedJurisdictionsIds)
                   }
                 >
-                  {`Remove ${checkedAreas} ${
-                    checkedAreas > 1 ? "areas" : "area"
+                  {`Remove ${checkedAreasCount} ${
+                    checkedAreasCount > 1 ? "areas" : "area"
                   }`}
                 </TransparentButton>
               </EditModeButtonsContainer>
@@ -386,14 +370,14 @@ export const AgencySettingsJurisdictions: React.FC<{
             Areas included
           </AgencySettingsBlockSubDescription>
         )}
-        {includedJurisdictions.map(
-          ({ id, type, area_name, state_name, state_abbrev }) => (
-            <AgencySettingsInfoRow key={id}>
-              {getLocationName(area_name, state_name, state_abbrev)}
-              <span>{removeUnderscore(type)}</span>
-            </AgencySettingsInfoRow>
-          )
-        )}
+        {includedJurisdictions.map(({ id, type, area_name }) => (
+          <AgencySettingsInfoRow key={id}>
+            {area_name}
+            <JurisdictionAreaType>
+              {removeUnderscore(type)}
+            </JurisdictionAreaType>
+          </AgencySettingsInfoRow>
+        ))}
         {excludedJurisdictions.length > 0 && (
           <AgencySettingsBlockSubDescription
             hasTopMargin={includedJurisdictions.length > 0}
@@ -401,14 +385,12 @@ export const AgencySettingsJurisdictions: React.FC<{
             Areas excluded
           </AgencySettingsBlockSubDescription>
         )}
-        {excludedJurisdictions.map(
-          ({ id, type, area_name, state_name, state_abbrev }) => (
-            <AgencySettingsInfoRow key={id}>
-              {getLocationName(area_name, state_name, state_abbrev)}
-              <span>{removeUnderscore(type)}</span>
-            </AgencySettingsInfoRow>
-          )
-        )}
+        {excludedJurisdictions.map(({ id, type, area_name }) => (
+          <AgencySettingsInfoRow key={id}>
+            {area_name}
+            <span>{removeUnderscore(type)}</span>
+          </AgencySettingsInfoRow>
+        ))}
         {allowEdit && (
           <EditButtonContainer>
             <EditButton onClick={openSetting}>

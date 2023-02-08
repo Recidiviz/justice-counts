@@ -476,6 +476,14 @@ export const JurisdictionsSearchResult = styled.div<{ hasAction?: boolean }>`
   }
 `;
 
+export const JurisdictionAreaType = styled.div`
+  ${typography.sizeCSS.normal};
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-transform: capitalize;
+`;
+
 export const SeeMoreButton = styled(JurisdictionsSearchResult)`
   justify-content: center;
   color: ${palette.solid.blue};
@@ -495,6 +503,7 @@ export const JurisdictionsListArea = styled.div`
 
 export const JurisdictionCheckBlock = styled.div`
   ${typography.sizeCSS.normal};
+  text-transform: capitalize;
   display: flex;
   flex-direction: row;
   gap: 28px;
