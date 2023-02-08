@@ -158,6 +158,7 @@ export const AgencySettingsJurisdictions: React.FC<{
   useEffect(() => {
     if (!isSettingInEditMode) {
       setInputValue("");
+      setIsExclusionsViewActive(false);
     }
   }, [isSettingInEditMode]);
 
@@ -388,7 +389,9 @@ export const AgencySettingsJurisdictions: React.FC<{
         {excludedJurisdictions.map(({ id, type, area_name }) => (
           <AgencySettingsInfoRow key={id}>
             {area_name}
-            <span>{removeUnderscore(type)}</span>
+            <JurisdictionAreaType>
+              {removeUnderscore(type)}
+            </JurisdictionAreaType>
           </AgencySettingsInfoRow>
         ))}
         {allowEdit && (
