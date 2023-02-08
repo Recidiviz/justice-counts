@@ -48,6 +48,8 @@ class MetricConfigStore {
 
   api: API;
 
+  isInitialized: boolean;
+
   metrics: {
     [systemMetricKey: string]: MetricInfo;
   };
@@ -122,6 +124,7 @@ class MetricConfigStore {
     this.dimensions = {};
     this.dimensionDefinitionSettings = {};
     this.contexts = {};
+    this.isInitialized = false;
   }
 
   static getSystemMetricKey(system: string, metricKey: string): string {
@@ -295,6 +298,7 @@ class MetricConfigStore {
             );
           });
         });
+        this.isInitialized = true;
       });
     } catch (error) {
       return new Error(error as string);

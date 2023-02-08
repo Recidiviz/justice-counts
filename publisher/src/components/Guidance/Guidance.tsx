@@ -32,6 +32,7 @@ import MetricConfigStore from "../../stores/MetricConfigStore";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import checkmarkIcon from "../assets/status-check-icon.png";
 import { REPORTS_LOWERCASE } from "../Global/constants";
+import { Loading } from "../Loading";
 import {
   ActionButton,
   ActionButtonWrapper,
@@ -164,6 +165,8 @@ export const Guidance = observer(() => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyId, currentTopicID, numberOfMetricsCompleted]);
+
+  if (!guidanceStore.isInitialized) return <Loading />;
 
   return (
     <>

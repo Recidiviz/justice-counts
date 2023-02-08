@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { MetricConfigurationSettingsOptions } from "@justice-counts/common/types";
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable, runInAction, when } from "mobx";
 
 import {
   metricConfigurationProgressSteps,
@@ -33,12 +33,15 @@ import UserStore from "./UserStore";
 type ProgressStepsTrackerType = {
   [metricConfigStep: string]: number;
 };
+
 class GuidanceStore {
   userStore: UserStore;
 
   metricConfigStore: MetricConfigStore;
 
   api: API;
+
+  isInitialized: boolean;
 
   onboardingTopicsMetadata: OnboardingTopicsMetadata;
 
@@ -47,10 +50,6 @@ class GuidanceStore {
   metricConfigurationProgressStepsTracker: {
     [systemMetricKey: string]: ProgressStepsTrackerType;
   };
-
-  showMetricConfigProgressToast: boolean;
-
-  metricConfigProgressToastInterval: NodeJS.Timer | number;
 
   constructor(
     userStore: UserStore,
@@ -62,11 +61,15 @@ class GuidanceStore {
     this.api = api;
     this.userStore = userStore;
     this.metricConfigStore = metricConfigStore;
+    this.isInitialized = false;
     this.onboardingTopicsMetadata = onboardingTopicsMetadata;
     this.onboardingTopicsStatus = mockTopicsStatus;
     this.metricConfigurationProgressStepsTracker = {};
-    this.showMetricConfigProgressToast = false;
-    this.metricConfigProgressToastInterval = 0;
+
+    when(
+      () => metricConfigStore.isInitialized,
+      () => this.initializeMetricConfigProgressStepsTracker()
+    );
   }
 
   get hasCompletedOnboarding() {
@@ -93,20 +96,20 @@ class GuidanceStore {
     });
   };
 
-  initializeMetricConfigProgressStepsTracker = (systemMetricKey: string) => {
-    this.metricConfigurationProgressStepsTracker[systemMetricKey] = {
-      ...Object.fromEntries(
-        metricConfigurationProgressSteps.map((step) => [step, 0])
-      ),
-    };
+  initializeMetricConfigProgressStepsTracker = () => {
+    const { metrics } = this.metricConfigStore;
+    Object.keys(metrics).forEach((systemMetricKey) => {
+      this.metricConfigurationProgressStepsTracker[systemMetricKey] = {
+        ...Object.fromEntries(
+          metricConfigurationProgressSteps.map((step) => [step, 0])
+        ),
+      };
+    });
+    this.isInitialized = true;
   };
 
   calculateMetricAvailabilityFrequencyProgress = (systemMetricKey: string) => {
     const { metrics } = this.metricConfigStore;
-
-    if (!this.metricConfigurationProgressStepsTracker[systemMetricKey]) {
-      this.initializeMetricConfigProgressStepsTracker(systemMetricKey);
-    }
 
     /** Confirm the metric’s availability/frequency */
     if (metrics[systemMetricKey]?.enabled === false) {
@@ -128,7 +131,10 @@ class GuidanceStore {
       ];
     }
 
-    if (metrics[systemMetricKey]?.enabled !== null) {
+    if (
+      metrics[systemMetricKey]?.enabled !== null &&
+      metrics[systemMetricKey]?.enabled !== undefined
+    ) {
       runInAction(() => {
         this.metricConfigurationProgressStepsTracker[systemMetricKey][
           "Confirm metric availability"
@@ -136,17 +142,13 @@ class GuidanceStore {
       });
     }
 
-    return this.metricConfigurationProgressStepsTracker[systemMetricKey][
+    return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
       "Confirm metric availability"
     ];
   };
 
   calculateMetricDefinitionProgress = (systemMetricKey: string) => {
-    const { metricDefinitionSettings } = this.metricConfigStore;
-
-    if (!this.metricConfigurationProgressStepsTracker[systemMetricKey]) {
-      this.initializeMetricConfigProgressStepsTracker(systemMetricKey);
-    }
+    const { metrics, metricDefinitionSettings } = this.metricConfigStore;
 
     const metricDefinitionsCompleted =
       metricDefinitionSettings[systemMetricKey] &&
@@ -157,7 +159,7 @@ class GuidanceStore {
     if (
       (metricDefinitionsCompleted ||
         !metricDefinitionSettings[systemMetricKey]) &&
-      this.calculateMetricCompletionPercentage(systemMetricKey) < 100
+      metrics[systemMetricKey]?.enabled
     ) {
       runInAction(() => {
         this.metricConfigurationProgressStepsTracker[systemMetricKey][
@@ -165,14 +167,14 @@ class GuidanceStore {
         ] = 25;
       });
     }
+
+    return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
+      "Confirm metric definition"
+    ];
   };
 
   calculateBreakdownProgress = (systemMetricKey: string) => {
-    const { dimensions } = this.metricConfigStore;
-
-    if (!this.metricConfigurationProgressStepsTracker[systemMetricKey]) {
-      this.initializeMetricConfigProgressStepsTracker(systemMetricKey);
-    }
+    const { metrics, dimensions } = this.metricConfigStore;
 
     const disaggregationValues =
       dimensions[systemMetricKey] && Object.values(dimensions[systemMetricKey]);
@@ -184,24 +186,22 @@ class GuidanceStore {
       });
     });
 
-    if (
-      nullDimensions.length === 0 &&
-      this.calculateMetricCompletionPercentage(systemMetricKey) < 100
-    ) {
+    if (nullDimensions.length === 0 && metrics[systemMetricKey]?.enabled) {
       runInAction(() => {
         this.metricConfigurationProgressStepsTracker[systemMetricKey][
           "Confirm breakdowns"
         ] = 25;
       });
     }
+
+    return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
+      "Confirm breakdowns"
+    ];
   };
 
   calculateBreakdownDefinitionProgress = (systemMetricKey: string) => {
-    const { dimensionDefinitionSettings, dimensions } = this.metricConfigStore;
-
-    if (!this.metricConfigurationProgressStepsTracker[systemMetricKey]) {
-      this.initializeMetricConfigProgressStepsTracker(systemMetricKey);
-    }
+    const { metrics, dimensionDefinitionSettings, dimensions } =
+      this.metricConfigStore;
 
     const disaggregationValues =
       dimensions[systemMetricKey] && Object.values(dimensions[systemMetricKey]);
@@ -241,7 +241,7 @@ class GuidanceStore {
 
     if (
       nullDimensionDefinitionSettings.length === 0 &&
-      this.calculateMetricCompletionPercentage(systemMetricKey) < 100
+      metrics[systemMetricKey]?.enabled
     ) {
       runInAction(() => {
         this.metricConfigurationProgressStepsTracker[systemMetricKey][
@@ -249,6 +249,10 @@ class GuidanceStore {
         ] = 25;
       });
     }
+
+    return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
+      "Confirm breakdown definitions"
+    ];
   };
 
   calculateOverallMetricProgress = (systemMetricKey: string) => {
@@ -258,6 +262,7 @@ class GuidanceStore {
       this.calculateBreakdownProgress(systemMetricKey);
       this.calculateBreakdownDefinitionProgress(systemMetricKey);
     });
+
     return this.metricConfigurationProgressStepsTracker[systemMetricKey];
   };
 
@@ -270,19 +275,6 @@ class GuidanceStore {
       return totalPercentage;
     }
     return 0;
-  };
-
-  handleMetricConfigToastDisplay = () => {
-    this.showMetricConfigProgressToast = true;
-    if (this.metricConfigProgressToastInterval) {
-      clearInterval(this.metricConfigProgressToastInterval);
-    }
-    const interval = setInterval(() => {
-      runInAction(() => {
-        this.showMetricConfigProgressToast = false;
-      });
-    }, 3500);
-    this.metricConfigProgressToastInterval = interval;
   };
 
   // calculateOverallMetricProgress = (systemMetricKey: string) => {

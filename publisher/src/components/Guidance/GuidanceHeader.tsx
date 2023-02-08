@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
@@ -38,9 +38,15 @@ import {
 
 export const GuidanceHeader = observer(() => {
   const { guidanceStore } = useStore();
-  const { calculateOverallMetricProgress, showMetricConfigProgressToast } =
-    guidanceStore;
-  const { currentTopicID } = guidanceStore;
+  const {
+    currentTopicID,
+    calculateOverallMetricProgress,
+    calculateMetricAvailabilityFrequencyProgress,
+    calculateBreakdownProgress,
+    calculateMetricDefinitionProgress,
+    calculateBreakdownDefinitionProgress,
+  } = guidanceStore;
+
   const navigate = useNavigate();
   const params = useParams();
   const [settingsSearchParams] = useSettingsSearchParams();
@@ -62,11 +68,51 @@ export const GuidanceHeader = observer(() => {
 
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const hasSystemMetricParams = !systemMetricKey.includes("undefined");
+
   const metricCompletionProgress =
     calculateOverallMetricProgress(systemMetricKey);
 
+  const [showMetricConfigProgressToast, setShowMetricConfigProgressToast] =
+    useState(false);
+  const [
+    metricConfigProgressToastInterval,
+    setMetricConfigProgressToastInterval,
+  ] = useState<NodeJS.Timer>();
+
+  const handleMetricConfigToastDisplay = () => {
+    setShowMetricConfigProgressToast(true);
+    if (metricConfigProgressToastInterval) {
+      clearInterval(metricConfigProgressToastInterval);
+    }
+    const interval = setInterval(() => {
+      setShowMetricConfigProgressToast(false);
+    }, 3500);
+    setMetricConfigProgressToastInterval(interval);
+  };
+
+  const metricProgress =
+    calculateMetricAvailabilityFrequencyProgress(systemMetricKey);
+  const metricDefinitionProgress =
+    calculateMetricDefinitionProgress(systemMetricKey);
+  const breakdownProgress = calculateBreakdownProgress(systemMetricKey);
+  const breakdownDefinitionProgress =
+    calculateBreakdownDefinitionProgress(systemMetricKey);
+
+  useEffect(
+    () => handleMetricConfigToastDisplay(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      metricProgress,
+      metricDefinitionProgress,
+      breakdownProgress,
+      breakdownDefinitionProgress,
+    ]
+  );
+
+  if (!guidanceStore.isInitialized) return null;
+
   return (
-    <HeaderBar bottomBorder>
+    <HeaderBar bottomBorder onClick={handleMetricConfigToastDisplay}>
       <LogoContainer onClick={() => navigate(guidancePaths.home)}>
         <Logo src={logo} alt="" />
       </LogoContainer>
