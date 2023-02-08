@@ -107,12 +107,10 @@ export const AgencySettingsTeamManagement = observer(() => {
 
   const sortAgencyTeam = (team: AgencyTeam[]) =>
     team
-      .filter(
-        (member) =>
-          member.auth0_user_id !== userStore.auth0UserID &&
-          (!userStore.isJusticeCountsAdmin(agencyId)
-            ? member.role !== AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN
-            : true)
+      .filter((member) =>
+        !userStore.isJusticeCountsAdmin(agencyId)
+          ? member.role !== AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN
+          : true
       )
       .sort((a, b) => a.name.localeCompare(b.name));
   const getRemovedUserName = (email: string) =>
@@ -194,10 +192,10 @@ export const AgencySettingsTeamManagement = observer(() => {
                   <TeamMemberNameContainer>
                     {name}{" "}
                     {role === "JUSTICE_COUNTS_ADMIN" && (
-                      <AdminStatus>JC Admin </AdminStatus>
+                      <AdminStatus>JC Admin</AdminStatus>
                     )}
                     {role === "AGENCY_ADMIN" && (
-                      <AdminStatus>Admin </AdminStatus>
+                      <AdminStatus>Admin</AdminStatus>
                     )}
                     {invitation_status === "PENDING" && (
                       <InvitedStatus>Invited</InvitedStatus>
