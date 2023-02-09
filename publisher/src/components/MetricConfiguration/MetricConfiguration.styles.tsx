@@ -302,7 +302,7 @@ export const MetricDetailsDisplay = styled.div`
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
     overflow-y: unset;
-    padding: 24px 12px 10px 0;
+    padding: 24px 12px 0px 0;
   }
 `;
 
@@ -880,6 +880,5 @@ export const DisaggregationHeader = styled.div`
   justify-content: space-between;
   padding-bottom: 16px;
   margin-top: 48px;
-  margin-bottom: 16px;
   border-bottom: 1px solid ${palette.highlight.grey5};
 `;

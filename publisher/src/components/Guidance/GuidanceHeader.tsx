@@ -75,19 +75,22 @@ export const GuidanceHeader = observer(() => {
   const [showMetricConfigProgressToast, setShowMetricConfigProgressToast] =
     useState(false);
   const [
-    metricConfigProgressToastInterval,
-    setMetricConfigProgressToastInterval,
+    metricConfigProgressToastTimeout,
+    setMetricConfigProgressToastTimeout,
   ] = useState<NodeJS.Timer>();
 
   const handleMetricConfigToastDisplay = () => {
     setShowMetricConfigProgressToast(true);
-    if (metricConfigProgressToastInterval) {
-      clearInterval(metricConfigProgressToastInterval);
+
+    if (metricConfigProgressToastTimeout) {
+      clearTimeout(metricConfigProgressToastTimeout);
     }
-    const interval = setInterval(() => {
+
+    const timeout = setTimeout(() => {
       setShowMetricConfigProgressToast(false);
     }, 3500);
-    setMetricConfigProgressToastInterval(interval);
+
+    setMetricConfigProgressToastTimeout(timeout);
   };
 
   const metricProgress =
