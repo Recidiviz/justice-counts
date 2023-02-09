@@ -248,6 +248,12 @@ class GuidanceStore {
           "Confirm breakdown definitions"
         ] = 25;
       });
+    } else if (this.metricConfigurationProgressStepsTracker[systemMetricKey]) {
+      runInAction(() => {
+        this.metricConfigurationProgressStepsTracker[systemMetricKey][
+          "Confirm breakdown definitions"
+        ] = 0;
+      });
     }
 
     return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
