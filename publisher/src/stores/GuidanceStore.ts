@@ -262,12 +262,10 @@ class GuidanceStore {
   };
 
   getOverallMetricProgress = (systemMetricKey: string) => {
-    runInAction(() => {
-      this.getMetricAvailabilityFrequencyProgress(systemMetricKey);
-      this.getMetricDefinitionProgress(systemMetricKey);
-      this.getBreakdownProgress(systemMetricKey);
-      this.getBreakdownDefinitionProgress(systemMetricKey);
-    });
+    this.getMetricAvailabilityFrequencyProgress(systemMetricKey);
+    this.getMetricDefinitionProgress(systemMetricKey);
+    this.getBreakdownProgress(systemMetricKey);
+    this.getBreakdownDefinitionProgress(systemMetricKey);
 
     return this.metricConfigurationProgressStepsTracker[systemMetricKey];
   };
