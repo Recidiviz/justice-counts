@@ -247,7 +247,7 @@ export function removeAgencyFromPath(location: string) {
  * @param {Boolean} options.hideCombined - for supervision system w/ subsystems - overrides and suppresses the addition of the word "(combined)" when true
  * @returns lowercase, non-snakecase string
  *
- * @examples formatSystemName("SUPERVISION", ["SUPERVISION", "PAROLE", "PROBATION", "POST_RELEASE"]) returns "supervision (combined)"
+ * @examples formatSystemName("SUPERVISION", ["SUPERVISION", "PAROLE", "PROBATION"]) returns "supervision (combined)"
  * formatSystemName("SUPERVISION", ["SUPERVISION"]) returns "supervision"
  * formatSystemName("COURTS_AND_PRETRIAL") returns "courts and pretrial"
  */
