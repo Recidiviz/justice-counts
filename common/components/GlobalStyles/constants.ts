@@ -18,3 +18,7 @@
 export const HEADER_BAR_HEIGHT = 64;
 export const TABLET_WIDTH = 834;
 export const COMMON_DESKTOP_WIDTH = 1366;
+
+export const MOBILE_WIDTH = 512;
+export const COMMON_TABLET_WIDTH = 700;
+export const DESKTOP_WIDTH = 700;
