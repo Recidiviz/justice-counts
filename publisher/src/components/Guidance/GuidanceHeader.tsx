@@ -42,11 +42,11 @@ export const GuidanceHeader = observer(() => {
   const {
     metricConfigurationProgressStepsTracker,
     currentTopicID,
-    calculateOverallMetricProgress,
-    calculateMetricAvailabilityFrequencyProgress,
-    calculateBreakdownProgress,
-    calculateMetricDefinitionProgress,
-    calculateBreakdownDefinitionProgress,
+    getOverallMetricProgress,
+    getMetricAvailabilityFrequencyProgress,
+    getBreakdownProgress,
+    getMetricDefinitionProgress,
+    getBreakdownDefinitionProgress,
   } = guidanceStore;
 
   const navigate = useNavigate();
@@ -71,8 +71,7 @@ export const GuidanceHeader = observer(() => {
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const hasSystemMetricParams = !systemMetricKey.includes("undefined");
 
-  const metricCompletionProgress =
-    calculateOverallMetricProgress(systemMetricKey);
+  const metricCompletionProgress = getOverallMetricProgress(systemMetricKey);
 
   const [showMetricConfigProgressToast, setShowMetricConfigProgressToast] =
     useState(false);
@@ -96,12 +95,11 @@ export const GuidanceHeader = observer(() => {
   };
 
   const metricProgress =
-    calculateMetricAvailabilityFrequencyProgress(systemMetricKey);
-  const metricDefinitionProgress =
-    calculateMetricDefinitionProgress(systemMetricKey);
-  const breakdownProgress = calculateBreakdownProgress(systemMetricKey);
+    getMetricAvailabilityFrequencyProgress(systemMetricKey);
+  const metricDefinitionProgress = getMetricDefinitionProgress(systemMetricKey);
+  const breakdownProgress = getBreakdownProgress(systemMetricKey);
   const breakdownDefinitionProgress =
-    calculateBreakdownDefinitionProgress(systemMetricKey);
+    getBreakdownDefinitionProgress(systemMetricKey);
 
   useEffect(
     () => handleMetricConfigToastDisplay(),

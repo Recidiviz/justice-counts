@@ -108,7 +108,7 @@ class GuidanceStore {
     this.isInitialized = true;
   };
 
-  calculateMetricAvailabilityFrequencyProgress = (systemMetricKey: string) => {
+  getMetricAvailabilityFrequencyProgress = (systemMetricKey: string) => {
     const { metrics } = this.metricConfigStore;
 
     /** Confirm the metric’s availability/frequency */
@@ -147,7 +147,7 @@ class GuidanceStore {
     ];
   };
 
-  calculateMetricDefinitionProgress = (systemMetricKey: string) => {
+  getMetricDefinitionProgress = (systemMetricKey: string) => {
     const { metrics, metricDefinitionSettings } = this.metricConfigStore;
 
     const metricDefinitionsCompleted =
@@ -173,7 +173,7 @@ class GuidanceStore {
     ];
   };
 
-  calculateBreakdownProgress = (systemMetricKey: string) => {
+  getBreakdownProgress = (systemMetricKey: string) => {
     const { metrics, dimensions } = this.metricConfigStore;
 
     const disaggregationValues =
@@ -199,7 +199,7 @@ class GuidanceStore {
     ];
   };
 
-  calculateBreakdownDefinitionProgress = (systemMetricKey: string) => {
+  getBreakdownDefinitionProgress = (systemMetricKey: string) => {
     const { metrics, dimensionDefinitionSettings, dimensions } =
       this.metricConfigStore;
 
@@ -255,18 +255,18 @@ class GuidanceStore {
     ];
   };
 
-  calculateOverallMetricProgress = (systemMetricKey: string) => {
+  getOverallMetricProgress = (systemMetricKey: string) => {
     runInAction(() => {
-      this.calculateMetricAvailabilityFrequencyProgress(systemMetricKey);
-      this.calculateMetricDefinitionProgress(systemMetricKey);
-      this.calculateBreakdownProgress(systemMetricKey);
-      this.calculateBreakdownDefinitionProgress(systemMetricKey);
+      this.getMetricAvailabilityFrequencyProgress(systemMetricKey);
+      this.getMetricDefinitionProgress(systemMetricKey);
+      this.getBreakdownProgress(systemMetricKey);
+      this.getBreakdownDefinitionProgress(systemMetricKey);
     });
 
     return this.metricConfigurationProgressStepsTracker[systemMetricKey];
   };
 
-  calculateMetricCompletionPercentage = (systemMetricKey: string) => {
+  getMetricCompletionPercentage = (systemMetricKey: string) => {
     if (this.metricConfigurationProgressStepsTracker[systemMetricKey]) {
       const totalPercentage = Object.values(
         this.metricConfigurationProgressStepsTracker[systemMetricKey]

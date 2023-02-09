@@ -71,8 +71,8 @@ export const Guidance = observer(() => {
     onboardingTopicsMetadata,
     currentTopicID,
     updateTopicStatus,
-    calculateOverallMetricProgress,
-    calculateMetricCompletionPercentage,
+    getOverallMetricProgress,
+    getMetricCompletionPercentage,
   } = guidanceStore;
 
   const currentTopicDisplayName =
@@ -124,7 +124,7 @@ export const Guidance = observer(() => {
   };
 
   const numberOfMetricsCompleted = metricsEntries.filter(
-    ([key]) => calculateMetricCompletionPercentage(key) === 100
+    ([key]) => getMetricCompletionPercentage(key) === 100
   ).length;
 
   useEffect(() => {
@@ -266,9 +266,9 @@ export const Guidance = observer(() => {
             <MetricListContainer>
               {metricsEntries.map(([systemMetricKey, metric]) => {
                 const metricCompletionProgress =
-                  calculateOverallMetricProgress(systemMetricKey);
+                  getOverallMetricProgress(systemMetricKey);
                 const metricCompletionProgressPercentage =
-                  calculateMetricCompletionPercentage(systemMetricKey);
+                  getMetricCompletionPercentage(systemMetricKey);
                 const { system, metricKey } =
                   MetricConfigStore.splitSystemMetricKey(systemMetricKey);
 
