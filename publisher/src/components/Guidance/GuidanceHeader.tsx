@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { autorun } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -40,7 +39,6 @@ import {
 export const GuidanceHeader = observer(() => {
   const { guidanceStore } = useStore();
   const {
-    metricConfigurationProgressStepsTracker,
     currentTopicID,
     getOverallMetricProgress,
     getMetricAvailabilityFrequencyProgress,
@@ -111,20 +109,6 @@ export const GuidanceHeader = observer(() => {
       breakdownDefinitionProgress,
     ]
   );
-
-  // useEffect(() => {
-  //   const dispose = autorun(() => {
-  //     handleMetricConfigToastDisplay();
-  //   });
-
-  //   return () => {
-  //     dispose();
-  //   };
-  // }, [
-  //   metricConfigurationProgressStepsTracker[systemMetricKey]?.[
-  //     "Confirm breakdowns"
-  //   ],
-  // ]);
 
   if (!guidanceStore.isInitialized) return null;
 
