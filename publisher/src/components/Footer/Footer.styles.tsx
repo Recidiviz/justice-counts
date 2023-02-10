@@ -21,9 +21,9 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-export const FooterWrapper = styled.footer`
+export const FooterWrapper = styled.footer<{ isPageDataUpload?: boolean }>`
   height: 100px;
-  z-index: 5;
+  z-index: ${({ isPageDataUpload }) => (isPageDataUpload ? "5" : "0")};
   width: 100vw;
   display: flex;
   flex-direction: column;

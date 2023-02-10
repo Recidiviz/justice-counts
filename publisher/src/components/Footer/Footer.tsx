@@ -16,6 +16,7 @@
 // =============================================================================
 
 import React from "react";
+import { useLocation } from "react-router-dom";
 
 import bjaLogo from "../assets/bja-logo.svg";
 import dojLogo from "../assets/doj-logo.svg";
@@ -32,8 +33,10 @@ import {
 } from "./Footer.styles";
 
 const Footer = () => {
+  const location = useLocation();
+
   return (
-    <FooterWrapper>
+    <FooterWrapper isPageDataUpload={location.pathname.endsWith("upload")}>
       <FooterTop>
         ©2022{" "}
         <FooterTopRight>

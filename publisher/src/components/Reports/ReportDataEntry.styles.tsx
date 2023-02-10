@@ -42,6 +42,7 @@ export const ReportDataEntryWrapper = styled.div`
   align-items: center;
   margin-top: -${HEADER_BAR_HEIGHT}px;
   padding-top: ${HEADER_BAR_HEIGHT}px;
+  width: 100%;
 `;
 
 export const PublishDataWrapper = styled.div`

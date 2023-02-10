@@ -54,7 +54,7 @@ export const ReportSummaryWrapper = styled.div<{
   showDataEntryHelpPage?: boolean;
 }>`
   width: ${SIDE_PANEL_WIDTH}px;
-  height: 100%;
+  height: calc(100% - 100px);
   position: fixed;
   top: 0;
   left: 0;

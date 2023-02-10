@@ -37,6 +37,7 @@ export const GlobalStyle = createGlobalStyle`
     font-size: 16px;
     background-color: ${palette.solid.white};
     color: ${palette.solid.darkgrey};
+    overscroll-behavior-y: none;
   }
 
   input, textarea {

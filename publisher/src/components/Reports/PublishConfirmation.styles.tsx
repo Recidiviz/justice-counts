@@ -74,7 +74,7 @@ export const ConfirmationDialogueTopBarButton = styled(Button)`
 export const ConfirmationDialogueWrapper = styled.div`
   background: ${palette.solid.white};
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   position: relative;
   width: 100%;
   padding-left: ${CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH}px;
@@ -89,6 +89,10 @@ export const ConfirmationDialogueWrapper = styled.div`
   @media only screen and (max-width: ${MAIN_PANEL_AND_ONE_SIDE_PANEL_MIN_WIDTH}px) {
     padding-left: ${CONTAINER_HORIZONTAL_PADDING}px;
     justify-content: center;
+  }
+
+  div {
+    max-width: ${MAIN_PANEL_MAX_WIDTH}px;
   }
 `;
 

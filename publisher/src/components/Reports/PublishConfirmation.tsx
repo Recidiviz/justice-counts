@@ -330,7 +330,7 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
       </PublishConfirmationTopBar>
       <ConfirmationDialogueWrapper>
         {metricsPreview && (
-          <>
+          <div>
             <Heading>
               Review <span>{metricsPreview.length}</span> Metrics
             </Heading>
@@ -351,7 +351,7 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
                 )
               );
             })}
-          </>
+          </div>
         )}
       </ConfirmationDialogueWrapper>
     </>
