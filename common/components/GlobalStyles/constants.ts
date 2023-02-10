@@ -21,4 +21,4 @@ export const COMMON_DESKTOP_WIDTH = 1366;
 
 export const NEW_MOBILE_WIDTH = 512;
 export const NEW_COMMON_TABLET_WIDTH = 700;
-export const NEW_DESKTOP_WIDTH = 1218;
+export const NEW_DESKTOP_WIDTH = 1200;

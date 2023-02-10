@@ -16,10 +16,9 @@
 // =============================================================================
 
 import {
-  NEW_DESKTOP_WIDTH,
   HEADER_BAR_HEIGHT,
+  NEW_DESKTOP_WIDTH,
   palette,
-  TABLET_WIDTH,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";

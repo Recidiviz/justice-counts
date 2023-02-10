@@ -27,7 +27,7 @@ import {
 } from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
-import { ONE_PANEL_MAX_WIDTH } from "../Reports/ReportDataEntry.styles";
+import { Button } from "../DataUpload";
 
 export const MenuContainer = styled.nav<{ isMobileMenuOpen: boolean }>`
   font-family: ${typography.family};
@@ -45,10 +45,26 @@ export const MenuContainer = styled.nav<{ isMobileMenuOpen: boolean }>`
     top: ${HEADER_BAR_HEIGHT + 1}px;
     left: 0;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     background-color: ${palette.solid.white};
-    padding: 48px 32px 32px 32px;
+    padding: 48px 32px ${HEADER_BAR_HEIGHT + 32}px 32px;
     gap: 32px;
+    overflow-y: scroll;
+
+    #upload {
+      width: 100%;
+      height: 56px;
+      margin-top: auto;
+
+      div {
+        width: 100%;
+        height: 100%;
+        ${typography.sizeCSS.medium}
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
   }
 `;
 
@@ -56,6 +72,7 @@ export const MenuItem = styled.div<{
   active?: boolean;
   highlight?: boolean;
   buttonPadding?: boolean;
+  isHoverDisabled?: boolean;
 }>`
   height: ${HEADER_BAR_HEIGHT}px;
   padding-top: ${({ buttonPadding }) => (buttonPadding ? `5px` : `14px`)};
@@ -64,6 +81,7 @@ export const MenuItem = styled.div<{
   transition: 0.2s ease;
   color: ${({ highlight }) =>
     highlight ? palette.solid.red : palette.solid.darkgrey};
+  white-space: nowrap;
 
   a,
   a:visited {
@@ -74,8 +92,10 @@ export const MenuItem = styled.div<{
 
   &:hover,
   a:hover {
-    cursor: pointer;
-    color: ${palette.solid.blue};
+    cursor: ${({ isHoverDisabled }) =>
+      isHoverDisabled ? "default" : "pointer"};
+    color: ${({ isHoverDisabled }) =>
+      isHoverDisabled ? palette.solid.darkgrey : palette.solid.blue};
   }
 
   @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
@@ -83,6 +103,22 @@ export const MenuItem = styled.div<{
     ${typography.sizeCSS.large};
     padding: 0;
     height: auto;
+  }
+`;
+
+export const SubMenuContainer = styled.div`
+  margin: -8px 0 -8px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+`;
+
+export const SubMenuItem = styled.div`
+  ${typography.sizeCSS.medium};
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.solid.blue};
   }
 `;
 
@@ -136,6 +172,11 @@ export const ExtendedDropdownToggle = styled(DropdownToggle)<{
 
   &:focus {
     color: ${palette.solid.darkgrey};
+  }
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    ${typography.sizeCSS.large};
+    margin-bottom: 0;
   }
 `;
 
@@ -192,4 +233,8 @@ export const ExtendedDropdownMenuItem = styled(DropdownMenuItem)<{
       stroke: ${palette.solid.blue};
     }
   }
+`;
+
+export const HeaderUploadButton = styled(Button)`
+  white-space: nowrap;
 `;

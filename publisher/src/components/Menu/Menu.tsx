@@ -21,20 +21,26 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
+import {
+  settingsMenuPaths,
+  settingsMenuPathsWithoutTeam,
+} from "../../pages/Settings";
 import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
 import useWindowWidth from "../../utils/useWIndowWidth";
 import closeMenuBurger from "../assets/close-header-menu-icon.svg";
 import menuBurger from "../assets/menu-burger-icon.svg";
-import { Button } from "../DataUpload";
 import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
 import {
   ExtendedDropdownMenu,
   ExtendedDropdownMenuItem,
   ExtendedDropdownToggle,
+  HeaderUploadButton,
   MenuContainer,
   MenuItem,
   MobileMenuIconWrapper,
+  SubMenuContainer,
+  SubMenuItem,
   WelcomeUser,
 } from ".";
 
@@ -47,6 +53,12 @@ const Menu = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const pathWithoutAgency = removeAgencyFromPath(location.pathname);
+
+  const handleCloseMobileMenu = () => {
+    if (windowWidth < NEW_DESKTOP_WIDTH && isMobileMenuOpen) {
+      setIsMobileMenuOpen(false);
+    }
+  };
 
   const logout = async (): Promise<void | string> => {
     try {
@@ -71,6 +83,11 @@ const Menu = () => {
   };
 
   const currentAgency = userStore.getAgency(agencyId);
+
+  // TODO remove that when team management is finished
+  const tempSettingsMenuPaths = userStore.isJusticeCountsAdmin(agencyId)
+    ? settingsMenuPaths
+    : settingsMenuPathsWithoutTeam;
 
   useEffect(() => {
     const { body } = document;
@@ -98,7 +115,10 @@ const Menu = () => {
 
         {/* Reports */}
         <MenuItem
-          onClick={() => navigate(REPORTS_LOWERCASE)}
+          onClick={() => {
+            navigate(REPORTS_LOWERCASE);
+            handleCloseMobileMenu();
+          }}
           active={pathWithoutAgency === REPORTS_LOWERCASE}
         >
           {REPORTS_CAPITALIZED}
@@ -106,22 +126,27 @@ const Menu = () => {
 
         {/* Data (Visualizations) */}
         <MenuItem
-          onClick={() => navigate("data")}
+          onClick={() => {
+            navigate("data");
+            handleCloseMobileMenu();
+          }}
           active={pathWithoutAgency === "data"}
         >
           Data
         </MenuItem>
 
         {/* Learn More */}
-        <MenuItem>
-          <a
-            href="https://justicecounts.csgjusticecenter.org/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Learn More
-          </a>
-        </MenuItem>
+        {windowWidth > NEW_DESKTOP_WIDTH && (
+          <MenuItem>
+            <a
+              href="https://justicecounts.csgjusticecenter.org/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Learn More
+            </a>
+          </MenuItem>
+        )}
 
         {/* Agencies Dropdown */}
         {userStore.isJusticeCountsAdmin(agencyId) && (
@@ -130,7 +155,9 @@ const Menu = () => {
               <ExtendedDropdownToggle kind="borderless">
                 Agencies
               </ExtendedDropdownToggle>
-              <ExtendedDropdownMenu alignment="right">
+              <ExtendedDropdownMenu
+                alignment={windowWidth > NEW_DESKTOP_WIDTH ? "right" : "left"}
+              >
                 {userStore.userAgencies
                   ?.slice()
                   .sort((a, b) => a.name.localeCompare(b.name))
@@ -140,6 +167,7 @@ const Menu = () => {
                         key={agency.id}
                         onClick={() => {
                           navigate(`/agency/${agency.id}/${pathWithoutAgency}`);
+                          handleCloseMobileMenu();
                         }}
                         highlight={agency.id === currentAgency?.id}
                       >
@@ -154,20 +182,47 @@ const Menu = () => {
 
         {/* Settings */}
         <MenuItem
-          onClick={() => navigate("settings")}
+          onClick={() => {
+            if (windowWidth > NEW_DESKTOP_WIDTH) {
+              navigate("settings");
+            }
+          }}
           active={pathWithoutAgency.startsWith("settings")}
+          isHoverDisabled={isMobileMenuOpen}
         >
           Settings
         </MenuItem>
+
+        {isMobileMenuOpen && (
+          <SubMenuContainer>
+            {tempSettingsMenuPaths.map(({ displayLabel, path }) => (
+              <SubMenuItem
+                key={path}
+                onClick={() => {
+                  navigate(`settings/${path}`);
+                  handleCloseMobileMenu();
+                }}
+              >
+                {displayLabel}
+              </SubMenuItem>
+            ))}
+          </SubMenuContainer>
+        )}
 
         <MenuItem onClick={logout} highlight>
           Log Out
         </MenuItem>
 
-        <MenuItem buttonPadding>
-          <Button type="blue" onClick={() => navigate("upload")}>
+        <MenuItem id="upload" buttonPadding>
+          <HeaderUploadButton
+            type="blue"
+            onClick={() => {
+              navigate("upload");
+              handleCloseMobileMenu();
+            }}
+          >
             Upload Data
-          </Button>
+          </HeaderUploadButton>
         </MenuItem>
       </MenuContainer>
       <MobileMenuIconWrapper
