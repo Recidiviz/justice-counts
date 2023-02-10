@@ -16,6 +16,7 @@
 // =============================================================================
 import {
   HEADER_BAR_HEIGHT,
+  NEW_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -28,13 +29,27 @@ import styled from "styled-components/macro";
 
 import { ONE_PANEL_MAX_WIDTH } from "../Reports/ReportDataEntry.styles";
 
-export const MenuContainer = styled.nav`
+export const MenuContainer = styled.nav<{ isMobileMenuOpen: boolean }>`
   font-family: ${typography.family};
   ${typography.sizeCSS.normal}
   display: flex;
   align-items: center;
   padding: 0 24px;
   gap: 24px;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    display: ${({ isMobileMenuOpen }) => (isMobileMenuOpen ? "flex" : "none")};
+    flex-direction: column;
+    align-items: start;
+    position: fixed;
+    top: ${HEADER_BAR_HEIGHT + 1}px;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: ${palette.solid.white};
+    padding: 48px 32px 32px 32px;
+    gap: 32px;
+  }
 `;
 
 export const MenuItem = styled.div<{
@@ -62,6 +77,28 @@ export const MenuItem = styled.div<{
     cursor: pointer;
     color: ${palette.solid.blue};
   }
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    border-top: none;
+    ${typography.sizeCSS.large};
+    padding: 0;
+    height: auto;
+  }
+`;
+
+export const MobileMenuIconWrapper = styled.div`
+  display: none;
+  width: 24px;
+  height: ${HEADER_BAR_HEIGHT}px;
+  margin-right: 24px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    display: flex;
+  }
 `;
 
 export const WelcomeUser = styled.div`
@@ -69,8 +106,12 @@ export const WelcomeUser = styled.div`
   border-right: 1px solid black;
   padding-right: 24px;
 
-  @media only screen and (max-width: ${ONE_PANEL_MAX_WIDTH}px) {
-    display: none;
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    max-width: 315px;
+    ${typography.sizeCSS.medium};
+    border-right: none;
+    padding-right: 0;
+    margin-bottom: 8px;
   }
 `;
 

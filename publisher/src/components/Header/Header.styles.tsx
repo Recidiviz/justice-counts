@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  NEW_DESKTOP_WIDTH,
   HEADER_BAR_HEIGHT,
   palette,
   TABLET_WIDTH,
@@ -60,7 +61,7 @@ export const LogoName = styled.div`
   ${typography.sizeCSS.medium};
   white-space: nowrap;
 
-  @media only screen and (max-width: ${TABLET_WIDTH}px) {
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
     display: none;
   }
 `;
