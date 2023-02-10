@@ -464,15 +464,27 @@ export const JurisdictionsSearchResult = styled.div<{ hasAction?: boolean }>`
   justify-content: space-between;
   align-items: center;
   cursor: ${({ hasAction }) => (hasAction ? "pointer" : "default")};
-
-  div {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
+  text-transform: capitalize;
 
   &:hover {
     background-color: ${palette.solid.offwhite};
+  }
+`;
+
+export const JurisdictionAreaType = styled.div`
+  ${typography.sizeCSS.normal};
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-transform: capitalize;
+`;
+
+export const SeeMoreButton = styled(JurisdictionsSearchResult)`
+  justify-content: center;
+  color: ${palette.solid.blue};
+
+  &:hover {
+    background-color: ${palette.solid.white};
   }
 `;
 
@@ -484,8 +496,13 @@ export const JurisdictionsListArea = styled.div`
   overflow-y: scroll;
 `;
 
+export const JurisdictionsInfoRow = styled(AgencySettingsInfoRow)`
+  text-transform: capitalize;
+`;
+
 export const JurisdictionCheckBlock = styled.div`
   ${typography.sizeCSS.normal};
+  text-transform: capitalize;
   display: flex;
   flex-direction: row;
   gap: 28px;

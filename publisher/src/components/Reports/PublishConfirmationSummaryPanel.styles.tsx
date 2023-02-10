@@ -40,6 +40,7 @@ const MAIN_PANEL_AND_SIDE_PANEL_MIN_WIDTH =
 export const ConfirmationSummaryWrapper = styled(ReportSummaryWrapper)`
   width: ${CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH}px;
   padding-top: ${56 + HEADER_BAR_HEIGHT}px;
+  bottom: 100px;
 
   @media only screen and (max-width: ${MAIN_PANEL_AND_SIDE_PANEL_MIN_WIDTH}px) {
     display: none;
