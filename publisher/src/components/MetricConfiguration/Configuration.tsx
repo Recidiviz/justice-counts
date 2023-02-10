@@ -391,7 +391,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     onChange={() =>
                       handleSupervisionDisaggregationSelection(false)
                     }
-                    defaultChecked={!disaggregatedBySupervisionSubsystems}
+                    checked={!disaggregatedBySupervisionSubsystems}
                   />
                   <BinaryRadioButton
                     type="radio"
@@ -402,7 +402,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     onChange={() =>
                       handleSupervisionDisaggregationSelection(true)
                     }
-                    defaultChecked={disaggregatedBySupervisionSubsystems}
+                    checked={disaggregatedBySupervisionSubsystems}
                   />
                 </RadioButtonGroupWrapper>
               </PromptWrapper>
