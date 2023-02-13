@@ -17,9 +17,12 @@
 
 import {
   HEADER_BAR_HEIGHT,
+  NEW_DESKTOP_WIDTH,
+  NEW_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
+import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
 const COLLAPSED_INNER_COLUMNS_WIDTH = 846;
@@ -33,12 +36,22 @@ export const PageHeader = styled.div`
 
 export const ReportsHeader = styled(PageHeader)`
   top: ${HEADER_BAR_HEIGHT}px;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    padding: 24px 24px 8px 24px;
+  }
 `;
 
 export const PageTitle = styled.div`
   ${typography.sizeCSS.headline}
   margin-top: 40px;
   padding: 0px 22px;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    ${typography.sizeCSS.small}
+    margin-top: 0;
+    padding: 0;
+  }
 `;
 
 export const TabbedBar = styled.div<{ noPadding?: boolean }>`
@@ -48,8 +61,12 @@ export const TabbedBar = styled.div<{ noPadding?: boolean }>`
   justify-content: space-between;
   align-items: center;
   position: relative;
-  padding: ${({ noPadding }) => (noPadding ? `none` : `0px 22px`)};
+  padding: ${({ noPadding }) => (noPadding ? `0` : `0px 22px`)};
   border-bottom: 1px solid ${palette.highlight.grey9};
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    padding-bottom: 12px;
+  }
 `;
 
 export const TabbedOptions = styled.div`
@@ -141,20 +158,57 @@ export const ReportActionsNewIcon = styled(ReportActionsSelectIcon)`
   }
 `;
 
+export const DropdownContainer = styled.div`
+  width: 100%;
+  height: 56px;
+  border-bottom: 1px solid ${palette.highlight.grey9};
+  display: flex;
+  align-items: center;
+
+  div {
+    width: 100%;
+  }
+`;
+
+export const StatusFilterDropdownToggle = styled(DropdownToggle)`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  gap: 12px;
+  align-items: center;
+  ${typography.sizeCSS.medium};
+`;
+
+export const StatusFilterDropdownMenu = styled(DropdownMenu)`
+  overflow-y: scroll;
+  z-index: 10;
+  margin-top: 11px;
+  box-shadow: 0px 0px 1px rgba(23, 28, 43, 0.1),
+    0px 4px 8px rgba(23, 28, 43, 0.04), 0px 8px 56px rgba(23, 28, 43, 0.1);
+  border-radius: 4px;
+`;
+
 export const Table = styled.div`
   width: 100%;
-  padding: 212px 0 50px 0;
+  padding: 212px 22px 50px 22px;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    padding-top: 161px;
+  }
 `;
 
 export const Row = styled.div<{
   noHover?: boolean;
   selected?: boolean;
+  isRowReportYear?: boolean;
 }>`
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 22px;
+  padding: 10px 0;
   color: ${({ noHover }) =>
     noHover ? palette.highlight.grey9 : palette.solid.darkgrey};
   transition: 0.3s ease;
@@ -171,6 +225,11 @@ export const Row = styled.div<{
            background-color: ${palette.solid.lightgreen};
     `}
   }
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    padding: ${({ isRowReportYear }) =>
+      isRowReportYear ? "8px 0 0 0" : "8px 0"};
+  }
 `;
 
 export const LabelRow = styled(Row)`
@@ -179,6 +238,11 @@ export const LabelRow = styled(Row)`
   &:hover {
     cursor: unset;
     background-color: unset;
+  }
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    padding: 16px 0 0 0;
+    ${typography.sizeCSS.small};
   }
 `;
 
@@ -204,8 +268,15 @@ export const Cell = styled.div<{ capitalize?: boolean }>`
     padding-right: unset;
   }
 
-  @media only screen and (max-width: ${COLLAPSED_INNER_COLUMNS_WIDTH}px) {
-    &:not(:first-child, :last-child) {
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    ${typography.sizeCSS.normal};
+    &:nth-child(2) {
+      display: none;
+    }
+  }
+
+  @media only screen and (max-width: ${NEW_TABLET_WIDTH}px) {
+    &:nth-child(4) {
       display: none;
     }
   }
