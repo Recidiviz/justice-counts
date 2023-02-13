@@ -24,15 +24,7 @@ import styled from "styled-components/macro";
 
 import { rem } from "../../utils";
 import { OpacityGradient } from "../Forms";
-import {
-  Cell,
-  LabelCell,
-  LabelRow,
-  PageTitle,
-  Row,
-  TabbedBar,
-  Table,
-} from "../Reports";
+import { PageTitle, TabbedBar } from "../Reports";
 
 export const DataUploadContainer = styled.div`
   width: 100%;
@@ -313,44 +305,6 @@ export const Icon = styled.img<{ grayscale?: boolean }>`
   ${({ grayscale }) => grayscale && `filter: grayscale(1);`}
 `;
 
-export const UploadedFilesError = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 25px;
-`;
-
-export const DownloadIcon = styled.img`
-  width: 20px;
-  margin-right: 5px;
-`;
-
-export const ActionsContainer = styled.div`
-  ${typography.sizeCSS.normal};
-  height: 100%;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  background: ${palette.solid.offwhite};
-  padding: 0 20px;
-  position: absolute;
-  right: 0;
-  z-index: 3;
-`;
-
-export const ActionButton = styled.div<{ red?: boolean }>`
-  white-space: nowrap;
-  background: ${palette.solid.offwhite};
-  color: ${({ red }) => (red ? palette.solid.red : palette.solid.blue)};
-
-  &:not(:last-child) {
-    margin-right: 10px;
-  }
-
-  &:hover {
-    color: ${palette.solid.darkgrey};
-  }
-`;
-
 export const UploadFileContainer = styled.div`
   height: 100%;
   display: flex;
@@ -513,68 +467,8 @@ export const ConfirmationPageContainer = styled.div`
   align-items: center;
 `;
 
-export const UploadedFilesContainer = styled.div``;
-
-export const UploadedFilesWrapper = styled.div`
-  position: relative;
-  overflow-y: scroll;
-`;
-
-export const UploadedFilesTable = styled(Table)`
-  padding: unset;
-  padding-bottom: 100px;
-`;
-
 export const ExtendedTabbedBar = styled(TabbedBar)`
   height: 66px;
-`;
-
-export const ExtendedRow = styled(Row)`
-  color: ${({ selected }) => selected && palette.highlight.grey9};
-  position: relative;
-  transition: unset;
-  padding-left: 0;
-  padding-right: 8px;
-`;
-
-export const ExtendedLabelRow = styled(LabelRow)`
-  position: sticky;
-  top: 0;
-  background: ${palette.solid.white};
-  z-index: 5;
-  padding-left: 0;
-  padding-right: 8px;
-`;
-
-export const ExtendedCell = styled(Cell)`
-  &:first-child {
-    flex: 3 1 auto;
-  }
-
-  &:nth-child(2) {
-    flex: 3 1 auto;
-  }
-
-  @media only screen and (max-width: 1050px) {
-    &:not(:first-child, :last-child) {
-      display: none;
-    }
-  }
-`;
-
-export const ExtendedLabelCell = styled(LabelCell)`
-  &:first-child {
-    flex: 3 1 auto;
-  }
-  &:nth-child(2) {
-    flex: 3 1 auto;
-  }
-
-  @media only screen and (max-width: 1050px) {
-    &:not(:first-child, :last-child) {
-      display: none;
-    }
-  }
 `;
 
 export const RedText = styled.span`
@@ -622,13 +516,4 @@ export const ExtendedOpacityGradient = styled(OpacityGradient)`
   height: 50px;
   position: fixed;
   bottom: 0;
-`;
-
-export const UploadedContainer = styled.span`
-  display: flex;
-  align-items: center;
-`;
-
-export const DateUploaded = styled.span`
-  margin-left: 8px;
 `;

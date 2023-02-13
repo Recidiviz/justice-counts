@@ -32,9 +32,9 @@ import { useParams } from "react-router-dom";
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import downloadIcon from "../assets/download-icon.png";
-import { Title, TitleWrapper } from "../Forms";
 import { ContainedLoader } from "../Loading";
 import { TeamMemberNameWithBadge } from "../primitives";
+import { UploadedFile, UploadedFileStatus } from ".";
 import {
   ActionButton,
   ActionsContainer,
@@ -45,13 +45,12 @@ import {
   ExtendedLabelRow,
   ExtendedRow,
   UploadedContainer,
-  UploadedFile,
   UploadedFilesContainer,
   UploadedFilesError,
   UploadedFilesTable,
-  UploadedFileStatus,
+  UploadedFilesTitle,
   UploadedFilesWrapper,
-} from ".";
+} from "./UploadedFiles.styles";
 
 export const UploadedFileRow: React.FC<{
   fileRowDetails: {
@@ -336,9 +335,7 @@ export const UploadedFiles: React.FC = observer(() => {
 
   return (
     <UploadedFilesWrapper>
-      <TitleWrapper>
-        <Title>Uploaded Files</Title>
-      </TitleWrapper>
+      <UploadedFilesTitle />
 
       <UploadedFilesContainer>
         <ExtendedLabelRow>
