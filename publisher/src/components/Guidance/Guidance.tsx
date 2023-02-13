@@ -65,12 +65,12 @@ import {
 
 export const Guidance = observer(() => {
   const navigate = useNavigate();
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const { guidanceStore, metricConfigStore, reportStore } = useStore();
   const {
     onboardingTopicsMetadata,
     currentTopicID,
-    updateTopicStatus,
+    saveOnboardingTopicsStatuses,
     getOverallMetricProgress,
     getMetricCompletionValue,
   } = guidanceStore;
@@ -130,11 +130,9 @@ export const Guidance = observer(() => {
   useEffect(() => {
     const initialize = async () => {
       reportStore.resetState();
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await reportStore.getReportOverviews(agencyId!);
+      await reportStore.getReportOverviews(agencyId);
       if (currentTopicID === "METRIC_CONFIG")
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        await metricConfigStore.initializeMetricConfigStoreValues(agencyId!);
+        await metricConfigStore.initializeMetricConfigStoreValues(agencyId);
 
       const hasMinimumOneReport =
         currentTopicID === "ADD_DATA" &&
@@ -146,13 +144,22 @@ export const Guidance = observer(() => {
         );
 
       if (hasMinimumOneReport) {
-        updateTopicStatus("ADD_DATA", true);
+        saveOnboardingTopicsStatuses(
+          { topicID: "ADD_DATA", topicCompleted: true },
+          agencyId
+        );
       }
       if (hasMinimumOnePublishedReport) {
-        updateTopicStatus("PUBLISH_DATA", true);
+        saveOnboardingTopicsStatuses(
+          { topicID: "PUBLISH_DATA", topicCompleted: true },
+          agencyId
+        );
       }
       if (totalMetrics > 0 && numberOfMetricsCompleted === totalMetrics) {
-        updateTopicStatus("METRIC_CONFIG", true);
+        saveOnboardingTopicsStatuses(
+          { topicID: "METRIC_CONFIG", topicCompleted: true },
+          agencyId
+        );
       }
     };
 
@@ -235,7 +242,10 @@ export const Guidance = observer(() => {
                   onClick={() => {
                     if (currentTopicID) {
                       if (pathToTask) navigate(pathToTask);
-                      updateTopicStatus(currentTopicID, true);
+                      saveOnboardingTopicsStatuses(
+                        { topicID: currentTopicID, topicCompleted: true },
+                        agencyId
+                      );
                     }
                   }}
                 >
@@ -247,9 +257,14 @@ export const Guidance = observer(() => {
 
           {skippable && (
             <SkipButton
-              onClick={() =>
-                currentTopicID && updateTopicStatus(currentTopicID, true)
-              }
+              onClick={() => {
+                if (currentTopicID) {
+                  saveOnboardingTopicsStatuses(
+                    { topicID: currentTopicID, topicCompleted: true },
+                    agencyId
+                  );
+                }
+              }}
             >
               Skip
             </SkipButton>

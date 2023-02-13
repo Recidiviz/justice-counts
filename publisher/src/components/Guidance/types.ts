@@ -32,7 +32,7 @@ export type OnboardingTopicsMetadata = {
   };
 };
 
-export type OnboardingTopicsStatus = {
+export type OnboardingTopicsStatuses = {
   topicID: TopicID;
   topicCompleted: boolean;
 };
@@ -85,14 +85,14 @@ export const metricConfigurationProgressSteps = [
 export type MetricConfigurationProgressSteps =
   typeof metricConfigurationProgressSteps[number];
 
-export const mockTopicsStatus: OnboardingTopicsStatus[] = [
+export const mockTopicsStatus: OnboardingTopicsStatuses[] = [
   {
     topicID: "WELCOME",
     topicCompleted: true,
   },
   {
     topicID: "AGENCY_SETUP",
-    topicCompleted: true,
+    topicCompleted: false,
   },
   {
     topicID: "METRIC_CONFIG",
@@ -104,6 +104,6 @@ export const mockTopicsStatus: OnboardingTopicsStatus[] = [
   },
   {
     topicID: "PUBLISH_DATA",
-    topicCompleted: false,
+    topicCompleted: true,
   },
 ];

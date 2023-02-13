@@ -92,6 +92,15 @@ export const GuidanceHeader = observer(() => {
     setMetricConfigProgressToastTimeout(timeout);
   };
 
+  useEffect(() => {
+    const initOnboardingTopicStatuses = async () => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await guidanceStore.getOnboardingTopicsStatuses(params.agencyId!);
+    };
+
+    initOnboardingTopicStatuses();
+  }, [guidanceStore, params.agencyId]);
+
   const metricProgress =
     getMetricAvailabilityFrequencyProgress(systemMetricKey);
   const metricDefinitionProgress = getMetricDefinitionProgress(systemMetricKey);
