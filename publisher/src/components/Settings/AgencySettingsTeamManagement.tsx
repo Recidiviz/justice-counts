@@ -17,7 +17,10 @@
 
 /* eslint-disable camelcase */
 import editIcon from "@justice-counts/common/assets/edit-row-icon.png";
-import { AgencyTeam, AgencyTeamMemberRole } from "@justice-counts/common/types";
+import {
+  AgencyTeamMember,
+  AgencyTeamMemberRole,
+} from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -36,6 +39,7 @@ import {
   InviteMemberButton,
   InviteMemberContainer,
   InviteMemberInput,
+  JCAdminStatus,
   TeamManagementBlock,
   TeamManagementDescription,
   TeamManagementSectionSubTitle,
@@ -107,14 +111,31 @@ export const AgencySettingsTeamManagement = observer(() => {
     setTeamMemberEditMenuActiveEmail(undefined);
   };
 
-  const sortAgencyTeam = (team: AgencyTeam[]) =>
-    team
-      .filter((member) =>
-        !userStore.isJusticeCountsAdmin(agencyId)
-          ? member.role !== AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN
-          : true
-      )
-      .sort((a, b) => a.name.localeCompare(b.name));
+  const sortAgencyTeam = (teamMembers: AgencyTeamMember[]) => {
+    const invitedMembers: AgencyTeamMember[] = [];
+    const acceptedMembers: AgencyTeamMember[] = [];
+    teamMembers.forEach((member) => {
+      if (member.invitation_status === "PENDING") {
+        invitedMembers.push(member);
+      } else {
+        acceptedMembers.push(member);
+      }
+    });
+
+    const filterAndSort = (members: AgencyTeamMember[]) =>
+      members
+        .filter((member) =>
+          !userStore.isJusticeCountsAdmin(agencyId)
+            ? member.role !== AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN
+            : true
+        )
+        .sort((a, b) => a.name.localeCompare(b.name));
+
+    return [
+      ...filterAndSort(invitedMembers),
+      ...filterAndSort(acceptedMembers),
+    ];
+  };
   const getRemovedUserName = (email: string) =>
     currentAgencyTeam?.find((member) => member.email === email)?.name || "";
 
@@ -156,7 +177,9 @@ export const AgencySettingsTeamManagement = observer(() => {
         <AgencySettingsTitle>Team Management</AgencySettingsTitle>
         <TeamManagementBlock>
           <TeamManagementDescription>
-            Manage your agency team by inviting members or assigning admins.
+            Enter the requested information, then click &quot;Invite&quot;. New
+            users will be able to add and edit data for{" "}
+            {agencyStore.currentAgency?.name} on Publisher.
           </TeamManagementDescription>
           <TeamManagementSectionTitle>
             Send invite to colleagues
@@ -191,10 +214,12 @@ export const AgencySettingsTeamManagement = observer(() => {
             sortAgencyTeam(currentAgencyTeam).map(
               ({ name, email, invitation_status, role }) => (
                 <TeamMemberRow key={`${name}-${email}`}>
-                  <TeamMemberNameContainer>
+                  <TeamMemberNameContainer
+                    pending={invitation_status === "PENDING"}
+                  >
                     {name}{" "}
                     {role === "JUSTICE_COUNTS_ADMIN" && (
-                      <AdminStatus>JC Admin</AdminStatus>
+                      <JCAdminStatus>JC Admin</JCAdminStatus>
                     )}
                     {role === "AGENCY_ADMIN" && (
                       <AdminStatus>Admin</AdminStatus>

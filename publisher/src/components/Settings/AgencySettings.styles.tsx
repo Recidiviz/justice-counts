@@ -301,9 +301,8 @@ export const InviteMemberInput = styled.input`
 export const InviteMemberButton = styled.div<{ disabled: boolean }>`
   ${typography.sizeCSS.normal};
   background-color: ${({ disabled }) =>
-    disabled ? palette.highlight.grey8 : palette.solid.blue};
-  color: ${({ disabled }) =>
-    disabled ? palette.solid.darkgrey : palette.solid.white};
+    disabled ? palette.highlight.grey5 : palette.solid.blue};
+  color: ${palette.solid.white};
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -331,7 +330,7 @@ export const TeamMemberRow = styled.div`
   border-bottom: 1px solid ${palette.highlight.grey4};
 `;
 
-export const TeamMemberNameContainer = styled.div`
+export const TeamMemberNameContainer = styled.div<{ pending?: boolean }>`
   width: 274px;
   min-width: 274px;
   display: flex;
@@ -339,11 +338,18 @@ export const TeamMemberNameContainer = styled.div`
   gap: 8px;
   align-items: center;
   ${typography.sizeCSS.normal};
+  color: ${({ pending }) =>
+    pending ? palette.highlight.grey10 : palette.solid.darkgrey};
 `;
 
 export const AdminStatus = styled.div`
   ${typography.sizeCSS.normal};
   color: ${palette.solid.green};
+`;
+
+export const JCAdminStatus = styled.div`
+  ${typography.sizeCSS.normal};
+  color: ${palette.solid.blue};
 `;
 
 export const InvitedStatus = styled.div`
