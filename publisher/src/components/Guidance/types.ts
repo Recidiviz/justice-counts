@@ -68,22 +68,22 @@ export const onboardingTopicsMetadata: OnboardingTopicsMetadata = {
   },
 };
 
-export const metricConfigurationProgressSteps = [
-  "Confirm metric availability",
-  "Confirm metric definition",
-  "Confirm breakdown availability",
-  "Confirm breakdown definitions",
-] as const;
-
-export type MetricConfigurationProgressSteps =
-  typeof metricConfigurationProgressSteps[number];
-
 export enum ProgressSteps {
   CONFIRM_METRIC_AVAILABILITY = "Confirm metric availability",
   CONFIRM_METRIC_DEFINITIONS = "Confirm metric definitions",
   CONFIRM_BREAKDOWN_AVAILABILITY = "Confirm breakdown availability",
   CONFIRM_BREAKDOWN_DEFINITIONS = "Confirm breakdown definitions",
 }
+
+export const metricConfigurationProgressSteps = [
+  ProgressSteps.CONFIRM_METRIC_AVAILABILITY,
+  ProgressSteps.CONFIRM_METRIC_DEFINITIONS,
+  ProgressSteps.CONFIRM_BREAKDOWN_AVAILABILITY,
+  ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS,
+] as const;
+
+export type MetricConfigurationProgressSteps =
+  typeof metricConfigurationProgressSteps[number];
 
 export const mockTopicsStatus: OnboardingTopicsStatus[] = [
   {
