@@ -97,6 +97,7 @@ class GuidanceStore {
     });
   };
 
+  /** Initialize `this.metricConfigurationProgressStepsTracker` object with zero progress weight on all categories */
   initializeMetricConfigProgressStepsTracker = () => {
     const { metrics } = this.metricConfigStore;
     Object.keys(metrics).forEach((systemMetricKey) => {
@@ -109,10 +110,43 @@ class GuidanceStore {
     this.isInitialized = true;
   };
 
+  /**
+   * The following methods compute the progress for each of the 4 categories
+   * required to complete a metric configuration.
+   *
+   * 1.) Confirm metric availability: user has made a selection on the availability/frequency of the overall metric
+   *      * 25% completion weight
+   *      * NOTE: 100% completion weight when the metric is disabled - in these situations, this is the only setting/action
+   *              required to complete a metric configuration
+   *
+   * 2.) Confirm metric definitions: user has made selections on all of the overall metric definitions
+   *      * 25% completion weight
+   *
+   * 3.) Confirm breakdown availability: user has made selections on all of the dimensions in each metric disaggregation
+   *      * 25% completion weight
+   *
+   * 4.) Confirm breakdown definitions: user has made selections on all of the definitions available for each dimension in each
+   *                                    metric disaggregation
+   *      * 25% completion weight
+   *
+   * A combined total of 100% (25% for each of the 4 categories when the metric is enabled - or 100% when metric availability is marked
+   * Not Available) will consider that metric configuration complete.
+   */
+
+  /**
+   * Determines whether or not the Metric Availability/Frequency has been selected by a user and returns a progress weight of:
+   * 25 - when user has made a frequency selection (not 'Not Available')
+   * 100 - when user has made a 'Not Available' selection (and zero for all other required categories)
+   */
   getMetricAvailabilityFrequencyProgress = (systemMetricKey: string) => {
     const { metrics } = this.metricConfigStore;
 
     /** Confirm the metric’s availability/frequency */
+    /**
+     * NOTE: when a metric is disabled, this is the only action required by a user to complete
+     * the metric configuration. The progress weight for this category becomes 100 and zero for all other
+     * categories to provide a total progress weight of 100 and signify completion of the metric configuration.
+     */
     if (metrics[systemMetricKey]?.enabled === false) {
       runInAction(() => {
         metricConfigurationProgressSteps.forEach((step) => {
@@ -148,6 +182,10 @@ class GuidanceStore {
     ];
   };
 
+  /**
+   * Determines whether or not a metric's definitions have all been set by a user and returns a progress
+   * weight of 25 when a user has set all of the metric's definitions
+   */
   getMetricDefinitionProgress = (systemMetricKey: string) => {
     const { metrics, metricDefinitionSettings } = this.metricConfigStore;
 
@@ -174,6 +212,10 @@ class GuidanceStore {
     ];
   };
 
+  /**
+   * Determines whether or not the metric's dimensions' availability in each metric disaggregation have all
+   * been set by a user and returns a progress weight of 25 when a user has set them all
+   */
   getBreakdownProgress = (systemMetricKey: string) => {
     const { metrics, dimensions } = this.metricConfigStore;
 
@@ -200,14 +242,20 @@ class GuidanceStore {
     ];
   };
 
+  /**
+   * Determines whether or not the metric's dimensions' definitions in each metric disaggregation have all
+   * been set by a user and returns a progress weight of 25 when a user has set them all
+   */
   getBreakdownDefinitionProgress = (systemMetricKey: string) => {
     const { metrics, dimensionDefinitionSettings, dimensions } =
       this.metricConfigStore;
 
     const disaggregationValues =
       dimensions[systemMetricKey] && Object.values(dimensions[systemMetricKey]);
+    /** Disabled dimensions do not count towards progress and will be ignored */
     const disabledDimensionKeys: string[] = [];
 
+    /** Search for disabled dimensions */
     disaggregationValues?.forEach((disaggregation) => {
       Object.values(disaggregation).forEach((dimension) => {
         if (dimension.enabled === false && dimension.key)
@@ -224,6 +272,7 @@ class GuidanceStore {
       label?: string;
     }[] = [];
 
+    /** Flat list of all dimensions' definition settings excluding the disabled dimensions */
     dimensionDefinitionSettingsDisaggregationKeys?.forEach(
       (disaggregationKey) => {
         Object.entries(
@@ -262,6 +311,7 @@ class GuidanceStore {
     ];
   };
 
+  /** Computes progress on all 4 categories and returns the overall progress tracker object */
   getOverallMetricProgress = (systemMetricKey: string) => {
     this.getMetricAvailabilityFrequencyProgress(systemMetricKey);
     this.getMetricDefinitionProgress(systemMetricKey);
@@ -271,6 +321,7 @@ class GuidanceStore {
     return this.metricConfigurationProgressStepsTracker[systemMetricKey];
   };
 
+  /** Returns the total progress weight for all 4 categories (out of 100) */
   getMetricCompletionPercentage = (systemMetricKey: string) => {
     if (this.metricConfigurationProgressStepsTracker[systemMetricKey]) {
       const totalPercentage = Object.values(
