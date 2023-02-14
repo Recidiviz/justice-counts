@@ -19,10 +19,7 @@ import { observer } from "mobx-react-lite";
 import React, { Fragment } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import {
-  settingsMenuPaths,
-  settingsMenuPathsWithoutTeam,
-} from "../../pages/Settings";
+import { settingsMenuPaths } from "../../pages/Settings";
 import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
 import {
@@ -52,15 +49,10 @@ export const SettingsMenu: React.FC = observer(() => {
     });
   };
 
-  // TODO remove that when team management is finished
-  const tempSettingsMenuPaths = userStore.isJusticeCountsAdmin(agencyId)
-    ? settingsMenuPaths
-    : settingsMenuPathsWithoutTeam;
-
   return (
     <SettingsMenuContainer>
       {/* TODO remove that when team management is finished */}
-      {tempSettingsMenuPaths.map(({ displayLabel, path }) => (
+      {settingsMenuPaths.map(({ displayLabel, path }) => (
         <Fragment key={path}>
           <MenuItem
             selected={
