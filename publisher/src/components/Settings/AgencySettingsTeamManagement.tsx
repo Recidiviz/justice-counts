@@ -27,7 +27,6 @@ import { Loading } from "../Loading";
 import {
   AdminStatus,
   AgencySettingsContent,
-  AgencySettingsTitle,
   AgencySettingsWrapper,
   EditTeamMemberIconContainer,
   EditTeamMemberMenu,
@@ -40,6 +39,7 @@ import {
   TeamManagementDescription,
   TeamManagementSectionSubTitle,
   TeamManagementSectionTitle,
+  TeamManagementSettingsTitle,
   TeamMemberEmailContainer,
   TeamMemberEmailContainerTitle,
   TeamMemberNameContainer,
@@ -153,7 +153,7 @@ export const AgencySettingsTeamManagement = observer(() => {
   return (
     <AgencySettingsWrapper>
       <AgencySettingsContent>
-        <AgencySettingsTitle>Team Management</AgencySettingsTitle>
+        <TeamManagementSettingsTitle />
         <TeamManagementBlock>
           <TeamManagementDescription>
             Manage your agency team by inviting members or assigning admins.

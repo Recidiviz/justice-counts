@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  NEW_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -26,6 +27,7 @@ import { CheckIcon } from "../DataUpload";
 
 // Common
 const AGENCY_SETTINGS_CONTAINER_WIDTH = 732;
+const MIN_MOBILE_AGENCY_SETTINGS_CONTAINER_WIDTH = 463;
 
 // 620px is settings menu width times 2
 export const AgencySettingsWrapper = styled.div`
@@ -39,9 +41,9 @@ export const AgencySettingsWrapper = styled.div`
   padding-bottom: 50px;
   z-index: 1;
 
-  @media only screen and (max-width: calc(620px + ${AGENCY_SETTINGS_CONTAINER_WIDTH}px)) {
-    justify-content: start;
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
     margin-right: 0;
+    min-width: ${MIN_MOBILE_AGENCY_SETTINGS_CONTAINER_WIDTH}px;
   }
 `;
 
@@ -52,6 +54,12 @@ export const AgencySettingsContent = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 16px;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    width: 100%;
+    align-items: start;
+    gap: 24px;
+  }
 `;
 
 export const AgencySettingsTitle = styled.div`
@@ -61,6 +69,19 @@ export const AgencySettingsTitle = styled.div`
   width: 644px;
   ${typography.sizeCSS.title};
   font-weight: 500;
+
+  &::before {
+    content: "Agency Settings";
+  }
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    ${typography.sizeCSS.normal};
+    width: unset;
+
+    &::before {
+      content: "Settings > Agency Settings";
+    }
+  }
 `;
 
 export const AgencySettingsBlock = styled.div<{
@@ -262,18 +283,43 @@ export const BasicInfoRow = styled.div<{ capitalize?: boolean }>`
 `;
 
 // Team
+export const TeamManagementSettingsTitle = styled(AgencySettingsTitle)`
+  &::before {
+    content: "Team Management";
+  }
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    &::before {
+      content: "Settings > Team Management";
+    }
+  }
+`;
+
 export const TeamManagementBlock = styled(AgencySettingsBlock)`
   padding-top: 0;
   padding-bottom: 0;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    padding: 0;
+    width: 100%;
+  }
 `;
 
 export const TeamManagementDescription = styled(AgencyInfoBlockDescription)`
   margin-bottom: 40px;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    margin-bottom: 24px;
+  }
 `;
 
 export const TeamManagementSectionTitle = styled.div`
   ${typography.sizeCSS.medium};
   margin-bottom: 8px;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    margin-bottom: 16px;
+  }
 `;
 
 export const InviteMemberContainer = styled.div`
@@ -282,6 +328,11 @@ export const InviteMemberContainer = styled.div`
   gap: 8px;
   height: 48px;
   margin-bottom: 40px;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    flex-direction: column;
+    height: unset;
+  }
 `;
 
 export const InviteMemberInput = styled.input`
@@ -295,14 +346,18 @@ export const InviteMemberInput = styled.input`
   &:focus {
     outline: none;
   }
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    ${typography.sizeCSS.large};
+    padding: 24px 16px;
+  }
 `;
 
 export const InviteMemberButton = styled.div<{ disabled: boolean }>`
   ${typography.sizeCSS.normal};
   background-color: ${({ disabled }) =>
     disabled ? palette.highlight.grey8 : palette.solid.blue};
-  color: ${({ disabled }) =>
-    disabled ? palette.solid.darkgrey : palette.solid.white};
+  color: ${palette.solid.white};
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -314,6 +369,11 @@ export const InviteMemberButton = styled.div<{ disabled: boolean }>`
 
   &:hover {
     opacity: ${({ disabled }) => !disabled && "0.8"};
+  }
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    padding-top: 16px;
+    padding-bottom: 16px;
   }
 `;
 
@@ -338,6 +398,11 @@ export const TeamMemberNameContainer = styled.div`
   gap: 8px;
   align-items: center;
   ${typography.sizeCSS.normal};
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    width: 50%;
+    min-width: unset;
+  }
 `;
 
 export const AdminStatus = styled.div`
@@ -363,6 +428,10 @@ export const TeamMemberEmailContainer = styled.div`
   align-items: center;
   ${typography.sizeCSS.normal};
   color: ${palette.highlight.grey10};
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    width: 50%;
+  }
 `;
 
 export const TeamMemberEmailContainerTitle = styled(TeamMemberEmailContainer)`
