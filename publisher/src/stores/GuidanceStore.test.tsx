@@ -20,6 +20,13 @@ import { rootStore } from ".";
 
 const { metricConfigStore, guidanceStore } = rootStore;
 
+afterEach(() => {
+  metricConfigStore.metrics = {};
+  metricConfigStore.metricDefinitionSettings = {};
+  metricConfigStore.dimensions = {};
+  metricConfigStore.dimensionDefinitionSettings = {};
+});
+
 /** Confirm metric availability */
 test("when metric enabled is null, return false for 'Confirm metric availability' step indicating this step has NOT been completed", () => {
   runInAction(() => {
@@ -41,8 +48,14 @@ test("when metric enabled is null, return false for 'Confirm metric availability
     guidanceStore.getMetricAvailabilityFrequencyProgress(
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_EXPENSES"
     );
+  const overallMetricProgress = guidanceStore.getOverallMetricProgress(
+    "LAW_ENFORCEMENT-LAW_ENFORCEMENT_EXPENSES"
+  );
 
   expect(confirmMetricAvailabilityCompleted).toEqual(false);
+  expect(overallMetricProgress["Confirm metric availability"]).toEqual(
+    confirmMetricAvailabilityCompleted
+  );
   expect.hasAssertions();
 });
 
@@ -66,8 +79,14 @@ test("when metric enabled is true, return true for 'Confirm metric availability'
     guidanceStore.getMetricAvailabilityFrequencyProgress(
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_EXPENSES"
     );
+  const overallMetricProgress = guidanceStore.getOverallMetricProgress(
+    "LAW_ENFORCEMENT-LAW_ENFORCEMENT_EXPENSES"
+  );
 
   expect(confirmMetricAvailabilityCompleted).toEqual(true);
+  expect(overallMetricProgress["Confirm metric availability"]).toEqual(
+    confirmMetricAvailabilityCompleted
+  );
   expect.hasAssertions();
 });
 
@@ -91,8 +110,14 @@ test("when metric enabled is false, return true for 'Confirm metric availability
     guidanceStore.getMetricAvailabilityFrequencyProgress(
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_EXPENSES"
     );
+  const overallMetricProgress = guidanceStore.getOverallMetricProgress(
+    "LAW_ENFORCEMENT-LAW_ENFORCEMENT_EXPENSES"
+  );
 
   expect(confirmMetricAvailabilityCompleted).toEqual(true);
+  expect(overallMetricProgress["Confirm metric availability"]).toEqual(
+    confirmMetricAvailabilityCompleted
+  );
   expect.hasAssertions();
 });
 
@@ -175,8 +200,14 @@ test("when metric definitions all have non-null values, return true for 'Confirm
     guidanceStore.getMetricDefinitionProgress(
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_EXPENSES"
     );
+  const overallMetricProgress = guidanceStore.getOverallMetricProgress(
+    "LAW_ENFORCEMENT-LAW_ENFORCEMENT_EXPENSES"
+  );
 
   expect(confirmMetricDefinitionsCompleted).toEqual(true);
+  expect(overallMetricProgress["Confirm metric definitions"]).toEqual(
+    confirmMetricDefinitionsCompleted
+  );
   expect.hasAssertions();
 });
 
@@ -258,8 +289,14 @@ test("when metric definitions have at least one null value, return false for 'Co
     guidanceStore.getMetricDefinitionProgress(
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_EXPENSES"
     );
+  const overallMetricProgress = guidanceStore.getOverallMetricProgress(
+    "LAW_ENFORCEMENT-LAW_ENFORCEMENT_EXPENSES"
+  );
 
   expect(confirmMetricDefinitionsCompleted).toEqual(false);
+  expect(overallMetricProgress["Confirm metric definitions"]).toEqual(
+    confirmMetricDefinitionsCompleted
+  );
   expect.hasAssertions();
 });
 
@@ -337,8 +374,14 @@ test("when a metric's disaggregations' dimensions have no null values, return tr
     guidanceStore.getBreakdownProgress(
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_ARRESTS"
     );
+  const overallMetricProgress = guidanceStore.getOverallMetricProgress(
+    "LAW_ENFORCEMENT-LAW_ENFORCEMENT_ARRESTS"
+  );
 
   expect(confirmBreakdownAvailabilityCompleted).toEqual(true);
+  expect(overallMetricProgress["Confirm breakdown availability"]).toEqual(
+    confirmBreakdownAvailabilityCompleted
+  );
   expect.hasAssertions();
 });
 
@@ -415,8 +458,14 @@ test("when a metric's disaggregations' dimensions have at least one null value, 
     guidanceStore.getBreakdownProgress(
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_ARRESTS"
     );
+  const overallMetricProgress = guidanceStore.getOverallMetricProgress(
+    "LAW_ENFORCEMENT-LAW_ENFORCEMENT_ARRESTS"
+  );
 
   expect(confirmBreakdownAvailabilityCompleted).toEqual(false);
+  expect(overallMetricProgress["Confirm breakdown availability"]).toEqual(
+    confirmBreakdownAvailabilityCompleted
+  );
   expect.hasAssertions();
 });
 
@@ -595,8 +644,14 @@ test("when a metric's disaggregations' dimensions' definitions have no null valu
     guidanceStore.getBreakdownDefinitionProgress(
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_ARRESTS"
     );
+  const overallMetricProgress = guidanceStore.getOverallMetricProgress(
+    "LAW_ENFORCEMENT-LAW_ENFORCEMENT_ARRESTS"
+  );
 
   expect(confirmBreakdownDefinitionsCompleted).toEqual(true);
+  expect(overallMetricProgress["Confirm breakdown definitions"]).toEqual(
+    confirmBreakdownDefinitionsCompleted
+  );
   expect.hasAssertions();
 });
 
@@ -774,7 +829,15 @@ test("when a metric's disaggregations' dimensions' definitions have at least one
     guidanceStore.getBreakdownDefinitionProgress(
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_ARRESTS"
     );
+  const overallMetricProgress = guidanceStore.getOverallMetricProgress(
+    "LAW_ENFORCEMENT-LAW_ENFORCEMENT_ARRESTS"
+  );
 
   expect(confirmBreakdownDefinitionsCompleted).toEqual(false);
+  expect(overallMetricProgress["Confirm breakdown definitions"]).toEqual(
+    confirmBreakdownDefinitionsCompleted
+  );
   expect.hasAssertions();
 });
+
+/**  */
