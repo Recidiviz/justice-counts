@@ -33,10 +33,9 @@ import {
 export const SettingsMenu: React.FC = observer(() => {
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
-  const { agencyId } = useParams() as { agencyId: string };
   const location = useLocation();
   const navigate = useNavigate();
-  const { metricConfigStore, userStore } = useStore();
+  const { metricConfigStore } = useStore();
   const { getMetricsBySystem } = metricConfigStore;
 
   const { system: systemSearchParam, metric: metricSearchParam } =

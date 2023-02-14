@@ -290,8 +290,8 @@ export const InviteMemberInnerContainer = styled.div`
 `;
 
 export const InviteMemberInput = styled.input<{
-  error: boolean;
   value: string | undefined;
+  error?: boolean;
 }>`
   ${typography.sizeCSS.normal};
   padding: 16px 13px;

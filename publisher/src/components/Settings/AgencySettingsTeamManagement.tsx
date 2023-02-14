@@ -79,11 +79,9 @@ export const AgencySettingsTeamManagement = observer(() => {
   };
 
   const validateEmail = (email: string) => {
-    return email
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
+    // simple email validation
+    // from: https://stackoverflow.com/a/9204568
+    return email.toLowerCase().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
   };
 
   const handleRemoveTeamMember = (email: string) => {
@@ -95,13 +93,13 @@ export const AgencySettingsTeamManagement = observer(() => {
   const handleInviteTeamMamber = async (name: string, email: string) => {
     if (name && email) {
       const result = await inviteTeamMemberRequest(
-        { invite_name: name, invite_email: email },
+        { invite_name: name.trim(), invite_email: email.trim() },
         agencyId
       );
       if (!(result instanceof Error)) {
         setNameValue("");
         setEmailValue("");
-        inviteTeamMember(name, email);
+        inviteTeamMember(name.trim(), email.trim());
       }
     }
   };
