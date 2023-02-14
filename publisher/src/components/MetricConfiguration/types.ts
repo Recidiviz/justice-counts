@@ -88,7 +88,7 @@ export enum ChartView {
 }
 
 export type MetricInfo = {
-  enabled?: boolean;
+  enabled?: boolean | null;
   label?: string;
   description?: Metric["description"];
   defaultFrequency?: ReportFrequency;

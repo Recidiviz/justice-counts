@@ -206,7 +206,7 @@ export const MetricBoxBottomPaddingContainer = styled.div`
 `;
 
 type MetricBoxContainerProps = {
-  enabled?: boolean;
+  enabled?: boolean | null;
 };
 
 export const MetricBoxContainer = styled.div<MetricBoxContainerProps>`
@@ -337,7 +337,7 @@ export const RadioButtonGroupWrapper = styled(BinaryRadioGroupWrapper)`
   display: flex;
 `;
 
-export const MetricDisaggregations = styled.div<{ enabled?: boolean }>`
+export const MetricDisaggregations = styled.div<{ enabled?: boolean | null }>`
   display: block;
   position: relative;
 
@@ -501,7 +501,7 @@ export const MetricConfigurationContainer = styled.div`
   display: block;
 `;
 
-export const MetricContextContainer = styled.div<{ enabled?: boolean }>`
+export const MetricContextContainer = styled.div<{ enabled?: boolean | null }>`
   display: block;
   border-top: 1px solid ${palette.highlight.grey3};
   position: relative;
@@ -668,14 +668,14 @@ export const DefinitionsDisplayContainer = styled.div`
   }
 `;
 
-export const DefinitionsDisplay = styled.div<{ enabled?: boolean }>`
+export const DefinitionsDisplay = styled.div<{ enabled?: boolean | null }>`
   width: 100%;
   position: relative;
 
   ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
 `;
 
-export const DefinitionsWrapper = styled.div<{ enabled?: boolean }>`
+export const DefinitionsWrapper = styled.div<{ enabled?: boolean | null }>`
   position: relative;
   ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
 `;

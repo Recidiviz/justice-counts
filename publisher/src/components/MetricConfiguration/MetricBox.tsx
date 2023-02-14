@@ -34,7 +34,7 @@ type MetricBoxProps = {
   frequency: ReportFrequency;
   customFrequency: ReportFrequency;
   description: string;
-  enabled?: boolean;
+  enabled?: boolean | null;
 };
 
 export const MetricBox: React.FC<MetricBoxProps> = observer(

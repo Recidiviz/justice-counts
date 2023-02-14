@@ -242,7 +242,7 @@ class GuidanceStore {
       dimensionDefinitionSettings[systemMetricKey] &&
       Object.keys(dimensionDefinitionSettings[systemMetricKey]);
     const dimensionDefinitionSettingsValues: {
-      included?: MetricConfigurationSettingsOptions;
+      included?: MetricConfigurationSettingsOptions | null;
       default?: MetricConfigurationSettingsOptions;
       label?: string;
     }[] = [];
@@ -254,7 +254,7 @@ class GuidanceStore {
           dimensionDefinitionSettings[systemMetricKey][disaggregationKey]
         ).forEach(([dimensionKey, dimension]) => {
           if (disabledDimensionKeys.includes(dimensionKey)) return;
-          dimensionDefinitionSettingsValues.push(...Object.values(dimension));
+          dimensionDefinitionSettingsValues.push(...Object.values(dimension!));
         });
       }
     );
@@ -266,6 +266,7 @@ class GuidanceStore {
 
     if (
       nullDimensionDefinitionSettings.length === 0 &&
+      dimensionDefinitionSettingsValues.length !== 0 &&
       metrics[systemMetricKey]?.enabled
     ) {
       runInAction(() => {

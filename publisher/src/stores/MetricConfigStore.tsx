@@ -57,7 +57,7 @@ class MetricConfigStore {
   metricDefinitionSettings: {
     [systemMetricKey: string]: {
       [settingKey: string]: {
-        included?: MetricConfigurationSettingsOptions;
+        included?: MetricConfigurationSettingsOptions | null;
         default?: MetricConfigurationSettingsOptions;
         label?: string;
       };
@@ -89,7 +89,7 @@ class MetricConfigStore {
     [systemMetricKey: string]: {
       [disaggregationKey: string]: {
         [dimensionKey: string]: {
-          enabled?: boolean;
+          enabled?: boolean | null;
           label?: string;
           key?: string;
           race?: Races;
@@ -104,7 +104,7 @@ class MetricConfigStore {
       [disaggregationKey: string]: {
         [dimensionKey: string]: {
           [settingKey: string]: {
-            included?: MetricConfigurationSettingsOptions;
+            included?: MetricConfigurationSettingsOptions | null;
             default?: MetricConfigurationSettingsOptions;
             label?: string;
           };
@@ -155,7 +155,7 @@ class MetricConfigStore {
         [] as {
           key: string;
           metric: {
-            enabled?: boolean;
+            enabled?: boolean | null;
             label?: string;
             description?: Metric["description"];
             defaultFrequency?: ReportFrequency;
@@ -299,6 +299,15 @@ class MetricConfigStore {
           });
         });
         this.isInitialized = true;
+
+        // console.log(JSON.parse(JSON.stringify(this.metrics, null, 2)));
+        // console.log(
+        //   JSON.parse(JSON.stringify(this.metricDefinitionSettings, null, 2))
+        // );
+        // console.log(JSON.parse(JSON.stringify(this.dimensions, null, 2)));
+        console.log(
+          JSON.parse(JSON.stringify(this.dimensionDefinitionSettings, null, 2))
+        );
       });
     } catch (error) {
       return new Error(error as string);
