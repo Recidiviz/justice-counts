@@ -24,6 +24,7 @@ import {
   OnboardingTopicsMetadata,
   onboardingTopicsMetadata,
   OnboardingTopicsStatus,
+  ProgressSteps,
   TopicID,
 } from "../components/Guidance";
 import API from "./API";
@@ -115,9 +116,9 @@ class GuidanceStore {
     if (metrics[systemMetricKey]?.enabled === false) {
       runInAction(() => {
         metricConfigurationProgressSteps.forEach((step) => {
-          if (step === "Confirm metric availability") {
+          if (step === ProgressSteps.CONFIRM_METRIC_AVAILABILITY) {
             this.metricConfigurationProgressStepsTracker[systemMetricKey][
-              "Confirm metric availability"
+              ProgressSteps.CONFIRM_METRIC_AVAILABILITY
             ] = 100;
             return;
           }
@@ -127,7 +128,7 @@ class GuidanceStore {
         });
       });
       return this.metricConfigurationProgressStepsTracker[systemMetricKey][
-        "Confirm metric availability"
+        ProgressSteps.CONFIRM_METRIC_AVAILABILITY
       ];
     }
 
@@ -137,13 +138,13 @@ class GuidanceStore {
     ) {
       runInAction(() => {
         this.metricConfigurationProgressStepsTracker[systemMetricKey][
-          "Confirm metric availability"
+          ProgressSteps.CONFIRM_METRIC_AVAILABILITY
         ] = 25;
       });
     }
 
     return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
-      "Confirm metric availability"
+      ProgressSteps.CONFIRM_METRIC_AVAILABILITY
     ];
   };
 
@@ -163,13 +164,13 @@ class GuidanceStore {
     ) {
       runInAction(() => {
         this.metricConfigurationProgressStepsTracker[systemMetricKey][
-          "Confirm metric definition"
+          ProgressSteps.CONFIRM_METRIC_DEFINITIONS
         ] = 25;
       });
     }
 
     return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
-      "Confirm metric definition"
+      ProgressSteps.CONFIRM_METRIC_DEFINITIONS
     ];
   };
 
@@ -189,13 +190,13 @@ class GuidanceStore {
     if (nullDimensions.length === 0 && metrics[systemMetricKey]?.enabled) {
       runInAction(() => {
         this.metricConfigurationProgressStepsTracker[systemMetricKey][
-          "Confirm breakdowns"
+          ProgressSteps.CONFIRM_BREAKDOWN_AVAILABILITY
         ] = 25;
       });
     }
 
     return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
-      "Confirm breakdowns"
+      ProgressSteps.CONFIRM_BREAKDOWN_AVAILABILITY
     ];
   };
 
@@ -245,19 +246,19 @@ class GuidanceStore {
     ) {
       runInAction(() => {
         this.metricConfigurationProgressStepsTracker[systemMetricKey][
-          "Confirm breakdown definitions"
+          ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
         ] = 25;
       });
     } else if (this.metricConfigurationProgressStepsTracker[systemMetricKey]) {
       runInAction(() => {
         this.metricConfigurationProgressStepsTracker[systemMetricKey][
-          "Confirm breakdown definitions"
+          ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
         ] = 0;
       });
     }
 
     return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
-      "Confirm breakdown definitions"
+      ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
     ];
   };
 
