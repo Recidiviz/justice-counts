@@ -27,7 +27,8 @@ import { CheckIcon } from "../DataUpload";
 
 // Common
 const AGENCY_SETTINGS_CONTAINER_WIDTH = 732;
-const MIN_MOBILE_AGENCY_SETTINGS_CONTAINER_WIDTH = 463;
+const AGENCY_SETTINGS_INNER_BLOCK = 644;
+const MIN_MOBILE_AGENCY_SETTINGS_CONTAINER_WIDTH = 464;
 
 // 620px is settings menu width times 2
 export const AgencySettingsWrapper = styled.div`
@@ -35,9 +36,10 @@ export const AgencySettingsWrapper = styled.div`
   overflow-y: scroll;
   min-width: ${AGENCY_SETTINGS_CONTAINER_WIDTH}px;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-right: 310px;
   justify-content: center;
-  align-items: center;
   padding-bottom: 50px;
   z-index: 1;
 
@@ -63,12 +65,13 @@ export const AgencySettingsContent = styled.div`
 `;
 
 export const AgencySettingsTitle = styled.div`
+  width: ${AGENCY_SETTINGS_INNER_BLOCK}px;
   display: flex;
   flex-direction: row;
   justify-content: start;
-  width: 644px;
   ${typography.sizeCSS.title};
   font-weight: 500;
+  margin-bottom: 24px;
 
   &::before {
     content: "Agency Settings";
@@ -76,7 +79,7 @@ export const AgencySettingsTitle = styled.div`
 
   @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
     ${typography.sizeCSS.normal};
-    width: unset;
+    width: 100%;
 
     &::before {
       content: "Settings > Agency Settings";
@@ -95,6 +98,11 @@ export const AgencySettingsBlock = styled.div<{
   border: ${({ withBorder }) => withBorder && "1px solid #DCDDDF"};
   width: ${({ withBorder }) =>
     withBorder ? "calc(100% - 88px)" : "calc(100% - 40px)"};
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    width: 100%;
+    padding: ${({ withBorder }) => (withBorder ? "32px" : "8px 0")};
+  }
 `;
 
 export const AgencySettingsBlockTitle = styled.div<{
@@ -194,13 +202,18 @@ export const AgencyInfoTextAreaWordCounter = styled.div<{ isRed: boolean }>`
   color: ${({ isRed }) => isRed && palette.solid.red};
 `;
 
-export const EditButtonContainer = styled.div`
+export const EditButtonContainer = styled.div<{ hasTopMargin?: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: end;
   align-items: center;
   cursor: pointer;
   margin-top: 16px;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    justify-content: start;
+    margin-top: ${({ hasTopMargin }) => (hasTopMargin ? "16px" : "0")};
+  }
 `;
 
 export const EditButton = styled.div`
@@ -511,7 +524,7 @@ export const JurisdictionsInput = styled(InviteMemberInput)`
 export const JurisdictionsSearchResultContainer = styled.div`
   position: absolute;
   z-index: 5;
-  width: 644px;
+  width: ${AGENCY_SETTINGS_INNER_BLOCK}px;
   padding: 8px 0;
   overflow-y: scroll;
   max-height: 270px;

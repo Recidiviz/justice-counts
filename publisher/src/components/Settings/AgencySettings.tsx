@@ -78,8 +78,8 @@ export const AgencySettings: React.FC = observer(() => {
 
   return (
     <AgencySettingsWrapper>
+      <AgencySettingsTitle />
       <AgencySettingsContent>
-        <AgencySettingsTitle />
         <AgencySettingsBasicInfo />
         <AgencySettingsDescription
           settingProps={generateSettingProps(ActiveSetting.Description)}

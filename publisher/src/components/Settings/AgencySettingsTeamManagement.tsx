@@ -152,8 +152,8 @@ export const AgencySettingsTeamManagement = observer(() => {
 
   return (
     <AgencySettingsWrapper>
+      <TeamManagementSettingsTitle />
       <AgencySettingsContent>
-        <TeamManagementSettingsTitle />
         <TeamManagementBlock>
           <TeamManagementDescription>
             Manage your agency team by inviting members or assigning admins.
