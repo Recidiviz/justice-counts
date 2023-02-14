@@ -126,7 +126,7 @@ export const AgencySettingsTeamManagement = observer(() => {
     setTeamMemberEditMenuActiveEmail(undefined);
   };
 
-  const sortAgencyTeam = (teamMembers: AgencyTeamMember[]) => {
+  const filterAndSortAgencyTeam = (teamMembers: AgencyTeamMember[]) => {
     const invitedMembers: AgencyTeamMember[] = [];
     const acceptedMembers: AgencyTeamMember[] = [];
     teamMembers.forEach((member) => {
@@ -244,7 +244,7 @@ export const AgencySettingsTeamManagement = observer(() => {
             <TeamMemberEmailContainerTitle>Email</TeamMemberEmailContainerTitle>
           </TeamMemberRow>
           {currentAgencyTeam &&
-            sortAgencyTeam(currentAgencyTeam).map(
+            filterAndSortAgencyTeam(currentAgencyTeam).map(
               ({ name, email, invitation_status, role }) => (
                 <TeamMemberRow key={`${name}-${email}`}>
                   <TeamMemberNameContainer
@@ -264,6 +264,7 @@ export const AgencySettingsTeamManagement = observer(() => {
                   <TeamMemberEmailContainer>
                     {email}
                     {role !== AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN &&
+                      !userStore.isContributor(agencyId) &&
                       userStore.email !== email && (
                         <EditTeamMemberIconContainer
                           id={email}
