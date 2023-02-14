@@ -22,19 +22,18 @@ import {
 import styled from "styled-components/macro";
 
 export const FooterWrapper = styled.footer<{ isPageDataUpload?: boolean }>`
-  height: 100px;
+  margin-top: 48px;
   z-index: ${({ isPageDataUpload }) => (isPageDataUpload ? "5" : "0")};
   width: 100vw;
   display: flex;
   flex-direction: column;
   justify-content: end;
-  gap: 14px;
 `;
 
 export const FooterTop = styled.div`
   ${typography.sizeCSS.small};
   color: ${palette.highlight.grey8};
-  padding: 0 24px;
+  padding: 14px 24px;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -56,8 +55,8 @@ export const FooterTopRightLogo = styled.img`
 
 export const FooterBottom = styled(FooterTop)`
   padding: 24px;
-  height: 72px;
   background-color: ${palette.solid.darkgrey};
+  align-items: start;
 `;
 
 export const FooterBottomText = styled.div`
