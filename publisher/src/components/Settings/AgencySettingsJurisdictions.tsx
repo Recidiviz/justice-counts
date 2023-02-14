@@ -188,6 +188,7 @@ export const AgencySettingsJurisdictions: React.FC<{
                 setInputValue(e.target.value);
                 getSearchResult(e.target.value);
               }}
+              error={false}
             />
             {!!inputValue &&
               (searchResult.length === 0 ? (

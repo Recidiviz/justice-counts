@@ -278,24 +278,57 @@ export const TeamManagementSectionTitle = styled.div`
 `;
 
 export const InviteMemberContainer = styled.div`
+  margin-bottom: 40px;
+`;
+
+export const InviteMemberInnerContainer = styled.div`
   display: flex;
   flex-direction: row;
   gap: 8px;
   height: 48px;
-  margin-bottom: 40px;
+  margin-bottom: 8px;
 `;
 
-export const InviteMemberInput = styled.input`
+export const InviteMemberInput = styled.input<{
+  error: boolean;
+  value: string | undefined;
+}>`
   ${typography.sizeCSS.normal};
   padding: 16px 13px;
-  background-color: ${palette.highlight.grey1};
+  background: ${({ value, error }) => {
+    if (error) {
+      return palette.highlight.red;
+    }
+    return value ? palette.highlight.lightblue1 : palette.highlight.grey1;
+  }};
   border: none;
-  border-bottom: 1px solid ${palette.highlight.grey7};
+  border-bottom: 1px solid
+    ${({ value, error }) => {
+      if (error) {
+        return palette.solid.red;
+      }
+      return value ? palette.solid.blue : palette.highlight.grey9;
+    }};
   min-width: 266px;
+  caret-color: ${({ error }) => {
+    if (error) {
+      return palette.solid.red;
+    }
+    return palette.solid.blue;
+  }};
 
   &:focus {
     outline: none;
   }
+`;
+
+export const InviteMemberErrorContainer = styled.div`
+  position: absolute;
+`;
+
+export const InviteMemberError = styled.div`
+  ${typography.sizeCSS.small}
+  color: ${palette.solid.red};
 `;
 
 export const InviteMemberButton = styled.div<{ disabled: boolean }>`

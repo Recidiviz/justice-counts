@@ -38,6 +38,9 @@ import {
   InvitedStatus,
   InviteMemberButton,
   InviteMemberContainer,
+  InviteMemberError,
+  InviteMemberErrorContainer,
+  InviteMemberInnerContainer,
   InviteMemberInput,
   JCAdminStatus,
   TeamManagementBlock,
@@ -70,6 +73,20 @@ export const AgencySettingsTeamManagement = observer(() => {
     useState<string | undefined>(undefined);
   const [nameValue, setNameValue] = useState("");
   const [emailValue, setEmailValue] = useState("");
+
+  const validateName = (name: string) => {
+    if (name === "") return true;
+    return name.match(/^[a-zA-Z ]+$/);
+  };
+
+  const validateEmail = (email: string) => {
+    if (email === "") return true;
+    return email
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
 
   const handleRemoveTeamMember = (email: string) => {
     removeAgencyTeamMember(email);
@@ -185,22 +202,40 @@ export const AgencySettingsTeamManagement = observer(() => {
             Send invite to colleagues
           </TeamManagementSectionTitle>
           <InviteMemberContainer>
-            <InviteMemberInput
-              placeholder="Enter full name"
-              value={nameValue}
-              onChange={(e) => setNameValue(e.target.value)}
-            />
-            <InviteMemberInput
-              placeholder="Enter email"
-              value={emailValue}
-              onChange={(e) => setEmailValue(e.target.value)}
-            />
-            <InviteMemberButton
-              onClick={() => handleInviteTeamMamber(nameValue, emailValue)}
-              disabled={!nameValue || !emailValue}
-            >
-              Invite
-            </InviteMemberButton>
+            <InviteMemberInnerContainer>
+              <InviteMemberInput
+                placeholder="Enter full name"
+                value={nameValue}
+                onChange={(e) => setNameValue(e.target.value)}
+                error={!validateName(nameValue)}
+              />
+              <InviteMemberInput
+                placeholder="Enter email"
+                value={emailValue}
+                onChange={(e) => setEmailValue(e.target.value)}
+                error={!validateEmail(emailValue)}
+              />
+              <InviteMemberButton
+                onClick={() => handleInviteTeamMamber(nameValue, emailValue)}
+                disabled={
+                  !validateName(nameValue) || !validateEmail(emailValue)
+                }
+              >
+                Invite
+              </InviteMemberButton>
+            </InviteMemberInnerContainer>
+            <InviteMemberErrorContainer>
+              {!validateName(nameValue) && (
+                <InviteMemberError>
+                  Please enter a valid name.
+                </InviteMemberError>
+              )}
+              {!validateEmail(emailValue) && (
+                <InviteMemberError>
+                  Please enter a valid email.
+                </InviteMemberError>
+              )}
+            </InviteMemberErrorContainer>
           </InviteMemberContainer>
           <TeamManagementSectionTitle>Manage staff</TeamManagementSectionTitle>
           <TeamManagementSectionSubTitle>
