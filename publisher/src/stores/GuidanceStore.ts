@@ -305,7 +305,7 @@ class GuidanceStore {
     const { metrics } = this.metricConfigStore;
 
     if (this.metricConfigurationProgressStepsTracker[systemMetricKey]) {
-      const totalPercentage =
+      const totalMetricCategoriesCompleted =
         metrics[systemMetricKey]?.enabled === false
           ? 4
           : Object.values(
@@ -318,7 +318,7 @@ class GuidanceStore {
               return acc;
             }, 0);
 
-      return totalPercentage;
+      return totalMetricCategoriesCompleted;
     }
     return 0;
   };
