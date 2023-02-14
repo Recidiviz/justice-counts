@@ -75,12 +75,10 @@ export const AgencySettingsTeamManagement = observer(() => {
   const [emailValue, setEmailValue] = useState("");
 
   const validateName = (name: string) => {
-    if (name === "") return true;
     return name.match(/^[a-zA-Z ]+$/);
   };
 
   const validateEmail = (email: string) => {
-    if (email === "") return true;
     return email
       .toLowerCase()
       .match(
@@ -207,13 +205,13 @@ export const AgencySettingsTeamManagement = observer(() => {
                 placeholder="Enter full name"
                 value={nameValue}
                 onChange={(e) => setNameValue(e.target.value)}
-                error={!validateName(nameValue)}
+                error={!!nameValue && !validateName(nameValue)}
               />
               <InviteMemberInput
                 placeholder="Enter email"
                 value={emailValue}
                 onChange={(e) => setEmailValue(e.target.value)}
-                error={!validateEmail(emailValue)}
+                error={!!emailValue && !validateEmail(emailValue)}
               />
               <InviteMemberButton
                 onClick={() => handleInviteTeamMamber(nameValue, emailValue)}
@@ -225,12 +223,12 @@ export const AgencySettingsTeamManagement = observer(() => {
               </InviteMemberButton>
             </InviteMemberInnerContainer>
             <InviteMemberErrorContainer>
-              {!validateName(nameValue) && (
+              {!!nameValue && !validateName(nameValue) && (
                 <InviteMemberError>
                   Please enter a valid name.
                 </InviteMemberError>
               )}
-              {!validateEmail(emailValue) && (
+              {!!emailValue && !validateEmail(emailValue) && (
                 <InviteMemberError>
                   Please enter a valid email.
                 </InviteMemberError>
