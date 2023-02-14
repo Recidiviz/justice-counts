@@ -17,6 +17,8 @@
 
 import {
   HEADER_BAR_HEIGHT,
+  NEW_DESKTOP_WIDTH,
+  NEW_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -64,6 +66,10 @@ export const DataUploadHeader = styled.div<{ transparent?: boolean }>`
       background: ${palette.solid.white};
       border-bottom: 1px solid ${palette.highlight.grey3};
     `}
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    background-color: ${palette.solid.blue};
+  }
 `;
 
 export const MediumPageTitle = styled(PageTitle)`
@@ -72,9 +78,9 @@ export const MediumPageTitle = styled(PageTitle)`
 
 export const Instructions = styled.div`
   height: 100%;
-  width: 50%;
   padding: 103px;
   display: flex;
+  width: 50%;
   flex-direction: column;
   ${typography.sizeCSS.medium}
 
@@ -137,6 +143,11 @@ export const Instructions = styled.div`
   td {
     border: 0.5px solid black;
     padding: 5px 20px;
+  }
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    width: 100%;
+    padding: 100px 24px 103px 24px;
   }
 `;
 
@@ -311,19 +322,62 @@ export const UploadFileContainer = styled.div`
   position: relative;
 `;
 
+// TODO find a way to make only fixed container shrink
 export const DragDropContainer = styled.div<{ dragging?: boolean }>`
   height: 100vh;
   position: fixed;
   right: 0;
-  width: 50%;
   display: flex;
   flex-direction: column;
-  flex: 1 1 50%;
+  width: 50%;
   align-items: center;
   justify-content: center;
   background: ${({ dragging }) =>
     dragging ? palette.solid.darkblue : palette.solid.blue};
   color: ${palette.solid.white};
+
+  div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    position: fixed;
+    height: ${HEADER_BAR_HEIGHT}px;
+    top: 0;
+    left: 64px;
+    width: calc(100% - 190px);
+    z-index: 2;
+    flex-direction: row;
+    padding: 0 10px;
+
+    div {
+      ${typography.sizeCSS.normal};
+      flex-direction: row;
+      gap: 8px;
+    }
+  }
+
+  @media only screen and (max-width: ${NEW_TABLET_WIDTH}px) {
+    div {
+      ${typography.sizeCSS.small};
+      flex-direction: column;
+      gap: 4px;
+      align-items: start;
+    }
+  }
+`;
+
+export const DragDropIcon = styled.img`
+  margin-bottom: 15px;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    margin-bottom: 0;
+    margin-right: 12px;
+    height: 22.5px;
+    width: 22.5px;
+  }
 `;
 
 export const Container = styled.div`
