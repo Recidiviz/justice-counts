@@ -26,26 +26,29 @@ export const SettingsContainer = styled.div`
   display: flex;
   align-items: flex-start;
   padding: 48px 24px 0 24px;
-  position: fixed;
+  position: relative;
 `;
 
 export const ContentDisplay = styled.div`
-  height: 89vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   flex: 10 10 auto;
+  overflow-x: scroll;
+  margin-left: 310px;
 `;
 
 export const SettingsMenuContainer = styled.div`
   ${typography.sizeCSS.headline}
-  width: fit-content;
+  width: 240px;
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
   gap: 16px;
   margin-right: 70px;
   z-index: 2;
+  position: fixed;
 `;
 
 export const MenuItem = styled.div<{ selected?: boolean }>`

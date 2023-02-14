@@ -54,7 +54,7 @@ export const ReportSummaryWrapper = styled.div<{
   showDataEntryHelpPage?: boolean;
 }>`
   width: ${SIDE_PANEL_WIDTH}px;
-  height: 100%;
+  height: calc(100% - 100px);
   position: fixed;
   top: 0;
   left: 0;
@@ -152,7 +152,7 @@ export const ReportStatusIcon = styled.div<{
 export const EditDetails = styled.div`
   width: 307px;
   position: fixed;
-  bottom: 61px;
+  bottom: 100px;
 
   @media only screen and (max-width: ${TWO_PANEL_MAX_WIDTH}px) {
     display: none;

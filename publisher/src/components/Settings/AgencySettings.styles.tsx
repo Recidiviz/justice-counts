@@ -27,22 +27,21 @@ import { CheckIcon } from "../DataUpload";
 // Common
 const AGENCY_SETTINGS_CONTAINER_WIDTH = 732;
 
-// 662px is settings menu width times 2
+// 620px is settings menu width times 2
 export const AgencySettingsWrapper = styled.div`
-  position: absolute;
   height: 100%;
   overflow-y: scroll;
-  left: 0;
-  width: 100vw;
   min-width: ${AGENCY_SETTINGS_CONTAINER_WIDTH}px;
   display: flex;
+  margin-right: 310px;
   justify-content: center;
-  padding-bottom: 150px;
+  align-items: center;
+  padding-bottom: 50px;
   z-index: 1;
 
-  @media only screen and (max-width: calc(662px + ${AGENCY_SETTINGS_CONTAINER_WIDTH}px)) {
-    margin-left: 331px;
+  @media only screen and (max-width: calc(620px + ${AGENCY_SETTINGS_CONTAINER_WIDTH}px)) {
     justify-content: start;
+    margin-right: 0;
   }
 `;
 

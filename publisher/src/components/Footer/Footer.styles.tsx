@@ -16,51 +16,61 @@
 // =============================================================================
 
 import {
-  HEADER_BAR_HEIGHT,
   palette,
-  TABLET_WIDTH,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-export const HeaderBar = styled.header`
-  width: 100%;
-  height: ${HEADER_BAR_HEIGHT}px;
+export const FooterWrapper = styled.footer<{ isPageDataUpload?: boolean }>`
+  height: 100px;
+  z-index: ${({ isPageDataUpload }) => (isPageDataUpload ? "5" : "0")};
+  width: 100vw;
   display: flex;
+  flex-direction: column;
+  justify-content: end;
+  gap: 14px;
+`;
+
+export const FooterTop = styled.div`
+  ${typography.sizeCSS.small};
+  color: ${palette.highlight.grey8};
+  padding: 0 24px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  position: fixed;
-  top: 0;
-  z-index: 3;
-  background: ${palette.solid.white};
-  padding: 16px 0;
 `;
 
-export const LogoContainer = styled.div`
-  height: ${HEADER_BAR_HEIGHT}px;
-  width: auto;
+export const FooterTopRight = styled.div`
   display: flex;
-  justify-content: start;
-  gap: 24px;
+  flex-direction: row;
   align-items: center;
-  transition: 0.3s ease;
-
-  &:hover {
-    cursor: pointer;
-    opacity: 0.9;
-  }
+  gap: 8px;
 `;
 
-export const Logo = styled.img`
-  width: 64px;
-  height: 64px;
+export const FooterTopRightLogo = styled.img`
+  width: 15px;
+  height: 16px;
 `;
 
-export const LogoName = styled.div`
-  ${typography.sizeCSS.medium};
-  white-space: nowrap;
+export const FooterBottom = styled(FooterTop)`
+  padding: 24px;
+  height: 72px;
+  background-color: ${palette.solid.darkgrey};
+`;
 
-  @media only screen and (max-width: ${TABLET_WIDTH}px) {
-    display: none;
-  }
+export const FooterBottomText = styled.div`
+  font-style: normal;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 12px;
+  color: #a1a9b8;
+  margin-right: 74px;
+`;
+
+export const FooterBottomLogos = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 `;

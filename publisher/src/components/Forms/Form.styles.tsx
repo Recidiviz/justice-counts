@@ -30,15 +30,21 @@ import {
   TWO_PANEL_MAX_WIDTH,
 } from "../Reports/ReportDataEntry.styles";
 
-export const PageWrapper = styled.div`
+export const AppWrapper = styled.div`
   height: 100%;
   width: 100%;
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
+export const PageWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-grow: 1;
   justify-content: center;
   padding-top: ${HEADER_BAR_HEIGHT}px;
-  position: absolute;
-  top: 0;
-  z-index: 0;
+  z-index: 1;
   background: ${palette.solid.white};
 `;
 

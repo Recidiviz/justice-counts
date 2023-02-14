@@ -35,7 +35,7 @@ test("Optional input label without value expected to be default position, font-s
 
   expect(window.getComputedStyle(label).top).toBe("26px");
   expect(window.getComputedStyle(label).fontSize).toBe("1.5rem");
-  expect(window.getComputedStyle(label).color).toBe("rgba(23, 28, 43, 0.5)");
+  expect(window.getComputedStyle(label).color).toBe("rgba(0, 17, 51, 0.5)");
 
   expect.hasAssertions();
 });

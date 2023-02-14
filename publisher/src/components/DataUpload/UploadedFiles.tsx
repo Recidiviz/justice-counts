@@ -43,7 +43,6 @@ import {
   ExtendedCell,
   ExtendedLabelCell,
   ExtendedLabelRow,
-  ExtendedOpacityGradient,
   ExtendedRow,
   UploadedContainer,
   UploadedFile,
@@ -364,7 +363,7 @@ export const UploadedFiles: React.FC = observer(() => {
         </UploadedFilesTable>
       </UploadedFilesContainer>
 
-      <ExtendedOpacityGradient />
+      {/* <ExtendedOpacityGradient /> */}
     </UploadedFilesWrapper>
   );
 });
