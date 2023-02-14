@@ -32,7 +32,7 @@ import MetricConfigStore from "./MetricConfigStore";
 import UserStore from "./UserStore";
 
 type ProgressStepsTrackerType = {
-  [metricConfigStep: string]: number;
+  [metricConfigStep: string]: boolean;
 };
 
 class GuidanceStore {
@@ -97,13 +97,13 @@ class GuidanceStore {
     });
   };
 
-  /** Initialize `this.metricConfigurationProgressStepsTracker` object with zero progress weight on all categories */
+  /** Initialize `this.metricConfigurationProgressStepsTracker` object with `false` on all categories */
   initializeMetricConfigProgressStepsTracker = () => {
     const { metrics } = this.metricConfigStore;
     Object.keys(metrics).forEach((systemMetricKey) => {
       this.metricConfigurationProgressStepsTracker[systemMetricKey] = {
         ...Object.fromEntries(
-          metricConfigurationProgressSteps.map((step) => [step, 0])
+          metricConfigurationProgressSteps.map((step) => [step, false])
         ),
       };
     });
@@ -134,38 +134,13 @@ class GuidanceStore {
    */
 
   /**
-   * Determines whether or not the Metric Availability/Frequency has been selected by a user and returns a progress weight of:
-   * 25 - when user has made a frequency selection (not 'Not Available')
-   * 100 - when user has made a 'Not Available' selection (and zero for all other required categories)
+   * Determines whether or not the Metric Availability/Frequency has been selected by a user
+   * and turns true when a user has set the metric's availability/frequency
    */
   getMetricAvailabilityFrequencyProgress = (systemMetricKey: string) => {
     const { metrics } = this.metricConfigStore;
 
     /** Confirm the metric’s availability/frequency */
-    /**
-     * NOTE: when a metric is disabled, this is the only action required by a user to complete
-     * the metric configuration. The progress weight for this category becomes 100 and zero for all other
-     * categories to provide a total progress weight of 100 and signify completion of the metric configuration.
-     */
-    if (metrics[systemMetricKey]?.enabled === false) {
-      runInAction(() => {
-        metricConfigurationProgressSteps.forEach((step) => {
-          if (step === ProgressSteps.CONFIRM_METRIC_AVAILABILITY) {
-            this.metricConfigurationProgressStepsTracker[systemMetricKey][
-              ProgressSteps.CONFIRM_METRIC_AVAILABILITY
-            ] = 100;
-            return;
-          }
-          this.metricConfigurationProgressStepsTracker[systemMetricKey][
-            step
-          ] = 0;
-        });
-      });
-      return this.metricConfigurationProgressStepsTracker[systemMetricKey][
-        ProgressSteps.CONFIRM_METRIC_AVAILABILITY
-      ];
-    }
-
     if (
       metrics[systemMetricKey]?.enabled !== null &&
       metrics[systemMetricKey]?.enabled !== undefined
@@ -173,7 +148,7 @@ class GuidanceStore {
       runInAction(() => {
         this.metricConfigurationProgressStepsTracker[systemMetricKey][
           ProgressSteps.CONFIRM_METRIC_AVAILABILITY
-        ] = 25;
+        ] = true;
       });
     }
 
@@ -183,8 +158,8 @@ class GuidanceStore {
   };
 
   /**
-   * Determines whether or not a metric's definitions have all been set by a user and returns a progress
-   * weight of 25 when a user has set all of the metric's definitions
+   * Determines whether or not a metric's definitions have all been set by a user and
+   * returns true when a user has set all of the metric's definitions
    */
   getMetricDefinitionProgress = (systemMetricKey: string) => {
     const { metrics, metricDefinitionSettings } = this.metricConfigStore;
@@ -203,7 +178,7 @@ class GuidanceStore {
       runInAction(() => {
         this.metricConfigurationProgressStepsTracker[systemMetricKey][
           ProgressSteps.CONFIRM_METRIC_DEFINITIONS
-        ] = 25;
+        ] = true;
       });
     }
 
@@ -214,7 +189,7 @@ class GuidanceStore {
 
   /**
    * Determines whether or not the metric's dimensions' availability in each metric disaggregation have all
-   * been set by a user and returns a progress weight of 25 when a user has set them all
+   * been set by a user and returns `true` when a user has set them all
    */
   getBreakdownProgress = (systemMetricKey: string) => {
     const { metrics, dimensions } = this.metricConfigStore;
@@ -233,7 +208,7 @@ class GuidanceStore {
       runInAction(() => {
         this.metricConfigurationProgressStepsTracker[systemMetricKey][
           ProgressSteps.CONFIRM_BREAKDOWN_AVAILABILITY
-        ] = 25;
+        ] = true;
       });
     }
 
@@ -244,7 +219,7 @@ class GuidanceStore {
 
   /**
    * Determines whether or not the metric's dimensions' definitions in each metric disaggregation have all
-   * been set by a user and returns a progress weight of 25 when a user has set them all
+   * been set by a user and returns `true` when a user has set them all
    */
   getBreakdownDefinitionProgress = (systemMetricKey: string) => {
     const { metrics, dimensionDefinitionSettings, dimensions } =
@@ -296,13 +271,13 @@ class GuidanceStore {
       runInAction(() => {
         this.metricConfigurationProgressStepsTracker[systemMetricKey][
           ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
-        ] = 25;
+        ] = true;
       });
     } else if (this.metricConfigurationProgressStepsTracker[systemMetricKey]) {
       runInAction(() => {
         this.metricConfigurationProgressStepsTracker[systemMetricKey][
           ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
-        ] = 0;
+        ] = false;
       });
     }
 
@@ -321,12 +296,27 @@ class GuidanceStore {
     return this.metricConfigurationProgressStepsTracker[systemMetricKey];
   };
 
-  /** Returns the total progress weight for all 4 categories (out of 100) */
-  getMetricCompletionPercentage = (systemMetricKey: string) => {
+  /**
+   * Returns the total progress weight for all 4 categories (0 - 4)
+   * 0: no metric configuration category complete
+   * 4: all metric configuration categories complete/metric is marked as Not Available
+   */
+  getMetricCompletionValue = (systemMetricKey: string) => {
+    const { metrics } = this.metricConfigStore;
+
     if (this.metricConfigurationProgressStepsTracker[systemMetricKey]) {
-      const totalPercentage = Object.values(
-        this.metricConfigurationProgressStepsTracker[systemMetricKey]
-      ).reduce((a, b) => a + b, 0);
+      const totalPercentage =
+        metrics[systemMetricKey]?.enabled === false
+          ? 4
+          : Object.values(
+              this.metricConfigurationProgressStepsTracker[systemMetricKey]
+            ).reduce((acc, completed) => {
+              if (completed) {
+                // eslint-disable-next-line no-param-reassign
+                acc += 1;
+              }
+              return acc;
+            }, 0);
 
       return totalPercentage;
     }

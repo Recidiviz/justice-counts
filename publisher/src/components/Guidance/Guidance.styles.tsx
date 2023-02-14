@@ -226,7 +226,7 @@ export const ProgressBarContainer = styled.div`
 `;
 
 export const Progress = styled.div<{ progress: number }>`
-  width: ${({ progress }) => progress}%;
+  width: ${({ progress }) => progress * 25}%;
   height: 100%;
   background: ${palette.solid.blue};
 `;
