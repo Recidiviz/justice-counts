@@ -299,15 +299,6 @@ class MetricConfigStore {
           });
         });
         this.isInitialized = true;
-
-        // console.log(JSON.parse(JSON.stringify(this.metrics, null, 2)));
-        // console.log(
-        //   JSON.parse(JSON.stringify(this.metricDefinitionSettings, null, 2))
-        // );
-        // console.log(JSON.parse(JSON.stringify(this.dimensions, null, 2)));
-        console.log(
-          JSON.parse(JSON.stringify(this.dimensionDefinitionSettings, null, 2))
-        );
       });
     } catch (error) {
       return new Error(error as string);

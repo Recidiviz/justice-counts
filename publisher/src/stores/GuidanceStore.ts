@@ -254,7 +254,7 @@ class GuidanceStore {
           dimensionDefinitionSettings[systemMetricKey][disaggregationKey]
         ).forEach(([dimensionKey, dimension]) => {
           if (disabledDimensionKeys.includes(dimensionKey)) return;
-          dimensionDefinitionSettingsValues.push(...Object.values(dimension!));
+          dimensionDefinitionSettingsValues.push(...Object.values(dimension));
         });
       }
     );
