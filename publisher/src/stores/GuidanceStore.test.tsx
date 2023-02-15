@@ -20,11 +20,14 @@ import { rootStore } from ".";
 
 const { metricConfigStore, guidanceStore } = rootStore;
 
-afterEach(() => {
-  metricConfigStore.metrics = {};
-  metricConfigStore.metricDefinitionSettings = {};
-  metricConfigStore.dimensions = {};
-  metricConfigStore.dimensionDefinitionSettings = {};
+beforeEach(() => {
+  runInAction(() => {
+    metricConfigStore.metrics = {};
+    metricConfigStore.metricDefinitionSettings = {};
+    metricConfigStore.dimensions = {};
+    metricConfigStore.dimensionDefinitionSettings = {};
+    guidanceStore.metricConfigurationProgressStepsTracker = {};
+  });
 });
 
 /** Confirm metric availability */
@@ -840,4 +843,460 @@ test("when a metric's disaggregations' dimensions' definitions have at least one
   expect.hasAssertions();
 });
 
-/**  */
+/** Overall Metric Completion Progress  */
+
+test("Metric disabled returns 4 signifying completion for all required categories", () => {
+  runInAction(() => {
+    metricConfigStore.metrics = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        label: "Funding",
+        description: "",
+        defaultFrequency: "ANNUAL",
+        customFrequency: "MONTHLY",
+        startingMonth: null,
+        enabled: false,
+      },
+    };
+    metricConfigStore.metricDefinitionSettings = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        FISCAL_YEAR: {
+          label: "Expenses for single fiscal year",
+          default: "Yes",
+          included: null,
+        },
+        BIENNIUM_FUNDING: {
+          label: "Biennium funding allocated during the time period",
+          default: "Yes",
+          included: "Yes",
+        },
+      },
+    };
+    metricConfigStore.dimensions = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        "metric/offense/type": {
+          "Person Offenses": {
+            label: "Person Offenses",
+            key: "Person Offenses",
+            enabled: null,
+          },
+          "Property Offenses": {
+            label: "Property Offenses",
+            key: "Property Offenses",
+            enabled: true,
+          },
+        },
+      },
+    };
+    metricConfigStore.dimensionDefinitionSettings = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        "metric/offense/type": {
+          "Person Offenses": {
+            AGGRAVATED_ASSAULT: {
+              label: "Aggravated assault",
+              default: "Yes",
+              included: "Yes",
+            },
+            SIMPLE_ASSAULT: {
+              label: "Simple assault",
+              default: "Yes",
+              included: null,
+            },
+          },
+        },
+      },
+    };
+    guidanceStore.initializeMetricConfigProgressStepsTracker();
+    guidanceStore.getOverallMetricProgress(
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING"
+    );
+  });
+
+  const metricDisabledCompletionValue = guidanceStore.getMetricCompletionValue(
+    "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING"
+  );
+
+  expect(metricDisabledCompletionValue).toEqual(4);
+  expect.hasAssertions();
+});
+
+test("Metric enabled and all other categories have null returns 1 signifying completion for 'Confirm metric availability' category", () => {
+  runInAction(() => {
+    metricConfigStore.metrics = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        label: "Funding",
+        description: "",
+        defaultFrequency: "ANNUAL",
+        customFrequency: "MONTHLY",
+        startingMonth: null,
+        enabled: true,
+      },
+    };
+    metricConfigStore.metricDefinitionSettings = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        FISCAL_YEAR: {
+          label: "Expenses for single fiscal year",
+          default: "Yes",
+          included: null,
+        },
+        BIENNIUM_FUNDING: {
+          label: "Biennium funding allocated during the time period",
+          default: "Yes",
+          included: "Yes",
+        },
+      },
+    };
+    metricConfigStore.dimensions = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        "metric/offense/type": {
+          "Person Offenses": {
+            label: "Person Offenses",
+            key: "Person Offenses",
+            enabled: null,
+          },
+          "Property Offenses": {
+            label: "Property Offenses",
+            key: "Property Offenses",
+            enabled: true,
+          },
+        },
+      },
+    };
+    metricConfigStore.dimensionDefinitionSettings = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        "metric/offense/type": {
+          "Person Offenses": {
+            AGGRAVATED_ASSAULT: {
+              label: "Aggravated assault",
+              default: "Yes",
+              included: "Yes",
+            },
+            SIMPLE_ASSAULT: {
+              label: "Simple assault",
+              default: "Yes",
+              included: null,
+            },
+          },
+        },
+      },
+    };
+    guidanceStore.initializeMetricConfigProgressStepsTracker();
+    guidanceStore.getOverallMetricProgress(
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING"
+    );
+  });
+
+  const metricDisabledCompletionValue = guidanceStore.getMetricCompletionValue(
+    "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING"
+  );
+
+  expect(metricDisabledCompletionValue).toEqual(1);
+  expect.hasAssertions();
+});
+
+test("Metric enabled, metric definition settings set and all other categories have null returns 2 signifying completion for 'Confirm metric availability' & 'Confirm metric definitions' categories", () => {
+  runInAction(() => {
+    metricConfigStore.metrics = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        label: "Funding",
+        description: "",
+        defaultFrequency: "ANNUAL",
+        customFrequency: "MONTHLY",
+        startingMonth: null,
+        enabled: true,
+      },
+    };
+    metricConfigStore.metricDefinitionSettings = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        FISCAL_YEAR: {
+          label: "Expenses for single fiscal year",
+          default: "Yes",
+          included: "No",
+        },
+        BIENNIUM_FUNDING: {
+          label: "Biennium funding allocated during the time period",
+          default: "Yes",
+          included: "Yes",
+        },
+      },
+    };
+    metricConfigStore.dimensions = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        "metric/offense/type": {
+          "Person Offenses": {
+            label: "Person Offenses",
+            key: "Person Offenses",
+            enabled: null,
+          },
+          "Property Offenses": {
+            label: "Property Offenses",
+            key: "Property Offenses",
+            enabled: true,
+          },
+        },
+      },
+    };
+    metricConfigStore.dimensionDefinitionSettings = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        "metric/offense/type": {
+          "Person Offenses": {
+            AGGRAVATED_ASSAULT: {
+              label: "Aggravated assault",
+              default: "Yes",
+              included: "Yes",
+            },
+            SIMPLE_ASSAULT: {
+              label: "Simple assault",
+              default: "Yes",
+              included: null,
+            },
+          },
+        },
+      },
+    };
+    guidanceStore.initializeMetricConfigProgressStepsTracker();
+    guidanceStore.getOverallMetricProgress(
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING"
+    );
+  });
+
+  const metricDisabledCompletionValue = guidanceStore.getMetricCompletionValue(
+    "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING"
+  );
+
+  expect(metricDisabledCompletionValue).toEqual(2);
+  expect.hasAssertions();
+});
+
+test("Metric enabled, metric definition settings and metric breakdown availability set and last category has null values returns 3 signifying completion for 'Confirm metric availability', 'Confirm metric definitions' and 'Confirm breakdown availability' categories", () => {
+  runInAction(() => {
+    metricConfigStore.metrics = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        label: "Funding",
+        description: "",
+        defaultFrequency: "ANNUAL",
+        customFrequency: "MONTHLY",
+        startingMonth: null,
+        enabled: true,
+      },
+    };
+    metricConfigStore.metricDefinitionSettings = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        FISCAL_YEAR: {
+          label: "Expenses for single fiscal year",
+          default: "Yes",
+          included: "No",
+        },
+        BIENNIUM_FUNDING: {
+          label: "Biennium funding allocated during the time period",
+          default: "Yes",
+          included: "Yes",
+        },
+      },
+    };
+    metricConfigStore.dimensions = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        "metric/offense/type": {
+          "Person Offenses": {
+            label: "Person Offenses",
+            key: "Person Offenses",
+            enabled: false,
+          },
+          "Property Offenses": {
+            label: "Property Offenses",
+            key: "Property Offenses",
+            enabled: true,
+          },
+        },
+      },
+    };
+    metricConfigStore.dimensionDefinitionSettings = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        "metric/offense/type": {
+          "Person Offenses": {
+            AGGRAVATED_ASSAULT: {
+              label: "Aggravated assault",
+              default: "Yes",
+              included: "Yes",
+            },
+            SIMPLE_ASSAULT: {
+              label: "Simple assault",
+              default: "Yes",
+              included: null,
+            },
+          },
+        },
+      },
+    };
+    guidanceStore.initializeMetricConfigProgressStepsTracker();
+    guidanceStore.getOverallMetricProgress(
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING"
+    );
+  });
+
+  const metricDisabledCompletionValue = guidanceStore.getMetricCompletionValue(
+    "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING"
+  );
+
+  expect(metricDisabledCompletionValue).toEqual(3);
+  expect.hasAssertions();
+});
+
+test("Metric enabled, metric definition settings, metric breakdown availability and metric breakdown definitions set returns 4 signifying completion for all metric configuration categories", () => {
+  runInAction(() => {
+    metricConfigStore.metrics = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        label: "Funding",
+        description: "",
+        defaultFrequency: "ANNUAL",
+        customFrequency: "MONTHLY",
+        startingMonth: null,
+        enabled: true,
+      },
+    };
+    metricConfigStore.metricDefinitionSettings = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        FISCAL_YEAR: {
+          label: "Expenses for single fiscal year",
+          default: "Yes",
+          included: "No",
+        },
+        BIENNIUM_FUNDING: {
+          label: "Biennium funding allocated during the time period",
+          default: "Yes",
+          included: "Yes",
+        },
+      },
+    };
+    metricConfigStore.dimensions = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        "metric/offense/type": {
+          "Person Offenses": {
+            label: "Person Offenses",
+            key: "Person Offenses",
+            enabled: true,
+          },
+          "Property Offenses": {
+            label: "Property Offenses",
+            key: "Property Offenses",
+            enabled: true,
+          },
+        },
+      },
+    };
+    metricConfigStore.dimensionDefinitionSettings = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        "metric/offense/type": {
+          "Person Offenses": {
+            AGGRAVATED_ASSAULT: {
+              label: "Aggravated assault",
+              default: "Yes",
+              included: "Yes",
+            },
+            SIMPLE_ASSAULT: {
+              label: "Simple assault",
+              default: "Yes",
+              included: "No",
+            },
+          },
+        },
+      },
+    };
+    guidanceStore.initializeMetricConfigProgressStepsTracker();
+    guidanceStore.getOverallMetricProgress(
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING"
+    );
+  });
+
+  const metricDisabledCompletionValue = guidanceStore.getMetricCompletionValue(
+    "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING"
+  );
+
+  expect(metricDisabledCompletionValue).toEqual(4);
+  expect.hasAssertions();
+});
+
+test("All categories set and disabled dimensions' definitions do not count towards progress. Returns 4 signifying completion for all metric configuration categories", () => {
+  runInAction(() => {
+    metricConfigStore.metrics = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        label: "Funding",
+        description: "",
+        defaultFrequency: "ANNUAL",
+        customFrequency: "MONTHLY",
+        startingMonth: null,
+        enabled: true,
+      },
+    };
+    metricConfigStore.metricDefinitionSettings = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        FISCAL_YEAR: {
+          label: "Expenses for single fiscal year",
+          default: "Yes",
+          included: "No",
+        },
+        BIENNIUM_FUNDING: {
+          label: "Biennium funding allocated during the time period",
+          default: "Yes",
+          included: "Yes",
+        },
+      },
+    };
+    metricConfigStore.dimensions = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        "metric/offense/type": {
+          "Person Offenses": {
+            label: "Person Offenses",
+            key: "Person Offenses",
+            enabled: false,
+          },
+          "Property Offenses": {
+            label: "Property Offenses",
+            key: "Property Offenses",
+            enabled: true,
+          },
+        },
+      },
+    };
+    metricConfigStore.dimensionDefinitionSettings = {
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
+        "metric/offense/type": {
+          "Person Offenses": {
+            AGGRAVATED_ASSAULT: {
+              label: "Aggravated assault",
+              default: "Yes",
+              included: null,
+            },
+            SIMPLE_ASSAULT: {
+              label: "Simple assault",
+              default: "Yes",
+              included: "No",
+            },
+          },
+          "Property Offenses": {
+            AGGRAVATED_ASSAULT: {
+              label: "Aggravated assault",
+              default: "Yes",
+              included: "Yes",
+            },
+            SIMPLE_ASSAULT: {
+              label: "Simple assault",
+              default: "Yes",
+              included: "No",
+            },
+          },
+        },
+      },
+    };
+    guidanceStore.initializeMetricConfigProgressStepsTracker();
+    guidanceStore.getOverallMetricProgress(
+      "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING"
+    );
+  });
+
+  const metricDisabledCompletionValue = guidanceStore.getMetricCompletionValue(
+    "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING"
+  );
+
+  expect(metricDisabledCompletionValue).toEqual(4);
+  expect.hasAssertions();
+});
