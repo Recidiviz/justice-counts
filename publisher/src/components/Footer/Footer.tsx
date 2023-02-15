@@ -45,20 +45,26 @@ const Footer = () => {
         </FooterTopRight>
       </FooterTop>
       <FooterBottom>
-        <FooterBottomText>
-          This Web site is funded in part through a grant from the Bureau of
-          Justice Assistance, Office of Justice Programs, U.S. Department of
-          Justice. Neither the U.S. Department of Justice nor any of its
-          components operate, control, are responsible for, or necessarily
-          endorse, this Web site (including, without limitation, its content,
-          technical infrastructure, and policies, and any services or tools
-          provided).
-        </FooterBottomText>
-        <FooterBottomLogos>
-          <img src={recidivizLogo} alt="" />
-          <img src={bjaLogo} alt="" />
-          <img src={dojLogo} alt="" />
-        </FooterBottomLogos>
+        <a
+          href="https://justicecounts.csgjusticecenter.org/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <FooterBottomText>
+            This Web site is funded in part through a grant from the Bureau of
+            Justice Assistance, Office of Justice Programs, U.S. Department of
+            Justice. Neither the U.S. Department of Justice nor any of its
+            components operate, control, are responsible for, or necessarily
+            endorse, this Web site (including, without limitation, its content,
+            technical infrastructure, and policies, and any services or tools
+            provided).
+          </FooterBottomText>
+          <FooterBottomLogos>
+            <img src={recidivizLogo} alt="" />
+            <img src={bjaLogo} alt="" />
+            <img src={dojLogo} alt="" />
+          </FooterBottomLogos>
+        </a>
       </FooterBottom>
     </FooterWrapper>
   );
