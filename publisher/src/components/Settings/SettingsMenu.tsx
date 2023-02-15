@@ -17,7 +17,7 @@
 
 import { observer } from "mobx-react-lite";
 import React, { Fragment } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { settingsMenuPaths } from "../../pages/Settings";
 import { useStore } from "../../stores";
