@@ -747,7 +747,7 @@ export const MiniButtonWrapper = styled.div`
 `;
 
 export const MiniButton = styled(RevertToDefaultButton)<{
-  selected?: boolean;
+  selected?: boolean | null;
   showDefault?: boolean;
 }>`
   width: unset;
