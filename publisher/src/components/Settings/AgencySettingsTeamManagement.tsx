@@ -17,7 +17,10 @@
 
 /* eslint-disable camelcase */
 import editIcon from "@justice-counts/common/assets/edit-row-icon.png";
-import { AgencyTeam, AgencyTeamMemberRole } from "@justice-counts/common/types";
+import {
+  AgencyTeamMember,
+  AgencyTeamMemberRole,
+} from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -35,7 +38,11 @@ import {
   InvitedStatus,
   InviteMemberButton,
   InviteMemberContainer,
+  InviteMemberError,
+  InviteMemberErrorContainer,
+  InviteMemberInnerContainer,
   InviteMemberInput,
+  JCAdminStatus,
   TeamManagementBlock,
   TeamManagementDescription,
   TeamManagementSectionSubTitle,
@@ -67,6 +74,16 @@ export const AgencySettingsTeamManagement = observer(() => {
   const [nameValue, setNameValue] = useState("");
   const [emailValue, setEmailValue] = useState("");
 
+  const validateName = (name: string) => {
+    return name.match(/^[a-zA-Z ]+$/);
+  };
+
+  const validateEmail = (email: string) => {
+    // simple email validation
+    // from: https://stackoverflow.com/a/9204568
+    return email.toLowerCase().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+  };
+
   const handleRemoveTeamMember = (email: string) => {
     removeAgencyTeamMember(email);
     removeAgencyTeamMemberRequest({ email }, agencyId);
@@ -76,13 +93,13 @@ export const AgencySettingsTeamManagement = observer(() => {
   const handleInviteTeamMamber = async (name: string, email: string) => {
     if (name && email) {
       const result = await inviteTeamMemberRequest(
-        { invite_name: name, invite_email: email },
+        { invite_name: name.trim(), invite_email: email.trim() },
         agencyId
       );
       if (!(result instanceof Error)) {
         setNameValue("");
         setEmailValue("");
-        inviteTeamMember(name, email);
+        inviteTeamMember(name.trim(), email.trim());
       }
     }
   };
@@ -107,14 +124,31 @@ export const AgencySettingsTeamManagement = observer(() => {
     setTeamMemberEditMenuActiveEmail(undefined);
   };
 
-  const sortAgencyTeam = (team: AgencyTeam[]) =>
-    team
-      .filter((member) =>
-        !userStore.isJusticeCountsAdmin(agencyId)
-          ? member.role !== AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN
-          : true
-      )
-      .sort((a, b) => a.name.localeCompare(b.name));
+  const filterAndSortAgencyTeam = (teamMembers: AgencyTeamMember[]) => {
+    const invitedMembers: AgencyTeamMember[] = [];
+    const acceptedMembers: AgencyTeamMember[] = [];
+    teamMembers.forEach((member) => {
+      if (member.invitation_status === "PENDING") {
+        invitedMembers.push(member);
+      } else {
+        acceptedMembers.push(member);
+      }
+    });
+
+    const filterAndSort = (members: AgencyTeamMember[]) =>
+      members
+        .filter((member) =>
+          !userStore.isJusticeCountsAdmin(agencyId)
+            ? member.role !== AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN
+            : true
+        )
+        .sort((a, b) => a.name.localeCompare(b.name));
+
+    return [
+      ...filterAndSort(invitedMembers),
+      ...filterAndSort(acceptedMembers),
+    ];
+  };
   const getRemovedUserName = (email: string) =>
     currentAgencyTeam?.find((member) => member.email === email)?.name || "";
 
@@ -156,28 +190,48 @@ export const AgencySettingsTeamManagement = observer(() => {
         <AgencySettingsTitle>Team Management</AgencySettingsTitle>
         <TeamManagementBlock>
           <TeamManagementDescription>
-            Manage your agency team by inviting members or assigning admins.
+            Enter the requested information, then click &quot;Invite&quot;. New
+            users will be able to add and edit data for{" "}
+            {agencyStore.currentAgency?.name} on Publisher.
           </TeamManagementDescription>
           <TeamManagementSectionTitle>
             Send invite to colleagues
           </TeamManagementSectionTitle>
           <InviteMemberContainer>
-            <InviteMemberInput
-              placeholder="Enter full name"
-              value={nameValue}
-              onChange={(e) => setNameValue(e.target.value)}
-            />
-            <InviteMemberInput
-              placeholder="Enter email"
-              value={emailValue}
-              onChange={(e) => setEmailValue(e.target.value)}
-            />
-            <InviteMemberButton
-              onClick={() => handleInviteTeamMamber(nameValue, emailValue)}
-              disabled={!nameValue || !emailValue}
-            >
-              Invite
-            </InviteMemberButton>
+            <InviteMemberInnerContainer>
+              <InviteMemberInput
+                placeholder="Enter full name"
+                value={nameValue}
+                onChange={(e) => setNameValue(e.target.value)}
+                error={!!nameValue && !validateName(nameValue)}
+              />
+              <InviteMemberInput
+                placeholder="Enter email"
+                value={emailValue}
+                onChange={(e) => setEmailValue(e.target.value)}
+                error={!!emailValue && !validateEmail(emailValue)}
+              />
+              <InviteMemberButton
+                onClick={() => handleInviteTeamMamber(nameValue, emailValue)}
+                disabled={
+                  !validateName(nameValue) || !validateEmail(emailValue)
+                }
+              >
+                Invite
+              </InviteMemberButton>
+            </InviteMemberInnerContainer>
+            <InviteMemberErrorContainer>
+              {!!nameValue && !validateName(nameValue) && (
+                <InviteMemberError>
+                  Please enter a valid name.
+                </InviteMemberError>
+              )}
+              {!!emailValue && !validateEmail(emailValue) && (
+                <InviteMemberError>
+                  Please enter a valid email.
+                </InviteMemberError>
+              )}
+            </InviteMemberErrorContainer>
           </InviteMemberContainer>
           <TeamManagementSectionTitle>Manage staff</TeamManagementSectionTitle>
           <TeamManagementSectionSubTitle>
@@ -188,13 +242,15 @@ export const AgencySettingsTeamManagement = observer(() => {
             <TeamMemberEmailContainerTitle>Email</TeamMemberEmailContainerTitle>
           </TeamMemberRow>
           {currentAgencyTeam &&
-            sortAgencyTeam(currentAgencyTeam).map(
+            filterAndSortAgencyTeam(currentAgencyTeam).map(
               ({ name, email, invitation_status, role }) => (
                 <TeamMemberRow key={`${name}-${email}`}>
-                  <TeamMemberNameContainer>
+                  <TeamMemberNameContainer
+                    pending={invitation_status === "PENDING"}
+                  >
                     {name}{" "}
                     {role === "JUSTICE_COUNTS_ADMIN" && (
-                      <AdminStatus>JC Admin</AdminStatus>
+                      <JCAdminStatus>JC Admin</JCAdminStatus>
                     )}
                     {role === "AGENCY_ADMIN" && (
                       <AdminStatus>Admin</AdminStatus>
@@ -206,6 +262,7 @@ export const AgencySettingsTeamManagement = observer(() => {
                   <TeamMemberEmailContainer>
                     {email}
                     {role !== AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN &&
+                      !userStore.isContributor(agencyId) &&
                       userStore.email !== email && (
                         <EditTeamMemberIconContainer
                           id={email}

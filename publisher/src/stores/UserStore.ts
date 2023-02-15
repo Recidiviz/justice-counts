@@ -192,6 +192,12 @@ class UserStore {
     );
   }
 
+  isContributor(agencyId: string): boolean {
+    return (
+      this.getUserAgencyRole(agencyId) === AgencyTeamMemberRole.CONTRIBUTOR
+    );
+  }
+
   async updateAndRetrieveUserPermissionsAndAgencies() {
     try {
       const response = (await this.api.request({
