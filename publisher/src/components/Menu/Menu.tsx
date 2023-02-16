@@ -100,33 +100,31 @@ const Menu = () => {
       </MenuItem>
 
       {/* Agencies Dropdown */}
-      {userStore.isJusticeCountsAdmin(agencyId) && (
-        <MenuItem>
-          <Dropdown>
-            <ExtendedDropdownToggle kind="borderless">
-              Agencies
-            </ExtendedDropdownToggle>
-            <ExtendedDropdownMenu alignment="right">
-              {userStore.userAgencies
-                ?.slice()
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((agency) => {
-                  return (
-                    <ExtendedDropdownMenuItem
-                      key={agency.id}
-                      onClick={() => {
-                        navigate(`/agency/${agency.id}/${pathWithoutAgency}`);
-                      }}
-                      highlight={agency.id === currentAgency?.id}
-                    >
-                      {agency.name}
-                    </ExtendedDropdownMenuItem>
-                  );
-                })}
-            </ExtendedDropdownMenu>
-          </Dropdown>
-        </MenuItem>
-      )}
+      <MenuItem>
+        <Dropdown>
+          <ExtendedDropdownToggle kind="borderless">
+            Agencies
+          </ExtendedDropdownToggle>
+          <ExtendedDropdownMenu alignment="right">
+            {userStore.userAgencies
+              ?.slice()
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((agency) => {
+                return (
+                  <ExtendedDropdownMenuItem
+                    key={agency.id}
+                    onClick={() => {
+                      navigate(`/agency/${agency.id}/${pathWithoutAgency}`);
+                    }}
+                    highlight={agency.id === currentAgency?.id}
+                  >
+                    {agency.name}
+                  </ExtendedDropdownMenuItem>
+                );
+              })}
+          </ExtendedDropdownMenu>
+        </Dropdown>
+      </MenuItem>
 
       {/* Settings */}
       <MenuItem
