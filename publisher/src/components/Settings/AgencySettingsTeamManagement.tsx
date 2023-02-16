@@ -69,6 +69,7 @@ export const AgencySettingsTeamManagement = observer(() => {
   } = agencyStore;
   const { loadingSettings, resetState } = agencyStore;
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInviting, setIsInviting] = useState(false);
   const [teamMemberEditMenuActiveEmail, setTeamMemberEditMenuActiveEmail] =
     useState<string | undefined>(undefined);
   const [nameValue, setNameValue] = useState("");
@@ -91,17 +92,17 @@ export const AgencySettingsTeamManagement = observer(() => {
     setIsModalOpen(false);
   };
   const handleInviteTeamMamber = async (name: string, email: string) => {
-    if (name && email) {
-      const result = await inviteTeamMemberRequest(
-        { invite_name: name.trim(), invite_email: email.trim() },
-        agencyId
-      );
-      if (!(result instanceof Error)) {
-        setNameValue("");
-        setEmailValue("");
-        inviteTeamMember(name.trim(), email.trim());
-      }
+    setIsInviting(true);
+    const result = await inviteTeamMemberRequest(
+      { invite_name: name.trim(), invite_email: email.trim() },
+      agencyId
+    );
+    if (!(result instanceof Error)) {
+      setNameValue("");
+      setEmailValue("");
+      inviteTeamMember(name.trim(), email.trim());
     }
+    setIsInviting(false);
   };
   const handleTeamMemberAdminStatus = (
     email: string,
@@ -214,7 +215,9 @@ export const AgencySettingsTeamManagement = observer(() => {
               <InviteMemberButton
                 onClick={() => handleInviteTeamMamber(nameValue, emailValue)}
                 disabled={
-                  !validateName(nameValue) || !validateEmail(emailValue)
+                  !validateName(nameValue) ||
+                  !validateEmail(emailValue) ||
+                  isInviting
                 }
               >
                 Invite
