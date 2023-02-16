@@ -17,24 +17,22 @@
 
 import React, { useCallback, useState } from "react";
 
+import useWindowWidth from "../../hooks/useWIndowWidth";
 import { ReportFrequency } from "../../types";
-import { Badge, BadgeColorMapping } from "../Badge";
+import { Badge, reportFrequencyBadgeColors } from "../Badge";
+import { NEW_DESKTOP_WIDTH } from "../GlobalStyles";
 import {
   MetricTitle,
   MetricTitleWrapper,
   MetricTitleWrapperGradient,
 } from "./DatapointsTitle.styles";
 
-const reportFrequencyBadgeColors: BadgeColorMapping = {
-  ANNUAL: "ORANGE",
-  MONTHLY: "GREEN",
-};
-
 export const DatapointsTitle: React.FC<{
   metricName: string;
   metricFrequency?: string;
 }> = ({ metricName, metricFrequency }) => {
   const [titleWidth, setTitleWidth] = useState<number>(0);
+  const windowWidth = useWindowWidth();
 
   const titleRef = useCallback(
     (node: HTMLDivElement) => {
@@ -48,7 +46,7 @@ export const DatapointsTitle: React.FC<{
     <MetricTitleWrapper>
       <MetricTitle ref={titleRef} titleWidth={titleWidth}>
         {metricName}
-        {metricFrequency && (
+        {metricFrequency && windowWidth > NEW_DESKTOP_WIDTH && (
           <Badge
             color={
               reportFrequencyBadgeColors[metricFrequency as ReportFrequency]

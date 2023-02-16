@@ -17,6 +17,8 @@
 
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
+import { NEW_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import useWindowWidth from "@justice-counts/common/hooks/useWIndowWidth";
 import { ReportFrequency } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
@@ -31,6 +33,7 @@ const ConnectedDatapointsView: React.FC<{
   dataView: ChartView;
 }> = ({ metric, metricName, metricFrequency, dataView }) => {
   const { datapointsStore, dataVizStore } = useStore();
+  const windowWidth = useWindowWidth();
 
   const datapointsForMetric = datapointsStore.datapointsByMetric[metric];
   const rawDatapointsForMetric = datapointsStore.rawDatapointsByMetric[metric];
@@ -76,6 +79,7 @@ const ConnectedDatapointsView: React.FC<{
           metricFrequency={metricFrequency}
           resizeHeight
           showTitle
+          showBottomMetricInsights={windowWidth <= NEW_DESKTOP_WIDTH}
         />
       )}
       {dataView === ChartView.Table && (

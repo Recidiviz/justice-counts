@@ -24,6 +24,7 @@ import {
   NEW_DESKTOP_WIDTH,
   palette,
 } from "@justice-counts/common/components/GlobalStyles";
+import useWindowWidth from "@justice-counts/common/hooks/useWIndowWidth";
 import { ReportOverview } from "@justice-counts/common/types";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
@@ -74,7 +75,6 @@ import {
   printReportTitle,
   removeSnakeCase,
 } from "../utils";
-import useWindowWidth from "../utils/useWIndowWidth";
 
 const ReportStatusFilterOptionObject: { [key: string]: string } = {
   allrecords: "All Records",

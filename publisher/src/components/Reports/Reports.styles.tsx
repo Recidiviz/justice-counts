@@ -164,10 +164,6 @@ export const DropdownContainer = styled.div`
   border-bottom: 1px solid ${palette.highlight.grey9};
   display: flex;
   align-items: center;
-
-  div {
-    width: 100%;
-  }
 `;
 
 export const StatusFilterDropdownToggle = styled(DropdownToggle)`

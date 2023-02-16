@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  NEW_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -23,6 +24,12 @@ import { DropdownToggle } from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
 import { BinaryRadioGroupWrapper } from "../Forms";
+import { ExtendedDropdownMenuItem } from "../Menu";
+import {
+  DropdownContainer,
+  StatusFilterDropdownMenu,
+  StatusFilterDropdownToggle,
+} from "../Reports";
 import { MenuItem } from "../Settings";
 
 const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
@@ -46,6 +53,10 @@ export const MetricsViewContainer = styled.div`
   flex-direction: column;
   align-items: flex-start;
   overflow-y: hidden;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    justify-content: start;
+  }
 `;
 
 export const MetricsViewControlPanel = styled.div`
@@ -55,7 +66,7 @@ export const MetricsViewControlPanel = styled.div`
   flex-wrap: nowrap;
   justify-content: space-between;
 
-  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
     justify-content: unset;
   }
 `;
@@ -64,6 +75,7 @@ export const MetricsViewControlPanelOverflowHidden = styled(
   MetricsViewControlPanel
 )`
   flex-wrap: nowrap;
+  overflow-y: scroll;
 `;
 
 export const PanelContainerLeft = styled.div`
@@ -75,6 +87,10 @@ export const PanelContainerLeft = styled.div`
   flex-direction: column;
   justify-content: space-between;
   padding: 46px 0 0 24px;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    display: none;
+  }
 `;
 
 export const SystemsContainer = styled.div`
@@ -149,6 +165,13 @@ export const DisclaimerContainer = styled.div`
   height: 200px;
 `;
 
+export const MobileDisclaimerContainer = styled(DisclaimerContainer)`
+  width: 100%;
+  height: auto;
+  justify-content: flex-start;
+  padding-bottom: 24px;
+`;
+
 export const DisclaimerTitle = styled.div`
   ${typography.sizeCSS.small}
 `;
@@ -172,6 +195,73 @@ export const PanelContainerRight = styled.div`
   overflow-y: scroll;
   overflow-x: scroll;
   padding-right: 24px;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    width: 100%;
+    min-width: unset;
+    padding: 24px;
+  }
+`;
+
+export const MobileDatapointsControls = styled.div`
+  display: none;
+  width: 100%;
+  flex-direction: column;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    display: flex;
+  } ;
+`;
+
+export const CurrentMetricsSystem = styled.div`
+  display: none;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    display: block;
+    width: 100%;
+    ${typography.sizeCSS.small};
+    text-transform: capitalize;
+    padding-bottom: 12px;
+    border-bottom: 1px solid ${palette.solid.darkgrey};
+  }
+`;
+
+export const MetricsDropdownContainer = styled(DropdownContainer)`
+  margin-bottom: 24px;
+
+  & > div {
+    width: 100%;
+  }
+`;
+
+export const MetricsDropdownToggle = styled(StatusFilterDropdownToggle)`
+  text-transform: capitalize;
+
+  & > div {
+    margin-left: auto;
+  }
+`;
+
+export const MetricsDropdownMenu = styled(StatusFilterDropdownMenu)`
+  max-height: 452px;
+  width: 100%;
+`;
+
+export const MetricsDropdownMenuItem = styled(ExtendedDropdownMenuItem)`
+  justify-content: space-between;
+  ${typography.sizeCSS.normal};
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    span {
+      ${typography.sizeCSS.small};
+      color: ${palette.highlight.grey8};
+      text-transform: capitalize;
+    }
+  }
 `;
 
 export const PanelRightTopButtonsContainer = styled.div`
@@ -184,6 +274,10 @@ export const PanelRightTopButtonsContainer = styled.div`
   top: 0;
   background-color: ${palette.solid.white};
   z-index: 2;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    display: none;
+  }
 `;
 
 export const PanelRightTopButton = styled.div`
