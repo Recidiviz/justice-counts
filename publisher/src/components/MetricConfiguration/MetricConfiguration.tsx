@@ -15,36 +15,45 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Badge } from "@justice-counts/common/components/Badge";
+import {
+  Badge,
+  reportFrequencyBadgeColors,
+} from "@justice-counts/common/components/Badge";
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
   AgencySystems,
   ReportFrequency,
   SupervisionSubsystems,
 } from "@justice-counts/common/types";
+import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
-import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
+import dropdownArrow from "../assets/dropdown-arrow.svg";
 import { ContainedLoader } from "../Loading";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   Configuration,
-  Metric,
   MetricBox,
   MetricBoxBottomPaddingContainer,
   MetricBoxContainerWrapper,
   MetricConfigurationDisplay,
+  MetricConfigurationDropdownContainer,
+  MetricConfigurationSystemsDropdownContainer,
   MetricConfigurationWrapper,
   MetricDefinitions,
   MetricDetailsDisplay,
-  MetricName,
+  MetricsConfigurationDropdownMenu,
+  MetricsConfigurationDropdownMenuItem,
+  MetricsConfigurationDropdownToggle,
+  MetricsConfigurationSystemsDropdownMenuItem,
   MetricsViewContainer,
   MetricsViewControlPanel,
+  MobileMetricsConfigurationHeader,
   RACE_ETHNICITY_DISAGGREGATION_KEY,
   RaceEthnicitiesForm,
   StickyHeader,
@@ -123,9 +132,12 @@ export const MetricConfiguration: React.FC = observer(() => {
   };
 
   const handleSystemClick = (option: AgencySystems) => {
-    setSettingsSearchParams({
-      system: option,
-    });
+    setSettingsSearchParams(
+      {
+        system: option,
+      },
+      true
+    );
   };
 
   useEffect(() => {
@@ -149,14 +161,25 @@ export const MetricConfiguration: React.FC = observer(() => {
   const enabledSupervisionSubsystems = currentAgency?.systems
     .filter((system) => SupervisionSubsystems.includes(system))
     .map((system) => system.toLowerCase());
+  const showSystems =
+    !metricSearchParam &&
+    currentAgency?.systems &&
+    currentAgency?.systems?.length > 1;
 
   return (
     <>
       <MetricsViewContainer>
+        <MobileMetricsConfigurationHeader hasBorder={showSystems}>
+          Metric Configuration
+          {systemSearchParam &&
+            ` > ${formatSystemName(systemSearchParam, {
+              allUserSystems: currentAgency?.systems,
+            })}`}
+          {metricSearchParam && ` > ${metrics[systemMetricKey]?.label}`}
+        </MobileMetricsConfigurationHeader>
         {/* System Tabs (for multi-system agencies) */}
-        {!metricSearchParam &&
-          currentAgency?.systems &&
-          currentAgency?.systems?.length > 1 && (
+        {showSystems && (
+          <>
             <StickyHeader>
               <TabbedBar noPadding>
                 <TabbedOptions>
@@ -181,7 +204,40 @@ export const MetricConfiguration: React.FC = observer(() => {
                 </TabbedOptions>
               </TabbedBar>
             </StickyHeader>
-          )}
+
+            {/* Systems Dropdown (for multi-system agencies)  */}
+            <MetricConfigurationSystemsDropdownContainer>
+              <Dropdown>
+                <MetricsConfigurationDropdownToggle kind="borderless">
+                  <img src={dropdownArrow} alt="" />
+                  {systemSearchParam &&
+                    formatSystemName(systemSearchParam, {
+                      allUserSystems: currentAgency?.systems,
+                    })}
+                </MetricsConfigurationDropdownToggle>
+                <MetricsConfigurationDropdownMenu>
+                  {currentAgency?.systems
+                    .filter(
+                      (system) => getMetricsBySystem(system)?.length !== 0
+                    )
+                    .map((system) => {
+                      return (
+                        <MetricsConfigurationSystemsDropdownMenuItem
+                          key={system}
+                          highlight={systemSearchParam === system}
+                          onClick={() => handleSystemClick(system)}
+                        >
+                          {formatSystemName(system, {
+                            allUserSystems: currentAgency?.systems,
+                          })}
+                        </MetricsConfigurationSystemsDropdownMenuItem>
+                      );
+                    })}
+                </MetricsConfigurationDropdownMenu>
+              </Dropdown>
+            </MetricConfigurationSystemsDropdownContainer>
+          </>
+        )}
 
         <MetricsViewControlPanel>
           {/* List Of Metrics */}
@@ -210,25 +266,82 @@ export const MetricConfiguration: React.FC = observer(() => {
           {metricSearchParam && (
             <MetricConfigurationWrapper>
               {/* Metric Configuration */}
-              <MetricConfigurationDisplay>
-                <Metric
-                  onClick={() => setActiveDimensionKey(undefined)}
-                  inView={!activeDimensionKey}
-                >
-                  <MetricName isTitle>
+              <MetricConfigurationDropdownContainer hasTopBorder>
+                <Dropdown>
+                  <MetricsConfigurationDropdownToggle kind="borderless">
+                    <img src={dropdownArrow} alt="" />
                     {metrics[systemMetricKey]?.label}
-                  </MetricName>
-                  <Badge color="GREEN" noMargin>
-                    {metrics[systemMetricKey]?.customFrequency
-                      ? metrics[
-                          systemMetricKey
-                        ]?.customFrequency?.toLocaleLowerCase()
-                      : metrics[
+                    <Badge
+                      color={
+                        reportFrequencyBadgeColors[
+                          metrics[systemMetricKey]?.customFrequency ||
+                            (metrics[systemMetricKey]
+                              ?.defaultFrequency as ReportFrequency)
+                        ]
+                      }
+                    >
+                      {metrics[
+                        systemMetricKey
+                      ]?.customFrequency?.toLowerCase() ||
+                        metrics[
                           systemMetricKey
                         ]?.defaultFrequency?.toLowerCase()}
-                  </Badge>
-                  <RightArrowIcon />
-                </Metric>
+                    </Badge>
+                  </MetricsConfigurationDropdownToggle>
+                  <MetricsConfigurationDropdownMenu>
+                    {getMetricsBySystem(systemSearchParam)?.map(
+                      ({ key, metric }) => (
+                        <MetricsConfigurationDropdownMenuItem
+                          key={key}
+                          onClick={() =>
+                            setSettingsSearchParams(
+                              {
+                                ...settingsSearchParams,
+                                metric: key,
+                              },
+                              true
+                            )
+                          }
+                        >
+                          {metric.label}
+                          <Badge
+                            color={
+                              reportFrequencyBadgeColors[
+                                metric.customFrequency
+                                  ? metric.customFrequency
+                                  : (metric.defaultFrequency as ReportFrequency)
+                              ]
+                            }
+                          >
+                            {metric.customFrequency
+                              ? metric.customFrequency?.toLowerCase()
+                              : metric.defaultFrequency?.toLowerCase()}
+                          </Badge>
+                        </MetricsConfigurationDropdownMenuItem>
+                      )
+                    )}
+                  </MetricsConfigurationDropdownMenu>
+                </Dropdown>
+              </MetricConfigurationDropdownContainer>
+              <MetricConfigurationDisplay>
+                {/* <Metric */}
+                {/*  onClick={() => setActiveDimensionKey(undefined)} */}
+                {/*  inView={!activeDimensionKey} */}
+                {/* > */}
+                {/*  <MetricName isTitle> */}
+                {/*    {metrics[systemMetricKey]?.label} */}
+                {/*  </MetricName> */}
+                {/*  <Badge color="GREEN" noMargin> */}
+                {/*    {metrics[systemMetricKey]?.customFrequency */}
+                {/*      ? metrics[ */}
+                {/*          systemMetricKey */}
+                {/*        ]?.customFrequency?.toLocaleLowerCase() */}
+                {/*      : metrics[ */}
+                {/*          systemMetricKey */}
+                {/*        ]?.defaultFrequency?.toLowerCase()} */}
+                {/*  </Badge> */}
+                {/*  <RightArrowIcon /> */}
+                {/* </Metric> */}
 
                 <MetricDetailsDisplay>
                   <Configuration

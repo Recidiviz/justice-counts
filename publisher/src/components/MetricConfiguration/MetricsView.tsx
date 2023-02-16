@@ -44,11 +44,11 @@ import {
   DisclaimerLink,
   DisclaimerText,
   DisclaimerTitle,
+  MetricConfigurationDropdownContainer,
   MetricItem,
-  MetricsDropdownContainer,
-  MetricsDropdownMenu,
-  MetricsDropdownMenuItem,
-  MetricsDropdownToggle,
+  MetricsConfigurationDropdownMenu,
+  MetricsConfigurationDropdownMenuItem,
+  MetricsConfigurationDropdownToggle,
   MetricsItemsContainer,
   MetricsViewContainer,
   MetricsViewControlPanelOverflowHidden,
@@ -261,9 +261,9 @@ export const MetricsView: React.FC = observer(() => {
             <CurrentMetricsSystem>
               {formatSystemName(systemSearchParam)}
             </CurrentMetricsSystem>
-            <MetricsDropdownContainer>
+            <MetricConfigurationDropdownContainer>
               <Dropdown>
-                <MetricsDropdownToggle kind="borderless">
+                <MetricsConfigurationDropdownToggle kind="borderless">
                   <img src={dropdownArrow} alt="" />
                   {metricName}
                   <Badge
@@ -275,10 +275,10 @@ export const MetricsView: React.FC = observer(() => {
                   >
                     {metricFrequency?.toLowerCase()}
                   </Badge>
-                </MetricsDropdownToggle>
-                <MetricsDropdownMenu>
+                </MetricsConfigurationDropdownToggle>
+                <MetricsConfigurationDropdownMenu>
                   {agencyMetrics.map((metric) => (
-                    <MetricsDropdownMenuItem
+                    <MetricsConfigurationDropdownMenuItem
                       highlight={metric.key === metricSearchParam}
                       key={metric.key}
                       onClick={() =>
@@ -301,11 +301,11 @@ export const MetricsView: React.FC = observer(() => {
                       >
                         {metric.frequency?.toLowerCase()}
                       </Badge>
-                    </MetricsDropdownMenuItem>
+                    </MetricsConfigurationDropdownMenuItem>
                   ))}
-                </MetricsDropdownMenu>
+                </MetricsConfigurationDropdownMenu>
               </Dropdown>
-            </MetricsDropdownContainer>
+            </MetricConfigurationDropdownContainer>
             <MobileDisclaimerContainer>
               <DisclaimerTitle>Note</DisclaimerTitle>
               <DisclaimerText>

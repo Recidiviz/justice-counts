@@ -22,16 +22,19 @@ import { getSettingsSearchParams } from "./utils";
 
 export const useSettingsSearchParams = (): [
   SettingsSearchParams,
-  (params: SettingsSearchParams) => void
+  (params: SettingsSearchParams, replaceHistory?: boolean) => void
 ] => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const settingsSearchParams = getSettingsSearchParams(searchParams);
   const { system, metric } = settingsSearchParams;
   const shouldReplace = !system && !metric;
-  const setSettingsSearchParams = (params: SettingsSearchParams) => {
+  const setSettingsSearchParams = (
+    params: SettingsSearchParams,
+    replaceHistory?: boolean
+  ) => {
     setSearchParams(JSON.parse(JSON.stringify(params).toLowerCase()), {
-      replace: shouldReplace,
+      replace: replaceHistory || shouldReplace,
     });
   };
 

@@ -159,11 +159,20 @@ export const ReportActionsNewIcon = styled(ReportActionsSelectIcon)`
 `;
 
 export const DropdownContainer = styled.div`
+  display: none;
   width: 100%;
   height: 56px;
   border-bottom: 1px solid ${palette.highlight.grey9};
-  display: flex;
+
   align-items: center;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    display: flex;
+  }
+
+  & > div {
+    width: 100%;
+  }
 `;
 
 export const StatusFilterDropdownToggle = styled(DropdownToggle)`
@@ -174,10 +183,12 @@ export const StatusFilterDropdownToggle = styled(DropdownToggle)`
   justify-content: start;
   gap: 12px;
   align-items: center;
+  padding-left: 0;
   ${typography.sizeCSS.medium};
 `;
 
 export const StatusFilterDropdownMenu = styled(DropdownMenu)`
+  width: 100%;
   overflow-y: scroll;
   z-index: 10;
   margin-top: 11px;

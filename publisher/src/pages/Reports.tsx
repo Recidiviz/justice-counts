@@ -390,31 +390,29 @@ const Reports: React.FC = () => {
         </TabbedBar>
 
         {/* MobileViewDropdown */}
-        {windowWidth < NEW_DESKTOP_WIDTH && (
-          <DropdownContainer>
-            <Dropdown>
-              <StatusFilterDropdownToggle kind="borderless">
-                <img src={dropdownArrow} alt="" />
-                {ReportStatusFilterOptionObject[reportsFilter]}
-              </StatusFilterDropdownToggle>
-              <StatusFilterDropdownMenu>
-                {Object.entries(ReportStatusFilterOptionObject).map(
-                  ([key, value]) => (
-                    <ExtendedDropdownMenuItem
-                      highlight={
-                        ReportStatusFilterOptionObject[reportsFilter] === value
-                      }
-                      key={key}
-                      onClick={() => setReportsFilter(normalizeString(key))}
-                    >
-                      {value}
-                    </ExtendedDropdownMenuItem>
-                  )
-                )}
-              </StatusFilterDropdownMenu>
-            </Dropdown>
-          </DropdownContainer>
-        )}
+        <DropdownContainer>
+          <Dropdown>
+            <StatusFilterDropdownToggle kind="borderless">
+              <img src={dropdownArrow} alt="" />
+              {ReportStatusFilterOptionObject[reportsFilter]}
+            </StatusFilterDropdownToggle>
+            <StatusFilterDropdownMenu>
+              {Object.entries(ReportStatusFilterOptionObject).map(
+                ([key, value]) => (
+                  <ExtendedDropdownMenuItem
+                    highlight={
+                      ReportStatusFilterOptionObject[reportsFilter] === value
+                    }
+                    key={key}
+                    onClick={() => setReportsFilter(normalizeString(key))}
+                  >
+                    {value}
+                  </ExtendedDropdownMenuItem>
+                )
+              )}
+            </StatusFilterDropdownMenu>
+          </Dropdown>
+        </DropdownContainer>
 
         {/* Labels */}
         <LabelRow>

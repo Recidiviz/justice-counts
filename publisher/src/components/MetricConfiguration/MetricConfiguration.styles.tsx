@@ -20,16 +20,12 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import { DropdownToggle } from "@recidiviz/design-system";
+import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
 import { BinaryRadioGroupWrapper } from "../Forms";
 import { ExtendedDropdownMenuItem } from "../Menu";
-import {
-  DropdownContainer,
-  StatusFilterDropdownMenu,
-  StatusFilterDropdownToggle,
-} from "../Reports";
+import { DropdownContainer } from "../Reports";
 import { MenuItem } from "../Settings";
 
 const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
@@ -56,6 +52,22 @@ export const MetricsViewContainer = styled.div`
 
   @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
     justify-content: start;
+  }
+`;
+
+export const MobileMetricsConfigurationHeader = styled.div<{
+  hasBorder?: boolean;
+}>`
+  ${typography.sizeCSS.small}
+  display: none;
+  width: 100%;
+  padding-bottom: 24px;
+  text-transform: capitalize;
+  border-bottom: ${({ hasBorder }) =>
+    hasBorder && `1px solid ${palette.solid.darkgrey}`};
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    display: block;
   }
 `;
 
@@ -226,28 +238,61 @@ export const CurrentMetricsSystem = styled.div`
   }
 `;
 
-export const MetricsDropdownContainer = styled(DropdownContainer)`
+export const MetricConfigurationDropdownContainer = styled(DropdownContainer)<{
+  hasTopBorder?: boolean;
+}>`
   margin-bottom: 24px;
+  min-height: 56px;
+  border-top: ${({ hasTopBorder }) =>
+    hasTopBorder && `1px solid ${palette.solid.darkgrey}`};
 
   & > div {
     width: 100%;
   }
 `;
 
-export const MetricsDropdownToggle = styled(StatusFilterDropdownToggle)`
+export const MetricConfigurationSystemsDropdownContainer = styled(
+  MetricConfigurationDropdownContainer
+)`
+  display: none;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    display: flex;
+  }
+`;
+
+export const MetricsConfigurationDropdownToggle = styled(DropdownToggle)`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  gap: 12px;
+  align-items: center;
+  ${typography.sizeCSS.medium};
   text-transform: capitalize;
+  padding-right: 0;
+  padding-left: 0;
 
   & > div {
     margin-left: auto;
   }
 `;
 
-export const MetricsDropdownMenu = styled(StatusFilterDropdownMenu)`
+export const MetricsConfigurationDropdownMenu = styled(DropdownMenu)`
+  overflow-y: scroll;
+  z-index: 10;
+  margin-top: 11px;
+  box-shadow: 0px 0px 1px rgba(23, 28, 43, 0.1),
+    0px 4px 8px rgba(23, 28, 43, 0.04), 0px 8px 56px rgba(23, 28, 43, 0.1);
+  border-radius: 4px;
   max-height: 452px;
   width: 100%;
 `;
 
-export const MetricsDropdownMenuItem = styled(ExtendedDropdownMenuItem)`
+export const MetricsConfigurationDropdownMenuItem = styled(
+  ExtendedDropdownMenuItem
+)`
   justify-content: space-between;
   ${typography.sizeCSS.normal};
 
@@ -262,6 +307,12 @@ export const MetricsDropdownMenuItem = styled(ExtendedDropdownMenuItem)`
       text-transform: capitalize;
     }
   }
+`;
+
+export const MetricsConfigurationSystemsDropdownMenuItem = styled(
+  MetricsConfigurationDropdownMenuItem
+)`
+  text-transform: capitalize;
 `;
 
 export const PanelRightTopButtonsContainer = styled.div`
@@ -321,7 +372,7 @@ export const MetricBoxContainer = styled.div<MetricBoxContainerProps>`
     border: 1px solid ${palette.solid.blue};
   }
 
-  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
     width: 100%;
     max-width: unset;
     flex: unset;
@@ -701,6 +752,10 @@ export const StickyHeader = styled.div`
   top: 0;
   background: ${palette.solid.white};
   margin-bottom: 29px;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    display: none;
+  }
 `;
 
 export const BackToMetrics = styled.div`
@@ -728,7 +783,7 @@ export const MetricConfigurationWrapper = styled.div`
   justify-content: space-between;
   overflow-y: hidden;
 
-  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
     flex-direction: column;
     overflow-y: scroll;
   }

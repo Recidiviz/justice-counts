@@ -31,6 +31,7 @@ import { removeAgencyFromPath } from "../../utils";
 import closeMenuBurger from "../assets/close-header-menu-icon.svg";
 import menuBurger from "../assets/menu-burger-icon.svg";
 import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
+import { useSettingsSearchParams } from "../Settings";
 import {
   ExtendedDropdownMenu,
   ExtendedDropdownMenuItem,
@@ -50,6 +51,8 @@ const Menu = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const windowWidth = useWindowWidth();
+  const [settingsSearchParams] = useSettingsSearchParams();
+  const { system: systemSearchParam } = settingsSearchParams;
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const pathWithoutAgency = removeAgencyFromPath(location.pathname);
@@ -199,7 +202,15 @@ const Menu = () => {
               <SubMenuItem
                 key={path}
                 onClick={() => {
-                  navigate(`settings/${path}`);
+                  if (path === "metric-config") {
+                    navigate(
+                      systemSearchParam
+                        ? `settings/${path}?system=${systemSearchParam}`
+                        : `settings/${path}`
+                    );
+                  } else {
+                    navigate(`settings/${path}`);
+                  }
                   handleCloseMobileMenu();
                 }}
               >
