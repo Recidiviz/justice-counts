@@ -50,7 +50,10 @@ export const DataUploadContainer = styled.div`
   }
 `;
 
-export const DataUploadHeader = styled.div<{ transparent?: boolean }>`
+export const DataUploadHeader = styled.div<{
+  transparent?: boolean;
+  isBackgroundBlue?: boolean;
+}>`
   width: 100%;
   z-index: 1;
   height: ${HEADER_BAR_HEIGHT}px;
@@ -68,7 +71,8 @@ export const DataUploadHeader = styled.div<{ transparent?: boolean }>`
     `}
 
   @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
-    background-color: ${palette.solid.blue};
+    background-color: ${({ isBackgroundBlue }) =>
+      isBackgroundBlue && palette.solid.blue};
   }
 `;
 

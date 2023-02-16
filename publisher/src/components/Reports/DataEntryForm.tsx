@@ -38,7 +38,7 @@ import {
   memoizeDebounce,
   printReportTitle,
 } from "../../utils";
-import logoImg from "../assets/jc-logo-vector.png";
+import logoImg from "../assets/jc-logo-vector-new.svg";
 import { Button, DataUploadHeader } from "../DataUpload";
 import {
   DataEntryFormTitle,
