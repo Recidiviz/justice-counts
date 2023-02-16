@@ -259,7 +259,7 @@ export const MetricsView: React.FC = observer(() => {
         <PanelContainerRight>
           <MobileDatapointsControls>
             <CurrentMetricsSystem>
-              {systemSearchParam.replaceAll("_", " ").toLowerCase()}
+              {formatSystemName(systemSearchParam)}
             </CurrentMetricsSystem>
             <MetricsDropdownContainer>
               <Dropdown>
