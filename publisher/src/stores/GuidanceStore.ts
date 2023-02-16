@@ -16,10 +16,9 @@
 // =============================================================================
 
 import { MetricConfigurationSettingsOptions } from "@justice-counts/common/types";
-import { makeAutoObservable, runInAction, when } from "mobx";
+import { makeAutoObservable, when } from "mobx";
 
 import {
-  metricConfigurationProgressSteps,
   mockTopicsStatus,
   OnboardingTopicsMetadata,
   onboardingTopicsMetadata,
@@ -48,9 +47,9 @@ class GuidanceStore {
 
   onboardingTopicsStatus: OnboardingTopicsStatus[];
 
-  metricConfigurationProgressStepsTracker: {
-    [systemMetricKey: string]: ProgressStepsTrackerType;
-  };
+  // metricConfigurationProgressStepsTracker: {
+  //   [systemMetricKey: string]: ProgressStepsTrackerType;
+  // };
 
   constructor(
     userStore: UserStore,
@@ -65,7 +64,7 @@ class GuidanceStore {
     this.isInitialized = false;
     this.onboardingTopicsMetadata = onboardingTopicsMetadata;
     this.onboardingTopicsStatus = mockTopicsStatus;
-    this.metricConfigurationProgressStepsTracker = {};
+    // this.metricConfigurationProgressStepsTracker = {};
 
     when(
       () => metricConfigStore.isInitialized,
@@ -99,15 +98,167 @@ class GuidanceStore {
 
   /** Initialize `this.metricConfigurationProgressStepsTracker` object with `false` on all categories */
   initializeMetricConfigProgressStepsTracker = () => {
-    const { metrics } = this.metricConfigStore;
-    Object.keys(metrics).forEach((systemMetricKey) => {
-      this.metricConfigurationProgressStepsTracker[systemMetricKey] = {
-        ...Object.fromEntries(
-          metricConfigurationProgressSteps.map((step) => [step, false])
-        ),
-      };
-    });
+    // const { metrics } = this.metricConfigStore;
+    // Object.keys(metrics).forEach((systemMetricKey) => {
+    //   this.metricConfigurationProgressStepsTracker[systemMetricKey] = {
+    //     ...Object.fromEntries(
+    //       metricConfigurationProgressSteps.map((step) => [step, false])
+    //     ),
+    //   };
+    // });
     this.isInitialized = true;
+  };
+
+  get metricConfigurationProgressStepsTracker(): {
+    [systemMetricKey: string]: ProgressStepsTrackerType;
+  } {
+    const result: { [systemMetricKey: string]: ProgressStepsTrackerType } = {};
+    const {
+      metrics,
+      metricDefinitionSettings,
+      dimensions,
+      dimensionDefinitionSettings,
+    } = this.metricConfigStore;
+    Object.keys(metrics).forEach((systemMetricKey) => {
+      /**
+       * Determines whether or not the Metric Availability/Frequency has been selected by a user
+       * and turns true when a user has set the metric's availability/frequency
+       */
+      if (!result[systemMetricKey]) result[systemMetricKey] = {};
+      if (
+        metrics[systemMetricKey]?.enabled !== null &&
+        metrics[systemMetricKey]?.enabled !== undefined
+      ) {
+        result[systemMetricKey][ProgressSteps.CONFIRM_METRIC_AVAILABILITY] =
+          true;
+      }
+
+      /**
+       * Determines whether or not a metric's definitions have all been set by a user and
+       * returns true when a user has set all of the metric's definitions
+       */
+      const metricDefinitionsCompleted =
+        metricDefinitionSettings[systemMetricKey] &&
+        Object.values(metricDefinitionSettings[systemMetricKey]).filter(
+          (definition) => definition.included === null
+        ).length === 0;
+
+      if (
+        (metricDefinitionsCompleted ||
+          !metricDefinitionSettings[systemMetricKey]) &&
+        metrics[systemMetricKey]?.enabled
+      ) {
+        result[systemMetricKey][ProgressSteps.CONFIRM_METRIC_DEFINITIONS] =
+          true;
+      }
+
+      /**
+       * Determines whether or not the metric's dimensions' availability in each metric disaggregation have all
+       * been set by a user and returns `true` when a user has set them all
+       */
+      const disaggregationValues =
+        dimensions[systemMetricKey] &&
+        Object.values(dimensions[systemMetricKey]);
+      const nullDimensions = [];
+
+      disaggregationValues?.forEach((disaggregation) => {
+        Object.values(disaggregation).forEach((dimension) => {
+          if (dimension.enabled === null) nullDimensions.push(dimension);
+        });
+      });
+
+      if (nullDimensions.length === 0 && metrics[systemMetricKey]?.enabled) {
+        result[systemMetricKey][ProgressSteps.CONFIRM_BREAKDOWN_AVAILABILITY] =
+          true;
+      }
+
+      /**
+       * Determines whether or not the metric's dimensions' definitions in each metric disaggregation have all
+       * been set by a user and returns `true` when a user has set them all
+       */
+
+      /** Disabled dimensions do not count towards progress and will be ignored */
+      const disabledDimensionKeys: string[] = [];
+
+      /** Search for disabled dimensions */
+      disaggregationValues?.forEach((disaggregation) => {
+        Object.values(disaggregation).forEach((dimension) => {
+          if (dimension.enabled === false && dimension.key)
+            disabledDimensionKeys.push(dimension.key);
+        });
+      });
+
+      const dimensionDefinitionSettingsDisaggregationKeys =
+        dimensionDefinitionSettings[systemMetricKey] &&
+        Object.keys(dimensionDefinitionSettings[systemMetricKey]);
+      const dimensionDefinitionSettingsValues: {
+        included?: MetricConfigurationSettingsOptions | null;
+        default?: MetricConfigurationSettingsOptions;
+        label?: string;
+      }[] = [];
+
+      /** Flat list of all dimensions' definition settings excluding the disabled dimensions */
+      dimensionDefinitionSettingsDisaggregationKeys?.forEach(
+        (disaggregationKey) => {
+          Object.entries(
+            dimensionDefinitionSettings[systemMetricKey][disaggregationKey]
+          ).forEach(([dimensionKey, dimension]) => {
+            if (disabledDimensionKeys.includes(dimensionKey)) return;
+            dimensionDefinitionSettingsValues.push(
+              ...Object.values(dimension!)
+            );
+          });
+        }
+      );
+
+      const nullDimensionDefinitionSettings =
+        dimensionDefinitionSettingsValues.filter(
+          (setting) => setting.included === null
+        );
+
+      if (
+        nullDimensionDefinitionSettings.length === 0 &&
+        dimensionDefinitionSettingsValues.length !== 0 &&
+        metrics[systemMetricKey]?.enabled
+      ) {
+        result[systemMetricKey][ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS] =
+          true;
+      } else {
+        result[systemMetricKey][ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS] =
+          false;
+      }
+    });
+
+    return result;
+  }
+
+  getMetricAvailabilityFrequencyProgress = (systemMetricKey: string) => {
+    return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
+      ProgressSteps.CONFIRM_METRIC_AVAILABILITY
+    ];
+  };
+
+  getMetricDefinitionProgress = (systemMetricKey: string) => {
+    return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
+      ProgressSteps.CONFIRM_METRIC_DEFINITIONS
+    ];
+  };
+
+  getBreakdownProgress = (systemMetricKey: string) => {
+    return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
+      ProgressSteps.CONFIRM_BREAKDOWN_AVAILABILITY
+    ];
+  };
+
+  getBreakdownDefinitionProgress = (systemMetricKey: string) => {
+    return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
+      ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
+    ];
+  };
+
+  /** Computes progress on all 4 categories and returns the overall progress tracker object */
+  getOverallMetricProgress = (systemMetricKey: string) => {
+    return this.metricConfigurationProgressStepsTracker[systemMetricKey];
   };
 
   /**
@@ -137,165 +288,165 @@ class GuidanceStore {
    * Determines whether or not the Metric Availability/Frequency has been selected by a user
    * and turns true when a user has set the metric's availability/frequency
    */
-  getMetricAvailabilityFrequencyProgress = (systemMetricKey: string) => {
-    const { metrics } = this.metricConfigStore;
+  // getMetricAvailabilityFrequencyProgress = (systemMetricKey: string) => {
+  //   const { metrics } = this.metricConfigStore;
 
-    /** Confirm the metric’s availability/frequency */
-    if (
-      metrics[systemMetricKey]?.enabled !== null &&
-      metrics[systemMetricKey]?.enabled !== undefined
-    ) {
-      runInAction(() => {
-        this.metricConfigurationProgressStepsTracker[systemMetricKey][
-          ProgressSteps.CONFIRM_METRIC_AVAILABILITY
-        ] = true;
-      });
-    }
+  //   /** Confirm the metric’s availability/frequency */
+  //   if (
+  //     metrics[systemMetricKey]?.enabled !== null &&
+  //     metrics[systemMetricKey]?.enabled !== undefined
+  //   ) {
+  //     runInAction(() => {
+  //       this.metricConfigurationProgressStepsTracker[systemMetricKey][
+  //         ProgressSteps.CONFIRM_METRIC_AVAILABILITY
+  //       ] = true;
+  //     });
+  //   }
 
-    return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
-      ProgressSteps.CONFIRM_METRIC_AVAILABILITY
-    ];
-  };
+  //   return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
+  //     ProgressSteps.CONFIRM_METRIC_AVAILABILITY
+  //   ];
+  // };
 
-  /**
-   * Determines whether or not a metric's definitions have all been set by a user and
-   * returns true when a user has set all of the metric's definitions
-   */
-  getMetricDefinitionProgress = (systemMetricKey: string) => {
-    const { metrics, metricDefinitionSettings } = this.metricConfigStore;
+  // /**
+  //  * Determines whether or not a metric's definitions have all been set by a user and
+  //  * returns true when a user has set all of the metric's definitions
+  //  */
+  // getMetricDefinitionProgress = (systemMetricKey: string) => {
+  //   const { metrics, metricDefinitionSettings } = this.metricConfigStore;
 
-    const metricDefinitionsCompleted =
-      metricDefinitionSettings[systemMetricKey] &&
-      Object.values(metricDefinitionSettings[systemMetricKey]).filter(
-        (definition) => definition.included === null
-      ).length === 0;
+  //   const metricDefinitionsCompleted =
+  //     metricDefinitionSettings[systemMetricKey] &&
+  //     Object.values(metricDefinitionSettings[systemMetricKey]).filter(
+  //       (definition) => definition.included === null
+  //     ).length === 0;
 
-    if (
-      (metricDefinitionsCompleted ||
-        !metricDefinitionSettings[systemMetricKey]) &&
-      metrics[systemMetricKey]?.enabled
-    ) {
-      runInAction(() => {
-        this.metricConfigurationProgressStepsTracker[systemMetricKey][
-          ProgressSteps.CONFIRM_METRIC_DEFINITIONS
-        ] = true;
-      });
-    }
+  //   if (
+  //     (metricDefinitionsCompleted ||
+  //       !metricDefinitionSettings[systemMetricKey]) &&
+  //     metrics[systemMetricKey]?.enabled
+  //   ) {
+  //     runInAction(() => {
+  //       this.metricConfigurationProgressStepsTracker[systemMetricKey][
+  //         ProgressSteps.CONFIRM_METRIC_DEFINITIONS
+  //       ] = true;
+  //     });
+  //   }
 
-    return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
-      ProgressSteps.CONFIRM_METRIC_DEFINITIONS
-    ];
-  };
+  //   return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
+  //     ProgressSteps.CONFIRM_METRIC_DEFINITIONS
+  //   ];
+  // };
 
-  /**
-   * Determines whether or not the metric's dimensions' availability in each metric disaggregation have all
-   * been set by a user and returns `true` when a user has set them all
-   */
-  getBreakdownProgress = (systemMetricKey: string) => {
-    const { metrics, dimensions } = this.metricConfigStore;
+  // /**
+  //  * Determines whether or not the metric's dimensions' availability in each metric disaggregation have all
+  //  * been set by a user and returns `true` when a user has set them all
+  //  */
+  // getBreakdownProgress = (systemMetricKey: string) => {
+  //   const { metrics, dimensions } = this.metricConfigStore;
 
-    const disaggregationValues =
-      dimensions[systemMetricKey] && Object.values(dimensions[systemMetricKey]);
-    const nullDimensions = [];
+  //   const disaggregationValues =
+  //     dimensions[systemMetricKey] && Object.values(dimensions[systemMetricKey]);
+  //   const nullDimensions = [];
 
-    disaggregationValues?.forEach((disaggregation) => {
-      Object.values(disaggregation).forEach((dimension) => {
-        if (dimension.enabled === null) nullDimensions.push(dimension);
-      });
-    });
+  //   disaggregationValues?.forEach((disaggregation) => {
+  //     Object.values(disaggregation).forEach((dimension) => {
+  //       if (dimension.enabled === null) nullDimensions.push(dimension);
+  //     });
+  //   });
 
-    if (nullDimensions.length === 0 && metrics[systemMetricKey]?.enabled) {
-      runInAction(() => {
-        this.metricConfigurationProgressStepsTracker[systemMetricKey][
-          ProgressSteps.CONFIRM_BREAKDOWN_AVAILABILITY
-        ] = true;
-      });
-    }
+  //   if (nullDimensions.length === 0 && metrics[systemMetricKey]?.enabled) {
+  //     runInAction(() => {
+  //       this.metricConfigurationProgressStepsTracker[systemMetricKey][
+  //         ProgressSteps.CONFIRM_BREAKDOWN_AVAILABILITY
+  //       ] = true;
+  //     });
+  //   }
 
-    return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
-      ProgressSteps.CONFIRM_BREAKDOWN_AVAILABILITY
-    ];
-  };
+  //   return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
+  //     ProgressSteps.CONFIRM_BREAKDOWN_AVAILABILITY
+  //   ];
+  // };
 
-  /**
-   * Determines whether or not the metric's dimensions' definitions in each metric disaggregation have all
-   * been set by a user and returns `true` when a user has set them all
-   */
-  getBreakdownDefinitionProgress = (systemMetricKey: string) => {
-    const { metrics, dimensionDefinitionSettings, dimensions } =
-      this.metricConfigStore;
+  // /**
+  //  * Determines whether or not the metric's dimensions' definitions in each metric disaggregation have all
+  //  * been set by a user and returns `true` when a user has set them all
+  //  */
+  // getBreakdownDefinitionProgress = (systemMetricKey: string) => {
+  //   const { metrics, dimensionDefinitionSettings, dimensions } =
+  //     this.metricConfigStore;
 
-    const disaggregationValues =
-      dimensions[systemMetricKey] && Object.values(dimensions[systemMetricKey]);
-    /** Disabled dimensions do not count towards progress and will be ignored */
-    const disabledDimensionKeys: string[] = [];
+  //   const disaggregationValues =
+  //     dimensions[systemMetricKey] && Object.values(dimensions[systemMetricKey]);
+  //   /** Disabled dimensions do not count towards progress and will be ignored */
+  //   const disabledDimensionKeys: string[] = [];
 
-    /** Search for disabled dimensions */
-    disaggregationValues?.forEach((disaggregation) => {
-      Object.values(disaggregation).forEach((dimension) => {
-        if (dimension.enabled === false && dimension.key)
-          disabledDimensionKeys.push(dimension.key);
-      });
-    });
+  //   /** Search for disabled dimensions */
+  //   disaggregationValues?.forEach((disaggregation) => {
+  //     Object.values(disaggregation).forEach((dimension) => {
+  //       if (dimension.enabled === false && dimension.key)
+  //         disabledDimensionKeys.push(dimension.key);
+  //     });
+  //   });
 
-    const dimensionDefinitionSettingsDisaggregationKeys =
-      dimensionDefinitionSettings[systemMetricKey] &&
-      Object.keys(dimensionDefinitionSettings[systemMetricKey]);
-    const dimensionDefinitionSettingsValues: {
-      included?: MetricConfigurationSettingsOptions | null;
-      default?: MetricConfigurationSettingsOptions;
-      label?: string;
-    }[] = [];
+  //   const dimensionDefinitionSettingsDisaggregationKeys =
+  //     dimensionDefinitionSettings[systemMetricKey] &&
+  //     Object.keys(dimensionDefinitionSettings[systemMetricKey]);
+  //   const dimensionDefinitionSettingsValues: {
+  //     included?: MetricConfigurationSettingsOptions | null;
+  //     default?: MetricConfigurationSettingsOptions;
+  //     label?: string;
+  //   }[] = [];
 
-    /** Flat list of all dimensions' definition settings excluding the disabled dimensions */
-    dimensionDefinitionSettingsDisaggregationKeys?.forEach(
-      (disaggregationKey) => {
-        Object.entries(
-          dimensionDefinitionSettings[systemMetricKey][disaggregationKey]
-        ).forEach(([dimensionKey, dimension]) => {
-          if (disabledDimensionKeys.includes(dimensionKey)) return;
-          dimensionDefinitionSettingsValues.push(...Object.values(dimension));
-        });
-      }
-    );
+  //   /** Flat list of all dimensions' definition settings excluding the disabled dimensions */
+  //   dimensionDefinitionSettingsDisaggregationKeys?.forEach(
+  //     (disaggregationKey) => {
+  //       Object.entries(
+  //         dimensionDefinitionSettings[systemMetricKey][disaggregationKey]
+  //       ).forEach(([dimensionKey, dimension]) => {
+  //         if (disabledDimensionKeys.includes(dimensionKey)) return;
+  //         dimensionDefinitionSettingsValues.push(...Object.values(dimension));
+  //       });
+  //     }
+  //   );
 
-    const nullDimensionDefinitionSettings =
-      dimensionDefinitionSettingsValues.filter(
-        (setting) => setting.included === null
-      );
+  //   const nullDimensionDefinitionSettings =
+  //     dimensionDefinitionSettingsValues.filter(
+  //       (setting) => setting.included === null
+  //     );
 
-    if (
-      nullDimensionDefinitionSettings.length === 0 &&
-      dimensionDefinitionSettingsValues.length !== 0 &&
-      metrics[systemMetricKey]?.enabled
-    ) {
-      runInAction(() => {
-        this.metricConfigurationProgressStepsTracker[systemMetricKey][
-          ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
-        ] = true;
-      });
-    } else if (this.metricConfigurationProgressStepsTracker[systemMetricKey]) {
-      runInAction(() => {
-        this.metricConfigurationProgressStepsTracker[systemMetricKey][
-          ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
-        ] = false;
-      });
-    }
+  //   if (
+  //     nullDimensionDefinitionSettings.length === 0 &&
+  //     dimensionDefinitionSettingsValues.length !== 0 &&
+  //     metrics[systemMetricKey]?.enabled
+  //   ) {
+  //     runInAction(() => {
+  //       this.metricConfigurationProgressStepsTracker[systemMetricKey][
+  //         ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
+  //       ] = true;
+  //     });
+  //   } else if (this.metricConfigurationProgressStepsTracker[systemMetricKey]) {
+  //     runInAction(() => {
+  //       this.metricConfigurationProgressStepsTracker[systemMetricKey][
+  //         ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
+  //       ] = false;
+  //     });
+  //   }
 
-    return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
-      ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
-    ];
-  };
+  //   return this.metricConfigurationProgressStepsTracker[systemMetricKey]?.[
+  //     ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
+  //   ];
+  // };
 
-  /** Computes progress on all 4 categories and returns the overall progress tracker object */
-  getOverallMetricProgress = (systemMetricKey: string) => {
-    this.getMetricAvailabilityFrequencyProgress(systemMetricKey);
-    this.getMetricDefinitionProgress(systemMetricKey);
-    this.getBreakdownProgress(systemMetricKey);
-    this.getBreakdownDefinitionProgress(systemMetricKey);
+  // /** Computes progress on all 4 categories and returns the overall progress tracker object */
+  // getOverallMetricProgress = (systemMetricKey: string) => {
+  //   this.getMetricAvailabilityFrequencyProgress(systemMetricKey);
+  //   this.getMetricDefinitionProgress(systemMetricKey);
+  //   this.getBreakdownProgress(systemMetricKey);
+  //   this.getBreakdownDefinitionProgress(systemMetricKey);
 
-    return this.metricConfigurationProgressStepsTracker[systemMetricKey];
-  };
+  //   return this.metricConfigurationProgressStepsTracker[systemMetricKey];
+  // };
 
   /**
    * Returns the total progress weight for all 4 categories (0 - 4)
