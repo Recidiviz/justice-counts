@@ -357,17 +357,19 @@ export const MetricsView: React.FC = observer(() => {
             metricFrequency={metricFrequency}
             dataView={dataView}
           />
-          <PanelRightTopButton
-            onClick={() => {
-              navigate({
-                pathname: "../settings/metric-config",
-                search: `?${createSearchParams(settingsSearchParams)}`,
-              });
-            }}
-          >
-            <GoToMetricConfig />
-            Go to Metric Configuration
-          </PanelRightTopButton>
+          {windowWidth <= NEW_DESKTOP_WIDTH && (
+            <PanelRightTopButton
+              onClick={() => {
+                navigate({
+                  pathname: "../settings/metric-config",
+                  search: `?${createSearchParams(settingsSearchParams)}`,
+                });
+              }}
+            >
+              <GoToMetricConfig />
+              Go to Metric Configuration
+            </PanelRightTopButton>
+          )}
         </PanelContainerRight>
       </MetricsViewControlPanelOverflowHidden>
     </MetricsViewContainer>
