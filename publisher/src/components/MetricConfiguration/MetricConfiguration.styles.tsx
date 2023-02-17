@@ -269,9 +269,17 @@ export const MetricsConfigurationDropdownToggle = styled(DropdownToggle)`
   text-transform: capitalize;
   padding-right: 0;
   padding-left: 0;
+  color: ${palette.solid.darkgrey};
 
   & > div {
     margin-left: auto;
+  }
+
+  &:active,
+  &:hover,
+  &:focus,
+  &[aria-expanded="true"] {
+    color: ${palette.solid.darkgrey};
   }
 `;
 

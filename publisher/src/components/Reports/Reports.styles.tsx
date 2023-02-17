@@ -184,7 +184,15 @@ export const StatusFilterDropdownToggle = styled(DropdownToggle)`
   gap: 12px;
   align-items: center;
   padding-left: 0;
+  color: ${palette.solid.darkgrey};
   ${typography.sizeCSS.medium};
+
+  &:active,
+  &:hover,
+  &:focus,
+  &[aria-expanded="true"] {
+    color: ${palette.solid.darkgrey};
+  }
 `;
 
 export const StatusFilterDropdownMenu = styled(DropdownMenu)`
