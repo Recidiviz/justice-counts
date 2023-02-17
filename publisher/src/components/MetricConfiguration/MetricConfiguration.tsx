@@ -19,7 +19,9 @@ import {
   Badge,
   reportFrequencyBadgeColors,
 } from "@justice-counts/common/components/Badge";
+import { NEW_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
+import useWindowWidth from "@justice-counts/common/hooks/useWIndowWidth";
 import {
   AgencySystems,
   ReportFrequency,
@@ -33,20 +35,22 @@ import { useParams } from "react-router-dom";
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import dropdownArrow from "../assets/dropdown-arrow.svg";
+import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import { ContainedLoader } from "../Loading";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   Configuration,
+  Metric,
   MetricBox,
   MetricBoxBottomPaddingContainer,
   MetricBoxContainerWrapper,
   MetricConfigurationDisplay,
   MetricConfigurationDropdownContainer,
-  MetricConfigurationSystemsDropdownContainer,
   MetricConfigurationWrapper,
   MetricDefinitions,
   MetricDetailsDisplay,
+  MetricName,
   MetricsConfigurationDropdownMenu,
   MetricsConfigurationDropdownMenuItem,
   MetricsConfigurationDropdownToggle,
@@ -66,6 +70,7 @@ export const MetricConfiguration: React.FC = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
   const { metrics, initializeMetricConfigStoreValues, getMetricsBySystem } =
     metricConfigStore;
+  const windowWidth = useWindowWidth();
 
   const { system: systemSearchParam, metric: metricSearchParam } =
     settingsSearchParams;
@@ -206,7 +211,7 @@ export const MetricConfiguration: React.FC = observer(() => {
             </StickyHeader>
 
             {/* Systems Dropdown (for multi-system agencies)  */}
-            <MetricConfigurationSystemsDropdownContainer>
+            <MetricConfigurationDropdownContainer hasBottomMargin>
               <Dropdown>
                 <MetricsConfigurationDropdownToggle kind="borderless">
                   <img src={dropdownArrow} alt="" />
@@ -235,7 +240,7 @@ export const MetricConfiguration: React.FC = observer(() => {
                     })}
                 </MetricsConfigurationDropdownMenu>
               </Dropdown>
-            </MetricConfigurationSystemsDropdownContainer>
+            </MetricConfigurationDropdownContainer>
           </>
         )}
 
@@ -307,15 +312,13 @@ export const MetricConfiguration: React.FC = observer(() => {
                           <Badge
                             color={
                               reportFrequencyBadgeColors[
-                                metric.customFrequency
-                                  ? metric.customFrequency
-                                  : (metric.defaultFrequency as ReportFrequency)
+                                metric.customFrequency ||
+                                  (metric.defaultFrequency as ReportFrequency)
                               ]
                             }
                           >
-                            {metric.customFrequency
-                              ? metric.customFrequency?.toLowerCase()
-                              : metric.defaultFrequency?.toLowerCase()}
+                            {metric.customFrequency?.toLowerCase() ||
+                              metric.defaultFrequency?.toLowerCase()}
                           </Badge>
                         </MetricsConfigurationDropdownMenuItem>
                       )
@@ -323,25 +326,33 @@ export const MetricConfiguration: React.FC = observer(() => {
                   </MetricsConfigurationDropdownMenu>
                 </Dropdown>
               </MetricConfigurationDropdownContainer>
+
+              {windowWidth <= NEW_DESKTOP_WIDTH && !activeDimensionKey && (
+                <MetricDefinitions
+                  activeDimensionKey={activeDimensionKey}
+                  activeDisaggregationKey={activeDisaggregationKey}
+                />
+              )}
+
               <MetricConfigurationDisplay>
-                {/* <Metric */}
-                {/*  onClick={() => setActiveDimensionKey(undefined)} */}
-                {/*  inView={!activeDimensionKey} */}
-                {/* > */}
-                {/*  <MetricName isTitle> */}
-                {/*    {metrics[systemMetricKey]?.label} */}
-                {/*  </MetricName> */}
-                {/*  <Badge color="GREEN" noMargin> */}
-                {/*    {metrics[systemMetricKey]?.customFrequency */}
-                {/*      ? metrics[ */}
-                {/*          systemMetricKey */}
-                {/*        ]?.customFrequency?.toLocaleLowerCase() */}
-                {/*      : metrics[ */}
-                {/*          systemMetricKey */}
-                {/*        ]?.defaultFrequency?.toLowerCase()} */}
-                {/*  </Badge> */}
-                {/*  <RightArrowIcon /> */}
-                {/* </Metric> */}
+                <Metric
+                  onClick={() => setActiveDimensionKey(undefined)}
+                  inView={!activeDimensionKey}
+                >
+                  <MetricName isTitle>
+                    {metrics[systemMetricKey]?.label}
+                  </MetricName>
+                  <Badge color="GREEN" noMargin>
+                    {metrics[systemMetricKey]?.customFrequency
+                      ? metrics[
+                          systemMetricKey
+                        ]?.customFrequency?.toLocaleLowerCase()
+                      : metrics[
+                          systemMetricKey
+                        ]?.defaultFrequency?.toLowerCase()}
+                  </Badge>
+                  <RightArrowIcon />
+                </Metric>
 
                 <MetricDetailsDisplay>
                   <Configuration
@@ -356,15 +367,16 @@ export const MetricConfiguration: React.FC = observer(() => {
 
               {/* Metric/Dimension Definitions (Includes/Excludes) & Context */}
               {/* Race/Ethnicities (when active disaggregation is Race / Ethnicities) */}
-              {activeDisaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY &&
-              activeDimensionKey ? (
-                <RaceEthnicitiesForm />
-              ) : (
-                <MetricDefinitions
-                  activeDimensionKey={activeDimensionKey}
-                  activeDisaggregationKey={activeDisaggregationKey}
-                />
-              )}
+              {windowWidth > NEW_DESKTOP_WIDTH &&
+                (activeDisaggregationKey ===
+                  RACE_ETHNICITY_DISAGGREGATION_KEY && activeDimensionKey ? (
+                  <RaceEthnicitiesForm />
+                ) : (
+                  <MetricDefinitions
+                    activeDimensionKey={activeDimensionKey}
+                    activeDisaggregationKey={activeDisaggregationKey}
+                  />
+                ))}
             </MetricConfigurationWrapper>
           )}
         </MetricsViewControlPanel>

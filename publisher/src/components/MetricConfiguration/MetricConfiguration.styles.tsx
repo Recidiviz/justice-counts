@@ -25,7 +25,7 @@ import styled from "styled-components/macro";
 
 import { BinaryRadioGroupWrapper } from "../Forms";
 import { ExtendedDropdownMenuItem } from "../Menu";
-import { DropdownContainer } from "../Reports";
+import { DropdownContainer, TabbedBar } from "../Reports";
 import { MenuItem } from "../Settings";
 
 const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
@@ -240,8 +240,10 @@ export const CurrentMetricsSystem = styled.div`
 
 export const MetricConfigurationDropdownContainer = styled(DropdownContainer)<{
   hasTopBorder?: boolean;
+  hasBottomMargin?: boolean;
 }>`
-  margin-bottom: 24px;
+  display: none;
+  margin-bottom: ${({ hasBottomMargin }) => hasBottomMargin && "24px"};
   min-height: 56px;
   border-top: ${({ hasTopBorder }) =>
     hasTopBorder && `1px solid ${palette.solid.darkgrey}`};
@@ -249,12 +251,6 @@ export const MetricConfigurationDropdownContainer = styled(DropdownContainer)<{
   & > div {
     width: 100%;
   }
-`;
-
-export const MetricConfigurationSystemsDropdownContainer = styled(
-  MetricConfigurationDropdownContainer
-)`
-  display: none;
 
   @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
     display: flex;
@@ -290,11 +286,24 @@ export const MetricsConfigurationDropdownMenu = styled(DropdownMenu)`
   width: 100%;
 `;
 
+export const StartingMonthDropdownMenu = styled(
+  MetricsConfigurationDropdownMenu
+)`
+  min-width: 264px;
+  margin-top: 4px;
+  min-height: 558px;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    margin-top: 0;
+  }
+`;
+
 export const MetricsConfigurationDropdownMenuItem = styled(
   ExtendedDropdownMenuItem
 )`
   justify-content: space-between;
   ${typography.sizeCSS.normal};
+  text-transform: capitalize;
 
   & > div {
     display: flex;
@@ -419,6 +428,10 @@ export const Metric = styled.div<{ inView: boolean }>`
     right: 13px;
     opacity: 1;
   }
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    display: none;
+  }
 `;
 
 type MetricNameProps = { isTitle?: boolean };
@@ -478,8 +491,22 @@ export const Subheader = styled.div`
   margin-bottom: 9px;
 `;
 
+export const BreakdownsTabbedBar = styled(TabbedBar)`
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    display: none;
+  }
+`;
+
 export const RadioButtonGroupWrapper = styled(BinaryRadioGroupWrapper)`
   display: flex;
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    flex-direction: column;
+
+    & > div {
+      width: 100%;
+    }
+  }
 `;
 
 export const TogglableSection = styled.div<{ enabled?: boolean }>`
@@ -799,7 +826,7 @@ export const DefinitionsDisplayContainer = styled.div`
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
     border-top: 1px solid ${palette.highlight.grey3};
-    padding: 30px 0 50px 0;
+    padding: 30px 0 0 0;
     overflow-y: unset;
     margin-right: 12px;
   }

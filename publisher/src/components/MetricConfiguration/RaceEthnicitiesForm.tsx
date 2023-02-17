@@ -33,6 +33,7 @@ import {
   RaceEthnicitiesDisplay,
   RaceEthnicitiesTitle,
   raceEthnicityGridStates,
+  RaceEthnicityRadioButtonGroupWrapper,
   RaceSelection,
   RadioButtonGroupWrapper,
   sortRaces,
@@ -256,7 +257,7 @@ export const RaceEthnicitiesForm = observer(() => {
                 <Race key={race}>
                   <RaceDisplayName>{race}</RaceDisplayName>
                   <RaceSelection>
-                    <RadioButtonGroupWrapper>
+                    <RaceEthnicityRadioButtonGroupWrapper>
                       <BinaryRadioButton
                         type="radio"
                         id={`${race}-no`}
@@ -279,7 +280,7 @@ export const RaceEthnicitiesForm = observer(() => {
                         buttonSize="small"
                         onChange={() => handleUpdateRaceDimensions(race, true)}
                       />
-                    </RadioButtonGroupWrapper>
+                    </RaceEthnicityRadioButtonGroupWrapper>
                   </RaceSelection>
                 </Race>
               );

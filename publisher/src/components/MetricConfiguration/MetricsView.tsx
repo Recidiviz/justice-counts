@@ -261,7 +261,7 @@ export const MetricsView: React.FC = observer(() => {
             <CurrentMetricsSystem>
               {formatSystemName(systemSearchParam)}
             </CurrentMetricsSystem>
-            <MetricConfigurationDropdownContainer>
+            <MetricConfigurationDropdownContainer hasBottomMargin>
               <Dropdown>
                 <MetricsConfigurationDropdownToggle kind="borderless">
                   <img src={dropdownArrow} alt="" />

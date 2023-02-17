@@ -16,6 +16,8 @@
 // =============================================================================
 
 import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
+import { NEW_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import useWindowWidth from "@justice-counts/common/hooks/useWIndowWidth";
 import {
   SupervisionSubsystems,
   SupervisionSystem,
@@ -30,18 +32,22 @@ import { useStore } from "../../stores";
 import { monthsByName, removeSnakeCase } from "../../utils";
 import { ReactComponent as CalendarIconDark } from "../assets/calendar-icon-dark.svg";
 import { ReactComponent as CalendarIconLight } from "../assets/calendar-icon-light.svg";
+import dropdownArrow from "../assets/dropdown-arrow.svg";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import { BinaryRadioButton } from "../Forms";
 import { REPORT_VERB_LOWERCASE } from "../Global/constants";
-import { ExtendedDropdownMenu, ExtendedDropdownMenuItem } from "../Menu";
-import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
+import { ExtendedDropdownMenuItem } from "../Menu";
+import { TabbedItem, TabbedOptions } from "../Reports";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   BlueCheckIcon,
   BlueLinkSpan,
   BreakdownHeader,
+  BreakdownsTabbedBar,
+  CalloutBox,
   Checkbox,
   CheckboxWrapper,
+  Description,
   Dimension,
   DimensionTitle,
   DimensionTitleWrapper,
@@ -50,12 +56,19 @@ import {
   DropdownButton,
   Header,
   MetricConfigurationContainer,
+  MetricConfigurationDropdownContainer,
+  MetricDefinitions,
   MetricOnOffWrapper,
+  MetricsConfigurationDropdownMenu,
+  MetricsConfigurationDropdownMenuItem,
+  MetricsConfigurationDropdownToggle,
   PromptWrapper,
   RACE_ETHNICITY_DISAGGREGATION_KEY,
+  RaceEthnicitiesForm,
   RaceEthnicitiesGrid,
   RadioButtonGroupWrapper,
   ReportFrequencyUpdate,
+  StartingMonthDropdownMenu,
   Subheader,
   TogglableSection,
 } from ".";
@@ -96,6 +109,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       saveMetricSettings,
       initializeMetricConfigStoreValues,
     } = metricConfigStore;
+    const windowWidth = useWindowWidth();
 
     const { system: systemSearchParam, metric: metricSearchParam } =
       settingsSearchParams;
@@ -139,8 +153,9 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
 
     useEffect(
       () => {
-        if (activeDisaggregationKeys)
+        if (activeDisaggregationKeys) {
           setActiveDisaggregationKey(activeDisaggregationKeys[0]);
+        }
         setActiveDimensionKey(undefined);
       },
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -333,7 +348,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                         monthsByName[startingMonth - 1]) ||
                         `Other...`}
                     </DropdownButton>
-                    <ExtendedDropdownMenu alignment="right">
+                    <StartingMonthDropdownMenu alignment="right">
                       {monthsByName
                         .filter((month) => !["January", "July"].includes(month))
                         .map((month) => {
@@ -353,7 +368,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                             </ExtendedDropdownMenuItem>
                           );
                         })}
-                    </ExtendedDropdownMenu>
+                    </StartingMonthDropdownMenu>
                   </Dropdown>
                 </RadioButtonGroupWrapper>
               </>
@@ -410,142 +425,249 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
         </MetricOnOffWrapper>
 
         {/* Breakdowns */}
-        {activeDisaggregationKey && activeDisaggregationKeys?.length > 0 && (
-          <TogglableSection enabled={metricEnabled}>
-            <BreakdownHeader>Breakdowns</BreakdownHeader>
-            <Subheader>
-              Mark (using the checkmark) each of the breakdowns below that your
-              agency will be able to {REPORT_VERB_LOWERCASE}. Click the arrow to
-              edit the definition for each breakdown.
-            </Subheader>
+        {activeDisaggregationKey &&
+          activeDisaggregationKeys &&
+          activeDisaggregationKeys?.length > 0 && (
+            <TogglableSection enabled={metricEnabled}>
+              <BreakdownHeader>Breakdowns</BreakdownHeader>
+              <Subheader>
+                Mark (using the checkmark) each of the breakdowns below that
+                your agency will be able to {REPORT_VERB_LOWERCASE}. Click the
+                arrow to edit the definition for each breakdown.
+              </Subheader>
 
-            {/* Disaggregations (Enable/Disable) */}
-            <TabbedBar noPadding>
-              <TabbedOptions>
-                {activeDisaggregationKeys?.map((disaggregationKey) => {
-                  const currentDisaggregation =
-                    disaggregations[systemMetricKey][disaggregationKey];
+              {/* Disaggregations (Enable/Disable) */}
+              <BreakdownsTabbedBar noPadding>
+                <TabbedOptions>
+                  {activeDisaggregationKeys?.map((disaggregationKey) => {
+                    const currentDisaggregation =
+                      disaggregations[systemMetricKey][disaggregationKey];
 
-                  return (
-                    <TabbedItem
-                      key={disaggregationKey}
-                      onClick={() => {
-                        setActiveDisaggregationKey(disaggregationKey);
+                    return (
+                      <TabbedItem
+                        key={disaggregationKey}
+                        onClick={() => {
+                          setActiveDisaggregationKey(disaggregationKey);
 
-                        /** Open first dimension when disaggregation tab is clicked */
-                        const [firstDimensionKey] = Object.keys(
-                          dimensions[systemMetricKey][disaggregationKey]
-                        );
-                        setActiveDimensionKey(firstDimensionKey);
-                      }}
-                      selected={disaggregationKey === activeDisaggregationKey}
-                      capitalize
-                    >
-                      <DisaggregationTab>
-                        <span>
-                          {removeSnakeCase(
-                            (
-                              currentDisaggregation.display_name as string
-                            ).toLowerCase()
-                          )}
-                        </span>
+                          /** Open first dimension when disaggregation tab is clicked */
+                          const [firstDimensionKey] = Object.keys(
+                            dimensions[systemMetricKey][disaggregationKey]
+                          );
+                          setActiveDimensionKey(firstDimensionKey);
+                        }}
+                        selected={disaggregationKey === activeDisaggregationKey}
+                        capitalize
+                      >
+                        <DisaggregationTab>
+                          <span>
+                            {removeSnakeCase(
+                              (
+                                currentDisaggregation.display_name as string
+                              ).toLowerCase()
+                            )}
+                          </span>
 
-                        <CheckboxWrapper>
+                          <CheckboxWrapper>
+                            <Checkbox
+                              type="checkbox"
+                              checked={currentDisaggregation.enabled}
+                              onChange={() =>
+                                handleUpdateDisaggregationEnabledStatus(
+                                  disaggregationKey,
+                                  !currentDisaggregation.enabled
+                                )
+                              }
+                            />
+                            <BlueCheckIcon
+                              src={blueCheck}
+                              alt=""
+                              enabled={currentDisaggregation.enabled}
+                            />
+                          </CheckboxWrapper>
+                        </DisaggregationTab>
+                      </TabbedItem>
+                    );
+                  })}
+                </TabbedOptions>
+              </BreakdownsTabbedBar>
+
+              {activeDisaggregationKey &&
+                disaggregations[systemMetricKey][activeDisaggregationKey] && (
+                  <MetricConfigurationDropdownContainer hasTopBorder>
+                    <Dropdown>
+                      <MetricsConfigurationDropdownToggle kind="borderless">
+                        <img src={dropdownArrow} alt="" />
+                        {removeSnakeCase(
+                          (
+                            disaggregations[systemMetricKey][
+                              activeDisaggregationKey
+                            ].display_name as string
+                          ).toLowerCase()
+                        )}
+
+                        <CheckboxWrapper onClick={(e) => e.stopPropagation()}>
                           <Checkbox
                             type="checkbox"
-                            checked={currentDisaggregation.enabled}
+                            checked={
+                              disaggregations[systemMetricKey][
+                                activeDisaggregationKey
+                              ].enabled || false
+                            }
                             onChange={() =>
                               handleUpdateDisaggregationEnabledStatus(
-                                disaggregationKey,
-                                !currentDisaggregation.enabled
+                                activeDisaggregationKey,
+                                !disaggregations[systemMetricKey][
+                                  activeDisaggregationKey
+                                ].enabled
                               )
                             }
                           />
                           <BlueCheckIcon
                             src={blueCheck}
                             alt=""
-                            enabled={currentDisaggregation.enabled}
+                            enabled={
+                              disaggregations[systemMetricKey][
+                                activeDisaggregationKey
+                              ].enabled || false
+                            }
                           />
                         </CheckboxWrapper>
-                      </DisaggregationTab>
-                    </TabbedItem>
-                  );
-                })}
-              </TabbedOptions>
-            </TabbedBar>
+                      </MetricsConfigurationDropdownToggle>
+                      <MetricsConfigurationDropdownMenu>
+                        {activeDisaggregationKeys?.map((disaggregationKey) => {
+                          const currentDisaggregation =
+                            disaggregations[systemMetricKey][disaggregationKey];
 
-            <Disaggregation>
-              {/* Dimension Fields (Enable/Disable) */}
-              {/* Race & Ethnicities Grid (when active disaggregation is Race / Ethnicity) */}
-              {activeDisaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY ? (
-                <RaceEthnicitiesGrid
-                  disaggregationEnabled={Boolean(
-                    disaggregations[systemMetricKey][
-                      RACE_ETHNICITY_DISAGGREGATION_KEY
-                    ]?.enabled
-                  )}
-                  onClick={() => setActiveDimensionKey(activeDimensionKeys[0])}
-                />
-              ) : (
-                activeDimensionKeys?.map((dimensionKey) => {
-                  const currentDisaggregation =
-                    disaggregations[systemMetricKey][activeDisaggregationKey];
-                  const currentDimension =
-                    dimensions[systemMetricKey][activeDisaggregationKey][
-                      dimensionKey
-                    ];
+                          return (
+                            <MetricsConfigurationDropdownMenuItem
+                              key={disaggregationKey}
+                              onClick={() => {
+                                setActiveDisaggregationKey(disaggregationKey);
 
-                  return (
-                    <Dimension
-                      key={dimensionKey}
-                      enabled={!metricEnabled || currentDisaggregation.enabled}
-                      inView={dimensionKey === activeDimensionKey}
-                      onClick={() => setActiveDimensionKey(dimensionKey)}
-                    >
-                      <CheckboxWrapper>
-                        <Checkbox
-                          type="checkbox"
-                          checked={
-                            currentDisaggregation.enabled &&
-                            currentDimension.enabled
-                          }
-                          onChange={() =>
-                            handleUpdateDimensionEnabledStatus(
-                              activeDisaggregationKey,
-                              dimensionKey,
-                              !currentDimension.enabled
-                            )
-                          }
-                        />
-                        <BlueCheckIcon
-                          src={blueCheck}
-                          alt=""
-                          enabled={
-                            currentDisaggregation.enabled &&
-                            currentDimension.enabled
-                          }
-                        />
-                      </CheckboxWrapper>
+                                const [firstDimensionKey] = Object.keys(
+                                  dimensions[systemMetricKey][disaggregationKey]
+                                );
+                                setActiveDimensionKey(firstDimensionKey);
+                              }}
+                              highlight={
+                                disaggregationKey === activeDisaggregationKey
+                              }
+                            >
+                              {removeSnakeCase(
+                                currentDisaggregation.display_name as string
+                              ).toLowerCase()}
+                            </MetricsConfigurationDropdownMenuItem>
+                          );
+                        })}
+                      </MetricsConfigurationDropdownMenu>
+                    </Dropdown>
+                  </MetricConfigurationDropdownContainer>
+                )}
+              {windowWidth <= NEW_DESKTOP_WIDTH &&
+                activeDisaggregationKey ===
+                  RACE_ETHNICITY_DISAGGREGATION_KEY && (
+                  <CalloutBox
+                    onClick={() =>
+                      setActiveDimensionKey(activeDimensionKeys[0])
+                    }
+                  >
+                    <Description>
+                      Answer the questions on the{" "}
+                      <span>Race and Ethnicity</span> form; the grid below will
+                      reflect your responses.
+                    </Description>
+                    <RightArrowIcon />
+                  </CalloutBox>
+                )}
+              {windowWidth <= NEW_DESKTOP_WIDTH &&
+                activeDimensionKey &&
+                (activeDisaggregationKey ===
+                  RACE_ETHNICITY_DISAGGREGATION_KEY && activeDimensionKey ? (
+                  <RaceEthnicitiesForm />
+                ) : (
+                  <MetricDefinitions
+                    activeDimensionKey={activeDimensionKey}
+                    activeDisaggregationKey={activeDisaggregationKey}
+                  />
+                ))}
 
-                      <DimensionTitleWrapper>
-                        <DimensionTitle
-                          enabled={
-                            currentDisaggregation.enabled &&
-                            currentDimension.enabled
-                          }
-                        >
-                          {currentDimension.label}
-                        </DimensionTitle>
+              <Disaggregation>
+                {/* Dimension Fields (Enable/Disable) */}
+                {/* Race & Ethnicities Grid (when active disaggregation is Race / Ethnicity) */}
+                {activeDisaggregationKey ===
+                RACE_ETHNICITY_DISAGGREGATION_KEY ? (
+                  <RaceEthnicitiesGrid
+                    disaggregationEnabled={Boolean(
+                      disaggregations[systemMetricKey][
+                        RACE_ETHNICITY_DISAGGREGATION_KEY
+                      ]?.enabled
+                    )}
+                    onClick={() =>
+                      setActiveDimensionKey(activeDimensionKeys[0])
+                    }
+                  />
+                ) : (
+                  activeDimensionKeys?.map((dimensionKey) => {
+                    const currentDisaggregation =
+                      disaggregations[systemMetricKey][activeDisaggregationKey];
+                    const currentDimension =
+                      dimensions[systemMetricKey][activeDisaggregationKey][
+                        dimensionKey
+                      ];
 
-                        <RightArrowIcon />
-                      </DimensionTitleWrapper>
-                    </Dimension>
-                  );
-                })
-              )}
-            </Disaggregation>
-          </TogglableSection>
-        )}
+                    return (
+                      <Dimension
+                        key={dimensionKey}
+                        enabled={
+                          !metricEnabled || currentDisaggregation.enabled
+                        }
+                        inView={dimensionKey === activeDimensionKey}
+                        onClick={() => setActiveDimensionKey(dimensionKey)}
+                      >
+                        <CheckboxWrapper>
+                          <Checkbox
+                            type="checkbox"
+                            checked={
+                              currentDisaggregation.enabled &&
+                              currentDimension.enabled
+                            }
+                            onChange={() =>
+                              handleUpdateDimensionEnabledStatus(
+                                activeDisaggregationKey,
+                                dimensionKey,
+                                !currentDimension.enabled
+                              )
+                            }
+                          />
+                          <BlueCheckIcon
+                            src={blueCheck}
+                            alt=""
+                            enabled={
+                              currentDisaggregation.enabled &&
+                              currentDimension.enabled
+                            }
+                          />
+                        </CheckboxWrapper>
+
+                        <DimensionTitleWrapper>
+                          <DimensionTitle
+                            enabled={
+                              currentDisaggregation.enabled &&
+                              currentDimension.enabled
+                            }
+                          >
+                            {currentDimension.label}
+                          </DimensionTitle>
+
+                          <RightArrowIcon />
+                        </DimensionTitleWrapper>
+                      </Dimension>
+                    );
+                  })
+                )}
+              </Disaggregation>
+            </TogglableSection>
+          )}
       </MetricConfigurationContainer>
     );
   }
