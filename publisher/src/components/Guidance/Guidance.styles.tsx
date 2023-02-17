@@ -34,6 +34,7 @@ export const GuidanceContainer = styled.div`
 
 export const ContentContainer = styled.div<{ currentTopicID?: string }>`
   width: 100%;
+  height: 54%;
   max-width: 497px;
 
   display: flex;
@@ -275,9 +276,12 @@ export const ProgressItemName = styled.div`
 
 export const MetricContentContainer = styled(ContentContainer)`
   width: 100%;
+  height: 54%;
   max-width: 550px;
-  margin-bottom: 100px;
   gap: unset;
+  justify-content: flex-start;
+  overflow-y: scroll;
+  overflow-x: hidden;
 `;
 
 export const Metric = styled.div<{ hideTooltip?: boolean }>`
