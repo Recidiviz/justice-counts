@@ -31,7 +31,7 @@ import { useStore } from "../../stores";
 import MetricConfigStore from "../../stores/MetricConfigStore";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import checkmarkIcon from "../assets/status-check-icon.png";
-import { REPORTS_LOWERCASE } from "../Global/constants";
+import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 import { Loader, Loading } from "../Loading";
 import {
   ActionButton,
@@ -231,7 +231,7 @@ export const Guidance = observer(() => {
                   kind="bordered"
                   onClick={() => navigate(`../${REPORTS_LOWERCASE}`)}
                 >
-                  Fill out report
+                  Fill out ${REPORT_LOWERCASE}
                 </ActionButton>
               </ActionButtonWrapper>
             </>
