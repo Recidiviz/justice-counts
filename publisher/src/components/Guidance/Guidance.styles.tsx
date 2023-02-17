@@ -35,28 +35,27 @@ export const GuidanceContainer = styled.div`
 export const ContentContainer = styled.div<{ currentTopicID?: string }>`
   width: 100%;
   max-width: 497px;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 56px;
+  text-align: center;
 
   ${({ currentTopicID }) => {
     if (currentTopicID === "WELCOME") {
       return `
-        justify-content: flex-start;
-        margin: 0 500px 150px 0;
+          max-width: 720px;
       `;
     }
     if (currentTopicID === "METRIC_CONFIG") {
       return `
         justify-content: flex-start;
         margin: 0 150px 150px 0;
+        text-align: left;
       `;
     }
-    return `
-        text-align: center;
-    `;
   }}
 `;
 
