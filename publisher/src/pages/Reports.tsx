@@ -293,7 +293,7 @@ const Reports: React.FC = () => {
 
           <TabbedActionsWrapper>
             {/* Admin Only: Manage Reports */}
-            {userStore.permissions.includes(Permission.RECIDIVIZ_ADMIN) && (
+            {userStore.permissions?.includes(Permission.RECIDIVIZ_ADMIN) && (
               <>
                 <ReportActions>
                   {!selectionMode && (

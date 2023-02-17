@@ -101,8 +101,8 @@ const Menu = () => {
       </MenuItem>
 
       {/* Agencies Dropdown */}
-      {(userStore.permissions.includes(Permission.RECIDIVIZ_ADMIN) ||
-        userStore.permissions.includes(Permission.SWITCH_AGENCIES)) && (
+      {(userStore.permissions?.includes(Permission.RECIDIVIZ_ADMIN) ||
+        userStore.permissions?.includes(Permission.SWITCH_AGENCIES)) && (
         <MenuItem>
           <Dropdown>
             <ExtendedDropdownToggle kind="borderless">
