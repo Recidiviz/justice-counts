@@ -100,7 +100,7 @@ const Menu = () => {
       </MenuItem>
 
       {/* Agencies Dropdown */}
-      {userStore.isJusticeCountsAdmin(agencyId) && (
+      {userStore.userAgencies && userStore.userAgencies.length > 1 && (
         <MenuItem>
           <Dropdown>
             <ExtendedDropdownToggle kind="borderless">
@@ -108,7 +108,7 @@ const Menu = () => {
             </ExtendedDropdownToggle>
             <ExtendedDropdownMenu alignment="right">
               {userStore.userAgencies
-                ?.slice()
+                .slice()
                 .sort((a, b) => a.name.localeCompare(b.name))
                 .map((agency) => {
                   return (
