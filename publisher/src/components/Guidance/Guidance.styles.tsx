@@ -98,6 +98,7 @@ export const ActionButton = styled.button<{ kind?: "primary" | "bordered" }>`
 export const SkipButton = styled.div`
   ${typography.sizeCSS.normal};
   color: ${palette.solid.blue};
+  margin-top: -16px;
 
   &:hover {
     cursor: pointer;
