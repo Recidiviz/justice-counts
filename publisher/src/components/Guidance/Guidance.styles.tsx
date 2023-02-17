@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2022 Recidiviz, Inc.
+// Copyright (C) 2023 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,10 +16,11 @@
 // =============================================================================
 
 import {
+  HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import styled from "styled-components/macro";
+import styled, { css } from "styled-components/macro";
 
 import { Button } from "../DataUpload";
 
@@ -197,6 +198,82 @@ export const ReviewPublishLink = styled.div`
   }
 `;
 
+const ProgressTooltipStyles = css`
+  background: ${palette.solid.black};
+  border-radius: 4px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: absolute;
+  right: 0;
+  top: 45px;
+  z-index: 2;
+  transition: 0.2s ease;
+  pointer-events: none;
+`;
+
+export const ProgressTooltipContainer = styled.div`
+  ${ProgressTooltipStyles}
+  opacity: 0;
+`;
+
+export const ProgressBarContainer = styled.div`
+  width: 100%;
+  height: 2px;
+  background: ${palette.highlight.grey4};
+  margin-bottom: 16px;
+`;
+
+export const Progress = styled.div<{ progress: number }>`
+  width: ${({ progress }) => progress * 25}%;
+  height: 100%;
+  background: ${palette.solid.blue};
+`;
+
+export const CheckIconWrapper = styled.div`
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+`;
+
+export const CheckIcon = styled.img`
+  width: 20px;
+`;
+
+export const ProgressTooltipToast = styled.div<{ showToast?: boolean }>`
+  ${ProgressTooltipStyles}
+  right: 150px;
+  top: ${HEADER_BAR_HEIGHT}px;
+  opacity: ${({ showToast }) => (showToast ? 1 : 0)};
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: ${palette.solid.black};
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+  }
+`;
+
+export const ProgressItemWrapper = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: center;
+`;
+
+export const ProgressItemName = styled.div`
+  ${typography.sizeCSS.normal}
+  color: ${palette.solid.white};
+`;
+
 export const MetricContentContainer = styled(ContentContainer)`
   width: 100%;
   max-width: 550px;
@@ -204,7 +281,7 @@ export const MetricContentContainer = styled(ContentContainer)`
   gap: unset;
 `;
 
-export const Metric = styled.div`
+export const Metric = styled.div<{ hideTooltip?: boolean }>`
   width: 100%;
   padding-bottom: 16px;
   display: flex;
@@ -229,6 +306,10 @@ export const Metric = styled.div`
     right: -20px;
     right: 13px;
     opacity: 1;
+  }
+
+  &:hover > ${ProgressTooltipContainer} {
+    opacity: ${({ hideTooltip }) => (hideTooltip ? 0 : 1)};
   }
 `;
 
@@ -263,21 +344,4 @@ export const MetricStatus = styled.div<{ greyText?: boolean }>`
   ${Metric}:hover & {
     opacity: 0;
   }
-`;
-
-export const ProgressBarContainer = styled.div`
-  width: 100%;
-  height: 2px;
-  background: ${palette.highlight.grey4};
-  margin-bottom: 16px;
-`;
-
-export const Progress = styled.div<{ progress: number }>`
-  width: ${({ progress }) => progress}%;
-  height: 100%;
-  background: ${palette.solid.blue};
-`;
-
-export const CheckIcon = styled.img`
-  width: 20px;
 `;

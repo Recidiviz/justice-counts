@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2022 Recidiviz, Inc.
+// Copyright (C) 2023 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,22 +32,28 @@ import MetricConfigStore from "../../stores/MetricConfigStore";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import checkmarkIcon from "../assets/status-check-icon.png";
 import { REPORTS_LOWERCASE } from "../Global/constants";
+import { Loading } from "../Loading";
 import {
   ActionButton,
   ActionButtonWrapper,
   CheckIcon,
+  CheckIconWrapper,
   ConfiguredMetricIndicatorTitle,
   ContentContainer,
   GuidanceContainer,
   Metric,
+  metricConfigurationProgressSteps,
   MetricContentContainer,
   MetricListContainer,
   MetricName,
   MetricStatus,
   Progress,
   ProgressBarContainer,
+  ProgressItemName,
+  ProgressItemWrapper,
   ProgressStepBubble,
   ProgressStepsContainer,
+  ProgressTooltipContainer,
   ReportsOverviewContainer,
   ReportsOverviewItemWrapper,
   ReportTitle,
@@ -59,10 +65,15 @@ import {
 
 export const Guidance = observer(() => {
   const navigate = useNavigate();
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
   const { guidanceStore, metricConfigStore, reportStore } = useStore();
-  const { onboardingTopicsMetadata, currentTopicID, updateTopicStatus } =
-    guidanceStore;
+  const {
+    onboardingTopicsMetadata,
+    currentTopicID,
+    saveOnboardingTopicsStatuses,
+    getOverallMetricProgress,
+    getMetricCompletionValue,
+  } = guidanceStore;
 
   const currentTopicDisplayName =
     currentTopicID && onboardingTopicsMetadata[currentTopicID].displayName;
@@ -84,48 +95,6 @@ export const Guidance = observer(() => {
   };
   const metricsEntries = Object.entries(metricConfigStore.metrics);
   const totalMetrics = metricsEntries.length;
-
-  useEffect(() => {
-    const initialize = async () => {
-      reportStore.resetState();
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await reportStore.getReportOverviews(agencyId!);
-      if (currentTopicID === "METRIC_CONFIG")
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        await metricConfigStore.initializeMetricConfigStoreValues(agencyId!);
-
-      const hasMinimumOneReport =
-        currentTopicID === "ADD_DATA" &&
-        Object.keys(reportStore.reportOverviews).length > 0;
-      const hasMinimumOnePublishedReport =
-        currentTopicID === "PUBLISH_DATA" &&
-        Object.values(reportStore.reportOverviews).find(
-          (report) => report.status === "PUBLISHED"
-        );
-
-      if (hasMinimumOneReport) {
-        /* TODO(#267) Enable this to check during the ADD_DATA step whether or not a user has atleast one draft (if so, then the topic is complete) */
-        // updateTopicStatus("ADD_DATA", true);
-      }
-      if (hasMinimumOnePublishedReport) {
-        /* TODO(#267) Enable this to check during the PUBLISH_DATA step whether or not a user has atleast one published record (if so, then the topic is complete) */
-        // updateTopicStatus("PUBLISH_DATA", true);
-      }
-      if (numberOfMetricsCompleted === totalMetrics) {
-        /* TODO(#267) Enable this to check during the PUBLISH_DATA step whether or not a user has atleast one published record (if so, then the topic is complete) */
-        // updateTopicStatus("METRIC_CONFIG", true);
-      }
-    };
-
-    if (
-      currentTopicID === "ADD_DATA" ||
-      currentTopicID === "PUBLISH_DATA" ||
-      currentTopicID === "METRIC_CONFIG"
-    )
-      initialize();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [agencyId, currentTopicID]);
 
   const renderProgressSteps = () => {
     if (currentTopicID === "WELCOME") return;
@@ -154,74 +123,57 @@ export const Guidance = observer(() => {
     );
   };
 
-  const calculateOverallMetricProgress = (systemMetricKey: string) => {
-    let completionPercentage = 0;
-    const {
-      metrics,
-      dimensions,
-      metricDefinitionSettings,
-      dimensionDefinitionSettings,
-    } = metricConfigStore;
-
-    /** Confirm the metric’s availability/frequency */
-    if (metrics[systemMetricKey].enabled !== null) {
-      completionPercentage += 25;
-    }
-
-    /** Confirm metric definitions */
-    const metricDefinitionsCompleted =
-      metricDefinitionSettings[systemMetricKey] &&
-      Object.values(metricDefinitionSettings[systemMetricKey]).filter(
-        (definition) => definition.included === null
-      ).length === 0;
-
-    if (
-      metricDefinitionsCompleted ||
-      !metricDefinitionSettings[systemMetricKey]
-    ) {
-      completionPercentage += 25;
-    }
-
-    /** Confirm breakdown availability */
-    const disaggregationValues =
-      dimensions[systemMetricKey] && Object.values(dimensions[systemMetricKey]);
-    const dimensionsCompleted =
-      disaggregationValues?.filter(
-        (disaggregation) =>
-          Object.values(disaggregation).filter(
-            (dimension) => dimension.enabled === null
-          ).length === 0
-      ).length === disaggregationValues?.length;
-
-    if (dimensionsCompleted) {
-      completionPercentage += 25;
-    }
-
-    /** Confirm breakdown definitions */
-    const dimensionDefinitionSettingsValues =
-      dimensionDefinitionSettings[systemMetricKey] &&
-      Object.values(dimensionDefinitionSettings[systemMetricKey]);
-    const dimensionDefinitionsCompleted =
-      dimensionDefinitionSettingsValues?.filter(
-        (dimension) =>
-          Object.values(dimension).filter(
-            (definition) => definition.enabled === null
-          ).length === 0
-      ).length === dimensionDefinitionSettingsValues?.length;
-
-    if (
-      dimensionDefinitionsCompleted ||
-      !dimensionDefinitionSettings[systemMetricKey]
-    ) {
-      completionPercentage += 25;
-    }
-
-    return completionPercentage;
-  };
-
   const numberOfMetricsCompleted = metricsEntries.filter(
-    ([key]) => calculateOverallMetricProgress(key) === 100
+    ([key]) => getMetricCompletionValue(key) === 4
   ).length;
+
+  useEffect(() => {
+    const initialize = async () => {
+      reportStore.resetState();
+      await reportStore.getReportOverviews(agencyId);
+      if (currentTopicID === "METRIC_CONFIG")
+        await metricConfigStore.initializeMetricConfigStoreValues(agencyId);
+
+      const hasMinimumOneReport =
+        currentTopicID === "ADD_DATA" &&
+        Object.keys(reportStore.reportOverviews).length > 0;
+      const hasMinimumOnePublishedReport =
+        currentTopicID === "PUBLISH_DATA" &&
+        Object.values(reportStore.reportOverviews).find(
+          (report) => report.status === "PUBLISHED"
+        );
+
+      if (hasMinimumOneReport) {
+        saveOnboardingTopicsStatuses(
+          { topicID: "ADD_DATA", topicCompleted: true },
+          agencyId
+        );
+      }
+      if (hasMinimumOnePublishedReport) {
+        saveOnboardingTopicsStatuses(
+          { topicID: "PUBLISH_DATA", topicCompleted: true },
+          agencyId
+        );
+      }
+      if (totalMetrics > 0 && numberOfMetricsCompleted === totalMetrics) {
+        saveOnboardingTopicsStatuses(
+          { topicID: "METRIC_CONFIG", topicCompleted: true },
+          agencyId
+        );
+      }
+    };
+
+    if (
+      currentTopicID === "ADD_DATA" ||
+      currentTopicID === "PUBLISH_DATA" ||
+      currentTopicID === "METRIC_CONFIG"
+    )
+      initialize();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [agencyId, currentTopicID, numberOfMetricsCompleted]);
+
+  if (!guidanceStore.isInitialized) return <Loading />;
 
   return (
     <>
@@ -282,38 +234,37 @@ export const Guidance = observer(() => {
                   Fill out report
                 </ActionButton>
               </ActionButtonWrapper>
-              {/* TODO(#268) To be removed entirely from this section - for testing purposes only */}
-              <ActionButton
-                onClick={() => {
-                  if (currentTopicID) {
-                    updateTopicStatus(currentTopicID, true);
-                  }
-                }}
-              >
-                Mock Topic Completion
-              </ActionButton>
             </>
           ) : (
             <>
-              {/* TODO(#268) Replace "Mock Topic Completion" buttons and only display ActionButton if there is a buttonDisplayName property while mocking */}
-              <ActionButton
-                onClick={() => {
-                  if (currentTopicID) {
-                    if (pathToTask) navigate(pathToTask);
-                    updateTopicStatus(currentTopicID, true);
-                  }
-                }}
-              >
-                {buttonDisplayName || "Mock Topic Completion"}
-              </ActionButton>
+              {buttonDisplayName && (
+                <ActionButton
+                  onClick={() => {
+                    if (currentTopicID) {
+                      if (pathToTask) navigate(pathToTask);
+                      saveOnboardingTopicsStatuses(
+                        { topicID: currentTopicID, topicCompleted: true },
+                        agencyId
+                      );
+                    }
+                  }}
+                >
+                  {buttonDisplayName}
+                </ActionButton>
+              )}
             </>
           )}
 
           {skippable && (
             <SkipButton
-              onClick={() =>
-                currentTopicID && updateTopicStatus(currentTopicID, true)
-              }
+              onClick={() => {
+                if (currentTopicID) {
+                  saveOnboardingTopicsStatuses(
+                    { topicID: currentTopicID, topicCompleted: true },
+                    agencyId
+                  );
+                }
+              }}
             >
               Skip
             </SkipButton>
@@ -328,15 +279,18 @@ export const Guidance = observer(() => {
               configured
             </ConfiguredMetricIndicatorTitle>
             <MetricListContainer>
-              {metricsEntries.map(([key, metric]) => {
-                const metricCompletionPercentage =
-                  calculateOverallMetricProgress(key);
+              {metricsEntries.map(([systemMetricKey, metric]) => {
+                const metricCompletionProgress =
+                  getOverallMetricProgress(systemMetricKey);
+                const metricCompletionProgressValue =
+                  getMetricCompletionValue(systemMetricKey);
                 const { system, metricKey } =
-                  MetricConfigStore.splitSystemMetricKey(key);
+                  MetricConfigStore.splitSystemMetricKey(systemMetricKey);
 
                 return (
-                  <Fragment key={metric.label}>
+                  <Fragment key={systemMetricKey}>
                     <Metric
+                      hideTooltip={metric.enabled === false}
                       onClick={() =>
                         navigate(
                           `../settings/metric-config?system=${system}&metric=${metricKey}`
@@ -345,23 +299,37 @@ export const Guidance = observer(() => {
                     >
                       <MetricName>{metric.label}</MetricName>
                       <MetricStatus greyText={metric.enabled === false}>
-                        {metricCompletionPercentage === 100 &&
+                        {metricCompletionProgressValue === 4 &&
                           metric.enabled && (
                             <CheckIcon src={checkmarkIcon} alt="" />
                           )}
                         {metric.enabled === false && "Unavailable"}
-                        {metricCompletionPercentage < 100 &&
-                          metric.enabled &&
+                        {metricCompletionProgressValue < 4 &&
+                          (metric.enabled || metric.enabled === null) &&
                           "Action Required"}
                       </MetricStatus>
                       <RightArrowIcon />
+
+                      {/* Progress Tooltip */}
+                      <ProgressTooltipContainer>
+                        {metricConfigurationProgressSteps.map((step) => (
+                          <ProgressItemWrapper key={step}>
+                            <CheckIconWrapper>
+                              {metricCompletionProgress[step] && (
+                                <CheckIcon src={checkmarkIcon} alt="" />
+                              )}
+                            </CheckIconWrapper>
+                            <ProgressItemName>{step}</ProgressItemName>
+                          </ProgressItemWrapper>
+                        ))}
+                      </ProgressTooltipContainer>
                     </Metric>
                     <ProgressBarContainer>
                       <Progress
                         progress={
                           metric.enabled === false
                             ? 0
-                            : metricCompletionPercentage
+                            : metricCompletionProgressValue
                         }
                       />
                     </ProgressBarContainer>

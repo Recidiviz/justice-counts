@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2022 Recidiviz, Inc.
+// Copyright (C) 2023 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -73,7 +73,11 @@ class RootStore {
     this.dataVizStore = new DataVizStore();
     this.metricConfigStore = new MetricConfigStore(this.userStore, this.api);
     this.agencyStore = new AgencyStore(this.userStore, this.api);
-    this.guidanceStore = new GuidanceStore(this.userStore, this.api);
+    this.guidanceStore = new GuidanceStore(
+      this.userStore,
+      this.metricConfigStore,
+      this.api
+    );
   }
 }
 
