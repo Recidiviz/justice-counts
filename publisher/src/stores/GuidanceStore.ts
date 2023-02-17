@@ -15,15 +15,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { showToast } from "@justice-counts/common/components/Toast";
 import { MetricConfigurationSettingsOptions } from "@justice-counts/common/types";
-import { makeAutoObservable, when } from "mobx";
+import { makeAutoObservable, runInAction, when } from "mobx";
 
 import {
   metricConfigurationProgressSteps,
-  mockTopicsStatus,
   OnboardingTopicsMetadata,
   onboardingTopicsMetadata,
-  OnboardingTopicsStatus,
+  OnboardingTopicsStatuses,
   ProgressSteps,
   TopicID,
 } from "../components/Guidance";
@@ -46,7 +46,7 @@ class GuidanceStore {
 
   onboardingTopicsMetadata: OnboardingTopicsMetadata;
 
-  onboardingTopicsStatus: OnboardingTopicsStatus[];
+  onboardingTopicsStatuses: OnboardingTopicsStatuses[];
 
   constructor(
     userStore: UserStore,
@@ -60,7 +60,7 @@ class GuidanceStore {
     this.metricConfigStore = metricConfigStore;
     this.isInitialized = false;
     this.onboardingTopicsMetadata = onboardingTopicsMetadata;
-    this.onboardingTopicsStatus = mockTopicsStatus;
+    this.onboardingTopicsStatuses = [];
 
     when(
       () => metricConfigStore.isInitialized,
@@ -69,27 +69,76 @@ class GuidanceStore {
   }
 
   get hasCompletedOnboarding() {
-    if (this.onboardingTopicsStatus.length === 0) return false;
-    const indexOfTopicNotCompleted = this.onboardingTopicsStatus.findIndex(
+    if (this.onboardingTopicsStatuses.length === 0) return false;
+    const indexOfTopicNotCompleted = this.onboardingTopicsStatuses.findIndex(
       (topic) => !topic.topicCompleted
     );
     return indexOfTopicNotCompleted < 0;
   }
 
   get currentTopicID() {
-    if (this.onboardingTopicsStatus.length === 0) return;
-    const topicIndex = this.onboardingTopicsStatus.findIndex(
+    if (this.onboardingTopicsStatuses.length === 0) return;
+    const topicIndex = this.onboardingTopicsStatuses.findIndex(
       (topic) => !topic.topicCompleted
     );
     if (topicIndex < 0) return;
-    return this.onboardingTopicsStatus[topicIndex].topicID;
+    return this.onboardingTopicsStatuses[topicIndex].topicID;
   }
 
-  updateTopicStatus = (topicID: TopicID, status: boolean) => {
-    this.onboardingTopicsStatus = this.onboardingTopicsStatus.map((topic) => {
-      if (topic.topicID !== topicID) return topic;
-      return { ...topic, topicCompleted: status };
+  getOnboardingTopicsStatuses = async (
+    agencyId: string
+  ): Promise<OnboardingTopicsStatuses[]> => {
+    const response = (await this.api.request({
+      path: `/api/users/guidance`,
+      method: "GET",
+    })) as Response;
+
+    if (response.status !== 200) {
+      throw new Error(
+        "There was an issue retrieving the onboarding topics statuses."
+      );
+    }
+
+    const onboardingTopicsStatuses = await response.json();
+    runInAction(() => {
+      this.onboardingTopicsStatuses =
+        onboardingTopicsStatuses.guidance_progress;
+      this.isInitialized = true;
     });
+    return onboardingTopicsStatuses.guidance_progress;
+  };
+
+  saveOnboardingTopicsStatuses = async (
+    updatedTopic: OnboardingTopicsStatuses,
+    agencyId: string
+  ): Promise<Response | Error> => {
+    const response = (await this.api.request({
+      path: `/api/users/guidance`,
+      body: { updated_topic: updatedTopic },
+      method: "PUT",
+    })) as Response;
+
+    if (response.status !== 200) {
+      showToast(`Failed to update topic status.`, true, "red", 4000);
+      throw new Error("There was an issue updating the topic status.");
+    }
+
+    runInAction(() => {
+      const { topicID, topicCompleted } = updatedTopic;
+      this.updateTopicStatus(topicID, topicCompleted);
+    });
+    return response;
+  };
+
+  updateTopicStatus = (topicID: TopicID, status: boolean) => {
+    this.onboardingTopicsStatuses = this.onboardingTopicsStatuses.map(
+      (topic) => {
+        if (topic.topicID !== topicID) return topic;
+        return { ...topic, topicCompleted: status };
+      }
+    );
+
+    return { topicID, topicCompleted: status };
   };
 
   initializeMetricConfigProgressStepsTracker = () => {
