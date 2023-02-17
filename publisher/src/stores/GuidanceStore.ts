@@ -46,7 +46,7 @@ class GuidanceStore {
 
   onboardingTopicsMetadata: OnboardingTopicsMetadata;
 
-  onboardingTopicsStatuses: OnboardingTopicsStatuses[];
+  onboardingTopicsStatuses: { [topicID: string]: boolean };
 
   constructor(
     userStore: UserStore,
@@ -60,7 +60,7 @@ class GuidanceStore {
     this.metricConfigStore = metricConfigStore;
     this.isInitialized = false;
     this.onboardingTopicsMetadata = onboardingTopicsMetadata;
-    this.onboardingTopicsStatuses = [];
+    this.onboardingTopicsStatuses = {};
 
     when(
       () => metricConfigStore.isInitialized,
@@ -69,20 +69,24 @@ class GuidanceStore {
   }
 
   get hasCompletedOnboarding() {
-    if (this.onboardingTopicsStatuses.length === 0) return false;
-    const indexOfTopicNotCompleted = this.onboardingTopicsStatuses.findIndex(
-      (topic) => !topic.topicCompleted
+    if (Object.values(this.onboardingTopicsStatuses).length === 0) return false;
+    return (
+      Object.values(this.onboardingTopicsStatuses).find(
+        (topicCompleted) => !topicCompleted
+      ) === undefined
     );
-    return indexOfTopicNotCompleted < 0;
   }
 
   get currentTopicID() {
-    if (this.onboardingTopicsStatuses.length === 0) return;
-    const topicIndex = this.onboardingTopicsStatuses.findIndex(
-      (topic) => !topic.topicCompleted
+    if (Object.values(this.onboardingTopicsStatuses).length === 0) return;
+    const topicEntry = Object.entries(this.onboardingTopicsStatuses).find(
+      ([_, topicCompleted]) => !topicCompleted
     );
-    if (topicIndex < 0) return;
-    return this.onboardingTopicsStatuses[topicIndex].topicID;
+    const topicID =
+      topicEntry && (topicEntry[0] as OnboardingTopicsStatuses["topicID"]);
+
+    if (!topicID) return;
+    return topicID;
   }
 
   getOnboardingTopicsStatuses = async (
@@ -99,10 +103,16 @@ class GuidanceStore {
       );
     }
 
-    const onboardingTopicsStatuses = await response.json();
+    const onboardingTopicsStatuses: {
+      guidance_progress: OnboardingTopicsStatuses[];
+    } = await response.json();
+
     runInAction(() => {
       this.onboardingTopicsStatuses =
-        onboardingTopicsStatuses.guidance_progress;
+        onboardingTopicsStatuses.guidance_progress.reduce((acc, topic) => {
+          acc[topic.topicID] = topic.topicCompleted;
+          return acc;
+        }, {} as { [topicID: string]: boolean });
       this.isInitialized = true;
     });
     return onboardingTopicsStatuses.guidance_progress;
@@ -131,12 +141,9 @@ class GuidanceStore {
   };
 
   updateTopicStatus = (topicID: TopicID, status: boolean) => {
-    this.onboardingTopicsStatuses = this.onboardingTopicsStatuses.map(
-      (topic) => {
-        if (topic.topicID !== topicID) return topic;
-        return { ...topic, topicCompleted: status };
-      }
-    );
+    runInAction(() => {
+      this.onboardingTopicsStatuses[topicID] = status;
+    });
 
     return { topicID, topicCompleted: status };
   };
