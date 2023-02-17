@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2022 Recidiviz, Inc.
+// Copyright (C) 2023 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ export type OnboardingTopicsMetadata = {
   };
 };
 
-export type OnboardingTopicsStatus = {
+export type OnboardingTopicsStatuses = {
   topicID: TopicID;
   topicCompleted: boolean;
 };
@@ -68,14 +68,31 @@ export const onboardingTopicsMetadata: OnboardingTopicsMetadata = {
   },
 };
 
-export const mockTopicsStatus: OnboardingTopicsStatus[] = [
+export enum ProgressSteps {
+  CONFIRM_METRIC_AVAILABILITY = "Confirm metric availability",
+  CONFIRM_METRIC_DEFINITIONS = "Confirm metric definitions",
+  CONFIRM_BREAKDOWN_AVAILABILITY = "Confirm breakdown availability",
+  CONFIRM_BREAKDOWN_DEFINITIONS = "Confirm breakdown definitions",
+}
+
+export const metricConfigurationProgressSteps = [
+  ProgressSteps.CONFIRM_METRIC_AVAILABILITY,
+  ProgressSteps.CONFIRM_METRIC_DEFINITIONS,
+  ProgressSteps.CONFIRM_BREAKDOWN_AVAILABILITY,
+  ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS,
+] as const;
+
+export type MetricConfigurationProgressSteps =
+  typeof metricConfigurationProgressSteps[number];
+
+export const mockTopicsStatus: OnboardingTopicsStatuses[] = [
   {
     topicID: "WELCOME",
     topicCompleted: true,
   },
   {
     topicID: "AGENCY_SETUP",
-    topicCompleted: true,
+    topicCompleted: false,
   },
   {
     topicID: "METRIC_CONFIG",
@@ -87,6 +104,6 @@ export const mockTopicsStatus: OnboardingTopicsStatus[] = [
   },
   {
     topicID: "PUBLISH_DATA",
-    topicCompleted: false,
+    topicCompleted: true,
   },
 ];

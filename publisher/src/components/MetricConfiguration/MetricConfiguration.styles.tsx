@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2022 Recidiviz, Inc.
+// Copyright (C) 2023 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -206,7 +206,7 @@ export const MetricBoxBottomPaddingContainer = styled.div`
 `;
 
 type MetricBoxContainerProps = {
-  enabled?: boolean;
+  enabled?: boolean | null;
 };
 
 export const MetricBoxContainer = styled.div<MetricBoxContainerProps>`
@@ -302,7 +302,7 @@ export const MetricDetailsDisplay = styled.div`
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
     overflow-y: unset;
-    padding: 24px 12px 10px 0;
+    padding: 24px 12px 0px 0;
   }
 `;
 
@@ -337,7 +337,7 @@ export const RadioButtonGroupWrapper = styled(BinaryRadioGroupWrapper)`
   display: flex;
 `;
 
-export const MetricDisaggregations = styled.div<{ enabled?: boolean }>`
+export const MetricDisaggregations = styled.div<{ enabled?: boolean | null }>`
   display: block;
   position: relative;
 
@@ -501,7 +501,7 @@ export const MetricConfigurationContainer = styled.div`
   display: block;
 `;
 
-export const MetricContextContainer = styled.div<{ enabled?: boolean }>`
+export const MetricContextContainer = styled.div<{ enabled?: boolean | null }>`
   display: block;
   border-top: 1px solid ${palette.highlight.grey3};
   position: relative;
@@ -668,14 +668,14 @@ export const DefinitionsDisplayContainer = styled.div`
   }
 `;
 
-export const DefinitionsDisplay = styled.div<{ enabled?: boolean }>`
+export const DefinitionsDisplay = styled.div<{ enabled?: boolean | null }>`
   width: 100%;
   position: relative;
 
   ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
 `;
 
-export const DefinitionsWrapper = styled.div<{ enabled?: boolean }>`
+export const DefinitionsWrapper = styled.div<{ enabled?: boolean | null }>`
   position: relative;
   ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
 `;
@@ -747,7 +747,7 @@ export const MiniButtonWrapper = styled.div`
 `;
 
 export const MiniButton = styled(RevertToDefaultButton)<{
-  selected?: boolean;
+  selected?: boolean | null;
   showDefault?: boolean;
 }>`
   width: unset;
@@ -880,6 +880,5 @@ export const DisaggregationHeader = styled.div`
   justify-content: space-between;
   padding-bottom: 16px;
   margin-top: 48px;
-  margin-bottom: 16px;
   border-bottom: 1px solid ${palette.highlight.grey5};
 `;
