@@ -80,7 +80,9 @@ test("no reports to display", async () => {
     });
   });
 
-  const noReportsLoaded = await screen.findByText(/No records to display./i);
+  const noReportsLoaded = await screen.findByText(
+    /No records to display. Create a record?/i
+  );
   expect(noReportsLoaded).toBeInTheDocument();
   expect.hasAssertions();
 });
