@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  NEW_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -24,6 +25,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import notReportedIcon from "../assets/not-reported-icon.png";
+import { DisaggregationsDropdownToggle } from "../Reports";
 import { TWO_PANEL_MAX_WIDTH } from "../Reports/ReportDataEntry.styles";
 import { TabItem } from "./Form.styles";
 import { InputWrapper } from "./TextInput";
@@ -77,6 +79,10 @@ export const NotReportedIconTooltip = styled.div`
     width: 167px;
     left: -38%;
   }
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    left: -147px;
+  }
 `;
 
 export const NotReportedIconTooltipHoverArea = styled.div<{
@@ -96,6 +102,10 @@ export const NotReportedIconTooltipHoverArea = styled.div<{
   }
 
   ${InputWrapper}:hover & {
+    display: block;
+  }
+
+  ${DisaggregationsDropdownToggle}:hover & {
     display: block;
   }
 `;

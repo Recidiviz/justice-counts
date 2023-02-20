@@ -17,6 +17,7 @@
 
 import {
   HEADER_BAR_HEIGHT,
+  NEW_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -203,6 +204,10 @@ export const TabsRow = styled.div`
   display: flex;
   margin-bottom: 32px;
   border-bottom: 1px solid ${palette.solid.darkgrey};
+
+  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+    display: none;
+  }
 `;
 
 export const TabItem = styled.div<{ active?: boolean; enabled?: boolean }>`

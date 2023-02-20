@@ -175,6 +175,12 @@ export const DropdownContainer = styled.div`
   }
 `;
 
+export const DisaggregationsDropdownContainer = styled(DropdownContainer)`
+  border-top: 1px solid ${palette.highlight.grey9};
+  margin-bottom: 32px;
+  height: 40px;
+`;
+
 export const StatusFilterDropdownToggle = styled(DropdownToggle)`
   width: 100%;
   height: 100%;
@@ -195,6 +201,20 @@ export const StatusFilterDropdownToggle = styled(DropdownToggle)`
   }
 `;
 
+export const DisaggregationsDropdownToggle = styled(StatusFilterDropdownToggle)`
+  justify-content: space-between;
+  ${typography.sizeCSS.normal};
+  padding-right: 0;
+  color: ${palette.solid.blue};
+`;
+
+export const DisaggregationsDropdownToggleName = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+`;
+
 export const StatusFilterDropdownMenu = styled(DropdownMenu)`
   width: 100%;
   overflow-y: scroll;
@@ -203,6 +223,10 @@ export const StatusFilterDropdownMenu = styled(DropdownMenu)`
   box-shadow: 0px 0px 1px rgba(23, 28, 43, 0.1),
     0px 4px 8px rgba(23, 28, 43, 0.04), 0px 8px 56px rgba(23, 28, 43, 0.1);
   border-radius: 4px;
+`;
+
+export const DisaggregationsDropdownMenu = styled(StatusFilterDropdownMenu)`
+  margin-top: 4px;
 `;
 
 export const Table = styled.div`
