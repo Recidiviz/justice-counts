@@ -347,13 +347,33 @@ export const InviteMemberContainer = styled.div`
   }
 `;
 
-export const InviteMemberInput = styled.input`
+export const InviteMemberInput = styled.input<{
+  value: string | undefined;
+  error?: boolean;
+}>`
   ${typography.sizeCSS.normal};
   padding: 16px 13px;
-  background-color: ${palette.highlight.grey1};
+  background: ${({ value, error }) => {
+    if (error) {
+      return palette.highlight.red;
+    }
+    return value ? palette.highlight.lightblue1 : palette.highlight.grey1;
+  }};
   border: none;
-  border-bottom: 1px solid ${palette.highlight.grey7};
+  border-bottom: 1px solid
+    ${({ value, error }) => {
+      if (error) {
+        return palette.solid.red;
+      }
+      return value ? palette.solid.blue : palette.highlight.grey9;
+    }};
   min-width: 266px;
+  caret-color: ${({ error }) => {
+    if (error) {
+      return palette.solid.red;
+    }
+    return palette.solid.blue;
+  }};
 
   &:focus {
     outline: none;
@@ -365,11 +385,21 @@ export const InviteMemberInput = styled.input`
   }
 `;
 
+export const InviteMemberErrorContainer = styled.div`
+  position: absolute;
+`;
+
+export const InviteMemberError = styled.div`
+  ${typography.sizeCSS.small}
+  color: ${palette.solid.red};
+`;
+
 export const InviteMemberButton = styled.div<{ disabled: boolean }>`
   ${typography.sizeCSS.normal};
   background-color: ${({ disabled }) =>
     disabled ? palette.highlight.grey8 : palette.solid.blue};
-  color: ${palette.solid.white};
+  color: ${({ disabled }) =>
+    disabled ? palette.solid.darkgrey : palette.solid.white};
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -402,7 +432,7 @@ export const TeamMemberRow = styled.div`
   border-bottom: 1px solid ${palette.highlight.grey4};
 `;
 
-export const TeamMemberNameContainer = styled.div`
+export const TeamMemberNameContainer = styled.div<{ pending?: boolean }>`
   width: 274px;
   min-width: 274px;
   display: flex;
@@ -410,6 +440,8 @@ export const TeamMemberNameContainer = styled.div`
   gap: 8px;
   align-items: center;
   ${typography.sizeCSS.normal};
+  color: ${({ pending }) =>
+    pending ? palette.highlight.grey10 : palette.solid.darkgrey};
 
   @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
     width: 50%;
@@ -420,6 +452,11 @@ export const TeamMemberNameContainer = styled.div`
 export const AdminStatus = styled.div`
   ${typography.sizeCSS.normal};
   color: ${palette.solid.green};
+`;
+
+export const JCAdminStatus = styled.div`
+  ${typography.sizeCSS.normal};
+  color: ${palette.solid.blue};
 `;
 
 export const InvitedStatus = styled.div`

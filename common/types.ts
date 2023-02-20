@@ -34,7 +34,7 @@ export type AgencySystems =
   | "PRETRIAL_SUPERVISION"
   | "OTHER_SUPERVISION";
 
-export type AgencyTeam = {
+export type AgencyTeamMember = {
   auth0_user_id: string;
   name: string;
   email: string;
@@ -95,7 +95,7 @@ export interface UserAgency {
   state_code: string;
   settings: AgencySetting[];
   systems: AgencySystems[];
-  team: AgencyTeam[];
+  team: AgencyTeamMember[];
 }
 
 export type ReportFrequency = "MONTHLY" | "ANNUAL";

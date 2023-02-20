@@ -19,7 +19,7 @@ import { showToast } from "@justice-counts/common/components/Toast";
 import {
   AgencySetting,
   AgencySystems as AgencySystem,
-  AgencyTeam,
+  AgencyTeamMember,
   AgencyTeamMemberRole,
   UserAgency,
 } from "@justice-counts/common/types";
@@ -58,7 +58,7 @@ class AgencyStore {
     return this.currentAgency?.systems;
   }
 
-  get currentAgencyTeam(): AgencyTeam[] | undefined {
+  get currentAgencyTeam(): AgencyTeamMember[] | undefined {
     return this.currentAgency?.team;
   }
 
@@ -266,7 +266,7 @@ class AgencyStore {
   };
 
   inviteTeamMember = (name: string, email: string) => {
-    const newTeamMember: AgencyTeam = {
+    const newTeamMember: AgencyTeamMember = {
       auth0_user_id: "",
       name,
       email,

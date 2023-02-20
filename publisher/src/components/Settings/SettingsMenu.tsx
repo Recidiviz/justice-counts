@@ -17,12 +17,9 @@
 
 import { observer } from "mobx-react-lite";
 import React, { Fragment } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import {
-  settingsMenuPaths,
-  settingsMenuPathsWithoutTeam,
-} from "../../pages/Settings";
+import { settingsMenuPaths } from "../../pages/Settings";
 import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
 import {
@@ -36,10 +33,9 @@ import {
 export const SettingsMenu: React.FC = observer(() => {
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
-  const { agencyId } = useParams() as { agencyId: string };
   const location = useLocation();
   const navigate = useNavigate();
-  const { metricConfigStore, userStore } = useStore();
+  const { metricConfigStore } = useStore();
   const { getMetricsBySystem } = metricConfigStore;
 
   const { system: systemSearchParam, metric: metricSearchParam } =
@@ -55,15 +51,10 @@ export const SettingsMenu: React.FC = observer(() => {
     );
   };
 
-  // TODO remove that when team management is finished
-  const tempSettingsMenuPaths = userStore.isJusticeCountsAdmin(agencyId)
-    ? settingsMenuPaths
-    : settingsMenuPathsWithoutTeam;
-
   return (
     <SettingsMenuContainer>
       {/* TODO remove that when team management is finished */}
-      {tempSettingsMenuPaths.map(({ displayLabel, path }) => (
+      {settingsMenuPaths.map(({ displayLabel, path }) => (
         <Fragment key={path}>
           <MenuItem
             selected={
