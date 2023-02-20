@@ -25,7 +25,7 @@ import {
 import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
-const COLLAPSED_INNER_COLUMNS_WIDTH = 846;
+// const COLLAPSED_INNER_COLUMNS_WIDTH = 846;
 
 export const PageHeader = styled.div`
   width: 100%;
