@@ -334,12 +334,30 @@ export const TeamManagementSectionTitle = styled.div`
   }
 `;
 
+// export const InviteMemberContainer = styled.div`
+//   display: flex;
+//   flex-direction: row;
+//   gap: 8px;
+//   height: 48px;
+//   margin-bottom: 40px;
+//
+//   @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+//     flex-direction: column;
+//     height: unset;
+//   }
+// `;
+
 export const InviteMemberContainer = styled.div`
+  margin-bottom: 40px;
+`;
+
+export const InviteMemberInnerContainer = styled.div`
   display: flex;
   flex-direction: row;
   gap: 8px;
   height: 48px;
   margin-bottom: 40px;
+  margin-bottom: 8px;
 
   @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
     flex-direction: column;

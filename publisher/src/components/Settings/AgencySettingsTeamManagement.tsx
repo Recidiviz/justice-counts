@@ -222,19 +222,19 @@ export const AgencySettingsTeamManagement = observer(() => {
               >
                 Invite
               </InviteMemberButton>
+              <InviteMemberErrorContainer>
+                {!!nameValue && !validateName(nameValue) && (
+                  <InviteMemberError>
+                    Please enter a valid name.
+                  </InviteMemberError>
+                )}
+                {!!emailValue && !validateEmail(emailValue) && (
+                  <InviteMemberError>
+                    Please enter a valid email.
+                  </InviteMemberError>
+                )}
+              </InviteMemberErrorContainer>
             </InviteMemberInnerContainer>
-            <InviteMemberErrorContainer>
-              {!!nameValue && !validateName(nameValue) && (
-                <InviteMemberError>
-                  Please enter a valid name.
-                </InviteMemberError>
-              )}
-              {!!emailValue && !validateEmail(emailValue) && (
-                <InviteMemberError>
-                  Please enter a valid email.
-                </InviteMemberError>
-              )}
-            </InviteMemberErrorContainer>
           </InviteMemberContainer>
           <TeamManagementSectionTitle>Manage staff</TeamManagementSectionTitle>
           <TeamManagementSectionSubTitle>

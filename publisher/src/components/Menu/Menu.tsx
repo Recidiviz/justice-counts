@@ -22,10 +22,7 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import {
-  settingsMenuPaths,
-  settingsMenuPathsWithoutTeam,
-} from "../../pages/Settings";
+import { settingsMenuPaths } from "../../pages/Settings";
 import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
 import closeMenuBurger from "../assets/close-header-menu-icon.svg";
@@ -86,11 +83,6 @@ const Menu = () => {
   };
 
   const currentAgency = userStore.getAgency(agencyId);
-
-  // TODO remove that when team management is finished
-  const tempSettingsMenuPaths = userStore.isJusticeCountsAdmin(agencyId)
-    ? settingsMenuPaths
-    : settingsMenuPathsWithoutTeam;
 
   useEffect(() => {
     const { body } = document;
@@ -198,7 +190,7 @@ const Menu = () => {
 
         {isMobileMenuOpen && (
           <SubMenuContainer>
-            {tempSettingsMenuPaths.map(({ displayLabel, path }) => (
+            {settingsMenuPaths.map(({ displayLabel, path }) => (
               <SubMenuItem
                 key={path}
                 onClick={() => {

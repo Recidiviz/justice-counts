@@ -20,7 +20,6 @@ import {
   NEW_DESKTOP_WIDTH,
   palette,
   typography,
-  TABLET_WIDTH,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 

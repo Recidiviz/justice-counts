@@ -329,6 +329,8 @@ export const UploadFileContainer = styled.div`
 // TODO find a way to make only fixed container shrink
 export const DragDropContainer = styled.div<{ dragging?: boolean }>`
   height: 100%;
+  position: fixed;
+  right: 0;
   display: flex;
   flex-direction: column;
   width: 50%;
