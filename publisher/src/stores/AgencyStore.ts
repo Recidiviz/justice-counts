@@ -36,6 +36,8 @@ class AgencyStore {
 
   currentAgencyId: string | undefined;
 
+  jurisdictions: { included: string[]; excluded: string[] };
+
   loadingSettings: boolean;
 
   constructor(userStore: UserStore, api: API) {
@@ -44,6 +46,7 @@ class AgencyStore {
     this.userStore = userStore;
     this.api = api;
     this.currentAgencyId = undefined;
+    this.jurisdictions = { included: [], excluded: [] };
     this.loadingSettings = true;
   }
 
@@ -72,6 +75,14 @@ class AgencyStore {
     );
   }
 
+  get includedJurisdictionsIds(): string[] {
+    return this.jurisdictions.included;
+  }
+
+  get excludedJurisdictionsIds(): string[] {
+    return this.jurisdictions.excluded;
+  }
+
   initCurrentAgency = (agencyId: string) => {
     runInAction(() => {
       this.currentAgencyId = agencyId;
@@ -97,6 +108,32 @@ class AgencyStore {
         if (this.currentAgency) {
           this.currentAgency.settings = responseJson.settings;
         }
+      });
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
+  async getAgencyJurisdictions(agencyId: string): Promise<void | Error> {
+    try {
+      const response = (await this.api.request({
+        path: `/api/agencies/${agencyId}/jurisdictions`,
+        method: "GET",
+      })) as Response;
+
+      if (response.status !== 200) {
+        throw new Error("There was an issue getting agency jurisdictions.");
+      }
+
+      const responseJson = (await response.json()) as {
+        agency_id: string;
+        jurisdictions: {
+          included: string[];
+          excluded: string[];
+        };
+      };
+      runInAction(() => {
+        this.jurisdictions = responseJson.jurisdictions;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
@@ -322,6 +359,7 @@ class AgencyStore {
     // reset the state when switching agencies
     runInAction(() => {
       this.currentAgencyId = undefined;
+      this.jurisdictions = { included: [], excluded: [] };
       this.loadingSettings = true;
     });
   };
