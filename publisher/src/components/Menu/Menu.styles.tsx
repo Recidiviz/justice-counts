@@ -27,7 +27,7 @@ import {
 } from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
-import { Button } from "../DataUpload";
+import { Button } from "../DataUpload/DataUpload.styles";
 
 export const MenuContainer = styled.nav<{ isMobileMenuOpen: boolean }>`
   font-family: ${typography.family};

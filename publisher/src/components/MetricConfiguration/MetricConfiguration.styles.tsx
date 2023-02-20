@@ -24,7 +24,7 @@ import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
 import { BinaryRadioGroupWrapper } from "../Forms";
-import { ExtendedDropdownMenuItem } from "../Menu";
+import { ExtendedDropdownMenuItem } from "../Menu/Menu.styles";
 import { DropdownContainer, TabbedBar } from "../Reports";
 import { MenuItem } from "../Settings";
 
