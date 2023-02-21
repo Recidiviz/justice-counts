@@ -58,8 +58,7 @@ export type JurisdictionType =
   | "county"
   | "county_subdivision";
 
-export type Jurisdiction = { id: string; dict: JurisdictionDict };
-export type JurisdictionDict = {
+export type Jurisdiction = {
   id: string;
   area_name: string;
   state_name: string;
