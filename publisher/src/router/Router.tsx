@@ -63,7 +63,16 @@ export const Router = () => {
               />
             }
           />
-          <Route path="/getting-started" element={<Guidance />} />
+          <Route
+            path="/getting-started"
+            element={
+              !hasCompletedOnboarding ? (
+                <Guidance />
+              ) : (
+                <Navigate to={`${REPORTS_LOWERCASE}`} />
+              )
+            }
+          />
           {hasCompletedOnboarding ||
             (!hasCompletedOnboarding && isPublishDataStep && (
               <Route path="/data" element={<MetricsView />} />
