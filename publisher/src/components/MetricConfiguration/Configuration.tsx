@@ -25,6 +25,15 @@ import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { useStore } from "../../stores";
+import { monthsByName, removeSnakeCase } from "../../utils";
+import { ReactComponent as CalendarIconDark } from "../assets/calendar-icon-dark.svg";
+import { ReactComponent as CalendarIconLight } from "../assets/calendar-icon-light.svg";
+import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
+import { BinaryRadioButton } from "../Forms";
+import { REPORT_VERB_LOWERCASE } from "../Global/constants";
+import { ExtendedDropdownMenu, ExtendedDropdownMenuItem } from "../Menu";
+import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   ActionStatusTitle,
   BlueLinkSpan,
@@ -41,21 +50,12 @@ import {
   MiniButton,
   MiniButtonWrapper,
   PromptWrapper,
-  RaceEthnicitiesGrid,
   RACE_ETHNICITY_DISAGGREGATION_KEY,
+  RaceEthnicitiesGrid,
   RadioButtonGroupWrapper,
   ReportFrequencyUpdate,
   Subheader,
 } from ".";
-import { useStore } from "../../stores";
-import { monthsByName, removeSnakeCase } from "../../utils";
-import { ReactComponent as CalendarIconDark } from "../assets/calendar-icon-dark.svg";
-import { ReactComponent as CalendarIconLight } from "../assets/calendar-icon-light.svg";
-import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
-import { BinaryRadioButton } from "../Forms";
-import { REPORT_VERB_LOWERCASE } from "../Global/constants";
-import { ExtendedDropdownMenu, ExtendedDropdownMenuItem } from "../Menu";
-import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 
 type MetricConfigurationProps = {
   activeDimensionKey: string | undefined;

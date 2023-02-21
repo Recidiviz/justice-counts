@@ -19,12 +19,12 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { HeaderBar, Logo, LogoContainer, LogoName } from ".";
 import { useStore } from "../../stores";
 import logo from "../assets/jc-logo-vector-new.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { GuidanceMenu, guidancePaths } from "../Guidance";
 import Menu from "../Menu";
+import { HeaderBar, Logo, LogoContainer, LogoName } from ".";
 
 const Header = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };

@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { REPORTS_LOWERCASE, REPORT_LOWERCASE } from "../Global/constants";
+import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 
 export type TopicID =
   | "WELCOME"

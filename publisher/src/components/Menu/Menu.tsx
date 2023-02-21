@@ -19,6 +19,10 @@ import { observer } from "mobx-react-lite";
 import React from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
+import { useStore } from "../../stores";
+import { removeAgencyFromPath } from "../../utils";
+import { Button } from "../DataUpload";
+import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
 import {
   ExtendedDropdownMenu,
   ExtendedDropdownMenuItem,
@@ -27,10 +31,6 @@ import {
   MenuItem,
   WelcomeUser,
 } from ".";
-import { useStore } from "../../stores";
-import { removeAgencyFromPath } from "../../utils";
-import { Button } from "../DataUpload";
-import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
 
 const Menu: React.FC<{ logout: () => Promise<void | string> }> = ({
   logout,

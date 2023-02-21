@@ -20,16 +20,6 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import {
-  CheckIcon,
-  CheckIconWrapper,
-  guidancePaths,
-  metricConfigurationProgressSteps,
-  ProgressItemName,
-  ProgressItemWrapper,
-  ProgressTooltipToast,
-  UploadDataButton,
-} from ".";
 import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
 import checkmarkIcon from "../assets/status-check-icon.png";
@@ -42,6 +32,16 @@ import {
   WelcomeUser,
 } from "../Menu";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
+import {
+  CheckIcon,
+  CheckIconWrapper,
+  guidancePaths,
+  metricConfigurationProgressSteps,
+  ProgressItemName,
+  ProgressItemWrapper,
+  ProgressTooltipToast,
+  UploadDataButton,
+} from ".";
 
 export const GuidanceMenu: React.FC<{ logout: () => Promise<void | string> }> =
   observer(({ logout }) => {
