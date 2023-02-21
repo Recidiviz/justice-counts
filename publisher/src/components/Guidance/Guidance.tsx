@@ -27,6 +27,12 @@ import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { useStore } from "../../stores";
+import MetricConfigStore from "../../stores/MetricConfigStore";
+import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
+import checkmarkIcon from "../assets/status-check-icon.png";
+import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
+import { Loader, Loading } from "../Loading";
 import {
   ActionButton,
   ActionButtonWrapper,
@@ -56,12 +62,6 @@ import {
   TopicDescription,
   TopicTitle,
 } from ".";
-import { useStore } from "../../stores";
-import MetricConfigStore from "../../stores/MetricConfigStore";
-import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
-import checkmarkIcon from "../assets/status-check-icon.png";
-import { REPORTS_LOWERCASE, REPORT_LOWERCASE } from "../Global/constants";
-import { Loader, Loading } from "../Loading";
 
 export const Guidance = observer(() => {
   const navigate = useNavigate();
