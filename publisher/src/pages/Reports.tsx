@@ -26,10 +26,10 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import checkmarkIcon from "../components/assets/status-check-icon.png";
 import {
-  REPORTS_CAPITALIZED,
-  REPORTS_LOWERCASE,
   REPORT_LOWERCASE,
   REPORT_PERIOD_CAPITALIZED,
+  REPORTS_CAPITALIZED,
+  REPORTS_LOWERCASE,
 } from "../components/Global/constants";
 import { Loading } from "../components/Loading";
 import { Onboarding } from "../components/Onboarding";
