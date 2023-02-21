@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { REPORTS_LOWERCASE } from "../Global/constants";
+import { REPORT_LOWERCASE } from "../Global/constants";
 
 export type TopicID =
   | "WELCOME"
@@ -61,7 +61,7 @@ export const onboardingTopicsMetadata: OnboardingTopicsMetadata = {
   },
   ADD_DATA: {
     displayName: "Add data",
-    description: `You can now upload data to your metrics by filling out a monthly ${REPORTS_LOWERCASE} or by uploading a spreadsheet.`,
+    description: `You can now upload data to your metrics by filling out a monthly ${REPORT_LOWERCASE} or by uploading a spreadsheet.`,
   },
   PUBLISH_DATA: {
     displayName: "Publish your uploaded data",
