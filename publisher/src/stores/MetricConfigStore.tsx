@@ -418,6 +418,8 @@ class MetricConfigStore {
       this.dimensions[systemMetricKey][disaggregationKey][dimensionKey] = {};
     }
 
+    this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].enabled =
+      dimensionData.enabled;
     this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].label =
       dimensionData.label;
     this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].key =
