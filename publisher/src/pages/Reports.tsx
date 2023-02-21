@@ -26,10 +26,10 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import checkmarkIcon from "../components/assets/status-check-icon.png";
 import {
-  REPORT_LOWERCASE,
-  REPORT_PERIOD_CAPITALIZED,
   REPORTS_CAPITALIZED,
   REPORTS_LOWERCASE,
+  REPORT_LOWERCASE,
+  REPORT_PERIOD_CAPITALIZED,
 } from "../components/Global/constants";
 import { Loading } from "../components/Loading";
 import { Onboarding } from "../components/Onboarding";
@@ -264,7 +264,7 @@ const Reports: React.FC = () => {
           )
         ) : (
           <NoReportsDisplay>
-            No {REPORTS_LOWERCASE} to display. Create a ${REPORT_LOWERCASE}?
+            No {REPORTS_LOWERCASE} to display. Create a {REPORT_LOWERCASE}?
           </NoReportsDisplay>
         )}
       </>
