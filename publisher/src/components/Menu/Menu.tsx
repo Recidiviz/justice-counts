@@ -43,10 +43,8 @@ import {
   WelcomeUser,
 } from ".";
 
-const Menu: React.FC<{ logout: () => Promise<void | string> }> = ({
-  logout,
-}) => {
-  const { userStore, guidanceStore } = useStore();
+const Menu: React.FC = observer(() => {
+  const { userStore, guidanceStore, authStore, api } = useStore();
   const {
     hasCompletedOnboarding,
     currentTopicID,
@@ -92,6 +90,28 @@ const Menu: React.FC<{ logout: () => Promise<void | string> }> = ({
     metricConfigProgressToastTimeout,
     setMetricConfigProgressToastTimeout,
   ] = useState<NodeJS.Timer>();
+
+  const logout = async (): Promise<void | string> => {
+    try {
+      const response = (await api.request({
+        path: "/auth/logout",
+        method: "POST",
+      })) as Response;
+
+      if (response.status === 200 && authStore) {
+        return authStore.logoutUser();
+      }
+
+      return Promise.reject(
+        new Error(
+          "Something went wrong with clearing auth session or authStore is not initialized."
+        )
+      );
+    } catch (error) {
+      if (error instanceof Error) return error.message;
+      return String(error);
+    }
+  };
 
   const handleMetricConfigToastDisplay = () => {
     setShowMetricConfigProgressToast(true);
@@ -271,6 +291,6 @@ const Menu: React.FC<{ logout: () => Promise<void | string> }> = ({
       )}
     </MenuContainer>
   );
-};
+});
 
 export default observer(Menu);

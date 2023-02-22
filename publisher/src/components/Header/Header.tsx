@@ -29,33 +29,11 @@ import { HeaderBar, Logo, LogoContainer, LogoName } from ".";
 const Header = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
-  const { userStore, guidanceStore, authStore, api } = useStore();
+  const { userStore, guidanceStore } = useStore();
   const { hasCompletedOnboarding } = guidanceStore;
 
   const isAgencyValid = !!userStore.getAgency(agencyId);
   const defaultAgency = userStore.getInitialAgencyId();
-
-  const logout = async (): Promise<void | string> => {
-    try {
-      const response = (await api.request({
-        path: "/auth/logout",
-        method: "POST",
-      })) as Response;
-
-      if (response.status === 200 && authStore) {
-        return authStore.logoutUser();
-      }
-
-      return Promise.reject(
-        new Error(
-          "Something went wrong with clearing auth session or authStore is not initialized."
-        )
-      );
-    } catch (error) {
-      if (error instanceof Error) return error.message;
-      return String(error);
-    }
-  };
 
   return (
     <HeaderBar bottomBorder={hasCompletedOnboarding === false}>
@@ -74,7 +52,7 @@ const Header = observer(() => {
         <LogoName>Justice Counts</LogoName>
       </LogoContainer>
 
-      <Menu logout={logout} />
+      <Menu />
     </HeaderBar>
   );
 });
