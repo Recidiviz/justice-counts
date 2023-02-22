@@ -22,7 +22,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useStore } from "../../stores";
 import logo from "../assets/jc-logo-vector-new.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
-import { GuidanceMenu, guidancePaths } from "../Guidance";
+import { guidancePaths } from "../Guidance";
 import Menu from "../Menu";
 import { HeaderBar, Logo, LogoContainer, LogoName } from ".";
 
@@ -74,11 +74,12 @@ const Header = observer(() => {
         <LogoName>Justice Counts</LogoName>
       </LogoContainer>
 
-      {hasCompletedOnboarding ? (
+      {/* {hasCompletedOnboarding ? (
         <Menu logout={logout} />
       ) : (
         <GuidanceMenu logout={logout} />
-      )}
+      )} */}
+      <Menu logout={logout} />
     </HeaderBar>
   );
 });

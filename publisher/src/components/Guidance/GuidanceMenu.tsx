@@ -43,90 +43,93 @@ import {
   UploadDataButton,
 } from ".";
 
-export const GuidanceMenu: React.FC<{ logout: () => Promise<void | string> }> =
-  observer(({ logout }) => {
-    const { guidanceStore, userStore } = useStore();
-    const {
-      currentTopicID,
-      getOverallMetricProgress,
-      getMetricAvailabilityFrequencyProgress,
-      getBreakdownProgress,
-      getMetricDefinitionProgress,
-      getBreakdownDefinitionProgress,
-    } = guidanceStore;
+// export const GuidanceMenu: React.FC<{ logout: () => Promise<void | string> }> =
+//   observer(({ logout }) => {
+//     const { guidanceStore, userStore } = useStore();
+//     const {
+//       currentTopicID,
+//       getOverallMetricProgress,
+//       getMetricAvailabilityFrequencyProgress,
+//       getBreakdownProgress,
+//       getMetricDefinitionProgress,
+//       getBreakdownDefinitionProgress,
+//     } = guidanceStore;
 
-    const navigate = useNavigate();
-    const location = useLocation();
-    const params = useParams();
-    const [settingsSearchParams] = useSettingsSearchParams();
-    const pathWithoutAgency = removeAgencyFromPath(location.pathname);
-    const currentAgency = userStore.getAgency(params.agencyId as string);
+//     const navigate = useNavigate();
+//     const location = useLocation();
+//     const params = useParams();
+//     const [settingsSearchParams] = useSettingsSearchParams();
+//     const pathWithoutAgency = removeAgencyFromPath(location.pathname);
+//     const currentAgency = userStore.getAgency(params.agencyId as string);
 
-    const isHome = params["*"] === guidancePaths.home;
-    const isSettings = params["*"]?.includes(guidancePaths.settings);
-    const isRecords = params["*"]?.includes(guidancePaths.records);
-    const isDataVizPage = params["*"]?.includes(guidancePaths.data);
-    const isPublishDataStep = currentTopicID === "PUBLISH_DATA";
-    const isAddDataOrPublishDataStep =
-      currentTopicID === "ADD_DATA" || isPublishDataStep;
-    const isMetricConfigStep = currentTopicID === "METRIC_CONFIG";
+//     const isHome = params["*"] === guidancePaths.home;
+//     const isSettings = params["*"]?.includes(guidancePaths.settings);
+//     const isRecords = params["*"]?.includes(guidancePaths.records);
+//     const isDataVizPage = params["*"]?.includes(guidancePaths.data);
+//     const isPublishDataStep = currentTopicID === "PUBLISH_DATA";
+//     const isAddDataOrPublishDataStep =
+//       currentTopicID === "ADD_DATA" || isPublishDataStep;
+//     const isMetricConfigStep = currentTopicID === "METRIC_CONFIG";
 
-    const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
-    const hasSystemMetricParams = !systemMetricKey.includes("undefined");
+//     const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
+//     const hasSystemMetricParams = !systemMetricKey.includes("undefined");
 
-    const metricCompletionProgress = getOverallMetricProgress(systemMetricKey);
+//     const metricCompletionProgress = getOverallMetricProgress(systemMetricKey);
 
-    const [showMetricConfigProgressToast, setShowMetricConfigProgressToast] =
-      useState(false);
-    const [
-      metricConfigProgressToastTimeout,
-      setMetricConfigProgressToastTimeout,
-    ] = useState<NodeJS.Timer>();
+//     const [showMetricConfigProgressToast, setShowMetricConfigProgressToast] =
+//       useState(false);
+//     const [
+//       metricConfigProgressToastTimeout,
+//       setMetricConfigProgressToastTimeout,
+//     ] = useState<NodeJS.Timer>();
 
-    const handleMetricConfigToastDisplay = () => {
-      setShowMetricConfigProgressToast(true);
+//     const handleMetricConfigToastDisplay = () => {
+//       setShowMetricConfigProgressToast(true);
 
-      if (metricConfigProgressToastTimeout) {
-        clearTimeout(metricConfigProgressToastTimeout);
-      }
+//       if (metricConfigProgressToastTimeout) {
+//         clearTimeout(metricConfigProgressToastTimeout);
+//       }
 
-      const timeout = setTimeout(() => {
-        setShowMetricConfigProgressToast(false);
-      }, 3500);
+//       const timeout = setTimeout(() => {
+//         setShowMetricConfigProgressToast(false);
+//       }, 3500);
 
-      setMetricConfigProgressToastTimeout(timeout);
-    };
+//       setMetricConfigProgressToastTimeout(timeout);
+//     };
 
-    const metricProgress =
-      getMetricAvailabilityFrequencyProgress(systemMetricKey);
-    const metricDefinitionProgress =
-      getMetricDefinitionProgress(systemMetricKey);
-    const breakdownProgress = getBreakdownProgress(systemMetricKey);
-    const breakdownDefinitionProgress =
-      getBreakdownDefinitionProgress(systemMetricKey);
+//     const metricProgress =
+//       getMetricAvailabilityFrequencyProgress(systemMetricKey);
+//     const metricDefinitionProgress =
+//       getMetricDefinitionProgress(systemMetricKey);
+//     const breakdownProgress = getBreakdownProgress(systemMetricKey);
+//     const breakdownDefinitionProgress =
+//       getBreakdownDefinitionProgress(systemMetricKey);
 
-    useEffect(
-      () => handleMetricConfigToastDisplay(),
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [
-        metricProgress,
-        metricDefinitionProgress,
-        breakdownProgress,
-        breakdownDefinitionProgress,
-      ]
-    );
+//     useEffect(
+//       () => handleMetricConfigToastDisplay(),
+//       // eslint-disable-next-line react-hooks/exhaustive-deps
+//       [
+//         metricProgress,
+//         metricDefinitionProgress,
+//         breakdownProgress,
+//         breakdownDefinitionProgress,
+//       ]
+//     );
 
-    if (!guidanceStore.isInitialized) return null;
+//     if (!guidanceStore.isInitialized) return null;
 
-    return (
-      <MenuContainer>
-        <WelcomeUser noRightBorder={currentTopicID === "WELCOME"}>
+//     return (
+//       <MenuContainer>
+{
+  /* <WelcomeUser noRightBorder={currentTopicID === "WELCOME"}>
           {userStore.nameOrEmail &&
             currentAgency?.name &&
             `Welcome, ${userStore.nameOrEmail} at ${currentAgency.name}`}
-        </WelcomeUser>
+        </WelcomeUser> */
+}
 
-        {currentTopicID !== "WELCOME" && (
+{
+  /* {currentTopicID !== "WELCOME" && (
           <>
             <MenuItem
               style={{ position: "relative" }}
@@ -134,10 +137,14 @@ export const GuidanceMenu: React.FC<{ logout: () => Promise<void | string> }> =
               onClick={() => navigate(guidancePaths.home)}
             >
               Get Started
-            </MenuItem>
+            </MenuItem> */
+}
 
-            {/* Metric Configuration Progress Toast */}
-            {isMetricConfigStep && hasSystemMetricParams && (
+{
+  /* Metric Configuration Progress Toast */
+}
+{
+  /* {isMetricConfigStep && hasSystemMetricParams && (
               <ProgressTooltipToast showToast={showMetricConfigProgressToast}>
                 {metricConfigurationProgressSteps.map((step) => (
                   <ProgressItemWrapper key={step}>
@@ -168,17 +175,23 @@ export const GuidanceMenu: React.FC<{ logout: () => Promise<void | string> }> =
               >
                 Data
               </MenuItem>
-            )}
+            )} */
+}
 
-            <MenuItem
+{
+  /* <MenuItem
               active={isSettings}
               onClick={() => navigate(guidancePaths.settings)}
             >
               Settings
-            </MenuItem>
+            </MenuItem> */
+}
 
-            {/* Learn More */}
-            <MenuItem>
+{
+  /* Learn More */
+}
+{
+  /* <MenuItem>
               <a
                 href="https://justicecounts.csgjusticecenter.org/"
                 target="_blank"
@@ -186,10 +199,14 @@ export const GuidanceMenu: React.FC<{ logout: () => Promise<void | string> }> =
               >
                 Learn More
               </a>
-            </MenuItem>
+            </MenuItem> */
+}
 
-            {/* Agencies Dropdown */}
-            {userStore.userAgencies && userStore.userAgencies.length > 1 && (
+{
+  /* Agencies Dropdown */
+}
+{
+  /* {userStore.userAgencies && userStore.userAgencies.length > 1 && (
               <MenuItem>
                 <Dropdown>
                   <ExtendedDropdownToggle kind="borderless">
@@ -217,9 +234,11 @@ export const GuidanceMenu: React.FC<{ logout: () => Promise<void | string> }> =
                   </ExtendedDropdownMenu>
                 </Dropdown>
               </MenuItem>
-            )}
+            )} */
+}
 
-            <MenuItem onClick={logout} highlight>
+{
+  /* <MenuItem onClick={logout} highlight>
               Log Out
             </MenuItem>
 
@@ -231,9 +250,12 @@ export const GuidanceMenu: React.FC<{ logout: () => Promise<void | string> }> =
               >
                 Upload Data
               </UploadDataButton>
-            </MenuItem>
-          </>
+            </MenuItem> */
+}
+{
+  /* </>
         )}
       </MenuContainer>
     );
-  });
+  }); */
+}

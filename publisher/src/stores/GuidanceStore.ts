@@ -69,7 +69,7 @@ class GuidanceStore {
   }
 
   get hasCompletedOnboarding() {
-    if (Object.values(this.onboardingTopicsStatuses).length === 0) return false;
+    if (Object.values(this.onboardingTopicsStatuses).length === 0) return null;
     return (
       Object.values(this.onboardingTopicsStatuses).find(
         (topicCompleted) => !topicCompleted
