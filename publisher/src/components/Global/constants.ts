@@ -32,3 +32,10 @@ export const REPORTED_LOWERCASE = "shared";
 export const REPORT_VERB_LOWERCASE = "share";
 export const REPORT_VERB_LOWERCASE2 = "enter";
 export const REPORTING_PERIOD_LOWERCASE = "time period";
+
+export const SYSTEM_LOWERCASE = "sector";
+export const SYSTEMS_LOWERCASE = "sectors";
+export const SYSTEM_UPPERCASE = "SECTOR";
+export const SYSTEMS_UPPERCASE = "SECTORS";
+export const SYSTEM_CAPITALIZED = "Sector";
+export const SYSTEMS_CAPITALIZED = "Sectors";

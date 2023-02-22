@@ -33,6 +33,7 @@ import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import downloadIcon from "../assets/download-icon.png";
 import { Title, TitleWrapper } from "../Forms";
+import { SYSTEM_CAPITALIZED } from "../Global/constants";
 import { ContainedLoader } from "../Loading";
 import { TeamMemberNameWithBadge } from "../primitives";
 import {
@@ -220,7 +221,7 @@ export const UploadedFiles: React.FC = observer(() => {
     "Filename",
     "Uploaded",
     "Processed",
-    "System",
+    SYSTEM_CAPITALIZED,
   ];
 
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
