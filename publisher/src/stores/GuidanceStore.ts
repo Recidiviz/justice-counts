@@ -89,9 +89,9 @@ class GuidanceStore {
     return topicID;
   }
 
-  getOnboardingTopicsStatuses = async (
-    agencyId: string
-  ): Promise<OnboardingTopicsStatuses[]> => {
+  getOnboardingTopicsStatuses = async (): Promise<
+    OnboardingTopicsStatuses[]
+  > => {
     const response = (await this.api.request({
       path: `/api/users/guidance`,
       method: "GET",

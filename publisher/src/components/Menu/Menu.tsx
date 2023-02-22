@@ -43,7 +43,7 @@ import {
   WelcomeUser,
 } from ".";
 
-const Menu: React.FC = observer(() => {
+const Menu: React.FC = () => {
   const { userStore, guidanceStore, authStore, api } = useStore();
   const {
     hasCompletedOnboarding,
@@ -143,7 +143,7 @@ const Menu: React.FC = observer(() => {
   useEffect(() => {
     const initOnboardingTopicStatuses = async () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await guidanceStore.getOnboardingTopicsStatuses(agencyId);
+      await guidanceStore.getOnboardingTopicsStatuses();
     };
 
     initOnboardingTopicStatuses();
@@ -291,6 +291,6 @@ const Menu: React.FC = observer(() => {
       )}
     </MenuContainer>
   );
-});
+};
 
 export default observer(Menu);
