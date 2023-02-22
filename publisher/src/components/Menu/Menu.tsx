@@ -63,15 +63,28 @@ const Menu: React.FC<{ logout: () => Promise<void | string> }> = ({
   const pathWithoutAgency = removeAgencyFromPath(location.pathname);
   const currentAgency = userStore.getAgency(agencyId);
   const [settingsSearchParams] = useSettingsSearchParams();
-
-  const isPublishDataStep = currentTopicID === "PUBLISH_DATA";
-  const isAddDataOrPublishDataStep =
-    currentTopicID === "ADD_DATA" || isPublishDataStep;
-  const isMetricConfigStep = currentTopicID === "METRIC_CONFIG";
-
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const hasSystemMetricParams = !systemMetricKey.includes("undefined");
-  const metricCompletionProgress = getOverallMetricProgress(systemMetricKey);
+
+  const isPublishDataStep =
+    !hasCompletedOnboarding && currentTopicID === "PUBLISH_DATA";
+  const isAddDataOrPublishDataStep =
+    (!hasCompletedOnboarding && currentTopicID === "ADD_DATA") ||
+    isPublishDataStep;
+  const isMetricConfigStep =
+    !hasCompletedOnboarding && currentTopicID === "METRIC_CONFIG";
+  const metricCompletionProgress = !hasCompletedOnboarding
+    ? getOverallMetricProgress(systemMetricKey)
+    : {};
+  const metricProgress =
+    !hasCompletedOnboarding &&
+    getMetricAvailabilityFrequencyProgress(systemMetricKey);
+  const metricDefinitionProgress =
+    !hasCompletedOnboarding && getMetricDefinitionProgress(systemMetricKey);
+  const breakdownProgress =
+    !hasCompletedOnboarding && getBreakdownProgress(systemMetricKey);
+  const breakdownDefinitionProgress =
+    !hasCompletedOnboarding && getBreakdownDefinitionProgress(systemMetricKey);
 
   const [showMetricConfigProgressToast, setShowMetricConfigProgressToast] =
     useState(false);
@@ -94,15 +107,10 @@ const Menu: React.FC<{ logout: () => Promise<void | string> }> = ({
     setMetricConfigProgressToastTimeout(timeout);
   };
 
-  const metricProgress =
-    getMetricAvailabilityFrequencyProgress(systemMetricKey);
-  const metricDefinitionProgress = getMetricDefinitionProgress(systemMetricKey);
-  const breakdownProgress = getBreakdownProgress(systemMetricKey);
-  const breakdownDefinitionProgress =
-    getBreakdownDefinitionProgress(systemMetricKey);
-
   useEffect(
-    () => handleMetricConfigToastDisplay(),
+    () => {
+      if (isMetricConfigStep) handleMetricConfigToastDisplay();
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       metricProgress,
