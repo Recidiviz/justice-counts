@@ -18,7 +18,7 @@
 /* eslint-disable camelcase */
 import addIcon from "@justice-counts/common/assets/add-icon.svg";
 import blackCheck from "@justice-counts/common/assets/black-check-icon.svg";
-import jurisdictionsData from "@justice-counts/common/fips_with_county_subdivisions.json";
+// import jurisdictionsData from "@justice-counts/common/fips_with_county_subdivisions.json";
 import { Jurisdiction } from "@justice-counts/common/types";
 import React, { useEffect, useState } from "react";
 
@@ -77,7 +77,7 @@ export const AgencySettingsJurisdictions: React.FC<{
   const [isExclusionsViewActive, setIsExclusionsViewActive] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [totalSearchResultsShow, setTotalSearchResultsShow] = useState(10);
-  const [searchResult, setSearchResult] = useState<Jurisdiction[]>([]);
+  const [searchResult] = useState<Jurisdiction[]>([]);
   const [includedJurisdictions, setIncludedJurisdictions] = useState<
     Jurisdiction[]
   >([]);
@@ -133,19 +133,19 @@ export const AgencySettingsJurisdictions: React.FC<{
   };
 
   // helpers
-  const getSearchResult = (searchValue: string) => {
-    // const matchedData = jurisdictions.filter((entry) =>
-    //   entry.area_name.toLowerCase().startsWith(searchValue.toLowerCase().trim())
-    // );
-    // const addedJurisdictions = [
-    //   ...includedJurisdictions,
-    //   ...excludedJurisdictions,
-    // ].map((entry) => entry.id);
-    // const matchedDataWithoutAddedAreas = matchedData.filter(
-    //   (entry) => !addedJurisdictions.includes(entry.id)
-    // );
-    // setSearchResult(matchedDataWithoutAddedAreas);
-  };
+  // const getSearchResult = (searchValue: string) => {
+  //   const matchedData = jurisdictions.filter((entry) =>
+  //     entry.area_name.toLowerCase().startsWith(searchValue.toLowerCase().trim())
+  //   );
+  //   const addedJurisdictions = [
+  //     ...includedJurisdictions,
+  //     ...excludedJurisdictions,
+  //   ].map((entry) => entry.id);
+  //   const matchedDataWithoutAddedAreas = matchedData.filter(
+  //     (entry) => !addedJurisdictions.includes(entry.id)
+  //   );
+  //   setSearchResult(matchedDataWithoutAddedAreas);
+  // };
 
   const removeUnderscore = (value: string) => value.replaceAll("_", " ");
 
@@ -186,7 +186,7 @@ export const AgencySettingsJurisdictions: React.FC<{
               value={inputValue}
               onChange={(e) => {
                 setInputValue(e.target.value);
-                getSearchResult(e.target.value);
+                // getSearchResult(e.target.value);
               }}
             />
             {!!inputValue &&
