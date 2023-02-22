@@ -56,15 +56,15 @@ import {
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
-const jurisdictions: Jurisdiction[] = (jurisdictionsData as Jurisdiction[]).map(
-  (entry) => ({
-    ...entry,
-    area_name:
-      entry.area_name === entry.state_name
-        ? entry.area_name
-        : `${entry.area_name}, ${entry.state_abbrev}`,
-  })
-);
+// const jurisdictions: Jurisdiction[] = (jurisdictionsData as Jurisdiction[]).map(
+//   (entry) => ({
+//     ...entry,
+//     area_name:
+//       entry.area_name === entry.state_name
+//         ? entry.area_name
+//         : `${entry.area_name}, ${entry.state_abbrev}`,
+//   })
+// );
 
 // whole flow is mocked
 export const AgencySettingsJurisdictions: React.FC<{
@@ -134,17 +134,17 @@ export const AgencySettingsJurisdictions: React.FC<{
 
   // helpers
   const getSearchResult = (searchValue: string) => {
-    const matchedData = jurisdictions.filter((entry) =>
-      entry.area_name.toLowerCase().startsWith(searchValue.toLowerCase().trim())
-    );
-    const addedJurisdictions = [
-      ...includedJurisdictions,
-      ...excludedJurisdictions,
-    ].map((entry) => entry.id);
-    const matchedDataWithoutAddedAreas = matchedData.filter(
-      (entry) => !addedJurisdictions.includes(entry.id)
-    );
-    setSearchResult(matchedDataWithoutAddedAreas);
+    // const matchedData = jurisdictions.filter((entry) =>
+    //   entry.area_name.toLowerCase().startsWith(searchValue.toLowerCase().trim())
+    // );
+    // const addedJurisdictions = [
+    //   ...includedJurisdictions,
+    //   ...excludedJurisdictions,
+    // ].map((entry) => entry.id);
+    // const matchedDataWithoutAddedAreas = matchedData.filter(
+    //   (entry) => !addedJurisdictions.includes(entry.id)
+    // );
+    // setSearchResult(matchedDataWithoutAddedAreas);
   };
 
   const removeUnderscore = (value: string) => value.replaceAll("_", " ");
