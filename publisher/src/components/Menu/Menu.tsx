@@ -120,6 +120,15 @@ const Menu: React.FC<{ logout: () => Promise<void | string> }> = ({
     ]
   );
 
+  useEffect(() => {
+    const initOnboardingTopicStatuses = async () => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await guidanceStore.getOnboardingTopicsStatuses(agencyId);
+    };
+
+    initOnboardingTopicStatuses();
+  }, [guidanceStore, agencyId]);
+
   if (hasCompletedOnboarding === false && !currentTopicID) return null;
 
   return (
@@ -133,7 +142,7 @@ const Menu: React.FC<{ logout: () => Promise<void | string> }> = ({
       </WelcomeUser>
 
       {(hasCompletedOnboarding ||
-        (!hasCompletedOnboarding && currentTopicID !== "WELCOME")) && (
+        (hasCompletedOnboarding === false && currentTopicID !== "WELCOME")) && (
         <>
           {/* Guidance */}
           {hasCompletedOnboarding === false && (
@@ -152,9 +161,10 @@ const Menu: React.FC<{ logout: () => Promise<void | string> }> = ({
                   {metricConfigurationProgressSteps.map((step) => (
                     <ProgressItemWrapper key={step}>
                       <CheckIconWrapper>
-                        {metricCompletionProgress[step] && (
-                          <CheckIcon src={checkmarkIcon} alt="" />
-                        )}
+                        {metricCompletionProgress &&
+                          metricCompletionProgress[step] && (
+                            <CheckIcon src={checkmarkIcon} alt="" />
+                          )}
                       </CheckIconWrapper>
                       <ProgressItemName>{step}</ProgressItemName>
                     </ProgressItemWrapper>

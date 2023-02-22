@@ -128,15 +128,6 @@ export const Guidance = observer(() => {
   ).length;
 
   useEffect(() => {
-    const initOnboardingTopicStatuses = async () => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await guidanceStore.getOnboardingTopicsStatuses(agencyId);
-    };
-
-    initOnboardingTopicStatuses();
-  }, [guidanceStore, agencyId]);
-
-  useEffect(() => {
     const initialize = async () => {
       reportStore.resetState();
       await reportStore.getReportOverviews(agencyId);

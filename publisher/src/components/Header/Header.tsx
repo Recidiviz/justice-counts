@@ -58,7 +58,7 @@ const Header = observer(() => {
   };
 
   return (
-    <HeaderBar bottomBorder={!hasCompletedOnboarding}>
+    <HeaderBar bottomBorder={hasCompletedOnboarding === false}>
       <LogoContainer
         onClick={() =>
           hasCompletedOnboarding
@@ -74,11 +74,6 @@ const Header = observer(() => {
         <LogoName>Justice Counts</LogoName>
       </LogoContainer>
 
-      {/* {hasCompletedOnboarding ? (
-        <Menu logout={logout} />
-      ) : (
-        <GuidanceMenu logout={logout} />
-      )} */}
       <Menu logout={logout} />
     </HeaderBar>
   );
