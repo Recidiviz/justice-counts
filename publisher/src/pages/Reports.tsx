@@ -136,6 +136,8 @@ const Reports: React.FC = () => {
       const result = await reportStore.getReportOverviews(agencyId);
       if (result instanceof Error) {
         setLoadingError(result.message);
+      } else {
+        setLoadingError(undefined);
       }
     };
 
