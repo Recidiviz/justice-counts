@@ -75,10 +75,6 @@ export const AgencySettingsTeamManagement = observer(() => {
   const [nameValue, setNameValue] = useState("");
   const [emailValue, setEmailValue] = useState("");
 
-  const validateName = (name: string) => {
-    return name.match(/^[a-zA-Z ]+$/);
-  };
-
   const validateEmail = (email: string) => {
     // simple email validation
     // from: https://stackoverflow.com/a/9204568
@@ -204,7 +200,6 @@ export const AgencySettingsTeamManagement = observer(() => {
                 placeholder="Enter full name"
                 value={nameValue}
                 onChange={(e) => setNameValue(e.target.value)}
-                error={!!nameValue && !validateName(nameValue)}
               />
               <InviteMemberInput
                 placeholder="Enter email"
@@ -215,26 +210,19 @@ export const AgencySettingsTeamManagement = observer(() => {
               <InviteMemberButton
                 onClick={() => handleInviteTeamMamber(nameValue, emailValue)}
                 disabled={
-                  !validateName(nameValue) ||
-                  !validateEmail(emailValue) ||
-                  isInviting
+                  !nameValue || !validateEmail(emailValue) || isInviting
                 }
               >
                 Invite
               </InviteMemberButton>
-              <InviteMemberErrorContainer>
-                {!!nameValue && !validateName(nameValue) && (
-                  <InviteMemberError>
-                    Please enter a valid name.
-                  </InviteMemberError>
-                )}
-                {!!emailValue && !validateEmail(emailValue) && (
-                  <InviteMemberError>
-                    Please enter a valid email.
-                  </InviteMemberError>
-                )}
-              </InviteMemberErrorContainer>
             </InviteMemberInnerContainer>
+            <InviteMemberErrorContainer>
+              {!!emailValue && !validateEmail(emailValue) && (
+                <InviteMemberError>
+                  Please enter a valid email.
+                </InviteMemberError>
+              )}
+            </InviteMemberErrorContainer>
           </InviteMemberContainer>
           <TeamManagementSectionTitle>Manage staff</TeamManagementSectionTitle>
           <TeamManagementSectionSubTitle>
