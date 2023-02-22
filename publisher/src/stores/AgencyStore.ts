@@ -29,6 +29,11 @@ import { AgencySettingType } from "../components/Settings";
 import API from "./API";
 import UserStore from "./UserStore";
 
+type Jurisdictions = {
+  included: string[];
+  excluded: string[];
+};
+
 class AgencyStore {
   userStore: UserStore;
 
@@ -36,7 +41,7 @@ class AgencyStore {
 
   currentAgencyId: string | undefined;
 
-  jurisdictions: { included: string[]; excluded: string[] };
+  jurisdictions: Jurisdictions;
 
   loadingSettings: boolean;
 
@@ -194,6 +199,33 @@ class AgencyStore {
     });
   };
 
+  saveAgencyJurisdictions = async (
+    jurisdictions: { jurisdictions: Jurisdictions },
+    agencyId: string
+  ): Promise<void> => {
+    const response = (await this.api.request({
+      path: `/api/agencies/${agencyId}`,
+      body: jurisdictions,
+      method: "PATCH",
+    })) as Response;
+
+    if (response.status !== 200) {
+      showToast({
+        message: `Failed to save.`,
+        color: "red",
+        timeout: 4000,
+      });
+      throw new Error("There was an issue updating agency jurisdictions.");
+    }
+
+    showToast({
+      message: `Agency jurisdictions saved.`,
+      check: true,
+      color: "blue",
+      timeout: 4000,
+    });
+  };
+
   updateAgencySettings = (
     type: AgencySettingType,
     text: string,
@@ -230,6 +262,14 @@ class AgencyStore {
     return {
       systems,
     };
+  };
+
+  updateAgencyJurisdictions = (
+    jurisdictions: Jurisdictions
+  ): { jurisdictions: Jurisdictions } => {
+    this.jurisdictions = jurisdictions;
+
+    return { jurisdictions };
   };
 
   removeAgencyTeamMemberRequest = async (

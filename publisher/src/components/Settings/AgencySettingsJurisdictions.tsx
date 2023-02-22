@@ -21,6 +21,7 @@ import blackCheck from "@justice-counts/common/assets/black-check-icon.svg";
 import jurisdictionsJSONData from "@justice-counts/common/fips_with_county_subdivisions.json";
 import { Jurisdiction } from "@justice-counts/common/types";
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import rightArrow from "../assets/right-arrow.svg";
@@ -57,16 +58,6 @@ import {
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
-const jurisdictions: Jurisdiction[] = (
-  jurisdictionsJSONData as Jurisdiction[]
-).map((entry) => ({
-  ...entry,
-  area_name:
-    entry.area_name === entry.state_name
-      ? entry.area_name
-      : `${entry.area_name}, ${entry.state_abbrev}`,
-}));
-
 const jurisdictionsMapById = (jurisdictionsJSONData as Jurisdiction[]).reduce(
   (map, area) => ({ ...map, [area.id]: area }),
   {} as { [id: string]: Jurisdiction }
@@ -76,10 +67,16 @@ const jurisdictionsMapById = (jurisdictionsJSONData as Jurisdiction[]).reduce(
 export const AgencySettingsJurisdictions: React.FC<{
   settingProps: SettingProps;
 }> = ({ settingProps }) => {
+  const { agencyId } = useParams() as { agencyId: string };
   const { isSettingInEditMode, openSetting, removeEditMode, allowEdit } =
     settingProps;
   const { agencyStore } = useStore();
-  const { includedJurisdictionsIds, excludedJurisdictionsIds } = agencyStore;
+  const {
+    includedJurisdictionsIds,
+    excludedJurisdictionsIds,
+    updateAgencyJurisdictions,
+    saveAgencyJurisdictions,
+  } = agencyStore;
 
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isExclusionsViewActive, setIsExclusionsViewActive] = useState(false);
@@ -99,13 +96,38 @@ export const AgencySettingsJurisdictions: React.FC<{
   const hasExclusions = excludedJurisdictionsIds.length > 0;
 
   const handleSaveClick = () => {
-    removeEditMode();
+    const updatedJurisdictions = updateAgencyJurisdictions({
+      included: editedIncludedJurisdictionsIds,
+      excluded: editedExcludedJurisdictionsIds,
+    });
+    saveAgencyJurisdictions(updatedJurisdictions, agencyId);
   };
-  // I guess I will compare store jurisdictions ids with locals and based on that will show modal or just close edit mode
   const handleCancelClick = () => {
-    removeEditMode();
+    const sortedStoreIncludedIds = includedJurisdictionsIds
+      .sort((a, b) => a.localeCompare(b))
+      .join();
+    const sortedEditedIncludedIds = editedIncludedJurisdictionsIds
+      .sort((a, b) => a.localeCompare(b))
+      .join();
+    const sortedStoreExcludedIds = excludedJurisdictionsIds
+      .sort((a, b) => a.localeCompare(b))
+      .join();
+    const sortedEditedExcludedIds = editedExcludedJurisdictionsIds
+      .sort((a, b) => a.localeCompare(b))
+      .join();
+
+    if (
+      sortedStoreIncludedIds === sortedEditedIncludedIds &&
+      sortedStoreExcludedIds === sortedEditedExcludedIds
+    ) {
+      removeEditMode();
+    } else {
+      setIsConfirmModalOpen(true);
+    }
   };
   const handleModalConfirm = () => {
+    setEditedIncludedJurisdictionsIds(includedJurisdictionsIds);
+    setEditedExcludedJurisdictionsIds(excludedJurisdictionsIds);
     setIsConfirmModalOpen(false);
     removeEditMode();
   };
@@ -146,8 +168,11 @@ export const AgencySettingsJurisdictions: React.FC<{
 
   // helpers
   const getSearchResult = (searchValue: string) => {
-    const matchedData = jurisdictions.filter((entry) =>
-      entry.area_name.toLowerCase().startsWith(searchValue.toLowerCase().trim())
+    const matchedData = (jurisdictionsJSONData as Jurisdiction[]).filter(
+      (entry) =>
+        entry.area_name
+          .toLowerCase()
+          .startsWith(searchValue.toLowerCase().trim())
     );
     const addedJurisdictions = [
       ...editedIncludedJurisdictionsIds,
