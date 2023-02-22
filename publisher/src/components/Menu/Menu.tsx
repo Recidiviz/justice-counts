@@ -71,7 +71,6 @@ const Menu: React.FC<{ logout: () => Promise<void | string> }> = ({
 
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const hasSystemMetricParams = !systemMetricKey.includes("undefined");
-
   const metricCompletionProgress = getOverallMetricProgress(systemMetricKey);
 
   const [showMetricConfigProgressToast, setShowMetricConfigProgressToast] =
@@ -113,7 +112,7 @@ const Menu: React.FC<{ logout: () => Promise<void | string> }> = ({
     ]
   );
 
-  if (!hasCompletedOnboarding && !currentTopicID) return null;
+  if (hasCompletedOnboarding === false && !currentTopicID) return null;
 
   return (
     <MenuContainer>
@@ -129,7 +128,7 @@ const Menu: React.FC<{ logout: () => Promise<void | string> }> = ({
         (!hasCompletedOnboarding && currentTopicID !== "WELCOME")) && (
         <>
           {/* Guidance */}
-          {!hasCompletedOnboarding && (
+          {hasCompletedOnboarding === false && (
             <>
               <MenuItem
                 style={{ position: "relative" }}
@@ -158,7 +157,9 @@ const Menu: React.FC<{ logout: () => Promise<void | string> }> = ({
           )}
 
           {/* Reports */}
-          {(hasCompletedOnboarding || isAddDataOrPublishDataStep) && (
+          {(hasCompletedOnboarding ||
+            hasCompletedOnboarding === null ||
+            isAddDataOrPublishDataStep) && (
             <MenuItem
               onClick={() => navigate(REPORTS_LOWERCASE)}
               active={pathWithoutAgency === REPORTS_LOWERCASE}
@@ -168,7 +169,9 @@ const Menu: React.FC<{ logout: () => Promise<void | string> }> = ({
           )}
 
           {/* Data (Visualizations) */}
-          {(hasCompletedOnboarding || isPublishDataStep) && (
+          {(hasCompletedOnboarding ||
+            hasCompletedOnboarding === null ||
+            isPublishDataStep) && (
             <MenuItem
               onClick={() => navigate("data")}
               active={pathWithoutAgency === "data"}
@@ -220,7 +223,6 @@ const Menu: React.FC<{ logout: () => Promise<void | string> }> = ({
           )}
 
           {/* Settings */}
-
           <MenuItem
             onClick={() => navigate("settings")}
             active={pathWithoutAgency.startsWith("settings")}

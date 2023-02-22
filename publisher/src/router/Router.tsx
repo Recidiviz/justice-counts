@@ -73,10 +73,10 @@ export const Router = () => {
               )
             }
           />
-          {hasCompletedOnboarding ||
-            (!hasCompletedOnboarding && isPublishDataStep && (
-              <Route path="/data" element={<MetricsView />} />
-            ))}
+          {(hasCompletedOnboarding ||
+            (!hasCompletedOnboarding && isPublishDataStep)) && (
+            <Route path="/data" element={<MetricsView />} />
+          )}
           {(hasCompletedOnboarding ||
             (!hasCompletedOnboarding && currentTopicID !== "WELCOME")) && (
             <Route path="/settings/*" element={<Settings />} />
