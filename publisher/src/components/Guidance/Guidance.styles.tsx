@@ -32,7 +32,6 @@ export const GuidanceContainer = styled.div`
 
 export const ContentContainer = styled.div<{ currentTopicID?: string }>`
   width: 100%;
-  height: 54%;
   max-width: 497px;
 
   display: flex;
@@ -142,10 +141,9 @@ export const ProgressStepBubble = styled.div<{ highlight?: boolean }>`
 
 export const ReportsOverviewContainer = styled.div`
   width: 100%;
-  max-height: 30vh;
-  height: 30vh;
+  height: 238px;
   padding: 10px 0;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 export const ReportsOverviewItemWrapper = styled.div`
