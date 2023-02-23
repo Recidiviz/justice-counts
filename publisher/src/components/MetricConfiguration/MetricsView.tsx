@@ -27,6 +27,7 @@ import { ReactComponent as GoToMetricConfig } from "../assets/goto-metric-config
 import { ReactComponent as SwitchToChartIcon } from "../assets/switch-to-chart-icon.svg";
 import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-data-table-icon.svg";
 import ConnectedDatapointsView from "../DataViz/ConnectedDatapointsView";
+import { SYSTEM_CAPITALIZED, SYSTEM_LOWERCASE } from "../Global/constants";
 import { Loading } from "../Loading";
 import { useSettingsSearchParams } from "../Settings";
 import {
@@ -95,7 +96,7 @@ export const MetricsView: React.FC = observer(() => {
         });
         setIsLoading(false);
         showToast({
-          message: `System "${systemSearchParam}" does not exist in "${currentAgency?.name}" agency.`,
+          message: `${SYSTEM_CAPITALIZED} "${systemSearchParam}" does not exist in "${currentAgency?.name}" agency.`,
           color: "red",
           timeout: 5000,
         });
@@ -114,7 +115,7 @@ export const MetricsView: React.FC = observer(() => {
         });
         setIsLoading(false);
         showToast({
-          message: `Metric "${metricSearchParam}" does not exist in "${systemSearchParam}" system.`,
+          message: `Metric "${metricSearchParam}" does not exist in "${systemSearchParam}" ${SYSTEM_LOWERCASE}.`,
           color: "red",
           timeout: 5000,
         });
