@@ -30,12 +30,16 @@ import { monthsByName, removeSnakeCase } from "../../utils";
 import { ReactComponent as CalendarIconDark } from "../assets/calendar-icon-dark.svg";
 import { ReactComponent as CalendarIconLight } from "../assets/calendar-icon-light.svg";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
+import checkmarkIcon from "../assets/status-check-icon.png";
+import { BlueText } from "../DataUpload";
 import { BinaryRadioButton } from "../Forms";
 import { REPORT_VERB_LOWERCASE } from "../Global/constants";
+import { CheckIcon } from "../Guidance";
 import { ExtendedDropdownMenu, ExtendedDropdownMenuItem } from "../Menu";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   ActionStatusTitle,
+  AvailableWithCheckWrapper,
   BlueLinkSpan,
   BreakdownHeader,
   Dimension,
@@ -483,7 +487,16 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                                 }
                                 inView={dimension.key === activeDimensionKey}
                               >
-                                {dimension.enabled && "Available"}
+                                {dimension.enabled && (
+                                  <AvailableWithCheckWrapper>
+                                    <BlueText>Available</BlueText>
+                                    <CheckIcon
+                                      src={checkmarkIcon}
+                                      alt=""
+                                      width={11}
+                                    />
+                                  </AvailableWithCheckWrapper>
+                                )}
                                 {dimension.enabled === false && "Unavailable"}
                                 {dimension.enabled === null &&
                                   "Action Required"}
