@@ -26,7 +26,7 @@ import searchIcon from "../assets/search-icon.png";
 
 // Common
 const AGENCY_SETTINGS_CONTAINER_WIDTH = 732;
-const AGENCY_SETTINGS_INNER_BLOCK = 644;
+const AGENCY_SETTINGS_INNER_BLOCK_WIDTH = 644;
 const MIN_MOBILE_AGENCY_SETTINGS_CONTAINER_WIDTH = 464;
 
 // 620px is settings menu width times 2
@@ -64,7 +64,7 @@ export const AgencySettingsContent = styled.div`
 `;
 
 export const AgencySettingsTitle = styled.div`
-  width: ${AGENCY_SETTINGS_INNER_BLOCK}px;
+  width: ${AGENCY_SETTINGS_INNER_BLOCK_WIDTH}px;
   display: flex;
   flex-direction: row;
   justify-content: start;
@@ -334,19 +334,6 @@ export const TeamManagementSectionTitle = styled.div`
   }
 `;
 
-// export const InviteMemberContainer = styled.div`
-//   display: flex;
-//   flex-direction: row;
-//   gap: 8px;
-//   height: 48px;
-//   margin-bottom: 40px;
-//
-//   @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
-//     flex-direction: column;
-//     height: unset;
-//   }
-// `;
-
 export const InviteMemberContainer = styled.div`
   margin-bottom: 40px;
 `;
@@ -578,7 +565,7 @@ export const JurisdictionsInput = styled(InviteMemberInput)`
 export const JurisdictionsSearchResultContainer = styled.div`
   position: absolute;
   z-index: 5;
-  width: ${AGENCY_SETTINGS_INNER_BLOCK}px;
+  width: ${AGENCY_SETTINGS_INNER_BLOCK_WIDTH}px;
   padding: 8px 0;
   overflow-y: scroll;
   max-height: 270px;

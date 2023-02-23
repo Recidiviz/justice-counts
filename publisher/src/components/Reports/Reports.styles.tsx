@@ -25,8 +25,6 @@ import {
 import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
-// const COLLAPSED_INNER_COLUMNS_WIDTH = 846;
-
 export const PageHeader = styled.div`
   width: 100%;
   background: ${palette.solid.white};
@@ -163,7 +161,6 @@ export const DropdownContainer = styled.div`
   width: 100%;
   height: 56px;
   border-bottom: 1px solid ${palette.highlight.grey9};
-
   align-items: center;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {

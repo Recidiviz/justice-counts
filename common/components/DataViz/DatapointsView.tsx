@@ -303,14 +303,6 @@ export const DatapointsView: React.FC<{
           <MetricInsights datapoints={filteredAggregateData} />
         </BottomMetricInsightsContainer>
       )}
-      {/* <MobileSelectMetricsButtonContainer> */}
-      {/*  <MobileSelectMetricsButton */}
-      {/*    onClick={() => setMobileSelectMetricsVisible(true)} */}
-      {/*  > */}
-      {/*    <GridIcon /> */}
-      {/*    <SelectMetricsButtonText /> */}
-      {/*  </MobileSelectMetricsButton> */}
-      {/* </MobileSelectMetricsButtonContainer> */}
       {shouldShowMobileSelectMetricsModal && (
         <MobileSelectMetricsModal
           agencyName={agencyName}
