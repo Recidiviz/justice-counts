@@ -144,22 +144,31 @@ export const Guidance = observer(() => {
         );
 
       if (hasMinimumOneReport) {
-        saveOnboardingTopicsStatuses({
-          topicID: "ADD_DATA",
-          topicCompleted: true,
-        });
+        saveOnboardingTopicsStatuses(
+          {
+            topicID: "ADD_DATA",
+            topicCompleted: true,
+          },
+          agencyId
+        );
       }
       if (hasMinimumOnePublishedReport) {
-        saveOnboardingTopicsStatuses({
-          topicID: "PUBLISH_DATA",
-          topicCompleted: true,
-        });
+        saveOnboardingTopicsStatuses(
+          {
+            topicID: "PUBLISH_DATA",
+            topicCompleted: true,
+          },
+          agencyId
+        );
       }
       if (totalMetrics > 0 && numberOfMetricsCompleted === totalMetrics) {
-        saveOnboardingTopicsStatuses({
-          topicID: "METRIC_CONFIG",
-          topicCompleted: true,
-        });
+        saveOnboardingTopicsStatuses(
+          {
+            topicID: "METRIC_CONFIG",
+            topicCompleted: true,
+          },
+          agencyId
+        );
       }
     };
 
@@ -242,10 +251,13 @@ export const Guidance = observer(() => {
                   onClick={() => {
                     if (currentTopicID) {
                       if (pathToTask) navigate(pathToTask);
-                      saveOnboardingTopicsStatuses({
-                        topicID: currentTopicID,
-                        topicCompleted: true,
-                      });
+                      saveOnboardingTopicsStatuses(
+                        {
+                          topicID: currentTopicID,
+                          topicCompleted: true,
+                        },
+                        agencyId
+                      );
                     }
                   }}
                 >
@@ -259,10 +271,13 @@ export const Guidance = observer(() => {
             <SkipButton
               onClick={() => {
                 if (currentTopicID) {
-                  saveOnboardingTopicsStatuses({
-                    topicID: currentTopicID,
-                    topicCompleted: true,
-                  });
+                  saveOnboardingTopicsStatuses(
+                    {
+                      topicID: currentTopicID,
+                      topicCompleted: true,
+                    },
+                    agencyId
+                  );
                 }
               }}
             >

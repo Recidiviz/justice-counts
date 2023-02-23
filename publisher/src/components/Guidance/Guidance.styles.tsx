@@ -153,7 +153,10 @@ export const ReportsOverviewItemWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 20px 0;
-  border-bottom: 1px solid ${palette.solid.darkgrey};
+
+  &:not(:last-child) {
+    border-bottom: 1px solid ${palette.solid.darkgrey};
+  }
 `;
 
 export const ReportTitle = styled.div`
