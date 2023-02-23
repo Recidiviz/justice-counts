@@ -91,6 +91,11 @@ export const AgencySettingsJurisdictions: React.FC<{
   const checkedAreasCount = checkedJurisdictionsIds.length;
   const hasInclusions = includedJurisdictions.length > 0;
   const hasExclusions = excludedJurisdictions.length > 0;
+  // TODO fix this in connect jurisdictions API task
+  const agencyJurisdictionsCurrentCount = [
+    ...includedJurisdictions,
+    ...excludedJurisdictions,
+  ].length;
 
   const handleSaveClick = () => {
     removeEditMode();
@@ -396,9 +401,7 @@ export const AgencySettingsJurisdictions: React.FC<{
         ))}
         {allowEdit && (
           <EditButtonContainer
-            hasTopMargin={
-              [...includedJurisdictions, ...excludedJurisdictions].length > 0
-            }
+            hasTopMargin={agencyJurisdictionsCurrentCount > 0}
           >
             <EditButton onClick={openSetting}>
               Edit jurisdictions
