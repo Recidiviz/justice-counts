@@ -20,7 +20,7 @@ import React, { useCallback, useState } from "react";
 import useWindowWidth from "../../hooks/useWIndowWidth";
 import { ReportFrequency } from "../../types";
 import { Badge, reportFrequencyBadgeColors } from "../Badge";
-import { NEW_DESKTOP_WIDTH } from "../GlobalStyles";
+import { MIN_DESKTOP_WIDTH } from "../GlobalStyles";
 import {
   MetricTitle,
   MetricTitleWrapper,
@@ -46,7 +46,7 @@ export const DatapointsTitle: React.FC<{
     <MetricTitleWrapper>
       <MetricTitle ref={titleRef} titleWidth={titleWidth}>
         {metricName}
-        {metricFrequency && windowWidth > NEW_DESKTOP_WIDTH && (
+        {metricFrequency && windowWidth > MIN_DESKTOP_WIDTH && (
           <Badge
             color={
               reportFrequencyBadgeColors[metricFrequency as ReportFrequency]

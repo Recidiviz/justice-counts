@@ -16,7 +16,7 @@
 // =============================================================================
 
 import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
-import { NEW_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import useWindowWidth from "@justice-counts/common/hooks/useWIndowWidth";
 import {
   SupervisionSubsystems,
@@ -563,7 +563,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     </Dropdown>
                   </MetricConfigurationDropdownContainer>
                 )}
-              {windowWidth <= NEW_DESKTOP_WIDTH &&
+              {windowWidth <= MIN_DESKTOP_WIDTH &&
                 activeDisaggregationKey ===
                   RACE_ETHNICITY_DISAGGREGATION_KEY && (
                   <CalloutBox
@@ -579,7 +579,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     <RightArrowIcon />
                   </CalloutBox>
                 )}
-              {windowWidth <= NEW_DESKTOP_WIDTH &&
+              {windowWidth <= MIN_DESKTOP_WIDTH &&
                 activeDimensionKey &&
                 (activeDisaggregationKey ===
                   RACE_ETHNICITY_DISAGGREGATION_KEY && activeDimensionKey ? (

@@ -17,7 +17,7 @@
 
 import {
   HEADER_BAR_HEIGHT,
-  NEW_DESKTOP_WIDTH,
+  MIN_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -60,7 +60,7 @@ export const LogoName = styled.div`
   ${typography.sizeCSS.medium};
   white-space: nowrap;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: none;
   }
 `;

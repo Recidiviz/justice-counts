@@ -19,7 +19,7 @@ import {
   Badge,
   reportFrequencyBadgeColors,
 } from "@justice-counts/common/components/Badge";
-import { NEW_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
 import useWindowWidth from "@justice-counts/common/hooks/useWIndowWidth";
 import { AgencySystems, ReportFrequency } from "@justice-counts/common/types";
@@ -160,7 +160,7 @@ export const MetricsView: React.FC = observer(() => {
   }, [agencyId]);
 
   useEffect(() => {
-    if (windowWidth <= NEW_DESKTOP_WIDTH) {
+    if (windowWidth <= MIN_DESKTOP_WIDTH) {
       setDataView(ChartView.Chart);
     }
   }, [windowWidth]);
@@ -357,7 +357,7 @@ export const MetricsView: React.FC = observer(() => {
             metricFrequency={metricFrequency}
             dataView={dataView}
           />
-          {windowWidth <= NEW_DESKTOP_WIDTH && (
+          {windowWidth <= MIN_DESKTOP_WIDTH && (
             <PanelRightTopButton
               onClick={() => {
                 navigate({

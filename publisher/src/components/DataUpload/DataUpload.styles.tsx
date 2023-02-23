@@ -17,8 +17,8 @@
 
 import {
   HEADER_BAR_HEIGHT,
-  NEW_DESKTOP_WIDTH,
-  NEW_TABLET_WIDTH,
+  MIN_DESKTOP_WIDTH,
+  MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -70,7 +70,7 @@ export const DataUploadHeader = styled.div<{
       border-bottom: 1px solid ${palette.highlight.grey3};
     `}
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     background-color: ${({ isBackgroundBlue }) =>
       isBackgroundBlue && palette.solid.blue};
   }
@@ -149,7 +149,7 @@ export const Instructions = styled.div`
     padding: 5px 20px;
   }
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     width: 100%;
     padding: 100px 24px 103px 24px;
   }
@@ -346,7 +346,7 @@ export const DragDropContainer = styled.div<{ dragging?: boolean }>`
     align-items: center;
   }
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     position: fixed;
     height: ${HEADER_BAR_HEIGHT}px;
     top: 0;
@@ -363,7 +363,7 @@ export const DragDropContainer = styled.div<{ dragging?: boolean }>`
     }
   }
 
-  @media only screen and (max-width: ${NEW_TABLET_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     div {
       ${typography.sizeCSS.small};
       flex-direction: column;
@@ -376,7 +376,7 @@ export const DragDropContainer = styled.div<{ dragging?: boolean }>`
 export const DragDropIcon = styled.img`
   margin-bottom: 15px;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     margin-bottom: 0;
     margin-right: 12px;
     height: 22.5px;

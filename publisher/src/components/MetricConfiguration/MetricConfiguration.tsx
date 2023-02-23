@@ -19,7 +19,7 @@ import {
   Badge,
   reportFrequencyBadgeColors,
 } from "@justice-counts/common/components/Badge";
-import { NEW_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
 import useWindowWidth from "@justice-counts/common/hooks/useWIndowWidth";
 import {
@@ -327,7 +327,7 @@ export const MetricConfiguration: React.FC = observer(() => {
                 </Dropdown>
               </MetricConfigurationDropdownContainer>
 
-              {windowWidth <= NEW_DESKTOP_WIDTH && !activeDimensionKey && (
+              {windowWidth <= MIN_DESKTOP_WIDTH && !activeDimensionKey && (
                 <MetricDefinitions
                   activeDimensionKey={activeDimensionKey}
                   activeDisaggregationKey={activeDisaggregationKey}
@@ -367,7 +367,7 @@ export const MetricConfiguration: React.FC = observer(() => {
 
               {/* Metric/Dimension Definitions (Includes/Excludes) & Context */}
               {/* Race/Ethnicities (when active disaggregation is Race / Ethnicities) */}
-              {windowWidth > NEW_DESKTOP_WIDTH &&
+              {windowWidth > MIN_DESKTOP_WIDTH &&
                 (activeDisaggregationKey ===
                   RACE_ETHNICITY_DISAGGREGATION_KEY && activeDimensionKey ? (
                   <RaceEthnicitiesForm />

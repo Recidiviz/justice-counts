@@ -16,7 +16,7 @@
 // =============================================================================
 
 import {
-  NEW_DESKTOP_WIDTH,
+  MIN_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -65,7 +65,7 @@ export const FooterBottom = styled(FooterTop)`
     align-items: start;
     text-decoration: none;
 
-    @media only screen and (min-width: ${NEW_DESKTOP_WIDTH + 1}px) {
+    @media only screen and (min-width: ${MIN_DESKTOP_WIDTH + 1}px) {
       pointer-events: none;
       cursor: default;
     }

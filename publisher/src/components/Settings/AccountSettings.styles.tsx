@@ -16,14 +16,14 @@
 // =============================================================================
 
 import {
-  NEW_DESKTOP_WIDTH,
+  MIN_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
 export const AccountSettingsWrapper = styled.div`
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -40,7 +40,7 @@ export const AccountSettingsTitle = styled.h1`
     content: "Account";
   }
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     border-bottom: none;
     ${typography.sizeCSS.normal};
     margin: 0;
@@ -61,7 +61,7 @@ export const AccountSettingsInputsWrapper = styled.div`
     margin-bottom: 16px;
   }
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
     gap: 0;
   }

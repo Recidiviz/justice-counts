@@ -16,8 +16,8 @@
 // =============================================================================
 
 import {
-  NEW_DESKTOP_WIDTH,
-  NEW_TABLET_WIDTH,
+  MIN_DESKTOP_WIDTH,
+  MIN_TABLET_WIDTH,
   palette,
   TABLET_WIDTH,
   typography,
@@ -39,7 +39,7 @@ export const MetricHeaderWrapper = styled.div`
   margin-bottom: 9px;
   white-space: nowrap;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     height: auto;
   }
 `;
@@ -105,7 +105,7 @@ export const DatapointsViewHeaderWrapper = styled.div`
   background-color: ${palette.solid.white};
   z-index: 2;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     position: static;
   }
 `;
@@ -259,7 +259,7 @@ export const MetricInsightsContainer = styled.div<{
     z-index: -1;
   }`}
 
-  @media only screen and (max-width: ${NEW_TABLET_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     flex-direction: column;
   }
 `;
@@ -318,7 +318,7 @@ export const DatapointsViewControlsRow = styled.div`
   gap: 8px;
   margin-top: 32px;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: none;
   }
 `;
@@ -326,7 +326,7 @@ export const DatapointsViewControlsRow = styled.div`
 export const MobileFiltersRow = styled.div`
   display: none;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: flex;
     border-top: 1px solid ${palette.highlight.grey9};
     padding-top: 8px;

@@ -16,7 +16,7 @@
 // =============================================================================
 
 import {
-  NEW_DESKTOP_WIDTH,
+  MIN_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -80,7 +80,7 @@ export const CalloutBox = styled.div`
     background-color: ${palette.highlight.blue};
   }
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     margin-top: 24px;
   }
 `;
@@ -164,7 +164,7 @@ export const SpecifyEthnicityWrapper = styled(MetricOnOffWrapper)`
 `;
 
 export const RaceEthnicitiesContainer = styled(DefinitionsDisplayContainer)`
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     padding-bottom: 0;
   }
 `;
@@ -181,7 +181,7 @@ export const RaceEthnicityRadioButtonGroupWrapper = styled(
 )`
   display: flex;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     gap: 4px;
     align-items: center;
   }

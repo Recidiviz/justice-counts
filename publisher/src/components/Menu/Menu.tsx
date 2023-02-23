@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { NEW_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import useWindowWidth from "@justice-counts/common/hooks/useWIndowWidth";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
@@ -55,7 +55,7 @@ const Menu = () => {
   const pathWithoutAgency = removeAgencyFromPath(location.pathname);
 
   const handleCloseMobileMenu = () => {
-    if (windowWidth < NEW_DESKTOP_WIDTH && isMobileMenuOpen) {
+    if (windowWidth < MIN_DESKTOP_WIDTH && isMobileMenuOpen) {
       setIsMobileMenuOpen(false);
     }
   };
@@ -94,7 +94,7 @@ const Menu = () => {
   }, [isMobileMenuOpen]);
 
   useEffect(() => {
-    if (windowWidth > NEW_DESKTOP_WIDTH) {
+    if (windowWidth > MIN_DESKTOP_WIDTH) {
       setIsMobileMenuOpen(false);
     }
   }, [windowWidth]);
@@ -131,7 +131,7 @@ const Menu = () => {
         </MenuItem>
 
         {/* Learn More */}
-        {windowWidth > NEW_DESKTOP_WIDTH && (
+        {windowWidth > MIN_DESKTOP_WIDTH && (
           <MenuItem>
             <a
               href="https://justicecounts.csgjusticecenter.org/"
@@ -151,7 +151,7 @@ const Menu = () => {
                 Agencies
               </ExtendedDropdownToggle>
               <ExtendedDropdownMenu
-                alignment={windowWidth > NEW_DESKTOP_WIDTH ? "right" : "left"}
+                alignment={windowWidth > MIN_DESKTOP_WIDTH ? "right" : "left"}
               >
                 {userStore.userAgencies
                   ?.slice()
@@ -178,7 +178,7 @@ const Menu = () => {
         {/* Settings */}
         <MenuItem
           onClick={() => {
-            if (windowWidth > NEW_DESKTOP_WIDTH) {
+            if (windowWidth > MIN_DESKTOP_WIDTH) {
               navigate("settings");
             }
           }}

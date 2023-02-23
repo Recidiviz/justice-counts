@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { NEW_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import useWindowWidth from "@justice-counts/common/hooks/useWIndowWidth";
 import { observer } from "mobx-react-lite";
 import React from "react";
@@ -61,7 +61,7 @@ export const RaceEthnicitiesGrid: React.FC<{
     <RaceEthnicitiesBreakdownContainer
       disaggregationEnabled={disaggregationEnabled}
     >
-      {windowWidth > NEW_DESKTOP_WIDTH && (
+      {windowWidth > MIN_DESKTOP_WIDTH && (
         <CalloutBox onClick={onClick}>
           <Description>
             Answer the questions on the <span>Race and Ethnicity</span> form;

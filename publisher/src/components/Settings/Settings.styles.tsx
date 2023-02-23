@@ -16,7 +16,7 @@
 // =============================================================================
 
 import {
-  NEW_DESKTOP_WIDTH,
+  MIN_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -29,7 +29,7 @@ export const SettingsContainer = styled.div`
   padding: 48px 24px 0 24px;
   position: relative;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     padding-top: 24px;
   }
 `;
@@ -43,7 +43,7 @@ export const ContentDisplay = styled.div`
   overflow-x: scroll;
   margin-left: 310px;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     margin-left: 0;
   }
 `;
@@ -59,7 +59,7 @@ export const SettingsMenuContainer = styled.div`
   z-index: 2;
   position: fixed;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: none;
   }
 `;

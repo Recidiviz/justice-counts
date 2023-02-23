@@ -16,7 +16,7 @@
 // =============================================================================
 
 import {
-  NEW_DESKTOP_WIDTH,
+  MIN_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -30,7 +30,7 @@ export const UploadedFilesTitle = styled(AccountSettingsTitle)`
     content: "Uploaded Files";
   }
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     border-bottom: 1px solid ${palette.highlight.grey9};
     padding-bottom: 24px;
 
@@ -69,7 +69,7 @@ export const ExtendedLabelRow = styled(LabelRow)`
   padding-left: 0;
   padding-right: 8px;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     padding-bottom: 8px;
   }
 `;
@@ -83,7 +83,7 @@ export const ExtendedCell = styled(Cell)`
     flex: 3 1 auto;
   }
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     &:nth-child(3) {
       display: none;
     }
@@ -108,7 +108,7 @@ export const ExtendedLabelCell = styled(LabelCell)`
     flex: 3 1 auto;
   }
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     &:nth-child(3) {
       display: none;
     }

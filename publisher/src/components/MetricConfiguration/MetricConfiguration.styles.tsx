@@ -16,7 +16,7 @@
 // =============================================================================
 
 import {
-  NEW_DESKTOP_WIDTH,
+  MIN_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -50,7 +50,7 @@ export const MetricsViewContainer = styled.div`
   align-items: flex-start;
   overflow-y: hidden;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     justify-content: start;
   }
 `;
@@ -66,7 +66,7 @@ export const MobileMetricsConfigurationHeader = styled.div<{
   border-bottom: ${({ hasBorder }) =>
     hasBorder && `1px solid ${palette.solid.darkgrey}`};
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: block;
   }
 `;
@@ -78,7 +78,7 @@ export const MetricsViewControlPanel = styled.div`
   flex-wrap: nowrap;
   justify-content: space-between;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     justify-content: unset;
   }
 `;
@@ -100,7 +100,7 @@ export const PanelContainerLeft = styled.div`
   justify-content: space-between;
   padding: 46px 0 0 24px;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: none;
   }
 `;
@@ -208,7 +208,7 @@ export const PanelContainerRight = styled.div`
   overflow-x: scroll;
   padding-right: 24px;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     width: 100%;
     min-width: unset;
     padding: 24px;
@@ -220,7 +220,7 @@ export const MobileDatapointsControls = styled.div`
   width: 100%;
   flex-direction: column;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: flex;
   } ;
 `;
@@ -228,7 +228,7 @@ export const MobileDatapointsControls = styled.div`
 export const CurrentMetricsSystem = styled.div`
   display: none;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: block;
     width: 100%;
     ${typography.sizeCSS.small};
@@ -252,7 +252,7 @@ export const MetricConfigurationDropdownContainer = styled(DropdownContainer)<{
     width: 100%;
   }
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: flex;
   }
 `;
@@ -301,7 +301,7 @@ export const StartingMonthDropdownMenu = styled(
   margin-top: 4px;
   min-height: 558px;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     margin-top: 0;
   }
 `;
@@ -343,7 +343,7 @@ export const PanelRightTopButtonsContainer = styled.div`
   background-color: ${palette.solid.white};
   z-index: 2;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: none;
   }
 `;
@@ -389,7 +389,7 @@ export const MetricBoxContainer = styled.div<MetricBoxContainerProps>`
     border: 1px solid ${palette.solid.blue};
   }
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     width: 100%;
     max-width: unset;
     flex: unset;
@@ -437,7 +437,7 @@ export const Metric = styled.div<{ inView: boolean }>`
     opacity: 1;
   }
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: none;
   }
 `;
@@ -500,7 +500,7 @@ export const Subheader = styled.div`
 `;
 
 export const BreakdownsTabbedBar = styled(TabbedBar)`
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: none;
   }
 `;
@@ -508,7 +508,7 @@ export const BreakdownsTabbedBar = styled(TabbedBar)`
 export const RadioButtonGroupWrapper = styled(BinaryRadioGroupWrapper)`
   display: flex;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
 
     & > div {
@@ -788,7 +788,7 @@ export const StickyHeader = styled.div`
   background: ${palette.solid.white};
   margin-bottom: 29px;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: none;
   }
 `;
@@ -818,7 +818,7 @@ export const MetricConfigurationWrapper = styled.div`
   justify-content: space-between;
   overflow-y: hidden;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
     overflow-y: scroll;
   }

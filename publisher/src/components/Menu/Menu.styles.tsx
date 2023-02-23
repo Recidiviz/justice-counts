@@ -16,7 +16,7 @@
 // =============================================================================
 import {
   HEADER_BAR_HEIGHT,
-  NEW_DESKTOP_WIDTH,
+  MIN_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -37,7 +37,7 @@ export const MenuContainer = styled.nav<{ isMobileMenuOpen: boolean }>`
   padding: 0 24px;
   gap: 24px;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: ${({ isMobileMenuOpen }) => (isMobileMenuOpen ? "flex" : "none")};
     flex-direction: column;
     align-items: start;
@@ -98,7 +98,7 @@ export const MenuItem = styled.div<{
       isHoverDisabled ? palette.solid.darkgrey : palette.solid.blue};
   }
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     border-top: none;
     ${typography.sizeCSS.large};
     padding: 0;
@@ -132,7 +132,7 @@ export const MobileMenuIconWrapper = styled.div`
   align-items: center;
   cursor: pointer;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: flex;
   }
 `;
@@ -142,7 +142,7 @@ export const WelcomeUser = styled.div`
   border-right: 1px solid black;
   padding-right: 24px;
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     max-width: 315px;
     ${typography.sizeCSS.medium};
     border-right: none;
@@ -174,7 +174,7 @@ export const ExtendedDropdownToggle = styled(DropdownToggle)<{
     color: ${palette.solid.darkgrey};
   }
 
-  @media only screen and (max-width: ${NEW_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     ${typography.sizeCSS.large};
     margin-bottom: 0;
   }
