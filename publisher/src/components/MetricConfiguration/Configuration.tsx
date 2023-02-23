@@ -446,7 +446,9 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   </DisaggregationHeader>
 
                   {/* Dimensions (Enable/Disable) */}
-                  {disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY ? (
+                  {disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY &&
+                  (currentDisaggregation.enabled ||
+                    currentDisaggregation.enabled === null) ? (
                     <RaceEthnicitiesGrid
                       disaggregationEnabled={
                         currentDisaggregation.enabled === true
@@ -462,48 +464,51 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     currentDimensions?.map((dimension) => {
                       return (
                         <Fragment key={dimension.key}>
-                          <Dimension
-                            enabled={
-                              !metricEnabled ||
-                              currentDisaggregation.enabled ||
-                              currentDisaggregation.enabled === null
-                            }
-                            inView={dimension.key === activeDimensionKey}
-                            onClick={() => {
-                              setActiveDisaggregationKey(disaggregationKey);
-                              setActiveDimensionKey(dimension.key);
-                            }}
-                          >
-                            <DimensionTitleWrapper>
-                              <DimensionTitle
-                                enabled={currentDisaggregation.enabled}
-                              >
-                                {dimension?.label}
-                              </DimensionTitle>
-                              <ActionStatusTitle
-                                enabled={
-                                  currentDisaggregation.enabled &&
-                                  dimension.enabled === null
-                                }
-                                inView={dimension.key === activeDimensionKey}
-                              >
-                                {dimension.enabled && (
-                                  <AvailableWithCheckWrapper>
-                                    <BlueText>Available</BlueText>
-                                    <CheckIcon
-                                      src={checkmarkIcon}
-                                      alt=""
-                                      width={11}
-                                    />
-                                  </AvailableWithCheckWrapper>
-                                )}
-                                {dimension.enabled === false && "Unavailable"}
-                                {dimension.enabled === null &&
-                                  "Action Required"}
-                              </ActionStatusTitle>
-                              <RightArrowIcon />
-                            </DimensionTitleWrapper>
-                          </Dimension>
+                          {(currentDisaggregation.enabled ||
+                            currentDisaggregation.enabled === null) && (
+                            <Dimension
+                              enabled={
+                                !metricEnabled ||
+                                currentDisaggregation.enabled ||
+                                currentDisaggregation.enabled === null
+                              }
+                              inView={dimension.key === activeDimensionKey}
+                              onClick={() => {
+                                setActiveDisaggregationKey(disaggregationKey);
+                                setActiveDimensionKey(dimension.key);
+                              }}
+                            >
+                              <DimensionTitleWrapper>
+                                <DimensionTitle
+                                  enabled={currentDisaggregation.enabled}
+                                >
+                                  {dimension?.label}
+                                </DimensionTitle>
+                                <ActionStatusTitle
+                                  enabled={
+                                    currentDisaggregation.enabled &&
+                                    dimension.enabled === null
+                                  }
+                                  inView={dimension.key === activeDimensionKey}
+                                >
+                                  {dimension.enabled && (
+                                    <AvailableWithCheckWrapper>
+                                      <BlueText>Available</BlueText>
+                                      <CheckIcon
+                                        src={checkmarkIcon}
+                                        alt=""
+                                        width={11}
+                                      />
+                                    </AvailableWithCheckWrapper>
+                                  )}
+                                  {dimension.enabled === false && "Unavailable"}
+                                  {dimension.enabled === null &&
+                                    "Action Required"}
+                                </ActionStatusTitle>
+                                <RightArrowIcon />
+                              </DimensionTitleWrapper>
+                            </Dimension>
+                          )}
                         </Fragment>
                       );
                     })
