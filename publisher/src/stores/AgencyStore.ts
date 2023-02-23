@@ -29,7 +29,7 @@ import { AgencySettingType } from "../components/Settings";
 import API from "./API";
 import UserStore from "./UserStore";
 
-type Jurisdictions = {
+type AgencyJurisdictions = {
   included: string[];
   excluded: string[];
 };
@@ -41,7 +41,7 @@ class AgencyStore {
 
   currentAgencyId: string | undefined;
 
-  jurisdictions: Jurisdictions;
+  jurisdictions: AgencyJurisdictions;
 
   loadingSettings: boolean;
 
@@ -200,7 +200,7 @@ class AgencyStore {
   };
 
   saveAgencyJurisdictions = async (
-    jurisdictions: { jurisdictions: Jurisdictions },
+    jurisdictions: { jurisdictions: AgencyJurisdictions },
     agencyId: string
   ): Promise<void> => {
     const response = (await this.api.request({
@@ -265,8 +265,8 @@ class AgencyStore {
   };
 
   updateAgencyJurisdictions = (
-    jurisdictions: Jurisdictions
-  ): { jurisdictions: Jurisdictions } => {
+    jurisdictions: AgencyJurisdictions
+  ): { jurisdictions: AgencyJurisdictions } => {
     this.jurisdictions = jurisdictions;
 
     return { jurisdictions };

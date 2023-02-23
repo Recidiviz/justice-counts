@@ -543,8 +543,10 @@ export const JurisdictionCheckBlock = styled.div`
   ${typography.sizeCSS.normal};
   text-transform: capitalize;
   display: flex;
+  align-items: center;
   flex-direction: row;
   gap: 28px;
+  white-space: nowrap;
 `;
 
 export const JurisdictionsEditModeFooter = styled.div`

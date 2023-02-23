@@ -18,8 +18,9 @@
 /* eslint-disable camelcase */
 import addIcon from "@justice-counts/common/assets/add-icon.svg";
 import blackCheck from "@justice-counts/common/assets/black-check-icon.svg";
-import jurisdictionsJSONData from "@justice-counts/common/fips_with_county_subdivisions.json";
+import mappedJurisdictionsJSONData from "@justice-counts/common/fips_with_county_subdivisions.json";
 import { Jurisdiction } from "@justice-counts/common/types";
+import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -58,20 +59,13 @@ import {
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
-// const jurisdictions: Jurisdiction[] = (jurisdictionsData as Jurisdiction[]).map(
-//   (entry) => ({
-//     ...entry,
-//     area_name:
-//       entry.area_name === entry.state_name
-//         ? entry.area_name
-//         : `${entry.area_name}, ${entry.state_abbrev}`,
-//   })
-// );
+const mappedJurisdictionsData = mappedJurisdictionsJSONData as unknown as {
+  [id: string]: Jurisdiction;
+};
 
-// whole flow is mocked
 export const AgencySettingsJurisdictions: React.FC<{
   settingProps: SettingProps;
-}> = ({ settingProps }) => {
+}> = observer(({ settingProps }) => {
   const { agencyId } = useParams() as { agencyId: string };
   const { isSettingInEditMode, openSetting, removeEditMode, allowEdit } =
     settingProps;
@@ -106,6 +100,7 @@ export const AgencySettingsJurisdictions: React.FC<{
       excluded: editedExcludedJurisdictionsIds,
     });
     saveAgencyJurisdictions(updatedJurisdictions, agencyId);
+    removeEditMode();
   };
   const handleCancelClick = () => {
     const sortedStoreIncludedIds = includedJurisdictionsIds
@@ -173,11 +168,8 @@ export const AgencySettingsJurisdictions: React.FC<{
 
   // helpers
   const getSearchResult = (searchValue: string) => {
-    const matchedData = (jurisdictionsJSONData as Jurisdiction[]).filter(
-      (entry) =>
-        entry.area_name
-          .toLowerCase()
-          .startsWith(searchValue.toLowerCase().trim())
+    const matchedData = Object.values(mappedJurisdictionsData).filter((entry) =>
+      entry.name.toLowerCase().startsWith(searchValue.toLowerCase().trim())
     );
     const addedJurisdictions = [
       ...editedIncludedJurisdictionsIds,
@@ -204,6 +196,22 @@ export const AgencySettingsJurisdictions: React.FC<{
     }
   }, [isSettingInEditMode]);
 
+  useEffect(() => {
+    if (
+      includedJurisdictionsIds.join() !== editedIncludedJurisdictionsIds.join()
+    )
+      setEditedIncludedJurisdictionsIds(includedJurisdictionsIds);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [includedJurisdictionsIds]);
+
+  useEffect(() => {
+    if (
+      excludedJurisdictionsIds.join() !== editedExcludedJurisdictionsIds.join()
+    )
+      setEditedExcludedJurisdictionsIds(excludedJurisdictionsIds);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [excludedJurisdictionsIds]);
+
   if (isSettingInEditMode) {
     return (
       <AgencySettingsEditModeModal
@@ -228,7 +236,7 @@ export const AgencySettingsJurisdictions: React.FC<{
               value={inputValue}
               onChange={(e) => {
                 setInputValue(e.target.value);
-                // getSearchResult(e.target.value);
+                getSearchResult(e.target.value);
               }}
             />
             {!!inputValue &&
@@ -248,7 +256,7 @@ export const AgencySettingsJurisdictions: React.FC<{
                         hasAction
                         onClick={() => handleAddArea(result.id)}
                       >
-                        {result.area_name}
+                        {result.name}
                         <JurisdictionAreaType>
                           {removeUnderscore(result.type)}{" "}
                           <AddIcon src={addIcon} alt="" />
@@ -282,9 +290,9 @@ export const AgencySettingsJurisdictions: React.FC<{
                     hasHover
                     onClick={() => handleCheckedJurisdictionsIds(id)}
                   >
-                    {jurisdictionsMapById[id].area_name}
+                    {mappedJurisdictionsData[id].name}
                     <JurisdictionCheckBlock>
-                      {removeUnderscore(jurisdictionsMapById[id].type)}
+                      {removeUnderscore(mappedJurisdictionsData[id].type)}
                       <CheckboxWrapper>
                         <Checkbox
                           type="checkbox"
@@ -312,9 +320,9 @@ export const AgencySettingsJurisdictions: React.FC<{
                     hasHover
                     onClick={() => handleCheckedJurisdictionsIds(id)}
                   >
-                    {jurisdictionsMapById[id].area_name}
+                    {mappedJurisdictionsData[id].name}
                     <JurisdictionCheckBlock>
-                      {removeUnderscore(jurisdictionsMapById[id].type)}
+                      {removeUnderscore(mappedJurisdictionsData[id].type)}
                       <CheckboxWrapper>
                         <Checkbox
                           type="checkbox"
@@ -407,37 +415,37 @@ export const AgencySettingsJurisdictions: React.FC<{
         <AgencySettingsBlockDescription>
           The following are within the agency’s jurisdiction.
         </AgencySettingsBlockDescription>
-        {!editedIncludedJurisdictionsIds.length &&
-          !editedExcludedJurisdictionsIds.length && (
+        {!includedJurisdictionsIds.length &&
+          !excludedJurisdictionsIds.length && (
             <AgencyInfoBlockDescription hasTopMargin>
               No jurisdictions added.
             </AgencyInfoBlockDescription>
           )}
-        {editedIncludedJurisdictionsIds.length > 0 && (
+        {includedJurisdictionsIds.length > 0 && (
           <AgencySettingsBlockSubDescription>
             Areas included
           </AgencySettingsBlockSubDescription>
         )}
         {includedJurisdictionsIds.map((id) => (
           <JurisdictionsInfoRow key={id}>
-            {jurisdictionsMapById[id].area_name}
+            {mappedJurisdictionsData[id].name}
             <JurisdictionAreaType>
-              {removeUnderscore(jurisdictionsMapById[id].type)}
+              {removeUnderscore(mappedJurisdictionsData[id].type)}
             </JurisdictionAreaType>
           </JurisdictionsInfoRow>
         ))}
-        {editedExcludedJurisdictionsIds.length > 0 && (
+        {excludedJurisdictionsIds.length > 0 && (
           <AgencySettingsBlockSubDescription
-            hasTopMargin={editedIncludedJurisdictionsIds.length > 0}
+            hasTopMargin={includedJurisdictionsIds.length > 0}
           >
             Areas excluded
           </AgencySettingsBlockSubDescription>
         )}
         {excludedJurisdictionsIds.map((id) => (
           <JurisdictionsInfoRow key={id}>
-            {jurisdictionsMapById[id].area_name}
+            {mappedJurisdictionsData[id].name}
             <JurisdictionAreaType>
-              {removeUnderscore(jurisdictionsMapById[id].type)}
+              {removeUnderscore(mappedJurisdictionsData[id].type)}
             </JurisdictionAreaType>
           </JurisdictionsInfoRow>
         ))}
@@ -452,4 +460,4 @@ export const AgencySettingsJurisdictions: React.FC<{
       </AgencySettingsBlock>
     </>
   );
-};
+});
