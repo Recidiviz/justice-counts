@@ -29,6 +29,7 @@ import { useParams } from "react-router-dom";
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
+import { SYSTEM_CAPITALIZED, SYSTEM_LOWERCASE } from "../Global/constants";
 import { ContainedLoader } from "../Loading";
 import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
@@ -87,7 +88,7 @@ export const MetricConfiguration: React.FC = observer(() => {
         setSettingsSearchParams({ system: currentAgency?.systems[0] });
         setIsLoading(false);
         showToast({
-          message: `System "${systemSearchParam}" does not exist in "${currentAgency?.name}" agency.`,
+          message: `${SYSTEM_CAPITALIZED} "${systemSearchParam}" does not exist in "${currentAgency?.name}" agency.`,
           color: "red",
           timeout: 5000,
         });
@@ -105,7 +106,7 @@ export const MetricConfiguration: React.FC = observer(() => {
         setSettingsSearchParams({ system: systemSearchParam });
         setIsLoading(false);
         showToast({
-          message: `Metric "${metricSearchParam}" does not exist in "${systemSearchParam}" system.`,
+          message: `Metric "${metricSearchParam}" does not exist in "${systemSearchParam}" ${SYSTEM_LOWERCASE}.`,
           color: "red",
           timeout: 5000,
         });

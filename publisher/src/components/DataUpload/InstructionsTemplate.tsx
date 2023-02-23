@@ -25,6 +25,8 @@ import {
   REPORTING_LOWERCASE,
   REPORTS_CAPITALIZED,
   REPORTS_LOWERCASE,
+  SYSTEM_LOWERCASE,
+  SYSTEMS_LOWERCASE,
 } from "../Global/constants";
 import {
   ButtonWrapper,
@@ -234,8 +236,8 @@ export const GeneralInstructions: React.FC<
       <h3>Basics</h3>
       <p>
         You will need to generate one Excel workbook for each criminal justice
-        system that your agency is {REPORTING_LOWERCASE} data for. Your agency
-        is responsible for {REPORTING_LOWERCASE} data for:{" "}
+        {SYSTEM_LOWERCASE} that your agency is {REPORTING_LOWERCASE} data for.
+        Your agency is responsible for {REPORTING_LOWERCASE} data for:{" "}
         {/* replace last comma with "and": https://stackoverflow.com/a/41035407 */}
         {systems
           .map((system) => systemToDetails[system].name)
@@ -245,7 +247,7 @@ export const GeneralInstructions: React.FC<
       </p>
       <p>
         Include one sheet (or tab) in the workbook for each Justice Counts
-        metric defined for the system. See the{" "}
+        metric defined for the {SYSTEM_LOWERCASE}. See the{" "}
         <a
           href="https://justicecounts.csgjusticecenter.org/metrics/justice-counts-metrics/"
           target="_blank"
@@ -467,7 +469,7 @@ export const SystemsInstructions: React.FC<
           <tr>
             <th>year</th>
             <th>month</th>
-            {system === "SUPERVISION" ? <th>system</th> : null}
+            {system === "SUPERVISION" ? <th>{SYSTEM_LOWERCASE}</th> : null}
             <th>value</th>
           </tr>
         </thead>
@@ -505,9 +507,9 @@ export const SystemsInstructions: React.FC<
       {system === "SUPERVISION" ? (
         <p>
           <b>Note:</b> If you are able to {REPORT_VERB_LOWERCASE} separately for
-          Parole and Probation, then you should fill out rows for both systems.
-          If you have only aggregate data, leave the <i>system</i> column blank,
-          or write &quot;Both&quot;.
+          Parole and Probation, then you should fill out rows for both{" "}
+          {SYSTEMS_LOWERCASE}. If you have only aggregate data, leave the{" "}
+          <i>{SYSTEM_LOWERCASE}</i> column blank, or write &quot;Both&quot;.
         </p>
       ) : null}
       <p>
@@ -519,7 +521,7 @@ export const SystemsInstructions: React.FC<
           <tr>
             <th>year</th>
             <th>month</th>
-            {system === "SUPERVISION" ? <th>system</th> : null}
+            {system === "SUPERVISION" ? <th>{SYSTEM_LOWERCASE}</th> : null}
             <th>{systemDetails.metric_disaggregation_column_name}</th>
             <th>value</th>
           </tr>
