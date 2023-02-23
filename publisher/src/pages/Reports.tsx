@@ -77,10 +77,10 @@ import {
 } from "../utils";
 
 const ReportStatusFilterOptionObject: { [key: string]: string } = {
-  allrecords: "All Records",
+  all_records: "All Records",
   draft: "Draft",
   published: "Published",
-  not_started: "Not_Started",
+  not_started: "Not Started",
 };
 
 const reportListColumnTitles = [
@@ -103,7 +103,7 @@ const Reports: React.FC = () => {
   const [showAdditionalEditorsTooltip, setShowAdditionalEditorsTooltip] =
     useState<number>();
   const [reportsFilter, setReportsFilter] = useState<string>(
-    `all${REPORTS_LOWERCASE}`
+    `all_${REPORTS_LOWERCASE}`
   );
   const [selectionMode, setSelectionMode] = useState(false);
   const [reportsToDelete, setReportsToDelete] = useState<number[]>([]);
@@ -160,7 +160,7 @@ const Reports: React.FC = () => {
 
   const filteredReportsMemoized = React.useMemo(
     () =>
-      reportsFilter === `all${REPORTS_LOWERCASE}`
+      reportsFilter === `all_${REPORTS_LOWERCASE}`
         ? reportStore.reportOverviewList
         : reportStore.reportOverviewList.filter(
             (report) => normalizeString(report.status) === reportsFilter
