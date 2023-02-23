@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
-import useWindowWidth from "@justice-counts/common/hooks/useWIndowWidth";
+import { useWindowWidth } from "@justice-counts/common/hooks";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";

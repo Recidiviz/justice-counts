@@ -18,7 +18,7 @@
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
 import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
-import useWindowWidth from "@justice-counts/common/hooks/useWIndowWidth";
+import { useWindowWidth } from "@justice-counts/common/hooks";
 import { ReportFrequency } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";

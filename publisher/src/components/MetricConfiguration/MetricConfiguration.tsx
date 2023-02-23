@@ -21,7 +21,7 @@ import {
 } from "@justice-counts/common/components/Badge";
 import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
-import useWindowWidth from "@justice-counts/common/hooks/useWIndowWidth";
+import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
   AgencySystems,
   ReportFrequency,

@@ -17,7 +17,7 @@
 
 import React, { useCallback, useState } from "react";
 
-import useWindowWidth from "../../hooks/useWIndowWidth";
+import { useWindowWidth } from "../../hooks";
 import { ReportFrequency } from "../../types";
 import { Badge, reportFrequencyBadgeColors } from "../Badge";
 import { MIN_DESKTOP_WIDTH } from "../GlobalStyles";

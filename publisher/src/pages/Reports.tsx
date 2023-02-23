@@ -24,7 +24,7 @@ import {
   MIN_DESKTOP_WIDTH,
   palette,
 } from "@justice-counts/common/components/GlobalStyles";
-import useWindowWidth from "@justice-counts/common/hooks/useWIndowWidth";
+import { useWindowWidth } from "@justice-counts/common/hooks";
 import { ReportOverview } from "@justice-counts/common/types";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
