@@ -392,9 +392,10 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
           <MetricDisaggregations enabled={metricEnabled}>
             <BreakdownHeader>Breakdowns</BreakdownHeader>
             <Subheader>
-              Mark (using the checkmark) each of the breakdowns below that your
-              agency will be able to {REPORT_VERB_LOWERCASE}. Click the arrow to
-              edit the definition for each breakdown.
+              Turn “on” the breakdowns that your agency will be able to{" "}
+              {REPORT_VERB_LOWERCASE}. Click into each category to indicate
+              whether or not the breakdown is available to be reported and to
+              configure the definition for that category.
             </Subheader>
 
             {/* Disaggregations (Enable/Disable) */}
