@@ -58,10 +58,15 @@ import {
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
-const jurisdictionsMapById = (jurisdictionsJSONData as Jurisdiction[]).reduce(
-  (map, area) => ({ ...map, [area.id]: area }),
-  {} as { [id: string]: Jurisdiction }
-);
+// const jurisdictions: Jurisdiction[] = (jurisdictionsData as Jurisdiction[]).map(
+//   (entry) => ({
+//     ...entry,
+//     area_name:
+//       entry.area_name === entry.state_name
+//         ? entry.area_name
+//         : `${entry.area_name}, ${entry.state_abbrev}`,
+//   })
+// );
 
 // whole flow is mocked
 export const AgencySettingsJurisdictions: React.FC<{
@@ -223,7 +228,7 @@ export const AgencySettingsJurisdictions: React.FC<{
               value={inputValue}
               onChange={(e) => {
                 setInputValue(e.target.value);
-                getSearchResult(e.target.value);
+                // getSearchResult(e.target.value);
               }}
             />
             {!!inputValue &&
