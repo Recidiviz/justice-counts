@@ -33,7 +33,7 @@ import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import checkmarkIcon from "../assets/status-check-icon.png";
 import { BlueText } from "../DataUpload";
 import { BinaryRadioButton } from "../Forms";
-import { REPORT_VERB_LOWERCASE } from "../Global/constants";
+import { REPORT_VERB_LOWERCASE, REPORTED_LOWERCASE } from "../Global/constants";
 import { CheckIcon } from "../Guidance";
 import { ExtendedDropdownMenu, ExtendedDropdownMenuItem } from "../Menu";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
@@ -398,8 +398,9 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
             <Subheader>
               Turn “on” the breakdowns that your agency will be able to{" "}
               {REPORT_VERB_LOWERCASE}. Click into each category to indicate
-              whether or not the breakdown is available to be reported and to
-              configure the definition for that category.
+              whether or not the breakdown is available to be{" "}
+              {REPORTED_LOWERCASE} and to configure the definition for that
+              category.
             </Subheader>
 
             {/* Disaggregations (Enable/Disable) */}
