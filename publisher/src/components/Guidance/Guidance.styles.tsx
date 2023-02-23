@@ -33,7 +33,6 @@ export const GuidanceContainer = styled.div`
 export const ContentContainer = styled.div<{ currentTopicID?: string }>`
   width: 100%;
   max-width: 497px;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
