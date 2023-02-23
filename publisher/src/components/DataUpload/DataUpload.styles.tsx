@@ -198,7 +198,7 @@ export const Button = styled.div<{
   gap: 16px;
   text-transform: capitalize;
 
-  ${({ type, enabledDuringOnboarding }) => {
+  ${({ type }) => {
     if (type === "light-border") {
       return `
         background: none;
@@ -240,7 +240,6 @@ export const Button = styled.div<{
   ${({ enabledDuringOnboarding }) =>
     enabledDuringOnboarding === false &&
     `
-      
       color: ${palette.highlight.grey8};
     `};
 
@@ -262,9 +261,9 @@ export const Button = styled.div<{
     ${({ enabledDuringOnboarding }) =>
       enabledDuringOnboarding === false &&
       `
-      cursor: not-allowed;
-      background: none;
-    `}
+        cursor: not-allowed;
+        background: none;
+      `}
   }
 
   a {
