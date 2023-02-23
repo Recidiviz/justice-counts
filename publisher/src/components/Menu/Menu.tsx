@@ -31,7 +31,6 @@ import {
   ProgressItemName,
   ProgressItemWrapper,
   ProgressTooltipToast,
-  UploadDataButton,
 } from "../Guidance";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
@@ -64,6 +63,29 @@ const Menu: React.FC = () => {
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const hasSystemMetricParams = !systemMetricKey.includes("undefined");
 
+  const logout = async (): Promise<void | string> => {
+    try {
+      const response = (await api.request({
+        path: "/auth/logout",
+        method: "POST",
+      })) as Response;
+
+      if (response.status === 200 && authStore) {
+        return authStore.logoutUser();
+      }
+
+      return Promise.reject(
+        new Error(
+          "Something went wrong with clearing auth session or authStore is not initialized."
+        )
+      );
+    } catch (error) {
+      if (error instanceof Error) return error.message;
+      return String(error);
+    }
+  };
+
+  // Guidance
   const isPublishDataStep =
     !hasCompletedOnboarding && currentTopicID === "PUBLISH_DATA";
   const isAddDataOrPublishDataStep =
@@ -90,28 +112,6 @@ const Menu: React.FC = () => {
     metricConfigProgressToastTimeout,
     setMetricConfigProgressToastTimeout,
   ] = useState<NodeJS.Timer>();
-
-  const logout = async (): Promise<void | string> => {
-    try {
-      const response = (await api.request({
-        path: "/auth/logout",
-        method: "POST",
-      })) as Response;
-
-      if (response.status === 200 && authStore) {
-        return authStore.logoutUser();
-      }
-
-      return Promise.reject(
-        new Error(
-          "Something went wrong with clearing auth session or authStore is not initialized."
-        )
-      );
-    } catch (error) {
-      if (error instanceof Error) return error.message;
-      return String(error);
-    }
-  };
 
   const handleMetricConfigToastDisplay = () => {
     setShowMetricConfigProgressToast(true);
@@ -149,12 +149,13 @@ const Menu: React.FC = () => {
     initOnboardingTopicStatuses();
   }, [guidanceStore, agencyId]);
 
-  if (hasCompletedOnboarding === false && !currentTopicID) return null;
-
   return (
     <MenuContainer>
       <WelcomeUser
-        noRightBorder={!hasCompletedOnboarding && currentTopicID === "WELCOME"}
+        noRightBorder={
+          !hasCompletedOnboarding &&
+          (!currentTopicID || currentTopicID === "WELCOME")
+        }
       >
         {userStore.nameOrEmail &&
           currentAgency?.name &&
@@ -196,7 +197,7 @@ const Menu: React.FC = () => {
 
           {/* Reports */}
           {(hasCompletedOnboarding ||
-            hasCompletedOnboarding === null ||
+            // hasCompletedOnboarding === null ||
             isAddDataOrPublishDataStep) && (
             <MenuItem
               onClick={() => navigate(REPORTS_LOWERCASE)}
@@ -208,7 +209,7 @@ const Menu: React.FC = () => {
 
           {/* Data (Visualizations) */}
           {(hasCompletedOnboarding ||
-            hasCompletedOnboarding === null ||
+            // hasCompletedOnboarding === null ||
             isPublishDataStep) && (
             <MenuItem
               onClick={() => navigate("data")}
@@ -273,19 +274,26 @@ const Menu: React.FC = () => {
           </MenuItem>
 
           <MenuItem buttonPadding>
-            {hasCompletedOnboarding ? (
-              <Button type="blue" onClick={() => navigate("upload")}>
-                Upload Data
-              </Button>
-            ) : (
-              <UploadDataButton
-                type={isAddDataOrPublishDataStep ? "blue" : "border"}
-                activated={isAddDataOrPublishDataStep}
-                onClick={() => isAddDataOrPublishDataStep && navigate("upload")}
-              >
-                Upload Data
-              </UploadDataButton>
-            )}
+            <Button
+              type={
+                hasCompletedOnboarding ||
+                (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
+                  ? "blue"
+                  : "border"
+              }
+              onClick={() => {
+                if (
+                  hasCompletedOnboarding ||
+                  (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
+                )
+                  navigate("upload");
+              }}
+              enabledDuringOnboarding={
+                !hasCompletedOnboarding && isAddDataOrPublishDataStep
+              }
+            >
+              Upload Data
+            </Button>
           </MenuItem>
         </>
       )}
