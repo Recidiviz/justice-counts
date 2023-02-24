@@ -16,7 +16,6 @@
 // =============================================================================
 
 import {
-  HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
