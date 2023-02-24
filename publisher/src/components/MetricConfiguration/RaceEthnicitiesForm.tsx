@@ -207,7 +207,7 @@ export const RaceEthnicitiesForm = observer(() => {
             <Race>
               <RaceDisplayName>Hispanic/Latino</RaceDisplayName>
               <RaceSelection>
-                <RadioButtonGroupWrapper>
+                <RaceEthnicityRadioButtonGroupWrapper>
                   <BinaryRadioButton
                     type="radio"
                     id="hispanic-latino-no"
@@ -238,7 +238,7 @@ export const RaceEthnicitiesForm = observer(() => {
                       )
                     }
                   />
-                </RadioButtonGroupWrapper>
+                </RaceEthnicityRadioButtonGroupWrapper>
               </RaceSelection>
             </Race>
           )}
