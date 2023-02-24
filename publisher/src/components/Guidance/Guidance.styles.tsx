@@ -227,8 +227,8 @@ export const CheckIconWrapper = styled.div`
   border: 1px solid rgba(255, 255, 255, 0.2);
 `;
 
-export const CheckIcon = styled.img`
-  width: 20px;
+export const CheckIcon = styled.img<{ width?: number }>`
+  width: ${({ width }) => (width ? `${width}px` : "20px")};
 `;
 
 export const ProgressTooltipToast = styled.div<{ showToast?: boolean }>`

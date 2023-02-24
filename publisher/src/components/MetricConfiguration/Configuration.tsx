@@ -30,12 +30,16 @@ import { monthsByName, removeSnakeCase } from "../../utils";
 import { ReactComponent as CalendarIconDark } from "../assets/calendar-icon-dark.svg";
 import { ReactComponent as CalendarIconLight } from "../assets/calendar-icon-light.svg";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
+import checkmarkIcon from "../assets/status-check-icon.png";
+import { BlueText } from "../DataUpload";
 import { BinaryRadioButton } from "../Forms";
-import { REPORT_VERB_LOWERCASE } from "../Global/constants";
+import { REPORT_VERB_LOWERCASE, REPORTED_LOWERCASE } from "../Global/constants";
+import { CheckIcon } from "../Guidance";
 import { ExtendedDropdownMenu, ExtendedDropdownMenuItem } from "../Menu";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   ActionStatusTitle,
+  AvailableWithCheckWrapper,
   BlueLinkSpan,
   BreakdownHeader,
   Dimension,
@@ -392,9 +396,11 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
           <MetricDisaggregations enabled={metricEnabled}>
             <BreakdownHeader>Breakdowns</BreakdownHeader>
             <Subheader>
-              Mark (using the checkmark) each of the breakdowns below that your
-              agency will be able to {REPORT_VERB_LOWERCASE}. Click the arrow to
-              edit the definition for each breakdown.
+              Turn “on” the breakdowns that your agency will be able to{" "}
+              {REPORT_VERB_LOWERCASE}. Click into each category to indicate
+              whether or not the breakdown is available to be{" "}
+              {REPORTED_LOWERCASE} and to configure the definition for that
+              category.
             </Subheader>
 
             {/* Disaggregations (Enable/Disable) */}
@@ -441,7 +447,9 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   </DisaggregationHeader>
 
                   {/* Dimensions (Enable/Disable) */}
-                  {disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY ? (
+                  {disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY &&
+                  (currentDisaggregation.enabled ||
+                    currentDisaggregation.enabled === null) ? (
                     <RaceEthnicitiesGrid
                       disaggregationEnabled={
                         currentDisaggregation.enabled === true
@@ -457,39 +465,51 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     currentDimensions?.map((dimension) => {
                       return (
                         <Fragment key={dimension.key}>
-                          <Dimension
-                            enabled={
-                              !metricEnabled ||
-                              currentDisaggregation.enabled ||
-                              currentDisaggregation.enabled === null
-                            }
-                            inView={dimension.key === activeDimensionKey}
-                            onClick={() => {
-                              setActiveDisaggregationKey(disaggregationKey);
-                              setActiveDimensionKey(dimension.key);
-                            }}
-                          >
-                            <DimensionTitleWrapper>
-                              <DimensionTitle
-                                enabled={currentDisaggregation.enabled}
-                              >
-                                {dimension?.label}
-                              </DimensionTitle>
-                              <ActionStatusTitle
-                                enabled={
-                                  currentDisaggregation.enabled &&
-                                  dimension.enabled === null
-                                }
-                                inView={dimension.key === activeDimensionKey}
-                              >
-                                {dimension.enabled && "Available"}
-                                {dimension.enabled === false && "Unavailable"}
-                                {dimension.enabled === null &&
-                                  "Action Required"}
-                              </ActionStatusTitle>
-                              <RightArrowIcon />
-                            </DimensionTitleWrapper>
-                          </Dimension>
+                          {(currentDisaggregation.enabled ||
+                            currentDisaggregation.enabled === null) && (
+                            <Dimension
+                              enabled={
+                                !metricEnabled ||
+                                currentDisaggregation.enabled ||
+                                currentDisaggregation.enabled === null
+                              }
+                              inView={dimension.key === activeDimensionKey}
+                              onClick={() => {
+                                setActiveDisaggregationKey(disaggregationKey);
+                                setActiveDimensionKey(dimension.key);
+                              }}
+                            >
+                              <DimensionTitleWrapper>
+                                <DimensionTitle
+                                  enabled={currentDisaggregation.enabled}
+                                >
+                                  {dimension?.label}
+                                </DimensionTitle>
+                                <ActionStatusTitle
+                                  enabled={
+                                    currentDisaggregation.enabled &&
+                                    dimension.enabled === null
+                                  }
+                                  inView={dimension.key === activeDimensionKey}
+                                >
+                                  {dimension.enabled && (
+                                    <AvailableWithCheckWrapper>
+                                      <BlueText>Available</BlueText>
+                                      <CheckIcon
+                                        src={checkmarkIcon}
+                                        alt=""
+                                        width={11}
+                                      />
+                                    </AvailableWithCheckWrapper>
+                                  )}
+                                  {dimension.enabled === false && "Unavailable"}
+                                  {dimension.enabled === null &&
+                                    "Action Required"}
+                                </ActionStatusTitle>
+                                <RightArrowIcon />
+                              </DimensionTitleWrapper>
+                            </Dimension>
+                          )}
                         </Fragment>
                       );
                     })

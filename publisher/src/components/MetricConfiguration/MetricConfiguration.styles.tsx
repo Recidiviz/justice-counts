@@ -881,3 +881,9 @@ export const DisaggregationHeader = styled.div`
   margin-top: 48px;
   border-bottom: 1px solid ${palette.highlight.grey5};
 `;
+
+export const AvailableWithCheckWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 7px;
+`;
