@@ -234,8 +234,10 @@ export const CheckIcon = styled.img`
 
 export const ProgressTooltipToast = styled.div<{ showToast?: boolean }>`
   ${ProgressTooltipStyles}
-  right: 150px;
-  top: ${HEADER_BAR_HEIGHT}px;
+  width: 280px;
+  top: 58px;
+  right: unset;
+  left: -100px;
   opacity: ${({ showToast }) => (showToast ? 1 : 0)};
 
   &::after {

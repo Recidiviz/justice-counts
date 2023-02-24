@@ -174,24 +174,25 @@ const Menu: React.FC = () => {
                 onClick={() => navigate("/")}
               >
                 Get Started
+                {/* Guidance: Metric Configuration Progress Toast */}
+                {isMetricConfigStep && hasSystemMetricParams && (
+                  <ProgressTooltipToast
+                    showToast={showMetricConfigProgressToast}
+                  >
+                    {metricConfigurationProgressSteps.map((step) => (
+                      <ProgressItemWrapper key={step}>
+                        <CheckIconWrapper>
+                          {metricCompletionProgress &&
+                            metricCompletionProgress[step] && (
+                              <CheckIcon src={checkmarkIcon} alt="" />
+                            )}
+                        </CheckIconWrapper>
+                        <ProgressItemName>{step}</ProgressItemName>
+                      </ProgressItemWrapper>
+                    ))}
+                  </ProgressTooltipToast>
+                )}
               </MenuItem>
-
-              {/* Guidance: Metric Configuration Progress Toast */}
-              {isMetricConfigStep && hasSystemMetricParams && (
-                <ProgressTooltipToast showToast={showMetricConfigProgressToast}>
-                  {metricConfigurationProgressSteps.map((step) => (
-                    <ProgressItemWrapper key={step}>
-                      <CheckIconWrapper>
-                        {metricCompletionProgress &&
-                          metricCompletionProgress[step] && (
-                            <CheckIcon src={checkmarkIcon} alt="" />
-                          )}
-                      </CheckIconWrapper>
-                      <ProgressItemName>{step}</ProgressItemName>
-                    </ProgressItemWrapper>
-                  ))}
-                </ProgressTooltipToast>
-              )}
             </>
           )}
 
