@@ -197,9 +197,7 @@ const Menu: React.FC = () => {
           )}
 
           {/* Reports */}
-          {(hasCompletedOnboarding ||
-            // hasCompletedOnboarding === null ||
-            isAddDataOrPublishDataStep) && (
+          {(hasCompletedOnboarding || isAddDataOrPublishDataStep) && (
             <MenuItem
               onClick={() => navigate(REPORTS_LOWERCASE)}
               active={pathWithoutAgency === REPORTS_LOWERCASE}
@@ -209,9 +207,7 @@ const Menu: React.FC = () => {
           )}
 
           {/* Data (Visualizations) */}
-          {(hasCompletedOnboarding ||
-            // hasCompletedOnboarding === null ||
-            isPublishDataStep) && (
+          {(hasCompletedOnboarding || isPublishDataStep) && (
             <MenuItem
               onClick={() => navigate("data")}
               active={pathWithoutAgency === "data"}
