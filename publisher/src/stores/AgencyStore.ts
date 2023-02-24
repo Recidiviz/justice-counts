@@ -25,6 +25,7 @@ import {
 } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction } from "mobx";
 
+import { SYSTEMS_LOWERCASE } from "../components/Global/constants";
 import { AgencySettingType } from "../components/Settings";
 import API from "./API";
 import UserStore from "./UserStore";
@@ -146,11 +147,13 @@ class AgencyStore {
         color: "red",
         timeout: 4000,
       });
-      throw new Error("There was an issue updating the agency systems.");
+      throw new Error(
+        `There was an issue updating the agency ${SYSTEMS_LOWERCASE}.`
+      );
     }
 
     showToast({
-      message: `Agency systems saved.`,
+      message: `Agency ${SYSTEMS_LOWERCASE} saved.`,
       check: true,
       color: "blue",
       timeout: 4000,

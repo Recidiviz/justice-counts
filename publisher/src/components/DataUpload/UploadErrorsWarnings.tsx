@@ -24,6 +24,7 @@ import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import { ReactComponent as ErrorIcon } from "../assets/error-icon.svg";
 import { ReactComponent as WarningIcon } from "../assets/warning-icon.svg";
+import { SYSTEM_LOWERCASE } from "../Global/constants";
 import {
   BlueText,
   Button,
@@ -260,7 +261,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
               allUserSystems: currentAgency?.systems,
             })}
         </span>{" "}
-        system (
+        {SYSTEM_LOWERCASE} (
         <a href={`/assets/${systemFileName}`} download={systemFileName}>
           download example
         </a>

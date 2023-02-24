@@ -32,6 +32,7 @@ import { useParams } from "react-router-dom";
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import downloadIcon from "../assets/download-icon.png";
+import { SYSTEM_CAPITALIZED } from "../Global/constants";
 import { ContainedLoader } from "../Loading";
 import { TeamMemberNameWithBadge } from "../primitives";
 import { UploadedFile, UploadedFileStatus } from ".";
@@ -219,7 +220,7 @@ export const UploadedFiles: React.FC = observer(() => {
     "Filename",
     "Uploaded",
     "Processed",
-    "System",
+    SYSTEM_CAPITALIZED,
   ];
 
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);

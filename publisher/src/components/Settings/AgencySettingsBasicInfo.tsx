@@ -19,6 +19,7 @@ import React from "react";
 
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
+import { SYSTEM_CAPITALIZED, SYSTEMS_CAPITALIZED } from "../Global/constants";
 import {
   AgencySettingsBlock,
   BasicInfoBlockDescription,
@@ -42,8 +43,8 @@ export const AgencySettingsBasicInfo = () => {
       <BasicInfoRow capitalize>
         <span>
           {currentAgencySystems && currentAgencySystems.length > 1
-            ? "Systems"
-            : "System"}
+            ? SYSTEMS_CAPITALIZED
+            : SYSTEM_CAPITALIZED}
         </span>
         {currentAgencySystems
           ?.map((system) =>

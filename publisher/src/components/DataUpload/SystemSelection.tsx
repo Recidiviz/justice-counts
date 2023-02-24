@@ -20,6 +20,7 @@ import React from "react";
 
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as CheckIcon } from "../assets/check-icon.svg";
+import { SYSTEM_LOWERCASE } from "../Global/constants";
 import {
   Container,
   FileName,
@@ -47,7 +48,7 @@ export const SystemSelection: React.FC<SystemSelectionProps> = ({
           <CheckIcon />
           {selectedFile.name}
         </FileName>
-        <Title>Which system is this data for?</Title>
+        <Title>Which {SYSTEM_LOWERCASE} is this data for?</Title>
 
         <SelectSystemOptions>
           {userSystems.map((system) => (

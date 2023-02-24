@@ -15,6 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { SYSTEM_LOWERCASE } from "../components/Global/constants";
+
 export const mockOverview = {
   id: 0,
   year: 2022,
@@ -100,8 +102,7 @@ export const mockMetrics = [
   {
     key: "ADMISSIONS",
     display_name: "Admissions",
-    description:
-      "Measure the number of new admission to the state corrections system.",
+    description: `Measure the number of new admission to the state corrections ${SYSTEM_LOWERCASE}.`,
     reporting_note:
       "Report individual in the most serious category (new sentence > vilation > hold).",
     value: null,

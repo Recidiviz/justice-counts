@@ -20,6 +20,7 @@ import {
   AgencySystems,
   FormError,
   Metric,
+  MetricConfigurationSettings,
   MetricConfigurationSettingsOptions,
   MetricContext,
   MetricDisaggregationDimensions,
@@ -56,11 +57,7 @@ class MetricConfigStore {
 
   metricDefinitionSettings: {
     [systemMetricKey: string]: {
-      [settingKey: string]: {
-        included?: MetricConfigurationSettingsOptions;
-        default?: MetricConfigurationSettingsOptions;
-        label?: string;
-      };
+      [settingKey: string]: Partial<MetricConfigurationSettings>;
     };
   };
 
@@ -90,7 +87,6 @@ class MetricConfigStore {
       [disaggregationKey: string]: {
         [dimensionKey: string]: {
           enabled?: boolean;
-          contexts?: { key: string; value: string }[];
           label?: string;
           description?: string;
           key?: string;
@@ -358,7 +354,7 @@ class MetricConfigStore {
     system: AgencySystems,
     metricKey: string,
     settingKey: string,
-    metricDefinitionSettings: { [key: string]: string }
+    metricDefinitionSettings: Partial<MetricConfigurationSettings>
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
@@ -418,6 +414,8 @@ class MetricConfigStore {
       this.dimensions[systemMetricKey][disaggregationKey][dimensionKey] = {};
     }
 
+    this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].enabled =
+      dimensionData.enabled;
     this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].label =
       dimensionData.label;
     this.dimensions[systemMetricKey][disaggregationKey][dimensionKey].key =
@@ -434,6 +432,42 @@ class MetricConfigStore {
         dimensionKey
       ].ethnicity = dimensionData.ethnicity as Ethnicities;
     }
+  };
+
+  initializeDimensionDefinitionSetting = (
+    system: AgencySystems,
+    metricKey: string,
+    disaggregationKey: string,
+    dimensionKey: string,
+    settingKey: string,
+    dimensionDefinitionSettings: Partial<MetricConfigurationSettings>
+  ) => {
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
+
+    if (!this.dimensionDefinitionSettings[systemMetricKey]) {
+      this.dimensionDefinitionSettings[systemMetricKey] = {};
+    }
+
+    if (!this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey]) {
+      this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey] = {};
+    }
+
+    if (
+      !this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
+        dimensionKey
+      ]
+    ) {
+      this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
+        dimensionKey
+      ] = {};
+    }
+
+    this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
+      dimensionKey
+    ][settingKey] = dimensionDefinitionSettings;
   };
 
   initializeDimensionContexts = (
@@ -716,42 +750,6 @@ class MetricConfigStore {
         },
       ],
     };
-  };
-
-  initializeDimensionDefinitionSetting = (
-    system: AgencySystems,
-    metricKey: string,
-    disaggregationKey: string,
-    dimensionKey: string,
-    settingKey: string,
-    dimensionDefinitionSettings: { [key: string]: string }
-  ) => {
-    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
-      system,
-      metricKey
-    );
-
-    if (!this.dimensionDefinitionSettings[systemMetricKey]) {
-      this.dimensionDefinitionSettings[systemMetricKey] = {};
-    }
-
-    if (!this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey]) {
-      this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey] = {};
-    }
-
-    if (
-      !this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
-        dimensionKey
-      ]
-    ) {
-      this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
-        dimensionKey
-      ] = {};
-    }
-
-    this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
-      dimensionKey
-    ][settingKey] = dimensionDefinitionSettings;
   };
 
   updateDimensionDefinitionSetting = (
