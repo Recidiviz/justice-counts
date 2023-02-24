@@ -18,10 +18,13 @@
 /* eslint-disable camelcase */
 import addIcon from "@justice-counts/common/assets/add-icon.svg";
 import blackCheck from "@justice-counts/common/assets/black-check-icon.svg";
-// import jurisdictionsData from "@justice-counts/common/fips_with_county_subdivisions.json";
+import mappedJurisdictionsJSONData from "@justice-counts/common/fips_with_county_subdivisions.json";
 import { Jurisdiction } from "@justice-counts/common/types";
+import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
+import { useStore } from "../../stores";
 import rightArrow from "../assets/right-arrow.svg";
 import {
   BlueCheckIcon,
@@ -56,55 +59,75 @@ import {
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
-// const jurisdictions: Jurisdiction[] = (jurisdictionsData as Jurisdiction[]).map(
-//   (entry) => ({
-//     ...entry,
-//     area_name:
-//       entry.area_name === entry.state_name
-//         ? entry.area_name
-//         : `${entry.area_name}, ${entry.state_abbrev}`,
-//   })
-// );
+const mappedJurisdictionsData = mappedJurisdictionsJSONData as unknown as {
+  [id: string]: Jurisdiction;
+};
 
-// whole flow is mocked
 export const AgencySettingsJurisdictions: React.FC<{
   settingProps: SettingProps;
-}> = ({ settingProps }) => {
+}> = observer(({ settingProps }) => {
+  const { agencyId } = useParams() as { agencyId: string };
   const { isSettingInEditMode, openSetting, removeEditMode, allowEdit } =
     settingProps;
+  const { agencyStore } = useStore();
+  const {
+    includedJurisdictionsIds,
+    excludedJurisdictionsIds,
+    updateAgencyJurisdictions,
+    saveAgencyJurisdictions,
+  } = agencyStore;
 
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isExclusionsViewActive, setIsExclusionsViewActive] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [totalSearchResultsShow, setTotalSearchResultsShow] = useState(10);
-  const [searchResult] = useState<Jurisdiction[]>([]);
-  const [includedJurisdictions, setIncludedJurisdictions] = useState<
-    Jurisdiction[]
-  >([]);
-  const [excludedJurisdictions, setExcludedJurisdictions] = useState<
-    Jurisdiction[]
-  >([]);
+  const [searchResult, setSearchResult] = useState<Jurisdiction[]>([]);
+  const [editedIncludedJurisdictionsIds, setEditedIncludedJurisdictionsIds] =
+    useState<string[]>(includedJurisdictionsIds);
+  const [editedExcludedJurisdictionsIds, setEditedExcludedJurisdictionsIds] =
+    useState<string[]>(excludedJurisdictionsIds);
   const [checkedJurisdictionsIds, setCheckedJurisdictionsIds] = useState<
     string[]
   >([]);
 
   const checkedAreasCount = checkedJurisdictionsIds.length;
-  const hasInclusions = includedJurisdictions.length > 0;
-  const hasExclusions = excludedJurisdictions.length > 0;
-  // TODO fix this in connect jurisdictions API task
-  const agencyJurisdictionsCurrentCount = [
-    ...includedJurisdictions,
-    ...excludedJurisdictions,
-  ].length;
+  const hasInclusions = includedJurisdictionsIds.length > 0;
+  const hasExclusions = excludedJurisdictionsIds.length > 0;
 
   const handleSaveClick = () => {
+    const updatedJurisdictions = updateAgencyJurisdictions({
+      included: editedIncludedJurisdictionsIds,
+      excluded: editedExcludedJurisdictionsIds,
+    });
+    saveAgencyJurisdictions(updatedJurisdictions, agencyId);
     removeEditMode();
   };
-  // I guess I will compare store jurisdictions ids with locals and based on that will show modal or just close edit mode
   const handleCancelClick = () => {
-    removeEditMode();
+    const sortedStoreIncludedIds = includedJurisdictionsIds
+      .sort((a, b) => a.localeCompare(b))
+      .join();
+    const sortedEditedIncludedIds = editedIncludedJurisdictionsIds
+      .sort((a, b) => a.localeCompare(b))
+      .join();
+    const sortedStoreExcludedIds = excludedJurisdictionsIds
+      .sort((a, b) => a.localeCompare(b))
+      .join();
+    const sortedEditedExcludedIds = editedExcludedJurisdictionsIds
+      .sort((a, b) => a.localeCompare(b))
+      .join();
+
+    if (
+      sortedStoreIncludedIds === sortedEditedIncludedIds &&
+      sortedStoreExcludedIds === sortedEditedExcludedIds
+    ) {
+      removeEditMode();
+    } else {
+      setIsConfirmModalOpen(true);
+    }
   };
   const handleModalConfirm = () => {
+    setEditedIncludedJurisdictionsIds(includedJurisdictionsIds);
+    setEditedExcludedJurisdictionsIds(excludedJurisdictionsIds);
     setIsConfirmModalOpen(false);
     removeEditMode();
   };
@@ -117,40 +140,46 @@ export const AgencySettingsJurisdictions: React.FC<{
     );
   };
   const handleRemoveJurisdictions = (jurisdictionIds: string[]) => {
-    const newIncludedJurisdictions = includedJurisdictions.filter(
-      (jurisdiction) => !jurisdictionIds.includes(jurisdiction.id)
+    const newIncludedJurisdictionsIds = editedIncludedJurisdictionsIds.filter(
+      (id) => !jurisdictionIds.includes(id)
     );
-    const newExcludedJurisdictions = excludedJurisdictions.filter(
-      (jurisdiction) => !jurisdictionIds.includes(jurisdiction.id)
+    const newExcludedJurisdictionsIds = editedExcludedJurisdictionsIds.filter(
+      (id) => !jurisdictionIds.includes(id)
     );
-    setIncludedJurisdictions(newIncludedJurisdictions);
-    setExcludedJurisdictions(newExcludedJurisdictions);
+    setEditedIncludedJurisdictionsIds(newIncludedJurisdictionsIds);
+    setEditedExcludedJurisdictionsIds(newExcludedJurisdictionsIds);
     setCheckedJurisdictionsIds([]);
   };
-  const handleAddArea = (area: Jurisdiction) => {
+  const handleAddArea = (id: string) => {
     if (isExclusionsViewActive) {
-      setExcludedJurisdictions([...excludedJurisdictions, area]);
+      setEditedExcludedJurisdictionsIds([
+        ...editedExcludedJurisdictionsIds,
+        id,
+      ]);
       setInputValue("");
     } else {
-      setIncludedJurisdictions([...includedJurisdictions, area]);
+      setEditedIncludedJurisdictionsIds([
+        ...editedIncludedJurisdictionsIds,
+        id,
+      ]);
       setInputValue("");
     }
   };
 
   // helpers
-  // const getSearchResult = (searchValue: string) => {
-  //   const matchedData = jurisdictions.filter((entry) =>
-  //     entry.area_name.toLowerCase().startsWith(searchValue.toLowerCase().trim())
-  //   );
-  //   const addedJurisdictions = [
-  //     ...includedJurisdictions,
-  //     ...excludedJurisdictions,
-  //   ].map((entry) => entry.id);
-  //   const matchedDataWithoutAddedAreas = matchedData.filter(
-  //     (entry) => !addedJurisdictions.includes(entry.id)
-  //   );
-  //   setSearchResult(matchedDataWithoutAddedAreas);
-  // };
+  const getSearchResult = (searchValue: string) => {
+    const matchedData = Object.values(mappedJurisdictionsData).filter((entry) =>
+      entry.name.toLowerCase().startsWith(searchValue.toLowerCase().trim())
+    );
+    const addedJurisdictions = [
+      ...editedIncludedJurisdictionsIds,
+      ...editedExcludedJurisdictionsIds,
+    ];
+    const matchedDataWithoutAddedAreas = matchedData.filter(
+      (entry) => !addedJurisdictions.includes(entry.id)
+    );
+    setSearchResult(matchedDataWithoutAddedAreas);
+  };
 
   const removeUnderscore = (value: string) => value.replaceAll("_", " ");
 
@@ -166,6 +195,22 @@ export const AgencySettingsJurisdictions: React.FC<{
       setIsExclusionsViewActive(false);
     }
   }, [isSettingInEditMode]);
+
+  useEffect(() => {
+    if (
+      includedJurisdictionsIds.join() !== editedIncludedJurisdictionsIds.join()
+    )
+      setEditedIncludedJurisdictionsIds(includedJurisdictionsIds);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [includedJurisdictionsIds]);
+
+  useEffect(() => {
+    if (
+      excludedJurisdictionsIds.join() !== editedExcludedJurisdictionsIds.join()
+    )
+      setEditedExcludedJurisdictionsIds(excludedJurisdictionsIds);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [excludedJurisdictionsIds]);
 
   if (isSettingInEditMode) {
     return (
@@ -191,7 +236,7 @@ export const AgencySettingsJurisdictions: React.FC<{
               value={inputValue}
               onChange={(e) => {
                 setInputValue(e.target.value);
-                // getSearchResult(e.target.value);
+                getSearchResult(e.target.value);
               }}
             />
             {!!inputValue &&
@@ -209,9 +254,9 @@ export const AgencySettingsJurisdictions: React.FC<{
                       <JurisdictionsSearchResult
                         key={result.id}
                         hasAction
-                        onClick={() => handleAddArea(result)}
+                        onClick={() => handleAddArea(result.id)}
                       >
-                        {result.area_name}
+                        {result.name}
                         <JurisdictionAreaType>
                           {removeUnderscore(result.type)}{" "}
                           <AddIcon src={addIcon} alt="" />
@@ -239,15 +284,15 @@ export const AgencySettingsJurisdictions: React.FC<{
                 Areas included
               </AgencySettingsBlockSubDescription>
               <JurisdictionsListArea>
-                {includedJurisdictions.map(({ id, type, area_name }) => (
+                {editedIncludedJurisdictionsIds.map((id) => (
                   <JurisdictionsInfoRow
                     key={id}
                     hasHover
                     onClick={() => handleCheckedJurisdictionsIds(id)}
                   >
-                    {area_name}
+                    {mappedJurisdictionsData[id].name}
                     <JurisdictionCheckBlock>
-                      {removeUnderscore(type)}
+                      {removeUnderscore(mappedJurisdictionsData[id].type)}
                       <CheckboxWrapper>
                         <Checkbox
                           type="checkbox"
@@ -269,15 +314,15 @@ export const AgencySettingsJurisdictions: React.FC<{
                 Areas excluded
               </AgencySettingsBlockSubDescription>
               <JurisdictionsListArea>
-                {excludedJurisdictions.map(({ id, type, area_name }) => (
+                {editedExcludedJurisdictionsIds.map((id) => (
                   <JurisdictionsInfoRow
                     key={id}
                     hasHover
                     onClick={() => handleCheckedJurisdictionsIds(id)}
                   >
-                    {area_name}
+                    {mappedJurisdictionsData[id].name}
                     <JurisdictionCheckBlock>
-                      {removeUnderscore(type)}
+                      {removeUnderscore(mappedJurisdictionsData[id].type)}
                       <CheckboxWrapper>
                         <Checkbox
                           type="checkbox"
@@ -297,8 +342,10 @@ export const AgencySettingsJurisdictions: React.FC<{
             {isExclusionsViewActive ? (
               <JurisdictionsEditModeFooterLeftBlock>
                 {hasInclusions
-                  ? `${includedJurisdictions.length} ${
-                      includedJurisdictions.length > 1 ? "areas" : "area"
+                  ? `${editedIncludedJurisdictionsIds.length} ${
+                      editedIncludedJurisdictionsIds.length > 1
+                        ? "areas"
+                        : "area"
                     } included`
                   : "Need to declare included areas?"}
                 <AddJurisdictionsExclusionsLink
@@ -312,8 +359,10 @@ export const AgencySettingsJurisdictions: React.FC<{
             ) : (
               <JurisdictionsEditModeFooterLeftBlock>
                 {hasExclusions
-                  ? `${excludedJurisdictions.length} ${
-                      excludedJurisdictions.length > 1 ? "areas" : "area"
+                  ? `${editedExcludedJurisdictionsIds.length} ${
+                      editedExcludedJurisdictionsIds.length > 1
+                        ? "areas"
+                        : "area"
                     } excluded`
                   : "Need to declare excluded areas?"}
                 <AddJurisdictionsExclusionsLink
@@ -366,36 +415,37 @@ export const AgencySettingsJurisdictions: React.FC<{
         <AgencySettingsBlockDescription>
           The following are within the agency’s jurisdiction.
         </AgencySettingsBlockDescription>
-        {!includedJurisdictions.length && !excludedJurisdictions.length && (
-          <AgencyInfoBlockDescription hasTopMargin>
-            No jurisdictions added.
-          </AgencyInfoBlockDescription>
-        )}
-        {includedJurisdictions.length > 0 && (
+        {!includedJurisdictionsIds.length &&
+          !excludedJurisdictionsIds.length && (
+            <AgencyInfoBlockDescription hasTopMargin>
+              No jurisdictions added.
+            </AgencyInfoBlockDescription>
+          )}
+        {includedJurisdictionsIds.length > 0 && (
           <AgencySettingsBlockSubDescription>
             Areas included
           </AgencySettingsBlockSubDescription>
         )}
-        {includedJurisdictions.map(({ id, type, area_name }) => (
+        {includedJurisdictionsIds.map((id) => (
           <JurisdictionsInfoRow key={id}>
-            {area_name}
+            {mappedJurisdictionsData[id].name}
             <JurisdictionAreaType>
-              {removeUnderscore(type)}
+              {removeUnderscore(mappedJurisdictionsData[id].type)}
             </JurisdictionAreaType>
           </JurisdictionsInfoRow>
         ))}
-        {excludedJurisdictions.length > 0 && (
+        {excludedJurisdictionsIds.length > 0 && (
           <AgencySettingsBlockSubDescription
-            hasTopMargin={includedJurisdictions.length > 0}
+            hasTopMargin={includedJurisdictionsIds.length > 0}
           >
             Areas excluded
           </AgencySettingsBlockSubDescription>
         )}
-        {excludedJurisdictions.map(({ id, type, area_name }) => (
+        {excludedJurisdictionsIds.map((id) => (
           <JurisdictionsInfoRow key={id}>
-            {area_name}
+            {mappedJurisdictionsData[id].name}
             <JurisdictionAreaType>
-              {removeUnderscore(type)}
+              {removeUnderscore(mappedJurisdictionsData[id].type)}
             </JurisdictionAreaType>
           </JurisdictionsInfoRow>
         ))}
@@ -412,4 +462,4 @@ export const AgencySettingsJurisdictions: React.FC<{
       </AgencySettingsBlock>
     </>
   );
-};
+});
