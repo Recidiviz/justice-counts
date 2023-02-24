@@ -494,7 +494,9 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                 <MetricConfigurationDropdownContainer hasTopBorder>
                   <Dropdown>
                     <MetricsConfigurationDropdownToggle kind="borderless">
-                      <img src={dropdownArrow} alt="" />
+                      {activeDisaggregationKeys?.length > 1 && (
+                        <img src={dropdownArrow} alt="" />
+                      )}
                       {removeSnakeCase(
                         (
                           disaggregations[systemMetricKey][
@@ -531,33 +533,37 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                         />
                       </CheckboxWrapper>
                     </MetricsConfigurationDropdownToggle>
-                    <MetricsConfigurationDropdownMenu>
-                      {activeDisaggregationKeys?.map((disaggregationKey) => {
-                        const currentDisaggregation =
-                          disaggregations[systemMetricKey][disaggregationKey];
+                    {activeDisaggregationKeys.length > 1 ? (
+                      <MetricsConfigurationDropdownMenu>
+                        {activeDisaggregationKeys?.map((disaggregationKey) => {
+                          const currentDisaggregation =
+                            disaggregations[systemMetricKey][disaggregationKey];
 
-                        return (
-                          <MetricsConfigurationDropdownMenuItem
-                            key={disaggregationKey}
-                            onClick={() => {
-                              setActiveDisaggregationKey(disaggregationKey);
+                          return (
+                            <MetricsConfigurationDropdownMenuItem
+                              key={disaggregationKey}
+                              onClick={() => {
+                                setActiveDisaggregationKey(disaggregationKey);
 
-                              const [firstDimensionKey] = Object.keys(
-                                dimensions[systemMetricKey][disaggregationKey]
-                              );
-                              setActiveDimensionKey(firstDimensionKey);
-                            }}
-                            highlight={
-                              disaggregationKey === activeDisaggregationKey
-                            }
-                          >
-                            {removeSnakeCase(
-                              currentDisaggregation.display_name as string
-                            ).toLowerCase()}
-                          </MetricsConfigurationDropdownMenuItem>
-                        );
-                      })}
-                    </MetricsConfigurationDropdownMenu>
+                                const [firstDimensionKey] = Object.keys(
+                                  dimensions[systemMetricKey][disaggregationKey]
+                                );
+                                setActiveDimensionKey(firstDimensionKey);
+                              }}
+                              highlight={
+                                disaggregationKey === activeDisaggregationKey
+                              }
+                            >
+                              {removeSnakeCase(
+                                currentDisaggregation.display_name as string
+                              ).toLowerCase()}
+                            </MetricsConfigurationDropdownMenuItem>
+                          );
+                        })}
+                      </MetricsConfigurationDropdownMenu>
+                    ) : (
+                      <></>
+                    )}
                   </Dropdown>
                 </MetricConfigurationDropdownContainer>
               )}

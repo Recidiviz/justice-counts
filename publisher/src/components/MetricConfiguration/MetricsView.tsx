@@ -265,7 +265,9 @@ export const MetricsView: React.FC = observer(() => {
             <MetricConfigurationDropdownContainer hasBottomMargin>
               <Dropdown>
                 <MetricsConfigurationDropdownToggle kind="borderless">
-                  <img src={dropdownArrow} alt="" />
+                  {agencyMetrics.length > 1 && (
+                    <img src={dropdownArrow} alt="" />
+                  )}
                   {metricName}
                   <Badge
                     color={
@@ -277,34 +279,40 @@ export const MetricsView: React.FC = observer(() => {
                     {metricFrequency?.toLowerCase()}
                   </Badge>
                 </MetricsConfigurationDropdownToggle>
-                <MetricsConfigurationDropdownMenu>
-                  {agencyMetrics.map((metric) => (
-                    <MetricsConfigurationDropdownMenuItem
-                      highlight={metric.key === metricSearchParam}
-                      key={metric.key}
-                      onClick={() =>
-                        setSettingsSearchParams({
-                          system: metric.system.key,
-                          metric: metric.key,
-                        })
-                      }
-                    >
-                      <div>
-                        {metric.display_name}
-                        <span>{formatSystemName(metric.system.key)}</span>
-                      </div>
-                      <Badge
-                        color={
-                          reportFrequencyBadgeColors[
-                            metric.frequency as ReportFrequency
-                          ]
-                        }
-                      >
-                        {metric.frequency?.toLowerCase()}
-                      </Badge>
-                    </MetricsConfigurationDropdownMenuItem>
-                  ))}
-                </MetricsConfigurationDropdownMenu>
+                {agencyMetrics.length > 1 ? (
+                  <MetricsConfigurationDropdownMenu>
+                    {agencyMetrics
+                      .filter((metric) => metric.enabled)
+                      .map((metric) => (
+                        <MetricsConfigurationDropdownMenuItem
+                          highlight={metric.key === metricSearchParam}
+                          key={metric.key}
+                          onClick={() =>
+                            setSettingsSearchParams({
+                              system: metric.system.key,
+                              metric: metric.key,
+                            })
+                          }
+                        >
+                          <div>
+                            {metric.display_name}
+                            <span>{formatSystemName(metric.system.key)}</span>
+                          </div>
+                          <Badge
+                            color={
+                              reportFrequencyBadgeColors[
+                                metric.frequency as ReportFrequency
+                              ]
+                            }
+                          >
+                            {metric.frequency?.toLowerCase()}
+                          </Badge>
+                        </MetricsConfigurationDropdownMenuItem>
+                      ))}
+                  </MetricsConfigurationDropdownMenu>
+                ) : (
+                  <></>
+                )}
               </Dropdown>
             </MetricConfigurationDropdownContainer>
             <MobileDisclaimerContainer>

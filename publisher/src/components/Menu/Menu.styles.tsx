@@ -143,7 +143,6 @@ export const WelcomeUser = styled.div`
   padding-right: 24px;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    max-width: 315px;
     ${typography.sizeCSS.medium};
     border-right: none;
     padding-right: 0;

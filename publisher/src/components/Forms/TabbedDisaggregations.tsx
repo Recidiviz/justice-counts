@@ -276,7 +276,9 @@ export const TabbedDisaggregations: React.FC<{
         <Dropdown>
           <DisaggregationsDropdownToggle kind="borderless">
             <DisaggregationsDropdownToggleName>
-              <img src={dropdownArrow} alt="" />
+              {metric.disaggregations.length > 1 && (
+                <img src={dropdownArrow} alt="" />
+              )}
               {activeDisaggregationObj.display_name}
             </DisaggregationsDropdownToggleName>
             <DisaggregationHasInputIndicator
@@ -294,30 +296,34 @@ export const TabbedDisaggregations: React.FC<{
               )}
             </DisaggregationHasInputIndicator>
           </DisaggregationsDropdownToggle>
-          <DisaggregationsDropdownMenu>
-            {metric.disaggregations.map((disaggregation, index) => {
-              const isDefaultFirstOrActiveDisaggregationTab =
-                (!activeDisaggregation[metric.key]?.disaggregationKey &&
-                  index === 0) ||
-                activeDisaggregation[metric.key]?.disaggregationKey ===
-                  disaggregation.key;
+          {metric.disaggregations.length > 1 ? (
+            <DisaggregationsDropdownMenu>
+              {metric.disaggregations.map((disaggregation, index) => {
+                const isDefaultFirstOrActiveDisaggregationTab =
+                  (!activeDisaggregation[metric.key]?.disaggregationKey &&
+                    index === 0) ||
+                  activeDisaggregation[metric.key]?.disaggregationKey ===
+                    disaggregation.key;
 
-              return (
-                <ExtendedDropdownMenuItem
-                  key={disaggregation.key}
-                  highlight={isDefaultFirstOrActiveDisaggregationTab}
-                  onClick={() =>
-                    updateActiveDisaggregationTab(
-                      metric.key,
-                      disaggregation.key
-                    )
-                  }
-                >
-                  {disaggregation.display_name}
-                </ExtendedDropdownMenuItem>
-              );
-            })}
-          </DisaggregationsDropdownMenu>
+                return (
+                  <ExtendedDropdownMenuItem
+                    key={disaggregation.key}
+                    highlight={isDefaultFirstOrActiveDisaggregationTab}
+                    onClick={() =>
+                      updateActiveDisaggregationTab(
+                        metric.key,
+                        disaggregation.key
+                      )
+                    }
+                  >
+                    {disaggregation.display_name}
+                  </ExtendedDropdownMenuItem>
+                );
+              })}
+            </DisaggregationsDropdownMenu>
+          ) : (
+            <></>
+          )}
         </Dropdown>
       </DisaggregationsDropdownContainer>
 

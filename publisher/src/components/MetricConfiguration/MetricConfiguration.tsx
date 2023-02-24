@@ -171,6 +171,10 @@ export const MetricConfiguration: React.FC = observer(() => {
     !metricSearchParam &&
     currentAgency?.systems &&
     currentAgency?.systems?.length > 1;
+  const showMetricsDropdownOptions = () => {
+    const systemMetrics = getMetricsBySystem(systemSearchParam);
+    return systemMetrics && systemMetrics.length > 1;
+  };
 
   return (
     <>
@@ -275,7 +279,9 @@ export const MetricConfiguration: React.FC = observer(() => {
               <MetricConfigurationDropdownContainer hasTopBorder>
                 <Dropdown>
                   <MetricsConfigurationDropdownToggle kind="borderless">
-                    <img src={dropdownArrow} alt="" />
+                    {showMetricsDropdownOptions() && (
+                      <img src={dropdownArrow} alt="" />
+                    )}
                     {metrics[systemMetricKey]?.label}
                     <Badge
                       color={
@@ -294,37 +300,41 @@ export const MetricConfiguration: React.FC = observer(() => {
                         ]?.defaultFrequency?.toLowerCase()}
                     </Badge>
                   </MetricsConfigurationDropdownToggle>
-                  <MetricsConfigurationDropdownMenu>
-                    {getMetricsBySystem(systemSearchParam)?.map(
-                      ({ key, metric }) => (
-                        <MetricsConfigurationDropdownMenuItem
-                          key={key}
-                          onClick={() =>
-                            setSettingsSearchParams(
-                              {
-                                ...settingsSearchParams,
-                                metric: key,
-                              },
-                              true
-                            )
-                          }
-                        >
-                          {metric.label}
-                          <Badge
-                            color={
-                              reportFrequencyBadgeColors[
-                                metric.customFrequency ||
-                                  (metric.defaultFrequency as ReportFrequency)
-                              ]
+                  {showMetricsDropdownOptions() ? (
+                    <MetricsConfigurationDropdownMenu>
+                      {getMetricsBySystem(systemSearchParam)?.map(
+                        ({ key, metric }) => (
+                          <MetricsConfigurationDropdownMenuItem
+                            key={key}
+                            onClick={() =>
+                              setSettingsSearchParams(
+                                {
+                                  ...settingsSearchParams,
+                                  metric: key,
+                                },
+                                true
+                              )
                             }
                           >
-                            {metric.customFrequency?.toLowerCase() ||
-                              metric.defaultFrequency?.toLowerCase()}
-                          </Badge>
-                        </MetricsConfigurationDropdownMenuItem>
-                      )
-                    )}
-                  </MetricsConfigurationDropdownMenu>
+                            {metric.label}
+                            <Badge
+                              color={
+                                reportFrequencyBadgeColors[
+                                  metric.customFrequency ||
+                                    (metric.defaultFrequency as ReportFrequency)
+                                ]
+                              }
+                            >
+                              {metric.customFrequency?.toLowerCase() ||
+                                metric.defaultFrequency?.toLowerCase()}
+                            </Badge>
+                          </MetricsConfigurationDropdownMenuItem>
+                        )
+                      )}
+                    </MetricsConfigurationDropdownMenu>
+                  ) : (
+                    <></>
+                  )}
                 </Dropdown>
               </MetricConfigurationDropdownContainer>
 
