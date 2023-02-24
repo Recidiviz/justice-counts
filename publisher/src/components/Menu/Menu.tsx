@@ -143,7 +143,7 @@ const Menu: React.FC = () => {
   useEffect(() => {
     const initOnboardingTopicStatuses = async () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await guidanceStore.getOnboardingTopicsStatuses();
+      await guidanceStore.getOnboardingTopicsStatuses(agencyId);
     };
 
     initOnboardingTopicStatuses();

@@ -89,11 +89,11 @@ class GuidanceStore {
     return topicID;
   }
 
-  getOnboardingTopicsStatuses = async (): Promise<
-    OnboardingTopicsStatuses[]
-  > => {
+  getOnboardingTopicsStatuses = async (
+    agencyId: string
+  ): Promise<OnboardingTopicsStatuses[]> => {
     const response = (await this.api.request({
-      path: `/api/users/guidance`,
+      path: `/api/users/agencies/${agencyId}/guidance`,
       method: "GET",
     })) as Response;
 
@@ -123,7 +123,7 @@ class GuidanceStore {
     agencyID: string
   ): Promise<Response | Error> => {
     const response = (await this.api.request({
-      path: `/api/users/guidance`,
+      path: `/api/users/agencies/${agencyID}/guidance`,
       body: { updated_topic: updatedTopic },
       method: "PUT",
     })) as Response;
