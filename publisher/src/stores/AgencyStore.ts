@@ -30,12 +30,19 @@ import { AgencySettingType } from "../components/Settings";
 import API from "./API";
 import UserStore from "./UserStore";
 
+type AgencyJurisdictions = {
+  included: string[];
+  excluded: string[];
+};
+
 class AgencyStore {
   userStore: UserStore;
 
   api: API;
 
   currentAgencyId: string | undefined;
+
+  jurisdictions: AgencyJurisdictions;
 
   loadingSettings: boolean;
 
@@ -45,6 +52,7 @@ class AgencyStore {
     this.userStore = userStore;
     this.api = api;
     this.currentAgencyId = undefined;
+    this.jurisdictions = { included: [], excluded: [] };
     this.loadingSettings = true;
   }
 
@@ -73,6 +81,14 @@ class AgencyStore {
     );
   }
 
+  get includedJurisdictionsIds(): string[] {
+    return this.jurisdictions.included;
+  }
+
+  get excludedJurisdictionsIds(): string[] {
+    return this.jurisdictions.excluded;
+  }
+
   initCurrentAgency = (agencyId: string) => {
     runInAction(() => {
       this.currentAgencyId = agencyId;
@@ -98,6 +114,32 @@ class AgencyStore {
         if (this.currentAgency) {
           this.currentAgency.settings = responseJson.settings;
         }
+      });
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
+  async getAgencyJurisdictions(agencyId: string): Promise<void | Error> {
+    try {
+      const response = (await this.api.request({
+        path: `/api/agencies/${agencyId}/jurisdictions`,
+        method: "GET",
+      })) as Response;
+
+      if (response.status !== 200) {
+        throw new Error("There was an issue getting agency jurisdictions.");
+      }
+
+      const responseJson = (await response.json()) as {
+        agency_id: string;
+        jurisdictions: {
+          included: string[];
+          excluded: string[];
+        };
+      };
+      runInAction(() => {
+        this.jurisdictions = responseJson.jurisdictions;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
@@ -160,6 +202,33 @@ class AgencyStore {
     });
   };
 
+  saveAgencyJurisdictions = async (
+    jurisdictions: { jurisdictions: AgencyJurisdictions },
+    agencyId: string
+  ): Promise<void> => {
+    const response = (await this.api.request({
+      path: `/api/agencies/${agencyId}`,
+      body: jurisdictions,
+      method: "PATCH",
+    })) as Response;
+
+    if (response.status !== 200) {
+      showToast({
+        message: `Failed to save.`,
+        color: "red",
+        timeout: 4000,
+      });
+      throw new Error("There was an issue updating agency jurisdictions.");
+    }
+
+    showToast({
+      message: `Agency jurisdictions saved.`,
+      check: true,
+      color: "blue",
+      timeout: 4000,
+    });
+  };
+
   updateAgencySettings = (
     type: AgencySettingType,
     text: string,
@@ -196,6 +265,14 @@ class AgencyStore {
     return {
       systems,
     };
+  };
+
+  updateAgencyJurisdictions = (
+    jurisdictions: AgencyJurisdictions
+  ): { jurisdictions: AgencyJurisdictions } => {
+    this.jurisdictions = jurisdictions;
+
+    return { jurisdictions };
   };
 
   removeAgencyTeamMemberRequest = async (
@@ -325,6 +402,7 @@ class AgencyStore {
     // reset the state when switching agencies
     runInAction(() => {
       this.currentAgencyId = undefined;
+      this.jurisdictions = { included: [], excluded: [] };
       this.loadingSettings = true;
     });
   };

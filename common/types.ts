@@ -60,15 +60,11 @@ export type JurisdictionType =
 
 export type Jurisdiction = {
   id: string;
-  area_name: string;
+  name: string;
   state_name: string;
   state_abbrev: string;
-  state_code: string;
-  fips: string;
   county_name: string | null;
-  county_code: string | null;
-  county_subdivision: string | null;
-  county_subdivision_code: string | null;
+  county_subdivision_name: string | null;
   type: JurisdictionType;
 };
 
