@@ -181,22 +181,24 @@ export const AgencySettingsJurisdictions: React.FC<{
     setSearchResult(matchedDataWithoutAddedAreas);
   };
 
-  const getWordSearch = (word: string, jurisdictions: Jurisdiction[]) => {
-    return jurisdictions.filter(
-      (area) =>
-        area.name.toLowerCase().includes(word) ||
-        area.state_abbrev.toLowerCase().includes(word)
-    );
-  };
-  const getSearch = () => {
-    let result: Jurisdiction[] = Object.values(mappedJurisdictionsData);
-    const inputWords = inputValue.trim().split(" ");
-    for (let i = 0; i < inputWords.length; i += 1) {
-      result = getWordSearch(inputWords[i].toLowerCase(), result);
-    }
-    return result;
-  };
-
+  // this commented part is for future follow up task for improving search algorithm
+  // please let it be here
+  // const getWordSearch = (word: string, jurisdictions: Jurisdiction[]) => {
+  //   return jurisdictions.filter(
+  //     (area) =>
+  //       area.name.toLowerCase().includes(word) ||
+  //       area.state_abbrev.toLowerCase().includes(word)
+  //   );
+  // };
+  // const getSearch = () => {
+  //   let result: Jurisdiction[] = Object.values(mappedJurisdictionsData);
+  //   const inputWords = inputValue.trim().split(" ");
+  //   for (let i = 0; i < inputWords.length; i += 1) {
+  //     result = getWordSearch(inputWords[i].toLowerCase(), result);
+  //   }
+  //   return result;
+  // };
+  //
   // console.log(getSearch());
 
   const removeUnderscore = (value: string) => value.replaceAll("_", " ");
