@@ -93,8 +93,6 @@ export const AgencySettingsJurisdictions: React.FC<{
   const checkedAreasCount = checkedJurisdictionsIds.length;
   const hasInclusions = includedJurisdictionsIds.length > 0;
   const hasExclusions = excludedJurisdictionsIds.length > 0;
-  const agencyHasJurisdictions =
-    [...includedJurisdictionsIds, ...excludedJurisdictionsIds].length > 0;
 
   const handleSaveClick = () => {
     const updatedJurisdictions = updateAgencyJurisdictions({
@@ -452,7 +450,7 @@ export const AgencySettingsJurisdictions: React.FC<{
           </JurisdictionsInfoRow>
         ))}
         {allowEdit && (
-          <EditButtonContainer hasTopMargin={!agencyHasJurisdictions}>
+          <EditButtonContainer hasTopMargin>
             <EditButton onClick={openSetting}>
               Edit jurisdictions
               <img src={rightArrow} alt="" />
