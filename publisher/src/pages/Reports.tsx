@@ -251,21 +251,19 @@ const Reports: React.FC = () => {
 
                           {showAdditionalEditorsTooltip === report.id && (
                             <AdditionalEditorsTooltip>
-                              {filterJCAdminEditors(filteredReportEditors).map(
-                                (editor, idx) => (
-                                  <React.Fragment key={editor.name}>
-                                    {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
-                                    <TeamMemberNameWithBadge
-                                      name={editor.name}
-                                      badgeColor={palette.solid.white}
-                                      role={editor.role}
-                                    />
-                                    {idx < filteredReportEditors.length - 1 && (
-                                      <CommaSpan />
-                                    )}
-                                  </React.Fragment>
-                                )
-                              )}
+                              {filteredReportEditors.map((editor, idx) => (
+                                <React.Fragment key={editor.name}>
+                                  {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
+                                  <TeamMemberNameWithBadge
+                                    name={editor.name}
+                                    badgeColor={palette.solid.white}
+                                    role={editor.role}
+                                  />
+                                  {idx < filteredReportEditors.length - 1 && (
+                                    <CommaSpan />
+                                  )}
+                                </React.Fragment>
+                              ))}
                             </AdditionalEditorsTooltip>
                           )}
                         </>
