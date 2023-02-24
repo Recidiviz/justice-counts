@@ -16,13 +16,10 @@
 // =============================================================================
 
 import {
-  HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled, { css } from "styled-components/macro";
-
-import { Button } from "../DataUpload";
 
 export const GuidanceContainer = styled.div`
   width: 100%;
@@ -34,9 +31,7 @@ export const GuidanceContainer = styled.div`
 
 export const ContentContainer = styled.div<{ currentTopicID?: string }>`
   width: 100%;
-  height: 54%;
   max-width: 497px;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -142,24 +137,11 @@ export const ProgressStepBubble = styled.div<{ highlight?: boolean }>`
   `}
 `;
 
-export const UploadDataButton = styled(Button)<{ activated?: boolean }>`
-  ${({ type }) => type === "border" && `color: ${palette.highlight.grey8};`}
-  ${({ activated }) =>
-    !activated &&
-    `
-        &:hover {
-            cursor: not-allowed;
-            background: none;
-        }
-    `}
-`;
-
 export const ReportsOverviewContainer = styled.div`
   width: 100%;
-  max-height: 30vh;
-  height: 30vh;
+  height: 238px;
   padding: 10px 0;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 export const ReportsOverviewItemWrapper = styled.div`
@@ -167,7 +149,10 @@ export const ReportsOverviewItemWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 20px 0;
-  border-bottom: 1px solid ${palette.solid.darkgrey};
+
+  &:not(:last-child) {
+    border-bottom: 1px solid ${palette.solid.darkgrey};
+  }
 `;
 
 export const ReportTitle = styled.div`
@@ -248,8 +233,10 @@ export const CheckIcon = styled.img`
 
 export const ProgressTooltipToast = styled.div<{ showToast?: boolean }>`
   ${ProgressTooltipStyles}
-  right: 150px;
-  top: ${HEADER_BAR_HEIGHT}px;
+  width: 280px;
+  top: 58px;
+  right: unset;
+  left: -100px;
   opacity: ${({ showToast }) => (showToast ? 1 : 0)};
 
   &::after {

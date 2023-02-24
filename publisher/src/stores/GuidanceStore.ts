@@ -69,7 +69,7 @@ class GuidanceStore {
   }
 
   get hasCompletedOnboarding() {
-    if (Object.values(this.onboardingTopicsStatuses).length === 0) return false;
+    if (Object.values(this.onboardingTopicsStatuses).length === 0) return null;
     return (
       Object.values(this.onboardingTopicsStatuses).find(
         (topicCompleted) => !topicCompleted
@@ -89,9 +89,9 @@ class GuidanceStore {
     return topicID;
   }
 
-  getOnboardingTopicsStatuses = async (
-    agencyId: string
-  ): Promise<OnboardingTopicsStatuses[]> => {
+  getOnboardingTopicsStatuses = async (): Promise<
+    OnboardingTopicsStatuses[]
+  > => {
     const response = (await this.api.request({
       path: `/api/users/guidance`,
       method: "GET",
@@ -120,7 +120,7 @@ class GuidanceStore {
 
   saveOnboardingTopicsStatuses = async (
     updatedTopic: OnboardingTopicsStatuses,
-    agencyId: string
+    agencyID: string
   ): Promise<Response | Error> => {
     const response = (await this.api.request({
       path: `/api/users/guidance`,

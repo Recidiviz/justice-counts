@@ -16,13 +16,23 @@
 // =============================================================================
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
+import checkmarkIcon from "../assets/status-check-icon.png";
 import { Button } from "../DataUpload";
 import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
+import {
+  CheckIcon,
+  CheckIconWrapper,
+  metricConfigurationProgressSteps,
+  ProgressItemName,
+  ProgressItemWrapper,
+  ProgressTooltipToast,
+} from "../Guidance";
+import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   ExtendedDropdownMenu,
   ExtendedDropdownMenuItem,
@@ -32,13 +42,26 @@ import {
   WelcomeUser,
 } from ".";
 
-const Menu = () => {
-  const { authStore, api, userStore } = useStore();
+const Menu: React.FC = () => {
+  const { userStore, guidanceStore, authStore, api } = useStore();
+  const {
+    hasCompletedOnboarding,
+    currentTopicID,
+    getOverallMetricProgress,
+    getMetricAvailabilityFrequencyProgress,
+    getBreakdownProgress,
+    getMetricDefinitionProgress,
+    getBreakdownDefinitionProgress,
+  } = guidanceStore;
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
   const location = useLocation();
 
   const pathWithoutAgency = removeAgencyFromPath(location.pathname);
+  const currentAgency = userStore.getAgency(agencyId);
+  const [settingsSearchParams] = useSettingsSearchParams();
+  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
+  const hasSystemMetricParams = !systemMetricKey.includes("undefined");
 
   const logout = async (): Promise<void | string> => {
     try {
@@ -62,89 +85,215 @@ const Menu = () => {
     }
   };
 
-  const currentAgency = userStore.getAgency(agencyId);
+  // Guidance
+  const isPublishDataStep =
+    !hasCompletedOnboarding && currentTopicID === "PUBLISH_DATA";
+  const isAddDataOrPublishDataStep =
+    (!hasCompletedOnboarding && currentTopicID === "ADD_DATA") ||
+    isPublishDataStep;
+  const isMetricConfigStep =
+    !hasCompletedOnboarding && currentTopicID === "METRIC_CONFIG";
+  const metricCompletionProgress = !hasCompletedOnboarding
+    ? getOverallMetricProgress(systemMetricKey)
+    : {};
+  const metricProgress =
+    !hasCompletedOnboarding &&
+    getMetricAvailabilityFrequencyProgress(systemMetricKey);
+  const metricDefinitionProgress =
+    !hasCompletedOnboarding && getMetricDefinitionProgress(systemMetricKey);
+  const breakdownProgress =
+    !hasCompletedOnboarding && getBreakdownProgress(systemMetricKey);
+  const breakdownDefinitionProgress =
+    !hasCompletedOnboarding && getBreakdownDefinitionProgress(systemMetricKey);
+
+  const [showMetricConfigProgressToast, setShowMetricConfigProgressToast] =
+    useState(false);
+  const [
+    metricConfigProgressToastTimeout,
+    setMetricConfigProgressToastTimeout,
+  ] = useState<NodeJS.Timer>();
+
+  const handleMetricConfigToastDisplay = () => {
+    setShowMetricConfigProgressToast(true);
+
+    if (metricConfigProgressToastTimeout) {
+      clearTimeout(metricConfigProgressToastTimeout);
+    }
+
+    const timeout = setTimeout(() => {
+      setShowMetricConfigProgressToast(false);
+    }, 3500);
+
+    setMetricConfigProgressToastTimeout(timeout);
+  };
+
+  useEffect(
+    () => {
+      if (isMetricConfigStep) handleMetricConfigToastDisplay();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      metricProgress,
+      metricDefinitionProgress,
+      breakdownProgress,
+      breakdownDefinitionProgress,
+    ]
+  );
+
+  useEffect(() => {
+    const initOnboardingTopicStatuses = async () => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await guidanceStore.getOnboardingTopicsStatuses();
+    };
+
+    initOnboardingTopicStatuses();
+  }, [guidanceStore, agencyId]);
 
   return (
     <MenuContainer>
-      <WelcomeUser>
+      <WelcomeUser
+        noRightBorder={
+          !hasCompletedOnboarding &&
+          (!currentTopicID || currentTopicID === "WELCOME")
+        }
+      >
         {userStore.nameOrEmail &&
           currentAgency?.name &&
           `Welcome, ${userStore.nameOrEmail} at ${currentAgency.name}`}
       </WelcomeUser>
 
-      {/* Reports */}
-      <MenuItem
-        onClick={() => navigate(REPORTS_LOWERCASE)}
-        active={pathWithoutAgency === REPORTS_LOWERCASE}
-      >
-        {REPORTS_CAPITALIZED}
-      </MenuItem>
+      {(hasCompletedOnboarding ||
+        (hasCompletedOnboarding === false && currentTopicID !== "WELCOME")) && (
+        <>
+          {/* Guidance */}
+          {hasCompletedOnboarding === false && (
+            <>
+              <MenuItem
+                style={{ position: "relative" }}
+                active={pathWithoutAgency === "getting-started"}
+                onClick={() => navigate("/")}
+              >
+                Get Started
+                {/* Guidance: Metric Configuration Progress Toast */}
+                {isMetricConfigStep && hasSystemMetricParams && (
+                  <ProgressTooltipToast
+                    showToast={showMetricConfigProgressToast}
+                  >
+                    {metricConfigurationProgressSteps.map((step) => (
+                      <ProgressItemWrapper key={step}>
+                        <CheckIconWrapper>
+                          {metricCompletionProgress &&
+                            metricCompletionProgress[step] && (
+                              <CheckIcon src={checkmarkIcon} alt="" />
+                            )}
+                        </CheckIconWrapper>
+                        <ProgressItemName>{step}</ProgressItemName>
+                      </ProgressItemWrapper>
+                    ))}
+                  </ProgressTooltipToast>
+                )}
+              </MenuItem>
+            </>
+          )}
 
-      {/* Data (Visualizations) */}
-      <MenuItem
-        onClick={() => navigate("data")}
-        active={pathWithoutAgency === "data"}
-      >
-        Data
-      </MenuItem>
+          {/* Reports */}
+          {(hasCompletedOnboarding || isAddDataOrPublishDataStep) && (
+            <MenuItem
+              onClick={() => navigate(REPORTS_LOWERCASE)}
+              active={pathWithoutAgency === REPORTS_LOWERCASE}
+            >
+              {REPORTS_CAPITALIZED}
+            </MenuItem>
+          )}
 
-      {/* Learn More */}
-      <MenuItem>
-        <a
-          href="https://justicecounts.csgjusticecenter.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Learn More
-        </a>
-      </MenuItem>
+          {/* Data (Visualizations) */}
+          {(hasCompletedOnboarding || isPublishDataStep) && (
+            <MenuItem
+              onClick={() => navigate("data")}
+              active={pathWithoutAgency === "data"}
+            >
+              Data
+            </MenuItem>
+          )}
 
-      {/* Agencies Dropdown */}
-      {userStore.userAgencies && userStore.userAgencies.length > 1 && (
-        <MenuItem>
-          <Dropdown>
-            <ExtendedDropdownToggle kind="borderless">
-              Agencies
-            </ExtendedDropdownToggle>
-            <ExtendedDropdownMenu alignment="right">
-              {userStore.userAgencies
-                .slice()
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((agency) => {
-                  return (
-                    <ExtendedDropdownMenuItem
-                      key={agency.id}
-                      onClick={() => {
-                        navigate(`/agency/${agency.id}/${pathWithoutAgency}`);
-                      }}
-                      highlight={agency.id === currentAgency?.id}
-                    >
-                      {agency.name}
-                    </ExtendedDropdownMenuItem>
-                  );
-                })}
-            </ExtendedDropdownMenu>
-          </Dropdown>
-        </MenuItem>
+          {/* Learn More */}
+          <MenuItem>
+            <a
+              href="https://justicecounts.csgjusticecenter.org/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Learn More
+            </a>
+          </MenuItem>
+
+          {/* Agencies Dropdown */}
+          {userStore.userAgencies && userStore.userAgencies.length > 1 && (
+            <MenuItem>
+              <Dropdown>
+                <ExtendedDropdownToggle kind="borderless">
+                  Agencies
+                </ExtendedDropdownToggle>
+                <ExtendedDropdownMenu alignment="right">
+                  {userStore.userAgencies
+                    .slice()
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map((agency) => {
+                      return (
+                        <ExtendedDropdownMenuItem
+                          key={agency.id}
+                          onClick={() => {
+                            navigate(
+                              `/agency/${agency.id}/${pathWithoutAgency}`
+                            );
+                          }}
+                          highlight={agency.id === currentAgency?.id}
+                        >
+                          {agency.name}
+                        </ExtendedDropdownMenuItem>
+                      );
+                    })}
+                </ExtendedDropdownMenu>
+              </Dropdown>
+            </MenuItem>
+          )}
+
+          {/* Settings */}
+          <MenuItem
+            onClick={() => navigate("settings")}
+            active={pathWithoutAgency.startsWith("settings")}
+          >
+            Settings
+          </MenuItem>
+
+          <MenuItem onClick={logout} highlight>
+            Log Out
+          </MenuItem>
+
+          <MenuItem buttonPadding>
+            <Button
+              type={
+                hasCompletedOnboarding ||
+                (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
+                  ? "blue"
+                  : "border"
+              }
+              onClick={() => {
+                if (
+                  hasCompletedOnboarding ||
+                  (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
+                )
+                  navigate("upload");
+              }}
+              enabledDuringOnboarding={
+                !hasCompletedOnboarding && isAddDataOrPublishDataStep
+              }
+            >
+              Upload Data
+            </Button>
+          </MenuItem>
+        </>
       )}
-
-      {/* Settings */}
-      <MenuItem
-        onClick={() => navigate("settings")}
-        active={pathWithoutAgency.startsWith("settings")}
-      >
-        Settings
-      </MenuItem>
-
-      <MenuItem onClick={logout} highlight>
-        Log Out
-      </MenuItem>
-
-      <MenuItem buttonPadding>
-        <Button type="blue" onClick={() => navigate("upload")}>
-          Upload Data
-        </Button>
-      </MenuItem>
     </MenuContainer>
   );
 };

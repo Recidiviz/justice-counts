@@ -145,19 +145,28 @@ export const Guidance = observer(() => {
 
       if (hasMinimumOneReport) {
         saveOnboardingTopicsStatuses(
-          { topicID: "ADD_DATA", topicCompleted: true },
+          {
+            topicID: "ADD_DATA",
+            topicCompleted: true,
+          },
           agencyId
         );
       }
       if (hasMinimumOnePublishedReport) {
         saveOnboardingTopicsStatuses(
-          { topicID: "PUBLISH_DATA", topicCompleted: true },
+          {
+            topicID: "PUBLISH_DATA",
+            topicCompleted: true,
+          },
           agencyId
         );
       }
       if (totalMetrics > 0 && numberOfMetricsCompleted === totalMetrics) {
         saveOnboardingTopicsStatuses(
-          { topicID: "METRIC_CONFIG", topicCompleted: true },
+          {
+            topicID: "METRIC_CONFIG",
+            topicCompleted: true,
+          },
           agencyId
         );
       }
@@ -231,7 +240,7 @@ export const Guidance = observer(() => {
                   kind="bordered"
                   onClick={() => navigate(`../${REPORTS_LOWERCASE}`)}
                 >
-                  Fill out ${REPORT_LOWERCASE}
+                  Fill out {REPORT_LOWERCASE}
                 </ActionButton>
               </ActionButtonWrapper>
             </>
@@ -243,7 +252,10 @@ export const Guidance = observer(() => {
                     if (currentTopicID) {
                       if (pathToTask) navigate(pathToTask);
                       saveOnboardingTopicsStatuses(
-                        { topicID: currentTopicID, topicCompleted: true },
+                        {
+                          topicID: currentTopicID,
+                          topicCompleted: true,
+                        },
                         agencyId
                       );
                     }
@@ -260,7 +272,10 @@ export const Guidance = observer(() => {
               onClick={() => {
                 if (currentTopicID) {
                   saveOnboardingTopicsStatuses(
-                    { topicID: currentTopicID, topicCompleted: true },
+                    {
+                      topicID: currentTopicID,
+                      topicCompleted: true,
+                    },
                     agencyId
                   );
                 }

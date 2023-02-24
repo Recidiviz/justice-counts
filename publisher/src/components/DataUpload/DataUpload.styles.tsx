@@ -186,7 +186,10 @@ export type ButtonTypes =
   | "blue"
   | "red";
 
-export const Button = styled.div<{ type?: ButtonTypes }>`
+export const Button = styled.div<{
+  type?: ButtonTypes;
+  enabledDuringOnboarding?: boolean;
+}>`
   ${typography.sizeCSS.normal};
   display: flex;
   align-items: center;
@@ -234,6 +237,12 @@ export const Button = styled.div<{ type?: ButtonTypes }>`
     `;
   }}
 
+  ${({ enabledDuringOnboarding }) =>
+    enabledDuringOnboarding === false &&
+    `
+      color: ${palette.highlight.grey8};
+    `};
+
   &:hover {
     cursor: pointer;
     ${({ type }) => {
@@ -248,6 +257,13 @@ export const Button = styled.div<{ type?: ButtonTypes }>`
       }
       return `background: ${palette.highlight.grey2};`;
     }};
+
+    ${({ enabledDuringOnboarding }) =>
+      enabledDuringOnboarding === false &&
+      `
+        cursor: not-allowed;
+        background: none;
+      `}
   }
 
   a {

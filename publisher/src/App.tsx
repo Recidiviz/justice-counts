@@ -51,36 +51,20 @@ const App: React.FC = (): ReactElement => {
   const initialAgency = userStore.getInitialAgencyId();
   const { hasCompletedOnboarding } = guidanceStore;
 
-  const renderRoutesBasedOnOnboardingStatus = (): JSX.Element => {
-    if (!hasCompletedOnboarding) {
-      return (
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Navigate to={`/agency/${initialAgency}/getting-started`} />
-            }
-          />
-          <Route path="/agency/:agencyId/*" element={<Router />} />
-          <Route
-            path="*"
-            element={
-              <Navigate to={`/agency/${initialAgency}/getting-started`} />
-            }
-          />
-        </Routes>
-      );
-    }
-
-    return (
-      <>
+  return (
+    <AppWrapper>
+      <PageWrapper>
         {initialAgency ? (
           <Routes>
             <Route
               path="/"
               element={
                 <Navigate
-                  to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`}
+                  to={`/agency/${initialAgency}/${
+                    hasCompletedOnboarding
+                      ? REPORTS_LOWERCASE
+                      : "getting-started"
+                  }`}
                 />
               }
             />
@@ -89,7 +73,11 @@ const App: React.FC = (): ReactElement => {
               path="*"
               element={
                 <Navigate
-                  to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`}
+                  to={`/agency/${initialAgency}/${
+                    hasCompletedOnboarding
+                      ? REPORTS_LOWERCASE
+                      : "getting-started"
+                  }`}
                 />
               }
             />
@@ -97,13 +85,7 @@ const App: React.FC = (): ReactElement => {
         ) : (
           <NoAgencies />
         )}
-      </>
-    );
-  };
-
-  return (
-    <AppWrapper>
-      <PageWrapper>{renderRoutesBasedOnOnboardingStatus()}</PageWrapper>{" "}
+      </PageWrapper>
       <Footer />
     </AppWrapper>
   );
