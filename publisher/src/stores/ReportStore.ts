@@ -89,6 +89,10 @@ class ReportStore {
     });
   }
 
+  get agencyMetrics(): Metric[] {
+    return Object.values(this.metricsBySystem).flatMap((metric) => metric);
+  }
+
   async getReportOverviews(agencyId: string): Promise<void | Error> {
     try {
       const response = (await this.api.request({

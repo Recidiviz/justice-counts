@@ -20,18 +20,25 @@ import {
   Badge,
   BadgeColorMapping,
 } from "@justice-counts/common/components/Badge";
-import { palette } from "@justice-counts/common/components/GlobalStyles";
+import {
+  MIN_DESKTOP_WIDTH,
+  palette,
+} from "@justice-counts/common/components/GlobalStyles";
+import { useWindowWidth } from "@justice-counts/common/hooks";
 import { ReportOverview } from "@justice-counts/common/types";
+import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import dropdownArrow from "../components/assets/dropdown-arrow.svg";
 import {
   REPORT_PERIOD_CAPITALIZED,
   REPORTS_CAPITALIZED,
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
 import { Loading } from "../components/Loading";
+import { ExtendedDropdownMenuItem } from "../components/Menu";
 import { Onboarding } from "../components/Onboarding";
 import { TeamMemberNameWithBadge } from "../components/primitives";
 import {
@@ -39,6 +46,7 @@ import {
   AndOthersSpan,
   Cell,
   CommaSpan,
+  DropdownContainer,
   EmptySelectionCircle,
   LabelCell,
   LabelRow,
@@ -51,6 +59,8 @@ import {
   ReportsHeader,
   Row,
   SelectedCheckmark,
+  StatusFilterDropdownMenu,
+  StatusFilterDropdownToggle,
   TabbedActionsWrapper,
   TabbedBar,
   TabbedItem,
@@ -66,12 +76,12 @@ import {
   removeSnakeCase,
 } from "../utils";
 
-enum ReportStatusFilterOption {
-  AllReports = "All Records",
-  Draft = "Draft",
-  Published = "Published",
-  NotStarted = "Not_Started",
-}
+const ReportStatusFilterOptionObject: { [key: string]: string } = {
+  all_records: "All Records",
+  draft: "Draft",
+  published: "Published",
+  not_started: "Not Started",
+};
 
 const reportListColumnTitles = [
   REPORT_PERIOD_CAPITALIZED,
@@ -84,6 +94,7 @@ const Reports: React.FC = () => {
   const { reportStore, userStore } = useStore();
   const { agencyId } = useParams<string>() as { agencyId: string };
   const navigate = useNavigate();
+  const windowWidth = useWindowWidth();
 
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [loadingError, setLoadingError] = useState<string | undefined>(
@@ -92,7 +103,7 @@ const Reports: React.FC = () => {
   const [showAdditionalEditorsTooltip, setShowAdditionalEditorsTooltip] =
     useState<number>();
   const [reportsFilter, setReportsFilter] = useState<string>(
-    `all${REPORTS_LOWERCASE}`
+    `all_${REPORTS_LOWERCASE}`
   );
   const [selectionMode, setSelectionMode] = useState(false);
   const [reportsToDelete, setReportsToDelete] = useState<number[]>([]);
@@ -126,7 +137,11 @@ const Reports: React.FC = () => {
       indexIsLessThanListOfReports && filteredReports[currentIndex + 1].year;
 
     if (indexIsLessThanListOfReports && nextReportYear !== currentReportYear) {
-      return <Row noHover>{nextReportYear}</Row>;
+      return (
+        <Row noHover isRowReportYear>
+          {nextReportYear}
+        </Row>
+      );
     }
   };
 
@@ -147,7 +162,7 @@ const Reports: React.FC = () => {
 
   const filteredReportsMemoized = React.useMemo(
     () =>
-      reportsFilter === `all${REPORTS_LOWERCASE}`
+      reportsFilter === `all_${REPORTS_LOWERCASE}`
         ? reportStore.reportOverviewList
         : reportStore.reportOverviewList.filter(
             (report) => normalizeString(report.status) === reportsFilter
@@ -296,22 +311,30 @@ const Reports: React.FC = () => {
   return (
     <>
       <ReportsHeader>
-        <PageTitle>{REPORTS_CAPITALIZED}</PageTitle>
+        {windowWidth > MIN_DESKTOP_WIDTH && (
+          <PageTitle>{REPORTS_CAPITALIZED}</PageTitle>
+        )}
 
         {/* Filter Reports By */}
-        <TabbedBar>
-          <TabbedOptions>
-            {Object.values(ReportStatusFilterOption).map((option) => (
-              <TabbedItem
-                key={option}
-                id={option}
-                selected={normalizeString(option) === reportsFilter}
-                onClick={(e) => filterReportsBy(e)}
-              >
-                {removeSnakeCase(option)}
-              </TabbedItem>
-            ))}
-          </TabbedOptions>
+        <TabbedBar noPadding={windowWidth < MIN_DESKTOP_WIDTH}>
+          {windowWidth > MIN_DESKTOP_WIDTH ? (
+            <TabbedOptions>
+              {Object.entries(ReportStatusFilterOptionObject).map(
+                ([key, value]) => (
+                  <TabbedItem
+                    key={key}
+                    id={key}
+                    selected={key === reportsFilter}
+                    onClick={(e) => filterReportsBy(e)}
+                  >
+                    {removeSnakeCase(value)}
+                  </TabbedItem>
+                )
+              )}
+            </TabbedOptions>
+          ) : (
+            <PageTitle>{REPORTS_CAPITALIZED}</PageTitle>
+          )}
 
           <TabbedActionsWrapper>
             {/* Admin Only: Manage Reports */}
@@ -367,6 +390,31 @@ const Reports: React.FC = () => {
             )}
           </TabbedActionsWrapper>
         </TabbedBar>
+
+        {/* MobileViewDropdown */}
+        <DropdownContainer>
+          <Dropdown>
+            <StatusFilterDropdownToggle kind="borderless">
+              <img src={dropdownArrow} alt="" />
+              {ReportStatusFilterOptionObject[reportsFilter]}
+            </StatusFilterDropdownToggle>
+            <StatusFilterDropdownMenu>
+              {Object.entries(ReportStatusFilterOptionObject).map(
+                ([key, value]) => (
+                  <ExtendedDropdownMenuItem
+                    highlight={
+                      ReportStatusFilterOptionObject[reportsFilter] === value
+                    }
+                    key={key}
+                    onClick={() => setReportsFilter(normalizeString(key))}
+                  >
+                    {value}
+                  </ExtendedDropdownMenuItem>
+                )
+              )}
+            </StatusFilterDropdownMenu>
+          </Dropdown>
+        </DropdownContainer>
 
         {/* Labels */}
         <LabelRow>

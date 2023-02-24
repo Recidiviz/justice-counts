@@ -16,51 +16,53 @@
 // =============================================================================
 
 import {
-  HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-export const HeaderBar = styled.header`
-  width: 100%;
-  height: ${HEADER_BAR_HEIGHT}px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  z-index: 3;
-  background: ${palette.solid.white};
-  padding: 16px 0;
-`;
-
-export const LogoContainer = styled.div`
-  height: ${HEADER_BAR_HEIGHT}px;
-  width: auto;
-  display: flex;
-  justify-content: start;
-  gap: 24px;
-  align-items: center;
-  transition: 0.3s ease;
-
-  &:hover {
-    cursor: pointer;
-    opacity: 0.9;
+export const AccountSettingsWrapper = styled.div`
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
   }
 `;
 
-export const Logo = styled.img`
-  width: 64px;
-  height: 64px;
-`;
+export const AccountSettingsTitle = styled.h1`
+  border-bottom: 1px solid ${palette.highlight.grey9};
+  ${typography.sizeCSS.title};
+  margin-top: 4px;
+  padding-bottom: 14px;
 
-export const LogoName = styled.div`
-  ${typography.sizeCSS.medium};
-  white-space: nowrap;
+  &::before {
+    content: "Account";
+  }
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    display: none;
+    border-bottom: none;
+    ${typography.sizeCSS.normal};
+    margin: 0;
+    padding: 0;
+
+    &::before {
+      content: "Settings > Your Account";
+    }
+  }
+`;
+
+export const AccountSettingsInputsWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+
+  div {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    flex-direction: column;
+    gap: 0;
   }
 `;

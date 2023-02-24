@@ -63,6 +63,11 @@ export const BadgeElement = styled.div<{
   ${({ noMargin }) => !noMargin && `margin-left: 10px;`};
 `;
 
+export const reportFrequencyBadgeColors: BadgeColorMapping = {
+  ANNUAL: "ORANGE",
+  MONTHLY: "GREEN",
+};
+
 export const Badge: React.FC<React.PropsWithChildren<BadgeProps>> = ({
   color,
   disabled,

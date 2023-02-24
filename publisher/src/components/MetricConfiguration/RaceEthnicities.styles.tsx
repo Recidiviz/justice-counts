@@ -16,11 +16,13 @@
 // =============================================================================
 
 import {
+  MIN_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled, { css } from "styled-components/macro";
 
+import { BinaryRadioGroupWrapper } from "../Forms";
 import {
   DefinitionDisplayName,
   DefinitionItem,
@@ -76,6 +78,10 @@ export const CalloutBox = styled.div`
   &:hover {
     cursor: pointer;
     background-color: ${palette.highlight.blue};
+  }
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    margin-top: 24px;
   }
 `;
 
@@ -157,7 +163,11 @@ export const SpecifyEthnicityWrapper = styled(MetricOnOffWrapper)`
   margin-bottom: 35px;
 `;
 
-export const RaceEthnicitiesContainer = styled(DefinitionsDisplayContainer)``;
+export const RaceEthnicitiesContainer = styled(DefinitionsDisplayContainer)`
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    padding-bottom: 0;
+  }
+`;
 export const RaceEthnicitiesDisplay = styled(DefinitionsDisplay)``;
 export const RaceEthnicitiesTitle = styled(DefinitionsTitle)``;
 export const RaceEthnicitiesDescription = styled(DefinitionsDescription)``;
@@ -166,3 +176,13 @@ export const Race = styled(DefinitionItem)``;
 export const RaceDisplayName = styled(DefinitionDisplayName)``;
 export const RaceSelection = styled(DefinitionSelection)``;
 export const RaceSelectionButton = styled(DefinitionMiniButton)``;
+export const RaceEthnicityRadioButtonGroupWrapper = styled(
+  BinaryRadioGroupWrapper
+)`
+  display: flex;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    gap: 4px;
+    align-items: center;
+  }
+`;

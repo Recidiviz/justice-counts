@@ -30,7 +30,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { trackReportPublished } from "../../analytics";
 import { useStore } from "../../stores";
 import { printReportTitle } from "../../utils";
-import logoImg from "../assets/jc-logo-vector.png";
+import logoImg from "../assets/jc-logo-vector-new.svg";
 import errorIcon from "../assets/status-error-icon.png";
 import {
   REPORT_LOWERCASE,

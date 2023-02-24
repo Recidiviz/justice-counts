@@ -113,6 +113,7 @@ const FormCreateButton = styled(CreateButton)`
   display: none;
   width: auto;
   margin-top: 48px;
+  padding: 0 32px;
 
   @media only screen and (max-width: ${TWO_PANEL_MAX_WIDTH}px) {
     display: block;

@@ -20,7 +20,7 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import logoImg from "../assets/jc-logo-vector.png";
+import logoImg from "../assets/jc-logo-vector-new.svg";
 import { Button, DataUploadHeader } from "../DataUpload";
 import { UploadedMetric } from "../DataUpload/types";
 import { REPORTS_LOWERCASE } from "../Global/constants";

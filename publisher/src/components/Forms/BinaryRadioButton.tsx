@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  MIN_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -70,6 +71,14 @@ export const RadioButtonWrapper = styled.div<{ lastOptionBlue?: boolean }>`
         color: ${palette.solid.white};
       }
     `}
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    width: 100%;
+
+    &:not(:last-child) {
+      margin: ${({ lastOptionBlue }) => !lastOptionBlue && "15px 0 0 0"};
+    }
+  }
 `;
 
 export const RadioButtonElement = styled.input<{

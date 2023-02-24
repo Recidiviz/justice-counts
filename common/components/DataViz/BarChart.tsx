@@ -29,7 +29,7 @@ import styled from "styled-components/macro";
 
 import { Datapoint } from "../../types";
 import { rem } from "../../utils";
-import { palette } from "../GlobalStyles";
+import { MIN_DESKTOP_WIDTH, palette } from "../GlobalStyles";
 import Tooltip from "./Tooltip";
 import { getDatapointBarLabel } from "./utils";
 
@@ -43,6 +43,10 @@ const ChartContainer = styled.div`
   justify-content: center;
   align-items: center;
   flex-grow: 1;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    min-height: 400px;
+  }
 `;
 
 const NoReportedData = styled.div`

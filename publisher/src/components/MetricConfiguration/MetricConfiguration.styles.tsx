@@ -16,13 +16,16 @@
 // =============================================================================
 
 import {
+  MIN_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import { DropdownToggle } from "@recidiviz/design-system";
+import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
 import { BinaryRadioGroupWrapper } from "../Forms";
+import { ExtendedDropdownMenuItem } from "../Menu/Menu.styles";
+import { DropdownContainer, TabbedBar } from "../Reports";
 import { MenuItem } from "../Settings";
 
 const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
@@ -46,6 +49,26 @@ export const MetricsViewContainer = styled.div`
   flex-direction: column;
   align-items: flex-start;
   overflow-y: hidden;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    justify-content: start;
+  }
+`;
+
+export const MobileMetricsConfigurationHeader = styled.div<{
+  hasBorder?: boolean;
+}>`
+  ${typography.sizeCSS.small}
+  display: none;
+  width: 100%;
+  padding-bottom: 24px;
+  text-transform: capitalize;
+  border-bottom: ${({ hasBorder }) =>
+    hasBorder && `1px solid ${palette.solid.darkgrey}`};
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: block;
+  }
 `;
 
 export const MetricsViewControlPanel = styled.div`
@@ -55,7 +78,7 @@ export const MetricsViewControlPanel = styled.div`
   flex-wrap: nowrap;
   justify-content: space-between;
 
-  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     justify-content: unset;
   }
 `;
@@ -64,6 +87,7 @@ export const MetricsViewControlPanelOverflowHidden = styled(
   MetricsViewControlPanel
 )`
   flex-wrap: nowrap;
+  overflow-y: scroll;
 `;
 
 export const PanelContainerLeft = styled.div`
@@ -75,6 +99,10 @@ export const PanelContainerLeft = styled.div`
   flex-direction: column;
   justify-content: space-between;
   padding: 46px 0 0 24px;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: none;
+  }
 `;
 
 export const SystemsContainer = styled.div`
@@ -149,6 +177,13 @@ export const DisclaimerContainer = styled.div`
   height: 200px;
 `;
 
+export const MobileDisclaimerContainer = styled(DisclaimerContainer)`
+  width: 100%;
+  height: auto;
+  justify-content: flex-start;
+  padding-bottom: 24px;
+`;
+
 export const DisclaimerTitle = styled.div`
   ${typography.sizeCSS.small}
 `;
@@ -172,6 +207,129 @@ export const PanelContainerRight = styled.div`
   overflow-y: scroll;
   overflow-x: scroll;
   padding-right: 24px;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    width: 100%;
+    min-width: unset;
+    padding: 24px;
+  }
+`;
+
+export const MobileDatapointsControls = styled.div`
+  display: none;
+  width: 100%;
+  flex-direction: column;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: flex;
+  } ;
+`;
+
+export const CurrentMetricsSystem = styled.div`
+  display: none;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: block;
+    width: 100%;
+    ${typography.sizeCSS.small};
+    text-transform: capitalize;
+    padding-bottom: 12px;
+    border-bottom: 1px solid ${palette.solid.darkgrey};
+  }
+`;
+
+export const MetricConfigurationDropdownContainer = styled(DropdownContainer)<{
+  hasTopBorder?: boolean;
+  hasBottomMargin?: boolean;
+}>`
+  display: none;
+  margin-bottom: ${({ hasBottomMargin }) => hasBottomMargin && "24px"};
+  min-height: 56px;
+  border-top: ${({ hasTopBorder }) =>
+    hasTopBorder && `1px solid ${palette.solid.darkgrey}`};
+
+  & > div {
+    width: 100%;
+  }
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: flex;
+  }
+`;
+
+export const MetricsConfigurationDropdownToggle = styled(DropdownToggle)`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  gap: 12px;
+  align-items: center;
+  ${typography.sizeCSS.medium};
+  text-transform: capitalize;
+  padding-right: 0;
+  padding-left: 0;
+  color: ${palette.solid.darkgrey};
+
+  & > div {
+    margin-left: auto;
+  }
+
+  &:active,
+  &:hover,
+  &:focus,
+  &[aria-expanded="true"] {
+    color: ${palette.solid.darkgrey};
+  }
+`;
+
+export const MetricsConfigurationDropdownMenu = styled(DropdownMenu)`
+  overflow-y: scroll;
+  z-index: 10;
+  margin-top: 11px;
+  box-shadow: 0px 0px 1px rgba(23, 28, 43, 0.1),
+    0px 4px 8px rgba(23, 28, 43, 0.04), 0px 8px 56px rgba(23, 28, 43, 0.1);
+  border-radius: 4px;
+  max-height: 452px;
+  width: 100%;
+`;
+
+export const StartingMonthDropdownMenu = styled(
+  MetricsConfigurationDropdownMenu
+)`
+  min-width: 264px;
+  margin-top: 4px;
+  min-height: 558px;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    margin-top: 0;
+  }
+`;
+
+export const MetricsConfigurationDropdownMenuItem = styled(
+  ExtendedDropdownMenuItem
+)`
+  justify-content: space-between;
+  ${typography.sizeCSS.normal};
+  text-transform: capitalize;
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    span {
+      ${typography.sizeCSS.small};
+      color: ${palette.highlight.grey8};
+      text-transform: capitalize;
+    }
+  }
+`;
+
+export const MetricsConfigurationSystemsDropdownMenuItem = styled(
+  MetricsConfigurationDropdownMenuItem
+)`
+  text-transform: capitalize;
 `;
 
 export const PanelRightTopButtonsContainer = styled.div`
@@ -184,6 +342,10 @@ export const PanelRightTopButtonsContainer = styled.div`
   top: 0;
   background-color: ${palette.solid.white};
   z-index: 2;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: none;
+  }
 `;
 
 export const PanelRightTopButton = styled.div`
@@ -227,7 +389,7 @@ export const MetricBoxContainer = styled.div<MetricBoxContainerProps>`
     border: 1px solid ${palette.solid.blue};
   }
 
-  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     width: 100%;
     max-width: unset;
     flex: unset;
@@ -273,6 +435,10 @@ export const Metric = styled.div<{ inView: boolean }>`
     display: block;
     right: 13px;
     opacity: 1;
+  }
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: none;
   }
 `;
 
@@ -333,8 +499,22 @@ export const Subheader = styled.div`
   margin-bottom: 9px;
 `;
 
+export const BreakdownsTabbedBar = styled(TabbedBar)`
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: none;
+  }
+`;
+
 export const RadioButtonGroupWrapper = styled(BinaryRadioGroupWrapper)`
   display: flex;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    flex-direction: column;
+
+    & > div {
+      width: 100%;
+    }
+  }
 `;
 
 export const TogglableSection = styled.div<{ enabled?: boolean }>`
@@ -607,6 +787,10 @@ export const StickyHeader = styled.div`
   top: 0;
   background: ${palette.solid.white};
   margin-bottom: 29px;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: none;
+  }
 `;
 
 export const BackToMetrics = styled.div`
@@ -634,7 +818,7 @@ export const MetricConfigurationWrapper = styled.div`
   justify-content: space-between;
   overflow-y: hidden;
 
-  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
     overflow-y: scroll;
   }
@@ -650,7 +834,7 @@ export const DefinitionsDisplayContainer = styled.div`
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
     border-top: 1px solid ${palette.highlight.grey3};
-    padding: 30px 0 50px 0;
+    padding: 30px 0 0 0;
     overflow-y: unset;
     margin-right: 12px;
   }

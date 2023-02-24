@@ -16,6 +16,8 @@
 // =============================================================================
 
 import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
+import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
   SupervisionSubsystems,
   SupervisionSystem,
@@ -30,18 +32,22 @@ import { useStore } from "../../stores";
 import { monthsByName, removeSnakeCase } from "../../utils";
 import { ReactComponent as CalendarIconDark } from "../assets/calendar-icon-dark.svg";
 import { ReactComponent as CalendarIconLight } from "../assets/calendar-icon-light.svg";
+import dropdownArrow from "../assets/dropdown-arrow.svg";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import { BinaryRadioButton } from "../Forms";
 import { REPORT_VERB_LOWERCASE } from "../Global/constants";
-import { ExtendedDropdownMenu, ExtendedDropdownMenuItem } from "../Menu";
-import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
+import { ExtendedDropdownMenuItem } from "../Menu";
+import { TabbedItem, TabbedOptions } from "../Reports";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   BlueCheckIcon,
   BlueLinkSpan,
   BreakdownHeader,
+  BreakdownsTabbedBar,
+  CalloutBox,
   Checkbox,
   CheckboxWrapper,
+  Description,
   Dimension,
   DimensionTitle,
   DimensionTitleWrapper,
@@ -50,12 +56,19 @@ import {
   DropdownButton,
   Header,
   MetricConfigurationContainer,
+  MetricConfigurationDropdownContainer,
+  MetricDefinitions,
   MetricOnOffWrapper,
+  MetricsConfigurationDropdownMenu,
+  MetricsConfigurationDropdownMenuItem,
+  MetricsConfigurationDropdownToggle,
   PromptWrapper,
   RACE_ETHNICITY_DISAGGREGATION_KEY,
+  RaceEthnicitiesForm,
   RaceEthnicitiesGrid,
   RadioButtonGroupWrapper,
   ReportFrequencyUpdate,
+  StartingMonthDropdownMenu,
   Subheader,
   TogglableSection,
 } from ".";
@@ -96,6 +109,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       saveMetricSettings,
       initializeMetricConfigStoreValues,
     } = metricConfigStore;
+    const windowWidth = useWindowWidth();
 
     const { system: systemSearchParam, metric: metricSearchParam } =
       settingsSearchParams;
@@ -139,8 +153,9 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
 
     useEffect(
       () => {
-        if (activeDisaggregationKeys)
+        if (activeDisaggregationKeys) {
           setActiveDisaggregationKey(activeDisaggregationKeys[0]);
+        }
         setActiveDimensionKey(undefined);
       },
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -333,7 +348,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                         monthsByName[startingMonth - 1]) ||
                         `Other...`}
                     </DropdownButton>
-                    <ExtendedDropdownMenu alignment="right">
+                    <StartingMonthDropdownMenu alignment="right">
                       {monthsByName
                         .filter((month) => !["January", "July"].includes(month))
                         .map((month) => {
@@ -353,7 +368,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                             </ExtendedDropdownMenuItem>
                           );
                         })}
-                    </ExtendedDropdownMenu>
+                    </StartingMonthDropdownMenu>
                   </Dropdown>
                 </RadioButtonGroupWrapper>
               </>
@@ -420,7 +435,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
             </Subheader>
 
             {/* Disaggregations (Enable/Disable) */}
-            <TabbedBar noPadding>
+            <BreakdownsTabbedBar noPadding>
               <TabbedOptions>
                 {activeDisaggregationKeys?.map((disaggregationKey) => {
                   const currentDisaggregation =
@@ -472,7 +487,109 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   );
                 })}
               </TabbedOptions>
-            </TabbedBar>
+            </BreakdownsTabbedBar>
+
+            {activeDisaggregationKey &&
+              disaggregations[systemMetricKey][activeDisaggregationKey] && (
+                <MetricConfigurationDropdownContainer hasTopBorder>
+                  <Dropdown>
+                    <MetricsConfigurationDropdownToggle kind="borderless">
+                      {activeDisaggregationKeys?.length > 1 && (
+                        <img src={dropdownArrow} alt="" />
+                      )}
+                      {removeSnakeCase(
+                        (
+                          disaggregations[systemMetricKey][
+                            activeDisaggregationKey
+                          ].display_name as string
+                        ).toLowerCase()
+                      )}
+
+                      <CheckboxWrapper onClick={(e) => e.stopPropagation()}>
+                        <Checkbox
+                          type="checkbox"
+                          checked={
+                            disaggregations[systemMetricKey][
+                              activeDisaggregationKey
+                            ].enabled || false
+                          }
+                          onChange={() =>
+                            handleUpdateDisaggregationEnabledStatus(
+                              activeDisaggregationKey,
+                              !disaggregations[systemMetricKey][
+                                activeDisaggregationKey
+                              ].enabled
+                            )
+                          }
+                        />
+                        <BlueCheckIcon
+                          src={blueCheck}
+                          alt=""
+                          enabled={
+                            disaggregations[systemMetricKey][
+                              activeDisaggregationKey
+                            ].enabled || false
+                          }
+                        />
+                      </CheckboxWrapper>
+                    </MetricsConfigurationDropdownToggle>
+                    {activeDisaggregationKeys.length > 1 ? (
+                      <MetricsConfigurationDropdownMenu>
+                        {activeDisaggregationKeys?.map((disaggregationKey) => {
+                          const currentDisaggregation =
+                            disaggregations[systemMetricKey][disaggregationKey];
+
+                          return (
+                            <MetricsConfigurationDropdownMenuItem
+                              key={disaggregationKey}
+                              onClick={() => {
+                                setActiveDisaggregationKey(disaggregationKey);
+
+                                const [firstDimensionKey] = Object.keys(
+                                  dimensions[systemMetricKey][disaggregationKey]
+                                );
+                                setActiveDimensionKey(firstDimensionKey);
+                              }}
+                              highlight={
+                                disaggregationKey === activeDisaggregationKey
+                              }
+                            >
+                              {removeSnakeCase(
+                                currentDisaggregation.display_name as string
+                              ).toLowerCase()}
+                            </MetricsConfigurationDropdownMenuItem>
+                          );
+                        })}
+                      </MetricsConfigurationDropdownMenu>
+                    ) : (
+                      <></>
+                    )}
+                  </Dropdown>
+                </MetricConfigurationDropdownContainer>
+              )}
+            {windowWidth <= MIN_DESKTOP_WIDTH &&
+              activeDisaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY && (
+                <CalloutBox
+                  onClick={() => setActiveDimensionKey(activeDimensionKeys[0])}
+                >
+                  <Description>
+                    Answer the questions on the <span>Race and Ethnicity</span>{" "}
+                    form; the grid below will reflect your responses.
+                  </Description>
+                  <RightArrowIcon />
+                </CalloutBox>
+              )}
+            {windowWidth <= MIN_DESKTOP_WIDTH &&
+              activeDimensionKey &&
+              (activeDisaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY &&
+              activeDimensionKey ? (
+                <RaceEthnicitiesForm />
+              ) : (
+                <MetricDefinitions
+                  activeDimensionKey={activeDimensionKey}
+                  activeDisaggregationKey={activeDisaggregationKey}
+                />
+              ))}
 
             <Disaggregation>
               {/* Dimension Fields (Enable/Disable) */}

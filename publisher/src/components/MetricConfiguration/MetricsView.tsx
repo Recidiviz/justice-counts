@@ -15,14 +15,22 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  Badge,
+  reportFrequencyBadgeColors,
+} from "@justice-counts/common/components/Badge";
+import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
-import { AgencySystems } from "@justice-counts/common/types";
+import { useWindowWidth } from "@justice-counts/common/hooks";
+import { AgencySystems, ReportFrequency } from "@justice-counts/common/types";
+import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { createSearchParams, useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
+import dropdownArrow from "../assets/dropdown-arrow.svg";
 import { ReactComponent as GoToMetricConfig } from "../assets/goto-metric-configuration-icon.svg";
 import { ReactComponent as SwitchToChartIcon } from "../assets/switch-to-chart-icon.svg";
 import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-data-table-icon.svg";
@@ -32,14 +40,21 @@ import { Loading } from "../Loading";
 import { useSettingsSearchParams } from "../Settings";
 import {
   ChartView,
+  CurrentMetricsSystem,
   DisclaimerContainer,
   DisclaimerLink,
   DisclaimerText,
   DisclaimerTitle,
+  MetricConfigurationDropdownContainer,
   MetricItem,
+  MetricsConfigurationDropdownMenu,
+  MetricsConfigurationDropdownMenuItem,
+  MetricsConfigurationDropdownToggle,
   MetricsItemsContainer,
   MetricsViewContainer,
   MetricsViewControlPanelOverflowHidden,
+  MobileDatapointsControls,
+  MobileDisclaimerContainer,
   PanelContainerLeft,
   PanelContainerRight,
   PanelRightTopButton,
@@ -54,8 +69,9 @@ export const MetricsView: React.FC = observer(() => {
   const navigate = useNavigate();
   const { reportStore, userStore, datapointsStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
-  const { metricsBySystem } = reportStore;
+  const { metricsBySystem, agencyMetrics } = reportStore;
   const currentAgency = userStore.getAgency(agencyId);
+  const windowWidth = useWindowWidth();
 
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
@@ -144,6 +160,12 @@ export const MetricsView: React.FC = observer(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyId]);
 
+  useEffect(() => {
+    if (windowWidth <= MIN_DESKTOP_WIDTH) {
+      setDataView(ChartView.Chart);
+    }
+  }, [windowWidth]);
+
   if (isLoading || !systemSearchParam || !metricSearchParam) {
     return <Loading />;
   }
@@ -159,65 +181,141 @@ export const MetricsView: React.FC = observer(() => {
     currentMetric?.custom_frequency || currentMetric?.frequency;
 
   return (
-    <>
-      <MetricsViewContainer>
-        <MetricsViewControlPanelOverflowHidden>
-          {/* List Of Metrics */}
-          <PanelContainerLeft>
-            <SystemsContainer>
-              {Object.entries(metricsBySystem).map(([system, metrics]) => (
-                <React.Fragment key={system}>
-                  {metrics.filter((metric) => metric.enabled).length > 0 ? (
-                    <SystemNameContainer
-                      isSystemActive={system === systemSearchParam}
-                      onClick={() => {
-                        setSettingsSearchParams({
-                          system: system as AgencySystems,
-                          metric: metricsBySystem[system][0].key,
-                        });
-                      }}
-                    >
-                      <SystemName>
-                        {formatSystemName(metrics[0].system.key, {
-                          allUserSystems: currentAgency?.systems,
-                        })}
-                      </SystemName>
-                      <SystemNamePlusSign
-                        isSystemActive={system === systemSearchParam}
-                      />
-                    </SystemNameContainer>
-                  ) : (
-                    <SystemNameContainer isSystemActive={false}>
-                      <SystemName>
-                        {metrics[0].system.display_name} (No enabled metrics)
-                      </SystemName>
-                    </SystemNameContainer>
-                  )}
-
-                  <MetricsItemsContainer
+    <MetricsViewContainer>
+      <MetricsViewControlPanelOverflowHidden>
+        {/* List Of Metrics */}
+        <PanelContainerLeft>
+          <SystemsContainer>
+            {Object.entries(metricsBySystem).map(([system, metrics]) => (
+              <React.Fragment key={system}>
+                {metrics.filter((metric) => metric.enabled).length > 0 ? (
+                  <SystemNameContainer
                     isSystemActive={system === systemSearchParam}
+                    onClick={() => {
+                      setSettingsSearchParams({
+                        system: system as AgencySystems,
+                        metric: metricsBySystem[system][0].key,
+                      });
+                    }}
                   >
-                    {metrics
+                    <SystemName>
+                      {formatSystemName(metrics[0].system.key, {
+                        allUserSystems: currentAgency?.systems,
+                      })}
+                    </SystemName>
+                    <SystemNamePlusSign
+                      isSystemActive={system === systemSearchParam}
+                    />
+                  </SystemNameContainer>
+                ) : (
+                  <SystemNameContainer isSystemActive={false}>
+                    <SystemName>
+                      {metrics[0].system.display_name} (No enabled metrics)
+                    </SystemName>
+                  </SystemNameContainer>
+                )}
+
+                <MetricsItemsContainer
+                  isSystemActive={system === systemSearchParam}
+                >
+                  {metrics
+                    .filter((metric) => metric.enabled)
+                    .map((metric) => (
+                      <MetricItem
+                        key={metric.key}
+                        selected={metricSearchParam === metric.key}
+                        onClick={() =>
+                          setSettingsSearchParams({
+                            system: system as AgencySystems,
+                            metric: metric.key,
+                          })
+                        }
+                      >
+                        {metric.display_name}
+                      </MetricItem>
+                    ))}
+                </MetricsItemsContainer>
+              </React.Fragment>
+            ))}
+          </SystemsContainer>
+          <DisclaimerContainer>
+            <DisclaimerTitle>Note</DisclaimerTitle>
+            <DisclaimerText>
+              These metrics are those that your agency has indicated are
+              available to be shared. If you believe this does not accurately
+              reflect your data sharing capabilities, please go to{" "}
+              <DisclaimerLink
+                onClick={() => {
+                  navigate("../settings/metric-config");
+                }}
+              >
+                Metric Configuration
+              </DisclaimerLink>{" "}
+              to adjust.
+            </DisclaimerText>
+          </DisclaimerContainer>
+        </PanelContainerLeft>
+
+        {/* Data Visualization */}
+        <PanelContainerRight>
+          <MobileDatapointsControls>
+            <CurrentMetricsSystem>
+              {formatSystemName(systemSearchParam)}
+            </CurrentMetricsSystem>
+            <MetricConfigurationDropdownContainer hasBottomMargin>
+              <Dropdown>
+                <MetricsConfigurationDropdownToggle kind="borderless">
+                  {agencyMetrics.length > 1 && (
+                    <img src={dropdownArrow} alt="" />
+                  )}
+                  {metricName}
+                  <Badge
+                    color={
+                      reportFrequencyBadgeColors[
+                        metricFrequency as ReportFrequency
+                      ]
+                    }
+                  >
+                    {metricFrequency?.toLowerCase()}
+                  </Badge>
+                </MetricsConfigurationDropdownToggle>
+                {agencyMetrics.length > 1 ? (
+                  <MetricsConfigurationDropdownMenu>
+                    {agencyMetrics
                       .filter((metric) => metric.enabled)
                       .map((metric) => (
-                        <MetricItem
+                        <MetricsConfigurationDropdownMenuItem
+                          highlight={metric.key === metricSearchParam}
                           key={metric.key}
-                          selected={metricSearchParam === metric.key}
                           onClick={() =>
                             setSettingsSearchParams({
-                              system: system as AgencySystems,
+                              system: metric.system.key,
                               metric: metric.key,
                             })
                           }
                         >
-                          {metric.display_name}
-                        </MetricItem>
+                          <div>
+                            {metric.display_name}
+                            <span>{formatSystemName(metric.system.key)}</span>
+                          </div>
+                          <Badge
+                            color={
+                              reportFrequencyBadgeColors[
+                                metric.frequency as ReportFrequency
+                              ]
+                            }
+                          >
+                            {metric.frequency?.toLowerCase()}
+                          </Badge>
+                        </MetricsConfigurationDropdownMenuItem>
                       ))}
-                  </MetricsItemsContainer>
-                </React.Fragment>
-              ))}
-            </SystemsContainer>
-            <DisclaimerContainer>
+                  </MetricsConfigurationDropdownMenu>
+                ) : (
+                  <></>
+                )}
+              </Dropdown>
+            </MetricConfigurationDropdownContainer>
+            <MobileDisclaimerContainer>
               <DisclaimerTitle>Note</DisclaimerTitle>
               <DisclaimerText>
                 These metrics are those that your agency has indicated are
@@ -232,50 +330,57 @@ export const MetricsView: React.FC = observer(() => {
                 </DisclaimerLink>{" "}
                 to adjust.
               </DisclaimerText>
-            </DisclaimerContainer>
-          </PanelContainerLeft>
-
-          {/* Data Visualization */}
-          <PanelContainerRight>
-            <PanelRightTopButtonsContainer>
-              {dataView === ChartView.Chart &&
-                !!datapointsStore.datapointsByMetric[metricSearchParam] && (
-                  <PanelRightTopButton
-                    onClick={() => setDataView(ChartView.Table)}
-                  >
-                    <SwitchToDataTableIcon />
-                    Switch to Data Table
-                  </PanelRightTopButton>
-                )}
-              {dataView === ChartView.Table && (
+            </MobileDisclaimerContainer>
+          </MobileDatapointsControls>
+          <PanelRightTopButtonsContainer>
+            {dataView === ChartView.Chart &&
+              !!datapointsStore.datapointsByMetric[metricSearchParam] && (
                 <PanelRightTopButton
-                  onClick={() => setDataView(ChartView.Chart)}
+                  onClick={() => setDataView(ChartView.Table)}
                 >
-                  <SwitchToChartIcon />
-                  Switch to Chart
+                  <SwitchToDataTableIcon />
+                  Switch to Data Table
                 </PanelRightTopButton>
               )}
-              <PanelRightTopButton
-                onClick={() => {
-                  navigate({
-                    pathname: "../settings/metric-config",
-                    search: `?${createSearchParams(settingsSearchParams)}`,
-                  });
-                }}
-              >
-                <GoToMetricConfig />
-                Go to Metric Configuration
+            {dataView === ChartView.Table && (
+              <PanelRightTopButton onClick={() => setDataView(ChartView.Chart)}>
+                <SwitchToChartIcon />
+                Switch to Chart
               </PanelRightTopButton>
-            </PanelRightTopButtonsContainer>
-            <ConnectedDatapointsView
-              metric={metricSearchParam}
-              metricName={metricName}
-              metricFrequency={metricFrequency}
-              dataView={dataView}
-            />
-          </PanelContainerRight>
-        </MetricsViewControlPanelOverflowHidden>
-      </MetricsViewContainer>
-    </>
+            )}
+            <PanelRightTopButton
+              onClick={() => {
+                navigate({
+                  pathname: "../settings/metric-config",
+                  search: `?${createSearchParams(settingsSearchParams)}`,
+                });
+              }}
+            >
+              <GoToMetricConfig />
+              Go to Metric Configuration
+            </PanelRightTopButton>
+          </PanelRightTopButtonsContainer>
+          <ConnectedDatapointsView
+            metric={metricSearchParam}
+            metricName={metricName}
+            metricFrequency={metricFrequency}
+            dataView={dataView}
+          />
+          {windowWidth <= MIN_DESKTOP_WIDTH && (
+            <PanelRightTopButton
+              onClick={() => {
+                navigate({
+                  pathname: "../settings/metric-config",
+                  search: `?${createSearchParams(settingsSearchParams)}`,
+                });
+              }}
+            >
+              <GoToMetricConfig />
+              Go to Metric Configuration
+            </PanelRightTopButton>
+          )}
+        </PanelContainerRight>
+      </MetricsViewControlPanelOverflowHidden>
+    </MetricsViewContainer>
   );
 });

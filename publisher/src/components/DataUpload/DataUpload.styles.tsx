@@ -17,6 +17,8 @@
 
 import {
   HEADER_BAR_HEIGHT,
+  MIN_DESKTOP_WIDTH,
+  MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -24,15 +26,7 @@ import styled from "styled-components/macro";
 
 import { rem } from "../../utils";
 import { OpacityGradient } from "../Forms";
-import {
-  Cell,
-  LabelCell,
-  LabelRow,
-  PageTitle,
-  Row,
-  TabbedBar,
-  Table,
-} from "../Reports";
+import { PageTitle, TabbedBar } from "../Reports";
 
 export const DataUploadContainer = styled.div`
   width: 100%;
@@ -56,7 +50,10 @@ export const DataUploadContainer = styled.div`
   }
 `;
 
-export const DataUploadHeader = styled.div<{ transparent?: boolean }>`
+export const DataUploadHeader = styled.div<{
+  transparent?: boolean;
+  isBackgroundBlue?: boolean;
+}>`
   width: 100%;
   z-index: 1;
   height: ${HEADER_BAR_HEIGHT}px;
@@ -72,6 +69,11 @@ export const DataUploadHeader = styled.div<{ transparent?: boolean }>`
       background: ${palette.solid.white};
       border-bottom: 1px solid ${palette.highlight.grey3};
     `}
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    background-color: ${({ isBackgroundBlue }) =>
+      isBackgroundBlue && palette.solid.blue};
+  }
 `;
 
 export const MediumPageTitle = styled(PageTitle)`
@@ -80,9 +82,9 @@ export const MediumPageTitle = styled(PageTitle)`
 
 export const Instructions = styled.div`
   height: 100%;
-  width: 50%;
   padding: 103px;
   display: flex;
+  width: 50%;
   flex-direction: column;
   ${typography.sizeCSS.medium}
 
@@ -145,6 +147,11 @@ export const Instructions = styled.div`
   td {
     border: 0.5px solid black;
     padding: 5px 20px;
+  }
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    width: 100%;
+    padding: 100px 24px 103px 24px;
   }
 `;
 
@@ -313,63 +320,68 @@ export const Icon = styled.img<{ grayscale?: boolean }>`
   ${({ grayscale }) => grayscale && `filter: grayscale(1);`}
 `;
 
-export const UploadedFilesError = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 25px;
-`;
-
-export const DownloadIcon = styled.img`
-  width: 20px;
-  margin-right: 5px;
-`;
-
-export const ActionsContainer = styled.div`
-  ${typography.sizeCSS.normal};
-  height: 100%;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  background: ${palette.solid.offwhite};
-  padding: 0 20px;
-  position: absolute;
-  right: 0;
-  z-index: 3;
-`;
-
-export const ActionButton = styled.div<{ red?: boolean }>`
-  white-space: nowrap;
-  background: ${palette.solid.offwhite};
-  color: ${({ red }) => (red ? palette.solid.red : palette.solid.blue)};
-
-  &:not(:last-child) {
-    margin-right: 10px;
-  }
-
-  &:hover {
-    color: ${palette.solid.darkgrey};
-  }
-`;
-
 export const UploadFileContainer = styled.div`
   height: 100%;
   display: flex;
   position: relative;
 `;
 
+// TODO find a way to make only fixed container shrink
 export const DragDropContainer = styled.div<{ dragging?: boolean }>`
-  height: 100vh;
+  height: 100%;
   position: fixed;
   right: 0;
-  width: 50%;
   display: flex;
   flex-direction: column;
-  flex: 1 1 50%;
+  width: 50%;
   align-items: center;
   justify-content: center;
   background: ${({ dragging }) =>
     dragging ? palette.solid.darkblue : palette.solid.blue};
   color: ${palette.solid.white};
+
+  div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    position: fixed;
+    height: ${HEADER_BAR_HEIGHT}px;
+    top: 0;
+    left: 64px;
+    width: calc(100% - 190px);
+    z-index: 2;
+    flex-direction: row;
+    padding: 0 10px;
+
+    div {
+      ${typography.sizeCSS.normal};
+      flex-direction: row;
+      gap: 8px;
+    }
+  }
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    div {
+      ${typography.sizeCSS.small};
+      flex-direction: column;
+      gap: 4px;
+      align-items: start;
+    }
+  }
+`;
+
+export const DragDropIcon = styled.img`
+  margin-bottom: 15px;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    margin-bottom: 0;
+    margin-right: 12px;
+    height: 22.5px;
+    width: 22.5px;
+  }
 `;
 
 export const Container = styled.div`
@@ -513,68 +525,8 @@ export const ConfirmationPageContainer = styled.div`
   align-items: center;
 `;
 
-export const UploadedFilesContainer = styled.div``;
-
-export const UploadedFilesWrapper = styled.div`
-  position: relative;
-  overflow-y: scroll;
-`;
-
-export const UploadedFilesTable = styled(Table)`
-  padding: unset;
-  padding-bottom: 100px;
-`;
-
 export const ExtendedTabbedBar = styled(TabbedBar)`
   height: 66px;
-`;
-
-export const ExtendedRow = styled(Row)`
-  color: ${({ selected }) => selected && palette.highlight.grey9};
-  position: relative;
-  transition: unset;
-  padding-left: 0;
-  padding-right: 8px;
-`;
-
-export const ExtendedLabelRow = styled(LabelRow)`
-  position: sticky;
-  top: 0;
-  background: ${palette.solid.white};
-  z-index: 5;
-  padding-left: 0;
-  padding-right: 8px;
-`;
-
-export const ExtendedCell = styled(Cell)`
-  &:first-child {
-    flex: 3 1 auto;
-  }
-
-  &:nth-child(2) {
-    flex: 3 1 auto;
-  }
-
-  @media only screen and (max-width: 1050px) {
-    &:not(:first-child, :last-child) {
-      display: none;
-    }
-  }
-`;
-
-export const ExtendedLabelCell = styled(LabelCell)`
-  &:first-child {
-    flex: 3 1 auto;
-  }
-  &:nth-child(2) {
-    flex: 3 1 auto;
-  }
-
-  @media only screen and (max-width: 1050px) {
-    &:not(:first-child, :last-child) {
-      display: none;
-    }
-  }
 `;
 
 export const RedText = styled.span`
@@ -622,13 +574,4 @@ export const ExtendedOpacityGradient = styled(OpacityGradient)`
   height: 50px;
   position: fixed;
   bottom: 0;
-`;
-
-export const UploadedContainer = styled.span`
-  display: flex;
-  align-items: center;
-`;
-
-export const DateUploaded = styled.span`
-  margin-left: 8px;
 `;

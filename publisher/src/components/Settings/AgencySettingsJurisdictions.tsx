@@ -450,7 +450,7 @@ export const AgencySettingsJurisdictions: React.FC<{
           </JurisdictionsInfoRow>
         ))}
         {allowEdit && (
-          <EditButtonContainer>
+          <EditButtonContainer hasTopMargin>
             <EditButton onClick={openSetting}>
               Edit jurisdictions
               <img src={rightArrow} alt="" />

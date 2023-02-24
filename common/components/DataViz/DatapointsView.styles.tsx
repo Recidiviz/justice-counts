@@ -16,6 +16,8 @@
 // =============================================================================
 
 import {
+  MIN_DESKTOP_WIDTH,
+  MIN_TABLET_WIDTH,
   palette,
   TABLET_WIDTH,
   typography,
@@ -36,6 +38,10 @@ export const MetricHeaderWrapper = styled.div`
   height: 58px;
   margin-bottom: 9px;
   white-space: nowrap;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    height: auto;
+  }
 `;
 
 export const ExtendedDropdownMenuItem = styled(DropdownMenuItem)<{
@@ -98,6 +104,10 @@ export const DatapointsViewHeaderWrapper = styled.div`
   top: 50px;
   background-color: ${palette.solid.white};
   z-index: 2;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    position: static;
+  }
 `;
 
 export const DatapointsViewControlsContainer = styled.div`
@@ -249,7 +259,7 @@ export const MetricInsightsContainer = styled.div<{
     z-index: -1;
   }`}
 
-  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     flex-direction: column;
   }
 `;
@@ -308,7 +318,7 @@ export const DatapointsViewControlsRow = styled.div`
   gap: 8px;
   margin-top: 32px;
 
-  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: none;
   }
 `;
@@ -316,7 +326,7 @@ export const DatapointsViewControlsRow = styled.div`
 export const MobileFiltersRow = styled.div`
   display: none;
 
-  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: flex;
     border-top: 1px solid ${palette.highlight.grey9};
     padding-top: 8px;

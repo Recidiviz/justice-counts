@@ -20,9 +20,10 @@ import { AgencySystems } from "@justice-counts/common/types";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
 import { removeSnakeCase } from "../../utils";
-import { ReactComponent as FileIcon } from "../assets/file-icon.svg";
+import fileIcon from "../assets/file-icon.svg";
 import {
   DragDropContainer,
+  DragDropIcon,
   GeneralInstructions,
   Instructions,
   SystemsInstructions,
@@ -139,25 +140,27 @@ export const UploadFile: React.FC<UploadFileProps> = ({
       </Instructions>
 
       <DragDropContainer ref={dragDropAreaRef} dragging={dragging}>
-        <FileIcon style={{ marginBottom: 15 }} />
-        <span>
-          Drag & drop a file or{" "}
-          <UploadButtonLabel htmlFor="upload-data">
-            <UploadButtonInput
-              type="file"
-              id="upload-data"
-              name="upload-data"
-              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-              onChange={handleFileUploadAttempt}
-              onClick={(e) => {
-                /** reset event state to allow user to re-upload same file (re-trigger the onChange event) */
-                e.currentTarget.value = "";
-              }}
-            />
-            browse your computer
-          </UploadButtonLabel>
-        </span>
-        <span style={{ opacity: 0.5 }}>Accepted file types: .xls, .xlsx</span>
+        <DragDropIcon src={fileIcon} alt="" />
+        <div>
+          <span>
+            Drag & drop a file or{" "}
+            <UploadButtonLabel htmlFor="upload-data">
+              <UploadButtonInput
+                type="file"
+                id="upload-data"
+                name="upload-data"
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                onChange={handleFileUploadAttempt}
+                onClick={(e) => {
+                  /** reset event state to allow user to re-upload same file (re-trigger the onChange event) */
+                  e.currentTarget.value = "";
+                }}
+              />
+              Browse
+            </UploadButtonLabel>
+          </span>
+          <span style={{ opacity: 0.5 }}>Files type: .csv, .xls, .xlsx</span>
+        </div>
       </DragDropContainer>
     </UploadFileContainer>
   );

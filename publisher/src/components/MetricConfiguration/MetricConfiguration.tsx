@@ -15,19 +15,26 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Badge } from "@justice-counts/common/components/Badge";
+import {
+  Badge,
+  reportFrequencyBadgeColors,
+} from "@justice-counts/common/components/Badge";
+import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
+import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
   AgencySystems,
   ReportFrequency,
   SupervisionSubsystems,
 } from "@justice-counts/common/types";
+import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
+import dropdownArrow from "../assets/dropdown-arrow.svg";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import { SYSTEM_CAPITALIZED, SYSTEM_LOWERCASE } from "../Global/constants";
 import { ContainedLoader } from "../Loading";
@@ -40,12 +47,18 @@ import {
   MetricBoxBottomPaddingContainer,
   MetricBoxContainerWrapper,
   MetricConfigurationDisplay,
+  MetricConfigurationDropdownContainer,
   MetricConfigurationWrapper,
   MetricDefinitions,
   MetricDetailsDisplay,
   MetricName,
+  MetricsConfigurationDropdownMenu,
+  MetricsConfigurationDropdownMenuItem,
+  MetricsConfigurationDropdownToggle,
+  MetricsConfigurationSystemsDropdownMenuItem,
   MetricsViewContainer,
   MetricsViewControlPanel,
+  MobileMetricsConfigurationHeader,
   RACE_ETHNICITY_DISAGGREGATION_KEY,
   RaceEthnicitiesForm,
   StickyHeader,
@@ -58,6 +71,7 @@ export const MetricConfiguration: React.FC = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
   const { metrics, initializeMetricConfigStoreValues, getMetricsBySystem } =
     metricConfigStore;
+  const windowWidth = useWindowWidth();
 
   const { system: systemSearchParam, metric: metricSearchParam } =
     settingsSearchParams;
@@ -124,9 +138,12 @@ export const MetricConfiguration: React.FC = observer(() => {
   };
 
   const handleSystemClick = (option: AgencySystems) => {
-    setSettingsSearchParams({
-      system: option,
-    });
+    setSettingsSearchParams(
+      {
+        system: option,
+      },
+      true
+    );
   };
 
   useEffect(() => {
@@ -150,14 +167,29 @@ export const MetricConfiguration: React.FC = observer(() => {
   const enabledSupervisionSubsystems = currentAgency?.systems
     .filter((system) => SupervisionSubsystems.includes(system))
     .map((system) => system.toLowerCase());
+  const showSystems =
+    !metricSearchParam &&
+    currentAgency?.systems &&
+    currentAgency?.systems?.length > 1;
+  const showMetricsDropdownOptions = () => {
+    const systemMetrics = getMetricsBySystem(systemSearchParam);
+    return systemMetrics && systemMetrics.length > 1;
+  };
 
   return (
     <>
       <MetricsViewContainer>
+        <MobileMetricsConfigurationHeader hasBorder={showSystems}>
+          Metric Configuration
+          {systemSearchParam &&
+            ` > ${formatSystemName(systemSearchParam, {
+              allUserSystems: currentAgency?.systems,
+            })}`}
+          {metricSearchParam && ` > ${metrics[systemMetricKey]?.label}`}
+        </MobileMetricsConfigurationHeader>
         {/* System Tabs (for multi-system agencies) */}
-        {!metricSearchParam &&
-          currentAgency?.systems &&
-          currentAgency?.systems?.length > 1 && (
+        {showSystems && (
+          <>
             <StickyHeader>
               <TabbedBar noPadding>
                 <TabbedOptions>
@@ -182,7 +214,40 @@ export const MetricConfiguration: React.FC = observer(() => {
                 </TabbedOptions>
               </TabbedBar>
             </StickyHeader>
-          )}
+
+            {/* Systems Dropdown (for multi-system agencies)  */}
+            <MetricConfigurationDropdownContainer hasBottomMargin>
+              <Dropdown>
+                <MetricsConfigurationDropdownToggle kind="borderless">
+                  <img src={dropdownArrow} alt="" />
+                  {systemSearchParam &&
+                    formatSystemName(systemSearchParam, {
+                      allUserSystems: currentAgency?.systems,
+                    })}
+                </MetricsConfigurationDropdownToggle>
+                <MetricsConfigurationDropdownMenu>
+                  {currentAgency?.systems
+                    .filter(
+                      (system) => getMetricsBySystem(system)?.length !== 0
+                    )
+                    .map((system) => {
+                      return (
+                        <MetricsConfigurationSystemsDropdownMenuItem
+                          key={system}
+                          highlight={systemSearchParam === system}
+                          onClick={() => handleSystemClick(system)}
+                        >
+                          {formatSystemName(system, {
+                            allUserSystems: currentAgency?.systems,
+                          })}
+                        </MetricsConfigurationSystemsDropdownMenuItem>
+                      );
+                    })}
+                </MetricsConfigurationDropdownMenu>
+              </Dropdown>
+            </MetricConfigurationDropdownContainer>
+          </>
+        )}
 
         <MetricsViewControlPanel>
           {/* List Of Metrics */}
@@ -211,6 +276,75 @@ export const MetricConfiguration: React.FC = observer(() => {
           {metricSearchParam && (
             <MetricConfigurationWrapper>
               {/* Metric Configuration */}
+              <MetricConfigurationDropdownContainer hasTopBorder>
+                <Dropdown>
+                  <MetricsConfigurationDropdownToggle kind="borderless">
+                    {showMetricsDropdownOptions() && (
+                      <img src={dropdownArrow} alt="" />
+                    )}
+                    {metrics[systemMetricKey]?.label}
+                    <Badge
+                      color={
+                        reportFrequencyBadgeColors[
+                          metrics[systemMetricKey]?.customFrequency ||
+                            (metrics[systemMetricKey]
+                              ?.defaultFrequency as ReportFrequency)
+                        ]
+                      }
+                    >
+                      {metrics[
+                        systemMetricKey
+                      ]?.customFrequency?.toLowerCase() ||
+                        metrics[
+                          systemMetricKey
+                        ]?.defaultFrequency?.toLowerCase()}
+                    </Badge>
+                  </MetricsConfigurationDropdownToggle>
+                  {showMetricsDropdownOptions() ? (
+                    <MetricsConfigurationDropdownMenu>
+                      {getMetricsBySystem(systemSearchParam)?.map(
+                        ({ key, metric }) => (
+                          <MetricsConfigurationDropdownMenuItem
+                            key={key}
+                            onClick={() =>
+                              setSettingsSearchParams(
+                                {
+                                  ...settingsSearchParams,
+                                  metric: key,
+                                },
+                                true
+                              )
+                            }
+                          >
+                            {metric.label}
+                            <Badge
+                              color={
+                                reportFrequencyBadgeColors[
+                                  metric.customFrequency ||
+                                    (metric.defaultFrequency as ReportFrequency)
+                                ]
+                              }
+                            >
+                              {metric.customFrequency?.toLowerCase() ||
+                                metric.defaultFrequency?.toLowerCase()}
+                            </Badge>
+                          </MetricsConfigurationDropdownMenuItem>
+                        )
+                      )}
+                    </MetricsConfigurationDropdownMenu>
+                  ) : (
+                    <></>
+                  )}
+                </Dropdown>
+              </MetricConfigurationDropdownContainer>
+
+              {windowWidth <= MIN_DESKTOP_WIDTH && !activeDimensionKey && (
+                <MetricDefinitions
+                  activeDimensionKey={activeDimensionKey}
+                  activeDisaggregationKey={activeDisaggregationKey}
+                />
+              )}
+
               <MetricConfigurationDisplay>
                 <Metric
                   onClick={() => setActiveDimensionKey(undefined)}
@@ -244,15 +378,16 @@ export const MetricConfiguration: React.FC = observer(() => {
 
               {/* Metric/Dimension Definitions (Includes/Excludes) & Context */}
               {/* Race/Ethnicities (when active disaggregation is Race / Ethnicities) */}
-              {activeDisaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY &&
-              activeDimensionKey ? (
-                <RaceEthnicitiesForm />
-              ) : (
-                <MetricDefinitions
-                  activeDimensionKey={activeDimensionKey}
-                  activeDisaggregationKey={activeDisaggregationKey}
-                />
-              )}
+              {windowWidth > MIN_DESKTOP_WIDTH &&
+                (activeDisaggregationKey ===
+                  RACE_ETHNICITY_DISAGGREGATION_KEY && activeDimensionKey ? (
+                  <RaceEthnicitiesForm />
+                ) : (
+                  <MetricDefinitions
+                    activeDimensionKey={activeDimensionKey}
+                    activeDisaggregationKey={activeDisaggregationKey}
+                  />
+                ))}
             </MetricConfigurationWrapper>
           )}
         </MetricsViewControlPanel>

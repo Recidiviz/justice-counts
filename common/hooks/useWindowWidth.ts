@@ -15,28 +15,19 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-import { SettingsSearchParams } from "./types";
-import { getSettingsSearchParams } from "./utils";
+export function useWindowWidth() {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-export const useSettingsSearchParams = (): [
-  SettingsSearchParams,
-  (params: SettingsSearchParams, replaceHistory?: boolean) => void
-] => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    function handleResize() {
+      setWindowWidth(window.innerWidth);
+    }
 
-  const settingsSearchParams = getSettingsSearchParams(searchParams);
-  const { system, metric } = settingsSearchParams;
-  const shouldReplace = !system && !metric;
-  const setSettingsSearchParams = (
-    params: SettingsSearchParams,
-    replaceHistory?: boolean
-  ) => {
-    setSearchParams(JSON.parse(JSON.stringify(params).toLowerCase()), {
-      replace: replaceHistory || shouldReplace,
-    });
-  };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-  return [settingsSearchParams, setSettingsSearchParams];
-};
+  return windowWidth;
+}

@@ -14,21 +14,31 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
+
+import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import { useWindowWidth } from "@justice-counts/common/hooks";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
+import { settingsMenuPaths } from "../../pages/Settings";
 import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
-import { Button } from "../DataUpload";
+import closeMenuBurger from "../assets/close-header-menu-icon.svg";
+import menuBurger from "../assets/menu-burger-icon.svg";
 import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
+import { useSettingsSearchParams } from "../Settings";
 import {
   ExtendedDropdownMenu,
   ExtendedDropdownMenuItem,
   ExtendedDropdownToggle,
+  HeaderUploadButton,
   MenuContainer,
   MenuItem,
+  MobileMenuIconWrapper,
+  SubMenuContainer,
+  SubMenuItem,
   WelcomeUser,
 } from ".";
 
@@ -37,8 +47,18 @@ const Menu = () => {
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
   const location = useLocation();
+  const windowWidth = useWindowWidth();
+  const [settingsSearchParams] = useSettingsSearchParams();
+  const { system: systemSearchParam } = settingsSearchParams;
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const pathWithoutAgency = removeAgencyFromPath(location.pathname);
+
+  const handleCloseMobileMenu = () => {
+    if (windowWidth < MIN_DESKTOP_WIDTH && isMobileMenuOpen) {
+      setIsMobileMenuOpen(false);
+    }
+  };
 
   const logout = async (): Promise<void | string> => {
     try {
@@ -64,88 +84,156 @@ const Menu = () => {
 
   const currentAgency = userStore.getAgency(agencyId);
 
+  useEffect(() => {
+    const { body } = document;
+    if (isMobileMenuOpen) {
+      body.style.overflow = "hidden";
+    } else {
+      body.style.overflow = "auto";
+    }
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    if (windowWidth > MIN_DESKTOP_WIDTH) {
+      setIsMobileMenuOpen(false);
+    }
+  }, [windowWidth]);
+
   return (
-    <MenuContainer>
-      <WelcomeUser>
-        {userStore.nameOrEmail &&
-          currentAgency?.name &&
-          `Welcome, ${userStore.nameOrEmail} at ${currentAgency.name}`}
-      </WelcomeUser>
+    <>
+      <MenuContainer isMobileMenuOpen={isMobileMenuOpen}>
+        <WelcomeUser>
+          {userStore.nameOrEmail &&
+            currentAgency?.name &&
+            `Welcome, ${userStore.nameOrEmail} at ${currentAgency.name}`}
+        </WelcomeUser>
 
-      {/* Reports */}
-      <MenuItem
-        onClick={() => navigate(REPORTS_LOWERCASE)}
-        active={pathWithoutAgency === REPORTS_LOWERCASE}
-      >
-        {REPORTS_CAPITALIZED}
-      </MenuItem>
-
-      {/* Data (Visualizations) */}
-      <MenuItem
-        onClick={() => navigate("data")}
-        active={pathWithoutAgency === "data"}
-      >
-        Data
-      </MenuItem>
-
-      {/* Learn More */}
-      <MenuItem>
-        <a
-          href="https://justicecounts.csgjusticecenter.org/"
-          target="_blank"
-          rel="noreferrer"
+        {/* Reports */}
+        <MenuItem
+          onClick={() => {
+            navigate(REPORTS_LOWERCASE);
+            handleCloseMobileMenu();
+          }}
+          active={pathWithoutAgency === REPORTS_LOWERCASE}
         >
-          Learn More
-        </a>
-      </MenuItem>
-
-      {/* Agencies Dropdown */}
-      {userStore.userAgencies && userStore.userAgencies.length > 1 && (
-        <MenuItem>
-          <Dropdown>
-            <ExtendedDropdownToggle kind="borderless">
-              Agencies
-            </ExtendedDropdownToggle>
-            <ExtendedDropdownMenu alignment="right">
-              {userStore.userAgencies
-                .slice()
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((agency) => {
-                  return (
-                    <ExtendedDropdownMenuItem
-                      key={agency.id}
-                      onClick={() => {
-                        navigate(`/agency/${agency.id}/${pathWithoutAgency}`);
-                      }}
-                      highlight={agency.id === currentAgency?.id}
-                    >
-                      {agency.name}
-                    </ExtendedDropdownMenuItem>
-                  );
-                })}
-            </ExtendedDropdownMenu>
-          </Dropdown>
+          {REPORTS_CAPITALIZED}
         </MenuItem>
-      )}
 
-      {/* Settings */}
-      <MenuItem
-        onClick={() => navigate("settings")}
-        active={pathWithoutAgency.startsWith("settings")}
+        {/* Data (Visualizations) */}
+        <MenuItem
+          onClick={() => {
+            navigate("data");
+            handleCloseMobileMenu();
+          }}
+          active={pathWithoutAgency === "data"}
+        >
+          Data
+        </MenuItem>
+
+        {/* Learn More */}
+        {windowWidth > MIN_DESKTOP_WIDTH && (
+          <MenuItem>
+            <a
+              href="https://justicecounts.csgjusticecenter.org/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Learn More
+            </a>
+          </MenuItem>
+        )}
+
+        {/* Agencies Dropdown */}
+        {userStore.isJusticeCountsAdmin(agencyId) && (
+          <MenuItem>
+            <Dropdown>
+              <ExtendedDropdownToggle kind="borderless">
+                Agencies
+              </ExtendedDropdownToggle>
+              <ExtendedDropdownMenu
+                alignment={windowWidth > MIN_DESKTOP_WIDTH ? "right" : "left"}
+              >
+                {userStore.userAgencies
+                  ?.slice()
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((agency) => {
+                    return (
+                      <ExtendedDropdownMenuItem
+                        key={agency.id}
+                        onClick={() => {
+                          navigate(`/agency/${agency.id}/${pathWithoutAgency}`);
+                          handleCloseMobileMenu();
+                        }}
+                        highlight={agency.id === currentAgency?.id}
+                      >
+                        {agency.name}
+                      </ExtendedDropdownMenuItem>
+                    );
+                  })}
+              </ExtendedDropdownMenu>
+            </Dropdown>
+          </MenuItem>
+        )}
+
+        {/* Settings */}
+        <MenuItem
+          onClick={() => {
+            if (windowWidth > MIN_DESKTOP_WIDTH) {
+              navigate("settings");
+            }
+          }}
+          active={pathWithoutAgency.startsWith("settings")}
+          isHoverDisabled={isMobileMenuOpen}
+        >
+          Settings
+        </MenuItem>
+
+        {isMobileMenuOpen && (
+          <SubMenuContainer>
+            {settingsMenuPaths.map(({ displayLabel, path }) => (
+              <SubMenuItem
+                key={path}
+                onClick={() => {
+                  if (path === "metric-config") {
+                    navigate(
+                      systemSearchParam
+                        ? `settings/${path}?system=${systemSearchParam}`
+                        : `settings/${path}`
+                    );
+                  } else {
+                    navigate(`settings/${path}`);
+                  }
+                  handleCloseMobileMenu();
+                }}
+              >
+                {displayLabel}
+              </SubMenuItem>
+            ))}
+          </SubMenuContainer>
+        )}
+
+        <MenuItem onClick={logout} highlight>
+          Log Out
+        </MenuItem>
+
+        <MenuItem id="upload" buttonPadding>
+          <HeaderUploadButton
+            type="blue"
+            onClick={() => {
+              navigate("upload");
+              handleCloseMobileMenu();
+            }}
+          >
+            Upload Data
+          </HeaderUploadButton>
+        </MenuItem>
+      </MenuContainer>
+      <MobileMenuIconWrapper
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >
-        Settings
-      </MenuItem>
-
-      <MenuItem onClick={logout} highlight>
-        Log Out
-      </MenuItem>
-
-      <MenuItem buttonPadding>
-        <Button type="blue" onClick={() => navigate("upload")}>
-          Upload Data
-        </Button>
-      </MenuItem>
-    </MenuContainer>
+        <img src={isMobileMenuOpen ? closeMenuBurger : menuBurger} alt="" />
+      </MobileMenuIconWrapper>
+    </>
   );
 };
 

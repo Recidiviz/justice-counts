@@ -30,8 +30,6 @@ import {
   MetricHeaderWrapper,
   MobileFiltersButton,
   MobileFiltersRow,
-  MobileSelectMetricsButton,
-  MobileSelectMetricsButtonContainer,
   SelectMetricsButtonContainer,
   SelectMetricsButtonText,
 } from "@justice-counts/common/components/DataViz/DatapointsView.styles";
@@ -300,19 +298,11 @@ export const DatapointsView: React.FC<{
       </MobileFiltersRow>
       {renderChartForMetric()}
       {renderLegend()}
-      {showBottomMetricInsights && (
+      {showBottomMetricInsights && selectedData.length > 0 && (
         <BottomMetricInsightsContainer>
           <MetricInsights datapoints={filteredAggregateData} />
         </BottomMetricInsightsContainer>
       )}
-      <MobileSelectMetricsButtonContainer>
-        <MobileSelectMetricsButton
-          onClick={() => setMobileSelectMetricsVisible(true)}
-        >
-          <GridIcon />
-          <SelectMetricsButtonText />
-        </MobileSelectMetricsButton>
-      </MobileSelectMetricsButtonContainer>
       {shouldShowMobileSelectMetricsModal && (
         <MobileSelectMetricsModal
           agencyName={agencyName}

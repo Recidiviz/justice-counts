@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  MIN_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -27,6 +28,10 @@ export const SettingsContainer = styled.div`
   align-items: flex-start;
   padding: 48px 24px 0 24px;
   position: relative;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    padding-top: 24px;
+  }
 `;
 
 export const ContentDisplay = styled.div`
@@ -37,6 +42,10 @@ export const ContentDisplay = styled.div`
   flex: 10 10 auto;
   overflow-x: scroll;
   margin-left: 310px;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    margin-left: 0;
+  }
 `;
 
 export const SettingsMenuContainer = styled.div`
@@ -49,6 +58,10 @@ export const SettingsMenuContainer = styled.div`
   margin-right: 70px;
   z-index: 2;
   position: fixed;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: none;
+  }
 `;
 
 export const MenuItem = styled.div<{ selected?: boolean }>`
@@ -64,17 +77,6 @@ export const MenuItem = styled.div<{ selected?: boolean }>`
   &:hover {
     cursor: pointer;
     color: ${({ selected }) => !selected && palette.solid.darkgrey};
-  }
-`;
-
-export const SettingsFormPanel = styled.div``;
-
-export const InputWrapper = styled.div`
-  display: flex;
-  gap: 10px;
-
-  div {
-    width: 100%;
   }
 `;
 

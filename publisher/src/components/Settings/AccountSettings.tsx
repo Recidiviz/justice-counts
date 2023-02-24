@@ -19,8 +19,12 @@ import { debounce as _debounce } from "lodash";
 import React, { useRef } from "react";
 
 import { useStore } from "../../stores";
-import { TextInput, Title, TitleWrapper } from "../Forms";
-import { InputWrapper, SettingsFormPanel } from ".";
+import { TextInput } from "../Forms";
+import {
+  AccountSettingsInputsWrapper,
+  AccountSettingsTitle,
+  AccountSettingsWrapper,
+} from "./AccountSettings.styles";
 
 export const AccountSettings = () => {
   const { userStore } = useStore();
@@ -39,13 +43,12 @@ export const AccountSettings = () => {
   const debouncedSave = useRef(_debounce(saveNameEmailChange, 1500)).current;
 
   return (
-    <SettingsFormPanel>
-      <TitleWrapper>
-        <Title>Account</Title>
-      </TitleWrapper>
+    <AccountSettingsWrapper>
+      <AccountSettingsTitle />
 
-      <InputWrapper>
+      <AccountSettingsInputsWrapper>
         <TextInput
+          style={{ marginBottom: "0" }}
           persistLabel
           label="Full Name"
           value={name}
@@ -63,7 +66,7 @@ export const AccountSettings = () => {
             debouncedSave(undefined, e.target.value);
           }}
         />
-      </InputWrapper>
-    </SettingsFormPanel>
+      </AccountSettingsInputsWrapper>
+    </AccountSettingsWrapper>
   );
 };

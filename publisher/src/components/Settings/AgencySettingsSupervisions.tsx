@@ -193,7 +193,7 @@ export const AgencySettingsSupervisions: React.FC<{
             No supervision populations selected.
           </AgencyInfoBlockDescription>
         )}
-        <EditButtonContainer>
+        <EditButtonContainer hasTopMargin>
           <EditButton onClick={openSetting}>
             Edit populations
             <img src={rightArrow} alt="" />

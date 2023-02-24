@@ -21,11 +21,20 @@ import {
   MetricDisaggregationDimensions,
   MetricDisaggregations,
 } from "@justice-counts/common/types";
+import { Dropdown } from "@recidiviz/design-system";
 import React, { Fragment, useEffect, useState } from "react";
 
 import { useStore } from "../../stores";
+import dropdownArrow from "../assets/dropdown-arrow.svg";
 import errorIcon from "../assets/status-error-icon.png";
+import { ExtendedDropdownMenuItem } from "../Menu";
 import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "../MetricConfiguration";
+import {
+  DisaggregationsDropdownContainer,
+  DisaggregationsDropdownMenu,
+  DisaggregationsDropdownToggle,
+  DisaggregationsDropdownToggleName,
+} from "../Reports";
 import { DisaggregationDimensionTextInput } from "../Reports/DataEntryFormComponents";
 import {
   DisaggregationHasInputIndicator,
@@ -262,6 +271,61 @@ export const TabbedDisaggregations: React.FC<{
           );
         })}
       </TabsRow>
+
+      <DisaggregationsDropdownContainer>
+        <Dropdown>
+          <DisaggregationsDropdownToggle kind="borderless">
+            <DisaggregationsDropdownToggleName>
+              {metric.disaggregations.length > 1 && (
+                <img src={dropdownArrow} alt="" />
+              )}
+              {activeDisaggregationObj.display_name}
+            </DisaggregationsDropdownToggleName>
+            <DisaggregationHasInputIndicator
+              active
+              error={hasDimensionErrors(
+                metric.key,
+                activeDisaggregationObj.key
+              )}
+              hasInput={disaggregationHasInput[activeDisaggregationObj.key]}
+            >
+              {renderIcon(
+                hasDimensionErrors(metric.key, activeDisaggregationObj.key),
+                activeDisaggregationObj.enabled,
+                disaggregationHasInput[activeDisaggregationObj.key]
+              )}
+            </DisaggregationHasInputIndicator>
+          </DisaggregationsDropdownToggle>
+          {metric.disaggregations.length > 1 ? (
+            <DisaggregationsDropdownMenu>
+              {metric.disaggregations.map((disaggregation, index) => {
+                const isDefaultFirstOrActiveDisaggregationTab =
+                  (!activeDisaggregation[metric.key]?.disaggregationKey &&
+                    index === 0) ||
+                  activeDisaggregation[metric.key]?.disaggregationKey ===
+                    disaggregation.key;
+
+                return (
+                  <ExtendedDropdownMenuItem
+                    key={disaggregation.key}
+                    highlight={isDefaultFirstOrActiveDisaggregationTab}
+                    onClick={() =>
+                      updateActiveDisaggregationTab(
+                        metric.key,
+                        disaggregation.key
+                      )
+                    }
+                  >
+                    {disaggregation.display_name}
+                  </ExtendedDropdownMenuItem>
+                );
+              })}
+            </DisaggregationsDropdownMenu>
+          ) : (
+            <></>
+          )}
+        </Dropdown>
+      </DisaggregationsDropdownContainer>
 
       {/* Dimensions */}
       <TabDisplay>

@@ -42,10 +42,13 @@ export const SettingsMenu: React.FC = observer(() => {
     settingsSearchParams;
 
   const handleMetricListItemClick = (metricKey: string) => {
-    setSettingsSearchParams({
-      system: systemSearchParam,
-      metric: metricKey,
-    });
+    setSettingsSearchParams(
+      {
+        system: systemSearchParam,
+        metric: metricKey,
+      },
+      true
+    );
   };
 
   return (

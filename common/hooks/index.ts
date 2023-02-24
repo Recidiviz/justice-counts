@@ -15,28 +15,4 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { useSearchParams } from "react-router-dom";
-
-import { SettingsSearchParams } from "./types";
-import { getSettingsSearchParams } from "./utils";
-
-export const useSettingsSearchParams = (): [
-  SettingsSearchParams,
-  (params: SettingsSearchParams, replaceHistory?: boolean) => void
-] => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const settingsSearchParams = getSettingsSearchParams(searchParams);
-  const { system, metric } = settingsSearchParams;
-  const shouldReplace = !system && !metric;
-  const setSettingsSearchParams = (
-    params: SettingsSearchParams,
-    replaceHistory?: boolean
-  ) => {
-    setSearchParams(JSON.parse(JSON.stringify(params).toLowerCase()), {
-      replace: replaceHistory || shouldReplace,
-    });
-  };
-
-  return [settingsSearchParams, setSettingsSearchParams];
-};
+export * from "./useWindowWidth";

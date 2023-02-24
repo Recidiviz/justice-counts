@@ -30,7 +30,6 @@ import { Loading } from "../Loading";
 import {
   AdminStatus,
   AgencySettingsContent,
-  AgencySettingsTitle,
   AgencySettingsWrapper,
   EditTeamMemberIconContainer,
   EditTeamMemberMenu,
@@ -47,6 +46,7 @@ import {
   TeamManagementDescription,
   TeamManagementSectionSubTitle,
   TeamManagementSectionTitle,
+  TeamManagementSettingsTitle,
   TeamMemberEmailContainer,
   TeamMemberEmailContainerTitle,
   TeamMemberNameContainer,
@@ -183,8 +183,8 @@ export const AgencySettingsTeamManagement = observer(() => {
 
   return (
     <AgencySettingsWrapper>
+      <TeamManagementSettingsTitle />
       <AgencySettingsContent>
-        <AgencySettingsTitle>Team Management</AgencySettingsTitle>
         <TeamManagementBlock>
           <TeamManagementDescription>
             Enter the requested information, then click &quot;Invite&quot;. New
