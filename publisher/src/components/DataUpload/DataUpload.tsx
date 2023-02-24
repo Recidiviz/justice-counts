@@ -297,7 +297,7 @@ export const DataUpload: React.FC = observer(() => {
     <DataUploadContainer>
       <DataUploadHeader
         transparent={!selectedFile && !errorsWarningsMetrics}
-        isBackgroundBlue
+        isBackgroundBlue={!selectedFile && !errorsWarningsMetrics}
       >
         <LogoContainer
           onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
