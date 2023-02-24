@@ -22,7 +22,6 @@ import {
 import styled from "styled-components/macro";
 
 import searchIcon from "../assets/search-icon.png";
-import { CheckIcon } from "../DataUpload";
 
 // Common
 const AGENCY_SETTINGS_CONTAINER_WIDTH = 732;
@@ -567,6 +566,7 @@ export const AddJurisdictionsExclusionsLink = styled.div`
   cursor: pointer;
 `;
 
-export const AddIcon = styled(CheckIcon)`
+export const AddIcon = styled.img`
+  width: 16px;
   margin-right: 0;
 `;
