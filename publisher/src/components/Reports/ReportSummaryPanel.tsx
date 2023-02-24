@@ -29,6 +29,7 @@ import styled from "styled-components/macro";
 
 import { useStore } from "../../stores";
 import {
+  filterJCAdminEditors,
   formatSystemName,
   printDateRangeFromMonthYear,
   printElapsedDaysMonthsYearsSinceDate,
@@ -253,6 +254,8 @@ const ReportSummaryPanel: React.FC<{
     frequency,
   } = reportStore.reportOverviews[reportID];
 
+  const filteredReportEditors = filterJCAdminEditors(editors);
+
   const metricsBySystem = reportStore.reportMetricsBySystem[reportID];
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;
 
@@ -301,8 +304,8 @@ const ReportSummaryPanel: React.FC<{
 
         <EditDetailsTitle>Editors</EditDetailsTitle>
         <EditDetailsContent>
-          {editors.length
-            ? editors.map((editor, index) => (
+          {filteredReportEditors.length
+            ? filteredReportEditors.map((editor, index) => (
                 <React.Fragment key={editor.name}>
                   {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
                   <TeamMemberNameWithBadge
@@ -310,7 +313,7 @@ const ReportSummaryPanel: React.FC<{
                     badgeId={`${editor}-${index}`}
                     role={editor.role}
                   />
-                  {index < editors.length - 1 && <CommaSpan />}
+                  {index < filteredReportEditors.length - 1 && <CommaSpan />}
                 </React.Fragment>
               ))
             : userStore.nameOrEmail}
@@ -318,17 +321,19 @@ const ReportSummaryPanel: React.FC<{
 
         <EditDetailsTitle>Details</EditDetailsTitle>
         <EditDetailsContent>
-          {editors.length === 1 &&
+          {filteredReportEditors.length === 1 &&
             !lastModifiedAt &&
-            `Created today by ${editors[0].name}`}
+            `Created today by ${filteredReportEditors[0].name}`}
 
-          {editors.length >= 1 &&
+          {filteredReportEditors.length >= 1 &&
             lastModifiedAt &&
             `Last modified ${printElapsedDaysMonthsYearsSinceDate(
               lastModifiedAt
-            )} by ${editors[editors.length - 1].name}`}
+            )} by ${
+              filteredReportEditors[filteredReportEditors.length - 1].name
+            }`}
 
-          {!editors.length && ``}
+          {!filteredReportEditors.length && ``}
         </EditDetailsContent>
       </EditDetails>
 

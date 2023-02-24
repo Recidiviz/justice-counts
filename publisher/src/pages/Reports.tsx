@@ -69,6 +69,7 @@ import {
 } from "../components/Reports";
 import { useStore } from "../stores";
 import {
+  filterJCAdminEditors,
   normalizeString,
   printElapsedDaysMonthsYearsSinceDate,
   printReportFrequency,
@@ -188,116 +189,121 @@ const Reports: React.FC = () => {
       <>
         {filteredReportsMemoized.length > 0 ? (
           filteredReportsMemoized.map(
-            (report: ReportOverview, index: number) => (
-              <Fragment key={report.id}>
-                <Row
-                  onClick={() => {
-                    if (!selectionMode) {
-                      navigate(`${report.id}`);
-                    } else {
-                      addOrRemoveReportToDelete(report.id);
-                    }
-                  }}
-                  selected={
-                    selectionMode && reportsToDelete.includes(report.id)
-                  }
-                >
-                  {/* Report Period */}
-                  <Cell id="report_period">
-                    {selectionMode && (
-                      <>
-                        {reportsToDelete.includes(report.id) ? (
-                          <SelectedCheckmark src={checkmarkIcon} alt="" />
-                        ) : (
-                          <EmptySelectionCircle />
-                        )}
-                      </>
-                    )}
-                    <span>
-                      {printReportTitle(
-                        report.month,
-                        report.year,
-                        report.frequency
-                      )}
-                    </span>
-                    <Badge color={reportStatusBadgeColors[report.status]}>
-                      {removeSnakeCase(report.status).toLowerCase()}
-                    </Badge>
-                  </Cell>
-
-                  {/* Status */}
-                  <Cell capitalize>
-                    {printReportFrequency(report.month, report.frequency)}
-                  </Cell>
-
-                  {/* Editors */}
-                  <Cell
-                    onMouseEnter={() => {
-                      if (report.editors.length > 1) {
-                        setShowAdditionalEditorsTooltip(report.id);
+            (report: ReportOverview, index: number) => {
+              const filteredReportEditors = filterJCAdminEditors(
+                report.editors
+              );
+              return (
+                <Fragment key={report.id}>
+                  <Row
+                    onClick={() => {
+                      if (!selectionMode) {
+                        navigate(`${report.id}`);
+                      } else {
+                        addOrRemoveReportToDelete(report.id);
                       }
                     }}
-                    onMouseLeave={() =>
-                      setShowAdditionalEditorsTooltip(undefined)
+                    selected={
+                      selectionMode && reportsToDelete.includes(report.id)
                     }
                   >
-                    {report.editors.length === 0 ? (
-                      "-"
-                    ) : (
-                      <>
-                        {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
-                        <TeamMemberNameWithBadge
-                          name={report.editors[0].name}
-                          badgeId={report.id.toString()}
-                          role={report.editors[0].role}
-                        />
-                        {report.editors.length > 1 ? (
-                          <AndOthersSpan>{`& ${
-                            report.editors.length - 1
-                          } other${
-                            report.editors.length > 2 ? "s" : ""
-                          }`}</AndOthersSpan>
-                        ) : null}
-
-                        {showAdditionalEditorsTooltip === report.id && (
-                          <AdditionalEditorsTooltip>
-                            {report.editors.map((editor, idx) => (
-                              <React.Fragment key={editor.name}>
-                                {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
-                                <TeamMemberNameWithBadge
-                                  name={editor.name}
-                                  badgeColor={palette.solid.white}
-                                  role={editor.role}
-                                />
-                                {idx < report.editors.length - 1 && (
-                                  <CommaSpan />
-                                )}
-                              </React.Fragment>
-                            ))}
-                          </AdditionalEditorsTooltip>
+                    {/* Report Period */}
+                    <Cell id="report_period">
+                      {selectionMode && (
+                        <>
+                          {reportsToDelete.includes(report.id) ? (
+                            <SelectedCheckmark src={checkmarkIcon} alt="" />
+                          ) : (
+                            <EmptySelectionCircle />
+                          )}
+                        </>
+                      )}
+                      <span>
+                        {printReportTitle(
+                          report.month,
+                          report.year,
+                          report.frequency
                         )}
-                      </>
-                    )}
-                  </Cell>
+                      </span>
+                      <Badge color={reportStatusBadgeColors[report.status]}>
+                        {removeSnakeCase(report.status).toLowerCase()}
+                      </Badge>
+                    </Cell>
 
-                  {/* Last Modified */}
-                  <Cell>
-                    {!report.last_modified_at
-                      ? "-"
-                      : printElapsedDaysMonthsYearsSinceDate(
-                          report.last_modified_at
-                        )}
-                  </Cell>
-                </Row>
+                    {/* Status */}
+                    <Cell capitalize>
+                      {printReportFrequency(report.month, report.frequency)}
+                    </Cell>
 
-                {/* Report Year Marker */}
-                {renderReportYearRow(
-                  filteredReportsMemoized,
-                  index,
-                  report.year
-                )}
-              </Fragment>
-            )
+                    {/* Editors */}
+                    <Cell
+                      onMouseEnter={() => {
+                        if (filteredReportEditors.length > 1) {
+                          setShowAdditionalEditorsTooltip(report.id);
+                        }
+                      }}
+                      onMouseLeave={() =>
+                        setShowAdditionalEditorsTooltip(undefined)
+                      }
+                    >
+                      {filteredReportEditors.length === 0 ? (
+                        "-"
+                      ) : (
+                        <>
+                          {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
+                          <TeamMemberNameWithBadge
+                            name={filteredReportEditors[0].name}
+                            badgeId={report.id.toString()}
+                            role={filteredReportEditors[0].role}
+                          />
+                          {filteredReportEditors.length > 1 ? (
+                            <AndOthersSpan>{`& ${
+                              filteredReportEditors.length - 1
+                            } other${
+                              filteredReportEditors.length > 2 ? "s" : ""
+                            }`}</AndOthersSpan>
+                          ) : null}
+
+                          {showAdditionalEditorsTooltip === report.id && (
+                            <AdditionalEditorsTooltip>
+                              {filteredReportEditors.map((editor, idx) => (
+                                <React.Fragment key={editor.name}>
+                                  {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
+                                  <TeamMemberNameWithBadge
+                                    name={editor.name}
+                                    badgeColor={palette.solid.white}
+                                    role={editor.role}
+                                  />
+                                  {idx < filteredReportEditors.length - 1 && (
+                                    <CommaSpan />
+                                  )}
+                                </React.Fragment>
+                              ))}
+                            </AdditionalEditorsTooltip>
+                          )}
+                        </>
+                      )}
+                    </Cell>
+
+                    {/* Last Modified */}
+                    <Cell>
+                      {!report.last_modified_at
+                        ? "-"
+                        : printElapsedDaysMonthsYearsSinceDate(
+                            report.last_modified_at
+                          )}
+                    </Cell>
+                  </Row>
+
+                  {/* Report Year Marker */}
+                  {renderReportYearRow(
+                    filteredReportsMemoized,
+                    index,
+                    report.year
+                  )}
+                </Fragment>
+              );
+            }
           )
         ) : (
           <NoReportsDisplay>

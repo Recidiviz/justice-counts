@@ -18,6 +18,7 @@
 import {
   AgencySystems,
   MetricContext,
+  ReportEditor,
   SupervisionSubsystems,
 } from "@justice-counts/common/types";
 import { debounce, memoize } from "lodash";
@@ -275,4 +276,21 @@ export const formatSystemName = (
 type FormatSystemNameOptions = {
   allUserSystems?: AgencySystems[];
   hideCombined?: boolean;
+};
+
+// Only display one "JC Admin" name if there are multiple "JC Admin" editors
+export const filterJCAdminEditors = (editors: ReportEditor[]) => {
+  const result: ReportEditor[] = [];
+  let hasSeenJCAdmin = false;
+  editors.forEach((editor) => {
+    if (editor.name === "JC Admin") {
+      if (!hasSeenJCAdmin) {
+        hasSeenJCAdmin = true;
+        result.push(editor);
+      }
+    } else {
+      result.push(editor);
+    }
+  });
+  return result;
 };
