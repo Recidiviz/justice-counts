@@ -292,7 +292,6 @@ class GuidanceStore {
 
       if (
         nullDimensionDefinitionSettings.length === 0 &&
-        dimensionDefinitionSettingsValues.length !== 0 &&
         metrics[systemMetricKey]?.enabled
       ) {
         result[systemMetricKey][ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS] =

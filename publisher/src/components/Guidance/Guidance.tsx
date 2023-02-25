@@ -127,7 +127,10 @@ export const Guidance = observer(() => {
     ([key]) => getMetricCompletionValue(key) === 4
   ).length;
 
-  useEffect(() => metricConfigStore.resetStore(), [agencyId]);
+  useEffect(
+    () => metricConfigStore.resetStore(),
+    [agencyId, metricConfigStore]
+  );
 
   useEffect(() => {
     const initialize = async () => {
