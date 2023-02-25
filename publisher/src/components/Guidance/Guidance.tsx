@@ -135,7 +135,6 @@ export const Guidance = observer(() => {
   useEffect(() => {
     const initialize = async () => {
       reportStore.resetState();
-      metricConfigStore.resetStore();
       await reportStore.getReportOverviews(agencyId);
       if (currentTopicID === "METRIC_CONFIG")
         await metricConfigStore.initializeMetricConfigStoreValues(agencyId);
