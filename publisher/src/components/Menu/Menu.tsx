@@ -286,7 +286,8 @@ const Menu: React.FC = () => {
                   navigate("upload");
               }}
               enabledDuringOnboarding={
-                !hasCompletedOnboarding && isAddDataOrPublishDataStep
+                hasCompletedOnboarding ||
+                (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
               }
             >
               Upload Data
