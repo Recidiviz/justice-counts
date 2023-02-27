@@ -171,7 +171,7 @@ const Menu: React.FC = () => {
               <MenuItem
                 style={{ position: "relative" }}
                 active={pathWithoutAgency === "getting-started"}
-                onClick={() => navigate("/")}
+                onClick={() => navigate(`/agency/${agencyId}/getting-started`)}
               >
                 Get Started
                 {/* Guidance: Metric Configuration Progress Toast */}

@@ -264,7 +264,7 @@ export const ProgressItemName = styled.div`
 
 export const MetricContentContainer = styled(ContentContainer)`
   width: 100%;
-  height: 54%;
+  max-height: 515px;
   max-width: 550px;
   gap: unset;
   justify-content: flex-start;
