@@ -41,7 +41,7 @@ export const AccountSettingsTitle = styled.h1`
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    ${typography.sizeCSS.normal};
+    ${typography.sizeCSS.medium};
     margin: 0;
     padding: 0 0 24px 0;
 

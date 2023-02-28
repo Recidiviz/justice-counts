@@ -80,7 +80,7 @@ export const AgencySettingsTitle = styled.div`
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    ${typography.sizeCSS.normal};
+    ${typography.sizeCSS.medium};
     width: 100%;
 
     &::before {

@@ -32,6 +32,7 @@ export const UploadedFilesTitle = styled(AccountSettingsTitle)`
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    ${typography.sizeCSS.medium};
     border-bottom: 1px solid ${palette.highlight.grey9};
     padding-bottom: 24px;
 
