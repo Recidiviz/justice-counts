@@ -228,10 +228,11 @@ export const DisaggregationsDropdownMenu = styled(StatusFilterDropdownMenu)`
 
 export const Table = styled.div`
   width: 100%;
-  padding: 212px 22px 50px 22px;
+  padding: 170px 22px 50px 22px;
+  overflow-x: scroll;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    padding-top: 161px;
+    padding-top: 115px;
   }
 `;
 
@@ -242,7 +243,7 @@ export const Row = styled.div<{
 }>`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
   align-items: center;
   padding: 10px 0;
   color: ${({ noHover }) =>
@@ -269,8 +270,6 @@ export const Row = styled.div<{
 `;
 
 export const LabelRow = styled(Row)`
-  padding: 10px 22px;
-
   &:hover {
     cursor: unset;
     background-color: unset;
@@ -283,10 +282,10 @@ export const LabelRow = styled(Row)`
 `;
 
 export const Cell = styled.div<{ capitalize?: boolean }>`
-  width: 100px;
+  min-width: 250px;
   display: flex;
-  flex: 1 4 auto;
-  justify-content: flex-start;
+  flex: 1 1 250px;
+  justify-content: start;
   align-items: center;
   position: relative;
   font-size: 1.2rem;
@@ -295,11 +294,10 @@ export const Cell = styled.div<{ capitalize?: boolean }>`
   white-space: nowrap;
 
   &:first-child {
-    flex: 2 1 auto;
+    flex: 2 1 250px;
   }
 
   &:last-child {
-    flex: 2 1 auto;
     justify-content: flex-end;
     padding-right: unset;
   }
@@ -314,6 +312,9 @@ export const Cell = styled.div<{ capitalize?: boolean }>`
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     &:nth-child(4) {
       display: none;
+    }
+    &:nth-child(3) {
+      padding-right: unset;
     }
   }
 `;
@@ -331,6 +332,7 @@ export const AdditionalEditorsTooltip = styled.div`
   position: absolute;
   z-index: 1;
   top: 32px;
+  right: 0;
   border-radius: 2px;
   text-align: center;
   box-shadow: 2px 2px 8px ${palette.highlight.grey5};
