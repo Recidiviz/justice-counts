@@ -264,12 +264,8 @@ export const ProgressItemName = styled.div`
 
 export const MetricContentContainer = styled(ContentContainer)`
   width: 100%;
-  /* max-height: 515px; */
   max-width: 550px;
   gap: unset;
-  /* justify-content: flex-start; */
-  /* overflow-y: scroll;
-  overflow-x: hidden; */
 `;
 
 export const Metric = styled.div<{ hideTooltip?: boolean }>`
