@@ -26,12 +26,12 @@ export const GuidanceContainer = styled.div`
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
 `;
 
 export const ContentContainer = styled.div<{ currentTopicID?: string }>`
   width: 100%;
   max-width: 497px;
+  padding: 100px 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -264,12 +264,12 @@ export const ProgressItemName = styled.div`
 
 export const MetricContentContainer = styled(ContentContainer)`
   width: 100%;
-  max-height: 515px;
+  /* max-height: 515px; */
   max-width: 550px;
   gap: unset;
-  justify-content: flex-start;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  /* justify-content: flex-start; */
+  /* overflow-y: scroll;
+  overflow-x: hidden; */
 `;
 
 export const Metric = styled.div<{ hideTooltip?: boolean }>`
