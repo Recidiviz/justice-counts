@@ -17,6 +17,7 @@
 
 import {
   MIN_DESKTOP_WIDTH,
+  MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -30,7 +31,7 @@ export const UploadedFilesTitle = styled(AccountSettingsTitle)`
     content: "Uploaded Files";
   }
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     border-bottom: 1px solid ${palette.highlight.grey9};
     padding-bottom: 24px;
 

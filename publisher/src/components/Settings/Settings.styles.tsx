@@ -16,11 +16,13 @@
 // =============================================================================
 
 import {
-  MIN_DESKTOP_WIDTH,
+  MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
+
+export const SETTINGS_MENU_WITH_PADDINGS_WIDTH = 288;
 
 export const SettingsContainer = styled.div`
   width: 100%;
@@ -29,7 +31,7 @@ export const SettingsContainer = styled.div`
   padding: 48px 24px 0 24px;
   position: relative;
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     padding-top: 24px;
   }
 `;
@@ -41,9 +43,9 @@ export const ContentDisplay = styled.div`
   justify-content: flex-start;
   flex: 10 10 auto;
   overflow-x: scroll;
-  margin-left: 310px;
+  margin-left: ${SETTINGS_MENU_WITH_PADDINGS_WIDTH - 24}px;
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     margin-left: 0;
   }
 `;
@@ -55,11 +57,11 @@ export const SettingsMenuContainer = styled.div`
   flex: 0 0 auto;
   flex-direction: column;
   gap: 16px;
-  margin-right: 70px;
+  margin-right: 24px;
   z-index: 2;
   position: fixed;
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: none;
   }
 `;

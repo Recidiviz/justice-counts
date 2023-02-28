@@ -17,34 +17,33 @@
 
 import {
   MIN_DESKTOP_WIDTH,
+  MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
 import searchIcon from "../assets/search-icon.png";
+import { SETTINGS_MENU_WITH_PADDINGS_WIDTH } from "./Settings.styles";
 
 // Common
-const AGENCY_SETTINGS_CONTAINER_WIDTH = 732;
-const AGENCY_SETTINGS_INNER_BLOCK_WIDTH = 644;
-const MIN_MOBILE_AGENCY_SETTINGS_CONTAINER_WIDTH = 464;
+const AGENCY_SETTINGS_CONTAINER_WIDTH = 644;
 
-// 620px is settings menu width times 2
 export const AgencySettingsWrapper = styled.div`
   height: 100%;
   overflow-y: scroll;
-  min-width: ${AGENCY_SETTINGS_CONTAINER_WIDTH}px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-right: 310px;
+  margin-right: ${SETTINGS_MENU_WITH_PADDINGS_WIDTH - 24}px;
   justify-content: center;
   padding-bottom: 50px;
   z-index: 1;
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${AGENCY_SETTINGS_CONTAINER_WIDTH +
+    SETTINGS_MENU_WITH_PADDINGS_WIDTH * 2}px) {
+    align-items: start;
     margin-right: 0;
-    min-width: ${MIN_MOBILE_AGENCY_SETTINGS_CONTAINER_WIDTH}px;
   }
 `;
 
@@ -57,6 +56,10 @@ export const AgencySettingsContent = styled.div`
   gap: 16px;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    width: ${AGENCY_SETTINGS_CONTAINER_WIDTH - 104}px;
+  }
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     width: 100%;
     align-items: start;
     gap: 24px;
@@ -64,7 +67,7 @@ export const AgencySettingsContent = styled.div`
 `;
 
 export const AgencySettingsTitle = styled.div`
-  width: ${AGENCY_SETTINGS_INNER_BLOCK_WIDTH}px;
+  width: ${AGENCY_SETTINGS_CONTAINER_WIDTH}px;
   display: flex;
   flex-direction: row;
   justify-content: start;
@@ -76,7 +79,7 @@ export const AgencySettingsTitle = styled.div`
     content: "Agency Settings";
   }
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     ${typography.sizeCSS.normal};
     width: 100%;
 
@@ -90,13 +93,12 @@ export const AgencySettingsBlock = styled.div<{
   withBorder?: boolean;
 }>`
   position: relative;
-  padding: 32px 24px;
   display: flex;
   flex-direction: column;
 
   border: ${({ withBorder }) => withBorder && "1px solid #DCDDDF"};
-  width: ${({ withBorder }) =>
-    withBorder ? "calc(100% - 88px)" : "calc(100% - 40px)"};
+  width: 100%;
+  padding: ${({ withBorder }) => (withBorder ? "32px" : "32px 0")};
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     width: 100%;
@@ -300,7 +302,7 @@ export const TeamManagementSettingsTitle = styled(AgencySettingsTitle)`
     content: "Team Management";
   }
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     &::before {
       content: "Settings > Team Management";
     }
@@ -308,19 +310,18 @@ export const TeamManagementSettingsTitle = styled(AgencySettingsTitle)`
 `;
 
 export const TeamManagementBlock = styled(AgencySettingsBlock)`
-  padding-top: 0;
-  padding-bottom: 0;
+  padding: 0;
+  width: 100%;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     padding: 0;
-    width: 100%;
   }
 `;
 
 export const TeamManagementDescription = styled(AgencyInfoBlockDescription)`
   margin-bottom: 40px;
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     margin-bottom: 24px;
   }
 `;
@@ -329,7 +330,7 @@ export const TeamManagementSectionTitle = styled.div`
   ${typography.sizeCSS.medium};
   margin-bottom: 8px;
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     margin-bottom: 16px;
   }
 `;
@@ -342,7 +343,6 @@ export const InviteMemberInnerContainer = styled.div`
   display: flex;
   flex-direction: row;
   gap: 8px;
-  height: 48px;
   margin-bottom: 40px;
   margin-bottom: 8px;
 
@@ -352,12 +352,22 @@ export const InviteMemberInnerContainer = styled.div`
   }
 `;
 
+export const InviteMemberInputsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    flex-direction: column;
+  }
+`;
+
 export const InviteMemberInput = styled.input<{
   value: string | undefined;
   error?: boolean;
 }>`
   ${typography.sizeCSS.normal};
-  padding: 16px 13px;
+  padding: 12px 13px;
   background: ${({ value, error }) => {
     if (error) {
       return palette.highlight.red;
@@ -384,9 +394,8 @@ export const InviteMemberInput = styled.input<{
     outline: none;
   }
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    ${typography.sizeCSS.large};
-    padding: 24px 16px;
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    width: 100%;
   }
 `;
 
@@ -419,8 +428,8 @@ export const InviteMemberButton = styled.div<{ disabled: boolean }>`
   }
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    padding-top: 16px;
-    padding-bottom: 16px;
+    width: 96px;
+    height: 47px;
   }
 `;
 
@@ -565,7 +574,7 @@ export const JurisdictionsInput = styled(InviteMemberInput)`
 export const JurisdictionsSearchResultContainer = styled.div`
   position: absolute;
   z-index: 5;
-  width: ${AGENCY_SETTINGS_INNER_BLOCK_WIDTH}px;
+  width: ${AGENCY_SETTINGS_CONTAINER_WIDTH}px;
   padding: 8px 0;
   overflow-y: scroll;
   max-height: 270px;
