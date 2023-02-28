@@ -22,7 +22,7 @@ import {
 import styled from "styled-components/macro";
 
 export const FooterWrapper = styled.footer<{ isPageDataUpload?: boolean }>`
-  height: 100px;
+  height: 103px;
   z-index: ${({ isPageDataUpload }) => (isPageDataUpload ? "5" : "0")};
   width: 100vw;
   display: flex;
