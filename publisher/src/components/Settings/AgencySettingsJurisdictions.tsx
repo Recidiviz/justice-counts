@@ -167,18 +167,44 @@ export const AgencySettingsJurisdictions: React.FC<{
   };
 
   // helpers
-  const getSearchResult = (searchValue: string) => {
-    const matchedData = Object.values(mappedJurisdictionsData).filter((entry) =>
-      entry.name.toLowerCase().startsWith(searchValue.toLowerCase().trim())
+  const getWordSearch = (
+    word: string,
+    jurisdictions: (Jurisdiction & { score: number })[]
+  ) => {
+    const matched = jurisdictions.filter(
+      (area) =>
+        area.state_abbrev.toLowerCase().includes(word) ||
+        area.name.toLowerCase().includes(word)
     );
+    const matchedWithScore = matched.reduce((acc, area) => {
+      acc[area.id] = 0;
+      if (area.state_abbrev.toLowerCase().startsWith(word)) acc[area.id] += 1;
+      if (area.name.toLowerCase().startsWith(word)) acc[area.id] += 1;
+      return acc;
+    }, {} as { [id: string]: number });
+    return matched
+      .map((area) => ({
+        ...area,
+        score: area.score + matchedWithScore[area.id],
+      }))
+      .sort((a, b) => b.score - a.score || a.name.length - b.name.length);
+  };
+
+  const getSearch = (searchValue: string) => {
+    let result: (Jurisdiction & { score: number })[] = Object.values(
+      mappedJurisdictionsData
+    ).map((area) => ({ ...area, score: 0 }));
+    const inputWords = searchValue.trim().split(" ");
+    for (let i = 0; i < inputWords.length; i += 1) {
+      result = getWordSearch(inputWords[i].toLowerCase(), result);
+    }
     const addedJurisdictions = [
       ...editedIncludedJurisdictionsIds,
       ...editedExcludedJurisdictionsIds,
     ];
-    const matchedDataWithoutAddedAreas = matchedData.filter(
-      (entry) => !addedJurisdictions.includes(entry.id)
+    setSearchResult(
+      result.filter((entry) => !addedJurisdictions.includes(entry.id))
     );
-    setSearchResult(matchedDataWithoutAddedAreas);
   };
 
   const removeUnderscore = (value: string) => value.replaceAll("_", " ");
@@ -236,7 +262,7 @@ export const AgencySettingsJurisdictions: React.FC<{
               value={inputValue}
               onChange={(e) => {
                 setInputValue(e.target.value);
-                getSearchResult(e.target.value);
+                getSearch(e.target.value);
               }}
             />
             {!!inputValue &&
