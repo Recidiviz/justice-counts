@@ -143,7 +143,7 @@ const Menu: React.FC = () => {
   useEffect(() => {
     const initOnboardingTopicStatuses = async () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await guidanceStore.getOnboardingTopicsStatuses();
+      await guidanceStore.getOnboardingTopicsStatuses(agencyId);
     };
 
     initOnboardingTopicStatuses();
@@ -171,7 +171,7 @@ const Menu: React.FC = () => {
               <MenuItem
                 style={{ position: "relative" }}
                 active={pathWithoutAgency === "getting-started"}
-                onClick={() => navigate("/")}
+                onClick={() => navigate(`/agency/${agencyId}/getting-started`)}
               >
                 Get Started
                 {/* Guidance: Metric Configuration Progress Toast */}
@@ -286,7 +286,8 @@ const Menu: React.FC = () => {
                   navigate("upload");
               }}
               enabledDuringOnboarding={
-                !hasCompletedOnboarding && isAddDataOrPublishDataStep
+                hasCompletedOnboarding ||
+                (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
               }
             >
               Upload Data

@@ -154,6 +154,18 @@ class MetricConfigStore {
     return { system, metricKey };
   }
 
+  resetStore = () => {
+    runInAction(() => {
+      this.metrics = {};
+      this.metricDefinitionSettings = {};
+      this.disaggregations = {};
+      this.dimensions = {};
+      this.dimensionDefinitionSettings = {};
+      this.contexts = {};
+      this.dimensionContexts = {};
+    });
+  };
+
   getMetricsBySystem = (systemName: AgencySystems | undefined) => {
     if (systemName) {
       const metrics = Object.entries(this.metrics).reduce(

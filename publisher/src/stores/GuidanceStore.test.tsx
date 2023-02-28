@@ -1138,7 +1138,7 @@ test("Metric enabled, metric definition settings and metric breakdown availabili
     "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING"
   );
 
-  expect(metricDisabledCompletionValue).toEqual(3);
+  expect(metricDisabledCompletionValue).toEqual(4);
   expect.hasAssertions();
 });
 

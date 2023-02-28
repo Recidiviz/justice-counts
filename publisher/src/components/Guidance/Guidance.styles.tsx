@@ -264,7 +264,7 @@ export const ProgressItemName = styled.div`
 
 export const MetricContentContainer = styled(ContentContainer)`
   width: 100%;
-  height: 54%;
+  max-height: 515px;
   max-width: 550px;
   gap: unset;
   justify-content: flex-start;
@@ -321,6 +321,7 @@ export const MetricListContainer = styled.div`
 
 export const MetricName = styled.div`
   ${typography.sizeCSS.large}
+  text-align: left;
 `;
 
 export const MetricStatus = styled.div<{ greyText?: boolean }>`
@@ -331,6 +332,7 @@ export const MetricStatus = styled.div<{ greyText?: boolean }>`
     greyText ? palette.highlight.grey10 : palette.solid.blue};
   opacity: 1;
   transition: opacity 0.2s ease;
+  white-space: nowrap;
 
   ${Metric}:hover & {
     opacity: 0;
