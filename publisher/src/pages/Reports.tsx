@@ -21,7 +21,7 @@ import {
   BadgeColorMapping,
 } from "@justice-counts/common/components/Badge";
 import {
-  MIN_DESKTOP_WIDTH,
+  MIN_TABLET_WIDTH,
   palette,
 } from "@justice-counts/common/components/GlobalStyles";
 import { useWindowWidth } from "@justice-counts/common/hooks";
@@ -317,13 +317,13 @@ const Reports: React.FC = () => {
   return (
     <>
       <ReportsHeader>
-        {windowWidth > MIN_DESKTOP_WIDTH && (
+        {windowWidth > MIN_TABLET_WIDTH && (
           <PageTitle>{REPORTS_CAPITALIZED}</PageTitle>
         )}
 
         {/* Filter Reports By */}
-        <TabbedBar noPadding={windowWidth < MIN_DESKTOP_WIDTH}>
-          {windowWidth > MIN_DESKTOP_WIDTH ? (
+        <TabbedBar noPadding={windowWidth < MIN_TABLET_WIDTH}>
+          {windowWidth > MIN_TABLET_WIDTH ? (
             <TabbedOptions>
               {Object.entries(ReportStatusFilterOptionObject).map(
                 ([key, value]) => (
