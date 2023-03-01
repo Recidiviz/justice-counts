@@ -263,7 +263,7 @@ export const Row = styled.div<{
     `}
   }
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     padding: ${({ isRowReportYear }) =>
       isRowReportYear ? "8px 0 0 0" : "8px 0"};
   }
@@ -275,9 +275,8 @@ export const LabelRow = styled(Row)`
     background-color: unset;
   }
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     padding: 16px 0 0 0;
-    ${typography.sizeCSS.small};
   }
 `;
 
@@ -309,13 +308,13 @@ export const Cell = styled.div<{ capitalize?: boolean }>`
   }
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    ${typography.sizeCSS.normal};
     &:nth-child(2) {
       display: none;
     }
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    ${typography.sizeCSS.normal};
     &:nth-child(4) {
       display: none;
     }
