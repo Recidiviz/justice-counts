@@ -77,6 +77,12 @@ export const ExtendedLabelRow = styled(LabelRow)`
 `;
 
 export const ExtendedCell = styled(Cell)`
+  span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
   &:first-child {
     flex: 3 1 auto;
   }

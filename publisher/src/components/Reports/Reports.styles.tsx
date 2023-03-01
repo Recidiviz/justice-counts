@@ -282,7 +282,7 @@ export const LabelRow = styled(Row)`
 `;
 
 export const Cell = styled.div<{ capitalize?: boolean }>`
-  min-width: 250px;
+  min-width: 200px;
   display: flex;
   flex: 1 1 250px;
   justify-content: start;
@@ -293,8 +293,14 @@ export const Cell = styled.div<{ capitalize?: boolean }>`
   padding-right: 40px;
   white-space: nowrap;
 
+  span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
   &:first-child {
-    flex: 2 1 250px;
+    flex: 2 1 200px;
   }
 
   &:last-child {
@@ -362,6 +368,9 @@ export const SelectedCheckmark = styled.img`
 
 export const AndOthersSpan = styled.span`
   margin-left: 8px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 `;
 
 export const CommaSpan = styled.span`
