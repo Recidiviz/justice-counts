@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2022 Recidiviz, Inc.
+// Copyright (C) 2023 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -46,10 +46,10 @@ import {
   MetricBox,
   MetricBoxBottomPaddingContainer,
   MetricBoxContainerWrapper,
+  MetricBreakdownAvailabilityDefinitions,
   MetricConfigurationDisplay,
   MetricConfigurationDropdownContainer,
   MetricConfigurationWrapper,
-  MetricDefinitions,
   MetricDetailsDisplay,
   MetricName,
   MetricsConfigurationDropdownMenu,
@@ -306,15 +306,16 @@ export const MetricConfiguration: React.FC = observer(() => {
                         ({ key, metric }) => (
                           <MetricsConfigurationDropdownMenuItem
                             key={key}
-                            onClick={() =>
+                            onClick={() => {
                               setSettingsSearchParams(
                                 {
                                   ...settingsSearchParams,
                                   metric: key,
                                 },
                                 true
-                              )
-                            }
+                              );
+                              setActiveDimensionKey(undefined);
+                            }}
                           >
                             {metric.label}
                             <Badge
@@ -339,7 +340,7 @@ export const MetricConfiguration: React.FC = observer(() => {
               </MetricConfigurationDropdownContainer>
 
               {windowWidth <= MIN_DESKTOP_WIDTH && !activeDimensionKey && (
-                <MetricDefinitions
+                <MetricBreakdownAvailabilityDefinitions
                   activeDimensionKey={activeDimensionKey}
                   activeDisaggregationKey={activeDisaggregationKey}
                 />
@@ -378,16 +379,33 @@ export const MetricConfiguration: React.FC = observer(() => {
 
               {/* Metric/Dimension Definitions (Includes/Excludes) & Context */}
               {/* Race/Ethnicities (when active disaggregation is Race / Ethnicities) */}
-              {windowWidth > MIN_DESKTOP_WIDTH &&
-                (activeDisaggregationKey ===
-                  RACE_ETHNICITY_DISAGGREGATION_KEY && activeDimensionKey ? (
-                  <RaceEthnicitiesForm />
-                ) : (
-                  <MetricDefinitions
-                    activeDimensionKey={activeDimensionKey}
-                    activeDisaggregationKey={activeDisaggregationKey}
-                  />
-                ))}
+              {activeDimensionKey && windowWidth <= MIN_DESKTOP_WIDTH && (
+                <>
+                  {activeDisaggregationKey ===
+                  RACE_ETHNICITY_DISAGGREGATION_KEY ? (
+                    <RaceEthnicitiesForm />
+                  ) : (
+                    <MetricBreakdownAvailabilityDefinitions
+                      activeDimensionKey={activeDimensionKey}
+                      activeDisaggregationKey={activeDisaggregationKey}
+                    />
+                  )}
+                </>
+              )}
+
+              {windowWidth > MIN_DESKTOP_WIDTH && (
+                <>
+                  {activeDisaggregationKey ===
+                  RACE_ETHNICITY_DISAGGREGATION_KEY ? (
+                    <RaceEthnicitiesForm />
+                  ) : (
+                    <MetricBreakdownAvailabilityDefinitions
+                      activeDimensionKey={activeDimensionKey}
+                      activeDisaggregationKey={activeDisaggregationKey}
+                    />
+                  )}
+                </>
+              )}
             </MetricConfigurationWrapper>
           )}
         </MetricsViewControlPanel>

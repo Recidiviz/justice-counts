@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2022 Recidiviz, Inc.
+// Copyright (C) 2023 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,32 +15,37 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { observer } from "mobx-react-lite";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import logo from "../assets/jc-logo-vector-new.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
+import { guidancePaths } from "../Guidance";
 import Menu from "../Menu";
 import { HeaderBar, Logo, LogoContainer, LogoName } from ".";
 
-const Header = () => {
+const Header = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
-  const { userStore } = useStore();
+  const { userStore, guidanceStore } = useStore();
+  const { hasCompletedOnboarding } = guidanceStore;
 
   const isAgencyValid = !!userStore.getAgency(agencyId);
   const defaultAgency = userStore.getInitialAgencyId();
 
   return (
-    <HeaderBar>
+    <HeaderBar bottomBorder={hasCompletedOnboarding === false}>
       <LogoContainer
         onClick={() =>
-          navigate(
-            `/agency/${
-              isAgencyValid ? agencyId : defaultAgency
-            }/${REPORTS_LOWERCASE}`
-          )
+          hasCompletedOnboarding
+            ? navigate(
+                `/agency/${
+                  isAgencyValid ? agencyId : defaultAgency
+                }/${REPORTS_LOWERCASE}`
+              )
+            : navigate(guidancePaths.home)
         }
       >
         <Logo src={logo} alt="" />
@@ -50,6 +55,6 @@ const Header = () => {
       <Menu />
     </HeaderBar>
   );
-};
+});
 
 export default Header;

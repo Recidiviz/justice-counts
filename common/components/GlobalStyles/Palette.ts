@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2022 Recidiviz, Inc.
+// Copyright (C) 2023 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ export const palette = {
     darkgrey: `rgba(0, 17, 51, 1)`,
     white: `rgba(255,255,255, 1)`,
     offwhite: `rgba(239, 244, 245, 1)`,
+    black: `rgba(14, 17, 26, 1)`,
   },
   highlight: {
     red: `rgba(221, 18, 18, 0.05)`,
