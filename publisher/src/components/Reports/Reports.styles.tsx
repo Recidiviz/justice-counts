@@ -228,10 +228,11 @@ export const DisaggregationsDropdownMenu = styled(StatusFilterDropdownMenu)`
 
 export const Table = styled.div`
   width: 100%;
-  padding: 212px 22px 50px 22px;
+  padding: 170px 22px 50px 22px;
+  overflow-x: scroll;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    padding-top: 161px;
+    padding-top: 115px;
   }
 `;
 
@@ -242,7 +243,7 @@ export const Row = styled.div<{
 }>`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
   align-items: center;
   padding: 10px 0;
   color: ${({ noHover }) =>
@@ -262,31 +263,28 @@ export const Row = styled.div<{
     `}
   }
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     padding: ${({ isRowReportYear }) =>
       isRowReportYear ? "8px 0 0 0" : "8px 0"};
   }
 `;
 
 export const LabelRow = styled(Row)`
-  padding: 10px 22px;
-
   &:hover {
     cursor: unset;
     background-color: unset;
   }
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     padding: 16px 0 0 0;
-    ${typography.sizeCSS.small};
   }
 `;
 
 export const Cell = styled.div<{ capitalize?: boolean }>`
-  width: 100px;
+  min-width: 200px;
   display: flex;
-  flex: 1 4 auto;
-  justify-content: flex-start;
+  flex: 1 1 250px;
+  justify-content: start;
   align-items: center;
   position: relative;
   font-size: 1.2rem;
@@ -294,26 +292,34 @@ export const Cell = styled.div<{ capitalize?: boolean }>`
   padding-right: 40px;
   white-space: nowrap;
 
+  span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
   &:first-child {
-    flex: 2 1 auto;
+    flex: 2 1 200px;
   }
 
   &:last-child {
-    flex: 2 1 auto;
     justify-content: flex-end;
     padding-right: unset;
   }
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    ${typography.sizeCSS.normal};
     &:nth-child(2) {
       display: none;
     }
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    ${typography.sizeCSS.normal};
     &:nth-child(4) {
       display: none;
+    }
+    &:nth-child(3) {
+      padding-right: unset;
     }
   }
 `;
@@ -331,6 +337,7 @@ export const AdditionalEditorsTooltip = styled.div`
   position: absolute;
   z-index: 1;
   top: 32px;
+  right: 0;
   border-radius: 2px;
   text-align: center;
   box-shadow: 2px 2px 8px ${palette.highlight.grey5};
@@ -360,6 +367,9 @@ export const SelectedCheckmark = styled.img`
 
 export const AndOthersSpan = styled.span`
   margin-left: 8px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 `;
 
 export const CommaSpan = styled.span`

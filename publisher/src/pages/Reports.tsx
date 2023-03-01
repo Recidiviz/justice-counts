@@ -421,17 +421,17 @@ const Reports: React.FC = () => {
             </StatusFilterDropdownMenu>
           </Dropdown>
         </DropdownContainer>
+      </ReportsHeader>
 
-        {/* Labels */}
+      {/* Reports List Table */}
+      <Table>
         <LabelRow>
           {reportListColumnTitles.map((title) => (
             <LabelCell key={title}>{title}</LabelCell>
           ))}
         </LabelRow>
-      </ReportsHeader>
-
-      {/* Reports List Table */}
-      <Table>{renderReports()}</Table>
+        {renderReports()}
+      </Table>
 
       {/* Onboarding */}
       {userStore.onboardingTopicsCompleted?.reportsview === false &&

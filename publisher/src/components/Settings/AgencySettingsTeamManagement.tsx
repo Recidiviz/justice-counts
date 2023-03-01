@@ -41,6 +41,7 @@ import {
   InviteMemberErrorContainer,
   InviteMemberInnerContainer,
   InviteMemberInput,
+  InviteMemberInputsContainer,
   JCAdminStatus,
   TeamManagementBlock,
   TeamManagementDescription,
@@ -196,17 +197,19 @@ export const AgencySettingsTeamManagement = observer(() => {
           </TeamManagementSectionTitle>
           <InviteMemberContainer>
             <InviteMemberInnerContainer>
-              <InviteMemberInput
-                placeholder="Enter full name"
-                value={nameValue}
-                onChange={(e) => setNameValue(e.target.value)}
-              />
-              <InviteMemberInput
-                placeholder="Enter email"
-                value={emailValue}
-                onChange={(e) => setEmailValue(e.target.value)}
-                error={!!emailValue && !validateEmail(emailValue)}
-              />
+              <InviteMemberInputsContainer>
+                <InviteMemberInput
+                  placeholder="Enter full name"
+                  value={nameValue}
+                  onChange={(e) => setNameValue(e.target.value)}
+                />
+                <InviteMemberInput
+                  placeholder="Enter email"
+                  value={emailValue}
+                  onChange={(e) => setEmailValue(e.target.value)}
+                  error={!!emailValue && !validateEmail(emailValue)}
+                />
+              </InviteMemberInputsContainer>
               <InviteMemberButton
                 onClick={() => handleInviteTeamMamber(nameValue, emailValue)}
                 disabled={

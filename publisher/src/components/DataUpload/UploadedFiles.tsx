@@ -41,11 +41,11 @@ import {
   ActionsContainer,
   DateUploaded,
   DownloadIcon,
-  ExtendedCell,
   ExtendedLabelCell,
   ExtendedLabelRow,
   ExtendedRow,
   UploadedContainer,
+  UploadedFilesCell,
   UploadedFilesContainer,
   UploadedFilesError,
   UploadedFilesTable,
@@ -140,7 +140,7 @@ export const UploadedFileRow: React.FC<{
         onMouseLeave={() => setRowHovered(false)}
       >
         {/* Filename */}
-        <ExtendedCell>
+        <UploadedFilesCell>
           {rowHovered && id && <DownloadIcon src={downloadIcon} alt="" />}
           <span>{name}</span>
           <Badge
@@ -149,10 +149,10 @@ export const UploadedFileRow: React.FC<{
           >
             {isDownloading ? "Downloading" : badgeText}
           </Badge>
-        </ExtendedCell>
+        </UploadedFilesCell>
 
         {/* Date Uploaded */}
-        <ExtendedCell capitalize>
+        <UploadedFilesCell capitalize>
           <UploadedContainer>
             {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
             <TeamMemberNameWithBadge
@@ -162,12 +162,12 @@ export const UploadedFileRow: React.FC<{
             />
             <DateUploaded>{`/ ${dateUploaded}`}</DateUploaded>
           </UploadedContainer>
-        </ExtendedCell>
+        </UploadedFilesCell>
 
         {/* Date Ingested */}
-        <ExtendedCell capitalize>
+        <UploadedFilesCell capitalize>
           <span>{dateIngested}</span>
-        </ExtendedCell>
+        </UploadedFilesCell>
 
         {rowHovered && id && (
           <ActionsContainer onClick={(e) => e.stopPropagation()}>
@@ -203,10 +203,10 @@ export const UploadedFileRow: React.FC<{
           </ActionsContainer>
         )}
 
-        <ExtendedCell capitalize>
+        <UploadedFilesCell capitalize>
           {/* System */}
           <span>{system}</span>
-        </ExtendedCell>
+        </UploadedFilesCell>
       </ExtendedRow>
     );
   }
@@ -339,13 +339,18 @@ export const UploadedFiles: React.FC = observer(() => {
       <UploadedFilesTitle />
 
       <UploadedFilesContainer>
-        <ExtendedLabelRow>
-          {dataUploadColumnTitles.map((title) => (
-            <ExtendedLabelCell key={title}>{title}</ExtendedLabelCell>
-          ))}
-        </ExtendedLabelRow>
+        {/* <ExtendedLabelRow> */}
+        {/*  {dataUploadColumnTitles.map((title) => ( */}
+        {/*    <ExtendedLabelCell key={title}>{title}</ExtendedLabelCell> */}
+        {/*  ))} */}
+        {/* </ExtendedLabelRow> */}
 
         <UploadedFilesTable>
+          <ExtendedLabelRow>
+            {dataUploadColumnTitles.map((title) => (
+              <ExtendedLabelCell key={title}>{title}</ExtendedLabelCell>
+            ))}
+          </ExtendedLabelRow>
           {uploadedFiles.map((fileDetails) => {
             const fileRowDetails = getFileRowDetails(fileDetails);
 

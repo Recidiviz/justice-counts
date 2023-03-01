@@ -58,7 +58,7 @@ export const MetricsViewContainer = styled.div`
 export const MobileMetricsConfigurationHeader = styled.div<{
   hasBorder?: boolean;
 }>`
-  ${typography.sizeCSS.small}
+  ${typography.sizeCSS.medium}
   display: none;
   width: 100%;
   padding-bottom: 24px;

@@ -17,12 +17,13 @@
 
 import {
   MIN_DESKTOP_WIDTH,
+  MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-import { Cell, LabelCell, LabelRow, Row, Table } from "../Reports";
+import { LabelRow, Row, Table } from "../Reports";
 import { AccountSettingsTitle } from "../Settings/AccountSettings.styles";
 
 export const UploadedFilesTitle = styled(AccountSettingsTitle)`
@@ -30,7 +31,8 @@ export const UploadedFilesTitle = styled(AccountSettingsTitle)`
     content: "Uploaded Files";
   }
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    ${typography.sizeCSS.medium};
     border-bottom: 1px solid ${palette.highlight.grey9};
     padding-bottom: 24px;
 
@@ -59,6 +61,7 @@ export const ExtendedRow = styled(Row)`
   transition: unset;
   padding-left: 0;
   padding-right: 8px;
+  justify-content: center;
 `;
 
 export const ExtendedLabelRow = styled(LabelRow)`
@@ -69,60 +72,64 @@ export const ExtendedLabelRow = styled(LabelRow)`
   padding-left: 0;
   padding-right: 8px;
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     padding-bottom: 8px;
   }
 `;
 
-export const ExtendedCell = styled(Cell)`
-  &:first-child {
-    flex: 3 1 auto;
+export const UploadedFilesCell = styled.div<{ capitalize?: boolean }>`
+  min-width: 200px;
+  display: flex;
+  flex: 1 1 250px;
+  justify-content: start;
+  align-items: center;
+  position: relative;
+  font-size: 1.2rem;
+  text-transform: ${({ capitalize }) => capitalize && "capitalize"};
+  padding-right: 40px;
+  white-space: nowrap;
+
+  span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
-  &:nth-child(2) {
-    flex: 3 1 auto;
+  &:first-child {
+    flex: 2 1 200px;
+  }
+
+  &:nth-child(3) {
+    flex: 1 2 200px;
+  }
+
+  &:last-child {
+    flex: 1 2 100px;
+    min-width: 100px;
+    justify-content: flex-end;
+    padding-right: unset;
   }
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     &:nth-child(3) {
       display: none;
     }
+  }
 
-    &:last-child {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    ${typography.sizeCSS.normal};
+    &:nth-child(4) {
       display: none;
     }
-
     &:nth-child(2) {
-      display: block;
-      padding-right: 0;
-      flex: 2 1 auto;
+      padding-right: unset;
     }
   }
 `;
 
-export const ExtendedLabelCell = styled(LabelCell)`
-  &:first-child {
-    flex: 3 1 auto;
-  }
-  &:nth-child(2) {
-    flex: 3 1 auto;
-  }
-
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    &:nth-child(3) {
-      display: none;
-    }
-
-    &:last-child {
-      display: none;
-    }
-
-    &:nth-child(2) {
-      display: block;
-      padding-right: 0;
-      flex: 2 1 auto;
-    }
-  }
+export const ExtendedLabelCell = styled(UploadedFilesCell)`
+  ${typography.sizeCSS.normal}
+  color: ${palette.highlight.grey9};
 `;
 
 export const ActionButton = styled.div<{ red?: boolean }>`
