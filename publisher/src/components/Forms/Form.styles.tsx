@@ -17,7 +17,7 @@
 
 import {
   HEADER_BAR_HEIGHT,
-  MIN_DESKTOP_WIDTH,
+  MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -205,7 +205,7 @@ export const TabsRow = styled.div`
   margin-bottom: 32px;
   border-bottom: 1px solid ${palette.solid.darkgrey};
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: none;
   }
 `;
