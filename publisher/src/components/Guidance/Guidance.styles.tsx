@@ -264,7 +264,6 @@ export const ProgressItemName = styled.div`
 
 export const Metric = styled.div<{
   hideTooltip?: boolean;
-  metricHovered?: boolean;
 }>`
   width: 100%;
   padding-bottom: 16px;
