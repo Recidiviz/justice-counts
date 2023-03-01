@@ -262,13 +262,10 @@ export const ProgressItemName = styled.div`
   color: ${palette.solid.white};
 `;
 
-export const MetricContentContainer = styled(ContentContainer)`
-  width: 100%;
-  max-width: 550px;
-  gap: unset;
-`;
-
-export const Metric = styled.div<{ hideTooltip?: boolean }>`
+export const Metric = styled.div<{
+  hideTooltip?: boolean;
+  metricHovered?: boolean;
+}>`
   width: 100%;
   padding-bottom: 16px;
   display: flex;
@@ -297,6 +294,16 @@ export const Metric = styled.div<{ hideTooltip?: boolean }>`
 
   &:hover > ${ProgressTooltipContainer} {
     opacity: ${({ hideTooltip }) => (hideTooltip ? 0 : 1)};
+  }
+`;
+
+export const MetricContentContainer = styled(ContentContainer)`
+  width: 100%;
+  max-width: 550px;
+  gap: unset;
+
+  &:hover ${Metric}:not(:hover) {
+    color: ${palette.highlight.grey8};
   }
 `;
 
