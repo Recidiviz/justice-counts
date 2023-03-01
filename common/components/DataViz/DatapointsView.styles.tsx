@@ -271,7 +271,7 @@ const MetricInsightContainer = styled.div`
     margin-right: 0;
   }
 
-  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH - 1}px) {
     text-align: left;
     margin-bottom: 16px;
 

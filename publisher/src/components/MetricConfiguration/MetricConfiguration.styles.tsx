@@ -231,7 +231,7 @@ export const CurrentMetricsSystem = styled.div`
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: block;
     width: 100%;
-    ${typography.sizeCSS.small};
+    ${typography.sizeCSS.medium};
     text-transform: capitalize;
     padding-bottom: 12px;
     border-bottom: 1px solid ${palette.solid.darkgrey};

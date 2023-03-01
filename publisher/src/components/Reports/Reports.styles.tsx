@@ -35,7 +35,7 @@ export const PageHeader = styled.div`
 export const ReportsHeader = styled(PageHeader)`
   top: ${HEADER_BAR_HEIGHT}px;
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     padding: 24px 24px 8px 24px;
   }
 `;
@@ -45,8 +45,8 @@ export const PageTitle = styled.div`
   margin-top: 40px;
   padding: 0px 22px;
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    ${typography.sizeCSS.small}
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    ${typography.sizeCSS.medium}
     margin-top: 0;
     padding: 0;
   }
@@ -62,7 +62,7 @@ export const TabbedBar = styled.div<{ noPadding?: boolean }>`
   padding: ${({ noPadding }) => (noPadding ? `0` : `0px 22px`)};
   border-bottom: 1px solid ${palette.highlight.grey9};
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     padding-bottom: 12px;
   }
 `;
@@ -163,7 +163,7 @@ export const DropdownContainer = styled.div`
   border-bottom: 1px solid ${palette.highlight.grey9};
   align-items: center;
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: flex;
   }
 
@@ -231,7 +231,7 @@ export const Table = styled.div`
   padding: 170px 22px 50px 22px;
   overflow-x: scroll;
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     padding-top: 115px;
   }
 `;
