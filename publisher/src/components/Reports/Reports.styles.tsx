@@ -214,7 +214,7 @@ export const DisaggregationsDropdownToggleName = styled.div`
 
 export const StatusFilterDropdownMenu = styled(DropdownMenu)`
   width: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   z-index: 10;
   margin-top: 11px;
   box-shadow: 0px 0px 1px rgba(23, 28, 43, 0.1),

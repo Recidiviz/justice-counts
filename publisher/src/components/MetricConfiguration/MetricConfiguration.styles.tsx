@@ -282,7 +282,7 @@ export const MetricsConfigurationDropdownToggle = styled(DropdownToggle)`
 `;
 
 export const MetricsConfigurationDropdownMenu = styled(DropdownMenu)`
-  overflow-y: scroll;
+  overflow-y: auto;
   z-index: 10;
   margin-top: 11px;
   box-shadow: 0px 0px 1px rgba(23, 28, 43, 0.1),
