@@ -229,7 +229,7 @@ export const DisaggregationsDropdownMenu = styled(StatusFilterDropdownMenu)`
 export const Table = styled.div`
   width: 100%;
   padding: 170px 22px 50px 22px;
-  overflow-x: scroll;
+  overflow: auto;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     padding-top: 115px;

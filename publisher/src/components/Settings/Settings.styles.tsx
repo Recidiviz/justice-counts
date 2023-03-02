@@ -42,7 +42,7 @@ export const ContentDisplay = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   flex: 10 10 auto;
-  overflow-x: scroll;
+  overflow-x: auto;
   margin-left: ${SETTINGS_MENU_WITH_PADDINGS_WIDTH - 24}px;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
