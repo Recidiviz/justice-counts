@@ -441,135 +441,298 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               category.
             </Subheader>
 
-            {windowWidth > MIN_DESKTOP_WIDTH && (
-              <>
-                {/* Disaggregations (Enable/Disable) */}
-                {activeDisaggregationKeys?.map((disaggregationKey) => {
-                  const currentDisaggregation =
-                    disaggregations[systemMetricKey][disaggregationKey];
-                  const currentDimensions = Object.values(
-                    dimensions[systemMetricKey][disaggregationKey]
-                  );
+            {/* Disaggregations (Enable/Disable) */}
+            {activeDisaggregationKeys?.map((disaggregationKey) => {
+              const currentDisaggregation =
+                disaggregations[systemMetricKey][disaggregationKey];
+              const currentDimensions = Object.values(
+                dimensions[systemMetricKey][disaggregationKey]
+              );
 
-                  return (
-                    <Fragment key={disaggregationKey}>
-                      <DisaggregationHeader>
-                        {currentDisaggregation.display_name}
-                        <MiniButtonWrapper>
-                          <MiniButton
-                            selected={currentDisaggregation.enabled === false}
-                            onClick={() => {
-                              if (
-                                currentDisaggregation.enabled ||
-                                currentDisaggregation.enabled === null
-                              )
-                                handleDisaggregationSelection(
-                                  disaggregationKey,
-                                  false
-                                );
-                            }}
-                          >
-                            Off
-                          </MiniButton>
-                          <MiniButton
-                            selected={currentDisaggregation.enabled}
-                            onClick={() => {
-                              if (!currentDisaggregation.enabled)
-                                handleDisaggregationSelection(
-                                  disaggregationKey,
-                                  true
-                                );
-                            }}
-                          >
-                            On
-                          </MiniButton>
-                        </MiniButtonWrapper>
-                      </DisaggregationHeader>
+              return (
+                <Fragment key={disaggregationKey}>
+                  {windowWidth <= MIN_DESKTOP_WIDTH ? (
+                    <>
+                      {activeDisaggregationKey &&
+                        disaggregations[systemMetricKey][
+                          activeDisaggregationKey
+                        ] && (
+                          <MetricConfigurationDropdownContainer hasTopBorder>
+                            <Dropdown>
+                              <MetricsConfigurationDropdownToggle kind="borderless">
+                                {activeDisaggregationKeys?.length > 1 && (
+                                  <img src={dropdownArrow} alt="" />
+                                )}
+                                {removeSnakeCase(
+                                  (
+                                    disaggregations[systemMetricKey][
+                                      activeDisaggregationKey
+                                    ].display_name as string
+                                  ).toLowerCase()
+                                )}
 
-                      {/* Dimensions (Enable/Disable) */}
-                      {disaggregationKey ===
-                        RACE_ETHNICITY_DISAGGREGATION_KEY &&
-                      (currentDisaggregation.enabled ||
-                        currentDisaggregation.enabled === null) ? (
-                        <RaceEthnicitiesGrid
-                          disaggregationEnabled={
-                            currentDisaggregation.enabled === true
-                          }
+                                <MiniButtonWrapper>
+                                  <MiniButton
+                                    selected={
+                                      currentDisaggregation.enabled === false
+                                    }
+                                    onClick={() => {
+                                      if (
+                                        currentDisaggregation.enabled ||
+                                        currentDisaggregation.enabled === null
+                                      )
+                                        handleDisaggregationSelection(
+                                          disaggregationKey,
+                                          false
+                                        );
+                                    }}
+                                  >
+                                    Off
+                                  </MiniButton>
+                                  <MiniButton
+                                    selected={currentDisaggregation.enabled}
+                                    onClick={() => {
+                                      if (!currentDisaggregation.enabled)
+                                        handleDisaggregationSelection(
+                                          disaggregationKey,
+                                          true
+                                        );
+                                    }}
+                                  >
+                                    On
+                                  </MiniButton>
+                                </MiniButtonWrapper>
+                              </MetricsConfigurationDropdownToggle>
+                              {activeDisaggregationKeys.length > 1 ? (
+                                <MetricsConfigurationDropdownMenu>
+                                  {activeDisaggregationKeys?.map((key) => {
+                                    return (
+                                      <MetricsConfigurationDropdownMenuItem
+                                        key={key}
+                                        onClick={() => {
+                                          setActiveDisaggregationKey(key);
+
+                                          const [firstDimensionKey] =
+                                            Object.keys(
+                                              dimensions[systemMetricKey][key]
+                                            );
+                                          setActiveDimensionKey(
+                                            firstDimensionKey
+                                          );
+                                        }}
+                                        highlight={
+                                          key === activeDisaggregationKey
+                                        }
+                                      >
+                                        {removeSnakeCase(
+                                          currentDisaggregation.display_name as string
+                                        ).toLowerCase()}
+                                      </MetricsConfigurationDropdownMenuItem>
+                                    );
+                                  })}
+                                </MetricsConfigurationDropdownMenu>
+                              ) : (
+                                <></>
+                              )}
+                            </Dropdown>
+                          </MetricConfigurationDropdownContainer>
+                        )}
+                    </>
+                  ) : (
+                    <DisaggregationHeader>
+                      {currentDisaggregation.display_name}
+                      <MiniButtonWrapper>
+                        <MiniButton
+                          selected={currentDisaggregation.enabled === false}
                           onClick={() => {
-                            setActiveDisaggregationKey(
-                              RACE_ETHNICITY_DISAGGREGATION_KEY
-                            );
-                            setActiveDimensionKey(
-                              firstRaceEthnicitiesDimension
-                            );
+                            if (
+                              currentDisaggregation.enabled ||
+                              currentDisaggregation.enabled === null
+                            )
+                              handleDisaggregationSelection(
+                                disaggregationKey,
+                                false
+                              );
                           }}
-                        />
+                        >
+                          Off
+                        </MiniButton>
+                        <MiniButton
+                          selected={currentDisaggregation.enabled}
+                          onClick={() => {
+                            if (!currentDisaggregation.enabled)
+                              handleDisaggregationSelection(
+                                disaggregationKey,
+                                true
+                              );
+                          }}
+                        >
+                          On
+                        </MiniButton>
+                      </MiniButtonWrapper>
+                    </DisaggregationHeader>
+                  )}
+
+                  {/* Dimensions (Enable/Disable) */}
+                  {activeDisaggregationKey ===
+                    RACE_ETHNICITY_DISAGGREGATION_KEY ||
+                  (disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY &&
+                    (currentDisaggregation.enabled ||
+                      currentDisaggregation.enabled === null)) ? (
+                    <RaceEthnicitiesGrid
+                      disaggregationEnabled={
+                        currentDisaggregation.enabled === true
+                      }
+                      onClick={() => {
+                        setActiveDisaggregationKey(
+                          RACE_ETHNICITY_DISAGGREGATION_KEY
+                        );
+                        setActiveDimensionKey(firstRaceEthnicitiesDimension);
+                      }}
+                    />
+                  ) : (
+                    <>
+                      {windowWidth > MIN_DESKTOP_WIDTH ? (
+                        <>
+                          {currentDimensions?.map((dimension) => {
+                            return (
+                              <Fragment key={dimension.key}>
+                                {(currentDisaggregation.enabled ||
+                                  currentDisaggregation.enabled === null) && (
+                                  <Dimension
+                                    enabled={
+                                      !metricEnabled ||
+                                      currentDisaggregation.enabled ||
+                                      currentDisaggregation.enabled === null
+                                    }
+                                    inView={
+                                      dimension.key === activeDimensionKey
+                                    }
+                                    onClick={() => {
+                                      setActiveDisaggregationKey(
+                                        disaggregationKey
+                                      );
+                                      setActiveDimensionKey(dimension.key);
+                                    }}
+                                  >
+                                    <DimensionTitleWrapper>
+                                      <DimensionTitle
+                                        enabled={currentDisaggregation.enabled}
+                                      >
+                                        {dimension?.label}
+                                      </DimensionTitle>
+                                      <ActionStatusTitle
+                                        enabled={
+                                          currentDisaggregation.enabled &&
+                                          dimension.enabled === null
+                                        }
+                                        inView={
+                                          dimension.key === activeDimensionKey
+                                        }
+                                      >
+                                        {dimension.enabled && (
+                                          <AvailableWithCheckWrapper>
+                                            <BlueText>Available</BlueText>
+                                            <CheckIcon
+                                              src={checkmarkIcon}
+                                              alt=""
+                                              width={11}
+                                            />
+                                          </AvailableWithCheckWrapper>
+                                        )}
+                                        {dimension.enabled === false &&
+                                          "Unavailable"}
+                                        {dimension.enabled === null &&
+                                          "Action Required"}
+                                      </ActionStatusTitle>
+                                      <RightArrowIcon />
+                                    </DimensionTitleWrapper>
+                                  </Dimension>
+                                )}
+                              </Fragment>
+                            );
+                          })}
+                        </>
                       ) : (
-                        currentDimensions?.map((dimension) => {
-                          return (
-                            <Fragment key={dimension.key}>
-                              {(currentDisaggregation.enabled ||
-                                currentDisaggregation.enabled === null) && (
+                        <>
+                          {activeDisaggregationKey &&
+                            dimensions?.[systemMetricKey]?.[
+                              activeDisaggregationKey
+                            ] &&
+                            Object.keys(
+                              dimensions[systemMetricKey][
+                                activeDisaggregationKey
+                              ]
+                            )?.map((dimensionKey) => {
+                              const currentDisaggregation =
+                                disaggregations[systemMetricKey][
+                                  activeDisaggregationKey
+                                ];
+                              const currentDimension =
+                                dimensions[systemMetricKey][
+                                  activeDisaggregationKey
+                                ][dimensionKey];
+
+                              return (
                                 <Dimension
+                                  key={dimensionKey}
                                   enabled={
                                     !metricEnabled ||
-                                    currentDisaggregation.enabled ||
-                                    currentDisaggregation.enabled === null
+                                    currentDisaggregation.enabled
                                   }
-                                  inView={dimension.key === activeDimensionKey}
-                                  onClick={() => {
-                                    setActiveDisaggregationKey(
-                                      disaggregationKey
-                                    );
-                                    setActiveDimensionKey(dimension.key);
-                                  }}
+                                  inView={dimensionKey === activeDimensionKey}
+                                  onClick={() =>
+                                    setActiveDimensionKey(dimensionKey)
+                                  }
                                 >
+                                  <CheckboxWrapper>
+                                    <Checkbox
+                                      type="checkbox"
+                                      checked={Boolean(
+                                        currentDisaggregation.enabled &&
+                                          currentDimension.enabled
+                                      )}
+                                      onChange={() =>
+                                        handleDimensionEnabledStatus(
+                                          !currentDimension.enabled
+                                        )
+                                      }
+                                    />
+                                    <BlueCheckIcon
+                                      src={blueCheck}
+                                      alt=""
+                                      enabled={Boolean(
+                                        currentDisaggregation.enabled &&
+                                          currentDimension.enabled
+                                      )}
+                                    />
+                                  </CheckboxWrapper>
+
                                   <DimensionTitleWrapper>
                                     <DimensionTitle
-                                      enabled={currentDisaggregation.enabled}
-                                    >
-                                      {dimension?.label}
-                                    </DimensionTitle>
-                                    <ActionStatusTitle
-                                      enabled={
+                                      enabled={Boolean(
                                         currentDisaggregation.enabled &&
-                                        dimension.enabled === null
-                                      }
-                                      inView={
-                                        dimension.key === activeDimensionKey
-                                      }
-                                    >
-                                      {dimension.enabled && (
-                                        <AvailableWithCheckWrapper>
-                                          <BlueText>Available</BlueText>
-                                          <CheckIcon
-                                            src={checkmarkIcon}
-                                            alt=""
-                                            width={11}
-                                          />
-                                        </AvailableWithCheckWrapper>
+                                          currentDimension.enabled
                                       )}
-                                      {dimension.enabled === false &&
-                                        "Unavailable"}
-                                      {dimension.enabled === null &&
-                                        "Action Required"}
-                                    </ActionStatusTitle>
+                                    >
+                                      {currentDimension.label}
+                                    </DimensionTitle>
+
                                     <RightArrowIcon />
                                   </DimensionTitleWrapper>
                                 </Dimension>
-                              )}
-                            </Fragment>
-                          );
-                        })
+                              );
+                            })}
+                        </>
                       )}
-                    </Fragment>
-                  );
-                })}
-              </>
-            )}
+                    </>
+                  )}
+                </Fragment>
+              );
+            })}
 
             {/* Responsive */}
-            {windowWidth <= MIN_DESKTOP_WIDTH && (
+            {/* {windowWidth <= MIN_DESKTOP_WIDTH && (
               <>
                 {activeDisaggregationKey &&
                   disaggregations[systemMetricKey][activeDisaggregationKey] && (
@@ -587,53 +750,33 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                             ).toLowerCase()
                           )}
 
-                          <MiniButtonWrapper
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <MiniButton
-                              selected={
+                          <CheckboxWrapper onClick={(e) => e.stopPropagation()}>
+                            <Checkbox
+                              type="checkbox"
+                              checked={
                                 disaggregations[systemMetricKey][
                                   activeDisaggregationKey
-                                ].enabled === false
+                                ].enabled || false
                               }
-                              onClick={() => {
-                                if (
-                                  disaggregations[systemMetricKey][
-                                    activeDisaggregationKey
-                                  ].enabled ||
-                                  disaggregations[systemMetricKey][
-                                    activeDisaggregationKey
-                                  ].enabled === null
-                                )
-                                  handleDisaggregationSelection(
-                                    activeDisaggregationKey,
-                                    false
-                                  );
-                              }}
-                            >
-                              Off
-                            </MiniButton>
-                            <MiniButton
-                              selected={
-                                disaggregations[systemMetricKey][
-                                  activeDisaggregationKey
-                                ].enabled
-                              }
-                              onClick={() => {
-                                if (
+                              onChange={() =>
+                                handleDisaggregationSelection(
+                                  activeDisaggregationKey,
                                   !disaggregations[systemMetricKey][
                                     activeDisaggregationKey
                                   ].enabled
                                 )
-                                  handleDisaggregationSelection(
-                                    activeDisaggregationKey,
-                                    true
-                                  );
-                              }}
-                            >
-                              On
-                            </MiniButton>
-                          </MiniButtonWrapper>
+                              }
+                            />
+                            <BlueCheckIcon
+                              src={blueCheck}
+                              alt=""
+                              enabled={
+                                disaggregations[systemMetricKey][
+                                  activeDisaggregationKey
+                                ].enabled || false
+                              }
+                            />
+                          </CheckboxWrapper>
                         </MetricsConfigurationDropdownToggle>
                         {activeDisaggregationKeys.length > 1 ? (
                           <MetricsConfigurationDropdownMenu>
@@ -702,102 +845,53 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                               ][dimensionKey];
 
                             return (
-                              <>
-                                <Dimension
-                                  enabled={
-                                    !metricEnabled ||
-                                    currentDisaggregation.enabled ||
-                                    currentDisaggregation.enabled === null
-                                  }
-                                  inView={dimensionKey === activeDimensionKey}
-                                  onClick={() => {
-                                    setActiveDisaggregationKey(
-                                      activeDisaggregationKey
-                                    );
-                                    setActiveDimensionKey(dimensionKey);
-                                  }}
-                                >
-                                  <DimensionTitleWrapper>
-                                    <DimensionTitle
-                                      enabled={currentDisaggregation.enabled}
-                                    >
-                                      {currentDimension?.label}
-                                    </DimensionTitle>
-                                    <ActionStatusTitle
-                                      enabled={
-                                        currentDisaggregation.enabled &&
-                                        currentDimension.enabled === null
-                                      }
-                                      inView={
-                                        dimensionKey === activeDimensionKey
-                                      }
-                                    >
-                                      {currentDimension.enabled && (
-                                        <AvailableWithCheckWrapper>
-                                          <BlueText>Available</BlueText>
-                                          <CheckIcon
-                                            src={checkmarkIcon}
-                                            alt=""
-                                            width={11}
-                                          />
-                                        </AvailableWithCheckWrapper>
-                                      )}
-                                      {currentDimension.enabled === false &&
-                                        "Unavailable"}
-                                      {currentDimension.enabled === null &&
-                                        "Action Required"}
-                                    </ActionStatusTitle>
-                                    <RightArrowIcon />
-                                  </DimensionTitleWrapper>
-                                </Dimension>
-                              </>
-                              // <Dimension
-                              //   key={dimensionKey}
-                              //   enabled={
-                              //     !metricEnabled ||
-                              //     currentDisaggregation.enabled
-                              //   }
-                              //   inView={dimensionKey === activeDimensionKey}
-                              //   onClick={() =>
-                              //     setActiveDimensionKey(dimensionKey)
-                              //   }
-                              // >
-                              //   <CheckboxWrapper>
-                              //     <Checkbox
-                              //       type="checkbox"
-                              //       checked={Boolean(
-                              //         currentDisaggregation.enabled &&
-                              //           currentDimension.enabled
-                              //       )}
-                              //       onChange={() =>
-                              //         handleDimensionEnabledStatus(
-                              //           !currentDimension.enabled
-                              //         )
-                              //       }
-                              //     />
-                              //     <BlueCheckIcon
-                              //       src={blueCheck}
-                              //       alt=""
-                              //       enabled={Boolean(
-                              //         currentDisaggregation.enabled &&
-                              //           currentDimension.enabled
-                              //       )}
-                              //     />
-                              //   </CheckboxWrapper>
+                              <Dimension
+                                key={dimensionKey}
+                                enabled={
+                                  !metricEnabled ||
+                                  currentDisaggregation.enabled
+                                }
+                                inView={dimensionKey === activeDimensionKey}
+                                onClick={() =>
+                                  setActiveDimensionKey(dimensionKey)
+                                }
+                              >
+                                <CheckboxWrapper>
+                                  <Checkbox
+                                    type="checkbox"
+                                    checked={Boolean(
+                                      currentDisaggregation.enabled &&
+                                        currentDimension.enabled
+                                    )}
+                                    onChange={() =>
+                                      handleDimensionEnabledStatus(
+                                        !currentDimension.enabled
+                                      )
+                                    }
+                                  />
+                                  <BlueCheckIcon
+                                    src={blueCheck}
+                                    alt=""
+                                    enabled={Boolean(
+                                      currentDisaggregation.enabled &&
+                                        currentDimension.enabled
+                                    )}
+                                  />
+                                </CheckboxWrapper>
 
-                              //   <DimensionTitleWrapper>
-                              //     <DimensionTitle
-                              //       enabled={Boolean(
-                              //         currentDisaggregation.enabled &&
-                              //           currentDimension.enabled
-                              //       )}
-                              //     >
-                              //       {currentDimension.label}
-                              //     </DimensionTitle>
+                                <DimensionTitleWrapper>
+                                  <DimensionTitle
+                                    enabled={Boolean(
+                                      currentDisaggregation.enabled &&
+                                        currentDimension.enabled
+                                    )}
+                                  >
+                                    {currentDimension.label}
+                                  </DimensionTitle>
 
-                              //     <RightArrowIcon />
-                              //   </DimensionTitleWrapper>
-                              // </Dimension>
+                                  <RightArrowIcon />
+                                </DimensionTitleWrapper>
+                              </Dimension>
                             );
                           })}
                       </>
@@ -805,7 +899,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   </>
                 )}
               </>
-            )}
+            )} */}
           </MetricDisaggregations>
         )}
       </MetricConfigurationContainer>
