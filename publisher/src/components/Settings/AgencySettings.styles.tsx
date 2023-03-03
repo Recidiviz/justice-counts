@@ -31,7 +31,7 @@ const AGENCY_SETTINGS_CONTAINER_WIDTH = 644;
 
 export const AgencySettingsWrapper = styled.div`
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;

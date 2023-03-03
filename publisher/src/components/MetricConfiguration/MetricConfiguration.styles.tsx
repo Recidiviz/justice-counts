@@ -43,7 +43,6 @@ const baseDisabledFadedOverlayCSS = `
 `;
 
 export const MetricsViewContainer = styled.div`
-  height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -87,14 +86,14 @@ export const MetricsViewControlPanelOverflowHidden = styled(
   MetricsViewControlPanel
 )`
   flex-wrap: nowrap;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 export const PanelContainerLeft = styled.div`
   width: 25%;
   min-width: calc(314px + 24px + 95px);
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -109,7 +108,7 @@ export const SystemsContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
 `;
 
@@ -200,12 +199,11 @@ export const DisclaimerLink = styled.span`
 export const PanelContainerRight = styled.div`
   width: 75%;
   min-width: 730px;
-  height: 100%;
+  min-height: 100%;
   display: flex;
   position: relative;
   flex-direction: column;
-  overflow-y: scroll;
-  overflow-x: scroll;
+  overflow: auto;
   padding-right: 24px;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
@@ -284,7 +282,7 @@ export const MetricsConfigurationDropdownToggle = styled(DropdownToggle)`
 `;
 
 export const MetricsConfigurationDropdownMenu = styled(DropdownMenu)`
-  overflow-y: scroll;
+  overflow-y: auto;
   z-index: 10;
   margin-top: 11px;
   box-shadow: 0px 0px 1px rgba(23, 28, 43, 0.1),
@@ -364,7 +362,7 @@ export const MetricBoxBottomPaddingContainer = styled.div`
   height: 100%;
   width: 100%;
   padding-bottom: 50px;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 type MetricBoxContainerProps = {
@@ -463,11 +461,11 @@ export const MetricDescription = styled.div`
 export const MetricDetailsDisplay = styled.div`
   height: 100%;
   width: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 24px 12px 50px 0;
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
-    overflow-y: unset;
     padding: 24px 12px 0px 0;
   }
 `;
@@ -831,7 +829,7 @@ export const MetricConfigurationWrapper = styled.div`
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 `;
 
@@ -840,7 +838,7 @@ export const DefinitionsDisplayContainer = styled.div`
   flex-direction: column;
   flex: 1 1 55%;
   padding: 18px 12px 50px 70px;
-  overflow-y: scroll;
+  overflow-y: auto;
   position: relative;
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {

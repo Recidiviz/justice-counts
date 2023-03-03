@@ -32,21 +32,24 @@ import {
 } from "../Reports/ReportDataEntry.styles";
 
 export const AppWrapper = styled.div`
-  height: 100%;
   width: 100%;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow: hidden;
 `;
 
 export const PageWrapper = styled.div`
   width: 100%;
+  min-height: 100%;
   display: flex;
   flex-grow: 1;
   justify-content: center;
   padding-top: ${HEADER_BAR_HEIGHT}px;
   z-index: 1;
   background: ${palette.solid.white};
+  overflow: hidden;
 `;
 
 export const FormWrapper = styled.div<{ showDataEntryHelpPage?: boolean }>`

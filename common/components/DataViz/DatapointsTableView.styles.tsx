@@ -91,7 +91,7 @@ export const DatapointsTableDetailsContainer = styled.div<{
   border-left: 1px solid ${palette.highlight.grey3};
 `;
 export const DatapointsTableDetailScrollContainer = styled.div`
-  overflow-x: scroll;
+  overflow-x: auto;
   padding-bottom: 10px;
 `;
 export const DatapointsTableDetailsContainerOverlay = styled.div`

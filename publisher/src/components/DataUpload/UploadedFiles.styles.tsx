@@ -166,7 +166,7 @@ export const UploadedFilesTable = styled(Table)`
 
 export const UploadedFilesWrapper = styled.div`
   position: relative;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 export const DownloadIcon = styled.img`
