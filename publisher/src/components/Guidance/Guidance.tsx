@@ -122,6 +122,7 @@ export const Guidance = observer(() => {
   );
   const totalMetrics = Object.values(metricsEntriesBySystem).reduce(
     (acc, metrics) => {
+      // eslint-disable-next-line no-param-reassign
       acc += metrics.length;
       return acc;
     },
