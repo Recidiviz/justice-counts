@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
 import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
@@ -44,11 +43,8 @@ import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   ActionStatusTitle,
   AvailableWithCheckWrapper,
-  BlueCheckIcon,
   BlueLinkSpan,
   BreakdownHeader,
-  Checkbox,
-  CheckboxWrapper,
   Dimension,
   DimensionTitle,
   DimensionTitleWrapper,
@@ -103,7 +99,6 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       dimensions,
       updateMetricEnabledStatus,
       updateDisaggregationEnabledStatus,
-      updateDimensionEnabledStatus,
       updateMetricReportFrequency,
       updateDisaggregatedBySupervisionSubsystems,
       saveMetricSettings,
@@ -213,25 +208,6 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
           systemSearchParam,
           metricSearchParam,
           disaggregationKey,
-          status
-        );
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        saveMetricSettings(updatedSetting, agencyId!);
-      }
-    };
-
-    const handleDimensionEnabledStatus = (status: boolean) => {
-      if (
-        systemSearchParam &&
-        metricSearchParam &&
-        activeDisaggregationKey &&
-        activeDimensionKey
-      ) {
-        const updatedSetting = updateDimensionEnabledStatus(
-          systemSearchParam,
-          metricSearchParam,
-          activeDisaggregationKey,
-          activeDimensionKey,
           status
         );
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -441,6 +417,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               category.
             </Subheader>
 
+            {/* Desktop Disaggregations */}
             {windowWidth > MIN_DESKTOP_WIDTH && (
               <>
                 {/* Disaggregations (Enable/Disable) */}
@@ -568,7 +545,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               </>
             )}
 
-            {/* Responsive */}
+            {/* Responsive Disaggregations with Dropdown Menu */}
             {windowWidth <= MIN_DESKTOP_WIDTH && (
               <>
                 {activeDisaggregationKey &&
@@ -751,53 +728,6 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                                   </DimensionTitleWrapper>
                                 </Dimension>
                               </>
-                              // <Dimension
-                              //   key={dimensionKey}
-                              //   enabled={
-                              //     !metricEnabled ||
-                              //     currentDisaggregation.enabled
-                              //   }
-                              //   inView={dimensionKey === activeDimensionKey}
-                              //   onClick={() =>
-                              //     setActiveDimensionKey(dimensionKey)
-                              //   }
-                              // >
-                              //   <CheckboxWrapper>
-                              //     <Checkbox
-                              //       type="checkbox"
-                              //       checked={Boolean(
-                              //         currentDisaggregation.enabled &&
-                              //           currentDimension.enabled
-                              //       )}
-                              //       onChange={() =>
-                              //         handleDimensionEnabledStatus(
-                              //           !currentDimension.enabled
-                              //         )
-                              //       }
-                              //     />
-                              //     <BlueCheckIcon
-                              //       src={blueCheck}
-                              //       alt=""
-                              //       enabled={Boolean(
-                              //         currentDisaggregation.enabled &&
-                              //           currentDimension.enabled
-                              //       )}
-                              //     />
-                              //   </CheckboxWrapper>
-
-                              //   <DimensionTitleWrapper>
-                              //     <DimensionTitle
-                              //       enabled={Boolean(
-                              //         currentDisaggregation.enabled &&
-                              //           currentDimension.enabled
-                              //       )}
-                              //     >
-                              //       {currentDimension.label}
-                              //     </DimensionTitle>
-
-                              //     <RightArrowIcon />
-                              //   </DimensionTitleWrapper>
-                              // </Dimension>
                             );
                           })}
                       </>
