@@ -340,3 +340,15 @@ export const MetricStatus = styled.div<{ greyText?: boolean }>`
     opacity: 0;
   }
 `;
+
+export const SystemNameTitle = styled.div`
+  ${typography.sizeCSS.medium}
+  text-align: left;
+  text-transform: capitalize;
+  color: ${palette.highlight.grey7};
+  margin-bottom: 20px;
+
+  &:not(:first-child) {
+    margin-top: 40px;
+  }
+`;

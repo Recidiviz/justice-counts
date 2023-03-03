@@ -20,6 +20,10 @@ import {
   BadgeColorMapping,
 } from "@justice-counts/common/components/Badge";
 import {
+  AgencySystems,
+  SupervisionSubsystems,
+} from "@justice-counts/common/types";
+import {
   printReportTitle,
   removeSnakeCase,
 } from "@justice-counts/common/utils";
@@ -29,10 +33,12 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import MetricConfigStore from "../../stores/MetricConfigStore";
+import { formatSystemName } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import checkmarkIcon from "../assets/status-check-icon.png";
 import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 import { Loader, Loading } from "../Loading";
+import { MetricInfo } from "../MetricConfiguration";
 import {
   ActionButton,
   ActionButtonWrapper,
@@ -59,6 +65,7 @@ import {
   ReportTitle,
   ReviewPublishLink,
   SkipButton,
+  SystemNameTitle,
   TopicDescription,
   TopicTitle,
 } from ".";
@@ -66,7 +73,8 @@ import {
 export const Guidance = observer(() => {
   const navigate = useNavigate();
   const { agencyId } = useParams() as { agencyId: string };
-  const { guidanceStore, metricConfigStore, reportStore } = useStore();
+  const { guidanceStore, metricConfigStore, reportStore, userStore } =
+    useStore();
   const {
     onboardingTopicsMetadata,
     currentTopicID,
@@ -93,7 +101,34 @@ export const Guidance = observer(() => {
     PUBLISHED: "GREEN",
     NOT_STARTED: "RED",
   };
+
+  const currentAgency = userStore.getAgency(agencyId);
   const metricsEntries = Object.entries(metricConfigStore.metrics);
+  const metricsEntriesBySystem = metricsEntries.reduce(
+    (acc, [systemMetricKey, metric]) => {
+      const { system } =
+        MetricConfigStore.splitSystemMetricKey(systemMetricKey);
+
+      if (!SupervisionSubsystems.includes(system as AgencySystems)) {
+        if (!acc[system]) {
+          acc[system] = [];
+        }
+        acc[system].push([systemMetricKey, metric]);
+      }
+
+      return acc;
+    },
+    {} as { [system: string]: [string, MetricInfo][] }
+  );
+
+  console.log(JSON.stringify(metricsEntriesBySystem, null, 2));
+  // console.log(
+  //   JSON.stringify(
+  //     metricConfigStore.getMetricsBySystem(currentAgency?.systems[0]),
+  //     null,
+  //     2
+  //   )
+  // );
   const totalMetrics = metricsEntries.length;
 
   const renderProgressSteps = () => {
@@ -308,63 +343,89 @@ export const Guidance = observer(() => {
                   metrics configured
                 </ConfiguredMetricIndicatorTitle>
                 <MetricListContainer>
-                  {metricsEntries.map(([systemMetricKey, metric]) => {
-                    const metricCompletionProgress =
-                      getOverallMetricProgress(systemMetricKey);
-                    const metricCompletionProgressValue =
-                      getMetricCompletionValue(systemMetricKey);
-                    const { system, metricKey } =
-                      MetricConfigStore.splitSystemMetricKey(systemMetricKey);
+                  {Object.entries(metricsEntriesBySystem).map(
+                    ([system, entries]) => {
+                      return (
+                        <>
+                          {currentAgency?.systems &&
+                            currentAgency.systems.length > 1 && (
+                              <SystemNameTitle>
+                                {formatSystemName(system as AgencySystems)}
+                              </SystemNameTitle>
+                            )}
+                          {entries.map(([systemMetricKey, metric]) => {
+                            const metricCompletionProgress =
+                              getOverallMetricProgress(systemMetricKey);
+                            const metricCompletionProgressValue =
+                              getMetricCompletionValue(systemMetricKey);
+                            const { metricKey } =
+                              MetricConfigStore.splitSystemMetricKey(
+                                systemMetricKey
+                              );
 
-                    return (
-                      <Fragment key={systemMetricKey}>
-                        <Metric
-                          hideTooltip={metric.enabled === false}
-                          onClick={() =>
-                            navigate(
-                              `../settings/metric-config?system=${system}&metric=${metricKey}`
-                            )
-                          }
-                        >
-                          <MetricName>{metric.label}</MetricName>
-                          <MetricStatus greyText={metric.enabled === false}>
-                            {metricCompletionProgressValue === 4 &&
-                              metric.enabled && (
-                                <CheckIcon src={checkmarkIcon} alt="" />
-                              )}
-                            {metric.enabled === false && "Unavailable"}
-                            {metricCompletionProgressValue < 4 &&
-                              (metric.enabled || metric.enabled === null) &&
-                              "Action Required"}
-                          </MetricStatus>
-                          <RightArrowIcon />
+                            return (
+                              <Fragment key={systemMetricKey}>
+                                <Metric
+                                  hideTooltip={metric.enabled === false}
+                                  onClick={() =>
+                                    navigate(
+                                      `../settings/metric-config?system=${system}&metric=${metricKey}`
+                                    )
+                                  }
+                                >
+                                  <MetricName>{metric.label}</MetricName>
+                                  <MetricStatus
+                                    greyText={metric.enabled === false}
+                                  >
+                                    {metricCompletionProgressValue === 4 &&
+                                      metric.enabled && (
+                                        <CheckIcon src={checkmarkIcon} alt="" />
+                                      )}
+                                    {metric.enabled === false && "Unavailable"}
+                                    {metricCompletionProgressValue < 4 &&
+                                      (metric.enabled ||
+                                        metric.enabled === null) &&
+                                      "Action Required"}
+                                  </MetricStatus>
+                                  <RightArrowIcon />
 
-                          {/* Progress Tooltip */}
-                          <ProgressTooltipContainer>
-                            {metricConfigurationProgressSteps.map((step) => (
-                              <ProgressItemWrapper key={step}>
-                                <CheckIconWrapper>
-                                  {metricCompletionProgress[step] && (
-                                    <CheckIcon src={checkmarkIcon} alt="" />
-                                  )}
-                                </CheckIconWrapper>
-                                <ProgressItemName>{step}</ProgressItemName>
-                              </ProgressItemWrapper>
-                            ))}
-                          </ProgressTooltipContainer>
-                        </Metric>
-                        <ProgressBarContainer>
-                          <Progress
-                            progress={
-                              metric.enabled === false
-                                ? 0
-                                : metricCompletionProgressValue
-                            }
-                          />
-                        </ProgressBarContainer>
-                      </Fragment>
-                    );
-                  })}
+                                  {/* Progress Tooltip */}
+                                  <ProgressTooltipContainer>
+                                    {metricConfigurationProgressSteps.map(
+                                      (step) => (
+                                        <ProgressItemWrapper key={step}>
+                                          <CheckIconWrapper>
+                                            {metricCompletionProgress[step] && (
+                                              <CheckIcon
+                                                src={checkmarkIcon}
+                                                alt=""
+                                              />
+                                            )}
+                                          </CheckIconWrapper>
+                                          <ProgressItemName>
+                                            {step}
+                                          </ProgressItemName>
+                                        </ProgressItemWrapper>
+                                      )
+                                    )}
+                                  </ProgressTooltipContainer>
+                                </Metric>
+                                <ProgressBarContainer>
+                                  <Progress
+                                    progress={
+                                      metric.enabled === false
+                                        ? 0
+                                        : metricCompletionProgressValue
+                                    }
+                                  />
+                                </ProgressBarContainer>
+                              </Fragment>
+                            );
+                          })}
+                        </>
+                      );
+                    }
+                  )}
                 </MetricListContainer>
               </>
             )}
