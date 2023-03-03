@@ -383,7 +383,7 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
                   }
                   onMouseLeave={() => setShowDefaultSettings(false)}
                 >
-                  Reset to default
+                  Choose Justice Counts Preferred Definition
                 </RevertToDefaultTextButton>
               </RevertToDefaultTextButtonWrapper>
             </DefinitionsWrapper>

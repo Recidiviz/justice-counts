@@ -191,186 +191,187 @@ const Menu: React.FC = () => {
             `Welcome, ${userStore.nameOrEmail} at ${currentAgency.name}`}
         </WelcomeUser>
 
+        {/* Guidance */}
+        {hasCompletedOnboarding === false && currentTopicID !== "WELCOME" && (
+          <>
+            <MenuItem
+              style={{ position: "relative" }}
+              active={pathWithoutAgency === "getting-started"}
+              onClick={() => {
+                navigate(`/agency/${agencyId}/getting-started`);
+                handleCloseMobileMenu();
+              }}
+            >
+              Get Started
+              {/* Guidance: Metric Configuration Progress Toast */}
+              {isMetricConfigStep && hasSystemMetricParams && (
+                <ProgressTooltipToast showToast={showMetricConfigProgressToast}>
+                  {metricConfigurationProgressSteps.map((step) => (
+                    <ProgressItemWrapper key={step}>
+                      <CheckIconWrapper>
+                        {metricCompletionProgress &&
+                          metricCompletionProgress[step] && (
+                            <CheckIcon src={checkmarkIcon} alt="" />
+                          )}
+                      </CheckIconWrapper>
+                      <ProgressItemName>{step}</ProgressItemName>
+                    </ProgressItemWrapper>
+                  ))}
+                </ProgressTooltipToast>
+              )}
+            </MenuItem>
+          </>
+        )}
+
+        {/* Reports */}
+        {(hasCompletedOnboarding || isAddDataOrPublishDataStep) && (
+          <MenuItem
+            onClick={() => {
+              navigate(REPORTS_LOWERCASE);
+              handleCloseMobileMenu();
+            }}
+            active={pathWithoutAgency === REPORTS_LOWERCASE}
+          >
+            {REPORTS_CAPITALIZED}
+          </MenuItem>
+        )}
+
+        {/* Data (Visualizations) */}
+        {(hasCompletedOnboarding || isPublishDataStep) && (
+          <MenuItem
+            onClick={() => {
+              navigate("data");
+              handleCloseMobileMenu();
+            }}
+            active={pathWithoutAgency === "data"}
+          >
+            Data
+          </MenuItem>
+        )}
+
+        {/* Learn More */}
+        {windowWidth > MIN_TABLET_WIDTH &&
+          (hasCompletedOnboarding ||
+            (hasCompletedOnboarding === false &&
+              currentTopicID !== "WELCOME")) && (
+            <MenuItem>
+              <a
+                href="https://justicecounts.csgjusticecenter.org/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Learn More
+              </a>
+            </MenuItem>
+          )}
+
+        {/* Agencies Dropdown */}
+        {userStore.isJusticeCountsAdmin(agencyId) &&
+          userStore.userAgencies &&
+          userStore.userAgencies.length > 1 && (
+            <MenuItem>
+              <Dropdown>
+                <ExtendedDropdownToggle kind="borderless">
+                  Agencies
+                </ExtendedDropdownToggle>
+                <ExtendedDropdownMenu
+                  alignment={windowWidth > MIN_TABLET_WIDTH ? "right" : "left"}
+                >
+                  {userStore.userAgencies
+                    .slice()
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map((agency) => {
+                      return (
+                        <ExtendedDropdownMenuItem
+                          key={agency.id}
+                          onClick={() => {
+                            navigate(
+                              `/agency/${agency.id}/${pathWithoutAgency}`
+                            );
+                            handleCloseMobileMenu();
+                          }}
+                          highlight={agency.id === currentAgency?.id}
+                        >
+                          {agency.name}
+                        </ExtendedDropdownMenuItem>
+                      );
+                    })}
+                </ExtendedDropdownMenu>
+              </Dropdown>
+            </MenuItem>
+          )}
+
+        {/* Settings */}
         {(hasCompletedOnboarding ||
           (hasCompletedOnboarding === false &&
             currentTopicID !== "WELCOME")) && (
-          <>
-            {/* Guidance */}
-            {hasCompletedOnboarding === false && (
-              <>
-                <MenuItem
-                  style={{ position: "relative" }}
-                  active={pathWithoutAgency === "getting-started"}
-                  onClick={() =>
-                    navigate(`/agency/${agencyId}/getting-started`)
+          <MenuItem
+            onClick={() => {
+              if (windowWidth > MIN_TABLET_WIDTH) {
+                navigate("settings");
+              }
+            }}
+            active={pathWithoutAgency.startsWith("settings")}
+          >
+            Settings
+          </MenuItem>
+        )}
+
+        {isMobileMenuOpen && (
+          <SubMenuContainer>
+            {settingsMenuPaths.map(({ displayLabel, path }) => (
+              <SubMenuItem
+                key={path}
+                onClick={() => {
+                  if (path === "metric-config") {
+                    navigate(
+                      systemSearchParam
+                        ? `settings/${path}?system=${systemSearchParam}`
+                        : `settings/${path}`
+                    );
+                  } else {
+                    navigate(`settings/${path}`);
                   }
-                >
-                  Get Started
-                  {/* Guidance: Metric Configuration Progress Toast */}
-                  {isMetricConfigStep && hasSystemMetricParams && (
-                    <ProgressTooltipToast
-                      showToast={showMetricConfigProgressToast}
-                    >
-                      {metricConfigurationProgressSteps.map((step) => (
-                        <ProgressItemWrapper key={step}>
-                          <CheckIconWrapper>
-                            {metricCompletionProgress &&
-                              metricCompletionProgress[step] && (
-                                <CheckIcon src={checkmarkIcon} alt="" />
-                              )}
-                          </CheckIconWrapper>
-                          <ProgressItemName>{step}</ProgressItemName>
-                        </ProgressItemWrapper>
-                      ))}
-                    </ProgressTooltipToast>
-                  )}
-                </MenuItem>
-              </>
-            )}
-
-            {/* Reports */}
-            {(hasCompletedOnboarding || isAddDataOrPublishDataStep) && (
-              <MenuItem
-                onClick={() => {
-                  navigate(REPORTS_LOWERCASE);
                   handleCloseMobileMenu();
                 }}
-                active={pathWithoutAgency === REPORTS_LOWERCASE}
               >
-                {REPORTS_CAPITALIZED}
-              </MenuItem>
-            )}
+                {displayLabel}
+              </SubMenuItem>
+            ))}
+          </SubMenuContainer>
+        )}
 
-            {/* Data (Visualizations) */}
-            {(hasCompletedOnboarding || isPublishDataStep) && (
-              <MenuItem
-                onClick={() => {
-                  navigate("data");
-                  handleCloseMobileMenu();
-                }}
-                active={pathWithoutAgency === "data"}
-              >
-                Data
-              </MenuItem>
-            )}
+        <MenuItem onClick={logout} highlight>
+          Log Out
+        </MenuItem>
 
-            {/* Learn More */}
-            {windowWidth > MIN_TABLET_WIDTH && (
-              <MenuItem>
-                <a
-                  href="https://justicecounts.csgjusticecenter.org/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Learn More
-                </a>
-              </MenuItem>
-            )}
-
-            {/* Agencies Dropdown */}
-            {userStore.isJusticeCountsAdmin(agencyId) &&
-              userStore.userAgencies &&
-              userStore.userAgencies.length > 1 && (
-                <MenuItem>
-                  <Dropdown>
-                    <ExtendedDropdownToggle kind="borderless">
-                      Agencies
-                    </ExtendedDropdownToggle>
-                    <ExtendedDropdownMenu
-                      alignment={
-                        windowWidth > MIN_TABLET_WIDTH ? "right" : "left"
-                      }
-                    >
-                      {userStore.userAgencies
-                        .slice()
-                        .sort((a, b) => a.name.localeCompare(b.name))
-                        .map((agency) => {
-                          return (
-                            <ExtendedDropdownMenuItem
-                              key={agency.id}
-                              onClick={() => {
-                                navigate(
-                                  `/agency/${agency.id}/${pathWithoutAgency}`
-                                );
-                                handleCloseMobileMenu();
-                              }}
-                              highlight={agency.id === currentAgency?.id}
-                            >
-                              {agency.name}
-                            </ExtendedDropdownMenuItem>
-                          );
-                        })}
-                    </ExtendedDropdownMenu>
-                  </Dropdown>
-                </MenuItem>
-              )}
-
-            {/* Settings */}
-            <MenuItem
+        {(hasCompletedOnboarding ||
+          (hasCompletedOnboarding === false &&
+            currentTopicID !== "WELCOME")) && (
+          <MenuItem id="upload" buttonPadding>
+            <HeaderUploadButton
+              type={
+                hasCompletedOnboarding ||
+                (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
+                  ? "blue"
+                  : "border"
+              }
               onClick={() => {
-                if (windowWidth > MIN_TABLET_WIDTH) {
-                  navigate("settings");
-                }
+                if (
+                  hasCompletedOnboarding ||
+                  (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
+                )
+                  navigate("upload");
+                handleCloseMobileMenu();
               }}
-              active={pathWithoutAgency.startsWith("settings")}
-              isHoverDisabled={isMobileMenuOpen}
+              enabledDuringOnboarding={
+                hasCompletedOnboarding ||
+                (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
+              }
             >
-              Settings
-            </MenuItem>
-
-            {isMobileMenuOpen && (
-              <SubMenuContainer>
-                {settingsMenuPaths.map(({ displayLabel, path }) => (
-                  <SubMenuItem
-                    key={path}
-                    onClick={() => {
-                      if (path === "metric-config") {
-                        navigate(
-                          systemSearchParam
-                            ? `settings/${path}?system=${systemSearchParam}`
-                            : `settings/${path}`
-                        );
-                      } else {
-                        navigate(`settings/${path}`);
-                      }
-                      handleCloseMobileMenu();
-                    }}
-                  >
-                    {displayLabel}
-                  </SubMenuItem>
-                ))}
-              </SubMenuContainer>
-            )}
-
-            <MenuItem onClick={logout} highlight>
-              Log Out
-            </MenuItem>
-
-            <MenuItem id="upload" buttonPadding>
-              <HeaderUploadButton
-                type={
-                  hasCompletedOnboarding ||
-                  (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
-                    ? "blue"
-                    : "border"
-                }
-                onClick={() => {
-                  if (
-                    hasCompletedOnboarding ||
-                    (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
-                  )
-                    navigate("upload");
-                  handleCloseMobileMenu();
-                }}
-                enabledDuringOnboarding={
-                  hasCompletedOnboarding ||
-                  (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
-                }
-              >
-                Upload Data
-              </HeaderUploadButton>
-            </MenuItem>
-          </>
+              Upload Data
+            </HeaderUploadButton>
+          </MenuItem>
         )}
       </MenuContainer>
       <MobileMenuIconWrapper

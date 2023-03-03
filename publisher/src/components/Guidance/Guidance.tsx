@@ -133,11 +133,9 @@ export const Guidance = observer(() => {
   );
 
   useEffect(() => {
-    const initialize = async () => {
+    const initializeReportStoreUpdateProgress = async () => {
       reportStore.resetState();
       await reportStore.getReportOverviews(agencyId);
-      if (currentTopicID === "METRIC_CONFIG")
-        await metricConfigStore.initializeMetricConfigStoreValues(agencyId);
 
       const hasMinimumOneReport =
         currentTopicID === "ADD_DATA" &&
@@ -166,6 +164,10 @@ export const Guidance = observer(() => {
           agencyId
         );
       }
+    };
+    const initializeMetricConfigStoreUpdateProgress = async () => {
+      await metricConfigStore.initializeMetricConfigStoreValues(agencyId);
+
       if (totalMetrics > 0 && numberOfMetricsCompleted === totalMetrics) {
         saveOnboardingTopicsStatuses(
           {
@@ -177,12 +179,15 @@ export const Guidance = observer(() => {
       }
     };
 
-    if (
-      currentTopicID === "ADD_DATA" ||
-      currentTopicID === "PUBLISH_DATA" ||
-      currentTopicID === "METRIC_CONFIG"
-    )
-      initialize();
+    // Initialize the ReportStore only when we are on the ADD_DATA/PUBLISH_DATA steps to load a list of reports in the overview screen
+    if (currentTopicID === "ADD_DATA" || currentTopicID === "PUBLISH_DATA") {
+      initializeReportStoreUpdateProgress();
+    }
+
+    // Initialize the MetricConfigStore only when we are on the METRIC_CONFIG step to load a list of metrics in the overview screen
+    if (currentTopicID === "METRIC_CONFIG") {
+      initializeMetricConfigStoreUpdateProgress();
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyId, currentTopicID, numberOfMetricsCompleted]);
