@@ -55,7 +55,7 @@ export const LearnMoreModal: React.FC<{
           <ModalParagraph>{metric.description}</ModalParagraph>
           {metric.definitions.length > 0 && (
             <>
-              <ModalSectionTitle>Definitions</ModalSectionTitle>
+              <ModalSectionTitle>Metric Definitions</ModalSectionTitle>
               {metric.definitions.map((definition) => (
                 <ModalParagraph key={definition.term}>
                   <span>{definition.term}</span>

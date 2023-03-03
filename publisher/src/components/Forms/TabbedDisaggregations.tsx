@@ -215,7 +215,9 @@ export const TabbedDisaggregations: React.FC<{
         {dimensionsGroupedByEthnicityEntries.map(([ethnicity, dimensions]) => (
           <Fragment key={dimensions[0]?.key + ethnicity}>
             {dimensions.length > 0 && (
-              <EthnicityHeader>{ethnicity}</EthnicityHeader>
+              <EthnicityHeader>
+                {ethnicity === "Hispanic" ? "Hispanic or Latino" : ethnicity}
+              </EthnicityHeader>
             )}
             {dimensions.map((dimension) => renderDimension({ dimension }))}
           </Fragment>

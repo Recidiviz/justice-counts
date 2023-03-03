@@ -158,9 +158,9 @@ export const RaceEthnicitiesForm = observer(() => {
 
         <SpecifyEthnicityWrapper>
           <Header>
-            Does your case management system allow you to specify an
-            individual’s <strong>ethnicity</strong> (Hispanic, Non-Hispanic, or
-            Unknown) for this metric?
+            Are you able to record an individual’s <strong>ethnicity</strong>{" "}
+            (Hispanic or Latino, Not Hispanic or Latino, or Unknown) separately
+            from their race in your case management system?
           </Header>
 
           <RadioButtonGroupWrapper>
@@ -205,7 +205,7 @@ export const RaceEthnicitiesForm = observer(() => {
           {/* Hispanic/Latino as Race (if user cannot specify ethnicity) */}
           {!canSpecifyEthnicity && (
             <Race>
-              <RaceDisplayName>Hispanic/Latino</RaceDisplayName>
+              <RaceDisplayName>Hispanic or Latino</RaceDisplayName>
               <RaceSelection>
                 <RaceEthnicityRadioButtonGroupWrapper>
                   <BinaryRadioButton
