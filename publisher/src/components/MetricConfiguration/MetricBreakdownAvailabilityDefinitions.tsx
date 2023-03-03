@@ -311,10 +311,13 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
                 (metrics[systemMetricKey]?.enabled && currentDimension?.enabled)
               }
             >
-              <DefinitionsSubTitle>Definitions</DefinitionsSubTitle>
+              <DefinitionsSubTitle>
+                {activeDimensionKey ? "Breakdown" : "Metric"} Definitions
+              </DefinitionsSubTitle>
               <DefinitionsDescription>
                 Indicate which of the following categories your agency considers
-                to be part of this metric or breakdown.
+                to be part of this {activeDimensionKey ? "breakdown" : "metric"}
+                .
                 <span>
                   You are NOT required to {REPORT_VERB_LOWERCASE} data for these
                   specific categories.
@@ -383,7 +386,7 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
                   }
                   onMouseLeave={() => setShowDefaultSettings(false)}
                 >
-                  Reset to default
+                  Reset to preferred definition
                 </RevertToDefaultTextButton>
               </RevertToDefaultTextButtonWrapper>
             </DefinitionsWrapper>
@@ -393,7 +396,7 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
             !hasMinOneDimensionContext &&
             !hasMinOneMetricLevelContext && (
               <DefinitionsSubTitle>
-                Technical Definitions are not available for this{" "}
+                There are no definitions to configure for this{" "}
                 {activeDimensionKey ? "breakdown." : "metric yet."}
               </DefinitionsSubTitle>
             )}

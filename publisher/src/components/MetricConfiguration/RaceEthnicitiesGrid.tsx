@@ -72,7 +72,7 @@ export const RaceEthnicitiesGrid: React.FC<{
           <EthnicityLabel>
             Ethnicity <RightArrowIcon />
           </EthnicityLabel>
-          <Ethnicity>Hispanic</Ethnicity>
+          <Ethnicity>Hispanic or Latino</Ethnicity>
           <Ethnicity>Not Hispanic</Ethnicity>
           <Ethnicity>Unknown</Ethnicity>
         </GridEthnicitiesHeader>
