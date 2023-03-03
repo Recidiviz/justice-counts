@@ -103,7 +103,7 @@ const RaceEthnicitiesGroupedByEthnicity: React.FC<{
         ([ethnicity, groupedDimensions]) => (
           <>
             <MetricSubTitleContainer secondary>
-              {ethnicity}
+              {ethnicity === "Hispanic" ? "Hispanic or Latino" : ethnicity}
             </MetricSubTitleContainer>
             <DisaggregationBreakdownContainer>
               {groupedDimensions.map((dimension) => (
