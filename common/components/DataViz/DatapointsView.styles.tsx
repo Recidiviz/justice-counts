@@ -107,6 +107,7 @@ export const DatapointsViewHeaderWrapper = styled.div`
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     position: static;
+    z-index: 1;
   }
 `;
 

@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
   palette,
   typography,
@@ -30,6 +31,8 @@ import { MenuItem } from "../Settings";
 
 const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
 const INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH = 314;
+const STICKY_HEADER_WITH_PADDING_HEIGHT = 48;
+const DROPDOWN_WITH_MARGIN_HEIGHT = 79;
 const baseDisabledFadedOverlayCSS = `
   &:after {
     content: "";
@@ -43,7 +46,6 @@ const baseDisabledFadedOverlayCSS = `
 `;
 
 export const MetricsViewContainer = styled.div`
-  height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -87,14 +89,14 @@ export const MetricsViewControlPanelOverflowHidden = styled(
   MetricsViewControlPanel
 )`
   flex-wrap: nowrap;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 export const PanelContainerLeft = styled.div`
   width: 25%;
   min-width: calc(314px + 24px + 95px);
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -109,7 +111,7 @@ export const SystemsContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
 `;
 
@@ -182,6 +184,8 @@ export const MobileDisclaimerContainer = styled(DisclaimerContainer)`
   height: auto;
   justify-content: flex-start;
   padding-bottom: 24px;
+  padding-top: ${STICKY_HEADER_WITH_PADDING_HEIGHT +
+  DROPDOWN_WITH_MARGIN_HEIGHT}px;
 `;
 
 export const DisclaimerTitle = styled.div`
@@ -200,12 +204,11 @@ export const DisclaimerLink = styled.span`
 export const PanelContainerRight = styled.div`
   width: 75%;
   min-width: 730px;
-  height: 100%;
+  min-height: 100%;
   display: flex;
   position: relative;
   flex-direction: column;
-  overflow-y: scroll;
-  overflow-x: scroll;
+  overflow: auto;
   padding-right: 24px;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
@@ -222,19 +225,25 @@ export const MobileDatapointsControls = styled.div`
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: flex;
-  } ;
+    position: relative;
+  }
 `;
 
 export const CurrentMetricsSystem = styled.div`
   display: none;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    position: fixed;
+    top: ${HEADER_BAR_HEIGHT}px;
     display: block;
-    width: 100%;
+    width: calc(100% - 48px);
     ${typography.sizeCSS.medium};
     text-transform: capitalize;
     padding-bottom: 12px;
+    padding-top: 24px;
     border-bottom: 1px solid ${palette.solid.darkgrey};
+    z-index: 2;
+    background-color: ${palette.solid.white};
   }
 `;
 
@@ -254,6 +263,19 @@ export const MetricConfigurationDropdownContainer = styled(DropdownContainer)<{
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: flex;
+  }
+`;
+
+export const MetricConfigurationDropdownContainerFixed = styled(
+  MetricConfigurationDropdownContainer
+)`
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: flex;
+    position: fixed;
+    top: ${HEADER_BAR_HEIGHT + 24 + 37}px;
+    width: calc(100% - 48px);
+    z-index: 2;
+    background-color: ${palette.solid.white};
   }
 `;
 
@@ -284,7 +306,7 @@ export const MetricsConfigurationDropdownToggle = styled(DropdownToggle)`
 `;
 
 export const MetricsConfigurationDropdownMenu = styled(DropdownMenu)`
-  overflow-y: scroll;
+  overflow-y: auto;
   z-index: 10;
   margin-top: 11px;
   box-shadow: 0px 0px 1px rgba(23, 28, 43, 0.1),
@@ -364,7 +386,7 @@ export const MetricBoxBottomPaddingContainer = styled.div`
   height: 100%;
   width: 100%;
   padding-bottom: 50px;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 type MetricBoxContainerProps = {
@@ -463,11 +485,11 @@ export const MetricDescription = styled.div`
 export const MetricDetailsDisplay = styled.div`
   height: 100%;
   width: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 24px 12px 50px 0;
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
-    overflow-y: unset;
     padding: 24px 12px 0px 0;
   }
 `;
@@ -831,7 +853,7 @@ export const MetricConfigurationWrapper = styled.div`
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 `;
 
@@ -840,7 +862,7 @@ export const DefinitionsDisplayContainer = styled.div`
   flex-direction: column;
   flex: 1 1 55%;
   padding: 18px 12px 50px 70px;
-  overflow-y: scroll;
+  overflow-y: auto;
   position: relative;
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {

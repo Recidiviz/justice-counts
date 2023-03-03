@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
   MIN_TABLET_WIDTH,
   palette,
@@ -26,6 +27,8 @@ import styled from "styled-components/macro";
 import { LabelRow, Row, Table } from "../Reports";
 import { AccountSettingsTitle } from "../Settings/AccountSettings.styles";
 
+const STICKY_RESPONSIVE_UPLOADED_FILES_TITLE_HEIGHT = 48;
+
 export const UploadedFilesTitle = styled(AccountSettingsTitle)`
   &::before {
     content: "Uploaded Files";
@@ -34,7 +37,12 @@ export const UploadedFilesTitle = styled(AccountSettingsTitle)`
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     ${typography.sizeCSS.medium};
     border-bottom: 1px solid ${palette.highlight.grey9};
-    padding-bottom: 24px;
+    position: fixed;
+    top: ${HEADER_BAR_HEIGHT}px;
+    padding: 24px 0;
+    z-index: 2;
+    width: calc(100% - 48px);
+    background-color: ${palette.solid.white};
 
     &::before {
       content: "Settings > Uploaded Files";
@@ -68,7 +76,7 @@ export const ExtendedLabelRow = styled(LabelRow)`
   position: sticky;
   top: 0;
   background: ${palette.solid.white};
-  z-index: 2;
+  z-index: 1;
   padding-left: 0;
   padding-right: 8px;
 
@@ -162,11 +170,15 @@ export const UploadedFilesError = styled.div`
 export const UploadedFilesTable = styled(Table)`
   padding: unset;
   padding-bottom: 100px;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    padding-top: ${STICKY_RESPONSIVE_UPLOADED_FILES_TITLE_HEIGHT}px;
+  }
 `;
 
 export const UploadedFilesWrapper = styled.div`
   position: relative;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 export const DownloadIcon = styled.img`

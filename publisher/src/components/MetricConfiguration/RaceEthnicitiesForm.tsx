@@ -71,9 +71,9 @@ export const RaceEthnicitiesForm = observer(() => {
     ethnicitiesByRaceArray.filter(([_, ethnicities]) => {
       /** At least one Race where all three Ethnicities are enabled */
       return (
-        ethnicities.Hispanic.enabled &&
-        ethnicities["Not Hispanic"].enabled &&
-        ethnicities["Unknown Ethnicity"].enabled
+        ethnicities.Hispanic?.enabled &&
+        ethnicities["Not Hispanic"]?.enabled &&
+        ethnicities["Unknown Ethnicity"]?.enabled
       );
     }).length > 0;
 
@@ -82,8 +82,8 @@ export const RaceEthnicitiesForm = observer(() => {
       /** Unknown Race has both Hispanic and Not Hispanic enabled */
       return (
         race === "Unknown" &&
-        ethnicities.Hispanic.enabled &&
-        ethnicities["Not Hispanic"].enabled
+        ethnicities.Hispanic?.enabled &&
+        ethnicities["Not Hispanic"]?.enabled
       );
     }).length > 0;
 

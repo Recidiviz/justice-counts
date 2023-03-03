@@ -26,12 +26,12 @@ export const GuidanceContainer = styled.div`
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
 `;
 
 export const ContentContainer = styled.div<{ currentTopicID?: string }>`
   width: 100%;
   max-width: 497px;
+  padding: 100px 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -262,17 +262,9 @@ export const ProgressItemName = styled.div`
   color: ${palette.solid.white};
 `;
 
-export const MetricContentContainer = styled(ContentContainer)`
-  width: 100%;
-  max-height: 515px;
-  max-width: 550px;
-  gap: unset;
-  justify-content: flex-start;
-  overflow-y: scroll;
-  overflow-x: hidden;
-`;
-
-export const Metric = styled.div<{ hideTooltip?: boolean }>`
+export const Metric = styled.div<{
+  hideTooltip?: boolean;
+}>`
   width: 100%;
   padding-bottom: 16px;
   display: flex;
@@ -301,6 +293,16 @@ export const Metric = styled.div<{ hideTooltip?: boolean }>`
 
   &:hover > ${ProgressTooltipContainer} {
     opacity: ${({ hideTooltip }) => (hideTooltip ? 0 : 1)};
+  }
+`;
+
+export const MetricContentContainer = styled(ContentContainer)`
+  width: 100%;
+  max-width: 550px;
+  gap: unset;
+
+  &:hover ${Metric}:not(:hover) {
+    color: ${palette.highlight.grey8};
   }
 `;
 

@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
   MIN_TABLET_WIDTH,
   palette,
@@ -28,10 +29,11 @@ import { SETTINGS_MENU_WITH_PADDINGS_WIDTH } from "./Settings.styles";
 
 // Common
 const AGENCY_SETTINGS_CONTAINER_WIDTH = 644;
+const STICKY_RESPONSIVE_HEADER_WITH_PADDING_HEIGHT = 48;
 
 export const AgencySettingsWrapper = styled.div`
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -60,6 +62,7 @@ export const AgencySettingsContent = styled.div`
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    padding-top: ${STICKY_RESPONSIVE_HEADER_WITH_PADDING_HEIGHT}px;
     width: 100%;
     align-items: start;
     gap: 24px;
@@ -82,6 +85,11 @@ export const AgencySettingsTitle = styled.div`
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     ${typography.sizeCSS.medium};
     width: 100%;
+    position: fixed;
+    top: ${HEADER_BAR_HEIGHT}px;
+    padding: 24px 0;
+    background-color: ${palette.solid.white};
+    z-index: 2;
 
     &::before {
       content: "Settings > Agency Settings";
