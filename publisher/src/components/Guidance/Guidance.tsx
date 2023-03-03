@@ -179,10 +179,12 @@ export const Guidance = observer(() => {
       }
     };
 
+    // Initialize the ReportStore only when we are on the ADD_DATA/PUBLISH_DATA steps to load a list of reports in the overview screen
     if (currentTopicID === "ADD_DATA" || currentTopicID === "PUBLISH_DATA") {
       initializeReportStoreUpdateProgress();
     }
 
+    // Initialize the MetricConfigStore only when we are on the METRIC_CONFIG step to load a list of metrics in the overview screen
     if (currentTopicID === "METRIC_CONFIG") {
       initializeMetricConfigStoreUpdateProgress();
     }
