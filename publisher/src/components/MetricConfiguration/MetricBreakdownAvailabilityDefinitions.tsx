@@ -386,7 +386,7 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
                   }
                   onMouseLeave={() => setShowDefaultSettings(false)}
                 >
-                  Reset to preferred definition
+                  Reset to default
                 </RevertToDefaultTextButton>
               </RevertToDefaultTextButtonWrapper>
             </DefinitionsWrapper>
