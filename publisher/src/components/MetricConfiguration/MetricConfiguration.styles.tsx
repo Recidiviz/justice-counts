@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
   palette,
   typography,
@@ -30,6 +31,8 @@ import { MenuItem } from "../Settings";
 
 const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
 const INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH = 314;
+const STICKY_HEADER_WITH_PADDING_HEIGHT = 48;
+const DROPDOWN_WITH_MARGIN_HEIGHT = 79;
 const baseDisabledFadedOverlayCSS = `
   &:after {
     content: "";
@@ -181,6 +184,8 @@ export const MobileDisclaimerContainer = styled(DisclaimerContainer)`
   height: auto;
   justify-content: flex-start;
   padding-bottom: 24px;
+  padding-top: ${STICKY_HEADER_WITH_PADDING_HEIGHT +
+  DROPDOWN_WITH_MARGIN_HEIGHT}px;
 `;
 
 export const DisclaimerTitle = styled.div`
@@ -220,19 +225,25 @@ export const MobileDatapointsControls = styled.div`
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: flex;
-  } ;
+    position: relative;
+  }
 `;
 
 export const CurrentMetricsSystem = styled.div`
   display: none;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    position: fixed;
+    top: ${HEADER_BAR_HEIGHT}px;
     display: block;
-    width: 100%;
+    width: calc(100% - 48px);
     ${typography.sizeCSS.medium};
     text-transform: capitalize;
     padding-bottom: 12px;
+    padding-top: 24px;
     border-bottom: 1px solid ${palette.solid.darkgrey};
+    z-index: 2;
+    background-color: ${palette.solid.white};
   }
 `;
 
@@ -252,6 +263,19 @@ export const MetricConfigurationDropdownContainer = styled(DropdownContainer)<{
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: flex;
+  }
+`;
+
+export const MetricConfigurationDropdownContainerFixed = styled(
+  MetricConfigurationDropdownContainer
+)`
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: flex;
+    position: fixed;
+    top: ${HEADER_BAR_HEIGHT + 24 + 37}px;
+    width: calc(100% - 48px);
+    z-index: 2;
+    background-color: ${palette.solid.white};
   }
 `;
 

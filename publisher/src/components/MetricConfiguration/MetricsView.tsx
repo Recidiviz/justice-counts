@@ -45,7 +45,7 @@ import {
   DisclaimerLink,
   DisclaimerText,
   DisclaimerTitle,
-  MetricConfigurationDropdownContainer,
+  MetricConfigurationDropdownContainerFixed,
   MetricItem,
   MetricsConfigurationDropdownMenu,
   MetricsConfigurationDropdownMenuItem,
@@ -262,7 +262,7 @@ export const MetricsView: React.FC = observer(() => {
             <CurrentMetricsSystem>
               {formatSystemName(systemSearchParam)}
             </CurrentMetricsSystem>
-            <MetricConfigurationDropdownContainer hasBottomMargin>
+            <MetricConfigurationDropdownContainerFixed hasBottomMargin>
               <Dropdown>
                 <MetricsConfigurationDropdownToggle kind="borderless">
                   {agencyMetrics.length > 1 && (
@@ -314,7 +314,7 @@ export const MetricsView: React.FC = observer(() => {
                   <></>
                 )}
               </Dropdown>
-            </MetricConfigurationDropdownContainer>
+            </MetricConfigurationDropdownContainerFixed>
             <MobileDisclaimerContainer>
               <DisclaimerTitle>Note</DisclaimerTitle>
               <DisclaimerText>
