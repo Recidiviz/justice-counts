@@ -344,7 +344,7 @@ export const Guidance = observer(() => {
                   {Object.entries(metricsEntriesBySystem).map(
                     ([system, entries]) => {
                       return (
-                        <>
+                        <Fragment key={system}>
                           {currentAgency?.systems &&
                             currentAgency.systems.length > 1 && (
                               <SystemNameTitle>
@@ -420,7 +420,7 @@ export const Guidance = observer(() => {
                               </Fragment>
                             );
                           })}
-                        </>
+                        </Fragment>
                       );
                     }
                   )}
