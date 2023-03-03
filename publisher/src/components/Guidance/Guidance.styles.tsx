@@ -345,7 +345,7 @@ export const SystemNameTitle = styled.div`
   ${typography.sizeCSS.medium}
   text-align: left;
   text-transform: capitalize;
-  color: ${palette.highlight.grey7};
+  color: ${palette.highlight.grey8};
   margin-bottom: 20px;
 
   &:not(:first-child) {

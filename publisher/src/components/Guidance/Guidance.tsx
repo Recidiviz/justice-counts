@@ -120,16 +120,13 @@ export const Guidance = observer(() => {
     },
     {} as { [system: string]: [string, MetricInfo][] }
   );
-
-  console.log(JSON.stringify(metricsEntriesBySystem, null, 2));
-  // console.log(
-  //   JSON.stringify(
-  //     metricConfigStore.getMetricsBySystem(currentAgency?.systems[0]),
-  //     null,
-  //     2
-  //   )
-  // );
-  const totalMetrics = metricsEntries.length;
+  const totalMetrics = Object.values(metricsEntriesBySystem).reduce(
+    (acc, metrics) => {
+      acc += metrics.length;
+      return acc;
+    },
+    0
+  );
 
   const renderProgressSteps = () => {
     if (currentTopicID === "WELCOME") return;
@@ -158,9 +155,9 @@ export const Guidance = observer(() => {
     );
   };
 
-  const numberOfMetricsCompleted = metricsEntries.filter(
-    ([key]) => getMetricCompletionValue(key) === 4
-  ).length;
+  const numberOfMetricsCompleted = Object.values(metricsEntriesBySystem)
+    .flatMap((entries) => entries)
+    .filter(([key]) => getMetricCompletionValue(key) === 4).length;
 
   useEffect(
     () => metricConfigStore.resetStore(),
