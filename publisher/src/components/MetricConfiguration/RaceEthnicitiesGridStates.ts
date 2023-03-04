@@ -44,128 +44,128 @@ export type RaceEthnicitiesGridStates = {
  */
 export const raceEthnicityGridStates = {
   CAN_SPECIFY_ETHNICITY: {
-    "American Indian / Alaskan Native": {
-      Hispanic: true,
-      "Not Hispanic": true,
+    "American Indian or Alaska Native": {
+      "Hispanic or Latino": true,
+      "Not Hispanic or Latino": true,
       "Unknown Ethnicity": true,
     },
     Asian: {
-      Hispanic: true,
-      "Not Hispanic": true,
+      "Hispanic or Latino": true,
+      "Not Hispanic or Latino": true,
       "Unknown Ethnicity": true,
     },
     Black: {
-      Hispanic: true,
-      "Not Hispanic": true,
+      "Hispanic or Latino": true,
+      "Not Hispanic or Latino": true,
       "Unknown Ethnicity": true,
     },
     "More than one race": {
-      Hispanic: true,
-      "Not Hispanic": true,
+      "Hispanic or Latino": true,
+      "Not Hispanic or Latino": true,
       "Unknown Ethnicity": true,
     },
-    "Native Hawaiian / Pacific Islander": {
-      Hispanic: true,
-      "Not Hispanic": true,
+    "Native Hawaiian or Pacific Islander": {
+      "Hispanic or Latino": true,
+      "Not Hispanic or Latino": true,
       "Unknown Ethnicity": true,
     },
     White: {
-      Hispanic: true,
-      "Not Hispanic": true,
+      "Hispanic or Latino": true,
+      "Not Hispanic or Latino": true,
       "Unknown Ethnicity": true,
     },
     Other: {
-      Hispanic: true,
-      "Not Hispanic": true,
+      "Hispanic or Latino": true,
+      "Not Hispanic or Latino": true,
       "Unknown Ethnicity": true,
     },
     Unknown: {
-      Hispanic: true,
-      "Not Hispanic": true,
+      "Hispanic or Latino": true,
+      "Not Hispanic or Latino": true,
       "Unknown Ethnicity": true,
     },
   },
   NO_ETHNICITY_HISPANIC_AS_RACE: {
-    "American Indian / Alaskan Native": {
-      Hispanic: false,
-      "Not Hispanic": true,
+    "American Indian or Alaska Native": {
+      "Hispanic or Latino": false,
+      "Not Hispanic or Latino": true,
       "Unknown Ethnicity": false,
     },
     Asian: {
-      Hispanic: false,
-      "Not Hispanic": true,
+      "Hispanic or Latino": false,
+      "Not Hispanic or Latino": true,
       "Unknown Ethnicity": false,
     },
     Black: {
-      Hispanic: false,
-      "Not Hispanic": true,
+      "Hispanic or Latino": false,
+      "Not Hispanic or Latino": true,
       "Unknown Ethnicity": false,
     },
     "More than one race": {
-      Hispanic: false,
-      "Not Hispanic": true,
+      "Hispanic or Latino": false,
+      "Not Hispanic or Latino": true,
       "Unknown Ethnicity": false,
     },
-    "Native Hawaiian / Pacific Islander": {
-      Hispanic: false,
-      "Not Hispanic": true,
+    "Native Hawaiian or Pacific Islander": {
+      "Hispanic or Latino": false,
+      "Not Hispanic or Latino": true,
       "Unknown Ethnicity": false,
     },
     White: {
-      Hispanic: false,
-      "Not Hispanic": true,
+      "Hispanic or Latino": false,
+      "Not Hispanic or Latino": true,
       "Unknown Ethnicity": false,
     },
     Other: {
-      Hispanic: false,
-      "Not Hispanic": true,
+      "Hispanic or Latino": false,
+      "Not Hispanic or Latino": true,
       "Unknown Ethnicity": false,
     },
     Unknown: {
-      Hispanic: true,
-      "Not Hispanic": true,
+      "Hispanic or Latino": true,
+      "Not Hispanic or Latino": true,
       "Unknown Ethnicity": false,
     },
   },
   NO_ETHNICITY_HISPANIC_NOT_SPECIFIED: {
-    "American Indian / Alaskan Native": {
-      Hispanic: false,
-      "Not Hispanic": false,
+    "American Indian or Alaska Native": {
+      "Hispanic or Latino": false,
+      "Not Hispanic or Latino": false,
       "Unknown Ethnicity": true,
     },
     Asian: {
-      Hispanic: false,
-      "Not Hispanic": false,
+      "Hispanic or Latino": false,
+      "Not Hispanic or Latino": false,
       "Unknown Ethnicity": true,
     },
     Black: {
-      Hispanic: false,
-      "Not Hispanic": false,
+      "Hispanic or Latino": false,
+      "Not Hispanic or Latino": false,
       "Unknown Ethnicity": true,
     },
     "More than one race": {
-      Hispanic: false,
-      "Not Hispanic": false,
+      "Hispanic or Latino": false,
+      "Not Hispanic or Latino": false,
       "Unknown Ethnicity": true,
     },
-    "Native Hawaiian / Pacific Islander": {
-      Hispanic: false,
-      "Not Hispanic": false,
+    "Native Hawaiian or Pacific Islander": {
+      "Hispanic or Latino": false,
+      "Not Hispanic or Latino": false,
       "Unknown Ethnicity": true,
     },
     White: {
-      Hispanic: false,
-      "Not Hispanic": false,
+      "Hispanic or Latino": false,
+      "Not Hispanic or Latino": false,
       "Unknown Ethnicity": true,
     },
     Other: {
-      Hispanic: false,
-      "Not Hispanic": false,
+      "Hispanic or Latino": false,
+      "Not Hispanic or Latino": false,
       "Unknown Ethnicity": true,
     },
     Unknown: {
-      Hispanic: false,
-      "Not Hispanic": false,
+      "Hispanic or Latino": false,
+      "Not Hispanic or Latino": false,
       "Unknown Ethnicity": true,
     },
   },

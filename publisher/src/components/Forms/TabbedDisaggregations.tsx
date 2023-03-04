@@ -188,11 +188,11 @@ export const TabbedDisaggregations: React.FC<{
         (acc, dimension) => {
           /** Include only enabled dimensions OR all dimensions when disaggregation is disabled (to avoid showing nothing)  */
           if (dimension.enabled || !raceEthnicityDisaggregation.enabled) {
-            if (dimension.ethnicity === "Hispanic") {
-              acc.Hispanic.push(dimension);
+            if (dimension.ethnicity === "Hispanic or Latino") {
+              acc["Hispanic or Latino"].push(dimension);
             }
-            if (dimension.ethnicity === "Not Hispanic") {
-              acc["Not Hispanic"].push(dimension);
+            if (dimension.ethnicity === "Not Hispanic or Latino") {
+              acc["Not Hispanic or Latino"].push(dimension);
             }
             if (dimension.ethnicity === "Unknown Ethnicity") {
               acc["Unknown Ethnicity"].push(dimension);
@@ -201,8 +201,8 @@ export const TabbedDisaggregations: React.FC<{
           return acc;
         },
         {
-          Hispanic: [],
-          "Not Hispanic": [],
+          "Hispanic or Latino": [],
+          "Not Hispanic or Latino": [],
           "Unknown Ethnicity": [],
         } as { [key: string]: MetricDisaggregationDimensions[] }
       ) || {};
@@ -215,9 +215,7 @@ export const TabbedDisaggregations: React.FC<{
         {dimensionsGroupedByEthnicityEntries.map(([ethnicity, dimensions]) => (
           <Fragment key={dimensions[0]?.key + ethnicity}>
             {dimensions.length > 0 && (
-              <EthnicityHeader>
-                {ethnicity === "Hispanic" ? "Hispanic or Latino" : ethnicity}
-              </EthnicityHeader>
+              <EthnicityHeader>{ethnicity}</EthnicityHeader>
             )}
             {dimensions.map((dimension) => renderDimension({ dimension }))}
           </Fragment>

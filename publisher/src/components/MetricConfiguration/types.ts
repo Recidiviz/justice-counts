@@ -61,10 +61,10 @@ export type UpdatedDisaggregation = {
 };
 
 export const races = [
-  "American Indian / Alaskan Native",
+  "American Indian or Alaskan Native",
   "Asian",
   "Black",
-  "Native Hawaiian / Pacific Islander",
+  "Native Hawaiian or Pacific Islander",
   "White",
   "More than one race",
   "Other",
@@ -73,8 +73,8 @@ export const races = [
 export type Races = typeof races[number];
 
 export const ethnicities = [
-  "Hispanic",
-  "Not Hispanic",
+  "Hispanic or Latino",
+  "Not Hispanic or Latino",
   "Unknown Ethnicity",
 ] as const;
 export type Ethnicities = typeof ethnicities[number];

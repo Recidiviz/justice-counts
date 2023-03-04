@@ -76,11 +76,11 @@ const RaceEthnicitiesGroupedByEthnicity: React.FC<{
   const dimensionsGroupedByEthnicity =
     dimensions.reduce(
       (acc, dimension) => {
-        if (dimension.ethnicity === "Hispanic") {
-          acc.Hispanic.push(dimension);
+        if (dimension.ethnicity === "Hispanic or Latino") {
+          acc["Hispanic or Latino"].push(dimension);
         }
-        if (dimension.ethnicity === "Not Hispanic") {
-          acc["Not Hispanic"].push(dimension);
+        if (dimension.ethnicity === "Not Hispanic or Latino") {
+          acc["Not Hispanic or Latino"].push(dimension);
         }
         if (dimension.ethnicity === "Unknown Ethnicity") {
           acc["Unknown Ethnicity"].push(dimension);
@@ -88,8 +88,8 @@ const RaceEthnicitiesGroupedByEthnicity: React.FC<{
         return acc;
       },
       {
-        Hispanic: [],
-        "Not Hispanic": [],
+        "Hispanic or Latino": [],
+        "Not Hispanic or Latino": [],
         "Unknown Ethnicity": [],
       } as { [key: string]: MetricDisaggregationDimensionsWithErrors[] }
     ) || {};
@@ -103,7 +103,7 @@ const RaceEthnicitiesGroupedByEthnicity: React.FC<{
         ([ethnicity, groupedDimensions]) => (
           <>
             <MetricSubTitleContainer secondary>
-              {ethnicity === "Hispanic" ? "Hispanic or Latino" : ethnicity}
+              {ethnicity}
             </MetricSubTitleContainer>
             <DisaggregationBreakdownContainer>
               {groupedDimensions.map((dimension) => (
