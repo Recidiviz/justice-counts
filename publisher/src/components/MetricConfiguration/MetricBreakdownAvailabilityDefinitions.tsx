@@ -15,6 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { MIN_TABLET_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
   MetricConfigurationSettingsOptions,
   metricConfigurationSettingsOptions,
@@ -24,6 +26,7 @@ import React, { Fragment, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import dropdownArrow from "../assets/dropdown-arrow.svg";
 import { REPORT_VERB_LOWERCASE } from "../Global/constants";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
@@ -39,6 +42,7 @@ import {
   DefinitionsDisplayContainer,
   DefinitionSelection,
   DefinitionsSubTitle,
+  DefinitionsSubTitleDropdownArrow,
   DefinitionsTitle,
   DefinitionsWrapper,
   DimensionContexts,
@@ -70,6 +74,8 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
       updateDimensionEnabledStatus,
       saveMetricSettings,
     } = metricConfigStore;
+    const windowWidth = useWindowWidth();
+    const [isDefinitionsOpen, setIsDefinitionsOpen] = useState(false);
 
     const { system: systemSearchParam, metric: metricSearchParam } =
       settingsSearchParams;
@@ -311,10 +317,23 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
                 (metrics[systemMetricKey]?.enabled && currentDimension?.enabled)
               }
             >
-              <DefinitionsSubTitle>
+              <DefinitionsSubTitle
+                onClick={() => {
+                  if (windowWidth <= MIN_TABLET_WIDTH) {
+                    setIsDefinitionsOpen(!isDefinitionsOpen);
+                  }
+                }}
+              >
+                {windowWidth <= MIN_TABLET_WIDTH && (
+                  <DefinitionsSubTitleDropdownArrow
+                    src={dropdownArrow}
+                    alt=""
+                    isOpen={isDefinitionsOpen}
+                  />
+                )}
                 {activeDimensionKey ? "Breakdown" : "Metric"} Definitions
               </DefinitionsSubTitle>
-              <DefinitionsDescription>
+              <DefinitionsDescription isHiddenInMobileView={!isDefinitionsOpen}>
                 Indicate which of the following categories your agency considers
                 to be part of this {activeDimensionKey ? "breakdown" : "metric"}
                 .
@@ -325,7 +344,7 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
               </DefinitionsDescription>
 
               {/* Definition Settings (Includes/Excludes) */}
-              <Definitions>
+              <Definitions isHiddenInMobileView={!isDefinitionsOpen}>
                 {activeSettingsKeys?.map((settingKey) => {
                   const currentSetting = (
                     isMetricDefinitionSettings
@@ -375,7 +394,9 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
               </Definitions>
 
               {/* Revert To Default Definition Settings */}
-              <RevertToDefaultTextButtonWrapper>
+              <RevertToDefaultTextButtonWrapper
+                isHiddenInMobileView={!isDefinitionsOpen}
+              >
                 <RevertToDefaultTextButton
                   onClick={() => {
                     setShowDefaultSettings(false);
@@ -395,7 +416,7 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
           {noSettingsAvailable &&
             !hasMinOneDimensionContext &&
             !hasMinOneMetricLevelContext && (
-              <DefinitionsSubTitle>
+              <DefinitionsSubTitle isHiddenInMobileView={!isDefinitionsOpen}>
                 There are no definitions to configure for this{" "}
                 {activeDimensionKey ? "breakdown." : "metric yet."}
               </DefinitionsSubTitle>
@@ -407,11 +428,18 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
               dimensionContextsMap={dimensionContextsMap}
               activeDisaggregationKey={activeDisaggregationKey}
               activeDimensionKey={activeDimensionKey}
+              isShown={
+                windowWidth <= MIN_TABLET_WIDTH ? isDefinitionsOpen : true
+              }
             />
           )}
         </DefinitionsDisplay>
         {/* Additional Context (only appears on overall metric settings and not individual dimension settings) */}
-        {!activeDimensionKey && <ContextConfiguration />}
+        {!activeDimensionKey && (
+          <ContextConfiguration
+            isShown={windowWidth <= MIN_TABLET_WIDTH ? isDefinitionsOpen : true}
+          />
+        )}
       </DefinitionsDisplayContainer>
     );
   });

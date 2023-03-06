@@ -16,7 +16,7 @@
 // =============================================================================
 
 import {
-  MIN_DESKTOP_WIDTH,
+  MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -56,6 +56,10 @@ export const RaceEthnicitiesBreakdownContainer = styled.div<{
         opacity: 0.5;
       }
     `}
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    padding-top: 0;
+  }
 `;
 
 export const CalloutBox = styled.div`
@@ -78,10 +82,6 @@ export const CalloutBox = styled.div`
   &:hover {
     cursor: pointer;
     background-color: ${palette.highlight.blue};
-  }
-
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    margin-top: 24px;
   }
 `;
 
@@ -164,13 +164,17 @@ export const SpecifyEthnicityWrapper = styled(MetricOnOffWrapper)`
 `;
 
 export const RaceEthnicitiesContainer = styled(DefinitionsDisplayContainer)`
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     padding-bottom: 0;
   }
 `;
 export const RaceEthnicitiesDisplay = styled(DefinitionsDisplay)``;
 export const RaceEthnicitiesTitle = styled(DefinitionsTitle)``;
-export const RaceEthnicitiesDescription = styled(DefinitionsDescription)``;
+export const RaceEthnicitiesDescription = styled(DefinitionsDescription)`
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    display: none;
+  }
+`;
 export const RaceContainer = styled(Definitions)``;
 export const Race = styled(DefinitionItem)``;
 export const RaceDisplayName = styled(DefinitionDisplayName)``;
@@ -181,7 +185,7 @@ export const RaceEthnicityRadioButtonGroupWrapper = styled(
 )`
   display: flex;
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     gap: 4px;
     align-items: center;
   }
