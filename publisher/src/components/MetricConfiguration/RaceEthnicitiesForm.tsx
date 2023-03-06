@@ -25,7 +25,6 @@ import { BinaryRadioButton } from "../Forms";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   Header,
-  Race,
   RaceContainer,
   RaceDisplayName,
   RaceEthnicitiesContainer,
@@ -35,6 +34,7 @@ import {
   raceEthnicityGridStates,
   RaceEthnicityRadioButtonGroupWrapper,
   RaceSelection,
+  RaceWrapper,
   RadioButtonGroupWrapper,
   sortRaces,
   SpecifyEthnicityWrapper,
@@ -204,7 +204,7 @@ export const RaceEthnicitiesForm = observer(() => {
         <RaceContainer>
           {/* Hispanic/Latino as Race (if user cannot specify ethnicity) */}
           {!canSpecifyEthnicity && (
-            <Race>
+            <RaceWrapper>
               <RaceDisplayName>Hispanic or Latino</RaceDisplayName>
               <RaceSelection>
                 <RaceEthnicityRadioButtonGroupWrapper>
@@ -240,7 +240,7 @@ export const RaceEthnicitiesForm = observer(() => {
                   />
                 </RaceEthnicityRadioButtonGroupWrapper>
               </RaceSelection>
-            </Race>
+            </RaceWrapper>
           )}
 
           {/* Races (Enable/Disable) */}
@@ -254,7 +254,7 @@ export const RaceEthnicitiesForm = observer(() => {
               );
 
               return (
-                <Race key={race}>
+                <RaceWrapper key={race}>
                   <RaceDisplayName>{race}</RaceDisplayName>
                   <RaceSelection>
                     <RaceEthnicityRadioButtonGroupWrapper>
@@ -282,7 +282,7 @@ export const RaceEthnicitiesForm = observer(() => {
                       />
                     </RaceEthnicityRadioButtonGroupWrapper>
                   </RaceSelection>
-                </Race>
+                </RaceWrapper>
               );
             })}
         </RaceContainer>

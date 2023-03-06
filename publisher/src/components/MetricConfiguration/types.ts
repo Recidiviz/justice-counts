@@ -60,23 +60,27 @@ export type UpdatedDisaggregation = {
   }[];
 };
 
-export const races = [
-  "American Indian or Alaskan Native",
-  "Asian",
-  "Black",
-  "Native Hawaiian or Pacific Islander",
-  "White",
-  "More than one race",
-  "Other",
-  "Unknown",
-] as const;
+export const Race = {
+  AMERICAN_INDIAN_OR_ALASKAN_NATIVE: "American Indian or Alaskan Native",
+  ASIAN: "Asian",
+  BLACK: "Black",
+  NATIVE_HAWAIIAN_OR_PACIFIC_ISLANDER: "Native Hawaiian or Pacific Islander",
+  WHITE: "White",
+  MORE_THAN_ONE_RACE: "More than one race",
+  OTHER: "Other",
+  UNKNOWN: "Unknown",
+};
+
+export const Ethnicity = {
+  HISPANIC_OR_LATINO: "Hispanic or Latino",
+  NOT_HISPANIC_OR_LATINO: "Not Hispanic or Latino",
+  UNKNOWN_ETHNICITY: "Unknown Ethnicity",
+};
+
+export const races = [...Object.values(Race)] as const;
 export type Races = typeof races[number];
 
-export const ethnicities = [
-  "Hispanic or Latino",
-  "Not Hispanic or Latino",
-  "Unknown Ethnicity",
-] as const;
+export const ethnicities = [...Object.values(Ethnicity)] as const;
 export type Ethnicities = typeof ethnicities[number];
 
 export enum ChartView {
