@@ -116,7 +116,7 @@ export const EthnicityLabel = styled.div`
   }
 `;
 
-export const Ethnicity = styled.div`
+export const EthnicityName = styled.div`
   color: ${palette.solid.darkgrey};
   white-space: nowrap;
 `;
@@ -172,7 +172,7 @@ export const RaceEthnicitiesDisplay = styled(DefinitionsDisplay)``;
 export const RaceEthnicitiesTitle = styled(DefinitionsTitle)``;
 export const RaceEthnicitiesDescription = styled(DefinitionsDescription)``;
 export const RaceContainer = styled(Definitions)``;
-export const Race = styled(DefinitionItem)``;
+export const RaceWrapper = styled(DefinitionItem)``;
 export const RaceDisplayName = styled(DefinitionDisplayName)``;
 export const RaceSelection = styled(DefinitionSelection)``;
 export const RaceSelectionButton = styled(MiniButton)``;

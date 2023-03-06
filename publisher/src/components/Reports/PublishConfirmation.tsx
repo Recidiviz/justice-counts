@@ -38,7 +38,10 @@ import {
   REPORTS_LOWERCASE,
 } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
-import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "../MetricConfiguration";
+import {
+  Ethnicity,
+  RACE_ETHNICITY_DISAGGREGATION_KEY,
+} from "../MetricConfiguration";
 import { Heading, Subheading } from "../ReviewMetrics/ReviewMetrics.styles";
 import { useCheckMetricForErrors } from "./hooks";
 import {
@@ -76,21 +79,21 @@ const RaceEthnicitiesGroupedByEthnicity: React.FC<{
   const dimensionsGroupedByEthnicity =
     dimensions.reduce(
       (acc, dimension) => {
-        if (dimension.ethnicity === "Hispanic") {
-          acc.Hispanic.push(dimension);
+        if (dimension.ethnicity === Ethnicity.HISPANIC_OR_LATINO) {
+          acc[Ethnicity.HISPANIC_OR_LATINO].push(dimension);
         }
-        if (dimension.ethnicity === "Not Hispanic") {
-          acc["Not Hispanic"].push(dimension);
+        if (dimension.ethnicity === Ethnicity.NOT_HISPANIC_OR_LATINO) {
+          acc[Ethnicity.NOT_HISPANIC_OR_LATINO].push(dimension);
         }
-        if (dimension.ethnicity === "Unknown Ethnicity") {
-          acc["Unknown Ethnicity"].push(dimension);
+        if (dimension.ethnicity === Ethnicity.UNKNOWN_ETHNICITY) {
+          acc[Ethnicity.UNKNOWN_ETHNICITY].push(dimension);
         }
         return acc;
       },
       {
-        Hispanic: [],
-        "Not Hispanic": [],
-        "Unknown Ethnicity": [],
+        [Ethnicity.HISPANIC_OR_LATINO]: [],
+        [Ethnicity.NOT_HISPANIC_OR_LATINO]: [],
+        [Ethnicity.UNKNOWN_ETHNICITY]: [],
       } as { [key: string]: MetricDisaggregationDimensionsWithErrors[] }
     ) || {};
   const dimensionsGroupedByEthnicityEntries = Object.entries(
@@ -103,7 +106,7 @@ const RaceEthnicitiesGroupedByEthnicity: React.FC<{
         ([ethnicity, groupedDimensions]) => (
           <>
             <MetricSubTitleContainer secondary>
-              {ethnicity === "Hispanic" ? "Hispanic or Latino" : ethnicity}
+              {ethnicity}
             </MetricSubTitleContainer>
             <DisaggregationBreakdownContainer>
               {groupedDimensions.map((dimension) => (

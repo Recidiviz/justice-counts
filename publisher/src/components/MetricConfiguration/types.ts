@@ -22,6 +22,8 @@ import {
   ReportFrequency,
 } from "@justice-counts/common/types";
 
+import { Ethnicity, Race } from ".";
+
 export type MetricSettings = {
   key: string;
   enabled?: boolean;
@@ -60,23 +62,10 @@ export type UpdatedDisaggregation = {
   }[];
 };
 
-export const races = [
-  "American Indian / Alaskan Native",
-  "Asian",
-  "Black",
-  "Native Hawaiian / Pacific Islander",
-  "White",
-  "More than one race",
-  "Other",
-  "Unknown",
-] as const;
+export const races = [...Object.values(Race)] as const;
 export type Races = typeof races[number];
 
-export const ethnicities = [
-  "Hispanic",
-  "Not Hispanic",
-  "Unknown Ethnicity",
-] as const;
+export const ethnicities = [...Object.values(Ethnicity)] as const;
 export type Ethnicities = typeof ethnicities[number];
 
 export enum ChartView {

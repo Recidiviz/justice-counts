@@ -24,8 +24,8 @@ import { useStore } from "../../stores";
 import { BinaryRadioButton } from "../Forms";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
+  Ethnicity,
   Header,
-  Race,
   RaceContainer,
   RaceDisplayName,
   RaceEthnicitiesContainer,
@@ -35,6 +35,7 @@ import {
   raceEthnicityGridStates,
   RaceEthnicityRadioButtonGroupWrapper,
   RaceSelection,
+  RaceWrapper,
   RadioButtonGroupWrapper,
   sortRaces,
   SpecifyEthnicityWrapper,
@@ -71,9 +72,9 @@ export const RaceEthnicitiesForm = observer(() => {
     ethnicitiesByRaceArray.filter(([_, ethnicities]) => {
       /** At least one Race where all three Ethnicities are enabled */
       return (
-        ethnicities.Hispanic?.enabled &&
-        ethnicities["Not Hispanic"]?.enabled &&
-        ethnicities["Unknown Ethnicity"]?.enabled
+        ethnicities[Ethnicity.HISPANIC_OR_LATINO].enabled &&
+        ethnicities[Ethnicity.NOT_HISPANIC_OR_LATINO].enabled &&
+        ethnicities[Ethnicity.UNKNOWN_ETHNICITY].enabled
       );
     }).length > 0;
 
@@ -82,8 +83,8 @@ export const RaceEthnicitiesForm = observer(() => {
       /** Unknown Race has both Hispanic and Not Hispanic enabled */
       return (
         race === "Unknown" &&
-        ethnicities.Hispanic?.enabled &&
-        ethnicities["Not Hispanic"]?.enabled
+        ethnicities[Ethnicity.HISPANIC_OR_LATINO].enabled &&
+        ethnicities[Ethnicity.NOT_HISPANIC_OR_LATINO].enabled
       );
     }).length > 0;
 
@@ -158,9 +159,10 @@ export const RaceEthnicitiesForm = observer(() => {
 
         <SpecifyEthnicityWrapper>
           <Header>
-            Are you able to record an individual’s <strong>ethnicity</strong>{" "}
-            (Hispanic or Latino, Not Hispanic or Latino, or Unknown) separately
-            from their race in your case management system?
+            Are you able to record an individual’s <strong>ethnicity</strong> (
+            {Ethnicity.HISPANIC_OR_LATINO}, {Ethnicity.NOT_HISPANIC_OR_LATINO},
+            or {Ethnicity.UNKNOWN_ETHNICITY}) separately from their race in your
+            case management system?
           </Header>
 
           <RadioButtonGroupWrapper>
@@ -204,8 +206,8 @@ export const RaceEthnicitiesForm = observer(() => {
         <RaceContainer>
           {/* Hispanic/Latino as Race (if user cannot specify ethnicity) */}
           {!canSpecifyEthnicity && (
-            <Race>
-              <RaceDisplayName>Hispanic or Latino</RaceDisplayName>
+            <RaceWrapper>
+              <RaceDisplayName>{Ethnicity.HISPANIC_OR_LATINO}</RaceDisplayName>
               <RaceSelection>
                 <RaceEthnicityRadioButtonGroupWrapper>
                   <BinaryRadioButton
@@ -240,7 +242,7 @@ export const RaceEthnicitiesForm = observer(() => {
                   />
                 </RaceEthnicityRadioButtonGroupWrapper>
               </RaceSelection>
-            </Race>
+            </RaceWrapper>
           )}
 
           {/* Races (Enable/Disable) */}
@@ -254,7 +256,7 @@ export const RaceEthnicitiesForm = observer(() => {
               );
 
               return (
-                <Race key={race}>
+                <RaceWrapper key={race}>
                   <RaceDisplayName>{race}</RaceDisplayName>
                   <RaceSelection>
                     <RaceEthnicityRadioButtonGroupWrapper>
@@ -282,7 +284,7 @@ export const RaceEthnicitiesForm = observer(() => {
                       />
                     </RaceEthnicityRadioButtonGroupWrapper>
                   </RaceSelection>
-                </Race>
+                </RaceWrapper>
               );
             })}
         </RaceContainer>

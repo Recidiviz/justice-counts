@@ -15,6 +15,25 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+// import { Ethnicity, Race } from ".";
+
+export const Race = {
+  AMERICAN_INDIAN_OR_ALASKAN_NATIVE: "American Indian or Alaska Native",
+  ASIAN: "Asian",
+  BLACK: "Black",
+  NATIVE_HAWAIIAN_OR_PACIFIC_ISLANDER: "Native Hawaiian or Pacific Islander",
+  WHITE: "White",
+  MORE_THAN_ONE_RACE: "More than one race",
+  OTHER: "Other",
+  UNKNOWN: "Unknown",
+};
+
+export const Ethnicity = {
+  HISPANIC_OR_LATINO: "Hispanic or Latino",
+  NOT_HISPANIC_OR_LATINO: "Not Hispanic or Latino",
+  UNKNOWN_ETHNICITY: "Unknown Ethnicity",
+};
+
 export type StateKeys = keyof typeof raceEthnicityGridStates;
 
 export type RaceEthnicitiesGridStates = {
@@ -42,131 +61,132 @@ export type RaceEthnicitiesGridStates = {
  * State 2 has only 9 available dimensions (Race x Not Hispanic/Latino Ethnicity, Unknown Race x Hispanic/Latino Ethnicity) - the other 15 dimensions are disabled.
  * State 3 has only 8 available dimensions (Race x Unknown Ethnicity) - the other 16 dimensions are disabled.
  */
+
 export const raceEthnicityGridStates = {
   CAN_SPECIFY_ETHNICITY: {
-    "American Indian / Alaskan Native": {
-      Hispanic: true,
-      "Not Hispanic": true,
-      "Unknown Ethnicity": true,
+    [Race.AMERICAN_INDIAN_OR_ALASKAN_NATIVE]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: true,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: true,
+      [Ethnicity.UNKNOWN_ETHNICITY]: true,
     },
-    Asian: {
-      Hispanic: true,
-      "Not Hispanic": true,
-      "Unknown Ethnicity": true,
+    [Race.ASIAN]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: true,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: true,
+      [Ethnicity.UNKNOWN_ETHNICITY]: true,
     },
-    Black: {
-      Hispanic: true,
-      "Not Hispanic": true,
-      "Unknown Ethnicity": true,
+    [Race.BLACK]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: true,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: true,
+      [Ethnicity.UNKNOWN_ETHNICITY]: true,
     },
-    "More than one race": {
-      Hispanic: true,
-      "Not Hispanic": true,
-      "Unknown Ethnicity": true,
+    [Race.MORE_THAN_ONE_RACE]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: true,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: true,
+      [Ethnicity.UNKNOWN_ETHNICITY]: true,
     },
-    "Native Hawaiian / Pacific Islander": {
-      Hispanic: true,
-      "Not Hispanic": true,
-      "Unknown Ethnicity": true,
+    [Race.NATIVE_HAWAIIAN_OR_PACIFIC_ISLANDER]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: true,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: true,
+      [Ethnicity.UNKNOWN_ETHNICITY]: true,
     },
-    White: {
-      Hispanic: true,
-      "Not Hispanic": true,
-      "Unknown Ethnicity": true,
+    [Race.WHITE]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: true,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: true,
+      [Ethnicity.UNKNOWN_ETHNICITY]: true,
     },
-    Other: {
-      Hispanic: true,
-      "Not Hispanic": true,
-      "Unknown Ethnicity": true,
+    [Race.OTHER]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: true,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: true,
+      [Ethnicity.UNKNOWN_ETHNICITY]: true,
     },
-    Unknown: {
-      Hispanic: true,
-      "Not Hispanic": true,
-      "Unknown Ethnicity": true,
+    [Race.UNKNOWN]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: true,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: true,
+      [Ethnicity.UNKNOWN_ETHNICITY]: true,
     },
   },
   NO_ETHNICITY_HISPANIC_AS_RACE: {
-    "American Indian / Alaskan Native": {
-      Hispanic: false,
-      "Not Hispanic": true,
-      "Unknown Ethnicity": false,
+    [Race.AMERICAN_INDIAN_OR_ALASKAN_NATIVE]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: false,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: true,
+      [Ethnicity.UNKNOWN_ETHNICITY]: false,
     },
-    Asian: {
-      Hispanic: false,
-      "Not Hispanic": true,
-      "Unknown Ethnicity": false,
+    [Race.ASIAN]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: false,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: true,
+      [Ethnicity.UNKNOWN_ETHNICITY]: false,
     },
-    Black: {
-      Hispanic: false,
-      "Not Hispanic": true,
-      "Unknown Ethnicity": false,
+    [Race.BLACK]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: false,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: true,
+      [Ethnicity.UNKNOWN_ETHNICITY]: false,
     },
-    "More than one race": {
-      Hispanic: false,
-      "Not Hispanic": true,
-      "Unknown Ethnicity": false,
+    [Race.MORE_THAN_ONE_RACE]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: false,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: true,
+      [Ethnicity.UNKNOWN_ETHNICITY]: false,
     },
-    "Native Hawaiian / Pacific Islander": {
-      Hispanic: false,
-      "Not Hispanic": true,
-      "Unknown Ethnicity": false,
+    [Race.NATIVE_HAWAIIAN_OR_PACIFIC_ISLANDER]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: false,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: true,
+      [Ethnicity.UNKNOWN_ETHNICITY]: false,
     },
-    White: {
-      Hispanic: false,
-      "Not Hispanic": true,
-      "Unknown Ethnicity": false,
+    [Race.WHITE]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: false,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: true,
+      [Ethnicity.UNKNOWN_ETHNICITY]: false,
     },
-    Other: {
-      Hispanic: false,
-      "Not Hispanic": true,
-      "Unknown Ethnicity": false,
+    [Race.OTHER]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: false,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: true,
+      [Ethnicity.UNKNOWN_ETHNICITY]: false,
     },
-    Unknown: {
-      Hispanic: true,
-      "Not Hispanic": true,
-      "Unknown Ethnicity": false,
+    [Race.UNKNOWN]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: true,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: true,
+      [Ethnicity.UNKNOWN_ETHNICITY]: false,
     },
   },
   NO_ETHNICITY_HISPANIC_NOT_SPECIFIED: {
-    "American Indian / Alaskan Native": {
-      Hispanic: false,
-      "Not Hispanic": false,
-      "Unknown Ethnicity": true,
+    [Race.AMERICAN_INDIAN_OR_ALASKAN_NATIVE]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: false,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: false,
+      [Ethnicity.UNKNOWN_ETHNICITY]: true,
     },
-    Asian: {
-      Hispanic: false,
-      "Not Hispanic": false,
-      "Unknown Ethnicity": true,
+    [Race.ASIAN]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: false,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: false,
+      [Ethnicity.UNKNOWN_ETHNICITY]: true,
     },
-    Black: {
-      Hispanic: false,
-      "Not Hispanic": false,
-      "Unknown Ethnicity": true,
+    [Race.BLACK]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: false,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: false,
+      [Ethnicity.UNKNOWN_ETHNICITY]: true,
     },
-    "More than one race": {
-      Hispanic: false,
-      "Not Hispanic": false,
-      "Unknown Ethnicity": true,
+    [Race.MORE_THAN_ONE_RACE]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: false,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: false,
+      [Ethnicity.UNKNOWN_ETHNICITY]: true,
     },
-    "Native Hawaiian / Pacific Islander": {
-      Hispanic: false,
-      "Not Hispanic": false,
-      "Unknown Ethnicity": true,
+    [Race.NATIVE_HAWAIIAN_OR_PACIFIC_ISLANDER]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: false,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: false,
+      [Ethnicity.UNKNOWN_ETHNICITY]: true,
     },
-    White: {
-      Hispanic: false,
-      "Not Hispanic": false,
-      "Unknown Ethnicity": true,
+    [Race.WHITE]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: false,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: false,
+      [Ethnicity.UNKNOWN_ETHNICITY]: true,
     },
-    Other: {
-      Hispanic: false,
-      "Not Hispanic": false,
-      "Unknown Ethnicity": true,
+    [Race.OTHER]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: false,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: false,
+      [Ethnicity.UNKNOWN_ETHNICITY]: true,
     },
-    Unknown: {
-      Hispanic: false,
-      "Not Hispanic": false,
-      "Unknown Ethnicity": true,
+    [Race.UNKNOWN]: {
+      [Ethnicity.HISPANIC_OR_LATINO]: false,
+      [Ethnicity.NOT_HISPANIC_OR_LATINO]: false,
+      [Ethnicity.UNKNOWN_ETHNICITY]: true,
     },
   },
 };
