@@ -38,7 +38,7 @@ export const DataEntryHelpPageWrapper = styled.div<{
   border-left: 1px solid ${palette.highlight.grey4};
   padding: 46px 44px;
   z-index: 6;
-  overflow-y: scroll;
+  overflow-y: auto;
   transition: left 500ms ease-out;
   display: flex;
   flex-direction: column;

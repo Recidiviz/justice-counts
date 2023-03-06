@@ -61,7 +61,7 @@ const ModalBody = styled.div`
   padding: 35px 50px;
   color: ${palette.solid.darkgrey};
   max-height: 76%;
-  overflow: scroll;
+  overflow: auto;
 
   h1 {
     ${typography.sizeCSS.large}
