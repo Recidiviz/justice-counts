@@ -32,6 +32,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import {
   Ethnicities,
   ethnicities,
+  Ethnicity,
   MetricInfo,
   MetricSettings,
   RACE_ETHNICITY_DISAGGREGATION_KEY,
@@ -903,8 +904,9 @@ class MetricConfigStore {
      * re-enable the Unknown Race dimensions for the NO_ETHNICITY_HISPANIC_AS_RACE state.
      */
     if (unknownRaceDisabled && state === "NO_ETHNICITY_HISPANIC_AS_RACE") {
-      ethnicitiesByRace.Unknown["Hispanic or Latino"].enabled = true;
-      ethnicitiesByRace.Unknown["Not Hispanic or Latino"].enabled = true;
+      ethnicitiesByRace.Unknown[Ethnicity.HISPANIC_OR_LATINO].enabled = true;
+      ethnicitiesByRace.Unknown[Ethnicity.NOT_HISPANIC_OR_LATINO].enabled =
+        true;
       sanitizedState = state;
     }
     /** Update dimensions to match the specified default grid state */

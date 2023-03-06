@@ -28,7 +28,10 @@ import { useStore } from "../../stores";
 import dropdownArrow from "../assets/dropdown-arrow.svg";
 import errorIcon from "../assets/status-error-icon.png";
 import { ExtendedDropdownMenuItem } from "../Menu";
-import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "../MetricConfiguration";
+import {
+  Ethnicity,
+  RACE_ETHNICITY_DISAGGREGATION_KEY,
+} from "../MetricConfiguration";
 import {
   DisaggregationsDropdownContainer,
   DisaggregationsDropdownMenu,
@@ -188,22 +191,22 @@ export const TabbedDisaggregations: React.FC<{
         (acc, dimension) => {
           /** Include only enabled dimensions OR all dimensions when disaggregation is disabled (to avoid showing nothing)  */
           if (dimension.enabled || !raceEthnicityDisaggregation.enabled) {
-            if (dimension.ethnicity === "Hispanic or Latino") {
-              acc["Hispanic or Latino"].push(dimension);
+            if (dimension.ethnicity === Ethnicity.HISPANIC_OR_LATINO) {
+              acc[Ethnicity.HISPANIC_OR_LATINO].push(dimension);
             }
-            if (dimension.ethnicity === "Not Hispanic or Latino") {
-              acc["Not Hispanic or Latino"].push(dimension);
+            if (dimension.ethnicity === Ethnicity.NOT_HISPANIC_OR_LATINO) {
+              acc[Ethnicity.NOT_HISPANIC_OR_LATINO].push(dimension);
             }
-            if (dimension.ethnicity === "Unknown Ethnicity") {
-              acc["Unknown Ethnicity"].push(dimension);
+            if (dimension.ethnicity === Ethnicity.UNKNOWN_ETHNICITY) {
+              acc[Ethnicity.UNKNOWN_ETHNICITY].push(dimension);
             }
           }
           return acc;
         },
         {
-          "Hispanic or Latino": [],
-          "Not Hispanic or Latino": [],
-          "Unknown Ethnicity": [],
+          [Ethnicity.HISPANIC_OR_LATINO]: [],
+          [Ethnicity.NOT_HISPANIC_OR_LATINO]: [],
+          [Ethnicity.UNKNOWN_ETHNICITY]: [],
         } as { [key: string]: MetricDisaggregationDimensions[] }
       ) || {};
     const dimensionsGroupedByEthnicityEntries = Object.entries(

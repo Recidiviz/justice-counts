@@ -24,6 +24,7 @@ import { useStore } from "../../stores";
 import { BinaryRadioButton } from "../Forms";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
+  Ethnicity,
   Header,
   RaceContainer,
   RaceDisplayName,
@@ -71,9 +72,9 @@ export const RaceEthnicitiesForm = observer(() => {
     ethnicitiesByRaceArray.filter(([_, ethnicities]) => {
       /** At least one Race where all three Ethnicities are enabled */
       return (
-        ethnicities["Hispanic or Latino"].enabled &&
-        ethnicities["Not Hispanic or Latino"].enabled &&
-        ethnicities["Unknown Ethnicity"].enabled
+        ethnicities[Ethnicity.HISPANIC_OR_LATINO].enabled &&
+        ethnicities[Ethnicity.NOT_HISPANIC_OR_LATINO].enabled &&
+        ethnicities[Ethnicity.UNKNOWN_ETHNICITY].enabled
       );
     }).length > 0;
 
@@ -82,8 +83,8 @@ export const RaceEthnicitiesForm = observer(() => {
       /** Unknown Race has both Hispanic and Not Hispanic enabled */
       return (
         race === "Unknown" &&
-        ethnicities["Hispanic or Latino"].enabled &&
-        ethnicities["Not Hispanic or Latino"].enabled
+        ethnicities[Ethnicity.HISPANIC_OR_LATINO].enabled &&
+        ethnicities[Ethnicity.NOT_HISPANIC_OR_LATINO].enabled
       );
     }).length > 0;
 
@@ -158,9 +159,10 @@ export const RaceEthnicitiesForm = observer(() => {
 
         <SpecifyEthnicityWrapper>
           <Header>
-            Are you able to record an individual’s <strong>ethnicity</strong>{" "}
-            (Hispanic or Latino, Not Hispanic or Latino, or Unknown) separately
-            from their race in your case management system?
+            Are you able to record an individual’s <strong>ethnicity</strong> (
+            {Ethnicity.HISPANIC_OR_LATINO}, {Ethnicity.NOT_HISPANIC_OR_LATINO},
+            or {Ethnicity.UNKNOWN_ETHNICITY}) separately from their race in your
+            case management system?
           </Header>
 
           <RadioButtonGroupWrapper>
@@ -205,7 +207,7 @@ export const RaceEthnicitiesForm = observer(() => {
           {/* Hispanic/Latino as Race (if user cannot specify ethnicity) */}
           {!canSpecifyEthnicity && (
             <RaceWrapper>
-              <RaceDisplayName>Hispanic or Latino</RaceDisplayName>
+              <RaceDisplayName>{Ethnicity.HISPANIC_OR_LATINO}</RaceDisplayName>
               <RaceSelection>
                 <RaceEthnicityRadioButtonGroupWrapper>
                   <BinaryRadioButton

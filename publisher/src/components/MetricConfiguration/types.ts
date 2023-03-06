@@ -22,6 +22,8 @@ import {
   ReportFrequency,
 } from "@justice-counts/common/types";
 
+import { Ethnicity, Race } from ".";
+
 export type MetricSettings = {
   key: string;
   enabled?: boolean;
@@ -58,23 +60,6 @@ export type UpdatedDisaggregation = {
     key: string;
     dimensions: UpdatedDimension[];
   }[];
-};
-
-export const Race = {
-  AMERICAN_INDIAN_OR_ALASKAN_NATIVE: "American Indian or Alaskan Native",
-  ASIAN: "Asian",
-  BLACK: "Black",
-  NATIVE_HAWAIIAN_OR_PACIFIC_ISLANDER: "Native Hawaiian or Pacific Islander",
-  WHITE: "White",
-  MORE_THAN_ONE_RACE: "More than one race",
-  OTHER: "Other",
-  UNKNOWN: "Unknown",
-};
-
-export const Ethnicity = {
-  HISPANIC_OR_LATINO: "Hispanic or Latino",
-  NOT_HISPANIC_OR_LATINO: "Not Hispanic or Latino",
-  UNKNOWN_ETHNICITY: "Unknown Ethnicity",
 };
 
 export const races = [...Object.values(Race)] as const;

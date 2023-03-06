@@ -25,6 +25,7 @@ import {
   CalloutBox,
   Description,
   EthnicitiesRow,
+  Ethnicity,
   EthnicityCell,
   EthnicityLabel,
   EthnicityName,
@@ -72,9 +73,9 @@ export const RaceEthnicitiesGrid: React.FC<{
           <EthnicityLabel>
             Ethnicity <RightArrowIcon />
           </EthnicityLabel>
-          <EthnicityName>Hispanic or Latino</EthnicityName>
-          <EthnicityName>Not Hispanic</EthnicityName>
-          <EthnicityName>Unknown</EthnicityName>
+          <EthnicityName>{Ethnicity.HISPANIC_OR_LATINO}</EthnicityName>
+          <EthnicityName>{Ethnicity.NOT_HISPANIC_OR_LATINO}</EthnicityName>
+          <EthnicityName>{Ethnicity.UNKNOWN_ETHNICITY}</EthnicityName>
         </GridEthnicitiesHeader>
       </GridHeaderContainer>
 
