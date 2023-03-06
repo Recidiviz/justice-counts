@@ -32,7 +32,7 @@ export const AboutModalContainer = styled.div`
   display: flex;
   align-items: left;
   justify-content: center;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 export const AboutModalInnerContainer = styled.div`
@@ -115,7 +115,7 @@ export const AboutModalInfoButton = styled.div`
   font-weight: 400;
   border: 1px solid ${palette.highlight.white1};
   border-radius: 99px;
-  padding: 8px; 16px;
+  padding: 8px 16px;
   float: left;
   margin-right: 2px;
   margin-top: 2px;

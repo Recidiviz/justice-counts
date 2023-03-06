@@ -50,7 +50,7 @@ export const MenuContainer = styled.nav<{ isMobileMenuOpen: boolean }>`
     background-color: ${palette.solid.white};
     padding: 48px 32px ${HEADER_BAR_HEIGHT + 32}px 32px;
     gap: 32px;
-    overflow-y: scroll;
+    overflow-y: auto;
 
     #upload {
       width: 100%;
@@ -187,7 +187,7 @@ export const ExtendedDropdownToggle = styled(DropdownToggle)<{
 
 export const ExtendedDropdownMenu = styled(DropdownMenu)`
   max-height: 50vh;
-  overflow-y: scroll;
+  overflow-y: auto;
   z-index: 10;
 `;
 

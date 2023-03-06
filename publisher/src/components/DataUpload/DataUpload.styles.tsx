@@ -33,7 +33,7 @@ export const DataUploadContainer = styled.div`
   height: 100%;
   position: relative;
   margin-top: -${HEADER_BAR_HEIGHT}px;
-  overflow-y: scroll;
+  overflow-y: auto;
   z-index: 5;
   background: ${palette.solid.white};
 

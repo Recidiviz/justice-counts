@@ -79,7 +79,7 @@ const PUBLISH_CONFIRMATION_BUTTON_HEIGHT_AND_PADDING = 128;
 export const ReportSummaryProgressIndicatorWrapper = styled.div`
   margin-top: 16px;
   height: 37vh;
-  overflow-y: scroll;
+  overflow-y: auto;
 
   &::-webkit-scrollbar {
     -webkit-appearance: none;
