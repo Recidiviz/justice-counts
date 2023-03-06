@@ -71,6 +71,11 @@ export const MobileMetricsConfigurationHeader = styled.div<{
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: block;
+    position: fixed;
+    top: ${HEADER_BAR_HEIGHT}px;
+    padding-top: 24px;
+    background-color: ${palette.solid.white};
+    z-index: 2;
   }
 `;
 
@@ -251,9 +256,11 @@ export const CurrentMetricsSystem = styled.div`
 export const MetricConfigurationDropdownContainer = styled(DropdownContainer)<{
   hasTopBorder?: boolean;
   hasBottomMargin?: boolean;
+  hasTopMargin?: boolean;
 }>`
   display: none;
   margin-bottom: ${({ hasBottomMargin }) => hasBottomMargin && "24px"};
+  margin-top: ${({ hasTopMargin }) => hasTopMargin && "48px"};
   min-height: 56px;
   border-top: ${({ hasTopBorder }) =>
     hasTopBorder && `1px solid ${palette.solid.darkgrey}`};

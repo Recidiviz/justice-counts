@@ -180,7 +180,7 @@ export const MetricConfiguration: React.FC = observer(() => {
   return (
     <>
       <MetricsViewContainer>
-        <MobileMetricsConfigurationHeader hasBorder={showSystems}>
+        <MobileMetricsConfigurationHeader>
           Metric Configuration
           {systemSearchParam &&
             ` > ${formatSystemName(systemSearchParam, {
@@ -217,7 +217,11 @@ export const MetricConfiguration: React.FC = observer(() => {
             </StickyHeader>
 
             {/* Systems Dropdown (for multi-system agencies)  */}
-            <MetricConfigurationDropdownContainer hasBottomMargin>
+            <MetricConfigurationDropdownContainer
+              hasBottomMargin
+              hasTopBorder
+              hasTopMargin
+            >
               <Dropdown>
                 <MetricsConfigurationDropdownToggle kind="borderless">
                   <img src={dropdownArrow} alt="" />
@@ -280,6 +284,7 @@ export const MetricConfiguration: React.FC = observer(() => {
               <MetricConfigurationDropdownContainer
                 hasTopBorder
                 hasBottomMargin
+                hasTopMargin
               >
                 <Dropdown>
                   <MetricsConfigurationDropdownToggle kind="borderless">
