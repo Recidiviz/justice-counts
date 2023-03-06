@@ -59,6 +59,7 @@ import {
   ProgressItemName,
   ProgressItemWrapper,
   ProgressStepBubble,
+  ProgressSteps,
   ProgressStepsContainer,
   ProgressTooltipContainer,
   ReportsOverviewContainer,
@@ -403,21 +404,50 @@ export const Guidance = observer(() => {
                                   {/* Progress Tooltip */}
                                   <ProgressTooltipContainer>
                                     {metricConfigurationProgressSteps.map(
-                                      (step) => (
-                                        <ProgressItemWrapper key={step}>
-                                          <CheckIconWrapper>
-                                            {metricCompletionProgress[step] && (
-                                              <CheckIcon
-                                                src={checkmarkIcon}
-                                                alt=""
-                                              />
-                                            )}
-                                          </CheckIconWrapper>
-                                          <ProgressItemName>
-                                            {step}
-                                          </ProgressItemName>
-                                        </ProgressItemWrapper>
-                                      )
+                                      (step) => {
+                                        // When all disaggregations are disabled, the "Confirm breakdown definitions" are no longer required.
+                                        if (
+                                          step ===
+                                          ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
+                                        ) {
+                                          const allDisaggregationsDisabled =
+                                            metricConfigStore.disaggregations[
+                                              systemMetricKey
+                                            ] &&
+                                            Object.values(
+                                              metricConfigStore.disaggregations[
+                                                systemMetricKey
+                                              ]
+                                            ).filter(
+                                              (disaggregation) =>
+                                                disaggregation.enabled ===
+                                                  true ||
+                                                disaggregation.enabled === null
+                                            ).length === 0;
+                                          if (allDisaggregationsDisabled) {
+                                            return null;
+                                          }
+                                        }
+
+                                        return (
+                                          <ProgressItemWrapper key={step}>
+                                            <CheckIconWrapper>
+                                              {metricCompletionProgress &&
+                                                metricCompletionProgress[
+                                                  step
+                                                ] && (
+                                                  <CheckIcon
+                                                    src={checkmarkIcon}
+                                                    alt=""
+                                                  />
+                                                )}
+                                            </CheckIconWrapper>
+                                            <ProgressItemName>
+                                              {step}
+                                            </ProgressItemName>
+                                          </ProgressItemWrapper>
+                                        );
+                                      }
                                     )}
                                   </ProgressTooltipContainer>
                                 </Metric>
