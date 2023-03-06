@@ -109,7 +109,11 @@ export const Guidance = observer(() => {
       const { system } =
         MetricConfigStore.splitSystemMetricKey(systemMetricKey);
 
-      if (!SupervisionSubsystems.includes(system as AgencySystems)) {
+      if (
+        !SupervisionSubsystems.includes(system as AgencySystems) ||
+        (SupervisionSubsystems.includes(system as AgencySystems) &&
+          metric.enabled)
+      ) {
         if (!acc[system]) {
           acc[system] = [];
         }
@@ -120,6 +124,7 @@ export const Guidance = observer(() => {
     },
     {} as { [system: string]: [string, MetricInfo][] }
   );
+
   const totalMetrics = Object.values(metricsEntriesBySystem).reduce(
     (acc, metrics) => {
       // eslint-disable-next-line no-param-reassign
