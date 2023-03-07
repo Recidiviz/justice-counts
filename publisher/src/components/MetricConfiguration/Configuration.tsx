@@ -146,7 +146,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
         return system.charAt(0).toUpperCase() + system.slice(1);
       }) || [];
     const hasEnabledSupervisionSubsystems =
-      enabledSupervisionSubsystems && enabledSupervisionSubsystems?.length > 0;
+      enabledSupervisionSubsystems && enabledSupervisionSubsystems.length > 0;
 
     useEffect(
       () => {
