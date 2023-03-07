@@ -110,6 +110,7 @@ export const Guidance = observer(() => {
       const { system } =
         MetricConfigStore.splitSystemMetricKey(systemMetricKey);
 
+      // Exclude Supervision subsystems unless they are disaggregated AND enabled (in which case, they should be rendered).
       if (
         !SupervisionSubsystems.includes(system as AgencySystems) ||
         (SupervisionSubsystems.includes(system as AgencySystems) &&
