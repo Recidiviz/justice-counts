@@ -115,3 +115,6 @@ export const mockTopicsStatus: OnboardingTopicsStatuses[] = [
     topicCompleted: true,
   },
 ];
+
+// A number that indicates 4 out of 4 required configuration steps have been completed for an individual metric.
+export const ALL_REQUIRED_METRIC_CONFIG_STEPS_COMPLETED = 4;

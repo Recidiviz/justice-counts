@@ -42,6 +42,7 @@ import { MetricInfo } from "../MetricConfiguration";
 import {
   ActionButton,
   ActionButtonWrapper,
+  ALL_REQUIRED_METRIC_CONFIG_STEPS_COMPLETED,
   CheckIcon,
   CheckIconWrapper,
   ConfiguredMetricIndicatorTitle,
@@ -163,7 +164,11 @@ export const Guidance = observer(() => {
 
   const numberOfMetricsCompleted = Object.values(metricsEntriesBySystem)
     .flatMap((entries) => entries)
-    .filter(([key]) => getMetricCompletionValue(key) === 4).length;
+    .filter(
+      ([key]) =>
+        getMetricCompletionValue(key) ===
+        ALL_REQUIRED_METRIC_CONFIG_STEPS_COMPLETED
+    ).length;
 
   useEffect(
     () => metricConfigStore.resetStore(),
@@ -380,12 +385,14 @@ export const Guidance = observer(() => {
                                   <MetricStatus
                                     greyText={metric.enabled === false}
                                   >
-                                    {metricCompletionProgressValue === 4 &&
+                                    {metricCompletionProgressValue ===
+                                      ALL_REQUIRED_METRIC_CONFIG_STEPS_COMPLETED &&
                                       metric.enabled && (
                                         <CheckIcon src={checkmarkIcon} alt="" />
                                       )}
                                     {metric.enabled === false && "Unavailable"}
-                                    {metricCompletionProgressValue < 4 &&
+                                    {metricCompletionProgressValue <
+                                      ALL_REQUIRED_METRIC_CONFIG_STEPS_COMPLETED &&
                                       (metric.enabled ||
                                         metric.enabled === null) &&
                                       "Action Required"}
