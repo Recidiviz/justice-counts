@@ -23,7 +23,6 @@ import styled, { css } from "styled-components/macro";
 
 export const GuidanceContainer = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   justify-content: center;
 `;
@@ -338,5 +337,17 @@ export const MetricStatus = styled.div<{ greyText?: boolean }>`
 
   ${Metric}:hover & {
     opacity: 0;
+  }
+`;
+
+export const SystemNameTitle = styled.div`
+  ${typography.sizeCSS.medium}
+  text-align: left;
+  text-transform: capitalize;
+  color: ${palette.highlight.grey8};
+  margin-bottom: 20px;
+
+  &:not(:first-child) {
+    margin-top: 40px;
   }
 `;

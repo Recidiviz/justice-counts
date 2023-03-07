@@ -20,6 +20,7 @@ import { MetricConfigurationSettingsOptions } from "@justice-counts/common/types
 import { makeAutoObservable, runInAction, when } from "mobx";
 
 import {
+  ALL_REQUIRED_METRIC_CONFIG_STEPS_COMPLETED,
   metricConfigurationProgressSteps,
   OnboardingTopicsMetadata,
   onboardingTopicsMetadata,
@@ -345,7 +346,7 @@ class GuidanceStore {
     if (this.metricConfigurationProgressStepsTracker[systemMetricKey]) {
       const totalMetricCategoriesCompleted =
         metrics[systemMetricKey]?.enabled === false
-          ? 4
+          ? ALL_REQUIRED_METRIC_CONFIG_STEPS_COMPLETED
           : Object.values(
               this.metricConfigurationProgressStepsTracker[systemMetricKey]
             ).reduce((acc, completed) => {
