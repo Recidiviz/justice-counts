@@ -70,15 +70,17 @@ export const LearnMoreModal: React.FC<{
               <ModalParagraph>{additionalContext}</ModalParagraph>
             </>
           )}
-          {metric.settings && metric.settings.length > 0 && (
+          {metric.includes_excludes && metric.includes_excludes.length > 0 && (
             <>
               <ModalSectionTitle>Settings</ModalSectionTitle>
-              {metric.settings.map((setting) => (
-                <ModalParagraph>
-                  <span>{setting.label}</span>
-                  {`: ${setting.included}`}
-                </ModalParagraph>
-              ))}
+              {metric.includes_excludes?.forEach((includesExcludes) =>
+                includesExcludes.settings.map((setting) => (
+                  <ModalParagraph>
+                    <span>{setting.label}</span>
+                    {`: ${setting.included}`}
+                  </ModalParagraph>
+                ))
+              )}
             </>
           )}
         </ModalInnerContainer>
