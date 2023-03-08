@@ -122,7 +122,7 @@ class MetricConfigStore {
           [includesExcludesKey: string]: {
             description?: string;
             settings: {
-              [settingKey: string]: Partial<MetricConfigurationSettings>;
+              [settingKey: string]: MetricConfigurationSettings;
             };
           };
           // [settingKey: string]: {
@@ -391,7 +391,7 @@ class MetricConfigStore {
     metricKey: string,
     includesExcludesKey: string,
     includesExcludesDescription: string,
-    metricDefinitionSettings: Partial<MetricConfigurationSettings>[]
+    metricDefinitionSettings: MetricConfigurationSettings[]
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
@@ -492,7 +492,7 @@ class MetricConfigStore {
     disaggregationKey: string,
     dimensionKey: string,
     includesExcludesKey: string,
-    dimensionDefinitionSettings: Partial<MetricConfigurationSettings>[]
+    dimensionDefinitionSettings: MetricConfigurationSettings[]
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,

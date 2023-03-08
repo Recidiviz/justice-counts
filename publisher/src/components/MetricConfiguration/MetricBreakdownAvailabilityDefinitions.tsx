@@ -146,106 +146,95 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
     const [showDefaultSettings, setShowDefaultSettings] = useState(false);
 
     const revertToAndSaveDefaultValues = () => {
-      // if (systemSearchParam && metricSearchParam) {
-      //   /** Create array of default settings and update settings (to default value) in the store */
-      //   const defaultSettings = activeSettingsKeys.map(
-      //     (includesExcludesKey) => {
-      //       let currentSettingDefaultValue;
-      //       if (isMetricDefinitionSettings) {
-      //         const currentMetricIncludesExcludes =
-      //           metricDefinitionSettings[systemMetricKey][includesExcludesKey];
-      //         Object.values(currentMetricIncludesExcludes.settings).flatMap(
-      //           (setting) => {
-      //             if (!setting.key) return;
-      //             currentSettingDefaultValue =
-      //               metricDefinitionSettings[systemMetricKey][
-      //                 includesExcludesKey
-      //               ].settings[setting.key].default;
-      //             updateMetricDefinitionSetting(
-      //               systemSearchParam,
-      //               metricSearchParam,
-      //               includesExcludesKey,
-      //               setting.key,
-      //               currentSettingDefaultValue as MetricConfigurationSettingsOptions
-      //             );
-      //             return {
-      //               key: setting.key,
-      //               included: currentSettingDefaultValue,
-      //             };
-      //           }
-      //         );
-      //       }
-      //       if (!activeDisaggregationKey || !activeDimensionKey) return;
-      //       const currentDimensionIncludesExcludes =
-      //         dimensionDefinitionSettings[systemMetricKey][
-      //           activeDisaggregationKey
-      //         ][activeDimensionKey][includesExcludesKey];
-      //       Object.values(currentDimensionIncludesExcludes.settings).flatMap(
-      //         (setting) => {
-      //           if (!setting.key) return;
-      //           currentSettingDefaultValue =
-      //             dimensionDefinitionSettings[systemMetricKey][
-      //               activeDisaggregationKey
-      //             ][activeDimensionKey][includesExcludesKey].settings[
-      //               setting.key
-      //             ].default;
-      //           updateDimensionDefinitionSetting(
-      //             systemSearchParam,
-      //             metricSearchParam,
-      //             activeDisaggregationKey as string,
-      //             activeDimensionKey,
-      //             includesExcludesKey,
-      //             setting.key,
-      //             currentSettingDefaultValue as MetricConfigurationSettingsOptions
-      //           );
-      //           return {
-      //             key: setting.key,
-      //             included: currentSettingDefaultValue,
-      //           };
-      //         }
-      //       );
-      //       // currentSettingDefaultValue =
-      //       //   dimensionDefinitionSettings[systemMetricKey][
-      //       //     activeDisaggregationKey
-      //       //   ][activeDimensionKey][includesExcludesKey].settings[setting.key]
-      //       //     .default;
-      //       // updateDimensionDefinitionSetting(
-      //       //   systemSearchParam,
-      //       //   metricSearchParam,
-      //       //   activeDisaggregationKey as string,
-      //       //   activeDimensionKey,
-      //       //   includesExcludesKey,
-      //       //   setting.key,
-      //       //   currentSettingDefaultValue as MetricConfigurationSettingsOptions
-      //       // );
-      //       // return { key: setting.key, included: currentSettingDefaultValue };
-      //       return {};
-      //     }
-      //   ) as MetricSettings["settings"];
-      //   /** Save default settings array */
-      //   if (isMetricDefinitionSettings) {
-      //     const updatedSetting = {
-      //       key: metricSearchParam as string,
-      //       settings: defaultSettings,
-      //     };
-      //     return saveMetricSettings(updatedSetting, agencyId);
-      //   }
-      //   const updatedSetting = {
-      //     key: metricSearchParam as string,
-      //     disaggregations: [
-      //       {
-      //         key: activeDisaggregationKey as string,
-      //         dimensions: [
-      //           {
-      //             key: activeDimensionKey,
-      //             settings: defaultSettings,
-      //           },
-      //         ],
-      //       },
-      //     ],
-      //   };
-      //   saveMetricSettings(updatedSetting, agencyId);
-      // }
+      if (systemSearchParam && metricSearchParam) {
+        /** Create array of default settings and update settings (to default value) in the store */
+        const defaultSettings: MetricSettings["settings"] = [];
+
+        activeSettingsKeys.forEach((includesExcludesKey) => {
+          let currentSettingDefaultValue;
+          if (isMetricDefinitionSettings) {
+            const currentMetricIncludesExcludes =
+              metricDefinitionSettings[systemMetricKey][includesExcludesKey];
+
+            Object.values(currentMetricIncludesExcludes.settings).forEach(
+              (setting) => {
+                if (!setting.key) return;
+                currentSettingDefaultValue = metricDefinitionSettings[
+                  systemMetricKey
+                ][includesExcludesKey].settings[setting.key]
+                  .default as MetricConfigurationSettingsOptions;
+                updateMetricDefinitionSetting(
+                  systemSearchParam,
+                  metricSearchParam,
+                  includesExcludesKey,
+                  setting.key,
+                  currentSettingDefaultValue
+                );
+                defaultSettings.push({
+                  key: setting.key,
+                  included: currentSettingDefaultValue,
+                });
+              }
+            );
+          }
+
+          if (!activeDisaggregationKey || !activeDimensionKey) return;
+
+          const currentDimensionIncludesExcludes =
+            dimensionDefinitionSettings[systemMetricKey][
+              activeDisaggregationKey
+            ][activeDimensionKey][includesExcludesKey];
+
+          Object.values(currentDimensionIncludesExcludes.settings).forEach(
+            (setting) => {
+              if (!setting.key) return;
+              currentSettingDefaultValue =
+                dimensionDefinitionSettings[systemMetricKey][
+                  activeDisaggregationKey
+                ][activeDimensionKey][includesExcludesKey].settings[setting.key]
+                  .default;
+              updateDimensionDefinitionSetting(
+                systemSearchParam,
+                metricSearchParam,
+                activeDisaggregationKey as string,
+                activeDimensionKey,
+                includesExcludesKey,
+                setting.key,
+                currentSettingDefaultValue as MetricConfigurationSettingsOptions
+              );
+
+              defaultSettings.push({
+                key: setting.key,
+                included: currentSettingDefaultValue,
+              });
+            }
+          );
+        });
+
+        /** Save default settings array */
+        if (isMetricDefinitionSettings) {
+          const updatedSetting = {
+            key: metricSearchParam as string,
+            settings: defaultSettings,
+          };
+          return saveMetricSettings(updatedSetting, agencyId);
+        }
+        const updatedSetting = {
+          key: metricSearchParam as string,
+          disaggregations: [
+            {
+              key: activeDisaggregationKey as string,
+              dimensions: [
+                {
+                  key: activeDimensionKey,
+                  settings: defaultSettings,
+                },
+              ],
+            },
+          ],
+        };
+        saveMetricSettings(updatedSetting, agencyId);
+      }
     };
 
     const handleUpdateMetricDefinitionSetting = (
@@ -388,16 +377,14 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
               {/* Definition Settings (Includes/Excludes) */}
               <Definitions isHiddenInMobileView={!isDefinitionsOpen}>
                 {activeSettingsKeys?.map((includesExcludesKey) => {
+                  if (!activeDisaggregationKey) return null;
                   const currentIncludesExcludes = isMetricDefinitionSettings
                     ? metricDefinitionSettings[systemMetricKey][
                         includesExcludesKey
                       ]
-                    : activeDisaggregationKey &&
-                      activeDimensionKey &&
-                      dimensionDefinitionSettings[systemMetricKey][
+                    : dimensionDefinitionSettings[systemMetricKey][
                         activeDisaggregationKey
                       ][activeDimensionKey][includesExcludesKey];
-                  if (!currentIncludesExcludes) return null;
 
                   return (
                     <>
