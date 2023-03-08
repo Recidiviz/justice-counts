@@ -55,7 +55,7 @@ export const MetricBox: React.FC<MetricBoxProps> = observer(
     const displayFrequency = customFrequency
       ? customFrequency.toLowerCase()
       : frequency.toLowerCase();
-    console.log("displayFrequency", displayFrequency);
+
     return (
       <MetricBoxContainer onClick={handleMetricBoxClick} enabled={enabled}>
         <MetricName>{displayName}</MetricName>
