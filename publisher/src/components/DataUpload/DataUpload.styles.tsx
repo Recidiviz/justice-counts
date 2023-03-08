@@ -28,6 +28,8 @@ import { rem } from "../../utils";
 import { OpacityGradient } from "../Forms";
 import { PageTitle, TabbedBar } from "../Reports";
 
+const FOOTER_HEIGHT = 144;
+
 export const DataUploadContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -563,7 +565,7 @@ export const BlueText = styled.span`
 
 export const DataUploadLoading = styled.div`
   width: 100%;
-  height: 100%;
+  height: calc(100vh - ${FOOTER_HEIGHT}px);
   display: flex;
   flex-direction: column;
   justify-content: center;
