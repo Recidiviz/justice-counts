@@ -188,11 +188,12 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
           Object.values(currentDimensionIncludesExcludes.settings).forEach(
             (setting) => {
               if (!setting.key) return;
-              currentSettingDefaultValue =
-                dimensionDefinitionSettings[systemMetricKey][
-                  activeDisaggregationKey
-                ][activeDimensionKey][includesExcludesKey].settings[setting.key]
-                  .default;
+              currentSettingDefaultValue = dimensionDefinitionSettings[
+                systemMetricKey
+              ][activeDisaggregationKey][activeDimensionKey][
+                includesExcludesKey
+              ].settings[setting.key]
+                .default as MetricConfigurationSettingsOptions;
               updateDimensionDefinitionSetting(
                 systemSearchParam,
                 metricSearchParam,
@@ -200,7 +201,7 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
                 activeDimensionKey,
                 includesExcludesKey,
                 setting.key,
-                currentSettingDefaultValue as MetricConfigurationSettingsOptions
+                currentSettingDefaultValue
               );
 
               defaultSettings.push({

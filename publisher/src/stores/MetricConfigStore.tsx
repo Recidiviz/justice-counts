@@ -122,7 +122,7 @@ class MetricConfigStore {
           [includesExcludesKey: string]: {
             description?: string;
             settings: {
-              [settingKey: string]: MetricConfigurationSettings;
+              [settingKey: string]: Partial<MetricConfigurationSettings>;
             };
           };
           // [settingKey: string]: {

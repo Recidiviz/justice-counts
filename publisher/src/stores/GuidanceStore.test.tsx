@@ -140,59 +140,65 @@ test("when metric definitions all have non-null values, return true for 'Confirm
     };
     metricConfigStore.metricDefinitionSettings = {
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_EXPENSES": {
-        FISCAL_YEAR: {
-          label: "Expenses for single fiscal year",
-          default: "Yes",
-          included: "Yes",
-        },
-        BIENNIUM_FUNDING: {
-          label: "Biennium funding allocated during the time period",
-          default: "Yes",
-          included: "Yes",
-        },
-        MULTI_YEAR_EXPENSES: {
-          label:
-            "Multi-year appropriations that are allocated in during the time period",
-          default: "Yes",
-          included: "Yes",
-        },
-        STAFF_FUNDING: {
-          label: "Expenses for agency staff",
-          default: "Yes",
-          included: "Yes",
-        },
-        EQUIPMENT: {
-          label: "Expenses for the purchase of law enforcement equipment",
-          default: "Yes",
-          included: "Yes",
-        },
-        CONSTRUCTION: {
-          label:
-            "Expenses for construction of law enforcement facilities (e.g., offices, temporary detention facilities, garages, etc.)",
-          default: "Yes",
-          included: "Yes",
-        },
-        MAINTENANCE: {
-          label:
-            "Expenses for the maintenance of law enforcement equipment and facilities",
-          default: "Yes",
-          included: "Yes",
-        },
-        OTHER: {
-          label:
-            "Expenses for other purposes not captured by the listed categories",
-          default: "Yes",
-          included: "Yes",
-        },
-        JAILS: {
-          label: "Expenses for the operation of jails",
-          default: "No",
-          included: "No",
-        },
-        SUPERVISION: {
-          label: "Expenses for the operation of community supervision services",
-          default: "No",
-          included: "No",
+        includes_excludes: {
+          description: "",
+          settings: {
+            FISCAL_YEAR: {
+              label: "Expenses for single fiscal year",
+              default: "Yes",
+              included: "Yes",
+            },
+            BIENNIUM_FUNDING: {
+              label: "Biennium funding allocated during the time period",
+              default: "Yes",
+              included: "Yes",
+            },
+            MULTI_YEAR_EXPENSES: {
+              label:
+                "Multi-year appropriations that are allocated in during the time period",
+              default: "Yes",
+              included: "Yes",
+            },
+            STAFF_FUNDING: {
+              label: "Expenses for agency staff",
+              default: "Yes",
+              included: "Yes",
+            },
+            EQUIPMENT: {
+              label: "Expenses for the purchase of law enforcement equipment",
+              default: "Yes",
+              included: "Yes",
+            },
+            CONSTRUCTION: {
+              label:
+                "Expenses for construction of law enforcement facilities (e.g., offices, temporary detention facilities, garages, etc.)",
+              default: "Yes",
+              included: "Yes",
+            },
+            MAINTENANCE: {
+              label:
+                "Expenses for the maintenance of law enforcement equipment and facilities",
+              default: "Yes",
+              included: "Yes",
+            },
+            OTHER: {
+              label:
+                "Expenses for other purposes not captured by the listed categories",
+              default: "Yes",
+              included: "Yes",
+            },
+            JAILS: {
+              label: "Expenses for the operation of jails",
+              default: "No",
+              included: "No",
+            },
+            SUPERVISION: {
+              label:
+                "Expenses for the operation of community supervision services",
+              default: "No",
+              included: "No",
+            },
+          },
         },
       },
     };
@@ -229,59 +235,65 @@ test("when metric definitions have at least one null value, return false for 'Co
     };
     metricConfigStore.metricDefinitionSettings = {
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_EXPENSES": {
-        FISCAL_YEAR: {
-          label: "Expenses for single fiscal year",
-          default: "Yes",
-          included: null,
-        },
-        BIENNIUM_FUNDING: {
-          label: "Biennium funding allocated during the time period",
-          default: "Yes",
-          included: null,
-        },
-        MULTI_YEAR_EXPENSES: {
-          label:
-            "Multi-year appropriations that are allocated in during the time period",
-          default: "Yes",
-          included: "Yes",
-        },
-        STAFF_FUNDING: {
-          label: "Expenses for agency staff",
-          default: "Yes",
-          included: "Yes",
-        },
-        EQUIPMENT: {
-          label: "Expenses for the purchase of law enforcement equipment",
-          default: "Yes",
-          included: "Yes",
-        },
-        CONSTRUCTION: {
-          label:
-            "Expenses for construction of law enforcement facilities (e.g., offices, temporary detention facilities, garages, etc.)",
-          default: "Yes",
-          included: "Yes",
-        },
-        MAINTENANCE: {
-          label:
-            "Expenses for the maintenance of law enforcement equipment and facilities",
-          default: "Yes",
-          included: "Yes",
-        },
-        OTHER: {
-          label:
-            "Expenses for other purposes not captured by the listed categories",
-          default: "Yes",
-          included: "Yes",
-        },
-        JAILS: {
-          label: "Expenses for the operation of jails",
-          default: "No",
-          included: "No",
-        },
-        SUPERVISION: {
-          label: "Expenses for the operation of community supervision services",
-          default: "No",
-          included: "No",
+        includes_excludes: {
+          description: "",
+          settings: {
+            FISCAL_YEAR: {
+              label: "Expenses for single fiscal year",
+              default: "Yes",
+              included: null,
+            },
+            BIENNIUM_FUNDING: {
+              label: "Biennium funding allocated during the time period",
+              default: "Yes",
+              included: null,
+            },
+            MULTI_YEAR_EXPENSES: {
+              label:
+                "Multi-year appropriations that are allocated in during the time period",
+              default: "Yes",
+              included: "Yes",
+            },
+            STAFF_FUNDING: {
+              label: "Expenses for agency staff",
+              default: "Yes",
+              included: "Yes",
+            },
+            EQUIPMENT: {
+              label: "Expenses for the purchase of law enforcement equipment",
+              default: "Yes",
+              included: "Yes",
+            },
+            CONSTRUCTION: {
+              label:
+                "Expenses for construction of law enforcement facilities (e.g., offices, temporary detention facilities, garages, etc.)",
+              default: "Yes",
+              included: "Yes",
+            },
+            MAINTENANCE: {
+              label:
+                "Expenses for the maintenance of law enforcement equipment and facilities",
+              default: "Yes",
+              included: "Yes",
+            },
+            OTHER: {
+              label:
+                "Expenses for other purposes not captured by the listed categories",
+              default: "Yes",
+              included: "Yes",
+            },
+            JAILS: {
+              label: "Expenses for the operation of jails",
+              default: "No",
+              included: "No",
+            },
+            SUPERVISION: {
+              label:
+                "Expenses for the operation of community supervision services",
+              default: "No",
+              included: "No",
+            },
+          },
         },
       },
     };
@@ -544,97 +556,127 @@ test("when a metric's disaggregations' dimensions' definitions have no null valu
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_ARRESTS": {
         "metric/offense/type": {
           "Person Offenses": {
-            AGGRAVATED_ASSAULT: {
-              label: "Aggravated assault",
-              default: "Yes",
-              included: "Yes",
-            },
-            SIMPLE_ASSAULT: {
-              label: "Simple assault",
-              default: "Yes",
-              included: "Yes",
-            },
-            INTIMIDATION: {
-              label: "Intimidation",
-              default: "Yes",
-              included: "No",
+            includes_excludes: {
+              description: "",
+              settings: {
+                AGGRAVATED_ASSAULT: {
+                  label: "Aggravated assault",
+                  default: "Yes",
+                  included: "Yes",
+                },
+                SIMPLE_ASSAULT: {
+                  label: "Simple assault",
+                  default: "Yes",
+                  included: "Yes",
+                },
+                INTIMIDATION: {
+                  label: "Intimidation",
+                  default: "Yes",
+                  included: "No",
+                },
+              },
             },
           },
           "Property Offenses": {
-            ARSON: {
-              label: "Arson",
-              default: "Yes",
-              included: "No",
-            },
-            BRIBERY: {
-              label: "Bribery",
-              default: "Yes",
-              included: "No",
-            },
-            BURGLARY: {
-              label: "Burglary/breaking and entering",
-              default: "Yes",
-              included: "No",
+            includes_excludes: {
+              description: "",
+              settings: {
+                ARSON: {
+                  label: "Arson",
+                  default: "Yes",
+                  included: "No",
+                },
+                BRIBERY: {
+                  label: "Bribery",
+                  default: "Yes",
+                  included: "No",
+                },
+                BURGLARY: {
+                  label: "Burglary/breaking and entering",
+                  default: "Yes",
+                  included: "No",
+                },
+              },
             },
           },
           "Drug Offenses": {
-            DRUG_VIOLATIONS: {
-              label: "Drug/narcotic violations",
-              default: "Yes",
-              included: "No",
-            },
-            DRUG_EQUIPMENT_VIOLATIONS: {
-              label: "Drug equipment violations",
-              default: "Yes",
-              included: "No",
-            },
-            DRUG_SALES: {
-              label: "Drug sales",
-              default: "Yes",
-              included: "No",
+            includes_excludes: {
+              description: "",
+              settings: {
+                DRUG_VIOLATIONS: {
+                  label: "Drug/narcotic violations",
+                  default: "Yes",
+                  included: "No",
+                },
+                DRUG_EQUIPMENT_VIOLATIONS: {
+                  label: "Drug equipment violations",
+                  default: "Yes",
+                  included: "No",
+                },
+                DRUG_SALES: {
+                  label: "Drug sales",
+                  default: "Yes",
+                  included: "No",
+                },
+              },
             },
           },
           "Public Order Offenses": {
-            ANIMAL_CRUELTY: {
-              label: "Animal cruelty",
-              default: "Yes",
-              included: "No",
-            },
-            IMPORT_VIOLATIONS: {
-              label: "Import violations",
-              default: "Yes",
-              included: "No",
-            },
-            EXPORT_VIOLATIONS: {
-              label: "Export violations",
-              default: "Yes",
-              included: "No",
+            includes_excludes: {
+              description: "",
+              settings: {
+                ANIMAL_CRUELTY: {
+                  label: "Animal cruelty",
+                  default: "Yes",
+                  included: "No",
+                },
+                IMPORT_VIOLATIONS: {
+                  label: "Import violations",
+                  default: "Yes",
+                  included: "No",
+                },
+                EXPORT_VIOLATIONS: {
+                  label: "Export violations",
+                  default: "Yes",
+                  included: "No",
+                },
+              },
             },
           },
         },
         "global/biological_sex": {
           "Male Biological Sex": {
-            MALE: {
-              label: "Male biological sex",
-              default: "Yes",
-              included: "Yes",
-            },
-            UNKNOWN: {
-              label: "Unknown biological sex",
-              default: "No",
-              included: "Yes",
+            includes_excludes: {
+              description: "",
+              settings: {
+                MALE: {
+                  label: "Male biological sex",
+                  default: "Yes",
+                  included: "Yes",
+                },
+                UNKNOWN: {
+                  label: "Unknown biological sex",
+                  default: "No",
+                  included: "Yes",
+                },
+              },
             },
           },
           "Female Biological Sex": {
-            FEMALE: {
-              label: "Female biological sex",
-              default: "Yes",
-              included: "Yes",
-            },
-            UNKNOWN: {
-              label: "Unknown biological sex",
-              default: "No",
-              included: "Yes",
+            includes_excludes: {
+              description: "",
+              settings: {
+                FEMALE: {
+                  label: "Female biological sex",
+                  default: "Yes",
+                  included: "Yes",
+                },
+                UNKNOWN: {
+                  label: "Unknown biological sex",
+                  default: "No",
+                  included: "Yes",
+                },
+              },
             },
           },
         },
@@ -729,97 +771,127 @@ test("when a metric's disaggregations' dimensions' definitions have at least one
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_ARRESTS": {
         "metric/offense/type": {
           "Person Offenses": {
-            AGGRAVATED_ASSAULT: {
-              label: "Aggravated assault",
-              default: "Yes",
-              included: "Yes",
-            },
-            SIMPLE_ASSAULT: {
-              label: "Simple assault",
-              default: "Yes",
-              included: null,
-            },
-            INTIMIDATION: {
-              label: "Intimidation",
-              default: "Yes",
-              included: "No",
+            includes_excludes: {
+              description: "",
+              settings: {
+                AGGRAVATED_ASSAULT: {
+                  label: "Aggravated assault",
+                  default: "Yes",
+                  included: "Yes",
+                },
+                SIMPLE_ASSAULT: {
+                  label: "Simple assault",
+                  default: "Yes",
+                  included: null,
+                },
+                INTIMIDATION: {
+                  label: "Intimidation",
+                  default: "Yes",
+                  included: "No",
+                },
+              },
             },
           },
           "Property Offenses": {
-            ARSON: {
-              label: "Arson",
-              default: "Yes",
-              included: "No",
-            },
-            BRIBERY: {
-              label: "Bribery",
-              default: "Yes",
-              included: "No",
-            },
-            BURGLARY: {
-              label: "Burglary/breaking and entering",
-              default: "Yes",
-              included: "No",
+            includes_excludes: {
+              description: "",
+              settings: {
+                ARSON: {
+                  label: "Arson",
+                  default: "Yes",
+                  included: "No",
+                },
+                BRIBERY: {
+                  label: "Bribery",
+                  default: "Yes",
+                  included: "No",
+                },
+                BURGLARY: {
+                  label: "Burglary/breaking and entering",
+                  default: "Yes",
+                  included: "No",
+                },
+              },
             },
           },
           "Drug Offenses": {
-            DRUG_VIOLATIONS: {
-              label: "Drug/narcotic violations",
-              default: "Yes",
-              included: "No",
-            },
-            DRUG_EQUIPMENT_VIOLATIONS: {
-              label: "Drug equipment violations",
-              default: "Yes",
-              included: "No",
-            },
-            DRUG_SALES: {
-              label: "Drug sales",
-              default: "Yes",
-              included: "No",
+            includes_excludes: {
+              description: "",
+              settings: {
+                DRUG_VIOLATIONS: {
+                  label: "Drug/narcotic violations",
+                  default: "Yes",
+                  included: "No",
+                },
+                DRUG_EQUIPMENT_VIOLATIONS: {
+                  label: "Drug equipment violations",
+                  default: "Yes",
+                  included: "No",
+                },
+                DRUG_SALES: {
+                  label: "Drug sales",
+                  default: "Yes",
+                  included: "No",
+                },
+              },
             },
           },
           "Public Order Offenses": {
-            ANIMAL_CRUELTY: {
-              label: "Animal cruelty",
-              default: "Yes",
-              included: "No",
-            },
-            IMPORT_VIOLATIONS: {
-              label: "Import violations",
-              default: "Yes",
-              included: "No",
-            },
-            EXPORT_VIOLATIONS: {
-              label: "Export violations",
-              default: "Yes",
-              included: null,
+            includes_excludes: {
+              description: "",
+              settings: {
+                ANIMAL_CRUELTY: {
+                  label: "Animal cruelty",
+                  default: "Yes",
+                  included: "No",
+                },
+                IMPORT_VIOLATIONS: {
+                  label: "Import violations",
+                  default: "Yes",
+                  included: "No",
+                },
+                EXPORT_VIOLATIONS: {
+                  label: "Export violations",
+                  default: "Yes",
+                  included: null,
+                },
+              },
             },
           },
         },
         "global/biological_sex": {
           "Male Biological Sex": {
-            MALE: {
-              label: "Male biological sex",
-              default: "Yes",
-              included: "Yes",
-            },
-            UNKNOWN: {
-              label: "Unknown biological sex",
-              default: "No",
-              included: "Yes",
+            includes_excludes: {
+              description: "",
+              settings: {
+                MALE: {
+                  label: "Male biological sex",
+                  default: "Yes",
+                  included: "Yes",
+                },
+                UNKNOWN: {
+                  label: "Unknown biological sex",
+                  default: "No",
+                  included: "Yes",
+                },
+              },
             },
           },
           "Female Biological Sex": {
-            FEMALE: {
-              label: "Female biological sex",
-              default: "Yes",
-              included: "Yes",
-            },
-            UNKNOWN: {
-              label: "Unknown biological sex",
-              default: "No",
-              included: "Yes",
+            includes_excludes: {
+              description: "",
+              settings: {
+                FEMALE: {
+                  label: "Female biological sex",
+                  default: "Yes",
+                  included: "Yes",
+                },
+                UNKNOWN: {
+                  label: "Unknown biological sex",
+                  default: "No",
+                  included: "Yes",
+                },
+              },
             },
           },
         },
@@ -859,15 +931,20 @@ test("Metric disabled returns 4 signifying completion for all required categorie
     };
     metricConfigStore.metricDefinitionSettings = {
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
-        FISCAL_YEAR: {
-          label: "Expenses for single fiscal year",
-          default: "Yes",
-          included: null,
-        },
-        BIENNIUM_FUNDING: {
-          label: "Biennium funding allocated during the time period",
-          default: "Yes",
-          included: "Yes",
+        includes_excludes: {
+          description: "",
+          settings: {
+            FISCAL_YEAR: {
+              label: "Expenses for single fiscal year",
+              default: "Yes",
+              included: null,
+            },
+            BIENNIUM_FUNDING: {
+              label: "Biennium funding allocated during the time period",
+              default: "Yes",
+              included: "Yes",
+            },
+          },
         },
       },
     };
@@ -891,15 +968,20 @@ test("Metric disabled returns 4 signifying completion for all required categorie
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
         "metric/offense/type": {
           "Person Offenses": {
-            AGGRAVATED_ASSAULT: {
-              label: "Aggravated assault",
-              default: "Yes",
-              included: "Yes",
-            },
-            SIMPLE_ASSAULT: {
-              label: "Simple assault",
-              default: "Yes",
-              included: null,
+            includes_excludes: {
+              description: "",
+              settings: {
+                AGGRAVATED_ASSAULT: {
+                  label: "Aggravated assault",
+                  default: "Yes",
+                  included: "Yes",
+                },
+                SIMPLE_ASSAULT: {
+                  label: "Simple assault",
+                  default: "Yes",
+                  included: null,
+                },
+              },
             },
           },
         },
@@ -933,15 +1015,20 @@ test("Metric enabled and all other categories have null returns 1 signifying com
     };
     metricConfigStore.metricDefinitionSettings = {
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
-        FISCAL_YEAR: {
-          label: "Expenses for single fiscal year",
-          default: "Yes",
-          included: null,
-        },
-        BIENNIUM_FUNDING: {
-          label: "Biennium funding allocated during the time period",
-          default: "Yes",
-          included: "Yes",
+        includes_excludes: {
+          description: "",
+          settings: {
+            FISCAL_YEAR: {
+              label: "Expenses for single fiscal year",
+              default: "Yes",
+              included: null,
+            },
+            BIENNIUM_FUNDING: {
+              label: "Biennium funding allocated during the time period",
+              default: "Yes",
+              included: "Yes",
+            },
+          },
         },
       },
     };
@@ -965,15 +1052,20 @@ test("Metric enabled and all other categories have null returns 1 signifying com
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
         "metric/offense/type": {
           "Person Offenses": {
-            AGGRAVATED_ASSAULT: {
-              label: "Aggravated assault",
-              default: "Yes",
-              included: "Yes",
-            },
-            SIMPLE_ASSAULT: {
-              label: "Simple assault",
-              default: "Yes",
-              included: null,
+            includes_excludes: {
+              description: "",
+              settings: {
+                AGGRAVATED_ASSAULT: {
+                  label: "Aggravated assault",
+                  default: "Yes",
+                  included: "Yes",
+                },
+                SIMPLE_ASSAULT: {
+                  label: "Simple assault",
+                  default: "Yes",
+                  included: null,
+                },
+              },
             },
           },
         },
@@ -1007,15 +1099,20 @@ test("Metric enabled, metric definition settings set and all other categories ha
     };
     metricConfigStore.metricDefinitionSettings = {
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
-        FISCAL_YEAR: {
-          label: "Expenses for single fiscal year",
-          default: "Yes",
-          included: "No",
-        },
-        BIENNIUM_FUNDING: {
-          label: "Biennium funding allocated during the time period",
-          default: "Yes",
-          included: "Yes",
+        includes_excludes: {
+          description: "",
+          settings: {
+            FISCAL_YEAR: {
+              label: "Expenses for single fiscal year",
+              default: "Yes",
+              included: "No",
+            },
+            BIENNIUM_FUNDING: {
+              label: "Biennium funding allocated during the time period",
+              default: "Yes",
+              included: "Yes",
+            },
+          },
         },
       },
     };
@@ -1039,15 +1136,20 @@ test("Metric enabled, metric definition settings set and all other categories ha
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
         "metric/offense/type": {
           "Person Offenses": {
-            AGGRAVATED_ASSAULT: {
-              label: "Aggravated assault",
-              default: "Yes",
-              included: "Yes",
-            },
-            SIMPLE_ASSAULT: {
-              label: "Simple assault",
-              default: "Yes",
-              included: null,
+            includes_excludes: {
+              description: "",
+              settings: {
+                AGGRAVATED_ASSAULT: {
+                  label: "Aggravated assault",
+                  default: "Yes",
+                  included: "Yes",
+                },
+                SIMPLE_ASSAULT: {
+                  label: "Simple assault",
+                  default: "Yes",
+                  included: null,
+                },
+              },
             },
           },
         },
@@ -1081,15 +1183,20 @@ test("Metric enabled, metric definition settings and metric breakdown availabili
     };
     metricConfigStore.metricDefinitionSettings = {
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
-        FISCAL_YEAR: {
-          label: "Expenses for single fiscal year",
-          default: "Yes",
-          included: "No",
-        },
-        BIENNIUM_FUNDING: {
-          label: "Biennium funding allocated during the time period",
-          default: "Yes",
-          included: "Yes",
+        includes_excludes: {
+          description: "",
+          settings: {
+            FISCAL_YEAR: {
+              label: "Expenses for single fiscal year",
+              default: "Yes",
+              included: "No",
+            },
+            BIENNIUM_FUNDING: {
+              label: "Biennium funding allocated during the time period",
+              default: "Yes",
+              included: "Yes",
+            },
+          },
         },
       },
     };
@@ -1113,15 +1220,20 @@ test("Metric enabled, metric definition settings and metric breakdown availabili
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
         "metric/offense/type": {
           "Person Offenses": {
-            AGGRAVATED_ASSAULT: {
-              label: "Aggravated assault",
-              default: "Yes",
-              included: "Yes",
-            },
-            SIMPLE_ASSAULT: {
-              label: "Simple assault",
-              default: "Yes",
-              included: null,
+            includes_excludes: {
+              description: "",
+              settings: {
+                AGGRAVATED_ASSAULT: {
+                  label: "Aggravated assault",
+                  default: "Yes",
+                  included: "Yes",
+                },
+                SIMPLE_ASSAULT: {
+                  label: "Simple assault",
+                  default: "Yes",
+                  included: null,
+                },
+              },
             },
           },
         },
@@ -1155,15 +1267,20 @@ test("Metric enabled, metric definition settings, metric breakdown availability 
     };
     metricConfigStore.metricDefinitionSettings = {
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
-        FISCAL_YEAR: {
-          label: "Expenses for single fiscal year",
-          default: "Yes",
-          included: "No",
-        },
-        BIENNIUM_FUNDING: {
-          label: "Biennium funding allocated during the time period",
-          default: "Yes",
-          included: "Yes",
+        includes_excludes: {
+          description: "",
+          settings: {
+            FISCAL_YEAR: {
+              label: "Expenses for single fiscal year",
+              default: "Yes",
+              included: "No",
+            },
+            BIENNIUM_FUNDING: {
+              label: "Biennium funding allocated during the time period",
+              default: "Yes",
+              included: "Yes",
+            },
+          },
         },
       },
     };
@@ -1187,15 +1304,20 @@ test("Metric enabled, metric definition settings, metric breakdown availability 
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
         "metric/offense/type": {
           "Person Offenses": {
-            AGGRAVATED_ASSAULT: {
-              label: "Aggravated assault",
-              default: "Yes",
-              included: "Yes",
-            },
-            SIMPLE_ASSAULT: {
-              label: "Simple assault",
-              default: "Yes",
-              included: "No",
+            includes_excludes: {
+              description: "",
+              settings: {
+                AGGRAVATED_ASSAULT: {
+                  label: "Aggravated assault",
+                  default: "Yes",
+                  included: "Yes",
+                },
+                SIMPLE_ASSAULT: {
+                  label: "Simple assault",
+                  default: "Yes",
+                  included: "No",
+                },
+              },
             },
           },
         },
@@ -1229,15 +1351,20 @@ test("All categories set and disabled dimensions' definitions do not count towar
     };
     metricConfigStore.metricDefinitionSettings = {
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
-        FISCAL_YEAR: {
-          label: "Expenses for single fiscal year",
-          default: "Yes",
-          included: "No",
-        },
-        BIENNIUM_FUNDING: {
-          label: "Biennium funding allocated during the time period",
-          default: "Yes",
-          included: "Yes",
+        includes_excludes: {
+          description: "",
+          settings: {
+            FISCAL_YEAR: {
+              label: "Expenses for single fiscal year",
+              default: "Yes",
+              included: "No",
+            },
+            BIENNIUM_FUNDING: {
+              label: "Biennium funding allocated during the time period",
+              default: "Yes",
+              included: "Yes",
+            },
+          },
         },
       },
     };
@@ -1261,27 +1388,37 @@ test("All categories set and disabled dimensions' definitions do not count towar
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
         "metric/offense/type": {
           "Person Offenses": {
-            AGGRAVATED_ASSAULT: {
-              label: "Aggravated assault",
-              default: "Yes",
-              included: null,
-            },
-            SIMPLE_ASSAULT: {
-              label: "Simple assault",
-              default: "Yes",
-              included: "No",
+            includes_excludes: {
+              description: "",
+              settings: {
+                AGGRAVATED_ASSAULT: {
+                  label: "Aggravated assault",
+                  default: "Yes",
+                  included: null,
+                },
+                SIMPLE_ASSAULT: {
+                  label: "Simple assault",
+                  default: "Yes",
+                  included: "No",
+                },
+              },
             },
           },
           "Property Offenses": {
-            AGGRAVATED_ASSAULT: {
-              label: "Aggravated assault",
-              default: "Yes",
-              included: "Yes",
-            },
-            SIMPLE_ASSAULT: {
-              label: "Simple assault",
-              default: "Yes",
-              included: "No",
+            includes_excludes: {
+              description: "",
+              settings: {
+                AGGRAVATED_ASSAULT: {
+                  label: "Aggravated assault",
+                  default: "Yes",
+                  included: "Yes",
+                },
+                SIMPLE_ASSAULT: {
+                  label: "Simple assault",
+                  default: "Yes",
+                  included: "No",
+                },
+              },
             },
           },
         },
