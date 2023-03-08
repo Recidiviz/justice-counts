@@ -46,6 +46,7 @@ import {
   DefinitionsTitle,
   DefinitionsWrapper,
   DimensionContexts,
+  IncludesExcludesDescription,
   MetricSettings,
   MiniButton,
   RevertToDefaultTextButton,
@@ -354,7 +355,9 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
 
                   return (
                     <>
-                      <div>{currentIncludesExcludes.description}</div>
+                      <IncludesExcludesDescription>
+                        {currentIncludesExcludes.description}
+                      </IncludesExcludesDescription>
                       {Object.keys(currentIncludesExcludes.settings).map(
                         (settingKey) => {
                           const currentSetting = (

@@ -1178,3 +1178,15 @@ export const AvailableWithCheckWrapper = styled.div`
   align-items: center;
   gap: 7px;
 `;
+
+export const IncludesExcludesDescription = styled.div`
+  ${typography.sizeCSS.normal}
+  color: ${palette.highlight.grey8};
+  margin: 0 0 16px 0;
+
+  &:not(:first-child) {
+    border-top: 1px solid ${palette.highlight.grey2};
+    padding-top: 16px;
+    margin: 16px 0;
+  }
+`;
