@@ -171,7 +171,6 @@ export interface Metric {
   disaggregations: MetricDisaggregations[];
   filenames: string[];
   enabled?: boolean;
-  settings?: MetricConfigurationSettings[]; // Deprecated
   includes_excludes?: MetricIncludesExcludes[];
   starting_month?: number;
   frequency?: ReportFrequency;
@@ -221,7 +220,6 @@ export interface MetricDisaggregationDimensions {
   reporting_note: string;
   contexts?: MetricDimensionContext[];
   enabled?: boolean;
-  settings?: MetricConfigurationSettings[]; // Deprecated
   includes_excludes?: MetricIncludesExcludes[];
   display_name?: string;
   description?: string;

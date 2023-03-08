@@ -217,7 +217,11 @@ class GuidanceStore {
       const metricDefinitionsCompleted =
         metricDefinitionSettings[systemMetricKey] &&
         Object.values(metricDefinitionSettings[systemMetricKey]).filter(
-          (definition) => definition.included === null
+          // (definition) => definition.included === null
+          (includesExcludes) =>
+            Object.values(includesExcludes.settings).filter(
+              (setting) => setting.included === null
+            ).length > 0
         ).length === 0;
 
       if (
@@ -281,7 +285,11 @@ class GuidanceStore {
             dimensionDefinitionSettings[systemMetricKey][disaggregationKey]
           ).forEach(([dimensionKey, dimension]) => {
             if (disabledDimensionKeys.includes(dimensionKey)) return;
-            dimensionDefinitionSettingsValues.push(...Object.values(dimension));
+            Object.values(dimension).forEach((includesExcludes) => {
+              dimensionDefinitionSettingsValues.push(
+                ...Object.values(includesExcludes.settings)
+              );
+            });
           });
         }
       );

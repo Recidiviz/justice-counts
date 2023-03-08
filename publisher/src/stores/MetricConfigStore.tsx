@@ -125,11 +125,6 @@ class MetricConfigStore {
               [settingKey: string]: Partial<MetricConfigurationSettings>;
             };
           };
-          // [settingKey: string]: {
-          //   included?: MetricConfigurationSettingsOptions | null;
-          //   default?: MetricConfigurationSettingsOptions;
-          //   label?: string;
-          // };
         };
       };
     };
@@ -270,7 +265,6 @@ class MetricConfigStore {
             this.initializeMetricDefinitionSetting(
               metric.system.key,
               metric.key,
-              includesExcludes.description, // as the includes/excludes key
               includesExcludes.description,
               includesExcludes.settings
             );
@@ -338,21 +332,6 @@ class MetricConfigStore {
                   includesExcludes.settings
                 );
               });
-              // dimension.settings?.forEach((setting) => {
-              //   /** Initialize Dimension Definition Settings (Included/Excluded) */
-              //   this.initializeDimensionDefinitionSetting(
-              //     metric.system.key,
-              //     metric.key,
-              //     disaggregation.key,
-              //     dimension.key,
-              //     setting.key,
-              //     {
-              //       label: setting.label,
-              //       default: setting.default,
-              //       included: setting.included,
-              //     }
-              //   );
-              // });
             });
           });
 
@@ -390,7 +369,6 @@ class MetricConfigStore {
     system: AgencySystems,
     metricKey: string,
     includesExcludesKey: string,
-    includesExcludesDescription: string,
     metricDefinitionSettings: MetricConfigurationSettings[]
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
@@ -404,7 +382,7 @@ class MetricConfigStore {
     }
     if (!this.metricDefinitionSettings[systemMetricKey][includesExcludesKey]) {
       this.metricDefinitionSettings[systemMetricKey][includesExcludesKey] = {
-        description: includesExcludesDescription,
+        description: includesExcludesKey,
         settings: {},
       };
     }
@@ -416,9 +394,6 @@ class MetricConfigStore {
         ].settings[setting.key] = setting;
       }
     });
-    // this.metricDefinitionSettings[systemMetricKey][includesExcludesKey].settings[
-    //   settingKey
-    // ] = metricDefinitionSettings;
   };
 
   initializeDisaggregation = (
