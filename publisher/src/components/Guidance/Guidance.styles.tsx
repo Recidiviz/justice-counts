@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  MIN_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -25,6 +26,12 @@ export const GuidanceContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 `;
 
 export const ContentContainer = styled.div<{ currentTopicID?: string }>`
@@ -52,6 +59,12 @@ export const ContentContainer = styled.div<{ currentTopicID?: string }>`
       `;
     }
   }}
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    max-width: 550px;
+    padding: 50px 0 20px 0;
+    margin: 0;
+  }
 `;
 
 export const TopicTitle = styled.div`
