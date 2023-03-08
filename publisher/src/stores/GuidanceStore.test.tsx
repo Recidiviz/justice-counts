@@ -27,7 +27,6 @@ beforeEach(() => {
     metricConfigStore.metricDefinitionSettings = {};
     metricConfigStore.dimensions = {};
     metricConfigStore.dimensionDefinitionSettings = {};
-    // guidanceStore.metricConfigurationProgressStepsTracker = {};
   });
 });
 
