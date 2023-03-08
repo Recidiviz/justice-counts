@@ -55,6 +55,7 @@ export const MetricBox: React.FC<MetricBoxProps> = observer(
     const displayFrequency = customFrequency
       ? customFrequency.toLowerCase()
       : frequency.toLowerCase();
+
     return (
       <MetricBoxContainer onClick={handleMetricBoxClick} enabled={enabled}>
         <MetricName>{displayName}</MetricName>
@@ -65,7 +66,12 @@ export const MetricBox: React.FC<MetricBoxProps> = observer(
             disabled={!enabled}
             noMargin
           >
-            {!enabled ? "Inactive" : displayFrequency}
+            {!enabled && "Inactive"}
+            {enabled && (
+              <>
+                {displayFrequency === "annual" ? "Annually" : displayFrequency}
+              </>
+            )}
           </Badge>
         </MetricNameBadgeWrapper>
       </MetricBoxContainer>
