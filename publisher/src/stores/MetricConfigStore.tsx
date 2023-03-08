@@ -60,7 +60,12 @@ class MetricConfigStore {
 
   metricDefinitionSettings: {
     [systemMetricKey: string]: {
-      [settingKey: string]: Partial<MetricConfigurationSettings>;
+      [includesExcludesKey: string]: {
+        description?: string;
+        settings: {
+          [settingKey: string]: Partial<MetricConfigurationSettings>;
+        };
+      };
     };
   };
 
@@ -253,20 +258,31 @@ class MetricConfigStore {
             disaggregatedBySupervisionSubsystems:
               metric.disaggregated_by_supervision_subsystems,
           });
-
-          metric.settings?.forEach((setting) => {
-            /** Initialize Metrics Definition Settings (Included/Excluded) */
+          console.log(JSON.stringify(metric.includes_excludes, null, 2));
+          metric.includes_excludes?.forEach((definition) => {
+            console.log("definition:", definition.settings);
             this.initializeMetricDefinitionSetting(
               metric.system.key,
               metric.key,
-              setting.key,
-              {
-                label: setting.label,
-                default: setting.default,
-                included: setting.included,
-              }
+              definition.description,
+              definition.description,
+              definition.settings
             );
           });
+          // metric.settings?.forEach((setting) => {
+          //   /** Initialize Metrics Definition Settings (Included/Excluded) */
+          //   this.initializeMetricDefinitionSetting(
+          //     metric.system.key,
+          //     metric.key,
+          //     ,
+          //     setting.key,
+          //     {
+          //       label: setting.label,
+          //       default: setting.default,
+          //       included: setting.included,
+          //     }
+          //   );
+          // });
 
           metric.disaggregations.forEach((disaggregation) => {
             /** Initialize Disaggregation Status (Enabled/Disabled) */
@@ -370,8 +386,9 @@ class MetricConfigStore {
   initializeMetricDefinitionSetting = (
     system: AgencySystems,
     metricKey: string,
-    settingKey: string,
-    metricDefinitionSettings: Partial<MetricConfigurationSettings>
+    includesExcludesKey: string,
+    includesExcludesDescription: string,
+    metricDefinitionSettings: Partial<MetricConfigurationSettings>[]
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
@@ -382,8 +399,23 @@ class MetricConfigStore {
     if (!this.metricDefinitionSettings[systemMetricKey]) {
       this.metricDefinitionSettings[systemMetricKey] = {};
     }
-    this.metricDefinitionSettings[systemMetricKey][settingKey] =
-      metricDefinitionSettings;
+    if (!this.metricDefinitionSettings[systemMetricKey][includesExcludesKey]) {
+      this.metricDefinitionSettings[systemMetricKey][includesExcludesKey] = {
+        description: includesExcludesDescription,
+        settings: {},
+      };
+    }
+
+    metricDefinitionSettings.forEach((setting) => {
+      if (setting.key) {
+        this.metricDefinitionSettings[systemMetricKey][
+          includesExcludesKey
+        ].settings[setting.key] = setting;
+      }
+    });
+    // this.metricDefinitionSettings[systemMetricKey][includesExcludesKey].settings[
+    //   settingKey
+    // ] = metricDefinitionSettings;
   };
 
   initializeDisaggregation = (
@@ -623,8 +655,8 @@ class MetricConfigStore {
     );
 
     /** Update value */
-    this.metricDefinitionSettings[systemMetricKey][settingKey].included =
-      included;
+    // this.metricDefinitionSettings[systemMetricKey][settingKey].included =
+    //   included;
 
     /** Return an object in the desired backend data structure for saving purposes */
     return {

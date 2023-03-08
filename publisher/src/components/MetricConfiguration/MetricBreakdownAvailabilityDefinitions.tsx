@@ -98,8 +98,9 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
           ]?.description
         : metrics[systemMetricKey]?.description;
 
-    const metricDefinitionSettingsKeys =
+    const metricDefinitionIncludesExcludesKeys =
       metricDefinitionSettings[systemMetricKey] &&
+      // Object.keys(metricDefinitionSettings[systemMetricKey]);
       Object.keys(metricDefinitionSettings[systemMetricKey]);
 
     const dimensionDefinitionSettingsKeys = (activeDisaggregationKey &&
@@ -114,7 +115,7 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
       )) as string[];
 
     const activeSettingsKeys = isMetricDefinitionSettings
-      ? metricDefinitionSettingsKeys
+      ? metricDefinitionIncludesExcludesKeys
       : dimensionDefinitionSettingsKeys;
 
     const hasActiveDisaggregationAndDimensionKey =
@@ -151,15 +152,15 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
           let currentSettingDefaultValue;
 
           if (isMetricDefinitionSettings) {
-            currentSettingDefaultValue =
-              metricDefinitionSettings[systemMetricKey][settingKey].default;
+            // currentSettingDefaultValue =
+            //   metricDefinitionSettings[systemMetricKey][settingKey].default;
 
-            updateMetricDefinitionSetting(
-              systemSearchParam,
-              metricSearchParam,
-              settingKey,
-              currentSettingDefaultValue as MetricConfigurationSettingsOptions
-            );
+            // updateMetricDefinitionSetting(
+            //   systemSearchParam,
+            //   metricSearchParam,
+            //   settingKey,
+            //   currentSettingDefaultValue as MetricConfigurationSettingsOptions
+            // );
 
             return { key: settingKey, included: currentSettingDefaultValue };
           }
@@ -345,50 +346,72 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
 
               {/* Definition Settings (Includes/Excludes) */}
               <Definitions isHiddenInMobileView={!isDefinitionsOpen}>
-                {activeSettingsKeys?.map((settingKey) => {
-                  const currentSetting = (
-                    isMetricDefinitionSettings
-                      ? metricDefinitionSettings[systemMetricKey][settingKey]
-                      : activeDisaggregationKey &&
-                        activeDimensionKey &&
-                        dimensionDefinitionSettings[systemMetricKey][
-                          activeDisaggregationKey
-                        ][activeDimensionKey][settingKey]
-                  ) as {
-                    included?: MetricConfigurationSettingsOptions | undefined;
-                    default?: MetricConfigurationSettingsOptions | undefined;
-                    label?: string | undefined;
-                  };
+                {activeSettingsKeys?.map((includesExcludesKey) => {
+                  const currentIncludesExcludes =
+                    metricDefinitionSettings[systemMetricKey][
+                      includesExcludesKey
+                    ];
 
                   return (
-                    <DefinitionItem key={settingKey}>
-                      <DefinitionDisplayName>
-                        {currentSetting.label}
-                      </DefinitionDisplayName>
+                    <>
+                      <div>{currentIncludesExcludes.description}</div>
+                      {Object.keys(currentIncludesExcludes.settings).map(
+                        (settingKey) => {
+                          const currentSetting = (
+                            isMetricDefinitionSettings
+                              ? metricDefinitionSettings[systemMetricKey][
+                                  includesExcludesKey
+                                ].settings[settingKey]
+                              : activeDisaggregationKey &&
+                                activeDimensionKey &&
+                                dimensionDefinitionSettings[systemMetricKey][
+                                  activeDisaggregationKey
+                                ][activeDimensionKey][settingKey]
+                          ) as {
+                            included?:
+                              | MetricConfigurationSettingsOptions
+                              | undefined;
+                            default?:
+                              | MetricConfigurationSettingsOptions
+                              | undefined;
+                            label?: string | undefined;
+                          };
 
-                      <DefinitionSelection>
-                        {metricConfigurationSettingsOptions.map((option) => (
-                          <Fragment key={option}>
-                            <MiniButton
-                              selected={
-                                showDefaultSettings
-                                  ? currentSetting.default === option
-                                  : currentSetting.included === option
-                              }
-                              showDefault={showDefaultSettings}
-                              onClick={() =>
-                                handleUpdateMetricDefinitionSetting(
-                                  settingKey,
-                                  option
-                                )
-                              }
-                            >
-                              {option}
-                            </MiniButton>
-                          </Fragment>
-                        ))}
-                      </DefinitionSelection>
-                    </DefinitionItem>
+                          return (
+                            <DefinitionItem key={settingKey}>
+                              <DefinitionDisplayName>
+                                {currentSetting.label}
+                              </DefinitionDisplayName>
+
+                              <DefinitionSelection>
+                                {metricConfigurationSettingsOptions.map(
+                                  (option) => (
+                                    <Fragment key={option}>
+                                      <MiniButton
+                                        selected={
+                                          showDefaultSettings
+                                            ? currentSetting.default === option
+                                            : currentSetting.included === option
+                                        }
+                                        showDefault={showDefaultSettings}
+                                        onClick={() =>
+                                          handleUpdateMetricDefinitionSetting(
+                                            settingKey,
+                                            option
+                                          )
+                                        }
+                                      >
+                                        {option}
+                                      </MiniButton>
+                                    </Fragment>
+                                  )
+                                )}
+                              </DefinitionSelection>
+                            </DefinitionItem>
+                          );
+                        }
+                      )}
+                    </>
                   );
                 })}
               </Definitions>
