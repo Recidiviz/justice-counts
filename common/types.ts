@@ -221,7 +221,8 @@ export interface MetricDisaggregationDimensions {
   reporting_note: string;
   contexts?: MetricDimensionContext[];
   enabled?: boolean;
-  settings?: MetricConfigurationSettings[];
+  settings?: MetricConfigurationSettings[]; // Deprecated
+  includes_excludes?: MetricIncludesExcludes[];
   display_name?: string;
   description?: string;
   race?: string;
