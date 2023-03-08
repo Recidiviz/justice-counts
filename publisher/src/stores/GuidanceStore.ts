@@ -217,7 +217,6 @@ class GuidanceStore {
       const metricDefinitionsCompleted =
         metricDefinitionSettings[systemMetricKey] &&
         Object.values(metricDefinitionSettings[systemMetricKey]).filter(
-          // (definition) => definition.included === null
           (includesExcludes) =>
             Object.values(includesExcludes.settings).filter(
               (setting) => setting.included === null
