@@ -20,6 +20,7 @@ import React from "react";
 
 import { useStore } from "../stores";
 import {
+  IncludesExcludesDescription,
   ModalCloseButton,
   ModalContainer,
   ModalInnerContainer,
@@ -53,17 +54,6 @@ export const LearnMoreModal: React.FC<{
           <ModalSubtitle>{agencyDataStore.agency?.name}</ModalSubtitle>
           <ModalTitle>{metric.display_name}</ModalTitle>
           <ModalParagraph>{metric.description}</ModalParagraph>
-          {metric.definitions && metric.definitions.length > 0 && (
-            <>
-              <ModalSectionTitle>Metric Definitions</ModalSectionTitle>
-              {metric.definitions.map((definition) => (
-                <ModalParagraph key={definition.term}>
-                  <span>{definition.term}</span>
-                  {`: ${definition.definition}`}
-                </ModalParagraph>
-              ))}
-            </>
-          )}
           {additionalContext && (
             <>
               <ModalSectionTitle>Context</ModalSectionTitle>
@@ -73,14 +63,23 @@ export const LearnMoreModal: React.FC<{
           {metric.includes_excludes && metric.includes_excludes.length > 0 && (
             <>
               <ModalSectionTitle>Settings</ModalSectionTitle>
-              {metric.includes_excludes?.map((includesExcludes) =>
-                includesExcludes.settings.map((setting) => (
-                  <ModalParagraph>
-                    <span>{setting.label}</span>
-                    {`: ${setting.included}`}
-                  </ModalParagraph>
-                ))
-              )}
+              <div>
+                {metric.includes_excludes?.map((includesExcludes) => (
+                  <>
+                    {includesExcludes.description && (
+                      <IncludesExcludesDescription>
+                        {includesExcludes.description}
+                      </IncludesExcludesDescription>
+                    )}
+                    {includesExcludes.settings.map((setting) => (
+                      <ModalParagraph>
+                        <span>{setting.label}</span>
+                        {`: ${setting.included}`}
+                      </ModalParagraph>
+                    ))}
+                  </>
+                ))}
+              </div>
             </>
           )}
         </ModalInnerContainer>

@@ -148,3 +148,14 @@ export const ShareCheckIcon = styled.img`
   width: 16px;
   height: 16px;
 `;
+
+export const IncludesExcludesDescription = styled.div`
+  ${typography.sizeCSS.normal}
+  color: ${palette.highlight.grey9};
+  margin-top: 20px;
+
+  &:not(:first-child) {
+    border-top: 1px solid ${palette.highlight.grey6};
+    padding-top: 16px;
+  }
+`;
