@@ -45,18 +45,23 @@ import { TeamMemberNameWithBadge } from "../components/primitives";
 import {
   AdditionalEditorsTooltip,
   AndOthersSpan,
+  BulkActionModeTitle,
+  BulkActionsArrow,
+  BulkActionsDropdownContainer,
+  BulkActionsDropdownMenu,
+  BulkActionsDropdownMenuItem,
+  BulkActionsDropdownToggle,
   Cell,
   CommaSpan,
+  DesktopRecordsPageTitle,
   DropdownContainer,
   EmptySelectionCircle,
   LabelCell,
   LabelRow,
+  MobileRecordsPageTitle,
   NoReportsDisplay,
-  PageTitle,
   ReportActions,
-  ReportActionsItem,
-  ReportActionsNewIcon,
-  ReportActionsSelectIcon,
+  ReportActionsButton,
   ReportsHeader,
   Row,
   SelectedCheckmark,
@@ -68,6 +73,7 @@ import {
   TabbedOptions,
   Table,
 } from "../components/Reports";
+import { RemoveRecordsModal } from "../components/Reports/RemoveRecordsModal";
 import { useStore } from "../stores";
 import {
   filterJCAdminEditors,
@@ -92,6 +98,8 @@ const reportListColumnTitles = [
   "Last Modified",
 ];
 
+type RecordsBulkAction = "publish" | "unpublish" | "delete";
+
 const Reports: React.FC = () => {
   const { reportStore, userStore } = useStore();
   const { agencyId } = useParams<string>() as { agencyId: string };
@@ -107,14 +115,19 @@ const Reports: React.FC = () => {
   const [reportsFilter, setReportsFilter] = useState<string>(
     `all_${REPORTS_LOWERCASE}`
   );
-  const [selectionMode, setSelectionMode] = useState(false);
-  const [reportsToDelete, setReportsToDelete] = useState<number[]>([]);
+  const [selectedRecords, setSelectedRecords] = useState<number[]>([]);
+  const [bulkAction, setBulkAction] = useState<RecordsBulkAction | undefined>(
+    undefined
+  );
+  const [isRemoveRecordsModalOpen, setIsRemoveRecordsModalOpen] =
+    useState(false);
 
-  const enterSelectionMode = () => setSelectionMode(true);
-  const exitSelectionMode = () => setSelectionMode(false);
-  const clearAllReportsToDelete = () => setReportsToDelete([]);
-  const addOrRemoveReportToDelete = (reportID: number) =>
-    setReportsToDelete((prev) =>
+  const activateBulkAction = (action: RecordsBulkAction) =>
+    setBulkAction(action);
+  const deactivateBulkAction = () => setBulkAction(undefined);
+  const clearAllSelectedRecords = () => setSelectedRecords([]);
+  const addOrRemoveSelectedRecords = (reportID: number) =>
+    setSelectedRecords((prev) =>
       !prev.includes(reportID)
         ? [...prev, reportID]
         : prev.filter((id) => id !== reportID)
@@ -162,6 +175,10 @@ const Reports: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyId]);
 
+  // useEffect(() => {
+  //   document.body.style.overflow = ? "hidden" : "unset";
+  // }, []);
+
   const filteredReportsMemoized = React.useMemo(
     () =>
       reportsFilter === `all_${REPORTS_LOWERCASE}`
@@ -198,21 +215,21 @@ const Reports: React.FC = () => {
                 <Fragment key={report.id}>
                   <Row
                     onClick={() => {
-                      if (!selectionMode) {
+                      if (!bulkAction) {
                         navigate(`${report.id}`);
                       } else {
-                        addOrRemoveReportToDelete(report.id);
+                        addOrRemoveSelectedRecords(report.id);
                       }
                     }}
                     selected={
-                      selectionMode && reportsToDelete.includes(report.id)
+                      !!bulkAction && selectedRecords.includes(report.id)
                     }
                   >
                     {/* Report Period */}
                     <Cell id="report_period">
-                      {selectionMode && (
+                      {!!bulkAction && (
                         <>
-                          {reportsToDelete.includes(report.id) ? (
+                          {selectedRecords.includes(report.id) ? (
                             <SelectedCheckmark src={checkmarkIcon} alt="" />
                           ) : (
                             <EmptySelectionCircle />
@@ -317,30 +334,74 @@ const Reports: React.FC = () => {
 
   return (
     <>
+      {isRemoveRecordsModalOpen && (
+        <RemoveRecordsModal
+          selectedRecords={selectedRecords.length}
+          closeModal={() => setIsRemoveRecordsModalOpen(false)}
+          confirmRemoveRecords={() => {
+            reportStore.deleteReports(selectedRecords, agencyId);
+            deactivateBulkAction();
+            clearAllSelectedRecords();
+            setIsRemoveRecordsModalOpen(false);
+          }}
+        />
+      )}
+
       <ReportsHeader>
-        {windowWidth > MIN_TABLET_WIDTH && (
-          <PageTitle>{REPORTS_CAPITALIZED}</PageTitle>
-        )}
+        <DesktopRecordsPageTitle>{REPORTS_CAPITALIZED}</DesktopRecordsPageTitle>
 
         {/* Filter Reports By */}
         <TabbedBar noPadding={windowWidth < MIN_TABLET_WIDTH}>
-          {windowWidth > MIN_TABLET_WIDTH ? (
-            <TabbedOptions>
-              {Object.entries(ReportStatusFilterOptionObject).map(
-                ([key, value]) => (
-                  <TabbedItem
-                    key={key}
-                    id={key}
-                    selected={key === reportsFilter}
-                    onClick={(e) => filterReportsBy(e)}
-                  >
-                    {removeSnakeCase(value)}
-                  </TabbedItem>
-                )
-              )}
-            </TabbedOptions>
-          ) : (
-            <PageTitle>{REPORTS_CAPITALIZED}</PageTitle>
+          {!bulkAction && (
+            <>
+              <TabbedOptions>
+                {Object.entries(ReportStatusFilterOptionObject).map(
+                  ([key, value]) => (
+                    <TabbedItem
+                      key={key}
+                      id={key}
+                      selected={key === reportsFilter}
+                      onClick={(e) => filterReportsBy(e)}
+                    >
+                      {removeSnakeCase(value)}
+                    </TabbedItem>
+                  )
+                )}
+              </TabbedOptions>
+              <MobileRecordsPageTitle>
+                {REPORTS_CAPITALIZED}
+              </MobileRecordsPageTitle>
+            </>
+          )}
+
+          {bulkAction === "publish" && (
+            <BulkActionModeTitle>
+              {selectedRecords.length
+                ? `${selectedRecords.length} draft${
+                    selectedRecords.length > 1 ? "s" : ""
+                  } selected`
+                : "Select draft(s) to publish..."}
+            </BulkActionModeTitle>
+          )}
+
+          {bulkAction === "unpublish" && (
+            <BulkActionModeTitle>
+              {selectedRecords.length
+                ? `${selectedRecords.length} record${
+                    selectedRecords.length > 1 ? "s" : ""
+                  } selected`
+                : "Select record(s) to unpublish..."}
+            </BulkActionModeTitle>
+          )}
+
+          {bulkAction === "delete" && (
+            <BulkActionModeTitle>
+              {selectedRecords.length
+                ? `${selectedRecords.length} record${
+                    selectedRecords.length > 1 ? "s" : ""
+                  } selected`
+                : "Select record(s) to delete..."}
+            </BulkActionModeTitle>
           )}
 
           <TabbedActionsWrapper>
@@ -349,47 +410,70 @@ const Reports: React.FC = () => {
               userStore.isAgencyAdmin(agencyId)) && (
               <>
                 <ReportActions>
-                  {!selectionMode && (
+                  {!bulkAction && (
                     <>
                       {userStore.isJusticeCountsAdmin(agencyId) && (
-                        <ReportActionsItem onClick={enterSelectionMode}>
-                          Select <ReportActionsSelectIcon />
-                        </ReportActionsItem>
+                        <BulkActionsDropdownContainer>
+                          <Dropdown>
+                            <BulkActionsDropdownToggle>
+                              Bulk Actions{" "}
+                              <BulkActionsArrow src={dropdownArrow} alt="" />
+                            </BulkActionsDropdownToggle>
+                            <BulkActionsDropdownMenu alignment="right">
+                              <BulkActionsDropdownMenuItem
+                                color="green"
+                                onClick={() => {
+                                  activateBulkAction("publish");
+                                }}
+                              >
+                                Publish...
+                              </BulkActionsDropdownMenuItem>
+                              <BulkActionsDropdownMenuItem
+                                onClick={() => {
+                                  activateBulkAction("unpublish");
+                                }}
+                              >
+                                Unpublish...
+                              </BulkActionsDropdownMenuItem>
+                              <BulkActionsDropdownMenuItem
+                                color="red"
+                                onClick={() => {
+                                  activateBulkAction("delete");
+                                }}
+                              >
+                                Delete...
+                              </BulkActionsDropdownMenuItem>
+                            </BulkActionsDropdownMenu>
+                          </Dropdown>
+                        </BulkActionsDropdownContainer>
                       )}
-                      <ReportActionsItem onClick={() => navigate("create")}>
-                        New <ReportActionsNewIcon />
-                      </ReportActionsItem>
+                      <ReportActionsButton
+                        textColor="blue"
+                        onClick={() => navigate("create")}
+                      >
+                        + New Record
+                      </ReportActionsButton>
                     </>
                   )}
 
-                  {selectionMode && (
+                  {!!bulkAction && (
                     <>
-                      <ReportActionsItem
-                        disabled={reportsToDelete.length === 0}
+                      <ReportActionsButton
                         onClick={() => {
-                          if (reportsToDelete.length > 0) {
-                            reportStore.deleteReports(
-                              reportsToDelete,
-                              agencyId
-                            );
-                            exitSelectionMode();
-                            clearAllReportsToDelete();
-                          }
+                          clearAllSelectedRecords();
+                          deactivateBulkAction();
                         }}
                       >
-                        Delete{" "}
-                        <ReportActionsSelectIcon
-                          disabled={reportsToDelete.length === 0}
-                        />
-                      </ReportActionsItem>
-                      <ReportActionsItem
-                        onClick={() => {
-                          exitSelectionMode();
-                          clearAllReportsToDelete();
-                        }}
-                      >
-                        Done
-                      </ReportActionsItem>
+                        Cancel
+                      </ReportActionsButton>
+                      {bulkAction === "delete" && selectedRecords.length > 0 && (
+                        <ReportActionsButton
+                          buttonColor="red"
+                          onClick={() => setIsRemoveRecordsModalOpen(true)}
+                        >
+                          Delete
+                        </ReportActionsButton>
+                      )}
                     </>
                   )}
                 </ReportActions>

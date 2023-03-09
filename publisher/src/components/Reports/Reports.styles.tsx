@@ -22,7 +22,11 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownToggle,
+} from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
 export const PageHeader = styled.div`
@@ -40,15 +44,22 @@ export const ReportsHeader = styled(PageHeader)`
   }
 `;
 
-export const PageTitle = styled.div`
+export const DesktopRecordsPageTitle = styled.div`
   ${typography.sizeCSS.headline}
   margin-top: 40px;
   padding: 0px 22px;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    display: none;
+  }
+`;
+
+export const MobileRecordsPageTitle = styled.div`
+  display: none;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     ${typography.sizeCSS.medium}
-    margin-top: 0;
-    padding: 0;
+    display: block;
   }
 `;
 
@@ -70,12 +81,17 @@ export const TabbedBar = styled.div<{ noPadding?: boolean }>`
 export const TabbedOptions = styled.div`
   display: flex;
   align-items: center;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    display: none;
+  }
 `;
 
 export const TabbedItem = styled.div<{
   selected?: boolean;
   capitalize?: boolean;
 }>`
+  ${typography.sizeCSS.large};
   padding: 24px 0 16px 0;
   margin-right: 20px;
   color: ${({ selected }) =>
@@ -91,6 +107,17 @@ export const TabbedItem = styled.div<{
   }
 `;
 
+export const BulkActionModeTitle = styled.div`
+  padding: 24px 0 19px 0;
+  ${typography.sizeCSS.large}
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    ${typography.sizeCSS.medium}
+    margin-top: 0;
+    padding: 0;
+  }
+`;
+
 export const TabbedActionsWrapper = styled.div`
   display: flex;
   gap: 15px;
@@ -100,15 +127,33 @@ export const ReportActions = styled.div`
   display: flex;
 `;
 
-export const ReportActionsItem = styled.div<{
+export const ReportActionsButton = styled.div<{
   disabled?: boolean;
+  textColor?: "blue";
+  buttonColor?: "red";
 }>`
+  position: relative;
+  border: ${({ buttonColor }) =>
+    !buttonColor && `1px solid ${palette.highlight.grey4}`};
+  border-radius: 2px;
+  padding: 8px 16px;
   display: flex;
+  gap: 10px;
   align-items: center;
   margin-left: 16px;
   transition: 0.2s ease;
-  color: ${({ disabled }) =>
-    disabled ? palette.highlight.grey8 : palette.solid.blue};
+  color: ${({ disabled, textColor, buttonColor }) => {
+    if (disabled) return palette.highlight.grey8;
+
+    if (textColor === "blue") return palette.solid.blue;
+
+    if (buttonColor === "red") return palette.solid.white;
+    return palette.solid.darkgrey;
+  }};
+  background-color: ${({ buttonColor }) => {
+    if (buttonColor === "red") return palette.solid.red;
+    return palette.solid.white;
+  }};
 
   &:hover {
     ${({ disabled }) =>
@@ -121,6 +166,97 @@ export const ReportActionsItem = styled.div<{
         cursor: default;
       `}
   }
+`;
+
+export const BulkActionsDropdownContainer = styled.div`
+  & > div {
+    width: 100%;
+  }
+`;
+
+export const BulkActionsDropdownToggle = styled(DropdownToggle)`
+  border: 1px solid ${palette.highlight.grey4};
+  border-radius: 2px;
+  padding: 8px 16px;
+  ${typography.sizeCSS.normal};
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  color: ${palette.solid.darkgrey};
+
+  &:active,
+  &:hover,
+  &:focus,
+  &[aria-expanded="true"] {
+    color: ${palette.solid.darkgrey};
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
+export const BulkActionsDropdownMenu = styled(DropdownMenu)`
+  width: 200px;
+  top: 0;
+  margin-top: 0;
+  border-radius: 3px;
+`;
+
+export const BulkActionsDropdownMenuItem = styled(DropdownMenuItem)<{
+  color?: "green" | "red";
+}>`
+  width: 200px;
+  min-width: 200px;
+  height: auto;
+  display: flex;
+  align-items: center;
+  ${typography.sizeCSS.normal};
+  color: ${({ color }) => {
+    if (color === "green") {
+      return palette.solid.green;
+    }
+    if (color === "red") {
+      return palette.solid.red;
+    }
+    return palette.solid.darkgrey;
+  }};
+
+  &:active,
+  &:hover,
+  &:focus,
+  &[aria-expanded="true"] {
+    color: ${({ color }) => {
+      if (color === "green") {
+        return palette.solid.green;
+      }
+      if (color === "red") {
+        return palette.solid.red;
+      }
+      return palette.solid.darkgrey;
+    }};
+
+    background-color: transparent;
+  }
+
+  padding: 16px;
+
+  &:first-child {
+    padding: 10px 16px 16px 16px;
+  }
+
+  &:last-child {
+    padding: 16px 16px 10px 16px;
+  }
+
+  &:not(:last-child) {
+    border-bottom: 1px solid ${palette.solid.offwhite};
+  }
+`;
+
+export const BulkActionsArrow = styled.img`
+  width: 10px;
+  height: 5px;
 `;
 
 export const ReportActionsSelectIcon = styled.div<{
@@ -232,7 +368,7 @@ export const Table = styled.div`
   overflow: auto;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    padding-top: 115px;
+    padding-top: 132px;
   }
 `;
 
@@ -287,7 +423,7 @@ export const Cell = styled.div<{ capitalize?: boolean }>`
   justify-content: start;
   align-items: center;
   position: relative;
-  font-size: 1.2rem;
+  ${typography.sizeCSS.medium};
   text-transform: ${({ capitalize }) => capitalize && "capitalize"};
   padding-right: 40px;
   white-space: nowrap;
