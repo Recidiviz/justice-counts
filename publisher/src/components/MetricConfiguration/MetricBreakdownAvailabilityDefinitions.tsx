@@ -46,6 +46,7 @@ import {
   DefinitionsTitle,
   DefinitionsWrapper,
   DimensionContexts,
+  IncludesExcludesDescription,
   MetricSettings,
   MiniButton,
   RevertToDefaultTextButton,
@@ -98,7 +99,7 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
           ]?.description
         : metrics[systemMetricKey]?.description;
 
-    const metricDefinitionSettingsKeys =
+    const metricDefinitionIncludesExcludesKeys =
       metricDefinitionSettings[systemMetricKey] &&
       Object.keys(metricDefinitionSettings[systemMetricKey]);
 
@@ -114,7 +115,7 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
       )) as string[];
 
     const activeSettingsKeys = isMetricDefinitionSettings
-      ? metricDefinitionSettingsKeys
+      ? metricDefinitionIncludesExcludesKeys
       : dimensionDefinitionSettingsKeys;
 
     const hasActiveDisaggregationAndDimensionKey =
@@ -147,40 +148,69 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
     const revertToAndSaveDefaultValues = () => {
       if (systemSearchParam && metricSearchParam) {
         /** Create array of default settings and update settings (to default value) in the store */
-        const defaultSettings = activeSettingsKeys.map((settingKey) => {
+        const defaultSettings: MetricSettings["settings"] = [];
+
+        activeSettingsKeys.forEach((includesExcludesKey) => {
           let currentSettingDefaultValue;
-
           if (isMetricDefinitionSettings) {
-            currentSettingDefaultValue =
-              metricDefinitionSettings[systemMetricKey][settingKey].default;
+            const currentMetricIncludesExcludes =
+              metricDefinitionSettings[systemMetricKey][includesExcludesKey];
 
-            updateMetricDefinitionSetting(
-              systemSearchParam,
-              metricSearchParam,
-              settingKey,
-              currentSettingDefaultValue as MetricConfigurationSettingsOptions
+            Object.values(currentMetricIncludesExcludes.settings).forEach(
+              (setting) => {
+                if (!setting.key) return;
+                currentSettingDefaultValue = metricDefinitionSettings[
+                  systemMetricKey
+                ][includesExcludesKey].settings[setting.key]
+                  .default as MetricConfigurationSettingsOptions;
+                updateMetricDefinitionSetting(
+                  systemSearchParam,
+                  metricSearchParam,
+                  includesExcludesKey,
+                  setting.key,
+                  currentSettingDefaultValue
+                );
+                defaultSettings.push({
+                  key: setting.key,
+                  included: currentSettingDefaultValue,
+                });
+              }
             );
-
-            return { key: settingKey, included: currentSettingDefaultValue };
           }
 
-          currentSettingDefaultValue =
-            activeDisaggregationKey &&
+          if (!activeDisaggregationKey || !activeDimensionKey) return;
+
+          const currentDimensionIncludesExcludes =
             dimensionDefinitionSettings[systemMetricKey][
               activeDisaggregationKey
-            ][activeDimensionKey][settingKey].default;
+            ][activeDimensionKey][includesExcludesKey];
 
-          updateDimensionDefinitionSetting(
-            systemSearchParam,
-            metricSearchParam,
-            activeDisaggregationKey as string,
-            activeDimensionKey,
-            settingKey,
-            currentSettingDefaultValue as MetricConfigurationSettingsOptions
+          Object.values(currentDimensionIncludesExcludes.settings).forEach(
+            (setting) => {
+              if (!setting.key) return;
+              currentSettingDefaultValue = dimensionDefinitionSettings[
+                systemMetricKey
+              ][activeDisaggregationKey][activeDimensionKey][
+                includesExcludesKey
+              ].settings[setting.key]
+                .default as MetricConfigurationSettingsOptions;
+              updateDimensionDefinitionSetting(
+                systemSearchParam,
+                metricSearchParam,
+                activeDisaggregationKey as string,
+                activeDimensionKey,
+                includesExcludesKey,
+                setting.key,
+                currentSettingDefaultValue
+              );
+
+              defaultSettings.push({
+                key: setting.key,
+                included: currentSettingDefaultValue,
+              });
+            }
           );
-
-          return { key: settingKey, included: currentSettingDefaultValue };
-        }) as MetricSettings["settings"];
+        });
 
         /** Save default settings array */
         if (isMetricDefinitionSettings) {
@@ -190,7 +220,6 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
           };
           return saveMetricSettings(updatedSetting, agencyId);
         }
-
         const updatedSetting = {
           key: metricSearchParam as string,
           disaggregations: [
@@ -210,6 +239,7 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
     };
 
     const handleUpdateMetricDefinitionSetting = (
+      includesExcludesKey: string,
       settingKey: string,
       settingValue: MetricConfigurationSettingsOptions
     ) => {
@@ -218,6 +248,7 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
           const updatedSetting = updateMetricDefinitionSetting(
             systemSearchParam,
             metricSearchParam,
+            includesExcludesKey,
             settingKey,
             settingValue
           );
@@ -229,6 +260,7 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
           metricSearchParam,
           activeDisaggregationKey as string,
           activeDimensionKey,
+          includesExcludesKey,
           settingKey,
           settingValue
         );
@@ -345,50 +377,82 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
 
               {/* Definition Settings (Includes/Excludes) */}
               <Definitions isHiddenInMobileView={!isDefinitionsOpen}>
-                {activeSettingsKeys?.map((settingKey) => {
-                  const currentSetting = (
-                    isMetricDefinitionSettings
-                      ? metricDefinitionSettings[systemMetricKey][settingKey]
-                      : activeDisaggregationKey &&
-                        activeDimensionKey &&
-                        dimensionDefinitionSettings[systemMetricKey][
-                          activeDisaggregationKey
-                        ][activeDimensionKey][settingKey]
-                  ) as {
-                    included?: MetricConfigurationSettingsOptions | undefined;
-                    default?: MetricConfigurationSettingsOptions | undefined;
-                    label?: string | undefined;
-                  };
+                {activeSettingsKeys?.map((includesExcludesKey) => {
+                  if (!activeDisaggregationKey) return null;
+                  const currentIncludesExcludes = isMetricDefinitionSettings
+                    ? metricDefinitionSettings[systemMetricKey][
+                        includesExcludesKey
+                      ]
+                    : dimensionDefinitionSettings[systemMetricKey][
+                        activeDisaggregationKey
+                      ][activeDimensionKey][includesExcludesKey];
 
                   return (
-                    <DefinitionItem key={settingKey}>
-                      <DefinitionDisplayName>
-                        {currentSetting.label}
-                      </DefinitionDisplayName>
+                    <>
+                      {currentIncludesExcludes.description && (
+                        <IncludesExcludesDescription>
+                          {currentIncludesExcludes.description}
+                        </IncludesExcludesDescription>
+                      )}
+                      {Object.keys(currentIncludesExcludes.settings).map(
+                        (settingKey) => {
+                          const currentSetting = (
+                            isMetricDefinitionSettings
+                              ? metricDefinitionSettings[systemMetricKey][
+                                  includesExcludesKey
+                                ].settings[settingKey]
+                              : activeDisaggregationKey &&
+                                activeDimensionKey &&
+                                dimensionDefinitionSettings[systemMetricKey][
+                                  activeDisaggregationKey
+                                ][activeDimensionKey][includesExcludesKey]
+                                  .settings[settingKey]
+                          ) as {
+                            included?:
+                              | MetricConfigurationSettingsOptions
+                              | undefined;
+                            default?:
+                              | MetricConfigurationSettingsOptions
+                              | undefined;
+                            label?: string | undefined;
+                          };
 
-                      <DefinitionSelection>
-                        {metricConfigurationSettingsOptions.map((option) => (
-                          <Fragment key={option}>
-                            <MiniButton
-                              selected={
-                                showDefaultSettings
-                                  ? currentSetting.default === option
-                                  : currentSetting.included === option
-                              }
-                              showDefault={showDefaultSettings}
-                              onClick={() =>
-                                handleUpdateMetricDefinitionSetting(
-                                  settingKey,
-                                  option
-                                )
-                              }
-                            >
-                              {option}
-                            </MiniButton>
-                          </Fragment>
-                        ))}
-                      </DefinitionSelection>
-                    </DefinitionItem>
+                          return (
+                            <DefinitionItem key={settingKey}>
+                              <DefinitionDisplayName>
+                                {currentSetting.label}
+                              </DefinitionDisplayName>
+
+                              <DefinitionSelection>
+                                {metricConfigurationSettingsOptions.map(
+                                  (option) => (
+                                    <Fragment key={option}>
+                                      <MiniButton
+                                        selected={
+                                          showDefaultSettings
+                                            ? currentSetting.default === option
+                                            : currentSetting.included === option
+                                        }
+                                        showDefault={showDefaultSettings}
+                                        onClick={() =>
+                                          handleUpdateMetricDefinitionSetting(
+                                            includesExcludesKey,
+                                            settingKey,
+                                            option
+                                          )
+                                        }
+                                      >
+                                        {option}
+                                      </MiniButton>
+                                    </Fragment>
+                                  )
+                                )}
+                              </DefinitionSelection>
+                            </DefinitionItem>
+                          );
+                        }
+                      )}
+                    </>
                   );
                 })}
               </Definitions>
