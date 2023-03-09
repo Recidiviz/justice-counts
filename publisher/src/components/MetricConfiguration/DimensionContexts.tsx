@@ -31,10 +31,16 @@ type DimensionContextsProps = {
   };
   activeDisaggregationKey: string;
   activeDimensionKey: string;
+  isShown: boolean;
 };
 
 export const DimensionContexts: React.FC<DimensionContextsProps> = observer(
-  ({ dimensionContextsMap, activeDisaggregationKey, activeDimensionKey }) => {
+  ({
+    dimensionContextsMap,
+    activeDisaggregationKey,
+    activeDimensionKey,
+    isShown,
+  }) => {
     const { agencyId } = useParams() as { agencyId: string };
     const [settingsSearchParams] = useSettingsSearchParams();
     const { system: systemSearchParam, metric: metricSearchParam } =
@@ -63,20 +69,21 @@ export const DimensionContexts: React.FC<DimensionContextsProps> = observer(
     };
     return (
       <>
-        {dimensionContextsEntries.map(([key, { label, value }]) => (
-          <Fragment key={key}>
-            <Label>{label}</Label>
-            <TextInput
-              type="text"
-              name={key}
-              id={key}
-              label=""
-              value={(value || "") as string}
-              multiline
-              onChange={(e) => handleTextInputChange(e, key)}
-            />
-          </Fragment>
-        ))}
+        {isShown &&
+          dimensionContextsEntries.map(([key, { label, value }]) => (
+            <Fragment key={key}>
+              <Label>{label}</Label>
+              <TextInput
+                type="text"
+                name={key}
+                id={key}
+                label=""
+                value={(value || "") as string}
+                multiline
+                onChange={(e) => handleTextInputChange(e, key)}
+              />
+            </Fragment>
+          ))}
       </>
     );
   }

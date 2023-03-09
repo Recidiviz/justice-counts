@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import { MIN_TABLET_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
   SupervisionSubsystems,
@@ -45,22 +45,25 @@ import {
   AvailableWithCheckWrapper,
   BlueLinkSpan,
   BreakdownHeader,
+  BreakdownsDropdownMenu,
+  ConfigurationBreakdownAvailabilityDescription,
   Dimension,
   DimensionTitle,
   DimensionTitleWrapper,
   DisaggregationHeader,
   DropdownButton,
   Header,
+  MetricBreakdownAvailabilityDefinitions,
   MetricConfigurationContainer,
   MetricConfigurationDropdownContainer,
   MetricDisaggregations,
   MetricOnOffWrapper,
-  MetricsConfigurationDropdownMenu,
   MetricsConfigurationDropdownMenuItem,
   MetricsConfigurationDropdownToggle,
   MiniButton,
   MiniButtonWrapper,
   PromptWrapper,
+  RACE_ETHNICITIES_DESCRIPTION,
   RACE_ETHNICITY_DISAGGREGATION_KEY,
   RaceEthnicitiesGrid,
   RadioButtonGroupWrapper,
@@ -408,6 +411,13 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
             )}
         </MetricOnOffWrapper>
 
+        {windowWidth <= MIN_TABLET_WIDTH && (
+          <MetricBreakdownAvailabilityDefinitions
+            activeDimensionKey={undefined}
+            activeDisaggregationKey={activeDisaggregationKey}
+          />
+        )}
+
         {/* Breakdowns */}
         {activeDisaggregationKeys?.length > 0 && (
           <MetricDisaggregations enabled={metricEnabled}>
@@ -421,7 +431,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
             </Subheader>
 
             {/* Desktop Disaggregations */}
-            {windowWidth > MIN_DESKTOP_WIDTH && (
+            {windowWidth > MIN_TABLET_WIDTH && (
               <>
                 {/* Disaggregations (Enable/Disable) */}
                 {activeDisaggregationKeys?.map((disaggregationKey) => {
@@ -549,11 +559,14 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
             )}
 
             {/* Responsive Disaggregations with Dropdown Menu */}
-            {windowWidth <= MIN_DESKTOP_WIDTH && (
+            {windowWidth <= MIN_TABLET_WIDTH && (
               <>
                 {activeDisaggregationKey &&
                   disaggregations[systemMetricKey][activeDisaggregationKey] && (
-                    <MetricConfigurationDropdownContainer hasTopBorder>
+                    <MetricConfigurationDropdownContainer
+                      hasTopBorder
+                      hasBottomMargin
+                    >
                       <Dropdown>
                         <MetricsConfigurationDropdownToggle kind="borderless">
                           {activeDisaggregationKeys?.length > 1 && (
@@ -616,7 +629,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                           </MiniButtonWrapper>
                         </MetricsConfigurationDropdownToggle>
                         {activeDisaggregationKeys.length > 1 ? (
-                          <MetricsConfigurationDropdownMenu>
+                          <BreakdownsDropdownMenu>
                             {activeDisaggregationKeys?.map((key) => {
                               const currentDisaggregation =
                                 disaggregations[systemMetricKey][key];
@@ -640,13 +653,23 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                                 </MetricsConfigurationDropdownMenuItem>
                               );
                             })}
-                          </MetricsConfigurationDropdownMenu>
+                          </BreakdownsDropdownMenu>
                         ) : (
                           <></>
                         )}
                       </Dropdown>
                     </MetricConfigurationDropdownContainer>
                   )}
+                {activeDimensionKey && activeDisaggregationKey && (
+                  <ConfigurationBreakdownAvailabilityDescription>
+                    {activeDisaggregationKey ===
+                    RACE_ETHNICITY_DISAGGREGATION_KEY
+                      ? RACE_ETHNICITIES_DESCRIPTION
+                      : dimensions[systemMetricKey]?.[
+                          activeDisaggregationKey
+                        ]?.[activeDimensionKey]?.description}
+                  </ConfigurationBreakdownAvailabilityDescription>
+                )}
                 {activeDisaggregationKey && (
                   <>
                     {activeDisaggregationKey ===

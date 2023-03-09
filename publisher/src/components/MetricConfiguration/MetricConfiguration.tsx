@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import { MIN_TABLET_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
@@ -38,6 +38,7 @@ import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   Configuration,
+  ConfigurationBreakdownAvailabilityDescription,
   Metric,
   MetricBox,
   MetricBoxBottomPaddingContainer,
@@ -175,7 +176,7 @@ export const MetricConfiguration: React.FC = observer(() => {
   return (
     <>
       <MetricsViewContainer>
-        <MobileMetricsConfigurationHeader hasBorder={showSystems}>
+        <MobileMetricsConfigurationHeader>
           Metric Configuration
           {systemSearchParam &&
             ` > ${formatSystemName(systemSearchParam, {
@@ -212,7 +213,11 @@ export const MetricConfiguration: React.FC = observer(() => {
             </StickyHeader>
 
             {/* Systems Dropdown (for multi-system agencies)  */}
-            <MetricConfigurationDropdownContainer hasBottomMargin>
+            <MetricConfigurationDropdownContainer
+              hasBottomMargin
+              hasTopBorder
+              hasTopMargin
+            >
               <Dropdown>
                 <MetricsConfigurationDropdownToggle kind="borderless">
                   <img src={dropdownArrow} alt="" />
@@ -272,7 +277,11 @@ export const MetricConfiguration: React.FC = observer(() => {
           {metricSearchParam && (
             <MetricConfigurationWrapper>
               {/* Metric Configuration */}
-              <MetricConfigurationDropdownContainer hasTopBorder>
+              <MetricConfigurationDropdownContainer
+                hasTopBorder
+                hasBottomMargin
+                hasTopMargin
+              >
                 <Dropdown>
                   <MetricsConfigurationDropdownToggle kind="borderless">
                     {showMetricsDropdownOptions() && (
@@ -296,6 +305,7 @@ export const MetricConfiguration: React.FC = observer(() => {
                               );
                               setActiveDimensionKey(undefined);
                             }}
+                            highlight={key === metricSearchParam}
                           >
                             {metric.label}
                           </MetricsConfigurationDropdownMenuItem>
@@ -308,11 +318,10 @@ export const MetricConfiguration: React.FC = observer(() => {
                 </Dropdown>
               </MetricConfigurationDropdownContainer>
 
-              {windowWidth <= MIN_DESKTOP_WIDTH && !activeDimensionKey && (
-                <MetricBreakdownAvailabilityDefinitions
-                  activeDimensionKey={activeDimensionKey}
-                  activeDisaggregationKey={activeDisaggregationKey}
-                />
+              {windowWidth <= MIN_TABLET_WIDTH && (
+                <ConfigurationBreakdownAvailabilityDescription>
+                  {metrics[systemMetricKey]?.description}
+                </ConfigurationBreakdownAvailabilityDescription>
               )}
 
               <MetricConfigurationDisplay>
@@ -339,7 +348,7 @@ export const MetricConfiguration: React.FC = observer(() => {
 
               {/* Metric/Dimension Definitions (Includes/Excludes) & Context */}
               {/* Race/Ethnicities (when active disaggregation is Race / Ethnicities) */}
-              {activeDimensionKey && windowWidth <= MIN_DESKTOP_WIDTH && (
+              {activeDimensionKey && windowWidth <= MIN_TABLET_WIDTH && (
                 <>
                   {activeDisaggregationKey ===
                   RACE_ETHNICITY_DISAGGREGATION_KEY ? (
@@ -353,7 +362,7 @@ export const MetricConfiguration: React.FC = observer(() => {
                 </>
               )}
 
-              {windowWidth > MIN_DESKTOP_WIDTH && (
+              {windowWidth > MIN_TABLET_WIDTH && (
                 <>
                   {activeDisaggregationKey ===
                   RACE_ETHNICITY_DISAGGREGATION_KEY ? (

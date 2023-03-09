@@ -18,6 +18,7 @@
 import {
   HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
+  MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -68,8 +69,13 @@ export const MobileMetricsConfigurationHeader = styled.div<{
   border-bottom: ${({ hasBorder }) =>
     hasBorder && `1px solid ${palette.solid.darkgrey}`};
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: block;
+    position: fixed;
+    top: ${HEADER_BAR_HEIGHT}px;
+    padding-top: 24px;
+    background-color: ${palette.solid.white};
+    z-index: 2;
   }
 `;
 
@@ -250,9 +256,11 @@ export const CurrentMetricsSystem = styled.div`
 export const MetricConfigurationDropdownContainer = styled(DropdownContainer)<{
   hasTopBorder?: boolean;
   hasBottomMargin?: boolean;
+  hasTopMargin?: boolean;
 }>`
   display: none;
   margin-bottom: ${({ hasBottomMargin }) => hasBottomMargin && "24px"};
+  margin-top: ${({ hasTopMargin }) => hasTopMargin && "48px"};
   min-height: 56px;
   border-top: ${({ hasTopBorder }) =>
     hasTopBorder && `1px solid ${palette.solid.darkgrey}`};
@@ -261,7 +269,7 @@ export const MetricConfigurationDropdownContainer = styled(DropdownContainer)<{
     width: 100%;
   }
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: flex;
   }
 `;
@@ -314,6 +322,10 @@ export const MetricsConfigurationDropdownMenu = styled(DropdownMenu)`
   border-radius: 4px;
   max-height: 452px;
   width: 100%;
+`;
+
+export const BreakdownsDropdownMenu = styled(MetricsConfigurationDropdownMenu)`
+  margin-top: 2px;
 `;
 
 export const StartingMonthDropdownMenu = styled(
@@ -459,7 +471,7 @@ export const Metric = styled.div<{ inView: boolean }>`
     opacity: 1;
   }
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: none;
   }
 `;
@@ -509,16 +521,29 @@ export const Header = styled.div`
   &:not(:first-child) {
     margin-top: 27px;
   }
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    ${typography.sizeCSS.normal};
+  }
 `;
 
 export const BreakdownHeader = styled(Header)`
   padding-top: 24px;
   border-top: 1px solid ${palette.highlight.grey5};
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    ${typography.sizeCSS.large};
+    padding: 32px 0 8px 0;
+  }
 `;
 
 export const Subheader = styled.div`
   ${typography.sizeCSS.normal};
-  margin-bottom: 9px;
+  margin-bottom: 8px;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    margin-bottom: 32px;
+  }
 `;
 
 export const BreakdownsTabbedBar = styled(TabbedBar)`
@@ -823,7 +848,7 @@ export const StickyHeader = styled.div`
   background: ${palette.solid.white};
   margin-bottom: 29px;
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: none;
   }
 `;
@@ -853,7 +878,7 @@ export const MetricConfigurationWrapper = styled.div`
   justify-content: space-between;
   overflow-y: hidden;
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     flex-direction: column;
     overflow-y: auto;
   }
@@ -867,9 +892,8 @@ export const DefinitionsDisplayContainer = styled.div`
   overflow-y: auto;
   position: relative;
 
-  @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
-    border-top: 1px solid ${palette.highlight.grey3};
-    padding: 30px 0 0 0;
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    padding: 8px 0;
     overflow-y: unset;
     margin-right: 12px;
   }
@@ -890,16 +914,43 @@ export const DefinitionsWrapper = styled.div<{ enabled?: boolean | null }>`
 export const DefinitionsTitle = styled.div`
   ${typography.sizeCSS.large}
   margin-bottom: 24px;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    display: none;
+  }
 `;
 
-export const DefinitionsSubTitle = styled.div`
+export const DefinitionsSubTitleDropdownArrow = styled.img<{
+  isOpen?: boolean;
+}>`
+  transform: ${({ isOpen }) => !isOpen && "rotate(270deg)"};
+`;
+
+export const DefinitionsSubTitle = styled.div<{
+  isHiddenInMobileView?: boolean;
+}>`
   ${typography.sizeCSS.medium}
   margin-bottom: 16px;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    display: ${({ isHiddenInMobileView }) =>
+      isHiddenInMobileView ? "none" : "flex"};
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+  }
 `;
 
-export const BreakdownAvailabilitySubTitle = styled(DefinitionsSubTitle)``;
+export const BreakdownAvailabilitySubTitle = styled(DefinitionsSubTitle)`
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    padding-top: 16px;
+  }
+`;
 
-export const DefinitionsDescription = styled.div`
+export const DefinitionsDescription = styled.div<{
+  isHiddenInMobileView?: boolean;
+}>`
   ${typography.sizeCSS.normal}
   margin-bottom: 32px;
 
@@ -907,10 +958,30 @@ export const DefinitionsDescription = styled.div`
     display: block;
     color: ${palette.solid.orange};
   }
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    display: ${({ isHiddenInMobileView }) =>
+      isHiddenInMobileView ? "none" : "block"};
+  }
 `;
 
 export const BreakdownAvailabilityDescription = styled(DefinitionsDescription)`
   margin-bottom: 16px;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    display: none;
+  }
+`;
+
+export const ConfigurationBreakdownAvailabilityDescription = styled(
+  DefinitionsDescription
+)`
+  margin-bottom: 16px;
+  display: none;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    display: block;
+  }
 `;
 
 export const RevertToDefaultButton = styled.div`
@@ -930,10 +1001,17 @@ export const RevertToDefaultButton = styled.div`
   }
 `;
 
-export const RevertToDefaultTextButtonWrapper = styled.div`
+export const RevertToDefaultTextButtonWrapper = styled.div<{
+  isHiddenInMobileView?: boolean;
+}>`
   width: 100%;
   display: flex;
   justify-content: flex-end;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    display: ${({ isHiddenInMobileView }) =>
+      isHiddenInMobileView ? "none" : "flex"};
+  }
 `;
 
 export const RevertToDefaultTextButton = styled.div`
@@ -990,12 +1068,17 @@ export const BreakdownAvailabilityMiniButtonWrapper = styled(MiniButtonWrapper)`
   margin-bottom: 32px;
 `;
 
-export const Definitions = styled.div`
+export const Definitions = styled.div<{ isHiddenInMobileView?: boolean }>`
   width: 100%;
   display: flex;
   flex-direction: column;
   margin-top: 16px;
   margin-bottom: 16px;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    display: ${({ isHiddenInMobileView }) =>
+      isHiddenInMobileView ? "none" : "flex"};
+  }
 `;
 
 export const DefinitionItem = styled.div`

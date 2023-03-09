@@ -43,6 +43,9 @@ import {
   Subheader,
 } from ".";
 
+export const RACE_ETHNICITIES_DESCRIPTION =
+  "This breakdown asks for combinations of race and ethnicity, and should be based on what data is available via your case management system. Answering all of the questions below will fill out the grid for this breakdown.";
+
 export const RaceEthnicitiesForm = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
   const [settingsSearchParams] = useSettingsSearchParams();
@@ -151,10 +154,7 @@ export const RaceEthnicitiesForm = observer(() => {
         <RaceEthnicitiesTitle>Race and Ethnicity</RaceEthnicitiesTitle>
 
         <RaceEthnicitiesDescription>
-          This breakdown asks for combinations of race and ethnicity, and should
-          be based on what data is available via your case management system.
-          Answering all of the questions below will fill out the grid for this
-          breakdown.
+          {RACE_ETHNICITIES_DESCRIPTION}
         </RaceEthnicitiesDescription>
 
         <SpecifyEthnicityWrapper>
