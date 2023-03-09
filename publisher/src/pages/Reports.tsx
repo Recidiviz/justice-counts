@@ -175,9 +175,11 @@ const Reports: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyId]);
 
-  // useEffect(() => {
-  //   document.body.style.overflow = ? "hidden" : "unset";
-  // }, []);
+  useEffect(() => {
+    document.body.style.overflow = isRemoveRecordsModalOpen
+      ? "hidden"
+      : "unset";
+  }, [isRemoveRecordsModalOpen]);
 
   const filteredReportsMemoized = React.useMemo(
     () =>
