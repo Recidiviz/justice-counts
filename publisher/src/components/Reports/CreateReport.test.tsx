@@ -162,10 +162,10 @@ describe("test create report button", () => {
       });
     });
 
-    const selectButton = screen.queryByText(/Select/i);
-    const createNewReportButton = screen.queryByText(/New/i);
+    const bulkActionButton = screen.queryByText(/Bulk Actions/i);
+    const createNewReportButton = screen.queryByText(/New Record/i);
 
-    expect(selectButton).toBeInTheDocument();
+    expect(bulkActionButton).toBeInTheDocument();
     expect(createNewReportButton).toBeInTheDocument();
   });
 });
