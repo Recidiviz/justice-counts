@@ -35,10 +35,12 @@ const RemoveRecordsModalWrapper = styled.div`
   align-items: center;
   z-index: 5;
   background-color: rgba(255, 255, 255, 0.8);
+  padding: 0 24px;
 `;
 
 const RemoveRecordsModalContainer = styled.div`
-  width: 582px;
+  width: 100%;
+  max-width: 582px;
   background-color: ${palette.solid.white};
   padding: 168px 24px 24px 24px;
   display: flex;
