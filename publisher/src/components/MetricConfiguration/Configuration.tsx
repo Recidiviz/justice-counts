@@ -63,10 +63,10 @@ import {
   MiniButton,
   MiniButtonWrapper,
   PromptWrapper,
+  RACE_ETHNICITIES_DESCRIPTION,
   RACE_ETHNICITY_DISAGGREGATION_KEY,
   RaceEthnicitiesGrid,
   RadioButtonGroupWrapper,
-  RECE_ETHNICITIES_DESCRIPTION,
   ReportFrequencyUpdate,
   StartingMonthDropdownMenu,
   Subheader,
@@ -661,7 +661,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   <ConfigurationBreakdownAvailabilityDescription>
                     {activeDisaggregationKey ===
                     RACE_ETHNICITY_DISAGGREGATION_KEY
-                      ? RECE_ETHNICITIES_DESCRIPTION
+                      ? RACE_ETHNICITIES_DESCRIPTION
                       : dimensions[systemMetricKey]?.[
                           activeDisaggregationKey
                         ]?.[activeDimensionKey]?.description}

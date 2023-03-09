@@ -42,7 +42,7 @@ import {
   Subheader,
 } from ".";
 
-export const RECE_ETHNICITIES_DESCRIPTION =
+export const RACE_ETHNICITIES_DESCRIPTION =
   "This breakdown asks for combinations of race and ethnicity, and should be based on what data is available via your case management system. Answering all of the questions below will fill out the grid for this breakdown.";
 
 export const RaceEthnicitiesForm = observer(() => {
@@ -153,7 +153,7 @@ export const RaceEthnicitiesForm = observer(() => {
         <RaceEthnicitiesTitle>Race and Ethnicity</RaceEthnicitiesTitle>
 
         <RaceEthnicitiesDescription>
-          {RECE_ETHNICITIES_DESCRIPTION}
+          {RACE_ETHNICITIES_DESCRIPTION}
         </RaceEthnicitiesDescription>
 
         <SpecifyEthnicityWrapper>
