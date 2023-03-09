@@ -1181,11 +1181,11 @@ export const AvailableWithCheckWrapper = styled.div`
 
 export const IncludesExcludesDescription = styled.div`
   ${typography.sizeCSS.normal}
-  color: ${palette.highlight.grey8};
+  color: ${palette.highlight.grey9};
   margin: 0 0 16px 0;
 
   &:not(:first-child) {
-    border-top: 1px solid ${palette.highlight.grey2};
+    border-top: 1px solid ${palette.highlight.grey6};
     padding-top: 16px;
     margin: 16px 0;
   }

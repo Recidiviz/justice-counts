@@ -53,7 +53,7 @@ export const LearnMoreModal: React.FC<{
           <ModalSubtitle>{agencyDataStore.agency?.name}</ModalSubtitle>
           <ModalTitle>{metric.display_name}</ModalTitle>
           <ModalParagraph>{metric.description}</ModalParagraph>
-          {metric.definitions.length > 0 && (
+          {metric.definitions && metric.definitions.length > 0 && (
             <>
               <ModalSectionTitle>Metric Definitions</ModalSectionTitle>
               {metric.definitions.map((definition) => (
@@ -73,7 +73,7 @@ export const LearnMoreModal: React.FC<{
           {metric.includes_excludes && metric.includes_excludes.length > 0 && (
             <>
               <ModalSectionTitle>Settings</ModalSectionTitle>
-              {metric.includes_excludes?.forEach((includesExcludes) =>
+              {metric.includes_excludes?.map((includesExcludes) =>
                 includesExcludes.settings.map((setting) => (
                   <ModalParagraph>
                     <span>{setting.label}</span>
