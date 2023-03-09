@@ -32,7 +32,7 @@ import {
 
 const HelperTextContainer = styled.div`
   height: 70vh;
-  overflow-y: scroll;
+  overflow-y: auto;
   ${typography.sizeCSS.normal}
 
   &::-webkit-scrollbar {

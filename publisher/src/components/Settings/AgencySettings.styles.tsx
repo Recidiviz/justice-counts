@@ -584,7 +584,7 @@ export const JurisdictionsSearchResultContainer = styled.div`
   z-index: 5;
   width: ${AGENCY_SETTINGS_CONTAINER_WIDTH}px;
   padding: 8px 0;
-  overflow-y: scroll;
+  overflow-y: auto;
   max-height: 270px;
   background-color: ${palette.solid.white};
   top: 55px;
@@ -633,7 +633,7 @@ export const JurisdictionsListArea = styled.div`
   flex-direction: column;
   height: 270px;
   margin-bottom: 64px;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 export const JurisdictionsInfoRow = styled(AgencySettingsInfoRow)`

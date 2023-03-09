@@ -15,10 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import {
-  Badge,
-  reportFrequencyBadgeColors,
-} from "@justice-counts/common/components/Badge";
 import { MIN_TABLET_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { useWindowWidth } from "@justice-counts/common/hooks";
@@ -292,22 +288,6 @@ export const MetricConfiguration: React.FC = observer(() => {
                       <img src={dropdownArrow} alt="" />
                     )}
                     {metrics[systemMetricKey]?.label}
-                    <Badge
-                      color={
-                        reportFrequencyBadgeColors[
-                          metrics[systemMetricKey]?.customFrequency ||
-                            (metrics[systemMetricKey]
-                              ?.defaultFrequency as ReportFrequency)
-                        ]
-                      }
-                    >
-                      {metrics[
-                        systemMetricKey
-                      ]?.customFrequency?.toLowerCase() ||
-                        metrics[
-                          systemMetricKey
-                        ]?.defaultFrequency?.toLowerCase()}
-                    </Badge>
                   </MetricsConfigurationDropdownToggle>
                   {showMetricsDropdownOptions() ? (
                     <MetricsConfigurationDropdownMenu>
@@ -328,17 +308,6 @@ export const MetricConfiguration: React.FC = observer(() => {
                             highlight={key === metricSearchParam}
                           >
                             {metric.label}
-                            <Badge
-                              color={
-                                reportFrequencyBadgeColors[
-                                  metric.customFrequency ||
-                                    (metric.defaultFrequency as ReportFrequency)
-                                ]
-                              }
-                            >
-                              {metric.customFrequency?.toLowerCase() ||
-                                metric.defaultFrequency?.toLowerCase()}
-                            </Badge>
                           </MetricsConfigurationDropdownMenuItem>
                         )
                       )}
@@ -363,15 +332,6 @@ export const MetricConfiguration: React.FC = observer(() => {
                   <MetricName isTitle>
                     {metrics[systemMetricKey]?.label}
                   </MetricName>
-                  <Badge color="GREEN" noMargin>
-                    {metrics[systemMetricKey]?.customFrequency
-                      ? metrics[
-                          systemMetricKey
-                        ]?.customFrequency?.toLocaleLowerCase()
-                      : metrics[
-                          systemMetricKey
-                        ]?.defaultFrequency?.toLowerCase()}
-                  </Badge>
                   <RightArrowIcon />
                 </Metric>
 

@@ -32,7 +32,7 @@ export const ModalContainer = styled.div`
   display: flex;
   align-items: left;
   justify-content: center;
-  overflow-y: scroll;
+  overflow-y: auto;
   z-index: 3;
 `;
 

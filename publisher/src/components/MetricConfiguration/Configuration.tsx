@@ -148,6 +148,8 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
         }
         return system.charAt(0).toUpperCase() + system.slice(1);
       }) || [];
+    const hasEnabledSupervisionSubsystems =
+      enabledSupervisionSubsystems && enabledSupervisionSubsystems.length > 0;
 
     useEffect(
       () => {
@@ -361,6 +363,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
 
           {/* Supervision Subsystem Disaggregation Selection (Supervision Systems ONLY) */}
           {systemSearchParam &&
+            hasEnabledSupervisionSubsystems &&
             (systemSearchParam === SupervisionSystem ||
               SupervisionSubsystems.includes(systemSearchParam)) && (
               <PromptWrapper>

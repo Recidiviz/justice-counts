@@ -28,6 +28,7 @@ import {
   Ethnicity,
   EthnicityCell,
   EthnicityLabel,
+  EthnicityName,
   GridEthnicitiesHeader,
   GridHeaderContainer,
   GridRaceHeader,
@@ -72,9 +73,9 @@ export const RaceEthnicitiesGrid: React.FC<{
           <EthnicityLabel>
             Ethnicity <RightArrowIcon />
           </EthnicityLabel>
-          <Ethnicity>Hispanic or Latino</Ethnicity>
-          <Ethnicity>Not Hispanic</Ethnicity>
-          <Ethnicity>Unknown</Ethnicity>
+          <EthnicityName>{Ethnicity.HISPANIC_OR_LATINO}</EthnicityName>
+          <EthnicityName>{Ethnicity.NOT_HISPANIC_OR_LATINO}</EthnicityName>
+          <EthnicityName>{Ethnicity.UNKNOWN_ETHNICITY}</EthnicityName>
         </GridEthnicitiesHeader>
       </GridHeaderContainer>
 

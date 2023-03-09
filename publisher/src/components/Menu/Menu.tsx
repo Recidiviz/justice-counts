@@ -35,6 +35,7 @@ import {
   metricConfigurationProgressSteps,
   ProgressItemName,
   ProgressItemWrapper,
+  ProgressSteps,
   ProgressTooltipToast,
 } from "../Guidance";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
@@ -52,7 +53,8 @@ import {
 } from ".";
 
 const Menu: React.FC = () => {
-  const { userStore, guidanceStore, authStore, api } = useStore();
+  const { userStore, guidanceStore, metricConfigStore, authStore, api } =
+    useStore();
   const {
     hasCompletedOnboarding,
     currentTopicID,
@@ -74,6 +76,13 @@ const Menu: React.FC = () => {
   const currentAgency = userStore.getAgency(agencyId);
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const hasSystemMetricParams = !systemMetricKey.includes("undefined");
+  const currentMetric = metricConfigStore.metrics[systemMetricKey];
+  const allDisaggregationsDisabled =
+    metricConfigStore.disaggregations[systemMetricKey] &&
+    Object.values(metricConfigStore.disaggregations[systemMetricKey]).filter(
+      (disaggregation) =>
+        disaggregation.enabled === true || disaggregation.enabled === null
+    ).length === 0;
 
   const handleCloseMobileMenu = () => {
     if (windowWidth < MIN_TABLET_WIDTH && isMobileMenuOpen) {
@@ -155,6 +164,8 @@ const Menu: React.FC = () => {
       metricDefinitionProgress,
       breakdownProgress,
       breakdownDefinitionProgress,
+      currentMetric?.enabled,
+      allDisaggregationsDisabled,
     ]
   );
 
@@ -206,17 +217,35 @@ const Menu: React.FC = () => {
               {/* Guidance: Metric Configuration Progress Toast */}
               {isMetricConfigStep && hasSystemMetricParams && (
                 <ProgressTooltipToast showToast={showMetricConfigProgressToast}>
-                  {metricConfigurationProgressSteps.map((step) => (
-                    <ProgressItemWrapper key={step}>
-                      <CheckIconWrapper>
-                        {metricCompletionProgress &&
-                          metricCompletionProgress[step] && (
-                            <CheckIcon src={checkmarkIcon} alt="" />
-                          )}
-                      </CheckIconWrapper>
-                      <ProgressItemName>{step}</ProgressItemName>
-                    </ProgressItemWrapper>
-                  ))}
+                  {metricConfigurationProgressSteps.map((step) => {
+                    // Don't show other 3 required steps if the metric is marked as Unavailable - because they are no longer required in this case.
+                    if (
+                      currentMetric?.enabled === false &&
+                      step !== ProgressSteps.CONFIRM_METRIC_AVAILABILITY
+                    ) {
+                      return null;
+                    }
+
+                    // When all disaggregations are disabled, the "Confirm breakdown definitions" are no longer required.
+                    if (
+                      allDisaggregationsDisabled &&
+                      step === ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
+                    ) {
+                      return null;
+                    }
+
+                    return (
+                      <ProgressItemWrapper key={step}>
+                        <CheckIconWrapper>
+                          {metricCompletionProgress &&
+                            metricCompletionProgress[step] && (
+                              <CheckIcon src={checkmarkIcon} alt="" />
+                            )}
+                        </CheckIconWrapper>
+                        <ProgressItemName>{step}</ProgressItemName>
+                      </ProgressItemWrapper>
+                    );
+                  })}
                 </ProgressTooltipToast>
               )}
             </MenuItem>

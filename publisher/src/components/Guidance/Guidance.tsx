@@ -20,6 +20,10 @@ import {
   BadgeColorMapping,
 } from "@justice-counts/common/components/Badge";
 import {
+  AgencySystems,
+  SupervisionSubsystems,
+} from "@justice-counts/common/types";
+import {
   printReportTitle,
   removeSnakeCase,
 } from "@justice-counts/common/utils";
@@ -29,13 +33,16 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import MetricConfigStore from "../../stores/MetricConfigStore";
+import { formatSystemName } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import checkmarkIcon from "../assets/status-check-icon.png";
 import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 import { Loader, Loading } from "../Loading";
+import { MetricInfo } from "../MetricConfiguration";
 import {
   ActionButton,
   ActionButtonWrapper,
+  ALL_REQUIRED_METRIC_CONFIG_STEPS_COMPLETED,
   CheckIcon,
   CheckIconWrapper,
   ConfiguredMetricIndicatorTitle,
@@ -52,6 +59,7 @@ import {
   ProgressItemName,
   ProgressItemWrapper,
   ProgressStepBubble,
+  ProgressSteps,
   ProgressStepsContainer,
   ProgressTooltipContainer,
   ReportsOverviewContainer,
@@ -59,6 +67,7 @@ import {
   ReportTitle,
   ReviewPublishLink,
   SkipButton,
+  SystemNameTitle,
   TopicDescription,
   TopicTitle,
 } from ".";
@@ -66,7 +75,8 @@ import {
 export const Guidance = observer(() => {
   const navigate = useNavigate();
   const { agencyId } = useParams() as { agencyId: string };
-  const { guidanceStore, metricConfigStore, reportStore } = useStore();
+  const { guidanceStore, metricConfigStore, reportStore, userStore } =
+    useStore();
   const {
     onboardingTopicsMetadata,
     currentTopicID,
@@ -93,8 +103,39 @@ export const Guidance = observer(() => {
     PUBLISHED: "GREEN",
     NOT_STARTED: "RED",
   };
+
+  const currentAgency = userStore.getAgency(agencyId);
   const metricsEntries = Object.entries(metricConfigStore.metrics);
-  const totalMetrics = metricsEntries.length;
+  const metricsEntriesBySystem = metricsEntries.reduce(
+    (acc, [systemMetricKey, metric]) => {
+      const { system } =
+        MetricConfigStore.splitSystemMetricKey(systemMetricKey);
+
+      // Exclude Supervision subsystems unless they are disaggregated AND enabled (in which case, they should be rendered).
+      if (
+        !SupervisionSubsystems.includes(system as AgencySystems) ||
+        (SupervisionSubsystems.includes(system as AgencySystems) &&
+          metric.enabled)
+      ) {
+        if (!acc[system]) {
+          acc[system] = [];
+        }
+        acc[system].push([systemMetricKey, metric]);
+      }
+
+      return acc;
+    },
+    {} as { [system: string]: [string, MetricInfo][] }
+  );
+
+  const totalMetrics = Object.values(metricsEntriesBySystem).reduce(
+    (acc, metrics) => {
+      // eslint-disable-next-line no-param-reassign
+      acc += metrics.length;
+      return acc;
+    },
+    0
+  );
 
   const renderProgressSteps = () => {
     if (currentTopicID === "WELCOME") return;
@@ -123,9 +164,13 @@ export const Guidance = observer(() => {
     );
   };
 
-  const numberOfMetricsCompleted = metricsEntries.filter(
-    ([key]) => getMetricCompletionValue(key) === 4
-  ).length;
+  const numberOfMetricsCompleted = Object.values(metricsEntriesBySystem)
+    .flatMap((entries) => entries)
+    .filter(
+      ([key]) =>
+        getMetricCompletionValue(key) ===
+        ALL_REQUIRED_METRIC_CONFIG_STEPS_COMPLETED
+    ).length;
 
   useEffect(
     () => metricConfigStore.resetStore(),
@@ -308,63 +353,120 @@ export const Guidance = observer(() => {
                   metrics configured
                 </ConfiguredMetricIndicatorTitle>
                 <MetricListContainer>
-                  {metricsEntries.map(([systemMetricKey, metric]) => {
-                    const metricCompletionProgress =
-                      getOverallMetricProgress(systemMetricKey);
-                    const metricCompletionProgressValue =
-                      getMetricCompletionValue(systemMetricKey);
-                    const { system, metricKey } =
-                      MetricConfigStore.splitSystemMetricKey(systemMetricKey);
+                  {Object.entries(metricsEntriesBySystem).map(
+                    ([system, entries]) => {
+                      return (
+                        <Fragment key={system}>
+                          {currentAgency?.systems &&
+                            currentAgency.systems.length > 1 && (
+                              <SystemNameTitle>
+                                {formatSystemName(system as AgencySystems)}
+                              </SystemNameTitle>
+                            )}
+                          {entries.map(([systemMetricKey, metric]) => {
+                            const metricCompletionProgress =
+                              getOverallMetricProgress(systemMetricKey);
+                            const metricCompletionProgressValue =
+                              getMetricCompletionValue(systemMetricKey);
+                            const { metricKey } =
+                              MetricConfigStore.splitSystemMetricKey(
+                                systemMetricKey
+                              );
 
-                    return (
-                      <Fragment key={systemMetricKey}>
-                        <Metric
-                          hideTooltip={metric.enabled === false}
-                          onClick={() =>
-                            navigate(
-                              `../settings/metric-config?system=${system}&metric=${metricKey}`
-                            )
-                          }
-                        >
-                          <MetricName>{metric.label}</MetricName>
-                          <MetricStatus greyText={metric.enabled === false}>
-                            {metricCompletionProgressValue === 4 &&
-                              metric.enabled && (
-                                <CheckIcon src={checkmarkIcon} alt="" />
-                              )}
-                            {metric.enabled === false && "Unavailable"}
-                            {metricCompletionProgressValue < 4 &&
-                              (metric.enabled || metric.enabled === null) &&
-                              "Action Required"}
-                          </MetricStatus>
-                          <RightArrowIcon />
+                            return (
+                              <Fragment key={systemMetricKey}>
+                                <Metric
+                                  hideTooltip={metric.enabled === false}
+                                  onClick={() =>
+                                    navigate(
+                                      `../settings/metric-config?system=${system}&metric=${metricKey}`
+                                    )
+                                  }
+                                >
+                                  <MetricName>{metric.label}</MetricName>
+                                  <MetricStatus
+                                    greyText={metric.enabled === false}
+                                  >
+                                    {metricCompletionProgressValue ===
+                                      ALL_REQUIRED_METRIC_CONFIG_STEPS_COMPLETED &&
+                                      metric.enabled && (
+                                        <CheckIcon src={checkmarkIcon} alt="" />
+                                      )}
+                                    {metric.enabled === false && "Unavailable"}
+                                    {metricCompletionProgressValue <
+                                      ALL_REQUIRED_METRIC_CONFIG_STEPS_COMPLETED &&
+                                      (metric.enabled ||
+                                        metric.enabled === null) &&
+                                      "Action Required"}
+                                  </MetricStatus>
+                                  <RightArrowIcon />
 
-                          {/* Progress Tooltip */}
-                          <ProgressTooltipContainer>
-                            {metricConfigurationProgressSteps.map((step) => (
-                              <ProgressItemWrapper key={step}>
-                                <CheckIconWrapper>
-                                  {metricCompletionProgress[step] && (
-                                    <CheckIcon src={checkmarkIcon} alt="" />
-                                  )}
-                                </CheckIconWrapper>
-                                <ProgressItemName>{step}</ProgressItemName>
-                              </ProgressItemWrapper>
-                            ))}
-                          </ProgressTooltipContainer>
-                        </Metric>
-                        <ProgressBarContainer>
-                          <Progress
-                            progress={
-                              metric.enabled === false
-                                ? 0
-                                : metricCompletionProgressValue
-                            }
-                          />
-                        </ProgressBarContainer>
-                      </Fragment>
-                    );
-                  })}
+                                  {/* Progress Tooltip */}
+                                  <ProgressTooltipContainer>
+                                    {metricConfigurationProgressSteps.map(
+                                      (step) => {
+                                        // When all disaggregations are disabled, the "Confirm breakdown definitions" are no longer required.
+                                        if (
+                                          step ===
+                                          ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
+                                        ) {
+                                          const allDisaggregationsDisabled =
+                                            metricConfigStore.disaggregations[
+                                              systemMetricKey
+                                            ] &&
+                                            Object.values(
+                                              metricConfigStore.disaggregations[
+                                                systemMetricKey
+                                              ]
+                                            ).filter(
+                                              (disaggregation) =>
+                                                disaggregation.enabled ===
+                                                  true ||
+                                                disaggregation.enabled === null
+                                            ).length === 0;
+                                          if (allDisaggregationsDisabled) {
+                                            return null;
+                                          }
+                                        }
+
+                                        return (
+                                          <ProgressItemWrapper key={step}>
+                                            <CheckIconWrapper>
+                                              {metricCompletionProgress &&
+                                                metricCompletionProgress[
+                                                  step
+                                                ] && (
+                                                  <CheckIcon
+                                                    src={checkmarkIcon}
+                                                    alt=""
+                                                  />
+                                                )}
+                                            </CheckIconWrapper>
+                                            <ProgressItemName>
+                                              {step}
+                                            </ProgressItemName>
+                                          </ProgressItemWrapper>
+                                        );
+                                      }
+                                    )}
+                                  </ProgressTooltipContainer>
+                                </Metric>
+                                <ProgressBarContainer>
+                                  <Progress
+                                    progress={
+                                      metric.enabled === false
+                                        ? 0
+                                        : metricCompletionProgressValue
+                                    }
+                                  />
+                                </ProgressBarContainer>
+                              </Fragment>
+                            );
+                          })}
+                        </Fragment>
+                      );
+                    }
+                  )}
                 </MetricListContainer>
               </>
             )}

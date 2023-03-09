@@ -31,7 +31,7 @@ const EditModalOuterWrapper = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: rgb(220, 221, 223);
-  overflow-y: scroll;
+  overflow-y: auto;
   display: flex;
   justify-content: center;
   align-items: center;

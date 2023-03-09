@@ -616,6 +616,8 @@ export const ActionStatusTitle = styled.div<{
   color: ${({ enabled }) =>
     enabled ? palette.solid.blue : palette.highlight.grey8};
   opacity: ${({ inView }) => (inView ? 0 : 1)};
+  white-space: nowrap;
+  margin-left: 20px;
 `;
 
 export const Dimension = styled.div<{ enabled?: boolean; inView?: boolean }>`

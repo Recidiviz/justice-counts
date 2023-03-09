@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  MIN_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -23,9 +24,14 @@ import styled, { css } from "styled-components/macro";
 
 export const GuidanceContainer = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   justify-content: center;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 `;
 
 export const ContentContainer = styled.div<{ currentTopicID?: string }>`
@@ -53,6 +59,12 @@ export const ContentContainer = styled.div<{ currentTopicID?: string }>`
       `;
     }
   }}
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    max-width: 550px;
+    padding: 50px 0 20px 0;
+    margin: 0;
+  }
 `;
 
 export const TopicTitle = styled.div`
@@ -338,5 +350,17 @@ export const MetricStatus = styled.div<{ greyText?: boolean }>`
 
   ${Metric}:hover & {
     opacity: 0;
+  }
+`;
+
+export const SystemNameTitle = styled.div`
+  ${typography.sizeCSS.medium}
+  text-align: left;
+  text-transform: capitalize;
+  color: ${palette.highlight.grey8};
+  margin-bottom: 20px;
+
+  &:not(:first-child) {
+    margin-top: 40px;
   }
 `;
