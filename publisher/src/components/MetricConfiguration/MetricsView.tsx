@@ -194,7 +194,9 @@ export const MetricsView: React.FC = observer(() => {
                     onClick={() => {
                       setSettingsSearchParams({
                         system: system as AgencySystems,
-                        metric: metricsBySystem[system][0].key,
+                        metric: metricsBySystem[system].filter(
+                          (metric) => metric.enabled
+                        )[0].key,
                       });
                     }}
                   >
