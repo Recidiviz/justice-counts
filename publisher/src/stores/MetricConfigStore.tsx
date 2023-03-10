@@ -60,7 +60,12 @@ class MetricConfigStore {
 
   metricDefinitionSettings: {
     [systemMetricKey: string]: {
-      [settingKey: string]: Partial<MetricConfigurationSettings>;
+      [includesExcludesKey: string]: {
+        description?: string;
+        settings: {
+          [settingKey: string]: Partial<MetricConfigurationSettings>;
+        };
+      };
     };
   };
 
@@ -114,10 +119,11 @@ class MetricConfigStore {
     [systemMetricKey: string]: {
       [disaggregationKey: string]: {
         [dimensionKey: string]: {
-          [settingKey: string]: {
-            included?: MetricConfigurationSettingsOptions | null;
-            default?: MetricConfigurationSettingsOptions;
-            label?: string;
+          [includesExcludesKey: string]: {
+            description?: string;
+            settings: {
+              [settingKey: string]: Partial<MetricConfigurationSettings>;
+            };
           };
         };
       };
@@ -254,17 +260,13 @@ class MetricConfigStore {
               metric.disaggregated_by_supervision_subsystems,
           });
 
-          metric.settings?.forEach((setting) => {
+          metric.includes_excludes?.forEach((includesExcludes) => {
             /** Initialize Metrics Definition Settings (Included/Excluded) */
             this.initializeMetricDefinitionSetting(
               metric.system.key,
               metric.key,
-              setting.key,
-              {
-                label: setting.label,
-                default: setting.default,
-                included: setting.included,
-              }
+              includesExcludes.description,
+              includesExcludes.settings
             );
           });
 
@@ -319,19 +321,15 @@ class MetricConfigStore {
                 );
               });
 
-              dimension.settings?.forEach((setting) => {
+              dimension.includes_excludes?.forEach((includesExcludes) => {
                 /** Initialize Dimension Definition Settings (Included/Excluded) */
                 this.initializeDimensionDefinitionSetting(
                   metric.system.key,
                   metric.key,
                   disaggregation.key,
                   dimension.key,
-                  setting.key,
-                  {
-                    label: setting.label,
-                    default: setting.default,
-                    included: setting.included,
-                  }
+                  includesExcludes.description,
+                  includesExcludes.settings
                 );
               });
             });
@@ -370,8 +368,8 @@ class MetricConfigStore {
   initializeMetricDefinitionSetting = (
     system: AgencySystems,
     metricKey: string,
-    settingKey: string,
-    metricDefinitionSettings: Partial<MetricConfigurationSettings>
+    includesExcludesKey: string,
+    metricDefinitionSettings: MetricConfigurationSettings[]
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
@@ -382,8 +380,20 @@ class MetricConfigStore {
     if (!this.metricDefinitionSettings[systemMetricKey]) {
       this.metricDefinitionSettings[systemMetricKey] = {};
     }
-    this.metricDefinitionSettings[systemMetricKey][settingKey] =
-      metricDefinitionSettings;
+    if (!this.metricDefinitionSettings[systemMetricKey][includesExcludesKey]) {
+      this.metricDefinitionSettings[systemMetricKey][includesExcludesKey] = {
+        description: includesExcludesKey,
+        settings: {},
+      };
+    }
+
+    metricDefinitionSettings.forEach((setting) => {
+      if (setting.key) {
+        this.metricDefinitionSettings[systemMetricKey][
+          includesExcludesKey
+        ].settings[setting.key] = setting;
+      }
+    });
   };
 
   initializeDisaggregation = (
@@ -456,8 +466,8 @@ class MetricConfigStore {
     metricKey: string,
     disaggregationKey: string,
     dimensionKey: string,
-    settingKey: string,
-    dimensionDefinitionSettings: Partial<MetricConfigurationSettings>
+    includesExcludesKey: string,
+    dimensionDefinitionSettings: MetricConfigurationSettings[]
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
@@ -481,10 +491,26 @@ class MetricConfigStore {
         dimensionKey
       ] = {};
     }
+    if (
+      !this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
+        dimensionKey
+      ][includesExcludesKey]
+    ) {
+      this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
+        dimensionKey
+      ][includesExcludesKey] = {
+        description: includesExcludesKey,
+        settings: {},
+      };
+    }
 
-    this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
-      dimensionKey
-    ][settingKey] = dimensionDefinitionSettings;
+    dimensionDefinitionSettings.forEach((setting) => {
+      if (setting.key) {
+        this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
+          dimensionKey
+        ][includesExcludesKey].settings[setting.key] = setting;
+      }
+    });
   };
 
   initializeDimensionContexts = (
@@ -614,6 +640,7 @@ class MetricConfigStore {
   updateMetricDefinitionSetting = (
     system: AgencySystems,
     metricKey: string,
+    includesExcludesKey: string,
     settingKey: string,
     included: MetricConfigurationSettingsOptions
   ): MetricSettings => {
@@ -623,8 +650,9 @@ class MetricConfigStore {
     );
 
     /** Update value */
-    this.metricDefinitionSettings[systemMetricKey][settingKey].included =
-      included;
+    this.metricDefinitionSettings[systemMetricKey][
+      includesExcludesKey
+    ].settings[settingKey].included = included;
 
     /** Return an object in the desired backend data structure for saving purposes */
     return {
@@ -780,6 +808,7 @@ class MetricConfigStore {
     metricKey: string,
     disaggregationKey: string,
     dimensionKey: string,
+    includesExcludesKey: string,
     settingKey: string,
     included: MetricConfigurationSettingsOptions
   ): MetricSettings => {
@@ -791,7 +820,7 @@ class MetricConfigStore {
     /** Update value */
     this.dimensionDefinitionSettings[systemMetricKey][disaggregationKey][
       dimensionKey
-    ][settingKey].included = included;
+    ][includesExcludesKey].settings[settingKey].included = included;
 
     /** Return an object in the desired backend data structure for saving purposes */
     return {

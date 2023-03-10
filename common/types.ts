@@ -171,10 +171,15 @@ export interface Metric {
   disaggregations: MetricDisaggregations[];
   filenames: string[];
   enabled?: boolean;
-  settings?: MetricConfigurationSettings[];
+  includes_excludes?: MetricIncludesExcludes[];
   starting_month?: number;
   frequency?: ReportFrequency;
   disaggregated_by_supervision_subsystems?: boolean;
+}
+
+export interface MetricIncludesExcludes {
+  description: string;
+  settings: MetricConfigurationSettings[];
 }
 
 export interface MetricDefinition {
@@ -215,7 +220,7 @@ export interface MetricDisaggregationDimensions {
   reporting_note: string;
   contexts?: MetricDimensionContext[];
   enabled?: boolean;
-  settings?: MetricConfigurationSettings[];
+  includes_excludes?: MetricIncludesExcludes[];
   display_name?: string;
   description?: string;
   race?: string;
