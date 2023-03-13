@@ -77,16 +77,16 @@ export const getDatapointDimensions = (datapoint: Datapoint) =>
 
 export const sortDatapointDimensions = (dimA: string, dimB: string) => {
   // sort alphabetically, except put "Other" and "Unknown" at the end.
-  if (dimA === "Other" && dimB === "Unknown") {
+  if (dimA.includes("Other") && dimB.includes("Unknown")) {
     return -1;
   }
-  if (dimB === "Other" && dimA === "Unknown") {
+  if (dimB.includes("Other") && dimA.includes("Unknown")) {
     return 1;
   }
-  if (dimA === "Other" || dimA === "Unknown") {
+  if (dimA.includes("Other") || dimA.includes("Unknown")) {
     return 1;
   }
-  if (dimB === "Other" || dimB === "Unknown") {
+  if (dimB.includes("Other") || dimB.includes("Unknown")) {
     return -1;
   }
   return dimA.localeCompare(dimB);
