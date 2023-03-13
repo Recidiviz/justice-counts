@@ -205,6 +205,7 @@ export const BulkActionsDropdownMenu = styled(DropdownMenu)`
 
 export const BulkActionsDropdownMenuItem = styled(DropdownMenuItem)<{
   color?: "green" | "red";
+  disabled?: boolean;
 }>`
   width: 200px;
   min-width: 200px;
@@ -252,6 +253,8 @@ export const BulkActionsDropdownMenuItem = styled(DropdownMenuItem)<{
   &:not(:last-child) {
     border-bottom: 1px solid ${palette.solid.offwhite};
   }
+
+  ${({ disabled }) => disabled && `opacity: 0.5; pointer-events: none;`}
 `;
 
 export const BulkActionsArrow = styled.img`

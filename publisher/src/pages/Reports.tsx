@@ -122,9 +122,8 @@ const Reports: React.FC = () => {
   const [isRemoveRecordsModalOpen, setIsRemoveRecordsModalOpen] =
     useState(false);
 
-  const activateBulkAction = (action: RecordsBulkAction) =>
-    setBulkAction(action);
-  const deactivateBulkAction = () => setBulkAction(undefined);
+  const selectBulkAction = (action: RecordsBulkAction) => setBulkAction(action);
+  const clearBulkAction = () => setBulkAction(undefined);
   const clearAllSelectedRecords = () => setSelectedRecords([]);
   const addOrRemoveSelectedRecords = (reportID: number) =>
     setSelectedRecords((prev) =>
@@ -223,13 +222,11 @@ const Reports: React.FC = () => {
                         addOrRemoveSelectedRecords(report.id);
                       }
                     }}
-                    selected={
-                      !!bulkAction && selectedRecords.includes(report.id)
-                    }
+                    selected={bulkAction && selectedRecords.includes(report.id)}
                   >
                     {/* Report Period */}
                     <Cell id="report_period">
-                      {!!bulkAction && (
+                      {bulkAction && (
                         <>
                           {selectedRecords.includes(report.id) ? (
                             <SelectedCheckmark src={checkmarkIcon} alt="" />
@@ -342,7 +339,7 @@ const Reports: React.FC = () => {
           closeModal={() => setIsRemoveRecordsModalOpen(false)}
           confirmRemoveRecords={() => {
             reportStore.deleteReports(selectedRecords, agencyId);
-            deactivateBulkAction();
+            clearBulkAction();
             clearAllSelectedRecords();
             setIsRemoveRecordsModalOpen(false);
           }}
@@ -389,20 +386,20 @@ const Reports: React.FC = () => {
           {bulkAction === "unpublish" && (
             <BulkActionModeTitle>
               {selectedRecords.length
-                ? `${selectedRecords.length} record${
+                ? `${selectedRecords.length} ${REPORT_LOWERCASE}${
                     selectedRecords.length > 1 ? "s" : ""
                   } selected`
-                : "Select record(s) to unpublish..."}
+                : `Select ${REPORT_LOWERCASE}(s) to unpublish...`}
             </BulkActionModeTitle>
           )}
 
           {bulkAction === "delete" && (
             <BulkActionModeTitle>
               {selectedRecords.length
-                ? `${selectedRecords.length} record${
+                ? `${selectedRecords.length} ${REPORT_LOWERCASE}${
                     selectedRecords.length > 1 ? "s" : ""
                   } selected`
-                : "Select record(s) to delete..."}
+                : `Select ${REPORT_LOWERCASE}(s) to delete...`}
             </BulkActionModeTitle>
           )}
 
@@ -417,7 +414,9 @@ const Reports: React.FC = () => {
                       {userStore.isJusticeCountsAdmin(agencyId) && (
                         <BulkActionsDropdownContainer>
                           <Dropdown>
-                            <BulkActionsDropdownToggle>
+                            <BulkActionsDropdownToggle
+                              disabled={filteredReportsMemoized.length === 0}
+                            >
                               Bulk Actions{" "}
                               <BulkActionsArrow src={dropdownArrow} alt="" />
                             </BulkActionsDropdownToggle>
@@ -425,22 +424,24 @@ const Reports: React.FC = () => {
                               <BulkActionsDropdownMenuItem
                                 color="green"
                                 onClick={() => {
-                                  activateBulkAction("publish");
+                                  selectBulkAction("publish");
                                 }}
+                                disabled={reportsFilter === "published"}
                               >
                                 Publish...
                               </BulkActionsDropdownMenuItem>
                               <BulkActionsDropdownMenuItem
                                 onClick={() => {
-                                  activateBulkAction("unpublish");
+                                  selectBulkAction("unpublish");
                                 }}
+                                disabled={reportsFilter === "draft"}
                               >
                                 Unpublish...
                               </BulkActionsDropdownMenuItem>
                               <BulkActionsDropdownMenuItem
                                 color="red"
                                 onClick={() => {
-                                  activateBulkAction("delete");
+                                  selectBulkAction("delete");
                                 }}
                               >
                                 Delete...
@@ -458,12 +459,12 @@ const Reports: React.FC = () => {
                     </>
                   )}
 
-                  {!!bulkAction && (
+                  {bulkAction && (
                     <>
                       <ReportActionsButton
                         onClick={() => {
                           clearAllSelectedRecords();
-                          deactivateBulkAction();
+                          clearBulkAction();
                         }}
                       >
                         Cancel

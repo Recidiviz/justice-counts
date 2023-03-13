@@ -22,6 +22,7 @@ import {
 import React from "react";
 import styled from "styled-components/macro";
 
+import { REPORT_LOWERCASE } from "../Global/constants";
 import { ReportActionsButton } from "./Reports.styles";
 
 const RemoveRecordsModalWrapper = styled.div`
@@ -92,7 +93,7 @@ export const RemoveRecordsModal: React.FC<RemoveRecordsModalProps> = ({
     <RemoveRecordsModalWrapper>
       <RemoveRecordsModalContainer>
         <RemoveRecordsModalTitle>
-          Delete <span>{selectedRecords}</span> record
+          Delete <span>{selectedRecords}</span> {REPORT_LOWERCASE}
           {selectedRecords > 1 ? "s" : ""}?
         </RemoveRecordsModalTitle>
         <RemoveRecordsModalHint>
