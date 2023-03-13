@@ -117,7 +117,7 @@ class GuidanceStore {
            * If you are not a JC Admin, your guidance progress is marked as completed for all topics.
            * If you are a JC Admin, your guidance progress is based on your actual guidance progress from the DB.
            *
-           * TODO(#) ungate guidance flow for all users
+           * TODO(#496) ungate guidance flow for all users
            */
           acc[topic.topicID] = !this.userStore.isJusticeCountsAdmin(agencyId)
             ? true
