@@ -190,6 +190,10 @@ const Reports: React.FC = () => {
     [reportStore.reportOverviewList, reportsFilter]
   );
 
+  const isAdmin =
+    userStore.isJusticeCountsAdmin(agencyId) ||
+    userStore.isAgencyAdmin(agencyId);
+
   const renderReports = () => {
     if (reportStore.loadingOverview) {
       return <Loading />;
@@ -450,12 +454,14 @@ const Reports: React.FC = () => {
                           </Dropdown>
                         </BulkActionsDropdownContainer>
                       )}
-                      <ReportActionsButton
-                        textColor="blue"
-                        onClick={() => navigate("create")}
-                      >
-                        + New Record
-                      </ReportActionsButton>
+                      {isAdmin && (
+                        <ReportActionsButton
+                          textColor="blue"
+                          onClick={() => navigate("create")}
+                        >
+                          + New Record
+                        </ReportActionsButton>
+                      )}
                     </>
                   )}
 
