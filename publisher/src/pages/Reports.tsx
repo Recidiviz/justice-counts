@@ -409,8 +409,7 @@ const Reports: React.FC = () => {
 
           <TabbedActionsWrapper>
             {/* Admin Only: Manage Reports */}
-            {(userStore.isJusticeCountsAdmin(agencyId) ||
-              userStore.isAgencyAdmin(agencyId)) && (
+            {isAdmin && (
               <>
                 <ReportActions>
                   {!bulkAction && (
@@ -454,14 +453,12 @@ const Reports: React.FC = () => {
                           </Dropdown>
                         </BulkActionsDropdownContainer>
                       )}
-                      {isAdmin && (
-                        <ReportActionsButton
-                          textColor="blue"
-                          onClick={() => navigate("create")}
-                        >
-                          + New Record
-                        </ReportActionsButton>
-                      )}
+                      <ReportActionsButton
+                        textColor="blue"
+                        onClick={() => navigate("create")}
+                      >
+                        + New Record
+                      </ReportActionsButton>
                     </>
                   )}
 
