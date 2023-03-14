@@ -367,7 +367,7 @@ export const DisaggregationsDropdownMenu = styled(StatusFilterDropdownMenu)`
 
 export const Table = styled.div`
   width: 100%;
-  padding: 170px 22px 50px 22px;
+  padding: 170px 0 50px 0;
   overflow: auto;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
@@ -384,7 +384,7 @@ export const Row = styled.div<{
   display: flex;
   justify-content: start;
   align-items: center;
-  padding: 10px 0;
+  padding: 10px 24px;
   color: ${({ noHover }) =>
     noHover ? palette.highlight.grey9 : palette.solid.darkgrey};
   transition: 0.3s ease;
@@ -404,7 +404,7 @@ export const Row = styled.div<{
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     padding: ${({ isRowReportYear }) =>
-      isRowReportYear ? "8px 0 0 0" : "8px 0"};
+      isRowReportYear ? "8px 24px 0 24px" : "8px 24px"};
   }
 `;
 
@@ -415,7 +415,7 @@ export const LabelRow = styled(Row)`
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    padding: 16px 0 0 0;
+    padding: 16px 24px 0 24px;
   }
 `;
 
