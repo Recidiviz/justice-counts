@@ -199,6 +199,39 @@ class ReportStore {
     }
   }
 
+  async updateMultipleReports(
+    reports: { report_id: number; metrics: UpdatedMetricsValues[] }[],
+    // reportIDs: number[],
+    currentAgencyId: string,
+    // updatedMetrics: UpdatedMetricsValues[],
+    status: ReportStatus
+  ): Promise<Response | Error | undefined> {
+    try {
+      const response = (await this.api.request({
+        path: `/api/reports`,
+        body: {
+          status,
+          // time_loaded:
+          //   this.reportOverviews[reportID].last_modified_at_timestamp,
+          reports,
+          agency_id: parseInt(currentAgencyId),
+        },
+        method: "PATCH",
+      })) as Response;
+
+      if (response.status === 200) {
+        /** Update the editor details (editors & last modified details) in real time within the report after autosave. */
+        const report = (await response.json()) as Report;
+        console.log("Response:", JSON.stringify(report, null, 2));
+        // this.reportOverviews[report.id] = report;
+      }
+
+      return response;
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
   async deleteReports(
     reportIDs: number[],
     currentAgencyId: string

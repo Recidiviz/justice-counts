@@ -159,6 +159,26 @@ const Reports: React.FC = () => {
     }
   };
 
+  const publishMultipleReports = async () => {
+    const updatedReports = selectedRecords.map((reportID) => {
+      return {
+        report_id: reportID,
+        metrics: [],
+      };
+    });
+    reportStore.updateMultipleReports(updatedReports, agencyId, "PUBLISHED");
+  };
+
+  const unpublishMultipleReports = async () => {
+    const updatedReports = selectedRecords.map((reportID) => {
+      return {
+        report_id: reportID,
+        metrics: [],
+      };
+    });
+    reportStore.updateMultipleReports(updatedReports, agencyId, "DRAFT");
+  };
+
   useEffect(() => {
     const initialize = async () => {
       reportStore.resetState();
@@ -480,6 +500,23 @@ const Reports: React.FC = () => {
                           Delete
                         </ReportActionsButton>
                       )}
+                      {bulkAction === "publish" && selectedRecords.length > 0 && (
+                        <ReportActionsButton
+                          buttonColor="green"
+                          onClick={() => publishMultipleReports()}
+                        >
+                          Review and Publish
+                        </ReportActionsButton>
+                      )}
+                      {bulkAction === "unpublish" &&
+                        selectedRecords.length > 0 && (
+                          <ReportActionsButton
+                            buttonColor="orange"
+                            onClick={() => publishMultipleReports()}
+                          >
+                            Unpublish
+                          </ReportActionsButton>
+                        )}
                     </>
                   )}
                 </ReportActions>
