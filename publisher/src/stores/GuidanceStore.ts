@@ -111,7 +111,17 @@ class GuidanceStore {
     runInAction(() => {
       this.onboardingTopicsStatuses =
         onboardingTopicsStatuses.guidance_progress.reduce((acc, topic) => {
-          acc[topic.topicID] = topic.topicCompleted;
+          /**
+           * NOTE:
+           * This gates the guidance flow for users who are not JC Admins.
+           * If you are not a JC Admin, your guidance progress is marked as completed for all topics.
+           * If you are a JC Admin, your guidance progress is based on your actual guidance progress from the DB.
+           *
+           * TODO(#496) ungate guidance flow for all users
+           */
+          acc[topic.topicID] = !this.userStore.isJusticeCountsAdmin(agencyId)
+            ? true
+            : topic.topicCompleted;
           return acc;
         }, {} as { [topicID: string]: boolean });
       this.isInitialized = true;
