@@ -26,7 +26,7 @@ import styled from "styled-components/macro";
 
 import { rem } from "../../utils";
 import { OpacityGradient } from "../Forms";
-import { PageTitle, TabbedBar } from "../Reports";
+import { TabbedBar } from "../Reports";
 
 const FOOTER_HEIGHT = 144;
 
@@ -76,10 +76,6 @@ export const DataUploadHeader = styled.div<{
     background-color: ${({ isBackgroundBlue }) =>
       isBackgroundBlue && palette.solid.blue};
   }
-`;
-
-export const MediumPageTitle = styled(PageTitle)`
-  font-size: ${rem("50px")};
 `;
 
 export const Instructions = styled.div`
