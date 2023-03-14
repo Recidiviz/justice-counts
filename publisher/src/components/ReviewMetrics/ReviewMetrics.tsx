@@ -15,7 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
+import { formatDateShortMonthYear } from "@justice-counts/common/components/DataViz/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -26,17 +28,24 @@ import { UploadedMetric } from "../DataUpload/types";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
 import {
+  CheckIcon,
   Container,
   Heading,
   MainPanel,
+  MetricsPanel,
   SectionContainer,
-  SectionTitle,
-  SectionTitleContainer,
-  SectionTitleMonths,
-  SectionTitleNumber,
-  SectionTitleOverwrites,
-  Subheading,
+  Summary,
+  SummarySection,
+  SummarySectionLine,
+  SummarySectionTitle,
 } from "./ReviewMetrics.styles";
+
+type Overwrite = {
+  key: number;
+  metricName: string;
+  dimensionName: string;
+  startDate: string;
+};
 
 const ReviewMetrics: React.FC = observer(() => {
   const { agencyId } = useParams();
@@ -61,38 +70,30 @@ const ReviewMetrics: React.FC = observer(() => {
     }))
     .filter((metric) => metric.datapoints.length > 0);
 
-  const renderSection = (metric: UploadedMetric, index: number) => {
-    const startDates = Array.from(
-      new Set(metric.datapoints.map((dp) => dp.start_date))
-    ).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+  const overwrites: Overwrite[] = [];
 
-    // keep track of count of overwritten values
-    let overwrittenValuesCount = 0;
-
+  filteredMetrics.forEach((metric) => {
     metric.datapoints.forEach((dp) => {
       if (dp.old_value !== null) {
-        overwrittenValuesCount += 1;
+        const overwriteData: Overwrite = {
+          key: dp.id,
+          metricName: dp.metric_display_name || "",
+          dimensionName: dp.dimension_display_name || "",
+          startDate: dp.start_date,
+        };
+        overwrites.push(overwriteData);
+        // overwrittenValuesCount += 1;
       }
     });
+  });
 
+  const renderSection = (metric: UploadedMetric) => {
     return (
       <SectionContainer key={metric.key}>
-        <SectionTitleContainer>
-          <SectionTitleNumber>{index + 1}</SectionTitleNumber>
-          <SectionTitle>{metric.display_name}</SectionTitle>
-          {overwrittenValuesCount > 0 && (
-            <SectionTitleOverwrites>
-              * {overwrittenValuesCount} Overwritten Value
-              {overwrittenValuesCount !== 1 ? "s" : ""}
-            </SectionTitleOverwrites>
-          )}
-          <SectionTitleMonths>
-            {startDates.length}{" "}
-            {metric.datapoints?.[0].frequency === "ANNUAL" ? "year" : "month"}
-            {startDates.length !== 1 ? "s" : ""}
-          </SectionTitleMonths>
-        </SectionTitleContainer>
-        <DatapointsTableView datapoints={metric.datapoints} />
+        <DatapointsTableView
+          datapoints={metric.datapoints}
+          metricName={metric.display_name}
+        />
       </SectionContainer>
     );
   };
@@ -114,33 +115,53 @@ const ReviewMetrics: React.FC = observer(() => {
         }
       </DataUploadHeader>
       <MainPanel>
-        <Heading>
-          {filteredMetrics.length > 0 ? (
-            <>
-              Review <span>{filteredMetrics.length}</span> Uploaded Metrics
-            </>
-          ) : (
-            "No Metrics to Review"
+        <Summary>
+          <Heading>
+            {filteredMetrics.length > 0
+              ? "Review Upload"
+              : "No Metrics to Review"}
+            <span>
+              {filteredMetrics.length > 0
+                ? "Here’s a breakdown of data from the file you uploaded. You can publish these changes now, or save as a draft for later."
+                : "Uploaded file contains no metrics to review."}
+            </span>
+          </Heading>
+          {filteredMetrics.length > 0 && (
+            <SummarySection>
+              <SummarySectionTitle color="blue">
+                <span>{filteredMetrics.length}</span> Metric
+                {filteredMetrics.length > 1 ? "s" : ""}
+              </SummarySectionTitle>
+              {filteredMetrics.map((metric) => (
+                <SummarySectionLine key={metric.key}>
+                  <CheckIcon src={blueCheck} alt="" />
+                  {metric.display_name}
+                </SummarySectionLine>
+              ))}
+            </SummarySection>
           )}
-        </Heading>
-        <Subheading>
-          {filteredMetrics.length > 0 ? (
-            <>
-              The following data has been successfully uploaded. Take a moment
-              to review the changes. If you believe there is an error, please
-              contact the Justice Counts team via{" "}
-              <a href="mailto:justice-counts-support@csg.org">
-                justice-counts-support@csg.org
-              </a>
-              .
-            </>
-          ) : (
-            "Uploaded file contains no metrics to review."
+          {overwrites.length > 0 && (
+            <SummarySection>
+              <SummarySectionTitle color="orange">
+                <span>{overwrites.length}</span> Overwrite
+                {overwrites.length > 1 ? "s" : ""}
+              </SummarySectionTitle>
+              {overwrites.map(
+                ({ key, metricName, dimensionName, startDate }) => (
+                  <SummarySectionLine key={key}>
+                    {metricName}: {dimensionName}
+                    <span>({formatDateShortMonthYear(startDate)})</span>
+                  </SummarySectionLine>
+                )
+              )}
+            </SummarySection>
           )}
-        </Subheading>
-        {filteredMetrics.map((metric, idx) => {
-          return renderSection(metric, idx);
-        })}
+        </Summary>
+        <MetricsPanel>
+          {filteredMetrics.map((metric) => {
+            return renderSection(metric);
+          })}
+        </MetricsPanel>
       </MainPanel>
     </Container>
   );

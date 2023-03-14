@@ -58,6 +58,21 @@ const abbreviatedMonths = [
   "Dec",
 ];
 
+const abbreviatedMonthsNumber: { [key: string]: string } = {
+  Jan: "01",
+  Feb: "02",
+  Mar: "03",
+  Apr: "04",
+  May: "05",
+  Jun: "06",
+  Jul: "07",
+  Aug: "08",
+  Sep: "09",
+  Oct: "10",
+  Nov: "11",
+  Dec: "12",
+};
+
 export const splitUtcString = (utcString: string) => {
   // the utc string can be split like this:
   // const [dayOfWeek, day, month, year, time, timezone] = splitUtcString(str);
@@ -344,6 +359,11 @@ export const getLatestDateFormatted = (
 export const formatDateShort = (dateStr: string) => {
   const [, , month, year] = splitUtcString(dateStr);
   return `${abbreviatedMonths.indexOf(month) + 1}/${year}`;
+};
+
+export const formatDateShortMonthYear = (dateStr: string) => {
+  const [, , month, year] = splitUtcString(dateStr);
+  return `${abbreviatedMonthsNumber[month]}/${year.slice(2)}`;
 };
 
 export const formatExternalLink = (url: string) => {

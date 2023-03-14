@@ -30,7 +30,7 @@ export const DatapointsTableViewTitleWrapper = styled.div`
 export const DatapointsTableContainer = styled.div<{
   useDataPageStyles?: boolean;
 }>`
-  margin-top: 32px;
+  margin-top: ${({ useDataPageStyles }) => (useDataPageStyles ? "32px" : "0")};
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -43,10 +43,12 @@ export const DatapointsTableContainer = styled.div<{
     }
   }
 `;
-export const DatapointsTableNamesContainer = styled.div`
-  width: 240px;
-  min-width: 240px;
-  margin-top: 33px;
+export const DatapointsTableNamesContainer = styled.div<{
+  useDataPageStyles?: boolean;
+}>`
+  width: 400px;
+  min-width: 400px;
+  margin-top: ${({ useDataPageStyles }) => (useDataPageStyles ? "33px" : "0")};
 `;
 export const DatapointsTableNamesTable = styled.table`
   border-collapse: collapse;
@@ -56,14 +58,18 @@ export const DatapointsTableBottomBorder = styled.tr`
   border-bottom: 1px solid ${palette.highlight.grey3};
 `;
 export const DatapointsTableNamesRow = styled.tr``;
-export const DatapointsTableNamesCell = styled.td`
-  padding-top: 4px;
-  padding-bottom: 4px;
+export const DatapointsTableNamesCell = styled.td<{
+  isTotalRow?: boolean;
+  useDataPageStyles?: boolean;
+}>`
+  padding-top: ${({ isTotalRow, useDataPageStyles }) =>
+    isTotalRow && useDataPageStyles ? "42px" : "4px"};
+  padding-bottom: ${({ isTotalRow }) => (isTotalRow ? "29px" : "4px")};
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 18px;
-  font-weight: 400;
+  font-weight: 500;
   width: 240px;
   max-width: 240px;
   height: 32px;
@@ -72,6 +78,12 @@ export const DatapointsTableNamesCell = styled.td`
     color: ${palette.solid.darkgrey};
   }
 `;
+export const DatapointsMetricNameCell = styled(DatapointsTableNamesCell)`
+  ${typography.sizeCSS.title};
+  color: ${palette.solid.darkgrey};
+  line-height: 38px;
+  padding: 0 0 31px 0;
+`;
 export const DatapointsTableNamesDivider = styled.td`
   ${typography.sizeCSS.small}
   padding-top: 8px;
@@ -79,7 +91,7 @@ export const DatapointsTableNamesDivider = styled.td`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: ${palette.solid.darkgrey};
+  color: ${palette.highlight.grey8};
 `;
 export const DatapointsTableDetailsContainer = styled.div<{
   useDataPageStyles?: boolean;
@@ -87,12 +99,10 @@ export const DatapointsTableDetailsContainer = styled.div<{
   position: relative;
   display: flex;
   max-width: ${({ useDataPageStyles }) =>
-    useDataPageStyles ? "calc(100% - 240px)" : "624px"};
-  border-left: 1px solid ${palette.highlight.grey3};
+    useDataPageStyles ? "calc(100% - 240px)" : "calc(100% - 400px)"};
 `;
 export const DatapointsTableDetailScrollContainer = styled.div`
   overflow-x: auto;
-  padding-bottom: 10px;
 `;
 export const DatapointsTableDetailsContainerOverlay = styled.div`
   position: absolute;
@@ -127,28 +137,34 @@ export const DatapointsTableDetailsTable = styled.table`
 `;
 export const DatapointsTableDetailsRowHead = styled.thead``;
 export const DatapointsTableDetailsRowBody = styled.tbody``;
-export const DatapointsTableDetailsRow = styled.tr<{
-  isTotalRow?: boolean;
+export const DatapointsTableDetailsRow = styled.tr``;
+export const DatapointsTableDetailsRowHeader = styled.th<{
+  useDataPageStyles?: boolean;
 }>`
-  font-weight: ${({ isTotalRow }) => (isTotalRow ? "600" : "400")};
-`;
-export const DatapointsTableDetailsRowHeader = styled.th`
-  ${typography.sizeCSS.small}
+  ${typography.sizeCSS.normal}
   padding-left: 15px;
   padding-right: 32px;
-  padding-bottom: 8px;
+  padding-bottom: 38px;
   padding-top: 8px;
   text-align: center;
 
   color: ${palette.solid.darkgrey};
+
+  span {
+    background-color: ${({ useDataPageStyles }) =>
+      useDataPageStyles ? palette.solid.white : palette.solid.offwhite};
+    padding: 5px 8px;
+    font-weight: 700;
+  }
 `;
 export const DatapointsTableDetailsCell = styled.td<{
   isColumnHovered: boolean;
   isRowHovered: boolean;
+  isTotalRow?: boolean;
 }>`
   padding-left: 15px;
   padding-right: 32px;
-  padding-bottom: 4px;
+  padding-bottom: ${({ isTotalRow }) => (isTotalRow ? "29px" : "4px")};
   padding-top: 4px;
   font-size: 18px;
   height: 32px;

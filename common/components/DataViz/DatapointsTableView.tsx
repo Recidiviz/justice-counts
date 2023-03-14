@@ -23,11 +23,13 @@ import {
   ReportFrequency,
 } from "../../types";
 import {
+  DatapointsMetricNameCell,
   DatapointsTableBottomBorder,
   DatapointsTableContainer,
   DatapointsTableDetailsCell,
   DatapointsTableDetailsContainer,
   DatapointsTableDetailsContainerOverlay,
+  DatapointsTableDetailsContainerOverlayLeftGradient,
   DatapointsTableDetailsContainerOverlayRightGradient,
   DatapointsTableDetailScrollContainer,
   DatapointsTableDetailsDivider,
@@ -47,7 +49,7 @@ import {
   StrikethroughText,
 } from "./DatapointsTableView.styles";
 import { DatapointsTitle } from "./DatapointsTitle";
-import { formatDateShort, sortDatapointDimensions } from "./utils";
+import { formatDateShortMonthYear, sortDatapointDimensions } from "./utils";
 
 type AggregationRowData = (RawDatapoint | undefined)[];
 
@@ -63,6 +65,7 @@ type DatapointValueCellProps = {
   oldValue: string | number | null;
   isRowHovered: boolean;
   isColHovered: boolean;
+  isTotalRow?: boolean;
   onMouseEnterSetHoveredCol: () => void;
   onMouseLeaveUnsetHoveredCol: () => void;
 };
@@ -70,7 +73,7 @@ type DatapointValueCellProps = {
 export const DatapointsTableView: React.FC<{
   datapoints: RawDatapoint[];
   useDataPageStyles?: boolean;
-  metricName?: string;
+  metricName: string;
   metricFrequency?: ReportFrequency;
 }> = ({ datapoints, useDataPageStyles, metricName, metricFrequency }) => {
   const [hoveredRowKey, setHoveredRowKey] = useState<string | null>(null);
@@ -133,7 +136,7 @@ export const DatapointsTableView: React.FC<{
 
   return (
     <>
-      {metricName && (
+      {useDataPageStyles && (
         <DatapointsTableViewTitleWrapper>
           <DatapointsTitle
             metricName={metricName}
@@ -142,20 +145,26 @@ export const DatapointsTableView: React.FC<{
         </DatapointsTableViewTitleWrapper>
       )}
       <DatapointsTableContainer useDataPageStyles={useDataPageStyles}>
-        <DatapointsTableNamesContainer>
+        <DatapointsTableNamesContainer useDataPageStyles={useDataPageStyles}>
           <DatapointsTableNamesTable>
             <DatapointsTableNamesTableBody>
+              {!useDataPageStyles && (
+                <DatapointsTableNamesRow>
+                  <DatapointsMetricNameCell>
+                    {metricName}
+                  </DatapointsMetricNameCell>
+                </DatapointsTableNamesRow>
+              )}
               <DatapointsTableNamesRow>
                 <DatapointsTableNamesCell
+                  isTotalRow
+                  useDataPageStyles={useDataPageStyles}
                   onMouseEnter={() => setHoveredRowKey("Total")}
                   onMouseLeave={() => setHoveredRowKey(null)}
                 >
-                  <strong>{DataVizAggregateName}</strong>
+                  {DataVizAggregateName}
                 </DatapointsTableNamesCell>
               </DatapointsTableNamesRow>
-              {Object.entries(disaggregationRowData).length > 0 && (
-                <DatapointsTableBottomBorder />
-              )}
               {Object.entries(disaggregationRowData).map(
                 ([disaggregation, dimension], index, array) => (
                   <React.Fragment key={disaggregation}>
@@ -186,23 +195,27 @@ export const DatapointsTableView: React.FC<{
           </DatapointsTableNamesTable>
         </DatapointsTableNamesContainer>
         <DatapointsTableDetailsContainer useDataPageStyles={useDataPageStyles}>
+          <DatapointsTableDetailsContainerOverlay>
+            <DatapointsTableDetailsContainerOverlayLeftGradient />
+          </DatapointsTableDetailsContainerOverlay>
           <DatapointsTableDetailScrollContainer>
-            <DatapointsTableDetailsTable>
+            <DatapointsTableDetailsTable cellPadding="16px">
               <DatapointsTableDetailsRowHead>
                 <DatapointsTableDetailsRow>
                   {startDates.map((date, index) => (
                     <DatapointsTableDetailsRowHeader
                       key={date}
+                      useDataPageStyles={useDataPageStyles}
                       onMouseEnter={() => setHoveredColKey(index)}
                       onMouseLeave={() => setHoveredColKey(null)}
                     >
-                      {formatDateShort(date)}
+                      <span>{formatDateShortMonthYear(date)}</span>
                     </DatapointsTableDetailsRowHeader>
                   ))}
                 </DatapointsTableDetailsRow>
               </DatapointsTableDetailsRowHead>
               <DatapointsTableDetailsRowBody>
-                <DatapointsTableDetailsRow isTotalRow>
+                <DatapointsTableDetailsRow>
                   {aggregateRowData.map((dp, index) =>
                     // row data could be null, so no distinct key given in that case
                     dp === undefined
@@ -212,6 +225,7 @@ export const DatapointsTableView: React.FC<{
                           oldValue: null,
                           isRowHovered: hoveredRowKey === "Total",
                           isColHovered: index === hoveredColKey,
+                          isTotalRow: true,
                           onMouseEnterSetHoveredCol: () =>
                             setHoveredColumn(index),
                           onMouseLeaveUnsetHoveredCol: unsetHoveredColumn,
@@ -222,15 +236,13 @@ export const DatapointsTableView: React.FC<{
                           oldValue: dp.old_value,
                           isRowHovered: hoveredRowKey === "Total",
                           isColHovered: index === hoveredColKey,
+                          isTotalRow: true,
                           onMouseEnterSetHoveredCol: () =>
                             setHoveredColumn(index),
                           onMouseLeaveUnsetHoveredCol: unsetHoveredColumn,
                         })
                   )}
                 </DatapointsTableDetailsRow>
-                {Object.entries(disaggregationRowData).length > 0 && (
-                  <DatapointsTableBottomBorder />
-                )}
                 {Object.entries(disaggregationRowData).map(
                   ([disaggregation, dimension], outerIndex, array) => (
                     <React.Fragment key={disaggregation}>
@@ -291,6 +303,7 @@ const renderDatapointsValue = (props: DatapointValueCellProps) => {
     oldValue,
     isColHovered,
     isRowHovered,
+    isTotalRow,
     onMouseEnterSetHoveredCol,
     onMouseLeaveUnsetHoveredCol,
   } = props;
@@ -309,6 +322,7 @@ const renderDatapointsValue = (props: DatapointValueCellProps) => {
         key={key}
         isColumnHovered={isColHovered}
         isRowHovered={isRowHovered}
+        isTotalRow={isTotalRow}
         onMouseEnter={onMouseEnterSetHoveredCol}
         onMouseLeave={onMouseLeaveUnsetHoveredCol}
       >
@@ -324,6 +338,7 @@ const renderDatapointsValue = (props: DatapointValueCellProps) => {
       key={key}
       isColumnHovered={isColHovered}
       isRowHovered={isRowHovered}
+      isTotalRow={isTotalRow}
       onMouseEnter={onMouseEnterSetHoveredCol}
       onMouseLeave={onMouseLeaveUnsetHoveredCol}
     >

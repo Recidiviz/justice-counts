@@ -34,16 +34,29 @@ export const Container = styled(DataUploadContainer)`
 
 export const MainPanel = styled.div`
   width: 100%;
-  max-width: ${MAIN_PANEL_MAX_WIDTH}px;
-  margin-top: ${56 + HEADER_BAR_HEIGHT}px;
-  margin-bottom: 128px;
+  // margin-top: ${40 + HEADER_BAR_HEIGHT}px;
+  // margin-bottom: 128px;
+  padding: ${40 + HEADER_BAR_HEIGHT}px 0 128px 24px;
+  display: flex;
+  flex-direction: row;
+  gap: 88px;
+`;
+
+export const Summary = styled.div`
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 `;
 
 export const Heading = styled.div`
-  ${typography.sizeCSS.headline}
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  ${typography.sizeCSS.headline};
 
   span {
-    color: ${palette.solid.blue};
+    ${typography.sizeCSS.medium};
   }
 `;
 
@@ -58,14 +71,67 @@ export const Subheading = styled.div`
   }
 `;
 
+export const SummarySection = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 30px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid ${palette.highlight.grey3};
+  }
+`;
+
+export const SummarySectionTitle = styled.div<{
+  color: "blue" | "orange" | "grey";
+}>`
+  ${typography.sizeCSS.title};
+  margin-bottom: 12px;
+
+  span {
+    color: ${({ color }) => {
+      if (color === "orange") return palette.solid.orange;
+      if (color === "grey") return "#64859E";
+      if (color === "blue") return palette.solid.blue;
+      return palette.solid.darkgrey;
+    }};
+  }
+`;
+
+export const SummarySectionLine = styled.div`
+  ${typography.sizeCSS.normal}
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const CheckIcon = styled.img`
+  width: 16px;
+  height: 16px;
+`;
+
+export const MetricsPanel = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 500px - 88px - 24px);
+`;
+
 export const SectionContainer = styled.div`
-  margin-top: 22px;
-  padding-top: 16px;
+  margin-top: 32px;
+  padding-top: 24px;
   display: flex;
   align-items: center;
   justify-content: stretch;
   flex-direction: column;
-  border-top: 1px solid ${palette.highlight.grey3};
+
+  &:not(:first-child) {
+    border-top: 1px solid ${palette.highlight.grey3};
+  }
+
+  &:first-child {
+    margin-top: 0;
+    padding-top: 0;
+  }
 `;
 
 export const SectionTitleContainer = styled.div`
