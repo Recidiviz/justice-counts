@@ -159,24 +159,16 @@ const Reports: React.FC = () => {
     }
   };
 
-  const publishMultipleReports = async () => {
+  const publishOrUnpublishMultipleReports = async (
+    status: "PUBLISHED" | "DRAFT"
+  ) => {
     const updatedReports = selectedRecords.map((reportID) => {
       return {
         report_id: reportID,
         metrics: [],
       };
     });
-    reportStore.updateMultipleReports(updatedReports, agencyId, "PUBLISHED");
-  };
-
-  const unpublishMultipleReports = async () => {
-    const updatedReports = selectedRecords.map((reportID) => {
-      return {
-        report_id: reportID,
-        metrics: [],
-      };
-    });
-    reportStore.updateMultipleReports(updatedReports, agencyId, "DRAFT");
+    reportStore.updateMultipleReports(updatedReports, agencyId, status);
   };
 
   useEffect(() => {
@@ -503,7 +495,9 @@ const Reports: React.FC = () => {
                       {bulkAction === "publish" && selectedRecords.length > 0 && (
                         <ReportActionsButton
                           buttonColor="green"
-                          onClick={() => publishMultipleReports()}
+                          onClick={() =>
+                            publishOrUnpublishMultipleReports("PUBLISHED")
+                          }
                         >
                           Review and Publish
                         </ReportActionsButton>
@@ -512,7 +506,9 @@ const Reports: React.FC = () => {
                         selectedRecords.length > 0 && (
                           <ReportActionsButton
                             buttonColor="orange"
-                            onClick={() => publishMultipleReports()}
+                            onClick={() =>
+                              publishOrUnpublishMultipleReports("DRAFT")
+                            }
                           >
                             Unpublish
                           </ReportActionsButton>
