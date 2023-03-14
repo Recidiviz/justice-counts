@@ -201,9 +201,7 @@ class ReportStore {
 
   async updateMultipleReports(
     reports: { report_id: number; metrics: UpdatedMetricsValues[] }[],
-    // reportIDs: number[],
     currentAgencyId: string,
-    // updatedMetrics: UpdatedMetricsValues[],
     status: ReportStatus
   ): Promise<Response | Error | undefined> {
     try {
@@ -221,9 +219,13 @@ class ReportStore {
 
       if (response.status === 200) {
         /** Update the editor details (editors & last modified details) in real time within the report after autosave. */
-        const report = (await response.json()) as Report;
-        console.log("Response:", JSON.stringify(report, null, 2));
-        // this.reportOverviews[report.id] = report;
+        const reportsList = (await response.json()) as Report[];
+
+        runInAction(() => {
+          reportsList.forEach((report) => {
+            this.reportOverviews[report.id] = report;
+          });
+        });
       }
 
       return response;

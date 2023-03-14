@@ -495,9 +495,11 @@ const Reports: React.FC = () => {
                       {bulkAction === "publish" && selectedRecords.length > 0 && (
                         <ReportActionsButton
                           buttonColor="green"
-                          onClick={() =>
-                            publishOrUnpublishMultipleReports("PUBLISHED")
-                          }
+                          onClick={() => {
+                            clearAllSelectedRecords();
+                            clearBulkAction();
+                            publishOrUnpublishMultipleReports("PUBLISHED");
+                          }}
                         >
                           Review and Publish
                         </ReportActionsButton>
@@ -506,9 +508,11 @@ const Reports: React.FC = () => {
                         selectedRecords.length > 0 && (
                           <ReportActionsButton
                             buttonColor="orange"
-                            onClick={() =>
-                              publishOrUnpublishMultipleReports("DRAFT")
-                            }
+                            onClick={() => {
+                              clearAllSelectedRecords();
+                              clearBulkAction();
+                              publishOrUnpublishMultipleReports("DRAFT");
+                            }}
                           >
                             Unpublish
                           </ReportActionsButton>
