@@ -153,6 +153,48 @@ class ReportStore {
     }
   }
 
+  async getMultipleReports(
+    reportIDs: number[],
+    currentAgencyId: string
+  ): Promise<void | Error> {
+    try {
+      const response = (await this.api.request({
+        path: `/api/reports/multiple`,
+        body: { report_ids: reportIDs, agency_id: parseInt(currentAgencyId) },
+        method: "POST",
+      })) as Response;
+
+      if (response.status !== 200) {
+        throw new Error(
+          `There was an issue retrieving these ${REPORTS_LOWERCASE}.`
+        );
+      }
+
+      const reports = (await response.json()) as Report[];
+
+      runInAction(() => {
+        reports.forEach((report) => {
+          const { metrics, ...overview } = report;
+          this.reportOverviews[report.id] = overview;
+          const metricsBySystem = groupBy(
+            metrics,
+            (metric) => metric.system.key
+          );
+          this.reportMetricsBySystem[report.id] = metricsBySystem;
+          // ensure that the order of the metrics in reportMetricsBySystem
+          // matches the order of the metrics in reportMetrics
+          this.reportMetrics[report.id] = Object.values(metricsBySystem).flat();
+        });
+      });
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    } finally {
+      runInAction(() => {
+        this.loadingReportData = false;
+      });
+    }
+  }
+
   async createReport(
     body: Record<string, unknown>,
     agencyId: number
