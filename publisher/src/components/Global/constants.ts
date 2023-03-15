@@ -22,7 +22,7 @@ export const REPORT_CAPITALIZED = "Record";
 export const REPORTS_CAPITALIZED = "Records";
 export const REPORTING_CAPITALIZED = "Data Sharing";
 export const REPORTED_CAPITALIZED = "Shared";
-export const REPORT_PERIOD_CAPITALIZED = "Time Period";
+export const REPORT_PERIOD_CAPITALIZED = "Reporting Period";
 
 export const REPORT_LOWERCASE = "record";
 export const REPORTS_LOWERCASE = "records";
