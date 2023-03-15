@@ -147,9 +147,7 @@ export const ReportActionsButton = styled.div<{
 
     if (textColor === "blue") return palette.solid.blue;
 
-    if (buttonColor && ["red", "orange", "green"].includes(buttonColor))
-      return palette.solid.white;
-    return palette.solid.darkgrey;
+    return buttonColor ? palette.solid.white : palette.solid.darkgrey;
   }};
   background-color: ${({ buttonColor }) => {
     if (buttonColor === "red") return palette.solid.red;
