@@ -15,14 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { showToast } from "@justice-counts/common/components/Toast";
-import {
-  MetricContextWithErrors,
-  MetricDisaggregationDimensions,
-  MetricDisaggregationDimensionsWithErrors,
-  MetricDisaggregationsWithErrors,
-  MetricWithErrors,
-} from "@justice-counts/common/types";
+import { MetricWithErrors } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -30,231 +25,220 @@ import { useNavigate, useParams } from "react-router-dom";
 import { trackReportPublished } from "../../analytics";
 import { useStore } from "../../stores";
 import { printReportTitle } from "../../utils";
+import checkIcon from "../assets/check-icon.svg";
 import logoImg from "../assets/jc-logo-vector-new.svg";
 import errorIcon from "../assets/status-error-icon.png";
 import {
+  REPORT_CAPITALIZED,
   REPORT_LOWERCASE,
-  REPORTED_CAPITALIZED,
   REPORTS_LOWERCASE,
 } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
 import {
-  Ethnicity,
-  RACE_ETHNICITY_DISAGGREGATION_KEY,
-} from "../MetricConfiguration";
-import { Heading, Subheading } from "../ReviewMetrics/ReviewMetrics.styles";
+  Heading,
+  MetricsPanel,
+  MetricStatusIcon,
+  SectionContainer,
+  Summary,
+  SummarySection,
+  SummarySectionLine,
+  SummarySectionTitle,
+} from "../ReviewMetrics/ReviewMetrics.styles";
 import { useCheckMetricForErrors } from "./hooks";
 import {
-  BreakdownErrorImg,
-  BreakdownLabel,
-  BreakdownLabelContainer,
-  BreakdownValue,
   ConfirmationButtonsContainer,
   ConfirmationDialogueTopBarButton,
-  ConfirmationDialogueWrapper,
-  ContextContainer,
-  ContextErrorImg,
-  ContextValue,
-  DisaggregationBreakdown,
-  DisaggregationBreakdownContainer,
-  HorizontalLine,
-  Metric,
-  MetricCollapseSignWrapper,
-  MetricDetailWrapper,
-  MetricHeader,
-  MetricSubTitleContainer,
-  MetricTitle,
-  MetricTitleNumber,
-  MetricTitleWrapper,
-  MetricValue,
+  EmptyIcon,
+  PublishConfirmationMainPanel,
   PublishConfirmationTopBar,
   PublishConfirmButton,
-  VerticalLine,
 } from "./PublishConfirmation.styles";
 
-const RaceEthnicitiesGroupedByEthnicity: React.FC<{
-  dimensions: MetricDisaggregationDimensions[] &
-    MetricDisaggregationDimensionsWithErrors[];
-}> = ({ dimensions }) => {
-  const dimensionsGroupedByEthnicity =
-    dimensions.reduce(
-      (acc, dimension) => {
-        if (dimension.ethnicity === Ethnicity.HISPANIC_OR_LATINO) {
-          acc[Ethnicity.HISPANIC_OR_LATINO].push(dimension);
-        }
-        if (dimension.ethnicity === Ethnicity.NOT_HISPANIC_OR_LATINO) {
-          acc[Ethnicity.NOT_HISPANIC_OR_LATINO].push(dimension);
-        }
-        if (dimension.ethnicity === Ethnicity.UNKNOWN_ETHNICITY) {
-          acc[Ethnicity.UNKNOWN_ETHNICITY].push(dimension);
-        }
-        return acc;
-      },
-      {
-        [Ethnicity.HISPANIC_OR_LATINO]: [],
-        [Ethnicity.NOT_HISPANIC_OR_LATINO]: [],
-        [Ethnicity.UNKNOWN_ETHNICITY]: [],
-      } as { [key: string]: MetricDisaggregationDimensionsWithErrors[] }
-    ) || {};
-  const dimensionsGroupedByEthnicityEntries = Object.entries(
-    dimensionsGroupedByEthnicity
-  );
+// const RaceEthnicitiesGroupedByEthnicity: React.FC<{
+//   dimensions: MetricDisaggregationDimensions[] &
+//     MetricDisaggregationDimensionsWithErrors[];
+// }> = ({ dimensions }) => {
+//   const dimensionsGroupedByEthnicity =
+//     dimensions.reduce(
+//       (acc, dimension) => {
+//         if (dimension.ethnicity === Ethnicity.HISPANIC_OR_LATINO) {
+//           acc[Ethnicity.HISPANIC_OR_LATINO].push(dimension);
+//         }
+//         if (dimension.ethnicity === Ethnicity.NOT_HISPANIC_OR_LATINO) {
+//           acc[Ethnicity.NOT_HISPANIC_OR_LATINO].push(dimension);
+//         }
+//         if (dimension.ethnicity === Ethnicity.UNKNOWN_ETHNICITY) {
+//           acc[Ethnicity.UNKNOWN_ETHNICITY].push(dimension);
+//         }
+//         return acc;
+//       },
+//       {
+//         [Ethnicity.HISPANIC_OR_LATINO]: [],
+//         [Ethnicity.NOT_HISPANIC_OR_LATINO]: [],
+//         [Ethnicity.UNKNOWN_ETHNICITY]: [],
+//       } as { [key: string]: MetricDisaggregationDimensionsWithErrors[] }
+//     ) || {};
+//   const dimensionsGroupedByEthnicityEntries = Object.entries(
+//     dimensionsGroupedByEthnicity
+//   );
+//
+//   return (
+//     <>
+//       {dimensionsGroupedByEthnicityEntries.map(
+//         ([ethnicity, groupedDimensions]) => (
+//           <>
+//             <MetricSubTitleContainer secondary>
+//               {ethnicity}
+//             </MetricSubTitleContainer>
+//             <DisaggregationBreakdownContainer>
+//               {groupedDimensions.map((dimension) => (
+//                 <DisaggregationBreakdown
+//                   key={dimension.key}
+//                   error={!!dimension.error}
+//                 >
+//                   <BreakdownLabelContainer>
+//                     <BreakdownLabel>{dimension.race}</BreakdownLabel>
+//                     {!!dimension.error && (
+//                       <BreakdownErrorImg src={errorIcon} alt="" />
+//                     )}
+//                   </BreakdownLabelContainer>
+//                   <BreakdownValue
+//                     missing={!dimension.value}
+//                     error={!!dimension.error}
+//                   >
+//                     {dimension.value?.toLocaleString("en-US") || "--"}
+//                   </BreakdownValue>
+//                 </DisaggregationBreakdown>
+//               ))}
+//             </DisaggregationBreakdownContainer>
+//           </>
+//         )
+//       )}
+//     </>
+//   );
+// };
 
-  return (
-    <>
-      {dimensionsGroupedByEthnicityEntries.map(
-        ([ethnicity, groupedDimensions]) => (
-          <>
-            <MetricSubTitleContainer secondary>
-              {ethnicity}
-            </MetricSubTitleContainer>
-            <DisaggregationBreakdownContainer>
-              {groupedDimensions.map((dimension) => (
-                <DisaggregationBreakdown
-                  key={dimension.key}
-                  error={!!dimension.error}
-                >
-                  <BreakdownLabelContainer>
-                    <BreakdownLabel>{dimension.race}</BreakdownLabel>
-                    {!!dimension.error && (
-                      <BreakdownErrorImg src={errorIcon} alt="" />
-                    )}
-                  </BreakdownLabelContainer>
-                  <BreakdownValue
-                    missing={!dimension.value}
-                    error={!!dimension.error}
-                  >
-                    {dimension.value?.toLocaleString("en-US") || "--"}
-                  </BreakdownValue>
-                </DisaggregationBreakdown>
-              ))}
-            </DisaggregationBreakdownContainer>
-          </>
-        )
-      )}
-    </>
-  );
-};
+// const Disaggregation: React.FC<{
+//   disaggregation: MetricDisaggregationsWithErrors;
+// }> = ({ disaggregation }) => {
+//   const { display_name: displayName, dimensions } = disaggregation;
+//
+//   return (
+//     <>
+//       <MetricSubTitleContainer>{displayName}</MetricSubTitleContainer>
+//
+//       {disaggregation.key === RACE_ETHNICITY_DISAGGREGATION_KEY ? (
+//         <RaceEthnicitiesGroupedByEthnicity dimensions={dimensions} />
+//       ) : (
+//         <DisaggregationBreakdownContainer>
+//           {dimensions.map(
+//             (dimension: MetricDisaggregationDimensionsWithErrors) => {
+//               return (
+//                 <DisaggregationBreakdown
+//                   key={dimension.key}
+//                   error={!!dimension.error}
+//                 >
+//                   <BreakdownLabelContainer>
+//                     <BreakdownLabel>{dimension.label}</BreakdownLabel>
+//                     {!!dimension.error && (
+//                       <BreakdownErrorImg src={errorIcon} alt="" />
+//                     )}
+//                   </BreakdownLabelContainer>
+//                   <BreakdownValue
+//                     missing={!dimension.value}
+//                     error={!!dimension.error}
+//                   >
+//                     {dimension.value?.toLocaleString("en-US") || "--"}
+//                   </BreakdownValue>
+//                 </DisaggregationBreakdown>
+//               );
+//             }
+//           )}
+//         </DisaggregationBreakdownContainer>
+//       )}
+//     </>
+//   );
+// };
 
-const Disaggregation: React.FC<{
-  disaggregation: MetricDisaggregationsWithErrors;
-}> = ({ disaggregation }) => {
-  const { display_name: displayName, dimensions } = disaggregation;
+// const Context: React.FC<{ context: MetricContextWithErrors }> = ({
+//   context,
+// }) => {
+//   const hasError = !!context.error && context.required;
+//   return (
+//     <ContextContainer verticalOnly>
+//       <MetricSubTitleContainer>
+//         {context.display_name}
+//         {hasError && <ContextErrorImg src={errorIcon} alt="" />}
+//       </MetricSubTitleContainer>
+//
+//       <ContextValue missing={!context.value} error={hasError}>
+//         {context.value?.toLocaleString("en-US") ||
+//           `Not ${REPORTED_CAPITALIZED}`}
+//       </ContextValue>
+//     </ContextContainer>
+//   );
+// };
 
-  return (
-    <>
-      <MetricSubTitleContainer>{displayName}</MetricSubTitleContainer>
-
-      {disaggregation.key === RACE_ETHNICITY_DISAGGREGATION_KEY ? (
-        <RaceEthnicitiesGroupedByEthnicity dimensions={dimensions} />
-      ) : (
-        <DisaggregationBreakdownContainer>
-          {dimensions.map(
-            (dimension: MetricDisaggregationDimensionsWithErrors) => {
-              return (
-                <DisaggregationBreakdown
-                  key={dimension.key}
-                  error={!!dimension.error}
-                >
-                  <BreakdownLabelContainer>
-                    <BreakdownLabel>{dimension.label}</BreakdownLabel>
-                    {!!dimension.error && (
-                      <BreakdownErrorImg src={errorIcon} alt="" />
-                    )}
-                  </BreakdownLabelContainer>
-                  <BreakdownValue
-                    missing={!dimension.value}
-                    error={!!dimension.error}
-                  >
-                    {dimension.value?.toLocaleString("en-US") || "--"}
-                  </BreakdownValue>
-                </DisaggregationBreakdown>
-              );
-            }
-          )}
-        </DisaggregationBreakdownContainer>
-      )}
-    </>
-  );
-};
-
-const Context: React.FC<{ context: MetricContextWithErrors }> = ({
-  context,
-}) => {
-  const hasError = !!context.error && context.required;
-  return (
-    <ContextContainer verticalOnly>
-      <MetricSubTitleContainer>
-        {context.display_name}
-        {hasError && <ContextErrorImg src={errorIcon} alt="" />}
-      </MetricSubTitleContainer>
-
-      <ContextValue missing={!context.value} error={hasError}>
-        {context.value?.toLocaleString("en-US") ||
-          `Not ${REPORTED_CAPITALIZED}`}
-      </ContextValue>
-    </ContextContainer>
-  );
-};
-
-const MetricsDisplay: React.FC<{
-  metric: MetricWithErrors;
-  metricHasError: boolean;
-  index: number;
-}> = ({ metric, metricHasError, index }) => {
-  const [isExpanded, setIsExpanded] = useState(true);
-
-  return (
-    <Metric id={metric.key}>
-      <MetricHeader
-        hasValue={!!metric.value}
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
-        <MetricTitleWrapper>
-          <MetricTitleNumber hasError={metricHasError}>
-            {index + 1}
-          </MetricTitleNumber>
-          <MetricTitle>{metric.display_name}</MetricTitle>
-          <MetricCollapseSignWrapper isExpanded={isExpanded}>
-            <HorizontalLine />
-            {!isExpanded && <VerticalLine />}
-          </MetricCollapseSignWrapper>
-        </MetricTitleWrapper>
-        <MetricValue>
-          {metric.value?.toLocaleString("en-US") ||
-            `Not ${REPORTED_CAPITALIZED}`}
-        </MetricValue>
-      </MetricHeader>
-
-      <MetricDetailWrapper isExpanded={isExpanded}>
-        {/* Disaggregations > Dimensions */}
-        {metric.disaggregations.length > 0 &&
-          metric.disaggregations.map((disaggregation) => {
-            return (
-              <Disaggregation
-                key={disaggregation.key}
-                disaggregation={disaggregation}
-              />
-            );
-          })}
-
-        {/* Contexts */}
-        {metric.contexts.length > 0 &&
-          metric.contexts.map((context) => {
-            return <Context key={context.key} context={context} />;
-          })}
-      </MetricDetailWrapper>
-    </Metric>
-  );
-};
+// const MetricsDisplay: React.FC<{
+//   metric: MetricWithErrors;
+//   metricHasError: boolean;
+//   index: number;
+// }> = ({ metric, metricHasError, index }) => {
+//   const [isExpanded, setIsExpanded] = useState(true);
+//
+//   return (
+//     <Metric id={metric.key}>
+//       <MetricHeader
+//         hasValue={!!metric.value}
+//         onClick={() => setIsExpanded(!isExpanded)}
+//       >
+//         <MetricTitleWrapper>
+//           <MetricTitleNumber hasError={metricHasError}>
+//             {index + 1}
+//           </MetricTitleNumber>
+//           <MetricTitle>{metric.display_name}</MetricTitle>
+//           <MetricCollapseSignWrapper isExpanded={isExpanded}>
+//             <HorizontalLine />
+//             {!isExpanded && <VerticalLine />}
+//           </MetricCollapseSignWrapper>
+//         </MetricTitleWrapper>
+//         <MetricValue>
+//           {metric.value?.toLocaleString("en-US") ||
+//             `Not ${REPORTED_CAPITALIZED}`}
+//         </MetricValue>
+//       </MetricHeader>
+//
+//       <MetricDetailWrapper isExpanded={isExpanded}>
+//         {/* Disaggregations > Dimensions */}
+//         {metric.disaggregations.length > 0 &&
+//           metric.disaggregations.map((disaggregation) => {
+//             return (
+//               <Disaggregation
+//                 key={disaggregation.key}
+//                 disaggregation={disaggregation}
+//               />
+//             );
+//           })}
+//
+//         {/* Contexts */}
+//         {metric.contexts.length > 0 &&
+//           metric.contexts.map((context) => {
+//             return <Context key={context.key} context={context} />;
+//           })}
+//       </MetricDetailWrapper>
+//     </Metric>
+//   );
+// };
 
 const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
   const [isPublishable, setIsPublishable] = useState(false);
   const [metricsPreview, setMetricsPreview] = useState<MetricWithErrors[]>();
-  const { formStore, reportStore, userStore, guidanceStore } = useStore();
+  const { formStore, reportStore, userStore, guidanceStore, datapointsStore } =
+    useStore();
   const { agencyId } = useParams();
   const navigate = useNavigate();
   const checkMetricForErrors = useCheckMetricForErrors(reportID);
+  const report = reportStore.reportOverviews[reportID];
 
   const publishReport = async () => {
     if (isPublishable) {
@@ -310,6 +294,21 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
     setIsPublishable(publishable);
   }, [formStore, reportID]);
 
+  const renderMetric = (metricKey: string, metricName: string) => {
+    const reportMetricDatapoints = datapointsStore.rawDatapointsByMetric[
+      metricKey
+    ].filter((dp) => dp.report_id === reportID);
+
+    return (
+      <SectionContainer key={metricKey}>
+        <DatapointsTableView
+          datapoints={reportMetricDatapoints}
+          metricName={metricName}
+        />
+      </SectionContainer>
+    );
+  };
+
   return (
     <>
       <PublishConfirmationTopBar transparent={false}>
@@ -338,32 +337,94 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
           />
         </ConfirmationButtonsContainer>
       </PublishConfirmationTopBar>
-      <ConfirmationDialogueWrapper>
-        {metricsPreview && (
-          <div>
-            <Heading>
-              Review <span>{metricsPreview.length}</span> Metrics
-            </Heading>
-            <Subheading>
-              Before publishing, take a moment to review the changes. You must
-              resolve any errors before publishing; otherwise, you can save this{" "}
-              {REPORT_LOWERCASE} and return at another time.
-            </Subheading>
-            {metricsPreview.map((metric, i) => {
-              return (
-                metric.enabled && (
-                  <MetricsDisplay
-                    key={metric.key}
-                    metric={metric}
-                    metricHasError={checkMetricForErrors(metric.key)}
-                    index={i}
-                  />
-                )
-              );
-            })}
-          </div>
-        )}
-      </ConfirmationDialogueWrapper>
+      {/* <ConfirmationDialogueWrapper> */}
+      {/*  {metricsPreview && ( */}
+      {/*    <div> */}
+      {/*      <Heading> */}
+      {/*        Review <span>{metricsPreview.length}</span> Metrics */}
+      {/*      </Heading> */}
+      {/*      <Subheading> */}
+      {/*        Before publishing, take a moment to review the changes. You must */}
+      {/*        resolve any errors before publishing; otherwise, you can save this{" "} */}
+      {/*        {REPORT_LOWERCASE} and return at another time. */}
+      {/*      </Subheading> */}
+      {/*      {metricsPreview.map((metric, i) => { */}
+      {/*        return ( */}
+      {/*          metric.enabled && ( */}
+      {/*            <MetricsDisplay */}
+      {/*              key={metric.key} */}
+      {/*              metric={metric} */}
+      {/*              metricHasError={checkMetricForErrors(metric.key)} */}
+      {/*              index={i} */}
+      {/*            /> */}
+      {/*          ) */}
+      {/*        ); */}
+      {/*      })} */}
+      {/*    </div> */}
+      {/*  )} */}
+      {/* </ConfirmationDialogueWrapper> */}
+      <PublishConfirmationMainPanel>
+        <Summary>
+          <Heading>
+            Review & Publish
+            <span>
+              Here’s a breakdown of data from the {REPORT_LOWERCASE}. Take a
+              moment to review these changes, then publish when ready. If you
+              believe there is an error, please contact the Justice Counts team
+              via{" "}
+              <a href="mailto:justice-counts-support@csg.org">
+                justice-counts-support@csg.org
+              </a>
+              .
+            </span>
+          </Heading>
+          {metricsPreview && metricsPreview.length > 0 && (
+            <>
+              <SummarySection>
+                <SummarySectionTitle color="blue">
+                  <span>{metricsPreview.length}</span> Metric
+                  {metricsPreview.length > 1 ? "s" : ""}
+                </SummarySectionTitle>
+                {metricsPreview.map((metric) => {
+                  const metricHasError = checkMetricForErrors(metric.key);
+                  const metricHasValidInput = Boolean(
+                    formStore.metricsValues?.[reportID]?.[metric.key]?.value
+                  );
+                  return (
+                    <SummarySectionLine key={metric.key}>
+                      {!metricHasError && metricHasValidInput && (
+                        <MetricStatusIcon src={checkIcon} alt="" />
+                      )}
+                      {metricHasError && (
+                        <MetricStatusIcon src={errorIcon} alt="" />
+                      )}
+                      {!metricHasError && !metricHasValidInput && <EmptyIcon />}
+                      {metric.display_name}
+                    </SummarySectionLine>
+                  );
+                })}
+              </SummarySection>
+              <SummarySection>
+                <SummarySectionTitle color="grey">
+                  <span>1</span> {REPORT_CAPITALIZED}
+                </SummarySectionTitle>
+                <SummarySectionLine>
+                  {printReportTitle(
+                    report.month,
+                    report.year,
+                    report.frequency
+                  )}
+                </SummarySectionLine>
+              </SummarySection>
+            </>
+          )}
+        </Summary>
+        <MetricsPanel>
+          {metricsPreview?.map((metric) => {
+            return renderMetric(metric.key, metric.display_name);
+          })}
+        </MetricsPanel>
+      </PublishConfirmationMainPanel>
     </>
   );
 };

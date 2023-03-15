@@ -24,13 +24,13 @@ import { useStore } from "../../stores";
 import { PageWrapper } from "../Forms";
 import { Loading } from "../Loading";
 import PublishConfirmation from "./PublishConfirmation";
-import PublishConfirmationSummaryPanel from "./PublishConfirmationSummaryPanel";
 import { ReportDataEntryWrapper } from "./ReportDataEntry.styles";
 
 const ReviewReportDataEntry = () => {
   const params = useParams();
   const reportID = Number(params.id);
-  const { reportStore, formStore } = useStore();
+  const agencyId = Number(params.agencyId);
+  const { reportStore, formStore, datapointsStore } = useStore();
 
   const [loadingError, setLoadingError] = useState<string | undefined>(
     undefined
@@ -44,13 +44,14 @@ const ReviewReportDataEntry = () => {
         return setLoadingError(result.message);
       }
       formStore.validatePreviouslySavedInputs(reportID);
+      datapointsStore.getDatapoints(agencyId);
     };
 
     initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (reportStore.loadingReportData)
+  if (reportStore.loadingReportData || datapointsStore.loading)
     return (
       <PageWrapper>
         <Loading />
@@ -69,7 +70,7 @@ const ReviewReportDataEntry = () => {
 
   return (
     <ReportDataEntryWrapper>
-      <PublishConfirmationSummaryPanel reportID={reportID} />
+      {/* <PublishConfirmationSummaryPanel reportID={reportID} /> */}
       <PublishConfirmation reportID={reportID} />
     </ReportDataEntryWrapper>
   );

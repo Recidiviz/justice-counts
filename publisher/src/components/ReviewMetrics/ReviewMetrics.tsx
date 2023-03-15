@@ -28,11 +28,11 @@ import { UploadedMetric } from "../DataUpload/types";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
 import {
-  CheckIcon,
   Container,
   Heading,
   MainPanel,
   MetricsPanel,
+  MetricStatusIcon,
   SectionContainer,
   Summary,
   SummarySection,
@@ -82,7 +82,6 @@ const ReviewMetrics: React.FC = observer(() => {
           startDate: dp.start_date,
         };
         overwrites.push(overwriteData);
-        // overwrittenValuesCount += 1;
       }
     });
   });
@@ -134,7 +133,7 @@ const ReviewMetrics: React.FC = observer(() => {
               </SummarySectionTitle>
               {filteredMetrics.map((metric) => (
                 <SummarySectionLine key={metric.key}>
-                  <CheckIcon src={blueCheck} alt="" />
+                  <MetricStatusIcon src={blueCheck} alt="" />
                   {metric.display_name}
                 </SummarySectionLine>
               ))}

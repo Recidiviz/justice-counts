@@ -34,8 +34,6 @@ export const Container = styled(DataUploadContainer)`
 
 export const MainPanel = styled.div`
   width: 100%;
-  // margin-top: ${40 + HEADER_BAR_HEIGHT}px;
-  // margin-bottom: 128px;
   padding: ${40 + HEADER_BAR_HEIGHT}px 0 128px 24px;
   display: flex;
   flex-direction: row;
@@ -57,6 +55,11 @@ export const Heading = styled.div`
 
   span {
     ${typography.sizeCSS.medium};
+
+    a {
+      color: ${palette.solid.blue};
+      text-decoration: none;
+    }
   }
 `;
 
@@ -105,7 +108,7 @@ export const SummarySectionLine = styled.div`
   gap: 8px;
 `;
 
-export const CheckIcon = styled.img`
+export const MetricStatusIcon = styled.img`
   width: 16px;
   height: 16px;
 `;
@@ -123,6 +126,8 @@ export const SectionContainer = styled.div`
   align-items: center;
   justify-content: stretch;
   flex-direction: column;
+  min-width: 700px;
+  overflow-x: auto;
 
   &:not(:first-child) {
     border-top: 1px solid ${palette.highlight.grey3};

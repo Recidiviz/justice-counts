@@ -71,6 +71,15 @@ export const ConfirmationDialogueTopBarButton = styled(Button)`
   white-space: nowrap;
 `;
 
+export const PublishConfirmationMainPanel = styled.div`
+  width: 100%;
+  padding: 40px 0 128px 24px;
+  display: flex;
+  flex-direction: row;
+  gap: 88px;
+  overflow-x: auto;
+`;
+
 export const ConfirmationDialogueWrapper = styled.div`
   background: ${palette.solid.white};
   display: flex;
@@ -275,4 +284,11 @@ export const ContextErrorImg = styled(ErrorImg)`
   width: 12px;
   height: 12px;
   transform: translate(0, 1px);
+`;
+
+export const EmptyIcon = styled.div`
+  width: 16px;
+  height: 16px;
+  border: 1px solid ${palette.highlight.grey4};
+  border-radius: 100%;
 `;
