@@ -19,7 +19,7 @@ import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { formatDateShortMonthYear } from "@justice-counts/common/components/DataViz/utils";
 import { observer } from "mobx-react-lite";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import logoImg from "../assets/jc-logo-vector-new.svg";
@@ -39,6 +39,7 @@ import {
   SummarySectionLine,
   SummarySectionTitle,
 } from "./ReviewMetrics.styles";
+import { ReviewMetricsModal } from "./ReviewMetricsModal";
 
 type Overwrite = {
   key: number;
@@ -49,21 +50,26 @@ type Overwrite = {
 
 const ReviewMetrics: React.FC = observer(() => {
   const { agencyId } = useParams();
-  const location = useLocation();
+  const { state } = useLocation();
+  const { uploadedMetrics, fileName } = state as {
+    uploadedMetrics: UploadedMetric[] | null;
+    fileName: string;
+  };
   const navigate = useNavigate();
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
   useEffect(() => {
-    if (!(location.state as UploadedMetric[] | null)) {
+    if (!uploadedMetrics) {
       // no metrics in passed in navigation state, redirect to home page
       navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`, { replace: true });
     }
   });
 
-  if (!(location.state as UploadedMetric[] | null)) {
+  if (!uploadedMetrics) {
     return null;
   }
 
-  const filteredMetrics = (location.state as UploadedMetric[])
+  const filteredMetrics = uploadedMetrics
     .map((metric) => ({
       ...metric,
       datapoints: metric.datapoints.filter((dp) => dp.value !== null),
@@ -99,6 +105,7 @@ const ReviewMetrics: React.FC = observer(() => {
 
   return (
     <Container>
+      {isSuccessModalOpen && <ReviewMetricsModal fileName={fileName} />}
       <DataUploadHeader transparent={false}>
         <LogoContainer
           onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
@@ -106,8 +113,8 @@ const ReviewMetrics: React.FC = observer(() => {
           <Logo src={logoImg} alt="" />
         </LogoContainer>
 
-        <Button type="blue" onClick={() => navigate(-1)}>
-          Close
+        <Button type="blue" onClick={() => setIsSuccessModalOpen(true)}>
+          Publish
         </Button>
         {
           // TODO(#24): Add Publish button to publish multiple reports at once
