@@ -17,41 +17,48 @@
 
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
-import { NotFound } from "../../pages/NotFound";
+import { RecordsBulkAction } from "../../pages/Reports";
 import { useStore } from "../../stores";
 import { PageWrapper } from "../Forms";
 import { Loading } from "../Loading";
-import PublishConfirmation from "./PublishConfirmation";
-import { ReportDataEntryWrapper } from "./ReportDataEntry.styles";
+import { BulkActionReviewWrapper } from "./BulkActionReview.styles";
+import BulkActionReviewConfirmation from "./BulkActionReviewConfirmation";
 
-const ReviewReportDataEntry = () => {
+const BulkActionReview = () => {
   const params = useParams();
-  const reportID = Number(params.id);
+  const { state } = useLocation();
+  const { recordsIds, action } = state as {
+    recordsIds: number[];
+    action: RecordsBulkAction;
+  };
   const agencyId = Number(params.agencyId);
-  const { reportStore, formStore, datapointsStore } = useStore();
-
+  const { reportStore, datapointsStore } = useStore();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingError, setLoadingError] = useState<string | undefined>(
     undefined
   );
 
   useEffect(() => {
     const initialize = async () => {
-      const result = await reportStore.getReport(reportID);
-      formStore.validatePreviouslySavedInputs(reportID);
+      // probably need better way to get reports metrics
+      await datapointsStore.getDatapoints(agencyId);
+      const result = await reportStore.initializeReportSettings(
+        agencyId.toString()
+      );
       if (result instanceof Error) {
+        setIsLoading(false);
         return setLoadingError(result.message);
       }
-      formStore.validatePreviouslySavedInputs(reportID);
-      await datapointsStore.getDatapoints(agencyId);
+      setIsLoading(false);
     };
 
     initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (reportStore.loadingReportData || datapointsStore.loading)
+  if (isLoading || datapointsStore.loading)
     return (
       <PageWrapper>
         <Loading />
@@ -59,21 +66,14 @@ const ReviewReportDataEntry = () => {
     );
 
   if (loadingError) {
-    return <PageWrapper>Error: {loadingError}</PageWrapper>;
-  }
-
-  if (
-    reportStore.reportOverviews[reportID].agency_id !== Number(params.agencyId)
-  ) {
-    return <NotFound />;
+    return <div>Error: {loadingError}</div>;
   }
 
   return (
-    <ReportDataEntryWrapper>
-      {/* <PublishConfirmationSummaryPanel reportID={reportID} /> */}
-      <PublishConfirmation reportID={reportID} />
-    </ReportDataEntryWrapper>
+    <BulkActionReviewWrapper>
+      <BulkActionReviewConfirmation recordsIds={recordsIds} action={action} />
+    </BulkActionReviewWrapper>
   );
 };
 
-export default observer(ReviewReportDataEntry);
+export default observer(BulkActionReview);

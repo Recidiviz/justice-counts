@@ -189,6 +189,7 @@ export type ButtonTypes =
   | "border"
   | "borderless"
   | "blue"
+  | "green"
   | "red";
 
 export const Button = styled.div<{
@@ -230,6 +231,12 @@ export const Button = styled.div<{
         color: ${palette.solid.white};
       `;
     }
+    if (type === "green") {
+      return `
+        background: ${palette.solid.green};
+        color: ${palette.solid.white};
+      `;
+    }
     if (type === "red") {
       return `
         background: ${palette.solid.red};
@@ -257,7 +264,7 @@ export const Button = styled.div<{
       if (type === "borderless") {
         return `opacity: 0.8;`;
       }
-      if (type === "blue" || type === "red") {
+      if (type === "blue" || type === "red" || type === "green") {
         return `opacity: 0.9;`;
       }
       return `background: ${palette.highlight.grey2};`;

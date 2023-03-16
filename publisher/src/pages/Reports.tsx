@@ -98,7 +98,7 @@ const reportListColumnTitles = [
   "Last Modified",
 ];
 
-type RecordsBulkAction = "publish" | "unpublish" | "delete";
+export type RecordsBulkAction = "publish" | "unpublish" | "delete";
 
 const Reports: React.FC = () => {
   const { reportStore, userStore } = useStore();
@@ -480,6 +480,37 @@ const Reports: React.FC = () => {
                           Delete
                         </ReportActionsButton>
                       )}
+                      {bulkAction === "publish" && selectedRecords.length > 0 && (
+                        <ReportActionsButton
+                          buttonColor="red"
+                          onClick={() =>
+                            navigate("bulk-review", {
+                              state: {
+                                recordsIds: selectedRecords,
+                                action: bulkAction,
+                              },
+                            })
+                          }
+                        >
+                          Review and Publish
+                        </ReportActionsButton>
+                      )}
+                      {bulkAction === "unpublish" &&
+                        selectedRecords.length > 0 && (
+                          <ReportActionsButton
+                            buttonColor="red"
+                            onClick={() =>
+                              navigate("bulk-review", {
+                                state: {
+                                  recordsIds: selectedRecords,
+                                  action: bulkAction,
+                                },
+                              })
+                            }
+                          >
+                            Review and Unpublish
+                          </ReportActionsButton>
+                        )}
                     </>
                   )}
                 </ReportActions>
