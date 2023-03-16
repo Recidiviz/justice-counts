@@ -482,7 +482,7 @@ const Reports: React.FC = () => {
                       )}
                       {bulkAction === "publish" && selectedRecords.length > 0 && (
                         <ReportActionsButton
-                          buttonColor="red"
+                          buttonColor="green"
                           onClick={() =>
                             navigate("bulk-review", {
                               state: {
@@ -498,7 +498,7 @@ const Reports: React.FC = () => {
                       {bulkAction === "unpublish" &&
                         selectedRecords.length > 0 && (
                           <ReportActionsButton
-                            buttonColor="red"
+                            buttonColor="blue"
                             onClick={() =>
                               navigate("bulk-review", {
                                 state: {

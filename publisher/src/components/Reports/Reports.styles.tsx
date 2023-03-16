@@ -130,7 +130,7 @@ export const ReportActions = styled.div`
 export const ReportActionsButton = styled.div<{
   disabled?: boolean;
   textColor?: "blue";
-  buttonColor?: "red";
+  buttonColor?: "red" | "green" | "blue";
 }>`
   position: relative;
   border: ${({ buttonColor }) =>
@@ -147,11 +147,12 @@ export const ReportActionsButton = styled.div<{
 
     if (textColor === "blue") return palette.solid.blue;
 
-    if (buttonColor === "red") return palette.solid.white;
-    return palette.solid.darkgrey;
+    return buttonColor ? palette.solid.white : palette.solid.darkgrey;
   }};
   background-color: ${({ buttonColor }) => {
     if (buttonColor === "red") return palette.solid.red;
+    if (buttonColor === "green") return palette.solid.green;
+    if (buttonColor === "blue") return palette.solid.blue;
     return palette.solid.white;
   }};
 

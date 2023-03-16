@@ -46,8 +46,9 @@ export const DatapointsTableContainer = styled.div<{
 export const DatapointsTableNamesContainer = styled.div<{
   useDataPageStyles?: boolean;
 }>`
-  width: 400px;
-  min-width: 400px;
+  width: ${({ useDataPageStyles }) => (useDataPageStyles ? "240px" : "400px")};
+  min-width: ${({ useDataPageStyles }) =>
+    useDataPageStyles ? "240px" : "400px"};
   margin-top: ${({ useDataPageStyles }) => (useDataPageStyles ? "33px" : "0")};
 `;
 export const DatapointsTableNamesTable = styled.table`
@@ -71,7 +72,7 @@ export const DatapointsTableNamesCell = styled.td<{
   font-size: 18px;
   font-weight: 500;
   width: 240px;
-  max-width: 240px;
+  max-width: 400px;
   height: 32px;
 
   &:hover {
