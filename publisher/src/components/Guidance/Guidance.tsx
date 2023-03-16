@@ -182,16 +182,19 @@ export const Guidance = observer(() => {
       reportStore.resetState();
       await reportStore.getReportOverviews(agencyId);
 
-      const hasMinimumOneReport =
+      const hasMinimumOneReportStarted =
         currentTopicID === "ADD_DATA" &&
-        Object.keys(reportStore.reportOverviews).length > 0;
+        Object.values(reportStore.reportOverviews).find(
+          (report) => report.status !== "NOT_STARTED"
+        );
+
       const hasMinimumOnePublishedReport =
         currentTopicID === "PUBLISH_DATA" &&
         Object.values(reportStore.reportOverviews).find(
           (report) => report.status === "PUBLISHED"
         );
 
-      if (hasMinimumOneReport) {
+      if (hasMinimumOneReportStarted) {
         saveOnboardingTopicsStatuses(
           {
             topicID: "ADD_DATA",
