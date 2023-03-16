@@ -33,18 +33,27 @@ export const Container = styled(DataUploadContainer)`
 `;
 
 export const MainPanel = styled.div`
-  width: 100%;
-  padding: ${40 + HEADER_BAR_HEIGHT}px 0 128px 24px;
+  max-width: 100%;
+  padding: ${40 + HEADER_BAR_HEIGHT}px 0 128px 612px;
   display: flex;
   flex-direction: row;
   gap: 88px;
+  overflow-x: hidden;
 `;
 
 export const Summary = styled.div`
+  position: fixed;
+  top: ${40 + HEADER_BAR_HEIGHT}px;
+  left: 0;
+  max-height: calc(100vh - ${40 + HEADER_BAR_HEIGHT + 200}px);
+  padding-left: 24px;
   width: 500px;
   display: flex;
   flex-direction: column;
   gap: 30px;
+  background-color: ${palette.solid.white};
+  z-index: 2;
+  overflow-y: auto;
 `;
 
 export const Heading = styled.div`
@@ -116,7 +125,8 @@ export const MetricStatusIcon = styled.img`
 export const MetricsPanel = styled.div`
   display: flex;
   flex-direction: column;
-  width: calc(100% - 500px - 88px - 24px);
+  width: 100%;
+  overflow-x: auto;
 `;
 
 export const SectionContainer = styled.div`

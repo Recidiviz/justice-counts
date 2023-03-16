@@ -45,6 +45,11 @@ export const ReportDataEntryWrapper = styled.div`
   width: 100%;
 `;
 
+export const ReviewWrapper = styled(ReportDataEntryWrapper)`
+  display: block;
+  align-items: start;
+`;
+
 export const PublishDataWrapper = styled.div`
   width: ${SIDE_PANEL_WIDTH}px;
   position: fixed;

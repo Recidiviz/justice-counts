@@ -25,6 +25,7 @@ import styled, { css } from "styled-components/macro";
 import { Button, DataUploadHeader } from "../DataUpload";
 import {
   MAIN_PANEL_MAX_WIDTH,
+  MainPanel,
   SectionTitle,
   SectionTitleNumber,
 } from "../ReviewMetrics/ReviewMetrics.styles";
@@ -71,13 +72,8 @@ export const ConfirmationDialogueTopBarButton = styled(Button)`
   white-space: nowrap;
 `;
 
-export const PublishConfirmationMainPanel = styled.div`
-  width: 100%;
-  padding: 40px 0 128px 24px;
-  display: flex;
-  flex-direction: row;
-  gap: 88px;
-  overflow-x: auto;
+export const PublishConfirmationMainPanel = styled(MainPanel)`
+  padding-top: 40px;
 `;
 
 export const ConfirmationDialogueWrapper = styled.div`

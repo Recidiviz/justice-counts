@@ -24,7 +24,7 @@ import { useStore } from "../../stores";
 import { PageWrapper } from "../Forms";
 import { Loading } from "../Loading";
 import PublishConfirmation from "./PublishConfirmation";
-import { ReportDataEntryWrapper } from "./ReportDataEntry.styles";
+import { ReviewWrapper } from "./ReportDataEntry.styles";
 
 const ReviewReportDataEntry = () => {
   const params = useParams();
@@ -69,10 +69,10 @@ const ReviewReportDataEntry = () => {
   }
 
   return (
-    <ReportDataEntryWrapper>
+    <ReviewWrapper>
       {/* <PublishConfirmationSummaryPanel reportID={reportID} /> */}
       <PublishConfirmation reportID={reportID} />
-    </ReportDataEntryWrapper>
+    </ReviewWrapper>
   );
 };
 

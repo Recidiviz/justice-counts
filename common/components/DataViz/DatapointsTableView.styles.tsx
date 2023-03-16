@@ -176,7 +176,7 @@ export const DatapointsTableDetailsCell = styled.td<{
   color: ${({ isRowHovered }) => isRowHovered && palette.solid.darkgrey};
 `;
 export const DatapointsTableDetailsDivider = styled.tr`
-  height: 32.5px;
+  height: 32px;
 `;
 export const OrangeText = styled.span`
   color: ${palette.solid.orange};

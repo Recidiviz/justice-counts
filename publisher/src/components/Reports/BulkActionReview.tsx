@@ -23,8 +23,8 @@ import { RecordsBulkAction } from "../../pages/Reports";
 import { useStore } from "../../stores";
 import { PageWrapper } from "../Forms";
 import { Loading } from "../Loading";
-import { BulkActionReviewWrapper } from "./BulkActionReview.styles";
 import BulkActionReviewConfirmation from "./BulkActionReviewConfirmation";
+import { ReviewWrapper } from "./ReportDataEntry.styles";
 
 const BulkActionReview = () => {
   const params = useParams();
@@ -70,9 +70,9 @@ const BulkActionReview = () => {
   }
 
   return (
-    <BulkActionReviewWrapper>
+    <ReviewWrapper>
       <BulkActionReviewConfirmation recordsIds={recordsIds} action={action} />
-    </BulkActionReviewWrapper>
+    </ReviewWrapper>
   );
 };
 

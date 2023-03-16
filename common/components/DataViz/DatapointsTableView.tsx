@@ -29,7 +29,6 @@ import {
   DatapointsTableDetailsCell,
   DatapointsTableDetailsContainer,
   DatapointsTableDetailsContainerOverlay,
-  DatapointsTableDetailsContainerOverlayLeftGradient,
   DatapointsTableDetailsContainerOverlayRightGradient,
   DatapointsTableDetailScrollContainer,
   DatapointsTableDetailsDivider,
@@ -195,9 +194,9 @@ export const DatapointsTableView: React.FC<{
           </DatapointsTableNamesTable>
         </DatapointsTableNamesContainer>
         <DatapointsTableDetailsContainer useDataPageStyles={useDataPageStyles}>
-          <DatapointsTableDetailsContainerOverlay>
-            <DatapointsTableDetailsContainerOverlayLeftGradient />
-          </DatapointsTableDetailsContainerOverlay>
+          {/* <DatapointsTableDetailsContainerOverlay> */}
+          {/*  <DatapointsTableDetailsContainerOverlayLeftGradient /> */}
+          {/* </DatapointsTableDetailsContainerOverlay> */}
           <DatapointsTableDetailScrollContainer>
             <DatapointsTableDetailsTable cellPadding="16px">
               <DatapointsTableDetailsRowHead>
