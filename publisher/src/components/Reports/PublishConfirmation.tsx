@@ -54,6 +54,7 @@ import {
   PublishConfirmationTopBar,
   PublishConfirmButton,
 } from "./PublishConfirmation.styles";
+import { ReviewPublishModal } from "./ReviewPublishModal";
 
 // const RaceEthnicitiesGroupedByEthnicity: React.FC<{
 //   dimensions: MetricDisaggregationDimensions[] &
@@ -235,6 +236,7 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
   const [isPublishable, setIsPublishable] = useState(false);
   const [metricsPreview, setMetricsPreview] = useState<MetricWithErrors[]>();
   const [isRecordsCollapsed, setIsRecordsCollapsed] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const { formStore, reportStore, userStore, guidanceStore, datapointsStore } =
     useStore();
   const { agencyId } = useParams();
@@ -262,7 +264,7 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
           !guidanceStore.hasCompletedOnboarding
         )
           guidanceStore.updateTopicStatus("PUBLISH_DATA", true);
-        navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`);
+        setIsSuccessModalOpen(true);
         showToast({
           message: `Congratulations! You published the ${printReportTitle(
             reportStore.reportOverviews[reportID].month,
@@ -313,6 +315,7 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
 
   return (
     <>
+      {isSuccessModalOpen && <ReviewPublishModal />}
       <PublishConfirmationTopBar transparent={false}>
         <LogoContainer
           onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
