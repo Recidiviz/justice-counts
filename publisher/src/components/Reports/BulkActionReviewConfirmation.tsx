@@ -17,7 +17,7 @@
 
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { RecordsBulkAction } from "../../pages/Reports";
@@ -33,6 +33,7 @@ import {
 } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
 import {
+  CollapseSign,
   Heading,
   MetricsPanel,
   MetricStatusIcon,
@@ -56,6 +57,7 @@ const BulkActionReviewConfirmation: React.FC<{
   const { agencyId } = useParams();
   const navigate = useNavigate();
   const { reportStore, datapointsStore } = useStore();
+  const [isRecordsCollapsed, setIsRecordsCollapsed] = useState(false);
 
   const selectedReports = recordsIds.map(
     (recordID) => reportStore.reportOverviews[recordID]
@@ -152,21 +154,27 @@ const BulkActionReviewConfirmation: React.FC<{
               })}
             </SummarySection>
             <SummarySection>
-              <SummarySectionTitle color="grey">
+              <SummarySectionTitle
+                color="grey"
+                hasAction
+                onClick={() => setIsRecordsCollapsed(!isRecordsCollapsed)}
+              >
                 <span>{recordsIds.length}</span>{" "}
                 {recordsIds.length > 1
                   ? REPORTS_CAPITALIZED
                   : REPORT_CAPITALIZED}
+                <CollapseSign>{isRecordsCollapsed ? "-" : "+"}</CollapseSign>
               </SummarySectionTitle>
-              {selectedReports.map((report) => (
-                <SummarySectionLine key={report.id}>
-                  {printReportTitle(
-                    report.month,
-                    report.year,
-                    report.frequency
-                  )}
-                </SummarySectionLine>
-              ))}
+              {isRecordsCollapsed &&
+                selectedReports.map((report) => (
+                  <SummarySectionLine key={report.id}>
+                    {printReportTitle(
+                      report.month,
+                      report.year,
+                      report.frequency
+                    )}
+                  </SummarySectionLine>
+                ))}
             </SummarySection>
           </>
         </Summary>

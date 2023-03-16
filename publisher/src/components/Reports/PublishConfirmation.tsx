@@ -35,6 +35,7 @@ import {
 } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
 import {
+  CollapseSign,
   Heading,
   MetricsPanel,
   MetricStatusIcon,
@@ -233,6 +234,7 @@ import {
 const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
   const [isPublishable, setIsPublishable] = useState(false);
   const [metricsPreview, setMetricsPreview] = useState<MetricWithErrors[]>();
+  const [isRecordsCollapsed, setIsRecordsCollapsed] = useState(false);
   const { formStore, reportStore, userStore, guidanceStore, datapointsStore } =
     useStore();
   const { agencyId } = useParams();
@@ -405,16 +407,23 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
                 })}
               </SummarySection>
               <SummarySection>
-                <SummarySectionTitle color="grey">
-                  <span>1</span> {REPORT_CAPITALIZED}
+                <SummarySectionTitle
+                  color="grey"
+                  hasAction
+                  onClick={() => setIsRecordsCollapsed(!isRecordsCollapsed)}
+                >
+                  <span>1</span> {REPORT_CAPITALIZED}{" "}
+                  <CollapseSign>{isRecordsCollapsed ? "-" : "+"}</CollapseSign>
                 </SummarySectionTitle>
-                <SummarySectionLine>
-                  {printReportTitle(
-                    report.month,
-                    report.year,
-                    report.frequency
-                  )}
-                </SummarySectionLine>
+                {isRecordsCollapsed && (
+                  <SummarySectionLine>
+                    {printReportTitle(
+                      report.month,
+                      report.year,
+                      report.frequency
+                    )}
+                  </SummarySectionLine>
+                )}
               </SummarySection>
             </>
           )}

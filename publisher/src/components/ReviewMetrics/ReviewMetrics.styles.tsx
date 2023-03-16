@@ -95,9 +95,13 @@ export const SummarySection = styled.div`
 
 export const SummarySectionTitle = styled.div<{
   color: "blue" | "orange" | "grey";
+  hasAction?: boolean;
 }>`
   ${typography.sizeCSS.title};
   margin-bottom: 12px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
 
   span {
     color: ${({ color }) => {
@@ -107,6 +111,16 @@ export const SummarySectionTitle = styled.div<{
       return palette.solid.darkgrey;
     }};
   }
+
+  cursor: ${({ hasAction }) => hasAction && "pointer"};
+`;
+
+export const CollapseSign = styled.div`
+  margin-left: auto;
+  ${typography.sizeCSS.large};
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const SummarySectionLine = styled.div`
