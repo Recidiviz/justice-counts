@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import { NotFound } from "../../pages/NotFound";
@@ -32,17 +32,8 @@ const ReviewReportDataEntry = () => {
   const agencyId = Number(params.agencyId);
   const { reportStore, formStore, datapointsStore } = useStore();
 
-  const [loadingError, setLoadingError] = useState<string | undefined>(
-    undefined
-  );
-
   useEffect(() => {
     const initialize = async () => {
-      const result = await reportStore.getReport(reportID);
-      formStore.validatePreviouslySavedInputs(reportID);
-      if (result instanceof Error) {
-        return setLoadingError(result.message);
-      }
       formStore.validatePreviouslySavedInputs(reportID);
       await datapointsStore.getDatapoints(agencyId);
     };
@@ -51,16 +42,12 @@ const ReviewReportDataEntry = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (reportStore.loadingReportData || datapointsStore.loading)
+  if (datapointsStore.loading)
     return (
       <PageWrapper>
         <Loading />
       </PageWrapper>
     );
-
-  if (loadingError) {
-    return <PageWrapper>Error: {loadingError}</PageWrapper>;
-  }
 
   if (
     reportStore.reportOverviews[reportID].agency_id !== Number(params.agencyId)
