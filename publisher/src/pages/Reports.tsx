@@ -162,13 +162,7 @@ const Reports: React.FC = () => {
   const publishOrUnpublishMultipleReports = async (
     status: "PUBLISHED" | "DRAFT"
   ) => {
-    const updatedReports = selectedRecords.map((reportID) => {
-      return {
-        report_id: reportID,
-        metrics: [],
-      };
-    });
-    reportStore.updateMultipleReports(updatedReports, agencyId, status);
+    reportStore.updateMultipleReportStatuses(selectedRecords, agencyId, status);
   };
 
   useEffect(() => {

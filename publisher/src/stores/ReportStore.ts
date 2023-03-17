@@ -199,8 +199,8 @@ class ReportStore {
     }
   }
 
-  async updateMultipleReports(
-    reports: { report_id: number; metrics: UpdatedMetricsValues[] }[],
+  async updateMultipleReportStatuses(
+    report_ids: number[],
     currentAgencyId: string,
     status: ReportStatus
   ): Promise<Response | Error | undefined> {
@@ -208,10 +208,8 @@ class ReportStore {
       const response = (await this.api.request({
         path: `/api/reports`,
         body: {
+          report_ids,
           status,
-          // time_loaded:
-          //   this.reportOverviews[reportID].last_modified_at_timestamp,
-          reports,
           agency_id: parseInt(currentAgencyId),
         },
         method: "PATCH",
