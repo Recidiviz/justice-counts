@@ -159,9 +159,10 @@ class ReportStore {
   ): Promise<void | Error> {
     try {
       const response = (await this.api.request({
-        path: `/api/reports/multiple`,
-        body: { report_ids: reportIDs, agency_id: parseInt(currentAgencyId) },
-        method: "POST",
+        path: `/api/reports?agency_id=${parseInt(
+          currentAgencyId
+        )}&report_ids=${reportIDs.join(",")}`,
+        method: "GET",
       })) as Response;
 
       if (response.status !== 200) {
