@@ -200,7 +200,7 @@ class ReportStore {
   }
 
   async updateMultipleReportStatuses(
-    report_ids: number[],
+    reportIDs: number[],
     currentAgencyId: string,
     status: ReportStatus
   ): Promise<Response | Error | undefined> {
@@ -208,7 +208,7 @@ class ReportStore {
       const response = (await this.api.request({
         path: `/api/reports`,
         body: {
-          report_ids,
+          report_ids: reportIDs,
           status,
           agency_id: parseInt(currentAgencyId),
         },
