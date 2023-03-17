@@ -180,8 +180,6 @@ class ReportStore {
         path: `/api/reports/${reportID}`,
         body: {
           status,
-          time_loaded:
-            this.reportOverviews[reportID].last_modified_at_timestamp,
           metrics: updatedMetrics,
         },
         method: "PATCH",
