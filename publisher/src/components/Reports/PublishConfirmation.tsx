@@ -265,14 +265,6 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
         )
           guidanceStore.updateTopicStatus("PUBLISH_DATA", true);
         setIsSuccessModalOpen(true);
-        showToast({
-          message: `Congratulations! You published the ${printReportTitle(
-            reportStore.reportOverviews[reportID].month,
-            reportStore.reportOverviews[reportID].year,
-            reportStore.reportOverviews[reportID].frequency
-          )} ${REPORT_LOWERCASE}!`,
-          check: true,
-        });
         const agencyID = reportStore.reportOverviews[reportID]?.agency_id;
         const agency = userStore.userAgenciesById[agencyID];
         trackReportPublished(reportID, finalMetricsToPublish, agency);
@@ -297,6 +289,10 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
     setMetricsPreview(enabledMetrics);
     setIsPublishable(publishable);
   }, [formStore, reportID]);
+
+  useEffect(() => {
+    document.body.style.overflow = isSuccessModalOpen ? "hidden" : "unset";
+  }, [isSuccessModalOpen]);
 
   const renderMetric = (metricKey: string, metricName: string) => {
     const reportMetricDatapoints = datapointsStore.rawDatapointsByMetric[
