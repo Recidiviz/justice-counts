@@ -176,7 +176,7 @@ class ReportStore {
       runInAction(() => {
         reports.forEach((report) => {
           const { metrics, ...overview } = report;
-          this.reportOverviews[report.id] = overview;
+          // this.reportOverviews[report.id] = overview;
           const metricsBySystem = groupBy(
             metrics,
             (metric) => metric.system.key
