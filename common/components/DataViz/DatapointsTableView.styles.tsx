@@ -141,6 +141,7 @@ export const DatapointsTableDetailsRowBody = styled.tbody``;
 export const DatapointsTableDetailsRow = styled.tr``;
 export const DatapointsTableDetailsRowHeader = styled.th<{
   useDataPageStyles?: boolean;
+  isColHovered?: boolean;
 }>`
   ${typography.sizeCSS.normal}
   padding-left: 15px;
@@ -149,11 +150,16 @@ export const DatapointsTableDetailsRowHeader = styled.th<{
   padding-top: 8px;
   text-align: center;
 
-  color: ${palette.solid.darkgrey};
+  color: ${({ useDataPageStyles, isColHovered }) => {
+    if (useDataPageStyles) return palette.solid.darkgrey;
+    return isColHovered ? palette.solid.white : palette.solid.darkgrey;
+  }};
 
   span {
-    background-color: ${({ useDataPageStyles }) =>
-      useDataPageStyles ? palette.solid.white : palette.solid.offwhite};
+    background-color: ${({ useDataPageStyles, isColHovered }) => {
+      if (useDataPageStyles) return palette.solid.white;
+      return isColHovered ? palette.solid.blue : palette.solid.offwhite;
+    }};
     padding: 5px 8px;
     font-weight: 700;
   }

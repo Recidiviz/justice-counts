@@ -207,6 +207,7 @@ export const DatapointsTableView: React.FC<{
                       useDataPageStyles={useDataPageStyles}
                       onMouseEnter={() => setHoveredColKey(index)}
                       onMouseLeave={() => setHoveredColKey(null)}
+                      isColHovered={index === hoveredColKey}
                     >
                       <span>{formatDateShortMonthYear(date)}</span>
                     </DatapointsTableDetailsRowHeader>
