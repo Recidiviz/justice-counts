@@ -52,9 +52,11 @@ export const ReviewPublishModalButton = styled(ReportActionsButton)`
   ${typography.sizeCSS.normal};
 `;
 
-export const ReviewPublishModal: React.FC<{ recordsCount?: number }> = ({
-  recordsCount,
-}) => {
+export const ReviewPublishModal: React.FC<{
+  systemKey?: string;
+  metricKey?: string;
+  recordsCount?: number;
+}> = ({ systemKey, metricKey, recordsCount }) => {
   const { agencyId } = useParams();
   const navigate = useNavigate();
   return (
@@ -79,7 +81,11 @@ export const ReviewPublishModal: React.FC<{ recordsCount?: number }> = ({
           </ReviewPublishModalButton>
           <ReviewPublishModalButton
             buttonColor="blue"
-            onClick={() => navigate(`/agency/${agencyId}/data`)}
+            onClick={() =>
+              navigate(
+                `/agency/${agencyId}/data?system=${systemKey?.toLowerCase()}&metric=${metricKey?.toLowerCase()}`
+              )
+            }
           >
             Go to Data
           </ReviewPublishModalButton>

@@ -309,9 +309,14 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
     );
   };
 
+  const systemKey = metricsPreview ? metricsPreview[0].system.key : undefined;
+  const metricKey = metricsPreview ? metricsPreview[0].key : undefined;
+
   return (
     <>
-      {isSuccessModalOpen && <ReviewPublishModal />}
+      {isSuccessModalOpen && (
+        <ReviewPublishModal systemKey={systemKey} metricKey={metricKey} />
+      )}
       <PublishConfirmationTopBar transparent={false}>
         <LogoContainer
           onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
