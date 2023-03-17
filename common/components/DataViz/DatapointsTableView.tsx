@@ -149,7 +149,7 @@ export const DatapointsTableView: React.FC<{
             <DatapointsTableNamesTableBody>
               {!useDataPageStyles && (
                 <DatapointsTableNamesRow>
-                  <DatapointsMetricNameCell>
+                  <DatapointsMetricNameCell title={metricName}>
                     {metricName}
                   </DatapointsMetricNameCell>
                 </DatapointsTableNamesRow>
@@ -177,6 +177,7 @@ export const DatapointsTableView: React.FC<{
                       .map((dimensionName) => (
                         <DatapointsTableNamesRow key={dimensionName}>
                           <DatapointsTableNamesCell
+                            title={dimensionName}
                             onMouseEnter={() => setHoveredRowKey(dimensionName)}
                             onMouseLeave={() => setHoveredRowKey(null)}
                           >
