@@ -57,7 +57,9 @@ const BulkActionReviewConfirmation: React.FC<{
   const { agencyId } = useParams();
   const navigate = useNavigate();
   const { reportStore, datapointsStore } = useStore();
-  const [isRecordsCollapsed, setIsRecordsCollapsed] = useState(false);
+  const [isRecordsCollapsed, setIsRecordsCollapsed] = useState(
+    () => recordsIds.length <= 10
+  );
 
   const selectedReports = recordsIds.map(
     (recordID) => reportStore.reportOverviews[recordID]
