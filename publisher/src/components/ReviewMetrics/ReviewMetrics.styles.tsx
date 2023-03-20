@@ -45,7 +45,7 @@ export const MainPanel = styled.div`
     padding: ${40 + HEADER_BAR_HEIGHT}px 24px 128px 24px;
     display: flex;
     flex-direction: column;
-    gap: 64px;
+    gap: 80px;
   }
 `;
 
@@ -53,7 +53,7 @@ export const Summary = styled.div`
   position: fixed;
   top: ${40 + HEADER_BAR_HEIGHT}px;
   left: 0;
-  max-height: calc(100vh - ${40 + HEADER_BAR_HEIGHT + 156}px);
+  max-height: calc(100vh - ${40 + HEADER_BAR_HEIGHT + 116}px);
   padding-left: 24px;
   width: 500px;
   display: flex;
@@ -120,15 +120,16 @@ export const SummarySectionsContainer = styled.div`
 `;
 
 export const SummarySection = styled.div`
-  &:not(:nth-child(2)) {
-    padding-top: 30px;
-  }
   display: flex;
   flex-direction: column;
-  padding-bottom: 30px;
 
   &:not(:last-child) {
     border-bottom: 1px solid ${palette.highlight.grey3};
+    padding-bottom: 30px;
+  }
+
+  &:not(:nth-child(2)) {
+    padding-top: 30px;
   }
 `;
 
