@@ -17,6 +17,7 @@
 
 import {
   HEADER_BAR_HEIGHT,
+  MIN_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -48,6 +49,11 @@ export const ReportDataEntryWrapper = styled.div`
 export const ReviewWrapper = styled(ReportDataEntryWrapper)`
   display: block;
   align-items: start;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: flex;
+    align-items: center;
+  }
 `;
 
 export const PublishDataWrapper = styled.div`

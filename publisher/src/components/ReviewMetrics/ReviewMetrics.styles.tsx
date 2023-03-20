@@ -17,6 +17,7 @@
 
 import {
   HEADER_BAR_HEIGHT,
+  MIN_DESKTOP_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -39,6 +40,13 @@ export const MainPanel = styled.div`
   flex-direction: row;
   gap: 88px;
   overflow-x: hidden;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    padding: ${40 + HEADER_BAR_HEIGHT}px 24px 128px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+  }
 `;
 
 export const Summary = styled.div`
@@ -52,6 +60,13 @@ export const Summary = styled.div`
   flex-direction: column;
   background-color: ${palette.solid.white};
   overflow: hidden;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    position: static;
+    max-height: unset;
+    padding-left: unset;
+    width: 100%;
+  }
 `;
 
 export const Heading = styled.div`
