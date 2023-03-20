@@ -93,6 +93,21 @@ class ReportStore {
     return Object.values(this.metricsBySystem).flatMap((metric) => metric);
   }
 
+  storeMetricDetails(
+    reportID: number,
+    metrics: Metric[],
+    overview?: ReportOverview
+  ): void {
+    runInAction(() => {
+      if (overview) this.reportOverviews[reportID] = overview;
+      const metricsBySystem = groupBy(metrics, (metric) => metric.system.key);
+      this.reportMetricsBySystem[reportID] = metricsBySystem;
+      // ensure that the order of the metrics in reportMetricsBySystem
+      // matches the order of the metrics in reportMetrics
+      this.reportMetrics[reportID] = Object.values(metricsBySystem).flat();
+    });
+  }
+
   async getReportOverviews(agencyId: string): Promise<void | Error> {
     try {
       const response = (await this.api.request({
@@ -135,15 +150,7 @@ class ReportStore {
 
       const report = (await response.json()) as Report;
       const { metrics, ...overview } = report;
-
-      runInAction(() => {
-        this.reportOverviews[reportID] = overview;
-        const metricsBySystem = groupBy(metrics, (metric) => metric.system.key);
-        this.reportMetricsBySystem[reportID] = metricsBySystem;
-        // ensure that the order of the metrics in reportMetricsBySystem
-        // matches the order of the metrics in reportMetrics
-        this.reportMetrics[reportID] = Object.values(metricsBySystem).flat();
-      });
+      this.storeMetricDetails(reportID, metrics, overview);
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
     } finally {
@@ -173,19 +180,8 @@ class ReportStore {
 
       const reports = (await response.json()) as Report[];
 
-      runInAction(() => {
-        reports.forEach((report) => {
-          const { metrics, ...overview } = report;
-          // this.reportOverviews[report.id] = overview;
-          const metricsBySystem = groupBy(
-            metrics,
-            (metric) => metric.system.key
-          );
-          this.reportMetricsBySystem[report.id] = metricsBySystem;
-          // ensure that the order of the metrics in reportMetricsBySystem
-          // matches the order of the metrics in reportMetrics
-          this.reportMetrics[report.id] = Object.values(metricsBySystem).flat();
-        });
+      reports.forEach((report) => {
+        this.storeMetricDetails(report.id, report.metrics);
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);

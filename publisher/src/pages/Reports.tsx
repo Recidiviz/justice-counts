@@ -161,8 +161,6 @@ const Reports: React.FC = () => {
 
   useEffect(() => {
     const initialize = async () => {
-      reportStore.getMultipleReports([1877, 1878, 1879], agencyId);
-      // reportStore.getMultipleReports([], agencyId);
       reportStore.resetState();
       const result = await reportStore.getReportOverviews(agencyId);
       if (result instanceof Error) {
