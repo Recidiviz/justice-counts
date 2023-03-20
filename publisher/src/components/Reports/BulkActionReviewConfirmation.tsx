@@ -97,7 +97,7 @@ const BulkActionReviewConfirmation: React.FC<{
             type="border"
             onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
           >
-            Cancel
+            Exit Without Publishing
           </ConfirmationDialogueTopBarButton>
           {action === "publish" && (
             <ConfirmationDialogueTopBarButton type="green">
