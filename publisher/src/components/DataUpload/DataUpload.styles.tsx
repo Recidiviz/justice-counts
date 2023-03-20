@@ -78,6 +78,13 @@ export const DataUploadHeader = styled.div<{
   }
 `;
 
+export const DataUploadHeaderButtonsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  gap: 8px;
+`;
+
 export const Instructions = styled.div`
   height: 100%;
   padding: 103px;

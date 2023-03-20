@@ -23,7 +23,11 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import logoImg from "../assets/jc-logo-vector-new.svg";
-import { Button, DataUploadHeader } from "../DataUpload";
+import {
+  Button,
+  DataUploadHeader,
+  DataUploadHeaderButtonsContainer,
+} from "../DataUpload";
 import { UploadedMetric } from "../DataUpload/types";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
@@ -113,10 +117,16 @@ const ReviewMetrics: React.FC = observer(() => {
         >
           <Logo src={logoImg} alt="" />
         </LogoContainer>
-
-        <Button type="blue" onClick={() => setIsSuccessModalOpen(true)}>
-          Publish
-        </Button>
+        <DataUploadHeaderButtonsContainer>
+          <Button type="border" onClick={() => navigate(-1)}>
+            Cancel
+          </Button>
+          {filteredMetrics.length > 0 && (
+            <Button type="blue" onClick={() => setIsSuccessModalOpen(true)}>
+              Publish
+            </Button>
+          )}
+        </DataUploadHeaderButtonsContainer>
         {
           // TODO(#24): Add Publish button to publish multiple reports at once
         }
