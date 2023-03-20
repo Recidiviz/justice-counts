@@ -118,12 +118,23 @@ const ReviewMetrics: React.FC = observer(() => {
           <Logo src={logoImg} alt="" />
         </LogoContainer>
         <DataUploadHeaderButtonsContainer>
-          <Button type="border" onClick={() => navigate(-1)}>
-            Cancel
-          </Button>
-          {filteredMetrics.length > 0 && (
-            <Button type="blue" onClick={() => setIsSuccessModalOpen(true)}>
-              Publish
+          {filteredMetrics.length > 0 ? (
+            <>
+              <Button
+                type="border"
+                onClick={() =>
+                  navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)
+                }
+              >
+                Exit Without Publishing
+              </Button>
+              <Button type="blue" onClick={() => setIsSuccessModalOpen(true)}>
+                Publish
+              </Button>
+            </>
+          ) : (
+            <Button type="red" onClick={() => navigate(-1)}>
+              Close
             </Button>
           )}
         </DataUploadHeaderButtonsContainer>
