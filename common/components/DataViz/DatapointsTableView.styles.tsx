@@ -56,7 +56,7 @@ export const DatapointsTableNamesTable = styled.table`
 `;
 export const DatapointsTableNamesTableBody = styled.tbody``;
 export const DatapointsTableBottomBorder = styled.tr`
-  border-bottom: 1px solid ${palette.highlight.grey3};
+  height: 24px;
 `;
 export const DatapointsTableNamesRow = styled.tr``;
 export const DatapointsTableNamesCell = styled.td<{
