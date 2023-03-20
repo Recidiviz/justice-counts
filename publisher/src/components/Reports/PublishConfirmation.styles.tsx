@@ -54,6 +54,7 @@ export const PublishConfirmButton = styled(Button)<{ disabled: boolean }>`
   padding-left: 22px;
   background-color: ${({ disabled }) =>
     disabled ? palette.highlight.grey5 : palette.solid.green};
+  pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
   color: ${palette.solid.white};
 
   &:hover {

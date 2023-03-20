@@ -51,8 +51,7 @@ export const Summary = styled.div`
   display: flex;
   flex-direction: column;
   background-color: ${palette.solid.white};
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
 `;
 
 export const Heading = styled.div`
@@ -75,8 +74,8 @@ export const Heading = styled.div`
 `;
 
 export const HeadingGradient = styled.div`
-  position: fixed;
-  top: calc(308px + ${HEADER_BAR_HEIGHT}px);
+  position: sticky;
+  top: 0;
   left: 0;
   width: 484px;
   background: linear-gradient(
@@ -98,8 +97,17 @@ export const Subheading = styled.div`
   }
 `;
 
+export const SummarySectionsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+`;
+
 export const SummarySection = styled.div`
-  padding-top: 30px;
+  &:not(:nth-child(2)) {
+    padding-top: 30px;
+  }
   display: flex;
   flex-direction: column;
   padding-bottom: 30px;

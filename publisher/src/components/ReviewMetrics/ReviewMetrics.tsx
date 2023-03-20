@@ -42,6 +42,7 @@ import {
   Summary,
   SummarySection,
   SummarySectionLine,
+  SummarySectionsContainer,
   SummarySectionTitle,
 } from "./ReviewMetrics.styles";
 import { ReviewMetricsModal } from "./ReviewMetricsModal";
@@ -154,37 +155,39 @@ const ReviewMetrics: React.FC = observer(() => {
                 : "Uploaded file contains no metrics to review."}
             </span>
           </Heading>
-          {filteredMetrics.length > 0 && (
-            <SummarySection>
-              <HeadingGradient />
-              <SummarySectionTitle color="blue">
-                <span>{filteredMetrics.length}</span> Metric
-                {filteredMetrics.length > 1 ? "s" : ""}
-              </SummarySectionTitle>
-              {filteredMetrics.map((metric) => (
-                <SummarySectionLine key={metric.key}>
-                  <MetricStatusIcon src={blueCheck} alt="" />
-                  {metric.display_name}
-                </SummarySectionLine>
-              ))}
-            </SummarySection>
-          )}
-          {overwrites.length > 0 && (
-            <SummarySection>
-              <SummarySectionTitle color="orange">
-                <span>{overwrites.length}</span> Overwrite
-                {overwrites.length > 1 ? "s" : ""}
-              </SummarySectionTitle>
-              {overwrites.map(
-                ({ key, metricName, dimensionName, startDate }) => (
-                  <SummarySectionLine key={key}>
-                    {metricName}: {dimensionName}
-                    <span>({formatDateShortMonthYear(startDate)})</span>
+          <SummarySectionsContainer>
+            <HeadingGradient />
+            {filteredMetrics.length > 0 && (
+              <SummarySection>
+                <SummarySectionTitle color="blue">
+                  <span>{filteredMetrics.length}</span> Metric
+                  {filteredMetrics.length > 1 ? "s" : ""}
+                </SummarySectionTitle>
+                {filteredMetrics.map((metric) => (
+                  <SummarySectionLine key={metric.key}>
+                    <MetricStatusIcon src={blueCheck} alt="" />
+                    {metric.display_name}
                   </SummarySectionLine>
-                )
-              )}
-            </SummarySection>
-          )}
+                ))}
+              </SummarySection>
+            )}
+            {overwrites.length > 0 && (
+              <SummarySection>
+                <SummarySectionTitle color="orange">
+                  <span>{overwrites.length}</span> Overwrite
+                  {overwrites.length > 1 ? "s" : ""}
+                </SummarySectionTitle>
+                {overwrites.map(
+                  ({ key, metricName, dimensionName, startDate }) => (
+                    <SummarySectionLine key={key}>
+                      {metricName}: {dimensionName}
+                      <span>({formatDateShortMonthYear(startDate)})</span>
+                    </SummarySectionLine>
+                  )
+                )}
+              </SummarySection>
+            )}
+          </SummarySectionsContainer>
         </Summary>
         <MetricsPanel>
           {filteredMetrics.map((metric) => {

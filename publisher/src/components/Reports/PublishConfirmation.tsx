@@ -44,6 +44,7 @@ import {
   Summary,
   SummarySection,
   SummarySectionLine,
+  SummarySectionsContainer,
   SummarySectionTitle,
 } from "../ReviewMetrics/ReviewMetrics.styles";
 import { useCheckMetricForErrors } from "./hooks";
@@ -236,7 +237,7 @@ import { ReviewPublishModal } from "./ReviewPublishModal";
 const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
   const [isPublishable, setIsPublishable] = useState(false);
   const [metricsPreview, setMetricsPreview] = useState<MetricWithErrors[]>();
-  const [isRecordsCollapsed, setIsRecordsCollapsed] = useState(false);
+  const [isRecordsCollapsed, setIsRecordsCollapsed] = useState(true);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const { formStore, reportStore, userStore, guidanceStore, datapointsStore } =
     useStore();
@@ -386,9 +387,9 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
             </span>
           </Heading>
           {metricsPreview && metricsPreview.length > 0 && (
-            <>
+            <SummarySectionsContainer>
+              <HeadingGradient />
               <SummarySection>
-                <HeadingGradient />
                 <SummarySectionTitle color="blue">
                   <span>{metricsPreview.length}</span> Metric
                   {metricsPreview.length > 1 ? "s" : ""}
@@ -431,7 +432,7 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
                   </SummarySectionLine>
                 )}
               </SummarySection>
-            </>
+            </SummarySectionsContainer>
           )}
         </Summary>
         <MetricsPanel>
