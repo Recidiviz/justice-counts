@@ -35,6 +35,7 @@ import { Logo, LogoContainer } from "../Header";
 import {
   CollapseSign,
   Heading,
+  HeadingGradient,
   MetricsPanel,
   MetricStatusIcon,
   SectionContainer,
@@ -139,46 +140,42 @@ const BulkActionReviewConfirmation: React.FC<{
               </>
             )}
           </Heading>
-
-          <>
-            <SummarySection>
-              <SummarySectionTitle color="blue">
-                <span>{enabledMetrics.length}</span> Metric
-                {enabledMetrics.length > 1 ? "s" : ""}
-              </SummarySectionTitle>
-              {enabledMetrics.map((metric) => {
-                return (
-                  <SummarySectionLine key={metric.key}>
-                    <MetricStatusIcon src={checkIcon} alt="" />
-                    {metric.display_name}
-                  </SummarySectionLine>
-                );
-              })}
-            </SummarySection>
-            <SummarySection>
-              <SummarySectionTitle
-                color="grey"
-                hasAction
-                onClick={() => setIsRecordsCollapsed(!isRecordsCollapsed)}
-              >
-                <span>{recordsIds.length}</span>{" "}
-                {recordsIds.length > 1
-                  ? REPORTS_CAPITALIZED
-                  : REPORT_CAPITALIZED}
-                <CollapseSign>{isRecordsCollapsed ? "-" : "+"}</CollapseSign>
-              </SummarySectionTitle>
-              {isRecordsCollapsed &&
-                selectedReports.map((report) => (
-                  <SummarySectionLine key={report.id}>
-                    {printReportTitle(
-                      report.month,
-                      report.year,
-                      report.frequency
-                    )}
-                  </SummarySectionLine>
-                ))}
-            </SummarySection>
-          </>
+          <SummarySection>
+            <HeadingGradient />
+            <SummarySectionTitle color="blue">
+              <span>{enabledMetrics.length}</span> Metric
+              {enabledMetrics.length > 1 ? "s" : ""}
+            </SummarySectionTitle>
+            {enabledMetrics.map((metric) => {
+              return (
+                <SummarySectionLine key={metric.key}>
+                  <MetricStatusIcon src={checkIcon} alt="" />
+                  {metric.display_name}
+                </SummarySectionLine>
+              );
+            })}
+          </SummarySection>
+          <SummarySection>
+            <SummarySectionTitle
+              color="grey"
+              hasAction
+              onClick={() => setIsRecordsCollapsed(!isRecordsCollapsed)}
+            >
+              <span>{recordsIds.length}</span>{" "}
+              {recordsIds.length > 1 ? REPORTS_CAPITALIZED : REPORT_CAPITALIZED}
+              <CollapseSign>{isRecordsCollapsed ? "-" : "+"}</CollapseSign>
+            </SummarySectionTitle>
+            {isRecordsCollapsed &&
+              selectedReports.map((report) => (
+                <SummarySectionLine key={report.id}>
+                  {printReportTitle(
+                    report.month,
+                    report.year,
+                    report.frequency
+                  )}
+                </SummarySectionLine>
+              ))}
+          </SummarySection>
         </Summary>
         <MetricsPanel>
           {enabledMetrics.map((metric) => {

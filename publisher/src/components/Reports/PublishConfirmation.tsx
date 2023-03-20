@@ -37,6 +37,7 @@ import { Logo, LogoContainer } from "../Header";
 import {
   CollapseSign,
   Heading,
+  HeadingGradient,
   MetricsPanel,
   MetricStatusIcon,
   SectionContainer,
@@ -387,6 +388,7 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
           {metricsPreview && metricsPreview.length > 0 && (
             <>
               <SummarySection>
+                <HeadingGradient />
                 <SummarySectionTitle color="blue">
                   <span>{metricsPreview.length}</span> Metric
                   {metricsPreview.length > 1 ? "s" : ""}

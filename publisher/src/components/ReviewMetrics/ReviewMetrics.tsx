@@ -30,6 +30,7 @@ import { Logo, LogoContainer } from "../Header";
 import {
   Container,
   Heading,
+  HeadingGradient,
   MainPanel,
   MetricsPanel,
   MetricStatusIcon,
@@ -134,6 +135,7 @@ const ReviewMetrics: React.FC = observer(() => {
           </Heading>
           {filteredMetrics.length > 0 && (
             <SummarySection>
+              <HeadingGradient />
               <SummarySectionTitle color="blue">
                 <span>{filteredMetrics.length}</span> Metric
                 {filteredMetrics.length > 1 ? "s" : ""}

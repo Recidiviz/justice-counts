@@ -45,24 +45,26 @@ export const Summary = styled.div`
   position: fixed;
   top: ${40 + HEADER_BAR_HEIGHT}px;
   left: 0;
-  max-height: calc(100vh - ${40 + HEADER_BAR_HEIGHT + 200}px);
+  max-height: calc(100vh - ${40 + HEADER_BAR_HEIGHT + 156}px);
   padding-left: 24px;
   width: 500px;
   display: flex;
   flex-direction: column;
-  gap: 30px;
   background-color: ${palette.solid.white};
-  z-index: 2;
   overflow-y: auto;
+  overflow-x: hidden;
 `;
 
 export const Heading = styled.div`
   display: flex;
+  position: sticky;
+  top: 0;
   flex-direction: column;
-  gap: 20px;
   ${typography.sizeCSS.headline};
+  background-color: ${palette.solid.white};
 
   span {
+    margin-top: 20px;
     ${typography.sizeCSS.medium};
 
     a {
@@ -70,6 +72,19 @@ export const Heading = styled.div`
       text-decoration: none;
     }
   }
+`;
+
+export const HeadingGradient = styled.div`
+  position: fixed;
+  top: calc(308px + ${HEADER_BAR_HEIGHT}px);
+  left: 0;
+  width: 484px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0.4009978991596639) 100%
+  );
+  min-height: 30px;
 `;
 
 export const Subheading = styled.div`
@@ -84,6 +99,7 @@ export const Subheading = styled.div`
 `;
 
 export const SummarySection = styled.div`
+  padding-top: 30px;
   display: flex;
   flex-direction: column;
   padding-bottom: 30px;
@@ -140,7 +156,7 @@ export const MetricsPanel = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  overflow-x: auto;
+  overflow-x: hidden;
 `;
 
 export const SectionContainer = styled.div`
