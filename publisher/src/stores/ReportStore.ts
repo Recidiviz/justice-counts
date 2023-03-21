@@ -180,8 +180,6 @@ class ReportStore {
         path: `/api/reports/${reportID}`,
         body: {
           status,
-          time_loaded:
-            this.reportOverviews[reportID].last_modified_at_timestamp,
           metrics: updatedMetrics,
         },
         method: "PATCH",
@@ -191,6 +189,39 @@ class ReportStore {
         /** Update the editor details (editors & last modified details) in real time within the report after autosave. */
         const report = (await response.json()) as Report;
         this.reportOverviews[report.id] = report;
+      }
+
+      return response;
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
+  async updateMultipleReportStatuses(
+    reportIDs: number[],
+    currentAgencyId: string,
+    status: ReportStatus
+  ): Promise<Response | Error | undefined> {
+    try {
+      const response = (await this.api.request({
+        path: `/api/reports`,
+        body: {
+          report_ids: reportIDs,
+          status,
+          agency_id: parseInt(currentAgencyId),
+        },
+        method: "PATCH",
+      })) as Response;
+
+      if (response.status === 200) {
+        /** Update the editor details (editors & last modified details) in real time within the report after autosave. */
+        const reportsList = (await response.json()) as Report[];
+
+        runInAction(() => {
+          reportsList.forEach((report) => {
+            this.reportOverviews[report.id] = report;
+          });
+        });
       }
 
       return response;

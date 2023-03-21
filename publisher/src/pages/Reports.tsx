@@ -159,6 +159,12 @@ const Reports: React.FC = () => {
     }
   };
 
+  const publishOrUnpublishMultipleReports = async (
+    status: "PUBLISHED" | "DRAFT"
+  ) => {
+    reportStore.updateMultipleReportStatuses(selectedRecords, agencyId, status);
+  };
+
   useEffect(() => {
     const initialize = async () => {
       reportStore.resetState();
@@ -509,6 +515,31 @@ const Reports: React.FC = () => {
                             }
                           >
                             Review and Unpublish
+                          </ReportActionsButton>
+                        )}
+                      {bulkAction === "publish" && selectedRecords.length > 0 && (
+                        <ReportActionsButton
+                          buttonColor="green"
+                          onClick={() => {
+                            clearAllSelectedRecords();
+                            clearBulkAction();
+                            publishOrUnpublishMultipleReports("PUBLISHED");
+                          }}
+                        >
+                          Review and Publish
+                        </ReportActionsButton>
+                      )}
+                      {bulkAction === "unpublish" &&
+                        selectedRecords.length > 0 && (
+                          <ReportActionsButton
+                            buttonColor="orange"
+                            onClick={() => {
+                              clearAllSelectedRecords();
+                              clearBulkAction();
+                              publishOrUnpublishMultipleReports("DRAFT");
+                            }}
+                          >
+                            Unpublish
                           </ReportActionsButton>
                         )}
                     </>
