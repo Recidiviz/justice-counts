@@ -48,7 +48,7 @@ import {
 } from "./ReviewMetrics.styles";
 import { ReviewMetricsModal } from "./ReviewMetricsModal";
 
-type Overwrite = {
+type MetricOverwrites = {
   key: number;
   metricName: string;
   dimensionName: string;
@@ -84,12 +84,12 @@ const ReviewMetrics: React.FC = observer(() => {
     }))
     .filter((metric) => metric.datapoints.length > 0);
 
-  const overwrites: Overwrite[] = [];
+  const overwrites: MetricOverwrites[] = [];
 
   filteredMetrics.forEach((metric) => {
     metric.datapoints.forEach((dp) => {
       if (dp.old_value !== null) {
-        const overwriteData: Overwrite = {
+        const overwriteData: MetricOverwrites = {
           key: dp.id,
           metricName: dp.metric_display_name || "",
           dimensionName: dp.dimension_display_name || "",
