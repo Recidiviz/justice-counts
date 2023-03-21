@@ -26,6 +26,7 @@ import styled from "styled-components/macro";
 import { DataUploadContainer } from "../DataUpload";
 
 export const MAIN_PANEL_MAX_WIDTH = 864;
+export const REVIEW_SUMMARY_DESKTOP_TOP_PADDING = 40 + HEADER_BAR_HEIGHT;
 
 export const Container = styled(DataUploadContainer)`
   display: flex;
@@ -35,14 +36,14 @@ export const Container = styled(DataUploadContainer)`
 
 export const MainPanel = styled.div`
   max-width: 100%;
-  padding: ${40 + HEADER_BAR_HEIGHT}px 0 128px 612px;
+  padding: ${REVIEW_SUMMARY_DESKTOP_TOP_PADDING}px 0 128px 612px;
   display: flex;
   flex-direction: row;
   gap: 88px;
   overflow-x: hidden;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    padding: ${40 + HEADER_BAR_HEIGHT}px 24px 128px 24px;
+    padding: ${REVIEW_SUMMARY_DESKTOP_TOP_PADDING}px 24px 128px 24px;
     display: flex;
     flex-direction: column;
     gap: 80px;
@@ -51,13 +52,13 @@ export const MainPanel = styled.div`
 
 export const Summary = styled.div<{ isFooterVisible?: boolean }>`
   position: fixed;
-  top: ${40 + HEADER_BAR_HEIGHT}px;
+  top: ${REVIEW_SUMMARY_DESKTOP_TOP_PADDING}px;
   left: 0;
 
   max-height: ${({ isFooterVisible }) =>
     isFooterVisible
-      ? `calc(100vh - ${40 + HEADER_BAR_HEIGHT + 116}px)`
-      : `calc(100vh - ${40 + HEADER_BAR_HEIGHT + 8}px)`};
+      ? `calc(100vh - ${REVIEW_SUMMARY_DESKTOP_TOP_PADDING + 116}px)`
+      : `calc(100vh - ${REVIEW_SUMMARY_DESKTOP_TOP_PADDING + 8}px)`};
 
   padding-left: 24px;
   width: 500px;
