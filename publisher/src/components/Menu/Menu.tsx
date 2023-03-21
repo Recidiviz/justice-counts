@@ -295,40 +295,36 @@ const Menu: React.FC = () => {
           )}
 
         {/* Agencies Dropdown */}
-        {userStore.isJusticeCountsAdmin(agencyId) &&
-          userStore.userAgencies &&
-          userStore.userAgencies.length > 1 && (
-            <MenuItem>
-              <Dropdown>
-                <ExtendedDropdownToggle kind="borderless">
-                  Agencies
-                </ExtendedDropdownToggle>
-                <ExtendedDropdownMenu
-                  alignment={windowWidth > MIN_TABLET_WIDTH ? "right" : "left"}
-                >
-                  {userStore.userAgencies
-                    .slice()
-                    .sort((a, b) => a.name.localeCompare(b.name))
-                    .map((agency) => {
-                      return (
-                        <ExtendedDropdownMenuItem
-                          key={agency.id}
-                          onClick={() => {
-                            navigate(
-                              `/agency/${agency.id}/${pathWithoutAgency}`
-                            );
-                            handleCloseMobileMenu();
-                          }}
-                          highlight={agency.id === currentAgency?.id}
-                        >
-                          {agency.name}
-                        </ExtendedDropdownMenuItem>
-                      );
-                    })}
-                </ExtendedDropdownMenu>
-              </Dropdown>
-            </MenuItem>
-          )}
+        {userStore.userAgencies && userStore.userAgencies.length > 1 && (
+          <MenuItem>
+            <Dropdown>
+              <ExtendedDropdownToggle kind="borderless">
+                Agencies
+              </ExtendedDropdownToggle>
+              <ExtendedDropdownMenu
+                alignment={windowWidth > MIN_TABLET_WIDTH ? "right" : "left"}
+              >
+                {userStore.userAgencies
+                  .slice()
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((agency) => {
+                    return (
+                      <ExtendedDropdownMenuItem
+                        key={agency.id}
+                        onClick={() => {
+                          navigate(`/agency/${agency.id}/${pathWithoutAgency}`);
+                          handleCloseMobileMenu();
+                        }}
+                        highlight={agency.id === currentAgency?.id}
+                      >
+                        {agency.name}
+                      </ExtendedDropdownMenuItem>
+                    );
+                  })}
+              </ExtendedDropdownMenu>
+            </Dropdown>
+          </MenuItem>
+        )}
 
         {/* Settings */}
         {(hasCompletedOnboarding ||
