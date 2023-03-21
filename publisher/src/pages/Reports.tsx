@@ -504,7 +504,7 @@ const Reports: React.FC = () => {
                       {bulkAction === "unpublish" &&
                         selectedRecords.length > 0 && (
                           <ReportActionsButton
-                            buttonColor="blue"
+                            buttonColor="orange"
                             onClick={() =>
                               navigate("bulk-review", {
                                 state: {
@@ -517,31 +517,31 @@ const Reports: React.FC = () => {
                             Review and Unpublish
                           </ReportActionsButton>
                         )}
-                      {bulkAction === "publish" && selectedRecords.length > 0 && (
-                        <ReportActionsButton
-                          buttonColor="green"
-                          onClick={() => {
-                            clearAllSelectedRecords();
-                            clearBulkAction();
-                            publishOrUnpublishMultipleReports("PUBLISHED");
-                          }}
-                        >
-                          Review and Publish
-                        </ReportActionsButton>
-                      )}
-                      {bulkAction === "unpublish" &&
-                        selectedRecords.length > 0 && (
-                          <ReportActionsButton
-                            buttonColor="orange"
-                            onClick={() => {
-                              clearAllSelectedRecords();
-                              clearBulkAction();
-                              publishOrUnpublishMultipleReports("DRAFT");
-                            }}
-                          >
-                            Unpublish
-                          </ReportActionsButton>
-                        )}
+                      {/* {bulkAction === "publish" && selectedRecords.length > 0 && ( */}
+                      {/*  <ReportActionsButton */}
+                      {/*    buttonColor="green" */}
+                      {/*    onClick={() => { */}
+                      {/*      clearAllSelectedRecords(); */}
+                      {/*      clearBulkAction(); */}
+                      {/*      publishOrUnpublishMultipleReports("PUBLISHED"); */}
+                      {/*    }} */}
+                      {/*  > */}
+                      {/*    Review and Publish */}
+                      {/*  </ReportActionsButton> */}
+                      {/* )} */}
+                      {/* {bulkAction === "unpublish" && */}
+                      {/*  selectedRecords.length > 0 && ( */}
+                      {/*    <ReportActionsButton */}
+                      {/*      buttonColor="orange" */}
+                      {/*      onClick={() => { */}
+                      {/*        clearAllSelectedRecords(); */}
+                      {/*        clearBulkAction(); */}
+                      {/*        publishOrUnpublishMultipleReports("DRAFT"); */}
+                      {/*      }} */}
+                      {/*    > */}
+                      {/*      Unpublish */}
+                      {/*    </ReportActionsButton> */}
+                      {/*  )} */}
                     </>
                   )}
                 </ReportActions>
