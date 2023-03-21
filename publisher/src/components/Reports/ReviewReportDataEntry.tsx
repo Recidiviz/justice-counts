@@ -57,7 +57,6 @@ const ReviewReportDataEntry = () => {
 
   return (
     <ReviewWrapper>
-      {/* <PublishConfirmationSummaryPanel reportID={reportID} /> */}
       <PublishConfirmation reportID={reportID} />
     </ReviewWrapper>
   );

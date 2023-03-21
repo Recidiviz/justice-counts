@@ -195,9 +195,6 @@ export const DatapointsTableView: React.FC<{
           </DatapointsTableNamesTable>
         </DatapointsTableNamesContainer>
         <DatapointsTableDetailsContainer useDataPageStyles={useDataPageStyles}>
-          {/* <DatapointsTableDetailsContainerOverlay> */}
-          {/*  <DatapointsTableDetailsContainerOverlayLeftGradient /> */}
-          {/* </DatapointsTableDetailsContainerOverlay> */}
           <DatapointsTableDetailScrollContainer>
             <DatapointsTableDetailsTable cellPadding="16px">
               <DatapointsTableDetailsRowHead>
