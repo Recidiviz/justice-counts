@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
+import { useIsFooterVisible } from "@justice-counts/common/hooks";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -59,6 +60,7 @@ const BulkActionReviewConfirmation: React.FC<{
   const { agencyId } = useParams();
   const navigate = useNavigate();
   const { reportStore, datapointsStore } = useStore();
+  const isFooterVisible = useIsFooterVisible();
   const [isRecordsCollapsed, setIsRecordsCollapsed] = useState(
     () => recordsIds.length <= 10
   );
@@ -113,7 +115,7 @@ const BulkActionReviewConfirmation: React.FC<{
         </ConfirmationButtonsContainer>
       </PublishConfirmationTopBar>
       <PublishConfirmationMainPanel>
-        <Summary>
+        <Summary isFooterVisible={isFooterVisible}>
           <Heading>
             {action === "publish" && (
               <>
@@ -191,5 +193,4 @@ const BulkActionReviewConfirmation: React.FC<{
     </>
   );
 };
-
 export default observer(BulkActionReviewConfirmation);

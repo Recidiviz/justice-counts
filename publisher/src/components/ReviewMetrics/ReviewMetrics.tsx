@@ -18,6 +18,7 @@
 import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { formatDateShortMonthYear } from "@justice-counts/common/components/DataViz/utils";
+import { useIsFooterVisible } from "@justice-counts/common/hooks";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -62,6 +63,7 @@ const ReviewMetrics: React.FC = observer(() => {
     fileName: string;
   };
   const navigate = useNavigate();
+  const isFooterVisible = useIsFooterVisible();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
   useEffect(() => {
@@ -144,7 +146,7 @@ const ReviewMetrics: React.FC = observer(() => {
         }
       </DataUploadHeader>
       <MainPanel>
-        <Summary>
+        <Summary isFooterVisible={isFooterVisible}>
           <Heading>
             {filteredMetrics.length > 0
               ? "Review Upload"

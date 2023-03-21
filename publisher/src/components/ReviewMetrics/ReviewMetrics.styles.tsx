@@ -49,11 +49,16 @@ export const MainPanel = styled.div`
   }
 `;
 
-export const Summary = styled.div`
+export const Summary = styled.div<{ isFooterVisible?: boolean }>`
   position: fixed;
   top: ${40 + HEADER_BAR_HEIGHT}px;
   left: 0;
-  max-height: calc(100vh - ${40 + HEADER_BAR_HEIGHT + 116}px);
+
+  max-height: ${({ isFooterVisible }) =>
+    isFooterVisible
+      ? `calc(100vh - ${40 + HEADER_BAR_HEIGHT + 116}px)`
+      : `calc(100vh - ${40 + HEADER_BAR_HEIGHT + 8}px)`};
+
   padding-left: 24px;
   width: 500px;
   display: flex;

@@ -17,6 +17,7 @@
 
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { showToast } from "@justice-counts/common/components/Toast";
+import { useIsFooterVisible } from "@justice-counts/common/hooks";
 import { MetricWithErrors } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -235,15 +236,17 @@ import { ReviewPublishModal } from "./ReviewPublishModal";
 // };
 
 const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
+  const { agencyId } = useParams();
+  const navigate = useNavigate();
+  const checkMetricForErrors = useCheckMetricForErrors(reportID);
+  const isFooterVisible = useIsFooterVisible();
   const [isPublishable, setIsPublishable] = useState(false);
   const [metricsPreview, setMetricsPreview] = useState<MetricWithErrors[]>();
   const [isRecordsCollapsed, setIsRecordsCollapsed] = useState(true);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const { formStore, reportStore, userStore, guidanceStore, datapointsStore } =
     useStore();
-  const { agencyId } = useParams();
-  const navigate = useNavigate();
-  const checkMetricForErrors = useCheckMetricForErrors(reportID);
+
   const report = reportStore.reportOverviews[reportID];
 
   const publishReport = async () => {
@@ -372,7 +375,7 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
       {/*  )} */}
       {/* </ConfirmationDialogueWrapper> */}
       <PublishConfirmationMainPanel>
-        <Summary>
+        <Summary isFooterVisible={isFooterVisible}>
           <Heading>
             Review & Publish
             <span>

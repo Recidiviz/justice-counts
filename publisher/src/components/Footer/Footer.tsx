@@ -36,7 +36,10 @@ const Footer = () => {
   const location = useLocation();
 
   return (
-    <FooterWrapper isPageDataUpload={location.pathname.endsWith("upload")}>
+    <FooterWrapper
+      id="footer"
+      isPageDataUpload={location.pathname.endsWith("upload")}
+    >
       <FooterTop>
         ©2022{" "}
         <FooterTopRight>
