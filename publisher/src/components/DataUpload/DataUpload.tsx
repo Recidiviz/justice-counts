@@ -161,8 +161,7 @@ export const DataUpload: React.FC = observer(() => {
   ): ErrorsWarningsMetrics => {
     const errorsWarningsAndSuccessfulMetrics = data.metrics.reduce(
       (acc, metric) => {
-        const isSuccessfulMetric = metric.datapoints.length > 0;
-        // console.log(isSuccessfulMetric);
+        const isSuccessfulMetric = metric.successful_ingest;
 
         /**
          * If there are no errors and only warnings, we still want to show the
