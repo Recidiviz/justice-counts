@@ -20,6 +20,11 @@ import { AgencySystems } from "@justice-counts/common/types";
 import React, { Fragment } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { useStore } from "../../stores";
+import { formatSystemName } from "../../utils";
+import { ReactComponent as ErrorIcon } from "../assets/error-icon.svg";
+import { ReactComponent as WarningIcon } from "../assets/warning-icon.svg";
+import { SYSTEM_LOWERCASE } from "../Global/constants";
 import {
   BlueText,
   Button,
@@ -41,11 +46,6 @@ import {
   Title,
   Wrapper,
 } from ".";
-import { useStore } from "../../stores";
-import { formatSystemName } from "../../utils";
-import { ReactComponent as ErrorIcon } from "../assets/error-icon.svg";
-import { ReactComponent as WarningIcon } from "../assets/warning-icon.svg";
-import { SYSTEM_LOWERCASE } from "../Global/constants";
 import {
   ErrorsWarningsMetrics,
   ErrorWarningMessage,
