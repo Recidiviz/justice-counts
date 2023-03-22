@@ -439,6 +439,12 @@ export const Message = styled.div`
   border-top: 1px solid ${palette.highlight.grey4};
 `;
 
+export const MessageDisabledMetric = styled.div`
+  width: 100%;
+  margin-top: 19px;
+  color: ${palette.highlight.grey9};
+`;
+
 export const SectionHeader = styled.div`
   ${typography.sizeCSS.title};
   margin: 10px 0;

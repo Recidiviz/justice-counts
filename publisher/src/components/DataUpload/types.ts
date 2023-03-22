@@ -28,6 +28,7 @@ export interface UploadedMetric {
   key: string;
   metric_errors: MetricErrors[];
   successful_ingest: boolean;
+  is_disabled: boolean;
 }
 
 export type ErrorWarningMessage = {
