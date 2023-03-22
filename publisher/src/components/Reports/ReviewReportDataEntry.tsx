@@ -49,9 +49,7 @@ const ReviewReportDataEntry = () => {
       </PageWrapper>
     );
 
-  if (
-    reportStore.reportOverviews[reportID].agency_id !== Number(params.agencyId)
-  ) {
+  if (reportStore.reportOverviews[reportID].agency_id !== agencyId) {
     return <NotFound />;
   }
 

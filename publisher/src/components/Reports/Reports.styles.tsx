@@ -153,6 +153,7 @@ export const ReportActionsButton = styled.div<{
     if (buttonColor === "red") return palette.solid.red;
     if (buttonColor === "green") return palette.solid.green;
     if (buttonColor === "orange") return palette.solid.orange;
+    if (buttonColor === "blue") return palette.solid.blue;
     return palette.solid.white;
   }};
 

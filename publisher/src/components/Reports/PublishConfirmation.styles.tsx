@@ -17,7 +17,7 @@
 
 import {
   HEADER_BAR_HEIGHT,
-  MIN_DESKTOP_WIDTH,
+  MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -77,7 +77,7 @@ export const ConfirmationDialogueTopBarButton = styled(Button)`
 export const PublishConfirmationMainPanel = styled(MainPanel)`
   padding-top: 40px;
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     padding: 40px;
   }
 `;
