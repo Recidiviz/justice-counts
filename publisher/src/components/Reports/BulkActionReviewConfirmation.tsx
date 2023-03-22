@@ -18,7 +18,7 @@
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { useIsFooterVisible } from "@justice-counts/common/hooks";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { RecordsBulkAction } from "../../pages/Reports";
@@ -52,18 +52,21 @@ import {
   PublishConfirmationMainPanel,
   PublishConfirmationTopBar,
 } from "./PublishConfirmation.styles";
+import { ReviewPublishModal } from "./ReviewPublishModal";
 
 const BulkActionReviewConfirmation: React.FC<{
   recordsIds: number[];
   action: RecordsBulkAction;
 }> = ({ recordsIds, action }) => {
-  const { agencyId } = useParams();
+  const params = useParams();
+  const agencyId = String(params.agencyId);
   const navigate = useNavigate();
   const { reportStore, datapointsStore } = useStore();
   const isFooterVisible = useIsFooterVisible();
   const [isRecordsCollapsed, setIsRecordsCollapsed] = useState(
     () => recordsIds.length <= 10
   );
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
   const selectedReports = recordsIds.map(
     (recordID) => reportStore.reportOverviews[recordID]
@@ -71,6 +74,26 @@ const BulkActionReviewConfirmation: React.FC<{
   const enabledMetrics = reportStore.agencyMetrics.filter(
     (metric) => metric.enabled
   );
+  const searchParamMetricKey = enabledMetrics[0].key;
+  const searchParamSystemKey = enabledMetrics[0].system.key;
+
+  const unpublishMultipleRecords = async () => {
+    await reportStore.updateMultipleReportStatuses(
+      recordsIds,
+      agencyId,
+      "DRAFT"
+    );
+    setIsSuccessModalOpen(true);
+  };
+
+  const publishMultipleRecords = async () => {
+    await reportStore.updateMultipleReportStatuses(
+      recordsIds,
+      agencyId,
+      "PUBLISHED"
+    );
+    setIsSuccessModalOpen(true);
+  };
 
   const renderMetric = (metricKey: string, metricName: string) => {
     const reportsMetricDatapoints = datapointsStore.rawDatapointsByMetric[
@@ -86,8 +109,20 @@ const BulkActionReviewConfirmation: React.FC<{
     );
   };
 
+  useEffect(() => {
+    document.body.style.overflow = isSuccessModalOpen ? "hidden" : "unset";
+  }, [isSuccessModalOpen]);
+
   return (
     <>
+      {isSuccessModalOpen && (
+        <ReviewPublishModal
+          systemKey={searchParamSystemKey}
+          metricKey={searchParamMetricKey}
+          recordsCount={recordsIds.length}
+          action={action}
+        />
+      )}
       <PublishConfirmationTopBar transparent={false}>
         <LogoContainer
           onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
@@ -103,12 +138,18 @@ const BulkActionReviewConfirmation: React.FC<{
             Exit Without Publishing
           </ConfirmationDialogueTopBarButton>
           {action === "publish" && (
-            <ConfirmationDialogueTopBarButton type="green">
+            <ConfirmationDialogueTopBarButton
+              type="green"
+              onClick={publishMultipleRecords}
+            >
               Publish
             </ConfirmationDialogueTopBarButton>
           )}
           {action === "unpublish" && (
-            <ConfirmationDialogueTopBarButton type="blue">
+            <ConfirmationDialogueTopBarButton
+              type="orange"
+              onClick={unpublishMultipleRecords}
+            >
               Unpublish
             </ConfirmationDialogueTopBarButton>
           )}

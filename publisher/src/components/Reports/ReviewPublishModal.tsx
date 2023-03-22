@@ -15,11 +15,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { typography } from "@justice-counts/common/components/GlobalStyles";
+import {
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components/macro";
 
+import { RecordsBulkAction } from "../../pages/Reports";
 import bigBlueCheck from "../assets/big-blue-check.png";
 import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 import {
@@ -38,7 +42,11 @@ export const ReviewPublishModalContainer = styled(RemoveRecordsModalContainer)`
 export const ReviewPublishModalIcon = styled.img`
   margin-bottom: 24px;
 `;
-export const ReviewPublishModalTitle = styled(RemoveRecordsModalTitle)``;
+export const ReviewPublishModalTitle = styled(RemoveRecordsModalTitle)`
+  span {
+    color: ${palette.solid.blue};
+  }
+`;
 export const ReviewPublishModalHint = styled(RemoveRecordsModalHint)`
   display: flex;
   text-align: center;
@@ -56,7 +64,8 @@ export const ReviewPublishModal: React.FC<{
   systemKey?: string;
   metricKey?: string;
   recordsCount?: number;
-}> = ({ systemKey, metricKey, recordsCount }) => {
+  action?: RecordsBulkAction;
+}> = ({ systemKey, metricKey, recordsCount, action }) => {
   const { agencyId } = useParams();
   const navigate = useNavigate();
   return (
@@ -64,14 +73,20 @@ export const ReviewPublishModal: React.FC<{
       <ReviewPublishModalContainer>
         <ReviewPublishModalIcon src={bigBlueCheck} alt="" />
         <ReviewPublishModalTitle>
-          {recordsCount
-            ? `${recordsCount} ${
-                recordsCount > 1 ? REPORTS_LOWERCASE : REPORT_LOWERCASE
-              } published!`
-            : "Data published!"}
+          {recordsCount && (
+            <>
+              <span>{recordsCount}</span>{" "}
+              {recordsCount > 1 ? REPORTS_LOWERCASE : REPORT_LOWERCASE}{" "}
+              {action === "publish" && "published!"}
+              {action === "unpublish" && "unpublished!"}
+            </>
+          )}
+          {!recordsCount && "Data published!"}
         </ReviewPublishModalTitle>
         <ReviewPublishModalHint>
-          You can view the published data in the Data tab.
+          {action === "unpublish"
+            ? `Data has been successfully unpublished.`
+            : "You can view the published data in the Data tab."}
         </ReviewPublishModalHint>
         <ReviewPublishModalButtonsContainer>
           <ReviewPublishModalButton

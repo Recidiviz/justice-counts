@@ -159,12 +159,6 @@ const Reports: React.FC = () => {
     }
   };
 
-  const publishOrUnpublishMultipleReports = async (
-    status: "PUBLISHED" | "DRAFT"
-  ) => {
-    reportStore.updateMultipleReportStatuses(selectedRecords, agencyId, status);
-  };
-
   useEffect(() => {
     const initialize = async () => {
       reportStore.resetState();

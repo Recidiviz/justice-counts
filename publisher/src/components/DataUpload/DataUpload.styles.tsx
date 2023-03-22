@@ -197,7 +197,8 @@ export type ButtonTypes =
   | "borderless"
   | "blue"
   | "green"
-  | "red";
+  | "red"
+  | "orange";
 
 export const Button = styled.div<{
   type?: ButtonTypes;
@@ -250,6 +251,12 @@ export const Button = styled.div<{
         color: ${palette.solid.white};
       `;
     }
+    if (type === "orange") {
+      return `
+        background: ${palette.solid.orange};
+        color: ${palette.solid.white};
+      `;
+    }
     return `
       background: ${palette.highlight.grey1};
       color: ${palette.highlight.grey10};
@@ -271,7 +278,12 @@ export const Button = styled.div<{
       if (type === "borderless") {
         return `opacity: 0.8;`;
       }
-      if (type === "blue" || type === "red" || type === "green") {
+      if (
+        type === "blue" ||
+        type === "red" ||
+        type === "green" ||
+        type === "orange"
+      ) {
         return `opacity: 0.9;`;
       }
       return `background: ${palette.highlight.grey2};`;
