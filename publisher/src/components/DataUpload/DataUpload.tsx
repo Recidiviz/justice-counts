@@ -25,6 +25,11 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { useStore } from "../../stores";
+import logoImg from "../assets/jc-logo-vector-new.svg";
+import { REPORTS_LOWERCASE } from "../Global/constants";
+import { Logo, LogoContainer } from "../Header";
+import { Loader } from "../Loading";
 import {
   Button,
   DataUploadContainer,
@@ -35,11 +40,6 @@ import {
   SystemSelection,
   UploadFile,
 } from ".";
-import { useStore } from "../../stores";
-import logoImg from "../assets/jc-logo-vector-new.svg";
-import { REPORTS_LOWERCASE } from "../Global/constants";
-import { Logo, LogoContainer } from "../Header";
-import { Loader } from "../Loading";
 import {
   DataUploadResponseBody,
   ErrorsWarningsMetrics,
