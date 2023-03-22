@@ -32,6 +32,7 @@ import {
 import { UploadedMetric } from "../DataUpload/types";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
+import { ReviewModal } from "../Reports/ReviewModal";
 import {
   Container,
   Heading,
@@ -46,7 +47,6 @@ import {
   SummarySectionsContainer,
   SummarySectionTitle,
 } from "./ReviewMetrics.styles";
-import { ReviewMetricsModal } from "./ReviewMetricsModal";
 
 type MetricOverwrites = {
   key: number;
@@ -113,7 +113,7 @@ const ReviewMetrics: React.FC = observer(() => {
 
   return (
     <Container>
-      {isSuccessModalOpen && <ReviewMetricsModal fileName={fileName} />}
+      {isSuccessModalOpen && <ReviewModal fileName={fileName} />}
       <DataUploadHeader transparent={false}>
         <LogoContainer
           onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}

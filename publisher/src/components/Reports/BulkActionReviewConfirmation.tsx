@@ -28,7 +28,6 @@ import checkIcon from "../assets/check-icon.svg";
 import logoImg from "../assets/jc-logo-vector-new.svg";
 import {
   REPORT_CAPITALIZED,
-  REPORT_LOWERCASE,
   REPORTS_CAPITALIZED,
   REPORTS_LOWERCASE,
 } from "../Global/constants";
@@ -52,7 +51,7 @@ import {
   PublishConfirmationMainPanel,
   PublishConfirmationTopBar,
 } from "./PublishConfirmation.styles";
-import { ReviewPublishModal } from "./ReviewPublishModal";
+import { ReviewModal } from "./ReviewModal";
 
 const BulkActionReviewConfirmation: React.FC<{
   recordsIds: number[];
@@ -116,7 +115,7 @@ const BulkActionReviewConfirmation: React.FC<{
   return (
     <>
       {isSuccessModalOpen && (
-        <ReviewPublishModal
+        <ReviewModal
           systemKey={searchParamSystemKey}
           metricKey={searchParamMetricKey}
           recordsCount={recordsIds.length}
@@ -162,7 +161,7 @@ const BulkActionReviewConfirmation: React.FC<{
               <>
                 Review & Publish
                 <span>
-                  Here’s a breakdown of data from the {REPORT_LOWERCASE}. Take a
+                  Here’s a breakdown of data you’ve selected to publish. Take a
                   moment to review these changes, then publish when ready. If
                   you believe there is an error, please contact the Justice
                   Counts team via{" "}

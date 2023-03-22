@@ -57,7 +57,7 @@ import {
   PublishConfirmationTopBar,
   PublishConfirmButton,
 } from "./PublishConfirmation.styles";
-import { ReviewPublishModal } from "./ReviewPublishModal";
+import { ReviewModal } from "./ReviewModal";
 
 const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
   const { agencyId } = useParams();
@@ -144,7 +144,7 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
   return (
     <>
       {isSuccessModalOpen && (
-        <ReviewPublishModal systemKey={systemKey} metricKey={metricKey} />
+        <ReviewModal systemKey={systemKey} metricKey={metricKey} />
       )}
       <PublishConfirmationTopBar transparent={false}>
         <LogoContainer

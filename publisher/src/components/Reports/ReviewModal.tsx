@@ -60,14 +60,25 @@ export const ReviewPublishModalButton = styled(ReportActionsButton)`
   ${typography.sizeCSS.normal};
 `;
 
-export const ReviewPublishModal: React.FC<{
+export const ReviewModal: React.FC<{
   systemKey?: string;
   metricKey?: string;
   recordsCount?: number;
+  fileName?: string;
   action?: RecordsBulkAction;
-}> = ({ systemKey, metricKey, recordsCount, action }) => {
+}> = ({ systemKey, metricKey, recordsCount, fileName, action }) => {
   const { agencyId } = useParams();
   const navigate = useNavigate();
+
+  const goToDataPage = () => {
+    if (systemKey && metricKey) {
+      navigate(
+        `/agency/${agencyId}/data?system=${systemKey.toLowerCase()}&metric=${metricKey.toLowerCase()}`
+      );
+    } else {
+      navigate(`/agency/${agencyId}/data`);
+    }
+  };
   return (
     <ReviewPublishModalWrapper>
       <ReviewPublishModalContainer>
@@ -81,7 +92,12 @@ export const ReviewPublishModal: React.FC<{
               {action === "unpublish" && "unpublished!"}
             </>
           )}
-          {!recordsCount && "Data published!"}
+          {fileName && (
+            <>
+              Data from <span>{fileName}</span> published!
+            </>
+          )}
+          {!recordsCount && !fileName && "Data published!"}
         </ReviewPublishModalTitle>
         <ReviewPublishModalHint>
           {action === "unpublish"
@@ -92,16 +108,9 @@ export const ReviewPublishModal: React.FC<{
           <ReviewPublishModalButton
             onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
           >
-            Back to Records
+            Go to Records
           </ReviewPublishModalButton>
-          <ReviewPublishModalButton
-            buttonColor="blue"
-            onClick={() =>
-              navigate(
-                `/agency/${agencyId}/data?system=${systemKey?.toLowerCase()}&metric=${metricKey?.toLowerCase()}`
-              )
-            }
-          >
+          <ReviewPublishModalButton buttonColor="blue" onClick={goToDataPage}>
             Go to Data
           </ReviewPublishModalButton>
         </ReviewPublishModalButtonsContainer>
