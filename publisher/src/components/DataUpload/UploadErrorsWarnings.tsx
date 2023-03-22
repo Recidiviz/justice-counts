@@ -20,11 +20,6 @@ import { AgencySystems } from "@justice-counts/common/types";
 import React, { Fragment } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { useStore } from "../../stores";
-import { formatSystemName } from "../../utils";
-import { ReactComponent as ErrorIcon } from "../assets/error-icon.svg";
-import { ReactComponent as WarningIcon } from "../assets/warning-icon.svg";
-import { SYSTEM_LOWERCASE } from "../Global/constants";
 import {
   BlueText,
   Button,
@@ -46,6 +41,11 @@ import {
   Title,
   Wrapper,
 } from ".";
+import { useStore } from "../../stores";
+import { formatSystemName } from "../../utils";
+import { ReactComponent as ErrorIcon } from "../assets/error-icon.svg";
+import { ReactComponent as WarningIcon } from "../assets/warning-icon.svg";
+import { SYSTEM_LOWERCASE } from "../Global/constants";
 import {
   ErrorsWarningsMetrics,
   ErrorWarningMessage,
@@ -211,22 +211,22 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
   const renderErrorWarningTitle = () => {
     return (
       <>
-        {/* Case 1: Only Warnings (which means all metrics were successfully ingested) */}
-        {errorCount === 0 && successfulMetricsCount > 0 && (
-          <>
-            <BlueText>{successfulMetricsCount}</BlueText> metric
-            {successfulMetricsCount === 0 || successfulMetricsCount > 1
-              ? "s"
-              : ""}{" "}
-            were saved successfully
-            {errorsWarningsAndSuccessfulMetrics.hasWarnings &&
-              " (with warnings)"}
-            .
-          </>
-        )}
+        {/* Section 1: Show number of metrics successfully ingested */}
+        {/* {errorCount === 0 && successfulMetricsCount > 0 && ( */}
+        <>
+          <BlueText>{successfulMetricsCount}</BlueText> metric
+          {successfulMetricsCount === 0 || successfulMetricsCount > 1
+            ? "s"
+            : ""}{" "}
+          were saved successfully
+          {errorsWarningsAndSuccessfulMetrics.hasWarnings && " (with warnings)"}
+          .
+        </>
+        {/* )} */}
 
-        {/* Case 2: Has Errors Only */}
-        {errorCount > 0 && successfulMetricsCount === 0 && (
+        {/* Section 2: Show number of metrics with errors */}
+        {/* {errorCount > 0 && successfulMetricsCount === 0 && ( */}
+        {errorCount > 0 && (
           <>
             We encountered <RedText>{errorCount}</RedText> error
             {errorCount > 1 ? "s" : ""}.
@@ -234,7 +234,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
         )}
 
         {/* Case 3: Has Errors and Successes */}
-        {errorCount > 0 && successfulMetricsCount > 0 && (
+        {/* {errorCount > 0 && successfulMetricsCount > 0 && (
           <>
             We encountered <RedText>{errorCount}</RedText> error
             {errorCount > 1 ? "s" : ""}, and{" "}
@@ -247,7 +247,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
               " (with warnings)"}
             .
           </>
-        )}
+        )} */}
       </>
     );
   };
