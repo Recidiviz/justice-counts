@@ -114,6 +114,10 @@ export const HeadingGradient = styled.div`
     rgba(255, 255, 255, 0.4009978991596639) 100%
   );
   min-height: 30px;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    min-height: 20px;
+  }
 `;
 
 export const Subheading = styled.div`
@@ -132,6 +136,10 @@ export const SummarySectionsContainer = styled.div`
   flex-direction: column;
   overflow-x: hidden;
   overflow-y: auto;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    overflow: hidden;
+  }
 `;
 
 export const SummarySection = styled.div`
@@ -141,22 +149,30 @@ export const SummarySection = styled.div`
   &:not(:last-child) {
     border-bottom: 1px solid ${palette.highlight.grey3};
     padding-bottom: 30px;
+
+    @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+      padding-bottom: 20px;
+    }
   }
 
   &:not(:nth-child(2)) {
     padding-top: 30px;
+
+    @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+      padding-top: 20px;
+    }
   }
 `;
 
 export const SummarySectionTitle = styled.div<{
   color: "blue" | "orange" | "grey";
-  hasAction?: boolean;
 }>`
   ${typography.sizeCSS.title};
   margin-bottom: 12px;
   display: flex;
   flex-direction: row;
   gap: 8px;
+  cursor: pointer;
 
   span {
     color: ${({ color }) => {
@@ -167,10 +183,16 @@ export const SummarySectionTitle = styled.div<{
     }};
   }
 
-  cursor: ${({ hasAction }) => hasAction && "pointer"};
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    ${typography.sizeCSS.medium};
+  }
 `;
 
-export const CollapseSign = styled.div`
+export const SectionExpandStatusSign = styled.div`
   margin-left: auto;
   ${typography.sizeCSS.large};
   display: flex;

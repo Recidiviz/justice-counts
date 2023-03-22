@@ -33,12 +33,12 @@ import {
 } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
 import {
-  CollapseSign,
   Heading,
   HeadingGradient,
   MetricsPanel,
   MetricStatusIcon,
   SectionContainer,
+  SectionExpandStatusSign,
   Summary,
   SummarySection,
   SummarySectionLine,
@@ -62,7 +62,9 @@ const BulkActionReviewConfirmation: React.FC<{
   const navigate = useNavigate();
   const { reportStore, datapointsStore } = useStore();
   const isFooterVisible = useIsFooterVisible();
-  const [isRecordsCollapsed, setIsRecordsCollapsed] = useState(
+  const [isMetricsSectionExpanded, setIsMetricsSectionExpanded] =
+    useState(true);
+  const [isRecordsSectionExpanded, setIsRecordsSectionExpanded] = useState(
     () => recordsIds.length <= 10
   );
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
@@ -186,32 +188,44 @@ const BulkActionReviewConfirmation: React.FC<{
           <SummarySectionsContainer>
             <HeadingGradient />
             <SummarySection>
-              <SummarySectionTitle color="blue">
+              <SummarySectionTitle
+                color="blue"
+                onClick={() =>
+                  setIsMetricsSectionExpanded(!isMetricsSectionExpanded)
+                }
+              >
                 <span>{enabledMetrics.length}</span> Metric
                 {enabledMetrics.length > 1 ? "s" : ""}
+                <SectionExpandStatusSign>
+                  {isMetricsSectionExpanded ? "-" : "+"}
+                </SectionExpandStatusSign>
               </SummarySectionTitle>
-              {enabledMetrics.map((metric) => {
-                return (
-                  <SummarySectionLine key={metric.key}>
-                    <MetricStatusIcon src={checkIcon} alt="" />
-                    {metric.display_name}
-                  </SummarySectionLine>
-                );
-              })}
+              {isMetricsSectionExpanded &&
+                enabledMetrics.map((metric) => {
+                  return (
+                    <SummarySectionLine key={metric.key}>
+                      <MetricStatusIcon src={checkIcon} alt="" />
+                      {metric.display_name}
+                    </SummarySectionLine>
+                  );
+                })}
             </SummarySection>
             <SummarySection>
               <SummarySectionTitle
                 color="grey"
-                hasAction
-                onClick={() => setIsRecordsCollapsed(!isRecordsCollapsed)}
+                onClick={() =>
+                  setIsRecordsSectionExpanded(!isRecordsSectionExpanded)
+                }
               >
                 <span>{recordsIds.length}</span>{" "}
                 {recordsIds.length > 1
                   ? REPORTS_CAPITALIZED
                   : REPORT_CAPITALIZED}
-                <CollapseSign>{isRecordsCollapsed ? "-" : "+"}</CollapseSign>
+                <SectionExpandStatusSign>
+                  {isRecordsSectionExpanded ? "-" : "+"}
+                </SectionExpandStatusSign>
               </SummarySectionTitle>
-              {isRecordsCollapsed &&
+              {isRecordsSectionExpanded &&
                 selectedReports.map((report) => (
                   <SummarySectionLine key={report.id}>
                     {printReportTitle(

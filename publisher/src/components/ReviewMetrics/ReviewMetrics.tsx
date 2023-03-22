@@ -41,6 +41,7 @@ import {
   MetricsPanel,
   MetricStatusIcon,
   SectionContainer,
+  SectionExpandStatusSign,
   Summary,
   SummarySection,
   SummarySectionLine,
@@ -65,6 +66,10 @@ const ReviewMetrics: React.FC = observer(() => {
   const navigate = useNavigate();
   const isFooterVisible = useIsFooterVisible();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isMetricsSectionExpanded, setIsMetricsSectionExpanded] =
+    useState(true);
+  const [isOverwritesSectionExpanded, setIsOverwritesSectionExpanded] =
+    useState(true);
 
   useEffect(() => {
     if (!uploadedMetrics) {
@@ -161,32 +166,50 @@ const ReviewMetrics: React.FC = observer(() => {
             <HeadingGradient />
             {filteredMetrics.length > 0 && (
               <SummarySection>
-                <SummarySectionTitle color="blue">
+                <SummarySectionTitle
+                  color="blue"
+                  onClick={() =>
+                    setIsMetricsSectionExpanded(!isMetricsSectionExpanded)
+                  }
+                >
                   <span>{filteredMetrics.length}</span> Metric
                   {filteredMetrics.length > 1 ? "s" : ""}
+                  <SectionExpandStatusSign>
+                    {isMetricsSectionExpanded ? "-" : "+"}
+                  </SectionExpandStatusSign>
                 </SummarySectionTitle>
-                {filteredMetrics.map((metric) => (
-                  <SummarySectionLine key={metric.key}>
-                    <MetricStatusIcon src={blueCheck} alt="" />
-                    {metric.display_name}
-                  </SummarySectionLine>
-                ))}
+                {isMetricsSectionExpanded &&
+                  filteredMetrics.map((metric) => (
+                    <SummarySectionLine key={metric.key}>
+                      <MetricStatusIcon src={blueCheck} alt="" />
+                      {metric.display_name}
+                    </SummarySectionLine>
+                  ))}
               </SummarySection>
             )}
             {overwrites.length > 0 && (
               <SummarySection>
-                <SummarySectionTitle color="orange">
+                <SummarySectionTitle
+                  color="orange"
+                  onClick={() =>
+                    setIsOverwritesSectionExpanded(!isOverwritesSectionExpanded)
+                  }
+                >
                   <span>{overwrites.length}</span> Overwrite
                   {overwrites.length > 1 ? "s" : ""}
+                  <SectionExpandStatusSign>
+                    {isOverwritesSectionExpanded ? "-" : "+"}
+                  </SectionExpandStatusSign>
                 </SummarySectionTitle>
-                {overwrites.map(
-                  ({ key, metricName, dimensionName, startDate }) => (
-                    <SummarySectionLine key={key}>
-                      {metricName}: {dimensionName}
-                      <span>({formatDateShortMonthYear(startDate)})</span>
-                    </SummarySectionLine>
-                  )
-                )}
+                {isOverwritesSectionExpanded &&
+                  overwrites.map(
+                    ({ key, metricName, dimensionName, startDate }) => (
+                      <SummarySectionLine key={key}>
+                        {metricName}: {dimensionName}
+                        <span>({formatDateShortMonthYear(startDate)})</span>
+                      </SummarySectionLine>
+                    )
+                  )}
               </SummarySection>
             )}
           </SummarySectionsContainer>

@@ -36,12 +36,12 @@ import {
 } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
 import {
-  CollapseSign,
   Heading,
   HeadingGradient,
   MetricsPanel,
   MetricStatusIcon,
   SectionContainer,
+  SectionExpandStatusSign,
   Summary,
   SummarySection,
   SummarySectionLine,
@@ -66,7 +66,10 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
   const isFooterVisible = useIsFooterVisible();
   const [isPublishable, setIsPublishable] = useState(false);
   const [metricsPreview, setMetricsPreview] = useState<MetricWithErrors[]>();
-  const [isRecordsCollapsed, setIsRecordsCollapsed] = useState(true);
+  const [isMetricsSectionExpanded, setIsMetricsSectionExpanded] =
+    useState(true);
+  const [isRecordsSectionExpanded, setIsRecordsSectionExpanded] =
+    useState(true);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const { formStore, reportStore, userStore, guidanceStore, datapointsStore } =
     useStore();
@@ -191,39 +194,53 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
             <SummarySectionsContainer>
               <HeadingGradient />
               <SummarySection>
-                <SummarySectionTitle color="blue">
+                <SummarySectionTitle
+                  color="blue"
+                  onClick={() =>
+                    setIsMetricsSectionExpanded(!isMetricsSectionExpanded)
+                  }
+                >
                   <span>{metricsPreview.length}</span> Metric
                   {metricsPreview.length > 1 ? "s" : ""}
+                  <SectionExpandStatusSign>
+                    {isMetricsSectionExpanded ? "-" : "+"}
+                  </SectionExpandStatusSign>
                 </SummarySectionTitle>
-                {metricsPreview.map((metric) => {
-                  const metricHasError = checkMetricForErrors(metric.key);
-                  const metricHasValidInput = Boolean(
-                    formStore.metricsValues?.[reportID]?.[metric.key]?.value
-                  );
-                  return (
-                    <SummarySectionLine key={metric.key}>
-                      {!metricHasError && metricHasValidInput && (
-                        <MetricStatusIcon src={checkIcon} alt="" />
-                      )}
-                      {metricHasError && (
-                        <MetricStatusIcon src={errorIcon} alt="" />
-                      )}
-                      {!metricHasError && !metricHasValidInput && <EmptyIcon />}
-                      {metric.display_name}
-                    </SummarySectionLine>
-                  );
-                })}
+                {isMetricsSectionExpanded &&
+                  metricsPreview.map((metric) => {
+                    const metricHasError = checkMetricForErrors(metric.key);
+                    const metricHasValidInput = Boolean(
+                      formStore.metricsValues?.[reportID]?.[metric.key]?.value
+                    );
+                    return (
+                      <SummarySectionLine key={metric.key}>
+                        {!metricHasError && metricHasValidInput && (
+                          <MetricStatusIcon src={checkIcon} alt="" />
+                        )}
+                        {metricHasError && (
+                          <MetricStatusIcon src={errorIcon} alt="" />
+                        )}
+                        {!metricHasError && !metricHasValidInput && (
+                          <EmptyIcon />
+                        )}
+                        {metric.display_name}
+                      </SummarySectionLine>
+                    );
+                  })}
               </SummarySection>
               <SummarySection>
                 <SummarySectionTitle
                   color="grey"
-                  hasAction
-                  onClick={() => setIsRecordsCollapsed(!isRecordsCollapsed)}
+                  onClick={() =>
+                    setIsRecordsSectionExpanded(!isRecordsSectionExpanded)
+                  }
                 >
                   <span>1</span> {REPORT_CAPITALIZED}{" "}
-                  <CollapseSign>{isRecordsCollapsed ? "-" : "+"}</CollapseSign>
+                  <SectionExpandStatusSign>
+                    {isRecordsSectionExpanded ? "-" : "+"}
+                  </SectionExpandStatusSign>
                 </SummarySectionTitle>
-                {isRecordsCollapsed && (
+                {isRecordsSectionExpanded && (
                   <SummarySectionLine>
                     {printReportTitle(
                       report.month,
