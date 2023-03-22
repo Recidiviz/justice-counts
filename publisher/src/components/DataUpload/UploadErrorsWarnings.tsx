@@ -221,7 +221,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
           </>
         )}
 
-        {/* Case 2: More than 1 metric was saved */}
+        {/* Case 2: 1 or more metrics were saved */}
         {successfulMetricsCount > 0 && (
           <>
             <BlueText>{successfulMetricsCount}</BlueText> metric
