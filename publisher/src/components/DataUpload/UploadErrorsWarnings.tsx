@@ -97,10 +97,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
             <SectionHeader>Alerts</SectionHeader>
             {errorsWarningsAndSuccessfulMetrics.errorWarningMetrics.map(
               (metric) => (
-                <Message
-                  key={metric.display_name}
-                  enabled={!metric.is_disabled}
-                >
+                <Message key={metric.display_name} enabled={metric.enabled}>
                   <MetricTitle>{metric.display_name}</MetricTitle>
                   {metric.metric_errors
                     .sort(sortMetricLevelErrorsBeforeSheetLevelErrors)
@@ -170,7 +167,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
             <SectionHeader>Saved Metrics</SectionHeader>
             {errorsWarningsAndSuccessfulMetrics.successfulMetrics.map(
               (metric) => (
-                <Message key={metric.key} enabled={!metric.is_disabled}>
+                <Message key={metric.key} enabled={metric.enabled}>
                   <MetricTitle>
                     <CheckIcon src={checkIcon} alt="" />
                     {metric.display_name}

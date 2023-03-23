@@ -27,7 +27,7 @@ export interface UploadedMetric {
   display_name: string;
   key: string;
   metric_errors: MetricErrors[];
-  is_disabled: boolean;
+  enabled: boolean;
 }
 
 export type ErrorWarningMessage = {
