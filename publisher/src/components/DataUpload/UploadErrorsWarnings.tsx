@@ -102,7 +102,6 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
                   enabled={!metric.is_disabled}
                 >
                   <MetricTitle>{metric.display_name}</MetricTitle>
-
                   {metric.metric_errors
                     .sort(sortMetricLevelErrorsBeforeSheetLevelErrors)
                     .map((sheet) => (
@@ -171,12 +170,11 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
             <SectionHeader>Saved Metrics</SectionHeader>
             {errorsWarningsAndSuccessfulMetrics.successfulMetrics.map(
               (metric) => (
-                <Message key={metric.key}>
+                <Message key={metric.key} enabled={!metric.is_disabled}>
                   <MetricTitle>
                     <CheckIcon src={checkIcon} alt="" />
                     {metric.display_name}
                   </MetricTitle>
-
                   {metric.metric_errors.map((sheet) => (
                     <Fragment key={sheet.display_name + sheet.sheet_name}>
                       {sheet.messages.map((message) => (
