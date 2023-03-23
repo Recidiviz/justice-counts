@@ -97,7 +97,10 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
             <SectionHeader>Alerts</SectionHeader>
             {errorsWarningsAndSuccessfulMetrics.errorWarningMetrics.map(
               (metric) => (
-                <Message key={metric.display_name}>
+                <Message
+                  key={metric.display_name}
+                  enabled={!metric.is_disabled}
+                >
                   <MetricTitle>{metric.display_name}</MetricTitle>
 
                   {metric.metric_errors
