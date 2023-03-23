@@ -27,7 +27,6 @@ export interface UploadedMetric {
   display_name: string;
   key: string;
   metric_errors: MetricErrors[];
-  successful_ingest: boolean;
   is_disabled: boolean;
 }
 

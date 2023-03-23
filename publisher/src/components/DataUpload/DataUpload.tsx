@@ -161,7 +161,13 @@ export const DataUpload: React.FC = observer(() => {
   ): ErrorsWarningsMetrics => {
     const errorsWarningsAndSuccessfulMetrics = data.metrics.reduce(
       (acc, metric) => {
-        const isSuccessfulMetric = metric.successful_ingest;
+        const noSheetErrorsFound =
+          metric.metric_errors.filter(
+            (sheet) =>
+              sheet.messages.filter((msg) => msg.type === "ERROR")?.length > 0
+          ).length === 0;
+        const isSuccessfulMetric =
+          metric.metric_errors.length === 0 || noSheetErrorsFound;
 
         /**
          * If there are no errors and only warnings, we still want to show the

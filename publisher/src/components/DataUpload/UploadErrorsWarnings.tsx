@@ -211,33 +211,41 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
   const renderErrorWarningTitle = () => {
     return (
       <>
-        {/* Section 1: Show number of metrics successfully ingested */}
-        {/* Case 1: 0 metrics was saved */}
-        {successfulMetricsCount === 0 && (
-          <>
-            <BlueText>{successfulMetricsCount}</BlueText> metrics were saved
-            successfully.
-            <br />
-          </>
-        )}
-
-        {/* Case 2: More than 1 metric was saved */}
-        {successfulMetricsCount > 0 && (
+        {/* Case 1: Only Warnings (which means all metrics were successfully ingested) */}
+        {errorCount === 0 && successfulMetricsCount > 0 && (
           <>
             <BlueText>{successfulMetricsCount}</BlueText> metric
-            {successfulMetricsCount === 1 ? " was" : "s were"} saved
-            successfully
+            {successfulMetricsCount === 0 || successfulMetricsCount > 1
+              ? "s"
+              : ""}{" "}
+            were saved successfully
             {errorsWarningsAndSuccessfulMetrics.hasWarnings &&
               " (with warnings)"}
-            .<br />
+            .
           </>
         )}
 
-        {/* Section 2: Show number of metrics with errors */}
-        {errorCount > 0 && (
+        {/* Case 2: Has Errors Only */}
+        {errorCount > 0 && successfulMetricsCount === 0 && (
           <>
             We encountered <RedText>{errorCount}</RedText> error
             {errorCount > 1 ? "s" : ""}.
+          </>
+        )}
+
+        {/* Case 3: Has Errors and Successes */}
+        {errorCount > 0 && successfulMetricsCount > 0 && (
+          <>
+            We encountered <RedText>{errorCount}</RedText> error
+            {errorCount > 1 ? "s" : ""}, and{" "}
+            <BlueText>{successfulMetricsCount}</BlueText> metric
+            {successfulMetricsCount === 0 || successfulMetricsCount > 1
+              ? "s"
+              : ""}{" "}
+            were saved successfully
+            {errorsWarningsAndSuccessfulMetrics.hasWarnings &&
+              " (with warnings)"}
+            .
           </>
         )}
       </>
