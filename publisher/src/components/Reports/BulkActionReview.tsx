@@ -17,13 +17,20 @@
 
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { RecordsBulkAction } from "../../pages/Reports";
 import { useStore } from "../../stores";
 import { PageWrapper } from "../Forms";
+import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 import { Loading } from "../Loading";
-import BulkActionReviewConfirmation from "./BulkActionReviewConfirmation";
+import {
+  ReviewHeaderActionButton,
+  ReviewMetric,
+  ReviewMetrics,
+} from "../ReviewMetrics/ReviewMetrics";
+import { ReviewMetricsModal } from "../ReviewMetrics/ReviewMetricsModal";
+import { ReviewWrapper } from "./ReportDataEntry.styles";
 
 const BulkActionReview = () => {
   const params = useParams();
@@ -33,11 +40,31 @@ const BulkActionReview = () => {
     action: RecordsBulkAction;
   };
   const agencyId = Number(params.agencyId);
-  const { reportStore, datapointsStore } = useStore();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingError, setLoadingError] = useState<string | undefined>(
     undefined
   );
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const { reportStore, datapointsStore } = useStore();
+
+  const publishMultipleRecords = async () => {
+    await reportStore.updateMultipleReportStatuses(
+      recordsIds,
+      agencyId.toString(),
+      "PUBLISHED"
+    );
+    setIsSuccessModalOpen(true);
+  };
+
+  const unpublishMultipleRecords = async () => {
+    await reportStore.updateMultipleReportStatuses(
+      recordsIds,
+      agencyId.toString(),
+      "DRAFT"
+    );
+    setIsSuccessModalOpen(true);
+  };
 
   useEffect(() => {
     const initialize = async () => {
@@ -57,6 +84,10 @@ const BulkActionReview = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = isSuccessModalOpen ? "hidden" : "unset";
+  }, [isSuccessModalOpen]);
+
   if (isLoading || datapointsStore.loading)
     return (
       <PageWrapper>
@@ -68,8 +99,91 @@ const BulkActionReview = () => {
     return <div>Error: {loadingError}</div>;
   }
 
+  const enabledMetrics = reportStore.agencyMetrics.filter(
+    (metric) => metric.enabled
+  );
+
+  // review component props
+  const metrics =
+    enabledMetrics.length > 0
+      ? enabledMetrics.reduce((acc, metric) => {
+          const reviewMetric = {
+            datapoints: datapointsStore.rawDatapointsByMetric[
+              metric.key
+            ].filter((dp) => dp.report_id && recordsIds.includes(dp.report_id)),
+            display_name: metric.display_name,
+            key: metric.key,
+          };
+          return [...acc, reviewMetric];
+        }, [] as ReviewMetric[])
+      : [];
+  const records = recordsIds.map(
+    (recordID) => reportStore.reportOverviews[recordID]
+  );
+  const publishActionTitle = "Review & Publish";
+  const unpublishActionTitle = "Review Unpublish";
+
+  const publishActionDescription = (
+    <>
+      Here’s a breakdown of data you’ve selected to publish. Take a moment to
+      review these changes, then publish when ready. If you believe there is an
+      error, please contact the Justice Counts team via{" "}
+      <a href="mailto:justice-counts-support@csg.org">
+        justice-counts-support@csg.org
+      </a>
+      .
+    </>
+  );
+  const unpublishActionDescription = `Here’s a breakdown of data you’ve selected to unpublish. All data in ${
+    records.length > 1
+      ? `these ${REPORTS_LOWERCASE}`
+      : `this ${REPORT_LOWERCASE}`
+  } will be saved, and you can re-publish at any time.`;
+
+  const buttons: ReviewHeaderActionButton[] = [
+    {
+      name: "Exit without Publishing",
+      type: "border",
+      onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
+    },
+    {
+      name: action === "publish" ? "Publish" : "Unpublish",
+      type: action === "publish" ? "green" : "orange",
+      onClick:
+        action === "publish"
+          ? publishMultipleRecords
+          : unpublishMultipleRecords,
+    },
+  ];
+
+  // modal props
+  const systemSearchParam =
+    enabledMetrics.length > 0 ? enabledMetrics[0].system.key : undefined;
+  const metricSearchParam =
+    enabledMetrics.length > 0 ? enabledMetrics[0].key : undefined;
+
   return (
-    <BulkActionReviewConfirmation recordsIds={recordsIds} action={action} />
+    <ReviewWrapper>
+      {isSuccessModalOpen && (
+        <ReviewMetricsModal
+          systemSearchParam={systemSearchParam}
+          metricSearchParam={metricSearchParam}
+          recordsCount={recordsIds.length}
+          action={action}
+        />
+      )}
+      <ReviewMetrics
+        title={action === "publish" ? publishActionTitle : unpublishActionTitle}
+        description={
+          action === "publish"
+            ? publishActionDescription
+            : unpublishActionDescription
+        }
+        buttons={buttons}
+        metrics={metrics}
+        records={records}
+      />
+    </ReviewWrapper>
   );
 };
 

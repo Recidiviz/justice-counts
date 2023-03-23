@@ -22,27 +22,32 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { trackReportPublished } from "../../analytics";
+import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
 import { printReportTitle } from "../../utils";
+import { PageWrapper } from "../Forms";
 import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
+import { Loading } from "../Loading";
 import {
   ReviewHeaderActionButton,
   ReviewMetric,
-  SharedReviewMetrics,
-} from "../ReviewMetrics/SharedReviewMetrics";
+  ReviewMetrics,
+} from "../ReviewMetrics/ReviewMetrics";
+import { ReviewMetricsModal } from "../ReviewMetrics/ReviewMetricsModal";
 import { useCheckMetricForErrors } from "./hooks";
 import { ReviewWrapper } from "./ReportDataEntry.styles";
-import { ReviewModal } from "./ReviewModal";
 
-const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
-  const { agencyId } = useParams();
+const DataEntryReview = () => {
+  const params = useParams();
+  const reportID = Number(params.id);
+  const agencyId = Number(params.agencyId);
   const navigate = useNavigate();
-  const checkMetricForErrors = useCheckMetricForErrors(reportID);
   const [isPublishable, setIsPublishable] = useState(false);
   const [metricsPreview, setMetricsPreview] = useState<MetricWithErrors[]>();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const { formStore, reportStore, userStore, guidanceStore, datapointsStore } =
+  const { reportStore, formStore, userStore, guidanceStore, datapointsStore } =
     useStore();
+  const checkMetricForErrors = useCheckMetricForErrors(reportID);
 
   const publishReport = async () => {
     if (isPublishable) {
@@ -82,6 +87,16 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
   };
 
   useEffect(() => {
+    const initialize = async () => {
+      formStore.validatePreviouslySavedInputs(reportID);
+      await datapointsStore.getDatapoints(agencyId);
+    };
+
+    initialize();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     const { metrics, isPublishable: publishable } =
       formStore.validateAndGetAllMetricFormValues(reportID);
     const enabledMetrics = metrics.filter((metric) => metric.enabled);
@@ -94,6 +109,18 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
     document.body.style.overflow = isSuccessModalOpen ? "hidden" : "unset";
   }, [isSuccessModalOpen]);
 
+  if (datapointsStore.loading)
+    return (
+      <PageWrapper>
+        <Loading />
+      </PageWrapper>
+    );
+
+  if (reportStore.reportOverviews[reportID].agency_id !== agencyId) {
+    return <NotFound />;
+  }
+
+  // review component props
   const metrics = metricsPreview
     ? metricsPreview.reduce((acc, metric) => {
         const reviewMetric = {
@@ -110,11 +137,8 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
         return [...acc, reviewMetric];
       }, [] as ReviewMetric[])
     : [];
-
   const record = reportStore.reportOverviews[reportID];
-
   const title = "Review & Publish";
-
   const description = (
     <>
       Here’s a breakdown of data from the {REPORT_LOWERCASE}. Take a moment to
@@ -126,7 +150,6 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
       .
     </>
   );
-
   const buttons: ReviewHeaderActionButton[] = [
     {
       name: "Back to data entry",
@@ -146,15 +169,21 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
     },
   ];
 
-  const systemKey = metricsPreview ? metricsPreview[0].system.key : undefined;
-  const metricKey = metricsPreview ? metricsPreview[0].key : undefined;
+  // modal props
+  const systemSearchParam = metricsPreview
+    ? metricsPreview[0].system.key
+    : undefined;
+  const metricSearchParam = metricsPreview ? metricsPreview[0].key : undefined;
 
   return (
     <ReviewWrapper>
       {isSuccessModalOpen && (
-        <ReviewModal systemKey={systemKey} metricKey={metricKey} />
+        <ReviewMetricsModal
+          systemSearchParam={systemSearchParam}
+          metricSearchParam={metricSearchParam}
+        />
       )}
-      <SharedReviewMetrics
+      <ReviewMetrics
         title={title}
         description={description}
         buttons={buttons}
@@ -165,4 +194,4 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
   );
 };
 
-export default observer(PublishConfirmation);
+export default observer(DataEntryReview);

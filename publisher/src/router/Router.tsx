@@ -19,15 +19,15 @@ import React from "react";
 import { Navigate, Route, Routes, useParams } from "react-router-dom";
 
 import { DataUpload } from "../components/DataUpload";
+import UploadReview from "../components/DataUpload/UploadReview";
 import { REPORTS_LOWERCASE } from "../components/Global/constants";
 import { Guidance } from "../components/Guidance";
 import Header from "../components/Header";
 import { MetricsView } from "../components/MetricConfiguration/MetricsView";
 import BulkActionReview from "../components/Reports/BulkActionReview";
 import CreateReport from "../components/Reports/CreateReport";
+import ReviewReportDataEntry from "../components/Reports/DataEntryReview";
 import ReportDataEntry from "../components/Reports/ReportDataEntry";
-import ReviewReportDataEntry from "../components/Reports/ReviewReportDataEntry";
-import ReviewMetrics from "../components/ReviewMetrics/ReviewMetrics";
 import { NotFound } from "../pages/NotFound";
 import Reports from "../pages/Reports";
 import Settings from "../pages/Settings";
@@ -104,10 +104,7 @@ export const Router = () => {
                 element={<ReviewReportDataEntry />}
               />
               <Route path="/upload" element={<DataUpload />} />
-              <Route
-                path="/upload/review-metrics"
-                element={<ReviewMetrics />}
-              />
+              <Route path="/upload/review-metrics" element={<UploadReview />} />
             </>
           )}
           <Route

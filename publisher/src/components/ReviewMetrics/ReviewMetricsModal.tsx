@@ -32,8 +32,8 @@ import {
   RemoveRecordsModalHint,
   RemoveRecordsModalTitle,
   RemoveRecordsModalWrapper,
-} from "./RemoveRecordsModal";
-import { ReportActionsButton } from "./Reports.styles";
+} from "../Reports/RemoveRecordsModal";
+import { ReportActionsButton } from "../Reports/Reports.styles";
 
 export const ReviewPublishModalWrapper = styled(RemoveRecordsModalWrapper)``;
 export const ReviewPublishModalContainer = styled(RemoveRecordsModalContainer)`
@@ -60,20 +60,26 @@ export const ReviewPublishModalButton = styled(ReportActionsButton)`
   ${typography.sizeCSS.normal};
 `;
 
-export const ReviewModal: React.FC<{
-  systemKey?: string;
-  metricKey?: string;
+export const ReviewMetricsModal: React.FC<{
+  systemSearchParam?: string;
+  metricSearchParam?: string;
   recordsCount?: number;
   fileName?: string;
   action?: RecordsBulkAction;
-}> = ({ systemKey, metricKey, recordsCount, fileName, action }) => {
+}> = ({
+  systemSearchParam,
+  metricSearchParam,
+  recordsCount,
+  fileName,
+  action,
+}) => {
   const { agencyId } = useParams();
   const navigate = useNavigate();
 
   const goToDataPage = () => {
-    if (systemKey && metricKey) {
+    if (systemSearchParam && metricSearchParam) {
       navigate(
-        `/agency/${agencyId}/data?system=${systemKey.toLowerCase()}&metric=${metricKey.toLowerCase()}`
+        `/agency/${agencyId}/data?system=${systemSearchParam.toLowerCase()}&metric=${metricSearchParam.toLowerCase()}`
       );
     } else {
       navigate(`/agency/${agencyId}/data`);
