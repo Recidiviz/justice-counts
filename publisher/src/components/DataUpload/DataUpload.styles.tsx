@@ -78,7 +78,12 @@ export const DataUploadHeader = styled.div<{
   }
 `;
 
-export const DataUploadHeaderButtonsContainer = styled.div`
+export const ReviewMetricsHeader = styled(DataUploadHeader)`
+  left: 0;
+  z-index: 4;
+`;
+
+export const ReviewMetricsButtonsContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: end;
@@ -203,6 +208,7 @@ export type ButtonTypes =
 export const Button = styled.div<{
   type?: ButtonTypes;
   enabledDuringOnboarding?: boolean;
+  disabled?: boolean;
 }>`
   ${typography.sizeCSS.normal};
   display: flex;
@@ -211,6 +217,8 @@ export const Button = styled.div<{
   border-radius: 3px;
   gap: 16px;
   text-transform: capitalize;
+  white-space: nowrap;
+  pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
 
   ${({ type }) => {
     if (type === "light-border") {
@@ -263,6 +271,8 @@ export const Button = styled.div<{
     `;
   }}
 
+  ${({ disabled }) => disabled && `background: ${palette.highlight.grey5}`};
+
   ${({ enabledDuringOnboarding }) =>
     enabledDuringOnboarding === false &&
     `
@@ -270,8 +280,9 @@ export const Button = styled.div<{
     `};
 
   &:hover {
-    cursor: pointer;
-    ${({ type }) => {
+    cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+    ${({ disabled, type }) => {
+      if (disabled) return "opacity: 1;";
       if (type === "border") {
         return `background: ${palette.highlight.grey1};`;
       }

@@ -23,10 +23,10 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled, { css } from "styled-components/macro";
 
-import { Button, DataUploadHeader } from "../DataUpload";
+import { DataUploadHeader } from "../DataUpload";
 import {
   MAIN_PANEL_MAX_WIDTH,
-  MainPanel,
+  ReviewMetricsWrapper,
   SectionTitle,
   SectionTitleNumber,
 } from "../ReviewMetrics/ReviewMetrics.styles";
@@ -50,31 +50,7 @@ export const ConfirmationButtonsContainer = styled.div`
   gap: 8px;
 `;
 
-export const PublishConfirmButton = styled(Button)<{ disabled: boolean }>`
-  padding-right: 22px;
-  padding-left: 22px;
-  background-color: ${({ disabled }) =>
-    disabled ? palette.highlight.grey5 : palette.solid.green};
-  pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
-  color: ${palette.solid.white};
-
-  &:hover {
-    cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
-    opacity: ${({ disabled }) => (disabled ? 1 : 0.9)};
-    background-color: ${({ disabled }) =>
-      disabled ? palette.highlight.grey5 : palette.solid.green};
-  }
-
-  &::after {
-    content: "Publish";
-  }
-`;
-
-export const ConfirmationDialogueTopBarButton = styled(Button)`
-  white-space: nowrap;
-`;
-
-export const PublishConfirmationMainPanel = styled(MainPanel)`
+export const PublishConfirmationMainPanel = styled(ReviewMetricsWrapper)`
   padding-top: 40px;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {

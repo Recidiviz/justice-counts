@@ -15,9 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { showToast } from "@justice-counts/common/components/Toast";
-import { useIsFooterVisible } from "@justice-counts/common/hooks";
 import { MetricWithErrors } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -26,55 +24,25 @@ import { useNavigate, useParams } from "react-router-dom";
 import { trackReportPublished } from "../../analytics";
 import { useStore } from "../../stores";
 import { printReportTitle } from "../../utils";
-import checkIcon from "../assets/check-icon.svg";
-import logoImg from "../assets/jc-logo-vector-new.svg";
-import errorIcon from "../assets/status-error-icon.png";
+import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 import {
-  REPORT_CAPITALIZED,
-  REPORT_LOWERCASE,
-  REPORTS_LOWERCASE,
-} from "../Global/constants";
-import { Logo, LogoContainer } from "../Header";
-import {
-  Heading,
-  HeadingGradient,
-  MetricsPanel,
-  MetricStatusIcon,
-  SectionContainer,
-  SectionExpandStatusSign,
-  Summary,
-  SummarySection,
-  SummarySectionLine,
-  SummarySectionsContainer,
-  SummarySectionTitle,
-} from "../ReviewMetrics/ReviewMetrics.styles";
+  ReviewHeaderActionButton,
+  ReviewMetric,
+  SharedReviewMetrics,
+} from "../ReviewMetrics/SharedReviewMetrics";
 import { useCheckMetricForErrors } from "./hooks";
-import {
-  ConfirmationButtonsContainer,
-  ConfirmationDialogueTopBarButton,
-  EmptyIcon,
-  PublishConfirmationMainPanel,
-  PublishConfirmationTopBar,
-  PublishConfirmButton,
-} from "./PublishConfirmation.styles";
+import { ReviewWrapper } from "./ReportDataEntry.styles";
 import { ReviewModal } from "./ReviewModal";
 
 const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
   const { agencyId } = useParams();
   const navigate = useNavigate();
   const checkMetricForErrors = useCheckMetricForErrors(reportID);
-  const isFooterVisible = useIsFooterVisible();
   const [isPublishable, setIsPublishable] = useState(false);
   const [metricsPreview, setMetricsPreview] = useState<MetricWithErrors[]>();
-  const [isMetricsSectionExpanded, setIsMetricsSectionExpanded] =
-    useState(true);
-  const [isRecordsSectionExpanded, setIsRecordsSectionExpanded] =
-    useState(true);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const { formStore, reportStore, userStore, guidanceStore, datapointsStore } =
     useStore();
-
-  const report = reportStore.reportOverviews[reportID];
 
   const publishReport = async () => {
     if (isPublishable) {
@@ -126,140 +94,74 @@ const PublishConfirmation: React.FC<{ reportID: number }> = ({ reportID }) => {
     document.body.style.overflow = isSuccessModalOpen ? "hidden" : "unset";
   }, [isSuccessModalOpen]);
 
-  const renderMetric = (metricKey: string, metricName: string) => {
-    const reportMetricDatapoints = datapointsStore.rawDatapointsByMetric[
-      metricKey
-    ].filter((dp) => dp.report_id === reportID);
+  const metrics = metricsPreview
+    ? metricsPreview.reduce((acc, metric) => {
+        const reviewMetric = {
+          datapoints: datapointsStore.rawDatapointsByMetric[metric.key].filter(
+            (dp) => dp.report_id === reportID
+          ),
+          display_name: metric.display_name,
+          key: metric.key,
+          metricHasError: checkMetricForErrors(metric.key),
+          metricHasValidInput: Boolean(
+            formStore.metricsValues?.[reportID]?.[metric.key]?.value
+          ),
+        };
+        return [...acc, reviewMetric];
+      }, [] as ReviewMetric[])
+    : [];
 
-    return (
-      <SectionContainer key={metricKey}>
-        <DatapointsTableView
-          datapoints={reportMetricDatapoints}
-          metricName={metricName}
-        />
-      </SectionContainer>
-    );
-  };
+  const record = reportStore.reportOverviews[reportID];
+
+  const title = "Review & Publish";
+
+  const description = (
+    <>
+      Here’s a breakdown of data from the {REPORT_LOWERCASE}. Take a moment to
+      review these changes, then publish when ready. If you believe there is an
+      error, please contact the Justice Counts team via{" "}
+      <a href="mailto:justice-counts-support@csg.org">
+        justice-counts-support@csg.org
+      </a>
+      .
+    </>
+  );
+
+  const buttons: ReviewHeaderActionButton[] = [
+    {
+      name: "Back to data entry",
+      type: "border",
+      onClick: () => navigate(-1),
+    },
+    {
+      name: "Exit without Publishing",
+      type: "border",
+      onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
+    },
+    {
+      name: "Publish",
+      type: "green",
+      onClick: publishReport,
+      disabled: !isPublishable,
+    },
+  ];
 
   const systemKey = metricsPreview ? metricsPreview[0].system.key : undefined;
   const metricKey = metricsPreview ? metricsPreview[0].key : undefined;
 
   return (
-    <>
+    <ReviewWrapper>
       {isSuccessModalOpen && (
         <ReviewModal systemKey={systemKey} metricKey={metricKey} />
       )}
-      <PublishConfirmationTopBar transparent={false}>
-        <LogoContainer
-          onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
-        >
-          <Logo src={logoImg} alt="" />
-        </LogoContainer>
-
-        <ConfirmationButtonsContainer>
-          <ConfirmationDialogueTopBarButton
-            type="border"
-            onClick={() => navigate(-1)}
-          >
-            Back to data entry
-          </ConfirmationDialogueTopBarButton>
-          <ConfirmationDialogueTopBarButton
-            type="border"
-            onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
-          >
-            Exit without Publishing
-          </ConfirmationDialogueTopBarButton>
-          <PublishConfirmButton
-            onClick={publishReport}
-            disabled={!isPublishable}
-          />
-        </ConfirmationButtonsContainer>
-      </PublishConfirmationTopBar>
-      <PublishConfirmationMainPanel>
-        <Summary isFooterVisible={isFooterVisible}>
-          <Heading>
-            Review & Publish
-            <span>
-              Here’s a breakdown of data from the {REPORT_LOWERCASE}. Take a
-              moment to review these changes, then publish when ready. If you
-              believe there is an error, please contact the Justice Counts team
-              via{" "}
-              <a href="mailto:justice-counts-support@csg.org">
-                justice-counts-support@csg.org
-              </a>
-              .
-            </span>
-          </Heading>
-          {metricsPreview && metricsPreview.length > 0 && (
-            <SummarySectionsContainer>
-              <HeadingGradient />
-              <SummarySection>
-                <SummarySectionTitle
-                  color="blue"
-                  onClick={() =>
-                    setIsMetricsSectionExpanded(!isMetricsSectionExpanded)
-                  }
-                >
-                  <span>{metricsPreview.length}</span> Metric
-                  {metricsPreview.length > 1 ? "s" : ""}
-                  <SectionExpandStatusSign>
-                    {isMetricsSectionExpanded ? "-" : "+"}
-                  </SectionExpandStatusSign>
-                </SummarySectionTitle>
-                {isMetricsSectionExpanded &&
-                  metricsPreview.map((metric) => {
-                    const metricHasError = checkMetricForErrors(metric.key);
-                    const metricHasValidInput = Boolean(
-                      formStore.metricsValues?.[reportID]?.[metric.key]?.value
-                    );
-                    return (
-                      <SummarySectionLine key={metric.key}>
-                        {!metricHasError && metricHasValidInput && (
-                          <MetricStatusIcon src={checkIcon} alt="" />
-                        )}
-                        {metricHasError && (
-                          <MetricStatusIcon src={errorIcon} alt="" />
-                        )}
-                        {!metricHasError && !metricHasValidInput && (
-                          <EmptyIcon />
-                        )}
-                        {metric.display_name}
-                      </SummarySectionLine>
-                    );
-                  })}
-              </SummarySection>
-              <SummarySection>
-                <SummarySectionTitle
-                  color="grey"
-                  onClick={() =>
-                    setIsRecordsSectionExpanded(!isRecordsSectionExpanded)
-                  }
-                >
-                  <span>1</span> {REPORT_CAPITALIZED}{" "}
-                  <SectionExpandStatusSign>
-                    {isRecordsSectionExpanded ? "-" : "+"}
-                  </SectionExpandStatusSign>
-                </SummarySectionTitle>
-                {isRecordsSectionExpanded && (
-                  <SummarySectionLine>
-                    {printReportTitle(
-                      report.month,
-                      report.year,
-                      report.frequency
-                    )}
-                  </SummarySectionLine>
-                )}
-              </SummarySection>
-            </SummarySectionsContainer>
-          )}
-        </Summary>
-        <MetricsPanel>
-          {metricsPreview?.map((metric) => {
-            return renderMetric(metric.key, metric.display_name);
-          })}
-        </MetricsPanel>
-      </PublishConfirmationMainPanel>
-    </>
+      <SharedReviewMetrics
+        title={title}
+        description={description}
+        buttons={buttons}
+        metrics={metrics}
+        records={[record]}
+      />
+    </ReviewWrapper>
   );
 };
 

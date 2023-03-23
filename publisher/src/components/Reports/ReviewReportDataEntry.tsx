@@ -24,7 +24,6 @@ import { useStore } from "../../stores";
 import { PageWrapper } from "../Forms";
 import { Loading } from "../Loading";
 import PublishConfirmation from "./PublishConfirmation";
-import { ReviewWrapper } from "./ReportDataEntry.styles";
 
 const ReviewReportDataEntry = () => {
   const params = useParams();
@@ -53,11 +52,7 @@ const ReviewReportDataEntry = () => {
     return <NotFound />;
   }
 
-  return (
-    <ReviewWrapper>
-      <PublishConfirmation reportID={reportID} />
-    </ReviewWrapper>
-  );
+  return <PublishConfirmation reportID={reportID} />;
 };
 
 export default observer(ReviewReportDataEntry);

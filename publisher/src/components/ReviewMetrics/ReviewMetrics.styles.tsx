@@ -34,16 +34,16 @@ export const Container = styled(DataUploadContainer)`
   align-items: center;
 `;
 
-export const MainPanel = styled.div`
+export const ReviewMetricsWrapper = styled.div`
   max-width: 100%;
-  padding: ${REVIEW_SUMMARY_DESKTOP_TOP_PADDING}px 0 128px 612px;
+  padding: 40px 0 128px 612px;
   display: flex;
   flex-direction: row;
   gap: 88px;
   overflow-x: hidden;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    padding: ${REVIEW_SUMMARY_DESKTOP_TOP_PADDING}px 24px 128px 24px;
+    padding: 40px 24px 128px 24px;
     display: flex;
     flex-direction: column;
     gap: 80px;
