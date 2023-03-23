@@ -212,11 +212,10 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
     return (
       <>
         {/* Section 1: Show number of metrics successfully ingested */}
-        {/* Case 1: 0 metrics was saved */}
+        {/* Case 1: 0 metrics were saved */}
         {successfulMetricsCount === 0 && (
           <>
-            <BlueText>{successfulMetricsCount}</BlueText> metrics were saved
-            successfully.
+            No metrics were saved successfully.
             <br />
           </>
         )}
