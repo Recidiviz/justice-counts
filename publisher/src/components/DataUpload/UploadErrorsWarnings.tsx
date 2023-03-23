@@ -169,7 +169,11 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
               (metric) => (
                 <Message key={metric.key} enabled={metric.enabled}>
                   <MetricTitle>
-                    <CheckIcon src={checkIcon} alt="" />
+                    <CheckIcon
+                      src={checkIcon}
+                      alt=""
+                      enabled={metric.enabled}
+                    />
                     {metric.display_name}
                   </MetricTitle>
                   {metric.metric_errors.map((sheet) => (

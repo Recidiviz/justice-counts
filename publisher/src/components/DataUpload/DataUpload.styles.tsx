@@ -585,9 +585,14 @@ export const LoadingSubheader = styled.div`
   ${typography.sizeCSS.normal};
 `;
 
-export const CheckIcon = styled.img`
+type CheckIconProps = {
+  enabled?: boolean | null;
+};
+
+export const CheckIcon = styled.img<CheckIconProps>`
   width: 16px;
   margin-right: 5px;
+  ${({ enabled }) => !enabled && `filter: grayscale(1);`};
 `;
 
 export const ExtendedOpacityGradient = styled(OpacityGradient)`
