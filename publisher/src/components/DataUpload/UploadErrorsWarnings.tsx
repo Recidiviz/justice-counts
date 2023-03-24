@@ -39,6 +39,7 @@ import {
   MessagesContainer,
   MessageSubtitle,
   MessageTitle,
+  MetricEnableDescription,
   MetricTitle,
   RedText,
   SectionHeader,
@@ -99,6 +100,18 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
               (metric) => (
                 <Message key={metric.display_name} enabled={metric.enabled}>
                   <MetricTitle>{metric.display_name}</MetricTitle>
+                  {metric.enabled === null && (
+                    <MetricEnableDescription>
+                      This metric has not been configured yet. Please visit the
+                      Metric Configuration page.
+                    </MetricEnableDescription>
+                  )}
+                  {!metric.enabled && (
+                    <MetricEnableDescription>
+                      This metric is disabled. If you would like to enable it,
+                      visit the Metric Configuration page.
+                    </MetricEnableDescription>
+                  )}
                   {metric.metric_errors
                     .sort(sortMetricLevelErrorsBeforeSheetLevelErrors)
                     .map((sheet) => (

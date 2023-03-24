@@ -445,6 +445,12 @@ export const Message = styled.div<MessageProps>`
     enabled ? palette.solid.darkgrey : palette.highlight.grey10};
 `;
 
+export const MetricEnableDescription = styled.div`
+  ${typography.sizeCSS.normal};
+  width: 100%;
+  margin: 8px 0 13px 0;
+`;
+
 export const SectionHeader = styled.div`
   ${typography.sizeCSS.title};
   margin: 10px 0;
