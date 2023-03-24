@@ -167,7 +167,7 @@ export const DataUpload: React.FC = observer(() => {
               sheet.messages.filter((msg) => msg.type === "ERROR")?.length > 0
           ).length === 0;
         const isSuccessfulMetric =
-          metric.metric_errors.length === 0 || noSheetErrorsFound;
+          noSheetErrorsFound && metric.datapoints.length > 0;
 
         /**
          * If there are no errors and only warnings, we still want to show the
