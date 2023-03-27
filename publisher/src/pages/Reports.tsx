@@ -137,6 +137,16 @@ const Reports: React.FC = () => {
       );
     }
   };
+  const isRecordDisabledForSelection = (
+    status: ReportStatus,
+    action: RecordsBulkAction
+  ) => {
+    if (action === "publish")
+      return status === "PUBLISHED" || status === "NOT_STARTED";
+    if (action === "unpublish")
+      return status === "DRAFT" || status === "NOT_STARTED";
+    return false;
+  };
 
   const filterReportsBy = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -201,17 +211,6 @@ const Reports: React.FC = () => {
           ),
     [reportStore.reportOverviewList, reportsFilter]
   );
-
-  const isRecordDisabledForSelection = (
-    status: ReportStatus,
-    action: RecordsBulkAction
-  ) => {
-    if (action === "publish")
-      return status === "PUBLISHED" || status === "NOT_STARTED";
-    if (action === "unpublish")
-      return status === "DRAFT" || status === "NOT_STARTED";
-    return false;
-  };
 
   const isAdmin =
     userStore.isJusticeCountsAdmin(agencyId) ||
