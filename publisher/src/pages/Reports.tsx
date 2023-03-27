@@ -25,7 +25,7 @@ import {
   palette,
 } from "@justice-counts/common/components/GlobalStyles";
 import { useWindowWidth } from "@justice-counts/common/hooks";
-import { ReportOverview } from "@justice-counts/common/types";
+import { ReportOverview, ReportStatus } from "@justice-counts/common/types";
 import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useState } from "react";
@@ -125,12 +125,18 @@ const Reports: React.FC = () => {
   const selectBulkAction = (action: RecordsBulkAction) => setBulkAction(action);
   const clearBulkAction = () => setBulkAction(undefined);
   const clearAllSelectedRecords = () => setSelectedRecords([]);
-  const addOrRemoveSelectedRecords = (reportID: number) =>
-    setSelectedRecords((prev) =>
-      !prev.includes(reportID)
-        ? [...prev, reportID]
-        : prev.filter((id) => id !== reportID)
-    );
+  const addOrRemoveSelectedRecords = (
+    reportID: number,
+    isRecordDisabledForSelection: boolean
+  ) => {
+    if (!isRecordDisabledForSelection) {
+      setSelectedRecords((prev) =>
+        !prev.includes(reportID)
+          ? [...prev, reportID]
+          : prev.filter((id) => id !== reportID)
+      );
+    }
+  };
 
   const filterReportsBy = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -196,6 +202,17 @@ const Reports: React.FC = () => {
     [reportStore.reportOverviewList, reportsFilter]
   );
 
+  const isRecordDisabledForSelection = (
+    status: ReportStatus,
+    action: RecordsBulkAction
+  ) => {
+    if (action === "publish")
+      return status === "PUBLISHED" || status === "NOT_STARTED";
+    if (action === "unpublish")
+      return status === "DRAFT" || status === "NOT_STARTED";
+    return false;
+  };
+
   const isAdmin =
     userStore.isJusticeCountsAdmin(agencyId) ||
     userStore.isAgencyAdmin(agencyId);
@@ -229,22 +246,32 @@ const Reports: React.FC = () => {
                       if (!bulkAction) {
                         navigate(`${report.id}`);
                       } else {
-                        addOrRemoveSelectedRecords(report.id);
+                        addOrRemoveSelectedRecords(
+                          report.id,
+                          isRecordDisabledForSelection(
+                            report.status,
+                            bulkAction
+                          )
+                        );
                       }
                     }}
                     selected={bulkAction && selectedRecords.includes(report.id)}
                   >
                     {/* Report Period */}
                     <Cell id="report_period">
-                      {bulkAction && (
-                        <>
-                          {selectedRecords.includes(report.id) ? (
-                            <SelectedCheckmark src={checkmarkIcon} alt="" />
-                          ) : (
-                            <EmptySelectionCircle />
-                          )}
-                        </>
-                      )}
+                      {bulkAction &&
+                        !isRecordDisabledForSelection(
+                          report.status,
+                          bulkAction
+                        ) && (
+                          <>
+                            {selectedRecords.includes(report.id) ? (
+                              <SelectedCheckmark src={checkmarkIcon} alt="" />
+                            ) : (
+                              <EmptySelectionCircle />
+                            )}
+                          </>
+                        )}
                       <span>
                         {printReportTitle(
                           report.month,
@@ -435,7 +462,10 @@ const Reports: React.FC = () => {
                                 onClick={() => {
                                   selectBulkAction("publish");
                                 }}
-                                disabled={reportsFilter === "published"}
+                                disabled={
+                                  reportsFilter === "published" ||
+                                  reportsFilter === "not_started"
+                                }
                               >
                                 Publish...
                               </BulkActionsDropdownMenuItem>
@@ -443,7 +473,10 @@ const Reports: React.FC = () => {
                                 onClick={() => {
                                   selectBulkAction("unpublish");
                                 }}
-                                disabled={reportsFilter === "draft"}
+                                disabled={
+                                  reportsFilter === "draft" ||
+                                  reportsFilter === "not_started"
+                                }
                               >
                                 Unpublish...
                               </BulkActionsDropdownMenuItem>
