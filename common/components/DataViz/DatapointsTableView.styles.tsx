@@ -53,6 +53,8 @@ export const DatapointsTableNamesContainer = styled.div<{
 `;
 export const DatapointsTableNamesTable = styled.table`
   border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
 `;
 export const DatapointsTableNamesTableBody = styled.tbody``;
 export const DatapointsTableBottomBorder = styled.tr`
@@ -71,8 +73,6 @@ export const DatapointsTableNamesCell = styled.td<{
   white-space: nowrap;
   font-size: 18px;
   font-weight: 500;
-  width: 240px;
-  max-width: 400px;
   height: 32px;
 
   &:hover {
