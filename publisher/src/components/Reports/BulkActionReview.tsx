@@ -142,7 +142,9 @@ const BulkActionReview = () => {
 
   const buttons: ReviewHeaderActionButton[] = [
     {
-      name: "Exit without Publishing",
+      name: `Exit without ${
+        action === "publish" ? "Publishing" : "Unpublishing"
+      }`,
       type: "border",
       onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
     },
