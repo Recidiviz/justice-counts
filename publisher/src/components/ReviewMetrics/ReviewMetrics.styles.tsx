@@ -24,6 +24,14 @@ import {
 import styled from "styled-components/macro";
 
 import { DataUploadContainer } from "../DataUpload";
+import { ReportActionsButton } from "../Reports";
+import {
+  RemoveRecordsModalButtonsContainer,
+  RemoveRecordsModalContainer,
+  RemoveRecordsModalHint,
+  RemoveRecordsModalTitle,
+  RemoveRecordsModalWrapper,
+} from "../Reports/RemoveRecordsModal";
 
 export const MAIN_PANEL_MAX_WIDTH = 864;
 export const REVIEW_SUMMARY_DESKTOP_TOP_PADDING = 40 + HEADER_BAR_HEIGHT;
@@ -117,17 +125,6 @@ export const HeadingGradient = styled.div`
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     min-height: 20px;
-  }
-`;
-
-export const Subheading = styled.div`
-  margin-top: 16px;
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 30px;
-
-  a {
-    color: ${palette.solid.blue};
   }
 `;
 
@@ -240,13 +237,6 @@ export const SectionContainer = styled.div`
   }
 `;
 
-export const SectionTitleContainer = styled.div`
-  display: inline-flex;
-  align-items: center;
-  max-width: 100%;
-  width: 100%;
-  flex: 1;
-`;
 export const SectionTitleNumber = styled.div`
   width: 40px;
   min-width: 40px;
@@ -268,18 +258,27 @@ export const SectionTitle = styled.div`
   text-overflow: ellipsis;
 `;
 
-export const SectionTitleMonths = styled.div`
-  background-color: ${palette.solid.blue};
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  margin-left: 16px;
-  ${typography.sizeCSS.small}
-  color: ${palette.solid.white};
-  white-space: nowrap;
+export const ReviewPublishModalWrapper = styled(RemoveRecordsModalWrapper)``;
+export const ReviewPublishModalContainer = styled(RemoveRecordsModalContainer)`
+  padding-top: 80px;
 `;
-
-export const SectionTitleOverwrites = styled(SectionTitleMonths)`
-  background-color: ${palette.solid.orange};
+export const ReviewPublishModalIcon = styled.img`
+  margin-bottom: 24px;
+`;
+export const ReviewPublishModalTitle = styled(RemoveRecordsModalTitle)`
+  span {
+    color: ${palette.solid.blue};
+  }
+`;
+export const ReviewPublishModalHint = styled(RemoveRecordsModalHint)`
+  display: flex;
+  text-align: center;
+  max-width: 264px;
+`;
+export const ReviewPublishModalButtonsContainer = styled(
+  RemoveRecordsModalButtonsContainer
+)``;
+export const ReviewPublishModalButton = styled(ReportActionsButton)`
+  margin-left: unset;
+  ${typography.sizeCSS.normal};
 `;

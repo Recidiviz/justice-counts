@@ -20,7 +20,6 @@
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { formatDateShortMonthYear } from "@justice-counts/common/components/DataViz/utils";
 import { useIsFooterVisible } from "@justice-counts/common/hooks";
-import { RawDatapoint, ReportOverview } from "@justice-counts/common/types";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -30,7 +29,6 @@ import logoImg from "../assets/jc-logo-vector-new.svg";
 import errorIcon from "../assets/status-error-icon.png";
 import {
   Button,
-  ButtonTypes,
   ReviewMetricsButtonsContainer,
   ReviewMetricsHeader,
 } from "../DataUpload";
@@ -55,37 +53,7 @@ import {
   SummarySectionsContainer,
   SummarySectionTitle,
 } from "./ReviewMetrics.styles";
-
-export type ReviewHeaderActionButton = {
-  name: string;
-  type: ButtonTypes;
-  onClick: () => void;
-  disabled?: boolean;
-};
-
-export type ReviewMetric = {
-  datapoints: RawDatapoint[];
-  display_name: string;
-  key: string;
-  metricHasError?: boolean;
-  metricHasValidInput?: boolean;
-};
-
-export type ReviewMetricOverwrites = {
-  key: number;
-  metricName: string;
-  dimensionName: string;
-  startDate: string;
-};
-
-type ReviewMetricsProps = {
-  title: string;
-  description: string | React.ReactNode;
-  buttons: ReviewHeaderActionButton[];
-  metrics: ReviewMetric[];
-  metricOverwrites?: ReviewMetricOverwrites[];
-  records?: ReportOverview[];
-};
+import { ReviewMetric, ReviewMetricsProps } from "./types";
 
 export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
   title,
@@ -137,9 +105,6 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
             </Button>
           ))}
         </ReviewMetricsButtonsContainer>
-        {
-          // TODO(#24): Add Publish button to publish multiple reports at once (todo from upload metrics)
-        }
       </ReviewMetricsHeader>
       <Summary isFooterVisible={isFooterVisible}>
         <Heading>

@@ -28,8 +28,8 @@ import {
   ReviewHeaderActionButton,
   ReviewMetric,
   ReviewMetrics,
-} from "../ReviewMetrics/ReviewMetrics";
-import { ReviewMetricsModal } from "../ReviewMetrics/ReviewMetricsModal";
+  ReviewMetricsModal,
+} from "../ReviewMetrics";
 import { ReviewWrapper } from "./ReportDataEntry.styles";
 
 const BulkActionReview = () => {
@@ -121,7 +121,7 @@ const BulkActionReview = () => {
     (recordID) => reportStore.reportOverviews[recordID]
   );
   const publishActionTitle = "Review & Publish";
-  const unpublishActionTitle = "Review Unpublish";
+  const unpublishActionTitle = "Review & Unpublish";
 
   const publishActionDescription = (
     <>

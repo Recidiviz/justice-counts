@@ -15,50 +15,21 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import {
-  palette,
-  typography,
-} from "@justice-counts/common/components/GlobalStyles";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import styled from "styled-components/macro";
 
 import { RecordsBulkAction } from "../../pages/Reports";
 import bigBlueCheck from "../assets/big-blue-check.png";
 import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 import {
-  RemoveRecordsModalButtonsContainer,
-  RemoveRecordsModalContainer,
-  RemoveRecordsModalHint,
-  RemoveRecordsModalTitle,
-  RemoveRecordsModalWrapper,
-} from "../Reports/RemoveRecordsModal";
-import { ReportActionsButton } from "../Reports/Reports.styles";
-
-export const ReviewPublishModalWrapper = styled(RemoveRecordsModalWrapper)``;
-export const ReviewPublishModalContainer = styled(RemoveRecordsModalContainer)`
-  padding-top: 80px;
-`;
-export const ReviewPublishModalIcon = styled.img`
-  margin-bottom: 24px;
-`;
-export const ReviewPublishModalTitle = styled(RemoveRecordsModalTitle)`
-  span {
-    color: ${palette.solid.blue};
-  }
-`;
-export const ReviewPublishModalHint = styled(RemoveRecordsModalHint)`
-  display: flex;
-  text-align: center;
-  max-width: 264px;
-`;
-export const ReviewPublishModalButtonsContainer = styled(
-  RemoveRecordsModalButtonsContainer
-)``;
-export const ReviewPublishModalButton = styled(ReportActionsButton)`
-  margin-left: unset;
-  ${typography.sizeCSS.normal};
-`;
+  ReviewPublishModalButton,
+  ReviewPublishModalButtonsContainer,
+  ReviewPublishModalContainer,
+  ReviewPublishModalHint,
+  ReviewPublishModalIcon,
+  ReviewPublishModalTitle,
+  ReviewPublishModalWrapper,
+} from "./ReviewMetrics.styles";
 
 export const ReviewMetricsModal: React.FC<{
   systemSearchParam?: string;

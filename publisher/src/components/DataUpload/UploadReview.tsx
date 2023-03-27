@@ -24,8 +24,8 @@ import {
   ReviewHeaderActionButton,
   ReviewMetricOverwrites,
   ReviewMetrics,
-} from "../ReviewMetrics/ReviewMetrics";
-import { ReviewMetricsModal } from "../ReviewMetrics/ReviewMetricsModal";
+  ReviewMetricsModal,
+} from "../ReviewMetrics";
 import { UploadedMetric } from "./types";
 
 const UploadReview: React.FC = observer(() => {

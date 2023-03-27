@@ -32,8 +32,8 @@ import {
   ReviewHeaderActionButton,
   ReviewMetric,
   ReviewMetrics,
-} from "../ReviewMetrics/ReviewMetrics";
-import { ReviewMetricsModal } from "../ReviewMetrics/ReviewMetricsModal";
+  ReviewMetricsModal,
+} from "../ReviewMetrics";
 import { useCheckMetricForErrors } from "./hooks";
 import { ReviewWrapper } from "./ReportDataEntry.styles";
 
