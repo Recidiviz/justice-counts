@@ -448,7 +448,7 @@ export const Message = styled.div<MessageProps>`
 export const MetricEnableDescription = styled.div`
   ${typography.sizeCSS.normal};
   width: 100%;
-  margin: 8px 0 13px 0;
+  margin: 0 0 13px 0;
 `;
 
 export const SectionHeader = styled.div`
