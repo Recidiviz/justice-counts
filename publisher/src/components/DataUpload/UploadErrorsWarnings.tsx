@@ -103,7 +103,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
                   {metric.enabled === null && (
                     <MetricEnableDescription>
                       This metric has not been configured yet. Please visit the
-                      Metric Configuration page.
+                      Metric Configuration page to configure this metric.
                     </MetricEnableDescription>
                   )}
                   {metric.enabled === false && (
