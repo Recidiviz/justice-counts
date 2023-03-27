@@ -16,8 +16,13 @@
 // =============================================================================
 
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import React, { useState } from "react";
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import {
@@ -38,15 +43,8 @@ const UploadReview: React.FC = observer(() => {
   const navigate = useNavigate();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
-  useEffect(() => {
-    if (!uploadedMetrics) {
-      // no metrics in passed in navigation state, redirect to home page
-      navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`, { replace: true });
-    }
-  });
-
-  if (!uploadedMetrics) {
-    return null;
+  if (!uploadedMetrics || !fileName) {
+    return <Navigate to={`/agency/${agencyId}/${REPORTS_LOWERCASE}`} replace />;
   }
 
   // review component props
