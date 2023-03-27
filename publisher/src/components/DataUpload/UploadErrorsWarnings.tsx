@@ -100,18 +100,34 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
               (metric) => (
                 <Message key={metric.display_name} enabled={metric.enabled}>
                   <MetricTitle>{metric.display_name}</MetricTitle>
-                  {metric.enabled === null && (
+                  {metric.enabled === null && metric.datapoints.length > 0 && (
                     <MetricEnableDescription>
-                      This metric has not been configured yet. Please visit the
-                      Metric Configuration page to configure this metric.
+                      Your uploaded data has been saved. This metric has not
+                      been configured yet. Please visit the Metric Configuration
+                      page to configure this metric.
                     </MetricEnableDescription>
                   )}
-                  {metric.enabled === false && (
+                  {metric.enabled === false && metric.datapoints.length > 0 && (
                     <MetricEnableDescription>
-                      This metric is disabled. If you would like to enable it,
-                      visit the Metric Configuration page.
+                      Your uploaded data has been saved. This metric is
+                      disabled. If you would like to enable it, visit the Metric
+                      Configuration page.
                     </MetricEnableDescription>
                   )}
+                  {metric.enabled === null &&
+                    metric.datapoints.length === 0 && (
+                      <MetricEnableDescription>
+                        This metric has not been configured yet. Please visit
+                        the Metric Configuration page to configure this metric.
+                      </MetricEnableDescription>
+                    )}
+                  {metric.enabled === false &&
+                    metric.datapoints.length === 0 && (
+                      <MetricEnableDescription>
+                        This metric is disabled. If you would like to enable it,
+                        visit the Metric Configuration page.
+                      </MetricEnableDescription>
+                    )}
                   {metric.metric_errors
                     .sort(sortMetricLevelErrorsBeforeSheetLevelErrors)
                     .map((sheet) => (
@@ -189,18 +205,34 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
                     />
                     {metric.display_name}
                   </MetricTitle>
-                  {metric.enabled === null && (
+                  {metric.enabled === null && metric.datapoints.length > 0 && (
                     <MetricEnableDescription>
-                      This metric has not been configured yet. Please visit the
-                      Metric Configuration page to configure this metric.
+                      Your uploaded data has been saved. This metric has not
+                      been configured yet. Please visit the Metric Configuration
+                      page to configure this metric.
                     </MetricEnableDescription>
                   )}
-                  {metric.enabled === false && (
+                  {metric.enabled === false && metric.datapoints.length > 0 && (
                     <MetricEnableDescription>
-                      This metric is disabled. If you would like to enable it,
-                      visit the Metric Configuration page.
+                      Your uploaded data has been saved. This metric is
+                      disabled. If you would like to enable it, visit the Metric
+                      Configuration page.
                     </MetricEnableDescription>
                   )}
+                  {metric.enabled === null &&
+                    metric.datapoints.length === 0 && (
+                      <MetricEnableDescription>
+                        This metric has not been configured yet. Please visit
+                        the Metric Configuration page to configure this metric.
+                      </MetricEnableDescription>
+                    )}
+                  {metric.enabled === false &&
+                    metric.datapoints.length === 0 && (
+                      <MetricEnableDescription>
+                        This metric is disabled. If you would like to enable it,
+                        visit the Metric Configuration page.
+                      </MetricEnableDescription>
+                    )}
                   {metric.metric_errors.map((sheet) => (
                     <Fragment key={sheet.display_name + sheet.sheet_name}>
                       {sheet.messages.map((message) => (
