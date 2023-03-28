@@ -25,7 +25,7 @@ import styled from "styled-components/macro";
 import { REPORT_LOWERCASE } from "../Global/constants";
 import { ReportActionsButton } from "./Reports.styles";
 
-const RemoveRecordsModalWrapper = styled.div`
+export const RemoveRecordsModalWrapper = styled.div`
   position: fixed;
   top: 0;
   height: 100vh;
@@ -39,7 +39,7 @@ const RemoveRecordsModalWrapper = styled.div`
   padding: 0 24px;
 `;
 
-const RemoveRecordsModalContainer = styled.div`
+export const RemoveRecordsModalContainer = styled.div`
   width: 100%;
   max-width: 582px;
   background-color: ${palette.solid.white};
@@ -52,7 +52,7 @@ const RemoveRecordsModalContainer = styled.div`
   border-radius: 4px;
 `;
 
-const RemoveRecordsModalTitle = styled.div`
+export const RemoveRecordsModalTitle = styled.div`
   ${typography.sizeCSS.large};
   margin-bottom: 16px;
 
@@ -61,19 +61,19 @@ const RemoveRecordsModalTitle = styled.div`
   }
 `;
 
-const RemoveRecordsModalHint = styled.div`
+export const RemoveRecordsModalHint = styled.div`
   ${typography.sizeCSS.normal};
   margin-bottom: 96px;
 `;
 
-const RemoveRecordsModalButtonsContainer = styled.div`
+export const RemoveRecordsModalButtonsContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 `;
 
-const RemoveRecordsModalButton = styled(ReportActionsButton)`
+export const RemoveRecordsModalButton = styled(ReportActionsButton)`
   margin-left: unset;
   ${typography.sizeCSS.normal};
 `;

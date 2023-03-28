@@ -56,6 +56,7 @@ class DatapointsStore extends BaseDatapointsStore {
   };
 
   async getDatapoints(agencyId: number): Promise<void | Error> {
+    this.loading = true;
     try {
       const response = (await this.api.request({
         path: `/api/agencies/${agencyId}/datapoints`,

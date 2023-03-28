@@ -115,6 +115,7 @@ export const DataUpload: React.FC = observer(() => {
     system: AgencySystems
   ): Promise<void> => {
     if (file && system && agencyId) {
+      setSelectedFile(file);
       const formData = new FormData();
       formData.append("file", file);
       formData.append("name", file.name);
@@ -150,7 +151,7 @@ export const DataUpload: React.FC = observer(() => {
       }
 
       navigate("review-metrics", {
-        state: data.metrics,
+        state: { uploadedMetrics: data.metrics, fileName: file.name },
         replace: true,
       });
     }
@@ -262,6 +263,7 @@ export const DataUpload: React.FC = observer(() => {
           errorsWarningsMetrics={errorsWarningsMetrics}
           selectedSystem={selectedSystem}
           resetToNewUpload={resetToNewUpload}
+          fileName={selectedFile?.name}
         />
       );
     }
@@ -312,7 +314,6 @@ export const DataUpload: React.FC = observer(() => {
           {selectedFile || errorsWarningsMetrics ? "Close" : "Cancel"}
         </Button>
       </DataUploadHeader>
-
       {renderCurrentUploadStep()}
     </DataUploadContainer>
   );

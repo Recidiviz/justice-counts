@@ -17,14 +17,24 @@
 
 import {
   HEADER_BAR_HEIGHT,
+  MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
 import { DataUploadContainer } from "../DataUpload";
+import { ReportActionsButton } from "../Reports";
+import {
+  RemoveRecordsModalButtonsContainer,
+  RemoveRecordsModalContainer,
+  RemoveRecordsModalHint,
+  RemoveRecordsModalTitle,
+  RemoveRecordsModalWrapper,
+} from "../Reports/RemoveRecordsModal";
 
 export const MAIN_PANEL_MAX_WIDTH = 864;
+export const REVIEW_SUMMARY_DESKTOP_TOP_PADDING = 40 + HEADER_BAR_HEIGHT;
 
 export const Container = styled(DataUploadContainer)`
   display: flex;
@@ -32,49 +42,201 @@ export const Container = styled(DataUploadContainer)`
   align-items: center;
 `;
 
-export const MainPanel = styled.div`
-  width: 100%;
-  max-width: ${MAIN_PANEL_MAX_WIDTH}px;
-  margin-top: ${56 + HEADER_BAR_HEIGHT}px;
-  margin-bottom: 128px;
+export const ReviewMetricsWrapper = styled.div`
+  max-width: 100%;
+  padding: 40px 0 128px 612px;
+  display: flex;
+  flex-direction: row;
+  gap: 88px;
+  overflow-x: hidden;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    padding: 40px 24px 128px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+  }
+`;
+
+export const Summary = styled.div<{ isFooterVisible?: boolean }>`
+  position: fixed;
+  top: ${REVIEW_SUMMARY_DESKTOP_TOP_PADDING}px;
+  left: 0;
+
+  max-height: ${({ isFooterVisible }) =>
+    isFooterVisible
+      ? `calc(100vh - ${REVIEW_SUMMARY_DESKTOP_TOP_PADDING + 116}px)`
+      : `calc(100vh - ${REVIEW_SUMMARY_DESKTOP_TOP_PADDING + 8}px)`};
+
+  padding-left: 24px;
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  background-color: ${palette.solid.white};
+  overflow: hidden;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    position: static;
+    max-height: unset;
+    padding-left: unset;
+    width: 100%;
+  }
 `;
 
 export const Heading = styled.div`
-  ${typography.sizeCSS.headline}
+  display: flex;
+  position: sticky;
+  top: 0;
+  flex-direction: column;
+  ${typography.sizeCSS.headline};
+  background-color: ${palette.solid.white};
 
   span {
-    color: ${palette.solid.blue};
+    margin-top: 20px;
+    ${typography.sizeCSS.medium};
+
+    a {
+      color: ${palette.solid.blue};
+      text-decoration: none;
+    }
+  }
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    ${typography.sizeCSS.title};
+
+    span {
+      ${typography.sizeCSS.normal};
+      margin-top: 5px;
+    }
   }
 `;
 
-export const Subheading = styled.div`
-  margin-top: 16px;
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 30px;
+export const HeadingGradient = styled.div`
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 484px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0.4009978991596639) 100%
+  );
+  min-height: 30px;
 
-  a {
-    color: ${palette.solid.blue};
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    min-height: 20px;
   }
+`;
+
+export const SummarySectionsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    overflow: hidden;
+  }
+`;
+
+export const SummarySection = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid ${palette.highlight.grey3};
+    padding-bottom: 30px;
+
+    @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+      padding-bottom: 20px;
+    }
+  }
+
+  &:not(:nth-child(2)) {
+    padding-top: 30px;
+
+    @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+      padding-top: 20px;
+    }
+  }
+`;
+
+export const SummarySectionTitle = styled.div<{
+  color: "blue" | "orange" | "grey";
+}>`
+  ${typography.sizeCSS.title};
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  cursor: pointer;
+
+  span {
+    color: ${({ color }) => {
+      if (color === "orange") return palette.solid.orange;
+      if (color === "grey") return "#64859E";
+      if (color === "blue") return palette.solid.blue;
+      return palette.solid.darkgrey;
+    }};
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    ${typography.sizeCSS.medium};
+  }
+`;
+
+export const SectionExpandStatusSign = styled.div`
+  margin-left: auto;
+  ${typography.sizeCSS.large};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const SummarySectionLine = styled.div`
+  ${typography.sizeCSS.normal}
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const MetricStatusIcon = styled.img`
+  width: 16px;
+  height: 16px;
+`;
+
+export const MetricsPanel = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow-x: hidden;
 `;
 
 export const SectionContainer = styled.div`
-  margin-top: 22px;
-  padding-top: 16px;
+  margin-top: 32px;
+  padding-top: 24px;
   display: flex;
   align-items: center;
   justify-content: stretch;
   flex-direction: column;
-  border-top: 1px solid ${palette.highlight.grey3};
+  min-width: 700px;
+  overflow-x: auto;
+
+  &:not(:first-child) {
+    border-top: 1px solid ${palette.highlight.grey3};
+  }
+
+  &:first-child {
+    margin-top: 0;
+    padding-top: 0;
+  }
 `;
 
-export const SectionTitleContainer = styled.div`
-  display: inline-flex;
-  align-items: center;
-  max-width: 100%;
-  width: 100%;
-  flex: 1;
-`;
 export const SectionTitleNumber = styled.div`
   width: 40px;
   min-width: 40px;
@@ -96,18 +258,27 @@ export const SectionTitle = styled.div`
   text-overflow: ellipsis;
 `;
 
-export const SectionTitleMonths = styled.div`
-  background-color: ${palette.solid.blue};
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  margin-left: 16px;
-  ${typography.sizeCSS.small}
-  color: ${palette.solid.white};
-  white-space: nowrap;
+export const ReviewPublishModalWrapper = styled(RemoveRecordsModalWrapper)``;
+export const ReviewPublishModalContainer = styled(RemoveRecordsModalContainer)`
+  padding-top: 80px;
 `;
-
-export const SectionTitleOverwrites = styled(SectionTitleMonths)`
-  background-color: ${palette.solid.orange};
+export const ReviewPublishModalIcon = styled.img`
+  margin-bottom: 24px;
+`;
+export const ReviewPublishModalTitle = styled(RemoveRecordsModalTitle)`
+  span {
+    color: ${palette.solid.blue};
+  }
+`;
+export const ReviewPublishModalHint = styled(RemoveRecordsModalHint)`
+  display: flex;
+  text-align: center;
+  max-width: 264px;
+`;
+export const ReviewPublishModalButtonsContainer = styled(
+  RemoveRecordsModalButtonsContainer
+)``;
+export const ReviewPublishModalButton = styled(ReportActionsButton)`
+  margin-left: unset;
+  ${typography.sizeCSS.normal};
 `;

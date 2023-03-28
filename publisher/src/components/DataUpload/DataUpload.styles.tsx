@@ -78,6 +78,18 @@ export const DataUploadHeader = styled.div<{
   }
 `;
 
+export const ReviewMetricsHeader = styled(DataUploadHeader)`
+  left: 0;
+  z-index: 4;
+`;
+
+export const ReviewMetricsButtonsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  gap: 8px;
+`;
+
 export const Instructions = styled.div`
   height: 100%;
   padding: 103px;
@@ -189,11 +201,14 @@ export type ButtonTypes =
   | "border"
   | "borderless"
   | "blue"
-  | "red";
+  | "green"
+  | "red"
+  | "orange";
 
 export const Button = styled.div<{
   type?: ButtonTypes;
   enabledDuringOnboarding?: boolean;
+  disabled?: boolean;
 }>`
   ${typography.sizeCSS.normal};
   display: flex;
@@ -202,6 +217,8 @@ export const Button = styled.div<{
   border-radius: 3px;
   gap: 16px;
   text-transform: capitalize;
+  white-space: nowrap;
+  pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
 
   ${({ type }) => {
     if (type === "light-border") {
@@ -230,9 +247,21 @@ export const Button = styled.div<{
         color: ${palette.solid.white};
       `;
     }
+    if (type === "green") {
+      return `
+        background: ${palette.solid.green};
+        color: ${palette.solid.white};
+      `;
+    }
     if (type === "red") {
       return `
         background: ${palette.solid.red};
+        color: ${palette.solid.white};
+      `;
+    }
+    if (type === "orange") {
+      return `
+        background: ${palette.solid.orange};
         color: ${palette.solid.white};
       `;
     }
@@ -242,6 +271,8 @@ export const Button = styled.div<{
     `;
   }}
 
+  ${({ disabled }) => disabled && `background: ${palette.highlight.grey5}`};
+
   ${({ enabledDuringOnboarding }) =>
     enabledDuringOnboarding === false &&
     `
@@ -249,15 +280,21 @@ export const Button = styled.div<{
     `};
 
   &:hover {
-    cursor: pointer;
-    ${({ type }) => {
+    cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+    ${({ disabled, type }) => {
+      if (disabled) return "opacity: 1;";
       if (type === "border") {
         return `background: ${palette.highlight.grey1};`;
       }
       if (type === "borderless") {
         return `opacity: 0.8;`;
       }
-      if (type === "blue" || type === "red") {
+      if (
+        type === "blue" ||
+        type === "red" ||
+        type === "green" ||
+        type === "orange"
+      ) {
         return `opacity: 0.9;`;
       }
       return `background: ${palette.highlight.grey2};`;

@@ -15,135 +15,198 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+/* eslint-disable camelcase */
+
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
-import { observer } from "mobx-react-lite";
-import React, { useEffect } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { formatDateShortMonthYear } from "@justice-counts/common/components/DataViz/utils";
+import { useIsFooterVisible } from "@justice-counts/common/hooks";
+import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
+import { printReportTitle } from "../../utils";
+import checkIcon from "../assets/check-icon.svg";
 import logoImg from "../assets/jc-logo-vector-new.svg";
-import { Button, DataUploadHeader } from "../DataUpload";
-import { UploadedMetric } from "../DataUpload/types";
-import { REPORTS_LOWERCASE } from "../Global/constants";
-import { Logo, LogoContainer } from "../Header";
+import errorIcon from "../assets/status-error-icon.png";
 import {
-  Container,
+  Button,
+  ReviewMetricsButtonsContainer,
+  ReviewMetricsHeader,
+} from "../DataUpload";
+import {
+  REPORT_CAPITALIZED,
+  REPORTS_CAPITALIZED,
+  REPORTS_LOWERCASE,
+} from "../Global/constants";
+import { Logo, LogoContainer } from "../Header";
+import { EmptyIcon } from "../Reports/PublishConfirmation.styles";
+import {
   Heading,
-  MainPanel,
+  HeadingGradient,
+  MetricsPanel,
+  MetricStatusIcon,
+  ReviewMetricsWrapper,
   SectionContainer,
-  SectionTitle,
-  SectionTitleContainer,
-  SectionTitleMonths,
-  SectionTitleNumber,
-  SectionTitleOverwrites,
-  Subheading,
+  SectionExpandStatusSign,
+  Summary,
+  SummarySection,
+  SummarySectionLine,
+  SummarySectionsContainer,
+  SummarySectionTitle,
 } from "./ReviewMetrics.styles";
+import { ReviewMetric, ReviewMetricsProps } from "./types";
 
-const ReviewMetrics: React.FC = observer(() => {
+export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
+  title,
+  description,
+  buttons,
+  metrics,
+  metricOverwrites,
+  records,
+}) => {
   const { agencyId } = useParams();
-  const location = useLocation();
   const navigate = useNavigate();
+  const isFooterVisible = useIsFooterVisible();
+  const [isMetricsSectionExpanded, setIsMetricsSectionExpanded] =
+    useState(true);
+  const [isOverwritesSectionExpanded, setIsOverwritesSectionExpanded] =
+    useState(true);
+  const [isRecordsSectionExpanded, setIsRecordsSectionExpanded] = useState(() =>
+    records ? records.length <= 10 : false
+  );
 
-  useEffect(() => {
-    if (!(location.state as UploadedMetric[] | null)) {
-      // no metrics in passed in navigation state, redirect to home page
-      navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`, { replace: true });
-    }
-  });
-
-  if (!(location.state as UploadedMetric[] | null)) {
-    return null;
-  }
-
-  const filteredMetrics = (location.state as UploadedMetric[])
-    .map((metric) => ({
-      ...metric,
-      datapoints: metric.datapoints.filter((dp) => dp.value !== null),
-    }))
-    .filter((metric) => metric.datapoints.length > 0);
-
-  const renderSection = (metric: UploadedMetric, index: number) => {
-    const startDates = Array.from(
-      new Set(metric.datapoints.map((dp) => dp.start_date))
-    ).sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-
-    // keep track of count of overwritten values
-    let overwrittenValuesCount = 0;
-
-    metric.datapoints.forEach((dp) => {
-      if (dp.old_value !== null) {
-        overwrittenValuesCount += 1;
-      }
-    });
-
+  const renderSection = (metric: ReviewMetric) => {
     return (
       <SectionContainer key={metric.key}>
-        <SectionTitleContainer>
-          <SectionTitleNumber>{index + 1}</SectionTitleNumber>
-          <SectionTitle>{metric.display_name}</SectionTitle>
-          {overwrittenValuesCount > 0 && (
-            <SectionTitleOverwrites>
-              * {overwrittenValuesCount} Overwritten Value
-              {overwrittenValuesCount !== 1 ? "s" : ""}
-            </SectionTitleOverwrites>
-          )}
-          <SectionTitleMonths>
-            {startDates.length}{" "}
-            {metric.datapoints?.[0].frequency === "ANNUAL" ? "year" : "month"}
-            {startDates.length !== 1 ? "s" : ""}
-          </SectionTitleMonths>
-        </SectionTitleContainer>
-        <DatapointsTableView datapoints={metric.datapoints} />
+        <DatapointsTableView
+          datapoints={metric.datapoints}
+          metricName={metric.display_name}
+        />
       </SectionContainer>
     );
   };
 
   return (
-    <Container>
-      <DataUploadHeader transparent={false}>
+    <ReviewMetricsWrapper>
+      <ReviewMetricsHeader transparent={false}>
         <LogoContainer
           onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
         >
           <Logo src={logoImg} alt="" />
         </LogoContainer>
-
-        <Button type="blue" onClick={() => navigate(-1)}>
-          Close
-        </Button>
-        {
-          // TODO(#24): Add Publish button to publish multiple reports at once
-        }
-      </DataUploadHeader>
-      <MainPanel>
+        <ReviewMetricsButtonsContainer>
+          {buttons.map(({ name, type, onClick, disabled }) => (
+            <Button
+              key={name}
+              type={type}
+              onClick={onClick}
+              disabled={disabled}
+            >
+              {name}
+            </Button>
+          ))}
+        </ReviewMetricsButtonsContainer>
+      </ReviewMetricsHeader>
+      <Summary isFooterVisible={isFooterVisible}>
         <Heading>
-          {filteredMetrics.length > 0 ? (
-            <>
-              Review <span>{filteredMetrics.length}</span> Uploaded Metrics
-            </>
-          ) : (
-            "No Metrics to Review"
-          )}
+          {title}
+          <span>{description}</span>
         </Heading>
-        <Subheading>
-          {filteredMetrics.length > 0 ? (
-            <>
-              The following data has been successfully uploaded. Take a moment
-              to review the changes. If you believe there is an error, please
-              contact the Justice Counts team via{" "}
-              <a href="mailto:justice-counts-support@csg.org">
-                justice-counts-support@csg.org
-              </a>
-              .
-            </>
-          ) : (
-            "Uploaded file contains no metrics to review."
+        <SummarySectionsContainer>
+          <HeadingGradient />
+          {metrics.length > 0 && (
+            <SummarySection>
+              <SummarySectionTitle
+                color="blue"
+                onClick={() =>
+                  setIsMetricsSectionExpanded(!isMetricsSectionExpanded)
+                }
+              >
+                <span>{metrics.length}</span> Metric
+                {metrics.length > 1 ? "s" : ""}
+                <SectionExpandStatusSign>
+                  {isMetricsSectionExpanded ? "-" : "+"}
+                </SectionExpandStatusSign>
+              </SummarySectionTitle>
+              {isMetricsSectionExpanded &&
+                metrics.map(
+                  ({
+                    key,
+                    display_name,
+                    metricHasError,
+                    metricHasValidInput,
+                  }) => (
+                    <SummarySectionLine key={key}>
+                      {!metricHasError && metricHasValidInput && (
+                        <MetricStatusIcon src={checkIcon} alt="" />
+                      )}
+                      {metricHasError && (
+                        <MetricStatusIcon src={errorIcon} alt="" />
+                      )}
+                      {!metricHasError && !metricHasValidInput && <EmptyIcon />}
+                      {display_name}
+                    </SummarySectionLine>
+                  )
+                )}
+            </SummarySection>
           )}
-        </Subheading>
-        {filteredMetrics.map((metric, idx) => {
-          return renderSection(metric, idx);
+          {metricOverwrites && metricOverwrites.length > 0 && (
+            <SummarySection>
+              <SummarySectionTitle
+                color="orange"
+                onClick={() =>
+                  setIsOverwritesSectionExpanded(!isOverwritesSectionExpanded)
+                }
+              >
+                <span>{metricOverwrites.length}</span> Overwrite
+                {metricOverwrites.length > 1 ? "s" : ""}
+                <SectionExpandStatusSign>
+                  {isOverwritesSectionExpanded ? "-" : "+"}
+                </SectionExpandStatusSign>
+              </SummarySectionTitle>
+              {isOverwritesSectionExpanded &&
+                metricOverwrites.map(
+                  ({ key, metricName, dimensionName, startDate }) => (
+                    <SummarySectionLine key={key}>
+                      {metricName}: {dimensionName}
+                      <span>({formatDateShortMonthYear(startDate)})</span>
+                    </SummarySectionLine>
+                  )
+                )}
+            </SummarySection>
+          )}
+          {records && records.length > 0 && (
+            <SummarySection>
+              <SummarySectionTitle
+                color="grey"
+                onClick={() =>
+                  setIsRecordsSectionExpanded(!isRecordsSectionExpanded)
+                }
+              >
+                <span>{records.length}</span>{" "}
+                {records.length > 1 ? REPORTS_CAPITALIZED : REPORT_CAPITALIZED}
+                <SectionExpandStatusSign>
+                  {isRecordsSectionExpanded ? "-" : "+"}
+                </SectionExpandStatusSign>
+              </SummarySectionTitle>
+              {isRecordsSectionExpanded &&
+                records.map((record) => (
+                  <SummarySectionLine key={record.id}>
+                    {printReportTitle(
+                      record.month,
+                      record.year,
+                      record.frequency
+                    )}
+                  </SummarySectionLine>
+                ))}
+            </SummarySection>
+          )}
+        </SummarySectionsContainer>
+      </Summary>
+      <MetricsPanel>
+        {metrics.map((metric) => {
+          return renderSection(metric);
         })}
-      </MainPanel>
-    </Container>
+      </MetricsPanel>
+    </ReviewMetricsWrapper>
   );
-});
-
-export default ReviewMetrics;
+};

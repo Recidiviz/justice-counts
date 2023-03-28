@@ -17,14 +17,16 @@
 
 import {
   HEADER_BAR_HEIGHT,
+  MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled, { css } from "styled-components/macro";
 
-import { Button, DataUploadHeader } from "../DataUpload";
+import { DataUploadHeader } from "../DataUpload";
 import {
   MAIN_PANEL_MAX_WIDTH,
+  ReviewMetricsWrapper,
   SectionTitle,
   SectionTitleNumber,
 } from "../ReviewMetrics/ReviewMetrics.styles";
@@ -48,27 +50,12 @@ export const ConfirmationButtonsContainer = styled.div`
   gap: 8px;
 `;
 
-export const PublishConfirmButton = styled(Button)<{ disabled: boolean }>`
-  padding-right: 22px;
-  padding-left: 22px;
-  background-color: ${({ disabled }) =>
-    disabled ? palette.highlight.grey5 : palette.solid.green};
-  color: ${palette.solid.white};
+export const PublishConfirmationMainPanel = styled(ReviewMetricsWrapper)`
+  padding-top: 40px;
 
-  &:hover {
-    cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
-    opacity: ${({ disabled }) => (disabled ? 1 : 0.9)};
-    background-color: ${({ disabled }) =>
-      disabled ? palette.highlight.grey5 : palette.solid.green};
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    padding: 40px;
   }
-
-  &::after {
-    content: "Publish";
-  }
-`;
-
-export const ConfirmationDialogueTopBarButton = styled(Button)`
-  white-space: nowrap;
 `;
 
 export const ConfirmationDialogueWrapper = styled.div`
@@ -275,4 +262,11 @@ export const ContextErrorImg = styled(ErrorImg)`
   width: 12px;
   height: 12px;
   transform: translate(0, 1px);
+`;
+
+export const EmptyIcon = styled.div`
+  width: 16px;
+  height: 16px;
+  border: 1px solid ${palette.highlight.grey4};
+  border-radius: 100%;
 `;
