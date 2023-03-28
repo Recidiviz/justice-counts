@@ -169,6 +169,8 @@ export const DataUpload: React.FC = observer(() => {
           ).length === 0;
         const isSuccessfulMetric =
           noSheetErrorsFound && metric.datapoints.length > 0;
+        const noMetricUpload =
+          noSheetErrorsFound && metric.datapoints.length === 0;
 
         /**
          * If there are no errors and only warnings, we still want to show the
@@ -184,6 +186,8 @@ export const DataUpload: React.FC = observer(() => {
 
         if (isSuccessfulMetric) {
           acc.successfulMetrics.push(metric);
+        } else if (noMetricUpload) {
+          acc.notUploadedMetrics.push(metric);
         } else {
           acc.errorWarningMetrics.push(metric);
         }
@@ -192,6 +196,7 @@ export const DataUpload: React.FC = observer(() => {
       },
       {
         successfulMetrics: [] as UploadedMetric[],
+        notUploadedMetrics: [] as UploadedMetric[],
         errorWarningMetrics: [] as UploadedMetric[],
         hasWarnings: false,
       }
