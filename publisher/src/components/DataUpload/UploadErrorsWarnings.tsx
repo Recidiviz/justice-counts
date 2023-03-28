@@ -56,11 +56,13 @@ type UploadErrorsWarningsProps = {
   errorsWarningsMetrics: ErrorsWarningsMetrics;
   selectedSystem: AgencySystems | undefined;
   resetToNewUpload: () => void;
+  fileName?: string;
 };
 export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
   errorsWarningsMetrics,
   selectedSystem,
   resetToNewUpload,
+  fileName,
 }) => {
   const navigate = useNavigate();
   const { agencyId } = useParams() as { agencyId: string };
@@ -318,7 +320,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
           <Button
             onClick={() =>
               navigate("review-metrics", {
-                state: metrics,
+                state: { uploadedMetrics: metrics, fileName },
                 replace: true,
               })
             }

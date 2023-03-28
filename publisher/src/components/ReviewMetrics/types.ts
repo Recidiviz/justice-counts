@@ -15,5 +15,38 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./useIsFooterVisible";
-export * from "./useWindowWidth";
+import { RawDatapoint, ReportOverview } from "@justice-counts/common/types";
+import React from "react";
+
+import { ButtonTypes } from "../DataUpload";
+
+export type ReviewHeaderActionButton = {
+  name: string;
+  type: ButtonTypes;
+  onClick: () => void;
+  disabled?: boolean;
+};
+
+export type ReviewMetric = {
+  datapoints: RawDatapoint[];
+  display_name: string;
+  key: string;
+  metricHasError?: boolean;
+  metricHasValidInput?: boolean;
+};
+
+export type ReviewMetricOverwrites = {
+  key: number;
+  metricName: string;
+  dimensionName: string;
+  startDate: string;
+};
+
+export type ReviewMetricsProps = {
+  title: string;
+  description: string | React.ReactNode;
+  buttons: ReviewHeaderActionButton[];
+  metrics: ReviewMetric[];
+  metricOverwrites?: ReviewMetricOverwrites[];
+  records?: ReportOverview[];
+};

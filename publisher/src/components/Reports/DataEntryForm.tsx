@@ -73,9 +73,13 @@ const TopBarButtonsContainer = styled.div<{ showDataEntryHelpPage: boolean }>`
   opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 0 : 1)};
 `;
 
-const DataEntryTopBarButton = styled(Button)`
+const DataEntryTopBarButton = styled(Button)<{ isSaveInProgress?: boolean }>`
   padding-right: 22px;
   padding-left: 22px;
+
+  opacity: ${({ isSaveInProgress }) => (isSaveInProgress ? "0.5" : "1")};
+  pointer-events: ${({ isSaveInProgress }) =>
+    isSaveInProgress ? "none" : "auto"};
 `;
 
 const TopBarCloseHelpButtonContainer = styled.div<{
@@ -119,6 +123,7 @@ const DataEntryForm: React.FC<{
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [hasVersionConflict, setHasVersionConflict] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isSaveInProgress, setIsSaveInProgress] = useState(false);
   const metricsRef = useRef<HTMLDivElement[]>([]);
   const { formStore, reportStore, userStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
@@ -196,6 +201,7 @@ const DataEntryForm: React.FC<{
         const agency = userStore.getAgency(agencyID.toString());
         trackReportNotStartedToDraft(reportID, agency);
       }
+      setIsSaveInProgress(false);
     } else {
       const body = await response.json();
       if (body.code === "version_conflict") {
@@ -212,6 +218,7 @@ const DataEntryForm: React.FC<{
         showToast({ message: "Failed to save", color: "red" });
       }
       trackAutosaveFailed(reportID);
+      setIsSaveInProgress(false);
     }
   };
 
@@ -286,6 +293,7 @@ const DataEntryForm: React.FC<{
             <DataEntryTopBarButton
               type="blue"
               onClick={() => navigate("review")}
+              isSaveInProgress={isSaveInProgress}
             >
               Review
             </DataEntryTopBarButton>
@@ -303,6 +311,7 @@ const DataEntryForm: React.FC<{
             const target = e.target as HTMLFormElement;
             const metricKey =
               target.getAttribute("data-metric-key") ?? undefined;
+            setIsSaveInProgress(true);
             debouncedSave(metricKey);
           }}
         >

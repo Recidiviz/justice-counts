@@ -15,5 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./useIsFooterVisible";
-export * from "./useWindowWidth";
+export * from "./ReviewMetrics";
+export * from "./ReviewMetricsModal";
+export * from "./types";

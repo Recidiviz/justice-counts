@@ -98,7 +98,7 @@ const reportListColumnTitles = [
   "Last Modified",
 ];
 
-type RecordsBulkAction = "publish" | "unpublish" | "delete";
+export type RecordsBulkAction = "publish" | "unpublish" | "delete";
 
 const Reports: React.FC = () => {
   const { reportStore, userStore } = useStore();
@@ -157,12 +157,6 @@ const Reports: React.FC = () => {
         </Row>
       );
     }
-  };
-
-  const publishOrUnpublishMultipleReports = async (
-    status: "PUBLISHED" | "DRAFT"
-  ) => {
-    reportStore.updateMultipleReportStatuses(selectedRecords, agencyId, status);
   };
 
   useEffect(() => {
@@ -489,11 +483,14 @@ const Reports: React.FC = () => {
                       {bulkAction === "publish" && selectedRecords.length > 0 && (
                         <ReportActionsButton
                           buttonColor="green"
-                          onClick={() => {
-                            clearAllSelectedRecords();
-                            clearBulkAction();
-                            publishOrUnpublishMultipleReports("PUBLISHED");
-                          }}
+                          onClick={() =>
+                            navigate("bulk-review", {
+                              state: {
+                                recordsIds: selectedRecords,
+                                action: bulkAction,
+                              },
+                            })
+                          }
                         >
                           Review and Publish
                         </ReportActionsButton>
@@ -502,13 +499,16 @@ const Reports: React.FC = () => {
                         selectedRecords.length > 0 && (
                           <ReportActionsButton
                             buttonColor="orange"
-                            onClick={() => {
-                              clearAllSelectedRecords();
-                              clearBulkAction();
-                              publishOrUnpublishMultipleReports("DRAFT");
-                            }}
+                            onClick={() =>
+                              navigate("bulk-review", {
+                                state: {
+                                  recordsIds: selectedRecords,
+                                  action: bulkAction,
+                                },
+                              })
+                            }
                           >
-                            Unpublish
+                            Review and Unpublish
                           </ReportActionsButton>
                         )}
                     </>
