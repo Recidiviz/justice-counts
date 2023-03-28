@@ -472,8 +472,20 @@ export const MessagesContainer = styled.div`
   margin-top: 19px;
 `;
 
-export const Message = styled.div`
+type MessageProps = {
+  enabled?: boolean | null;
+};
+
+export const Message = styled.div<MessageProps>`
   border-top: 1px solid ${palette.highlight.grey4};
+  color: ${({ enabled }) =>
+    enabled ? palette.solid.darkgrey : palette.highlight.grey10};
+`;
+
+export const MetricEnableDescription = styled.div`
+  ${typography.sizeCSS.normal};
+  width: 100%;
+  margin: 0 0 13px 0;
 `;
 
 export const SectionHeader = styled.div`
@@ -616,9 +628,14 @@ export const LoadingSubheader = styled.div`
   ${typography.sizeCSS.normal};
 `;
 
-export const CheckIcon = styled.img`
+type CheckIconProps = {
+  enabled?: boolean | null;
+};
+
+export const CheckIcon = styled.img<CheckIconProps>`
   width: 16px;
   margin-right: 5px;
+  ${({ enabled }) => !enabled && `filter: grayscale(1);`};
 `;
 
 export const ExtendedOpacityGradient = styled(OpacityGradient)`

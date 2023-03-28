@@ -39,6 +39,7 @@ import {
   MessagesContainer,
   MessageSubtitle,
   MessageTitle,
+  MetricEnableDescription,
   MetricTitle,
   RedText,
   SectionHeader,
@@ -90,6 +91,19 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
   const sortErrorsBeforeWarnings = (a: ErrorWarningMessage) =>
     a.type === "ERROR" ? -1 : 1;
 
+  const metricNotConfigured = (
+    <MetricEnableDescription>
+      This metric has not been configured yet. Please visit the Metric
+      Configuration page to configure this metric.
+    </MetricEnableDescription>
+  );
+  const metricDisabled = (
+    <MetricEnableDescription>
+      This metric is disabled. If you would like to enable it, visit the Metric
+      Configuration page.
+    </MetricEnableDescription>
+  );
+
   const renderMessages = () => {
     return (
       <>
@@ -99,9 +113,10 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
             <SectionHeader>Alerts</SectionHeader>
             {errorsWarningsAndSuccessfulMetrics.errorWarningMetrics.map(
               (metric) => (
-                <Message key={metric.display_name}>
+                <Message key={metric.display_name} enabled={metric.enabled}>
                   <MetricTitle>{metric.display_name}</MetricTitle>
-
+                  {metric.enabled === null && metricNotConfigured}
+                  {metric.enabled === false && metricDisabled}
                   {metric.metric_errors
                     .sort(sortMetricLevelErrorsBeforeSheetLevelErrors)
                     .map((sheet) => (
@@ -170,12 +185,35 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
             <SectionHeader>Saved Metrics</SectionHeader>
             {errorsWarningsAndSuccessfulMetrics.successfulMetrics.map(
               (metric) => (
-                <Message key={metric.key}>
+                <Message key={metric.key} enabled={metric.enabled}>
                   <MetricTitle>
-                    <CheckIcon src={checkIcon} alt="" />
+                    <CheckIcon
+                      src={checkIcon}
+                      alt=""
+                      enabled={metric.enabled}
+                    />
                     {metric.display_name}
                   </MetricTitle>
-
+                  {metric.enabled === null && metric.datapoints.length > 0 && (
+                    <MetricEnableDescription>
+                      Your uploaded data has been saved. This metric has not
+                      been configured yet. Please visit the Metric Configuration
+                      page to configure this metric.
+                    </MetricEnableDescription>
+                  )}
+                  {metric.enabled === false && metric.datapoints.length > 0 && (
+                    <MetricEnableDescription>
+                      Your uploaded data has been saved. This metric is
+                      disabled. If you would like to enable it, visit the Metric
+                      Configuration page.
+                    </MetricEnableDescription>
+                  )}
+                  {metric.enabled === null &&
+                    metric.datapoints.length === 0 &&
+                    metricNotConfigured}
+                  {metric.enabled === false &&
+                    metric.datapoints.length === 0 &&
+                    metricDisabled}
                   {metric.metric_errors.map((sheet) => (
                     <Fragment key={sheet.display_name + sheet.sheet_name}>
                       {sheet.messages.map((message) => (
