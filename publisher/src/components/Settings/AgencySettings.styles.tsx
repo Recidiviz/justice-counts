@@ -43,7 +43,8 @@ export const AgencySettingsWrapper = styled.div`
   z-index: 1;
 
   @media only screen and (max-width: ${AGENCY_SETTINGS_CONTAINER_WIDTH +
-    SETTINGS_MENU_WITH_PADDINGS_WIDTH * 2}px) {
+    SETTINGS_MENU_WITH_PADDINGS_WIDTH * 2 +
+    24}px) {
     align-items: start;
     margin-right: 0;
   }
@@ -70,7 +71,9 @@ export const AgencySettingsContent = styled.div`
 `;
 
 export const AgencySettingsTitle = styled.div`
-  width: ${AGENCY_SETTINGS_CONTAINER_WIDTH}px;
+  max-width: ${AGENCY_SETTINGS_CONTAINER_WIDTH}px;
+  width: 100%;
+  min-width: fit-content;
   display: flex;
   flex-direction: row;
   justify-content: start;
