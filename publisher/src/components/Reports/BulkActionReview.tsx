@@ -113,6 +113,8 @@ const BulkActionReview = () => {
             ].filter((dp) => dp.report_id && recordsIds.includes(dp.report_id)),
             display_name: metric.display_name,
             key: metric.key,
+            metricHasError: false,
+            metricHasValidInput: true,
           };
           return [...acc, reviewMetric];
         }, [] as ReviewMetric[])

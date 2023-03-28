@@ -48,14 +48,16 @@ const UploadReview: React.FC = observer(() => {
   }
 
   // review component props
-  const filteredMetrics = uploadedMetrics
+  const metrics = uploadedMetrics
     .map((metric) => ({
       ...metric,
       datapoints: metric.datapoints.filter((dp) => dp.value !== null),
+      metricHasError: false,
+      metricHasValidInput: true,
     }))
     .filter((metric) => metric.datapoints.length > 0);
   const overwrites: ReviewMetricOverwrites[] = [];
-  filteredMetrics.forEach((metric) => {
+  metrics.forEach((metric) => {
     metric.datapoints.forEach((dp) => {
       if (dp.old_value !== null) {
         const overwriteData: ReviewMetricOverwrites = {
@@ -68,14 +70,13 @@ const UploadReview: React.FC = observer(() => {
       }
     });
   });
-  const title =
-    filteredMetrics.length > 0 ? "Review Upload" : "No Metrics to Review";
+  const title = metrics.length > 0 ? "Review Upload" : "No Metrics to Review";
   const description =
-    filteredMetrics.length > 0
+    metrics.length > 0
       ? "Here’s a breakdown of data from the file you uploaded. You can publish these changes now, or save as a draft for later."
       : "Uploaded file contains no metrics to review.";
   const buttons: ReviewHeaderActionButton[] =
-    filteredMetrics.length > 0
+    metrics.length > 0
       ? [
           {
             name: "Exit Without Publishing",
@@ -103,7 +104,7 @@ const UploadReview: React.FC = observer(() => {
         title={title}
         description={description}
         buttons={buttons}
-        metrics={filteredMetrics}
+        metrics={metrics}
         metricOverwrites={overwrites}
       />
     </>
