@@ -312,7 +312,7 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
                 Confirm breakdown availability
               </BreakdownAvailabilitySubTitle>
               <BreakdownAvailabilityDescription>
-                Are you currently able to share any part of this metric?
+                Can you share data for this breakdown?
               </BreakdownAvailabilityDescription>
 
               <BreakdownAvailabilityMiniButtonWrapper>
