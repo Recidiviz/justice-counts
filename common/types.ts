@@ -118,6 +118,7 @@ export interface ReportOverview {
 
 export interface Report extends ReportOverview {
   metrics: Metric[];
+  datapoints: RawDatapoint[];
 }
 
 export type MetricWithErrors = Metric & {
