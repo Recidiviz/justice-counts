@@ -42,6 +42,7 @@ const BulkActionReview = () => {
     action: RecordsBulkAction;
   };
   const agencyId = Number(params.agencyId);
+  const agencyIdString = String(agencyId);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingError, setLoadingError] = useState<string | undefined>(
@@ -55,7 +56,7 @@ const BulkActionReview = () => {
   const publishMultipleRecords = async () => {
     await reportStore.updateMultipleReportStatuses(
       recordsIds,
-      agencyId.toString(),
+      agencyIdString,
       "PUBLISHED"
     );
     setIsSuccessModalOpen(true);
@@ -64,7 +65,7 @@ const BulkActionReview = () => {
   const unpublishMultipleRecords = async () => {
     await reportStore.updateMultipleReportStatuses(
       recordsIds,
-      agencyId.toString(),
+      agencyIdString,
       "DRAFT"
     );
     setIsSuccessModalOpen(true);
@@ -72,11 +73,7 @@ const BulkActionReview = () => {
 
   useEffect(() => {
     const initialize = async () => {
-      // probably need better way to get reports metrics
-      // await datapointsStore.getDatapoints(agencyId);
-      const result = await reportStore.initializeReportSettings(
-        agencyId.toString()
-      );
+      const result = await reportStore.initializeReportSettings(agencyIdString);
       if (result instanceof Error) {
         setIsLoading(false);
         return setLoadingError(result.message);
@@ -84,7 +81,7 @@ const BulkActionReview = () => {
       const reportsWithDatapoints =
         (await reportStore.getMultipleReportsWithDatapoints(
           recordsIds,
-          String(agencyId)
+          agencyIdString
         )) as Report[];
       const combinedDatapointsFromAllReports = reportsWithDatapoints
         .map((report) => report.datapoints)

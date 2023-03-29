@@ -177,11 +177,6 @@ const Reports: React.FC = () => {
 
   useEffect(() => {
     const initialize = async () => {
-      // const hi = await reportStore.getMultipleReportsWithDatapoints(
-      //   [2213],
-      //   agencyId
-      // );
-      // console.log("HI:: ", hi);
       reportStore.resetState();
       const result = await reportStore.getReportOverviews(agencyId);
       if (result instanceof Error) {
