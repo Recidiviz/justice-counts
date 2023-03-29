@@ -15,6 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import DatapointsStore from "@justice-counts/common/stores/BaseDatapointsStore";
+import { RawDatapointsByMetric, Report } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -46,7 +48,9 @@ const BulkActionReview = () => {
     undefined
   );
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const { reportStore, datapointsStore } = useStore();
+  const { reportStore } = useStore();
+
+  const [datapoints, setDatapoints] = useState<RawDatapointsByMetric>({});
 
   const publishMultipleRecords = async () => {
     await reportStore.updateMultipleReportStatuses(
@@ -69,7 +73,7 @@ const BulkActionReview = () => {
   useEffect(() => {
     const initialize = async () => {
       // probably need better way to get reports metrics
-      await datapointsStore.getDatapoints(agencyId);
+      // await datapointsStore.getDatapoints(agencyId);
       const result = await reportStore.initializeReportSettings(
         agencyId.toString()
       );
@@ -77,6 +81,19 @@ const BulkActionReview = () => {
         setIsLoading(false);
         return setLoadingError(result.message);
       }
+      const reportsWithDatapoints =
+        (await reportStore.getMultipleReportsWithDatapoints(
+          recordsIds,
+          String(agencyId)
+        )) as Report[];
+      const combinedDatapointsFromAllReports = reportsWithDatapoints
+        .map((report) => report.datapoints)
+        .flat();
+      setDatapoints(
+        DatapointsStore.keyRawDatapointsByMetric(
+          combinedDatapointsFromAllReports
+        )
+      );
       setIsLoading(false);
     };
 
@@ -88,7 +105,7 @@ const BulkActionReview = () => {
     document.body.style.overflow = isSuccessModalOpen ? "hidden" : "unset";
   }, [isSuccessModalOpen]);
 
-  if (isLoading || datapointsStore.loading)
+  if (isLoading)
     return (
       <PageWrapper>
         <Loading />
@@ -108,9 +125,7 @@ const BulkActionReview = () => {
     enabledMetrics.length > 0
       ? enabledMetrics.reduce((acc, metric) => {
           const reviewMetric = {
-            datapoints: datapointsStore.rawDatapointsByMetric[
-              metric.key
-            ].filter((dp) => dp.report_id && recordsIds.includes(dp.report_id)),
+            datapoints: datapoints[metric.key],
             display_name: metric.display_name,
             key: metric.key,
             metricHasError: false,
