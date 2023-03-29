@@ -83,7 +83,8 @@ export const Router = () => {
             <Route path="/settings/*" element={<Settings />} />
           )}
 
-          {(hasCompletedOnboarding ||
+          {(userStore.isJusticeCountsAdmin(agencyId) ||
+            hasCompletedOnboarding ||
             (!hasCompletedOnboarding && isAddDataOrPublishDataStep)) && (
             <>
               <Route path={`/${REPORTS_LOWERCASE}`} element={<Reports />} />
