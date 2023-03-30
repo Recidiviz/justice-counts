@@ -206,6 +206,17 @@ const Reports: React.FC = () => {
     [reportStore.reportOverviewList, reportsFilter]
   );
 
+  const isPublishDisabled =
+    reportsFilter === "published" ||
+    reportsFilter === "not_started" ||
+    filteredReportsMemoized.filter((record) => record.status === "DRAFT")
+      .length === 0;
+  const isUnpublishDisabled =
+    reportsFilter === "draft" ||
+    reportsFilter === "not_started" ||
+    filteredReportsMemoized.filter((record) => record.status === "PUBLISHED")
+      .length === 0;
+
   const isAdmin =
     userStore.isJusticeCountsAdmin(agencyId) ||
     userStore.isAgencyAdmin(agencyId);
@@ -455,10 +466,7 @@ const Reports: React.FC = () => {
                                 onClick={() => {
                                   selectBulkAction("publish");
                                 }}
-                                disabled={
-                                  reportsFilter === "published" ||
-                                  reportsFilter === "not_started"
-                                }
+                                disabled={isPublishDisabled}
                               >
                                 Publish...
                               </BulkActionsDropdownMenuItem>
@@ -466,10 +474,7 @@ const Reports: React.FC = () => {
                                 onClick={() => {
                                   selectBulkAction("unpublish");
                                 }}
-                                disabled={
-                                  reportsFilter === "draft" ||
-                                  reportsFilter === "not_started"
-                                }
+                                disabled={isUnpublishDisabled}
                               >
                                 Unpublish...
                               </BulkActionsDropdownMenuItem>
