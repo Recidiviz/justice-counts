@@ -64,8 +64,8 @@ export const UploadedFileRow: React.FC<{
     dateUploaded: string;
     dateIngested: string;
     system?: AgencySystems;
-    uploadedByName: string;
-    uploadedByRole: AgencyTeamMemberRole;
+    uploadedByName?: string;
+    uploadedByRole?: AgencyTeamMemberRole;
   };
   deleteUploadedFile: (spreadsheetID: number) => void;
   updateUploadedFileStatus: (
@@ -155,12 +155,18 @@ export const UploadedFileRow: React.FC<{
         <UploadedFilesCell capitalize>
           <UploadedContainer>
             {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
-            <TeamMemberNameWithBadge
-              name={uploadedByName}
-              badgeId={id?.toString()}
-              role={uploadedByRole}
-            />
-            <DateUploaded>{`/ ${dateUploaded}`}</DateUploaded>
+            {uploadedByName && (
+              <TeamMemberNameWithBadge
+                name={uploadedByName}
+                badgeId={id?.toString()}
+                role={uploadedByRole}
+              />
+            )}
+            {uploadedByName ? (
+              <DateUploaded>{`/ ${dateUploaded}`}</DateUploaded>
+            ) : (
+              <>{dateUploaded}</>
+            )}
           </UploadedContainer>
         </UploadedFilesCell>
 
