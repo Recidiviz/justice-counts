@@ -76,7 +76,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
     selectedSystem && systemToTemplateSpreadsheetFileName[selectedSystem];
   const successfulMetricsCount =
     errorsWarningsAndSuccessfulMetrics.successfulMetrics.length;
-  const noMetricUpload =
+  const noMetricUploadCount =
     errorsWarningsAndSuccessfulMetrics.notUploadedMetrics.length;
   /** If there are non-metric errors, include them in the error count */
   const errorCount = nonMetricErrors
@@ -247,7 +247,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
           </>
         )}
         {/* Metrics with no Uploaded Data */}
-        {noMetricUpload > 0 && (
+        {noMetricUploadCount > 0 && (
           <>
             <SectionHeader>Metrics Not Uploaded</SectionHeader>
             {errorsWarningsAndSuccessfulMetrics.notUploadedMetrics.map(
