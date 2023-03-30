@@ -47,7 +47,6 @@ import {
   Title,
   Wrapper,
 } from ".";
-import { NotReportedIcon } from "./NotReportedIcon";
 import {
   ErrorsWarningsMetrics,
   ErrorWarningMessage,
@@ -77,7 +76,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
     selectedSystem && systemToTemplateSpreadsheetFileName[selectedSystem];
   const successfulMetricsCount =
     errorsWarningsAndSuccessfulMetrics.successfulMetrics.length;
-  const noMetricUploadCount =
+  const noMetricUpload =
     errorsWarningsAndSuccessfulMetrics.notUploadedMetrics.length;
   /** If there are non-metric errors, include them in the error count */
   const errorCount = nonMetricErrors
@@ -248,16 +247,13 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
           </>
         )}
         {/* Metrics with no Uploaded Data */}
-        {noMetricUploadCount > 0 && (
+        {noMetricUpload > 0 && (
           <>
             <SectionHeader>Metrics Not Uploaded</SectionHeader>
             {errorsWarningsAndSuccessfulMetrics.notUploadedMetrics.map(
               (metric) => (
                 <Message key={metric.key} enabled={metric.enabled}>
-                  <MetricTitle>
-                    {metric.display_name}{" "}
-                    <NotReportedIcon size={16} lighter noTooltip />
-                  </MetricTitle>
+                  <MetricTitle>{metric.display_name}</MetricTitle>
                 </Message>
               )
             )}
