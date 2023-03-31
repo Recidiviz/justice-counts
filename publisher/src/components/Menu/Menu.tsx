@@ -253,7 +253,9 @@ const Menu: React.FC = () => {
         )}
 
         {/* Reports */}
-        {(hasCompletedOnboarding || isAddDataOrPublishDataStep) && (
+        {(userStore.isJusticeCountsAdmin(agencyId) ||
+          hasCompletedOnboarding ||
+          isAddDataOrPublishDataStep) && (
           <MenuItem
             onClick={() => {
               navigate(REPORTS_LOWERCASE);
@@ -370,12 +372,14 @@ const Menu: React.FC = () => {
           Log Out
         </MenuItem>
 
-        {(hasCompletedOnboarding ||
+        {(userStore.isJusticeCountsAdmin(agencyId) ||
+          hasCompletedOnboarding ||
           (hasCompletedOnboarding === false &&
             currentTopicID !== "WELCOME")) && (
           <MenuItem id="upload" buttonPadding>
             <HeaderUploadButton
               type={
+                userStore.isJusticeCountsAdmin(agencyId) ||
                 hasCompletedOnboarding ||
                 (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
                   ? "blue"
@@ -383,6 +387,7 @@ const Menu: React.FC = () => {
               }
               onClick={() => {
                 if (
+                  userStore.isJusticeCountsAdmin(agencyId) ||
                   hasCompletedOnboarding ||
                   (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
                 )
@@ -390,6 +395,7 @@ const Menu: React.FC = () => {
                 handleCloseMobileMenu();
               }}
               enabledDuringOnboarding={
+                userStore.isJusticeCountsAdmin(agencyId) ||
                 hasCompletedOnboarding ||
                 (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
               }
