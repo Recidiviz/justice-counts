@@ -42,7 +42,8 @@ export const Container = styled(DataUploadContainer)`
   align-items: center;
 `;
 
-export const ReviewMetricsWrapper = styled.div`
+export const ReviewMetricsWrapper = styled.div<{ hasNoDatapoints: boolean }>`
+  ${({ hasNoDatapoints }) => hasNoDatapoints && `height: 100%;`}
   max-width: 100%;
   padding: 40px 0 128px 612px;
   display: flex;
@@ -281,4 +282,8 @@ export const ReviewPublishModalButtonsContainer = styled(
 export const ReviewPublishModalButton = styled(ReportActionsButton)`
   margin-left: unset;
   ${typography.sizeCSS.normal};
+`;
+
+export const NoDatapointsMessage = styled.div`
+  margin: auto auto;
 `;
