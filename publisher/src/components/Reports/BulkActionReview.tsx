@@ -113,17 +113,36 @@ const BulkActionReview = () => {
     return <div>Error: {loadingError}</div>;
   }
 
-  const enabledMetrics = reportStore.agencyMetrics.filter(
-    (metric) => metric.enabled
+  let currentSystemKey;
+  const enabledMetricKeys = reportStore.agencyMetrics.reduce((keys, metric) => {
+    if (metric.enabled) {
+      currentSystemKey = metric.system.key;
+      keys.push(metric.key);
+    }
+    return keys;
+  }, [] as string[]);
+
+  const metricsToDisplay = Object.entries(datapoints).reduce(
+    (acc, [metricKey, datapoint]) => {
+      if (enabledMetricKeys.includes(metricKey)) {
+        acc.push({
+          key: metricKey,
+          displayName: datapoint[0].metric_display_name as string,
+        });
+      }
+
+      return acc;
+    },
+    [] as { key: string; displayName: string }[]
   );
 
   // review component props
   const metrics =
-    enabledMetrics.length > 0
-      ? enabledMetrics.reduce((acc, metric) => {
+    metricsToDisplay.length > 0
+      ? metricsToDisplay.reduce((acc, metric) => {
           const reviewMetric = {
             datapoints: datapoints[metric.key],
-            display_name: metric.display_name,
+            display_name: metric.displayName,
             key: metric.key,
             metricHasError: false,
             metricHasValidInput: true,
@@ -131,6 +150,7 @@ const BulkActionReview = () => {
           return [...acc, reviewMetric];
         }, [] as ReviewMetric[])
       : [];
+
   const records = recordsIds.map(
     (recordID) => reportStore.reportOverviews[recordID]
   );
@@ -174,9 +194,9 @@ const BulkActionReview = () => {
 
   // modal props
   const systemSearchParam =
-    enabledMetrics.length > 0 ? enabledMetrics[0].system.key : undefined;
+    enabledMetricKeys.length > 0 ? currentSystemKey : undefined;
   const metricSearchParam =
-    enabledMetrics.length > 0 ? enabledMetrics[0].key : undefined;
+    enabledMetricKeys.length > 0 ? enabledMetricKeys[0] : undefined;
 
   return (
     <ReviewWrapper>
