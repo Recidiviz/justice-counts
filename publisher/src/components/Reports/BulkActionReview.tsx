@@ -84,13 +84,17 @@ const BulkActionReview = () => {
           agencyIdString
         )) as Report[];
       const combinedDatapointsFromAllReports = reportsWithDatapoints
-        .map((report) => report.datapoints)
+        ?.map((report) => report.datapoints)
         .flat();
-      setDatapoints(
-        DatapointsStore.keyRawDatapointsByMetric(
-          combinedDatapointsFromAllReports
-        )
-      );
+
+      if (combinedDatapointsFromAllReports) {
+        setDatapoints(
+          DatapointsStore.keyRawDatapointsByMetric(
+            combinedDatapointsFromAllReports
+          )
+        );
+      }
+
       setIsLoading(false);
     };
 

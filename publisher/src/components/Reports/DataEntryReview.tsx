@@ -102,11 +102,13 @@ const DataEntryReview = () => {
           String(agencyId)
         )) as Report[];
 
-      setDatapoints(
-        DatapointsStore.keyRawDatapointsByMetric(
-          reportWithDatapoints.datapoints
-        )
-      );
+      if (reportWithDatapoints.datapoints) {
+        setDatapoints(
+          DatapointsStore.keyRawDatapointsByMetric(
+            reportWithDatapoints.datapoints
+          )
+        );
+      }
 
       setLoadingDatapoints(false);
     };
