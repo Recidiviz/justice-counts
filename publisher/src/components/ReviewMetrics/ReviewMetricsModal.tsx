@@ -15,12 +15,16 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { ReportOverview } from "@justice-counts/common/types";
+import { printReportTitle } from "@justice-counts/common/utils";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { RecordsBulkAction } from "../../pages/Reports";
 import bigBlueCheck from "../assets/big-blue-check.png";
+import warningIcon from "../assets/warning-icon.svg";
 import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
+import { ReportActionsButtonColors } from "../Reports";
 import {
   ReviewPublishModalButton,
   ReviewPublishModalButtonsContainer,
@@ -29,6 +33,7 @@ import {
   ReviewPublishModalIcon,
   ReviewPublishModalTitle,
   ReviewPublishModalWrapper,
+  SummarySectionLine,
 } from "./ReviewMetrics.styles";
 
 export const ReviewMetricsModal: React.FC<{
@@ -37,12 +42,22 @@ export const ReviewMetricsModal: React.FC<{
   recordsCount?: number;
   fileName?: string;
   action?: RecordsBulkAction;
+  isExistingReportWarningModalOpen?: boolean;
+  existingReports?: ReportOverview[];
+  publishingExistingReportsButtons?: {
+    name: string;
+    color?: string;
+    onClick: () => void;
+  }[];
 }> = ({
   systemSearchParam,
   metricSearchParam,
   recordsCount,
   fileName,
   action,
+  isExistingReportWarningModalOpen,
+  existingReports,
+  publishingExistingReportsButtons,
 }) => {
   const { agencyId } = useParams();
   const navigate = useNavigate();
@@ -56,42 +71,78 @@ export const ReviewMetricsModal: React.FC<{
       navigate(`/agency/${agencyId}/data`);
     }
   };
+
   return (
     <ReviewPublishModalWrapper>
-      <ReviewPublishModalContainer>
-        <ReviewPublishModalIcon src={bigBlueCheck} alt="" />
-        <ReviewPublishModalTitle>
-          {recordsCount && (
-            <>
-              <span>{recordsCount}</span>{" "}
-              {recordsCount > 1 ? REPORTS_LOWERCASE : REPORT_LOWERCASE}{" "}
-              {action === "publish" && "published!"}
-              {action === "unpublish" && "unpublished!"}
-            </>
-          )}
-          {fileName && (
-            <>
-              Data from <span>{fileName}</span> published!
-            </>
-          )}
-          {!recordsCount && !fileName && "Data published!"}
-        </ReviewPublishModalTitle>
-        <ReviewPublishModalHint>
-          {action === "unpublish"
-            ? `Data has been successfully unpublished.`
-            : "You can view the published data in the Data tab."}
-        </ReviewPublishModalHint>
-        <ReviewPublishModalButtonsContainer>
-          <ReviewPublishModalButton
-            onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
-          >
-            Go to Records
-          </ReviewPublishModalButton>
-          <ReviewPublishModalButton buttonColor="blue" onClick={goToDataPage}>
-            Go to Data
-          </ReviewPublishModalButton>
-        </ReviewPublishModalButtonsContainer>
-      </ReviewPublishModalContainer>
+      {isExistingReportWarningModalOpen ? (
+        <ReviewPublishModalContainer>
+          <ReviewPublishModalIcon
+            src={warningIcon}
+            alt=""
+            width={20}
+            height={20}
+          />
+          <ReviewPublishModalTitle>Wait!</ReviewPublishModalTitle>
+          <ReviewPublishModalHint>
+            The following existing reports will also be published. Are you sure
+            you want to proceed?
+          </ReviewPublishModalHint>
+          <div>
+            {existingReports?.map((record) => (
+              <SummarySectionLine key={record.id}>
+                {printReportTitle(record.month, record.year, record.frequency)}
+              </SummarySectionLine>
+            ))}
+          </div>
+          <ReviewPublishModalButtonsContainer>
+            {publishingExistingReportsButtons?.map((button) => (
+              <ReviewPublishModalButton
+                buttonColor={button.color as ReportActionsButtonColors}
+                onClick={button.onClick}
+              >
+                {button.name}
+              </ReviewPublishModalButton>
+            ))}
+          </ReviewPublishModalButtonsContainer>
+        </ReviewPublishModalContainer>
+      ) : (
+        <ReviewPublishModalContainer>
+          <ReviewPublishModalIcon src={bigBlueCheck} alt="" />
+          <ReviewPublishModalTitle>
+            {recordsCount && (
+              <>
+                <span>{recordsCount}</span>{" "}
+                {recordsCount > 1 ? REPORTS_LOWERCASE : REPORT_LOWERCASE}{" "}
+                {action === "publish" && "published!"}
+                {action === "unpublish" && "unpublished!"}
+              </>
+            )}
+            {fileName && (
+              <>
+                Data from <span>{fileName}</span> published!
+              </>
+            )}
+            {!recordsCount && !fileName && "Data published!"}
+          </ReviewPublishModalTitle>
+          <ReviewPublishModalHint>
+            {action === "unpublish"
+              ? `Data has been successfully unpublished.`
+              : "You can view the published data in the Data tab."}
+          </ReviewPublishModalHint>
+          <ReviewPublishModalButtonsContainer>
+            <ReviewPublishModalButton
+              onClick={() =>
+                navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)
+              }
+            >
+              Go to Records
+            </ReviewPublishModalButton>
+            <ReviewPublishModalButton buttonColor="blue" onClick={goToDataPage}>
+              Go to Data
+            </ReviewPublishModalButton>
+          </ReviewPublishModalButtonsContainer>
+        </ReviewPublishModalContainer>
+      )}
     </ReviewPublishModalWrapper>
   );
 };
