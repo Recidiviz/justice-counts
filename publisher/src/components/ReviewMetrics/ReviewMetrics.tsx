@@ -208,8 +208,8 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
 
       {hasNoDatapoints ? (
         <NoDatapointsMessage>
-          There are no metric data to review. Please go back and add metric data
-          to Review & Publish.
+          There is no data to review. Please go back and enter data in order to
+          Review & Publish.
         </NoDatapointsMessage>
       ) : (
         <MetricsPanel>
