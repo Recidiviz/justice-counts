@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { ReportOverview } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import {
@@ -24,6 +25,7 @@ import {
   useParams,
 } from "react-router-dom";
 
+import { useStore } from "../../stores";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import {
   ReviewHeaderActionButton,
@@ -36,9 +38,12 @@ import { UploadedMetric } from "./types";
 const UploadReview: React.FC = observer(() => {
   const { agencyId } = useParams();
   const { state } = useLocation();
-  const { uploadedMetrics, fileName } = state as {
+  const { reportStore } = useStore();
+  const { uploadedMetrics, fileName, newReports, updatedReportIDs } = state as {
     uploadedMetrics: UploadedMetric[] | null;
     fileName: string;
+    newReports: ReportOverview[];
+    updatedReportIDs: number[];
   };
   const navigate = useNavigate();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
@@ -48,6 +53,10 @@ const UploadReview: React.FC = observer(() => {
   }
 
   // review component props
+  const existingRecords = updatedReportIDs.map(
+    (id) => reportStore.reportOverviews[id]
+  );
+  const existingAndNewRecords = [...existingRecords, ...newReports];
   const metrics = uploadedMetrics
     .map((metric) => ({
       ...metric,
@@ -106,6 +115,7 @@ const UploadReview: React.FC = observer(() => {
         buttons={buttons}
         metrics={metrics}
         metricOverwrites={overwrites}
+        records={existingAndNewRecords}
       />
     </>
   );
