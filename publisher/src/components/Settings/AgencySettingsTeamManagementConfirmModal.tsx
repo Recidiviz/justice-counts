@@ -21,10 +21,7 @@ import React from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components/macro";
 
-import {
-  RemoveTeamMemberButton,
-  TransparentButton,
-} from "./AgencySettings.styles";
+import { Button } from "../shared/Button";
 import {
   ConfirmModalButtonsContainer,
   ConfirmModalContent,
@@ -70,10 +67,6 @@ const TeamManagementModalButtonsContainer = styled(
   justify-content: space-between;
 `;
 
-const CancelButton = styled(TransparentButton)`
-  padding: 9px 16px;
-`;
-
 type Props = {
   userName?: string;
   closeModal: () => void;
@@ -95,10 +88,12 @@ export const AgencySettingsTeamManagementConfirmModal: React.FC<Props> = ({
             Are you sure you want to remove <span>{userName}</span>
           </ModalInfoText>
           <TeamManagementModalButtonsContainer>
-            <CancelButton onClick={closeModal}>Cancel</CancelButton>
-            <RemoveTeamMemberButton onClick={handleConfirm}>
-              Remove from agency
-            </RemoveTeamMemberButton>
+            <Button label="Cancel" onClick={closeModal} />
+            <Button
+              label="Remove from agency"
+              onClick={handleConfirm}
+              buttonColor="red"
+            />
           </TeamManagementModalButtonsContainer>
         </TeamManagementModalContent>
       </TeamManagementModalInnerWrapper>

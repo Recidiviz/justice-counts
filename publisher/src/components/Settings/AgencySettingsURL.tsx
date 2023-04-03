@@ -22,6 +22,7 @@ import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import rightArrow from "../assets/right-arrow.svg";
+import { Button } from "../shared/Button";
 import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,
@@ -30,11 +31,9 @@ import {
   AgencyInfoTextInput,
   AgencySettingsBlock,
   AgencySettingsBlockTitle,
-  EditButton,
+  EditArrowImage,
   EditButtonContainer,
   EditModeButtonsContainer,
-  FilledButton,
-  TransparentButton,
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
@@ -113,10 +112,8 @@ const AgencySettingsUrl: React.FC<{
             value={urlText}
           />
           <EditModeButtonsContainer noMargin>
-            <TransparentButton onClick={handleCancelClick}>
-              Cancel
-            </TransparentButton>
-            <FilledButton onClick={handleSaveClick}>Save</FilledButton>
+            <Button label="Cancel" onClick={handleCancelClick} />
+            <Button label="Save" onClick={handleSaveClick} buttonColor="blue" />
           </EditModeButtonsContainer>
         </>
       </AgencySettingsEditModeModal>
@@ -145,15 +142,20 @@ const AgencySettingsUrl: React.FC<{
         </AgencyInfoBlockDescription>
         {allowEdit && (
           <EditButtonContainer>
-            <EditButton
+            <Button
+              label={
+                <>
+                  Edit URL <EditArrowImage src={rightArrow} alt="" />
+                </>
+              }
               onClick={() => {
                 setUrlText(homepageUrlSetting);
                 openSetting();
               }}
-            >
-              Edit URL
-              <img src={rightArrow} alt="" />
-            </EditButton>
+              labelColor="blue"
+              hasNoSidePadding
+              noHover
+            />
           </EditButtonContainer>
         )}
       </AgencySettingsBlock>

@@ -21,6 +21,7 @@ import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import rightArrow from "../assets/right-arrow.svg";
+import { Button } from "../shared/Button";
 import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,
@@ -29,11 +30,9 @@ import {
   AgencyInfoTextAreaWordCounter,
   AgencySettingsBlock,
   AgencySettingsBlockTitle,
-  EditButton,
+  EditArrowImage,
   EditButtonContainer,
   EditModeButtonsContainer,
-  FilledButton,
-  TransparentButton,
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
@@ -125,10 +124,8 @@ const AgencySettingsDescription: React.FC<{
             {infoText.length}/{MAX_DESCRIPTION_CHARACTERS} characters
           </AgencyInfoTextAreaWordCounter>
           <EditModeButtonsContainer noMargin>
-            <TransparentButton onClick={handleCancelClick}>
-              Cancel
-            </TransparentButton>
-            <FilledButton onClick={handleSaveClick}>Save</FilledButton>
+            <Button label="Cancel" onClick={handleCancelClick} />
+            <Button label="Save" onClick={handleSaveClick} buttonColor="blue" />
           </EditModeButtonsContainer>
         </>
       </AgencySettingsEditModeModal>
@@ -144,15 +141,20 @@ const AgencySettingsDescription: React.FC<{
         </AgencyInfoBlockDescription>
         {allowEdit && (
           <EditButtonContainer>
-            <EditButton
+            <Button
+              label={
+                <>
+                  Edit description <EditArrowImage src={rightArrow} alt="" />
+                </>
+              }
               onClick={() => {
                 setInfoText(purposeAndFunctionsSetting);
                 openSetting();
               }}
-            >
-              Edit description
-              <img src={rightArrow} alt="" />
-            </EditButton>
+              labelColor="blue"
+              hasNoSidePadding
+              noHover
+            />
           </EditButtonContainer>
         )}
       </AgencySettingsBlock>

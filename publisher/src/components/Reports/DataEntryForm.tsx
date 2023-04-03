@@ -39,7 +39,7 @@ import {
   printReportTitle,
 } from "../../utils";
 import logoImg from "../assets/jc-logo-vector-new.svg";
-import { Button, DataUploadHeader } from "../DataUpload";
+import { DataUploadHeader } from "../DataUpload";
 import {
   DataEntryFormTitle,
   DisabledMetricsInfoLink,
@@ -57,6 +57,7 @@ import {
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
 import { Onboarding } from "../Onboarding";
+import { Button } from "../shared/Button";
 import { MetricTextInput } from "./DataEntryFormComponents";
 import DataEntryHelpPage from "./DataEntryHelpPage";
 
@@ -71,15 +72,6 @@ const TopBarButtonsContainer = styled.div<{ showDataEntryHelpPage: boolean }>`
   transition: opacity 400ms ease-in;
 
   opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 0 : 1)};
-`;
-
-const DataEntryTopBarButton = styled(Button)<{ isSaveInProgress?: boolean }>`
-  padding-right: 22px;
-  padding-left: 22px;
-
-  opacity: ${({ isSaveInProgress }) => (isSaveInProgress ? "0.5" : "1")};
-  pointer-events: ${({ isSaveInProgress }) =>
-    isSaveInProgress ? "none" : "auto"};
 `;
 
 const TopBarCloseHelpButtonContainer = styled.div<{
@@ -267,36 +259,40 @@ const DataEntryForm: React.FC<{
         <TopBarCloseHelpButtonContainer
           showDataEntryHelpPage={showDataEntryHelpPage}
         >
-          <Button type="red" onClick={() => setShowDataEntryHelpPage(false)}>
-            Close Help
-          </Button>
+          <Button
+            label="Close Help"
+            onClick={() => setShowDataEntryHelpPage(false)}
+            buttonColor="red"
+          />
         </TopBarCloseHelpButtonContainer>
 
         <TopBarButtonsContainer showDataEntryHelpPage={showDataEntryHelpPage}>
-          <Button type="border" onClick={() => setShowDataEntryHelpPage(true)}>
-            Need Help?
-          </Button>
           <Button
-            type="border"
+            label="Need Help?"
+            onClick={() => setShowDataEntryHelpPage(true)}
+            borderColor="lightgrey"
+          />
+          <Button
+            label="Save as Draft"
             onClick={() => {
               saveUpdatedMetrics();
               navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`);
             }}
-          >
-            Save as Draft
-          </Button>
+            borderColor="lightgrey"
+          />
           {reportOverview.status === "PUBLISHED" ? (
-            <DataEntryTopBarButton type="blue" onClick={convertReportToDraft}>
-              Unpublish and Edit
-            </DataEntryTopBarButton>
+            <Button
+              label="Unpublish and Edit"
+              onClick={convertReportToDraft}
+              buttonColor="blue"
+            />
           ) : (
-            <DataEntryTopBarButton
-              type="blue"
+            <Button
+              label="Review"
               onClick={() => navigate("review")}
-              isSaveInProgress={isSaveInProgress}
-            >
-              Review
-            </DataEntryTopBarButton>
+              buttonColor="blue"
+              disabled={isSaveInProgress}
+            />
           )}
         </TopBarButtonsContainer>
       </DataEntryTopBar>

@@ -24,11 +24,10 @@ import { RecordsBulkAction } from "../../pages/Reports";
 import bigBlueCheck from "../assets/big-blue-check.png";
 import warningIcon from "../assets/warning-icon.svg";
 import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
-import { ReportActionsButtonColors } from "../Reports";
+import { Button, ButtonColor } from "../shared/Button";
 import {
   ListOfReportsContainer,
   ModifiedReportTitle,
-  ReviewPublishModalButton,
   ReviewPublishModalButtonsContainer,
   ReviewPublishModalContainer,
   ReviewPublishModalHint,
@@ -106,13 +105,12 @@ export const ReviewMetricsModal: React.FC<{
           </ReviewPublishModalHint>
           <ReviewPublishModalButtonsContainer>
             {publishingExistingReportsButtons?.map((button) => (
-              <ReviewPublishModalButton
+              <Button
                 key={button.name}
-                buttonColor={button.color as ReportActionsButtonColors}
+                label={button.name}
+                buttonColor={button.color as ButtonColor}
                 onClick={button.onClick}
-              >
-                {button.name}
-              </ReviewPublishModalButton>
+              />
             ))}
           </ReviewPublishModalButtonsContainer>
         </ReviewPublishModalContainer>
@@ -141,16 +139,18 @@ export const ReviewMetricsModal: React.FC<{
               : "You can view the published data in the Data tab."}
           </ReviewPublishModalHint>
           <ReviewPublishModalButtonsContainer>
-            <ReviewPublishModalButton
+            <Button
+              label="Go to Records"
               onClick={() =>
                 navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)
               }
-            >
-              Go to Records
-            </ReviewPublishModalButton>
-            <ReviewPublishModalButton buttonColor="blue" onClick={goToDataPage}>
-              Go to Data
-            </ReviewPublishModalButton>
+              borderColor="lightgrey"
+            />
+            <Button
+              label="Go to Data"
+              onClick={goToDataPage}
+              buttonColor="blue"
+            />
           </ReviewPublishModalButtonsContainer>
         </ReviewPublishModalContainer>
       )}

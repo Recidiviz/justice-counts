@@ -23,7 +23,7 @@ import React from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components/macro";
 
-import { FilledButton, TransparentButton } from "./AgencySettings.styles";
+import { Button } from "../shared/Button";
 
 // z-index 102 to be above all content including edit mode modal
 // also portal this modal as well as edit mode to not deal
@@ -89,8 +89,8 @@ export const AgencySettingsConfirmModal: React.FC<Props> = ({
             You have unsaved changes, would like to leave anyway?
           </ConfirmModalText>
           <ConfirmModalButtonsContainer>
-            <TransparentButton onClick={closeModal}>Cancel</TransparentButton>
-            <FilledButton onClick={handleConfirm}>Okay</FilledButton>
+            <Button label="Cancel" onClick={closeModal} hasNoSidePadding />
+            <Button label="Okay" onClick={handleConfirm} buttonColor="blue" />
           </ConfirmModalButtonsContainer>
         </ConfirmModalContent>
       </ConfirmModalInnerWrapper>

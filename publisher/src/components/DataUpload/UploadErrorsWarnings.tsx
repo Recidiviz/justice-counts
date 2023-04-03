@@ -25,9 +25,9 @@ import { formatSystemName } from "../../utils";
 import { ReactComponent as ErrorIcon } from "../assets/error-icon.svg";
 import { ReactComponent as WarningIcon } from "../assets/warning-icon.svg";
 import { SYSTEM_LOWERCASE } from "../Global/constants";
+import { Button } from "../shared/Button";
 import {
   BlueText,
-  Button,
   CheckIcon,
   Container,
   ErrorWarningButtonWrapper,
@@ -373,9 +373,9 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
 
         {/* Action Button(s) */}
         <ErrorWarningButtonWrapper>
-          <Button onClick={resetToNewUpload}>New Upload</Button>
-
+          <Button label="New Upload" onClick={resetToNewUpload} />
           <Button
+            label="Continue"
             onClick={() =>
               navigate("review-metrics", {
                 state: {
@@ -387,9 +387,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
                 replace: true,
               })
             }
-          >
-            Continue
-          </Button>
+          />
         </ErrorWarningButtonWrapper>
 
         {/* Messages */}

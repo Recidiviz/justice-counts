@@ -27,18 +27,17 @@ import {
   Checkbox,
   CheckboxWrapper,
 } from "../MetricConfiguration";
+import { Button } from "../shared/Button";
 import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,
   AgencySettingsBlock,
   AgencySettingsBlockDescription,
   AgencySettingsBlockTitle,
-  EditButton,
+  EditArrowImage,
   EditButtonContainer,
   EditModeButtonsContainer,
-  FilledButton,
   SupervisionSystemRow,
-  TransparentButton,
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
@@ -164,10 +163,8 @@ export const AgencySettingsSupervisions: React.FC<{
             </SupervisionSystemRow>
           ))}
           <EditModeButtonsContainer>
-            <TransparentButton onClick={handleCancelClick}>
-              Cancel
-            </TransparentButton>
-            <FilledButton onClick={handleSaveClick}>Save</FilledButton>
+            <Button label="Cancel" onClick={handleCancelClick} />
+            <Button label="Save" onClick={handleSaveClick} buttonColor="blue" />
           </EditModeButtonsContainer>
         </>
       </AgencySettingsEditModeModal>
@@ -194,10 +191,17 @@ export const AgencySettingsSupervisions: React.FC<{
           </AgencyInfoBlockDescription>
         )}
         <EditButtonContainer hasTopMargin>
-          <EditButton onClick={openSetting}>
-            Edit populations
-            <img src={rightArrow} alt="" />
-          </EditButton>
+          <Button
+            label={
+              <>
+                Edit populations <EditArrowImage src={rightArrow} alt="" />
+              </>
+            }
+            onClick={openSetting}
+            labelColor="blue"
+            hasNoSidePadding
+            noHover
+          />
         </EditButtonContainer>
       </AgencySettingsBlock>
     </>

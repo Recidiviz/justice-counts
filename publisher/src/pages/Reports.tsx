@@ -61,7 +61,6 @@ import {
   MobileRecordsPageTitle,
   NoReportsDisplay,
   ReportActions,
-  ReportActionsButton,
   ReportsHeader,
   Row,
   SelectedCheckmark,
@@ -74,6 +73,7 @@ import {
   Table,
 } from "../components/Reports";
 import { RemoveRecordsModal } from "../components/Reports/RemoveRecordsModal";
+import { Button } from "../components/shared/Button";
 import { useStore } from "../stores";
 import {
   filterJCAdminEditors,
@@ -447,111 +447,105 @@ const Reports: React.FC = () => {
           <TabbedActionsWrapper>
             {/* Admin Only: Manage Reports */}
             {isAdmin && (
-              <>
-                <ReportActions>
-                  {!bulkAction && (
-                    <>
-                      {userStore.isJusticeCountsAdmin(agencyId) && (
-                        <BulkActionsDropdownContainer>
-                          <Dropdown>
-                            <BulkActionsDropdownToggle
-                              disabled={filteredReportsMemoized.length === 0}
-                            >
-                              Bulk Actions{" "}
-                              <BulkActionsArrow src={dropdownArrow} alt="" />
-                            </BulkActionsDropdownToggle>
-                            <BulkActionsDropdownMenu alignment="right">
-                              <BulkActionsDropdownMenuItem
-                                color="green"
-                                onClick={() => {
-                                  selectBulkAction("publish");
-                                }}
-                                disabled={isPublishDisabled}
-                              >
-                                Publish...
-                              </BulkActionsDropdownMenuItem>
-                              <BulkActionsDropdownMenuItem
-                                onClick={() => {
-                                  selectBulkAction("unpublish");
-                                }}
-                                disabled={isUnpublishDisabled}
-                              >
-                                Unpublish...
-                              </BulkActionsDropdownMenuItem>
-                              <BulkActionsDropdownMenuItem
-                                color="red"
-                                onClick={() => {
-                                  selectBulkAction("delete");
-                                }}
-                              >
-                                Delete...
-                              </BulkActionsDropdownMenuItem>
-                            </BulkActionsDropdownMenu>
-                          </Dropdown>
-                        </BulkActionsDropdownContainer>
-                      )}
-                      <ReportActionsButton
-                        textColor="blue"
-                        onClick={() => navigate("create")}
-                      >
-                        + New Record
-                      </ReportActionsButton>
-                    </>
-                  )}
-
-                  {bulkAction && (
-                    <>
-                      <ReportActionsButton
-                        onClick={() => {
-                          clearAllSelectedRecords();
-                          clearBulkAction();
-                        }}
-                      >
-                        Cancel
-                      </ReportActionsButton>
-                      {bulkAction === "delete" && selectedRecords.length > 0 && (
-                        <ReportActionsButton
-                          buttonColor="red"
-                          onClick={() => setIsRemoveRecordsModalOpen(true)}
-                        >
-                          Delete
-                        </ReportActionsButton>
-                      )}
-                      {bulkAction === "publish" && selectedRecords.length > 0 && (
-                        <ReportActionsButton
-                          buttonColor="green"
-                          onClick={() =>
-                            navigate("bulk-review", {
-                              state: {
-                                recordsIds: selectedRecords,
-                                action: bulkAction,
-                              },
-                            })
-                          }
-                        >
-                          Review and Publish
-                        </ReportActionsButton>
-                      )}
-                      {bulkAction === "unpublish" &&
-                        selectedRecords.length > 0 && (
-                          <ReportActionsButton
-                            buttonColor="orange"
-                            onClick={() =>
-                              navigate("bulk-review", {
-                                state: {
-                                  recordsIds: selectedRecords,
-                                  action: bulkAction,
-                                },
-                              })
-                            }
+              <ReportActions>
+                {!bulkAction && (
+                  <>
+                    {userStore.isJusticeCountsAdmin(agencyId) && (
+                      <BulkActionsDropdownContainer>
+                        <Dropdown>
+                          <BulkActionsDropdownToggle
+                            disabled={filteredReportsMemoized.length === 0}
                           >
-                            Review and Unpublish
-                          </ReportActionsButton>
-                        )}
-                    </>
-                  )}
-                </ReportActions>
-              </>
+                            Bulk Actions{" "}
+                            <BulkActionsArrow src={dropdownArrow} alt="" />
+                          </BulkActionsDropdownToggle>
+                          <BulkActionsDropdownMenu alignment="right">
+                            <BulkActionsDropdownMenuItem
+                              color="green"
+                              onClick={() => {
+                                selectBulkAction("publish");
+                              }}
+                              disabled={isPublishDisabled}
+                            >
+                              Publish...
+                            </BulkActionsDropdownMenuItem>
+                            <BulkActionsDropdownMenuItem
+                              onClick={() => {
+                                selectBulkAction("unpublish");
+                              }}
+                              disabled={isUnpublishDisabled}
+                            >
+                              Unpublish...
+                            </BulkActionsDropdownMenuItem>
+                            <BulkActionsDropdownMenuItem
+                              color="red"
+                              onClick={() => {
+                                selectBulkAction("delete");
+                              }}
+                            >
+                              Delete...
+                            </BulkActionsDropdownMenuItem>
+                          </BulkActionsDropdownMenu>
+                        </Dropdown>
+                      </BulkActionsDropdownContainer>
+                    )}
+                    <Button
+                      label="+ New Record"
+                      onClick={() => navigate("create")}
+                      labelColor="blue"
+                      borderColor="lightgrey"
+                    />
+                  </>
+                )}
+
+                {bulkAction && (
+                  <>
+                    <Button
+                      label="Cancel"
+                      onClick={() => {
+                        clearAllSelectedRecords();
+                        clearBulkAction();
+                      }}
+                      borderColor="lightgrey"
+                    />
+                    {bulkAction === "delete" && selectedRecords.length > 0 && (
+                      <Button
+                        label="Delete"
+                        onClick={() => setIsRemoveRecordsModalOpen(true)}
+                        buttonColor="red"
+                      />
+                    )}
+                    {bulkAction === "publish" && selectedRecords.length > 0 && (
+                      <Button
+                        label="Review and Publish"
+                        onClick={() =>
+                          navigate("bulk-review", {
+                            state: {
+                              recordsIds: selectedRecords,
+                              action: bulkAction,
+                            },
+                          })
+                        }
+                        buttonColor="green"
+                      />
+                    )}
+                    {bulkAction === "unpublish" && selectedRecords.length > 0 && (
+                      <Button
+                        label="Review and Unpublish"
+                        onClick={() =>
+                          navigate("bulk-review", {
+                            state: {
+                              recordsIds: selectedRecords,
+                              action: bulkAction,
+                            },
+                          })
+                        }
+                        buttonColor="orange"
+                      />
+                    )}
+                  </>
+                )}
+              </ReportActions>
             )}
           </TabbedActionsWrapper>
         </TabbedBar>

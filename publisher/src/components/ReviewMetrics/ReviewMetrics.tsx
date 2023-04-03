@@ -28,7 +28,6 @@ import checkIcon from "../assets/check-icon.svg";
 import logoImg from "../assets/jc-logo-vector-new.svg";
 import errorIcon from "../assets/status-error-icon.png";
 import {
-  Button,
   ReviewMetricsButtonsContainer,
   ReviewMetricsHeader,
 } from "../DataUpload";
@@ -39,6 +38,7 @@ import {
 } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
 import { EmptyIcon } from "../Reports/PublishConfirmation.styles";
+import { Button } from "../shared/Button";
 import {
   Heading,
   HeadingGradient,
@@ -97,16 +97,26 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
           <Logo src={logoImg} alt="" />
         </LogoContainer>
         <ReviewMetricsButtonsContainer>
-          {buttons.map(({ name, type, onClick, disabled }) => (
-            <Button
-              key={name}
-              type={type}
-              onClick={onClick}
-              disabled={disabled}
-            >
-              {name}
-            </Button>
-          ))}
+          {buttons.map(
+            ({
+              name,
+              onClick,
+              disabled,
+              buttonColor,
+              labelColor,
+              borderColor,
+            }) => (
+              <Button
+                key={name}
+                label={name}
+                onClick={onClick}
+                disabled={disabled}
+                buttonColor={buttonColor}
+                labelColor={labelColor}
+                borderColor={borderColor}
+              />
+            )
+          )}
         </ReviewMetricsButtonsContainer>
       </ReviewMetricsHeader>
       <Summary isFooterVisible={isFooterVisible}>

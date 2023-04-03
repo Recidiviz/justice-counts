@@ -24,7 +24,6 @@ import {
 import styled from "styled-components/macro";
 
 import { DataUploadContainer } from "../DataUpload";
-import { ReportActionsButton } from "../Reports";
 import {
   RemoveRecordsModalButtonsContainer,
   RemoveRecordsModalContainer,
@@ -282,10 +281,6 @@ export const ReviewPublishModalHint = styled(RemoveRecordsModalHint)`
 export const ReviewPublishModalButtonsContainer = styled(
   RemoveRecordsModalButtonsContainer
 )``;
-export const ReviewPublishModalButton = styled(ReportActionsButton)`
-  margin-left: unset;
-  ${typography.sizeCSS.normal};
-`;
 
 export const NoDatapointsMessage = styled.div`
   margin: auto auto;

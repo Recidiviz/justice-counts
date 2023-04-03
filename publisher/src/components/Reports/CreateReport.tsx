@@ -51,6 +51,7 @@ import {
   REPORTING_LOWERCASE,
   REPORTS_LOWERCASE,
 } from "../Global/constants";
+import { Button } from "../shared/Button";
 import {
   PublishDataWrapper,
   TWO_PANEL_MAX_WIDTH,
@@ -80,40 +81,14 @@ const BoldFont = styled.span`
   font-weight: 700;
 `;
 
-const CreateButton = styled.button<{
-  disabled?: boolean;
-}>`
-  ${typography.sizeCSS.medium}
-  width: 315px;
-  height: 56px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: ${({ disabled }) => (disabled ? "none" : palette.solid.blue)};
-  color: ${({ disabled }) =>
-    disabled ? palette.highlight.grey8 : palette.solid.white};
-  border: 1px solid
-    ${({ disabled }) =>
-      disabled ? palette.highlight.grey3 : palette.highlight.grey3};
-  border-radius: 2px;
-  transition: 0.2s ease;
-
-  &:hover {
-    cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
-    background: ${({ disabled }) =>
-      disabled ? "none" : palette.solid.darkblue};
-  }
-
-  &::after {
-    content: "${`Create ${REPORT_CAPITALIZED}`}";
-  }
+const CreateButtonContainer = styled.div`
+  width: 100%;
 `;
 
-const FormCreateButton = styled(CreateButton)`
+const FormCreateButtonContainer = styled.div`
   display: none;
-  width: auto;
   margin-top: 48px;
-  padding: 0 32px;
+  width: 200px;
 
   @media only screen and (max-width: ${TWO_PANEL_MAX_WIDTH}px) {
     display: block;
@@ -355,25 +330,29 @@ const CreateReport = () => {
             </BoldFont>
             .
           </CreateReportInfoContainer>
-          <FormCreateButton
-            onClick={(e) => {
-              e.preventDefault();
-              /** Should trigger a confirmation dialogue before submitting */
-              createNewReport();
-            }}
-          />
+          <FormCreateButtonContainer>
+            <Button
+              label={`Create ${REPORT_CAPITALIZED}`}
+              onClick={createNewReport}
+              buttonColor="blue"
+              size="medium"
+            />
+          </FormCreateButtonContainer>
         </Form>
       </FormWrapper>
 
       {/* Create Report Review Panel */}
       <PublishDataWrapper>
         <Title>
-          <CreateButton
-            onClick={() => {
+          <CreateButtonContainer>
+            <Button
+              label={`Create ${REPORT_CAPITALIZED}`}
               /** Should trigger a confirmation dialogue before submitting */
-              createNewReport();
-            }}
-          />
+              onClick={createNewReport}
+              buttonColor="blue"
+              size="medium"
+            />
+          </CreateButtonContainer>
         </Title>
       </PublishDataWrapper>
     </>

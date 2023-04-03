@@ -56,8 +56,8 @@ export const ActionsContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  background: ${palette.solid.offwhite};
-  padding: 0 20px;
+  gap: 10px;
+  background-color: ${palette.solid.offwhite};
   position: absolute;
   right: 0;
   z-index: 2;
@@ -138,20 +138,6 @@ export const UploadedFilesCell = styled.div<{ capitalize?: boolean }>`
 export const ExtendedLabelCell = styled(UploadedFilesCell)`
   ${typography.sizeCSS.normal}
   color: ${palette.highlight.grey9};
-`;
-
-export const ActionButton = styled.div<{ red?: boolean }>`
-  white-space: nowrap;
-  background: ${palette.solid.offwhite};
-  color: ${({ red }) => (red ? palette.solid.red : palette.solid.blue)};
-
-  &:not(:last-child) {
-    margin-right: 10px;
-  }
-
-  &:hover {
-    color: ${palette.solid.darkgrey};
-  }
 `;
 
 export const UploadedContainer = styled.span`

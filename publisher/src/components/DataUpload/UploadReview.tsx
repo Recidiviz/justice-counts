@@ -27,13 +27,14 @@ import {
 
 import { useStore } from "../../stores";
 import { REPORTS_LOWERCASE } from "../Global/constants";
-import { ReportActionsButtonColors } from "../Reports";
+// import { ReportActionsButtonColors } from "../Reports";
 import {
   ReviewHeaderActionButton,
   ReviewMetricOverwrites,
   ReviewMetrics,
   ReviewMetricsModal,
 } from "../ReviewMetrics";
+import { ButtonColor } from "../shared/Button";
 import { UploadedMetric } from "./types";
 
 const UploadReview: React.FC = observer(() => {
@@ -66,7 +67,7 @@ const UploadReview: React.FC = observer(() => {
   const isPublishingExistingReports = updatedReportIDs.length > 0;
   const publishingExistingReportsButtons: {
     name: string;
-    color?: ReportActionsButtonColors;
+    color?: ButtonColor;
     onClick: () => void;
   }[] = [
     {
@@ -126,12 +127,12 @@ const UploadReview: React.FC = observer(() => {
       ? [
           {
             name: "Exit Without Publishing",
-            type: "border",
             onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
+            borderColor: "lightgrey",
           },
           {
             name: "Publish",
-            type: "green",
+            buttonColor: "green",
             onClick: () =>
               isPublishingExistingReports
                 ? setExistingReportWarningOpen(true)
@@ -141,8 +142,8 @@ const UploadReview: React.FC = observer(() => {
       : [
           {
             name: "Close",
-            type: "red",
             onClick: () => navigate(-1),
+            buttonColor: "red",
           },
         ];
 

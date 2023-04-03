@@ -39,11 +39,11 @@ import {
   ProgressTooltipToast,
 } from "../Guidance";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
+import { Button } from "../shared/Button";
 import {
   ExtendedDropdownMenu,
   ExtendedDropdownMenuItem,
   ExtendedDropdownToggle,
-  HeaderUploadButton,
   MenuContainer,
   MenuItem,
   MobileMenuIconWrapper,
@@ -355,16 +355,15 @@ const Menu: React.FC = () => {
         </MenuItem>
 
         <MenuItem id="upload" buttonPadding>
-          <HeaderUploadButton
-            type="blue"
+          <Button
+            label="Upload Data"
             onClick={() => {
               navigate("upload");
               handleCloseMobileMenu();
             }}
+            buttonColor="blue"
             enabledDuringOnboarding
-          >
-            Upload Data
-          </HeaderUploadButton>
+          />
         </MenuItem>
       </MenuContainer>
       <MobileMenuIconWrapper

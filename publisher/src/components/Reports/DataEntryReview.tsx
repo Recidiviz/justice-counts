@@ -172,19 +172,19 @@ const DataEntryReview = () => {
   const buttons: ReviewHeaderActionButton[] = [
     {
       name: "Back to data entry",
-      type: "border",
       onClick: () => navigate(-1),
+      borderColor: "lightgrey",
     },
     {
       name: "Exit without Publishing",
-      type: "border",
       onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
+      borderColor: "lightgrey",
     },
     {
       name: "Publish",
-      type: "green",
       onClick: publishReport,
       disabled: !isPublishable,
+      buttonColor: "green",
     },
   ];
 

@@ -27,6 +27,7 @@ import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { Loading } from "../Loading";
+import { Button } from "../shared/Button";
 import {
   AdminStatus,
   AgencySettingsContent,
@@ -35,7 +36,6 @@ import {
   EditTeamMemberMenu,
   EditTeamMemberMenuItem,
   InvitedStatus,
-  InviteMemberButton,
   InviteMemberContainer,
   InviteMemberError,
   InviteMemberErrorContainer,
@@ -210,14 +210,14 @@ export const AgencySettingsTeamManagement = observer(() => {
                   error={!!emailValue && !validateEmail(emailValue)}
                 />
               </InviteMemberInputsContainer>
-              <InviteMemberButton
+              <Button
+                label="Invite"
                 onClick={() => handleInviteTeamMamber(nameValue, emailValue)}
+                buttonColor="blue"
                 disabled={
                   !nameValue || !validateEmail(emailValue) || isInviting
                 }
-              >
-                Invite
-              </InviteMemberButton>
+              />
             </InviteMemberInnerContainer>
             <InviteMemberErrorContainer>
               {!!emailValue && !validateEmail(emailValue) && (

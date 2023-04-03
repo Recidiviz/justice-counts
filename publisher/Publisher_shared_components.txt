@@ -1,0 +1,32 @@
+This file is created for documenting ui components that can be made as shared and used throughout the publisher application
+
+1.
+- Button Component
+- Generally speaking, I think that there is no need to write where Button is used (originally located in DataUpload.styles)
+because this component (I mean action button not radio button like in metric config or create record) can be modified in a way
+that it will be fully customizable. If there will be any specific cases with buttons that are in conflict with Button
+shared component settings then in styles file we can always create specific button and use shared one as a base.
+
+2.
+- Tabbed bar
+- Used in: Records page, Settings -> Metric config, Data entry (note: in data entry it is slightly different,
+has indicator and more options, so it is to be investigated if data entry tabs can be in this list)
+
+3.
+- Overlapping header (DataUploadHeader)
+- Used in UploadFile, Data Entry, Review metrics
+
+4.
+- Table
+- Used in Records and UploadedFiles (they have different columns disappear when responsive, can adjust columns or something like that)
+
+5.
+- Dropdowns
+- Used in responsive views mostly (records, metric config, data page, etc.)
+I know that Dropdown is already from recidiviz/design-system, but we can make a customizable dropdown on top of it and reuse it
+
+6.
+- Confirmation/Success Modals
+- Used in agency settings, team management, now in review
+Might be a problem cause they all do not use icon, also probably by design they had different dimensions,
+but I guess we can make a fixed version which will be customizable like review page where you pass all props like text, icons, buttons etc.
