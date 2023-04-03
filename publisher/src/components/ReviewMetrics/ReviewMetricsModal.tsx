@@ -26,6 +26,8 @@ import warningIcon from "../assets/warning-icon.svg";
 import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 import { ReportActionsButtonColors } from "../Reports";
 import {
+  ListOfReportsContainer,
+  ModifiedReportTitle,
   ReviewPublishModalButton,
   ReviewPublishModalButtonsContainer,
   ReviewPublishModalContainer,
@@ -33,7 +35,6 @@ import {
   ReviewPublishModalIcon,
   ReviewPublishModalTitle,
   ReviewPublishModalWrapper,
-  SummarySectionLine,
 } from "./ReviewMetrics.styles";
 
 export const ReviewMetricsModal: React.FC<{
@@ -86,17 +87,22 @@ export const ReviewMetricsModal: React.FC<{
           <ReviewPublishModalHint>
             The following existing reports will also be published. Are you sure
             you want to proceed?
+            <ListOfReportsContainer>
+              {existingReports?.map((record) => (
+                <ModifiedReportTitle key={record.id}>
+                  {printReportTitle(
+                    record.month,
+                    record.year,
+                    record.frequency
+                  )}
+                </ModifiedReportTitle>
+              ))}
+            </ListOfReportsContainer>
           </ReviewPublishModalHint>
-          <div>
-            {existingReports?.map((record) => (
-              <SummarySectionLine key={record.id}>
-                {printReportTitle(record.month, record.year, record.frequency)}
-              </SummarySectionLine>
-            ))}
-          </div>
           <ReviewPublishModalButtonsContainer>
             {publishingExistingReportsButtons?.map((button) => (
               <ReviewPublishModalButton
+                key={button.name}
                 buttonColor={button.color as ReportActionsButtonColors}
                 onClick={button.onClick}
               >
