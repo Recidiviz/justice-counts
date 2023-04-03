@@ -78,7 +78,7 @@ const UploadReview: React.FC = observer(() => {
       name: "Proceed with Publishing",
       color: "green",
       onClick: () => {
-        // setExistingReportWarningOpen(false);
+        setExistingReportWarningOpen(false);
         publishMultipleRecords();
       },
     },
@@ -91,7 +91,6 @@ const UploadReview: React.FC = observer(() => {
         agencyId,
         "PUBLISHED"
       );
-      setExistingReportWarningOpen(false);
       setIsSuccessModalOpen(true);
     }
   };

@@ -143,7 +143,10 @@ export const DataUpload: React.FC = observer(() => {
 
       const data: DataUploadResponseBody = await response?.json();
 
-      /** After upload, the response may include newly created reports and/or updated existing report IDs (for overwrites) */
+      /**
+       * After upload, the response will include newly created reports and/or
+       * updated existing report IDs (for reports w/ overwrites)
+       */
       setNewAndUpdatedReports({
         newReports: data.new_reports || [],
         updatedReportIDs: data.updated_report_ids || [],
