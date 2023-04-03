@@ -75,6 +75,11 @@ export const ReviewMetricsModal: React.FC<{
 
   return (
     <ReviewPublishModalWrapper>
+      {/**
+       * Warning/Success Modal
+       *  * Warning modal: appears after a user uploads a spreadsheet that modifies existing reports, and the user attempts to publish
+       *  * Success modal: typically appears after a user successfully publishes a report
+       */}
       {isExistingReportWarningModalOpen ? (
         <ReviewPublishModalContainer>
           <ReviewPublishModalIcon
