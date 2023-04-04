@@ -60,10 +60,9 @@ const UploadReview: React.FC = observer(() => {
     (id) => reportStore.reportOverviews[id]
   );
   const existingAndNewRecords = [...existingReports, ...newReports];
-  const existingAndNewRecordIDs =
-    existingAndNewRecords.length > 0
-      ? existingAndNewRecords.map((record) => record.id)
-      : [];
+  const existingAndNewRecordIDs = existingAndNewRecords.map(
+    (record) => record.id
+  );
   const isPublishingExistingReports = updatedReportIDs.length > 0;
   const publishingExistingReportsButtons: {
     name: string;
