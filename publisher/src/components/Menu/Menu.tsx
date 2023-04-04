@@ -396,11 +396,12 @@ const Menu: React.FC = () => {
               navigate("upload");
               handleCloseMobileMenu();
             }}
-            enabledDuringOnboarding={
-              userStore.isJusticeCountsAdmin(agencyId) ||
-              hasCompletedOnboarding ||
-              (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
-            }
+            enabledDuringOnboarding
+            // enabledDuringOnboarding={
+            //   userStore.isJusticeCountsAdmin(agencyId) ||
+            //   hasCompletedOnboarding ||
+            //   (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
+            // }
           >
             Upload Data
           </HeaderUploadButton>
