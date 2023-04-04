@@ -56,9 +56,9 @@ const UploadReview: React.FC = observer(() => {
   }
 
   // review component props
-  const existingReports = updatedReportIDs.map(
-    (id) => reportStore.reportOverviews[id]
-  );
+  const existingReports = updatedReportIDs
+    .map((id) => reportStore.reportOverviews[id])
+    .filter((report) => report);
   const existingAndNewRecords = [...existingReports, ...newReports];
   const existingAndNewRecordIDs = existingAndNewRecords.map(
     (record) => record.id
