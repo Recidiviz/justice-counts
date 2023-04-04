@@ -74,40 +74,40 @@ export const Router = () => {
               )
             }
           />
-          {(hasCompletedOnboarding ||
-            (!hasCompletedOnboarding && isPublishDataStep)) && (
-            <Route path="/data" element={<MetricsView />} />
-          )}
-          {(hasCompletedOnboarding ||
-            (!hasCompletedOnboarding && currentTopicID !== "WELCOME")) && (
-            <Route path="/settings/*" element={<Settings />} />
-          )}
+          {/* {(hasCompletedOnboarding ||
+            (!hasCompletedOnboarding && isPublishDataStep)) && ( */}
+          <Route path="/data" element={<MetricsView />} />
+          {/* )} */}
+          {/* {(hasCompletedOnboarding ||
+            (!hasCompletedOnboarding && currentTopicID !== "WELCOME")) && ( */}
+          <Route path="/settings/*" element={<Settings />} />
+          {/* )} */}
 
-          {(userStore.isJusticeCountsAdmin(agencyId) ||
+          {/* {(userStore.isJusticeCountsAdmin(agencyId) ||
             hasCompletedOnboarding ||
-            (!hasCompletedOnboarding && isAddDataOrPublishDataStep)) && (
-            <>
-              <Route path={`/${REPORTS_LOWERCASE}`} element={<Reports />} />
-              <Route
-                path={`/${REPORTS_LOWERCASE}/bulk-review`}
-                element={<BulkActionReview />}
-              />
-              <Route
-                path={`/${REPORTS_LOWERCASE}/create`}
-                element={<CreateReport />}
-              />
-              <Route
-                path={`/${REPORTS_LOWERCASE}/:id`}
-                element={<ReportDataEntry />}
-              />
-              <Route
-                path={`/${REPORTS_LOWERCASE}/:id/review`}
-                element={<ReviewReportDataEntry />}
-              />
-              <Route path="/upload" element={<DataUpload />} />
-              <Route path="/upload/review-metrics" element={<UploadReview />} />
-            </>
-          )}
+            (!hasCompletedOnboarding && isAddDataOrPublishDataStep)) && ( */}
+          <>
+            <Route path={`/${REPORTS_LOWERCASE}`} element={<Reports />} />
+            <Route
+              path={`/${REPORTS_LOWERCASE}/bulk-review`}
+              element={<BulkActionReview />}
+            />
+            <Route
+              path={`/${REPORTS_LOWERCASE}/create`}
+              element={<CreateReport />}
+            />
+            <Route
+              path={`/${REPORTS_LOWERCASE}/:id`}
+              element={<ReportDataEntry />}
+            />
+            <Route
+              path={`/${REPORTS_LOWERCASE}/:id/review`}
+              element={<ReviewReportDataEntry />}
+            />
+            <Route path="/upload" element={<DataUpload />} />
+            <Route path="/upload/review-metrics" element={<UploadReview />} />
+          </>
+          {/* )} */}
           <Route
             path="*"
             element={
