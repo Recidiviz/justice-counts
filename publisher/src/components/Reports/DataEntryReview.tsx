@@ -16,7 +16,12 @@
 // =============================================================================
 
 import { showToast } from "@justice-counts/common/components/Toast";
-import { MetricWithErrors } from "@justice-counts/common/types";
+import DatapointsStore from "@justice-counts/common/stores/BaseDatapointsStore";
+import {
+  MetricWithErrors,
+  RawDatapointsByMetric,
+  Report,
+} from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -45,8 +50,7 @@ const DataEntryReview = () => {
   const [isPublishable, setIsPublishable] = useState(false);
   const [metricsPreview, setMetricsPreview] = useState<MetricWithErrors[]>();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const { reportStore, formStore, userStore, guidanceStore, datapointsStore } =
-    useStore();
+  const { reportStore, formStore, userStore, guidanceStore } = useStore();
   const checkMetricForErrors = useCheckMetricForErrors(reportID);
 
   const publishReport = async () => {
@@ -86,10 +90,27 @@ const DataEntryReview = () => {
     }
   };
 
+  const [datapoints, setDatapoints] = useState<RawDatapointsByMetric>({});
+  const [loadingDatapoints, setLoadingDatapoints] = useState(true);
+
   useEffect(() => {
     const initialize = async () => {
       formStore.validatePreviouslySavedInputs(reportID);
-      await datapointsStore.getDatapoints(agencyId);
+      const [reportWithDatapoints] =
+        (await reportStore.getMultipleReportsWithDatapoints(
+          [reportID],
+          String(agencyId)
+        )) as Report[];
+
+      if (reportWithDatapoints.datapoints) {
+        setDatapoints(
+          DatapointsStore.keyRawDatapointsByMetric(
+            reportWithDatapoints.datapoints
+          )
+        );
+      }
+
+      setLoadingDatapoints(false);
     };
 
     initialize();
@@ -109,24 +130,22 @@ const DataEntryReview = () => {
     document.body.style.overflow = isSuccessModalOpen ? "hidden" : "unset";
   }, [isSuccessModalOpen]);
 
-  if (datapointsStore.loading)
+  if (reportStore.reportOverviews[reportID].agency_id !== agencyId) {
+    return <NotFound />;
+  }
+
+  if (loadingDatapoints)
     return (
       <PageWrapper>
         <Loading />
       </PageWrapper>
     );
 
-  if (reportStore.reportOverviews[reportID].agency_id !== agencyId) {
-    return <NotFound />;
-  }
-
   // review component props
   const metrics = metricsPreview
     ? metricsPreview.reduce((acc, metric) => {
         const reviewMetric = {
-          datapoints: datapointsStore.rawDatapointsByMetric[metric.key].filter(
-            (dp) => dp.report_id === reportID
-          ),
+          datapoints: datapoints[metric.key],
           display_name: metric.display_name,
           key: metric.key,
           metricHasError: checkMetricForErrors(metric.key),

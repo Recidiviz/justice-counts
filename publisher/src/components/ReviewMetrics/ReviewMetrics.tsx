@@ -44,6 +44,7 @@ import {
   HeadingGradient,
   MetricsPanel,
   MetricStatusIcon,
+  NoDatapointsMessage,
   ReviewMetricsWrapper,
   SectionContainer,
   SectionExpandStatusSign,
@@ -73,6 +74,8 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
   const [isRecordsSectionExpanded, setIsRecordsSectionExpanded] = useState(() =>
     records ? records.length <= 10 : false
   );
+  const hasNoDatapoints =
+    metrics.filter((metric) => metric.datapoints)?.length === 0;
 
   const renderSection = (metric: ReviewMetric) => {
     return (
@@ -86,7 +89,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
   };
 
   return (
-    <ReviewMetricsWrapper>
+    <ReviewMetricsWrapper hasNoDatapoints={hasNoDatapoints}>
       <ReviewMetricsHeader transparent={false}>
         <LogoContainer
           onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
@@ -202,11 +205,19 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
           )}
         </SummarySectionsContainer>
       </Summary>
-      <MetricsPanel>
-        {metrics.map((metric) => {
-          return renderSection(metric);
-        })}
-      </MetricsPanel>
+
+      {hasNoDatapoints ? (
+        <NoDatapointsMessage>
+          There is no data to review. Please go back and enter data in order to
+          Review & Publish.
+        </NoDatapointsMessage>
+      ) : (
+        <MetricsPanel>
+          {metrics.map((metric) => {
+            return renderSection(metric);
+          })}
+        </MetricsPanel>
+      )}
     </ReviewMetricsWrapper>
   );
 };

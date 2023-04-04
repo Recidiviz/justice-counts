@@ -114,7 +114,11 @@ abstract class DatapointsStore {
   }
 
   get rawDatapointsByMetric(): RawDatapointsByMetric {
-    return this.rawDatapoints.reduce((res: RawDatapointsByMetric, dp) => {
+    return DatapointsStore.keyRawDatapointsByMetric(this.rawDatapoints);
+  }
+
+  static keyRawDatapointsByMetric = (rawDatapoints: RawDatapoint[]) => {
+    return rawDatapoints.reduce((res: RawDatapointsByMetric, dp) => {
       if (!res[dp.metric_definition_key]) {
         res[dp.metric_definition_key] = [dp];
       } else {
@@ -123,7 +127,7 @@ abstract class DatapointsStore {
 
       return res;
     }, {});
-  }
+  };
 
   abstract getDatapoints(agencyId: number): Promise<void | Error>;
 
