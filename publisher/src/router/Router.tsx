@@ -37,15 +37,8 @@ export const Router = () => {
   const { agencyId } = useParams() as { agencyId: string };
   const { userStore, guidanceStore } = useStore();
 
-  // using this to indicate whether user has agency id of which is provided in the url
-  // if not then show placeholder (InvalidAgency page) from which you can go to homepage
-  // e.g. reports page with initial available user agency
-  // or maybe display some text since header is available and user can pick available agency
   const isAgencyIdInUserAgencies = userStore.getAgency(agencyId);
   const { hasCompletedOnboarding } = guidanceStore;
-  // const isPublishDataStep = currentTopicID === "PUBLISH_DATA";
-  // const isAddDataOrPublishDataStep =
-  //   currentTopicID === "ADD_DATA" || isPublishDataStep;
 
   return (
     <>
@@ -74,40 +67,29 @@ export const Router = () => {
               )
             }
           />
-          {/* {(hasCompletedOnboarding ||
-            (!hasCompletedOnboarding && isPublishDataStep)) && ( */}
-          <Route path="/data" element={<MetricsView />} />
-          {/* )} */}
-          {/* {(hasCompletedOnboarding ||
-            (!hasCompletedOnboarding && currentTopicID !== "WELCOME")) && ( */}
-          <Route path="/settings/*" element={<Settings />} />
-          {/* )} */}
 
-          {/* {(userStore.isJusticeCountsAdmin(agencyId) ||
-            hasCompletedOnboarding ||
-            (!hasCompletedOnboarding && isAddDataOrPublishDataStep)) && ( */}
-          <>
-            <Route path={`/${REPORTS_LOWERCASE}`} element={<Reports />} />
-            <Route
-              path={`/${REPORTS_LOWERCASE}/bulk-review`}
-              element={<BulkActionReview />}
-            />
-            <Route
-              path={`/${REPORTS_LOWERCASE}/create`}
-              element={<CreateReport />}
-            />
-            <Route
-              path={`/${REPORTS_LOWERCASE}/:id`}
-              element={<ReportDataEntry />}
-            />
-            <Route
-              path={`/${REPORTS_LOWERCASE}/:id/review`}
-              element={<ReviewReportDataEntry />}
-            />
-            <Route path="/upload" element={<DataUpload />} />
-            <Route path="/upload/review-metrics" element={<UploadReview />} />
-          </>
-          {/* )} */}
+          <Route path="/data" element={<MetricsView />} />
+          <Route path="/settings/*" element={<Settings />} />
+          <Route path={`/${REPORTS_LOWERCASE}`} element={<Reports />} />
+          <Route
+            path={`/${REPORTS_LOWERCASE}/bulk-review`}
+            element={<BulkActionReview />}
+          />
+          <Route
+            path={`/${REPORTS_LOWERCASE}/create`}
+            element={<CreateReport />}
+          />
+          <Route
+            path={`/${REPORTS_LOWERCASE}/:id`}
+            element={<ReportDataEntry />}
+          />
+          <Route
+            path={`/${REPORTS_LOWERCASE}/:id/review`}
+            element={<ReviewReportDataEntry />}
+          />
+          <Route path="/upload" element={<DataUpload />} />
+          <Route path="/upload/review-metrics" element={<UploadReview />} />
+
           <Route
             path="*"
             element={

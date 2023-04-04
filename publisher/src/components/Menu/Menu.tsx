@@ -113,11 +113,6 @@ const Menu: React.FC = () => {
   };
 
   // Guidance
-  // const isPublishDataStep =
-  //   !hasCompletedOnboarding && currentTopicID === "PUBLISH_DATA";
-  // const isAddDataOrPublishDataStep =
-  //   (!hasCompletedOnboarding && currentTopicID === "ADD_DATA") ||
-  //   isPublishDataStep;
   const isMetricConfigStep =
     !hasCompletedOnboarding && currentTopicID === "METRIC_CONFIG";
   const metricCompletionProgress = !hasCompletedOnboarding
@@ -203,7 +198,6 @@ const Menu: React.FC = () => {
         </WelcomeUser>
 
         {/* Guidance */}
-        {/* {hasCompletedOnboarding === false && currentTopicID !== "WELCOME" && ( */}
         {hasCompletedOnboarding === false && (
           <>
             <MenuItem
@@ -254,9 +248,6 @@ const Menu: React.FC = () => {
         )}
 
         {/* Reports */}
-        {/* {(userStore.isJusticeCountsAdmin(agencyId) ||
-          hasCompletedOnboarding ||
-          isAddDataOrPublishDataStep) && ( */}
         <MenuItem
           onClick={() => {
             navigate(REPORTS_LOWERCASE);
@@ -266,10 +257,8 @@ const Menu: React.FC = () => {
         >
           {REPORTS_CAPITALIZED}
         </MenuItem>
-        {/* )} */}
 
         {/* Data (Visualizations) */}
-        {/* {(hasCompletedOnboarding || isPublishDataStep) && ( */}
         <MenuItem
           onClick={() => {
             navigate("data");
@@ -279,13 +268,9 @@ const Menu: React.FC = () => {
         >
           Data
         </MenuItem>
-        {/* )} */}
 
         {/* Learn More */}
         {windowWidth > MIN_TABLET_WIDTH && (
-          // (hasCompletedOnboarding ||
-          //   (hasCompletedOnboarding === false &&
-          //     currentTopicID !== "WELCOME")) &&
           <MenuItem>
             <a
               href="https://justicecounts.csgjusticecenter.org/"
@@ -330,9 +315,6 @@ const Menu: React.FC = () => {
         )}
 
         {/* Settings */}
-        {/* {(hasCompletedOnboarding ||
-          (hasCompletedOnboarding === false &&
-            currentTopicID !== "WELCOME")) && ( */}
         <MenuItem
           onClick={() => {
             if (windowWidth > MIN_TABLET_WIDTH) {
@@ -343,7 +325,6 @@ const Menu: React.FC = () => {
         >
           Settings
         </MenuItem>
-        {/* )} */}
 
         {isMobileMenuOpen && (
           <SubMenuContainer>
@@ -373,40 +354,18 @@ const Menu: React.FC = () => {
           Log Out
         </MenuItem>
 
-        {/* {(userStore.isJusticeCountsAdmin(agencyId) ||
-          hasCompletedOnboarding ||
-          (hasCompletedOnboarding === false &&
-            currentTopicID !== "WELCOME")) && ( */}
         <MenuItem id="upload" buttonPadding>
           <HeaderUploadButton
-            // type={
-            //   userStore.isJusticeCountsAdmin(agencyId) ||
-            //   hasCompletedOnboarding ||
-            //   (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
-            //     ? "blue"
-            //     : "border"
-            // }
             type="blue"
             onClick={() => {
-              // if (
-              //   userStore.isJusticeCountsAdmin(agencyId) ||
-              //   hasCompletedOnboarding ||
-              //   (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
-              // )
               navigate("upload");
               handleCloseMobileMenu();
             }}
             enabledDuringOnboarding
-            // enabledDuringOnboarding={
-            //   userStore.isJusticeCountsAdmin(agencyId) ||
-            //   hasCompletedOnboarding ||
-            //   (!hasCompletedOnboarding && isAddDataOrPublishDataStep)
-            // }
           >
             Upload Data
           </HeaderUploadButton>
         </MenuItem>
-        {/* )} */}
       </MenuContainer>
       <MobileMenuIconWrapper
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
