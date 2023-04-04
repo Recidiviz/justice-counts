@@ -113,11 +113,11 @@ const Menu: React.FC = () => {
   };
 
   // Guidance
-  const isPublishDataStep =
-    !hasCompletedOnboarding && currentTopicID === "PUBLISH_DATA";
-  const isAddDataOrPublishDataStep =
-    (!hasCompletedOnboarding && currentTopicID === "ADD_DATA") ||
-    isPublishDataStep;
+  // const isPublishDataStep =
+  //   !hasCompletedOnboarding && currentTopicID === "PUBLISH_DATA";
+  // const isAddDataOrPublishDataStep =
+  //   (!hasCompletedOnboarding && currentTopicID === "ADD_DATA") ||
+  //   isPublishDataStep;
   const isMetricConfigStep =
     !hasCompletedOnboarding && currentTopicID === "METRIC_CONFIG";
   const metricCompletionProgress = !hasCompletedOnboarding
