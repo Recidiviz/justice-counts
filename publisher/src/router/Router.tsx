@@ -42,10 +42,10 @@ export const Router = () => {
   // e.g. reports page with initial available user agency
   // or maybe display some text since header is available and user can pick available agency
   const isAgencyIdInUserAgencies = userStore.getAgency(agencyId);
-  const { hasCompletedOnboarding, currentTopicID } = guidanceStore;
-  const isPublishDataStep = currentTopicID === "PUBLISH_DATA";
-  const isAddDataOrPublishDataStep =
-    currentTopicID === "ADD_DATA" || isPublishDataStep;
+  const { hasCompletedOnboarding } = guidanceStore;
+  // const isPublishDataStep = currentTopicID === "PUBLISH_DATA";
+  // const isAddDataOrPublishDataStep =
+  //   currentTopicID === "ADD_DATA" || isPublishDataStep;
 
   return (
     <>
