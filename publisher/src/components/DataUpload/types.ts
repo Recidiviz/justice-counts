@@ -15,11 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { RawDatapoint } from "@justice-counts/common/types";
+import { RawDatapoint, ReportOverview } from "@justice-counts/common/types";
 
 export interface DataUploadResponseBody {
   metrics: UploadedMetric[];
   non_metric_errors?: ErrorWarningMessage[];
+  new_reports: ReportOverview[];
+  updated_report_ids: number[];
 }
 
 export interface UploadedMetric {

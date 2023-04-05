@@ -24,7 +24,6 @@ import {
 import styled from "styled-components/macro";
 
 import { DataUploadContainer } from "../DataUpload";
-import { ReportActionsButton } from "../Reports";
 import {
   RemoveRecordsModalButtonsContainer,
   RemoveRecordsModalContainer,
@@ -275,15 +274,25 @@ export const ReviewPublishModalHint = styled(RemoveRecordsModalHint)`
   display: flex;
   text-align: center;
   max-width: 264px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 export const ReviewPublishModalButtonsContainer = styled(
   RemoveRecordsModalButtonsContainer
 )``;
-export const ReviewPublishModalButton = styled(ReportActionsButton)`
-  margin-left: unset;
-  ${typography.sizeCSS.normal};
-`;
 
 export const NoDatapointsMessage = styled.div`
   margin: auto auto;
 `;
+
+export const ListOfReportsContainer = styled.div`
+  width: 100%;
+  max-height: 120px;
+  overflow: auto;
+  margin-top: 15px;
+  padding: 0 15px;
+  color: ${palette.highlight.grey9};
+`;
+
+export const ModifiedReportTitle = styled.div``;

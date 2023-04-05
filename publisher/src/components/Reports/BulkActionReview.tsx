@@ -183,16 +183,16 @@ const BulkActionReview = () => {
       name: `Exit without ${
         action === "publish" ? "Publishing" : "Unpublishing"
       }`,
-      type: "border",
       onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
+      borderColor: "lightgrey",
     },
     {
       name: action === "publish" ? "Publish" : "Unpublish",
-      type: action === "publish" ? "green" : "orange",
       onClick:
         action === "publish"
           ? publishMultipleRecords
           : unpublishMultipleRecords,
+      buttonColor: action === "publish" ? "green" : "orange",
     },
   ];
 

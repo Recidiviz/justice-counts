@@ -219,7 +219,6 @@ export const EditButtonContainer = styled.div<{ hasTopMargin?: boolean }>`
   flex-direction: row;
   justify-content: end;
   align-items: center;
-  cursor: pointer;
   margin-top: 16px;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
@@ -228,59 +227,19 @@ export const EditButtonContainer = styled.div<{ hasTopMargin?: boolean }>`
   }
 `;
 
-export const EditButton = styled.div`
-  ${typography.sizeCSS.normal};
-  color: ${palette.solid.blue};
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-
-  img {
-    width: 15px;
-    height: 10px;
-    filter: invert(47%) sepia(90%) saturate(6984%) hue-rotate(199deg)
-      brightness(100%) contrast(101%);
-  }
+export const EditArrowImage = styled.img`
+  width: 15px;
+  height: 10px;
+  filter: invert(47%) sepia(90%) saturate(6984%) hue-rotate(199deg)
+    brightness(100%) contrast(101%);
 `;
 
 export const EditModeButtonsContainer = styled.div<{ noMargin?: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: end;
-  gap: 32px;
+  gap: 16px;
   margin-top: ${({ noMargin }) => (noMargin ? "0" : "16px")};
-`;
-
-export const TransparentButton = styled.div<{ color?: "red" | "blue" }>`
-  padding: 9px 0;
-  ${typography.sizeCSS.normal};
-  color: ${({ color }) => {
-    if (color === "red") {
-      return palette.solid.red;
-    }
-    if (color === "blue") {
-      return palette.solid.blue;
-    }
-    return palette.solid.darkgrey;
-  }};
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.8;
-  }
-`;
-
-export const FilledButton = styled.div`
-  ${typography.sizeCSS.normal};
-  color: ${palette.solid.white};
-  background-color: ${palette.solid.blue};
-  padding: 9px 29px;
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.8;
-  }
 `;
 
 // Basic Info
@@ -357,9 +316,18 @@ export const InviteMemberInnerContainer = styled.div`
   margin-bottom: 40px;
   margin-bottom: 8px;
 
+  & > div:last-child {
+    flex-grow: 2;
+  }
+
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
     height: unset;
+
+    & > div:last-child {
+      height: 47px;
+      width: 96px;
+    }
   }
 `;
 
@@ -417,31 +385,6 @@ export const InviteMemberErrorContainer = styled.div`
 export const InviteMemberError = styled.div`
   ${typography.sizeCSS.small}
   color: ${palette.solid.red};
-`;
-
-export const InviteMemberButton = styled.div<{ disabled: boolean }>`
-  ${typography.sizeCSS.normal};
-  background-color: ${({ disabled }) =>
-    disabled ? palette.highlight.grey8 : palette.solid.blue};
-  color: ${({ disabled }) =>
-    disabled ? palette.solid.darkgrey : palette.solid.white};
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  cursor: ${({ disabled }) => !disabled && "pointer"};
-  pointer-events: ${({ disabled }) => disabled && "none"};
-  width: 100%;
-  border-radius: 2px;
-
-  &:hover {
-    opacity: ${({ disabled }) => !disabled && "0.8"};
-  }
-
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    width: 96px;
-    height: 47px;
-  }
 `;
 
 export const TeamManagementSectionSubTitle = styled.div`
@@ -549,19 +492,6 @@ export const EditTeamMemberMenuItem = styled.div`
   }
 `;
 
-export const RemoveTeamMemberButton = styled(FilledButton)`
-  ${typography.sizeCSS.normal};
-  color: ${palette.solid.white};
-  background-color: ${palette.solid.red};
-  border-radius: "2px";
-  padding: 9px 16px;
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.8;
-  }
-`;
-
 // Supervisions
 export const SupervisionSystemRow = styled(AgencySettingsInfoRow)`
   justify-content: start;
@@ -622,15 +552,6 @@ export const JurisdictionAreaType = styled.div`
   text-transform: capitalize;
 `;
 
-export const SeeMoreButton = styled(JurisdictionsSearchResult)`
-  justify-content: center;
-  color: ${palette.solid.blue};
-
-  &:hover {
-    background-color: ${palette.solid.white};
-  }
-`;
-
 export const JurisdictionsListArea = styled.div`
   display: flex;
   flex-direction: column;
@@ -664,13 +585,7 @@ export const JurisdictionsEditModeFooterLeftBlock = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 4px;
   margin-top: 16px;
-`;
-
-export const AddJurisdictionsExclusionsLink = styled.div`
-  color: ${palette.solid.blue};
-  cursor: pointer;
 `;
 
 export const AddIcon = styled.img`

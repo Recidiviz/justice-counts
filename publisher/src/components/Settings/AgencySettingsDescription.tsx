@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Button } from "@justice-counts/common/components/Button";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -29,11 +30,9 @@ import {
   AgencyInfoTextAreaWordCounter,
   AgencySettingsBlock,
   AgencySettingsBlockTitle,
-  EditButton,
+  EditArrowImage,
   EditButtonContainer,
   EditModeButtonsContainer,
-  FilledButton,
-  TransparentButton,
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
@@ -125,10 +124,8 @@ const AgencySettingsDescription: React.FC<{
             {infoText.length}/{MAX_DESCRIPTION_CHARACTERS} characters
           </AgencyInfoTextAreaWordCounter>
           <EditModeButtonsContainer noMargin>
-            <TransparentButton onClick={handleCancelClick}>
-              Cancel
-            </TransparentButton>
-            <FilledButton onClick={handleSaveClick}>Save</FilledButton>
+            <Button label="Cancel" onClick={handleCancelClick} />
+            <Button label="Save" onClick={handleSaveClick} buttonColor="blue" />
           </EditModeButtonsContainer>
         </>
       </AgencySettingsEditModeModal>
@@ -144,15 +141,20 @@ const AgencySettingsDescription: React.FC<{
         </AgencyInfoBlockDescription>
         {allowEdit && (
           <EditButtonContainer>
-            <EditButton
+            <Button
+              label={
+                <>
+                  Edit description <EditArrowImage src={rightArrow} alt="" />
+                </>
+              }
               onClick={() => {
                 setInfoText(purposeAndFunctionsSetting);
                 openSetting();
               }}
-            >
-              Edit description
-              <img src={rightArrow} alt="" />
-            </EditButton>
+              labelColor="blue"
+              noSidePadding
+              noHover
+            />
           </EditButtonContainer>
         )}
       </AgencySettingsBlock>

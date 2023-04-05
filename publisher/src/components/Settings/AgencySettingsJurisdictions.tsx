@@ -18,6 +18,7 @@
 /* eslint-disable camelcase */
 import addIcon from "@justice-counts/common/assets/add-icon.svg";
 import blackCheck from "@justice-counts/common/assets/black-check-icon.svg";
+import { Button } from "@justice-counts/common/components/Button";
 import mappedJurisdictionsJSONData from "@justice-counts/common/fips_with_county_subdivisions.json";
 import { Jurisdiction } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
@@ -34,16 +35,14 @@ import {
 import { SettingProps } from "./AgencySettings";
 import {
   AddIcon,
-  AddJurisdictionsExclusionsLink,
   AgencyInfoBlockDescription,
   AgencySettingsBlock,
   AgencySettingsBlockDescription,
   AgencySettingsBlockSubDescription,
   AgencySettingsBlockTitle,
-  EditButton,
+  EditArrowImage,
   EditButtonContainer,
   EditModeButtonsContainer,
-  FilledButton,
   JurisdictionAreaType,
   JurisdictionCheckBlock,
   JurisdictionsEditModeFooter,
@@ -54,8 +53,6 @@ import {
   JurisdictionsListArea,
   JurisdictionsSearchResult,
   JurisdictionsSearchResultContainer,
-  SeeMoreButton,
-  TransparentButton,
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
@@ -291,14 +288,14 @@ export const AgencySettingsJurisdictions: React.FC<{
                     ))}
                   {!!inputValue &&
                     searchResult.length > totalSearchResultsShow && (
-                      <SeeMoreButton
-                        hasAction
+                      <Button
+                        label="See More"
                         onClick={() =>
                           setTotalSearchResultsShow(totalSearchResultsShow + 10)
                         }
-                      >
-                        See more
-                      </SeeMoreButton>
+                        labelColor="blue"
+                        noHover
+                      />
                     )}
                 </JurisdictionsSearchResultContainer>
               ))}
@@ -374,13 +371,15 @@ export const AgencySettingsJurisdictions: React.FC<{
                         : "area"
                     } included`
                   : "Need to declare included areas?"}
-                <AddJurisdictionsExclusionsLink
+                <Button
+                  label={hasInclusions ? "View and Edit" : "Add them"}
                   onClick={() =>
                     setIsExclusionsViewActive(!isExclusionsViewActive)
                   }
-                >
-                  {hasInclusions ? "View and Edit" : "Add them"}
-                </AddJurisdictionsExclusionsLink>
+                  labelColor="blue"
+                  noSidePadding
+                  noHover
+                />
               </JurisdictionsEditModeFooterLeftBlock>
             ) : (
               <JurisdictionsEditModeFooterLeftBlock>
@@ -391,40 +390,46 @@ export const AgencySettingsJurisdictions: React.FC<{
                         : "area"
                     } excluded`
                   : "Need to declare excluded areas?"}
-                <AddJurisdictionsExclusionsLink
+                <Button
+                  label={hasExclusions ? "View and Edit" : "Add them"}
                   onClick={() =>
                     setIsExclusionsViewActive(!isExclusionsViewActive)
                   }
-                >
-                  {hasExclusions ? "View and Edit" : "Add them"}
-                </AddJurisdictionsExclusionsLink>
+                  labelColor="blue"
+                  noSidePadding
+                  noHover
+                />
               </JurisdictionsEditModeFooterLeftBlock>
             )}
             {checkedJurisdictionsIds.length === 0 ? (
               <EditModeButtonsContainer>
-                <TransparentButton onClick={handleCancelClick}>
-                  Cancel
-                </TransparentButton>
-                <FilledButton onClick={handleSaveClick}>Save</FilledButton>
+                <Button label="Cancel" onClick={handleCancelClick} />
+                <Button
+                  label="Save"
+                  onClick={handleSaveClick}
+                  buttonColor="blue"
+                />
               </EditModeButtonsContainer>
             ) : (
               <EditModeButtonsContainer>
-                <TransparentButton
-                  color="blue"
+                <Button
+                  label="Cancel"
                   onClick={() => setCheckedJurisdictionsIds([])}
-                >
-                  Cancel
-                </TransparentButton>
-                <TransparentButton
-                  color="red"
+                  labelColor="blue"
+                  noSidePadding
+                  noHover
+                />
+                <Button
+                  label={`Remove ${checkedAreasCount} ${
+                    checkedAreasCount > 1 ? "areas" : "area"
+                  }`}
                   onClick={() =>
                     handleRemoveJurisdictions(checkedJurisdictionsIds)
                   }
-                >
-                  {`Remove ${checkedAreasCount} ${
-                    checkedAreasCount > 1 ? "areas" : "area"
-                  }`}
-                </TransparentButton>
+                  labelColor="red"
+                  noSidePadding
+                  noHover
+                />
               </EditModeButtonsContainer>
             )}
           </JurisdictionsEditModeFooter>
@@ -477,10 +482,17 @@ export const AgencySettingsJurisdictions: React.FC<{
         ))}
         {allowEdit && (
           <EditButtonContainer hasTopMargin>
-            <EditButton onClick={openSetting}>
-              Edit jurisdictions
-              <img src={rightArrow} alt="" />
-            </EditButton>
+            <Button
+              label={
+                <>
+                  Edit jurisdictions <EditArrowImage src={rightArrow} alt="" />
+                </>
+              }
+              onClick={openSetting}
+              labelColor="blue"
+              noSidePadding
+              noHover
+            />
           </EditButtonContainer>
         )}
       </AgencySettingsBlock>

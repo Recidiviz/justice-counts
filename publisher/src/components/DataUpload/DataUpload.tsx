@@ -15,10 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Button } from "@justice-counts/common/components/Button";
+import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
+import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
   AgencySystems,
   AgencyTeamMemberRole,
+  ReportOverview,
   SupervisionSubsystems,
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
@@ -31,7 +35,6 @@ import { REPORTS_LOWERCASE } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
 import { Loader } from "../Loading";
 import {
-  Button,
   DataUploadContainer,
   DataUploadHeader,
   DataUploadLoading,
@@ -87,6 +90,7 @@ export const DataUpload: React.FC = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
   const currentAgency = userStore.getAgency(agencyId);
+  const windowWidth = useWindowWidth();
 
   /**
    * Sub-systems of the SUPERVISION system should not render a separate template & instructions.
@@ -109,6 +113,13 @@ export const DataUpload: React.FC = observer(() => {
   const [selectedSystem, setSelectedSystem] = useState<
     AgencySystems | undefined
   >();
+  const [newAndUpdatedReports, setNewAndUpdatedReports] = useState<{
+    newReports: ReportOverview[];
+    updatedReportIDs: number[];
+  }>({
+    newReports: [],
+    updatedReportIDs: [],
+  });
 
   const handleFileUpload = async (
     file: File,
@@ -133,9 +144,18 @@ export const DataUpload: React.FC = observer(() => {
         });
       }
 
-      /** Errors and/or Warnings Encountered During Upload -- Show Interstitial instead of Confirmation Page */
       const data: DataUploadResponseBody = await response?.json();
 
+      /**
+       * After upload, the response will include newly created reports and/or
+       * updated existing report IDs (for reports w/ overwrites)
+       */
+      setNewAndUpdatedReports({
+        newReports: data.new_reports || [],
+        updatedReportIDs: data.updated_report_ids || [],
+      });
+
+      /** Errors and/or Warnings Encountered During Upload -- Show Interstitial instead of Confirmation Page */
       const errorsWarningsAndMetrics = processUploadResponseBody(data);
       const hasErrorsOrWarnings =
         (errorsWarningsAndMetrics.nonMetricErrors &&
@@ -151,7 +171,12 @@ export const DataUpload: React.FC = observer(() => {
       }
 
       navigate("review-metrics", {
-        state: { uploadedMetrics: data.metrics, fileName: file.name },
+        state: {
+          uploadedMetrics: data.metrics,
+          fileName: file.name,
+          newReports: data.new_reports || [],
+          updatedReportIDs: data.updated_report_ids || [],
+        },
         replace: true,
       });
     }
@@ -266,6 +291,7 @@ export const DataUpload: React.FC = observer(() => {
       return (
         <UploadErrorsWarnings
           errorsWarningsMetrics={errorsWarningsMetrics}
+          newAndUpdatedReports={newAndUpdatedReports}
           selectedSystem={selectedSystem}
           resetToNewUpload={resetToNewUpload}
           fileName={selectedFile?.name}
@@ -303,8 +329,8 @@ export const DataUpload: React.FC = observer(() => {
   return (
     <DataUploadContainer>
       <DataUploadHeader
-        transparent={!selectedFile && !errorsWarningsMetrics}
-        isBackgroundBlue={!selectedFile && !errorsWarningsMetrics}
+        transparent={windowWidth > MIN_DESKTOP_WIDTH}
+        isBackgroundBlue={windowWidth <= MIN_DESKTOP_WIDTH}
       >
         <LogoContainer
           onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
@@ -313,11 +339,18 @@ export const DataUpload: React.FC = observer(() => {
         </LogoContainer>
 
         <Button
-          type={selectedFile || errorsWarningsMetrics ? "red" : "light-border"}
+          label={selectedFile || errorsWarningsMetrics ? "Close" : "Cancel"}
           onClick={() => navigate(-1)}
-        >
-          {selectedFile || errorsWarningsMetrics ? "Close" : "Cancel"}
-        </Button>
+          buttonColor={
+            selectedFile || errorsWarningsMetrics ? "red" : undefined
+          }
+          borderColor={
+            selectedFile || errorsWarningsMetrics ? undefined : "white"
+          }
+          labelColor={
+            selectedFile || errorsWarningsMetrics ? undefined : "white"
+          }
+        />
       </DataUploadHeader>
       {renderCurrentUploadStep()}
     </DataUploadContainer>
