@@ -152,7 +152,7 @@ const AgencySettingsDescription: React.FC<{
                 openSetting();
               }}
               labelColor="blue"
-              hasNoSidePadding
+              noSidePadding
               noHover
             />
           </EditButtonContainer>

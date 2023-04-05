@@ -35,7 +35,7 @@ export const Button = styled.div<{
   size?: ButtonSize;
   enabledDuringOnboarding?: boolean;
   disabled?: boolean;
-  hasNoSidePadding?: boolean;
+  noSidePadding?: boolean;
   noHover?: boolean;
 }>`
   display: flex;
@@ -79,6 +79,7 @@ export const Button = styled.div<{
         color: ${palette.solid.red};
       `;
     // maybe remove button color later if there would be colored buttons without white label
+    // current designs require only white color for label inside colored buttons
     if (labelColor === "white" || buttonColor)
       return `
         color: ${palette.solid.white};
@@ -103,8 +104,8 @@ export const Button = styled.div<{
     return "padding: 10px 15px";
   }};
   
-  ${({ hasNoSidePadding }) =>
-    hasNoSidePadding && "padding-left: 0; padding-right: 0;"}
+  ${({ noSidePadding }) =>
+    noSidePadding && "padding-left: 0; padding-right: 0;"}
 
   &:hover {
     cursor: pointer;

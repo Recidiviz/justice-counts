@@ -377,7 +377,7 @@ export const AgencySettingsJurisdictions: React.FC<{
                     setIsExclusionsViewActive(!isExclusionsViewActive)
                   }
                   labelColor="blue"
-                  hasNoSidePadding
+                  noSidePadding
                   noHover
                 />
               </JurisdictionsEditModeFooterLeftBlock>
@@ -396,7 +396,7 @@ export const AgencySettingsJurisdictions: React.FC<{
                     setIsExclusionsViewActive(!isExclusionsViewActive)
                   }
                   labelColor="blue"
-                  hasNoSidePadding
+                  noSidePadding
                   noHover
                 />
               </JurisdictionsEditModeFooterLeftBlock>
@@ -416,7 +416,7 @@ export const AgencySettingsJurisdictions: React.FC<{
                   label="Cancel"
                   onClick={() => setCheckedJurisdictionsIds([])}
                   labelColor="blue"
-                  hasNoSidePadding
+                  noSidePadding
                   noHover
                 />
                 <Button
@@ -427,7 +427,7 @@ export const AgencySettingsJurisdictions: React.FC<{
                     handleRemoveJurisdictions(checkedJurisdictionsIds)
                   }
                   labelColor="red"
-                  hasNoSidePadding
+                  noSidePadding
                   noHover
                 />
               </EditModeButtonsContainer>
@@ -490,7 +490,7 @@ export const AgencySettingsJurisdictions: React.FC<{
               }
               onClick={openSetting}
               labelColor="blue"
-              hasNoSidePadding
+              noSidePadding
               noHover
             />
           </EditButtonContainer>

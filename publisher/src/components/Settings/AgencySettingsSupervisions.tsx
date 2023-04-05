@@ -199,7 +199,7 @@ export const AgencySettingsSupervisions: React.FC<{
             }
             onClick={openSetting}
             labelColor="blue"
-            hasNoSidePadding
+            noSidePadding
             noHover
           />
         </EditButtonContainer>

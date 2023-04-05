@@ -89,7 +89,7 @@ export const AgencySettingsConfirmModal: React.FC<Props> = ({
             You have unsaved changes, would like to leave anyway?
           </ConfirmModalText>
           <ConfirmModalButtonsContainer>
-            <Button label="Cancel" onClick={closeModal} hasNoSidePadding />
+            <Button label="Cancel" onClick={closeModal} noSidePadding />
             <Button label="Okay" onClick={handleConfirm} buttonColor="blue" />
           </ConfirmModalButtonsContainer>
         </ConfirmModalContent>

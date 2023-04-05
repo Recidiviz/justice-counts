@@ -19,12 +19,3 @@ export type ButtonColor = "blue" | "green" | "red" | "orange";
 export type ButtonLabelColor = "white" | "blue" | "red";
 export type ButtonBorderColor = "white" | "lightgrey";
 export type ButtonSize = "medium";
-
-// export type ButtonType =
-//   | "light-border"
-//   | "border"
-//   | "borderless"
-//   | "blue"
-//   | "green"
-//   | "red"
-//   | "orange";

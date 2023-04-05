@@ -34,7 +34,7 @@ type Props = {
   size?: ButtonSize;
   enabledDuringOnboarding?: boolean;
   disabled?: boolean;
-  hasNoSidePadding?: boolean;
+  noSidePadding?: boolean;
   noHover?: boolean;
 };
 
@@ -47,7 +47,7 @@ export function Button({
   size,
   enabledDuringOnboarding,
   disabled,
-  hasNoSidePadding,
+  noSidePadding,
   noHover,
 }: Props) {
   return (
@@ -59,7 +59,7 @@ export function Button({
       size={size}
       disabled={disabled}
       enabledDuringOnboarding={enabledDuringOnboarding}
-      hasNoSidePadding={hasNoSidePadding}
+      noSidePadding={noSidePadding}
       noHover={noHover}
     >
       {label}
