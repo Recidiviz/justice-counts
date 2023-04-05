@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { showToast } from "@justice-counts/common/components/Toast";
 import DatapointsStore from "@justice-counts/common/stores/BaseDatapointsStore";
 import { RawDatapointsByMetric, Report } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
@@ -54,11 +55,20 @@ const BulkActionReview = () => {
   const [datapoints, setDatapoints] = useState<RawDatapointsByMetric>({});
 
   const publishMultipleRecords = async () => {
-    await reportStore.updateMultipleReportStatuses(
+    const response = (await reportStore.updateMultipleReportStatuses(
       recordsIds,
       agencyIdString,
       "PUBLISHED"
-    );
+    )) as Response;
+
+    if (response.status !== 200) {
+      showToast({
+        message: `Failed to publish. Please try again.`,
+        color: "red",
+        timeout: 3000,
+      });
+      return;
+    }
     setIsSuccessModalOpen(true);
   };
 

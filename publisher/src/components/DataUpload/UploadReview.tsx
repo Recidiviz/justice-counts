@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { ButtonColor } from "@justice-counts/common/components/Button";
+import { showToast } from "@justice-counts/common/components/Toast";
 import { ReportOverview } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
@@ -85,11 +86,20 @@ const UploadReview: React.FC = observer(() => {
 
   const publishMultipleRecords = async () => {
     if (agencyId) {
-      await reportStore.updateMultipleReportStatuses(
+      const response = (await reportStore.updateMultipleReportStatuses(
         existingAndNewRecordIDs,
         agencyId,
         "PUBLISHED"
-      );
+      )) as Response;
+
+      if (response.status !== 200) {
+        showToast({
+          message: `Failed to publish. Please try again.`,
+          color: "red",
+          timeout: 3000,
+        });
+        return;
+      }
       setIsSuccessModalOpen(true);
     }
   };
