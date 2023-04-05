@@ -28,8 +28,6 @@ import {
 } from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
-import { Button } from "../DataUpload/DataUpload.styles";
-
 export const MenuContainer = styled.nav<{ isMobileMenuOpen: boolean }>`
   font-family: ${typography.family};
   ${typography.sizeCSS.normal}
@@ -238,8 +236,4 @@ export const ExtendedDropdownMenuItem = styled(DropdownMenuItem)<{
       stroke: ${palette.solid.blue};
     }
   }
-`;
-
-export const HeaderUploadButton = styled(Button)`
-  white-space: nowrap;
 `;

@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Button } from "@justice-counts/common/components/Button";
 import {
   palette,
   typography,
@@ -23,7 +24,6 @@ import React from "react";
 import styled from "styled-components/macro";
 
 import { REPORT_LOWERCASE } from "../Global/constants";
-import { ReportActionsButton } from "./Reports.styles";
 
 export const RemoveRecordsModalWrapper = styled.div`
   position: fixed;
@@ -73,11 +73,6 @@ export const RemoveRecordsModalButtonsContainer = styled.div`
   justify-content: space-between;
 `;
 
-export const RemoveRecordsModalButton = styled(ReportActionsButton)`
-  margin-left: unset;
-  ${typography.sizeCSS.normal};
-`;
-
 type RemoveRecordsModalProps = {
   selectedRecords: number;
   closeModal: () => void;
@@ -100,15 +95,16 @@ export const RemoveRecordsModal: React.FC<RemoveRecordsModalProps> = ({
           You can’t undo this action.
         </RemoveRecordsModalHint>
         <RemoveRecordsModalButtonsContainer>
-          <RemoveRecordsModalButton onClick={closeModal}>
-            No, Cancel
-          </RemoveRecordsModalButton>
-          <RemoveRecordsModalButton
-            buttonColor="red"
+          <Button
+            label="No, Cancel"
+            onClick={closeModal}
+            borderColor="lightgrey"
+          />
+          <Button
+            label="Yes, Delete"
             onClick={confirmRemoveRecords}
-          >
-            Yes, Delete
-          </RemoveRecordsModalButton>
+            buttonColor="red"
+          />
         </RemoveRecordsModalButtonsContainer>
       </RemoveRecordsModalContainer>
     </RemoveRecordsModalWrapper>

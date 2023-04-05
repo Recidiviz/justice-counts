@@ -19,6 +19,7 @@ import {
   Badge,
   BadgeColorMapping,
 } from "@justice-counts/common/components/Badge";
+import { Button } from "@justice-counts/common/components/Button";
 import {
   AgencySystems,
   SupervisionSubsystems,
@@ -40,7 +41,6 @@ import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 import { Loader, Loading } from "../Loading";
 import { MetricInfo } from "../MetricConfiguration";
 import {
-  ActionButton,
   ActionButtonWrapper,
   ALL_REQUIRED_METRIC_CONFIG_STEPS_COMPLETED,
   CheckIcon,
@@ -66,7 +66,6 @@ import {
   ReportsOverviewItemWrapper,
   ReportTitle,
   ReviewPublishLink,
-  SkipButton,
   SystemNameTitle,
   TopicDescription,
   TopicTitle,
@@ -288,24 +287,25 @@ export const Guidance = observer(() => {
           {currentTopicID === "ADD_DATA" ? (
             <>
               <ActionButtonWrapper>
-                <ActionButton
-                  kind="primary"
+                <Button
+                  label="Upload spreadsheet"
                   onClick={() => navigate("../upload")}
-                >
-                  Upload spreadsheet
-                </ActionButton>
-                <ActionButton
-                  kind="bordered"
+                  buttonColor="blue"
+                  size="medium"
+                />
+                <Button
+                  label={`Fill out ${REPORT_LOWERCASE}`}
                   onClick={() => navigate(`../${REPORTS_LOWERCASE}`)}
-                >
-                  Fill out {REPORT_LOWERCASE}
-                </ActionButton>
+                  borderColor="lightgrey"
+                  size="medium"
+                />
               </ActionButtonWrapper>
             </>
           ) : (
             <>
               {buttonDisplayName && (
-                <ActionButton
+                <Button
+                  label={buttonDisplayName}
                   onClick={() => {
                     if (currentTopicID) {
                       if (pathToTask) navigate(pathToTask);
@@ -318,15 +318,16 @@ export const Guidance = observer(() => {
                       );
                     }
                   }}
-                >
-                  {buttonDisplayName}
-                </ActionButton>
+                  size="medium"
+                  buttonColor="blue"
+                />
               )}
             </>
           )}
 
           {skippable && (
-            <SkipButton
+            <Button
+              label="Skip"
               onClick={() => {
                 if (currentTopicID) {
                   saveOnboardingTopicsStatuses(
@@ -338,9 +339,9 @@ export const Guidance = observer(() => {
                   );
                 }
               }}
-            >
-              Skip
-            </SkipButton>
+              labelColor="blue"
+              noHover
+            />
           )}
         </ContentContainer>
 

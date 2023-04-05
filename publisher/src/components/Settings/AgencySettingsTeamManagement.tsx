@@ -17,6 +17,7 @@
 
 /* eslint-disable camelcase */
 import editIcon from "@justice-counts/common/assets/edit-row-icon.png";
+import { Button } from "@justice-counts/common/components/Button";
 import {
   AgencyTeamMember,
   AgencyTeamMemberRole,
@@ -35,7 +36,6 @@ import {
   EditTeamMemberMenu,
   EditTeamMemberMenuItem,
   InvitedStatus,
-  InviteMemberButton,
   InviteMemberContainer,
   InviteMemberError,
   InviteMemberErrorContainer,
@@ -210,14 +210,14 @@ export const AgencySettingsTeamManagement = observer(() => {
                   error={!!emailValue && !validateEmail(emailValue)}
                 />
               </InviteMemberInputsContainer>
-              <InviteMemberButton
+              <Button
+                label="Invite"
                 onClick={() => handleInviteTeamMamber(nameValue, emailValue)}
+                buttonColor="blue"
                 disabled={
                   !nameValue || !validateEmail(emailValue) || isInviting
                 }
-              >
-                Invite
-              </InviteMemberButton>
+              />
             </InviteMemberInnerContainer>
             <InviteMemberErrorContainer>
               {!!emailValue && !validateEmail(emailValue) && (

@@ -80,39 +80,6 @@ export const ActionButtonWrapper = styled.div`
   gap: 8px;
 `;
 
-export const ActionButton = styled.button<{ kind?: "primary" | "bordered" }>`
-  ${typography.sizeCSS.medium};
-  width: fit-content;
-  border: 1px solid
-    ${({ kind }) =>
-      kind === "bordered" ? palette.highlight.grey4 : palette.solid.blue};
-  border-radius: 3px;
-  padding: 16px 32px;
-  background: ${({ kind }) =>
-    kind === "bordered" ? `none` : palette.solid.blue};
-  color: ${({ kind }) =>
-    kind === "bordered" ? palette.solid.darkgrey : palette.solid.white};
-  transition: 0.3s ease;
-
-  &:hover {
-    cursor: pointer;
-    background: ${({ kind }) =>
-      kind === "bordered" ? palette.solid.blue : palette.solid.darkblue};
-    ${({ kind }) => kind === "bordered" && `color: ${palette.solid.white};`}
-  }
-`;
-
-export const SkipButton = styled.div`
-  ${typography.sizeCSS.normal};
-  color: ${palette.solid.blue};
-  margin-top: -16px;
-
-  &:hover {
-    cursor: pointer;
-    color: ${palette.solid.darkblue};
-  }
-`;
-
 export const ProgressStepsContainer = styled.div<{ position?: string }>`
   width: 100%;
   display: flex;

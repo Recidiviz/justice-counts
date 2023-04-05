@@ -15,43 +15,54 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import React from "react";
+
+import * as Styled from "./Button.styled";
 import {
   ButtonBorderColor,
   ButtonColor,
   ButtonLabelColor,
-} from "@justice-counts/common/components/Button";
-import { RawDatapoint, ReportOverview } from "@justice-counts/common/types";
-import React from "react";
+  ButtonSize,
+} from "./types";
 
-export type ReviewHeaderActionButton = {
-  name: string;
+type Props = {
+  label: string | React.ReactNode;
   onClick: () => void;
-  disabled?: boolean;
   buttonColor?: ButtonColor;
   labelColor?: ButtonLabelColor;
   borderColor?: ButtonBorderColor;
+  size?: ButtonSize;
+  enabledDuringOnboarding?: boolean;
+  disabled?: boolean;
+  noSidePadding?: boolean;
+  noHover?: boolean;
 };
 
-export type ReviewMetric = {
-  datapoints: RawDatapoint[];
-  display_name: string;
-  key: string;
-  metricHasError?: boolean;
-  metricHasValidInput?: boolean;
-};
-
-export type ReviewMetricOverwrites = {
-  key: number;
-  metricName: string;
-  dimensionName: string;
-  startDate: string;
-};
-
-export type ReviewMetricsProps = {
-  title: string;
-  description: string | React.ReactNode;
-  buttons: ReviewHeaderActionButton[];
-  metrics: ReviewMetric[];
-  metricOverwrites?: ReviewMetricOverwrites[];
-  records?: ReportOverview[];
-};
+export function Button({
+  label,
+  onClick,
+  buttonColor,
+  labelColor,
+  borderColor,
+  size,
+  enabledDuringOnboarding,
+  disabled,
+  noSidePadding,
+  noHover,
+}: Props) {
+  return (
+    <Styled.Button
+      onClick={onClick}
+      buttonColor={buttonColor}
+      labelColor={labelColor}
+      borderColor={borderColor}
+      size={size}
+      disabled={disabled}
+      enabledDuringOnboarding={enabledDuringOnboarding}
+      noSidePadding={noSidePadding}
+      noHover={noHover}
+    >
+      {label}
+    </Styled.Button>
+  );
+}

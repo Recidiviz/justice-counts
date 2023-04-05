@@ -15,7 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Button } from "@justice-counts/common/components/Button";
+import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
+import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
   AgencySystems,
   AgencyTeamMemberRole,
@@ -32,7 +35,6 @@ import { REPORTS_LOWERCASE } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
 import { Loader } from "../Loading";
 import {
-  Button,
   DataUploadContainer,
   DataUploadHeader,
   DataUploadLoading,
@@ -88,6 +90,7 @@ export const DataUpload: React.FC = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
   const currentAgency = userStore.getAgency(agencyId);
+  const windowWidth = useWindowWidth();
 
   /**
    * Sub-systems of the SUPERVISION system should not render a separate template & instructions.
@@ -326,8 +329,8 @@ export const DataUpload: React.FC = observer(() => {
   return (
     <DataUploadContainer>
       <DataUploadHeader
-        transparent={!selectedFile && !errorsWarningsMetrics}
-        isBackgroundBlue={!selectedFile && !errorsWarningsMetrics}
+        transparent={windowWidth > MIN_DESKTOP_WIDTH}
+        isBackgroundBlue={windowWidth <= MIN_DESKTOP_WIDTH}
       >
         <LogoContainer
           onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
@@ -336,11 +339,18 @@ export const DataUpload: React.FC = observer(() => {
         </LogoContainer>
 
         <Button
-          type={selectedFile || errorsWarningsMetrics ? "red" : "light-border"}
+          label={selectedFile || errorsWarningsMetrics ? "Close" : "Cancel"}
           onClick={() => navigate(-1)}
-        >
-          {selectedFile || errorsWarningsMetrics ? "Close" : "Cancel"}
-        </Button>
+          buttonColor={
+            selectedFile || errorsWarningsMetrics ? "red" : undefined
+          }
+          borderColor={
+            selectedFile || errorsWarningsMetrics ? undefined : "white"
+          }
+          labelColor={
+            selectedFile || errorsWarningsMetrics ? undefined : "white"
+          }
+        />
       </DataUploadHeader>
       {renderCurrentUploadStep()}
     </DataUploadContainer>

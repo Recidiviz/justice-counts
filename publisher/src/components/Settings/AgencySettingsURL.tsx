@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Button } from "@justice-counts/common/components/Button";
 import { formatExternalLink } from "@justice-counts/common/components/DataViz/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
@@ -30,11 +31,9 @@ import {
   AgencyInfoTextInput,
   AgencySettingsBlock,
   AgencySettingsBlockTitle,
-  EditButton,
+  EditArrowImage,
   EditButtonContainer,
   EditModeButtonsContainer,
-  FilledButton,
-  TransparentButton,
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
@@ -113,10 +112,8 @@ const AgencySettingsUrl: React.FC<{
             value={urlText}
           />
           <EditModeButtonsContainer noMargin>
-            <TransparentButton onClick={handleCancelClick}>
-              Cancel
-            </TransparentButton>
-            <FilledButton onClick={handleSaveClick}>Save</FilledButton>
+            <Button label="Cancel" onClick={handleCancelClick} />
+            <Button label="Save" onClick={handleSaveClick} buttonColor="blue" />
           </EditModeButtonsContainer>
         </>
       </AgencySettingsEditModeModal>
@@ -145,15 +142,20 @@ const AgencySettingsUrl: React.FC<{
         </AgencyInfoBlockDescription>
         {allowEdit && (
           <EditButtonContainer>
-            <EditButton
+            <Button
+              label={
+                <>
+                  Edit URL <EditArrowImage src={rightArrow} alt="" />
+                </>
+              }
               onClick={() => {
                 setUrlText(homepageUrlSetting);
                 openSetting();
               }}
-            >
-              Edit URL
-              <img src={rightArrow} alt="" />
-            </EditButton>
+              labelColor="blue"
+              noSidePadding
+              noHover
+            />
           </EditButtonContainer>
         )}
       </AgencySettingsBlock>

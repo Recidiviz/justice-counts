@@ -20,6 +20,7 @@ import {
   BadgeColorMapping,
   BadgeColors,
 } from "@justice-counts/common/components/Badge";
+import { Button } from "@justice-counts/common/components/Button";
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
   AgencySystems,
@@ -37,7 +38,6 @@ import { ContainedLoader } from "../Loading";
 import { TeamMemberNameWithBadge } from "../primitives";
 import { UploadedFile, UploadedFileStatus } from ".";
 import {
-  ActionButton,
   ActionsContainer,
   DateUploaded,
   DownloadIcon,
@@ -174,32 +174,33 @@ export const UploadedFileRow: React.FC<{
             {userStore.isJusticeCountsAdmin(agencyId) && (
               <>
                 {(badgeText === "processed" || badgeText === "error") && (
-                  <ActionButton
+                  <Button
+                    label="Mark as Pending"
                     onClick={() => updateUploadedFileStatus(id, "UPLOADED")}
-                  >
-                    Mark as Pending
-                  </ActionButton>
+                    labelColor="blue"
+                  />
                 )}
                 {(badgeText === "pending" || badgeText === "error") && (
-                  <ActionButton
+                  <Button
+                    label="Mark as Processed"
                     onClick={() => updateUploadedFileStatus(id, "INGESTED")}
-                  >
-                    Mark as Processed
-                  </ActionButton>
+                    labelColor="blue"
+                  />
                 )}
                 {badgeText !== "error" && (
-                  <ActionButton
+                  <Button
+                    label="Mark as Error"
                     onClick={() => updateUploadedFileStatus(id, "ERRORED")}
-                  >
-                    Mark as Error
-                  </ActionButton>
+                    labelColor="blue"
+                  />
                 )}
               </>
             )}
-
-            <ActionButton red onClick={() => deleteUploadedFile(id)}>
-              Delete
-            </ActionButton>
+            <Button
+              label="Delete"
+              onClick={() => deleteUploadedFile(id)}
+              labelColor="red"
+            />
           </ActionsContainer>
         )}
 

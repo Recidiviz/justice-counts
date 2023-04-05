@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Button } from "@justice-counts/common/components/Button";
 import { MIN_TABLET_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import { Dropdown } from "@recidiviz/design-system";
@@ -43,7 +44,6 @@ import {
   ExtendedDropdownMenu,
   ExtendedDropdownMenuItem,
   ExtendedDropdownToggle,
-  HeaderUploadButton,
   MenuContainer,
   MenuItem,
   MobileMenuIconWrapper,
@@ -355,16 +355,15 @@ const Menu: React.FC = () => {
         </MenuItem>
 
         <MenuItem id="upload" buttonPadding>
-          <HeaderUploadButton
-            type="blue"
+          <Button
+            label="Upload Data"
             onClick={() => {
               navigate("upload");
               handleCloseMobileMenu();
             }}
+            buttonColor="blue"
             enabledDuringOnboarding
-          >
-            Upload Data
-          </HeaderUploadButton>
+          />
         </MenuItem>
       </MenuContainer>
       <MobileMenuIconWrapper

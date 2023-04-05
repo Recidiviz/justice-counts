@@ -70,7 +70,7 @@ export const TabbedBar = styled.div<{ noPadding?: boolean }>`
   justify-content: space-between;
   align-items: center;
   position: relative;
-  padding: ${({ noPadding }) => (noPadding ? `0` : `0px 22px`)};
+  padding: ${({ noPadding }) => (noPadding ? `0` : `0 22px`)};
   border-bottom: 1px solid ${palette.highlight.grey9};
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
@@ -125,51 +125,8 @@ export const TabbedActionsWrapper = styled.div`
 
 export const ReportActions = styled.div`
   display: flex;
-`;
-
-export type ReportActionsButtonColors = "red" | "green" | "blue" | "orange";
-
-export const ReportActionsButton = styled.div<{
-  disabled?: boolean;
-  textColor?: "blue";
-  buttonColor?: ReportActionsButtonColors;
-}>`
-  position: relative;
-  border: ${({ buttonColor }) =>
-    !buttonColor && `1px solid ${palette.highlight.grey4}`};
-  border-radius: 2px;
-  padding: 8px 16px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-left: 16px;
-  transition: 0.2s ease;
-  color: ${({ disabled, textColor, buttonColor }) => {
-    if (disabled) return palette.highlight.grey8;
-
-    if (textColor === "blue") return palette.solid.blue;
-
-    return buttonColor ? palette.solid.white : palette.solid.darkgrey;
-  }};
-  background-color: ${({ buttonColor }) => {
-    if (buttonColor === "red") return palette.solid.red;
-    if (buttonColor === "green") return palette.solid.green;
-    if (buttonColor === "orange") return palette.solid.orange;
-    if (buttonColor === "blue") return palette.solid.blue;
-    return palette.solid.white;
-  }};
-
-  &:hover {
-    ${({ disabled }) =>
-      !disabled
-        ? `
-        cursor: pointer;
-        opacity: 0.8;
-      `
-        : `
-        cursor: default;
-      `}
-  }
+  flex-direction: row;
+  gap: 16px;
 `;
 
 export const BulkActionsDropdownContainer = styled.div`
@@ -180,23 +137,19 @@ export const BulkActionsDropdownContainer = styled.div`
 
 export const BulkActionsDropdownToggle = styled(DropdownToggle)`
   border: 1px solid ${palette.highlight.grey4};
-  border-radius: 2px;
-  padding: 8px 16px;
+  border-radius: 3px;
+  padding: 10px 15px;
   ${typography.sizeCSS.normal};
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 8px;
   color: ${palette.solid.darkgrey};
 
   &:active,
   &:hover,
   &:focus,
   &[aria-expanded="true"] {
-    color: ${palette.solid.darkgrey};
-  }
-
-  &:hover {
-    opacity: 0.8;
+    background-color: ${palette.highlight.grey1};
   }
 `;
 
@@ -264,39 +217,6 @@ export const BulkActionsDropdownMenuItem = styled(DropdownMenuItem)<{
 export const BulkActionsArrow = styled.img`
   width: 10px;
   height: 5px;
-`;
-
-export const ReportActionsSelectIcon = styled.div<{
-  disabled?: boolean;
-}>`
-  width: 11px;
-  height: 11px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-left: 4.5px;
-  border: 1px solid
-    ${({ disabled }) =>
-      disabled ? palette.highlight.grey8 : palette.solid.blue};
-  border-radius: 50%;
-
-  &::after {
-    content: "";
-    height: 1px;
-    width: 6px;
-    background-color: ${({ disabled }) =>
-      disabled ? palette.highlight.grey8 : palette.solid.blue};
-  }
-`;
-
-export const ReportActionsNewIcon = styled(ReportActionsSelectIcon)`
-  &::before {
-    content: "";
-    position: absolute;
-    height: 6px;
-    width: 1px;
-    background-color: ${palette.solid.blue};
-  }
 `;
 
 export const DropdownContainer = styled.div`

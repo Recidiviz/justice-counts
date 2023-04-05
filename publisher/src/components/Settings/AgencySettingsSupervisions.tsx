@@ -16,6 +16,7 @@
 // =============================================================================
 
 import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
+import { Button } from "@justice-counts/common/components/Button";
 import { AgencySystems } from "@justice-counts/common/types";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -33,12 +34,10 @@ import {
   AgencySettingsBlock,
   AgencySettingsBlockDescription,
   AgencySettingsBlockTitle,
-  EditButton,
+  EditArrowImage,
   EditButtonContainer,
   EditModeButtonsContainer,
-  FilledButton,
   SupervisionSystemRow,
-  TransparentButton,
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
@@ -164,10 +163,8 @@ export const AgencySettingsSupervisions: React.FC<{
             </SupervisionSystemRow>
           ))}
           <EditModeButtonsContainer>
-            <TransparentButton onClick={handleCancelClick}>
-              Cancel
-            </TransparentButton>
-            <FilledButton onClick={handleSaveClick}>Save</FilledButton>
+            <Button label="Cancel" onClick={handleCancelClick} />
+            <Button label="Save" onClick={handleSaveClick} buttonColor="blue" />
           </EditModeButtonsContainer>
         </>
       </AgencySettingsEditModeModal>
@@ -194,10 +191,17 @@ export const AgencySettingsSupervisions: React.FC<{
           </AgencyInfoBlockDescription>
         )}
         <EditButtonContainer hasTopMargin>
-          <EditButton onClick={openSetting}>
-            Edit populations
-            <img src={rightArrow} alt="" />
-          </EditButton>
+          <Button
+            label={
+              <>
+                Edit populations <EditArrowImage src={rightArrow} alt="" />
+              </>
+            }
+            onClick={openSetting}
+            labelColor="blue"
+            noSidePadding
+            noHover
+          />
         </EditButtonContainer>
       </AgencySettingsBlock>
     </>

@@ -16,6 +16,7 @@
 // =============================================================================
 
 import checkIcon from "@justice-counts/common/assets/status-check-icon.png";
+import { Button } from "@justice-counts/common/components/Button";
 import { AgencySystems, ReportOverview } from "@justice-counts/common/types";
 import React, { Fragment } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -27,7 +28,6 @@ import { ReactComponent as WarningIcon } from "../assets/warning-icon.svg";
 import { SYSTEM_LOWERCASE } from "../Global/constants";
 import {
   BlueText,
-  Button,
   CheckIcon,
   Container,
   ErrorWarningButtonWrapper,
@@ -373,9 +373,9 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
 
         {/* Action Button(s) */}
         <ErrorWarningButtonWrapper>
-          <Button onClick={resetToNewUpload}>New Upload</Button>
-
+          <Button label="New Upload" onClick={resetToNewUpload} />
           <Button
+            label="Continue"
             onClick={() =>
               navigate("review-metrics", {
                 state: {
@@ -387,9 +387,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
                 replace: true,
               })
             }
-          >
-            Continue
-          </Button>
+          />
         </ErrorWarningButtonWrapper>
 
         {/* Messages */}

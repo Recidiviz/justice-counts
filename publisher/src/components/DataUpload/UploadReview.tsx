@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { ButtonColor } from "@justice-counts/common/components/Button";
 import { ReportOverview } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
@@ -27,7 +28,6 @@ import {
 
 import { useStore } from "../../stores";
 import { REPORTS_LOWERCASE } from "../Global/constants";
-import { ReportActionsButtonColors } from "../Reports";
 import {
   ReviewHeaderActionButton,
   ReviewMetricOverwrites,
@@ -66,7 +66,7 @@ const UploadReview: React.FC = observer(() => {
   const isPublishingExistingReports = updatedReportIDs.length > 0;
   const publishingExistingReportsButtons: {
     name: string;
-    color?: ReportActionsButtonColors;
+    color?: ButtonColor;
     onClick: () => void;
   }[] = [
     {
@@ -126,12 +126,12 @@ const UploadReview: React.FC = observer(() => {
       ? [
           {
             name: "Exit Without Publishing",
-            type: "border",
             onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
+            borderColor: "lightgrey",
           },
           {
             name: "Publish",
-            type: "green",
+            buttonColor: "green",
             onClick: () =>
               isPublishingExistingReports
                 ? setExistingReportWarningOpen(true)
@@ -141,8 +141,8 @@ const UploadReview: React.FC = observer(() => {
       : [
           {
             name: "Close",
-            type: "red",
             onClick: () => navigate(-1),
+            buttonColor: "red",
           },
         ];
 
