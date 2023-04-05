@@ -73,11 +73,21 @@ const BulkActionReview = () => {
   };
 
   const unpublishMultipleRecords = async () => {
-    await reportStore.updateMultipleReportStatuses(
+    const response = (await reportStore.updateMultipleReportStatuses(
       recordsIds,
       agencyIdString,
       "DRAFT"
-    );
+    )) as Response;
+
+    if (response.status !== 200) {
+      showToast({
+        message: `Failed to publish. Please try again.`,
+        color: "red",
+        timeout: 3000,
+      });
+      return;
+    }
+
     setIsSuccessModalOpen(true);
   };
 

@@ -17,11 +17,7 @@
 
 import { showToast } from "@justice-counts/common/components/Toast";
 import DatapointsStore from "@justice-counts/common/stores/BaseDatapointsStore";
-import {
-  MetricWithErrors,
-  RawDatapointsByMetric,
-  Report,
-} from "@justice-counts/common/types";
+import { RawDatapointsByMetric, Report } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -48,7 +44,6 @@ const DataEntryReview = () => {
   const agencyId = Number(params.agencyId);
   const navigate = useNavigate();
   const [isPublishable, setIsPublishable] = useState(false);
-  const [metricsPreview, setMetricsPreview] = useState<MetricWithErrors[]>();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const { reportStore, formStore, userStore, guidanceStore } = useStore();
   const checkMetricForErrors = useCheckMetricForErrors(reportID);
@@ -96,6 +91,7 @@ const DataEntryReview = () => {
   useEffect(() => {
     const initialize = async () => {
       formStore.validatePreviouslySavedInputs(reportID);
+      await reportStore.initializeReportSettings(String(agencyId));
       const [reportWithDatapoints] =
         (await reportStore.getMultipleReportsWithDatapoints(
           [reportID],
@@ -118,11 +114,8 @@ const DataEntryReview = () => {
   }, []);
 
   useEffect(() => {
-    const { metrics, isPublishable: publishable } =
+    const { isPublishable: publishable } =
       formStore.validateAndGetAllMetricFormValues(reportID);
-    const enabledMetrics = metrics.filter((metric) => metric.enabled);
-
-    setMetricsPreview(enabledMetrics);
     setIsPublishable(publishable);
   }, [formStore, reportID]);
 
@@ -141,12 +134,34 @@ const DataEntryReview = () => {
       </PageWrapper>
     );
 
+  let currentSystemKey;
+  const enabledMetricKeys = reportStore.agencyMetrics.reduce((keys, metric) => {
+    if (metric.enabled) {
+      currentSystemKey = metric.system.key;
+      keys.push(metric.key);
+    }
+    return keys;
+  }, [] as string[]);
+  const metricsToDisplay = Object.entries(datapoints).reduce(
+    (acc, [metricKey, datapoint]) => {
+      if (enabledMetricKeys.includes(metricKey)) {
+        acc.push({
+          key: metricKey,
+          displayName: datapoint[0].metric_display_name as string,
+        });
+      }
+
+      return acc;
+    },
+    [] as { key: string; displayName: string }[]
+  );
+
   // review component props
-  const metrics = metricsPreview
-    ? metricsPreview.reduce((acc, metric) => {
+  const metrics = metricsToDisplay
+    ? metricsToDisplay.reduce((acc, metric) => {
         const reviewMetric = {
           datapoints: datapoints[metric.key],
-          display_name: metric.display_name,
+          display_name: metric.displayName,
           key: metric.key,
           metricHasError: checkMetricForErrors(metric.key),
           metricHasValidInput: Boolean(
@@ -189,10 +204,10 @@ const DataEntryReview = () => {
   ];
 
   // modal props
-  const systemSearchParam = metricsPreview
-    ? metricsPreview[0].system.key
-    : undefined;
-  const metricSearchParam = metricsPreview ? metricsPreview[0].key : undefined;
+  const systemSearchParam =
+    enabledMetricKeys.length > 0 ? currentSystemKey : undefined;
+  const metricSearchParam =
+    enabledMetricKeys.length > 0 ? enabledMetricKeys[0] : undefined;
 
   return (
     <ReviewWrapper>
