@@ -160,10 +160,10 @@ class ReportStore {
     }
   }
 
-  async getMultipleReports(
+  async getMultipleReportsWithDatapoints(
     reportIDs: number[],
     currentAgencyId: string
-  ): Promise<void | Error> {
+  ): Promise<Report[] | Error | void> {
     try {
       const response = (await this.api.request({
         path: `/api/reports?agency_id=${parseInt(
@@ -180,9 +180,7 @@ class ReportStore {
 
       const reports = (await response.json()) as Report[];
 
-      reports.forEach((report) => {
-        this.storeMetricDetails(report.id, report.metrics);
-      });
+      return reports;
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
     } finally {
