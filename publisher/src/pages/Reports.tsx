@@ -20,6 +20,7 @@ import {
   Badge,
   BadgeColorMapping,
 } from "@justice-counts/common/components/Badge";
+import { Button } from "@justice-counts/common/components/Button";
 import {
   MIN_TABLET_WIDTH,
   palette,
@@ -73,7 +74,6 @@ import {
   Table,
 } from "../components/Reports";
 import { RemoveRecordsModal } from "../components/Reports/RemoveRecordsModal";
-import { Button } from "../components/shared/Button";
 import { useStore } from "../stores";
 import {
   filterJCAdminEditors,

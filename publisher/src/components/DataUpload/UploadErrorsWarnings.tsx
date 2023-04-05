@@ -16,6 +16,7 @@
 // =============================================================================
 
 import checkIcon from "@justice-counts/common/assets/status-check-icon.png";
+import { Button } from "@justice-counts/common/components/Button";
 import { AgencySystems, ReportOverview } from "@justice-counts/common/types";
 import React, { Fragment } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -25,7 +26,6 @@ import { formatSystemName } from "../../utils";
 import { ReactComponent as ErrorIcon } from "../assets/error-icon.svg";
 import { ReactComponent as WarningIcon } from "../assets/warning-icon.svg";
 import { SYSTEM_LOWERCASE } from "../Global/constants";
-import { Button } from "../shared/Button";
 import {
   BlueText,
   CheckIcon,

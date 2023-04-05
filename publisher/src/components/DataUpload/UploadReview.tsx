@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { ButtonColor } from "@justice-counts/common/components/Button";
 import { ReportOverview } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
@@ -27,14 +28,12 @@ import {
 
 import { useStore } from "../../stores";
 import { REPORTS_LOWERCASE } from "../Global/constants";
-// import { ReportActionsButtonColors } from "../Reports";
 import {
   ReviewHeaderActionButton,
   ReviewMetricOverwrites,
   ReviewMetrics,
   ReviewMetricsModal,
 } from "../ReviewMetrics";
-import { ButtonColor } from "../shared/Button";
 import { UploadedMetric } from "./types";
 
 const UploadReview: React.FC = observer(() => {

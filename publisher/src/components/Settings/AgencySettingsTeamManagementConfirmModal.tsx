@@ -16,12 +16,12 @@
 // =============================================================================
 
 import removeWarningIcon from "@justice-counts/common/assets/remove-warning-icon.png";
+import { Button } from "@justice-counts/common/components/Button";
 import { typography } from "@justice-counts/common/components/GlobalStyles";
 import React from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components/macro";
 
-import { Button } from "../shared/Button";
 import {
   ConfirmModalButtonsContainer,
   ConfirmModalContent,

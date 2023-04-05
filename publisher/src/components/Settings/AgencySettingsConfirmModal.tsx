@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Button } from "@justice-counts/common/components/Button";
 import {
   palette,
   typography,
@@ -22,8 +23,6 @@ import {
 import React from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components/macro";
-
-import { Button } from "../shared/Button";
 
 // z-index 102 to be above all content including edit mode modal
 // also portal this modal as well as edit mode to not deal

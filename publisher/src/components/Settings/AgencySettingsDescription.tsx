@@ -15,13 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Button } from "@justice-counts/common/components/Button";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import rightArrow from "../assets/right-arrow.svg";
-import { Button } from "../shared/Button";
 import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,

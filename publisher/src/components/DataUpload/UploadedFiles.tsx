@@ -20,6 +20,7 @@ import {
   BadgeColorMapping,
   BadgeColors,
 } from "@justice-counts/common/components/Badge";
+import { Button } from "@justice-counts/common/components/Button";
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
   AgencySystems,
@@ -35,7 +36,6 @@ import downloadIcon from "../assets/download-icon.png";
 import { SYSTEM_CAPITALIZED } from "../Global/constants";
 import { ContainedLoader } from "../Loading";
 import { TeamMemberNameWithBadge } from "../primitives";
-import { Button } from "../shared/Button";
 import { UploadedFile, UploadedFileStatus } from ".";
 import {
   ActionsContainer,

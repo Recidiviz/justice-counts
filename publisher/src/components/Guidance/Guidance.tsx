@@ -19,6 +19,7 @@ import {
   Badge,
   BadgeColorMapping,
 } from "@justice-counts/common/components/Badge";
+import { Button } from "@justice-counts/common/components/Button";
 import {
   AgencySystems,
   SupervisionSubsystems,
@@ -39,7 +40,6 @@ import checkmarkIcon from "../assets/status-check-icon.png";
 import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 import { Loader, Loading } from "../Loading";
 import { MetricInfo } from "../MetricConfiguration";
-import { Button } from "../shared/Button";
 import {
   ActionButtonWrapper,
   ALL_REQUIRED_METRIC_CONFIG_STEPS_COMPLETED,

@@ -17,6 +17,7 @@
 
 /* eslint-disable camelcase */
 
+import { Button } from "@justice-counts/common/components/Button";
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { formatDateShortMonthYear } from "@justice-counts/common/components/DataViz/utils";
 import { useIsFooterVisible } from "@justice-counts/common/hooks";
@@ -38,7 +39,6 @@ import {
 } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
 import { EmptyIcon } from "../Reports/PublishConfirmation.styles";
-import { Button } from "../shared/Button";
 import {
   Heading,
   HeadingGradient,

@@ -15,14 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { RawDatapoint, ReportOverview } from "@justice-counts/common/types";
-import React from "react";
-
 import {
   ButtonBorderColor,
   ButtonColor,
   ButtonLabelColor,
-} from "../shared/Button";
+} from "@justice-counts/common/components/Button";
+import { RawDatapoint, ReportOverview } from "@justice-counts/common/types";
+import React from "react";
 
 export type ReviewHeaderActionButton = {
   name: string;

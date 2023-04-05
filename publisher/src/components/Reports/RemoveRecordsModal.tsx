@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Button } from "@justice-counts/common/components/Button";
 import {
   palette,
   typography,
@@ -23,7 +24,6 @@ import React from "react";
 import styled from "styled-components/macro";
 
 import { REPORT_LOWERCASE } from "../Global/constants";
-import { Button } from "../shared/Button";
 
 export const RemoveRecordsModalWrapper = styled.div`
   position: fixed;

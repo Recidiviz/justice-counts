@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Button } from "@justice-counts/common/components/Button";
 import {
   HEADER_BAR_HEIGHT,
   palette,
@@ -57,7 +58,6 @@ import {
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { Logo, LogoContainer } from "../Header";
 import { Onboarding } from "../Onboarding";
-import { Button } from "../shared/Button";
 import { MetricTextInput } from "./DataEntryFormComponents";
 import DataEntryHelpPage from "./DataEntryHelpPage";
 

@@ -16,6 +16,7 @@
 // =============================================================================
 
 import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
+import { Button } from "@justice-counts/common/components/Button";
 import { AgencySystems } from "@justice-counts/common/types";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -27,7 +28,6 @@ import {
   Checkbox,
   CheckboxWrapper,
 } from "../MetricConfiguration";
-import { Button } from "../shared/Button";
 import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,

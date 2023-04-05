@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Button, ButtonColor } from "@justice-counts/common/components/Button";
 import { ReportOverview } from "@justice-counts/common/types";
 import { printReportTitle } from "@justice-counts/common/utils";
 import React from "react";
@@ -24,7 +25,6 @@ import { RecordsBulkAction } from "../../pages/Reports";
 import bigBlueCheck from "../assets/big-blue-check.png";
 import warningIcon from "../assets/warning-icon.svg";
 import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
-import { Button, ButtonColor } from "../shared/Button";
 import {
   ListOfReportsContainer,
   ModifiedReportTitle,

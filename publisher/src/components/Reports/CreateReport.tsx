@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Button } from "@justice-counts/common/components/Button";
 import {
   palette,
   typography,
@@ -51,7 +52,6 @@ import {
   REPORTING_LOWERCASE,
   REPORTS_LOWERCASE,
 } from "../Global/constants";
-import { Button } from "../shared/Button";
 import {
   PublishDataWrapper,
   TWO_PANEL_MAX_WIDTH,

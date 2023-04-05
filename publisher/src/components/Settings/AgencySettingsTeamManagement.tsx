@@ -17,6 +17,7 @@
 
 /* eslint-disable camelcase */
 import editIcon from "@justice-counts/common/assets/edit-row-icon.png";
+import { Button } from "@justice-counts/common/components/Button";
 import {
   AgencyTeamMember,
   AgencyTeamMemberRole,
@@ -27,7 +28,6 @@ import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { Loading } from "../Loading";
-import { Button } from "../shared/Button";
 import {
   AdminStatus,
   AgencySettingsContent,

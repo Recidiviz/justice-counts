@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Button } from "@justice-counts/common/components/Button";
 import { MIN_TABLET_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import { Dropdown } from "@recidiviz/design-system";
@@ -39,7 +40,6 @@ import {
   ProgressTooltipToast,
 } from "../Guidance";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
-import { Button } from "../shared/Button";
 import {
   ExtendedDropdownMenu,
   ExtendedDropdownMenuItem,
