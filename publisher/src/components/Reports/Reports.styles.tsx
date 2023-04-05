@@ -127,10 +127,12 @@ export const ReportActions = styled.div`
   display: flex;
 `;
 
+export type ReportActionsButtonColors = "red" | "green" | "blue" | "orange";
+
 export const ReportActionsButton = styled.div<{
   disabled?: boolean;
   textColor?: "blue";
-  buttonColor?: "red" | "green" | "blue" | "orange";
+  buttonColor?: ReportActionsButtonColors;
 }>`
   position: relative;
   border: ${({ buttonColor }) =>

@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { ReportOverview } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import {
@@ -24,7 +25,9 @@ import {
   useParams,
 } from "react-router-dom";
 
+import { useStore } from "../../stores";
 import { REPORTS_LOWERCASE } from "../Global/constants";
+import { ReportActionsButtonColors } from "../Reports";
 import {
   ReviewHeaderActionButton,
   ReviewMetricOverwrites,
@@ -36,18 +39,61 @@ import { UploadedMetric } from "./types";
 const UploadReview: React.FC = observer(() => {
   const { agencyId } = useParams();
   const { state } = useLocation();
-  const { uploadedMetrics, fileName } = state as {
+  const { reportStore } = useStore();
+  const { uploadedMetrics, fileName, newReports, updatedReportIDs } = state as {
     uploadedMetrics: UploadedMetric[] | null;
     fileName: string;
+    newReports: ReportOverview[];
+    updatedReportIDs: number[];
   };
   const navigate = useNavigate();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isExistingReportWarningModalOpen, setExistingReportWarningOpen] =
+    useState(false);
 
   if (!uploadedMetrics || !fileName) {
     return <Navigate to={`/agency/${agencyId}/${REPORTS_LOWERCASE}`} replace />;
   }
 
   // review component props
+  const existingReports = updatedReportIDs
+    .map((id) => reportStore.reportOverviews[id])
+    .filter((report) => report);
+  const existingAndNewRecords = [...existingReports, ...newReports];
+  const existingAndNewRecordIDs = existingAndNewRecords.map(
+    (record) => record.id
+  );
+  const isPublishingExistingReports = updatedReportIDs.length > 0;
+  const publishingExistingReportsButtons: {
+    name: string;
+    color?: ReportActionsButtonColors;
+    onClick: () => void;
+  }[] = [
+    {
+      name: "Go back",
+      onClick: () => setExistingReportWarningOpen(false),
+    },
+    {
+      name: "Proceed with Publishing",
+      color: "green",
+      onClick: () => {
+        setExistingReportWarningOpen(false);
+        publishMultipleRecords();
+      },
+    },
+  ];
+
+  const publishMultipleRecords = async () => {
+    if (agencyId) {
+      await reportStore.updateMultipleReportStatuses(
+        existingAndNewRecordIDs,
+        agencyId,
+        "PUBLISHED"
+      );
+      setIsSuccessModalOpen(true);
+    }
+  };
+
   const metrics = uploadedMetrics
     .map((metric) => ({
       ...metric,
@@ -86,7 +132,10 @@ const UploadReview: React.FC = observer(() => {
           {
             name: "Publish",
             type: "green",
-            onClick: () => setIsSuccessModalOpen(true),
+            onClick: () =>
+              isPublishingExistingReports
+                ? setExistingReportWarningOpen(true)
+                : publishMultipleRecords(),
           },
         ]
       : [
@@ -99,13 +148,21 @@ const UploadReview: React.FC = observer(() => {
 
   return (
     <>
-      {isSuccessModalOpen && <ReviewMetricsModal fileName={fileName} />}
+      {(isSuccessModalOpen || isExistingReportWarningModalOpen) && (
+        <ReviewMetricsModal
+          fileName={fileName}
+          isExistingReportWarningModalOpen={isExistingReportWarningModalOpen}
+          existingReports={existingReports}
+          publishingExistingReportsButtons={publishingExistingReportsButtons}
+        />
+      )}
       <ReviewMetrics
         title={title}
         description={description}
         buttons={buttons}
         metrics={metrics}
         metricOverwrites={overwrites}
+        records={existingAndNewRecords}
       />
     </>
   );

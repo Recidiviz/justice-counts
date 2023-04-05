@@ -19,6 +19,7 @@ import { showToast } from "@justice-counts/common/components/Toast";
 import {
   AgencySystems,
   AgencyTeamMemberRole,
+  ReportOverview,
   SupervisionSubsystems,
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
@@ -109,6 +110,13 @@ export const DataUpload: React.FC = observer(() => {
   const [selectedSystem, setSelectedSystem] = useState<
     AgencySystems | undefined
   >();
+  const [newAndUpdatedReports, setNewAndUpdatedReports] = useState<{
+    newReports: ReportOverview[];
+    updatedReportIDs: number[];
+  }>({
+    newReports: [],
+    updatedReportIDs: [],
+  });
 
   const handleFileUpload = async (
     file: File,
@@ -133,9 +141,18 @@ export const DataUpload: React.FC = observer(() => {
         });
       }
 
-      /** Errors and/or Warnings Encountered During Upload -- Show Interstitial instead of Confirmation Page */
       const data: DataUploadResponseBody = await response?.json();
 
+      /**
+       * After upload, the response will include newly created reports and/or
+       * updated existing report IDs (for reports w/ overwrites)
+       */
+      setNewAndUpdatedReports({
+        newReports: data.new_reports || [],
+        updatedReportIDs: data.updated_report_ids || [],
+      });
+
+      /** Errors and/or Warnings Encountered During Upload -- Show Interstitial instead of Confirmation Page */
       const errorsWarningsAndMetrics = processUploadResponseBody(data);
       const hasErrorsOrWarnings =
         (errorsWarningsAndMetrics.nonMetricErrors &&
@@ -151,7 +168,12 @@ export const DataUpload: React.FC = observer(() => {
       }
 
       navigate("review-metrics", {
-        state: { uploadedMetrics: data.metrics, fileName: file.name },
+        state: {
+          uploadedMetrics: data.metrics,
+          fileName: file.name,
+          newReports: data.new_reports || [],
+          updatedReportIDs: data.updated_report_ids || [],
+        },
         replace: true,
       });
     }
@@ -266,6 +288,7 @@ export const DataUpload: React.FC = observer(() => {
       return (
         <UploadErrorsWarnings
           errorsWarningsMetrics={errorsWarningsMetrics}
+          newAndUpdatedReports={newAndUpdatedReports}
           selectedSystem={selectedSystem}
           resetToNewUpload={resetToNewUpload}
           fileName={selectedFile?.name}
