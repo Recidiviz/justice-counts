@@ -17,7 +17,11 @@
 
 import { showToast } from "@justice-counts/common/components/Toast";
 import DatapointsStore from "@justice-counts/common/stores/BaseDatapointsStore";
-import { RawDatapointsByMetric, Report } from "@justice-counts/common/types";
+import {
+  RawDatapointsByMetric,
+  Report,
+  ReportOverview,
+} from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -45,6 +49,8 @@ const DataEntryReview = () => {
   const navigate = useNavigate();
   const [isPublishable, setIsPublishable] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [record, setRecord] = useState<ReportOverview[]>([]);
+  const [enabledMetricKeys, setEnabledMetricKeys] = useState<string[]>([]);
   const { reportStore, formStore, userStore, guidanceStore } = useStore();
   const checkMetricForErrors = useCheckMetricForErrors(reportID);
 
@@ -91,35 +97,47 @@ const DataEntryReview = () => {
   useEffect(() => {
     const initialize = async () => {
       formStore.validatePreviouslySavedInputs(reportID);
-      await reportStore.initializeReportSettings(String(agencyId));
-      const [reportWithDatapoints] =
+      const reportWithDatapoints =
         (await reportStore.getMultipleReportsWithDatapoints(
           [reportID],
           String(agencyId)
         )) as Report[];
 
-      if (reportWithDatapoints.datapoints) {
+      if (reportWithDatapoints[0].datapoints) {
         setDatapoints(
           DatapointsStore.keyRawDatapointsByMetric(
-            reportWithDatapoints.datapoints
+            reportWithDatapoints[0].datapoints
           )
         );
       }
-
+      setRecord(reportWithDatapoints);
       setLoadingDatapoints(false);
     };
 
-    if (!reportStore.reportOverviews[reportID]) {
-      navigate("/");
+    // When a user refreshes in the review page, navigate them back to the data entry form
+    if (!reportStore.reportMetrics[reportID]) {
+      return navigate(`../records/${reportID}`);
     }
 
     initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  let currentSystemKey;
+
   useEffect(() => {
-    const { isPublishable: publishable } =
+    const { metrics, isPublishable: publishable } =
       formStore.validateAndGetAllMetricFormValues(reportID);
+    setEnabledMetricKeys(
+      metrics.reduce((keys, metric) => {
+        if (metric.enabled) {
+          currentSystemKey = metric.system.key;
+          keys.push(metric.key);
+        }
+        return keys;
+      }, [] as string[])
+    );
+
     setIsPublishable(publishable);
   }, [formStore, reportID]);
 
@@ -141,14 +159,6 @@ const DataEntryReview = () => {
       </PageWrapper>
     );
 
-  let currentSystemKey;
-  const enabledMetricKeys = reportStore.agencyMetrics.reduce((keys, metric) => {
-    if (metric.enabled) {
-      currentSystemKey = metric.system.key;
-      keys.push(metric.key);
-    }
-    return keys;
-  }, [] as string[]);
   const metricsToDisplay = Object.entries(datapoints).reduce(
     (acc, [metricKey, datapoint]) => {
       if (enabledMetricKeys.includes(metricKey)) {
@@ -178,7 +188,6 @@ const DataEntryReview = () => {
         return [...acc, reviewMetric];
       }, [] as ReviewMetric[])
     : [];
-  const record = reportStore.reportOverviews[reportID];
   const title = "Review & Publish";
   const description = (
     <>
@@ -229,7 +238,7 @@ const DataEntryReview = () => {
         description={description}
         buttons={buttons}
         metrics={metrics}
-        records={[record]}
+        records={record}
       />
     </ReviewWrapper>
   );
