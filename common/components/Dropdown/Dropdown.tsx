@@ -17,12 +17,63 @@
 
 import React from "react";
 
+import caret from "../../assets/dropdown-caret.svg";
 import * as Styled from "./Dropdown.styled";
+import { DropdownBorder, DropdownOption, ToggleHover } from "./types";
 
-export function Dropdown() {
+type Props = {
+  toggleLabel: string | React.ReactNode;
+  options: DropdownOption[];
+  dropdownBorder?: DropdownBorder;
+  toggleDisabled?: boolean;
+  toggleHover?: ToggleHover;
+  toggleNoPadding?: boolean;
+  noCaret?: boolean;
+  menuAlignment?: "left" | "right";
+  menuOverflow?: boolean;
+};
+
+export function Dropdown({
+  dropdownBorder,
+  toggleLabel,
+  toggleDisabled,
+  toggleHover,
+  toggleNoPadding,
+  noCaret,
+  menuAlignment,
+  menuOverflow,
+  options,
+}: Props) {
   return (
-    <Styled.Dropdown>
-      <div />
-    </Styled.Dropdown>
+    <Styled.CustomDropdown border={dropdownBorder}>
+      <Styled.CustomDropdownToggle
+        kind="borderless"
+        disabled={toggleDisabled}
+        hover={toggleHover}
+        noPadding={toggleNoPadding}
+      >
+        {toggleLabel}
+        {!noCaret && <Styled.CustomDropdownToggleCaret src={caret} alt="" />}
+      </Styled.CustomDropdownToggle>
+      <Styled.CustomDropdownMenu
+        alignment={menuAlignment}
+        menuOverflow={menuOverflow}
+      >
+        {options.map(
+          ({ id, label, onClick, color, disabled, highlight, hasHover }) => (
+            <Styled.CustomDropdownMenuItem
+              key={id}
+              onClick={onClick}
+              color={color}
+              disabled={disabled}
+              highlight={highlight}
+              hasHover={hasHover}
+            >
+              {label}
+            </Styled.CustomDropdownMenuItem>
+          )
+        )}
+      </Styled.CustomDropdownMenu>
+    </Styled.CustomDropdown>
   );
 }

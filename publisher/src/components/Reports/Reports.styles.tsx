@@ -22,11 +22,7 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import {
-  DropdownMenu,
-  DropdownMenuItem,
-  DropdownToggle,
-} from "@recidiviz/design-system";
+import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
 export const PageHeader = styled.div`
@@ -129,11 +125,7 @@ export const ReportActions = styled.div`
   gap: 16px;
 `;
 
-export const BulkActionsDropdownContainer = styled.div`
-  & > div {
-    width: 100%;
-  }
-`;
+export const BulkActionsDropdownContainer = styled.div``;
 
 export const BulkActionsDropdownToggle = styled(DropdownToggle)`
   border: 1px solid ${palette.highlight.grey4};
@@ -151,72 +143,6 @@ export const BulkActionsDropdownToggle = styled(DropdownToggle)`
   &[aria-expanded="true"] {
     background-color: ${palette.highlight.grey1};
   }
-`;
-
-export const BulkActionsDropdownMenu = styled(DropdownMenu)`
-  width: 200px;
-  top: 0;
-  margin-top: 0;
-  border-radius: 3px;
-`;
-
-export const BulkActionsDropdownMenuItem = styled(DropdownMenuItem)<{
-  color?: "green" | "red";
-  disabled?: boolean;
-}>`
-  width: 200px;
-  min-width: 200px;
-  height: auto;
-  display: flex;
-  align-items: center;
-  ${typography.sizeCSS.normal};
-  color: ${({ color }) => {
-    if (color === "green") {
-      return palette.solid.green;
-    }
-    if (color === "red") {
-      return palette.solid.red;
-    }
-    return palette.solid.darkgrey;
-  }};
-
-  &:active,
-  &:hover,
-  &:focus,
-  &[aria-expanded="true"] {
-    color: ${({ color }) => {
-      if (color === "green") {
-        return palette.solid.green;
-      }
-      if (color === "red") {
-        return palette.solid.red;
-      }
-      return palette.solid.darkgrey;
-    }};
-
-    background-color: transparent;
-  }
-
-  padding: 16px;
-
-  &:first-child {
-    padding: 10px 16px 16px 16px;
-  }
-
-  &:last-child {
-    padding: 16px 16px 10px 16px;
-  }
-
-  &:not(:last-child) {
-    border-bottom: 1px solid ${palette.solid.offwhite};
-  }
-
-  ${({ disabled }) => disabled && `opacity: 0.5; pointer-events: none;`}
-`;
-
-export const BulkActionsArrow = styled.img`
-  width: 10px;
-  height: 5px;
 `;
 
 export const DropdownContainer = styled.div`

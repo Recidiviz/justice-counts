@@ -71,10 +71,14 @@ export const MenuItem = styled.div<{
   active?: boolean;
   highlight?: boolean;
   buttonPadding?: boolean;
+  dropdownPadding?: boolean;
   isHoverDisabled?: boolean;
 }>`
   height: ${HEADER_BAR_HEIGHT}px;
-  padding-top: ${({ buttonPadding }) => (buttonPadding ? `5px` : `14px`)};
+  padding-top: ${({ buttonPadding, dropdownPadding }) => {
+    if (dropdownPadding) return "9px";
+    return buttonPadding ? "5px" : "14px";
+  }};
   border-top: 6px solid
     ${({ active }) => (active ? palette.solid.blue : "transparent")};
   transition: 0.2s ease;
