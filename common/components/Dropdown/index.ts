@@ -12,4 +12,5 @@
 // =============================================================================
 
 export * from "./Dropdown";
+export * from "./Dropdown.styled";
 export * from "./types";

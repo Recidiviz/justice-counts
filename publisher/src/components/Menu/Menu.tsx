@@ -309,32 +309,6 @@ const Menu: React.FC = () => {
               menuAlignment={windowWidth > MIN_TABLET_WIDTH ? "right" : "left"}
               noCaret
             />
-            {/* <Dropdown> */}
-            {/*  <ExtendedDropdownToggle kind="borderless"> */}
-            {/*    Agencies */}
-            {/*  </ExtendedDropdownToggle> */}
-            {/*  <ExtendedDropdownMenu */}
-            {/*    alignment={windowWidth > MIN_TABLET_WIDTH ? "right" : "left"} */}
-            {/*  > */}
-            {/*    {userStore.userAgencies */}
-            {/*      .slice() */}
-            {/*      .sort((a, b) => a.name.localeCompare(b.name)) */}
-            {/*      .map((agency) => { */}
-            {/*        return ( */}
-            {/*          <ExtendedDropdownMenuItem */}
-            {/*            key={agency.id} */}
-            {/*            onClick={() => { */}
-            {/*              navigate(`/agency/${agency.id}/${pathWithoutAgency}`); */}
-            {/*              handleCloseMobileMenu(); */}
-            {/*            }} */}
-            {/*            highlight={agency.id === currentAgency?.id} */}
-            {/*          > */}
-            {/*            {agency.name} */}
-            {/*          </ExtendedDropdownMenuItem> */}
-            {/*        ); */}
-            {/*      })} */}
-            {/*  </ExtendedDropdownMenu> */}
-            {/* </Dropdown> */}
           </MenuItem>
         )}
 
@@ -346,6 +320,7 @@ const Menu: React.FC = () => {
             }
           }}
           active={pathWithoutAgency.startsWith("settings")}
+          isHoverDisabled={windowWidth <= MIN_TABLET_WIDTH}
         >
           Settings
         </MenuItem>
