@@ -17,57 +17,78 @@
 
 import React from "react";
 
-import caret from "../../assets/dropdown-caret.svg";
+import dropdownCaret from "../../assets/dropdown-caret.svg";
 import * as Styled from "./Dropdown.styled";
-import { DropdownBorder, DropdownOption, ToggleHover } from "./types";
+import {
+  DropdownBorder,
+  DropdownOption,
+  ToggleHover,
+  ToggleSize,
+} from "./types";
 
 type Props = {
   toggleLabel: string | React.ReactNode;
   options: DropdownOption[];
-  dropdownBorder?: DropdownBorder;
+  border?: DropdownBorder;
+  size?: ToggleSize;
   toggleDisabled?: boolean;
   toggleHover?: ToggleHover;
-  toggleNoPadding?: boolean;
-  noCaret?: boolean;
+  caret?: "left" | "right";
   menuAlignment?: "left" | "right";
   menuOverflow?: boolean;
+  menuFullWidth?: boolean;
 };
 
 export function Dropdown({
-  dropdownBorder,
   toggleLabel,
+  options,
+  border,
+  size,
   toggleDisabled,
   toggleHover,
-  toggleNoPadding,
-  noCaret,
+  caret,
   menuAlignment,
   menuOverflow,
-  options,
+  menuFullWidth,
 }: Props) {
   return (
-    <Styled.CustomDropdown border={dropdownBorder}>
+    <Styled.CustomDropdown border={border}>
       <Styled.CustomDropdownToggle
         kind="borderless"
         disabled={toggleDisabled}
         hover={toggleHover}
-        noPadding={toggleNoPadding}
+        size={size}
       >
+        {caret === "left" && (
+          <Styled.CustomDropdownToggleCaret
+            src={dropdownCaret}
+            alt=""
+            size={size}
+          />
+        )}
         {toggleLabel}
-        {!noCaret && <Styled.CustomDropdownToggleCaret src={caret} alt="" />}
+        {caret === "right" && (
+          <Styled.CustomDropdownToggleCaret
+            src={dropdownCaret}
+            alt=""
+            size={size}
+          />
+        )}
       </Styled.CustomDropdownToggle>
       <Styled.CustomDropdownMenu
         alignment={menuAlignment}
         menuOverflow={menuOverflow}
+        menuFullWidth={menuFullWidth}
       >
         {options.map(
-          ({ id, label, onClick, color, disabled, highlight, hasHover }) => (
+          ({ id, label, onClick, color, disabled, highlight, noHover }) => (
             <Styled.CustomDropdownMenuItem
               key={id}
               onClick={onClick}
               color={color}
               disabled={disabled}
               highlight={highlight}
-              hasHover={hasHover}
+              noHover={noHover}
             >
               {label}
             </Styled.CustomDropdownMenuItem>

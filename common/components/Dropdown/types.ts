@@ -25,6 +25,8 @@ export type DropdownBorder =
 
 export type ToggleHover = "background" | "label";
 
+export type ToggleSize = "medium";
+
 export type DropdownOption = {
   id: string | number;
   label: string | React.ReactNode;
@@ -32,5 +34,5 @@ export type DropdownOption = {
   color?: "green" | "red";
   disabled?: boolean;
   highlight?: boolean;
-  hasHover?: boolean;
+  noHover?: boolean;
 };

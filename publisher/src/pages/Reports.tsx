@@ -31,12 +31,10 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import { ReportOverview, ReportStatus } from "@justice-counts/common/types";
-import { Dropdown as RecidivizDropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import dropdownArrow from "../components/assets/dropdown-arrow.svg";
 import {
   REPORT_LOWERCASE,
   REPORT_PERIOD_CAPITALIZED,
@@ -44,7 +42,6 @@ import {
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
 import { Loading } from "../components/Loading";
-import { ExtendedDropdownMenuItem } from "../components/Menu";
 import { Onboarding } from "../components/Onboarding";
 import { TeamMemberNameWithBadge } from "../components/primitives";
 import {
@@ -65,8 +62,6 @@ import {
   ReportsHeader,
   Row,
   SelectedCheckmark,
-  StatusFilterDropdownMenu,
-  StatusFilterDropdownToggle,
   TabbedActionsWrapper,
   TabbedBar,
   TabbedItem,
@@ -216,27 +211,38 @@ const Reports: React.FC = () => {
     reportsFilter === "not_started" ||
     filteredReportsMemoized.filter((record) => record.status === "PUBLISHED")
       .length === 0;
-  const dropdownOptions: DropdownOption[] = [
+  const bulkActionsDropdownOptions: DropdownOption[] = [
     {
       id: "publishAction",
       label: "Publish...",
       onClick: () => selectBulkAction("publish"),
       color: "green",
       disabled: isPublishDisabled,
+      noHover: true,
     },
     {
       id: "unpublishAction",
       label: "Unpublish...",
       onClick: () => selectBulkAction("unpublish"),
       disabled: isUnpublishDisabled,
+      noHover: true,
     },
     {
       id: "deleteAction",
       label: "Delete...",
       onClick: () => selectBulkAction("delete"),
       color: "red",
+      noHover: true,
     },
   ];
+  const reportsFilterDropdownOptions: DropdownOption[] = Object.entries(
+    ReportStatusFilterOptionObject
+  ).map(([key, value]) => ({
+    id: key,
+    label: value,
+    onClick: () => setReportsFilter(normalizeString(key)),
+    highlight: ReportStatusFilterOptionObject[reportsFilter] === value,
+  }));
 
   const isAdmin =
     userStore.isJusticeCountsAdmin(agencyId) ||
@@ -476,11 +482,12 @@ const Reports: React.FC = () => {
                         <Dropdown
                           toggleLabel="Bulk Actions"
                           toggleDisabled={filteredReportsMemoized.length === 0}
-                          dropdownBorder="lightgrey-round"
+                          border="lightgrey-round"
                           toggleHover="background"
+                          caret="right"
                           menuAlignment="right"
                           menuOverflow
-                          options={dropdownOptions}
+                          options={bulkActionsDropdownOptions}
                         />
                       </BulkActionsDropdownContainer>
                     )}
@@ -547,27 +554,13 @@ const Reports: React.FC = () => {
 
         {/* MobileViewDropdown */}
         <DropdownContainer>
-          <RecidivizDropdown>
-            <StatusFilterDropdownToggle kind="borderless">
-              <img src={dropdownArrow} alt="" />
-              {ReportStatusFilterOptionObject[reportsFilter]}
-            </StatusFilterDropdownToggle>
-            <StatusFilterDropdownMenu>
-              {Object.entries(ReportStatusFilterOptionObject).map(
-                ([key, value]) => (
-                  <ExtendedDropdownMenuItem
-                    highlight={
-                      ReportStatusFilterOptionObject[reportsFilter] === value
-                    }
-                    key={key}
-                    onClick={() => setReportsFilter(normalizeString(key))}
-                  >
-                    {value}
-                  </ExtendedDropdownMenuItem>
-                )
-              )}
-            </StatusFilterDropdownMenu>
-          </RecidivizDropdown>
+          <Dropdown
+            toggleLabel={ReportStatusFilterOptionObject[reportsFilter]}
+            options={reportsFilterDropdownOptions}
+            size="medium"
+            caret="left"
+            menuFullWidth
+          />
         </DropdownContainer>
       </ReportsHeader>
 

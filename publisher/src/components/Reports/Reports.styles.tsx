@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { CustomDropdownToggle } from "@justice-counts/common/components/Dropdown";
 import {
   HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
@@ -125,7 +126,11 @@ export const ReportActions = styled.div`
   gap: 16px;
 `;
 
-export const BulkActionsDropdownContainer = styled.div``;
+export const BulkActionsDropdownContainer = styled.div`
+  & ${CustomDropdownToggle} {
+    padding: 10px 15px;
+  }
+`;
 
 export const BulkActionsDropdownToggle = styled(DropdownToggle)`
   border: 1px solid ${palette.highlight.grey4};

@@ -161,7 +161,6 @@ const Menu: React.FC = () => {
             handleCloseMobileMenu();
           },
           highlight: agency.id === currentAgency?.id,
-          hasHover: true,
         }))
     : [];
 
@@ -305,9 +304,7 @@ const Menu: React.FC = () => {
               toggleLabel="Agencies"
               options={dropdownOptions}
               toggleHover="label"
-              toggleNoPadding
               menuAlignment={windowWidth > MIN_TABLET_WIDTH ? "right" : "left"}
-              noCaret
             />
           </MenuItem>
         )}

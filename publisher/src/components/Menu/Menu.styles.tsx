@@ -14,7 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-import { CustomDropdownToggle } from "@justice-counts/common/components/Dropdown";
+import {
+  CustomDropdown,
+  CustomDropdownToggle,
+} from "@justice-counts/common/components/Dropdown";
 import {
   HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
@@ -86,6 +89,10 @@ export const MenuItem = styled.div<{
   color: ${({ highlight }) =>
     highlight ? palette.solid.red : palette.solid.darkgrey};
   white-space: nowrap;
+
+  & ${CustomDropdown} {
+    height: auto;
+  }
 
   a,
   a:visited {

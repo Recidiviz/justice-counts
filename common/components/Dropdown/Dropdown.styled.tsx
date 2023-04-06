@@ -24,31 +24,38 @@ import {
 import styled from "styled-components/macro";
 
 import { palette, typography } from "../GlobalStyles";
-import { DropdownBorder, ToggleHover } from "./types";
+import { DropdownBorder, ToggleHover, ToggleSize } from "./types";
 
 export const CustomDropdown = styled(Dropdown)<{
   border?: DropdownBorder;
 }>`
   width: 100%;
+  height: 100%;
 
   ${({ border }) => {
     if (border === "lightgrey-round")
       return `border: 1px solid ${palette.highlight.grey4}; border-radius: 3px;`;
+    if (border === "top")
+      return `border-top: 1px solid ${palette.solid.darkgrey};`;
     return "border: none";
   }};
 `;
 
 export const CustomDropdownToggle = styled(DropdownToggle)<{
   hover?: ToggleHover;
-  noPadding?: boolean;
+  size?: ToggleSize;
 }>`
+  padding: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: row;
-  gap: 10px;
-  padding: ${({ noPadding }) => (noPadding ? "0" : "10px 15px")};
-  ${typography.sizeCSS.normal};
+  justify-content: start;
+  gap: 12px;
   color: ${palette.solid.darkgrey};
   white-space: nowrap;
+  ${({ size }) =>
+    size === "medium" ? typography.sizeCSS.medium : typography.sizeCSS.normal};
 
   &:active,
   &:hover,
@@ -67,14 +74,14 @@ export const CustomDropdownToggle = styled(DropdownToggle)<{
   }
 `;
 
-export const CustomDropdownToggleCaret = styled.img`
-  width: 10px;
-  height: 5px;
-  margin-left: auto;
+export const CustomDropdownToggleCaret = styled.img<{ size?: ToggleSize }>`
+  width: ${({ size }) => (size === "medium" ? "12px" : "10px")};
+  height: ${({ size }) => (size === "medium" ? "6px" : "5px")};
 `;
 
 export const CustomDropdownMenu = styled(DropdownMenu)<{
   menuOverflow?: boolean;
+  menuFullWidth?: boolean;
 }>`
   border-radius: 3px;
   margin-top: 0;
@@ -83,13 +90,14 @@ export const CustomDropdownMenu = styled(DropdownMenu)<{
   z-index: 5;
 
   ${({ menuOverflow }) => menuOverflow && "top: 0"}
+  ${({ menuFullWidth }) => menuFullWidth && "width: 100%"}
 `;
 
 export const CustomDropdownMenuItem = styled(DropdownMenuItem)<{
   color?: "green" | "red";
   disabled?: boolean;
   highlight?: boolean;
-  hasHover?: boolean;
+  noHover?: boolean;
 }>`
   margin: 0 !important;
   width: 100%;
@@ -114,10 +122,8 @@ export const CustomDropdownMenuItem = styled(DropdownMenuItem)<{
   &:hover,
   &:focus,
   &[aria-expanded="true"] {
-    color: ${({ color }) => {
-      if (color === "green") return palette.solid.green;
-      if (color === "red") return palette.solid.red;
-      return palette.solid.darkgrey;
+    color: ${({ noHover }) => {
+      if (!noHover) return palette.solid.blue;
     }};
 
     background-color: ${palette.solid.white};
@@ -132,11 +138,8 @@ export const CustomDropdownMenuItem = styled(DropdownMenuItem)<{
   }
 
   &:hover {
-    color: ${({ color, hasHover }) => {
-      if (color === "green") return palette.solid.green;
-      if (color === "red") return palette.solid.red;
-      if (hasHover) return palette.solid.blue;
-      return palette.solid.darkgrey;
+    color: ${({ noHover }) => {
+      if (!noHover) return palette.solid.blue;
     }};
   }
 
