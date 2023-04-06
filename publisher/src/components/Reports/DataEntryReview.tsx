@@ -109,6 +109,10 @@ const DataEntryReview = () => {
       setLoadingDatapoints(false);
     };
 
+    if (!reportStore.reportOverviews[reportID]) {
+      navigate("/");
+    }
+
     initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -123,7 +127,10 @@ const DataEntryReview = () => {
     document.body.style.overflow = isSuccessModalOpen ? "hidden" : "unset";
   }, [isSuccessModalOpen]);
 
-  if (reportStore.reportOverviews[reportID].agency_id !== agencyId) {
+  if (
+    reportStore.reportOverviews[reportID] &&
+    reportStore.reportOverviews[reportID].agency_id !== agencyId
+  ) {
     return <NotFound />;
   }
 
