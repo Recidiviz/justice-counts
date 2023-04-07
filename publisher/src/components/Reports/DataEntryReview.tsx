@@ -18,9 +18,9 @@
 import { showToast } from "@justice-counts/common/components/Toast";
 import DatapointsStore from "@justice-counts/common/stores/BaseDatapointsStore";
 import {
+  MetricWithErrors,
   RawDatapointsByMetric,
   Report,
-  ReportOverview,
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -48,9 +48,8 @@ const DataEntryReview = () => {
   const agencyId = Number(params.agencyId);
   const navigate = useNavigate();
   const [isPublishable, setIsPublishable] = useState(false);
+  const [metricsPreview, setMetricsPreview] = useState<MetricWithErrors[]>();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const [record, setRecord] = useState<ReportOverview[]>([]);
-  const [enabledMetricKeys, setEnabledMetricKeys] = useState<string[]>([]);
   const { reportStore, formStore, userStore, guidanceStore } = useStore();
   const checkMetricForErrors = useCheckMetricForErrors(reportID);
 
@@ -97,20 +96,20 @@ const DataEntryReview = () => {
   useEffect(() => {
     const initialize = async () => {
       formStore.validatePreviouslySavedInputs(reportID);
-      const reportWithDatapoints =
+      const [reportWithDatapoints] =
         (await reportStore.getMultipleReportsWithDatapoints(
           [reportID],
           String(agencyId)
         )) as Report[];
 
-      if (reportWithDatapoints[0].datapoints) {
+      if (reportWithDatapoints.datapoints) {
         setDatapoints(
           DatapointsStore.keyRawDatapointsByMetric(
-            reportWithDatapoints[0].datapoints
+            reportWithDatapoints.datapoints
           )
         );
       }
-      setRecord(reportWithDatapoints);
+
       setLoadingDatapoints(false);
     };
 
@@ -123,21 +122,12 @@ const DataEntryReview = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  let currentSystemKey;
-
   useEffect(() => {
     const { metrics, isPublishable: publishable } =
       formStore.validateAndGetAllMetricFormValues(reportID);
-    setEnabledMetricKeys(
-      metrics.reduce((keys, metric) => {
-        if (metric.enabled) {
-          currentSystemKey = metric.system.key;
-          keys.push(metric.key);
-        }
-        return keys;
-      }, [] as string[])
-    );
+    const enabledMetrics = metrics.filter((metric) => metric.enabled);
 
+    setMetricsPreview(enabledMetrics);
     setIsPublishable(publishable);
   }, [formStore, reportID]);
 
@@ -159,26 +149,12 @@ const DataEntryReview = () => {
       </PageWrapper>
     );
 
-  const metricsToDisplay = Object.entries(datapoints).reduce(
-    (acc, [metricKey, datapoint]) => {
-      if (enabledMetricKeys.includes(metricKey)) {
-        acc.push({
-          key: metricKey,
-          displayName: datapoint[0].metric_display_name as string,
-        });
-      }
-
-      return acc;
-    },
-    [] as { key: string; displayName: string }[]
-  );
-
   // review component props
-  const metrics = metricsToDisplay
-    ? metricsToDisplay.reduce((acc, metric) => {
+  const metrics = metricsPreview
+    ? metricsPreview.reduce((acc, metric) => {
         const reviewMetric = {
           datapoints: datapoints[metric.key],
-          display_name: metric.displayName,
+          display_name: metric.display_name,
           key: metric.key,
           metricHasError: checkMetricForErrors(metric.key),
           metricHasValidInput: Boolean(
@@ -188,6 +164,7 @@ const DataEntryReview = () => {
         return [...acc, reviewMetric];
       }, [] as ReviewMetric[])
     : [];
+  const record = reportStore.reportOverviews[reportID];
   const title = "Review & Publish";
   const description = (
     <>
@@ -220,10 +197,10 @@ const DataEntryReview = () => {
   ];
 
   // modal props
-  const systemSearchParam =
-    enabledMetricKeys.length > 0 ? currentSystemKey : undefined;
-  const metricSearchParam =
-    enabledMetricKeys.length > 0 ? enabledMetricKeys[0] : undefined;
+  const systemSearchParam = metricsPreview
+    ? metricsPreview[0].system.key
+    : undefined;
+  const metricSearchParam = metricsPreview ? metricsPreview[0].key : undefined;
 
   return (
     <ReviewWrapper>
@@ -238,7 +215,7 @@ const DataEntryReview = () => {
         description={description}
         buttons={buttons}
         metrics={metrics}
-        records={record}
+        records={[record]}
       />
     </ReviewWrapper>
   );
