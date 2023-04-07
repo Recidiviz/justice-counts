@@ -16,17 +16,19 @@
 // =============================================================================
 
 import {
+  CustomDropdown,
+  CustomDropdownToggleLabel,
+} from "@justice-counts/common/components/Dropdown";
+import {
   HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
   MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
 import { BinaryRadioGroupWrapper } from "../Forms";
-import { ExtendedDropdownMenuItem } from "../Menu/Menu.styles";
 import { MenuItem } from "../Settings";
 
 const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
@@ -77,7 +79,7 @@ export const MobileMetricsConfigurationHeader = styled.div`
 `;
 
 export const MetricsViewControlPanel = styled.div<{
-  multipleSystems?: boolean;
+  hasSystemsDropdown?: boolean;
 }>`
   height: 100%;
   width: 100%;
@@ -90,8 +92,8 @@ export const MetricsViewControlPanel = styled.div<{
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    padding-top: ${({ multipleSystems }) =>
-      multipleSystems
+    padding-top: ${({ hasSystemsDropdown }) =>
+      hasSystemsDropdown
         ? `${FIXED_HEADER_WITH_DROPDOWN_HEIGHT + 24}px`
         : `${FIXED_HEADER_WITHOUT_DROPDOWN_HEIGHT + 24}px`};
   }
@@ -302,85 +304,12 @@ export const MetricConfigurationDropdownContainerFixed = styled(
   }
 `;
 
-export const MetricsConfigurationDropdownToggle = styled(DropdownToggle)`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: start;
-  gap: 12px;
-  align-items: center;
-  ${typography.sizeCSS.medium};
-  text-transform: capitalize;
-  padding-right: 0;
-  padding-left: 0;
-  color: ${palette.solid.darkgrey};
-
-  & > div {
-    margin-left: auto;
-  }
-
-  &:active,
-  &:hover,
-  &:focus,
-  &[aria-expanded="true"] {
-    color: ${palette.solid.darkgrey};
-  }
-`;
-
-export const MetricsConfigurationDropdownMenu = styled(DropdownMenu)`
-  overflow-y: auto;
-  z-index: 10;
-  margin-top: 11px;
-  box-shadow: 0px 0px 1px rgba(23, 28, 43, 0.1),
-    0px 4px 8px rgba(23, 28, 43, 0.04), 0px 8px 56px rgba(23, 28, 43, 0.1);
-  border-radius: 4px;
-  max-height: 452px;
-  width: 100%;
-`;
-
-export const BreakdownsDropdownMenu = styled(MetricsConfigurationDropdownMenu)`
-  margin-top: 2px;
-`;
-
-export const StartingMonthDropdownMenu = styled(
-  MetricsConfigurationDropdownMenu
-)`
-  min-width: 264px;
-  margin-top: 4px;
-  min-height: 558px;
-
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    margin-top: 0;
-  }
-`;
-
 export const MetricsViewDropdownLabel = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  ${typography.sizeCSS.normal};
-  text-transform: capitalize;
-
-  & > div {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-
-    span {
-      ${typography.sizeCSS.small};
-      color: ${palette.highlight.grey8};
-      text-transform: capitalize;
-    }
-  }
-`;
-
-export const MetricsConfigurationDropdownMenuItem = styled(
-  ExtendedDropdownMenuItem
-)`
-  justify-content: space-between;
   ${typography.sizeCSS.normal};
   text-transform: capitalize;
 
@@ -1039,39 +968,34 @@ export const DefinitionSelection = styled.div`
   gap: 4px;
 `;
 
-export const DropdownButton = styled(DropdownToggle)<{ checked?: boolean }>`
-  ${typography.sizeCSS.normal}
-  font-family: ${typography.family};
-  display: flex;
-  gap: 10px;
+export const MonthSelectionDropdownContainer = styled.div<{
+  checked?: boolean;
+}>`
+  margin-top: 15px;
   width: 100%;
   height: 56px;
-  min-height: unset;
-  border: 1px solid ${palette.highlight.grey4} !important;
+  min-height: 56px;
+  border: 1px solid ${palette.highlight.grey4};
   border-radius: 2px;
-  transition: 0.2s ease;
-  color: ${palette.solid.darkgrey};
-  margin-top: 15px;
+
+  & ${CustomDropdown} {
+    height: 54px;
+  }
+
+  & ${CustomDropdownToggleLabel} {
+    justify-content: center;
+    gap: 10px;
+  }
 
   ${({ checked }) =>
     checked &&
     `
-      background-color: ${palette.solid.blue} !important;
-      color: ${palette.solid.white} !important;
-    `}
-
-  &[aria-expanded="true"] {
-    color: ${palette.solid.darkgrey};
-  }
-
-  &[aria-expanded="false"]:hover {
-    color: ${palette.solid.darkgrey};
-    background-color: ${palette.highlight.grey2};
-  }
-
-  &:focus {
-    color: ${palette.solid.darkgrey};
-  }
+      background-color: ${palette.solid.blue};
+      
+      & ${CustomDropdownToggleLabel} {
+        color: ${palette.solid.white};
+      };
+    `};
 `;
 
 export const PromptWrapper = styled.div`

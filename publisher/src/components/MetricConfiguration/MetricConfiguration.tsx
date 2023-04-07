@@ -257,8 +257,10 @@ export const MetricConfiguration: React.FC = observer(() => {
         )}
 
         <MetricsViewControlPanel
-          multipleSystems={
-            currentAgency?.systems && currentAgency.systems.length > 1
+          hasSystemsDropdown={
+            !metricSearchParam &&
+            currentAgency?.systems &&
+            currentAgency.systems.length > 1
           }
         >
           {/* List Of Metrics */}
