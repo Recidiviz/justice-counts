@@ -157,7 +157,6 @@ export const ReportsFilterDropdownContainer = styled.div`
 export const DisaggregationsDropdownContainer = styled(
   ReportsFilterDropdownContainer
 )`
-  border-top: 1px solid ${palette.highlight.grey9};
   margin-bottom: 32px;
   height: 40px;
 `;
