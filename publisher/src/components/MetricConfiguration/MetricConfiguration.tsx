@@ -15,6 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  Dropdown,
+  DropdownOption,
+} from "@justice-counts/common/components/Dropdown";
 import { MIN_TABLET_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { useWindowWidth } from "@justice-counts/common/hooks";
@@ -23,14 +27,12 @@ import {
   ReportFrequency,
   SupervisionSubsystems,
 } from "@justice-counts/common/types";
-import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
-import dropdownArrow from "../assets/dropdown-arrow.svg";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import { SYSTEM_CAPITALIZED, SYSTEM_LOWERCASE } from "../Global/constants";
 import { ContainedLoader } from "../Loading";
@@ -46,13 +48,10 @@ import {
   MetricBreakdownAvailabilityDefinitions,
   MetricConfigurationDisplay,
   MetricConfigurationDropdownContainer,
+  MetricConfigurationDropdownContainerFixed,
   MetricConfigurationWrapper,
   MetricDetailsDisplay,
   MetricName,
-  MetricsConfigurationDropdownMenu,
-  MetricsConfigurationDropdownMenuItem,
-  MetricsConfigurationDropdownToggle,
-  MetricsConfigurationSystemsDropdownMenuItem,
   MetricsViewContainer,
   MetricsViewControlPanel,
   MobileMetricsConfigurationHeader,
@@ -172,6 +171,34 @@ export const MetricConfiguration: React.FC = observer(() => {
     const systemMetrics = getMetricsBySystem(systemSearchParam);
     return systemMetrics && systemMetrics.length > 1;
   };
+  const systemsDropdownOptions: DropdownOption[] = currentAgency?.systems
+    ? currentAgency.systems
+        .filter((system) => getMetricsBySystem(system)?.length !== 0)
+        .map((system) => ({
+          key: system,
+          label: formatSystemName(system, {
+            allUserSystems: currentAgency?.systems,
+          }),
+          onClick: () => handleSystemClick(system),
+          highlight: systemSearchParam === system,
+        }))
+    : [];
+  const metricsDropdownOptions: DropdownOption[] =
+    getMetricsBySystem(systemSearchParam)?.map(({ key, metric }) => ({
+      key,
+      label: metric.label,
+      onClick: () => {
+        setSettingsSearchParams(
+          {
+            ...settingsSearchParams,
+            metric: key,
+          },
+          true
+        );
+        setActiveDimensionKey(undefined);
+      },
+      highlight: key === metricSearchParam,
+    })) || [];
 
   return (
     <>
@@ -213,44 +240,27 @@ export const MetricConfiguration: React.FC = observer(() => {
             </StickyHeader>
 
             {/* Systems Dropdown (for multi-system agencies)  */}
-            <MetricConfigurationDropdownContainer
-              hasBottomMargin
-              hasTopBorder
-              hasTopMargin
-            >
-              <Dropdown>
-                <MetricsConfigurationDropdownToggle kind="borderless">
-                  <img src={dropdownArrow} alt="" />
-                  {systemSearchParam &&
-                    formatSystemName(systemSearchParam, {
-                      allUserSystems: currentAgency?.systems,
-                    })}
-                </MetricsConfigurationDropdownToggle>
-                <MetricsConfigurationDropdownMenu>
-                  {currentAgency?.systems
-                    .filter(
-                      (system) => getMetricsBySystem(system)?.length !== 0
-                    )
-                    .map((system) => {
-                      return (
-                        <MetricsConfigurationSystemsDropdownMenuItem
-                          key={system}
-                          highlight={systemSearchParam === system}
-                          onClick={() => handleSystemClick(system)}
-                        >
-                          {formatSystemName(system, {
-                            allUserSystems: currentAgency?.systems,
-                          })}
-                        </MetricsConfigurationSystemsDropdownMenuItem>
-                      );
-                    })}
-                </MetricsConfigurationDropdownMenu>
-              </Dropdown>
-            </MetricConfigurationDropdownContainer>
+            <MetricConfigurationDropdownContainerFixed>
+              <Dropdown
+                toggleLabel={
+                  systemSearchParam &&
+                  formatSystemName(systemSearchParam, {
+                    allUserSystems: currentAgency?.systems,
+                  })
+                }
+                options={systemsDropdownOptions}
+                caret="left"
+                menuFullWidth
+              />
+            </MetricConfigurationDropdownContainerFixed>
           </>
         )}
 
-        <MetricsViewControlPanel>
+        <MetricsViewControlPanel
+          multipleSystems={
+            currentAgency?.systems && currentAgency.systems.length > 1
+          }
+        >
           {/* List Of Metrics */}
           {!metricSearchParam && (
             <MetricBoxBottomPaddingContainer>
@@ -277,45 +287,13 @@ export const MetricConfiguration: React.FC = observer(() => {
           {metricSearchParam && (
             <MetricConfigurationWrapper>
               {/* Metric Configuration */}
-              <MetricConfigurationDropdownContainer
-                hasTopBorder
-                hasBottomMargin
-                hasTopMargin
-              >
-                <Dropdown>
-                  <MetricsConfigurationDropdownToggle kind="borderless">
-                    {showMetricsDropdownOptions() && (
-                      <img src={dropdownArrow} alt="" />
-                    )}
-                    {metrics[systemMetricKey]?.label}
-                  </MetricsConfigurationDropdownToggle>
-                  {showMetricsDropdownOptions() ? (
-                    <MetricsConfigurationDropdownMenu>
-                      {getMetricsBySystem(systemSearchParam)?.map(
-                        ({ key, metric }) => (
-                          <MetricsConfigurationDropdownMenuItem
-                            key={key}
-                            onClick={() => {
-                              setSettingsSearchParams(
-                                {
-                                  ...settingsSearchParams,
-                                  metric: key,
-                                },
-                                true
-                              );
-                              setActiveDimensionKey(undefined);
-                            }}
-                            highlight={key === metricSearchParam}
-                          >
-                            {metric.label}
-                          </MetricsConfigurationDropdownMenuItem>
-                        )
-                      )}
-                    </MetricsConfigurationDropdownMenu>
-                  ) : (
-                    <></>
-                  )}
-                </Dropdown>
+              <MetricConfigurationDropdownContainer>
+                <Dropdown
+                  toggleLabel={metrics[systemMetricKey]?.label}
+                  options={metricsDropdownOptions}
+                  caret={showMetricsDropdownOptions() ? "left" : undefined}
+                  menuFullWidth
+                />
               </MetricConfigurationDropdownContainer>
 
               {windowWidth <= MIN_TABLET_WIDTH && (

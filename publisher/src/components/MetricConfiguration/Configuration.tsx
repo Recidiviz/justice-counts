@@ -563,10 +563,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               <>
                 {activeDisaggregationKey &&
                   disaggregations[systemMetricKey][activeDisaggregationKey] && (
-                    <MetricConfigurationDropdownContainer
-                      hasTopBorder
-                      hasBottomMargin
-                    >
+                    <MetricConfigurationDropdownContainer>
                       <Dropdown>
                         <MetricsConfigurationDropdownToggle kind="borderless">
                           {activeDisaggregationKeys?.length > 1 && (

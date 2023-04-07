@@ -47,11 +47,11 @@ import {
   DisclaimerLink,
   DisclaimerText,
   DisclaimerTitle,
-  MetricConfigurationDropdownContainerFixed,
   MetricItem,
   MetricsItemsContainer,
   MetricsViewContainer,
   MetricsViewControlPanelOverflowHidden,
+  MetricsViewDropdownContainerFixed,
   MetricsViewDropdownLabel,
   MobileDatapointsControls,
   MobileDisclaimerContainer,
@@ -291,7 +291,7 @@ export const MetricsView: React.FC = observer(() => {
             <CurrentMetricsSystem>
               {formatSystemName(systemSearchParam)}
             </CurrentMetricsSystem>
-            <MetricConfigurationDropdownContainerFixed>
+            <MetricsViewDropdownContainerFixed>
               <Dropdown
                 toggleLabel={
                   <>
@@ -311,7 +311,7 @@ export const MetricsView: React.FC = observer(() => {
                 caret={agencyMetrics.length > 1 ? "left" : undefined}
                 menuFullWidth
               />
-            </MetricConfigurationDropdownContainerFixed>
+            </MetricsViewDropdownContainerFixed>
             <MobileDisclaimerContainer>
               <DisclaimerTitle>Note</DisclaimerTitle>
               <DisclaimerText>

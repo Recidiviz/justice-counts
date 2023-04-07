@@ -27,13 +27,14 @@ import styled from "styled-components/macro";
 
 import { BinaryRadioGroupWrapper } from "../Forms";
 import { ExtendedDropdownMenuItem } from "../Menu/Menu.styles";
-import { ReportsFilterDropdownContainer } from "../Reports";
 import { MenuItem } from "../Settings";
 
 const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
 const INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH = 314;
 const STICKY_HEADER_WITH_PADDING_HEIGHT = 48;
 const DROPDOWN_WITH_MARGIN_HEIGHT = 79;
+const FIXED_HEADER_WITH_DROPDOWN_HEIGHT = 92;
+const FIXED_HEADER_WITHOUT_DROPDOWN_HEIGHT = 24;
 const baseDisabledFadedOverlayCSS = `
   &:after {
     content: "";
@@ -58,28 +59,26 @@ export const MetricsViewContainer = styled.div`
   }
 `;
 
-export const MobileMetricsConfigurationHeader = styled.div<{
-  hasBorder?: boolean;
-}>`
+export const MobileMetricsConfigurationHeader = styled.div`
   ${typography.sizeCSS.medium}
   display: none;
   width: 100%;
-  padding-bottom: 24px;
+  padding-bottom: 12px;
   text-transform: capitalize;
-  border-bottom: ${({ hasBorder }) =>
-    hasBorder && `1px solid ${palette.solid.darkgrey}`};
+  position: fixed;
+  top: ${HEADER_BAR_HEIGHT}px;
+  padding-top: 24px;
+  background-color: ${palette.solid.white};
+  z-index: 2;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: block;
-    position: fixed;
-    top: ${HEADER_BAR_HEIGHT}px;
-    padding-top: 24px;
-    background-color: ${palette.solid.white};
-    z-index: 2;
   }
 `;
 
-export const MetricsViewControlPanel = styled.div`
+export const MetricsViewControlPanel = styled.div<{
+  multipleSystems?: boolean;
+}>`
   height: 100%;
   width: 100%;
   display: flex;
@@ -88,6 +87,13 @@ export const MetricsViewControlPanel = styled.div`
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     justify-content: unset;
+  }
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    padding-top: ${({ multipleSystems }) =>
+      multipleSystems
+        ? `${FIXED_HEADER_WITH_DROPDOWN_HEIGHT + 24}px`
+        : `${FIXED_HEADER_WITHOUT_DROPDOWN_HEIGHT + 24}px`};
   }
 `;
 
@@ -252,43 +258,47 @@ export const CurrentMetricsSystem = styled.div`
   }
 `;
 
-export const MetricConfigurationDropdownContainer = styled(
-  ReportsFilterDropdownContainer
-)<{
-  hasTopBorder?: boolean;
-  hasBottomMargin?: boolean;
-  hasTopMargin?: boolean;
-}>`
+export const MetricConfigurationDropdownContainer = styled.div`
   display: none;
-  margin-bottom: ${({ hasBottomMargin }) => hasBottomMargin && "24px"};
-  margin-top: ${({ hasTopMargin }) => hasTopMargin && "48px"};
+  width: 100%;
+  margin-bottom: 24px;
+  height: 56px;
   min-height: 56px;
-  border-top: ${({ hasTopBorder }) =>
-    hasTopBorder && `1px solid ${palette.solid.darkgrey}`};
-
-  & > div {
-    width: 100%;
-  }
+  border-bottom: 1px solid ${palette.highlight.grey9};
+  border-top: 1px solid ${palette.highlight.grey9};
+  align-items: center;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: flex;
   }
 `;
 
-export const MetricConfigurationDropdownContainerFixed = styled.div`
+export const MetricsViewDropdownContainerFixed = styled.div`
   display: none;
+  position: fixed;
+  top: ${HEADER_BAR_HEIGHT + 24 + 36}px;
+  width: calc(100% - 48px);
+  min-height: 56px;
+  height: 56px;
+  z-index: 2;
+  background-color: ${palette.solid.white};
+  border-top: 1px solid ${palette.highlight.grey9};
+  border-bottom: 1px solid ${palette.highlight.grey9};
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: flex;
-    position: fixed;
-    top: ${HEADER_BAR_HEIGHT + 24 + 36}px;
-    width: calc(100% - 48px);
-    min-height: 56px;
-    height: 56px;
-    z-index: 2;
-    background-color: ${palette.solid.white};
-    border-top: 1px solid ${palette.highlight.grey9};
-    border-bottom: 1px solid ${palette.highlight.grey9};
+  }
+`;
+
+export const MetricConfigurationDropdownContainerFixed = styled(
+  MetricsViewDropdownContainerFixed
+)`
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: none;
+  }
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    display: flex;
   }
 `;
 
@@ -385,12 +395,6 @@ export const MetricsConfigurationDropdownMenuItem = styled(
       text-transform: capitalize;
     }
   }
-`;
-
-export const MetricsConfigurationSystemsDropdownMenuItem = styled(
-  MetricsConfigurationDropdownMenuItem
-)`
-  text-transform: capitalize;
 `;
 
 export const PanelRightTopButtonsContainer = styled.div`

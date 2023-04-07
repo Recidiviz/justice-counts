@@ -74,6 +74,7 @@ export const CustomDropdownToggleLabel = styled.div<{ size?: ToggleSize }>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  text-transform: capitalize;
 `;
 
 export const CustomDropdownMenu = styled(DropdownMenu)<{
@@ -104,6 +105,7 @@ export const CustomDropdownMenuItem = styled(DropdownMenuItem)<{
   display: flex;
   align-items: center;
   border-radius: 3px;
+  text-transform: capitalize;
   ${typography.sizeCSS.normal};
   color: ${({ color, highlight }) => {
     if (color === "green") {
