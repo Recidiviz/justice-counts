@@ -17,18 +17,12 @@
 
 import React from "react";
 
-export type DropdownBorder =
-  | "lightgrey-round"
-  | "top"
-  | "bottom"
-  | "top-bottom";
-
 export type ToggleHover = "background" | "label";
 
-export type ToggleSize = "medium";
+export type ToggleSize = "small";
 
 export type DropdownOption = {
-  id: string | number;
+  key: string | number;
   label: string | React.ReactNode;
   onClick: () => void;
   color?: "green" | "red";

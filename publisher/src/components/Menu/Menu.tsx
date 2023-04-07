@@ -154,7 +154,7 @@ const Menu: React.FC = () => {
         .slice()
         .sort((a, b) => a.name.localeCompare(b.name))
         .map((agency) => ({
-          id: agency.id,
+          key: agency.id,
           label: agency.name,
           onClick: () => {
             navigate(`/agency/${agency.id}/${pathWithoutAgency}`);
@@ -303,6 +303,7 @@ const Menu: React.FC = () => {
             <Dropdown
               toggleLabel="Agencies"
               options={dropdownOptions}
+              size="small"
               toggleHover="label"
               menuAlignment={windowWidth > MIN_TABLET_WIDTH ? "right" : "left"}
             />

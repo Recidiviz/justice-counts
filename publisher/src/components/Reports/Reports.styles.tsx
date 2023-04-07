@@ -72,6 +72,7 @@ export const TabbedBar = styled.div<{ noPadding?: boolean }>`
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     padding-bottom: 12px;
+    border-bottom: none;
   }
 `;
 
@@ -127,6 +128,9 @@ export const ReportActions = styled.div`
 `;
 
 export const BulkActionsDropdownContainer = styled.div`
+  border: 1px solid ${palette.highlight.grey4};
+  border-radius: 3px;
+
   & ${CustomDropdownToggle} {
     padding: 10px 15px;
   }
@@ -150,23 +154,22 @@ export const BulkActionsDropdownToggle = styled(DropdownToggle)`
   }
 `;
 
-export const DropdownContainer = styled.div`
+export const ReportsFilterDropdownContainer = styled.div`
   display: none;
   width: 100%;
   height: 56px;
   border-bottom: 1px solid ${palette.highlight.grey9};
+  border-top: 1px solid ${palette.highlight.grey9};
   align-items: center;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: flex;
   }
-
-  & > div {
-    width: 100%;
-  }
 `;
 
-export const DisaggregationsDropdownContainer = styled(DropdownContainer)`
+export const DisaggregationsDropdownContainer = styled(
+  ReportsFilterDropdownContainer
+)`
   border-top: 1px solid ${palette.highlight.grey9};
   margin-bottom: 32px;
   height: 40px;

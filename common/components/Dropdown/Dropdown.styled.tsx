@@ -24,21 +24,11 @@ import {
 import styled from "styled-components/macro";
 
 import { palette, typography } from "../GlobalStyles";
-import { DropdownBorder, ToggleHover, ToggleSize } from "./types";
+import { ToggleHover, ToggleSize } from "./types";
 
-export const CustomDropdown = styled(Dropdown)<{
-  border?: DropdownBorder;
-}>`
+export const CustomDropdown = styled(Dropdown)`
   width: 100%;
   height: 100%;
-
-  ${({ border }) => {
-    if (border === "lightgrey-round")
-      return `border: 1px solid ${palette.highlight.grey4}; border-radius: 3px;`;
-    if (border === "top")
-      return `border-top: 1px solid ${palette.solid.darkgrey};`;
-    return "border: none";
-  }};
 `;
 
 export const CustomDropdownToggle = styled(DropdownToggle)<{
@@ -51,11 +41,11 @@ export const CustomDropdownToggle = styled(DropdownToggle)<{
   display: flex;
   flex-direction: row;
   justify-content: start;
-  gap: 12px;
+  gap: ${({ size }) => (size === "small" ? "10px" : "12px")};
   color: ${palette.solid.darkgrey};
   white-space: nowrap;
   ${({ size }) =>
-    size === "medium" ? typography.sizeCSS.medium : typography.sizeCSS.normal};
+    size === "small" ? typography.sizeCSS.normal : typography.sizeCSS.medium};
 
   &:active,
   &:hover,
@@ -75,8 +65,15 @@ export const CustomDropdownToggle = styled(DropdownToggle)<{
 `;
 
 export const CustomDropdownToggleCaret = styled.img<{ size?: ToggleSize }>`
-  width: ${({ size }) => (size === "medium" ? "12px" : "10px")};
-  height: ${({ size }) => (size === "medium" ? "6px" : "5px")};
+  width: ${({ size }) => (size === "small" ? "10px" : "12px")};
+  height: ${({ size }) => (size === "small" ? "5px" : "6px")};
+`;
+
+export const CustomDropdownToggleLabel = styled.div<{ size?: ToggleSize }>`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `;
 
 export const CustomDropdownMenu = styled(DropdownMenu)<{

@@ -27,7 +27,7 @@ import styled from "styled-components/macro";
 
 import { BinaryRadioGroupWrapper } from "../Forms";
 import { ExtendedDropdownMenuItem } from "../Menu/Menu.styles";
-import { DropdownContainer, TabbedBar } from "../Reports";
+import { ReportsFilterDropdownContainer } from "../Reports";
 import { MenuItem } from "../Settings";
 
 const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
@@ -247,13 +247,14 @@ export const CurrentMetricsSystem = styled.div`
     text-transform: capitalize;
     padding-bottom: 12px;
     padding-top: 24px;
-    border-bottom: 1px solid ${palette.solid.darkgrey};
     z-index: 2;
     background-color: ${palette.solid.white};
   }
 `;
 
-export const MetricConfigurationDropdownContainer = styled(DropdownContainer)<{
+export const MetricConfigurationDropdownContainer = styled(
+  ReportsFilterDropdownContainer
+)<{
   hasTopBorder?: boolean;
   hasBottomMargin?: boolean;
   hasTopMargin?: boolean;
@@ -274,16 +275,20 @@ export const MetricConfigurationDropdownContainer = styled(DropdownContainer)<{
   }
 `;
 
-export const MetricConfigurationDropdownContainerFixed = styled(
-  MetricConfigurationDropdownContainer
-)`
+export const MetricConfigurationDropdownContainerFixed = styled.div`
+  display: none;
+
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: flex;
     position: fixed;
-    top: ${HEADER_BAR_HEIGHT + 24 + 37}px;
+    top: ${HEADER_BAR_HEIGHT + 24 + 36}px;
     width: calc(100% - 48px);
+    min-height: 56px;
+    height: 56px;
     z-index: 2;
     background-color: ${palette.solid.white};
+    border-top: 1px solid ${palette.highlight.grey9};
+    border-bottom: 1px solid ${palette.highlight.grey9};
   }
 `;
 
@@ -337,6 +342,28 @@ export const StartingMonthDropdownMenu = styled(
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     margin-top: 0;
+  }
+`;
+
+export const MetricsViewDropdownLabel = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  ${typography.sizeCSS.normal};
+  text-transform: capitalize;
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    span {
+      ${typography.sizeCSS.small};
+      color: ${palette.highlight.grey8};
+      text-transform: capitalize;
+    }
   }
 `;
 
@@ -546,12 +573,6 @@ export const Subheader = styled.div`
   }
 `;
 
-export const BreakdownsTabbedBar = styled(TabbedBar)`
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    display: none;
-  }
-`;
-
 export const RadioButtonGroupWrapper = styled(BinaryRadioGroupWrapper)`
   display: flex;
 
@@ -588,13 +609,6 @@ export const MetricDisaggregations = styled.div<{ enabled?: boolean | null }>`
 export const Disaggregation = styled.div`
   display: block;
   margin-bottom: 15px;
-`;
-
-export const DisaggregationName = styled.div<{ enabled?: boolean }>`
-  ${typography.sizeCSS.large};
-
-  color: ${({ enabled }) =>
-    enabled ? palette.solid.darkgrey : palette.highlight.grey8};
 `;
 
 export const DisaggregationTab = styled.div`
@@ -751,73 +765,6 @@ export const Label = styled.div<{ noBottomMargin?: boolean }>`
   margin-bottom: ${({ noBottomMargin }) => (noBottomMargin ? 0 : `16px`)};
 `;
 
-export const ToggleSwitchWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 8px 0;
-`;
-
-export const ToggleSwitch = styled.label`
-  position: relative;
-  display: inline-block;
-  width: 38px;
-  height: 24px;
-`;
-
-export const ToggleSwitchInput = styled.input`
-  opacity: 0;
-  width: 0;
-  height: 0;
-
-  &:checked + span {
-    background-color: ${palette.solid.blue};
-  }
-
-  &:checked + span:before {
-    transform: translateX(14px);
-  }
-`;
-
-export const Slider = styled.span`
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: ${palette.solid.grey};
-  border-radius: 34px;
-  transition: 0.3s;
-
-  &:before {
-    content: "";
-    height: 14px;
-    width: 14px;
-    position: absolute;
-    left: 5px;
-    bottom: 5px;
-    background-color: ${palette.solid.white};
-    border-radius: 50%;
-    transition: 0.3s;
-  }
-`;
-
-export const ToggleSwitchLabel = styled.span<{ switchedOn?: boolean }>`
-  ${typography.sizeCSS.normal}
-  color: ${({ switchedOn }) =>
-    switchedOn ? palette.solid.blue : palette.solid.grey};
-  text-transform: uppercase;
-  margin-right: 11px;
-  position: relative;
-
-  &::after {
-    content: "${({ switchedOn }) => (switchedOn ? "ON" : "OFF")}";
-    position: absolute;
-    top: -11px;
-    left: -27px;
-  }
-`;
-
 export const MultipleChoiceWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -850,17 +797,6 @@ export const StickyHeader = styled.div`
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: none;
-  }
-`;
-
-export const BackToMetrics = styled.div`
-  color: ${palette.solid.blue};
-  transition: 0.2s ease;
-  margin-bottom: 24px;
-
-  &:hover {
-    cursor: pointer;
-    opacity: 0.85;
   }
 `;
 
@@ -1099,19 +1035,6 @@ export const DefinitionSelection = styled.div`
   gap: 4px;
 `;
 
-export const NoDefinitionsSelected = styled.div`
-  width: 100%;
-  height: fit-content;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  padding: 59px;
-  border: 1px solid ${palette.highlight.grey5};
-  color: ${palette.highlight.grey12};
-  text-align: center;
-`;
-
 export const DropdownButton = styled(DropdownToggle)<{ checked?: boolean }>`
   ${typography.sizeCSS.normal}
   font-family: ${typography.family};
@@ -1149,10 +1072,6 @@ export const DropdownButton = styled(DropdownToggle)<{ checked?: boolean }>`
 
 export const PromptWrapper = styled.div`
   margin-top: 35px;
-`;
-
-export const CapitalizedSpan = styled.span`
-  text-transform: capitalize;
 `;
 
 export const BlueLinkSpan = styled.span`

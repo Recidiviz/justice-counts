@@ -52,13 +52,13 @@ import {
   Cell,
   CommaSpan,
   DesktopRecordsPageTitle,
-  DropdownContainer,
   EmptySelectionCircle,
   LabelCell,
   LabelRow,
   MobileRecordsPageTitle,
   NoReportsDisplay,
   ReportActions,
+  ReportsFilterDropdownContainer,
   ReportsHeader,
   Row,
   SelectedCheckmark,
@@ -213,7 +213,7 @@ const Reports: React.FC = () => {
       .length === 0;
   const bulkActionsDropdownOptions: DropdownOption[] = [
     {
-      id: "publishAction",
+      key: "publishAction",
       label: "Publish...",
       onClick: () => selectBulkAction("publish"),
       color: "green",
@@ -221,14 +221,14 @@ const Reports: React.FC = () => {
       noHover: true,
     },
     {
-      id: "unpublishAction",
+      key: "unpublishAction",
       label: "Unpublish...",
       onClick: () => selectBulkAction("unpublish"),
       disabled: isUnpublishDisabled,
       noHover: true,
     },
     {
-      id: "deleteAction",
+      key: "deleteAction",
       label: "Delete...",
       onClick: () => selectBulkAction("delete"),
       color: "red",
@@ -238,7 +238,7 @@ const Reports: React.FC = () => {
   const reportsFilterDropdownOptions: DropdownOption[] = Object.entries(
     ReportStatusFilterOptionObject
   ).map(([key, value]) => ({
-    id: key,
+    key,
     label: value,
     onClick: () => setReportsFilter(normalizeString(key)),
     highlight: ReportStatusFilterOptionObject[reportsFilter] === value,
@@ -481,13 +481,13 @@ const Reports: React.FC = () => {
                       <BulkActionsDropdownContainer>
                         <Dropdown
                           toggleLabel="Bulk Actions"
+                          options={bulkActionsDropdownOptions}
+                          size="small"
                           toggleDisabled={filteredReportsMemoized.length === 0}
-                          border="lightgrey-round"
                           toggleHover="background"
                           caret="right"
                           menuAlignment="right"
                           menuOverflow
-                          options={bulkActionsDropdownOptions}
                         />
                       </BulkActionsDropdownContainer>
                     )}
@@ -553,15 +553,14 @@ const Reports: React.FC = () => {
         </TabbedBar>
 
         {/* MobileViewDropdown */}
-        <DropdownContainer>
+        <ReportsFilterDropdownContainer>
           <Dropdown
             toggleLabel={ReportStatusFilterOptionObject[reportsFilter]}
             options={reportsFilterDropdownOptions}
-            size="medium"
             caret="left"
             menuFullWidth
           />
-        </DropdownContainer>
+        </ReportsFilterDropdownContainer>
       </ReportsHeader>
 
       {/* Reports List Table */}
