@@ -69,7 +69,7 @@ export const CustomDropdownToggleCaret = styled.img<{ size?: ToggleSize }>`
   height: ${({ size }) => (size === "small" ? "5px" : "6px")};
 `;
 
-export const CustomDropdownToggleLabel = styled.div<{ size?: ToggleSize }>`
+export const CustomDropdownToggleLabel = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;

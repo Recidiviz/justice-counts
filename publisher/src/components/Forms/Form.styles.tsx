@@ -255,6 +255,20 @@ export const DisaggregationHasInputIndicator = styled.div<{
   }
 `;
 
+export const DisaggregationsDropdownContainer = styled.div`
+  display: none;
+  width: 100%;
+  height: 40px;
+  border-bottom: 1px solid ${palette.highlight.grey9};
+  border-top: 1px solid ${palette.highlight.grey9};
+  margin-bottom: 32px;
+  align-items: center;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    display: flex;
+  }
+`;
+
 export const TabDisplay = styled.div`
   width: 100%;
   display: flex;
