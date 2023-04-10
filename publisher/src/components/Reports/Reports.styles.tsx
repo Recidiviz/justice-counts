@@ -26,7 +26,6 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import { DropdownToggle } from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
 export const PageHeader = styled.div`
@@ -152,33 +151,6 @@ export const ReportsFilterDropdownContainer = styled.div`
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: flex;
   }
-`;
-
-export const StatusFilterDropdownToggle = styled(DropdownToggle)`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: start;
-  gap: 12px;
-  align-items: center;
-  padding-left: 0;
-  color: ${palette.solid.darkgrey};
-  ${typography.sizeCSS.medium};
-
-  &:active,
-  &:hover,
-  &:focus,
-  &[aria-expanded="true"] {
-    color: ${palette.solid.darkgrey};
-  }
-`;
-
-export const DisaggregationsDropdownToggle = styled(StatusFilterDropdownToggle)`
-  justify-content: space-between;
-  ${typography.sizeCSS.normal};
-  padding-right: 0;
-  color: ${palette.solid.blue};
 `;
 
 export const Table = styled.div`
