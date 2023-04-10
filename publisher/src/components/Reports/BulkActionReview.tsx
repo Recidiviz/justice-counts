@@ -15,8 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { showToast } from "@justice-counts/common/components/Toast";
 import DatapointsStore from "@justice-counts/common/stores/BaseDatapointsStore";
-import { RawDatapointsByMetric, Report } from "@justice-counts/common/types";
+import {
+  RawDatapointsByMetric,
+  Report,
+  ReportOverview,
+} from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -52,22 +57,42 @@ const BulkActionReview = () => {
   const { reportStore } = useStore();
 
   const [datapoints, setDatapoints] = useState<RawDatapointsByMetric>({});
+  const [records, setRecords] = useState<ReportOverview[]>([]);
 
   const publishMultipleRecords = async () => {
-    await reportStore.updateMultipleReportStatuses(
+    const response = (await reportStore.updateMultipleReportStatuses(
       recordsIds,
       agencyIdString,
       "PUBLISHED"
-    );
+    )) as Response;
+
+    if (response.status !== 200) {
+      showToast({
+        message: `Failed to publish. Please try again.`,
+        color: "red",
+        timeout: 3000,
+      });
+      return;
+    }
     setIsSuccessModalOpen(true);
   };
 
   const unpublishMultipleRecords = async () => {
-    await reportStore.updateMultipleReportStatuses(
+    const response = (await reportStore.updateMultipleReportStatuses(
       recordsIds,
       agencyIdString,
       "DRAFT"
-    );
+    )) as Response;
+
+    if (response.status !== 200) {
+      showToast({
+        message: `Failed to publish. Please try again.`,
+        color: "red",
+        timeout: 3000,
+      });
+      return;
+    }
+
     setIsSuccessModalOpen(true);
   };
 
@@ -94,7 +119,7 @@ const BulkActionReview = () => {
           )
         );
       }
-
+      setRecords(reportsWithDatapoints);
       setIsLoading(false);
     };
 
@@ -155,12 +180,8 @@ const BulkActionReview = () => {
         }, [] as ReviewMetric[])
       : [];
 
-  const records = recordsIds.map(
-    (recordID) => reportStore.reportOverviews[recordID]
-  );
   const publishActionTitle = "Review & Publish";
   const unpublishActionTitle = "Review & Unpublish";
-
   const publishActionDescription = (
     <>
       Here’s a breakdown of data you’ve selected to publish. Take a moment to
