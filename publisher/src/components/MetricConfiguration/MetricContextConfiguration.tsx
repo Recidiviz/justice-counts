@@ -80,7 +80,9 @@ export const ContextConfiguration: React.FC<{ isShown: boolean }> = observer(
     if (activeContextKeys.length === 0 || !isShown) return null;
 
     return (
-      <MetricContextContainer enabled={metrics[systemMetricKey]?.enabled}>
+      <MetricContextContainer
+        enabled={metrics[systemMetricKey]?.enabled !== false}
+      >
         {activeContextKeys.map((contextKey) => {
           const currentContext = contexts[systemMetricKey][contextKey];
 
