@@ -85,8 +85,6 @@ export const MetricsView: React.FC = observer(() => {
   const { system: systemSearchParam, metric: metricSearchParam } =
     settingsSearchParams;
 
-  console.log(settingsSearchParams);
-
   const initDataPageMetrics = async () => {
     const result = await reportStore.initializeReportSettings(agencyId);
     if (result instanceof Error) {
@@ -171,7 +169,7 @@ export const MetricsView: React.FC = observer(() => {
     }
   }, [windowWidth]);
 
-  if (!metricSearchParam) {
+  if (!metricSearchParam && !isLoading) {
     return (
       <NoEnabledMetricsMessage>
         There are no enabled metrics to view. Please go to{" "}
@@ -186,6 +184,7 @@ export const MetricsView: React.FC = observer(() => {
       </NoEnabledMetricsMessage>
     );
   }
+
   if (isLoading || !systemSearchParam || !metricSearchParam) {
     return <Loading />;
   }
