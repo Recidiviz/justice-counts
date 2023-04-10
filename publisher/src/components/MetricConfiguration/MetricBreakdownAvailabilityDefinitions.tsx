@@ -297,7 +297,9 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
 
     return (
       <DefinitionsDisplayContainer>
-        <DefinitionsDisplay enabled={metrics[systemMetricKey]?.enabled}>
+        <DefinitionsDisplay
+          enabled={metrics[systemMetricKey]?.enabled !== false}
+        >
           <DefinitionsTitle>
             {activeMetricOrDimensionDisplayName}
           </DefinitionsTitle>
