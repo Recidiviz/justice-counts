@@ -55,6 +55,7 @@ import {
   MetricsViewControlPanelOverflowHidden,
   MobileDatapointsControls,
   MobileDisclaimerContainer,
+  NoEnabledMetricsMessage,
   PanelContainerLeft,
   PanelContainerRight,
   PanelRightTopButton,
@@ -84,6 +85,8 @@ export const MetricsView: React.FC = observer(() => {
   const { system: systemSearchParam, metric: metricSearchParam } =
     settingsSearchParams;
 
+  console.log(settingsSearchParams);
+
   const initDataPageMetrics = async () => {
     const result = await reportStore.initializeReportSettings(agencyId);
     if (result instanceof Error) {
@@ -94,7 +97,9 @@ export const MetricsView: React.FC = observer(() => {
     const defaultSystemSearchParam = Object.keys(result)[0]
       .toLowerCase()
       .replace(" ", "_") as AgencySystems;
-    const defaultMetricSearchParam = Object.values(result)[0][0].key;
+    const defaultMetricSearchParam = Object.values(result)[0]?.find(
+      (metric) => metric.enabled
+    )?.key;
 
     // same logic as in metric config page, the only difference is
     // there should always be metric search param
@@ -166,6 +171,21 @@ export const MetricsView: React.FC = observer(() => {
     }
   }, [windowWidth]);
 
+  if (!metricSearchParam) {
+    return (
+      <NoEnabledMetricsMessage>
+        There are no enabled metrics to view. Please go to{" "}
+        <DisclaimerLink
+          onClick={() => {
+            navigate("../settings/metric-config");
+          }}
+        >
+          Metric Configuration
+        </DisclaimerLink>{" "}
+        to enable a metric.
+      </NoEnabledMetricsMessage>
+    );
+  }
   if (isLoading || !systemSearchParam || !metricSearchParam) {
     return <Loading />;
   }

@@ -1193,3 +1193,8 @@ export const OverlayWrapper = styled.div<{ enabled?: boolean | null }>`
   position: relative;
   ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
 `;
+
+export const NoEnabledMetricsMessage = styled.div`
+  min-height: 100%;
+  margin: auto auto;
+`;
