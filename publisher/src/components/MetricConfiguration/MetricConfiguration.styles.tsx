@@ -457,8 +457,7 @@ export const MetricDescription = styled.div`
 export const MetricDetailsDisplay = styled.div`
   height: 100%;
   width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   padding: 24px 12px 50px 0;
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {

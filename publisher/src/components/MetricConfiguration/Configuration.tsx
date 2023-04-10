@@ -152,6 +152,8 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       () => {
         if (activeDisaggregationKeys) {
           setActiveDisaggregationKey(activeDisaggregationKeys[0]);
+        } else {
+          setActiveDisaggregationKey(undefined);
         }
         setActiveDimensionKey(undefined);
       },
@@ -219,6 +221,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
 
     const disaggregationsDropdownToggleLabel =
       activeDisaggregationKey &&
+      disaggregations[systemMetricKey] &&
       disaggregations[systemMetricKey][activeDisaggregationKey] ? (
         <>
           {removeSnakeCase(
@@ -268,25 +271,27 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       );
 
     const disaggregationsDropdownOptions: DropdownOption[] =
-      activeDisaggregationKeys?.map((key) => {
-        const currentDisaggregation = disaggregations[systemMetricKey][key];
+      activeDisaggregationKeys
+        ? activeDisaggregationKeys.map((key) => {
+            const currentDisaggregation = disaggregations[systemMetricKey][key];
 
-        return {
-          key,
-          label: removeSnakeCase(
-            currentDisaggregation.display_name as string
-          ).toLowerCase(),
-          onClick: () => {
-            setActiveDisaggregationKey(key);
+            return {
+              key,
+              label: removeSnakeCase(
+                currentDisaggregation.display_name as string
+              ).toLowerCase(),
+              onClick: () => {
+                setActiveDisaggregationKey(key);
 
-            const [firstDimensionKey] = Object.keys(
-              dimensions[systemMetricKey][key]
-            );
-            setActiveDimensionKey(firstDimensionKey);
-          },
-          highlight: key === activeDisaggregationKey,
-        };
-      });
+                const [firstDimensionKey] = Object.keys(
+                  dimensions[systemMetricKey][key]
+                );
+                setActiveDimensionKey(firstDimensionKey);
+              },
+              highlight: key === activeDisaggregationKey,
+            };
+          })
+        : [];
 
     const monthSelectionDropdownOptions: DropdownOption[] = monthsByName
       .filter((month) => !["January", "July"].includes(month))
