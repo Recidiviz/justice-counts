@@ -51,10 +51,10 @@ const Header = observer(() => {
       >
         <Logo src={logo} alt="" />
         <LogoName>Justice Counts</LogoName>
-        {rootStore.api.environment === "dev-local" && (
+        {rootStore.api.environment === "local" && (
           <Environment>Local</Environment>
         )}
-        {rootStore.api.environment === "dev-staging" && (
+        {rootStore.api.environment === "staging" && (
           <Environment>Staging</Environment>
         )}
       </LogoContainer>
