@@ -113,6 +113,11 @@ const DataEntryReview = () => {
       setLoadingDatapoints(false);
     };
 
+    // When a user refreshes in the review page, navigate them back to the data entry form
+    if (!reportStore.reportMetrics[reportID]) {
+      return navigate(`../records/${reportID}`);
+    }
+
     initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -130,7 +135,10 @@ const DataEntryReview = () => {
     document.body.style.overflow = isSuccessModalOpen ? "hidden" : "unset";
   }, [isSuccessModalOpen]);
 
-  if (reportStore.reportOverviews[reportID].agency_id !== agencyId) {
+  if (
+    reportStore.reportOverviews[reportID] &&
+    reportStore.reportOverviews[reportID].agency_id !== agencyId
+  ) {
     return <NotFound />;
   }
 
