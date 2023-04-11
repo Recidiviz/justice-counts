@@ -67,3 +67,13 @@ export const LogoName = styled.div`
     display: none;
   }
 `;
+
+export const Environment = styled.div`
+  ${typography.sizeCSS.medium};
+  color: red;
+  white-space: nowrap;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: none;
+  }
+`;

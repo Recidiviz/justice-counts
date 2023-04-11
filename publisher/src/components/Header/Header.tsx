@@ -24,7 +24,7 @@ import logo from "../assets/jc-logo-vector-new.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { guidancePaths } from "../Guidance";
 import Menu from "../Menu";
-import { HeaderBar, Logo, LogoContainer, LogoName } from ".";
+import { Environment, HeaderBar, Logo, LogoContainer, LogoName } from ".";
 
 const Header = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
@@ -50,6 +50,7 @@ const Header = observer(() => {
       >
         <Logo src={logo} alt="" />
         <LogoName>Justice Counts</LogoName>
+        <Environment>Staging</Environment>
       </LogoContainer>
 
       <Menu />
