@@ -35,12 +35,15 @@ class API {
 
   csrfToken: string;
 
+  environment: string;
+
   constructor(authStore: AuthStore) {
     makeAutoObservable(this);
 
     this.authStore = authStore;
     this.isSessionInitialized = false;
     this.csrfToken = "";
+    this.environment = "";
 
     when(
       () => authStore.isAuthorized,
@@ -55,10 +58,12 @@ class API {
         method: "GET",
       })) as Response;
       const { csrf } = await response.json();
+      const { env } = await response.json();
 
       runInAction(() => {
         if (csrf !== "") this.csrfToken = csrf;
         this.isSessionInitialized = true;
+        this.environment = env;
       });
     } catch (error) {
       if (error instanceof Error) return error.message;
