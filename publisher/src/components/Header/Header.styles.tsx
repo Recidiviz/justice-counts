@@ -70,8 +70,11 @@ export const LogoName = styled.div`
 
 export const Environment = styled.div`
   ${typography.sizeCSS.medium};
-  color: red;
-  white-space: nowrap;
+  background-color: red;
+  color: white;
+  height: 64px;
+  width: 100%;
+  line-height: 64px;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: none;

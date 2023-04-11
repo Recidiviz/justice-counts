@@ -57,8 +57,7 @@ class API {
         path: "/api/init",
         method: "GET",
       })) as Response;
-      const { csrf } = await response.json();
-      const { env } = await response.json();
+      const { csrf, env } = await response.json();
 
       runInAction(() => {
         if (csrf !== "") this.csrfToken = csrf;

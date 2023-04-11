@@ -20,6 +20,7 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import rootStore from "../../stores/RootStore";
 import logo from "../assets/jc-logo-vector-new.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { guidancePaths } from "../Guidance";
@@ -50,7 +51,12 @@ const Header = observer(() => {
       >
         <Logo src={logo} alt="" />
         <LogoName>Justice Counts</LogoName>
-        <Environment>Staging</Environment>
+        {rootStore.api.environment === "dev-local" && (
+          <Environment>Local</Environment>
+        )}
+        {rootStore.api.environment === "dev-staging" && (
+          <Environment>Staging</Environment>
+        )}
       </LogoContainer>
 
       <Menu />
