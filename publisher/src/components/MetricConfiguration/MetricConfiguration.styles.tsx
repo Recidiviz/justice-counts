@@ -141,18 +141,6 @@ export const SystemName = styled.span`
   text-transform: capitalize;
 `;
 
-export const SystemNamePlusSign = styled.span<{ isSystemActive: boolean }>`
-  display: none;
-
-  &::after {
-    content: "+";
-  }
-
-  ${SystemNameContainer}:hover && {
-    display: ${({ isSystemActive }) => (isSystemActive ? "none" : "block")};
-  }
-`;
-
 export const MetricsItemsContainer = styled.div<{ isSystemActive: boolean }>`
   display: flex;
   flex-direction: column;

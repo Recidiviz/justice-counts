@@ -62,7 +62,6 @@ import {
   PanelRightTopButtonsContainer,
   SystemName,
   SystemNameContainer,
-  SystemNamePlusSign,
   SystemsContainer,
 } from ".";
 
@@ -92,12 +91,13 @@ export const MetricsView: React.FC = observer(() => {
       return setLoadingError(result.message);
     }
 
-    const defaultSystemSearchParam = Object.keys(result)[0]
+    const firstEnabledMetric = Object.values(result)
+      ?.flat()
+      .find((metric) => metric.enabled);
+    const defaultSystemSearchParam = firstEnabledMetric?.system.key
       .toLowerCase()
       .replace(" ", "_") as AgencySystems;
-    const defaultMetricSearchParam = Object.values(result)[0]?.find(
-      (metric) => metric.enabled
-    )?.key;
+    const defaultMetricSearchParam = firstEnabledMetric?.key;
 
     // same logic as in metric config page, the only difference is
     // there should always be metric search param
@@ -211,25 +211,12 @@ export const MetricsView: React.FC = observer(() => {
               return (
                 <React.Fragment key={system}>
                   {enabledMetrics.length > 0 ? (
-                    <SystemNameContainer
-                      isSystemActive={system === systemSearchParam}
-                      onClick={() => {
-                        setSettingsSearchParams({
-                          system: system as AgencySystems,
-                          metric: metricsBySystem[system].filter(
-                            (metric) => metric.enabled
-                          )[0].key,
-                        });
-                      }}
-                    >
+                    <SystemNameContainer isSystemActive>
                       <SystemName>
                         {formatSystemName(metrics[0].system.key, {
                           allUserSystems: currentAgency?.systems,
                         })}
                       </SystemName>
-                      <SystemNamePlusSign
-                        isSystemActive={system === systemSearchParam}
-                      />
                     </SystemNameContainer>
                   ) : (
                     <SystemNameContainer isSystemActive={false}>
