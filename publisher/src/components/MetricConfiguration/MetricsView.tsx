@@ -205,43 +205,46 @@ export const MetricsView: React.FC = observer(() => {
         {/* List Of Metrics */}
         <PanelContainerLeft>
           <SystemsContainer>
-            {Object.entries(metricsBySystem).map(([system, metrics]) => (
-              <React.Fragment key={system}>
-                {metrics.filter((metric) => metric.enabled).length > 0 ? (
-                  <SystemNameContainer
-                    isSystemActive={system === systemSearchParam}
-                    onClick={() => {
-                      setSettingsSearchParams({
-                        system: system as AgencySystems,
-                        metric: metricsBySystem[system].filter(
-                          (metric) => metric.enabled
-                        )[0].key,
-                      });
-                    }}
-                  >
-                    <SystemName>
-                      {formatSystemName(metrics[0].system.key, {
-                        allUserSystems: currentAgency?.systems,
-                      })}
-                    </SystemName>
-                    <SystemNamePlusSign
-                      isSystemActive={system === systemSearchParam}
-                    />
-                  </SystemNameContainer>
-                ) : (
-                  <SystemNameContainer isSystemActive={false}>
-                    <SystemName>
-                      {metrics[0].system.display_name} (No enabled metrics)
-                    </SystemName>
-                  </SystemNameContainer>
-                )}
+            {Object.entries(metricsBySystem).map(([system, metrics]) => {
+              const enabledMetrics = metrics.filter((metric) => metric.enabled);
 
-                <MetricsItemsContainer
-                  isSystemActive={system === systemSearchParam}
-                >
-                  {metrics
-                    .filter((metric) => metric.enabled)
-                    .map((metric) => (
+              return (
+                <React.Fragment key={system}>
+                  {enabledMetrics.length > 0 ? (
+                    <SystemNameContainer
+                      isSystemActive={system === systemSearchParam}
+                      onClick={() => {
+                        setSettingsSearchParams({
+                          system: system as AgencySystems,
+                          metric: metricsBySystem[system].filter(
+                            (metric) => metric.enabled
+                          )[0].key,
+                        });
+                      }}
+                    >
+                      <SystemName>
+                        {formatSystemName(metrics[0].system.key, {
+                          allUserSystems: currentAgency?.systems,
+                        })}
+                      </SystemName>
+                      <SystemNamePlusSign
+                        isSystemActive={system === systemSearchParam}
+                      />
+                    </SystemNameContainer>
+                  ) : (
+                    <SystemNameContainer isSystemActive={false}>
+                      <SystemName>
+                        {metrics[0].system.display_name} (No enabled metrics)
+                      </SystemName>
+                    </SystemNameContainer>
+                  )}
+
+                  <MetricsItemsContainer
+                    isSystemActive={
+                      system === systemSearchParam || enabledMetrics.length > 0
+                    }
+                  >
+                    {enabledMetrics.map((metric) => (
                       <MetricItem
                         key={metric.key}
                         selected={metricSearchParam === metric.key}
@@ -255,9 +258,10 @@ export const MetricsView: React.FC = observer(() => {
                         {metric.display_name}
                       </MetricItem>
                     ))}
-                </MetricsItemsContainer>
-              </React.Fragment>
-            ))}
+                  </MetricsItemsContainer>
+                </React.Fragment>
+              );
+            })}
           </SystemsContainer>
           <DisclaimerContainer>
             <DisclaimerTitle>Note</DisclaimerTitle>
