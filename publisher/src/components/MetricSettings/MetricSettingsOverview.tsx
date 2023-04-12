@@ -24,7 +24,7 @@ import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/bold-right-arrow-icon.svg";
 import { SYSTEM_CAPITALIZED, SYSTEM_LOWERCASE } from "../Global/constants";
-import { ContainedLoader } from "../Loading";
+import { Loading } from "../Loading";
 import { useSettingsSearchParams } from "../Settings";
 import * as Styled from "./MetricSettingsOverview.styled";
 
@@ -44,6 +44,8 @@ export function MetricSettingsOverview() {
   const [loadingErrorMessage, setLoadingErrorMessage] = useState<string>();
 
   const initializeMetricConfiguration = async () => {
+    setIsLoading(true);
+
     const response = await initializeMetricConfigStoreValues(agencyId);
     if (response instanceof Error) {
       return setLoadingErrorMessage(response.message);
@@ -116,7 +118,7 @@ export function MetricSettingsOverview() {
   }, [agencyId]);
 
   if (isLoading) {
-    return <ContainedLoader />;
+    return <Loading />;
   }
 
   if (loadingErrorMessage) {
