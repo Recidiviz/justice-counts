@@ -23,7 +23,7 @@ import { DropdownOption, ToggleHover, ToggleSize } from "./types";
 
 type Props = {
   label: string | React.ReactNode;
-  options: DropdownOption[];
+  options?: DropdownOption[];
   size?: ToggleSize;
   disabled?: boolean;
   hover?: ToggleHover;
@@ -37,7 +37,7 @@ type Props = {
  * Customizable Dropdown Component
  * @param {Object} Props
  * @param Props.label - what is seen inside dropdown toggle
- * @param Props.options - options for a dropdown
+ * @param [Props.options] - options for a dropdown
  * @param [Props.size] - size of a dropdown (default for medium like in most cases)
  * @param [Props.disabled] - condition for disabling dropdown
  * @param [Props.hover] - defines what hover effect has toggle, label color change or background color change, default is cursor = pointer
@@ -83,38 +83,34 @@ export function Dropdown({
           />
         )}
       </Styled.CustomDropdownToggle>
-      {options.length > 1 ? (
-        <Styled.CustomDropdownMenu
-          alignment={alignment}
-          menuOverflow={overflow}
-          menuFullWidth={fullWidth}
-        >
-          {options.map(
-            ({
-              key,
-              label: optionLabel,
-              onClick,
-              color,
-              disabled: optionDisabled,
-              highlight,
-              noHover,
-            }) => (
-              <Styled.CustomDropdownMenuItem
-                key={key}
-                onClick={onClick}
-                color={color}
-                disabled={optionDisabled}
-                highlight={highlight}
-                noHover={noHover}
-              >
-                {optionLabel}
-              </Styled.CustomDropdownMenuItem>
-            )
-          )}
-        </Styled.CustomDropdownMenu>
-      ) : (
-        <></>
-      )}
+      <Styled.CustomDropdownMenu
+        alignment={alignment}
+        menuOverflow={overflow}
+        menuFullWidth={fullWidth}
+      >
+        {options?.map(
+          ({
+            key,
+            label: optionLabel,
+            onClick,
+            color,
+            disabled: optionDisabled,
+            highlight,
+            noHover,
+          }) => (
+            <Styled.CustomDropdownMenuItem
+              key={key}
+              onClick={onClick}
+              color={color}
+              disabled={optionDisabled}
+              highlight={highlight}
+              noHover={noHover}
+            >
+              {optionLabel}
+            </Styled.CustomDropdownMenuItem>
+          )
+        )}
+      </Styled.CustomDropdownMenu>
     </Styled.CustomDropdown>
   );
 }

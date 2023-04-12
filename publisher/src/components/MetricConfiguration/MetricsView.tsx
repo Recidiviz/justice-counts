@@ -307,7 +307,9 @@ export const MetricsView: React.FC = observer(() => {
                     </Badge>
                   </>
                 }
-                options={dropdownOptions}
+                options={
+                  dropdownOptions.length > 1 ? dropdownOptions : undefined
+                }
                 caretPosition={agencyMetrics.length > 1 ? "left" : undefined}
                 fullWidth
               />

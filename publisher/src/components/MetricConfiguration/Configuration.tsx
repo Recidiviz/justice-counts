@@ -220,27 +220,25 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     };
 
     const disaggregationsDropdownOptions: DropdownOption[] =
-      activeDisaggregationKeys
-        ? activeDisaggregationKeys.map((key) => {
-            const currentDisaggregation = disaggregations[systemMetricKey][key];
+      activeDisaggregationKeys.map((key) => {
+        const currentDisaggregation = disaggregations[systemMetricKey][key];
 
-            return {
-              key,
-              label: removeSnakeCase(
-                currentDisaggregation.display_name as string
-              ).toLowerCase(),
-              onClick: () => {
-                setActiveDisaggregationKey(key);
+        return {
+          key,
+          label: removeSnakeCase(
+            currentDisaggregation.display_name as string
+          ).toLowerCase(),
+          onClick: () => {
+            setActiveDisaggregationKey(key);
 
-                const [firstDimensionKey] = Object.keys(
-                  dimensions[systemMetricKey][key]
-                );
-                setActiveDimensionKey(firstDimensionKey);
-              },
-              highlight: key === activeDisaggregationKey,
-            };
-          })
-        : [];
+            const [firstDimensionKey] = Object.keys(
+              dimensions[systemMetricKey][key]
+            );
+            setActiveDimensionKey(firstDimensionKey);
+          },
+          highlight: key === activeDisaggregationKey,
+        };
+      });
 
     const monthSelectionDropdownOptions: DropdownOption[] = monthsByName
       .filter((month) => !["January", "July"].includes(month))
@@ -648,7 +646,11 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                             </MiniButtonWrapper>
                           </>
                         }
-                        options={disaggregationsDropdownOptions}
+                        options={
+                          disaggregationsDropdownOptions.length > 1
+                            ? disaggregationsDropdownOptions
+                            : undefined
+                        }
                         caretPosition={
                           activeDisaggregationKeys?.length > 1
                             ? "left"
