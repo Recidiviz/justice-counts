@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Badge } from "@justice-counts/common/components/Badge";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -50,8 +51,8 @@ const Header = observer(() => {
       >
         <Logo src={logo} alt="" />
         <LogoName>Justice Counts</LogoName>
-        {api.environment === "local" && <Environment>Local</Environment>}
-        {api.environment === "staging" && <Environment>Staging</Environment>}
+        {api.environment === "local" && <Badge color="RED">Local</Badge>}
+        {api.environment === "staging" && <Badge color="RED">Staging</Badge>}
       </LogoContainer>
 
       <Menu />
