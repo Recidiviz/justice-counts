@@ -21,11 +21,17 @@ export type ToggleHover = "background" | "label";
 
 export type ToggleSize = "small";
 
+export type ToggleCaretPosition = "left" | "right";
+
+export type DropdownMenuAlignment = "left" | "right";
+
+type DropdownOptionTextColor = "green" | "red";
+
 export type DropdownOption = {
   key: string | number;
   label: string | React.ReactNode;
   onClick: () => void;
-  color?: "green" | "red";
+  color?: DropdownOptionTextColor;
   disabled?: boolean;
   highlight?: boolean;
   noHover?: boolean;

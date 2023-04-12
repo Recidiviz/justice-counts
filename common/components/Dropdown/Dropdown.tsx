@@ -19,7 +19,13 @@ import React from "react";
 
 import dropdownCaret from "../../assets/dropdown-caret.svg";
 import * as Styled from "./Dropdown.styled";
-import { DropdownOption, ToggleHover, ToggleSize } from "./types";
+import {
+  DropdownMenuAlignment,
+  DropdownOption,
+  ToggleCaretPosition,
+  ToggleHover,
+  ToggleSize,
+} from "./types";
 
 type Props = {
   label: string | React.ReactNode;
@@ -27,8 +33,8 @@ type Props = {
   size?: ToggleSize;
   disabled?: boolean;
   hover?: ToggleHover;
-  caretPosition?: "left" | "right";
-  alignment?: "left" | "right";
+  caretPosition?: ToggleCaretPosition;
+  alignment?: DropdownMenuAlignment;
   overflow?: boolean;
   fullWidth?: boolean;
 };
