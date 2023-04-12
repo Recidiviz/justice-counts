@@ -34,7 +34,7 @@ const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
 const INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH = 314;
 const STICKY_HEADER_WITH_PADDING_HEIGHT = 48;
 const DROPDOWN_WITH_MARGIN_HEIGHT = 79;
-const baseDisabledFadedOverlayCSS = `
+export const baseDisabledFadedOverlayCSS = `
   &:after {
     content: "";
     width: 100%;
@@ -899,11 +899,9 @@ export const DefinitionsDisplayContainer = styled.div`
   }
 `;
 
-export const DefinitionsDisplay = styled.div<{ enabled?: boolean | null }>`
+export const DefinitionsDisplay = styled.div`
   width: 100%;
   position: relative;
-
-  ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
 `;
 
 export const DefinitionsWrapper = styled.div<{ enabled?: boolean | null }>`
@@ -1189,4 +1187,9 @@ export const IncludesExcludesDescription = styled.div`
     padding-top: 16px;
     margin: 16px 0;
   }
+`;
+
+export const OverlayWrapper = styled.div<{ enabled?: boolean | null }>`
+  position: relative;
+  ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
 `;

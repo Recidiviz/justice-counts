@@ -24,11 +24,11 @@ import styled, { css } from "styled-components/macro";
 
 import { BinaryRadioGroupWrapper } from "../Forms";
 import {
+  baseDisabledFadedOverlayCSS,
   DefinitionDisplayName,
   DefinitionItem,
   Definitions,
   DefinitionsDescription,
-  DefinitionsDisplay,
   DefinitionsDisplayContainer,
   DefinitionSelection,
   DefinitionsTitle,
@@ -171,7 +171,13 @@ export const RaceEthnicitiesContainer = styled(DefinitionsDisplayContainer)`
     padding-bottom: 0;
   }
 `;
-export const RaceEthnicitiesDisplay = styled(DefinitionsDisplay)``;
+
+export const RaceEthnicitiesDisplay = styled.div<{ enabled?: boolean | null }>`
+  width: 100%;
+  position: relative;
+  ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
+`;
+
 export const RaceEthnicitiesTitle = styled(DefinitionsTitle)``;
 export const RaceEthnicitiesDescription = styled(DefinitionsDescription)`
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {

@@ -49,6 +49,7 @@ import {
   IncludesExcludesDescription,
   MetricSettings,
   MiniButton,
+  OverlayWrapper,
   RevertToDefaultTextButton,
   RevertToDefaultTextButtonWrapper,
 } from ".";
@@ -297,7 +298,7 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
 
     return (
       <DefinitionsDisplayContainer>
-        <DefinitionsDisplay enabled={metrics[systemMetricKey]?.enabled}>
+        <DefinitionsDisplay>
           <DefinitionsTitle>
             {activeMetricOrDimensionDisplayName}
           </DefinitionsTitle>
@@ -305,198 +306,205 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
             {activeMetricOrDimensionDescription}
           </BreakdownAvailabilityDescription>
 
-          {/* Breakdown Availability */}
-          {activeDimensionKey && (
-            <>
-              <BreakdownAvailabilitySubTitle>
-                Confirm breakdown availability
-              </BreakdownAvailabilitySubTitle>
-              <BreakdownAvailabilityDescription>
-                Can you share data for this breakdown?
-              </BreakdownAvailabilityDescription>
+          <OverlayWrapper enabled={metrics[systemMetricKey]?.enabled}>
+            {/* Breakdown Availability */}
+            {activeDimensionKey && (
+              <>
+                <BreakdownAvailabilitySubTitle>
+                  Confirm breakdown availability
+                </BreakdownAvailabilitySubTitle>
+                <BreakdownAvailabilityDescription>
+                  Can you share data for this breakdown?
+                </BreakdownAvailabilityDescription>
 
-              <BreakdownAvailabilityMiniButtonWrapper>
-                <MiniButton
-                  selected={currentDimension?.enabled === false}
-                  onClick={() => {
-                    if (
-                      currentDimension?.enabled ||
-                      currentDimension?.enabled === null
-                    )
-                      handleDimensionEnabledStatus(false);
-                  }}
-                >
-                  Unavailable
-                </MiniButton>
-                <MiniButton
-                  selected={currentDimension?.enabled}
-                  onClick={() => {
-                    if (!currentDimension?.enabled)
-                      handleDimensionEnabledStatus(true);
-                  }}
-                >
-                  Available
-                </MiniButton>
-              </BreakdownAvailabilityMiniButtonWrapper>
-            </>
-          )}
-
-          {Boolean(activeSettingsKeys?.length) && (
-            <DefinitionsWrapper
-              enabled={
-                !metrics[systemMetricKey]?.enabled ||
-                !activeDimensionKey ||
-                (metrics[systemMetricKey]?.enabled && currentDimension?.enabled)
-              }
-            >
-              <DefinitionsSubTitle
-                onClick={() => {
-                  if (windowWidth <= MIN_TABLET_WIDTH) {
-                    setIsDefinitionsOpen(!isDefinitionsOpen);
-                  }
-                }}
-              >
-                {windowWidth <= MIN_TABLET_WIDTH && (
-                  <DefinitionsSubTitleDropdownArrow
-                    src={dropdownArrow}
-                    alt=""
-                    isOpen={isDefinitionsOpen}
-                  />
-                )}
-                {activeDimensionKey ? "Breakdown" : "Metric"} Definitions
-              </DefinitionsSubTitle>
-              <DefinitionsDescription isHiddenInMobileView={!isDefinitionsOpen}>
-                Indicate which of the following categories your agency considers
-                to be part of this {activeDimensionKey ? "breakdown" : "metric"}
-                .
-                <span>
-                  You are NOT required to {REPORT_VERB_LOWERCASE} data for these
-                  specific categories.
-                </span>
-              </DefinitionsDescription>
-
-              {/* Definition Settings (Includes/Excludes) */}
-              <Definitions isHiddenInMobileView={!isDefinitionsOpen}>
-                {activeSettingsKeys?.map((includesExcludesKey) => {
-                  if (!activeDisaggregationKey) return null;
-                  const currentIncludesExcludes = isMetricDefinitionSettings
-                    ? metricDefinitionSettings[systemMetricKey][
-                        includesExcludesKey
-                      ]
-                    : dimensionDefinitionSettings[systemMetricKey][
-                        activeDisaggregationKey
-                      ][activeDimensionKey][includesExcludesKey];
-
-                  return (
-                    <>
-                      {currentIncludesExcludes.description && (
-                        <IncludesExcludesDescription>
-                          {currentIncludesExcludes.description}
-                        </IncludesExcludesDescription>
-                      )}
-                      {Object.keys(currentIncludesExcludes.settings).map(
-                        (settingKey) => {
-                          const currentSetting = (
-                            isMetricDefinitionSettings
-                              ? metricDefinitionSettings[systemMetricKey][
-                                  includesExcludesKey
-                                ].settings[settingKey]
-                              : activeDisaggregationKey &&
-                                activeDimensionKey &&
-                                dimensionDefinitionSettings[systemMetricKey][
-                                  activeDisaggregationKey
-                                ][activeDimensionKey][includesExcludesKey]
-                                  .settings[settingKey]
-                          ) as {
-                            included?:
-                              | MetricConfigurationSettingsOptions
-                              | undefined;
-                            default?:
-                              | MetricConfigurationSettingsOptions
-                              | undefined;
-                            label?: string | undefined;
-                          };
-
-                          return (
-                            <DefinitionItem key={settingKey}>
-                              <DefinitionDisplayName>
-                                {currentSetting.label}
-                              </DefinitionDisplayName>
-
-                              <DefinitionSelection>
-                                {metricConfigurationSettingsOptions.map(
-                                  (option) => (
-                                    <Fragment key={option}>
-                                      <MiniButton
-                                        selected={
-                                          showDefaultSettings
-                                            ? currentSetting.default === option
-                                            : currentSetting.included === option
-                                        }
-                                        showDefault={showDefaultSettings}
-                                        onClick={() =>
-                                          handleUpdateMetricDefinitionSetting(
-                                            includesExcludesKey,
-                                            settingKey,
-                                            option
-                                          )
-                                        }
-                                      >
-                                        {option}
-                                      </MiniButton>
-                                    </Fragment>
-                                  )
-                                )}
-                              </DefinitionSelection>
-                            </DefinitionItem>
-                          );
-                        }
-                      )}
-                    </>
-                  );
-                })}
-              </Definitions>
-
-              {/* Revert To Default Definition Settings */}
-              <RevertToDefaultTextButtonWrapper
-                isHiddenInMobileView={!isDefinitionsOpen}
-              >
-                <RevertToDefaultTextButton
-                  onClick={() => {
-                    setShowDefaultSettings(false);
-                    revertToAndSaveDefaultValues();
-                  }}
-                  onMouseEnter={() =>
-                    !showDefaultSettings && setShowDefaultSettings(true)
-                  }
-                  onMouseLeave={() => setShowDefaultSettings(false)}
-                >
-                  Choose Justice Counts Preferred Definition
-                </RevertToDefaultTextButton>
-              </RevertToDefaultTextButtonWrapper>
-            </DefinitionsWrapper>
-          )}
-          {/* Display when user is viewing a dimension & there are no settings available */}
-          {noSettingsAvailable &&
-            !hasMinOneDimensionContext &&
-            !hasMinOneMetricLevelContext && (
-              <DefinitionsSubTitle isHiddenInMobileView={!isDefinitionsOpen}>
-                There are no definitions to configure for this{" "}
-                {activeDimensionKey ? "breakdown." : "metric yet."}
-              </DefinitionsSubTitle>
+                <BreakdownAvailabilityMiniButtonWrapper>
+                  <MiniButton
+                    selected={currentDimension?.enabled === false}
+                    onClick={() => {
+                      if (
+                        currentDimension?.enabled ||
+                        currentDimension?.enabled === null
+                      )
+                        handleDimensionEnabledStatus(false);
+                    }}
+                  >
+                    Unavailable
+                  </MiniButton>
+                  <MiniButton
+                    selected={currentDimension?.enabled}
+                    onClick={() => {
+                      if (!currentDimension?.enabled)
+                        handleDimensionEnabledStatus(true);
+                    }}
+                  >
+                    Available
+                  </MiniButton>
+                </BreakdownAvailabilityMiniButtonWrapper>
+              </>
             )}
 
-          {/* Display when dimension has additional contexts */}
-          {dimensionContextsMap && (
-            <DimensionContexts
-              dimensionContextsMap={dimensionContextsMap}
-              activeDisaggregationKey={activeDisaggregationKey}
-              activeDimensionKey={activeDimensionKey}
-              isShown={
-                windowWidth <= MIN_TABLET_WIDTH ? isDefinitionsOpen : true
-              }
-            />
-          )}
+            {Boolean(activeSettingsKeys?.length) && (
+              <DefinitionsWrapper
+                enabled={
+                  !metrics[systemMetricKey]?.enabled ||
+                  !activeDimensionKey ||
+                  (metrics[systemMetricKey]?.enabled &&
+                    currentDimension?.enabled)
+                }
+              >
+                <DefinitionsSubTitle
+                  onClick={() => {
+                    if (windowWidth <= MIN_TABLET_WIDTH) {
+                      setIsDefinitionsOpen(!isDefinitionsOpen);
+                    }
+                  }}
+                >
+                  {windowWidth <= MIN_TABLET_WIDTH && (
+                    <DefinitionsSubTitleDropdownArrow
+                      src={dropdownArrow}
+                      alt=""
+                      isOpen={isDefinitionsOpen}
+                    />
+                  )}
+                  {activeDimensionKey ? "Breakdown" : "Metric"} Definitions
+                </DefinitionsSubTitle>
+                <DefinitionsDescription
+                  isHiddenInMobileView={!isDefinitionsOpen}
+                >
+                  Indicate which of the following categories your agency
+                  considers to be part of this{" "}
+                  {activeDimensionKey ? "breakdown" : "metric"}.
+                  <span>
+                    You are NOT required to {REPORT_VERB_LOWERCASE} data for
+                    these specific categories.
+                  </span>
+                </DefinitionsDescription>
+
+                {/* Definition Settings (Includes/Excludes) */}
+                <Definitions isHiddenInMobileView={!isDefinitionsOpen}>
+                  {activeSettingsKeys?.map((includesExcludesKey) => {
+                    if (!activeDisaggregationKey) return null;
+                    const currentIncludesExcludes = isMetricDefinitionSettings
+                      ? metricDefinitionSettings[systemMetricKey][
+                          includesExcludesKey
+                        ]
+                      : dimensionDefinitionSettings[systemMetricKey][
+                          activeDisaggregationKey
+                        ][activeDimensionKey][includesExcludesKey];
+
+                    return (
+                      <>
+                        {currentIncludesExcludes.description && (
+                          <IncludesExcludesDescription>
+                            {currentIncludesExcludes.description}
+                          </IncludesExcludesDescription>
+                        )}
+                        {Object.keys(currentIncludesExcludes.settings).map(
+                          (settingKey) => {
+                            const currentSetting = (
+                              isMetricDefinitionSettings
+                                ? metricDefinitionSettings[systemMetricKey][
+                                    includesExcludesKey
+                                  ].settings[settingKey]
+                                : activeDisaggregationKey &&
+                                  activeDimensionKey &&
+                                  dimensionDefinitionSettings[systemMetricKey][
+                                    activeDisaggregationKey
+                                  ][activeDimensionKey][includesExcludesKey]
+                                    .settings[settingKey]
+                            ) as {
+                              included?:
+                                | MetricConfigurationSettingsOptions
+                                | undefined;
+                              default?:
+                                | MetricConfigurationSettingsOptions
+                                | undefined;
+                              label?: string | undefined;
+                            };
+
+                            return (
+                              <DefinitionItem key={settingKey}>
+                                <DefinitionDisplayName>
+                                  {currentSetting.label}
+                                </DefinitionDisplayName>
+
+                                <DefinitionSelection>
+                                  {metricConfigurationSettingsOptions.map(
+                                    (option) => (
+                                      <Fragment key={option}>
+                                        <MiniButton
+                                          selected={
+                                            showDefaultSettings
+                                              ? currentSetting.default ===
+                                                option
+                                              : currentSetting.included ===
+                                                option
+                                          }
+                                          showDefault={showDefaultSettings}
+                                          onClick={() =>
+                                            handleUpdateMetricDefinitionSetting(
+                                              includesExcludesKey,
+                                              settingKey,
+                                              option
+                                            )
+                                          }
+                                        >
+                                          {option}
+                                        </MiniButton>
+                                      </Fragment>
+                                    )
+                                  )}
+                                </DefinitionSelection>
+                              </DefinitionItem>
+                            );
+                          }
+                        )}
+                      </>
+                    );
+                  })}
+                </Definitions>
+
+                {/* Revert To Default Definition Settings */}
+                <RevertToDefaultTextButtonWrapper
+                  isHiddenInMobileView={!isDefinitionsOpen}
+                >
+                  <RevertToDefaultTextButton
+                    onClick={() => {
+                      setShowDefaultSettings(false);
+                      revertToAndSaveDefaultValues();
+                    }}
+                    onMouseEnter={() =>
+                      !showDefaultSettings && setShowDefaultSettings(true)
+                    }
+                    onMouseLeave={() => setShowDefaultSettings(false)}
+                  >
+                    Choose Justice Counts Preferred Definition
+                  </RevertToDefaultTextButton>
+                </RevertToDefaultTextButtonWrapper>
+              </DefinitionsWrapper>
+            )}
+            {/* Display when user is viewing a dimension & there are no settings available */}
+            {noSettingsAvailable &&
+              !hasMinOneDimensionContext &&
+              !hasMinOneMetricLevelContext && (
+                <DefinitionsSubTitle isHiddenInMobileView={!isDefinitionsOpen}>
+                  There are no definitions to configure for this{" "}
+                  {activeDimensionKey ? "breakdown." : "metric yet."}
+                </DefinitionsSubTitle>
+              )}
+
+            {/* Display when dimension has additional contexts */}
+            {dimensionContextsMap && (
+              <DimensionContexts
+                dimensionContextsMap={dimensionContextsMap}
+                activeDisaggregationKey={activeDisaggregationKey}
+                activeDimensionKey={activeDimensionKey}
+                isShown={
+                  windowWidth <= MIN_TABLET_WIDTH ? isDefinitionsOpen : true
+                }
+              />
+            )}
+          </OverlayWrapper>
         </DefinitionsDisplay>
         {/* Additional Context (only appears on overall metric settings and not individual dimension settings) */}
         {!activeDimensionKey && (
