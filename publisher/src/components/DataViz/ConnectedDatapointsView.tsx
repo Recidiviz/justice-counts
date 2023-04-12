@@ -80,6 +80,7 @@ const ConnectedDatapointsView: React.FC<{
           resizeHeight
           showTitle
           showBottomMetricInsights={windowWidth <= MIN_DESKTOP_WIDTH}
+          maxHeightViewport
         />
       )}
       {dataView === ChartView.Table && (

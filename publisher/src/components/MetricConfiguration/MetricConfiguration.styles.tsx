@@ -141,18 +141,6 @@ export const SystemName = styled.span`
   text-transform: capitalize;
 `;
 
-export const SystemNamePlusSign = styled.span<{ isSystemActive: boolean }>`
-  display: none;
-
-  &::after {
-    content: "+";
-  }
-
-  ${SystemNameContainer}:hover && {
-    display: ${({ isSystemActive }) => (isSystemActive ? "none" : "block")};
-  }
-`;
-
 export const MetricsItemsContainer = styled.div<{ isSystemActive: boolean }>`
   display: flex;
   flex-direction: column;
@@ -1192,4 +1180,9 @@ export const IncludesExcludesDescription = styled.div`
 export const OverlayWrapper = styled.div<{ enabled?: boolean | null }>`
   position: relative;
   ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
+`;
+
+export const NoEnabledMetricsMessage = styled.div`
+  min-height: 100%;
+  margin: auto auto;
 `;
