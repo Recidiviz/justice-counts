@@ -108,6 +108,7 @@ export const DatapointsView: React.FC<{
   showTitle?: boolean;
   showBottomMetricInsights?: boolean;
   resizeHeight?: boolean;
+  maxHeightViewport?: boolean;
 }> = ({
   datapointsGroupedByAggregateAndDisaggregations,
   dimensionNamesByDisaggregation,
@@ -125,6 +126,7 @@ export const DatapointsView: React.FC<{
   showTitle = false,
   showBottomMetricInsights = false,
   resizeHeight = false,
+  maxHeightViewport = false,
 }) => {
   const [mobileSelectMetricsVisible, setMobileSelectMetricsVisible] =
     React.useState<boolean>(false);
@@ -266,7 +268,7 @@ export const DatapointsView: React.FC<{
   const shouldShowMobileFiltersModal = mobileFiltersVisible && metricName;
 
   return (
-    <DatapointsViewContainer>
+    <DatapointsViewContainer maxHeightViewport={maxHeightViewport}>
       <DatapointsViewHeaderWrapper>
         {showTitle && (
           <MetricHeaderWrapper>
