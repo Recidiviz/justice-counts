@@ -219,57 +219,6 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       }
     };
 
-    const disaggregationsDropdownToggleLabel =
-      activeDisaggregationKey &&
-      disaggregations[systemMetricKey] &&
-      disaggregations[systemMetricKey][activeDisaggregationKey] ? (
-        <>
-          {removeSnakeCase(
-            (
-              disaggregations[systemMetricKey][activeDisaggregationKey]
-                .display_name as string
-            ).toLowerCase()
-          )}
-
-          <MiniButtonWrapper onClick={(e) => e.stopPropagation()}>
-            <MiniButton
-              selected={
-                disaggregations[systemMetricKey][activeDisaggregationKey]
-                  .enabled === false
-              }
-              onClick={() => {
-                if (
-                  disaggregations[systemMetricKey][activeDisaggregationKey]
-                    .enabled ||
-                  disaggregations[systemMetricKey][activeDisaggregationKey]
-                    .enabled === null
-                )
-                  handleDisaggregationSelection(activeDisaggregationKey, false);
-              }}
-            >
-              Off
-            </MiniButton>
-            <MiniButton
-              selected={
-                disaggregations[systemMetricKey][activeDisaggregationKey]
-                  .enabled
-              }
-              onClick={() => {
-                if (
-                  !disaggregations[systemMetricKey][activeDisaggregationKey]
-                    .enabled
-                )
-                  handleDisaggregationSelection(activeDisaggregationKey, true);
-              }}
-            >
-              On
-            </MiniButton>
-          </MiniButtonWrapper>
-        </>
-      ) : (
-        ""
-      );
-
     const disaggregationsDropdownOptions: DropdownOption[] =
       activeDisaggregationKeys
         ? activeDisaggregationKeys.map((key) => {
@@ -640,7 +589,65 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   disaggregations[systemMetricKey][activeDisaggregationKey] && (
                     <MetricConfigurationDropdownContainer>
                       <Dropdown
-                        label={disaggregationsDropdownToggleLabel}
+                        label={
+                          <>
+                            {removeSnakeCase(
+                              (
+                                disaggregations[systemMetricKey][
+                                  activeDisaggregationKey
+                                ].display_name as string
+                              ).toLowerCase()
+                            )}
+
+                            <MiniButtonWrapper
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <MiniButton
+                                selected={
+                                  disaggregations[systemMetricKey][
+                                    activeDisaggregationKey
+                                  ].enabled === false
+                                }
+                                onClick={() => {
+                                  if (
+                                    disaggregations[systemMetricKey][
+                                      activeDisaggregationKey
+                                    ].enabled ||
+                                    disaggregations[systemMetricKey][
+                                      activeDisaggregationKey
+                                    ].enabled === null
+                                  )
+                                    handleDisaggregationSelection(
+                                      activeDisaggregationKey,
+                                      false
+                                    );
+                                }}
+                              >
+                                Off
+                              </MiniButton>
+                              <MiniButton
+                                selected={
+                                  disaggregations[systemMetricKey][
+                                    activeDisaggregationKey
+                                  ].enabled
+                                }
+                                onClick={() => {
+                                  if (
+                                    !disaggregations[systemMetricKey][
+                                      activeDisaggregationKey
+                                    ].enabled
+                                  )
+                                    handleDisaggregationSelection(
+                                      activeDisaggregationKey,
+                                      true
+                                    );
+                                }}
+                              >
+                                On
+                              </MiniButton>
+                            </MiniButtonWrapper>
+                          </>
+                        }
                         options={disaggregationsDropdownOptions}
                         caretPosition={
                           activeDisaggregationKeys?.length > 1
