@@ -20,7 +20,6 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import rootStore from "../../stores/RootStore";
 import logo from "../assets/jc-logo-vector-new.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { guidancePaths } from "../Guidance";
@@ -30,7 +29,7 @@ import { Environment, HeaderBar, Logo, LogoContainer, LogoName } from ".";
 const Header = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
-  const { userStore, guidanceStore } = useStore();
+  const { userStore, guidanceStore, api } = useStore();
   const { hasCompletedOnboarding } = guidanceStore;
 
   const isAgencyValid = !!userStore.getAgency(agencyId);
@@ -51,12 +50,8 @@ const Header = observer(() => {
       >
         <Logo src={logo} alt="" />
         <LogoName>Justice Counts</LogoName>
-        {rootStore.api.environment === "local" && (
-          <Environment>Local</Environment>
-        )}
-        {rootStore.api.environment === "staging" && (
-          <Environment>Staging</Environment>
-        )}
+        {api.environment === "local" && <Environment>Local</Environment>}
+        {api.environment === "staging" && <Environment>Staging</Environment>}
       </LogoContainer>
 
       <Menu />
