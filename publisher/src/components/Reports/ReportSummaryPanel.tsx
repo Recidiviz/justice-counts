@@ -329,9 +329,7 @@ const ReportSummaryPanel: React.FC<{
             lastModifiedAt &&
             `Last modified ${printElapsedDaysMonthsYearsSinceDate(
               lastModifiedAt
-            )} by ${
-              filteredReportEditors[filteredReportEditors.length - 1].name
-            }`}
+            )} by ${filteredReportEditors[0].name}`}
 
           {!filteredReportEditors.length && ``}
         </EditDetailsContent>
