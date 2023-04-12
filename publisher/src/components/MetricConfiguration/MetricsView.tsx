@@ -219,7 +219,7 @@ export const MetricsView: React.FC = observer(() => {
                       </SystemName>
                     </SystemNameContainer>
                   ) : (
-                    <SystemNameContainer isSystemActive={false}>
+                    <SystemNameContainer isSystemActive>
                       <SystemName>
                         {metrics[0].system.display_name} (No enabled metrics)
                       </SystemName>
