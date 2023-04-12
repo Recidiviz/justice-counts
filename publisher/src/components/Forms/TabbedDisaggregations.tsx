@@ -307,13 +307,10 @@ export const TabbedDisaggregations: React.FC<{
       <DisaggregationsDropdownContainer>
         <Dropdown
           label={disaggregationsDropdownLabel}
-          options={
-            disaggregationsDropdownOptions.length > 1
-              ? disaggregationsDropdownOptions
-              : undefined
-          }
+          options={disaggregationsDropdownOptions}
           size="small"
           caretPosition={metric.disaggregations.length > 1 ? "left" : undefined}
+          hover="label"
           fullWidth
         />
       </DisaggregationsDropdownContainer>

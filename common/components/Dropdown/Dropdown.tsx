@@ -88,28 +88,30 @@ export function Dropdown({
         menuOverflow={overflow}
         menuFullWidth={fullWidth}
       >
-        {options?.map(
-          ({
-            key,
-            label: optionLabel,
-            onClick,
-            color,
-            disabled: optionDisabled,
-            highlight,
-            noHover,
-          }) => (
-            <Styled.CustomDropdownMenuItem
-              key={key}
-              onClick={onClick}
-              color={color}
-              disabled={optionDisabled}
-              highlight={highlight}
-              noHover={noHover}
-            >
-              {optionLabel}
-            </Styled.CustomDropdownMenuItem>
-          )
-        )}
+        {options && options.length > 1
+          ? options.map(
+              ({
+                key,
+                label: optionLabel,
+                onClick,
+                color,
+                disabled: optionDisabled,
+                highlight,
+                noHover,
+              }) => (
+                <Styled.CustomDropdownMenuItem
+                  key={key}
+                  onClick={onClick}
+                  color={color}
+                  disabled={optionDisabled}
+                  highlight={highlight}
+                  noHover={noHover}
+                >
+                  {optionLabel}
+                </Styled.CustomDropdownMenuItem>
+              )
+            )
+          : undefined}
       </Styled.CustomDropdownMenu>
     </Styled.CustomDropdown>
   );

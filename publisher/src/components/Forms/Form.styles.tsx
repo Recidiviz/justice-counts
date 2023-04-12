@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { CustomDropdownToggle } from "@justice-counts/common/components/Dropdown";
 import {
   HEADER_BAR_HEIGHT,
   MIN_TABLET_WIDTH,
@@ -263,6 +264,10 @@ export const DisaggregationsDropdownContainer = styled.div`
   border-top: 1px solid ${palette.highlight.grey9};
   margin-bottom: 32px;
   align-items: center;
+
+  ${CustomDropdownToggle} {
+    color: ${palette.solid.blue};
+  }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: flex;

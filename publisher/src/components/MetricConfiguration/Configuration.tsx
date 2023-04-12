@@ -646,11 +646,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                             </MiniButtonWrapper>
                           </>
                         }
-                        options={
-                          disaggregationsDropdownOptions.length > 1
-                            ? disaggregationsDropdownOptions
-                            : undefined
-                        }
+                        options={disaggregationsDropdownOptions}
                         caretPosition={
                           activeDisaggregationKeys?.length > 1
                             ? "left"
