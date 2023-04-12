@@ -249,7 +249,7 @@ export const MetricConfiguration: React.FC = observer(() => {
                   })
                 }
                 options={systemsDropdownOptions}
-                caret="left"
+                caretPosition="left"
                 menuFullWidth
               />
             </MetricConfigurationDropdownContainerFixed>
@@ -293,7 +293,9 @@ export const MetricConfiguration: React.FC = observer(() => {
                 <Dropdown
                   toggleLabel={metrics[systemMetricKey]?.label}
                   options={metricsDropdownOptions}
-                  caret={showMetricsDropdownOptions() ? "left" : undefined}
+                  caretPosition={
+                    showMetricsDropdownOptions() ? "left" : undefined
+                  }
                   menuFullWidth
                 />
               </MetricConfigurationDropdownContainer>

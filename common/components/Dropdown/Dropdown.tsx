@@ -27,7 +27,7 @@ type Props = {
   size?: ToggleSize;
   toggleDisabled?: boolean;
   toggleHover?: ToggleHover;
-  caret?: "left" | "right";
+  caretPosition?: "left" | "right";
   alignment?: "left" | "right";
   menuOverflow?: boolean;
   menuFullWidth?: boolean;
@@ -39,7 +39,7 @@ export function Dropdown({
   size,
   toggleDisabled,
   toggleHover,
-  caret,
+  caretPosition,
   alignment,
   menuOverflow,
   menuFullWidth,
@@ -52,7 +52,7 @@ export function Dropdown({
         hover={toggleHover}
         size={size}
       >
-        {caret === "left" && (
+        {caretPosition === "left" && (
           <Styled.CustomDropdownToggleCaret
             src={dropdownCaret}
             alt=""
@@ -62,7 +62,7 @@ export function Dropdown({
         <Styled.CustomDropdownToggleLabel>
           {toggleLabel}
         </Styled.CustomDropdownToggleLabel>
-        {caret === "right" && (
+        {caretPosition === "right" && (
           <Styled.CustomDropdownToggleCaret
             src={dropdownCaret}
             alt=""

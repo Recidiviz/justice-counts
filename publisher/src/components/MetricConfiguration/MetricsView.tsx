@@ -308,7 +308,7 @@ export const MetricsView: React.FC = observer(() => {
                   </>
                 }
                 options={dropdownOptions}
-                caret={agencyMetrics.length > 1 ? "left" : undefined}
+                caretPosition={agencyMetrics.length > 1 ? "left" : undefined}
                 menuFullWidth
               />
             </MetricsViewDropdownContainerFixed>

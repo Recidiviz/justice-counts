@@ -642,7 +642,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                       <Dropdown
                         toggleLabel={disaggregationsDropdownToggleLabel}
                         options={disaggregationsDropdownOptions}
-                        caret={
+                        caretPosition={
                           activeDisaggregationKeys?.length > 1
                             ? "left"
                             : undefined

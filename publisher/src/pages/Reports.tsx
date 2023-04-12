@@ -485,7 +485,7 @@ const Reports: React.FC = () => {
                           size="small"
                           toggleDisabled={filteredReportsMemoized.length === 0}
                           toggleHover="background"
-                          caret="right"
+                          caretPosition="right"
                           alignment="right"
                           menuOverflow
                         />
@@ -557,7 +557,7 @@ const Reports: React.FC = () => {
           <Dropdown
             toggleLabel={ReportStatusFilterOptionObject[reportsFilter]}
             options={reportsFilterDropdownOptions}
-            caret="left"
+            caretPosition="left"
             menuFullWidth
           />
         </ReportsFilterDropdownContainer>
