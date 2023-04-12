@@ -486,7 +486,7 @@ const Reports: React.FC = () => {
                           toggleDisabled={filteredReportsMemoized.length === 0}
                           toggleHover="background"
                           caret="right"
-                          menuAlignment="right"
+                          alignment="right"
                           menuOverflow
                         />
                       </BulkActionsDropdownContainer>

@@ -28,7 +28,7 @@ type Props = {
   toggleDisabled?: boolean;
   toggleHover?: ToggleHover;
   caret?: "left" | "right";
-  menuAlignment?: "left" | "right";
+  alignment?: "left" | "right";
   menuOverflow?: boolean;
   menuFullWidth?: boolean;
 };
@@ -40,7 +40,7 @@ export function Dropdown({
   toggleDisabled,
   toggleHover,
   caret,
-  menuAlignment,
+  alignment,
   menuOverflow,
   menuFullWidth,
 }: Props) {
@@ -72,7 +72,7 @@ export function Dropdown({
       </Styled.CustomDropdownToggle>
       {options.length > 1 ? (
         <Styled.CustomDropdownMenu
-          alignment={menuAlignment}
+          alignment={alignment}
           menuOverflow={menuOverflow}
           menuFullWidth={menuFullWidth}
         >

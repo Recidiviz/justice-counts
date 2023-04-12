@@ -305,7 +305,7 @@ const Menu: React.FC = () => {
               options={dropdownOptions}
               size="small"
               toggleHover="label"
-              menuAlignment={windowWidth > MIN_TABLET_WIDTH ? "right" : "left"}
+              alignment={windowWidth > MIN_TABLET_WIDTH ? "right" : "left"}
             />
           </MenuItem>
         )}
