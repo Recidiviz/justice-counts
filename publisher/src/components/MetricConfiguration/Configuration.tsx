@@ -412,7 +412,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                     checked={startingMonthNotJanuaryJuly}
                   >
                     <Dropdown
-                      toggleLabel={
+                      label={
                         <>
                           {startingMonthNotJanuaryJuly ? (
                             <CalendarIconLight />
@@ -427,8 +427,8 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                       }
                       options={monthSelectionDropdownOptions}
                       size="small"
-                      toggleHover="background"
-                      menuFullWidth
+                      hover="background"
+                      fullWidth
                     />
                   </MonthSelectionDropdownContainer>
                 </RadioButtonGroupWrapper>
@@ -640,14 +640,14 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                   disaggregations[systemMetricKey][activeDisaggregationKey] && (
                     <MetricConfigurationDropdownContainer>
                       <Dropdown
-                        toggleLabel={disaggregationsDropdownToggleLabel}
+                        label={disaggregationsDropdownToggleLabel}
                         options={disaggregationsDropdownOptions}
                         caretPosition={
                           activeDisaggregationKeys?.length > 1
                             ? "left"
                             : undefined
                         }
-                        menuFullWidth
+                        fullWidth
                       />
                     </MetricConfigurationDropdownContainer>
                   )}

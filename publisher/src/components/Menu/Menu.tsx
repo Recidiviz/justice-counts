@@ -301,10 +301,10 @@ const Menu: React.FC = () => {
         {userStore.userAgencies && userStore.userAgencies.length > 1 && (
           <MenuItem dropdownPadding>
             <Dropdown
-              toggleLabel="Agencies"
+              label="Agencies"
               options={dropdownOptions}
               size="small"
-              toggleHover="label"
+              hover="label"
               alignment={windowWidth > MIN_TABLET_WIDTH ? "right" : "left"}
             />
           </MenuItem>

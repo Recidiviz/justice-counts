@@ -306,11 +306,11 @@ export const TabbedDisaggregations: React.FC<{
 
       <DisaggregationsDropdownContainer>
         <Dropdown
-          toggleLabel={disaggregationsDropdownLabel}
+          label={disaggregationsDropdownLabel}
           options={disaggregationsDropdownOptions}
           size="small"
           caretPosition={metric.disaggregations.length > 1 ? "left" : undefined}
-          menuFullWidth
+          fullWidth
         />
       </DisaggregationsDropdownContainer>
 

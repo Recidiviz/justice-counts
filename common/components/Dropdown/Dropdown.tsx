@@ -22,34 +22,47 @@ import * as Styled from "./Dropdown.styled";
 import { DropdownOption, ToggleHover, ToggleSize } from "./types";
 
 type Props = {
-  toggleLabel: string | React.ReactNode;
+  label: string | React.ReactNode;
   options: DropdownOption[];
   size?: ToggleSize;
-  toggleDisabled?: boolean;
-  toggleHover?: ToggleHover;
+  disabled?: boolean;
+  hover?: ToggleHover;
   caretPosition?: "left" | "right";
   alignment?: "left" | "right";
-  menuOverflow?: boolean;
-  menuFullWidth?: boolean;
+  overflow?: boolean;
+  fullWidth?: boolean;
 };
 
+/**
+ * Customizable Dropdown Component
+ * @param {Object} Props
+ * @param Props.label - what is seen inside dropdown toggle
+ * @param Props.options - options for a dropdown
+ * @param [Props.size] - size of a dropdown (default for medium like in most cases)
+ * @param [Props.disabled] - condition for disabling dropdown
+ * @param [Props.hover] - defines what hover effect has toggle, label color change or background color change, default is cursor = pointer
+ * @param [Props.caretPosition] - left or right (if undefined caret is not displayed)
+ * @param [Props.alignment] - alignment of the menu (right or left) if not provided then it is left by default
+ * @param [Props.overflow] - defines if the menu will be displayed above toggle
+ * @param [Props.fullWidth] - defines if the menu width will be equal to dropdown toggle width (default is fit-content)
+ * */
 export function Dropdown({
-  toggleLabel,
+  label,
   options,
   size,
-  toggleDisabled,
-  toggleHover,
+  disabled,
+  hover,
   caretPosition,
   alignment,
-  menuOverflow,
-  menuFullWidth,
+  overflow,
+  fullWidth,
 }: Props) {
   return (
     <Styled.CustomDropdown>
       <Styled.CustomDropdownToggle
         kind="borderless"
-        disabled={toggleDisabled}
-        hover={toggleHover}
+        disabled={disabled}
+        hover={hover}
         size={size}
       >
         {caretPosition === "left" && (
@@ -60,7 +73,7 @@ export function Dropdown({
           />
         )}
         <Styled.CustomDropdownToggleLabel>
-          {toggleLabel}
+          {label}
         </Styled.CustomDropdownToggleLabel>
         {caretPosition === "right" && (
           <Styled.CustomDropdownToggleCaret
@@ -73,20 +86,28 @@ export function Dropdown({
       {options.length > 1 ? (
         <Styled.CustomDropdownMenu
           alignment={alignment}
-          menuOverflow={menuOverflow}
-          menuFullWidth={menuFullWidth}
+          menuOverflow={overflow}
+          menuFullWidth={fullWidth}
         >
           {options.map(
-            ({ key, label, onClick, color, disabled, highlight, noHover }) => (
+            ({
+              key,
+              label: optionLabel,
+              onClick,
+              color,
+              disabled: optionDisabled,
+              highlight,
+              noHover,
+            }) => (
               <Styled.CustomDropdownMenuItem
                 key={key}
                 onClick={onClick}
                 color={color}
-                disabled={disabled}
+                disabled={optionDisabled}
                 highlight={highlight}
                 noHover={noHover}
               >
-                {label}
+                {optionLabel}
               </Styled.CustomDropdownMenuItem>
             )
           )}

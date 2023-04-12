@@ -293,7 +293,7 @@ export const MetricsView: React.FC = observer(() => {
             </CurrentMetricsSystem>
             <MetricsViewDropdownContainerFixed>
               <Dropdown
-                toggleLabel={
+                label={
                   <>
                     {metricName}{" "}
                     <Badge
@@ -309,7 +309,7 @@ export const MetricsView: React.FC = observer(() => {
                 }
                 options={dropdownOptions}
                 caretPosition={agencyMetrics.length > 1 ? "left" : undefined}
-                menuFullWidth
+                fullWidth
               />
             </MetricsViewDropdownContainerFixed>
             <MobileDisclaimerContainer>

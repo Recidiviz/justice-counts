@@ -242,7 +242,7 @@ export const MetricConfiguration: React.FC = observer(() => {
             {/* Systems Dropdown (for multi-system agencies)  */}
             <MetricConfigurationDropdownContainerFixed>
               <Dropdown
-                toggleLabel={
+                label={
                   systemSearchParam &&
                   formatSystemName(systemSearchParam, {
                     allUserSystems: currentAgency?.systems,
@@ -250,7 +250,7 @@ export const MetricConfiguration: React.FC = observer(() => {
                 }
                 options={systemsDropdownOptions}
                 caretPosition="left"
-                menuFullWidth
+                fullWidth
               />
             </MetricConfigurationDropdownContainerFixed>
           </>
@@ -291,12 +291,12 @@ export const MetricConfiguration: React.FC = observer(() => {
               {/* Metric Configuration */}
               <MetricConfigurationDropdownContainer>
                 <Dropdown
-                  toggleLabel={metrics[systemMetricKey]?.label}
+                  label={metrics[systemMetricKey]?.label}
                   options={metricsDropdownOptions}
                   caretPosition={
                     showMetricsDropdownOptions() ? "left" : undefined
                   }
-                  menuFullWidth
+                  fullWidth
                 />
               </MetricConfigurationDropdownContainer>
 

@@ -480,14 +480,14 @@ const Reports: React.FC = () => {
                     {userStore.isJusticeCountsAdmin(agencyId) && (
                       <BulkActionsDropdownContainer>
                         <Dropdown
-                          toggleLabel="Bulk Actions"
+                          label="Bulk Actions"
                           options={bulkActionsDropdownOptions}
                           size="small"
-                          toggleDisabled={filteredReportsMemoized.length === 0}
-                          toggleHover="background"
+                          disabled={filteredReportsMemoized.length === 0}
+                          hover="background"
                           caretPosition="right"
                           alignment="right"
-                          menuOverflow
+                          overflow
                         />
                       </BulkActionsDropdownContainer>
                     )}
@@ -555,10 +555,10 @@ const Reports: React.FC = () => {
         {/* MobileViewDropdown */}
         <ReportsFilterDropdownContainer>
           <Dropdown
-            toggleLabel={ReportStatusFilterOptionObject[reportsFilter]}
+            label={ReportStatusFilterOptionObject[reportsFilter]}
             options={reportsFilterDropdownOptions}
             caretPosition="left"
-            menuFullWidth
+            fullWidth
           />
         </ReportsFilterDropdownContainer>
       </ReportsHeader>
