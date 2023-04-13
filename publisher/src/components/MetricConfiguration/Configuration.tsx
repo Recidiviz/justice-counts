@@ -220,7 +220,7 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
     };
 
     const disaggregationsDropdownOptions: DropdownOption[] =
-      activeDisaggregationKeys.map((key) => {
+      activeDisaggregationKeys?.map((key) => {
         const currentDisaggregation = disaggregations[systemMetricKey][key];
 
         return {

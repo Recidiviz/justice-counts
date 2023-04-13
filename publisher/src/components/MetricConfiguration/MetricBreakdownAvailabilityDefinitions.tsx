@@ -378,15 +378,14 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
               {/* Definition Settings (Includes/Excludes) */}
               <Definitions isHiddenInMobileView={!isDefinitionsOpen}>
                 {activeSettingsKeys?.map((includesExcludesKey) => {
-                  // if dimension key is not undefined then disaggregation key
-                  // is not undefined either so it should be safe to type cast
-                  const currentIncludesExcludes = isMetricDefinitionSettings
-                    ? metricDefinitionSettings[systemMetricKey][
-                        includesExcludesKey
-                      ]
-                    : dimensionDefinitionSettings[systemMetricKey][
-                        activeDisaggregationKey as string
-                      ][activeDimensionKey][includesExcludesKey];
+                  const currentIncludesExcludes =
+                    activeDisaggregationKey && activeDimensionKey
+                      ? dimensionDefinitionSettings[systemMetricKey][
+                          activeDisaggregationKey
+                        ][activeDimensionKey][includesExcludesKey]
+                      : metricDefinitionSettings[systemMetricKey][
+                          includesExcludesKey
+                        ];
 
                   return (
                     <>
