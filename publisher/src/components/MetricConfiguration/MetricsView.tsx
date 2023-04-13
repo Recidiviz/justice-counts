@@ -55,13 +55,13 @@ import {
   MetricsViewDropdownLabel,
   MobileDatapointsControls,
   MobileDisclaimerContainer,
+  NoEnabledMetricsMessage,
   PanelContainerLeft,
   PanelContainerRight,
   PanelRightTopButton,
   PanelRightTopButtonsContainer,
   SystemName,
   SystemNameContainer,
-  SystemNamePlusSign,
   SystemsContainer,
 } from ".";
 
@@ -91,10 +91,13 @@ export const MetricsView: React.FC = observer(() => {
       return setLoadingError(result.message);
     }
 
-    const defaultSystemSearchParam = Object.keys(result)[0]
+    const firstEnabledMetric = Object.values(result)
+      ?.flat()
+      .find((metric) => metric.enabled);
+    const defaultSystemSearchParam = firstEnabledMetric?.system.key
       .toLowerCase()
       .replace(" ", "_") as AgencySystems;
-    const defaultMetricSearchParam = Object.values(result)[0][0].key;
+    const defaultMetricSearchParam = firstEnabledMetric?.key;
 
     // same logic as in metric config page, the only difference is
     // there should always be metric search param
@@ -193,6 +196,22 @@ export const MetricsView: React.FC = observer(() => {
     }
   }, [windowWidth]);
 
+  if (!metricSearchParam && !isLoading) {
+    return (
+      <NoEnabledMetricsMessage>
+        There are no enabled metrics to view. Please go to{" "}
+        <DisclaimerLink
+          onClick={() => {
+            navigate("../settings/metric-config");
+          }}
+        >
+          Metric Configuration
+        </DisclaimerLink>{" "}
+        to enable a metric.
+      </NoEnabledMetricsMessage>
+    );
+  }
+
   if (isLoading || !systemSearchParam || !metricSearchParam) {
     return <Loading />;
   }
@@ -213,43 +232,33 @@ export const MetricsView: React.FC = observer(() => {
         {/* List Of Metrics */}
         <PanelContainerLeft>
           <SystemsContainer>
-            {Object.entries(metricsBySystem).map(([system, metrics]) => (
-              <React.Fragment key={system}>
-                {metrics.filter((metric) => metric.enabled).length > 0 ? (
-                  <SystemNameContainer
-                    isSystemActive={system === systemSearchParam}
-                    onClick={() => {
-                      setSettingsSearchParams({
-                        system: system as AgencySystems,
-                        metric: metricsBySystem[system].filter(
-                          (metric) => metric.enabled
-                        )[0].key,
-                      });
-                    }}
-                  >
-                    <SystemName>
-                      {formatSystemName(metrics[0].system.key, {
-                        allUserSystems: currentAgency?.systems,
-                      })}
-                    </SystemName>
-                    <SystemNamePlusSign
-                      isSystemActive={system === systemSearchParam}
-                    />
-                  </SystemNameContainer>
-                ) : (
-                  <SystemNameContainer isSystemActive={false}>
-                    <SystemName>
-                      {metrics[0].system.display_name} (No enabled metrics)
-                    </SystemName>
-                  </SystemNameContainer>
-                )}
+            {Object.entries(metricsBySystem).map(([system, metrics]) => {
+              const enabledMetrics = metrics.filter((metric) => metric.enabled);
 
-                <MetricsItemsContainer
-                  isSystemActive={system === systemSearchParam}
-                >
-                  {metrics
-                    .filter((metric) => metric.enabled)
-                    .map((metric) => (
+              return (
+                <React.Fragment key={system}>
+                  {enabledMetrics.length > 0 ? (
+                    <SystemNameContainer isSystemActive>
+                      <SystemName>
+                        {formatSystemName(metrics[0].system.key, {
+                          allUserSystems: currentAgency?.systems,
+                        })}
+                      </SystemName>
+                    </SystemNameContainer>
+                  ) : (
+                    <SystemNameContainer isSystemActive>
+                      <SystemName>
+                        {metrics[0].system.display_name} (No enabled metrics)
+                      </SystemName>
+                    </SystemNameContainer>
+                  )}
+
+                  <MetricsItemsContainer
+                    isSystemActive={
+                      system === systemSearchParam || enabledMetrics.length > 0
+                    }
+                  >
+                    {enabledMetrics.map((metric) => (
                       <MetricItem
                         key={metric.key}
                         selected={metricSearchParam === metric.key}
@@ -263,9 +272,10 @@ export const MetricsView: React.FC = observer(() => {
                         {metric.display_name}
                       </MetricItem>
                     ))}
-                </MetricsItemsContainer>
-              </React.Fragment>
-            ))}
+                  </MetricsItemsContainer>
+                </React.Fragment>
+              );
+            })}
           </SystemsContainer>
           <DisclaimerContainer>
             <DisclaimerTitle>Note</DisclaimerTitle>

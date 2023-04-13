@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Badge } from "@justice-counts/common/components/Badge";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -29,7 +30,7 @@ import { HeaderBar, Logo, LogoContainer, LogoName } from ".";
 const Header = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
-  const { userStore, guidanceStore } = useStore();
+  const { userStore, guidanceStore, api } = useStore();
   const { hasCompletedOnboarding } = guidanceStore;
 
   const isAgencyValid = !!userStore.getAgency(agencyId);
@@ -50,6 +51,8 @@ const Header = observer(() => {
       >
         <Logo src={logo} alt="" />
         <LogoName>Justice Counts</LogoName>
+        {api.environment === "local" && <Badge color="RED">Local</Badge>}
+        {api.environment === "staging" && <Badge color="RED">Staging</Badge>}
       </LogoContainer>
 
       <Menu />

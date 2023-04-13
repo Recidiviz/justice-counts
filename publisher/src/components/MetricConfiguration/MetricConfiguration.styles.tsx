@@ -37,7 +37,7 @@ const STICKY_HEADER_WITH_PADDING_HEIGHT = 48;
 const DROPDOWN_WITH_MARGIN_HEIGHT = 79;
 const FIXED_HEADER_WITH_DROPDOWN_HEIGHT = 92;
 const FIXED_HEADER_WITHOUT_DROPDOWN_HEIGHT = 24;
-const baseDisabledFadedOverlayCSS = `
+export const baseDisabledFadedOverlayCSS = `
   &:after {
     content: "";
     width: 100%;
@@ -147,18 +147,6 @@ export const SystemNameContainer = styled.div<{ isSystemActive: boolean }>`
 export const SystemName = styled.span`
   white-space: nowrap;
   text-transform: capitalize;
-`;
-
-export const SystemNamePlusSign = styled.span<{ isSystemActive: boolean }>`
-  display: none;
-
-  &::after {
-    content: "+";
-  }
-
-  ${SystemNameContainer}:hover && {
-    display: ${({ isSystemActive }) => (isSystemActive ? "none" : "block")};
-  }
 `;
 
 export const MetricsItemsContainer = styled.div<{ isSystemActive: boolean }>`
@@ -767,11 +755,9 @@ export const DefinitionsDisplayContainer = styled.div`
   }
 `;
 
-export const DefinitionsDisplay = styled.div<{ enabled?: boolean | null }>`
+export const DefinitionsDisplay = styled.div`
   width: 100%;
   position: relative;
-
-  ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
 `;
 
 export const DefinitionsWrapper = styled.div<{ enabled?: boolean | null }>`
@@ -1035,4 +1021,14 @@ export const IncludesExcludesDescription = styled.div`
     padding-top: 16px;
     margin: 16px 0;
   }
+`;
+
+export const OverlayWrapper = styled.div<{ enabled?: boolean | null }>`
+  position: relative;
+  ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
+`;
+
+export const NoEnabledMetricsMessage = styled.div`
+  min-height: 100%;
+  margin: auto auto;
 `;
