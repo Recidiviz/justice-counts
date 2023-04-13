@@ -19,6 +19,8 @@ import { useIsFooterVisible } from "@justice-counts/common/hooks";
 import { observer } from "mobx-react-lite";
 import React from "react";
 
+import indicatorAlertIcon from "../assets/indicator-alert-icon.svg";
+import indicatorSuccessIcon from "../assets/indicator-success-icon.svg";
 import * as Styled from "./MetricSettings.styled";
 
 function MetricSettings() {
@@ -47,6 +49,9 @@ function MetricSettings() {
             </Styled.MenuItemLabel>
           </Styled.MenuItem>
         </Styled.Menu>
+        <Styled.MetricIndicator available={false}>
+          <img src={indicatorAlertIcon} alt="" /> Configuration required
+        </Styled.MetricIndicator>
       </Styled.MetricSettingsSideBar>
     </>
   );

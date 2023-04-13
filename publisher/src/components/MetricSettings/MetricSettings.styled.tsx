@@ -97,3 +97,18 @@ export const MenuItemLabel = styled.div<{
   border-bottom: 2px solid
     ${({ active }) => (active ? palette.solid.blue : "transparent")};
 `;
+
+export const MetricIndicator = styled.div<{ available: boolean }>`
+  width: 90%;
+  padding: 26px 24px;
+  margin-top: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  background-color: ${({ available }) =>
+    available ? palette.solid.green : palette.solid.orange};
+  color: ${palette.solid.white};
+  ${typography.sizeCSS.medium};
+  border-radius: 3px;
+`;
