@@ -70,6 +70,11 @@ export const SystemMenuItem = styled.div<{ selected: boolean }>`
   text-overflow: ellipsis;
   text-transform: capitalize;
   cursor: pointer;
+
+  &:hover {
+    color: ${({ selected }) =>
+      selected ? palette.solid.darkgrey : palette.highlight.grey10};
+  }
 `;
 
 export const MetricsWrapper = styled.div`
@@ -111,6 +116,10 @@ export const MetricItem = styled.div`
     display: block;
     margin-right: 13px;
     opacity: 1;
+  }
+
+  &:hover {
+    background-color: ${palette.highlight.grey2};
   }
 `;
 
