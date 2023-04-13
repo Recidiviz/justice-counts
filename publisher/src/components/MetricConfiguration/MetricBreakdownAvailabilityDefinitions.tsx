@@ -383,14 +383,14 @@ export const MetricBreakdownAvailabilityDefinitions: React.FC<MetricDefinitionsP
                 {/* Definition Settings (Includes/Excludes) */}
                 <Definitions isHiddenInMobileView={!isDefinitionsOpen}>
                   {activeSettingsKeys?.map((includesExcludesKey) => {
-                    if (!activeDisaggregationKey) return null;
-                    const currentIncludesExcludes = isMetricDefinitionSettings
-                      ? metricDefinitionSettings[systemMetricKey][
-                          includesExcludesKey
-                        ]
-                      : dimensionDefinitionSettings[systemMetricKey][
-                          activeDisaggregationKey
-                        ][activeDimensionKey][includesExcludesKey];
+                    const currentIncludesExcludes =
+                      activeDisaggregationKey && activeDimensionKey
+                        ? dimensionDefinitionSettings[systemMetricKey][
+                            activeDisaggregationKey
+                          ][activeDimensionKey][includesExcludesKey]
+                        : metricDefinitionSettings[systemMetricKey][
+                            includesExcludesKey
+                          ];
 
                     return (
                       <>

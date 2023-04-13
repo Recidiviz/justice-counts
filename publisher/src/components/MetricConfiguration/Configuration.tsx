@@ -15,6 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  Dropdown,
+  DropdownOption,
+} from "@justice-counts/common/components/Dropdown";
 import { MIN_TABLET_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
@@ -22,7 +26,6 @@ import {
   SupervisionSystem,
 } from "@justice-counts/common/types";
 import { printCommaSeparatedList } from "@justice-counts/common/utils";
-import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -31,44 +34,38 @@ import { useStore } from "../../stores";
 import { monthsByName, removeSnakeCase } from "../../utils";
 import { ReactComponent as CalendarIconDark } from "../assets/calendar-icon-dark.svg";
 import { ReactComponent as CalendarIconLight } from "../assets/calendar-icon-light.svg";
-import dropdownArrow from "../assets/dropdown-arrow.svg";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import checkmarkIcon from "../assets/status-check-icon.png";
 import { BlueText } from "../DataUpload";
 import { BinaryRadioButton } from "../Forms";
 import { REPORT_VERB_LOWERCASE, REPORTED_LOWERCASE } from "../Global/constants";
 import { CheckIcon } from "../Guidance";
-import { ExtendedDropdownMenuItem } from "../Menu";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   ActionStatusTitle,
   AvailableWithCheckWrapper,
   BlueLinkSpan,
   BreakdownHeader,
-  BreakdownsDropdownMenu,
   ConfigurationBreakdownAvailabilityDescription,
   Dimension,
   DimensionTitle,
   DimensionTitleWrapper,
   DisaggregationHeader,
-  DropdownButton,
   Header,
   MetricBreakdownAvailabilityDefinitions,
   MetricConfigurationContainer,
   MetricConfigurationDropdownContainer,
   MetricDisaggregations,
   MetricOnOffWrapper,
-  MetricsConfigurationDropdownMenuItem,
-  MetricsConfigurationDropdownToggle,
   MiniButton,
   MiniButtonWrapper,
+  MonthSelectionDropdownContainer,
   PromptWrapper,
   RACE_ETHNICITIES_DESCRIPTION,
   RACE_ETHNICITY_DISAGGREGATION_KEY,
   RaceEthnicitiesGrid,
   RadioButtonGroupWrapper,
   ReportFrequencyUpdate,
-  StartingMonthDropdownMenu,
   Subheader,
 } from ".";
 
@@ -155,6 +152,8 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
       () => {
         if (activeDisaggregationKeys) {
           setActiveDisaggregationKey(activeDisaggregationKeys[0]);
+        } else {
+          setActiveDisaggregationKey(undefined);
         }
         setActiveDimensionKey(undefined);
       },
@@ -219,6 +218,94 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
         saveMetricSettings(updatedSetting, agencyId!);
       }
     };
+
+    const disaggregationsDropdownToggleLabel =
+      activeDisaggregationKey &&
+      disaggregations[systemMetricKey] &&
+      disaggregations[systemMetricKey][activeDisaggregationKey] ? (
+        <>
+          {removeSnakeCase(
+            (
+              disaggregations[systemMetricKey][activeDisaggregationKey]
+                .display_name as string
+            ).toLowerCase()
+          )}
+
+          <MiniButtonWrapper onClick={(e) => e.stopPropagation()}>
+            <MiniButton
+              selected={
+                disaggregations[systemMetricKey][activeDisaggregationKey]
+                  .enabled === false
+              }
+              onClick={() => {
+                if (
+                  disaggregations[systemMetricKey][activeDisaggregationKey]
+                    .enabled ||
+                  disaggregations[systemMetricKey][activeDisaggregationKey]
+                    .enabled === null
+                )
+                  handleDisaggregationSelection(activeDisaggregationKey, false);
+              }}
+            >
+              Off
+            </MiniButton>
+            <MiniButton
+              selected={
+                disaggregations[systemMetricKey][activeDisaggregationKey]
+                  .enabled
+              }
+              onClick={() => {
+                if (
+                  !disaggregations[systemMetricKey][activeDisaggregationKey]
+                    .enabled
+                )
+                  handleDisaggregationSelection(activeDisaggregationKey, true);
+              }}
+            >
+              On
+            </MiniButton>
+          </MiniButtonWrapper>
+        </>
+      ) : (
+        ""
+      );
+
+    const disaggregationsDropdownOptions: DropdownOption[] =
+      activeDisaggregationKeys?.map((key) => {
+        const currentDisaggregation = disaggregations[systemMetricKey][key];
+
+        return {
+          key,
+          label: removeSnakeCase(
+            currentDisaggregation.display_name as string
+          ).toLowerCase(),
+          onClick: () => {
+            setActiveDisaggregationKey(key);
+
+            const [firstDimensionKey] = Object.keys(
+              dimensions[systemMetricKey][key]
+            );
+            setActiveDimensionKey(firstDimensionKey);
+          },
+          highlight: key === activeDisaggregationKey,
+        };
+      });
+
+    const monthSelectionDropdownOptions: DropdownOption[] = monthsByName
+      .filter((month) => !["January", "July"].includes(month))
+      .map((month) => {
+        const monthNumber = monthsByName.indexOf(month) + 1;
+        return {
+          key: month,
+          label: month,
+          onClick: () =>
+            handleUpdateMetricReportFrequency({
+              customFrequency: "ANNUAL",
+              startingMonth: monthNumber,
+            }),
+          highlight: monthNumber === startingMonth,
+        };
+      });
 
     return (
       <MetricConfigurationContainer>
@@ -319,43 +406,29 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
                       })
                     }
                   />
-                  <Dropdown>
-                    <DropdownButton
-                      kind="borderless"
-                      checked={startingMonthNotJanuaryJuly}
-                    >
-                      {startingMonthNotJanuaryJuly ? (
-                        <CalendarIconLight />
-                      ) : (
-                        <CalendarIconDark />
-                      )}
-                      {(startingMonthNotJanuaryJuly &&
-                        startingMonth &&
-                        monthsByName[startingMonth - 1]) ||
-                        `Other...`}
-                    </DropdownButton>
-                    <StartingMonthDropdownMenu alignment="right">
-                      {monthsByName
-                        .filter((month) => !["January", "July"].includes(month))
-                        .map((month) => {
-                          const monthNumber = monthsByName.indexOf(month) + 1;
-                          return (
-                            <ExtendedDropdownMenuItem
-                              key={month}
-                              onClick={() =>
-                                handleUpdateMetricReportFrequency({
-                                  customFrequency: "ANNUAL",
-                                  startingMonth: monthNumber,
-                                })
-                              }
-                              highlight={monthNumber === startingMonth}
-                            >
-                              {month}
-                            </ExtendedDropdownMenuItem>
-                          );
-                        })}
-                    </StartingMonthDropdownMenu>
-                  </Dropdown>
+                  <MonthSelectionDropdownContainer
+                    checked={startingMonthNotJanuaryJuly}
+                  >
+                    <Dropdown
+                      label={
+                        <>
+                          {startingMonthNotJanuaryJuly ? (
+                            <CalendarIconLight />
+                          ) : (
+                            <CalendarIconDark />
+                          )}
+                          {(startingMonthNotJanuaryJuly &&
+                            startingMonth &&
+                            monthsByName[startingMonth - 1]) ||
+                            `Other...`}
+                        </>
+                      }
+                      options={monthSelectionDropdownOptions}
+                      size="small"
+                      hover="background"
+                      fullWidth
+                    />
+                  </MonthSelectionDropdownContainer>
                 </RadioButtonGroupWrapper>
               </>
             )}
@@ -563,101 +636,17 @@ export const Configuration: React.FC<MetricConfigurationProps> = observer(
               <>
                 {activeDisaggregationKey &&
                   disaggregations[systemMetricKey][activeDisaggregationKey] && (
-                    <MetricConfigurationDropdownContainer
-                      hasTopBorder
-                      hasBottomMargin
-                    >
-                      <Dropdown>
-                        <MetricsConfigurationDropdownToggle kind="borderless">
-                          {activeDisaggregationKeys?.length > 1 && (
-                            <img src={dropdownArrow} alt="" />
-                          )}
-                          {removeSnakeCase(
-                            (
-                              disaggregations[systemMetricKey][
-                                activeDisaggregationKey
-                              ].display_name as string
-                            ).toLowerCase()
-                          )}
-
-                          <MiniButtonWrapper
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <MiniButton
-                              selected={
-                                disaggregations[systemMetricKey][
-                                  activeDisaggregationKey
-                                ].enabled === false
-                              }
-                              onClick={() => {
-                                if (
-                                  disaggregations[systemMetricKey][
-                                    activeDisaggregationKey
-                                  ].enabled ||
-                                  disaggregations[systemMetricKey][
-                                    activeDisaggregationKey
-                                  ].enabled === null
-                                )
-                                  handleDisaggregationSelection(
-                                    activeDisaggregationKey,
-                                    false
-                                  );
-                              }}
-                            >
-                              Off
-                            </MiniButton>
-                            <MiniButton
-                              selected={
-                                disaggregations[systemMetricKey][
-                                  activeDisaggregationKey
-                                ].enabled
-                              }
-                              onClick={() => {
-                                if (
-                                  !disaggregations[systemMetricKey][
-                                    activeDisaggregationKey
-                                  ].enabled
-                                )
-                                  handleDisaggregationSelection(
-                                    activeDisaggregationKey,
-                                    true
-                                  );
-                              }}
-                            >
-                              On
-                            </MiniButton>
-                          </MiniButtonWrapper>
-                        </MetricsConfigurationDropdownToggle>
-                        {activeDisaggregationKeys.length > 1 ? (
-                          <BreakdownsDropdownMenu>
-                            {activeDisaggregationKeys?.map((key) => {
-                              const currentDisaggregation =
-                                disaggregations[systemMetricKey][key];
-
-                              return (
-                                <MetricsConfigurationDropdownMenuItem
-                                  key={key}
-                                  onClick={() => {
-                                    setActiveDisaggregationKey(key);
-
-                                    const [firstDimensionKey] = Object.keys(
-                                      dimensions[systemMetricKey][key]
-                                    );
-                                    setActiveDimensionKey(firstDimensionKey);
-                                  }}
-                                  highlight={key === activeDisaggregationKey}
-                                >
-                                  {removeSnakeCase(
-                                    currentDisaggregation.display_name as string
-                                  ).toLowerCase()}
-                                </MetricsConfigurationDropdownMenuItem>
-                              );
-                            })}
-                          </BreakdownsDropdownMenu>
-                        ) : (
-                          <></>
-                        )}
-                      </Dropdown>
+                    <MetricConfigurationDropdownContainer>
+                      <Dropdown
+                        label={disaggregationsDropdownToggleLabel}
+                        options={disaggregationsDropdownOptions}
+                        caretPosition={
+                          activeDisaggregationKeys?.length > 1
+                            ? "left"
+                            : undefined
+                        }
+                        fullWidth
+                      />
                     </MetricConfigurationDropdownContainer>
                   )}
                 {activeDimensionKey && activeDisaggregationKey && (

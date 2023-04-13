@@ -19,18 +19,20 @@ import {
   Badge,
   reportFrequencyBadgeColors,
 } from "@justice-counts/common/components/Badge";
+import {
+  Dropdown,
+  DropdownOption,
+} from "@justice-counts/common/components/Dropdown";
 import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import { AgencySystems, ReportFrequency } from "@justice-counts/common/types";
-import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { createSearchParams, useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
-import dropdownArrow from "../assets/dropdown-arrow.svg";
 import { ReactComponent as GoToMetricConfig } from "../assets/goto-metric-configuration-icon.svg";
 import { ReactComponent as SwitchToChartIcon } from "../assets/switch-to-chart-icon.svg";
 import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-data-table-icon.svg";
@@ -45,14 +47,12 @@ import {
   DisclaimerLink,
   DisclaimerText,
   DisclaimerTitle,
-  MetricConfigurationDropdownContainerFixed,
   MetricItem,
-  MetricsConfigurationDropdownMenu,
-  MetricsConfigurationDropdownMenuItem,
-  MetricsConfigurationDropdownToggle,
   MetricsItemsContainer,
   MetricsViewContainer,
   MetricsViewControlPanelOverflowHidden,
+  MetricsViewDropdownContainerFixed,
+  MetricsViewDropdownLabel,
   MobileDatapointsControls,
   MobileDisclaimerContainer,
   NoEnabledMetricsMessage,
@@ -150,6 +150,33 @@ export const MetricsView: React.FC = observer(() => {
     }
     setIsLoading(false);
   };
+
+  const dropdownOptions: DropdownOption[] = agencyMetrics
+    .filter((metric) => metric.enabled)
+    .map((metric) => ({
+      key: metric.key,
+      label: (
+        <MetricsViewDropdownLabel>
+          <div>
+            {metric.display_name}
+            <span>{formatSystemName(metric.system.key)}</span>
+          </div>
+          <Badge
+            color={
+              reportFrequencyBadgeColors[metric.frequency as ReportFrequency]
+            }
+          >
+            {metric.frequency?.toLowerCase()}
+          </Badge>
+        </MetricsViewDropdownLabel>
+      ),
+      onClick: () =>
+        setSettingsSearchParams({
+          system: metric.system.key,
+          metric: metric.key,
+        }),
+      highlight: metric.key === metricSearchParam,
+    }));
 
   useEffect(() => {
     datapointsStore.resetState();
@@ -274,59 +301,27 @@ export const MetricsView: React.FC = observer(() => {
             <CurrentMetricsSystem>
               {formatSystemName(systemSearchParam)}
             </CurrentMetricsSystem>
-            <MetricConfigurationDropdownContainerFixed hasBottomMargin>
-              <Dropdown>
-                <MetricsConfigurationDropdownToggle kind="borderless">
-                  {agencyMetrics.length > 1 && (
-                    <img src={dropdownArrow} alt="" />
-                  )}
-                  {metricName}
-                  <Badge
-                    color={
-                      reportFrequencyBadgeColors[
-                        metricFrequency as ReportFrequency
-                      ]
-                    }
-                  >
-                    {metricFrequency?.toLowerCase()}
-                  </Badge>
-                </MetricsConfigurationDropdownToggle>
-                {agencyMetrics.length > 1 ? (
-                  <MetricsConfigurationDropdownMenu>
-                    {agencyMetrics
-                      .filter((metric) => metric.enabled)
-                      .map((metric) => (
-                        <MetricsConfigurationDropdownMenuItem
-                          highlight={metric.key === metricSearchParam}
-                          key={metric.key}
-                          onClick={() =>
-                            setSettingsSearchParams({
-                              system: metric.system.key,
-                              metric: metric.key,
-                            })
-                          }
-                        >
-                          <div>
-                            {metric.display_name}
-                            <span>{formatSystemName(metric.system.key)}</span>
-                          </div>
-                          <Badge
-                            color={
-                              reportFrequencyBadgeColors[
-                                metric.frequency as ReportFrequency
-                              ]
-                            }
-                          >
-                            {metric.frequency?.toLowerCase()}
-                          </Badge>
-                        </MetricsConfigurationDropdownMenuItem>
-                      ))}
-                  </MetricsConfigurationDropdownMenu>
-                ) : (
-                  <></>
-                )}
-              </Dropdown>
-            </MetricConfigurationDropdownContainerFixed>
+            <MetricsViewDropdownContainerFixed>
+              <Dropdown
+                label={
+                  <>
+                    {metricName}{" "}
+                    <Badge
+                      color={
+                        reportFrequencyBadgeColors[
+                          metricFrequency as ReportFrequency
+                        ]
+                      }
+                    >
+                      {metricFrequency?.toLowerCase()}
+                    </Badge>
+                  </>
+                }
+                options={dropdownOptions}
+                caretPosition={agencyMetrics.length > 1 ? "left" : undefined}
+                fullWidth
+              />
+            </MetricsViewDropdownContainerFixed>
             <MobileDisclaimerContainer>
               <DisclaimerTitle>Note</DisclaimerTitle>
               <DisclaimerText>

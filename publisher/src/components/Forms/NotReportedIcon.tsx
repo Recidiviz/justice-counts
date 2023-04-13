@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { CustomDropdownToggle } from "@justice-counts/common/components/Dropdown";
 import {
   MIN_DESKTOP_WIDTH,
   palette,
@@ -25,7 +26,6 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import notReportedIcon from "../assets/not-reported-icon.png";
-import { DisaggregationsDropdownToggle } from "../Reports";
 import { TWO_PANEL_MAX_WIDTH } from "../Reports/ReportDataEntry.styles";
 import { TabItem } from "./Form.styles";
 import { InputWrapper } from "./TextInput";
@@ -73,7 +73,9 @@ export const NotReportedIconTooltip = styled.div`
   padding: 15px;
   border-radius: 5px;
   box-shadow: 0px 4px 10px ${palette.highlight.grey3};
-  ${typography.sizeCSS.normal}
+  ${typography.sizeCSS.normal};
+  white-space: normal;
+  text-align: start;
 
   @media only screen and (max-width: ${TWO_PANEL_MAX_WIDTH}px) {
     width: 167px;
@@ -105,7 +107,7 @@ export const NotReportedIconTooltipHoverArea = styled.div<{
     display: block;
   }
 
-  ${DisaggregationsDropdownToggle}:hover & {
+  ${CustomDropdownToggle}:hover & {
     display: block;
   }
 `;

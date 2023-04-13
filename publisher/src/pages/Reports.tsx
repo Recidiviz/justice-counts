@@ -22,17 +22,19 @@ import {
 } from "@justice-counts/common/components/Badge";
 import { Button } from "@justice-counts/common/components/Button";
 import {
+  Dropdown,
+  DropdownOption,
+} from "@justice-counts/common/components/Dropdown";
+import {
   MIN_TABLET_WIDTH,
   palette,
 } from "@justice-counts/common/components/GlobalStyles";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import { ReportOverview, ReportStatus } from "@justice-counts/common/types";
-import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import dropdownArrow from "../components/assets/dropdown-arrow.svg";
 import {
   REPORT_LOWERCASE,
   REPORT_PERIOD_CAPITALIZED,
@@ -40,33 +42,26 @@ import {
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
 import { Loading } from "../components/Loading";
-import { ExtendedDropdownMenuItem } from "../components/Menu";
 import { Onboarding } from "../components/Onboarding";
 import { TeamMemberNameWithBadge } from "../components/primitives";
 import {
   AdditionalEditorsTooltip,
   AndOthersSpan,
   BulkActionModeTitle,
-  BulkActionsArrow,
   BulkActionsDropdownContainer,
-  BulkActionsDropdownMenu,
-  BulkActionsDropdownMenuItem,
-  BulkActionsDropdownToggle,
   Cell,
   CommaSpan,
   DesktopRecordsPageTitle,
-  DropdownContainer,
   EmptySelectionCircle,
   LabelCell,
   LabelRow,
   MobileRecordsPageTitle,
   NoReportsDisplay,
   ReportActions,
+  ReportsFilterDropdownContainer,
   ReportsHeader,
   Row,
   SelectedCheckmark,
-  StatusFilterDropdownMenu,
-  StatusFilterDropdownToggle,
   TabbedActionsWrapper,
   TabbedBar,
   TabbedItem,
@@ -216,6 +211,38 @@ const Reports: React.FC = () => {
     reportsFilter === "not_started" ||
     filteredReportsMemoized.filter((record) => record.status === "PUBLISHED")
       .length === 0;
+  const bulkActionsDropdownOptions: DropdownOption[] = [
+    {
+      key: "publishAction",
+      label: "Publish...",
+      onClick: () => selectBulkAction("publish"),
+      color: "green",
+      disabled: isPublishDisabled,
+      noHover: true,
+    },
+    {
+      key: "unpublishAction",
+      label: "Unpublish...",
+      onClick: () => selectBulkAction("unpublish"),
+      disabled: isUnpublishDisabled,
+      noHover: true,
+    },
+    {
+      key: "deleteAction",
+      label: "Delete...",
+      onClick: () => selectBulkAction("delete"),
+      color: "red",
+      noHover: true,
+    },
+  ];
+  const reportsFilterDropdownOptions: DropdownOption[] = Object.entries(
+    ReportStatusFilterOptionObject
+  ).map(([key, value]) => ({
+    key,
+    label: value,
+    onClick: () => setReportsFilter(normalizeString(key)),
+    highlight: ReportStatusFilterOptionObject[reportsFilter] === value,
+  }));
 
   const isAdmin =
     userStore.isJusticeCountsAdmin(agencyId) ||
@@ -452,48 +479,23 @@ const Reports: React.FC = () => {
                   <>
                     {userStore.isJusticeCountsAdmin(agencyId) && (
                       <BulkActionsDropdownContainer>
-                        <Dropdown>
-                          <BulkActionsDropdownToggle
-                            disabled={filteredReportsMemoized.length === 0}
-                          >
-                            Bulk Actions{" "}
-                            <BulkActionsArrow src={dropdownArrow} alt="" />
-                          </BulkActionsDropdownToggle>
-                          <BulkActionsDropdownMenu alignment="right">
-                            <BulkActionsDropdownMenuItem
-                              color="green"
-                              onClick={() => {
-                                selectBulkAction("publish");
-                              }}
-                              disabled={isPublishDisabled}
-                            >
-                              Publish...
-                            </BulkActionsDropdownMenuItem>
-                            <BulkActionsDropdownMenuItem
-                              onClick={() => {
-                                selectBulkAction("unpublish");
-                              }}
-                              disabled={isUnpublishDisabled}
-                            >
-                              Unpublish...
-                            </BulkActionsDropdownMenuItem>
-                            <BulkActionsDropdownMenuItem
-                              color="red"
-                              onClick={() => {
-                                selectBulkAction("delete");
-                              }}
-                            >
-                              Delete...
-                            </BulkActionsDropdownMenuItem>
-                          </BulkActionsDropdownMenu>
-                        </Dropdown>
+                        <Dropdown
+                          label="Bulk Actions"
+                          options={bulkActionsDropdownOptions}
+                          size="small"
+                          disabled={filteredReportsMemoized.length === 0}
+                          hover="background"
+                          caretPosition="right"
+                          alignment="right"
+                          overflow
+                        />
                       </BulkActionsDropdownContainer>
                     )}
                     <Button
                       label="+ New Record"
-                      onClick={() => navigate("create")}
                       labelColor="blue"
                       borderColor="lightgrey"
+                      onClick={() => navigate("create")}
                     />
                   </>
                 )}
@@ -551,29 +553,14 @@ const Reports: React.FC = () => {
         </TabbedBar>
 
         {/* MobileViewDropdown */}
-        <DropdownContainer>
-          <Dropdown>
-            <StatusFilterDropdownToggle kind="borderless">
-              <img src={dropdownArrow} alt="" />
-              {ReportStatusFilterOptionObject[reportsFilter]}
-            </StatusFilterDropdownToggle>
-            <StatusFilterDropdownMenu>
-              {Object.entries(ReportStatusFilterOptionObject).map(
-                ([key, value]) => (
-                  <ExtendedDropdownMenuItem
-                    highlight={
-                      ReportStatusFilterOptionObject[reportsFilter] === value
-                    }
-                    key={key}
-                    onClick={() => setReportsFilter(normalizeString(key))}
-                  >
-                    {value}
-                  </ExtendedDropdownMenuItem>
-                )
-              )}
-            </StatusFilterDropdownMenu>
-          </Dropdown>
-        </DropdownContainer>
+        <ReportsFilterDropdownContainer>
+          <Dropdown
+            label={ReportStatusFilterOptionObject[reportsFilter]}
+            options={reportsFilterDropdownOptions}
+            caretPosition="left"
+            fullWidth
+          />
+        </ReportsFilterDropdownContainer>
       </ReportsHeader>
 
       {/* Reports List Table */}

@@ -16,17 +16,16 @@
 // =============================================================================
 
 import {
+  CustomDropdown,
+  CustomDropdownToggle,
+} from "@justice-counts/common/components/Dropdown";
+import {
   HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
   MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import {
-  DropdownMenu,
-  DropdownMenuItem,
-  DropdownToggle,
-} from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
 export const PageHeader = styled.div`
@@ -75,6 +74,7 @@ export const TabbedBar = styled.div<{ noPadding?: boolean }>`
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     padding-bottom: 12px;
+    border-bottom: none;
   }
 `;
 
@@ -130,163 +130,27 @@ export const ReportActions = styled.div`
 `;
 
 export const BulkActionsDropdownContainer = styled.div`
-  & > div {
-    width: 100%;
+  & ${CustomDropdown} {
+    border: 1px solid ${palette.highlight.grey4};
+    border-radius: 3px;
+  }
+
+  & ${CustomDropdownToggle} {
+    padding: 9px 14px;
   }
 `;
 
-export const BulkActionsDropdownToggle = styled(DropdownToggle)`
-  border: 1px solid ${palette.highlight.grey4};
-  border-radius: 3px;
-  padding: 10px 15px;
-  ${typography.sizeCSS.normal};
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  color: ${palette.solid.darkgrey};
-
-  &:active,
-  &:hover,
-  &:focus,
-  &[aria-expanded="true"] {
-    background-color: ${palette.highlight.grey1};
-  }
-`;
-
-export const BulkActionsDropdownMenu = styled(DropdownMenu)`
-  width: 200px;
-  top: 0;
-  margin-top: 0;
-  border-radius: 3px;
-`;
-
-export const BulkActionsDropdownMenuItem = styled(DropdownMenuItem)<{
-  color?: "green" | "red";
-  disabled?: boolean;
-}>`
-  width: 200px;
-  min-width: 200px;
-  height: auto;
-  display: flex;
-  align-items: center;
-  ${typography.sizeCSS.normal};
-  color: ${({ color }) => {
-    if (color === "green") {
-      return palette.solid.green;
-    }
-    if (color === "red") {
-      return palette.solid.red;
-    }
-    return palette.solid.darkgrey;
-  }};
-
-  &:active,
-  &:hover,
-  &:focus,
-  &[aria-expanded="true"] {
-    color: ${({ color }) => {
-      if (color === "green") {
-        return palette.solid.green;
-      }
-      if (color === "red") {
-        return palette.solid.red;
-      }
-      return palette.solid.darkgrey;
-    }};
-
-    background-color: transparent;
-  }
-
-  padding: 16px;
-
-  &:first-child {
-    padding: 10px 16px 16px 16px;
-  }
-
-  &:last-child {
-    padding: 16px 16px 10px 16px;
-  }
-
-  &:not(:last-child) {
-    border-bottom: 1px solid ${palette.solid.offwhite};
-  }
-
-  ${({ disabled }) => disabled && `opacity: 0.5; pointer-events: none;`}
-`;
-
-export const BulkActionsArrow = styled.img`
-  width: 10px;
-  height: 5px;
-`;
-
-export const DropdownContainer = styled.div`
+export const ReportsFilterDropdownContainer = styled.div`
   display: none;
   width: 100%;
   height: 56px;
   border-bottom: 1px solid ${palette.highlight.grey9};
+  border-top: 1px solid ${palette.highlight.grey9};
   align-items: center;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: flex;
   }
-
-  & > div {
-    width: 100%;
-  }
-`;
-
-export const DisaggregationsDropdownContainer = styled(DropdownContainer)`
-  border-top: 1px solid ${palette.highlight.grey9};
-  margin-bottom: 32px;
-  height: 40px;
-`;
-
-export const StatusFilterDropdownToggle = styled(DropdownToggle)`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: start;
-  gap: 12px;
-  align-items: center;
-  padding-left: 0;
-  color: ${palette.solid.darkgrey};
-  ${typography.sizeCSS.medium};
-
-  &:active,
-  &:hover,
-  &:focus,
-  &[aria-expanded="true"] {
-    color: ${palette.solid.darkgrey};
-  }
-`;
-
-export const DisaggregationsDropdownToggle = styled(StatusFilterDropdownToggle)`
-  justify-content: space-between;
-  ${typography.sizeCSS.normal};
-  padding-right: 0;
-  color: ${palette.solid.blue};
-`;
-
-export const DisaggregationsDropdownToggleName = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-`;
-
-export const StatusFilterDropdownMenu = styled(DropdownMenu)`
-  width: 100%;
-  overflow-y: auto;
-  z-index: 10;
-  margin-top: 11px;
-  box-shadow: 0px 0px 1px rgba(23, 28, 43, 0.1),
-    0px 4px 8px rgba(23, 28, 43, 0.04), 0px 8px 56px rgba(23, 28, 43, 0.1);
-  border-radius: 4px;
-`;
-
-export const DisaggregationsDropdownMenu = styled(StatusFilterDropdownMenu)`
-  margin-top: 4px;
 `;
 
 export const Table = styled.div`
