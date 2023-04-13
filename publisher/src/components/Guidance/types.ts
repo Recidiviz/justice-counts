@@ -93,28 +93,5 @@ export const guidancePaths = {
   data: "data",
 };
 
-export const mockTopicsStatus: OnboardingTopicsStatuses[] = [
-  {
-    topicID: "WELCOME",
-    topicCompleted: true,
-  },
-  {
-    topicID: "AGENCY_SETUP",
-    topicCompleted: false,
-  },
-  {
-    topicID: "METRIC_CONFIG",
-    topicCompleted: false,
-  },
-  {
-    topicID: "ADD_DATA",
-    topicCompleted: false,
-  },
-  {
-    topicID: "PUBLISH_DATA",
-    topicCompleted: true,
-  },
-];
-
 // A number that indicates 4 out of 4 required configuration steps have been completed for an individual metric.
 export const ALL_REQUIRED_METRIC_CONFIG_STEPS_COMPLETED = 4;

@@ -671,11 +671,6 @@ export const MetricContextContainer = styled.div<{ enabled?: boolean | null }>`
   ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
 `;
 
-export const MetricContextHeader = styled.div`
-  ${typography.sizeCSS.large};
-  margin: 40px 0 20px 0;
-`;
-
 export const MetricContextItem = styled.div`
   margin-bottom: 16px;
 `;
@@ -698,14 +693,6 @@ export const MultipleChoiceWrapper = styled.div`
     width: 90%;
     flex: 40%;
   }
-`;
-
-export const MetricSettingsDisplayError = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 50px;
 `;
 
 export const StickyHeader = styled.div`
