@@ -20,10 +20,10 @@ import { Navigate, Route, Routes, useParams } from "react-router-dom";
 
 import { DataUpload } from "../components/DataUpload";
 import UploadReview from "../components/DataUpload/UploadReview";
+import { MetricsDataChart } from "../components/DataViz/MetricsDataChart";
 import { REPORTS_LOWERCASE } from "../components/Global/constants";
 import { Guidance } from "../components/Guidance";
 import Header from "../components/Header";
-import { MetricsView } from "../components/MetricConfiguration/MetricsView";
 import { MetricSettingsOverview } from "../components/MetricSettings/MetricSettingsOverview";
 import BulkActionReview from "../components/Reports/BulkActionReview";
 import CreateReport from "../components/Reports/CreateReport";
@@ -69,7 +69,7 @@ export const Router = () => {
             }
           />
 
-          <Route path="/data" element={<MetricsView />} />
+          <Route path="/data" element={<MetricsDataChart />} />
           <Route path="/settings/*" element={<Settings />} />
           <Route
             path="/settings/metric-config-v2"

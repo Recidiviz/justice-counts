@@ -36,10 +36,8 @@ import { formatSystemName } from "../../utils";
 import { ReactComponent as GoToMetricConfig } from "../assets/goto-metric-configuration-icon.svg";
 import { ReactComponent as SwitchToChartIcon } from "../assets/switch-to-chart-icon.svg";
 import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-data-table-icon.svg";
-import ConnectedDatapointsView from "../DataViz/ConnectedDatapointsView";
 import { SYSTEM_CAPITALIZED, SYSTEM_LOWERCASE } from "../Global/constants";
 import { Loading } from "../Loading";
-import { useSettingsSearchParams } from "../Settings";
 import {
   ChartView,
   CurrentMetricsSystem,
@@ -63,9 +61,11 @@ import {
   SystemName,
   SystemNameContainer,
   SystemsContainer,
-} from ".";
+} from "../MetricConfiguration";
+import { useSettingsSearchParams } from "../Settings";
+import ConnectedDatapointsView from "./ConnectedDatapointsView";
 
-export const MetricsView: React.FC = observer(() => {
+export const MetricsDataChart: React.FC = observer(() => {
   const navigate = useNavigate();
   const { reportStore, userStore, datapointsStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
