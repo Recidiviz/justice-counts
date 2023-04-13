@@ -19,18 +19,20 @@ import {
   Badge,
   reportFrequencyBadgeColors,
 } from "@justice-counts/common/components/Badge";
+import {
+  Dropdown,
+  DropdownOption,
+} from "@justice-counts/common/components/Dropdown";
 import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import { AgencySystems, ReportFrequency } from "@justice-counts/common/types";
-import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { createSearchParams, useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
-import dropdownArrow from "../assets/dropdown-arrow.svg";
 import { ReactComponent as GoToMetricConfig } from "../assets/goto-metric-configuration-icon.svg";
 import { ReactComponent as SwitchToChartIcon } from "../assets/switch-to-chart-icon.svg";
 import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-data-table-icon.svg";
@@ -45,23 +47,21 @@ import {
   DisclaimerLink,
   DisclaimerText,
   DisclaimerTitle,
-  MetricConfigurationDropdownContainerFixed,
   MetricItem,
-  MetricsConfigurationDropdownMenu,
-  MetricsConfigurationDropdownMenuItem,
-  MetricsConfigurationDropdownToggle,
   MetricsItemsContainer,
   MetricsViewContainer,
   MetricsViewControlPanelOverflowHidden,
+  MetricsViewDropdownContainerFixed,
+  MetricsViewDropdownLabel,
   MobileDatapointsControls,
   MobileDisclaimerContainer,
+  NoEnabledMetricsMessage,
   PanelContainerLeft,
   PanelContainerRight,
   PanelRightTopButton,
   PanelRightTopButtonsContainer,
   SystemName,
   SystemNameContainer,
-  SystemNamePlusSign,
   SystemsContainer,
 } from ".";
 
@@ -91,10 +91,13 @@ export const MetricsView: React.FC = observer(() => {
       return setLoadingError(result.message);
     }
 
-    const defaultSystemSearchParam = Object.keys(result)[0]
+    const firstEnabledMetric = Object.values(result)
+      ?.flat()
+      .find((metric) => metric.enabled);
+    const defaultSystemSearchParam = firstEnabledMetric?.system.key
       .toLowerCase()
       .replace(" ", "_") as AgencySystems;
-    const defaultMetricSearchParam = Object.values(result)[0][0].key;
+    const defaultMetricSearchParam = firstEnabledMetric?.key;
 
     // same logic as in metric config page, the only difference is
     // there should always be metric search param
@@ -148,6 +151,33 @@ export const MetricsView: React.FC = observer(() => {
     setIsLoading(false);
   };
 
+  const dropdownOptions: DropdownOption[] = agencyMetrics
+    .filter((metric) => metric.enabled)
+    .map((metric) => ({
+      key: metric.key,
+      label: (
+        <MetricsViewDropdownLabel>
+          <div>
+            {metric.display_name}
+            <span>{formatSystemName(metric.system.key)}</span>
+          </div>
+          <Badge
+            color={
+              reportFrequencyBadgeColors[metric.frequency as ReportFrequency]
+            }
+          >
+            {metric.frequency?.toLowerCase()}
+          </Badge>
+        </MetricsViewDropdownLabel>
+      ),
+      onClick: () =>
+        setSettingsSearchParams({
+          system: metric.system.key,
+          metric: metric.key,
+        }),
+      highlight: metric.key === metricSearchParam,
+    }));
+
   useEffect(() => {
     datapointsStore.resetState();
     const initialize = async () => {
@@ -165,6 +195,22 @@ export const MetricsView: React.FC = observer(() => {
       setDataView(ChartView.Chart);
     }
   }, [windowWidth]);
+
+  if (!metricSearchParam && !isLoading) {
+    return (
+      <NoEnabledMetricsMessage>
+        There are no enabled metrics to view. Please go to{" "}
+        <DisclaimerLink
+          onClick={() => {
+            navigate("../settings/metric-config");
+          }}
+        >
+          Metric Configuration
+        </DisclaimerLink>{" "}
+        to enable a metric.
+      </NoEnabledMetricsMessage>
+    );
+  }
 
   if (isLoading || !systemSearchParam || !metricSearchParam) {
     return <Loading />;
@@ -186,43 +232,33 @@ export const MetricsView: React.FC = observer(() => {
         {/* List Of Metrics */}
         <PanelContainerLeft>
           <SystemsContainer>
-            {Object.entries(metricsBySystem).map(([system, metrics]) => (
-              <React.Fragment key={system}>
-                {metrics.filter((metric) => metric.enabled).length > 0 ? (
-                  <SystemNameContainer
-                    isSystemActive={system === systemSearchParam}
-                    onClick={() => {
-                      setSettingsSearchParams({
-                        system: system as AgencySystems,
-                        metric: metricsBySystem[system].filter(
-                          (metric) => metric.enabled
-                        )[0].key,
-                      });
-                    }}
-                  >
-                    <SystemName>
-                      {formatSystemName(metrics[0].system.key, {
-                        allUserSystems: currentAgency?.systems,
-                      })}
-                    </SystemName>
-                    <SystemNamePlusSign
-                      isSystemActive={system === systemSearchParam}
-                    />
-                  </SystemNameContainer>
-                ) : (
-                  <SystemNameContainer isSystemActive={false}>
-                    <SystemName>
-                      {metrics[0].system.display_name} (No enabled metrics)
-                    </SystemName>
-                  </SystemNameContainer>
-                )}
+            {Object.entries(metricsBySystem).map(([system, metrics]) => {
+              const enabledMetrics = metrics.filter((metric) => metric.enabled);
 
-                <MetricsItemsContainer
-                  isSystemActive={system === systemSearchParam}
-                >
-                  {metrics
-                    .filter((metric) => metric.enabled)
-                    .map((metric) => (
+              return (
+                <React.Fragment key={system}>
+                  {enabledMetrics.length > 0 ? (
+                    <SystemNameContainer isSystemActive>
+                      <SystemName>
+                        {formatSystemName(metrics[0].system.key, {
+                          allUserSystems: currentAgency?.systems,
+                        })}
+                      </SystemName>
+                    </SystemNameContainer>
+                  ) : (
+                    <SystemNameContainer isSystemActive>
+                      <SystemName>
+                        {metrics[0].system.display_name} (No enabled metrics)
+                      </SystemName>
+                    </SystemNameContainer>
+                  )}
+
+                  <MetricsItemsContainer
+                    isSystemActive={
+                      system === systemSearchParam || enabledMetrics.length > 0
+                    }
+                  >
+                    {enabledMetrics.map((metric) => (
                       <MetricItem
                         key={metric.key}
                         selected={metricSearchParam === metric.key}
@@ -236,9 +272,10 @@ export const MetricsView: React.FC = observer(() => {
                         {metric.display_name}
                       </MetricItem>
                     ))}
-                </MetricsItemsContainer>
-              </React.Fragment>
-            ))}
+                  </MetricsItemsContainer>
+                </React.Fragment>
+              );
+            })}
           </SystemsContainer>
           <DisclaimerContainer>
             <DisclaimerTitle>Note</DisclaimerTitle>
@@ -264,59 +301,27 @@ export const MetricsView: React.FC = observer(() => {
             <CurrentMetricsSystem>
               {formatSystemName(systemSearchParam)}
             </CurrentMetricsSystem>
-            <MetricConfigurationDropdownContainerFixed hasBottomMargin>
-              <Dropdown>
-                <MetricsConfigurationDropdownToggle kind="borderless">
-                  {agencyMetrics.length > 1 && (
-                    <img src={dropdownArrow} alt="" />
-                  )}
-                  {metricName}
-                  <Badge
-                    color={
-                      reportFrequencyBadgeColors[
-                        metricFrequency as ReportFrequency
-                      ]
-                    }
-                  >
-                    {metricFrequency?.toLowerCase()}
-                  </Badge>
-                </MetricsConfigurationDropdownToggle>
-                {agencyMetrics.length > 1 ? (
-                  <MetricsConfigurationDropdownMenu>
-                    {agencyMetrics
-                      .filter((metric) => metric.enabled)
-                      .map((metric) => (
-                        <MetricsConfigurationDropdownMenuItem
-                          highlight={metric.key === metricSearchParam}
-                          key={metric.key}
-                          onClick={() =>
-                            setSettingsSearchParams({
-                              system: metric.system.key,
-                              metric: metric.key,
-                            })
-                          }
-                        >
-                          <div>
-                            {metric.display_name}
-                            <span>{formatSystemName(metric.system.key)}</span>
-                          </div>
-                          <Badge
-                            color={
-                              reportFrequencyBadgeColors[
-                                metric.frequency as ReportFrequency
-                              ]
-                            }
-                          >
-                            {metric.frequency?.toLowerCase()}
-                          </Badge>
-                        </MetricsConfigurationDropdownMenuItem>
-                      ))}
-                  </MetricsConfigurationDropdownMenu>
-                ) : (
-                  <></>
-                )}
-              </Dropdown>
-            </MetricConfigurationDropdownContainerFixed>
+            <MetricsViewDropdownContainerFixed>
+              <Dropdown
+                label={
+                  <>
+                    {metricName}{" "}
+                    <Badge
+                      color={
+                        reportFrequencyBadgeColors[
+                          metricFrequency as ReportFrequency
+                        ]
+                      }
+                    >
+                      {metricFrequency?.toLowerCase()}
+                    </Badge>
+                  </>
+                }
+                options={dropdownOptions}
+                caretPosition={agencyMetrics.length > 1 ? "left" : undefined}
+                fullWidth
+              />
+            </MetricsViewDropdownContainerFixed>
             <MobileDisclaimerContainer>
               <DisclaimerTitle>Note</DisclaimerTitle>
               <DisclaimerText>

@@ -16,25 +16,28 @@
 // =============================================================================
 
 import {
+  CustomDropdown,
+  CustomDropdownToggleLabel,
+} from "@justice-counts/common/components/Dropdown";
+import {
   HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
   MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
 import { BinaryRadioGroupWrapper } from "../Forms";
-import { ExtendedDropdownMenuItem } from "../Menu/Menu.styles";
-import { DropdownContainer, TabbedBar } from "../Reports";
 import { MenuItem } from "../Settings";
 
 const METRICS_VIEW_CONTAINER_BREAKPOINT = 1200;
 const INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH = 314;
 const STICKY_HEADER_WITH_PADDING_HEIGHT = 48;
 const DROPDOWN_WITH_MARGIN_HEIGHT = 79;
-const baseDisabledFadedOverlayCSS = `
+const FIXED_HEADER_WITH_DROPDOWN_HEIGHT = 92;
+const FIXED_HEADER_WITHOUT_DROPDOWN_HEIGHT = 24;
+export const baseDisabledFadedOverlayCSS = `
   &:after {
     content: "";
     width: 100%;
@@ -58,28 +61,26 @@ export const MetricsViewContainer = styled.div`
   }
 `;
 
-export const MobileMetricsConfigurationHeader = styled.div<{
-  hasBorder?: boolean;
-}>`
+export const MobileMetricsConfigurationHeader = styled.div`
   ${typography.sizeCSS.medium}
   display: none;
   width: 100%;
-  padding-bottom: 24px;
+  padding-bottom: 12px;
   text-transform: capitalize;
-  border-bottom: ${({ hasBorder }) =>
-    hasBorder && `1px solid ${palette.solid.darkgrey}`};
+  position: fixed;
+  top: ${HEADER_BAR_HEIGHT}px;
+  padding-top: 24px;
+  background-color: ${palette.solid.white};
+  z-index: 2;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: block;
-    position: fixed;
-    top: ${HEADER_BAR_HEIGHT}px;
-    padding-top: 24px;
-    background-color: ${palette.solid.white};
-    z-index: 2;
   }
 `;
 
-export const MetricsViewControlPanel = styled.div`
+export const MetricsViewControlPanel = styled.div<{
+  hasSystemsDropdown?: boolean;
+}>`
   height: 100%;
   width: 100%;
   display: flex;
@@ -88,6 +89,13 @@ export const MetricsViewControlPanel = styled.div`
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     justify-content: unset;
+  }
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    padding-top: ${({ hasSystemsDropdown }) =>
+      hasSystemsDropdown
+        ? `${FIXED_HEADER_WITH_DROPDOWN_HEIGHT + 24}px`
+        : `${FIXED_HEADER_WITHOUT_DROPDOWN_HEIGHT + 24}px`};
   }
 `;
 
@@ -139,18 +147,6 @@ export const SystemNameContainer = styled.div<{ isSystemActive: boolean }>`
 export const SystemName = styled.span`
   white-space: nowrap;
   text-transform: capitalize;
-`;
-
-export const SystemNamePlusSign = styled.span<{ isSystemActive: boolean }>`
-  display: none;
-
-  &::after {
-    content: "+";
-  }
-
-  ${SystemNameContainer}:hover && {
-    display: ${({ isSystemActive }) => (isSystemActive ? "none" : "block")};
-  }
 `;
 
 export const MetricsItemsContainer = styled.div<{ isSystemActive: boolean }>`
@@ -247,26 +243,48 @@ export const CurrentMetricsSystem = styled.div`
     text-transform: capitalize;
     padding-bottom: 12px;
     padding-top: 24px;
-    border-bottom: 1px solid ${palette.solid.darkgrey};
     z-index: 2;
     background-color: ${palette.solid.white};
   }
 `;
 
-export const MetricConfigurationDropdownContainer = styled(DropdownContainer)<{
-  hasTopBorder?: boolean;
-  hasBottomMargin?: boolean;
-  hasTopMargin?: boolean;
-}>`
+export const MetricConfigurationDropdownContainer = styled.div`
   display: none;
-  margin-bottom: ${({ hasBottomMargin }) => hasBottomMargin && "24px"};
-  margin-top: ${({ hasTopMargin }) => hasTopMargin && "48px"};
+  width: 100%;
+  margin-bottom: 24px;
+  height: 56px;
   min-height: 56px;
-  border-top: ${({ hasTopBorder }) =>
-    hasTopBorder && `1px solid ${palette.solid.darkgrey}`};
+  border-bottom: 1px solid ${palette.highlight.grey9};
+  border-top: 1px solid ${palette.highlight.grey9};
+  align-items: center;
 
-  & > div {
-    width: 100%;
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    display: flex;
+  }
+`;
+
+export const MetricsViewDropdownContainerFixed = styled.div`
+  display: none;
+  position: fixed;
+  top: ${HEADER_BAR_HEIGHT + 24 + 36}px;
+  width: calc(100% - 48px);
+  min-height: 56px;
+  height: 56px;
+  z-index: 2;
+  background-color: ${palette.solid.white};
+  border-top: 1px solid ${palette.highlight.grey9};
+  border-bottom: 1px solid ${palette.highlight.grey9};
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: flex;
+  }
+`;
+
+export const MetricConfigurationDropdownContainerFixed = styled(
+  MetricsViewDropdownContainerFixed
+)`
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: none;
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
@@ -274,76 +292,12 @@ export const MetricConfigurationDropdownContainer = styled(DropdownContainer)<{
   }
 `;
 
-export const MetricConfigurationDropdownContainerFixed = styled(
-  MetricConfigurationDropdownContainer
-)`
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    display: flex;
-    position: fixed;
-    top: ${HEADER_BAR_HEIGHT + 24 + 37}px;
-    width: calc(100% - 48px);
-    z-index: 2;
-    background-color: ${palette.solid.white};
-  }
-`;
-
-export const MetricsConfigurationDropdownToggle = styled(DropdownToggle)`
+export const MetricsViewDropdownLabel = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: start;
-  gap: 12px;
-  align-items: center;
-  ${typography.sizeCSS.medium};
-  text-transform: capitalize;
-  padding-right: 0;
-  padding-left: 0;
-  color: ${palette.solid.darkgrey};
-
-  & > div {
-    margin-left: auto;
-  }
-
-  &:active,
-  &:hover,
-  &:focus,
-  &[aria-expanded="true"] {
-    color: ${palette.solid.darkgrey};
-  }
-`;
-
-export const MetricsConfigurationDropdownMenu = styled(DropdownMenu)`
-  overflow-y: auto;
-  z-index: 10;
-  margin-top: 11px;
-  box-shadow: 0px 0px 1px rgba(23, 28, 43, 0.1),
-    0px 4px 8px rgba(23, 28, 43, 0.04), 0px 8px 56px rgba(23, 28, 43, 0.1);
-  border-radius: 4px;
-  max-height: 452px;
-  width: 100%;
-`;
-
-export const BreakdownsDropdownMenu = styled(MetricsConfigurationDropdownMenu)`
-  margin-top: 2px;
-`;
-
-export const StartingMonthDropdownMenu = styled(
-  MetricsConfigurationDropdownMenu
-)`
-  min-width: 264px;
-  margin-top: 4px;
-  min-height: 558px;
-
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    margin-top: 0;
-  }
-`;
-
-export const MetricsConfigurationDropdownMenuItem = styled(
-  ExtendedDropdownMenuItem
-)`
   justify-content: space-between;
+  align-items: center;
   ${typography.sizeCSS.normal};
   text-transform: capitalize;
 
@@ -358,12 +312,6 @@ export const MetricsConfigurationDropdownMenuItem = styled(
       text-transform: capitalize;
     }
   }
-`;
-
-export const MetricsConfigurationSystemsDropdownMenuItem = styled(
-  MetricsConfigurationDropdownMenuItem
-)`
-  text-transform: capitalize;
 `;
 
 export const PanelRightTopButtonsContainer = styled.div`
@@ -497,8 +445,7 @@ export const MetricDescription = styled.div`
 export const MetricDetailsDisplay = styled.div`
   height: 100%;
   width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   padding: 24px 12px 50px 0;
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
@@ -546,12 +493,6 @@ export const Subheader = styled.div`
   }
 `;
 
-export const BreakdownsTabbedBar = styled(TabbedBar)`
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    display: none;
-  }
-`;
-
 export const RadioButtonGroupWrapper = styled(BinaryRadioGroupWrapper)`
   display: flex;
 
@@ -588,13 +529,6 @@ export const MetricDisaggregations = styled.div<{ enabled?: boolean | null }>`
 export const Disaggregation = styled.div`
   display: block;
   margin-bottom: 15px;
-`;
-
-export const DisaggregationName = styled.div<{ enabled?: boolean }>`
-  ${typography.sizeCSS.large};
-
-  color: ${({ enabled }) =>
-    enabled ? palette.solid.darkgrey : palette.highlight.grey8};
 `;
 
 export const DisaggregationTab = styled.div`
@@ -751,73 +685,6 @@ export const Label = styled.div<{ noBottomMargin?: boolean }>`
   margin-bottom: ${({ noBottomMargin }) => (noBottomMargin ? 0 : `16px`)};
 `;
 
-export const ToggleSwitchWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 8px 0;
-`;
-
-export const ToggleSwitch = styled.label`
-  position: relative;
-  display: inline-block;
-  width: 38px;
-  height: 24px;
-`;
-
-export const ToggleSwitchInput = styled.input`
-  opacity: 0;
-  width: 0;
-  height: 0;
-
-  &:checked + span {
-    background-color: ${palette.solid.blue};
-  }
-
-  &:checked + span:before {
-    transform: translateX(14px);
-  }
-`;
-
-export const Slider = styled.span`
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: ${palette.solid.grey};
-  border-radius: 34px;
-  transition: 0.3s;
-
-  &:before {
-    content: "";
-    height: 14px;
-    width: 14px;
-    position: absolute;
-    left: 5px;
-    bottom: 5px;
-    background-color: ${palette.solid.white};
-    border-radius: 50%;
-    transition: 0.3s;
-  }
-`;
-
-export const ToggleSwitchLabel = styled.span<{ switchedOn?: boolean }>`
-  ${typography.sizeCSS.normal}
-  color: ${({ switchedOn }) =>
-    switchedOn ? palette.solid.blue : palette.solid.grey};
-  text-transform: uppercase;
-  margin-right: 11px;
-  position: relative;
-
-  &::after {
-    content: "${({ switchedOn }) => (switchedOn ? "ON" : "OFF")}";
-    position: absolute;
-    top: -11px;
-    left: -27px;
-  }
-`;
-
 export const MultipleChoiceWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -850,17 +717,6 @@ export const StickyHeader = styled.div`
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: none;
-  }
-`;
-
-export const BackToMetrics = styled.div`
-  color: ${palette.solid.blue};
-  transition: 0.2s ease;
-  margin-bottom: 24px;
-
-  &:hover {
-    cursor: pointer;
-    opacity: 0.85;
   }
 `;
 
@@ -899,11 +755,9 @@ export const DefinitionsDisplayContainer = styled.div`
   }
 `;
 
-export const DefinitionsDisplay = styled.div<{ enabled?: boolean | null }>`
+export const DefinitionsDisplay = styled.div`
   width: 100%;
   position: relative;
-
-  ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
 `;
 
 export const DefinitionsWrapper = styled.div<{ enabled?: boolean | null }>`
@@ -1099,60 +953,38 @@ export const DefinitionSelection = styled.div`
   gap: 4px;
 `;
 
-export const NoDefinitionsSelected = styled.div`
-  width: 100%;
-  height: fit-content;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  padding: 59px;
-  border: 1px solid ${palette.highlight.grey5};
-  color: ${palette.highlight.grey12};
-  text-align: center;
-`;
-
-export const DropdownButton = styled(DropdownToggle)<{ checked?: boolean }>`
-  ${typography.sizeCSS.normal}
-  font-family: ${typography.family};
-  display: flex;
-  gap: 10px;
+export const MonthSelectionDropdownContainer = styled.div<{
+  checked?: boolean;
+}>`
+  margin-top: 15px;
   width: 100%;
   height: 56px;
-  min-height: unset;
-  border: 1px solid ${palette.highlight.grey4} !important;
+  min-height: 56px;
+  border: 1px solid ${palette.highlight.grey4};
   border-radius: 2px;
-  transition: 0.2s ease;
-  color: ${palette.solid.darkgrey};
-  margin-top: 15px;
+
+  & ${CustomDropdown} {
+    height: 54px;
+  }
+
+  & ${CustomDropdownToggleLabel} {
+    justify-content: center;
+    gap: 10px;
+  }
 
   ${({ checked }) =>
     checked &&
     `
-      background-color: ${palette.solid.blue} !important;
-      color: ${palette.solid.white} !important;
-    `}
-
-  &[aria-expanded="true"] {
-    color: ${palette.solid.darkgrey};
-  }
-
-  &[aria-expanded="false"]:hover {
-    color: ${palette.solid.darkgrey};
-    background-color: ${palette.highlight.grey2};
-  }
-
-  &:focus {
-    color: ${palette.solid.darkgrey};
-  }
+      background-color: ${palette.solid.blue};
+      
+      & ${CustomDropdownToggleLabel} {
+        color: ${palette.solid.white};
+      };
+    `};
 `;
 
 export const PromptWrapper = styled.div`
   margin-top: 35px;
-`;
-
-export const CapitalizedSpan = styled.span`
-  text-transform: capitalize;
 `;
 
 export const BlueLinkSpan = styled.span`
@@ -1189,4 +1021,14 @@ export const IncludesExcludesDescription = styled.div`
     padding-top: 16px;
     margin: 16px 0;
   }
+`;
+
+export const OverlayWrapper = styled.div<{ enabled?: boolean | null }>`
+  position: relative;
+  ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
+`;
+
+export const NoEnabledMetricsMessage = styled.div`
+  min-height: 100%;
+  margin: auto auto;
 `;

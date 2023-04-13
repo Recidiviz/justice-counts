@@ -15,17 +15,16 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 import {
+  CustomDropdown,
+  CustomDropdownToggle,
+} from "@justice-counts/common/components/Dropdown";
+import {
   HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
   MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import {
-  DropdownMenu,
-  DropdownMenuItem,
-  DropdownToggle,
-} from "@recidiviz/design-system";
 import styled from "styled-components/macro";
 
 export const MenuContainer = styled.nav<{ isMobileMenuOpen: boolean }>`
@@ -71,16 +70,24 @@ export const MenuItem = styled.div<{
   active?: boolean;
   highlight?: boolean;
   buttonPadding?: boolean;
+  dropdownPadding?: boolean;
   isHoverDisabled?: boolean;
 }>`
   height: ${HEADER_BAR_HEIGHT}px;
-  padding-top: ${({ buttonPadding }) => (buttonPadding ? `5px` : `14px`)};
+  padding-top: ${({ buttonPadding, dropdownPadding }) => {
+    if (dropdownPadding) return "9px";
+    return buttonPadding ? "5px" : "14px";
+  }};
   border-top: 6px solid
     ${({ active }) => (active ? palette.solid.blue : "transparent")};
   transition: 0.2s ease;
   color: ${({ highlight }) =>
     highlight ? palette.solid.red : palette.solid.darkgrey};
   white-space: nowrap;
+
+  & ${CustomDropdown} {
+    height: auto;
+  }
 
   a,
   a:visited {
@@ -102,6 +109,10 @@ export const MenuItem = styled.div<{
     ${typography.sizeCSS.large};
     padding: 0;
     height: auto;
+
+    & ${CustomDropdownToggle} {
+      ${typography.sizeCSS.large};
+    }
   }
 `;
 
@@ -151,89 +162,5 @@ export const WelcomeUser = styled.div`
     border-right: none;
     padding-right: 0;
     margin-bottom: 8px;
-  }
-`;
-
-export const ExtendedDropdownToggle = styled(DropdownToggle)<{
-  noMargin?: boolean;
-}>`
-  font-family: ${typography.family};
-  ${typography.sizeCSS.normal}
-  padding: 0;
-  min-height: unset;
-  line-height: 0;
-  margin-bottom: ${({ noMargin }) => (noMargin ? "0" : "22px")};
-  color: ${palette.solid.darkgrey};
-
-  &[aria-expanded="true"] {
-    color: ${palette.solid.blue};
-  }
-
-  &:hover {
-    color: ${palette.solid.blue};
-  }
-
-  &:focus {
-    color: ${palette.solid.darkgrey};
-  }
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    ${typography.sizeCSS.large};
-    margin-bottom: 0;
-  }
-`;
-
-export const ExtendedDropdownMenu = styled(DropdownMenu)`
-  max-height: 50vh;
-  overflow-y: auto;
-  z-index: 10;
-`;
-
-export const ExtendedDropdownMenuItem = styled(DropdownMenuItem)<{
-  highlight?: boolean;
-  noPadding?: boolean;
-}>`
-  min-width: 264px;
-  display: flex;
-  align-items: center;
-  font-family: ${typography.family};
-  ${typography.sizeCSS.normal}
-  color: ${({ highlight }) =>
-    highlight ? palette.solid.red : palette.solid.darkgrey};
-  height: auto;
-  padding: 0;
-  gap: 8px;
-
-  ${({ noPadding }) =>
-    !noPadding &&
-    `  
-      padding: 16px;
-      
-      &:first-child {
-        padding: 10px 16px 16px 16px;
-      }
-      
-      &:last-child {
-        padding: 16px 16px 10px 16px;
-      }
-    `}
-
-  &:not(:last-child) {
-    border-bottom: 1px solid ${palette.solid.offwhite};
-  }
-
-  &:focus {
-    background-color: transparent;
-    color: ${({ highlight }) =>
-      highlight ? palette.solid.red : palette.solid.darkgrey};
-  }
-
-  &:hover {
-    color: ${palette.solid.blue};
-    background-color: transparent;
-
-    svg path {
-      stroke: ${palette.solid.blue};
-    }
   }
 `;

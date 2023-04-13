@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
   MIN_TABLET_WIDTH,
   palette,
@@ -93,10 +94,14 @@ export const ExtendedDropdownMenuItem = styled(DropdownMenuItem)<{
   }
 `;
 
-export const DatapointsViewContainer = styled.div`
+export const DatapointsViewContainer = styled.div<{
+  maxHeightViewport?: boolean;
+}>`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  ${({ maxHeightViewport }) =>
+    maxHeightViewport && `max-height: calc(100vh - ${HEADER_BAR_HEIGHT}px)`}
 `;
 
 export const DatapointsViewHeaderWrapper = styled.div`

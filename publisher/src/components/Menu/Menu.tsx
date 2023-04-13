@@ -16,9 +16,12 @@
 // =============================================================================
 
 import { Button } from "@justice-counts/common/components/Button";
+import {
+  Dropdown,
+  DropdownOption,
+} from "@justice-counts/common/components/Dropdown";
 import { MIN_TABLET_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { useWindowWidth } from "@justice-counts/common/hooks";
-import { Dropdown } from "@recidiviz/design-system";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -41,9 +44,6 @@ import {
 } from "../Guidance";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
-  ExtendedDropdownMenu,
-  ExtendedDropdownMenuItem,
-  ExtendedDropdownToggle,
   MenuContainer,
   MenuItem,
   MobileMenuIconWrapper,
@@ -148,6 +148,21 @@ const Menu: React.FC = () => {
 
     setMetricConfigProgressToastTimeout(timeout);
   };
+
+  const dropdownOptions: DropdownOption[] = userStore.userAgencies
+    ? userStore.userAgencies
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((agency) => ({
+          key: agency.id,
+          label: agency.name,
+          onClick: () => {
+            navigate(`/agency/${agency.id}/${pathWithoutAgency}`);
+            handleCloseMobileMenu();
+          },
+          highlight: agency.id === currentAgency?.id,
+        }))
+    : [];
 
   useEffect(
     () => {
@@ -284,33 +299,14 @@ const Menu: React.FC = () => {
 
         {/* Agencies Dropdown */}
         {userStore.userAgencies && userStore.userAgencies.length > 1 && (
-          <MenuItem>
-            <Dropdown>
-              <ExtendedDropdownToggle kind="borderless">
-                Agencies
-              </ExtendedDropdownToggle>
-              <ExtendedDropdownMenu
-                alignment={windowWidth > MIN_TABLET_WIDTH ? "right" : "left"}
-              >
-                {userStore.userAgencies
-                  .slice()
-                  .sort((a, b) => a.name.localeCompare(b.name))
-                  .map((agency) => {
-                    return (
-                      <ExtendedDropdownMenuItem
-                        key={agency.id}
-                        onClick={() => {
-                          navigate(`/agency/${agency.id}/${pathWithoutAgency}`);
-                          handleCloseMobileMenu();
-                        }}
-                        highlight={agency.id === currentAgency?.id}
-                      >
-                        {agency.name}
-                      </ExtendedDropdownMenuItem>
-                    );
-                  })}
-              </ExtendedDropdownMenu>
-            </Dropdown>
+          <MenuItem dropdownPadding>
+            <Dropdown
+              label="Agencies"
+              options={dropdownOptions}
+              size="small"
+              hover="label"
+              alignment={windowWidth > MIN_TABLET_WIDTH ? "right" : "left"}
+            />
           </MenuItem>
         )}
 
@@ -322,6 +318,7 @@ const Menu: React.FC = () => {
             }
           }}
           active={pathWithoutAgency.startsWith("settings")}
+          isHoverDisabled={windowWidth <= MIN_TABLET_WIDTH}
         >
           Settings
         </MenuItem>

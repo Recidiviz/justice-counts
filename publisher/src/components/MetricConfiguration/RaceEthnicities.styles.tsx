@@ -24,11 +24,11 @@ import styled, { css } from "styled-components/macro";
 
 import { BinaryRadioGroupWrapper } from "../Forms";
 import {
+  baseDisabledFadedOverlayCSS,
   DefinitionDisplayName,
   DefinitionItem,
   Definitions,
   DefinitionsDescription,
-  DefinitionsDisplay,
   DefinitionsDisplayContainer,
   DefinitionSelection,
   DefinitionsTitle,
@@ -90,6 +90,7 @@ export const GridHeaderContainer = styled.div`
   color: ${palette.highlight.grey5};
   width: 100%;
   display: flex;
+  align-items: center;
   padding-bottom: 10px;
   border-bottom: 1px solid ${palette.highlight.grey4};
 `;
@@ -99,7 +100,8 @@ export const GridRaceHeader = styled.div`
 `;
 export const GridEthnicitiesHeader = styled.div`
   display: flex;
-  gap: 17px;
+  gap: 7px;
+  justify-content: space-between;
 `;
 
 export const EthnicityLabel = styled.div`
@@ -118,7 +120,8 @@ export const EthnicityLabel = styled.div`
 
 export const EthnicityName = styled.div`
   color: ${palette.solid.darkgrey};
-  white-space: nowrap;
+  text-align: center;
+  min-width: 80px;
 `;
 
 export const Description = styled.div`
@@ -148,8 +151,8 @@ export const RaceCell = styled.div``;
 
 export const EthnicitiesRow = styled.div`
   display: flex;
-  margin-right: 17px;
-  gap: 60px;
+  margin-right: 28px;
+  gap: 70px;
 `;
 export const EthnicityCell = styled.div<{ enabled?: boolean }>`
   width: 20px;
@@ -168,7 +171,13 @@ export const RaceEthnicitiesContainer = styled(DefinitionsDisplayContainer)`
     padding-bottom: 0;
   }
 `;
-export const RaceEthnicitiesDisplay = styled(DefinitionsDisplay)``;
+
+export const RaceEthnicitiesDisplay = styled.div<{ enabled?: boolean | null }>`
+  width: 100%;
+  position: relative;
+  ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
+`;
+
 export const RaceEthnicitiesTitle = styled(DefinitionsTitle)``;
 export const RaceEthnicitiesDescription = styled(DefinitionsDescription)`
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
