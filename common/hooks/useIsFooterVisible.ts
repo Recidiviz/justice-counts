@@ -18,12 +18,13 @@
 import { useEffect, useState } from "react";
 
 export function useIsFooterVisible() {
-  const footer = document.getElementById("footer");
   const [isFooterVisible, setIsFooterVisible] = useState<boolean | undefined>(
     undefined
   );
 
   useEffect(() => {
+    const footer = document.getElementById("footer");
+
     function setFooterVisibility() {
       setIsFooterVisible(checkIsFooterVisible(footer));
     }
