@@ -38,7 +38,6 @@ export function MetricSettingsOverview() {
 
   const { system: systemSearchParam, metric: metricSearchParam } =
     settingsSearchParams;
-  // const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingErrorMessage, setLoadingErrorMessage] = useState<string>();
@@ -126,17 +125,26 @@ export function MetricSettingsOverview() {
   }
 
   const currentAgency = userStore.getAgency(agencyId);
+
   const showSystems =
     currentAgency?.systems && currentAgency?.systems?.length > 1;
+
   const actionRequiredMetrics = getMetricsBySystem(systemSearchParam)?.filter(
-    ({ metric }) => metric.enabled === null || metric.enabled === undefined
+    ({ metric }) => metric.enabled === null
   );
+  const hasActionRequiredMetrics =
+    actionRequiredMetrics && actionRequiredMetrics.length > 0;
+
   const availableMetrics = getMetricsBySystem(systemSearchParam)?.filter(
     ({ metric }) => metric.enabled
   );
+  const hasAvailableMetrics = availableMetrics && availableMetrics.length > 0;
+
   const unavailableMetrics = getMetricsBySystem(systemSearchParam)?.filter(
     ({ metric }) => metric.enabled === false
   );
+  const hasUnavailableMetrics =
+    unavailableMetrics && unavailableMetrics.length > 0;
 
   return (
     <Styled.Wrapper>
@@ -166,7 +174,7 @@ export function MetricSettingsOverview() {
         </Styled.SystemsList>
       </Styled.OverviewWrapper>
       <Styled.MetricsWrapper>
-        {actionRequiredMetrics && actionRequiredMetrics.length > 0 && (
+        {hasActionRequiredMetrics && (
           <Styled.MetricsSection>
             <Styled.MetricsSectionTitle>
               Action required
@@ -187,7 +195,7 @@ export function MetricSettingsOverview() {
             ))}
           </Styled.MetricsSection>
         )}
-        {availableMetrics && availableMetrics.length > 0 && (
+        {hasAvailableMetrics && (
           <Styled.MetricsSection>
             <Styled.MetricsSectionTitle>
               Available Metrics
@@ -211,7 +219,7 @@ export function MetricSettingsOverview() {
             ))}
           </Styled.MetricsSection>
         )}
-        {unavailableMetrics && unavailableMetrics.length > 0 && (
+        {hasUnavailableMetrics && (
           <Styled.MetricsSection>
             <Styled.MetricsSectionTitle>
               Unavailable Metrics
