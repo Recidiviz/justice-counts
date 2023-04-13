@@ -24,6 +24,7 @@ import { REPORTS_LOWERCASE } from "../components/Global/constants";
 import { Guidance } from "../components/Guidance";
 import Header from "../components/Header";
 import { MetricsView } from "../components/MetricConfiguration/MetricsView";
+import { MetricSettingsOverview } from "../components/MetricSettings/MetricSettingsOverview";
 import BulkActionReview from "../components/Reports/BulkActionReview";
 import CreateReport from "../components/Reports/CreateReport";
 import ReviewReportDataEntry from "../components/Reports/DataEntryReview";
@@ -70,6 +71,10 @@ export const Router = () => {
 
           <Route path="/data" element={<MetricsView />} />
           <Route path="/settings/*" element={<Settings />} />
+          <Route
+            path="/settings/metric-config-v2"
+            element={<MetricSettingsOverview />}
+          />
           <Route path={`/${REPORTS_LOWERCASE}`} element={<Reports />} />
           <Route
             path={`/${REPORTS_LOWERCASE}/bulk-review`}
