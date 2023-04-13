@@ -17,7 +17,7 @@
 
 import React, { useContext, useEffect } from "react";
 
-import NoAuthConfigErrorPage from "../components/Error/NoAuthConfigErrorPage";
+import NoAuthConfigErrorPage from "../components/Auth/NoAuthConfigErrorPage";
 import rootStore from "./RootStore";
 
 const StoreContext = React.createContext<typeof rootStore | undefined>(
