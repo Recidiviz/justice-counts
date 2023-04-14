@@ -110,18 +110,24 @@ class AgencyStore {
       const responseJson = (await response.json()) as {
         settings: AgencySetting[];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         agency_id: string;
 >>>>>>> b14ce5d (deleted call to get_agency_jurisdictions())
+=======
+>>>>>>> 3643ddf (changed json response type)
         jurisdictions: {
-          included: string[];
-          excluded: string[];
+          agency_id: string;
+          jurisdictions: {
+            included: string[];
+            excluded: string[];
+          };
         };
       };
       runInAction(() => {
         if (this.currentAgency) {
           this.currentAgency.settings = responseJson.settings;
-          this.jurisdictions = responseJson.jurisdictions;
+          this.jurisdictions = responseJson.jurisdictions.jurisdictions;
         }
       });
     } catch (error) {
