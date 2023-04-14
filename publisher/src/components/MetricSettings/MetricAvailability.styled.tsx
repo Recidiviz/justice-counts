@@ -15,12 +15,138 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  CustomDropdown,
+  CustomDropdownMenu,
+  CustomDropdownToggle,
+  CustomDropdownToggleLabel,
+} from "@justice-counts/common/components/Dropdown";
+import {
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
 export const Wrapper = styled.div`
+  width: 100%;
+  padding-left: 574px;
+`;
+
+export const InnerWrapper = styled.div`
   width: 754px;
-  margin: 0 auto;
   padding: 72px 0 100px 0;
   display: flex;
   flex-direction: column;
+`;
+
+export const Header = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+`;
+
+export const HeaderNumber = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32.5px;
+  height: 32.5px;
+  margin-top: 2px;
+  border: 0.5px solid ${palette.highlight.grey4};
+  border-radius: 100%;
+  font-family: ${typography.family};
+  font-size: 16.25px;
+  line-height: 22px;
+  color: ${palette.solid.white};
+  background-color: ${palette.solid.blue};
+`;
+
+export const HeaderLabel = styled.div`
+  ${typography.sizeCSS.title};
+  font-size: 42px;
+`;
+
+export const Description = styled.div`
+  ${typography.sizeCSS.medium};
+  color: ${palette.highlight.grey10};
+  margin-bottom: 40px;
+`;
+
+export const SectionTitle = styled.div`
+  ${typography.sizeCSS.title};
+  margin-bottom: 16px;
+`;
+
+export const SettingRowsContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 64px;
+`;
+
+export const SettingRow = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+`;
+
+export const SettingName = styled.div`
+  width: 45%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  ${typography.sizeCSS.medium};
+`;
+
+export const SettingOptions = styled.div`
+  width: 55%;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+`;
+
+export const MonthSelectionDropdownContainer = styled.div<{
+  checked?: boolean;
+}>`
+  display: flex;
+  flex: 1 1 0;
+  border-radius: 3px;
+
+  & ${CustomDropdown} {
+    border: 1px solid ${palette.highlight.grey4};
+    border-radius: 3px;
+  }
+
+  & ${CustomDropdownToggle} {
+    padding: 9px 16px;
+  }
+
+  & ${CustomDropdownToggleLabel} {
+    justify-content: center;
+    gap: 8px;
+  }
+
+  & ${CustomDropdownMenu} {
+    max-height: calc(55px * 4);
+  }
+
+  ${({ checked }) =>
+    checked &&
+    `
+      background-color: ${palette.solid.blue};
+      
+      & ${CustomDropdownToggleLabel} {
+        color: ${palette.solid.white};
+      };
+      
+      &:hover {
+        background-color: ${palette.solid.darkblue};
+      }
+    `};
 `;

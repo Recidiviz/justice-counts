@@ -15,46 +15,103 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { useIsFooterVisible } from "@justice-counts/common/hooks";
-import { observer } from "mobx-react-lite";
-import React from "react";
+import { showToast } from "@justice-counts/common/components/Toast";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
-import indicatorAlertIcon from "../assets/indicator-alert-icon.svg";
-import indicatorSuccessIcon from "../assets/indicator-success-icon.svg";
-import * as Styled from "./MetricSettings.styled";
+import { useStore } from "../../stores";
+import { SYSTEM_CAPITALIZED, SYSTEM_LOWERCASE } from "../Global/constants";
+import { Loading } from "../Loading";
+import { useSettingsSearchParams } from "../Settings";
+import MetricConfig from "./MetricConfig";
+import { Overview } from "./Overview";
 
-function MetricSettings() {
-  const isFooterVisible = useIsFooterVisible();
-  return (
-    <>
-      <Styled.MetricSettingsSideBar isFooterVisible={isFooterVisible}>
-        <Styled.SystemName>Supervision</Styled.SystemName>
-        <Styled.MetricName>Staff</Styled.MetricName>
-        <Styled.Description>
-          The amount of funding for the operation and maintenance of jail
-          facilities and the care of people who are incarcerated under the
-          jurisdiction of the agency.
-        </Styled.Description>
-        <Styled.Menu>
-          <Styled.MenuItem>
-            <Styled.MenuItemNumber>1</Styled.MenuItemNumber>
-            <Styled.MenuItemLabel active>
-              Set metric availability
-            </Styled.MenuItemLabel>
-          </Styled.MenuItem>
-          <Styled.MenuItem>
-            <Styled.MenuItemNumber disabled>2</Styled.MenuItemNumber>
-            <Styled.MenuItemLabel active={false} disabled>
-              Define metrics
-            </Styled.MenuItemLabel>
-          </Styled.MenuItem>
-        </Styled.Menu>
-        <Styled.MetricIndicator available={false}>
-          <img src={indicatorAlertIcon} alt="" /> Configuration required
-        </Styled.MetricIndicator>
-      </Styled.MetricSettingsSideBar>
-    </>
-  );
+export function MetricSettings() {
+  const [settingsSearchParams, setSettingsSearchParams] =
+    useSettingsSearchParams();
+  const { agencyId } = useParams() as { agencyId: string };
+  const { userStore, metricConfigStore } = useStore();
+  const { initializeMetricConfigStoreValues, getMetricsBySystem } =
+    metricConfigStore;
+
+  const { system: systemSearchParam, metric: metricSearchParam } =
+    settingsSearchParams;
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [loadingErrorMessage, setLoadingErrorMessage] = useState<string>();
+
+  const initializeMetricConfiguration = async () => {
+    setIsLoading(true);
+
+    const response = await initializeMetricConfigStoreValues(agencyId);
+    if (response instanceof Error) {
+      return setLoadingErrorMessage(response.message);
+    }
+
+    const currentAgency = userStore.getAgency(agencyId);
+
+    // now when agency is in the url we still have to check external link
+    // with system and metric search params in it if they belong to agency
+    // (system to agency and metric to system)
+    // if system in agency, go further, if not change system to 1st one in agency
+    if (systemSearchParam && currentAgency?.systems) {
+      const isUrlSystemParamInCurrentAgencySystems =
+        !!currentAgency?.systems.find((system) => system === systemSearchParam);
+      if (!isUrlSystemParamInCurrentAgencySystems) {
+        setSettingsSearchParams({ system: currentAgency?.systems[0] });
+        setIsLoading(false);
+        showToast({
+          message: `${SYSTEM_CAPITALIZED} "${systemSearchParam}" does not exist in "${currentAgency?.name}" agency.`,
+          color: "red",
+          timeout: 5000,
+        });
+        return;
+      }
+    }
+
+    // if system in agency go here and check if metric in system
+    // if not change system to first in agency
+    if (metricSearchParam) {
+      const isUrlMetricParamInCurrentSystem = !!getMetricsBySystem(
+        systemSearchParam
+      )?.find((metric) => metric.key === metricSearchParam);
+      if (!isUrlMetricParamInCurrentSystem) {
+        setSettingsSearchParams({ system: systemSearchParam });
+        setIsLoading(false);
+        showToast({
+          message: `Metric "${metricSearchParam}" does not exist in "${systemSearchParam}" ${SYSTEM_LOWERCASE}.`,
+          color: "red",
+          timeout: 5000,
+        });
+        return;
+      }
+    }
+
+    // if user just go to metric config page set system to 1st one in agency
+    if (!systemSearchParam) {
+      setSettingsSearchParams({
+        system: currentAgency?.systems[0],
+      });
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    const initialize = async () => {
+      await initializeMetricConfiguration();
+    };
+
+    initialize();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [agencyId]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (loadingErrorMessage) {
+    return <div>Error: {loadingErrorMessage}</div>;
+  }
+
+  return metricSearchParam ? <MetricConfig /> : <Overview />;
 }
-
-export default observer(MetricSettings);

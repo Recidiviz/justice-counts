@@ -42,11 +42,14 @@ export const MetricSettingsSideBar = styled.div<{
 export const SystemName = styled.div`
   ${typography.sizeCSS.medium};
   margin-bottom: 16px;
+  text-transform: capitalize;
+  cursor: pointer;
 `;
 
 export const MetricName = styled.div`
   ${typography.sizeCSS.headline};
   margin-bottom: 24px;
+  width: 100%;
 `;
 
 export const Description = styled.div`
@@ -96,6 +99,8 @@ export const MenuItemLabel = styled.div<{
     disabled ? palette.highlight.grey8 : palette.solid.darkgrey};
   border-bottom: 2px solid
     ${({ active }) => (active ? palette.solid.blue : "transparent")};
+  cursor: pointer;
+  pointer-events: ${({ disabled }) => disabled && "none"};
 `;
 
 export const MetricIndicator = styled.div<{ available: boolean }>`
