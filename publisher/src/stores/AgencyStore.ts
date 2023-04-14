@@ -109,29 +109,6 @@ class AgencyStore {
 
       const responseJson = (await response.json()) as {
         settings: AgencySetting[];
-      };
-      runInAction(() => {
-        if (this.currentAgency) {
-          this.currentAgency.settings = responseJson.settings;
-        }
-      });
-    } catch (error) {
-      if (error instanceof Error) return new Error(error.message);
-    }
-  }
-
-  async getAgencyJurisdictions(agencyId: string): Promise<void | Error> {
-    try {
-      const response = (await this.api.request({
-        path: `/api/agencies/${agencyId}/jurisdictions`,
-        method: "GET",
-      })) as Response;
-
-      if (response.status !== 200) {
-        throw new Error("There was an issue getting agency jurisdictions.");
-      }
-
-      const responseJson = (await response.json()) as {
         agency_id: string;
         jurisdictions: {
           included: string[];
@@ -139,7 +116,10 @@ class AgencyStore {
         };
       };
       runInAction(() => {
-        this.jurisdictions = responseJson.jurisdictions;
+        if (this.currentAgency) {
+          this.currentAgency.settings = responseJson.settings;
+          this.jurisdictions = responseJson.jurisdictions;
+        }
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
