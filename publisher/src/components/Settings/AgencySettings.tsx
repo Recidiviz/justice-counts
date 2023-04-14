@@ -68,7 +68,6 @@ export const AgencySettings: React.FC = observer(() => {
       resetState();
       agencyStore.initCurrentAgency(agencyId);
       agencyStore.getAgencySettings(agencyId);
-      agencyStore.getAgencyJurisdictions(agencyId);
     };
 
     initialize();

@@ -109,16 +109,18 @@ class AgencyStore {
 
       const responseJson = (await response.json()) as {
         settings: AgencySetting[];
-        agency_id: string;
         jurisdictions: {
-          included: string[];
-          excluded: string[];
+          agency_id: string;
+          jurisdictions: {
+            included: string[];
+            excluded: string[];
+          };
         };
       };
       runInAction(() => {
         if (this.currentAgency) {
           this.currentAgency.settings = responseJson.settings;
-          this.jurisdictions = responseJson.jurisdictions;
+          this.jurisdictions = responseJson.jurisdictions.jurisdictions;
         }
       });
     } catch (error) {
