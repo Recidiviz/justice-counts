@@ -17,13 +17,10 @@
 
 import {
   Datapoint,
-  DataVizAggregateName,
   DataVizCountOrPercentageView,
   DataVizTimeRange,
 } from "@justice-counts/common/types";
 import { mapValues, pickBy } from "lodash";
-
-import { formatNumberInput } from "../../utils";
 
 export const thirtyOneDaysInSeconds = 2678400000;
 export const threeHundredSixtySixDaysInSeconds = 31622400000;
@@ -74,23 +71,6 @@ export const getDatapointDimensions = (datapoint: Datapoint) =>
       key !== "frequency" &&
       key !== "dataVizMissingData"
   );
-
-export const sortDatapointDimensions = (dimA: string, dimB: string) => {
-  // sort alphabetically, except put "Other" and "Unknown" at the end.
-  if (dimA === "Other" && dimB === "Unknown") {
-    return -1;
-  }
-  if (dimB === "Other" && dimA === "Unknown") {
-    return 1;
-  }
-  if (dimA === "Other" || dimA === "Unknown") {
-    return 1;
-  }
-  if (dimB === "Other" || dimB === "Unknown") {
-    return -1;
-  }
-  return dimA.localeCompare(dimB);
-};
 
 export const getSumOfDimensionValues = (datapoint: Datapoint) => {
   let sumOfDimensions = 0;
@@ -280,59 +260,6 @@ export const transformData = (
 };
 
 // get insights from data
-
-export const getPercentChangeOverTime = (data: Datapoint[]) => {
-  if (data.length > 0) {
-    const start = data[0][DataVizAggregateName] as number | undefined;
-    const end = data[data.length - 1][DataVizAggregateName] as
-      | number
-      | undefined;
-    if (start !== undefined && end !== undefined) {
-      const formattedPercentChange = formatNumberInput(
-        Math.round(((end - start) / start) * 100).toString()
-      );
-      if (formattedPercentChange) {
-        return `${formattedPercentChange}%`;
-      }
-    }
-  }
-  return "N/A";
-};
-
-export const getAverageTotalValue = (data: Datapoint[], isAnnual: boolean) => {
-  if (data.length > 0) {
-    let totalValueFound = false;
-    const avgTotalValue =
-      data.reduce((res, dp) => {
-        if (dp[DataVizAggregateName] !== undefined) {
-          totalValueFound = true;
-          return res + (dp[DataVizAggregateName] as number);
-        }
-        return res;
-      }, 0) / data.length;
-    if (totalValueFound && avgTotalValue !== undefined) {
-      const formattedAvgTotalValue = formatNumberInput(
-        Math.round(avgTotalValue).toString()
-      );
-      if (formattedAvgTotalValue !== undefined) {
-        return `${formattedAvgTotalValue}/${isAnnual ? "yr" : "mo"}`;
-      }
-    }
-  }
-  return "N/A";
-};
-
-export const getLatestDateFormatted = (
-  data: Datapoint[],
-  isAnnual: boolean
-) => {
-  const mostRecentDate = data[data.length - 1]?.start_date;
-  if (mostRecentDate) {
-    const [, , month, year] = splitUtcString(mostRecentDate);
-    return `${!isAnnual ? `${month} ` : ""}${year}`;
-  }
-  return "N/A";
-};
 
 export const formatDateShort = (dateStr: string) => {
   const [, , month, year] = splitUtcString(dateStr);

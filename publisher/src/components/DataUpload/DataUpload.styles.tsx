@@ -26,7 +26,6 @@ import styled from "styled-components/macro";
 
 import { rem } from "../../utils";
 import { OpacityGradient } from "../Forms";
-import { TabbedBar } from "../Reports";
 
 const FOOTER_HEIGHT = 144;
 
@@ -238,10 +237,6 @@ export const UploadButtonInput = styled.input`
   display: none;
 `;
 
-export const DropdownItemUploadInput = styled.input`
-  display: none;
-`;
-
 export const Icon = styled.img<{ grayscale?: boolean }>`
   width: 16px;
   aspect-ratio: auto;
@@ -382,12 +377,6 @@ export const MetricTitle = styled.div`
   padding: 16px 0;
 `;
 
-export const SheetTitle = styled.div`
-  ${typography.sizeCSS.medium};
-  font-size: ${rem("22px")};
-  padding: 0px 0 16px 0;
-`;
-
 export const IconWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -458,28 +447,8 @@ export const FileName = styled.div<{ error?: boolean }>`
   color: ${({ error }) => (error ? palette.solid.red : palette.solid.green)};
 `;
 
-export const ConfirmationPageContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const ExtendedTabbedBar = styled(TabbedBar)`
-  height: 66px;
-`;
-
 export const RedText = styled.span`
   color: ${palette.solid.red};
-`;
-
-export const OrangeText = styled.span`
-  color: ${palette.solid.orange};
-`;
-
-export const StrikethroughText = styled.span`
-  text-decoration: line-through;
 `;
 
 export const BlueText = styled.span`

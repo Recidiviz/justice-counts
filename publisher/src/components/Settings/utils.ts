@@ -35,10 +35,3 @@ export const getSettingsSearchParams = (
 
   return { system, metric };
 };
-
-export const normalizeSystem = (system: string) => {
-  return system
-    .split("_")
-    .map((systemPart) => systemPart[0] + systemPart.substring(1).toLowerCase())
-    .join(" ");
-};
