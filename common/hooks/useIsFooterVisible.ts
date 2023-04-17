@@ -17,7 +17,10 @@
 
 import { useEffect, useState } from "react";
 
-export function useIsFooterVisible() {
+export function useIsFooterVisible(): [
+  boolean | undefined,
+  (footerElement: HTMLElement | null) => void
+] {
   const [isFooterVisible, setIsFooterVisible] = useState<boolean | undefined>(
     undefined
   );
@@ -36,7 +39,11 @@ export function useIsFooterVisible() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return isFooterVisible;
+  return [
+    isFooterVisible,
+    (footerElement: HTMLElement | null) =>
+      setIsFooterVisible(checkIsFooterVisible(footerElement)),
+  ];
 }
 
 function checkIsFooterVisible(element: HTMLElement | null) {

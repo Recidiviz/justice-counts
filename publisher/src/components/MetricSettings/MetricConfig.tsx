@@ -15,8 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { useIsFooterVisible } from "@justice-counts/common/hooks";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
@@ -29,6 +30,7 @@ import * as Styled from "./MetricConfig.styled";
 
 function MetricConfig() {
   const { agencyId } = useParams() as { agencyId: string };
+  const [isFooterVisible, setIsFooterVisible] = useIsFooterVisible();
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
   const { system: systemSearchParam } = settingsSearchParams;
@@ -42,9 +44,15 @@ function MetricConfig() {
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const metricEnabled = metrics[systemMetricKey]?.enabled;
 
+  useEffect(() => {
+    const footer = document.getElementById("footer");
+    setIsFooterVisible(footer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [metricConfigPage]);
+
   return (
     <>
-      <Styled.MetricSettingsSideBar>
+      <Styled.MetricSettingsSideBar isFooterVisible={isFooterVisible}>
         <Styled.SystemName
           onClick={() =>
             setSettingsSearchParams({

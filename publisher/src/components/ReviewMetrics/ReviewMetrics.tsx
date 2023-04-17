@@ -66,7 +66,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
 }) => {
   const { agencyId } = useParams();
   const navigate = useNavigate();
-  const isFooterVisible = useIsFooterVisible();
+  const [isFooterVisible] = useIsFooterVisible();
   const [isMetricsSectionExpanded, setIsMetricsSectionExpanded] =
     useState(true);
   const [isOverwritesSectionExpanded, setIsOverwritesSectionExpanded] =

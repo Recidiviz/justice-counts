@@ -33,7 +33,10 @@ export const MetricSettingsSideBar = styled.div<{
   display: flex;
   flex-direction: column;
   width: 424px;
-  height: calc(100vh - ${METRIC_SETTINGS_MENU_TOP_PADDING + 116}px);
+  height: ${({ isFooterVisible }) =>
+    isFooterVisible
+      ? `calc(100vh - ${METRIC_SETTINGS_MENU_TOP_PADDING + 116}px)`
+      : `calc(100vh - ${METRIC_SETTINGS_MENU_TOP_PADDING + 24}px)`};
 `;
 
 export const SystemName = styled.div`
