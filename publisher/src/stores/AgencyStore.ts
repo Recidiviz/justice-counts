@@ -117,17 +117,14 @@ class AgencyStore {
 =======
 >>>>>>> 3643ddf (changed json response type)
         jurisdictions: {
-          agency_id: string;
-          jurisdictions: {
-            included: string[];
-            excluded: string[];
-          };
+          included: string[];
+          excluded: string[];
         };
       };
       runInAction(() => {
         if (this.currentAgency) {
           this.currentAgency.settings = responseJson.settings;
-          this.jurisdictions = responseJson.jurisdictions.jurisdictions;
+          this.jurisdictions = responseJson.jurisdictions;
         }
       });
     } catch (error) {
