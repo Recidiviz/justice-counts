@@ -41,8 +41,9 @@ import * as Styled from "./MetricAvailability.styled";
 function MetricAvailability() {
   const { agencyId } = useParams() as { agencyId: string };
   const [settingsSearchParams] = useSettingsSearchParams();
+  const { system: systemSearchParam, metric: metricSearchParam } =
+    settingsSearchParams;
   const { metricConfigStore, userStore } = useStore();
-
   const {
     metrics,
     disaggregations,
@@ -55,12 +56,13 @@ function MetricAvailability() {
     saveMetricSettings,
     initializeMetricConfigStoreValues,
   } = metricConfigStore;
-  const { system: systemSearchParam, metric: metricSearchParam } =
-    settingsSearchParams;
-  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const [activeDisaggregationKey, setActiveDisaggregationKey] =
     useState<string>();
 
+  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
+  const activeDisaggregationKeys =
+    disaggregations[systemMetricKey] &&
+    Object.keys(disaggregations[systemMetricKey]);
   const {
     defaultFrequency,
     customFrequency,
@@ -78,10 +80,6 @@ function MetricAvailability() {
     .map((system) => system.toLowerCase());
   const hasEnabledSupervisionSubsystems =
     enabledSupervisionSubsystems && enabledSupervisionSubsystems.length > 0;
-
-  const activeDisaggregationKeys =
-    disaggregations[systemMetricKey] &&
-    Object.keys(disaggregations[systemMetricKey]);
 
   const handleUpdateMetricEnabledStatus = (enabledStatus: boolean) => {
     if (systemSearchParam && metricSearchParam) {
