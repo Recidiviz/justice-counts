@@ -35,8 +35,9 @@ export const MetricSettingsSideBar = styled.div<{
   width: 424px;
   height: ${({ isFooterVisible }) =>
     isFooterVisible
-      ? `calc(100vh - ${METRIC_SETTINGS_MENU_TOP_PADDING + 116}px)`
+      ? `calc(100vh - ${METRIC_SETTINGS_MENU_TOP_PADDING + 96}px)`
       : `calc(100vh - ${METRIC_SETTINGS_MENU_TOP_PADDING + 24}px)`};
+  transition: height 0.5s ease-in-out;
 `;
 
 export const SystemName = styled.div`
