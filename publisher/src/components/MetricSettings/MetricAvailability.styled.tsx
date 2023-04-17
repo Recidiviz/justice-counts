@@ -74,7 +74,7 @@ export const Description = styled.div`
   margin-bottom: 40px;
 `;
 
-export const SectionTitle = styled.div`
+export const MetricSettingsSectionTitle = styled.div`
   ${typography.sizeCSS.title};
   margin-bottom: 16px;
 `;
@@ -149,4 +149,93 @@ export const MonthSelectionDropdownContainer = styled.div<{
         background-color: ${palette.solid.darkblue};
       }
     `};
+`;
+
+export const BreakdownsSection = styled.div<{ disabled: boolean }>`
+  width: 100%;
+  position: relative;
+
+  ${({ disabled }) => disabled && `pointer-events: none; opacity: 0.5`}
+`;
+
+export const BreakdownsSectionTitle = styled(MetricSettingsSectionTitle)`
+  margin-bottom: 8px;
+`;
+
+export const BreakdownsSectionDescription = styled(Description)`
+  margin-bottom: 24px;
+  color: ${palette.solid.darkgrey};
+`;
+
+export const BreakdownsOptionsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-bottom: 16px;
+`;
+
+export const BreakdownsOption = styled.div<{ active: boolean }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 20px;
+  text-transform: capitalize;
+  ${typography.sizeCSS.small};
+  color: ${({ active }) =>
+    active ? palette.solid.white : palette.solid.darkgrey};
+  background-color: ${({ active }) =>
+    active ? palette.solid.blue : palette.solid.offwhite};
+  cursor: pointer;
+`;
+
+export const DimensionsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2px;
+`;
+
+export const DimensionsHeader = styled.div`
+  ${typography.sizeCSS.small};
+  display: flex;
+  flex-direction: row;
+  gap: 11px;
+`;
+
+export const SelectAllDimensions = styled.span`
+  display: inline-block;
+  color: ${palette.solid.blue};
+  cursor: pointer;
+`;
+
+export const DimensionsList = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const DimensionsListItem = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  padding: 16px 0 16px 10px;
+  border-bottom: 1px solid ${palette.highlight.grey4};
+  ${typography.sizeCSS.medium};
+  cursor: pointer;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  img {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+export const DisabledDimensionIcon = styled.div`
+  width: 20px;
+  height: 20px;
+  border: 1px solid ${palette.highlight.grey4};
+  border-radius: 100%;
 `;

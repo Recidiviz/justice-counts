@@ -16,6 +16,7 @@
 // =============================================================================
 
 import infoIcon from "@justice-counts/common/assets/info-icon.svg";
+import blueCheckIcon from "@justice-counts/common/assets/status-check-icon.png";
 import {
   Dropdown,
   DropdownOption,
@@ -26,11 +27,11 @@ import {
   SupervisionSystem,
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { monthsByName } from "../../utils";
+import { monthsByName, removeSnakeCase } from "../../utils";
 import { ReactComponent as CalendarIconDark } from "../assets/calendar-icon-dark.svg";
 import { ReactComponent as CalendarIconLight } from "../assets/calendar-icon-light.svg";
 import { ReportFrequencyUpdate } from "../MetricConfiguration";
@@ -48,6 +49,7 @@ function MetricAvailability() {
     dimensions,
     updateMetricEnabledStatus,
     updateDisaggregationEnabledStatus,
+    updateDimensionEnabledStatus,
     updateMetricReportFrequency,
     updateDisaggregatedBySupervisionSubsystems,
     saveMetricSettings,
@@ -56,6 +58,8 @@ function MetricAvailability() {
   const { system: systemSearchParam, metric: metricSearchParam } =
     settingsSearchParams;
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
+  const [activeDisaggregationKey, setActiveDisaggregationKey] =
+    useState<string>();
 
   const {
     defaultFrequency,
@@ -73,6 +77,9 @@ function MetricAvailability() {
     .map((system) => system.toLowerCase());
   const hasEnabledSupervisionSubsystems =
     enabledSupervisionSubsystems && enabledSupervisionSubsystems.length > 0;
+  const activeDisaggregationKeys =
+    disaggregations[systemMetricKey] &&
+    Object.keys(disaggregations[systemMetricKey]);
 
   const handleUpdateMetricEnabledStatus = (enabledStatus: boolean) => {
     if (systemSearchParam && metricSearchParam) {
@@ -114,6 +121,40 @@ function MetricAvailability() {
     }
   };
 
+  const handleDisaggregationSelection = (
+    disaggregationKey: string,
+    status: boolean
+  ) => {
+    if (systemSearchParam && metricSearchParam) {
+      const updatedSetting = updateDisaggregationEnabledStatus(
+        systemSearchParam,
+        metricSearchParam,
+        disaggregationKey,
+        status
+      );
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      saveMetricSettings(updatedSetting, agencyId!);
+    }
+  };
+
+  const handleDimensionEnabledStatus = (
+    status: boolean,
+    dimensionKey: string,
+    disaggregationKey: string
+  ) => {
+    if (systemSearchParam && metricSearchParam) {
+      const updatedSetting = updateDimensionEnabledStatus(
+        systemSearchParam,
+        metricSearchParam,
+        disaggregationKey,
+        dimensionKey,
+        status
+      );
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      saveMetricSettings(updatedSetting, agencyId!);
+    }
+  };
+
   const monthSelectionDropdownOptions: DropdownOption[] = monthsByName
     .filter((month) => !["January", "July"].includes(month))
     .map((month) => {
@@ -130,6 +171,34 @@ function MetricAvailability() {
       };
     });
 
+  const disaggregationsOptions = activeDisaggregationKeys?.map((key) => {
+    const currentDisaggregation = disaggregations[systemMetricKey][key];
+    const dimensionsCount = Object.values(
+      dimensions[systemMetricKey][key]
+    ).length;
+    const activeDimensionsCount = Object.values(
+      dimensions[systemMetricKey][key]
+    ).filter((dimension) => dimension.enabled).length;
+
+    return {
+      key: currentDisaggregation.display_name,
+      label: (
+        <>
+          {removeSnakeCase(
+            currentDisaggregation.display_name as string
+          ).toLowerCase()}{" "}
+          ({activeDimensionsCount}/{dimensionsCount})
+        </>
+      ),
+      onClick: () => setActiveDisaggregationKey(key),
+      active: key === activeDisaggregationKey,
+    };
+  });
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <Styled.Wrapper>
       <Styled.InnerWrapper>
@@ -140,7 +209,9 @@ function MetricAvailability() {
         <Styled.Description>
           Tell Justice Counts if you plan on sharing data for this metric.
         </Styled.Description>
-        <Styled.SectionTitle>Metric</Styled.SectionTitle>
+        <Styled.MetricSettingsSectionTitle>
+          Metric
+        </Styled.MetricSettingsSectionTitle>
         <Styled.SettingRowsContainer>
           <Styled.SettingRow>
             <Styled.SettingName>
@@ -296,6 +367,90 @@ function MetricAvailability() {
               </Styled.SettingRow>
             )}
         </Styled.SettingRowsContainer>
+        <Styled.BreakdownsSection disabled={!metricEnabled}>
+          <Styled.BreakdownsSectionTitle>
+            Metric Breakdowns
+          </Styled.BreakdownsSectionTitle>
+          <Styled.BreakdownsSectionDescription>
+            Select the categories that your agency is able to report as
+            disaggregations of {metrics[systemMetricKey]?.label}.
+          </Styled.BreakdownsSectionDescription>
+          <Styled.BreakdownsOptionsContainer>
+            <Styled.BreakdownsOption
+              onClick={() => setActiveDisaggregationKey(undefined)}
+              active={!activeDisaggregationKey}
+            >
+              Show all
+            </Styled.BreakdownsOption>
+            {disaggregationsOptions &&
+              disaggregationsOptions.map(({ key, label, onClick, active }) => (
+                <Styled.BreakdownsOption
+                  key={key}
+                  onClick={onClick}
+                  active={active}
+                >
+                  {label}
+                </Styled.BreakdownsOption>
+              ))}
+          </Styled.BreakdownsOptionsContainer>
+          {activeDisaggregationKeys?.map((disaggregationKey) => {
+            const currentDisaggregation =
+              disaggregations[systemMetricKey][disaggregationKey];
+            const currentDimensions =
+              dimensions[systemMetricKey][disaggregationKey];
+            const currentEnabledDimensions = Object.values(
+              currentDimensions
+            ).filter((dimension) => dimension.enabled);
+
+            if (
+              activeDisaggregationKey &&
+              activeDisaggregationKey !== disaggregationKey
+            )
+              return null;
+
+            return (
+              <Styled.DimensionsContainer key={disaggregationKey}>
+                <Styled.DimensionsHeader>
+                  {currentDisaggregation.display_name} (
+                  {`${currentEnabledDimensions.length}/${
+                    Object.values(currentDimensions).length
+                  }`}
+                  )
+                  <Styled.SelectAllDimensions
+                    onClick={() =>
+                      handleDisaggregationSelection(disaggregationKey, true)
+                    }
+                  >
+                    Select All
+                  </Styled.SelectAllDimensions>
+                </Styled.DimensionsHeader>
+                <Styled.DimensionsList>
+                  {Object.entries(currentDimensions).map(
+                    ([dimensionKey, { label, enabled }]) => (
+                      <Styled.DimensionsListItem
+                        key={dimensionKey}
+                        onClick={() =>
+                          handleDimensionEnabledStatus(
+                            !enabled,
+                            dimensionKey,
+                            disaggregationKey
+                          )
+                        }
+                      >
+                        {enabled ? (
+                          <img src={blueCheckIcon} alt="" />
+                        ) : (
+                          <Styled.DisabledDimensionIcon />
+                        )}
+                        {label}
+                      </Styled.DimensionsListItem>
+                    )
+                  )}
+                </Styled.DimensionsList>
+              </Styled.DimensionsContainer>
+            );
+          })}
+        </Styled.BreakdownsSection>
       </Styled.InnerWrapper>
     </Styled.Wrapper>
   );

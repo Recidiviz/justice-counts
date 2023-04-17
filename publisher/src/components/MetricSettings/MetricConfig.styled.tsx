@@ -33,10 +33,7 @@ export const MetricSettingsSideBar = styled.div<{
   display: flex;
   flex-direction: column;
   width: 424px;
-  height: ${({ isFooterVisible }) =>
-    isFooterVisible
-      ? `calc(100vh - ${METRIC_SETTINGS_MENU_TOP_PADDING + 116}px)`
-      : `calc(100vh - ${METRIC_SETTINGS_MENU_TOP_PADDING + 24}px)`};
+  height: calc(100vh - ${METRIC_SETTINGS_MENU_TOP_PADDING + 116}px);
 `;
 
 export const SystemName = styled.div`
@@ -103,7 +100,7 @@ export const MenuItemLabel = styled.div<{
   pointer-events: ${({ disabled }) => disabled && "none"};
 `;
 
-export const MetricIndicator = styled.div<{ available: boolean }>`
+export const MetricIndicator = styled.div<{ isAlert?: boolean }>`
   width: 90%;
   padding: 26px 24px;
   margin-top: auto;
@@ -111,8 +108,8 @@ export const MetricIndicator = styled.div<{ available: boolean }>`
   flex-direction: row;
   align-items: center;
   gap: 12px;
-  background-color: ${({ available }) =>
-    available ? palette.solid.green : palette.solid.orange};
+  background-color: ${({ isAlert }) =>
+    isAlert ? palette.solid.orange : palette.solid.green};
   color: ${palette.solid.white};
   ${typography.sizeCSS.medium};
   border-radius: 3px;

@@ -48,7 +48,7 @@ const getToastStyles = (color?: ToastColor, positionNextToIcon?: boolean) => {
       height: ${HEADER_BAR_HEIGHT - 1}px;
       display: flex;
       align-items: center;
-      background: ${toastBackgroundColor};
+      background-color: ${toastBackgroundColor};
       color: ${color === "grey" ? palette.solid.grey : palette.solid.white};
       padding: 20px 24px;
       border-radius: 2px;

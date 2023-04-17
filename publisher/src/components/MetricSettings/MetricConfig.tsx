@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { useIsFooterVisible } from "@justice-counts/common/hooks";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -30,7 +29,6 @@ import * as Styled from "./MetricConfig.styled";
 
 function MetricConfig() {
   const { agencyId } = useParams() as { agencyId: string };
-  const isFooterVisible = useIsFooterVisible();
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
   const { system: systemSearchParam } = settingsSearchParams;
@@ -46,7 +44,7 @@ function MetricConfig() {
 
   return (
     <>
-      <Styled.MetricSettingsSideBar isFooterVisible={isFooterVisible}>
+      <Styled.MetricSettingsSideBar>
         <Styled.SystemName
           onClick={() =>
             setSettingsSearchParams({
@@ -89,19 +87,16 @@ function MetricConfig() {
             </Styled.MenuItemLabel>
           </Styled.MenuItem>
         </Styled.Menu>
-        <Styled.MetricIndicator available={metricEnabled !== null}>
-          {metricEnabled === null && (
-            <>
-              <img src={indicatorAlertIcon} alt="" /> Configuration required
-            </>
-          )}
-          {metricEnabled !== null && (
-            <>
-              <img src={indicatorSuccessIcon} alt="" /> Available for data
-              upload
-            </>
-          )}
-        </Styled.MetricIndicator>
+        {metricEnabled === null && (
+          <Styled.MetricIndicator isAlert>
+            <img src={indicatorAlertIcon} alt="" /> Configuration required
+          </Styled.MetricIndicator>
+        )}
+        {metricEnabled && (
+          <Styled.MetricIndicator>
+            <img src={indicatorSuccessIcon} alt="" /> Available for data upload
+          </Styled.MetricIndicator>
+        )}
       </Styled.MetricSettingsSideBar>
       {metricConfigPage === "availability" && <MetricAvailability />}
       {metricConfigPage === "definitions" && <></>}

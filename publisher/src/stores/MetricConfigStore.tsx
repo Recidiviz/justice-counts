@@ -234,7 +234,6 @@ class MetricConfigStore {
     showToast({
       message: `Settings saved.`,
       check: true,
-      color: "grey",
       timeout: 4000,
     });
     return response;
