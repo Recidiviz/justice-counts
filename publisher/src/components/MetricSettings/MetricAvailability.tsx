@@ -71,12 +71,14 @@ function MetricAvailability() {
   const customOrDefaultFrequency = customFrequency || defaultFrequency;
   const startingMonthNotJanuaryJuly =
     startingMonth !== null && startingMonth !== 1 && startingMonth !== 7;
+
   const currentAgency = userStore.getAgency(agencyId);
   const enabledSupervisionSubsystems = currentAgency?.systems
     .filter((system) => SupervisionSubsystems.includes(system))
     .map((system) => system.toLowerCase());
   const hasEnabledSupervisionSubsystems =
     enabledSupervisionSubsystems && enabledSupervisionSubsystems.length > 0;
+
   const activeDisaggregationKeys =
     disaggregations[systemMetricKey] &&
     Object.keys(disaggregations[systemMetricKey]);
