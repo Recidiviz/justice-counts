@@ -215,7 +215,14 @@ function MetricAvailability() {
         <Styled.SettingRowsContainer>
           <Styled.SettingRow>
             <Styled.SettingName>
-              Availability <img src={infoIcon} alt="" />
+              Availability{" "}
+              <Styled.SettingNameInfoIconWrapper>
+                <img src={infoIcon} alt="" />
+                <Styled.SettingTooltip>
+                  Tell us the frequency at which you intend to report this data.
+                  You can always change this later.
+                </Styled.SettingTooltip>
+              </Styled.SettingNameInfoIconWrapper>
             </Styled.SettingName>
             <Styled.SettingOptions>
               <RadioButton
@@ -267,7 +274,15 @@ function MetricAvailability() {
           {metricEnabled && customFrequency === "ANNUAL" && (
             <Styled.SettingRow>
               <Styled.SettingName>
-                Starting Month <img src={infoIcon} alt="" />
+                Starting Month{" "}
+                <Styled.SettingNameInfoIconWrapper>
+                  <img src={infoIcon} alt="" />
+                  <Styled.SettingTooltip>
+                    {"For Annual metrics, please tell us which month the counting year starts with " +
+                      "(e.g., if your data describes the budget for October to September, select October). " +
+                      "Select “Calendar Year” for January -> December, or “Fiscal Year” for July -> June."}
+                  </Styled.SettingTooltip>
+                </Styled.SettingNameInfoIconWrapper>
               </Styled.SettingName>
               <Styled.SettingOptions>
                 <RadioButton
@@ -336,7 +351,15 @@ function MetricAvailability() {
               <Styled.SettingRow>
                 <Styled.SettingName>
                   Disaggregated by Supervision Type{" "}
-                  <img src={infoIcon} alt="" />
+                  <Styled.SettingNameInfoIconWrapper>
+                    <img src={infoIcon} alt="" />
+                    <Styled.SettingTooltip>
+                      For Supervision metrics, you can choose to share the data
+                      for your supervision operations as a whole, or
+                      disaggregated by your supervision populations (parole,
+                      probation, dual, etc).
+                    </Styled.SettingTooltip>
+                  </Styled.SettingNameInfoIconWrapper>
                 </Styled.SettingName>
                 <Styled.SettingOptions>
                   <RadioButton

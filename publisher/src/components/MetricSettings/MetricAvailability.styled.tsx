@@ -104,6 +104,32 @@ export const SettingName = styled.div`
   ${typography.sizeCSS.medium};
 `;
 
+export const SettingNameInfoIconWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+`;
+
+export const SettingTooltip = styled.div`
+  display: none;
+  position: absolute;
+  left: 32px;
+  background-color: #0e111a;
+  border-radius: 3px;
+  color: ${palette.solid.white};
+  padding: 24px;
+  width: 417px;
+  max-width: 417px;
+  z-index: 2;
+  ${typography.sizeCSS.normal};
+
+  ${SettingNameInfoIconWrapper}:hover & {
+    display: block;
+  }
+`;
+
 export const SettingOptions = styled.div`
   width: 55%;
   display: flex;
