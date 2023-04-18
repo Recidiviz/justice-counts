@@ -27,6 +27,7 @@ import indicatorSuccessIcon from "../assets/indicator-success-icon.svg";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import MetricAvailability from "./MetricAvailability";
 import * as Styled from "./MetricConfig.styled";
+import MetricDefinitions from "./MetricDefinitions";
 
 function MetricConfig() {
   const { agencyId } = useParams() as { agencyId: string };
@@ -107,7 +108,7 @@ function MetricConfig() {
         )}
       </Styled.MetricSettingsSideBar>
       {metricConfigPage === "availability" && <MetricAvailability />}
-      {metricConfigPage === "definitions" && <></>}
+      {metricConfigPage === "definitions" && <MetricDefinitions />}
     </>
   );
 }
