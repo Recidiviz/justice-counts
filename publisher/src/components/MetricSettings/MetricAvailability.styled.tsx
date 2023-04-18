@@ -116,7 +116,7 @@ export const SettingTooltip = styled.div`
   display: none;
   position: absolute;
   left: 32px;
-  background-color: #0e111a;
+  background-color: ${palette.solid.black};
   border-radius: 3px;
   color: ${palette.solid.white};
   padding: 24px;
