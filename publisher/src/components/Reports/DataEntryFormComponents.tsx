@@ -26,7 +26,7 @@ import React from "react";
 
 import { useStore } from "../../stores";
 import { formatNumberInput } from "../../utils";
-import { BinaryRadioButton, TextInput } from "../Forms";
+import { TextInput } from "../Forms";
 
 interface MetricTextInputProps {
   reportID: number;
@@ -154,61 +154,6 @@ interface AdditionalContextInputsProps extends MetricTextInputProps {
   context: MetricContext;
   contextIndex: number;
 }
-
-interface BinaryContextProps extends AdditionalContextInputsProps {
-  options: string[];
-}
-
-export const BinaryRadioButtonInputs = observer(
-  ({
-    reportID,
-    metric,
-    context,
-    contextIndex,
-    options,
-    disabled,
-  }: BinaryContextProps) => {
-    const { formStore } = useStore();
-    const { contexts, updateContextValue } = formStore;
-
-    const handleContextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (!disabled) {
-        updateContextValue(
-          reportID,
-          metric.key,
-          context.key,
-          e.target.value,
-          context.required,
-          context.type,
-          metric.enabled
-        );
-      }
-    };
-
-    return (
-      <>
-        {options.map((option: string) => (
-          <BinaryRadioButton
-            type="radio"
-            key={option}
-            id={`${metric.key}-${context.key}-${option}`}
-            name={`${metric.key}-${context.key}`}
-            metricKey={metric.key}
-            label={option}
-            value={option}
-            onChange={handleContextChange}
-            checked={
-              contexts?.[reportID]?.[metric.key]?.[context.key]
-                ? contexts[reportID][metric.key][context.key].value === option
-                : metric.contexts[contextIndex].value === option
-            }
-            disabled={disabled}
-          />
-        ))}
-      </>
-    );
-  }
-);
 
 export const AdditionalContextInput = observer(
   ({

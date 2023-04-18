@@ -20,6 +20,7 @@ import { Navigate, Route, Routes, useParams } from "react-router-dom";
 
 import { DataUpload } from "../components/DataUpload";
 import UploadReview from "../components/DataUpload/UploadReview";
+import { MetricsDataChart } from "../components/DataViz/MetricsDataChart";
 import { REPORTS_LOWERCASE } from "../components/Global/constants";
 import { Guidance } from "../components/Guidance";
 import Header from "../components/Header";
@@ -69,7 +70,7 @@ export const Router = () => {
             }
           />
 
-          <Route path="/data" element={<MetricsView />} />
+          <Route path="/data" element={<MetricsDataChart />} />
           <Route path="/settings/*" element={<Settings />} />
           {/* WIP pages */}
           <Route

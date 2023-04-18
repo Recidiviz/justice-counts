@@ -33,7 +33,6 @@ import {
   DefinitionSelection,
   DefinitionsTitle,
   MetricOnOffWrapper,
-  MiniButton,
 } from ".";
 
 export const RaceEthnicitiesBreakdownContainer = styled.div<{
@@ -188,7 +187,6 @@ export const RaceContainer = styled(Definitions)``;
 export const RaceWrapper = styled(DefinitionItem)``;
 export const RaceDisplayName = styled(DefinitionDisplayName)``;
 export const RaceSelection = styled(DefinitionSelection)``;
-export const RaceSelectionButton = styled(MiniButton)``;
 export const RaceEthnicityRadioButtonGroupWrapper = styled(
   BinaryRadioGroupWrapper
 )`

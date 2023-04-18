@@ -17,71 +17,17 @@
 
 import {
   HEADER_BAR_HEIGHT,
-  MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import styled, { css } from "styled-components/macro";
+import styled from "styled-components/macro";
 
-import { DataUploadHeader } from "../DataUpload";
 import {
   MAIN_PANEL_MAX_WIDTH,
-  ReviewMetricsWrapper,
   SectionTitle,
-  SectionTitleNumber,
 } from "../ReviewMetrics/ReviewMetrics.styles";
-import { CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH } from "./ReportDataEntry.styles";
 
 const CONTAINER_HORIZONTAL_PADDING = 24;
-const MAIN_PANEL_AND_TWO_SIDE_PANELS_MIN_WIDTH =
-  CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH * 2 + MAIN_PANEL_MAX_WIDTH;
-const MAIN_PANEL_AND_ONE_SIDE_PANEL_MIN_WIDTH =
-  CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH +
-  MAIN_PANEL_MAX_WIDTH +
-  CONTAINER_HORIZONTAL_PADDING * 2;
-
-export const PublishConfirmationTopBar = styled(DataUploadHeader)`
-  z-index: 4;
-`;
-
-export const ConfirmationButtonsContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-`;
-
-export const PublishConfirmationMainPanel = styled(ReviewMetricsWrapper)`
-  padding-top: 40px;
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    padding: 40px;
-  }
-`;
-
-export const ConfirmationDialogueWrapper = styled.div`
-  background: ${palette.solid.white};
-  display: flex;
-  justify-content: center;
-  position: relative;
-  width: 100%;
-  padding-left: ${CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH}px;
-  padding-right: ${CONFIRMATION_DIALOGUE_SIDE_PANEL_WIDTH}px;
-  margin-top: 56px;
-
-  @media only screen and (max-width: ${MAIN_PANEL_AND_TWO_SIDE_PANELS_MIN_WIDTH}px) {
-    padding-right: ${CONTAINER_HORIZONTAL_PADDING}px;
-    justify-content: start;
-  }
-
-  @media only screen and (max-width: ${MAIN_PANEL_AND_ONE_SIDE_PANEL_MIN_WIDTH}px) {
-    padding-left: ${CONTAINER_HORIZONTAL_PADDING}px;
-    justify-content: center;
-  }
-
-  div {
-    max-width: ${MAIN_PANEL_MAX_WIDTH}px;
-  }
-`;
 
 export const MetricCollapseSignWrapper = styled.div<{ isExpanded: boolean }>`
   width: 16px;
@@ -93,22 +39,6 @@ export const MetricCollapseSignWrapper = styled.div<{ isExpanded: boolean }>`
   &:hover {
     display: block;
   }
-`;
-
-export const HorizontalLine = styled.div`
-  width: 100%;
-  position: absolute;
-  top: 7px;
-  border: 1px solid ${palette.solid.darkgrey};
-  border-radius: 2px;
-`;
-
-export const VerticalLine = styled.div`
-  height: 100%;
-  position: absolute;
-  left: 7px;
-  border: 1px solid ${palette.solid.darkgrey};
-  border-radius: 2px;
 `;
 
 export const Metric = styled.div`
@@ -129,67 +59,14 @@ export const Metric = styled.div`
   }
 `;
 
-export const MetricHeader = styled.div<{ hasValue: boolean }>`
-  padding-top: 16px;
-  border-top: 1px solid ${palette.highlight.grey3};
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  color: ${({ hasValue }) =>
-    hasValue ? palette.solid.darkgrey : palette.highlight.grey8};
-
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-export const MetricTitleWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
 export const MetricTitle = styled(SectionTitle)`
   &:hover {
     cursor: pointer;
   }
 `;
 
-export const MetricTitleNumber = styled(SectionTitleNumber)<{
-  hasError: boolean;
-}>`
-  background-color: ${({ hasError }) =>
-    hasError ? palette.solid.red : palette.solid.blue};
-`;
-
 export const MetricValue = styled.div`
   ${typography.sizeCSS.title}
-`;
-
-export const MetricDetailWrapper = styled.div<{ isExpanded: boolean }>`
-  flex: 0 1 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-
-  @media only screen and (max-width: ${MAIN_PANEL_MAX_WIDTH +
-    CONTAINER_HORIZONTAL_PADDING * 2}px) {
-    flex: 0 1 auto;
-  }
-
-  display: ${({ isExpanded }) => (isExpanded ? "block" : "none")};
-`;
-
-export const MetricSubTitleContainer = styled.div<{ secondary?: boolean }>`
-  ${typography.sizeCSS.small}
-  margin-bottom: 16px;
-  margin-top: 16px;
-  ${({ secondary }) =>
-    secondary &&
-    css`
-      color: ${palette.highlight.grey7};
-      margin-bottom: 8px;
-    `}
 `;
 
 export const Breakdown = styled.div<{ missing?: boolean }>`
@@ -203,20 +80,6 @@ export const Breakdown = styled.div<{ missing?: boolean }>`
 
 export const DisaggregationBreakdown = styled(Breakdown)<{ error?: boolean }>`
   color: ${({ error }) => (error ? palette.solid.red : palette.solid.darkgrey)};
-`;
-
-export const DisaggregationBreakdownContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-
-  &:hover ${DisaggregationBreakdown}:not(:hover) {
-    opacity: 0.5;
-  }
-`;
-
-export const BreakdownLabelContainer = styled.div`
-  display: flex;
 `;
 
 export const BreakdownLabel = styled.div`
@@ -252,16 +115,6 @@ export const ErrorImg = styled.img`
   margin-left: 4px;
   width: 16px;
   height: 16px;
-`;
-
-export const BreakdownErrorImg = styled(ErrorImg)`
-  transform: translate(0, 2px);
-`;
-
-export const ContextErrorImg = styled(ErrorImg)`
-  width: 12px;
-  height: 12px;
-  transform: translate(0, 1px);
 `;
 
 export const EmptyIcon = styled.div`
