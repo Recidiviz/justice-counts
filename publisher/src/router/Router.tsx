@@ -24,7 +24,6 @@ import { MetricsDataChart } from "../components/DataViz/MetricsDataChart";
 import { REPORTS_LOWERCASE } from "../components/Global/constants";
 import { Guidance } from "../components/Guidance";
 import Header from "../components/Header";
-import { MetricsView } from "../components/MetricConfiguration/MetricsView";
 import { MetricSettings } from "../components/MetricSettings/MetricSettings";
 import BulkActionReview from "../components/Reports/BulkActionReview";
 import CreateReport from "../components/Reports/CreateReport";
