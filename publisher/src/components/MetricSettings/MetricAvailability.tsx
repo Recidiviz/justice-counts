@@ -216,13 +216,13 @@ function MetricAvailability() {
           <Styled.SettingRow>
             <Styled.SettingName>
               Availability{" "}
-              <Styled.SettingNameInfoIconWrapper>
+              <Styled.InfoIconWrapper>
                 <img src={infoIcon} alt="" />
                 <Styled.SettingTooltip>
                   Tell us the frequency at which you intend to report this data.
                   You can always change this later.
                 </Styled.SettingTooltip>
-              </Styled.SettingNameInfoIconWrapper>
+              </Styled.InfoIconWrapper>
             </Styled.SettingName>
             <Styled.SettingOptions>
               <RadioButton
@@ -275,14 +275,14 @@ function MetricAvailability() {
             <Styled.SettingRow>
               <Styled.SettingName>
                 Starting Month{" "}
-                <Styled.SettingNameInfoIconWrapper>
+                <Styled.InfoIconWrapper>
                   <img src={infoIcon} alt="" />
                   <Styled.SettingTooltip>
                     {"For Annual metrics, please tell us which month the counting year starts with " +
                       "(e.g., if your data describes the budget for October to September, select October). " +
                       "Select “Calendar Year” for January -> December, or “Fiscal Year” for July -> June."}
                   </Styled.SettingTooltip>
-                </Styled.SettingNameInfoIconWrapper>
+                </Styled.InfoIconWrapper>
               </Styled.SettingName>
               <Styled.SettingOptions>
                 <RadioButton
@@ -351,7 +351,7 @@ function MetricAvailability() {
               <Styled.SettingRow>
                 <Styled.SettingName>
                   Disaggregated by Supervision Type{" "}
-                  <Styled.SettingNameInfoIconWrapper>
+                  <Styled.InfoIconWrapper>
                     <img src={infoIcon} alt="" />
                     <Styled.SettingTooltip>
                       For Supervision metrics, you can choose to share the data
@@ -359,7 +359,7 @@ function MetricAvailability() {
                       disaggregated by your supervision populations (parole,
                       probation, dual, etc).
                     </Styled.SettingTooltip>
-                  </Styled.SettingNameInfoIconWrapper>
+                  </Styled.InfoIconWrapper>
                 </Styled.SettingName>
                 <Styled.SettingOptions>
                   <RadioButton

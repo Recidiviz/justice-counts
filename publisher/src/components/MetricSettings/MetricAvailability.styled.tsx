@@ -104,7 +104,7 @@ export const SettingName = styled.div`
   ${typography.sizeCSS.medium};
 `;
 
-export const SettingNameInfoIconWrapper = styled.div`
+export const InfoIconWrapper = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
@@ -125,7 +125,7 @@ export const SettingTooltip = styled.div`
   z-index: 2;
   ${typography.sizeCSS.normal};
 
-  ${SettingNameInfoIconWrapper}:hover & {
+  ${InfoIconWrapper}:hover & {
     display: block;
   }
 `;
