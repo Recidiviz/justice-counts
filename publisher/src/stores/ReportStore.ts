@@ -31,8 +31,10 @@ import {
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
 import { MetricSettings } from "../components/MetricConfiguration";
+import { PublishReviewPropsFromDatapoints } from "../components/ReviewMetrics";
 import { groupBy } from "../utils";
 import API from "./API";
+import DatapointsStore from "./DatapointsStore";
 import UserStore from "./UserStore";
 
 class ReportStore {
@@ -187,6 +189,54 @@ class ReportStore {
       runInAction(() => {
         this.loadingReportData = false;
       });
+    }
+  }
+
+  async getPublishReviewPropsFromDatapoints(
+    reportIDs: number[],
+    currentAgencyId: string
+  ): Promise<PublishReviewPropsFromDatapoints | Error | undefined> {
+    try {
+      const reportsWithDatapoints =
+        (await this.getMultipleReportsWithDatapoints(
+          reportIDs,
+          currentAgencyId
+        )) as Report[] | Error;
+      if (reportsWithDatapoints instanceof Error) {
+        throw new Error(
+          `There was an issue retrieving these ${REPORTS_LOWERCASE}.`
+        );
+      }
+
+      const combinedFilteredDatapointsFromAllReports = reportsWithDatapoints
+        ?.map((report) => report.datapoints)
+        .flat()
+        .filter((dp) => dp.value !== null);
+      const datapointsByMetric = DatapointsStore.keyRawDatapointsByMetric(
+        combinedFilteredDatapointsFromAllReports
+      );
+
+      const datapointsEntries = Object.entries(datapointsByMetric);
+      const metricsToDisplay = datapointsEntries.map(
+        ([metricKey, metricDatapoints]) => {
+          return {
+            key: metricKey,
+            displayName: metricDatapoints[0].metric_display_name as string,
+          };
+        }
+      );
+      const firstSystemKey = datapointsEntries[0][0].split("_")[0]; // get first system key via splitting a datapoint's metric key
+      const firstMetricKey = metricsToDisplay[0].key;
+
+      return {
+        reports: reportsWithDatapoints,
+        datapointsByMetric,
+        metricsToDisplay,
+        firstSystemKey,
+        firstMetricKey,
+      };
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
     }
   }
 

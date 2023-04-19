@@ -32,6 +32,7 @@ import { PageWrapper } from "../Forms";
 import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 import { Loading } from "../Loading";
 import {
+  PublishReviewPropsFromDatapoints,
   ReviewHeaderActionButton,
   ReviewMetric,
   ReviewMetrics,
@@ -56,8 +57,20 @@ const BulkActionReview = () => {
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const { reportStore } = useStore();
 
-  const [datapoints, setDatapoints] = useState<RawDatapointsByMetric>({});
-  const [records, setRecords] = useState<ReportOverview[]>([]);
+  // const [datapoints, setDatapoints] = useState<RawDatapointsByMetric>({});
+  const [publishReviewProps, setPublishReviewProps] =
+    useState<PublishReviewPropsFromDatapoints>(
+      {} as PublishReviewPropsFromDatapoints
+    );
+  // const [records, setRecords] = useState<ReportOverview[]>([]);
+
+  const {
+    reports,
+    datapointsByMetric,
+    metricsToDisplay,
+    firstSystemKey,
+    firstMetricKey,
+  } = publishReviewProps;
 
   const publishMultipleRecords = async () => {
     const response = (await reportStore.updateMultipleReportStatuses(
@@ -98,28 +111,33 @@ const BulkActionReview = () => {
 
   useEffect(() => {
     const initialize = async () => {
-      const reportsWithDatapoints =
-        (await reportStore.getMultipleReportsWithDatapoints(
-          recordsIds,
-          agencyIdString
-        )) as Report[] | Error;
-      if (reportsWithDatapoints instanceof Error) {
+      // const reportsWithDatapoints =
+      //   (await reportStore.getMultipleReportsWithDatapoints(
+      //     recordsIds,
+      //     agencyIdString
+      //   )) as Report[] | Error;
+      const reviewProps = await reportStore.getPublishReviewPropsFromDatapoints(
+        recordsIds,
+        agencyIdString
+      );
+      if (reviewProps instanceof Error) {
         setIsLoading(false);
-        return setLoadingError(reportsWithDatapoints.message);
+        return setLoadingError(reviewProps.message);
       }
-      const combinedDatapointsFromAllReports = reportsWithDatapoints
-        ?.map((report) => report.datapoints)
-        .flat()
-        .filter((dp) => dp.value !== null);
+      // const combinedDatapointsFromAllReports = reportsWithDatapoints
+      //   ?.map((report) => report.datapoints)
+      //   .flat()
+      //   .filter((dp) => dp.value !== null);
 
-      if (combinedDatapointsFromAllReports) {
-        setDatapoints(
-          DatapointsStore.keyRawDatapointsByMetric(
-            combinedDatapointsFromAllReports
-          )
-        );
-      }
-      setRecords(reportsWithDatapoints);
+      // if (combinedDatapointsFromAllReports) {
+      //   setDatapoints(
+      //     DatapointsStore.keyRawDatapointsByMetric(
+      //       combinedDatapointsFromAllReports
+      //     )
+      //   );
+      // }
+      if (reviewProps) setPublishReviewProps(reviewProps);
+      // setRecords(reviewProps.reports);
       setIsLoading(false);
     };
 
@@ -143,21 +161,21 @@ const BulkActionReview = () => {
   }
 
   // review component props
-  const datapointsEntries = Object.entries(datapoints);
-  const currentSystemKey = datapointsEntries[0][0].split("_")[0]; // get system key via splitting a datapoint's metric key
-  const metricsToDisplay = datapointsEntries.map(
-    ([metricKey, metricDatapoints]) => {
-      return {
-        key: metricKey,
-        displayName: metricDatapoints[0].metric_display_name as string,
-      };
-    }
-  );
+  // const datapointsEntries = Object.entries(datapoints);
+  // const currentSystemKey = datapointsEntries[0][0].split("_")[0]; // get system key via splitting a datapoint's metric key
+  // const metricsToDisplay = datapointsEntries.map(
+  //   ([metricKey, metricDatapoints]) => {
+  //     return {
+  //       key: metricKey,
+  //       displayName: metricDatapoints[0].metric_display_name as string,
+  //     };
+  //   }
+  // );
   const metrics =
     metricsToDisplay.length > 0
       ? metricsToDisplay.reduce((acc, metric) => {
           const reviewMetric = {
-            datapoints: datapoints[metric.key],
+            datapoints: datapointsByMetric[metric.key],
             display_name: metric.displayName,
             key: metric.key,
             metricHasError: false,
@@ -181,7 +199,7 @@ const BulkActionReview = () => {
     </>
   );
   const unpublishActionDescription = `Here’s a breakdown of data you’ve selected to unpublish. All data in ${
-    records.length > 1
+    reports?.length > 1
       ? `these ${REPORTS_LOWERCASE}`
       : `this ${REPORT_LOWERCASE}`
   } will be saved, and you can re-publish at any time.`;
@@ -205,8 +223,8 @@ const BulkActionReview = () => {
   ];
 
   // modal props
-  const systemSearchParam = currentSystemKey;
-  const metricSearchParam = metricsToDisplay[0].key;
+  const systemSearchParam = firstSystemKey;
+  const metricSearchParam = firstMetricKey;
 
   return (
     <ReviewWrapper>
@@ -227,7 +245,7 @@ const BulkActionReview = () => {
         }
         buttons={buttons}
         metrics={metrics}
-        records={records}
+        records={reports}
       />
     </ReviewWrapper>
   );
