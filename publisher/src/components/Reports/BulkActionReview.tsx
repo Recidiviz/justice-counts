@@ -98,16 +98,15 @@ const BulkActionReview = () => {
 
   useEffect(() => {
     const initialize = async () => {
-      const result = await reportStore.initializeReportSettings(agencyIdString);
-      if (result instanceof Error) {
-        setIsLoading(false);
-        return setLoadingError(result.message);
-      }
       const reportsWithDatapoints =
         (await reportStore.getMultipleReportsWithDatapoints(
           recordsIds,
           agencyIdString
-        )) as Report[];
+        )) as Report[] | Error;
+      if (reportsWithDatapoints instanceof Error) {
+        setIsLoading(false);
+        return setLoadingError(reportsWithDatapoints.message);
+      }
       const combinedDatapointsFromAllReports = reportsWithDatapoints
         ?.map((report) => report.datapoints)
         .flat();
@@ -142,30 +141,15 @@ const BulkActionReview = () => {
     return <div>Error: {loadingError}</div>;
   }
 
-  let currentSystemKey;
-  const enabledMetricKeys = reportStore.agencyMetrics.reduce((keys, metric) => {
-    if (metric.enabled) {
-      currentSystemKey = metric.system.key;
-      keys.push(metric.key);
-    }
-    return keys;
-  }, [] as string[]);
-
-  const metricsToDisplay = Object.entries(datapoints).reduce(
-    (acc, [metricKey, datapoint]) => {
-      if (enabledMetricKeys.includes(metricKey)) {
-        acc.push({
-          key: metricKey,
-          displayName: datapoint[0].metric_display_name as string,
-        });
-      }
-
-      return acc;
-    },
-    [] as { key: string; displayName: string }[]
-  );
-
   // review component props
+  const datapointsEntries = Object.entries(datapoints);
+  const currentSystemKey = datapointsEntries[0][0].split("_")[0]; // get system key via splitting a datapoint's metric key
+  const metricsToDisplay = datapointsEntries.map(([metricKey, datapoint]) => {
+    return {
+      key: metricKey,
+      displayName: datapoint[0].metric_display_name as string,
+    };
+  });
   const metrics =
     metricsToDisplay.length > 0
       ? metricsToDisplay.reduce((acc, metric) => {
@@ -218,10 +202,8 @@ const BulkActionReview = () => {
   ];
 
   // modal props
-  const systemSearchParam =
-    enabledMetricKeys.length > 0 ? currentSystemKey : undefined;
-  const metricSearchParam =
-    enabledMetricKeys.length > 0 ? enabledMetricKeys[0] : undefined;
+  const systemSearchParam = currentSystemKey;
+  const metricSearchParam = metricsToDisplay[0].key;
 
   return (
     <ReviewWrapper>
