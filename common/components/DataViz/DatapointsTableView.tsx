@@ -24,6 +24,7 @@ import {
 } from "../../types";
 import {
   DatapointsMetricNameCell,
+  DatapointsMetricNameCellTooltip,
   DatapointsTableBottomBorder,
   DatapointsTableContainer,
   DatapointsTableDetailsCell,
@@ -151,6 +152,9 @@ export const DatapointsTableView: React.FC<{
                 <DatapointsTableNamesRow>
                   <DatapointsMetricNameCell title={metricName}>
                     {metricName}
+                    <DatapointsMetricNameCellTooltip>
+                      {metricName}
+                    </DatapointsMetricNameCellTooltip>
                   </DatapointsMetricNameCell>
                 </DatapointsTableNamesRow>
               )}
