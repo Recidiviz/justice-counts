@@ -16,8 +16,6 @@
 // =============================================================================
 
 import { showToast } from "@justice-counts/common/components/Toast";
-import DatapointsStore from "@justice-counts/common/stores/BaseDatapointsStore";
-import { RawDatapointsByMetric, Report } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -30,6 +28,7 @@ import { PageWrapper } from "../Forms";
 import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 import { Loading } from "../Loading";
 import {
+  PublishReviewPropsFromDatapoints,
   ReviewHeaderActionButton,
   ReviewMetric,
   ReviewMetrics,
@@ -43,10 +42,21 @@ const DataEntryReview = () => {
   const reportID = Number(params.id);
   const agencyId = Number(params.agencyId);
   const navigate = useNavigate();
-  const [isPublishable, setIsPublishable] = useState(false);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const { reportStore, formStore, userStore, guidanceStore } = useStore();
   const checkMetricForErrors = useCheckMetricForErrors(reportID);
+  const [isPublishable, setIsPublishable] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [loadingDatapoints, setLoadingDatapoints] = useState(true);
+  const [publishReviewProps, setPublishReviewProps] =
+    useState<PublishReviewPropsFromDatapoints>(
+      {} as PublishReviewPropsFromDatapoints
+    );
+  const {
+    datapointsByMetric,
+    metricsToDisplay,
+    firstSystemKey,
+    firstMetricKey,
+  } = publishReviewProps;
 
   const publishReport = async () => {
     if (isPublishable) {
@@ -85,25 +95,16 @@ const DataEntryReview = () => {
     }
   };
 
-  const [datapoints, setDatapoints] = useState<RawDatapointsByMetric>({});
-  const [loadingDatapoints, setLoadingDatapoints] = useState(true);
-
   useEffect(() => {
     const initialize = async () => {
-      const [reportWithDatapoints] =
-        (await reportStore.getMultipleReportsWithDatapoints(
-          [reportID],
-          String(agencyId)
-        )) as Report[];
-
-      if (reportWithDatapoints.datapoints) {
-        const filteredDatapoints = reportWithDatapoints.datapoints.filter(
-          (dp) => dp.value !== null
-        );
-        setDatapoints(
-          DatapointsStore.keyRawDatapointsByMetric(filteredDatapoints)
-        );
+      const reviewProps = await reportStore.getPublishReviewPropsFromDatapoints(
+        [reportID],
+        String(agencyId)
+      );
+      if (reviewProps instanceof Error) {
+        return setLoadingDatapoints(false);
       }
+      if (reviewProps) setPublishReviewProps(reviewProps);
 
       setLoadingDatapoints(false);
     };
@@ -142,20 +143,10 @@ const DataEntryReview = () => {
     );
 
   // review component props
-  const datapointsEntries = Object.entries(datapoints);
-  const currentSystemKey = datapointsEntries[0][0].split("_")[0]; // get system key via splitting a datapoint's metric key
-  const metricsToDisplay = datapointsEntries.map(
-    ([metricKey, metricDatapoints]) => {
-      return {
-        key: metricKey,
-        displayName: metricDatapoints[0].metric_display_name as string,
-      };
-    }
-  );
   const metrics = metricsToDisplay
     ? metricsToDisplay.reduce((acc, metric) => {
         const reviewMetric = {
-          datapoints: datapoints[metric.key],
+          datapoints: datapointsByMetric[metric.key],
           display_name: metric.displayName,
           key: metric.key,
           metricHasError: checkMetricForErrors(metric.key),
@@ -199,8 +190,8 @@ const DataEntryReview = () => {
   ];
 
   // modal props
-  const systemSearchParam = currentSystemKey;
-  const metricSearchParam = metricsToDisplay[0].key;
+  const systemSearchParam = firstSystemKey;
+  const metricSearchParam = firstMetricKey;
 
   return (
     <ReviewWrapper>

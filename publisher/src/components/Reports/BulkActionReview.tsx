@@ -16,12 +16,6 @@
 // =============================================================================
 
 import { showToast } from "@justice-counts/common/components/Toast";
-import DatapointsStore from "@justice-counts/common/stores/BaseDatapointsStore";
-import {
-  RawDatapointsByMetric,
-  Report,
-  ReportOverview,
-} from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -50,20 +44,16 @@ const BulkActionReview = () => {
   const agencyId = Number(params.agencyId);
   const agencyIdString = String(agencyId);
   const navigate = useNavigate();
+  const { reportStore } = useStore();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingError, setLoadingError] = useState<string | undefined>(
     undefined
   );
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const { reportStore } = useStore();
-
-  // const [datapoints, setDatapoints] = useState<RawDatapointsByMetric>({});
   const [publishReviewProps, setPublishReviewProps] =
     useState<PublishReviewPropsFromDatapoints>(
       {} as PublishReviewPropsFromDatapoints
     );
-  // const [records, setRecords] = useState<ReportOverview[]>([]);
-
   const {
     reports,
     datapointsByMetric,
@@ -111,11 +101,6 @@ const BulkActionReview = () => {
 
   useEffect(() => {
     const initialize = async () => {
-      // const reportsWithDatapoints =
-      //   (await reportStore.getMultipleReportsWithDatapoints(
-      //     recordsIds,
-      //     agencyIdString
-      //   )) as Report[] | Error;
       const reviewProps = await reportStore.getPublishReviewPropsFromDatapoints(
         recordsIds,
         agencyIdString
@@ -124,20 +109,7 @@ const BulkActionReview = () => {
         setIsLoading(false);
         return setLoadingError(reviewProps.message);
       }
-      // const combinedDatapointsFromAllReports = reportsWithDatapoints
-      //   ?.map((report) => report.datapoints)
-      //   .flat()
-      //   .filter((dp) => dp.value !== null);
-
-      // if (combinedDatapointsFromAllReports) {
-      //   setDatapoints(
-      //     DatapointsStore.keyRawDatapointsByMetric(
-      //       combinedDatapointsFromAllReports
-      //     )
-      //   );
-      // }
       if (reviewProps) setPublishReviewProps(reviewProps);
-      // setRecords(reviewProps.reports);
       setIsLoading(false);
     };
 
@@ -161,16 +133,6 @@ const BulkActionReview = () => {
   }
 
   // review component props
-  // const datapointsEntries = Object.entries(datapoints);
-  // const currentSystemKey = datapointsEntries[0][0].split("_")[0]; // get system key via splitting a datapoint's metric key
-  // const metricsToDisplay = datapointsEntries.map(
-  //   ([metricKey, metricDatapoints]) => {
-  //     return {
-  //       key: metricKey,
-  //       displayName: metricDatapoints[0].metric_display_name as string,
-  //     };
-  //   }
-  // );
   const metrics =
     metricsToDisplay.length > 0
       ? metricsToDisplay.reduce((acc, metric) => {
