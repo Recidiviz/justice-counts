@@ -109,13 +109,6 @@ class AgencyStore {
 
       const responseJson = (await response.json()) as {
         settings: AgencySetting[];
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-        agency_id: string;
->>>>>>> b14ce5d (deleted call to get_agency_jurisdictions())
-=======
->>>>>>> 3643ddf (changed json response type)
         jurisdictions: {
           included: string[];
           excluded: string[];
