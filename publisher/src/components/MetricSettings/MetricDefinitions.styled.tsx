@@ -50,6 +50,7 @@ export const Section = styled.div`
 
 export const SectionTitle = styled.div`
   ${typography.sizeCSS.normal};
+  margin-bottom: 8px;
 `;
 
 export const SectionItem = styled.div`
@@ -62,6 +63,7 @@ export const SectionItem = styled.div`
   border-top: 1px solid ${palette.highlight.grey4};
   ${typography.sizeCSS.medium};
   position: relative;
+  cursor: pointer;
 
   span {
     ${typography.sizeCSS.normal};
@@ -76,16 +78,23 @@ export const SectionItem = styled.div`
 export const SectionItemTooltip = styled.div`
   position: absolute;
   right: 60px;
+  width: 417px;
+  max-width: 417px;
   padding: 24px;
   background-color: ${palette.solid.black};
   border-radius: 3px;
   color: ${palette.solid.white};
-  display: flex;
   flex-direction: column;
   gap: 10px;
   ${typography.sizeCSS.medium};
+  display: none;
 
   span {
     ${typography.sizeCSS.normal};
+    color: ${palette.solid.white};
+  }
+
+  ${SectionItem}:hover & {
+    display: flex;
   }
 `;
