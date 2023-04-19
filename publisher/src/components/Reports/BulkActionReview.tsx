@@ -109,7 +109,8 @@ const BulkActionReview = () => {
       }
       const combinedDatapointsFromAllReports = reportsWithDatapoints
         ?.map((report) => report.datapoints)
-        .flat();
+        .flat()
+        .filter((dp) => dp.value !== null);
 
       if (combinedDatapointsFromAllReports) {
         setDatapoints(
@@ -144,12 +145,14 @@ const BulkActionReview = () => {
   // review component props
   const datapointsEntries = Object.entries(datapoints);
   const currentSystemKey = datapointsEntries[0][0].split("_")[0]; // get system key via splitting a datapoint's metric key
-  const metricsToDisplay = datapointsEntries.map(([metricKey, datapoint]) => {
-    return {
-      key: metricKey,
-      displayName: datapoint[0].metric_display_name as string,
-    };
-  });
+  const metricsToDisplay = datapointsEntries.map(
+    ([metricKey, metricDatapoints]) => {
+      return {
+        key: metricKey,
+        displayName: metricDatapoints[0].metric_display_name as string,
+      };
+    }
+  );
   const metrics =
     metricsToDisplay.length > 0
       ? metricsToDisplay.reduce((acc, metric) => {
