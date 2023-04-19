@@ -55,7 +55,7 @@ const BulkActionReview = () => {
       {} as PublishReviewPropsFromDatapoints
     );
   const {
-    reports,
+    records,
     datapointsByMetric,
     metricsToDisplay,
     firstSystemKey,
@@ -161,7 +161,7 @@ const BulkActionReview = () => {
     </>
   );
   const unpublishActionDescription = `Here’s a breakdown of data you’ve selected to unpublish. All data in ${
-    reports?.length > 1
+    records?.length > 1
       ? `these ${REPORTS_LOWERCASE}`
       : `this ${REPORT_LOWERCASE}`
   } will be saved, and you can re-publish at any time.`;
@@ -207,7 +207,7 @@ const BulkActionReview = () => {
         }
         buttons={buttons}
         metrics={metrics}
-        records={reports}
+        records={records}
       />
     </ReviewWrapper>
   );

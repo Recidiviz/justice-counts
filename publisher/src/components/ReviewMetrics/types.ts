@@ -62,7 +62,7 @@ export type ReviewMetricsProps = {
 };
 
 export type PublishReviewPropsFromDatapoints = {
-  reports: Report[];
+  records: Report[];
   datapointsByMetric: RawDatapointsByMetric;
   metricsToDisplay: {
     key: string;

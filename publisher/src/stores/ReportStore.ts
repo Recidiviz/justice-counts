@@ -229,7 +229,7 @@ class ReportStore {
       const firstMetricKey = metricsToDisplay[0].key;
 
       return {
-        reports: reportsWithDatapoints,
+        records: reportsWithDatapoints,
         datapointsByMetric,
         metricsToDisplay,
         firstSystemKey,
