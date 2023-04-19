@@ -202,6 +202,7 @@ class ReportStore {
           reportIDs,
           currentAgencyId
         )) as Report[] | Error;
+
       if (reportsWithDatapoints instanceof Error) {
         throw new Error(
           `There was an issue retrieving these ${REPORTS_LOWERCASE}.`
@@ -215,7 +216,6 @@ class ReportStore {
       const datapointsByMetric = DatapointsStore.keyRawDatapointsByMetric(
         combinedFilteredDatapointsFromAllReports
       );
-
       const datapointsEntries = Object.entries(datapointsByMetric);
       const metricsToDisplay = datapointsEntries.map(
         ([metricKey, metricDatapoints]) => {
