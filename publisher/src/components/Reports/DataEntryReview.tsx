@@ -17,11 +17,7 @@
 
 import { showToast } from "@justice-counts/common/components/Toast";
 import DatapointsStore from "@justice-counts/common/stores/BaseDatapointsStore";
-import {
-  MetricWithErrors,
-  RawDatapointsByMetric,
-  Report,
-} from "@justice-counts/common/types";
+import { RawDatapointsByMetric, Report } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -48,45 +44,39 @@ const DataEntryReview = () => {
   const agencyId = Number(params.agencyId);
   const navigate = useNavigate();
   const [isPublishable, setIsPublishable] = useState(false);
-  const [metricsPreview, setMetricsPreview] = useState<MetricWithErrors[]>();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const { reportStore, formStore, userStore, guidanceStore } = useStore();
   const checkMetricForErrors = useCheckMetricForErrors(reportID);
 
   const publishReport = async () => {
-    if (isPublishable) {
-      setIsPublishable(false);
+    const finalMetricsToPublish =
+      formStore.reportUpdatedValuesForBackend(reportID);
 
-      const finalMetricsToPublish =
-        formStore.reportUpdatedValuesForBackend(reportID);
+    const response = (await reportStore.updateReport(
+      reportID,
+      finalMetricsToPublish,
+      "PUBLISHED"
+    )) as Response;
 
-      const response = (await reportStore.updateReport(
-        reportID,
-        finalMetricsToPublish,
-        "PUBLISHED"
-      )) as Response;
-
-      if (response.status === 200) {
-        // For users who have not completed the onboarding flow and are publishing for the first time.
-        if (
-          guidanceStore.currentTopicID === "PUBLISH_DATA" &&
-          !guidanceStore.hasCompletedOnboarding
-        )
-          guidanceStore.updateTopicStatus("PUBLISH_DATA", true);
-        setIsSuccessModalOpen(true);
-        const agencyID = reportStore.reportOverviews[reportID]?.agency_id;
-        const agency = userStore.userAgenciesById[agencyID];
-        trackReportPublished(reportID, finalMetricsToPublish, agency);
-      } else {
-        showToast({
-          message: `Something went wrong publishing the ${printReportTitle(
-            reportStore.reportOverviews[reportID].month,
-            reportStore.reportOverviews[reportID].year,
-            reportStore.reportOverviews[reportID].frequency
-          )} ${REPORT_LOWERCASE}!`,
-        });
-        setIsPublishable(true);
-      }
+    if (response.status === 200) {
+      // For users who have not completed the onboarding flow and are publishing for the first time.
+      if (
+        guidanceStore.currentTopicID === "PUBLISH_DATA" &&
+        !guidanceStore.hasCompletedOnboarding
+      )
+        guidanceStore.updateTopicStatus("PUBLISH_DATA", true);
+      setIsSuccessModalOpen(true);
+      const agencyID = reportStore.reportOverviews[reportID]?.agency_id;
+      const agency = userStore.userAgenciesById[agencyID];
+      trackReportPublished(reportID, finalMetricsToPublish, agency);
+    } else {
+      showToast({
+        message: `Something went wrong publishing the ${printReportTitle(
+          reportStore.reportOverviews[reportID].month,
+          reportStore.reportOverviews[reportID].year,
+          reportStore.reportOverviews[reportID].frequency
+        )} ${REPORT_LOWERCASE}!`,
+      });
     }
   };
 
@@ -95,7 +85,6 @@ const DataEntryReview = () => {
 
   useEffect(() => {
     const initialize = async () => {
-      formStore.validatePreviouslySavedInputs(reportID);
       const [reportWithDatapoints] =
         (await reportStore.getMultipleReportsWithDatapoints(
           [reportID],
@@ -103,10 +92,11 @@ const DataEntryReview = () => {
         )) as Report[];
 
       if (reportWithDatapoints.datapoints) {
+        const filteredDatapoints = reportWithDatapoints.datapoints.filter(
+          (dp) => dp.value !== null
+        );
         setDatapoints(
-          DatapointsStore.keyRawDatapointsByMetric(
-            reportWithDatapoints.datapoints
-          )
+          DatapointsStore.keyRawDatapointsByMetric(filteredDatapoints)
         );
       }
 
@@ -123,11 +113,8 @@ const DataEntryReview = () => {
   }, []);
 
   useEffect(() => {
-    const { metrics, isPublishable: publishable } =
+    const { isPublishable: publishable } =
       formStore.validateAndGetAllMetricFormValues(reportID);
-    const enabledMetrics = metrics.filter((metric) => metric.enabled);
-
-    setMetricsPreview(enabledMetrics);
     setIsPublishable(publishable);
   }, [formStore, reportID]);
 
@@ -150,11 +137,21 @@ const DataEntryReview = () => {
     );
 
   // review component props
-  const metrics = metricsPreview
-    ? metricsPreview.reduce((acc, metric) => {
+  const datapointsEntries = Object.entries(datapoints);
+  const currentSystemKey = datapointsEntries[0][0].split("_")[0]; // get system key via splitting a datapoint's metric key
+  const metricsToDisplay = datapointsEntries.map(
+    ([metricKey, metricDatapoints]) => {
+      return {
+        key: metricKey,
+        displayName: metricDatapoints[0].metric_display_name as string,
+      };
+    }
+  );
+  const metrics = metricsToDisplay
+    ? metricsToDisplay.reduce((acc, metric) => {
         const reviewMetric = {
           datapoints: datapoints[metric.key],
-          display_name: metric.display_name,
+          display_name: metric.displayName,
           key: metric.key,
           metricHasError: checkMetricForErrors(metric.key),
           metricHasValidInput: Boolean(
@@ -197,10 +194,8 @@ const DataEntryReview = () => {
   ];
 
   // modal props
-  const systemSearchParam = metricsPreview
-    ? metricsPreview[0].system.key
-    : undefined;
-  const metricSearchParam = metricsPreview ? metricsPreview[0].key : undefined;
+  const systemSearchParam = currentSystemKey;
+  const metricSearchParam = metricsToDisplay[0].key;
 
   return (
     <ReviewWrapper>
