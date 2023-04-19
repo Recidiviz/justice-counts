@@ -26,6 +26,7 @@ import { formatSystemName } from "../../utils";
 import { ReactComponent as ErrorIcon } from "../assets/error-icon.svg";
 import { ReactComponent as WarningIcon } from "../assets/warning-icon.svg";
 import { SYSTEM_LOWERCASE } from "../Global/constants";
+import useSettingsSearchParams from "../Settings";
 import {
   BlueText,
   CheckIcon,
@@ -75,6 +76,9 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
   const { userStore } = useStore();
   const currentAgency = userStore.getAgency(agencyId);
 
+  const [settingsSearchParams] = useSettingsSearchParams();
+  const { system: systemSearchParam } = settingsSearchParams;
+
   const { metrics, errorsWarningsAndSuccessfulMetrics, nonMetricErrors } =
     errorsWarningsMetrics;
   const systemFileName =
@@ -97,7 +101,6 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
     !a.display_name ? -1 : 1;
   const sortErrorsBeforeWarnings = (a: ErrorWarningMessage) =>
     a.type === "ERROR" ? -1 : 1;
-
   const metricNotConfigured = (
     <MetricEnableDescription>
       This metric has not been configured yet. Please visit the Metric
@@ -146,7 +149,15 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
                                       <span>{sheet.sheet_name}</span>
                                     )}
                                   </MessageTitle>
-                                  <MessageSubtitle>
+                                  <MessageSubtitle
+                                    onClick={() => {
+                                      navigate(
+                                        systemSearchParam
+                                          ? `settings/metric-config?system=${systemSearchParam}`
+                                          : `settings/metric-config`
+                                      );
+                                    }}
+                                  >
                                     {message.subtitle}
                                   </MessageSubtitle>
                                 </MessageBody>
