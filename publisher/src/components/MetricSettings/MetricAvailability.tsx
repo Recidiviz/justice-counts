@@ -195,6 +195,9 @@ function MetricAvailability() {
     };
   });
 
+  const hasDisaggregations =
+    disaggregationsOptions && disaggregationsOptions.length > 0;
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -390,90 +393,98 @@ function MetricAvailability() {
               </Styled.SettingRow>
             )}
         </Styled.SettingRowsContainer>
-        <Styled.BreakdownsSection disabled={!metricEnabled}>
-          <Styled.BreakdownsSectionTitle>
-            Metric Breakdowns
-          </Styled.BreakdownsSectionTitle>
-          <Styled.BreakdownsSectionDescription>
-            Select the categories that your agency is able to report as
-            disaggregations of {metrics[systemMetricKey]?.label}.
-          </Styled.BreakdownsSectionDescription>
-          <Styled.BreakdownsOptionsContainer>
-            <Styled.BreakdownsOption
-              onClick={() => setActiveDisaggregationKey(undefined)}
-              active={!activeDisaggregationKey}
-            >
-              Show all
-            </Styled.BreakdownsOption>
-            {disaggregationsOptions &&
-              disaggregationsOptions.map(({ key, label, onClick, active }) => (
-                <Styled.BreakdownsOption
-                  key={key}
-                  onClick={onClick}
-                  active={active}
-                >
-                  {label}
-                </Styled.BreakdownsOption>
-              ))}
-          </Styled.BreakdownsOptionsContainer>
-          {activeDisaggregationKeys?.map((disaggregationKey) => {
-            const currentDisaggregation =
-              disaggregations[systemMetricKey][disaggregationKey];
-            const currentDimensions =
-              dimensions[systemMetricKey][disaggregationKey];
-            const currentEnabledDimensions = Object.values(
-              currentDimensions
-            ).filter((dimension) => dimension.enabled);
-
-            if (
-              activeDisaggregationKey &&
-              activeDisaggregationKey !== disaggregationKey
-            )
-              return null;
-
-            return (
-              <Styled.DimensionsContainer key={disaggregationKey}>
-                <Styled.DimensionsHeader>
-                  {currentDisaggregation.display_name} (
-                  {`${currentEnabledDimensions.length}/${
-                    Object.values(currentDimensions).length
-                  }`}
+        {hasDisaggregations && (
+          <Styled.BreakdownsSection disabled={!metricEnabled}>
+            <Styled.BreakdownsSectionTitle>
+              Metric Breakdowns
+            </Styled.BreakdownsSectionTitle>
+            <Styled.BreakdownsSectionDescription>
+              Select the categories that your agency is able to report as
+              disaggregations of {metrics[systemMetricKey]?.label}.
+            </Styled.BreakdownsSectionDescription>
+            <Styled.BreakdownsOptionsContainer>
+              <Styled.BreakdownsOption
+                onClick={() => setActiveDisaggregationKey(undefined)}
+                active={!activeDisaggregationKey}
+              >
+                Show all
+              </Styled.BreakdownsOption>
+              {disaggregationsOptions &&
+                disaggregationsOptions.map(
+                  ({ key, label, onClick, active }) => (
+                    <Styled.BreakdownsOption
+                      key={key}
+                      onClick={onClick}
+                      active={active}
+                    >
+                      {label}
+                    </Styled.BreakdownsOption>
                   )
-                  <Styled.SelectAllDimensions
-                    onClick={() =>
-                      handleDisaggregationSelection(disaggregationKey, true)
-                    }
-                  >
-                    Select All
-                  </Styled.SelectAllDimensions>
-                </Styled.DimensionsHeader>
-                <Styled.DimensionsList>
-                  {Object.entries(currentDimensions).map(
-                    ([dimensionKey, { label, enabled }]) => (
-                      <Styled.DimensionsListItem
-                        key={dimensionKey}
-                        onClick={() =>
-                          handleDimensionEnabledStatus(
-                            !enabled,
-                            dimensionKey,
-                            disaggregationKey
-                          )
-                        }
-                      >
-                        {enabled ? (
-                          <img src={blueCheckIcon} alt="" />
-                        ) : (
-                          <Styled.DisabledDimensionIcon />
-                        )}
-                        {label}
-                      </Styled.DimensionsListItem>
+                )}
+            </Styled.BreakdownsOptionsContainer>
+            {activeDisaggregationKeys?.map((disaggregationKey) => {
+              const currentDisaggregation =
+                disaggregations[systemMetricKey][disaggregationKey];
+              const currentDimensions =
+                dimensions[systemMetricKey][disaggregationKey];
+              const currentEnabledDimensions = Object.values(
+                currentDimensions
+              ).filter((dimension) => dimension.enabled);
+              const allDimensionsEnabled =
+                Object.values(currentDimensions).length ===
+                currentEnabledDimensions.length;
+
+              if (
+                activeDisaggregationKey &&
+                activeDisaggregationKey !== disaggregationKey
+              )
+                return null;
+
+              return (
+                <Styled.DimensionsContainer key={disaggregationKey}>
+                  <Styled.DimensionsHeader>
+                    {currentDisaggregation.display_name} (
+                    {`${currentEnabledDimensions.length}/${
+                      Object.values(currentDimensions).length
+                    }`}
                     )
-                  )}
-                </Styled.DimensionsList>
-              </Styled.DimensionsContainer>
-            );
-          })}
-        </Styled.BreakdownsSection>
+                    <Styled.SelectAllDimensions
+                      onClick={() =>
+                        handleDisaggregationSelection(disaggregationKey, true)
+                      }
+                      disabled={allDimensionsEnabled}
+                    >
+                      Select All
+                    </Styled.SelectAllDimensions>
+                  </Styled.DimensionsHeader>
+                  <Styled.DimensionsList>
+                    {Object.entries(currentDimensions).map(
+                      ([dimensionKey, { label, enabled }]) => (
+                        <Styled.DimensionsListItem
+                          key={dimensionKey}
+                          onClick={() =>
+                            handleDimensionEnabledStatus(
+                              !enabled,
+                              dimensionKey,
+                              disaggregationKey
+                            )
+                          }
+                        >
+                          {enabled ? (
+                            <img src={blueCheckIcon} alt="" />
+                          ) : (
+                            <Styled.DisabledDimensionIcon />
+                          )}
+                          {label}
+                        </Styled.DimensionsListItem>
+                      )
+                    )}
+                  </Styled.DimensionsList>
+                </Styled.DimensionsContainer>
+              );
+            })}
+          </Styled.BreakdownsSection>
+        )}
       </Styled.InnerWrapper>
     </Styled.Wrapper>
   );

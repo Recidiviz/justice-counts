@@ -181,7 +181,7 @@ export const BreakdownsSection = styled.div<{ disabled: boolean }>`
   width: 100%;
   position: relative;
 
-  ${({ disabled }) => disabled && `pointer-events: none; opacity: 0.5`}
+  ${({ disabled }) => disabled && "pointer-events: none; opacity: 0.5;"};
 `;
 
 export const BreakdownsSectionTitle = styled(MetricSettingsSectionTitle)`
@@ -197,7 +197,7 @@ export const BreakdownsOptionsContainer = styled.div`
   display: flex;
   flex-direction: row;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 32px;
 `;
 
 export const BreakdownsOption = styled.div<{ active: boolean }>`
@@ -218,20 +218,22 @@ export const BreakdownsOption = styled.div<{ active: boolean }>`
 export const DimensionsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 2px;
+  margin-bottom: 16px;
 `;
 
 export const DimensionsHeader = styled.div`
-  ${typography.sizeCSS.small};
+  ${typography.sizeCSS.normal};
   display: flex;
   flex-direction: row;
   gap: 11px;
 `;
 
-export const SelectAllDimensions = styled.span`
+export const SelectAllDimensions = styled.span<{ disabled?: boolean }>`
   display: inline-block;
-  color: ${palette.solid.blue};
   cursor: pointer;
+  color: ${({ disabled }) =>
+    disabled ? palette.highlight.grey8 : palette.solid.blue};
+  ${({ disabled }) => disabled && "pointer-events: none;"};
 `;
 
 export const DimensionsList = styled.div`

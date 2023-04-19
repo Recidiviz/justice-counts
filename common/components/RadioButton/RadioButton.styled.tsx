@@ -60,18 +60,17 @@ export const RadioButtonLabel = styled.label<{
   display: flex;
   justify-content: center;
   align-items: center;
-  width: ${({ fullWidth }) => fullWidth && "100%"}
   min-width: 60px;
   padding: 9px 16px;
   border: 1px solid ${palette.highlight.grey4};
   border-radius: 3px;
   transition: 0.2s ease;
 
+  ${({ fullWidth }) => fullWidth && "width: 100%;"};
+
   &:hover {
     cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
     background-color: ${({ disabled }) =>
       disabled ? "none" : palette.highlight.grey1};
   }
-
-  ${({ fullWidth }) => fullWidth && "width: 100%"}
 `;

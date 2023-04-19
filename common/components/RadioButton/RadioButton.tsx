@@ -19,7 +19,7 @@ import React, { InputHTMLAttributes } from "react";
 
 import * as Styled from "./RadioButton.styled";
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+interface RadioButtonProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   metricKey?: string;
   fullWidth?: boolean;
@@ -32,7 +32,7 @@ export function RadioButton({
   disabled,
   fullWidth,
   ...props
-}: Props) {
+}: RadioButtonProps) {
   return (
     <Styled.RadioButtonWrapper>
       <Styled.RadioButtonInput
