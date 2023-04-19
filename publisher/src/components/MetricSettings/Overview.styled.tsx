@@ -60,7 +60,7 @@ export const SystemMenuItem = styled.div<{ selected: boolean }>`
   ${typography.sizeCSS.large};
   padding: 2px 0;
   color: ${({ selected }) =>
-    selected ? palette.solid.darkgrey : palette.highlight.grey7};
+    selected ? palette.solid.darkgrey : palette.highlight.grey8};
   border-bottom: 2px solid
     ${({ selected }) => (selected ? palette.solid.blue : "transparent")};
   width: fit-content;
@@ -119,7 +119,7 @@ export const MetricItem = styled.div`
   }
 
   &:hover {
-    background-color: ${palette.highlight.grey2};
+    background-color: ${palette.highlight.grey1};
   }
 `;
 

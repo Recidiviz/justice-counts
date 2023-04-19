@@ -213,6 +213,11 @@ export const BreakdownsOption = styled.div<{ active: boolean }>`
   background-color: ${({ active }) =>
     active ? palette.solid.blue : palette.solid.offwhite};
   cursor: pointer;
+
+  &:hover {
+    background-color: ${({ active }) =>
+      active ? palette.solid.darkblue : palette.highlight.grey2};
+  }
 `;
 
 export const DimensionsContainer = styled.div`
@@ -234,6 +239,10 @@ export const SelectAllDimensions = styled.span<{ disabled?: boolean }>`
   color: ${({ disabled }) =>
     disabled ? palette.highlight.grey8 : palette.solid.blue};
   ${({ disabled }) => disabled && "pointer-events: none;"};
+
+  &:hover {
+    color: ${palette.solid.darkblue};
+  }
 `;
 
 export const DimensionsList = styled.div`
@@ -258,6 +267,10 @@ export const DimensionsListItem = styled.div`
   img {
     width: 20px;
     height: 20px;
+  }
+
+  &:hover {
+    background-color: ${palette.highlight.grey1};
   }
 `;
 

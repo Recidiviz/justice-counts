@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Button } from "@justice-counts/common/components/Button";
 import { useIsFooterVisible } from "@justice-counts/common/hooks";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -43,6 +44,7 @@ function MetricConfig() {
   const currentAgency = userStore.getAgency(agencyId);
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const metricEnabled = metrics[systemMetricKey]?.enabled;
+  const metricLabelLength = `${metrics[systemMetricKey].label}`.length;
 
   useEffect(() => {
     const footer = document.getElementById("footer");
@@ -53,24 +55,33 @@ function MetricConfig() {
   return (
     <>
       <Styled.MetricSettingsSideBar isFooterVisible={isFooterVisible}>
-        <Styled.SystemName
+        <Button
+          label="<- Back to All Metrics"
           onClick={() =>
             setSettingsSearchParams({
               ...settingsSearchParams,
               metric: undefined,
             })
           }
-        >
-          {systemSearchParam &&
-            formatSystemName(systemSearchParam, {
-              allUserSystems: currentAgency?.systems,
-            })}
-        </Styled.SystemName>
-        <Styled.MetricName>{metrics[systemMetricKey]?.label}</Styled.MetricName>
+          labelColor="blue"
+          noSidePadding
+          noHover
+          size="medium"
+        />
+        <Styled.MetricName isNameLong={metricLabelLength > 20}>
+          {metrics[systemMetricKey]?.label}
+        </Styled.MetricName>
         <Styled.Description>
           The amount of funding for the operation and maintenance of jail
           facilities and the care of people who are incarcerated under the
           jurisdiction of the agency.
+          <span>
+            Sector:{" "}
+            {systemSearchParam &&
+              formatSystemName(systemSearchParam, {
+                allUserSystems: currentAgency?.systems,
+              })}
+          </span>
         </Styled.Description>
         <Styled.Menu>
           <Styled.MenuItem>
