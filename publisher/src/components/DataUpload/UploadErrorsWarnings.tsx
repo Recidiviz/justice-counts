@@ -101,6 +101,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
     !a.display_name ? -1 : 1;
   const sortErrorsBeforeWarnings = (a: ErrorWarningMessage) =>
     a.type === "ERROR" ? -1 : 1;
+
   const metricNotConfigured = (
     <MetricEnableDescription>
       This metric has not been configured yet. Please visit the Metric
@@ -149,20 +150,20 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
                                       <span>{sheet.sheet_name}</span>
                                     )}
                                   </MessageTitle>
-                                  <MessageSubtitle
-                                    onClick={() => {
-                                      navigate(
-                                        systemSearchParam
-                                          ? `settings/metric-config?system=${systemSearchParam}`
-                                          : `settings/metric-config`
-                                      );
-                                    }}
-                                  >
+                                  <MessageSubtitle>
                                     {message.subtitle}
                                   </MessageSubtitle>
                                 </MessageBody>
                               </IconWrapper>
-                              <MessageDescription>
+                              <MessageDescription
+                                onClick={() => {
+                                  navigate(
+                                    systemSearchParam
+                                      ? `settings/metric-config?system=${systemSearchParam}`
+                                      : `settings/metric-config`
+                                  );
+                                }}
+                              >
                                 {message.description}
                               </MessageDescription>
                             </Fragment>
