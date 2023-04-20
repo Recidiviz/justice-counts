@@ -478,9 +478,7 @@ function MetricAvailability() {
                     </Styled.DimensionsHeader>
                     {disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY ? (
                       <RaceEthnicitiesGrid
-                        disaggregationEnabled={
-                          currentDisaggregation.enabled === true
-                        }
+                        disaggregationEnabled
                         onClick={() => setIsRaceEthnicityModalOpen(true)}
                       />
                     ) : (
