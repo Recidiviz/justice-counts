@@ -66,7 +66,7 @@ export const RadioButtonLabel = styled.label<{
   border-radius: 3px;
   transition: 0.2s ease;
 
-  ${({ fullWidth }) => fullWidth && "width: 100%;"};
+  ${({ fullWidth }) => fullWidth && "width: 100%"};
 
   &:hover {
     cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};

@@ -181,7 +181,7 @@ export const BreakdownsSection = styled.div<{ disabled: boolean }>`
   width: 100%;
   position: relative;
 
-  ${({ disabled }) => disabled && "pointer-events: none; opacity: 0.5;"};
+  ${({ disabled }) => disabled && "pointer-events: none; opacity: 0.5"};
 `;
 
 export const BreakdownsSectionTitle = styled(MetricSettingsSectionTitle)`
@@ -238,7 +238,7 @@ export const SelectAllDimensions = styled.span<{ disabled?: boolean }>`
   cursor: pointer;
   color: ${({ disabled }) =>
     disabled ? palette.highlight.grey8 : palette.solid.blue};
-  ${({ disabled }) => disabled && "pointer-events: none;"};
+  ${({ disabled }) => disabled && "pointer-events: none"};
 
   &:hover {
     color: ${palette.solid.darkblue};
