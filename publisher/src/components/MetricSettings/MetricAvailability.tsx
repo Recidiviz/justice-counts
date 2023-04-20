@@ -34,9 +34,14 @@ import { useStore } from "../../stores";
 import { monthsByName, removeSnakeCase } from "../../utils";
 import { ReactComponent as CalendarIconDark } from "../assets/calendar-icon-dark.svg";
 import { ReactComponent as CalendarIconLight } from "../assets/calendar-icon-light.svg";
-import { ReportFrequencyUpdate } from "../MetricConfiguration";
+import {
+  RACE_ETHNICITY_DISAGGREGATION_KEY,
+  RaceEthnicitiesGrid,
+  ReportFrequencyUpdate,
+} from "../MetricConfiguration";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import * as Styled from "./MetricAvailability.styled";
+import RaceEthnicitiesModalForm from "./RaceEthnicitiesModalForm";
 
 function MetricAvailability() {
   const { agencyId } = useParams() as { agencyId: string };
@@ -58,6 +63,8 @@ function MetricAvailability() {
   } = metricConfigStore;
   const [activeDisaggregationKey, setActiveDisaggregationKey] =
     useState<string>();
+  const [isRaceEthnicityModalOpen, setIsRaceEthnicityModalOpen] =
+    useState(false);
 
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const activeDisaggregationKeys =
@@ -202,102 +209,81 @@ function MetricAvailability() {
     window.scrollTo(0, 0);
   }, []);
 
+  useEffect(() => {
+    if (isRaceEthnicityModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isRaceEthnicityModalOpen]);
+
   return (
-    <Styled.Wrapper>
-      <Styled.InnerWrapper>
-        <Styled.Header>
-          <Styled.HeaderNumber>1</Styled.HeaderNumber>
-          <Styled.HeaderLabel>Set metric availability</Styled.HeaderLabel>
-        </Styled.Header>
-        <Styled.Description>
-          Tell Justice Counts if you plan on sharing data for this metric.
-        </Styled.Description>
-        <Styled.MetricSettingsSectionTitle>
-          Metric
-        </Styled.MetricSettingsSectionTitle>
-        <Styled.SettingRowsContainer>
-          <Styled.SettingRow>
-            <Styled.SettingName>
-              Availability{" "}
-              <Styled.InfoIconWrapper>
-                <img src={infoIcon} alt="" />
-                <Styled.SettingTooltip>
-                  Tell us the frequency at which you intend to report this data.
-                  You can always change this later.
-                </Styled.SettingTooltip>
-              </Styled.InfoIconWrapper>
-            </Styled.SettingName>
-            <Styled.SettingOptions>
-              <RadioButton
-                type="radio"
-                id="metric-config-not-available"
-                name="metric-config"
-                label="Not Available"
-                value="Not Available"
-                fullWidth
-                checked={Boolean(metricEnabled === false)}
-                onChange={() => handleUpdateMetricEnabledStatus(false)}
-              />
-              <RadioButton
-                type="radio"
-                id="metric-config-monthly"
-                name="metric-config"
-                label="Monthly"
-                value="Monthly"
-                fullWidth
-                checked={Boolean(
-                  metricEnabled && customOrDefaultFrequency === "MONTHLY"
-                )}
-                onChange={() =>
-                  handleUpdateMetricReportFrequency({
-                    customFrequency: "MONTHLY",
-                    startingMonth: null,
-                  })
-                }
-              />
-              <RadioButton
-                type="radio"
-                id="metric-config-annual"
-                name="metric-config"
-                label="Annually"
-                value="Annual"
-                fullWidth
-                checked={Boolean(
-                  metricEnabled && customOrDefaultFrequency === "ANNUAL"
-                )}
-                onChange={() =>
-                  handleUpdateMetricReportFrequency({
-                    customFrequency: "ANNUAL",
-                    startingMonth: 1,
-                  })
-                }
-              />
-            </Styled.SettingOptions>
-          </Styled.SettingRow>
-          {metricEnabled && customFrequency === "ANNUAL" && (
+    <>
+      <Styled.Wrapper>
+        <Styled.InnerWrapper>
+          <Styled.Header>
+            <Styled.HeaderNumber>1</Styled.HeaderNumber>
+            <Styled.HeaderLabel>Set metric availability</Styled.HeaderLabel>
+          </Styled.Header>
+          <Styled.Description>
+            Tell Justice Counts if you plan on sharing data for this metric.
+          </Styled.Description>
+          <Styled.MetricSettingsSectionTitle>
+            Metric
+          </Styled.MetricSettingsSectionTitle>
+          <Styled.SettingRowsContainer>
             <Styled.SettingRow>
               <Styled.SettingName>
-                Starting Month{" "}
+                Availability{" "}
                 <Styled.InfoIconWrapper>
                   <img src={infoIcon} alt="" />
                   <Styled.SettingTooltip>
-                    {"For Annual metrics, please tell us which month the counting year starts with " +
-                      "(e.g., if your data describes the budget for October to September, select October). " +
-                      "Select “Calendar Year” for January -> December, or “Fiscal Year” for July -> June."}
+                    Tell us the frequency at which you intend to report this
+                    data. You can always change this later.
                   </Styled.SettingTooltip>
                 </Styled.InfoIconWrapper>
               </Styled.SettingName>
               <Styled.SettingOptions>
                 <RadioButton
                   type="radio"
-                  id="metric-config-calendar-year"
-                  name="metric-config-frequency"
-                  label="Calendar Year"
-                  value="Calendar Year (Jan)"
+                  id="metric-config-not-available"
+                  name="metric-config"
+                  label="Not Available"
+                  value="Not Available"
                   fullWidth
-                  checked={
-                    metricEnabled && (startingMonth === 1 || !startingMonth)
+                  checked={Boolean(metricEnabled === false)}
+                  onChange={() => handleUpdateMetricEnabledStatus(false)}
+                />
+                <RadioButton
+                  type="radio"
+                  id="metric-config-monthly"
+                  name="metric-config"
+                  label="Monthly"
+                  value="Monthly"
+                  fullWidth
+                  checked={Boolean(
+                    metricEnabled && customOrDefaultFrequency === "MONTHLY"
+                  )}
+                  onChange={() =>
+                    handleUpdateMetricReportFrequency({
+                      customFrequency: "MONTHLY",
+                      startingMonth: null,
+                    })
                   }
+                />
+                <RadioButton
+                  type="radio"
+                  id="metric-config-annual"
+                  name="metric-config"
+                  label="Annually"
+                  value="Annual"
+                  fullWidth
+                  checked={Boolean(
+                    metricEnabled && customOrDefaultFrequency === "ANNUAL"
+                  )}
                   onChange={() =>
                     handleUpdateMetricReportFrequency({
                       customFrequency: "ANNUAL",
@@ -305,188 +291,236 @@ function MetricAvailability() {
                     })
                   }
                 />
-                <RadioButton
-                  type="radio"
-                  id="metric-config-fiscal-year"
-                  name="metric-config-frequency"
-                  label="Fiscal Year"
-                  value="Fiscal Year (Jul)"
-                  checked={metricEnabled && startingMonth === 7}
-                  fullWidth
-                  onChange={() =>
-                    handleUpdateMetricReportFrequency({
-                      customFrequency: "ANNUAL",
-                      startingMonth: 7,
-                    })
-                  }
-                />
-                <Styled.MonthSelectionDropdownContainer
-                  checked={startingMonthNotJanuaryJuly}
-                >
-                  <Dropdown
-                    label={
-                      <>
-                        {startingMonthNotJanuaryJuly ? (
-                          <CalendarIconLight />
-                        ) : (
-                          <CalendarIconDark />
-                        )}
-                        {(startingMonthNotJanuaryJuly &&
-                          startingMonth &&
-                          monthsByName[startingMonth - 1]) ||
-                          `Other...`}
-                      </>
-                    }
-                    options={monthSelectionDropdownOptions}
-                    size="small"
-                    hover="background"
-                    alignment="right"
-                    fullWidth
-                  />
-                </Styled.MonthSelectionDropdownContainer>
               </Styled.SettingOptions>
             </Styled.SettingRow>
-          )}
-          {systemSearchParam &&
-            hasEnabledSupervisionSubsystems &&
-            (systemSearchParam === SupervisionSystem ||
-              SupervisionSubsystems.includes(systemSearchParam)) && (
+            {metricEnabled && customFrequency === "ANNUAL" && (
               <Styled.SettingRow>
                 <Styled.SettingName>
-                  Disaggregated by Supervision Type{" "}
+                  Starting Month{" "}
                   <Styled.InfoIconWrapper>
                     <img src={infoIcon} alt="" />
                     <Styled.SettingTooltip>
-                      For Supervision metrics, you can choose to share the data
-                      for your supervision operations as a whole, or
-                      disaggregated by your supervision populations (parole,
-                      probation, dual, etc).
+                      {"For Annual metrics, please tell us which month the counting year starts with " +
+                        "(e.g., if your data describes the budget for October to September, select October). " +
+                        "Select “Calendar Year” for January -> December, or “Fiscal Year” for July -> June."}
                     </Styled.SettingTooltip>
                   </Styled.InfoIconWrapper>
                 </Styled.SettingName>
                 <Styled.SettingOptions>
                   <RadioButton
                     type="radio"
-                    id="supervision-subsystem-combined"
-                    name="supervision-subsystem"
-                    label="Combined"
-                    value="All Populations / Combined"
+                    id="metric-config-calendar-year"
+                    name="metric-config-frequency"
+                    label="Calendar Year"
+                    value="Calendar Year (Jan)"
                     fullWidth
-                    onChange={() =>
-                      handleSupervisionDisaggregationSelection(false)
+                    checked={
+                      metricEnabled && (startingMonth === 1 || !startingMonth)
                     }
-                    checked={!disaggregatedBySupervisionSubsystems}
+                    onChange={() =>
+                      handleUpdateMetricReportFrequency({
+                        customFrequency: "ANNUAL",
+                        startingMonth: 1,
+                      })
+                    }
                   />
                   <RadioButton
                     type="radio"
-                    id="supervision-subsystem-disaggregated"
-                    name="supervision-subsystem"
-                    label="Disaggregated"
-                    value="Disaggregated"
+                    id="metric-config-fiscal-year"
+                    name="metric-config-frequency"
+                    label="Fiscal Year"
+                    value="Fiscal Year (Jul)"
+                    checked={metricEnabled && startingMonth === 7}
                     fullWidth
                     onChange={() =>
-                      handleSupervisionDisaggregationSelection(true)
+                      handleUpdateMetricReportFrequency({
+                        customFrequency: "ANNUAL",
+                        startingMonth: 7,
+                      })
                     }
-                    checked={disaggregatedBySupervisionSubsystems}
                   />
+                  <Styled.MonthSelectionDropdownContainer
+                    checked={startingMonthNotJanuaryJuly}
+                  >
+                    <Dropdown
+                      label={
+                        <>
+                          {startingMonthNotJanuaryJuly ? (
+                            <CalendarIconLight />
+                          ) : (
+                            <CalendarIconDark />
+                          )}
+                          {(startingMonthNotJanuaryJuly &&
+                            startingMonth &&
+                            monthsByName[startingMonth - 1]) ||
+                            `Other...`}
+                        </>
+                      }
+                      options={monthSelectionDropdownOptions}
+                      size="small"
+                      hover="background"
+                      alignment="right"
+                      fullWidth
+                    />
+                  </Styled.MonthSelectionDropdownContainer>
                 </Styled.SettingOptions>
               </Styled.SettingRow>
             )}
-        </Styled.SettingRowsContainer>
-        {hasDisaggregations && (
-          <Styled.BreakdownsSection disabled={!metricEnabled}>
-            <Styled.BreakdownsSectionTitle>
-              Metric Breakdowns
-            </Styled.BreakdownsSectionTitle>
-            <Styled.BreakdownsSectionDescription>
-              Select the categories that your agency is able to report as
-              disaggregations of {metrics[systemMetricKey]?.label}.
-            </Styled.BreakdownsSectionDescription>
-            <Styled.BreakdownsOptionsContainer>
-              <Styled.BreakdownsOption
-                onClick={() => setActiveDisaggregationKey(undefined)}
-                active={!activeDisaggregationKey}
-              >
-                Show all
-              </Styled.BreakdownsOption>
-              {disaggregationsOptions &&
-                disaggregationsOptions.map(
-                  ({ key, label, onClick, active }) => (
-                    <Styled.BreakdownsOption
-                      key={key}
-                      onClick={onClick}
-                      active={active}
-                    >
-                      {label}
-                    </Styled.BreakdownsOption>
-                  )
-                )}
-            </Styled.BreakdownsOptionsContainer>
-            {activeDisaggregationKeys?.map((disaggregationKey) => {
-              const currentDisaggregation =
-                disaggregations[systemMetricKey][disaggregationKey];
-              const currentDimensions =
-                dimensions[systemMetricKey][disaggregationKey];
-              const currentEnabledDimensions = Object.values(
-                currentDimensions
-              ).filter((dimension) => dimension.enabled);
-              const allDimensionsEnabled =
-                Object.values(currentDimensions).length ===
-                currentEnabledDimensions.length;
-
-              if (
-                activeDisaggregationKey &&
-                activeDisaggregationKey !== disaggregationKey
-              )
-                return null;
-
-              return (
-                <Styled.DimensionsContainer key={disaggregationKey}>
-                  <Styled.DimensionsHeader>
-                    {currentDisaggregation.display_name} (
-                    {`${currentEnabledDimensions.length}/${
-                      Object.values(currentDimensions).length
-                    }`}
-                    )
-                    <Styled.SelectAllDimensions
-                      onClick={() =>
-                        handleDisaggregationSelection(disaggregationKey, true)
+            {systemSearchParam &&
+              hasEnabledSupervisionSubsystems &&
+              (systemSearchParam === SupervisionSystem ||
+                SupervisionSubsystems.includes(systemSearchParam)) && (
+                <Styled.SettingRow>
+                  <Styled.SettingName>
+                    Disaggregated by Supervision Type{" "}
+                    <Styled.InfoIconWrapper>
+                      <img src={infoIcon} alt="" />
+                      <Styled.SettingTooltip>
+                        For Supervision metrics, you can choose to share the
+                        data for your supervision operations as a whole, or
+                        disaggregated by your supervision populations (parole,
+                        probation, dual, etc).
+                      </Styled.SettingTooltip>
+                    </Styled.InfoIconWrapper>
+                  </Styled.SettingName>
+                  <Styled.SettingOptions>
+                    <RadioButton
+                      type="radio"
+                      id="supervision-subsystem-combined"
+                      name="supervision-subsystem"
+                      label="Combined"
+                      value="All Populations / Combined"
+                      fullWidth
+                      onChange={() =>
+                        handleSupervisionDisaggregationSelection(false)
                       }
-                      disabled={allDimensionsEnabled}
-                    >
-                      Select All
-                    </Styled.SelectAllDimensions>
-                  </Styled.DimensionsHeader>
-                  <Styled.DimensionsList>
-                    {Object.entries(currentDimensions).map(
-                      ([dimensionKey, { label, enabled }]) => (
-                        <Styled.DimensionsListItem
-                          key={dimensionKey}
-                          onClick={() =>
-                            handleDimensionEnabledStatus(
-                              !enabled,
-                              dimensionKey,
-                              disaggregationKey
-                            )
-                          }
-                        >
-                          {enabled ? (
-                            <img src={blueCheckIcon} alt="" />
-                          ) : (
-                            <Styled.DisabledDimensionIcon />
-                          )}
-                          {label}
-                        </Styled.DimensionsListItem>
+                      checked={!disaggregatedBySupervisionSubsystems}
+                    />
+                    <RadioButton
+                      type="radio"
+                      id="supervision-subsystem-disaggregated"
+                      name="supervision-subsystem"
+                      label="Disaggregated"
+                      value="Disaggregated"
+                      fullWidth
+                      onChange={() =>
+                        handleSupervisionDisaggregationSelection(true)
+                      }
+                      checked={disaggregatedBySupervisionSubsystems}
+                    />
+                  </Styled.SettingOptions>
+                </Styled.SettingRow>
+              )}
+          </Styled.SettingRowsContainer>
+          {hasDisaggregations && (
+            <Styled.BreakdownsSection disabled={!metricEnabled}>
+              <Styled.BreakdownsSectionTitle>
+                Metric Breakdowns
+              </Styled.BreakdownsSectionTitle>
+              <Styled.BreakdownsSectionDescription>
+                Select the categories that your agency is able to report as
+                disaggregations of {metrics[systemMetricKey]?.label}.
+              </Styled.BreakdownsSectionDescription>
+              <Styled.BreakdownsOptionsContainer>
+                <Styled.BreakdownsOption
+                  onClick={() => setActiveDisaggregationKey(undefined)}
+                  active={!activeDisaggregationKey}
+                >
+                  Show all
+                </Styled.BreakdownsOption>
+                {disaggregationsOptions &&
+                  disaggregationsOptions.map(
+                    ({ key, label, onClick, active }) => (
+                      <Styled.BreakdownsOption
+                        key={key}
+                        onClick={onClick}
+                        active={active}
+                      >
+                        {label}
+                      </Styled.BreakdownsOption>
+                    )
+                  )}
+              </Styled.BreakdownsOptionsContainer>
+              {activeDisaggregationKeys?.map((disaggregationKey) => {
+                const currentDisaggregation =
+                  disaggregations[systemMetricKey][disaggregationKey];
+                const currentDimensions =
+                  dimensions[systemMetricKey][disaggregationKey];
+                const currentEnabledDimensions = Object.values(
+                  currentDimensions
+                ).filter((dimension) => dimension.enabled);
+                const allDimensionsEnabled =
+                  Object.values(currentDimensions).length ===
+                  currentEnabledDimensions.length;
+
+                if (
+                  activeDisaggregationKey &&
+                  activeDisaggregationKey !== disaggregationKey
+                )
+                  return null;
+
+                return (
+                  <Styled.DimensionsContainer key={disaggregationKey}>
+                    <Styled.DimensionsHeader>
+                      {currentDisaggregation.display_name} (
+                      {`${currentEnabledDimensions.length}/${
+                        Object.values(currentDimensions).length
+                      }`}
                       )
+                      <Styled.SelectAllDimensions
+                        onClick={() =>
+                          handleDisaggregationSelection(disaggregationKey, true)
+                        }
+                        disabled={allDimensionsEnabled}
+                      >
+                        Select All
+                      </Styled.SelectAllDimensions>
+                    </Styled.DimensionsHeader>
+                    {disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY ? (
+                      <RaceEthnicitiesGrid
+                        disaggregationEnabled={
+                          currentDisaggregation.enabled === true
+                        }
+                        onClick={() => setIsRaceEthnicityModalOpen(true)}
+                      />
+                    ) : (
+                      <Styled.DimensionsList>
+                        {Object.entries(currentDimensions).map(
+                          ([dimensionKey, { label, enabled }]) => (
+                            <Styled.DimensionsListItem
+                              key={dimensionKey}
+                              onClick={() =>
+                                handleDimensionEnabledStatus(
+                                  !enabled,
+                                  dimensionKey,
+                                  disaggregationKey
+                                )
+                              }
+                            >
+                              {enabled ? (
+                                <img src={blueCheckIcon} alt="" />
+                              ) : (
+                                <Styled.DisabledDimensionIcon />
+                              )}
+                              {label}
+                            </Styled.DimensionsListItem>
+                          )
+                        )}
+                      </Styled.DimensionsList>
                     )}
-                  </Styled.DimensionsList>
-                </Styled.DimensionsContainer>
-              );
-            })}
-          </Styled.BreakdownsSection>
-        )}
-      </Styled.InnerWrapper>
-    </Styled.Wrapper>
+                  </Styled.DimensionsContainer>
+                );
+              })}
+            </Styled.BreakdownsSection>
+          )}
+        </Styled.InnerWrapper>
+      </Styled.Wrapper>
+      {isRaceEthnicityModalOpen && (
+        <RaceEthnicitiesModalForm
+          closeModal={() => setIsRaceEthnicityModalOpen(false)}
+        />
+      )}
+    </>
   );
 }
 
