@@ -68,6 +68,6 @@ export type PublishReviewPropsFromDatapoints = {
     key: string;
     displayName: string;
   }[];
-  firstSystemKey: string;
+  firstSystemKey: string | undefined;
   firstMetricKey: string;
 };

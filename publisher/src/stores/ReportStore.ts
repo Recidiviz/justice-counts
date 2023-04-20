@@ -192,6 +192,7 @@ class ReportStore {
     }
   }
 
+  /** Fetches Reports w/ datapoints and returns necessary props to render the Publish Review pages */
   async getPublishReviewPropsFromDatapoints(
     reportIDs: number[],
     currentAgencyId: string
@@ -225,7 +226,9 @@ class ReportStore {
           };
         }
       );
-      const firstSystemKey = datapointsEntries[0][0].split("_")[0]; // get first system key via splitting a datapoint's metric key
+      const firstSystemKey = this.userStore.userAgencies?.find(
+        (agency) => String(agency.id) === currentAgencyId
+      )?.systems?.[0];
       const firstMetricKey = metricsToDisplay[0].key;
 
       return {
