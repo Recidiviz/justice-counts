@@ -44,8 +44,12 @@ function RaceEthnicitiesModalForm({
   const { agencyId } = useParams() as { agencyId: string };
   const [settingsSearchParams] = useSettingsSearchParams();
   const { metricConfigStore } = useStore();
-  const { getEthnicitiesByRace, updateRacesDimensions, saveMetricSettings } =
-    metricConfigStore;
+  const {
+    getEthnicitiesByRace,
+    updateRacesDimensions,
+    updateAllRaceEthnicitiesToDefaultState,
+    saveMetricSettings,
+  } = metricConfigStore;
   const { system: systemSearchParam, metric: metricSearchParam } =
     settingsSearchParams;
 
@@ -101,6 +105,13 @@ function RaceEthnicitiesModalForm({
   const handleUpdateRacesDimensions = () => {
     if (!systemSearchParam || !metricSearchParam) return;
     const currentState = determineCurrentState();
+
+    updateAllRaceEthnicitiesToDefaultState(
+      currentState,
+      raceEthnicityGridStates,
+      systemSearchParam,
+      metricSearchParam
+    );
 
     const updatedDimensions = updateRacesDimensions(
       racesStatusObject,
