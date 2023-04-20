@@ -93,7 +93,7 @@ class GuidanceStore {
   getOnboardingTopicsStatuses = async (
     agencyId: string
   ): Promise<OnboardingTopicsStatuses[]> => {
-    if (this.userStore.isJusticeCountsAdmin(agencyId)) {
+    if (!this.userStore.isJusticeCountsAdmin(agencyId)) {
       /**
        * NOTE:
        * This gates the guidance flow for users who are not JC Admins.
