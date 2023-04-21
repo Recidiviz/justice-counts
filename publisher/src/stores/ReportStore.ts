@@ -31,8 +31,10 @@ import {
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
 import { MetricSettings } from "../components/MetricConfiguration";
+import { PublishReviewPropsFromDatapoints } from "../components/ReviewMetrics";
 import { groupBy } from "../utils";
 import API from "./API";
+import DatapointsStore from "./DatapointsStore";
 import UserStore from "./UserStore";
 
 class ReportStore {
@@ -187,6 +189,51 @@ class ReportStore {
       runInAction(() => {
         this.loadingReportData = false;
       });
+    }
+  }
+
+  /** Fetches Reports w/ datapoints and returns necessary props to render the Publish Review pages */
+  async getPublishReviewPropsFromDatapoints(
+    reportIDs: number[],
+    currentAgencyId: string
+  ): Promise<PublishReviewPropsFromDatapoints | Error | undefined> {
+    try {
+      const reportsWithDatapoints =
+        (await this.getMultipleReportsWithDatapoints(
+          reportIDs,
+          currentAgencyId
+        )) as Report[] | Error;
+
+      if (reportsWithDatapoints instanceof Error) {
+        throw new Error(
+          `There was an issue retrieving these ${REPORTS_LOWERCASE}.`
+        );
+      }
+
+      const combinedFilteredDatapointsFromAllReports = reportsWithDatapoints
+        ?.map((report) => report.datapoints)
+        .flat()
+        .filter((dp) => dp.value !== null);
+      const datapointsByMetric = DatapointsStore.keyRawDatapointsByMetric(
+        combinedFilteredDatapointsFromAllReports
+      );
+      const datapointsEntries = Object.entries(datapointsByMetric);
+      const metricsToDisplay = datapointsEntries.map(
+        ([metricKey, metricDatapoints]) => {
+          return {
+            key: metricKey,
+            displayName: metricDatapoints[0].metric_display_name as string,
+          };
+        }
+      );
+
+      return {
+        records: reportsWithDatapoints,
+        datapointsByMetric,
+        metricsToDisplay,
+      };
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
     }
   }
 

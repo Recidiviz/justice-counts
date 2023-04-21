@@ -20,7 +20,12 @@ import {
   ButtonColor,
   ButtonLabelColor,
 } from "@justice-counts/common/components/Button";
-import { RawDatapoint, ReportOverview } from "@justice-counts/common/types";
+import {
+  RawDatapoint,
+  RawDatapointsByMetric,
+  Report,
+  ReportOverview,
+} from "@justice-counts/common/types";
 import React from "react";
 
 export type ReviewHeaderActionButton = {
@@ -54,4 +59,13 @@ export type ReviewMetricsProps = {
   metrics: ReviewMetric[];
   metricOverwrites?: ReviewMetricOverwrites[];
   records?: ReportOverview[];
+};
+
+export type PublishReviewPropsFromDatapoints = {
+  records: Report[];
+  datapointsByMetric: RawDatapointsByMetric;
+  metricsToDisplay: {
+    key: string;
+    displayName: string;
+  }[];
 };
