@@ -48,10 +48,10 @@ const DataEntryReview = () => {
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [loadingDatapoints, setLoadingDatapoints] = useState(true);
   const [publishReviewProps, setPublishReviewProps] =
-    useState<PublishReviewPropsFromDatapoints>(
-      {} as PublishReviewPropsFromDatapoints
-    );
-  const { datapointsByMetric, metricsToDisplay } = publishReviewProps;
+    useState<PublishReviewPropsFromDatapoints>();
+  const datapointsByMetric = publishReviewProps?.datapointsByMetric;
+  const metricsToDisplay = publishReviewProps?.metricsToDisplay;
+  const hasPublishReviewProps = metricsToDisplay && datapointsByMetric;
 
   const publishReport = async () => {
     if (isPublishable) {
@@ -138,20 +138,21 @@ const DataEntryReview = () => {
     );
 
   // review component props
-  const metrics = metricsToDisplay
-    ? metricsToDisplay.reduce((acc, metric) => {
-        const reviewMetric = {
-          datapoints: datapointsByMetric[metric.key],
-          display_name: metric.displayName,
-          key: metric.key,
-          metricHasError: checkMetricForErrors(metric.key),
-          metricHasValidInput: Boolean(
-            formStore.metricsValues?.[reportID]?.[metric.key]?.value
-          ),
-        };
-        return [...acc, reviewMetric];
-      }, [] as ReviewMetric[])
-    : [];
+  const metrics =
+    hasPublishReviewProps && metricsToDisplay
+      ? metricsToDisplay.reduce((acc, metric) => {
+          const reviewMetric = {
+            datapoints: datapointsByMetric[metric.key],
+            display_name: metric.displayName,
+            key: metric.key,
+            metricHasError: checkMetricForErrors(metric.key),
+            metricHasValidInput: Boolean(
+              formStore.metricsValues?.[reportID]?.[metric.key]?.value
+            ),
+          };
+          return [...acc, reviewMetric];
+        }, [] as ReviewMetric[])
+      : [];
   const record = reportStore.reportOverviews[reportID];
   const title = "Review & Publish";
   const description = (

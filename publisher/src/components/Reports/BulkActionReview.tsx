@@ -51,10 +51,12 @@ const BulkActionReview = () => {
   );
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [publishReviewProps, setPublishReviewProps] =
-    useState<PublishReviewPropsFromDatapoints>(
-      {} as PublishReviewPropsFromDatapoints
-    );
-  const { records, datapointsByMetric, metricsToDisplay } = publishReviewProps;
+    useState<PublishReviewPropsFromDatapoints>();
+  const records = publishReviewProps?.records;
+  const datapointsByMetric = publishReviewProps?.datapointsByMetric;
+  const metricsToDisplay = publishReviewProps?.metricsToDisplay;
+  const hasPublishReviewProps =
+    records && metricsToDisplay && datapointsByMetric;
 
   const publishMultipleRecords = async () => {
     const response = (await reportStore.updateMultipleReportStatuses(
@@ -128,7 +130,7 @@ const BulkActionReview = () => {
 
   // review component props
   const metrics =
-    metricsToDisplay.length > 0
+    hasPublishReviewProps && metricsToDisplay.length > 0
       ? metricsToDisplay.reduce((acc, metric) => {
           const reviewMetric = {
             datapoints: datapointsByMetric[metric.key],
@@ -155,7 +157,7 @@ const BulkActionReview = () => {
     </>
   );
   const unpublishActionDescription = `Here’s a breakdown of data you’ve selected to unpublish. All data in ${
-    records?.length > 1
+    records && records?.length > 1
       ? `these ${REPORTS_LOWERCASE}`
       : `this ${REPORT_LOWERCASE}`
   } will be saved, and you can re-publish at any time.`;
