@@ -51,12 +51,7 @@ const DataEntryReview = () => {
     useState<PublishReviewPropsFromDatapoints>(
       {} as PublishReviewPropsFromDatapoints
     );
-  const {
-    datapointsByMetric,
-    metricsToDisplay,
-    firstSystemKey,
-    firstMetricKey,
-  } = publishReviewProps;
+  const { datapointsByMetric, metricsToDisplay } = publishReviewProps;
 
   const publishReport = async () => {
     if (isPublishable) {
@@ -189,18 +184,9 @@ const DataEntryReview = () => {
     },
   ];
 
-  // modal props
-  const systemSearchParam = firstSystemKey;
-  const metricSearchParam = firstMetricKey;
-
   return (
     <ReviewWrapper>
-      {isSuccessModalOpen && (
-        <ReviewMetricsModal
-          systemSearchParam={systemSearchParam}
-          metricSearchParam={metricSearchParam}
-        />
-      )}
+      {isSuccessModalOpen && <ReviewMetricsModal />}
       <ReviewMetrics
         title={title}
         description={description}

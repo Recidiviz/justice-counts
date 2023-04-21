@@ -37,8 +37,6 @@ import {
 } from "./ReviewMetrics.styles";
 
 export const ReviewMetricsModal: React.FC<{
-  systemSearchParam?: string;
-  metricSearchParam?: string;
   recordsCount?: number;
   fileName?: string;
   action?: RecordsBulkAction;
@@ -50,8 +48,6 @@ export const ReviewMetricsModal: React.FC<{
     onClick: () => void;
   }[];
 }> = ({
-  systemSearchParam,
-  metricSearchParam,
   recordsCount,
   fileName,
   action,
@@ -62,15 +58,7 @@ export const ReviewMetricsModal: React.FC<{
   const { agencyId } = useParams();
   const navigate = useNavigate();
 
-  const goToDataPage = () => {
-    if (systemSearchParam && metricSearchParam) {
-      navigate(
-        `/agency/${agencyId}/data?system=${systemSearchParam.toLowerCase()}&metric=${metricSearchParam.toLowerCase()}`
-      );
-    } else {
-      navigate(`/agency/${agencyId}/data`);
-    }
-  };
+  const goToDataPage = () => navigate(`/agency/${agencyId}/data`);
 
   return (
     <ReviewPublishModalWrapper>

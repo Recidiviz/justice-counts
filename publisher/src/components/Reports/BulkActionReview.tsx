@@ -54,13 +54,7 @@ const BulkActionReview = () => {
     useState<PublishReviewPropsFromDatapoints>(
       {} as PublishReviewPropsFromDatapoints
     );
-  const {
-    records,
-    datapointsByMetric,
-    metricsToDisplay,
-    firstSystemKey,
-    firstMetricKey,
-  } = publishReviewProps;
+  const { records, datapointsByMetric, metricsToDisplay } = publishReviewProps;
 
   const publishMultipleRecords = async () => {
     const response = (await reportStore.updateMultipleReportStatuses(
@@ -184,19 +178,10 @@ const BulkActionReview = () => {
     },
   ];
 
-  // modal props
-  const systemSearchParam = firstSystemKey;
-  const metricSearchParam = firstMetricKey;
-
   return (
     <ReviewWrapper>
       {isSuccessModalOpen && (
-        <ReviewMetricsModal
-          systemSearchParam={systemSearchParam}
-          metricSearchParam={metricSearchParam}
-          recordsCount={recordsIds.length}
-          action={action}
-        />
+        <ReviewMetricsModal recordsCount={recordsIds.length} action={action} />
       )}
       <ReviewMetrics
         title={action === "publish" ? publishActionTitle : unpublishActionTitle}
