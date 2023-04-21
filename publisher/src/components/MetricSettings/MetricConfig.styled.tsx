@@ -32,6 +32,7 @@ export const MetricSettingsSideBar = styled.div<{
   left: 24px;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   width: 424px;
   height: ${({ isFooterVisible }) =>
     isFooterVisible
@@ -47,8 +48,13 @@ export const SystemName = styled.div`
   cursor: pointer;
 `;
 
-export const MetricName = styled.div`
-  ${typography.sizeCSS.headline};
+export const MetricName = styled.div<{ isNameLong?: boolean }>`
+  ${({ isNameLong }) => {
+    if (isNameLong) {
+      return `font-family: ${typography.family}; font-size: 48px; line-height: 48px; font-weight: 500;`;
+    }
+    return typography.sizeCSS.headline;
+  }}
   margin-bottom: 24px;
   width: 100%;
 `;
@@ -57,6 +63,13 @@ export const Description = styled.div`
   ${typography.sizeCSS.medium};
   color: ${palette.highlight.grey10};
   margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  span {
+    text-transform: capitalize;
+  }
 `;
 
 export const Menu = styled.div`
@@ -84,7 +97,7 @@ export const MenuItemNumber = styled.div<{ disabled?: boolean }>`
   font-size: 10px;
   line-height: 13px;
   color: ${({ disabled }) =>
-    disabled ? palette.solid.darkgrey : palette.solid.white};
+    disabled ? palette.highlight.grey7 : palette.solid.white};
   background-color: ${({ disabled }) =>
     disabled ? palette.solid.white : palette.solid.blue};
 `;
@@ -96,12 +109,21 @@ export const MenuItemLabel = styled.div<{
   padding-bottom: 2px;
   width: fit-content;
   ${typography.sizeCSS.large};
-  color: ${({ disabled }) =>
-    disabled ? palette.highlight.grey8 : palette.solid.darkgrey};
+  color: ${({ active, disabled }) => {
+    if (disabled) return palette.highlight.grey7;
+    return active ? palette.solid.darkgrey : palette.highlight.grey8;
+  }};
   border-bottom: 2px solid
     ${({ active }) => (active ? palette.solid.blue : "transparent")};
   cursor: pointer;
   pointer-events: ${({ disabled }) => disabled && "none"};
+
+  &:hover {
+    color: ${({ active, disabled }) => {
+      if (disabled) return palette.highlight.grey7;
+      return active ? palette.solid.darkgrey : palette.highlight.grey10;
+    }};
+  }
 `;
 
 export const MetricIndicator = styled.div<{ isAlert?: boolean }>`
