@@ -138,21 +138,20 @@ const DataEntryReview = () => {
     );
 
   // review component props
-  const metrics =
-    hasPublishReviewProps && metricsToDisplay
-      ? metricsToDisplay.reduce((acc, metric) => {
-          const reviewMetric = {
-            datapoints: datapointsByMetric[metric.key],
-            display_name: metric.displayName,
-            key: metric.key,
-            metricHasError: checkMetricForErrors(metric.key),
-            metricHasValidInput: Boolean(
-              formStore.metricsValues?.[reportID]?.[metric.key]?.value
-            ),
-          };
-          return [...acc, reviewMetric];
-        }, [] as ReviewMetric[])
-      : [];
+  const metrics = hasPublishReviewProps
+    ? metricsToDisplay.reduce((acc, metric) => {
+        const reviewMetric = {
+          datapoints: datapointsByMetric[metric.key],
+          display_name: metric.displayName,
+          key: metric.key,
+          metricHasError: checkMetricForErrors(metric.key),
+          metricHasValidInput: Boolean(
+            formStore.metricsValues?.[reportID]?.[metric.key]?.value
+          ),
+        };
+        return [...acc, reviewMetric];
+      }, [] as ReviewMetric[])
+    : [];
   const record = reportStore.reportOverviews[reportID];
   const title = "Review & Publish";
   const description = (
