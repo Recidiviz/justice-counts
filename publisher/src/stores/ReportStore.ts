@@ -226,19 +226,11 @@ class ReportStore {
           };
         }
       );
-      // const firstSystemKey = undefined;
-      // const firstMetricKey = undefined;
-      // const firstSystemKey = this.userStore.userAgencies?.find(
-      //   (agency) => String(agency.id) === currentAgencyId
-      // )?.systems?.[0];
-      // const firstMetricKey = metricsToDisplay[0].key;
 
       return {
         records: reportsWithDatapoints,
         datapointsByMetric,
         metricsToDisplay,
-        // firstSystemKey,
-        // firstMetricKey,
       };
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
