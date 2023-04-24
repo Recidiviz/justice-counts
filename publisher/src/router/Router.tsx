@@ -24,7 +24,7 @@ import { MetricsDataChart } from "../components/DataViz/MetricsDataChart";
 import { REPORTS_LOWERCASE } from "../components/Global/constants";
 import { Guidance } from "../components/Guidance";
 import Header from "../components/Header";
-import { MetricSettingsOverview } from "../components/MetricSettings/MetricSettingsOverview";
+import { MetricSettings } from "../components/MetricSettings/MetricSettings";
 import BulkActionReview from "../components/Reports/BulkActionReview";
 import CreateReport from "../components/Reports/CreateReport";
 import ReviewReportDataEntry from "../components/Reports/DataEntryReview";
@@ -71,10 +71,12 @@ export const Router = () => {
 
           <Route path="/data" element={<MetricsDataChart />} />
           <Route path="/settings/*" element={<Settings />} />
+          {/* WIP pages */}
           <Route
             path="/settings/metric-config-v2"
-            element={<MetricSettingsOverview />}
+            element={<MetricSettings />}
           />
+          {/* WIP pages */}
           <Route path={`/${REPORTS_LOWERCASE}`} element={<Reports />} />
           <Route
             path={`/${REPORTS_LOWERCASE}/bulk-review`}

@@ -67,6 +67,7 @@ export const Summary = styled.div<{ isFooterVisible?: boolean }>`
     isFooterVisible
       ? `calc(100vh - ${REVIEW_SUMMARY_DESKTOP_TOP_PADDING + 116}px)`
       : `calc(100vh - ${REVIEW_SUMMARY_DESKTOP_TOP_PADDING + 8}px)`};
+  transition: max-height 0.5s ease-in-out;
 
   padding-left: 24px;
   width: 500px;

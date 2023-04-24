@@ -234,7 +234,6 @@ class MetricConfigStore {
     showToast({
       message: `Settings saved.`,
       check: true,
-      color: "grey",
       timeout: 4000,
     });
     return response;
@@ -1017,6 +1016,59 @@ class MetricConfigStore {
         enabled
       );
     });
+
+    const systemMetricKey = MetricConfigStore.getSystemMetricKey(
+      system,
+      metricKey
+    );
+    const raceEthnicitiesDimensions =
+      this.dimensions[systemMetricKey]?.[RACE_ETHNICITY_DISAGGREGATION_KEY];
+    const dimensions =
+      raceEthnicitiesDimensions &&
+      (Object.values(raceEthnicitiesDimensions) as UpdatedDimension[]);
+
+    /** Return an object w/ all dimensions in the desired backend data structure for saving purposes */
+    return {
+      key: metricKey,
+      disaggregations: [
+        {
+          key: RACE_ETHNICITY_DISAGGREGATION_KEY,
+          dimensions,
+        },
+      ],
+    };
+  };
+
+  updateRacesDimensions = (
+    racesStatusObject: { [key: string]: boolean },
+    state: StateKeys,
+    gridStates: RaceEthnicitiesGridStates,
+    system: AgencySystems,
+    metricKey: string
+  ): UpdatedDisaggregation => {
+    const ethnicitiesByRace = this.getEthnicitiesByRace(system, metricKey);
+
+    Object.entries(racesStatusObject).forEach(([race, enabled]) =>
+      ethnicities.forEach((ethnicity) => {
+        /** No update if intended update matches the current state (e.g. enabling an already enabled dimension) */
+        if (ethnicitiesByRace[race][ethnicity].enabled === enabled) return;
+        /** No update if enabling a disabled dimension that is not available to the user to edit (determined by current grid state) */
+        if (
+          enabled &&
+          ethnicitiesByRace[race][ethnicity].enabled ===
+            gridStates[state][race][ethnicity]
+        )
+          return;
+
+        this.updateDimensionEnabledStatus(
+          system,
+          metricKey,
+          RACE_ETHNICITY_DISAGGREGATION_KEY,
+          ethnicitiesByRace[race][ethnicity].key,
+          enabled
+        );
+      })
+    );
 
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
