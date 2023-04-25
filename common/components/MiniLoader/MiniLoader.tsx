@@ -36,7 +36,9 @@ export const AnimatedSVGGroup = styled.g`
   animation: ${dotLoopAnimation} 0.8s infinite steps(8, start);
 `;
 
-export const MiniLoader: React.FC = () => {
+export const MiniLoader: React.FC<{ dark?: boolean }> = ({ dark }) => {
+  const fillColor = dark ? "#000000" : "#ffffff";
+
   return (
     <SVGContainer>
       <svg
@@ -46,37 +48,37 @@ export const MiniLoader: React.FC = () => {
         viewBox="0 0 16 16"
       >
         <title>dots anim</title>
-        <g fill="#ffffff">
+        <g fill={fillColor}>
           <AnimatedSVGGroup>
-            <circle cx="8" cy="1.5" fill="#ffffff" r="1.5" opacity="0.6" />
+            <circle cx="8" cy="1.5" fill={fillColor} r="1.5" opacity="0.6" />
             <circle
               cx="12.596"
               cy="3.404"
-              fill="#ffffff"
+              fill={fillColor}
               r="1.5"
               opacity="0.8"
             />
-            <circle cx="14.5" cy="8" fill="#ffffff" r="1.5" />
+            <circle cx="14.5" cy="8" fill={fillColor} r="1.5" />
             <circle
               cx="12.596"
               cy="12.596"
-              fill="#ffffff"
+              fill={fillColor}
               r="1.5"
               opacity="0.4"
             />
-            <circle cx="8" cy="14.5" fill="#ffffff" r="1.5" opacity="0.4" />
+            <circle cx="8" cy="14.5" fill={fillColor} r="1.5" opacity="0.4" />
             <circle
               cx="3.404"
               cy="12.596"
-              fill="#ffffff"
+              fill={fillColor}
               r="1.5"
               opacity="0.4"
             />
-            <circle cx="1.5" cy="8" fill="#ffffff" r="1.5" opacity="0.4" />
+            <circle cx="1.5" cy="8" fill={fillColor} r="1.5" opacity="0.4" />
             <circle
               cx="3.404"
               cy="3.404"
-              fill="#ffffff"
+              fill={fillColor}
               r="1.5"
               opacity="0.4"
             />
