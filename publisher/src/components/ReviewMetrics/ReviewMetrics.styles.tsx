@@ -267,6 +267,7 @@ export const ReviewPublishModalIcon = styled.img`
   margin-bottom: 24px;
 `;
 export const ReviewPublishModalTitle = styled(RemoveRecordsModalTitle)`
+  text-align: center;
   span {
     color: ${palette.solid.blue};
   }
