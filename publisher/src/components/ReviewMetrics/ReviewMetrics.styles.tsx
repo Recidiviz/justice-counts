@@ -44,7 +44,7 @@ export const Container = styled(DataUploadContainer)`
 export const ReviewMetricsWrapper = styled.div<{ hasNoDatapoints: boolean }>`
   ${({ hasNoDatapoints }) => hasNoDatapoints && `height: 100%;`}
   max-width: 100%;
-  padding: 40px 0 128px 520px;
+  padding: 40px 0 128px 500px;
   display: flex;
   flex-direction: row;
   gap: 88px;
@@ -70,7 +70,7 @@ export const Summary = styled.div<{ isFooterVisible?: boolean }>`
   transition: max-height 0.5s ease-in-out;
 
   padding-left: 24px;
-  width: 400px;
+  width: 380px;
   display: flex;
   flex-direction: column;
   background-color: ${palette.solid.white};
