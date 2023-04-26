@@ -18,7 +18,7 @@
 import { Badge } from "@justice-counts/common/components/Badge";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import logo from "../assets/jc-logo-vector-new.svg";
@@ -30,14 +30,20 @@ import { HeaderBar, Logo, LogoContainer, LogoName } from ".";
 const Header = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
+  const location = useLocation();
   const { userStore, guidanceStore, api } = useStore();
   const { hasCompletedOnboarding } = guidanceStore;
 
   const isAgencyValid = !!userStore.getAgency(agencyId);
   const defaultAgency = userStore.getInitialAgencyId();
+  /** We'll use this to hide the main header so it doesn't appear at all during the transition from Data Entry Form -> Publish Review */
+  const isPublishReviewPage = location.pathname.includes("/review");
 
   return (
-    <HeaderBar bottomBorder={hasCompletedOnboarding === false}>
+    <HeaderBar
+      bottomBorder={hasCompletedOnboarding === false}
+      hide={isPublishReviewPage}
+    >
       <LogoContainer
         onClick={() =>
           hasCompletedOnboarding

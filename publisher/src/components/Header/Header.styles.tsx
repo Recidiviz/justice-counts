@@ -23,10 +23,13 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-export const HeaderBar = styled.header<{ bottomBorder?: boolean }>`
+export const HeaderBar = styled.header<{
+  bottomBorder?: boolean;
+  hide?: boolean;
+}>`
   width: 100%;
   height: ${HEADER_BAR_HEIGHT}px;
-  display: flex;
+  display: ${({ hide }) => (hide ? "none" : "flex")};
   justify-content: space-between;
   align-items: center;
   position: fixed;
