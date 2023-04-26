@@ -15,51 +15,48 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { useWindowWidth } from "@justice-counts/common/hooks";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "../MetricConfiguration";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
-import DefinitionModal from "./DefinitionModal";
+import DefinitionModalForm from "./DefinitionModalForm";
 import * as Styled from "./MetricDefinitions.styled";
 
 function MetricDefinitions() {
-  const { agencyId } = useParams() as { agencyId: string };
   const [settingsSearchParams] = useSettingsSearchParams();
   const { metricConfigStore } = useStore();
-  const {
-    metrics,
-    metricDefinitionSettings,
-    contexts,
-    dimensions,
-    dimensionDefinitionSettings,
-    dimensionContexts,
-    updateMetricDefinitionSetting,
-    updateDimensionDefinitionSetting,
-    updateDimensionEnabledStatus,
-    saveMetricSettings,
-    disaggregations,
-  } = metricConfigStore;
-  const windowWidth = useWindowWidth();
-  const [activeDefinitionKey, setActiveDefinitionKey] = useState(undefined);
+  const { metrics, dimensions, disaggregations } = metricConfigStore;
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [activeDisaggregationKey, setActiveDisaggregationKey] = useState<
+    string | undefined
+  >(undefined);
+  const [activeDimensionKey, setActiveDimensionKey] = useState<
+    string | undefined
+  >(undefined);
 
-  const { system: systemSearchParam, metric: metricSearchParam } =
-    settingsSearchParams;
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const activeDisaggregationKeys =
     disaggregations[systemMetricKey] &&
     Object.keys(disaggregations[systemMetricKey]);
 
   useEffect(() => {
-    document.body.style.overflow = activeDefinitionKey ? "hidden" : "unset";
-  }, [activeDefinitionKey]);
+    document.body.style.overflow = isSettingsModalOpen ? "hidden" : "unset";
+  }, [isSettingsModalOpen]);
 
   return (
     <>
-      {activeDefinitionKey && (
-        <DefinitionModal definitionKey={activeDefinitionKey} />
+      {isSettingsModalOpen && (
+        <DefinitionModalForm
+          activeDisaggregationKey={activeDisaggregationKey}
+          activeDimensionKey={activeDimensionKey}
+          closeModal={() => {
+            setIsSettingsModalOpen(false);
+            setActiveDisaggregationKey(undefined);
+            setActiveDimensionKey(undefined);
+          }}
+        />
       )}
       <Styled.Wrapper>
         <Styled.InnerWrapper>
@@ -81,7 +78,7 @@ function MetricDefinitions() {
           </Styled.Description>
           <Styled.Section>
             <Styled.SectionTitle>Primary Metric</Styled.SectionTitle>
-            <Styled.SectionItem>
+            <Styled.SectionItem onClick={() => setIsSettingsModalOpen(true)}>
               {metrics[systemMetricKey]?.label} (Total)
               <span>View / Edit</span>
               <Styled.SectionItemTooltip>
@@ -97,7 +94,11 @@ function MetricDefinitions() {
               dimensions[systemMetricKey][disaggregationKey]
             ).filter(([_, dimension]) => dimension.enabled);
 
-            if (currentEnabledDimensions.length === 0) return null;
+            if (
+              currentEnabledDimensions.length === 0 ||
+              disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY
+            )
+              return null;
 
             return (
               <Styled.Section key={disaggregationKey}>
@@ -105,7 +106,14 @@ function MetricDefinitions() {
                   {currentDisaggregation.display_name}
                 </Styled.SectionTitle>
                 {currentEnabledDimensions.map(([key, dimension]) => (
-                  <Styled.SectionItem key={key}>
+                  <Styled.SectionItem
+                    key={key}
+                    onClick={() => {
+                      setActiveDisaggregationKey(disaggregationKey);
+                      setActiveDimensionKey(key);
+                      setIsSettingsModalOpen(true);
+                    }}
+                  >
                     {dimension.label}
                     <span>View / Edit</span>
                     <Styled.SectionItemTooltip>

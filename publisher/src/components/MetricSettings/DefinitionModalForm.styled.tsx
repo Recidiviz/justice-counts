@@ -21,8 +21,11 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
+import { Label } from "../MetricConfiguration";
+
 export const Wrapper = styled.div`
   position: fixed;
+  top: 0;
   width: 100%;
   height: 100%;
   background-color: ${palette.highlight.grey2};
@@ -37,14 +40,16 @@ export const Content = styled.div`
   max-width: 582px;
   height: 587px;
   max-height: 587px;
+  padding-top: 24px;
   background-color: ${palette.solid.white};
   position: relative;
+  border-radius: 3px;
 `;
 
 export const ScrollableInnerWrapper = styled.div`
   width: 100%;
-  height: 100%;
-  padding: 24px 32px 104px 32px;
+  height: calc(100% - 104px);
+  padding: 0 32px 0 32px;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -55,10 +60,11 @@ export const Header = styled.div`
   margin-bottom: 4px;
 `;
 
-export const DefinitionLabel = styled.div`
+export const Title = styled.div`
   ${typography.sizeCSS.title};
   line-height: 39px;
   margin-bottom: 4px;
+  text-transform: capitalize;
 `;
 
 export const Description = styled.div`
@@ -67,8 +73,9 @@ export const Description = styled.div`
   margin-bottom: 16px;
 `;
 
-export const ChooseDefinitions = styled.span`
+export const ChooseDefaultSettings = styled.span`
   color: ${palette.solid.blue};
+  cursor: pointer;
 `;
 
 export const IncludesExcludesContainer = styled.div`
@@ -82,15 +89,34 @@ export const IncludeExclude = styled.div`
   display: flex;
   flex-direction: row;
   gap: 8px;
-  align-items: center;
+  align-items: start;
   ${typography.sizeCSS.normal};
+  cursor: pointer;
+
+  &:hover {
+    color: ${palette.solid.darkblue};
+  }
+`;
+
+export const EnabledIcon = styled.img`
+  margin-top: 3px;
+  width: 16px;
+  height: 16px;
 `;
 
 export const DisabledIcon = styled.div`
+  margin-top: 3px;
   width: 16px;
   height: 16px;
   border: 1px solid ${palette.highlight.grey4};
   border-radius: 100%;
+`;
+
+export const ContextContainer = styled.div`
+  ${Label} {
+    ${typography.sizeCSS.normal} !important;
+    color: ${palette.highlight.grey8} !important;
+  }
 `;
 
 export const BottomButtonsContainer = styled.div`
@@ -101,5 +127,8 @@ export const BottomButtonsContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: end;
+  gap: 16px;
   align-items: center;
+  background-color: ${palette.solid.white};
+  z-index: 2;
 `;

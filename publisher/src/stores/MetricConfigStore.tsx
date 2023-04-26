@@ -316,7 +316,8 @@ class MetricConfigStore {
                   disaggregation.key,
                   dimension.key,
                   context.key as string,
-                  context.label
+                  context.label,
+                  context.value
                 );
               });
 
@@ -518,7 +519,8 @@ class MetricConfigStore {
     disaggregationKey: string,
     dimensionKey: string,
     contextKey: string,
-    label?: string
+    label?: string,
+    value?: string
   ) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
@@ -542,7 +544,7 @@ class MetricConfigStore {
 
     this.dimensionContexts[systemMetricKey][disaggregationKey][dimensionKey][
       contextKey
-    ] = { label };
+    ] = { label, value };
   };
 
   initializeContext = (
