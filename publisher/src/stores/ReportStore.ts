@@ -213,6 +213,7 @@ class ReportStore {
       const combinedFilteredDatapointsFromAllReports = reportsWithDatapoints
         ?.map((report) => report.datapoints)
         .flat()
+        .sort((a, b) => a.id - b.id)
         .filter((dp) => dp.value !== null);
       const datapointsByMetric = DatapointsStore.keyRawDatapointsByMetric(
         combinedFilteredDatapointsFromAllReports
