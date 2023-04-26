@@ -41,11 +41,18 @@ const UploadReview: React.FC = observer(() => {
   const { agencyId } = useParams();
   const { state } = useLocation();
   const { reportStore } = useStore();
-  const { uploadedMetrics, fileName, newReports, updatedReportIDs } = state as {
+  const {
+    uploadedMetrics,
+    fileName,
+    newReports,
+    updatedReportIDs,
+    uploadedReportIDs,
+  } = state as {
     uploadedMetrics: UploadedMetric[] | null;
     fileName: string;
     newReports: ReportOverview[];
     updatedReportIDs: number[];
+    uploadedReportIDs: number[];
   };
   const navigate = useNavigate();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
@@ -57,7 +64,7 @@ const UploadReview: React.FC = observer(() => {
   }
 
   // review component props
-  const existingReports = updatedReportIDs
+  const existingReports = [...updatedReportIDs, ...uploadedReportIDs]
     .map((id) => reportStore.reportOverviews[id])
     .filter((report) => report);
   const existingAndNewRecords = [...existingReports, ...newReports];
