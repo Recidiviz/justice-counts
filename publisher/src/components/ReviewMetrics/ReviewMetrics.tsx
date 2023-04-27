@@ -190,7 +190,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
           {records && records.length > 0 && (
             <SummarySection>
               <SummarySectionTitle
-                color="grey"
+                color="orange"
                 onClick={() =>
                   setIsRecordsSectionExpanded(!isRecordsSectionExpanded)
                 }

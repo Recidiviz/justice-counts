@@ -16,24 +16,18 @@
 // =============================================================================
 
 import { showToast } from "@justice-counts/common/components/Toast";
-import DatapointsStore from "@justice-counts/common/stores/BaseDatapointsStore";
-import {
-  MetricWithErrors,
-  RawDatapointsByMetric,
-  Report,
-} from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { trackReportPublished } from "../../analytics";
 import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
 import { printReportTitle } from "../../utils";
-import { PageWrapper } from "../Forms";
 import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 import { Loading } from "../Loading";
 import {
+  PublishReviewPropsFromDatapoints,
   ReviewHeaderActionButton,
   ReviewMetric,
   ReviewMetrics,
@@ -47,11 +41,18 @@ const DataEntryReview = () => {
   const reportID = Number(params.id);
   const agencyId = Number(params.agencyId);
   const navigate = useNavigate();
-  const [isPublishable, setIsPublishable] = useState(false);
-  const [metricsPreview, setMetricsPreview] = useState<MetricWithErrors[]>();
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const { state } = useLocation();
+  const { metricDisplayNames } = state as { metricDisplayNames: string[] };
   const { reportStore, formStore, userStore, guidanceStore } = useStore();
   const checkMetricForErrors = useCheckMetricForErrors(reportID);
+  const [isPublishable, setIsPublishable] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [loadingDatapoints, setLoadingDatapoints] = useState(true);
+  const [publishReviewProps, setPublishReviewProps] =
+    useState<PublishReviewPropsFromDatapoints>();
+  const datapointsByMetric = publishReviewProps?.datapointsByMetric;
+  const metricsToDisplay = publishReviewProps?.metricsToDisplay;
+  const hasPublishReviewProps = metricsToDisplay && datapointsByMetric;
 
   const publishReport = async () => {
     if (isPublishable) {
@@ -90,25 +91,16 @@ const DataEntryReview = () => {
     }
   };
 
-  const [datapoints, setDatapoints] = useState<RawDatapointsByMetric>({});
-  const [loadingDatapoints, setLoadingDatapoints] = useState(true);
-
   useEffect(() => {
     const initialize = async () => {
-      formStore.validatePreviouslySavedInputs(reportID);
-      const [reportWithDatapoints] =
-        (await reportStore.getMultipleReportsWithDatapoints(
-          [reportID],
-          String(agencyId)
-        )) as Report[];
-
-      if (reportWithDatapoints.datapoints) {
-        setDatapoints(
-          DatapointsStore.keyRawDatapointsByMetric(
-            reportWithDatapoints.datapoints
-          )
-        );
+      const reviewProps = await reportStore.getPublishReviewPropsFromDatapoints(
+        [reportID],
+        String(agencyId)
+      );
+      if (reviewProps instanceof Error) {
+        return setLoadingDatapoints(false);
       }
+      if (reviewProps) setPublishReviewProps(reviewProps);
 
       setLoadingDatapoints(false);
     };
@@ -123,11 +115,8 @@ const DataEntryReview = () => {
   }, []);
 
   useEffect(() => {
-    const { metrics, isPublishable: publishable } =
+    const { isPublishable: publishable } =
       formStore.validateAndGetAllMetricFormValues(reportID);
-    const enabledMetrics = metrics.filter((metric) => metric.enabled);
-
-    setMetricsPreview(enabledMetrics);
     setIsPublishable(publishable);
   }, [formStore, reportID]);
 
@@ -142,27 +131,27 @@ const DataEntryReview = () => {
     return <NotFound />;
   }
 
-  if (loadingDatapoints)
-    return (
-      <PageWrapper>
-        <Loading />
-      </PageWrapper>
-    );
-
   // review component props
-  const metrics = metricsPreview
-    ? metricsPreview.reduce((acc, metric) => {
-        const reviewMetric = {
-          datapoints: datapoints[metric.key],
-          display_name: metric.display_name,
-          key: metric.key,
-          metricHasError: checkMetricForErrors(metric.key),
-          metricHasValidInput: Boolean(
-            formStore.metricsValues?.[reportID]?.[metric.key]?.value
-          ),
-        };
-        return [...acc, reviewMetric];
-      }, [] as ReviewMetric[])
+  const metrics = hasPublishReviewProps
+    ? metricsToDisplay
+        .reduce((acc, metric) => {
+          const reviewMetric = {
+            datapoints: datapointsByMetric[metric.key],
+            display_name: metric.displayName,
+            key: metric.key,
+            metricHasError: checkMetricForErrors(metric.key),
+            metricHasValidInput: Boolean(
+              formStore.metricsValues?.[reportID]?.[metric.key]?.value
+            ),
+          };
+          return [...acc, reviewMetric];
+        }, [] as ReviewMetric[])
+        // Sort this list of metrics so it matches the order of the metrics list on the data entry page
+        .sort(
+          (a, b) =>
+            metricDisplayNames.indexOf(a.display_name) -
+            metricDisplayNames.indexOf(b.display_name)
+        )
     : [];
   const record = reportStore.reportOverviews[reportID];
   const title = "Review & Publish";
@@ -196,27 +185,20 @@ const DataEntryReview = () => {
     },
   ];
 
-  // modal props
-  const systemSearchParam = metricsPreview
-    ? metricsPreview[0].system.key
-    : undefined;
-  const metricSearchParam = metricsPreview ? metricsPreview[0].key : undefined;
-
   return (
     <ReviewWrapper>
-      {isSuccessModalOpen && (
-        <ReviewMetricsModal
-          systemSearchParam={systemSearchParam}
-          metricSearchParam={metricSearchParam}
+      {isSuccessModalOpen && <ReviewMetricsModal />}
+      {loadingDatapoints ? (
+        <Loading />
+      ) : (
+        <ReviewMetrics
+          title={title}
+          description={description}
+          buttons={buttons}
+          metrics={metrics}
+          records={[record]}
         />
       )}
-      <ReviewMetrics
-        title={title}
-        description={description}
-        buttons={buttons}
-        metrics={metrics}
-        records={[record]}
-      />
     </ReviewWrapper>
   );
 };

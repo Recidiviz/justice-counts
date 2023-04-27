@@ -44,7 +44,7 @@ export const Container = styled(DataUploadContainer)`
 export const ReviewMetricsWrapper = styled.div<{ hasNoDatapoints: boolean }>`
   ${({ hasNoDatapoints }) => hasNoDatapoints && `height: 100%;`}
   max-width: 100%;
-  padding: 40px 0 128px 612px;
+  padding: 40px 0 128px 500px;
   display: flex;
   flex-direction: row;
   gap: 88px;
@@ -70,7 +70,7 @@ export const Summary = styled.div<{ isFooterVisible?: boolean }>`
   transition: max-height 0.5s ease-in-out;
 
   padding-left: 24px;
-  width: 500px;
+  width: 380px;
   display: flex;
   flex-direction: column;
   background-color: ${palette.solid.white};
@@ -267,6 +267,7 @@ export const ReviewPublishModalIcon = styled.img`
   margin-bottom: 24px;
 `;
 export const ReviewPublishModalTitle = styled(RemoveRecordsModalTitle)`
+  text-align: center;
   span {
     color: ${palette.solid.blue};
   }

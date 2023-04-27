@@ -20,6 +20,7 @@ import {
   HEADER_BAR_HEIGHT,
   palette,
 } from "@justice-counts/common/components/GlobalStyles";
+import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { AgencySystems, Report } from "@justice-counts/common/types";
 import { runInAction } from "mobx";
@@ -95,6 +96,20 @@ const TopBarCloseHelpButtonContainer = styled.div<{
   opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 1 : 0)};
   background-color: ${({ showDataEntryHelpPage }) =>
     showDataEntryHelpPage ? palette.solid.white : "transparent"};
+`;
+
+const MiniLoaderWrapper = styled.div`
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+`;
+
+const ReviewButtonContainer = styled.div`
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
 `;
 
 const DataEntryForm: React.FC<{
@@ -241,6 +256,10 @@ const DataEntryForm: React.FC<{
   const reportOverview = reportStore.reportOverviews[reportID] as Report;
   const reportMetrics = reportStore.reportMetrics[reportID];
   const metricsBySystem = reportStore.reportMetricsBySystem[reportID];
+  // We'll use metricDisplayNames as a reference to sort the publish review page's list of metrics so they both match
+  const metricDisplayNames = Object.values(metricsBySystem)
+    .flat()
+    .map((metric) => metric.display_name);
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;
 
   if (!reportOverview || !reportMetrics) {
@@ -287,12 +306,25 @@ const DataEntryForm: React.FC<{
               buttonColor="blue"
             />
           ) : (
-            <Button
-              label="Review"
-              onClick={() => navigate("review")}
-              buttonColor="blue"
-              disabled={isSaveInProgress}
-            />
+            <ReviewButtonContainer>
+              {isSaveInProgress && (
+                <MiniLoaderWrapper>
+                  <MiniLoader dark />
+                </MiniLoaderWrapper>
+              )}
+              <Button
+                label="Review"
+                onClick={() =>
+                  navigate("review", {
+                    state: {
+                      metricDisplayNames,
+                    },
+                  })
+                }
+                buttonColor="blue"
+                disabled={isSaveInProgress}
+              />
+            </ReviewButtonContainer>
           )}
         </TopBarButtonsContainer>
       </DataEntryTopBar>
