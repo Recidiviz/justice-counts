@@ -61,7 +61,7 @@ type UploadErrorsWarningsProps = {
   newAndUpdatedReports: {
     newReports: ReportOverview[];
     updatedReportIDs: number[];
-    uploadedReportIDs: number[];
+    unchangedReportIDs: number[];
   };
 };
 export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
@@ -384,7 +384,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
                   fileName,
                   newReports: newAndUpdatedReports.newReports,
                   updatedReportIDs: newAndUpdatedReports.updatedReportIDs,
-                  uploadedReportIDs: newAndUpdatedReports.uploadedReportIDs,
+                  unchangedReportIDs: newAndUpdatedReports.unchangedReportIDs,
                 },
                 replace: true,
               })
