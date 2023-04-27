@@ -24,7 +24,6 @@ import { trackReportPublished } from "../../analytics";
 import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
 import { printReportTitle } from "../../utils";
-import { PageWrapper } from "../Forms";
 import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 import { Loading } from "../Loading";
 import {
@@ -132,13 +131,6 @@ const DataEntryReview = () => {
     return <NotFound />;
   }
 
-  if (loadingDatapoints)
-    return (
-      <PageWrapper>
-        <Loading />
-      </PageWrapper>
-    );
-
   // review component props
   const metrics = hasPublishReviewProps
     ? metricsToDisplay
@@ -196,13 +188,17 @@ const DataEntryReview = () => {
   return (
     <ReviewWrapper>
       {isSuccessModalOpen && <ReviewMetricsModal />}
-      <ReviewMetrics
-        title={title}
-        description={description}
-        buttons={buttons}
-        metrics={metrics}
-        records={[record]}
-      />
+      {loadingDatapoints ? (
+        <Loading />
+      ) : (
+        <ReviewMetrics
+          title={title}
+          description={description}
+          buttons={buttons}
+          metrics={metrics}
+          records={[record]}
+        />
+      )}
     </ReviewWrapper>
   );
 };
