@@ -256,6 +256,10 @@ const DataEntryForm: React.FC<{
   const reportOverview = reportStore.reportOverviews[reportID] as Report;
   const reportMetrics = reportStore.reportMetrics[reportID];
   const metricsBySystem = reportStore.reportMetricsBySystem[reportID];
+  // We'll use metricDisplayNames as a reference to sort the publish review page's list of metrics so they both match
+  const metricDisplayNames = Object.values(metricsBySystem)
+    .flat()
+    .map((metric) => metric.display_name);
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;
 
   if (!reportOverview || !reportMetrics) {
@@ -310,7 +314,13 @@ const DataEntryForm: React.FC<{
               )}
               <Button
                 label="Review"
-                onClick={() => navigate("review")}
+                onClick={() =>
+                  navigate("review", {
+                    state: {
+                      metricDisplayNames,
+                    },
+                  })
+                }
                 buttonColor="blue"
                 disabled={isSaveInProgress}
               />

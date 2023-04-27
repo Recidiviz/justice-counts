@@ -18,7 +18,7 @@
 import { showToast } from "@justice-counts/common/components/Toast";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { trackReportPublished } from "../../analytics";
 import { NotFound } from "../../pages/NotFound";
@@ -42,6 +42,8 @@ const DataEntryReview = () => {
   const reportID = Number(params.id);
   const agencyId = Number(params.agencyId);
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const { metricDisplayNames } = state as { metricDisplayNames: string[] };
   const { reportStore, formStore, userStore, guidanceStore } = useStore();
   const checkMetricForErrors = useCheckMetricForErrors(reportID);
   const [isPublishable, setIsPublishable] = useState(false);
@@ -139,18 +141,24 @@ const DataEntryReview = () => {
 
   // review component props
   const metrics = hasPublishReviewProps
-    ? metricsToDisplay.reduce((acc, metric) => {
-        const reviewMetric = {
-          datapoints: datapointsByMetric[metric.key],
-          display_name: metric.displayName,
-          key: metric.key,
-          metricHasError: checkMetricForErrors(metric.key),
-          metricHasValidInput: Boolean(
-            formStore.metricsValues?.[reportID]?.[metric.key]?.value
-          ),
-        };
-        return [...acc, reviewMetric];
-      }, [] as ReviewMetric[])
+    ? metricsToDisplay
+        .reduce((acc, metric) => {
+          const reviewMetric = {
+            datapoints: datapointsByMetric[metric.key],
+            display_name: metric.displayName,
+            key: metric.key,
+            metricHasError: checkMetricForErrors(metric.key),
+            metricHasValidInput: Boolean(
+              formStore.metricsValues?.[reportID]?.[metric.key]?.value
+            ),
+          };
+          return [...acc, reviewMetric];
+        }, [] as ReviewMetric[])
+        .sort(
+          (a, b) =>
+            metricDisplayNames.indexOf(a.display_name) -
+            metricDisplayNames.indexOf(b.display_name)
+        )
     : [];
   const record = reportStore.reportOverviews[reportID];
   const title = "Review & Publish";
