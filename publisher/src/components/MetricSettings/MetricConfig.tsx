@@ -17,6 +17,7 @@
 
 import { Button } from "@justice-counts/common/components/Button";
 import { useIsFooterVisible } from "@justice-counts/common/hooks";
+import { MetricConfigurationSettings } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -25,6 +26,7 @@ import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import indicatorAlertIcon from "../assets/indicator-alert-icon.svg";
 import indicatorSuccessIcon from "../assets/indicator-success-icon.svg";
+import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "../MetricConfiguration";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import MetricAvailability from "./MetricAvailability";
 import * as Styled from "./MetricConfig.styled";
@@ -37,7 +39,8 @@ function MetricConfig() {
     useSettingsSearchParams();
   const { system: systemSearchParam } = settingsSearchParams;
   const { metricConfigStore, userStore } = useStore();
-  const { metrics } = metricConfigStore;
+  const { metrics, metricDefinitionSettings, dimensionDefinitionSettings } =
+    metricConfigStore;
   const [metricConfigPage, setMetricConfigPage] = useState<
     "availability" | "definitions"
   >("availability");
@@ -52,6 +55,56 @@ function MetricConfig() {
     setIsFooterVisible(footer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metricConfigPage]);
+
+  const metricTotalHasSelectedDatapoint =
+    Object.values(metricDefinitionSettings[systemMetricKey]).flatMap(
+      ({ settings }) =>
+        Object.values(settings).filter((setting) => setting.included === "Yes")
+    ).length > 0;
+
+  const dimensionsHasAtLeastOneSettingSelection = () => {
+    const disaggregationKeysWithoutRaceEthnicity = Object.keys(
+      dimensionDefinitionSettings[systemMetricKey]
+    ).filter((key) => key !== RACE_ETHNICITY_DISAGGREGATION_KEY);
+    const dimensionsToCheck = disaggregationKeysWithoutRaceEthnicity.reduce(
+      (acc, key) => {
+        return { ...acc, ...dimensionDefinitionSettings[systemMetricKey][key] };
+      },
+      {} as {
+        [dimensionKey: string]: {
+          [includesExcludesKey: string]: {
+            description?: string;
+            settings: {
+              [settingKey: string]: Partial<MetricConfigurationSettings>;
+            };
+          };
+        };
+      }
+    );
+    const dimensionsWithAtLeastOneSelectedDatapoint = Object.keys(
+      dimensionsToCheck
+    ).map((dimensionKey) => ({
+      [dimensionKey]: Object.values(dimensionsToCheck[dimensionKey]).flatMap(
+        (dimensionSettings) =>
+          Object.values(dimensionSettings.settings).filter(
+            (setting) => setting.included === "Yes"
+          )
+      ),
+    }));
+    const checkedDimensionsWithAtLeastOneSelectedDatapoint =
+      dimensionsWithAtLeastOneSelectedDatapoint
+        .map((entry) => Object.values(entry).flatMap((settings) => settings))
+        .filter((flatSettings) => flatSettings.length > 0);
+    return (
+      checkedDimensionsWithAtLeastOneSelectedDatapoint.length ===
+      Object.entries(dimensionsToCheck).length
+    );
+  };
+
+  const isAvailableForPublishing =
+    metricEnabled &&
+    metricTotalHasSelectedDatapoint &&
+    dimensionsHasAtLeastOneSettingSelection();
 
   return (
     <>
@@ -112,9 +165,14 @@ function MetricConfig() {
             <img src={indicatorAlertIcon} alt="" /> Configuration required
           </Styled.MetricIndicator>
         )}
-        {metricEnabled && (
+        {metricEnabled && !isAvailableForPublishing && (
           <Styled.MetricIndicator>
             <img src={indicatorSuccessIcon} alt="" /> Available for data upload
+          </Styled.MetricIndicator>
+        )}
+        {isAvailableForPublishing && (
+          <Styled.MetricIndicator>
+            <img src={indicatorSuccessIcon} alt="" /> Available for publishing
           </Styled.MetricIndicator>
         )}
       </Styled.MetricSettingsSideBar>
