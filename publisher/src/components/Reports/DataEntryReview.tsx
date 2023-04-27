@@ -154,6 +154,7 @@ const DataEntryReview = () => {
           };
           return [...acc, reviewMetric];
         }, [] as ReviewMetric[])
+        // Sort this list of metrics so it matches the order of the metrics list on the data entry page
         .sort(
           (a, b) =>
             metricDisplayNames.indexOf(a.display_name) -
