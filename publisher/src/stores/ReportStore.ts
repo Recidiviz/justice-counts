@@ -210,15 +210,12 @@ class ReportStore {
         );
       }
 
-      const combinedFilteredSortedDatapointsFromAllReports =
-        reportsWithDatapoints
-          ?.map((report) => report.datapoints)
-          .flat()
-          // sorting by `id` allows the list of metrics rendered in the data entry page to match the review page
-          .sort((a, b) => a.id - b.id)
-          .filter((dp) => dp.value !== null);
+      const combinedFilteredDatapointsFromAllReports = reportsWithDatapoints
+        ?.map((report) => report.datapoints)
+        .flat()
+        .filter((dp) => dp.value !== null);
       const datapointsByMetric = DatapointsStore.keyRawDatapointsByMetric(
-        combinedFilteredSortedDatapointsFromAllReports
+        combinedFilteredDatapointsFromAllReports
       );
       const datapointsEntries = Object.entries(datapointsByMetric);
       const metricsToDisplay = datapointsEntries.map(
