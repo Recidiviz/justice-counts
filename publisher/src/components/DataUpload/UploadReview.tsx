@@ -67,11 +67,12 @@ const UploadReview: React.FC = observer(() => {
   const existingReports = [...updatedReportIDs, ...unchangedReportIDs]
     .map((id) => reportStore.reportOverviews[id])
     .filter((report) => report);
+  const hasExistingAndNewRecords =
+    existingReports.length > 0 && newReports.length > 0;
   const existingAndNewRecords = [...existingReports, ...newReports];
   const existingAndNewRecordIDs = existingAndNewRecords.map(
     (record) => record.id
   );
-  const isPublishingExistingReports = updatedReportIDs.length > 0;
   const publishingExistingReportsButtons: {
     name: string;
     color?: ButtonColor;
@@ -150,7 +151,7 @@ const UploadReview: React.FC = observer(() => {
             name: "Publish",
             buttonColor: "green",
             onClick: () =>
-              isPublishingExistingReports
+              hasExistingAndNewRecords
                 ? setExistingReportWarningOpen(true)
                 : publishMultipleRecords(),
           },
