@@ -67,10 +67,6 @@ function MetricConfig() {
     ).length > 0;
 
   const dimensionsHaveAtLeastOneSettingSelection = () => {
-    const raceEthnicitiesHasEnabledRace = Object.values(
-      dimensions[systemMetricKey][RACE_ETHNICITY_DISAGGREGATION_KEY]
-    ).find((raceDimension) => raceDimension.enabled);
-
     const disaggregationKeysWithoutRaceEthnicity = Object.keys(
       dimensionDefinitionSettings[systemMetricKey]
     ).filter((key) => key !== RACE_ETHNICITY_DISAGGREGATION_KEY);
@@ -124,8 +120,7 @@ function MetricConfig() {
 
     return (
       checkedDimensionsWithAtLeastOneSelectedDatapoint.length ===
-        Object.entries(dimensionsToCheck).length &&
-      raceEthnicitiesHasEnabledRace
+      Object.entries(dimensionsToCheck).length
     );
   };
 
