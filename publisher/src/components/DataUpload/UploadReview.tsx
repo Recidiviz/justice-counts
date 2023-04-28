@@ -73,6 +73,10 @@ const UploadReview: React.FC = observer(() => {
   const existingAndNewRecordIDs = existingAndNewRecords.map(
     (record) => record.id
   );
+  const hasAllPublishedRecords =
+    existingAndNewRecords.filter((record) => record.status !== "PUBLISHED")
+      .length === 0;
+
   const publishingExistingReportsButtons: {
     name: string;
     color?: ButtonColor;
@@ -172,6 +176,7 @@ const UploadReview: React.FC = observer(() => {
           isExistingReportWarningModalOpen={isExistingReportWarningModalOpen}
           existingReports={existingReports}
           publishingExistingReportsButtons={publishingExistingReportsButtons}
+          hasAllPublishedRecords={hasAllPublishedRecords}
         />
       )}
       <ReviewMetrics
