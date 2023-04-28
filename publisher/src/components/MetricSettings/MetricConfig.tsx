@@ -39,8 +39,12 @@ function MetricConfig() {
     useSettingsSearchParams();
   const { system: systemSearchParam } = settingsSearchParams;
   const { metricConfigStore, userStore } = useStore();
-  const { metrics, metricDefinitionSettings, dimensionDefinitionSettings } =
-    metricConfigStore;
+  const {
+    metrics,
+    metricDefinitionSettings,
+    dimensionDefinitionSettings,
+    dimensions,
+  } = metricConfigStore;
   const [metricConfigPage, setMetricConfigPage] = useState<
     "availability" | "definitions"
   >("availability");
@@ -56,20 +60,48 @@ function MetricConfig() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metricConfigPage]);
 
-  const metricTotalHasSelectedDatapoint =
+  const metricTotalHasAtLeastOneSettingSelection =
     Object.values(metricDefinitionSettings[systemMetricKey]).flatMap(
       ({ settings }) =>
         Object.values(settings).filter((setting) => setting.included === "Yes")
     ).length > 0;
 
-  const dimensionsHasAtLeastOneSettingSelection = () => {
+  const dimensionsHaveAtLeastOneSettingSelection = () => {
+    const raceEthnicitiesHasEnabledRace = Object.values(
+      dimensions[systemMetricKey][RACE_ETHNICITY_DISAGGREGATION_KEY]
+    ).find((raceDimension) => raceDimension.enabled);
+
     const disaggregationKeysWithoutRaceEthnicity = Object.keys(
       dimensionDefinitionSettings[systemMetricKey]
     ).filter((key) => key !== RACE_ETHNICITY_DISAGGREGATION_KEY);
 
     const dimensionsToCheck = disaggregationKeysWithoutRaceEthnicity.reduce(
       (acc, key) => {
-        return { ...acc, ...dimensionDefinitionSettings[systemMetricKey][key] };
+        const enabledDimensionsKeys = Object.values(
+          dimensions[systemMetricKey][key]
+        )
+          .filter((dimension) => dimension.enabled)
+          .map((enabledDimension) => enabledDimension.key);
+
+        const enabledDimensionsDefinitionSettings = Object.entries(
+          dimensionDefinitionSettings[systemMetricKey][key]
+        ).reduce(
+          (
+            enabledDimensionsDefinitionSettingsAcc,
+            [dimensionKey, dimension]
+          ) => {
+            if (enabledDimensionsKeys.includes(dimensionKey)) {
+              return {
+                ...enabledDimensionsDefinitionSettingsAcc,
+                [dimensionKey]: dimension,
+              };
+            }
+            return enabledDimensionsDefinitionSettingsAcc;
+          },
+          {} as DimensionSettings
+        );
+
+        return { ...acc, ...enabledDimensionsDefinitionSettings };
       },
       {} as DimensionSettings
     );
@@ -92,14 +124,15 @@ function MetricConfig() {
 
     return (
       checkedDimensionsWithAtLeastOneSelectedDatapoint.length ===
-      Object.entries(dimensionsToCheck).length
+        Object.entries(dimensionsToCheck).length &&
+      raceEthnicitiesHasEnabledRace
     );
   };
 
   const isAvailableForPublishing =
     metricEnabled &&
-    metricTotalHasSelectedDatapoint &&
-    dimensionsHasAtLeastOneSettingSelection();
+    metricTotalHasAtLeastOneSettingSelection &&
+    dimensionsHaveAtLeastOneSettingSelection();
 
   return (
     <>
@@ -165,7 +198,7 @@ function MetricConfig() {
             <img src={indicatorSuccessIcon} alt="" /> Available for data upload
           </Styled.MetricIndicator>
         )}
-        {isAvailableForPublishing && (
+        {metricEnabled && isAvailableForPublishing && (
           <Styled.MetricIndicator>
             <img src={indicatorSuccessIcon} alt="" /> Available for publishing
           </Styled.MetricIndicator>
