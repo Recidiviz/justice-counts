@@ -30,6 +30,7 @@ import { TextInput } from "../Forms";
 import { Label, MetricSettings } from "../MetricConfiguration";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import * as Styled from "./DefinitionModalForm.styled";
+import { ContextsByContextKey, SettingsByIncludesExcludesKey } from "./types";
 
 type DefinitionModalFormProps = {
   activeDisaggregationKey?: string;
@@ -69,23 +70,23 @@ function DefinitionModalForm({
     metricDefinitionSettings[systemMetricKey] &&
     Object.keys(metricDefinitionSettings[systemMetricKey]);
 
-  const dimensionDefinitionSettingsKeys = (activeDisaggregationKey &&
-    activeDimensionKey &&
-    dimensionDefinitionSettings[systemMetricKey]?.[activeDisaggregationKey]?.[
-      activeDimensionKey
-    ] &&
-    Object.keys(
-      dimensionDefinitionSettings[systemMetricKey][activeDisaggregationKey][
+  const hasActiveDisaggregationAndDimensionKey =
+    activeDisaggregationKey && activeDimensionKey;
+
+  const dimensionDefinitionSettingsKeys =
+    (hasActiveDisaggregationAndDimensionKey &&
+      dimensionDefinitionSettings[systemMetricKey]?.[activeDisaggregationKey]?.[
         activeDimensionKey
-      ]
-    )) as string[];
+      ] &&
+      Object.keys(
+        dimensionDefinitionSettings[systemMetricKey][activeDisaggregationKey][
+          activeDimensionKey
+        ]
+      )) as string[];
 
   const activeSettingsKeys = isMetricDefinitionSettings
     ? metricDefinitionIncludesExcludesKeys
     : dimensionDefinitionSettingsKeys;
-
-  const hasActiveDisaggregationAndDimensionKey =
-    activeDisaggregationKey && activeDimensionKey;
 
   const dimensionContextsMap =
     hasActiveDisaggregationAndDimensionKey &&
@@ -107,61 +108,59 @@ function DefinitionModalForm({
       !activeSettingsKeys?.length && activeDimensionKey && !dimensionContextsMap
     );
 
-  const hasNoSettings =
+  const hasNoSettingsAndNoContext =
     noSettingsAvailable &&
     !hasMinOneDimensionContext &&
     !hasMinOneMetricLevelContext;
 
   const currentDimension =
-    (activeDisaggregationKey &&
-      activeDimensionKey &&
+    (hasActiveDisaggregationAndDimensionKey &&
       dimensions[systemMetricKey]?.[activeDisaggregationKey]?.[
         activeDimensionKey
       ]) ||
     undefined;
 
-  const [currentSettings, setCurrentSettings] = useState(
-    activeSettingsKeys?.reduce((acc, includesExcludesKey) => {
-      const currentIncludesExcludes =
-        activeDisaggregationKey && activeDimensionKey
-          ? dimensionDefinitionSettings[systemMetricKey][
-              activeDisaggregationKey
-            ][activeDimensionKey][includesExcludesKey]
-          : metricDefinitionSettings[systemMetricKey][includesExcludesKey];
+  const initialSettings = activeSettingsKeys?.reduce(
+    (acc, includesExcludesKey) => {
+      const currentIncludesExcludes = hasActiveDisaggregationAndDimensionKey
+        ? dimensionDefinitionSettings[systemMetricKey][activeDisaggregationKey][
+            activeDimensionKey
+          ][includesExcludesKey]
+        : metricDefinitionSettings[systemMetricKey][includesExcludesKey];
 
       return {
         ...acc,
         [includesExcludesKey]: currentIncludesExcludes,
       };
-    }, {} as { [includesExcludesKey: string]: { description?: string; settings: { [settingKey: string]: Partial<MetricConfigurationSettings> } } })
+    },
+    {} as SettingsByIncludesExcludesKey
   );
 
-  const [currentContexts, setCurrentContexts] = useState(
-    dimensionContextsMap
-      ? Object.entries(dimensionContextsMap).reduce((acc, [key, context]) => {
+  const initialContexts = dimensionContextsMap
+    ? Object.entries(dimensionContextsMap).reduce((acc, [key, context]) => {
+        return {
+          ...acc,
+          [key]: {
+            label: context.label || "",
+            value: context.value ? context.value.toString() : "",
+          },
+        };
+      }, {} as ContextsByContextKey)
+    : Object.entries(contexts[systemMetricKey]).reduce(
+        (acc, [key, context]) => {
           return {
             ...acc,
             [key]: {
-              label: context.label || "",
+              label: context.display_name || "",
               value: context.value ? context.value.toString() : "",
             },
           };
-        }, {} as { [contextKey: string]: { label: string; value: string } })
-      : Object.entries(contexts[systemMetricKey]).reduce(
-          (acc, [key, context]) => {
-            return {
-              ...acc,
-              [key]: {
-                label: context.display_name || "",
-                value: context.value ? context.value.toString() : "",
-              },
-            };
-          },
-          {} as {
-            [contextKey: string]: { label: string; value: string };
-          }
-        )
-  );
+        },
+        {} as ContextsByContextKey
+      );
+
+  const [currentSettings, setCurrentSettings] = useState(initialSettings);
+  const [currentContexts, setCurrentContexts] = useState(initialContexts);
 
   const handleChooseDefaults = () => {
     setCurrentSettings(
@@ -185,14 +184,7 @@ function DefinitionModalForm({
             },
           };
         },
-        {} as {
-          [includesExcludesKey: string]: {
-            description?: string | undefined;
-            settings: {
-              [p: string]: Partial<MetricConfigurationSettings>;
-            };
-          };
-        }
+        {} as SettingsByIncludesExcludesKey
       )
     );
   };
@@ -238,7 +230,11 @@ function DefinitionModalForm({
       const settingsToSave: MetricSettings["settings"] = [];
       const contextsToSave: MetricSettings["contexts"] = [];
 
-      if (activeDisaggregationKey && activeDimensionKey) {
+      // if hasActiveDisaggregationAndDimensionKey is true then we saving all dimension definition settings and contexts
+      // if false then we are saving metric definition settings and contexts
+      // we have to loop through all settings grouped by includesExcludesKey to make sure we saving all changes
+      // and loop through all contexts to do the same
+      if (hasActiveDisaggregationAndDimensionKey) {
         if (currentSettings) {
           Object.entries(currentSettings).forEach(
             ([includesExcludesKey, { settings }]) => {
@@ -332,7 +328,7 @@ function DefinitionModalForm({
     }
   };
 
-  if (hasNoSettings)
+  if (hasNoSettingsAndNoContext)
     return (
       <Styled.Wrapper>
         <Styled.Content>
