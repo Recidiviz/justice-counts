@@ -297,17 +297,6 @@ class ReportStore {
         method: "PATCH",
       })) as Response;
 
-      if (response.status === 200) {
-        /** Update the editor details (editors & last modified details) in real time within the report after autosave. */
-        const reportsList = (await response.json()) as Report[];
-
-        runInAction(() => {
-          reportsList.forEach((report) => {
-            this.reportOverviews[report.id] = report;
-          });
-        });
-      }
-
       return response;
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
