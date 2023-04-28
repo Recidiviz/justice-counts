@@ -78,9 +78,9 @@ export const SectionItem = styled.div`
 export const SectionItemTooltip = styled.div`
   position: absolute;
   z-index: 2;
-  right: 60px;
-  width: 417px;
-  max-width: 417px;
+  right: 100px;
+  width: 240px;
+  max-width: 240px;
   padding: 24px;
   background-color: ${palette.solid.black};
   border-radius: 3px;
