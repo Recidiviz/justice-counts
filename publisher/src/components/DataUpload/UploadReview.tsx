@@ -97,7 +97,7 @@ const UploadReview: React.FC = observer(() => {
   ];
 
   const publishMultipleRecords = async () => {
-    if (agencyId) {
+    if (agencyId && !hasAllPublishedRecords) {
       const response = (await reportStore.updateMultipleReportStatuses(
         existingAndNewRecordIDs,
         agencyId,
@@ -112,8 +112,8 @@ const UploadReview: React.FC = observer(() => {
         });
         return;
       }
-      setIsSuccessModalOpen(true);
     }
+    setIsSuccessModalOpen(true);
   };
 
   const metrics = uploadedMetrics
