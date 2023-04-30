@@ -125,7 +125,6 @@ function MetricConfig() {
   };
 
   const isAvailableForPublishing =
-    metricEnabled &&
     metricTotalHasAtLeastOneSettingSelection &&
     dimensionsHaveAtLeastOneSettingSelection();
 
