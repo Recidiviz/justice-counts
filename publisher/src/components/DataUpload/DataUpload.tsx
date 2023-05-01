@@ -129,8 +129,9 @@ export const DataUpload: React.FC = observer(() => {
   ): Promise<void> => {
     if (file && system && agencyId) {
       setSelectedFile(file);
-      // Replaces () parentheses - opening parenthesis '(' becomes '_' and closing parenthesis is removed
+      // Removes extra spacing and replaces () parentheses - opening parenthesis '(' becomes '_' and closing parenthesis is removed
       const sanitizedFileName = file.name
+        .replaceAll(" ", "")
         .replaceAll("(", "_")
         .replaceAll(")", "");
 
