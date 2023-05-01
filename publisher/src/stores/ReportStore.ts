@@ -254,7 +254,6 @@ class ReportStore {
           return {
             key: metricKey,
             displayName: metricDatapoints[0].metric_display_name as string,
-            metricErrors,
           };
         }
       );
@@ -263,6 +262,7 @@ class ReportStore {
         records: reportsWithDatapoints,
         datapointsByMetric,
         metricsToDisplay,
+        metricErrors,
       };
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);

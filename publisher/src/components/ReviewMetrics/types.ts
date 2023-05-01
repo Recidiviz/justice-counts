@@ -71,6 +71,6 @@ export type PublishReviewPropsFromDatapoints = {
   metricsToDisplay: {
     key: string;
     displayName: string;
-    metricErrors: PublishReviewMetricErrors;
   }[];
+  metricErrors: PublishReviewMetricErrors;
 };
