@@ -190,12 +190,12 @@ export const GeneralInstructions: React.FC<
           </a>{" "}
           page
         </li>
-        <li>Uploading an Excel spreadsheet</li>
+        <li>Uploading an Excel spreadsheet or CSV file</li>
       </ol>
       <p>
         If you choose the second option, we require that you upload the
-        spreadsheet <b>in a particular format</b>, so we can build automation on
-        our end to easily upload this data into our platform.
+        spreadsheet/file <b>in a particular format</b>, so we can build
+        automation on our end to easily upload this data into our platform.
       </p>
 
       <h3>Examples</h3>

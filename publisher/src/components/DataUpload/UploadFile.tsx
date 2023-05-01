@@ -160,7 +160,7 @@ export const UploadFile: React.FC<UploadFileProps> = ({
               Browse
             </UploadButtonLabel>
           </span>
-          <span style={{ opacity: 0.5 }}>Files type: .xls, .xlsx</span>
+          <span style={{ opacity: 0.5 }}>Files type: .xls, .xlsx, .csv</span>
         </div>
       </DragDropContainer>
     </UploadFileContainer>
