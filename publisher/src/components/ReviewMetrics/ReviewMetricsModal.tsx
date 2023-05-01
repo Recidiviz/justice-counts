@@ -47,6 +47,7 @@ export const ReviewMetricsModal: React.FC<{
     color?: string;
     onClick: () => void;
   }[];
+  hasAllPublishedRecords?: boolean;
 }> = ({
   recordsCount,
   fileName,
@@ -54,6 +55,7 @@ export const ReviewMetricsModal: React.FC<{
   isExistingReportWarningModalOpen,
   existingReports,
   publishingExistingReportsButtons,
+  hasAllPublishedRecords,
 }) => {
   const { agencyId } = useParams();
   const navigate = useNavigate();
@@ -116,7 +118,8 @@ export const ReviewMetricsModal: React.FC<{
             )}
             {fileName && (
               <>
-                Data from <span>{fileName}</span> published!
+                Data from <span>{fileName}</span>{" "}
+                {hasAllPublishedRecords && "is already"} published!
               </>
             )}
             {!recordsCount && !fileName && "Data published!"}

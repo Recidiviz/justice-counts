@@ -41,11 +41,18 @@ const UploadReview: React.FC = observer(() => {
   const { agencyId } = useParams();
   const { state } = useLocation();
   const { reportStore } = useStore();
-  const { uploadedMetrics, fileName, newReports, updatedReportIDs } = state as {
+  const {
+    uploadedMetrics,
+    fileName,
+    newReports,
+    updatedReportIDs,
+    unchangedReportIDs,
+  } = state as {
     uploadedMetrics: UploadedMetric[] | null;
     fileName: string;
     newReports: ReportOverview[];
     updatedReportIDs: number[];
+    unchangedReportIDs: number[];
   };
   const navigate = useNavigate();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
@@ -57,14 +64,19 @@ const UploadReview: React.FC = observer(() => {
   }
 
   // review component props
-  const existingReports = updatedReportIDs
+  const existingReports = [...updatedReportIDs, ...unchangedReportIDs]
     .map((id) => reportStore.reportOverviews[id])
     .filter((report) => report);
+  const hasExistingAndNewRecords =
+    existingReports.length > 0 && newReports.length > 0;
   const existingAndNewRecords = [...existingReports, ...newReports];
   const existingAndNewRecordIDs = existingAndNewRecords.map(
     (record) => record.id
   );
-  const isPublishingExistingReports = updatedReportIDs.length > 0;
+  const hasAllPublishedRecordsNoOverwrites =
+    existingAndNewRecords.filter((record) => record.status !== "PUBLISHED")
+      .length === 0 && updatedReportIDs.length === 0;
+
   const publishingExistingReportsButtons: {
     name: string;
     color?: ButtonColor;
@@ -85,7 +97,7 @@ const UploadReview: React.FC = observer(() => {
   ];
 
   const publishMultipleRecords = async () => {
-    if (agencyId) {
+    if (agencyId && !hasAllPublishedRecordsNoOverwrites) {
       const response = (await reportStore.updateMultipleReportStatuses(
         existingAndNewRecordIDs,
         agencyId,
@@ -100,8 +112,8 @@ const UploadReview: React.FC = observer(() => {
         });
         return;
       }
-      setIsSuccessModalOpen(true);
     }
+    setIsSuccessModalOpen(true);
   };
 
   const metrics = uploadedMetrics
@@ -143,7 +155,7 @@ const UploadReview: React.FC = observer(() => {
             name: "Publish",
             buttonColor: "green",
             onClick: () =>
-              isPublishingExistingReports
+              hasExistingAndNewRecords
                 ? setExistingReportWarningOpen(true)
                 : publishMultipleRecords(),
           },
@@ -164,6 +176,7 @@ const UploadReview: React.FC = observer(() => {
           isExistingReportWarningModalOpen={isExistingReportWarningModalOpen}
           existingReports={existingReports}
           publishingExistingReportsButtons={publishingExistingReportsButtons}
+          hasAllPublishedRecords={hasAllPublishedRecordsNoOverwrites}
         />
       )}
       <ReviewMetrics
