@@ -136,7 +136,7 @@ const BulkActionReview = () => {
             datapoints: datapointsByMetric[metric.key],
             display_name: metric.displayName,
             key: metric.key,
-            metricHasError: false,
+            metricHasError: metric.metricErrors[metric.key],
             metricHasValidInput: true,
           };
           return [...acc, reviewMetric];

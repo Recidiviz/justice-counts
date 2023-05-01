@@ -31,7 +31,10 @@ import {
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
 import { MetricSettings } from "../components/MetricConfiguration";
-import { PublishReviewPropsFromDatapoints } from "../components/ReviewMetrics";
+import {
+  PublishReviewMetricErrors,
+  PublishReviewPropsFromDatapoints,
+} from "../components/ReviewMetrics";
 import { groupBy } from "../utils";
 import API from "./API";
 import DatapointsStore from "./DatapointsStore";
@@ -212,17 +215,46 @@ class ReportStore {
 
       const combinedFilteredDatapointsFromAllReports = reportsWithDatapoints
         ?.map((report) => report.datapoints)
-        .flat()
-        .filter((dp) => dp.value !== null);
-      const datapointsByMetric = DatapointsStore.keyRawDatapointsByMetric(
-        combinedFilteredDatapointsFromAllReports
-      );
+        .flat();
+
+      const metricErrors = combinedFilteredDatapointsFromAllReports
+        .sort((a, _) => (a.dimension_display_name ? -1 : 1))
+        .reduce((acc, val) => {
+          if (Number.isNaN(Number(val.value))) {
+            acc[val.metric_definition_key] = true;
+            return acc;
+          }
+          if (
+            val.dimension_display_name &&
+            acc[val.metric_definition_key] === undefined &&
+            val.value !== null
+          ) {
+            acc[val.metric_definition_key] = false;
+          }
+          if (
+            !val.dimension_display_name &&
+            acc[val.metric_definition_key] === false &&
+            val.value === null
+          ) {
+            acc[val.metric_definition_key] = true;
+          }
+          return acc;
+        }, {} as PublishReviewMetricErrors);
+
+      const filteredDatapoints =
+        combinedFilteredDatapointsFromAllReports.filter(
+          (dp) => dp.value !== null
+        );
+
+      const datapointsByMetric =
+        DatapointsStore.keyRawDatapointsByMetric(filteredDatapoints);
       const datapointsEntries = Object.entries(datapointsByMetric);
       const metricsToDisplay = datapointsEntries.map(
         ([metricKey, metricDatapoints]) => {
           return {
             key: metricKey,
             displayName: metricDatapoints[0].metric_display_name as string,
+            metricErrors,
           };
         }
       );

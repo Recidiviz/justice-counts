@@ -61,11 +61,16 @@ export type ReviewMetricsProps = {
   records?: ReportOverview[];
 };
 
+export type PublishReviewMetricErrors = {
+  [key: string]: boolean;
+};
+
 export type PublishReviewPropsFromDatapoints = {
   records: Report[];
   datapointsByMetric: RawDatapointsByMetric;
   metricsToDisplay: {
     key: string;
     displayName: string;
+    metricErrors: PublishReviewMetricErrors;
   }[];
 };
