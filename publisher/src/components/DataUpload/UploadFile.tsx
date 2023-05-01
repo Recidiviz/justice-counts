@@ -19,6 +19,8 @@ import { showToast } from "@justice-counts/common/components/Toast";
 import { AgencySystems } from "@justice-counts/common/types";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
+import { removeSnakeCase } from "../../utils";
+import fileIcon from "../assets/file-icon.svg";
 import {
   DragDropContainer,
   DragDropIcon,
@@ -29,8 +31,6 @@ import {
   UploadButtonLabel,
   UploadFileContainer,
 } from ".";
-import { removeSnakeCase } from "../../utils";
-import fileIcon from "../assets/file-icon.svg";
 
 type UploadFileProps = {
   userSystems: AgencySystems[];
