@@ -217,13 +217,20 @@ class ReportStore {
         ?.map((report) => report.datapoints)
         .flat();
 
+      /** Find metric errors from datapoints (non-numeric characters and breakdowns with values but no value for the top-level metric)  */
       const metricErrors = combinedFilteredDatapointsFromAllReports
+        /**  First, sort the datapoints so breakdowns come before top level metrics */
         .sort((a, _) => (a.dimension_display_name ? -1 : 1))
         .reduce((acc, val) => {
+          /** Add non-numeric characters */
           if (Number.isNaN(Number(val.value))) {
             acc[val.metric_definition_key] = true;
             return acc;
           }
+          /**
+           * If there is a value in the breakdowns and it's the first time we've come across this breakdown,
+           * add it to our map and mark it as false until we come across the top level metric
+           */
           if (
             val.dimension_display_name &&
             acc[val.metric_definition_key] === undefined &&
@@ -231,6 +238,10 @@ class ReportStore {
           ) {
             acc[val.metric_definition_key] = false;
           }
+          /**
+           * After going through all of the breakdowns values, check to see if the top level metric has a null value.
+           * If so, we've encountered an error with breakdowns having a value and the top level metric having no value.
+           */
           if (
             !val.dimension_display_name &&
             acc[val.metric_definition_key] === false &&
