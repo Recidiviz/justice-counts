@@ -276,7 +276,7 @@ const Menu: React.FC = () => {
         {/* Data (Visualizations) */}
         <MenuItem
           onClick={() => {
-            navigate("data");
+            if (pathWithoutAgency !== "data") navigate("data");
             handleCloseMobileMenu();
           }}
           active={pathWithoutAgency === "data"}
