@@ -341,11 +341,11 @@ function DefinitionModalForm({
             </Styled.Title>
             <Styled.Description>
               There are no definitions to configure for this{" "}
-              {isMetricDefinitionSettings ? "metric yet." : "breakdown yet."}
+              {isMetricDefinitionSettings ? "metric." : "breakdown."}
             </Styled.Description>
           </Styled.ScrollableInnerWrapper>
           <Styled.BottomButtonsContainer>
-            <Button label="Cancel" onClick={closeModal} noHover />
+            <Button label="Close" onClick={closeModal} buttonColor="red" />
           </Styled.BottomButtonsContainer>
         </Styled.Content>
       </Styled.Wrapper>
@@ -361,17 +361,19 @@ function DefinitionModalForm({
               ? `${metrics[systemMetricKey]?.label} (Total)`
               : currentDimension?.label}
           </Styled.Title>
-          <Styled.Description>
-            Indicate which of the following categories your agency considers to
-            be part of this datapoint. You are not required to share data for
-            these specific categories. Or,{" "}
-            <Styled.ChooseDefaultSettings onClick={handleChooseDefaults}>
-              choose the Justice Counts definition.
-            </Styled.ChooseDefaultSettings>
-          </Styled.Description>
-          <Styled.IncludesExcludesContainer>
-            {currentSettings &&
-              Object.entries(currentSettings).map(
+          {activeSettingsKeys && (
+            <Styled.Description>
+              Indicate which of the following categories your agency considers
+              to be part of this datapoint. You are not required to share data
+              for these specific categories. Or,{" "}
+              <Styled.ChooseDefaultSettings onClick={handleChooseDefaults}>
+                choose the Justice Counts definition.
+              </Styled.ChooseDefaultSettings>
+            </Styled.Description>
+          )}
+          {currentSettings && (
+            <Styled.IncludesExcludesContainer>
+              {Object.entries(currentSettings).map(
                 ([includesExcludesKey, value]) => {
                   return Object.entries(value.settings).map(
                     ([settingKey, setting]) => {
@@ -397,7 +399,8 @@ function DefinitionModalForm({
                   );
                 }
               )}
-          </Styled.IncludesExcludesContainer>
+            </Styled.IncludesExcludesContainer>
+          )}
           <Styled.ContextContainer>
             {currentContexts &&
               Object.entries(currentContexts).map(([key, { label, value }]) => {
