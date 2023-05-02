@@ -136,28 +136,32 @@ function DefinitionModalForm({
     {} as SettingsByIncludesExcludesKey
   );
 
-  const initialContexts = dimensionContextsMap
-    ? Object.entries(dimensionContextsMap).reduce((acc, [key, context]) => {
-        return {
-          ...acc,
-          [key]: {
-            label: context.label || "",
-            value: context.value ? context.value.toString() : "",
-          },
-        };
-      }, {} as ContextsByContextKey)
-    : Object.entries(contexts[systemMetricKey]).reduce(
-        (acc, [key, context]) => {
+  const initialContexts = () => {
+    if (!dimensionContextsMap && !contexts[systemMetricKey]) return {};
+
+    return dimensionContextsMap
+      ? Object.entries(dimensionContextsMap).reduce((acc, [key, context]) => {
           return {
             ...acc,
             [key]: {
-              label: context.display_name || "",
+              label: context.label || "",
               value: context.value ? context.value.toString() : "",
             },
           };
-        },
-        {} as ContextsByContextKey
-      );
+        }, {} as ContextsByContextKey)
+      : Object.entries(contexts[systemMetricKey]).reduce(
+          (acc, [key, context]) => {
+            return {
+              ...acc,
+              [key]: {
+                label: context.display_name || "",
+                value: context.value ? context.value.toString() : "",
+              },
+            };
+          },
+          {} as ContextsByContextKey
+        );
+  };
 
   const [currentSettings, setCurrentSettings] = useState(initialSettings);
   const [currentContexts, setCurrentContexts] = useState(initialContexts);
