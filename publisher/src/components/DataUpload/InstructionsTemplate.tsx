@@ -236,8 +236,7 @@ export const GeneralInstructions: React.FC<
       <h3>Basics</h3>
       <p>
         You will need to generate one Excel workbook (or set of CSV files) for
-        each criminal justice{" "}{/* eslint-disable-line */}
-        {SYSTEM_LOWERCASE} that your agency is{" "}{/* eslint-disable-line */}
+        each criminal justice {SYSTEM_LOWERCASE} that your agency is{" "}
         {REPORTING_LOWERCASE} data for. Your agency is responsible for{" "}
         {REPORTING_LOWERCASE} data for:{" "}
         {/* replace last comma with "and": https://stackoverflow.com/a/41035407 */}
@@ -264,9 +263,9 @@ export const GeneralInstructions: React.FC<
       <p>
         If you are uploading an Excel workbook, we require that each sheet is
         given a standard name.{" "}
-        <b>Refer to your example file for the valid sheet names.{" "}</b>{/* eslint-disable-line */}
-        If you are uploading a set of CSV files, their filenames names should
-        also exactly match these sheet names (e.g. admissions.csv).
+        <b>Refer to your example file for the valid sheet names. </b> If you are
+        uploading a set of CSV files, their filenames names should also exactly
+        match these sheet names (e.g. admissions.csv).
       </p>
       <p>
         All sheets will have columns for <i>year</i> and <i>value</i>. Monthly
