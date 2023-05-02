@@ -17,6 +17,12 @@
 
 import React from "react";
 
+import {
+  ButtonWrapper,
+  DownloadTemplateBox,
+  DownloadTemplateSystem,
+  systemToTemplateSpreadsheetFileName,
+} from ".";
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as SpreadsheetIcon } from "../assets/microsoft-excel-icon.svg";
 import {
@@ -28,12 +34,6 @@ import {
   SYSTEM_LOWERCASE,
   SYSTEMS_LOWERCASE,
 } from "../Global/constants";
-import {
-  ButtonWrapper,
-  DownloadTemplateBox,
-  DownloadTemplateSystem,
-  systemToTemplateSpreadsheetFileName,
-} from ".";
 
 export type GeneralInstructionsTemplateParams = {
   systems: string[];
@@ -236,9 +236,10 @@ export const GeneralInstructions: React.FC<
       <h3>Basics</h3>
       <p>
         You will need to generate one Excel workbook (or set of CSV files) for
-        each criminal justice
-        {SYSTEM_LOWERCASE} that your agency is {REPORTING_LOWERCASE} data for.
-        Your agency is responsible for {REPORTING_LOWERCASE} data for:{" "}
+        each criminal justice{" "}
+        {SYSTEM_LOWERCASE} that your agency is{" "}
+        {REPORTING_LOWERCASE} data for. Your agency is responsible for{" "}
+        {REPORTING_LOWERCASE} data for:{" "}
         {/* replace last comma with "and": https://stackoverflow.com/a/41035407 */}
         {systems
           .map((system) => systemToDetails[system].name)
@@ -263,7 +264,7 @@ export const GeneralInstructions: React.FC<
       <p>
         If you are uploading an Excel workbook, we require that each sheet is
         given a standard name.{" "}
-        <b>Refer to your example file for the valid sheet names.</b>
+        <b>Refer to your example file for the valid sheet names.{" "}</b>
         If you are uploading a set of CSV files, their filenames names should
         also exactly match these sheet names (e.g. admissions.csv).
       </p>
