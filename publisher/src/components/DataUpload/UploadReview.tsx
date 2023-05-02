@@ -19,7 +19,7 @@ import { ButtonColor } from "@justice-counts/common/components/Button";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { ReportOverview } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Navigate,
   useLocation,
@@ -54,6 +54,19 @@ const UploadReview: React.FC = observer(() => {
     updatedReportIDs: number[];
     unchangedReportIDs: number[];
   };
+  useEffect(() => {
+    const getAllRelevantReports = async () => {
+      reportStore.resetState();
+      if (agencyId !== undefined) {
+        await reportStore.getReportOverviews(
+          /* agencyId */ agencyId?.toString(),
+          /* includeChildAgencies */ true
+        );
+      }
+    };
+    getAllRelevantReports();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const navigate = useNavigate();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isExistingReportWarningModalOpen, setExistingReportWarningOpen] =

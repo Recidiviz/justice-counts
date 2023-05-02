@@ -110,10 +110,17 @@ class ReportStore {
     });
   }
 
-  async getReportOverviews(agencyId: string): Promise<void | Error> {
+  async getReportOverviews(
+    agencyId: string,
+    includeChildAgencies?: boolean
+  ): Promise<void | Error> {
+    let path = `/api/agencies/${agencyId}/reports`;
+    if (includeChildAgencies === true) {
+      path += "?includeChildAgencies=true";
+    }
     try {
       const response = (await this.api.request({
-        path: `/api/agencies/${agencyId}/reports`,
+        path,
         method: "GET",
       })) as Response;
       if (response.status === 200) {
