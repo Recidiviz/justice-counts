@@ -17,12 +17,6 @@
 
 import React from "react";
 
-import {
-  ButtonWrapper,
-  DownloadTemplateBox,
-  DownloadTemplateSystem,
-  systemToTemplateSpreadsheetFileName,
-} from ".";
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as SpreadsheetIcon } from "../assets/microsoft-excel-icon.svg";
 import {
@@ -34,6 +28,12 @@ import {
   SYSTEM_LOWERCASE,
   SYSTEMS_LOWERCASE,
 } from "../Global/constants";
+import {
+  ButtonWrapper,
+  DownloadTemplateBox,
+  DownloadTemplateSystem,
+  systemToTemplateSpreadsheetFileName,
+} from ".";
 
 export type GeneralInstructionsTemplateParams = {
   systems: string[];
