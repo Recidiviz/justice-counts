@@ -27,6 +27,7 @@ import {
   ButtonLabelColor,
   ButtonSize,
 } from "./types";
+import { tooltipStyles } from "../../../publisher/src/components/primitives";
 
 export const Button = styled.div<{
   buttonColor?: ButtonColor;
@@ -124,5 +125,28 @@ export const Button = styled.div<{
     color: ${palette.solid.blue};
     display: flex;
     align-items: center;
+  }
+`;
+
+export const ButtonWrapper = styled.div`
+  position: relative;
+  ${Button} {
+    height: 100%;
+  }
+`;
+
+export const ButtonTooltip = styled.span`
+  ${tooltipStyles}
+  width: 270px;
+  position: absolute;
+  top: 45px;
+  right: 0;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  display: none;
+
+  ${ButtonWrapper}:hover > & {
+    display: block;
   }
 `;

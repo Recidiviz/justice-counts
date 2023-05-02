@@ -49,7 +49,7 @@ const StyledAgencyAdmin = styled(AgencyAdmin)`
   min-height: 13px;
 `;
 
-const tooltipStyles = {
+export const tooltipStyles = {
   transition: "opacity 0s ease-out",
   background: palette.solid.darkgrey,
   boxShadow: "0px 4px 10px rgba(23, 28, 43, 0.2)",
