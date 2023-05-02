@@ -21,13 +21,13 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
+import { tooltipStyles } from "../../../publisher/src/components/primitives";
 import {
   ButtonBorderColor,
   ButtonColor,
   ButtonLabelColor,
   ButtonSize,
 } from "./types";
-import { tooltipStyles } from "../../../publisher/src/components/primitives";
 
 export const Button = styled.div<{
   buttonColor?: ButtonColor;
