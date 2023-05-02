@@ -29,6 +29,10 @@ import {
   MIN_TABLET_WIDTH,
   palette,
 } from "@justice-counts/common/components/GlobalStyles";
+import {
+  TabbedBar,
+  TabOption,
+} from "@justice-counts/common/components/TabbedBar";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import { ReportOverview, ReportStatus } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
@@ -45,6 +49,7 @@ import { Loading } from "../components/Loading";
 import { Onboarding } from "../components/Onboarding";
 import { TeamMemberNameWithBadge } from "../components/primitives";
 import {
+  ActionsWrapper,
   AdditionalEditorsTooltip,
   AndOthersSpan,
   BulkActionModeTitle,
@@ -62,10 +67,7 @@ import {
   ReportsHeader,
   Row,
   SelectedCheckmark,
-  TabbedActionsWrapper,
-  TabbedBar,
-  TabbedItem,
-  TabbedOptions,
+  TabbedBarContainer,
   Table,
 } from "../components/Reports";
 import { RemoveRecordsModal } from "../components/Reports/RemoveRecordsModal";
@@ -141,14 +143,6 @@ const Reports: React.FC = () => {
     if (action === "unpublish")
       return status === "DRAFT" || status === "NOT_STARTED";
     return false;
-  };
-
-  const filterReportsBy = (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ): void => {
-    const { id } = e.target as HTMLDivElement;
-    const normalizedID = normalizeString(id);
-    setReportsFilter(normalizedID);
   };
 
   const renderReportYearRow = (
@@ -235,6 +229,14 @@ const Reports: React.FC = () => {
       noHover: true,
     },
   ];
+  const tabbedBarOptions: TabOption[] = Object.entries(
+    ReportStatusFilterOptionObject
+  ).map(([key, value]) => ({
+    key,
+    label: removeSnakeCase(value),
+    onClick: () => setReportsFilter(normalizeString(key)),
+    selected: key === reportsFilter,
+  }));
   const reportsFilterDropdownOptions: DropdownOption[] = Object.entries(
     ReportStatusFilterOptionObject
   ).map(([key, value]) => ({
@@ -418,23 +420,12 @@ const Reports: React.FC = () => {
         <DesktopRecordsPageTitle>{REPORTS_CAPITALIZED}</DesktopRecordsPageTitle>
 
         {/* Filter Reports By */}
-        <TabbedBar noPadding={windowWidth < MIN_TABLET_WIDTH}>
+        <ActionsWrapper noPadding={windowWidth < MIN_TABLET_WIDTH}>
           {!bulkAction && (
             <>
-              <TabbedOptions>
-                {Object.entries(ReportStatusFilterOptionObject).map(
-                  ([key, value]) => (
-                    <TabbedItem
-                      key={key}
-                      id={key}
-                      selected={key === reportsFilter}
-                      onClick={(e) => filterReportsBy(e)}
-                    >
-                      {removeSnakeCase(value)}
-                    </TabbedItem>
-                  )
-                )}
-              </TabbedOptions>
+              <TabbedBarContainer>
+                <TabbedBar options={tabbedBarOptions} size="large" />
+              </TabbedBarContainer>
               <MobileRecordsPageTitle>
                 {REPORTS_CAPITALIZED}
               </MobileRecordsPageTitle>
@@ -471,86 +462,84 @@ const Reports: React.FC = () => {
             </BulkActionModeTitle>
           )}
 
-          <TabbedActionsWrapper>
-            {/* Admin Only: Manage Reports */}
-            {isAdmin && (
-              <ReportActions>
-                {!bulkAction && (
-                  <>
-                    {userStore.isJusticeCountsAdmin(agencyId) && (
-                      <BulkActionsDropdownContainer>
-                        <Dropdown
-                          label="Bulk Actions"
-                          options={bulkActionsDropdownOptions}
-                          size="small"
-                          disabled={filteredReportsMemoized.length === 0}
-                          hover="background"
-                          caretPosition="right"
-                          alignment="right"
-                          overflow
-                        />
-                      </BulkActionsDropdownContainer>
-                    )}
-                    <Button
-                      label="+ New Record"
-                      labelColor="blue"
-                      borderColor="lightgrey"
-                      onClick={() => navigate("create")}
-                    />
-                  </>
-                )}
+          {/* Admin Only: Manage Reports */}
+          {isAdmin && (
+            <ReportActions>
+              {!bulkAction && (
+                <>
+                  {userStore.isJusticeCountsAdmin(agencyId) && (
+                    <BulkActionsDropdownContainer>
+                      <Dropdown
+                        label="Bulk Actions"
+                        options={bulkActionsDropdownOptions}
+                        size="small"
+                        disabled={filteredReportsMemoized.length === 0}
+                        hover="background"
+                        caretPosition="right"
+                        alignment="right"
+                        overflow
+                      />
+                    </BulkActionsDropdownContainer>
+                  )}
+                  <Button
+                    label="+ New Record"
+                    labelColor="blue"
+                    borderColor="lightgrey"
+                    onClick={() => navigate("create")}
+                  />
+                </>
+              )}
 
-                {bulkAction && (
-                  <>
+              {bulkAction && (
+                <>
+                  <Button
+                    label="Cancel"
+                    onClick={() => {
+                      clearAllSelectedRecords();
+                      clearBulkAction();
+                    }}
+                    borderColor="lightgrey"
+                  />
+                  {bulkAction === "delete" && selectedRecords.length > 0 && (
                     <Button
-                      label="Cancel"
-                      onClick={() => {
-                        clearAllSelectedRecords();
-                        clearBulkAction();
-                      }}
-                      borderColor="lightgrey"
+                      label="Delete"
+                      onClick={() => setIsRemoveRecordsModalOpen(true)}
+                      buttonColor="red"
                     />
-                    {bulkAction === "delete" && selectedRecords.length > 0 && (
-                      <Button
-                        label="Delete"
-                        onClick={() => setIsRemoveRecordsModalOpen(true)}
-                        buttonColor="red"
-                      />
-                    )}
-                    {bulkAction === "publish" && selectedRecords.length > 0 && (
-                      <Button
-                        label="Review and Publish"
-                        onClick={() =>
-                          navigate("bulk-review", {
-                            state: {
-                              recordsIds: selectedRecords,
-                              action: bulkAction,
-                            },
-                          })
-                        }
-                        buttonColor="green"
-                      />
-                    )}
-                    {bulkAction === "unpublish" && selectedRecords.length > 0 && (
-                      <Button
-                        label="Review and Unpublish"
-                        onClick={() =>
-                          navigate("bulk-review", {
-                            state: {
-                              recordsIds: selectedRecords,
-                              action: bulkAction,
-                            },
-                          })
-                        }
-                        buttonColor="orange"
-                      />
-                    )}
-                  </>
-                )}
-              </ReportActions>
-            )}
-          </TabbedActionsWrapper>
-        </TabbedBar>
+                  )}
+                  {bulkAction === "publish" && selectedRecords.length > 0 && (
+                    <Button
+                      label="Review and Publish"
+                      onClick={() =>
+                        navigate("bulk-review", {
+                          state: {
+                            recordsIds: selectedRecords,
+                            action: bulkAction,
+                          },
+                        })
+                      }
+                      buttonColor="green"
+                    />
+                  )}
+                  {bulkAction === "unpublish" && selectedRecords.length > 0 && (
+                    <Button
+                      label="Review and Unpublish"
+                      onClick={() =>
+                        navigate("bulk-review", {
+                          state: {
+                            recordsIds: selectedRecords,
+                            action: bulkAction,
+                          },
+                        })
+                      }
+                      buttonColor="orange"
+                    />
+                  )}
+                </>
+              )}
+            </ReportActions>
+          )}
+        </ActionsWrapper>
 
         {/* MobileViewDropdown */}
         <ReportsFilterDropdownContainer>

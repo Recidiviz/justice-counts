@@ -27,7 +27,7 @@ import {
   ToggleSize,
 } from "./types";
 
-type Props = {
+type DropdownProps = {
   label: string | React.ReactNode;
   options?: DropdownOption[];
   size?: ToggleSize;
@@ -62,7 +62,7 @@ export function Dropdown({
   alignment,
   overflow,
   fullWidth,
-}: Props) {
+}: DropdownProps) {
   return (
     <Styled.CustomDropdown>
       <Styled.CustomDropdownToggle

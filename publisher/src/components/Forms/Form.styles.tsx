@@ -22,6 +22,7 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
+import { Tab } from "@justice-counts/common/components/TabbedBar";
 import styled from "styled-components/macro";
 
 import { REPORTS_CAPITALIZED } from "../Global/constants";
@@ -198,37 +199,18 @@ export const DisabledMetricsInfoLink = styled.span`
   cursor: pointer;
 `;
 
-export const DisaggregationTabsContainer = styled.div`
+export const DisaggregationDisplayContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-export const TabsRow = styled.div`
+export const DisaggregationsTabbedBarContainer = styled.div`
   width: 100%;
-  display: flex;
   margin-bottom: 32px;
   border-bottom: 1px solid ${palette.solid.darkgrey};
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: none;
-  }
-`;
-
-export const TabItem = styled.div<{ active?: boolean; enabled?: boolean }>`
-  ${typography.sizeCSS.normal}
-  display: flex;
-  margin-right: 32px;
-  transition: 0.2s ease;
-  color: ${({ active }) =>
-    active ? palette.solid.blue : palette.highlight.grey7};
-  padding-bottom: 7px;
-  border-bottom: 3px solid
-    ${({ active }) => (active ? palette.solid.blue : `transparent`)};
-
-  &:hover {
-    cursor: pointer;
-    color: ${({ enabled, active }) =>
-      !active && (enabled ? palette.solid.blue : palette.solid.darkgrey)};
   }
 `;
 
@@ -246,12 +228,13 @@ export const DisaggregationHasInputIndicator = styled.div<{
   margin-left: 8px;
   align-self: center;
   border: 1px solid ${palette.highlight.grey4};
+
   ${({ active, hasInput, error }) =>
     !active &&
     (hasInput || error) &&
-    `border: none; filter: grayscale(1) opacity(0.3);`}
+    `border: none; filter: grayscale(1) opacity(0.3);`};
 
-  ${TabItem}:hover & {
+  ${Tab}:hover & {
     filter: none;
   }
 `;
@@ -274,7 +257,7 @@ export const DisaggregationsDropdownContainer = styled.div`
   }
 `;
 
-export const TabDisplay = styled.div`
+export const DisaggregationDimensions = styled.div`
   width: 100%;
   display: flex;
   flex-wrap: wrap;

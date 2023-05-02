@@ -319,7 +319,7 @@ export const PanelRightTopButtonsContainer = styled.div`
   flex-direction: row;
   gap: 16px;
   height: 50px;
-  padding: 24px 0 4px 0px;
+  padding: 24px 0 4px 0;
   position: sticky;
   top: 0;
   background-color: ${palette.solid.white};
@@ -449,7 +449,7 @@ export const MetricDetailsDisplay = styled.div`
   padding: 24px 12px 50px 0;
 
   @media only screen and (max-width: ${METRICS_VIEW_CONTAINER_BREAKPOINT}px) {
-    padding: 24px 12px 0px 0;
+    padding: 24px 12px 0 0;
   }
 `;
 
@@ -701,6 +701,15 @@ export const StickyHeader = styled.div`
   top: 0;
   background: ${palette.solid.white};
   margin-bottom: 29px;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    display: none;
+  }
+`;
+
+export const TabbedBarContainer = styled.div`
+  width: 100%;
+  border-bottom: 1px solid ${palette.highlight.grey9};
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: none;

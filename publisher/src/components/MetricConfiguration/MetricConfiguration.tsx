@@ -20,6 +20,10 @@ import {
   DropdownOption,
 } from "@justice-counts/common/components/Dropdown";
 import { MIN_TABLET_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import {
+  TabbedBar,
+  TabOption,
+} from "@justice-counts/common/components/TabbedBar";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
@@ -36,7 +40,6 @@ import { formatSystemName } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import { SYSTEM_CAPITALIZED, SYSTEM_LOWERCASE } from "../Global/constants";
 import { ContainedLoader } from "../Loading";
-import { TabbedBar, TabbedItem, TabbedOptions } from "../Reports";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import {
   Configuration,
@@ -58,6 +61,7 @@ import {
   RACE_ETHNICITY_DISAGGREGATION_KEY,
   RaceEthnicitiesForm,
   StickyHeader,
+  TabbedBarContainer,
 } from ".";
 
 export const MetricConfiguration: React.FC = observer(() => {
@@ -171,6 +175,16 @@ export const MetricConfiguration: React.FC = observer(() => {
     const systemMetrics = getMetricsBySystem(systemSearchParam);
     return systemMetrics && systemMetrics.length > 1;
   };
+  const systemsTabOptions: TabOption[] | undefined = currentAgency?.systems
+    .filter((system) => getMetricsBySystem(system)?.length !== 0)
+    .map((system) => ({
+      key: system,
+      label: formatSystemName(system, {
+        allUserSystems: currentAgency?.systems,
+      }),
+      onClick: () => handleSystemClick(system),
+      selected: systemSearchParam === system,
+    }));
   const systemsDropdownOptions: DropdownOption[] = currentAgency?.systems
     ? currentAgency.systems
         .filter((system) => getMetricsBySystem(system)?.length !== 0)
@@ -215,28 +229,11 @@ export const MetricConfiguration: React.FC = observer(() => {
         {showSystems && (
           <>
             <StickyHeader>
-              <TabbedBar noPadding>
-                <TabbedOptions>
-                  {currentAgency?.systems
-                    .filter(
-                      (system) => getMetricsBySystem(system)?.length !== 0
-                    )
-                    .map((system) => {
-                      return (
-                        <TabbedItem
-                          key={system}
-                          selected={systemSearchParam === system}
-                          onClick={() => handleSystemClick(system)}
-                          capitalize
-                        >
-                          {formatSystemName(system, {
-                            allUserSystems: currentAgency?.systems,
-                          })}
-                        </TabbedItem>
-                      );
-                    })}
-                </TabbedOptions>
-              </TabbedBar>
+              {systemsTabOptions && (
+                <TabbedBarContainer>
+                  <TabbedBar options={systemsTabOptions} size="large" />
+                </TabbedBarContainer>
+              )}
             </StickyHeader>
 
             {/* Systems Dropdown (for multi-system agencies)  */}
