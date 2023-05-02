@@ -17,6 +17,12 @@
 
 import React from "react";
 
+import {
+  ButtonWrapper,
+  DownloadTemplateBox,
+  DownloadTemplateSystem,
+  systemToTemplateSpreadsheetFileName,
+} from ".";
 import { removeSnakeCase } from "../../utils";
 import { ReactComponent as SpreadsheetIcon } from "../assets/microsoft-excel-icon.svg";
 import {
@@ -28,12 +34,6 @@ import {
   SYSTEM_LOWERCASE,
   SYSTEMS_LOWERCASE,
 } from "../Global/constants";
-import {
-  ButtonWrapper,
-  DownloadTemplateBox,
-  DownloadTemplateSystem,
-  systemToTemplateSpreadsheetFileName,
-} from ".";
 
 export type GeneralInstructionsTemplateParams = {
   systems: string[];
@@ -194,7 +194,7 @@ export const GeneralInstructions: React.FC<
       </ol>
       <p>
         If you choose the second option, we require that you upload the
-        spreadsheet/file <b>in a particular format</b>, so we can build
+        spreadsheet or CSV file <b>in a particular format</b>, so we can build
         automation on our end to easily upload this data into our platform.
       </p>
 
@@ -235,7 +235,8 @@ export const GeneralInstructions: React.FC<
       </p>
       <h3>Basics</h3>
       <p>
-        You will need to generate one Excel workbook for each criminal justice
+        You will need to generate one Excel workbook (or set of CSV files) for
+        each criminal justice
         {SYSTEM_LOWERCASE} that your agency is {REPORTING_LOWERCASE} data for.
         Your agency is responsible for {REPORTING_LOWERCASE} data for:{" "}
         {/* replace last comma with "and": https://stackoverflow.com/a/41035407 */}
@@ -246,8 +247,10 @@ export const GeneralInstructions: React.FC<
         .
       </p>
       <p>
-        Include one sheet (or tab) in the workbook for each Justice Counts
-        metric defined for the {SYSTEM_LOWERCASE}. See the{" "}
+        If you choose to upload an Excel workbook, include one sheet (or tab) in
+        the workbook for each Justice Counts metric defined for the{" "}
+        {SYSTEM_LOWERCASE}. If you choose to upload a set of CSV files, you will
+        need to upload one file for each metric. See the{" "}
         <a
           href="https://justicecounts.csgjusticecenter.org/metrics/justice-counts-metrics/"
           target="_blank"
@@ -258,8 +261,11 @@ export const GeneralInstructions: React.FC<
         for a list and description of these metrics.
       </p>
       <p>
-        We require that each sheet is given a standard name.{" "}
+        If you are uploading an Excel workbook, we require that each sheet is
+        given a standard name.{" "}
         <b>Refer to your example file for the valid sheet names.</b>
+        If you are uploading a set of CSV files, their filenames names should
+        also exactly match these sheet names (e.g. admissions.csv).
       </p>
       <p>
         All sheets will have columns for <i>year</i> and <i>value</i>. Monthly
