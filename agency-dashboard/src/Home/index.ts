@@ -15,21 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
-import { Route, Routes } from "react-router-dom";
-
-import { AgencyOverview } from "./AgencyOverview";
-import { DashboardView } from "./DashboardView";
-import { Home } from "./Home";
-
-function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/agency/:id" element={<AgencyOverview />} />
-      <Route path="/agency/:id/dashboard" element={<DashboardView />} />
-    </Routes>
-  );
-}
-
-export default App;
+export * from "./Home";
+export * from "./Home.styles";
+export * from "./types";

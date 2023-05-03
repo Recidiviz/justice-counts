@@ -25,6 +25,7 @@ import {
 import { isPositiveNumber } from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
+import { AgenciesList } from "../Home";
 import { request } from "../utils/networking";
 
 class AgencyDataStore {
@@ -174,6 +175,57 @@ class AgencyDataStore {
       runInAction(() => {
         this.loading = false;
       });
+    } catch (error) {
+      runInAction(() => {
+        this.loading = false;
+      });
+      throw error;
+    }
+  }
+
+  async fetchAllAgencies(): Promise<AgenciesList> {
+    try {
+      return {
+        agencies: [
+          { name: "Test Agency 1", id: 147, number_of_published_metrics: 1 },
+          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
+          {
+            name: "North Carolina Department of Public Safety (NCDPS) of Public Safety (NCDPS)",
+            id: 151,
+            number_of_published_metrics: 2,
+          },
+          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
+          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
+          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
+          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
+          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
+          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
+          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
+          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
+          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
+          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
+          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
+          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
+          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
+          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
+          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
+        ],
+      };
+      const response = (await request({
+        path: `/api/agencies`,
+        method: "GET",
+      })) as Response;
+
+      runInAction(() => {
+        this.loading = false;
+      });
+
+      if (response.status === 200) {
+        const result = await response.json();
+        return result;
+      }
+      const error = await response.json();
+      throw new Error(error.description);
     } catch (error) {
       runInAction(() => {
         this.loading = false;

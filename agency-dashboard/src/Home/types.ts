@@ -15,21 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
-import { Route, Routes } from "react-router-dom";
+export type AgenciesList = {
+  agencies: AgencyMetadata[];
+};
 
-import { AgencyOverview } from "./AgencyOverview";
-import { DashboardView } from "./DashboardView";
-import { Home } from "./Home";
-
-function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/agency/:id" element={<AgencyOverview />} />
-      <Route path="/agency/:id/dashboard" element={<DashboardView />} />
-    </Routes>
-  );
-}
-
-export default App;
+export type AgencyMetadata = {
+  name: string;
+  id: number;
+  number_of_published_metrics: number;
+};
