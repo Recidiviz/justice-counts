@@ -32,7 +32,7 @@ import {
   AboutModalInnerContainer,
   AboutModalLogo,
   AboutModalTitle,
-} from "./AboutModal.styles";
+} from ".";
 
 export const AboutModal: React.FC<{
   closeModal: () => void;

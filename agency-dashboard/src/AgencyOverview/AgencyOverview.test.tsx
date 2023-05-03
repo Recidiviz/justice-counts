@@ -18,8 +18,8 @@ import { render, screen } from "@testing-library/react";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
 
-import AgencyOverview from "./AgencyOverview";
-import { StoreProvider } from "./stores";
+import { StoreProvider } from "../stores";
+import { AgencyOverview } from ".";
 
 beforeEach(() => {
   fetchMock.resetMocks();

@@ -15,19 +15,5 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Route, Routes } from "react-router-dom";
-
-import { AgencyOverview } from "./AgencyOverview";
-import { DashboardView } from "./DashboardView";
-
-function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<div>Hi</div>} />
-      <Route path="/agency/:id" element={<AgencyOverview />} />
-      <Route path="/agency/:id/dashboard" element={<DashboardView />} />
-    </Routes>
-  );
-}
-
-export default App;
+export * from "./HeaderBar";
+export * from "./HeaderBar.styles";

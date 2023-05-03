@@ -17,7 +17,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import { METRIC_BOX_DESKTOP_WIDTH } from "../AgencyOverview.styles";
+import { METRIC_BOX_DESKTOP_WIDTH } from "../AgencyOverview";
 
 export const useMaxMetricBoxesInRow = () => {
   const [maxMetricBoxesInRow, setMaxMetricBoxesInRow] = useState(

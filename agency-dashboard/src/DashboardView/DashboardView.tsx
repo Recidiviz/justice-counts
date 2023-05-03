@@ -29,8 +29,9 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { LearnMoreModal } from "./DashboardModals/LearnMoreModal";
-import { ShareModal } from "./DashboardModals/ShareModal";
+import { LearnMoreModal, ShareModal } from "../DashboardModals";
+import { HeaderBar } from "../Header";
+import { useStore } from "../stores";
 import {
   BackButtonContainer,
   Container,
@@ -45,9 +46,7 @@ import {
   RightPanelMetricOverviewActionsContainer,
   RightPanelMetricOverviewContent,
   RightPanelMetricTitle,
-} from "./DashboardView.styles";
-import { HeaderBar } from "./Header/HeaderBar";
-import { useStore } from "./stores";
+} from ".";
 
 const getScreenWidth = () =>
   window.innerWidth ||
@@ -101,7 +100,7 @@ const MetricOverviewActionShareButton = ({
   </MetricOverviewActionButtonContainer>
 );
 
-const DashboardView = () => {
+export const DashboardView = observer(() => {
   const [isDesktopWidth, setIsDesktopWidth] = useState<boolean>(
     getScreenWidth() >= COMMON_DESKTOP_WIDTH
   );
@@ -323,6 +322,4 @@ const DashboardView = () => {
       )}
     </Container>
   );
-};
-
-export default observer(DashboardView);
+});

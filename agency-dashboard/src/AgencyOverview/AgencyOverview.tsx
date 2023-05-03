@@ -28,6 +28,10 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { HeaderBar } from "../Header/HeaderBar";
+import { useMaxMetricBoxesInRow } from "../hooks";
+import { Loading } from "../Loading";
+import { useStore } from "../stores";
 import {
   AgencyOverviewWrapper,
   AgencyTitle,
@@ -45,11 +49,7 @@ import {
   MetricsViewContainer,
   MiniChartContainer,
   PageTitle,
-} from "./AgencyOverview.styles";
-import { HeaderBar } from "./Header/HeaderBar";
-import { useMaxMetricBoxesInRow } from "./hooks";
-import { Loading } from "./Loading";
-import { useStore } from "./stores";
+} from ".";
 
 const orderedCategories = [
   "Capacity and Cost",
@@ -60,7 +60,7 @@ const orderedCategories = [
   "Fairness",
 ];
 
-const AgencyOverview = () => {
+export const AgencyOverview = observer(() => {
   const navigate = useNavigate();
   const params = useParams();
   const agencyId = Number(params.id);
@@ -240,6 +240,4 @@ const AgencyOverview = () => {
       </AgencyOverviewWrapper>
     </>
   );
-};
-
-export default observer(AgencyOverview);
+});
