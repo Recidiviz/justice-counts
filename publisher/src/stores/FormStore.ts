@@ -312,6 +312,11 @@ class FormStore {
     return updatedMetricValues || [];
   }
 
+  /**
+   * IMPORTANT: this validation logic is similar to the validation run on datapoints (the main difference is that this
+   * is validating errors on report objects vs. datapoint objects). If you plan to adjust the logic here, please update
+   * the `metricErrors` logic within the `getPublishReviewPropsFromDatapoints` function as well in `ReportStore.ts`
+   */
   validate = (
     validationType: string,
     value: string,

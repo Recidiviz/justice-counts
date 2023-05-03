@@ -118,7 +118,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
                 showTooltip={disabled && isPublishButton}
                 tooltipMsg={
                   disabled && isPublishButton
-                    ? "There are errors in your data that need to be addressed before publishing. Please contact the Justice Counts team at support@justice-counts.com if you need help."
+                    ? "There are errors in your data that need to be addressed before publishing. Please contact the Justice Counts team at justice-counts-support@csg.org if you need help."
                     : undefined
                 }
               />

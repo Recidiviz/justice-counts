@@ -217,7 +217,14 @@ class ReportStore {
         ?.map((report) => report.datapoints)
         .flat();
 
-      /** Find metric errors from datapoints (non-numeric characters and breakdowns with values but no value for the top-level metric)  */
+      /**
+       * Find metric errors from datapoints (non-numeric characters and breakdowns with values but no value for the top-level metric)
+       *
+       * IMPORTANT: this validation logic is similar to the validation run on an individual report (the main difference is that this
+       * is validating errors on datapoint objects vs. report objects). If you plan to adjust the logic here, please update the `validate`
+       * function's logic as well in `FormStore.ts`
+       */
+
       const metricErrors = combinedFilteredDatapointsFromAllReports
         /**  First, sort the datapoints so breakdowns come before top level metrics */
         .sort((a, _) => (a.dimension_display_name ? -1 : 1))
