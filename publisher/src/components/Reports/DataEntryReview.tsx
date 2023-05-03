@@ -182,6 +182,7 @@ const DataEntryReview = () => {
       onClick: publishReport,
       disabled: !isPublishable,
       buttonColor: "green",
+      isPublishButton: true,
     },
   ];
 

@@ -35,6 +35,7 @@ export type ReviewHeaderActionButton = {
   buttonColor?: ButtonColor;
   labelColor?: ButtonLabelColor;
   borderColor?: ButtonBorderColor;
+  isPublishButton?: boolean;
 };
 
 export type ReviewMetric = {
