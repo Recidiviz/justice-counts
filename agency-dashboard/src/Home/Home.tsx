@@ -19,10 +19,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { HeaderBar } from "../Header";
+import { Loader } from "../Loading";
 import { useStore } from "../stores";
 import * as Styled from "./Home.styles";
 import { AgencyMetadata } from "./types";
-import { Loader } from "../Loading";
 
 export const Home = () => {
   const navigate = useNavigate();
