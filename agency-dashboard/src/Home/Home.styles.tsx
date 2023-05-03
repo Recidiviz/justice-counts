@@ -40,7 +40,7 @@ export const Title = styled.div`
 `;
 
 export const AgencyDetailsContainer = styled.div`
-  max-width: 80vw;
+  max-width: 60vw;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;

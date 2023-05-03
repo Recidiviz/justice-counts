@@ -185,32 +185,6 @@ class AgencyDataStore {
 
   async fetchAllAgencies(): Promise<AgenciesList> {
     try {
-      return {
-        agencies: [
-          { name: "Test Agency 1", id: 147, number_of_published_metrics: 1 },
-          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
-          {
-            name: "North Carolina Department of Public Safety (NCDPS) of Public Safety (NCDPS)",
-            id: 151,
-            number_of_published_metrics: 2,
-          },
-          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
-          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
-          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
-          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
-          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
-          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
-          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
-          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
-          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
-          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
-          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
-          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
-          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
-          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
-          { name: "Another Agency", id: 151, number_of_published_metrics: 2 },
-        ],
-      };
       const response = (await request({
         path: `/api/agencies`,
         method: "GET",
