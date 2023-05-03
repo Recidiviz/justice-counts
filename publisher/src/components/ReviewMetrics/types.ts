@@ -35,6 +35,7 @@ export type ReviewHeaderActionButton = {
   buttonColor?: ButtonColor;
   labelColor?: ButtonLabelColor;
   borderColor?: ButtonBorderColor;
+  isPublishButton?: boolean;
 };
 
 export type ReviewMetric = {
@@ -61,6 +62,10 @@ export type ReviewMetricsProps = {
   records?: ReportOverview[];
 };
 
+export type PublishReviewMetricErrors = {
+  [key: string]: boolean;
+};
+
 export type PublishReviewPropsFromDatapoints = {
   records: Report[];
   datapointsByMetric: RawDatapointsByMetric;
@@ -68,4 +73,5 @@ export type PublishReviewPropsFromDatapoints = {
     key: string;
     displayName: string;
   }[];
+  metricErrors: PublishReviewMetricErrors;
 };
