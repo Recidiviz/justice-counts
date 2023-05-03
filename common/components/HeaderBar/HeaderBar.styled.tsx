@@ -1,0 +1,81 @@
+// Recidiviz - a data platform for criminal justice reform
+// Copyright (C) 2023 Recidiviz, Inc.
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+// =============================================================================
+
+import styled from "styled-components/macro";
+
+import {
+  HEADER_BAR_HEIGHT,
+  MIN_DESKTOP_WIDTH,
+  palette,
+  typography,
+} from "../GlobalStyles";
+
+export const HeaderBar = styled.div<{
+  isTransparent?: boolean;
+  isBlueBackground?: boolean;
+  hasBottomBorder?: boolean;
+}>`
+  width: 100%;
+  height: ${HEADER_BAR_HEIGHT}px;
+  padding: 16px 24px 16px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3;
+
+  background: ${({ isTransparent, isBlueBackground }) => {
+    if (isTransparent) return "transparent";
+    if (isBlueBackground) return palette.solid.blue;
+    return palette.solid.white;
+  }};
+
+  border-bottom: ${({ hasBottomBorder }) =>
+    hasBottomBorder ? `1px solid ${palette.highlight.grey3}` : "none"};
+`;
+
+export const LogoContainer = styled.div`
+  height: ${HEADER_BAR_HEIGHT}px;
+  width: auto;
+  padding-right: 16px;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 24px;
+  transition: 0.3s ease;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.9;
+  }
+`;
+
+export const LogoImg = styled.img`
+  width: 64px;
+  height: 64px;
+`;
+
+export const Label = styled.div`
+  ${typography.sizeCSS.medium};
+  white-space: nowrap;
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: none;
+  }
+`;

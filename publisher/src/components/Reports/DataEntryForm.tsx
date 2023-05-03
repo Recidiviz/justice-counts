@@ -20,6 +20,7 @@ import {
   HEADER_BAR_HEIGHT,
   palette,
 } from "@justice-counts/common/components/GlobalStyles";
+import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { AgencySystems, Report } from "@justice-counts/common/types";
@@ -40,8 +41,6 @@ import {
   memoizeDebounce,
   printReportTitle,
 } from "../../utils";
-import logoImg from "../assets/jc-logo-vector-new.svg";
-import { DataUploadHeader } from "../DataUpload";
 import {
   DataEntryFormTitle,
   DisabledMetricsInfoLink,
@@ -57,14 +56,9 @@ import {
   TabbedDisaggregations,
 } from "../Forms";
 import { REPORTS_LOWERCASE } from "../Global/constants";
-import { Logo, LogoContainer } from "../Header";
 import { Onboarding } from "../Onboarding";
 import { MetricTextInput } from "./DataEntryFormComponents";
 import DataEntryHelpPage from "./DataEntryHelpPage";
-
-const DataEntryTopBar = styled(DataUploadHeader)`
-  z-index: 3;
-`;
 
 const TopBarButtonsContainer = styled.div<{ showDataEntryHelpPage: boolean }>`
   display: flex;
@@ -89,8 +83,7 @@ const TopBarCloseHelpButtonContainer = styled.div<{
   flex-direction: row;
   justify-content: flex-end;
 
-  transition: background-color 400ms ease-in;
-  transition: opacity 400ms ease-in;
+  transition: background-color 400ms ease-in, opacity 400ms ease-in;
 
   z-index: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 1 : -1)};
   opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 1 : 0)};
@@ -268,13 +261,10 @@ const DataEntryForm: React.FC<{
 
   return (
     <>
-      <DataEntryTopBar>
-        <LogoContainer
-          onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
-        >
-          <Logo src={logoImg} alt="" />
-        </LogoContainer>
-
+      <HeaderBar
+        onLogoClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
+        hasBottomBorder
+      >
         <TopBarCloseHelpButtonContainer
           showDataEntryHelpPage={showDataEntryHelpPage}
         >
@@ -327,7 +317,7 @@ const DataEntryForm: React.FC<{
             </ReviewButtonContainer>
           )}
         </TopBarButtonsContainer>
-      </DataEntryTopBar>
+      </HeaderBar>
 
       <FormWrapper showDataEntryHelpPage={showDataEntryHelpPage}>
         <Form

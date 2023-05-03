@@ -58,6 +58,13 @@ export const ReviewMetricsWrapper = styled.div<{ hasNoDatapoints: boolean }>`
   }
 `;
 
+export const ReviewMetricsButtonsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  gap: 8px;
+`;
+
 export const Summary = styled.div<{ isFooterVisible?: boolean }>`
   position: fixed;
   top: ${REVIEW_SUMMARY_DESKTOP_TOP_PADDING}px;
@@ -209,6 +216,13 @@ export const SummarySectionLine = styled.div`
 export const MetricStatusIcon = styled.img`
   width: 16px;
   height: 16px;
+`;
+
+export const EmptyIcon = styled.div`
+  width: 16px;
+  height: 16px;
+  border: 1px solid ${palette.highlight.grey4};
+  border-radius: 100%;
 `;
 
 export const MetricsPanel = styled.div`
