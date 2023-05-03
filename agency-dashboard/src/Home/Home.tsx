@@ -22,6 +22,7 @@ import { HeaderBar } from "../Header";
 import { useStore } from "../stores";
 import * as Styled from "./Home.styles";
 import { AgencyMetadata } from "./types";
+import { Loader } from "../Loading";
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -44,19 +45,24 @@ export const Home = () => {
       <Styled.HomeContainer>
         <HeaderBar />
         <Styled.Title>Welcome to Agency Dashboards</Styled.Title>
-        <Styled.AgencyDetailsContainer>
-          {agenciesMetadata.map((agency) => (
-            <Styled.AgencyDetailsWrapper
-              onClick={() => navigate(`/agency/${agency.id}`)}
-            >
-              <Styled.AgencyName>{agency.name}</Styled.AgencyName>
-              <Styled.NumberOfPublishedMetrics>
-                <span>{agency.number_of_published_metrics}</span> published
-                metrics
-              </Styled.NumberOfPublishedMetrics>
-            </Styled.AgencyDetailsWrapper>
-          ))}
-        </Styled.AgencyDetailsContainer>
+
+        {agencyDataStore.loading ? (
+          <Loader />
+        ) : (
+          <Styled.AgencyDetailsContainer>
+            {agenciesMetadata.map((agency) => (
+              <Styled.AgencyDetailsWrapper
+                onClick={() => navigate(`/agency/${agency.id}`)}
+              >
+                <Styled.AgencyName>{agency.name}</Styled.AgencyName>
+                <Styled.NumberOfPublishedMetrics>
+                  <span>{agency.number_of_published_metrics}</span> published
+                  metrics
+                </Styled.NumberOfPublishedMetrics>
+              </Styled.AgencyDetailsWrapper>
+            ))}
+          </Styled.AgencyDetailsContainer>
+        )}
       </Styled.HomeContainer>
     </>
   );
