@@ -99,6 +99,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
               buttonColor,
               labelColor,
               borderColor,
+              isPublishButton,
             }) => (
               <Button
                 key={name}
@@ -108,6 +109,12 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
                 buttonColor={buttonColor}
                 labelColor={labelColor}
                 borderColor={borderColor}
+                showTooltip={disabled && isPublishButton}
+                tooltipMsg={
+                  disabled && isPublishButton
+                    ? "There are errors in your data that need to be addressed before publishing. Please contact the Justice Counts team at justice-counts-support@csg.org if you need help."
+                    : undefined
+                }
               />
             )
           )}

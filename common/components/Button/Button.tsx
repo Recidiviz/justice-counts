@@ -36,6 +36,8 @@ type Props = {
   disabled?: boolean;
   noSidePadding?: boolean;
   noHover?: boolean;
+  showTooltip?: boolean;
+  tooltipMsg?: string;
 };
 
 export function Button({
@@ -49,20 +51,25 @@ export function Button({
   disabled,
   noSidePadding,
   noHover,
+  showTooltip,
+  tooltipMsg,
 }: Props) {
   return (
-    <Styled.Button
-      onClick={onClick}
-      buttonColor={buttonColor}
-      labelColor={labelColor}
-      borderColor={borderColor}
-      size={size}
-      disabled={disabled}
-      enabledDuringOnboarding={enabledDuringOnboarding}
-      noSidePadding={noSidePadding}
-      noHover={noHover}
-    >
-      {label}
-    </Styled.Button>
+    <Styled.ButtonWrapper>
+      <Styled.Button
+        onClick={onClick}
+        buttonColor={buttonColor}
+        labelColor={labelColor}
+        borderColor={borderColor}
+        size={size}
+        disabled={disabled}
+        enabledDuringOnboarding={enabledDuringOnboarding}
+        noSidePadding={noSidePadding}
+        noHover={noHover}
+      >
+        {label}
+      </Styled.Button>
+      {showTooltip && <Styled.ButtonTooltip>{tooltipMsg}</Styled.ButtonTooltip>}
+    </Styled.ButtonWrapper>
   );
 }

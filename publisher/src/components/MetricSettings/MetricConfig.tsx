@@ -60,11 +60,16 @@ function MetricConfig() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metricConfigPage]);
 
-  const metricTotalHasAtLeastOneSettingSelection =
-    Object.values(metricDefinitionSettings[systemMetricKey]).flatMap(
-      ({ settings }) =>
-        Object.values(settings).filter((setting) => setting.included === "Yes")
-    ).length > 0;
+  const metricTotalHasAtLeastOneSettingSelection = metricDefinitionSettings[
+    systemMetricKey
+  ]
+    ? Object.values(metricDefinitionSettings[systemMetricKey]).flatMap(
+        ({ settings }) =>
+          Object.values(settings).filter(
+            (setting) => setting.included === "Yes"
+          )
+      ).length > 0
+    : true;
 
   const dimensionsHaveAtLeastOneSettingSelection = () => {
     const disaggregationKeysWithoutRaceEthnicity = Object.keys(

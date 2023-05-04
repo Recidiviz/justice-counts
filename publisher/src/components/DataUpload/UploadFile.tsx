@@ -50,6 +50,7 @@ export const UploadFile: React.FC<UploadFileProps> = ({
   const acceptableFileTypes = [
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     "application/vnd.ms-excel",
+    "text/csv",
   ];
 
   const handleFileUploadAttempt = (
@@ -159,7 +160,7 @@ export const UploadFile: React.FC<UploadFileProps> = ({
               Browse
             </UploadButtonLabel>
           </span>
-          <span style={{ opacity: 0.5 }}>Files type: .xls, .xlsx</span>
+          <span style={{ opacity: 0.5 }}>Files type: .xls, .xlsx, .csv</span>
         </div>
       </DragDropContainer>
     </UploadFileContainer>
