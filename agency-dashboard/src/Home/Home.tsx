@@ -52,6 +52,7 @@ export const Home = () => {
           <Styled.AgencyDetailsContainer>
             {agenciesMetadata.map((agency) => (
               <Styled.AgencyDetailsWrapper
+                key={agency.id}
                 onClick={() => navigate(`/agency/${agency.id}`)}
               >
                 <Styled.AgencyName>{agency.name}</Styled.AgencyName>

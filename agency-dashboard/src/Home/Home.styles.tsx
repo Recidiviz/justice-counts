@@ -47,6 +47,7 @@ export const AgencyDetailsContainer = styled.div`
   align-items: stretch;
   gap: 16px;
 `;
+
 export const AgencyDetailsWrapper = styled.div`
   width: 250px;
   display: flex;
@@ -60,15 +61,25 @@ export const AgencyDetailsWrapper = styled.div`
   &:hover {
     cursor: pointer;
     scale: 1.03;
+    background: ${palette.solid.blue};
+    color: ${palette.solid.white};
   }
 `;
+
 export const AgencyName = styled.div`
   ${typography.sizeCSS.medium}
 `;
+
 export const NumberOfPublishedMetrics = styled.div`
   ${typography.sizeCSS.normal}
 
   span {
     color: ${palette.solid.blue};
+    transition: 0.3s ease;
+  }
+
+  ${AgencyDetailsWrapper}:hover > & > span {
+    color: ${palette.solid.white};
+    font-weight: 700;
   }
 `;
