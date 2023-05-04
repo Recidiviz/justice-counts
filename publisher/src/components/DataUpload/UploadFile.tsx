@@ -150,7 +150,7 @@ export const UploadFile: React.FC<UploadFileProps> = ({
                 type="file"
                 id="upload-data"
                 name="upload-data"
-                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, text/csv"
                 onChange={handleFileUploadAttempt}
                 onClick={(e) => {
                   /** reset event state to allow user to re-upload same file (re-trigger the onChange event) */
