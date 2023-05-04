@@ -51,44 +51,6 @@ export const DataUploadContainer = styled.div`
   }
 `;
 
-export const DataUploadHeader = styled.div<{
-  transparent?: boolean;
-  isBackgroundBlue?: boolean;
-}>`
-  width: 100%;
-  z-index: 1;
-  height: ${HEADER_BAR_HEIGHT}px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  padding-right: 24px;
-  ${({ transparent }) =>
-    !transparent &&
-    `
-      background: ${palette.solid.white};
-      border-bottom: 1px solid ${palette.highlight.grey3};
-    `}
-
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    background-color: ${({ isBackgroundBlue }) =>
-      isBackgroundBlue && palette.solid.blue};
-  }
-`;
-
-export const ReviewMetricsHeader = styled(DataUploadHeader)`
-  left: 0;
-  z-index: 4;
-`;
-
-export const ReviewMetricsButtonsContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: end;
-  gap: 8px;
-`;
-
 export const Instructions = styled.div`
   height: 100%;
   padding: 103px;
@@ -205,7 +167,6 @@ export const DownloadTemplateBox = styled.a`
   text-transform: capitalize;
   background: none;
   border: 1px solid ${palette.highlight.grey4};
-  border-radius: 4px;
 
   &:hover {
     background: ${palette.highlight.grey1};
@@ -276,7 +237,7 @@ export const DragDropContainer = styled.div<{ dragging?: boolean }>`
     top: 0;
     left: 64px;
     width: calc(100% - 190px);
-    z-index: 2;
+    z-index: 4;
     flex-direction: row;
     padding: 0 10px;
 

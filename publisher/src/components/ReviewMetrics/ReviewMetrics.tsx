@@ -20,31 +20,27 @@
 import { Button } from "@justice-counts/common/components/Button";
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { formatDateShortMonthYear } from "@justice-counts/common/components/DataViz/utils";
+import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
 import { useIsFooterVisible } from "@justice-counts/common/hooks";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { printReportTitle } from "../../utils";
 import checkIcon from "../assets/check-icon.svg";
-import logoImg from "../assets/jc-logo-vector-new.svg";
 import errorIcon from "../assets/status-error-icon.png";
-import {
-  ReviewMetricsButtonsContainer,
-  ReviewMetricsHeader,
-} from "../DataUpload";
 import {
   REPORT_CAPITALIZED,
   REPORTS_CAPITALIZED,
   REPORTS_LOWERCASE,
 } from "../Global/constants";
-import { Logo, LogoContainer } from "../Header";
-import { EmptyIcon } from "../Reports/PublishConfirmation.styles";
 import {
+  EmptyIcon,
   Heading,
   HeadingGradient,
   MetricsPanel,
   MetricStatusIcon,
   NoDatapointsMessage,
+  ReviewMetricsButtonsContainer,
   ReviewMetricsWrapper,
   SectionContainer,
   SectionExpandStatusSign,
@@ -90,12 +86,10 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
 
   return (
     <ReviewMetricsWrapper hasNoDatapoints={hasNoDatapoints}>
-      <ReviewMetricsHeader transparent={false}>
-        <LogoContainer
-          onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
-        >
-          <Logo src={logoImg} alt="" />
-        </LogoContainer>
+      <HeaderBar
+        onLogoClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
+        hasBottomBorder
+      >
         <ReviewMetricsButtonsContainer>
           {buttons.map(
             ({
@@ -125,7 +119,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
             )
           )}
         </ReviewMetricsButtonsContainer>
-      </ReviewMetricsHeader>
+      </HeaderBar>
       <Summary isFooterVisible={isFooterVisible}>
         <Heading>
           {title}
@@ -197,7 +191,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
           {records && records.length > 0 && (
             <SummarySection>
               <SummarySectionTitle
-                color="orange"
+                color="grey"
                 onClick={() =>
                   setIsRecordsSectionExpanded(!isRecordsSectionExpanded)
                 }
