@@ -21,6 +21,10 @@ import {
   DropdownOption,
 } from "@justice-counts/common/components/Dropdown";
 import {
+  TabbedBar,
+  TabOption,
+} from "@justice-counts/common/components/TabbedBar";
+import {
   Metric as MetricType,
   MetricDisaggregationDimensions,
   MetricDisaggregations,
@@ -35,15 +39,14 @@ import {
 } from "../MetricsConfiguration";
 import { DisaggregationDimensionTextInput } from "../Reports/DataEntryFormComponents";
 import {
+  DisaggregationDimensions,
+  DisaggregationDisplayContainer,
   DisaggregationHasInputIndicator,
   DisaggregationInputWrapper,
   DisaggregationsDropdownContainer,
-  DisaggregationTabsContainer,
+  DisaggregationsTabbedBarContainer,
   EthnicityHeader,
   NotReportedIcon,
-  TabDisplay,
-  TabItem,
-  TabsRow,
 } from ".";
 
 export const TabbedDisaggregations: React.FC<{
@@ -233,6 +236,37 @@ export const TabbedDisaggregations: React.FC<{
     []
   );
 
+  const disaggregationsTabbedBarOptions: TabOption[] =
+    metric.disaggregations.map((disaggregation, index) => {
+      const isDefaultFirstOrActiveDisaggregationTab =
+        (!activeDisaggregation[metric.key]?.disaggregationKey && index === 0) ||
+        activeDisaggregation[metric.key]?.disaggregationKey ===
+          disaggregation.key;
+      const indicator = (
+        <DisaggregationHasInputIndicator
+          active
+          error={hasDimensionErrors(metric.key, disaggregation.key)}
+          hasInput={disaggregationHasInput[disaggregation.key]}
+        >
+          {renderIcon(
+            hasDimensionErrors(metric.key, disaggregation.key),
+            disaggregation.enabled,
+            disaggregationHasInput[disaggregation.key]
+          )}
+        </DisaggregationHasInputIndicator>
+      );
+
+      return {
+        key: disaggregation.key,
+        label: disaggregation.display_name,
+        onClick: () =>
+          updateActiveDisaggregationTab(metric.key, disaggregation.key),
+        selected: isDefaultFirstOrActiveDisaggregationTab,
+        enabled: disaggregation.enabled,
+        indicator,
+      };
+    });
+
   const disaggregationsDropdownLabel = (
     <>
       {activeDisaggregationObj.display_name}
@@ -267,42 +301,11 @@ export const TabbedDisaggregations: React.FC<{
     });
 
   return (
-    <DisaggregationTabsContainer>
+    <DisaggregationDisplayContainer>
       {/* Disaggregation Selection Tabs */}
-      <TabsRow>
-        {metric.disaggregations.map((disaggregation, index) => {
-          const hasErrors = hasDimensionErrors(metric.key, disaggregation.key);
-          const isDefaultFirstOrActiveDisaggregationTab =
-            (!activeDisaggregation[metric.key]?.disaggregationKey &&
-              index === 0) ||
-            activeDisaggregation[metric.key]?.disaggregationKey ===
-              disaggregation.key;
-
-          return (
-            <TabItem
-              key={disaggregation.key}
-              active={isDefaultFirstOrActiveDisaggregationTab}
-              enabled={disaggregation.enabled}
-              onClick={() =>
-                updateActiveDisaggregationTab(metric.key, disaggregation.key)
-              }
-            >
-              {disaggregation.display_name}
-              <DisaggregationHasInputIndicator
-                active={isDefaultFirstOrActiveDisaggregationTab}
-                error={hasErrors}
-                hasInput={disaggregationHasInput[disaggregation.key]}
-              >
-                {renderIcon(
-                  hasErrors,
-                  disaggregation.enabled,
-                  disaggregationHasInput[disaggregation.key]
-                )}
-              </DisaggregationHasInputIndicator>
-            </TabItem>
-          );
-        })}
-      </TabsRow>
+      <DisaggregationsTabbedBarContainer>
+        <TabbedBar options={disaggregationsTabbedBarOptions} />
+      </DisaggregationsTabbedBarContainer>
 
       <DisaggregationsDropdownContainer>
         <Dropdown
@@ -316,13 +319,13 @@ export const TabbedDisaggregations: React.FC<{
       </DisaggregationsDropdownContainer>
 
       {/* Dimensions */}
-      <TabDisplay>
+      <DisaggregationDimensions>
         {activeDisaggregationObj?.key === RACE_ETHNICITY_DISAGGREGATION_KEY
           ? renderRaceEthnicityDimensionsGroupedByEthnicity()
           : activeDisaggregationObj?.dimensions.map((dimension) => {
               return renderDimension({ dimension });
             })}
-      </TabDisplay>
-    </DisaggregationTabsContainer>
+      </DisaggregationDimensions>
+    </DisaggregationDisplayContainer>
   );
 };

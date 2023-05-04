@@ -32,7 +32,6 @@ export const MenuContainer = styled.nav<{ isMobileMenuOpen: boolean }>`
   ${typography.sizeCSS.normal}
   display: flex;
   align-items: center;
-  padding: 0 24px;
   gap: 24px;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
@@ -136,7 +135,6 @@ export const MobileMenuIconWrapper = styled.div`
   display: none;
   width: 24px;
   height: ${HEADER_BAR_HEIGHT}px;
-  margin-right: 24px;
   flex-direction: row;
   justify-content: center;
   align-items: center;

@@ -17,6 +17,7 @@
 
 import { Button } from "@justice-counts/common/components/Button";
 import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
@@ -30,13 +31,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import logoImg from "../assets/jc-logo-vector-new.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
-import { Logo, LogoContainer } from "../Header";
 import { Loader } from "../Loading";
 import {
   DataUploadContainer,
-  DataUploadHeader,
   DataUploadLoading,
   LoadingHeader,
   LoadingSubheader,
@@ -122,6 +120,14 @@ export const DataUpload: React.FC = observer(() => {
     updatedReportIDs: [],
     unchangedReportIDs: [],
   });
+
+  const headerBackground = () => {
+    if (!errorsWarningsMetrics && windowWidth > MIN_DESKTOP_WIDTH)
+      return "transparent";
+    if (!errorsWarningsMetrics && windowWidth <= MIN_DESKTOP_WIDTH)
+      return "blue";
+    return undefined;
+  };
 
   const handleFileUpload = async (
     file: File,
@@ -338,16 +344,11 @@ export const DataUpload: React.FC = observer(() => {
 
   return (
     <DataUploadContainer>
-      <DataUploadHeader
-        transparent={windowWidth > MIN_DESKTOP_WIDTH}
-        isBackgroundBlue={windowWidth <= MIN_DESKTOP_WIDTH}
+      <HeaderBar
+        onLogoClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
+        background={headerBackground()}
+        hasBottomBorder={!!errorsWarningsMetrics}
       >
-        <LogoContainer
-          onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
-        >
-          <Logo src={logoImg} alt="" />
-        </LogoContainer>
-
         <Button
           label={selectedFile || errorsWarningsMetrics ? "Close" : "Cancel"}
           onClick={() => navigate(-1)}
@@ -361,7 +362,7 @@ export const DataUpload: React.FC = observer(() => {
             selectedFile || errorsWarningsMetrics ? undefined : "white"
           }
         />
-      </DataUploadHeader>
+      </HeaderBar>
       {renderCurrentUploadStep()}
     </DataUploadContainer>
   );

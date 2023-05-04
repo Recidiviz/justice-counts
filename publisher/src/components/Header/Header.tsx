@@ -16,16 +16,15 @@
 // =============================================================================
 
 import { Badge } from "@justice-counts/common/components/Badge";
+import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import logo from "../assets/jc-logo-vector-new.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { guidancePaths } from "../Guidance";
 import Menu from "../Menu";
-import { HeaderBar, Logo, LogoContainer, LogoName } from ".";
 
 const Header = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
@@ -35,26 +34,30 @@ const Header = observer(() => {
 
   const isAgencyValid = !!userStore.getAgency(agencyId);
   const defaultAgency = userStore.getInitialAgencyId();
+  const onLogoClick = () =>
+    hasCompletedOnboarding
+      ? navigate(
+          `/agency/${
+            isAgencyValid ? agencyId : defaultAgency
+          }/${REPORTS_LOWERCASE}`
+        )
+      : navigate(guidancePaths.home);
+  const badge = () => {
+    if (api.environment === "local" || api.environment === "staging")
+      return (
+        <Badge color="RED" noMargin>
+          {api.environment === "local" ? "Local" : "Staging"}
+        </Badge>
+      );
+  };
 
   return (
-    <HeaderBar bottomBorder={hasCompletedOnboarding === false}>
-      <LogoContainer
-        onClick={() =>
-          hasCompletedOnboarding
-            ? navigate(
-                `/agency/${
-                  isAgencyValid ? agencyId : defaultAgency
-                }/${REPORTS_LOWERCASE}`
-              )
-            : navigate(guidancePaths.home)
-        }
-      >
-        <Logo src={logo} alt="" />
-        <LogoName>Justice Counts</LogoName>
-        {api.environment === "local" && <Badge color="RED">Local</Badge>}
-        {api.environment === "staging" && <Badge color="RED">Staging</Badge>}
-      </LogoContainer>
-
+    <HeaderBar
+      onLogoClick={onLogoClick}
+      label="Justice Counts"
+      badge={badge()}
+      hasBottomBorder={hasCompletedOnboarding === false}
+    >
       <Menu />
     </HeaderBar>
   );

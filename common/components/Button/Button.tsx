@@ -25,7 +25,7 @@ import {
   ButtonSize,
 } from "./types";
 
-type Props = {
+type ButtonProps = {
   label: string | React.ReactNode;
   onClick: () => void;
   buttonColor?: ButtonColor;
@@ -53,7 +53,7 @@ export function Button({
   noHover,
   showTooltip,
   tooltipMsg,
-}: Props) {
+}: ButtonProps) {
   return (
     <Styled.ButtonWrapper>
       <Styled.Button
