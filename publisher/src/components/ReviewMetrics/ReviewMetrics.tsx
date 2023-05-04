@@ -72,6 +72,8 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
   );
   const hasNoDatapoints =
     metrics.filter((metric) => metric.datapoints)?.length === 0;
+  const hasMetricErrors =
+    metrics.filter((metric) => metric.metricHasError).length > 0;
 
   const renderSection = (metric: ReviewMetric) => {
     return (
@@ -109,9 +111,9 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
                 buttonColor={buttonColor}
                 labelColor={labelColor}
                 borderColor={borderColor}
-                showTooltip={disabled && isPublishButton}
+                showTooltip={hasMetricErrors && isPublishButton}
                 tooltipMsg={
-                  disabled && isPublishButton
+                  hasMetricErrors && isPublishButton
                     ? "There are errors in your data that need to be addressed before publishing. Please contact the Justice Counts team at justice-counts-support@csg.org if you need help."
                     : undefined
                 }

@@ -143,7 +143,9 @@ const BulkActionReview = () => {
             datapoints: datapointsByMetric[metric.key],
             display_name: metric.displayName,
             key: metric.key,
-            metricHasError: metricErrors?.[metric.key],
+            metricHasError: Boolean(
+              recordsIds.find((id) => metricErrors?.[metric.key + id])
+            ),
             metricHasValidInput: true,
           };
           return [...acc, reviewMetric];
@@ -184,6 +186,7 @@ const BulkActionReview = () => {
           ? publishMultipleRecords
           : unpublishMultipleRecords,
       disabled: isPublishable,
+      isPublishButton: true,
       buttonColor: action === "publish" ? "green" : "orange",
     },
   ];
