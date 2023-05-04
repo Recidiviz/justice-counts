@@ -46,7 +46,7 @@ export const ReportsHeader = styled(PageHeader)`
 export const DesktopRecordsPageTitle = styled.div`
   ${typography.sizeCSS.headline}
   margin-top: 40px;
-  padding: 0px 22px;
+  padding: 0 22px;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: none;
@@ -62,7 +62,7 @@ export const MobileRecordsPageTitle = styled.div`
   }
 `;
 
-export const TabbedBar = styled.div<{ noPadding?: boolean }>`
+export const ActionsWrapper = styled.div<{ noPadding?: boolean }>`
   ${typography.sizeCSS.normal}
   width: 100%;
   display: flex;
@@ -78,49 +78,21 @@ export const TabbedBar = styled.div<{ noPadding?: boolean }>`
   }
 `;
 
-export const TabbedOptions = styled.div`
-  display: flex;
-  align-items: center;
-
+export const TabbedBarContainer = styled.div`
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: none;
   }
 `;
 
-export const TabbedItem = styled.div<{
-  selected?: boolean;
-  capitalize?: boolean;
-}>`
-  ${typography.sizeCSS.large};
-  padding: 24px 0 16px 0;
-  margin-right: 20px;
-  color: ${({ selected }) =>
-    selected ? palette.solid.blue : palette.highlight.grey9};
-  border-bottom: ${({ selected }) =>
-    selected ? `3px solid ${palette.solid.blue}` : `3px solid transparent`};
-  transition: color 0.3s ease;
-  ${({ capitalize }) => capitalize && `text-transform: capitalize;`}
-
-  &:hover {
-    cursor: pointer;
-    color: ${palette.solid.blue};
-  }
-`;
-
 export const BulkActionModeTitle = styled.div`
   padding: 24px 0 19px 0;
-  ${typography.sizeCSS.large}
+  ${typography.sizeCSS.large};
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     ${typography.sizeCSS.medium}
     margin-top: 0;
     padding: 0;
   }
-`;
-
-export const TabbedActionsWrapper = styled.div`
-  display: flex;
-  gap: 15px;
 `;
 
 export const ReportActions = styled.div`
@@ -176,11 +148,11 @@ export const Row = styled.div<{
   color: ${({ noHover }) =>
     noHover ? palette.highlight.grey9 : palette.solid.darkgrey};
   transition: 0.3s ease;
+
   ${({ noHover }) =>
     noHover ? typography.sizeCSS.normal : typography.sizeCSS.large}
   ${({ selected }) =>
     selected && `background-color: ${palette.solid.lightgreen};`}
-
   &:hover {
     ${({ noHover }) =>
       noHover
@@ -245,6 +217,7 @@ export const Cell = styled.div<{ capitalize?: boolean }>`
     &:nth-child(4) {
       display: none;
     }
+
     &:nth-child(3) {
       padding-right: unset;
     }
@@ -303,6 +276,7 @@ export const CommaSpan = styled.span`
   &::after {
     content: ",";
   }
-  margin-left: 0px;
+
+  margin-left: 0;
   margin-right: 2px;
 `;

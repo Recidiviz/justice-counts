@@ -21,13 +21,13 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
+import { Tab } from "@justice-counts/common/components/TabbedBar";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import notReportedIcon from "../assets/not-reported-icon.png";
 import { TWO_PANEL_MAX_WIDTH } from "../Reports/ReportDataEntry.styles";
-import { TabItem } from "./Form.styles";
 import { InputWrapper } from "./TextInput";
 
 export const NotReportedIconWrapper = styled.div<{
@@ -55,7 +55,7 @@ export const NotReportedIconImg = styled.img<{
     }
   `};
 
-  ${TabItem}:hover & {
+  ${Tab}:hover & {
     opacity: 1;
   }
 
@@ -72,7 +72,7 @@ export const NotReportedIconTooltip = styled.div`
   color: ${palette.solid.white};
   padding: 15px;
   border-radius: 5px;
-  box-shadow: 0px 4px 10px ${palette.highlight.grey3};
+  box-shadow: 0 4px 10px ${palette.highlight.grey3};
   ${typography.sizeCSS.normal};
   white-space: normal;
   text-align: start;
@@ -92,14 +92,14 @@ export const NotReportedIconTooltipHoverArea = styled.div<{
 }>`
   display: none;
   position: absolute;
-  top: 0px;
+  top: 0;
   left: -1px;
   width: 300px;
   height: 200px;
   padding-top: ${({ size }) => (size ? size + 5 : 27)}px;
   padding-left: ${({ size }) => (size ? size + 5 : 27)}px;
 
-  ${TabItem}:hover & {
+  ${Tab}:hover & {
     display: block;
   }
 
