@@ -40,7 +40,7 @@ export const Title = styled.div`
 `;
 
 export const AgencyDetailsContainer = styled.div`
-  max-width: 60vw;
+  max-width: 70vw;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -49,7 +49,7 @@ export const AgencyDetailsContainer = styled.div`
 `;
 
 export const AgencyDetailsWrapper = styled.div`
-  width: 250px;
+  width: 300px;
   display: flex;
   flex-direction: column;
   border: 1px solid ${palette.highlight.grey4};
