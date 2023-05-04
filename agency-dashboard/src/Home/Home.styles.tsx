@@ -26,7 +26,7 @@ import styled from "styled-components/macro";
 export const HomeContainer = styled.div`
   width: 100%;
   min-height: 100%;
-  padding-top: ${HEADER_BAR_HEIGHT}px;
+  padding: ${HEADER_BAR_HEIGHT + 50}px 0 100px 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
