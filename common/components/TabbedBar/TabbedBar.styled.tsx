@@ -47,14 +47,11 @@ export const Tab = styled.div<{
       return `padding: 16px 0; ${typography.sizeCSS.large};`;
     return `padding: 8px 0; ${typography.sizeCSS.normal};`;
   }}
-  
   &:hover {
     cursor: pointer;
     color: ${({ enabled, selected }) => {
-      if (enabled !== undefined)
-        return (
-          !selected && (enabled ? palette.solid.blue : palette.solid.darkgrey)
-        );
+      if (enabled !== undefined && !selected)
+        return enabled ? palette.solid.blue : palette.solid.darkgrey;
       return palette.solid.blue;
     }}
 `;
