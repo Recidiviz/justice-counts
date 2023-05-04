@@ -89,8 +89,7 @@ const TopBarCloseHelpButtonContainer = styled.div<{
   flex-direction: row;
   justify-content: flex-end;
 
-  transition: background-color 400ms ease-in;
-  transition: opacity 400ms ease-in;
+  transition: background-color 400ms ease-in, opacity 400ms ease-in;
 
   z-index: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 1 : -1)};
   opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 1 : 0)};
@@ -427,7 +426,7 @@ const DataEntryForm: React.FC<{
                       disabled. If you believe this is incorrect, go to{" "}
                       <DisabledMetricsInfoLink
                         onClick={() =>
-                          navigate(`/agency/${agencyId}/settings/metric-config`)
+                          navigate(`/agency/${agencyId}/metric-config`)
                         }
                       >
                         Metric Configuration

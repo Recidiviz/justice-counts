@@ -38,32 +38,10 @@ import { ReactComponent as SwitchToChartIcon } from "../assets/switch-to-chart-i
 import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-data-table-icon.svg";
 import { SYSTEM_CAPITALIZED, SYSTEM_LOWERCASE } from "../Global/constants";
 import { Loading } from "../Loading";
-import {
-  ChartView,
-  CurrentMetricsSystem,
-  DisclaimerContainer,
-  DisclaimerLink,
-  DisclaimerText,
-  DisclaimerTitle,
-  MetricItem,
-  MetricsItemsContainer,
-  MetricsViewContainer,
-  MetricsViewControlPanelOverflowHidden,
-  MetricsViewDropdownContainerFixed,
-  MetricsViewDropdownLabel,
-  MobileDatapointsControls,
-  MobileDisclaimerContainer,
-  NoEnabledMetricsMessage,
-  PanelContainerLeft,
-  PanelContainerRight,
-  PanelRightTopButton,
-  PanelRightTopButtonsContainer,
-  SystemName,
-  SystemNameContainer,
-  SystemsContainer,
-} from "../MetricConfiguration";
 import { useSettingsSearchParams } from "../Settings";
 import ConnectedDatapointsView from "./ConnectedDatapointsView";
+import * as Styled from "./MetricsDataChart.styled";
+import { ChartView } from "./types";
 
 export const MetricsDataChart: React.FC = observer(() => {
   const navigate = useNavigate();
@@ -156,7 +134,7 @@ export const MetricsDataChart: React.FC = observer(() => {
     .map((metric) => ({
       key: metric.key,
       label: (
-        <MetricsViewDropdownLabel>
+        <Styled.MetricsViewDropdownLabel>
           <div>
             {metric.display_name}
             <span>{formatSystemName(metric.system.key)}</span>
@@ -168,7 +146,7 @@ export const MetricsDataChart: React.FC = observer(() => {
           >
             {metric.frequency?.toLowerCase()}
           </Badge>
-        </MetricsViewDropdownLabel>
+        </Styled.MetricsViewDropdownLabel>
       ),
       onClick: () =>
         setSettingsSearchParams({
@@ -198,17 +176,17 @@ export const MetricsDataChart: React.FC = observer(() => {
 
   if (!metricSearchParam && !isLoading) {
     return (
-      <NoEnabledMetricsMessage>
+      <Styled.NoEnabledMetricsMessage>
         There are no enabled metrics to view. Please go to{" "}
-        <DisclaimerLink
+        <Styled.DisclaimerLink
           onClick={() => {
-            navigate("../settings/metric-config");
+            navigate("../metric-config");
           }}
         >
           Metric Configuration
-        </DisclaimerLink>{" "}
+        </Styled.DisclaimerLink>{" "}
         to enable a metric.
-      </NoEnabledMetricsMessage>
+      </Styled.NoEnabledMetricsMessage>
     );
   }
 
@@ -227,39 +205,39 @@ export const MetricsDataChart: React.FC = observer(() => {
     currentMetric?.custom_frequency || currentMetric?.frequency;
 
   return (
-    <MetricsViewContainer>
-      <MetricsViewControlPanelOverflowHidden>
+    <Styled.MetricsViewContainer>
+      <Styled.MetricsViewPanel>
         {/* List Of Metrics */}
-        <PanelContainerLeft>
-          <SystemsContainer>
+        <Styled.PanelContainerLeft>
+          <Styled.SystemsContainer>
             {Object.entries(metricsBySystem).map(([system, metrics]) => {
               const enabledMetrics = metrics.filter((metric) => metric.enabled);
 
               return (
                 <React.Fragment key={system}>
                   {enabledMetrics.length > 0 ? (
-                    <SystemNameContainer isSystemActive>
-                      <SystemName>
+                    <Styled.SystemNameContainer isSystemActive>
+                      <Styled.SystemName>
                         {formatSystemName(metrics[0].system.key, {
                           allUserSystems: currentAgency?.systems,
                         })}
-                      </SystemName>
-                    </SystemNameContainer>
+                      </Styled.SystemName>
+                    </Styled.SystemNameContainer>
                   ) : (
-                    <SystemNameContainer isSystemActive>
-                      <SystemName>
+                    <Styled.SystemNameContainer isSystemActive>
+                      <Styled.SystemName>
                         {metrics[0].system.display_name} (No enabled metrics)
-                      </SystemName>
-                    </SystemNameContainer>
+                      </Styled.SystemName>
+                    </Styled.SystemNameContainer>
                   )}
 
-                  <MetricsItemsContainer
+                  <Styled.MetricsItemsContainer
                     isSystemActive={
                       system === systemSearchParam || enabledMetrics.length > 0
                     }
                   >
                     {enabledMetrics.map((metric) => (
-                      <MetricItem
+                      <Styled.MetricItem
                         key={metric.key}
                         selected={metricSearchParam === metric.key}
                         onClick={() =>
@@ -270,38 +248,38 @@ export const MetricsDataChart: React.FC = observer(() => {
                         }
                       >
                         {metric.display_name}
-                      </MetricItem>
+                      </Styled.MetricItem>
                     ))}
-                  </MetricsItemsContainer>
+                  </Styled.MetricsItemsContainer>
                 </React.Fragment>
               );
             })}
-          </SystemsContainer>
-          <DisclaimerContainer>
-            <DisclaimerTitle>Note</DisclaimerTitle>
-            <DisclaimerText>
+          </Styled.SystemsContainer>
+          <Styled.DisclaimerContainer>
+            <Styled.DisclaimerTitle>Note</Styled.DisclaimerTitle>
+            <Styled.DisclaimerText>
               These metrics are those that your agency has indicated are
               available to be shared. If you believe this does not accurately
               reflect your data sharing capabilities, please go to{" "}
-              <DisclaimerLink
+              <Styled.DisclaimerLink
                 onClick={() => {
-                  navigate("../settings/metric-config");
+                  navigate("../metric-config");
                 }}
               >
                 Metric Configuration
-              </DisclaimerLink>{" "}
+              </Styled.DisclaimerLink>{" "}
               to adjust.
-            </DisclaimerText>
-          </DisclaimerContainer>
-        </PanelContainerLeft>
+            </Styled.DisclaimerText>
+          </Styled.DisclaimerContainer>
+        </Styled.PanelContainerLeft>
 
         {/* Data Visualization */}
-        <PanelContainerRight>
-          <MobileDatapointsControls>
-            <CurrentMetricsSystem>
+        <Styled.PanelContainerRight>
+          <Styled.MobileDatapointsControls>
+            <Styled.CurrentMetricsSystem>
               {formatSystemName(systemSearchParam)}
-            </CurrentMetricsSystem>
-            <MetricsViewDropdownContainerFixed>
+            </Styled.CurrentMetricsSystem>
+            <Styled.MetricsViewDropdownContainerFixed>
               <Dropdown
                 label={
                   <>
@@ -321,52 +299,54 @@ export const MetricsDataChart: React.FC = observer(() => {
                 caretPosition={agencyMetrics.length > 1 ? "left" : undefined}
                 fullWidth
               />
-            </MetricsViewDropdownContainerFixed>
-            <MobileDisclaimerContainer>
-              <DisclaimerTitle>Note</DisclaimerTitle>
-              <DisclaimerText>
+            </Styled.MetricsViewDropdownContainerFixed>
+            <Styled.MobileDisclaimerContainer>
+              <Styled.DisclaimerTitle>Note</Styled.DisclaimerTitle>
+              <Styled.DisclaimerText>
                 These metrics are those that your agency has indicated are
                 available to be shared. If you believe this does not accurately
                 reflect your data sharing capabilities, please go to{" "}
-                <DisclaimerLink
+                <Styled.DisclaimerLink
                   onClick={() => {
-                    navigate("../settings/metric-config");
+                    navigate("../metric-config");
                   }}
                 >
                   Metric Configuration
-                </DisclaimerLink>{" "}
+                </Styled.DisclaimerLink>{" "}
                 to adjust.
-              </DisclaimerText>
-            </MobileDisclaimerContainer>
-          </MobileDatapointsControls>
-          <PanelRightTopButtonsContainer>
+              </Styled.DisclaimerText>
+            </Styled.MobileDisclaimerContainer>
+          </Styled.MobileDatapointsControls>
+          <Styled.PanelRightTopButtonsContainer>
             {dataView === ChartView.Chart &&
               !!datapointsStore.datapointsByMetric[metricSearchParam] && (
-                <PanelRightTopButton
+                <Styled.PanelRightTopButton
                   onClick={() => setDataView(ChartView.Table)}
                 >
                   <SwitchToDataTableIcon />
                   Switch to Data Table
-                </PanelRightTopButton>
+                </Styled.PanelRightTopButton>
               )}
             {dataView === ChartView.Table && (
-              <PanelRightTopButton onClick={() => setDataView(ChartView.Chart)}>
+              <Styled.PanelRightTopButton
+                onClick={() => setDataView(ChartView.Chart)}
+              >
                 <SwitchToChartIcon />
                 Switch to Chart
-              </PanelRightTopButton>
+              </Styled.PanelRightTopButton>
             )}
-            <PanelRightTopButton
+            <Styled.PanelRightTopButton
               onClick={() => {
                 navigate({
-                  pathname: "../settings/metric-config",
+                  pathname: "../metric-config",
                   search: `?${createSearchParams(settingsSearchParams)}`,
                 });
               }}
             >
               <GoToMetricConfig />
               Go to Metric Configuration
-            </PanelRightTopButton>
-          </PanelRightTopButtonsContainer>
+            </Styled.PanelRightTopButton>
+          </Styled.PanelRightTopButtonsContainer>
           <ConnectedDatapointsView
             metric={metricSearchParam}
             metricName={metricName}
@@ -374,20 +354,20 @@ export const MetricsDataChart: React.FC = observer(() => {
             dataView={dataView}
           />
           {windowWidth <= MIN_DESKTOP_WIDTH && (
-            <PanelRightTopButton
+            <Styled.PanelRightTopButton
               onClick={() => {
                 navigate({
-                  pathname: "../settings/metric-config",
+                  pathname: "../metric-config",
                   search: `?${createSearchParams(settingsSearchParams)}`,
                 });
               }}
             >
               <GoToMetricConfig />
               Go to Metric Configuration
-            </PanelRightTopButton>
+            </Styled.PanelRightTopButton>
           )}
-        </PanelContainerRight>
-      </MetricsViewControlPanelOverflowHidden>
-    </MetricsViewContainer>
+        </Styled.PanelContainerRight>
+      </Styled.MetricsViewPanel>
+    </Styled.MetricsViewContainer>
   );
 });

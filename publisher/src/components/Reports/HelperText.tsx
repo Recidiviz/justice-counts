@@ -154,7 +154,7 @@ const HelperText: React.FC<{
       <HelperTextSection>
         <HelperTextTitle>
           Additional context can be viewed and entered via the{" "}
-          <HelperTextLink onClick={() => navigate("../settings/metric-config")}>
+          <HelperTextLink onClick={() => navigate("../metric-config")}>
             Metric Configuration
           </HelperTextLink>{" "}
           page in Settings.

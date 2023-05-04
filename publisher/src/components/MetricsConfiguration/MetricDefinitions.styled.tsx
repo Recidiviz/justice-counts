@@ -61,7 +61,6 @@ export const SectionItem = styled.div`
   justify-content: space-between;
   align-items: center;
   border-top: 1px solid ${palette.highlight.grey4};
-  ${typography.sizeCSS.medium};
   position: relative;
   cursor: pointer;
 
@@ -72,6 +71,19 @@ export const SectionItem = styled.div`
 
   &:hover {
     background-color: ${palette.highlight.lightblue1};
+  }
+`;
+
+export const SectionItemLabel = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  ${typography.sizeCSS.medium};
+
+  img {
+    width: 20px;
+    height: 20px;
   }
 `;
 

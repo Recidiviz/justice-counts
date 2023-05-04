@@ -24,7 +24,7 @@ import { MetricsDataChart } from "../components/DataViz/MetricsDataChart";
 import { REPORTS_LOWERCASE } from "../components/Global/constants";
 import { Guidance } from "../components/Guidance";
 import Header from "../components/Header";
-import { MetricSettings } from "../components/MetricSettings/MetricSettings";
+import { MetricsConfiguration } from "../components/MetricsConfiguration";
 import BulkActionReview from "../components/Reports/BulkActionReview";
 import CreateReport from "../components/Reports/CreateReport";
 import ReviewReportDataEntry from "../components/Reports/DataEntryReview";
@@ -69,22 +69,14 @@ export const Router = () => {
             }
           />
 
-          <Route path="/data" element={<MetricsDataChart />} />
-          <Route path="/settings/*" element={<Settings />} />
-          {/* WIP pages */}
-          <Route
-            path="/settings/metric-config-v2"
-            element={<MetricSettings />}
-          />
-          {/* WIP pages */}
           <Route path={`/${REPORTS_LOWERCASE}`} element={<Reports />} />
-          <Route
-            path={`/${REPORTS_LOWERCASE}/bulk-review`}
-            element={<BulkActionReview />}
-          />
           <Route
             path={`/${REPORTS_LOWERCASE}/create`}
             element={<CreateReport />}
+          />
+          <Route
+            path={`/${REPORTS_LOWERCASE}/bulk-review`}
+            element={<BulkActionReview />}
           />
           <Route
             path={`/${REPORTS_LOWERCASE}/:id`}
@@ -94,6 +86,9 @@ export const Router = () => {
             path={`/${REPORTS_LOWERCASE}/:id/review`}
             element={<ReviewReportDataEntry />}
           />
+          <Route path="/data" element={<MetricsDataChart />} />
+          <Route path="/metric-config" element={<MetricsConfiguration />} />
+          <Route path="/settings/*" element={<Settings />} />
           <Route path="/upload" element={<DataUpload />} />
           <Route path="/upload/review-metrics" element={<UploadReview />} />
 

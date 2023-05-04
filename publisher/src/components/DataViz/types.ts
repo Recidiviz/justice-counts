@@ -15,31 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { UpdatedDimension } from ".";
-
-/**
- * Sort Races from an `ethnicitiesByRace` object entries array in the following order:
- * 'American Indian / Alaskan Native', 'Asian', 'Black', 'Native Hawaiian / Pacific Islander', 'White', 'More than one race', 'Other', 'Unknown'
- */
-export const sortRaces = (
-  [a, _]: [
-    string,
-    {
-      [ethnicity: string]: UpdatedDimension;
-    }
-  ],
-  [b, __]: [
-    string,
-    {
-      [ethnicity: string]: UpdatedDimension;
-    }
-  ]
-) => {
-  if (b === "More than one race" && (a === "Other" || a === "Unknown")) {
-    return 0;
-  }
-  if (b === "More than one race" && a !== "Other" && a !== "Unknown") {
-    return -1;
-  }
-  return 1;
-};
+export enum ChartView {
+  Chart = "CHART",
+  Table = "TABLE",
+}

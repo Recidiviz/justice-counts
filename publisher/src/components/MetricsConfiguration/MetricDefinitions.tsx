@@ -15,19 +15,27 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import blueCheckIcon from "@justice-counts/common/assets/status-check-icon.png";
+import { MetricConfigurationSettings } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 
 import { useStore } from "../../stores";
-import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "../MetricConfiguration";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
+import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "./constants";
 import DefinitionModalForm from "./DefinitionModalForm";
 import * as Styled from "./MetricDefinitions.styled";
 
 function MetricDefinitions() {
   const [settingsSearchParams] = useSettingsSearchParams();
   const { metricConfigStore } = useStore();
-  const { metrics, dimensions, disaggregations } = metricConfigStore;
+  const {
+    metrics,
+    dimensions,
+    disaggregations,
+    metricDefinitionSettings,
+    dimensionDefinitionSettings,
+  } = metricConfigStore;
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [activeDisaggregationKey, setActiveDisaggregationKey] = useState<
     string | undefined
@@ -40,6 +48,17 @@ function MetricDefinitions() {
   const activeDisaggregationKeys =
     disaggregations[systemMetricKey] &&
     Object.keys(disaggregations[systemMetricKey]);
+  const metricHasDefinitionSelected = () => {
+    if (!metricDefinitionSettings[systemMetricKey]) return true;
+    const metricSettings = Object.values(
+      metricDefinitionSettings[systemMetricKey]
+    ).reduce((acc, metricSetting) => {
+      return { ...acc, ...metricSetting.settings };
+    }, {} as { [settingKey: string]: Partial<MetricConfigurationSettings> });
+    return !!Object.values(metricSettings).find(
+      (setting) => setting.included === "Yes"
+    );
+  };
 
   useEffect(() => {
     document.body.style.overflow = isSettingsModalOpen ? "hidden" : "unset";
@@ -79,7 +98,12 @@ function MetricDefinitions() {
           <Styled.Section>
             <Styled.SectionTitle>Primary Metric</Styled.SectionTitle>
             <Styled.SectionItem onClick={() => setIsSettingsModalOpen(true)}>
-              {metrics[systemMetricKey]?.label} (Total)
+              <Styled.SectionItemLabel>
+                {metricHasDefinitionSelected() && (
+                  <img src={blueCheckIcon} alt="" />
+                )}
+                {metrics[systemMetricKey]?.label} (Total)
+              </Styled.SectionItemLabel>
               <span>View / Edit</span>
               <Styled.SectionItemTooltip>
                 {metrics[systemMetricKey]?.label} (Total)
@@ -105,23 +129,50 @@ function MetricDefinitions() {
                 <Styled.SectionTitle>
                   {currentDisaggregation.display_name}
                 </Styled.SectionTitle>
-                {currentEnabledDimensions.map(([key, dimension]) => (
-                  <Styled.SectionItem
-                    key={key}
-                    onClick={() => {
-                      setActiveDisaggregationKey(disaggregationKey);
-                      setActiveDimensionKey(key);
-                      setIsSettingsModalOpen(true);
-                    }}
-                  >
-                    {dimension.label}
-                    <span>View / Edit</span>
-                    <Styled.SectionItemTooltip>
-                      {dimension.label}
-                      <span>{dimension.description}</span>
-                    </Styled.SectionItemTooltip>
-                  </Styled.SectionItem>
-                ))}
+                {currentEnabledDimensions.map(([key, dimension]) => {
+                  let hasEnabledDefinition: boolean;
+                  if (
+                    !dimensionDefinitionSettings[systemMetricKey][
+                      disaggregationKey
+                    ][key]
+                  ) {
+                    hasEnabledDefinition = true;
+                  } else {
+                    const dimensionSettings = Object.values(
+                      dimensionDefinitionSettings[systemMetricKey][
+                        disaggregationKey
+                      ][key]
+                    ).reduce((acc, dimensionSetting) => {
+                      return { ...acc, ...dimensionSetting.settings };
+                    }, {} as { [settingKey: string]: Partial<MetricConfigurationSettings> });
+                    hasEnabledDefinition = !!Object.values(
+                      dimensionSettings
+                    ).find((setting) => setting.included === "Yes");
+                  }
+
+                  return (
+                    <Styled.SectionItem
+                      key={key}
+                      onClick={() => {
+                        setActiveDisaggregationKey(disaggregationKey);
+                        setActiveDimensionKey(key);
+                        setIsSettingsModalOpen(true);
+                      }}
+                    >
+                      <Styled.SectionItemLabel>
+                        {hasEnabledDefinition && (
+                          <img src={blueCheckIcon} alt="" />
+                        )}
+                        {dimension.label}
+                      </Styled.SectionItemLabel>
+                      <span>View / Edit</span>
+                      <Styled.SectionItemTooltip>
+                        {dimension.label}
+                        <span>{dimension.description}</span>
+                      </Styled.SectionItemTooltip>
+                    </Styled.SectionItem>
+                  );
+                })}
               </Styled.Section>
             );
           })}

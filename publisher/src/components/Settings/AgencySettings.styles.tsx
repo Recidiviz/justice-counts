@@ -166,7 +166,6 @@ export const AgencySettingsInfoRow = styled.div<{ hasHover?: boolean }>`
   ${({ hasHover }) =>
     hasHover &&
     `&:hover {cursor: pointer; background-color: ${palette.highlight.grey2}}`}
-
   span {
     ${typography.sizeCSS.normal};
     text-align: end;
@@ -259,8 +258,8 @@ export const BasicInfoRow = styled.div<{ capitalize?: boolean }>`
   flex-direction: column;
   gap: 8px;
   margin-bottom: 24px;
-  ${({ capitalize }) => capitalize && `text-transform: capitalize;`}
 
+  ${({ capitalize }) => capitalize && `text-transform: capitalize;`}
   span {
     ${typography.sizeCSS.small};
   }
@@ -313,7 +312,6 @@ export const InviteMemberInnerContainer = styled.div`
   display: flex;
   flex-direction: row;
   gap: 8px;
-  margin-bottom: 40px;
   margin-bottom: 8px;
 
   & > div:last-child {
@@ -471,8 +469,8 @@ export const EditTeamMemberMenu = styled.div`
   right: 0;
   padding: 9px 0;
   background-color: ${palette.solid.white};
-  box-shadow: 0px 0px 1px rgba(23, 28, 43, 0.1),
-    0px 4px 8px rgba(23, 28, 43, 0.04), 0px 8px 56px rgba(23, 28, 43, 0.1);
+  box-shadow: 0 0 1px rgba(23, 28, 43, 0.1), 0 4px 8px rgba(23, 28, 43, 0.04),
+    0 8px 56px rgba(23, 28, 43, 0.1);
   border-radius: 4px;
   display: flex;
   flex-direction: column;
@@ -523,8 +521,8 @@ export const JurisdictionsSearchResultContainer = styled.div`
   top: 55px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0px 0px 1px rgba(23, 28, 43, 0.1),
-    0px 4px 8px rgba(23, 28, 43, 0.04), 0px 8px 56px rgba(23, 28, 43, 0.1);
+  box-shadow: 0 0 1px rgba(23, 28, 43, 0.1), 0 4px 8px rgba(23, 28, 43, 0.04),
+    0 8px 56px rgba(23, 28, 43, 0.1);
 `;
 
 export const JurisdictionsSearchResult = styled.div<{ hasAction?: boolean }>`
@@ -586,6 +584,42 @@ export const JurisdictionsEditModeFooterLeftBlock = styled.div`
   flex-direction: row;
   align-items: center;
   margin-top: 16px;
+`;
+
+export const CheckboxWrapper = styled.div`
+  display: flex;
+  position: relative;
+  z-index: 1;
+`;
+
+export const Checkbox = styled.input`
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border: 1px solid ${palette.highlight.grey6};
+  border-radius: 100%;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:checked {
+    border: 1px solid transparent;
+  }
+
+  &:checked + img {
+    display: block;
+  }
+`;
+
+export const BlueCheckIcon = styled.img<{ enabled?: boolean }>`
+  width: 20px;
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
 `;
 
 export const AddIcon = styled.img`

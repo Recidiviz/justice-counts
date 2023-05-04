@@ -25,14 +25,14 @@ import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import indicatorAlertIcon from "../assets/indicator-alert-icon.svg";
 import indicatorSuccessIcon from "../assets/indicator-success-icon.svg";
-import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "../MetricConfiguration";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
+import * as Styled from "./Configuration.styled";
+import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "./constants";
 import MetricAvailability from "./MetricAvailability";
-import * as Styled from "./MetricConfig.styled";
 import MetricDefinitions from "./MetricDefinitions";
 import { DimensionSettings } from "./types";
 
-function MetricConfig() {
+function Configuration() {
   const { agencyId } = useParams() as { agencyId: string };
   const [isFooterVisible, setIsFooterVisible] = useIsFooterVisible();
   const [settingsSearchParams, setSettingsSearchParams] =
@@ -72,6 +72,8 @@ function MetricConfig() {
     : true;
 
   const dimensionsHaveAtLeastOneSettingSelection = () => {
+    if (!dimensionDefinitionSettings[systemMetricKey]) return true;
+
     const disaggregationKeysWithoutRaceEthnicity = Object.keys(
       dimensionDefinitionSettings[systemMetricKey]
     ).filter((key) => key !== RACE_ETHNICITY_DISAGGREGATION_KEY);
@@ -209,4 +211,4 @@ function MetricConfig() {
   );
 }
 
-export default observer(MetricConfig);
+export default observer(Configuration);

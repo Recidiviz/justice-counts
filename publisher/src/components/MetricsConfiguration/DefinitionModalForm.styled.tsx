@@ -21,8 +21,6 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-import { Label } from "../MetricConfiguration";
-
 export const Wrapper = styled.div`
   position: fixed;
   top: 0;
@@ -107,9 +105,16 @@ export const EnabledIcon = styled.img`
 export const DisabledIcon = styled.div`
   margin-top: 3px;
   width: 16px;
+  min-width: 16px;
   height: 16px;
+  min-height: 16px;
   border: 1px solid ${palette.highlight.grey4};
   border-radius: 100%;
+`;
+
+export const Label = styled.div`
+  ${typography.sizeCSS.medium};
+  margin-bottom: 16px;
 `;
 
 export const ContextContainer = styled.div`

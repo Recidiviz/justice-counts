@@ -21,23 +21,9 @@ import React from "react";
 import { useStore } from "../../stores";
 import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import { useSettingsSearchParams } from "../Settings";
-import {
-  CalloutBox,
-  Description,
-  EthnicitiesRow,
-  Ethnicity,
-  EthnicityCell,
-  EthnicityLabel,
-  EthnicityName,
-  GridEthnicitiesHeader,
-  GridHeaderContainer,
-  GridRaceHeader,
-  RaceCell,
-  RaceEthnicitiesBreakdownContainer,
-  RaceEthnicitiesRow,
-  RaceEthnicitiesTable,
-  sortRaces,
-} from ".";
+import * as Styled from "./RaceEthnicitiesGrid.styled";
+import { Ethnicity } from "./RaceEthnicitiesGridStates";
+import { sortRaces } from "./utils";
 
 export const RaceEthnicitiesGrid: React.FC<{
   disaggregationEnabled: boolean;
@@ -56,46 +42,52 @@ export const RaceEthnicitiesGrid: React.FC<{
     {};
 
   return (
-    <RaceEthnicitiesBreakdownContainer
+    <Styled.RaceEthnicitiesBreakdownContainer
       disaggregationEnabled={disaggregationEnabled}
     >
-      <CalloutBox onClick={onClick}>
-        <Description>
+      <Styled.CalloutBox onClick={onClick}>
+        <Styled.Description>
           Answer the questions on the <span>Race and Ethnicity</span> form; the
           grid below will reflect your responses.
-        </Description>
+        </Styled.Description>
         <RightArrowIcon />
-      </CalloutBox>
+      </Styled.CalloutBox>
 
-      <GridHeaderContainer>
-        <GridRaceHeader>Race</GridRaceHeader>
-        <GridEthnicitiesHeader>
-          <EthnicityLabel>
+      <Styled.GridHeaderContainer>
+        <Styled.GridRaceHeader>Race</Styled.GridRaceHeader>
+        <Styled.GridEthnicitiesHeader>
+          <Styled.EthnicityLabel>
             Ethnicity <RightArrowIcon />
-          </EthnicityLabel>
-          <EthnicityName>{Ethnicity.HISPANIC_OR_LATINO}</EthnicityName>
-          <EthnicityName>{Ethnicity.NOT_HISPANIC_OR_LATINO}</EthnicityName>
-          <EthnicityName>{Ethnicity.UNKNOWN_ETHNICITY}</EthnicityName>
-        </GridEthnicitiesHeader>
-      </GridHeaderContainer>
+          </Styled.EthnicityLabel>
+          <Styled.EthnicityName>
+            {Ethnicity.HISPANIC_OR_LATINO}
+          </Styled.EthnicityName>
+          <Styled.EthnicityName>
+            {Ethnicity.NOT_HISPANIC_OR_LATINO}
+          </Styled.EthnicityName>
+          <Styled.EthnicityName>
+            {Ethnicity.UNKNOWN_ETHNICITY}
+          </Styled.EthnicityName>
+        </Styled.GridEthnicitiesHeader>
+      </Styled.GridHeaderContainer>
 
-      <RaceEthnicitiesTable>
+      <Styled.RaceEthnicitiesTable>
         {Object.entries(ethnicitiesByRace)
           .sort(sortRaces)
           .map(([race, ethnicities]) => (
-            <RaceEthnicitiesRow key={race}>
-              <RaceCell>{race}</RaceCell>
-              <EthnicitiesRow>
+            <Styled.RaceEthnicitiesRow key={race}>
+              <Styled.RaceCell>{race}</Styled.RaceCell>
+              <Styled.EthnicitiesRow>
                 {Object.values(ethnicities).map((ethnicity) => (
-                  <EthnicityCell
+                  <Styled.EthnicityCell
                     key={ethnicity.key}
                     enabled={ethnicity.enabled}
                   />
                 ))}
-              </EthnicitiesRow>
-            </RaceEthnicitiesRow>
+              </Styled.EthnicitiesRow>
+            </Styled.RaceEthnicitiesRow>
           ))}
-      </RaceEthnicitiesTable>
-    </RaceEthnicitiesBreakdownContainer>
+      </Styled.RaceEthnicitiesTable>
+    </Styled.RaceEthnicitiesBreakdownContainer>
   );
 });

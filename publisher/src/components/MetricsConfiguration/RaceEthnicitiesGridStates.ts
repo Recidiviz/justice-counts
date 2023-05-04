@@ -15,8 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-// import { Ethnicity, Race } from ".";
-
 export const Race = {
   AMERICAN_INDIAN_OR_ALASKAN_NATIVE: "American Indian or Alaska Native",
   ASIAN: "Asian",

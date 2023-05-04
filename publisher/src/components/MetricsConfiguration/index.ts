@@ -15,17 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./Configuration";
 export * from "./constants";
-export * from "./DimensionContexts";
-export * from "./MetricBox";
-export * from "./MetricBreakdownAvailabilityDefinitions";
-export * from "./MetricConfiguration";
-export * from "./MetricConfiguration.styles";
-export * from "./MetricContextConfiguration";
-export * from "./RaceEthnicities.styles";
-export * from "./RaceEthnicitiesForm";
-export * from "./RaceEthnicitiesGrid";
+export * from "./MetricsConfiguration";
 export * from "./RaceEthnicitiesGridStates";
 export * from "./types";
 export * from "./utils";

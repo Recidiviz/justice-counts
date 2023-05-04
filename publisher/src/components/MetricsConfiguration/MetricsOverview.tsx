@@ -23,9 +23,9 @@ import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/bold-right-arrow-icon.svg";
 import { useSettingsSearchParams } from "../Settings";
-import * as Styled from "./Overview.styled";
+import * as Styled from "./MetricsOverview.styled";
 
-export function Overview() {
+export function MetricsOverview() {
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
   const { agencyId } = useParams() as { agencyId: string };

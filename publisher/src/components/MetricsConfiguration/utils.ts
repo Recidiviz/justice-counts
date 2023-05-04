@@ -15,21 +15,31 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { MetricConfigurationSettings } from "@justice-counts/common/types";
+import { UpdatedDimension } from "./types";
 
-export type SettingsByIncludesExcludesKey = {
-  [includesExcludesKey: string]: {
-    description?: string;
-    settings: {
-      [settingKey: string]: Partial<MetricConfigurationSettings>;
-    };
-  };
-};
-
-export type DimensionSettings = {
-  [dimensionKey: string]: SettingsByIncludesExcludesKey;
-};
-
-export type ContextsByContextKey = {
-  [contextKey: string]: { label: string; value: string };
+/**
+ * Sort Races from an `ethnicitiesByRace` object entries array in the following order:
+ * 'American Indian / Alaskan Native', 'Asian', 'Black', 'Native Hawaiian / Pacific Islander', 'White', 'More than one race', 'Other', 'Unknown'
+ */
+export const sortRaces = (
+  [a, _]: [
+    string,
+    {
+      [ethnicity: string]: UpdatedDimension;
+    }
+  ],
+  [b, __]: [
+    string,
+    {
+      [ethnicity: string]: UpdatedDimension;
+    }
+  ]
+) => {
+  if (b === "More than one race" && (a === "Other" || a === "Unknown")) {
+    return 0;
+  }
+  if (b === "More than one race" && a !== "Other" && a !== "Unknown") {
+    return -1;
+  }
+  return 1;
 };

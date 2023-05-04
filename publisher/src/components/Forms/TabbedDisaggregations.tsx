@@ -32,7 +32,7 @@ import errorIcon from "../assets/status-error-icon.png";
 import {
   Ethnicity,
   RACE_ETHNICITY_DISAGGREGATION_KEY,
-} from "../MetricConfiguration";
+} from "../MetricsConfiguration";
 import { DisaggregationDimensionTextInput } from "../Reports/DataEntryFormComponents";
 import {
   DisaggregationHasInputIndicator,

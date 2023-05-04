@@ -12,7 +12,7 @@
 | Type: Feature               	| non-breaking change that adds functionality                                                               	|
 | Type: Breaking Change       	| fix or feature that would cause existing functionality to not work as expected                            	|
 | Type: Non-breaking refactor 	| change addresses some tech debt item or prepares for a later change, but does not change functionality    	|
-| Type: Configuration Change  	| adjusts configuration to achieve some end related to functionality, development, performance, or security 	|
+| Type: MetricsConfiguration Change  	| adjusts configuration to achieve some end related to functionality, development, performance, or security 	|
 | Type: Dependency Upgrade      | upgrades a project dependency - these changes are not included in release notes                             |
 
 ## Related issues

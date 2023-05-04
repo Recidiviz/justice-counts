@@ -27,10 +27,13 @@ import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { TextInput } from "../Forms";
-import { Label, MetricSettings } from "../MetricConfiguration";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import * as Styled from "./DefinitionModalForm.styled";
-import { ContextsByContextKey, SettingsByIncludesExcludesKey } from "./types";
+import {
+  ContextsByContextKey,
+  MetricSettings,
+  SettingsByIncludesExcludesKey,
+} from "./types";
 
 type DefinitionModalFormProps = {
   activeDisaggregationKey?: string;
@@ -410,7 +413,7 @@ function DefinitionModalForm({
               Object.entries(currentContexts).map(([key, { label, value }]) => {
                 return (
                   <Fragment key={key}>
-                    <Label>{label}</Label>
+                    <Styled.Label>{label}</Styled.Label>
                     <TextInput
                       type="text"
                       name={key}
