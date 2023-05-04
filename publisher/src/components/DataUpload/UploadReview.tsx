@@ -158,6 +158,7 @@ const UploadReview: React.FC = observer(() => {
               hasExistingAndNewRecords
                 ? setExistingReportWarningOpen(true)
                 : publishMultipleRecords(),
+            isPublishButton: true,
           },
         ]
       : [

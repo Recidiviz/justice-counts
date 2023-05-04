@@ -31,7 +31,10 @@ import {
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
 import { MetricSettings } from "../components/MetricConfiguration";
-import { PublishReviewPropsFromDatapoints } from "../components/ReviewMetrics";
+import {
+  PublishReviewMetricErrors,
+  PublishReviewPropsFromDatapoints,
+} from "../components/ReviewMetrics";
 import { groupBy } from "../utils";
 import API from "./API";
 import DatapointsStore from "./DatapointsStore";
@@ -212,11 +215,57 @@ class ReportStore {
 
       const combinedFilteredDatapointsFromAllReports = reportsWithDatapoints
         ?.map((report) => report.datapoints)
-        .flat()
-        .filter((dp) => dp.value !== null);
-      const datapointsByMetric = DatapointsStore.keyRawDatapointsByMetric(
-        combinedFilteredDatapointsFromAllReports
-      );
+        .flat();
+
+      /**
+       * Find metric errors from datapoints (non-numeric characters and breakdowns with values but no value for the top-level metric)
+       *
+       * IMPORTANT: this validation logic is similar to the validation run on an individual report (the main difference is that this
+       * is validating errors on datapoint objects vs. report objects). If you plan to adjust the logic here, please update the `validate`
+       * function's logic as well in `FormStore.ts`
+       */
+
+      const metricErrors = combinedFilteredDatapointsFromAllReports
+        /**  First, sort the datapoints so breakdowns come before top level metrics */
+        .sort((a, _) => (a.dimension_display_name ? -1 : 1))
+        .reduce((acc, val) => {
+          /** Add non-numeric characters */
+          if (Number.isNaN(Number(val.value))) {
+            acc[val.metric_definition_key] = true;
+            return acc;
+          }
+          /**
+           * If there is a value in the breakdowns and it's the first time we've come across this breakdown,
+           * add it to our map and mark it as false until we come across the top level metric
+           */
+          if (
+            val.dimension_display_name &&
+            acc[val.metric_definition_key] === undefined &&
+            val.value !== null
+          ) {
+            acc[val.metric_definition_key] = false;
+          }
+          /**
+           * After going through all of the breakdowns values, check to see if the top level metric has a null value.
+           * If so, we've encountered an error with breakdowns having a value and the top level metric having no value.
+           */
+          if (
+            !val.dimension_display_name &&
+            acc[val.metric_definition_key] === false &&
+            val.value === null
+          ) {
+            acc[val.metric_definition_key] = true;
+          }
+          return acc;
+        }, {} as PublishReviewMetricErrors);
+
+      const filteredDatapoints =
+        combinedFilteredDatapointsFromAllReports.filter(
+          (dp) => dp.value !== null
+        );
+
+      const datapointsByMetric =
+        DatapointsStore.keyRawDatapointsByMetric(filteredDatapoints);
       const datapointsEntries = Object.entries(datapointsByMetric);
       const metricsToDisplay = datapointsEntries.map(
         ([metricKey, metricDatapoints]) => {
@@ -231,6 +280,7 @@ class ReportStore {
         records: reportsWithDatapoints,
         datapointsByMetric,
         metricsToDisplay,
+        metricErrors,
       };
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
