@@ -231,7 +231,7 @@ class ReportStore {
         .reduce((acc, val) => {
           /** Add non-numeric characters */
           if (Number.isNaN(Number(val.value))) {
-            acc[val.metric_definition_key] = true;
+            acc[val.metric_definition_key + val.report_id] = true;
             return acc;
           }
           /**
@@ -240,10 +240,10 @@ class ReportStore {
            */
           if (
             val.dimension_display_name &&
-            acc[val.metric_definition_key] === undefined &&
+            acc[val.metric_definition_key + val.report_id] === undefined &&
             val.value !== null
           ) {
-            acc[val.metric_definition_key] = false;
+            acc[val.metric_definition_key + val.report_id] = false;
           }
           /**
            * After going through all of the breakdowns values, check to see if the top level metric has a null value.
@@ -251,10 +251,10 @@ class ReportStore {
            */
           if (
             !val.dimension_display_name &&
-            acc[val.metric_definition_key] === false &&
+            acc[val.metric_definition_key + val.report_id] === false &&
             val.value === null
           ) {
-            acc[val.metric_definition_key] = true;
+            acc[val.metric_definition_key + val.report_id] = true;
           }
           return acc;
         }, {} as PublishReviewMetricErrors);
