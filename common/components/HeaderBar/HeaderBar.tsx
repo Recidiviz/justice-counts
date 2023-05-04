@@ -19,14 +19,14 @@ import React from "react";
 
 import logoImg from "../../assets/jc-logo-vector-new.svg";
 import * as Styled from "./HeaderBar.styled";
+import { HeaderBarBackground } from "./types";
 
 type HeaderBarProps = {
   onLogoClick: () => void;
   children: React.ReactNode;
   label?: string;
   badge?: React.ReactNode;
-  isTransparent?: boolean;
-  isBlueBackground?: boolean;
+  background?: HeaderBarBackground;
   hasBottomBorder?: boolean;
 };
 
@@ -35,16 +35,11 @@ export function HeaderBar({
   children,
   label,
   badge,
-  isTransparent,
-  isBlueBackground,
+  background,
   hasBottomBorder,
 }: HeaderBarProps) {
   return (
-    <Styled.HeaderBar
-      isTransparent={isTransparent}
-      isBlueBackground={isBlueBackground}
-      hasBottomBorder={hasBottomBorder}
-    >
+    <Styled.HeaderBar background={background} hasBottomBorder={hasBottomBorder}>
       <Styled.LogoContainer onClick={onLogoClick}>
         <Styled.LogoImg src={logoImg} alt="" />
         <Styled.Label>{label}</Styled.Label>

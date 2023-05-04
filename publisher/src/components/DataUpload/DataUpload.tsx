@@ -121,6 +121,14 @@ export const DataUpload: React.FC = observer(() => {
     unchangedReportIDs: [],
   });
 
+  const headerBackground = () => {
+    if (!errorsWarningsMetrics && windowWidth > MIN_DESKTOP_WIDTH)
+      return "transparent";
+    if (!errorsWarningsMetrics && windowWidth <= MIN_DESKTOP_WIDTH)
+      return "blue";
+    return undefined;
+  };
+
   const handleFileUpload = async (
     file: File,
     system: AgencySystems
@@ -338,12 +346,7 @@ export const DataUpload: React.FC = observer(() => {
     <DataUploadContainer>
       <HeaderBar
         onLogoClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
-        isTransparent={
-          !errorsWarningsMetrics && windowWidth > MIN_DESKTOP_WIDTH
-        }
-        isBlueBackground={
-          !errorsWarningsMetrics && windowWidth <= MIN_DESKTOP_WIDTH
-        }
+        background={headerBackground()}
         hasBottomBorder={!!errorsWarningsMetrics}
       >
         <Button

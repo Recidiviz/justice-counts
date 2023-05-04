@@ -23,10 +23,10 @@ import {
   palette,
   typography,
 } from "../GlobalStyles";
+import { HeaderBarBackground } from "./types";
 
 export const HeaderBar = styled.div<{
-  isTransparent?: boolean;
-  isBlueBackground?: boolean;
+  background?: HeaderBarBackground;
   hasBottomBorder?: boolean;
 }>`
   width: 100%;
@@ -40,9 +40,9 @@ export const HeaderBar = styled.div<{
   left: 0;
   z-index: 3;
 
-  background: ${({ isTransparent, isBlueBackground }) => {
-    if (isTransparent) return "transparent";
-    if (isBlueBackground) return palette.solid.blue;
+  background: ${({ background }) => {
+    if (background === "transparent") return "transparent";
+    if (background === "blue") return palette.solid.blue;
     return palette.solid.white;
   }};
 
