@@ -188,19 +188,26 @@ class AgencyDataStore {
 
   async fetchAllAgencies(): Promise<AgenciesList> {
     try {
+      runInAction(() => {
+        this.loading = true;
+      });
+
       const response = (await request({
         path: `/api/agencies`,
         method: "GET",
       })) as Response;
 
+      if (response.status === 200) {
+        const result = await response.json();
+        runInAction(() => {
+          this.loading = false;
+        });
+        return result;
+      }
+
       runInAction(() => {
         this.loading = false;
       });
-
-      if (response.status === 200) {
-        const result = await response.json();
-        return result;
-      }
       const error = await response.json();
       throw new Error(error.description);
     } catch (error) {

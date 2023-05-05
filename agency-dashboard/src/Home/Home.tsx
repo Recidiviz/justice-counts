@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -24,7 +25,7 @@ import { useStore } from "../stores";
 import * as Styled from "./Home.styles";
 import { AgencyMetadata } from "./types";
 
-export const Home = () => {
+export const Home = observer(() => {
   const navigate = useNavigate();
   const { agencyDataStore } = useStore();
   const [agenciesMetadata, setAgenciesMetadata] = useState<AgencyMetadata[]>(
@@ -38,7 +39,7 @@ export const Home = () => {
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [agencyDataStore]);
 
   return (
     <>
@@ -69,4 +70,4 @@ export const Home = () => {
       </Styled.HomeContainer>
     </>
   );
-};
+});
