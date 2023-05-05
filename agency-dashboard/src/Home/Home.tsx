@@ -50,18 +50,20 @@ export const Home = () => {
           <Loader />
         ) : (
           <Styled.AgencyDetailsContainer>
-            {agenciesMetadata.map((agency) => (
-              <Styled.AgencyDetailsWrapper
-                key={agency.id}
-                onClick={() => navigate(`/agency/${agency.id}`)}
-              >
-                <Styled.AgencyName>{agency.name}</Styled.AgencyName>
-                <Styled.NumberOfPublishedMetrics>
-                  <span>{agency.number_of_published_metrics}</span> published
-                  metrics
-                </Styled.NumberOfPublishedMetrics>
-              </Styled.AgencyDetailsWrapper>
-            ))}
+            {agenciesMetadata
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((agency) => (
+                <Styled.AgencyDetailsWrapper
+                  key={agency.id}
+                  onClick={() => navigate(`/agency/${agency.id}`)}
+                >
+                  <Styled.AgencyName>{agency.name}</Styled.AgencyName>
+                  <Styled.NumberOfPublishedMetrics>
+                    <span>{agency.number_of_published_metrics}</span> published
+                    metrics
+                  </Styled.NumberOfPublishedMetrics>
+                </Styled.AgencyDetailsWrapper>
+              ))}
           </Styled.AgencyDetailsContainer>
         )}
       </Styled.HomeContainer>
