@@ -45,7 +45,6 @@ const DataEntryReview = () => {
   const { metricDisplayNames } = state as { metricDisplayNames: string[] };
   const { reportStore, formStore, userStore, guidanceStore } = useStore();
   const checkMetricForErrors = useCheckMetricForErrors(reportID);
-  const [isPublishable, setIsPublishable] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [loadingDatapoints, setLoadingDatapoints] = useState(true);
   const [publishReviewProps, setPublishReviewProps] =
@@ -55,39 +54,34 @@ const DataEntryReview = () => {
   const hasPublishReviewProps = metricsToDisplay && datapointsByMetric;
 
   const publishReport = async () => {
-    if (isPublishable) {
-      setIsPublishable(false);
+    const finalMetricsToPublish =
+      formStore.reportUpdatedValuesForBackend(reportID);
 
-      const finalMetricsToPublish =
-        formStore.reportUpdatedValuesForBackend(reportID);
+    const response = (await reportStore.updateReport(
+      reportID,
+      finalMetricsToPublish,
+      "PUBLISHED"
+    )) as Response;
 
-      const response = (await reportStore.updateReport(
-        reportID,
-        finalMetricsToPublish,
-        "PUBLISHED"
-      )) as Response;
-
-      if (response.status === 200) {
-        // For users who have not completed the onboarding flow and are publishing for the first time.
-        if (
-          guidanceStore.currentTopicID === "PUBLISH_DATA" &&
-          !guidanceStore.hasCompletedOnboarding
-        )
-          guidanceStore.updateTopicStatus("PUBLISH_DATA", true);
-        setIsSuccessModalOpen(true);
-        const agencyID = reportStore.reportOverviews[reportID]?.agency_id;
-        const agency = userStore.userAgenciesById[agencyID];
-        trackReportPublished(reportID, finalMetricsToPublish, agency);
-      } else {
-        showToast({
-          message: `Something went wrong publishing the ${printReportTitle(
-            reportStore.reportOverviews[reportID].month,
-            reportStore.reportOverviews[reportID].year,
-            reportStore.reportOverviews[reportID].frequency
-          )} ${REPORT_LOWERCASE}!`,
-        });
-        setIsPublishable(true);
-      }
+    if (response.status === 200) {
+      // For users who have not completed the onboarding flow and are publishing for the first time.
+      if (
+        guidanceStore.currentTopicID === "PUBLISH_DATA" &&
+        !guidanceStore.hasCompletedOnboarding
+      )
+        guidanceStore.updateTopicStatus("PUBLISH_DATA", true);
+      setIsSuccessModalOpen(true);
+      const agencyID = reportStore.reportOverviews[reportID]?.agency_id;
+      const agency = userStore.userAgenciesById[agencyID];
+      trackReportPublished(reportID, finalMetricsToPublish, agency);
+    } else {
+      showToast({
+        message: `Something went wrong publishing the ${printReportTitle(
+          reportStore.reportOverviews[reportID].month,
+          reportStore.reportOverviews[reportID].year,
+          reportStore.reportOverviews[reportID].frequency
+        )} ${REPORT_LOWERCASE}!`,
+      });
     }
   };
 
@@ -113,12 +107,6 @@ const DataEntryReview = () => {
     initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    const { isPublishable: publishable } =
-      formStore.validateAndGetAllMetricFormValues(reportID);
-    setIsPublishable(publishable);
-  }, [formStore, reportID]);
 
   useEffect(() => {
     document.body.style.overflow = isSuccessModalOpen ? "hidden" : "unset";
@@ -180,7 +168,6 @@ const DataEntryReview = () => {
     {
       name: "Publish",
       onClick: publishReport,
-      disabled: !isPublishable,
       buttonColor: "green",
       isPublishButton: true,
     },

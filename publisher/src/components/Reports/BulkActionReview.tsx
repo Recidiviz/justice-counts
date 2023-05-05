@@ -130,12 +130,6 @@ const BulkActionReview = () => {
   }
 
   // review component props
-  const isPublishable = !metricErrors
-    ? true
-    : Boolean(
-        Object.values(metricErrors).find((hasError) => hasError === true)
-      );
-
   const metrics =
     hasPublishReviewProps && metricsToDisplay.length > 0
       ? metricsToDisplay.reduce((acc, metric) => {
@@ -143,7 +137,9 @@ const BulkActionReview = () => {
             datapoints: datapointsByMetric[metric.key],
             display_name: metric.displayName,
             key: metric.key,
-            metricHasError: metricErrors?.[metric.key],
+            metricHasError: Boolean(
+              recordsIds.find((id) => metricErrors?.[metric.key + id])
+            ),
             metricHasValidInput: true,
           };
           return [...acc, reviewMetric];
@@ -183,7 +179,7 @@ const BulkActionReview = () => {
         action === "publish"
           ? publishMultipleRecords
           : unpublishMultipleRecords,
-      disabled: isPublishable,
+      isPublishButton: true,
       buttonColor: action === "publish" ? "green" : "orange",
     },
   ];

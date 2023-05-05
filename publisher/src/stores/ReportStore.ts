@@ -229,9 +229,11 @@ class ReportStore {
         /**  First, sort the datapoints so breakdowns come before top level metrics */
         .sort((a, _) => (a.dimension_display_name ? -1 : 1))
         .reduce((acc, val) => {
+          const metricDefinitionReportIDKey =
+            val.metric_definition_key + val.report_id;
           /** Add non-numeric characters */
           if (Number.isNaN(Number(val.value))) {
-            acc[val.metric_definition_key] = true;
+            acc[metricDefinitionReportIDKey] = true;
             return acc;
           }
           /**
@@ -240,10 +242,10 @@ class ReportStore {
            */
           if (
             val.dimension_display_name &&
-            acc[val.metric_definition_key] === undefined &&
+            acc[metricDefinitionReportIDKey] === undefined &&
             val.value !== null
           ) {
-            acc[val.metric_definition_key] = false;
+            acc[metricDefinitionReportIDKey] = false;
           }
           /**
            * After going through all of the breakdowns values, check to see if the top level metric has a null value.
@@ -251,10 +253,10 @@ class ReportStore {
            */
           if (
             !val.dimension_display_name &&
-            acc[val.metric_definition_key] === false &&
+            acc[metricDefinitionReportIDKey] === false &&
             val.value === null
           ) {
-            acc[val.metric_definition_key] = true;
+            acc[metricDefinitionReportIDKey] = true;
           }
           return acc;
         }, {} as PublishReviewMetricErrors);
@@ -267,6 +269,7 @@ class ReportStore {
       const datapointsByMetric =
         DatapointsStore.keyRawDatapointsByMetric(filteredDatapoints);
       const datapointsEntries = Object.entries(datapointsByMetric);
+
       const metricsToDisplay = datapointsEntries.map(
         ([metricKey, metricDatapoints]) => {
           return {
