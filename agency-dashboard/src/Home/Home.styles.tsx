@@ -52,6 +52,7 @@ export const AgencyDetailsWrapper = styled.div`
   width: 300px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   border: 1px solid ${palette.highlight.grey4};
   border-radius: 10px;
   padding: 16px;

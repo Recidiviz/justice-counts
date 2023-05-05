@@ -158,6 +158,9 @@ class AgencyDataStore {
 
   async fetchAgencyData(agencyId: number): Promise<void | Error> {
     try {
+      runInAction(() => {
+        this.loading = true;
+      });
       const response = (await request({
         path: `/api/agencies/${agencyId}/published_data`,
         method: "GET",
