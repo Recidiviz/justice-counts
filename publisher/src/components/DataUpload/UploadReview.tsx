@@ -64,18 +64,13 @@ const UploadReview: React.FC = observer(() => {
   }
 
   // review component props
-  const existingReports = [...updatedReportIDs, ...unchangedReportIDs]
-    .map((id) => reportStore.reportOverviews[id])
-    .filter((report) => report);
+  const existingReports = [...updatedReportIDs, ...unchangedReportIDs];
   const hasExistingAndNewRecords =
     existingReports.length > 0 && newReports.length > 0;
-  const existingAndNewRecords = [...existingReports, ...newReports];
-  const existingAndNewRecordIDs = existingAndNewRecords.map(
-    (record) => record.id
-  );
-  const hasAllPublishedRecordsNoOverwrites =
-    existingAndNewRecords.filter((record) => record.status !== "PUBLISHED")
-      .length === 0 && updatedReportIDs.length === 0;
+  const existingAndNewRecordIDs = [
+    ...existingReports,
+    ...newReports.map((report) => report.id),
+  ];
 
   const publishingExistingReportsButtons: {
     name: string;
@@ -97,7 +92,7 @@ const UploadReview: React.FC = observer(() => {
   ];
 
   const publishMultipleRecords = async () => {
-    if (agencyId && !hasAllPublishedRecordsNoOverwrites) {
+    if (agencyId) {
       const response = (await reportStore.updateMultipleReportStatuses(
         existingAndNewRecordIDs,
         agencyId,
@@ -175,9 +170,7 @@ const UploadReview: React.FC = observer(() => {
         <ReviewMetricsModal
           fileName={fileName}
           isExistingReportWarningModalOpen={isExistingReportWarningModalOpen}
-          existingReports={existingReports}
           publishingExistingReportsButtons={publishingExistingReportsButtons}
-          hasAllPublishedRecords={hasAllPublishedRecordsNoOverwrites}
         />
       )}
       <ReviewMetrics
@@ -186,7 +179,6 @@ const UploadReview: React.FC = observer(() => {
         buttons={buttons}
         metrics={metrics}
         metricOverwrites={overwrites}
-        records={existingAndNewRecords}
       />
     </>
   );
