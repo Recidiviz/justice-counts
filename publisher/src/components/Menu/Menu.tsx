@@ -68,7 +68,8 @@ const Menu: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const windowWidth = useWindowWidth();
-  const [settingsSearchParams] = useSettingsSearchParams();
+  const [settingsSearchParams, setSettingsSearchParams] =
+    useSettingsSearchParams();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const pathWithoutAgency = removeAgencyFromPath(location.pathname);
@@ -223,7 +224,7 @@ const Menu: React.FC = () => {
               }}
             >
               Get Started
-              {/* Guidance: Metric MetricsConfiguration Progress Toast */}
+              {/* Guidance: Metric Configuration Progress Toast */}
               {isMetricConfigStep && hasSystemMetricParams && (
                 <ProgressTooltipToast showToast={showMetricConfigProgressToast}>
                   {metricConfigurationProgressSteps.map((step) => {
@@ -286,7 +287,14 @@ const Menu: React.FC = () => {
         {/* Metric Config */}
         <MenuItem
           onClick={() => {
-            navigate("metric-config");
+            if (pathWithoutAgency === "metric-config") {
+              setSettingsSearchParams({
+                ...settingsSearchParams,
+                metric: undefined,
+              });
+            } else {
+              navigate("metric-config");
+            }
             handleCloseMobileMenu();
           }}
           active={pathWithoutAgency === "metric-config"}

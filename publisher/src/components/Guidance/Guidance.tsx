@@ -345,7 +345,7 @@ export const Guidance = observer(() => {
           )}
         </ContentContainer>
 
-        {/* Configure Metrics: MetricsOverview List */}
+        {/* Configure Metrics: Overview List */}
         {currentTopicID === "METRIC_CONFIG" && (
           <MetricContentContainer>
             {totalMetrics === 0 ? (
