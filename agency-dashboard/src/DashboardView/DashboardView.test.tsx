@@ -18,8 +18,8 @@ import { render, screen } from "@testing-library/react";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
 
-import DashboardView from "./DashboardView";
-import { StoreProvider } from "./stores";
+import { StoreProvider } from "../stores";
+import { DashboardView } from ".";
 
 beforeEach(() => {
   fetchMock.resetMocks();

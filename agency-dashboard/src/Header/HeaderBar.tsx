@@ -19,8 +19,8 @@ import logo from "@justice-counts/common/assets/jc-logo-vector.png";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { AboutModal } from "../DashboardModals";
 import { useStore } from "../stores";
-import { AboutModal } from "./AboutModal";
 import {
   HeaderBarContainer,
   HeaderButton,

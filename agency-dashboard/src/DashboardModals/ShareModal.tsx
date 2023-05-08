@@ -33,7 +33,7 @@ import {
   ShareCurrentViewContainer,
   ShareCurrentViewText,
   ShareEmptyCheckCircle,
-} from "./DashboardModal.styles";
+} from ".";
 
 export const ShareModal: React.FC<{
   closeModal: () => void;

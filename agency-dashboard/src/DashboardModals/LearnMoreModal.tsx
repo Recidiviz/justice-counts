@@ -29,7 +29,7 @@ import {
   ModalSectionTitle,
   ModalSubtitle,
   ModalTitle,
-} from "./DashboardModal.styles";
+} from ".";
 
 export const LearnMoreModal: React.FC<{
   closeModal: () => void;

@@ -15,24 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { useEffect, useMemo, useState } from "react";
-
-import { METRIC_BOX_DESKTOP_WIDTH } from "../AgencyOverview";
-
-export const useMaxMetricBoxesInRow = () => {
-  const [maxMetricBoxesInRow, setMaxMetricBoxesInRow] = useState(
-    // 48 is horizontal padding (24 + 24) + 1 extra pixel
-    Math.floor((window.innerWidth - (48 - 1)) / METRIC_BOX_DESKTOP_WIDTH)
-  );
-
-  useEffect(() => {
-    const handler = () =>
-      setMaxMetricBoxesInRow(
-        Math.floor((window.innerWidth - 48 - 1) / METRIC_BOX_DESKTOP_WIDTH)
-      );
-    window.addEventListener("resize", handler);
-    return () => window.removeEventListener("resize", handler);
-  }, []);
-
-  return useMemo(() => maxMetricBoxesInRow, [maxMetricBoxesInRow]);
-};
+export * from "./AboutModal";
+export * from "./AboutModal.styles";
+export * from "./DashboardModal.styles";
+export * from "./LearnMoreModal";
+export * from "./ShareModal";

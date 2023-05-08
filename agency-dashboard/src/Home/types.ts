@@ -15,24 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { useEffect, useMemo, useState } from "react";
+export type AgenciesList = {
+  agencies: AgencyMetadata[];
+};
 
-import { METRIC_BOX_DESKTOP_WIDTH } from "../AgencyOverview";
-
-export const useMaxMetricBoxesInRow = () => {
-  const [maxMetricBoxesInRow, setMaxMetricBoxesInRow] = useState(
-    // 48 is horizontal padding (24 + 24) + 1 extra pixel
-    Math.floor((window.innerWidth - (48 - 1)) / METRIC_BOX_DESKTOP_WIDTH)
-  );
-
-  useEffect(() => {
-    const handler = () =>
-      setMaxMetricBoxesInRow(
-        Math.floor((window.innerWidth - 48 - 1) / METRIC_BOX_DESKTOP_WIDTH)
-      );
-    window.addEventListener("resize", handler);
-    return () => window.removeEventListener("resize", handler);
-  }, []);
-
-  return useMemo(() => maxMetricBoxesInRow, [maxMetricBoxesInRow]);
+export type AgencyMetadata = {
+  name: string;
+  id: number;
+  number_of_published_metrics: number;
 };

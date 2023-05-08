@@ -25,6 +25,7 @@ import {
 import { isPositiveNumber } from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
+import { AgenciesList } from "../Home";
 import { request } from "../utils/networking";
 
 class AgencyDataStore {
@@ -157,6 +158,9 @@ class AgencyDataStore {
 
   async fetchAgencyData(agencyId: number): Promise<void | Error> {
     try {
+      runInAction(() => {
+        this.loading = true;
+      });
       const response = (await request({
         path: `/api/agencies/${agencyId}/published_data`,
         method: "GET",
@@ -174,6 +178,38 @@ class AgencyDataStore {
       runInAction(() => {
         this.loading = false;
       });
+    } catch (error) {
+      runInAction(() => {
+        this.loading = false;
+      });
+      throw error;
+    }
+  }
+
+  async fetchAllAgencies(): Promise<AgenciesList> {
+    try {
+      runInAction(() => {
+        this.loading = true;
+      });
+
+      const response = (await request({
+        path: `/api/agencies`,
+        method: "GET",
+      })) as Response;
+
+      if (response.status === 200) {
+        const result = await response.json();
+        runInAction(() => {
+          this.loading = false;
+        });
+        return result;
+      }
+
+      runInAction(() => {
+        this.loading = false;
+      });
+      const error = await response.json();
+      throw new Error(error.description);
     } catch (error) {
       runInAction(() => {
         this.loading = false;
