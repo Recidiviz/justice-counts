@@ -22,19 +22,6 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled, { css } from "styled-components/macro";
 
-import { BinaryRadioGroupWrapper } from "../Forms";
-import {
-  baseDisabledFadedOverlayCSS,
-  DefinitionDisplayName,
-  DefinitionItem,
-  Definitions,
-  DefinitionsDescription,
-  DefinitionsDisplayContainer,
-  DefinitionSelection,
-  DefinitionsTitle,
-  MetricOnOffWrapper,
-} from ".";
-
 export const RaceEthnicitiesBreakdownContainer = styled.div<{
   disaggregationEnabled?: boolean;
 }>`
@@ -54,9 +41,8 @@ export const RaceEthnicitiesBreakdownContainer = styled.div<{
         background: ${palette.solid.white};
         opacity: 0.5;
       }
-    `}
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    `};
+  @media only screen and(max-width: ${MIN_TABLET_WIDTH}px) {
     padding-top: 0;
   }
 `;
@@ -70,7 +56,7 @@ export const CalloutBox = styled.div`
   margin-bottom: 27px;
   border-radius: 2px;
   border: 1px solid ${palette.solid.blue};
-  box-shadow: 0px 2px 4px rgba(0, 115, 229, 0.25);
+  box-shadow: 0 2px 4px rgba(0, 115, 229, 0.25);
   transition: 0.2s ease;
 
   svg {
@@ -111,6 +97,7 @@ export const EthnicityLabel = styled.div`
   svg {
     margin-left: 3px;
     width: 10px;
+
     path {
       fill: ${palette.highlight.grey5};
     }
@@ -125,7 +112,6 @@ export const EthnicityName = styled.div`
 
 export const Description = styled.div`
   ${typography.sizeCSS.normal}
-
   span {
     color: ${palette.solid.blue};
   }
@@ -161,39 +147,10 @@ export const EthnicityCell = styled.div<{ enabled?: boolean }>`
   ${({ enabled }) => enabled && `background: ${palette.solid.blue};`}
 `;
 
-export const SpecifyEthnicityWrapper = styled(MetricOnOffWrapper)`
-  margin-bottom: 35px;
-`;
-
-export const RaceEthnicitiesContainer = styled(DefinitionsDisplayContainer)`
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    padding-bottom: 0;
-  }
-`;
-
-export const RaceEthnicitiesDisplay = styled.div<{ enabled?: boolean | null }>`
+export const RaceWrapper = styled.div`
   width: 100%;
-  position: relative;
-  ${({ enabled }) => !enabled && baseDisabledFadedOverlayCSS}
-`;
-
-export const RaceEthnicitiesTitle = styled(DefinitionsTitle)``;
-export const RaceEthnicitiesDescription = styled(DefinitionsDescription)`
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    display: none;
-  }
-`;
-export const RaceContainer = styled(Definitions)``;
-export const RaceWrapper = styled(DefinitionItem)``;
-export const RaceDisplayName = styled(DefinitionDisplayName)``;
-export const RaceSelection = styled(DefinitionSelection)``;
-export const RaceEthnicityRadioButtonGroupWrapper = styled(
-  BinaryRadioGroupWrapper
-)`
   display: flex;
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    gap: 4px;
-    align-items: center;
-  }
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
 `;

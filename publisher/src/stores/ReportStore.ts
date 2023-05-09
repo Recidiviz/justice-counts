@@ -30,7 +30,7 @@ import {
   REPORT_LOWERCASE,
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
-import { MetricSettings } from "../components/MetricConfiguration";
+import { MetricSettings } from "../components/MetricsConfiguration";
 import {
   PublishReviewMetricErrors,
   PublishReviewPropsFromDatapoints,

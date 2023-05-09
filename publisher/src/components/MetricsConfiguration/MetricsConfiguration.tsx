@@ -23,10 +23,10 @@ import { useStore } from "../../stores";
 import { SYSTEM_CAPITALIZED, SYSTEM_LOWERCASE } from "../Global/constants";
 import { Loading } from "../Loading";
 import { useSettingsSearchParams } from "../Settings";
-import MetricConfig from "./MetricConfig";
-import { Overview } from "./Overview";
+import MetricConfig from "./Configuration";
+import { MetricsOverview } from "./MetricsOverview";
 
-export function MetricSettings() {
+export function MetricsConfiguration() {
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
   const { agencyId } = useParams() as { agencyId: string };
@@ -113,5 +113,5 @@ export function MetricSettings() {
     return <div>Error: {loadingErrorMessage}</div>;
   }
 
-  return metricSearchParam ? <MetricConfig /> : <Overview />;
+  return metricSearchParam ? <MetricConfig /> : <MetricsOverview />;
 }

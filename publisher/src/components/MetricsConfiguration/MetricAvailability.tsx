@@ -34,14 +34,12 @@ import { useStore } from "../../stores";
 import { monthsByName, removeSnakeCase } from "../../utils";
 import { ReactComponent as CalendarIconDark } from "../assets/calendar-icon-dark.svg";
 import { ReactComponent as CalendarIconLight } from "../assets/calendar-icon-light.svg";
-import {
-  RACE_ETHNICITY_DISAGGREGATION_KEY,
-  RaceEthnicitiesGrid,
-  ReportFrequencyUpdate,
-} from "../MetricConfiguration";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
+import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "./constants";
 import * as Styled from "./MetricAvailability.styled";
+import { RaceEthnicitiesGrid } from "./RaceEthnicitiesGrid";
 import RaceEthnicitiesModalForm from "./RaceEthnicitiesModalForm";
+import { ReportFrequencyUpdate } from "./types";
 
 function MetricAvailability() {
   const { agencyId } = useParams() as { agencyId: string };

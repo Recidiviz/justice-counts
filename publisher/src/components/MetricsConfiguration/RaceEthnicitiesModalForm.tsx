@@ -23,13 +23,13 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { useSettingsSearchParams } from "../Settings";
 import {
   Ethnicity,
   raceEthnicityGridStates,
-  sortRaces,
-} from "../MetricConfiguration";
-import { useSettingsSearchParams } from "../Settings";
+} from "./RaceEthnicitiesGridStates";
 import * as Styled from "./RaceEthnicitiesModalForm.styled";
+import { sortRaces } from "./utils";
 
 export const RACE_ETHNICITIES_DESCRIPTION =
   "This breakdown asks for combinations of race and ethnicity, and should be based on what data is available via your case management system. Answering all of the questions below will fill out the grid for this breakdown.";

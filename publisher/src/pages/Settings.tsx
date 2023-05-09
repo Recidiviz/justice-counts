@@ -19,7 +19,6 @@ import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import { UploadedFiles } from "../components/DataUpload";
-import { MetricConfiguration } from "../components/MetricConfiguration";
 import {
   AccountSettings,
   AgencySettings,
@@ -34,7 +33,6 @@ export const settingsMenuPaths = [
   { displayLabel: "Agency Settings", path: "agency-settings" },
   { displayLabel: "Team Management", path: "team-management" },
   { displayLabel: "Uploaded Files", path: "uploaded-files" },
-  { displayLabel: "Metric Configuration", path: "metric-config" },
 ];
 
 export type ListOfMetricsForNavigation = {
@@ -57,7 +55,6 @@ const Settings = () => {
             element={<AgencySettingsTeamManagement />}
           />
           <Route path="/uploaded-files" element={<UploadedFiles />} />
-          <Route path="/metric-config" element={<MetricConfiguration />} />
           <Route path="*" element={<Navigate to="account" />} />
         </Routes>
       </ContentDisplay>

@@ -68,8 +68,8 @@ const Menu: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const windowWidth = useWindowWidth();
-  const [settingsSearchParams] = useSettingsSearchParams();
-  const { system: systemSearchParam } = settingsSearchParams;
+  const [settingsSearchParams, setSettingsSearchParams] =
+    useSettingsSearchParams();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const pathWithoutAgency = removeAgencyFromPath(location.pathname);
@@ -284,6 +284,24 @@ const Menu: React.FC = () => {
           Data
         </MenuItem>
 
+        {/* Metric Config */}
+        <MenuItem
+          onClick={() => {
+            if (pathWithoutAgency === "metric-config") {
+              setSettingsSearchParams({
+                ...settingsSearchParams,
+                metric: undefined,
+              });
+            } else {
+              navigate("metric-config");
+            }
+            handleCloseMobileMenu();
+          }}
+          active={pathWithoutAgency === "metric-config"}
+        >
+          Configuration
+        </MenuItem>
+
         {/* Learn More */}
         {windowWidth > MIN_TABLET_WIDTH && (
           <MenuItem>
@@ -329,15 +347,7 @@ const Menu: React.FC = () => {
               <SubMenuItem
                 key={path}
                 onClick={() => {
-                  if (path === "metric-config") {
-                    navigate(
-                      systemSearchParam
-                        ? `settings/${path}?system=${systemSearchParam}`
-                        : `settings/${path}`
-                    );
-                  } else {
-                    navigate(`settings/${path}`);
-                  }
+                  navigate(`settings/${path}`);
                   handleCloseMobileMenu();
                 }}
               >

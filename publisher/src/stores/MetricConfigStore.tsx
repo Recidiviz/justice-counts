@@ -42,7 +42,7 @@ import {
   StateKeys,
   UpdatedDimension,
   UpdatedDisaggregation,
-} from "../components/MetricConfiguration";
+} from "../components/MetricsConfiguration";
 import { isPositiveNumber, removeCommaSpaceAndTrim } from "../utils";
 import API from "./API";
 import UserStore from "./UserStore";

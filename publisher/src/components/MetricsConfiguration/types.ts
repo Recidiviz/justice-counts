@@ -17,12 +17,13 @@
 
 import {
   Metric,
+  MetricConfigurationSettings,
   MetricConfigurationSettingsOptions,
   MetricContext,
   ReportFrequency,
 } from "@justice-counts/common/types";
 
-import { Ethnicity, Race } from ".";
+import { Ethnicity, Race } from "./RaceEthnicitiesGridStates";
 
 export type MetricSettings = {
   key: string;
@@ -46,6 +47,39 @@ export type MetricSettings = {
   }[];
 };
 
+export type MetricInfo = {
+  enabled?: boolean | null;
+  label?: string;
+  description?: Metric["description"];
+  defaultFrequency?: ReportFrequency;
+  customFrequency?: Metric["custom_frequency"];
+  startingMonth?: Metric["starting_month"] | null;
+  disaggregatedBySupervisionSubsystems?: boolean;
+};
+
+export type ReportFrequencyUpdate = {
+  defaultFrequency?: ReportFrequency;
+  customFrequency?: ReportFrequency;
+  startingMonth?: number | null;
+};
+
+export type SettingsByIncludesExcludesKey = {
+  [includesExcludesKey: string]: {
+    description?: string;
+    settings: {
+      [settingKey: string]: Partial<MetricConfigurationSettings>;
+    };
+  };
+};
+
+export type DimensionSettings = {
+  [dimensionKey: string]: SettingsByIncludesExcludesKey;
+};
+
+export type ContextsByContextKey = {
+  [contextKey: string]: { label: string; value: string };
+};
+
 export type UpdatedDimension = {
   key: string;
   label: string;
@@ -67,24 +101,3 @@ export type Races = typeof races[number];
 
 export const ethnicities = [...Object.values(Ethnicity)] as const;
 export type Ethnicities = typeof ethnicities[number];
-
-export enum ChartView {
-  Chart = "CHART",
-  Table = "TABLE",
-}
-
-export type MetricInfo = {
-  enabled?: boolean | null;
-  label?: string;
-  description?: Metric["description"];
-  defaultFrequency?: ReportFrequency;
-  customFrequency?: Metric["custom_frequency"];
-  startingMonth?: Metric["starting_month"] | null;
-  disaggregatedBySupervisionSubsystems?: boolean;
-};
-
-export type ReportFrequencyUpdate = {
-  defaultFrequency?: ReportFrequency;
-  customFrequency?: ReportFrequency;
-  startingMonth?: number | null;
-};

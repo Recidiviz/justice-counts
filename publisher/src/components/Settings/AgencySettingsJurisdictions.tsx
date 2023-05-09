@@ -27,11 +27,6 @@ import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import rightArrow from "../assets/right-arrow.svg";
-import {
-  BlueCheckIcon,
-  Checkbox,
-  CheckboxWrapper,
-} from "../MetricConfiguration";
 import { SettingProps } from "./AgencySettings";
 import {
   AddIcon,
@@ -40,6 +35,9 @@ import {
   AgencySettingsBlockDescription,
   AgencySettingsBlockSubDescription,
   AgencySettingsBlockTitle,
+  BlueCheckIcon,
+  Checkbox,
+  CheckboxWrapper,
   EditArrowImage,
   EditButtonContainer,
   EditModeButtonsContainer,

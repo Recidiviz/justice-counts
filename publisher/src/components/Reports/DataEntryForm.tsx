@@ -417,7 +417,7 @@ const DataEntryForm: React.FC<{
                       disabled. If you believe this is incorrect, go to{" "}
                       <DisabledMetricsInfoLink
                         onClick={() =>
-                          navigate(`/agency/${agencyId}/settings/metric-config`)
+                          navigate(`/agency/${agencyId}/metric-config`)
                         }
                       >
                         Metric Configuration

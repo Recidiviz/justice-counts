@@ -39,7 +39,7 @@ import { ReactComponent as RightArrowIcon } from "../assets/right-arrow.svg";
 import checkmarkIcon from "../assets/status-check-icon.png";
 import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 import { Loader, Loading } from "../Loading";
-import { MetricInfo } from "../MetricConfiguration";
+import { MetricInfo } from "../MetricsConfiguration";
 import {
   ActionButtonWrapper,
   ALL_REQUIRED_METRIC_CONFIG_STEPS_COMPLETED,
@@ -249,7 +249,7 @@ export const Guidance = observer(() => {
           <TopicTitle>{currentTopicDisplayName}</TopicTitle>
           <TopicDescription>{currentTopicDescription}</TopicDescription>
 
-          {/* Publish Data - Reports Overview */}
+          {/* Publish Data - Reports MetricsOverview */}
           {currentTopicID === "PUBLISH_DATA" && (
             <ReportsOverviewContainer>
               {Object.values(reportStore.reportOverviews).map((report) => (
@@ -383,7 +383,7 @@ export const Guidance = observer(() => {
                                   hideTooltip={metric.enabled === false}
                                   onClick={() =>
                                     navigate(
-                                      `../settings/metric-config?system=${system}&metric=${metricKey}`
+                                      `../metric-config?system=${system}&metric=${metricKey}`
                                     )
                                   }
                                 >

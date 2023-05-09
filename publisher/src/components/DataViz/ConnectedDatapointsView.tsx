@@ -24,7 +24,7 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 
 import { useStore } from "../../stores";
-import { ChartView } from "../MetricConfiguration";
+import { ChartView } from "./types";
 
 const ConnectedDatapointsView: React.FC<{
   metric: string;
