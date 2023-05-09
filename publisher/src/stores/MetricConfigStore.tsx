@@ -375,11 +375,7 @@ class MetricConfigStore {
       system,
       metricKey
     );
-    // console.log("WTF", includesExcludesKey);
-    // console.log(
-    //   "WTF",
-    //   JSON.stringify(this.metricDefinitionSettings[systemMetricKey], null, 2)
-    // );
+
     /** Initialize nested objects for quick lookup and update and reduce re-renders */
     if (!this.metricDefinitionSettings[systemMetricKey]) {
       this.metricDefinitionSettings[systemMetricKey] = {};
