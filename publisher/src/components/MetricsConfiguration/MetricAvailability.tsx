@@ -420,19 +420,21 @@ function MetricAvailability() {
                 disaggregations of {metrics[systemMetricKey]?.label}.
               </Styled.BreakdownsSectionDescription>
               <Styled.BreakdownsOptionsContainer>
-                <Styled.BreakdownsOption
-                  onClick={() => setActiveDisaggregationKey(undefined)}
-                  active={!activeDisaggregationKey}
-                >
-                  Show all
-                </Styled.BreakdownsOption>
+                {disaggregationsOptions.length > 1 && (
+                  <Styled.BreakdownsOption
+                    onClick={() => setActiveDisaggregationKey(undefined)}
+                    active={!activeDisaggregationKey}
+                  >
+                    Show all
+                  </Styled.BreakdownsOption>
+                )}
                 {disaggregationsOptions &&
                   disaggregationsOptions.map(
                     ({ key, label, onClick, active }) => (
                       <Styled.BreakdownsOption
                         key={key}
                         onClick={onClick}
-                        active={active}
+                        active={active || disaggregationsOptions.length === 1}
                       >
                         {label}
                       </Styled.BreakdownsOption>
