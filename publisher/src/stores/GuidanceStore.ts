@@ -90,51 +90,23 @@ class GuidanceStore {
     return topicID;
   }
 
-  getOnboardingTopicsStatuses = async (
-    agencyId: string
-  ): Promise<OnboardingTopicsStatuses[]> => {
-    if (!this.userStore.isJusticeCountsAdmin(agencyId)) {
-      /**
-       * NOTE:
-       * This gates the guidance flow for users who are not JC Admins.
-       * If you are not a JC Admin, your guidance progress is marked as completed for all topics.
-       * If you are a JC Admin, your guidance progress is based on your actual guidance progress from the DB.
-       *
-       * TODO(#496) ungate guidance flow for all users
-       */
-
-      runInAction(() => {
-        this.onboardingTopicsStatuses = {
-          WELCOME: true,
-        };
-      });
-      return [];
-    }
-
-    const response = (await this.api.request({
-      path: `/api/users/agencies/${agencyId}/guidance`,
-      method: "GET",
-    })) as Response;
-
-    if (response.status !== 200) {
-      throw new Error(
-        "There was an issue retrieving the onboarding topics statuses."
-      );
-    }
-
-    const onboardingTopicsStatuses: {
-      guidance_progress: OnboardingTopicsStatuses[];
-    } = await response.json();
+  getOnboardingTopicsStatuses = async (): Promise<
+    OnboardingTopicsStatuses[]
+  > => {
+    /**
+     * NOTE:
+     * This gates the guidance flow for all users.
+     * We will eventually remove this entire iteration of guidance.
+     *
+     * TODO(#621) deprecate current guidance flow
+     */
 
     runInAction(() => {
-      this.onboardingTopicsStatuses =
-        onboardingTopicsStatuses.guidance_progress.reduce((acc, topic) => {
-          acc[topic.topicID] = topic.topicCompleted;
-          return acc;
-        }, {} as { [topicID: string]: boolean });
-      this.isInitialized = true;
+      this.onboardingTopicsStatuses = {
+        WELCOME: true,
+      };
     });
-    return onboardingTopicsStatuses.guidance_progress;
+    return [];
   };
 
   saveOnboardingTopicsStatuses = async (
