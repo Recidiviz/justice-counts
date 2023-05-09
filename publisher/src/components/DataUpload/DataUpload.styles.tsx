@@ -137,7 +137,7 @@ export const ErrorWarningButtonWrapper = styled(ButtonWrapper)`
   width: 100%;
   justify-content: space-between;
 
-  div:not(:last-child) {
+  div:not(:last-child) > div {
     background: transparent;
     border: 1px solid ${palette.highlight.grey4};
     border-radius: 4px;
@@ -147,7 +147,7 @@ export const ErrorWarningButtonWrapper = styled(ButtonWrapper)`
     }
   }
 
-  div:last-child {
+  div:last-child > div {
     background: ${palette.solid.blue};
     color: ${palette.solid.white};
 

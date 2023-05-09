@@ -260,6 +260,26 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
               (metric) => (
                 <Message key={metric.key} enabled={metric.enabled}>
                   <MetricTitle>{metric.display_name}</MetricTitle>
+                  {metric.metric_errors.map((sheet) => (
+                    <Fragment key={sheet.display_name + sheet.sheet_name}>
+                      {sheet.messages.map((message) => (
+                        <Fragment key={message.title + message.description}>
+                          <IconWrapper>
+                            <WarningIcon />
+                            <MessageBody>
+                              <MessageTitle>{message.title}</MessageTitle>
+                              <MessageSubtitle>
+                                {message.subtitle}
+                              </MessageSubtitle>
+                            </MessageBody>
+                          </IconWrapper>
+                          <MessageDescription>
+                            {message.description}
+                          </MessageDescription>
+                        </Fragment>
+                      ))}
+                    </Fragment>
+                  ))}
                 </Message>
               )
             )}
