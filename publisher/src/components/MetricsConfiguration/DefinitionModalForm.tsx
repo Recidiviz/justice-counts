@@ -382,27 +382,36 @@ function DefinitionModalForm({
             <Styled.IncludesExcludesContainer>
               {Object.entries(currentSettings).map(
                 ([includesExcludesKey, value]) => {
-                  return Object.entries(value.settings).map(
-                    ([settingKey, setting]) => {
-                      return (
-                        <Styled.IncludeExclude
-                          key={settingKey}
-                          onClick={() =>
-                            handleChangeDefinitionIncluded(
-                              includesExcludesKey,
-                              settingKey
-                            )
-                          }
-                        >
-                          {setting.included === "Yes" ? (
-                            <Styled.EnabledIcon src={blueCheckIcon} alt="" />
-                          ) : (
-                            <Styled.DisabledIcon />
-                          )}
-                          {setting.label}
-                        </Styled.IncludeExclude>
-                      );
-                    }
+                  return (
+                    <>
+                      {includesExcludesKey !== "NO_DESCRIPTION" &&
+                        includesExcludesKey}
+                      {Object.entries(value.settings).map(
+                        ([settingKey, setting]) => {
+                          return (
+                            <Styled.IncludeExclude
+                              key={settingKey}
+                              onClick={() =>
+                                handleChangeDefinitionIncluded(
+                                  includesExcludesKey,
+                                  settingKey
+                                )
+                              }
+                            >
+                              {setting.included === "Yes" ? (
+                                <Styled.EnabledIcon
+                                  src={blueCheckIcon}
+                                  alt=""
+                                />
+                              ) : (
+                                <Styled.DisabledIcon />
+                              )}
+                              {setting.label}
+                            </Styled.IncludeExclude>
+                          );
+                        }
+                      )}
+                    </>
                   );
                 }
               )}

@@ -264,7 +264,7 @@ class MetricConfigStore {
             this.initializeMetricDefinitionSetting(
               metric.system.key,
               metric.key,
-              includesExcludes.description,
+              includesExcludes.description || "NO_DESCRIPTION",
               includesExcludes.settings
             );
           });
@@ -328,7 +328,7 @@ class MetricConfigStore {
                   metric.key,
                   disaggregation.key,
                   dimension.key,
-                  includesExcludes.description,
+                  includesExcludes.description || "NO_DESCRIPTION",
                   includesExcludes.settings
                 );
               });
