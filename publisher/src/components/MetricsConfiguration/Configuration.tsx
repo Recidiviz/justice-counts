@@ -155,9 +155,7 @@ function Configuration() {
           {metrics[systemMetricKey]?.label}
         </Styled.MetricName>
         <Styled.Description>
-          The amount of funding for the operation and maintenance of jail
-          facilities and the care of people who are incarcerated under the
-          jurisdiction of the agency.
+          {metrics[systemMetricKey]?.description}
           <span>
             Sector:{" "}
             {systemSearchParam &&
