@@ -50,7 +50,7 @@
       "id": 4,
       "year": 2021,
       "month": 12,
-      "frequency": "ANNUAL",
+      "frequency": "ANNUALLY",
       "last_modified_at": "1640995200000",
       "editors": [
         { "name": "Editor #1", "role": "AGENCY_ADMIN" },
@@ -195,7 +195,7 @@
       "id": 17,
       "year": 2020,
       "month": 12,
-      "frequency": "ANNUAL",
+      "frequency": "ANNUALLY",
       "last_modified_at": "",
       "editors": [],
       "status": "NOT_STARTED"
@@ -259,7 +259,7 @@
       "id": 23,
       "year": 2019,
       "month": 7,
-      "frequency": "ANNUAL",
+      "frequency": "ANNUALLY",
       "last_modified_at": "",
       "editors": [],
       "status": "NOT_STARTED"
@@ -493,7 +493,7 @@
       "id": 4,
       "year": 2021,
       "month": 12,
-      "frequency": "ANNUAL",
+      "frequency": "ANNUALLY",
       "last_modified_at": "1640995200000",
       "editors": [
         { "name": "Editor #1", "role": "AGENCY_ADMIN" },
@@ -516,7 +516,7 @@
       "id": 17,
       "year": 2020,
       "month": 12,
-      "frequency": "ANNUAL",
+      "frequency": "ANNUALLY",
       "last_modified_at": "",
       "editors": [],
       "status": "NOT_STARTED"
@@ -525,7 +525,7 @@
       "id": 23,
       "year": 2019,
       "month": 7,
-      "frequency": "ANNUAL",
+      "frequency": "ANNUALLY",
       "last_modified_at": "",
       "editors": [],
       "status": "NOT_STARTED"
