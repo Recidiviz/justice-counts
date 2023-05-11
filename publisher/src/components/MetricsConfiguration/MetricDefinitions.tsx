@@ -84,9 +84,9 @@ function MetricDefinitions() {
             <Styled.HeaderLabel>Define Metrics</Styled.HeaderLabel>
           </Styled.Header>
           <Styled.Description>
-            Click into each of the datapoints you are sharing to tell us what
-            events, populations, etc. are included in that datapoint. Learn more
-            in the{" "}
+            Click into each of the metrics and breakdowns below to configure its
+            definition. Learn more about how to define metrics and breakdowns in
+            the{" "}
             <a
               href="https://justicecounts.csgjusticecenter.org/metrics/technical-implementation-guides/"
               target="_blank"
