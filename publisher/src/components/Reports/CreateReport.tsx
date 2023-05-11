@@ -145,7 +145,7 @@ const CreateReport = () => {
     const response = await reportStore.createReport(
       {
         frequency,
-        month: frequency === "ANNUAL" ? annualStartMonth : month,
+        month: frequency === "ANNUALLY" ? annualStartMonth : month,
         is_recurring: isRecurring,
         year: isRecurring ? new Date(Date.now()).getFullYear() : year,
       },
@@ -233,13 +233,13 @@ const CreateReport = () => {
               type="radio"
               id="annual"
               name="frequency"
-              label="Annual"
-              value="ANNUAL"
+              label="Annually"
+              value="ANNUALLY"
               onChange={updateFrequency}
-              defaultChecked={frequency === "ANNUAL"}
+              defaultChecked={frequency === "ANNUALLY"}
             />
           </BinaryRadioGroupWrapper>
-          {createReportFormValues.frequency === "ANNUAL" && (
+          {createReportFormValues.frequency === "ANNUALLY" && (
             <>
               <Heading>
                 What year standard do you use for annual {REPORTS_LOWERCASE}?
@@ -323,7 +323,7 @@ const CreateReport = () => {
             {REPORT_LOWERCASE} will be created for{` `}
             <BoldFont>
               {printDateRangeFromMonthYear(
-                frequency === "ANNUAL" ? annualStartMonth : month,
+                frequency === "ANNUALLY" ? annualStartMonth : month,
                 isRecurring ? new Date(Date.now()).getFullYear() : year,
                 frequency
               )}

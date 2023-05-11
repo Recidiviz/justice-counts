@@ -79,7 +79,7 @@ test("displayed created reports", async () => {
         agency_id: 0,
         month: 11,
         year: 2020,
-        frequency: "ANNUAL",
+        frequency: "ANNUALLY",
         last_modified_at: null,
         last_modified_at_timestamp: null,
         editors: [

@@ -169,7 +169,7 @@ function MetricAvailability() {
         label: month,
         onClick: () =>
           handleUpdateMetricReportFrequency({
-            customFrequency: "ANNUAL",
+            customFrequency: "ANNUALLY",
             startingMonth: monthNumber,
           }),
         highlight: monthNumber === startingMonth,
@@ -277,21 +277,21 @@ function MetricAvailability() {
                   id="metric-config-annual"
                   name="metric-config"
                   label="Annually"
-                  value="Annual"
+                  value="Annually"
                   fullWidth
                   checked={Boolean(
-                    metricEnabled && customOrDefaultFrequency === "ANNUAL"
+                    metricEnabled && customOrDefaultFrequency === "ANNUALLY"
                   )}
                   onChange={() =>
                     handleUpdateMetricReportFrequency({
-                      customFrequency: "ANNUAL",
+                      customFrequency: "ANNUALLY",
                       startingMonth: 1,
                     })
                   }
                 />
               </Styled.SettingOptions>
             </Styled.SettingRow>
-            {metricEnabled && customFrequency === "ANNUAL" && (
+            {metricEnabled && customFrequency === "ANNUALLY" && (
               <Styled.SettingRow>
                 <Styled.SettingName>
                   Starting Month{" "}
@@ -317,7 +317,7 @@ function MetricAvailability() {
                     }
                     onChange={() =>
                       handleUpdateMetricReportFrequency({
-                        customFrequency: "ANNUAL",
+                        customFrequency: "ANNUALLY",
                         startingMonth: 1,
                       })
                     }
@@ -332,7 +332,7 @@ function MetricAvailability() {
                     fullWidth
                     onChange={() =>
                       handleUpdateMetricReportFrequency({
-                        customFrequency: "ANNUAL",
+                        customFrequency: "ANNUALLY",
                         startingMonth: 7,
                       })
                     }

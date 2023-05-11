@@ -326,7 +326,7 @@ export interface RawDatapoint {
  * Each Datapoint represents a bar on the bar chart.
  * Each Datapoint has:
  * • a unique start_date and end_date, which serve as the x-axis category,
- * • the frequency of the reporting data, either monthly or annual
+ * • the frequency of the reporting data, either monthly or annually
  * • "dataVizMissingData" which is used to render the missing data bar if there are no metrics for the time range represented
  * • remaning keys which store the name of a piece of the stacked bar chart and its value.
  *
