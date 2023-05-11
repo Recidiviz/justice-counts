@@ -94,7 +94,7 @@ export interface UserAgency {
   team: AgencyTeamMember[];
 }
 
-export type ReportFrequency = "MONTHLY" | "ANNUAL";
+export type ReportFrequency = "MONTHLY" | "ANNUALLY";
 
 export type ReportStatus = "NOT_STARTED" | "DRAFT" | "PUBLISHED";
 
