@@ -83,10 +83,10 @@ class ReportStore {
       if (a.year === b.year) {
         // Annual reports should always be sorted before Monthly reports,
         // regardless of their month
-        if (a.frequency === "ANNUAL") {
+        if (a.frequency === "ANNUALLY") {
           return -1;
         }
-        if (b.frequency === "ANNUAL") {
+        if (b.frequency === "ANNUALLY") {
           return 1;
         }
       }

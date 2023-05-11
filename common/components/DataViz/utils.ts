@@ -223,7 +223,7 @@ export const fillTimeGapsBetweenDatapoints = (
     return data;
   }
 
-  const isAnnual = data[0].frequency === "ANNUAL";
+  const isAnnual = data[0].frequency === "ANNUALLY";
   const increment = isAnnual ? incrementYear : incrementMonth;
   const defaultBarValue = getHighestTotalValue(data) / 3;
   const dataWithGapDatapoints = [...data];
@@ -376,7 +376,7 @@ export const getDatapointBarLabel = (datapoint: Datapoint) => {
     // something went wrong with finding the previous month, return an error string
     return `invalid date for start date: ${datapoint.start_date}`;
   }
-  if (datapoint.frequency === "ANNUAL") {
+  if (datapoint.frequency === "ANNUALLY") {
     const previousMonth =
       abbreviatedMonths[
         (abbreviatedMonths.findIndex((m) => m === month) + 11) % 12
