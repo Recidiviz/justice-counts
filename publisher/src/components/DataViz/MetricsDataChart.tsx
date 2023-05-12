@@ -15,6 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { frequencyString } from "@justice-counts/common/utils/helperUtils"
+
 import {
   Badge,
   reportFrequencyBadgeColors,
@@ -144,7 +146,7 @@ export const MetricsDataChart: React.FC = observer(() => {
               reportFrequencyBadgeColors[metric.frequency as ReportFrequency]
             }
           >
-            {metric.frequency?.toLowerCase()}
+            {frequencyString(metric.frequency)?.toLowerCase()}
           </Badge>
         </Styled.MetricsViewDropdownLabel>
       ),
@@ -291,7 +293,7 @@ export const MetricsDataChart: React.FC = observer(() => {
                         ]
                       }
                     >
-                      {metricFrequency?.toLowerCase()}
+                      {frequencyString(metricFrequency)?.toLowerCase()}
                     </Badge>
                   </>
                 }

@@ -76,13 +76,13 @@ export const printReportTitle = (
 export const printReportFrequency = (
   month: number,
   frequency: ReportFrequency
-): string => {
+): string | undefined => {
   if (frequency === "ANNUAL") {
-    return `${frequencyString(frequency).toLowerCase()} 
+    return `${frequencyString(frequency)?.toLowerCase()} 
     (${monthsByName[month - 1]})`;
   }
 
-  return frequencyString(frequency).toLowerCase();
+  return frequencyString(frequency)?.toLowerCase();
 };
 
 /**

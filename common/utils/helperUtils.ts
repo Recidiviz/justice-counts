@@ -19,7 +19,7 @@ import { debounce, memoize } from "lodash";
 
 import { MetricContext } from "../types";
 
-export const frequencyString = (frequency: string) => {
+export const frequencyString = (frequency?: string) => {
   if (frequency === "ANNUAL") {
     return "ANNUALLY";
   }
