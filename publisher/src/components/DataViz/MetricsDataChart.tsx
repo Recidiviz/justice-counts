@@ -27,6 +27,7 @@ import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyle
 import { showToast } from "@justice-counts/common/components/Toast";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import { AgencySystems, ReportFrequency } from "@justice-counts/common/types";
+import { frequencyString } from "@justice-counts/common/utils/helperUtils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { createSearchParams, useNavigate, useParams } from "react-router-dom";
@@ -144,7 +145,7 @@ export const MetricsDataChart: React.FC = observer(() => {
               reportFrequencyBadgeColors[metric.frequency as ReportFrequency]
             }
           >
-            {metric.frequency?.toLowerCase()}
+            {frequencyString(metric.frequency)?.toLowerCase()}
           </Badge>
         </Styled.MetricsViewDropdownLabel>
       ),
@@ -291,7 +292,7 @@ export const MetricsDataChart: React.FC = observer(() => {
                         ]
                       }
                     >
-                      {metricFrequency?.toLowerCase()}
+                      {frequencyString(metricFrequency)?.toLowerCase()}
                     </Badge>
                   </>
                 }
