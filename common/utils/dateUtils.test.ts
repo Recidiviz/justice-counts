@@ -53,8 +53,8 @@ describe("printDateRangeFromMonthYear", () => {
   });
 
   test("annual", () => {
-    const result1 = printDateRangeFromMonthYear(1, 2022, "ANNUALLY");
-    const result2 = printDateRangeFromMonthYear(7, 2022, "ANNUALLY");
+    const result1 = printDateRangeFromMonthYear(1, 2022, "ANNUAL");
+    const result2 = printDateRangeFromMonthYear(7, 2022, "ANNUAL");
     expect(result1).toEqual("January 1, 2022 - December 31, 2022");
     expect(result2).toEqual("July 1, 2022 - June 30, 2023");
   });

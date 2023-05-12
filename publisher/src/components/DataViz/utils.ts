@@ -188,7 +188,7 @@ export const fillTimeGapsBetweenDatapoints = (
     return data;
   }
 
-  const isAnnual = data[0].frequency === "ANNUALLY";
+  const isAnnual = data[0].frequency === "ANNUAL";
   const increment = isAnnual ? incrementYear : incrementMonth;
   const defaultBarValue = getHighestTotalValue(data) / 3;
   const dataWithGapDatapoints = [...data];

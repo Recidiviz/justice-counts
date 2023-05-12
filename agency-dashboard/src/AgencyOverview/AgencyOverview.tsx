@@ -99,7 +99,7 @@ export const AgencyOverview = observer(() => {
       (aggregation) => aggregation.frequency === "MONTHLY"
     );
     const yearlyPublishes = aggregateWithNonNullValues.filter(
-      (aggregation) => aggregation.frequency === "ANNUALLY"
+      (aggregation) => aggregation.frequency === "ANNUAL"
     );
 
     const yearCount =

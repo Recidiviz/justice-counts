@@ -55,7 +55,7 @@ export const printReportTitle = (
   year: number,
   frequency: ReportFrequency
 ): string => {
-  if (frequency === "ANNUALLY") {
+  if (frequency === "ANNUAL") {
     if (month === 1) {
       // CY stands for Calendar Year
       return `Annual ${REPORT_CAPITALIZED} CY${year}`;
@@ -76,7 +76,7 @@ export const printReportFrequency = (
   month: number,
   frequency: ReportFrequency
 ): string => {
-  if (frequency === "ANNUALLY") {
+  if (frequency === "ANNUAL") {
     return `${frequency.toLowerCase()} (${monthsByName[month - 1]})`;
   }
 

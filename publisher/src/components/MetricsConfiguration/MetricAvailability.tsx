@@ -169,7 +169,7 @@ function MetricAvailability() {
         label: month,
         onClick: () =>
           handleUpdateMetricReportFrequency({
-            customFrequency: "ANNUALLY",
+            customFrequency: "ANNUAL",
             startingMonth: monthNumber,
           }),
         highlight: monthNumber === startingMonth,
@@ -280,18 +280,18 @@ function MetricAvailability() {
                   value="Annually"
                   fullWidth
                   checked={Boolean(
-                    metricEnabled && customOrDefaultFrequency === "ANNUALLY"
+                    metricEnabled && customOrDefaultFrequency === "ANNUAL"
                   )}
                   onChange={() =>
                     handleUpdateMetricReportFrequency({
-                      customFrequency: "ANNUALLY",
+                      customFrequency: "ANNUAL",
                       startingMonth: 1,
                     })
                   }
                 />
               </Styled.SettingOptions>
             </Styled.SettingRow>
-            {metricEnabled && customFrequency === "ANNUALLY" && (
+            {metricEnabled && customFrequency === "ANNUAL" && (
               <Styled.SettingRow>
                 <Styled.SettingName>
                   Starting Month{" "}
@@ -317,7 +317,7 @@ function MetricAvailability() {
                     }
                     onChange={() =>
                       handleUpdateMetricReportFrequency({
-                        customFrequency: "ANNUALLY",
+                        customFrequency: "ANNUAL",
                         startingMonth: 1,
                       })
                     }
@@ -332,7 +332,7 @@ function MetricAvailability() {
                     fullWidth
                     onChange={() =>
                       handleUpdateMetricReportFrequency({
-                        customFrequency: "ANNUALLY",
+                        customFrequency: "ANNUAL",
                         startingMonth: 7,
                       })
                     }

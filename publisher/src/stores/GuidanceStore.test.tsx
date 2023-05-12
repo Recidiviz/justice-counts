@@ -38,7 +38,7 @@ test("when metric enabled is null, return false for 'Confirm metric availability
         label: "Expenses",
         description:
           "The amount spent by the agency for law enforcement activities.",
-        defaultFrequency: "ANNUALLY",
+        defaultFrequency: "ANNUAL",
         customFrequency: "MONTHLY",
         startingMonth: null,
         enabled: null,
@@ -69,7 +69,7 @@ test("when metric enabled is true, return true for 'Confirm metric availability'
         label: "Expenses",
         description:
           "The amount spent by the agency for law enforcement activities.",
-        defaultFrequency: "ANNUALLY",
+        defaultFrequency: "ANNUAL",
         customFrequency: "MONTHLY",
         startingMonth: null,
         enabled: true,
@@ -100,7 +100,7 @@ test("when metric enabled is false, return true for 'Confirm metric availability
         label: "Expenses",
         description:
           "The amount spent by the agency for law enforcement activities.",
-        defaultFrequency: "ANNUALLY",
+        defaultFrequency: "ANNUAL",
         customFrequency: "MONTHLY",
         startingMonth: null,
         enabled: false,
@@ -132,7 +132,7 @@ test("when metric definitions all have non-null values, return true for 'Confirm
         label: "Expenses",
         description:
           "The amount spent by the agency for law enforcement activities.",
-        defaultFrequency: "ANNUALLY",
+        defaultFrequency: "ANNUAL",
         customFrequency: "MONTHLY",
         startingMonth: null,
         enabled: true,
@@ -227,7 +227,7 @@ test("when metric definitions have at least one null value, return false for 'Co
         label: "Expenses",
         description:
           "The amount spent by the agency for law enforcement activities.",
-        defaultFrequency: "ANNUALLY",
+        defaultFrequency: "ANNUAL",
         customFrequency: "MONTHLY",
         startingMonth: null,
         enabled: true,
@@ -323,7 +323,7 @@ test("when a metric's disaggregations' dimensions have no null values, return tr
         label: "Expenses",
         description:
           "The amount spent by the agency for law enforcement activities.",
-        defaultFrequency: "ANNUALLY",
+        defaultFrequency: "ANNUAL",
         customFrequency: "MONTHLY",
         startingMonth: null,
         enabled: true,
@@ -407,7 +407,7 @@ test("when a metric's disaggregations' dimensions have at least one null value, 
         label: "Expenses",
         description:
           "The amount spent by the agency for law enforcement activities.",
-        defaultFrequency: "ANNUALLY",
+        defaultFrequency: "ANNUAL",
         customFrequency: "MONTHLY",
         startingMonth: null,
         enabled: true,
@@ -492,7 +492,7 @@ test("when a metric's disaggregations' dimensions' definitions have no null valu
         label: "Expenses",
         description:
           "The amount spent by the agency for law enforcement activities.",
-        defaultFrequency: "ANNUALLY",
+        defaultFrequency: "ANNUAL",
         customFrequency: "MONTHLY",
         startingMonth: null,
         enabled: true,
@@ -707,7 +707,7 @@ test("when a metric's disaggregations' dimensions' definitions have at least one
         label: "Expenses",
         description:
           "The amount spent by the agency for law enforcement activities.",
-        defaultFrequency: "ANNUALLY",
+        defaultFrequency: "ANNUAL",
         customFrequency: "MONTHLY",
         startingMonth: null,
         enabled: true,
@@ -923,7 +923,7 @@ test("Metric disabled returns 4 signifying completion for all required categorie
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
         label: "Funding",
         description: "",
-        defaultFrequency: "ANNUALLY",
+        defaultFrequency: "ANNUAL",
         customFrequency: "MONTHLY",
         startingMonth: null,
         enabled: false,
@@ -1007,7 +1007,7 @@ test("Metric enabled and all other categories have null returns 1 signifying com
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
         label: "Funding",
         description: "",
-        defaultFrequency: "ANNUALLY",
+        defaultFrequency: "ANNUAL",
         customFrequency: "MONTHLY",
         startingMonth: null,
         enabled: true,
@@ -1091,7 +1091,7 @@ test("Metric enabled, metric definition settings set and all other categories ha
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
         label: "Funding",
         description: "",
-        defaultFrequency: "ANNUALLY",
+        defaultFrequency: "ANNUAL",
         customFrequency: "MONTHLY",
         startingMonth: null,
         enabled: true,
@@ -1175,7 +1175,7 @@ test("Metric enabled, metric definition settings and metric breakdown availabili
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
         label: "Funding",
         description: "",
-        defaultFrequency: "ANNUALLY",
+        defaultFrequency: "ANNUAL",
         customFrequency: "MONTHLY",
         startingMonth: null,
         enabled: true,
@@ -1259,7 +1259,7 @@ test("Metric enabled, metric definition settings, metric breakdown availability 
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
         label: "Funding",
         description: "",
-        defaultFrequency: "ANNUALLY",
+        defaultFrequency: "ANNUAL",
         customFrequency: "MONTHLY",
         startingMonth: null,
         enabled: true,
@@ -1343,7 +1343,7 @@ test("All categories set and disabled dimensions' definitions do not count towar
       "LAW_ENFORCEMENT-LAW_ENFORCEMENT_FUNDING": {
         label: "Funding",
         description: "",
-        defaultFrequency: "ANNUALLY",
+        defaultFrequency: "ANNUAL",
         customFrequency: "MONTHLY",
         startingMonth: null,
         enabled: true,

@@ -64,7 +64,7 @@ export const BadgeElement = styled.div<{
 `;
 
 export const reportFrequencyBadgeColors: BadgeColorMapping = {
-  ANNUALLY: "ORANGE",
+  ANNUAL: "ORANGE",
   MONTHLY: "GREEN",
 };
 

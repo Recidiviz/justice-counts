@@ -52,7 +52,7 @@ export const printReportTitle = (
   year: number,
   frequency: ReportFrequency
 ): string => {
-  if (frequency === "ANNUALLY") {
+  if (frequency === "ANNUAL") {
     return `Annual Report ${year}`;
   }
 

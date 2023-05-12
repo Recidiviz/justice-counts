@@ -32,7 +32,7 @@ export const MetricInsights: React.FC<{
   datapoints: Datapoint[];
   enableHideByWidth?: boolean;
 }> = ({ datapoints, enableHideByWidth = false }) => {
-  const isAnnual = datapoints[0]?.frequency === "ANNUALLY";
+  const isAnnual = datapoints[0]?.frequency === "ANNUAL";
   const percentChange = getPercentChangeOverTime(datapoints);
   const avgValue = getAverageTotalValue(datapoints, isAnnual);
   const mostRecentValue = getLatestDateFormatted(datapoints, isAnnual);
