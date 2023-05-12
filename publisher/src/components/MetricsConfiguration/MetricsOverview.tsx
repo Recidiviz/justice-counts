@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { AgencySystems } from "@justice-counts/common/types";
+import { frequencyString } from "@justice-counts/common/utils/helperUtils";
 import React from "react";
 import { useParams } from "react-router-dom";
 
@@ -132,7 +133,9 @@ export function MetricsOverview() {
               >
                 <Styled.MetricItemName>
                   {metric.label}
-                  <span>{metric.customFrequency?.toLowerCase()}</span>
+                  <span>
+                    {frequencyString(metric.customFrequency)?.toLowerCase()}
+                  </span>
                 </Styled.MetricItemName>
                 <RightArrowIcon />
               </Styled.MetricItem>

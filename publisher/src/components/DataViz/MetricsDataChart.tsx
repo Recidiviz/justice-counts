@@ -15,8 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { frequencyString } from "@justice-counts/common/utils/helperUtils"
-
 import {
   Badge,
   reportFrequencyBadgeColors,
@@ -29,6 +27,7 @@ import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyle
 import { showToast } from "@justice-counts/common/components/Toast";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import { AgencySystems, ReportFrequency } from "@justice-counts/common/types";
+import { frequencyString } from "@justice-counts/common/utils/helperUtils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { createSearchParams, useNavigate, useParams } from "react-router-dom";
