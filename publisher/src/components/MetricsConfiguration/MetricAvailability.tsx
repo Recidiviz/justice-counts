@@ -239,7 +239,7 @@ function MetricAvailability() {
                 <Styled.InfoIconWrapper>
                   <img src={infoIcon} alt="" />
                   <Styled.SettingTooltip>
-                    Tell us the frequency at which you intend to share this
+                    Tell us the frequency at which you intend to report this
                     data. You can always change this later.
                   </Styled.SettingTooltip>
                 </Styled.InfoIconWrapper>
@@ -416,8 +416,8 @@ function MetricAvailability() {
                 Metric Breakdowns
               </Styled.BreakdownsSectionTitle>
               <Styled.BreakdownsSectionDescription>
-                Select the categories that your agency will share as breakdowns
-                of {metrics[systemMetricKey]?.label}.
+                Select the categories that your agency is able to report as
+                disaggregations of {metrics[systemMetricKey]?.label}.
               </Styled.BreakdownsSectionDescription>
               <Styled.BreakdownsOptionsContainer>
                 {disaggregationsOptions.length > 1 && (

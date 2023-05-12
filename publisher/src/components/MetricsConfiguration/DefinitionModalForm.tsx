@@ -371,9 +371,8 @@ function DefinitionModalForm({
           {activeSettingsKeys && (
             <Styled.Description>
               Indicate which of the following categories your agency considers
-              to be part of this{" "}
-              {isMetricDefinitionSettings ? `metric` : `breakdown`}. You are not
-              required to share data for these specific categories. Or,{" "}
+              to be part of this datapoint. You are not required to share data
+              for these specific categories. Or,{" "}
               <Styled.ChooseDefaultSettings onClick={handleChooseDefaults}>
                 choose the Justice Counts definition.
               </Styled.ChooseDefaultSettings>

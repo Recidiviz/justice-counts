@@ -331,7 +331,7 @@ export const GeneralInstructions: React.FC<
           </tr>
         </tbody>
       </table>
-      <h3>Breakdowns</h3>
+      <h3>Disaggregations</h3>
       <p>
         If the metric asks you to break the value down into different categories
         (e.g. separating out crimes by offense type), add an additional sheet to
