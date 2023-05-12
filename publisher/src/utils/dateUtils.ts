@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { ReportFrequency } from "@justice-counts/common/types";
+import { frequencyString } from "@justice-counts/common/utils/helperUtils";
 
 import { REPORT_CAPITALIZED } from "../components/Global/constants";
 
@@ -68,19 +69,20 @@ export const printReportTitle = (
 };
 
 /**
- * @returns either "Annual", "Annual ([MONTH])" or "Monthly"
+ * @returns either "Annually", "Annually ([MONTH])" or "Monthly"
  * as a string depending on frequency
- * @example "Annual" "Annual (October)" or "March 2022"
+ * @example "Annually" "Annually (October)" or "March 2022"
  */
 export const printReportFrequency = (
   month: number,
   frequency: ReportFrequency
 ): string => {
   if (frequency === "ANNUAL") {
-    return `${frequency.toLowerCase()} (${monthsByName[month - 1]})`;
+    return `${frequencyString(frequency).toLowerCase()} 
+    (${monthsByName[month - 1]})`;
   }
 
-  return frequency.toLowerCase();
+  return frequencyString(frequency).toLowerCase();
 };
 
 /**
