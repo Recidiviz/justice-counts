@@ -16,7 +16,7 @@
 // =============================================================================
 
 import React, { useCallback, useState } from "react";
-
+import { frequencyString } from "../../utils";
 import { useWindowWidth } from "../../hooks";
 import { ReportFrequency } from "../../types";
 import { Badge, reportFrequencyBadgeColors } from "../Badge";
@@ -53,7 +53,7 @@ export const DatapointsTitle: React.FC<{
             }
             noMargin
           >
-            {metricFrequency}
+            {frequencyString(metricFrequency)}
           </Badge>
         )}
       </MetricTitle>

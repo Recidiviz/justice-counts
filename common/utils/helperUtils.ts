@@ -19,6 +19,13 @@ import { debounce, memoize } from "lodash";
 
 import { MetricContext } from "../types";
 
+export const frequencyString = (frequency: string) => {
+  if (frequency === "ANNUAL") {
+    return "ANNUALLY";
+  }
+  return frequency;
+};
+
 export const isPositiveNumber = (value: string | number) => {
   if (typeof value === "string") {
     return (value.trim() !== "" && Number(value) === 0) || Number(value) > 0;
