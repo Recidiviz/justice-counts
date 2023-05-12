@@ -277,7 +277,7 @@ function MetricAvailability() {
                   id="metric-config-annual"
                   name="metric-config"
                   label="Annually"
-                  value="Annually"
+                  value="Annual"
                   fullWidth
                   checked={Boolean(
                     metricEnabled && customOrDefaultFrequency === "ANNUAL"

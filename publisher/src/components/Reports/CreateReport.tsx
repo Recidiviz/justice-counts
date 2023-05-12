@@ -233,7 +233,7 @@ const CreateReport = () => {
               type="radio"
               id="annual"
               name="frequency"
-              label="Annually"
+              label="Annual"
               value="ANNUAL"
               onChange={updateFrequency}
               defaultChecked={frequency === "ANNUAL"}
