@@ -451,3 +451,14 @@ export const ExtendedOpacityGradient = styled(OpacityGradient)`
   position: fixed;
   bottom: 0;
 `;
+
+export const ListOfModifiedRecordsContainer = styled.div`
+  width: 100%;
+  max-height: 120px;
+  overflow: auto;
+  margin-top: 15px;
+  padding: 0 15px;
+  color: ${palette.highlight.grey9};
+`;
+
+export const ModifiedRecordTitle = styled.div``;

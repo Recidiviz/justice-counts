@@ -15,9 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { ButtonColor } from "@justice-counts/common/components/Button";
+import { palette } from "@justice-counts/common/components/GlobalStyles";
+import { Modal } from "@justice-counts/common/components/Modal";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { ReportOverview } from "@justice-counts/common/types";
+import { printReportTitle } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import {
@@ -33,8 +35,11 @@ import {
   ReviewHeaderActionButton,
   ReviewMetricOverwrites,
   ReviewMetrics,
-  ReviewMetricsModal,
 } from "../ReviewMetrics";
+import {
+  ListOfModifiedRecordsContainer,
+  ModifiedRecordTitle,
+} from "./DataUpload.styles";
 import { UploadedMetric } from "./types";
 
 const UploadReview: React.FC = observer(() => {
@@ -76,25 +81,6 @@ const UploadReview: React.FC = observer(() => {
   const hasAllPublishedRecordsNoOverwrites =
     existingAndNewRecords.filter((record) => record.status !== "PUBLISHED")
       .length === 0 && updatedReportIDs.length === 0;
-
-  const publishingExistingReportsButtons: {
-    name: string;
-    color?: ButtonColor;
-    onClick: () => void;
-  }[] = [
-    {
-      name: "Go back",
-      onClick: () => setExistingReportWarningOpen(false),
-    },
-    {
-      name: "Proceed with Publishing",
-      color: "green",
-      onClick: () => {
-        setExistingReportWarningOpen(false);
-        publishMultipleRecords();
-      },
-    },
-  ];
 
   const publishMultipleRecords = async () => {
     if (agencyId && !hasAllPublishedRecordsNoOverwrites) {
@@ -169,15 +155,56 @@ const UploadReview: React.FC = observer(() => {
           },
         ];
 
+  const warningModalDescription = (
+    <>
+      The following existing reports will also be published. Are you sure you
+      want to proceed?
+      <ListOfModifiedRecordsContainer>
+        {existingReports?.map((record) => (
+          <ModifiedRecordTitle key={record.id}>
+            {printReportTitle(record.month, record.year, record.frequency)}
+          </ModifiedRecordTitle>
+        ))}
+      </ListOfModifiedRecordsContainer>
+    </>
+  );
+  const successModalTitle = (
+    <>
+      Data from{" "}
+      <span style={{ color: `${palette.solid.blue}` }}>{fileName}</span>{" "}
+      {hasAllPublishedRecordsNoOverwrites && "is already"} published!
+    </>
+  );
+
   return (
     <>
-      {(isSuccessModalOpen || isExistingReportWarningModalOpen) && (
-        <ReviewMetricsModal
-          fileName={fileName}
-          isExistingReportWarningModalOpen={isExistingReportWarningModalOpen}
-          existingReports={existingReports}
-          publishingExistingReportsButtons={publishingExistingReportsButtons}
-          hasAllPublishedRecords={hasAllPublishedRecordsNoOverwrites}
+      {isExistingReportWarningModalOpen && (
+        <Modal
+          title="Wait!"
+          description={warningModalDescription}
+          secondaryButtonLabel="Go back"
+          secondaryButtonOnClick={() => setExistingReportWarningOpen(false)}
+          primaryButtonLabel="Proceed with Publishing"
+          primaryButtonOnClick={() => {
+            setExistingReportWarningOpen(false);
+            publishMultipleRecords();
+          }}
+          primaryButtonColor="green"
+          icon="warning"
+        />
+      )}
+      {isSuccessModalOpen && (
+        <Modal
+          title={successModalTitle}
+          description="You can view the published data in the Data tab."
+          secondaryButtonLabel="Go to Records"
+          secondaryButtonOnClick={() =>
+            navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)
+          }
+          primaryButtonLabel="Go to Data"
+          primaryButtonOnClick={() => navigate(`/agency/${agencyId}/data`)}
+          primaryButtonColor="blue"
+          icon="success"
         />
       )}
       <ReviewMetrics

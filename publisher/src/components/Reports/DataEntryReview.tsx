@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Modal } from "@justice-counts/common/components/Modal";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -31,7 +32,6 @@ import {
   ReviewHeaderActionButton,
   ReviewMetric,
   ReviewMetrics,
-  ReviewMetricsModal,
 } from "../ReviewMetrics";
 import { useCheckMetricForErrors } from "./hooks";
 import { ReviewWrapper } from "./ReportDataEntry.styles";
@@ -108,10 +108,6 @@ const DataEntryReview = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    document.body.style.overflow = isSuccessModalOpen ? "hidden" : "unset";
-  }, [isSuccessModalOpen]);
-
   if (
     reportStore.reportOverviews[reportID] &&
     reportStore.reportOverviews[reportID].agency_id !== agencyId
@@ -175,7 +171,20 @@ const DataEntryReview = () => {
 
   return (
     <ReviewWrapper>
-      {isSuccessModalOpen && <ReviewMetricsModal />}
+      {isSuccessModalOpen && (
+        <Modal
+          title="Data published!"
+          description="You can view the published data in the Data tab."
+          secondaryButtonLabel="Go to Records"
+          secondaryButtonOnClick={() =>
+            navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)
+          }
+          primaryButtonLabel="Go to Data"
+          primaryButtonOnClick={() => navigate(`/agency/${agencyId}/data`)}
+          primaryButtonColor="blue"
+          icon="success"
+        />
+      )}
       {loadingDatapoints ? (
         <Loading />
       ) : (

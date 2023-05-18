@@ -112,6 +112,10 @@ export const BulkActionsDropdownContainer = styled.div`
   }
 `;
 
+export const RemoveRecordsNumber = styled.span`
+  color: ${palette.solid.red};
+`;
+
 export const ReportsFilterDropdownContainer = styled.div`
   display: none;
   width: 100%;

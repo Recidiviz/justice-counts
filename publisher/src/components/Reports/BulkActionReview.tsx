@@ -15,6 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { palette } from "@justice-counts/common/components/GlobalStyles";
+import { Modal } from "@justice-counts/common/components/Modal";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -30,7 +32,6 @@ import {
   ReviewHeaderActionButton,
   ReviewMetric,
   ReviewMetrics,
-  ReviewMetricsModal,
 } from "../ReviewMetrics";
 import { ReviewWrapper } from "./ReportDataEntry.styles";
 
@@ -74,6 +75,7 @@ const BulkActionReview = () => {
       });
       return;
     }
+
     setIsSuccessModalOpen(true);
   };
 
@@ -113,10 +115,6 @@ const BulkActionReview = () => {
     initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    document.body.style.overflow = isSuccessModalOpen ? "hidden" : "unset";
-  }, [isSuccessModalOpen]);
 
   if (isLoading)
     return (
@@ -184,10 +182,35 @@ const BulkActionReview = () => {
     },
   ];
 
+  const modalTitle = (
+    <>
+      <span style={{ color: `${palette.solid.blue}` }}>
+        {recordsIds.length}
+      </span>{" "}
+      {recordsIds.length > 1 ? REPORTS_LOWERCASE : REPORT_LOWERCASE}{" "}
+      {action === "publish" ? "published!" : "unpublished!"}
+    </>
+  );
+  const modalDescription =
+    action === "publish"
+      ? "You can view the published data in the Data tab."
+      : "Data has been successfully unpublished.";
+
   return (
     <ReviewWrapper>
       {isSuccessModalOpen && (
-        <ReviewMetricsModal recordsCount={recordsIds.length} action={action} />
+        <Modal
+          title={modalTitle}
+          description={modalDescription}
+          secondaryButtonLabel="Go to Records"
+          secondaryButtonOnClick={() =>
+            navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)
+          }
+          primaryButtonLabel="Go to Data"
+          primaryButtonOnClick={() => navigate(`/agency/${agencyId}/data`)}
+          primaryButtonColor="blue"
+          icon="success"
+        />
       )}
       <ReviewMetrics
         title={action === "publish" ? publishActionTitle : unpublishActionTitle}
