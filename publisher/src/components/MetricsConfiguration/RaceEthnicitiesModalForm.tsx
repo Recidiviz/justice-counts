@@ -142,7 +142,6 @@ function RaceEthnicitiesModalForm({
             name="specify-ethnicity"
             label="Yes"
             value="yes"
-            fullWidth
             checked={canSpecifyEthnicity}
             onChange={() => setCanSpecifyEthnicity(true)}
           />
@@ -152,7 +151,6 @@ function RaceEthnicitiesModalForm({
             name="specify-ethnicity"
             label="No"
             value="no"
-            fullWidth
             checked={!canSpecifyEthnicity}
             onChange={() => setCanSpecifyEthnicity(false)}
           />

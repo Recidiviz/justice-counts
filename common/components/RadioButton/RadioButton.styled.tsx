@@ -18,6 +18,7 @@
 import styled from "styled-components/macro";
 
 import { palette, typography } from "../GlobalStyles";
+import { RadioButtonSize } from "./types";
 
 export const RadioButtonWrapper = styled.div`
   display: flex;
@@ -53,20 +54,25 @@ export const RadioButtonInput = styled.input<{
 `;
 
 export const RadioButtonLabel = styled.label<{
+  buttonSize?: RadioButtonSize;
   disabled?: boolean;
-  fullWidth?: boolean;
 }>`
   ${typography.sizeCSS.normal}
   display: flex;
   justify-content: center;
   align-items: center;
   min-width: 60px;
+  width: 100%;
   padding: 9px 16px;
   border: 1px solid ${palette.highlight.grey4};
   border-radius: 3px;
   transition: 0.2s ease;
 
-  ${({ fullWidth }) => fullWidth && "width: 100%"};
+  ${({ buttonSize }) => {
+    if (buttonSize === "large")
+      return `height: 56px; ${typography.sizeCSS.medium}`;
+    return `height: auto; ${typography.sizeCSS.normal}`;
+  }};
 
   &:hover {
     cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};

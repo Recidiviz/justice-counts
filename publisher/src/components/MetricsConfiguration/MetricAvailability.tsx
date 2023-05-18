@@ -251,7 +251,6 @@ function MetricAvailability() {
                   name="metric-config"
                   label="Not Available"
                   value="Not Available"
-                  fullWidth
                   checked={Boolean(metricEnabled === false)}
                   onChange={() => handleUpdateMetricEnabledStatus(false)}
                 />
@@ -261,7 +260,6 @@ function MetricAvailability() {
                   name="metric-config"
                   label="Monthly"
                   value="Monthly"
-                  fullWidth
                   checked={Boolean(
                     metricEnabled && customOrDefaultFrequency === "MONTHLY"
                   )}
@@ -278,7 +276,6 @@ function MetricAvailability() {
                   name="metric-config"
                   label="Annually"
                   value="Annual"
-                  fullWidth
                   checked={Boolean(
                     metricEnabled && customOrDefaultFrequency === "ANNUAL"
                   )}
@@ -311,7 +308,6 @@ function MetricAvailability() {
                     name="metric-config-frequency"
                     label="Calendar Year"
                     value="Calendar Year (Jan)"
-                    fullWidth
                     checked={
                       metricEnabled && (startingMonth === 1 || !startingMonth)
                     }
@@ -329,7 +325,6 @@ function MetricAvailability() {
                     label="Fiscal Year"
                     value="Fiscal Year (Jul)"
                     checked={metricEnabled && startingMonth === 7}
-                    fullWidth
                     onChange={() =>
                       handleUpdateMetricReportFrequency({
                         customFrequency: "ANNUAL",
@@ -388,7 +383,6 @@ function MetricAvailability() {
                       name="supervision-subsystem"
                       label="Combined"
                       value="All Populations / Combined"
-                      fullWidth
                       onChange={() =>
                         handleSupervisionDisaggregationSelection(false)
                       }
@@ -400,7 +394,6 @@ function MetricAvailability() {
                       name="supervision-subsystem"
                       label="Disaggregated"
                       value="Disaggregated"
-                      fullWidth
                       onChange={() =>
                         handleSupervisionDisaggregationSelection(true)
                       }
