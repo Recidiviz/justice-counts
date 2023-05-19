@@ -55,13 +55,15 @@ export const AgencySettingsSupervisions: React.FC<{
   const { isSettingInEditMode, openSetting, removeEditMode } = settingProps;
 
   const { agencyId } = useParams() as { agencyId: string };
-  const { agencyStore } = useStore();
+  const { agencyStore, userStore } = useStore();
   const { currentAgencySystems, updateAgencySystems, saveAgencySystems } =
     agencyStore;
   const [supervisionSystemsToSave, setSupervisionSystemsToSave] =
     useState(currentAgencySystems);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-
+  const isAdmin =
+    userStore.isAgencyAdmin(agencyId) ||
+    userStore.isJusticeCountsAdmin(agencyId);
   const systemsToDisplayInReadMode = supervisionAgencySystems.filter((system) =>
     currentAgencySystems?.includes(system.value)
   );
@@ -188,19 +190,21 @@ export const AgencySettingsSupervisions: React.FC<{
             No supervision populations selected.
           </AgencyInfoBlockDescription>
         )}
-        <EditButtonContainer hasTopMargin>
-          <Button
-            label={
-              <>
-                Edit populations <EditArrowImage src={rightArrow} alt="" />
-              </>
-            }
-            onClick={openSetting}
-            labelColor="blue"
-            noSidePadding
-            noHover
-          />
-        </EditButtonContainer>
+        {isAdmin && (
+          <EditButtonContainer hasTopMargin>
+            <Button
+              label={
+                <>
+                  Edit populations <EditArrowImage src={rightArrow} alt="" />
+                </>
+              }
+              onClick={openSetting}
+              labelColor="blue"
+              noSidePadding
+              noHover
+            />
+          </EditButtonContainer>
+        )}
       </AgencySettingsBlock>
     </>
   );
