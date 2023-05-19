@@ -16,4 +16,4 @@
 // =============================================================================
 
 export type ModalBackground = "opaque";
-export type ModalIcon = "success" | "warning" | "alert";
+export type ModalType = "success" | "warning" | "alert";

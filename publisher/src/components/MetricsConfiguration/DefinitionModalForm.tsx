@@ -439,7 +439,7 @@ function DefinitionModalForm({
           </Styled.ContextContainer>
         </Styled.ScrollableInnerWrapper>
         <Styled.BottomButtonsContainer>
-          <Button label="Cancel" onClick={closeModal} noHover />
+          <Button label="Cancel" onClick={closeModal} />
           <Button
             label="Save"
             onClick={() => {

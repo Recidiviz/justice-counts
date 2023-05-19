@@ -18,7 +18,7 @@
 import styled from "styled-components/macro";
 
 import { palette, typography } from "../GlobalStyles";
-import { ModalBackground } from "./types";
+import { ModalBackground, ModalType } from "./types";
 
 export const OuterWrapper = styled.div<{
   modalBackground?: ModalBackground;
@@ -40,11 +40,11 @@ export const OuterWrapper = styled.div<{
   }};
 `;
 
-export const InnerWrapper = styled.div`
+export const InnerWrapper = styled.div<{ modalType?: ModalType }>`
   background-color: ${palette.solid.white};
   width: 100%;
   max-width: 582px;
-  padding: 80px 24px 24px 24px;
+  padding: ${({ modalType }) => (modalType ? "80px 24px 24px 24px" : "24px")};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -67,13 +67,16 @@ export const Description = styled.div`
   flex-direction: column;
   align-items: center;
   ${typography.sizeCSS.normal};
-  margin-bottom: 72px;
   text-align: center;
 `;
 
-export const ButtonsContainer = styled.div`
+export const ButtonsContainer = styled.div<{ modalType?: ModalType }>`
   width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+
+  ${({ modalType }) => {
+    if (modalType) return "justify-content: space-between; margin-top: 72px;";
+    return "justify-content: end; gap: 16px; margin-top: 24px;";
+  }}
 `;

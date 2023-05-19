@@ -182,29 +182,33 @@ const UploadReview: React.FC = observer(() => {
         <Modal
           title="Wait!"
           description={warningModalDescription}
-          secondaryButtonLabel="Go back"
-          secondaryButtonOnClick={() => setExistingReportWarningOpen(false)}
-          primaryButtonLabel="Proceed with Publishing"
-          primaryButtonOnClick={() => {
-            setExistingReportWarningOpen(false);
-            publishMultipleRecords();
+          primaryButton={{
+            label: "Proceed with Publishing",
+            onClick: () => {
+              setExistingReportWarningOpen(false);
+              publishMultipleRecords();
+            },
           }}
-          primaryButtonColor="green"
-          icon="warning"
+          secondaryButton={{
+            label: "Go back",
+            onClick: () => setExistingReportWarningOpen(false),
+          }}
+          modalType="warning"
         />
       )}
       {isSuccessModalOpen && (
         <Modal
           title={successModalTitle}
           description="You can view the published data in the Data tab."
-          secondaryButtonLabel="Go to Records"
-          secondaryButtonOnClick={() =>
-            navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)
-          }
-          primaryButtonLabel="Go to Data"
-          primaryButtonOnClick={() => navigate(`/agency/${agencyId}/data`)}
-          primaryButtonColor="blue"
-          icon="success"
+          primaryButton={{
+            label: "Go to Data",
+            onClick: () => navigate(`/agency/${agencyId}/data`),
+          }}
+          secondaryButton={{
+            label: "Go to Records",
+            onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
+          }}
+          modalType="success"
         />
       )}
       <ReviewMetrics

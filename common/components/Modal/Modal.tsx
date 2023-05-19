@@ -23,31 +23,31 @@ import successIcon from "../../assets/success-icon.png";
 import warningIcon from "../../assets/warning-icon.svg";
 import { Button, ButtonColor } from "../Button";
 import * as Styled from "./Modal.styled";
-import { ModalBackground, ModalIcon } from "./types";
+import { ModalBackground, ModalType } from "./types";
 
 type ModalProps = {
   title: string | React.ReactNode;
   description: string | React.ReactNode;
-  secondaryButtonLabel: string;
-  secondaryButtonOnClick: () => void;
-  primaryButtonLabel: string;
-  primaryButtonOnClick: () => void;
-  primaryButtonColor: ButtonColor;
+  primaryButton: { label: string; onClick: () => void };
+  secondaryButton: { label: string; onClick: () => void };
+  modalType?: ModalType;
   modalBackground?: ModalBackground;
-  icon?: ModalIcon;
 };
 
 export function Modal({
   title,
   description,
-  secondaryButtonLabel,
-  secondaryButtonOnClick,
-  primaryButtonLabel,
-  primaryButtonOnClick,
-  primaryButtonColor,
+  primaryButton,
+  secondaryButton,
+  modalType,
   modalBackground,
-  icon,
 }: ModalProps) {
+  const primaryButtonColor = (): ButtonColor => {
+    if (modalType === "alert") return "red";
+    if (modalType === "warning") return "green";
+    return "blue";
+  };
+
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
@@ -58,22 +58,21 @@ export function Modal({
 
   const Portal = (
     <Styled.OuterWrapper modalBackground={modalBackground}>
-      <Styled.InnerWrapper>
-        {icon === "success" && <Styled.Icon src={successIcon} alt="" />}
-        {icon === "warning" && <Styled.Icon src={warningIcon} alt="" />}
-        {icon === "alert" && <Styled.Icon src={alertIcon} alt="" />}
+      <Styled.InnerWrapper modalType={modalType}>
+        {modalType === "success" && <Styled.Icon src={successIcon} alt="" />}
+        {modalType === "warning" && <Styled.Icon src={warningIcon} alt="" />}
+        {modalType === "alert" && <Styled.Icon src={alertIcon} alt="" />}
         <Styled.Title>{title}</Styled.Title>
         <Styled.Description>{description}</Styled.Description>
-        <Styled.ButtonsContainer>
+        <Styled.ButtonsContainer modalType={modalType}>
           <Button
-            label={secondaryButtonLabel}
-            onClick={secondaryButtonOnClick}
-            borderColor="lightgrey"
+            label={secondaryButton.label}
+            onClick={secondaryButton.onClick}
           />
           <Button
-            label={primaryButtonLabel}
-            onClick={primaryButtonOnClick}
-            buttonColor={primaryButtonColor}
+            label={primaryButton.label}
+            onClick={primaryButton.onClick}
+            buttonColor={primaryButtonColor()}
           />
         </Styled.ButtonsContainer>
       </Styled.InnerWrapper>

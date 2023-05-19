@@ -202,14 +202,15 @@ const BulkActionReview = () => {
         <Modal
           title={modalTitle}
           description={modalDescription}
-          secondaryButtonLabel="Go to Records"
-          secondaryButtonOnClick={() =>
-            navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)
-          }
-          primaryButtonLabel="Go to Data"
-          primaryButtonOnClick={() => navigate(`/agency/${agencyId}/data`)}
-          primaryButtonColor="blue"
-          icon="success"
+          primaryButton={{
+            label: "Go to Data",
+            onClick: () => navigate(`/agency/${agencyId}/data`),
+          }}
+          secondaryButton={{
+            label: "Go to Records",
+            onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
+          }}
+          modalType="success"
         />
       )}
       <ReviewMetrics

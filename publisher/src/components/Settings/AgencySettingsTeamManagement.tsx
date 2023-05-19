@@ -179,15 +179,13 @@ export const AgencySettingsTeamManagement = observer(() => {
             Are you sure you want to remove <span>{userName}</span>
           </>
         }
-        secondaryButtonLabel="Cancel"
-        secondaryButtonOnClick={handleCloseModal}
-        primaryButtonLabel="Remove from agency"
-        primaryButtonOnClick={() =>
-          handleRemoveTeamMember(teamMemberEditMenuActiveEmail)
-        }
-        primaryButtonColor="red"
+        primaryButton={{
+          label: "Remove from agency",
+          onClick: () => handleRemoveTeamMember(teamMemberEditMenuActiveEmail),
+        }}
+        secondaryButton={{ label: "Cancel", onClick: handleCloseModal }}
+        modalType="alert"
         modalBackground="opaque"
-        icon="alert"
       />
     );
   }

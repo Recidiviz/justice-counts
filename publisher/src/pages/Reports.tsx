@@ -416,12 +416,12 @@ const Reports: React.FC = () => {
         <Modal
           title={removeRecordsModalTitle}
           description="You can’t undo this action."
-          secondaryButtonLabel="No, Cancel"
-          secondaryButtonOnClick={() => setIsRemoveRecordsModalOpen(false)}
-          primaryButtonLabel="Yes, Delete"
-          primaryButtonOnClick={handleRemoveRecords}
-          primaryButtonColor="red"
-          icon="alert"
+          primaryButton={{ label: "Yes, Delete", onClick: handleRemoveRecords }}
+          secondaryButton={{
+            label: "No, Cancel",
+            onClick: () => setIsRemoveRecordsModalOpen(false),
+          }}
+          modalType="alert"
         />
       )}
 
