@@ -116,5 +116,5 @@ export const BottomButtonsContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: end;
-  gap: 8px;
+  gap: 16px;
 `;

@@ -18,6 +18,7 @@
 /* eslint-disable camelcase */
 import editIcon from "@justice-counts/common/assets/edit-row-icon.png";
 import { Button } from "@justice-counts/common/components/Button";
+import { Modal } from "@justice-counts/common/components/Modal";
 import {
   AgencyTeamMember,
   AgencyTeamMemberRole,
@@ -54,7 +55,6 @@ import {
   TeamMemberNameContainerTitle,
   TeamMemberRow,
 } from "./AgencySettings.styles";
-import { AgencySettingsTeamManagementConfirmModal } from "./AgencySettingsTeamManagementConfirmModal";
 
 export const AgencySettingsTeamManagement = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
@@ -168,16 +168,24 @@ export const AgencySettingsTeamManagement = observer(() => {
 
   if (loadingSettings) return <Loading />;
 
-  if (isModalOpen) {
+  if (isModalOpen && teamMemberEditMenuActiveEmail) {
+    const userName = getRemovedUserName(teamMemberEditMenuActiveEmail);
+
     return (
-      <AgencySettingsTeamManagementConfirmModal
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        userName={getRemovedUserName(teamMemberEditMenuActiveEmail!)}
-        closeModal={handleCloseModal}
-        handleConfirm={() =>
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          handleRemoveTeamMember(teamMemberEditMenuActiveEmail!)
+      <Modal
+        title="This action cannot be undone"
+        description={
+          <>
+            Are you sure you want to remove <span>{userName}</span>
+          </>
         }
+        primaryButton={{
+          label: "Remove from agency",
+          onClick: () => handleRemoveTeamMember(teamMemberEditMenuActiveEmail),
+        }}
+        secondaryButton={{ label: "Cancel", onClick: handleCloseModal }}
+        modalType="alert"
+        modalBackground="opaque"
       />
     );
   }

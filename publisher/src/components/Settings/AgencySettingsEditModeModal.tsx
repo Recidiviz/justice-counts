@@ -16,13 +16,12 @@
 // =============================================================================
 
 import { palette } from "@justice-counts/common/components/GlobalStyles";
+import { Modal } from "@justice-counts/common/components/Modal";
 import React from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components/macro";
 
-import { AgencySettingsConfirmModal } from "./AgencySettingsConfirmModal";
-
-// z-index 101 to be above all, cancel confirm modal will have 102
+// z-index 101 to be above all
 const EditModalOuterWrapper = styled.div`
   position: fixed;
   z-index: 101;
@@ -71,9 +70,11 @@ export const AgencySettingsEditModeModal: React.FC<{
         </EditModalInnerWrapper>
       </EditModalOuterWrapper>
       {isConfirmModalOpen && (
-        <AgencySettingsConfirmModal
-          closeModal={closeCancelModal}
-          handleConfirm={handleCancelModalConfirm}
+        <Modal
+          title="Unsaved changes"
+          description="You have unsaved changes, would like to leave anyway?"
+          primaryButton={{ label: "Leave", onClick: handleCancelModalConfirm }}
+          secondaryButton={{ label: "Cancel", onClick: closeCancelModal }}
         />
       )}
     </>

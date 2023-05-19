@@ -15,6 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { palette } from "@justice-counts/common/components/GlobalStyles";
+import { Modal } from "@justice-counts/common/components/Modal";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -23,14 +25,17 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { RecordsBulkAction } from "../../pages/Reports";
 import { useStore } from "../../stores";
 import { PageWrapper } from "../Forms";
-import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
+import {
+  REPORT_LOWERCASE,
+  REPORTS_CAPITALIZED,
+  REPORTS_LOWERCASE,
+} from "../Global/constants";
 import { Loading } from "../Loading";
 import {
   PublishReviewPropsFromDatapoints,
   ReviewHeaderActionButton,
   ReviewMetric,
   ReviewMetrics,
-  ReviewMetricsModal,
 } from "../ReviewMetrics";
 import { ReviewWrapper } from "./ReportDataEntry.styles";
 
@@ -74,6 +79,7 @@ const BulkActionReview = () => {
       });
       return;
     }
+
     setIsSuccessModalOpen(true);
   };
 
@@ -113,10 +119,6 @@ const BulkActionReview = () => {
     initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    document.body.style.overflow = isSuccessModalOpen ? "hidden" : "unset";
-  }, [isSuccessModalOpen]);
 
   if (isLoading)
     return (
@@ -184,10 +186,36 @@ const BulkActionReview = () => {
     },
   ];
 
+  const modalTitle = (
+    <>
+      <span style={{ color: `${palette.solid.blue}` }}>
+        {recordsIds.length}
+      </span>{" "}
+      {recordsIds.length > 1 ? REPORTS_LOWERCASE : REPORT_LOWERCASE}{" "}
+      {action === "publish" ? "published!" : "unpublished!"}
+    </>
+  );
+  const modalDescription =
+    action === "publish"
+      ? "You can view the published data in the Data tab."
+      : "Data has been successfully unpublished.";
+
   return (
     <ReviewWrapper>
       {isSuccessModalOpen && (
-        <ReviewMetricsModal recordsCount={recordsIds.length} action={action} />
+        <Modal
+          title={modalTitle}
+          description={modalDescription}
+          primaryButton={{
+            label: "Go to Data",
+            onClick: () => navigate(`/agency/${agencyId}/data`),
+          }}
+          secondaryButton={{
+            label: `Go to ${REPORTS_CAPITALIZED}`,
+            onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
+          }}
+          modalType="success"
+        />
       )}
       <ReviewMetrics
         title={action === "publish" ? publishActionTitle : unpublishActionTitle}
