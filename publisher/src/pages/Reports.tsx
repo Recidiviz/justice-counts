@@ -29,6 +29,7 @@ import {
   MIN_TABLET_WIDTH,
   palette,
 } from "@justice-counts/common/components/GlobalStyles";
+import { Modal } from "@justice-counts/common/components/Modal";
 import {
   TabbedBar,
   TabOption,
@@ -62,6 +63,7 @@ import {
   LabelRow,
   MobileRecordsPageTitle,
   NoReportsDisplay,
+  RemoveRecordsNumber,
   ReportActions,
   ReportsFilterDropdownContainer,
   ReportsHeader,
@@ -70,7 +72,6 @@ import {
   TabbedBarContainer,
   Table,
 } from "../components/Reports";
-import { RemoveRecordsModal } from "../components/Reports/RemoveRecordsModal";
 import { useStore } from "../stores";
 import {
   filterJCAdminEditors,
@@ -164,6 +165,20 @@ const Reports: React.FC = () => {
     }
   };
 
+  const handleRemoveRecords = () => {
+    reportStore.deleteReports(selectedRecords, agencyId);
+    clearBulkAction();
+    clearAllSelectedRecords();
+    setIsRemoveRecordsModalOpen(false);
+  };
+  const removeRecordsModalTitle = (
+    <>
+      Delete <RemoveRecordsNumber>{selectedRecords.length}</RemoveRecordsNumber>{" "}
+      {REPORT_LOWERCASE}
+      {selectedRecords.length > 1 ? "s" : ""}?
+    </>
+  );
+
   useEffect(() => {
     const initialize = async () => {
       reportStore.resetState();
@@ -178,12 +193,6 @@ const Reports: React.FC = () => {
     initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyId]);
-
-  useEffect(() => {
-    document.body.style.overflow = isRemoveRecordsModalOpen
-      ? "hidden"
-      : "unset";
-  }, [isRemoveRecordsModalOpen]);
 
   const filteredReportsMemoized = React.useMemo(
     () =>
@@ -404,15 +413,15 @@ const Reports: React.FC = () => {
   return (
     <>
       {isRemoveRecordsModalOpen && (
-        <RemoveRecordsModal
-          selectedRecords={selectedRecords.length}
-          closeModal={() => setIsRemoveRecordsModalOpen(false)}
-          confirmRemoveRecords={() => {
-            reportStore.deleteReports(selectedRecords, agencyId);
-            clearBulkAction();
-            clearAllSelectedRecords();
-            setIsRemoveRecordsModalOpen(false);
+        <Modal
+          title={removeRecordsModalTitle}
+          description="You can’t undo this action."
+          primaryButton={{ label: "Yes, Delete", onClick: handleRemoveRecords }}
+          secondaryButton={{
+            label: "No, Cancel",
+            onClick: () => setIsRemoveRecordsModalOpen(false),
           }}
+          modalType="alert"
         />
       )}
 

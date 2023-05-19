@@ -24,13 +24,6 @@ import {
 import styled from "styled-components/macro";
 
 import { DataUploadContainer } from "../DataUpload";
-import {
-  RemoveRecordsModalButtonsContainer,
-  RemoveRecordsModalContainer,
-  RemoveRecordsModalHint,
-  RemoveRecordsModalTitle,
-  RemoveRecordsModalWrapper,
-} from "../Reports/RemoveRecordsModal";
 
 export const MAIN_PANEL_MAX_WIDTH = 864;
 export const REVIEW_SUMMARY_DESKTOP_TOP_PADDING = 40 + HEADER_BAR_HEIGHT;
@@ -252,63 +245,6 @@ export const SectionContainer = styled.div`
   }
 `;
 
-export const SectionTitleNumber = styled.div`
-  width: 40px;
-  min-width: 40px;
-  height: 40px;
-  border-radius: 20px;
-  background-color: ${palette.solid.blue};
-  color: ${palette.solid.white};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const SectionTitle = styled.div`
-  margin-left: 16px;
-  ${typography.sizeCSS.title}
-  flex: 1;
-  padding-right: 4px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-export const ReviewPublishModalWrapper = styled(RemoveRecordsModalWrapper)``;
-export const ReviewPublishModalContainer = styled(RemoveRecordsModalContainer)`
-  padding-top: 80px;
-`;
-export const ReviewPublishModalIcon = styled.img`
-  margin-bottom: 24px;
-`;
-export const ReviewPublishModalTitle = styled(RemoveRecordsModalTitle)`
-  text-align: center;
-  span {
-    color: ${palette.solid.blue};
-  }
-`;
-export const ReviewPublishModalHint = styled(RemoveRecordsModalHint)`
-  display: flex;
-  text-align: center;
-  max-width: 264px;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-export const ReviewPublishModalButtonsContainer = styled(
-  RemoveRecordsModalButtonsContainer
-)``;
-
 export const NoDatapointsMessage = styled.div`
   margin: auto auto;
 `;
-
-export const ListOfReportsContainer = styled.div`
-  width: 100%;
-  max-height: 120px;
-  overflow: auto;
-  margin-top: 15px;
-  padding: 0 15px;
-  color: ${palette.highlight.grey9};
-`;
-
-export const ModifiedReportTitle = styled.div``;

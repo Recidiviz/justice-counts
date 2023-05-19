@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Modal } from "@justice-counts/common/components/Modal";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -24,14 +25,17 @@ import { trackReportPublished } from "../../analytics";
 import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
 import { printReportTitle } from "../../utils";
-import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
+import {
+  REPORT_LOWERCASE,
+  REPORTS_CAPITALIZED,
+  REPORTS_LOWERCASE,
+} from "../Global/constants";
 import { Loading } from "../Loading";
 import {
   PublishReviewPropsFromDatapoints,
   ReviewHeaderActionButton,
   ReviewMetric,
   ReviewMetrics,
-  ReviewMetricsModal,
 } from "../ReviewMetrics";
 import { useCheckMetricForErrors } from "./hooks";
 import { ReviewWrapper } from "./ReportDataEntry.styles";
@@ -108,10 +112,6 @@ const DataEntryReview = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    document.body.style.overflow = isSuccessModalOpen ? "hidden" : "unset";
-  }, [isSuccessModalOpen]);
-
   if (
     reportStore.reportOverviews[reportID] &&
     reportStore.reportOverviews[reportID].agency_id !== agencyId
@@ -175,7 +175,21 @@ const DataEntryReview = () => {
 
   return (
     <ReviewWrapper>
-      {isSuccessModalOpen && <ReviewMetricsModal />}
+      {isSuccessModalOpen && (
+        <Modal
+          title="Data published!"
+          description="You can view the published data in the Data tab."
+          primaryButton={{
+            label: "Go to Data",
+            onClick: () => navigate(`/agency/${agencyId}/data`),
+          }}
+          secondaryButton={{
+            label: `Go to ${REPORTS_CAPITALIZED}`,
+            onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
+          }}
+          modalType="success"
+        />
+      )}
       {loadingDatapoints ? (
         <Loading />
       ) : (
