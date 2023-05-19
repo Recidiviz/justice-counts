@@ -25,7 +25,11 @@ import { trackReportPublished } from "../../analytics";
 import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
 import { printReportTitle } from "../../utils";
-import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
+import {
+  REPORT_LOWERCASE,
+  REPORTS_CAPITALIZED,
+  REPORTS_LOWERCASE,
+} from "../Global/constants";
 import { Loading } from "../Loading";
 import {
   PublishReviewPropsFromDatapoints,
@@ -180,7 +184,7 @@ const DataEntryReview = () => {
             onClick: () => navigate(`/agency/${agencyId}/data`),
           }}
           secondaryButton={{
-            label: "Go to Records",
+            label: `Go to ${REPORTS_CAPITALIZED}`,
             onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
           }}
           modalType="success"

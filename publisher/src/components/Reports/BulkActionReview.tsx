@@ -25,7 +25,11 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { RecordsBulkAction } from "../../pages/Reports";
 import { useStore } from "../../stores";
 import { PageWrapper } from "../Forms";
-import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
+import {
+  REPORT_LOWERCASE,
+  REPORTS_CAPITALIZED,
+  REPORTS_LOWERCASE,
+} from "../Global/constants";
 import { Loading } from "../Loading";
 import {
   PublishReviewPropsFromDatapoints,
@@ -207,7 +211,7 @@ const BulkActionReview = () => {
             onClick: () => navigate(`/agency/${agencyId}/data`),
           }}
           secondaryButton={{
-            label: "Go to Records",
+            label: `Go to ${REPORTS_CAPITALIZED}`,
             onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
           }}
           modalType="success"

@@ -30,7 +30,7 @@ import {
 } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { REPORTS_LOWERCASE } from "../Global/constants";
+import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
 import {
   ReviewHeaderActionButton,
   ReviewMetricOverwrites,
@@ -205,7 +205,7 @@ const UploadReview: React.FC = observer(() => {
             onClick: () => navigate(`/agency/${agencyId}/data`),
           }}
           secondaryButton={{
-            label: "Go to Records",
+            label: `Go to ${REPORTS_CAPITALIZED}`,
             onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
           }}
           modalType="success"
