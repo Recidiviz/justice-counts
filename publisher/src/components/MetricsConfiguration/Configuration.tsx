@@ -24,13 +24,10 @@ import { useParams } from "react-router-dom";
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import indicatorAlertIcon from "../assets/indicator-alert-icon.svg";
-import indicatorSuccessIcon from "../assets/indicator-success-icon.svg";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import * as Styled from "./Configuration.styled";
-import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "./constants";
 import MetricAvailability from "./MetricAvailability";
 import MetricDefinitions from "./MetricDefinitions";
-import { DimensionSettings } from "./types";
 
 function Configuration() {
   const { agencyId } = useParams() as { agencyId: string };
@@ -39,12 +36,7 @@ function Configuration() {
     useSettingsSearchParams();
   const { system: systemSearchParam } = settingsSearchParams;
   const { metricConfigStore, userStore } = useStore();
-  const {
-    metrics,
-    metricDefinitionSettings,
-    dimensionDefinitionSettings,
-    dimensions,
-  } = metricConfigStore;
+  const { metrics } = metricConfigStore;
   const [metricConfigPage, setMetricConfigPage] = useState<
     "availability" | "definitions"
   >("availability");
@@ -59,81 +51,6 @@ function Configuration() {
     setIsFooterVisible(footer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metricConfigPage]);
-
-  const metricTotalHasAtLeastOneSettingSelection = metricDefinitionSettings[
-    systemMetricKey
-  ]
-    ? Object.values(metricDefinitionSettings[systemMetricKey]).flatMap(
-        ({ settings }) =>
-          Object.values(settings).filter(
-            (setting) => setting.included === "Yes"
-          )
-      ).length > 0
-    : true;
-
-  const dimensionsHaveAtLeastOneSettingSelection = () => {
-    if (!dimensionDefinitionSettings[systemMetricKey]) return true;
-
-    const disaggregationKeysWithoutRaceEthnicity = Object.keys(
-      dimensionDefinitionSettings[systemMetricKey]
-    ).filter((key) => key !== RACE_ETHNICITY_DISAGGREGATION_KEY);
-
-    const dimensionsToCheck = disaggregationKeysWithoutRaceEthnicity.reduce(
-      (acc, key) => {
-        const enabledDimensionsKeys = Object.values(
-          dimensions[systemMetricKey][key]
-        )
-          .filter((dimension) => dimension.enabled)
-          .map((enabledDimension) => enabledDimension.key);
-
-        const enabledDimensionsDefinitionSettings = Object.entries(
-          dimensionDefinitionSettings[systemMetricKey][key]
-        ).reduce(
-          (
-            enabledDimensionsDefinitionSettingsAcc,
-            [dimensionKey, dimension]
-          ) => {
-            if (enabledDimensionsKeys.includes(dimensionKey)) {
-              return {
-                ...enabledDimensionsDefinitionSettingsAcc,
-                [dimensionKey]: dimension,
-              };
-            }
-            return enabledDimensionsDefinitionSettingsAcc;
-          },
-          {} as DimensionSettings
-        );
-
-        return { ...acc, ...enabledDimensionsDefinitionSettings };
-      },
-      {} as DimensionSettings
-    );
-
-    const dimensionsWithAtLeastOneSelectedDatapoint = Object.keys(
-      dimensionsToCheck
-    ).map((dimensionKey) => ({
-      [dimensionKey]: Object.values(dimensionsToCheck[dimensionKey]).flatMap(
-        (dimensionSettings) =>
-          Object.values(dimensionSettings.settings).filter(
-            (setting) => setting.included === "Yes"
-          )
-      ),
-    }));
-
-    const checkedDimensionsWithAtLeastOneSelectedDatapoint =
-      dimensionsWithAtLeastOneSelectedDatapoint
-        .map((entry) => Object.values(entry).flatMap((settings) => settings))
-        .filter((flatSettings) => flatSettings.length > 0);
-
-    return (
-      checkedDimensionsWithAtLeastOneSelectedDatapoint.length ===
-      Object.entries(dimensionsToCheck).length
-    );
-  };
-
-  const isAvailableForPublishing =
-    metricTotalHasAtLeastOneSettingSelection &&
-    dimensionsHaveAtLeastOneSettingSelection();
 
   return (
     <>
@@ -190,16 +107,6 @@ function Configuration() {
         {metricEnabled === null && (
           <Styled.MetricIndicator isAlert>
             <img src={indicatorAlertIcon} alt="" /> Configuration required
-          </Styled.MetricIndicator>
-        )}
-        {metricEnabled && !isAvailableForPublishing && (
-          <Styled.MetricIndicator>
-            <img src={indicatorSuccessIcon} alt="" /> Available for data upload
-          </Styled.MetricIndicator>
-        )}
-        {metricEnabled && isAvailableForPublishing && (
-          <Styled.MetricIndicator>
-            <img src={indicatorSuccessIcon} alt="" /> Available for publishing
           </Styled.MetricIndicator>
         )}
       </Styled.MetricSettingsSideBar>
