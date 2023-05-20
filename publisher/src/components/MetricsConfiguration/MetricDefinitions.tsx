@@ -50,6 +50,7 @@ function MetricDefinitions() {
   const activeDisaggregationKeys =
     disaggregations[systemMetricKey] &&
     Object.keys(disaggregations[systemMetricKey]);
+
   const metricHasDefinitionSelected = () => {
     if (!metricDefinitionSettings[systemMetricKey]) return true;
     const metricSettings = Object.values(
