@@ -35,6 +35,8 @@ function MetricDefinitions() {
     disaggregations,
     metricDefinitionSettings,
     dimensionDefinitionSettings,
+    contexts,
+    dimensionContexts,
   } = metricConfigStore;
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [activeDisaggregationKey, setActiveDisaggregationKey] = useState<
@@ -55,8 +57,11 @@ function MetricDefinitions() {
     ).reduce((acc, metricSetting) => {
       return { ...acc, ...metricSetting.settings };
     }, {} as { [settingKey: string]: Partial<MetricConfigurationSettings> });
+    const hasContextValue = Boolean(
+      contexts[systemMetricKey].INCLUDES_EXCLUDES_DESCRIPTION.value
+    );
     return !!Object.values(metricSettings).find(
-      (setting) => setting.included === "Yes"
+      (setting) => setting.included === "Yes" || hasContextValue
     );
   };
 
@@ -131,23 +136,43 @@ function MetricDefinitions() {
                 </Styled.SectionTitle>
                 {currentEnabledDimensions.map(([key, dimension]) => {
                   let hasEnabledDefinition: boolean;
-                  if (
-                    !dimensionDefinitionSettings[systemMetricKey][
+                  const currentDimensionDefinitionSettings =
+                    dimensionDefinitionSettings[systemMetricKey][
                       disaggregationKey
-                    ][key]
+                    ][key];
+                  const hasSettings = Boolean(
+                    currentDimensionDefinitionSettings
+                  );
+                  const dimensionContext =
+                    dimensionContexts[systemMetricKey][disaggregationKey][key];
+                  const hasContext = Boolean(dimensionContext);
+                  const hasContextValue = hasContext
+                    ? Boolean(Object.values(dimensionContext)[0].value)
+                    : false;
+
+                  if (
+                    (!hasSettings && !hasContext) ||
+                    (!hasSettings && hasContext && hasContextValue)
                   ) {
                     hasEnabledDefinition = true;
                   } else {
-                    const dimensionSettings = Object.values(
-                      dimensionDefinitionSettings[systemMetricKey][
-                        disaggregationKey
-                      ][key]
-                    ).reduce((acc, dimensionSetting) => {
-                      return { ...acc, ...dimensionSetting.settings };
-                    }, {} as { [settingKey: string]: Partial<MetricConfigurationSettings> });
+                    const dimensionSettings =
+                      hasSettings &&
+                      Object.values(currentDimensionDefinitionSettings).reduce(
+                        (acc, dimensionSetting) => {
+                          return { ...acc, ...dimensionSetting.settings };
+                        },
+                        {} as {
+                          [
+                            settingKey: string
+                          ]: Partial<MetricConfigurationSettings>;
+                        }
+                      );
                     hasEnabledDefinition = !!Object.values(
                       dimensionSettings
-                    ).find((setting) => setting.included === "Yes");
+                    ).find(
+                      (setting) => setting.included === "Yes" || hasContextValue
+                    );
                   }
 
                   return (
