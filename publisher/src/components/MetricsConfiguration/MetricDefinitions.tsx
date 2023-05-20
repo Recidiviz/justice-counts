@@ -136,7 +136,7 @@ function MetricDefinitions() {
                   {currentDisaggregation.display_name}
                 </Styled.SectionTitle>
                 {currentEnabledDimensions.map(([key, dimension]) => {
-                  let hasEnabledDefinition: boolean;
+                  let hasEnabledDefinition = false;
                   const currentDimensionDefinitionSettings =
                     dimensionDefinitionSettings[systemMetricKey][
                       disaggregationKey
@@ -156,19 +156,19 @@ function MetricDefinitions() {
                     (!hasSettings && hasContext && hasContextValue)
                   ) {
                     hasEnabledDefinition = true;
-                  } else {
-                    const dimensionSettings =
-                      hasSettings &&
-                      Object.values(currentDimensionDefinitionSettings).reduce(
-                        (acc, dimensionSetting) => {
-                          return { ...acc, ...dimensionSetting.settings };
-                        },
-                        {} as {
-                          [
-                            settingKey: string
-                          ]: Partial<MetricConfigurationSettings>;
-                        }
-                      );
+                  } else if (hasSettings) {
+                    const dimensionSettings = Object.values(
+                      currentDimensionDefinitionSettings
+                    ).reduce(
+                      (acc, dimensionSetting) => {
+                        return { ...acc, ...dimensionSetting.settings };
+                      },
+                      {} as {
+                        [
+                          settingKey: string
+                        ]: Partial<MetricConfigurationSettings>;
+                      }
+                    );
                     hasEnabledDefinition = !!Object.values(
                       dimensionSettings
                     ).find(
