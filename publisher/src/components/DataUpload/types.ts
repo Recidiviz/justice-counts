@@ -21,8 +21,8 @@ export interface DataUploadResponseBody {
   metrics: UploadedMetric[];
   non_metric_errors?: ErrorWarningMessage[];
   new_reports: ReportOverview[];
-  updated_report_ids: number[];
-  unchanged_report_ids: number[];
+  updated_reports: ReportOverview[];
+  unchanged_reports: ReportOverview[];
 }
 
 export interface UploadedMetric {

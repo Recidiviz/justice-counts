@@ -50,14 +50,14 @@ const UploadReview: React.FC = observer(() => {
     uploadedMetrics,
     fileName,
     newReports,
-    updatedReportIDs,
-    unchangedReportIDs,
+    updatedReports,
+    unchangedReports,
   } = state as {
     uploadedMetrics: UploadedMetric[] | null;
     fileName: string;
     newReports: ReportOverview[];
-    updatedReportIDs: number[];
-    unchangedReportIDs: number[];
+    updatedReports: ReportOverview[];
+    unchangedReports: ReportOverview[];
   };
   const navigate = useNavigate();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
@@ -69,9 +69,10 @@ const UploadReview: React.FC = observer(() => {
   }
 
   // review component props
-  const existingReports = [...updatedReportIDs, ...unchangedReportIDs]
-    .map((id) => reportStore.reportOverviews[id])
-    .filter((report) => report);
+  const existingReports = [
+    ...(updatedReports || []),
+    ...(unchangedReports || []),
+  ];
   const hasExistingAndNewRecords =
     existingReports.length > 0 && newReports.length > 0;
   const existingAndNewRecords = [...existingReports, ...newReports];
@@ -80,7 +81,7 @@ const UploadReview: React.FC = observer(() => {
   );
   const hasAllPublishedRecordsNoOverwrites =
     existingAndNewRecords.filter((record) => record.status !== "PUBLISHED")
-      .length === 0 && updatedReportIDs.length === 0;
+      .length === 0 && updatedReports?.length === 0;
 
   const publishMultipleRecords = async () => {
     if (agencyId && !hasAllPublishedRecordsNoOverwrites) {
@@ -194,6 +195,7 @@ const UploadReview: React.FC = observer(() => {
             onClick: () => setExistingReportWarningOpen(false),
           }}
           modalType="warning"
+          centerText
         />
       )}
       {isSuccessModalOpen && (
@@ -209,6 +211,7 @@ const UploadReview: React.FC = observer(() => {
             onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
           }}
           modalType="success"
+          centerText
         />
       )}
       <ReviewMetrics
