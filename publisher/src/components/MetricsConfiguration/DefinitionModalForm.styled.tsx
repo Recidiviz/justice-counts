@@ -83,13 +83,14 @@ export const IncludesExcludesContainer = styled.div`
   margin-bottom: 32px;
 `;
 
-export const IncludeExclude = styled.div`
+export const IncludeExclude = styled.div<{ enabled?: boolean }>`
   display: flex;
   flex-direction: row;
   gap: 8px;
-  align-items: start;
+  align-items: center;
   ${typography.sizeCSS.normal};
   cursor: pointer;
+  ${({ enabled }) => !enabled && `color: ${palette.highlight.grey7};`}
 
   &:hover {
     color: ${palette.solid.darkblue};
