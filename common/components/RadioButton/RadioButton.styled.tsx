@@ -18,7 +18,20 @@
 import styled from "styled-components/macro";
 
 import { palette, typography } from "../GlobalStyles";
-import { RadioButtonSize } from "./types";
+import { RadioButtonSize, WrapperSpacing } from "./types";
+
+export const RadioButtonsWrapper = styled.div<{
+  spacing?: WrapperSpacing;
+}>`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin: ${({ spacing }) =>
+    `${spacing?.top || 0}px ${spacing?.right || 0}px ${
+      spacing?.bottom || 0
+    }px ${spacing?.left || 0}px`};
+`;
 
 export const RadioButtonWrapper = styled.div`
   display: flex;
@@ -66,6 +79,7 @@ export const RadioButtonLabel = styled.label<{
   padding: 9px 16px;
   border: 1px solid ${palette.highlight.grey4};
   border-radius: 3px;
+  white-space: nowrap;
   transition: 0.2s ease;
 
   ${({ buttonSize }) => {

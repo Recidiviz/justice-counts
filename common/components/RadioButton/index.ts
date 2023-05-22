@@ -16,3 +16,4 @@
 // =============================================================================
 
 export * from "./RadioButton";
+export * from "./RadioButtonsWrapper";

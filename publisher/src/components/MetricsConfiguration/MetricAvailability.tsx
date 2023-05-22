@@ -21,7 +21,10 @@ import {
   Dropdown,
   DropdownOption,
 } from "@justice-counts/common/components/Dropdown";
-import { RadioButton } from "@justice-counts/common/components/RadioButton";
+import {
+  RadioButton,
+  RadioButtonsWrapper,
+} from "@justice-counts/common/components/RadioButton";
 import {
   SupervisionSubsystems,
   SupervisionSystem,
@@ -239,7 +242,7 @@ function MetricAvailability() {
                   </Styled.SettingTooltip>
                 </Styled.InfoIconWrapper>
               </Styled.SettingName>
-              <Styled.SettingOptions>
+              <RadioButtonsWrapper>
                 <RadioButton
                   type="radio"
                   id="metric-config-not-available"
@@ -281,7 +284,7 @@ function MetricAvailability() {
                     })
                   }
                 />
-              </Styled.SettingOptions>
+              </RadioButtonsWrapper>
             </Styled.SettingRow>
             {metricEnabled && customFrequency === "ANNUAL" && (
               <Styled.SettingRow>
@@ -296,7 +299,7 @@ function MetricAvailability() {
                     </Styled.SettingTooltip>
                   </Styled.InfoIconWrapper>
                 </Styled.SettingName>
-                <Styled.SettingOptions>
+                <RadioButtonsWrapper>
                   <RadioButton
                     type="radio"
                     id="metric-config-calendar-year"
@@ -351,7 +354,7 @@ function MetricAvailability() {
                       fullWidth
                     />
                   </Styled.MonthSelectionDropdownContainer>
-                </Styled.SettingOptions>
+                </RadioButtonsWrapper>
               </Styled.SettingRow>
             )}
             {systemSearchParam &&
@@ -371,7 +374,7 @@ function MetricAvailability() {
                       </Styled.SettingTooltip>
                     </Styled.InfoIconWrapper>
                   </Styled.SettingName>
-                  <Styled.SettingOptions>
+                  <RadioButtonsWrapper>
                     <RadioButton
                       type="radio"
                       id="supervision-subsystem-combined"
@@ -394,7 +397,7 @@ function MetricAvailability() {
                       }
                       checked={disaggregatedBySupervisionSubsystems}
                     />
-                  </Styled.SettingOptions>
+                  </RadioButtonsWrapper>
                 </Styled.SettingRow>
               )}
           </Styled.SettingRowsContainer>

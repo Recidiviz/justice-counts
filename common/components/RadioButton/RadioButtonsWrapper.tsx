@@ -15,10 +15,19 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export type WrapperSpacing = {
-  top?: number;
-  right?: number;
-  bottom?: number;
-  left?: number;
+import React from "react";
+
+import { RadioButtonsWrapper as Wrapper } from "./RadioButton.styled";
+import { WrapperSpacing } from "./types";
+
+type RadioButtonsWrapperProps = {
+  children: React.ReactNode;
+  spacing?: WrapperSpacing;
 };
-export type RadioButtonSize = "large";
+
+export function RadioButtonsWrapper({
+  children,
+  spacing,
+}: RadioButtonsWrapperProps) {
+  return <Wrapper spacing={spacing}>{children}</Wrapper>;
+}

@@ -17,7 +17,10 @@
 
 import blueCheckIcon from "@justice-counts/common/assets/status-check-icon.png";
 import { Button } from "@justice-counts/common/components/Button";
-import { RadioButton } from "@justice-counts/common/components/RadioButton";
+import {
+  RadioButton,
+  RadioButtonsWrapper,
+} from "@justice-counts/common/components/RadioButton";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -135,7 +138,7 @@ function RaceEthnicitiesModalForm({
           {Ethnicity.UNKNOWN_ETHNICITY}) separately from their race in your case
           management system?
         </Styled.SpecifyEthnicityPrompt>
-        <Styled.SpecifyEthnicityButtonsContainer>
+        <RadioButtonsWrapper spacing={{ bottom: 32 }}>
           <RadioButton
             type="radio"
             id="specify-ethnicity-yes"
@@ -154,7 +157,7 @@ function RaceEthnicitiesModalForm({
             checked={!canSpecifyEthnicity}
             onChange={() => setCanSpecifyEthnicity(false)}
           />
-        </Styled.SpecifyEthnicityButtonsContainer>
+        </RadioButtonsWrapper>
         <Styled.RaceListHeader>
           Which of the following categories does your case management system
           capture for race?

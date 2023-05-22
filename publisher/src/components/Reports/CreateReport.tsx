@@ -20,7 +20,10 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import { RadioButton } from "@justice-counts/common/components/RadioButton";
+import {
+  RadioButton,
+  RadioButtonsWrapper,
+} from "@justice-counts/common/components/RadioButton";
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
   CreateReportFormValuesType,
@@ -65,13 +68,6 @@ const Heading = styled.div`
   font-size: ${typography.sizeCSS.medium};
   margin-top: 24px;
   margin-bottom: 12px;
-`;
-
-const RadioButtonsWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
 `;
 
 const CreateReportInfoContainer = styled.div`

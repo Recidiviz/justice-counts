@@ -69,14 +69,6 @@ export const SpecifyEthnicityPrompt = styled.div`
   margin-bottom: 20px;
 `;
 
-export const SpecifyEthnicityButtonsContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  margin-bottom: 32px;
-`;
-
 export const RaceListHeader = styled.div`
   ${typography.sizeCSS.normal};
   margin-bottom: 24px;
