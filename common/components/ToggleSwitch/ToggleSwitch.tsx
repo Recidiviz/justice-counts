@@ -15,12 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React, { useState } from "react";
+import React from "react";
+
 import {
   Slider,
+  ToggleSwitchContainer,
   ToggleSwitchInput,
   ToggleSwitchLabel,
-  ToggleSwitchContainer,
   ToggleSwitchProps,
 } from ".";
 

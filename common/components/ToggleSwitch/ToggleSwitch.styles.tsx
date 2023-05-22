@@ -16,6 +16,7 @@
 // =============================================================================
 
 import styled from "styled-components/macro";
+
 import { palette } from "../GlobalStyles/Palette";
 
 export const ToggleSwitchContainer = styled.div`
