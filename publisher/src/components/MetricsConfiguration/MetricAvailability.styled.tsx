@@ -244,7 +244,7 @@ export const DimensionsList = styled.div`
   flex-direction: column;
 `;
 
-export const DimensionsListItem = styled.div`
+export const DimensionsListItem = styled.div<{ enabled?: boolean }>`
   display: flex;
   flex-direction: row;
   gap: 12px;
@@ -253,6 +253,8 @@ export const DimensionsListItem = styled.div`
   border-bottom: 1px solid ${palette.highlight.grey4};
   ${typography.sizeCSS.medium};
   cursor: pointer;
+
+  ${({ enabled }) => !enabled && `color: ${palette.highlight.grey7};`}
 
   &:last-child {
     border-bottom: none;
