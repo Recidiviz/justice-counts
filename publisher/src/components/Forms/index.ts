@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./BinaryRadioButton";
 export * from "./Form.styles";
 export * from "./NotReportedIcon";
 export * from "./TabbedDisaggregations";

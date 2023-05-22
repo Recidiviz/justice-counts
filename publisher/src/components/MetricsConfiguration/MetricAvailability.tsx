@@ -21,7 +21,10 @@ import {
   Dropdown,
   DropdownOption,
 } from "@justice-counts/common/components/Dropdown";
-import { RadioButton } from "@justice-counts/common/components/RadioButton";
+import {
+  RadioButton,
+  RadioButtonsWrapper,
+} from "@justice-counts/common/components/RadioButton";
 import {
   SupervisionSubsystems,
   SupervisionSystem,
@@ -239,14 +242,13 @@ function MetricAvailability() {
                   </Styled.SettingTooltip>
                 </Styled.InfoIconWrapper>
               </Styled.SettingName>
-              <Styled.SettingOptions>
+              <RadioButtonsWrapper>
                 <RadioButton
                   type="radio"
                   id="metric-config-not-available"
                   name="metric-config"
                   label="Not Available"
                   value="Not Available"
-                  fullWidth
                   checked={Boolean(metricEnabled === false)}
                   onChange={() => handleUpdateMetricEnabledStatus(false)}
                 />
@@ -256,7 +258,6 @@ function MetricAvailability() {
                   name="metric-config"
                   label="Monthly"
                   value="Monthly"
-                  fullWidth
                   checked={Boolean(
                     metricEnabled && customOrDefaultFrequency === "MONTHLY"
                   )}
@@ -273,7 +274,6 @@ function MetricAvailability() {
                   name="metric-config"
                   label="Annually"
                   value="Annual"
-                  fullWidth
                   checked={Boolean(
                     metricEnabled && customOrDefaultFrequency === "ANNUAL"
                   )}
@@ -284,7 +284,7 @@ function MetricAvailability() {
                     })
                   }
                 />
-              </Styled.SettingOptions>
+              </RadioButtonsWrapper>
             </Styled.SettingRow>
             {metricEnabled && customFrequency === "ANNUAL" && (
               <Styled.SettingRow>
@@ -299,14 +299,13 @@ function MetricAvailability() {
                     </Styled.SettingTooltip>
                   </Styled.InfoIconWrapper>
                 </Styled.SettingName>
-                <Styled.SettingOptions>
+                <RadioButtonsWrapper>
                   <RadioButton
                     type="radio"
                     id="metric-config-calendar-year"
                     name="metric-config-frequency"
                     label="Calendar Year"
                     value="Calendar Year (Jan)"
-                    fullWidth
                     checked={
                       metricEnabled && (startingMonth === 1 || !startingMonth)
                     }
@@ -324,7 +323,6 @@ function MetricAvailability() {
                     label="Fiscal Year"
                     value="Fiscal Year (Jul)"
                     checked={metricEnabled && startingMonth === 7}
-                    fullWidth
                     onChange={() =>
                       handleUpdateMetricReportFrequency({
                         customFrequency: "ANNUAL",
@@ -356,7 +354,7 @@ function MetricAvailability() {
                       fullWidth
                     />
                   </Styled.MonthSelectionDropdownContainer>
-                </Styled.SettingOptions>
+                </RadioButtonsWrapper>
               </Styled.SettingRow>
             )}
             {systemSearchParam &&
@@ -376,14 +374,13 @@ function MetricAvailability() {
                       </Styled.SettingTooltip>
                     </Styled.InfoIconWrapper>
                   </Styled.SettingName>
-                  <Styled.SettingOptions>
+                  <RadioButtonsWrapper>
                     <RadioButton
                       type="radio"
                       id="supervision-subsystem-combined"
                       name="supervision-subsystem"
                       label="Combined"
                       value="All Populations / Combined"
-                      fullWidth
                       onChange={() =>
                         handleSupervisionDisaggregationSelection(false)
                       }
@@ -395,13 +392,12 @@ function MetricAvailability() {
                       name="supervision-subsystem"
                       label="Disaggregated"
                       value="Disaggregated"
-                      fullWidth
                       onChange={() =>
                         handleSupervisionDisaggregationSelection(true)
                       }
                       checked={disaggregatedBySupervisionSubsystems}
                     />
-                  </Styled.SettingOptions>
+                  </RadioButtonsWrapper>
                 </Styled.SettingRow>
               )}
           </Styled.SettingRowsContainer>

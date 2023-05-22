@@ -20,6 +20,10 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
+import {
+  RadioButton,
+  RadioButtonsWrapper,
+} from "@justice-counts/common/components/RadioButton";
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
   CreateReportFormValuesType,
@@ -33,8 +37,6 @@ import { trackReportCreated } from "../../analytics";
 import { useStore } from "../../stores";
 import { monthsByName, printDateRangeFromMonthYear } from "../../utils";
 import {
-  BinaryRadioButton,
-  BinaryRadioGroupWrapper,
   Form,
   FormWrapper,
   GoBackToReportsOverviewLink,
@@ -65,6 +67,7 @@ function createIntegerRange(start: number, end: number) {
 const Heading = styled.div`
   font-size: ${typography.sizeCSS.medium};
   margin-top: 24px;
+  margin-bottom: 12px;
 `;
 
 const CreateReportInfoContainer = styled.div`
@@ -219,8 +222,8 @@ const CreateReport = () => {
           <Heading>
             What {REPORTING_LOWERCASE} frequency is this {REPORT_LOWERCASE}?
           </Heading>
-          <BinaryRadioGroupWrapper>
-            <BinaryRadioButton
+          <RadioButtonsWrapper>
+            <RadioButton
               type="radio"
               id="monthly"
               name="frequency"
@@ -228,8 +231,9 @@ const CreateReport = () => {
               value="MONTHLY"
               onChange={updateFrequency}
               defaultChecked={frequency === "MONTHLY"}
+              buttonSize="large"
             />
-            <BinaryRadioButton
+            <RadioButton
               type="radio"
               id="annual"
               name="frequency"
@@ -237,15 +241,16 @@ const CreateReport = () => {
               value="ANNUAL"
               onChange={updateFrequency}
               defaultChecked={frequency === "ANNUAL"}
+              buttonSize="large"
             />
-          </BinaryRadioGroupWrapper>
+          </RadioButtonsWrapper>
           {createReportFormValues.frequency === "ANNUAL" && (
             <>
               <Heading>
                 What year standard do you use for annual {REPORTS_LOWERCASE}?
               </Heading>
-              <BinaryRadioGroupWrapper>
-                <BinaryRadioButton
+              <RadioButtonsWrapper>
+                <RadioButton
                   type="radio"
                   id="calendar"
                   name="yearStandard"
@@ -253,8 +258,9 @@ const CreateReport = () => {
                   value={1}
                   onChange={updateYearStandard}
                   defaultChecked={annualStartMonth === 1}
+                  buttonSize="large"
                 />
-                <BinaryRadioButton
+                <RadioButton
                   type="radio"
                   id="fiscal"
                   name="yearStandard"
@@ -262,8 +268,9 @@ const CreateReport = () => {
                   value={7}
                   onChange={updateYearStandard}
                   defaultChecked={annualStartMonth === 7}
+                  buttonSize="large"
                 />
-              </BinaryRadioGroupWrapper>
+              </RadioButtonsWrapper>
             </>
           )}
           {/* Disable recurring report toggle for now */}

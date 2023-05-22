@@ -15,38 +15,19 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React, { InputHTMLAttributes } from "react";
+import React from "react";
 
-import * as Styled from "./RadioButton.styled";
-import { RadioButtonSize } from "./types";
+import { RadioButtonsWrapper as Wrapper } from "./RadioButton.styled";
+import { WrapperSpacing } from "./types";
 
-interface RadioButtonProps extends InputHTMLAttributes<HTMLInputElement> {
-  label: string;
-  buttonSize?: RadioButtonSize;
-  metricKey?: string;
-}
+type RadioButtonsWrapperProps = {
+  children: React.ReactNode;
+  spacing?: WrapperSpacing;
+};
 
-export function RadioButton({
-  label,
-  buttonSize,
-  metricKey,
-  disabled,
-  ...props
-}: RadioButtonProps) {
-  return (
-    <Styled.RadioButtonWrapper>
-      <Styled.RadioButtonInput
-        disabled={disabled}
-        {...props}
-        data-metric-key={metricKey}
-      />
-      <Styled.RadioButtonLabel
-        buttonSize={buttonSize}
-        disabled={disabled}
-        htmlFor={props.id}
-      >
-        {label}
-      </Styled.RadioButtonLabel>
-    </Styled.RadioButtonWrapper>
-  );
+export function RadioButtonsWrapper({
+  children,
+  spacing,
+}: RadioButtonsWrapperProps) {
+  return <Wrapper spacing={spacing}>{children}</Wrapper>;
 }

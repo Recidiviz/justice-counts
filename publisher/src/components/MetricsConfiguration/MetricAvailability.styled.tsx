@@ -97,6 +97,7 @@ export const SettingRow = styled.div`
 
 export const SettingName = styled.div`
   width: 45%;
+  min-width: 45%;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -128,13 +129,6 @@ export const SettingTooltip = styled.div`
   ${InfoIconWrapper}:hover & {
     display: block;
   }
-`;
-
-export const SettingOptions = styled.div`
-  width: 55%;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
 `;
 
 export const MonthSelectionDropdownContainer = styled.div<{
