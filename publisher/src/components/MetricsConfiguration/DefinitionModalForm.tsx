@@ -398,6 +398,7 @@ function DefinitionModalForm({
                                   settingKey
                                 )
                               }
+                              enabled={setting.included === "Yes"}
                             >
                               {setting.included === "Yes" ? (
                                 <Styled.EnabledIcon
