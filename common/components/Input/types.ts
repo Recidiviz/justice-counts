@@ -15,6 +15,27 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./BinaryRadioButton";
-export * from "./Form.styles";
-export * from "./TabbedDisaggregations";
+export type InputProps = {
+  error?: string;
+  placeholder?: string;
+  isPlaceholderVisible?: boolean;
+  multiline?: boolean;
+  persistLabel?: boolean;
+  notReporting?: boolean;
+  textSize?: "small";
+};
+
+export type InputLabelProps = {
+  inputHasValue?: boolean;
+  isDisabled?: boolean;
+  error?: string;
+  persistLabel?: boolean;
+  notReporting?: boolean;
+};
+
+export type ErrorLabelProps = {
+  isDisabled?: boolean;
+  error?: string;
+  multiline?: boolean;
+  textSize?: "small";
+};

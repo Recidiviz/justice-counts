@@ -15,11 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Input } from "@justice-counts/common/components/Input";
 import { debounce as _debounce } from "lodash";
 import React, { useRef } from "react";
 
 import { useStore } from "../../stores";
-import { TextInput } from "../Forms";
 import {
   AccountSettingsInputsWrapper,
   AccountSettingsTitle,
@@ -47,7 +47,7 @@ export const AccountSettings = () => {
       <AccountSettingsTitle />
 
       <AccountSettingsInputsWrapper>
-        <TextInput
+        <Input
           style={{ marginBottom: "0" }}
           persistLabel
           label="Full Name"
@@ -57,7 +57,7 @@ export const AccountSettings = () => {
             debouncedSave(e.target.value, undefined);
           }}
         />
-        <TextInput
+        <Input
           persistLabel
           label="Email"
           value={email}

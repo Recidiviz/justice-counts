@@ -17,6 +17,7 @@
 
 import blueCheckIcon from "@justice-counts/common/assets/status-check-icon.png";
 import { Button } from "@justice-counts/common/components/Button";
+import { Input } from "@justice-counts/common/components/Input";
 import {
   MetricConfigurationSettings,
   MetricConfigurationSettingsOptions,
@@ -26,7 +27,6 @@ import React, { ChangeEvent, Fragment, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { TextInput } from "../Forms";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import * as Styled from "./DefinitionModalForm.styled";
 import {
@@ -424,7 +424,7 @@ function DefinitionModalForm({
                 return (
                   <Fragment key={key}>
                     <Styled.Label>{label}</Styled.Label>
-                    <TextInput
+                    <Input
                       type="text"
                       name={key}
                       id={key}

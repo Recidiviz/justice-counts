@@ -15,20 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { CustomDropdownToggle } from "@justice-counts/common/components/Dropdown";
-import {
-  MIN_DESKTOP_WIDTH,
-  palette,
-  typography,
-} from "@justice-counts/common/components/GlobalStyles";
-import { Tab } from "@justice-counts/common/components/TabbedBar";
-import React from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components/macro";
 
-import notReportedIcon from "../assets/not-reported-icon.png";
-import { TWO_PANEL_MAX_WIDTH } from "../Reports/ReportDataEntry.styles";
-import { InputWrapper } from "./TextInput";
+import { CustomDropdownToggle } from "../Dropdown";
+import { MIN_DESKTOP_WIDTH, palette, typography } from "../GlobalStyles";
+import { Tab } from "../TabbedBar";
+import { InputWrapper } from "./Input.styled";
+
+const DATA_ENTRY_PAGE_TWO_PANEL_MAX_WIDTH = 644 + 360 * 2;
 
 export const NotReportedIconWrapper = styled.div<{
   size?: number;
@@ -77,7 +71,7 @@ export const NotReportedIconTooltip = styled.div`
   white-space: normal;
   text-align: start;
 
-  @media only screen and (max-width: ${TWO_PANEL_MAX_WIDTH}px) {
+  @media only screen and (max-width: ${DATA_ENTRY_PAGE_TWO_PANEL_MAX_WIDTH}px) {
     width: 167px;
     left: -38%;
   }
@@ -120,35 +114,3 @@ export const MetricsViewLink = styled.span`
     cursor: pointer;
   }
 `;
-
-export const NotReportedIcon: React.FC<{
-  size?: number;
-  lighter?: boolean;
-  noTooltip?: boolean;
-}> = ({ size, lighter, noTooltip }) => {
-  const navigate = useNavigate();
-  return (
-    <NotReportedIconWrapper size={size}>
-      <NotReportedIconImg
-        src={notReportedIcon}
-        alt=""
-        size={size}
-        lighter={lighter}
-        hasTooltip={!noTooltip}
-      />
-      {!noTooltip && (
-        <NotReportedIconTooltipHoverArea size={size}>
-          <NotReportedIconTooltip>
-            This has been disabled by an admin because the data is unavailable.
-            If you have the data for this, consider changing the configuration
-            in the{" "}
-            <MetricsViewLink onClick={() => navigate("/settings")}>
-              Settings
-            </MetricsViewLink>
-            .
-          </NotReportedIconTooltip>
-        </NotReportedIconTooltipHoverArea>
-      )}
-    </NotReportedIconWrapper>
-  );
-};

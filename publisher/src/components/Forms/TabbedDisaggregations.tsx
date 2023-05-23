@@ -16,10 +16,12 @@
 // =============================================================================
 
 import successIcon from "@justice-counts/common/assets/status-check-icon.png";
+import errorIcon from "@justice-counts/common/assets/status-error-icon.png";
 import {
   Dropdown,
   DropdownOption,
 } from "@justice-counts/common/components/Dropdown";
+import { NotReportedIcon } from "@justice-counts/common/components/Input";
 import {
   TabbedBar,
   TabOption,
@@ -30,9 +32,9 @@ import {
   MetricDisaggregations,
 } from "@justice-counts/common/types";
 import React, { Fragment, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import errorIcon from "../assets/status-error-icon.png";
 import {
   Ethnicity,
   RACE_ETHNICITY_DISAGGREGATION_KEY,
@@ -46,7 +48,6 @@ import {
   DisaggregationsDropdownContainer,
   DisaggregationsTabbedBarContainer,
   EthnicityHeader,
-  NotReportedIcon,
 } from ".";
 
 export const TabbedDisaggregations: React.FC<{
@@ -55,6 +56,8 @@ export const TabbedDisaggregations: React.FC<{
   disabled?: boolean;
   updateFieldDescription: (title?: string, description?: string) => void;
 }> = ({ metric, reportID, disabled, updateFieldDescription }) => {
+  const navigate = useNavigate();
+  const { agencyId } = useParams() as { agencyId: string };
   const { formStore } = useStore();
 
   const [activeDisaggregation, setActiveDisaggregation] = useState<{
@@ -135,7 +138,15 @@ export const TabbedDisaggregations: React.FC<{
     hasInput: boolean | undefined
   ) => {
     if (!disaggregationEnabled) {
-      return <NotReportedIcon size={16} lighter />;
+      return (
+        <NotReportedIcon
+          size={16}
+          lighter
+          notReportingTooltipLink={() =>
+            navigate(`/agency/${agencyId}/metric-config`)
+          }
+        />
+      );
     }
 
     if (hasError && disaggregationEnabled) {

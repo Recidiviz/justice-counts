@@ -18,10 +18,12 @@
 /* eslint-disable camelcase */
 import editIcon from "@justice-counts/common/assets/edit-row-icon.png";
 import { Button } from "@justice-counts/common/components/Button";
+import { Input } from "@justice-counts/common/components/Input";
 import { Modal } from "@justice-counts/common/components/Modal";
 import {
   AgencyTeamMember,
   AgencyTeamMemberRole,
+  FormError,
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -38,10 +40,7 @@ import {
   EditTeamMemberMenuItem,
   InvitedStatus,
   InviteMemberContainer,
-  InviteMemberError,
-  InviteMemberErrorContainer,
   InviteMemberInnerContainer,
-  InviteMemberInput,
   InviteMemberInputsContainer,
   JCAdminStatus,
   TeamManagementBlock,
@@ -75,6 +74,9 @@ export const AgencySettingsTeamManagement = observer(() => {
     useState<string | undefined>(undefined);
   const [nameValue, setNameValue] = useState("");
   const [emailValue, setEmailValue] = useState("");
+  const [inputsError, setInputsError] = useState<FormError | undefined>(
+    undefined
+  );
 
   const validateEmail = (email: string) => {
     // simple email validation
@@ -204,18 +206,38 @@ export const AgencySettingsTeamManagement = observer(() => {
             Send invite to colleagues
           </TeamManagementSectionTitle>
           <InviteMemberContainer>
-            <InviteMemberInnerContainer>
+            <InviteMemberInnerContainer hasError={!!inputsError}>
               <InviteMemberInputsContainer>
-                <InviteMemberInput
+                <Input
+                  label=""
+                  noBottomMargin
                   placeholder="Enter full name"
+                  isPlaceholderVisible
                   value={nameValue}
                   onChange={(e) => setNameValue(e.target.value)}
+                  textSize="small"
                 />
-                <InviteMemberInput
+                <Input
+                  label=""
+                  noBottomMargin
                   placeholder="Enter email"
+                  isPlaceholderVisible
                   value={emailValue}
-                  onChange={(e) => setEmailValue(e.target.value)}
-                  error={!!emailValue && !validateEmail(emailValue)}
+                  onChange={(e) => {
+                    setEmailValue(e.target.value);
+                    const isEmailInvalid =
+                      !e.target.value || !validateEmail(e.target.value);
+                    if (isEmailInvalid) {
+                      setInputsError({
+                        message: "Please enter a valid email.",
+                      });
+                    } else {
+                      setInputsError(undefined);
+                    }
+                  }}
+                  error={inputsError}
+                  textSize="small"
+                  // error={!!emailValue && !validateEmail(emailValue)}
                 />
               </InviteMemberInputsContainer>
               <Button
@@ -227,13 +249,6 @@ export const AgencySettingsTeamManagement = observer(() => {
                 }
               />
             </InviteMemberInnerContainer>
-            <InviteMemberErrorContainer>
-              {!!emailValue && !validateEmail(emailValue) && (
-                <InviteMemberError>
-                  Please enter a valid email.
-                </InviteMemberError>
-              )}
-            </InviteMemberErrorContainer>
           </InviteMemberContainer>
           <TeamManagementSectionTitle>Manage staff</TeamManagementSectionTitle>
           <TeamManagementSectionSubTitle>
