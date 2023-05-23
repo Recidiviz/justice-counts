@@ -52,6 +52,7 @@ function MetricDefinitions() {
     Object.keys(disaggregations[systemMetricKey]);
 
   const metricHasDefinitionSelected = () => {
+    /** Top-level Metric Definitions */
     if (!metricDefinitionSettings[systemMetricKey]) return true;
     const metricSettings = Object.values(
       metricDefinitionSettings[systemMetricKey]
@@ -61,8 +62,11 @@ function MetricDefinitions() {
     const hasContextValue = Boolean(
       contexts[systemMetricKey].INCLUDES_EXCLUDES_DESCRIPTION.value
     );
-    return !!Object.values(metricSettings).find(
-      (setting) => setting.included === "Yes" || hasContextValue
+    return (
+      hasContextValue ||
+      !!Object.values(metricSettings).find(
+        (setting) => setting.included === "Yes"
+      )
     );
   };
 
@@ -135,6 +139,7 @@ function MetricDefinitions() {
                 <Styled.SectionTitle>
                   {currentDisaggregation.display_name}
                 </Styled.SectionTitle>
+                {/* Dimension-level Definitions */}
                 {currentEnabledDimensions.map(([key, dimension]) => {
                   let hasEnabledDefinition = false;
                   const currentDimensionDefinitionSettings =
@@ -169,11 +174,11 @@ function MetricDefinitions() {
                         ]: Partial<MetricConfigurationSettings>;
                       }
                     );
-                    hasEnabledDefinition = !!Object.values(
-                      dimensionSettings
-                    ).find(
-                      (setting) => setting.included === "Yes" || hasContextValue
-                    );
+                    hasEnabledDefinition =
+                      hasContextValue ||
+                      !!Object.values(dimensionSettings).find(
+                        (setting) => setting.included === "Yes"
+                      );
                   }
 
                   return (
