@@ -252,7 +252,6 @@ export const DimensionsListItem = styled.div<{ enabled?: boolean }>`
   padding: 16px 0 16px 10px;
   border-bottom: 1px solid ${palette.highlight.grey4};
   ${typography.sizeCSS.medium};
-  cursor: pointer;
 
   ${({ enabled }) => !enabled && `color: ${palette.highlight.grey7};`}
 
