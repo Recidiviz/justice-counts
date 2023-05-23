@@ -166,7 +166,7 @@ function MetricDefinitions() {
 
                   if (
                     (!hasSettings && !hasContext) ||
-                    (!hasSettings && hasContext && hasContextValue)
+                    (!hasSettings && hasContextValue)
                   ) {
                     hasEnabledDefinition = true;
                   } else if (hasSettings) {
