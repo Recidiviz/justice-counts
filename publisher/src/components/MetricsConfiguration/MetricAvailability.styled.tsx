@@ -264,10 +264,6 @@ export const DimensionsListItem = styled.div<{ enabled?: boolean }>`
     width: 20px;
     height: 20px;
   }
-
-  &:hover {
-    background-color: ${palette.highlight.grey1};
-  }
 `;
 
 export const DisabledDimensionIcon = styled.div`
