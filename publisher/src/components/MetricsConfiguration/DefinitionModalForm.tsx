@@ -398,6 +398,7 @@ function DefinitionModalForm({
                                   settingKey
                                 )
                               }
+                              enabled={setting.included === "Yes"}
                             >
                               {setting.included === "Yes" ? (
                                 <Styled.EnabledIcon
@@ -418,6 +419,7 @@ function DefinitionModalForm({
               )}
             </Styled.IncludesExcludesContainer>
           )}
+
           <Styled.ContextContainer>
             {currentContexts &&
               Object.entries(currentContexts).map(([key, { label, value }]) => {

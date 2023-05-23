@@ -16,7 +16,6 @@
 // =============================================================================
 
 import infoIcon from "@justice-counts/common/assets/info-icon.svg";
-import blueCheckIcon from "@justice-counts/common/assets/status-check-icon.png";
 import {
   Dropdown,
   DropdownOption,
@@ -25,6 +24,7 @@ import {
   RadioButton,
   RadioButtonsWrapper,
 } from "@justice-counts/common/components/RadioButton";
+import { ToggleSwitch } from "@justice-counts/common/components/ToggleSwitch";
 import {
   SupervisionSubsystems,
   SupervisionSystem,
@@ -478,19 +478,18 @@ function MetricAvailability() {
                           ([dimensionKey, { label, enabled }]) => (
                             <Styled.DimensionsListItem
                               key={dimensionKey}
-                              onClick={() =>
-                                handleDimensionEnabledStatus(
-                                  !enabled,
-                                  dimensionKey,
-                                  disaggregationKey
-                                )
-                              }
+                              enabled={Boolean(enabled)}
                             >
-                              {enabled ? (
-                                <img src={blueCheckIcon} alt="" />
-                              ) : (
-                                <Styled.DisabledDimensionIcon />
-                              )}
+                              <ToggleSwitch
+                                checked={Boolean(enabled)}
+                                onChange={() =>
+                                  handleDimensionEnabledStatus(
+                                    !enabled,
+                                    dimensionKey,
+                                    disaggregationKey
+                                  )
+                                }
+                              />
                               {label}
                             </Styled.DimensionsListItem>
                           )
