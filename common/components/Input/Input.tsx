@@ -23,6 +23,7 @@ import { FormError } from "../../types";
 import { ErrorWithTooltip } from "./ErrorWithTooltip";
 import * as Styled from "./Input.styled";
 import { NotReportedIcon } from "./NotReportedIcon";
+import { InputTextSize } from "./types";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -35,10 +36,10 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   notReporting?: boolean;
   notReportingTooltipLink?: () => void;
   isPlaceholderVisible?: boolean;
-  textSize?: "small";
+  textSize?: InputTextSize;
 }
 
-export const Input: React.FC<InputProps> = ({
+export function Input({
   label,
   noBottomMargin,
   error,
@@ -52,7 +53,7 @@ export const Input: React.FC<InputProps> = ({
   isPlaceholderVisible,
   textSize,
   ...props
-}): JSX.Element => {
+}: InputProps) {
   const [showTooltip, setShowTooltip] = useState<boolean>();
   const { name, value, disabled } = props;
 
@@ -148,4 +149,4 @@ export const Input: React.FC<InputProps> = ({
       )}
     </Styled.InputWrapper>
   );
-};
+}

@@ -22,7 +22,7 @@ export type InputProps = {
   multiline?: boolean;
   persistLabel?: boolean;
   notReporting?: boolean;
-  textSize?: "small";
+  textSize?: InputTextSize;
 };
 
 export type InputLabelProps = {
@@ -37,5 +37,7 @@ export type ErrorLabelProps = {
   isDisabled?: boolean;
   error?: string;
   multiline?: boolean;
-  textSize?: "small";
+  textSize?: InputTextSize;
 };
+
+export type InputTextSize = "small";

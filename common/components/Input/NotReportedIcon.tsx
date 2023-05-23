@@ -20,12 +20,19 @@ import React from "react";
 import notReportedIcon from "../../assets/not-reported-icon.png";
 import * as Styled from "./NotReportedIcon.styled";
 
-export const NotReportedIcon: React.FC<{
+type NotReportedIconProps = {
   size?: number;
   lighter?: boolean;
   noTooltip?: boolean;
   notReportingTooltipLink?: () => void;
-}> = ({ size, lighter, noTooltip, notReportingTooltipLink }) => {
+};
+
+export function NotReportedIcon({
+  size,
+  lighter,
+  noTooltip,
+  notReportingTooltipLink,
+}: NotReportedIconProps) {
   return (
     <Styled.NotReportedIconWrapper size={size}>
       <Styled.NotReportedIconImg
@@ -41,13 +48,13 @@ export const NotReportedIcon: React.FC<{
             This has been disabled by an admin because the data is unavailable.
             If you have the data for this, consider changing the configuration
             in the{" "}
-            <Styled.MetricsViewLink onClick={notReportingTooltipLink}>
+            <Styled.TooltipLink onClick={notReportingTooltipLink}>
               Settings
-            </Styled.MetricsViewLink>
+            </Styled.TooltipLink>
             .
           </Styled.NotReportedIconTooltip>
         </Styled.NotReportedIconTooltipHoverArea>
       )}
     </Styled.NotReportedIconWrapper>
   );
-};
+}

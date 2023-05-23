@@ -106,7 +106,7 @@ export const NotReportedIconTooltipHoverArea = styled.div<{
   }
 `;
 
-export const MetricsViewLink = styled.span`
+export const TooltipLink = styled.span`
   color: ${palette.solid.white};
   text-decoration: underline;
 

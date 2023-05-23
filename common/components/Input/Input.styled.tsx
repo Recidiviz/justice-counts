@@ -18,7 +18,12 @@
 import styled from "styled-components/macro";
 
 import { palette, typography } from "../GlobalStyles";
-import { ErrorLabelProps, InputLabelProps, InputProps } from "./types";
+import {
+  ErrorLabelProps,
+  InputLabelProps,
+  InputProps,
+  InputTextSize,
+} from "./types";
 
 export const InputWrapper = styled.div<{ noBottomMargin?: boolean }>`
   position: relative;
@@ -155,7 +160,7 @@ export const ErrorLabel = styled.span<ErrorLabelProps>`
   width: 100%;
 `;
 
-export const LabelChipPosition = styled.span<{ textSize?: "small" }>`
+export const LabelChipPosition = styled.span<{ textSize?: InputTextSize }>`
   position: absolute;
   top: ${({ textSize }) => (textSize === "small" ? "18px" : "24px")};
   right: 16px;

@@ -20,20 +20,21 @@ import React, { useState } from "react";
 import infoRedIcon from "../../assets/info-red-icon.png";
 import { FormError } from "../../types";
 import { ErrorIconContainer, ErrorInfo, ErrorLabel } from "./Input.styled";
+import { InputTextSize } from "./types";
 
 type ErrorWithTooltipProps = {
   error: FormError;
   disabled?: boolean;
   multiline?: boolean;
-  textSize?: "small";
+  textSize?: InputTextSize;
 };
 
-export const ErrorWithTooltip: React.FC<ErrorWithTooltipProps> = ({
+export function ErrorWithTooltip({
   error,
   disabled,
   multiline,
   textSize,
-}): JSX.Element => {
+}: ErrorWithTooltipProps) {
   const [showErrorInfo, setShowErrorInfo] = useState<boolean>();
   return (
     <ErrorLabel
@@ -58,4 +59,4 @@ export const ErrorWithTooltip: React.FC<ErrorWithTooltipProps> = ({
       )}
     </ErrorLabel>
   );
-};
+}
