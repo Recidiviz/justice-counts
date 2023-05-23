@@ -384,7 +384,7 @@ function DefinitionModalForm({
               {Object.entries(currentSettings).map(
                 ([includesExcludesKey, value]) => {
                   return (
-                    <>
+                    <Fragment key={includesExcludesKey}>
                       {includesExcludesKey !== "NO_DESCRIPTION" &&
                         includesExcludesKey}
                       {Object.entries(value.settings).map(
@@ -412,7 +412,7 @@ function DefinitionModalForm({
                           );
                         }
                       )}
-                    </>
+                    </Fragment>
                   );
                 }
               )}
