@@ -59,6 +59,7 @@ function MetricDefinitions() {
     ).reduce((acc, metricSetting) => {
       return { ...acc, ...metricSetting.settings };
     }, {} as { [settingKey: string]: Partial<MetricConfigurationSettings> });
+    /** Top-level metric context key will always be "INCLUDES_EXCLUDES_DESCRIPTION" */
     const hasContextValue = Boolean(
       contexts[systemMetricKey].INCLUDES_EXCLUDES_DESCRIPTION.value
     );
@@ -152,8 +153,15 @@ function MetricDefinitions() {
                   const dimensionContext =
                     dimensionContexts[systemMetricKey][disaggregationKey][key];
                   const hasContext = Boolean(dimensionContext);
+                  /**
+                   * Dimension-level context key will be either "INCLUDES_EXCLUDES_DESCRIPTION"
+                   * for general context descriptions or "ADDITIONAL_CONTEXT" for the "Other" dimensions' context
+                   */
                   const hasContextValue = hasContext
-                    ? Boolean(Object.values(dimensionContext)[0].value)
+                    ? Boolean(
+                        dimensionContext.INCLUDES_EXCLUDES_DESCRIPTION?.value ||
+                          dimensionContext.ADDITIONAL_CONTEXT?.value
+                      )
                     : false;
 
                   if (
