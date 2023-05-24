@@ -90,10 +90,11 @@ export const MetricsSection = styled.div`
   flex-direction: column;
 `;
 
-export const MetricsSectionTitle = styled.div`
+export const MetricsSectionTitle = styled.div<{ textColor?: string }>`
   ${typography.sizeCSS.medium};
   margin-bottom: 12px;
-  color: ${palette.highlight.grey9};
+  color: ${({ textColor }) =>
+    textColor === "red" ? palette.solid.red : palette.highlight.grey9};
 `;
 
 export const MetricItem = styled.div`

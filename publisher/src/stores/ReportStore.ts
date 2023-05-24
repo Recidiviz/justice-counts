@@ -30,6 +30,7 @@ import {
   REPORT_LOWERCASE,
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
+import { LatestReportsAgencyMetrics } from "../components/Home";
 import { MetricSettings } from "../components/MetricsConfiguration";
 import {
   PublishReviewMetricErrors,
@@ -169,6 +170,46 @@ class ReportStore {
       runInAction(() => {
         this.loadingReportData = false;
       });
+    }
+  }
+
+  async getLatestReportsAndMetrics(
+    currentAgencyId: string
+  ): Promise<void | Error | LatestReportsAgencyMetrics> {
+    try {
+      const response = (await this.api.request({
+        path: `/api/home/${currentAgencyId}`,
+        method: "GET",
+      })) as Response;
+
+      if (response.status !== 200) {
+        throw new Error(
+          `There was an issue getting this ${REPORT_LOWERCASE} .`
+        );
+      }
+
+      const latestRecordsAndMetrics =
+        (await response.json()) as LatestReportsAgencyMetrics;
+      const annualRecords = Object.values(
+        latestRecordsAndMetrics.annual_reports
+      );
+      const hasAnnualRecords = Boolean(annualRecords.length > 0);
+      const hasMonthlyRecord = Boolean(
+        latestRecordsAndMetrics.monthly_report.id
+      );
+      const allRecords = [];
+
+      if (hasMonthlyRecord)
+        allRecords.push(latestRecordsAndMetrics.monthly_report);
+      if (hasAnnualRecords) allRecords.push(...annualRecords);
+      if (allRecords.length > 0) {
+        allRecords.forEach((record) =>
+          this.storeMetricDetails(record.id, record.metrics, record)
+        );
+      }
+      return latestRecordsAndMetrics;
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
     }
   }
 

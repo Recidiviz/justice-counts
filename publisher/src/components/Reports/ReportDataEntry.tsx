@@ -44,7 +44,6 @@ const ReportDataEntry = () => {
   const [fieldDescription, setFieldDescription] = useState<
     FieldDescriptionProps | undefined
   >(undefined);
-  const [showDataEntryHelpPage, setShowDataEntryHelpPage] = useState(false);
   const { formStore, reportStore, userStore } = useStore();
   const { agencyId, id } = useParams();
   const reportID = Number(id);
@@ -139,7 +138,6 @@ const ReportDataEntry = () => {
       <ReportSummaryPanel
         reportID={reportID}
         activeMetric={activeMetric}
-        showDataEntryHelpPage={showDataEntryHelpPage}
         fieldDescription={fieldDescription}
       />
       <DataEntryForm
@@ -147,8 +145,6 @@ const ReportDataEntry = () => {
         updateActiveMetric={updateActiveMetric}
         updateFieldDescription={updateFieldDescription}
         convertReportToDraft={convertReportToDraft}
-        showDataEntryHelpPage={showDataEntryHelpPage}
-        setShowDataEntryHelpPage={setShowDataEntryHelpPage}
       />
       <PublishDataPanel
         reportID={reportID}

@@ -28,8 +28,7 @@ import { ModalBackground, ModalType } from "./types";
 type ModalProps = {
   title: string | React.ReactNode;
   description: string | React.ReactNode;
-  primaryButton: { label: string; onClick: () => void };
-  secondaryButton: { label: string; onClick: () => void };
+  buttons: { label: string; onClick: () => void }[];
   modalType?: ModalType;
   modalBackground?: ModalBackground;
   centerText?: boolean;
@@ -38,8 +37,7 @@ type ModalProps = {
 export function Modal({
   title,
   description,
-  primaryButton,
-  secondaryButton,
+  buttons,
   modalType,
   modalBackground,
   centerText,
@@ -67,15 +65,18 @@ export function Modal({
         <Styled.Title>{title}</Styled.Title>
         <Styled.Description>{description}</Styled.Description>
         <Styled.ButtonsContainer modalType={modalType}>
-          <Button
-            label={secondaryButton.label}
-            onClick={secondaryButton.onClick}
-          />
-          <Button
-            label={primaryButton.label}
-            onClick={primaryButton.onClick}
-            buttonColor={primaryButtonColor()}
-          />
+          {buttons.map((button, index) => (
+            <Button
+              label={button.label}
+              onClick={button.onClick}
+              borderColor={
+                index === buttons.length - 1 ? undefined : "lightgrey"
+              }
+              buttonColor={
+                index === buttons.length - 1 ? primaryButtonColor() : undefined
+              }
+            />
+          ))}
         </Styled.ButtonsContainer>
       </Styled.InnerWrapper>
     </Styled.OuterWrapper>

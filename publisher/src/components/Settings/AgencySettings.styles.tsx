@@ -119,10 +119,24 @@ export const AgencySettingsBlock = styled.div<{
 
 export const AgencySettingsBlockTitle = styled.div<{
   isEditModeActive?: boolean;
+  configured?: boolean;
 }>`
   ${typography.sizeCSS.large};
   margin-bottom: ${({ isEditModeActive }) =>
     isEditModeActive ? "8px" : "16px"};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  ${({ configured }) =>
+    configured === false &&
+    `
+    &::after {
+      ${typography.sizeCSS.small}
+      content: "Action Required";
+      color: ${palette.solid.red};
+    } 
+  `}
 `;
 
 export const AgencySettingsBlockDescription = styled.div`

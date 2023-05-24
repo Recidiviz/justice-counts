@@ -53,11 +53,10 @@ export const HeaderBar = styled.div<{
 export const LogoContainer = styled.div`
   height: ${HEADER_BAR_HEIGHT}px;
   width: auto;
-  padding-right: 16px;
+  padding-right: 1px;
   display: flex;
   justify-content: start;
   align-items: center;
-  gap: 24px;
   transition: 0.3s ease;
 
   &:hover {

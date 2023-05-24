@@ -25,13 +25,10 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { RecordsBulkAction } from "../../pages/Reports";
 import { useStore } from "../../stores";
 import { PageWrapper } from "../Forms";
-import {
-  REPORT_LOWERCASE,
-  REPORTS_CAPITALIZED,
-  REPORTS_LOWERCASE,
-} from "../Global/constants";
+import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 import { Loading } from "../Loading";
 import {
+  createPublishSuccessModalButtons,
   PublishReviewPropsFromDatapoints,
   ReviewHeaderActionButton,
   ReviewMetric,
@@ -55,6 +52,7 @@ const BulkActionReview = () => {
     undefined
   );
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isPublishInProgress, setIsPublishInProgress] = useState(false);
   const [publishReviewProps, setPublishReviewProps] =
     useState<PublishReviewPropsFromDatapoints>();
   const records = publishReviewProps?.records;
@@ -65,6 +63,7 @@ const BulkActionReview = () => {
     records && metricsToDisplay && datapointsByMetric;
 
   const publishMultipleRecords = async () => {
+    setIsPublishInProgress(true);
     const response = (await reportStore.updateMultipleReportStatuses(
       recordsIds,
       agencyIdString,
@@ -81,6 +80,7 @@ const BulkActionReview = () => {
     }
 
     setIsSuccessModalOpen(true);
+    setIsPublishInProgress(false);
   };
 
   const unpublishMultipleRecords = async () => {
@@ -183,6 +183,7 @@ const BulkActionReview = () => {
           : unpublishMultipleRecords,
       isPublishButton: true,
       buttonColor: action === "publish" ? "green" : "orange",
+      isPublishInProgress,
     },
   ];
 
@@ -206,14 +207,7 @@ const BulkActionReview = () => {
         <Modal
           title={modalTitle}
           description={modalDescription}
-          primaryButton={{
-            label: "Go to Data",
-            onClick: () => navigate(`/agency/${agencyId}/data`),
-          }}
-          secondaryButton={{
-            label: `Go to ${REPORTS_CAPITALIZED}`,
-            onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
-          }}
+          buttons={createPublishSuccessModalButtons(agencyId, navigate)}
           modalType="success"
         />
       )}

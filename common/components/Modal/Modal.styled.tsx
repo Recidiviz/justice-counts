@@ -77,10 +77,15 @@ export const Description = styled.div`
 export const ButtonsContainer = styled.div<{ modalType?: ModalType }>`
   width: 100%;
   display: flex;
-  flex-direction: row;
+  gap: 12px;
 
   ${({ modalType }) => {
     if (modalType) return "justify-content: space-between; margin-top: 72px;";
     return "justify-content: end; gap: 16px; margin-top: 24px;";
   }}
+
+  & > div:last-child {
+    justify-content: unset;
+    margin-left: auto;
+  }
 `;

@@ -86,8 +86,11 @@ export const CustomDropdownMenu = styled(DropdownMenu)<{
   max-height: 250px;
   overflow-y: auto;
   z-index: 5;
+  transform: unset;
+  transition: unset;
 
-  ${({ menuFullWidth }) => menuFullWidth && "width: 100%"}
+  ${({ menuFullWidth }) =>
+    menuFullWidth ? "width: 100%;" : "min-width: 293px;"}
 `;
 
 export const CustomDropdownMenuItem = styled(DropdownMenuItem)<{
@@ -103,6 +106,7 @@ export const CustomDropdownMenuItem = styled(DropdownMenuItem)<{
   height: auto;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   border-radius: 3px;
   text-transform: capitalize;
   ${typography.sizeCSS.normal};
@@ -136,8 +140,16 @@ export const CustomDropdownMenuItem = styled(DropdownMenuItem)<{
   }
 
   &:hover {
-    color: ${({ noHover }) => {
-      if (!noHover) return palette.solid.blue;
+    ${({ noHover }) => {
+      if (!noHover)
+        return `
+        color: ${palette.solid.blue};
+        
+        svg path {
+          fill: ${palette.solid.blue};
+          fill-opacity: 1;
+        }
+      `;
     }};
   }
 
@@ -146,4 +158,18 @@ export const CustomDropdownMenuItem = styled(DropdownMenuItem)<{
   }
 
   ${({ disabled }) => disabled && `opacity: 0.5; pointer-events: none;`}
+`;
+
+export const OptionLabelWrapper = styled.div<{
+  highlightIcon?: boolean;
+}>`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: ${({ highlightIcon }) =>
+    highlightIcon ? "space-between" : "flex-start"};
+  align-items: center;
+  gap: 16px;
+  color: inherit !important;
+  ${({ highlightIcon }) => highlightIcon && "padding-left: 8px;"}
 `;

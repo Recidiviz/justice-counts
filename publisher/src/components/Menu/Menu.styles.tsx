@@ -20,7 +20,6 @@ import {
 } from "@justice-counts/common/components/Dropdown";
 import {
   HEADER_BAR_HEIGHT,
-  MIN_DESKTOP_WIDTH,
   MIN_TABLET_WIDTH,
   palette,
   typography,
@@ -28,11 +27,13 @@ import {
 import styled from "styled-components/macro";
 
 export const MenuContainer = styled.nav<{ isMobileMenuOpen: boolean }>`
+  width: 100%;
+  height: 100%;
   font-family: ${typography.family};
   ${typography.sizeCSS.normal}
   display: flex;
   align-items: center;
-  gap: 24px;
+  justify-content: space-between;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: ${({ isMobileMenuOpen }) => (isMobileMenuOpen ? "flex" : "none")};
@@ -65,6 +66,12 @@ export const MenuContainer = styled.nav<{ isMobileMenuOpen: boolean }>`
   }
 `;
 
+export const MenuItemsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 56px;
+`;
+
 export const MenuItem = styled.div<{
   active?: boolean;
   highlight?: boolean;
@@ -72,16 +79,18 @@ export const MenuItem = styled.div<{
   dropdownPadding?: boolean;
   isHoverDisabled?: boolean;
 }>`
+  ${typography.sizeCSS.medium}
   height: ${HEADER_BAR_HEIGHT}px;
-  padding-top: ${({ buttonPadding, dropdownPadding }) => {
-    if (dropdownPadding) return "9px";
-    return buttonPadding ? "5px" : "14px";
-  }};
-  border-top: 6px solid
+  display: flex;
+  align-items: center;
+  border-bottom: 3px solid
     ${({ active }) => (active ? palette.solid.blue : "transparent")};
   transition: 0.2s ease;
-  color: ${({ highlight }) =>
-    highlight ? palette.solid.red : palette.solid.darkgrey};
+  color: ${({ highlight, active }) => {
+    if (highlight) return palette.solid.red;
+    if (active && !highlight) return palette.solid.darkgrey;
+    return palette.highlight.grey8;
+  }};
   white-space: nowrap;
 
   & ${CustomDropdown} {
@@ -145,20 +154,134 @@ export const MobileMenuIconWrapper = styled.div`
   }
 `;
 
-export const WelcomeUser = styled.div`
-  color: ${palette.highlight.grey8};
-  padding-right: 24px;
-  border-right: 1px solid black;
+export const AgencyDropdownHeaderBadgeWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    display: none;
+export const AgencyDropdownWrapper = styled.div`
+  background: ${palette.solid.darkgrey};
+  height: ${HEADER_BAR_HEIGHT}px;
+
+  & > div {
+    border-bottom: 0;
   }
 
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    display: block;
-    ${typography.sizeCSS.medium};
-    border-right: none;
-    padding-right: 0;
-    margin-bottom: 8px;
+  button {
+    height: ${HEADER_BAR_HEIGHT}px;
+    width: 100%;
+    padding: 16px;
+  }
+
+  button div {
+    color: ${palette.solid.white};
+  }
+
+  button img {
+    filter: brightness(0) invert(1);
+  }
+
+  button + div {
+    border-radius: 0;
+  }
+`;
+
+export const ProfileDropdownWrapper = styled.div`
+  ${typography.sizeCSS.small}
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  color: ${palette.solid.white};
+  background: ${palette.solid.darkblue2};
+  position: relative;
+  margin-left: -8px;
+
+  & > div:last-child {
+    position: absolute;
+    z-index: 1;
+  }
+
+  & button + div {
+    margin-top: 13px;
+    border-radius: 0;
+  }
+
+  &::before {
+    content: "";
+    height: 16px;
+    width: 16px;
+    position: absolute;
+    right: -1px;
+    bottom: -1px;
+    border-radius: 50%;
+    background: ${palette.solid.white};
+  }
+
+  &::after {
+    content: "";
+    height: 12px;
+    width: 12px;
+    position: absolute;
+    right: 1px;
+    bottom: 1px;
+    border-radius: 50%;
+    background: ${palette.highlight.grey3};
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+export const Caret = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &::before {
+    content: "";
+    height: 1.5px;
+    width: 5px;
+    position: absolute;
+    right: 6px;
+    bottom: 5.5px;
+    border-radius: 10px;
+    rotate: 45deg;
+    background: ${palette.solid.darkgrey};
+  }
+
+  &::after {
+    content: "";
+    height: 1.5px;
+    width: 5px;
+    position: absolute;
+    right: 3px;
+    bottom: 5.5px;
+    border-radius: 10px;
+    rotate: 135deg;
+    background: ${palette.solid.darkgrey};
+  }
+`;
+
+export const TargetIcon = styled.div`
+  height: 14px;
+  width: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid ${palette.solid.blue};
+  border-radius: 50%;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background: ${palette.solid.blue};
   }
 `;

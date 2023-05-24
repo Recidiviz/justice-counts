@@ -234,7 +234,7 @@ export function memoizeDebounce<F extends (...args: any[]) => any>(
  * @param location
  */
 export function removeAgencyFromPath(location: string) {
-  const agencyRegex = /\/agency\/\d+\//i;
+  const agencyRegex = /\/agency\/\d+\/?/i;
   return location.replace(agencyRegex, "");
 }
 
