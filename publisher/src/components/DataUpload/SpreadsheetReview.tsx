@@ -24,8 +24,9 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
+import { REPORTS_LOWERCASE } from "../Global/constants";
 import {
+  createPublishSuccessModalButtons,
   DatapointsByMetricNameByAgencyName,
   ReviewHeaderActionButton,
   ReviewMetricOverwrites,
@@ -56,6 +57,7 @@ export function SpreadsheetReview({
   const navigate = useNavigate();
   const { reportStore } = useStore();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isPublishInProgress, setIsPublishInProgress] = useState(false);
   const [isExistingReportWarningModalOpen, setExistingReportWarningOpen] =
     useState(false);
 
@@ -75,6 +77,7 @@ export function SpreadsheetReview({
       .length === 0 && updatedReports?.length === 0;
 
   const publishMultipleRecords = async () => {
+    setIsPublishInProgress(true);
     if (agencyId && !hasAllPublishedRecordsNoOverwrites) {
       const response = (await reportStore.updateMultipleReportStatuses(
         existingAndNewRecordIDs,
@@ -92,6 +95,7 @@ export function SpreadsheetReview({
       }
     }
     setIsSuccessModalOpen(true);
+    setIsPublishInProgress(false);
   };
 
   /**
@@ -177,6 +181,7 @@ export function SpreadsheetReview({
                 ? setExistingReportWarningOpen(true)
                 : publishMultipleRecords(),
             isPublishButton: true,
+            isPublishInProgress,
           },
         ]
       : [
@@ -214,17 +219,19 @@ export function SpreadsheetReview({
         <Modal
           title="Wait!"
           description={warningModalDescription}
-          primaryButton={{
-            label: "Proceed with Publishing",
-            onClick: () => {
-              setExistingReportWarningOpen(false);
-              publishMultipleRecords();
+          buttons={[
+            {
+              label: "Proceed with Publishing",
+              onClick: () => {
+                setExistingReportWarningOpen(false);
+                publishMultipleRecords();
+              },
             },
-          }}
-          secondaryButton={{
-            label: "Go back",
-            onClick: () => setExistingReportWarningOpen(false),
-          }}
+            {
+              label: "Go back",
+              onClick: () => setExistingReportWarningOpen(false),
+            },
+          ]}
           modalType="warning"
           centerText
         />
@@ -233,14 +240,10 @@ export function SpreadsheetReview({
         <Modal
           title={successModalTitle}
           description="You can view the published data in the Data tab."
-          primaryButton={{
-            label: "Go to Data",
-            onClick: () => navigate(`/agency/${agencyId}/data`),
-          }}
-          secondaryButton={{
-            label: `Go to ${REPORTS_CAPITALIZED}`,
-            onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
-          }}
+          buttons={createPublishSuccessModalButtons(
+            agencyId as string,
+            navigate
+          )}
           modalType="success"
           centerText
         />

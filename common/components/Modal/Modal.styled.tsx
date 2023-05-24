@@ -87,11 +87,16 @@ export const ButtonsContainer = styled.div<{
 }>`
   width: 100%;
   display: flex;
-  flex-direction: row;
+  gap: 12px;
 
   ${({ modalType, centerButtons }) => {
     if (centerButtons) return "justify-content: center; margin-top: 72px;";
     if (modalType) return "justify-content: space-between; margin-top: 72px;";
     return "justify-content: end; gap: 16px; margin-top: 24px;";
   }}
+
+  & > div:last-child {
+    justify-content: unset;
+    margin-left: auto;
+  }
 `;

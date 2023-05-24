@@ -273,3 +273,17 @@ export const AndOthersSpan = styled.span`
   overflow: hidden;
   white-space: nowrap;
 `;
+
+export const MiniLoaderWrapper = styled.div`
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+`;
+
+export const ReviewButtonContainer = styled.div`
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+`;

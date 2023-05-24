@@ -51,9 +51,7 @@ import {
   TWO_PANEL_MAX_WIDTH,
 } from "./ReportDataEntry.styles";
 
-export const ReportSummaryWrapper = styled.div<{
-  showDataEntryHelpPage?: boolean;
-}>`
+export const ReportSummaryWrapper = styled.div`
   width: ${SIDE_PANEL_WIDTH}px;
   height: calc(100% - 100px);
   position: fixed;
@@ -63,11 +61,6 @@ export const ReportSummaryWrapper = styled.div<{
   padding: ${HEADER_BAR_HEIGHT + 31}px ${SIDE_PANEL_HORIZONTAL_PADDING}px 0
     ${SIDE_PANEL_HORIZONTAL_PADDING}px;
   background: ${palette.solid.white};
-  transition: opacity 300ms ease-in;
-
-  opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 0.5 : 1)};
-  pointer-events: ${({ showDataEntryHelpPage }) =>
-    showDataEntryHelpPage ? "none" : "auto"};
 
   @media only screen and (max-width: ${ONE_PANEL_MAX_WIDTH}px) {
     display: none;
@@ -239,9 +232,8 @@ const ReportStatusIconComponent: React.FC<{
 const ReportSummaryPanel: React.FC<{
   reportID: number;
   activeMetric: string;
-  showDataEntryHelpPage: boolean;
   fieldDescription?: FieldDescriptionProps;
-}> = ({ reportID, activeMetric, showDataEntryHelpPage, fieldDescription }) => {
+}> = ({ reportID, activeMetric, fieldDescription }) => {
   const { formStore, reportStore, userStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
   const currentAgency = userStore.getAgency(agencyId);
@@ -260,7 +252,7 @@ const ReportSummaryPanel: React.FC<{
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;
 
   return (
-    <ReportSummaryWrapper showDataEntryHelpPage={showDataEntryHelpPage}>
+    <ReportSummaryWrapper>
       <Title>{REPORT_CAPITALIZED} Summary</Title>
 
       <ReportSummaryProgressIndicatorWrapper>

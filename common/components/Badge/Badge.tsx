@@ -29,12 +29,14 @@ export type BadgeProps = {
   disabled?: boolean;
   loading?: boolean;
   noMargin?: boolean;
+  leftMargin?: number;
 };
 
 export const BadgeElement = styled.div<{
   color?: BadgeColors;
   disabled?: boolean;
   noMargin?: boolean;
+  leftMargin?: number;
 }>`
   height: 24px;
   display: flex;
@@ -61,7 +63,8 @@ export const BadgeElement = styled.div<{
   font-weight: 600;
   white-space: nowrap;
   text-transform: capitalize;
-  ${({ noMargin }) => !noMargin && `margin-left: 10px;`};
+  ${({ noMargin, leftMargin }) =>
+    !noMargin && `margin-left: ${leftMargin || 10}px;`};
 `;
 
 export const reportFrequencyBadgeColors: BadgeColorMapping = {
@@ -74,10 +77,16 @@ export const Badge: React.FC<React.PropsWithChildren<BadgeProps>> = ({
   disabled,
   loading,
   noMargin,
+  leftMargin,
   children,
 }) => {
   return (
-    <BadgeElement color={color} disabled={disabled} noMargin={noMargin}>
+    <BadgeElement
+      color={color}
+      disabled={disabled}
+      noMargin={noMargin}
+      leftMargin={leftMargin}
+    >
       {children}
       {loading && <MiniLoader />}
     </BadgeElement>

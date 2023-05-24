@@ -15,29 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Badge } from "@justice-counts/common/components/Badge";
-import React from "react";
-import { useParams } from "react-router-dom";
-
-import { useStore } from "../../stores";
-
-export function useHeaderBadge() {
-  const { agencyId } = useParams() as { agencyId: string };
-  const { userStore, api } = useStore();
-
-  if (userStore.isUserReadOnly(agencyId)) {
-    return (
-      <Badge color="GREY" leftMargin={24}>
-        Read Only
-      </Badge>
-    );
-  }
-
-  if (api.environment === "local" || api.environment === "staging") {
-    return (
-      <Badge color="RED" leftMargin={24}>
-        {api.environment === "local" ? "Local" : "Staging"}
-      </Badge>
-    );
-  }
-}
+export * from "./helpers";
+export * from "./Home";
+export * from "./Home.styled";
+export * from "./TaskCard";
+export * from "./types";

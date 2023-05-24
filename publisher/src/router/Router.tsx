@@ -18,14 +18,15 @@
 import React from "react";
 import { Navigate, Route, Routes, useParams } from "react-router-dom";
 
+import { DataEntryInterstitial } from "../components/DataEntryInterstitial";
 import { DataUpload } from "../components/DataUpload";
 import ShareSpreadsheetReview from "../components/DataUpload/ShareSpreadsheet";
 import ShareUploadErrorWarnings from "../components/DataUpload/ShareUploadErrorWarnings";
 import UploadSpreadsheetReview from "../components/DataUpload/UploadSpreadsheet";
 import { MetricsDataChart } from "../components/DataViz/MetricsDataChart";
 import { REPORTS_LOWERCASE } from "../components/Global/constants";
-import { Guidance } from "../components/Guidance";
 import Header from "../components/Header";
+import { Home } from "../components/Home";
 import { MetricsConfiguration } from "../components/MetricsConfiguration";
 import BulkActionReview from "../components/Reports/BulkActionReview";
 import CreateReport from "../components/Reports/CreateReport";
@@ -38,39 +39,16 @@ import { useStore } from "../stores";
 
 export const Router = () => {
   const { agencyId } = useParams() as { agencyId: string };
-  const { userStore, guidanceStore } = useStore();
+  const { userStore } = useStore();
 
   const isAgencyIdInUserAgencies = userStore.getAgency(agencyId);
-  const { hasCompletedOnboarding } = guidanceStore;
 
   return (
     <>
       <Header />
       {isAgencyIdInUserAgencies ? (
         <Routes>
-          <Route
-            path="/"
-            element={
-              <Navigate
-                to={
-                  hasCompletedOnboarding
-                    ? `${REPORTS_LOWERCASE}`
-                    : `getting-started`
-                }
-              />
-            }
-          />
-          <Route
-            path="/getting-started"
-            element={
-              !hasCompletedOnboarding ? (
-                <Guidance />
-              ) : (
-                <Navigate to={REPORTS_LOWERCASE} />
-              )
-            }
-          />
-
+          <Route path="/" element={<Home />} />
           <Route path={`/${REPORTS_LOWERCASE}`} element={<Reports />} />
           <Route
             path={`/${REPORTS_LOWERCASE}/create`}
@@ -92,6 +70,7 @@ export const Router = () => {
           <Route path="/metric-config" element={<MetricsConfiguration />} />
           <Route path="/settings/*" element={<Settings />} />
           <Route path="/upload" element={<DataUpload />} />
+          <Route path="/data-entry" element={<DataEntryInterstitial />} />
           <Route
             path="/upload/review-metrics"
             element={<UploadSpreadsheetReview />}
@@ -104,19 +83,7 @@ export const Router = () => {
             path="/upload/:spreadsheetId/review-metrics"
             element={<ShareSpreadsheetReview />}
           />
-
-          <Route
-            path="*"
-            element={
-              <Navigate
-                to={
-                  hasCompletedOnboarding
-                    ? `${REPORTS_LOWERCASE}`
-                    : `getting-started`
-                }
-              />
-            }
-          />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       ) : (
         <NotFound />
