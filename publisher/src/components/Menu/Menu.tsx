@@ -31,21 +31,12 @@ import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
 import closeMenuBurger from "../assets/close-header-menu-icon.svg";
 import menuBurger from "../assets/menu-burger-icon.svg";
-import checkmarkIcon from "../assets/status-check-icon.png";
-import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
+import { useSettingsSearchParams } from "../Settings";
 import {
-  CheckIcon,
-  CheckIconWrapper,
-  metricConfigurationProgressSteps,
-  ProgressItemName,
-  ProgressItemWrapper,
-  ProgressSteps,
-  ProgressTooltipToast,
-} from "../Guidance";
-import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
-import {
+  AgencyDropdownWrapper,
   MenuContainer,
   MenuItem,
+  MenuItemsWrapper,
   MobileMenuIconWrapper,
   SubMenuContainer,
   SubMenuItem,
@@ -53,36 +44,18 @@ import {
 } from ".";
 
 const Menu: React.FC = () => {
-  const { userStore, guidanceStore, metricConfigStore, authStore, api } =
-    useStore();
-  const {
-    hasCompletedOnboarding,
-    currentTopicID,
-    getOverallMetricProgress,
-    getMetricAvailabilityFrequencyProgress,
-    getBreakdownProgress,
-    getMetricDefinitionProgress,
-    getBreakdownDefinitionProgress,
-  } = guidanceStore;
+  const { userStore, authStore, api } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
   const location = useLocation();
   const windowWidth = useWindowWidth();
+
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const pathWithoutAgency = removeAgencyFromPath(location.pathname);
   const currentAgency = userStore.getAgency(agencyId);
-  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
-  const hasSystemMetricParams = !systemMetricKey.includes("undefined");
-  const currentMetric = metricConfigStore.metrics[systemMetricKey];
-  const allDisaggregationsDisabled =
-    metricConfigStore.disaggregations[systemMetricKey] &&
-    Object.values(metricConfigStore.disaggregations[systemMetricKey]).filter(
-      (disaggregation) =>
-        disaggregation.enabled === true || disaggregation.enabled === null
-    ).length === 0;
 
   const handleCloseMobileMenu = () => {
     if (windowWidth < MIN_TABLET_WIDTH && isMobileMenuOpen) {
@@ -112,43 +85,6 @@ const Menu: React.FC = () => {
     }
   };
 
-  // Guidance
-  const isMetricConfigStep =
-    !hasCompletedOnboarding && currentTopicID === "METRIC_CONFIG";
-  const metricCompletionProgress = !hasCompletedOnboarding
-    ? getOverallMetricProgress(systemMetricKey)
-    : {};
-  const metricProgress =
-    !hasCompletedOnboarding &&
-    getMetricAvailabilityFrequencyProgress(systemMetricKey);
-  const metricDefinitionProgress =
-    !hasCompletedOnboarding && getMetricDefinitionProgress(systemMetricKey);
-  const breakdownProgress =
-    !hasCompletedOnboarding && getBreakdownProgress(systemMetricKey);
-  const breakdownDefinitionProgress =
-    !hasCompletedOnboarding && getBreakdownDefinitionProgress(systemMetricKey);
-
-  const [showMetricConfigProgressToast, setShowMetricConfigProgressToast] =
-    useState(false);
-  const [
-    metricConfigProgressToastTimeout,
-    setMetricConfigProgressToastTimeout,
-  ] = useState<NodeJS.Timer>();
-
-  const handleMetricConfigToastDisplay = () => {
-    setShowMetricConfigProgressToast(true);
-
-    if (metricConfigProgressToastTimeout) {
-      clearTimeout(metricConfigProgressToastTimeout);
-    }
-
-    const timeout = setTimeout(() => {
-      setShowMetricConfigProgressToast(false);
-    }, 3500);
-
-    setMetricConfigProgressToastTimeout(timeout);
-  };
-
   const dropdownOptions: DropdownOption[] = userStore.userAgencies
     ? userStore.userAgencies
         .slice()
@@ -163,30 +99,6 @@ const Menu: React.FC = () => {
           highlight: agency.id === currentAgency?.id,
         }))
     : [];
-
-  useEffect(
-    () => {
-      if (isMetricConfigStep) handleMetricConfigToastDisplay();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      metricProgress,
-      metricDefinitionProgress,
-      breakdownProgress,
-      breakdownDefinitionProgress,
-      currentMetric?.enabled,
-      allDisaggregationsDisabled,
-    ]
-  );
-
-  useEffect(() => {
-    const initOnboardingTopicStatuses = async () => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await guidanceStore.getOnboardingTopicsStatuses();
-    };
-
-    initOnboardingTopicStatuses();
-  }, [guidanceStore, agencyId]);
 
   useEffect(() => {
     const { body } = document;
@@ -206,64 +118,50 @@ const Menu: React.FC = () => {
   return (
     <>
       <MenuContainer isMobileMenuOpen={isMobileMenuOpen}>
-        <WelcomeUser>
+        {/* <WelcomeUser>
           {userStore.nameOrEmail &&
             currentAgency?.name &&
             `Welcome, ${userStore.nameOrEmail} at ${currentAgency.name}`}
-        </WelcomeUser>
-
-        {/* Guidance */}
-        {hasCompletedOnboarding === false && (
-          <>
-            <MenuItem
-              style={{ position: "relative" }}
-              active={pathWithoutAgency === "getting-started"}
-              onClick={() => {
-                navigate(`/agency/${agencyId}/getting-started`);
-                handleCloseMobileMenu();
-              }}
-            >
-              Get Started
-              {/* Guidance: Metric Configuration Progress Toast */}
-              {isMetricConfigStep && hasSystemMetricParams && (
-                <ProgressTooltipToast showToast={showMetricConfigProgressToast}>
-                  {metricConfigurationProgressSteps.map((step) => {
-                    // Don't show other 3 required steps if the metric is marked as Unavailable - because they are no longer required in this case.
-                    if (
-                      currentMetric?.enabled === false &&
-                      step !== ProgressSteps.CONFIRM_METRIC_AVAILABILITY
-                    ) {
-                      return null;
-                    }
-
-                    // When all disaggregations are disabled, the "Confirm breakdown definitions" are no longer required.
-                    if (
-                      allDisaggregationsDisabled &&
-                      step === ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
-                    ) {
-                      return null;
-                    }
-
-                    return (
-                      <ProgressItemWrapper key={step}>
-                        <CheckIconWrapper>
-                          {metricCompletionProgress &&
-                            metricCompletionProgress[step] && (
-                              <CheckIcon src={checkmarkIcon} alt="" />
-                            )}
-                        </CheckIconWrapper>
-                        <ProgressItemName>{step}</ProgressItemName>
-                      </ProgressItemWrapper>
-                    );
-                  })}
-                </ProgressTooltipToast>
-              )}
+        </WelcomeUser> */}
+        {/* Agencies Dropdown */}
+        {userStore.userAgencies && userStore.userAgencies.length > 1 && (
+          <AgencyDropdownWrapper>
+            <MenuItem>
+              <Dropdown
+                label={currentAgency?.name}
+                options={dropdownOptions}
+                size="small"
+                hover="label"
+                alignment="left"
+                caretPosition="right"
+              />
             </MenuItem>
-          </>
+          </AgencyDropdownWrapper>
         )}
 
-        {/* Reports */}
-        <MenuItem
+        <MenuItemsWrapper>
+          <MenuItem>Home</MenuItem>
+
+          {/* Metric Config */}
+          <MenuItem
+            onClick={() => {
+              if (pathWithoutAgency === "metric-config") {
+                setSettingsSearchParams({
+                  ...settingsSearchParams,
+                  metric: undefined,
+                });
+              } else {
+                navigate("metric-config");
+              }
+              handleCloseMobileMenu();
+            }}
+            active={pathWithoutAgency === "metric-config"}
+          >
+            Metric Settings
+          </MenuItem>
+
+          {/* Reports */}
+          {/* <MenuItem
           onClick={() => {
             navigate(REPORTS_LOWERCASE);
             handleCloseMobileMenu();
@@ -271,52 +169,23 @@ const Menu: React.FC = () => {
           active={pathWithoutAgency === REPORTS_LOWERCASE}
         >
           {REPORTS_CAPITALIZED}
-        </MenuItem>
+        </MenuItem> */}
 
-        {/* Data (Visualizations) */}
-        <MenuItem
-          onClick={() => {
-            if (pathWithoutAgency !== "data") navigate("data");
-            handleCloseMobileMenu();
-          }}
-          active={pathWithoutAgency === "data"}
-        >
-          Data
-        </MenuItem>
+          <MenuItem>Data Entry</MenuItem>
 
-        {/* Metric Config */}
-        <MenuItem
-          onClick={() => {
-            if (pathWithoutAgency === "metric-config") {
-              setSettingsSearchParams({
-                ...settingsSearchParams,
-                metric: undefined,
-              });
-            } else {
-              navigate("metric-config");
-            }
-            handleCloseMobileMenu();
-          }}
-          active={pathWithoutAgency === "metric-config"}
-        >
-          Configuration
-        </MenuItem>
-
-        {/* Learn More */}
-        {windowWidth > MIN_TABLET_WIDTH && (
-          <MenuItem>
-            <a
-              href="https://justicecounts.csgjusticecenter.org/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Learn More
-            </a>
+          {/* Data (Visualizations) */}
+          <MenuItem
+            onClick={() => {
+              if (pathWithoutAgency !== "data") navigate("data");
+              handleCloseMobileMenu();
+            }}
+            active={pathWithoutAgency === "data"}
+          >
+            View Data
           </MenuItem>
-        )}
 
-        {/* Agencies Dropdown */}
-        {userStore.userAgencies && userStore.userAgencies.length > 1 && (
+          {/* Agencies Dropdown */}
+          {/* {userStore.userAgencies && userStore.userAgencies.length > 1 && (
           <MenuItem dropdownPadding>
             <Dropdown
               label="Agencies"
@@ -326,10 +195,10 @@ const Menu: React.FC = () => {
               alignment={windowWidth > MIN_TABLET_WIDTH ? "right" : "left"}
             />
           </MenuItem>
-        )}
+        )} */}
 
-        {/* Settings */}
-        <MenuItem
+          {/* Settings */}
+          {/* <MenuItem
           onClick={() => {
             if (windowWidth > MIN_TABLET_WIDTH) {
               navigate("settings");
@@ -339,29 +208,29 @@ const Menu: React.FC = () => {
           isHoverDisabled={windowWidth <= MIN_TABLET_WIDTH}
         >
           Settings
-        </MenuItem>
+        </MenuItem> */}
 
-        {isMobileMenuOpen && (
-          <SubMenuContainer>
-            {settingsMenuPaths.map(({ displayLabel, path }) => (
-              <SubMenuItem
-                key={path}
-                onClick={() => {
-                  navigate(`settings/${path}`);
-                  handleCloseMobileMenu();
-                }}
-              >
-                {displayLabel}
-              </SubMenuItem>
-            ))}
-          </SubMenuContainer>
-        )}
+          {isMobileMenuOpen && (
+            <SubMenuContainer>
+              {settingsMenuPaths.map(({ displayLabel, path }) => (
+                <SubMenuItem
+                  key={path}
+                  onClick={() => {
+                    navigate(`settings/${path}`);
+                    handleCloseMobileMenu();
+                  }}
+                >
+                  {displayLabel}
+                </SubMenuItem>
+              ))}
+            </SubMenuContainer>
+          )}
 
-        <MenuItem onClick={logout} highlight>
+          {/* <MenuItem onClick={logout} highlight>
           Log Out
-        </MenuItem>
+        </MenuItem> */}
 
-        <MenuItem id="upload" buttonPadding>
+          {/* <MenuItem id="upload" buttonPadding>
           <Button
             label="Upload Data"
             onClick={() => {
@@ -369,9 +238,9 @@ const Menu: React.FC = () => {
               handleCloseMobileMenu();
             }}
             buttonColor="blue"
-            enabledDuringOnboarding
           />
-        </MenuItem>
+        </MenuItem> */}
+        </MenuItemsWrapper>
       </MenuContainer>
       <MobileMenuIconWrapper
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

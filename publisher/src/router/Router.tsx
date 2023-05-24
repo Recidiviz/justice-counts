@@ -46,18 +46,7 @@ export const Router = () => {
       <Header />
       {isAgencyIdInUserAgencies ? (
         <Routes>
-          <Route
-            path="/"
-            element={
-              <Navigate
-                to={
-                  hasCompletedOnboarding
-                    ? `${REPORTS_LOWERCASE}`
-                    : `getting-started`
-                }
-              />
-            }
-          />
+          <Route path="/" element={<Navigate to={REPORTS_LOWERCASE} />} />
           <Route
             path="/getting-started"
             element={

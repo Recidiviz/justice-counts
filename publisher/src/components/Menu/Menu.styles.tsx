@@ -28,11 +28,13 @@ import {
 import styled from "styled-components/macro";
 
 export const MenuContainer = styled.nav<{ isMobileMenuOpen: boolean }>`
+  width: 100%;
+  height: 100%;
   font-family: ${typography.family};
   ${typography.sizeCSS.normal}
   display: flex;
   align-items: center;
-  gap: 24px;
+  justify-content: space-between;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: ${({ isMobileMenuOpen }) => (isMobileMenuOpen ? "flex" : "none")};
@@ -65,6 +67,11 @@ export const MenuContainer = styled.nav<{ isMobileMenuOpen: boolean }>`
   }
 `;
 
+export const MenuItemsWrapper = styled.div`
+  display: flex;
+  gap: 56px;
+`;
+
 export const MenuItem = styled.div<{
   active?: boolean;
   highlight?: boolean;
@@ -72,16 +79,18 @@ export const MenuItem = styled.div<{
   dropdownPadding?: boolean;
   isHoverDisabled?: boolean;
 }>`
+  ${typography.sizeCSS.medium}
   height: ${HEADER_BAR_HEIGHT}px;
-  padding-top: ${({ buttonPadding, dropdownPadding }) => {
-    if (dropdownPadding) return "9px";
-    return buttonPadding ? "5px" : "14px";
-  }};
-  border-top: 6px solid
+  display: flex;
+  align-items: center;
+  border-bottom: 3px solid
     ${({ active }) => (active ? palette.solid.blue : "transparent")};
   transition: 0.2s ease;
-  color: ${({ highlight }) =>
-    highlight ? palette.solid.red : palette.solid.darkgrey};
+  color: ${({ highlight, active }) => {
+    if (highlight) return palette.solid.red;
+    if (active && !highlight) return palette.solid.darkgrey;
+    return palette.highlight.grey8;
+  }};
   white-space: nowrap;
 
   & ${CustomDropdown} {
@@ -160,5 +169,29 @@ export const WelcomeUser = styled.div`
     border-right: none;
     padding-right: 0;
     margin-bottom: 8px;
+  }
+`;
+
+export const AgencyDropdownWrapper = styled.div`
+  background: ${palette.solid.darkerblue};
+  height: 65px;
+  padding: 0 16px;
+
+  & div {
+    border-bottom: 0;
+  }
+
+  & button div {
+    color: ${palette.solid.white};
+  }
+
+  & button img {
+    filter: brightness(0) invert(1);
+  }
+
+  & button + div {
+    margin-top: 20px;
+    margin-left: -16px;
+    border-radius: 0;
   }
 `;
