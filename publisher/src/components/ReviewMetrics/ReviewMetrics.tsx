@@ -34,6 +34,7 @@ import {
   REPORTS_LOWERCASE,
 } from "../Global/constants";
 import {
+  AgencyTitle,
   EmptyIcon,
   Heading,
   HeadingGradient,
@@ -80,10 +81,22 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
   const renderSection = (metric: ReviewMetric) => {
     return (
       <SectionContainer key={metric.key}>
-        <DatapointsTableView
-          datapoints={metric.datapoints}
-          metricName={metric.display_name}
-        />
+        {isSuperAgencyUpload && datapointsByAgencyName ? (
+          Object.entries(datapointsByAgencyName).map(([key, datapoints]) => (
+            <>
+              <AgencyTitle>{key}</AgencyTitle>
+              <DatapointsTableView
+                datapoints={datapoints}
+                metricName={metric.display_name}
+              />
+            </>
+          ))
+        ) : (
+          <DatapointsTableView
+            datapoints={metric.datapoints}
+            metricName={metric.display_name}
+          />
+        )}
       </SectionContainer>
     );
   };

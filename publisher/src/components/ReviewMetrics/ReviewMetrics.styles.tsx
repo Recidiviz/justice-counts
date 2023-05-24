@@ -248,3 +248,16 @@ export const SectionContainer = styled.div`
 export const NoDatapointsMessage = styled.div`
   margin: auto auto;
 `;
+
+export const AgencyTitle = styled.div`
+  ${typography.sizeCSS.normal}
+  width: 100%;
+  margin-bottom: 15px;
+  color: ${palette.highlight.grey8};
+
+  &:not(:first-child) {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid ${palette.highlight.grey3};
+  }
+`;

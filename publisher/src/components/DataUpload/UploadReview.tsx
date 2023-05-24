@@ -125,7 +125,6 @@ const UploadReview: React.FC = observer(() => {
 
   const { isSuperAgencyUpload, datapointsByAgencyName } =
     uploadedMetricsToDatapointsByAgencyName(uploadedMetrics);
-
   const metrics = uploadedMetrics
     .map((metric) => {
       return {
