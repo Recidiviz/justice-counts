@@ -60,7 +60,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
   metrics,
   metricOverwrites,
   records,
-  isSuperAgencyUpload,
+  isMultiAgencyUpload,
   datapointsByAgencyName,
 }) => {
   const { agencyId } = useParams();
@@ -81,21 +81,10 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
   const renderSection = (metric: ReviewMetric) => {
     return (
       <SectionContainer key={metric.key}>
-        {/* {isSuperAgencyUpload && datapointsByAgencyName ? (
-          Object.entries(datapointsByAgencyName).map(([key, dpByMetrics]) => (
-            <>
-              <AgencyName>{key}</AgencyName>
-              {Object.entries(dpByMetrics).map(([metricName, dps]) => (
-                <DatapointsTableView datapoints={dps} metricName={metricName} />
-              ))}
-            </>
-          ))
-        ) : ( */}
         <DatapointsTableView
           datapoints={metric.datapoints}
           metricName={metric.display_name}
         />
-        {/* )} */}
       </SectionContainer>
     );
   };
@@ -240,7 +229,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
         </NoDatapointsMessage>
       ) : (
         <MetricsPanel>
-          {isSuperAgencyUpload && datapointsByAgencyName
+          {isMultiAgencyUpload && datapointsByAgencyName
             ? Object.entries(datapointsByAgencyName).map(
                 ([key, dpByMetrics]) => (
                   <Fragment key={key}>

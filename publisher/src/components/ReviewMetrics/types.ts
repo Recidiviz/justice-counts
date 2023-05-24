@@ -60,7 +60,7 @@ export type ReviewMetricsProps = {
   metrics: ReviewMetric[];
   metricOverwrites?: ReviewMetricOverwrites[];
   records?: ReportOverview[];
-  isSuperAgencyUpload?: boolean;
+  isMultiAgencyUpload?: boolean;
   datapointsByAgencyName?: DatapointsByAgencyName;
 };
 

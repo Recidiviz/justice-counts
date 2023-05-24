@@ -104,9 +104,7 @@ const UploadReview: React.FC = observer(() => {
     setIsSuccessModalOpen(true);
   };
 
-  const uploadedMetricsToDatapointsByAgencyName = (
-    metrics: UploadedMetric[]
-  ) => {
+  const metricsToMetricDatapointsByAgencyName = (metrics: UploadedMetric[]) => {
     const allDatapoints = metrics
       .flatMap((metric) => metric.datapoints)
       .filter((dp) => dp.value);
@@ -121,23 +119,21 @@ const UploadReview: React.FC = observer(() => {
       acc[dp.agency_name][dp.metric_display_name].push(dp);
       return acc;
     }, {} as DatapointsByAgencyName);
-    const isSuperAgencyUpload =
+    const isMultiAgencyUpload =
       Object.values(datapointsByAgencyName).length > 1;
 
-    return { isSuperAgencyUpload, datapointsByAgencyName };
+    return { isMultiAgencyUpload, datapointsByAgencyName };
   };
 
-  const { isSuperAgencyUpload, datapointsByAgencyName } =
-    uploadedMetricsToDatapointsByAgencyName(uploadedMetrics);
+  const { isMultiAgencyUpload, datapointsByAgencyName } =
+    metricsToMetricDatapointsByAgencyName(uploadedMetrics);
   const metrics = uploadedMetrics
-    .map((metric) => {
-      return {
-        ...metric,
-        datapoints: metric.datapoints.filter((dp) => dp.value !== null),
-        metricHasError: false,
-        metricHasValidInput: true,
-      };
-    })
+    .map((metric) => ({
+      ...metric,
+      datapoints: metric.datapoints.filter((dp) => dp.value !== null),
+      metricHasError: false,
+      metricHasValidInput: true,
+    }))
     .filter((metric) => metric.datapoints.length > 0);
   const overwrites: ReviewMetricOverwrites[] = [];
   metrics.forEach((metric) => {
@@ -249,7 +245,7 @@ const UploadReview: React.FC = observer(() => {
         metrics={metrics}
         metricOverwrites={overwrites}
         records={existingAndNewRecords}
-        isSuperAgencyUpload={isSuperAgencyUpload}
+        isMultiAgencyUpload={isMultiAgencyUpload}
         datapointsByAgencyName={datapointsByAgencyName}
       />
     </>
