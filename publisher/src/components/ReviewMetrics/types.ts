@@ -61,7 +61,7 @@ export type ReviewMetricsProps = {
   metricOverwrites?: ReviewMetricOverwrites[];
   records?: ReportOverview[];
   isMultiAgencyUpload?: boolean;
-  datapointsByAgencyName?: DatapointsByAgencyName;
+  datapointsByMetricNameByAgencyName?: DatapointsByMetricNameByAgencyName;
 };
 
 export type PublishReviewMetricErrors = {
@@ -78,6 +78,6 @@ export type PublishReviewPropsFromDatapoints = {
   metricErrors: PublishReviewMetricErrors;
 };
 
-export type DatapointsByAgencyName = {
+export type DatapointsByMetricNameByAgencyName = {
   [agencyName: string]: { [metricName: string]: RawDatapoint[] };
 };

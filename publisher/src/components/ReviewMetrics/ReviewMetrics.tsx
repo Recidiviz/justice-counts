@@ -51,7 +51,11 @@ import {
   SummarySectionsContainer,
   SummarySectionTitle,
 } from "./ReviewMetrics.styles";
-import { ReviewMetric, ReviewMetricsProps } from "./types";
+import {
+  DatapointsByMetricNameByAgencyName,
+  ReviewMetric,
+  ReviewMetricsProps,
+} from "./types";
 
 export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
   title,
@@ -61,7 +65,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
   metricOverwrites,
   records,
   isMultiAgencyUpload,
-  datapointsByAgencyName,
+  datapointsByMetricNameByAgencyName,
 }) => {
   const { agencyId } = useParams();
   const navigate = useNavigate();
@@ -87,6 +91,23 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
         />
       </SectionContainer>
     );
+  };
+
+  const renderDatapointsByMetricNameByAgencyName = (
+    groupedDatapoints: DatapointsByMetricNameByAgencyName
+  ) => {
+    return Object.entries(groupedDatapoints).map(([key, dpByMetrics]) => (
+      <Fragment key={key}>
+        <AgencyName>{key}</AgencyName>
+        <div>
+          {Object.entries(dpByMetrics).map(([metricName, dps]) => (
+            <SectionContainer key={metricName}>
+              <DatapointsTableView datapoints={dps} metricName={metricName} />
+            </SectionContainer>
+          ))}
+        </div>
+      </Fragment>
+    ));
   };
 
   return (
@@ -229,23 +250,9 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
         </NoDatapointsMessage>
       ) : (
         <MetricsPanel>
-          {isMultiAgencyUpload && datapointsByAgencyName
-            ? Object.entries(datapointsByAgencyName).map(
-                ([key, dpByMetrics]) => (
-                  <Fragment key={key}>
-                    <AgencyName>{key}</AgencyName>
-                    <div>
-                      {Object.entries(dpByMetrics).map(([metricName, dps]) => (
-                        <SectionContainer key={metricName}>
-                          <DatapointsTableView
-                            datapoints={dps}
-                            metricName={metricName}
-                          />
-                        </SectionContainer>
-                      ))}
-                    </div>
-                  </Fragment>
-                )
+          {isMultiAgencyUpload && datapointsByMetricNameByAgencyName
+            ? renderDatapointsByMetricNameByAgencyName(
+                datapointsByMetricNameByAgencyName
               )
             : metrics.map((metric) => {
                 return renderSection(metric);

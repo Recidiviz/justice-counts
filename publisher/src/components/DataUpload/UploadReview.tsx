@@ -32,7 +32,7 @@ import {
 import { useStore } from "../../stores";
 import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
 import {
-  DatapointsByAgencyName,
+  DatapointsByMetricNameByAgencyName,
   ReviewHeaderActionButton,
   ReviewMetricOverwrites,
   ReviewMetrics,
@@ -104,29 +104,45 @@ const UploadReview: React.FC = observer(() => {
     setIsSuccessModalOpen(true);
   };
 
-  const metricsToMetricDatapointsByAgencyName = (metrics: UploadedMetric[]) => {
+  /**
+   * Groups uploaded metrics' datapoints by metric name by agency name
+   * @returns Object { isMultiAgencyUpload, datapointsByMetricNameByAgencyName }
+   *          - isMultiAgencyUpload { boolean } - whether or not this is a multiple agency upload
+   *          - datapointsByMetricNameByAgencyName { object } - grouped
+   * @example
+   *  {
+   *    "Agency 1": { "Staff": [...datapoints], "Arrests": [...datapoints], ... }
+   *    "Agency 2": { "Staff": [...datapoints], ... },
+   *  }
+   *   */
+  const metricsToDatapointsByMetricNameByAgencyName = (
+    metrics: UploadedMetric[]
+  ) => {
     const allDatapoints = metrics
       .flatMap((metric) => metric.datapoints)
       .filter((dp) => dp.value);
-    const datapointsByAgencyName = allDatapoints.reduce((acc, dp) => {
-      if (!dp.agency_name || !dp.metric_display_name) return acc;
-      if (!acc[dp.agency_name]) {
-        acc[dp.agency_name] = {};
-      }
-      if (!acc[dp.agency_name][dp.metric_display_name]) {
-        acc[dp.agency_name][dp.metric_display_name] = [];
-      }
-      acc[dp.agency_name][dp.metric_display_name].push(dp);
-      return acc;
-    }, {} as DatapointsByAgencyName);
+    const datapointsByMetricNameByAgencyName = allDatapoints.reduce(
+      (acc, dp) => {
+        if (!dp.agency_name || !dp.metric_display_name) return acc;
+        if (!acc[dp.agency_name]) {
+          acc[dp.agency_name] = {};
+        }
+        if (!acc[dp.agency_name][dp.metric_display_name]) {
+          acc[dp.agency_name][dp.metric_display_name] = [];
+        }
+        acc[dp.agency_name][dp.metric_display_name].push(dp);
+        return acc;
+      },
+      {} as DatapointsByMetricNameByAgencyName
+    );
     const isMultiAgencyUpload =
-      Object.values(datapointsByAgencyName).length > 1;
+      Object.values(datapointsByMetricNameByAgencyName).length > 1;
 
-    return { isMultiAgencyUpload, datapointsByAgencyName };
+    return { isMultiAgencyUpload, datapointsByMetricNameByAgencyName };
   };
 
-  const { isMultiAgencyUpload, datapointsByAgencyName } =
-    metricsToMetricDatapointsByAgencyName(uploadedMetrics);
+  const { isMultiAgencyUpload, datapointsByMetricNameByAgencyName } =
+    metricsToDatapointsByMetricNameByAgencyName(uploadedMetrics);
   const metrics = uploadedMetrics
     .map((metric) => ({
       ...metric,
@@ -246,7 +262,7 @@ const UploadReview: React.FC = observer(() => {
         metricOverwrites={overwrites}
         records={existingAndNewRecords}
         isMultiAgencyUpload={isMultiAgencyUpload}
-        datapointsByAgencyName={datapointsByAgencyName}
+        datapointsByMetricNameByAgencyName={datapointsByMetricNameByAgencyName}
       />
     </>
   );
