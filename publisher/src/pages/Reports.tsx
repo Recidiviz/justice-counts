@@ -476,20 +476,18 @@ const Reports: React.FC = () => {
             <ReportActions>
               {!bulkAction && (
                 <>
-                  {userStore.isJusticeCountsAdmin(agencyId) && (
-                    <BulkActionsDropdownContainer>
-                      <Dropdown
-                        label="Bulk Actions"
-                        options={bulkActionsDropdownOptions}
-                        size="small"
-                        disabled={filteredReportsMemoized.length === 0}
-                        hover="background"
-                        caretPosition="right"
-                        alignment="right"
-                        overflow
-                      />
-                    </BulkActionsDropdownContainer>
-                  )}
+                  <BulkActionsDropdownContainer>
+                    <Dropdown
+                      label="Bulk Actions"
+                      options={bulkActionsDropdownOptions}
+                      size="small"
+                      disabled={filteredReportsMemoized.length === 0}
+                      hover="background"
+                      caretPosition="right"
+                      alignment="right"
+                      overflow
+                    />
+                  </BulkActionsDropdownContainer>
                   <Button
                     label="+ New Record"
                     labelColor="blue"
