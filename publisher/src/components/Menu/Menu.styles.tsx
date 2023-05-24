@@ -69,6 +69,7 @@ export const MenuContainer = styled.nav<{ isMobileMenuOpen: boolean }>`
 
 export const MenuItemsWrapper = styled.div`
   display: flex;
+  align-items: center;
   gap: 56px;
 `;
 
@@ -154,26 +155,8 @@ export const MobileMenuIconWrapper = styled.div`
   }
 `;
 
-export const WelcomeUser = styled.div`
-  color: ${palette.highlight.grey8};
-  padding-right: 24px;
-  border-right: 1px solid black;
-
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    display: none;
-  }
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    display: block;
-    ${typography.sizeCSS.medium};
-    border-right: none;
-    padding-right: 0;
-    margin-bottom: 8px;
-  }
-`;
-
 export const AgencyDropdownWrapper = styled.div`
-  background: ${palette.solid.darkerblue};
+  background: ${palette.solid.darkblue3};
   height: 65px;
   padding: 0 16px;
 
@@ -193,5 +176,85 @@ export const AgencyDropdownWrapper = styled.div`
     margin-top: 20px;
     margin-left: -16px;
     border-radius: 0;
+  }
+`;
+
+export const ProfileDropdownWrapper = styled.div`
+  ${typography.sizeCSS.small}
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  color: ${palette.solid.white};
+  background: ${palette.solid.darkblue2};
+  position: relative;
+  margin-left: -8px;
+
+  & div:last-child {
+    position: absolute;
+    z-index: 1;
+  }
+
+  & button + div {
+    margin-top: 13px;
+    border-radius: 0;
+  }
+
+  &::before {
+    content: "";
+    height: 16px;
+    width: 16px;
+    position: absolute;
+    right: -1px;
+    bottom: -1px;
+    border-radius: 50%;
+    background: ${palette.solid.white};
+  }
+
+  &::after {
+    content: "";
+    height: 12px;
+    width: 12px;
+    position: absolute;
+    right: 1px;
+    bottom: 1px;
+    border-radius: 50%;
+    background: ${palette.highlight.grey3};
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+export const Caret = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &::before {
+    content: "";
+    height: 1.5px;
+    width: 5px;
+    position: absolute;
+    right: 6px;
+    bottom: 5.5px;
+    border-radius: 10px;
+    rotate: 45deg;
+    background: ${palette.solid.darkgrey};
+  }
+
+  &::after {
+    content: "";
+    height: 1.5px;
+    width: 5px;
+    position: absolute;
+    right: 3px;
+    bottom: 5.5px;
+    border-radius: 10px;
+    rotate: 135deg;
+    background: ${palette.solid.darkgrey};
   }
 `;

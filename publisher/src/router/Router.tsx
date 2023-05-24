@@ -16,7 +16,7 @@
 // =============================================================================
 
 import React from "react";
-import { Navigate, Route, Routes, useParams } from "react-router-dom";
+import { Route, Routes, useParams } from "react-router-dom";
 
 import { DataUpload } from "../components/DataUpload";
 import UploadReview from "../components/DataUpload/UploadReview";

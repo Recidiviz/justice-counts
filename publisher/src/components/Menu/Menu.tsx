@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Button } from "@justice-counts/common/components/Button";
 import {
   Dropdown,
   DropdownOption,
@@ -34,13 +33,14 @@ import menuBurger from "../assets/menu-burger-icon.svg";
 import { useSettingsSearchParams } from "../Settings";
 import {
   AgencyDropdownWrapper,
+  Caret,
   MenuContainer,
   MenuItem,
   MenuItemsWrapper,
   MobileMenuIconWrapper,
+  ProfileDropdownWrapper,
   SubMenuContainer,
   SubMenuItem,
-  WelcomeUser,
 } from ".";
 
 const Menu: React.FC = () => {
@@ -60,6 +60,16 @@ const Menu: React.FC = () => {
   const handleCloseMobileMenu = () => {
     if (windowWidth < MIN_TABLET_WIDTH && isMobileMenuOpen) {
       setIsMobileMenuOpen(false);
+    }
+  };
+
+  const usernameToInitials = () => {
+    if (userStore.name) {
+      const splitName = userStore.name.split(" ");
+      if (splitName.length > 1) {
+        return (splitName[0][0] + splitName[1][0]).toUpperCase();
+      }
+      return splitName[0][0].toUpperCase();
     }
   };
 
@@ -118,11 +128,6 @@ const Menu: React.FC = () => {
   return (
     <>
       <MenuContainer isMobileMenuOpen={isMobileMenuOpen}>
-        {/* <WelcomeUser>
-          {userStore.nameOrEmail &&
-            currentAgency?.name &&
-            `Welcome, ${userStore.nameOrEmail} at ${currentAgency.name}`}
-        </WelcomeUser> */}
         {/* Agencies Dropdown */}
         {userStore.userAgencies && userStore.userAgencies.length > 1 && (
           <AgencyDropdownWrapper>
@@ -165,17 +170,6 @@ const Menu: React.FC = () => {
             Metric Settings
           </MenuItem>
 
-          {/* Reports */}
-          {/* <MenuItem
-          onClick={() => {
-            navigate(REPORTS_LOWERCASE);
-            handleCloseMobileMenu();
-          }}
-          active={pathWithoutAgency === REPORTS_LOWERCASE}
-        >
-          {REPORTS_CAPITALIZED}
-        </MenuItem> */}
-
           <MenuItem>Data Entry</MenuItem>
 
           {/* Data (Visualizations) */}
@@ -188,19 +182,6 @@ const Menu: React.FC = () => {
           >
             View Data
           </MenuItem>
-
-          {/* Agencies Dropdown */}
-          {/* {userStore.userAgencies && userStore.userAgencies.length > 1 && (
-          <MenuItem dropdownPadding>
-            <Dropdown
-              label="Agencies"
-              options={dropdownOptions}
-              size="small"
-              hover="label"
-              alignment={windowWidth > MIN_TABLET_WIDTH ? "right" : "left"}
-            />
-          </MenuItem>
-        )} */}
 
           {/* Settings */}
           {/* <MenuItem
@@ -234,17 +215,17 @@ const Menu: React.FC = () => {
           {/* <MenuItem onClick={logout} highlight>
           Log Out
         </MenuItem> */}
-
-          {/* <MenuItem id="upload" buttonPadding>
-          <Button
-            label="Upload Data"
-            onClick={() => {
-              navigate("upload");
-              handleCloseMobileMenu();
-            }}
-            buttonColor="blue"
-          />
-        </MenuItem> */}
+          <ProfileDropdownWrapper>
+            {usernameToInitials()}
+            <Caret />
+            <Dropdown
+              label=""
+              options={dropdownOptions}
+              size="small"
+              hover="label"
+              alignment="right"
+            />
+          </ProfileDropdownWrapper>
         </MenuItemsWrapper>
       </MenuContainer>
       <MobileMenuIconWrapper

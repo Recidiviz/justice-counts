@@ -21,7 +21,6 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { REPORTS_LOWERCASE } from "../Global/constants";
 import Menu from "../Menu";
 import { useHeaderBadge } from "./hooks";
 
