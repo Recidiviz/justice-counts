@@ -34,7 +34,7 @@ import {
   REPORTS_LOWERCASE,
 } from "../Global/constants";
 import {
-  AgencyTitle,
+  AgencyName,
   EmptyIcon,
   Heading,
   HeadingGradient,
@@ -84,7 +84,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
         {/* {isSuperAgencyUpload && datapointsByAgencyName ? (
           Object.entries(datapointsByAgencyName).map(([key, dpByMetrics]) => (
             <>
-              <AgencyTitle>{key}</AgencyTitle>
+              <AgencyName>{key}</AgencyName>
               {Object.entries(dpByMetrics).map(([metricName, dps]) => (
                 <DatapointsTableView datapoints={dps} metricName={metricName} />
               ))}
@@ -244,15 +244,17 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
             ? Object.entries(datapointsByAgencyName).map(
                 ([key, dpByMetrics]) => (
                   <Fragment key={key}>
-                    <AgencyTitle>{key}</AgencyTitle>
-                    {Object.entries(dpByMetrics).map(([metricName, dps]) => (
-                      <SectionContainer key={metricName}>
-                        <DatapointsTableView
-                          datapoints={dps}
-                          metricName={metricName}
-                        />
-                      </SectionContainer>
-                    ))}
+                    <AgencyName>{key}</AgencyName>
+                    <div>
+                      {Object.entries(dpByMetrics).map(([metricName, dps]) => (
+                        <SectionContainer key={metricName}>
+                          <DatapointsTableView
+                            datapoints={dps}
+                            metricName={metricName}
+                          />
+                        </SectionContainer>
+                      ))}
+                    </div>
                   </Fragment>
                 )
               )

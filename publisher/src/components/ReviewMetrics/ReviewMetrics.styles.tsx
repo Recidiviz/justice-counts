@@ -249,15 +249,15 @@ export const NoDatapointsMessage = styled.div`
   margin: auto auto;
 `;
 
-export const AgencyTitle = styled.div`
-  ${typography.sizeCSS.normal}
+export const AgencyName = styled.div`
+  ${typography.sizeCSS.medium}
   width: 100%;
-  margin-bottom: 15px;
-  color: ${palette.highlight.grey8};
+  margin-bottom: 25px;
+  color: ${palette.solid.green};
 
   &:not(:first-child) {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid ${palette.highlight.grey3};
+    margin-top: 80px;
+    padding-top: 30px;
+    border-top: 1px dotted ${palette.highlight.grey8};
   }
 `;
