@@ -140,7 +140,12 @@ const Menu: React.FC = () => {
         )}
 
         <MenuItemsWrapper>
-          <MenuItem>Home</MenuItem>
+          <MenuItem
+            onClick={() => navigate("/")}
+            active={removeAgencyFromPath(`${pathWithoutAgency}/`) === ""}
+          >
+            Home
+          </MenuItem>
 
           {/* Metric Config */}
           <MenuItem

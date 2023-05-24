@@ -22,8 +22,8 @@ import { DataUpload } from "../components/DataUpload";
 import UploadReview from "../components/DataUpload/UploadReview";
 import { MetricsDataChart } from "../components/DataViz/MetricsDataChart";
 import { REPORTS_LOWERCASE } from "../components/Global/constants";
-import { Guidance } from "../components/Guidance";
 import Header from "../components/Header";
+import { Home } from "../components/Home";
 import { MetricsConfiguration } from "../components/MetricsConfiguration";
 import BulkActionReview from "../components/Reports/BulkActionReview";
 import CreateReport from "../components/Reports/CreateReport";
@@ -36,28 +36,16 @@ import { useStore } from "../stores";
 
 export const Router = () => {
   const { agencyId } = useParams() as { agencyId: string };
-  const { userStore, guidanceStore } = useStore();
+  const { userStore } = useStore();
 
   const isAgencyIdInUserAgencies = userStore.getAgency(agencyId);
-  const { hasCompletedOnboarding } = guidanceStore;
 
   return (
     <>
       <Header />
       {isAgencyIdInUserAgencies ? (
         <Routes>
-          <Route path="/" element={<Navigate to={REPORTS_LOWERCASE} />} />
-          <Route
-            path="/getting-started"
-            element={
-              !hasCompletedOnboarding ? (
-                <Guidance />
-              ) : (
-                <Navigate to={`${REPORTS_LOWERCASE}`} />
-              )
-            }
-          />
-
+          <Route path="/" element={<Home />} />
           <Route path={`/${REPORTS_LOWERCASE}`} element={<Reports />} />
           <Route
             path={`/${REPORTS_LOWERCASE}/create`}
@@ -81,18 +69,7 @@ export const Router = () => {
           <Route path="/upload" element={<DataUpload />} />
           <Route path="/upload/review-metrics" element={<UploadReview />} />
 
-          <Route
-            path="*"
-            element={
-              <Navigate
-                to={
-                  hasCompletedOnboarding
-                    ? `${REPORTS_LOWERCASE}`
-                    : `getting-started`
-                }
-              />
-            }
-          />
+          <Route path="*" element={<Home />} />
         </Routes>
       ) : (
         <NotFound />

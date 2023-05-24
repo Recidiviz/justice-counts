@@ -30,7 +30,7 @@ import { useStore } from "./stores";
 
 const App: React.FC = (): ReactElement => {
   const location = useLocation();
-  const { userStore, guidanceStore } = useStore();
+  const { userStore } = useStore();
   useEffect(() => {
     trackNavigation(location.pathname + location.search);
   }, [location]);
@@ -49,7 +49,6 @@ const App: React.FC = (): ReactElement => {
   // if false then we just show user page that there are no associated agencies
   // if user has agencies but route is out of pattern /agency/:agencyId then redirect to /agency/:initialAgencyId/reports
   const initialAgency = userStore.getInitialAgencyId();
-  const { hasCompletedOnboarding } = guidanceStore;
 
   return (
     <AppWrapper>
@@ -58,26 +57,14 @@ const App: React.FC = (): ReactElement => {
           <Routes>
             <Route
               path="/"
-              element={
-                <Navigate
-                  to={`/agency/${initialAgency}/${
-                    hasCompletedOnboarding
-                      ? REPORTS_LOWERCASE
-                      : "getting-started"
-                  }`}
-                />
-              }
+              element={<Navigate to={`/agency/${initialAgency}`} />}
             />
             <Route path="/agency/:agencyId/*" element={<Router />} />
             <Route
               path="*"
               element={
                 <Navigate
-                  to={`/agency/${initialAgency}/${
-                    hasCompletedOnboarding
-                      ? REPORTS_LOWERCASE
-                      : "getting-started"
-                  }`}
+                  to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`}
                 />
               }
             />
