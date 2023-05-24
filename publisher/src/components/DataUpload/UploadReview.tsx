@@ -18,7 +18,7 @@
 import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { showToast } from "@justice-counts/common/components/Toast";
-import { RawDatapoint, ReportOverview } from "@justice-counts/common/types";
+import { ReportOverview } from "@justice-counts/common/types";
 import { printReportTitle } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
@@ -32,6 +32,7 @@ import {
 import { useStore } from "../../stores";
 import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
 import {
+  DatapointsByAgencyName,
   ReviewHeaderActionButton,
   ReviewMetricOverwrites,
   ReviewMetrics,
@@ -119,7 +120,7 @@ const UploadReview: React.FC = observer(() => {
       }
       acc[dp.agency_name][dp.metric_display_name].push(dp);
       return acc;
-    }, {} as { [key: string]: RawDatapoint[] });
+    }, {} as DatapointsByAgencyName);
     const isSuperAgencyUpload =
       Object.values(datapointsByAgencyName).length > 1;
 

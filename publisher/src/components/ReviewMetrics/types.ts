@@ -79,5 +79,5 @@ export type PublishReviewPropsFromDatapoints = {
 };
 
 export type DatapointsByAgencyName = {
-  [key: string]: RawDatapoint[];
+  [agencyName: string]: { [metricName: string]: RawDatapoint[] };
 };
