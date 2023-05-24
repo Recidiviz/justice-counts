@@ -53,6 +53,10 @@ export const UploadFile: React.FC<UploadFileProps> = ({
     "text/csv",
   ];
 
+  // TODO
+  // const isReadOnly = userStore.isUserReadOnly(agencyId);
+  const isReadOnly = true;
+
   const handleFileUploadAttempt = (
     e: React.ChangeEvent<HTMLInputElement> | DragEvent
   ) => {
@@ -78,7 +82,7 @@ export const UploadFile: React.FC<UploadFileProps> = ({
 
   useEffect(
     () => {
-      const dragDropArea = dragDropAreaRef.current;
+      const dragDropArea = isReadOnly ? null : dragDropAreaRef.current;
 
       const handleDragOver = (e: DragEvent) => {
         e.preventDefault();
@@ -156,6 +160,7 @@ export const UploadFile: React.FC<UploadFileProps> = ({
                   /** reset event state to allow user to re-upload same file (re-trigger the onChange event) */
                   e.currentTarget.value = "";
                 }}
+                disabled={isReadOnly}
               />
               Browse
             </UploadButtonLabel>
