@@ -59,6 +59,8 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
   metrics,
   metricOverwrites,
   records,
+  isSuperAgencyUpload,
+  datapointsByAgencyName,
 }) => {
   const { agencyId } = useParams();
   const navigate = useNavigate();

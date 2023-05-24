@@ -18,7 +18,7 @@
 import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { showToast } from "@justice-counts/common/components/Toast";
-import { ReportOverview } from "@justice-counts/common/types";
+import { RawDatapoint, ReportOverview } from "@justice-counts/common/types";
 import { printReportTitle } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
@@ -103,13 +103,38 @@ const UploadReview: React.FC = observer(() => {
     setIsSuccessModalOpen(true);
   };
 
+  const uploadedMetricsToDatapointsByAgencyName = (
+    metrics: UploadedMetric[]
+  ) => {
+    const allDatapoints = metrics
+      .flatMap((metric) => metric.datapoints)
+      .filter((dp) => dp.value);
+    const datapointsByAgencyName = allDatapoints.reduce((acc, dp) => {
+      if (!dp.agency_name) return acc;
+      if (!acc[dp.agency_name]) {
+        acc[dp.agency_name] = [];
+      }
+      acc[dp.agency_name].push(dp);
+      return acc;
+    }, {} as { [key: string]: RawDatapoint[] });
+    const isSuperAgencyUpload =
+      Object.values(datapointsByAgencyName).length > 1;
+
+    return { isSuperAgencyUpload, datapointsByAgencyName };
+  };
+
+  const { isSuperAgencyUpload, datapointsByAgencyName } =
+    uploadedMetricsToDatapointsByAgencyName(uploadedMetrics);
+
   const metrics = uploadedMetrics
-    .map((metric) => ({
-      ...metric,
-      datapoints: metric.datapoints.filter((dp) => dp.value !== null),
-      metricHasError: false,
-      metricHasValidInput: true,
-    }))
+    .map((metric) => {
+      return {
+        ...metric,
+        datapoints: metric.datapoints.filter((dp) => dp.value !== null),
+        metricHasError: false,
+        metricHasValidInput: true,
+      };
+    })
     .filter((metric) => metric.datapoints.length > 0);
   const overwrites: ReviewMetricOverwrites[] = [];
   metrics.forEach((metric) => {
@@ -221,6 +246,8 @@ const UploadReview: React.FC = observer(() => {
         metrics={metrics}
         metricOverwrites={overwrites}
         records={existingAndNewRecords}
+        isSuperAgencyUpload={isSuperAgencyUpload}
+        datapointsByAgencyName={datapointsByAgencyName}
       />
     </>
   );
