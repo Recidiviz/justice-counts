@@ -22,7 +22,7 @@ import { DatapointsTableView } from "@justice-counts/common/components/DataViz/D
 import { formatDateShortMonthYear } from "@justice-counts/common/components/DataViz/utils";
 import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
 import { useIsFooterVisible } from "@justice-counts/common/hooks";
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { printReportTitle } from "../../utils";
@@ -81,22 +81,21 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
   const renderSection = (metric: ReviewMetric) => {
     return (
       <SectionContainer key={metric.key}>
-        {isSuperAgencyUpload && datapointsByAgencyName ? (
-          Object.entries(datapointsByAgencyName).map(([key, datapoints]) => (
+        {/* {isSuperAgencyUpload && datapointsByAgencyName ? (
+          Object.entries(datapointsByAgencyName).map(([key, dpByMetrics]) => (
             <>
               <AgencyTitle>{key}</AgencyTitle>
-              <DatapointsTableView
-                datapoints={datapoints}
-                metricName={metric.display_name}
-              />
+              {Object.entries(dpByMetrics).map(([metricName, dps]) => (
+                <DatapointsTableView datapoints={dps} metricName={metricName} />
+              ))}
             </>
           ))
-        ) : (
-          <DatapointsTableView
-            datapoints={metric.datapoints}
-            metricName={metric.display_name}
-          />
-        )}
+        ) : ( */}
+        <DatapointsTableView
+          datapoints={metric.datapoints}
+          metricName={metric.display_name}
+        />
+        {/* )} */}
       </SectionContainer>
     );
   };
@@ -241,9 +240,25 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
         </NoDatapointsMessage>
       ) : (
         <MetricsPanel>
-          {metrics.map((metric) => {
-            return renderSection(metric);
-          })}
+          {isSuperAgencyUpload && datapointsByAgencyName
+            ? Object.entries(datapointsByAgencyName).map(
+                ([key, dpByMetrics]) => (
+                  <Fragment key={key}>
+                    <AgencyTitle>{key}</AgencyTitle>
+                    {Object.entries(dpByMetrics).map(([metricName, dps]) => (
+                      <SectionContainer key={metricName}>
+                        <DatapointsTableView
+                          datapoints={dps}
+                          metricName={metricName}
+                        />
+                      </SectionContainer>
+                    ))}
+                  </Fragment>
+                )
+              )
+            : metrics.map((metric) => {
+                return renderSection(metric);
+              })}
         </MetricsPanel>
       )}
     </ReviewMetricsWrapper>

@@ -110,11 +110,14 @@ const UploadReview: React.FC = observer(() => {
       .flatMap((metric) => metric.datapoints)
       .filter((dp) => dp.value);
     const datapointsByAgencyName = allDatapoints.reduce((acc, dp) => {
-      if (!dp.agency_name) return acc;
+      if (!dp.agency_name || !dp.metric_display_name) return acc;
       if (!acc[dp.agency_name]) {
-        acc[dp.agency_name] = [];
+        acc[dp.agency_name] = {};
       }
-      acc[dp.agency_name].push(dp);
+      if (!acc[dp.agency_name][dp.metric_display_name]) {
+        acc[dp.agency_name][dp.metric_display_name] = [];
+      }
+      acc[dp.agency_name][dp.metric_display_name].push(dp);
       return acc;
     }, {} as { [key: string]: RawDatapoint[] });
     const isSuperAgencyUpload =
