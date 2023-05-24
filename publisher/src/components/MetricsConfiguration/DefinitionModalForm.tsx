@@ -15,8 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import blueCheckIcon from "@justice-counts/common/assets/status-check-icon.png";
 import { Button } from "@justice-counts/common/components/Button";
+import { ToggleSwitch } from "@justice-counts/common/components/ToggleSwitch";
 import {
   MetricConfigurationSettings,
   MetricConfigurationSettingsOptions,
@@ -392,22 +392,17 @@ function DefinitionModalForm({
                           return (
                             <Styled.IncludeExclude
                               key={settingKey}
-                              onClick={() =>
-                                handleChangeDefinitionIncluded(
-                                  includesExcludesKey,
-                                  settingKey
-                                )
-                              }
                               enabled={setting.included === "Yes"}
                             >
-                              {setting.included === "Yes" ? (
-                                <Styled.EnabledIcon
-                                  src={blueCheckIcon}
-                                  alt=""
-                                />
-                              ) : (
-                                <Styled.DisabledIcon />
-                              )}
+                              <ToggleSwitch
+                                checked={setting.included === "Yes"}
+                                onChange={() =>
+                                  handleChangeDefinitionIncluded(
+                                    includesExcludesKey,
+                                    settingKey
+                                  )
+                                }
+                              />
                               {setting.label}
                             </Styled.IncludeExclude>
                           );

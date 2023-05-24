@@ -87,12 +87,7 @@ export const RaceListItem = styled.div<{ enabled?: boolean }>`
   gap: 8px;
   align-items: center;
   ${typography.sizeCSS.normal};
-  cursor: pointer;
   ${({ enabled }) => !enabled && `color: ${palette.highlight.grey7};`}
-
-  &:hover {
-    color: ${palette.solid.darkblue};
-  }
 `;
 
 export const EnabledRaceIcon = styled.img`
