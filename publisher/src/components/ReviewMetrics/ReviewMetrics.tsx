@@ -227,7 +227,6 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
       ) : (
         <MetricsPanel>
           {metrics.map((metric) => {
-            console.log("agency_name", metric);
             return renderSection(metric);
           })}
         </MetricsPanel>
