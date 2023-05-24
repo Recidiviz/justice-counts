@@ -19,6 +19,7 @@ export enum AgencyTeamMemberRole {
   JUSTICE_COUNTS_ADMIN = "JUSTICE_COUNTS_ADMIN",
   AGENCY_ADMIN = "AGENCY_ADMIN",
   CONTRIBUTOR = "CONTRIBUTOR",
+  READ_ONLY = "READ_ONLY",
 }
 
 export type AgencySystems =

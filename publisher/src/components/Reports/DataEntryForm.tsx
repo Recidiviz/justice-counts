@@ -46,6 +46,7 @@ import {
   DisabledMetricsInfoLink,
   DisabledMetricsInfoWrapper,
   Form,
+  FormFieldSet,
   FormWrapper,
   Metric,
   MetricSectionSubTitle,
@@ -255,6 +256,10 @@ const DataEntryForm: React.FC<{
     .map((metric) => metric.display_name);
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;
 
+  // TODO
+  // const isReadOnly = userStore.isUserReadOnly(agencyId);
+  const isReadOnly = true;
+
   if (!reportOverview || !reportMetrics) {
     return null;
   }
@@ -288,12 +293,14 @@ const DataEntryForm: React.FC<{
               navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`);
             }}
             borderColor="lightgrey"
+            disabled={isReadOnly}
           />
           {reportOverview.status === "PUBLISHED" ? (
             <Button
               label="Unpublish and Edit"
               onClick={convertReportToDraft}
               buttonColor="blue"
+              disabled={isReadOnly}
             />
           ) : (
             <ReviewButtonContainer>
@@ -312,7 +319,7 @@ const DataEntryForm: React.FC<{
                   })
                 }
                 buttonColor="blue"
-                disabled={isSaveInProgress}
+                disabled={isSaveInProgress || isReadOnly}
               />
             </ReviewButtonContainer>
           )}
@@ -333,6 +340,7 @@ const DataEntryForm: React.FC<{
             debouncedSave(metricKey);
           }}
         >
+          {/* <FormFieldSet disabled={isReadOnly}> */}
           {/* Form Title */}
           <PreTitle>Enter Data</PreTitle>
           <DataEntryFormTitle scrolled={scrolled} sticky>
@@ -430,6 +438,7 @@ const DataEntryForm: React.FC<{
               );
             }
           )}
+          {/* </FormFieldSet> */}
         </Form>
 
         {/* Onboarding */}

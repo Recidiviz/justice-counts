@@ -259,6 +259,10 @@ const Reports: React.FC = () => {
     userStore.isJusticeCountsAdmin(agencyId) ||
     userStore.isAgencyAdmin(agencyId);
 
+  // TODO
+  // const isReadOnly = userStore.isUserReadOnly(agencyId);
+  const isReadOnly = true;
+
   const renderReports = () => {
     if (reportStore.loadingOverview) {
       return <Loading />;
