@@ -21,6 +21,7 @@ import dropdownCaret from "../../assets/dropdown-caret.svg";
 import * as Styled from "./Dropdown.styled";
 import {
   DropdownMenuAlignment,
+  DropdownMenuIconAlignment,
   DropdownOption,
   ToggleCaretPosition,
   ToggleHover,
@@ -37,6 +38,10 @@ type DropdownProps = {
   alignment?: DropdownMenuAlignment;
   overflow?: boolean;
   fullWidth?: boolean;
+  icon?: {
+    element: React.ReactNode;
+    alignment: DropdownMenuIconAlignment;
+  };
 };
 
 /**
@@ -62,6 +67,7 @@ export function Dropdown({
   alignment,
   overflow,
   fullWidth,
+  icon,
 }: DropdownProps) {
   return (
     <Styled.CustomDropdown>

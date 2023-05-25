@@ -25,6 +25,8 @@ export type ToggleCaretPosition = "left" | "right";
 
 export type DropdownMenuAlignment = "left" | "right";
 
+export type DropdownMenuIconAlignment = "left" | "right";
+
 type DropdownOptionTextColor = "green" | "red";
 
 export type DropdownOption = {

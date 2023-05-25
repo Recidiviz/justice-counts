@@ -16,7 +16,7 @@
 // =============================================================================
 
 import React from "react";
-import { Route, Routes, useParams } from "react-router-dom";
+import { Navigate, Route, Routes, useParams } from "react-router-dom";
 
 import { DataUpload } from "../components/DataUpload";
 import UploadReview from "../components/DataUpload/UploadReview";
@@ -68,8 +68,7 @@ export const Router = () => {
           <Route path="/settings/*" element={<Settings />} />
           <Route path="/upload" element={<DataUpload />} />
           <Route path="/upload/review-metrics" element={<UploadReview />} />
-
-          <Route path="*" element={<Home />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       ) : (
         <NotFound />

@@ -105,6 +105,7 @@ export const CustomDropdownMenuItem = styled(DropdownMenuItem)<{
   height: auto;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   border-radius: 3px;
   text-transform: capitalize;
   ${typography.sizeCSS.normal};

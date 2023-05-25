@@ -109,7 +109,7 @@ const Menu: React.FC = () => {
           highlight: agency.id === currentAgency?.id,
         }))
     : [];
-
+  console.log("dropdownOptions", dropdownOptions);
   useEffect(() => {
     const { body } = document;
     if (isMobileMenuOpen) {
@@ -146,8 +146,8 @@ const Menu: React.FC = () => {
 
         <MenuItemsWrapper>
           <MenuItem
-            onClick={() => navigate("/")}
-            active={removeAgencyFromPath(`${pathWithoutAgency}/`) === ""}
+            onClick={() => navigate(`/agency/${agencyId}/`)}
+            active={pathWithoutAgency === ""}
           >
             Home
           </MenuItem>
