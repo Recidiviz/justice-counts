@@ -17,9 +17,9 @@
 
 import { Button } from "@justice-counts/common/components/Button";
 import {
-  palette,
-  typography,
-} from "@justice-counts/common/components/GlobalStyles";
+  Dropdown,
+  DropdownOption,
+} from "@justice-counts/common/components/Dropdown";
 import {
   RadioButton,
   RadioButtonsWrapper,
@@ -31,7 +31,6 @@ import {
 } from "@justice-counts/common/types";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import styled from "styled-components/macro";
 
 import { trackReportCreated } from "../../analytics";
 import { useStore } from "../../stores";
@@ -47,56 +46,19 @@ import {
   Title,
   TitleWrapper,
 } from "../Forms";
-import { Dropdown, DropdownWrapper } from "../Forms/Dropdown";
 import {
   REPORT_CAPITALIZED,
   REPORT_LOWERCASE,
   REPORTING_LOWERCASE,
   REPORTS_LOWERCASE,
 } from "../Global/constants";
-import {
-  PublishDataWrapper,
-  TWO_PANEL_MAX_WIDTH,
-} from "./ReportDataEntry.styles";
+import * as Styled from "./CreateReport.styled";
+import { PublishDataWrapper } from "./ReportDataEntry.styles";
 import { ReportSummaryWrapper } from "./ReportSummaryPanel";
 
 function createIntegerRange(start: number, end: number) {
   return Array.from({ length: end - start + 1 }, (_, i) => start + i);
 }
-
-const Heading = styled.div`
-  font-size: ${typography.sizeCSS.medium};
-  margin-top: 24px;
-  margin-bottom: 12px;
-`;
-
-const CreateReportInfoContainer = styled.div`
-  border-radius: 5px;
-  padding: 20px 30px 20px 30px;
-  border: 2px solid ${palette.highlight.lightblue2};
-  background: ${palette.highlight.lightblue1};
-  margin-top: 38px;
-  color: ${palette.solid.blue};
-  ${typography.sizeCSS.medium}
-`;
-
-const BoldFont = styled.span`
-  font-weight: 700;
-`;
-
-const CreateButtonContainer = styled.div`
-  width: 100%;
-`;
-
-const FormCreateButtonContainer = styled.div`
-  display: none;
-  margin-top: 48px;
-  width: 200px;
-
-  @media only screen and (max-width: ${TWO_PANEL_MAX_WIDTH}px) {
-    display: block;
-  }
-`;
 
 const initialCreateReportFormValues: CreateReportFormValuesType = {
   month: 1,
@@ -114,21 +76,12 @@ const CreateReport = () => {
     initialCreateReportFormValues
   );
 
-  const updateMonth = (e: React.ChangeEvent<HTMLSelectElement>) =>
-    setCreateReportFormValues((prev) => ({
-      ...prev,
-      month: +e.target.value as CreateReportFormValuesType["month"],
-    }));
-
   const updateYearStandard = (e: React.ChangeEvent<HTMLInputElement>) =>
     setCreateReportFormValues((prev) => ({
       ...prev,
       annualStartMonth: +e.target
         .value as CreateReportFormValuesType["annualStartMonth"],
     }));
-
-  const updateYear = (e: React.ChangeEvent<HTMLSelectElement>) =>
-    setCreateReportFormValues((prev) => ({ ...prev, year: +e.target.value }));
 
   const updateFrequency = (e: React.ChangeEvent<HTMLInputElement>) =>
     setCreateReportFormValues((prev) => ({
@@ -188,6 +141,30 @@ const CreateReport = () => {
   const { frequency, month, year, annualStartMonth, isRecurring } =
     createReportFormValues;
 
+  const monthsOptions: DropdownOption[] = monthsByName.map(
+    (monthName, index) => ({
+      key: monthName,
+      label: monthName,
+      onClick: () =>
+        setCreateReportFormValues((prev) => ({
+          ...prev,
+          month: (index + 1) as CreateReportFormValuesType["month"],
+        })),
+      highlight: index + 1 === month,
+    })
+  );
+
+  const yearsOptions: DropdownOption[] = createIntegerRange(
+    1970,
+    new Date().getFullYear() + 1
+  ).map((yearValue) => ({
+    key: yearValue,
+    label: yearValue,
+    onClick: () =>
+      setCreateReportFormValues((prev) => ({ ...prev, year: yearValue })),
+    highlight: yearValue === year,
+  }));
+
   return (
     <>
       {/* Create Report Details Panel */}
@@ -219,9 +196,9 @@ const CreateReport = () => {
             </MetricSectionTitle>
             <MetricSectionSubTitle />
           </TitleWrapper>
-          <Heading>
+          <Styled.Heading>
             What {REPORTING_LOWERCASE} frequency is this {REPORT_LOWERCASE}?
-          </Heading>
+          </Styled.Heading>
           <RadioButtonsWrapper>
             <RadioButton
               type="radio"
@@ -246,9 +223,9 @@ const CreateReport = () => {
           </RadioButtonsWrapper>
           {createReportFormValues.frequency === "ANNUAL" && (
             <>
-              <Heading>
+              <Styled.Heading>
                 What year standard do you use for annual {REPORTS_LOWERCASE}?
-              </Heading>
+              </Styled.Heading>
               <RadioButtonsWrapper>
                 <RadioButton
                   type="radio"
@@ -297,61 +274,62 @@ const CreateReport = () => {
         </BinaryRadioGroupContainer> */}
           {createReportFormValues.isRecurring === false && (
             <>
-              <Heading>When should this {REPORT_LOWERCASE} start?</Heading>
-              <DropdownWrapper>
+              <Styled.Heading>
+                When should this {REPORT_LOWERCASE} start?
+              </Styled.Heading>
+              <Styled.DropdownsWrapper>
                 {createReportFormValues.frequency === "MONTHLY" && (
-                  <Dropdown onChange={updateMonth} value={month}>
-                    {monthsByName.map((m, i) => {
-                      return (
-                        <option key={m} value={i + 1}>
-                          {m}
-                        </option>
-                      );
-                    })}
-                  </Dropdown>
+                  <Styled.DropdownContainer>
+                    <Dropdown
+                      label={monthsByName[month - 1]}
+                      options={monthsOptions}
+                      hover="background"
+                      caretPosition="right"
+                      fullWidth
+                    />
+                  </Styled.DropdownContainer>
                 )}
 
-                <Dropdown onChange={updateYear} value={year}>
-                  {createIntegerRange(1970, new Date().getFullYear() + 1).map(
-                    (yr) => {
-                      return (
-                        <option key={yr} value={yr}>
-                          {yr}
-                        </option>
-                      );
-                    }
-                  )}
-                </Dropdown>
-              </DropdownWrapper>
+                <Styled.DropdownContainer>
+                  <Dropdown
+                    label={year}
+                    options={yearsOptions}
+                    hover="background"
+                    caretPosition="right"
+                    fullWidth
+                  />
+                </Styled.DropdownContainer>
+              </Styled.DropdownsWrapper>
             </>
           )}
-          <CreateReportInfoContainer>
-            The <BoldFont>{isRecurring ? `recurring` : ``}</BoldFont>{" "}
+          <Styled.CreateReportInfoContainer>
+            The{" "}
+            <Styled.BoldFont>{isRecurring ? `recurring` : ``}</Styled.BoldFont>{" "}
             {REPORT_LOWERCASE} will be created for{` `}
-            <BoldFont>
+            <Styled.BoldFont>
               {printDateRangeFromMonthYear(
                 frequency === "ANNUAL" ? annualStartMonth : month,
                 isRecurring ? new Date(Date.now()).getFullYear() : year,
                 frequency
               )}
-            </BoldFont>
+            </Styled.BoldFont>
             .
-          </CreateReportInfoContainer>
-          <FormCreateButtonContainer>
+          </Styled.CreateReportInfoContainer>
+          <Styled.FormCreateButtonContainer>
             <Button
               label={`Create ${REPORT_CAPITALIZED}`}
               onClick={createNewReport}
               buttonColor="blue"
               size="medium"
             />
-          </FormCreateButtonContainer>
+          </Styled.FormCreateButtonContainer>
         </Form>
       </FormWrapper>
 
       {/* Create Report Review Panel */}
       <PublishDataWrapper>
         <Title>
-          <CreateButtonContainer>
+          <Styled.CreateButtonContainer>
             <Button
               label={`Create ${REPORT_CAPITALIZED}`}
               /** Should trigger a confirmation dialogue before submitting */
@@ -359,7 +337,7 @@ const CreateReport = () => {
               buttonColor="blue"
               size="medium"
             />
-          </CreateButtonContainer>
+          </Styled.CreateButtonContainer>
         </Title>
       </PublishDataWrapper>
     </>
