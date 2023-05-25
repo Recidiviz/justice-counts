@@ -57,19 +57,19 @@ export const Instructions = styled.div`
   display: flex;
   width: 50%;
   flex-direction: column;
+  ${typography.sizeCSS.medium};
 
-  ${typography.sizeCSS.medium}
   h1 {
-    ${typography.sizeCSS.title}
+    ${typography.sizeCSS.title};
   }
 
   h2 {
-    ${typography.sizeCSS.large}
+    ${typography.sizeCSS.large};
     margin: 15px 0;
   }
 
   h3 {
-    ${typography.sizeCSS.large}
+    ${typography.sizeCSS.large};
     font-size: ${rem("22px")};
     color: ${palette.highlight.grey10};
     margin-top: 15px;
