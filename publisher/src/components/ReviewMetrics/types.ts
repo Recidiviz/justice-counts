@@ -51,6 +51,7 @@ export type ReviewMetricOverwrites = {
   metricName: string;
   dimensionName: string;
   startDate: string;
+  agencyName?: string;
 };
 
 export type ReviewMetricsProps = {

@@ -159,6 +159,7 @@ const UploadReview: React.FC = observer(() => {
           key: dp.id,
           metricName: dp.metric_display_name || "",
           dimensionName: dp.dimension_display_name || "",
+          agencyName: dp.agency_name,
           startDate: dp.start_date,
         };
         overwrites.push(overwriteData);

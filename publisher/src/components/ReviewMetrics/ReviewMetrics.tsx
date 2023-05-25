@@ -41,6 +41,8 @@ import {
   MetricsPanel,
   MetricStatusIcon,
   NoDatapointsMessage,
+  OverwritesAgencyName,
+  OverwritesWrapper,
   ReviewMetricsButtonsContainer,
   ReviewMetricsWrapper,
   SectionContainer,
@@ -54,6 +56,7 @@ import {
 import {
   DatapointsByMetricNameByAgencyName,
   ReviewMetric,
+  ReviewMetricOverwrites,
   ReviewMetricsProps,
 } from "./types";
 
@@ -115,6 +118,42 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
         </div>
       </Fragment>
     ));
+  };
+
+  const renderOverwritesByAgencyName = (
+    reviewMetricOverwrites: ReviewMetricOverwrites[]
+  ) => {
+    const groupedMetricOverwrites = reviewMetricOverwrites.reduce(
+      (acc, overwrite) => {
+        if (!overwrite.agencyName) return acc;
+        if (!acc[overwrite.agencyName]) {
+          acc[overwrite.agencyName] = [];
+        }
+        acc[overwrite.agencyName].push(overwrite);
+        return acc;
+      },
+      {} as { [key: string]: ReviewMetricOverwrites[] }
+    );
+
+    return (
+      <OverwritesWrapper>
+        {Object.entries(groupedMetricOverwrites).map(
+          ([agencyName, overwrites]) => (
+            <Fragment key={agencyName}>
+              <OverwritesAgencyName>{agencyName}</OverwritesAgencyName>
+              {overwrites.map(
+                ({ key, metricName, dimensionName, startDate }) => (
+                  <SummarySectionLine key={key}>
+                    {metricName}: {dimensionName}
+                    <span>({formatDateShortMonthYear(startDate)})</span>
+                  </SummarySectionLine>
+                )
+              )}
+            </Fragment>
+          )
+        )}
+      </OverwritesWrapper>
+    );
   };
 
   return (
@@ -210,15 +249,20 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
                   {isOverwritesSectionExpanded ? "-" : "+"}
                 </SectionExpandStatusSign>
               </SummarySectionTitle>
-              {isOverwritesSectionExpanded &&
-                metricOverwrites.map(
-                  ({ key, metricName, dimensionName, startDate }) => (
-                    <SummarySectionLine key={key}>
-                      {metricName}: {dimensionName}
-                      <span>({formatDateShortMonthYear(startDate)})</span>
-                    </SummarySectionLine>
-                  )
-                )}
+              {isOverwritesSectionExpanded && (
+                <>
+                  {isMultiAgencyUpload
+                    ? renderOverwritesByAgencyName(metricOverwrites)
+                    : metricOverwrites.map(
+                        ({ key, metricName, dimensionName, startDate }) => (
+                          <SummarySectionLine key={key}>
+                            {metricName}: {dimensionName}
+                            <span>({formatDateShortMonthYear(startDate)})</span>
+                          </SummarySectionLine>
+                        )
+                      )}
+                </>
+              )}
             </SummarySection>
           )}
           {records && records.length > 0 && (

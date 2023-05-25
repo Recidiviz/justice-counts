@@ -263,3 +263,14 @@ export const AgencyName = styled.div`
     border-top: 1px solid ${palette.highlight.grey3};
   }
 `;
+
+export const OverwritesAgencyName = styled.div`
+  ${typography.sizeCSS.normal}
+  color: ${palette.solid.blue};
+`;
+
+export const OverwritesWrapper = styled.div`
+  ${OverwritesAgencyName}:not(:first-child) {
+    margin-top: 5px;
+  }
+`;
