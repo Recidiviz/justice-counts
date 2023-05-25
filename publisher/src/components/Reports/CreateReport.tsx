@@ -30,7 +30,7 @@ import {
   ReportOverview,
 } from "@justice-counts/common/types";
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import { trackReportCreated } from "../../analytics";
@@ -187,6 +187,9 @@ const CreateReport = () => {
 
   const { frequency, month, year, annualStartMonth, isRecurring } =
     createReportFormValues;
+
+  if (userStore.isUserReadOnly(agencyId))
+    return <Navigate to={`/agency/${agencyId}/${REPORTS_LOWERCASE}`} />;
 
   return (
     <>
