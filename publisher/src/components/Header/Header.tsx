@@ -43,14 +43,13 @@ const Header = observer(() => {
         )
       : navigate(guidancePaths.home);
   const badge = () => {
-    // TODO
-    // if (userStore.isUserReadOnly(agencyId)) {
-    return (
-      <Badge color="GREY" noMargin>
-        Read only
-      </Badge>
-    );
-    // }
+    if (userStore.isUserReadOnly(agencyId)) {
+      return (
+        <Badge color="GREY" noMargin>
+          Read only
+        </Badge>
+      );
+    }
     if (api.environment === "local" || api.environment === "staging")
       return (
         <Badge color="RED" noMargin>
@@ -58,7 +57,6 @@ const Header = observer(() => {
         </Badge>
       );
   };
-
   return (
     <HeaderBar
       onLogoClick={onLogoClick}
@@ -70,5 +68,4 @@ const Header = observer(() => {
     </HeaderBar>
   );
 });
-
 export default Header;

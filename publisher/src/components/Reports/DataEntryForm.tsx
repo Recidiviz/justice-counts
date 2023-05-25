@@ -256,9 +256,7 @@ const DataEntryForm: React.FC<{
     .map((metric) => metric.display_name);
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;
 
-  // TODO
-  // const isReadOnly = userStore.isUserReadOnly(agencyId);
-  const isReadOnly = true;
+  const isReadOnly = userStore.isUserReadOnly(agencyId);
 
   if (!reportOverview || !reportMetrics) {
     return null;
