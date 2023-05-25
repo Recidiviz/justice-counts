@@ -79,11 +79,22 @@ export const DatapointsTableNamesCell = styled.td<{
     color: ${palette.solid.darkgrey};
   }
 `;
-export const DatapointsMetricNameCell = styled(DatapointsTableNamesCell)`
-  ${typography.sizeCSS.title};
-  color: ${palette.solid.darkgrey};
+export const DatapointsMetricNameCell = styled(DatapointsTableNamesCell)<{
+  useMultiAgencyStyles?: boolean;
+}>`
+  ${({ useMultiAgencyStyles }) =>
+    useMultiAgencyStyles
+      ? typography.sizeCSS.medium
+      : typography.sizeCSS.title};
+  color: ${({ useMultiAgencyStyles }) =>
+    useMultiAgencyStyles ? palette.solid.blue : palette.solid.darkgrey};
   line-height: 38px;
   padding: 0 0 31px 0;
+
+  &:hover {
+    color: ${({ useMultiAgencyStyles }) =>
+      useMultiAgencyStyles ? palette.solid.blue : palette.solid.darkgrey};
+  }
 `;
 export const DatapointsMetricNameCellTooltip = styled.div`
   ${typography.sizeCSS.normal};
