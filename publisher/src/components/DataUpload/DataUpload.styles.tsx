@@ -57,7 +57,6 @@ export const Instructions = styled.div`
   display: flex;
   width: 50%;
   flex-direction: column;
-  z-index: 1;
 
   ${typography.sizeCSS.medium}
   h1 {
