@@ -41,6 +41,7 @@ import {
   ProfileDropdownWrapper,
   SubMenuContainer,
   SubMenuItem,
+  TargetIcon,
 } from ".";
 
 const Menu: React.FC = () => {
@@ -139,6 +140,11 @@ const Menu: React.FC = () => {
                 hover="label"
                 alignment="left"
                 caretPosition="right"
+                icon={{
+                  element: <TargetIcon />,
+                  alignment: "right",
+                  highlightIcon: true,
+                }}
               />
             </MenuItem>
           </AgencyDropdownWrapper>
@@ -224,6 +230,11 @@ const Menu: React.FC = () => {
               size="small"
               hover="label"
               alignment="right"
+              icon={{
+                element: <TargetIcon />,
+                alignment: "left",
+                highlightIcon: false,
+              }}
             />
           </ProfileDropdownWrapper>
         </MenuItemsWrapper>

@@ -160,19 +160,19 @@ export const AgencyDropdownWrapper = styled.div`
   height: 65px;
   padding: 0 16px;
 
-  & div {
+  & > div {
     border-bottom: 0;
   }
 
-  & button div {
+  button div {
     color: ${palette.solid.white};
   }
 
-  & button img {
+  button img {
     filter: brightness(0) invert(1);
   }
 
-  & button + div {
+  button + div {
     margin-top: 20px;
     margin-left: -16px;
     border-radius: 0;
@@ -192,7 +192,7 @@ export const ProfileDropdownWrapper = styled.div`
   position: relative;
   margin-left: -8px;
 
-  & div:last-child {
+  & > div:last-child {
     position: absolute;
     z-index: 1;
   }
@@ -256,5 +256,25 @@ export const Caret = styled.div`
     border-radius: 10px;
     rotate: 135deg;
     background: ${palette.solid.darkgrey};
+  }
+`;
+
+export const TargetIcon = styled.div`
+  height: 14px;
+  width: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid ${palette.solid.blue};
+  border-radius: 50%;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background: ${palette.solid.blue};
   }
 `;

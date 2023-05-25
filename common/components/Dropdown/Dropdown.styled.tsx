@@ -24,7 +24,7 @@ import {
 import styled from "styled-components/macro";
 
 import { palette, typography } from "../GlobalStyles";
-import { ToggleHover, ToggleSize } from "./types";
+import { DropdownMenuIconAlignment, ToggleHover, ToggleSize } from "./types";
 
 export const CustomDropdown = styled(Dropdown)`
   width: 100%;
@@ -149,4 +149,29 @@ export const CustomDropdownMenuItem = styled(DropdownMenuItem)<{
   }
 
   ${({ disabled }) => disabled && `opacity: 0.5; pointer-events: none;`}
+`;
+
+export const OptionLabelWrapper = styled.div<{
+  alignment: DropdownMenuIconAlignment;
+  highlightIcon?: boolean;
+}>`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: ${({ alignment }) =>
+    alignment === "left" ? "row-reverse" : "row"};
+  justify-content: ${({ alignment }) =>
+    alignment === "left" ? "flex-end" : "space-between"};
+  align-items: center;
+  gap: 16px;
+  color: inherit !important;
+
+  ${({ highlightIcon }) =>
+    highlightIcon &&
+    `
+      span {
+        width: 16px;
+        margin-left: 16px;
+      }
+    `}
 `;

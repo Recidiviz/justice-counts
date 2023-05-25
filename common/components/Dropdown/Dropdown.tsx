@@ -41,6 +41,7 @@ type DropdownProps = {
   icon?: {
     element: React.ReactNode;
     alignment: DropdownMenuIconAlignment;
+    highlightIcon: boolean;
   };
 };
 
@@ -119,7 +120,20 @@ export function Dropdown({
                   highlight={highlight}
                   noHover={noHover}
                 >
-                  {optionLabel}
+                  {!icon && optionLabel}
+                  {icon && (
+                    <Styled.OptionLabelWrapper
+                      alignment={icon.alignment}
+                      highlightIcon={icon.highlightIcon}
+                    >
+                      {optionLabel}
+                      <span>
+                        {((icon.highlightIcon && highlight) ||
+                          !icon.highlightIcon) &&
+                          icon.element}
+                      </span>
+                    </Styled.OptionLabelWrapper>
+                  )}
                 </Styled.CustomDropdownMenuItem>
               )
             )
