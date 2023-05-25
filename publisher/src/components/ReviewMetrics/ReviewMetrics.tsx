@@ -99,25 +99,27 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
   const renderDatapointsByMetricNameByAgencyName = (
     groupedDatapoints: DatapointsByMetricNameByAgencyName
   ) => {
-    return Object.entries(groupedDatapoints).map(([key, dpByMetrics]) => (
-      <Fragment key={key}>
-        <AgencyName>{key}</AgencyName>
-        <div>
-          {Object.entries(dpByMetrics).map(([metricName, dps]) => (
-            <SectionContainer
-              key={metricName}
-              isMultiAgencyUpload={isMultiAgencyUpload}
-            >
-              <DatapointsTableView
-                datapoints={dps}
-                metricName={metricName}
-                useMultiAgencyStyles={isMultiAgencyUpload}
-              />
-            </SectionContainer>
-          ))}
-        </div>
-      </Fragment>
-    ));
+    return Object.entries(groupedDatapoints).map(
+      ([agencyName, dpByMetrics]) => (
+        <Fragment key={agencyName}>
+          <AgencyName>{agencyName}</AgencyName>
+          <div>
+            {Object.entries(dpByMetrics).map(([metricName, dps]) => (
+              <SectionContainer
+                key={metricName}
+                isMultiAgencyUpload={isMultiAgencyUpload}
+              >
+                <DatapointsTableView
+                  datapoints={dps}
+                  metricName={metricName}
+                  useMultiAgencyStyles={isMultiAgencyUpload}
+                />
+              </SectionContainer>
+            ))}
+          </div>
+        </Fragment>
+      )
+    );
   };
 
   const renderOverwritesByAgencyName = (
