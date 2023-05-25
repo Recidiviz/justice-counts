@@ -225,9 +225,9 @@ export const MetricsPanel = styled.div`
   overflow-x: hidden;
 `;
 
-export const SectionContainer = styled.div`
+export const SectionContainer = styled.div<{ isMultiAgencyUpload?: boolean }>`
   margin-top: 32px;
-  padding-top: 24px;
+  padding-top: 22px;
   display: flex;
   align-items: center;
   justify-content: stretch;
@@ -236,7 +236,9 @@ export const SectionContainer = styled.div`
   overflow-x: auto;
 
   &:not(:first-child) {
-    border-top: 1px solid ${palette.highlight.grey3};
+    ${({ isMultiAgencyUpload }) =>
+      !isMultiAgencyUpload &&
+      `border-top: 1px solid ${palette.highlight.grey3}`};
   }
 
   &:first-child {
@@ -250,14 +252,14 @@ export const NoDatapointsMessage = styled.div`
 `;
 
 export const AgencyName = styled.div`
-  ${typography.sizeCSS.medium}
+  ${typography.sizeCSS.title}
   width: 100%;
-  margin-bottom: 25px;
-  color: ${palette.solid.green};
+  margin-bottom: 13px;
+  color: ${palette.solid.darkgrey};
 
   &:not(:first-child) {
-    margin-top: 80px;
-    padding-top: 30px;
-    border-top: 1px dotted ${palette.highlight.grey8};
+    margin-top: 40px;
+    padding-top: 8px;
+    border-top: 1px solid ${palette.highlight.grey3};
   }
 `;

@@ -101,8 +101,15 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
         <AgencyName>{key}</AgencyName>
         <div>
           {Object.entries(dpByMetrics).map(([metricName, dps]) => (
-            <SectionContainer key={metricName}>
-              <DatapointsTableView datapoints={dps} metricName={metricName} />
+            <SectionContainer
+              key={metricName}
+              isMultiAgencyUpload={isMultiAgencyUpload}
+            >
+              <DatapointsTableView
+                datapoints={dps}
+                metricName={metricName}
+                useMultiAgencyStyles={isMultiAgencyUpload}
+              />
             </SectionContainer>
           ))}
         </div>
