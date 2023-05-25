@@ -17,17 +17,28 @@
 
 import React from "react";
 
-import { RadioButtonsWrapper as Wrapper } from "./RadioButton.styled";
+import {
+  RadioButtonsFieldset,
+  RadioButtonsWrapper as Wrapper,
+} from "./RadioButton.styled";
 import { WrapperSpacing } from "./types";
 
 type RadioButtonsWrapperProps = {
   children: React.ReactNode;
   spacing?: WrapperSpacing;
+  disabled?: boolean;
 };
 
 export function RadioButtonsWrapper({
   children,
   spacing,
+  disabled,
 }: RadioButtonsWrapperProps) {
-  return <Wrapper spacing={spacing}>{children}</Wrapper>;
+  return (
+    <Wrapper spacing={spacing}>
+      <RadioButtonsFieldset disabled={disabled}>
+        {children}
+      </RadioButtonsFieldset>
+    </Wrapper>
+  );
 }

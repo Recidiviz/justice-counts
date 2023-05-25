@@ -239,9 +239,12 @@ export const SelectAllDimensions = styled.span<{ disabled?: boolean }>`
   }
 `;
 
-export const DimensionsList = styled.div`
+export const DimensionsList = styled.form``;
+
+export const DimensionsListFieldset = styled.fieldset`
   display: flex;
   flex-direction: column;
+  border: none;
 `;
 
 export const DimensionsListItem = styled.div<{ enabled?: boolean }>`
@@ -254,7 +257,6 @@ export const DimensionsListItem = styled.div<{ enabled?: boolean }>`
   ${typography.sizeCSS.medium};
 
   ${({ enabled }) => !enabled && `color: ${palette.highlight.grey7};`}
-
   &:last-child {
     border-bottom: none;
   }

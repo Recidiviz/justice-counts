@@ -19,6 +19,7 @@ import blueCheckIcon from "@justice-counts/common/assets/status-check-icon.png";
 import { MetricConfigurationSettings } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
@@ -27,8 +28,9 @@ import DefinitionModalForm from "./DefinitionModalForm";
 import * as Styled from "./MetricDefinitions.styled";
 
 function MetricDefinitions() {
+  const { agencyId } = useParams() as { agencyId: string };
   const [settingsSearchParams] = useSettingsSearchParams();
-  const { metricConfigStore } = useStore();
+  const { metricConfigStore, userStore } = useStore();
   const {
     metrics,
     dimensions,
@@ -45,6 +47,8 @@ function MetricDefinitions() {
   const [activeDimensionKey, setActiveDimensionKey] = useState<
     string | undefined
   >(undefined);
+
+  const isReadOnly = userStore.isUserReadOnly(agencyId);
 
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const activeDisaggregationKeys =
@@ -108,7 +112,13 @@ function MetricDefinitions() {
           </Styled.Description>
           <Styled.Section>
             <Styled.SectionTitle>Primary Metric</Styled.SectionTitle>
-            <Styled.SectionItem onClick={() => setIsSettingsModalOpen(true)}>
+            <Styled.SectionItem
+              onClick={() => {
+                if (!isReadOnly) {
+                  setIsSettingsModalOpen(true);
+                }
+              }}
+            >
               <Styled.SectionItemLabel>
                 {metricHasDefinitionSelected() && (
                   <img src={blueCheckIcon} alt="" />
@@ -193,9 +203,11 @@ function MetricDefinitions() {
                     <Styled.SectionItem
                       key={key}
                       onClick={() => {
-                        setActiveDisaggregationKey(disaggregationKey);
-                        setActiveDimensionKey(key);
-                        setIsSettingsModalOpen(true);
+                        if (!isReadOnly) {
+                          setActiveDisaggregationKey(disaggregationKey);
+                          setActiveDimensionKey(key);
+                          setIsSettingsModalOpen(true);
+                        }
                       }}
                     >
                       <Styled.SectionItemLabel>
