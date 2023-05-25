@@ -198,6 +198,10 @@ class UserStore {
     );
   }
 
+  isReadOnly(agencyId: string): boolean {
+    return this.getUserAgencyRole(agencyId) === AgencyTeamMemberRole.READ_ONLY;
+  }
+
   async updateAndRetrieveUserPermissionsAndAgencies() {
     try {
       const response = (await this.api.request({
