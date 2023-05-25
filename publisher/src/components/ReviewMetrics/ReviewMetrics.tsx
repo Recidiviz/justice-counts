@@ -123,7 +123,11 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
   const renderOverwritesByAgencyName = (
     reviewMetricOverwrites: ReviewMetricOverwrites[]
   ) => {
-    const groupedMetricOverwrites = reviewMetricOverwrites.reduce(
+    /**
+     * Groups metric overwrites by agency name
+     * @example { "Agency 1": { key, metricName, dimensionName, startDate, agencyName }, "Agency 2": { ... } }
+     */
+    const groupedMetricOverwritesByAgencyName = reviewMetricOverwrites.reduce(
       (acc, overwrite) => {
         if (!overwrite.agencyName) return acc;
         if (!acc[overwrite.agencyName]) {
@@ -137,7 +141,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
 
     return (
       <OverwritesWrapper>
-        {Object.entries(groupedMetricOverwrites).map(
+        {Object.entries(groupedMetricOverwritesByAgencyName).map(
           ([agencyName, overwrites]) => (
             <Fragment key={agencyName}>
               <OverwritesAgencyName>{agencyName}</OverwritesAgencyName>
