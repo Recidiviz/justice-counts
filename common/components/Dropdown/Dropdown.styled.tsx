@@ -24,7 +24,7 @@ import {
 import styled from "styled-components/macro";
 
 import { palette, typography } from "../GlobalStyles";
-import { DropdownMenuIconAlignment, ToggleHover, ToggleSize } from "./types";
+import { ToggleHover, ToggleSize } from "./types";
 
 export const CustomDropdown = styled(Dropdown)`
   width: 100%;
