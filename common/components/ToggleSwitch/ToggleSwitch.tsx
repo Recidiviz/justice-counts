@@ -15,38 +15,27 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React, { InputHTMLAttributes } from "react";
+import React from "react";
 
-import * as Styled from "./RadioButton.styled";
-import { RadioButtonSize } from "./types";
+import {
+  Slider,
+  ToggleSwitchContainer,
+  ToggleSwitchInput,
+  ToggleSwitchLabel,
+  ToggleSwitchProps,
+} from ".";
 
-interface RadioButtonProps extends InputHTMLAttributes<HTMLInputElement> {
-  label: string;
-  buttonSize?: RadioButtonSize;
-  metricKey?: string;
-}
-
-export function RadioButton({
-  label,
-  buttonSize,
-  metricKey,
-  disabled,
-  ...props
-}: RadioButtonProps) {
+export const ToggleSwitch = ({ checked, onChange }: ToggleSwitchProps) => {
   return (
-    <Styled.RadioButtonWrapper>
-      <Styled.RadioButtonInput
-        disabled={disabled}
-        {...props}
-        data-metric-key={metricKey}
-      />
-      <Styled.RadioButtonLabel
-        buttonSize={buttonSize}
-        disabled={disabled}
-        htmlFor={props.id}
-      >
-        {label}
-      </Styled.RadioButtonLabel>
-    </Styled.RadioButtonWrapper>
+    <ToggleSwitchContainer>
+      <ToggleSwitchLabel>
+        <ToggleSwitchInput
+          type="checkbox"
+          checked={checked}
+          onChange={onChange}
+        />
+        <Slider />
+      </ToggleSwitchLabel>
+    </ToggleSwitchContainer>
   );
-}
+};

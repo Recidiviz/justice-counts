@@ -97,6 +97,7 @@ export const SettingRow = styled.div`
 
 export const SettingName = styled.div`
   width: 45%;
+  min-width: 45%;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -128,13 +129,6 @@ export const SettingTooltip = styled.div`
   ${InfoIconWrapper}:hover & {
     display: block;
   }
-`;
-
-export const SettingOptions = styled.div`
-  width: 55%;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
 `;
 
 export const MonthSelectionDropdownContainer = styled.div<{
@@ -250,7 +244,7 @@ export const DimensionsList = styled.div`
   flex-direction: column;
 `;
 
-export const DimensionsListItem = styled.div`
+export const DimensionsListItem = styled.div<{ enabled?: boolean }>`
   display: flex;
   flex-direction: row;
   gap: 12px;
@@ -258,7 +252,8 @@ export const DimensionsListItem = styled.div`
   padding: 16px 0 16px 10px;
   border-bottom: 1px solid ${palette.highlight.grey4};
   ${typography.sizeCSS.medium};
-  cursor: pointer;
+
+  ${({ enabled }) => !enabled && `color: ${palette.highlight.grey7};`}
 
   &:last-child {
     border-bottom: none;
@@ -267,10 +262,6 @@ export const DimensionsListItem = styled.div`
   img {
     width: 20px;
     height: 20px;
-  }
-
-  &:hover {
-    background-color: ${palette.highlight.grey1};
   }
 `;
 

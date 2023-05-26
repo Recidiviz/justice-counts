@@ -15,9 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import blueCheckIcon from "@justice-counts/common/assets/status-check-icon.png";
 import { Button } from "@justice-counts/common/components/Button";
-import { RadioButton } from "@justice-counts/common/components/RadioButton";
+import {
+  RadioButton,
+  RadioButtonsWrapper,
+} from "@justice-counts/common/components/RadioButton";
+import { ToggleSwitch } from "@justice-counts/common/components/ToggleSwitch";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -135,14 +138,13 @@ function RaceEthnicitiesModalForm({
           {Ethnicity.UNKNOWN_ETHNICITY}) separately from their race in your case
           management system?
         </Styled.SpecifyEthnicityPrompt>
-        <Styled.SpecifyEthnicityButtonsContainer>
+        <RadioButtonsWrapper spacing={{ bottom: 32 }}>
           <RadioButton
             type="radio"
             id="specify-ethnicity-yes"
             name="specify-ethnicity"
             label="Yes"
             value="yes"
-            fullWidth
             checked={canSpecifyEthnicity}
             onChange={() => setCanSpecifyEthnicity(true)}
           />
@@ -152,51 +154,46 @@ function RaceEthnicitiesModalForm({
             name="specify-ethnicity"
             label="No"
             value="no"
-            fullWidth
             checked={!canSpecifyEthnicity}
             onChange={() => setCanSpecifyEthnicity(false)}
           />
-        </Styled.SpecifyEthnicityButtonsContainer>
+        </RadioButtonsWrapper>
         <Styled.RaceListHeader>
           Which of the following categories does your case management system
           capture for race?
         </Styled.RaceListHeader>
         <Styled.RaceList>
           {!canSpecifyEthnicity && (
-            <Styled.RaceListItem
-              onClick={() => {
-                if (!specifiesHispanicAsRace) {
-                  setRacesStatusObject({ ...racesStatusObject, Unknown: true });
-                }
-                setSpecifiesHispanicAsRace(!specifiesHispanicAsRace);
-              }}
-            >
-              {specifiesHispanicAsRace ? (
-                <Styled.EnabledRaceIcon src={blueCheckIcon} alt="" />
-              ) : (
-                <Styled.DisabledRaceIcon />
-              )}
+            <Styled.RaceListItem enabled={specifiesHispanicAsRace}>
+              <ToggleSwitch
+                checked={specifiesHispanicAsRace}
+                onChange={() => {
+                  if (!specifiesHispanicAsRace) {
+                    setRacesStatusObject({
+                      ...racesStatusObject,
+                      Unknown: true,
+                    });
+                  }
+                  setSpecifiesHispanicAsRace(!specifiesHispanicAsRace);
+                }}
+              />
               {Ethnicity.HISPANIC_OR_LATINO}
             </Styled.RaceListItem>
           )}
           {Object.entries(racesStatusObject).map(([race, enabled]) => (
-            <Styled.RaceListItem
-              key={race}
-              onClick={() => {
-                if (race === "Unknown" && enabled && !canSpecifyEthnicity) {
-                  setSpecifiesHispanicAsRace(false);
-                }
-                setRacesStatusObject({
-                  ...racesStatusObject,
-                  [race]: !enabled,
-                });
-              }}
-            >
-              {enabled ? (
-                <Styled.EnabledRaceIcon src={blueCheckIcon} alt="" />
-              ) : (
-                <Styled.DisabledRaceIcon />
-              )}{" "}
+            <Styled.RaceListItem key={race} enabled={Boolean(enabled)}>
+              <ToggleSwitch
+                checked={Boolean(enabled)}
+                onChange={() => {
+                  if (race === "Unknown" && enabled && !canSpecifyEthnicity) {
+                    setSpecifiesHispanicAsRace(false);
+                  }
+                  setRacesStatusObject({
+                    ...racesStatusObject,
+                    [race]: !enabled,
+                  });
+                }}
+              />
               {race}
             </Styled.RaceListItem>
           ))}
