@@ -15,6 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
 export const InterstitialContainer = styled.div`
@@ -23,4 +27,39 @@ export const InterstitialContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+export const OptionsWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 64px;
+`;
+
+export const OptionBox = styled.div`
+  width: 424px;
+  height: 264px;
+  border: 0.5px solid ${palette.highlight.grey4};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  &:hover {
+    cursor: pointer;
+    background: ${palette.highlight.grey1};
+  }
+`;
+
+export const OptionName = styled.div`
+  ${typography.sizeCSS.large}
+  margin-top: 18px;
+  margin-bottom: 16px;
+`;
+
+export const OptionDescription = styled.div`
+  ${typography.sizeCSS.normal}
+  max-width: 220px;
+  color: ${palette.highlight.grey8};
 `;

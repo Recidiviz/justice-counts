@@ -16,13 +16,37 @@
 // =============================================================================
 
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
+import manualEntryIcon from "../assets/manual-entry-icon.svg";
+import uploadFolderIcon from "../assets/upload-folder-icon.svg";
+import { REPORTS_LOWERCASE } from "../Global/constants";
 import * as Styled from ".";
 
 export const DataEntryInterstitial = () => {
+  const navigate = useNavigate();
+
   return (
     <Styled.InterstitialContainer>
-      Hi, I will be the data entry interstial page soon.
+      <Styled.OptionsWrapper>
+        {/* Manual Entry */}
+        <Styled.OptionBox onClick={() => navigate(`../${REPORTS_LOWERCASE}`)}>
+          <img src={manualEntryIcon} alt="" />
+          <Styled.OptionName>Manual Entry</Styled.OptionName>
+          <Styled.OptionDescription>
+            Manually enter your data through text fields
+          </Styled.OptionDescription>
+        </Styled.OptionBox>
+
+        {/* Upload File */}
+        <Styled.OptionBox onClick={() => navigate("../upload")}>
+          <img src={uploadFolderIcon} alt="" />
+          <Styled.OptionName>Upload File</Styled.OptionName>
+          <Styled.OptionDescription>
+            Drag a spreadsheet and upload in bulk
+          </Styled.OptionDescription>
+        </Styled.OptionBox>
+      </Styled.OptionsWrapper>
     </Styled.InterstitialContainer>
   );
 };

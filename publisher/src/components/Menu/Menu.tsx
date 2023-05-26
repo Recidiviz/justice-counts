@@ -35,6 +35,7 @@ import logoutIcon from "../assets/logout-icon.svg";
 import menuBurger from "../assets/menu-burger-icon.svg";
 import agencySettingsIcon from "../assets/pillar-icon.svg";
 import yourAccountIcon from "../assets/profile-icon.svg";
+import { REPORTS_LOWERCASE } from "../Global/constants";
 import { useSettingsSearchParams } from "../Settings";
 import {
   AgencyDropdownWrapper,
@@ -226,7 +227,10 @@ const Menu: React.FC = () => {
               if (pathWithoutAgency !== "data-entry") navigate("data-entry");
               handleCloseMobileMenu();
             }}
-            active={pathWithoutAgency === "data-entry"}
+            active={
+              pathWithoutAgency === "data-entry" ||
+              pathWithoutAgency === REPORTS_LOWERCASE
+            }
           >
             Data Entry
           </MenuItem>
