@@ -49,7 +49,6 @@ const App: React.FC = (): ReactElement => {
   // if false then we just show user page that there are no associated agencies
   // if user has agencies but route is out of pattern /agency/:agencyId then redirect to /agency/:initialAgencyId/reports
   const initialAgency = userStore.getInitialAgencyId();
-  console.log(location);
 
   return (
     <AppWrapper>

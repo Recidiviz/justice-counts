@@ -21,7 +21,6 @@ import dropdownCaret from "../../assets/dropdown-caret.svg";
 import * as Styled from "./Dropdown.styled";
 import {
   DropdownMenuAlignment,
-  DropdownMenuIconAlignment,
   DropdownOption,
   ToggleCaretPosition,
   ToggleHover,
@@ -38,11 +37,7 @@ type DropdownProps = {
   alignment?: DropdownMenuAlignment;
   overflow?: boolean;
   fullWidth?: boolean;
-  icon?: {
-    element: React.ReactNode;
-    alignment: DropdownMenuIconAlignment;
-    highlightIcon: boolean;
-  };
+  highlightIcon?: React.ReactNode;
 };
 
 /**
@@ -68,7 +63,7 @@ export function Dropdown({
   alignment,
   overflow,
   fullWidth,
-  icon,
+  highlightIcon,
 }: DropdownProps) {
   return (
     <Styled.CustomDropdown>
@@ -111,29 +106,23 @@ export function Dropdown({
                 disabled: optionDisabled,
                 highlight,
                 noHover,
+                icon,
               }) => (
                 <Styled.CustomDropdownMenuItem
                   key={key}
                   onClick={onClick}
                   color={color}
                   disabled={optionDisabled}
-                  highlight={highlight}
                   noHover={noHover}
+                  highlight={highlight && !highlightIcon}
                 >
-                  {!icon && optionLabel}
-                  {icon && (
-                    <Styled.OptionLabelWrapper
-                      alignment={icon.alignment}
-                      highlightIcon={icon.highlightIcon}
-                    >
-                      {optionLabel}
-                      <span>
-                        {((icon.highlightIcon && highlight) ||
-                          !icon.highlightIcon) &&
-                          icon.element}
-                      </span>
-                    </Styled.OptionLabelWrapper>
-                  )}
+                  <Styled.OptionLabelWrapper
+                    highlightIcon={Boolean(highlightIcon)}
+                  >
+                    {!highlightIcon && icon}
+                    {optionLabel}
+                    {highlightIcon && highlight && highlightIcon}
+                  </Styled.OptionLabelWrapper>
                 </Styled.CustomDropdownMenuItem>
               )
             )

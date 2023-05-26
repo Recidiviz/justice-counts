@@ -88,8 +88,9 @@ export const CustomDropdownMenu = styled(DropdownMenu)<{
   overflow-y: auto;
   z-index: 5;
 
-  ${({ menuOverflow }) => menuOverflow && "top: 0"}
-  ${({ menuFullWidth }) => menuFullWidth && "width: 100%"}
+  ${({ menuOverflow }) => menuOverflow && "top: 0;"}
+  ${({ menuFullWidth }) =>
+    menuFullWidth ? "width: 100%;" : "min-width: 293px;"}
 `;
 
 export const CustomDropdownMenuItem = styled(DropdownMenuItem)<{
@@ -152,26 +153,14 @@ export const CustomDropdownMenuItem = styled(DropdownMenuItem)<{
 `;
 
 export const OptionLabelWrapper = styled.div<{
-  alignment: DropdownMenuIconAlignment;
   highlightIcon?: boolean;
 }>`
   height: 100%;
   width: 100%;
   display: flex;
-  flex-direction: ${({ alignment }) =>
-    alignment === "left" ? "row-reverse" : "row"};
-  justify-content: ${({ alignment }) =>
-    alignment === "left" ? "flex-end" : "space-between"};
+  justify-content: ${({ highlightIcon }) =>
+    highlightIcon ? "space-between" : "flex-start"};
   align-items: center;
   gap: 16px;
   color: inherit !important;
-
-  ${({ highlightIcon }) =>
-    highlightIcon &&
-    `
-      span {
-        width: 16px;
-        margin-left: 16px;
-      }
-    `}
 `;

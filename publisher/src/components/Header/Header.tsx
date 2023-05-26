@@ -33,7 +33,7 @@ const Header = observer(() => {
   const isAgencyValid = !!userStore.getAgency(agencyId);
   const defaultAgency = userStore.getInitialAgencyId();
   const onLogoClick = () =>
-    navigate(`/agency/${isAgencyValid ? agencyId : defaultAgency}`);
+    navigate(`/agency/${isAgencyValid ? agencyId : defaultAgency}/`);
 
   return (
     <HeaderBar onLogoClick={onLogoClick} badge={headerBadge} hasBottomBorder>

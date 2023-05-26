@@ -37,4 +37,5 @@ export type DropdownOption = {
   disabled?: boolean;
   highlight?: boolean;
   noHover?: boolean;
+  icon?: React.ReactNode;
 };

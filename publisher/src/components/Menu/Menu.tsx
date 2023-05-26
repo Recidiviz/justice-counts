@@ -29,7 +29,12 @@ import { settingsMenuPaths } from "../../pages/Settings";
 import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
 import closeMenuBurger from "../assets/close-header-menu-icon.svg";
+import teamManagementIcon from "../assets/data-line-icon.svg";
+import uploadedFilesIcon from "../assets/folder-icon.svg";
+import logoutIcon from "../assets/logout-icon.svg";
 import menuBurger from "../assets/menu-burger-icon.svg";
+import agencySettingsIcon from "../assets/pillar-icon.svg";
+import yourAccountIcon from "../assets/profile-icon.svg";
 import { useSettingsSearchParams } from "../Settings";
 import {
   AgencyDropdownWrapper,
@@ -96,7 +101,7 @@ const Menu: React.FC = () => {
     }
   };
 
-  const dropdownOptions: DropdownOption[] = userStore.userAgencies
+  const agencyDropdownOptions: DropdownOption[] = userStore.userAgencies
     ? userStore.userAgencies
         .slice()
         .sort((a, b) => a.name.localeCompare(b.name))
@@ -110,7 +115,51 @@ const Menu: React.FC = () => {
           highlight: agency.id === currentAgency?.id,
         }))
     : [];
-  console.log("dropdownOptions", dropdownOptions);
+
+  const profileDropdownLabels = [
+    {
+      label: "Your Account",
+      icon: <img src={yourAccountIcon} alt="" />,
+      path: "./settings/account",
+    },
+    {
+      label: "Agency Settings",
+      icon: <img src={agencySettingsIcon} alt="" />,
+      path: "./settings/agency-settings",
+    },
+    {
+      label: "Team Management",
+      icon: <img src={teamManagementIcon} alt="" />,
+      path: "./settings/team-management",
+    },
+    {
+      label: "Uploaded Files",
+      icon: <img src={uploadedFilesIcon} alt="" />,
+      path: "./settings/uploaded-files",
+    },
+    {
+      label: "Logout",
+      icon: <img src={logoutIcon} alt="" />,
+      highlightOption: true,
+      onClick: logout,
+    },
+  ];
+
+  const profileDropdownOptions: DropdownOption[] = profileDropdownLabels.map(
+    ({ label, icon, highlightOption, path, onClick }) => ({
+      key: label,
+      label,
+      onClick: () => {
+        if (path) navigate(path);
+        if (onClick) onClick();
+        handleCloseMobileMenu();
+      },
+      highlight: highlightOption,
+      noHover: highlightOption,
+      icon,
+    })
+  );
+
   useEffect(() => {
     const { body } = document;
     if (isMobileMenuOpen) {
@@ -135,16 +184,12 @@ const Menu: React.FC = () => {
             <MenuItem>
               <Dropdown
                 label={currentAgency?.name}
-                options={dropdownOptions}
+                options={agencyDropdownOptions}
                 size="small"
                 hover="label"
                 alignment="left"
                 caretPosition="right"
-                icon={{
-                  element: <TargetIcon />,
-                  alignment: "right",
-                  highlightIcon: true,
-                }}
+                highlightIcon={<TargetIcon />}
               />
             </MenuItem>
           </AgencyDropdownWrapper>
@@ -226,15 +271,15 @@ const Menu: React.FC = () => {
             <Caret />
             <Dropdown
               label=""
-              options={dropdownOptions}
+              options={profileDropdownOptions}
               size="small"
               hover="label"
               alignment="right"
-              icon={{
-                element: <TargetIcon />,
-                alignment: "left",
-                highlightIcon: false,
-              }}
+              // icon={{
+              //   element: <img src={profileIcon} alt="" />,
+              //   alignment: "left",
+              //   highlightIcon: false,
+              // }}
             />
           </ProfileDropdownWrapper>
         </MenuItemsWrapper>

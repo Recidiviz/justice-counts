@@ -20,7 +20,6 @@ import {
 } from "@justice-counts/common/components/Dropdown";
 import {
   HEADER_BAR_HEIGHT,
-  MIN_DESKTOP_WIDTH,
   MIN_TABLET_WIDTH,
   palette,
   typography,
