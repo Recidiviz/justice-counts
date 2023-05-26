@@ -237,7 +237,6 @@ export const AgencySettingsTeamManagement = observer(() => {
                   }}
                   error={inputsError}
                   textSize="small"
-                  // error={!!emailValue && !validateEmail(emailValue)}
                 />
               </InviteMemberInputsContainer>
               <Button
