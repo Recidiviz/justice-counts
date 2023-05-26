@@ -242,7 +242,7 @@ export const AdditionalEditorsTooltip = styled.div`
   z-index: 1;
   top: 32px;
   right: 0;
-  border-radius: 2px;
+  border-radius: 3px;
   text-align: center;
   box-shadow: 2px 2px 8px ${palette.highlight.grey5};
   display: flex;

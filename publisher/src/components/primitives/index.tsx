@@ -17,6 +17,7 @@
 
 import { AgencyTeamMemberRole } from "@justice-counts/common/types";
 import React from "react";
+import { Tooltip } from "react-tooltip";
 import styled from "styled-components/macro";
 
 import { ReactComponent as RecidivizAdmin } from "../assets/recidiviz-admin.svg";
@@ -50,9 +51,23 @@ export const TeamMemberNameWithBadge: React.FC<{
   badgeColor?: string;
   badgeId?: string;
 }> = ({ name, role, badgeColor, badgeId }) => (
-  <TeamMemberNameContainer color={badgeColor}>
-    <NameContainer>{name}</NameContainer>
+  <>
+    <TeamMemberNameContainer color={badgeColor}>
+      <NameContainer>{name}</NameContainer>
+      {role === AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN &&
+        name !== "JC Admin" && <StyledRecidivizAdmin id={badgeId} />}
+    </TeamMemberNameContainer>
     {role === AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN &&
-      name !== "JC Admin" && <StyledRecidivizAdmin id={badgeId} />}
-  </TeamMemberNameContainer>
+      name !== "JC Admin" && (
+        <Tooltip
+          anchorId={badgeId}
+          content="JC Admin"
+          place="right"
+          noArrow
+          offset={6}
+          variant="dark"
+          style={{ fontSize: "14px" }}
+        />
+      )}
+  </>
 );
