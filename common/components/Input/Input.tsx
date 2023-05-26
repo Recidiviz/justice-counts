@@ -17,13 +17,14 @@
 
 import React, { InputHTMLAttributes, useState } from "react";
 
+import notReportedIcon from "../../assets/not-reported-icon.png";
 import statusCheckIcon from "../../assets/status-check-icon.png";
 import statusErrorIcon from "../../assets/status-error-icon.png";
 import { FormError } from "../../types";
 import { ErrorWithTooltip } from "./ErrorWithTooltip";
 import * as Styled from "./Input.styled";
 import { NotReportedIcon } from "./NotReportedIcon";
-import { InputTextSize } from "./types";
+import { InputTextSize, NotReportedIconWithTooltipProps } from "./types";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -33,8 +34,8 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   multiline?: boolean;
   persistLabel?: boolean;
   metricKey?: string;
-  notReporting?: boolean;
-  notReportingTooltipLink?: () => void;
+  notReported?: boolean;
+  notReportedIconWithTooltip?: NotReportedIconWithTooltipProps;
   isPlaceholderVisible?: boolean;
   textSize?: InputTextSize;
 }
@@ -48,8 +49,8 @@ export function Input({
   placeholder,
   persistLabel,
   metricKey,
-  notReporting,
-  notReportingTooltipLink,
+  notReported,
+  notReportedIconWithTooltip,
   isPlaceholderVisible,
   textSize,
   ...props
@@ -86,7 +87,7 @@ export function Input({
         placeholder={placeholder}
         isPlaceholderVisible={isPlaceholderVisible}
         persistLabel={persistLabel}
-        notReporting={notReporting}
+        notReporting={notReported}
         textSize={textSize}
       />
 
@@ -97,7 +98,7 @@ export function Input({
         isDisabled={disabled}
         persistLabel={persistLabel}
         error={error?.message}
-        notReporting={notReporting}
+        notReporting={notReported}
       >
         {label}
       </Styled.InputLabel>
@@ -116,33 +117,26 @@ export function Input({
 
       {/* Label Chip (appears inside of text input on the right) */}
 
-      {/* Chip: Required */}
-      {/* Disable the Required Chip for now. Refer to https://github.com/Recidiviz/recidiviz-data/pull/13849 for more information */}
-      {/* {required && !error && !value && (
-        <LabelChipPosition>
-          <RequiredChip />
-        </LabelChipPosition>
-      )} */}
       {/* Chip: Not Reporting Status */}
-      {notReporting && (
+      {notReported && (
         <Styled.LabelChipPosition textSize={textSize}>
-          <NotReportedIcon
-            lighter
-            size={textSize === "small" ? 16 : undefined}
-            notReportingTooltipLink={notReportingTooltipLink}
-          />
+          {notReportedIconWithTooltip ? (
+            <NotReportedIcon {...notReportedIconWithTooltip} />
+          ) : (
+            <img src={notReportedIcon} alt="" />
+          )}
         </Styled.LabelChipPosition>
       )}
 
       {/* Chip: Error Status */}
-      {error && !notReporting && (
+      {error && !notReported && (
         <Styled.LabelChipPosition textSize={textSize}>
           <img src={statusErrorIcon} alt="" />
         </Styled.LabelChipPosition>
       )}
 
       {/* Chip: Validated Successfully Status */}
-      {!error && !notReporting && value && (
+      {!error && !notReported && value && (
         <Styled.LabelChipPosition textSize={textSize}>
           <img src={statusCheckIcon} alt="" />
         </Styled.LabelChipPosition>

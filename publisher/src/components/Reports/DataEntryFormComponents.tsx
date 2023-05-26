@@ -147,10 +147,13 @@ export const DisaggregationDimensionTextInput = observer(
         onFocus={updateFieldDescription}
         onBlur={clearFieldDescription}
         disabled={disabled}
-        notReporting={!disaggregation.enabled || !dimension.enabled}
-        notReportingTooltipLink={() =>
-          navigate(`/agency/${agencyId}/metric-config`)
-        }
+        notReported={!disaggregation.enabled || !dimension.enabled}
+        notReportedIconWithTooltip={{
+          tooltipText:
+            "This has been disabled by an admin because the data is unavailable. If you have the data for this, consider changing the configuration in the",
+          tooltipLinkLabel: "Settings",
+          tooltipLink: () => navigate(`/agency/${agencyId}/metric-config`),
+        }}
       />
     );
   }

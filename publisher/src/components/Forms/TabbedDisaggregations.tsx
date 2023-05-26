@@ -142,9 +142,9 @@ export const TabbedDisaggregations: React.FC<{
         <NotReportedIcon
           size={16}
           lighter
-          notReportingTooltipLink={() =>
-            navigate(`/agency/${agencyId}/metric-config`)
-          }
+          tooltipText="This has been disabled by an admin because the data is unavailable. If you have the data for this, consider changing the configuration in the"
+          tooltipLinkLabel="Settings"
+          tooltipLink={() => navigate(`/agency/${agencyId}/metric-config`)}
         />
       );
     }

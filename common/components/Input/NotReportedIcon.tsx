@@ -19,20 +19,16 @@ import React from "react";
 
 import notReportedIcon from "../../assets/not-reported-icon.png";
 import * as Styled from "./NotReportedIcon.styled";
-
-type NotReportedIconProps = {
-  size?: number;
-  lighter?: boolean;
-  noTooltip?: boolean;
-  notReportingTooltipLink?: () => void;
-};
+import { NotReportedIconWithTooltipProps } from "./types";
 
 export function NotReportedIcon({
   size,
   lighter,
-  noTooltip,
-  notReportingTooltipLink,
-}: NotReportedIconProps) {
+  tooltipText,
+  tooltipLinkLabel,
+  tooltipLink,
+}: NotReportedIconWithTooltipProps) {
+  const hasTooltip = !!tooltipText || !!tooltipLinkLabel || !!tooltipLink;
   return (
     <Styled.NotReportedIconWrapper size={size}>
       <Styled.NotReportedIconImg
@@ -40,16 +36,14 @@ export function NotReportedIcon({
         alt=""
         size={size}
         lighter={lighter}
-        hasTooltip={!noTooltip}
+        hasTooltip={hasTooltip}
       />
-      {!noTooltip && (
+      {hasTooltip && (
         <Styled.NotReportedIconTooltipHoverArea size={size}>
           <Styled.NotReportedIconTooltip>
-            This has been disabled by an admin because the data is unavailable.
-            If you have the data for this, consider changing the configuration
-            in the{" "}
-            <Styled.TooltipLink onClick={notReportingTooltipLink}>
-              Settings
+            {tooltipText}{" "}
+            <Styled.TooltipLink onClick={tooltipLink}>
+              {tooltipLinkLabel}
             </Styled.TooltipLink>
             .
           </Styled.NotReportedIconTooltip>

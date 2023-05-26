@@ -40,4 +40,12 @@ export type ErrorLabelProps = {
   textSize?: InputTextSize;
 };
 
+export type NotReportedIconWithTooltipProps = {
+  size?: number;
+  lighter?: boolean;
+  tooltipText?: string;
+  tooltipLinkLabel?: string;
+  tooltipLink?: () => void;
+};
+
 export type InputTextSize = "small";
