@@ -156,11 +156,16 @@ export const MobileMenuIconWrapper = styled.div`
 
 export const AgencyDropdownWrapper = styled.div`
   background: ${palette.solid.darkblue3};
-  height: 65px;
-  padding: 0 16px;
+  height: ${HEADER_BAR_HEIGHT}px;
 
   & > div {
     border-bottom: 0;
+  }
+
+  button {
+    height: ${HEADER_BAR_HEIGHT}px;
+    width: 100%;
+    padding: 0 16px;
   }
 
   button div {
@@ -172,8 +177,6 @@ export const AgencyDropdownWrapper = styled.div`
   }
 
   button + div {
-    margin-top: 20px;
-    margin-left: -16px;
     border-radius: 0;
   }
 `;
