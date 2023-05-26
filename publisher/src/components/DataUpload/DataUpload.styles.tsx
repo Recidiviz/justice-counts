@@ -274,7 +274,7 @@ export const DragDropContainer = styled.div<{ dragging?: boolean }>`
   }
 `;
 
-export const DragDropIcon = styled.img`
+export const DragDropIconWrapper = styled.div`
   margin-bottom: 15px;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {

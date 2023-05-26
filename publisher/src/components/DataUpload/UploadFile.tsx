@@ -22,10 +22,10 @@ import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
-import fileIcon from "../assets/file-icon.svg";
+import { ReactComponent as FileIcon } from "../assets/file-icon.svg";
 import {
   DragDropContainer,
-  DragDropIcon,
+  DragDropIconWrapper,
   GeneralInstructions,
   Instructions,
   InstructionsTopOverlay,
@@ -149,7 +149,9 @@ export const UploadFile: React.FC<UploadFileProps> = ({
       </Instructions>
 
       <DragDropContainer ref={dragDropAreaRef} dragging={dragging}>
-        <DragDropIcon src={fileIcon} alt="" />
+        <DragDropIconWrapper>
+          <FileIcon />
+        </DragDropIconWrapper>
         <div>
           <span>
             Drag & drop a file or{" "}
