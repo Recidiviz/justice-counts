@@ -16,8 +16,8 @@
 // =============================================================================
 
 import { Button } from "@justice-counts/common/components/Button";
-import { ToggleSwitch } from "@justice-counts/common/components/ToggleSwitch";
 import { Input } from "@justice-counts/common/components/Input";
+import { ToggleSwitch } from "@justice-counts/common/components/ToggleSwitch";
 import {
   MetricConfigurationSettings,
   MetricConfigurationSettingsOptions,
