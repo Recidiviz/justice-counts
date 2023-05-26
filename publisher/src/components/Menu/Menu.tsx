@@ -221,7 +221,15 @@ const Menu: React.FC = () => {
             Metric Settings
           </MenuItem>
 
-          <MenuItem>Data Entry</MenuItem>
+          <MenuItem
+            onClick={() => {
+              if (pathWithoutAgency !== "data-entry") navigate("data-entry");
+              handleCloseMobileMenu();
+            }}
+            active={pathWithoutAgency === "data-entry"}
+          >
+            Data Entry
+          </MenuItem>
 
           {/* Data (Visualizations) */}
           <MenuItem

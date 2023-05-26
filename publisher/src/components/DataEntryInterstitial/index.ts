@@ -15,14 +15,5 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
-
-import * as Styled from ".";
-
-export const Home = () => {
-  return (
-    <Styled.HomeContainer>
-      Hi, I am going to be a beautiful homepage soon.
-    </Styled.HomeContainer>
-  );
-};
+export * from "./DataEntryInterstitial";
+export * from "./DataEntryInterstitial.styled";

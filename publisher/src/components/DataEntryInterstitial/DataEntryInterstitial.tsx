@@ -19,10 +19,10 @@ import React from "react";
 
 import * as Styled from ".";
 
-export const Home = () => {
+export const DataEntryInterstitial = () => {
   return (
-    <Styled.HomeContainer>
-      Hi, I am going to be a beautiful homepage soon.
-    </Styled.HomeContainer>
+    <Styled.InterstitialContainer>
+      Hi, I will be the data entry interstial page soon.
+    </Styled.InterstitialContainer>
   );
 };
