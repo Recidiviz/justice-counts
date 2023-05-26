@@ -28,13 +28,13 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { settingsMenuPaths } from "../../pages/Settings";
 import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
-import closeMenuBurger from "../assets/close-header-menu-icon.svg";
-import teamManagementIcon from "../assets/data-line-icon.svg";
-import uploadedFilesIcon from "../assets/folder-icon.svg";
-import logoutIcon from "../assets/logout-icon.svg";
-import menuBurger from "../assets/menu-burger-icon.svg";
-import agencySettingsIcon from "../assets/pillar-icon.svg";
-import yourAccountIcon from "../assets/profile-icon.svg";
+import { ReactComponent as CloseMenuBurger } from "../assets/close-header-menu-icon.svg";
+import { ReactComponent as TeamManagementIcon } from "../assets/data-line-icon.svg";
+import { ReactComponent as UploadedFilesIcon } from "../assets/folder-icon.svg";
+import { ReactComponent as LogoutIcon } from "../assets/logout-icon.svg";
+import { ReactComponent as MenuBurger } from "../assets/menu-burger-icon.svg";
+import { ReactComponent as AgencySettingsIcon } from "../assets/pillar-icon.svg";
+import { ReactComponent as YourAccountIcon } from "../assets/profile-icon.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { useSettingsSearchParams } from "../Settings";
 import {
@@ -120,27 +120,27 @@ const Menu: React.FC = () => {
   const profileDropdownLabels = [
     {
       label: "Your Account",
-      icon: <img src={yourAccountIcon} alt="" />,
+      icon: <YourAccountIcon />,
       path: "./settings/account",
     },
     {
       label: "Agency Settings",
-      icon: <img src={agencySettingsIcon} alt="" />,
+      icon: <AgencySettingsIcon />,
       path: "./settings/agency-settings",
     },
     {
       label: "Team Management",
-      icon: <img src={teamManagementIcon} alt="" />,
+      icon: <TeamManagementIcon />,
       path: "./settings/team-management",
     },
     {
       label: "Uploaded Files",
-      icon: <img src={uploadedFilesIcon} alt="" />,
+      icon: <UploadedFilesIcon />,
       path: "./settings/uploaded-files",
     },
     {
       label: "Logout",
-      icon: <img src={logoutIcon} alt="" />,
+      icon: <LogoutIcon />,
       highlightOption: true,
       onClick: logout,
     },
@@ -196,6 +196,7 @@ const Menu: React.FC = () => {
           </AgencyDropdownWrapper>
         )}
 
+        {/* Home */}
         <MenuItemsWrapper>
           <MenuItem
             onClick={() => navigate(`/agency/${agencyId}/`)}
@@ -222,6 +223,7 @@ const Menu: React.FC = () => {
             Metric Settings
           </MenuItem>
 
+          {/* Data Entry */}
           <MenuItem
             onClick={() => {
               if (pathWithoutAgency !== "data-entry") navigate("data-entry");
@@ -246,19 +248,6 @@ const Menu: React.FC = () => {
             View Data
           </MenuItem>
 
-          {/* Settings */}
-          {/* <MenuItem
-          onClick={() => {
-            if (windowWidth > MIN_TABLET_WIDTH) {
-              navigate("settings");
-            }
-          }}
-          active={pathWithoutAgency.startsWith("settings")}
-          isHoverDisabled={windowWidth <= MIN_TABLET_WIDTH}
-        >
-          Settings
-        </MenuItem> */}
-
           {isMobileMenuOpen && (
             <SubMenuContainer>
               {settingsMenuPaths.map(({ displayLabel, path }) => (
@@ -275,9 +264,6 @@ const Menu: React.FC = () => {
             </SubMenuContainer>
           )}
 
-          {/* <MenuItem onClick={logout} highlight>
-          Log Out
-        </MenuItem> */}
           <ProfileDropdownWrapper>
             {usernameToInitials()}
             <Caret />
@@ -287,11 +273,6 @@ const Menu: React.FC = () => {
               size="small"
               hover="label"
               alignment="right"
-              // icon={{
-              //   element: <img src={profileIcon} alt="" />,
-              //   alignment: "left",
-              //   highlightIcon: false,
-              // }}
             />
           </ProfileDropdownWrapper>
         </MenuItemsWrapper>
@@ -299,7 +280,7 @@ const Menu: React.FC = () => {
       <MobileMenuIconWrapper
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >
-        <img src={isMobileMenuOpen ? closeMenuBurger : menuBurger} alt="" />
+        {isMobileMenuOpen ? <CloseMenuBurger /> : <MenuBurger />}
       </MobileMenuIconWrapper>
     </>
   );
