@@ -17,6 +17,7 @@
 
 /* eslint-disable camelcase */
 
+import errorIcon from "@justice-counts/common/assets/status-error-icon.png";
 import { Button } from "@justice-counts/common/components/Button";
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { formatDateShortMonthYear } from "@justice-counts/common/components/DataViz/utils";
@@ -27,7 +28,6 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { printReportTitle } from "../../utils";
 import checkIcon from "../assets/check-icon.svg";
-import errorIcon from "../assets/status-error-icon.png";
 import {
   REPORT_CAPITALIZED,
   REPORTS_CAPITALIZED,
@@ -101,7 +101,6 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
             ({
               name,
               onClick,
-              disabled,
               buttonColor,
               labelColor,
               borderColor,
