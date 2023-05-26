@@ -163,4 +163,5 @@ export const OptionLabelWrapper = styled.div<{
   align-items: center;
   gap: 16px;
   color: inherit !important;
+  ${({ highlightIcon }) => highlightIcon && "padding-left: 8px;"}
 `;
