@@ -33,6 +33,7 @@ import {
   REPORTS_CAPITALIZED,
   REPORTS_LOWERCASE,
 } from "../Global/constants";
+import { useHeaderBadge } from "../Header/hooks";
 import {
   EmptyIcon,
   Heading,
@@ -62,6 +63,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
 }) => {
   const { agencyId } = useParams();
   const navigate = useNavigate();
+  const headerBadge = useHeaderBadge();
   const [isFooterVisible] = useIsFooterVisible();
   const [isMetricsSectionExpanded, setIsMetricsSectionExpanded] =
     useState(true);
@@ -91,6 +93,8 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
       <HeaderBar
         onLogoClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
         hasBottomBorder
+        label="Justice Counts"
+        badge={headerBadge}
       >
         <ReviewMetricsButtonsContainer>
           {buttons.map(

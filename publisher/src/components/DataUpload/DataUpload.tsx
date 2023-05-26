@@ -32,6 +32,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { REPORTS_LOWERCASE } from "../Global/constants";
+import { useHeaderBadge } from "../Header/hooks";
 import { Loader } from "../Loading";
 import {
   DataUploadContainer,
@@ -84,11 +85,13 @@ export const systemToTemplateSpreadsheetFileName: { [system: string]: string } =
   };
 
 export const DataUpload: React.FC = observer(() => {
-  const { userStore, reportStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
-  const currentAgency = userStore.getAgency(agencyId);
+  const headerBadge = useHeaderBadge();
   const windowWidth = useWindowWidth();
+  const { userStore, reportStore } = useStore();
+
+  const currentAgency = userStore.getAgency(agencyId);
 
   /**
    * Sub-systems of the SUPERVISION system should not render a separate template & instructions.
@@ -348,6 +351,8 @@ export const DataUpload: React.FC = observer(() => {
         onLogoClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
         background={headerBackground()}
         hasBottomBorder={!!errorsWarningsMetrics}
+        label="Justice Counts"
+        badge={headerBadge}
       >
         <Button
           label={selectedFile || errorsWarningsMetrics ? "Close" : "Cancel"}
