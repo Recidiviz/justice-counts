@@ -50,12 +50,14 @@ export const TeamMemberNameWithBadge: React.FC<{
   role?: AgencyTeamMemberRole;
   badgeColor?: string;
   badgeId?: string;
-}> = ({ name, role, badgeColor, badgeId }) => (
+  isInsideTooltip?: boolean;
+  isLast?: boolean;
+}> = ({ name, role, badgeColor, badgeId, isInsideTooltip, isLast }) => (
   <>
     <TeamMemberNameContainer color={badgeColor}>
-      <NameContainer>{name}</NameContainer>
+      <NameContainer>{`${name}${isLast ? "" : ","}`}</NameContainer>
       {role === AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN &&
-        name !== "JC Admin" && <StyledRecidivizAdmin id={badgeId} />}
+        !isInsideTooltip && <StyledRecidivizAdmin id={badgeId} />}
     </TeamMemberNameContainer>
     {role === AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN &&
       name !== "JC Admin" && (
