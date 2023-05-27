@@ -52,24 +52,27 @@ export const TeamMemberNameWithBadge: React.FC<{
   badgeId?: string;
   isInsideTooltip?: boolean;
   isLast?: boolean;
-}> = ({ name, role, badgeColor, badgeId, isInsideTooltip, isLast }) => (
-  <>
-    <TeamMemberNameContainer color={badgeColor}>
-      <NameContainer>{`${name}${isLast ? "" : ","}`}</NameContainer>
+}> = ({ name, role, badgeColor, badgeId, isInsideTooltip, isLast }) => {
+  const isJCAdminInsideTooltip = isInsideTooltip && name === "JC Admin";
+  return (
+    <>
+      <TeamMemberNameContainer color={badgeColor}>
+        <NameContainer>{`${name}${isLast ? "" : ","}`}</NameContainer>
+        {role === AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN &&
+          !isJCAdminInsideTooltip && <StyledRecidivizAdmin id={badgeId} />}
+      </TeamMemberNameContainer>
       {role === AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN &&
-        !isInsideTooltip && <StyledRecidivizAdmin id={badgeId} />}
-    </TeamMemberNameContainer>
-    {role === AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN &&
-      name !== "JC Admin" && (
-        <Tooltip
-          anchorId={badgeId}
-          content="JC Admin"
-          place="right"
-          noArrow
-          offset={6}
-          variant="dark"
-          style={{ fontSize: "14px" }}
-        />
-      )}
-  </>
-);
+        name !== "JC Admin" && (
+          <Tooltip
+            anchorId={badgeId}
+            content="JC Admin"
+            place="right"
+            noArrow
+            offset={6}
+            variant="dark"
+            style={{ fontSize: "14px" }}
+          />
+        )}
+    </>
+  );
+};
