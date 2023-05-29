@@ -144,7 +144,6 @@ export const Home = observer(() => {
   useEffect(() => {
     const fetchMetricsAndRecords = async () => {
       setLoading(true);
-
       const {
         agency_metrics: agencyMetrics,
         annual_reports: annualRecords,
