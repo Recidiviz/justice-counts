@@ -354,7 +354,6 @@ function MetricAvailability() {
                       hover="background"
                       alignment="right"
                       fullWidth
-                      disabled={isReadOnly}
                     />
                   </Styled.MonthSelectionDropdownContainer>
                 </RadioButtonsWrapper>
@@ -377,7 +376,7 @@ function MetricAvailability() {
                       </Styled.SettingTooltip>
                     </Styled.InfoIconWrapper>
                   </Styled.SettingName>
-                  <RadioButtonsWrapper>
+                  <RadioButtonsWrapper disabled={isReadOnly}>
                     <RadioButton
                       type="radio"
                       id="supervision-subsystem-combined"
@@ -472,7 +471,7 @@ function MetricAvailability() {
                     </Styled.DimensionsHeader>
                     {disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY ? (
                       <RaceEthnicitiesGrid
-                        disaggregationEnabled
+                        disaggregationEnabled={!isReadOnly}
                         onClick={() => {
                           if (!isReadOnly) {
                             setIsRaceEthnicityModalOpen(true);

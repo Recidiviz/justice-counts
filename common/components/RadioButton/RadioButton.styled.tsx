@@ -30,12 +30,13 @@ export const RadioButtonsWrapper = styled.form<{
     }px ${spacing?.left || 0}px`};
 `;
 
-export const RadioButtonsFieldset = styled.fieldset`
+export const RadioButtonsFieldset = styled.fieldset<{ disabled?: boolean }>`
   border: none;
   width: 100%;
   display: flex;
   flex-direction: row;
   gap: 8px;
+  ${({ disabled }) => disabled && "opacity: 0.6; pointer-events: none"};
 `;
 
 export const RadioButtonWrapper = styled.div`

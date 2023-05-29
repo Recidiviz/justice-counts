@@ -241,10 +241,11 @@ export const SelectAllDimensions = styled.span<{ disabled?: boolean }>`
 
 export const DimensionsList = styled.form``;
 
-export const DimensionsListFieldset = styled.fieldset`
+export const DimensionsListFieldset = styled.fieldset<{ disabled?: boolean }>`
   display: flex;
   flex-direction: column;
   border: none;
+  ${({ disabled }) => disabled && "opacity: 0.6; pointer-events: none"};
 `;
 
 export const DimensionsListItem = styled.div<{ enabled?: boolean }>`
