@@ -93,7 +93,7 @@ export const Submenu = styled.div`
   gap: 16px;
 `;
 
-export const SubmenuButton = styled.button`
+export const SubmenuItem = styled.a`
   ${typography.sizeCSS.medium};
   display: flex;
   justify-content: flex-start;
@@ -107,5 +107,11 @@ export const SubmenuButton = styled.button`
   &:hover {
     cursor: pointer;
     background: ${palette.highlight.grey1};
+  }
+
+  &,
+  &:visited {
+    color: inherit;
+    text-decoration: none;
   }
 `;

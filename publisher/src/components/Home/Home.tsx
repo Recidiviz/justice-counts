@@ -17,6 +17,7 @@
 
 import { observer } from "mobx-react-lite";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { ReactComponent as GearIcon } from "../assets/gear-icon.svg";
@@ -26,6 +27,7 @@ import * as Styled from ".";
 
 export const Home = observer(() => {
   const { userStore } = useStore();
+  const navigate = useNavigate();
   const userFirstName = userStore.name?.split(" ")[0];
   return (
     <Styled.HomeContainer>
@@ -55,18 +57,24 @@ export const Home = observer(() => {
           </Styled.TaskCard>
         </Styled.OpenTasksContainer>
         <Styled.Submenu>
-          <Styled.SubmenuButton>
+          <Styled.SubmenuItem
+            onClick={() => navigate("./settings/agency-settings")}
+          >
             <GearIcon />
             Agency Settings
-          </Styled.SubmenuButton>
-          <Styled.SubmenuButton>
+          </Styled.SubmenuItem>
+          <Styled.SubmenuItem onClick={() => navigate("./metric-config")}>
             <SettingsIcon />
             Metric Settings
-          </Styled.SubmenuButton>
-          <Styled.SubmenuButton>
+          </Styled.SubmenuItem>
+          <Styled.SubmenuItem
+            href="https://justicecounts.csgjusticecenter.org/"
+            rel="noreferrer noopener"
+            target="_blank"
+          >
             <OpenLinkIcon />
             Justice Counts Website
-          </Styled.SubmenuButton>
+          </Styled.SubmenuItem>
         </Styled.Submenu>
       </Styled.ContentContainer>
     </Styled.HomeContainer>
