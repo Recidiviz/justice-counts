@@ -155,7 +155,7 @@ export const MobileMenuIconWrapper = styled.div`
 `;
 
 export const AgencyDropdownWrapper = styled.div`
-  background: ${palette.solid.darkblue3};
+  background: ${palette.solid.darkgrey};
   height: ${HEADER_BAR_HEIGHT}px;
 
   & > div {

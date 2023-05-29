@@ -117,7 +117,7 @@ const Menu: React.FC = () => {
         }))
     : [];
 
-  const profileDropdownLabels = [
+  const profileDropdownMetadata = [
     {
       label: "Your Account",
       icon: <YourAccountIcon />,
@@ -146,7 +146,7 @@ const Menu: React.FC = () => {
     },
   ];
 
-  const profileDropdownOptions: DropdownOption[] = profileDropdownLabels.map(
+  const profileDropdownOptions: DropdownOption[] = profileDropdownMetadata.map(
     ({ label, icon, highlightOption, path, onClick }) => ({
       key: label,
       label,
@@ -264,6 +264,7 @@ const Menu: React.FC = () => {
             </SubMenuContainer>
           )}
 
+          {/* Profile */}
           <ProfileDropdownWrapper>
             {usernameToInitials()}
             <Caret />
