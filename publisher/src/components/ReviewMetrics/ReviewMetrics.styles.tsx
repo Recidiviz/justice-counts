@@ -264,13 +264,13 @@ export const AgencyName = styled.div`
   }
 `;
 
-export const OverwritesAgencyName = styled.div`
+export const SummaryAgencyName = styled.div`
   ${typography.sizeCSS.normal}
   color: ${palette.solid.blue};
 `;
 
-export const OverwritesWrapper = styled.div`
-  ${OverwritesAgencyName}:not(:first-child) {
+export const SummaryWrapper = styled.div`
+  ${SummaryAgencyName}:not(:first-child) {
     margin-top: 5px;
   }
 `;

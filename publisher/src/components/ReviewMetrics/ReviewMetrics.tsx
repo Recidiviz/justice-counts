@@ -22,6 +22,7 @@ import { DatapointsTableView } from "@justice-counts/common/components/DataViz/D
 import { formatDateShortMonthYear } from "@justice-counts/common/components/DataViz/utils";
 import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
 import { useIsFooterVisible } from "@justice-counts/common/hooks";
+import { groupBy } from "@justice-counts/common/utils";
 import React, { Fragment, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -41,17 +42,17 @@ import {
   MetricsPanel,
   MetricStatusIcon,
   NoDatapointsMessage,
-  OverwritesAgencyName,
-  OverwritesWrapper,
   ReviewMetricsButtonsContainer,
   ReviewMetricsWrapper,
   SectionContainer,
   SectionExpandStatusSign,
   Summary,
+  SummaryAgencyName,
   SummarySection,
   SummarySectionLine,
   SummarySectionsContainer,
   SummarySectionTitle,
+  SummaryWrapper,
 } from "./ReviewMetrics.styles";
 import {
   DatapointsByMetricNameByAgencyName,
@@ -142,11 +143,11 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
     );
 
     return (
-      <OverwritesWrapper>
+      <SummaryWrapper>
         {Object.entries(groupedMetricOverwritesByAgencyName).map(
           ([agencyName, overwrites]) => (
             <Fragment key={agencyName}>
-              <OverwritesAgencyName>{agencyName}</OverwritesAgencyName>
+              <SummaryAgencyName>{agencyName}</SummaryAgencyName>
               {overwrites.map(
                 ({ key, metricName, dimensionName, startDate }) => (
                   <SummarySectionLine key={key}>
@@ -158,7 +159,64 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
             </Fragment>
           )
         )}
-      </OverwritesWrapper>
+      </SummaryWrapper>
+    );
+  };
+
+  /**
+   * Used to render the list of metrics on the left-side panel of the review page by agency name by
+   * utilizing `datapointsByMetricNameByAgency` to extract the list of metrics uploaded by agency name.
+   */
+  const renderMetricsListByAgencyName = () => {
+    return (
+      <SummaryWrapper>
+        {datapointsByMetricNameByAgencyName &&
+          Object.entries(datapointsByMetricNameByAgencyName).map(
+            ([agencyName, agencyMetrics]) => {
+              return (
+                <Fragment key={agencyName}>
+                  <SummaryAgencyName>{agencyName}</SummaryAgencyName>
+                  {Object.keys(agencyMetrics).map((metric) => (
+                    <SummarySectionLine key={metric}>
+                      {metric}
+                    </SummarySectionLine>
+                  ))}
+                </Fragment>
+              );
+            }
+          )}
+      </SummaryWrapper>
+    );
+  };
+
+  /**
+   * Used to render the list of records on the left-side panel of the review page by agency name
+   */
+  const renderRecordsListByAgencyName = () => {
+    if (!records) return;
+    const groupedRecords = groupBy(records, (record) =>
+      String(record.agency_name)
+    );
+
+    return (
+      <SummaryWrapper>
+        {Object.entries(groupedRecords)
+          .sort((a, b) => a[0].localeCompare(b[0])) // sort by agency name
+          .map(([agencyName, agencyRecords]) => (
+            <Fragment key={agencyName}>
+              <SummaryAgencyName>{agencyName}</SummaryAgencyName>
+              {agencyRecords.map((record) => (
+                <SummarySectionLine key={record.id}>
+                  {printReportTitle(
+                    record.month,
+                    record.year,
+                    record.frequency
+                  )}
+                </SummarySectionLine>
+              ))}
+            </Fragment>
+          ))}
+      </SummaryWrapper>
     );
   };
 
@@ -219,26 +277,33 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
                   {isMetricsSectionExpanded ? "-" : "+"}
                 </SectionExpandStatusSign>
               </SummarySectionTitle>
-              {isMetricsSectionExpanded &&
-                metrics.map(
-                  ({
-                    key,
-                    display_name,
-                    metricHasError,
-                    metricHasValidInput,
-                  }) => (
-                    <SummarySectionLine key={key}>
-                      {!metricHasError && metricHasValidInput && (
-                        <MetricStatusIcon src={checkIcon} alt="" />
+              {isMetricsSectionExpanded && (
+                <>
+                  {isMultiAgencyUpload
+                    ? renderMetricsListByAgencyName()
+                    : metrics.map(
+                        ({
+                          key,
+                          display_name,
+                          metricHasError,
+                          metricHasValidInput,
+                        }) => (
+                          <SummarySectionLine key={key}>
+                            {!metricHasError && metricHasValidInput && (
+                              <MetricStatusIcon src={checkIcon} alt="" />
+                            )}
+                            {metricHasError && (
+                              <MetricStatusIcon src={errorIcon} alt="" />
+                            )}
+                            {!metricHasError && !metricHasValidInput && (
+                              <EmptyIcon />
+                            )}
+                            {display_name}
+                          </SummarySectionLine>
+                        )
                       )}
-                      {metricHasError && (
-                        <MetricStatusIcon src={errorIcon} alt="" />
-                      )}
-                      {!metricHasError && !metricHasValidInput && <EmptyIcon />}
-                      {display_name}
-                    </SummarySectionLine>
-                  )
-                )}
+                </>
+              )}
             </SummarySection>
           )}
           {metricOverwrites && metricOverwrites.length > 0 && (
@@ -285,16 +350,21 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
                   {isRecordsSectionExpanded ? "-" : "+"}
                 </SectionExpandStatusSign>
               </SummarySectionTitle>
-              {isRecordsSectionExpanded &&
-                records.map((record) => (
-                  <SummarySectionLine key={record.id}>
-                    {printReportTitle(
-                      record.month,
-                      record.year,
-                      record.frequency
-                    )}
-                  </SummarySectionLine>
-                ))}
+              {isRecordsSectionExpanded && (
+                <>
+                  {isMultiAgencyUpload
+                    ? renderRecordsListByAgencyName()
+                    : records.map((record) => (
+                        <SummarySectionLine key={record.id}>
+                          {printReportTitle(
+                            record.month,
+                            record.year,
+                            record.frequency
+                          )}
+                        </SummarySectionLine>
+                      ))}
+                </>
+              )}
             </SummarySection>
           )}
         </SummarySectionsContainer>
