@@ -140,8 +140,16 @@ export const CustomDropdownMenuItem = styled(DropdownMenuItem)<{
   }
 
   &:hover {
-    color: ${({ noHover }) => {
-      if (!noHover) return palette.solid.blue;
+    ${({ noHover }) => {
+      if (!noHover)
+        return `
+        color: ${palette.solid.blue};
+        
+        svg path {
+          fill: ${palette.solid.blue};
+          fill-opacity: 1;
+        }
+      `;
     }};
   }
 
