@@ -42,18 +42,26 @@ export const WelcomeDescription = styled.div`
 `;
 
 export const ContentContainer = styled.div`
+  width: 100%;
   display: flex;
   gap: 48px;
+
+  & > div:nth-child(1) {
+    flex: 1 1 392px;
+  }
+  & > div:nth-child(2) {
+    flex: 1 1 644px;
+  }
+  & > div:nth-child(3) {
+    flex: 1 1 392px;
+  }
 `;
 
-export const LeftPanelWrapper = styled.div`
-  width: 392px;
-`;
+export const LeftPanelWrapper = styled.div``;
 
 export const OpenTasksContainer = styled.div``;
 
 export const TaskCard = styled.div`
-  width: 644px;
   padding: 32px;
   border: 1px solid ${palette.highlight.grey3};
 `;
@@ -66,7 +74,10 @@ export const TaskCardTitle = styled.div`
 export const TaskCardDescription = styled.div`
   ${typography.sizeCSS.medium};
   color: ${palette.highlight.grey8};
-  margin-bottom: 48px;
+
+  &:not(:last-child) {
+    margin-bottom: 48px;
+  }
 `;
 
 export const TaskCardActionLinksWrapper = styled.div`
@@ -89,7 +100,6 @@ export const Submenu = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
   gap: 16px;
 `;
 
@@ -113,5 +123,24 @@ export const SubmenuItem = styled.a`
   &:visited {
     color: inherit;
     text-decoration: none;
+  }
+`;
+
+export const SystemSelectorTabWrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+`;
+
+export const SystemSelectorTab = styled.div<{ selected?: boolean }>`
+  color: ${({ selected }) =>
+    selected ? palette.solid.blue : palette.solid.darkgrey};
+  border-bottom: 1.5px solid
+    ${({ selected }) => (selected ? palette.solid.blue : "none")};
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.solid.darkblue};
   }
 `;

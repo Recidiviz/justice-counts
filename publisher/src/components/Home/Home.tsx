@@ -29,33 +29,83 @@ export const Home = observer(() => {
   const { userStore } = useStore();
   const navigate = useNavigate();
   const userFirstName = userStore.name?.split(" ")[0];
+  const welcomeDescription = false // TODO: set this to the conditional that determines whether or not all tasks are completed
+    ? "See open tasks below"
+    : "All tasks are completed";
+  const taskCardActionLinks = {
+    publish: { label: "Publish", path: "records" },
+    uploadData: { label: "Upload Data", path: "upload" },
+    newRecord: { label: "New Record", path: "records/create" },
+    metricAvailability: { label: "Metric Availability", path: "metric-config" },
+  };
+  const allTasksCompleteTaskCardMetadata = {
+    title: "All tasks complete",
+    description: "Your data is updated and published.",
+  };
+
+  const renderTaskCard = ({
+    title,
+    description,
+    actionLinks,
+  }: {
+    title: string;
+    description: string;
+    actionLinks?: { label: string; path: string }[];
+  }) => {
+    return (
+      <Styled.TaskCard>
+        <Styled.TaskCardTitle>{title}</Styled.TaskCardTitle>
+        <Styled.TaskCardDescription>{description}</Styled.TaskCardDescription>
+        {actionLinks && (
+          <Styled.TaskCardActionLinksWrapper>
+            {actionLinks?.map((link) => (
+              <Styled.TaskCardActionLink
+                onClick={() => navigate(`./${link.path}`)}
+              >
+                {link.label}
+              </Styled.TaskCardActionLink>
+            ))}
+          </Styled.TaskCardActionLinksWrapper>
+        )}
+      </Styled.TaskCard>
+    );
+  };
+
+  const renderSystemSelectorTabs = (
+    tabs: {
+      label: string;
+      selected: boolean;
+    }[]
+  ) => {
+    return (
+      <Styled.ContentContainer>
+        <div />
+        <Styled.SystemSelectorTabWrapper>
+          {tabs.map((tab) => (
+            <Styled.SystemSelectorTab selected={tab.selected} key={tab.label}>
+              {tab.label}
+            </Styled.SystemSelectorTab>
+          ))}
+        </Styled.SystemSelectorTabWrapper>
+        <div />
+      </Styled.ContentContainer>
+    );
+  };
+
   return (
     <Styled.HomeContainer>
       <Styled.WelcomeUser>Welcome, {userFirstName}</Styled.WelcomeUser>
       <Styled.WelcomeDescription>
-        See open tasks below
+        {welcomeDescription}
       </Styled.WelcomeDescription>
+
       <Styled.ContentContainer>
         <Styled.LeftPanelWrapper />
+
         <Styled.OpenTasksContainer>
-          <Styled.TaskCard>
-            <Styled.TaskCardTitle>
-              Post-adjudication Admissions
-            </Styled.TaskCardTitle>
-            <Styled.TaskCardDescription>
-              The number of admission events to the agency’s jurisdiction in
-              which the person has been adjudicated.
-            </Styled.TaskCardDescription>
-            <Styled.TaskCardActionLinksWrapper>
-              <Styled.TaskCardActionLink>
-                Set Metric Availability
-              </Styled.TaskCardActionLink>
-              <Styled.TaskCardActionLink>Upload Data</Styled.TaskCardActionLink>
-              <Styled.TaskCardActionLink>New Record</Styled.TaskCardActionLink>
-              <Styled.TaskCardActionLink>Publish</Styled.TaskCardActionLink>
-            </Styled.TaskCardActionLinksWrapper>
-          </Styled.TaskCard>
+          {renderTaskCard(allTasksCompleteTaskCardMetadata)}
         </Styled.OpenTasksContainer>
+
         <Styled.Submenu>
           <Styled.SubmenuItem
             onClick={() => navigate("./settings/agency-settings")}
