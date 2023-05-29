@@ -28,7 +28,7 @@ import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
-import * as Styled from "./DefinitionModalForm.styled";
+import * as Styled from "./ModalForm.styled";
 import {
   ContextsByContextKey,
   MetricSettings,
@@ -380,7 +380,7 @@ function DefinitionModalForm({
             </Styled.Description>
           )}
           {currentSettings && (
-            <Styled.IncludesExcludesContainer>
+            <Styled.ToggleSwitchesList>
               {Object.entries(currentSettings).map(
                 ([includesExcludesKey, value]) => {
                   return (
@@ -390,7 +390,7 @@ function DefinitionModalForm({
                       {Object.entries(value.settings).map(
                         ([settingKey, setting]) => {
                           return (
-                            <Styled.IncludeExclude
+                            <Styled.ToggleSwitchWrapper
                               key={settingKey}
                               enabled={setting.included === "Yes"}
                             >
@@ -404,7 +404,7 @@ function DefinitionModalForm({
                                 }
                               />
                               {setting.label}
-                            </Styled.IncludeExclude>
+                            </Styled.ToggleSwitchWrapper>
                           );
                         }
                       )}
@@ -412,7 +412,7 @@ function DefinitionModalForm({
                   );
                 }
               )}
-            </Styled.IncludesExcludesContainer>
+            </Styled.ToggleSwitchesList>
           )}
 
           <Styled.ContextContainer>
@@ -420,7 +420,7 @@ function DefinitionModalForm({
               Object.entries(currentContexts).map(([key, { label, value }]) => {
                 return (
                   <Fragment key={key}>
-                    <Styled.Label>{label}</Styled.Label>
+                    <Styled.ContextLabel>{label}</Styled.ContextLabel>
                     <Input
                       type="text"
                       name={key}

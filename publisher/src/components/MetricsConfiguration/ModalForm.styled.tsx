@@ -21,9 +21,13 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
+const MAX_MODAL_FORM_HEIGHT_WITH_PADDINGS = 587 + 24 * 2;
+
+// common
 export const Wrapper = styled.div`
   position: fixed;
   top: 0;
+  padding: 24px;
   width: 100%;
   height: 100%;
   background-color: ${palette.highlight.grey2};
@@ -31,6 +35,11 @@ export const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 4;
+
+  @media only screen and (max-height: ${MAX_MODAL_FORM_HEIGHT_WITH_PADDINGS}px) {
+    align-items: start;
+    overflow-y: auto;
+  }
 `;
 
 export const Content = styled.div`
@@ -71,53 +80,20 @@ export const Description = styled.div`
   margin-bottom: 16px;
 `;
 
-export const ChooseDefaultSettings = styled.span`
-  color: ${palette.solid.blue};
-  cursor: pointer;
-`;
-
-export const IncludesExcludesContainer = styled.div`
+export const ToggleSwitchesList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
   margin-bottom: 32px;
 `;
 
-export const IncludeExclude = styled.div<{ enabled?: boolean }>`
+export const ToggleSwitchWrapper = styled.div<{ enabled?: boolean }>`
   display: flex;
   flex-direction: row;
   gap: 8px;
   align-items: center;
   ${typography.sizeCSS.normal};
   ${({ enabled }) => !enabled && `color: ${palette.highlight.grey7};`}
-`;
-
-export const EnabledIcon = styled.img`
-  margin-top: 3px;
-  width: 16px;
-  height: 16px;
-`;
-
-export const DisabledIcon = styled.div`
-  margin-top: 3px;
-  width: 16px;
-  min-width: 16px;
-  height: 16px;
-  min-height: 16px;
-  border: 1px solid ${palette.highlight.grey4};
-  border-radius: 100%;
-`;
-
-export const Label = styled.div`
-  ${typography.sizeCSS.medium};
-  margin-bottom: 16px;
-`;
-
-export const ContextContainer = styled.div`
-  ${Label} {
-    ${typography.sizeCSS.normal} !important;
-    color: ${palette.highlight.grey8} !important;
-  }
 `;
 
 export const BottomButtonsContainer = styled.div`
@@ -132,4 +108,29 @@ export const BottomButtonsContainer = styled.div`
   align-items: center;
   background-color: ${palette.solid.white};
   z-index: 2;
+`;
+
+// race ethnicities
+export const SpecifyEthnicityPrompt = styled.div`
+  ${typography.sizeCSS.normal};
+  margin-bottom: 20px;
+`;
+
+export const ToggleSwitchesListHeader = styled.div`
+  ${typography.sizeCSS.normal};
+  margin-bottom: 24px;
+`;
+
+// definitions
+export const ChooseDefaultSettings = styled.span`
+  color: ${palette.solid.blue};
+  cursor: pointer;
+`;
+
+export const ContextContainer = styled.div``;
+
+export const ContextLabel = styled.div`
+  ${typography.sizeCSS.normal};
+  color: ${palette.highlight.grey8};
+  margin-bottom: 16px;
 `;
