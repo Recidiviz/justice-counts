@@ -87,6 +87,8 @@ export const CustomDropdownMenu = styled(DropdownMenu)<{
   max-height: 310px;
   overflow-y: auto;
   z-index: 5;
+  transform: unset;
+  transition: unset;
 
   ${({ menuOverflow }) => menuOverflow && "top: 0;"}
   ${({ menuFullWidth }) =>
