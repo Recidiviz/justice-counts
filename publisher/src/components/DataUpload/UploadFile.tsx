@@ -28,6 +28,7 @@ import {
   DragDropIcon,
   GeneralInstructions,
   Instructions,
+  InstructionsTopOverlay,
   SystemsInstructions,
   UploadButtonInput,
   UploadButtonLabel,
@@ -129,6 +130,7 @@ export const UploadFile: React.FC<UploadFileProps> = ({
   return (
     <UploadFileContainer>
       <Instructions>
+        <InstructionsTopOverlay />
         {/* General Instructions */}
         <GeneralInstructions systems={userSystems} />
 

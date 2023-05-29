@@ -15,5 +15,29 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./Form.styles";
-export * from "./TabbedDisaggregations";
+import { Badge } from "@justice-counts/common/components/Badge";
+import React from "react";
+import { useParams } from "react-router-dom";
+
+import { useStore } from "../../stores";
+
+export function useHeaderBadge() {
+  const { agencyId } = useParams() as { agencyId: string };
+  const { userStore, api } = useStore();
+
+  if (userStore.isReadOnly(agencyId)) {
+    return (
+      <Badge color="GREY" noMargin>
+        Read Only
+      </Badge>
+    );
+  }
+
+  if (api.environment === "local" || api.environment === "staging") {
+    return (
+      <Badge color="RED" noMargin>
+        {api.environment === "local" ? "Local" : "Staging"}
+      </Badge>
+    );
+  }
+}

@@ -57,6 +57,7 @@ import {
   TabbedDisaggregations,
 } from "../Forms";
 import { REPORTS_LOWERCASE } from "../Global/constants";
+import { useHeaderBadge } from "../Header/hooks";
 import { Onboarding } from "../Onboarding";
 import { MetricTextInput } from "./DataEntryFormComponents";
 import DataEntryHelpPage from "./DataEntryHelpPage";
@@ -121,14 +122,16 @@ const DataEntryForm: React.FC<{
   showDataEntryHelpPage,
   setShowDataEntryHelpPage,
 }) => {
+  const { agencyId } = useParams() as { agencyId: string };
+  const navigate = useNavigate();
+  const headerBadge = useHeaderBadge();
+  const { formStore, reportStore, userStore } = useStore();
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [hasVersionConflict, setHasVersionConflict] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isSaveInProgress, setIsSaveInProgress] = useState(false);
   const metricsRef = useRef<HTMLDivElement[]>([]);
-  const { formStore, reportStore, userStore } = useStore();
-  const { agencyId } = useParams() as { agencyId: string };
-  const navigate = useNavigate();
+
   const currentAgency = userStore.getAgency(agencyId);
 
   const isPublished =
@@ -267,6 +270,8 @@ const DataEntryForm: React.FC<{
       <HeaderBar
         onLogoClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
         hasBottomBorder
+        label="Justice Counts"
+        badge={headerBadge}
       >
         <TopBarCloseHelpButtonContainer
           showDataEntryHelpPage={showDataEntryHelpPage}

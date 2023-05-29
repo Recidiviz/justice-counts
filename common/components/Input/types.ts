@@ -15,5 +15,37 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./Form.styles";
-export * from "./TabbedDisaggregations";
+export type InputProps = {
+  error?: string;
+  placeholder?: string;
+  isPlaceholderVisible?: boolean;
+  multiline?: boolean;
+  persistLabel?: boolean;
+  notReporting?: boolean;
+  textSize?: InputTextSize;
+};
+
+export type InputLabelProps = {
+  inputHasValue?: boolean;
+  isDisabled?: boolean;
+  error?: string;
+  persistLabel?: boolean;
+  notReporting?: boolean;
+};
+
+export type ErrorLabelProps = {
+  isDisabled?: boolean;
+  error?: string;
+  multiline?: boolean;
+  textSize?: InputTextSize;
+};
+
+export type NotReportedIconWithTooltipProps = {
+  size?: number;
+  lighter?: boolean;
+  tooltipText?: string;
+  tooltipLinkLabel?: string;
+  tooltipLink?: () => void;
+};
+
+export type InputTextSize = "small";

@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Badge } from "@justice-counts/common/components/Badge";
 import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
 import { observer } from "mobx-react-lite";
 import React from "react";
@@ -25,11 +24,13 @@ import { useStore } from "../../stores";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { guidancePaths } from "../Guidance";
 import Menu from "../Menu";
+import { useHeaderBadge } from "./hooks";
 
 const Header = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
-  const { userStore, guidanceStore, api } = useStore();
+  const headerBadge = useHeaderBadge();
+  const { userStore, guidanceStore } = useStore();
   const { hasCompletedOnboarding } = guidanceStore;
 
   const isAgencyValid = !!userStore.getAgency(agencyId);
@@ -42,26 +43,12 @@ const Header = observer(() => {
           }/${REPORTS_LOWERCASE}`
         )
       : navigate(guidancePaths.home);
-  const badge = () => {
-    if (userStore.isUserReadOnly(agencyId)) {
-      return (
-        <Badge color="GREY" noMargin>
-          Read only
-        </Badge>
-      );
-    }
-    if (api.environment === "local" || api.environment === "staging")
-      return (
-        <Badge color="RED" noMargin>
-          {api.environment === "local" ? "Local" : "Staging"}
-        </Badge>
-      );
-  };
+
   return (
     <HeaderBar
       onLogoClick={onLogoClick}
       label="Justice Counts"
-      badge={badge()}
+      badge={headerBadge}
       hasBottomBorder={hasCompletedOnboarding === false}
     >
       <Menu />

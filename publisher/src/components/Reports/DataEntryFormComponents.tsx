@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Input } from "@justice-counts/common/components/Input";
 import {
   Metric,
   MetricContext,
@@ -23,10 +24,10 @@ import {
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { formatNumberInput } from "../../utils";
-import { TextInput } from "../Forms";
 
 interface MetricTextInputProps {
   reportID: number;
@@ -53,7 +54,7 @@ export const MetricTextInput = observer(
       updateMetricsValues(reportID, metric.key, e.target.value, metric.enabled);
 
     return (
-      <TextInput
+      <Input
         label={metric.label}
         error={metricsValues[reportID]?.[metric.key]?.error}
         type="text"
@@ -96,6 +97,8 @@ export const DisaggregationDimensionTextInput = observer(
     disabled,
     customLabel,
   }: DisaggregationDimensionTextInputProps) => {
+    const navigate = useNavigate();
+    const { agencyId } = useParams() as { agencyId: string };
     const { formStore } = useStore();
     const { disaggregations, updateDisaggregationDimensionValue } = formStore;
 
@@ -113,7 +116,7 @@ export const DisaggregationDimensionTextInput = observer(
       );
 
     return (
-      <TextInput
+      <Input
         key={dimension.key}
         label={customLabel || dimension.label}
         error={
@@ -144,7 +147,13 @@ export const DisaggregationDimensionTextInput = observer(
         onFocus={updateFieldDescription}
         onBlur={clearFieldDescription}
         disabled={disabled}
-        notReporting={!disaggregation.enabled || !dimension.enabled}
+        notReported={!disaggregation.enabled || !dimension.enabled}
+        notReportedIconWithTooltip={{
+          tooltipText:
+            "This has been disabled by an admin because the data is unavailable. If you have the data for this, consider changing the configuration in the",
+          tooltipLinkLabel: "Settings",
+          tooltipLink: () => navigate(`/agency/${agencyId}/metric-config`),
+        }}
       />
     );
   }
@@ -196,7 +205,7 @@ export const AdditionalContextInput = observer(
       );
 
     return (
-      <TextInput
+      <Input
         type="text"
         metricKey={metric.key}
         name={context.key}

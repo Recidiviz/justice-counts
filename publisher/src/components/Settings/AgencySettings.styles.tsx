@@ -178,35 +178,6 @@ export const AgencyInfoTextAreaLabel = styled.label`
   ${typography.sizeCSS.normal};
 `;
 
-export const AgencyInfoTextInput = styled.input`
-  ${typography.sizeCSS.medium};
-  font-size: 20px;
-  padding: 24px 14px;
-  background-color: ${palette.highlight.grey1};
-  border: none;
-  border-bottom: 1px solid ${palette.highlight.grey7};
-  resize: none;
-  margin-bottom: 24px;
-
-  &:focus {
-    outline: none;
-  }
-`;
-
-export const AgencyInfoTextArea = styled.textarea`
-  ${typography.sizeCSS.medium};
-  font-size: 20px;
-  padding: 24px 14px;
-  background-color: ${palette.highlight.grey1};
-  border: none;
-  border-bottom: 1px solid ${palette.highlight.grey7};
-  resize: none;
-
-  &:focus {
-    outline: none;
-  }
-`;
-
 export const AgencyInfoTextAreaWordCounter = styled.div<{ isRed: boolean }>`
   margin-top: 8px;
   ${typography.sizeCSS.small};
@@ -308,7 +279,7 @@ export const InviteMemberContainer = styled.div`
   margin-bottom: 40px;
 `;
 
-export const InviteMemberInnerContainer = styled.div`
+export const InviteMemberInnerContainer = styled.div<{ hasError?: boolean }>`
   display: flex;
   flex-direction: row;
   gap: 8px;
@@ -323,8 +294,14 @@ export const InviteMemberInnerContainer = styled.div`
     height: unset;
 
     & > div:last-child {
-      height: 47px;
+      height: 51px;
       width: 96px;
+    }
+  }
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    & > div:last-child {
+      margin-top: ${({ hasError }) => (hasError ? "24px" : "0")};
     }
   }
 `;
@@ -337,52 +314,6 @@ export const InviteMemberInputsContainer = styled.div`
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     flex-direction: column;
   }
-`;
-
-export const InviteMemberInput = styled.input<{
-  value: string | undefined;
-  error?: boolean;
-}>`
-  ${typography.sizeCSS.normal};
-  padding: 12px 13px;
-  background: ${({ value, error }) => {
-    if (error) {
-      return palette.highlight.red;
-    }
-    return value ? palette.highlight.lightblue1 : palette.highlight.grey1;
-  }};
-  border: none;
-  border-bottom: 1px solid
-    ${({ value, error }) => {
-      if (error) {
-        return palette.solid.red;
-      }
-      return value ? palette.solid.blue : palette.highlight.grey9;
-    }};
-  min-width: 266px;
-  caret-color: ${({ error }) => {
-    if (error) {
-      return palette.solid.red;
-    }
-    return palette.solid.blue;
-  }};
-
-  &:focus {
-    outline: none;
-  }
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    width: 100%;
-  }
-`;
-
-export const InviteMemberErrorContainer = styled.div`
-  position: absolute;
-`;
-
-export const InviteMemberError = styled.div`
-  ${typography.sizeCSS.small}
-  color: ${palette.solid.red};
 `;
 
 export const TeamManagementSectionSubTitle = styled.div`
@@ -501,13 +432,28 @@ export const JurisdictionsInputWrapper = styled.div`
   position: relative;
 `;
 
-export const JurisdictionsInput = styled(InviteMemberInput)`
+export const JurisdictionsSearchBar = styled.input<{
+  value: string | undefined;
+}>`
+  ${typography.sizeCSS.normal};
+  padding: 12px 13px;
   width: 100%;
   background-image: url(${searchIcon});
   background-position: left 16px top 50%;
   background-repeat: no-repeat;
   margin-bottom: 24px;
   text-indent: 24px;
+  background-color: ${({ value }) =>
+    value ? palette.highlight.lightblue1 : palette.highlight.grey1};
+  border: none;
+  border-bottom: 1px solid
+    ${({ value }) => (value ? palette.solid.blue : palette.highlight.grey9)};
+  min-width: 266px;
+  caret-color: ${palette.solid.blue};
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const JurisdictionsSearchResultContainer = styled.div`

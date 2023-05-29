@@ -15,14 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Input } from "@justice-counts/common/components/Input";
 import { render, screen } from "@testing-library/react";
 import React from "react";
 
-import { TextInput } from ".";
-
 test("Optional input label without value expected to be default position, font-size and color", () => {
   render(
-    <TextInput
+    <Input
       type="text"
       label="Total Staff"
       valueLabel="People"
@@ -42,7 +41,7 @@ test("Optional input label without value expected to be default position, font-s
 
 test("Required input label with value expected to shrink position, font-size and change color", () => {
   render(
-    <TextInput
+    <Input
       type="text"
       label="Total Staff"
       valueLabel="People"
@@ -63,7 +62,7 @@ test("Required input label with value expected to shrink position, font-size and
 
 test("Error description appears in document", () => {
   render(
-    <TextInput
+    <Input
       error={{ message: "Please enter valid number." }}
       type="text"
       label="Total Staff"
@@ -83,7 +82,7 @@ test("Error description appears in document", () => {
 
 test("Error state changes text input colors to red", () => {
   render(
-    <TextInput
+    <Input
       error={{ message: "Please enter valid number." }}
       type="text"
       name="Total Staff"

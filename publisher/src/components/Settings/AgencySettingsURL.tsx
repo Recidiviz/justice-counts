@@ -17,6 +17,7 @@
 
 import { Button } from "@justice-counts/common/components/Button";
 import { formatExternalLink } from "@justice-counts/common/components/DataViz/utils";
+import { Input } from "@justice-counts/common/components/Input";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -28,7 +29,6 @@ import {
   AgencyInfoBlockDescription,
   AgencyInfoLink,
   AgencyInfoTextAreaLabel,
-  AgencyInfoTextInput,
   AgencySettingsBlock,
   AgencySettingsBlockTitle,
   EditArrowImage,
@@ -101,14 +101,15 @@ const AgencySettingsUrl: React.FC<{
           <AgencySettingsBlockTitle isEditModeActive>
             Agency Homepage URL
           </AgencySettingsBlockTitle>
-          <AgencyInfoTextAreaLabel htmlFor="homepage-url">
+          <AgencyInfoTextAreaLabel>
             Provide a link to your agency&apos;s website.
           </AgencyInfoTextAreaLabel>
-          <AgencyInfoTextInput
-            id="homepage-url"
-            onChange={(e) => setUrlText(e.target.value)}
+          <Input
+            name="homepage-url"
+            label=""
             placeholder="URL of agency (e.g., https://doc.iowa.gov/)"
-            ref={textAreaRef}
+            isPlaceholderVisible
+            onChange={(e) => setUrlText(e.target.value)}
             value={urlText}
           />
           <EditModeButtonsContainer noMargin>
