@@ -16,6 +16,4 @@
 // =============================================================================
 
 export * from "./Form.styles";
-export * from "./NotReportedIcon";
 export * from "./TabbedDisaggregations";
-export * from "./TextInput";

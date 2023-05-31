@@ -15,30 +15,29 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Badge } from "@justice-counts/common/components/Badge";
 import React from "react";
+import { useParams } from "react-router-dom";
 
-import {
-  RadioButtonsFieldset,
-  RadioButtonsWrapper as Wrapper,
-} from "./RadioButton.styled";
-import { WrapperSpacing } from "./types";
+import { useStore } from "../../stores";
 
-type RadioButtonsWrapperProps = {
-  children: React.ReactNode;
-  spacing?: WrapperSpacing;
-  disabled?: boolean;
-};
+export function useHeaderBadge() {
+  const { agencyId } = useParams() as { agencyId: string };
+  const { userStore, api } = useStore();
 
-export function RadioButtonsWrapper({
-  children,
-  spacing,
-  disabled,
-}: RadioButtonsWrapperProps) {
-  return (
-    <Wrapper spacing={spacing}>
-      <RadioButtonsFieldset disabled={disabled}>
-        {children}
-      </RadioButtonsFieldset>
-    </Wrapper>
-  );
+  if (userStore.isUserReadOnly(agencyId)) {
+    return (
+      <Badge color="GREY" noMargin>
+        Read Only
+      </Badge>
+    );
+  }
+
+  if (api.environment === "local" || api.environment === "staging") {
+    return (
+      <Badge color="RED" noMargin>
+        {api.environment === "local" ? "Local" : "Staging"}
+      </Badge>
+    );
+  }
 }

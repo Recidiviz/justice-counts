@@ -16,8 +16,9 @@
 // =============================================================================
 
 import { Button } from "@justice-counts/common/components/Button";
+import { Input } from "@justice-counts/common/components/Input";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
@@ -25,7 +26,6 @@ import rightArrow from "../assets/right-arrow.svg";
 import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,
-  AgencyInfoTextArea,
   AgencyInfoTextAreaLabel,
   AgencyInfoTextAreaWordCounter,
   AgencySettingsBlock,
@@ -37,7 +37,6 @@ import {
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
 const MAX_DESCRIPTION_CHARACTERS = 750;
-const MIN_TEXT_AREA_HEIGHT = 121;
 
 const AgencySettingsDescription: React.FC<{
   settingProps: SettingProps;
@@ -51,7 +50,6 @@ const AgencySettingsDescription: React.FC<{
     agencyStore;
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [infoText, setInfoText] = useState("");
-  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const purposeAndFunctionsSetting =
     currentAgencySettings?.find(
@@ -80,21 +78,6 @@ const AgencySettingsDescription: React.FC<{
     removeEditMode();
   };
 
-  useEffect(() => {
-    if (textAreaRef.current) {
-      // eslint-disable-next-line no-param-reassign
-      textAreaRef.current.style.height = "0px";
-      const { scrollHeight } = textAreaRef.current;
-
-      // eslint-disable-next-line no-param-reassign
-      textAreaRef.current.style.height = `${
-        MIN_TEXT_AREA_HEIGHT > Number(scrollHeight) + 1
-          ? MIN_TEXT_AREA_HEIGHT
-          : Number(scrollHeight) + 1
-      }px`;
-    }
-  }, [infoText, isSettingInEditMode]);
-
   if (isSettingInEditMode) {
     return (
       <AgencySettingsEditModeModal
@@ -107,16 +90,17 @@ const AgencySettingsDescription: React.FC<{
           <AgencySettingsBlockTitle isEditModeActive>
             Agency Information
           </AgencySettingsBlockTitle>
-          <AgencyInfoTextAreaLabel htmlFor="basic-info-description">
+          <AgencyInfoTextAreaLabel>
             Briefly describe your agency’s purpose and functions. This text will
             be displayed in the About page of the public-facing dashboard.
           </AgencyInfoTextAreaLabel>
-          <AgencyInfoTextArea
-            id="basic-info-description"
+          <Input
+            name="basic-info-description"
+            label=""
             onChange={(e) => setInfoText(e.target.value)}
             placeholder="Enter agency description..."
-            ref={textAreaRef}
-            rows={1}
+            isPlaceholderVisible
+            multiline
             value={infoText}
             maxLength={750}
           />

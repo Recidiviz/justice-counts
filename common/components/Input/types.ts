@@ -15,30 +15,37 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
-
-import {
-  RadioButtonsFieldset,
-  RadioButtonsWrapper as Wrapper,
-} from "./RadioButton.styled";
-import { WrapperSpacing } from "./types";
-
-type RadioButtonsWrapperProps = {
-  children: React.ReactNode;
-  spacing?: WrapperSpacing;
-  disabled?: boolean;
+export type InputProps = {
+  error?: string;
+  placeholder?: string;
+  isPlaceholderVisible?: boolean;
+  multiline?: boolean;
+  persistLabel?: boolean;
+  notReporting?: boolean;
+  textSize?: InputTextSize;
 };
 
-export function RadioButtonsWrapper({
-  children,
-  spacing,
-  disabled,
-}: RadioButtonsWrapperProps) {
-  return (
-    <Wrapper spacing={spacing}>
-      <RadioButtonsFieldset disabled={disabled}>
-        {children}
-      </RadioButtonsFieldset>
-    </Wrapper>
-  );
-}
+export type InputLabelProps = {
+  inputHasValue?: boolean;
+  isDisabled?: boolean;
+  error?: string;
+  persistLabel?: boolean;
+  notReporting?: boolean;
+};
+
+export type ErrorLabelProps = {
+  isDisabled?: boolean;
+  error?: string;
+  multiline?: boolean;
+  textSize?: InputTextSize;
+};
+
+export type NotReportedIconWithTooltipProps = {
+  size?: number;
+  lighter?: boolean;
+  tooltipText?: string;
+  tooltipLinkLabel?: string;
+  tooltipLink?: () => void;
+};
+
+export type InputTextSize = "small";

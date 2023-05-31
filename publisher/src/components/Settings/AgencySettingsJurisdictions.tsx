@@ -46,9 +46,9 @@ import {
   JurisdictionsEditModeFooter,
   JurisdictionsEditModeFooterLeftBlock,
   JurisdictionsInfoRow,
-  JurisdictionsInput,
   JurisdictionsInputWrapper,
   JurisdictionsListArea,
+  JurisdictionsSearchBar,
   JurisdictionsSearchResult,
   JurisdictionsSearchResultContainer,
 } from "./AgencySettings.styles";
@@ -252,7 +252,7 @@ export const AgencySettingsJurisdictions: React.FC<{
             {isExclusionsViewActive && "DO NOT"} correspond with your agency.
           </AgencySettingsBlockDescription>
           <JurisdictionsInputWrapper>
-            <JurisdictionsInput
+            <JurisdictionsSearchBar
               placeholder="Type in the name of your jurisdiction (for example, Thurston County)"
               value={inputValue}
               onChange={(e) => {

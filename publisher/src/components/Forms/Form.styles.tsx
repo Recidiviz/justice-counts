@@ -80,6 +80,10 @@ export const Form = styled.form`
   padding-bottom: 100px;
 `;
 
+export const FormFieldSet = styled.fieldset`
+  border: 0;
+`;
+
 type TitleWrapperProps = {
   underlined?: boolean;
 };

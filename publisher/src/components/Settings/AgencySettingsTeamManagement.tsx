@@ -18,10 +18,12 @@
 /* eslint-disable camelcase */
 import editIcon from "@justice-counts/common/assets/edit-row-icon.png";
 import { Button } from "@justice-counts/common/components/Button";
+import { Input } from "@justice-counts/common/components/Input";
 import { Modal } from "@justice-counts/common/components/Modal";
 import {
   AgencyTeamMember,
   AgencyTeamMemberRole,
+  FormError,
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -38,10 +40,7 @@ import {
   EditTeamMemberMenuItem,
   InvitedStatus,
   InviteMemberContainer,
-  InviteMemberError,
-  InviteMemberErrorContainer,
   InviteMemberInnerContainer,
-  InviteMemberInput,
   InviteMemberInputsContainer,
   JCAdminStatus,
   TeamManagementBlock,
@@ -75,6 +74,9 @@ export const AgencySettingsTeamManagement = observer(() => {
     useState<string | undefined>(undefined);
   const [nameValue, setNameValue] = useState("");
   const [emailValue, setEmailValue] = useState("");
+  const [inputsError, setInputsError] = useState<FormError | undefined>(
+    undefined
+  );
 
   const validateEmail = (email: string) => {
     // simple email validation
@@ -156,6 +158,10 @@ export const AgencySettingsTeamManagement = observer(() => {
     }
   }, [teamMemberEditMenuActiveEmail]);
 
+  const isReadOnly = userStore.isUserReadOnly(agencyId);
+  const isInviteDisabled =
+    !nameValue || !validateEmail(emailValue) || isInviting || isReadOnly;
+
   useEffect(() => {
     const initialize = async () => {
       resetState();
@@ -204,36 +210,48 @@ export const AgencySettingsTeamManagement = observer(() => {
             Send invite to colleagues
           </TeamManagementSectionTitle>
           <InviteMemberContainer>
-            <InviteMemberInnerContainer>
+            <InviteMemberInnerContainer hasError={!!inputsError}>
               <InviteMemberInputsContainer>
-                <InviteMemberInput
+                <Input
+                  label=""
+                  noBottomMargin
                   placeholder="Enter full name"
+                  isPlaceholderVisible
                   value={nameValue}
                   onChange={(e) => setNameValue(e.target.value)}
+                  textSize="small"
+                  disabled={isReadOnly}
                 />
-                <InviteMemberInput
+                <Input
+                  label=""
+                  noBottomMargin
                   placeholder="Enter email"
+                  isPlaceholderVisible
                   value={emailValue}
-                  onChange={(e) => setEmailValue(e.target.value)}
-                  error={!!emailValue && !validateEmail(emailValue)}
+                  onChange={(e) => {
+                    setEmailValue(e.target.value);
+                    const isEmailInvalid =
+                      !e.target.value || !validateEmail(e.target.value);
+                    if (isEmailInvalid) {
+                      setInputsError({
+                        message: "Please enter a valid email.",
+                      });
+                    } else {
+                      setInputsError(undefined);
+                    }
+                  }}
+                  error={inputsError}
+                  textSize="small"
+                  disabled={isReadOnly}
                 />
               </InviteMemberInputsContainer>
               <Button
                 label="Invite"
                 onClick={() => handleInviteTeamMamber(nameValue, emailValue)}
                 buttonColor="blue"
-                disabled={
-                  !nameValue || !validateEmail(emailValue) || isInviting
-                }
+                disabled={isInviteDisabled}
               />
             </InviteMemberInnerContainer>
-            <InviteMemberErrorContainer>
-              {!!emailValue && !validateEmail(emailValue) && (
-                <InviteMemberError>
-                  Please enter a valid email.
-                </InviteMemberError>
-              )}
-            </InviteMemberErrorContainer>
           </InviteMemberContainer>
           <TeamManagementSectionTitle>Manage staff</TeamManagementSectionTitle>
           <TeamManagementSectionSubTitle>
@@ -245,27 +263,32 @@ export const AgencySettingsTeamManagement = observer(() => {
           </TeamMemberRow>
           {currentAgencyTeam &&
             filterAndSortAgencyTeam(currentAgencyTeam).map(
-              ({ name, email, invitation_status, role }) => (
-                <TeamMemberRow key={`${name}-${email}`}>
-                  <TeamMemberNameContainer
-                    pending={invitation_status === "PENDING"}
-                  >
-                    {name}{" "}
-                    {role === "JUSTICE_COUNTS_ADMIN" && (
-                      <JCAdminStatus>JC Admin</JCAdminStatus>
-                    )}
-                    {role === "AGENCY_ADMIN" && (
-                      <AdminStatus>Admin</AdminStatus>
-                    )}
-                    {invitation_status === "PENDING" && (
-                      <InvitedStatus>Invited</InvitedStatus>
-                    )}
-                  </TeamMemberNameContainer>
-                  <TeamMemberEmailContainer>
-                    {email}
-                    {role !== AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN &&
-                      !userStore.isContributor(agencyId) &&
-                      userStore.email !== email && (
+              ({ name, email, invitation_status, role }) => {
+                const isTeamMemberEditMenuDisabled =
+                  role === AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN ||
+                  userStore.isContributor(agencyId) ||
+                  userStore.email === email ||
+                  isReadOnly;
+
+                return (
+                  <TeamMemberRow key={`${name}-${email}`}>
+                    <TeamMemberNameContainer
+                      pending={invitation_status === "PENDING"}
+                    >
+                      {name}{" "}
+                      {role === "JUSTICE_COUNTS_ADMIN" && (
+                        <JCAdminStatus>JC Admin</JCAdminStatus>
+                      )}
+                      {role === "AGENCY_ADMIN" && (
+                        <AdminStatus>Admin</AdminStatus>
+                      )}
+                      {invitation_status === "PENDING" && (
+                        <InvitedStatus>Invited</InvitedStatus>
+                      )}
+                    </TeamMemberNameContainer>
+                    <TeamMemberEmailContainer>
+                      {email}
+                      {!isTeamMemberEditMenuDisabled && (
                         <EditTeamMemberIconContainer
                           id={email}
                           tabIndex={-1}
@@ -305,9 +328,10 @@ export const AgencySettingsTeamManagement = observer(() => {
                           )}
                         </EditTeamMemberIconContainer>
                       )}
-                  </TeamMemberEmailContainer>
-                </TeamMemberRow>
-              )
+                    </TeamMemberEmailContainer>
+                  </TeamMemberRow>
+                );
+              }
             )}
         </TeamManagementBlock>
       </AgencySettingsContent>

@@ -57,19 +57,19 @@ export const Instructions = styled.div`
   display: flex;
   width: 50%;
   flex-direction: column;
-  ${typography.sizeCSS.medium}
+  ${typography.sizeCSS.medium};
 
   h1 {
-    ${typography.sizeCSS.title}
+    ${typography.sizeCSS.title};
   }
 
   h2 {
-    ${typography.sizeCSS.large}
+    ${typography.sizeCSS.large};
     margin: 15px 0;
   }
 
   h3 {
-    ${typography.sizeCSS.large}
+    ${typography.sizeCSS.large};
     font-size: ${rem("22px")};
     color: ${palette.highlight.grey10};
     margin-top: 15px;
@@ -123,6 +123,20 @@ export const Instructions = styled.div`
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     width: 100%;
     padding: 100px 24px 103px 24px;
+  }
+`;
+
+export const InstructionsTopOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: ${HEADER_BAR_HEIGHT}px;
+  width: 50%;
+  z-index: 2;
+  background-color: ${palette.solid.white};
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    display: none;
   }
 `;
 
@@ -239,7 +253,7 @@ export const DragDropContainer = styled.div<{ dragging?: boolean }>`
     width: calc(100% - 190px);
     z-index: 4;
     flex-direction: row;
-    padding: 0 10px;
+    background: transparent;
 
     div {
       ${typography.sizeCSS.normal};
@@ -249,6 +263,8 @@ export const DragDropContainer = styled.div<{ dragging?: boolean }>`
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    justify-content: end;
+
     div {
       ${typography.sizeCSS.small};
       flex-direction: column;

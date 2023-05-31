@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import errorIcon from "@justice-counts/common/assets/status-error-icon.png";
 import { AgencySystems, Metric } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React from "react";
@@ -23,7 +24,6 @@ import { useParams } from "react-router-dom";
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import checkIcon from "../assets/check-icon.svg";
-import errorIcon from "../assets/status-error-icon.png";
 import { MetricSummarySectionTitle } from "../Forms";
 import { useCheckMetricForErrors } from "./hooks";
 import {

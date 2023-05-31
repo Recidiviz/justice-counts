@@ -17,6 +17,7 @@
 
 /* eslint-disable camelcase */
 
+import errorIcon from "@justice-counts/common/assets/status-error-icon.png";
 import { Button } from "@justice-counts/common/components/Button";
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { formatDateShortMonthYear } from "@justice-counts/common/components/DataViz/utils";
@@ -27,12 +28,12 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { printReportTitle } from "../../utils";
 import checkIcon from "../assets/check-icon.svg";
-import errorIcon from "../assets/status-error-icon.png";
 import {
   REPORT_CAPITALIZED,
   REPORTS_CAPITALIZED,
   REPORTS_LOWERCASE,
 } from "../Global/constants";
+import { useHeaderBadge } from "../Header/hooks";
 import {
   EmptyIcon,
   Heading,
@@ -62,6 +63,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
 }) => {
   const { agencyId } = useParams();
   const navigate = useNavigate();
+  const headerBadge = useHeaderBadge();
   const [isFooterVisible] = useIsFooterVisible();
   const [isMetricsSectionExpanded, setIsMetricsSectionExpanded] =
     useState(true);
@@ -91,13 +93,14 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
       <HeaderBar
         onLogoClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
         hasBottomBorder
+        label="Justice Counts"
+        badge={headerBadge}
       >
         <ReviewMetricsButtonsContainer>
           {buttons.map(
             ({
               name,
               onClick,
-              disabled,
               buttonColor,
               labelColor,
               borderColor,

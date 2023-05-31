@@ -15,30 +15,5 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
-
-import {
-  RadioButtonsFieldset,
-  RadioButtonsWrapper as Wrapper,
-} from "./RadioButton.styled";
-import { WrapperSpacing } from "./types";
-
-type RadioButtonsWrapperProps = {
-  children: React.ReactNode;
-  spacing?: WrapperSpacing;
-  disabled?: boolean;
-};
-
-export function RadioButtonsWrapper({
-  children,
-  spacing,
-  disabled,
-}: RadioButtonsWrapperProps) {
-  return (
-    <Wrapper spacing={spacing}>
-      <RadioButtonsFieldset disabled={disabled}>
-        {children}
-      </RadioButtonsFieldset>
-    </Wrapper>
-  );
-}
+export * from "./Input";
+export * from "./NotReportedIcon";
