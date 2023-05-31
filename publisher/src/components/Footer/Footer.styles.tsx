@@ -25,7 +25,7 @@ import styled from "styled-components/macro";
 export const FooterWrapper = styled.footer<{ isPageDataUpload?: boolean }>`
   margin-top: 48px;
   z-index: ${({ isPageDataUpload }) => (isPageDataUpload ? "5" : "0")};
-  width: 100vw;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: end;
