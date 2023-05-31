@@ -47,10 +47,12 @@ const SpreadsheetReview: React.FC = observer(() => {
   } = data;
 
   // with using spreadsheetId we will fetch spreadsheet data
-  const { agencyId, spreadsheetId } = useParams() as {
-    agencyId: string;
-    spreadsheetId: string;
-  };
+  // const { agencyId, spreadsheetId } = useParams() as {
+  //   agencyId: string;
+  //   spreadsheetId: string;
+  // };
+
+  const { agencyId } = useParams() as { agencyId: string };
   const { reportStore } = useStore();
   const navigate = useNavigate();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
