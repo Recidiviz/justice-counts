@@ -376,7 +376,10 @@ function DefinitionModalForm({
               to be part of this{" "}
               {isMetricDefinitionSettings ? `metric` : `breakdown`}. You are not
               required to share data for these specific categories. Or,{" "}
-              <Styled.ChooseDefaultSettings onClick={handleChooseDefaults}>
+              <Styled.ChooseDefaultSettings
+                onClick={handleChooseDefaults}
+                disabled={isReadOnly}
+              >
                 choose the Justice Counts definition.
               </Styled.ChooseDefaultSettings>
             </Styled.Description>
