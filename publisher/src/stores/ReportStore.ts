@@ -216,20 +216,19 @@ class ReportStore {
 
       if (response.status !== 200) {
         throw new Error(
-          `There was an issue retrieving these ${REPORTS_LOWERCASE}.`
+          `There was an issue retrieving these spreadsheet with id ${spreadsheetId}.`
         );
       }
 
       const data = (await response.json()) as MockDataType;
       runInAction(() => {
         this.spreadsheetReviewData[data.spreadsheetId] = data;
-        this.loadingSpreadsheetReviewData = false;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
     } finally {
       runInAction(() => {
-        this.loadingReportData = false;
+        this.loadingSpreadsheetReviewData = false;
       });
     }
   }
