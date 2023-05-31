@@ -57,7 +57,11 @@ export const TeamMemberNameWithBadge: React.FC<{
   return (
     <>
       <TeamMemberNameContainer color={badgeColor}>
-        <NameContainer>{`${name}${isLast ? "" : ","}`}</NameContainer>
+        {isInsideTooltip ? (
+          <NameContainer>{`${name}${isLast ? "" : ","}`}</NameContainer>
+        ) : (
+          <NameContainer>{name}</NameContainer>
+        )}
         {role === AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN &&
           !isJCAdminInsideTooltip && <StyledRecidivizAdmin id={badgeId} />}
       </TeamMemberNameContainer>
