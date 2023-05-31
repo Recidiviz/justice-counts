@@ -178,6 +178,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
                   <SummaryAgencyName>{agencyName}</SummaryAgencyName>
                   {Object.keys(agencyMetrics).map((metric) => (
                     <SummarySectionLine key={metric}>
+                      <MetricStatusIcon src={checkIcon} alt="" />
                       {metric}
                     </SummarySectionLine>
                   ))}
