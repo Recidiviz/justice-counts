@@ -28,7 +28,7 @@ import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
-import * as Styled from "./DefinitionModalForm.styled";
+import * as Styled from "./ModalForm.styled";
 import {
   ContextsByContextKey,
   MetricSettings,
@@ -48,7 +48,7 @@ function DefinitionModalForm({
 }: DefinitionModalFormProps) {
   const { agencyId } = useParams() as { agencyId: string };
   const [settingsSearchParams] = useSettingsSearchParams();
-  const { metricConfigStore } = useStore();
+  const { metricConfigStore, userStore } = useStore();
   const {
     metrics,
     metricDefinitionSettings,
@@ -62,6 +62,8 @@ function DefinitionModalForm({
     updateDimensionContexts,
     updateContextValue,
   } = metricConfigStore;
+
+  const isReadOnly = userStore.isUserReadOnly(agencyId);
 
   const { system: systemSearchParam, metric: metricSearchParam } =
     settingsSearchParams;
@@ -380,7 +382,7 @@ function DefinitionModalForm({
             </Styled.Description>
           )}
           {currentSettings && (
-            <Styled.IncludesExcludesContainer>
+            <Styled.ToggleSwitchesList disabled={isReadOnly}>
               {Object.entries(currentSettings).map(
                 ([includesExcludesKey, value]) => {
                   return (
@@ -390,7 +392,7 @@ function DefinitionModalForm({
                       {Object.entries(value.settings).map(
                         ([settingKey, setting]) => {
                           return (
-                            <Styled.IncludeExclude
+                            <Styled.ToggleSwitchWrapper
                               key={settingKey}
                               enabled={setting.included === "Yes"}
                             >
@@ -404,7 +406,7 @@ function DefinitionModalForm({
                                 }
                               />
                               {setting.label}
-                            </Styled.IncludeExclude>
+                            </Styled.ToggleSwitchWrapper>
                           );
                         }
                       )}
@@ -412,7 +414,7 @@ function DefinitionModalForm({
                   );
                 }
               )}
-            </Styled.IncludesExcludesContainer>
+            </Styled.ToggleSwitchesList>
           )}
 
           <Styled.ContextContainer>
@@ -420,7 +422,7 @@ function DefinitionModalForm({
               Object.entries(currentContexts).map(([key, { label, value }]) => {
                 return (
                   <Fragment key={key}>
-                    <Styled.Label>{label}</Styled.Label>
+                    <Styled.ContextLabel>{label}</Styled.ContextLabel>
                     <Input
                       type="text"
                       name={key}
@@ -429,6 +431,7 @@ function DefinitionModalForm({
                       value={value}
                       multiline
                       onChange={(e) => handleContextValueChange(e, key)}
+                      disabled={isReadOnly}
                     />
                   </Fragment>
                 );
@@ -436,15 +439,20 @@ function DefinitionModalForm({
           </Styled.ContextContainer>
         </Styled.ScrollableInnerWrapper>
         <Styled.BottomButtonsContainer>
-          <Button label="Cancel" onClick={closeModal} />
           <Button
-            label="Save"
-            onClick={() => {
-              handleSaveSettings();
-              closeModal();
-            }}
-            buttonColor="blue"
+            label={isReadOnly ? "Close" : "Cancel"}
+            onClick={closeModal}
           />
+          {!isReadOnly && (
+            <Button
+              label="Save"
+              onClick={() => {
+                handleSaveSettings();
+                closeModal();
+              }}
+              buttonColor="blue"
+            />
+          )}
         </Styled.BottomButtonsContainer>
       </Styled.Content>
     </Styled.Wrapper>

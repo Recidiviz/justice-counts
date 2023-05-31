@@ -27,11 +27,11 @@ import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { useSettingsSearchParams } from "../Settings";
+import * as Styled from "./ModalForm.styled";
 import {
   Ethnicity,
   raceEthnicityGridStates,
 } from "./RaceEthnicitiesGridStates";
-import * as Styled from "./RaceEthnicitiesModalForm.styled";
 import { sortRaces } from "./utils";
 
 export const RACE_ETHNICITIES_DESCRIPTION =
@@ -128,76 +128,80 @@ function RaceEthnicitiesModalForm({
 
   return (
     <Styled.Wrapper>
-      <Styled.InnerWrapper>
-        <Styled.Header>Breakdown</Styled.Header>
-        <Styled.Title>Race & Ethnicity Form</Styled.Title>
-        <Styled.Description>{RACE_ETHNICITIES_DESCRIPTION}</Styled.Description>
-        <Styled.SpecifyEthnicityPrompt>
-          Are you able to record an individual’s <strong>ethnicity</strong> (
-          {Ethnicity.HISPANIC_OR_LATINO}, {Ethnicity.NOT_HISPANIC_OR_LATINO}, or{" "}
-          {Ethnicity.UNKNOWN_ETHNICITY}) separately from their race in your case
-          management system?
-        </Styled.SpecifyEthnicityPrompt>
-        <RadioButtonsWrapper spacing={{ bottom: 32 }}>
-          <RadioButton
-            type="radio"
-            id="specify-ethnicity-yes"
-            name="specify-ethnicity"
-            label="Yes"
-            value="yes"
-            checked={canSpecifyEthnicity}
-            onChange={() => setCanSpecifyEthnicity(true)}
-          />
-          <RadioButton
-            type="radio"
-            id="specify-ethnicity-no"
-            name="specify-ethnicity"
-            label="No"
-            value="no"
-            checked={!canSpecifyEthnicity}
-            onChange={() => setCanSpecifyEthnicity(false)}
-          />
-        </RadioButtonsWrapper>
-        <Styled.RaceListHeader>
-          Which of the following categories does your case management system
-          capture for race?
-        </Styled.RaceListHeader>
-        <Styled.RaceList>
-          {!canSpecifyEthnicity && (
-            <Styled.RaceListItem enabled={specifiesHispanicAsRace}>
-              <ToggleSwitch
-                checked={specifiesHispanicAsRace}
-                onChange={() => {
-                  if (!specifiesHispanicAsRace) {
+      <Styled.Content>
+        <Styled.ScrollableInnerWrapper>
+          <Styled.Header>Breakdown</Styled.Header>
+          <Styled.Title>Race & Ethnicity Form</Styled.Title>
+          <Styled.Description>
+            {RACE_ETHNICITIES_DESCRIPTION}
+          </Styled.Description>
+          <Styled.SpecifyEthnicityPrompt>
+            Are you able to record an individual’s <strong>ethnicity</strong> (
+            {Ethnicity.HISPANIC_OR_LATINO}, {Ethnicity.NOT_HISPANIC_OR_LATINO},
+            or {Ethnicity.UNKNOWN_ETHNICITY}) separately from their race in your
+            case management system?
+          </Styled.SpecifyEthnicityPrompt>
+          <RadioButtonsWrapper spacing={{ bottom: 32 }}>
+            <RadioButton
+              type="radio"
+              id="specify-ethnicity-yes"
+              name="specify-ethnicity"
+              label="Yes"
+              value="yes"
+              checked={canSpecifyEthnicity}
+              onChange={() => setCanSpecifyEthnicity(true)}
+            />
+            <RadioButton
+              type="radio"
+              id="specify-ethnicity-no"
+              name="specify-ethnicity"
+              label="No"
+              value="no"
+              checked={!canSpecifyEthnicity}
+              onChange={() => setCanSpecifyEthnicity(false)}
+            />
+          </RadioButtonsWrapper>
+          <Styled.ToggleSwitchesListHeader>
+            Which of the following categories does your case management system
+            capture for race?
+          </Styled.ToggleSwitchesListHeader>
+          <Styled.ToggleSwitchesList>
+            {!canSpecifyEthnicity && (
+              <Styled.ToggleSwitchWrapper enabled={specifiesHispanicAsRace}>
+                <ToggleSwitch
+                  checked={specifiesHispanicAsRace}
+                  onChange={() => {
+                    if (!specifiesHispanicAsRace) {
+                      setRacesStatusObject({
+                        ...racesStatusObject,
+                        Unknown: true,
+                      });
+                    }
+                    setSpecifiesHispanicAsRace(!specifiesHispanicAsRace);
+                  }}
+                />
+                {Ethnicity.HISPANIC_OR_LATINO}
+              </Styled.ToggleSwitchWrapper>
+            )}
+            {Object.entries(racesStatusObject).map(([race, enabled]) => (
+              <Styled.ToggleSwitchWrapper key={race} enabled={Boolean(enabled)}>
+                <ToggleSwitch
+                  checked={Boolean(enabled)}
+                  onChange={() => {
+                    if (race === "Unknown" && enabled && !canSpecifyEthnicity) {
+                      setSpecifiesHispanicAsRace(false);
+                    }
                     setRacesStatusObject({
                       ...racesStatusObject,
-                      Unknown: true,
+                      [race]: !enabled,
                     });
-                  }
-                  setSpecifiesHispanicAsRace(!specifiesHispanicAsRace);
-                }}
-              />
-              {Ethnicity.HISPANIC_OR_LATINO}
-            </Styled.RaceListItem>
-          )}
-          {Object.entries(racesStatusObject).map(([race, enabled]) => (
-            <Styled.RaceListItem key={race} enabled={Boolean(enabled)}>
-              <ToggleSwitch
-                checked={Boolean(enabled)}
-                onChange={() => {
-                  if (race === "Unknown" && enabled && !canSpecifyEthnicity) {
-                    setSpecifiesHispanicAsRace(false);
-                  }
-                  setRacesStatusObject({
-                    ...racesStatusObject,
-                    [race]: !enabled,
-                  });
-                }}
-              />
-              {race}
-            </Styled.RaceListItem>
-          ))}
-        </Styled.RaceList>
+                  }}
+                />
+                {race}
+              </Styled.ToggleSwitchWrapper>
+            ))}
+          </Styled.ToggleSwitchesList>
+        </Styled.ScrollableInnerWrapper>
         <Styled.BottomButtonsContainer>
           <Button label="Cancel" onClick={closeModal} />
           <Button
@@ -209,7 +213,7 @@ function RaceEthnicitiesModalForm({
             buttonColor="blue"
           />
         </Styled.BottomButtonsContainer>
-      </Styled.InnerWrapper>
+      </Styled.Content>
     </Styled.Wrapper>
   );
 }

@@ -39,7 +39,7 @@ export const RaceEthnicitiesBreakdownContainer = styled.div<{
         height: 100%;
         width: 100%;
         background: ${palette.solid.white};
-        opacity: 0.5;
+        opacity: 0.6;
       }
     `};
   @media only screen and(max-width: ${MIN_TABLET_WIDTH}px) {
