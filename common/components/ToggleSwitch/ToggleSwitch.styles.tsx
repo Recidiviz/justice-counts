@@ -61,11 +61,11 @@ export const Slider = styled.span<{ disabled?: boolean }>`
 
   &:before {
     content: "";
-    height: 15px;
-    width: 15px;
+    height: 16px;
+    width: 16px;
     position: absolute;
     left: 4px;
-    bottom: 3.5px;
+    bottom: 3px;
     background-color: ${palette.solid.white};
     border-radius: 50%;
     transition: 0.3s;
