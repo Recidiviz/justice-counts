@@ -35,6 +35,7 @@ import {
   PublishReviewMetricErrors,
   PublishReviewPropsFromDatapoints,
 } from "../components/ReviewMetrics";
+import { MockDataType } from "../mocks/spreadsheetReviewData";
 import { groupBy } from "../utils";
 import API from "./API";
 import DatapointsStore from "./DatapointsStore";
@@ -53,9 +54,13 @@ class ReportStore {
 
   metricsBySystem: { [system: string]: Metric[] }; // key by system
 
+  spreadsheetReviewData: { [spreadsheetId: string]: MockDataType };
+
   loadingOverview: boolean;
 
   loadingReportData: boolean;
+
+  loadingSpreadsheetReviewData: boolean;
 
   disposers: IReactionDisposer[] = [];
 
@@ -68,8 +73,10 @@ class ReportStore {
     this.reportMetrics = {};
     this.reportMetricsBySystem = {};
     this.metricsBySystem = {};
+    this.spreadsheetReviewData = {};
     this.loadingOverview = true;
     this.loadingReportData = true;
+    this.loadingSpreadsheetReviewData = true;
   }
 
   deconstructor = () => {
@@ -186,6 +193,38 @@ class ReportStore {
       const reports = (await response.json()) as Report[];
 
       return reports;
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    } finally {
+      runInAction(() => {
+        this.loadingReportData = false;
+      });
+    }
+  }
+
+  // api call for spreadsheet data
+  async getSpreadsheetReviewData(
+    spreadsheetId: string
+  ): Promise<MockDataType | Error | void> {
+    this.loadingSpreadsheetReviewData = true;
+
+    try {
+      const response = (await this.api.request({
+        path: `/api/spreadsheets${spreadsheetId}/review`,
+        method: "GET",
+      })) as Response;
+
+      if (response.status !== 200) {
+        throw new Error(
+          `There was an issue retrieving these ${REPORTS_LOWERCASE}.`
+        );
+      }
+
+      const data = (await response.json()) as MockDataType;
+      runInAction(() => {
+        this.spreadsheetReviewData[data.spreadsheetId] = data;
+        this.loadingSpreadsheetReviewData = false;
+      });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
     } finally {

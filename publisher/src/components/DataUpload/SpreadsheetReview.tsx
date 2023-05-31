@@ -21,7 +21,7 @@ import { showToast } from "@justice-counts/common/components/Toast";
 import { printReportTitle } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { data } from "../../mocks/spreadsheetReviewData";
 import { useStore } from "../../stores";
@@ -37,7 +37,7 @@ import {
 } from "./DataUpload.styles";
 
 const SpreadsheetReview: React.FC = observer(() => {
-  // mock data
+  // mock data that will be replaced with one from store
   const {
     metrics: uploadedMetrics,
     fileName,
@@ -56,13 +56,33 @@ const SpreadsheetReview: React.FC = observer(() => {
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isExistingReportWarningModalOpen, setExistingReportWarningOpen] =
     useState(false);
+  // const [loadingError, setLoadingError] = useState<string | undefined>(
+  //   undefined
+  // );
 
-  // here will be fetch spreadsheet call
-  // useEffect(() => {}, []);
-
-  if (!uploadedMetrics) {
-    return <Navigate to={`/agency/${agencyId}/${REPORTS_LOWERCASE}`} replace />;
-  }
+  // here will be fetch spreadsheet call and loading and error handling
+  // useEffect(() => {
+  //   const initialize = async () => {
+  //     const result = await reportStore.getSpreadsheetReviewData(spreadsheetId);
+  //     if (result instanceof Error) {
+  //       setLoadingError(result.message);
+  //     }
+  //   };
+  //
+  //   initialize();
+  // }, []);
+  //
+  // if (reportStore.loadingSpreadsheetReviewData) {
+  //   return (
+  //     <PageWrapper>
+  //       <Loading />
+  //     </PageWrapper>
+  //   );
+  // }
+  //
+  // if (loadingError || !reportStore.spreadsheetReviewData[spreadsheetId]) {
+  //   return <PageWrapper>Error: {loadingError}</PageWrapper>;
+  // }
 
   // review component props
   const existingReports = [...updatedReportIds, ...unchangedReportIds]
