@@ -119,9 +119,13 @@ export function Dropdown({
                   <Styled.OptionLabelWrapper
                     highlightIcon={Boolean(highlightIcon)}
                   >
-                    {!highlightIcon && icon}
+                    {/**
+                     * icon: a label icon that's always visible in the dropdown menu
+                     * highlightIcon: an icon that indicates (and is only visible on) the menu option that is currently active
+                     */}
+                    {icon}
                     {optionLabel}
-                    {highlightIcon && highlight && highlightIcon}
+                    {highlight && highlightIcon}
                   </Styled.OptionLabelWrapper>
                 </Styled.CustomDropdownMenuItem>
               )
