@@ -93,7 +93,6 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
       <HeaderBar
         onLogoClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
         hasBottomBorder
-        label="Justice Counts"
         badge={headerBadge}
       >
         <ReviewMetricsButtonsContainer>

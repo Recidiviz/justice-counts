@@ -187,7 +187,6 @@ const Menu: React.FC = () => {
               </Styled.MenuItem>
             </Styled.AgencyDropdownWrapper>
           )}
-
           {headerBadge}
         </Styled.AgencyDropdownHeaderBadgeWrapper>
 

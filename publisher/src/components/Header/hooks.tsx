@@ -27,7 +27,7 @@ export function useHeaderBadge() {
 
   if (userStore.isUserReadOnly(agencyId)) {
     return (
-      <Badge color="GREY" noMargin>
+      <Badge color="GREY" leftMargin={24}>
         Read Only
       </Badge>
     );
@@ -35,7 +35,7 @@ export function useHeaderBadge() {
 
   if (api.environment === "local" || api.environment === "staging") {
     return (
-      <Badge color="RED" noMargin>
+      <Badge color="RED" leftMargin={24}>
         {api.environment === "local" ? "Local" : "Staging"}
       </Badge>
     );

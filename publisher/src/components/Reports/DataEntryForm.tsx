@@ -270,7 +270,6 @@ const DataEntryForm: React.FC<{
       <HeaderBar
         onLogoClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
         hasBottomBorder
-        label="Justice Counts"
         badge={headerBadge}
       >
         <TopBarCloseHelpButtonContainer
