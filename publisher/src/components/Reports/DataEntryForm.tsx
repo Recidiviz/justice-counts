@@ -46,6 +46,7 @@ import {
   DisabledMetricsInfoLink,
   DisabledMetricsInfoWrapper,
   Form,
+  FormFieldSet,
   FormWrapper,
   Metric,
   MetricSectionSubTitle,
@@ -258,6 +259,8 @@ const DataEntryForm: React.FC<{
     .map((metric) => metric.display_name);
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;
 
+  const isReadOnly = userStore.isUserReadOnly(agencyId);
+
   if (!reportOverview || !reportMetrics) {
     return null;
   }
@@ -293,12 +296,14 @@ const DataEntryForm: React.FC<{
               navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`);
             }}
             borderColor="lightgrey"
+            disabled={isReadOnly}
           />
           {reportOverview.status === "PUBLISHED" ? (
             <Button
               label="Unpublish and Edit"
               onClick={convertReportToDraft}
               buttonColor="blue"
+              disabled={isReadOnly}
             />
           ) : (
             <ReviewButtonContainer>
@@ -317,7 +322,7 @@ const DataEntryForm: React.FC<{
                   })
                 }
                 buttonColor="blue"
-                disabled={isSaveInProgress}
+                disabled={isSaveInProgress || isReadOnly}
               />
             </ReviewButtonContainer>
           )}
@@ -338,103 +343,107 @@ const DataEntryForm: React.FC<{
             debouncedSave(metricKey);
           }}
         >
-          {/* Form Title */}
-          <PreTitle>Enter Data</PreTitle>
-          <DataEntryFormTitle scrolled={scrolled} sticky>
-            {reportOverview &&
-              printReportTitle(
-                reportOverview.month,
-                reportOverview.year,
-                reportOverview.frequency
-              )}
-          </DataEntryFormTitle>
+          <FormFieldSet disabled={isReadOnly}>
+            {/* Form Title */}
+            <PreTitle>Enter Data</PreTitle>
+            <DataEntryFormTitle scrolled={scrolled} sticky>
+              {reportOverview &&
+                printReportTitle(
+                  reportOverview.month,
+                  reportOverview.year,
+                  reportOverview.frequency
+                )}
+            </DataEntryFormTitle>
 
-          {/* Metrics */}
-          {Object.entries(metricsBySystem).map(
-            ([system, metrics], systemIndex) => {
-              const enabledMetrics = metrics.filter((metric) => metric.enabled);
+            {/* Metrics */}
+            {Object.entries(metricsBySystem).map(
+              ([system, metrics], systemIndex) => {
+                const enabledMetrics = metrics.filter(
+                  (metric) => metric.enabled
+                );
 
-              const disabledMetrics = metrics.filter(
-                (metric) => !metric.enabled
-              );
-              const disabledMetricsNames = disabledMetrics.map(
-                (metric, index) =>
-                  disabledMetrics.length > 1 &&
-                  index === disabledMetrics.length - 1
-                    ? `and ${metric.display_name}`
-                    : metric.display_name
-              );
-              const displayDisabledMetricsNames =
-                disabledMetricsNames.length > 2
-                  ? disabledMetricsNames.join(", ")
-                  : disabledMetricsNames.join(" ");
+                const disabledMetrics = metrics.filter(
+                  (metric) => !metric.enabled
+                );
+                const disabledMetricsNames = disabledMetrics.map(
+                  (metric, index) =>
+                    disabledMetrics.length > 1 &&
+                    index === disabledMetrics.length - 1
+                      ? `and ${metric.display_name}`
+                      : metric.display_name
+                );
+                const displayDisabledMetricsNames =
+                  disabledMetricsNames.length > 2
+                    ? disabledMetricsNames.join(", ")
+                    : disabledMetricsNames.join(" ");
 
-              return (
-                <Fragment key={system}>
-                  {showMetricSectionTitles && (
-                    <MetricSystemTitle firstTitle={systemIndex === 0}>
-                      {formatSystemName(system as AgencySystems, {
-                        allUserSystems: currentAgency?.systems,
-                      })}
-                    </MetricSystemTitle>
-                  )}
+                return (
+                  <Fragment key={system}>
+                    {showMetricSectionTitles && (
+                      <MetricSystemTitle firstTitle={systemIndex === 0}>
+                        {formatSystemName(system as AgencySystems, {
+                          allUserSystems: currentAgency?.systems,
+                        })}
+                      </MetricSystemTitle>
+                    )}
 
-                  {enabledMetrics.map((metric, index) => (
-                    <Metric
-                      key={metric.key}
-                      id={metric.key}
-                      ref={(e: HTMLDivElement) => metricsRef.current?.push(e)}
-                    >
-                      <MetricSectionTitleWrapper>
-                        <MetricSectionTitle>
-                          {metric.display_name}
-                        </MetricSectionTitle>
-                      </MetricSectionTitleWrapper>
-                      <MetricSectionSubTitle>
-                        {metric.description}
-                      </MetricSectionSubTitle>
+                    {enabledMetrics.map((metric, index) => (
+                      <Metric
+                        key={metric.key}
+                        id={metric.key}
+                        ref={(e: HTMLDivElement) => metricsRef.current?.push(e)}
+                      >
+                        <MetricSectionTitleWrapper>
+                          <MetricSectionTitle>
+                            {metric.display_name}
+                          </MetricSectionTitle>
+                        </MetricSectionTitleWrapper>
+                        <MetricSectionSubTitle>
+                          {metric.description}
+                        </MetricSectionSubTitle>
 
-                      {/* Metric Value */}
-                      <MetricTextInput
-                        reportID={reportID}
-                        metric={metric}
-                        autoFocus={index === 0 && systemIndex === 0}
-                        disabled={isPublished || hasVersionConflict}
-                      />
-
-                      {/* Disaggregations & Dimensions */}
-                      {metric.disaggregations.length > 0 && (
-                        <TabbedDisaggregations
+                        {/* Metric Value */}
+                        <MetricTextInput
                           reportID={reportID}
                           metric={metric}
-                          updateFieldDescription={updateFieldDescription}
+                          autoFocus={index === 0 && systemIndex === 0}
                           disabled={isPublished || hasVersionConflict}
                         />
-                      )}
-                    </Metric>
-                  ))}
-                  {disabledMetrics.length > 0 && (
-                    <DisabledMetricsInfoWrapper>
-                      {displayDisabledMetricsNames}{" "}
-                      {disabledMetricsNames.length > 1 ? "are all" : "is"}{" "}
-                      associated with your agency’s operations, but{" "}
-                      {disabledMetricsNames.length > 1 ? "have" : "has"} been
-                      disabled. If you believe this is incorrect, go to{" "}
-                      <DisabledMetricsInfoLink
-                        onClick={() =>
-                          navigate(`/agency/${agencyId}/metric-config`)
-                        }
-                      >
-                        Metric Configuration
-                      </DisabledMetricsInfoLink>{" "}
-                      to re-enable{" "}
-                      {disabledMetricsNames.length > 1 ? "them" : "it"}.
-                    </DisabledMetricsInfoWrapper>
-                  )}
-                </Fragment>
-              );
-            }
-          )}
+
+                        {/* Disaggregations & Dimensions */}
+                        {metric.disaggregations.length > 0 && (
+                          <TabbedDisaggregations
+                            reportID={reportID}
+                            metric={metric}
+                            updateFieldDescription={updateFieldDescription}
+                            disabled={isPublished || hasVersionConflict}
+                          />
+                        )}
+                      </Metric>
+                    ))}
+                    {disabledMetrics.length > 0 && (
+                      <DisabledMetricsInfoWrapper>
+                        {displayDisabledMetricsNames}{" "}
+                        {disabledMetricsNames.length > 1 ? "are all" : "is"}{" "}
+                        associated with your agency’s operations, but{" "}
+                        {disabledMetricsNames.length > 1 ? "have" : "has"} been
+                        disabled. If you believe this is incorrect, go to{" "}
+                        <DisabledMetricsInfoLink
+                          onClick={() =>
+                            navigate(`/agency/${agencyId}/metric-config`)
+                          }
+                        >
+                          Metric Configuration
+                        </DisabledMetricsInfoLink>{" "}
+                        to re-enable{" "}
+                        {disabledMetricsNames.length > 1 ? "them" : "it"}.
+                      </DisabledMetricsInfoWrapper>
+                    )}
+                  </Fragment>
+                );
+              }
+            )}
+          </FormFieldSet>
         </Form>
 
         {/* Onboarding */}

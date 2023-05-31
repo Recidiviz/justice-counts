@@ -48,7 +48,7 @@ function DefinitionModalForm({
 }: DefinitionModalFormProps) {
   const { agencyId } = useParams() as { agencyId: string };
   const [settingsSearchParams] = useSettingsSearchParams();
-  const { metricConfigStore } = useStore();
+  const { metricConfigStore, userStore } = useStore();
   const {
     metrics,
     metricDefinitionSettings,
@@ -62,6 +62,8 @@ function DefinitionModalForm({
     updateDimensionContexts,
     updateContextValue,
   } = metricConfigStore;
+
+  const isReadOnly = userStore.isUserReadOnly(agencyId);
 
   const { system: systemSearchParam, metric: metricSearchParam } =
     settingsSearchParams;
@@ -380,7 +382,7 @@ function DefinitionModalForm({
             </Styled.Description>
           )}
           {currentSettings && (
-            <Styled.ToggleSwitchesList>
+            <Styled.ToggleSwitchesList disabled={isReadOnly}>
               {Object.entries(currentSettings).map(
                 ([includesExcludesKey, value]) => {
                   return (
@@ -429,6 +431,7 @@ function DefinitionModalForm({
                       value={value}
                       multiline
                       onChange={(e) => handleContextValueChange(e, key)}
+                      disabled={isReadOnly}
                     />
                   </Fragment>
                 );
@@ -436,15 +439,20 @@ function DefinitionModalForm({
           </Styled.ContextContainer>
         </Styled.ScrollableInnerWrapper>
         <Styled.BottomButtonsContainer>
-          <Button label="Cancel" onClick={closeModal} />
           <Button
-            label="Save"
-            onClick={() => {
-              handleSaveSettings();
-              closeModal();
-            }}
-            buttonColor="blue"
+            label={isReadOnly ? "Close" : "Cancel"}
+            onClick={closeModal}
           />
+          {!isReadOnly && (
+            <Button
+              label="Save"
+              onClick={() => {
+                handleSaveSettings();
+                closeModal();
+              }}
+              buttonColor="blue"
+            />
+          )}
         </Styled.BottomButtonsContainer>
       </Styled.Content>
     </Styled.Wrapper>

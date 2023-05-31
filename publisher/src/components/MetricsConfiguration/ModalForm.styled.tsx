@@ -80,11 +80,15 @@ export const Description = styled.div`
   margin-bottom: 16px;
 `;
 
-export const ToggleSwitchesList = styled.div`
+export const ToggleSwitchesList = styled.fieldset<{
+  disabled?: boolean;
+}>`
   display: flex;
   flex-direction: column;
   gap: 12px;
   margin-bottom: 32px;
+  border: none;
+  ${({ disabled }) => disabled && "opacity: 0.6; pointer-events: none"};
 `;
 
 export const ToggleSwitchWrapper = styled.div<{ enabled?: boolean }>`

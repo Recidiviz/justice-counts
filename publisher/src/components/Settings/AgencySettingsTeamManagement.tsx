@@ -158,6 +158,10 @@ export const AgencySettingsTeamManagement = observer(() => {
     }
   }, [teamMemberEditMenuActiveEmail]);
 
+  const isReadOnly = userStore.isUserReadOnly(agencyId);
+  const isInviteDisabled =
+    !nameValue || !validateEmail(emailValue) || isInviting || isReadOnly;
+
   useEffect(() => {
     const initialize = async () => {
       resetState();
@@ -216,6 +220,7 @@ export const AgencySettingsTeamManagement = observer(() => {
                   value={nameValue}
                   onChange={(e) => setNameValue(e.target.value)}
                   textSize="small"
+                  disabled={isReadOnly}
                 />
                 <Input
                   label=""
@@ -237,15 +242,14 @@ export const AgencySettingsTeamManagement = observer(() => {
                   }}
                   error={inputsError}
                   textSize="small"
+                  disabled={isReadOnly}
                 />
               </InviteMemberInputsContainer>
               <Button
                 label="Invite"
                 onClick={() => handleInviteTeamMamber(nameValue, emailValue)}
                 buttonColor="blue"
-                disabled={
-                  !nameValue || !validateEmail(emailValue) || isInviting
-                }
+                disabled={isInviteDisabled}
               />
             </InviteMemberInnerContainer>
           </InviteMemberContainer>
@@ -259,27 +263,32 @@ export const AgencySettingsTeamManagement = observer(() => {
           </TeamMemberRow>
           {currentAgencyTeam &&
             filterAndSortAgencyTeam(currentAgencyTeam).map(
-              ({ name, email, invitation_status, role }) => (
-                <TeamMemberRow key={`${name}-${email}`}>
-                  <TeamMemberNameContainer
-                    pending={invitation_status === "PENDING"}
-                  >
-                    {name}{" "}
-                    {role === "JUSTICE_COUNTS_ADMIN" && (
-                      <JCAdminStatus>JC Admin</JCAdminStatus>
-                    )}
-                    {role === "AGENCY_ADMIN" && (
-                      <AdminStatus>Admin</AdminStatus>
-                    )}
-                    {invitation_status === "PENDING" && (
-                      <InvitedStatus>Invited</InvitedStatus>
-                    )}
-                  </TeamMemberNameContainer>
-                  <TeamMemberEmailContainer>
-                    {email}
-                    {role !== AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN &&
-                      !userStore.isContributor(agencyId) &&
-                      userStore.email !== email && (
+              ({ name, email, invitation_status, role }) => {
+                const isTeamMemberEditMenuDisabled =
+                  role === AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN ||
+                  userStore.isContributor(agencyId) ||
+                  userStore.email === email ||
+                  isReadOnly;
+
+                return (
+                  <TeamMemberRow key={`${name}-${email}`}>
+                    <TeamMemberNameContainer
+                      pending={invitation_status === "PENDING"}
+                    >
+                      {name}{" "}
+                      {role === "JUSTICE_COUNTS_ADMIN" && (
+                        <JCAdminStatus>JC Admin</JCAdminStatus>
+                      )}
+                      {role === "AGENCY_ADMIN" && (
+                        <AdminStatus>Admin</AdminStatus>
+                      )}
+                      {invitation_status === "PENDING" && (
+                        <InvitedStatus>Invited</InvitedStatus>
+                      )}
+                    </TeamMemberNameContainer>
+                    <TeamMemberEmailContainer>
+                      {email}
+                      {!isTeamMemberEditMenuDisabled && (
                         <EditTeamMemberIconContainer
                           id={email}
                           tabIndex={-1}
@@ -319,9 +328,10 @@ export const AgencySettingsTeamManagement = observer(() => {
                           )}
                         </EditTeamMemberIconContainer>
                       )}
-                  </TeamMemberEmailContainer>
-                </TeamMemberRow>
-              )
+                    </TeamMemberEmailContainer>
+                  </TeamMemberRow>
+                );
+              }
             )}
         </TeamManagementBlock>
       </AgencySettingsContent>

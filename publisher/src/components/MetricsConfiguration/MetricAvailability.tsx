@@ -67,6 +67,8 @@ function MetricAvailability() {
   const [isRaceEthnicityModalOpen, setIsRaceEthnicityModalOpen] =
     useState(false);
 
+  const isReadOnly = userStore.isUserReadOnly(agencyId);
+
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const activeDisaggregationKeys =
     disaggregations[systemMetricKey] &&
@@ -242,7 +244,7 @@ function MetricAvailability() {
                   </Styled.SettingTooltip>
                 </Styled.InfoIconWrapper>
               </Styled.SettingName>
-              <RadioButtonsWrapper>
+              <RadioButtonsWrapper disabled={isReadOnly}>
                 <RadioButton
                   type="radio"
                   id="metric-config-not-available"
@@ -299,7 +301,7 @@ function MetricAvailability() {
                     </Styled.SettingTooltip>
                   </Styled.InfoIconWrapper>
                 </Styled.SettingName>
-                <RadioButtonsWrapper>
+                <RadioButtonsWrapper disabled={isReadOnly}>
                   <RadioButton
                     type="radio"
                     id="metric-config-calendar-year"
@@ -374,7 +376,7 @@ function MetricAvailability() {
                       </Styled.SettingTooltip>
                     </Styled.InfoIconWrapper>
                   </Styled.SettingName>
-                  <RadioButtonsWrapper>
+                  <RadioButtonsWrapper disabled={isReadOnly}>
                     <RadioButton
                       type="radio"
                       id="supervision-subsystem-combined"
@@ -462,38 +464,44 @@ function MetricAvailability() {
                         onClick={() =>
                           handleDisaggregationSelection(disaggregationKey, true)
                         }
-                        disabled={allDimensionsEnabled}
+                        disabled={allDimensionsEnabled || isReadOnly}
                       >
                         Select All
                       </Styled.SelectAllDimensions>
                     </Styled.DimensionsHeader>
                     {disaggregationKey === RACE_ETHNICITY_DISAGGREGATION_KEY ? (
                       <RaceEthnicitiesGrid
-                        disaggregationEnabled
-                        onClick={() => setIsRaceEthnicityModalOpen(true)}
+                        disaggregationEnabled={!isReadOnly}
+                        onClick={() => {
+                          if (!isReadOnly) {
+                            setIsRaceEthnicityModalOpen(true);
+                          }
+                        }}
                       />
                     ) : (
                       <Styled.DimensionsList>
-                        {Object.entries(currentDimensions).map(
-                          ([dimensionKey, { label, enabled }]) => (
-                            <Styled.DimensionsListItem
-                              key={dimensionKey}
-                              enabled={Boolean(enabled)}
-                            >
-                              <ToggleSwitch
-                                checked={Boolean(enabled)}
-                                onChange={() =>
-                                  handleDimensionEnabledStatus(
-                                    !enabled,
-                                    dimensionKey,
-                                    disaggregationKey
-                                  )
-                                }
-                              />
-                              {label}
-                            </Styled.DimensionsListItem>
-                          )
-                        )}
+                        <Styled.DimensionsListFieldset disabled={isReadOnly}>
+                          {Object.entries(currentDimensions).map(
+                            ([dimensionKey, { label, enabled }]) => (
+                              <Styled.DimensionsListItem
+                                key={dimensionKey}
+                                enabled={Boolean(enabled)}
+                              >
+                                <ToggleSwitch
+                                  checked={Boolean(enabled)}
+                                  onChange={() =>
+                                    handleDimensionEnabledStatus(
+                                      !enabled,
+                                      dimensionKey,
+                                      disaggregationKey
+                                    )
+                                  }
+                                />
+                                {label}
+                              </Styled.DimensionsListItem>
+                            )
+                          )}
+                        </Styled.DimensionsListFieldset>
                       </Styled.DimensionsList>
                     )}
                   </Styled.DimensionsContainer>
