@@ -55,5 +55,4 @@ const Header = observer(() => {
     </HeaderBar>
   );
 });
-
 export default Header;

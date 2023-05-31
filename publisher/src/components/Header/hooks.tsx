@@ -25,7 +25,7 @@ export function useHeaderBadge() {
   const { agencyId } = useParams() as { agencyId: string };
   const { userStore, api } = useStore();
 
-  if (userStore.isReadOnly(agencyId)) {
+  if (userStore.isUserReadOnly(agencyId)) {
     return (
       <Badge color="GREY" noMargin>
         Read Only
