@@ -19,6 +19,7 @@ import React from "react";
 import { Navigate, Route, Routes, useParams } from "react-router-dom";
 
 import { DataUpload } from "../components/DataUpload";
+import SpreadsheetReview from "../components/DataUpload/SpreadsheetReview";
 import UploadReview from "../components/DataUpload/UploadReview";
 import { MetricsDataChart } from "../components/DataViz/MetricsDataChart";
 import { REPORTS_LOWERCASE } from "../components/Global/constants";
@@ -91,6 +92,10 @@ export const Router = () => {
           <Route path="/settings/*" element={<Settings />} />
           <Route path="/upload" element={<DataUpload />} />
           <Route path="/upload/review-metrics" element={<UploadReview />} />
+          <Route
+            path="/upload/:spreadsheetId/review-metrics"
+            element={<SpreadsheetReview />}
+          />
 
           <Route
             path="*"
