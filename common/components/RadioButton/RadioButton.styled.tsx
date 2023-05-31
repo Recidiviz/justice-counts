@@ -20,17 +20,23 @@ import styled from "styled-components/macro";
 import { palette, typography } from "../GlobalStyles";
 import { RadioButtonSize, WrapperSpacing } from "./types";
 
-export const RadioButtonsWrapper = styled.div<{
+export const RadioButtonsWrapper = styled.form<{
   spacing?: WrapperSpacing;
 }>`
   width: 100%;
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
   margin: ${({ spacing }) =>
     `${spacing?.top || 0}px ${spacing?.right || 0}px ${
       spacing?.bottom || 0
     }px ${spacing?.left || 0}px`};
+`;
+
+export const RadioButtonsFieldset = styled.fieldset<{ disabled?: boolean }>`
+  border: none;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  ${({ disabled }) => disabled && "opacity: 0.6; pointer-events: none"};
 `;
 
 export const RadioButtonWrapper = styled.div`

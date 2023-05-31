@@ -198,7 +198,7 @@ class UserStore {
     );
   }
 
-  isReadOnly(agencyId: string): boolean {
+  isUserReadOnly(agencyId: string): boolean {
     return this.getUserAgencyRole(agencyId) === AgencyTeamMemberRole.READ_ONLY;
   }
 

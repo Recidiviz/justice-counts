@@ -76,11 +76,15 @@ export const ChooseDefaultSettings = styled.span`
   cursor: pointer;
 `;
 
-export const IncludesExcludesContainer = styled.div`
+export const IncludesExcludesContainer = styled.fieldset<{
+  disabled?: boolean;
+}>`
   display: flex;
   flex-direction: column;
   gap: 12px;
   margin-bottom: 32px;
+  border: none;
+  ${({ disabled }) => disabled && "opacity: 0.6; pointer-events: none"};
 `;
 
 export const IncludeExclude = styled.div<{ enabled?: boolean }>`

@@ -18,7 +18,9 @@
 import { showToast } from "@justice-counts/common/components/Toast";
 import { AgencySystems } from "@justice-counts/common/types";
 import React, { Fragment, useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 
+import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
 import fileIcon from "../assets/file-icon.svg";
 import {
@@ -46,6 +48,8 @@ export const UploadFile: React.FC<UploadFileProps> = ({
   setSelectedFile,
   handleFileUpload,
 }) => {
+  const { userStore } = useStore();
+  const { agencyId } = useParams() as { agencyId: string };
   const dragDropAreaRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState<boolean>(false);
   const acceptableFileTypes = [
@@ -53,6 +57,8 @@ export const UploadFile: React.FC<UploadFileProps> = ({
     "application/vnd.ms-excel",
     "text/csv",
   ];
+
+  const isReadOnly = userStore.isUserReadOnly(agencyId);
 
   const handleFileUploadAttempt = (
     e: React.ChangeEvent<HTMLInputElement> | DragEvent
@@ -79,7 +85,7 @@ export const UploadFile: React.FC<UploadFileProps> = ({
 
   useEffect(
     () => {
-      const dragDropArea = dragDropAreaRef.current;
+      const dragDropArea = isReadOnly ? null : dragDropAreaRef.current;
 
       const handleDragOver = (e: DragEvent) => {
         e.preventDefault();
@@ -158,6 +164,7 @@ export const UploadFile: React.FC<UploadFileProps> = ({
                   /** reset event state to allow user to re-upload same file (re-trigger the onChange event) */
                   e.currentTarget.value = "";
                 }}
+                disabled={isReadOnly}
               />
               Browse
             </UploadButtonLabel>
