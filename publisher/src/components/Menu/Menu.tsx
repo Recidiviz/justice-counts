@@ -36,19 +36,9 @@ import { ReactComponent as MenuBurger } from "../assets/menu-burger-icon.svg";
 import { ReactComponent as AgencySettingsIcon } from "../assets/pillar-icon.svg";
 import { ReactComponent as YourAccountIcon } from "../assets/profile-icon.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
+import { useHeaderBadge } from "../Header/hooks";
 import { useSettingsSearchParams } from "../Settings";
-import {
-  AgencyDropdownWrapper,
-  Caret,
-  MenuContainer,
-  MenuItem,
-  MenuItemsWrapper,
-  MobileMenuIconWrapper,
-  ProfileDropdownWrapper,
-  SubMenuContainer,
-  SubMenuItem,
-  TargetIcon,
-} from ".";
+import * as Styled from "./Menu.styles";
 
 const Menu: React.FC = () => {
   const { userStore, authStore, api } = useStore();
@@ -56,6 +46,7 @@ const Menu: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const windowWidth = useWindowWidth();
+  const headerBadge = useHeaderBadge();
 
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
@@ -178,35 +169,39 @@ const Menu: React.FC = () => {
 
   return (
     <>
-      <MenuContainer isMobileMenuOpen={isMobileMenuOpen}>
-        {/* Agencies Dropdown */}
-        {userStore.userAgencies && userStore.userAgencies.length > 1 && (
-          <AgencyDropdownWrapper>
-            <MenuItem>
-              <Dropdown
-                label={currentAgency?.name}
-                options={agencyDropdownOptions}
-                size="small"
-                hover="label"
-                alignment="left"
-                caretPosition="right"
-                highlightIcon={<TargetIcon />}
-              />
-            </MenuItem>
-          </AgencyDropdownWrapper>
-        )}
+      <Styled.MenuContainer isMobileMenuOpen={isMobileMenuOpen}>
+        <Styled.AgencyDropdownHeaderBadgeWrapper>
+          {/* Agencies Dropdown */}
+          {userStore.userAgencies && userStore.userAgencies.length > 1 && (
+            <Styled.AgencyDropdownWrapper>
+              <Styled.MenuItem>
+                <Dropdown
+                  label={currentAgency?.name}
+                  options={agencyDropdownOptions}
+                  size="small"
+                  hover="label"
+                  alignment="left"
+                  caretPosition="right"
+                  highlightIcon={<Styled.TargetIcon />}
+                />
+              </Styled.MenuItem>
+            </Styled.AgencyDropdownWrapper>
+          )}
+
+          {headerBadge}
+        </Styled.AgencyDropdownHeaderBadgeWrapper>
 
         {/* Home */}
-        <MenuItemsWrapper>
-          <MenuItem
+        <Styled.MenuItemsWrapper>
+          <Styled.MenuItem
             onClick={() => navigate(`/agency/${agencyId}/`)}
             active={pathWithoutAgency === ""}
           >
             Home
-          </MenuItem>
+          </Styled.MenuItem>
 
           {/* Metric Config */}
-          <MenuItem
+          <Styled.MenuItem
             onClick={() => {
               if (pathWithoutAgency === "metric-config") {
                 setSettingsSearchParams({
@@ -221,10 +216,10 @@ const Menu: React.FC = () => {
             active={pathWithoutAgency === "metric-config"}
           >
             Metric Settings
-          </MenuItem>
+          </Styled.MenuItem>
 
           {/* Data Entry */}
-          <MenuItem
+          <Styled.MenuItem
             onClick={() => {
               if (pathWithoutAgency !== "data-entry") navigate("data-entry");
               handleCloseMobileMenu();
@@ -235,10 +230,10 @@ const Menu: React.FC = () => {
             }
           >
             Data Entry
-          </MenuItem>
+          </Styled.MenuItem>
 
           {/* Data (Visualizations) */}
-          <MenuItem
+          <Styled.MenuItem
             onClick={() => {
               if (pathWithoutAgency !== "data") navigate("data");
               handleCloseMobileMenu();
@@ -246,12 +241,12 @@ const Menu: React.FC = () => {
             active={pathWithoutAgency === "data"}
           >
             View Data
-          </MenuItem>
+          </Styled.MenuItem>
 
           {isMobileMenuOpen && (
-            <SubMenuContainer>
+            <Styled.SubMenuContainer>
               {settingsMenuPaths.map(({ displayLabel, path }) => (
-                <SubMenuItem
+                <Styled.SubMenuItem
                   key={path}
                   onClick={() => {
                     navigate(`settings/${path}`);
@@ -259,15 +254,15 @@ const Menu: React.FC = () => {
                   }}
                 >
                   {displayLabel}
-                </SubMenuItem>
+                </Styled.SubMenuItem>
               ))}
-            </SubMenuContainer>
+            </Styled.SubMenuContainer>
           )}
 
           {/* Profile */}
-          <ProfileDropdownWrapper>
+          <Styled.ProfileDropdownWrapper>
             {usernameToInitials()}
-            <Caret />
+            <Styled.Caret />
             <Dropdown
               label=""
               options={profileDropdownOptions}
@@ -275,14 +270,14 @@ const Menu: React.FC = () => {
               hover="label"
               alignment="right"
             />
-          </ProfileDropdownWrapper>
-        </MenuItemsWrapper>
-      </MenuContainer>
-      <MobileMenuIconWrapper
+          </Styled.ProfileDropdownWrapper>
+        </Styled.MenuItemsWrapper>
+      </Styled.MenuContainer>
+      <Styled.MobileMenuIconWrapper
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >
         {isMobileMenuOpen ? <CloseMenuBurger /> : <MenuBurger />}
-      </MobileMenuIconWrapper>
+      </Styled.MobileMenuIconWrapper>
     </>
   );
 };

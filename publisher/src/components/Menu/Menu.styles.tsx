@@ -154,6 +154,12 @@ export const MobileMenuIconWrapper = styled.div`
   }
 `;
 
+export const AgencyDropdownHeaderBadgeWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 24px;
+`;
+
 export const AgencyDropdownWrapper = styled.div`
   background: ${palette.solid.darkgrey};
   height: ${HEADER_BAR_HEIGHT}px;

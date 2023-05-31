@@ -22,12 +22,10 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import Menu from "../Menu";
-import { useHeaderBadge } from "./hooks";
 
 const Header = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
-  const headerBadge = useHeaderBadge();
   const { userStore } = useStore();
 
   const isAgencyValid = !!userStore.getAgency(agencyId);
@@ -36,7 +34,7 @@ const Header = observer(() => {
     navigate(`/agency/${isAgencyValid ? agencyId : defaultAgency}/`);
 
   return (
-    <HeaderBar onLogoClick={onLogoClick} badge={headerBadge} hasBottomBorder>
+    <HeaderBar onLogoClick={onLogoClick} hasBottomBorder>
       <Menu />
     </HeaderBar>
   );
