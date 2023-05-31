@@ -56,7 +56,6 @@ import {
   BulkActionModeTitle,
   BulkActionsDropdownContainer,
   Cell,
-  CommaSpan,
   DesktopRecordsPageTitle,
   EmptySelectionCircle,
   LabelCell,
@@ -369,10 +368,11 @@ const Reports: React.FC = () => {
                                     name={editor.name}
                                     badgeColor={palette.solid.white}
                                     role={editor.role}
+                                    isInsideTooltip
+                                    isLast={
+                                      idx === filteredReportEditors.length - 1
+                                    }
                                   />
-                                  {idx < filteredReportEditors.length - 1 && (
-                                    <CommaSpan />
-                                  )}
                                 </React.Fragment>
                               ))}
                             </AdditionalEditorsTooltip>

@@ -21,7 +21,7 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-import { tooltipStyles } from "../../../publisher/src/components/primitives";
+import { TooltipContent } from "../Tooltip";
 import {
   ButtonBorderColor,
   ButtonColor,
@@ -104,10 +104,9 @@ export const Button = styled.div<{
     if (size === "medium") return "padding: 16px 32px";
     return "padding: 10px 15px";
   }};
-  
+
   ${({ noSidePadding }) =>
     noSidePadding && "padding-left: 0; padding-right: 0;"}
-
   &:hover {
     cursor: pointer;
 
@@ -117,26 +116,25 @@ export const Button = styled.div<{
       if (buttonColor) return "opacity: 0.8;";
       return !noHover && `background-color: ${palette.highlight.grey1};`;
     }}
-
-  a {
-    ${typography.sizeCSS.small};
-    width: fit-content;
-    text-decoration: none;
-    color: ${palette.solid.blue};
-    display: flex;
-    align-items: center;
-  }
+    a {
+      ${typography.sizeCSS.small};
+      width: fit-content;
+      text-decoration: none;
+      color: ${palette.solid.blue};
+      display: flex;
+      align-items: center;
+    }
 `;
 
 export const ButtonWrapper = styled.div`
   position: relative;
+
   ${Button} {
     height: 100%;
   }
 `;
 
-export const ButtonTooltip = styled.span`
-  ${tooltipStyles}
+export const ButtonTooltip = styled(TooltipContent)`
   width: 270px;
   position: absolute;
   top: 45px;

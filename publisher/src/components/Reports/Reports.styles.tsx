@@ -241,11 +241,15 @@ export const AdditionalEditorsTooltip = styled.div`
   position: absolute;
   z-index: 1;
   top: 32px;
-  right: 0;
-  border-radius: 2px;
+  left: 0;
+  max-width: 300px;
+  border-radius: 3px;
   text-align: center;
   box-shadow: 2px 2px 8px ${palette.highlight.grey5};
   display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2px;
 `;
 
 export const NoReportsDisplay = styled.div`
@@ -274,13 +278,4 @@ export const AndOthersSpan = styled.span`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-`;
-
-export const CommaSpan = styled.span`
-  &::after {
-    content: ",";
-  }
-
-  margin-left: 0;
-  margin-right: 2px;
 `;

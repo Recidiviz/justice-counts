@@ -15,14 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { AgencyTeamMemberRole } from "@justice-counts/common/types";
-import { rem } from "@justice-counts/common/utils";
 import React from "react";
 import { Tooltip } from "react-tooltip";
 import styled from "styled-components/macro";
 
-import { ReactComponent as AgencyAdmin } from "../assets/agency-admin.svg";
 import { ReactComponent as RecidivizAdmin } from "../assets/recidiviz-admin.svg";
 
 const TeamMemberNameContainer = styled.span<{
@@ -44,24 +41,6 @@ const StyledRecidivizAdmin = styled(RecidivizAdmin)`
   min-height: 16px;
 `;
 
-const StyledAgencyAdmin = styled(AgencyAdmin)`
-  min-width: 10px;
-  min-height: 13px;
-`;
-
-export const tooltipStyles = {
-  transition: "opacity 0s ease-out",
-  background: palette.solid.darkgrey,
-  boxShadow: "0px 4px 10px rgba(23, 28, 43, 0.2)",
-  borderRadius: 5,
-  opacity: 1,
-  paddingVertical: 10,
-  paddingHorizontal: 12,
-  fontSize: rem("14px"),
-  lineHeight: rem("22px"),
-  fontWeight: 500,
-};
-
 const NameContainer = styled.span`
   padding: 0 !important;
 `;
@@ -71,36 +50,33 @@ export const TeamMemberNameWithBadge: React.FC<{
   role?: AgencyTeamMemberRole;
   badgeColor?: string;
   badgeId?: string;
-}> = ({ name, role, badgeColor, badgeId }) => (
-  <>
-    <TeamMemberNameContainer color={badgeColor}>
-      <NameContainer>{name}</NameContainer>
-      {role === AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN && (
-        <StyledRecidivizAdmin id={badgeId} />
-      )}
-      {role === AgencyTeamMemberRole.AGENCY_ADMIN && (
-        <StyledAgencyAdmin id={badgeId} />
-      )}
-    </TeamMemberNameContainer>
-    {role === AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN && (
-      <Tooltip
-        anchorId={badgeId}
-        content="JC Admin"
-        place="right"
-        noArrow
-        offset={6}
-        style={tooltipStyles}
-      />
-    )}
-    {role === AgencyTeamMemberRole.AGENCY_ADMIN && (
-      <Tooltip
-        anchorId={badgeId}
-        content="Admin"
-        place="right"
-        noArrow
-        offset={6}
-        style={tooltipStyles}
-      />
-    )}
-  </>
-);
+  isInsideTooltip?: boolean;
+  isLast?: boolean;
+}> = ({ name, role, badgeColor, badgeId, isInsideTooltip, isLast }) => {
+  const isJCAdminInsideTooltip = isInsideTooltip && name === "JC Admin";
+  return (
+    <>
+      <TeamMemberNameContainer color={badgeColor}>
+        {isInsideTooltip ? (
+          <NameContainer>{`${name}${isLast ? "" : ","}`}</NameContainer>
+        ) : (
+          <NameContainer>{name}</NameContainer>
+        )}
+        {role === AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN &&
+          !isJCAdminInsideTooltip && <StyledRecidivizAdmin id={badgeId} />}
+      </TeamMemberNameContainer>
+      {role === AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN &&
+        name !== "JC Admin" && (
+          <Tooltip
+            anchorId={badgeId}
+            content="JC Admin"
+            place="right"
+            noArrow
+            offset={6}
+            variant="dark"
+            style={{ fontSize: "14px" }}
+          />
+        )}
+    </>
+  );
+};
