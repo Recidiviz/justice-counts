@@ -32,6 +32,7 @@ export const HomeContainer = styled.div`
 
 export const WelcomeUser = styled.div`
   ${typography.sizeCSS.headline};
+  text-align: center;
   margin-bottom: 24px;
 `;
 
@@ -47,7 +48,7 @@ export const ContentContainer = styled.div`
   gap: 48px;
 
   & > div:nth-child(1) {
-    flex: 1 1 392px;
+    flex: 1 4 392px;
   }
   & > div:nth-child(2) {
     flex: 1 1 644px;
@@ -105,12 +106,13 @@ export const Submenu = styled.div`
 
 export const SubmenuItem = styled.a`
   ${typography.sizeCSS.medium};
+  width: 100%;
+  max-width: 392px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   gap: 24px;
   padding: 24px;
-  width: 392px;
   background: transparent;
   border: 1px solid ${palette.highlight.grey3};
 

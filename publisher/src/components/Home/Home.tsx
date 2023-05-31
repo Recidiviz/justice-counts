@@ -32,7 +32,7 @@ export const Home = observer(() => {
   const welcomeDescription = false // TODO: set this to the conditional that determines whether or not all tasks are completed
     ? "See open tasks below"
     : "All tasks are completed";
-  const taskCardActionLinks = {
+  const taskCardLabelsActionLinks = {
     publish: { label: "Publish", path: "records" },
     uploadData: { label: "Upload Data", path: "upload" },
     newRecord: { label: "New Record", path: "records/create" },
