@@ -412,28 +412,29 @@ function MetricAvailability() {
                 Select the categories that your agency will share as breakdowns
                 of {metrics[systemMetricKey]?.label}.
               </Styled.BreakdownsSectionDescription>
-              <Styled.BreakdownsOptionsContainer>
-                {disaggregationsOptions.length > 1 && (
+              {disaggregationsOptions.length > 1 && (
+                <Styled.BreakdownsOptionsContainer>
                   <Styled.BreakdownsOption
                     onClick={() => setActiveDisaggregationKey(undefined)}
                     active={!activeDisaggregationKey}
                   >
                     Show all
                   </Styled.BreakdownsOption>
-                )}
-                {disaggregationsOptions &&
-                  disaggregationsOptions.map(
-                    ({ key, label, onClick, active }) => (
-                      <Styled.BreakdownsOption
-                        key={key}
-                        onClick={onClick}
-                        active={active || disaggregationsOptions.length === 1}
-                      >
-                        {label}
-                      </Styled.BreakdownsOption>
-                    )
-                  )}
-              </Styled.BreakdownsOptionsContainer>
+
+                  {disaggregationsOptions &&
+                    disaggregationsOptions.map(
+                      ({ key, label, onClick, active }) => (
+                        <Styled.BreakdownsOption
+                          key={key}
+                          onClick={onClick}
+                          active={active || disaggregationsOptions.length === 1}
+                        >
+                          {label}
+                        </Styled.BreakdownsOption>
+                      )
+                    )}
+                </Styled.BreakdownsOptionsContainer>
+              )}
               {activeDisaggregationKeys?.map((disaggregationKey) => {
                 const currentDisaggregation =
                   disaggregations[systemMetricKey][disaggregationKey];
