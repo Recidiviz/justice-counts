@@ -100,6 +100,10 @@ export const ToggleSwitchWrapper = styled.div<{ enabled?: boolean }>`
   ${({ enabled }) => !enabled && `color: ${palette.highlight.grey7};`}
 `;
 
+export const ToggleSwitchInfoIcon = styled.img`
+  cursor: pointer;
+`;
+
 export const BottomButtonsContainer = styled.div`
   position: absolute;
   bottom: 0;

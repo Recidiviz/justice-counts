@@ -17,7 +17,7 @@
 
 import styled from "styled-components/macro";
 
-import { palette } from "../GlobalStyles/Palette";
+import { palette } from "../GlobalStyles";
 
 export const ToggleSwitchContainer = styled.div`
   display: flex;
@@ -46,7 +46,7 @@ export const ToggleSwitchInput = styled.input`
   }
 `;
 
-export const Slider = styled.span`
+export const Slider = styled.span<{ disabled?: boolean }>`
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -56,6 +56,8 @@ export const Slider = styled.span`
   background-color: ${palette.highlight.grey3};
   border-radius: 34px;
   transition: 0.3s;
+
+  ${({ disabled }) => disabled && "opacity: 0.6; pointer-events: none"};
 
   &:before {
     content: "";

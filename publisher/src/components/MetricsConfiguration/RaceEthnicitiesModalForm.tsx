@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import infoIcon from "@justice-counts/common/assets/info-icon.svg";
 import { Button } from "@justice-counts/common/components/Button";
 import {
   RadioButton,
@@ -24,6 +25,7 @@ import { ToggleSwitch } from "@justice-counts/common/components/ToggleSwitch";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
 
 import { useStore } from "../../stores";
 import { useSettingsSearchParams } from "../Settings";
@@ -183,23 +185,45 @@ function RaceEthnicitiesModalForm({
                 {Ethnicity.HISPANIC_OR_LATINO}
               </Styled.ToggleSwitchWrapper>
             )}
-            {Object.entries(racesStatusObject).map(([race, enabled]) => (
-              <Styled.ToggleSwitchWrapper key={race} enabled={Boolean(enabled)}>
-                <ToggleSwitch
-                  checked={Boolean(enabled)}
-                  onChange={() => {
-                    if (race === "Unknown" && enabled && !canSpecifyEthnicity) {
-                      setSpecifiesHispanicAsRace(false);
-                    }
-                    setRacesStatusObject({
-                      ...racesStatusObject,
-                      [race]: !enabled,
-                    });
-                  }}
-                />
-                {race}
-              </Styled.ToggleSwitchWrapper>
-            ))}
+            {Object.entries(racesStatusObject).map(([race, enabled]) => {
+              const disabledUnknownRace =
+                race === "Unknown" && specifiesHispanicAsRace;
+
+              return (
+                <Styled.ToggleSwitchWrapper
+                  key={race}
+                  enabled={Boolean(enabled) && !disabledUnknownRace}
+                >
+                  <ToggleSwitch
+                    checked={Boolean(enabled)}
+                    onChange={() => {
+                      setRacesStatusObject({
+                        ...racesStatusObject,
+                        [race]: !enabled,
+                      });
+                    }}
+                    disabled={disabledUnknownRace}
+                  />
+                  {race}
+                  {disabledUnknownRace && (
+                    <>
+                      <Styled.ToggleSwitchInfoIcon
+                        id="anchor"
+                        src={infoIcon}
+                        alt=""
+                      />
+                      <Tooltip
+                        anchorId="anchor"
+                        place="right"
+                        content="The Justice Counts data model requires the Unknown Race category to be turned on if the Hispanic or Latino Race category is turned on."
+                        variant="dark"
+                        style={{ maxWidth: "300px" }}
+                      />
+                    </>
+                  )}
+                </Styled.ToggleSwitchWrapper>
+              );
+            })}
           </Styled.ToggleSwitchesList>
         </Styled.ScrollableInnerWrapper>
         <Styled.BottomButtonsContainer>
