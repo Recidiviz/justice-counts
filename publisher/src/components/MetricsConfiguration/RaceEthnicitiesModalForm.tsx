@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import infoIcon from "@justice-counts/common/assets/info-icon.svg";
+import { ReactComponent as InfoIcon } from "@justice-counts/common/assets/info-icon.svg";
 import { Button } from "@justice-counts/common/components/Button";
 import {
   RadioButton,
@@ -207,11 +207,7 @@ function RaceEthnicitiesModalForm({
                   {race}
                   {disabledUnknownRace && (
                     <>
-                      <Styled.ToggleSwitchInfoIcon
-                        id="anchor"
-                        src={infoIcon}
-                        alt=""
-                      />
+                      <InfoIcon id="anchor" />
                       <Tooltip
                         anchorId="anchor"
                         place="right"
