@@ -21,67 +21,77 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-import { DisabledDimensionIcon } from "./MetricAvailability.styled";
+const MAX_MODAL_FORM_HEIGHT_WITH_PADDINGS = 587 + 24 * 2;
 
+// common
 export const Wrapper = styled.div`
   position: fixed;
   top: 0;
-  z-index: 4;
-  width: 100vw;
-  height: 100vh;
+  padding: 24px;
+  width: 100%;
+  height: 100%;
   background-color: ${palette.highlight.grey2};
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 4;
+
+  @media only screen and (max-height: ${MAX_MODAL_FORM_HEIGHT_WITH_PADDINGS}px) {
+    align-items: start;
+    overflow-y: auto;
+  }
 `;
 
-export const InnerWrapper = styled.div`
-  background-color: ${palette.solid.white};
-  border: 1px solid ${palette.highlight.grey3};
-  border-radius: 3px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  padding: 24px 32px;
-  display: flex;
-  flex-direction: column;
+export const Content = styled.div`
   width: 582px;
   max-width: 582px;
+  height: 587px;
+  max-height: 587px;
+  padding-top: 24px;
+  background-color: ${palette.solid.white};
+  position: relative;
+  border-radius: 3px;
+`;
+
+export const ScrollableInnerWrapper = styled.div`
+  width: 100%;
+  height: calc(100% - 104px);
+  padding: 0 32px 0 32px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
 `;
 
 export const Header = styled.div`
   ${typography.sizeCSS.normal};
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 `;
 
 export const Title = styled.div`
   ${typography.sizeCSS.title};
   line-height: 39px;
   margin-bottom: 4px;
+  text-transform: capitalize;
 `;
 
 export const Description = styled.div`
   ${typography.sizeCSS.normal};
   color: ${palette.highlight.grey8};
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 `;
 
-export const SpecifyEthnicityPrompt = styled.div`
-  ${typography.sizeCSS.normal};
-  margin-bottom: 20px;
-`;
-
-export const RaceListHeader = styled.div`
-  ${typography.sizeCSS.normal};
-  margin-bottom: 24px;
-`;
-
-export const RaceList = styled.div`
+export const ToggleSwitchesList = styled.fieldset<{
+  disabled?: boolean;
+}>`
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 40px;
+  gap: 12px;
+  margin-bottom: 32px;
+  border: none;
+  ${({ disabled }) => disabled && "opacity: 0.6; pointer-events: none"};
 `;
 
-export const RaceListItem = styled.div<{ enabled?: boolean }>`
+export const ToggleSwitchWrapper = styled.div<{ enabled?: boolean }>`
   display: flex;
   flex-direction: row;
   gap: 8px;
@@ -90,19 +100,41 @@ export const RaceListItem = styled.div<{ enabled?: boolean }>`
   ${({ enabled }) => !enabled && `color: ${palette.highlight.grey7};`}
 `;
 
-export const EnabledRaceIcon = styled.img`
-  width: 16px;
-  height: 16px;
-`;
-
-export const DisabledRaceIcon = styled(DisabledDimensionIcon)`
-  width: 16px;
-  height: 16px;
-`;
-
 export const BottomButtonsContainer = styled.div`
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 32px;
   display: flex;
   flex-direction: row;
   justify-content: end;
   gap: 16px;
+  align-items: center;
+  background-color: ${palette.solid.white};
+  z-index: 2;
+`;
+
+// race ethnicities
+export const SpecifyEthnicityPrompt = styled.div`
+  ${typography.sizeCSS.normal};
+  margin-bottom: 20px;
+`;
+
+export const ToggleSwitchesListHeader = styled.div`
+  ${typography.sizeCSS.normal};
+  margin-bottom: 24px;
+`;
+
+// definitions
+export const ChooseDefaultSettings = styled.span`
+  color: ${palette.solid.blue};
+  cursor: pointer;
+`;
+
+export const ContextContainer = styled.div``;
+
+export const ContextLabel = styled.div`
+  ${typography.sizeCSS.normal};
+  color: ${palette.highlight.grey8};
+  margin-bottom: 16px;
 `;
