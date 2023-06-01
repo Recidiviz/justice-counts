@@ -30,9 +30,6 @@ export const Home = observer(() => {
   const { userStore, metricConfigStore } = useStore();
   const navigate = useNavigate();
   const userFirstName = userStore.name?.split(" ")[0];
-  const welcomeDescription = false // TODO: set this to the conditional that determines whether or not all tasks are completed
-    ? "See open tasks below"
-    : "All tasks are completed";
   const taskCardLabelsActionLinks = {
     publish: { label: "Publish", path: "records" },
     uploadData: { label: "Upload Data", path: "upload" },
@@ -116,29 +113,38 @@ export const Home = observer(() => {
     fetchMetrics();
   }, [agencyId, metricConfigStore]);
 
-  const enabledMetrics = tempState
-    ?.filter((metric) => metric.enabled)
-    .map((metric) => {
-      return {
-        title: metric.display_name,
-        description: metric.description,
-        actionLinks: [
-          taskCardLabelsActionLinks.uploadData,
-          taskCardLabelsActionLinks.newRecord,
-        ],
-      };
-    });
+  const enabledMetrics =
+    tempState
+      ?.filter((metric) => metric.enabled)
+      .map((metric) => {
+        return {
+          title: metric.display_name,
+          description: metric.description,
+          actionLinks: [
+            taskCardLabelsActionLinks.uploadData,
+            taskCardLabelsActionLinks.newRecord,
+          ],
+        };
+      }) || [];
 
-  const untouchedMetrics = tempState
-    ?.filter((metric) => metric.enabled === null)
-    .map((metric) => {
-      return {
-        title: metric.display_name,
-        description: metric.description,
-        metricSettingsParams: `?system=${metric.system.key.toLowerCase()}&metric=${metric.key.toLowerCase()}`,
-        actionLinks: [taskCardLabelsActionLinks.metricAvailability],
-      };
-    });
+  const untouchedMetrics =
+    tempState
+      ?.filter((metric) => metric.enabled === null)
+      .map((metric) => {
+        return {
+          title: metric.display_name,
+          description: metric.description,
+          metricSettingsParams: `?system=${metric.system.key.toLowerCase()}&metric=${metric.key.toLowerCase()}`,
+          actionLinks: [taskCardLabelsActionLinks.metricAvailability],
+        };
+      }) || [];
+
+  const hasNoEnabledOrUntouchedMetrics =
+    enabledMetrics.length === 0 && untouchedMetrics.length === 0;
+
+  const welcomeDescription = hasNoEnabledOrUntouchedMetrics
+    ? "All tasks are completed"
+    : "See open tasks below";
 
   if (!enabledMetrics && !untouchedMetrics) {
     return <Loading />;
@@ -155,9 +161,11 @@ export const Home = observer(() => {
         <Styled.LeftPanelWrapper />
 
         <Styled.OpenTasksContainer>
-          {[...untouchedMetrics, ...enabledMetrics].map((metric) =>
-            renderTaskCard(metric)
-          )}
+          {hasNoEnabledOrUntouchedMetrics
+            ? renderTaskCard(allTasksCompleteTaskCardMetadata)
+            : [...untouchedMetrics, ...enabledMetrics].map((metric) =>
+                renderTaskCard(metric)
+              )}
         </Styled.OpenTasksContainer>
 
         <Styled.Submenu>
