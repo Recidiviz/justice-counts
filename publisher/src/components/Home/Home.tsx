@@ -16,17 +16,18 @@
 // =============================================================================
 
 import { observer } from "mobx-react-lite";
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { ReactComponent as GearIcon } from "../assets/gear-icon.svg";
 import { ReactComponent as OpenLinkIcon } from "../assets/open-link-icon.svg";
 import { ReactComponent as SettingsIcon } from "../assets/settings-icon.svg";
 import * as Styled from ".";
+import { Loading } from "../Loading";
 
 export const Home = observer(() => {
-  const { userStore } = useStore();
+  const { userStore, metricConfigStore } = useStore();
   const navigate = useNavigate();
   const userFirstName = userStore.name?.split(" ")[0];
   const welcomeDescription = false // TODO: set this to the conditional that determines whether or not all tasks are completed
@@ -47,6 +48,7 @@ export const Home = observer(() => {
     title,
     description,
     actionLinks,
+    metricSettingsParams,
   }: {
     title: string;
     description: string;
@@ -60,7 +62,15 @@ export const Home = observer(() => {
           <Styled.TaskCardActionLinksWrapper>
             {actionLinks?.map((link) => (
               <Styled.TaskCardActionLink
-                onClick={() => navigate(`./${link.path}`)}
+                onClick={() => {
+                  if (
+                    link.path ===
+                    taskCardLabelsActionLinks.metricAvailability.path
+                  ) {
+                    return navigate(`./${link.path + metricSettingsParams}`);
+                  }
+                  navigate(`./${link.path}`);
+                }}
               >
                 {link.label}
               </Styled.TaskCardActionLink>
@@ -92,6 +102,48 @@ export const Home = observer(() => {
     );
   };
 
+  const { agencyId } = useParams();
+
+  const [tempState, setTempState] = useState<any>();
+
+  useEffect(() => {
+    const fetchMetrics = async () => {
+      const data = await metricConfigStore.getMetricSettings(String(agencyId));
+      setTempState(data);
+      console.log("data", data);
+    };
+
+    fetchMetrics();
+  }, [agencyId, metricConfigStore]);
+
+  const enabledMetrics = tempState
+    ?.filter((metric) => metric.enabled)
+    .map((metric) => {
+      return {
+        title: metric.display_name,
+        description: metric.description,
+        actionLinks: [
+          taskCardLabelsActionLinks.uploadData,
+          taskCardLabelsActionLinks.newRecord,
+        ],
+      };
+    });
+
+  const untouchedMetrics = tempState
+    ?.filter((metric) => metric.enabled === null)
+    .map((metric) => {
+      return {
+        title: metric.display_name,
+        description: metric.description,
+        metricSettingsParams: `?system=${metric.system.key.toLowerCase()}&metric=${metric.key.toLowerCase()}`,
+        actionLinks: [taskCardLabelsActionLinks.metricAvailability],
+      };
+    });
+
+  if (!enabledMetrics && !untouchedMetrics) {
+    return <Loading />;
+  }
+
   return (
     <Styled.HomeContainer>
       <Styled.WelcomeUser>Welcome, {userFirstName}</Styled.WelcomeUser>
@@ -103,7 +155,9 @@ export const Home = observer(() => {
         <Styled.LeftPanelWrapper />
 
         <Styled.OpenTasksContainer>
-          {renderTaskCard(allTasksCompleteTaskCardMetadata)}
+          {[...untouchedMetrics, ...enabledMetrics].map((metric) =>
+            renderTaskCard(metric)
+          )}
         </Styled.OpenTasksContainer>
 
         <Styled.Submenu>

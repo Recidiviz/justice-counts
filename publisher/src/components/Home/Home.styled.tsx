@@ -28,6 +28,7 @@ export const HomeContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding-top: 80px;
 `;
 
 export const WelcomeUser = styled.div`
@@ -60,7 +61,11 @@ export const ContentContainer = styled.div`
 
 export const LeftPanelWrapper = styled.div``;
 
-export const OpenTasksContainer = styled.div``;
+export const OpenTasksContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+`;
 
 export const TaskCard = styled.div`
   padding: 32px;
@@ -100,7 +105,7 @@ export const TaskCardActionLink = styled.div`
 export const Submenu = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 16px;
 `;
 
