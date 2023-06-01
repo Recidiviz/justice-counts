@@ -22,7 +22,8 @@ import { DatapointsTableView } from "@justice-counts/common/components/DataViz/D
 import { formatDateShortMonthYear } from "@justice-counts/common/components/DataViz/utils";
 import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
 import { useIsFooterVisible } from "@justice-counts/common/hooks";
-import React, { useState } from "react";
+import { groupBy } from "@justice-counts/common/utils";
+import React, { Fragment, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { printReportTitle } from "../../utils";
@@ -34,6 +35,7 @@ import {
   REPORTS_LOWERCASE,
 } from "../Global/constants";
 import {
+  AgencyName,
   EmptyIcon,
   Heading,
   HeadingGradient,
@@ -45,12 +47,19 @@ import {
   SectionContainer,
   SectionExpandStatusSign,
   Summary,
+  SummaryAgencyName,
   SummarySection,
   SummarySectionLine,
   SummarySectionsContainer,
   SummarySectionTitle,
+  SummaryWrapper,
 } from "./ReviewMetrics.styles";
-import { ReviewMetric, ReviewMetricsProps } from "./types";
+import {
+  DatapointsByMetricNameByAgencyName,
+  ReviewMetric,
+  ReviewMetricOverwrites,
+  ReviewMetricsProps,
+} from "./types";
 
 export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
   title,
@@ -59,6 +68,8 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
   metrics,
   metricOverwrites,
   records,
+  isMultiAgencyUpload,
+  datapointsByMetricNameByAgencyName,
 }) => {
   const { agencyId } = useParams();
   const navigate = useNavigate();
@@ -83,6 +94,138 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
           metricName={metric.display_name}
         />
       </SectionContainer>
+    );
+  };
+
+  /** Multi-Agency Uploads */
+
+  const renderDatapointsByMetricNameByAgencyName = (
+    groupedDatapoints: DatapointsByMetricNameByAgencyName
+  ) => {
+    return Object.entries(groupedDatapoints).map(
+      ([agencyName, dpByMetrics]) => (
+        <Fragment key={agencyName}>
+          <AgencyName>{agencyName}</AgencyName>
+          <div>
+            {Object.entries(dpByMetrics).map(([metricName, dps]) => (
+              <SectionContainer
+                key={metricName}
+                isMultiAgencyUpload={isMultiAgencyUpload}
+              >
+                <DatapointsTableView
+                  datapoints={dps}
+                  metricName={metricName}
+                  useMultiAgencyStyles={isMultiAgencyUpload}
+                />
+              </SectionContainer>
+            ))}
+          </div>
+        </Fragment>
+      )
+    );
+  };
+
+  const renderOverwritesByAgencyName = (
+    reviewMetricOverwrites: ReviewMetricOverwrites[]
+  ) => {
+    /**
+     * Groups metric overwrites by agency name
+     * @example { "Agency 1": { key, metricName, dimensionName, startDate, agencyName }, "Agency 2": { ... } }
+     */
+    const groupedMetricOverwritesByAgencyName = reviewMetricOverwrites.reduce(
+      (acc, overwrite) => {
+        if (!overwrite.agencyName) return acc;
+        if (!acc[overwrite.agencyName]) {
+          acc[overwrite.agencyName] = [];
+        }
+        acc[overwrite.agencyName].push(overwrite);
+        return acc;
+      },
+      {} as { [key: string]: ReviewMetricOverwrites[] }
+    );
+
+    return (
+      <SummaryWrapper>
+        {Object.entries(groupedMetricOverwritesByAgencyName).map(
+          ([agencyName, overwrites]) => (
+            <Fragment key={agencyName}>
+              <SummaryAgencyName>{agencyName}</SummaryAgencyName>
+              {overwrites.map(
+                ({ key, metricName, dimensionName, startDate }) => (
+                  <SummarySectionLine key={key}>
+                    {metricName}: {dimensionName}
+                    <span>({formatDateShortMonthYear(startDate)})</span>
+                  </SummarySectionLine>
+                )
+              )}
+            </Fragment>
+          )
+        )}
+      </SummaryWrapper>
+    );
+  };
+
+  /**
+   * Used to render the list of metrics on the left-side panel of the review page by agency name by
+   * utilizing `datapointsByMetricNameByAgency` to extract the list of metrics uploaded by agency name.
+   */
+  const renderMetricsListByAgencyName = () => {
+    return (
+      <SummaryWrapper>
+        {datapointsByMetricNameByAgencyName &&
+          Object.entries(datapointsByMetricNameByAgencyName).map(
+            ([agencyName, agencyMetrics]) => {
+              return (
+                <Fragment key={agencyName}>
+                  <SummaryAgencyName>{agencyName}</SummaryAgencyName>
+                  {Object.keys(agencyMetrics).map((metric) => (
+                    <SummarySectionLine key={metric}>
+                      {/**
+                       * Since multiagency uploads currenly only take place via the bulk upload flow
+                       * and that has its own errors/warnings page, we can safely assume that metrics that
+                       * make it to the review page are successfully saved metrics with inputs and
+                       * without errors - thus, earning a check icon.
+                       */}
+                      <MetricStatusIcon src={checkIcon} alt="" />
+                      {metric}
+                    </SummarySectionLine>
+                  ))}
+                </Fragment>
+              );
+            }
+          )}
+      </SummaryWrapper>
+    );
+  };
+
+  /**
+   * Used to render the list of records on the left-side panel of the review page by agency name
+   */
+  const renderRecordsListByAgencyName = () => {
+    if (!records) return;
+    const groupedRecords = groupBy(records, (record) =>
+      String(record.agency_name)
+    );
+
+    return (
+      <SummaryWrapper>
+        {Object.entries(groupedRecords)
+          .sort((a, b) => a[0].localeCompare(b[0])) // sort by agency name
+          .map(([agencyName, agencyRecords]) => (
+            <Fragment key={agencyName}>
+              <SummaryAgencyName>{agencyName}</SummaryAgencyName>
+              {agencyRecords.map((record) => (
+                <SummarySectionLine key={record.id}>
+                  {printReportTitle(
+                    record.month,
+                    record.year,
+                    record.frequency
+                  )}
+                </SummarySectionLine>
+              ))}
+            </Fragment>
+          ))}
+      </SummaryWrapper>
     );
   };
 
@@ -143,26 +286,33 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
                   {isMetricsSectionExpanded ? "-" : "+"}
                 </SectionExpandStatusSign>
               </SummarySectionTitle>
-              {isMetricsSectionExpanded &&
-                metrics.map(
-                  ({
-                    key,
-                    display_name,
-                    metricHasError,
-                    metricHasValidInput,
-                  }) => (
-                    <SummarySectionLine key={key}>
-                      {!metricHasError && metricHasValidInput && (
-                        <MetricStatusIcon src={checkIcon} alt="" />
+              {isMetricsSectionExpanded && (
+                <>
+                  {isMultiAgencyUpload
+                    ? renderMetricsListByAgencyName()
+                    : metrics.map(
+                        ({
+                          key,
+                          display_name,
+                          metricHasError,
+                          metricHasValidInput,
+                        }) => (
+                          <SummarySectionLine key={key}>
+                            {!metricHasError && metricHasValidInput && (
+                              <MetricStatusIcon src={checkIcon} alt="" />
+                            )}
+                            {metricHasError && (
+                              <MetricStatusIcon src={errorIcon} alt="" />
+                            )}
+                            {!metricHasError && !metricHasValidInput && (
+                              <EmptyIcon />
+                            )}
+                            {display_name}
+                          </SummarySectionLine>
+                        )
                       )}
-                      {metricHasError && (
-                        <MetricStatusIcon src={errorIcon} alt="" />
-                      )}
-                      {!metricHasError && !metricHasValidInput && <EmptyIcon />}
-                      {display_name}
-                    </SummarySectionLine>
-                  )
-                )}
+                </>
+              )}
             </SummarySection>
           )}
           {metricOverwrites && metricOverwrites.length > 0 && (
@@ -179,15 +329,20 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
                   {isOverwritesSectionExpanded ? "-" : "+"}
                 </SectionExpandStatusSign>
               </SummarySectionTitle>
-              {isOverwritesSectionExpanded &&
-                metricOverwrites.map(
-                  ({ key, metricName, dimensionName, startDate }) => (
-                    <SummarySectionLine key={key}>
-                      {metricName}: {dimensionName}
-                      <span>({formatDateShortMonthYear(startDate)})</span>
-                    </SummarySectionLine>
-                  )
-                )}
+              {isOverwritesSectionExpanded && (
+                <>
+                  {isMultiAgencyUpload
+                    ? renderOverwritesByAgencyName(metricOverwrites)
+                    : metricOverwrites.map(
+                        ({ key, metricName, dimensionName, startDate }) => (
+                          <SummarySectionLine key={key}>
+                            {metricName}: {dimensionName}
+                            <span>({formatDateShortMonthYear(startDate)})</span>
+                          </SummarySectionLine>
+                        )
+                      )}
+                </>
+              )}
             </SummarySection>
           )}
           {records && records.length > 0 && (
@@ -204,16 +359,21 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
                   {isRecordsSectionExpanded ? "-" : "+"}
                 </SectionExpandStatusSign>
               </SummarySectionTitle>
-              {isRecordsSectionExpanded &&
-                records.map((record) => (
-                  <SummarySectionLine key={record.id}>
-                    {printReportTitle(
-                      record.month,
-                      record.year,
-                      record.frequency
-                    )}
-                  </SummarySectionLine>
-                ))}
+              {isRecordsSectionExpanded && (
+                <>
+                  {isMultiAgencyUpload
+                    ? renderRecordsListByAgencyName()
+                    : records.map((record) => (
+                        <SummarySectionLine key={record.id}>
+                          {printReportTitle(
+                            record.month,
+                            record.year,
+                            record.frequency
+                          )}
+                        </SummarySectionLine>
+                      ))}
+                </>
+              )}
             </SummarySection>
           )}
         </SummarySectionsContainer>
@@ -226,9 +386,13 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
         </NoDatapointsMessage>
       ) : (
         <MetricsPanel>
-          {metrics.map((metric) => {
-            return renderSection(metric);
-          })}
+          {isMultiAgencyUpload && datapointsByMetricNameByAgencyName
+            ? renderDatapointsByMetricNameByAgencyName(
+                datapointsByMetricNameByAgencyName
+              )
+            : metrics.map((metric) => {
+                return renderSection(metric);
+              })}
         </MetricsPanel>
       )}
     </ReviewMetricsWrapper>

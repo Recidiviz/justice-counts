@@ -32,6 +32,7 @@ import {
 import { useStore } from "../../stores";
 import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
 import {
+  DatapointsByMetricNameByAgencyName,
   ReviewHeaderActionButton,
   ReviewMetricOverwrites,
   ReviewMetrics,
@@ -103,6 +104,45 @@ const UploadReview: React.FC = observer(() => {
     setIsSuccessModalOpen(true);
   };
 
+  /**
+   * Groups uploaded metrics' datapoints by metric name by agency name
+   * @returns Object { isMultiAgencyUpload, datapointsByMetricNameByAgencyName }
+   *          - isMultiAgencyUpload { boolean } - whether or not this is a multiple agency upload
+   *          - datapointsByMetricNameByAgencyName { object } - grouped
+   * @example
+   *  {
+   *    "Agency 1": { "Staff": [...datapoints], "Arrests": [...datapoints], ... }
+   *    "Agency 2": { "Staff": [...datapoints], ... },
+   *  }
+   *   */
+  const metricsToDatapointsByMetricNameByAgencyName = (
+    metrics: UploadedMetric[]
+  ) => {
+    const allDatapoints = metrics
+      .flatMap((metric) => metric.datapoints)
+      .filter((dp) => dp.value);
+    const datapointsByMetricNameByAgencyName = allDatapoints.reduce(
+      (acc, dp) => {
+        if (!dp.agency_name || !dp.metric_display_name) return acc;
+        if (!acc[dp.agency_name]) {
+          acc[dp.agency_name] = {};
+        }
+        if (!acc[dp.agency_name][dp.metric_display_name]) {
+          acc[dp.agency_name][dp.metric_display_name] = [];
+        }
+        acc[dp.agency_name][dp.metric_display_name].push(dp);
+        return acc;
+      },
+      {} as DatapointsByMetricNameByAgencyName
+    );
+    const isMultiAgencyUpload =
+      Object.values(datapointsByMetricNameByAgencyName).length > 1;
+
+    return { isMultiAgencyUpload, datapointsByMetricNameByAgencyName };
+  };
+
+  const { isMultiAgencyUpload, datapointsByMetricNameByAgencyName } =
+    metricsToDatapointsByMetricNameByAgencyName(uploadedMetrics);
   const metrics = uploadedMetrics
     .map((metric) => ({
       ...metric,
@@ -119,6 +159,7 @@ const UploadReview: React.FC = observer(() => {
           key: dp.id,
           metricName: dp.metric_display_name || "",
           dimensionName: dp.dimension_display_name || "",
+          agencyName: dp.agency_name,
           startDate: dp.start_date,
         };
         overwrites.push(overwriteData);
@@ -221,6 +262,8 @@ const UploadReview: React.FC = observer(() => {
         metrics={metrics}
         metricOverwrites={overwrites}
         records={existingAndNewRecords}
+        isMultiAgencyUpload={isMultiAgencyUpload}
+        datapointsByMetricNameByAgencyName={datapointsByMetricNameByAgencyName}
       />
     </>
   );
