@@ -97,6 +97,8 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
     );
   };
 
+  /** Multi-Agency Uploads */
+
   const renderDatapointsByMetricNameByAgencyName = (
     groupedDatapoints: DatapointsByMetricNameByAgencyName
   ) => {
@@ -178,6 +180,12 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
                   <SummaryAgencyName>{agencyName}</SummaryAgencyName>
                   {Object.keys(agencyMetrics).map((metric) => (
                     <SummarySectionLine key={metric}>
+                      {/**
+                       * Since multiagency uploads currenly only take place via the bulk upload flow
+                       * and that has its own errors/warnings page, we can safely assume that metrics that
+                       * make it to the review page are successfully saved metrics with inputs and
+                       * without errors - thus, earning a check icon.
+                       */}
                       <MetricStatusIcon src={checkIcon} alt="" />
                       {metric}
                     </SummarySectionLine>
