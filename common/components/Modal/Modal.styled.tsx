@@ -40,7 +40,10 @@ export const OuterWrapper = styled.div<{
   }};
 `;
 
-export const InnerWrapper = styled.div<{ modalType?: ModalType }>`
+export const InnerWrapper = styled.div<{
+  modalType?: ModalType;
+  centerText?: boolean;
+}>`
   background-color: ${palette.solid.white};
   width: 100%;
   max-width: 582px;
@@ -49,6 +52,7 @@ export const InnerWrapper = styled.div<{ modalType?: ModalType }>`
   flex-direction: column;
   align-items: center;
   border-radius: 3px;
+  ${({ centerText }) => centerText && `text-align: center;`}
 `;
 
 export const Icon = styled.img`

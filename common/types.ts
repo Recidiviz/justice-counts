@@ -115,6 +115,7 @@ export interface ReportOverview {
   last_modified_at_timestamp: number | null;
   editors: ReportEditor[];
   status: ReportStatus;
+  agency_name?: string;
 }
 
 export interface Report extends ReportOverview {
@@ -319,6 +320,7 @@ export interface RawDatapoint {
   old_value: string | number | null;
   is_published: boolean;
   frequency: ReportFrequency;
+  agency_name?: string;
 }
 
 /**
