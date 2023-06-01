@@ -33,7 +33,7 @@ export const Home = observer(() => {
   const taskCardLabelsActionLinks = {
     publish: { label: "Publish", path: "records" },
     uploadData: { label: "Upload Data", path: "upload" },
-    newRecord: { label: "New Record", path: "records/create" },
+    manualEntry: { label: "Manual Entry", path: "records/create" },
     metricAvailability: { label: "Metric Availability", path: "metric-config" },
   };
   const allTasksCompleteTaskCardMetadata = {
@@ -122,7 +122,7 @@ export const Home = observer(() => {
           description: metric.description,
           actionLinks: [
             taskCardLabelsActionLinks.uploadData,
-            taskCardLabelsActionLinks.newRecord,
+            taskCardLabelsActionLinks.manualEntry,
           ],
         };
       }) || [];
@@ -146,7 +146,7 @@ export const Home = observer(() => {
     ? "All tasks are completed"
     : "See open tasks below";
 
-  if (!enabledMetrics && !untouchedMetrics) {
+  if (!tempState) {
     return <Loading />;
   }
 
