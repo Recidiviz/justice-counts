@@ -61,6 +61,17 @@ export const Home = observer(() => {
     metricSettingsParams?: string;
     hasMetricValue?: boolean;
   }) => {
+    if (hasMetricValue) {
+      if (
+        (metricFrequency === "MONTHLY" &&
+          tempLatestRecordInfo.monthly.status === "PUBLISHED") ||
+        (metricFrequency === "ANNUAL" &&
+          tempLatestRecordInfo.annual.status === "PUBLISHED")
+      ) {
+        return null;
+      }
+    }
+
     return (
       <Styled.TaskCard>
         <Styled.TaskCardTitle>{title}</Styled.TaskCardTitle>
@@ -86,7 +97,7 @@ export const Home = observer(() => {
                         (metricFrequency && metricFrequency === "MONTHLY"
                           ? tempLatestRecordInfo.monthly.id
                           : tempLatestRecordInfo.annual.id)
-                      }${hasMetricValue && `/review`}`
+                      }`
                     );
                   }
                   navigate(`./${link.path}`);
@@ -126,7 +137,7 @@ export const Home = observer(() => {
 
   const [tempMetrics, setTempMetrics] = useState<Metric[]>();
   const [tempLatestRecordInfo, setTempLatestRecordInfo] = useState<{
-    [frequency: string]: { id?: number; metrics?: any };
+    [frequency: string]: { id?: number; metrics?: Metric[]; status: string };
   }>({});
 
   useEffect(() => {
@@ -152,6 +163,9 @@ export const Home = observer(() => {
       await reportStore.getReport(latestMonthlyRecordID as number);
       await reportStore.getReport(latestAnnualRecordID as number);
 
+      const latestMonthlyRecordStatus = records[latestMonthlyRecordID]?.status;
+      const latestAnnualRecordStatus = records[latestAnnualRecordID]?.status;
+
       const latestMonthlyMetrics =
         latestMonthlyRecordID &&
         reportStore.reportMetrics[latestMonthlyRecordID];
@@ -160,8 +174,16 @@ export const Home = observer(() => {
 
       setTempMetrics(metrics);
       setTempLatestRecordInfo({
-        monthly: { id: latestMonthlyRecordID, metrics: latestMonthlyMetrics },
-        annual: { id: latestAnnualRecordID, metrics: latestAnnualMetrics },
+        monthly: {
+          id: latestMonthlyRecordID,
+          metrics: latestMonthlyMetrics,
+          status: latestMonthlyRecordStatus,
+        },
+        annual: {
+          id: latestAnnualRecordID,
+          metrics: latestAnnualMetrics,
+          status: latestAnnualRecordStatus,
+        },
       });
     };
 
