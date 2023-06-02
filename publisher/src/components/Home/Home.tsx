@@ -27,13 +27,13 @@ import * as Styled from ".";
 import { Loading } from "../Loading";
 
 export const Home = observer(() => {
-  const { userStore, metricConfigStore } = useStore();
+  const { userStore, metricConfigStore, reportStore } = useStore();
   const navigate = useNavigate();
   const userFirstName = userStore.name?.split(" ")[0];
   const taskCardLabelsActionLinks = {
     publish: { label: "Publish", path: "records" },
     uploadData: { label: "Upload Data", path: "upload" },
-    manualEntry: { label: "Manual Entry", path: "records/create" },
+    manualEntry: { label: "Manual Entry", path: "records/" },
     metricAvailability: { label: "Metric Availability", path: "metric-config" },
   };
   const allTasksCompleteTaskCardMetadata = {
@@ -45,6 +45,7 @@ export const Home = observer(() => {
     title,
     description,
     actionLinks,
+    metricFrequency,
     metricSettingsParams,
   }: {
     title: string;
@@ -65,6 +66,18 @@ export const Home = observer(() => {
                     taskCardLabelsActionLinks.metricAvailability.path
                   ) {
                     return navigate(`./${link.path + metricSettingsParams}`);
+                  }
+                  if (
+                    link.path === taskCardLabelsActionLinks.manualEntry.path
+                  ) {
+                    return navigate(
+                      `./${
+                        link.path +
+                        (metricFrequency && metricFrequency === "MONTHLY"
+                          ? latestMonthlyRecordID
+                          : latestAnnualRecordID)
+                      }`
+                    );
                   }
                   navigate(`./${link.path}`);
                 }}
@@ -101,34 +114,56 @@ export const Home = observer(() => {
 
   const { agencyId } = useParams();
 
-  const [tempState, setTempState] = useState<any>();
+  const [tempMetrics, setTempMetrics] = useState<any>();
+  const [tempRecords, setTempRecords] = useState<any>({});
 
   useEffect(() => {
-    const fetchMetrics = async () => {
-      const data = await metricConfigStore.getMetricSettings(String(agencyId));
-      setTempState(data);
-      console.log("data", data);
+    const fetchMetricsAndRecords = async () => {
+      const metrics = await metricConfigStore.getMetricSettings(
+        String(agencyId)
+      );
+      await reportStore.getReportOverviews(String(agencyId));
+      const records = reportStore.reportOverviews;
+      setTempMetrics(metrics);
+      setTempRecords(records);
     };
 
-    fetchMetrics();
+    fetchMetricsAndRecords();
   }, [agencyId, metricConfigStore]);
 
+  const sortedRecords = Object.values(tempRecords).sort(
+    (a, b) =>
+      new Date(b.year, b.month).getTime() - new Date(a.year, a.month).getTime()
+  );
+
+  console.log(sortedRecords);
+
+  const latestMonthlyRecordID = sortedRecords.find(
+    (record) => record.frequency === "MONTHLY"
+  )?.id;
+  const latestAnnualRecordID = sortedRecords.find(
+    (record) => record.frequency === "ANNUAL"
+  )?.id;
+
   const enabledMetrics =
-    tempState
+    tempMetrics
       ?.filter((metric) => metric.enabled)
       .map((metric) => {
         return {
           title: metric.display_name,
           description: metric.description,
-          actionLinks: [
-            taskCardLabelsActionLinks.uploadData,
-            taskCardLabelsActionLinks.manualEntry,
-          ],
+          metricFrequency: metric.custom_frequency || metric.frequency,
+          actionLinks: metric.value
+            ? [taskCardLabelsActionLinks.publish]
+            : [
+                taskCardLabelsActionLinks.uploadData,
+                taskCardLabelsActionLinks.manualEntry,
+              ],
         };
       }) || [];
 
   const untouchedMetrics =
-    tempState
+    tempMetrics
       ?.filter((metric) => metric.enabled === null)
       .map((metric) => {
         return {
@@ -146,7 +181,7 @@ export const Home = observer(() => {
     ? "All tasks are completed"
     : "See open tasks below";
 
-  if (!tempState) {
+  if (!tempMetrics) {
     return <Loading />;
   }
 
