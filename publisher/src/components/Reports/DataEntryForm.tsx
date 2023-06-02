@@ -268,7 +268,7 @@ const DataEntryForm: React.FC<{
   return (
     <>
       <HeaderBar
-        onLogoClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
+        onLogoClick={() => navigate(`/agency/${agencyId}`)}
         hasBottomBorder
         badge={headerBadge}
       >
