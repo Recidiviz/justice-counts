@@ -21,10 +21,11 @@ import notReportedIcon from "../../assets/not-reported-icon.png";
 import statusCheckIcon from "../../assets/status-check-icon.png";
 import statusErrorIcon from "../../assets/status-error-icon.png";
 import { FormError } from "../../types";
+import { replaceSymbolsWithDash } from "../../utils";
+import { Tooltip } from "../Tooltip";
 import { ErrorWithTooltip } from "./ErrorWithTooltip";
 import * as Styled from "./Input.styled";
-import { NotReportedIcon } from "./NotReportedIcon";
-import { InputTextSize, NotReportedIconWithTooltipProps } from "./types";
+import { InputTextSize, NotReportedIconTooltipProps } from "./types";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -35,7 +36,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   persistLabel?: boolean;
   metricKey?: string;
   notReported?: boolean;
-  notReportedIconWithTooltip?: NotReportedIconWithTooltipProps;
+  notReportedIconWithTooltip?: NotReportedIconTooltipProps;
   isPlaceholderVisible?: boolean;
   textSize?: InputTextSize;
 }
@@ -55,18 +56,28 @@ export function Input({
   textSize,
   ...props
 }: InputProps) {
-  const [showTooltip, setShowTooltip] = useState<boolean>();
+  const [showTooltip, setShowTooltip] = useState<boolean>(false);
+  const [showNotReportedTooltip, setShowNotReportedTooltip] =
+    useState<boolean>(false);
   const { name, value, disabled } = props;
+
+  const tooltipId = replaceSymbolsWithDash(`input-${metricKey}-${name}`);
 
   const showTooltipIfTruncated = (
     e: React.MouseEvent<HTMLInputElement, MouseEvent>
   ) => {
+    if (notReportedIconWithTooltip) {
+      setShowNotReportedTooltip(true);
+    }
     const labelElement = e.currentTarget.querySelector("label") as HTMLElement;
     if (labelElement.offsetWidth < labelElement.scrollWidth) {
       setShowTooltip(true);
     }
   };
-  const clearTooltip = () => setShowTooltip(false);
+  const clearTooltip = () => {
+    setShowTooltip(false);
+    setShowNotReportedTooltip(false);
+  };
 
   return (
     <Styled.InputWrapper
@@ -74,6 +85,7 @@ export function Input({
       onMouseLeave={clearTooltip}
       onFocus={clearTooltip}
       noBottomMargin={noBottomMargin}
+      id={tooltipId}
     >
       {/* Text Input */}
       <Styled.Input
@@ -103,7 +115,14 @@ export function Input({
         {label}
       </Styled.InputLabel>
 
-      {showTooltip && <Styled.InputTooltip>{name}</Styled.InputTooltip>}
+      <Tooltip
+        anchorId={tooltipId}
+        position="top"
+        content={name}
+        noArrow
+        isOpen={showTooltip}
+        offset={0}
+      />
 
       {/* Error Description (appears below text input) */}
       {error && (
@@ -118,12 +137,29 @@ export function Input({
       {/* Label Chip (appears inside of text input on the right) */}
 
       {/* Chip: Not Reporting Status */}
+
       {notReported && (
         <Styled.LabelChipPosition textSize={textSize}>
-          {notReportedIconWithTooltip ? (
-            <NotReportedIcon {...notReportedIconWithTooltip} />
-          ) : (
-            <img src={notReportedIcon} alt="" />
+          <img id={`img-${tooltipId}`} src={notReportedIcon} alt="" />
+          {notReportedIconWithTooltip && (
+            <Tooltip
+              anchorId={`img-${tooltipId}`}
+              position="bottom"
+              content={
+                <>
+                  {notReportedIconWithTooltip.tooltipText}{" "}
+                  <Styled.TooltipLink
+                    onClick={notReportedIconWithTooltip.tooltipLink}
+                  >
+                    {notReportedIconWithTooltip.tooltipLinkLabel}
+                  </Styled.TooltipLink>
+                  .
+                </>
+              }
+              tooltipWidth="narrow"
+              clickable
+              isOpen={showNotReportedTooltip}
+            />
           )}
         </Styled.LabelChipPosition>
       )}

@@ -22,9 +22,10 @@ import {
   RawDatapoint,
   ReportFrequency,
 } from "../../types";
+import { replaceSymbolsWithDash } from "../../utils";
+import { Tooltip } from "../Tooltip";
 import {
   DatapointsMetricNameCell,
-  DatapointsMetricNameCellTooltip,
   DatapointsTableBottomBorder,
   DatapointsTableContainer,
   DatapointsTableDetailsCell,
@@ -158,13 +159,18 @@ export const DatapointsTableView: React.FC<{
               {!useDataPageStyles && (
                 <DatapointsTableNamesRow>
                   <DatapointsMetricNameCell
+                    id={replaceSymbolsWithDash(metricName)}
                     title={metricName}
                     useMultiAgencyStyles={useMultiAgencyStyles}
                   >
                     {metricName}
-                    <DatapointsMetricNameCellTooltip>
-                      {metricName}
-                    </DatapointsMetricNameCellTooltip>
+                    <Tooltip
+                      anchorId={replaceSymbolsWithDash(metricName)}
+                      position="bottom"
+                      content={metricName}
+                      noArrow
+                      offset={-30}
+                    />
                   </DatapointsMetricNameCell>
                 </DatapointsTableNamesRow>
               )}
@@ -191,11 +197,18 @@ export const DatapointsTableView: React.FC<{
                       .map((dimensionName) => (
                         <DatapointsTableNamesRow key={dimensionName}>
                           <DatapointsTableNamesCell
-                            title={dimensionName}
+                            id={replaceSymbolsWithDash(dimensionName)}
                             onMouseEnter={() => setHoveredRowKey(dimensionName)}
                             onMouseLeave={() => setHoveredRowKey(null)}
                           >
                             {dimensionName}
+                            <Tooltip
+                              anchorId={replaceSymbolsWithDash(dimensionName)}
+                              position="bottom"
+                              content={dimensionName}
+                              noArrow
+                              offset={-5}
+                            />
                           </DatapointsTableNamesCell>
                         </DatapointsTableNamesRow>
                       ))}

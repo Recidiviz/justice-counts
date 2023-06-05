@@ -15,37 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import styled from "styled-components/macro";
+export type TooltipColor = "info";
 
-import { palette, typography } from "../GlobalStyles";
-import { TooltipColor, TooltipWidth } from "./types";
-
-export const TooltipContainer = styled.div<{
-  tooltipColor?: TooltipColor;
-  tooltipWidth?: TooltipWidth;
-}>`
-  padding: 8px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  border-radius: 3px;
-
-  max-width: ${({ tooltipWidth }) => {
-    if (tooltipWidth === "narrow") return "170px";
-    return "300px";
-  }};
-
-  background-color: ${({ tooltipColor }) => {
-    if (tooltipColor === "info") return palette.solid.blue;
-    return palette.solid.darkgrey;
-  }};
-`;
-
-export const TooltipTitle = styled.span`
-  ${typography.sizeCSS.medium};
-`;
-
-export const TooltipContent = styled.span`
-  ${typography.sizeCSS.normal};
-  white-space: normal;
-`;
+export type TooltipWidth = "narrow";
