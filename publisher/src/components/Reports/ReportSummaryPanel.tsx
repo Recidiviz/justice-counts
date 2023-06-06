@@ -265,11 +265,7 @@ const ReportSummaryPanel: React.FC<{
 
       <ReportSummaryProgressIndicatorWrapper>
         {Object.entries(metricsBySystem).map(([system, metrics]) => {
-          const enabledMetrics = metrics.filter(
-            (metric) =>
-              metric.enabled &&
-              (metric.custom_frequency || metric.frequency) === frequency
-          );
+          const enabledMetrics = metrics.filter((metric) => metric.enabled);
 
           return (
             <React.Fragment key={system}>

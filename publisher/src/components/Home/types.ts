@@ -15,6 +15,30 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./Home";
-export * from "./Home.styled";
-export * from "./types";
+import {
+  Metric,
+  ReportFrequency,
+  ReportStatus,
+} from "@justice-counts/common/types";
+
+export type TaskCardMetadata = {
+  title: string;
+  description: string;
+  actionLinks?: TaskCardActionLinksMetadata[];
+  metricFrequency?: ReportFrequency;
+  metricSettingsParams?: string;
+  hasMetricValue?: boolean;
+};
+
+export type TaskCardActionLinksMetadata = { label: string; path: string };
+
+export type TaskCardActionLinksMetadataList = {
+  [key: string]: TaskCardActionLinksMetadata;
+};
+
+export type LatestRecordMetadata = {
+  id: number;
+  metrics: Metric[];
+  status: ReportStatus;
+  reportTitle: string;
+};
