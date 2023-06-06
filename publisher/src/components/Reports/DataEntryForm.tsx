@@ -359,7 +359,10 @@ const DataEntryForm: React.FC<{
             {Object.entries(metricsBySystem).map(
               ([system, metrics], systemIndex) => {
                 const enabledMetrics = metrics.filter(
-                  (metric) => metric.enabled
+                  (metric) =>
+                    metric.enabled &&
+                    (metric.custom_frequency || metric.frequency) ===
+                      reportOverview.frequency
                 );
 
                 const disabledMetrics = metrics.filter(
