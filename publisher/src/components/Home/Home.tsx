@@ -89,7 +89,7 @@ export const Home = observer(() => {
                         (metricFrequency && metricFrequency === "MONTHLY"
                           ? tempLatestRecordInfo.monthly.id
                           : tempLatestRecordInfo.annual.id) +
-                        "/review"
+                        (link.label === "Publish" ? "/review" : "")
                       }`
                     );
                   }
@@ -297,10 +297,14 @@ export const Home = observer(() => {
           {/*  */}
           {allMetricsWithValues.find(
             (metric) => metric.metricFrequency === "MONTHLY"
-          ) && renderTaskCard(publishMonthlyRecordTaskCard)}
+          ) &&
+            tempLatestRecordInfo.monthly.status !== "PUBLISHED" &&
+            renderTaskCard(publishMonthlyRecordTaskCard)}
           {allMetricsWithValues.find(
             (metric) => metric.metricFrequency === "ANNUAL"
-          ) && renderTaskCard(publishAnnualRecordTaskCard)}
+          ) &&
+            tempLatestRecordInfo.annual.status !== "PUBLISHED" &&
+            renderTaskCard(publishAnnualRecordTaskCard)}
         </Styled.OpenTasksContainer>
 
         <Styled.Submenu>

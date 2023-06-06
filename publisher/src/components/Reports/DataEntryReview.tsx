@@ -158,7 +158,7 @@ const DataEntryReview = () => {
   const buttons: ReviewHeaderActionButton[] = [
     {
       name: "Back to data entry",
-      onClick: () => navigate(-1),
+      onClick: () => navigate(`../records/${reportID}`),
       borderColor: "lightgrey",
     },
     {
