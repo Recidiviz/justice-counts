@@ -27,7 +27,7 @@ import { ReactComponent as OpenLinkIcon } from "../assets/open-link-icon.svg";
 import { ReactComponent as SettingsIcon } from "../assets/settings-icon.svg";
 import { Loading } from "../Loading";
 import {
-  LatestRecordMetadata,
+  LatestAnnualMonthlyRecordMetadata,
   TaskCardActionLinksMetadataList,
   TaskCardMetadata,
 } from ".";
@@ -39,10 +39,10 @@ export const Home = observer(() => {
   const { agencyId } = useParams();
 
   const [tempMetrics, setTempMetrics] = useState<Metric[]>();
-  const [tempLatestRecordInfo, setTempLatestRecordInfo] = useState<{
-    monthly: Partial<LatestRecordMetadata>;
-    annual: Partial<LatestRecordMetadata>;
-  }>();
+  const [
+    latestMonthlyAnnualRecordMetadata,
+    setLatestMonthlyAnnualRecordMetadata,
+  ] = useState<LatestAnnualMonthlyRecordMetadata>();
 
   const userFirstName = userStore.name?.split(" ")[0];
   const taskCardLabelsActionLinks: TaskCardActionLinksMetadataList = {
@@ -64,7 +64,7 @@ export const Home = observer(() => {
       .map((metric) => {
         const metricFrequency = metric.custom_frequency || metric.frequency;
         const hasMetricValue = Boolean(
-          tempLatestRecordInfo?.[
+          latestMonthlyAnnualRecordMetadata?.[
             metricFrequency === "MONTHLY" ? "monthly" : "annual"
           ]?.metrics?.find((m) => m.key === metric.key)?.value
         );
@@ -94,14 +94,14 @@ export const Home = observer(() => {
         };
       }) || [];
   const monthlyPublishRecordTaskCard = {
-    title: tempLatestRecordInfo?.monthly?.reportTitle || "",
-    description: `Publish all the data you have added for ${tempLatestRecordInfo?.monthly?.reportTitle}`,
+    title: latestMonthlyAnnualRecordMetadata?.monthly?.reportTitle || "",
+    description: `Publish all the data you have added for ${latestMonthlyAnnualRecordMetadata?.monthly?.reportTitle}`,
     actionLinks: [taskCardLabelsActionLinks.publish],
     metricFrequency: "MONTHLY" as ReportFrequency,
   };
   const annualPublishRecordTaskCard = {
-    title: tempLatestRecordInfo?.annual?.reportTitle || "",
-    description: `Publish all the data you have added for ${tempLatestRecordInfo?.annual?.reportTitle}`,
+    title: latestMonthlyAnnualRecordMetadata?.annual?.reportTitle || "",
+    description: `Publish all the data you have added for ${latestMonthlyAnnualRecordMetadata?.annual?.reportTitle}`,
     actionLinks: [taskCardLabelsActionLinks.publish],
     metricFrequency: "ANNUAL" as ReportFrequency,
   };
@@ -154,8 +154,8 @@ export const Home = observer(() => {
                     action.label === taskCardLabelsActionLinks.publish.label;
                   const reportID =
                     metricFrequency && metricFrequency === "MONTHLY"
-                      ? tempLatestRecordInfo?.monthly.id
-                      : tempLatestRecordInfo?.annual.id;
+                      ? latestMonthlyAnnualRecordMetadata?.monthly.id
+                      : latestMonthlyAnnualRecordMetadata?.annual.id;
                   const reviewPagePath =
                     action.label === "Publish" ? "/review" : "";
 
@@ -207,7 +207,7 @@ export const Home = observer(() => {
       );
       await reportStore.getReportOverviews(String(agencyId));
       const records = reportStore.reportOverviews;
-      /** Sorted: latest record first, oldest record last */
+      /** Sort records latest record first, oldest record last */
       const sortedRecords = Object.values(records).sort(
         (a, b) =>
           new Date(b.year, b.month).getTime() -
@@ -219,10 +219,6 @@ export const Home = observer(() => {
       const latestAnnualRecordID = sortedRecords.find(
         (record) => record.frequency === "ANNUAL"
       )?.id;
-
-      await reportStore.getReport(latestMonthlyRecordID as number);
-      await reportStore.getReport(latestAnnualRecordID as number);
-
       const latestMonthlyRecordStatus =
         records[latestMonthlyRecordID || ""]?.status;
       const latestAnnualRecordStatus =
@@ -237,13 +233,19 @@ export const Home = observer(() => {
         records[latestAnnualRecordID || ""]?.year,
         "ANNUAL"
       );
+
+      /** Load ReportStore with both latest monthly and annual records */
+      if (latestMonthlyRecordID)
+        await reportStore.getReport(latestMonthlyRecordID as number);
+      if (latestAnnualRecordID)
+        await reportStore.getReport(latestAnnualRecordID as number);
       const latestMonthlyMetrics =
         reportStore.reportMetrics[latestMonthlyRecordID || ""];
       const latestAnnualMetrics =
         reportStore.reportMetrics[latestAnnualRecordID || ""];
 
       setTempMetrics(metrics);
-      setTempLatestRecordInfo({
+      setLatestMonthlyAnnualRecordMetadata({
         monthly: {
           id: latestMonthlyRecordID,
           reportTitle: latestMonthlyReportTitle,
@@ -284,12 +286,12 @@ export const Home = observer(() => {
           {allMetricsWithValues.find(
             (metric) => metric.metricFrequency === "MONTHLY"
           ) &&
-            tempLatestRecordInfo?.monthly.status !== "PUBLISHED" &&
+            latestMonthlyAnnualRecordMetadata?.monthly.status !== "PUBLISHED" &&
             renderTaskCard(monthlyPublishRecordTaskCard)}
           {allMetricsWithValues.find(
             (metric) => metric.metricFrequency === "ANNUAL"
           ) &&
-            tempLatestRecordInfo?.annual.status !== "PUBLISHED" &&
+            latestMonthlyAnnualRecordMetadata?.annual.status !== "PUBLISHED" &&
             renderTaskCard(annualPublishRecordTaskCard)}
         </Styled.OpenTasksContainer>
 
