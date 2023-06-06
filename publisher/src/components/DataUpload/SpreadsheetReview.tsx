@@ -18,12 +18,11 @@
 import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { showToast } from "@justice-counts/common/components/Toast";
+import { ReportOverview } from "@justice-counts/common/types";
 import { printReportTitle } from "@justice-counts/common/utils";
-import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { data } from "../../mocks/spreadsheetReviewData";
 import { useStore } from "../../stores";
 import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
 import {
@@ -35,59 +34,32 @@ import {
   ListOfModifiedRecordsContainer,
   ModifiedRecordTitle,
 } from "./DataUpload.styles";
+import { UploadedMetric } from "./types";
 
-const SpreadsheetReview: React.FC = observer(() => {
-  // mock data that will be replaced with one from store
-  const {
-    metrics: uploadedMetrics,
-    fileName,
-    unchanged_report_ids: unchangedReportIds,
-    updated_report_ids: updatedReportIds,
-    new_reports: newReports,
-  } = data;
+type SpreadsheetReviewProps = {
+  updatedReportIDs: number[];
+  unchangedReportIDs: number[];
+  newReports: ReportOverview[];
+  uploadedMetrics: UploadedMetric[];
+  fileName: string;
+};
 
-  // with using spreadsheetId we will fetch spreadsheet data
-  // const { agencyId, spreadsheetId } = useParams() as {
-  //   agencyId: string;
-  //   spreadsheetId: string;
-  // };
-
-  const { agencyId } = useParams() as { agencyId: string };
-  const { reportStore } = useStore();
+export function SpreadsheetReview({
+  updatedReportIDs,
+  unchangedReportIDs,
+  newReports,
+  uploadedMetrics,
+  fileName,
+}: SpreadsheetReviewProps) {
+  const { agencyId } = useParams();
   const navigate = useNavigate();
+  const { reportStore } = useStore();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isExistingReportWarningModalOpen, setExistingReportWarningOpen] =
     useState(false);
-  // const [loadingError, setLoadingError] = useState<string | undefined>(
-  //   undefined
-  // );
-
-  // here will be fetch spreadsheet call and loading and error handling
-  // useEffect(() => {
-  //   const initialize = async () => {
-  //     const result = await reportStore.getSpreadsheetReviewData(spreadsheetId);
-  //     if (result instanceof Error) {
-  //       setLoadingError(result.message);
-  //     }
-  //   };
-  //
-  //   initialize();
-  // }, []);
-  //
-  // if (reportStore.loadingSpreadsheetReviewData) {
-  //   return (
-  //     <PageWrapper>
-  //       <Loading />
-  //     </PageWrapper>
-  //   );
-  // }
-  //
-  // if (loadingError || !reportStore.spreadsheetReviewData[spreadsheetId]) {
-  //   return <PageWrapper>Error: {loadingError}</PageWrapper>;
-  // }
 
   // review component props
-  const existingReports = [...updatedReportIds, ...unchangedReportIds]
+  const existingReports = [...updatedReportIDs, ...unchangedReportIDs]
     .map((id) => reportStore.reportOverviews[id])
     .filter((report) => report);
   const hasExistingAndNewRecords =
@@ -98,7 +70,7 @@ const SpreadsheetReview: React.FC = observer(() => {
   );
   const hasAllPublishedRecordsNoOverwrites =
     existingAndNewRecords.filter((record) => record.status !== "PUBLISHED")
-      .length === 0 && updatedReportIds.length === 0;
+      .length === 0 && updatedReportIDs.length === 0;
 
   const publishMultipleRecords = async () => {
     if (agencyId && !hasAllPublishedRecordsNoOverwrites) {
@@ -239,6 +211,4 @@ const SpreadsheetReview: React.FC = observer(() => {
       />
     </>
   );
-});
-
-export default SpreadsheetReview;
+}
