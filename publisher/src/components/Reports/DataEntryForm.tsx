@@ -250,6 +250,10 @@ const DataEntryForm: React.FC<{
     document.body.style.overflow = showDataEntryHelpPage ? "hidden" : "unset";
   }, [showDataEntryHelpPage]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const reportOverview = reportStore.reportOverviews[reportID] as Report;
   const reportMetrics = reportStore.reportMetrics[reportID];
   const metricsBySystem = reportStore.reportMetricsBySystem[reportID];
@@ -257,7 +261,6 @@ const DataEntryForm: React.FC<{
   const metricDisplayNames = Object.values(metricsBySystem)
     .flat()
     .map((metric) => metric.display_name);
-  console.log(metricDisplayNames);
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;
 
   const isReadOnly = userStore.isUserReadOnly(agencyId);
@@ -365,7 +368,6 @@ const DataEntryForm: React.FC<{
                     (metric.custom_frequency || metric.frequency) ===
                       reportOverview.frequency
                 );
-                console.log(JSON.parse(JSON.stringify(metrics)));
                 const disabledMetrics = metrics.filter(
                   (metric) => !metric.enabled
                 );
