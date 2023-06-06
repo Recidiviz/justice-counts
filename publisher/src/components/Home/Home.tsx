@@ -238,6 +238,9 @@ export const Home = observer(() => {
     return <Loading />;
   }
 
+  console.log("untouchedMetrics", untouchedMetrics);
+  console.log("enabledMetrics", enabledMetrics);
+
   return (
     <Styled.HomeContainer>
       <Styled.WelcomeUser>Welcome, {userFirstName}</Styled.WelcomeUser>

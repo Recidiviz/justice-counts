@@ -257,6 +257,7 @@ const DataEntryForm: React.FC<{
   const metricDisplayNames = Object.values(metricsBySystem)
     .flat()
     .map((metric) => metric.display_name);
+  console.log(metricDisplayNames);
   const showMetricSectionTitles = Object.keys(metricsBySystem).length > 1;
 
   const isReadOnly = userStore.isUserReadOnly(agencyId);
@@ -355,12 +356,16 @@ const DataEntryForm: React.FC<{
             </DataEntryFormTitle>
 
             {/* Metrics */}
+
             {Object.entries(metricsBySystem).map(
               ([system, metrics], systemIndex) => {
                 const enabledMetrics = metrics.filter(
-                  (metric) => metric.enabled
+                  (metric) =>
+                    metric.enabled &&
+                    (metric.custom_frequency || metric.frequency) ===
+                      reportOverview.frequency
                 );
-
+                console.log(JSON.parse(JSON.stringify(metrics)));
                 const disabledMetrics = metrics.filter(
                   (metric) => !metric.enabled
                 );
