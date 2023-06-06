@@ -123,7 +123,12 @@ export const Home = observer(() => {
   );
   const hasNoEnabledOrUntouchedMetrics =
     enabledMetrics.length === 0 && untouchedMetrics.length === 0;
-  const welcomeDescription = hasNoEnabledOrUntouchedMetrics
+  const hasCompletedAllTasks =
+    hasNoEnabledOrUntouchedMetrics ||
+    (latestMonthlyAnnualRecordMetadata?.annual.status === "PUBLISHED" &&
+      latestMonthlyAnnualRecordMetadata?.monthly.status === "PUBLISHED" &&
+      allMetricsWithoutValues.length === 0);
+  const welcomeDescription = hasCompletedAllTasks
     ? "All tasks are completed"
     : "See open tasks below";
 
@@ -202,6 +207,7 @@ export const Home = observer(() => {
 
   useEffect(() => {
     const fetchMetricsAndRecords = async () => {
+      await reportStore.resetState();
       const metrics = await metricConfigStore.getMetricSettings(
         String(agencyId)
       );
@@ -279,7 +285,7 @@ export const Home = observer(() => {
         <Styled.LeftPanelWrapper />
 
         <Styled.OpenTasksContainer>
-          {hasNoEnabledOrUntouchedMetrics
+          {hasCompletedAllTasks
             ? renderTaskCard(allTasksCompleteTaskCardMetadata)
             : allMetricsWithoutValues.map((metric) => renderTaskCard(metric))}
           {/*  */}
