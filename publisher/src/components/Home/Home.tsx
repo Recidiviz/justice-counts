@@ -38,6 +38,7 @@ export const Home = observer(() => {
   const navigate = useNavigate();
   const { agencyId } = useParams();
 
+  const [loading, setLoading] = useState(true);
   const [tempMetrics, setTempMetrics] = useState<Metric[]>();
   const [
     latestMonthlyAnnualRecordMetadata,
@@ -207,6 +208,7 @@ export const Home = observer(() => {
 
   useEffect(() => {
     const fetchMetricsAndRecords = async () => {
+      setLoading(true);
       await reportStore.resetState();
       const metrics = await metricConfigStore.getMetricSettings(
         String(agencyId)
@@ -265,12 +267,13 @@ export const Home = observer(() => {
           status: latestAnnualRecordStatus,
         },
       });
+      setLoading(false);
     };
 
     fetchMetricsAndRecords();
   }, [agencyId, metricConfigStore, reportStore]);
 
-  if (!tempMetrics) {
+  if (!tempMetrics || loading) {
     return <Loading />;
   }
 
