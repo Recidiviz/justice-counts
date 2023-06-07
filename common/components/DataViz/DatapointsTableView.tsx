@@ -73,9 +73,16 @@ type DatapointValueCellProps = {
 export const DatapointsTableView: React.FC<{
   datapoints: RawDatapoint[];
   useDataPageStyles?: boolean;
+  useMultiAgencyStyles?: boolean;
   metricName: string;
   metricFrequency?: ReportFrequency;
-}> = ({ datapoints, useDataPageStyles, metricName, metricFrequency }) => {
+}> = ({
+  datapoints,
+  useDataPageStyles,
+  metricName,
+  metricFrequency,
+  useMultiAgencyStyles,
+}) => {
   const [hoveredRowKey, setHoveredRowKey] = useState<string | null>(null);
   const [hoveredColKey, setHoveredColKey] = useState<number | null>(null);
 
@@ -150,7 +157,10 @@ export const DatapointsTableView: React.FC<{
             <DatapointsTableNamesTableBody>
               {!useDataPageStyles && (
                 <DatapointsTableNamesRow>
-                  <DatapointsMetricNameCell title={metricName}>
+                  <DatapointsMetricNameCell
+                    title={metricName}
+                    useMultiAgencyStyles={useMultiAgencyStyles}
+                  >
                     {metricName}
                     <DatapointsMetricNameCellTooltip>
                       {metricName}

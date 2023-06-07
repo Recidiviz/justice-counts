@@ -116,12 +116,12 @@ export const DataUpload: React.FC = observer(() => {
   >();
   const [newAndUpdatedReports, setNewAndUpdatedReports] = useState<{
     newReports: ReportOverview[];
-    updatedReportIDs: number[];
-    unchangedReportIDs: number[];
+    updatedReports: ReportOverview[];
+    unchangedReports: ReportOverview[];
   }>({
     newReports: [],
-    updatedReportIDs: [],
-    unchangedReportIDs: [],
+    updatedReports: [],
+    unchangedReports: [],
   });
 
   const headerBackground = () => {
@@ -169,8 +169,8 @@ export const DataUpload: React.FC = observer(() => {
        */
       setNewAndUpdatedReports({
         newReports: data.new_reports || [],
-        updatedReportIDs: data.updated_report_ids || [],
-        unchangedReportIDs: data.unchanged_report_ids || [],
+        updatedReports: data.updated_reports || [],
+        unchangedReports: data.unchanged_reports || [],
       });
 
       /** Errors and/or Warnings Encountered During Upload -- Show Interstitial instead of Confirmation Page */
@@ -193,8 +193,8 @@ export const DataUpload: React.FC = observer(() => {
           uploadedMetrics: data.metrics,
           fileName: file.name,
           newReports: data.new_reports || [],
-          updatedReportIDs: data.updated_report_ids || [],
-          unchangedReportIDs: data.unchanged_report_ids || [],
+          updatedReports: data.updated_reports || [],
+          unchangedReports: data.unchanged_reports || [],
         },
         replace: true,
       });

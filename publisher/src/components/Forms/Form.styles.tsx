@@ -39,7 +39,6 @@ export const AppWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  overflow: hidden;
 `;
 
 export const PageWrapper = styled.div`
@@ -51,7 +50,6 @@ export const PageWrapper = styled.div`
   padding-top: ${HEADER_BAR_HEIGHT}px;
   z-index: 1;
   background: ${palette.solid.white};
-  overflow: hidden;
 `;
 
 export const FormWrapper = styled.div<{ showDataEntryHelpPage?: boolean }>`

@@ -45,8 +45,8 @@ export const Wrapper = styled.div`
 export const Content = styled.div`
   width: 582px;
   max-width: 582px;
-  height: 587px;
-  max-height: 587px;
+  height: 640px;
+  max-height: 640px;
   padding-top: 24px;
   background-color: ${palette.solid.white};
   position: relative;
@@ -126,9 +126,11 @@ export const ToggleSwitchesListHeader = styled.div`
 `;
 
 // definitions
-export const ChooseDefaultSettings = styled.span`
+export const ChooseDefaultSettings = styled.span<{ disabled?: boolean }>`
   color: ${palette.solid.blue};
   cursor: pointer;
+
+  ${({ disabled }) => disabled && `pointer-events: none`};
 `;
 
 export const ContextContainer = styled.div``;

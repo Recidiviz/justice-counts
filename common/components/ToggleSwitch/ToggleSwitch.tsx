@@ -25,7 +25,11 @@ import {
   ToggleSwitchProps,
 } from ".";
 
-export const ToggleSwitch = ({ checked, onChange }: ToggleSwitchProps) => {
+export const ToggleSwitch = ({
+  checked,
+  onChange,
+  disabled,
+}: ToggleSwitchProps) => {
   return (
     <ToggleSwitchContainer>
       <ToggleSwitchLabel>
@@ -33,8 +37,9 @@ export const ToggleSwitch = ({ checked, onChange }: ToggleSwitchProps) => {
           type="checkbox"
           checked={checked}
           onChange={onChange}
+          disabled={disabled}
         />
-        <Slider />
+        <Slider disabled={disabled} />
       </ToggleSwitchLabel>
     </ToggleSwitchContainer>
   );

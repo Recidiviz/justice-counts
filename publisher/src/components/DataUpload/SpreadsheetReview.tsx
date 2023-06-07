@@ -26,6 +26,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useStore } from "../../stores";
 import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
 import {
+  DatapointsByMetricNameByAgencyName,
   ReviewHeaderActionButton,
   ReviewMetricOverwrites,
   ReviewMetrics,
@@ -37,16 +38,16 @@ import {
 import { UploadedMetric } from "./types";
 
 type SpreadsheetReviewProps = {
-  updatedReportIDs: number[];
-  unchangedReportIDs: number[];
+  updatedReports: ReportOverview[];
+  unchangedReports: ReportOverview[];
   newReports: ReportOverview[];
   uploadedMetrics: UploadedMetric[];
   fileName: string;
 };
 
 export function SpreadsheetReview({
-  updatedReportIDs,
-  unchangedReportIDs,
+  updatedReports,
+  unchangedReports,
   newReports,
   uploadedMetrics,
   fileName,
@@ -59,9 +60,10 @@ export function SpreadsheetReview({
     useState(false);
 
   // review component props
-  const existingReports = [...updatedReportIDs, ...unchangedReportIDs]
-    .map((id) => reportStore.reportOverviews[id])
-    .filter((report) => report);
+  const existingReports = [
+    ...(updatedReports || []),
+    ...(unchangedReports || []),
+  ];
   const hasExistingAndNewRecords =
     existingReports.length > 0 && newReports.length > 0;
   const existingAndNewRecords = [...existingReports, ...newReports];
@@ -70,7 +72,7 @@ export function SpreadsheetReview({
   );
   const hasAllPublishedRecordsNoOverwrites =
     existingAndNewRecords.filter((record) => record.status !== "PUBLISHED")
-      .length === 0 && updatedReportIDs.length === 0;
+      .length === 0 && updatedReports?.length === 0;
 
   const publishMultipleRecords = async () => {
     if (agencyId && !hasAllPublishedRecordsNoOverwrites) {
@@ -92,6 +94,45 @@ export function SpreadsheetReview({
     setIsSuccessModalOpen(true);
   };
 
+  /**
+   * Groups uploaded metrics' datapoints by metric name by agency name
+   * @returns Object { isMultiAgencyUpload, datapointsByMetricNameByAgencyName }
+   *          - isMultiAgencyUpload { boolean } - whether or not this is a multiple agency upload
+   *          - datapointsByMetricNameByAgencyName { object } - grouped
+   * @example
+   *  {
+   *    "Agency 1": { "Staff": [...datapoints], "Arrests": [...datapoints], ... }
+   *    "Agency 2": { "Staff": [...datapoints], ... },
+   *  }
+   *   */
+  const metricsToDatapointsByMetricNameByAgencyName = (
+    metrics: UploadedMetric[]
+  ) => {
+    const allDatapoints = metrics
+      .flatMap((metric) => metric.datapoints)
+      .filter((dp) => dp.value);
+    const datapointsByMetricNameByAgencyName = allDatapoints.reduce(
+      (acc, dp) => {
+        if (!dp.agency_name || !dp.metric_display_name) return acc;
+        if (!acc[dp.agency_name]) {
+          acc[dp.agency_name] = {};
+        }
+        if (!acc[dp.agency_name][dp.metric_display_name]) {
+          acc[dp.agency_name][dp.metric_display_name] = [];
+        }
+        acc[dp.agency_name][dp.metric_display_name].push(dp);
+        return acc;
+      },
+      {} as DatapointsByMetricNameByAgencyName
+    );
+    const isMultiAgencyUpload =
+      Object.values(datapointsByMetricNameByAgencyName).length > 1;
+
+    return { isMultiAgencyUpload, datapointsByMetricNameByAgencyName };
+  };
+
+  const { isMultiAgencyUpload, datapointsByMetricNameByAgencyName } =
+    metricsToDatapointsByMetricNameByAgencyName(uploadedMetrics);
   const metrics = uploadedMetrics
     .map((metric) => ({
       ...metric,
@@ -108,6 +149,7 @@ export function SpreadsheetReview({
           key: dp.id,
           metricName: dp.metric_display_name || "",
           dimensionName: dp.dimension_display_name || "",
+          agencyName: dp.agency_name,
           startDate: dp.start_date,
         };
         overwrites.push(overwriteData);
@@ -184,6 +226,7 @@ export function SpreadsheetReview({
             onClick: () => setExistingReportWarningOpen(false),
           }}
           modalType="warning"
+          centerText
         />
       )}
       {isSuccessModalOpen && (
@@ -199,6 +242,7 @@ export function SpreadsheetReview({
             onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
           }}
           modalType="success"
+          centerText
         />
       )}
       <ReviewMetrics
@@ -208,6 +252,8 @@ export function SpreadsheetReview({
         metrics={metrics}
         metricOverwrites={overwrites}
         records={existingAndNewRecords}
+        isMultiAgencyUpload={isMultiAgencyUpload}
+        datapointsByMetricNameByAgencyName={datapointsByMetricNameByAgencyName}
       />
     </>
   );

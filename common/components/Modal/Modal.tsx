@@ -32,6 +32,7 @@ type ModalProps = {
   secondaryButton: { label: string; onClick: () => void };
   modalType?: ModalType;
   modalBackground?: ModalBackground;
+  centerText?: boolean;
 };
 
 export function Modal({
@@ -41,6 +42,7 @@ export function Modal({
   secondaryButton,
   modalType,
   modalBackground,
+  centerText,
 }: ModalProps) {
   const primaryButtonColor = (): ButtonColor => {
     if (modalType === "alert") return "red";
@@ -58,7 +60,7 @@ export function Modal({
 
   const Portal = (
     <Styled.OuterWrapper modalBackground={modalBackground}>
-      <Styled.InnerWrapper modalType={modalType}>
+      <Styled.InnerWrapper modalType={modalType} centerText={centerText}>
         {modalType === "success" && <Styled.Icon src={successIcon} alt="" />}
         {modalType === "warning" && <Styled.Icon src={warningIcon} alt="" />}
         {modalType === "alert" && <Styled.Icon src={alertIcon} alt="" />}
