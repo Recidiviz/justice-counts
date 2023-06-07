@@ -10200,6 +10200,6 @@ export const data: MockDataType = {
   ],
   new_reports: [],
   non_metric_errors: [],
-  unchanged_report_ids: [3585, 3586, 3747, 3759, 4056, 4058, 4059, 4060, 4061],
-  updated_report_ids: [4057, 3587, 3758],
+  unchanged_reports: [],
+  updated_reports: [],
 };

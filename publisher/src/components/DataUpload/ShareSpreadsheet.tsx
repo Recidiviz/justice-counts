@@ -26,8 +26,8 @@ function ShareSpreadsheet() {
   const {
     metrics: uploadedMetrics,
     fileName,
-    unchanged_report_ids: unchangedReportIds,
-    updated_report_ids: updatedReportIds,
+    unchanged_reports: unchangedReports,
+    updated_reports: updatedReports,
     new_reports: newReports,
   } = data;
 
@@ -66,8 +66,8 @@ function ShareSpreadsheet() {
 
   return (
     <SpreadsheetReview
-      updatedReportIDs={updatedReportIds}
-      unchangedReportIDs={unchangedReportIds}
+      updatedReports={updatedReports}
+      unchangedReports={unchangedReports}
       newReports={newReports}
       uploadedMetrics={uploadedMetrics}
       fileName={fileName}

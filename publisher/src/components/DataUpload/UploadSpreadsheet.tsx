@@ -31,14 +31,14 @@ function UploadSpreadsheet() {
     uploadedMetrics,
     fileName,
     newReports,
-    updatedReportIDs,
-    unchangedReportIDs,
+    updatedReports,
+    unchangedReports,
   } = state as {
     uploadedMetrics: UploadedMetric[] | null;
     fileName: string;
     newReports: ReportOverview[];
-    updatedReportIDs: number[];
-    unchangedReportIDs: number[];
+    updatedReports: ReportOverview[];
+    unchangedReports: ReportOverview[];
   };
 
   if (!uploadedMetrics || !fileName) {
@@ -47,8 +47,8 @@ function UploadSpreadsheet() {
 
   return (
     <SpreadsheetReview
-      updatedReportIDs={updatedReportIDs}
-      unchangedReportIDs={unchangedReportIDs}
+      updatedReports={updatedReports}
+      unchangedReports={unchangedReports}
       newReports={newReports}
       uploadedMetrics={uploadedMetrics}
       fileName={fileName}
