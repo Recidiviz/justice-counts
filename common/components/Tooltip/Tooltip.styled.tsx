@@ -24,7 +24,7 @@ export const TooltipContainer = styled.div<{
   tooltipColor?: TooltipColor;
   tooltipWidth?: TooltipWidth;
 }>`
-  padding: 8px 16px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;

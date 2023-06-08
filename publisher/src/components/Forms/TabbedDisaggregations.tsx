@@ -142,6 +142,18 @@ export const TabbedDisaggregations: React.FC<{
     hasInput: boolean | undefined
   ) => {
     if (!disaggregationEnabled) {
+      const tooltipContent = (
+        <>
+          This has been disabled by an admin because the data is unavailable. If
+          you have the data for this, consider changing the configuration in the{" "}
+          <DisaggregationTooltipLink
+            onClick={() => navigate(`/agency/${agencyId}/metric-config`)}
+          >
+            Settings
+          </DisaggregationTooltipLink>
+        </>
+      );
+
       return (
         <>
           <DisaggregationIcon
@@ -152,18 +164,7 @@ export const TabbedDisaggregations: React.FC<{
           <Tooltip
             anchorId={replaceSymbolsWithDash(activeDisaggregationObj.key)}
             position="bottom"
-            content={
-              <>
-                This has been disabled by an admin because the data is
-                unavailable. If you have the data for this, consider changing
-                the configuration in the{" "}
-                <DisaggregationTooltipLink
-                  onClick={() => navigate(`/agency/${agencyId}/metric-config`)}
-                >
-                  Settings
-                </DisaggregationTooltipLink>
-              </>
-            }
+            content={tooltipContent}
             tooltipWidth="narrow"
             clickable
           />

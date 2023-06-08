@@ -36,7 +36,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   persistLabel?: boolean;
   metricKey?: string;
   notReported?: boolean;
-  notReportedIconWithTooltip?: NotReportedIconTooltipProps;
+  notReportedIconTooltip?: NotReportedIconTooltipProps;
   isPlaceholderVisible?: boolean;
   textSize?: InputTextSize;
 }
@@ -51,7 +51,7 @@ export function Input({
   persistLabel,
   metricKey,
   notReported,
-  notReportedIconWithTooltip,
+  notReportedIconTooltip,
   isPlaceholderVisible,
   textSize,
   ...props
@@ -62,11 +62,22 @@ export function Input({
   const { name, value, disabled } = props;
 
   const tooltipId = replaceSymbolsWithDash(`input-${metricKey}-${name}`);
+  const notReportedIconTooltipContent = notReportedIconTooltip ? (
+    <>
+      {notReportedIconTooltip.tooltipText}{" "}
+      <Styled.TooltipLink onClick={notReportedIconTooltip.tooltipLink}>
+        {notReportedIconTooltip.tooltipLinkLabel}
+      </Styled.TooltipLink>
+      .
+    </>
+  ) : (
+    ""
+  );
 
   const showTooltipIfTruncated = (
     e: React.MouseEvent<HTMLInputElement, MouseEvent>
   ) => {
-    if (notReportedIconWithTooltip) {
+    if (notReportedIconTooltip) {
       setShowNotReportedTooltip(true);
     }
     const labelElement = e.currentTarget.querySelector("label") as HTMLElement;
@@ -141,21 +152,11 @@ export function Input({
       {notReported && (
         <Styled.LabelChipPosition textSize={textSize}>
           <img id={`img-${tooltipId}`} src={notReportedIcon} alt="" />
-          {notReportedIconWithTooltip && (
+          {notReportedIconTooltip && (
             <Tooltip
               anchorId={`img-${tooltipId}`}
               position="bottom"
-              content={
-                <>
-                  {notReportedIconWithTooltip.tooltipText}{" "}
-                  <Styled.TooltipLink
-                    onClick={notReportedIconWithTooltip.tooltipLink}
-                  >
-                    {notReportedIconWithTooltip.tooltipLinkLabel}
-                  </Styled.TooltipLink>
-                  .
-                </>
-              }
+              content={notReportedIconTooltipContent}
               tooltipWidth="narrow"
               clickable
               isOpen={showNotReportedTooltip}
