@@ -20,14 +20,8 @@ import { Modal } from "@justice-counts/common/components/Modal";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { ReportOverview } from "@justice-counts/common/types";
 import { printReportTitle } from "@justice-counts/common/utils";
-import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
-import {
-  Navigate,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
@@ -43,31 +37,27 @@ import {
 } from "./DataUpload.styles";
 import { UploadedMetric } from "./types";
 
-const UploadReview: React.FC = observer(() => {
+type SpreadsheetReviewProps = {
+  updatedReports: ReportOverview[];
+  unchangedReports: ReportOverview[];
+  newReports: ReportOverview[];
+  uploadedMetrics: UploadedMetric[];
+  fileName: string;
+};
+
+export function SpreadsheetReview({
+  updatedReports,
+  unchangedReports,
+  newReports,
+  uploadedMetrics,
+  fileName,
+}: SpreadsheetReviewProps) {
   const { agencyId } = useParams();
-  const { state } = useLocation();
-  const { reportStore } = useStore();
-  const {
-    uploadedMetrics,
-    fileName,
-    newReports,
-    updatedReports,
-    unchangedReports,
-  } = state as {
-    uploadedMetrics: UploadedMetric[] | null;
-    fileName: string;
-    newReports: ReportOverview[];
-    updatedReports: ReportOverview[];
-    unchangedReports: ReportOverview[];
-  };
   const navigate = useNavigate();
+  const { reportStore } = useStore();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isExistingReportWarningModalOpen, setExistingReportWarningOpen] =
     useState(false);
-
-  if (!uploadedMetrics || !fileName) {
-    return <Navigate to={`/agency/${agencyId}/${REPORTS_LOWERCASE}`} replace />;
-  }
 
   // review component props
   const existingReports = [
@@ -267,6 +257,4 @@ const UploadReview: React.FC = observer(() => {
       />
     </>
   );
-});
-
-export default UploadReview;
+}
