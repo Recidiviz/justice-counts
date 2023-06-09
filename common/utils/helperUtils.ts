@@ -130,6 +130,7 @@ export const formatNumberInput = (
  *
  * @param value input value
  * @param previousValue previously saved value retrieved from the backend
+ * @param [type] metric context type
  * @returns
  * * `previousValue` from the backend if `value` is undefined
  * * `null` for empty string
@@ -192,6 +193,7 @@ export const groupBy = <T, K extends keyof any>(arr: T[], key: (i: T) => K) => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface MemoizeDebouncedFunction<F extends (...args: any[]) => any> {
   (...args: Parameters<F>): void;
+
   flush: (...args: Parameters<F>) => void;
 }
 
@@ -229,4 +231,12 @@ export function memoizeDebounce<F extends (...args: any[]) => any>(
   };
 
   return wrappedFunction as unknown as MemoizeDebouncedFunction<F>;
+}
+
+/**
+ * Replace all symbols with dash symbol (reason - make valid id)
+ * @param value any string
+ */
+export function replaceSymbolsWithDash(value: string) {
+  return value.replace(/[^A-Za-z0-9]/g, "-").toLowerCase();
 }

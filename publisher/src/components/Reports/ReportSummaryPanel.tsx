@@ -310,7 +310,7 @@ const ReportSummaryPanel: React.FC<{
                   {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
                   <TeamMemberNameWithBadge
                     name={editor.name}
-                    badgeId={`${editor}-${index}`}
+                    badgeId={`${editor.name}-${index}`}
                     role={editor.role}
                   />
                   {index < filteredReportEditors.length - 1 && <CommaSpan />}

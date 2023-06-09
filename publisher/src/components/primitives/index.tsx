@@ -15,19 +15,18 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import { AgencyTeamMemberRole } from "@justice-counts/common/types";
 import React from "react";
-import { Tooltip } from "react-tooltip";
 import styled from "styled-components/macro";
 
 import { ReactComponent as RecidivizAdmin } from "../assets/recidiviz-admin.svg";
 
-const TeamMemberNameContainer = styled.span<{
+const TeamMemberNameContainer = styled.div<{
   color?: string;
 }>`
   display: flex;
   align-items: center;
-  gap: 4px;
 
   svg {
     path {
@@ -39,6 +38,7 @@ const TeamMemberNameContainer = styled.span<{
 const StyledRecidivizAdmin = styled(RecidivizAdmin)`
   min-width: 10px;
   min-height: 16px;
+  margin-left: 4px;
 `;
 
 const NameContainer = styled.span`
@@ -54,27 +54,24 @@ export const TeamMemberNameWithBadge: React.FC<{
   isLast?: boolean;
 }> = ({ name, role, badgeColor, badgeId, isInsideTooltip, isLast }) => {
   const isJCAdminInsideTooltip = isInsideTooltip && name === "JC Admin";
+
   return (
     <>
-      <TeamMemberNameContainer color={badgeColor}>
-        {isInsideTooltip ? (
-          <NameContainer>{`${name}${isLast ? "" : ","}`}</NameContainer>
-        ) : (
-          <NameContainer>{name}</NameContainer>
-        )}
+      <TeamMemberNameContainer color={badgeColor} id={badgeId}>
+        <NameContainer>{name}</NameContainer>
         {role === AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN &&
           !isJCAdminInsideTooltip && <StyledRecidivizAdmin id={badgeId} />}
+        {isInsideTooltip && !isLast && ","}
       </TeamMemberNameContainer>
       {role === AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN &&
-        name !== "JC Admin" && (
+        name !== "JC Admin" &&
+        badgeId && (
           <Tooltip
             anchorId={badgeId}
             content="JC Admin"
-            place="right"
+            position="right"
             noArrow
             offset={6}
-            variant="dark"
-            style={{ fontSize: "14px" }}
           />
         )}
     </>

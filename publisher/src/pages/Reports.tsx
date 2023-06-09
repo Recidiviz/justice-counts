@@ -34,6 +34,7 @@ import {
   TabbedBar,
   TabOption,
 } from "@justice-counts/common/components/TabbedBar";
+import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import { ReportOverview, ReportStatus } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
@@ -51,12 +52,13 @@ import { Onboarding } from "../components/Onboarding";
 import { TeamMemberNameWithBadge } from "../components/primitives";
 import {
   ActionsWrapper,
-  AdditionalEditorsTooltip,
   AndOthersSpan,
   BulkActionModeTitle,
   BulkActionsDropdownContainer,
   Cell,
   DesktopRecordsPageTitle,
+  EditorsContentCellContainer,
+  EditorsTooltipContainer,
   EmptySelectionCircle,
   LabelCell,
   LabelRow,
@@ -107,8 +109,6 @@ const Reports: React.FC = () => {
   const [loadingError, setLoadingError] = useState<string | undefined>(
     undefined
   );
-  const [showAdditionalEditorsTooltip, setShowAdditionalEditorsTooltip] =
-    useState<number>();
   const [reportsFilter, setReportsFilter] = useState<string>(
     `all_${REPORTS_LOWERCASE}`
   );
@@ -331,24 +331,15 @@ const Reports: React.FC = () => {
                     </Cell>
 
                     {/* Editors */}
-                    <Cell
-                      onMouseEnter={() => {
-                        if (filteredReportEditors.length > 1) {
-                          setShowAdditionalEditorsTooltip(report.id);
-                        }
-                      }}
-                      onMouseLeave={() =>
-                        setShowAdditionalEditorsTooltip(undefined)
-                      }
-                    >
+                    <Cell>
                       {filteredReportEditors.length === 0 ? (
                         "-"
                       ) : (
-                        <>
+                        <EditorsContentCellContainer id={`record-${report.id}`}>
                           {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
                           <TeamMemberNameWithBadge
                             name={filteredReportEditors[0].name}
-                            badgeId={report.id.toString()}
+                            badgeId={`admin-${report.id}`}
                             role={filteredReportEditors[0].role}
                           />
                           {filteredReportEditors.length > 1 ? (
@@ -358,9 +349,15 @@ const Reports: React.FC = () => {
                               filteredReportEditors.length > 2 ? "s" : ""
                             }`}</AndOthersSpan>
                           ) : null}
+                        </EditorsContentCellContainer>
+                      )}
 
-                          {showAdditionalEditorsTooltip === report.id && (
-                            <AdditionalEditorsTooltip>
+                      {filteredReportEditors.length > 1 && (
+                        <Tooltip
+                          anchorId={`record-${report.id}`}
+                          position="bottom"
+                          content={
+                            <EditorsTooltipContainer>
                               {filteredReportEditors.map((editor, idx) => (
                                 <React.Fragment key={editor.name}>
                                   {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
@@ -375,9 +372,11 @@ const Reports: React.FC = () => {
                                   />
                                 </React.Fragment>
                               ))}
-                            </AdditionalEditorsTooltip>
-                          )}
-                        </>
+                            </EditorsTooltipContainer>
+                          }
+                          noArrow
+                          tooltipColor="info"
+                        />
                       )}
                     </Cell>
 

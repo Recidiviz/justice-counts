@@ -64,7 +64,7 @@ export const SectionItem = styled.div`
   position: relative;
   cursor: pointer;
 
-  span {
+  & > span {
     ${typography.sizeCSS.normal};
     color: ${palette.solid.blue};
   }
@@ -84,30 +84,5 @@ export const SectionItemLabel = styled.div`
   img {
     width: 20px;
     height: 20px;
-  }
-`;
-
-export const SectionItemTooltip = styled.div`
-  position: absolute;
-  z-index: 2;
-  right: 100px;
-  width: 240px;
-  max-width: 240px;
-  padding: 24px;
-  background-color: ${palette.solid.black};
-  border-radius: 3px;
-  color: ${palette.solid.white};
-  flex-direction: column;
-  gap: 10px;
-  ${typography.sizeCSS.medium};
-  display: none;
-
-  span {
-    ${typography.sizeCSS.normal};
-    color: ${palette.solid.white};
-  }
-
-  ${SectionItem}:hover & {
-    display: flex;
   }
 `;

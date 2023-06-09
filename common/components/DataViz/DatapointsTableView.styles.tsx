@@ -96,23 +96,6 @@ export const DatapointsMetricNameCell = styled(DatapointsTableNamesCell)<{
       useMultiAgencyStyles ? palette.solid.blue : palette.solid.darkgrey};
   }
 `;
-export const DatapointsMetricNameCellTooltip = styled.div`
-  ${typography.sizeCSS.normal};
-  display: none;
-  position: absolute;
-  z-index: 100;
-  transition: opacity 0s ease-out;
-  background: ${palette.solid.darkgrey};
-  box-shadow: 0px 4px 10px rgba(23, 28, 43, 0.2);
-  border-radius: 5px;
-  opacity: 1;
-  padding: 10px 12px;
-  color: ${palette.solid.white};
-
-  ${DatapointsMetricNameCell}:hover & {
-    display: block;
-  }
-`;
 export const DatapointsTableNamesDivider = styled.td`
   ${typography.sizeCSS.small}
   padding-top: 8px;
