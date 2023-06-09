@@ -227,6 +227,29 @@ export const GeneralInstructions: React.FC<
           );
         })}
       </ButtonWrapper>
+      <ButtonWrapper>
+        {systems.map((system) => {
+          const systemName = removeSnakeCase(system).toLowerCase();
+          const systemFileName = systemToTemplateSpreadsheetFileName[system]
+            .split(".xlsx")[0]
+            .concat("_SINGLE_PAGE.xlsx");
+
+          return (
+            <DownloadTemplateBox
+              key={system}
+              href={`/assets/${systemFileName}`}
+              download={systemFileName}
+            >
+              <SpreadsheetIcon />
+
+              <DownloadTemplateSystem>
+                {systemName} Single Page
+                <span>Download</span>
+              </DownloadTemplateSystem>
+            </DownloadTemplateBox>
+          );
+        })}
+      </ButtonWrapper>
 
       <h2>High-Level Summary</h2>
       <p>
