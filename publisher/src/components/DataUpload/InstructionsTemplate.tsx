@@ -354,6 +354,30 @@ export const GeneralInstructions: React.FC<
           </tr>
         </tbody>
       </table>
+      <h3>Single Page Uploads</h3>
+      <p>
+        Alternative to uploading a single Excel workbook with multiple pages or
+        multiple CSV files, a Single Page Upload template is also available (see
+        the{" "}
+        <i>
+          {systems
+            .map((system) => systemToDetails[system].name)
+            .join(", ")
+            .replace(/,(?!.*,)/gim, " and")}{" "}
+          Single Page
+        </i>{" "}
+        Download above).
+      </p>
+      <p>
+        If you choose to upload a Single Page template, the <i>metric</i> column
+        is required to distinguish which metric a given row in the file is
+        associated with.
+      </p>
+      <p>
+        Additionally, each row in the file that contains data for an aggregate
+        metric must have empty cells in the <i>breakdown_category</i> and{" "}
+        <i>breakdown</i> columns.
+      </p>
       <h3>Breakdowns</h3>
       <p>
         If the metric asks you to break the value down into different categories
@@ -433,31 +457,31 @@ export const GeneralInstructions: React.FC<
         Fill in as many categories as you can. Skip any that are not applicable
         to your agency.
       </p>
-      <h3>Multiple Jurisdictions</h3>
+      <h3>Multiple Agencies</h3>
       <p>
-        If you are {REPORTING_LOWERCASE} data for multiple jurisdictions, you
-        should also add a column to each sheet titled <i>jurisdiction_name</i>.
-        The value of this column should be the name of the jurisdiction to which
-        that data point belongs. For instance:
+        If you are sharing data for multiple agencies, you should also add a
+        column to each sheet titled <i>agency</i>. The value of this column
+        should be the name of the agency to which that data point belongs. For
+        instance:
       </p>
       <table>
         <thead>
           <tr>
             <th>year</th>
-            <th>jurisdiction_name</th>
+            <th>agency</th>
             <th>value</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>2021</td>
-            <td>County X</td>
+            <td>Agency X</td>
             <td>1000</td>
           </tr>
 
           <tr>
             <td>2021</td>
-            <td>County Y</td>
+            <td>Agency Y</td>
             <td>2000</td>
           </tr>
         </tbody>
