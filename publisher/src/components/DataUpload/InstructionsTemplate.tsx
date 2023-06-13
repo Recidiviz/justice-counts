@@ -356,9 +356,9 @@ export const GeneralInstructions: React.FC<
       </table>
       <h3>Single Page Uploads</h3>
       <p>
-        Alternative to uploading a single Excel workbook with multiple pages or
-        multiple CSV files, a Single Page Upload template is also available (see
-        the{" "}
+        As an alternative to uploading a single Excel workbook with multiple
+        pages or multiple CSV files, a Single Page Upload template is also
+        available (see the{" "}
         <i>
           {systems
             .map((system) => systemToDetails[system].name)
