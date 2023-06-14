@@ -67,7 +67,7 @@ export const OpenTasksContainer = styled.div`
   gap: 24px;
 `;
 
-export const TaskCard = styled.div`
+export const TaskCardContainer = styled.div`
   padding: 32px;
   border: 1px solid ${palette.highlight.grey3};
 `;

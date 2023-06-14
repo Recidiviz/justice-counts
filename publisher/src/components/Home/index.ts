@@ -17,4 +17,5 @@
 
 export * from "./Home";
 export * from "./Home.styled";
+export * from "./TaskCard";
 export * from "./types";

@@ -17,6 +17,7 @@
 
 import {
   AgencySystems,
+  LatestReportsAgencyMetrics,
   Metric,
   Report,
   ReportOverview,
@@ -156,6 +157,32 @@ class ReportStore {
       const report = (await response.json()) as Report;
       const { metrics, ...overview } = report;
       this.storeMetricDetails(reportID, metrics, overview);
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    } finally {
+      runInAction(() => {
+        this.loadingReportData = false;
+      });
+    }
+  }
+
+  async getLatestReports(
+    currentAgencyId: string
+  ): Promise<void | Error | LatestReportsAgencyMetrics> {
+    try {
+      const response = (await this.api.request({
+        path: `/api/home/${currentAgencyId}`,
+        method: "GET",
+      })) as Response;
+
+      if (response.status !== 200) {
+        throw new Error(
+          `There was an issue getting this ${REPORT_LOWERCASE} .`
+        );
+      }
+
+      const reports = await response.json();
+      return reports;
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
     } finally {
