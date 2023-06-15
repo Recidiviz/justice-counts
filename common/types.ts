@@ -122,12 +122,6 @@ export interface Report extends ReportOverview {
   datapoints: RawDatapoint[];
 }
 
-export type LatestReportsAgencyMetrics = {
-  agency_metrics: Metric[];
-  annual_reports: { [key: string]: Report };
-  monthly_report: Report;
-};
-
 export type MetricWithErrors = Metric & {
   error?: string;
   contexts: MetricContextWithErrors[];

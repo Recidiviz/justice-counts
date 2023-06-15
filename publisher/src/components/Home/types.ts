@@ -17,12 +17,19 @@
 
 import {
   Metric,
+  Report,
   ReportFrequency,
   ReportStatus,
 } from "@justice-counts/common/types";
 
+export type LatestReportsAgencyMetrics = {
+  agency_metrics: Metric[];
+  annual_reports: { [key: string]: Report };
+  monthly_report: Report;
+};
+
 export type TaskCardMetadata = {
-  id?: number;
+  reportID?: number;
   title: string;
   description: string;
   actionLinks?: TaskCardActionLinksMetadata[];

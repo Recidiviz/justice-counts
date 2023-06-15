@@ -15,11 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import {
-  LatestReportsAgencyMetrics,
-  Metric,
-  ReportFrequency,
-} from "@justice-counts/common/types";
+import { Metric, ReportFrequency } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -33,6 +29,7 @@ import { Loading } from "../Loading";
 import {
   AnnualRecordMetadata,
   LatestAnnualMonthlyRecordMetadata,
+  LatestReportsAgencyMetrics,
   TaskCard,
   taskCardLabelsActionLinks,
   TaskCardMetadata,
@@ -64,19 +61,19 @@ export const Home = observer(() => {
       .map((metric) => {
         const metricFrequency = metric.custom_frequency || metric.frequency;
         const startingMonth = metric.starting_month;
+        const latestMonthlyMetricValue =
+          latestMonthlyAnnualRecordMetadata?.monthly?.metrics?.find(
+            (m) => m.key === metric.key
+          )?.value;
+        const latestAnnualMetricValue =
+          startingMonth &&
+          latestMonthlyAnnualRecordMetadata?.annual[
+            startingMonth
+          ]?.metrics?.find((m) => m.key === metric.key)?.value;
         const hasMetricValue =
           metricFrequency === "MONTHLY"
-            ? Boolean(
-                latestMonthlyAnnualRecordMetadata?.monthly?.metrics?.find(
-                  (m) => m.key === metric.key
-                )?.value
-              )
-            : Boolean(
-                startingMonth &&
-                  latestMonthlyAnnualRecordMetadata?.annual[
-                    startingMonth
-                  ]?.metrics?.find((m) => m.key === metric.key)?.value
-              );
+            ? Boolean(latestMonthlyMetricValue)
+            : Boolean(latestAnnualMetricValue);
         const reportID =
           metricFrequency === "MONTHLY"
             ? latestMonthlyAnnualRecordMetadata?.monthly.id
@@ -84,7 +81,7 @@ export const Home = observer(() => {
               latestMonthlyAnnualRecordMetadata?.annual[startingMonth].id;
 
         return {
-          id: reportID,
+          reportID,
           title: metric.display_name,
           description: metric.description,
           actionLinks: hasMetricValue
@@ -110,7 +107,7 @@ export const Home = observer(() => {
               latestMonthlyAnnualRecordMetadata?.annual[startingMonth].id;
 
         return {
-          id: reportID,
+          reportID,
           title: metric.display_name,
           description: metric.description,
           actionLinks: [taskCardLabelsActionLinks.metricAvailability],
@@ -258,7 +255,7 @@ export const Home = observer(() => {
             allMetricsWithoutValuesOrUntouched.map((taskCardMetadata) => (
               <TaskCard
                 metadata={taskCardMetadata}
-                reportID={taskCardMetadata.id}
+                reportID={taskCardMetadata.reportID}
               />
             ))
           )}
