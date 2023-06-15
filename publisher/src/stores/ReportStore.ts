@@ -185,10 +185,6 @@ class ReportStore {
       return latestReportsAndMetrics;
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
-    } finally {
-      runInAction(() => {
-        this.loadingReportData = false;
-      });
     }
   }
 
