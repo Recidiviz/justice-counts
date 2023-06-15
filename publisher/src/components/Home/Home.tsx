@@ -31,6 +31,7 @@ import { ReactComponent as OpenLinkIcon } from "../assets/open-link-icon.svg";
 import { ReactComponent as SettingsIcon } from "../assets/settings-icon.svg";
 import { Loading } from "../Loading";
 import {
+  AnnualRecordMetadata,
   LatestAnnualMonthlyRecordMetadata,
   TaskCard,
   taskCardLabelsActionLinks,
@@ -51,20 +52,31 @@ export const Home = observer(() => {
   ] = useState<LatestAnnualMonthlyRecordMetadata>();
 
   const userFirstName = userStore.name?.split(" ")[0];
+
+  /** Task Card Metadatas */
   const allTasksCompleteTaskCardMetadata: TaskCardMetadata = {
     title: "All tasks complete",
     description: "Your data is updated and published.",
   };
-  const enabledMetrics: TaskCardMetadata[] =
+  const enabledMetricsTaskCardMetadata: TaskCardMetadata[] =
     currentAgencyMetrics
       ?.filter((metric) => metric.enabled)
       .map((metric) => {
         const metricFrequency = metric.custom_frequency || metric.frequency;
-        const hasMetricValue = Boolean(
-          latestMonthlyAnnualRecordMetadata?.[
-            metricFrequency === "MONTHLY" ? "monthly" : "annual"
-          ]?.metrics?.find((m) => m.key === metric.key)?.value
-        );
+        const startingMonth = metric.starting_month;
+        const hasMetricValue =
+          metricFrequency === "MONTHLY"
+            ? Boolean(
+                latestMonthlyAnnualRecordMetadata?.monthly?.metrics?.find(
+                  (m) => m.key === metric.key
+                )?.value
+              )
+            : Boolean(
+                startingMonth &&
+                  latestMonthlyAnnualRecordMetadata?.annual[
+                    startingMonth
+                  ]?.metrics?.find((m) => m.key === metric.key)?.value
+              );
 
         return {
           title: metric.display_name,
@@ -79,7 +91,7 @@ export const Home = observer(() => {
           hasMetricValue,
         };
       }) || [];
-  const untouchedMetrics: TaskCardMetadata[] =
+  const untouchedMetricsTaskCardMetadata: TaskCardMetadata[] =
     currentAgencyMetrics
       ?.filter((metric) => metric.enabled === null)
       .map((metric) => {
@@ -90,21 +102,23 @@ export const Home = observer(() => {
           metricSettingsParams: `?system=${metric.system.key.toLowerCase()}&metric=${metric.key.toLowerCase()}`,
         };
       }) || [];
-  const monthlyPublishRecordTaskCardMetadata = {
-    title: latestMonthlyAnnualRecordMetadata?.monthly?.reportTitle || "",
-    description: `Publish all the data you have added for ${latestMonthlyAnnualRecordMetadata?.monthly?.reportTitle}`,
-    actionLinks: [taskCardLabelsActionLinks.publish],
-    metricFrequency: "MONTHLY" as ReportFrequency,
+
+  /** Creates Publish Record task card metadata for monthly and annual records */
+  const createPublishRecordTaskCardMetadata = (
+    reportTitle: string,
+    frequency: ReportFrequency
+  ) => {
+    return {
+      title: reportTitle,
+      description: `Publish all the data you have added for ${reportTitle}`,
+      actionLinks: [taskCardLabelsActionLinks.publish],
+      metricFrequency: frequency,
+    };
   };
-  const annualPublishRecordTaskCard = {
-    title: latestMonthlyAnnualRecordMetadata?.annual?.reportTitle || "",
-    description: `Publish all the data you have added for ${latestMonthlyAnnualRecordMetadata?.annual?.reportTitle}`,
-    actionLinks: [taskCardLabelsActionLinks.publish],
-    metricFrequency: "ANNUAL" as ReportFrequency,
-  };
+
   const { allMetricsWithValues, allMetricsWithoutValues } = [
-    ...untouchedMetrics,
-    ...enabledMetrics,
+    ...untouchedMetricsTaskCardMetadata,
+    ...enabledMetricsTaskCardMetadata,
   ].reduce(
     (acc, metric) => {
       if (metric.hasMetricValue) {
@@ -118,15 +132,19 @@ export const Home = observer(() => {
       [key: string]: TaskCardMetadata[];
     }
   );
-  const hasNoEnabledOrUntouchedMetrics =
-    enabledMetrics.length === 0 && untouchedMetrics.length === 0;
+  const hasNoEnabledOrUntouchedMetricsTaskCardMetadata =
+    enabledMetricsTaskCardMetadata.length === 0 &&
+    untouchedMetricsTaskCardMetadata.length === 0;
   const hasCompletedAllTasks =
-    hasNoEnabledOrUntouchedMetrics ||
-    (latestMonthlyAnnualRecordMetadata?.annual.status === "PUBLISHED" &&
+    hasNoEnabledOrUntouchedMetricsTaskCardMetadata ||
+    (latestMonthlyAnnualRecordMetadata &&
+      Object.values(latestMonthlyAnnualRecordMetadata.annual).find(
+        (metadata) => metadata.status === "PUBLISHED"
+      ) &&
       latestMonthlyAnnualRecordMetadata?.monthly.status === "PUBLISHED" &&
       allMetricsWithoutValues.length === 0);
-  const welcomeDescription = hasCompletedAllTasks
-    ? "All tasks are completed"
+  const welcomeDescription = !hasCompletedAllTasks
+    ? ""
     : "See open tasks below";
 
   // const renderSystemSelectorTabs = (
@@ -156,9 +174,9 @@ export const Home = observer(() => {
 
       const {
         agency_metrics: agencyMetrics,
-        annual_report: annualRecord,
+        annual_reports: annualRecord,
         monthly_report: monthlyRecord,
-      } = (await reportStore.getLatestReports(
+      } = (await reportStore.getLatestReportsAndMetrics(
         agencyId as string
       )) as LatestReportsAgencyMetrics;
       const monthlyRecordReportTitle =
@@ -169,14 +187,25 @@ export const Home = observer(() => {
               monthlyRecord.frequency
             )
           : "";
-      const annualRecordReportTitle =
-        "month" in annualRecord
-          ? printReportTitle(
-              annualRecord.month,
-              annualRecord.year,
-              annualRecord.frequency
-            )
-          : "";
+
+      const annualRecordsMetadata = Object.entries(annualRecord).reduce(
+        (acc, [startingMonth, record]) => {
+          const annualRecordReportTitle = printReportTitle(
+            record.month,
+            record.year,
+            record.frequency
+          );
+
+          acc[startingMonth] = {
+            id: record?.id,
+            reportTitle: annualRecordReportTitle,
+            metrics: record?.metrics,
+            status: record?.status,
+          };
+          return acc;
+        },
+        {} as AnnualRecordMetadata
+      );
 
       setAgencyMetrics(agencyMetrics);
       setLatestMonthlyAnnualRecordMetadata({
@@ -186,12 +215,7 @@ export const Home = observer(() => {
           metrics: monthlyRecord?.metrics,
           status: monthlyRecord?.status,
         },
-        annual: {
-          id: annualRecord?.id,
-          reportTitle: annualRecordReportTitle,
-          metrics: annualRecord?.metrics,
-          status: annualRecord?.status,
-        },
+        annual: annualRecordsMetadata,
       });
       setLoading(false);
     };
@@ -235,16 +259,20 @@ export const Home = observer(() => {
           {allMetricsWithValues.find(
             (metric) => metric.metricFrequency === "MONTHLY"
           ) &&
-            latestMonthlyAnnualRecordMetadata?.monthly.status !==
+            latestMonthlyAnnualRecordMetadata &&
+            latestMonthlyAnnualRecordMetadata.monthly.status !==
               "PUBLISHED" && (
               <TaskCard
-                metadata={monthlyPublishRecordTaskCardMetadata}
+                metadata={createPublishRecordTaskCardMetadata(
+                  latestMonthlyAnnualRecordMetadata.monthly.reportTitle || "",
+                  "MONTHLY"
+                )}
                 latestMonthlyAnnualRecordMetadata={
                   latestMonthlyAnnualRecordMetadata
                 }
               />
             )}
-          {allMetricsWithValues.find(
+          {/* {allMetricsWithValues.find(
             (metric) => metric.metricFrequency === "ANNUAL"
           ) &&
             latestMonthlyAnnualRecordMetadata?.annual.status !==
@@ -255,7 +283,7 @@ export const Home = observer(() => {
                   latestMonthlyAnnualRecordMetadata
                 }
               />
-            )}
+            )} */}
         </Styled.OpenTasksContainer>
 
         <Styled.Submenu>

@@ -166,7 +166,7 @@ class ReportStore {
     }
   }
 
-  async getLatestReports(
+  async getLatestReportsAndMetrics(
     currentAgencyId: string
   ): Promise<void | Error | LatestReportsAgencyMetrics> {
     try {
@@ -181,8 +181,8 @@ class ReportStore {
         );
       }
 
-      const reports = await response.json();
-      return reports;
+      const latestReportsAndMetrics = await response.json();
+      return latestReportsAndMetrics;
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
     } finally {

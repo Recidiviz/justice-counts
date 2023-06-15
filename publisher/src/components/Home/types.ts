@@ -43,7 +43,11 @@ export type LatestRecordMetadata = {
   reportTitle: string;
 };
 
+export type AnnualRecordMetadata = {
+  [startingMonth: string]: Partial<LatestRecordMetadata>;
+};
+
 export type LatestAnnualMonthlyRecordMetadata = {
   monthly: Partial<LatestRecordMetadata>;
-  annual: Partial<LatestRecordMetadata>;
+  annual: AnnualRecordMetadata;
 };
