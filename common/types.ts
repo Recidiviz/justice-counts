@@ -124,7 +124,7 @@ export interface Report extends ReportOverview {
 
 export type LatestReportsAgencyMetrics = {
   agency_metrics: Metric[];
-  annual_report: Report;
+  annual_reports: { [key: string]: Report };
   monthly_report: Report;
 };
 
