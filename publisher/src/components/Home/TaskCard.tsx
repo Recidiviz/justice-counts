@@ -48,6 +48,7 @@ export const TaskCard: React.FC<{
             <Styled.TaskCardActionLink
               key={action.label}
               onClick={() => {
+                /** Which action type is this? */
                 const isSetMetricAvailabilityAction =
                   action.label ===
                   taskCardLabelsActionLinks.metricAvailability.label;
@@ -55,8 +56,8 @@ export const TaskCard: React.FC<{
                   action.label === taskCardLabelsActionLinks.manualEntry.label;
                 const isPublishAction =
                   action.label === taskCardLabelsActionLinks.publish.label;
-                const reviewPagePath =
-                  action.label === "Publish" ? "/review" : "";
+                /** Add `/review` to Publish Actions' navigation path  */
+                const reviewPagePath = isPublishAction ? "/review" : "";
 
                 if (isSetMetricAvailabilityAction) {
                   return navigate(`./${action.path + metricSettingsParams}`);

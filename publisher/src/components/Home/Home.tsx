@@ -190,7 +190,7 @@ export const Home = observer(() => {
 
       const {
         agency_metrics: agencyMetrics,
-        annual_reports: annualRecord,
+        annual_reports: annualRecords,
         monthly_report: monthlyRecord,
       } = (await reportStore.getLatestReportsAndMetrics(
         agencyId as string
@@ -200,8 +200,9 @@ export const Home = observer(() => {
         monthlyRecord.year,
         monthlyRecord.frequency
       );
-      const annualRecordsMetadata = Object.entries(annualRecord).reduce(
+      const annualRecordsMetadata = Object.entries(annualRecords).reduce(
         (acc, [startingMonth, record]) => {
+          if (record.metrics.length === 0) return acc;
           const annualRecordReportTitle = printReportTitle(
             record.month,
             record.year,
