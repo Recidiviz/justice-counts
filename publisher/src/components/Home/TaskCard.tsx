@@ -18,11 +18,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import {
-  LatestAnnualMonthlyRecordMetadata,
-  TaskCardActionLinksMetadataList,
-  TaskCardMetadata,
-} from ".";
+import { TaskCardActionLinksMetadataList, TaskCardMetadata } from ".";
 import * as Styled from "./Home.styled";
 
 export const taskCardLabelsActionLinks: TaskCardActionLinksMetadataList = {
@@ -37,16 +33,10 @@ export const taskCardLabelsActionLinks: TaskCardActionLinksMetadataList = {
 
 export const TaskCard: React.FC<{
   metadata: TaskCardMetadata;
-  latestMonthlyAnnualRecordMetadata?: LatestAnnualMonthlyRecordMetadata;
-}> = ({ metadata, latestMonthlyAnnualRecordMetadata }) => {
+  reportID?: number;
+}> = ({ metadata, reportID }) => {
   const navigate = useNavigate();
-  const {
-    title,
-    description,
-    actionLinks,
-    metricFrequency,
-    metricSettingsParams,
-  } = metadata;
+  const { title, description, actionLinks, metricSettingsParams } = metadata;
 
   return (
     <Styled.TaskCardContainer key={title}>
@@ -65,10 +55,6 @@ export const TaskCard: React.FC<{
                   action.label === taskCardLabelsActionLinks.manualEntry.label;
                 const isPublishAction =
                   action.label === taskCardLabelsActionLinks.publish.label;
-                const reportID =
-                  metricFrequency && metricFrequency === "MONTHLY"
-                    ? latestMonthlyAnnualRecordMetadata?.monthly.id
-                    : latestMonthlyAnnualRecordMetadata?.annual.id;
                 const reviewPagePath =
                   action.label === "Publish" ? "/review" : "";
 

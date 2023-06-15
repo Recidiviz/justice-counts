@@ -22,6 +22,7 @@ import {
 } from "@justice-counts/common/types";
 
 export type TaskCardMetadata = {
+  id?: number;
   title: string;
   description: string;
   actionLinks?: TaskCardActionLinksMetadata[];
@@ -44,10 +45,10 @@ export type LatestRecordMetadata = {
 };
 
 export type AnnualRecordMetadata = {
-  [startingMonth: string]: Partial<LatestRecordMetadata>;
+  [startingMonth: string]: LatestRecordMetadata;
 };
 
 export type LatestAnnualMonthlyRecordMetadata = {
-  monthly: Partial<LatestRecordMetadata>;
+  monthly: LatestRecordMetadata;
   annual: AnnualRecordMetadata;
 };
