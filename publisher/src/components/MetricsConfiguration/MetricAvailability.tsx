@@ -33,6 +33,7 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+import { trackMetricConfiguration } from "../../analytics";
 import { useStore } from "../../stores";
 import { monthsByName, removeSnakeCase } from "../../utils";
 import { ReactComponent as CalendarIconDark } from "../assets/calendar-icon-dark.svg";
@@ -79,7 +80,7 @@ function MetricAvailability() {
     startingMonth,
     disaggregatedBySupervisionSubsystems,
   } = metrics[systemMetricKey];
-  const metricEnabled = metrics[systemMetricKey]?.enabled;
+  const metricEnabled = metrics[systemMetricKey]?.enabled ?? false;
   const customOrDefaultFrequency = customFrequency || defaultFrequency;
   const startingMonthNotJanuaryJuly =
     startingMonth !== null && startingMonth !== 1 && startingMonth !== 7;
@@ -98,6 +99,11 @@ function MetricAvailability() {
         metricSearchParam,
         enabledStatus
       );
+      trackMetricConfiguration({
+        agencyId,
+        key: metricSearchParam,
+        enabled: enabledStatus,
+      });
       saveMetricSettings(updatedSetting, agencyId);
     }
   };
@@ -111,6 +117,11 @@ function MetricAvailability() {
         metricSearchParam,
         frequencyUpdate
       );
+      trackMetricConfiguration({
+        agencyId,
+        key: metricSearchParam,
+        enabled: metricEnabled,
+      });
       saveMetricSettings(updatedSetting, agencyId);
     }
   };

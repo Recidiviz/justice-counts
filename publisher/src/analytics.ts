@@ -194,3 +194,21 @@ export const trackLoadTime = (
     loadTime,
   });
 };
+
+type TrackingInput = {
+  agencyId: string;
+  key: string;
+  enabled: boolean;
+};
+
+export const trackMetricConfiguration = ({
+  agencyId,
+  key,
+  enabled,
+}: Partial<TrackingInput>): void => {
+  track("metric_configured", {
+    agencyId,
+    key,
+    enabled,
+  });
+};
