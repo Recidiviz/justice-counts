@@ -43,6 +43,7 @@ import {
   InviteMemberInnerContainer,
   InviteMemberInputsContainer,
   JCAdminStatus,
+  ReadOnlyStatus,
   TeamManagementBlock,
   TeamManagementDescription,
   TeamManagementSectionSubTitle,
@@ -281,6 +282,9 @@ export const AgencySettingsTeamManagement = observer(() => {
                       )}
                       {role === "AGENCY_ADMIN" && (
                         <AdminStatus>Admin</AdminStatus>
+                      )}
+                      {role === "READ_ONLY" && (
+                        <ReadOnlyStatus>Read only</ReadOnlyStatus>
                       )}
                       {invitation_status === "PENDING" && (
                         <InvitedStatus>Invited</InvitedStatus>
