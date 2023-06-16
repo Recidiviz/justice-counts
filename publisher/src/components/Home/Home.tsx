@@ -118,6 +118,11 @@ export const Home = observer(() => {
           metricSettingsParams: `?system=${metric.system.key.toLowerCase()}&metric=${metric.key.toLowerCase()}`,
         };
       }) || [];
+  /**
+   * Metrics without values or not yet configured (`allMetricsWithoutValuesOrNotConfigured`) are straightforwardly rendered.
+   * Metrics with values (`allMetricsWithValues`) collapse into one Publish task card for the report the
+   * metric belongs to.
+   */
   const { allMetricsWithValues, allMetricsWithoutValuesOrNotConfigured } = [
     ...unconfiguredMetricsTaskCardMetadata,
     ...enabledMetricsTaskCardMetadata,
@@ -158,7 +163,7 @@ export const Home = observer(() => {
     ? ""
     : "See open tasks below";
 
-  /** TODO: Support multi-system agencies */
+  /** TODO(#716): Support multi-system agencies */
   // const renderSystemSelectorTabs = (
   //   tabs: {
   //     label: string;
@@ -207,7 +212,7 @@ export const Home = observer(() => {
       /**
        * Create annual records metadata objects in the same structure as the response JSON:
        * { [key: starting month]: AnnualRecordMetadata }
-       *  */
+       */
       const annualRecordsMetadata = Object.entries(annualRecords).reduce(
         (acc, [startingMonth, record]) => {
           // Exclude annual records with no metrics assigned to them
