@@ -61,15 +61,21 @@ export const Home = observer(() => {
       ?.filter((metric) => {
         const metricFrequency = metric.custom_frequency || metric.frequency;
         const startingMonth = metric.starting_month;
-        /** Does a record exist for this current metric? */
-        const recordExistsForMetric =
+        /** Does a record exist for this current metric and is that record unpublished? */
+        const recordExistsForMetricAndUnpublished =
           metricFrequency === "MONTHLY"
-            ? Boolean(latestMonthlyAnnualRecordsMetadata?.monthly?.id)
+            ? Boolean(
+                latestMonthlyAnnualRecordsMetadata?.monthly?.id &&
+                  latestMonthlyAnnualRecordsMetadata.monthly.status !==
+                    "PUBLISHED"
+              )
             : startingMonth &&
               Boolean(
-                latestMonthlyAnnualRecordsMetadata?.annual[startingMonth]
+                latestMonthlyAnnualRecordsMetadata?.annual[startingMonth] &&
+                  latestMonthlyAnnualRecordsMetadata?.annual[startingMonth]
+                    .status !== "PUBLISHED"
               );
-        return metric.enabled && recordExistsForMetric;
+        return metric.enabled && recordExistsForMetricAndUnpublished;
       })
       .map((metric) => {
         const metricFrequency = metric.custom_frequency || metric.frequency;
@@ -155,7 +161,6 @@ export const Home = observer(() => {
       [key: string]: TaskCardMetadata[];
     }
   );
-
   /** Determining whether or not all tasks have been completed */
   const hasNoEnabledOrUnconfiguredMetricsTaskCardMetadata =
     enabledMetricsTaskCardMetadata.length === 0 &&
@@ -297,7 +302,6 @@ export const Home = observer(() => {
 
       <Styled.ContentContainer>
         <Styled.LeftPanelWrapper />
-
         {/* All Open Tasks */}
         <Styled.OpenTasksContainer>
           {/* All Tasks Completed Card or Configure Metrics/Add Data Cards */}
@@ -352,7 +356,6 @@ export const Home = observer(() => {
               }
             )}
         </Styled.OpenTasksContainer>
-
         {/* Submenu */}
         <Styled.Submenu>
           <Styled.SubmenuItem
