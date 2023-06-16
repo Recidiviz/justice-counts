@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { Metric, ReportFrequency } from "@justice-counts/common/types";
+import { monthsByName } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -204,7 +205,9 @@ export const Home = observer(() => {
   ) => {
     return {
       title: reportTitle,
-      description: `Publish all the data you have added for ${reportTitle}`,
+      description: `Publish all the data you have added for ${
+        reportTitle.split("(")[0] // Remove `([Starting Month])` from description for annual records
+      }`,
       actionLinks: [taskCardLabelsActionLinks.publish],
       metricFrequency: frequency,
     };
@@ -239,11 +242,12 @@ export const Home = observer(() => {
           // Exclude annual records with no metrics assigned to them
           if (record.metrics.length === 0) return acc;
 
-          const annualRecordReportTitle = printReportTitle(
+          // Add starting month to report title to differentiate same year annual record titles
+          const annualRecordReportTitle = `${printReportTitle(
             record.month,
             record.year,
             record.frequency
-          );
+          )} (${monthsByName[Number(startingMonth) - 1]})`;
           acc[startingMonth] = {
             id: record?.id,
             reportTitle: annualRecordReportTitle,
