@@ -57,7 +57,19 @@ export const Home = observer(() => {
   };
   const enabledMetricsTaskCardMetadata: TaskCardMetadata[] =
     currentAgencyMetrics
-      ?.filter((metric) => metric.enabled)
+      ?.filter((metric) => {
+        const metricFrequency = metric.custom_frequency || metric.frequency;
+        const startingMonth = metric.starting_month;
+        /** Does a record exist for this current metric? */
+        const recordExistsForMetric =
+          metricFrequency === "MONTHLY"
+            ? Boolean(latestMonthlyAnnualRecordsMetadata?.monthly?.id)
+            : startingMonth &&
+              Boolean(
+                latestMonthlyAnnualRecordsMetadata?.annual[startingMonth]
+              );
+        return metric.enabled && recordExistsForMetric;
+      })
       .map((metric) => {
         const metricFrequency = metric.custom_frequency || metric.frequency;
         const startingMonth = metric.starting_month;
@@ -80,9 +92,9 @@ export const Home = observer(() => {
             : Boolean(latestAnnualMetricValue);
         const reportID =
           metricFrequency === "MONTHLY"
-            ? latestMonthlyAnnualRecordsMetadata?.monthly.id
+            ? latestMonthlyAnnualRecordsMetadata?.monthly?.id
             : startingMonth &&
-              latestMonthlyAnnualRecordsMetadata?.annual[startingMonth].id;
+              latestMonthlyAnnualRecordsMetadata?.annual[startingMonth]?.id;
 
         return {
           reportID,
@@ -209,6 +221,15 @@ export const Home = observer(() => {
         agencyId as string
       )) as LatestReportsAgencyMetrics;
 
+      if (
+        Object.values(monthlyRecord).length === 0 &&
+        Object.values(annualRecords).length === 0
+      ) {
+        setAgencyMetrics([]);
+        setLoading(false);
+        return;
+      }
+
       /**
        * Create annual records metadata objects in the same structure as the response JSON:
        * { [key: starting month]: AnnualRecordMetadata }
@@ -233,14 +254,17 @@ export const Home = observer(() => {
         },
         {} as AnnualRecordMetadata
       );
-      const monthlyRecordReportTitle = printReportTitle(
-        monthlyRecord.month,
-        monthlyRecord.year,
-        monthlyRecord.frequency
-      );
+
+      const monthlyRecordReportTitle =
+        monthlyRecord.month &&
+        printReportTitle(
+          monthlyRecord.month,
+          monthlyRecord.year,
+          monthlyRecord.frequency
+        );
       const monthlyRecordMetadata = {
         id: monthlyRecord?.id,
-        reportTitle: monthlyRecordReportTitle,
+        reportTitle: monthlyRecordReportTitle || "",
         metrics: monthlyRecord?.metrics,
         status: monthlyRecord?.status,
       };
