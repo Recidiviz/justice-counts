@@ -160,8 +160,8 @@ export const Home = observer(() => {
       hasPublishedLatestMonthlyRecord &&
       allMetricsWithoutValuesOrNotConfigured.length === 0);
   const welcomeDescription = !hasCompletedAllTasks
-    ? ""
-    : "See open tasks below";
+    ? "See open tasks below"
+    : "";
 
   /** TODO(#716): Support multi-system agencies */
   // const renderSystemSelectorTabs = (
