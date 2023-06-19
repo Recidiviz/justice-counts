@@ -196,3 +196,11 @@ export const ErrorInfo = styled.div`
   max-width: 300px;
   bottom: 24px;
 `;
+
+export const TooltipLink = styled.span`
+  text-decoration: underline;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
