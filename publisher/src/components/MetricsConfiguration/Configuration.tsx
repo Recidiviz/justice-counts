@@ -110,7 +110,11 @@ function Configuration() {
           </Styled.MetricIndicator>
         )}
       </Styled.MetricSettingsSideBar>
-      {metricConfigPage === "availability" && <MetricAvailability />}
+      {metricConfigPage === "availability" && (
+        <MetricAvailability
+          goToDefineMetrics={() => setMetricConfigPage("definitions")}
+        />
+      )}
       {metricConfigPage === "definitions" && <MetricDefinitions />}
     </>
   );

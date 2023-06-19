@@ -34,7 +34,7 @@ export const Wrapper = styled.div`
 
 export const InnerWrapper = styled.div`
   width: 754px;
-  padding: 72px 0 100px 0;
+  padding: 72px 0 64px 0;
   display: flex;
   flex-direction: column;
 `;
@@ -217,6 +217,7 @@ export const BreakdownsOption = styled.div<{ active: boolean }>`
 export const DimensionsContainer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: start;
   margin-bottom: 16px;
 `;
 
@@ -239,7 +240,9 @@ export const SelectAllDimensions = styled.span<{ disabled?: boolean }>`
   }
 `;
 
-export const DimensionsList = styled.form``;
+export const DimensionsList = styled.form`
+  margin-bottom: 16px;
+`;
 
 export const DimensionsListFieldset = styled.fieldset<{ disabled?: boolean }>`
   display: flex;
@@ -253,14 +256,10 @@ export const DimensionsListItem = styled.div<{ enabled?: boolean }>`
   flex-direction: row;
   gap: 12px;
   align-items: center;
-  padding: 16px 0 16px 10px;
-  border-bottom: 1px solid ${palette.highlight.grey4};
+  padding: 8px 0 8px 10px;
   ${typography.sizeCSS.medium};
 
   ${({ enabled }) => !enabled && `color: ${palette.highlight.grey7};`}
-  &:last-child {
-    border-bottom: none;
-  }
 
   img {
     width: 20px;
