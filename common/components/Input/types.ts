@@ -40,7 +40,7 @@ export type ErrorLabelProps = {
   textSize?: InputTextSize;
 };
 
-export type NotReportedIconWithTooltipProps = {
+export type NotReportedIconTooltipProps = {
   size?: number;
   lighter?: boolean;
   tooltipText?: string;

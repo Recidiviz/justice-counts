@@ -15,22 +15,24 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import notReportedIcon from "@justice-counts/common/assets/not-reported-icon.png";
 import successIcon from "@justice-counts/common/assets/status-check-icon.png";
 import errorIcon from "@justice-counts/common/assets/status-error-icon.png";
 import {
   Dropdown,
   DropdownOption,
 } from "@justice-counts/common/components/Dropdown";
-import { NotReportedIcon } from "@justice-counts/common/components/Input";
 import {
   TabbedBar,
   TabOption,
 } from "@justice-counts/common/components/TabbedBar";
+import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import {
   Metric as MetricType,
   MetricDisaggregationDimensions,
   MetricDisaggregations,
 } from "@justice-counts/common/types";
+import { replaceSymbolsWithDash } from "@justice-counts/common/utils";
 import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -44,9 +46,11 @@ import {
   DisaggregationDimensions,
   DisaggregationDisplayContainer,
   DisaggregationHasInputIndicator,
+  DisaggregationIcon,
   DisaggregationInputWrapper,
   DisaggregationsDropdownContainer,
   DisaggregationsTabbedBarContainer,
+  DisaggregationTooltipLink,
   EthnicityHeader,
 } from ".";
 
@@ -138,14 +142,33 @@ export const TabbedDisaggregations: React.FC<{
     hasInput: boolean | undefined
   ) => {
     if (!disaggregationEnabled) {
+      const tooltipContent = (
+        <>
+          This has been disabled by an admin because the data is unavailable. If
+          you have the data for this, consider changing the configuration in the{" "}
+          <DisaggregationTooltipLink
+            onClick={() => navigate(`/agency/${agencyId}/metric-config`)}
+          >
+            Settings
+          </DisaggregationTooltipLink>
+        </>
+      );
+
       return (
-        <NotReportedIcon
-          size={16}
-          lighter
-          tooltipText="This has been disabled by an admin because the data is unavailable. If you have the data for this, consider changing the configuration in the"
-          tooltipLinkLabel="Settings"
-          tooltipLink={() => navigate(`/agency/${agencyId}/metric-config`)}
-        />
+        <>
+          <DisaggregationIcon
+            id={replaceSymbolsWithDash(activeDisaggregationObj.key)}
+            src={notReportedIcon}
+            alt=""
+          />
+          <Tooltip
+            anchorId={replaceSymbolsWithDash(activeDisaggregationObj.key)}
+            position="bottom"
+            content={tooltipContent}
+            tooltipWidth="narrow"
+            clickable
+          />
+        </>
       );
     }
 

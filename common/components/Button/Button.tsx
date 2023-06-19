@@ -17,6 +17,7 @@
 
 import React from "react";
 
+import { Tooltip } from "../Tooltip";
 import * as Styled from "./Button.styled";
 import {
   ButtonBorderColor,
@@ -28,6 +29,7 @@ import {
 type ButtonProps = {
   label: string | React.ReactNode;
   onClick: () => void;
+  id?: string;
   buttonColor?: ButtonColor;
   labelColor?: ButtonLabelColor;
   borderColor?: ButtonBorderColor;
@@ -36,13 +38,13 @@ type ButtonProps = {
   disabled?: boolean;
   noSidePadding?: boolean;
   noHover?: boolean;
-  showTooltip?: boolean;
   tooltipMsg?: string;
 };
 
 export function Button({
   label,
   onClick,
+  id,
   buttonColor,
   labelColor,
   borderColor,
@@ -51,11 +53,10 @@ export function Button({
   disabled,
   noSidePadding,
   noHover,
-  showTooltip,
   tooltipMsg,
 }: ButtonProps) {
   return (
-    <Styled.ButtonWrapper>
+    <Styled.ButtonWrapper id={id}>
       <Styled.Button
         onClick={onClick}
         buttonColor={buttonColor}
@@ -69,7 +70,9 @@ export function Button({
       >
         {label}
       </Styled.Button>
-      {showTooltip && <Styled.ButtonTooltip>{tooltipMsg}</Styled.ButtonTooltip>}
+      {tooltipMsg && id && (
+        <Tooltip anchorId={id} position="bottom" content={tooltipMsg} />
+      )}
     </Styled.ButtonWrapper>
   );
 }

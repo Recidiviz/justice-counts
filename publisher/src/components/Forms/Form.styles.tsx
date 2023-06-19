@@ -241,6 +241,15 @@ export const DisaggregationHasInputIndicator = styled.div<{
   }
 `;
 
+export const DisaggregationIcon = styled.img`
+  width: 16px;
+  height: 16px;
+`;
+
+export const DisaggregationTooltipLink = styled.span`
+  text-decoration: underline;
+`;
+
 export const DisaggregationsDropdownContainer = styled.div`
   display: none;
   width: 100%;

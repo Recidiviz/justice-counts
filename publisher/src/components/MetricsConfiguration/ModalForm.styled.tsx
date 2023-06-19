@@ -56,7 +56,7 @@ export const Content = styled.div`
 export const ScrollableInnerWrapper = styled.div`
   width: 100%;
   height: calc(100% - 104px);
-  padding: 0 32px 0 32px;
+  padding: 0 32px 32px 32px;
   display: flex;
   flex-direction: column;
   overflow-y: auto;

@@ -21,7 +21,6 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-import { TooltipContent } from "../Tooltip";
 import {
   ButtonBorderColor,
   ButtonColor,
@@ -131,20 +130,5 @@ export const ButtonWrapper = styled.div`
 
   ${Button} {
     height: 100%;
-  }
-`;
-
-export const ButtonTooltip = styled(TooltipContent)`
-  width: 270px;
-  position: absolute;
-  top: 45px;
-  right: 0;
-  color: white;
-  padding: 20px;
-  text-align: center;
-  display: none;
-
-  ${ButtonWrapper}:hover > & {
-    display: block;
   }
 `;

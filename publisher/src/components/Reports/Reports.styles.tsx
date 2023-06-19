@@ -233,19 +233,7 @@ export const LabelCell = styled(Cell)`
   color: ${palette.highlight.grey9};
 `;
 
-export const AdditionalEditorsTooltip = styled.div`
-  ${typography.sizeCSS.normal}
-  padding: 10px 20px;
-  background: ${palette.solid.blue};
-  color: ${palette.solid.white};
-  position: absolute;
-  z-index: 1;
-  top: 32px;
-  left: 0;
-  max-width: 300px;
-  border-radius: 3px;
-  text-align: center;
-  box-shadow: 2px 2px 8px ${palette.highlight.grey5};
+export const EditorsTooltipContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -271,6 +259,12 @@ export const SelectedCheckmark = styled.img`
   width: 16px;
   height: 16px;
   margin-right: 8px;
+`;
+
+export const EditorsContentCellContainer = styled.div`
+  width: fit-content;
+  display: flex;
+  flex-direction: row;
 `;
 
 export const AndOthersSpan = styled.span`

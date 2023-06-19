@@ -253,11 +253,11 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
                 key={name}
                 label={name}
                 onClick={onClick}
+                id={name}
                 disabled={hasMetricErrors && isPublishButton}
                 buttonColor={buttonColor}
                 labelColor={labelColor}
                 borderColor={borderColor}
-                showTooltip={hasMetricErrors && isPublishButton}
                 tooltipMsg={
                   hasMetricErrors && isPublishButton
                     ? "There are errors in your data that need to be addressed before publishing. Please contact the Justice Counts team at justice-counts-support@csg.org if you need help."

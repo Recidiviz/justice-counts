@@ -22,10 +22,11 @@ import {
   RadioButtonsWrapper,
 } from "@justice-counts/common/components/RadioButton";
 import { ToggleSwitch } from "@justice-counts/common/components/ToggleSwitch";
+import { Tooltip } from "@justice-counts/common/components/Tooltip";
+import { replaceSymbolsWithDash } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { Tooltip } from "react-tooltip";
 
 import { useStore } from "../../stores";
 import { useSettingsSearchParams } from "../Settings";
@@ -207,13 +208,11 @@ function RaceEthnicitiesModalForm({
                   {race}
                   {disabledUnknownRace && (
                     <>
-                      <InfoIcon id="anchor" />
+                      <InfoIcon id={replaceSymbolsWithDash(race)} />
                       <Tooltip
-                        anchorId="anchor"
-                        place="right"
+                        anchorId={replaceSymbolsWithDash(race)}
+                        position="right"
                         content="The Justice Counts data model requires the Unknown Race category to be turned on if the Hispanic or Latino Race category is turned on."
-                        variant="dark"
-                        style={{ maxWidth: "300px" }}
                       />
                     </>
                   )}

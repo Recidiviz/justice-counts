@@ -16,7 +16,9 @@
 // =============================================================================
 
 import blueCheckIcon from "@justice-counts/common/assets/status-check-icon.png";
+import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import { MetricConfigurationSettings } from "@justice-counts/common/types";
+import { replaceSymbolsWithDash } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 
@@ -108,7 +110,10 @@ function MetricDefinitions() {
           </Styled.Description>
           <Styled.Section>
             <Styled.SectionTitle>Primary Metric</Styled.SectionTitle>
-            <Styled.SectionItem onClick={() => setIsSettingsModalOpen(true)}>
+            <Styled.SectionItem
+              id="metric-total"
+              onClick={() => setIsSettingsModalOpen(true)}
+            >
               <Styled.SectionItemLabel>
                 {metricHasDefinitionSelected() && (
                   <img src={blueCheckIcon} alt="" />
@@ -116,10 +121,14 @@ function MetricDefinitions() {
                 {metrics[systemMetricKey]?.label} (Total)
               </Styled.SectionItemLabel>
               <span>View / Edit</span>
-              <Styled.SectionItemTooltip>
-                {metrics[systemMetricKey]?.label} (Total)
-                <span>{metrics[systemMetricKey]?.description}</span>
-              </Styled.SectionItemTooltip>
+              <Tooltip
+                anchorId="metric-total"
+                position="bottom"
+                content={metrics[systemMetricKey]?.description}
+                title={`${metrics[systemMetricKey]?.label} (Total)`}
+                noArrow
+                offset={-5}
+              />
             </Styled.SectionItem>
           </Styled.Section>
           {activeDisaggregationKeys?.map((disaggregationKey) => {
@@ -191,6 +200,7 @@ function MetricDefinitions() {
 
                   return (
                     <Styled.SectionItem
+                      id={replaceSymbolsWithDash(key)}
                       key={key}
                       onClick={() => {
                         setActiveDisaggregationKey(disaggregationKey);
@@ -205,10 +215,14 @@ function MetricDefinitions() {
                         {dimension.label}
                       </Styled.SectionItemLabel>
                       <span>View / Edit</span>
-                      <Styled.SectionItemTooltip>
-                        {dimension.label}
-                        <span>{dimension.description}</span>
-                      </Styled.SectionItemTooltip>
+                      <Tooltip
+                        anchorId={replaceSymbolsWithDash(key)}
+                        position="bottom"
+                        content={dimension.description}
+                        title={dimension.label}
+                        noArrow
+                        offset={-5}
+                      />
                     </Styled.SectionItem>
                   );
                 })}
