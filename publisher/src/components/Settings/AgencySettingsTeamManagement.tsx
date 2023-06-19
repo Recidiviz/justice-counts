@@ -284,7 +284,7 @@ export const AgencySettingsTeamManagement = observer(() => {
                         <AdminStatus>Admin</AdminStatus>
                       )}
                       {role === "READ_ONLY" && (
-                        <ReadOnlyStatus>Read only</ReadOnlyStatus>
+                        <ReadOnlyStatus>Read Only</ReadOnlyStatus>
                       )}
                       {invitation_status === "PENDING" && (
                         <InvitedStatus>Invited</InvitedStatus>
