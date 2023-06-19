@@ -104,7 +104,7 @@ abstract class DatapointsStore {
           ? UnitedRaceEthnicityKeys[dp.dimension_display_name]
           : dp.dimension_display_name;
 
-        const isDimensionNameExists =
+        const hasDimensionName =
           res[dp.metric_definition_key].disaggregations[
             dp.disaggregation_display_name
           ][dp.start_date] &&
@@ -116,7 +116,7 @@ abstract class DatapointsStore {
 
         let dimensionValue: string | number | null;
 
-        if (isDimensionNameExists) {
+        if (hasDimensionName) {
           dimensionValue =
             Number(
               res[dp.metric_definition_key].disaggregations[
