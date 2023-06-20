@@ -119,6 +119,11 @@ const Reports: React.FC = () => {
   const [isRemoveRecordsModalOpen, setIsRemoveRecordsModalOpen] =
     useState(false);
 
+  const isAdmin =
+    userStore.isJusticeCountsAdmin(agencyId) ||
+    userStore.isAgencyAdmin(agencyId);
+  const isJCAdmin = userStore.isJusticeCountsAdmin(agencyId);
+
   const selectBulkAction = (action: RecordsBulkAction) => setBulkAction(action);
   const clearBulkAction = () => setBulkAction(undefined);
   const clearAllSelectedRecords = () => setSelectedRecords([]);
@@ -234,6 +239,7 @@ const Reports: React.FC = () => {
       label: "Delete...",
       onClick: () => selectBulkAction("delete"),
       color: "red",
+      disabled: !isJCAdmin,
       noHover: true,
     },
   ];
@@ -253,10 +259,6 @@ const Reports: React.FC = () => {
     onClick: () => setReportsFilter(normalizeString(key)),
     highlight: ReportStatusFilterOptionObject[reportsFilter] === value,
   }));
-
-  const isAdmin =
-    userStore.isJusticeCountsAdmin(agencyId) ||
-    userStore.isAgencyAdmin(agencyId);
 
   const renderReports = () => {
     if (reportStore.loadingOverview) {
