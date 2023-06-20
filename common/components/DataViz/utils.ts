@@ -92,16 +92,22 @@ export const getDatapointDimensions = (datapoint: Datapoint) =>
 
 export const sortDatapointDimensions = (dimA: string, dimB: string) => {
   // sort alphabetically, except put "Other" and "Unknown" at the end.
-  if (dimA.includes("Other") && dimB.includes("Unknown")) {
+  if (dimA.startsWith("Hispanic or Latino")) {
     return -1;
   }
-  if (dimB.includes("Other") && dimA.includes("Unknown")) {
+  if (dimB.startsWith("Hispanic or Latino")) {
     return 1;
   }
-  if (dimA.includes("Other") || dimA.includes("Unknown")) {
+  if (dimA.startsWith("Other") && dimB.startsWith("Unknown")) {
+    return -1;
+  }
+  if (dimB.startsWith("Other") && dimA.startsWith("Unknown")) {
     return 1;
   }
-  if (dimB.includes("Other") || dimB.includes("Unknown")) {
+  if (dimA.startsWith("Other") || dimA.startsWith("Unknown")) {
+    return 1;
+  }
+  if (dimB.startsWith("Other") || dimB.startsWith("Unknown")) {
     return -1;
   }
   return dimA.localeCompare(dimB);

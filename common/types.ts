@@ -364,6 +364,50 @@ export interface DatapointsByMetric {
   [metricKey: string]: DatapointsGroupedByAggregateAndDisaggregations;
 }
 
+export const UnitedRaceEthnicityKeys: { [key: string]: string } = {
+  "American Indian or Alaska Native / Unknown Ethnicity":
+    "American Indian or Alaska Native (non-Hispanic or Unknown ethnicity)",
+  "American Indian or Alaska Native / Not Hispanic or Latino":
+    "American Indian or Alaska Native (non-Hispanic or Unknown ethnicity)",
+
+  "Asian / Unknown Ethnicity": "Asian (non-Hispanic or Unknown ethnicity)",
+  "Asian / Not Hispanic or Latino": "Asian (non-Hispanic or Unknown ethnicity)",
+
+  "Black / Unknown Ethnicity": "Black (non-Hispanic or Unknown ethnicity)",
+  "Black / Not Hispanic or Latino": "Black (non-Hispanic or Unknown ethnicity)",
+
+  "American Indian or Alaska Native / Hispanic or Latino":
+    "Hispanic or Latino (any race)",
+  "Asian / Hispanic or Latino": "Hispanic or Latino (any race)",
+  "Black / Hispanic or Latino": "Hispanic or Latino (any race)",
+  "Native Hawaiian or Pacific Islander / Hispanic or Latino":
+    "Hispanic or Latino (any race)",
+  "White / Hispanic or Latino": "Hispanic or Latino (any race)",
+  "More than one race / Hispanic or Latino": "Hispanic or Latino (any race)",
+  "Other / Hispanic or Latino": "Hispanic or Latino (any race)",
+  "Unknown / Hispanic or Latino": "Hispanic or Latino (any race)",
+
+  "Native Hawaiian or Pacific Islander / Unknown Ethnicity":
+    "Native Hawaiian or Pacific Islander (non-Hispanic or Unknown ethnicity)",
+  "Native Hawaiian or Pacific Islander / Not Hispanic or Latino":
+    "Native Hawaiian or Pacific Islander (non-Hispanic or Unknown ethnicity)",
+
+  "White / Unknown Ethnicity": "White (non-Hispanic or Unknown ethnicity)",
+  "White / Not Hispanic or Latino": "White (non-Hispanic or Unknown ethnicity)",
+
+  "More than one race / Unknown Ethnicity":
+    "More than one race (non-Hispanic or Unknown ethnicity)",
+  "More than one race / Not Hispanic or Latino":
+    "More than one race (non-Hispanic or Unknown ethnicity)",
+
+  "Other / Unknown Ethnicity": "Other (non-Hispanic or Unknown ethnicity)",
+  "Other / Not Hispanic or Latino": "Other (non-Hispanic or Unknown ethnicity)",
+
+  "Unknown / Unknown Ethnicity": "Unknown (non-Hispanic or Unknown ethnicity)",
+  "Unknown / Not Hispanic or Latino":
+    "Unknown (non-Hispanic or Unknown ethnicity)",
+};
+
 export interface RawDatapointsByMetric {
   [metricKey: string]: RawDatapoint[];
 }
