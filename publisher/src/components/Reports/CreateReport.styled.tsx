@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { ButtonComponent } from "@justice-counts/common/components/Button";
 import {
   CustomDropdown,
   CustomDropdownToggle,
@@ -25,7 +26,23 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
+import { Form, FormWrapper } from "../Forms";
 import { TWO_PANEL_MAX_WIDTH } from "./ReportDataEntry.styles";
+
+export const CreateReportFormWrapper = styled(FormWrapper)`
+  margin-bottom: 0;
+`;
+
+export const CreateReportForm = styled(Form)`
+  padding-bottom: 0;
+`;
+
+export const BackButtonWrapper = styled.div`
+  & ${ButtonComponent} {
+    justify-content: start;
+    padding: 0;
+  }
+`;
 
 export const Heading = styled.div`
   font-size: ${typography.sizeCSS.medium};
@@ -39,6 +56,7 @@ export const DropdownsWrapper = styled.div`
   flex-direction: row;
   gap: 8px;
   height: 56px;
+  z-index: 4;
 `;
 
 export const DropdownContainer = styled.div`

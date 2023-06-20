@@ -57,7 +57,7 @@ export function Button({
 }: ButtonProps) {
   return (
     <Styled.ButtonWrapper id={id}>
-      <Styled.Button
+      <Styled.ButtonComponent
         onClick={onClick}
         buttonColor={buttonColor}
         labelColor={labelColor}
@@ -69,7 +69,7 @@ export function Button({
         noHover={noHover}
       >
         {label}
-      </Styled.Button>
+      </Styled.ButtonComponent>
       {tooltipMsg && id && (
         <Tooltip anchorId={id} position="bottom" content={tooltipMsg} />
       )}

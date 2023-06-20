@@ -20,17 +20,13 @@ import {
   MIN_DESKTOP_WIDTH,
   MIN_TABLET_WIDTH,
   palette,
-  TABLET_WIDTH,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import {
-  Dropdown,
-  DropdownMenu,
-  DropdownMenuItem,
-  DropdownToggle,
-} from "@recidiviz/design-system";
+import { Dropdown, DropdownMenuItem } from "@recidiviz/design-system";
 import React from "react";
 import styled from "styled-components/macro";
+
+import { CustomDropdown } from "../Dropdown";
 
 export const MetricHeaderWrapper = styled.div`
   display: flex;
@@ -73,7 +69,6 @@ export const ExtendedDropdownMenuItem = styled(DropdownMenuItem)<{
         padding: 16px 16px 10px 16px;
       }
     `}
-
   &:not(:last-child) {
     border-bottom: 1px solid ${palette.solid.offwhite};
   }
@@ -119,135 +114,19 @@ export const DatapointsViewHeaderWrapper = styled.div`
 export const DatapointsViewControlsContainer = styled.div`
   display: flex;
   flex-direction: row;
-  flex-grow: 1;
-  border: 1px solid ${palette.highlight.grey9};
-`;
-
-const DatapointsViewDropdown = styled(Dropdown)`
-  display: flex;
-  flex-grow: 1;
-  flex-basis: 0;
-  min-width: 0;
-  border-left: 1px solid ${palette.highlight.grey9};
-
-  & > button {
-    transition-duration: 0ms;
-    border-width: 0;
-  }
-
-  &:first-child {
-    border-left: none;
-  }
-`;
-
-const DatapointsViewDropdownToggleContainer = styled(DropdownToggle)`
-  font-family: ${typography.family};
-  padding: 0;
-  min-height: unset;
-  line-height: 0;
-  position: relative;
-  flex-grow: 1;
-  flex-basis: 0;
-  color: ${palette.solid.darkgrey};
-  text-align: start;
-
-  &:hover {
-    color: ${palette.solid.darkgrey};
-  }
-
-  &[aria-expanded="true"] {
-    color: ${palette.solid.darkgrey};
-  }
-`;
-const DatapointsViewDropdownToggleSelection = styled.div`
-  height: 40px;
-  padding-top: 7px;
-  padding-left: 22px;
   width: 100%;
-  ${typography.sizeCSS.normal}
-  color: ${palette.solid.darkgrey};
-  line-height: 1.6rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+  height: 42px;
+  border: 1px solid ${palette.highlight.grey9};
 
-  &:hover {
-    cursor: pointer;
-    background-color: ${palette.highlight.lightblue1};
-    color: ${palette.solid.blue};
+  & ${CustomDropdown} {
+    border-right: 1px solid ${palette.highlight.grey9};
+    padding: 0 8px;
+
+    &:last-child {
+      border-right: none;
+    }
   }
 `;
-const DatapointsViewDropdownToggleTitle = styled.div`
-  position: absolute;
-  ${typography.sizeCSS.small}
-  pointer-events: none;
-  top: -20px;
-  left: 0;
-`;
-
-const DatapointsViewDropdownToggleArrow = styled.div`
-  top: 2px;
-  left: -7px;
-  position: absolute;
-  font-size: 6px;
-  transform: rotate(45deg);
-  padding: 16px;
-  pointer-events: none;
-
-  &::after {
-    content: "◢";
-  }
-`;
-
-interface DatapointsViewControlsDropdownMenuProps {
-  title: string;
-  selectedValue: string;
-}
-
-const DatapointsViewControlsDropdownMenu: React.FC<
-  DatapointsViewControlsDropdownMenuProps
-> = ({ title, selectedValue }) => (
-  <DatapointsViewDropdownToggleContainer kind="borderless">
-    <DatapointsViewDropdownToggleTitle>
-      {title}
-    </DatapointsViewDropdownToggleTitle>
-    <DatapointsViewDropdownToggleSelection>
-      {selectedValue}
-    </DatapointsViewDropdownToggleSelection>
-    <DatapointsViewDropdownToggleArrow />
-  </DatapointsViewDropdownToggleContainer>
-);
-
-interface DatapointsViewControlsDropdownProps {
-  title: string;
-  selectedValue: string;
-  onSelect: (value: string) => void;
-  options: readonly string[] | string[];
-}
-
-export const DatapointsViewControlsDropdown: React.FC<
-  DatapointsViewControlsDropdownProps
-> = ({ title, selectedValue, onSelect, options }) => (
-  <DatapointsViewDropdown>
-    <DatapointsViewControlsDropdownMenu
-      title={title}
-      selectedValue={selectedValue}
-    />
-    <DropdownMenu>
-      {options.map((value) => (
-        <ExtendedDropdownMenuItem
-          key={value}
-          onClick={() => {
-            onSelect(value);
-          }}
-          highlight={selectedValue === value}
-        >
-          {value}
-        </ExtendedDropdownMenuItem>
-      ))}
-    </DropdownMenu>
-  </DatapointsViewDropdown>
-);
 
 export const MetricInsightsContainer = styled.div<{
   selfWidth: number;
@@ -263,9 +142,8 @@ export const MetricInsightsContainer = styled.div<{
     visibility: hidden;
     position: absolute;
     z-index: -1;
-  }`}
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+  }`};
+  @media only screen and(max-width: ${MIN_TABLET_WIDTH}px) {
     flex-direction: column;
   }
 `;
@@ -381,40 +259,6 @@ export const SelectMetricsButtonText = styled.div`
   }
 `;
 
-export const MobileSelectMetricsButtonContainer = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  path {
-    fill: ${palette.solid.darkgrey};
-  }
-  position: fixed;
-  bottom: 24px;
-  justify-content: center;
-  left: 0;
-  right: 0;
-  pointer-events: none;
-
-  @media only screen and (min-width: ${TABLET_WIDTH}px) {
-    display: none;
-  }
-`;
-
-export const MobileSelectMetricsButton = styled.div`
-  pointer-events: auto;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 10px;
-  border: 1px solid ${palette.highlight.grey4};
-  border-radius: 24px;
-  background: ${palette.solid.white};
-
-  &:hover {
-    cursor: pointer;
-    opacity: 0.8;
-  }
-`;
-
 export const ExtendedDropdown = styled(Dropdown)`
   & > button {
     margin-top: 8px;
@@ -424,6 +268,7 @@ export const ExtendedDropdown = styled(Dropdown)`
     padding: 0;
     border: none;
   }
+
   &:hover > button {
     background: none;
   }

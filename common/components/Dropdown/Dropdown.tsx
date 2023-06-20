@@ -35,7 +35,6 @@ type DropdownProps = {
   hover?: ToggleHover;
   caretPosition?: ToggleCaretPosition;
   alignment?: DropdownMenuAlignment;
-  overflow?: boolean;
   fullWidth?: boolean;
 };
 
@@ -49,7 +48,6 @@ type DropdownProps = {
  * @param [Props.hover] - defines what hover effect has toggle, label color change or background color change, default is cursor = pointer
  * @param [Props.caretPosition] - left or right (if undefined caret is not displayed)
  * @param [Props.alignment] - alignment of the menu (right or left) if not provided then it is left by default
- * @param [Props.overflow] - defines if the menu will be displayed above toggle
  * @param [Props.fullWidth] - defines if the menu width will be equal to dropdown toggle width (default is fit-content)
  * */
 export function Dropdown({
@@ -60,7 +58,6 @@ export function Dropdown({
   hover,
   caretPosition,
   alignment,
-  overflow,
   fullWidth,
 }: DropdownProps) {
   return (
@@ -91,7 +88,6 @@ export function Dropdown({
       </Styled.CustomDropdownToggle>
       <Styled.CustomDropdownMenu
         alignment={alignment}
-        menuOverflow={overflow}
         menuFullWidth={fullWidth}
       >
         {options && options.length > 1

@@ -28,7 +28,7 @@ import {
   ButtonSize,
 } from "./types";
 
-export const Button = styled.div<{
+export const ButtonComponent = styled.div<{
   buttonColor?: ButtonColor;
   labelColor?: ButtonLabelColor;
   borderColor?: ButtonBorderColor;
@@ -128,7 +128,7 @@ export const Button = styled.div<{
 export const ButtonWrapper = styled.div`
   position: relative;
 
-  ${Button} {
+  ${ButtonComponent} {
     height: 100%;
   }
 `;

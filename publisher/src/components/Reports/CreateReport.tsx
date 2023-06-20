@@ -36,8 +36,6 @@ import { trackReportCreated } from "../../analytics";
 import { useStore } from "../../stores";
 import { monthsByName, printDateRangeFromMonthYear } from "../../utils";
 import {
-  Form,
-  FormWrapper,
   GoBackToReportsOverviewLink,
   MetricSectionSubTitle,
   MetricSectionTitle,
@@ -50,6 +48,7 @@ import {
   REPORT_CAPITALIZED,
   REPORT_LOWERCASE,
   REPORTING_LOWERCASE,
+  REPORTS_CAPITALIZED,
   REPORTS_LOWERCASE,
 } from "../Global/constants";
 import * as Styled from "./CreateReport.styled";
@@ -172,17 +171,21 @@ const CreateReport = () => {
     <>
       {/* Create Report Details Panel */}
       <ReportSummaryWrapper>
-        <PreTitle>
-          <GoBackToReportsOverviewLink
+        <Styled.BackButtonWrapper>
+          <Button
+            label={`<- Back to ${REPORTS_CAPITALIZED} Overview`}
             onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
+            noSidePadding
+            labelColor="blue"
+            noHover
           />
-        </PreTitle>
+        </Styled.BackButtonWrapper>
         {/* <Title>Report Details</Title> */}
       </ReportSummaryWrapper>
 
       {/* Create Report Form */}
-      <FormWrapper>
-        <Form>
+      <Styled.CreateReportFormWrapper>
+        <Styled.CreateReportForm>
           {/* Form Title */}
           <OnePanelBackLinkContainer>
             <GoBackToReportsOverviewLink
@@ -326,8 +329,8 @@ const CreateReport = () => {
               size="medium"
             />
           </Styled.FormCreateButtonContainer>
-        </Form>
-      </FormWrapper>
+        </Styled.CreateReportForm>
+      </Styled.CreateReportFormWrapper>
 
       {/* Create Report Review Panel */}
       <PublishDataWrapper>
