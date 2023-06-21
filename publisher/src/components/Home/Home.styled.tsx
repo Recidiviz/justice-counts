@@ -123,7 +123,6 @@ export const TaskCardActionLink = styled.div`
 
 export const Submenu = styled.div`
   width: 100%;
-  max-width: 280px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -132,6 +131,7 @@ export const Submenu = styled.div`
 
 export const SubmenuItem = styled.a`
   ${typography.sizeCSS.normal};
+  max-width: 280px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -149,6 +149,10 @@ export const SubmenuItem = styled.a`
   &:visited {
     color: inherit;
     text-decoration: none;
+  }
+
+  @media only screen and (max-width: 1024px) {
+    max-width: unset;
   }
 `;
 
