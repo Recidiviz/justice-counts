@@ -242,6 +242,7 @@ const Reports: React.FC = () => {
       noHover: true,
     },
   ].filter((option) => {
+    // Gates `Delete` action to Justice Counts Admins only
     if (option.key === "deleteAction" && !isJCAdmin) {
       return false;
     }
