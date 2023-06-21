@@ -204,7 +204,7 @@ export const Home = observer(() => {
       </Styled.WelcomeDescription>
 
       {/* System Selector */}
-      {agencySystems.length > 1 && (
+      {hasMultipleSystems && (
         <Styled.SystemSelectorContainer>
           <div />
           <Styled.SystemSelectorTabWrapper>
