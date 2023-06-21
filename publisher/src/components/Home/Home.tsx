@@ -48,10 +48,10 @@ export const Home = observer(() => {
   const navigate = useNavigate();
   const { agencyId } = useParams() as { agencyId: string };
   const currentAgency = userStore.getAgency(agencyId);
-  const agencySystems =
-    currentAgency && currentAgency.systems.length > 1
-      ? ["ALL", ...Object.values(currentAgency.systems)]
-      : (currentAgency && Object.values(currentAgency.systems)) || [];
+  const hasMultipleSystems = currentAgency && currentAgency.systems.length > 1;
+  const agencySystems = hasMultipleSystems
+    ? ["ALL", ...Object.values(currentAgency.systems)]
+    : currentAgency?.systems || [];
 
   const [loading, setLoading] = useState(true);
   const [currentAgencyMetrics, setAgencyMetrics] = useState<Metric[]>([]);
@@ -137,7 +137,7 @@ export const Home = observer(() => {
   useEffect(() => {
     const fetchMetricsAndRecords = async () => {
       setLoading(true);
-      if (agencySystems) setCurrentSystem(agencySystems[0]);
+      if (agencySystems.length > 0) setCurrentSystem(agencySystems[0]);
       const {
         agency_metrics: agencyMetrics,
         annual_reports: annualRecords,
@@ -185,7 +185,26 @@ export const Home = observer(() => {
         {welcomeDescription}
       </Styled.WelcomeDescription>
 
-      {/* {agencySystems.length > 1 && renderSystemSelectorTabs()} */}
+      {/* System Selector */}
+      {agencySystems.length > 1 && (
+        <Styled.SystemSelectorContainer>
+          <div />
+          <Styled.SystemSelectorTabWrapper>
+            {agencySystems?.map((system) => (
+              <Styled.SystemSelectorTab
+                selected={system === currentSystem}
+                key={system}
+                onClick={() => setCurrentSystem(system)}
+              >
+                {system.toLocaleLowerCase()}
+              </Styled.SystemSelectorTab>
+            ))}
+          </Styled.SystemSelectorTabWrapper>
+          <div />
+        </Styled.SystemSelectorContainer>
+      )}
+
+      {/* Tasks & Submenu */}
       <Styled.ContentContainer>
         <Styled.LeftPanelWrapper />
         {/* All Open Tasks */}
