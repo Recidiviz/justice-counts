@@ -181,7 +181,22 @@ class ReportStore {
         );
       }
 
-      const latestReportsAndMetrics = await response.json();
+      const latestReportsAndMetrics =
+        (await response.json()) as LatestReportsAgencyMetrics;
+
+      const allRecords = [
+        latestReportsAndMetrics.monthly_report,
+        ...Object.values(latestReportsAndMetrics.annual_reports),
+      ];
+
+      if (allRecords.length > 0) {
+        allRecords.forEach(
+          (record) =>
+            record.id &&
+            this.storeMetricDetails(record.id, record.metrics, record)
+        );
+      }
+
       return latestReportsAndMetrics;
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
