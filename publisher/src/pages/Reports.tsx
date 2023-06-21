@@ -218,7 +218,7 @@ const Reports: React.FC = () => {
     reportsFilter === "not_started" ||
     filteredReportsMemoized.filter((record) => record.status === "PUBLISHED")
       .length === 0;
-  const bulkActionsDropdownOptions: DropdownOption[] = [
+  const bulkActionsDropdownOptions = [
     {
       key: "publishAction",
       label: "Publish...",
@@ -239,10 +239,14 @@ const Reports: React.FC = () => {
       label: "Delete...",
       onClick: () => selectBulkAction("delete"),
       color: "red",
-      disabled: !isJCAdmin,
       noHover: true,
     },
-  ];
+  ].filter((option) => {
+    if (option.key === "deleteAction" && !isJCAdmin) {
+      return false;
+    }
+    return true;
+  }) as DropdownOption[];
   const tabbedBarOptions: TabOption[] = Object.entries(
     ReportStatusFilterOptionObject
   ).map(([key, value]) => ({
