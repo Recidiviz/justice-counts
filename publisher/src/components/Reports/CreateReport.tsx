@@ -52,6 +52,7 @@ import {
   REPORTING_LOWERCASE,
   REPORTS_LOWERCASE,
 } from "../Global/constants";
+import { Loading } from "../Loading";
 import * as Styled from "./CreateReport.styled";
 import { PublishDataWrapper } from "./ReportDataEntry.styles";
 import { ReportSummaryWrapper } from "./ReportSummaryPanel";
@@ -75,6 +76,7 @@ const CreateReport = () => {
   const [createReportFormValues, setCreateReportFormValues] = useState(
     initialCreateReportFormValues
   );
+  const [isRecordCreating, setIsRecordCreating] = useState(false);
 
   const updateYearStandard = (e: React.ChangeEvent<HTMLInputElement>) =>
     setCreateReportFormValues((prev) => ({
@@ -98,6 +100,7 @@ const CreateReport = () => {
   const createNewReport = async () => {
     const { frequency, month, year, annualStartMonth, isRecurring } =
       createReportFormValues;
+    setIsRecordCreating(true);
     const response = await reportStore.createReport(
       {
         frequency,
@@ -109,13 +112,13 @@ const CreateReport = () => {
     );
     if (response && response instanceof Response) {
       if (response.status === 200) {
-        navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`);
         showToast({
           message: `The ${REPORT_LOWERCASE} was successfully created`,
           check: true,
         });
         const report = (await response.json()) as ReportOverview;
         const agency = userStore.userAgenciesById[report.agency_id];
+        navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}/${report.id}`);
         trackReportCreated(report.id, agency);
         return;
       }
@@ -129,13 +132,16 @@ const CreateReport = () => {
           message: responseJson.description.replace("report", REPORT_LOWERCASE),
           color: "red",
         });
+        setIsRecordCreating(false);
         return;
       }
+      setIsRecordCreating(false);
     }
     showToast({
       message: `Error creating ${REPORT_LOWERCASE}`,
       color: "red",
     });
+    setIsRecordCreating(false);
   };
 
   const { frequency, month, year, annualStartMonth, isRecurring } =
@@ -170,6 +176,11 @@ const CreateReport = () => {
 
   return (
     <>
+      {isRecordCreating && (
+        <Styled.LoadingWrapper>
+          <Loading />
+        </Styled.LoadingWrapper>
+      )}
       {/* Create Report Details Panel */}
       <ReportSummaryWrapper>
         <PreTitle>
@@ -331,17 +342,15 @@ const CreateReport = () => {
 
       {/* Create Report Review Panel */}
       <PublishDataWrapper>
-        <Title>
-          <Styled.CreateButtonContainer>
-            <Button
-              label={`Create ${REPORT_CAPITALIZED}`}
-              /** Should trigger a confirmation dialogue before submitting */
-              onClick={createNewReport}
-              buttonColor="blue"
-              size="medium"
-            />
-          </Styled.CreateButtonContainer>
-        </Title>
+        <Styled.CreateButtonContainer>
+          <Button
+            label={`Create ${REPORT_CAPITALIZED}`}
+            /** Should trigger a confirmation dialogue before submitting */
+            onClick={createNewReport}
+            buttonColor="blue"
+            size="medium"
+          />
+        </Styled.CreateButtonContainer>
       </PublishDataWrapper>
     </>
   );
