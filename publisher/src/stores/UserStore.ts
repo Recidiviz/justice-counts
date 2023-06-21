@@ -142,6 +142,18 @@ class UserStore {
     );
   }
 
+  get userAgenciesFromMultipleStates(): boolean {
+    if (!this.userAgencies) return false;
+    const agenciesStateCodes =
+      this.userAgencies
+        ?.filter((agency) => !!agency.state_code)
+        .map((agency) => agency.state_code) || [];
+    return (
+      agenciesStateCodes.length > 0 &&
+      agenciesStateCodes.length !== new Set(agenciesStateCodes).size
+    );
+  }
+
   getAgency(agencyId: string): UserAgency | undefined {
     if (agencyId) {
       return this.userAgenciesById[agencyId];

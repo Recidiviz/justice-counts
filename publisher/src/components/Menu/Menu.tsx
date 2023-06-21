@@ -155,7 +155,11 @@ const Menu: React.FC = () => {
         .sort((a, b) => a.name.localeCompare(b.name))
         .map((agency) => ({
           key: agency.id,
-          label: agency.name,
+          label: `${agency.name} ${
+            agency.state_code && userStore.userAgenciesFromMultipleStates
+              ? `(${agency.state_code.split("_")[1].toUpperCase()})`
+              : ""
+          }`,
           onClick: () => {
             navigate(`/agency/${agency.id}/${pathWithoutAgency}`);
             handleCloseMobileMenu();
