@@ -46,7 +46,12 @@ import * as Styled from "./Home.styled";
 export const Home = observer(() => {
   const { userStore, reportStore } = useStore();
   const navigate = useNavigate();
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
+  const currentAgency = userStore.getAgency(agencyId);
+  const agencySystems =
+    currentAgency && currentAgency.systems.length > 1
+      ? ["ALL", ...Object.values(currentAgency.systems)]
+      : (currentAgency && Object.values(currentAgency.systems)) || [];
 
   const [loading, setLoading] = useState(true);
   const [currentAgencyMetrics, setAgencyMetrics] = useState<Metric[]>([]);
@@ -69,6 +74,7 @@ export const Home = observer(() => {
       ? latestMonthlyRecordUnpublished
       : latestAnnualMetricUnpublished;
   };
+  const [currentSystem, setCurrentSystem] = useState(agencySystems[0]);
 
   const userFirstName = userStore.name?.split(" ")[0];
   /** Task Card Metadatas */
@@ -131,7 +137,7 @@ export const Home = observer(() => {
   useEffect(() => {
     const fetchMetricsAndRecords = async () => {
       setLoading(true);
-
+      if (agencySystems) setCurrentSystem(agencySystems[0]);
       const {
         agency_metrics: agencyMetrics,
         annual_reports: annualRecords,
@@ -165,6 +171,7 @@ export const Home = observer(() => {
     };
 
     fetchMetricsAndRecords();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyId, reportStore]);
 
   if (!currentAgencyMetrics || loading) {
@@ -178,6 +185,7 @@ export const Home = observer(() => {
         {welcomeDescription}
       </Styled.WelcomeDescription>
 
+      {/* {agencySystems.length > 1 && renderSystemSelectorTabs()} */}
       <Styled.ContentContainer>
         <Styled.LeftPanelWrapper />
         {/* All Open Tasks */}
