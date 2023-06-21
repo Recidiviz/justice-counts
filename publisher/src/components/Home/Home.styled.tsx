@@ -32,9 +32,9 @@ export const HomeContainer = styled.div`
 `;
 
 export const WelcomeUser = styled.div`
-  ${typography.sizeCSS.headline};
+  ${typography.sizeCSS.title};
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 8px;
 `;
 
 export const WelcomeDescription = styled.div`
@@ -44,18 +44,36 @@ export const WelcomeDescription = styled.div`
 `;
 
 export const ContentContainer = styled.div`
-  width: 100%;
   display: flex;
-  gap: 48px;
+  gap: 32px;
 
   & > div:nth-child(1) {
-    flex: 1 4 392px;
+    flex: 1 4 280px;
   }
   & > div:nth-child(2) {
-    flex: 1 1 644px;
+    flex: 1 1 500px;
   }
   & > div:nth-child(3) {
-    flex: 1 1 392px;
+    flex: 1 1 280px;
+  }
+
+  @media only screen and (max-width: 1024px) {
+    flex-direction: column;
+
+    & > div:nth-child(1) {
+      display: none;
+    }
+    & > div:nth-child(2) {
+      max-width: 500px;
+    }
+    & > div:nth-child(3) {
+      max-width: unset;
+
+      &::before {
+        content: "Navigate";
+        margin-bottom: 12px;
+      }
+    }
   }
 `;
 
@@ -73,12 +91,12 @@ export const TaskCardContainer = styled.div`
 `;
 
 export const TaskCardTitle = styled.div`
-  ${typography.sizeCSS.large};
+  ${typography.sizeCSS.medium};
   margin-bottom: 16px;
 `;
 
 export const TaskCardDescription = styled.div`
-  ${typography.sizeCSS.medium};
+  ${typography.sizeCSS.normal};
   color: ${palette.highlight.grey8};
 
   &:not(:last-child) {
@@ -87,6 +105,7 @@ export const TaskCardDescription = styled.div`
 `;
 
 export const TaskCardActionLinksWrapper = styled.div`
+  ${typography.sizeCSS.normal};
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -103,6 +122,8 @@ export const TaskCardActionLink = styled.div`
 `;
 
 export const Submenu = styled.div`
+  width: 100%;
+  max-width: 280px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -110,14 +131,12 @@ export const Submenu = styled.div`
 `;
 
 export const SubmenuItem = styled.a`
-  ${typography.sizeCSS.medium};
-  width: 100%;
-  max-width: 392px;
+  ${typography.sizeCSS.normal};
   display: flex;
   justify-content: flex-start;
   align-items: center;
   gap: 24px;
-  padding: 24px;
+  padding: 16px;
   background: transparent;
   border: 1px solid ${palette.highlight.grey3};
 
