@@ -65,6 +65,7 @@ export const ContentContainer = styled.div`
     }
     & > div:nth-child(2) {
       max-width: 500px;
+      flex: unset;
     }
     & > div:nth-child(3) {
       max-width: unset;
@@ -77,15 +78,19 @@ export const ContentContainer = styled.div`
   }
 `;
 
-export const LeftPanelWrapper = styled.div``;
+export const LeftPanelWrapper = styled.div`
+  width: 280px;
+`;
 
 export const OpenTasksContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 24px;
 `;
 
 export const TaskCardContainer = styled.div`
+  width: 500px;
   padding: 32px;
   border: 1px solid ${palette.highlight.grey3};
 `;
@@ -131,7 +136,7 @@ export const Submenu = styled.div`
 
 export const SubmenuItem = styled.a`
   ${typography.sizeCSS.normal};
-  max-width: 280px;
+  width: 280px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -152,7 +157,7 @@ export const SubmenuItem = styled.a`
   }
 
   @media only screen and (max-width: 1024px) {
-    max-width: unset;
+    width: unset;
   }
 `;
 
