@@ -77,6 +77,10 @@ export const Home = observer(() => {
   const [currentSystem, setCurrentSystem] = useState(agencySystems[0]);
 
   const userFirstName = userStore.name?.split(" ")[0];
+  const isCurrentSystemMetric = (metric: Metric) =>
+    currentSystem === "ALL" ||
+    (currentSystem !== "ALL" && metric.system.key === currentSystem);
+
   /** Task Card Metadatas */
   const allTasksCompleteTaskCardMetadata: TaskCardMetadata = {
     title: "All tasks complete",
@@ -210,8 +214,8 @@ export const Home = observer(() => {
           <Styled.SystemSelectorTabWrapper>
             {agencySystems?.map((system) => (
               <Styled.SystemSelectorTab
-                selected={system === currentSystem}
                 key={system}
+                selected={system === currentSystem}
                 onClick={() => setCurrentSystem(system)}
               >
                 {system.toLocaleLowerCase()}
