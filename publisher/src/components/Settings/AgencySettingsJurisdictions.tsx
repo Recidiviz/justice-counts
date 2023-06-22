@@ -66,6 +66,7 @@ export const AgencySettingsJurisdictions: React.FC<{
     settingProps;
   const { agencyStore } = useStore();
   const {
+    currentAgencySettings,
     includedJurisdictionsIds,
     excludedJurisdictionsIds,
     updateAgencyJurisdictions,
@@ -439,7 +440,11 @@ export const AgencySettingsJurisdictions: React.FC<{
   return (
     <>
       <AgencySettingsBlock id="jurisdictions">
-        <AgencySettingsBlockTitle>Jurisdictions</AgencySettingsBlockTitle>
+        <AgencySettingsBlockTitle
+          configured={Boolean(currentAgencySettings?.[2]?.value)}
+        >
+          Jurisdictions
+        </AgencySettingsBlockTitle>
 
         <AgencySettingsBlockDescription>
           The following are within the agency’s jurisdiction.

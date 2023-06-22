@@ -124,7 +124,11 @@ const AgencySettingsUrl: React.FC<{
   return (
     <>
       <AgencySettingsBlock id="homepage_url">
-        <AgencySettingsBlockTitle>Agency Homepage URL</AgencySettingsBlockTitle>
+        <AgencySettingsBlockTitle
+          configured={Boolean(currentAgencySettings?.[1]?.value)}
+        >
+          Agency Homepage URL
+        </AgencySettingsBlockTitle>
         <AgencyInfoBlockDescription>
           {homepageUrlSetting ? (
             <AgencyInfoLink

@@ -119,7 +119,11 @@ const AgencySettingsDescription: React.FC<{
   return (
     <>
       <AgencySettingsBlock id="description">
-        <AgencySettingsBlockTitle>Agency Information</AgencySettingsBlockTitle>
+        <AgencySettingsBlockTitle
+          configured={Boolean(currentAgencySettings?.[0]?.value)}
+        >
+          Agency Information
+        </AgencySettingsBlockTitle>
         <AgencyInfoBlockDescription>
           {purposeAndFunctionsSetting || "No description added."}
         </AgencyInfoBlockDescription>

@@ -97,7 +97,7 @@ export function MetricsOverview() {
       <Styled.MetricsWrapper>
         {hasActionRequiredMetrics && (
           <Styled.MetricsSection>
-            <Styled.MetricsSectionTitle>
+            <Styled.MetricsSectionTitle textColor="red">
               Action required
             </Styled.MetricsSectionTitle>
             {actionRequiredMetrics?.map(({ key, metric }) => (
