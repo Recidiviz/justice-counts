@@ -80,7 +80,6 @@ export const Home = observer(() => {
   const isCurrentSystemMetric = (metric: Metric) =>
     currentSystem === "ALL" ||
     (currentSystem !== "ALL" && metric.system.key === currentSystem);
-
   /** Task Card Metadatas */
   const allTasksCompleteTaskCardMetadata: TaskCardMetadata = {
     title: "All tasks complete",
