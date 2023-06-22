@@ -24,17 +24,28 @@ import styled from "styled-components/macro";
 
 export const FooterWrapper = styled.footer<{ isPageDataUpload?: boolean }>`
   margin-top: 48px;
+  padding: 14px 24px;
   z-index: ${({ isPageDataUpload }) => (isPageDataUpload ? "5" : "0")};
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
+  background-color: ${palette.solid.darkgrey};
+
+  a {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: start;
+    text-decoration: none;
+
+    @media only screen and (min-width: ${MIN_TABLET_WIDTH + 1}px) {
+      pointer-events: none;
+      cursor: default;
+    }
+  }
 `;
 
 export const FooterTop = styled.div`
   ${typography.sizeCSS.small};
-  color: ${palette.highlight.grey8};
-  padding: 14px 24px;
+  color: #a1a9b8;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -54,23 +65,7 @@ export const FooterTopRightLogo = styled.img`
   height: 16px;
 `;
 
-export const FooterBottom = styled(FooterTop)`
-  background-color: ${palette.solid.darkgrey};
-  padding: 0;
-
-  a {
-    padding: 14px 24px;
-    display: flex;
-    flex-direction: row;
-    align-items: start;
-    text-decoration: none;
-
-    @media only screen and (min-width: ${MIN_TABLET_WIDTH + 1}px) {
-      pointer-events: none;
-      cursor: default;
-    }
-  }
-`;
+export const FooterBottom = styled(FooterTop)``;
 
 export const FooterBottomText = styled.div`
   font-style: normal;
