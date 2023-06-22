@@ -27,6 +27,15 @@ import styled from "styled-components/macro";
 
 import { TWO_PANEL_MAX_WIDTH } from "./ReportDataEntry.styles";
 
+export const LoadingWrapper = styled.div`
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  z-index: 4;
+  background-color: ${palette.highlight.grey2};
+`;
+
 export const Heading = styled.div`
   font-size: ${typography.sizeCSS.medium};
   margin-top: 24px;
