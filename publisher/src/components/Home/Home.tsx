@@ -77,9 +77,26 @@ export const Home = observer(() => {
   const [currentSystem, setCurrentSystem] = useState(agencySystems[0]);
 
   const userFirstName = userStore.name?.split(" ")[0];
+  /** Does the given metric belong to the currently selected system? */
   const isCurrentSystemMetric = (metric: Metric) =>
     currentSystem === "ALL" ||
     (currentSystem !== "ALL" && metric.system.key === currentSystem);
+  const getSupervisionSubsystemStartingMonth = (metric: Metric) => {
+    if (
+      !latestMonthlyAnnualRecordsMetadata ||
+      !metric.disaggregated_by_supervision_subsystems
+    )
+      return null;
+    const annualRecordsEntries = Object.entries(
+      latestMonthlyAnnualRecordsMetadata.annual
+    );
+    const [startingMonth] =
+      annualRecordsEntries.find(([_, record]) =>
+        record.metrics.find((recordMetric) => recordMetric.key === metric.key)
+      ) || [];
+    return Number(startingMonth);
+  };
+
   /** Task Card Metadatas */
   const allTasksCompleteTaskCardMetadata: TaskCardMetadata = {
     title: "All tasks complete",
