@@ -21,6 +21,7 @@ import {
   DimensionNamesByMetricAndDisaggregation,
   RawDatapoint,
   RawDatapointsByMetric,
+  UnitedRaceEthnicityKeys,
 } from "@justice-counts/common/types";
 import { isPositiveNumber } from "@justice-counts/common/utils";
 import {
@@ -96,6 +97,36 @@ abstract class DatapointsStore {
             dp.disaggregation_display_name
           ] = {};
         }
+
+        const dimensionName = Object.keys(UnitedRaceEthnicityKeys).includes(
+          dp.dimension_display_name
+        )
+          ? UnitedRaceEthnicityKeys[dp.dimension_display_name]
+          : dp.dimension_display_name;
+
+        const hasDimensionName =
+          res[dp.metric_definition_key].disaggregations[
+            dp.disaggregation_display_name
+          ][dp.start_date] &&
+          Object.keys(
+            res[dp.metric_definition_key].disaggregations[
+              dp.disaggregation_display_name
+            ][dp.start_date]
+          ).includes(dimensionName);
+
+        let dimensionValue: string | number | null;
+
+        if (hasDimensionName) {
+          dimensionValue =
+            Number(
+              res[dp.metric_definition_key].disaggregations[
+                dp.disaggregation_display_name
+              ][dp.start_date][dimensionName] ?? 0
+            ) + (sanitizedValue ?? 0);
+        } else {
+          dimensionValue = sanitizedValue;
+        }
+
         res[dp.metric_definition_key].disaggregations[
           dp.disaggregation_display_name
         ][dp.start_date] = {
@@ -104,7 +135,7 @@ abstract class DatapointsStore {
           ][dp.start_date],
           start_date: dp.start_date,
           end_date: dp.end_date,
-          [dp.dimension_display_name]: sanitizedValue,
+          [dimensionName]: dimensionValue,
           frequency: dp.frequency,
           dataVizMissingData: 0,
         };

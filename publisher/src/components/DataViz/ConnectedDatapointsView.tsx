@@ -19,7 +19,10 @@ import { DatapointsTableView } from "@justice-counts/common/components/DataViz/D
 import { DatapointsView } from "@justice-counts/common/components/DataViz/DatapointsView";
 import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { useWindowWidth } from "@justice-counts/common/hooks";
-import { ReportFrequency } from "@justice-counts/common/types";
+import {
+  ReportFrequency,
+  UnitedRaceEthnicityKeys,
+} from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 
@@ -61,14 +64,29 @@ const ConnectedDatapointsView: React.FC<{
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  let dimensionNamesByDisaggregation =
+    datapointsStore.dimensionNamesByMetricAndDisaggregation[metric];
+
+  if (
+    Object.keys(
+      datapointsStore.dimensionNamesByMetricAndDisaggregation[metric]
+    ).includes("Race / Ethnicity")
+  ) {
+    const raceEthnicityDimensionNames = Array.from(
+      new Set(Object.values(UnitedRaceEthnicityKeys))
+    );
+    dimensionNamesByDisaggregation = {
+      ...datapointsStore.dimensionNamesByMetricAndDisaggregation[metric],
+      "Race / Ethnicity": raceEthnicityDimensionNames,
+    };
+  }
+
   return (
     <>
       {dataView === ChartView.Chart && (
         <DatapointsView
           datapointsGroupedByAggregateAndDisaggregations={datapointsForMetric}
-          dimensionNamesByDisaggregation={
-            datapointsStore.dimensionNamesByMetricAndDisaggregation[metric]
-          }
+          dimensionNamesByDisaggregation={dimensionNamesByDisaggregation}
           timeRange={timeRange}
           disaggregationName={disaggregationName}
           countOrPercentageView={countOrPercentageView}

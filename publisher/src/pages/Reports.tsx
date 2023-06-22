@@ -119,6 +119,11 @@ const Reports: React.FC = () => {
   const [isRemoveRecordsModalOpen, setIsRemoveRecordsModalOpen] =
     useState(false);
 
+  const isAdmin =
+    userStore.isJusticeCountsAdmin(agencyId) ||
+    userStore.isAgencyAdmin(agencyId);
+  const isJCAdmin = userStore.isJusticeCountsAdmin(agencyId);
+
   const selectBulkAction = (action: RecordsBulkAction) => setBulkAction(action);
   const clearBulkAction = () => setBulkAction(undefined);
   const clearAllSelectedRecords = () => setSelectedRecords([]);
@@ -213,7 +218,7 @@ const Reports: React.FC = () => {
     reportsFilter === "not_started" ||
     filteredReportsMemoized.filter((record) => record.status === "PUBLISHED")
       .length === 0;
-  const bulkActionsDropdownOptions: DropdownOption[] = [
+  const bulkActionsDropdownOptions = [
     {
       key: "publishAction",
       label: "Publish",
@@ -235,7 +240,13 @@ const Reports: React.FC = () => {
       color: "red",
       noHover: true,
     },
-  ];
+  ].filter((option) => {
+    // Gates `Delete` action to Justice Counts Admins only
+    if (option.key === "deleteAction" && !isJCAdmin) {
+      return false;
+    }
+    return true;
+  }) as DropdownOption[];
   const tabbedBarOptions: TabOption[] = Object.entries(
     ReportStatusFilterOptionObject
   ).map(([key, value]) => ({
@@ -252,10 +263,6 @@ const Reports: React.FC = () => {
     onClick: () => setReportsFilter(normalizeString(key)),
     highlight: ReportStatusFilterOptionObject[reportsFilter] === value,
   }));
-
-  const isAdmin =
-    userStore.isJusticeCountsAdmin(agencyId) ||
-    userStore.isAgencyAdmin(agencyId);
 
   const renderReports = () => {
     if (reportStore.loadingOverview) {
