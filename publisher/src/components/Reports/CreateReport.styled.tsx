@@ -25,7 +25,22 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
+import { Form, FormWrapper } from "../Forms";
 import { TWO_PANEL_MAX_WIDTH } from "./ReportDataEntry.styles";
+
+export const CreateReportFormWrapper = styled(FormWrapper)`
+  margin-bottom: 0;
+`;
+
+export const CreateReportForm = styled(Form)`
+  padding-bottom: 0;
+`;
+
+export const BackButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+`;
 
 export const LoadingWrapper = styled.div`
   width: 100vw;
@@ -48,6 +63,7 @@ export const DropdownsWrapper = styled.div`
   flex-direction: row;
   gap: 8px;
   height: 56px;
+  z-index: 4;
 `;
 
 export const DropdownContainer = styled.div`

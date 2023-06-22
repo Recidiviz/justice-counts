@@ -36,6 +36,7 @@ export const Button = styled.div<{
   enabledDuringOnboarding?: boolean;
   disabled?: boolean;
   noSidePadding?: boolean;
+  noTopBottomPadding?: boolean;
   noHover?: boolean;
 }>`
   display: flex;
@@ -106,6 +107,9 @@ export const Button = styled.div<{
 
   ${({ noSidePadding }) =>
     noSidePadding && "padding-left: 0; padding-right: 0;"}
+  ${({ noTopBottomPadding }) =>
+    noTopBottomPadding && "padding-top: 0; padding-bottom: 0;"}
+  
   &:hover {
     cursor: pointer;
 

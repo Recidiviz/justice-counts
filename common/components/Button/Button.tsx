@@ -37,6 +37,7 @@ type ButtonProps = {
   enabledDuringOnboarding?: boolean;
   disabled?: boolean;
   noSidePadding?: boolean;
+  noTopBottomPadding?: boolean;
   noHover?: boolean;
   tooltipMsg?: string;
 };
@@ -52,6 +53,7 @@ export function Button({
   enabledDuringOnboarding,
   disabled,
   noSidePadding,
+  noTopBottomPadding,
   noHover,
   tooltipMsg,
 }: ButtonProps) {
@@ -66,6 +68,7 @@ export function Button({
         disabled={disabled}
         enabledDuringOnboarding={enabledDuringOnboarding}
         noSidePadding={noSidePadding}
+        noTopBottomPadding={noTopBottomPadding}
         noHover={noHover}
       >
         {label}

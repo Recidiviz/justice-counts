@@ -221,22 +221,21 @@ const Reports: React.FC = () => {
   const bulkActionsDropdownOptions = [
     {
       key: "publishAction",
-      label: "Publish...",
+      label: "Publish",
       onClick: () => selectBulkAction("publish"),
-      color: "green",
       disabled: isPublishDisabled,
       noHover: true,
     },
     {
       key: "unpublishAction",
-      label: "Unpublish...",
+      label: "Unpublish",
       onClick: () => selectBulkAction("unpublish"),
       disabled: isUnpublishDisabled,
       noHover: true,
     },
     {
       key: "deleteAction",
-      label: "Delete...",
+      label: "Delete",
       onClick: () => selectBulkAction("delete"),
       color: "red",
       noHover: true,
@@ -491,7 +490,6 @@ const Reports: React.FC = () => {
                       hover="background"
                       caretPosition="right"
                       alignment="right"
-                      overflow
                     />
                   </BulkActionsDropdownContainer>
                   <Button

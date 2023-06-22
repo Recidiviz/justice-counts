@@ -22,7 +22,6 @@ import {
   BottomMetricInsightsContainer,
   DatapointsViewContainer,
   DatapointsViewControlsContainer,
-  DatapointsViewControlsDropdown,
   DatapointsViewControlsRow,
   DatapointsViewHeaderWrapper,
   ExtendedDropdown,
@@ -54,6 +53,7 @@ import {
 import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
 import React, { useEffect } from "react";
 
+import { Dropdown, DropdownOption } from "../Dropdown";
 import { MobileFiltersModal } from "./MobileFiltersModal";
 import { MobileSelectMetricsModal } from "./MobileSelectMetricsModal";
 
@@ -213,40 +213,57 @@ export const DatapointsView: React.FC<{
   };
 
   const renderDataVizControls = () => {
+    const timeRanges = isAnnualOnly
+      ? Object.keys(DataVizTimeRangesMap).filter(
+          (key) => key !== "6 Months Ago"
+        )
+      : Object.keys(DataVizTimeRangesMap);
+    const timeRangesDropdownOptions: DropdownOption[] = timeRanges.map(
+      (range) => ({
+        key: range,
+        label: range,
+        onClick: () => setTimeRange(range as DataVizTimeRangeDisplayName),
+        highlight: range === timeRange,
+      })
+    );
+
+    const disaggregationDropdownOptions: DropdownOption[] =
+      disaggregationOptions.map((option) => ({
+        key: option,
+        label: option,
+        onClick: () => setDisaggregationName(option),
+        highlight: disaggregationName === option,
+      }));
+
+    const countOrPercentageDropdownOptions: DropdownOption[] =
+      dataVizCountOrPercentageView.map((option) => ({
+        key: option,
+        label: option,
+        onClick: () => setCountOrPercentageView(option),
+        highlight: countOrPercentageView === option,
+      }));
     return (
       <DatapointsViewControlsContainer>
-        <DatapointsViewControlsDropdown
-          title="Date Range"
-          selectedValue={timeRange}
-          options={
-            isAnnualOnly
-              ? Object.keys(DataVizTimeRangesMap).filter(
-                  (key) => key !== "6 Months Ago"
-                )
-              : Object.keys(DataVizTimeRangesMap)
-          }
-          onSelect={(key) => {
-            setTimeRange(key as DataVizTimeRangeDisplayName);
-          }}
+        <Dropdown
+          label={timeRange}
+          options={timeRangesDropdownOptions}
+          size="small"
+          caretPosition="right"
         />
         {disaggregationOptions.length > 1 && (
-          <DatapointsViewControlsDropdown
-            title="Disaggregation"
-            selectedValue={disaggregationName}
-            options={disaggregationOptions}
-            onSelect={(key) => {
-              setDisaggregationName(key);
-            }}
+          <Dropdown
+            label={disaggregationName}
+            options={disaggregationDropdownOptions}
+            size="small"
+            caretPosition="right"
           />
         )}
         {disaggregationName !== noDisaggregationOption && (
-          <DatapointsViewControlsDropdown
-            title="View"
-            selectedValue={countOrPercentageView}
-            options={dataVizCountOrPercentageView}
-            onSelect={(key) => {
-              setCountOrPercentageView(key as DataVizCountOrPercentageView);
-            }}
+          <Dropdown
+            label={countOrPercentageView}
+            options={countOrPercentageDropdownOptions}
+            size="small"
+            caretPosition="right"
           />
         )}
       </DatapointsViewControlsContainer>
