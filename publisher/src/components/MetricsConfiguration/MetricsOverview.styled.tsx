@@ -107,15 +107,12 @@ export const MetricItem = styled.div`
   cursor: pointer;
 
   svg {
-    margin-right: -20px;
-    opacity: 0;
-    transition: opacity 0.2s ease, margin-right 0.3s ease;
+    display: none;
   }
 
   &:hover svg {
     display: block;
     margin-right: 13px;
-    opacity: 1;
   }
 
   &:hover {
