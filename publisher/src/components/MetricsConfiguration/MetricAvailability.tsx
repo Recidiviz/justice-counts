@@ -510,17 +510,18 @@ function MetricAvailability({ goToDefineMetrics }: MetricAvailabilityProps) {
                         </Styled.DimensionsListFieldset>
                       </Styled.DimensionsList>
                     )}
-                    {metricEnabled && (
-                      <Button
-                        label="Define Metrics ->"
-                        onClick={goToDefineMetrics}
-                        labelColor="blue"
-                        noHover
-                      />
-                    )}
                   </Styled.DimensionsContainer>
                 );
               })}
+              {metricEnabled && (
+                <Button
+                  label="Define Metrics ->"
+                  onClick={goToDefineMetrics}
+                  labelColor="blue"
+                  noHover
+                  noSidePadding
+                />
+              )}
             </Styled.BreakdownsSection>
           )}
         </Styled.InnerWrapper>

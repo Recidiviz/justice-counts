@@ -174,6 +174,9 @@ export const MonthSelectionDropdownContainer = styled.div<{
 export const BreakdownsSection = styled.div<{ disabled: boolean }>`
   width: 100%;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
 
   ${({ disabled }) => disabled && "pointer-events: none; opacity: 0.5"};
 `;
@@ -240,9 +243,7 @@ export const SelectAllDimensions = styled.span<{ disabled?: boolean }>`
   }
 `;
 
-export const DimensionsList = styled.form`
-  margin-bottom: 16px;
-`;
+export const DimensionsList = styled.form``;
 
 export const DimensionsListFieldset = styled.fieldset<{ disabled?: boolean }>`
   display: flex;
@@ -256,11 +257,10 @@ export const DimensionsListItem = styled.div<{ enabled?: boolean }>`
   flex-direction: row;
   gap: 12px;
   align-items: center;
-  padding: 8px 0 8px 10px;
+  padding: 8px 0;
   ${typography.sizeCSS.medium};
 
   ${({ enabled }) => !enabled && `color: ${palette.highlight.grey7};`}
-
   img {
     width: 20px;
     height: 20px;
