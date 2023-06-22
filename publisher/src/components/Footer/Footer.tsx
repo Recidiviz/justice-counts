@@ -40,19 +40,19 @@ const Footer = () => {
       id="footer"
       isPageDataUpload={location.pathname.endsWith("upload")}
     >
-      <FooterTop>
-        ©2022{" "}
-        <FooterTopRight>
-          The Council of State Governments. All Rights Reserved.{" "}
-          <FooterTopRightLogo src={csgLogo} alt="" />
-        </FooterTopRight>
-      </FooterTop>
-      <FooterBottom>
-        <a
-          href="https://justicecounts.csgjusticecenter.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
+      <a
+        href="https://justicecounts.csgjusticecenter.org/"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <FooterTop>
+          ©2022{" "}
+          <FooterTopRight>
+            The Council of State Governments. All Rights Reserved.{" "}
+            <FooterTopRightLogo src={csgLogo} alt="" />
+          </FooterTopRight>
+        </FooterTop>
+        <FooterBottom>
           <FooterBottomText>
             This Web site is funded in part through a grant from the Bureau of
             Justice Assistance, Office of Justice Programs, U.S. Department of
@@ -67,8 +67,8 @@ const Footer = () => {
             <img src={bjaLogo} alt="" />
             <img src={dojLogo} alt="" />
           </FooterBottomLogos>
-        </a>
-      </FooterBottom>
+        </FooterBottom>
+      </a>
     </FooterWrapper>
   );
 };

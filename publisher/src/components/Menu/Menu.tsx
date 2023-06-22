@@ -149,13 +149,18 @@ const Menu: React.FC = () => {
     setMetricConfigProgressToastTimeout(timeout);
   };
 
+  const includeStateCodeInAgencyName = userStore.userAgenciesFromMultipleStates;
   const dropdownOptions: DropdownOption[] = userStore.userAgencies
     ? userStore.userAgencies
         .slice()
         .sort((a, b) => a.name.localeCompare(b.name))
         .map((agency) => ({
           key: agency.id,
-          label: agency.name,
+          label: `${agency.name} ${
+            agency.state_code && includeStateCodeInAgencyName
+              ? `(${agency.state_code.split("_")[1].toUpperCase()})`
+              : ""
+          }`,
           onClick: () => {
             navigate(`/agency/${agency.id}/${pathWithoutAgency}`);
             handleCloseMobileMenu();
