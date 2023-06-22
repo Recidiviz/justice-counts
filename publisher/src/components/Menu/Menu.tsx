@@ -149,6 +149,7 @@ const Menu: React.FC = () => {
     setMetricConfigProgressToastTimeout(timeout);
   };
 
+  const includeStateCodeInAgencyName = userStore.userAgenciesFromMultipleStates;
   const dropdownOptions: DropdownOption[] = userStore.userAgencies
     ? userStore.userAgencies
         .slice()
@@ -156,7 +157,7 @@ const Menu: React.FC = () => {
         .map((agency) => ({
           key: agency.id,
           label: `${agency.name} ${
-            agency.state_code && userStore.userAgenciesFromMultipleStates
+            agency.state_code && includeStateCodeInAgencyName
               ? `(${agency.state_code.split("_")[1].toUpperCase()})`
               : ""
           }`,
