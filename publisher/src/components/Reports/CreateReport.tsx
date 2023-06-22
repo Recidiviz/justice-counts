@@ -176,6 +176,7 @@ const CreateReport = () => {
             label={`<- Back to ${REPORTS_CAPITALIZED} Overview`}
             onClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
             noSidePadding
+            noTopBottomPadding
             labelColor="blue"
             noHover
           />

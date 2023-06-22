@@ -37,6 +37,7 @@ type ButtonProps = {
   enabledDuringOnboarding?: boolean;
   disabled?: boolean;
   noSidePadding?: boolean;
+  noTopBottomPadding?: boolean;
   noHover?: boolean;
   tooltipMsg?: string;
 };
@@ -52,12 +53,13 @@ export function Button({
   enabledDuringOnboarding,
   disabled,
   noSidePadding,
+  noTopBottomPadding,
   noHover,
   tooltipMsg,
 }: ButtonProps) {
   return (
     <Styled.ButtonWrapper id={id}>
-      <Styled.ButtonComponent
+      <Styled.Button
         onClick={onClick}
         buttonColor={buttonColor}
         labelColor={labelColor}
@@ -66,10 +68,11 @@ export function Button({
         disabled={disabled}
         enabledDuringOnboarding={enabledDuringOnboarding}
         noSidePadding={noSidePadding}
+        noTopBottomPadding={noTopBottomPadding}
         noHover={noHover}
       >
         {label}
-      </Styled.ButtonComponent>
+      </Styled.Button>
       {tooltipMsg && id && (
         <Tooltip anchorId={id} position="bottom" content={tooltipMsg} />
       )}

@@ -28,7 +28,7 @@ import {
   ButtonSize,
 } from "./types";
 
-export const ButtonComponent = styled.div<{
+export const Button = styled.div<{
   buttonColor?: ButtonColor;
   labelColor?: ButtonLabelColor;
   borderColor?: ButtonBorderColor;
@@ -36,6 +36,7 @@ export const ButtonComponent = styled.div<{
   enabledDuringOnboarding?: boolean;
   disabled?: boolean;
   noSidePadding?: boolean;
+  noTopBottomPadding?: boolean;
   noHover?: boolean;
 }>`
   display: flex;
@@ -106,6 +107,9 @@ export const ButtonComponent = styled.div<{
 
   ${({ noSidePadding }) =>
     noSidePadding && "padding-left: 0; padding-right: 0;"}
+  ${({ noTopBottomPadding }) =>
+    noTopBottomPadding && "padding-top: 0; padding-bottom: 0;"}
+  
   &:hover {
     cursor: pointer;
 
@@ -128,7 +132,7 @@ export const ButtonComponent = styled.div<{
 export const ButtonWrapper = styled.div`
   position: relative;
 
-  ${ButtonComponent} {
+  ${Button} {
     height: 100%;
   }
 `;

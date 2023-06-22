@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { ButtonComponent } from "@justice-counts/common/components/Button";
 import {
   CustomDropdown,
   CustomDropdownToggle,
@@ -38,10 +37,9 @@ export const CreateReportForm = styled(Form)`
 `;
 
 export const BackButtonWrapper = styled.div`
-  & ${ButtonComponent} {
-    justify-content: start;
-    padding: 0;
-  }
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
 `;
 
 export const Heading = styled.div`
