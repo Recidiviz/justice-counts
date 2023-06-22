@@ -85,7 +85,7 @@ export const TabbedBarContainer = styled.div`
 `;
 
 export const BulkActionModeTitle = styled.div`
-  padding: 24px 0 19px 0;
+  padding: 16px 0 19px 0;
   ${typography.sizeCSS.large};
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
