@@ -361,6 +361,11 @@ export const InvitedStatus = styled.div`
   color: ${palette.solid.orange};
 `;
 
+export const ReadOnlyStatus = styled.div`
+  ${typography.sizeCSS.normal};
+  color: ${palette.highlight.grey7};
+`;
+
 export const TeamMemberNameContainerTitle = styled(TeamMemberNameContainer)`
   ${typography.sizeCSS.small};
   color: ${palette.highlight.grey10};
