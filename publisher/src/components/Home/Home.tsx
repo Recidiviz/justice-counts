@@ -61,7 +61,7 @@ export const Home = observer(() => {
       ?.filter((metric) => {
         const metricFrequency = metric.custom_frequency || metric.frequency;
         const startingMonth = metric.starting_month;
-        /** Does a record exist for this current metric and is that record unpublished? */
+        /** Does a record that matches this metric's reporting frequency exist and is that record unpublished? */
         const recordExistsForMetricAndUnpublished =
           metricFrequency === "MONTHLY"
             ? Boolean(
