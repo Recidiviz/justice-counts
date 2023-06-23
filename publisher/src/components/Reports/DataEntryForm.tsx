@@ -199,7 +199,7 @@ const DataEntryForm: React.FC<{
     )) as Response;
 
     if (response.status === 200) {
-      showToast({ message: "Saved", color: "grey" });
+      showToast({ message: "Saved", color: "blue" });
       if (oldStatus === "NOT_STARTED" && status === "DRAFT") {
         const agencyID = reportStore.reportOverviews[reportID]?.agency_id;
         const agency = userStore.getAgency(agencyID.toString());
