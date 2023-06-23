@@ -18,6 +18,22 @@
 import { Metric, ReportFrequency } from "@justice-counts/common/types";
 import { monthsByName } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
+import {
+  allPass,
+  always,
+  and,
+  equals,
+  filter,
+  groupBy,
+  ifElse,
+  map,
+  not,
+  or,
+  path,
+  pipe,
+  prop,
+  when,
+} from "ramda";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -49,6 +65,46 @@ export const Home = observer(() => {
     setLatestMonthlyAnnualsRecordMetadata,
   ] = useState<LatestAnnualMonthlyRecordMetadata>();
 
+  const metricEnabled = ({ enabled }: Metric) => enabled;
+  const metricIsMonthly = (metric: Metric) =>
+    equals(or(metric.custom_frequency, metric.frequency), "MONTHLY");
+  const metricIsAnnual = (metric: Metric) =>
+    equals(or(metric.custom_frequency, metric.frequency), "ANNUAL");
+  const metricStartingMonth = ({ starting_month }: Metric) => starting_month;
+  const latestAnnualRecordStatus = (getStartingMonth) => {
+    const startingMonth = getStartingMonth();
+
+    latestMonthlyAnnualRecordsMetadata?.annual[startingMonth] &&
+      latestMonthlyAnnualRecordsMetadata?.annual[startingMonth].status;
+  };
+  /** Does a record that matches this metric's reporting frequency exist and is that record unpublished? */
+  const hasUnpublishedLatestRecord = ifElse(
+    metricIsMonthly,
+    always(
+      and(
+        latestMonthlyAnnualRecordsMetadata?.monthly?.id,
+        not(
+          equals(
+            latestMonthlyAnnualRecordsMetadata?.monthly?.status,
+            "PUBLISHED"
+          )
+        )
+      )
+    ),
+    always(
+      and(
+        metricStartingMonth,
+        and(
+          latestAnnualRecordStatus,
+          equals(
+            latestAnnualRecordStatus(() => metricStartingMonth),
+            "PUBLISHED"
+          )
+        )
+      )
+    )
+  );
+
   const userFirstName = userStore.name?.split(" ")[0];
 
   /** Task Card Metadatas */
@@ -58,32 +114,37 @@ export const Home = observer(() => {
   };
   const enabledMetricsTaskCardMetadata: TaskCardMetadata[] =
     currentAgencyMetrics
-      ?.filter((metric) => {
-        const metricFrequency = metric.custom_frequency || metric.frequency;
-        const startingMonth = metric.starting_month;
+      ?.filter(metricEnabled)
+      .filter(hasUnpublishedLatestRecord)
+      // ?.filter((metric) => {
+      //   const metricFrequency = or(metric.custom_frequency, metric.frequency);
+      //   const startingMonth = metric.starting_month;
+      //   hasUnpublishedLatestRecord(startingMonth);
 
-        /** Does a record that matches this metric's reporting frequency exist and is that record unpublished? */
-        /** Monthly Metric */
-        if (metricFrequency === "MONTHLY") {
-          const hasUnpublishedRecord = Boolean(
-            latestMonthlyAnnualRecordsMetadata?.monthly.status !== "PUBLISHED"
-          );
-          return metric.enabled && hasUnpublishedRecord;
-        }
+      //   /** Does a record that matches this metric's reporting frequency exist and is that record unpublished? */
 
-        /** Annual Metric */
-        const hasUnpublishedRecord =
-          startingMonth &&
-          Boolean(
-            latestMonthlyAnnualRecordsMetadata?.annual[startingMonth].status !==
-              "PUBLISHED"
-          );
-        return metric.enabled && hasUnpublishedRecord;
-      })
+      //   /** Monthly Metric */
+      //   // if (metricFrequency === "MONTHLY") {
+      //   //   const hasUnpublishedRecord = Boolean(
+      //   //     latestMonthlyAnnualRecordsMetadata?.monthly.status !== "PUBLISHED"
+      //   //   );
+      //   //   return metric.enabled && hasUnpublishedRecord;
+      //   // }
+
+      //   // /** Annual Metric */
+      //   // const hasUnpublishedRecord =
+      //   //   startingMonth &&
+      //   //   Boolean(
+      //   //     latestMonthlyAnnualRecordsMetadata?.annual[startingMonth].status !==
+      //   //       "PUBLISHED"
+      //   //   );
+      //   return metric.enabled && hasUnpublishedLatestRecord(startingMonth);
+      // })
       .map((metric) => {
-        const metricFrequency = metric.custom_frequency || metric.frequency;
-        const startingMonth = metric.starting_month;
-
+        // const metricFrequency = metric.custom_frequency || metric.frequency;
+        // const startingMonth = metric.starting_month;
+        const metricFrequency = or(metric.custom_frequency, metric.frequency);
+        const startingMonth = prop("starting_month", metric);
         /** Create Task Card linked to the latest Monthly Record */
         if (metricFrequency === "MONTHLY") {
           const latestMonthlyMetricValue =
@@ -308,13 +369,16 @@ export const Home = observer(() => {
           monthlyRecord.year,
           monthlyRecord.frequency
         );
-      const monthlyRecordMetadata = {
-        id: monthlyRecord?.id,
-        reportTitle: monthlyRecordReportTitle || "",
-        metrics: monthlyRecord?.metrics,
-        status: monthlyRecord?.status,
-      };
-
+      const monthlyRecordMetadata =
+        Object.values(monthlyRecord).length > 0
+          ? {
+              id: monthlyRecord?.id,
+              reportTitle: monthlyRecordReportTitle || "",
+              metrics: monthlyRecord?.metrics,
+              status: monthlyRecord?.status,
+            }
+          : {};
+      console.log("::::::", monthlyRecord);
       setAgencyMetrics(agencyMetrics);
       setLatestMonthlyAnnualsRecordMetadata({
         monthly: monthlyRecordMetadata,
