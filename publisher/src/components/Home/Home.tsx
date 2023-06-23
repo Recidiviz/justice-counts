@@ -336,53 +336,57 @@ export const Home = observer(() => {
           {hasCompletedAllTasks ? (
             <TaskCard metadata={allTasksCompleteTaskCardMetadata} />
           ) : (
-            allMetricsWithoutValuesOrNotConfigured.map((taskCardMetadata) => (
-              <TaskCard
-                key={taskCardMetadata.title}
-                metadata={taskCardMetadata}
-                reportID={taskCardMetadata.reportID}
-              />
-            ))
-          )}
-
-          {/* Publish-Ready Cards (for Monthly & Annual Records) */}
-
-          {/* Publish latest monthly record */}
-          {allMetricsWithValues.find(
-            (metric) => metric.metricFrequency === "MONTHLY"
-          ) &&
-            latestMonthlyAnnualRecordsMetadata &&
-            latestMonthlyAnnualRecordsMetadata.monthly.status !==
-              "PUBLISHED" && (
-              <TaskCard
-                metadata={createPublishRecordTaskCardMetadata(
-                  latestMonthlyAnnualRecordsMetadata.monthly.reportTitle,
-                  "MONTHLY"
-                )}
-                reportID={latestMonthlyAnnualRecordsMetadata.monthly.id}
-              />
-            )}
-
-          {/* Publish latest annual record(s) */}
-          {allMetricsWithValues.find(
-            (metric) => metric.metricFrequency === "ANNUAL"
-          ) &&
-            latestMonthlyAnnualRecordsMetadata?.annual &&
-            Object.values(latestMonthlyAnnualRecordsMetadata.annual).map(
-              (metadata) => {
-                if (metadata.status === "PUBLISHED") return null;
-                return (
+            <>
+              {allMetricsWithoutValuesOrNotConfigured.map(
+                (taskCardMetadata) => (
                   <TaskCard
-                    key={metadata.id}
-                    metadata={createPublishRecordTaskCardMetadata(
-                      metadata.reportTitle,
-                      "ANNUAL"
-                    )}
-                    reportID={metadata.id}
+                    key={taskCardMetadata.title}
+                    metadata={taskCardMetadata}
+                    reportID={taskCardMetadata.reportID}
                   />
-                );
-              }
-            )}
+                )
+              )}
+
+              {/* Publish-Ready Cards (for Monthly & Annual Records) */}
+
+              {/* Publish latest monthly record */}
+              {allMetricsWithValues.find(
+                (metric) => metric.metricFrequency === "MONTHLY"
+              ) &&
+                latestMonthlyAnnualRecordsMetadata &&
+                latestMonthlyAnnualRecordsMetadata.monthly.status !==
+                  "PUBLISHED" && (
+                  <TaskCard
+                    metadata={createPublishRecordTaskCardMetadata(
+                      latestMonthlyAnnualRecordsMetadata.monthly.reportTitle,
+                      "MONTHLY"
+                    )}
+                    reportID={latestMonthlyAnnualRecordsMetadata.monthly.id}
+                  />
+                )}
+
+              {/* Publish latest annual record(s) */}
+              {allMetricsWithValues.find(
+                (metric) => metric.metricFrequency === "ANNUAL"
+              ) &&
+                latestMonthlyAnnualRecordsMetadata?.annual &&
+                Object.values(latestMonthlyAnnualRecordsMetadata.annual).map(
+                  (metadata) => {
+                    if (metadata.status === "PUBLISHED") return null;
+                    return (
+                      <TaskCard
+                        key={metadata.id}
+                        metadata={createPublishRecordTaskCardMetadata(
+                          metadata.reportTitle,
+                          "ANNUAL"
+                        )}
+                        reportID={metadata.id}
+                      />
+                    );
+                  }
+                )}
+            </>
+          )}
         </Styled.OpenTasksContainer>
         {/* Submenu */}
         <Styled.Submenu>
