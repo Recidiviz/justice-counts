@@ -250,10 +250,6 @@ const DataEntryForm: React.FC<{
     document.body.style.overflow = showDataEntryHelpPage ? "hidden" : "unset";
   }, [showDataEntryHelpPage]);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   const reportOverview = reportStore.reportOverviews[reportID] as Report;
   const reportMetrics = reportStore.reportMetrics[reportID];
   const metricsBySystem = reportStore.reportMetricsBySystem[reportID];

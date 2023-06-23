@@ -16,19 +16,24 @@
 // =============================================================================
 
 import {
+  HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
+import { FOOTER_HEIGHT_WITH_MARGIN } from "../Footer";
+
+const containerHeight = `100vh - ${FOOTER_HEIGHT_WITH_MARGIN}px - ${HEADER_BAR_HEIGHT}px`;
+
 export const HomeContainer = styled.div`
   width: 100%;
-  min-height: 100%;
+  height: calc(${containerHeight});
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   padding-top: 80px;
+  overflow: auto;
 `;
 
 export const WelcomeUser = styled.div`

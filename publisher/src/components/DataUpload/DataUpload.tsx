@@ -333,10 +333,6 @@ export const DataUpload: React.FC = observer(() => {
     setSelectedSystem(userSystems.length === 1 ? userSystems[0] : undefined);
   }, [userSystems]);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   if (isLoading) {
     return (
       <DataUploadContainer>
