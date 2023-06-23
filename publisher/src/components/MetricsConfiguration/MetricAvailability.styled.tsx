@@ -34,7 +34,7 @@ export const Wrapper = styled.div`
 
 export const InnerWrapper = styled.div`
   width: 754px;
-  padding: 72px 0 100px 0;
+  padding: 72px 0 64px 0;
   display: flex;
   flex-direction: column;
 `;
@@ -174,6 +174,9 @@ export const MonthSelectionDropdownContainer = styled.div<{
 export const BreakdownsSection = styled.div<{ disabled: boolean }>`
   width: 100%;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
 
   ${({ disabled }) => disabled && "pointer-events: none; opacity: 0.5"};
 `;
@@ -217,6 +220,7 @@ export const BreakdownsOption = styled.div<{ active: boolean }>`
 export const DimensionsContainer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: start;
   margin-bottom: 16px;
 `;
 
@@ -253,15 +257,10 @@ export const DimensionsListItem = styled.div<{ enabled?: boolean }>`
   flex-direction: row;
   gap: 12px;
   align-items: center;
-  padding: 16px 0 16px 10px;
-  border-bottom: 1px solid ${palette.highlight.grey4};
+  padding: 8px 0;
   ${typography.sizeCSS.medium};
 
   ${({ enabled }) => !enabled && `color: ${palette.highlight.grey7};`}
-  &:last-child {
-    border-bottom: none;
-  }
-
   img {
     width: 20px;
     height: 20px;

@@ -16,6 +16,7 @@
 // =============================================================================
 
 import infoIcon from "@justice-counts/common/assets/info-icon.svg";
+import { Button } from "@justice-counts/common/components/Button";
 import {
   Dropdown,
   DropdownOption,
@@ -44,7 +45,11 @@ import { RaceEthnicitiesGrid } from "./RaceEthnicitiesGrid";
 import RaceEthnicitiesModalForm from "./RaceEthnicitiesModalForm";
 import { ReportFrequencyUpdate } from "./types";
 
-function MetricAvailability() {
+type MetricAvailabilityProps = {
+  goToDefineMetrics: () => void;
+};
+
+function MetricAvailability({ goToDefineMetrics }: MetricAvailabilityProps) {
   const { agencyId } = useParams() as { agencyId: string };
   const [settingsSearchParams] = useSettingsSearchParams();
   const { system: systemSearchParam, metric: metricSearchParam } =
@@ -508,6 +513,15 @@ function MetricAvailability() {
                   </Styled.DimensionsContainer>
                 );
               })}
+              {metricEnabled && (
+                <Button
+                  label="Define Metrics ->"
+                  onClick={goToDefineMetrics}
+                  labelColor="blue"
+                  noHover
+                  noSidePadding
+                />
+              )}
             </Styled.BreakdownsSection>
           )}
         </Styled.InnerWrapper>
