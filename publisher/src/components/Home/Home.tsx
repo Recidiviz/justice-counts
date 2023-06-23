@@ -190,9 +190,12 @@ export const Home = observer(() => {
     }
   );
   /** Determining whether or not all tasks have been completed */
+
+  /** Case: User has configured all metrics and set them all to "Not Available" */
   const hasNoEnabledOrUnconfiguredMetricsTaskCardMetadata =
     enabledMetricsTaskCardMetadata.length === 0 &&
     unconfiguredMetricsTaskCardMetadata.length === 0;
+  /** Case: User has published the latest monthly and annual record */
   const hasPublishedLatestAnnualRecords =
     latestMonthlyAnnualRecordsMetadata &&
     Object.values(latestMonthlyAnnualRecordsMetadata.annual).filter(
@@ -200,6 +203,12 @@ export const Home = observer(() => {
     ).length === 0;
   const hasPublishedLatestMonthlyRecord =
     latestMonthlyAnnualRecordsMetadata?.monthly.status === "PUBLISHED";
+  /**
+   * User has completed all tasks if:
+   *  1. User has configured all metrics and set them all to "Not Available"
+   *  2. User has entered values for all metrics in the latest annual and/or monthly
+   *     records and those records are published
+   */
   const hasCompletedAllTasks =
     hasNoEnabledOrUnconfiguredMetricsTaskCardMetadata ||
     (hasPublishedLatestAnnualRecords &&
