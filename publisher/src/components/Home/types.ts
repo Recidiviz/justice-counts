@@ -56,6 +56,6 @@ export type AnnualRecordMetadata = {
 };
 
 export type LatestAnnualMonthlyRecordMetadata = {
-  monthly: LatestRecordMetadata;
-  annual: AnnualRecordMetadata;
+  monthly?: LatestRecordMetadata;
+  annual?: AnnualRecordMetadata;
 };

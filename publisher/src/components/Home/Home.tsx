@@ -57,6 +57,7 @@ export const Home = observer(() => {
   const { userStore, reportStore } = useStore();
   const navigate = useNavigate();
   const { agencyId } = useParams();
+  const userFirstName = userStore.name?.split(" ")[0];
 
   const [loading, setLoading] = useState(true);
   const [currentAgencyMetrics, setAgencyMetrics] = useState<Metric[]>();
@@ -65,24 +66,30 @@ export const Home = observer(() => {
     setLatestMonthlyAnnualsRecordMetadata,
   ] = useState<LatestAnnualMonthlyRecordMetadata>();
 
+  const hasLatestMonthlyRecord = Boolean(
+    latestMonthlyAnnualRecordsMetadata?.monthly?.id
+  );
+  const hasLatestAnnualRecords = Boolean(
+    latestMonthlyAnnualRecordsMetadata?.annual &&
+      Object.values(latestMonthlyAnnualRecordsMetadata?.annual).length > 0
+  );
   const metricEnabled = ({ enabled }: Metric) => enabled;
   const metricIsMonthly = (metric: Metric) =>
     equals(or(metric.custom_frequency, metric.frequency), "MONTHLY");
   const metricIsAnnual = (metric: Metric) =>
     equals(or(metric.custom_frequency, metric.frequency), "ANNUAL");
-  const metricStartingMonth = ({ starting_month }: Metric) => starting_month;
-  const latestAnnualRecordStatus = (getStartingMonth) => {
-    const startingMonth = getStartingMonth();
-
-    latestMonthlyAnnualRecordsMetadata?.annual[startingMonth] &&
-      latestMonthlyAnnualRecordsMetadata?.annual[startingMonth].status;
+  const metricStartingMonth = ({ starting_month: startingMonth }: Metric) =>
+    startingMonth;
+  const latestAnnualRecordByStartingMonth = (startingMonth?: number) => {
+    if (!startingMonth) return;
+    return latestMonthlyAnnualRecordsMetadata?.annual?.[startingMonth];
   };
   /** Does a record that matches this metric's reporting frequency exist and is that record unpublished? */
   const hasUnpublishedLatestRecord = ifElse(
     metricIsMonthly,
     always(
       and(
-        latestMonthlyAnnualRecordsMetadata?.monthly?.id,
+        hasLatestMonthlyRecord,
         not(
           equals(
             latestMonthlyAnnualRecordsMetadata?.monthly?.status,
@@ -91,21 +98,17 @@ export const Home = observer(() => {
         )
       )
     ),
-    always(
-      and(
-        metricStartingMonth,
+    (metric) =>
+      always(
         and(
-          latestAnnualRecordStatus,
+          metric.starting_month,
           equals(
-            latestAnnualRecordStatus(() => metricStartingMonth),
+            latestAnnualRecordByStartingMonth(metric.starting_month)?.status,
             "PUBLISHED"
           )
         )
       )
-    )
   );
-
-  const userFirstName = userStore.name?.split(" ")[0];
 
   /** Task Card Metadatas */
   const allTasksCompleteTaskCardMetadata: TaskCardMetadata = {
@@ -113,87 +116,77 @@ export const Home = observer(() => {
     description: "Your data is updated and published.",
   };
   const enabledMetricsTaskCardMetadata: TaskCardMetadata[] =
-    currentAgencyMetrics
-      ?.filter(metricEnabled)
-      .filter(hasUnpublishedLatestRecord)
-      // ?.filter((metric) => {
-      //   const metricFrequency = or(metric.custom_frequency, metric.frequency);
-      //   const startingMonth = metric.starting_month;
-      //   hasUnpublishedLatestRecord(startingMonth);
+    (currentAgencyMetrics &&
+      pipe(
+        filter(metricEnabled),
+        filter(hasUnpublishedLatestRecord),
+        map((metric) => {
+          const metricFrequency = or(metric.custom_frequency, metric.frequency);
+          const startingMonth = prop("starting_month", metric);
+          const latestMonthlyMetricsHash =
+            latestMonthlyAnnualRecordsMetadata?.monthly?.metrics &&
+            pipe(
+              path<any>(["monthly", "metrics"]),
+              groupBy(({ key }) => key)
+            )(latestMonthlyAnnualRecordsMetadata);
+          const latestAnnualMetricsHash =
+            startingMonth &&
+            latestMonthlyAnnualRecordsMetadata?.annual?.[startingMonth]
+              ?.metrics &&
+            pipe(
+              path<any>(["annual", startingMonth as number, "metrics"]),
+              groupBy(({ key }) => key)
+            )(latestMonthlyAnnualRecordsMetadata);
+          const latestMonthlyMetricValue = when(
+            metricIsMonthly,
+            always(latestMonthlyMetricsHash?.[metric.key]?.[0]?.value)
+          );
+          const latestAnnualMetricValue = when(
+            allPass([metricIsAnnual, metricStartingMonth]),
+            always(latestAnnualMetricsHash?.[metric.key]?.[0]?.value)
+          );
+          const latestAnnualMetricID = path<any>([
+            "annual",
+            startingMonth as number,
+            "id",
+          ])(latestMonthlyAnnualRecordsMetadata);
+          const hasMetricValue = ifElse(
+            metricIsMonthly,
+            latestMonthlyMetricValue,
+            when(
+              allPass([metricIsAnnual, metricStartingMonth]),
+              latestAnnualMetricValue
+            )
+          );
+          const getReportID = ifElse(
+            metricIsMonthly,
+            always(latestMonthlyAnnualRecordsMetadata?.monthly?.id),
+            when(
+              allPass([metricIsAnnual, metricStartingMonth]),
+              always(latestAnnualMetricID)
+            )
+          );
 
-      //   /** Does a record that matches this metric's reporting frequency exist and is that record unpublished? */
-
-      //   /** Monthly Metric */
-      //   // if (metricFrequency === "MONTHLY") {
-      //   //   const hasUnpublishedRecord = Boolean(
-      //   //     latestMonthlyAnnualRecordsMetadata?.monthly.status !== "PUBLISHED"
-      //   //   );
-      //   //   return metric.enabled && hasUnpublishedRecord;
-      //   // }
-
-      //   // /** Annual Metric */
-      //   // const hasUnpublishedRecord =
-      //   //   startingMonth &&
-      //   //   Boolean(
-      //   //     latestMonthlyAnnualRecordsMetadata?.annual[startingMonth].status !==
-      //   //       "PUBLISHED"
-      //   //   );
-      //   return metric.enabled && hasUnpublishedLatestRecord(startingMonth);
-      // })
-      .map((metric) => {
-        // const metricFrequency = metric.custom_frequency || metric.frequency;
-        // const startingMonth = metric.starting_month;
-        const metricFrequency = or(metric.custom_frequency, metric.frequency);
-        const startingMonth = prop("starting_month", metric);
-        /** Create Task Card linked to the latest Monthly Record */
-        if (metricFrequency === "MONTHLY") {
-          const latestMonthlyMetricValue =
-            latestMonthlyAnnualRecordsMetadata?.monthly?.metrics?.find(
-              (latestMonthlyMetric) => latestMonthlyMetric.key === metric.key
-            )?.value;
-          const reportID = latestMonthlyAnnualRecordsMetadata?.monthly?.id;
+          const actionLinks = ifElse(
+            hasMetricValue,
+            always([taskCardLabelsActionLinks.publish]),
+            always([
+              taskCardLabelsActionLinks.uploadData,
+              taskCardLabelsActionLinks.manualEntry,
+            ])
+          );
 
           return {
-            reportID,
+            reportID: getReportID(metric),
             title: metric.display_name,
             description: metric.description,
-            actionLinks: latestMonthlyMetricValue
-              ? [taskCardLabelsActionLinks.publish]
-              : [
-                  taskCardLabelsActionLinks.uploadData,
-                  taskCardLabelsActionLinks.manualEntry,
-                ],
+            actionLinks: actionLinks(metric),
             metricFrequency,
-            hasMetricValue: Boolean(latestMonthlyMetricValue),
+            hasMetricValue: hasMetricValue(metric),
           };
-        }
-
-        /** Create Task Card linked to the latest Annual Record */
-        const latestAnnualMetricValue =
-          startingMonth &&
-          latestMonthlyAnnualRecordsMetadata?.annual[
-            startingMonth
-          ]?.metrics?.find(
-            (latestAnnualMetric) => latestAnnualMetric.key === metric.key
-          )?.value;
-        const reportID =
-          startingMonth &&
-          latestMonthlyAnnualRecordsMetadata?.annual[startingMonth]?.id;
-
-        return {
-          reportID,
-          title: metric.display_name,
-          description: metric.description,
-          actionLinks: latestAnnualMetricValue
-            ? [taskCardLabelsActionLinks.publish]
-            : [
-                taskCardLabelsActionLinks.uploadData,
-                taskCardLabelsActionLinks.manualEntry,
-              ],
-          metricFrequency,
-          hasMetricValue: Boolean(latestAnnualMetricValue),
-        };
-      }) || [];
+        })
+      )(currentAgencyMetrics)) ||
+    [];
   const unconfiguredMetricsTaskCardMetadata: TaskCardMetadata[] =
     currentAgencyMetrics
       ?.filter((metric) => metric.enabled === null)
@@ -203,7 +196,7 @@ export const Home = observer(() => {
 
         /** Create Task Card linked to the latest Monthly Record */
         if (metricFrequency === "MONTHLY") {
-          const reportID = latestMonthlyAnnualRecordsMetadata?.monthly.id;
+          const reportID = latestMonthlyAnnualRecordsMetadata?.monthly?.id;
           return {
             reportID,
             title: metric.display_name,
@@ -216,7 +209,7 @@ export const Home = observer(() => {
         /** Create Task Card linked to the latest Annual Record */
         const reportID =
           startingMonth &&
-          latestMonthlyAnnualRecordsMetadata?.annual[startingMonth].id;
+          latestMonthlyAnnualRecordsMetadata?.annual?.[startingMonth].id;
 
         return {
           reportID,
@@ -258,12 +251,12 @@ export const Home = observer(() => {
     unconfiguredMetricsTaskCardMetadata.length === 0;
   /** Case: User has published the latest monthly and annual record */
   const hasPublishedLatestAnnualRecords =
-    latestMonthlyAnnualRecordsMetadata &&
+    latestMonthlyAnnualRecordsMetadata?.annual &&
     Object.values(latestMonthlyAnnualRecordsMetadata.annual).filter(
       (metadata) => metadata.status !== "PUBLISHED"
     ).length === 0;
   const hasPublishedLatestMonthlyRecord =
-    latestMonthlyAnnualRecordsMetadata?.monthly.status === "PUBLISHED";
+    latestMonthlyAnnualRecordsMetadata?.monthly?.status === "PUBLISHED";
   /**
    * User has completed all tasks if:
    *  1. User has configured all metrics and set them all to "Not Available"
@@ -369,16 +362,13 @@ export const Home = observer(() => {
           monthlyRecord.year,
           monthlyRecord.frequency
         );
-      const monthlyRecordMetadata =
-        Object.values(monthlyRecord).length > 0
-          ? {
-              id: monthlyRecord?.id,
-              reportTitle: monthlyRecordReportTitle || "",
-              metrics: monthlyRecord?.metrics,
-              status: monthlyRecord?.status,
-            }
-          : {};
-      console.log("::::::", monthlyRecord);
+      const monthlyRecordMetadata = {
+        id: monthlyRecord?.id,
+        reportTitle: monthlyRecordReportTitle || "",
+        metrics: monthlyRecord?.metrics,
+        status: monthlyRecord?.status,
+      };
+
       setAgencyMetrics(agencyMetrics);
       setLatestMonthlyAnnualsRecordMetadata({
         monthly: monthlyRecordMetadata,
@@ -427,14 +417,15 @@ export const Home = observer(() => {
                 (metric) => metric.metricFrequency === "MONTHLY"
               ) &&
                 latestMonthlyAnnualRecordsMetadata &&
-                latestMonthlyAnnualRecordsMetadata.monthly.status !==
+                latestMonthlyAnnualRecordsMetadata.monthly?.status !==
                   "PUBLISHED" && (
                   <TaskCard
                     metadata={createPublishRecordTaskCardMetadata(
-                      latestMonthlyAnnualRecordsMetadata.monthly.reportTitle,
+                      latestMonthlyAnnualRecordsMetadata.monthly?.reportTitle ||
+                        "",
                       "MONTHLY"
                     )}
-                    reportID={latestMonthlyAnnualRecordsMetadata.monthly.id}
+                    reportID={latestMonthlyAnnualRecordsMetadata.monthly?.id}
                   />
                 )}
 
