@@ -46,7 +46,7 @@ export type TaskCardActionLinksMetadataList = {
 
 export type LatestRecordMetadata = {
   id: number;
-  metrics: Metric[];
+  metrics: { [key: string]: Metric[] };
   status: ReportStatus;
   reportTitle: string;
 };
