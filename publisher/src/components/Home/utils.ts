@@ -75,7 +75,7 @@ export const createAnnualRecordsMetadata = (annualRecords: {
   }, {} as AnnualRecordMetadata);
 };
 
-export const createDataEntryOrPublishTaskCard = (
+export const createDataEntryTaskCardMetadata = (
   currentMetric: Metric,
   recordMetadata?: LatestRecordMetadata
 ) => {
@@ -88,18 +88,30 @@ export const createDataEntryOrPublishTaskCard = (
     reportID: recordMetadata?.id,
     title: currentMetric.display_name,
     description: currentMetric.description,
-    actionLinks: hasMetricValue
-      ? [taskCardLabelsActionLinks.publish]
-      : [
-          taskCardLabelsActionLinks.uploadData,
-          taskCardLabelsActionLinks.manualEntry,
-        ],
+    actionLinks: [
+      taskCardLabelsActionLinks.uploadData,
+      taskCardLabelsActionLinks.manualEntry,
+    ],
     metricFrequency,
     hasMetricValue,
   };
 };
 
-export const createConfigurationTaskCard = (
+export const createPublishTaskCardMetadata = (
+  reportTitle: string,
+  frequency: ReportFrequency
+) => {
+  return {
+    title: reportTitle,
+    description: `Publish all the data you have added for ${
+      reportTitle.split("(")[0] // Remove `([Starting Month])` from description for annual records
+    }`,
+    actionLinks: [taskCardLabelsActionLinks.publish],
+    metricFrequency: frequency,
+  };
+};
+
+export const createConfigurationTaskCardMetadata = (
   currentMetric: Metric,
   recordMetadata?: LatestRecordMetadata
 ) => {
@@ -112,7 +124,7 @@ export const createConfigurationTaskCard = (
   };
 };
 
-export const createTaskCards = (
+export const createTaskCardMetadatas = (
   metric: Metric,
   recordMetadatas: [
     () => LatestRecordMetadata | undefined,

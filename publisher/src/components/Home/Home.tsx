@@ -15,25 +15,25 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Metric, ReportFrequency } from "@justice-counts/common/types";
+import { Metric } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import {
   createAnnualRecordsMetadata,
-  createConfigurationTaskCard,
+  createConfigurationTaskCardMetadata,
+  createDataEntryTaskCardMetadata,
   createMonthlyRecordMetadata,
-  createDataEntryOrPublishTaskCard,
+  createPublishTaskCardMetadata,
+  createTaskCardMetadatas,
   LatestAnnualMonthlyRecordMetadata,
   LatestReportsAgencyMetrics,
-  TaskCard,
-  taskCardLabelsActionLinks,
-  TaskCardMetadata,
-  createTaskCards,
   metricEnabled,
   metricIsMonthly,
   metricNotConfigured,
+  TaskCard,
+  TaskCardMetadata,
 } from ".";
 import { useStore } from "../../stores";
 import { ReactComponent as GearIcon } from "../assets/gear-icon.svg";
@@ -80,20 +80,20 @@ export const Home = observer(() => {
       .filter(metricEnabled)
       .filter(metricHasUnpublishedRecord)
       .map((metric) =>
-        createTaskCards(
+        createTaskCardMetadatas(
           metric,
           [latestMonthlyRecord, latestAnnualRecord],
-          createDataEntryOrPublishTaskCard
+          createDataEntryTaskCardMetadata
         )
       ) || [];
   const unconfiguredMetricsTaskCardMetadata: TaskCardMetadata[] =
     currentAgencyMetrics
       ?.filter(metricNotConfigured)
       .map((metric) =>
-        createTaskCards(
+        createTaskCardMetadatas(
           metric,
           [latestMonthlyRecord, latestAnnualRecord],
-          createConfigurationTaskCard
+          createConfigurationTaskCardMetadata
         )
       ) || [];
 
@@ -176,19 +176,6 @@ export const Home = observer(() => {
   // };
 
   /** Creates Publish task card metadata object for monthly and annual records */
-  const createPublishRecordTaskCardMetadata = (
-    reportTitle: string,
-    frequency: ReportFrequency
-  ) => {
-    return {
-      title: reportTitle,
-      description: `Publish all the data you have added for ${
-        reportTitle.split("(")[0] // Remove `([Starting Month])` from description for annual records
-      }`,
-      actionLinks: [taskCardLabelsActionLinks.publish],
-      metricFrequency: frequency,
-    };
-  };
 
   useEffect(() => {
     const fetchMetricsAndRecords = async () => {
@@ -267,7 +254,7 @@ export const Home = observer(() => {
                 latestMonthlyAnnualRecordsMetadata.monthly.status !==
                   "PUBLISHED" && (
                   <TaskCard
-                    metadata={createPublishRecordTaskCardMetadata(
+                    metadata={createPublishTaskCardMetadata(
                       latestMonthlyAnnualRecordsMetadata.monthly.reportTitle,
                       "MONTHLY"
                     )}
@@ -281,16 +268,16 @@ export const Home = observer(() => {
               ) &&
                 latestMonthlyAnnualRecordsMetadata?.annual &&
                 Object.values(latestMonthlyAnnualRecordsMetadata.annual).map(
-                  (metadata) => {
-                    if (metadata.status === "PUBLISHED") return null;
+                  (record) => {
+                    if (record.status === "PUBLISHED") return null;
                     return (
                       <TaskCard
-                        key={metadata.id}
-                        metadata={createPublishRecordTaskCardMetadata(
-                          metadata.reportTitle,
+                        key={record.id}
+                        metadata={createPublishTaskCardMetadata(
+                          record.reportTitle,
                           "ANNUAL"
                         )}
-                        reportID={metadata.id}
+                        reportID={record.id}
                       />
                     );
                   }
