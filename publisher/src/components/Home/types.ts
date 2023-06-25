@@ -59,3 +59,11 @@ export type LatestAnnualMonthlyRecordMetadata = {
   monthly: LatestRecordMetadata;
   annual: AnnualRecordMetadata;
 };
+
+export type TaskCardMetadataValueConfigurationGroup = {
+  allMetricMetadatasWithValues: {
+    MONTHLY: TaskCardMetadata[];
+    ANNUAL: TaskCardMetadata[];
+  };
+  allMetricMetadatasWithoutValuesOrNotConfigured: TaskCardMetadata[];
+};

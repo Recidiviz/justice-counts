@@ -27,6 +27,7 @@ import {
   createMonthlyRecordMetadata,
   createPublishTaskCardMetadata,
   createTaskCardMetadatas,
+  groupMetadatasByValueAndConfiguration,
   LatestAnnualMonthlyRecordMetadata,
   LatestReportsAgencyMetrics,
   metricEnabled,
@@ -46,7 +47,6 @@ export const Home = observer(() => {
   const { userStore, reportStore } = useStore();
   const navigate = useNavigate();
   const { agencyId } = useParams();
-  const userFirstName = userStore.name?.split(" ")[0];
 
   const [loading, setLoading] = useState(true);
   const [currentAgencyMetrics, setAgencyMetrics] = useState<Metric[]>([]);
@@ -58,6 +58,7 @@ export const Home = observer(() => {
   const latestMonthlyRecord = () => latestMonthlyAnnualRecordsMetadata?.monthly;
   const latestAnnualRecord = (startingMonth: number | string) =>
     latestMonthlyAnnualRecordsMetadata?.annual[startingMonth];
+  /** Does a record that matches this metric's reporting frequency exist? */
   const metricHasUnpublishedRecord = (metric: Metric) => {
     const latestMonthlyRecordUnpublished =
       latestMonthlyRecord()?.id &&
@@ -69,59 +70,6 @@ export const Home = observer(() => {
       ? latestMonthlyRecordUnpublished
       : latestAnnualMetricUnpublished;
   };
-
-  /** Task Card Metadatas */
-  const allTasksCompleteTaskCardMetadata: TaskCardMetadata = {
-    title: "All tasks complete",
-    description: "Your data is updated and published.",
-  };
-  const enabledMetricsTaskCardMetadata: TaskCardMetadata[] =
-    currentAgencyMetrics
-      .filter(metricEnabled)
-      .filter(metricHasUnpublishedRecord)
-      .map((metric) =>
-        createTaskCardMetadatas(
-          metric,
-          [latestMonthlyRecord, latestAnnualRecord],
-          createDataEntryTaskCardMetadata
-        )
-      ) || [];
-  const unconfiguredMetricsTaskCardMetadata: TaskCardMetadata[] =
-    currentAgencyMetrics
-      ?.filter(metricNotConfigured)
-      .map((metric) =>
-        createTaskCardMetadatas(
-          metric,
-          [latestMonthlyRecord, latestAnnualRecord],
-          createConfigurationTaskCardMetadata
-        )
-      ) || [];
-
-  /**
-   * Metrics without values or not yet configured (`allMetricsWithoutValuesOrNotConfigured`) are straightforwardly rendered.
-   * Metrics with values (`allMetricsWithValues`) collapse into one Publish task card for the report the
-   * metric belongs to.
-   */
-  const { allMetricsWithValues, allMetricsWithoutValuesOrNotConfigured } = [
-    ...unconfiguredMetricsTaskCardMetadata,
-    ...enabledMetricsTaskCardMetadata,
-  ].reduce(
-    (acc, metric) => {
-      if (metric.hasMetricValue) {
-        acc.allMetricsWithValues.push(metric);
-      } else {
-        acc.allMetricsWithoutValuesOrNotConfigured.push(metric);
-      }
-      return acc;
-    },
-    {
-      allMetricsWithValues: [],
-      allMetricsWithoutValuesOrNotConfigured: [],
-    } as {
-      [key: string]: TaskCardMetadata[];
-    }
-  );
-
   /**
    * User has completed all tasks if:
    *  1. User has configured all metrics and set them all to "Not Available"
@@ -146,36 +94,58 @@ export const Home = observer(() => {
       hasNoEnabledOrUnconfiguredMetricsTaskCardMetadata ||
       (hasPublishedLatestAnnualRecords &&
         hasPublishedLatestMonthlyRecord &&
-        allMetricsWithoutValuesOrNotConfigured.length === 0)
+        allMetricMetadatasWithoutValuesOrNotConfigured.length === 0)
     );
   };
+
+  const userFirstName = userStore.name?.split(" ")[0];
   const welcomeDescription = !hasCompletedAllTasks()
     ? "See open tasks below"
     : "";
 
-  /** TODO(#716): Support multi-system agencies */
-  // const renderSystemSelectorTabs = (
-  //   tabs: {
-  //     label: string;
-  //     selected: boolean;
-  //   }[]
-  // ) => {
-  //   return (
-  //     <Styled.ContentContainer>
-  //       <div />
-  //       <Styled.SystemSelectorTabWrapper>
-  //         {tabs.map((tab) => (
-  //           <Styled.SystemSelectorTab selected={tab.selected} key={tab.label}>
-  //             {tab.label}
-  //           </Styled.SystemSelectorTab>
-  //         ))}
-  //       </Styled.SystemSelectorTabWrapper>
-  //       <div />
-  //     </Styled.ContentContainer>
-  //   );
-  // };
+  /** Task Card Metadatas */
+  const allTasksCompleteTaskCardMetadata: TaskCardMetadata = {
+    title: "All tasks complete",
+    description: "Your data is updated and published.",
+  };
+  const enabledMetricsTaskCardMetadata: TaskCardMetadata[] =
+    currentAgencyMetrics
+      .filter(metricEnabled)
+      .filter(metricHasUnpublishedRecord)
+      .map((metric) =>
+        createTaskCardMetadatas(
+          metric,
+          { latestMonthlyRecord, latestAnnualRecord },
+          createDataEntryTaskCardMetadata
+        )
+      ) || [];
+  const unconfiguredMetricsTaskCardMetadata: TaskCardMetadata[] =
+    currentAgencyMetrics
+      .filter(metricNotConfigured)
+      .map((metric) =>
+        createTaskCardMetadatas(
+          metric,
+          { latestMonthlyRecord, latestAnnualRecord },
+          createConfigurationTaskCardMetadata
+        )
+      ) || [];
 
-  /** Creates Publish task card metadata object for monthly and annual records */
+  /**
+   * Metrics without values or not yet configured (`allMetricMetadatasWithoutValuesOrNotConfigured`) are
+   * straightforwardly rendered - each metric will have its own individual task card.
+   *
+   * Metrics with values (`allMetricMetadatasWithValues`) collapse into one Publish task card for the report the
+   * metric belongs to. (e.g. adding data to metrics will remove those metric's individual task cards, and
+   * the user will see one task card with the latest report that matches that metric's frequency with a
+   * Publish action link.)
+   */
+  const {
+    allMetricMetadatasWithValues,
+    allMetricMetadatasWithoutValuesOrNotConfigured,
+  } = groupMetadatasByValueAndConfiguration([
+    ...unconfiguredMetricsTaskCardMetadata,
+    ...enabledMetricsTaskCardMetadata,
+  ]);
 
   useEffect(() => {
     const fetchMetricsAndRecords = async () => {
@@ -234,7 +204,7 @@ export const Home = observer(() => {
             <TaskCard metadata={allTasksCompleteTaskCardMetadata} />
           ) : (
             <>
-              {allMetricsWithoutValuesOrNotConfigured.map(
+              {allMetricMetadatasWithoutValuesOrNotConfigured.map(
                 (taskCardMetadata) => (
                   <TaskCard
                     key={taskCardMetadata.title}
@@ -247,9 +217,7 @@ export const Home = observer(() => {
               {/* Publish-Ready Cards (for Monthly & Annual Records) */}
 
               {/* Publish latest monthly record */}
-              {allMetricsWithValues.find(
-                (metric) => metric.metricFrequency === "MONTHLY"
-              ) &&
+              {allMetricMetadatasWithValues["MONTHLY"] &&
                 latestMonthlyAnnualRecordsMetadata &&
                 latestMonthlyAnnualRecordsMetadata.monthly.status !==
                   "PUBLISHED" && (
@@ -263,9 +231,7 @@ export const Home = observer(() => {
                 )}
 
               {/* Publish latest annual record(s) */}
-              {allMetricsWithValues.find(
-                (metric) => metric.metricFrequency === "ANNUAL"
-              ) &&
+              {allMetricMetadatasWithValues["ANNUAL"] &&
                 latestMonthlyAnnualRecordsMetadata?.annual &&
                 Object.values(latestMonthlyAnnualRecordsMetadata.annual).map(
                   (record) => {

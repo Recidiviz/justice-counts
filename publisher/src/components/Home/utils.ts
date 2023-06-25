@@ -26,6 +26,7 @@ import {
   AnnualRecordMetadata,
   LatestRecordMetadata,
   TaskCardMetadata,
+  TaskCardMetadataValueConfigurationGroup,
   taskCardLabelsActionLinks,
 } from ".";
 
@@ -126,22 +127,48 @@ export const createConfigurationTaskCardMetadata = (
 
 export const createTaskCardMetadatas = (
   metric: Metric,
-  recordMetadatas: [
-    () => LatestRecordMetadata | undefined,
-    (startingMonth: number | string) => LatestRecordMetadata | undefined
-  ],
-  createTaskCard: (
+  recordMetadatas: {
+    latestMonthlyRecord: () => LatestRecordMetadata | undefined;
+    latestAnnualRecord: (
+      startingMonth: number | string
+    ) => LatestRecordMetadata | undefined;
+  },
+  createTaskCardCallback: (
     currentMetric: Metric,
     recordMetadata?: LatestRecordMetadata
   ) => TaskCardMetadata
 ) => {
   const metricFrequency = metric.custom_frequency || metric.frequency;
   const startingMonth = metric.starting_month;
-  const [latestMonthlyRecord, latestAnnualRecord] = recordMetadatas;
+  const { latestMonthlyRecord, latestAnnualRecord } = recordMetadatas;
   /** Create Task Card linked to the latest Monthly Record */
   if (metricFrequency === "MONTHLY") {
-    return createTaskCard(metric, latestMonthlyRecord());
+    return createTaskCardCallback(metric, latestMonthlyRecord());
   }
   /** Create Task Card linked to the latest Annual Record */
-  return createTaskCard(metric, latestAnnualRecord(startingMonth as number));
+  return createTaskCardCallback(
+    metric,
+    latestAnnualRecord(startingMonth as number)
+  );
+};
+
+export const groupMetadatasByValueAndConfiguration = (
+  metricMetadatas: TaskCardMetadata[]
+) => {
+  return metricMetadatas.reduce(
+    (acc, metric) => {
+      const metricFrequency = metric.metricFrequency;
+      if (metric.hasMetricValue) {
+        if (metricFrequency)
+          acc.allMetricMetadatasWithValues[metricFrequency].push(metric);
+      } else {
+        acc.allMetricMetadatasWithoutValuesOrNotConfigured.push(metric);
+      }
+      return acc;
+    },
+    {
+      allMetricMetadatasWithValues: { MONTHLY: [], ANNUAL: [] },
+      allMetricMetadatasWithoutValuesOrNotConfigured: [],
+    } as TaskCardMetadataValueConfigurationGroup
+  );
 };
