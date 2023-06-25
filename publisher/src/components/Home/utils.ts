@@ -157,7 +157,7 @@ export const groupMetadatasByValueAndConfiguration = (
 ) => {
   return metricMetadatas.reduce(
     (acc, metric) => {
-      const metricFrequency = metric.metricFrequency;
+      const { metricFrequency } = metric;
       if (metric.hasMetricValue) {
         if (metricFrequency)
           acc.allMetricMetadatasWithValues[metricFrequency].push(metric);

@@ -217,7 +217,7 @@ export const Home = observer(() => {
               {/* Publish-Ready Cards (for Monthly & Annual Records) */}
 
               {/* Publish latest monthly record */}
-              {allMetricMetadatasWithValues["MONTHLY"] &&
+              {allMetricMetadatasWithValues.MONTHLY &&
                 latestMonthlyAnnualRecordsMetadata &&
                 latestMonthlyAnnualRecordsMetadata.monthly.status !==
                   "PUBLISHED" && (
@@ -231,7 +231,7 @@ export const Home = observer(() => {
                 )}
 
               {/* Publish latest annual record(s) */}
-              {allMetricMetadatasWithValues["ANNUAL"] &&
+              {allMetricMetadatasWithValues.ANNUAL &&
                 latestMonthlyAnnualRecordsMetadata?.annual &&
                 Object.values(latestMonthlyAnnualRecordsMetadata.annual).map(
                   (record) => {
