@@ -266,7 +266,6 @@ export const DataUpload: React.FC = observer(() => {
     setIsLoading(true);
     setSelectedSystem(system);
     handleFileUpload(file, system);
-    setSelectedFile(undefined);
   };
 
   const resetToNewUpload = () => {
