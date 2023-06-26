@@ -25,9 +25,9 @@ import {
 import {
   AnnualRecordMetadata,
   LatestRecordMetadata,
+  taskCardLabelsActionLinks,
   TaskCardMetadata,
   TaskCardMetadataValueConfigurationGroup,
-  taskCardLabelsActionLinks,
 } from ".";
 
 export const metricEnabled = ({ enabled }: Metric) => enabled;
@@ -35,6 +35,10 @@ export const metricNotConfigured = ({ enabled }: Metric) => enabled === null;
 export const metricIsMonthly = (metric: Metric) =>
   metric.custom_frequency === "MONTHLY" || metric.frequency === "MONTHLY";
 
+/**
+ * Creates Report Title (includes month name in parenthesis to differentiate
+ * between annual records of similar time-periods)
+ */
 export const createReportTitle = (record: Report, monthName?: string) => {
   return monthName
     ? `${printReportTitle(
@@ -67,7 +71,7 @@ export const createAnnualRecordsMetadata = (annualRecords: {
 
     acc[startingMonth] = {
       id: record.id,
-      reportTitle: createReportTitle(record, monthName), // Add starting month to report title to differentiate same year annual record titles
+      reportTitle: createReportTitle(record, monthName),
       metrics: groupBy(record.metrics, (metric: Metric) => metric.key),
       status: record.status,
     };
@@ -152,6 +156,10 @@ export const createTaskCardMetadatas = (
   );
 };
 
+/**
+ * Groups metric task card metadatas by those with values (to collapse into one publish task card),
+ * and those without values/not configured  (to render their respective individual task cards)
+ */
 export const groupMetadatasByValueAndConfiguration = (
   metricMetadatas: TaskCardMetadata[]
 ) => {
