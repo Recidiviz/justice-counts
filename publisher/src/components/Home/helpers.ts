@@ -148,7 +148,7 @@ export const createPublishTaskCardMetadata = (
 
 /**
  * Creates configuration and data entry task card metadata objects from metrics linked to
- * the corresponding latest record. This function uses the above `createConfigurationTaskCardMetadata` and
+ * their corresponding latest record. This function uses the above `createConfigurationTaskCardMetadata` and
  * `createDataEntryTaskCardMetadata` as callback functions to create the appropriate task card metadata object.
  */
 export const createTaskCardMetadatas = (
@@ -180,7 +180,7 @@ export const createTaskCardMetadatas = (
 
 /**
  * Groups metric task card metadatas by those with values (to collapse into one publish task card),
- * and those without values/not configured  (to render their respective individual task cards)
+ * and those without values/not configured  (to render their respective individual task cards).
  */
 export const groupMetadatasByValueAndConfiguration = (
   metricMetadatas: TaskCardMetadata[]
