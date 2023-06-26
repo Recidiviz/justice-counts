@@ -63,21 +63,21 @@ function DefinitionModalForm({
     updateContextValue,
   } = metricConfigStore;
 
+  // read only check
   const isReadOnly = userStore.isUserReadOnly(agencyId);
 
+  // system and metric keys
   const { system: systemSearchParam, metric: metricSearchParam } =
     settingsSearchParams;
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
 
+  // definitions
   const isMetricDefinitionSettings = !activeDimensionKey;
-
+  const hasActiveDisaggregationAndDimensionKey =
+    activeDisaggregationKey && activeDimensionKey;
   const metricDefinitionIncludesExcludesKeys =
     metricDefinitionSettings[systemMetricKey] &&
     Object.keys(metricDefinitionSettings[systemMetricKey]);
-
-  const hasActiveDisaggregationAndDimensionKey =
-    activeDisaggregationKey && activeDimensionKey;
-
   const dimensionDefinitionSettingsKeys =
     (hasActiveDisaggregationAndDimensionKey &&
       dimensionDefinitionSettings[systemMetricKey]?.[activeDisaggregationKey]?.[
@@ -88,42 +88,33 @@ function DefinitionModalForm({
           activeDimensionKey
         ]
       )) as string[];
-
   const activeSettingsKeys = isMetricDefinitionSettings
     ? metricDefinitionIncludesExcludesKeys
     : dimensionDefinitionSettingsKeys;
 
+  // contexts
   const dimensionContextsMap =
     hasActiveDisaggregationAndDimensionKey &&
     dimensionContexts[systemMetricKey]?.[activeDisaggregationKey]?.[
       activeDimensionKey
     ];
-
   const hasMinOneDimensionContext =
     dimensionContextsMap && Object.values(dimensionContextsMap).length > 0;
-
   const hasMinOneMetricLevelContext =
     !activeDimensionKey &&
     contexts[systemMetricKey] &&
     Object.values(contexts[systemMetricKey]).length > 0;
 
+  // check if settings are available
   const noSettingsAvailable =
     !activeSettingsKeys ||
     Boolean(
       !activeSettingsKeys?.length && activeDimensionKey && !dimensionContextsMap
     );
-
   const hasNoSettingsAndNoContext =
     noSettingsAvailable &&
     !hasMinOneDimensionContext &&
     !hasMinOneMetricLevelContext;
-
-  const currentDimension =
-    (hasActiveDisaggregationAndDimensionKey &&
-      dimensions[systemMetricKey]?.[activeDisaggregationKey]?.[
-        activeDimensionKey
-      ]) ||
-    undefined;
 
   const initialSettings = activeSettingsKeys?.reduce(
     (acc, includesExcludesKey) => {
@@ -143,29 +134,17 @@ function DefinitionModalForm({
 
   const initialContexts = () => {
     if (!dimensionContextsMap && !contexts[systemMetricKey]) return {};
+    const currentContexts = dimensionContextsMap || contexts[systemMetricKey];
 
-    return dimensionContextsMap
-      ? Object.entries(dimensionContextsMap).reduce((acc, [key, context]) => {
-          return {
-            ...acc,
-            [key]: {
-              label: context.label || "",
-              value: context.value ? context.value.toString() : "",
-            },
-          };
-        }, {} as ContextsByContextKey)
-      : Object.entries(contexts[systemMetricKey]).reduce(
-          (acc, [key, context]) => {
-            return {
-              ...acc,
-              [key]: {
-                label: context.display_name || "",
-                value: context.value ? context.value.toString() : "",
-              },
-            };
-          },
-          {} as ContextsByContextKey
-        );
+    return Object.entries(currentContexts).reduce((acc, [key, context]) => {
+      return {
+        ...acc,
+        [key]: {
+          label: context[dimensionContextsMap ? "label" : "display_name"] || "",
+          value: context.value ? context.value.toString() : "",
+        },
+      };
+    }, {} as ContextsByContextKey);
   };
 
   const [currentSettings, setCurrentSettings] = useState(initialSettings);
@@ -336,6 +315,13 @@ function DefinitionModalForm({
       saveMetricSettings(updatedSettingsAndContexts, agencyId);
     }
   };
+
+  const currentDimension =
+    (hasActiveDisaggregationAndDimensionKey &&
+      dimensions[systemMetricKey]?.[activeDisaggregationKey]?.[
+        activeDimensionKey
+      ]) ||
+    undefined;
 
   if (hasNoSettingsAndNoContext)
     return (
