@@ -20,6 +20,11 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { useStore } from "../../stores";
+import { ReactComponent as GearIcon } from "../assets/gear-icon.svg";
+import { ReactComponent as OpenLinkIcon } from "../assets/open-link-icon.svg";
+import { ReactComponent as SettingsIcon } from "../assets/settings-icon.svg";
+import { Loading } from "../Loading";
 import {
   createAnnualRecordsMetadata,
   createConfigurationTaskCardMetadata,
@@ -36,11 +41,6 @@ import {
   TaskCard,
   TaskCardMetadata,
 } from ".";
-import { useStore } from "../../stores";
-import { ReactComponent as GearIcon } from "../assets/gear-icon.svg";
-import { ReactComponent as OpenLinkIcon } from "../assets/open-link-icon.svg";
-import { ReactComponent as SettingsIcon } from "../assets/settings-icon.svg";
-import { Loading } from "../Loading";
 import * as Styled from "./Home.styled";
 
 export const Home = observer(() => {
@@ -53,16 +53,15 @@ export const Home = observer(() => {
   const [
     latestMonthlyAnnualRecordsMetadata,
     setLatestMonthlyAnnualsRecordMetadata,
-  ] = useState<LatestAnnualMonthlyRecordMetadata>();
+  ] = useState<Partial<LatestAnnualMonthlyRecordMetadata>>();
 
-  const latestMonthlyRecord = () => latestMonthlyAnnualRecordsMetadata?.monthly;
+  const latestMonthlyRecord = latestMonthlyAnnualRecordsMetadata?.monthly;
   const latestAnnualRecord = (startingMonth: number | string) =>
-    latestMonthlyAnnualRecordsMetadata?.annual[startingMonth];
+    latestMonthlyAnnualRecordsMetadata?.annual?.[startingMonth];
   /** Does a record that matches this metric's reporting frequency exist? */
   const metricHasUnpublishedRecord = (metric: Metric) => {
     const latestMonthlyRecordUnpublished =
-      latestMonthlyRecord()?.id &&
-      latestMonthlyRecord()?.status !== "PUBLISHED";
+      latestMonthlyRecord?.id && latestMonthlyRecord?.status !== "PUBLISHED";
     const latestAnnualMetricUnpublished =
       metric.starting_month &&
       latestAnnualRecord(metric.starting_month)?.status !== "PUBLISHED";
@@ -70,39 +69,8 @@ export const Home = observer(() => {
       ? latestMonthlyRecordUnpublished
       : latestAnnualMetricUnpublished;
   };
-  /**
-   * User has completed all tasks if:
-   *  1. User has configured all metrics and set them all to "Not Available"
-   *  2. User has entered values for all metrics in the latest annual and/or monthly
-   *     records and those records are published
-   */
-  const hasCompletedAllTasks = () => {
-    /** Case: User has configured all metrics and set them all to "Not Available" */
-    const hasNoEnabledOrUnconfiguredMetricsTaskCardMetadata =
-      enabledMetricsTaskCardMetadata.length === 0 &&
-      unconfiguredMetricsTaskCardMetadata.length === 0;
-    /** Case: User has published the latest monthly and annual record */
-    const hasPublishedLatestAnnualRecords =
-      latestMonthlyAnnualRecordsMetadata &&
-      Object.values(latestMonthlyAnnualRecordsMetadata.annual).filter(
-        (metadata) => metadata.status !== "PUBLISHED"
-      ).length === 0;
-    const hasPublishedLatestMonthlyRecord =
-      latestMonthlyAnnualRecordsMetadata?.monthly.status === "PUBLISHED";
-
-    return (
-      hasNoEnabledOrUnconfiguredMetricsTaskCardMetadata ||
-      (hasPublishedLatestAnnualRecords &&
-        hasPublishedLatestMonthlyRecord &&
-        allMetricMetadatasWithoutValuesOrNotConfigured.length === 0)
-    );
-  };
 
   const userFirstName = userStore.name?.split(" ")[0];
-  const welcomeDescription = !hasCompletedAllTasks()
-    ? "See open tasks below"
-    : "";
-
   /** Task Card Metadatas */
   const allTasksCompleteTaskCardMetadata: TaskCardMetadata = {
     title: "All tasks complete",
@@ -129,6 +97,37 @@ export const Home = observer(() => {
           createConfigurationTaskCardMetadata
         )
       ) || [];
+
+  /**
+   * User has completed all tasks if:
+   *  1. User has configured all metrics and set them all to "Not Available"
+   *  2. User has entered values for all metrics in the latest annual and/or monthly
+   *     records and those records are published
+   */
+  const hasCompletedAllTasks = () => {
+    /** Case: User has configured all metrics and set them all to "Not Available" */
+    const hasNoEnabledOrUnconfiguredMetricsTaskCardMetadata =
+      enabledMetricsTaskCardMetadata.length === 0 &&
+      unconfiguredMetricsTaskCardMetadata.length === 0;
+    /** Case: User has published the latest monthly and annual record */
+    const hasPublishedLatestAnnualRecords =
+      latestMonthlyAnnualRecordsMetadata?.annual &&
+      Object.values(latestMonthlyAnnualRecordsMetadata.annual).filter(
+        (metadata) => metadata.status !== "PUBLISHED"
+      ).length === 0;
+    const hasPublishedLatestMonthlyRecord =
+      latestMonthlyAnnualRecordsMetadata?.monthly?.status === "PUBLISHED";
+
+    return (
+      hasNoEnabledOrUnconfiguredMetricsTaskCardMetadata ||
+      (hasPublishedLatestAnnualRecords &&
+        hasPublishedLatestMonthlyRecord &&
+        allMetricMetadatasWithoutValuesOrNotConfigured.length === 0)
+    );
+  };
+  const welcomeDescription = !hasCompletedAllTasks()
+    ? "See open tasks below"
+    : "";
 
   /**
    * Metrics without values or not yet configured (`allMetricMetadatasWithoutValuesOrNotConfigured`) are
@@ -169,10 +168,12 @@ export const Home = observer(() => {
         return;
       }
 
-      const annualRecordsMetadata =
-        hasAnnualRecords && createAnnualRecordsMetadata(annualRecords);
-      const monthlyRecordMetadata =
-        hasMonthlyRecord && createMonthlyRecordMetadata(monthlyRecord);
+      const annualRecordsMetadata = hasAnnualRecords
+        ? createAnnualRecordsMetadata(annualRecords)
+        : undefined;
+      const monthlyRecordMetadata = hasMonthlyRecord
+        ? createMonthlyRecordMetadata(monthlyRecord)
+        : undefined;
       setLatestMonthlyAnnualsRecordMetadata({
         monthly: monthlyRecordMetadata,
         annual: annualRecordsMetadata,
@@ -199,7 +200,7 @@ export const Home = observer(() => {
         <Styled.LeftPanelWrapper />
         {/* All Open Tasks */}
         <Styled.OpenTasksContainer>
-          {/* All Tasks Completed Card or Configure Metrics/Add Data Cards */}
+          {/* All Tasks Completed Card or Configure Metrics/Add Data/Publish Record Cards */}
           {hasCompletedAllTasks() ? (
             <TaskCard metadata={allTasksCompleteTaskCardMetadata} />
           ) : (
@@ -217,21 +218,20 @@ export const Home = observer(() => {
               {/* Publish-Ready Cards (for Monthly & Annual Records) */}
 
               {/* Publish latest monthly record */}
-              {allMetricMetadatasWithValues.MONTHLY &&
-                latestMonthlyAnnualRecordsMetadata &&
-                latestMonthlyAnnualRecordsMetadata.monthly.status !==
-                  "PUBLISHED" && (
+              {allMetricMetadatasWithValues.MONTHLY.length > 0 &&
+                latestMonthlyRecord &&
+                latestMonthlyRecord.status !== "PUBLISHED" && (
                   <TaskCard
                     metadata={createPublishTaskCardMetadata(
-                      latestMonthlyAnnualRecordsMetadata.monthly.reportTitle,
+                      latestMonthlyRecord.reportTitle,
                       "MONTHLY"
                     )}
-                    reportID={latestMonthlyAnnualRecordsMetadata.monthly.id}
+                    reportID={latestMonthlyRecord.id}
                   />
                 )}
 
               {/* Publish latest annual record(s) */}
-              {allMetricMetadatasWithValues.ANNUAL &&
+              {allMetricMetadatasWithValues.ANNUAL.length > 0 &&
                 latestMonthlyAnnualRecordsMetadata?.annual &&
                 Object.values(latestMonthlyAnnualRecordsMetadata.annual).map(
                   (record) => {

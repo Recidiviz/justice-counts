@@ -49,6 +49,10 @@ export const createReportTitle = (record: Report, monthName?: string) => {
     : printReportTitle(record.month, record.year, record.frequency);
 };
 
+/**
+ * Creates latest monthly record metadata object to store information needed
+ * from the latest monthly record.
+ */
 export const createMonthlyRecordMetadata = (
   monthlyRecord: Report
 ): LatestRecordMetadata => {
@@ -60,6 +64,10 @@ export const createMonthlyRecordMetadata = (
   };
 };
 
+/**
+ * Creates latest annual record(s) metadata object(s) keyed by starting month
+ * to store information needed from the latest annual record(s).
+ */
 export const createAnnualRecordsMetadata = (annualRecords: {
   [key: string]: Report;
 }) => {
@@ -80,6 +88,25 @@ export const createAnnualRecordsMetadata = (annualRecords: {
   }, {} as AnnualRecordMetadata);
 };
 
+/**
+ * Creates task card metadata object used to render task cards with metric config action link.
+ */
+export const createConfigurationTaskCardMetadata = (
+  currentMetric: Metric,
+  recordMetadata?: LatestRecordMetadata
+) => {
+  return {
+    reportID: recordMetadata?.id,
+    title: currentMetric.display_name,
+    description: currentMetric.description,
+    actionLinks: [taskCardLabelsActionLinks.metricAvailability],
+    metricSettingsParams: `?system=${currentMetric.system.key.toLowerCase()}&metric=${currentMetric.key.toLowerCase()}`,
+  };
+};
+
+/**
+ * Creates task card metadata object used to render metric task cards with data entry action links.
+ */
 export const createDataEntryTaskCardMetadata = (
   currentMetric: Metric,
   recordMetadata?: LatestRecordMetadata
@@ -102,6 +129,9 @@ export const createDataEntryTaskCardMetadata = (
   };
 };
 
+/**
+ * Creates task card metadata object used to render record task cards with publish action link.
+ */
 export const createPublishTaskCardMetadata = (
   reportTitle: string,
   frequency: ReportFrequency
@@ -109,30 +139,22 @@ export const createPublishTaskCardMetadata = (
   return {
     title: reportTitle,
     description: `Publish all the data you have added for ${
-      reportTitle.split("(")[0] // Remove `([Starting Month])` from description for annual records
+      reportTitle.split("(")[0] // Remove `(<Starting Month>)` from description for annual records
     }`,
     actionLinks: [taskCardLabelsActionLinks.publish],
     metricFrequency: frequency,
   };
 };
 
-export const createConfigurationTaskCardMetadata = (
-  currentMetric: Metric,
-  recordMetadata?: LatestRecordMetadata
-) => {
-  return {
-    reportID: recordMetadata?.id,
-    title: currentMetric.display_name,
-    description: currentMetric.description,
-    actionLinks: [taskCardLabelsActionLinks.metricAvailability],
-    metricSettingsParams: `?system=${currentMetric.system.key.toLowerCase()}&metric=${currentMetric.key.toLowerCase()}`,
-  };
-};
-
+/**
+ * Creates configuration and data entry task card metadata objects from metrics linked to
+ * the corresponding latest record. This function uses the above `createConfigurationTaskCardMetadata` and
+ * `createDataEntryTaskCardMetadata` as callback functions to create the appropriate task card metadata object.
+ */
 export const createTaskCardMetadatas = (
   metric: Metric,
   recordMetadatas: {
-    latestMonthlyRecord: () => LatestRecordMetadata | undefined;
+    latestMonthlyRecord: LatestRecordMetadata | undefined;
     latestAnnualRecord: (
       startingMonth: number | string
     ) => LatestRecordMetadata | undefined;
@@ -147,7 +169,7 @@ export const createTaskCardMetadatas = (
   const { latestMonthlyRecord, latestAnnualRecord } = recordMetadatas;
   /** Create Task Card linked to the latest Monthly Record */
   if (metricFrequency === "MONTHLY") {
-    return createTaskCardCallback(metric, latestMonthlyRecord());
+    return createTaskCardCallback(metric, latestMonthlyRecord);
   }
   /** Create Task Card linked to the latest Annual Record */
   return createTaskCardCallback(
