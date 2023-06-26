@@ -66,7 +66,6 @@ export const AgencySettingsJurisdictions: React.FC<{
     settingProps;
   const { agencyStore } = useStore();
   const {
-    currentAgencySettings,
     includedJurisdictionsIds,
     excludedJurisdictionsIds,
     updateAgencyJurisdictions,
@@ -89,6 +88,7 @@ export const AgencySettingsJurisdictions: React.FC<{
   const checkedAreasCount = checkedJurisdictionsIds.length;
   const hasInclusions = includedJurisdictionsIds.length > 0;
   const hasExclusions = excludedJurisdictionsIds.length > 0;
+  const isAgencySettingConfigured = hasInclusions || hasExclusions;
 
   const handleSaveClick = () => {
     const updatedJurisdictions = updateAgencyJurisdictions({
@@ -440,9 +440,7 @@ export const AgencySettingsJurisdictions: React.FC<{
   return (
     <>
       <AgencySettingsBlock id="jurisdictions">
-        <AgencySettingsBlockTitle
-          configured={Boolean(currentAgencySettings?.[2]?.value)}
-        >
+        <AgencySettingsBlockTitle configured={isAgencySettingConfigured}>
           Jurisdictions
         </AgencySettingsBlockTitle>
 
