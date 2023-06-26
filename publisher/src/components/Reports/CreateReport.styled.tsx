@@ -30,6 +30,7 @@ import { TWO_PANEL_MAX_WIDTH } from "./ReportDataEntry.styles";
 
 export const CreateReportFormWrapper = styled(FormWrapper)`
   margin-bottom: 0;
+  margin-top: 32px;
 `;
 
 export const CreateReportForm = styled(Form)`
