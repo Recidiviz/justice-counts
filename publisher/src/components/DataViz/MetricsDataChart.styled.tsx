@@ -93,7 +93,7 @@ export const SystemsContainer = styled.div`
 `;
 
 export const SystemNameContainer = styled.div<{ isSystemActive: boolean }>`
-  ${typography.sizeCSS.normal}
+  ${typography.sizeCSS.title}
   width: ${INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH}px;
   display: flex;
   flex-direction: row;
