@@ -89,40 +89,42 @@ const AgencySettingsUrl: React.FC<{
     }
   }, [urlText, isSettingInEditMode]);
 
-  if (isSettingInEditMode) {
-    return (
-      <AgencySettingsEditModeModal
-        openCancelModal={handleCancelClick}
-        isConfirmModalOpen={isConfirmModalOpen}
-        closeCancelModal={() => setIsConfirmModalOpen(false)}
-        handleCancelModalConfirm={handleModalConfirm}
-      >
-        <>
-          <AgencySettingsBlockTitle isEditModeActive>
-            Agency Homepage URL
-          </AgencySettingsBlockTitle>
-          <AgencyInfoTextAreaLabel>
-            Provide a link to your agency&apos;s website.
-          </AgencyInfoTextAreaLabel>
-          <Input
-            name="homepage-url"
-            label=""
-            placeholder="URL of agency (e.g., https://doc.iowa.gov/)"
-            isPlaceholderVisible
-            onChange={(e) => setUrlText(e.target.value)}
-            value={urlText}
-          />
-          <EditModeButtonsContainer noMargin>
-            <Button label="Cancel" onClick={handleCancelClick} />
-            <Button label="Save" onClick={handleSaveClick} buttonColor="blue" />
-          </EditModeButtonsContainer>
-        </>
-      </AgencySettingsEditModeModal>
-    );
-  }
-
   return (
     <>
+      {isSettingInEditMode && (
+        <AgencySettingsEditModeModal
+          openCancelModal={handleCancelClick}
+          isConfirmModalOpen={isConfirmModalOpen}
+          closeCancelModal={() => setIsConfirmModalOpen(false)}
+          handleCancelModalConfirm={handleModalConfirm}
+        >
+          <>
+            <AgencySettingsBlockTitle isEditModeActive>
+              Agency Homepage URL
+            </AgencySettingsBlockTitle>
+            <AgencyInfoTextAreaLabel>
+              Provide a link to your agency&apos;s website.
+            </AgencyInfoTextAreaLabel>
+            <Input
+              name="homepage-url"
+              label=""
+              placeholder="URL of agency (e.g., https://doc.iowa.gov/)"
+              isPlaceholderVisible
+              onChange={(e) => setUrlText(e.target.value)}
+              value={urlText}
+            />
+            <EditModeButtonsContainer noMargin>
+              <Button label="Cancel" onClick={handleCancelClick} />
+              <Button
+                label="Save"
+                onClick={handleSaveClick}
+                buttonColor="blue"
+              />
+            </EditModeButtonsContainer>
+          </>
+        </AgencySettingsEditModeModal>
+      )}
+
       <AgencySettingsBlock id="homepage_url">
         <AgencySettingsBlockTitle>Agency Homepage URL</AgencySettingsBlockTitle>
         <AgencyInfoBlockDescription>

@@ -78,46 +78,49 @@ const AgencySettingsDescription: React.FC<{
     removeEditMode();
   };
 
-  if (isSettingInEditMode) {
-    return (
-      <AgencySettingsEditModeModal
-        openCancelModal={handleCancelClick}
-        isConfirmModalOpen={isConfirmModalOpen}
-        closeCancelModal={() => setIsConfirmModalOpen(false)}
-        handleCancelModalConfirm={handleModalConfirm}
-      >
-        <>
-          <AgencySettingsBlockTitle isEditModeActive>
-            Agency Information
-          </AgencySettingsBlockTitle>
-          <AgencyInfoTextAreaLabel>
-            Briefly describe your agency’s purpose and functions. This text will
-            be displayed in the About page of the public-facing dashboard.
-          </AgencyInfoTextAreaLabel>
-          <Input
-            name="basic-info-description"
-            label=""
-            onChange={(e) => setInfoText(e.target.value)}
-            placeholder="Enter agency description..."
-            isPlaceholderVisible
-            multiline
-            value={infoText}
-            maxLength={750}
-          />
-          <AgencyInfoTextAreaWordCounter isRed={infoText.length >= 750}>
-            {infoText.length}/{MAX_DESCRIPTION_CHARACTERS} characters
-          </AgencyInfoTextAreaWordCounter>
-          <EditModeButtonsContainer noMargin>
-            <Button label="Cancel" onClick={handleCancelClick} />
-            <Button label="Save" onClick={handleSaveClick} buttonColor="blue" />
-          </EditModeButtonsContainer>
-        </>
-      </AgencySettingsEditModeModal>
-    );
-  }
-
   return (
     <>
+      {isSettingInEditMode && (
+        <AgencySettingsEditModeModal
+          openCancelModal={handleCancelClick}
+          isConfirmModalOpen={isConfirmModalOpen}
+          closeCancelModal={() => setIsConfirmModalOpen(false)}
+          handleCancelModalConfirm={handleModalConfirm}
+        >
+          <>
+            <AgencySettingsBlockTitle isEditModeActive>
+              Agency Information
+            </AgencySettingsBlockTitle>
+            <AgencyInfoTextAreaLabel>
+              Briefly describe your agency’s purpose and functions. This text
+              will be displayed in the About page of the public-facing
+              dashboard.
+            </AgencyInfoTextAreaLabel>
+            <Input
+              name="basic-info-description"
+              label=""
+              onChange={(e) => setInfoText(e.target.value)}
+              placeholder="Enter agency description..."
+              isPlaceholderVisible
+              multiline
+              value={infoText}
+              maxLength={750}
+            />
+            <AgencyInfoTextAreaWordCounter isRed={infoText.length >= 750}>
+              {infoText.length}/{MAX_DESCRIPTION_CHARACTERS} characters
+            </AgencyInfoTextAreaWordCounter>
+            <EditModeButtonsContainer noMargin>
+              <Button label="Cancel" onClick={handleCancelClick} />
+              <Button
+                label="Save"
+                onClick={handleSaveClick}
+                buttonColor="blue"
+              />
+            </EditModeButtonsContainer>
+          </>
+        </AgencySettingsEditModeModal>
+      )}
+
       <AgencySettingsBlock id="description">
         <AgencySettingsBlockTitle>Agency Information</AgencySettingsBlockTitle>
         <AgencyInfoBlockDescription>
