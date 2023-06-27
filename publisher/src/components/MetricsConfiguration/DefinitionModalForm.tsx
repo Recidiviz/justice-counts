@@ -116,6 +116,7 @@ function DefinitionModalForm({
     !hasMinOneDimensionContext &&
     !hasMinOneMetricLevelContext;
 
+  // useState initial values
   const initialSettings = activeSettingsKeys?.reduce(
     (acc, includesExcludesKey) => {
       const currentIncludesExcludes = hasActiveDisaggregationAndDimensionKey
@@ -150,6 +151,7 @@ function DefinitionModalForm({
   const [currentSettings, setCurrentSettings] = useState(initialSettings);
   const [currentContexts, setCurrentContexts] = useState(initialContexts);
 
+  // handlers
   const handleChooseDefaults = () => {
     setCurrentSettings(
       Object.entries(currentSettings).reduce(
@@ -323,29 +325,6 @@ function DefinitionModalForm({
       ]) ||
     undefined;
 
-  if (hasNoSettingsAndNoContext)
-    return (
-      <Styled.Wrapper>
-        <Styled.Content>
-          <Styled.ScrollableInnerWrapper>
-            <Styled.Header>Definition</Styled.Header>
-            <Styled.Title>
-              {isMetricDefinitionSettings
-                ? `${metrics[systemMetricKey]?.label} (Total)`
-                : currentDimension?.label}
-            </Styled.Title>
-            <Styled.Description>
-              There are no definitions to configure for this{" "}
-              {isMetricDefinitionSettings ? "metric." : "breakdown."}
-            </Styled.Description>
-          </Styled.ScrollableInnerWrapper>
-          <Styled.BottomButtonsContainer>
-            <Button label="Close" onClick={closeModal} buttonColor="red" />
-          </Styled.BottomButtonsContainer>
-        </Styled.Content>
-      </Styled.Wrapper>
-    );
-
   return (
     <Styled.Wrapper>
       <Styled.Content>
@@ -356,6 +335,12 @@ function DefinitionModalForm({
               ? `${metrics[systemMetricKey]?.label} (Total)`
               : currentDimension?.label}
           </Styled.Title>
+          {hasNoSettingsAndNoContext && (
+            <Styled.Description>
+              There are no definitions to configure for this{" "}
+              {isMetricDefinitionSettings ? "metric." : "breakdown."}
+            </Styled.Description>
+          )}
           {activeSettingsKeys && (
             <Styled.Description>
               Indicate which of the following categories your agency considers
@@ -408,6 +393,7 @@ function DefinitionModalForm({
 
           <Styled.ContextContainer>
             {currentContexts &&
+              !hasNoSettingsAndNoContext &&
               Object.entries(currentContexts).map(([key, { label, value }]) => {
                 return (
                   <Fragment key={key}>
@@ -429,10 +415,11 @@ function DefinitionModalForm({
         </Styled.ScrollableInnerWrapper>
         <Styled.BottomButtonsContainer>
           <Button
-            label={isReadOnly ? "Close" : "Cancel"}
+            label={isReadOnly || hasNoSettingsAndNoContext ? "Close" : "Cancel"}
             onClick={closeModal}
+            buttonColor={hasNoSettingsAndNoContext ? "red" : undefined}
           />
-          {!isReadOnly && (
+          {!isReadOnly && !hasNoSettingsAndNoContext && (
             <Button
               label="Save"
               onClick={() => {
