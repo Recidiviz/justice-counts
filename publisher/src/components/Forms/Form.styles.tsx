@@ -57,7 +57,7 @@ export const FormWrapper = styled.div<{ showDataEntryHelpPage?: boolean }>`
   max-width: ${DATA_ENTRY_WIDTH}px;
   display: flex;
   flex-direction: column;
-  margin: 32px 360px 50px 360px;
+  margin: 114px 360px 50px 360px;
   transition: opacity 300ms ease-in;
 
   opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 0.5 : 1)};
@@ -65,11 +65,11 @@ export const FormWrapper = styled.div<{ showDataEntryHelpPage?: boolean }>`
     showDataEntryHelpPage ? "none" : "auto"};
 
   @media only screen and (max-width: ${TWO_PANEL_MAX_WIDTH}px) {
-    margin: 32px 24px 50px 360px;
+    margin: 114px 24px 50px 360px;
   }
 
   @media only screen and (max-width: ${ONE_PANEL_MAX_WIDTH}px) {
-    margin: 32px 24px 50px 24px;
+    margin: 114px 24px 50px 24px;
   }
 `;
 
@@ -92,6 +92,16 @@ export const TitleWrapper = styled.div<TitleWrapperProps>`
   flex-direction: column;
   border-bottom: ${({ underlined }) =>
     underlined ? `1px solid ${palette.solid.darkgrey}` : `none`};
+`;
+
+export const DataEntryFormTitleWrapper = styled.div`
+  width: ${DATA_ENTRY_WIDTH + 2}px;
+  margin: 0 -1px;
+  position: fixed;
+  top: ${HEADER_BAR_HEIGHT}px;
+  padding-top: 32px;
+  z-index: 2;
+  background-color: ${palette.solid.white};
 `;
 
 export const PreTitle = styled.div`
@@ -119,36 +129,17 @@ export const MetricSummarySectionTitle = styled.div`
   margin-right: 17px;
 `;
 
-export const Title = styled.h1<{ scrolled?: boolean; sticky?: boolean }>`
-  ${({ scrolled }) =>
-    scrolled ? typography.sizeCSS.medium : typography.sizeCSS.title}
-
-  ${({ scrolled }) => scrolled && `padding-top: 16px;`}
-
+export const Title = styled.h1`
+  ${typography.sizeCSS.title};
   margin-top: 4px;
   padding-bottom: 14px;
   border-bottom: 1px solid ${palette.highlight.grey9};
   transition: 0.3s ease;
-
-  ${({ sticky }) =>
-    sticky &&
-    `
-      position: sticky;
-      top: ${HEADER_BAR_HEIGHT}px;
-      background: ${palette.solid.white};
-      z-index: 2;
-      margin-right: -1px;
-      margin-left: -1px;
-  `}
-`;
-
-export const DataEntryFormTitle = styled(Title)`
-  ${({ scrolled }) => scrolled && `padding-top: 42px;`}
 `;
 
 export const Metric = styled.div<{ notReporting?: boolean }>`
-  margin-top: -8em;
-  padding-top: 8em;
+  padding-top: 178px;
+  margin-top: -178px;
 `;
 
 export const MetricSectionTitleWrapper = styled.div`

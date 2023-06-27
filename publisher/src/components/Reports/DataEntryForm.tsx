@@ -42,7 +42,7 @@ import {
   printReportTitle,
 } from "../../utils";
 import {
-  DataEntryFormTitle,
+  DataEntryFormTitleWrapper,
   DisabledMetricsInfoLink,
   DisabledMetricsInfoWrapper,
   Form,
@@ -55,6 +55,7 @@ import {
   MetricSystemTitle,
   PreTitle,
   TabbedDisaggregations,
+  Title,
 } from "../Forms";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { useHeaderBadge } from "../Header/hooks";
@@ -128,7 +129,6 @@ const DataEntryForm: React.FC<{
   const { formStore, reportStore, userStore } = useStore();
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [hasVersionConflict, setHasVersionConflict] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [isSaveInProgress, setIsSaveInProgress] = useState(false);
   const metricsRef = useRef<HTMLDivElement[]>([]);
 
@@ -140,11 +140,6 @@ const DataEntryForm: React.FC<{
   useEffect(
     () => {
       const handleScroll = () => {
-        /** To shrink the Report Title on scroll */
-        if (window.scrollY > HEADER_BAR_HEIGHT) {
-          setScrolled(true);
-        } else setScrolled(false);
-
         /**
          * To sync the Report Summary metrics list and right panel Helper Text
          * to the current (mostly) visible metric.
@@ -345,15 +340,17 @@ const DataEntryForm: React.FC<{
         >
           <FormFieldSet disabled={isReadOnly}>
             {/* Form Title */}
-            <PreTitle>Enter Data</PreTitle>
-            <DataEntryFormTitle scrolled={scrolled} sticky>
-              {reportOverview &&
-                printReportTitle(
-                  reportOverview.month,
-                  reportOverview.year,
-                  reportOverview.frequency
-                )}
-            </DataEntryFormTitle>
+            <DataEntryFormTitleWrapper>
+              <PreTitle>Enter Data</PreTitle>
+              <Title>
+                {reportOverview &&
+                  printReportTitle(
+                    reportOverview.month,
+                    reportOverview.year,
+                    reportOverview.frequency
+                  )}
+              </Title>
+            </DataEntryFormTitleWrapper>
 
             {/* Metrics */}
             {Object.entries(metricsBySystem).map(

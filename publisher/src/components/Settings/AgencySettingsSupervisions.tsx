@@ -125,54 +125,57 @@ export const AgencySettingsSupervisions: React.FC<{
     }
   };
 
-  if (isSettingInEditMode) {
-    return (
-      <AgencySettingsEditModeModal
-        openCancelModal={handleCancelClick}
-        isConfirmModalOpen={isConfirmModalOpen}
-        closeCancelModal={() => setIsConfirmModalOpen(false)}
-        handleCancelModalConfirm={handleModalConfirm}
-      >
-        <>
-          <AgencySettingsBlockTitle isEditModeActive>
-            Supervision Populations
-          </AgencySettingsBlockTitle>
-          <AgencySettingsBlockDescription>
-            Select the supervision populations that your agency is responsible
-            for. This enables disaggregating data by selected population types.
-          </AgencySettingsBlockDescription>
-          {supervisionAgencySystems.map(({ label, value }) => (
-            <SupervisionSystemRow
-              key={value}
-              hasHover={isSettingInEditMode}
-              onClick={() => handleSetSupervisionSystemsToSave(value)}
-            >
-              <CheckboxWrapper>
-                <Checkbox
-                  type="checkbox"
-                  checked={
-                    supervisionSystemsToSave?.includes(
-                      value as AgencySystems
-                    ) || false
-                  }
-                  onChange={() => handleSetSupervisionSystemsToSave(value)}
-                />
-                <BlueCheckIcon src={blueCheck} alt="" enabled />
-              </CheckboxWrapper>
-              {label}
-            </SupervisionSystemRow>
-          ))}
-          <EditModeButtonsContainer>
-            <Button label="Cancel" onClick={handleCancelClick} />
-            <Button label="Save" onClick={handleSaveClick} buttonColor="blue" />
-          </EditModeButtonsContainer>
-        </>
-      </AgencySettingsEditModeModal>
-    );
-  }
-
   return (
     <>
+      {isSettingInEditMode && (
+        <AgencySettingsEditModeModal
+          openCancelModal={handleCancelClick}
+          isConfirmModalOpen={isConfirmModalOpen}
+          closeCancelModal={() => setIsConfirmModalOpen(false)}
+          handleCancelModalConfirm={handleModalConfirm}
+        >
+          <>
+            <AgencySettingsBlockTitle isEditModeActive>
+              Supervision Populations
+            </AgencySettingsBlockTitle>
+            <AgencySettingsBlockDescription>
+              Select the supervision populations that your agency is responsible
+              for. This enables disaggregating data by selected population
+              types.
+            </AgencySettingsBlockDescription>
+            {supervisionAgencySystems.map(({ label, value }) => (
+              <SupervisionSystemRow
+                key={value}
+                hasHover={isSettingInEditMode}
+                onClick={() => handleSetSupervisionSystemsToSave(value)}
+              >
+                <CheckboxWrapper>
+                  <Checkbox
+                    type="checkbox"
+                    checked={
+                      supervisionSystemsToSave?.includes(
+                        value as AgencySystems
+                      ) || false
+                    }
+                    onChange={() => handleSetSupervisionSystemsToSave(value)}
+                  />
+                  <BlueCheckIcon src={blueCheck} alt="" enabled />
+                </CheckboxWrapper>
+                {label}
+              </SupervisionSystemRow>
+            ))}
+            <EditModeButtonsContainer>
+              <Button label="Cancel" onClick={handleCancelClick} />
+              <Button
+                label="Save"
+                onClick={handleSaveClick}
+                buttonColor="blue"
+              />
+            </EditModeButtonsContainer>
+          </>
+        </AgencySettingsEditModeModal>
+      )}
+
       <AgencySettingsBlock id="supervisions">
         <AgencySettingsBlockTitle>
           Supervision Populations

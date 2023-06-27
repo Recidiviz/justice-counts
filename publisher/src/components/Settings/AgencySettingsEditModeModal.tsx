@@ -17,7 +17,7 @@
 
 import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { Modal } from "@justice-counts/common/components/Modal";
-import React from "react";
+import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components/macro";
 
@@ -29,7 +29,7 @@ const EditModalOuterWrapper = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgb(220, 221, 223);
+  background-color: ${palette.highlight.grey2};
   overflow-y: auto;
   display: flex;
   justify-content: center;
@@ -62,6 +62,13 @@ export const AgencySettingsEditModeModal: React.FC<{
   closeCancelModal,
   handleCancelModalConfirm,
 }) => {
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   const Portal = (
     <>
       <EditModalOuterWrapper onClick={openCancelModal}>
