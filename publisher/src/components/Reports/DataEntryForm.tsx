@@ -16,10 +16,7 @@
 // =============================================================================
 
 import { Button } from "@justice-counts/common/components/Button";
-import {
-  HEADER_BAR_HEIGHT,
-  palette,
-} from "@justice-counts/common/components/GlobalStyles";
+import { HEADER_BAR_HEIGHT } from "@justice-counts/common/components/GlobalStyles";
 import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import { showToast } from "@justice-counts/common/components/Toast";
@@ -59,52 +56,13 @@ import {
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { useHeaderBadge } from "../Header/hooks";
 import { Onboarding } from "../Onboarding";
+import { MiniLoaderWrapper, ReviewButtonContainer } from ".";
 import { MetricTextInput } from "./DataEntryFormComponents";
-import DataEntryHelpPage from "./DataEntryHelpPage";
 
-const TopBarButtonsContainer = styled.div<{ showDataEntryHelpPage: boolean }>`
+const TopBarButtonsContainer = styled.div`
   display: flex;
   flex-direction: row;
   gap: 8px;
-  transition: opacity 400ms ease-in;
-
-  opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 0 : 1)};
-`;
-
-const TopBarCloseHelpButtonContainer = styled.div<{
-  showDataEntryHelpPage: boolean;
-}>`
-  position: absolute;
-  top: 0;
-  right: 24px;
-  display: flex;
-  height: ${HEADER_BAR_HEIGHT - 1}px;
-  width: calc(100% - 24px - ${HEADER_BAR_HEIGHT}px);
-  padding-top: 10px;
-  padding-bottom: 9px;
-  flex-direction: row;
-  justify-content: flex-end;
-
-  transition: background-color 400ms ease-in, opacity 400ms ease-in;
-
-  z-index: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 1 : -1)};
-  opacity: ${({ showDataEntryHelpPage }) => (showDataEntryHelpPage ? 1 : 0)};
-  background-color: ${({ showDataEntryHelpPage }) =>
-    showDataEntryHelpPage ? palette.solid.white : "transparent"};
-`;
-
-const MiniLoaderWrapper = styled.div`
-  position: absolute;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-`;
-
-const ReviewButtonContainer = styled.div`
-  display: flex;
-  position: relative;
-  align-items: center;
-  justify-content: center;
 `;
 
 const DataEntryForm: React.FC<{
@@ -112,15 +70,11 @@ const DataEntryForm: React.FC<{
   updateFieldDescription: (title?: string, description?: string) => void;
   updateActiveMetric: (metricKey: string) => void;
   convertReportToDraft: () => void;
-  showDataEntryHelpPage: boolean;
-  setShowDataEntryHelpPage: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({
   reportID,
   updateFieldDescription,
   updateActiveMetric,
   convertReportToDraft,
-  showDataEntryHelpPage,
-  setShowDataEntryHelpPage,
 }) => {
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
@@ -255,10 +209,6 @@ const DataEntryForm: React.FC<{
     []
   );
 
-  useEffect(() => {
-    document.body.style.overflow = showDataEntryHelpPage ? "hidden" : "unset";
-  }, [showDataEntryHelpPage]);
-
   const reportOverview = reportStore.reportOverviews[reportID] as Report;
   const reportMetrics = reportStore.reportMetrics[reportID];
   const metricsBySystem = reportStore.reportMetricsBySystem[reportID];
@@ -281,22 +231,7 @@ const DataEntryForm: React.FC<{
         hasBottomBorder
         badge={headerBadge}
       >
-        <TopBarCloseHelpButtonContainer
-          showDataEntryHelpPage={showDataEntryHelpPage}
-        >
-          <Button
-            label="Close Help"
-            onClick={() => setShowDataEntryHelpPage(false)}
-            buttonColor="red"
-          />
-        </TopBarCloseHelpButtonContainer>
-
-        <TopBarButtonsContainer showDataEntryHelpPage={showDataEntryHelpPage}>
-          <Button
-            label="Need Help?"
-            onClick={() => setShowDataEntryHelpPage(true)}
-            borderColor="lightgrey"
-          />
+        <TopBarButtonsContainer>
           <Button
             label="Save as Draft"
             onClick={() => {
@@ -305,6 +240,11 @@ const DataEntryForm: React.FC<{
             }}
             borderColor="lightgrey"
             disabled={isReadOnly}
+          />
+          <Button
+            label="Home"
+            onClick={() => navigate("/")}
+            borderColor="lightgrey"
           />
           {reportOverview.status === "PUBLISHED" ? (
             <Button
@@ -337,7 +277,7 @@ const DataEntryForm: React.FC<{
         </TopBarButtonsContainer>
       </HeaderBar>
 
-      <FormWrapper showDataEntryHelpPage={showDataEntryHelpPage}>
+      <FormWrapper>
         <Form
           onChange={(e) => {
             // When the form has changed, check the changed element for a `data-metric-key`
@@ -463,10 +403,6 @@ const DataEntryForm: React.FC<{
             />
           )}
       </FormWrapper>
-      <DataEntryHelpPage
-        showDataEntryHelpPage={showDataEntryHelpPage}
-        closeHelpPage={() => setShowDataEntryHelpPage(false)}
-      />
     </>
   );
 };

@@ -30,8 +30,9 @@ import {
 } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
+import { REPORTS_LOWERCASE } from "../Global/constants";
 import {
+  createPublishSuccessModalButtons,
   ReviewHeaderActionButton,
   ReviewMetricOverwrites,
   ReviewMetrics,
@@ -61,6 +62,7 @@ const UploadReview: React.FC = observer(() => {
   };
   const navigate = useNavigate();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isPublishInProgress, setIsPublishInProgress] = useState(false);
   const [isExistingReportWarningModalOpen, setExistingReportWarningOpen] =
     useState(false);
 
@@ -83,6 +85,7 @@ const UploadReview: React.FC = observer(() => {
       .length === 0 && updatedReportIDs.length === 0;
 
   const publishMultipleRecords = async () => {
+    setIsPublishInProgress(true);
     if (agencyId && !hasAllPublishedRecordsNoOverwrites) {
       const response = (await reportStore.updateMultipleReportStatuses(
         existingAndNewRecordIDs,
@@ -100,6 +103,7 @@ const UploadReview: React.FC = observer(() => {
       }
     }
     setIsSuccessModalOpen(true);
+    setIsPublishInProgress(false);
   };
 
   const metrics = uploadedMetrics
@@ -145,6 +149,7 @@ const UploadReview: React.FC = observer(() => {
                 ? setExistingReportWarningOpen(true)
                 : publishMultipleRecords(),
             isPublishButton: true,
+            isPublishInProgress,
           },
         ]
       : [
@@ -182,17 +187,19 @@ const UploadReview: React.FC = observer(() => {
         <Modal
           title="Wait!"
           description={warningModalDescription}
-          primaryButton={{
-            label: "Proceed with Publishing",
-            onClick: () => {
-              setExistingReportWarningOpen(false);
-              publishMultipleRecords();
+          buttons={[
+            {
+              label: "Proceed with Publishing",
+              onClick: () => {
+                setExistingReportWarningOpen(false);
+                publishMultipleRecords();
+              },
             },
-          }}
-          secondaryButton={{
-            label: "Go back",
-            onClick: () => setExistingReportWarningOpen(false),
-          }}
+            {
+              label: "Go back",
+              onClick: () => setExistingReportWarningOpen(false),
+            },
+          ]}
           modalType="warning"
         />
       )}
@@ -200,14 +207,10 @@ const UploadReview: React.FC = observer(() => {
         <Modal
           title={successModalTitle}
           description="You can view the published data in the Data tab."
-          primaryButton={{
-            label: "Go to Data",
-            onClick: () => navigate(`/agency/${agencyId}/data`),
-          }}
-          secondaryButton={{
-            label: `Go to ${REPORTS_CAPITALIZED}`,
-            onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
-          }}
+          buttons={createPublishSuccessModalButtons(
+            agencyId as string,
+            navigate
+          )}
           modalType="success"
         />
       )}

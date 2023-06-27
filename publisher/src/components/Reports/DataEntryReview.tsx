@@ -25,13 +25,10 @@ import { trackReportPublished } from "../../analytics";
 import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
 import { printReportTitle } from "../../utils";
-import {
-  REPORT_LOWERCASE,
-  REPORTS_CAPITALIZED,
-  REPORTS_LOWERCASE,
-} from "../Global/constants";
+import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 import { Loading } from "../Loading";
 import {
+  createPublishSuccessModalButtons,
   PublishReviewPropsFromDatapoints,
   ReviewHeaderActionButton,
   ReviewMetric,
@@ -48,9 +45,10 @@ const DataEntryReview = () => {
   const { state } = useLocation();
   const { metricDisplayNames } =
     (state as { metricDisplayNames: string[] }) || {};
-  const { reportStore, formStore, userStore, guidanceStore } = useStore();
+  const { reportStore, formStore, userStore } = useStore();
   const checkMetricForErrors = useCheckMetricForErrors(reportID);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isPublishInProgress, setIsPublishInProgress] = useState(false);
   const [loadingDatapoints, setLoadingDatapoints] = useState(true);
   const [publishReviewProps, setPublishReviewProps] =
     useState<PublishReviewPropsFromDatapoints>();
@@ -61,6 +59,7 @@ const DataEntryReview = () => {
   const publishReport = async () => {
     const finalMetricsToPublish =
       formStore.reportUpdatedValuesForBackend(reportID);
+    setIsPublishInProgress(true);
 
     const response = (await reportStore.updateReport(
       reportID,
@@ -69,13 +68,8 @@ const DataEntryReview = () => {
     )) as Response;
 
     if (response.status === 200) {
-      // For users who have not completed the onboarding flow and are publishing for the first time.
-      if (
-        guidanceStore.currentTopicID === "PUBLISH_DATA" &&
-        !guidanceStore.hasCompletedOnboarding
-      )
-        guidanceStore.updateTopicStatus("PUBLISH_DATA", true);
       setIsSuccessModalOpen(true);
+      setIsPublishInProgress(false);
       const agencyID = reportStore.reportOverviews[reportID]?.agency_id;
       const agency = userStore.userAgenciesById[agencyID];
       trackReportPublished(reportID, finalMetricsToPublish, agency);
@@ -171,6 +165,7 @@ const DataEntryReview = () => {
       onClick: publishReport,
       buttonColor: "green",
       isPublishButton: true,
+      isPublishInProgress,
     },
   ];
 
@@ -180,14 +175,7 @@ const DataEntryReview = () => {
         <Modal
           title="Data published!"
           description="You can view the published data in the Data tab."
-          primaryButton={{
-            label: "Go to Data",
-            onClick: () => navigate(`/agency/${agencyId}/data`),
-          }}
-          secondaryButton={{
-            label: `Go to ${REPORTS_CAPITALIZED}`,
-            onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
-          }}
+          buttons={createPublishSuccessModalButtons(agencyId, navigate)}
           modalType="success"
         />
       )}

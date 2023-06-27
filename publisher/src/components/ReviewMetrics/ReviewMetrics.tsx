@@ -22,6 +22,7 @@ import { Button } from "@justice-counts/common/components/Button";
 import { DatapointsTableView } from "@justice-counts/common/components/DataViz/DatapointsTableView";
 import { formatDateShortMonthYear } from "@justice-counts/common/components/DataViz/utils";
 import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
+import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import { useIsFooterVisible } from "@justice-counts/common/hooks";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -34,6 +35,7 @@ import {
   REPORTS_LOWERCASE,
 } from "../Global/constants";
 import { useHeaderBadge } from "../Header/hooks";
+import { MiniLoaderWrapper, ReviewButtonContainer } from "../Reports";
 import {
   EmptyIcon,
   Heading,
@@ -104,22 +106,32 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
               labelColor,
               borderColor,
               isPublishButton,
+              isPublishInProgress,
             }) => (
-              <Button
-                key={name}
-                label={name}
-                onClick={onClick}
-                disabled={hasMetricErrors && isPublishButton}
-                buttonColor={buttonColor}
-                labelColor={labelColor}
-                borderColor={borderColor}
-                showTooltip={hasMetricErrors && isPublishButton}
-                tooltipMsg={
-                  hasMetricErrors && isPublishButton
-                    ? "There are errors in your data that need to be addressed before publishing. Please contact the Justice Counts team at justice-counts-support@csg.org if you need help."
-                    : undefined
-                }
-              />
+              <ReviewButtonContainer>
+                {isPublishInProgress && (
+                  <MiniLoaderWrapper>
+                    <MiniLoader dark />
+                  </MiniLoaderWrapper>
+                )}
+                <Button
+                  key={name}
+                  label={name}
+                  onClick={onClick}
+                  disabled={
+                    (hasMetricErrors && isPublishButton) || isPublishInProgress
+                  }
+                  buttonColor={buttonColor}
+                  labelColor={labelColor}
+                  borderColor={borderColor}
+                  showTooltip={hasMetricErrors && isPublishButton}
+                  tooltipMsg={
+                    hasMetricErrors && isPublishButton
+                      ? "There are errors in your data that need to be addressed before publishing. Please contact the Justice Counts team at justice-counts-support@csg.org if you need help."
+                      : undefined
+                  }
+                />
+              </ReviewButtonContainer>
             )
           )}
         </ReviewMetricsButtonsContainer>

@@ -73,8 +73,10 @@ export const AgencySettingsEditModeModal: React.FC<{
         <Modal
           title="Unsaved changes"
           description="You have unsaved changes, would like to leave anyway?"
-          primaryButton={{ label: "Leave", onClick: handleCancelModalConfirm }}
-          secondaryButton={{ label: "Cancel", onClick: closeCancelModal }}
+          buttons={[
+            { label: "Leave", onClick: handleCancelModalConfirm },
+            { label: "Cancel", onClick: closeCancelModal },
+          ]}
         />
       )}
     </>
