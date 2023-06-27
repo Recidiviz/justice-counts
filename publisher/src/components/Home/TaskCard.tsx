@@ -36,7 +36,8 @@ export const TaskCard: React.FC<{
   reportID?: number;
 }> = ({ metadata, reportID }) => {
   const navigate = useNavigate();
-  const { title, description, actionLinks, metricSettingsParams } = metadata;
+  const { title, description, actionLinks, metricSettingsParams, metricKey } =
+    metadata;
 
   return (
     <Styled.TaskCardContainer key={title}>
@@ -62,7 +63,12 @@ export const TaskCard: React.FC<{
                 if (isSetMetricAvailabilityAction) {
                   return navigate(`./${action.path + metricSettingsParams}`);
                 }
-                if (isManualEntryAction || isPublishAction) {
+                if (isManualEntryAction) {
+                  return navigate(`./${action.path + reportID}`, {
+                    state: { scrollToMetricKey: metricKey },
+                  });
+                }
+                if (isPublishAction) {
                   return navigate(
                     `./${action.path + reportID + reviewPagePath}`
                   );
