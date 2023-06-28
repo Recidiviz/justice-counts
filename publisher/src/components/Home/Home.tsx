@@ -78,6 +78,7 @@ export const Home = observer(() => {
     currentAgencyMetrics
       .filter(metricEnabled)
       .filter(metricBelongsToCurrentSystem)
+      // .filter(metricHasUnpublishedRecord)
       .map((metric) =>
         createTaskCardMetadatas(
           metric,
@@ -139,9 +140,14 @@ export const Home = observer(() => {
         agencyId as string
       )) as LatestReportsAgencyMetrics;
 
-      const annualRecordsMetadata = createAnnualRecordsMetadata(annualRecords);
-      const monthlyRecordMetadata = createMonthlyRecordMetadata(monthlyRecord);
-
+      const hasMonthlyRecord = Object.values(monthlyRecord).length > 0;
+      const hasAnnualRecords = Object.values(annualRecords).length > 0;
+      const annualRecordsMetadata = hasAnnualRecords
+        ? createAnnualRecordsMetadata(annualRecords)
+        : undefined;
+      const monthlyRecordMetadata = hasMonthlyRecord
+        ? createMonthlyRecordMetadata(monthlyRecord)
+        : undefined;
       setLatestMonthlyAnnualsRecordMetadata({
         monthly: monthlyRecordMetadata,
         annual: annualRecordsMetadata,
