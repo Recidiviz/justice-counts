@@ -153,30 +153,48 @@ function DefinitionModalForm({
 
   // handlers
   const handleChooseDefaults = () => {
-    setCurrentSettings(
-      Object.entries(currentSettings).reduce(
-        (acc, [includesExcludesKey, value]) => {
+    const includesExcludesKey = Object.keys(currentSettings)[0];
+    setCurrentSettings({
+      ...currentSettings,
+      [includesExcludesKey]: {
+        ...currentSettings[includesExcludesKey],
+        settings: Object.entries(
+          currentSettings[includesExcludesKey].settings
+        ).reduce((innerAcc, [settingKey, setting]) => {
           return {
-            ...acc,
-            [includesExcludesKey]: {
-              ...value,
-              settings: Object.entries(
-                currentSettings[includesExcludesKey].settings
-              ).reduce((innerAcc, [settingKey, setting]) => {
-                return {
-                  ...innerAcc,
-                  [settingKey]: {
-                    ...setting,
-                    included: setting.default,
-                  },
-                };
-              }, {} as { [settingKey: string]: Partial<MetricConfigurationSettings> }),
+            ...innerAcc,
+            [settingKey]: {
+              ...setting,
+              included: setting.default,
             },
           };
-        },
-        {} as SettingsByIncludesExcludesKey
-      )
-    );
+        }, {} as { [settingKey: string]: Partial<MetricConfigurationSettings> }),
+      },
+    });
+    // setCurrentSettings(
+    //   Object.entries(currentSettings).reduce(
+    //     (acc, [includesExcludesKey, value]) => {
+    //       return {
+    //         ...acc,
+    //         [includesExcludesKey]: {
+    //           ...value,
+    //           settings: Object.entries(
+    //             currentSettings[includesExcludesKey].settings
+    //           ).reduce((innerAcc, [settingKey, setting]) => {
+    //             return {
+    //               ...innerAcc,
+    //               [settingKey]: {
+    //                 ...setting,
+    //                 included: setting.default,
+    //               },
+    //             };
+    //           }, {} as { [settingKey: string]: Partial<MetricConfigurationSettings> }),
+    //         },
+    //       };
+    //     },
+    //     {} as SettingsByIncludesExcludesKey
+    //   )
+    // );
   };
 
   const handleChangeDefinitionIncluded = (
