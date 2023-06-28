@@ -36,7 +36,6 @@ import {
   LatestAnnualMonthlyRecordMetadata,
   LatestReportsAgencyMetrics,
   metricEnabled,
-  metricIsMonthly,
   metricNotConfigured,
   TaskCard,
   TaskCardMetadata,
@@ -66,17 +65,6 @@ export const Home = observer(() => {
   const latestMonthlyRecord = latestMonthlyAnnualRecordsMetadata?.monthly;
   const latestAnnualRecord = (startingMonth: number | string) =>
     latestMonthlyAnnualRecordsMetadata?.annual?.[startingMonth];
-  /** Does a record that matches this metric's reporting frequency exist? */
-  const metricHasUnpublishedRecord = (metric: Metric) => {
-    const latestMonthlyRecordUnpublished =
-      latestMonthlyRecord?.id && latestMonthlyRecord?.status !== "PUBLISHED";
-    const latestAnnualMetricUnpublished =
-      metric.starting_month &&
-      latestAnnualRecord(metric.starting_month)?.status !== "PUBLISHED";
-    return metricIsMonthly(metric)
-      ? latestMonthlyRecordUnpublished
-      : latestAnnualMetricUnpublished;
-  };
   /** Does the given metric belong to the currently selected system? */
   const metricBelongsToCurrentSystem = (metric: Metric) =>
     currentSystem === "ALL" || metric.system.key === currentSystem;
@@ -90,7 +78,6 @@ export const Home = observer(() => {
     currentAgencyMetrics
       .filter(metricEnabled)
       .filter(metricBelongsToCurrentSystem)
-      .filter(metricHasUnpublishedRecord)
       .map((metric) =>
         createTaskCardMetadatas(
           metric,
@@ -152,22 +139,9 @@ export const Home = observer(() => {
         agencyId as string
       )) as LatestReportsAgencyMetrics;
 
-      /** Temporary solution for case where user has no records */
-      const hasMonthlyRecord = Object.values(monthlyRecord).length > 0;
-      const hasAnnualRecords = Object.values(annualRecords).length > 0;
-      const hasRecords = hasMonthlyRecord || hasAnnualRecords;
-      if (!hasRecords) {
-        setAgencyMetrics([]);
-        setLoading(false);
-        return;
-      }
+      const annualRecordsMetadata = createAnnualRecordsMetadata(annualRecords);
+      const monthlyRecordMetadata = createMonthlyRecordMetadata(monthlyRecord);
 
-      const annualRecordsMetadata = hasAnnualRecords
-        ? createAnnualRecordsMetadata(annualRecords)
-        : undefined;
-      const monthlyRecordMetadata = hasMonthlyRecord
-        ? createMonthlyRecordMetadata(monthlyRecord)
-        : undefined;
       setLatestMonthlyAnnualsRecordMetadata({
         monthly: monthlyRecordMetadata,
         annual: annualRecordsMetadata,

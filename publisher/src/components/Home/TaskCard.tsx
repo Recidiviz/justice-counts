@@ -64,7 +64,7 @@ export const TaskCard: React.FC<{
                   return navigate(`./${action.path + metricSettingsParams}`);
                 }
                 if (isManualEntryAction) {
-                  return navigate(`./${action.path + reportID}`, {
+                  return navigate(`./${action.path + (reportID || `create`)}`, {
                     state: { scrollToMetricKey: metricKey },
                   });
                 }
