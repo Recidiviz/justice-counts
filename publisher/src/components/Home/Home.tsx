@@ -127,7 +127,7 @@ export const Home = observer(() => {
   };
   const welcomeDescription = !hasCompletedAllTasks()
     ? "See open tasks below"
-    : "";
+    : "Dashboards are updated with latest published records";
 
   /**
    * Metrics without values or not yet configured (`allMetricMetadatasWithoutValuesOrNotConfigured`) are
