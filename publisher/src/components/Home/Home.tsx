@@ -78,7 +78,6 @@ export const Home = observer(() => {
     currentAgencyMetrics
       .filter(metricEnabled)
       .filter(metricBelongsToCurrentSystem)
-      // .filter(metricHasUnpublishedRecord)
       .map((metric) =>
         createTaskCardMetadatas(
           metric,
@@ -109,7 +108,7 @@ export const Home = observer(() => {
     unconfiguredMetricsTaskCardMetadata.length === 0;
   const welcomeDescription = !hasCompletedAllTasks
     ? "See open tasks below"
-    : "Dashboards are updated with latest published records";
+    : "Dashboards are updated with the latest published records";
   const userFirstName = userStore.name?.split(" ")[0];
 
   /**
