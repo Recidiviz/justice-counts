@@ -144,7 +144,7 @@ export const Home = observer(() => {
   useEffect(() => {
     const fetchMetricsAndRecords = async () => {
       setLoading(true);
-      if (agencySystems.length > 0) setCurrentSystem(agencySystems[0]);
+
       const {
         agency_metrics: agencyMetrics,
         annual_reports: annualRecords,
