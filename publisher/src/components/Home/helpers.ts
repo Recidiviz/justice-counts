@@ -33,7 +33,8 @@ import {
 export const metricEnabled = ({ enabled }: Metric) => enabled;
 export const metricNotConfigured = ({ enabled }: Metric) => enabled === null;
 export const metricIsMonthly = (metric: Metric) =>
-  metric.custom_frequency === "MONTHLY" || metric.frequency === "MONTHLY";
+  metric.custom_frequency === "MONTHLY" ||
+  (!metric.custom_frequency && metric.frequency === "MONTHLY");
 
 /**
  * Creates Report Title (includes month name in parenthesis to differentiate
