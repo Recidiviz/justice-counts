@@ -188,10 +188,8 @@ class ReportStore {
         ...Object.values(latestReportsAndMetrics.annual_reports),
       ];
       if (allRecords.length > 0) {
-        allRecords.forEach(
-          (record) =>
-            record.id &&
-            this.storeMetricDetails(record.id, record.metrics, record)
+        allRecords.forEach((record) =>
+          this.storeMetricDetails(record.id, record.metrics, record)
         );
       }
       return latestReportsAndMetrics;
