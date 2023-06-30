@@ -55,11 +55,7 @@ const AgencySettingsDescription: React.FC<{
     currentAgencySettings?.find(
       (setting) => setting.setting_type === "PURPOSE_AND_FUNCTIONS"
     )?.value || "";
-  const isAgencySettingConfigured = Boolean(
-    currentAgencySettings?.find(
-      (setting) => setting.setting_type === "PURPOSE_AND_FUNCTIONS"
-    )?.value
-  );
+  const isAgencySettingConfigured = Boolean(purposeAndFunctionsSetting);
 
   const handleSaveClick = () => {
     const updatedSettings = updateAgencySettings(
