@@ -154,21 +154,27 @@ function DefinitionModalForm({
   // handlers
   const handleChooseDefaults = () => {
     const includesExcludesKey = Object.keys(currentSettings)[0];
+    const includesExcludesSettings =
+      currentSettings[includesExcludesKey].settings;
+
+    const defaultSettings = Object.entries(includesExcludesSettings).reduce(
+      (innerAcc, [settingKey, setting]) => {
+        return {
+          ...innerAcc,
+          [settingKey]: {
+            ...setting,
+            included: setting.default,
+          },
+        };
+      },
+      {} as { [settingKey: string]: Partial<MetricConfigurationSettings> }
+    );
+
     setCurrentSettings({
       ...currentSettings,
       [includesExcludesKey]: {
         ...currentSettings[includesExcludesKey],
-        settings: Object.entries(
-          currentSettings[includesExcludesKey].settings
-        ).reduce((innerAcc, [settingKey, setting]) => {
-          return {
-            ...innerAcc,
-            [settingKey]: {
-              ...setting,
-              included: setting.default,
-            },
-          };
-        }, {} as { [settingKey: string]: Partial<MetricConfigurationSettings> }),
+        settings: defaultSettings,
       },
     });
     // setCurrentSettings(
