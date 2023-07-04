@@ -63,21 +63,21 @@ function DefinitionModalForm({
     updateContextValue,
   } = metricConfigStore;
 
+  // read only check
   const isReadOnly = userStore.isUserReadOnly(agencyId);
 
+  // system and metric keys
   const { system: systemSearchParam, metric: metricSearchParam } =
     settingsSearchParams;
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
 
+  // definitions
   const isMetricDefinitionSettings = !activeDimensionKey;
-
+  const hasActiveDisaggregationAndDimensionKey =
+    activeDisaggregationKey && activeDimensionKey;
   const metricDefinitionIncludesExcludesKeys =
     metricDefinitionSettings[systemMetricKey] &&
     Object.keys(metricDefinitionSettings[systemMetricKey]);
-
-  const hasActiveDisaggregationAndDimensionKey =
-    activeDisaggregationKey && activeDimensionKey;
-
   const dimensionDefinitionSettingsKeys =
     (hasActiveDisaggregationAndDimensionKey &&
       dimensionDefinitionSettings[systemMetricKey]?.[activeDisaggregationKey]?.[
@@ -88,43 +88,35 @@ function DefinitionModalForm({
           activeDimensionKey
         ]
       )) as string[];
-
   const activeSettingsKeys = isMetricDefinitionSettings
     ? metricDefinitionIncludesExcludesKeys
     : dimensionDefinitionSettingsKeys;
 
+  // contexts
   const dimensionContextsMap =
     hasActiveDisaggregationAndDimensionKey &&
     dimensionContexts[systemMetricKey]?.[activeDisaggregationKey]?.[
       activeDimensionKey
     ];
-
   const hasMinOneDimensionContext =
     dimensionContextsMap && Object.values(dimensionContextsMap).length > 0;
-
   const hasMinOneMetricLevelContext =
     !activeDimensionKey &&
     contexts[systemMetricKey] &&
     Object.values(contexts[systemMetricKey]).length > 0;
 
+  // check if settings are available
   const noSettingsAvailable =
     !activeSettingsKeys ||
     Boolean(
       !activeSettingsKeys?.length && activeDimensionKey && !dimensionContextsMap
     );
-
   const hasNoSettingsAndNoContext =
     noSettingsAvailable &&
     !hasMinOneDimensionContext &&
     !hasMinOneMetricLevelContext;
 
-  const currentDimension =
-    (hasActiveDisaggregationAndDimensionKey &&
-      dimensions[systemMetricKey]?.[activeDisaggregationKey]?.[
-        activeDimensionKey
-      ]) ||
-    undefined;
-
+  // useState initial values
   const initialSettings = activeSettingsKeys?.reduce(
     (acc, includesExcludesKey) => {
       const currentIncludesExcludes = hasActiveDisaggregationAndDimensionKey
@@ -143,45 +135,31 @@ function DefinitionModalForm({
 
   const initialContexts = () => {
     if (!dimensionContextsMap && !contexts[systemMetricKey]) return {};
+    const currentContexts = dimensionContextsMap || contexts[systemMetricKey];
 
-    return dimensionContextsMap
-      ? Object.entries(dimensionContextsMap).reduce((acc, [key, context]) => {
-          return {
-            ...acc,
-            [key]: {
-              label: context.label || "",
-              value: context.value ? context.value.toString() : "",
-            },
-          };
-        }, {} as ContextsByContextKey)
-      : Object.entries(contexts[systemMetricKey]).reduce(
-          (acc, [key, context]) => {
-            return {
-              ...acc,
-              [key]: {
-                label: context.display_name || "",
-                value: context.value ? context.value.toString() : "",
-              },
-            };
-          },
-          {} as ContextsByContextKey
-        );
+    return Object.entries(currentContexts).reduce((acc, [key, context]) => {
+      return {
+        ...acc,
+        [key]: {
+          label: context[dimensionContextsMap ? "label" : "display_name"] || "",
+          value: context.value ? context.value.toString() : "",
+        },
+      };
+    }, {} as ContextsByContextKey);
   };
 
   const [currentSettings, setCurrentSettings] = useState(initialSettings);
   const [currentContexts, setCurrentContexts] = useState(initialContexts);
 
+  // handlers
   const handleChooseDefaults = () => {
-    setCurrentSettings(
-      Object.entries(currentSettings).reduce(
-        (acc, [includesExcludesKey, value]) => {
-          return {
-            ...acc,
-            [includesExcludesKey]: {
-              ...value,
-              settings: Object.entries(
-                currentSettings[includesExcludesKey].settings
-              ).reduce((innerAcc, [settingKey, setting]) => {
+    const defaultSettings = Object.entries(currentSettings).reduce(
+      (acc, [includesExcludesKey, { settings }]) => {
+        return {
+          ...acc,
+          [includesExcludesKey]: {
+            settings: Object.entries(settings).reduce(
+              (innerAcc, [settingKey, setting]) => {
                 return {
                   ...innerAcc,
                   [settingKey]: {
@@ -189,13 +167,18 @@ function DefinitionModalForm({
                     included: setting.default,
                   },
                 };
-              }, {} as { [settingKey: string]: Partial<MetricConfigurationSettings> }),
-            },
-          };
-        },
-        {} as SettingsByIncludesExcludesKey
-      )
+              },
+              {} as {
+                [settingKey: string]: Partial<MetricConfigurationSettings>;
+              }
+            ),
+          },
+        };
+      },
+      {} as SettingsByIncludesExcludesKey
     );
+
+    setCurrentSettings({ ...currentSettings, ...defaultSettings });
   };
 
   const handleChangeDefinitionIncluded = (
@@ -337,28 +320,12 @@ function DefinitionModalForm({
     }
   };
 
-  if (hasNoSettingsAndNoContext)
-    return (
-      <Styled.Wrapper>
-        <Styled.Content>
-          <Styled.ScrollableInnerWrapper>
-            <Styled.Header>Definition</Styled.Header>
-            <Styled.Title>
-              {isMetricDefinitionSettings
-                ? `${metrics[systemMetricKey]?.label} (Total)`
-                : currentDimension?.label}
-            </Styled.Title>
-            <Styled.Description>
-              There are no definitions to configure for this{" "}
-              {isMetricDefinitionSettings ? "metric." : "breakdown."}
-            </Styled.Description>
-          </Styled.ScrollableInnerWrapper>
-          <Styled.BottomButtonsContainer>
-            <Button label="Close" onClick={closeModal} buttonColor="red" />
-          </Styled.BottomButtonsContainer>
-        </Styled.Content>
-      </Styled.Wrapper>
-    );
+  const currentDimension =
+    (hasActiveDisaggregationAndDimensionKey &&
+      dimensions[systemMetricKey]?.[activeDisaggregationKey]?.[
+        activeDimensionKey
+      ]) ||
+    undefined;
 
   return (
     <Styled.Wrapper>
@@ -370,6 +337,12 @@ function DefinitionModalForm({
               ? `${metrics[systemMetricKey]?.label} (Total)`
               : currentDimension?.label}
           </Styled.Title>
+          {hasNoSettingsAndNoContext && (
+            <Styled.Description>
+              There are no definitions to configure for this{" "}
+              {isMetricDefinitionSettings ? "metric." : "breakdown."}
+            </Styled.Description>
+          )}
           {activeSettingsKeys && (
             <Styled.Description>
               Indicate which of the following categories your agency considers
@@ -422,6 +395,7 @@ function DefinitionModalForm({
 
           <Styled.ContextContainer>
             {currentContexts &&
+              !hasNoSettingsAndNoContext &&
               Object.entries(currentContexts).map(([key, { label, value }]) => {
                 return (
                   <Fragment key={key}>
@@ -443,10 +417,11 @@ function DefinitionModalForm({
         </Styled.ScrollableInnerWrapper>
         <Styled.BottomButtonsContainer>
           <Button
-            label={isReadOnly ? "Close" : "Cancel"}
+            label={isReadOnly || hasNoSettingsAndNoContext ? "Close" : "Cancel"}
             onClick={closeModal}
+            buttonColor={hasNoSettingsAndNoContext ? "red" : undefined}
           />
-          {!isReadOnly && (
+          {!isReadOnly && !hasNoSettingsAndNoContext && (
             <Button
               label="Save"
               onClick={() => {
