@@ -55,6 +55,7 @@ const AgencySettingsUrl: React.FC<{
     currentAgencySettings?.find(
       (setting) => setting.setting_type === "HOMEPAGE_URL"
     )?.value || "";
+  const isAgencySettingConfigured = Boolean(homepageUrlSetting);
 
   const handleSaveClick = () => {
     const updatedSettings = updateAgencySettings(
@@ -124,7 +125,9 @@ const AgencySettingsUrl: React.FC<{
   return (
     <>
       <AgencySettingsBlock id="homepage_url">
-        <AgencySettingsBlockTitle>Agency Homepage URL</AgencySettingsBlockTitle>
+        <AgencySettingsBlockTitle configured={isAgencySettingConfigured}>
+          Agency Homepage URL
+        </AgencySettingsBlockTitle>
         <AgencyInfoBlockDescription>
           {homepageUrlSetting ? (
             <AgencyInfoLink
