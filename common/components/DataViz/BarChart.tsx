@@ -145,9 +145,9 @@ const ResponsiveBarChart: React.FC<{
 }) => {
   const renderBarDefinitions = () => {
     // each Recharts Bar component defines a category type in the stacked bar chart
-    const barDefinitions = [];
+    let barDefinitions: JSX.Element[] = [];
     dimensionNames.forEach((dimension, index) => {
-      barDefinitions.push(
+      const newBar = (
         <Bar
           key={dimension}
           dataKey={dimension}
@@ -156,6 +156,7 @@ const ResponsiveBarChart: React.FC<{
           maxBarSize={MAX_BAR_SIZE}
         />
       );
+      barDefinitions = [newBar, ...barDefinitions];
     });
     barDefinitions.push(
       <Bar
