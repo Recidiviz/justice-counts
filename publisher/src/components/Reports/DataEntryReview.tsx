@@ -46,7 +46,8 @@ const DataEntryReview = () => {
   const agencyId = Number(params.agencyId);
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { metricDisplayNames } = state as { metricDisplayNames: string[] };
+  const { metricDisplayNames } =
+    (state as { metricDisplayNames: string[] }) || {};
   const { reportStore, formStore, userStore, guidanceStore } = useStore();
   const checkMetricForErrors = useCheckMetricForErrors(reportID);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
@@ -137,8 +138,8 @@ const DataEntryReview = () => {
         // Sort this list of metrics so it matches the order of the metrics list on the data entry page
         .sort(
           (a, b) =>
-            metricDisplayNames.indexOf(a.display_name) -
-            metricDisplayNames.indexOf(b.display_name)
+            metricDisplayNames?.indexOf(a.display_name) -
+            metricDisplayNames?.indexOf(b.display_name)
         )
     : [];
   const record = reportStore.reportOverviews[reportID];
@@ -157,7 +158,7 @@ const DataEntryReview = () => {
   const buttons: ReviewHeaderActionButton[] = [
     {
       name: "Back to data entry",
-      onClick: () => navigate(-1),
+      onClick: () => navigate(`../records/${reportID}`),
       borderColor: "lightgrey",
     },
     {
