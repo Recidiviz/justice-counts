@@ -27,7 +27,7 @@ import { AgencySystems, Report } from "@justice-counts/common/types";
 import { runInAction } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components/macro";
 
 import {
@@ -124,6 +124,7 @@ const DataEntryForm: React.FC<{
 }) => {
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
+  const { state } = useLocation();
   const headerBadge = useHeaderBadge();
   const { formStore, reportStore, userStore } = useStore();
   const [showOnboarding, setShowOnboarding] = useState(true);
@@ -133,9 +134,17 @@ const DataEntryForm: React.FC<{
   const metricsRef = useRef<HTMLDivElement[]>([]);
 
   const currentAgency = userStore.getAgency(agencyId);
-
   const isPublished =
     reportStore.reportOverviews[reportID].status === "PUBLISHED";
+
+  /** Scroll to metric (currently used by new Home page task cards) */
+  useEffect(() => {
+    if (state?.scrollToMetricKey) {
+      document
+        .getElementById(state.scrollToMetricKey)
+        ?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [state]);
 
   useEffect(
     () => {

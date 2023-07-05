@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Metric } from "@justice-counts/common/types";
+import { AgencySystems, Metric } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -46,9 +46,17 @@ import * as Styled from "./Home.styled";
 export const Home = observer(() => {
   const { userStore, reportStore } = useStore();
   const navigate = useNavigate();
-  const { agencyId } = useParams();
+  const { agencyId } = useParams() as { agencyId: string };
+  const currentAgency = userStore.getAgency(agencyId);
+  const hasMultipleSystems = currentAgency && currentAgency.systems.length > 1;
+  const agencySystems: Array<AgencySystems | "ALL"> = hasMultipleSystems
+    ? ["ALL", ...Object.values(currentAgency.systems)]
+    : currentAgency?.systems || [];
 
   const [loading, setLoading] = useState(true);
+  const [currentSystem, setCurrentSystem] = useState<AgencySystems | "ALL">(
+    agencySystems[0]
+  );
   const [currentAgencyMetrics, setAgencyMetrics] = useState<Metric[]>([]);
   const [
     latestMonthlyAnnualRecordsMetadata,
@@ -69,8 +77,10 @@ export const Home = observer(() => {
       ? latestMonthlyRecordUnpublished
       : latestAnnualMetricUnpublished;
   };
+  /** Does the given metric belong to the currently selected system? */
+  const metricBelongsToCurrentSystem = (metric: Metric) =>
+    currentSystem === "ALL" || metric.system.key === currentSystem;
 
-  const userFirstName = userStore.name?.split(" ")[0];
   /** Task Card Metadatas */
   const allTasksCompleteTaskCardMetadata: TaskCardMetadata = {
     title: "All tasks complete",
@@ -79,6 +89,7 @@ export const Home = observer(() => {
   const enabledMetricsTaskCardMetadata: TaskCardMetadata[] =
     currentAgencyMetrics
       .filter(metricEnabled)
+      .filter(metricBelongsToCurrentSystem)
       .filter(metricHasUnpublishedRecord)
       .map((metric) =>
         createTaskCardMetadatas(
@@ -90,6 +101,7 @@ export const Home = observer(() => {
   const unconfiguredMetricsTaskCardMetadata: TaskCardMetadata[] =
     currentAgencyMetrics
       .filter(metricNotConfigured)
+      .filter(metricBelongsToCurrentSystem)
       .map((metric) =>
         createTaskCardMetadatas(
           metric,
@@ -110,6 +122,7 @@ export const Home = observer(() => {
   const welcomeDescription = !hasCompletedAllTasks
     ? "See open tasks below"
     : "Dashboards are updated with latest published records";
+  const userFirstName = userStore.name?.split(" ")[0];
 
   /**
    * Metrics without values or not yet configured (`allMetricMetadatasWithoutValuesOrNotConfigured`) are
@@ -165,6 +178,7 @@ export const Home = observer(() => {
     };
 
     fetchMetricsAndRecords();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyId, reportStore]);
 
   if (!currentAgencyMetrics || loading) {
@@ -178,6 +192,26 @@ export const Home = observer(() => {
         {welcomeDescription}
       </Styled.WelcomeDescription>
 
+      {/* System Selector */}
+      {hasMultipleSystems && (
+        <Styled.SystemSelectorContainer>
+          <div />
+          <Styled.SystemSelectorTabWrapper>
+            {agencySystems?.map((system) => (
+              <Styled.SystemSelectorTab
+                key={system}
+                selected={system === currentSystem}
+                onClick={() => setCurrentSystem(system)}
+              >
+                {system.toLocaleLowerCase()}
+              </Styled.SystemSelectorTab>
+            ))}
+          </Styled.SystemSelectorTabWrapper>
+          <div />
+        </Styled.SystemSelectorContainer>
+      )}
+
+      {/* Tasks & Submenu */}
       <Styled.ContentContainer>
         <Styled.LeftPanelWrapper />
         {/* All Open Tasks */}
@@ -187,18 +221,17 @@ export const Home = observer(() => {
             <TaskCard metadata={allTasksCompleteTaskCardMetadata} />
           ) : (
             <>
+              {/* Configure Metrics/Add Data Cards */}
               {allMetricMetadatasWithoutValuesOrNotConfigured.map(
                 (taskCardMetadata) => (
                   <TaskCard
-                    key={taskCardMetadata.title}
+                    key={JSON.stringify(taskCardMetadata)}
                     metadata={taskCardMetadata}
                     reportID={taskCardMetadata.reportID}
                   />
                 )
               )}
-
               {/* Publish-Ready Cards (for Monthly & Annual Records) */}
-
               {/* Publish latest monthly record */}
               {allMetricMetadatasWithValues.MONTHLY.length > 0 &&
                 latestMonthlyRecord &&
@@ -211,7 +244,6 @@ export const Home = observer(() => {
                     reportID={latestMonthlyRecord.id}
                   />
                 )}
-
               {/* Publish latest annual record(s) */}
               {allMetricMetadatasWithValues.ANNUAL.length > 0 &&
                 latestMonthlyAnnualRecordsMetadata?.annual &&

@@ -36,6 +36,7 @@ export type TaskCardMetadata = {
   metricFrequency?: ReportFrequency;
   metricSettingsParams?: string;
   hasMetricValue?: boolean;
+  metricKey?: string;
 };
 
 export type TaskCardActionLinksMetadata = { label: string; path: string };

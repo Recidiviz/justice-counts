@@ -127,6 +127,7 @@ export const createDataEntryTaskCardMetadata = (
     ],
     metricFrequency,
     hasMetricValue,
+    metricKey: currentMetric.key,
   };
 };
 

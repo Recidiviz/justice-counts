@@ -45,7 +45,7 @@ export const WelcomeUser = styled.div`
 export const WelcomeDescription = styled.div`
   ${typography.sizeCSS.medium};
   color: ${palette.highlight.grey8};
-  margin-bottom: 64px;
+  margin-bottom: 48px;
 `;
 
 export const ContentContainer = styled.div`
@@ -166,6 +166,22 @@ export const SubmenuItem = styled.a`
   }
 `;
 
+export const SystemSelectorContainer = styled.div`
+  ${typography.sizeCSS.normal};
+  display: flex;
+  gap: 32px;
+
+  & > div:nth-child(1) {
+    flex: 1 4 280px;
+  }
+  & > div:nth-child(2) {
+    width: 500px;
+  }
+  & > div:nth-child(3) {
+    flex: 1 1 280px;
+  }
+`;
+
 export const SystemSelectorTabWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
@@ -174,6 +190,7 @@ export const SystemSelectorTabWrapper = styled.div`
 `;
 
 export const SystemSelectorTab = styled.div<{ selected?: boolean }>`
+  text-transform: capitalize;
   color: ${({ selected }) =>
     selected ? palette.solid.blue : palette.solid.darkgrey};
   border-bottom: 1.5px solid
