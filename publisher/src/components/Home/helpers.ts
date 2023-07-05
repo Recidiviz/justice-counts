@@ -102,6 +102,7 @@ export const createConfigurationTaskCardMetadata = (
     description: currentMetric.description,
     actionLinks: [taskCardLabelsActionLinks.metricAvailability],
     metricSettingsParams: `?system=${currentMetric.system.key.toLowerCase()}&metric=${currentMetric.key.toLowerCase()}`,
+    status: recordMetadata?.status,
   };
 };
 
@@ -127,6 +128,7 @@ export const createDataEntryTaskCardMetadata = (
     ],
     metricFrequency,
     hasMetricValue,
+    status: recordMetadata?.status,
     metricKey: currentMetric.key,
   };
 };
@@ -191,7 +193,7 @@ export const groupMetadatasByValueAndConfiguration = (
     (acc, metric) => {
       const { metricFrequency } = metric;
       if (metric.hasMetricValue) {
-        if (metricFrequency)
+        if (metricFrequency && metric.status !== "PUBLISHED")
           acc.allMetricMetadatasWithValues[metricFrequency].push(metric);
       } else {
         acc.allMetricMetadatasWithoutValuesOrNotConfigured.push(metric);

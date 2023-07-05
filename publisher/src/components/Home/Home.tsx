@@ -120,28 +120,12 @@ export const Home = observer(() => {
    *  2. User has entered values for all metrics in the latest annual and/or monthly
    *     records and those records are published
    */
-  const hasCompletedAllTasks = () => {
-    /** Case: User has configured all metrics and set them all to "Not Available" */
-    const hasNoEnabledOrUnconfiguredMetricsTaskCardMetadata =
-      enabledMetricsTaskCardMetadata.length === 0 &&
-      unconfiguredMetricsTaskCardMetadata.length === 0;
-    /** Case: User has published the latest monthly and annual record */
-    const hasPublishedLatestAnnualRecords =
-      latestMonthlyAnnualRecordsMetadata?.annual &&
-      Object.values(latestMonthlyAnnualRecordsMetadata.annual).filter(
-        (metadata) => metadata.status !== "PUBLISHED"
-      ).length === 0;
-    const hasPublishedLatestMonthlyRecord =
-      latestMonthlyAnnualRecordsMetadata?.monthly?.status === "PUBLISHED";
+  const hasCompletedAllTasks =
+    allMetricMetadatasWithoutValuesOrNotConfigured.length === 0 &&
+    allMetricMetadatasWithValues.ANNUAL.length === 0 &&
+    allMetricMetadatasWithValues.MONTHLY.length === 0;
 
-    return (
-      hasNoEnabledOrUnconfiguredMetricsTaskCardMetadata ||
-      (hasPublishedLatestAnnualRecords &&
-        hasPublishedLatestMonthlyRecord &&
-        allMetricMetadatasWithoutValuesOrNotConfigured.length === 0)
-    );
-  };
-  const welcomeDescription = !hasCompletedAllTasks()
+  const welcomeDescription = !hasCompletedAllTasks
     ? "See open tasks below"
     : "Dashboards are updated with the latest published records";
   const userFirstName = userStore.name?.split(" ")[0];
@@ -214,7 +198,7 @@ export const Home = observer(() => {
         {/* All Open Tasks */}
         <Styled.OpenTasksContainer>
           {/* All Tasks Completed Card or Configure Metrics/Add Data/Publish Record Cards */}
-          {hasCompletedAllTasks() ? (
+          {hasCompletedAllTasks ? (
             <TaskCard metadata={allTasksCompleteTaskCardMetadata} />
           ) : (
             <>
