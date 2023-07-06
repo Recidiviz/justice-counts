@@ -265,17 +265,19 @@ const Menu: React.FC = () => {
           )} */}
           </Styled.MenuItemsWrapper>
           {/* Profile */}
-          <Styled.ProfileDropdownWrapper>
-            {usernameToInitials()}
-            <Styled.Caret />
-            <Dropdown
-              label=""
-              options={profileDropdownOptions}
-              size="small"
-              hover="label"
-              alignment="right"
-            />
-          </Styled.ProfileDropdownWrapper>
+          <Styled.ProfileDropdownContainer>
+            <Styled.ProfileDropdownWrapper>
+              {usernameToInitials()}
+              <Styled.Caret />
+              <Dropdown
+                label=""
+                options={profileDropdownOptions}
+                size="small"
+                hover="label"
+                alignment="right"
+              />
+            </Styled.ProfileDropdownWrapper>
+          </Styled.ProfileDropdownContainer>
         </Styled.MenuItemsProfileWrapper>
       </Styled.MenuContainer>
       {/* <Styled.MobileMenuIconWrapper

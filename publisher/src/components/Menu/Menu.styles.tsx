@@ -60,6 +60,11 @@ export const MenuItemsProfileWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 56px;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    width: 100%;
+    justify-content: flex-end;
+  }
 `;
 
 export const MenuItem = styled.div<{
@@ -170,6 +175,19 @@ export const AgencyDropdownWrapper = styled.div`
 
   button + div {
     border-radius: 0;
+  }
+`;
+
+export const ProfileDropdownContainer = styled.div`
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    height: ${HEADER_BAR_HEIGHT}px;
+    width: calc(100% - 1px);
+    min-width: ${HEADER_BAR_HEIGHT}px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background: ${palette.solid.darkgrey};
+    padding-right: 16px;
   }
 `;
 

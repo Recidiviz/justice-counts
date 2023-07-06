@@ -20,6 +20,7 @@ import styled from "styled-components/macro";
 import {
   HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
+  MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "../GlobalStyles";
@@ -48,6 +49,10 @@ export const HeaderBar = styled.div<{
 
   border-bottom: ${({ hasBottomBorder }) =>
     hasBottomBorder ? `1px solid ${palette.highlight.grey3}` : "none"};
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    padding: 0;
+  }
 `;
 
 export const LogoContainer = styled.div`
