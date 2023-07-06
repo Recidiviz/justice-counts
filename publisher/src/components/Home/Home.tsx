@@ -124,7 +124,6 @@ export const Home = observer(() => {
     allMetricMetadatasWithoutValuesOrNotConfigured.length === 0 &&
     allMetricMetadatasWithValues.ANNUAL.length === 0 &&
     allMetricMetadatasWithValues.MONTHLY.length === 0;
-
   const welcomeDescription = !hasCompletedAllTasks
     ? "See open tasks below"
     : "Dashboards are updated with the latest published records";
@@ -215,8 +214,7 @@ export const Home = observer(() => {
               {/* Publish-Ready Cards (for Monthly & Annual Records) */}
               {/* Publish latest monthly record */}
               {allMetricMetadatasWithValues.MONTHLY.length > 0 &&
-                latestMonthlyRecord &&
-                latestMonthlyRecord.status !== "PUBLISHED" && (
+                latestMonthlyRecord && (
                   <TaskCard
                     metadata={createPublishTaskCardMetadata(
                       latestMonthlyRecord.reportTitle,
@@ -230,7 +228,6 @@ export const Home = observer(() => {
                 latestMonthlyAnnualRecordsMetadata?.annual &&
                 Object.values(latestMonthlyAnnualRecordsMetadata.annual).map(
                   (record) => {
-                    if (record.status === "PUBLISHED") return null;
                     return (
                       <TaskCard
                         key={record.id}
