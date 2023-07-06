@@ -34,39 +34,29 @@ export const MenuContainer = styled.nav<{ isMobileMenuOpen: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    display: ${({ isMobileMenuOpen }) => (isMobileMenuOpen ? "flex" : "none")};
-    flex-direction: column;
-    align-items: start;
-    position: fixed;
-    top: ${HEADER_BAR_HEIGHT + 1}px;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: ${palette.solid.white};
-    padding: 48px 32px ${HEADER_BAR_HEIGHT + 32}px 32px;
-    gap: 32px;
-    overflow-y: auto;
-
-    #upload {
-      width: 100%;
-      height: 56px;
-      margin-top: auto;
-
-      div {
-        width: 100%;
-        height: 100%;
-        ${typography.sizeCSS.medium}
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-      }
-    }
-  }
 `;
 
 export const MenuItemsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 56px;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    width: 100%;
+    height: ${HEADER_BAR_HEIGHT}px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    position: absolute;
+    bottom: calc(-100vh + ${HEADER_BAR_HEIGHT}px);
+    left: 0;
+    gap: unset;
+    background: ${palette.solid.white};
+    border-top: 1px solid ${palette.highlight.grey5};
+  }
+`;
+
+export const MenuItemsProfileWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 56px;
@@ -113,14 +103,11 @@ export const MenuItem = styled.div<{
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    border-top: none;
-    ${typography.sizeCSS.large};
+    height: 100%;
     padding: 0;
-    height: auto;
-
-    & ${CustomDropdownToggle} {
-      ${typography.sizeCSS.large};
-    }
+    border-top: 3px solid
+      ${({ active }) => (active ? palette.solid.blue : "transparent")};
+    border-bottom: none;
   }
 `;
 

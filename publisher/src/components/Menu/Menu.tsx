@@ -195,59 +195,60 @@ const Menu: React.FC = () => {
           {headerBadge}
         </Styled.AgencyDropdownHeaderBadgeWrapper>
 
-        {/* Home */}
-        <Styled.MenuItemsWrapper>
-          <Styled.MenuItem
-            onClick={() => navigate(`/agency/${agencyId}/`)}
-            active={pathWithoutAgency === ""}
-          >
-            Home
-          </Styled.MenuItem>
+        <Styled.MenuItemsProfileWrapper>
+          {/* Home */}
+          <Styled.MenuItemsWrapper>
+            <Styled.MenuItem
+              onClick={() => navigate(`/agency/${agencyId}/`)}
+              active={pathWithoutAgency === ""}
+            >
+              Home
+            </Styled.MenuItem>
 
-          {/* Metric Config */}
-          <Styled.MenuItem
-            onClick={() => {
-              if (pathWithoutAgency === "metric-config") {
-                setSettingsSearchParams({
-                  ...settingsSearchParams,
-                  metric: undefined,
-                });
-              } else {
-                navigate("metric-config");
+            {/* Metric Config */}
+            <Styled.MenuItem
+              onClick={() => {
+                if (pathWithoutAgency === "metric-config") {
+                  setSettingsSearchParams({
+                    ...settingsSearchParams,
+                    metric: undefined,
+                  });
+                } else {
+                  navigate("metric-config");
+                }
+                handleCloseMobileMenu();
+              }}
+              active={pathWithoutAgency === "metric-config"}
+            >
+              Metric Settings
+            </Styled.MenuItem>
+
+            {/* Data Entry */}
+            <Styled.MenuItem
+              onClick={() => {
+                if (pathWithoutAgency !== "data-entry") navigate("data-entry");
+                handleCloseMobileMenu();
+              }}
+              active={
+                pathWithoutAgency === "data-entry" ||
+                pathWithoutAgency === REPORTS_LOWERCASE
               }
-              handleCloseMobileMenu();
-            }}
-            active={pathWithoutAgency === "metric-config"}
-          >
-            Metric Settings
-          </Styled.MenuItem>
+            >
+              Data Entry
+            </Styled.MenuItem>
 
-          {/* Data Entry */}
-          <Styled.MenuItem
-            onClick={() => {
-              if (pathWithoutAgency !== "data-entry") navigate("data-entry");
-              handleCloseMobileMenu();
-            }}
-            active={
-              pathWithoutAgency === "data-entry" ||
-              pathWithoutAgency === REPORTS_LOWERCASE
-            }
-          >
-            Data Entry
-          </Styled.MenuItem>
+            {/* Data (Visualizations) */}
+            <Styled.MenuItem
+              onClick={() => {
+                if (pathWithoutAgency !== "data") navigate("data");
+                handleCloseMobileMenu();
+              }}
+              active={pathWithoutAgency === "data"}
+            >
+              View Data
+            </Styled.MenuItem>
 
-          {/* Data (Visualizations) */}
-          <Styled.MenuItem
-            onClick={() => {
-              if (pathWithoutAgency !== "data") navigate("data");
-              handleCloseMobileMenu();
-            }}
-            active={pathWithoutAgency === "data"}
-          >
-            View Data
-          </Styled.MenuItem>
-
-          {isMobileMenuOpen && (
+            {/* {isMobileMenuOpen && (
             <Styled.SubMenuContainer>
               {settingsMenuPaths.map(({ displayLabel, path }) => (
                 <Styled.SubMenuItem
@@ -261,8 +262,8 @@ const Menu: React.FC = () => {
                 </Styled.SubMenuItem>
               ))}
             </Styled.SubMenuContainer>
-          )}
-
+          )} */}
+          </Styled.MenuItemsWrapper>
           {/* Profile */}
           <Styled.ProfileDropdownWrapper>
             {usernameToInitials()}
@@ -275,13 +276,13 @@ const Menu: React.FC = () => {
               alignment="right"
             />
           </Styled.ProfileDropdownWrapper>
-        </Styled.MenuItemsWrapper>
+        </Styled.MenuItemsProfileWrapper>
       </Styled.MenuContainer>
-      <Styled.MobileMenuIconWrapper
+      {/* <Styled.MobileMenuIconWrapper
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >
         {isMobileMenuOpen ? <CloseMenuBurger /> : <MenuBurger />}
-      </Styled.MobileMenuIconWrapper>
+      </Styled.MobileMenuIconWrapper> */}
     </>
   );
 };
