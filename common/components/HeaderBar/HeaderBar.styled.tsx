@@ -29,6 +29,7 @@ import { HeaderBarBackground } from "./types";
 export const HeaderBar = styled.div<{
   background?: HeaderBarBackground;
   hasBottomBorder?: boolean;
+  noPaddingInSmallScreenWidth?: boolean;
 }>`
   width: 100%;
   height: ${HEADER_BAR_HEIGHT}px;
@@ -50,9 +51,13 @@ export const HeaderBar = styled.div<{
   border-bottom: ${({ hasBottomBorder }) =>
     hasBottomBorder ? `1px solid ${palette.highlight.grey3}` : "none"};
 
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    padding: 0;
-  }
+  ${({ noPaddingInSmallScreenWidth }) =>
+    noPaddingInSmallScreenWidth &&
+    `
+      @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+        padding: 0;
+      }
+  `}
 `;
 
 export const LogoContainer = styled.div`

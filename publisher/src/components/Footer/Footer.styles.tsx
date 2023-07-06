@@ -22,10 +22,10 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-export const FOOTER_HEIGHT_WITH_MARGIN = 156;
+export const FOOTER_HEIGHT_WITHOUT_MARGIN = 96;
+export const FOOTER_HEIGHT_WITH_MARGIN = FOOTER_HEIGHT_WITHOUT_MARGIN + 60;
 
 export const FooterWrapper = styled.footer<{ isPageDataUpload?: boolean }>`
-  margin-top: 48px;
   padding: 14px 24px;
   z-index: ${({ isPageDataUpload }) => (isPageDataUpload ? "5" : "0")};
   width: 100%;

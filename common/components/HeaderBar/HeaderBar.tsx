@@ -28,6 +28,7 @@ type HeaderBarProps = {
   badge?: React.ReactNode;
   background?: HeaderBarBackground;
   hasBottomBorder?: boolean;
+  noPaddingInSmallScreenWidth?: boolean;
 };
 
 export function HeaderBar({
@@ -37,9 +38,14 @@ export function HeaderBar({
   badge,
   background,
   hasBottomBorder,
+  noPaddingInSmallScreenWidth,
 }: HeaderBarProps) {
   return (
-    <Styled.HeaderBar background={background} hasBottomBorder={hasBottomBorder}>
+    <Styled.HeaderBar
+      background={background}
+      hasBottomBorder={hasBottomBorder}
+      noPaddingInSmallScreenWidth={noPaddingInSmallScreenWidth}
+    >
       <Styled.LogoContainer onClick={onLogoClick}>
         <Styled.LogoImg src={logoImg} alt="" />
         <Styled.Label>{label}</Styled.Label>

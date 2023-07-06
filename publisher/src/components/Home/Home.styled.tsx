@@ -22,9 +22,9 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-import { FOOTER_HEIGHT_WITH_MARGIN } from "../Footer";
+import { FOOTER_HEIGHT_WITHOUT_MARGIN } from "../Footer";
 
-const containerHeight = `100vh - ${FOOTER_HEIGHT_WITH_MARGIN}px - ${HEADER_BAR_HEIGHT}px`;
+const containerHeight = `100vh - ${FOOTER_HEIGHT_WITHOUT_MARGIN}px - ${HEADER_BAR_HEIGHT}px`;
 
 export const HomeContainer = styled.div`
   width: 100%;
@@ -32,7 +32,7 @@ export const HomeContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 80px;
+  padding: 80px 0;
   overflow: auto;
 `;
 

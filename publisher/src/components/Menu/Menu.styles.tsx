@@ -38,6 +38,11 @@ export const MenuItemsWrapper = styled.div`
   align-items: center;
   gap: 56px;
 
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH + 180}px) {
+    gap: 20px;
+    height: ${HEADER_BAR_HEIGHT}px;
+  }
+
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     width: 100%;
     height: ${HEADER_BAR_HEIGHT}px;
@@ -230,11 +235,17 @@ export const ProfileDropdownWrapper = styled.div`
     right: 1px;
     bottom: 1px;
     border-radius: 50%;
-    background: ${palette.highlight.grey3};
+    background: rgb(222, 222, 222);
   }
 
   &:hover {
     cursor: pointer;
+  }
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    &::before {
+      background: ${palette.solid.darkgrey};
+    }
   }
 `;
 
@@ -242,6 +253,7 @@ export const Caret = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 2;
 
   &::before {
     content: "";

@@ -263,13 +263,13 @@ export const DragDropContainer = styled.div<{ dragging?: boolean }>`
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    justify-content: end;
+    justify-content: center;
 
     div {
       ${typography.sizeCSS.small};
       flex-direction: column;
       gap: 4px;
-      align-items: start;
+      align-items: center;
     }
   }
 `;
