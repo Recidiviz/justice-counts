@@ -14,10 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-import {
-  CustomDropdown,
-  CustomDropdownToggle,
-} from "@justice-counts/common/components/Dropdown";
+import { CustomDropdown } from "@justice-counts/common/components/Dropdown";
 import {
   HEADER_BAR_HEIGHT,
   MIN_TABLET_WIDTH,

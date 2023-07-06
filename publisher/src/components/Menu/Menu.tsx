@@ -25,14 +25,11 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { settingsMenuPaths } from "../../pages/Settings";
 import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
-import { ReactComponent as CloseMenuBurger } from "../assets/close-header-menu-icon.svg";
 import { ReactComponent as TeamManagementIcon } from "../assets/data-line-icon.svg";
 import { ReactComponent as UploadedFilesIcon } from "../assets/folder-icon.svg";
 import { ReactComponent as LogoutIcon } from "../assets/logout-icon.svg";
-import { ReactComponent as MenuBurger } from "../assets/menu-burger-icon.svg";
 import { ReactComponent as AgencySettingsIcon } from "../assets/pillar-icon.svg";
 import { ReactComponent as YourAccountIcon } from "../assets/profile-icon.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
@@ -247,22 +244,6 @@ const Menu: React.FC = () => {
             >
               View Data
             </Styled.MenuItem>
-
-            {/* {isMobileMenuOpen && (
-            <Styled.SubMenuContainer>
-              {settingsMenuPaths.map(({ displayLabel, path }) => (
-                <Styled.SubMenuItem
-                  key={path}
-                  onClick={() => {
-                    navigate(`settings/${path}`);
-                    handleCloseMobileMenu();
-                  }}
-                >
-                  {displayLabel}
-                </Styled.SubMenuItem>
-              ))}
-            </Styled.SubMenuContainer>
-          )} */}
           </Styled.MenuItemsWrapper>
           {/* Profile */}
           <Styled.ProfileDropdownContainer>
