@@ -24,93 +24,99 @@ import {
   UnitedRaceEthnicityKeys,
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
-import React, { useEffect } from "react";
+import React, { forwardRef, useEffect } from "react";
 
 import { useStore } from "../../stores";
 import { ChartView } from "./types";
 
-const ConnectedDatapointsView: React.FC<{
+type ConnectedDatapointsViewProps = {
   metric: string;
   metricName: string;
   metricFrequency?: ReportFrequency;
   dataView: ChartView;
-}> = ({ metric, metricName, metricFrequency, dataView }) => {
-  const { datapointsStore, dataVizStore } = useStore();
-  const windowWidth = useWindowWidth();
-
-  const datapointsForMetric = datapointsStore.datapointsByMetric[metric];
-  const rawDatapointsForMetric = datapointsStore.rawDatapointsByMetric[metric];
-
-  const {
-    timeRange,
-    disaggregationName,
-    countOrPercentageView,
-    setTimeRange,
-    setDisaggregationName,
-    setCountOrPercentageView,
-    setInitialStateFromSearchParams,
-    resetState,
-  } = dataVizStore;
-
-  useEffect(() => {
-    setInitialStateFromSearchParams();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [metric]);
-
-  useEffect(() => {
-    return () => {
-      resetState();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  let dimensionNamesByDisaggregation =
-    datapointsStore.dimensionNamesByMetricAndDisaggregation[metric];
-
-  if (
-    Object.keys(
-      datapointsStore.dimensionNamesByMetricAndDisaggregation[metric]
-    ).includes("Race / Ethnicity")
-  ) {
-    const raceEthnicityDimensionNames = Array.from(
-      new Set(Object.values(UnitedRaceEthnicityKeys))
-    );
-    dimensionNamesByDisaggregation = {
-      ...datapointsStore.dimensionNamesByMetricAndDisaggregation[metric],
-      "Race / Ethnicity": raceEthnicityDimensionNames,
-    };
-  }
-
-  return (
-    <>
-      {dataView === ChartView.Chart && (
-        <DatapointsView
-          datapointsGroupedByAggregateAndDisaggregations={datapointsForMetric}
-          dimensionNamesByDisaggregation={dimensionNamesByDisaggregation}
-          timeRange={timeRange}
-          disaggregationName={disaggregationName}
-          countOrPercentageView={countOrPercentageView}
-          setTimeRange={setTimeRange}
-          setDisaggregationName={setDisaggregationName}
-          setCountOrPercentageView={setCountOrPercentageView}
-          metricName={metricName}
-          metricFrequency={metricFrequency}
-          resizeHeight
-          showTitle
-          showBottomMetricInsights={windowWidth <= MIN_DESKTOP_WIDTH}
-          maxHeightViewport
-        />
-      )}
-      {dataView === ChartView.Table && (
-        <DatapointsTableView
-          datapoints={rawDatapointsForMetric}
-          useDataPageStyles
-          metricName={metricName}
-          metricFrequency={metricFrequency}
-        />
-      )}
-    </>
-  );
 };
+
+const ConnectedDatapointsView = forwardRef<never, ConnectedDatapointsViewProps>(
+  ({ metric, metricName, metricFrequency, dataView }, ref) => {
+    const { datapointsStore, dataVizStore } = useStore();
+    const windowWidth = useWindowWidth();
+
+    const datapointsForMetric = datapointsStore.datapointsByMetric[metric];
+    const rawDatapointsForMetric =
+      datapointsStore.rawDatapointsByMetric[metric];
+
+    const {
+      timeRange,
+      disaggregationName,
+      countOrPercentageView,
+      setTimeRange,
+      setDisaggregationName,
+      setCountOrPercentageView,
+      setInitialStateFromSearchParams,
+      resetState,
+    } = dataVizStore;
+
+    useEffect(() => {
+      setInitialStateFromSearchParams();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [metric]);
+
+    useEffect(() => {
+      return () => {
+        resetState();
+      };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    let dimensionNamesByDisaggregation =
+      datapointsStore.dimensionNamesByMetricAndDisaggregation[metric];
+
+    if (
+      Object.keys(
+        datapointsStore.dimensionNamesByMetricAndDisaggregation[metric]
+      ).includes("Race / Ethnicity")
+    ) {
+      const raceEthnicityDimensionNames = Array.from(
+        new Set(Object.values(UnitedRaceEthnicityKeys))
+      );
+      dimensionNamesByDisaggregation = {
+        ...datapointsStore.dimensionNamesByMetricAndDisaggregation[metric],
+        "Race / Ethnicity": raceEthnicityDimensionNames,
+      };
+    }
+
+    return (
+      <>
+        {dataView === ChartView.Chart && (
+          <DatapointsView
+            datapointsGroupedByAggregateAndDisaggregations={datapointsForMetric}
+            dimensionNamesByDisaggregation={dimensionNamesByDisaggregation}
+            timeRange={timeRange}
+            disaggregationName={disaggregationName}
+            countOrPercentageView={countOrPercentageView}
+            setTimeRange={setTimeRange}
+            setDisaggregationName={setDisaggregationName}
+            setCountOrPercentageView={setCountOrPercentageView}
+            metricName={metricName}
+            metricFrequency={metricFrequency}
+            resizeHeight
+            showTitle
+            showBottomMetricInsights={windowWidth <= MIN_DESKTOP_WIDTH}
+            maxHeightViewport
+            ref={ref}
+          />
+        )}
+        {dataView === ChartView.Table && (
+          <DatapointsTableView
+            datapoints={rawDatapointsForMetric}
+            useDataPageStyles
+            metricName={metricName}
+            metricFrequency={metricFrequency}
+          />
+        )}
+      </>
+    );
+  }
+);
 
 export default observer(ConnectedDatapointsView);
