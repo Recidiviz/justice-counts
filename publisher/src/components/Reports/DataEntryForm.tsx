@@ -243,7 +243,7 @@ const DataEntryForm: React.FC<{
           />
           <Button
             label="Home"
-            onClick={() => navigate("/")}
+            onClick={() => navigate(`/agency/${agencyId}`)}
             borderColor="lightgrey"
           />
           {reportOverview.status === "PUBLISHED" ? (

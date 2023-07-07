@@ -36,7 +36,6 @@ import {
   LatestAnnualMonthlyRecordMetadata,
   LatestReportsAgencyMetrics,
   metricEnabled,
-  metricIsMonthly,
   metricNotConfigured,
   TaskCard,
   TaskCardMetadata,
@@ -66,17 +65,6 @@ export const Home = observer(() => {
   const latestMonthlyRecord = latestMonthlyAnnualRecordsMetadata?.monthly;
   const latestAnnualRecord = (startingMonth: number | string) =>
     latestMonthlyAnnualRecordsMetadata?.annual?.[startingMonth];
-  /** Does a record that matches this metric's reporting frequency exist? */
-  const metricHasUnpublishedRecord = (metric: Metric) => {
-    const latestMonthlyRecordUnpublished =
-      latestMonthlyRecord?.id && latestMonthlyRecord?.status !== "PUBLISHED";
-    const latestAnnualMetricUnpublished =
-      metric.starting_month &&
-      latestAnnualRecord(metric.starting_month)?.status !== "PUBLISHED";
-    return metricIsMonthly(metric)
-      ? latestMonthlyRecordUnpublished
-      : latestAnnualMetricUnpublished;
-  };
   /** Does the given metric belong to the currently selected system? */
   const metricBelongsToCurrentSystem = (metric: Metric) =>
     currentSystem === "ALL" || metric.system.key === currentSystem;
@@ -90,14 +78,13 @@ export const Home = observer(() => {
     currentAgencyMetrics
       .filter(metricEnabled)
       .filter(metricBelongsToCurrentSystem)
-      .filter(metricHasUnpublishedRecord)
       .map((metric) =>
         createTaskCardMetadatas(
           metric,
           { latestMonthlyRecord, latestAnnualRecord },
           createDataEntryTaskCardMetadata
         )
-      ) || [];
+      );
   const unconfiguredMetricsTaskCardMetadata: TaskCardMetadata[] =
     currentAgencyMetrics
       .filter(metricNotConfigured)
@@ -108,21 +95,7 @@ export const Home = observer(() => {
           { latestMonthlyRecord, latestAnnualRecord },
           createConfigurationTaskCardMetadata
         )
-      ) || [];
-
-  /**
-   * User has completed all tasks if:
-   *  1. User has configured all metrics and set them all to "Not Available"
-   *  2. User has entered values for all metrics in the latest annual and/or monthly
-   *     records and those records are published
-   */
-  const hasCompletedAllTasks =
-    enabledMetricsTaskCardMetadata.length === 0 &&
-    unconfiguredMetricsTaskCardMetadata.length === 0;
-  const welcomeDescription = !hasCompletedAllTasks
-    ? "See open tasks below"
-    : "Dashboards are updated with latest published records";
-  const userFirstName = userStore.name?.split(" ")[0];
+      );
 
   /**
    * Metrics without values or not yet configured (`allMetricMetadatasWithoutValuesOrNotConfigured`) are
@@ -141,10 +114,24 @@ export const Home = observer(() => {
     ...enabledMetricsTaskCardMetadata,
   ]);
 
+  /**
+   * User has completed all tasks if:
+   *  1. User has configured all metrics and set them all to "Not Available"
+   *  2. User has entered values for all metrics in the latest annual and/or monthly
+   *     records and those records are published
+   */
+  const hasCompletedAllTasks =
+    allMetricMetadatasWithoutValuesOrNotConfigured.length === 0 &&
+    allMetricMetadatasWithValues.ANNUAL.length === 0 &&
+    allMetricMetadatasWithValues.MONTHLY.length === 0;
+  const welcomeDescription = !hasCompletedAllTasks
+    ? "See open tasks below"
+    : "Dashboards are updated with the latest published records";
+  const userFirstName = userStore.name?.split(" ")[0];
+
   useEffect(() => {
     const fetchMetricsAndRecords = async () => {
       setLoading(true);
-
       const {
         agency_metrics: agencyMetrics,
         annual_reports: annualRecords,
@@ -153,16 +140,8 @@ export const Home = observer(() => {
         agencyId as string
       )) as LatestReportsAgencyMetrics;
 
-      /** Temporary solution for case where user has no records */
       const hasMonthlyRecord = Object.values(monthlyRecord).length > 0;
       const hasAnnualRecords = Object.values(annualRecords).length > 0;
-      const hasRecords = hasMonthlyRecord || hasAnnualRecords;
-      if (!hasRecords) {
-        setAgencyMetrics([]);
-        setLoading(false);
-        return;
-      }
-
       const annualRecordsMetadata = hasAnnualRecords
         ? createAnnualRecordsMetadata(annualRecords)
         : undefined;
@@ -174,6 +153,7 @@ export const Home = observer(() => {
         annual: annualRecordsMetadata,
       });
       setAgencyMetrics(agencyMetrics);
+      setCurrentSystem(agencySystems[0]);
       setLoading(false);
     };
 
@@ -234,8 +214,7 @@ export const Home = observer(() => {
               {/* Publish-Ready Cards (for Monthly & Annual Records) */}
               {/* Publish latest monthly record */}
               {allMetricMetadatasWithValues.MONTHLY.length > 0 &&
-                latestMonthlyRecord &&
-                latestMonthlyRecord.status !== "PUBLISHED" && (
+                latestMonthlyRecord && (
                   <TaskCard
                     metadata={createPublishTaskCardMetadata(
                       latestMonthlyRecord.reportTitle,
@@ -249,7 +228,6 @@ export const Home = observer(() => {
                 latestMonthlyAnnualRecordsMetadata?.annual &&
                 Object.values(latestMonthlyAnnualRecordsMetadata.annual).map(
                   (record) => {
-                    if (record.status === "PUBLISHED") return null;
                     return (
                       <TaskCard
                         key={record.id}
