@@ -36,7 +36,8 @@ type ConnectedDatapointsViewProps = {
   dataView: ChartView;
 };
 
-const ConnectedDatapointsView = forwardRef<never, ConnectedDatapointsViewProps>(
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+const ConnectedDatapointsView = forwardRef<any, ConnectedDatapointsViewProps>(
   ({ metric, metricName, metricFrequency, dataView }, ref) => {
     const { datapointsStore, dataVizStore } = useStore();
     const windowWidth = useWindowWidth();

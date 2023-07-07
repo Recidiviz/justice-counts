@@ -139,7 +139,8 @@ type ResponsiveBarChartProps = {
   resizeHeight?: boolean;
 };
 
-const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+const ResponsiveBarChart = forwardRef<any, ResponsiveBarChartProps>(
   (
     {
       data,
