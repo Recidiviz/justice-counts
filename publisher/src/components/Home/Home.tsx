@@ -84,7 +84,7 @@ export const Home = observer(() => {
           { latestMonthlyRecord, latestAnnualRecord },
           createDataEntryTaskCardMetadata
         )
-      ) || [];
+      );
   const unconfiguredMetricsTaskCardMetadata: TaskCardMetadata[] =
     currentAgencyMetrics
       .filter(metricNotConfigured)
@@ -95,21 +95,7 @@ export const Home = observer(() => {
           { latestMonthlyRecord, latestAnnualRecord },
           createConfigurationTaskCardMetadata
         )
-      ) || [];
-
-  /**
-   * User has completed all tasks if:
-   *  1. User has configured all metrics and set them all to "Not Available"
-   *  2. User has entered values for all metrics in the latest annual and/or monthly
-   *     records and those records are published
-   */
-  const hasCompletedAllTasks =
-    enabledMetricsTaskCardMetadata.length === 0 &&
-    unconfiguredMetricsTaskCardMetadata.length === 0;
-  const welcomeDescription = !hasCompletedAllTasks
-    ? "See open tasks below"
-    : "Dashboards are updated with the latest published records";
-  const userFirstName = userStore.name?.split(" ")[0];
+      );
 
   /**
    * Metrics without values or not yet configured (`allMetricMetadatasWithoutValuesOrNotConfigured`) are
@@ -127,6 +113,21 @@ export const Home = observer(() => {
     ...unconfiguredMetricsTaskCardMetadata,
     ...enabledMetricsTaskCardMetadata,
   ]);
+
+  /**
+   * User has completed all tasks if:
+   *  1. User has configured all metrics and set them all to "Not Available"
+   *  2. User has entered values for all metrics in the latest annual and/or monthly
+   *     records and those records are published
+   */
+  const hasCompletedAllTasks =
+    allMetricMetadatasWithoutValuesOrNotConfigured.length === 0 &&
+    allMetricMetadatasWithValues.ANNUAL.length === 0 &&
+    allMetricMetadatasWithValues.MONTHLY.length === 0;
+  const welcomeDescription = !hasCompletedAllTasks
+    ? "See open tasks below"
+    : "Dashboards are updated with the latest published records";
+  const userFirstName = userStore.name?.split(" ")[0];
 
   useEffect(() => {
     const fetchMetricsAndRecords = async () => {
@@ -152,6 +153,7 @@ export const Home = observer(() => {
         annual: annualRecordsMetadata,
       });
       setAgencyMetrics(agencyMetrics);
+      setCurrentSystem(agencySystems[0]);
       setLoading(false);
     };
 
@@ -212,8 +214,7 @@ export const Home = observer(() => {
               {/* Publish-Ready Cards (for Monthly & Annual Records) */}
               {/* Publish latest monthly record */}
               {allMetricMetadatasWithValues.MONTHLY.length > 0 &&
-                latestMonthlyRecord &&
-                latestMonthlyRecord.status !== "PUBLISHED" && (
+                latestMonthlyRecord && (
                   <TaskCard
                     metadata={createPublishTaskCardMetadata(
                       latestMonthlyRecord.reportTitle,
@@ -227,7 +228,6 @@ export const Home = observer(() => {
                 latestMonthlyAnnualRecordsMetadata?.annual &&
                 Object.values(latestMonthlyAnnualRecordsMetadata.annual).map(
                   (record) => {
-                    if (record.status === "PUBLISHED") return null;
                     return (
                       <TaskCard
                         key={record.id}

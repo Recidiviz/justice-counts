@@ -181,18 +181,26 @@ class ReportStore {
         );
       }
 
-      const latestReportsAndMetrics =
+      const latestRecordsAndMetrics =
         (await response.json()) as LatestReportsAgencyMetrics;
-      const allRecords = [
-        latestReportsAndMetrics.monthly_report,
-        ...Object.values(latestReportsAndMetrics.annual_reports),
-      ];
+      const annualRecords = Object.values(
+        latestRecordsAndMetrics.annual_reports
+      );
+      const hasAnnualRecords = Boolean(annualRecords.length > 0);
+      const hasMonthlyRecord = Boolean(
+        latestRecordsAndMetrics.monthly_report.id
+      );
+      const allRecords = [];
+
+      if (hasMonthlyRecord)
+        allRecords.push(latestRecordsAndMetrics.monthly_report);
+      if (hasAnnualRecords) allRecords.push(...annualRecords);
       if (allRecords.length > 0) {
         allRecords.forEach((record) =>
           this.storeMetricDetails(record.id, record.metrics, record)
         );
       }
-      return latestReportsAndMetrics;
+      return latestRecordsAndMetrics;
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
     }
