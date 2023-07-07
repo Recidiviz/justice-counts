@@ -261,11 +261,6 @@ const Menu: React.FC = () => {
           </Styled.ProfileDropdownContainer>
         </Styled.MenuItemsProfileWrapper>
       </Styled.MenuContainer>
-      {/* <Styled.MobileMenuIconWrapper
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-      >
-        {isMobileMenuOpen ? <CloseMenuBurger /> : <MenuBurger />}
-      </Styled.MobileMenuIconWrapper> */}
     </>
   );
 };
