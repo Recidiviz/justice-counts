@@ -45,6 +45,6 @@ export const GlobalStyle = createGlobalStyle`
   }
 `;
 
-export * from "./constants";
 export * from "./Palette";
 export * from "./Typography";
+export * from "./constants";
