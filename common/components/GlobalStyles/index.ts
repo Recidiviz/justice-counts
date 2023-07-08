@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { createGlobalStyle } from "styled-components/macro";
+import { createGlobalStyle } from "styled-components";
 
 import { palette } from "./Palette";
 
@@ -45,6 +45,6 @@ export const GlobalStyle = createGlobalStyle`
   }
 `;
 
-export * from "./constants";
 export * from "./Palette";
 export * from "./Typography";
+export * from "./constants";

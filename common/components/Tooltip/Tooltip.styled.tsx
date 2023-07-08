@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import styled from "styled-components/macro";
+import styled from "styled-components";
 
 import { palette, typography } from "../GlobalStyles";
 import { TooltipColor, TooltipWidth } from "./types";

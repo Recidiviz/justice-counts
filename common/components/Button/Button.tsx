@@ -26,7 +26,7 @@ import {
   ButtonSize,
 } from "./types";
 
-type ButtonProps = {
+export type ButtonProps = {
   label: string | React.ReactNode;
   onClick: () => void;
   id?: string;

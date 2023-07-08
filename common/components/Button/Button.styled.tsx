@@ -19,7 +19,7 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import styled from "styled-components/macro";
+import styled from "styled-components";
 
 import {
   ButtonBorderColor,
