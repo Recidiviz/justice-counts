@@ -210,7 +210,7 @@ class ReportStore {
 
     try {
       const response = (await this.api.request({
-        path: `/api/spreadsheets${spreadsheetId}/review`,
+        path: `/api/errors_warnings_json/${spreadsheetId}`,
         method: "GET",
       })) as Response;
 
