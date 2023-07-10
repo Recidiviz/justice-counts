@@ -394,3 +394,23 @@ export const getDatapointBarLabel = (datapoint: Datapoint) => {
   }
   return `${month} ${year}`;
 };
+
+export function generateSavingFileName(
+  systemParam?: string,
+  metricParam?: string,
+  disaggregation?: string
+) {
+  if (!systemParam) return "metric.png";
+  if (!metricParam) return "metric.png";
+
+  const metricName = metricParam
+    .toLowerCase()
+    .replace(systemParam.toLowerCase(), "");
+
+  const disaggregationName =
+    !disaggregation || disaggregation.toLowerCase() === "none"
+      ? ""
+      : `_by_${disaggregation.toLowerCase()}`;
+
+  return `${metricName}${disaggregationName}.png`;
+}

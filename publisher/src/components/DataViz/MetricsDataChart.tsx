@@ -29,14 +29,13 @@ import { showToast } from "@justice-counts/common/components/Toast";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import { AgencySystems, ReportFrequency } from "@justice-counts/common/types";
 import { frequencyString } from "@justice-counts/common/utils/helperUtils";
-// eslint-disable-next-line import/no-extraneous-dependencies
 import FileSaver from "file-saver";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useEffect, useState } from "react";
 import { createSearchParams, useNavigate, useParams } from "react-router-dom";
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { useCurrentPng } from "recharts-to-png";
 
+import { generateSavingFileName } from "../../../../common/components/DataViz/utils";
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import { ReactComponent as GoToMetricConfig } from "../assets/goto-metric-configuration-icon.svg";
@@ -72,20 +71,21 @@ export const MetricsDataChart: React.FC = observer(() => {
   const handleChartDownload = useCallback(async () => {
     const png = await getChartPng();
 
-    const fileName = `${
-      metricSearchParam
-        ? metricSearchParam.toLowerCase().split("_").slice(1).join("_")
-        : "metric"
-    }${
-      dataVizStore.disaggregationName.toLowerCase() === "none"
-        ? ""
-        : `_by_${dataVizStore.disaggregationName.toLowerCase()}`
-    }.png`.replaceAll(" ", "_");
+    const fileName = generateSavingFileName(
+      systemSearchParam,
+      metricSearchParam,
+      dataVizStore.disaggregationName
+    );
 
     if (png) {
       FileSaver.saveAs(png, fileName);
     }
-  }, [getChartPng, metricSearchParam, dataVizStore.disaggregationName]);
+  }, [
+    getChartPng,
+    systemSearchParam,
+    metricSearchParam,
+    dataVizStore.disaggregationName,
+  ]);
 
   const initDataPageMetrics = async () => {
     const result = await reportStore.initializeReportSettings(agencyId);
