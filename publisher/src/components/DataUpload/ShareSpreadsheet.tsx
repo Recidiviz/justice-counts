@@ -61,16 +61,14 @@ function ShareSpreadsheet() {
   return (
     <SpreadsheetReview
       updatedReports={
-        reportStore.spreadsheetReviewData[spreadsheetId].updatedReports
+        reportStore.spreadsheetReviewData[spreadsheetId].updated_reports
       }
       unchangedReports={
-        reportStore.spreadsheetReviewData[spreadsheetId].unchangedReports
+        reportStore.spreadsheetReviewData[spreadsheetId].unchanged_reports
       }
-      newReports={reportStore.spreadsheetReviewData[spreadsheetId].newReports}
-      uploadedMetrics={
-        reportStore.spreadsheetReviewData[spreadsheetId].uploadedMetrics
-      }
-      fileName={reportStore.spreadsheetReviewData[spreadsheetId].fileName}
+      newReports={reportStore.spreadsheetReviewData[spreadsheetId].new_reports}
+      uploadedMetrics={reportStore.spreadsheetReviewData[spreadsheetId].metrics}
+      // fileName={reportStore.spreadsheetReviewData[spreadsheetId].fileName}
     />
   );
 }

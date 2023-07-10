@@ -42,7 +42,7 @@ type SpreadsheetReviewProps = {
   unchangedReports: ReportOverview[];
   newReports: ReportOverview[];
   uploadedMetrics: UploadedMetric[];
-  fileName: string;
+  // fileName: string;
 };
 
 export function SpreadsheetReview({
@@ -50,8 +50,8 @@ export function SpreadsheetReview({
   unchangedReports,
   newReports,
   uploadedMetrics,
-  fileName,
-}: SpreadsheetReviewProps) {
+}: // fileName,
+SpreadsheetReviewProps) {
   const { agencyId } = useParams();
   const navigate = useNavigate();
   const { reportStore } = useStore();
@@ -203,7 +203,7 @@ export function SpreadsheetReview({
   const successModalTitle = (
     <>
       Data from{" "}
-      <span style={{ color: `${palette.solid.blue}` }}>{fileName}</span>{" "}
+      {/* <span style={{ color: `${palette.solid.blue}` }}>{fileName}</span>{" "} */}
       {hasAllPublishedRecordsNoOverwrites && "is already"} published!
     </>
   );

@@ -39,7 +39,7 @@ import { groupBy } from "../utils";
 import API from "./API";
 import DatapointsStore from "./DatapointsStore";
 import UserStore from "./UserStore";
-import DataUploadResponseBody from "../components/DataUpload/types";
+import { DataUploadResponseBody } from "../components/DataUpload/types";
 
 class ReportStore {
   userStore: UserStore;
@@ -222,7 +222,7 @@ class ReportStore {
 
       const data = (await response.json()) as DataUploadResponseBody;
       runInAction(() => {
-        this.spreadsheetReviewData[data.spreadsheetId] = data;
+        this.spreadsheetReviewData[spreadsheetId] = data;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
