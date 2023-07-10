@@ -17,6 +17,7 @@
 
 import { observer } from "mobx-react-lite";
 import { useParams } from "react-router-dom";
+import DataUploadResponseBody from "../components/DataUpload/types";
 
 import { SpreadsheetReview } from "./SpreadsheetReview";
 import React, { useEffect, useState } from "react";
@@ -41,7 +42,7 @@ function ShareSpreadsheet() {
       if (result instanceof Error) {
         setLoadingError(result.message);
       }
-      // const data: DataUploadResponseBody = await result?.json();
+      const data: DataUploadResponseBody = await result?.json();
     };
 
     initialize();
@@ -61,11 +62,11 @@ function ShareSpreadsheet() {
 
   return (
     <SpreadsheetReview
-      updatedReports={updatedReports}
-      unchangedReports={unchangedReports}
-      newReports={newReports}
-      uploadedMetrics={uploadedMetrics}
-      fileName={fileName}
+      updatedReports={data.updatedReports}
+      unchangedReports={data.unchangedReports}
+      newReports={data.newReports}
+      uploadedMetrics={data.uploadedMetrics}
+      fileName={data.fileName}
     />
   );
 }

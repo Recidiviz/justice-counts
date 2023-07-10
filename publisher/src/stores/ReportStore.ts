@@ -35,11 +35,11 @@ import {
   PublishReviewMetricErrors,
   PublishReviewPropsFromDatapoints,
 } from "../components/ReviewMetrics";
-import { MockDataType } from "../mocks/spreadsheetReviewData";
 import { groupBy } from "../utils";
 import API from "./API";
 import DatapointsStore from "./DatapointsStore";
 import UserStore from "./UserStore";
+import DataUploadResponseBody from "../components/DataUpload/types";
 
 class ReportStore {
   userStore: UserStore;
@@ -54,7 +54,7 @@ class ReportStore {
 
   metricsBySystem: { [system: string]: Metric[] }; // key by system
 
-  spreadsheetReviewData: { [spreadsheetId: string]: MockDataType };
+  spreadsheetReviewData: { [spreadsheetId: string]: DataUploadResponseBody };
 
   loadingOverview: boolean;
 
@@ -205,7 +205,7 @@ class ReportStore {
   // api call for spreadsheet data
   async getSpreadsheetReviewData(
     spreadsheetId: string
-  ): Promise<MockDataType | Error | void> {
+  ): Promise<DataUploadResponseBody | Error | void> {
     this.loadingSpreadsheetReviewData = true;
 
     try {
@@ -220,7 +220,7 @@ class ReportStore {
         );
       }
 
-      const data = (await response.json()) as MockDataType;
+      const data = (await response.json()) as DataUploadResponseBody;
       runInAction(() => {
         this.spreadsheetReviewData[data.spreadsheetId] = data;
       });
