@@ -33,6 +33,7 @@ import {
   MetricDisaggregations,
 } from "@justice-counts/common/types";
 import { replaceSymbolsWithDash } from "@justice-counts/common/utils";
+import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -59,7 +60,7 @@ export const TabbedDisaggregations: React.FC<{
   reportID: number;
   disabled?: boolean;
   updateFieldDescription: (title?: string, description?: string) => void;
-}> = ({ metric, reportID, disabled, updateFieldDescription }) => {
+}> = observer(({ metric, reportID, disabled, updateFieldDescription }) => {
   const navigate = useNavigate();
   const { agencyId } = useParams() as { agencyId: string };
   const { formStore } = useStore();
@@ -267,7 +268,7 @@ export const TabbedDisaggregations: React.FC<{
         updateDisaggregationHasInput(disaggregation.key);
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [formStore.disaggregations?.[reportID]]
   );
 
   const disaggregationsTabbedBarOptions: TabOption[] =
@@ -362,4 +363,4 @@ export const TabbedDisaggregations: React.FC<{
       </DisaggregationDimensions>
     </DisaggregationDisplayContainer>
   );
-};
+});
