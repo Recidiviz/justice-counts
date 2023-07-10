@@ -79,8 +79,6 @@ export const UploadedFileRow: React.FC<{
     const [rowHovered, setRowHovered] = useState(false);
     const { agencyId } = useParams() as { agencyId: string };
 
-    const isReadOnly = userStore.isUserReadOnly(agencyId);
-
     const handleDownload = async (spreadsheetID: number, name: string) => {
       setIsDownloading(true);
 
@@ -197,13 +195,6 @@ export const UploadedFileRow: React.FC<{
                   />
                 )}
               </>
-            )}
-            {!isReadOnly && (
-              <Button
-                label="Delete"
-                onClick={() => deleteUploadedFile(id)}
-                labelColor="red"
-              />
             )}
           </ActionsContainer>
         )}
