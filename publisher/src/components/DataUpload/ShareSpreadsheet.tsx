@@ -26,7 +26,7 @@ import { SpreadsheetReview } from "./SpreadsheetReview";
 import React, { useEffect, useState } from "react";
 import { useStore } from "../../stores";
 import { PageWrapper } from "../Forms";
-import { Loading } from "./components/Loading";
+import { Loading } from "../Loading/Loading";
 
 function ShareSpreadsheet() {
   // using spreadsheetId we will fetch spreadsheet data
