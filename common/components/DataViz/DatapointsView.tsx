@@ -51,11 +51,31 @@ import {
   ReportFrequency,
 } from "@justice-counts/common/types";
 import { DropdownMenu, DropdownToggle } from "@recidiviz/design-system";
-import React, { useEffect } from "react";
+import React, { forwardRef, useEffect } from "react";
 
 import { Dropdown, DropdownOption } from "../Dropdown";
 import { MobileFiltersModal } from "./MobileFiltersModal";
 import { MobileSelectMetricsModal } from "./MobileSelectMetricsModal";
+
+type DatapointsViewProps = {
+  datapointsGroupedByAggregateAndDisaggregations?: DatapointsGroupedByAggregateAndDisaggregations;
+  dimensionNamesByDisaggregation?: DimensionNamesByDisaggregation;
+  timeRange: DataVizTimeRangeDisplayName;
+  disaggregationName: string;
+  countOrPercentageView: DataVizCountOrPercentageView;
+  setTimeRange: (timeRange: DataVizTimeRangeDisplayName) => void;
+  setDisaggregationName: (disaggregation: string) => void;
+  setCountOrPercentageView: (viewSetting: DataVizCountOrPercentageView) => void;
+  metricName: string;
+  metricFrequency?: ReportFrequency;
+  metricNamesByCategory?: { [key: string]: string[] };
+  agencyName?: string;
+  onMetricsSelect?: (metric: string) => void;
+  showTitle?: boolean;
+  showBottomMetricInsights?: boolean;
+  resizeHeight?: boolean;
+  maxHeightViewport?: boolean;
+};
 
 const noDisaggregationOption = "None";
 
@@ -91,43 +111,27 @@ const SelectMetricButtonDropdown: React.FC<{
   </ExtendedDropdown>
 );
 
-export const DatapointsView: React.FC<{
-  datapointsGroupedByAggregateAndDisaggregations?: DatapointsGroupedByAggregateAndDisaggregations;
-  dimensionNamesByDisaggregation?: DimensionNamesByDisaggregation;
-  timeRange: DataVizTimeRangeDisplayName;
-  disaggregationName: string;
-  countOrPercentageView: DataVizCountOrPercentageView;
-  setTimeRange: (timeRange: DataVizTimeRangeDisplayName) => void;
-  setDisaggregationName: (disaggregation: string) => void;
-  setCountOrPercentageView: (viewSetting: DataVizCountOrPercentageView) => void;
-  metricName: string;
-  metricFrequency?: ReportFrequency;
-  metricNamesByCategory?: { [key: string]: string[] };
-  agencyName?: string;
-  onMetricsSelect?: (metric: string) => void;
-  showTitle?: boolean;
-  showBottomMetricInsights?: boolean;
-  resizeHeight?: boolean;
-  maxHeightViewport?: boolean;
-}> = ({
-  datapointsGroupedByAggregateAndDisaggregations,
-  dimensionNamesByDisaggregation,
-  timeRange,
-  disaggregationName,
-  countOrPercentageView,
-  setTimeRange,
-  setDisaggregationName,
-  setCountOrPercentageView,
-  metricName,
-  metricFrequency,
-  metricNamesByCategory,
-  agencyName,
-  onMetricsSelect,
-  showTitle = false,
-  showBottomMetricInsights = false,
-  resizeHeight = false,
-  maxHeightViewport = false,
-}) => {
+export const DatapointsView = forwardRef((props: DatapointsViewProps, ref) => {
+  const {
+    datapointsGroupedByAggregateAndDisaggregations,
+    dimensionNamesByDisaggregation,
+    timeRange,
+    disaggregationName,
+    countOrPercentageView,
+    setTimeRange,
+    setDisaggregationName,
+    setCountOrPercentageView,
+    metricName,
+    metricFrequency,
+    metricNamesByCategory,
+    agencyName,
+    onMetricsSelect,
+    showTitle = false,
+    showBottomMetricInsights = false,
+    resizeHeight = false,
+    maxHeightViewport = false,
+  } = props;
+
   const [mobileSelectMetricsVisible, setMobileSelectMetricsVisible] =
     React.useState<boolean>(false);
   const [mobileFiltersVisible, setMobileFiltersVisible] =
@@ -201,6 +205,7 @@ export const DatapointsView: React.FC<{
           !!disaggregationName && countOrPercentageView === "Percentage"
         }
         resizeHeight={resizeHeight}
+        ref={ref}
       />
     );
   };
@@ -346,4 +351,4 @@ export const DatapointsView: React.FC<{
       )}
     </DatapointsViewContainer>
   );
-};
+});

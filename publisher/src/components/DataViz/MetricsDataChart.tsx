@@ -15,10 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { ReactComponent as DownloadChartIcon } from "@justice-counts/common/assets/download-icon.svg";
 import {
   Badge,
   reportFrequencyBadgeColors,
 } from "@justice-counts/common/components/Badge";
+import { generateSavingFileName } from "@justice-counts/common/components/DataViz/utils";
 import {
   Dropdown,
   DropdownOption,
@@ -28,9 +30,11 @@ import { showToast } from "@justice-counts/common/components/Toast";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import { AgencySystems, ReportFrequency } from "@justice-counts/common/types";
 import { frequencyString } from "@justice-counts/common/utils/helperUtils";
+import FileSaver from "file-saver";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { createSearchParams, useNavigate, useParams } from "react-router-dom";
+import { useCurrentPng } from "recharts-to-png";
 
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
@@ -45,8 +49,9 @@ import * as Styled from "./MetricsDataChart.styled";
 import { ChartView } from "./types";
 
 export const MetricsDataChart: React.FC = observer(() => {
+  const [getChartPng, { ref }] = useCurrentPng();
   const navigate = useNavigate();
-  const { reportStore, userStore, datapointsStore } = useStore();
+  const { reportStore, userStore, datapointsStore, dataVizStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
   const { metricsBySystem, agencyMetrics } = reportStore;
   const currentAgency = userStore.getAgency(agencyId);
@@ -62,6 +67,25 @@ export const MetricsDataChart: React.FC = observer(() => {
 
   const { system: systemSearchParam, metric: metricSearchParam } =
     settingsSearchParams;
+
+  const handleChartDownload = useCallback(async () => {
+    const png = await getChartPng();
+
+    const fileName = generateSavingFileName(
+      systemSearchParam,
+      metricSearchParam,
+      dataVizStore.disaggregationName
+    );
+
+    if (png) {
+      FileSaver.saveAs(png, fileName);
+    }
+  }, [
+    getChartPng,
+    systemSearchParam,
+    metricSearchParam,
+    dataVizStore.disaggregationName,
+  ]);
 
   const initDataPageMetrics = async () => {
     const result = await reportStore.initializeReportSettings(agencyId);
@@ -347,12 +371,17 @@ export const MetricsDataChart: React.FC = observer(() => {
               <GoToMetricConfig />
               Go to Metric Configuration
             </Styled.PanelRightTopButton>
+            <Styled.PanelRightTopButton onClick={handleChartDownload}>
+              <DownloadChartIcon />
+              Download
+            </Styled.PanelRightTopButton>
           </Styled.PanelRightTopButtonsContainer>
           <ConnectedDatapointsView
             metric={metricSearchParam}
             metricName={metricName}
             metricFrequency={metricFrequency}
             dataView={dataView}
+            ref={ref}
           />
           {windowWidth <= MIN_DESKTOP_WIDTH && (
             <Styled.PanelRightTopButton
