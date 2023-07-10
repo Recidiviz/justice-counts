@@ -20,6 +20,7 @@ import {
   Badge,
   reportFrequencyBadgeColors,
 } from "@justice-counts/common/components/Badge";
+import { generateSavingFileName } from "@justice-counts/common/components/DataViz/utils";
 import {
   Dropdown,
   DropdownOption,
@@ -35,7 +36,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { createSearchParams, useNavigate, useParams } from "react-router-dom";
 import { useCurrentPng } from "recharts-to-png";
 
-import { generateSavingFileName } from "../../../../common/components/DataViz/utils";
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import { ReactComponent as GoToMetricConfig } from "../assets/goto-metric-configuration-icon.svg";
