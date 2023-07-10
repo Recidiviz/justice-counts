@@ -405,12 +405,12 @@ export function generateSavingFileName(
 
   const metricName = metricParam
     .toLowerCase()
-    .replace(systemParam.toLowerCase(), "");
+    .replace(`${systemParam.toLowerCase()}_`, "");
 
   const disaggregationName =
     !disaggregation || disaggregation.toLowerCase() === "none"
       ? ""
-      : `_by_${disaggregation.toLowerCase()}`;
+      : `_by_${disaggregation.toLowerCase().replaceAll(" ", "_")}`;
 
   return `${metricName}${disaggregationName}.png`;
 }
