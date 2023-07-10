@@ -18,7 +18,6 @@
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import DataUploadResponseBody from "../components/DataUpload/types";
 
 import { useStore } from "../../stores";
 import { PageWrapper } from "../Forms";
