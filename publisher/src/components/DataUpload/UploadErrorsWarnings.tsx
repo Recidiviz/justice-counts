@@ -398,7 +398,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
           <Button
             label="Continue"
             onClick={() =>
-              navigate("review-metrics", {
+              navigate(`/agency/${agencyId}/upload/review-metrics`, {
                 state: {
                   uploadedMetrics: metrics,
                   fileName,

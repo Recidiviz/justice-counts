@@ -42,12 +42,9 @@ import {
   SystemSelection,
   UploadFile,
 } from ".";
-import {
-  DataUploadResponseBody,
-  ErrorsWarningsMetrics,
-  UploadedMetric,
-} from "./types";
+import { DataUploadResponseBody, ErrorsWarningsMetrics } from "./types";
 import { UploadErrorsWarnings } from "./UploadErrorsWarnings";
+import { processUploadResponseBody } from "./utils";
 
 export type UploadedFileStatus = "UPLOADED" | "INGESTED" | "ERRORED";
 
@@ -199,67 +196,6 @@ export const DataUpload: React.FC = observer(() => {
         replace: true,
       });
     }
-  };
-
-  const processUploadResponseBody = (
-    data: DataUploadResponseBody
-  ): ErrorsWarningsMetrics => {
-    const errorsWarningsAndSuccessfulMetrics = data.metrics.reduce(
-      (acc, metric) => {
-        const noSheetErrorsFound =
-          metric.metric_errors.filter(
-            (sheet) =>
-              sheet.messages.filter((msg) => msg.type === "ERROR")?.length > 0
-          ).length === 0;
-        const isSuccessfulMetric =
-          noSheetErrorsFound && metric.datapoints.length > 0;
-        const noMetricUpload =
-          noSheetErrorsFound && metric.datapoints.length === 0;
-
-        /**
-         * If there are no errors and only warnings, we still want to show the
-         * error/warning page so users can review the warnings (that now appear in the success section).
-         */
-        metric.metric_errors.forEach((sheet) =>
-          sheet.messages.forEach((msg) => {
-            if (msg.type === "WARNING" && !acc.hasWarnings) {
-              acc.hasWarnings = true;
-            }
-          })
-        );
-
-        if (isSuccessfulMetric) {
-          acc.successfulMetrics.push(metric);
-        } else if (noMetricUpload) {
-          acc.notUploadedMetrics.push(metric);
-        } else {
-          acc.errorWarningMetrics.push(metric);
-        }
-
-        return acc;
-      },
-      {
-        successfulMetrics: [] as UploadedMetric[],
-        notUploadedMetrics: [] as UploadedMetric[],
-        errorWarningMetrics: [] as UploadedMetric[],
-        hasWarnings: false,
-      }
-    );
-
-    /**
-     * Non-metric errors: errors that are not associated with a metric.
-     * @example: user uploads an excel file that contains a sheet not associated
-     * with a metric.
-     */
-    if (data.non_metric_errors && data.non_metric_errors.length > 0) {
-      return {
-        errorsWarningsAndSuccessfulMetrics,
-        metrics: data.metrics,
-        nonMetricErrors: data.non_metric_errors,
-      };
-    }
-
-    return { errorsWarningsAndSuccessfulMetrics, metrics: data.metrics };
   };
 
   const handleSystemSelection = (file: File, system: AgencySystems) => {
