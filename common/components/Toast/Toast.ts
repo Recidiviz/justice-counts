@@ -49,7 +49,7 @@ const getToastStyles = (color?: ToastColor, positionNextToIcon?: boolean) => {
       display: flex;
       align-items: center;
       background-color: ${toastBackgroundColor};
-      color: ${color === "grey" ? palette.solid.grey : palette.solid.white};
+      color: ${color === "grey" ? palette.solid.grey1 : palette.solid.white};
       padding: 20px 24px;
       border-radius: 2px;
       white-space: nowrap;

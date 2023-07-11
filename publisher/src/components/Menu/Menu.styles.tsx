@@ -235,7 +235,7 @@ export const ProfileDropdownWrapper = styled.div`
     right: 1px;
     bottom: 1px;
     border-radius: 50%;
-    background: rgb(222, 222, 222);
+    background: ${palette.solid.grey2};
   }
 
   &:hover {
