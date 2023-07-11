@@ -19,6 +19,7 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
+// eslint-disable-next-line no-restricted-imports
 import styled from "styled-components";
 
 import {
