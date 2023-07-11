@@ -40,7 +40,6 @@ import { groupBy } from "../utils";
 import API from "./API";
 import DatapointsStore from "./DatapointsStore";
 import UserStore from "./UserStore";
-import { DataUploadResponseBody } from "../components/DataUpload/types";
 
 class ReportStore {
   userStore: UserStore;

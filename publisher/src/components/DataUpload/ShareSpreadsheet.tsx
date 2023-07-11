@@ -27,6 +27,7 @@ import React, { useEffect, useState } from "react";
 import { useStore } from "../../stores";
 import { PageWrapper } from "../Forms";
 import { Loading } from "../Loading/Loading";
+import { SpreadsheetReview } from "./SpreadsheetReview";
 
 function ShareSpreadsheet() {
   // using spreadsheetId we will fetch spreadsheet data
