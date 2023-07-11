@@ -151,11 +151,23 @@ export const createPublishTaskCardMetadata = (
 };
 
 /**
+ * Strips the system name from a given metric key and returns the raw metric key.
+ *
+ * @example
+ * metricKey = "PAROLE_FUNDING"
+ * systemKey = "PAROLE"
+ * returns "FUNDING"
+ */
+const stripSystemKeyFromMetricKey = (metricKey: string, systemKey: string) =>
+  metricKey.replace(`${systemKey}_`, "");
+
+/**
  * Creates configuration and data entry task card metadata objects from metrics linked to
  * their corresponding latest record. This function uses the above `createConfigurationTaskCardMetadata` and
  * `createDataEntryTaskCardMetadata` as callback functions to create the appropriate task card metadata object.
  */
 export const createTaskCardMetadatas = (
+  currentAgencyMetricsByMetricKey: Record<string, Metric[]>,
   metric: Metric,
   recordMetadatas: {
     latestMonthlyRecord: LatestRecordMetadata | undefined;
@@ -169,7 +181,19 @@ export const createTaskCardMetadatas = (
   ) => TaskCardMetadata
 ) => {
   const metricFrequency = metric.custom_frequency || metric.frequency;
-  const startingMonth = metric.starting_month;
+  /**
+   * Supervision subsystems metrics have a default `null` value for `starting_month`.
+   * If this is a supervision subsystem, use the parent supervision metric's starting month,
+   * otherwise use the current metric's starting month.
+   */
+  const startingMonth = metric.disaggregated_by_supervision_subsystems
+    ? currentAgencyMetricsByMetricKey[
+        `SUPERVISION_${stripSystemKeyFromMetricKey(
+          metric.key,
+          metric.system.key
+        )}`
+      ]?.[0].starting_month
+    : metric.starting_month;
   const { latestMonthlyRecord, latestAnnualRecord } = recordMetadatas;
   /** Create Task Card linked to the latest Monthly Record */
   if (metricFrequency === "MONTHLY") {
