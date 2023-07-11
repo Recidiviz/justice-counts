@@ -17,6 +17,7 @@
 
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { palette } from "../GlobalStyles";
 import { TabbedBar } from "./TabbedBar";
 import { TabOption } from "./types";
 
@@ -25,8 +26,17 @@ const meta: Meta<typeof TabbedBar> = {
   component: TabbedBar,
   tags: ["autodocs"],
   parameters: {
-    layout: "fullscreen",
+    layout: "centered",
     actions: { onClick: { action: "onClick" } },
+    backgrounds: {
+      default: "gray",
+      values: [
+        {
+          name: "gray",
+          value: palette.highlight.grey1,
+        },
+      ],
+    },
   },
 };
 

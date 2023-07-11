@@ -16,7 +16,9 @@
 // =============================================================================
 
 import type { Meta, StoryObj } from "@storybook/react";
+import React from "react";
 
+import { palette } from "../GlobalStyles";
 import { Tooltip } from "./Tooltip";
 
 const meta: Meta<typeof Tooltip> = {
@@ -24,8 +26,24 @@ const meta: Meta<typeof Tooltip> = {
   component: Tooltip,
   tags: ["autodocs"],
   parameters: {
-    layout: "fullscreen",
+    layout: "centered",
+    backgrounds: {
+      default: "gray",
+      values: [
+        {
+          name: "gray",
+          value: palette.highlight.grey1,
+        },
+      ],
+    },
   },
+  decorators: [
+    (Story) => (
+      <div id="tooltip">
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export default meta;
@@ -33,15 +51,16 @@ type Story = StoryObj<typeof Tooltip>;
 
 export const Top: Story = {
   args: {
-    anchorId: "",
+    anchorId: "tooltip",
     position: "top",
     content: "Test",
+    isOpen: true,
   },
 };
 
 export const Bottom: Story = {
   args: {
-    anchorId: "",
+    anchorId: "tooltip",
     position: "bottom",
     content: "Test",
   },

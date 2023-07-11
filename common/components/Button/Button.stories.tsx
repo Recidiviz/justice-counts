@@ -17,6 +17,7 @@
 
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { palette } from "../GlobalStyles";
 import { Button } from "./Button";
 
 const meta: Meta<typeof Button> = {
@@ -24,7 +25,16 @@ const meta: Meta<typeof Button> = {
   component: Button,
   tags: ["autodocs"],
   parameters: {
-    layout: "fullscreen",
+    layout: "centered",
+    backgrounds: {
+      default: "gray",
+      values: [
+        {
+          name: "gray",
+          value: palette.highlight.grey1,
+        },
+      ],
+    },
   },
 };
 
@@ -35,15 +45,17 @@ export const Blue: Story = {
   args: {
     size: "medium",
     label: "Test",
-    labelColor: "blue",
+    labelColor: "white",
+    buttonColor: "blue",
   },
 };
 
-export const White: Story = {
+export const Green: Story = {
   args: {
     size: "medium",
     label: "Test",
     labelColor: "white",
+    buttonColor: "green",
   },
 };
 
@@ -51,7 +63,17 @@ export const Red: Story = {
   args: {
     size: "medium",
     label: "Test",
-    labelColor: "red",
+    labelColor: "white",
+    buttonColor: "red",
+  },
+};
+
+export const Orange: Story = {
+  args: {
+    size: "medium",
+    label: "Test",
+    labelColor: "white",
+    buttonColor: "orange",
   },
 };
 
@@ -60,5 +82,7 @@ export const Disabled: Story = {
     size: "medium",
     label: "Test",
     disabled: true,
+    labelColor: "white",
+    buttonColor: "blue",
   },
 };

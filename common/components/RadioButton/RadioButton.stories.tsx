@@ -17,6 +17,7 @@
 
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { palette } from "../GlobalStyles";
 import { RadioButton } from "./RadioButton";
 
 const meta: Meta<typeof RadioButton> = {
@@ -24,8 +25,17 @@ const meta: Meta<typeof RadioButton> = {
   component: RadioButton,
   tags: ["autodocs"],
   parameters: {
-    layout: "fullscreen",
+    layout: "centered",
     actions: { onClick: { action: "onClick" } },
+    backgrounds: {
+      default: "gray",
+      values: [
+        {
+          name: "gray",
+          value: palette.highlight.grey1,
+        },
+      ],
+    },
   },
 };
 
@@ -34,9 +44,10 @@ type Story = StoryObj<typeof RadioButton>;
 
 export const Checked: Story = {
   args: {
+    type: "radio",
     label: "Label",
+    value: "Label",
     buttonSize: "large",
-    metricKey: "metricKey",
     disabled: false,
     checked: true,
   },
@@ -44,9 +55,10 @@ export const Checked: Story = {
 
 export const Unchecked: Story = {
   args: {
+    type: "radio",
     label: "Label",
+    value: "Label",
     buttonSize: "large",
-    metricKey: "metricKey",
     disabled: false,
     checked: false,
   },
@@ -54,9 +66,10 @@ export const Unchecked: Story = {
 
 export const Disabled: Story = {
   args: {
+    type: "radio",
     label: "Label",
+    value: "Label",
     buttonSize: "large",
-    metricKey: "metricKey",
     disabled: true,
   },
 };
