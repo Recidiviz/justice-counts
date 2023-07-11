@@ -34,7 +34,11 @@ const Header = observer(() => {
     navigate(`/agency/${isAgencyValid ? agencyId : defaultAgency}/`);
 
   return (
-    <HeaderBar onLogoClick={onLogoClick} hasBottomBorder>
+    <HeaderBar
+      onLogoClick={onLogoClick}
+      hasBottomBorder
+      noPaddingInSmallScreenWidth
+    >
       <Menu />
     </HeaderBar>
   );

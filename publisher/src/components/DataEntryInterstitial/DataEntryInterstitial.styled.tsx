@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -29,16 +30,9 @@ export const InterstitialContainer = styled.div`
   align-items: center;
 `;
 
-export const OptionsWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 64px;
-`;
-
 export const OptionBox = styled.div`
-  width: 424px;
-  height: 264px;
+  min-width: 424px;
+  min-height: 264px;
   border: 0.5px solid ${palette.highlight.grey4};
   display: flex;
   flex-direction: column;
@@ -49,6 +43,22 @@ export const OptionBox = styled.div`
   &:hover {
     cursor: pointer;
     background: ${palette.highlight.grey1};
+  }
+`;
+
+export const OptionsWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 64px;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    flex-direction: column;
+
+    ${OptionBox} {
+      min-width: 374px;
+      min-height: 240px;
+    }
   }
 `;
 
