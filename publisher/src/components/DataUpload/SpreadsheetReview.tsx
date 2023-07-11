@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { palette } from "@justice-counts/common/components/GlobalStyles";
+// import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { ReportOverview } from "@justice-counts/common/types";
