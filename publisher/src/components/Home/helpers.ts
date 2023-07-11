@@ -50,6 +50,15 @@ export const createReportTitle = (record: Report, monthName?: string) => {
     : printReportTitle(record.month, record.year, record.frequency);
 };
 
+export const formatTaskCardTitle = (
+  title: string,
+  systemName: string,
+  hasMultipleSystemsAndNoSystemFilter?: boolean
+) => {
+  if (!hasMultipleSystemsAndNoSystemFilter) return title;
+  return `${title} ${title.includes(systemName) ? `` : `(${systemName})`}`;
+};
+
 /**
  * Creates latest monthly record metadata object to store information needed
  * from the latest monthly record.
@@ -94,11 +103,17 @@ export const createAnnualRecordsMetadata = (annualRecords: {
  */
 export const createConfigurationTaskCardMetadata = (
   currentMetric: Metric,
-  recordMetadata?: LatestRecordMetadata
+  recordMetadata?: LatestRecordMetadata,
+  hasMultipleSystemsAndNoSystemFilter?: boolean
 ) => {
   return {
     reportID: recordMetadata?.id,
-    title: currentMetric.display_name,
+    // title: currentMetric.display_name,
+    title: formatTaskCardTitle(
+      currentMetric.display_name,
+      currentMetric.system.display_name,
+      hasMultipleSystemsAndNoSystemFilter
+    ),
     description: currentMetric.description,
     actionLinks: [taskCardLabelsActionLinks.metricAvailability],
     metricSettingsParams: `?system=${currentMetric.system.key.toLowerCase()}&metric=${currentMetric.key.toLowerCase()}`,
@@ -111,7 +126,8 @@ export const createConfigurationTaskCardMetadata = (
  */
 export const createDataEntryTaskCardMetadata = (
   currentMetric: Metric,
-  recordMetadata?: LatestRecordMetadata
+  recordMetadata?: LatestRecordMetadata,
+  hasMultipleSystemsAndNoSystemFilter?: boolean
 ) => {
   const metricFrequency =
     currentMetric.custom_frequency || currentMetric.frequency;
@@ -120,7 +136,12 @@ export const createDataEntryTaskCardMetadata = (
   );
   return {
     reportID: recordMetadata?.id,
-    title: currentMetric.display_name,
+    // title: currentMetric.display_name,
+    title: formatTaskCardTitle(
+      currentMetric.display_name,
+      currentMetric.system.display_name,
+      hasMultipleSystemsAndNoSystemFilter
+    ),
     description: currentMetric.description,
     actionLinks: [
       taskCardLabelsActionLinks.uploadData,
@@ -177,8 +198,10 @@ export const createTaskCardMetadatas = (
   },
   createTaskCardCallback: (
     currentMetric: Metric,
-    recordMetadata?: LatestRecordMetadata
-  ) => TaskCardMetadata
+    recordMetadata?: LatestRecordMetadata,
+    hasMultipleSystemsAndNoSystemFilter?: boolean
+  ) => TaskCardMetadata,
+  hasMultipleSystemsAndNoSystemFilter?: boolean
 ) => {
   const metricFrequency = metric.custom_frequency || metric.frequency;
   /**
@@ -198,12 +221,17 @@ export const createTaskCardMetadatas = (
   const { latestMonthlyRecord, latestAnnualRecord } = recordMetadatas;
   /** Create Task Card linked to the latest Monthly Record */
   if (metricFrequency === "MONTHLY") {
-    return createTaskCardCallback(metric, latestMonthlyRecord);
+    return createTaskCardCallback(
+      metric,
+      latestMonthlyRecord,
+      hasMultipleSystemsAndNoSystemFilter
+    );
   }
   /** Create Task Card linked to the latest Annual Record */
   return createTaskCardCallback(
     metric,
-    latestAnnualRecord(startingMonth as number)
+    latestAnnualRecord(startingMonth as number),
+    hasMultipleSystemsAndNoSystemFilter
   );
 };
 
