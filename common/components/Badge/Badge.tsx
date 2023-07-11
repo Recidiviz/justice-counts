@@ -14,7 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-import { palette } from "@justice-counts/common/components/GlobalStyles";
+import {
+  MIN_TABLET_WIDTH,
+  palette,
+} from "@justice-counts/common/components/GlobalStyles";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import React from "react";
 // eslint-disable-next-line no-restricted-imports
@@ -65,6 +68,10 @@ export const BadgeElement = styled.div<{
   text-transform: capitalize;
   ${({ noMargin, leftMargin }) =>
     !noMargin && `margin-left: ${leftMargin || 10}px;`};
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    display: none;
+  }
 `;
 
 export const reportFrequencyBadgeColors: BadgeColorMapping = {

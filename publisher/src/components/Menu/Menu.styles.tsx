@@ -14,10 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-import {
-  CustomDropdown,
-  CustomDropdownToggle,
-} from "@justice-counts/common/components/Dropdown";
+import { CustomDropdown } from "@justice-counts/common/components/Dropdown";
 import {
   HEADER_BAR_HEIGHT,
   MIN_TABLET_WIDTH,
@@ -34,42 +31,42 @@ export const MenuContainer = styled.nav<{ isMobileMenuOpen: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    display: ${({ isMobileMenuOpen }) => (isMobileMenuOpen ? "flex" : "none")};
-    flex-direction: column;
-    align-items: start;
-    position: fixed;
-    top: ${HEADER_BAR_HEIGHT + 1}px;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: ${palette.solid.white};
-    padding: 48px 32px ${HEADER_BAR_HEIGHT + 32}px 32px;
-    gap: 32px;
-    overflow-y: auto;
-
-    #upload {
-      width: 100%;
-      height: 56px;
-      margin-top: auto;
-
-      div {
-        width: 100%;
-        height: 100%;
-        ${typography.sizeCSS.medium}
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-      }
-    }
-  }
 `;
 
 export const MenuItemsWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 56px;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH + 180}px) {
+    gap: 20px;
+    height: ${HEADER_BAR_HEIGHT}px;
+  }
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    width: 100%;
+    height: ${HEADER_BAR_HEIGHT}px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    position: absolute;
+    bottom: calc(-100vh + ${HEADER_BAR_HEIGHT}px);
+    left: 0;
+    gap: unset;
+    background: ${palette.solid.white};
+    border-top: 1px solid ${palette.highlight.grey5};
+  }
+`;
+
+export const MenuItemsProfileWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 56px;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    width: 100%;
+    justify-content: flex-end;
+  }
 `;
 
 export const MenuItem = styled.div<{
@@ -113,14 +110,11 @@ export const MenuItem = styled.div<{
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    border-top: none;
-    ${typography.sizeCSS.large};
+    height: 100%;
     padding: 0;
-    height: auto;
-
-    & ${CustomDropdownToggle} {
-      ${typography.sizeCSS.large};
-    }
+    border-top: 3px solid
+      ${({ active }) => (active ? palette.solid.blue : "transparent")};
+    border-bottom: none;
   }
 `;
 
@@ -186,6 +180,19 @@ export const AgencyDropdownWrapper = styled.div`
   }
 `;
 
+export const ProfileDropdownContainer = styled.div`
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    height: ${HEADER_BAR_HEIGHT}px;
+    width: calc(100% - 1px);
+    min-width: ${HEADER_BAR_HEIGHT}px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background: ${palette.solid.darkgrey};
+    padding-right: 16px;
+  }
+`;
+
 export const ProfileDropdownWrapper = styled.div`
   ${typography.sizeCSS.small}
   display: flex;
@@ -228,11 +235,17 @@ export const ProfileDropdownWrapper = styled.div`
     right: 1px;
     bottom: 1px;
     border-radius: 50%;
-    background: ${palette.highlight.grey3};
+    background: ${palette.solid.grey2};
   }
 
   &:hover {
     cursor: pointer;
+  }
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    &::before {
+      background: ${palette.solid.darkgrey};
+    }
   }
 `;
 
@@ -240,6 +253,7 @@ export const Caret = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 2;
 
   &::before {
     content: "";

@@ -39,6 +39,10 @@ export const AppWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    padding-bottom: ${HEADER_BAR_HEIGHT}px;
+  }
 `;
 
 export const PageWrapper = styled.div`

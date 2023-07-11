@@ -61,7 +61,7 @@ export const ParagraphContainer = styled.div`
   ${typography.sizeCSS.medium}
   padding-top: 24px;
   padding-bottom: 32px;
-  color: ${palette.solid.grey};
+  color: ${palette.solid.grey1};
 `;
 
 export const JusticeCountsSupportLink = styled.a`

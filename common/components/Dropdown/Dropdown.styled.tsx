@@ -84,7 +84,7 @@ export const CustomDropdownMenu = styled(DropdownMenu)<{
 }>`
   border-radius: 3px;
   margin-top: 4px;
-  max-height: 250px;
+  max-height: 300px;
   overflow-y: auto;
   z-index: 5;
   transform: unset;

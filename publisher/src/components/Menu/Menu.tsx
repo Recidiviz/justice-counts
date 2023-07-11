@@ -25,14 +25,11 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { settingsMenuPaths } from "../../pages/Settings";
 import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
-import { ReactComponent as CloseMenuBurger } from "../assets/close-header-menu-icon.svg";
 import { ReactComponent as TeamManagementIcon } from "../assets/data-line-icon.svg";
 import { ReactComponent as UploadedFilesIcon } from "../assets/folder-icon.svg";
 import { ReactComponent as LogoutIcon } from "../assets/logout-icon.svg";
-import { ReactComponent as MenuBurger } from "../assets/menu-burger-icon.svg";
 import { ReactComponent as AgencySettingsIcon } from "../assets/pillar-icon.svg";
 import { ReactComponent as YourAccountIcon } from "../assets/profile-icon.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
@@ -195,93 +192,75 @@ const Menu: React.FC = () => {
           {headerBadge}
         </Styled.AgencyDropdownHeaderBadgeWrapper>
 
-        {/* Home */}
-        <Styled.MenuItemsWrapper>
-          <Styled.MenuItem
-            onClick={() => navigate(`/agency/${agencyId}/`)}
-            active={pathWithoutAgency === ""}
-          >
-            Home
-          </Styled.MenuItem>
+        <Styled.MenuItemsProfileWrapper>
+          {/* Home */}
+          <Styled.MenuItemsWrapper>
+            <Styled.MenuItem
+              onClick={() => navigate(`/agency/${agencyId}/`)}
+              active={pathWithoutAgency === ""}
+            >
+              Home
+            </Styled.MenuItem>
 
-          {/* Metric Config */}
-          <Styled.MenuItem
-            onClick={() => {
-              if (pathWithoutAgency === "metric-config") {
-                setSettingsSearchParams({
-                  ...settingsSearchParams,
-                  metric: undefined,
-                });
-              } else {
-                navigate("metric-config");
+            {/* Metric Config */}
+            <Styled.MenuItem
+              onClick={() => {
+                if (pathWithoutAgency === "metric-config") {
+                  setSettingsSearchParams({
+                    ...settingsSearchParams,
+                    metric: undefined,
+                  });
+                } else {
+                  navigate("metric-config");
+                }
+                handleCloseMobileMenu();
+              }}
+              active={pathWithoutAgency === "metric-config"}
+            >
+              Metric Settings
+            </Styled.MenuItem>
+
+            {/* Data Entry */}
+            <Styled.MenuItem
+              onClick={() => {
+                if (pathWithoutAgency !== "data-entry") navigate("data-entry");
+                handleCloseMobileMenu();
+              }}
+              active={
+                pathWithoutAgency === "data-entry" ||
+                pathWithoutAgency === REPORTS_LOWERCASE
               }
-              handleCloseMobileMenu();
-            }}
-            active={pathWithoutAgency === "metric-config"}
-          >
-            Metric Settings
-          </Styled.MenuItem>
+            >
+              Data Entry
+            </Styled.MenuItem>
 
-          {/* Data Entry */}
-          <Styled.MenuItem
-            onClick={() => {
-              if (pathWithoutAgency !== "data-entry") navigate("data-entry");
-              handleCloseMobileMenu();
-            }}
-            active={
-              pathWithoutAgency === "data-entry" ||
-              pathWithoutAgency === REPORTS_LOWERCASE
-            }
-          >
-            Data Entry
-          </Styled.MenuItem>
-
-          {/* Data (Visualizations) */}
-          <Styled.MenuItem
-            onClick={() => {
-              if (pathWithoutAgency !== "data") navigate("data");
-              handleCloseMobileMenu();
-            }}
-            active={pathWithoutAgency === "data"}
-          >
-            View Data
-          </Styled.MenuItem>
-
-          {isMobileMenuOpen && (
-            <Styled.SubMenuContainer>
-              {settingsMenuPaths.map(({ displayLabel, path }) => (
-                <Styled.SubMenuItem
-                  key={path}
-                  onClick={() => {
-                    navigate(`settings/${path}`);
-                    handleCloseMobileMenu();
-                  }}
-                >
-                  {displayLabel}
-                </Styled.SubMenuItem>
-              ))}
-            </Styled.SubMenuContainer>
-          )}
-
+            {/* Data (Visualizations) */}
+            <Styled.MenuItem
+              onClick={() => {
+                if (pathWithoutAgency !== "data") navigate("data");
+                handleCloseMobileMenu();
+              }}
+              active={pathWithoutAgency === "data"}
+            >
+              View Data
+            </Styled.MenuItem>
+          </Styled.MenuItemsWrapper>
           {/* Profile */}
-          <Styled.ProfileDropdownWrapper>
-            {usernameToInitials()}
-            <Styled.Caret />
-            <Dropdown
-              label=""
-              options={profileDropdownOptions}
-              size="small"
-              hover="label"
-              alignment="right"
-            />
-          </Styled.ProfileDropdownWrapper>
-        </Styled.MenuItemsWrapper>
+          <Styled.ProfileDropdownContainer>
+            <Styled.ProfileDropdownWrapper>
+              {usernameToInitials()}
+              <Styled.Caret />
+              <Dropdown
+                label=""
+                options={profileDropdownOptions}
+                size="small"
+                hover="label"
+                alignment="right"
+              />
+            </Styled.ProfileDropdownWrapper>
+          </Styled.ProfileDropdownContainer>
+        </Styled.MenuItemsProfileWrapper>
       </Styled.MenuContainer>
-      <Styled.MobileMenuIconWrapper
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-      >
-        {isMobileMenuOpen ? <CloseMenuBurger /> : <MenuBurger />}
-      </Styled.MobileMenuIconWrapper>
     </>
   );
 };
