@@ -48,4 +48,5 @@ export const TooltipTitle = styled.span`
 export const TooltipContent = styled.span`
   ${typography.sizeCSS.normal};
   white-space: normal;
+  text-transform: none;
 `;
