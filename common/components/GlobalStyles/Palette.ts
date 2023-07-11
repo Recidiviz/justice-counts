@@ -25,6 +25,7 @@ export const palette = {
     darkblue: `rgba(0, 86, 224, 1)`,
     darkblue2: `rgba(19, 49, 88, 1)`,
     grey: `rgba(119, 119, 119, 1)`,
+    grey3: `rgb(222, 222, 222)`, // solid color version of `highlight.grey3`
     darkgrey: `rgba(0, 17, 51, 1)`,
     white: `rgba(255,255,255, 1)`,
     offwhite: `rgba(239, 244, 245, 1)`,
