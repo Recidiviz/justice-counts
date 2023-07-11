@@ -24,7 +24,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useStore } from "../../stores";
 import { ReactComponent as GearIcon } from "../assets/gear-icon.svg";
 import { ReactComponent as OpenLinkIcon } from "../assets/open-link-icon.svg";
-import { ReactComponent as SettingsIcon } from "../assets/settings-icon.svg";
 import { Loading } from "../Loading";
 import {
   createAnnualRecordsMetadata,
@@ -258,10 +257,6 @@ export const Home = observer(() => {
           >
             <GearIcon />
             Agency Settings
-          </Styled.SubmenuItem>
-          <Styled.SubmenuItem onClick={() => navigate("./metric-config")}>
-            <SettingsIcon />
-            Metric Settings
           </Styled.SubmenuItem>
           <Styled.SubmenuItem
             href="https://justicecounts.csgjusticecenter.org/"
