@@ -234,7 +234,7 @@ export const DatapointsTableView: React.FC<{
                       onMouseLeave={() => setHoveredColKey(null)}
                       isColHovered={index === hoveredColKey}
                     >
-                      {/* <span>{formatDateShortMonthYear(date)}</span> */}
+                      <span>{formatDateShortMonthYear(date)}</span>
                     </DatapointsTableDetailsRowHeader>
                   ))}
                 </DatapointsTableDetailsRow>
