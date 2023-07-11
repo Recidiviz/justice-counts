@@ -78,7 +78,7 @@ export const Home = observer(() => {
   /** Task Card Metadatas */
   const allTasksCompleteTaskCardMetadata: TaskCardMetadata = {
     title: "All tasks complete",
-    description: "Your data is updated and published.",
+    description: "Your data is up-to-date and published.",
   };
   const enabledMetricsTaskCardMetadata: TaskCardMetadata[] =
     currentAgencyMetrics
