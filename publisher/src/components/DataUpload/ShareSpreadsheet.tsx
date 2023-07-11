@@ -44,7 +44,7 @@ function ShareSpreadsheet() {
     };
 
     initialize();
-  }, []);
+  }, [reportStore, spreadsheetId]);
 
   if (reportStore.loadingSpreadsheetReviewData) {
     return (
