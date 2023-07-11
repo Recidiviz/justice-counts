@@ -17,10 +17,7 @@
 
 import type { Meta, StoryObj } from "@storybook/react";
 
-<<<<<<< HEAD
 import { palette } from "../GlobalStyles";
-=======
->>>>>>> c851959 (fix lint errors)
 import { Button } from "./Button";
 
 const meta: Meta<typeof Button> = {
