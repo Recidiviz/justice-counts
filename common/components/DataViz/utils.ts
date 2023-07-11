@@ -79,12 +79,6 @@ export const splitUtcString = (utcString: string) => {
   return utcString.split(" ");
 };
 
-export const splitUtcStringDash = (utcString: string) => {
-  // the utc string can be split like this:
-  // const [year, month, day] = splitUtcStringDash(str);
-  return utcString.split("-");
-};
-
 export const getDatapointDimensions = (datapoint: Datapoint) =>
   // gets the datapoint object minus the non-dimension keys "start_date", "end_date", "frequency", "dataVizMissingData"
   pickBy(
@@ -371,11 +365,6 @@ export const getLatestDateFormatted = (
 export const formatDateShort = (dateStr: string) => {
   const [, , month, year] = splitUtcString(dateStr);
   return `${abbreviatedMonths.indexOf(month) + 1}/${year}`;
-};
-
-export const formatDateShortYearMonthDash = (dateStr: string) => {
-  const [year, month, ,] = splitUtcStringDash(dateStr);
-  return `${month}/${year.slice(2)}`;
 };
 
 export const formatDateShortMonthYear = (dateStr: string) => {

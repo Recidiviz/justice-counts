@@ -50,7 +50,7 @@ import {
   StrikethroughText,
 } from "./DatapointsTableView.styles";
 import { DatapointsTitle } from "./DatapointsTitle";
-import { formatDateShortYearMonthDash, sortDatapointDimensions } from "./utils";
+import { formatDateShortMonthYear, sortDatapointDimensions } from "./utils";
 
 type AggregationRowData = (RawDatapoint | undefined)[];
 
@@ -234,7 +234,7 @@ export const DatapointsTableView: React.FC<{
                       onMouseLeave={() => setHoveredColKey(null)}
                       isColHovered={index === hoveredColKey}
                     >
-                      <span>{formatDateShortYearMonthDash(date)}</span>
+                      {/* <span>{formatDateShortMonthYear(date)}</span> */}
                     </DatapointsTableDetailsRowHeader>
                   ))}
                 </DatapointsTableDetailsRow>
