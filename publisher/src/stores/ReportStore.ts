@@ -26,6 +26,7 @@ import {
 import { IReactionDisposer, makeAutoObservable, runInAction } from "mobx";
 
 import { UploadedFileStatus } from "../components/DataUpload";
+import { DataUploadResponseBody } from "../components/DataUpload/types";
 import {
   REPORT_LOWERCASE,
   REPORTS_LOWERCASE,
@@ -39,7 +40,6 @@ import { groupBy } from "../utils";
 import API from "./API";
 import DatapointsStore from "./DatapointsStore";
 import UserStore from "./UserStore";
-import { DataUploadResponseBody } from "../components/DataUpload/types";
 
 class ReportStore {
   userStore: UserStore;
