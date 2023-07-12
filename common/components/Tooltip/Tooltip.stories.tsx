@@ -53,11 +53,7 @@ export const Top: Story = {
   args: {
     anchorId: "tooltip",
     position: "top",
-<<<<<<< HEAD
     content: "Top",
-=======
-    content: "Test",
->>>>>>> 5d994a6 (update styles and fix some issues)
     isOpen: true,
   },
 };
