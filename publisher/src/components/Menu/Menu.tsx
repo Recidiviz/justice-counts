@@ -228,7 +228,8 @@ const Menu: React.FC = () => {
               }}
               active={
                 pathWithoutAgency === "data-entry" ||
-                pathWithoutAgency === REPORTS_LOWERCASE
+                pathWithoutAgency === REPORTS_LOWERCASE ||
+                pathWithoutAgency === `${REPORTS_LOWERCASE}/create`
               }
             >
               Data Entry

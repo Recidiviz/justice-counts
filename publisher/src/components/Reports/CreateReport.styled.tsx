@@ -108,3 +108,10 @@ export const FormCreateButtonContainer = styled.div`
     display: block;
   }
 `;
+
+export const NoRecordsForTaskCardManualEntryMessage = styled.div`
+  ${typography.sizeCSS.normal};
+  text-align: center;
+  color: ${palette.solid.red};
+  margin-bottom: 16px;
+`;
