@@ -108,7 +108,6 @@ export const createConfigurationTaskCardMetadata = (
 ) => {
   return {
     reportID: recordMetadata?.id,
-    // title: currentMetric.display_name,
     title: formatTaskCardTitle(
       currentMetric.display_name,
       currentMetric.system.display_name,
@@ -136,7 +135,6 @@ export const createDataEntryTaskCardMetadata = (
   );
   return {
     reportID: recordMetadata?.id,
-    // title: currentMetric.display_name,
     title: formatTaskCardTitle(
       currentMetric.display_name,
       currentMetric.system.display_name,
