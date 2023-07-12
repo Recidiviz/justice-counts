@@ -50,6 +50,12 @@ export const createReportTitle = (record: Report, monthName?: string) => {
     : printReportTitle(record.month, record.year, record.frequency);
 };
 
+/**
+ * Formats a task card title to include the system name in parenthesis if the
+ * user has multiple systems and they are viewing all of the task cards for all
+ * of their systems (under the "All" filter)
+ * @returns "Metric" or "Metric (System Name)"
+ */
 export const formatTaskCardTitle = (
   title: string,
   systemName: string,
