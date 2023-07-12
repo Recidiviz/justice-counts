@@ -16,14 +16,13 @@
 // =============================================================================
 
 import type { Meta, StoryObj } from "@storybook/react";
-import React from "react";
 
 import { palette } from "../GlobalStyles";
-import { Tooltip } from "./Tooltip";
+import { Badge } from "./Badge";
 
-const meta: Meta<typeof Tooltip> = {
-  title: "Tooltip",
-  component: Tooltip,
+const meta: Meta<typeof Badge> = {
+  title: "Badge",
+  component: Badge,
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
@@ -37,32 +36,44 @@ const meta: Meta<typeof Tooltip> = {
       ],
     },
   },
-  decorators: [
-    (Story) => (
-      <div id="tooltip" style={{ width: 200, height: 10, marginTop: 100 }}>
-        <Story />
-      </div>
-    ),
-  ],
 };
 
 export default meta;
-type Story = StoryObj<typeof Tooltip>;
+type Story = StoryObj<typeof Badge>;
 
-export const Top: Story = {
+export const Red: Story = {
   args: {
-    anchorId: "tooltip",
-    position: "top",
-    content: "Top",
-    isOpen: true,
+    color: "RED",
+    children: "Badge",
   },
 };
 
-export const Bottom: Story = {
+export const Green: Story = {
   args: {
-    anchorId: "tooltip",
-    position: "bottom",
-    content: "Bottom",
-    isOpen: true,
+    color: "GREEN",
+    children: "Badge",
+  },
+};
+
+export const Orange: Story = {
+  args: {
+    color: "ORANGE",
+    children: "Badge",
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    color: "GREEN",
+    children: "Badge",
+    disabled: true,
+  },
+};
+
+export const Loading: Story = {
+  args: {
+    color: "GREEN",
+    children: "Badge",
+    loading: true,
   },
 };

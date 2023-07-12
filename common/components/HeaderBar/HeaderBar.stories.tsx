@@ -16,14 +16,15 @@
 // =============================================================================
 
 import type { Meta, StoryObj } from "@storybook/react";
+
 import React from "react";
-
+import { Badge } from "../Badge";
 import { palette } from "../GlobalStyles";
-import { Tooltip } from "./Tooltip";
+import { HeaderBar } from "./HeaderBar";
 
-const meta: Meta<typeof Tooltip> = {
-  title: "Tooltip",
-  component: Tooltip,
+const meta: Meta<typeof HeaderBar> = {
+  title: "HeaderBar",
+  component: HeaderBar,
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
@@ -37,32 +38,43 @@ const meta: Meta<typeof Tooltip> = {
       ],
     },
   },
-  decorators: [
-    (Story) => (
-      <div id="tooltip" style={{ width: 200, height: 10, marginTop: 100 }}>
-        <Story />
-      </div>
-    ),
-  ],
 };
 
 export default meta;
-type Story = StoryObj<typeof Tooltip>;
+type Story = StoryObj<typeof HeaderBar>;
 
-export const Top: Story = {
+export const Default: Story = {
   args: {
-    anchorId: "tooltip",
-    position: "top",
-    content: "Top",
-    isOpen: true,
+    label: "Label",
+    badge: (
+      <Badge color="RED" noMargin>
+        Storybook
+      </Badge>
+    ),
   },
 };
 
-export const Bottom: Story = {
+export const WithBottomBorder: Story = {
   args: {
-    anchorId: "tooltip",
-    position: "bottom",
-    content: "Bottom",
-    isOpen: true,
+    label: "Label",
+    badge: (
+      <Badge color="RED" noMargin>
+        Storybook
+      </Badge>
+    ),
+    hasBottomBorder: true,
+  },
+};
+
+export const NoBadge: Story = {
+  args: {
+    label: "Label",
+  },
+};
+
+export const BlueBackground: Story = {
+  args: {
+    label: "Label",
+    background: "blue",
   },
 };

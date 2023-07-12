@@ -16,14 +16,13 @@
 // =============================================================================
 
 import type { Meta, StoryObj } from "@storybook/react";
-import React from "react";
 
 import { palette } from "../GlobalStyles";
-import { Tooltip } from "./Tooltip";
+import { Input } from "./Input";
 
-const meta: Meta<typeof Tooltip> = {
-  title: "Tooltip",
-  component: Tooltip,
+const meta: Meta<typeof Input> = {
+  title: "Input",
+  component: Input,
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
@@ -37,32 +36,42 @@ const meta: Meta<typeof Tooltip> = {
       ],
     },
   },
-  decorators: [
-    (Story) => (
-      <div id="tooltip" style={{ width: 200, height: 10, marginTop: 100 }}>
-        <Story />
-      </div>
-    ),
-  ],
 };
 
 export default meta;
-type Story = StoryObj<typeof Tooltip>;
+type Story = StoryObj<typeof Input>;
 
-export const Top: Story = {
+export const Empty: Story = {
   args: {
-    anchorId: "tooltip",
-    position: "top",
-    content: "Top",
-    isOpen: true,
+    label: "Label",
   },
 };
 
-export const Bottom: Story = {
+export const WithValue: Story = {
   args: {
-    anchorId: "tooltip",
-    position: "bottom",
-    content: "Bottom",
-    isOpen: true,
+    value: "Value",
+  },
+};
+
+export const Error: Story = {
+  args: {
+    label: "Error",
+    error: {
+      message: "This is an error message",
+    },
+  },
+};
+
+export const NoBottomMargin: Story = {
+  args: {
+    label: "Label",
+    noBottomMargin: true,
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    label: "Label",
+    disabled: true,
   },
 };

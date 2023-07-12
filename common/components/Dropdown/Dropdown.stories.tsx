@@ -16,14 +16,13 @@
 // =============================================================================
 
 import type { Meta, StoryObj } from "@storybook/react";
-import React from "react";
 
 import { palette } from "../GlobalStyles";
-import { Tooltip } from "./Tooltip";
+import { Dropdown } from "./Dropdown";
 
-const meta: Meta<typeof Tooltip> = {
-  title: "Tooltip",
-  component: Tooltip,
+const meta: Meta<typeof Dropdown> = {
+  title: "Dropdown",
+  component: Dropdown,
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
@@ -37,32 +36,51 @@ const meta: Meta<typeof Tooltip> = {
       ],
     },
   },
-  decorators: [
-    (Story) => (
-      <div id="tooltip" style={{ width: 200, height: 10, marginTop: 100 }}>
-        <Story />
-      </div>
-    ),
-  ],
 };
 
 export default meta;
-type Story = StoryObj<typeof Tooltip>;
+type Story = StoryObj<typeof Dropdown>;
 
-export const Top: Story = {
+export const Default: Story = {
   args: {
-    anchorId: "tooltip",
-    position: "top",
-    content: "Top",
-    isOpen: true,
-  },
-};
-
-export const Bottom: Story = {
-  args: {
-    anchorId: "tooltip",
-    position: "bottom",
-    content: "Bottom",
-    isOpen: true,
+    label: "Click Me",
+    options: [
+      {
+        key: "1",
+        label: "Red",
+        onClick: () => ({}),
+        color: "green",
+        disabled: false,
+        highlight: false,
+        noHover: false,
+      },
+      {
+        key: "2",
+        label: "Green",
+        onClick: () => ({}),
+        color: "red",
+        disabled: false,
+        highlight: false,
+        noHover: false,
+      },
+      {
+        key: "3",
+        label: "Disabled",
+        onClick: () => ({}),
+        color: "red",
+        disabled: true,
+        highlight: false,
+        noHover: false,
+      },
+      {
+        key: "4",
+        label: "Highlighted",
+        onClick: () => ({}),
+        color: "green",
+        disabled: false,
+        highlight: true,
+        noHover: false,
+      },
+    ],
   },
 };
