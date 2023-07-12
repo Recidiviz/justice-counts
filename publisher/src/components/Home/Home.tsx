@@ -68,7 +68,7 @@ export const Home = observer(() => {
   /** Does the given metric belong to the currently selected system? */
   const metricBelongsToCurrentSystem = (metric: Metric) =>
     currentSystem === "ALL" || metric.system.key === currentSystem;
-  const hasMultipleSystemsAndNoSystemFilter = Boolean(
+  const hasMultipleSystemsAndAllSystemsFilter = Boolean(
     hasMultipleSystems && currentSystem === "ALL"
   );
   /** Agency metrics by metric key */
@@ -92,7 +92,7 @@ export const Home = observer(() => {
           metric,
           { latestMonthlyRecord, latestAnnualRecord },
           createDataEntryTaskCardMetadata,
-          hasMultipleSystemsAndNoSystemFilter
+          hasMultipleSystemsAndAllSystemsFilter
         )
       );
   const unconfiguredMetricsTaskCardMetadata: TaskCardMetadata[] =
@@ -105,7 +105,7 @@ export const Home = observer(() => {
           metric,
           { latestMonthlyRecord, latestAnnualRecord },
           createConfigurationTaskCardMetadata,
-          hasMultipleSystemsAndNoSystemFilter
+          hasMultipleSystemsAndAllSystemsFilter
         )
       );
 

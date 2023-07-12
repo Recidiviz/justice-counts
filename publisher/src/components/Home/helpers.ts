@@ -59,9 +59,9 @@ export const createReportTitle = (record: Report, monthName?: string) => {
 export const formatTaskCardTitle = (
   title: string,
   systemName: string,
-  hasMultipleSystemsAndNoSystemFilter?: boolean
+  hasMultipleSystemsAndAllSystemsFilter?: boolean
 ) => {
-  if (!hasMultipleSystemsAndNoSystemFilter) return title;
+  if (!hasMultipleSystemsAndAllSystemsFilter) return title;
   return `${title} ${title.includes(systemName) ? `` : `(${systemName})`}`;
 };
 
@@ -110,14 +110,14 @@ export const createAnnualRecordsMetadata = (annualRecords: {
 export const createConfigurationTaskCardMetadata = (
   currentMetric: Metric,
   recordMetadata?: LatestRecordMetadata,
-  hasMultipleSystemsAndNoSystemFilter?: boolean
+  hasMultipleSystemsAndAllSystemsFilter?: boolean
 ) => {
   return {
     reportID: recordMetadata?.id,
     title: formatTaskCardTitle(
       currentMetric.display_name,
       currentMetric.system.display_name,
-      hasMultipleSystemsAndNoSystemFilter
+      hasMultipleSystemsAndAllSystemsFilter
     ),
     description: currentMetric.description,
     actionLinks: [taskCardLabelsActionLinks.metricAvailability],
@@ -132,7 +132,7 @@ export const createConfigurationTaskCardMetadata = (
 export const createDataEntryTaskCardMetadata = (
   currentMetric: Metric,
   recordMetadata?: LatestRecordMetadata,
-  hasMultipleSystemsAndNoSystemFilter?: boolean
+  hasMultipleSystemsAndAllSystemsFilter?: boolean
 ) => {
   const metricFrequency =
     currentMetric.custom_frequency || currentMetric.frequency;
@@ -144,7 +144,7 @@ export const createDataEntryTaskCardMetadata = (
     title: formatTaskCardTitle(
       currentMetric.display_name,
       currentMetric.system.display_name,
-      hasMultipleSystemsAndNoSystemFilter
+      hasMultipleSystemsAndAllSystemsFilter
     ),
     description: currentMetric.description,
     actionLinks: [
@@ -203,9 +203,9 @@ export const createTaskCardMetadatas = (
   createTaskCardCallback: (
     currentMetric: Metric,
     recordMetadata?: LatestRecordMetadata,
-    hasMultipleSystemsAndNoSystemFilter?: boolean
+    hasMultipleSystemsAndAllSystemsFilter?: boolean
   ) => TaskCardMetadata,
-  hasMultipleSystemsAndNoSystemFilter?: boolean
+  hasMultipleSystemsAndAllSystemsFilter?: boolean
 ) => {
   const metricFrequency = metric.custom_frequency || metric.frequency;
   /**
@@ -228,14 +228,14 @@ export const createTaskCardMetadatas = (
     return createTaskCardCallback(
       metric,
       latestMonthlyRecord,
-      hasMultipleSystemsAndNoSystemFilter
+      hasMultipleSystemsAndAllSystemsFilter
     );
   }
   /** Create Task Card linked to the latest Annual Record */
   return createTaskCardCallback(
     metric,
     latestAnnualRecord(startingMonth as number),
-    hasMultipleSystemsAndNoSystemFilter
+    hasMultipleSystemsAndAllSystemsFilter
   );
 };
 
