@@ -55,7 +55,6 @@ import {
 } from "../Forms";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { useHeaderBadge } from "../Header/hooks";
-import { Onboarding } from "../Onboarding";
 import { MiniLoaderWrapper, ReviewButtonContainer } from ".";
 import { MetricTextInput } from "./DataEntryFormComponents";
 
@@ -81,7 +80,7 @@ const DataEntryForm: React.FC<{
   const { state } = useLocation();
   const headerBadge = useHeaderBadge();
   const { formStore, reportStore, userStore } = useStore();
-  const [showOnboarding, setShowOnboarding] = useState(true);
+
   const [hasVersionConflict, setHasVersionConflict] = useState(false);
   const [isSaveInProgress, setIsSaveInProgress] = useState(false);
   const metricsRef = useRef<HTMLDivElement[]>([]);
@@ -389,15 +388,6 @@ const DataEntryForm: React.FC<{
             )}
           </FormFieldSet>
         </Form>
-
-        {/* Onboarding */}
-        {userStore.onboardingTopicsCompleted?.dataentryview === false &&
-          showOnboarding && (
-            <Onboarding
-              setShowOnboarding={setShowOnboarding}
-              topic="dataentryview"
-            />
-          )}
       </FormWrapper>
     </>
   );
