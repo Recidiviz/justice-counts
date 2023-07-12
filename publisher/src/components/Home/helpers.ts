@@ -186,14 +186,15 @@ export const createTaskCardMetadatas = (
    * If this is a supervision subsystem, use the parent supervision metric's starting month,
    * otherwise use the current metric's starting month.
    */
-  const startingMonth = metric.disaggregated_by_supervision_subsystems
-    ? currentAgencyMetricsByMetricKey[
-        `SUPERVISION_${stripSystemKeyFromMetricKey(
-          metric.key,
-          metric.system.key
-        )}`
-      ]?.[0].starting_month
-    : metric.starting_month;
+  const startingMonth =
+    metric.disaggregated_by_supervision_subsystems && !metric.starting_month
+      ? currentAgencyMetricsByMetricKey[
+          `SUPERVISION_${stripSystemKeyFromMetricKey(
+            metric.key,
+            metric.system.key
+          )}`
+        ]?.[0].starting_month
+      : metric.starting_month;
   const { latestMonthlyRecord, latestAnnualRecord } = recordMetadatas;
   /** Create Task Card linked to the latest Monthly Record */
   if (metricFrequency === "MONTHLY") {
