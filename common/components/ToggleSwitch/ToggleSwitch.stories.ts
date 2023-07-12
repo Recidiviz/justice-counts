@@ -14,37 +14,41 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-// eslint-disable-next-line no-restricted-imports
-import { createGlobalStyle } from "styled-components";
 
-import { palette } from "./Palette";
+import type { Meta, StoryObj } from "@storybook/react";
 
-export const GlobalStyle = createGlobalStyle`
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+import { palette } from "../GlobalStyles";
+import { ToggleSwitch } from "./ToggleSwitch";
 
-  html, body, #root {
-    height: 100%;
-  }
+const meta: Meta<typeof ToggleSwitch> = {
+  title: "ToggleSwitch",
+  component: ToggleSwitch,
+  tags: ["autodocs"],
+  parameters: {
+    layout: "centered",
+    backgrounds: {
+      default: "gray",
+      values: [
+        {
+          name: "gray",
+          value: palette.highlight.grey1,
+        },
+      ],
+    },
+  },
+};
 
-  body {
-    width: 100%;
-    font-family: "Inter", sans-serif;
-    font-weight: 500;
-    font-size: 16px;
-    background-color: ${palette.solid.white};
-    color: ${palette.solid.darkgrey};
-    overscroll-behavior-y: none;
-  }
+export default meta;
+type Story = StoryObj<typeof ToggleSwitch>;
 
-  input, textarea {
-    font-family: "Inter", sans-serif;
-  }
-`;
+export const Checked: Story = {
+  args: {
+    checked: true,
+  },
+};
 
-export * from "./constants";
-export * from "./Palette";
-export * from "./Typography";
+export const Unchecked: Story = {
+  args: {
+    checked: false,
+  },
+};

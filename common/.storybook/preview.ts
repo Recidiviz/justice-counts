@@ -14,37 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-// eslint-disable-next-line no-restricted-imports
-import { createGlobalStyle } from "styled-components";
 
-import { palette } from "./Palette";
+import type { Preview } from "@storybook/react";
 
-export const GlobalStyle = createGlobalStyle`
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+const preview: Preview = {
+  parameters: {
+    actions: { argTypesRegex: "^on[A-Z].*" },
+    controls: {
+      matchers: {
+        color: /(background|color)$/i,
+        date: /Date$/,
+      },
+    },
+  },
+};
 
-  html, body, #root {
-    height: 100%;
-  }
-
-  body {
-    width: 100%;
-    font-family: "Inter", sans-serif;
-    font-weight: 500;
-    font-size: 16px;
-    background-color: ${palette.solid.white};
-    color: ${palette.solid.darkgrey};
-    overscroll-behavior-y: none;
-  }
-
-  input, textarea {
-    font-family: "Inter", sans-serif;
-  }
-`;
-
-export * from "./constants";
-export * from "./Palette";
-export * from "./Typography";
+export default preview;

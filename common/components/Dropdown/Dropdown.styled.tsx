@@ -21,7 +21,8 @@ import {
   DropdownMenuItem,
   DropdownToggle,
 } from "@recidiviz/design-system";
-import styled from "styled-components/macro";
+// eslint-disable-next-line no-restricted-imports
+import styled from "styled-components";
 
 import { palette, typography } from "../GlobalStyles";
 import { ToggleHover, ToggleSize } from "./types";

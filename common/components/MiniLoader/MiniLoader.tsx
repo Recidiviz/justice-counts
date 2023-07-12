@@ -15,7 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 import React from "react";
-import styled, { keyframes } from "styled-components/macro";
+// eslint-disable-next-line no-restricted-imports
+import styled, { keyframes } from "styled-components";
 
 const dotLoopAnimation = keyframes`
     0% {

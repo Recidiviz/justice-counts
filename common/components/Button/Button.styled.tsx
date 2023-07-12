@@ -19,7 +19,8 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import styled from "styled-components/macro";
+// eslint-disable-next-line no-restricted-imports
+import styled from "styled-components";
 
 import {
   ButtonBorderColor,

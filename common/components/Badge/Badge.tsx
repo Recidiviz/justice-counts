@@ -17,7 +17,8 @@
 import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import React from "react";
-import styled from "styled-components/macro";
+// eslint-disable-next-line no-restricted-imports
+import styled from "styled-components";
 
 export type BadgeColors = "RED" | "GREEN" | "ORANGE" | "GREY";
 
