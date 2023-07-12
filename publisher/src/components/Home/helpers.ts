@@ -182,9 +182,9 @@ export const createTaskCardMetadatas = (
 ) => {
   const metricFrequency = metric.custom_frequency || metric.frequency;
   /**
-   * Supervision subsystems metrics have a default `null` value for `starting_month`.
-   * If this is a supervision subsystem, use the parent supervision metric's starting month,
-   * otherwise use the current metric's starting month.
+   * If this is a supervision subsystem (with an annual frequency) that does not have a
+   * starting month set, use the parent supervision metric's starting month, otherwise
+   * use the current metric's starting month.
    */
   const startingMonth =
     metric.disaggregated_by_supervision_subsystems && !metric.starting_month
