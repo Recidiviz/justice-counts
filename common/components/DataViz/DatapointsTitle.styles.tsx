@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-
-import styled, { css, keyframes } from "styled-components/macro";
+// eslint-disable-next-line no-restricted-imports
+import styled, { css, keyframes } from "styled-components";
 
 import { typography } from "../GlobalStyles";
 
