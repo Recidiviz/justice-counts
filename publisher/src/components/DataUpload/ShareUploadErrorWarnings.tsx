@@ -25,12 +25,12 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { data } from "../../mocks/spreadsheetReviewData";
 import { useStore } from "../../stores";
+import { PageWrapper } from "../Forms";
+import { Loading } from "../Loading";
 import ShareSpreadsheet from "./ShareSpreadsheet";
-import { ErrorsWarningsMetrics, DataUploadResponseBody } from "./types";
+import { ErrorsWarningsMetrics } from "./types";
 import { UploadErrorsWarnings } from "./UploadErrorsWarnings";
 import { processUploadResponseBody } from "./utils";
-import { PageWrapper } from "./components/Forms";
-import { Loading } from "../Loading";
 
 function ShareUploadErrorWarnings() {
   const navigate = useNavigate();
