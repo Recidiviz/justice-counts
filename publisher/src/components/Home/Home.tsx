@@ -41,6 +41,7 @@ import {
   LatestReportsAgencyMetrics,
   metricEnabled,
   metricNotConfigured,
+  supervisionSubsystemsWithEnabledMetrics,
   TaskCard,
   TaskCardMetadata,
 } from ".";
@@ -182,28 +183,6 @@ export const Home = observer(() => {
     return <Loading />;
   }
 
-  const supervisionSubsystemsWithNoTasksFilter = (
-    currentAgencyMetrics,
-    system
-  ) => {
-    const isSupervisionSubsystem = Boolean(
-      SupervisionSubsystems.includes(system.toUpperCase())
-    );
-    if (!isSupervisionSubsystem) return true;
-
-    const supervisionSubsystemsWithTaskCards = currentAgencyMetrics
-      .filter(metricEnabled)
-      .filter((metric) => {
-        const metricSystem = metric.system.key.toLocaleLowerCase();
-        return metricSystem === system.toLowerCase();
-      });
-
-    if (supervisionSubsystemsWithTaskCards.length > 0) {
-      return true;
-    }
-    return false;
-  };
-
   return (
     <Styled.HomeContainer>
       <Styled.WelcomeUser>Welcome, {userFirstName}</Styled.WelcomeUser>
@@ -217,7 +196,12 @@ export const Home = observer(() => {
           <div />
           <Styled.SystemSelectorTabWrapper>
             {agencySystems
-              ?.filter(supervisionSubsystemsWithNoTasksFilter)
+              ?.filter((system) =>
+                supervisionSubsystemsWithEnabledMetrics(
+                  system,
+                  currentAgencyMetrics
+                )
+              )
               .map((system) => (
                 <Styled.SystemSelectorTab
                   key={system}

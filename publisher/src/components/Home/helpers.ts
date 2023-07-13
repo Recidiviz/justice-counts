@@ -15,7 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Metric, Report, ReportFrequency } from "@justice-counts/common/types";
+import {
+  AgencySystems,
+  Metric,
+  Report,
+  ReportFrequency,
+  SupervisionSubsystems,
+} from "@justice-counts/common/types";
 import {
   groupBy,
   monthsByName,
@@ -35,6 +41,29 @@ export const metricNotConfigured = ({ enabled }: Metric) => enabled === null;
 export const metricIsMonthly = (metric: Metric) =>
   metric.custom_frequency === "MONTHLY" ||
   (!metric.custom_frequency && metric.frequency === "MONTHLY");
+
+/** Filters supervision subsystems with enabled metrics  */
+export const supervisionSubsystemsWithEnabledMetrics = (
+  system: AgencySystems | "ALL",
+  currentAgencyMetrics: Metric[]
+) => {
+  const isSupervisionSubsystem = Boolean(
+    SupervisionSubsystems.includes(system.toUpperCase() as AgencySystems)
+  );
+  if (!isSupervisionSubsystem) return true;
+
+  const supervisionSubsystemsWithTaskCards = currentAgencyMetrics
+    .filter(metricEnabled)
+    .filter((metric) => {
+      const metricSystem = metric.system.key.toLocaleLowerCase();
+      return metricSystem === system.toLowerCase();
+    });
+
+  if (supervisionSubsystemsWithTaskCards.length > 0) {
+    return true;
+  }
+  return false;
+};
 
 /**
  * Creates Report Title (includes month name in parenthesis to differentiate
