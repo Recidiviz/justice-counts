@@ -46,8 +46,8 @@ export const Success: Story = {
   args: {
     title: "Title",
     description: "Description",
-    primaryButton: { label: "Primary Button", onClick: () => {} },
-    secondaryButton: { label: "Secondary Button", onClick: () => {} },
+    primaryButton: { label: "Primary Button", onClick: () => ({}) },
+    secondaryButton: { label: "Secondary Button", onClick: () => ({}) },
     modalType: "success",
   },
 };
@@ -56,8 +56,8 @@ export const Warning: Story = {
   args: {
     title: "Title",
     description: "Description",
-    primaryButton: { label: "Primary Button", onClick: () => {} },
-    secondaryButton: { label: "Secondary Button", onClick: () => {} },
+    primaryButton: { label: "Primary Button", onClick: () => ({}) },
+    secondaryButton: { label: "Secondary Button", onClick: () => ({}) },
     modalType: "warning",
   },
 };
@@ -66,8 +66,11 @@ export const Alert: Story = {
   args: {
     title: "Title",
     description: "Description",
-    primaryButton: { label: "Primary Button", onClick: () => {} },
-    secondaryButton: { label: "Secondary Button", onClick: () => {} },
+    primaryButton: {
+      label: "Primary Button",
+      onClick: () => ({}),
+    },
+    secondaryButton: { label: "Secondary Button", onClick: () => ({}) },
     modalType: "alert",
   },
 };
@@ -76,8 +79,8 @@ export const CenterText: Story = {
   args: {
     title: "Title",
     description: "Description",
-    primaryButton: { label: "Primary Button", onClick: () => {} },
-    secondaryButton: { label: "Secondary Button", onClick: () => {} },
+    primaryButton: { label: "Primary Button", onClick: () => ({}) },
+    secondaryButton: { label: "Secondary Button", onClick: () => ({}) },
     modalType: "success",
     centerText: true,
   },

@@ -16,6 +16,7 @@
 // =============================================================================
 
 import type { Meta, StoryObj } from "@storybook/react";
+import React from "react";
 
 import { palette } from "../GlobalStyles";
 import BarChart from "./BarChart";
