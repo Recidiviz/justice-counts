@@ -16,81 +16,35 @@
 // =============================================================================
 
 import {
-  HEADER_BAR_HEIGHT,
+  AGENCY_DASHBOARD_HEADER_BAR_HEIGHT,
   palette,
-  TABLET_WIDTH,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
 export const HeaderBarContainer = styled.header`
   width: 100%;
-  height: ${HEADER_BAR_HEIGHT}px;
+  height: ${AGENCY_DASHBOARD_HEADER_BAR_HEIGHT}px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: center;
+  align-items: start;
   position: fixed;
   top: 0;
   z-index: 3;
   background: ${palette.solid.white};
-  padding: 16px 0;
   border-bottom: 1px solid ${palette.highlight.grey5};
 `;
 
-export const LogoContainer = styled.div`
-  height: ${HEADER_BAR_HEIGHT}px;
-  width: ${HEADER_BAR_HEIGHT}px;
+export const LogoTitle = styled.div`
+  background-color: ${palette.solid.darkgrey};
   display: flex;
-  justify-content: center;
+  flex-direction: row;
   align-items: center;
-  background: ${palette.solid.green};
-  transition: 0.3s ease;
-
-  &:hover {
-    cursor: pointer;
-    opacity: 0.9;
-  }
-`;
-
-export const Logo = styled.img`
-  width: 48px;
-  height: 48px;
-`;
-
-export const HeaderTitle = styled.div`
-  flex-grow: 1;
-  padding-left: 16px;
-
-  @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
-    display: none;
-  }
-`;
-
-export const HeaderButtonsContainer = styled.div`
-  display: flex;
-`;
-
-export const HeaderButton = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 64px;
-  padding-right: 12px;
-  padding-left: 12px;
-  background: none;
-  border: none;
-  ${typography.sizeCSS.normal}
-
-  &:hover {
-    cursor: pointer;
-    color: ${palette.solid.blue};
-  }
-
-  &:hover rect {
-    fill: ${palette.solid.blue};
-  }
-
-  &:last-child {
-    padding-right: 24px;
-  }
+  gap: 16px;
+  padding: 12px 24px;
+  font-family: "VitesseSSm", sans-serif;
+  ${typography.sizeCSS.large};
+  color: ${palette.solid.white};
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 `;

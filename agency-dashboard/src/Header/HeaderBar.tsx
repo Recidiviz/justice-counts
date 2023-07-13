@@ -15,75 +15,18 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import logo from "@justice-counts/common/assets/jc-logo-vector.png";
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { ReactComponent as JCLogo } from "@justice-counts/common/assets/jc-no-background-logo.svg";
+import React from "react";
 
-import { AboutModal } from "../DashboardModals";
-import { useStore } from "../stores";
-import {
-  HeaderBarContainer,
-  HeaderButton,
-  HeaderButtonsContainer,
-  HeaderTitle,
-  Logo,
-  LogoContainer,
-} from "./HeaderBar.styles";
+import * as Styled from "./HeaderBar.styles";
 
-export const HeaderBar: React.FC<{ showTitle?: boolean }> = ({ showTitle }) => {
-  const { agencyDataStore } = useStore();
-  const navigate = useNavigate();
-  const params = useParams();
-  const agencyId = Number(params.id);
-  const [aboutModalVisible, setAboutModalVisible] = useState<boolean>(false);
-
-  const showAboutModal = () => {
-    setAboutModalVisible(true);
-  };
-
-  const hideAboutModal = () => {
-    setAboutModalVisible(false);
-  };
-
-  /** Prevent body from scrolling when modal is open */
-  useEffect(() => {
-    if (aboutModalVisible) {
-      document.body.style.overflow = "hidden";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [aboutModalVisible]);
-
+export const HeaderBar: React.FC = () => {
   return (
-    <HeaderBarContainer>
-      {aboutModalVisible && (
-        <AboutModal
-          closeModal={hideAboutModal}
-          agencyName={agencyDataStore.agency?.name || ""}
-          agencyDescription={
-            agencyDataStore.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS
-              ?.value || ""
-          }
-          agencyUrl={
-            agencyDataStore.agencySettingsBySettingType.HOMEPAGE_URL?.value ||
-            ""
-          }
-        />
-      )}
-      <LogoContainer onClick={() => navigate(`/agency/${agencyId}`)}>
-        <Logo src={logo} alt="" />
-      </LogoContainer>
-      {showTitle && (
-        <HeaderTitle>
-          {`Justice Counts${
-            agencyDataStore.agency?.name && ` + ${agencyDataStore.agency?.name}`
-          }`}
-        </HeaderTitle>
-      )}
-      <HeaderButtonsContainer>
-        <HeaderButton onClick={showAboutModal}>About</HeaderButton>
-      </HeaderButtonsContainer>
-    </HeaderBarContainer>
+    <Styled.HeaderBarContainer>
+      <Styled.LogoTitle>
+        <JCLogo />
+        Justice Counts
+      </Styled.LogoTitle>
+    </Styled.HeaderBarContainer>
   );
 };

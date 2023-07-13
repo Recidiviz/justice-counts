@@ -16,6 +16,7 @@
 // =============================================================================
 
 export const HEADER_BAR_HEIGHT = 64;
+export const AGENCY_DASHBOARD_HEADER_BAR_HEIGHT = 88;
 export const TABLET_WIDTH = 834;
 export const COMMON_DESKTOP_WIDTH = 1366;
 
