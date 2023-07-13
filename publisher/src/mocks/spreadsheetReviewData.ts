@@ -18,12 +18,11 @@
 import { DataUploadResponseBody } from "../components/DataUpload/types";
 
 export type MockDataType = DataUploadResponseBody & {
-  fileName: string;
   spreadsheetId: string;
 };
 
 export const data: MockDataType = {
-  fileName: "MockFile.csv",
+  file_name: "MockFile.csv",
   spreadsheetId: "someCSVId",
   metrics: [
     {

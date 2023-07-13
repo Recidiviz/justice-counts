@@ -68,7 +68,7 @@ function ShareSpreadsheet() {
       }
       newReports={reportStore.spreadsheetReviewData[spreadsheetId].new_reports}
       uploadedMetrics={reportStore.spreadsheetReviewData[spreadsheetId].metrics}
-      // fileName={reportStore.spreadsheetReviewData[spreadsheetId].fileName}
+      fileName={reportStore.spreadsheetReviewData[spreadsheetId].file_name}
     />
   );
 }

@@ -210,7 +210,7 @@ class ReportStore {
 
     try {
       const response = (await this.api.request({
-        path: `/api/errors_warnings_json/${spreadsheetId}`,
+        path: `/api/${spreadsheetId}/bulk_upload_json`,
         method: "GET",
       })) as Response;
 
