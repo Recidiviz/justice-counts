@@ -204,10 +204,14 @@ const CreateReport = () => {
 
       {/* Create Report Form */}
       <Styled.CreateReportFormWrapper>
-        <Styled.NoRecordsForTaskCardManualEntryMessage>
-          {state?.from === "Home" &&
-            `It looks like there are no ${REPORTS_LOWERCASE} for the metric you would like to manually input data for. Please create a new ${REPORT_LOWERCASE}.`}
-        </Styled.NoRecordsForTaskCardManualEntryMessage>
+        {state?.from === "Home" && (
+          <Styled.NoRecordsForTaskCardManualEntryMessage>
+            It looks like there are no {REPORTS_LOWERCASE} for the metric you
+            would like to manually input data for. Please create a new{" "}
+            {REPORT_LOWERCASE}.
+          </Styled.NoRecordsForTaskCardManualEntryMessage>
+        )}
+
         <Styled.CreateReportForm>
           {/* Form Title */}
           <OnePanelBackLinkContainer>
