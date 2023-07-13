@@ -193,7 +193,7 @@ export const createTaskCardMetadatas = (
             metric.key,
             metric.system.key
           )}`
-        ]?.[0].starting_month
+        ]?.[0]?.starting_month
       : metric.starting_month;
   const { latestMonthlyRecord, latestAnnualRecord } = recordMetadatas;
   /** Create Task Card linked to the latest Monthly Record */
