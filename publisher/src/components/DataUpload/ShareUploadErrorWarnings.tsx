@@ -29,6 +29,8 @@ import ShareSpreadsheet from "./ShareSpreadsheet";
 import { ErrorsWarningsMetrics, DataUploadResponseBody } from "./types";
 import { UploadErrorsWarnings } from "./UploadErrorsWarnings";
 import { processUploadResponseBody } from "./utils";
+import { PageWrapper } from "./components/Forms";
+import { Loading } from "../Loading";
 
 function ShareUploadErrorWarnings() {
   const navigate = useNavigate();
@@ -96,19 +98,18 @@ function ShareUploadErrorWarnings() {
           updatedReports: result.updated_reports || [],
           unchangedReports: result.unchanged_reports || [],
         });
-        const errorsWarningsAndMetrics = processUploadResponseBody(
-          result as DataUploadResponseBody
-        );
-        const hasErrorsOrWarnings =
-          (errorsWarningsAndMetrics.nonMetricErrors &&
-            errorsWarningsAndMetrics.nonMetricErrors.length > 0) ||
-          errorsWarningsAndMetrics.errorsWarningsAndSuccessfulMetrics
-            .errorWarningMetrics.length > 0 ||
-          errorsWarningsAndMetrics.errorsWarningsAndSuccessfulMetrics.hasWarnings;
-      
-        if (hasErrorsOrWarnings) {
-          return setErrorsWarningsMetrics(errorsWarningsAndMetrics);
-        }
+        // const errorsWarningsAndMetrics = processUploadResponseBody(
+        //   result as DataUploadResponseBody
+        // );
+        // const hasErrorsOrWarnings =
+        //   (errorsWarningsAndMetrics.nonMetricErrors &&
+        //     errorsWarningsAndMetrics.nonMetricErrors.length > 0) ||
+        //   errorsWarningsAndMetrics.errorsWarningsAndSuccessfulMetrics
+        //     .errorWarningMetrics.length > 0 ||
+        //   errorsWarningsAndMetrics.errorsWarningsAndSuccessfulMetrics.hasWarnings;
+        // if (hasErrorsOrWarnings) {
+        //   return setErrorsWarningsMetrics(errorsWarningsAndMetrics);
+        // }
       }
     };
     initialize();
@@ -121,7 +122,6 @@ function ShareUploadErrorWarnings() {
       </PageWrapper>
     );
   }
-  
   if (loadingError || !reportStore.spreadsheetReviewData[spreadsheetId]) {
     return <PageWrapper>Error: {loadingError}</PageWrapper>;
   }
