@@ -17,13 +17,14 @@
 
 import type { Meta, StoryObj } from "@storybook/react";
 import React from "react";
+
 import { palette } from "../GlobalStyles";
 import { showToast } from "./Toast";
 
 const meta: Meta<JSX.Element> = {
   title: "Toast",
   tags: ["autodocs"],
-  component: (): JSX.Element => <div></div>,
+  component: (): JSX.Element => <div />,
   parameters: {
     layout: "fullscreen",
     backgrounds: {
