@@ -23,7 +23,7 @@ export interface DataUploadResponseBody {
   new_reports: ReportOverview[];
   updated_reports: ReportOverview[];
   unchanged_reports: ReportOverview[];
-  file_name: string;
+  file_name?: string;
 }
 
 export interface UploadedMetric {

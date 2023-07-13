@@ -42,7 +42,7 @@ type SpreadsheetReviewProps = {
   unchangedReports: ReportOverview[];
   newReports: ReportOverview[];
   uploadedMetrics: UploadedMetric[];
-  fileName: string;
+  fileName?: string;
 };
 
 export function SpreadsheetReview({
