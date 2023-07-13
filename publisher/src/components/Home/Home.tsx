@@ -15,7 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystems, Metric } from "@justice-counts/common/types";
+import {
+  AgencySystems,
+  Metric,
+  SupervisionSubsystems,
+} from "@justice-counts/common/types";
 import { groupBy } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -160,6 +164,7 @@ export const Home = observer(() => {
       const monthlyRecordMetadata = hasMonthlyRecord
         ? createMonthlyRecordMetadata(monthlyRecord)
         : undefined;
+
       setLatestMonthlyAnnualsRecordMetadata({
         monthly: monthlyRecordMetadata,
         annual: annualRecordsMetadata,
@@ -177,6 +182,28 @@ export const Home = observer(() => {
     return <Loading />;
   }
 
+  const supervisionSubsystemsWithNoTasksFilter = (
+    currentAgencyMetrics,
+    system
+  ) => {
+    const isSupervisionSubsystem = Boolean(
+      SupervisionSubsystems.includes(system.toUpperCase())
+    );
+    if (!isSupervisionSubsystem) return true;
+
+    const supervisionSubsystemsWithTaskCards = currentAgencyMetrics
+      .filter(metricEnabled)
+      .filter((metric) => {
+        const metricSystem = metric.system.key.toLocaleLowerCase();
+        return metricSystem === system.toLowerCase();
+      });
+
+    if (supervisionSubsystemsWithTaskCards.length > 0) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <Styled.HomeContainer>
       <Styled.WelcomeUser>Welcome, {userFirstName}</Styled.WelcomeUser>
@@ -189,15 +216,17 @@ export const Home = observer(() => {
         <Styled.SystemSelectorContainer>
           <div />
           <Styled.SystemSelectorTabWrapper>
-            {agencySystems?.map((system) => (
-              <Styled.SystemSelectorTab
-                key={system}
-                selected={system === currentSystem}
-                onClick={() => setCurrentSystem(system)}
-              >
-                {system.toLocaleLowerCase()}
-              </Styled.SystemSelectorTab>
-            ))}
+            {agencySystems
+              ?.filter(supervisionSubsystemsWithNoTasksFilter)
+              .map((system) => (
+                <Styled.SystemSelectorTab
+                  key={system}
+                  selected={system === currentSystem}
+                  onClick={() => setCurrentSystem(system)}
+                >
+                  {system.toLocaleLowerCase()}
+                </Styled.SystemSelectorTab>
+              ))}
           </Styled.SystemSelectorTabWrapper>
           <div />
         </Styled.SystemSelectorContainer>
