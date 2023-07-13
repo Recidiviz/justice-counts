@@ -28,7 +28,8 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { HeaderBar } from "../Header/HeaderBar";
+import { Footer } from "../Footer";
+import { HeaderBar } from "../Header";
 import { useMaxMetricBoxesInRow } from "../hooks";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
@@ -238,6 +239,7 @@ export const AgencyOverview = observer(() => {
           })}
         </MetricsViewContainer>
       </AgencyOverviewWrapper>
+      <Footer />
     </>
   );
 });
