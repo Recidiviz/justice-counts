@@ -42,7 +42,19 @@ export const metricIsMonthly = (metric: Metric) =>
   metric.custom_frequency === "MONTHLY" ||
   (!metric.custom_frequency && metric.frequency === "MONTHLY");
 
-/** Filters supervision subsystems with enabled metrics  */
+/**
+ * Filters supervision subsystems with enabled metrics.
+ *
+ * Note: used to render supervision subsystem filter options
+ * in the homepage for supervision subsystems with enabled metrics
+ * and subsequently hide the subsystem option for subsystems
+ * with no enabled metrics.
+ *
+ * @example
+ * `agencySystems` filter options: ["ALL", "SUPERVISION", "PAROLE", "PROBATION"]
+ * If "PAROLE" subsystem has no enabled metrics, then the filtered list would become
+ * ["ALL", "SUPERVISION", "PROBATION"]
+ */
 export const supervisionSubsystemsWithEnabledMetrics = (
   system: AgencySystems | "ALL",
   currentAgencyMetrics: Metric[]
@@ -52,14 +64,14 @@ export const supervisionSubsystemsWithEnabledMetrics = (
   );
   if (!isSupervisionSubsystem) return true;
 
-  const supervisionSubsystemsWithTaskCards = currentAgencyMetrics
+  const enabledSupervisionSubsystemMetrics = currentAgencyMetrics
     .filter(metricEnabled)
     .filter((metric) => {
       const metricSystem = metric.system.key.toLocaleLowerCase();
-      return metricSystem === system.toLowerCase();
+      return metricSystem === system.toLocaleLowerCase();
     });
 
-  if (supervisionSubsystemsWithTaskCards.length > 0) {
+  if (enabledSupervisionSubsystemMetrics.length > 0) {
     return true;
   }
   return false;

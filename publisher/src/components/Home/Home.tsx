@@ -249,6 +249,7 @@ export const Home = observer(() => {
                 latestMonthlyAnnualRecordsMetadata?.annual &&
                 Object.values(latestMonthlyAnnualRecordsMetadata.annual).map(
                   (record) => {
+                    /** Only display records w/ metrics that match the current system */
                     if (
                       Object.values(record.metrics).filter(
                         ([metric]) =>
