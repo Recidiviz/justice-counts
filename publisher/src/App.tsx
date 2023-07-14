@@ -20,6 +20,8 @@ import React, { ReactElement, useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 import { trackNavigation } from "./analytics";
+import ShareSpreadsheetReview from "./components/DataUpload/ShareSpreadsheet";
+import ShareUploadErrorWarnings from "./components/DataUpload/ShareUploadErrorWarnings";
 import Footer from "./components/Footer";
 import { AppWrapper, PageWrapper } from "./components/Forms";
 import { REPORTS_LOWERCASE } from "./components/Global/constants";
@@ -80,6 +82,14 @@ const App: React.FC = (): ReactElement => {
                   }`}
                 />
               }
+            />
+            <Route
+              path="/upload/:spreadsheetId/errors-warnings"
+              element={<ShareUploadErrorWarnings />}
+            />
+            <Route
+              path="/upload/:spreadsheetId/review-metrics"
+              element={<ShareSpreadsheetReview />}
             />
           </Routes>
         ) : (
