@@ -15,11 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import {
-  AgencySystems,
-  Metric,
-  SupervisionSubsystems,
-} from "@justice-counts/common/types";
+import { AgencySystems, Metric } from "@justice-counts/common/types";
 import { groupBy } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -253,6 +249,14 @@ export const Home = observer(() => {
                 latestMonthlyAnnualRecordsMetadata?.annual &&
                 Object.values(latestMonthlyAnnualRecordsMetadata.annual).map(
                   (record) => {
+                    if (
+                      Object.values(record.metrics).filter(
+                        ([metric]) =>
+                          metricBelongsToCurrentSystem(metric) &&
+                          metricEnabled(metric)
+                      )?.length === 0
+                    )
+                      return null;
                     return (
                       <TaskCard
                         key={record.id}
