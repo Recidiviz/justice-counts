@@ -45,14 +45,15 @@ const getToastStyles = (color?: ToastColor, positionNextToIcon?: boolean) => {
     `;
   const toastStyles = `
       width: auto;
+      max-width: 400px;
       height: ${HEADER_BAR_HEIGHT - 1}px;
       display: flex;
       align-items: center;
       background-color: ${toastBackgroundColor};
       color: ${color === "grey" ? palette.solid.grey1 : palette.solid.white};
       padding: 20px 24px;
-      border-radius: 2px;
-      white-space: nowrap;
+      border-radius: 5px;
+      ${color === "grey" && `border: 1px solid ${palette.highlight.grey6}`};
     `;
   const checkIconStyles = `
       width: 16px;
@@ -63,10 +64,10 @@ const getToastStyles = (color?: ToastColor, positionNextToIcon?: boolean) => {
 
   return { wrapperStyles, toastStyles, checkIconStyles };
 };
-const animationTransform = [{ maxWidth: "0px" }, { maxWidth: "100%" }];
-const animationTransformReverse = [{ maxWidth: "700px" }, { maxWidth: "0px" }];
+const animationTransform = [{ opacity: "0%" }, { opacity: "100%" }];
+const animationTransformReverse = [{ opacity: "100%" }, { opacity: "0%" }];
 const getAnimateProps = (isReverse?: boolean): KeyframeAnimationOptions => ({
-  duration: isReverse ? 600 : 800,
+  duration: isReverse ? 200 : 400,
   fill: "forwards",
   easing: "ease",
 });
