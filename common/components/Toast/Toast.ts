@@ -38,8 +38,8 @@ const getToastStyles = (color?: ToastColor, positionNextToIcon?: boolean) => {
 
   const wrapperStyles = `
       position: fixed;    
-      top: 0;
-      left: ${positionNextToIcon ? 65 : 0}px;
+      bottom: 85px;
+      right: 25px;
       z-index: 100;
       overflow: hidden;
     `;
