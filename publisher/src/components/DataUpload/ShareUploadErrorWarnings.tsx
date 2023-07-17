@@ -23,7 +23,6 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { data } from "../../mocks/spreadsheetReviewData";
 import { useStore } from "../../stores";
 import { PageWrapper } from "../Forms";
 import { Loading } from "../Loading";
@@ -66,26 +65,6 @@ function ShareUploadErrorWarnings() {
       : [];
   }, [currentAgency]);
 
-  const errorsWarningsAndMetrics = processUploadResponseBody(data);
-  const hasErrorsOrWarnings =
-    (errorsWarningsAndMetrics.nonMetricErrors &&
-      errorsWarningsAndMetrics.nonMetricErrors.length > 0) ||
-    errorsWarningsAndMetrics.errorsWarningsAndSuccessfulMetrics
-      .errorWarningMetrics.length > 0 ||
-    errorsWarningsAndMetrics.errorsWarningsAndSuccessfulMetrics.hasWarnings;
-
-  useEffect(() => {
-    if (hasErrorsOrWarnings) {
-      setNewAndUpdatedReports({
-        newReports: data.new_reports || [],
-        updatedReports: data.updated_reports || [],
-        unchangedReports: data.unchanged_reports || [],
-      });
-      setErrorsWarningsMetrics(errorsWarningsAndMetrics);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // here will be fetch spreadsheet call and loading and error handling
   useEffect(() => {
     const initialize = async () => {
@@ -98,6 +77,17 @@ function ShareUploadErrorWarnings() {
           updatedReports: result.updated_reports || [],
           unchangedReports: result.unchanged_reports || [],
         });
+        const errorsWarningsAndMetrics = processUploadResponseBody(result);
+        const hasErrorsOrWarnings =
+          (errorsWarningsAndMetrics.nonMetricErrors &&
+            errorsWarningsAndMetrics.nonMetricErrors.length > 0) ||
+          errorsWarningsAndMetrics.errorsWarningsAndSuccessfulMetrics
+            .errorWarningMetrics.length > 0 ||
+          errorsWarningsAndMetrics.errorsWarningsAndSuccessfulMetrics
+            .hasWarnings;
+        if (hasErrorsOrWarnings) {
+          return setErrorsWarningsMetrics(errorsWarningsAndMetrics);
+        }
       }
     };
     initialize();
