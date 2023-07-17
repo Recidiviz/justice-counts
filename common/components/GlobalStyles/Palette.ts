@@ -61,5 +61,6 @@ export const palette = {
     bar8: "#64859E",
     bar9: "#596041",
     bar10: "#C36C3B",
+    bar11: "#081E5C",
   },
 };

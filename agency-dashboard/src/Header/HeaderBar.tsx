@@ -17,12 +17,15 @@
 
 import { ReactComponent as JCLogo } from "@justice-counts/common/assets/jc-no-background-logo.svg";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import * as Styled from "./HeaderBar.styles";
 
 export const HeaderBar: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
-    <Styled.HeaderBarContainer>
+    <Styled.HeaderBarContainer onClick={() => navigate("/")}>
       <Styled.LogoTitle>
         <JCLogo />
         Justice Counts

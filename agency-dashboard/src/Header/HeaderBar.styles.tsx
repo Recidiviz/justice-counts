@@ -33,6 +33,7 @@ export const HeaderBarContainer = styled.header`
   z-index: 3;
   background: ${palette.solid.white};
   border-bottom: 1px solid ${palette.highlight.grey5};
+  cursor: pointer;
 `;
 
 export const LogoTitle = styled.div`
@@ -42,7 +43,7 @@ export const LogoTitle = styled.div`
   align-items: center;
   gap: 16px;
   padding: 12px 24px;
-  font-family: "VitesseSSm", sans-serif;
+  font-family: VitesseSSm, sans-serif;
   ${typography.sizeCSS.large};
   color: ${palette.solid.white};
   border-bottom-left-radius: 8px;

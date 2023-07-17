@@ -16,7 +16,7 @@
 // =============================================================================
 
 import {
-  HEADER_BAR_HEIGHT,
+  AGENCY_DASHBOARD_HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -26,7 +26,7 @@ export const METRIC_BOX_DESKTOP_WIDTH = 280;
 
 export const AgencyOverviewWrapper = styled.div`
   max-width: ${METRIC_BOX_DESKTOP_WIDTH * 4 + 48 + 1}px;
-  margin: ${HEADER_BAR_HEIGHT + 14}px auto;
+  margin: ${AGENCY_DASHBOARD_HEADER_BAR_HEIGHT + 96}px auto;
   display: flex;
   flex-direction: column;
   padding: 0 24px 73px 24px;
@@ -37,44 +37,39 @@ export const AgencyOverviewWrapper = styled.div`
   }
 `;
 
-export const PageTitle = styled.div`
-  ${typography.sizeCSS.medium};
+export const AgencyOverviewHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  padding-bottom: 96px;
+  border-bottom: 1px solid ${palette.highlight.grey3};
   margin-bottom: 24px;
-
-  @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
-    ${typography.sizeCSS.normal};
-    margin-bottom: 16px;
-  }
 `;
 
 export const AgencyTitle = styled.div`
   ${typography.sizeCSS.headline};
-  margin-bottom: 24px;
-
-  @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
-    ${typography.sizeCSS.title};
-    line-height: 38px;
-    margin-bottom: 16px;
-  }
+  width: 50%;
 `;
 
-export const Description = styled.div`
-  max-width: 424px;
+export const AgencyDescription = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
   ${typography.sizeCSS.normal};
-  margin-bottom: 32px;
 `;
 
-export const MetricsCount = styled.div`
-  ${typography.sizeCSS.title};
-  margin-bottom: 32px;
+export const AgencyHomepage = styled.a`
+  color: ${palette.solid.blue};
+  text-decoration: none;
+`;
 
-  span {
-    color: ${palette.solid.blue};
-  }
-
-  @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
-    ${typography.sizeCSS.medium};
-  }
+export const NoDataText = styled.div`
+  ${typography.sizeCSS.large};
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  padding-top: 64px;
 `;
 
 export const MetricsViewContainer = styled.div`
@@ -83,24 +78,49 @@ export const MetricsViewContainer = styled.div`
   gap: 32px;
 `;
 
+export const SectorChipsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  margin-bottom: 64px;
+`;
+
+export const SectorChip = styled.div<{ active: boolean }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${({ active }) =>
+    active ? palette.highlight.grey1 : palette.highlight.grey8};
+  color: ${({ active }) =>
+    active ? palette.highlight.grey8 : palette.solid.white};
+  padding: 8px 16px;
+  ${typography.sizeCSS.normal};
+  width: fit-content;
+  border-radius: 8px;
+  text-transform: capitalize;
+  cursor: pointer;
+`;
+
 export const CategorizedMetricsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
-
-  @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
-    margin-bottom: 9px;
-  }
+  margin-bottom: 96px;
 `;
 
 export const CategoryTitle = styled.div`
-  ${typography.sizeCSS.medium}
-  max-width: ${METRIC_BOX_DESKTOP_WIDTH}px;
+  ${typography.sizeCSS.large};
+  margin-bottom: 8px;
 
-  @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
-    ${typography.sizeCSS.small};
-    color: ${palette.highlight.grey9};
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
   }
+`;
+
+export const CategoryDescription = styled.div`
+  ${typography.sizeCSS.normal};
+  color: ${palette.highlight.grey8};
+  margin-bottom: 32px;
 `;
 
 export const MetricsContainer = styled.div<{ maxMetricsInRow: number }>`
@@ -120,69 +140,38 @@ export const MetricsContainer = styled.div<{ maxMetricsInRow: number }>`
   }
 `;
 
-export const MetricBox = styled.div<{ isPublished: boolean }>`
+export const MetricBox = styled.div`
   width: ${METRIC_BOX_DESKTOP_WIDTH}px;
   max-width: ${METRIC_BOX_DESKTOP_WIDTH}px;
-  height: 352px;
-  padding: 10px 14px 14px 14px;
+  height: 223px;
+  padding: 24px;
   border-right: 1px solid ${palette.highlight.grey3};
   border-bottom: 1px solid ${palette.highlight.grey3};
 
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 
-  ${({ isPublished }) =>
-    isPublished &&
-    `&:hover {
+  &:hover {
+    background-color: ${palette.highlight.grey1};
     cursor: pointer;
-    background-color: ${palette.solid.blue};
-    border-right: 1px solid ${palette.solid.blue};
-    border-bottom: 1px solid ${palette.solid.blue};
-    box-shadow: -1px -1px ${palette.solid.blue}, 0 -1px ${palette.solid.blue},
-      -1px 0 ${palette.solid.blue};
-    color: ${palette.solid.white};
-  }`}
+  }
 
   @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
-    width: 100%;
-    max-width: 100%;
-    border-right: none;
-    border-bottom: none;
-
-    height: auto;
-    padding: 6px 0;
-    border-top: 1px solid ${palette.solid.darkgrey};
-    flex-direction: row;
-    justify-content: space-between;
-
-    ${({ isPublished }) =>
-      isPublished &&
-      `&:hover {
-        cursor: pointer;
-        background-color: transparent;
-        border-right: none;
-        border-bottom: none;
-        box-shadow: none;
-        color: ${palette.solid.darkgrey};
-    }`}
+    border-left: 1px solid ${palette.highlight.grey3};
+    border-top: 1px solid ${palette.highlight.grey3};
   }
 `;
 
-export const MetricBoxTitle = styled.div<{ isPublished: boolean }>`
-  ${typography.sizeCSS.title};
-  line-height: 38px;
-  color: ${({ isPublished }) => !isPublished && palette.highlight.grey8};
+export const MetricBoxTitle = styled.div`
+  ${typography.sizeCSS.small};
+  color: ${palette.highlight.grey8};
+  letter-spacing: 2px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   word-break: break-word;
   overflow: hidden;
-
-  @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
-    width: 70%;
-    ${typography.sizeCSS.medium};
-  }
+  margin-bottom: auto;
 `;
 
 export const MetricBoxContentContainer = styled.div`
@@ -199,8 +188,7 @@ export const MetricBoxGraphContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 58px;
+  gap: 4px;
 
   @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
     margin-bottom: 0;
@@ -208,47 +196,43 @@ export const MetricBoxGraphContainer = styled.div`
 `;
 
 export const MiniChartContainer = styled.div`
-  width: 128px;
+  width: 100%;
   height: 85px;
 
   .recharts-wrapper {
     cursor: pointer !important;
   }
-
-  @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
-    width: 38px;
-    height: 24px;
-  }
 `;
 
-export const MetricBoxGraphLastUpdate = styled.div`
-  ${typography.sizeCSS.small};
-
-  @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
-    display: none;
-  }
-`;
-
-export const MetricBoxFooter = styled.div<{ isPublished: boolean }>`
+export const MetricBoxGraphRange = styled.div`
+  ${typography.sizeCSS.normal};
+  color: ${palette.highlight.grey8};
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
-  ${typography.sizeCSS.medium};
-  color: ${({ isPublished }) => !isPublished && palette.highlight.grey8};
-
-  img {
-    transform: rotate(180deg);
-
-    ${MetricBox}:hover & {
-      filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%)
-        hue-rotate(261deg) brightness(108%) contrast(101%);
-    }
-  }
-
-  @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
-    display: ${({ isPublished }) => isPublished && "none"};
-    ${typography.sizeCSS.small};
-    align-items: start;
-  }
+  width: 100%;
 `;
+
+// export const MetricBoxFooter = styled.div<{ isPublished: boolean }>`
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: space-between;
+//   align-items: center;
+//   ${typography.sizeCSS.medium};
+//   color: ${({ isPublished }) => !isPublished && palette.highlight.grey8};
+//
+//   img {
+//     transform: rotate(180deg);
+//
+//     ${MetricBox}:hover & {
+//       filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%)
+//         hue-rotate(261deg) brightness(108%) contrast(101%);
+//     }
+//   }
+//
+//   @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
+//     display: ${({ isPublished }) => isPublished && "none"};
+//     ${typography.sizeCSS.small};
+//     align-items: start;
+//   }
+// `;
