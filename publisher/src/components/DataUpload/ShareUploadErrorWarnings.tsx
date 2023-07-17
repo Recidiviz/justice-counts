@@ -15,6 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Button } from "@justice-counts/common/components/Button";
+import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
+import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
   ReportOverview,
   SupervisionSubsystems,
@@ -25,7 +29,10 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { PageWrapper } from "../Forms";
+import { REPORTS_LOWERCASE } from "../Global/constants";
+import { useHeaderBadge } from "../Header/hooks";
 import { Loading } from "../Loading";
+import { DataUploadContainer } from ".";
 import ShareSpreadsheet from "./ShareSpreadsheet";
 import { ErrorsWarningsMetrics } from "./types";
 import { UploadErrorsWarnings } from "./UploadErrorsWarnings";
@@ -34,6 +41,8 @@ import { processUploadResponseBody } from "./utils";
 function ShareUploadErrorWarnings() {
   const navigate = useNavigate();
   const { userStore, reportStore } = useStore();
+  const headerBadge = useHeaderBadge();
+  const windowWidth = useWindowWidth();
 
   const [errorsWarningsMetrics, setErrorsWarningsMetrics] =
     useState<ErrorsWarningsMetrics>();
@@ -103,16 +112,41 @@ function ShareUploadErrorWarnings() {
   if (loadingError || !reportStore.spreadsheetReviewData[spreadsheetId]) {
     return <PageWrapper>Error: {loadingError}</PageWrapper>;
   }
-
+  const headerBackground = () => {
+    if (!errorsWarningsMetrics && windowWidth > MIN_DESKTOP_WIDTH)
+      return "transparent";
+    if (!errorsWarningsMetrics && windowWidth <= MIN_DESKTOP_WIDTH)
+      return "blue";
+    return undefined;
+  };
   if (errorsWarningsMetrics) {
     return (
-      <UploadErrorsWarnings
-        errorsWarningsMetrics={errorsWarningsMetrics}
-        newAndUpdatedReports={newAndUpdatedReports}
-        selectedSystem={userSystems.length === 1 ? userSystems[0] : undefined}
-        resetToNewUpload={() => navigate(`/agency/${agencyId}/upload`)}
-        fileName={reportStore.spreadsheetReviewData[spreadsheetId].file_name}
-      />
+      <DataUploadContainer>
+        <HeaderBar
+          onLogoClick={() =>
+            navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)
+          }
+          background={headerBackground()}
+          hasBottomBorder={!!errorsWarningsMetrics}
+          label="Justice Counts"
+          badge={headerBadge}
+        >
+          <Button
+            label={errorsWarningsMetrics ? "Close" : "Cancel"}
+            onClick={() => navigate(-1)}
+            buttonColor={errorsWarningsMetrics ? "red" : undefined}
+            borderColor={errorsWarningsMetrics ? undefined : "white"}
+            labelColor={errorsWarningsMetrics ? undefined : "white"}
+          />
+        </HeaderBar>
+        <UploadErrorsWarnings
+          errorsWarningsMetrics={errorsWarningsMetrics}
+          newAndUpdatedReports={newAndUpdatedReports}
+          selectedSystem={userSystems.length === 1 ? userSystems[0] : undefined}
+          resetToNewUpload={() => navigate(`/agency/${agencyId}/upload`)}
+          fileName={reportStore.spreadsheetReviewData[spreadsheetId].file_name}
+        />
+      </DataUploadContainer>
     );
   }
   return <ShareSpreadsheet />;
