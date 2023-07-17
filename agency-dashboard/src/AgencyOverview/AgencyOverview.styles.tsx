@@ -63,15 +63,6 @@ export const AgencyHomepage = styled.a`
   text-decoration: none;
 `;
 
-export const NoDataText = styled.div`
-  ${typography.sizeCSS.large};
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  text-align: center;
-  padding-top: 64px;
-`;
-
 export const MetricsViewContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -213,26 +204,43 @@ export const MetricBoxGraphRange = styled.div`
   width: 100%;
 `;
 
-// export const MetricBoxFooter = styled.div<{ isPublished: boolean }>`
-//   display: flex;
-//   flex-direction: row;
-//   justify-content: space-between;
-//   align-items: center;
-//   ${typography.sizeCSS.medium};
-//   color: ${({ isPublished }) => !isPublished && palette.highlight.grey8};
-//
-//   img {
-//     transform: rotate(180deg);
-//
-//     ${MetricBox}:hover & {
-//       filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%)
-//         hue-rotate(261deg) brightness(108%) contrast(101%);
-//     }
-//   }
-//
-//   @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
-//     display: ${({ isPublished }) => isPublished && "none"};
-//     ${typography.sizeCSS.small};
-//     align-items: start;
-//   }
-// `;
+export const NotFoundWrapper = styled.div`
+  //margin-top: ${AGENCY_DASHBOARD_HEADER_BAR_HEIGHT + 96}px;
+  //margin-bottom: 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+`;
+
+export const NotFoundTitle = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  ${typography.sizeCSS.headline};
+`;
+
+export const NotFoundText = styled.div`
+  ${typography.sizeCSS.large};
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  span {
+    ${typography.sizeCSS.medium};
+  }
+
+  a {
+    ${typography.sizeCSS.medium};
+    text-decoration: none;
+    color: ${palette.solid.blue};
+  }
+`;
