@@ -120,11 +120,13 @@ export const AgencyOverview = observer(() => {
     agencyDataStore.agency?.systems?.some((system) =>
       availableSectors.includes(system)
     );
-  const metricsByAvailableCategories = agencyDataStore.metrics.filter(
-    (metric) => Object.keys(orderedCategoriesMap).includes(metric.category)
+  const metricsByAvailableCategoriesAndSectors = agencyDataStore.metrics.filter(
+    (metric) =>
+      Object.keys(orderedCategoriesMap).includes(metric.category) &&
+      availableSectors.includes(metric.system.key)
   );
   const metricsByAvailableCategoriesWithData =
-    metricsByAvailableCategories.filter(
+    metricsByAvailableCategoriesAndSectors.filter(
       (metric) =>
         agencyDataStore.datapointsByMetric[metric.key].aggregate.filter(
           (dp) => dp[DataVizAggregateName] !== null
