@@ -15,9 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import bjaLogo from "@justice-counts/common/assets/bja-logo.png";
-import csgLogo from "@justice-counts/common/assets/csg-logo.png";
-import dojLogo from "@justice-counts/common/assets/doj-logo.png";
+import { ReactComponent as BJALogo } from "@justice-counts/common/assets/bja-logo.svg";
+import { ReactComponent as CSGLogo } from "@justice-counts/common/assets/csg-logo.svg";
+import { ReactComponent as DOJLogo } from "@justice-counts/common/assets/doj-logo.svg";
 import React from "react";
 
 import * as Styled from "./Footer.styles";
@@ -45,9 +45,9 @@ export function Footer() {
           </Styled.FooterInfoBlock>
         </Styled.FooterTopInfo>
         <Styled.FooterLogos>
-          <img src={dojLogo} alt="" />
-          <img src={bjaLogo} alt="" />
-          <img src={csgLogo} alt="" />
+          <DOJLogo />
+          <BJALogo />
+          <CSGLogo />
         </Styled.FooterLogos>
         <Styled.FooterBottomInfo>
           This Web site is funded in part through a grant from the Bureau of

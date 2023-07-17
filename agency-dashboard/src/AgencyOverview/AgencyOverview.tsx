@@ -53,8 +53,8 @@ import {
   NotFoundText,
   NotFoundTitle,
   NotFoundWrapper,
-  SectorChip,
-  SectorChipsContainer,
+  SystemChip,
+  SystemChipsContainer,
 } from ".";
 
 const orderedCategoriesMap: {
@@ -70,8 +70,8 @@ const orderedCategoriesMap: {
   },
 };
 
-// include here sectors that you want users to be able to choose
-const availableSectors: AgencySystems[] = ["PRISONS"];
+// include here systems that you want users to be able to choose
+const availableSystems: AgencySystems[] = ["PRISONS"];
 
 export const AgencyOverview = observer(() => {
   const navigate = useNavigate();
@@ -79,8 +79,8 @@ export const AgencyOverview = observer(() => {
   const agencyId = Number(params.id);
   const { agencyDataStore } = useStore();
   const maxMetricsInRow = useMaxMetricBoxesInRow();
-  const [currentSector, setCurrentSector] = useState<AgencySystems>(
-    availableSectors[0]
+  const [currentSystem, setCurrentSystem] = useState<AgencySystems>(
+    availableSystems[0]
   );
 
   const agencyDescription =
@@ -116,27 +116,26 @@ export const AgencyOverview = observer(() => {
     return <Loading />;
   }
 
-  const isAgencyIncludesAvailableSectors =
-    agencyDataStore.agency?.systems?.some((system) =>
-      availableSectors.includes(system)
-    );
-  const metricsByAvailableCategoriesAndSectors = agencyDataStore.metrics.filter(
+  const agencyHasAvailableSystems = agencyDataStore.agency?.systems?.some(
+    (system) => availableSystems.includes(system)
+  );
+  const metricsByAvailableCategoriesAndSystems = agencyDataStore.metrics.filter(
     (metric) =>
       Object.keys(orderedCategoriesMap).includes(metric.category) &&
-      availableSectors.includes(metric.system.key)
+      availableSystems.includes(metric.system.key)
   );
-  const metricsByAvailableCategoriesAndSectorsWithData =
-    metricsByAvailableCategoriesAndSectors.filter(
+  const metricsByAvailableCategoriesAndSystemsWithData =
+    metricsByAvailableCategoriesAndSystems.filter(
       (metric) =>
         agencyDataStore.datapointsByMetric[metric.key].aggregate.filter(
           (dp) => dp[DataVizAggregateName] !== null
         ).length > 0
     );
-  const agencyHasNoAvailableSectorsOrHasNoData =
-    !isAgencyIncludesAvailableSectors ||
-    metricsByAvailableCategoriesAndSectorsWithData.length === 0;
+  const agencyHasNoAvailableSystemsOrHasNoData =
+    !agencyHasAvailableSystems ||
+    metricsByAvailableCategoriesAndSystemsWithData.length === 0;
 
-  if (agencyHasNoAvailableSectorsOrHasNoData)
+  if (agencyHasNoAvailableSystemsOrHasNoData)
     return (
       <>
         <HeaderBar />
@@ -173,25 +172,25 @@ export const AgencyOverview = observer(() => {
           </AgencyDescription>
         </AgencyOverviewHeader>
         <MetricsViewContainer>
-          <SectorChipsContainer>
-            {availableSectors.map((sector) => (
-              <SectorChip
-                key={sector}
-                onClick={() => setCurrentSector(sector)}
-                active={sector === currentSector}
+          <SystemChipsContainer>
+            {availableSystems.map((system) => (
+              <SystemChip
+                key={system}
+                onClick={() => setCurrentSystem(system)}
+                active={system === currentSystem}
               >
-                {sector.toLowerCase().replaceAll("_", " ")}
-              </SectorChip>
+                {system.toLowerCase().replaceAll("_", " ")}
+              </SystemChip>
             ))}
-          </SectorChipsContainer>
+          </SystemChipsContainer>
           {Object.keys(orderedCategoriesMap).map((category) => {
             const metricsByCategory =
               agencyDataStore.metricsByCategory[category];
             if (!metricsByCategory) return null;
-            const metricsByCategoryBySector = metricsByCategory.filter(
-              (metric) => metric.system.key === currentSector
+            const metricsByCategoryBySystem = metricsByCategory.filter(
+              (metric) => metric.system.key === currentSystem
             );
-            const metricsWithData = metricsByCategoryBySector.filter(
+            const metricsWithData = metricsByCategoryBySystem.filter(
               (metric) =>
                 agencyDataStore.datapointsByMetric[metric.key].aggregate.filter(
                   (dp) => dp[DataVizAggregateName] !== null

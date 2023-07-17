@@ -26,7 +26,7 @@ export const METRIC_BOX_DESKTOP_WIDTH = 280;
 
 export const AgencyOverviewWrapper = styled.div`
   max-width: ${METRIC_BOX_DESKTOP_WIDTH * 4 + 48 + 1}px;
-  margin: ${AGENCY_DASHBOARD_HEADER_BAR_HEIGHT + 96}px auto;
+  margin: ${AGENCY_DASHBOARD_HEADER_BAR_HEIGHT + 96}px auto 64px auto;
   display: flex;
   flex-direction: column;
   padding: 0 24px 73px 24px;
@@ -66,17 +66,16 @@ export const AgencyHomepage = styled.a`
 export const MetricsViewContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 32px;
 `;
 
-export const SectorChipsContainer = styled.div`
+export const SystemChipsContainer = styled.div`
   display: flex;
   flex-direction: row;
   gap: 24px;
   margin-bottom: 64px;
 `;
 
-export const SectorChip = styled.div<{ active: boolean }>`
+export const SystemChip = styled.div<{ active: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -96,6 +95,10 @@ export const CategorizedMetricsContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 96px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 `;
 
 export const CategoryTitle = styled.div`
@@ -205,8 +208,6 @@ export const MetricBoxGraphRange = styled.div`
 `;
 
 export const NotFoundWrapper = styled.div`
-  //margin-top: ${AGENCY_DASHBOARD_HEADER_BAR_HEIGHT + 96}px;
-  //margin-bottom: 96px;
   display: flex;
   flex-direction: column;
   gap: 48px;
