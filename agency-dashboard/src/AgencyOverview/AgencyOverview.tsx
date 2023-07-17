@@ -125,7 +125,7 @@ export const AgencyOverview = observer(() => {
       Object.keys(orderedCategoriesMap).includes(metric.category) &&
       availableSectors.includes(metric.system.key)
   );
-  const metricsByAvailableCategoriesWithData =
+  const metricsByAvailableCategoriesAndSectorsWithData =
     metricsByAvailableCategoriesAndSectors.filter(
       (metric) =>
         agencyDataStore.datapointsByMetric[metric.key].aggregate.filter(
@@ -134,7 +134,7 @@ export const AgencyOverview = observer(() => {
     );
   const agencyHasNoAvailableSectorsOrHasNoData =
     !isAgencyIncludesAvailableSectors ||
-    metricsByAvailableCategoriesWithData.length === 0;
+    metricsByAvailableCategoriesAndSectorsWithData.length === 0;
 
   if (agencyHasNoAvailableSectorsOrHasNoData)
     return (
