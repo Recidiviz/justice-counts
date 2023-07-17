@@ -224,6 +224,7 @@ class ReportStore {
       runInAction(() => {
         this.spreadsheetReviewData[spreadsheetId] = data;
       });
+      return data;
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
     } finally {
