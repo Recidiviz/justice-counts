@@ -26,6 +26,7 @@ import {
 import { IReactionDisposer, makeAutoObservable, runInAction } from "mobx";
 
 import { UploadedFileStatus } from "../components/DataUpload";
+import { DataUploadResponseBody } from "../components/DataUpload/types";
 import {
   REPORT_LOWERCASE,
   REPORTS_LOWERCASE,
@@ -35,7 +36,6 @@ import {
   PublishReviewMetricErrors,
   PublishReviewPropsFromDatapoints,
 } from "../components/ReviewMetrics";
-import { MockDataType } from "../mocks/spreadsheetReviewData";
 import { groupBy } from "../utils";
 import API from "./API";
 import DatapointsStore from "./DatapointsStore";
@@ -54,7 +54,7 @@ class ReportStore {
 
   metricsBySystem: { [system: string]: Metric[] }; // key by system
 
-  spreadsheetReviewData: { [spreadsheetId: string]: MockDataType };
+  spreadsheetReviewData: { [spreadsheetId: string]: DataUploadResponseBody };
 
   loadingOverview: boolean;
 
@@ -205,12 +205,12 @@ class ReportStore {
   // api call for spreadsheet data
   async getSpreadsheetReviewData(
     spreadsheetId: string
-  ): Promise<MockDataType | Error | void> {
+  ): Promise<DataUploadResponseBody | Error | void> {
     this.loadingSpreadsheetReviewData = true;
 
     try {
       const response = (await this.api.request({
-        path: `/api/spreadsheets${spreadsheetId}/review`,
+        path: `/api/${spreadsheetId}/bulk-upload-json`,
         method: "GET",
       })) as Response;
 
@@ -220,9 +220,9 @@ class ReportStore {
         );
       }
 
-      const data = (await response.json()) as MockDataType;
+      const data = (await response.json()) as DataUploadResponseBody;
       runInAction(() => {
-        this.spreadsheetReviewData[data.spreadsheetId] = data;
+        this.spreadsheetReviewData[spreadsheetId] = data;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);

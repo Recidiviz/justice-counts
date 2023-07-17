@@ -16,61 +16,57 @@
 // =============================================================================
 
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
-import { data } from "../../mocks/spreadsheetReviewData";
+import { useStore } from "../../stores";
+import { PageWrapper } from "../Forms";
+import { Loading } from "../Loading/Loading";
 import { SpreadsheetReview } from "./SpreadsheetReview";
 
 function ShareSpreadsheet() {
-  // mock data that will be replaced with one from store
-  const {
-    metrics: uploadedMetrics,
-    fileName,
-    unchanged_reports: unchangedReports,
-    updated_reports: updatedReports,
-    new_reports: newReports,
-  } = data;
-
-  // with using spreadsheetId we will fetch spreadsheet data
-  // const { agencyId, spreadsheetId } = useParams() as {
-  //   agencyId: string;
-  //   spreadsheetId: string;
-  // };
-  // const [loadingError, setLoadingError] = useState<string | undefined>(
-  //   undefined
-  // );
+  // using spreadsheetId we will fetch spreadsheet data
+  const { spreadsheetId } = useParams() as {
+    spreadsheetId: string;
+  };
+  const [loadingError, setLoadingError] = useState<string | undefined>(
+    undefined
+  );
+  const { reportStore } = useStore();
 
   // here will be fetch spreadsheet call and loading and error handling
-  // useEffect(() => {
-  //   const initialize = async () => {
-  //     const result = await reportStore.getSpreadsheetReviewData(spreadsheetId);
-  //     if (result instanceof Error) {
-  //       setLoadingError(result.message);
-  //     }
-  //   };
-  //
-  //   initialize();
-  // }, []);
-  //
-  // if (reportStore.loadingSpreadsheetReviewData) {
-  //   return (
-  //     <PageWrapper>
-  //       <Loading />
-  //     </PageWrapper>
-  //   );
-  // }
-  //
-  // if (loadingError || !reportStore.spreadsheetReviewData[spreadsheetId]) {
-  //   return <PageWrapper>Error: {loadingError}</PageWrapper>;
-  // }
+  useEffect(() => {
+    const initialize = async () => {
+      const result = await reportStore.getSpreadsheetReviewData(spreadsheetId);
+      if (result instanceof Error) {
+        setLoadingError(result.message);
+      }
+    };
 
+    initialize();
+  }, [reportStore, spreadsheetId]);
+
+  if (reportStore.loadingSpreadsheetReviewData) {
+    return (
+      <PageWrapper>
+        <Loading />
+      </PageWrapper>
+    );
+  }
+
+  if (loadingError || !reportStore.spreadsheetReviewData[spreadsheetId]) {
+    return <PageWrapper>Error: {loadingError}</PageWrapper>;
+  }
+
+  const spreadsheetReviewData =
+    reportStore.spreadsheetReviewData[spreadsheetId];
   return (
     <SpreadsheetReview
-      updatedReports={updatedReports}
-      unchangedReports={unchangedReports}
-      newReports={newReports}
-      uploadedMetrics={uploadedMetrics}
-      fileName={fileName}
+      updatedReports={spreadsheetReviewData.updated_reports}
+      unchangedReports={spreadsheetReviewData.unchanged_reports}
+      newReports={spreadsheetReviewData.new_reports}
+      uploadedMetrics={spreadsheetReviewData.metrics}
+      fileName={spreadsheetReviewData.file_name}
     />
   );
 }
