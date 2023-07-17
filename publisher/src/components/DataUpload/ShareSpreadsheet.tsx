@@ -58,17 +58,15 @@ function ShareSpreadsheet() {
     return <PageWrapper>Error: {loadingError}</PageWrapper>;
   }
 
+  const spreadsheetReviewData =
+    reportStore.spreadsheetReviewData[spreadsheetId];
   return (
     <SpreadsheetReview
-      updatedReports={
-        reportStore.spreadsheetReviewData[spreadsheetId].updated_reports
-      }
-      unchangedReports={
-        reportStore.spreadsheetReviewData[spreadsheetId].unchanged_reports
-      }
-      newReports={reportStore.spreadsheetReviewData[spreadsheetId].new_reports}
-      uploadedMetrics={reportStore.spreadsheetReviewData[spreadsheetId].metrics}
-      fileName={reportStore.spreadsheetReviewData[spreadsheetId].file_name}
+      updatedReports={spreadsheetReviewData.updated_reports}
+      unchangedReports={spreadsheetReviewData.unchanged_reports}
+      newReports={spreadsheetReviewData.new_reports}
+      uploadedMetrics={spreadsheetReviewData.metrics}
+      fileName={spreadsheetReviewData.file_name}
     />
   );
 }
