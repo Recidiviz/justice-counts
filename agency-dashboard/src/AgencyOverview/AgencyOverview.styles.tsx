@@ -117,20 +117,14 @@ export const CategoryDescription = styled.div`
   margin-bottom: 32px;
 `;
 
-export const MetricsContainer = styled.div<{ maxMetricsInRow: number }>`
+export const MetricsContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  max-width: ${({ maxMetricsInRow }) =>
-    maxMetricsInRow * METRIC_BOX_DESKTOP_WIDTH + 1}px;
-  border-left: 1px solid ${palette.highlight.grey3};
-  border-top: 1px solid ${palette.highlight.grey3};
 
   @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
     max-width: 100%;
     flex-direction: column;
-    border-left: none;
-    border-top: none;
   }
 `;
 
@@ -139,8 +133,11 @@ export const MetricBox = styled.div`
   max-width: ${METRIC_BOX_DESKTOP_WIDTH}px;
   height: 223px;
   padding: 24px;
-  border-right: 1px solid ${palette.highlight.grey3};
-  border-bottom: 1px solid ${palette.highlight.grey3};
+
+  // dark grey palette color with 0.15 opacity converted to opaque color in order to look properly
+  box-shadow: 1px 0 0 0 rgb(217, 219, 224), 0 1px 0 0 rgb(217, 219, 224),
+    1px 1px 0 0 rgb(217, 219, 224), 1px 0 0 0 rgb(217, 219, 224) inset,
+    0 1px 0 0 rgb(217, 219, 224) inset;
 
   display: flex;
   flex-direction: column;
@@ -148,11 +145,6 @@ export const MetricBox = styled.div`
   &:hover {
     background-color: ${palette.highlight.grey1};
     cursor: pointer;
-  }
-
-  @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
-    border-left: 1px solid ${palette.highlight.grey3};
-    border-top: 1px solid ${palette.highlight.grey3};
   }
 `;
 

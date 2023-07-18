@@ -30,7 +30,6 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
-import { useMaxMetricBoxesInRow } from "../hooks";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
 import {
@@ -78,7 +77,6 @@ export const AgencyOverview = observer(() => {
   const params = useParams();
   const agencyId = Number(params.id);
   const { agencyDataStore } = useStore();
-  const maxMetricsInRow = useMaxMetricBoxesInRow();
   const [currentSystem, setCurrentSystem] = useState<AgencySystems>(
     availableSystems[0]
   );
@@ -197,79 +195,69 @@ export const AgencyOverview = observer(() => {
                 ).length > 0
             );
             return (
-              metricsWithData.length > 0 && (
-                <CategorizedMetricsContainer key={category}>
-                  <CategoryTitle>
-                    {`${orderedCategoriesMap[category].label} ->`}
-                  </CategoryTitle>
-                  <CategoryDescription>
-                    {orderedCategoriesMap[category].description}
-                  </CategoryDescription>
-                  <MetricsContainer
-                    maxMetricsInRow={
-                      maxMetricsInRow >= 4 ||
-                      maxMetricsInRow > metricsWithData.length
-                        ? metricsWithData.length
-                        : maxMetricsInRow
-                    }
-                  >
-                    {metricsWithData.map((metric) => {
-                      const data =
-                        agencyDataStore.datapointsByMetric[metric.key]
-                          .aggregate;
-                      const isAnnual = metric.custom_frequency === "ANNUAL";
-                      const lastDatapointDate = new Date(
-                        data[data.length - 1].start_date
-                      );
+              <CategorizedMetricsContainer key={category}>
+                <CategoryTitle>
+                  {`${orderedCategoriesMap[category].label} ->`}
+                </CategoryTitle>
+                <CategoryDescription>
+                  {orderedCategoriesMap[category].description}
+                </CategoryDescription>
+                <MetricsContainer>
+                  {metricsWithData.map((metric) => {
+                    const data =
+                      agencyDataStore.datapointsByMetric[metric.key].aggregate;
+                    const isAnnual = metric.custom_frequency === "ANNUAL";
+                    const lastDatapointDate = new Date(
+                      data[data.length - 1].start_date
+                    );
 
-                      return (
-                        <MetricBox
-                          key={metric.key}
-                          onClick={() => handleNavigate(true, metric.key)}
-                        >
-                          <MetricBoxTitle>
-                            {metric.display_name.toUpperCase()}
-                          </MetricBoxTitle>
-                          <MetricBoxContentContainer>
-                            <MetricBoxGraphContainer>
-                              <MiniChartContainer>
-                                <MiniBarChart
-                                  data={transformDataForBarChart(
-                                    data,
-                                    isAnnual
-                                      ? DataVizTimeRangesMap["5 Years Ago"]
-                                      : DataVizTimeRangesMap["1 Year Ago"],
-                                    "Count"
-                                  )}
-                                  dimensionNames={[DataVizAggregateName]}
-                                />
-                              </MiniChartContainer>
-                              <MetricBoxGraphRange>
-                                <span>
-                                  {isAnnual
-                                    ? lastDatapointDate.getFullYear() - 5
-                                    : printDateAsShortMonthYear(
-                                        lastDatapointDate.getMonth() + 1,
-                                        lastDatapointDate.getFullYear() - 1
-                                      )}
-                                </span>
-                                <span>
-                                  {isAnnual
-                                    ? lastDatapointDate.getFullYear()
-                                    : printDateAsShortMonthYear(
-                                        lastDatapointDate.getMonth() + 1,
-                                        lastDatapointDate.getFullYear()
-                                      )}
-                                </span>
-                              </MetricBoxGraphRange>
-                            </MetricBoxGraphContainer>
-                          </MetricBoxContentContainer>
-                        </MetricBox>
-                      );
-                    })}
-                  </MetricsContainer>
-                </CategorizedMetricsContainer>
-              )
+                    return (
+                      <MetricBox
+                        key={metric.key}
+                        onClick={() => handleNavigate(true, metric.key)}
+                      >
+                        <MetricBoxTitle>
+                          {metric.display_name.toUpperCase()}
+                        </MetricBoxTitle>
+                        <MetricBoxContentContainer>
+                          <MetricBoxGraphContainer>
+                            <MiniChartContainer>
+                              <MiniBarChart
+                                data={transformDataForBarChart(
+                                  data,
+                                  isAnnual
+                                    ? DataVizTimeRangesMap["5 Years Ago"]
+                                    : DataVizTimeRangesMap["1 Year Ago"],
+                                  "Count"
+                                )}
+                                dimensionNames={[DataVizAggregateName]}
+                              />
+                            </MiniChartContainer>
+                            <MetricBoxGraphRange>
+                              <span>
+                                {isAnnual
+                                  ? lastDatapointDate.getFullYear() - 5
+                                  : printDateAsShortMonthYear(
+                                      lastDatapointDate.getMonth() + 1,
+                                      lastDatapointDate.getFullYear() - 1
+                                    )}
+                              </span>
+                              <span>
+                                {isAnnual
+                                  ? lastDatapointDate.getFullYear()
+                                  : printDateAsShortMonthYear(
+                                      lastDatapointDate.getMonth() + 1,
+                                      lastDatapointDate.getFullYear()
+                                    )}
+                              </span>
+                            </MetricBoxGraphRange>
+                          </MetricBoxGraphContainer>
+                        </MetricBoxContentContainer>
+                      </MetricBox>
+                    );
+                  })}
+                </MetricsContainer>
+              </CategorizedMetricsContainer>
             );
           })}
         </MetricsViewContainer>
