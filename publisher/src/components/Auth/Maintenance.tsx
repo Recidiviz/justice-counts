@@ -15,9 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import logoImg from "@justice-counts/common/assets/jc-logo-vector-new.svg";
 import React from "react";
 import styled from "styled-components/macro";
-import logoImg from "@justice-counts/common/assets/jc-logo-vector-new.svg";
 
 const MaintenanceContainer = styled.div`
   height: 100vh;
