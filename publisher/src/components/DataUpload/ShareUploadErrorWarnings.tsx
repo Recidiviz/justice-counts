@@ -15,6 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Button } from "@justice-counts/common/components/Button";
+import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
+import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
   ReportOverview,
   SupervisionSubsystems,
@@ -23,8 +27,11 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { data } from "../../mocks/spreadsheetReviewData";
 import { useStore } from "../../stores";
+import { PageWrapper } from "../Forms";
+import { useHeaderBadge } from "../Header/hooks";
+import { Loading } from "../Loading";
+import { DataUploadContainer } from ".";
 import ShareSpreadsheet from "./ShareSpreadsheet";
 import { ErrorsWarningsMetrics } from "./types";
 import { UploadErrorsWarnings } from "./UploadErrorsWarnings";
@@ -32,7 +39,9 @@ import { processUploadResponseBody } from "./utils";
 
 function ShareUploadErrorWarnings() {
   const navigate = useNavigate();
-  const { userStore } = useStore();
+  const { userStore, reportStore } = useStore();
+  const headerBadge = useHeaderBadge();
+  const windowWidth = useWindowWidth();
 
   const [errorsWarningsMetrics, setErrorsWarningsMetrics] =
     useState<ErrorsWarningsMetrics>();
@@ -47,13 +56,13 @@ function ShareUploadErrorWarnings() {
   });
 
   // with using spreadsheetId we will fetch spreadsheet data
-  const { agencyId } = useParams() as {
+  const { agencyId, spreadsheetId } = useParams() as {
     agencyId: string;
     spreadsheetId: string;
   };
-  // const [loadingError, setLoadingError] = useState<string | undefined>(
-  //   undefined
-  // );
+  const [loadingError, setLoadingError] = useState<string | undefined>(
+    undefined
+  );
 
   const currentAgency = userStore.getAgency(agencyId);
   const userSystems = useMemo(() => {
@@ -64,83 +73,79 @@ function ShareUploadErrorWarnings() {
       : [];
   }, [currentAgency]);
 
-  const errorsWarningsAndMetrics = processUploadResponseBody(data);
-  const hasErrorsOrWarnings =
-    (errorsWarningsAndMetrics.nonMetricErrors &&
-      errorsWarningsAndMetrics.nonMetricErrors.length > 0) ||
-    errorsWarningsAndMetrics.errorsWarningsAndSuccessfulMetrics
-      .errorWarningMetrics.length > 0 ||
-    errorsWarningsAndMetrics.errorsWarningsAndSuccessfulMetrics.hasWarnings;
-
-  useEffect(() => {
-    if (hasErrorsOrWarnings) {
-      setNewAndUpdatedReports({
-        newReports: data.new_reports || [],
-        updatedReports: data.updated_reports || [],
-        unchangedReports: data.unchanged_reports || [],
-      });
-      setErrorsWarningsMetrics(errorsWarningsAndMetrics);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // here will be fetch spreadsheet call and loading and error handling
-  // useEffect(() => {
-  //   const initialize = async () => {
-  //     const result = await reportStore.getSpreadsheetReviewData(spreadsheetId);
-  //     if (result instanceof Error) {
-  //       setLoadingError(result.message);
-  //     }
-  //
-  //     setNewAndUpdatedReports({
-  //       newReports: result.new_reports || [],
-  //       updatedReports: result.updated_reports || [],
-  //       unchangedReports: result.unchanged_reports || [],
-  //     });
-  //
-  //     const errorsWarningsAndMetrics = processUploadResponseBody(
-  //       result as DataUploadResponseBody
-  //     );
-  //     const hasErrorsOrWarnings =
-  //       (errorsWarningsAndMetrics.nonMetricErrors &&
-  //         errorsWarningsAndMetrics.nonMetricErrors.length > 0) ||
-  //       errorsWarningsAndMetrics.errorsWarningsAndSuccessfulMetrics
-  //         .errorWarningMetrics.length > 0 ||
-  //       errorsWarningsAndMetrics.errorsWarningsAndSuccessfulMetrics.hasWarnings;
-  //
-  //     if (hasErrorsOrWarnings) {
-  //       return setErrorsWarningsMetrics(errorsWarningsAndMetrics);
-  //     }
-  //   };
-  //
-  //   initialize();
-  // }, []);
+  useEffect(() => {
+    const initialize = async () => {
+      const result = await reportStore.getSpreadsheetReviewData(spreadsheetId);
+      if (result instanceof Error) {
+        setLoadingError(result.message);
+      } else if (result) {
+        setNewAndUpdatedReports({
+          newReports: result.new_reports || [],
+          updatedReports: result.updated_reports || [],
+          unchangedReports: result.unchanged_reports || [],
+        });
+        const errorsWarningsAndMetrics = processUploadResponseBody(result);
+        const hasErrorsOrWarnings =
+          (errorsWarningsAndMetrics.nonMetricErrors &&
+            errorsWarningsAndMetrics.nonMetricErrors.length > 0) ||
+          errorsWarningsAndMetrics.errorsWarningsAndSuccessfulMetrics
+            .errorWarningMetrics.length > 0 ||
+          errorsWarningsAndMetrics.errorsWarningsAndSuccessfulMetrics
+            .hasWarnings;
+        if (hasErrorsOrWarnings) {
+          return setErrorsWarningsMetrics(errorsWarningsAndMetrics);
+        }
+      }
+    };
+    initialize();
+  }, [reportStore, spreadsheetId]);
 
-  // if (reportStore.loadingSpreadsheetReviewData) {
-  //   return (
-  //     <PageWrapper>
-  //       <Loading />
-  //     </PageWrapper>
-  //   );
-  // }
-  //
-  // if (loadingError || !reportStore.spreadsheetReviewData[spreadsheetId]) {
-  //   return <PageWrapper>Error: {loadingError}</PageWrapper>;
-  // }
-
-  if (errorsWarningsMetrics) {
+  if (reportStore.loadingSpreadsheetReviewData) {
     return (
-      <UploadErrorsWarnings
-        errorsWarningsMetrics={errorsWarningsMetrics}
-        newAndUpdatedReports={newAndUpdatedReports}
-        selectedSystem={userSystems.length === 1 ? userSystems[0] : undefined}
-        resetToNewUpload={() => navigate(`/agency/${agencyId}/upload`)}
-        // fileName={reportStore.spreadsheetReviewData[spreadsheetId].fileName}
-        fileName="new file"
-      />
+      <PageWrapper>
+        <Loading />
+      </PageWrapper>
     );
   }
-
+  if (loadingError || !reportStore.spreadsheetReviewData[spreadsheetId]) {
+    return <PageWrapper>Error: {loadingError}</PageWrapper>;
+  }
+  const headerBackground = () => {
+    if (!errorsWarningsMetrics && windowWidth > MIN_DESKTOP_WIDTH)
+      return "transparent";
+    if (!errorsWarningsMetrics && windowWidth <= MIN_DESKTOP_WIDTH)
+      return "blue";
+    return undefined;
+  };
+  if (errorsWarningsMetrics) {
+    return (
+      <DataUploadContainer>
+        <HeaderBar
+          onLogoClick={() => navigate(`/agency/${agencyId}`)}
+          background={headerBackground()}
+          hasBottomBorder={!!errorsWarningsMetrics}
+          label="Justice Counts"
+          badge={headerBadge}
+        >
+          <Button
+            label={errorsWarningsMetrics ? "Close" : "Cancel"}
+            onClick={() => navigate(-1)}
+            buttonColor={errorsWarningsMetrics ? "red" : undefined}
+            borderColor={errorsWarningsMetrics ? undefined : "white"}
+            labelColor={errorsWarningsMetrics ? undefined : "white"}
+          />
+        </HeaderBar>
+        <UploadErrorsWarnings
+          errorsWarningsMetrics={errorsWarningsMetrics}
+          newAndUpdatedReports={newAndUpdatedReports}
+          selectedSystem={userSystems.length === 1 ? userSystems[0] : undefined}
+          resetToNewUpload={() => navigate(`/agency/${agencyId}/upload`)}
+          fileName={reportStore.spreadsheetReviewData[spreadsheetId].file_name}
+        />
+      </DataUploadContainer>
+    );
+  }
   return <ShareSpreadsheet />;
 }
 
