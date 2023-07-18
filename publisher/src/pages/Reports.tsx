@@ -48,7 +48,6 @@ import {
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
 import { Loading } from "../components/Loading";
-import { Onboarding } from "../components/Onboarding";
 import { TeamMemberNameWithBadge } from "../components/primitives";
 import {
   ActionsWrapper,
@@ -105,7 +104,6 @@ const Reports: React.FC = () => {
   const navigate = useNavigate();
   const windowWidth = useWindowWidth();
 
-  const [showOnboarding, setShowOnboarding] = useState(true);
   const [loadingError, setLoadingError] = useState<string | undefined>(
     undefined
   );
@@ -574,15 +572,6 @@ const Reports: React.FC = () => {
         </LabelRow>
         {renderReports()}
       </Table>
-
-      {/* Onboarding */}
-      {userStore.onboardingTopicsCompleted?.reportsview === false &&
-        showOnboarding && (
-          <Onboarding
-            setShowOnboarding={setShowOnboarding}
-            topic="reportsview"
-          />
-        )}
     </>
   );
 };
