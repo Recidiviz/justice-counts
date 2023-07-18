@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { AgencySystems, Metric } from "@justice-counts/common/types";
+import { groupBy } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -68,6 +69,11 @@ export const Home = observer(() => {
   /** Does the given metric belong to the currently selected system? */
   const metricBelongsToCurrentSystem = (metric: Metric) =>
     currentSystem === "ALL" || metric.system.key === currentSystem;
+  /** Agency metrics by metric key */
+  const currentAgencyMetricsByMetricKey = groupBy(
+    currentAgencyMetrics,
+    (metric) => metric.key
+  );
 
   /** Task Card Metadatas */
   const allTasksCompleteTaskCardMetadata: TaskCardMetadata = {
@@ -80,6 +86,7 @@ export const Home = observer(() => {
       .filter(metricBelongsToCurrentSystem)
       .map((metric) =>
         createTaskCardMetadatas(
+          currentAgencyMetricsByMetricKey,
           metric,
           { latestMonthlyRecord, latestAnnualRecord },
           createDataEntryTaskCardMetadata
@@ -91,6 +98,7 @@ export const Home = observer(() => {
       .filter(metricBelongsToCurrentSystem)
       .map((metric) =>
         createTaskCardMetadatas(
+          currentAgencyMetricsByMetricKey,
           metric,
           { latestMonthlyRecord, latestAnnualRecord },
           createConfigurationTaskCardMetadata
