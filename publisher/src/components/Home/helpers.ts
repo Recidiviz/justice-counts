@@ -15,7 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Metric, Report, ReportFrequency } from "@justice-counts/common/types";
+import {
+  AgencySystems,
+  Metric,
+  Report,
+  ReportFrequency,
+  SupervisionSubsystems,
+} from "@justice-counts/common/types";
 import {
   groupBy,
   monthsByName,
@@ -37,6 +43,41 @@ export const metricIsMonthly = (metric: Metric) =>
   (!metric.custom_frequency && metric.frequency === "MONTHLY");
 
 /**
+ * Filters supervision subsystems with enabled metrics.
+ *
+ * Note: used to render supervision subsystem filter options
+ * in the homepage for supervision subsystems with enabled metrics
+ * and subsequently hide the subsystem option for subsystems
+ * with no enabled metrics.
+ *
+ * @example
+ * `agencySystems` filter options: ["ALL", "SUPERVISION", "PAROLE", "PROBATION"]
+ * If "PAROLE" subsystem has no enabled metrics, then the filtered list would become
+ * ["ALL", "SUPERVISION", "PROBATION"]
+ */
+export const supervisionSubsystemsWithEnabledMetrics = (
+  system: AgencySystems | "ALL",
+  currentAgencyMetrics: Metric[]
+) => {
+  const isSupervisionSubsystem = Boolean(
+    SupervisionSubsystems.includes(system.toUpperCase() as AgencySystems)
+  );
+  if (!isSupervisionSubsystem) return true;
+
+  const enabledSupervisionSubsystemMetrics = currentAgencyMetrics
+    .filter(metricEnabled)
+    .filter((metric) => {
+      const metricSystem = metric.system.key.toLocaleLowerCase();
+      return metricSystem === system.toLocaleLowerCase();
+    });
+
+  if (enabledSupervisionSubsystemMetrics.length > 0) {
+    return true;
+  }
+  return false;
+};
+
+/**
  * Creates Report Title (includes month name in parenthesis to differentiate
  * between annual records of similar time-periods)
  */
@@ -48,6 +89,21 @@ export const createReportTitle = (record: Report, monthName?: string) => {
         record.frequency
       )} (${monthName})`
     : printReportTitle(record.month, record.year, record.frequency);
+};
+
+/**
+ * Formats a task card title to include the system name in parenthesis if the
+ * user has multiple systems and they are viewing all of the task cards for all
+ * of their systems (under the "All" filter)
+ * @returns "Metric" or "Metric (System Name)"
+ */
+export const formatTaskCardTitle = (
+  title: string,
+  systemName: string,
+  hasMultipleSystemsAndAllSystemsFilter?: boolean
+) => {
+  if (!hasMultipleSystemsAndAllSystemsFilter) return title;
+  return `${title} ${title.includes(systemName) ? `` : `(${systemName})`}`;
 };
 
 /**
@@ -94,11 +150,16 @@ export const createAnnualRecordsMetadata = (annualRecords: {
  */
 export const createConfigurationTaskCardMetadata = (
   currentMetric: Metric,
-  recordMetadata?: LatestRecordMetadata
+  recordMetadata?: LatestRecordMetadata,
+  hasMultipleSystemsAndAllSystemsFilter?: boolean
 ) => {
   return {
     reportID: recordMetadata?.id,
-    title: currentMetric.display_name,
+    title: formatTaskCardTitle(
+      currentMetric.display_name,
+      currentMetric.system.display_name,
+      hasMultipleSystemsAndAllSystemsFilter
+    ),
     description: currentMetric.description,
     actionLinks: [taskCardLabelsActionLinks.metricAvailability],
     metricSettingsParams: `?system=${currentMetric.system.key.toLowerCase()}&metric=${currentMetric.key.toLowerCase()}`,
@@ -111,7 +172,8 @@ export const createConfigurationTaskCardMetadata = (
  */
 export const createDataEntryTaskCardMetadata = (
   currentMetric: Metric,
-  recordMetadata?: LatestRecordMetadata
+  recordMetadata?: LatestRecordMetadata,
+  hasMultipleSystemsAndAllSystemsFilter?: boolean
 ) => {
   const metricFrequency =
     currentMetric.custom_frequency || currentMetric.frequency;
@@ -120,7 +182,11 @@ export const createDataEntryTaskCardMetadata = (
   );
   return {
     reportID: recordMetadata?.id,
-    title: currentMetric.display_name,
+    title: formatTaskCardTitle(
+      currentMetric.display_name,
+      currentMetric.system.display_name,
+      hasMultipleSystemsAndAllSystemsFilter
+    ),
     description: currentMetric.description,
     actionLinks: [
       taskCardLabelsActionLinks.uploadData,
@@ -177,8 +243,10 @@ export const createTaskCardMetadatas = (
   },
   createTaskCardCallback: (
     currentMetric: Metric,
-    recordMetadata?: LatestRecordMetadata
-  ) => TaskCardMetadata
+    recordMetadata?: LatestRecordMetadata,
+    hasMultipleSystemsAndAllSystemsFilter?: boolean
+  ) => TaskCardMetadata,
+  hasMultipleSystemsAndAllSystemsFilter?: boolean
 ) => {
   const metricFrequency = metric.custom_frequency || metric.frequency;
   /**
@@ -198,12 +266,17 @@ export const createTaskCardMetadatas = (
   const { latestMonthlyRecord, latestAnnualRecord } = recordMetadatas;
   /** Create Task Card linked to the latest Monthly Record */
   if (metricFrequency === "MONTHLY") {
-    return createTaskCardCallback(metric, latestMonthlyRecord);
+    return createTaskCardCallback(
+      metric,
+      latestMonthlyRecord,
+      hasMultipleSystemsAndAllSystemsFilter
+    );
   }
   /** Create Task Card linked to the latest Annual Record */
   return createTaskCardCallback(
     metric,
-    latestAnnualRecord(startingMonth as number)
+    latestAnnualRecord(startingMonth as number),
+    hasMultipleSystemsAndAllSystemsFilter
   );
 };
 

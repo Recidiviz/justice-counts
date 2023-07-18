@@ -24,7 +24,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useStore } from "../../stores";
 import { ReactComponent as GearIcon } from "../assets/gear-icon.svg";
 import { ReactComponent as OpenLinkIcon } from "../assets/open-link-icon.svg";
-import { ReactComponent as SettingsIcon } from "../assets/settings-icon.svg";
 import { Loading } from "../Loading";
 import {
   createAnnualRecordsMetadata,
@@ -38,6 +37,7 @@ import {
   LatestReportsAgencyMetrics,
   metricEnabled,
   metricNotConfigured,
+  supervisionSubsystemsWithEnabledMetrics,
   TaskCard,
   TaskCardMetadata,
 } from ".";
@@ -69,6 +69,9 @@ export const Home = observer(() => {
   /** Does the given metric belong to the currently selected system? */
   const metricBelongsToCurrentSystem = (metric: Metric) =>
     currentSystem === "ALL" || metric.system.key === currentSystem;
+  const hasMultipleSystemsAndAllSystemsFilter = Boolean(
+    hasMultipleSystems && currentSystem === "ALL"
+  );
   /** Agency metrics by metric key */
   const currentAgencyMetricsByMetricKey = groupBy(
     currentAgencyMetrics,
@@ -78,7 +81,7 @@ export const Home = observer(() => {
   /** Task Card Metadatas */
   const allTasksCompleteTaskCardMetadata: TaskCardMetadata = {
     title: "All tasks complete",
-    description: "Your data is updated and published.",
+    description: "Your data is up-to-date and published.",
   };
   const enabledMetricsTaskCardMetadata: TaskCardMetadata[] =
     currentAgencyMetrics
@@ -89,7 +92,8 @@ export const Home = observer(() => {
           currentAgencyMetricsByMetricKey,
           metric,
           { latestMonthlyRecord, latestAnnualRecord },
-          createDataEntryTaskCardMetadata
+          createDataEntryTaskCardMetadata,
+          hasMultipleSystemsAndAllSystemsFilter
         )
       );
   const unconfiguredMetricsTaskCardMetadata: TaskCardMetadata[] =
@@ -101,7 +105,8 @@ export const Home = observer(() => {
           currentAgencyMetricsByMetricKey,
           metric,
           { latestMonthlyRecord, latestAnnualRecord },
-          createConfigurationTaskCardMetadata
+          createConfigurationTaskCardMetadata,
+          hasMultipleSystemsAndAllSystemsFilter
         )
       );
 
@@ -156,6 +161,7 @@ export const Home = observer(() => {
       const monthlyRecordMetadata = hasMonthlyRecord
         ? createMonthlyRecordMetadata(monthlyRecord)
         : undefined;
+
       setLatestMonthlyAnnualsRecordMetadata({
         monthly: monthlyRecordMetadata,
         annual: annualRecordsMetadata,
@@ -185,15 +191,22 @@ export const Home = observer(() => {
         <Styled.SystemSelectorContainer>
           <div />
           <Styled.SystemSelectorTabWrapper>
-            {agencySystems?.map((system) => (
-              <Styled.SystemSelectorTab
-                key={system}
-                selected={system === currentSystem}
-                onClick={() => setCurrentSystem(system)}
-              >
-                {system.toLocaleLowerCase()}
-              </Styled.SystemSelectorTab>
-            ))}
+            {agencySystems
+              ?.filter((system) =>
+                supervisionSubsystemsWithEnabledMetrics(
+                  system,
+                  currentAgencyMetrics
+                )
+              )
+              .map((system) => (
+                <Styled.SystemSelectorTab
+                  key={system}
+                  selected={system === currentSystem}
+                  onClick={() => setCurrentSystem(system)}
+                >
+                  {system.toLocaleLowerCase()}
+                </Styled.SystemSelectorTab>
+              ))}
           </Styled.SystemSelectorTabWrapper>
           <div />
         </Styled.SystemSelectorContainer>
@@ -236,6 +249,15 @@ export const Home = observer(() => {
                 latestMonthlyAnnualRecordsMetadata?.annual &&
                 Object.values(latestMonthlyAnnualRecordsMetadata.annual).map(
                   (record) => {
+                    /** Only display records w/ metrics that match the current system */
+                    if (
+                      Object.values(record.metrics).filter(
+                        ([metric]) =>
+                          metricBelongsToCurrentSystem(metric) &&
+                          metricEnabled(metric)
+                      )?.length === 0
+                    )
+                      return null;
                     return (
                       <TaskCard
                         key={record.id}
@@ -258,10 +280,6 @@ export const Home = observer(() => {
           >
             <GearIcon />
             Agency Settings
-          </Styled.SubmenuItem>
-          <Styled.SubmenuItem onClick={() => navigate("./metric-config")}>
-            <SettingsIcon />
-            Metric Settings
           </Styled.SubmenuItem>
           <Styled.SubmenuItem
             href="https://justicecounts.csgjusticecenter.org/"
