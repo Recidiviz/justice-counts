@@ -17,20 +17,18 @@
 
 import { observer } from "mobx-react-lite";
 import React, { ReactElement, useEffect } from "react";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import { trackNavigation } from "./analytics";
-import Footer from "./components/Footer";
+import MaintenancePage from "./components/Auth/Maintenance";
 import { AppWrapper, PageWrapper } from "./components/Forms";
-import { REPORTS_LOWERCASE } from "./components/Global/constants";
 import { Loading } from "./components/Loading";
-import { NoAgencies } from "./pages/NoAgencies";
-import { Router } from "./router";
 import { useStore } from "./stores";
 
 const App: React.FC = (): ReactElement => {
   const location = useLocation();
-  const { userStore, guidanceStore } = useStore();
+  const { userStore } = useStore();
+  // const { userStore, guidanceStore } = useStore();
   useEffect(() => {
     trackNavigation(location.pathname + location.search);
   }, [location]);
@@ -48,12 +46,13 @@ const App: React.FC = (): ReactElement => {
   // or we go to route associated with specific agency (like external url with specific page and maybe search params)
   // if false then we just show user page that there are no associated agencies
   // if user has agencies but route is out of pattern /agency/:agencyId then redirect to /agency/:initialAgencyId/reports
-  const initialAgency = userStore.getInitialAgencyId();
-  const { hasCompletedOnboarding } = guidanceStore;
+  // const initialAgency = userStore.getInitialAgencyId();
+  // const { hasCompletedOnboarding } = guidanceStore;
 
   return (
     <AppWrapper>
-      <PageWrapper>
+      <MaintenancePage />
+      {/* <PageWrapper>
         {initialAgency ? (
           <Routes>
             <Route
@@ -86,7 +85,7 @@ const App: React.FC = (): ReactElement => {
           <NoAgencies />
         )}
       </PageWrapper>
-      <Footer />
+      <Footer /> */}
     </AppWrapper>
   );
 };
