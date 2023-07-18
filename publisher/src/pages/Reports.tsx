@@ -48,11 +48,6 @@ import {
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
 import { Loading } from "../components/Loading";
-import {
-  ResourceTypes,
-  UnauthorizedDeleteActionModal,
-} from "../components/Modals";
-import { Onboarding } from "../components/Onboarding";
 import { TeamMemberNameWithBadge } from "../components/primitives";
 import {
   ActionsWrapper,
@@ -86,6 +81,10 @@ import {
   printReportTitle,
   removeSnakeCase,
 } from "../utils";
+import {
+  ResourceTypes,
+  UnauthorizedDeleteActionModal,
+} from "../components/Modals";
 
 const ReportStatusFilterOptionObject: { [key: string]: string } = {
   all_records: "All Records",
@@ -109,7 +108,6 @@ const Reports: React.FC = () => {
   const navigate = useNavigate();
   const windowWidth = useWindowWidth();
 
-  const [showOnboarding, setShowOnboarding] = useState(true);
   const [loadingError, setLoadingError] = useState<string | undefined>(
     undefined
   );
@@ -587,15 +585,6 @@ const Reports: React.FC = () => {
         </LabelRow>
         {renderReports()}
       </Table>
-
-      {/* Onboarding */}
-      {userStore.onboardingTopicsCompleted?.reportsview === false &&
-        showOnboarding && (
-          <Onboarding
-            setShowOnboarding={setShowOnboarding}
-            topic="reportsview"
-          />
-        )}
     </>
   );
 };

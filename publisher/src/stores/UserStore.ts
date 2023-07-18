@@ -18,7 +18,7 @@ import { showToast } from "@justice-counts/common/components/Toast";
 import { AgencyTeamMemberRole, UserAgency } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction, when } from "mobx";
 
-import { APP_METADATA_CLAIM, AuthStore } from "../components/Auth";
+import { AuthStore } from "../components/Auth";
 import API from "./API";
 
 type UserSettingsRequestBody = {
@@ -35,8 +35,6 @@ class UserStore {
 
   userInfoLoaded: boolean;
 
-  onboardingTopicsCompleted: { [topic: string]: boolean } | undefined;
-
   constructor(authStore: AuthStore, api: API) {
     makeAutoObservable(this);
 
@@ -44,7 +42,6 @@ class UserStore {
     this.api = api;
     this.userAgencies = undefined;
     this.userInfoLoaded = false;
-    this.onboardingTopicsCompleted = undefined;
 
     when(
       () => api.isSessionInitialized,
@@ -227,12 +224,6 @@ class UserStore {
       const { agencies: userAgencies } = await response.json();
       runInAction(() => {
         this.userAgencies = userAgencies;
-        this.onboardingTopicsCompleted = this.authStore.user?.[
-          APP_METADATA_CLAIM
-        ]?.onboarding_topics_completed || {
-          reportsview: false,
-          dataentryview: false,
-        };
       });
     } catch (error) {
       if (error instanceof Error) return error.message;
@@ -241,33 +232,6 @@ class UserStore {
       runInAction(() => {
         this.userInfoLoaded = true;
       });
-    }
-  }
-
-  async updateOnboardingStatus(topic: string, status: boolean) {
-    try {
-      const response = (await this.api.request({
-        path: "/api/users",
-        method: "PATCH",
-        body: {
-          onboarding_topics_completed: {
-            ...this.onboardingTopicsCompleted,
-            [topic]: status,
-          },
-        },
-      })) as Response;
-
-      runInAction(() => {
-        this.onboardingTopicsCompleted = {
-          ...this.onboardingTopicsCompleted,
-          [topic]: status,
-        };
-      });
-
-      return response;
-    } catch (error) {
-      if (error instanceof Error) return error.message;
-      return String(error);
     }
   }
 }
