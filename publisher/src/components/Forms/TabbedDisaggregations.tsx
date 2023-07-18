@@ -151,6 +151,7 @@ export const TabbedDisaggregations: React.FC<{
           >
             Settings
           </DisaggregationTooltipLink>
+          .
         </>
       );
 

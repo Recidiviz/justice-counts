@@ -86,6 +86,7 @@ const DataEntryReview = () => {
 
   useEffect(() => {
     const initialize = async () => {
+      formStore.validatePreviouslySavedInputs(reportID);
       const reviewProps = await reportStore.getPublishReviewPropsFromDatapoints(
         [reportID],
         String(agencyId)

@@ -213,21 +213,33 @@ export const MetricsDataChart: React.FC = observer(() => {
           <Styled.SystemsContainer>
             {Object.entries(metricsBySystem).map(([system, metrics]) => {
               const enabledMetrics = metrics.filter((metric) => metric.enabled);
+              const systemName = formatSystemName(metrics[0].system.key, {
+                allUserSystems: currentAgency?.systems,
+              });
+              const systemNameOrSystemNameWithSpan = systemName.includes(
+                "(combined)"
+              ) ? (
+                <>
+                  {systemName.replace("(combined)", "")}
+                  <span>combined</span>
+                </>
+              ) : (
+                systemName
+              );
 
               return (
                 <React.Fragment key={system}>
                   {enabledMetrics.length > 0 ? (
                     <Styled.SystemNameContainer isSystemActive>
                       <Styled.SystemName>
-                        {formatSystemName(metrics[0].system.key, {
-                          allUserSystems: currentAgency?.systems,
-                        })}
+                        {systemNameOrSystemNameWithSpan}
                       </Styled.SystemName>
                     </Styled.SystemNameContainer>
                   ) : (
                     <Styled.SystemNameContainer isSystemActive>
                       <Styled.SystemName>
-                        {metrics[0].system.display_name} (No enabled metrics)
+                        {metrics[0].system.display_name}{" "}
+                        <span>No enabled metrics</span>
                       </Styled.SystemName>
                     </Styled.SystemNameContainer>
                   )}
