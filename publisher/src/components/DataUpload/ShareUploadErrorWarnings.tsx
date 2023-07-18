@@ -29,7 +29,6 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { PageWrapper } from "../Forms";
-import { REPORTS_LOWERCASE } from "../Global/constants";
 import { useHeaderBadge } from "../Header/hooks";
 import { Loading } from "../Loading";
 import { DataUploadContainer } from ".";
