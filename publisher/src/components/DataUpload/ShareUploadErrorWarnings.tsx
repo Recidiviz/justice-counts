@@ -123,9 +123,7 @@ function ShareUploadErrorWarnings() {
     return (
       <DataUploadContainer>
         <HeaderBar
-          onLogoClick={() =>
-            navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)
-          }
+          onLogoClick={() => navigate(`/agency/${agencyId}`)}
           background={headerBackground()}
           hasBottomBorder={!!errorsWarningsMetrics}
           label="Justice Counts"
