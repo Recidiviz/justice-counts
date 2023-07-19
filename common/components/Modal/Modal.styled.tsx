@@ -61,9 +61,15 @@ export const Icon = styled.img`
   margin-bottom: 24px;
 `;
 
-export const Title = styled.div`
-  ${typography.sizeCSS.large};
+export const Title = styled.div<{ mediumTitle?: boolean }>`
+  ${({ mediumTitle }) =>
+    mediumTitle ? typography.sizeCSS.medium : typography.sizeCSS.large};
   margin-bottom: 16px;
+
+  a {
+    color: ${palette.solid.blue};
+    text-decoration: none;
+  }
 `;
 
 export const Description = styled.div`
@@ -74,12 +80,16 @@ export const Description = styled.div`
   text-align: center;
 `;
 
-export const ButtonsContainer = styled.div<{ modalType?: ModalType }>`
+export const ButtonsContainer = styled.div<{
+  modalType?: ModalType;
+  centerButtons?: boolean;
+}>`
   width: 100%;
   display: flex;
   flex-direction: row;
 
-  ${({ modalType }) => {
+  ${({ modalType, centerButtons }) => {
+    if (centerButtons) return "justify-content: center; margin-top: 72px;";
     if (modalType) return "justify-content: space-between; margin-top: 72px;";
     return "justify-content: end; gap: 16px; margin-top: 24px;";
   }}

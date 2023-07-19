@@ -118,6 +118,10 @@ const Reports: React.FC = () => {
   );
   const [isRemoveRecordsModalOpen, setIsRemoveRecordsModalOpen] =
     useState(false);
+  const [
+    isUnauthorizedRemoveRecordsModalOpen,
+    setIsUnauthorizedRemoveRecordsModalOpen,
+  ] = useState(false);
 
   const isAdmin =
     userStore.isJusticeCountsAdmin(agencyId) ||
@@ -170,6 +174,7 @@ const Reports: React.FC = () => {
   };
 
   const handleRemoveRecords = () => {
+    if (!isJCAdmin) return;
     reportStore.deleteReports(selectedRecords, agencyId);
     clearBulkAction();
     clearAllSelectedRecords();
@@ -236,17 +241,14 @@ const Reports: React.FC = () => {
     {
       key: "deleteAction",
       label: "Delete",
-      onClick: () => selectBulkAction("delete"),
+      onClick: () =>
+        isJCAdmin
+          ? selectBulkAction("delete")
+          : setIsUnauthorizedRemoveRecordsModalOpen(true),
       color: "red",
       noHover: true,
     },
-  ].filter((option) => {
-    // Gates `Delete` action to Justice Counts Admins only
-    if (option.key === "deleteAction" && !isJCAdmin) {
-      return false;
-    }
-    return true;
-  }) as DropdownOption[];
+  ] as DropdownOption[];
   const tabbedBarOptions: TabOption[] = Object.entries(
     ReportStatusFilterOptionObject
   ).map(([key, value]) => ({
@@ -417,6 +419,29 @@ const Reports: React.FC = () => {
 
   return (
     <>
+      {isUnauthorizedRemoveRecordsModalOpen && (
+        <Modal
+          title={
+            <>
+              Please reach out to{" "}
+              <a href="mailto:justice-counts-support@csg.org">
+                justice-counts-support@csg.org
+              </a>{" "}
+              if you would like to delete a file.
+            </>
+          }
+          description=""
+          primaryButton={{
+            label: "OK",
+            onClick: () => setIsUnauthorizedRemoveRecordsModalOpen(false),
+          }}
+          modalType="alert"
+          centerText
+          centerButtons
+          mediumTitle
+        />
+      )}
+
       {isRemoveRecordsModalOpen && (
         <Modal
           title={removeRecordsModalTitle}
