@@ -48,6 +48,7 @@ import {
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
 import { Loading } from "../components/Loading";
+import { UnauthorizedDeleteActionModal } from "../components/Modals";
 import { Onboarding } from "../components/Onboarding";
 import { TeamMemberNameWithBadge } from "../components/primitives";
 import {
@@ -242,7 +243,7 @@ const Reports: React.FC = () => {
       key: "deleteAction",
       label: "Delete",
       onClick: () =>
-        isJCAdmin
+        !isJCAdmin
           ? selectBulkAction("delete")
           : setIsUnauthorizedRemoveRecordsModalOpen(true),
       color: "red",
@@ -420,25 +421,8 @@ const Reports: React.FC = () => {
   return (
     <>
       {isUnauthorizedRemoveRecordsModalOpen && (
-        <Modal
-          title={
-            <>
-              Please reach out to{" "}
-              <a href="mailto:justice-counts-support@csg.org">
-                justice-counts-support@csg.org
-              </a>{" "}
-              if you would like to delete a file.
-            </>
-          }
-          description=""
-          primaryButton={{
-            label: "OK",
-            onClick: () => setIsUnauthorizedRemoveRecordsModalOpen(false),
-          }}
-          modalType="alert"
-          centerText
-          centerButtons
-          mediumTitle
+        <UnauthorizedDeleteActionModal
+          closeModal={() => setIsUnauthorizedRemoveRecordsModalOpen(false)}
         />
       )}
 
