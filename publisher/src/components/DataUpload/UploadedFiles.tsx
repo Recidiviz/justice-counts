@@ -21,7 +21,6 @@ import {
   BadgeColors,
 } from "@justice-counts/common/components/Badge";
 import { Button } from "@justice-counts/common/components/Button";
-import { Modal } from "@justice-counts/common/components/Modal";
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
   AgencySystems,
@@ -36,6 +35,7 @@ import { formatSystemName } from "../../utils";
 import downloadIcon from "../assets/download-icon.png";
 import { SYSTEM_CAPITALIZED } from "../Global/constants";
 import { ContainedLoader } from "../Loading";
+import { UnauthorizedDeleteActionModal } from "../Modals";
 import { TeamMemberNameWithBadge } from "../primitives";
 import { UploadedFile, UploadedFileStatus } from ".";
 import {
@@ -73,7 +73,7 @@ export const UploadedFileRow: React.FC<{
     spreadsheetID: number,
     status: UploadedFileStatus
   ) => Promise<void>;
-  setIsUnauthorizedRemoveRecordsModalOpen: React.Dispatch<
+  setIsUnauthorizedRemoveFileModalOpen: React.Dispatch<
     React.SetStateAction<boolean>
   >;
 }> = observer(
@@ -81,7 +81,7 @@ export const UploadedFileRow: React.FC<{
     fileRowDetails,
     deleteUploadedFile,
     updateUploadedFileStatus,
-    setIsUnauthorizedRemoveRecordsModalOpen,
+    setIsUnauthorizedRemoveFileModalOpen,
   }) => {
     const { reportStore, userStore } = useStore();
     const [isDownloading, setIsDownloading] = useState(false);
@@ -214,7 +214,7 @@ export const UploadedFileRow: React.FC<{
                 onClick={() =>
                   isJCAdmin
                     ? deleteUploadedFile(id)
-                    : setIsUnauthorizedRemoveRecordsModalOpen(true)
+                    : setIsUnauthorizedRemoveFileModalOpen(true)
                 }
                 labelColor="red"
               />
@@ -247,7 +247,7 @@ export const UploadedFiles: React.FC = observer(() => {
   const [fetchError, setFetchError] = useState(false);
   const [
     isUnauthorizedRemoveRecordsModalOpen,
-    setIsUnauthorizedRemoveRecordsModalOpen,
+    setIsUnauthorizedRemoveFileModalOpen,
   ] = useState(false);
 
   const uploadStatusColorMapping: BadgeColorMapping = {
@@ -360,25 +360,8 @@ export const UploadedFiles: React.FC = observer(() => {
   return (
     <UploadedFilesWrapper>
       {isUnauthorizedRemoveRecordsModalOpen && (
-        <Modal
-          title={
-            <>
-              Please reach out to{" "}
-              <a href="mailto:justice-counts-support@csg.org">
-                justice-counts-support@csg.org
-              </a>{" "}
-              if you would like to delete a file.
-            </>
-          }
-          description=""
-          primaryButton={{
-            label: "OK",
-            onClick: () => setIsUnauthorizedRemoveRecordsModalOpen(false),
-          }}
-          modalType="alert"
-          centerText
-          centerButtons
-          mediumTitle
+        <UnauthorizedDeleteActionModal
+          closeModal={() => setIsUnauthorizedRemoveFileModalOpen(false)}
         />
       )}
 
@@ -406,8 +389,8 @@ export const UploadedFiles: React.FC = observer(() => {
                 fileRowDetails={fileRowDetails}
                 deleteUploadedFile={deleteUploadedFile}
                 updateUploadedFileStatus={updateUploadedFileStatus}
-                setIsUnauthorizedRemoveRecordsModalOpen={
-                  setIsUnauthorizedRemoveRecordsModalOpen
+                setIsUnauthorizedRemoveFileModalOpen={
+                  setIsUnauthorizedRemoveFileModalOpen
                 }
               />
             );
