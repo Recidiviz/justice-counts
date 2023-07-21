@@ -30,13 +30,13 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+import { UploadedFile, UploadedFileStatus } from ".";
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
-import downloadIcon from "../assets/download-icon.png";
 import { SYSTEM_CAPITALIZED } from "../Global/constants";
 import { ContainedLoader } from "../Loading";
+import downloadIcon from "../assets/download-icon.png";
 import { TeamMemberNameWithBadge } from "../primitives";
-import { UploadedFile, UploadedFileStatus } from ".";
 import {
   ActionsContainer,
   DateUploaded,
@@ -315,7 +315,7 @@ export const UploadedFiles: React.FC = observer(() => {
       fetchListOfUploadedFiles();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [agencyId]
   );
 
   if (isLoading) {
