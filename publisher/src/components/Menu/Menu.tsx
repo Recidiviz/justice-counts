@@ -243,7 +243,7 @@ const Menu: React.FC = () => {
               }}
               active={pathWithoutAgency === "data"}
             >
-              View Data
+              Explore Data
             </Styled.MenuItem>
           </Styled.MenuItemsWrapper>
           {/* Profile */}
