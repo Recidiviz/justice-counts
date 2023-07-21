@@ -16,36 +16,53 @@
 // =============================================================================
 
 import {
-  AGENCY_DASHBOARD_HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-export const HeaderBarContainer = styled.header`
+export const FooterWrapper = styled.div`
   width: 100%;
-  height: ${AGENCY_DASHBOARD_HEADER_BAR_HEIGHT}px;
-  display: flex;
-  justify-content: center;
-  align-items: start;
-  position: fixed;
-  top: 0;
-  z-index: 3;
-  background: ${palette.solid.white};
-  border-bottom: 1px solid ${palette.highlight.grey5};
-  cursor: pointer;
+  background-color: ${palette.solid.darkgrey};
+  padding: 97px 209px 209px 209px;
 `;
 
-export const LogoTitle = styled.div`
-  background-color: ${palette.solid.darkgrey};
+export const FooterContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 40px;
+  color: ${palette.solid.white};
+`;
+
+export const FooterTopInfo = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: center;
+  gap: 24px;
+`;
+
+export const FooterInfoBlock = styled.div`
+  display: flex;
+  flex-direction: column;
   gap: 16px;
-  padding: 12px 24px;
-  font-family: VitesseSSm, sans-serif;
-  ${typography.sizeCSS.large};
-  color: ${palette.solid.white};
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
+  ${typography.sizeCSS.normal};
+  max-width: 240px;
+`;
+
+export const FooterInfoBlockTitle = styled.span`
+  ${typography.sizeCSS.medium};
+`;
+
+export const FooterLogos = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 64px;
+`;
+
+export const FooterBottomInfo = styled.div`
+  ${typography.sizeCSS.medium};
+`;
+
+export const FooterCopyrights = styled.div`
+  ${typography.sizeCSS.medium};
 `;

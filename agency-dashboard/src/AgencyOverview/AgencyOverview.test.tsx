@@ -30,15 +30,17 @@ test("renders list of metrics", async () => {
     JSON.stringify({
       agency: {
         id: 1,
-        name: "Test Agency",
+        name: "Prisons",
         settings: [],
-        systems: [],
+        systems: ["PRISONS"],
       },
       metrics: [
         {
-          key: "LAW_ENFORCEMENT_ARRESTS",
-          display_name: "Total Arrests",
+          key: "PRISONS_EXPENSES",
+          display_name: "Expenses",
           category: "Capacity and Cost",
+          system: { key: "PRISONS" },
+          custom_frequency: "ANNUAL",
           datapoints: [
             {
               dimension_display_name: null,
@@ -47,8 +49,8 @@ test("renders list of metrics", async () => {
               frequency: "ANNUAL",
               id: 24627,
               is_published: true,
-              metric_definition_key: "LAW_ENFORCEMENT_ARRESTS",
-              metric_display_name: "Annual Budget",
+              metric_definition_key: "PRISONS_EXPENSES",
+              metric_display_name: "Expenses",
               old_value: null,
               report_id: 3092,
               start_date: "Sat, 01 Jan 2022 00:00:00 GMT",
@@ -58,9 +60,11 @@ test("renders list of metrics", async () => {
           disaggregations: [],
         },
         {
-          key: "LAW_ENFORCEMENT_BUDGET",
-          display_name: "Annual Budget",
+          key: "PRISONS_FUNDING",
+          display_name: "Funding",
           category: "Capacity and Cost",
+          system: { key: "PRISONS" },
+          custom_frequency: "ANNUAL",
           datapoints: [
             {
               dimension_display_name: null,
@@ -69,30 +73,8 @@ test("renders list of metrics", async () => {
               frequency: "ANNUAL",
               id: 24627,
               is_published: true,
-              metric_definition_key: "LAW_ENFORCEMENT_BUDGET",
-              metric_display_name: "Annual Budget",
-              old_value: null,
-              report_id: 3092,
-              start_date: "Sat, 01 Jan 2022 00:00:00 GMT",
-              value: 45.0,
-            },
-          ],
-          disaggregations: [],
-        },
-        {
-          key: "LAW_ENFORCEMENT_CALLS_FOR_SERVICE",
-          display_name: "Calls for Service",
-          category: "Capacity and Cost",
-          datapoints: [
-            {
-              dimension_display_name: null,
-              disaggregation_display_name: null,
-              end_date: "Sun, 01 Jan 2023 00:00:00 GMT",
-              frequency: "ANNUAL",
-              id: 24627,
-              is_published: true,
-              metric_definition_key: "LAW_ENFORCEMENT_CALLS_FOR_SERVICE",
-              metric_display_name: "Annual Budget",
+              metric_definition_key: "PRISONS_FUNDING",
+              metric_display_name: "Funding",
               old_value: null,
               report_id: 3092,
               start_date: "Sat, 01 Jan 2022 00:00:00 GMT",
@@ -113,12 +95,8 @@ test("renders list of metrics", async () => {
       </MemoryRouter>
     </StoreProvider>
   );
-  const textElementTotalArrests = await screen.findByText(/Total Arrests/i);
-  expect(textElementTotalArrests).toBeInTheDocument();
-  const textElementAnnualBudget = await screen.findByText(/Annual Budget/i);
-  expect(textElementAnnualBudget).toBeInTheDocument();
-  const textElementCallsForService = await screen.findByText(
-    /Calls for Service/i
-  );
-  expect(textElementCallsForService).toBeInTheDocument();
+  const textElementFunding = await screen.findByText(/FUNDING/i);
+  expect(textElementFunding).toBeInTheDocument();
+  const textElementExpenses = await screen.findByText(/EXPENSES/i);
+  expect(textElementExpenses).toBeInTheDocument();
 });

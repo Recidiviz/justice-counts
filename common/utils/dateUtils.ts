@@ -44,6 +44,20 @@ export const printDateAsMonthYear = (month: number, year: number): string => {
 };
 
 /**
+ * @returns the month and year as a string
+ * @example "Mar 2022"
+ */
+export const printDateAsShortMonthYear = (
+  month: number,
+  year: number
+): string => {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    year: "numeric",
+  }).format(Date.UTC(year, month, -15));
+};
+
+/**
  * @returns either "Annual Report [YEAR]" or "[MONTH] [YEAR]" as a string depending on frequency
  * @example "Annual Report 2022" or "March 2022"
  */

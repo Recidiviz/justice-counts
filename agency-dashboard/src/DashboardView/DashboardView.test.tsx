@@ -29,22 +29,22 @@ test("renders 'No reported data for this metric.' state", async () => {
   fetchMock.mockResponses([
     JSON.stringify({
       agency: {
-        name: "Test Agency",
+        name: "Prisons",
       },
       metrics: [
         {
-          key: "LAW_ENFORCEMENT_ARRESTS",
-          display_name: "Total Arrests",
+          key: "PRISONS_FUNDING",
+          display_name: "Funding",
           disaggregations: [],
         },
         {
-          key: "LAW_ENFORCEMENT_BUDGET",
-          display_name: "Annual Budget",
+          key: "PRISONS_EXPENSES",
+          display_name: "Expenses",
           disaggregations: [],
         },
         {
-          key: "LAW_ENFORCEMENT_CALLS_FOR_SERVICE",
-          display_name: "Calls for Service",
+          key: "PRISONS_TOTAL_STAFF",
+          display_name: "Staff",
           disaggregations: [],
         },
       ],
@@ -55,14 +55,14 @@ test("renders 'No reported data for this metric.' state", async () => {
   render(
     <StoreProvider>
       <MemoryRouter
-        initialEntries={["/agency/1/dashboard?metric=LAW_ENFORCEMENT_ARRESTS"]}
+        initialEntries={["/agency/1/dashboard?metric=PRISONS_EXPENSES"]}
       >
         <DashboardView />
       </MemoryRouter>
     </StoreProvider>
   );
 
-  const textElements = await screen.findAllByText(/Total Arrests/i);
+  const textElements = await screen.findAllByText(/Expenses/i);
   expect(textElements[0]).toBeInTheDocument();
   expect(textElements[1]).toBeInTheDocument();
 });

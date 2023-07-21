@@ -25,13 +25,12 @@ import {
 import { Datapoint } from "../../types";
 import { palette } from "../GlobalStyles";
 
-const MAX_BAR_SIZE = 9;
+const MAX_BAR_SIZE = 100;
 
 const MiniBarChart: React.FC<{
   data: Datapoint[];
   dimensionNames: string[];
-  isMetricHovered: boolean;
-}> = ({ data, dimensionNames, isMetricHovered }) => {
+}> = ({ data, dimensionNames }) => {
   const renderBarDefinitions = () => {
     const barDefinitions = [];
     dimensionNames.forEach((dimension) => {
@@ -40,7 +39,7 @@ const MiniBarChart: React.FC<{
           key={dimension}
           dataKey={dimension}
           stackId="a"
-          fill={isMetricHovered ? palette.solid.white : palette.highlight.grey4}
+          fill={palette.dataViz.bar11}
           maxBarSize={MAX_BAR_SIZE}
         />
       );
@@ -50,9 +49,7 @@ const MiniBarChart: React.FC<{
         key="dataVizMissingData"
         dataKey="dataVizMissingData"
         stackId="a"
-        fill={`${
-          isMetricHovered ? "url(#hovered-gradient)" : "url(#gradient)"
-        }`}
+        fill="url(#gradient)"
         maxBarSize={MAX_BAR_SIZE}
       />
     );
@@ -64,6 +61,7 @@ const MiniBarChart: React.FC<{
       <BarChartComponent
         data={data}
         barGap={0}
+        barCategoryGap="2%"
         margin={{
           top: 0,
           right: 0,

@@ -15,65 +15,76 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import arrow from "@justice-counts/common/assets/left-arrow-icon.svg";
 import MiniBarChart from "@justice-counts/common/components/DataViz/MiniBarChart";
 import { transformDataForBarChart } from "@justice-counts/common/components/DataViz/utils";
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
-  DatapointsGroupedByAggregateAndDisaggregations,
+  AgencySystems,
   DataVizAggregateName,
   DataVizTimeRangesMap,
 } from "@justice-counts/common/types";
+import { printDateAsShortMonthYear } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { HeaderBar } from "../Header/HeaderBar";
-import { useMaxMetricBoxesInRow } from "../hooks";
+import { Footer } from "../Footer";
+import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
 import {
+  AgencyDescription,
+  AgencyHomepage,
+  AgencyOverviewHeader,
   AgencyOverviewWrapper,
   AgencyTitle,
   CategorizedMetricsContainer,
+  CategoryDescription,
   CategoryTitle,
-  Description,
   MetricBox,
   MetricBoxContentContainer,
-  MetricBoxFooter,
   MetricBoxGraphContainer,
-  MetricBoxGraphLastUpdate,
+  MetricBoxGraphRange,
   MetricBoxTitle,
   MetricsContainer,
-  MetricsCount,
   MetricsViewContainer,
   MiniChartContainer,
-  PageTitle,
+  NotFoundText,
+  NotFoundTitle,
+  NotFoundWrapper,
+  SystemChip,
+  SystemChipsContainer,
 } from ".";
 
-const orderedCategories = [
-  "Capacity and Cost",
-  "Populations",
-  "Operations and Dynamics",
-  "Public Safety",
-  "Equity",
-  "Fairness",
-];
+const orderedCategoriesMap: {
+  [category: string]: { label: string; description: string };
+} = {
+  "Capacity and Cost": {
+    label: "Understand the Finances",
+    description: "See how we’re funded and where we use those funds",
+  },
+  Populations: {
+    label: "Track Population Movements",
+    description: "Observe how people move in and out of our system",
+  },
+};
+
+// include here systems that you want users to be able to choose
+const availableSystems: AgencySystems[] = ["PRISONS"];
 
 export const AgencyOverview = observer(() => {
   const navigate = useNavigate();
   const params = useParams();
   const agencyId = Number(params.id);
   const { agencyDataStore } = useStore();
-  const maxMetricsInRow = useMaxMetricBoxesInRow();
-  const [hoveredMetric, setHoveredMetric] = useState<string | undefined>(
-    undefined
+  const [currentSystem, setCurrentSystem] = useState<AgencySystems>(
+    availableSystems[0]
   );
 
-  const metricsCount = agencyDataStore.metrics.length;
-  const availableMetricsCount = Object.values(
-    agencyDataStore.datapointsByMetric
-  ).filter((datapoints) => datapoints.aggregate.length > 0).length;
+  const agencyDescription =
+    agencyDataStore.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS?.value;
+  const agencyHomepageUrl =
+    agencyDataStore.agencySettingsBySettingType.HOMEPAGE_URL?.value;
 
   const handleNavigate = (isPublished: boolean, metricKey: string) => {
     if (isPublished) {
@@ -81,43 +92,6 @@ export const AgencyOverview = observer(() => {
         `/agency/${agencyId}/dashboard?metric=${metricKey.toLocaleLowerCase()}`
       );
     }
-  };
-
-  const getPublishCount = (
-    datapoint: DatapointsGroupedByAggregateAndDisaggregations
-  ): string => {
-    const aggregateWithNonNullValues = datapoint.aggregate.filter(
-      (dp) => dp[DataVizAggregateName] !== null
-    );
-    if (!aggregateWithNonNullValues.length) {
-      return "No Data";
-    }
-
-    let result = "";
-
-    const monthlyPublishes = aggregateWithNonNullValues.filter(
-      (aggregation) => aggregation.frequency === "MONTHLY"
-    );
-    const yearlyPublishes = aggregateWithNonNullValues.filter(
-      (aggregation) => aggregation.frequency === "ANNUAL"
-    );
-
-    const yearCount =
-      yearlyPublishes.length + Math.floor(monthlyPublishes.length / 12);
-
-    if (yearCount > 0) {
-      result += `${yearCount} ${yearCount > 1 ? "Years" : "Year"} `;
-    }
-
-    const remainingMonths = monthlyPublishes.length % 12;
-
-    if (remainingMonths > 0) {
-      result += `${remainingMonths} ${
-        remainingMonths > 1 ? "Months" : "Month"
-      }`;
-    }
-
-    return result;
   };
 
   useEffect(() => {
@@ -140,104 +114,155 @@ export const AgencyOverview = observer(() => {
     return <Loading />;
   }
 
+  const agencyHasAvailableSystems = agencyDataStore.agency?.systems?.some(
+    (system) => availableSystems.includes(system)
+  );
+  const metricsByAvailableCategoriesAndSystems = agencyDataStore.metrics.filter(
+    (metric) =>
+      Object.keys(orderedCategoriesMap).includes(metric.category) &&
+      availableSystems.includes(metric.system.key)
+  );
+  const metricsByAvailableCategoriesAndSystemsWithData =
+    metricsByAvailableCategoriesAndSystems.filter(
+      (metric) =>
+        agencyDataStore.datapointsByMetric[metric.key].aggregate.filter(
+          (dp) => dp[DataVizAggregateName] !== null
+        ).length > 0
+    );
+  const agencyHasNoAvailableSystemsOrHasNoData =
+    !agencyHasAvailableSystems ||
+    metricsByAvailableCategoriesAndSystemsWithData.length === 0;
+
+  if (agencyHasNoAvailableSystemsOrHasNoData)
+    return (
+      <>
+        <HeaderBar />
+        <NotFoundWrapper>
+          <NotFoundTitle>Page Not Found</NotFoundTitle>
+          <NotFoundText>
+            Error 404
+            <span>
+              The page you are looking for seems to be missing. Send us an email
+              and we’ll help you find it.
+            </span>
+            <a href="mailto:justice-counts-support@csg.org">
+              justice-counts-support@csg.org
+            </a>
+          </NotFoundText>
+        </NotFoundWrapper>
+        <Footer />
+      </>
+    );
+
   return (
     <>
       <HeaderBar />
       <AgencyOverviewWrapper>
-        <PageTitle>Justice Counts</PageTitle>
-        <AgencyTitle>{agencyDataStore.agency?.name}</AgencyTitle>
-        <Description>
-          {
-            agencyDataStore.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS
-              ?.value
-          }
-        </Description>
-        <MetricsCount>
-          <span>
-            {availableMetricsCount} out of {metricsCount}
-          </span>{" "}
-          Metrics Available
-        </MetricsCount>
+        <AgencyOverviewHeader>
+          <AgencyTitle>{agencyDataStore.agency?.name}</AgencyTitle>
+          <AgencyDescription>
+            {agencyDescription}{" "}
+            {agencyHomepageUrl && (
+              <AgencyHomepage href={agencyHomepageUrl}>
+                Visit our Website
+              </AgencyHomepage>
+            )}
+          </AgencyDescription>
+        </AgencyOverviewHeader>
         <MetricsViewContainer>
-          {orderedCategories.map((category) => {
-            const metrics = agencyDataStore.metricsByCategory[category];
+          <SystemChipsContainer>
+            {availableSystems.map((system) => (
+              <SystemChip
+                key={system}
+                onClick={() => setCurrentSystem(system)}
+                active={system === currentSystem}
+              >
+                {system.toLowerCase().replaceAll("_", " ")}
+              </SystemChip>
+            ))}
+          </SystemChipsContainer>
+          {Object.keys(orderedCategoriesMap).map((category) => {
+            const metricsByCategory =
+              agencyDataStore.metricsByCategory[category];
+            if (!metricsByCategory) return null;
+            const metricsByCategoryBySystem = metricsByCategory.filter(
+              (metric) => metric.system.key === currentSystem
+            );
+            const metricsWithData = metricsByCategoryBySystem.filter(
+              (metric) =>
+                agencyDataStore.datapointsByMetric[metric.key].aggregate.filter(
+                  (dp) => dp[DataVizAggregateName] !== null
+                ).length > 0
+            );
             return (
-              !!metrics && (
-                <CategorizedMetricsContainer key={category}>
-                  <CategoryTitle>{category}</CategoryTitle>
-                  <MetricsContainer
-                    maxMetricsInRow={
-                      maxMetricsInRow >= 4 || maxMetricsInRow > metrics.length
-                        ? metrics.length
-                        : maxMetricsInRow
-                    }
-                  >
-                    {metrics.map((metric) => {
-                      const hasNonNullData =
-                        agencyDataStore.datapointsByMetric[
-                          metric.key
-                        ].aggregate.filter(
-                          (dp) => dp[DataVizAggregateName] !== null
-                        ).length > 0;
-                      const publishCount = getPublishCount(
-                        agencyDataStore.datapointsByMetric[metric.key]
-                      );
-                      const data =
-                        agencyDataStore.datapointsByMetric[metric.key]
-                          .aggregate;
-                      return (
-                        <MetricBox
-                          key={metric.key}
-                          isPublished={hasNonNullData}
-                          onClick={() =>
-                            handleNavigate(hasNonNullData, metric.key)
-                          }
-                          onMouseEnter={() => setHoveredMetric(metric.key)}
-                          onMouseLeave={() => setHoveredMetric(undefined)}
-                        >
-                          <MetricBoxTitle isPublished={hasNonNullData}>
-                            {metric.display_name}
-                          </MetricBoxTitle>
-                          <MetricBoxContentContainer>
-                            {hasNonNullData && (
-                              <MetricBoxGraphContainer>
-                                <MiniChartContainer>
-                                  <MiniBarChart
-                                    data={transformDataForBarChart(
-                                      data,
-                                      DataVizTimeRangesMap.All,
-                                      "Count"
+              <CategorizedMetricsContainer key={category}>
+                <CategoryTitle>
+                  {`${orderedCategoriesMap[category].label} ->`}
+                </CategoryTitle>
+                <CategoryDescription>
+                  {orderedCategoriesMap[category].description}
+                </CategoryDescription>
+                <MetricsContainer>
+                  {metricsWithData.map((metric) => {
+                    const data =
+                      agencyDataStore.datapointsByMetric[metric.key].aggregate;
+                    const isAnnual = metric.custom_frequency === "ANNUAL";
+                    const lastDatapointDate = new Date(
+                      data[data.length - 1].start_date
+                    );
+
+                    return (
+                      <MetricBox
+                        key={metric.key}
+                        onClick={() => handleNavigate(true, metric.key)}
+                      >
+                        <MetricBoxTitle>
+                          {metric.display_name.toUpperCase()}
+                        </MetricBoxTitle>
+                        <MetricBoxContentContainer>
+                          <MetricBoxGraphContainer>
+                            <MiniChartContainer>
+                              <MiniBarChart
+                                data={transformDataForBarChart(
+                                  data,
+                                  isAnnual
+                                    ? DataVizTimeRangesMap["5 Years Ago"]
+                                    : DataVizTimeRangesMap["1 Year Ago"],
+                                  "Count"
+                                )}
+                                dimensionNames={[DataVizAggregateName]}
+                              />
+                            </MiniChartContainer>
+                            <MetricBoxGraphRange>
+                              <span>
+                                {isAnnual
+                                  ? lastDatapointDate.getFullYear() - 5
+                                  : printDateAsShortMonthYear(
+                                      lastDatapointDate.getMonth() + 1,
+                                      lastDatapointDate.getFullYear() - 1
                                     )}
-                                    dimensionNames={[DataVizAggregateName]}
-                                    isMetricHovered={
-                                      metric.key === hoveredMetric &&
-                                      maxMetricsInRow >= 2
-                                    }
-                                  />
-                                </MiniChartContainer>
-                                <MetricBoxGraphLastUpdate>
-                                  Last updated{" "}
-                                  {new Date(
-                                    data[data.length - 1].start_date
-                                  ).toLocaleDateString("en-US")}
-                                </MetricBoxGraphLastUpdate>
-                              </MetricBoxGraphContainer>
-                            )}
-                            <MetricBoxFooter isPublished={hasNonNullData}>
-                              {publishCount}{" "}
-                              {hasNonNullData && <img src={arrow} alt="" />}
-                            </MetricBoxFooter>
-                          </MetricBoxContentContainer>
-                        </MetricBox>
-                      );
-                    })}
-                  </MetricsContainer>
-                </CategorizedMetricsContainer>
-              )
+                              </span>
+                              <span>
+                                {isAnnual
+                                  ? lastDatapointDate.getFullYear()
+                                  : printDateAsShortMonthYear(
+                                      lastDatapointDate.getMonth() + 1,
+                                      lastDatapointDate.getFullYear()
+                                    )}
+                              </span>
+                            </MetricBoxGraphRange>
+                          </MetricBoxGraphContainer>
+                        </MetricBoxContentContainer>
+                      </MetricBox>
+                    );
+                  })}
+                </MetricsContainer>
+              </CategorizedMetricsContainer>
             );
           })}
         </MetricsViewContainer>
       </AgencyOverviewWrapper>
+      <Footer />
     </>
   );
 });

@@ -247,7 +247,7 @@ export const DashboardView = observer(() => {
 
   return (
     <Container key={metricKeyParam}>
-      <HeaderBar showTitle />
+      <HeaderBar />
       <LeftPanel>
         <BackButton onClick={() => navigate(`/agency/${agencyId}`)} />
         <MetricTitle>{metricName}</MetricTitle>

@@ -16,6 +16,7 @@
 // =============================================================================
 
 import {
+  AGENCY_DASHBOARD_HEADER_BAR_HEIGHT,
   COMMON_DESKTOP_WIDTH,
   palette,
   TABLET_WIDTH,
@@ -30,12 +31,11 @@ export const Container = styled.div`
   display: flex;
   justify-content: stretch;
   align-items: stretch;
-  padding-top: 64px;
+  padding-top: ${AGENCY_DASHBOARD_HEADER_BAR_HEIGHT}px;
 `;
 
 export const LeftPanel = styled.div`
   margin-left: 24px;
-  margin-right: 24px;
   width: 424px;
   min-width: 424px;
   margin-right: 126px;
@@ -163,11 +163,11 @@ export const MetricOverviewActionButtonContainer = styled.div`
   }
 
   &:first-child {
-    padding-left: 0px;
+    padding-left: 0;
   }
 
   @media only screen and (max-width: ${TABLET_WIDTH - 1}px) {
-    padding-left: 0px;
+    padding-left: 0;
   }
 `;
 
