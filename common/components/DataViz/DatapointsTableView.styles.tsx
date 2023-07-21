@@ -15,7 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import styled from "styled-components/macro";
+// eslint-disable-next-line no-restricted-imports
+import styled from "styled-components";
 
 import { palette, typography } from "../GlobalStyles";
 

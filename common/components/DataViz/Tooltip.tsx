@@ -17,7 +17,8 @@
 
 import React from "react";
 import { TooltipProps as RechartsTooltipProps } from "recharts";
-import styled from "styled-components/macro";
+// eslint-disable-next-line no-restricted-imports
+import styled from "styled-components";
 
 import { Datapoint } from "../../types";
 import { formatNumberInput } from "../../utils";
