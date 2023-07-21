@@ -35,20 +35,12 @@ export const Default: Story = {
   args: {
     metricName: "Metric Name",
     disaggregationOptions: [],
-    closeModal: () => {
-      return;
-    },
+    closeModal: () => {},
     timeRange: "All",
     disaggregationName: "Disaggregation",
     countOrPercentageView: "Count",
-    setTimeRange: (timeRange) => {
-      return;
-    },
-    setDisaggregationName: (disaggregation: string) => {
-      return;
-    },
-    setCountOrPercentageView: (viewSetting) => {
-      return;
-    },
+    setTimeRange: (timeRange) => {},
+    setDisaggregationName: (disaggregation: string) => {},
+    setCountOrPercentageView: (viewSetting) => {},
   },
 };
