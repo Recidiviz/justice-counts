@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 
 import { TaskCardActionLinksMetadataList, TaskCardMetadata } from ".";
 import * as Styled from "./Home.styled";
+import { Tooltip } from "@justice-counts/common/components/Tooltip";
 
 export const taskCardLabelsActionLinks: TaskCardActionLinksMetadataList = {
   publish: { label: "Publish", path: "records/" },
@@ -38,6 +39,7 @@ export const TaskCard: React.FC<{
   const navigate = useNavigate();
   const { title, description, actionLinks, metricSettingsParams, metricKey } =
     metadata;
+  const tooltipAnchorID = `${title.replace(" ", "")}-tooltip-anchor`;
 
   return (
     <Styled.TaskCardContainer key={title}>
@@ -47,6 +49,7 @@ export const TaskCard: React.FC<{
         <Styled.TaskCardActionLinksWrapper>
           {actionLinks.map((action) => (
             <Styled.TaskCardActionLink
+              id={tooltipAnchorID}
               key={action.label}
               onClick={() => {
                 /** Which action type is this? */
@@ -77,6 +80,16 @@ export const TaskCard: React.FC<{
               }}
             >
               {action.label}
+              {action.path === "upload" && (
+                <Tooltip
+                  anchorId={tooltipAnchorID}
+                  position="top"
+                  content={
+                    "You can also upload data for other metrics within the same file."
+                  }
+                  centerText
+                />
+              )}
             </Styled.TaskCardActionLink>
           ))}
         </Styled.TaskCardActionLinksWrapper>

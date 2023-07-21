@@ -23,6 +23,7 @@ import { TooltipColor, TooltipWidth } from "./types";
 export const TooltipContainer = styled.div<{
   tooltipColor?: TooltipColor;
   tooltipWidth?: TooltipWidth;
+  centerText?: boolean;
 }>`
   padding: 16px;
   display: flex;
@@ -34,11 +35,11 @@ export const TooltipContainer = styled.div<{
     if (tooltipWidth === "narrow") return "170px";
     return "300px";
   }};
-
   background-color: ${({ tooltipColor }) => {
     if (tooltipColor === "info") return palette.solid.blue;
     return palette.solid.darkgrey;
   }};
+  ${({ centerText }) => centerText && `text-align: center;`};
 `;
 
 export const TooltipTitle = styled.span`
