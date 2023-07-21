@@ -36,7 +36,5 @@ export const Default: Story = {
     agencyName: "Agency",
     metricNamesByCategory: { test: ["test"] },
     selectedMetricName: "test",
-    closeModal: () => {},
-    onSelectMetric: (metric: string) => {},
   },
 };
