@@ -17,10 +17,19 @@
 
 import { Modal } from "@justice-counts/common/components/Modal";
 import React from "react";
+import { useLocation } from "react-router-dom";
+
+import { removeAgencyFromPath } from "../../utils";
+import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 
 export const UnauthorizedDeleteActionModal: React.FC<{
   closeModal: () => void;
 }> = ({ closeModal }) => {
+  const location = useLocation();
+  const isRecordsPage =
+    removeAgencyFromPath(location.pathname) === REPORTS_LOWERCASE;
+  const typeOfAssetDisplayName = isRecordsPage ? REPORT_LOWERCASE : "file";
+
   return (
     <Modal
       title={
@@ -29,7 +38,7 @@ export const UnauthorizedDeleteActionModal: React.FC<{
           <a href="mailto:justice-counts-support@csg.org">
             justice-counts-support@csg.org
           </a>{" "}
-          if you would like to delete a file.
+          if you would like to delete a {typeOfAssetDisplayName}.
         </>
       }
       description=""
