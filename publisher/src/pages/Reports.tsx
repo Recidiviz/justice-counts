@@ -246,7 +246,7 @@ const Reports: React.FC = () => {
       key: "deleteAction",
       label: "Delete",
       onClick: () =>
-        !isJCAdmin
+        isJCAdmin
           ? selectBulkAction("delete")
           : setIsUnauthorizedRemoveRecordsModalOpen(true),
       color: "red",
