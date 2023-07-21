@@ -217,7 +217,7 @@ const Menu: React.FC = () => {
               }}
               active={pathWithoutAgency === "metric-config"}
             >
-              Metric Settings
+              Set Up Metrics
             </Styled.MenuItem>
 
             {/* Data Entry */}
@@ -232,7 +232,7 @@ const Menu: React.FC = () => {
                 pathWithoutAgency === `${REPORTS_LOWERCASE}/create`
               }
             >
-              Data Entry
+              Enter Data
             </Styled.MenuItem>
 
             {/* Data (Visualizations) */}
