@@ -15,35 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Modal } from "@justice-counts/common/components/Modal";
-import React from "react";
+import { REPORT_LOWERCASE } from "../Global/constants";
 
-import { TypeOfAsset, typeOfAssetToDisplayName } from ".";
-
-export const UnauthorizedDeleteActionModal: React.FC<{
-  closeModal: () => void;
-  typeOfAsset: TypeOfAsset;
-}> = ({ closeModal, typeOfAsset }) => {
-  return (
-    <Modal
-      title={
-        <>
-          Please reach out to{" "}
-          <a href="mailto:justice-counts-support@csg.org">
-            justice-counts-support@csg.org
-          </a>{" "}
-          if you would like to delete a {typeOfAssetToDisplayName[typeOfAsset]}.
-        </>
-      }
-      description=""
-      primaryButton={{
-        label: "OK",
-        onClick: closeModal,
-      }}
-      modalType="alert"
-      centerText
-      centerButtons
-      mediumTitle
-    />
-  );
+export const typeOfAssetToDisplayName = {
+  FILE: "file",
+  RECORD: REPORT_LOWERCASE,
 };
+
+export type TypeOfAsset = keyof typeof typeOfAssetToDisplayName;
