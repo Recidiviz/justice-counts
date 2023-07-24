@@ -18,12 +18,12 @@
 import { Modal } from "@justice-counts/common/components/Modal";
 import React from "react";
 
-import { TypeOfAsset, typeOfAssetToDisplayName } from ".";
+import { ResourceType, resourceTypeToDisplayName } from ".";
 
 export const UnauthorizedDeleteActionModal: React.FC<{
   closeModal: () => void;
-  typeOfAsset: TypeOfAsset;
-}> = ({ closeModal, typeOfAsset }) => {
+  resourceType: ResourceType;
+}> = ({ closeModal, resourceType }) => {
   return (
     <Modal
       title={
@@ -32,7 +32,8 @@ export const UnauthorizedDeleteActionModal: React.FC<{
           <a href="mailto:justice-counts-support@csg.org">
             justice-counts-support@csg.org
           </a>{" "}
-          if you would like to delete a {typeOfAssetToDisplayName[typeOfAsset]}.
+          if you would like to delete a{" "}
+          {resourceTypeToDisplayName[resourceType]}.
         </>
       }
       description=""

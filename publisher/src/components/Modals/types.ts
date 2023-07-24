@@ -17,9 +17,9 @@
 
 import { REPORT_LOWERCASE } from "../Global/constants";
 
-export const typeOfAssetToDisplayName = {
+export const resourceTypeToDisplayName = {
   FILE: "file",
   RECORD: REPORT_LOWERCASE,
 };
 
-export type TypeOfAsset = keyof typeof typeOfAssetToDisplayName;
+export type ResourceType = keyof typeof resourceTypeToDisplayName;

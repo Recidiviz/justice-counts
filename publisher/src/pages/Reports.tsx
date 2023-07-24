@@ -423,7 +423,7 @@ const Reports: React.FC = () => {
       {isUnauthorizedRemoveRecordsModalOpen && (
         <UnauthorizedDeleteActionModal
           closeModal={() => setIsUnauthorizedRemoveRecordsModalOpen(false)}
-          typeOfAsset="RECORD"
+          resourceType="RECORD"
         />
       )}
 
