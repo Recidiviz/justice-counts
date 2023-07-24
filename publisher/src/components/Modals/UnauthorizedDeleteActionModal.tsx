@@ -17,10 +17,6 @@
 
 import { Modal } from "@justice-counts/common/components/Modal";
 import React from "react";
-import { useLocation } from "react-router-dom";
-
-import { removeAgencyFromPath } from "../../utils";
-import { REPORT_LOWERCASE, REPORTS_LOWERCASE } from "../Global/constants";
 
 import { ResourceType, resourceTypeToDisplayName } from ".";
 
