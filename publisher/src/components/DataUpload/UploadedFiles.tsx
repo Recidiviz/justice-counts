@@ -362,6 +362,7 @@ export const UploadedFiles: React.FC = observer(() => {
       {isUnauthorizedRemoveRecordsModalOpen && (
         <UnauthorizedDeleteActionModal
           closeModal={() => setIsUnauthorizedRemoveFileModalOpen(false)}
+          resourceType="FILE"
         />
       )}
 
