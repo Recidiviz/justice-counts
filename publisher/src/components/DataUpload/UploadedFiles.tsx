@@ -315,7 +315,7 @@ export const UploadedFiles: React.FC = observer(() => {
       fetchListOfUploadedFiles();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [agencyId]
   );
 
   if (isLoading) {
