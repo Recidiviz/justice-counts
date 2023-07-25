@@ -27,8 +27,9 @@ import {
 } from "@justice-counts/common/types";
 import { printDateAsShortMonthYear } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import useAsyncEffect from "use-async-effect";
 
 import {
   AgencyDescription,
@@ -57,7 +58,6 @@ import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
-import { slugify } from "../utils/formatting";
 
 const orderedCategoriesMap: {
   [category: string]: { label: string; description: string };
@@ -78,44 +78,50 @@ const availableSystems: AgencySystems[] = ["PRISONS"];
 export const AgencyOverview = observer(() => {
   const navigate = useNavigate();
   const params = useParams();
-  const agencySlug = slugify(params.name as string);
+  const [agencySlug, setAgencySlug] = useState<string | undefined>(params.slug);
   const { agencyDataStore } = useStore();
   const [currentSystem, setCurrentSystem] = useState<AgencySystems>(
     availableSystems[0]
   );
+
+  useEffect(() => {
+    if (params.slug) {
+      setAgencySlug(params.slug);
+    }
+  }, [params.slug]);
 
   const agencyDescription =
     agencyDataStore.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS?.value;
   const agencyHomepageUrl =
     agencyDataStore.agencySettingsBySettingType.HOMEPAGE_URL?.value;
 
-  const handleNavigate = (isPublished: boolean, metricKey: string) => {
-    if (isPublished) {
-      navigate(
-        `/agency/${encodeURIComponent(
-          agencySlug
-        )}/dashboard?metric=${metricKey.toLocaleLowerCase()}`
-      );
-    }
-  };
+  const handleNavigate = useCallback(
+    (isPublished: boolean, metricKey: string) => {
+      if (isPublished && agencySlug) {
+        navigate(
+          `/agency/${encodeURIComponent(
+            agencySlug
+          )}/dashboard?metric=${metricKey.toLocaleLowerCase()}`
+        );
+      }
+    },
+    [navigate, agencySlug]
+  );
 
-  useEffect(() => {
+  useAsyncEffect(async () => {
     if (agencySlug) {
-      const fetchData = async () => {
-        try {
-          await agencyDataStore.fetchAgencyData(agencySlug);
-        } catch (error) {
-          showToast({
-            message: "Error fetching data.",
-            color: "red",
-            timeout: 4000,
-          });
-        }
-      };
-      fetchData();
+      try {
+        await agencyDataStore.fetchAgencyData(agencySlug);
+      } catch (error) {
+        showToast({
+          message: "Error fetching data.",
+          color: "red",
+          timeout: 4000,
+        });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [agencySlug]);
+  }, []);
 
   if (agencyDataStore.loading) {
     return <Loading />;

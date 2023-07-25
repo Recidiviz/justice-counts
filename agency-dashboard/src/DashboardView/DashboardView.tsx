@@ -49,7 +49,6 @@ import {
 import { LearnMoreModal, ShareModal } from "../DashboardModals";
 import { HeaderBar } from "../Header";
 import { useStore } from "../stores";
-import { slugify } from "../utils/formatting";
 
 const getScreenWidth = () =>
   window.innerWidth ||
@@ -112,8 +111,14 @@ export const DashboardView = observer(() => {
     useState<boolean>(false);
   const navigate = useNavigate();
   const params = useParams();
-  const agencySlug = slugify(params.slug as string);
+  const [agencySlug, setAgencySlug] = useState<string | undefined>(params.slug);
   const { agencyDataStore, dataVizStore } = useStore();
+
+  useEffect(() => {
+    if (params.slug) {
+      setAgencySlug(params.slug);
+    }
+  }, [params.slug]);
 
   /** Prevent body from scrolling when modal is open */
   useEffect(() => {
@@ -173,6 +178,8 @@ export const DashboardView = observer(() => {
   useEffect(() => {
     if (
       metricKeyParam &&
+      agencySlug &&
+      navigate &&
       !agencyDataStore.loading &&
       !agencyDataStore.dimensionNamesByMetricAndDisaggregation[metricKeyParam]
     ) {
@@ -180,7 +187,7 @@ export const DashboardView = observer(() => {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [agencyDataStore.loading]);
+  }, [navigate, agencyDataStore.loading, agencySlug]);
 
   useEffect(() => {
     const resizeListener = () => {
@@ -258,13 +265,33 @@ export const DashboardView = observer(() => {
     }
   }, [agencyDataStore.agency, agencyDataStore.metricsByKey, metricKeyParam]);
 
+  const handleBackClick = useCallback(() => {
+    if (navigate && agencySlug)
+      navigate(`/agency/${encodeURIComponent(agencySlug)}`);
+  }, [navigate, agencySlug]);
+
+  const handleMetricsSelect = useCallback(
+    (selectedMetricName: string) => {
+      if (agencyDataStore.metricDisplayNameToKey) {
+        const selectedMetricKey =
+          agencyDataStore.metricDisplayNameToKey[selectedMetricName];
+        if (navigate && agencySlug && selectedMetricKey) {
+          navigate(
+            `/agency/${encodeURIComponent(
+              agencySlug
+            )}/dashboard?metric=${selectedMetricKey.toLocaleLowerCase()}`
+          );
+        }
+      }
+    },
+    [navigate, agencySlug, agencyDataStore]
+  );
+
   return (
     <Container key={metricKeyParam}>
       <HeaderBar />
       <LeftPanel>
-        <BackButton
-          onClick={() => navigate(`/agency/${encodeURIComponent(agencySlug)}`)}
-        />
+        <BackButton onClick={handleBackClick} />
         <MetricTitle>{metricName}</MetricTitle>
         <MetricInsights datapoints={filteredAggregateData} />
         <MetricOverviewContent>
@@ -281,9 +308,7 @@ export const DashboardView = observer(() => {
         </MetricOverviewActionsContainer>
       </LeftPanel>
       <RightPanel>
-        <RightPanelBackButton
-          onClick={() => navigate(`/agency/${encodeURIComponent(agencySlug)}`)}
-        />
+        <RightPanelBackButton onClick={handleBackClick} />
         <RightPanelMetricTitle>{metricName}</RightPanelMetricTitle>
         <DatapointsView
           datapointsGroupedByAggregateAndDisaggregations={
@@ -303,17 +328,7 @@ export const DashboardView = observer(() => {
           metricNamesByCategory={metricNamesByCategory}
           metricName={metricName}
           agencyName={agencyDataStore.agency?.name}
-          onMetricsSelect={(selectedMetricName) => {
-            const selectedMetricKey =
-              agencyDataStore.metricDisplayNameToKey[selectedMetricName];
-            if (selectedMetricKey) {
-              navigate(
-                `/agency/${encodeURIComponent(
-                  agencySlug
-                )}/dashboard?metric=${selectedMetricKey.toLocaleLowerCase()}`
-              );
-            }
-          }}
+          onMetricsSelect={handleMetricsSelect}
           showBottomMetricInsights={!isDesktopWidth}
           resizeHeight={isDesktopWidth}
         />
