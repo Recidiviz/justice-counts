@@ -35,7 +35,7 @@ import { formatSystemName } from "../../utils";
 import downloadIcon from "../assets/download-icon.png";
 import { SYSTEM_CAPITALIZED } from "../Global/constants";
 import { ContainedLoader } from "../Loading";
-import { UnauthorizedDeleteActionModal } from "../Modals";
+import { ResourceTypes, UnauthorizedDeleteActionModal } from "../Modals";
 import { TeamMemberNameWithBadge } from "../primitives";
 import { UploadedFile, UploadedFileStatus } from ".";
 import {
@@ -362,7 +362,7 @@ export const UploadedFiles: React.FC = observer(() => {
       {isUnauthorizedRemoveRecordsModalOpen && (
         <UnauthorizedDeleteActionModal
           closeModal={() => setIsUnauthorizedRemoveFileModalOpen(false)}
-          resourceType="FILE"
+          resourceType={ResourceTypes.FILE}
         />
       )}
 

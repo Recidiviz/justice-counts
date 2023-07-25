@@ -17,7 +17,7 @@
 
 import { REPORT_LOWERCASE, REPORT_UPPERCASE } from "../Global/constants";
 
-export const ResourceTypes: Record<string, ResourceType> = {
+export const ResourceTypes: Record<ResourceType, ResourceType> = {
   FILE: "FILE",
   RECORD: REPORT_UPPERCASE,
 };
