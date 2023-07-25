@@ -304,3 +304,16 @@ export const groupMetadatasByValueAndConfiguration = (
     } as TaskCardMetadataValueConfigurationGroup
   );
 };
+
+/**
+ * Replaces spaces and parenthesis with hyphen
+ * @returns string - e.g. returns "New-Cases-Parole" if provided "New Cases (Parole)"
+ */
+export const replaceSpacesAndParenthesesWithHyphen = (str: string) => {
+  const spaceAndParenRegex = /[\s()]+/g;
+  const leadingTrailingHyphenRegex = /^-+|-+$/g;
+  const replacedString = str.replace(spaceAndParenRegex, "-");
+  const finalString = replacedString.replace(leadingTrailingHyphenRegex, "");
+
+  return finalString;
+};
