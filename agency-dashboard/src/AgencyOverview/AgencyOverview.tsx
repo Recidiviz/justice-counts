@@ -1,3 +1,5 @@
+/* eslint-disable simple-import-sort/imports */
+/* eslint-disable import/no-extraneous-dependencies */
 // Recidiviz - a data platform for criminal justice reform
 // Copyright (C) 2023 Recidiviz, Inc.
 //
@@ -28,10 +30,6 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { Footer } from "../Footer";
-import { HeaderBar } from "../Header";
-import { Loading } from "../Loading";
-import { useStore } from "../stores";
 import {
   AgencyDescription,
   AgencyHomepage,
@@ -55,6 +53,11 @@ import {
   SystemChip,
   SystemChipsContainer,
 } from ".";
+import { Footer } from "../Footer";
+import { HeaderBar } from "../Header";
+import { Loading } from "../Loading";
+import { useStore } from "../stores";
+import { slugify } from "../utils/formatting";
 
 const orderedCategoriesMap: {
   [category: string]: { label: string; description: string };
@@ -75,7 +78,7 @@ const availableSystems: AgencySystems[] = ["PRISONS"];
 export const AgencyOverview = observer(() => {
   const navigate = useNavigate();
   const params = useParams();
-  const agencyId = Number(params.id);
+  const agencySlug = slugify(params.name as string);
   const { agencyDataStore } = useStore();
   const [currentSystem, setCurrentSystem] = useState<AgencySystems>(
     availableSystems[0]
@@ -89,26 +92,30 @@ export const AgencyOverview = observer(() => {
   const handleNavigate = (isPublished: boolean, metricKey: string) => {
     if (isPublished) {
       navigate(
-        `/agency/${agencyId}/dashboard?metric=${metricKey.toLocaleLowerCase()}`
+        `/agency/${encodeURIComponent(
+          agencySlug
+        )}/dashboard?metric=${metricKey.toLocaleLowerCase()}`
       );
     }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await agencyDataStore.fetchAgencyData(agencyId);
-      } catch (error) {
-        showToast({
-          message: "Error fetching data.",
-          color: "red",
-          timeout: 4000,
-        });
-      }
-    };
-    fetchData();
+    if (agencySlug) {
+      const fetchData = async () => {
+        try {
+          await agencyDataStore.fetchAgencyData(agencySlug);
+        } catch (error) {
+          showToast({
+            message: "Error fetching data.",
+            color: "red",
+            timeout: 4000,
+          });
+        }
+      };
+      fetchData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [agencySlug]);
 
   if (agencyDataStore.loading) {
     return <Loading />;

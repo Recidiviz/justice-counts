@@ -5,6 +5,8 @@
   "dependencies": {
     "@justice-counts/common": "*",
     "@recidiviz/design-system": "^4.1.0",
+    "@types/bluebird": "^3.5.38",
+    "bluebird": "^3.7.2",
     "http-proxy-middleware": "^2.0.6",
     "mobx": "^6.4.2",
     "mobx-react-lite": "^3.3.0",

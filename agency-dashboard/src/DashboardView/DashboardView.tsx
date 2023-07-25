@@ -1,3 +1,4 @@
+/* eslint-disable simple-import-sort/imports */
 // Recidiviz - a data platform for criminal justice reform
 // Copyright (C) 2023 Recidiviz, Inc.
 //
@@ -25,13 +26,11 @@ import { transformDataForMetricInsights } from "@justice-counts/common/component
 import { COMMON_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { DataVizTimeRangesMap } from "@justice-counts/common/types";
+import { each } from "bluebird";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { LearnMoreModal, ShareModal } from "../DashboardModals";
-import { HeaderBar } from "../Header";
-import { useStore } from "../stores";
 import {
   BackButtonContainer,
   Container,
@@ -47,6 +46,10 @@ import {
   RightPanelMetricOverviewContent,
   RightPanelMetricTitle,
 } from ".";
+import { LearnMoreModal, ShareModal } from "../DashboardModals";
+import { HeaderBar } from "../Header";
+import { useStore } from "../stores";
+import { slugify } from "../utils/formatting";
 
 const getScreenWidth = () =>
   window.innerWidth ||
@@ -109,7 +112,7 @@ export const DashboardView = observer(() => {
     useState<boolean>(false);
   const navigate = useNavigate();
   const params = useParams();
-  const agencyId = Number(params.id);
+  const agencySlug = slugify(params.slug as string);
   const { agencyDataStore, dataVizStore } = useStore();
 
   /** Prevent body from scrolling when modal is open */
@@ -150,20 +153,22 @@ export const DashboardView = observer(() => {
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await agencyDataStore.fetchAgencyData(agencyId);
-      } catch (error) {
-        showToast({
-          message: "Error fetching data.",
-          color: "red",
-          timeout: 4000,
-        });
-      }
-    };
-    fetchData();
+    if (agencySlug) {
+      const fetchData = async () => {
+        try {
+          await agencyDataStore.fetchAgencyData(agencySlug);
+        } catch (error) {
+          showToast({
+            message: "Error fetching data.",
+            color: "red",
+            timeout: 4000,
+          });
+        }
+      };
+      fetchData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [agencySlug]);
 
   useEffect(() => {
     if (
@@ -171,7 +176,7 @@ export const DashboardView = observer(() => {
       !agencyDataStore.loading &&
       !agencyDataStore.dimensionNamesByMetricAndDisaggregation[metricKeyParam]
     ) {
-      navigate(`/agency/${agencyId}`);
+      navigate(`/agency/${encodeURIComponent(agencySlug)}`);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -228,28 +233,38 @@ export const DashboardView = observer(() => {
     DataVizTimeRangesMap[dataVizStore.timeRange]
   );
 
-  const downloadFeedData = async (system: string, filename: string) => {
-    const a = document.createElement("a");
-    a.href = `/feed/${agencyId}?system=${system}&metric=${filename}`;
-    a.setAttribute("download", `${filename}.csv`);
-    a.click();
-    a.remove();
-  };
+  const downloadFeedData =
+    (system: string, agencyId: number) => async (filename: string) => {
+      const a = document.createElement("a");
+      a.href = `/feed/${agencyId}?system=${system}&metric=${filename}`;
+      a.setAttribute("download", `${filename}.csv`);
+      a.click();
+      a.remove();
+    };
 
-  const downloadMetricData = () => {
-    const metric = agencyDataStore.metricsByKey[metricKeyParam];
-    if (metric) {
-      metric.filenames.forEach((fileName) => {
-        downloadFeedData(metric.system.key, fileName);
-      });
+  const downloadMetricData = useCallback(() => {
+    if (
+      agencyDataStore.agency &&
+      agencyDataStore.metricsByKey?.[metricKeyParam] &&
+      metricKeyParam
+    ) {
+      const metric = agencyDataStore.metricsByKey[metricKeyParam];
+      if (metric) {
+        each(
+          metric.filenames,
+          downloadFeedData(metric.system.key, agencyDataStore.agency.id)
+        );
+      }
     }
-  };
+  }, [agencyDataStore.agency, agencyDataStore.metricsByKey, metricKeyParam]);
 
   return (
     <Container key={metricKeyParam}>
       <HeaderBar />
       <LeftPanel>
-        <BackButton onClick={() => navigate(`/agency/${agencyId}`)} />
+        <BackButton
+          onClick={() => navigate(`/agency/${encodeURIComponent(agencySlug)}`)}
+        />
         <MetricTitle>{metricName}</MetricTitle>
         <MetricInsights datapoints={filteredAggregateData} />
         <MetricOverviewContent>
@@ -266,7 +281,9 @@ export const DashboardView = observer(() => {
         </MetricOverviewActionsContainer>
       </LeftPanel>
       <RightPanel>
-        <RightPanelBackButton onClick={() => navigate(`/agency/${agencyId}`)} />
+        <RightPanelBackButton
+          onClick={() => navigate(`/agency/${encodeURIComponent(agencySlug)}`)}
+        />
         <RightPanelMetricTitle>{metricName}</RightPanelMetricTitle>
         <DatapointsView
           datapointsGroupedByAggregateAndDisaggregations={
@@ -291,7 +308,9 @@ export const DashboardView = observer(() => {
               agencyDataStore.metricDisplayNameToKey[selectedMetricName];
             if (selectedMetricKey) {
               navigate(
-                `/agency/${agencyId}/dashboard?metric=${selectedMetricKey.toLocaleLowerCase()}`
+                `/agency/${encodeURIComponent(
+                  agencySlug
+                )}/dashboard?metric=${selectedMetricKey.toLocaleLowerCase()}`
               );
             }
           }}

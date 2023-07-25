@@ -26,8 +26,8 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/agency/:id" element={<AgencyOverview />} />
-      <Route path="/agency/:id/dashboard" element={<DashboardView />} />
+      <Route path="/agency/:slug" element={<AgencyOverview />} />
+      <Route path="/agency/:slug/dashboard" element={<DashboardView />} />
     </Routes>
   );
 }
