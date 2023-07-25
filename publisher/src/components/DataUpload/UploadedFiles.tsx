@@ -27,7 +27,7 @@ import {
   AgencyTeamMemberRole,
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
@@ -136,6 +136,13 @@ export const UploadedFileRow: React.FC<{
       uploadedByRole,
     } = fileRowDetails;
 
+    const handleDeleteActionBasedOnRole = useCallback(() => {
+      return !isJCAdmin && id
+        ? deleteUploadedFile(id)
+        : setIsUnauthorizedRemoveFileModalOpen(true);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [id, isJCAdmin]);
+
     useEffect(
       () => {
         if (rowHovered) setRowHovered(false);
@@ -211,11 +218,7 @@ export const UploadedFileRow: React.FC<{
             {!isReadOnly && (
               <Button
                 label="Delete"
-                onClick={() =>
-                  isJCAdmin
-                    ? deleteUploadedFile(id)
-                    : setIsUnauthorizedRemoveFileModalOpen(true)
-                }
+                onClick={handleDeleteActionBasedOnRole}
                 labelColor="red"
               />
             )}
