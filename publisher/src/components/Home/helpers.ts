@@ -178,7 +178,7 @@ export const createDataEntryTaskCardMetadata = (
   const metricFrequency =
     currentMetric.custom_frequency || currentMetric.frequency;
   const hasMetricValue = Boolean(
-    recordMetadata?.metrics?.[currentMetric.key][0].value
+    recordMetadata?.metrics?.[currentMetric.key]?.[0]?.value
   );
   return {
     reportID: recordMetadata?.id,
