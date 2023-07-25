@@ -15,8 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { REPORT_LOWERCASE } from "../Global/constants";
+import { REPORT_LOWERCASE, REPORT_UPPERCASE } from "../Global/constants";
 
+export const ResourceTypes: Record<string, ResourceType> = {
+  FILE: "FILE",
+  RECORD: REPORT_UPPERCASE,
+};
 export const resourceTypeToDisplayName = {
   FILE: "file",
   RECORD: REPORT_LOWERCASE,

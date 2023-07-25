@@ -48,7 +48,10 @@ import {
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
 import { Loading } from "../components/Loading";
-import { UnauthorizedDeleteActionModal } from "../components/Modals";
+import {
+  ResourceTypes,
+  UnauthorizedDeleteActionModal,
+} from "../components/Modals";
 import { Onboarding } from "../components/Onboarding";
 import { TeamMemberNameWithBadge } from "../components/primitives";
 import {
@@ -423,7 +426,7 @@ const Reports: React.FC = () => {
       {isUnauthorizedRemoveRecordsModalOpen && (
         <UnauthorizedDeleteActionModal
           closeModal={() => setIsUnauthorizedRemoveRecordsModalOpen(false)}
-          resourceType="RECORD"
+          resourceType={ResourceTypes.RECORD}
         />
       )}
 
