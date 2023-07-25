@@ -49,7 +49,7 @@ export const TaskCard: React.FC<{
           {actionLinks.map((action) => {
             const tooltipAnchorID =
               action.path === "upload"
-                ? `${title.replace(" ", "")}-tooltip-anchor`
+                ? `${title.replaceAll(" ", "")}-tooltip-anchor`
                 : undefined;
 
             return (

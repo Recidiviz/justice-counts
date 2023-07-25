@@ -17,7 +17,7 @@
 
 import styled from "styled-components/macro";
 
-import { palette, typography } from "../GlobalStyles";
+import { centerText, palette, typography } from "../GlobalStyles";
 import { ModalBackground, ModalType } from "./types";
 
 export const OuterWrapper = styled.div<{
@@ -52,7 +52,7 @@ export const InnerWrapper = styled.div<{
   flex-direction: column;
   align-items: center;
   border-radius: 3px;
-  ${({ centerText }) => centerText && `text-align: center;`}
+  ${centerText}
 `;
 
 export const Icon = styled.img`

@@ -17,7 +17,7 @@
 
 import styled from "styled-components/macro";
 
-import { palette, typography } from "../GlobalStyles";
+import { centerText, palette, typography } from "../GlobalStyles";
 import { TooltipColor, TooltipWidth } from "./types";
 
 export const TooltipContainer = styled.div<{
@@ -39,7 +39,7 @@ export const TooltipContainer = styled.div<{
     if (tooltipColor === "info") return palette.solid.blue;
     return palette.solid.darkgrey;
   }};
-  ${({ centerText }) => centerText && `text-align: center;`};
+  ${centerText}
 `;
 
 export const TooltipTitle = styled.span`
