@@ -54,5 +54,5 @@ export const typography = {
   },
 };
 
-export const centerText = ({ centerText }: { centerText?: boolean }) =>
+export const centerTextCSS = ({ centerText }: { centerText?: boolean }) =>
   centerText && `text-align: center;`;
