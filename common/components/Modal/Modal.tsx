@@ -29,10 +29,12 @@ type ModalProps = {
   title: string | React.ReactNode;
   description: string | React.ReactNode;
   primaryButton: { label: string; onClick: () => void };
-  secondaryButton: { label: string; onClick: () => void };
+  secondaryButton?: { label: string; onClick: () => void };
   modalType?: ModalType;
   modalBackground?: ModalBackground;
   centerText?: boolean;
+  centerButtons?: boolean;
+  mediumTitle?: boolean;
 };
 
 export function Modal({
@@ -43,6 +45,8 @@ export function Modal({
   modalType,
   modalBackground,
   centerText,
+  centerButtons,
+  mediumTitle,
 }: ModalProps) {
   const primaryButtonColor = (): ButtonColor => {
     if (modalType === "alert") return "red";
@@ -64,13 +68,18 @@ export function Modal({
         {modalType === "success" && <Styled.Icon src={successIcon} alt="" />}
         {modalType === "warning" && <Styled.Icon src={warningIcon} alt="" />}
         {modalType === "alert" && <Styled.Icon src={alertIcon} alt="" />}
-        <Styled.Title>{title}</Styled.Title>
+        <Styled.Title mediumTitle={mediumTitle}>{title}</Styled.Title>
         <Styled.Description>{description}</Styled.Description>
-        <Styled.ButtonsContainer modalType={modalType}>
-          <Button
-            label={secondaryButton.label}
-            onClick={secondaryButton.onClick}
-          />
+        <Styled.ButtonsContainer
+          modalType={modalType}
+          centerButtons={centerButtons}
+        >
+          {secondaryButton && (
+            <Button
+              label={secondaryButton.label}
+              onClick={secondaryButton.onClick}
+            />
+          )}
           <Button
             label={primaryButton.label}
             onClick={primaryButton.onClick}
