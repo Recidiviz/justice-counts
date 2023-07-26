@@ -305,6 +305,7 @@ export const UploadedFiles: React.FC = observer(() => {
 
       return filteredFiles;
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateUploadedFileStatus = useCallback(
@@ -320,6 +321,7 @@ export const UploadedFiles: React.FC = observer(() => {
 
       return fetchListOfUploadedFiles();
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
