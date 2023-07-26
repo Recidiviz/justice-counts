@@ -74,7 +74,7 @@ const orderedCategoriesMap: {
 };
 
 // include here systems that you want users to be able to choose
-const availableSystems: AgencySystems[] = ["PRISONS", "LAW_ENFORCEMENT"];
+const availableSystems: AgencySystems[] = ["PRISONS"];
 
 export const AgencyOverview = observer(() => {
   const navigate = useNavigate();
