@@ -24,10 +24,11 @@ import {
   AgencySystems,
   DataVizAggregateName,
   DataVizTimeRangesMap,
+  Metric,
 } from "@justice-counts/common/types";
 import { printDateAsShortMonthYear } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useAsyncEffect from "use-async-effect";
 
@@ -73,7 +74,7 @@ const orderedCategoriesMap: {
 };
 
 // include here systems that you want users to be able to choose
-const availableSystems: AgencySystems[] = ["PRISONS"];
+const availableSystems: AgencySystems[] = ["PRISONS", "LAW_ENFORCEMENT"];
 
 export const AgencyOverview = observer(() => {
   const navigate = useNavigate();
@@ -83,6 +84,17 @@ export const AgencyOverview = observer(() => {
   const [currentSystem, setCurrentSystem] = useState<AgencySystems>(
     availableSystems[0]
   );
+  const [agencyHasAvailableSystems, setAgencyHasAvailableSystems] = useState<
+    boolean | undefined
+  >();
+  const [
+    metricsByAvailableCategoriesAndSystems,
+    setMetricsByAvailableCategoriesAndSystems,
+  ] = useState<Metric[]>();
+  const [
+    metricsByAvailableCategoriesAndSystemsWithData,
+    setMetricsByAvailableCategoriesAndSystemsWithData,
+  ] = useState<Metric[]>();
 
   useEffect(() => {
     if (params.slug) {
@@ -123,28 +135,52 @@ export const AgencyOverview = observer(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    console.log(agencyDataStore.agency, availableSystems);
+    if (agencyDataStore.agency?.systems?.length) {
+      setAgencyHasAvailableSystems(
+        agencyDataStore.agency?.systems?.some((system) =>
+          availableSystems.includes(system)
+        )
+      );
+    }
+    if (agencyDataStore.metrics?.length) {
+      setMetricsByAvailableCategoriesAndSystems(
+        agencyDataStore.metrics.filter(
+          (metric) =>
+            Object.keys(orderedCategoriesMap).includes(metric.category) &&
+            availableSystems.includes(metric.system.key)
+        )
+      );
+    }
+  }, [agencyDataStore]);
+
+  useEffect(() => {
+    if (metricsByAvailableCategoriesAndSystems?.length) {
+      setMetricsByAvailableCategoriesAndSystemsWithData(
+        metricsByAvailableCategoriesAndSystems.filter(
+          (metric) =>
+            agencyDataStore.datapointsByMetric[metric.key].aggregate.filter(
+              (dp) => dp[DataVizAggregateName] !== null
+            ).length > 0
+        )
+      );
+    }
+  }, [
+    metricsByAvailableCategoriesAndSystems,
+    agencyDataStore.datapointsByMetric,
+  ]);
+
+  const agencyHasNoAvailableSystemsOrHasNoData = useMemo(
+    () =>
+      !agencyHasAvailableSystems ||
+      metricsByAvailableCategoriesAndSystemsWithData?.length === 0,
+    [agencyHasAvailableSystems, metricsByAvailableCategoriesAndSystemsWithData]
+  );
+
   if (agencyDataStore.loading) {
     return <Loading />;
   }
-
-  const agencyHasAvailableSystems = agencyDataStore.agency?.systems?.some(
-    (system) => availableSystems.includes(system)
-  );
-  const metricsByAvailableCategoriesAndSystems = agencyDataStore.metrics.filter(
-    (metric) =>
-      Object.keys(orderedCategoriesMap).includes(metric.category) &&
-      availableSystems.includes(metric.system.key)
-  );
-  const metricsByAvailableCategoriesAndSystemsWithData =
-    metricsByAvailableCategoriesAndSystems.filter(
-      (metric) =>
-        agencyDataStore.datapointsByMetric[metric.key].aggregate.filter(
-          (dp) => dp[DataVizAggregateName] !== null
-        ).length > 0
-    );
-  const agencyHasNoAvailableSystemsOrHasNoData =
-    !agencyHasAvailableSystems ||
-    metricsByAvailableCategoriesAndSystemsWithData.length === 0;
 
   if (agencyHasNoAvailableSystemsOrHasNoData)
     return (
