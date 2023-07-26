@@ -96,17 +96,18 @@ export const AgencyOverview = observer(() => {
     metricsByAvailableCategoriesAndSystemsWithData,
     setMetricsByAvailableCategoriesAndSystemsWithData,
   ] = useState<Metric[]>();
+  const [agencyDescription, setAgencyDescription] = useState<string>(
+    agencyDataStore.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS?.value
+  );
+  const [agencyHomepageUrl, setAgencyHomepageUrl] = useState<string>(
+    agencyDataStore.agencySettingsBySettingType.HOMEPAGE_URL?.value
+  );
 
   useEffect(() => {
     if (params.slug) {
       setAgencySlug(params.slug);
     }
   }, [params.slug]);
-
-  const agencyDescription =
-    agencyDataStore.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS?.value;
-  const agencyHomepageUrl =
-    agencyDataStore.agencySettingsBySettingType.HOMEPAGE_URL?.value;
 
   const handleNavigate = useCallback(
     (isPublished: boolean, metricKey: string) => {
@@ -136,10 +137,8 @@ export const AgencyOverview = observer(() => {
   }, []);
 
   useEffect(() => {
-    if (agencyDataStore) {
-      setLoading(agencyDataStore.loading || !agencyDataStore.agency);
-    }
-  }, [agencyDataStore]);
+    setLoading(agencyDataStore.loading || !agencyDataStore.agency);
+  }, [agencyDataStore.loading, agencyDataStore.agency]);
 
   useEffect(() => {
     if (agencyDataStore.agency?.systems?.length) {
@@ -149,6 +148,9 @@ export const AgencyOverview = observer(() => {
         )
       );
     }
+  }, [agencyDataStore.agency]);
+
+  useEffect(() => {
     if (agencyDataStore.metrics?.length) {
       setMetricsByAvailableCategoriesAndSystems(
         agencyDataStore.metrics.filter(
@@ -158,7 +160,22 @@ export const AgencyOverview = observer(() => {
         )
       );
     }
-  }, [agencyDataStore.agency, agencyDataStore.metrics]);
+  }, [agencyDataStore.metrics]);
+
+  useEffect(() => {
+    if (
+      agencyDataStore.agencySettingsBySettingType?.PURPOSE_AND_FUNCTIONS?.value
+    ) {
+      setAgencyDescription(
+        agencyDataStore.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS.value
+      );
+    }
+    if (agencyDataStore.agencySettingsBySettingType?.HOMEPAGE_URL?.value) {
+      setAgencyHomepageUrl(
+        agencyDataStore.agencySettingsBySettingType.HOMEPAGE_URL.value
+      );
+    }
+  }, [agencyDataStore.agencySettingsBySettingType]);
 
   useEffect(() => {
     if (metricsByAvailableCategoriesAndSystems?.length) {
