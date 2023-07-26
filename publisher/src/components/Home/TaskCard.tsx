@@ -15,10 +15,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { TaskCardActionLinksMetadataList, TaskCardMetadata } from ".";
+import {
+  replaceSpacesAndParenthesesWithHyphen,
+  TaskCardActionLinksMetadataList,
+  TaskCardMetadata,
+} from ".";
 import * as Styled from "./Home.styled";
 
 export const taskCardLabelsActionLinks: TaskCardActionLinksMetadataList = {
@@ -45,40 +50,62 @@ export const TaskCard: React.FC<{
       <Styled.TaskCardDescription>{description}</Styled.TaskCardDescription>
       {actionLinks && (
         <Styled.TaskCardActionLinksWrapper>
-          {actionLinks.map((action) => (
-            <Styled.TaskCardActionLink
-              key={action.label}
-              onClick={() => {
-                /** Which action type is this? */
-                const isSetMetricAvailabilityAction =
-                  action.label ===
-                  taskCardLabelsActionLinks.metricAvailability.label;
-                const isManualEntryAction =
-                  action.label === taskCardLabelsActionLinks.manualEntry.label;
-                const isPublishAction =
-                  action.label === taskCardLabelsActionLinks.publish.label;
-                /** Add `/review` to Publish Actions' navigation path  */
-                const reviewPagePath = isPublishAction ? "/review" : "";
+          {actionLinks.map((action) => {
+            const tooltipAnchorID =
+              action.path === "upload"
+                ? `${replaceSpacesAndParenthesesWithHyphen(
+                    title
+                  )}-tooltip-anchor`
+                : undefined;
 
-                if (isSetMetricAvailabilityAction) {
-                  return navigate(`./${action.path + metricSettingsParams}`);
-                }
-                if (isManualEntryAction) {
-                  return navigate(`./${action.path + (reportID || `create`)}`, {
-                    state: { scrollToMetricKey: metricKey, from: "Home" },
-                  });
-                }
-                if (isPublishAction) {
-                  return navigate(
-                    `./${action.path + reportID + reviewPagePath}`
-                  );
-                }
-                navigate(`./${action.path}`);
-              }}
-            >
-              {action.label}
-            </Styled.TaskCardActionLink>
-          ))}
+            return (
+              <Styled.TaskCardActionLink
+                id={tooltipAnchorID}
+                key={action.label}
+                onClick={() => {
+                  /** Which action type is this? */
+                  const isSetMetricAvailabilityAction =
+                    action.label ===
+                    taskCardLabelsActionLinks.metricAvailability.label;
+                  const isManualEntryAction =
+                    action.label ===
+                    taskCardLabelsActionLinks.manualEntry.label;
+                  const isPublishAction =
+                    action.label === taskCardLabelsActionLinks.publish.label;
+                  /** Add `/review` to Publish Actions' navigation path  */
+                  const reviewPagePath = isPublishAction ? "/review" : "";
+
+                  if (isSetMetricAvailabilityAction) {
+                    return navigate(`./${action.path + metricSettingsParams}`);
+                  }
+                  if (isManualEntryAction) {
+                    return navigate(
+                      `./${action.path + (reportID || `create`)}`,
+                      {
+                        state: { scrollToMetricKey: metricKey, from: "Home" },
+                      }
+                    );
+                  }
+                  if (isPublishAction) {
+                    return navigate(
+                      `./${action.path + reportID + reviewPagePath}`
+                    );
+                  }
+                  navigate(`./${action.path}`);
+                }}
+              >
+                {action.label}
+                {tooltipAnchorID && (
+                  <Tooltip
+                    anchorId={tooltipAnchorID}
+                    position="top"
+                    content="You can also upload data for other metrics within the same file"
+                    centerText
+                  />
+                )}
+              </Styled.TaskCardActionLink>
+            );
+          })}
         </Styled.TaskCardActionLinksWrapper>
       )}
     </Styled.TaskCardContainer>

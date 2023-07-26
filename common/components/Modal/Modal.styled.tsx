@@ -18,7 +18,7 @@
 // eslint-disable-next-line no-restricted-imports
 import styled from "styled-components";
 
-import { palette, typography } from "../GlobalStyles";
+import { centerTextCSS, palette, typography } from "../GlobalStyles";
 import { ModalBackground, ModalType } from "./types";
 
 export const OuterWrapper = styled.div<{
@@ -53,7 +53,7 @@ export const InnerWrapper = styled.div<{
   flex-direction: column;
   align-items: center;
   border-radius: 3px;
-  ${({ centerText }) => centerText && `text-align: center;`}
+  ${centerTextCSS}
 `;
 
 export const Icon = styled.img`

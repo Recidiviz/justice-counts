@@ -178,7 +178,7 @@ export const createDataEntryTaskCardMetadata = (
   const metricFrequency =
     currentMetric.custom_frequency || currentMetric.frequency;
   const hasMetricValue = Boolean(
-    recordMetadata?.metrics?.[currentMetric.key][0].value
+    recordMetadata?.metrics?.[currentMetric.key]?.[0]?.value
   );
   return {
     reportID: recordMetadata?.id,
@@ -303,4 +303,17 @@ export const groupMetadatasByValueAndConfiguration = (
       allMetricMetadatasWithoutValuesOrNotConfigured: [],
     } as TaskCardMetadataValueConfigurationGroup
   );
+};
+
+/**
+ * Replaces spaces and parenthesis with hyphen
+ * @returns string - e.g. returns "New-Cases-Parole" if provided "New Cases (Parole)"
+ */
+export const replaceSpacesAndParenthesesWithHyphen = (str: string) => {
+  const spaceAndParenRegex = /[\s()]+/g;
+  const leadingTrailingHyphenRegex = /^-+|-+$/g;
+  const replacedString = str.replace(spaceAndParenRegex, "-");
+  const finalString = replacedString.replace(leadingTrailingHyphenRegex, "");
+
+  return finalString;
 };
