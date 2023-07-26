@@ -1,0 +1,242 @@
+// Recidiviz - a data platform for criminal justice reform
+// Copyright (C) 2023 Recidiviz, Inc.
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+// =============================================================================
+
+import React, { forwardRef } from "react";
+import {
+  Bar,
+  BarChart as BarChartComponent,
+  ResponsiveContainer,
+  Tooltip as TooltipComponent,
+  XAxis,
+  YAxis,
+} from "recharts";
+// eslint-disable-next-line no-restricted-imports
+import styled from "styled-components";
+
+import { Datapoint } from "../../types";
+import { rem } from "../../utils";
+import { palette } from "../GlobalStyles";
+import Tooltip from "./Tooltip";
+import { getDatapointBarLabel } from "./utils";
+
+const MAX_BAR_SIZE = 150;
+
+const NoReportedData = styled.div`
+  position: absolute;
+  background: white;
+  padding: 0 0 0 53px;
+
+  &::after {
+    content: "No reported data for this metric.";
+  }
+`;
+
+const tickStyle = {
+  fontSize: rem("12px"),
+  fontWeight: 600,
+  fill: palette.highlight.grey8,
+};
+
+const abbreviateNumber = (num: number) => {
+  // abbreviates numbers into 1k, 2.5m, 5.5t, etc
+  const numLength = num.toString().length;
+  if (numLength >= 13) {
+    return `${parseFloat((num / 1000000000000).toFixed(1))}t`;
+  }
+  if (numLength >= 10) {
+    return `${parseFloat((num / 1000000000).toFixed(1))}b`;
+  }
+  if (numLength >= 7) {
+    return `${parseFloat((num / 1000000).toFixed(1))}m`;
+  }
+  if (numLength >= 4) {
+    return `${parseFloat((num / 1000).toFixed(1))}k`;
+  }
+  return num.toString();
+};
+
+interface TickProps {
+  y: number;
+  payload: {
+    coordinate: number;
+    isShow: boolean;
+    offset: number;
+    tickCoord: number;
+    value: number;
+  };
+}
+
+interface CustomYAxisTickProps extends TickProps {
+  percentageView: boolean;
+}
+
+const CustomYAxisTick = (props: CustomYAxisTickProps) => {
+  const { y, payload, percentageView } = props;
+  const str = percentageView
+    ? `${payload.value * 100}%`
+    : abbreviateNumber(payload.value);
+  const label = str.length > 7 ? str.substring(0, 5).concat("...") : str;
+  return (
+    <g transform={`translate(${0},${y})`}>
+      <text
+        x={0}
+        y={0}
+        textAnchor="start"
+        fill={palette.solid.darkgrey}
+        style={tickStyle}
+      >
+        {label}
+      </text>
+    </g>
+  );
+};
+
+const CustomCursor = (props: React.SVGProps<SVGRectElement>) => {
+  const { x, y, width, height } = props;
+  return (
+    <rect
+      fill={palette.solid.darkgrey}
+      x={Number(x) + Number(width) / 2}
+      y={y}
+      width={1}
+      height={height}
+    />
+  );
+};
+
+type ResponsiveBarChartProps = {
+  data: Datapoint[];
+  dimensionNames: string[];
+  percentageView?: boolean;
+  resizeHeight?: boolean;
+};
+
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+const ResponsiveBarChart = forwardRef<any, ResponsiveBarChartProps>(
+  (
+    {
+      data,
+      dimensionNames,
+      percentageView,
+      resizeHeight,
+    }: ResponsiveBarChartProps,
+    ref
+  ) => {
+    const renderBarDefinitions = () => {
+      // each Recharts Bar component defines a category type in the stacked bar chart
+      let barDefinitions: JSX.Element[] = [];
+      dimensionNames.forEach((dimension, index) => {
+        const newBar = (
+          <Bar
+            key={dimension}
+            dataKey={dimension}
+            stackId="a"
+            fill={Object.values(palette.dataViz)[index]}
+            maxBarSize={MAX_BAR_SIZE}
+          />
+        );
+        barDefinitions = [newBar, ...barDefinitions];
+      });
+      barDefinitions.push(
+        <Bar
+          key="dataVizMissingData"
+          dataKey="dataVizMissingData"
+          stackId="a"
+          fill="url(#gradient)"
+          maxBarSize={MAX_BAR_SIZE}
+        />
+      );
+      return barDefinitions;
+    };
+
+    return (
+      <>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChartComponent
+            data={data}
+            barGap={0}
+            barCategoryGap={0.5}
+            margin={{
+              top: 20,
+              right: 0,
+              left: 0,
+              bottom: 16,
+            }}
+            ref={ref}
+          >
+            <defs>
+              <linearGradient
+                key="gradient"
+                x1="0"
+                x2="0"
+                y1="0"
+                y2="1"
+                id="gradient"
+              >
+                <stop stopColor="rgba(221, 18, 18, 0)" offset="0%" />
+                <stop stopColor="rgba(221, 18, 18, 0.25)" offset="100%" />
+              </linearGradient>
+            </defs>
+            <XAxis
+              dataKey={(datapoint) => {
+                return getDatapointBarLabel(datapoint);
+              }}
+              padding={{ left: -0.5, right: -0.5 }}
+              interval="preserveEnd"
+              minTickGap={32}
+              tick={tickStyle}
+              tickLine={false}
+              tickMargin={12}
+              stroke="transparent"
+            />
+            {data.length !== 0 && (
+              <YAxis
+                allowDecimals={percentageView}
+                tick={(props: TickProps) => (
+                  <CustomYAxisTick
+                    y={props.y}
+                    payload={props.payload}
+                    percentageView={!!percentageView}
+                  />
+                )}
+                tickLine={false}
+                tickCount={percentageView ? 5 : 12}
+                domain={percentageView ? ["dataMin", "dataMax"] : undefined}
+                axisLine={false}
+              />
+            )}
+            <TooltipComponent
+              isAnimationActive={false}
+              position={{ y: 100 }}
+              cursor={data.length === 0 ? false : <CustomCursor />}
+              content={
+                <Tooltip
+                  percentOnly={!!percentageView}
+                  dimensionNames={dimensionNames}
+                />
+              }
+            />
+            {renderBarDefinitions()}
+          </BarChartComponent>
+        </ResponsiveContainer>
+        {data.length === 0 && <NoReportedData />}
+      </>
+    );
+  }
+);
+
+export default ResponsiveBarChart;

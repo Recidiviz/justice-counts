@@ -196,7 +196,17 @@ export const AgencyOverview = observer(() => {
             );
             return (
               <CategorizedMetricsContainer key={category}>
-                <CategoryTitle>
+                <CategoryTitle
+                  onClick={() => {
+                    if (category === "Capacity and Cost") {
+                      navigate(
+                        `/agency/${agencyId}/${category
+                          .toLowerCase()
+                          .replaceAll(" ", "-")}`
+                      );
+                    }
+                  }}
+                >
                   {`${orderedCategoriesMap[category].label} ->`}
                 </CategoryTitle>
                 <CategoryDescription>

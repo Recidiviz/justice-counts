@@ -19,6 +19,7 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 
 import { AgencyOverview } from "./AgencyOverview";
+import { CategoryOverview } from "./CategoryOverview/CategoryOverview";
 import { DashboardView } from "./DashboardView";
 import { Home } from "./Home";
 
@@ -27,6 +28,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/agency/:id" element={<AgencyOverview />} />
+      <Route path="/agency/:id/:category" element={<CategoryOverview />} />
       <Route path="/agency/:id/dashboard" element={<DashboardView />} />
     </Routes>
   );
