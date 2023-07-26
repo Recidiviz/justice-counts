@@ -136,13 +136,6 @@ export const UploadedFileRow: React.FC<{
       uploadedByRole,
     } = fileRowDetails;
 
-    const handleDeleteActionBasedOnRole = useCallback(() => {
-      return !isJCAdmin && id
-        ? deleteUploadedFile(id)
-        : setIsUnauthorizedRemoveFileModalOpen(true);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [id, isJCAdmin]);
-
     useEffect(
       () => {
         if (rowHovered) setRowHovered(false);
@@ -218,7 +211,11 @@ export const UploadedFileRow: React.FC<{
             {!isReadOnly && (
               <Button
                 label="Delete"
-                onClick={handleDeleteActionBasedOnRole}
+                onClick={() =>
+                  isJCAdmin
+                    ? deleteUploadedFile(id)
+                    : setIsUnauthorizedRemoveFileModalOpen(true)
+                }
                 labelColor="red"
               />
             )}
@@ -296,7 +293,7 @@ export const UploadedFiles: React.FC = observer(() => {
     };
   };
 
-  const deleteUploadedFile = async (spreadsheetID: number) => {
+  const deleteUploadedFile = useCallback(async (spreadsheetID: number) => {
     const response = await reportStore.deleteUploadedSpreadsheet(spreadsheetID);
 
     if (response instanceof Error) {
@@ -308,20 +305,23 @@ export const UploadedFiles: React.FC = observer(() => {
 
       return filteredFiles;
     });
-  };
+  }, []);
 
-  const updateUploadedFileStatus = async (
-    spreadsheetID: number,
-    status: UploadedFileStatus
-  ) => {
-    const response = await reportStore.updateFileStatus(spreadsheetID, status);
+  const updateUploadedFileStatus = useCallback(
+    async (spreadsheetID: number, status: UploadedFileStatus) => {
+      const response = await reportStore.updateFileStatus(
+        spreadsheetID,
+        status
+      );
 
-    if (response instanceof Error) {
-      return showToast({ message: response.message, color: "red" });
-    }
+      if (response instanceof Error) {
+        return showToast({ message: response.message, color: "red" });
+      }
 
-    return fetchListOfUploadedFiles();
-  };
+      return fetchListOfUploadedFiles();
+    },
+    []
+  );
 
   const fetchListOfUploadedFiles = async () => {
     const response = (await reportStore.getUploadedFilesList(agencyId)) as
