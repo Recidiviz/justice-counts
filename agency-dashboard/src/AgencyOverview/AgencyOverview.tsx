@@ -84,9 +84,10 @@ export const AgencyOverview = observer(() => {
   const [currentSystem, setCurrentSystem] = useState<AgencySystems>(
     availableSystems[0]
   );
-  const [agencyHasAvailableSystems, setAgencyHasAvailableSystems] = useState<
-    boolean | undefined
-  >();
+
+  const [loading, setLoading] = useState<boolean>(agencyDataStore.loading);
+  const [agencyHasAvailableSystems, setAgencyHasAvailableSystems] =
+    useState<boolean>(false);
   const [
     metricsByAvailableCategoriesAndSystems,
     setMetricsByAvailableCategoriesAndSystems,
@@ -136,7 +137,12 @@ export const AgencyOverview = observer(() => {
   }, []);
 
   useEffect(() => {
-    console.log(agencyDataStore.agency, availableSystems);
+    if (agencyDataStore) {
+      setLoading(agencyDataStore.loading || !agencyDataStore.agency);
+    }
+  }, [agencyDataStore]);
+
+  useEffect(() => {
     if (agencyDataStore.agency?.systems?.length) {
       setAgencyHasAvailableSystems(
         agencyDataStore.agency?.systems?.some((system) =>
@@ -153,16 +159,16 @@ export const AgencyOverview = observer(() => {
         )
       );
     }
-  }, [agencyDataStore]);
+  }, [agencyDataStore.agency, agencyDataStore.metrics]);
 
   useEffect(() => {
     if (metricsByAvailableCategoriesAndSystems?.length) {
       setMetricsByAvailableCategoriesAndSystemsWithData(
         metricsByAvailableCategoriesAndSystems.filter(
           (metric) =>
-            agencyDataStore.datapointsByMetric[metric.key].aggregate.filter(
-              (dp) => dp[DataVizAggregateName] !== null
-            ).length > 0
+            (
+              agencyDataStore.datapointsByMetric[metric.key]?.aggregate ?? []
+            ).filter((dp) => dp[DataVizAggregateName] !== null).length > 0
         )
       );
     }
@@ -178,7 +184,13 @@ export const AgencyOverview = observer(() => {
     [agencyHasAvailableSystems, metricsByAvailableCategoriesAndSystemsWithData]
   );
 
-  if (agencyDataStore.loading) {
+  useEffect(() => {
+    if (!agencyHasNoAvailableSystemsOrHasNoData) {
+      setLoading(false);
+    }
+  }, [agencyHasNoAvailableSystemsOrHasNoData]);
+
+  if (loading) {
     return <Loading />;
   }
 
