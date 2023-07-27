@@ -101,14 +101,16 @@ export const CategorizedMetricsContainer = styled.div`
   }
 `;
 
-export const CategoryTitle = styled.div`
+export const CategoryTitle = styled.div<{ hasHover?: boolean }>`
   ${typography.sizeCSS.large};
   margin-bottom: 8px;
 
-  &:hover {
+  ${({ hasHover }) =>
+    hasHover &&
+    `&:hover {
     text-decoration: underline;
     cursor: pointer;
-  }
+  }`}
 `;
 
 export const CategoryDescription = styled.div`
@@ -117,14 +119,23 @@ export const CategoryDescription = styled.div`
   margin-bottom: 32px;
 `;
 
-export const MetricsContainer = styled.div`
+export const MetricsContainer = styled.div<{ hasHover?: boolean }>`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  width: fit-content;
 
   @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
     max-width: 100%;
     flex-direction: column;
+  }
+
+  &:hover {
+    & > div {
+      background-color: ${({ hasHover }) =>
+        hasHover ? palette.highlight.grey1 : palette.solid.white};
+      cursor: ${({ hasHover }) => (hasHover ? "pointer" : "auto")};
+    }
   }
 `;
 
@@ -133,20 +144,13 @@ export const MetricBox = styled.div`
   max-width: ${METRIC_BOX_DESKTOP_WIDTH}px;
   height: 223px;
   padding: 24px;
-
+  display: flex;
+  flex-direction: column;
   // dark grey palette color with 0.15 opacity converted to opaque color in order to look properly
   box-shadow: 1px 0 0 0 ${palette.solid.lightgrey},
     0 1px 0 0 ${palette.solid.lightgrey}, 1px 1px 0 0 ${palette.solid.lightgrey},
     1px 0 0 0 ${palette.solid.lightgrey} inset,
     0 1px 0 0 ${palette.solid.lightgrey} inset;
-
-  display: flex;
-  flex-direction: column;
-
-  &:hover {
-    background-color: ${palette.highlight.grey1};
-    cursor: pointer;
-  }
 `;
 
 export const MetricBoxTitle = styled.div`

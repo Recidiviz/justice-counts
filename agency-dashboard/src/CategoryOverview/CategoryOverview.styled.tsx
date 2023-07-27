@@ -147,4 +147,8 @@ export const MetricDataVizContainer = styled.div`
   padding: 0 72px 0 19px;
   width: 100%;
   height: 254px;
+
+  .recharts-bar-rectangle {
+    cursor: pointer !important;
+  }
 `;

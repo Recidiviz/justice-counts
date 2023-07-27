@@ -86,14 +86,6 @@ export const AgencyOverview = observer(() => {
   const agencyHomepageUrl =
     agencyDataStore.agencySettingsBySettingType.HOMEPAGE_URL?.value;
 
-  const handleNavigate = (isPublished: boolean, metricKey: string) => {
-    if (isPublished) {
-      navigate(
-        `/agency/${agencyId}/dashboard?metric=${metricKey.toLocaleLowerCase()}`
-      );
-    }
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -194,24 +186,39 @@ export const AgencyOverview = observer(() => {
                   (dp) => dp[DataVizAggregateName] !== null
                 ).length > 0
             );
+            const isCapacityAndCostCategory = category === "Capacity and Cost";
+
             return (
               <CategorizedMetricsContainer key={category}>
                 <CategoryTitle
                   onClick={() => {
-                    if (category === "Capacity and Cost") {
+                    if (isCapacityAndCostCategory) {
                       const categoryUrlParam = category
                         .toLowerCase()
                         .replaceAll(" ", "-");
                       navigate(`/agency/${agencyId}/${categoryUrlParam}`);
                     }
                   }}
+                  hasHover={isCapacityAndCostCategory}
                 >
-                  {`${orderedCategoriesMap[category].label} ->`}
+                  {`${orderedCategoriesMap[category].label}${
+                    isCapacityAndCostCategory ? " ->" : ""
+                  }`}
                 </CategoryTitle>
                 <CategoryDescription>
                   {orderedCategoriesMap[category].description}
                 </CategoryDescription>
-                <MetricsContainer>
+                <MetricsContainer
+                  onClick={() => {
+                    if (isCapacityAndCostCategory) {
+                      const categoryUrlParam = category
+                        .toLowerCase()
+                        .replaceAll(" ", "-");
+                      navigate(`/agency/${agencyId}/${categoryUrlParam}`);
+                    }
+                  }}
+                  hasHover={isCapacityAndCostCategory}
+                >
                   {metricsWithData.map((metric) => {
                     const data =
                       agencyDataStore.datapointsByMetric[metric.key].aggregate;
@@ -221,10 +228,7 @@ export const AgencyOverview = observer(() => {
                     );
 
                     return (
-                      <MetricBox
-                        key={metric.key}
-                        onClick={() => handleNavigate(true, metric.key)}
-                      >
+                      <MetricBox key={metric.key}>
                         <MetricBoxTitle>
                           {metric.display_name.toUpperCase()}
                         </MetricBoxTitle>

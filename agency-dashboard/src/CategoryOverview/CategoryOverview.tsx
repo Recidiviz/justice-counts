@@ -63,7 +63,7 @@ export const CategoryOverview = observer(() => {
   );
 
   const filterDatapoints = (datapoints: Datapoint[]) => {
-    return dataRangeFilter === "recent" ? datapoints.slice(0, 10) : datapoints;
+    return dataRangeFilter === "recent" ? datapoints.slice(-5) : datapoints;
   };
 
   const copyUrlToClipboard = async () => {
