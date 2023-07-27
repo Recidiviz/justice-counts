@@ -80,9 +80,9 @@ export const SystemChip = styled.div<{ active: boolean }>`
   justify-content: center;
   align-items: center;
   background-color: ${({ active }) =>
-    active ? palette.highlight.grey1 : palette.highlight.grey8};
+    active ? palette.highlight.grey8 : palette.highlight.grey1};
   color: ${({ active }) =>
-    active ? palette.highlight.grey8 : palette.solid.white};
+    active ? palette.solid.white : palette.highlight.grey8};
   padding: 8px 16px;
   ${typography.sizeCSS.normal};
   width: fit-content;
@@ -135,9 +135,10 @@ export const MetricBox = styled.div`
   padding: 24px;
 
   // dark grey palette color with 0.15 opacity converted to opaque color in order to look properly
-  box-shadow: 1px 0 0 0 rgb(217, 219, 224), 0 1px 0 0 rgb(217, 219, 224),
-    1px 1px 0 0 rgb(217, 219, 224), 1px 0 0 0 rgb(217, 219, 224) inset,
-    0 1px 0 0 rgb(217, 219, 224) inset;
+  box-shadow: 1px 0 0 0 ${palette.solid.lightgrey},
+    0 1px 0 0 ${palette.solid.lightgrey}, 1px 1px 0 0 ${palette.solid.lightgrey},
+    1px 0 0 0 ${palette.solid.lightgrey} inset,
+    0 1px 0 0 ${palette.solid.lightgrey} inset;
 
   display: flex;
   flex-direction: column;

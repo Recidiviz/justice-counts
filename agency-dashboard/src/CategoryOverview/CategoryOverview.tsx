@@ -36,11 +36,11 @@ import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
+import { downloadFeedData } from "../utils/donwloadFile";
 import * as Styled from "./CategoryOverview.styled";
+import { CategoryData } from "./types";
 
-const categoryData: {
-  [category: string]: { key: string; label: string; description: string };
-} = {
+const categoryData: CategoryData = {
   "capacity-and-cost": {
     key: "Capacity and Cost",
     label: "Capacity and Cost",
@@ -75,7 +75,7 @@ export const CategoryOverview = observer(() => {
         color: "blue",
         positionNextToIcon: false,
       });
-    } catch (_) {
+    } catch {
       showToast({
         message: "Error copying link",
         color: "blue",
@@ -100,7 +100,7 @@ export const CategoryOverview = observer(() => {
         if (agencyDataStore.metrics.length === 0) {
           await agencyDataStore.fetchAgencyData(Number(id));
         }
-      } catch (error) {
+      } catch {
         showToast({
           message: "Error fetching data.",
           color: "red",
@@ -108,6 +108,7 @@ export const CategoryOverview = observer(() => {
         });
       }
     };
+
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -118,6 +119,17 @@ export const CategoryOverview = observer(() => {
 
   const categoryMetrics =
     agencyDataStore.metricsByCategory[categoryData[category].key];
+
+  const downloadMetricsData = () => {
+    categoryMetrics.forEach((categoryMetric) => {
+      const metric = agencyDataStore.metricsByKey[categoryMetric.key];
+      if (metric) {
+        metric.filenames.forEach((fileName) => {
+          downloadFeedData(metric.system.key, fileName, id);
+        });
+      }
+    });
+  };
 
   return (
     <>
@@ -139,7 +151,7 @@ export const CategoryOverview = observer(() => {
               {categoryData[category].description}
             </Styled.CategoryDescription>
             <Styled.TopBlockControls>
-              <Styled.TopBlockControl onClick={handleChartDownload}>
+              <Styled.TopBlockControl onClick={downloadMetricsData}>
                 <DownloadIcon /> Download Data
               </Styled.TopBlockControl>
               <Styled.TopBlockControl onClick={copyUrlToClipboard}>
@@ -181,7 +193,6 @@ export const CategoryOverview = observer(() => {
                         )
                       )}
                       dimensionNames={[DataVizAggregateName]}
-                      resizeHeight
                       ref={ref}
                     />
                   </Styled.MetricDataVizContainer>

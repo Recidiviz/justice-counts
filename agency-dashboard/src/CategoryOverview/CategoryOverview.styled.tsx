@@ -78,8 +78,8 @@ export const TopBlockControl = styled.div`
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  ${typography.sizeCSS.normal};
 
-  ${typography.sizeCSS.normal}
   svg {
     width: 16px;
     height: 16px;
@@ -119,9 +119,10 @@ export const MetricBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: start;
-  box-shadow: 1px 0 0 0 rgb(217, 219, 224), 0 1px 0 0 rgb(217, 219, 224),
-    1px 1px 0 0 rgb(217, 219, 224), 1px 0 0 0 rgb(217, 219, 224) inset,
-    0 1px 0 0 rgb(217, 219, 224) inset;
+  box-shadow: 1px 0 0 0 ${palette.solid.lightgrey},
+    0 1px 0 0 ${palette.solid.lightgrey}, 1px 1px 0 0 ${palette.solid.lightgrey},
+    1px 0 0 0 ${palette.solid.lightgrey} inset,
+    0 1px 0 0 ${palette.solid.lightgrey} inset;
 `;
 
 export const MetricName = styled.div`

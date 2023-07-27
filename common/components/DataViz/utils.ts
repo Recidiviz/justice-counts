@@ -186,7 +186,7 @@ export const transformToRelativePerchanges = (data: Datapoint[]) => {
   return data.map((datapoint) => {
     const dimensions = getDatapointDimensions(datapoint);
     const sumOfDimensions = getSumOfDimensionValues(datapoint);
-    const dimensionsPercentage = mapValues(dimensions, (val, key) => {
+    const dimensionsPercentage = mapValues(dimensions, (val) => {
       if (typeof val === "number" && val !== 0) {
         return val / sumOfDimensions;
       }
@@ -414,3 +414,21 @@ export function generateSavingFileName(
 
   return `${metricName}${disaggregationName}.png`;
 }
+
+export const abbreviateNumber = (num: number) => {
+  // abbreviates numbers into 1k, 2.5m, 5.5t, etc
+  const numLength = num.toString().length;
+  if (numLength >= 13) {
+    return `${parseFloat((num / 1000000000000).toFixed(1))}t`;
+  }
+  if (numLength >= 10) {
+    return `${parseFloat((num / 1000000000).toFixed(1))}b`;
+  }
+  if (numLength >= 7) {
+    return `${parseFloat((num / 1000000).toFixed(1))}m`;
+  }
+  if (numLength >= 4) {
+    return `${parseFloat((num / 1000).toFixed(1))}k`;
+  }
+  return num.toString();
+};

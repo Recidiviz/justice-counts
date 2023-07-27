@@ -111,244 +111,246 @@ const SelectMetricButtonDropdown: React.FC<{
   </ExtendedDropdown>
 );
 
-export const DatapointsView = forwardRef((props: DatapointsViewProps, ref) => {
-  const {
-    datapointsGroupedByAggregateAndDisaggregations,
-    dimensionNamesByDisaggregation,
-    timeRange,
-    disaggregationName,
-    countOrPercentageView,
-    setTimeRange,
-    setDisaggregationName,
-    setCountOrPercentageView,
-    metricName,
-    metricFrequency,
-    metricNamesByCategory,
-    agencyName,
-    onMetricsSelect,
-    showTitle = false,
-    showBottomMetricInsights = false,
-    resizeHeight = false,
-    maxHeightViewport = false,
-  } = props;
+export const DatapointsView = forwardRef<never, DatapointsViewProps>(
+  (props, ref) => {
+    const {
+      datapointsGroupedByAggregateAndDisaggregations,
+      dimensionNamesByDisaggregation,
+      timeRange,
+      disaggregationName,
+      countOrPercentageView,
+      setTimeRange,
+      setDisaggregationName,
+      setCountOrPercentageView,
+      metricName,
+      metricFrequency,
+      metricNamesByCategory,
+      agencyName,
+      onMetricsSelect,
+      showTitle = false,
+      showBottomMetricInsights = false,
+      resizeHeight = false,
+      maxHeightViewport = false,
+    } = props;
 
-  const [mobileSelectMetricsVisible, setMobileSelectMetricsVisible] =
-    React.useState<boolean>(false);
-  const [mobileFiltersVisible, setMobileFiltersVisible] =
-    React.useState<boolean>(false);
+    const [mobileSelectMetricsVisible, setMobileSelectMetricsVisible] =
+      React.useState<boolean>(false);
+    const [mobileFiltersVisible, setMobileFiltersVisible] =
+      React.useState<boolean>(false);
 
-  const selectedData =
-    (disaggregationName !== NoDisaggregationOption &&
-      Object.values(
-        datapointsGroupedByAggregateAndDisaggregations?.disaggregations[
-          disaggregationName
-        ] || {}
-      )) ||
-    datapointsGroupedByAggregateAndDisaggregations?.aggregate ||
-    [];
+    const selectedData =
+      (disaggregationName !== NoDisaggregationOption &&
+        Object.values(
+          datapointsGroupedByAggregateAndDisaggregations?.disaggregations[
+            disaggregationName
+          ] || {}
+        )) ||
+      datapointsGroupedByAggregateAndDisaggregations?.aggregate ||
+      [];
 
-  // all datapoints have annual frequency
-  const isAnnualOnly = !selectedData.find((dp) => dp.frequency === "MONTHLY");
-  const disaggregations = Object.keys(dimensionNamesByDisaggregation || {});
-  const disaggregationOptions = [...disaggregations];
-  disaggregationOptions.unshift(noDisaggregationOption);
-  const dimensionNames =
-    disaggregationName !== noDisaggregationOption
-      ? (dimensionNamesByDisaggregation?.[disaggregationName] || [])
-          .slice() // Must use slice() before sorting a MobX observableArray
-          .sort(sortDatapointDimensions)
-      : [DataVizAggregateName];
+    // all datapoints have annual frequency
+    const isAnnualOnly = !selectedData.find((dp) => dp.frequency === "MONTHLY");
+    const disaggregations = Object.keys(dimensionNamesByDisaggregation || {});
+    const disaggregationOptions = [...disaggregations];
+    disaggregationOptions.unshift(noDisaggregationOption);
+    const dimensionNames =
+      disaggregationName !== noDisaggregationOption
+        ? (dimensionNamesByDisaggregation?.[disaggregationName] || [])
+            .slice() // Must use slice() before sorting a MobX observableArray
+            .sort(sortDatapointDimensions)
+        : [DataVizAggregateName];
 
-  const selectedTimeRangeValue = DataVizTimeRangesMap[timeRange];
+    const selectedTimeRangeValue = DataVizTimeRangesMap[timeRange];
 
-  useEffect(() => {
-    if (isAnnualOnly && selectedTimeRangeValue === 6) {
-      setTimeRange("All");
-    }
-    if (!disaggregationOptions.includes(disaggregationName)) {
-      setDisaggregationName(noDisaggregationOption);
-      setCountOrPercentageView("Count");
-    }
-    if (disaggregationName === noDisaggregationOption) {
-      setCountOrPercentageView("Count");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [datapointsGroupedByAggregateAndDisaggregations]);
+    useEffect(() => {
+      if (isAnnualOnly && selectedTimeRangeValue === 6) {
+        setTimeRange("All");
+      }
+      if (!disaggregationOptions.includes(disaggregationName)) {
+        setDisaggregationName(noDisaggregationOption);
+        setCountOrPercentageView("Count");
+      }
+      if (disaggregationName === noDisaggregationOption) {
+        setCountOrPercentageView("Count");
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [datapointsGroupedByAggregateAndDisaggregations]);
 
-  useEffect(() => {
-    if (disaggregationName === noDisaggregationOption) {
-      setCountOrPercentageView("Count");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [disaggregationName]);
+    useEffect(() => {
+      if (disaggregationName === noDisaggregationOption) {
+        setCountOrPercentageView("Count");
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [disaggregationName]);
 
-  /** Prevent body from scrolling when modal is open */
-  useEffect(() => {
-    if (mobileSelectMetricsVisible || mobileFiltersVisible) {
-      document.body.style.overflow = "hidden";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
+    /** Prevent body from scrolling when modal is open */
+    useEffect(() => {
+      if (mobileSelectMetricsVisible || mobileFiltersVisible) {
+        document.body.style.overflow = "hidden";
+      }
+      return () => {
+        document.body.style.overflow = "unset";
+      };
+    }, [mobileSelectMetricsVisible, mobileFiltersVisible]);
+
+    const renderChartForMetric = () => {
+      return (
+        <BarChart
+          data={transformDataForBarChart(
+            selectedData,
+            selectedTimeRangeValue,
+            countOrPercentageView
+          )}
+          dimensionNames={dimensionNames}
+          percentageView={
+            !!disaggregationName && countOrPercentageView === "Percentage"
+          }
+          resizeHeight={resizeHeight}
+          ref={ref}
+        />
+      );
     };
-  }, [mobileSelectMetricsVisible, mobileFiltersVisible]);
 
-  const renderChartForMetric = () => {
-    return (
-      <BarChart
-        data={transformDataForBarChart(
-          selectedData,
-          selectedTimeRangeValue,
-          countOrPercentageView
-        )}
-        dimensionNames={dimensionNames}
-        percentageView={
-          !!disaggregationName && countOrPercentageView === "Percentage"
-        }
-        resizeHeight={resizeHeight}
-        ref={ref}
-      />
-    );
-  };
+    const renderLegend = () => {
+      if (disaggregationName !== noDisaggregationOption) {
+        return <Legend names={dimensionNames} />;
+      }
+      return <Legend />;
+    };
 
-  const renderLegend = () => {
-    if (disaggregationName !== noDisaggregationOption) {
-      return <Legend names={dimensionNames} />;
-    }
-    return <Legend />;
-  };
+    const renderDataVizControls = () => {
+      const timeRanges = isAnnualOnly
+        ? Object.keys(DataVizTimeRangesMap).filter(
+            (key) => key !== "6 Months Ago"
+          )
+        : Object.keys(DataVizTimeRangesMap);
+      const timeRangesDropdownOptions: DropdownOption[] = timeRanges.map(
+        (range) => ({
+          key: range,
+          label: range,
+          onClick: () => setTimeRange(range as DataVizTimeRangeDisplayName),
+          highlight: range === timeRange,
+        })
+      );
 
-  const renderDataVizControls = () => {
-    const timeRanges = isAnnualOnly
-      ? Object.keys(DataVizTimeRangesMap).filter(
-          (key) => key !== "6 Months Ago"
-        )
-      : Object.keys(DataVizTimeRangesMap);
-    const timeRangesDropdownOptions: DropdownOption[] = timeRanges.map(
-      (range) => ({
-        key: range,
-        label: range,
-        onClick: () => setTimeRange(range as DataVizTimeRangeDisplayName),
-        highlight: range === timeRange,
-      })
-    );
+      const disaggregationDropdownOptions: DropdownOption[] =
+        disaggregationOptions.map((option) => ({
+          key: option,
+          label: option,
+          onClick: () => setDisaggregationName(option),
+          highlight: disaggregationName === option,
+        }));
 
-    const disaggregationDropdownOptions: DropdownOption[] =
-      disaggregationOptions.map((option) => ({
-        key: option,
-        label: option,
-        onClick: () => setDisaggregationName(option),
-        highlight: disaggregationName === option,
-      }));
-
-    const countOrPercentageDropdownOptions: DropdownOption[] =
-      dataVizCountOrPercentageView.map((option) => ({
-        key: option,
-        label: option,
-        onClick: () => setCountOrPercentageView(option),
-        highlight: countOrPercentageView === option,
-      }));
-    return (
-      <DatapointsViewControlsContainer>
-        <Dropdown
-          label={timeRange}
-          options={timeRangesDropdownOptions}
-          size="small"
-          caretPosition="right"
-        />
-        {disaggregationOptions.length > 1 && (
+      const countOrPercentageDropdownOptions: DropdownOption[] =
+        dataVizCountOrPercentageView.map((option) => ({
+          key: option,
+          label: option,
+          onClick: () => setCountOrPercentageView(option),
+          highlight: countOrPercentageView === option,
+        }));
+      return (
+        <DatapointsViewControlsContainer>
           <Dropdown
-            label={disaggregationName}
-            options={disaggregationDropdownOptions}
+            label={timeRange}
+            options={timeRangesDropdownOptions}
             size="small"
             caretPosition="right"
           />
-        )}
-        {disaggregationName !== noDisaggregationOption && (
-          <Dropdown
-            label={countOrPercentageView}
-            options={countOrPercentageDropdownOptions}
-            size="small"
-            caretPosition="right"
-          />
-        )}
-      </DatapointsViewControlsContainer>
-    );
-  };
-
-  const filteredAggregateData = transformDataForMetricInsights(
-    datapointsGroupedByAggregateAndDisaggregations?.aggregate || [],
-    selectedTimeRangeValue
-  );
-
-  const shouldShowMobileSelectMetricsModal =
-    mobileSelectMetricsVisible &&
-    agencyName &&
-    metricNamesByCategory &&
-    metricName &&
-    onMetricsSelect;
-
-  const shouldShowMobileFiltersModal = mobileFiltersVisible && metricName;
-
-  return (
-    <DatapointsViewContainer maxHeightViewport={maxHeightViewport}>
-      <DatapointsViewHeaderWrapper>
-        {showTitle && (
-          <MetricHeaderWrapper>
-            <DatapointsTitle
-              metricName={metricName}
-              metricFrequency={metricFrequency}
+          {disaggregationOptions.length > 1 && (
+            <Dropdown
+              label={disaggregationName}
+              options={disaggregationDropdownOptions}
+              size="small"
+              caretPosition="right"
             />
-            {selectedData.length > 0 && (
-              <MetricInsights
-                datapoints={filteredAggregateData}
-                enableHideByWidth
+          )}
+          {disaggregationName !== noDisaggregationOption && (
+            <Dropdown
+              label={countOrPercentageView}
+              options={countOrPercentageDropdownOptions}
+              size="small"
+              caretPosition="right"
+            />
+          )}
+        </DatapointsViewControlsContainer>
+      );
+    };
+
+    const filteredAggregateData = transformDataForMetricInsights(
+      datapointsGroupedByAggregateAndDisaggregations?.aggregate || [],
+      selectedTimeRangeValue
+    );
+
+    const shouldShowMobileSelectMetricsModal =
+      mobileSelectMetricsVisible &&
+      agencyName &&
+      metricNamesByCategory &&
+      metricName &&
+      onMetricsSelect;
+
+    const shouldShowMobileFiltersModal = mobileFiltersVisible && metricName;
+
+    return (
+      <DatapointsViewContainer maxHeightViewport={maxHeightViewport}>
+        <DatapointsViewHeaderWrapper>
+          {showTitle && (
+            <MetricHeaderWrapper>
+              <DatapointsTitle
+                metricName={metricName}
+                metricFrequency={metricFrequency}
               />
-            )}
-          </MetricHeaderWrapper>
+              {selectedData.length > 0 && (
+                <MetricInsights
+                  datapoints={filteredAggregateData}
+                  enableHideByWidth
+                />
+              )}
+            </MetricHeaderWrapper>
+          )}
+        </DatapointsViewHeaderWrapper>
+        <DatapointsViewControlsRow>
+          {metricNamesByCategory && onMetricsSelect && (
+            <SelectMetricButtonDropdown
+              options={Object.values(metricNamesByCategory).flat()}
+              onSelect={onMetricsSelect}
+              currentMetricName={metricName}
+            />
+          )}
+          {renderDataVizControls()}
+        </DatapointsViewControlsRow>
+        <MobileFiltersRow>
+          <MobileFiltersButton onClick={() => setMobileFiltersVisible(true)} />
+        </MobileFiltersRow>
+        {renderChartForMetric()}
+        {renderLegend()}
+        {showBottomMetricInsights && selectedData.length > 0 && (
+          <BottomMetricInsightsContainer>
+            <MetricInsights datapoints={filteredAggregateData} />
+          </BottomMetricInsightsContainer>
         )}
-      </DatapointsViewHeaderWrapper>
-      <DatapointsViewControlsRow>
-        {metricNamesByCategory && onMetricsSelect && (
-          <SelectMetricButtonDropdown
-            options={Object.values(metricNamesByCategory).flat()}
-            onSelect={onMetricsSelect}
-            currentMetricName={metricName}
+        {shouldShowMobileSelectMetricsModal && (
+          <MobileSelectMetricsModal
+            agencyName={agencyName}
+            selectedMetricName={metricName}
+            metricNamesByCategory={metricNamesByCategory}
+            closeModal={() => setMobileSelectMetricsVisible(false)}
+            onSelectMetric={onMetricsSelect}
           />
         )}
-        {renderDataVizControls()}
-      </DatapointsViewControlsRow>
-      <MobileFiltersRow>
-        <MobileFiltersButton onClick={() => setMobileFiltersVisible(true)} />
-      </MobileFiltersRow>
-      {renderChartForMetric()}
-      {renderLegend()}
-      {showBottomMetricInsights && selectedData.length > 0 && (
-        <BottomMetricInsightsContainer>
-          <MetricInsights datapoints={filteredAggregateData} />
-        </BottomMetricInsightsContainer>
-      )}
-      {shouldShowMobileSelectMetricsModal && (
-        <MobileSelectMetricsModal
-          agencyName={agencyName}
-          selectedMetricName={metricName}
-          metricNamesByCategory={metricNamesByCategory}
-          closeModal={() => setMobileSelectMetricsVisible(false)}
-          onSelectMetric={onMetricsSelect}
-        />
-      )}
-      {shouldShowMobileFiltersModal && (
-        <MobileFiltersModal
-          metricName={metricName}
-          disaggregationOptions={disaggregationOptions}
-          closeModal={() => setMobileFiltersVisible(false)}
-          timeRange={timeRange}
-          disaggregationName={disaggregationName}
-          countOrPercentageView={countOrPercentageView}
-          setTimeRange={setTimeRange}
-          setDisaggregationName={setDisaggregationName}
-          setCountOrPercentageView={setCountOrPercentageView}
-        />
-      )}
-    </DatapointsViewContainer>
-  );
-});
+        {shouldShowMobileFiltersModal && (
+          <MobileFiltersModal
+            metricName={metricName}
+            disaggregationOptions={disaggregationOptions}
+            closeModal={() => setMobileFiltersVisible(false)}
+            timeRange={timeRange}
+            disaggregationName={disaggregationName}
+            countOrPercentageView={countOrPercentageView}
+            setTimeRange={setTimeRange}
+            setDisaggregationName={setDisaggregationName}
+            setCountOrPercentageView={setCountOrPercentageView}
+          />
+        )}
+      </DatapointsViewContainer>
+    );
+  }
+);

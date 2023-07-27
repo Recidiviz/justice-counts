@@ -24,13 +24,13 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-// eslint-disable-next-line no-restricted-imports
-import styled from "styled-components";
+import styled from "styled-components/macro";
 
-import { Datapoint } from "../../types";
 import { rem } from "../../utils";
 import { palette } from "../GlobalStyles";
+import { CustomCursor, CustomYAxisTick } from "./BarChartComponents";
 import Tooltip from "./Tooltip";
+import { ResponsiveBarChartProps, TickProps } from "./types";
 import { getDatapointBarLabel } from "./utils";
 
 const MAX_BAR_SIZE = 150;
@@ -51,91 +51,8 @@ const tickStyle = {
   fill: palette.highlight.grey8,
 };
 
-const abbreviateNumber = (num: number) => {
-  // abbreviates numbers into 1k, 2.5m, 5.5t, etc
-  const numLength = num.toString().length;
-  if (numLength >= 13) {
-    return `${parseFloat((num / 1000000000000).toFixed(1))}t`;
-  }
-  if (numLength >= 10) {
-    return `${parseFloat((num / 1000000000).toFixed(1))}b`;
-  }
-  if (numLength >= 7) {
-    return `${parseFloat((num / 1000000).toFixed(1))}m`;
-  }
-  if (numLength >= 4) {
-    return `${parseFloat((num / 1000).toFixed(1))}k`;
-  }
-  return num.toString();
-};
-
-interface TickProps {
-  y: number;
-  payload: {
-    coordinate: number;
-    isShow: boolean;
-    offset: number;
-    tickCoord: number;
-    value: number;
-  };
-}
-
-interface CustomYAxisTickProps extends TickProps {
-  percentageView: boolean;
-}
-
-const CustomYAxisTick = (props: CustomYAxisTickProps) => {
-  const { y, payload, percentageView } = props;
-  const str = percentageView
-    ? `${payload.value * 100}%`
-    : abbreviateNumber(payload.value);
-  const label = str.length > 7 ? str.substring(0, 5).concat("...") : str;
-  return (
-    <g transform={`translate(${0},${y})`}>
-      <text
-        x={0}
-        y={0}
-        textAnchor="start"
-        fill={palette.solid.darkgrey}
-        style={tickStyle}
-      >
-        {label}
-      </text>
-    </g>
-  );
-};
-
-const CustomCursor = (props: React.SVGProps<SVGRectElement>) => {
-  const { x, y, width, height } = props;
-  return (
-    <rect
-      fill={palette.solid.darkgrey}
-      x={Number(x) + Number(width) / 2}
-      y={y}
-      width={1}
-      height={height}
-    />
-  );
-};
-
-type ResponsiveBarChartProps = {
-  data: Datapoint[];
-  dimensionNames: string[];
-  percentageView?: boolean;
-  resizeHeight?: boolean;
-};
-
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-const ResponsiveBarChart = forwardRef<any, ResponsiveBarChartProps>(
-  (
-    {
-      data,
-      dimensionNames,
-      percentageView,
-      resizeHeight,
-    }: ResponsiveBarChartProps,
-    ref
-  ) => {
+const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
+  ({ data, dimensionNames }: ResponsiveBarChartProps, ref) => {
     const renderBarDefinitions = () => {
       // each Recharts Bar component defines a category type in the stacked bar chart
       let barDefinitions: JSX.Element[] = [];
@@ -205,17 +122,16 @@ const ResponsiveBarChart = forwardRef<any, ResponsiveBarChartProps>(
             />
             {data.length !== 0 && (
               <YAxis
-                allowDecimals={percentageView}
                 tick={(props: TickProps) => (
                   <CustomYAxisTick
                     y={props.y}
                     payload={props.payload}
-                    percentageView={!!percentageView}
+                    percentageView={false}
+                    styles={tickStyle}
                   />
                 )}
                 tickLine={false}
-                tickCount={percentageView ? 5 : 12}
-                domain={percentageView ? ["dataMin", "dataMax"] : undefined}
+                tickCount={12}
                 axisLine={false}
               />
             )}
@@ -224,10 +140,7 @@ const ResponsiveBarChart = forwardRef<any, ResponsiveBarChartProps>(
               position={{ y: 100 }}
               cursor={data.length === 0 ? false : <CustomCursor />}
               content={
-                <Tooltip
-                  percentOnly={!!percentageView}
-                  dimensionNames={dimensionNames}
-                />
+                <Tooltip dimensionNames={dimensionNames} percentOnly={false} />
               }
             />
             {renderBarDefinitions()}

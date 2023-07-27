@@ -31,7 +31,9 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { LearnMoreModal, ShareModal } from "../DashboardModals";
 import { HeaderBar } from "../Header";
+import { Loading } from "../Loading";
 import { useStore } from "../stores";
+import { downloadFeedData } from "../utils/donwloadFile";
 import {
   BackButtonContainer,
   Container,
@@ -205,7 +207,7 @@ export const DashboardView = observer(() => {
   }
 
   if (agencyDataStore.loading) {
-    return <>Loading...</>;
+    return <Loading />;
   }
 
   const metricNamesByCategory = agencyDataStore.metrics.reduce(
@@ -228,19 +230,11 @@ export const DashboardView = observer(() => {
     DataVizTimeRangesMap[dataVizStore.timeRange]
   );
 
-  const downloadFeedData = async (system: string, filename: string) => {
-    const a = document.createElement("a");
-    a.href = `/feed/${agencyId}?system=${system}&metric=${filename}`;
-    a.setAttribute("download", `${filename}.csv`);
-    a.click();
-    a.remove();
-  };
-
   const downloadMetricData = () => {
     const metric = agencyDataStore.metricsByKey[metricKeyParam];
     if (metric) {
       metric.filenames.forEach((fileName) => {
-        downloadFeedData(metric.system.key, fileName);
+        downloadFeedData(metric.system.key, fileName, agencyId.toString());
       });
     }
   };

@@ -199,11 +199,10 @@ export const AgencyOverview = observer(() => {
                 <CategoryTitle
                   onClick={() => {
                     if (category === "Capacity and Cost") {
-                      navigate(
-                        `/agency/${agencyId}/${category
-                          .toLowerCase()
-                          .replaceAll(" ", "-")}`
-                      );
+                      const categoryUrlParam = category
+                        .toLowerCase()
+                        .replaceAll(" ", "-");
+                      navigate(`/agency/${agencyId}/${categoryUrlParam}`);
                     }
                   }}
                 >
