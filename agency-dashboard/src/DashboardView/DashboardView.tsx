@@ -30,6 +30,7 @@ import { each } from "bluebird";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import useAsyncEffect from "use-async-effect";
 
 import {
   BackButtonContainer,
@@ -157,23 +158,19 @@ export const DashboardView = observer(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
+  useAsyncEffect(async () => {
     if (agencySlug) {
-      const fetchData = async () => {
-        try {
-          await agencyDataStore.fetchAgencyData(agencySlug);
-        } catch (error) {
-          showToast({
-            message: "Error fetching data.",
-            color: "red",
-            timeout: 4000,
-          });
-        }
-      };
-      fetchData();
+      try {
+        await agencyDataStore.fetchAgencyData(agencySlug);
+      } catch (error) {
+        showToast({
+          message: "Error fetching data.",
+          color: "red",
+          timeout: 4000,
+        });
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [agencySlug]);
+  }, [agencySlug, agencyDataStore.fetchAgencyData, showToast]);
 
   useEffect(() => {
     if (
@@ -185,9 +182,13 @@ export const DashboardView = observer(() => {
     ) {
       navigate(`/agency/${encodeURIComponent(agencySlug)}`);
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate, agencyDataStore.loading, agencySlug]);
+  }, [
+    metricKeyParam,
+    navigate,
+    agencyDataStore.loading,
+    agencyDataStore.dimensionNamesByMetricAndDisaggregation,
+    agencySlug,
+  ]);
 
   useEffect(() => {
     const resizeListener = () => {
