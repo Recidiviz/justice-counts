@@ -26,9 +26,8 @@ import {
   DataVizAggregateName,
   DataVizTimeRangesMap,
 } from "@justice-counts/common/types";
-import FileSaver from "file-saver";
 import { observer } from "mobx-react-lite";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCurrentPng } from "recharts-to-png";
 
@@ -55,7 +54,7 @@ export const CategoryOverview = observer(() => {
     category: string;
   };
   const navigate = useNavigate();
-  const [getChartPng, { ref }] = useCurrentPng({
+  const [, { ref }] = useCurrentPng({
     scale: 10,
   });
   const { agencyDataStore } = useStore();
@@ -86,13 +85,13 @@ export const CategoryOverview = observer(() => {
 
   // this will only download last chart since refs are the same, leave it like that for separate task for download button
   // TODO
-  const handleChartDownload = useCallback(async () => {
-    const png = await getChartPng();
-
-    if (png) {
-      FileSaver.saveAs(png, "data.png");
-    }
-  }, [getChartPng]);
+  // const handleChartDownload = useCallback(async () => {
+  //   const png = await getChartPng();
+  //
+  //   if (png) {
+  //     FileSaver.saveAs(png, "data.png");
+  //   }
+  // }, [getChartPng]);
 
   useEffect(() => {
     const fetchData = async () => {
