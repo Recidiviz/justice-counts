@@ -14,24 +14,31 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-
+import { observer } from "mobx-react-lite";
 import React from "react";
-import { Route, Routes } from "react-router-dom";
 
-import { AgencyOverview } from "./AgencyOverview";
-import { DashboardView } from "./DashboardView";
-import { Home } from "./Home";
-import { NotFound } from "./NotFound";
+import { Footer } from "../Footer";
+import { HeaderBar } from "../Header";
+import { NotFoundText, NotFoundTitle, NotFoundWrapper } from ".";
 
-function App() {
+export const NotFound = observer(() => {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/agency/:slug" element={<AgencyOverview />} />
-      <Route path="/agency/:slug/dashboard" element={<DashboardView />} />
-      <Route path="/404" element={<NotFound />} />
-    </Routes>
+    <>
+      <HeaderBar />
+      <NotFoundWrapper>
+        <NotFoundTitle>Page Not Found</NotFoundTitle>
+        <NotFoundText>
+          Error 404
+          <span>
+            The page you are looking for seems to be missing. Send us an email
+            and we’ll help you find it.
+          </span>
+          <a href="mailto:justice-counts-support@csg.org">
+            justice-counts-support@csg.org
+          </a>
+        </NotFoundText>
+      </NotFoundWrapper>
+      <Footer />
+    </>
   );
-}
-
-export default App;
+});

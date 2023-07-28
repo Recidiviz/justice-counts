@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
 
@@ -90,13 +90,17 @@ test("renders list of metrics", async () => {
 
   render(
     <StoreProvider>
-      <MemoryRouter initialEntries={["/agency/1"]}>
+      <MemoryRouter initialEntries={["/agency/agency-slug"]}>
         <AgencyOverview />
       </MemoryRouter>
     </StoreProvider>
   );
-  const textElementFunding = await screen.findByText(/FUNDING/i);
-  expect(textElementFunding).toBeInTheDocument();
-  const textElementExpenses = await screen.findByText(/EXPENSES/i);
-  expect(textElementExpenses).toBeInTheDocument();
+  await waitFor(async () => {
+    const textElementFunding = await screen.findByText(/FUNDING/i);
+    expect(textElementFunding).toBeInTheDocument();
+  });
+  await waitFor(async () => {
+    const textElementExpenses = await screen.findByText(/EXPENSES/i);
+    expect(textElementExpenses).toBeInTheDocument();
+  });
 });
