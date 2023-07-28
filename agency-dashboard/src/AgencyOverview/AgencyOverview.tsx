@@ -14,23 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-/* eslint-disable import/no-extraneous-dependencies */
-// Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2023 Recidiviz, Inc.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <https://www.gnu.org/licenses/>.
-// =============================================================================
 
 import MiniBarChart from "@justice-counts/common/components/DataViz/MiniBarChart";
 import { transformDataForBarChart } from "@justice-counts/common/components/DataViz/utils";
@@ -43,7 +26,7 @@ import {
 } from "@justice-counts/common/types";
 import { printDateAsShortMonthYear } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useAsyncEffect from "use-async-effect";
 
@@ -68,9 +51,6 @@ import {
   MetricsContainer,
   MetricsViewContainer,
   MiniChartContainer,
-  NotFoundText,
-  NotFoundTitle,
-  NotFoundWrapper,
   SystemChip,
   SystemChipsContainer,
 } from ".";
@@ -93,14 +73,11 @@ const availableSystems: AgencySystems[] = ["PRISONS"];
 
 export const AgencyOverview = observer(() => {
   const navigate = useNavigate();
-  const params = useParams();
-  const [agencySlug, setAgencySlug] = useState<string | undefined>(params.slug);
+  const { slug } = useParams();
   const { agencyDataStore } = useStore();
   const [currentSystem, setCurrentSystem] = useState<AgencySystems>(
     availableSystems[0]
   );
-
-  const [loading, setLoading] = useState<boolean>(agencyDataStore.loading);
   const [agencyHasAvailableSystems, setAgencyHasAvailableSystems] =
     useState<boolean>(false);
   const [
@@ -118,64 +95,44 @@ export const AgencyOverview = observer(() => {
     agencyDataStore.agencySettingsBySettingType.HOMEPAGE_URL?.value
   );
 
-  useEffect(() => {
-    if (params.slug) {
-      setAgencySlug(params.slug);
-    }
-  }, [params.slug]);
-
   const handleNavigate = useCallback(
     (isPublished: boolean, metricKey: string) => {
-      if (isPublished && agencySlug) {
+      if (isPublished && slug) {
         navigate(
           `/agency/${encodeURIComponent(
-            agencySlug
+            slug
           )}/dashboard?metric=${metricKey.toLocaleLowerCase()}`
         );
       }
     },
-    [navigate, agencySlug]
+    [navigate, slug]
   );
 
   useAsyncEffect(async () => {
-    if (agencySlug) {
-      try {
-        await agencyDataStore.fetchAgencyData(agencySlug);
-      } catch (error) {
-        showToast({
-          message: "Error fetching data.",
-          color: "red",
-          timeout: 4000,
-        });
-      }
+    try {
+      await agencyDataStore.fetchAgencyData(slug as string);
+    } catch (error) {
+      showToast({
+        message: "Error fetching data.",
+        color: "red",
+        timeout: 4000,
+      });
     }
   }, []);
 
   useEffect(() => {
-    setLoading(agencyDataStore.loading || !agencyDataStore.agency);
-  }, [agencyDataStore.loading, agencyDataStore.agency]);
-
-  useEffect(() => {
-    if (agencyDataStore.agency?.systems?.length) {
-      setAgencyHasAvailableSystems(
-        agencyDataStore.agency?.systems?.some((system) =>
-          availableSystems.includes(system)
-        )
-      );
-    }
-  }, [agencyDataStore.agency]);
-
-  useEffect(() => {
-    if (agencyDataStore.metrics?.length) {
-      setMetricsByAvailableCategoriesAndSystems(
-        agencyDataStore.metrics.filter(
+    if (metricsByAvailableCategoriesAndSystems?.length) {
+      setMetricsByAvailableCategoriesAndSystemsWithData(
+        metricsByAvailableCategoriesAndSystems.filter(
           (metric) =>
-            Object.keys(orderedCategoriesMap).includes(metric.category) &&
-            availableSystems.includes(metric.system.key)
+            (
+              agencyDataStore.datapointsByMetric[metric.key]?.aggregate ?? []
+            ).filter((dp) => dp[DataVizAggregateName] !== null).length > 0
         )
       );
     }
-  }, [agencyDataStore.metrics]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [metricsByAvailableCategoriesAndSystems, agencyDataStore]);
 
   useEffect(() => {
     if (
@@ -190,63 +147,42 @@ export const AgencyOverview = observer(() => {
         agencyDataStore.agencySettingsBySettingType.HOMEPAGE_URL.value
       );
     }
-  }, [agencyDataStore.agencySettingsBySettingType]);
-
-  useEffect(() => {
-    if (metricsByAvailableCategoriesAndSystems?.length) {
-      setMetricsByAvailableCategoriesAndSystemsWithData(
-        metricsByAvailableCategoriesAndSystems.filter(
+    if (agencyDataStore.metrics?.length) {
+      setMetricsByAvailableCategoriesAndSystems(
+        agencyDataStore.metrics.filter(
           (metric) =>
-            (
-              agencyDataStore.datapointsByMetric[metric.key]?.aggregate ?? []
-            ).filter((dp) => dp[DataVizAggregateName] !== null).length > 0
+            Object.keys(orderedCategoriesMap).includes(metric.category) &&
+            availableSystems.includes(metric.system.key)
         )
       );
     }
-  }, [
-    metricsByAvailableCategoriesAndSystems,
-    agencyDataStore.datapointsByMetric,
-  ]);
-
-  const agencyHasNoAvailableSystemsOrHasNoData = useMemo(
-    () =>
-      !agencyHasAvailableSystems ||
-      metricsByAvailableCategoriesAndSystemsWithData?.length === 0,
-    [agencyHasAvailableSystems, metricsByAvailableCategoriesAndSystemsWithData]
-  );
+    if (agencyDataStore.agency?.systems?.length) {
+      setAgencyHasAvailableSystems(
+        agencyDataStore.agency?.systems?.some((system) =>
+          availableSystems.includes(system)
+        )
+      );
+    }
+  }, [agencyDataStore]);
 
   useEffect(() => {
-    if (!agencyHasNoAvailableSystemsOrHasNoData) {
-      setLoading(false);
+    if (
+      !agencyDataStore.loading &&
+      (!agencyHasAvailableSystems ||
+        metricsByAvailableCategoriesAndSystemsWithData?.length === 0)
+    ) {
+      navigate("/404");
     }
-  }, [agencyHasNoAvailableSystemsOrHasNoData]);
+  }, [
+    navigate,
+    agencyDataStore,
+    agencyHasAvailableSystems,
+    metricsByAvailableCategoriesAndSystemsWithData,
+  ]);
 
-  if (loading) {
-    return <Loading />;
-  }
-
-  if (agencyHasNoAvailableSystemsOrHasNoData)
-    return (
-      <>
-        <HeaderBar />
-        <NotFoundWrapper>
-          <NotFoundTitle>Page Not Found</NotFoundTitle>
-          <NotFoundText>
-            Error 404
-            <span>
-              The page you are looking for seems to be missing. Send us an email
-              and we’ll help you find it.
-            </span>
-            <a href="mailto:justice-counts-support@csg.org">
-              justice-counts-support@csg.org
-            </a>
-          </NotFoundText>
-        </NotFoundWrapper>
-        <Footer />
-      </>
-    );
-
-  return (
+  return agencyDataStore.loading ? (
+    <Loading />
+  ) : (
     <>
       <HeaderBar />
       <AgencyOverviewWrapper>

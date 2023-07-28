@@ -21,6 +21,7 @@ import { Route, Routes } from "react-router-dom";
 import { AgencyOverview } from "./AgencyOverview";
 import { DashboardView } from "./DashboardView";
 import { Home } from "./Home";
+import { NotFound } from "./NotFound";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/agency/:slug" element={<AgencyOverview />} />
       <Route path="/agency/:slug/dashboard" element={<DashboardView />} />
+      <Route path="/404" element={<NotFound />} />
     </Routes>
   );
 }
