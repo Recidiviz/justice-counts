@@ -16,42 +16,37 @@
 // =============================================================================
 
 import {
-  AGENCY_DASHBOARD_HEADER_BAR_HEIGHT,
+  HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-const CATEGORY_METRIC_BOX_WIDTH = 547;
+const MIN_METRIC_BOX_WIDTH = 507;
 
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  margin-top: ${AGENCY_DASHBOARD_HEADER_BAR_HEIGHT}px;
-  margin-bottom: ${AGENCY_DASHBOARD_HEADER_BAR_HEIGHT}px;
+  margin-top: ${HEADER_BAR_HEIGHT}px;
+  margin-bottom: ${HEADER_BAR_HEIGHT}px;
 `;
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: start;
-  gap: 40px;
-  width: ${CATEGORY_METRIC_BOX_WIDTH * 2}px;
-`;
-
-export const Divider = styled.div`
+  gap: 50px;
   width: 100%;
-  border-bottom: 1px solid ${palette.highlight.grey4};
+  padding: 0 96px;
 `;
 
 export const TopBlock = styled.div`
   display: flex;
   flex-direction: column;
   align-items: start;
-  width: ${CATEGORY_METRIC_BOX_WIDTH}px;
-  padding-top: 32px;
-  gap: 24px;
+  width: ${MIN_METRIC_BOX_WIDTH}px;
+  padding-top: 40px;
 
   & > div > div {
     min-width: unset;
@@ -60,10 +55,12 @@ export const TopBlock = styled.div`
 
 export const CategoryTitle = styled.div`
   ${typography.sizeCSS.title};
+  margin-bottom: 16px;
 `;
 
 export const CategoryDescription = styled.div`
   ${typography.sizeCSS.normal};
+  margin-bottom: 40px;
 `;
 
 export const TopBlockControls = styled.div`
@@ -90,7 +87,6 @@ export const MetricsBlock = styled.div`
   display: flex;
   flex-direction: column;
   align-items: start;
-  gap: 32px;
 `;
 
 export const MetricsFilters = styled.div`
@@ -111,42 +107,45 @@ export const MetricsWrapper = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+
+  @media only screen and (max-width: 1220px) {
+    flex-direction: column;
+    flex-wrap: unset;
+  }
 `;
 
 export const MetricBox = styled.div`
-  width: ${CATEGORY_METRIC_BOX_WIDTH}px;
-  padding: 40px 0;
+  width: 50%;
+  min-width: ${MIN_METRIC_BOX_WIDTH}px;
+  padding: 56px 96px 56px 0;
   display: flex;
   flex-direction: column;
   align-items: start;
-  box-shadow: 1px 0 0 0 ${palette.solid.lightgrey},
-    0 1px 0 0 ${palette.solid.lightgrey}, 1px 1px 0 0 ${palette.solid.lightgrey},
-    1px 0 0 0 ${palette.solid.lightgrey} inset,
-    0 1px 0 0 ${palette.solid.lightgrey} inset;
+
+  @media only screen and (max-width: 1220px) {
+    width: 100%;
+  }
 `;
 
 export const MetricName = styled.div`
   display: flex;
   flex-direction: row;
   gap: 16px;
-  ${typography.sizeCSS.large};
+  ${typography.sizeCSS.headline};
   margin-bottom: 16px;
-  padding: 0 72px;
 `;
 
 export const MetricDescription = styled.div`
   ${typography.sizeCSS.normal};
   margin-bottom: 40px;
-  padding: 0 72px;
 `;
 
 export const MetricDataVizContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 72px 0 19px;
   width: 100%;
-  height: 254px;
+  height: 647px;
 
   .recharts-bar-rectangle {
     cursor: pointer !important;

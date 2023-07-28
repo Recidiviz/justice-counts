@@ -31,7 +31,7 @@ import { palette } from "../GlobalStyles";
 import { CustomCursor, CustomYAxisTick } from "./BarChartComponents";
 import Tooltip from "./Tooltip";
 import { ResponsiveBarChartProps, TickProps } from "./types";
-import { getDatapointBarLabel } from "./utils";
+import { splitUtcString } from "./utils";
 
 const MAX_BAR_SIZE = 150;
 
@@ -110,11 +110,12 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
             </defs>
             <XAxis
               dataKey={(datapoint) => {
-                return getDatapointBarLabel(datapoint);
+                const [, , , year] = splitUtcString(datapoint.start_date);
+                return year;
               }}
               padding={{ left: -0.5, right: -0.5 }}
               interval="preserveEnd"
-              minTickGap={32}
+              minTickGap={16}
               tick={tickStyle}
               tickLine={false}
               tickMargin={12}

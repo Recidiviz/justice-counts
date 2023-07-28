@@ -33,7 +33,7 @@ import { LearnMoreModal, ShareModal } from "../DashboardModals";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
-import { downloadFeedData } from "../utils/donwloadFile";
+import { downloadFeedData } from "../utils/downloadHelpers";
 import {
   BackButtonContainer,
   Container,

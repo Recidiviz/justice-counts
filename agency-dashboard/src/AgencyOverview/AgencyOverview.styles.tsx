@@ -16,7 +16,7 @@
 // =============================================================================
 
 import {
-  AGENCY_DASHBOARD_HEADER_BAR_HEIGHT,
+  HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -26,7 +26,7 @@ export const METRIC_BOX_DESKTOP_WIDTH = 280;
 
 export const AgencyOverviewWrapper = styled.div`
   max-width: ${METRIC_BOX_DESKTOP_WIDTH * 4 + 48 + 1}px;
-  margin: ${AGENCY_DASHBOARD_HEADER_BAR_HEIGHT + 96}px auto 64px auto;
+  margin: ${HEADER_BAR_HEIGHT + 96}px auto 64px auto;
   display: flex;
   flex-direction: column;
   padding: 0 24px 73px 24px;

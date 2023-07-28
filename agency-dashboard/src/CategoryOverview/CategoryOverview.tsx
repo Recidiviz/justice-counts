@@ -15,8 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { ReactComponent as CopyLinkIcon } from "@justice-counts/common/assets/copy-link-icon.svg";
 import { ReactComponent as DownloadIcon } from "@justice-counts/common/assets/download-icon.svg";
+import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share-icon.svg";
 import { Button } from "@justice-counts/common/components/Button";
 import MetricsCategoryBarChart from "@justice-counts/common/components/DataViz/MetricsCategoryBarChart";
 import { transformDataForBarChart } from "@justice-counts/common/components/DataViz/utils";
@@ -35,7 +35,7 @@ import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
-import { downloadFeedData } from "../utils/donwloadFile";
+import { downloadFeedData } from "../utils/downloadHelpers";
 import * as Styled from "./CategoryOverview.styled";
 import { CategoryData } from "./types";
 
@@ -72,13 +72,11 @@ export const CategoryOverview = observer(() => {
       showToast({
         message: "Link copied",
         color: "blue",
-        positionNextToIcon: false,
       });
     } catch {
       showToast({
         message: "Error copying link",
         color: "blue",
-        positionNextToIcon: false,
       });
     }
   };
@@ -154,11 +152,10 @@ export const CategoryOverview = observer(() => {
                 <DownloadIcon /> Download Data
               </Styled.TopBlockControl>
               <Styled.TopBlockControl onClick={copyUrlToClipboard}>
-                <CopyLinkIcon /> Copy Link
+                <ShareIcon /> Share
               </Styled.TopBlockControl>
             </Styled.TopBlockControls>
           </Styled.TopBlock>
-          <Styled.Divider />
           <Styled.MetricsBlock>
             <Styled.MetricsFilters>
               <Styled.MetricsFilterButton
