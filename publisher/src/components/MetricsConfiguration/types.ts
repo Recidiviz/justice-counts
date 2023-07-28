@@ -97,7 +97,7 @@ export type UpdatedDisaggregation = {
 };
 
 export const races = [...Object.values(Race)] as const;
-export type Races = typeof races[number];
+export type Races = (typeof races)[number];
 
 export const ethnicities = [...Object.values(Ethnicity)] as const;
-export type Ethnicities = typeof ethnicities[number];
+export type Ethnicities = (typeof ethnicities)[number];

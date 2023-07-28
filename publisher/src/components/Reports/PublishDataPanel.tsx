@@ -31,17 +31,15 @@ const PublishDataPanel: React.FC<{
   fieldDescription?: FieldDescriptionProps;
 }> = ({ reportID, activeMetric, fieldDescription }) => {
   return (
-    <>
-      <PublishDataWrapper>
-        {/* Metric Description, Definitions and Reporting Notes */}
-        <HelperText reportID={reportID} activeMetric={activeMetric} />
+    <PublishDataWrapper>
+      {/* Metric Description, Definitions and Reporting Notes */}
+      <HelperText reportID={reportID} activeMetric={activeMetric} />
 
-        {/* Displays the description of the field currently focused */}
-        {fieldDescription && (
-          <FieldDescription fieldDescription={fieldDescription} />
-        )}
-      </PublishDataWrapper>
-    </>
+      {/* Displays the description of the field currently focused */}
+      {fieldDescription && (
+        <FieldDescription fieldDescription={fieldDescription} />
+      )}
+    </PublishDataWrapper>
   );
 };
 

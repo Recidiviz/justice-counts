@@ -66,7 +66,7 @@ export const Router = () => {
               !hasCompletedOnboarding ? (
                 <Guidance />
               ) : (
-                <Navigate to={`${REPORTS_LOWERCASE}`} />
+                <Navigate to={REPORTS_LOWERCASE} />
               )
             }
           />

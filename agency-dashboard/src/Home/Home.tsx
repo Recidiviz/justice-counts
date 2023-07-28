@@ -43,36 +43,34 @@ export const Home = observer(() => {
   }, [agencyDataStore]);
 
   return (
-    <>
-      <Styled.HomeContainer>
-        <WelcomeHeaderBar />
-        <Styled.Title>Welcome to Agency Dashboards</Styled.Title>
+    <Styled.HomeContainer>
+      <WelcomeHeaderBar />
+      <Styled.Title>Welcome to Agency Dashboards</Styled.Title>
 
-        {agencyDataStore.loading ? (
-          <Loader />
-        ) : (
-          <Styled.AgencyDetailsContainer>
-            {agenciesMetadata
-              .sort((a, b) => a.name.localeCompare(b.name))
-              .map((agency) => (
-                <Styled.AgencyDetailsWrapper
-                  key={agency.id}
-                  onClick={() =>
-                    navigate(
-                      `/agency/${encodeURIComponent(slugify(agency.name))}`
-                    )
-                  }
-                >
-                  <Styled.AgencyName>{agency.name}</Styled.AgencyName>
-                  <Styled.NumberOfPublishedMetrics>
-                    <span>{agency.number_of_published_metrics}</span> published
-                    metrics
-                  </Styled.NumberOfPublishedMetrics>
-                </Styled.AgencyDetailsWrapper>
-              ))}
-          </Styled.AgencyDetailsContainer>
-        )}
-      </Styled.HomeContainer>
-    </>
+      {agencyDataStore.loading ? (
+        <Loader />
+      ) : (
+        <Styled.AgencyDetailsContainer>
+          {agenciesMetadata
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((agency) => (
+              <Styled.AgencyDetailsWrapper
+                key={agency.id}
+                onClick={() =>
+                  navigate(
+                    `/agency/${encodeURIComponent(slugify(agency.name))}`
+                  )
+                }
+              >
+                <Styled.AgencyName>{agency.name}</Styled.AgencyName>
+                <Styled.NumberOfPublishedMetrics>
+                  <span>{agency.number_of_published_metrics}</span> published
+                  metrics
+                </Styled.NumberOfPublishedMetrics>
+              </Styled.AgencyDetailsWrapper>
+            ))}
+        </Styled.AgencyDetailsContainer>
+      )}
+    </Styled.HomeContainer>
   );
 });

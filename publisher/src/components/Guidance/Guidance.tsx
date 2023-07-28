@@ -242,241 +242,236 @@ export const Guidance = observer(() => {
   if (!guidanceStore.isInitialized) return <Loading />;
 
   return (
-    <>
-      <GuidanceContainer>
-        <ContentContainer currentTopicID={currentTopicID}>
-          {renderProgressSteps()}
-          <TopicTitle>{currentTopicDisplayName}</TopicTitle>
-          <TopicDescription>{currentTopicDescription}</TopicDescription>
+    <GuidanceContainer>
+      <ContentContainer currentTopicID={currentTopicID}>
+        {renderProgressSteps()}
+        <TopicTitle>{currentTopicDisplayName}</TopicTitle>
+        <TopicDescription>{currentTopicDescription}</TopicDescription>
 
-          {/* Publish Data - Reports MetricsOverview */}
-          {currentTopicID === "PUBLISH_DATA" && (
-            <ReportsOverviewContainer>
-              {Object.values(reportStore.reportOverviews).map((report) => (
-                <ReportsOverviewItemWrapper key={report.id}>
-                  <ReportTitle
-                    onClick={() =>
-                      navigate(`../${REPORTS_LOWERCASE}/${report.id}`)
-                    }
-                  >
-                    <span>
-                      {printReportTitle(
-                        report.month,
-                        report.year,
-                        report.frequency
-                      )}
-                    </span>
-                    <Badge color={reportStatusBadgeColors[report.status]}>
-                      {removeSnakeCase(report.status).toLowerCase()}
-                    </Badge>
-                  </ReportTitle>
-                  <ReviewPublishLink
-                    onClick={() =>
-                      navigate(`../${REPORTS_LOWERCASE}/${report.id}/review`)
-                    }
-                  >
-                    Review and publish
-                    <RightArrowIcon />
-                  </ReviewPublishLink>
-                </ReportsOverviewItemWrapper>
-              ))}
-            </ReportsOverviewContainer>
-          )}
+        {/* Publish Data - Reports MetricsOverview */}
+        {currentTopicID === "PUBLISH_DATA" && (
+          <ReportsOverviewContainer>
+            {Object.values(reportStore.reportOverviews).map((report) => (
+              <ReportsOverviewItemWrapper key={report.id}>
+                <ReportTitle
+                  onClick={() =>
+                    navigate(`../${REPORTS_LOWERCASE}/${report.id}`)
+                  }
+                >
+                  <span>
+                    {printReportTitle(
+                      report.month,
+                      report.year,
+                      report.frequency
+                    )}
+                  </span>
+                  <Badge color={reportStatusBadgeColors[report.status]}>
+                    {removeSnakeCase(report.status).toLowerCase()}
+                  </Badge>
+                </ReportTitle>
+                <ReviewPublishLink
+                  onClick={() =>
+                    navigate(`../${REPORTS_LOWERCASE}/${report.id}/review`)
+                  }
+                >
+                  Review and publish
+                  <RightArrowIcon />
+                </ReviewPublishLink>
+              </ReportsOverviewItemWrapper>
+            ))}
+          </ReportsOverviewContainer>
+        )}
 
-          {/* Action Buttons */}
-          {currentTopicID === "ADD_DATA" ? (
-            <>
-              <ActionButtonWrapper>
-                <Button
-                  label="Upload spreadsheet"
-                  onClick={() => navigate("../upload")}
-                  buttonColor="blue"
-                  size="medium"
-                />
-                <Button
-                  label={`Fill out ${REPORT_LOWERCASE}`}
-                  onClick={() => navigate(`../${REPORTS_LOWERCASE}`)}
-                  borderColor="lightgrey"
-                  size="medium"
-                />
-              </ActionButtonWrapper>
-            </>
+        {/* Action Buttons */}
+        {currentTopicID === "ADD_DATA" ? (
+          <ActionButtonWrapper>
+            <Button
+              label="Upload spreadsheet"
+              onClick={() => navigate("../upload")}
+              buttonColor="blue"
+              size="medium"
+            />
+            <Button
+              label={`Fill out ${REPORT_LOWERCASE}`}
+              onClick={() => navigate(`../${REPORTS_LOWERCASE}`)}
+              borderColor="lightgrey"
+              size="medium"
+            />
+          </ActionButtonWrapper>
+        ) : (
+          <>
+            {buttonDisplayName && (
+              <Button
+                label={buttonDisplayName}
+                onClick={() => {
+                  if (currentTopicID) {
+                    if (pathToTask) navigate(pathToTask);
+                    saveOnboardingTopicsStatuses(
+                      {
+                        topicID: currentTopicID,
+                        topicCompleted: true,
+                      },
+                      agencyId
+                    );
+                  }
+                }}
+                size="medium"
+                buttonColor="blue"
+              />
+            )}
+          </>
+        )}
+
+        {skippable && (
+          <Button
+            label="Skip"
+            onClick={() => {
+              if (currentTopicID) {
+                saveOnboardingTopicsStatuses(
+                  {
+                    topicID: currentTopicID,
+                    topicCompleted: true,
+                  },
+                  agencyId
+                );
+              }
+            }}
+            labelColor="blue"
+            noHover
+          />
+        )}
+      </ContentContainer>
+
+      {/* Configure Metrics: Overview List */}
+      {currentTopicID === "METRIC_CONFIG" && (
+        <MetricContentContainer>
+          {totalMetrics === 0 ? (
+            <Loader />
           ) : (
             <>
-              {buttonDisplayName && (
-                <Button
-                  label={buttonDisplayName}
-                  onClick={() => {
-                    if (currentTopicID) {
-                      if (pathToTask) navigate(pathToTask);
-                      saveOnboardingTopicsStatuses(
-                        {
-                          topicID: currentTopicID,
-                          topicCompleted: true,
-                        },
-                        agencyId
-                      );
-                    }
-                  }}
-                  size="medium"
-                  buttonColor="blue"
-                />
-              )}
-            </>
-          )}
+              <ConfiguredMetricIndicatorTitle>
+                <span>{numberOfMetricsCompleted}</span> of {totalMetrics}{" "}
+                metrics configured
+              </ConfiguredMetricIndicatorTitle>
+              <MetricListContainer>
+                {Object.entries(metricsEntriesBySystem).map(
+                  ([system, entries]) => {
+                    return (
+                      <Fragment key={system}>
+                        {currentAgency?.systems &&
+                          currentAgency.systems.length > 1 && (
+                            <SystemNameTitle>
+                              {formatSystemName(system as AgencySystems)}
+                            </SystemNameTitle>
+                          )}
+                        {entries.map(([systemMetricKey, metric]) => {
+                          const metricCompletionProgress =
+                            getOverallMetricProgress(systemMetricKey);
+                          const metricCompletionProgressValue =
+                            getMetricCompletionValue(systemMetricKey);
+                          const { metricKey } =
+                            MetricConfigStore.splitSystemMetricKey(
+                              systemMetricKey
+                            );
 
-          {skippable && (
-            <Button
-              label="Skip"
-              onClick={() => {
-                if (currentTopicID) {
-                  saveOnboardingTopicsStatuses(
-                    {
-                      topicID: currentTopicID,
-                      topicCompleted: true,
-                    },
-                    agencyId
-                  );
-                }
-              }}
-              labelColor="blue"
-              noHover
-            />
-          )}
-        </ContentContainer>
-
-        {/* Configure Metrics: Overview List */}
-        {currentTopicID === "METRIC_CONFIG" && (
-          <MetricContentContainer>
-            {totalMetrics === 0 ? (
-              <Loader />
-            ) : (
-              <>
-                <ConfiguredMetricIndicatorTitle>
-                  <span>{numberOfMetricsCompleted}</span> of {totalMetrics}{" "}
-                  metrics configured
-                </ConfiguredMetricIndicatorTitle>
-                <MetricListContainer>
-                  {Object.entries(metricsEntriesBySystem).map(
-                    ([system, entries]) => {
-                      return (
-                        <Fragment key={system}>
-                          {currentAgency?.systems &&
-                            currentAgency.systems.length > 1 && (
-                              <SystemNameTitle>
-                                {formatSystemName(system as AgencySystems)}
-                              </SystemNameTitle>
-                            )}
-                          {entries.map(([systemMetricKey, metric]) => {
-                            const metricCompletionProgress =
-                              getOverallMetricProgress(systemMetricKey);
-                            const metricCompletionProgressValue =
-                              getMetricCompletionValue(systemMetricKey);
-                            const { metricKey } =
-                              MetricConfigStore.splitSystemMetricKey(
-                                systemMetricKey
-                              );
-
-                            return (
-                              <Fragment key={systemMetricKey}>
-                                <Metric
-                                  hideTooltip={metric.enabled === false}
-                                  onClick={() =>
-                                    navigate(
-                                      `../metric-config?system=${system}&metric=${metricKey}`
-                                    )
-                                  }
+                          return (
+                            <Fragment key={systemMetricKey}>
+                              <Metric
+                                hideTooltip={metric.enabled === false}
+                                onClick={() =>
+                                  navigate(
+                                    `../metric-config?system=${system}&metric=${metricKey}`
+                                  )
+                                }
+                              >
+                                <MetricName>{metric.label}</MetricName>
+                                <MetricStatus
+                                  greyText={metric.enabled === false}
                                 >
-                                  <MetricName>{metric.label}</MetricName>
-                                  <MetricStatus
-                                    greyText={metric.enabled === false}
-                                  >
-                                    {metricCompletionProgressValue ===
-                                      ALL_REQUIRED_METRIC_CONFIG_STEPS_COMPLETED &&
-                                      metric.enabled && (
-                                        <CheckIcon src={checkmarkIcon} alt="" />
-                                      )}
-                                    {metric.enabled === false && "Unavailable"}
-                                    {metricCompletionProgressValue <
-                                      ALL_REQUIRED_METRIC_CONFIG_STEPS_COMPLETED &&
-                                      (metric.enabled ||
-                                        metric.enabled === null) &&
-                                      "Action Required"}
-                                  </MetricStatus>
-                                  <RightArrowIcon />
+                                  {metricCompletionProgressValue ===
+                                    ALL_REQUIRED_METRIC_CONFIG_STEPS_COMPLETED &&
+                                    metric.enabled && (
+                                      <CheckIcon src={checkmarkIcon} alt="" />
+                                    )}
+                                  {metric.enabled === false && "Unavailable"}
+                                  {metricCompletionProgressValue <
+                                    ALL_REQUIRED_METRIC_CONFIG_STEPS_COMPLETED &&
+                                    (metric.enabled ||
+                                      metric.enabled === null) &&
+                                    "Action Required"}
+                                </MetricStatus>
+                                <RightArrowIcon />
 
-                                  {/* Progress Tooltip */}
-                                  <ProgressTooltipContainer>
-                                    {metricConfigurationProgressSteps.map(
-                                      (step) => {
-                                        // When all disaggregations are disabled, the "Confirm breakdown definitions" are no longer required.
-                                        if (
-                                          step ===
-                                          ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
-                                        ) {
-                                          const allDisaggregationsDisabled =
+                                {/* Progress Tooltip */}
+                                <ProgressTooltipContainer>
+                                  {metricConfigurationProgressSteps.map(
+                                    (step) => {
+                                      // When all disaggregations are disabled, the "Confirm breakdown definitions" are no longer required.
+                                      if (
+                                        step ===
+                                        ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
+                                      ) {
+                                        const allDisaggregationsDisabled =
+                                          metricConfigStore.disaggregations[
+                                            systemMetricKey
+                                          ] &&
+                                          Object.values(
                                             metricConfigStore.disaggregations[
                                               systemMetricKey
-                                            ] &&
-                                            Object.values(
-                                              metricConfigStore.disaggregations[
-                                                systemMetricKey
-                                              ]
-                                            ).filter(
-                                              (disaggregation) =>
-                                                disaggregation.enabled ===
-                                                  true ||
-                                                disaggregation.enabled === null
-                                            ).length === 0;
-                                          if (allDisaggregationsDisabled) {
-                                            return null;
-                                          }
+                                            ]
+                                          ).filter(
+                                            (disaggregation) =>
+                                              disaggregation.enabled === true ||
+                                              disaggregation.enabled === null
+                                          ).length === 0;
+                                        if (allDisaggregationsDisabled) {
+                                          return null;
                                         }
-
-                                        return (
-                                          <ProgressItemWrapper key={step}>
-                                            <CheckIconWrapper>
-                                              {metricCompletionProgress &&
-                                                metricCompletionProgress[
-                                                  step
-                                                ] && (
-                                                  <CheckIcon
-                                                    src={checkmarkIcon}
-                                                    alt=""
-                                                  />
-                                                )}
-                                            </CheckIconWrapper>
-                                            <ProgressItemName>
-                                              {step}
-                                            </ProgressItemName>
-                                          </ProgressItemWrapper>
-                                        );
                                       }
-                                    )}
-                                  </ProgressTooltipContainer>
-                                </Metric>
-                                <ProgressBarContainer>
-                                  <Progress
-                                    progress={
-                                      metric.enabled === false
-                                        ? 0
-                                        : metricCompletionProgressValue
+
+                                      return (
+                                        <ProgressItemWrapper key={step}>
+                                          <CheckIconWrapper>
+                                            {metricCompletionProgress &&
+                                              metricCompletionProgress[
+                                                step
+                                              ] && (
+                                                <CheckIcon
+                                                  src={checkmarkIcon}
+                                                  alt=""
+                                                />
+                                              )}
+                                          </CheckIconWrapper>
+                                          <ProgressItemName>
+                                            {step}
+                                          </ProgressItemName>
+                                        </ProgressItemWrapper>
+                                      );
                                     }
-                                  />
-                                </ProgressBarContainer>
-                              </Fragment>
-                            );
-                          })}
-                        </Fragment>
-                      );
-                    }
-                  )}
-                </MetricListContainer>
-              </>
-            )}
-          </MetricContentContainer>
-        )}
-      </GuidanceContainer>
-    </>
+                                  )}
+                                </ProgressTooltipContainer>
+                              </Metric>
+                              <ProgressBarContainer>
+                                <Progress
+                                  progress={
+                                    metric.enabled === false
+                                      ? 0
+                                      : metricCompletionProgressValue
+                                  }
+                                />
+                              </ProgressBarContainer>
+                            </Fragment>
+                          );
+                        })}
+                      </Fragment>
+                    );
+                  }
+                )}
+              </MetricListContainer>
+            </>
+          )}
+        </MetricContentContainer>
+      )}
+    </GuidanceContainer>
   );
 });
