@@ -3428,12 +3428,12 @@
     eslint-config-prettier "^8.1.0"
     prettier "^2.2.1"
 
-"@recidiviz/tsconfig@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@recidiviz/tsconfig/-/tsconfig-1.0.0.tgz#317b6dc9a6c45016d10f4f4864b124d4ce5ba097"
-  integrity sha512-N6brrksfnQIYh7fqKhFhM+SQr817lXQdCgtHJyEvRL9rhtOR+1Y0b0nhVADZWEUSdRJdzjHoWWkOIJPoI9AluA==
+"@recidiviz/tsconfig@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@recidiviz/tsconfig/-/tsconfig-2.0.0.tgz#7c44379bd7a9623eacd41861c5981bbfcc06cbee"
+  integrity sha512-X0oGfvRVqf9Kpm/eNhkTPRjXEX1UvC47hWmsKJB2t1vQ89HElHZcN1XCj0Nr+6vHJnOjIYJM6MpzIw8fApuQUA==
   dependencies:
-    "@tsconfig/node12" "^1.0.7"
+    "@tsconfig/node16" "^1.0.2"
 
 "@remix-run/router@1.0.2":
   version "1.0.2"
@@ -4529,10 +4529,10 @@
   resolved "https://registry.yarnpkg.com/@trysound/sax/-/sax-0.2.0.tgz#cccaab758af56761eb7bf37af6f03f326dd798ad"
   integrity sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==
 
-"@tsconfig/node12@^1.0.7":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@tsconfig/node12/-/node12-1.0.11.tgz#ee3def1f27d9ed66dac6e46a295cffb0152e058d"
-  integrity sha512-cqefuRsh12pWyGsIoBKJA9luFu3mRxCA+ORZvA4ktLSzIuCUtWVxGIuXigEwO5/ywWFMZ2QEGKWvkZG1zDMTag==
+"@tsconfig/node16@^1.0.2":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.4.tgz#0b92dcc0cc1c81f6f306a381f28e31b1a56536e9"
+  integrity sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==
 
 "@types/aria-query@^4.2.0":
   version "4.2.2"
