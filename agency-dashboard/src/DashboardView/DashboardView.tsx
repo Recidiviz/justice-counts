@@ -47,9 +47,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useAsyncEffect from "use-async-effect";
 
-import { LearnMoreModal, ShareModal } from "../DashboardModals";
-import { HeaderBar } from "../Header";
-import { useStore } from "../stores";
 import {
   BackButtonContainer,
   Container,
@@ -65,6 +62,10 @@ import {
   RightPanelMetricOverviewContent,
   RightPanelMetricTitle,
 } from ".";
+import { LearnMoreModal, ShareModal } from "../DashboardModals";
+import { HeaderBar } from "../Header";
+import { Loading } from "../Loading";
+import { useStore } from "../stores";
 
 const getScreenWidth = () =>
   window.innerWidth ||
@@ -126,15 +127,8 @@ export const DashboardView = observer(() => {
   const [learnMoreModalVisible, setLearnMoreModalVisible] =
     useState<boolean>(false);
   const navigate = useNavigate();
-  const params = useParams();
-  const [agencySlug, setAgencySlug] = useState<string | undefined>(params.slug);
+  const { slug } = useParams();
   const { agencyDataStore, dataVizStore } = useStore();
-
-  useEffect(() => {
-    if (params.slug) {
-      setAgencySlug(params.slug);
-    }
-  }, [params.slug]);
 
   /** Prevent body from scrolling when modal is open */
   useEffect(() => {
@@ -174,35 +168,33 @@ export const DashboardView = observer(() => {
   }, []);
 
   useAsyncEffect(async () => {
-    if (agencySlug) {
-      try {
-        await agencyDataStore.fetchAgencyData(agencySlug);
-      } catch (error) {
-        showToast({
-          message: "Error fetching data.",
-          color: "red",
-          timeout: 4000,
-        });
-      }
+    try {
+      await agencyDataStore.fetchAgencyData(slug as string);
+    } catch (error) {
+      showToast({
+        message: "Error fetching data.",
+        color: "red",
+        timeout: 4000,
+      });
     }
-  }, [agencySlug, agencyDataStore.fetchAgencyData, showToast]);
+  }, []);
 
   useEffect(() => {
     if (
       metricKeyParam &&
-      agencySlug &&
+      slug &&
       navigate &&
       !agencyDataStore.loading &&
       !agencyDataStore.dimensionNamesByMetricAndDisaggregation[metricKeyParam]
     ) {
-      navigate(`/agency/${encodeURIComponent(agencySlug)}`);
+      navigate(`/agency/${encodeURIComponent(slug)}`);
     }
   }, [
     metricKeyParam,
     navigate,
     agencyDataStore.loading,
     agencyDataStore.dimensionNamesByMetricAndDisaggregation,
-    agencySlug,
+    slug,
   ]);
 
   useEffect(() => {
@@ -230,10 +222,6 @@ export const DashboardView = observer(() => {
       !agencyDataStore.dimensionNamesByMetricAndDisaggregation[metricKeyParam])
   ) {
     return null;
-  }
-
-  if (agencyDataStore.loading) {
-    return <>Loading...</>;
   }
 
   const metricNamesByCategory = agencyDataStore.metrics.reduce(
@@ -279,31 +267,32 @@ export const DashboardView = observer(() => {
         );
       }
     }
-  }, [agencyDataStore.agency, agencyDataStore.metricsByKey, metricKeyParam]);
+  }, [agencyDataStore, metricKeyParam]);
 
   const handleBackClick = useCallback(() => {
-    if (navigate && agencySlug)
-      navigate(`/agency/${encodeURIComponent(agencySlug)}`);
-  }, [navigate, agencySlug]);
+    if (navigate && slug) navigate(`/agency/${encodeURIComponent(slug)}`);
+  }, [navigate, slug]);
 
   const handleMetricsSelect = useCallback(
     (selectedMetricName: string) => {
       if (agencyDataStore.metricDisplayNameToKey) {
         const selectedMetricKey =
           agencyDataStore.metricDisplayNameToKey[selectedMetricName];
-        if (navigate && agencySlug && selectedMetricKey) {
+        if (navigate && slug && selectedMetricKey) {
           navigate(
             `/agency/${encodeURIComponent(
-              agencySlug
+              slug
             )}/dashboard?metric=${selectedMetricKey.toLocaleLowerCase()}`
           );
         }
       }
     },
-    [navigate, agencySlug, agencyDataStore]
+    [navigate, slug, agencyDataStore]
   );
 
-  return (
+  return agencyDataStore.loading ? (
+    <Loading />
+  ) : (
     <Container key={metricKeyParam}>
       <HeaderBar />
       <LeftPanel>
