@@ -30,6 +30,7 @@ test("renders 'No reported data for this metric.' state", async () => {
     JSON.stringify({
       agency: {
         name: "Prisons",
+        settings: [],
       },
       metrics: [
         {
