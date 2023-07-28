@@ -47,6 +47,10 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useAsyncEffect from "use-async-effect";
 
+import { LearnMoreModal, ShareModal } from "../DashboardModals";
+import { HeaderBar } from "../Header";
+import { Loading } from "../Loading";
+import { useStore } from "../stores";
 import {
   BackButtonContainer,
   Container,
@@ -62,10 +66,6 @@ import {
   RightPanelMetricOverviewContent,
   RightPanelMetricTitle,
 } from ".";
-import { LearnMoreModal, ShareModal } from "../DashboardModals";
-import { HeaderBar } from "../Header";
-import { Loading } from "../Loading";
-import { useStore } from "../stores";
 
 const getScreenWidth = () =>
   window.innerWidth ||
