@@ -28,7 +28,7 @@ import {
 } from "@justice-counts/common/types";
 import { each } from "bluebird";
 import { observer } from "mobx-react-lite";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCurrentPng } from "recharts-to-png";
 
@@ -118,7 +118,7 @@ export const CategoryOverview = observer(() => {
   const categoryMetrics =
     agencyDataStore.metricsByCategory[categoryData[category].key];
 
-  const downloadMetricsData = useCallback(() => {
+  const downloadMetricsData = () => {
     categoryMetrics.forEach((categoryMetric) => {
       const metric = agencyDataStore.metricsByKey[categoryMetric.key];
       if (metric && agencyDataStore.agency) {
@@ -128,7 +128,7 @@ export const CategoryOverview = observer(() => {
         );
       }
     });
-  }, [agencyDataStore, categoryMetrics]);
+  };
 
   return (
     <>
