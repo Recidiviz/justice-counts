@@ -84,7 +84,7 @@ export const metricConfigurationProgressSteps = [
 ] as const;
 
 export type MetricConfigurationProgressSteps =
-  (typeof metricConfigurationProgressSteps)[number];
+  typeof metricConfigurationProgressSteps[number];
 
 export const guidancePaths = {
   home: "getting-started",
