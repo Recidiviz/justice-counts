@@ -22,15 +22,15 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-import { Datapoint } from "../../types";
 import { palette } from "../GlobalStyles";
+import { ResponsiveBarChartProps } from "./types";
 
 const MAX_BAR_SIZE = 100;
 
-const MiniBarChart: React.FC<{
-  data: Datapoint[];
-  dimensionNames: string[];
-}> = ({ data, dimensionNames }) => {
+const MiniBarChart: React.FC<ResponsiveBarChartProps> = ({
+  data,
+  dimensionNames,
+}) => {
   const renderBarDefinitions = () => {
     const barDefinitions = [];
     dimensionNames.forEach((dimension) => {

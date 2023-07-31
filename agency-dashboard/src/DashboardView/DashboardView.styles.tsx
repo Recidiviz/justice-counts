@@ -16,8 +16,8 @@
 // =============================================================================
 
 import {
-  AGENCY_DASHBOARD_HEADER_BAR_HEIGHT,
   COMMON_DESKTOP_WIDTH,
+  HEADER_BAR_HEIGHT,
   palette,
   TABLET_WIDTH,
   typography,
@@ -31,7 +31,7 @@ export const Container = styled.div`
   display: flex;
   justify-content: stretch;
   align-items: stretch;
-  padding-top: ${AGENCY_DASHBOARD_HEADER_BAR_HEIGHT}px;
+  padding-top: ${HEADER_BAR_HEIGHT}px;
 `;
 
 export const LeftPanel = styled.div`

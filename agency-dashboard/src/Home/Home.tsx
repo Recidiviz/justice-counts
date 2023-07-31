@@ -19,7 +19,7 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { HeaderBar } from "../Header";
+import { WelcomeHeaderBar } from "../Header";
 import { Loader } from "../Loading";
 import { useStore } from "../stores";
 import { slugify } from "../utils/formatting";
@@ -45,7 +45,7 @@ export const Home = observer(() => {
   return (
     <>
       <Styled.HomeContainer>
-        <HeaderBar />
+        <WelcomeHeaderBar />
         <Styled.Title>Welcome to Agency Dashboards</Styled.Title>
 
         {agencyDataStore.loading ? (

@@ -16,7 +16,7 @@
 // =============================================================================
 
 import {
-  AGENCY_DASHBOARD_HEADER_BAR_HEIGHT,
+  HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
@@ -26,7 +26,7 @@ export const METRIC_BOX_DESKTOP_WIDTH = 280;
 
 export const AgencyOverviewWrapper = styled.div`
   max-width: ${METRIC_BOX_DESKTOP_WIDTH * 4 + 48 + 1}px;
-  margin: ${AGENCY_DASHBOARD_HEADER_BAR_HEIGHT + 96}px auto 64px auto;
+  margin: ${HEADER_BAR_HEIGHT + 96}px auto 64px auto;
   display: flex;
   flex-direction: column;
   padding: 0 24px 73px 24px;
@@ -80,9 +80,9 @@ export const SystemChip = styled.div<{ active: boolean }>`
   justify-content: center;
   align-items: center;
   background-color: ${({ active }) =>
-    active ? palette.highlight.grey1 : palette.highlight.grey8};
+    active ? palette.highlight.grey8 : palette.highlight.grey1};
   color: ${({ active }) =>
-    active ? palette.highlight.grey8 : palette.solid.white};
+    active ? palette.solid.white : palette.highlight.grey8};
   padding: 8px 16px;
   ${typography.sizeCSS.normal};
   width: fit-content;
@@ -101,14 +101,16 @@ export const CategorizedMetricsContainer = styled.div`
   }
 `;
 
-export const CategoryTitle = styled.div`
+export const CategoryTitle = styled.div<{ hasHover?: boolean }>`
   ${typography.sizeCSS.large};
   margin-bottom: 8px;
 
-  &:hover {
+  ${({ hasHover }) =>
+    hasHover &&
+    `&:hover {
     text-decoration: underline;
     cursor: pointer;
-  }
+  }`}
 `;
 
 export const CategoryDescription = styled.div`
@@ -117,14 +119,23 @@ export const CategoryDescription = styled.div`
   margin-bottom: 32px;
 `;
 
-export const MetricsContainer = styled.div`
+export const MetricsContainer = styled.div<{ hasHover?: boolean }>`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  width: fit-content;
 
   @media only screen and (max-width: ${METRIC_BOX_DESKTOP_WIDTH * 2 + 48}px) {
     max-width: 100%;
     flex-direction: column;
+  }
+
+  &:hover {
+    & > div {
+      background-color: ${({ hasHover }) =>
+        hasHover ? palette.highlight.grey1 : palette.solid.white};
+      cursor: ${({ hasHover }) => (hasHover ? "pointer" : "auto")};
+    }
   }
 `;
 
@@ -133,19 +144,13 @@ export const MetricBox = styled.div`
   max-width: ${METRIC_BOX_DESKTOP_WIDTH}px;
   height: 223px;
   padding: 24px;
-
-  // dark grey palette color with 0.15 opacity converted to opaque color in order to look properly
-  box-shadow: 1px 0 0 0 rgb(217, 219, 224), 0 1px 0 0 rgb(217, 219, 224),
-    1px 1px 0 0 rgb(217, 219, 224), 1px 0 0 0 rgb(217, 219, 224) inset,
-    0 1px 0 0 rgb(217, 219, 224) inset;
-
   display: flex;
   flex-direction: column;
-
-  &:hover {
-    background-color: ${palette.highlight.grey1};
-    cursor: pointer;
-  }
+  // dark grey palette color with 0.15 opacity converted to opaque color in order to look properly
+  box-shadow: 1px 0 0 0 ${palette.solid.lightgrey},
+    0 1px 0 0 ${palette.solid.lightgrey}, 1px 1px 0 0 ${palette.solid.lightgrey},
+    1px 0 0 0 ${palette.solid.lightgrey} inset,
+    0 1px 0 0 ${palette.solid.lightgrey} inset;
 `;
 
 export const MetricBoxTitle = styled.div`

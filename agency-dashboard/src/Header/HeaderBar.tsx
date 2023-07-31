@@ -15,21 +15,55 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { ReactComponent as JCLogo } from "@justice-counts/common/assets/jc-no-background-logo.svg";
+import { ReactComponent as JCLogo } from "@justice-counts/common/assets/jc-logo-vector-new.svg";
+import { ReactComponent as JCWelcomeLogo } from "@justice-counts/common/assets/jc-no-background-logo.svg";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+import { useStore } from "../stores";
 import * as Styled from "./HeaderBar.styles";
 
-export const HeaderBar: React.FC = () => {
+export const WelcomeHeaderBar: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <Styled.HeaderBarContainer onClick={() => navigate("/")}>
-      <Styled.LogoTitle>
-        <JCLogo />
+    <Styled.WelcomeHeaderBarContainer onClick={() => navigate("/")}>
+      <Styled.WelcomeLogoTitle>
+        <JCWelcomeLogo />
         Justice Counts
-      </Styled.LogoTitle>
+      </Styled.WelcomeLogoTitle>
+    </Styled.WelcomeHeaderBarContainer>
+  );
+};
+
+export const HeaderBar: React.FC = () => {
+  const navigate = useNavigate();
+  const { agencyDataStore } = useStore();
+
+  const agencyUrl = agencyDataStore.agency?.settings.find(
+    (setting) => setting.setting_type === "HOMEPAGE_URL"
+  )?.value;
+
+  return (
+    <Styled.HeaderBarContainer>
+      <Styled.LogoBlock>
+        <JCLogo onClick={() => navigate("/")} />
+        Overview
+      </Styled.LogoBlock>
+      <Styled.LinksBlock>
+        {agencyUrl && (
+          <Styled.Link href={agencyUrl} target="_blank" rel="noreferrer">
+            Agency Website
+          </Styled.Link>
+        )}
+        <Styled.Link
+          href="https://justicecounts.csgjusticecenter.org/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Justice Counts
+        </Styled.Link>
+      </Styled.LinksBlock>
     </Styled.HeaderBarContainer>
   );
 };

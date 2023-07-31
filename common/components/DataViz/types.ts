@@ -15,25 +15,27 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Datapoint } from "../../types";
 
-import { AgencyOverview } from "./AgencyOverview";
-import { CategoryOverview } from "./CategoryOverview/CategoryOverview";
-import { DashboardView } from "./DashboardView";
-import { Home } from "./Home";
-import { NotFound } from "./NotFound";
-
-function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/agency/:slug" element={<AgencyOverview />} />
-      <Route path="/agency/:slug/:category" element={<CategoryOverview />} />
-      <Route path="/agency/:slug/dashboard" element={<DashboardView />} />
-      <Route path="/404" element={<NotFound />} />
-    </Routes>
-  );
+export interface TickProps {
+  y: number;
+  payload: {
+    coordinate: number;
+    isShow: boolean;
+    offset: number;
+    tickCoord: number;
+    value: number;
+  };
 }
 
-export default App;
+export interface CustomYAxisTickProps extends TickProps {
+  percentageView: boolean;
+  styles: React.CSSProperties;
+}
+
+export type ResponsiveBarChartProps = {
+  data: Datapoint[];
+  dimensionNames: string[];
+  percentageView?: boolean;
+  resizeHeight?: boolean;
+};

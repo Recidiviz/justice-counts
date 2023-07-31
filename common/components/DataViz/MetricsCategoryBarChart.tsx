@@ -19,7 +19,6 @@ import React, { forwardRef } from "react";
 import {
   Bar,
   BarChart as BarChartComponent,
-  CartesianGrid,
   ResponsiveContainer,
   Tooltip as TooltipComponent,
   XAxis,
@@ -28,32 +27,18 @@ import {
 import styled from "styled-components/macro";
 
 import { rem } from "../../utils";
-import { MIN_DESKTOP_WIDTH, palette } from "../GlobalStyles";
+import { palette } from "../GlobalStyles";
 import { CustomCursor, CustomYAxisTick } from "./BarChartComponents";
 import Tooltip from "./Tooltip";
 import { ResponsiveBarChartProps, TickProps } from "./types";
-import { getDatapointBarLabel } from "./utils";
+import { splitUtcString } from "./utils";
 
 const MAX_BAR_SIZE = 150;
-
-const ChartContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  max-height: calc(100% - 220px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 1;
-
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    min-height: 400px;
-  }
-`;
 
 const NoReportedData = styled.div`
   position: absolute;
   background: white;
-  padding: 8px;
+  padding: 0 0 0 53px;
 
   &::after {
     content: "No reported data for this metric.";
@@ -63,19 +48,11 @@ const NoReportedData = styled.div`
 const tickStyle = {
   fontSize: rem("12px"),
   fontWeight: 600,
-  fill: palette.solid.darkgrey,
+  fill: palette.highlight.grey8,
 };
 
 const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
-  (
-    {
-      data,
-      dimensionNames,
-      percentageView,
-      resizeHeight,
-    }: ResponsiveBarChartProps,
-    ref
-  ) => {
+  ({ data, dimensionNames }: ResponsiveBarChartProps, ref) => {
     const renderBarDefinitions = () => {
       // each Recharts Bar component defines a category type in the stacked bar chart
       let barDefinitions: JSX.Element[] = [];
@@ -103,19 +80,9 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
       return barDefinitions;
     };
 
-    const responsiveContainerProps = resizeHeight
-      ? {
-          width: "100%",
-          height: "100%",
-        }
-      : {
-          width: "100%",
-          height: 500,
-        };
-
     return (
-      <ChartContainer>
-        <ResponsiveContainer {...responsiveContainerProps}>
+      <>
+        <ResponsiveContainer width="100%" height="100%">
           <BarChartComponent
             data={data}
             barGap={0}
@@ -141,49 +108,47 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
                 <stop stopColor="rgba(221, 18, 18, 0.25)" offset="100%" />
               </linearGradient>
             </defs>
-            <CartesianGrid vertical={false} strokeDasharray="1 0" />
             <XAxis
               dataKey={(datapoint) => {
-                return getDatapointBarLabel(datapoint);
+                const [, , , year] = splitUtcString(datapoint.start_date);
+                return year;
               }}
               padding={{ left: -0.5, right: -0.5 }}
               interval="preserveEnd"
-              minTickGap={32}
+              minTickGap={16}
               tick={tickStyle}
               tickLine={false}
               tickMargin={12}
+              stroke="transparent"
             />
-            <YAxis
-              allowDecimals={percentageView}
-              tick={(props: TickProps) => (
-                <CustomYAxisTick
-                  y={props.y}
-                  payload={props.payload}
-                  percentageView={!!percentageView}
-                  styles={tickStyle}
-                />
-              )}
-              tickLine={false}
-              tickCount={percentageView ? 5 : 12}
-              domain={percentageView ? ["dataMin", "dataMax"] : undefined}
-              axisLine={false}
-            />
+            {data.length !== 0 && (
+              <YAxis
+                tick={(props: TickProps) => (
+                  <CustomYAxisTick
+                    y={props.y}
+                    payload={props.payload}
+                    percentageView={false}
+                    styles={tickStyle}
+                  />
+                )}
+                tickLine={false}
+                tickCount={12}
+                axisLine={false}
+              />
+            )}
             <TooltipComponent
               isAnimationActive={false}
               position={{ y: 100 }}
               cursor={data.length === 0 ? false : <CustomCursor />}
               content={
-                <Tooltip
-                  percentOnly={!!percentageView}
-                  dimensionNames={dimensionNames}
-                />
+                <Tooltip dimensionNames={dimensionNames} percentOnly={false} />
               }
             />
             {renderBarDefinitions()}
           </BarChartComponent>
         </ResponsiveContainer>
         {data.length === 0 && <NoReportedData />}
-      </ChartContainer>
+      </>
     );
   }
 );
