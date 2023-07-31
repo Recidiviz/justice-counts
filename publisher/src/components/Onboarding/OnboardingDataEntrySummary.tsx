@@ -145,6 +145,8 @@ export const OnboardingDataEntrySummary: React.FC = () => {
   };
   const openOnboardingSummary = () => setShowOnboardingSummary(true);
 
+  // This entire component will be deprecated
+  // eslint-disable-next-line react/no-unstable-nested-components
   const OnboardingSummary: React.FC = () => (
     <OnboardingContainer>
       <OnboardingBackdropContainer onClick={closeOnboardingSummary}>

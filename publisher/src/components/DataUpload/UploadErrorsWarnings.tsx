@@ -87,7 +87,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
   /** If there are non-metric errors, include them in the error count */
   const errorCount = nonMetricErrors
     ? errorsWarningsAndSuccessfulMetrics.errorWarningMetrics.length +
-      nonMetricErrors?.length
+      (nonMetricErrors?.length || 0)
     : errorsWarningsAndSuccessfulMetrics.errorWarningMetrics.length;
 
   /**

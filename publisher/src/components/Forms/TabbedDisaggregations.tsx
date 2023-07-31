@@ -181,7 +181,7 @@ export const TabbedDisaggregations: React.FC<{
       return <img src={successIcon} alt="" width="16px" height="16px" />;
     }
 
-    return <></>;
+    return null;
   };
 
   const renderDimension = ({
@@ -250,7 +250,7 @@ export const TabbedDisaggregations: React.FC<{
     return (
       <>
         {dimensionsGroupedByEthnicityEntries.map(([ethnicity, dimensions]) => (
-          <Fragment key={dimensions[0]?.key + ethnicity}>
+          <Fragment key={`${dimensions[0]?.key}-${ethnicity}`}>
             {dimensions.length > 0 && (
               <EthnicityHeader>{ethnicity}</EthnicityHeader>
             )}
