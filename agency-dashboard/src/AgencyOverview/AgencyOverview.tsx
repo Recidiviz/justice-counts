@@ -26,7 +26,7 @@ import {
 } from "@justice-counts/common/types";
 import { printDateAsShortMonthYear } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useAsyncEffect from "use-async-effect";
 
@@ -93,19 +93,6 @@ export const AgencyOverview = observer(() => {
   );
   const [agencyHomepageUrl, setAgencyHomepageUrl] = useState<string>(
     agencyDataStore.agencySettingsBySettingType.HOMEPAGE_URL?.value
-  );
-
-  const handleNavigate = useCallback(
-    (isPublished: boolean, metricKey: string) => {
-      if (isPublished && slug) {
-        navigate(
-          `/agency/${encodeURIComponent(
-            slug
-          )}/dashboard?metric=${metricKey.toLocaleLowerCase()}`
-        );
-      }
-    },
-    [navigate, slug]
   );
 
   useAsyncEffect(async () => {
@@ -232,7 +219,7 @@ export const AgencyOverview = observer(() => {
                       const categoryUrlParam = category
                         .toLowerCase()
                         .replaceAll(" ", "-");
-                      navigate(`/agency/${agencyId}/${categoryUrlParam}`);
+                      navigate(`/agency/${slug}/${categoryUrlParam}`);
                     }
                   }}
                   hasHover={isCapacityAndCostCategory}
@@ -250,7 +237,7 @@ export const AgencyOverview = observer(() => {
                       const categoryUrlParam = category
                         .toLowerCase()
                         .replaceAll(" ", "-");
-                      navigate(`/agency/${agencyId}/${categoryUrlParam}`);
+                      navigate(`/agency/${slug}/${categoryUrlParam}`);
                     }
                   }}
                   hasHover={isCapacityAndCostCategory}

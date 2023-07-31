@@ -233,15 +233,6 @@ export const DashboardView = observer(() => {
     DataVizTimeRangesMap[dataVizStore.timeRange]
   );
 
-  const downloadFeedData =
-    (system: string, agencyId: number) => async (filename: string) => {
-      const a = document.createElement("a");
-      a.href = `/feed/${agencyId}?system=${system}&metric=${filename}`;
-      a.setAttribute("download", `${filename}.csv`);
-      a.click();
-      a.remove();
-    };
-
   const downloadMetricData = useCallback(() => {
     if (
       agencyDataStore.agency &&

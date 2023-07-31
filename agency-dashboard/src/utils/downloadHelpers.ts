@@ -15,14 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export const downloadFeedData = async (
-  system: string,
-  filename: string,
-  agencyId: string
-) => {
-  const a = document.createElement("a");
-  a.href = `/feed/${agencyId}?system=${system}&metric=${filename}`;
-  a.setAttribute("download", `${filename}.csv`);
-  a.click();
-  a.remove();
-};
+export const downloadFeedData =
+  (system: string, agencyId: number) => async (filename: string) => {
+    const a = document.createElement("a");
+    a.href = `/feed/${agencyId}?system=${system}&metric=${filename}`;
+    a.setAttribute("download", `${filename}.csv`);
+    a.click();
+    a.remove();
+  };

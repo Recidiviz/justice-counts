@@ -26,8 +26,9 @@ import {
   DataVizAggregateName,
   DataVizTimeRangesMap,
 } from "@justice-counts/common/types";
+import { each } from "bluebird";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCurrentPng } from "recharts-to-png";
 
@@ -49,8 +50,8 @@ const categoryData: CategoryData = {
 };
 
 export const CategoryOverview = observer(() => {
-  const { id, category } = useParams() as {
-    id: string;
+  const { slug, category } = useParams() as {
+    slug: string;
     category: string;
   };
   const navigate = useNavigate();
@@ -95,7 +96,7 @@ export const CategoryOverview = observer(() => {
     const fetchData = async () => {
       try {
         if (agencyDataStore.metrics.length === 0) {
-          await agencyDataStore.fetchAgencyData(Number(id));
+          await agencyDataStore.fetchAgencyData(slug);
         }
       } catch {
         showToast({
@@ -117,16 +118,17 @@ export const CategoryOverview = observer(() => {
   const categoryMetrics =
     agencyDataStore.metricsByCategory[categoryData[category].key];
 
-  const downloadMetricsData = () => {
+  const downloadMetricsData = useCallback(() => {
     categoryMetrics.forEach((categoryMetric) => {
       const metric = agencyDataStore.metricsByKey[categoryMetric.key];
-      if (metric) {
-        metric.filenames.forEach((fileName) => {
-          downloadFeedData(metric.system.key, fileName, id);
-        });
+      if (metric && agencyDataStore.agency) {
+        each(
+          metric.filenames,
+          downloadFeedData(metric.system.key, agencyDataStore.agency.id)
+        );
       }
     });
-  };
+  }, [agencyDataStore, categoryMetrics]);
 
   return (
     <>
