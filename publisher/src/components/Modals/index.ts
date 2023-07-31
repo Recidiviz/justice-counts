@@ -15,25 +15,5 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
-import { Route, Routes } from "react-router-dom";
-
-import { AgencyOverview } from "./AgencyOverview";
-import { CategoryOverview } from "./CategoryOverview/CategoryOverview";
-import { DashboardView } from "./DashboardView";
-import { Home } from "./Home";
-import { NotFound } from "./NotFound";
-
-function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/agency/:slug" element={<AgencyOverview />} />
-      <Route path="/agency/:slug/:category" element={<CategoryOverview />} />
-      <Route path="/agency/:slug/dashboard" element={<DashboardView />} />
-      <Route path="/404" element={<NotFound />} />
-    </Routes>
-  );
-}
-
-export default App;
+export * from "./types";
+export * from "./UnauthorizedDeleteActionModal";

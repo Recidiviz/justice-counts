@@ -48,6 +48,10 @@ import {
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
 import { Loading } from "../components/Loading";
+import {
+  ResourceTypes,
+  UnauthorizedDeleteActionModal,
+} from "../components/Modals";
 import { Onboarding } from "../components/Onboarding";
 import { TeamMemberNameWithBadge } from "../components/primitives";
 import {
@@ -118,6 +122,10 @@ const Reports: React.FC = () => {
   );
   const [isRemoveRecordsModalOpen, setIsRemoveRecordsModalOpen] =
     useState(false);
+  const [
+    isUnauthorizedRemoveRecordsModalOpen,
+    setIsUnauthorizedRemoveRecordsModalOpen,
+  ] = useState(false);
 
   const isAdmin =
     userStore.isJusticeCountsAdmin(agencyId) ||
@@ -170,6 +178,7 @@ const Reports: React.FC = () => {
   };
 
   const handleRemoveRecords = () => {
+    if (!isJCAdmin) return;
     reportStore.deleteReports(selectedRecords, agencyId);
     clearBulkAction();
     clearAllSelectedRecords();
@@ -236,17 +245,14 @@ const Reports: React.FC = () => {
     {
       key: "deleteAction",
       label: "Delete",
-      onClick: () => selectBulkAction("delete"),
+      onClick: () =>
+        isJCAdmin
+          ? selectBulkAction("delete")
+          : setIsUnauthorizedRemoveRecordsModalOpen(true),
       color: "red",
       noHover: true,
     },
-  ].filter((option) => {
-    // Gates `Delete` action to Justice Counts Admins only
-    if (option.key === "deleteAction" && !isJCAdmin) {
-      return false;
-    }
-    return true;
-  }) as DropdownOption[];
+  ] as DropdownOption[];
   const tabbedBarOptions: TabOption[] = Object.entries(
     ReportStatusFilterOptionObject
   ).map(([key, value]) => ({
@@ -417,6 +423,13 @@ const Reports: React.FC = () => {
 
   return (
     <>
+      {isUnauthorizedRemoveRecordsModalOpen && (
+        <UnauthorizedDeleteActionModal
+          closeModal={() => setIsUnauthorizedRemoveRecordsModalOpen(false)}
+          resourceType={ResourceTypes.RECORD}
+        />
+      )}
+
       {isRemoveRecordsModalOpen && (
         <Modal
           title={removeRecordsModalTitle}

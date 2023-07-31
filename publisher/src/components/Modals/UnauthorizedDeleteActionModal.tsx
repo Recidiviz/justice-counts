@@ -15,25 +15,36 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Modal } from "@justice-counts/common/components/Modal";
 import React from "react";
-import { Route, Routes } from "react-router-dom";
 
-import { AgencyOverview } from "./AgencyOverview";
-import { CategoryOverview } from "./CategoryOverview/CategoryOverview";
-import { DashboardView } from "./DashboardView";
-import { Home } from "./Home";
-import { NotFound } from "./NotFound";
+import { ResourceType, resourceTypeToDisplayName } from ".";
 
-function App() {
+export const UnauthorizedDeleteActionModal: React.FC<{
+  closeModal: () => void;
+  resourceType: ResourceType;
+}> = ({ closeModal, resourceType }) => {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/agency/:slug" element={<AgencyOverview />} />
-      <Route path="/agency/:slug/:category" element={<CategoryOverview />} />
-      <Route path="/agency/:slug/dashboard" element={<DashboardView />} />
-      <Route path="/404" element={<NotFound />} />
-    </Routes>
+    <Modal
+      title={
+        <>
+          Please reach out to{" "}
+          <a href="mailto:justice-counts-support@csg.org">
+            justice-counts-support@csg.org
+          </a>{" "}
+          if you would like to delete a{" "}
+          {resourceTypeToDisplayName[resourceType]}.
+        </>
+      }
+      description=""
+      primaryButton={{
+        label: "OK",
+        onClick: closeModal,
+      }}
+      modalType="alert"
+      centerText
+      centerButtons
+      mediumTitle
+    />
   );
-}
-
-export default App;
+};

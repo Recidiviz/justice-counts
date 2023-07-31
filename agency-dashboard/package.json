@@ -5,6 +5,8 @@
   "dependencies": {
     "@justice-counts/common": "*",
     "@recidiviz/design-system": "^4.1.0",
+    "@types/bluebird": "^3.5.38",
+    "bluebird": "^3.7.2",
     "file-saver": "^2.0.5",
     "http-proxy-middleware": "^2.0.6",
     "mobx": "^6.4.2",
@@ -14,7 +16,8 @@
     "react-router-dom": "^6",
     "recharts-to-png": "^2.2.1",
     "styled-components": "^5.3.6",
-    "typescript": "^4.8.4"
+    "typescript": "^4.8.4",
+    "use-async-effect": "^2.2.7"
   },
   "scripts": {
     "dev": "PORT=3001 react-app-rewired start",

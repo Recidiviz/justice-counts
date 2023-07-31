@@ -130,7 +130,7 @@ function ShareUploadErrorWarnings() {
         >
           <Button
             label={errorsWarningsMetrics ? "Close" : "Cancel"}
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(`/agency/${agencyId}`)}
             buttonColor={errorsWarningsMetrics ? "red" : undefined}
             borderColor={errorsWarningsMetrics ? undefined : "white"}
             labelColor={errorsWarningsMetrics ? undefined : "white"}

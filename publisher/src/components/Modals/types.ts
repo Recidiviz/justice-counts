@@ -15,25 +15,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { REPORT_LOWERCASE, REPORT_UPPERCASE } from "../Global/constants";
 
-import { AgencyOverview } from "./AgencyOverview";
-import { CategoryOverview } from "./CategoryOverview/CategoryOverview";
-import { DashboardView } from "./DashboardView";
-import { Home } from "./Home";
-import { NotFound } from "./NotFound";
+export const ResourceTypes: Record<ResourceType, ResourceType> = {
+  FILE: "FILE",
+  RECORD: REPORT_UPPERCASE,
+};
+export const resourceTypeToDisplayName = {
+  FILE: "file",
+  RECORD: REPORT_LOWERCASE,
+};
 
-function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/agency/:slug" element={<AgencyOverview />} />
-      <Route path="/agency/:slug/:category" element={<CategoryOverview />} />
-      <Route path="/agency/:slug/dashboard" element={<DashboardView />} />
-      <Route path="/404" element={<NotFound />} />
-    </Routes>
-  );
-}
-
-export default App;
+export type ResourceType = keyof typeof resourceTypeToDisplayName;

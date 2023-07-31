@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { WelcomeHeaderBar } from "../Header";
 import { Loader } from "../Loading";
 import { useStore } from "../stores";
+import { slugify } from "../utils/formatting";
 import * as Styled from "./Home.styles";
 import { AgencyMetadata } from "./types";
 
@@ -56,7 +57,11 @@ export const Home = observer(() => {
               .map((agency) => (
                 <Styled.AgencyDetailsWrapper
                   key={agency.id}
-                  onClick={() => navigate(`/agency/${agency.id}`)}
+                  onClick={() =>
+                    navigate(
+                      `/agency/${encodeURIComponent(slugify(agency.name))}`
+                    )
+                  }
                 >
                   <Styled.AgencyName>{agency.name}</Styled.AgencyName>
                   <Styled.NumberOfPublishedMetrics>

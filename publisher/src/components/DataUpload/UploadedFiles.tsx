@@ -27,7 +27,7 @@ import {
   AgencyTeamMemberRole,
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
@@ -35,6 +35,7 @@ import { formatSystemName } from "../../utils";
 import downloadIcon from "../assets/download-icon.png";
 import { SYSTEM_CAPITALIZED } from "../Global/constants";
 import { ContainedLoader } from "../Loading";
+import { ResourceTypes, UnauthorizedDeleteActionModal } from "../Modals";
 import { TeamMemberNameWithBadge } from "../primitives";
 import { UploadedFile, UploadedFileStatus } from ".";
 import {
@@ -72,12 +73,23 @@ export const UploadedFileRow: React.FC<{
     spreadsheetID: number,
     status: UploadedFileStatus
   ) => Promise<void>;
+  setIsUnauthorizedRemoveFileModalOpen: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
 }> = observer(
-  ({ fileRowDetails, deleteUploadedFile, updateUploadedFileStatus }) => {
+  ({
+    fileRowDetails,
+    deleteUploadedFile,
+    updateUploadedFileStatus,
+    setIsUnauthorizedRemoveFileModalOpen,
+  }) => {
     const { reportStore, userStore } = useStore();
     const [isDownloading, setIsDownloading] = useState(false);
     const [rowHovered, setRowHovered] = useState(false);
     const { agencyId } = useParams() as { agencyId: string };
+
+    const isReadOnly = userStore.isUserReadOnly(agencyId);
+    const isJCAdmin = userStore.isJusticeCountsAdmin(agencyId);
 
     const handleDownload = async (spreadsheetID: number, name: string) => {
       setIsDownloading(true);
@@ -196,6 +208,17 @@ export const UploadedFileRow: React.FC<{
                 )}
               </>
             )}
+            {!isReadOnly && (
+              <Button
+                label="Delete"
+                onClick={() =>
+                  isJCAdmin
+                    ? deleteUploadedFile(id)
+                    : setIsUnauthorizedRemoveFileModalOpen(true)
+                }
+                labelColor="red"
+              />
+            )}
           </ActionsContainer>
         )}
 
@@ -222,6 +245,10 @@ export const UploadedFiles: React.FC = observer(() => {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
+  const [
+    isUnauthorizedRemoveRecordsModalOpen,
+    setIsUnauthorizedRemoveFileModalOpen,
+  ] = useState(false);
 
   const uploadStatusColorMapping: BadgeColorMapping = {
     UPLOADED: "ORANGE",
@@ -266,7 +293,7 @@ export const UploadedFiles: React.FC = observer(() => {
     };
   };
 
-  const deleteUploadedFile = async (spreadsheetID: number) => {
+  const deleteUploadedFile = useCallback(async (spreadsheetID: number) => {
     const response = await reportStore.deleteUploadedSpreadsheet(spreadsheetID);
 
     if (response instanceof Error) {
@@ -278,20 +305,25 @@ export const UploadedFiles: React.FC = observer(() => {
 
       return filteredFiles;
     });
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const updateUploadedFileStatus = async (
-    spreadsheetID: number,
-    status: UploadedFileStatus
-  ) => {
-    const response = await reportStore.updateFileStatus(spreadsheetID, status);
+  const updateUploadedFileStatus = useCallback(
+    async (spreadsheetID: number, status: UploadedFileStatus) => {
+      const response = await reportStore.updateFileStatus(
+        spreadsheetID,
+        status
+      );
 
-    if (response instanceof Error) {
-      return showToast({ message: response.message, color: "red" });
-    }
+      if (response instanceof Error) {
+        return showToast({ message: response.message, color: "red" });
+      }
 
-    return fetchListOfUploadedFiles();
-  };
+      return fetchListOfUploadedFiles();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   const fetchListOfUploadedFiles = async () => {
     const response = (await reportStore.getUploadedFilesList(agencyId)) as
@@ -315,7 +347,7 @@ export const UploadedFiles: React.FC = observer(() => {
       fetchListOfUploadedFiles();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [agencyId]
   );
 
   if (isLoading) {
@@ -332,6 +364,13 @@ export const UploadedFiles: React.FC = observer(() => {
 
   return (
     <UploadedFilesWrapper>
+      {isUnauthorizedRemoveRecordsModalOpen && (
+        <UnauthorizedDeleteActionModal
+          closeModal={() => setIsUnauthorizedRemoveFileModalOpen(false)}
+          resourceType={ResourceTypes.FILE}
+        />
+      )}
+
       <UploadedFilesTitle />
 
       <UploadedFilesContainer>
@@ -356,6 +395,9 @@ export const UploadedFiles: React.FC = observer(() => {
                 fileRowDetails={fileRowDetails}
                 deleteUploadedFile={deleteUploadedFile}
                 updateUploadedFileStatus={updateUploadedFileStatus}
+                setIsUnauthorizedRemoveFileModalOpen={
+                  setIsUnauthorizedRemoveFileModalOpen
+                }
               />
             );
           })}

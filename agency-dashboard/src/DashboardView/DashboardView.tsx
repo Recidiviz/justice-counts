@@ -25,9 +25,11 @@ import { transformDataForMetricInsights } from "@justice-counts/common/component
 import { COMMON_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { DataVizTimeRangesMap } from "@justice-counts/common/types";
+import { each } from "bluebird";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import useAsyncEffect from "use-async-effect";
 
 import { LearnMoreModal, ShareModal } from "../DashboardModals";
 import { HeaderBar } from "../Header";
@@ -110,8 +112,7 @@ export const DashboardView = observer(() => {
   const [learnMoreModalVisible, setLearnMoreModalVisible] =
     useState<boolean>(false);
   const navigate = useNavigate();
-  const params = useParams();
-  const agencyId = Number(params.id);
+  const { slug } = useParams();
   const { agencyDataStore, dataVizStore } = useStore();
 
   /** Prevent body from scrolling when modal is open */
@@ -151,33 +152,35 @@ export const DashboardView = observer(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await agencyDataStore.fetchAgencyData(agencyId);
-      } catch (error) {
-        showToast({
-          message: "Error fetching data.",
-          color: "red",
-          timeout: 4000,
-        });
-      }
-    };
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  useAsyncEffect(async () => {
+    try {
+      await agencyDataStore.fetchAgencyData(slug as string);
+    } catch (error) {
+      showToast({
+        message: "Error fetching data.",
+        color: "red",
+        timeout: 4000,
+      });
+    }
   }, []);
 
   useEffect(() => {
     if (
       metricKeyParam &&
+      slug &&
+      navigate &&
       !agencyDataStore.loading &&
       !agencyDataStore.dimensionNamesByMetricAndDisaggregation[metricKeyParam]
     ) {
-      navigate(`/agency/${agencyId}`);
+      navigate(`/agency/${encodeURIComponent(slug)}`);
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [agencyDataStore.loading]);
+  }, [
+    metricKeyParam,
+    navigate,
+    agencyDataStore.loading,
+    agencyDataStore.dimensionNamesByMetricAndDisaggregation,
+    slug,
+  ]);
 
   useEffect(() => {
     const resizeListener = () => {
@@ -230,20 +233,59 @@ export const DashboardView = observer(() => {
     DataVizTimeRangesMap[dataVizStore.timeRange]
   );
 
-  const downloadMetricData = () => {
-    const metric = agencyDataStore.metricsByKey[metricKeyParam];
-    if (metric) {
-      metric.filenames.forEach((fileName) => {
-        downloadFeedData(metric.system.key, fileName, agencyId.toString());
-      });
-    }
-  };
+  const downloadFeedData =
+    (system: string, agencyId: number) => async (filename: string) => {
+      const a = document.createElement("a");
+      a.href = `/feed/${agencyId}?system=${system}&metric=${filename}`;
+      a.setAttribute("download", `${filename}.csv`);
+      a.click();
+      a.remove();
+    };
 
-  return (
+  const downloadMetricData = useCallback(() => {
+    if (
+      agencyDataStore.agency &&
+      agencyDataStore.metricsByKey?.[metricKeyParam] &&
+      metricKeyParam
+    ) {
+      const metric = agencyDataStore.metricsByKey[metricKeyParam];
+      if (metric) {
+        each(
+          metric.filenames,
+          downloadFeedData(metric.system.key, agencyDataStore.agency.id)
+        );
+      }
+    }
+  }, [agencyDataStore, metricKeyParam]);
+
+  const handleBackClick = useCallback(() => {
+    if (navigate && slug) navigate(`/agency/${encodeURIComponent(slug)}`);
+  }, [navigate, slug]);
+
+  const handleMetricsSelect = useCallback(
+    (selectedMetricName: string) => {
+      if (agencyDataStore.metricDisplayNameToKey) {
+        const selectedMetricKey =
+          agencyDataStore.metricDisplayNameToKey[selectedMetricName];
+        if (navigate && slug && selectedMetricKey) {
+          navigate(
+            `/agency/${encodeURIComponent(
+              slug
+            )}/dashboard?metric=${selectedMetricKey.toLocaleLowerCase()}`
+          );
+        }
+      }
+    },
+    [navigate, slug, agencyDataStore]
+  );
+
+  return agencyDataStore.loading ? (
+    <Loading />
+  ) : (
     <Container key={metricKeyParam}>
       <HeaderBar />
       <LeftPanel>
-        <BackButton onClick={() => navigate(`/agency/${agencyId}`)} />
+        <BackButton onClick={handleBackClick} />
         <MetricTitle>{metricName}</MetricTitle>
         <MetricInsights datapoints={filteredAggregateData} />
         <MetricOverviewContent>
@@ -260,7 +302,7 @@ export const DashboardView = observer(() => {
         </MetricOverviewActionsContainer>
       </LeftPanel>
       <RightPanel>
-        <RightPanelBackButton onClick={() => navigate(`/agency/${agencyId}`)} />
+        <RightPanelBackButton onClick={handleBackClick} />
         <RightPanelMetricTitle>{metricName}</RightPanelMetricTitle>
         <DatapointsView
           datapointsGroupedByAggregateAndDisaggregations={
@@ -280,15 +322,7 @@ export const DashboardView = observer(() => {
           metricNamesByCategory={metricNamesByCategory}
           metricName={metricName}
           agencyName={agencyDataStore.agency?.name}
-          onMetricsSelect={(selectedMetricName) => {
-            const selectedMetricKey =
-              agencyDataStore.metricDisplayNameToKey[selectedMetricName];
-            if (selectedMetricKey) {
-              navigate(
-                `/agency/${agencyId}/dashboard?metric=${selectedMetricKey.toLocaleLowerCase()}`
-              );
-            }
-          }}
+          onMetricsSelect={handleMetricsSelect}
           showBottomMetricInsights={!isDesktopWidth}
           resizeHeight={isDesktopWidth}
         />
