@@ -40,6 +40,7 @@ export function CategoryOverviewLineChart({
           key={dimension}
           dataKey={dimension}
           stroke={Object.values(palette.dataViz)[index]}
+          type="monotone"
         />
       );
       lineDefinitions = [newLine, ...lineDefinitions];
