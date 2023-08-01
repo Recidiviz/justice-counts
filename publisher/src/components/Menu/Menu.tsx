@@ -219,52 +219,50 @@ const Menu: React.FC = () => {
 
         {/* Guidance */}
         {hasCompletedOnboarding === false && (
-          <>
-            <MenuItem
-              style={{ position: "relative" }}
-              active={pathWithoutAgency === "getting-started"}
-              onClick={() => {
-                navigate(`/agency/${agencyId}/getting-started`);
-                handleCloseMobileMenu();
-              }}
-            >
-              Get Started
-              {/* Guidance: Metric Configuration Progress Toast */}
-              {isMetricConfigStep && hasSystemMetricParams && (
-                <ProgressTooltipToast showToast={showMetricConfigProgressToast}>
-                  {metricConfigurationProgressSteps.map((step) => {
-                    // Don't show other 3 required steps if the metric is marked as Unavailable - because they are no longer required in this case.
-                    if (
-                      currentMetric?.enabled === false &&
-                      step !== ProgressSteps.CONFIRM_METRIC_AVAILABILITY
-                    ) {
-                      return null;
-                    }
+          <MenuItem
+            style={{ position: "relative" }}
+            active={pathWithoutAgency === "getting-started"}
+            onClick={() => {
+              navigate(`/agency/${agencyId}/getting-started`);
+              handleCloseMobileMenu();
+            }}
+          >
+            Get Started
+            {/* Guidance: Metric Configuration Progress Toast */}
+            {isMetricConfigStep && hasSystemMetricParams && (
+              <ProgressTooltipToast showToast={showMetricConfigProgressToast}>
+                {metricConfigurationProgressSteps.map((step) => {
+                  // Don't show other 3 required steps if the metric is marked as Unavailable - because they are no longer required in this case.
+                  if (
+                    currentMetric?.enabled === false &&
+                    step !== ProgressSteps.CONFIRM_METRIC_AVAILABILITY
+                  ) {
+                    return null;
+                  }
 
-                    // When all disaggregations are disabled, the "Confirm breakdown definitions" are no longer required.
-                    if (
-                      allDisaggregationsDisabled &&
-                      step === ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
-                    ) {
-                      return null;
-                    }
+                  // When all disaggregations are disabled, the "Confirm breakdown definitions" are no longer required.
+                  if (
+                    allDisaggregationsDisabled &&
+                    step === ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
+                  ) {
+                    return null;
+                  }
 
-                    return (
-                      <ProgressItemWrapper key={step}>
-                        <CheckIconWrapper>
-                          {metricCompletionProgress &&
-                            metricCompletionProgress[step] && (
-                              <CheckIcon src={checkmarkIcon} alt="" />
-                            )}
-                        </CheckIconWrapper>
-                        <ProgressItemName>{step}</ProgressItemName>
-                      </ProgressItemWrapper>
-                    );
-                  })}
-                </ProgressTooltipToast>
-              )}
-            </MenuItem>
-          </>
+                  return (
+                    <ProgressItemWrapper key={step}>
+                      <CheckIconWrapper>
+                        {metricCompletionProgress &&
+                          metricCompletionProgress[step] && (
+                            <CheckIcon src={checkmarkIcon} alt="" />
+                          )}
+                      </CheckIconWrapper>
+                      <ProgressItemName>{step}</ProgressItemName>
+                    </ProgressItemWrapper>
+                  );
+                })}
+              </ProgressTooltipToast>
+            )}
+          </MenuItem>
         )}
 
         {/* Reports */}

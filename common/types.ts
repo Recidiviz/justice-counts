@@ -145,7 +145,7 @@ export type MetricDisaggregationDimensionsWithErrors =
 export const metricConfigurationSettingsOptions = ["No", "Yes"] as const;
 
 export type MetricConfigurationSettingsOptions =
-  typeof metricConfigurationSettingsOptions[number];
+  (typeof metricConfigurationSettingsOptions)[number];
 
 export type MetricConfigurationSettings = {
   key: string;
@@ -422,7 +422,7 @@ export const dataVizTimeRangeDisplayName = [
   "10 Years Ago",
 ] as const;
 export type DataVizTimeRangeDisplayName =
-  typeof dataVizTimeRangeDisplayName[number];
+  (typeof dataVizTimeRangeDisplayName)[number];
 
 export const DataVizTimeRangesMap: {
   [key in DataVizTimeRangeDisplayName]: DataVizTimeRange;
@@ -436,7 +436,7 @@ export const DataVizTimeRangesMap: {
 
 export const dataVizCountOrPercentageView = ["Count", "Percentage"] as const;
 export type DataVizCountOrPercentageView =
-  typeof dataVizCountOrPercentageView[number];
+  (typeof dataVizCountOrPercentageView)[number];
 
 export interface DimensionNamesByDisaggregation {
   [disaggregation: string]: string[];

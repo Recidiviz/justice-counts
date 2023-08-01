@@ -155,6 +155,8 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
             />
             <YAxis
               allowDecimals={percentageView}
+              // TODO(#803): Fix lint error and remove the `eslint-disable-next-line`
+              // eslint-disable-next-line react/no-unstable-nested-components
               tick={(props: TickProps) => (
                 <CustomYAxisTick
                   y={props.y}

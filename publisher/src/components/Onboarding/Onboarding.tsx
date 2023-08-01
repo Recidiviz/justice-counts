@@ -427,23 +427,20 @@ const OnboardingSessionView = ({
       order: 1,
       title: `${REPORTS_CAPITALIZED} View`,
       html: (
-        <>
-          <p>
-            Every month, we’ll generate new{" "}
-            <strong>{REPORTS_CAPITALIZED}</strong> on this homepage. As a member
-            of this agency’s Justice Counts team, you’ll be able to add data for
-            the{" "}
-            <a
-              href="https://justicecounts.csgjusticecenter.org/metrics/justice-counts-metrics/"
-              rel="noreferrer noopener"
-              target="_blank"
-            >
-              <strong>Justice Counts Metrics</strong>
-            </a>{" "}
-            via these {REPORTS_LOWERCASE} whenever the relevant data is ready on
-            your end.
-          </p>
-        </>
+        <p>
+          Every month, we’ll generate new <strong>{REPORTS_CAPITALIZED}</strong>{" "}
+          on this homepage. As a member of this agency’s Justice Counts team,
+          you’ll be able to add data for the{" "}
+          <a
+            href="https://justicecounts.csgjusticecenter.org/metrics/justice-counts-metrics/"
+            rel="noreferrer noopener"
+            target="_blank"
+          >
+            <strong>Justice Counts Metrics</strong>
+          </a>{" "}
+          via these {REPORTS_LOWERCASE} whenever the relevant data is ready on
+          your end.
+        </p>
       ),
       position: "bottomright",
       action: "Next",
@@ -452,14 +449,12 @@ const OnboardingSessionView = ({
       order: 2,
       title: "Settings",
       html: (
-        <>
-          <p>
-            You can view and edit the Justice Counts metrics your agency is able
-            to record in the <strong>Settings</strong> page, accessible from the
-            menu bar at the top of the screen. You can also change your display
-            name and email from this page.
-          </p>
-        </>
+        <p>
+          You can view and edit the Justice Counts metrics your agency is able
+          to record in the <strong>Settings</strong> page, accessible from the
+          menu bar at the top of the screen. You can also change your display
+          name and email from this page.
+        </p>
       ),
       position: "bottomright",
       action: "Next",
@@ -468,17 +463,14 @@ const OnboardingSessionView = ({
       order: 3,
       title: "Feedback",
       html: (
-        <>
-          <p>
-            Your feedback helps us to make this product even easier to use. If
-            you have questions, requests, or any other feedback, please email us
-            at{" "}
-            <a href="mailto:justice-counts-support@csg.org">
-              justice-counts-support@csg.org
-            </a>{" "}
-            and we’ll be happy to get back to you.
-          </p>
-        </>
+        <p>
+          Your feedback helps us to make this product even easier to use. If you
+          have questions, requests, or any other feedback, please email us at{" "}
+          <a href="mailto:justice-counts-support@csg.org">
+            justice-counts-support@csg.org
+          </a>{" "}
+          and we’ll be happy to get back to you.
+        </p>
       ),
       position: "bottomright",
       action: "Finish",
@@ -487,15 +479,13 @@ const OnboardingSessionView = ({
       order: null,
       title: "You're ready to go!",
       html: (
-        <>
-          <p>
-            If you have any questions, email the Justice Counts team at{" "}
-            <a href="mailto:justice-counts-support@csg.org">
-              justice-counts-support@csg.org
-            </a>
-            .
-          </p>
-        </>
+        <p>
+          If you have any questions, email the Justice Counts team at{" "}
+          <a href="mailto:justice-counts-support@csg.org">
+            justice-counts-support@csg.org
+          </a>
+          .
+        </p>
       ),
       position: "bottomright",
       action: "Close",
@@ -506,21 +496,19 @@ const OnboardingSessionView = ({
       order: 1,
       title: "Entering data",
       html: (
-        <>
-          <p>
-            This is where you’ll enter the data and important contextual
-            information about the Justice Counts Metrics (linked{" "}
-            <a
-              href="https://justicecounts.csgjusticecenter.org/metrics/justice-counts-metrics/"
-              rel="noreferrer noopener"
-              target="_blank"
-            >
-              here
-            </a>{" "}
-            in case you need a refresher). We’ve included additional
-            descriptions and definitions on the side in case it’s helpful.
-          </p>
-        </>
+        <p>
+          This is where you’ll enter the data and important contextual
+          information about the Justice Counts Metrics (linked{" "}
+          <a
+            href="https://justicecounts.csgjusticecenter.org/metrics/justice-counts-metrics/"
+            rel="noreferrer noopener"
+            target="_blank"
+          >
+            here
+          </a>{" "}
+          in case you need a refresher). We’ve included additional descriptions
+          and definitions on the side in case it’s helpful.
+        </p>
       ),
       position: "bottomright",
       action: "Next",
@@ -571,15 +559,13 @@ const OnboardingSessionView = ({
       order: null,
       title: "You're ready to go!",
       html: (
-        <>
-          <p>
-            If you have any questions, email the Justice Counts team at{" "}
-            <a href="mailto:justice-counts-support@csg.org">
-              justice-counts-support@csg.org
-            </a>
-            .
-          </p>
-        </>
+        <p>
+          If you have any questions, email the Justice Counts team at{" "}
+          <a href="mailto:justice-counts-support@csg.org">
+            justice-counts-support@csg.org
+          </a>
+          .
+        </p>
       ),
       position: "bottomright",
       action: "Close",

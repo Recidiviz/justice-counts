@@ -104,7 +104,6 @@ class UserStore {
             message: "Failed to update user details.",
             color: "red",
           });
-          return;
         }
       }
     } catch (error) {

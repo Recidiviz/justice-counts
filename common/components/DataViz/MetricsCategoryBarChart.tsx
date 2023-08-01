@@ -123,6 +123,8 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
             />
             {data.length !== 0 && (
               <YAxis
+                // TODO(#803): Fix lint error and remove the `eslint-disable-next-line`
+                // eslint-disable-next-line react/no-unstable-nested-components
                 tick={(props: TickProps) => (
                   <CustomYAxisTick
                     y={props.y}

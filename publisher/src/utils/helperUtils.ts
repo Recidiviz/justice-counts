@@ -206,7 +206,7 @@ export function memoizeDebounce<F extends (...args: any[]) => any>(
   func: F,
   wait = 0,
   options: _.DebounceSettings = {},
-  resolver?: (...args: Parameters<F>) => unknown
+  resolver: ((...args: Parameters<F>) => unknown) | undefined = undefined
 ): MemoizeDebouncedFunction<F> {
   const debounceMemo = memoize<(...args: Parameters<F>) => _.DebouncedFunc<F>>(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
