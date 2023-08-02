@@ -167,7 +167,11 @@ export const DashboardView = observer(() => {
   }, []);
 
   useEffect(() => {
-    if (agencyDataStore?.agency && !isAllowListed(agencyDataStore.agency))
+    if (
+      getEnv() === "production" &&
+      agencyDataStore?.agency &&
+      !isAllowListed(agencyDataStore.agency)
+    )
       navigate("/404");
     if (
       getEnv() === "production" &&
