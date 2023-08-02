@@ -52,6 +52,7 @@ import { Loading } from "../Loading";
 import { useStore } from "../stores";
 import { isAllowListed } from "../utils/allowlist";
 import { downloadFeedData } from "../utils/downloadHelpers";
+import { getEnv } from "../utils/env";
 
 const getScreenWidth = () =>
   window.innerWidth ||
@@ -166,7 +167,11 @@ export const DashboardView = observer(() => {
   }, []);
 
   useEffect(() => {
-    if (agencyDataStore?.agency && !isAllowListed(agencyDataStore.agency))
+    if (
+      getEnv() === "production" &&
+      agencyDataStore?.agency &&
+      !isAllowListed(agencyDataStore.agency)
+    )
       navigate("/404");
     if (
       metricKeyParam &&
