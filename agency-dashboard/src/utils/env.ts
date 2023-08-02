@@ -16,8 +16,8 @@
 // =============================================================================
 
 enum envRegexes {
-  PRODUCTION = "/publisher.justice-counts.org/i",
-  STAGING = "/publisher-staging.justice-counts.org/i",
+  PRODUCTION = "/dashboard.justice-counts.org/i",
+  STAGING = "/dashboard-staging.justice-counts.org/i",
 }
 
 export const getEnv = () => {
