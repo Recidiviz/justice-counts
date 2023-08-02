@@ -105,8 +105,7 @@ export const MetricsFilterButton = styled.div<{ active: boolean }>`
 export const MetricsWrapper = styled.div`
   width: 100%;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-direction: column;
 
   @media only screen and (max-width: 1220px) {
     flex-direction: column;
