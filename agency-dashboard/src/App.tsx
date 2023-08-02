@@ -23,11 +23,16 @@ import { CategoryOverview } from "./CategoryOverview/CategoryOverview";
 import { DashboardView } from "./DashboardView";
 import { Home } from "./Home";
 import { NotFound } from "./NotFound";
+import { environment, getEnv } from "./utils/env";
 
 function App() {
+  const env = getEnv();
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route
+        path="/"
+        element={env === environment.PRODUCTION ? <NotFound /> : <Home />}
+      />
       <Route path="/agency/:slug" element={<AgencyOverview />} />
       <Route path="/agency/:slug/:category" element={<CategoryOverview />} />
       <Route path="/agency/:slug/dashboard" element={<DashboardView />} />

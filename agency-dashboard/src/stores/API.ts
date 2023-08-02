@@ -18,6 +18,11 @@ import { makeAutoObservable, runInAction } from "mobx";
 
 import { request } from "../utils/networking";
 
+export enum environment {
+  PRODUCTION = "production",
+  STAGING = "staging",
+  DEVELOPMENT = "development",
+}
 export interface RequestProps {
   path: string;
   method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
