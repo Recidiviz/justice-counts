@@ -131,7 +131,7 @@ export const MetricName = styled.div`
   display: flex;
   flex-direction: row;
   gap: 16px;
-  ${typography.sizeCSS.headline};
+  ${typography.sizeCSS.title};
   margin-bottom: 16px;
 `;
 
@@ -145,7 +145,7 @@ export const MetricDataVizContainer = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 647px;
+  height: 456px;
 
   .recharts-bar-rectangle {
     cursor: pointer !important;
