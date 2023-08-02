@@ -35,7 +35,9 @@ import { LearnMoreModal, ShareModal } from "../DashboardModals";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
+import { isAllowListed } from "../utils/allowlist";
 import { downloadFeedData } from "../utils/downloadHelpers";
+import { getEnv } from "../utils/env";
 import {
   BackButtonContainer,
   Container,
@@ -166,6 +168,12 @@ export const DashboardView = observer(() => {
 
   useEffect(() => {
     if (
+      getEnv() === "production" &&
+      agencyDataStore?.agency &&
+      !isAllowListed(agencyDataStore.agency)
+    )
+      navigate("/404");
+    if (
       metricKeyParam &&
       slug &&
       navigate &&
@@ -174,13 +182,7 @@ export const DashboardView = observer(() => {
     ) {
       navigate(`/agency/${encodeURIComponent(slug)}`);
     }
-  }, [
-    metricKeyParam,
-    navigate,
-    agencyDataStore.loading,
-    agencyDataStore.dimensionNamesByMetricAndDisaggregation,
-    slug,
-  ]);
+  }, [metricKeyParam, navigate, agencyDataStore, slug]);
 
   useEffect(() => {
     const resizeListener = () => {
