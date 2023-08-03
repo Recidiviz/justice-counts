@@ -31,12 +31,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useAsyncEffect from "use-async-effect";
 
-import { LearnMoreModal, ShareModal } from "../DashboardModals";
-import { HeaderBar } from "../Header";
-import { Loading } from "../Loading";
-import { useStore } from "../stores";
-import { isAllowListed } from "../utils/allowlist";
-import { downloadFeedData } from "../utils/downloadHelpers";
 import {
   BackButtonContainer,
   Container,
@@ -52,6 +46,12 @@ import {
   RightPanelMetricOverviewContent,
   RightPanelMetricTitle,
 } from ".";
+import { LearnMoreModal, ShareModal } from "../DashboardModals";
+import { HeaderBar } from "../Header";
+import { Loading } from "../Loading";
+import { useStore } from "../stores";
+import { isAllowListed } from "../utils/allowlist";
+import { downloadFeedData } from "../utils/downloadHelpers";
 
 const getScreenWidth = () =>
   window.innerWidth ||
@@ -173,6 +173,9 @@ export const DashboardView = observer(() => {
     ) {
       navigate("/404");
     }
+  }, [api.environment, agencyDataStore.agency, navigate]);
+
+  useEffect(() => {
     if (
       metricKeyParam &&
       slug &&
@@ -182,7 +185,13 @@ export const DashboardView = observer(() => {
     ) {
       navigate(`/agency/${encodeURIComponent(slug)}`);
     }
-  }, [api.environment, metricKeyParam, navigate, agencyDataStore, slug]);
+  }, [
+    metricKeyParam,
+    navigate,
+    agencyDataStore.loading,
+    agencyDataStore.dimensionNamesByMetricAndDisaggregation,
+    slug,
+  ]);
 
   useEffect(() => {
     const resizeListener = () => {
