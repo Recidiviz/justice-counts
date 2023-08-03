@@ -167,7 +167,7 @@ export const DashboardView = observer(() => {
 
   useEffect(() => {
     if (
-      api.environment === "production" &&
+      (api.environment === "production" || api.environment === "staging") &&
       agencyDataStore?.agency &&
       !isAllowListed(agencyDataStore.agency)
     ) {

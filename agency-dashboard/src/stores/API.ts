@@ -16,6 +16,8 @@
 // =============================================================================
 import { makeAutoObservable, runInAction } from "mobx";
 
+import { request } from "../utils/networking";
+
 export interface RequestProps {
   path: string;
   method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
@@ -36,7 +38,7 @@ export default class API {
 
   async getEnv(): Promise<void | string> {
     try {
-      const response = (await this.request({
+      const response = (await request({
         path: "/api/env",
         method: "GET",
       })) as Response;
@@ -48,32 +50,6 @@ export default class API {
     } catch (error) {
       if (error instanceof Error) return error.message;
       return String(error);
-    }
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  async request({
-    path,
-    method,
-    body,
-  }: RequestProps): Promise<Body | Response | string> {
-    try {
-      // Files are sent as FormData and not JSON
-      const jsonOrFormDataBody =
-        body instanceof FormData ? body : JSON.stringify(body);
-
-      const response = await fetch(path, {
-        body: method !== "GET" ? jsonOrFormDataBody : null,
-        method,
-      });
-
-      return response;
-    } catch (error) {
-      if (error instanceof Error) {
-        // TODO add some tracking here
-        throw error;
-      }
-      throw error;
     }
   }
 }
