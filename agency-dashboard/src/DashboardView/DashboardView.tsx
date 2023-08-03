@@ -37,7 +37,6 @@ import { Loading } from "../Loading";
 import { useStore } from "../stores";
 import { isAllowListed } from "../utils/allowlist";
 import { downloadFeedData } from "../utils/downloadHelpers";
-import { getEnv } from "../utils/env";
 import {
   BackButtonContainer,
   Container,
@@ -113,10 +112,9 @@ export const DashboardView = observer(() => {
   const [shareModalVisible, setShareModalVisible] = useState<boolean>(false);
   const [learnMoreModalVisible, setLearnMoreModalVisible] =
     useState<boolean>(false);
-  const [env, setEnv] = useState();
   const navigate = useNavigate();
   const { slug } = useParams();
-  const { agencyDataStore, dataVizStore } = useStore();
+  const { agencyDataStore, dataVizStore, api } = useStore();
 
   /** Prevent body from scrolling when modal is open */
   useEffect(() => {
@@ -158,7 +156,6 @@ export const DashboardView = observer(() => {
   useAsyncEffect(async () => {
     try {
       await agencyDataStore.fetchAgencyData(slug as string);
-      setEnv(await getEnv());
     } catch (error) {
       showToast({
         message: "Error fetching data.",
@@ -170,7 +167,7 @@ export const DashboardView = observer(() => {
 
   useEffect(() => {
     if (
-      env === "production" &&
+      api.environment === "production" &&
       agencyDataStore?.agency &&
       !isAllowListed(agencyDataStore.agency)
     ) {
@@ -185,7 +182,7 @@ export const DashboardView = observer(() => {
     ) {
       navigate(`/agency/${encodeURIComponent(slug)}`);
     }
-  }, [env, metricKeyParam, navigate, agencyDataStore, slug]);
+  }, [api.environment, metricKeyParam, navigate, agencyDataStore, slug]);
 
   useEffect(() => {
     const resizeListener = () => {
