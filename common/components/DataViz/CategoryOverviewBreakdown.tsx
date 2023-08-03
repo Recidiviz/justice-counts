@@ -7,20 +7,27 @@ export const CategoryOverviewBreakdown: FunctionComponent<{ names: any[] }> = ({
 }) => {
   return (
     <Container>
-      <ul>
-        {names.map(({ fill, value }) => (
-          <li style={{ fontSize: 24, color: fill, listStyleType: "square" }}>
-            <span style={{ fontSize: 18, color: palette.solid.black }}>
-              {value}
-            </span>
-          </li>
-        ))}
-      </ul>
+      {names.map(({ fill, value }) => (
+        <LegendItem color={fill}>
+          <LegendName color={palette.solid.black}>{value}</LegendName>
+        </LegendItem>
+      ))}
     </Container>
   );
 };
 
-const Container = styled.div`
+const Container = styled.ul`
   width: 100%;
   display: flex;
+`;
+
+const LegendItem = styled.li<{ color: string }>`
+  font-size: 24;
+  color: ${({ color }) => color};
+  list-style-type: square;
+`;
+
+const LegendName = styled.span<{ color: string }>`
+  font-size: 18;
+  color: ${({ color }) => color};
 `;
