@@ -24,7 +24,7 @@ import styled from "styled-components/macro";
 export const FooterWrapper = styled.div`
   width: 100%;
   background-color: ${palette.solid.darkgrey};
-  padding: 97px 209px 209px 209px;
+  padding: 80px;
 `;
 
 export const FooterContent = styled.div`
