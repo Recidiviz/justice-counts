@@ -75,9 +75,8 @@ export const AgencyOverview = observer(() => {
   const navigate = useNavigate();
   const { slug } = useParams();
   const { agencyDataStore } = useStore();
-  const [currentSystem, setCurrentSystem] = useState<AgencySystems>(
-    availableSystems[0]
-  );
+  const [currentSystem, setCurrentSystem] = useState<AgencySystems>();
+  // availableSystems[0]
   const [agencyHasAvailableSystems, setAgencyHasAvailableSystems] =
     useState<boolean>(false);
   const [
@@ -98,6 +97,9 @@ export const AgencyOverview = observer(() => {
   useAsyncEffect(async () => {
     try {
       await agencyDataStore.fetchAgencyData(slug as string);
+      console.log("in fetch");
+      console.log(agencyDataStore.agency?.systems[0]);
+      setCurrentSystem(agencyDataStore.agency?.systems[0]);
     } catch (error) {
       showToast({
         message: "Error fetching data.",
@@ -143,20 +145,41 @@ export const AgencyOverview = observer(() => {
         )
       );
     }
+    console.log(
+      "inside useEffect setter of stuff",
+      agencyDataStore.agency?.systems
+    );
     if (agencyDataStore.agency?.systems?.length) {
+      console.log("hi");
       setAgencyHasAvailableSystems(
         agencyDataStore.agency?.systems?.some((system) =>
           availableSystems.includes(system)
         )
       );
     }
-  }, [agencyDataStore]);
+  }, [
+    agencyDataStore,
+    agencyDataStore.agency,
+    agencyDataStore.metrics,
+    agencyDataStore.agencySettingsBySettingType,
+    currentSystem,
+  ]);
 
   useEffect(() => {
+    // if (
+    //   !agencyDataStore.loading &&
+    //   (!agencyHasAvailableSystems ||
+    //     metricsByAvailableCategoriesAndSystemsWithData?.length === 0)
+    // ) {
+    //   navigate("/404");
+    // }
+    console.log("in navigate useEffect");
+    console.log(agencyDataStore.agency?.systems);
     if (
       !agencyDataStore.loading &&
-      (!agencyHasAvailableSystems ||
-        metricsByAvailableCategoriesAndSystemsWithData?.length === 0)
+      agencyDataStore.agency?.systems?.some((system) =>
+        availableSystems.includes(system)
+      ) === false
     ) {
       navigate("/404");
     }
@@ -165,6 +188,7 @@ export const AgencyOverview = observer(() => {
     agencyDataStore,
     agencyHasAvailableSystems,
     metricsByAvailableCategoriesAndSystemsWithData,
+    currentSystem,
   ]);
 
   return agencyDataStore.loading ? (

@@ -169,6 +169,7 @@ class AgencyDataStore {
       })) as Response;
       if (response.status === 200) {
         const result = await response.json();
+        console.log("result in store", result);
         runInAction(() => {
           this.agency = result.agency;
           this.metrics = result.metrics;
@@ -223,6 +224,7 @@ class AgencyDataStore {
   resetState() {
     // reset the state
     runInAction(() => {
+      this.agency = undefined;
       this.metrics = [];
       this.loading = true;
     });
