@@ -182,6 +182,7 @@ export const CategoryOverview = observer(() => {
                   </Styled.MetricDescription>
                   <Styled.MetricDataVizContainer>
                     <MetricsCategoryBarChart
+                      width={1059}
                       data={filterDatapoints(
                         transformDataForBarChart(
                           agencyDataStore.datapointsByMetric[metric.key]
@@ -194,31 +195,30 @@ export const CategoryOverview = observer(() => {
                       metric={metric.display_name}
                       ref={ref}
                     />
+                    <CategoryOverviewLineChart
+                      data={filterDatapoints(
+                        transformDataForBarChart(
+                          Object.values(
+                            agencyDataStore.datapointsByMetric[metric.key]
+                              ?.disaggregations[
+                              Object.keys(
+                                agencyDataStore.datapointsByMetric[metric.key]
+                                  ?.disaggregations
+                              )[0]
+                            ]
+                          ),
+                          DataVizTimeRangesMap.All,
+                          "Count"
+                        )
+                      )}
+                      dimensions={
+                        Object.values(
+                          agencyDataStore
+                            .dimensionNamesByMetricAndDisaggregation[metric.key]
+                        )[0]
+                      }
+                    />
                   </Styled.MetricDataVizContainer>
-                  {/* <CategoryOverviewLineChart */}
-                  {/*  data={filterDatapoints( */}
-                  {/*    transformDataForBarChart( */}
-                  {/*      Object.values( */}
-                  {/*        agencyDataStore.datapointsByMetric[metric.key] */}
-                  {/*          ?.disaggregations[ */}
-                  {/*          Object.keys( */}
-                  {/*            agencyDataStore.datapointsByMetric[metric.key] */}
-                  {/*              ?.disaggregations */}
-                  {/*          )[0] */}
-                  {/*        ] */}
-                  {/*      ), */}
-                  {/*      DataVizTimeRangesMap.All, */}
-                  {/*      "Count" */}
-                  {/*    ) */}
-                  {/*  )} */}
-                  {/*  dimensions={ */}
-                  {/*    Object.values( */}
-                  {/*      agencyDataStore.dimensionNamesByMetricAndDisaggregation[ */}
-                  {/*        metric.key */}
-                  {/*      ] */}
-                  {/*    )[0] */}
-                  {/*  } */}
-                  {/* /> */}
                 </Styled.MetricBox>
               ))}
             </Styled.MetricsWrapper>

@@ -15,11 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
+import { invertObj, mapObjIndexed, pipe } from "ramda";
+import React, { useCallback } from "react";
 import { Legend, Line, LineChart, Tooltip, XAxis } from "recharts";
 
 import { Datapoint } from "../../types";
 import { palette } from "../GlobalStyles";
+import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
 import { splitUtcString } from "./utils";
 
 type LineChartProps = {
@@ -31,39 +33,64 @@ export function CategoryOverviewLineChart({
   data,
   dimensions,
 }: LineChartProps) {
-  const renderLines = () => {
-    // each Recharts Bar component defines a category type in the stacked bar chart
-    let lineDefinitions: JSX.Element[] = [];
-    dimensions.forEach((dimension, index) => {
-      const newLine = (
-        <Line
-          key={dimension}
-          dataKey={dimension}
-          stroke={Object.values(palette.dataViz)[index]}
-          type="monotone"
-        />
-      );
-      lineDefinitions = [newLine, ...lineDefinitions];
-    });
-    return lineDefinitions;
-  };
+  const colorDict = pipe(
+    invertObj,
+    mapObjIndexed(
+      (colorName: string, fill) =>
+        dimensions[Number(colorName.replace("bar", "")) - 1]
+    ),
+    invertObj
+  )(palette.dataViz);
+
+  const renderLines = useCallback(
+    (dimensions: string[]) => {
+      // each Recharts Bar component defines a category type in the stacked bar chart
+      let lineDefinitions: JSX.Element[] = [];
+      dimensions.forEach((dimension, index) => {
+        const newLine = (
+          <Line
+            key={dimension}
+            dataKey={dimension}
+            stroke={colorDict[dimension]}
+            type="monotone"
+          />
+        );
+        lineDefinitions = [newLine, ...lineDefinitions];
+      });
+      return lineDefinitions;
+    },
+    [colorDict]
+  );
 
   return (
-    <LineChart
-      width={730}
-      height={250}
-      data={data}
-      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-    >
-      <XAxis
-        dataKey={(datapoint) => {
-          const [, , , year] = splitUtcString(datapoint.start_date);
-          return year;
-        }}
-      />
-      <Tooltip />
-      <Legend />
-      {renderLines()}
-    </LineChart>
+    <>
+      <LineChart
+        width={533}
+        height={250}
+        data={data}
+        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+      >
+        <XAxis
+          dataKey={(datapoint) => {
+            const [, , , year] = splitUtcString(datapoint.start_date);
+            return year;
+          }}
+        />
+        <Tooltip />
+        {renderLines(dimensions)}
+        <Legend
+          content={(props) => (
+            <CategoryOverviewBreakdown
+              names={
+                dimensions.map((item, index) => ({
+                  fill: colorDict[item],
+                  value: item,
+                })) ?? []
+              }
+            />
+          )}
+        />
+      </LineChart>
+    </>
   );
 }

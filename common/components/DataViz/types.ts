@@ -40,4 +40,5 @@ export type ResponsiveBarChartProps = {
   metric?: string;
   percentageView?: boolean;
   resizeHeight?: boolean;
+  width?: string | number;
 };
