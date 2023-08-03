@@ -113,6 +113,7 @@ export const DashboardView = observer(() => {
   const [shareModalVisible, setShareModalVisible] = useState<boolean>(false);
   const [learnMoreModalVisible, setLearnMoreModalVisible] =
     useState<boolean>(false);
+  const [env, setEnv] = useState();
   const navigate = useNavigate();
   const { slug } = useParams();
   const { agencyDataStore, dataVizStore } = useStore();
@@ -157,6 +158,7 @@ export const DashboardView = observer(() => {
   useAsyncEffect(async () => {
     try {
       await agencyDataStore.fetchAgencyData(slug as string);
+      setEnv(await getEnv());
     } catch (error) {
       showToast({
         message: "Error fetching data.",
@@ -168,17 +170,12 @@ export const DashboardView = observer(() => {
 
   useEffect(() => {
     if (
-      getEnv() === "production" &&
+      env === "production" &&
       agencyDataStore?.agency &&
       !isAllowListed(agencyDataStore.agency)
-    )
+    ) {
       navigate("/404");
-    if (
-      getEnv() === "production" &&
-      agencyDataStore?.agency &&
-      !isAllowListed(agencyDataStore.agency)
-    )
-      navigate("/404");
+    }
     if (
       metricKeyParam &&
       slug &&
@@ -188,7 +185,7 @@ export const DashboardView = observer(() => {
     ) {
       navigate(`/agency/${encodeURIComponent(slug)}`);
     }
-  }, [metricKeyParam, navigate, agencyDataStore, slug]);
+  }, [env, metricKeyParam, navigate, agencyDataStore, slug]);
 
   useEffect(() => {
     const resizeListener = () => {

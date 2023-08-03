@@ -15,17 +15,17 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-enum envRegexes {
-  PRODUCTION = "/dashboard.justice-counts.org/i",
-  STAGING = "/dashboard-staging.justice-counts.org/i",
-}
+import { request } from "./networking";
 
-export const getEnv = () => {
-  if (new RegExp(envRegexes.PRODUCTION).test(window.location.host)) {
-    return "production";
+export const getEnv = async () => {
+  try {
+    const response = (await request({
+      path: "/api/init",
+      method: "GET",
+    })) as Response;
+    const { env } = await response.json();
+    return env;
+  } catch (err) {
+    return "development";
   }
-  if (new RegExp(envRegexes.STAGING).test(window.location.host)) {
-    return "staging";
-  }
-  return "development";
 };
