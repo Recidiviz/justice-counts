@@ -42,25 +42,22 @@ export function CategoryOverviewLineChart({
     invertObj
   )(palette.dataViz);
 
-  const renderLines = useCallback(
-    (dimensions: string[]) => {
-      // each Recharts Bar component defines a category type in the stacked bar chart
-      let lineDefinitions: JSX.Element[] = [];
-      dimensions.forEach((dimension, index) => {
-        const newLine = (
-          <Line
-            key={dimension}
-            dataKey={dimension}
-            stroke={colorDict[dimension]}
-            type="monotone"
-          />
-        );
-        lineDefinitions = [newLine, ...lineDefinitions];
-      });
-      return lineDefinitions;
-    },
-    [colorDict]
-  );
+  const renderLines = useCallback(() => {
+    // each Recharts Bar component defines a category type in the stacked bar chart
+    let lineDefinitions: JSX.Element[] = [];
+    dimensions.forEach((dimension, index) => {
+      const newLine = (
+        <Line
+          key={dimension}
+          dataKey={dimension}
+          stroke={colorDict[dimension]}
+          type="monotone"
+        />
+      );
+      lineDefinitions = [newLine, ...lineDefinitions];
+    });
+    return lineDefinitions;
+  }, [colorDict, dimensions]);
 
   return (
     <>
@@ -77,7 +74,7 @@ export function CategoryOverviewLineChart({
           }}
         />
         <Tooltip />
-        {renderLines(dimensions)}
+        {renderLines()}
         <Legend
           content={(props) => (
             <CategoryOverviewBreakdown

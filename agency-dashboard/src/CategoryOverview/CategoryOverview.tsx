@@ -25,18 +25,21 @@ import {
   Datapoint,
   DataVizAggregateName,
   DataVizTimeRangesMap,
+  Metric,
 } from "@justice-counts/common/types";
 import { each } from "bluebird";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCurrentPng } from "recharts-to-png";
 
+import { ResponsiveBarData } from "@justice-counts/common/components/DataViz/types";
 import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
 import { downloadFeedData } from "../utils/downloadHelpers";
+import { getDatapointYear } from "../utils/formatting";
 import * as Styled from "./CategoryOverview.styled";
 import { CategoryData } from "./types";
 
@@ -62,10 +65,19 @@ export const CategoryOverview = observer(() => {
   const [dataRangeFilter, setDataRangeFilter] = useState<"recent" | "all">(
     "recent"
   );
+  const [lineChartData, setLineChartData] = useState<Datapoint[]>([]);
 
-  const filterDatapoints = (datapoints: Datapoint[]) => {
-    return dataRangeFilter === "recent" ? datapoints.slice(-5) : datapoints;
-  };
+  const categoryMetrics =
+    agencyDataStore.metricsByCategory[categoryData[category].key];
+  const [selectedMetricKey, setSelectedMetricKey] = useState<string>();
+  const [selectedYear, setSelectedYear] = useState<string>();
+
+  const filterDatapoints = useCallback(
+    (datapoints: Datapoint[]) => {
+      return dataRangeFilter === "recent" ? datapoints.slice(-5) : datapoints;
+    },
+    [dataRangeFilter]
+  );
 
   const copyUrlToClipboard = async () => {
     try {
@@ -111,12 +123,51 @@ export const CategoryOverview = observer(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const getBarChartData = useCallback(
+    (metric: Metric) => {
+      return filterDatapoints(
+        transformDataForBarChart(
+          agencyDataStore.datapointsByMetric[metric.key].aggregate,
+          DataVizTimeRangesMap.All,
+          "Count"
+        )
+      );
+    },
+    [filterDatapoints, agencyDataStore.datapointsByMetric]
+  );
+
+  const getLineChartData = useCallback(
+    (metricKey: string) => {
+      return filterDatapoints(
+        transformDataForBarChart(
+          Object.values(
+            agencyDataStore.datapointsByMetric[metricKey]?.disaggregations[
+              Object.keys(
+                agencyDataStore.datapointsByMetric[metricKey]?.disaggregations
+              )[0]
+            ]
+          ),
+          DataVizTimeRangesMap.All,
+          "Count"
+        )
+      );
+    },
+    [filterDatapoints, agencyDataStore.datapointsByMetric]
+  );
+
+  useEffect(() => {
+    console.log(selectedYear, selectedMetricKey);
+    if (selectedYear && selectedMetricKey)
+      setLineChartData(
+        getLineChartData(selectedMetricKey).filter(
+          (datapoint) => getDatapointYear(datapoint) === selectedYear
+        )
+      );
+  }, [selectedYear, selectedMetricKey]);
+
   if (agencyDataStore.loading) {
     return <Loading />;
   }
-
-  const categoryMetrics =
-    agencyDataStore.metricsByCategory[categoryData[category].key];
 
   const downloadMetricsData = () => {
     categoryMetrics.forEach((categoryMetric) => {
@@ -183,34 +234,19 @@ export const CategoryOverview = observer(() => {
                   <Styled.MetricDataVizContainer>
                     <MetricsCategoryBarChart
                       width={1059}
-                      data={filterDatapoints(
-                        transformDataForBarChart(
-                          agencyDataStore.datapointsByMetric[metric.key]
-                            .aggregate,
-                          DataVizTimeRangesMap.All,
-                          "Count"
-                        )
-                      )}
+                      maxBarSize={193}
+                      onHoverBar={(data: ResponsiveBarData) => {
+                        console.log(data, getDatapointYear(data));
+                        setSelectedMetricKey(metric.key);
+                        setSelectedYear(getDatapointYear(data));
+                      }}
+                      data={getBarChartData(metric)}
                       dimensionNames={[DataVizAggregateName]}
                       metric={metric.display_name}
                       ref={ref}
                     />
                     <CategoryOverviewLineChart
-                      data={filterDatapoints(
-                        transformDataForBarChart(
-                          Object.values(
-                            agencyDataStore.datapointsByMetric[metric.key]
-                              ?.disaggregations[
-                              Object.keys(
-                                agencyDataStore.datapointsByMetric[metric.key]
-                                  ?.disaggregations
-                              )[0]
-                            ]
-                          ),
-                          DataVizTimeRangesMap.All,
-                          "Count"
-                        )
-                      )}
+                      data={lineChartData}
                       dimensions={
                         Object.values(
                           agencyDataStore

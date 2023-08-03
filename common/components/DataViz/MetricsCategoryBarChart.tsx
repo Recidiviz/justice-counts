@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React, { forwardRef } from "react";
+import React, { forwardRef, useState } from "react";
 import {
   Bar,
   BarChart as BarChartComponent,
@@ -26,12 +26,12 @@ import {
 } from "recharts";
 import styled from "styled-components/macro";
 
+import { getDatapointYear } from "../../../agency-dashboard/src/utils/formatting";
 import { rem } from "../../utils";
 import { palette } from "../GlobalStyles";
 import { CustomCursor, CustomYAxisTick } from "./BarChartComponents";
 import Tooltip from "./Tooltip";
-import { ResponsiveBarChartProps, TickProps } from "./types";
-import { splitUtcString } from "./utils";
+import { ResponsiveBarChartProps, ResponsiveBarData, TickProps } from "./types";
 
 const MAX_BAR_SIZE = 150;
 
@@ -52,7 +52,18 @@ const tickStyle = {
 };
 
 const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
-  ({ data, dimensionNames, width, metric }: ResponsiveBarChartProps, ref) => {
+  (
+    {
+      data,
+      dimensionNames,
+      width,
+      metric,
+      maxBarSize,
+      onHoverBar,
+    }: ResponsiveBarChartProps,
+    ref
+  ) => {
+    const [colors] = useState<string[]>(Object.values(palette.dataViz));
     const renderBarDefinitions = () => {
       // each Recharts Bar component defines a category type in the stacked bar chart
       let barDefinitions: JSX.Element[] = [];
@@ -62,8 +73,11 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
             key={dimension}
             dataKey={dimension}
             stackId="a"
-            fill={Object.values(palette.dataViz)[index]}
-            maxBarSize={MAX_BAR_SIZE}
+            fill={colors[index]}
+            maxBarSize={maxBarSize ?? MAX_BAR_SIZE}
+            onMouseOver={(barData: ResponsiveBarData) =>
+              onHoverBar ? onHoverBar(barData) : null
+            }
           />
         );
         barDefinitions = [newBar, ...barDefinitions];
@@ -74,7 +88,7 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
           dataKey="dataVizMissingData"
           stackId="a"
           fill="url(#gradient)"
-          maxBarSize={MAX_BAR_SIZE}
+          maxBarSize={maxBarSize ?? MAX_BAR_SIZE}
         />
       );
       return barDefinitions;
@@ -109,10 +123,7 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
               </linearGradient>
             </defs>
             <XAxis
-              dataKey={(datapoint) => {
-                const [, , , year] = splitUtcString(datapoint.start_date);
-                return year;
-              }}
+              dataKey={getDatapointYear}
               padding={{ left: -0.5, right: -0.5 }}
               interval="preserveEnd"
               minTickGap={16}
@@ -123,8 +134,6 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
             />
             {data.length !== 0 && (
               <YAxis
-                // TODO(#803): Fix lint error and remove the `eslint-disable-next-line`
-                // eslint-disable-next-line react/no-unstable-nested-components
                 tick={(props: TickProps) => (
                   <CustomYAxisTick
                     y={props.y}

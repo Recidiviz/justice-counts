@@ -19,6 +19,7 @@ export const CategoryOverviewBreakdown: FunctionComponent<{ names: any[] }> = ({
 const Container = styled.ul`
   width: 100%;
   display: flex;
+  flex-direction: column;
 `;
 
 const LegendItem = styled.li<{ color: string }>`

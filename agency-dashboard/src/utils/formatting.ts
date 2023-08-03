@@ -13,6 +13,15 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+import { splitUtcString } from "@justice-counts/common/components/DataViz/utils";
+import { Datapoint } from "@justice-counts/common/types";
+
 // =============================================================================
 export const slugify = (str: string): string =>
   str?.replace(/\s/g, "-")?.toLowerCase();
+
+export const getDatapointYear = (datapoint: Datapoint) => {
+  const [, , , year] = splitUtcString(datapoint.start_date);
+  return year;
+};

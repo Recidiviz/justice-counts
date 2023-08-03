@@ -41,4 +41,39 @@ export type ResponsiveBarChartProps = {
   percentageView?: boolean;
   resizeHeight?: boolean;
   width?: string | number;
+  maxBarSize?: number;
+  onHoverBar?: (data: ResponsiveBarData) => void;
 };
+
+export type BarChartBackground = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+export type BarChartTooltipPayload = {
+  chartType: any;
+  color: string;
+  dataKey: string;
+  fill: string;
+  formatter: any;
+  name: string;
+  payload: Datapoint;
+  type: any;
+  unit: any;
+  value: number;
+};
+
+export type ResponsiveBarData = Datapoint &
+  BarChartBackground &
+  Record<string, any> & {
+    height: number;
+    width: number;
+    value: number[];
+    x: number;
+    y: number;
+    payload: Datapoint;
+    background: BarChartBackground;
+    tooltipPayload: BarChartTooltipPayload;
+  };
