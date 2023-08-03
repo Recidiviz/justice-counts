@@ -134,7 +134,7 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
                   />
                 )}
                 tickLine={false}
-                tickCount={12}
+                tickCount={6}
                 axisLine={false}
               />
             )}
