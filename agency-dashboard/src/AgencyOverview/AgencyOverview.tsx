@@ -22,11 +22,10 @@ import {
   AgencySystems,
   DataVizAggregateName,
   DataVizTimeRangesMap,
-  Metric,
 } from "@justice-counts/common/types";
 import { printDateAsShortMonthYear } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useAsyncEffect from "use-async-effect";
 
@@ -78,22 +77,10 @@ export const AgencyOverview = observer(() => {
   const [currentSystem, setCurrentSystem] = useState<AgencySystems>(
     availableSystems[0]
   );
-  const [agencyHasAvailableSystems, setAgencyHasAvailableSystems] =
-    useState<boolean>(false);
-  const [
-    metricsByAvailableCategoriesAndSystems,
-    setMetricsByAvailableCategoriesAndSystems,
-  ] = useState<Metric[]>();
-  const [
-    metricsByAvailableCategoriesAndSystemsWithData,
-    setMetricsByAvailableCategoriesAndSystemsWithData,
-  ] = useState<Metric[]>();
-  const [agencyDescription, setAgencyDescription] = useState<string>(
-    agencyDataStore.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS?.value
-  );
-  const [agencyHomepageUrl, setAgencyHomepageUrl] = useState<string>(
-    agencyDataStore.agencySettingsBySettingType.HOMEPAGE_URL?.value
-  );
+  const agencyDescription =
+    agencyDataStore.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS?.value;
+  const agencyHomepageUrl =
+    agencyDataStore.agencySettingsBySettingType.HOMEPAGE_URL?.value;
 
   useAsyncEffect(async () => {
     try {
@@ -107,65 +94,26 @@ export const AgencyOverview = observer(() => {
     }
   }, []);
 
-  useEffect(() => {
-    if (metricsByAvailableCategoriesAndSystems?.length) {
-      setMetricsByAvailableCategoriesAndSystemsWithData(
-        metricsByAvailableCategoriesAndSystems.filter(
-          (metric) =>
-            (
-              agencyDataStore.datapointsByMetric[metric.key]?.aggregate ?? []
-            ).filter((dp) => dp[DataVizAggregateName] !== null).length > 0
-        )
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [metricsByAvailableCategoriesAndSystems, agencyDataStore]);
+  const agencyHasAvailableSystems = agencyDataStore.agency?.systems?.some(
+    (system) => availableSystems.includes(system)
+  );
+  const metricsByAvailableCategoriesAndSystems = agencyDataStore.metrics.filter(
+    (metric) =>
+      Object.keys(orderedCategoriesMap).includes(metric.category) &&
+      availableSystems.includes(metric.system.key)
+  );
+  const metricsByAvailableCategoriesAndSystemsWithData =
+    metricsByAvailableCategoriesAndSystems.filter(
+      (metric) =>
+        agencyDataStore.datapointsByMetric[metric.key].aggregate.filter(
+          (dp) => dp[DataVizAggregateName] !== null
+        ).length > 0
+    );
+  const agencyHasNoAvailableSystemsOrHasNoData =
+    !agencyHasAvailableSystems ||
+    metricsByAvailableCategoriesAndSystemsWithData.length === 0;
 
-  useEffect(() => {
-    if (
-      agencyDataStore.agencySettingsBySettingType?.PURPOSE_AND_FUNCTIONS?.value
-    ) {
-      setAgencyDescription(
-        agencyDataStore.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS.value
-      );
-    }
-    if (agencyDataStore.agencySettingsBySettingType?.HOMEPAGE_URL?.value) {
-      setAgencyHomepageUrl(
-        agencyDataStore.agencySettingsBySettingType.HOMEPAGE_URL.value
-      );
-    }
-    if (agencyDataStore.metrics?.length) {
-      setMetricsByAvailableCategoriesAndSystems(
-        agencyDataStore.metrics.filter(
-          (metric) =>
-            Object.keys(orderedCategoriesMap).includes(metric.category) &&
-            availableSystems.includes(metric.system.key)
-        )
-      );
-    }
-    if (agencyDataStore.agency?.systems?.length) {
-      setAgencyHasAvailableSystems(
-        agencyDataStore.agency?.systems?.some((system) =>
-          availableSystems.includes(system)
-        )
-      );
-    }
-  }, [agencyDataStore]);
-
-  useEffect(() => {
-    if (
-      !agencyDataStore.loading &&
-      (!agencyHasAvailableSystems ||
-        metricsByAvailableCategoriesAndSystemsWithData?.length === 0)
-    ) {
-      navigate("/404");
-    }
-  }, [
-    navigate,
-    agencyDataStore,
-    agencyHasAvailableSystems,
-    metricsByAvailableCategoriesAndSystemsWithData,
-  ]);
+  if (agencyHasNoAvailableSystemsOrHasNoData) navigate("/404");
 
   return agencyDataStore.loading ? (
     <Loading />
