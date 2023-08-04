@@ -14,31 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-import { observer } from "mobx-react-lite";
 import React from "react";
 
 import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
 import { NotFoundText, NotFoundTitle, NotFoundWrapper } from ".";
 
-export const NotFound = observer(() => {
-  return (
-    <>
-      <HeaderBar />
-      <NotFoundWrapper>
-        <NotFoundTitle>Page Not Found</NotFoundTitle>
-        <NotFoundText>
-          Error 404
-          <span>
-            The page you are looking for seems to be missing. Send us an email
-            and we’ll help you find it.
-          </span>
-          <a href="mailto:justice-counts-support@csg.org">
-            justice-counts-support@csg.org
-          </a>
-        </NotFoundText>
-      </NotFoundWrapper>
-      <Footer />
-    </>
-  );
-});
+export const NotFound = () => (
+  <>
+    <HeaderBar />
+    <NotFoundWrapper>
+      <NotFoundTitle>Page Not Found</NotFoundTitle>
+      <NotFoundText>
+        Error 404
+        <span>
+          The page you are looking for seems to be missing. Send us an email and
+          we’ll help you find it.
+        </span>
+        <a href="mailto:justice-counts-support@csg.org">
+          justice-counts-support@csg.org
+        </a>
+      </NotFoundText>
+    </NotFoundWrapper>
+    <Footer />
+  </>
+);
