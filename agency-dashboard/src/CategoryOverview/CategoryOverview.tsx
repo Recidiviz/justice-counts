@@ -42,9 +42,9 @@ import * as Styled from "./CategoryOverview.styled";
 import { CategoryData } from "./types";
 
 const categoryData: CategoryData = {
-  "capacity-and-cost": {
-    key: "Capacity and Cost",
-    label: "Capacity and Cost",
+  "capacity-and-costs": {
+    key: "Capacity and Costs",
+    label: "Capacity and Costs",
     description:
       "The number of full-time equivalent (FTE) positions budgeted and paid for by the agency for the operation and maintenance of the jail facilities and the care of people who are incarcerated under the jurisdiction of the agency.",
   },
