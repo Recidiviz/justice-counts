@@ -18,7 +18,6 @@
 import { ReactComponent as DownloadIcon } from "@justice-counts/common/assets/download-icon.svg";
 import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share-icon.svg";
 import { Button } from "@justice-counts/common/components/Button";
-import { CategoryOverviewLineChart } from "@justice-counts/common/components/DataViz/CategoryOverviewLineChart";
 import MetricsCategoryBarChart from "@justice-counts/common/components/DataViz/MetricsCategoryBarChart";
 import { transformDataForBarChart } from "@justice-counts/common/components/DataViz/utils";
 import { showToast } from "@justice-counts/common/components/Toast";
@@ -192,33 +191,34 @@ export const CategoryOverview = observer(() => {
                         )
                       )}
                       dimensionNames={[DataVizAggregateName]}
+                      metric={metric.display_name}
                       ref={ref}
                     />
                   </Styled.MetricDataVizContainer>
-                  <CategoryOverviewLineChart
-                    data={filterDatapoints(
-                      transformDataForBarChart(
-                        Object.values(
-                          agencyDataStore.datapointsByMetric[metric.key]
-                            ?.disaggregations[
-                            Object.keys(
-                              agencyDataStore.datapointsByMetric[metric.key]
-                                ?.disaggregations
-                            )[0]
-                          ]
-                        ),
-                        DataVizTimeRangesMap.All,
-                        "Count"
-                      )
-                    )}
-                    dimensions={
-                      Object.values(
-                        agencyDataStore.dimensionNamesByMetricAndDisaggregation[
-                          metric.key
-                        ]
-                      )[0]
-                    }
-                  />
+                  {/* <CategoryOverviewLineChart */}
+                  {/*  data={filterDatapoints( */}
+                  {/*    transformDataForBarChart( */}
+                  {/*      Object.values( */}
+                  {/*        agencyDataStore.datapointsByMetric[metric.key] */}
+                  {/*          ?.disaggregations[ */}
+                  {/*          Object.keys( */}
+                  {/*            agencyDataStore.datapointsByMetric[metric.key] */}
+                  {/*              ?.disaggregations */}
+                  {/*          )[0] */}
+                  {/*        ] */}
+                  {/*      ), */}
+                  {/*      DataVizTimeRangesMap.All, */}
+                  {/*      "Count" */}
+                  {/*    ) */}
+                  {/*  )} */}
+                  {/*  dimensions={ */}
+                  {/*    Object.values( */}
+                  {/*      agencyDataStore.dimensionNamesByMetricAndDisaggregation[ */}
+                  {/*        metric.key */}
+                  {/*      ] */}
+                  {/*    )[0] */}
+                  {/*  } */}
+                  {/* /> */}
                 </Styled.MetricBox>
               ))}
             </Styled.MetricsWrapper>
