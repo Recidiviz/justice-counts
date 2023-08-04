@@ -38,7 +38,7 @@ test("renders list of metrics", async () => {
         {
           key: "PRISONS_EXPENSES",
           display_name: "Expenses",
-          category: "Capacity and Cost",
+          category: "Capacity and Costs",
           system: { key: "PRISONS" },
           custom_frequency: "ANNUAL",
           datapoints: [
@@ -62,7 +62,7 @@ test("renders list of metrics", async () => {
         {
           key: "PRISONS_FUNDING",
           display_name: "Funding",
-          category: "Capacity and Cost",
+          category: "Capacity and Costs",
           system: { key: "PRISONS" },
           custom_frequency: "ANNUAL",
           datapoints: [
