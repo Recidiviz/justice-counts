@@ -37,7 +37,6 @@ import { Loading } from "../Loading";
 import { useStore } from "../stores";
 import { isAllowListed } from "../utils/allowlist";
 import { downloadFeedData } from "../utils/downloadHelpers";
-import { getEnv } from "../utils/env";
 import {
   BackButtonContainer,
   Container,
@@ -115,7 +114,7 @@ export const DashboardView = observer(() => {
     useState<boolean>(false);
   const navigate = useNavigate();
   const { slug } = useParams();
-  const { agencyDataStore, dataVizStore } = useStore();
+  const { agencyDataStore, dataVizStore, api } = useStore();
 
   /** Prevent body from scrolling when modal is open */
   useEffect(() => {
@@ -168,11 +167,15 @@ export const DashboardView = observer(() => {
 
   useEffect(() => {
     if (
-      getEnv() === "production" &&
+      (api.environment === "production" || api.environment === "staging") &&
       agencyDataStore?.agency &&
       !isAllowListed(agencyDataStore.agency)
-    )
+    ) {
       navigate("/404");
+    }
+  }, [api.environment, agencyDataStore.agency, navigate]);
+
+  useEffect(() => {
     if (
       metricKeyParam &&
       slug &&
@@ -182,7 +185,13 @@ export const DashboardView = observer(() => {
     ) {
       navigate(`/agency/${encodeURIComponent(slug)}`);
     }
-  }, [metricKeyParam, navigate, agencyDataStore, slug]);
+  }, [
+    metricKeyParam,
+    navigate,
+    agencyDataStore.loading,
+    agencyDataStore.dimensionNamesByMetricAndDisaggregation,
+    slug,
+  ]);
 
   useEffect(() => {
     const resizeListener = () => {

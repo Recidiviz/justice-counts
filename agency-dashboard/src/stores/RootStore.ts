@@ -18,15 +18,19 @@
 import DataVizStore from "@justice-counts/common/stores/DataVizStore";
 
 import AgencyDataStore from "./AgencyDataStore";
+import API from "./API";
 
 class RootStore {
   agencyDataStore: AgencyDataStore;
 
   dataVizStore: DataVizStore;
 
+  api: API;
+
   constructor() {
     this.agencyDataStore = new AgencyDataStore();
     this.dataVizStore = new DataVizStore();
+    this.api = new API();
   }
 }
 

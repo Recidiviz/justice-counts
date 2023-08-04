@@ -14,18 +14,42 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
+import { makeAutoObservable, runInAction } from "mobx";
 
-enum envRegexes {
-  PRODUCTION = "/publisher.justice-counts.org/i",
-  STAGING = "/publisher-staging.justice-counts.org/i",
+import { request } from "../utils/networking";
+
+export interface RequestProps {
+  path: string;
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+  body?: FormData | Record<string, unknown>;
+  retrying?: boolean;
 }
 
-export const getEnv = () => {
-  if (new RegExp(envRegexes.PRODUCTION).test(window.location.host)) {
-    return "production";
+export default class API {
+  environment: string;
+
+  constructor() {
+    makeAutoObservable(this);
+
+    this.environment = "";
+
+    this.getEnv();
   }
-  if (new RegExp(envRegexes.STAGING).test(window.location.host)) {
-    return "staging";
+
+  async getEnv(): Promise<void | string> {
+    try {
+      const response = (await request({
+        path: "/api/env",
+        method: "GET",
+      })) as Response;
+      const { env } = await response.json();
+
+      runInAction(() => {
+        this.environment = env;
+      });
+    } catch (error) {
+      if (error instanceof Error) return error.message;
+      return String(error);
+    }
   }
-  return "development";
-};
+}
