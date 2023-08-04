@@ -58,7 +58,7 @@ import {
 const orderedCategoriesMap: {
   [category: string]: { label: string; description: string };
 } = {
-  "Capacity and Cost": {
+  "Capacity and Costs": {
     label: "Understand the Finances",
     description: "See how we’re funded and where we use those funds",
   },
@@ -209,7 +209,7 @@ export const AgencyOverview = observer(() => {
                   (dp) => dp[DataVizAggregateName] !== null
                 ).length > 0
             );
-            const isCapacityAndCostCategory = category === "Capacity and Cost";
+            const isCapacityAndCostCategory = category === "Capacity and Costs";
 
             return (
               <CategorizedMetricsContainer key={category}>
