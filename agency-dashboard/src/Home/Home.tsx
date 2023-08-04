@@ -44,7 +44,7 @@ export const Home = observer(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyDataStore]);
 
-  if (api.environment === environment.STAGING) {
+  if (api.environment === environment.PRODUCTION) {
     return <NotFound />;
   }
 
