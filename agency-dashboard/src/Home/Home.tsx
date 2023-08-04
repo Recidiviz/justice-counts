@@ -38,7 +38,6 @@ export const Home = observer(() => {
       const result = await agencyDataStore.fetchAllAgencies();
       setAgenciesMetadata(result.agencies);
     };
-    agencyDataStore.resetState();
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyDataStore]);

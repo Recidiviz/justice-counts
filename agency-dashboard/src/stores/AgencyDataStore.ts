@@ -160,6 +160,7 @@ class AgencyDataStore {
     try {
       runInAction(() => {
         this.loading = true;
+        this.resetState();
       });
       const response = (await request({
         path: `/api/v2/agencies/${encodeURIComponent(
@@ -169,10 +170,14 @@ class AgencyDataStore {
       })) as Response;
       if (response.status === 200) {
         const result = await response.json();
-        console.log("result in store", result);
+
         runInAction(() => {
           this.agency = result.agency;
           this.metrics = result.metrics;
+          console.log(
+            "this.agency?.systems in AgencyDataStore:",
+            this.agency?.systems
+          );
         });
       } else {
         const error = await response.json();
@@ -224,7 +229,6 @@ class AgencyDataStore {
   resetState() {
     // reset the state
     runInAction(() => {
-      this.agency = undefined;
       this.metrics = [];
       this.loading = true;
     });
