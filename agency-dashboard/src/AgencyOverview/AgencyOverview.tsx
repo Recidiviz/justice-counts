@@ -29,11 +29,6 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useAsyncEffect from "use-async-effect";
 
-import { Footer } from "../Footer";
-import { HeaderBar } from "../Header";
-import { Loading } from "../Loading";
-import { NotFoundComponent } from "../NotFound";
-import { useStore } from "../stores";
 import {
   AgencyDescription,
   AgencyHomepage,
@@ -54,6 +49,11 @@ import {
   SystemChip,
   SystemChipsContainer,
 } from ".";
+import { Footer } from "../Footer";
+import { HeaderBar } from "../Header";
+import { Loading } from "../Loading";
+import { NotFoundComponent } from "../NotFound";
+import { useStore } from "../stores";
 
 const orderedCategoriesMap: {
   [category: string]: { label: string; description: string };
@@ -114,7 +114,8 @@ export const AgencyOverview = observer(() => {
     !agencyHasAvailableSystems ||
     metricsByAvailableCategoriesAndSystemsWithData.length === 0;
 
-  if (agencyHasNoAvailableSystemsOrHasNoData) return <NotFoundComponent />;
+  if (agencyHasNoAvailableSystemsOrHasNoData && !agencyDataStore.loading)
+    return <NotFoundComponent />;
 
   return agencyDataStore.loading ? (
     <Loading />
