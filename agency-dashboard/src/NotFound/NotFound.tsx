@@ -14,18 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-import { observer } from "mobx-react-lite";
 import React from "react";
 
+import { NotFoundText, NotFoundTitle, NotFoundWrapper } from ".";
 import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
-import { NotFoundText, NotFoundTitle, NotFoundWrapper } from ".";
 
-export const NotFound = observer(() => {
-  return <NotFoundComponent />;
-});
-
-export const NotFoundComponent = () => (
+export const NotFound = () => (
   <>
     <HeaderBar />
     <NotFoundWrapper>
