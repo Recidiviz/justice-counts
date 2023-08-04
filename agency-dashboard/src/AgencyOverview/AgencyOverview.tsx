@@ -114,12 +114,12 @@ export const AgencyOverview = observer(() => {
     !agencyHasAvailableSystems ||
     metricsByAvailableCategoriesAndSystemsWithData.length === 0;
 
+  if (agencyDataStore.loading) return <Loading />;
+
   if (agencyHasNoAvailableSystemsOrHasNoData && !agencyDataStore.loading)
     return <NotFoundComponent />;
 
-  return agencyDataStore.loading ? (
-    <Loading />
-  ) : (
+  return (
     <>
       <HeaderBar />
       <AgencyOverviewWrapper>
