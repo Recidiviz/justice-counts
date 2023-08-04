@@ -42,3 +42,23 @@ export const NotFound = observer(() => {
     </>
   );
 });
+
+export const NotFoundComponent = () => (
+  <>
+    <HeaderBar />
+    <NotFoundWrapper>
+      <NotFoundTitle>Page Not Found</NotFoundTitle>
+      <NotFoundText>
+        Error 404
+        <span>
+          The page you are looking for seems to be missing. Send us an email and
+          we’ll help you find it.
+        </span>
+        <a href="mailto:justice-counts-support@csg.org">
+          justice-counts-support@csg.org
+        </a>
+      </NotFoundText>
+    </NotFoundWrapper>
+    <Footer />
+  </>
+);
