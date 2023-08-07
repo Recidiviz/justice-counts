@@ -181,13 +181,11 @@ export const DatapointsTableDetailsCell = styled.td<{
   isRowHovered: boolean;
   isTotalRow?: boolean;
 }>`
-  padding-left: 15px;
-  padding-right: 32px;
-  padding-bottom: ${({ isTotalRow }) => (isTotalRow ? "29px" : "4px")};
-  padding-top: 4px;
+  padding: ${({ isTotalRow }) =>
+    isTotalRow ? "4px 32px 29px 15px" : "4px 32px 4px 15px"};
   font-size: 18px;
   height: 32px;
-  text-align: center;
+  text-align: end;
   white-space: nowrap;
 
   color: ${({ isColumnHovered }) => isColumnHovered && palette.solid.darkgrey};
