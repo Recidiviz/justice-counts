@@ -98,7 +98,7 @@ export const MetricsSectionTitle = styled.div`
 
 export const MetricItem = styled.div`
   width: 100%;
-  padding: 32px 16px 32px 0;
+  padding: 32px 16px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
