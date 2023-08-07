@@ -31,11 +31,13 @@ export interface TickProps {
 export interface CustomYAxisTickProps extends TickProps {
   percentageView: boolean;
   styles: React.CSSProperties;
+  metric?: string;
 }
 
 export type ResponsiveBarChartProps = {
   data: Datapoint[];
   dimensionNames: string[];
+  metric?: string;
   percentageView?: boolean;
   resizeHeight?: boolean;
 };

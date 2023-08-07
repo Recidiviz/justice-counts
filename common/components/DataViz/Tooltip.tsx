@@ -57,6 +57,7 @@ const TooltipNameWithBottomMargin = styled(TooltipName)`
 interface TooltipProps extends RechartsTooltipProps<number, string> {
   percentOnly: boolean;
   dimensionNames: string[];
+  metric?: string;
 }
 
 const Tooltip: React.FC<TooltipProps> = ({
@@ -65,9 +66,11 @@ const Tooltip: React.FC<TooltipProps> = ({
   label,
   percentOnly,
   dimensionNames,
+  metric,
 }) => {
   if (active && payload && payload.length) {
     const datapoint = payload[0].payload as Datapoint;
+    const textHasDollarSign = metric === "Funding" || metric === "Expenses";
 
     const renderText = (val: string | number | null, maxValue: number) => {
       if (typeof val !== "number") {
@@ -83,7 +86,7 @@ const Tooltip: React.FC<TooltipProps> = ({
       }
       return percentOnly
         ? percentText
-        : `${formatNumberInput(val.toString())}${
+        : `${textHasDollarSign ? "$" : ""}${formatNumberInput(val.toString())}${
             payload.length > 2 ? ` (${percentText})` : ""
           }`;
     };
@@ -111,7 +114,9 @@ const Tooltip: React.FC<TooltipProps> = ({
         return (
           <TooltipItemContainer key={dimension}>
             <LegendColor index={idx} />
-            <TooltipName>{dimension}</TooltipName>
+            <TooltipName>{`${dimension}${
+              dimension === "Total" ? ` ${metric}` : ""
+            }`}</TooltipName>
             <TooltipValue>
               {renderText(datapoint[dimension], sumOfDimensions)}
             </TooltipValue>

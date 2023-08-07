@@ -52,7 +52,7 @@ const tickStyle = {
 };
 
 const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
-  ({ data, dimensionNames }: ResponsiveBarChartProps, ref) => {
+  ({ data, dimensionNames, metric }: ResponsiveBarChartProps, ref) => {
     const renderBarDefinitions = () => {
       // each Recharts Bar component defines a category type in the stacked bar chart
       let barDefinitions: JSX.Element[] = [];
@@ -131,6 +131,7 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
                     payload={props.payload}
                     percentageView={false}
                     styles={tickStyle}
+                    metric={metric}
                   />
                 )}
                 tickLine={false}
@@ -143,7 +144,11 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
               position={{ y: 100 }}
               cursor={data.length === 0 ? false : <CustomCursor />}
               content={
-                <Tooltip dimensionNames={dimensionNames} percentOnly={false} />
+                <Tooltip
+                  dimensionNames={dimensionNames}
+                  percentOnly={false}
+                  metric={metric}
+                />
               }
             />
             {renderBarDefinitions()}

@@ -22,11 +22,12 @@ import { CustomYAxisTickProps } from "./types";
 import { abbreviateNumber } from "./utils";
 
 export const CustomYAxisTick = (props: CustomYAxisTickProps) => {
-  const { y, payload, percentageView, styles } = props;
+  const { y, payload, percentageView, styles, metric } = props;
   const str = percentageView
     ? `${payload.value * 100}%`
     : abbreviateNumber(payload.value);
   const label = str.length > 7 ? str.substring(0, 5).concat("...") : str;
+  const labelHasDollarSign = metric === "Funding" || metric === "Expenses";
   return (
     <g transform={`translate(${0},${y})`}>
       <text
@@ -36,7 +37,7 @@ export const CustomYAxisTick = (props: CustomYAxisTickProps) => {
         fill={palette.solid.darkgrey}
         style={styles}
       >
-        {label}
+        {`${labelHasDollarSign ? "$" : ""}${label}`}
       </text>
     </g>
   );
