@@ -20,15 +20,17 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { WelcomeHeaderBar } from "../Header";
-import { Loader } from "../Loading";
+import { Loading } from "../Loading";
+import { NotFound } from "../NotFound";
 import { useStore } from "../stores";
+import { environment } from "../stores/API";
 import { slugify } from "../utils/formatting";
 import * as Styled from "./Home.styles";
 import { AgencyMetadata } from "./types";
 
 export const Home = observer(() => {
   const navigate = useNavigate();
-  const { agencyDataStore } = useStore();
+  const { agencyDataStore, api } = useStore();
   const [agenciesMetadata, setAgenciesMetadata] = useState<AgencyMetadata[]>(
     []
   );
@@ -38,39 +40,42 @@ export const Home = observer(() => {
       const result = await agencyDataStore.fetchAllAgencies();
       setAgenciesMetadata(result.agencies);
     };
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [agencyDataStore]);
+    if (api.environment !== environment.PRODUCTION) {
+      fetchData();
+    }
+  }, [agencyDataStore, api]);
+
+  if (api.environment === environment.PRODUCTION) {
+    return <NotFound />;
+  }
+
+  if (agencyDataStore.loading) {
+    return <Loading />;
+  }
 
   return (
     <Styled.HomeContainer>
       <WelcomeHeaderBar />
       <Styled.Title>Welcome to Agency Dashboards</Styled.Title>
 
-      {agencyDataStore.loading ? (
-        <Loader />
-      ) : (
-        <Styled.AgencyDetailsContainer>
-          {agenciesMetadata
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .map((agency) => (
-              <Styled.AgencyDetailsWrapper
-                key={agency.id}
-                onClick={() =>
-                  navigate(
-                    `/agency/${encodeURIComponent(slugify(agency.name))}`
-                  )
-                }
-              >
-                <Styled.AgencyName>{agency.name}</Styled.AgencyName>
-                <Styled.NumberOfPublishedMetrics>
-                  <span>{agency.number_of_published_metrics}</span> published
-                  metrics
-                </Styled.NumberOfPublishedMetrics>
-              </Styled.AgencyDetailsWrapper>
-            ))}
-        </Styled.AgencyDetailsContainer>
-      )}
+      <Styled.AgencyDetailsContainer>
+        {agenciesMetadata
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((agency) => (
+            <Styled.AgencyDetailsWrapper
+              key={agency.id}
+              onClick={() =>
+                navigate(`/agency/${encodeURIComponent(slugify(agency.name))}`)
+              }
+            >
+              <Styled.AgencyName>{agency.name}</Styled.AgencyName>
+              <Styled.NumberOfPublishedMetrics>
+                <span>{agency.number_of_published_metrics}</span> published
+                metrics
+              </Styled.NumberOfPublishedMetrics>
+            </Styled.AgencyDetailsWrapper>
+          ))}
+      </Styled.AgencyDetailsContainer>
     </Styled.HomeContainer>
   );
 });
