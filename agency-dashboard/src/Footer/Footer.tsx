@@ -29,15 +29,6 @@ export function Footer() {
         <Styled.FooterTopInfo>
           <Styled.FooterInfoBlock>
             <Styled.FooterInfoBlockTitle>
-              Clackamas County Jail
-            </Styled.FooterInfoBlockTitle>
-            <span>
-              Clackamas County Jail 2206 Kaen Rd Oregon City, OR 97045
-            </span>
-            <span>(503) 722-6777</span>
-          </Styled.FooterInfoBlock>
-          <Styled.FooterInfoBlock>
-            <Styled.FooterInfoBlockTitle>
               Justice Counts: The Council of State Governments
             </Styled.FooterInfoBlockTitle>
             <span>22 Cortlandt St 22nd Floor New York, NY 10007</span>
