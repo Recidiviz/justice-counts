@@ -22,5 +22,5 @@ export type AgenciesList = {
 export type AgencyMetadata = {
   name: string;
   id: number;
-  number_of_published_metrics: number;
+  number_of_published_records: number;
 };
