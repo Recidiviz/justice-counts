@@ -40,9 +40,10 @@ export const Home = observer(() => {
       const result = await agencyDataStore.fetchAllAgencies();
       setAgenciesMetadata(result.agencies);
     };
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [agencyDataStore]);
+    if (api.environment !== environment.PRODUCTION) {
+      fetchData();
+    }
+  }, [agencyDataStore, api]);
 
   if (api.environment === environment.PRODUCTION) {
     return <NotFound />;
