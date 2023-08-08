@@ -88,7 +88,7 @@ export const useLineChartLegend = (
         0,
         dimensions
       ),
-    [dimensions]
+    [dimensions, data]
   );
   return { legendData, referenceLineHeight };
 };
