@@ -15,15 +15,22 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { keys, map, mergeAll, pipe } from "ramda";
+import { renderPercentText } from "@justice-counts/agency-dashboard/src/utils/formatting";
+import { filter, is, pipe, reduce, values } from "ramda";
 import React, { FunctionComponent } from "react";
-// eslint-disable-next-line no-restricted-imports
-import styled from "styled-components";
 
+// eslint-disable-next-line no-restricted-imports
 import { Datapoint } from "../../types";
-import { formatNumberInput, printDateAsYear } from "../../utils";
+import { printDateAsYear } from "../../utils";
 import { palette } from "../GlobalStyles";
-import { getSumOfDimensionValues } from "./utils";
+import {
+  Container,
+  LegendBullet,
+  LegendItem,
+  LegendName,
+  LegendTitle,
+  LegendValue,
+} from "./CategoryOverviewBreakdown.styled";
 
 export const CategoryOverviewBreakdown: FunctionComponent<{
   data: Record<
@@ -31,84 +38,33 @@ export const CategoryOverviewBreakdown: FunctionComponent<{
     { value: number | string | null; fill: string }
   >;
   dimensions: string[];
-}> = ({ data, dimensions }) => {
-  const renderText = (val: number | string | null, maxValue: number) => {
-    if (typeof val !== "number") {
-      return "Not Reported";
-    }
-
-    let percentText = `${val !== 0 ? Math.round((val / maxValue) * 100) : 0}%`;
-    // handle case of non-zero being rounded down to 0%
-    if (percentText === "0%" && val !== 0) {
-      percentText = "<1%";
-    }
-    return `${formatNumberInput(val.toString())} (${percentText})`;
-  };
-  return (
-    <Container>
-      <LegendTitle>{`Recent (${printDateAsYear(
-        String(data.end_date.value)
-      )})`}</LegendTitle>
-      {dimensions.map((dimension) => (
-        <LegendItem>
-          <LegendBullet color={data[dimension]?.fill}>▪</LegendBullet>
-          <LegendName color={palette.solid.black}>{dimension}</LegendName>
-          <LegendValue>
-            {renderText(
-              data[dimension]?.value,
-              getSumOfDimensionValues(
-                pipe(
-                  keys,
-                  map((key: keyof Datapoint) => ({
-                    [key]: data?.[dimension]?.value,
-                  })),
-                  mergeAll
-                )(data) as Datapoint
+}> = ({ data, dimensions }) => (
+  <Container>
+    <LegendTitle>{`Recent (${printDateAsYear(
+      String(data.end_date.value)
+    )})`}</LegendTitle>
+    {dimensions.map((dimension) => (
+      <LegendItem>
+        <LegendBullet color={data[dimension]?.fill}>▪</LegendBullet>
+        <LegendName color={palette.solid.black}>{dimension}</LegendName>
+        <LegendValue>
+          {renderPercentText(
+            data[dimension]?.value,
+            pipe(
+              values,
+              filter(
+                ({ value }: { value: number | string | null; fill: string }) =>
+                  is(Number, value)
+              ),
+              reduce(
+                (acc: number, { value }: { value: number; fill: string }) =>
+                  acc + value,
+                0
               )
-            )}
-          </LegendValue>
-        </LegendItem>
-      ))}
-    </Container>
-  );
-};
-
-const Container = styled.ul`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  list-style-type: square;
-  margin-top: 32px;
-`;
-
-const LegendTitle = styled.p`
-  font-size: 14px;
-  line-height: 22px;
-`;
-
-const LegendItem = styled.li`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-`;
-
-const LegendBullet = styled.span<{ color: string }>`
-  font-size: 32px;
-  color: ${({ color }) => color};
-  line-height: 18px;
-  text-align: left;
-`;
-
-const LegendName = styled.span<{ color: string }>`
-  font-size: 14px;
-  line-height: 22px;
-  color: ${({ color }) => color};
-  text-align: left;
-`;
-
-const LegendValue = styled.span`
-  font-size: 14px;
-  line-height: 22px;
-  margin-left: auto;
-  text-align: right;
-`;
+            )(data)
+          )}
+        </LegendValue>
+      </LegendItem>
+    ))}
+  </Container>
+);

@@ -23,16 +23,13 @@ import MetricsCategoryBarChart from "@justice-counts/common/components/DataViz/M
 import { showToast } from "@justice-counts/common/components/Toast";
 import { useBarChart, useLineChart } from "@justice-counts/common/hooks";
 import {
-  Datapoint,
-  DatapointsByMetric,
   DataVizAggregateName,
-  DimensionNamesByMetricAndDisaggregation,
+  Datapoint,
   Metric,
-  UserAgency,
 } from "@justice-counts/common/types";
 import { each } from "bluebird";
 import { observer } from "mobx-react-lite";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCurrentPng } from "recharts-to-png";
 import useAsyncEffect from "use-async-effect";
@@ -67,20 +64,6 @@ export const CategoryOverview = observer(() => {
   const [dataRangeFilter, setDataRangeFilter] = useState<"recent" | "all">(
     "recent"
   );
-  const [loading, setLoading] = useState<boolean>(true);
-  const [agency, setAgency] = useState<UserAgency>();
-  const [metricsByKey, setMetricsByKey] = useState<{
-    [metricKey: string]: Metric;
-  }>();
-  const [metricsByCategory, setMetricsByCategory] = useState<{
-    [metricKey: string]: Metric[];
-  }>();
-  const [datapointsByMetric, setDatapointsByMetric] =
-    useState<DatapointsByMetric>();
-  const [
-    dimensionNamesByMetricAndDisaggregation,
-    setDimensionNamesByMetricAndDisaggregation,
-  ] = useState<DimensionNamesByMetricAndDisaggregation>();
 
   const filterDatapoints = useCallback(
     (datapoints: Datapoint[]) => {
@@ -89,43 +72,22 @@ export const CategoryOverview = observer(() => {
     [dataRangeFilter]
   );
 
-  useEffect(() => {
-    setLoading(agencyDataStore.loading);
-    if (agencyDataStore.agency) setAgency(agencyDataStore.agency);
-    if (agencyDataStore.metricsByKey)
-      setMetricsByKey(agencyDataStore.metricsByKey);
-    if (agencyDataStore.metricsByCategory)
-      setMetricsByCategory(agencyDataStore.metricsByCategory);
-    if (agencyDataStore.datapointsByMetric)
-      setDatapointsByMetric(agencyDataStore.datapointsByMetric);
-    if (agencyDataStore.dimensionNamesByMetricAndDisaggregation)
-      setDimensionNamesByMetricAndDisaggregation(
-        agencyDataStore.dimensionNamesByMetricAndDisaggregation
-      );
-  }, [
-    agencyDataStore.loading,
-    agencyDataStore.agency,
-    agencyDataStore.metricsByKey,
-    agencyDataStore.metricsByCategory,
-    agencyDataStore.datapointsByMetric,
-    agencyDataStore.dimensionNamesByMetricAndDisaggregation,
-  ]);
-
   const { getLineChartData, getLineChartDimensions } = useLineChart({
     filterDatapoints,
-    datapointsByMetric,
-    dimensionNamesByMetricAndDisaggregation,
+    datapointsByMetric: agencyDataStore.datapointsByMetric,
+    dimensionNamesByMetricAndDisaggregation:
+      agencyDataStore.dimensionNamesByMetricAndDisaggregation,
     dataRangeFilter,
   });
 
   const { getBarChartData } = useBarChart({
     filterDatapoints,
-    datapointsByMetric,
+    datapointsByMetric: agencyDataStore.datapointsByMetric,
   });
 
   const categoryMetrics = useMemo(
-    () => metricsByCategory?.[categoryData[category].key],
-    [metricsByCategory, category]
+    () => agencyDataStore.metricsByCategory?.[categoryData[category].key],
+    [agencyDataStore.metricsByCategory, category]
   );
 
   const copyUrlToClipboard = async () => {
@@ -167,14 +129,17 @@ export const CategoryOverview = observer(() => {
 
   const downloadMetricsData = useCallback(() => {
     categoryMetrics?.forEach((categoryMetric: Metric) => {
-      const metric = metricsByKey?.[categoryMetric.key];
-      if (metric && agency) {
-        each(metric.filenames, downloadFeedData(metric.system.key, agency.id));
+      const metric = agencyDataStore.metricsByKey?.[categoryMetric.key];
+      if (metric && agencyDataStore.agency) {
+        each(
+          metric.filenames,
+          downloadFeedData(metric.system.key, agencyDataStore.agency.id)
+        );
       }
     });
-  }, [categoryMetrics, metricsByKey, agency]);
+  }, [categoryMetrics, agencyDataStore.metricsByKey, agencyDataStore.agency]);
 
-  if (loading) {
+  if (agencyDataStore.loading) {
     return <Loading />;
   }
   return categoryMetrics ? (
