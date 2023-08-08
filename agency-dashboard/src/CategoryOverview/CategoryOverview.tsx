@@ -22,7 +22,6 @@ import MetricsCategoryBarChart from "@justice-counts/common/components/DataViz/M
 import { transformDataForBarChart } from "@justice-counts/common/components/DataViz/utils";
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
-  Datapoint,
   DataVizAggregateName,
   DataVizTimeRangesMap,
 } from "@justice-counts/common/types";
@@ -63,8 +62,13 @@ export const CategoryOverview = observer(() => {
     "recent"
   );
 
-  const filterDatapoints = (datapoints: Datapoint[]) => {
-    return dataRangeFilter === "recent" ? datapoints.slice(-5) : datapoints;
+  const currentTimeRange = (isAnnual: boolean) => {
+    if (dataRangeFilter === "recent") {
+      return isAnnual
+        ? DataVizTimeRangesMap["5 Years Ago"]
+        : DataVizTimeRangesMap["1 Year Ago"];
+    }
+    return DataVizTimeRangesMap.All;
   };
 
   const copyUrlToClipboard = async () => {
@@ -182,13 +186,11 @@ export const CategoryOverview = observer(() => {
                   </Styled.MetricDescription>
                   <Styled.MetricDataVizContainer>
                     <MetricsCategoryBarChart
-                      data={filterDatapoints(
-                        transformDataForBarChart(
-                          agencyDataStore.datapointsByMetric[metric.key]
-                            .aggregate,
-                          DataVizTimeRangesMap.All,
-                          "Count"
-                        )
+                      data={transformDataForBarChart(
+                        agencyDataStore.datapointsByMetric[metric.key]
+                          .aggregate,
+                        currentTimeRange(metric.custom_frequency === "ANNUAL"),
+                        "Count"
                       )}
                       dimensionNames={[DataVizAggregateName]}
                       metric={metric.display_name}
