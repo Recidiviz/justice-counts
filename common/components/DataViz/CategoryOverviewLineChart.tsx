@@ -19,7 +19,7 @@ import {
   BreakdownsTitle,
   Container,
 } from "@justice-counts/agency-dashboard/src/CategoryOverview/CategoryOverview.styled";
-import { filter, invertObj, mapObjIndexed, pipe, reduce } from "ramda";
+import { invertObj, mapObjIndexed, pipe } from "ramda";
 import React, { useMemo } from "react";
 import {
   CartesianGrid,
@@ -74,7 +74,11 @@ export function CategoryOverviewLineChart({
     });
     return lineDefinitions;
   };
-  const { legendData } = useLineChartLegend(data, dimensions, colorDict);
+  const { legendData, referenceLineHeight } = useLineChartLegend(
+    data,
+    dimensions,
+    colorDict
+  );
 
   return (
     <Container>
@@ -86,28 +90,7 @@ export function CategoryOverviewLineChart({
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid horizontal={false} />
-        <ReferenceLine
-          y={reduce(
-            (total: number, dimension: keyof Datapoint) => {
-              const reducedDatapoints = pipe(
-                filter(
-                  (datapoint: Datapoint) =>
-                    typeof datapoint[dimension] === "number"
-                ),
-                reduce(
-                  (acc: number, datapoint: Datapoint): number =>
-                    Number(datapoint[dimension]) > acc
-                      ? Number(datapoint[dimension])
-                      : acc,
-                  0
-                )
-              )(data);
-              return reducedDatapoints > total ? reducedDatapoints : total;
-            },
-            0,
-            dimensions
-          )}
-        />
+        <ReferenceLine y={referenceLineHeight} />
         <XAxis dataKey={(datapoint) => printDateAsYear(datapoint.end_date)} />
         {/* <Tooltip /> */}
         {renderLines()}
