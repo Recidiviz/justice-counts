@@ -195,8 +195,20 @@ export const AgencyOverview = observer(() => {
                     const data =
                       agencyDataStore.datapointsByMetric[metric.key].aggregate;
                     const isAnnual = metric.custom_frequency === "ANNUAL";
+                    const transformedDataForChart = transformDataForBarChart(
+                      data,
+                      isAnnual
+                        ? DataVizTimeRangesMap["5 Years Ago"]
+                        : DataVizTimeRangesMap["1 Year Ago"],
+                      "Count"
+                    );
+                    const firstDatapointDate = new Date(
+                      transformedDataForChart[0].start_date
+                    );
                     const lastDatapointDate = new Date(
-                      data[data.length - 1].start_date
+                      transformedDataForChart[
+                        transformedDataForChart.length - 1
+                      ].start_date
                     );
 
                     return (
@@ -208,23 +220,17 @@ export const AgencyOverview = observer(() => {
                           <MetricBoxGraphContainer>
                             <MiniChartContainer>
                               <MiniBarChart
-                                data={transformDataForBarChart(
-                                  data,
-                                  isAnnual
-                                    ? DataVizTimeRangesMap["5 Years Ago"]
-                                    : DataVizTimeRangesMap["1 Year Ago"],
-                                  "Count"
-                                )}
+                                data={transformedDataForChart}
                                 dimensionNames={[DataVizAggregateName]}
                               />
                             </MiniChartContainer>
                             <MetricBoxGraphRange>
                               <span>
                                 {isAnnual
-                                  ? lastDatapointDate.getFullYear() - 5
+                                  ? firstDatapointDate.getFullYear()
                                   : printDateAsShortMonthYear(
-                                      lastDatapointDate.getMonth() + 1,
-                                      lastDatapointDate.getFullYear() - 1
+                                      firstDatapointDate.getMonth() + 1,
+                                      firstDatapointDate.getFullYear()
                                     )}
                               </span>
                               <span>
