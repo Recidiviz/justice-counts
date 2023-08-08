@@ -52,13 +52,15 @@ export const CategoryOverviewBreakdown: FunctionComponent<
             data[dimension]?.value,
             pipe(
               values,
-              filter(({ value }: LineChartBreakdownValue) => is(Number, value)),
-              reduce(
+              filter<LineChartBreakdownValue>(
+                ({ value }: LineChartBreakdownValue) => is(Number, value)
+              ),
+              reduce<LineChartBreakdownNumericValue, number>(
                 (acc: number, { value }: LineChartBreakdownNumericValue) =>
                   acc + value,
                 0
               )
-            )(data)
+            )(data) as number
           )}
         </LegendValue>
       </LegendItem>
