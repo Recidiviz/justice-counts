@@ -32,6 +32,7 @@ type TooltipProps = {
   tooltipWidth?: TooltipWidth;
   isOpen?: boolean;
   clickable?: boolean;
+  centerText?: boolean;
 };
 
 export function Tooltip({
@@ -45,6 +46,7 @@ export function Tooltip({
   tooltipWidth,
   isOpen,
   clickable,
+  centerText,
 }: TooltipProps) {
   return (
     <ReactTooltip
@@ -59,6 +61,7 @@ export function Tooltip({
       <Styled.TooltipContainer
         tooltipColor={tooltipColor}
         tooltipWidth={tooltipWidth}
+        centerText={centerText}
       >
         {title && <Styled.TooltipTitle>{title}</Styled.TooltipTitle>}
         <Styled.TooltipContent>{content}</Styled.TooltipContent>

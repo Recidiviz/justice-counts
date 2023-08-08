@@ -21,35 +21,23 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { REPORTS_LOWERCASE } from "../Global/constants";
-import { guidancePaths } from "../Guidance";
 import Menu from "../Menu";
-import { useHeaderBadge } from "./hooks";
 
 const Header = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
-  const headerBadge = useHeaderBadge();
-  const { userStore, guidanceStore } = useStore();
-  const { hasCompletedOnboarding } = guidanceStore;
+  const { userStore } = useStore();
 
   const isAgencyValid = !!userStore.getAgency(agencyId);
   const defaultAgency = userStore.getInitialAgencyId();
   const onLogoClick = () =>
-    hasCompletedOnboarding
-      ? navigate(
-          `/agency/${
-            isAgencyValid ? agencyId : defaultAgency
-          }/${REPORTS_LOWERCASE}`
-        )
-      : navigate(guidancePaths.home);
+    navigate(`/agency/${isAgencyValid ? agencyId : defaultAgency}/`);
 
   return (
     <HeaderBar
       onLogoClick={onLogoClick}
-      label="Justice Counts"
-      badge={headerBadge}
-      hasBottomBorder={hasCompletedOnboarding === false}
+      hasBottomBorder
+      noPaddingInSmallScreenWidth
     >
       <Menu />
     </HeaderBar>

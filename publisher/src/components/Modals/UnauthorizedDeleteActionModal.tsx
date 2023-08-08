@@ -37,10 +37,12 @@ export const UnauthorizedDeleteActionModal: React.FC<{
         </>
       }
       description=""
-      primaryButton={{
-        label: "OK",
-        onClick: closeModal,
-      }}
+      buttons={[
+        {
+          label: "OK",
+          onClick: closeModal,
+        },
+      ]}
       modalType="alert"
       centerText
       centerButtons

@@ -36,6 +36,7 @@ type DropdownProps = {
   caretPosition?: ToggleCaretPosition;
   alignment?: DropdownMenuAlignment;
   fullWidth?: boolean;
+  highlightIcon?: React.ReactNode;
 };
 
 /**
@@ -59,6 +60,7 @@ export function Dropdown({
   caretPosition,
   alignment,
   fullWidth,
+  highlightIcon,
 }: DropdownProps) {
   return (
     <Styled.CustomDropdown>
@@ -100,16 +102,27 @@ export function Dropdown({
                 disabled: optionDisabled,
                 highlight,
                 noHover,
+                icon,
               }) => (
                 <Styled.CustomDropdownMenuItem
                   key={key}
                   onClick={onClick}
                   color={color}
                   disabled={optionDisabled}
-                  highlight={highlight}
                   noHover={noHover}
+                  highlight={highlight && !highlightIcon}
                 >
-                  {optionLabel}
+                  <Styled.OptionLabelWrapper
+                    highlightIcon={Boolean(highlightIcon)}
+                  >
+                    {/**
+                     * icon: a label icon that's always visible in the dropdown menu
+                     * highlightIcon: an icon that indicates (and is only visible on) the menu option that is currently active
+                     */}
+                    {icon}
+                    {optionLabel}
+                    {highlight && highlightIcon}
+                  </Styled.OptionLabelWrapper>
                 </Styled.CustomDropdownMenuItem>
               )
             )

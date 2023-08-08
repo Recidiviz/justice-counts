@@ -18,7 +18,7 @@
 // eslint-disable-next-line no-restricted-imports
 import styled from "styled-components";
 
-import { palette, typography } from "../GlobalStyles";
+import { centerTextCSS, palette, typography } from "../GlobalStyles";
 import { ModalBackground, ModalType } from "./types";
 
 export const OuterWrapper = styled.div<{
@@ -53,7 +53,7 @@ export const InnerWrapper = styled.div<{
   flex-direction: column;
   align-items: center;
   border-radius: 3px;
-  ${({ centerText }) => centerText && `text-align: center;`}
+  ${centerTextCSS}
 `;
 
 export const Icon = styled.img`
@@ -87,11 +87,16 @@ export const ButtonsContainer = styled.div<{
 }>`
   width: 100%;
   display: flex;
-  flex-direction: row;
+  gap: 12px;
 
   ${({ modalType, centerButtons }) => {
     if (centerButtons) return "justify-content: center; margin-top: 72px;";
     if (modalType) return "justify-content: space-between; margin-top: 72px;";
     return "justify-content: end; gap: 16px; margin-top: 24px;";
   }}
+
+  & > div:last-child {
+    justify-content: unset;
+    margin-left: auto;
+  }
 `;

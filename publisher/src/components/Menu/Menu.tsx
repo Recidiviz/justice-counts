@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Button } from "@justice-counts/common/components/Button";
 import {
   Dropdown,
   DropdownOption,
@@ -26,67 +25,46 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { settingsMenuPaths } from "../../pages/Settings";
 import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
-import closeMenuBurger from "../assets/close-header-menu-icon.svg";
-import menuBurger from "../assets/menu-burger-icon.svg";
-import checkmarkIcon from "../assets/status-check-icon.png";
-import { REPORTS_CAPITALIZED, REPORTS_LOWERCASE } from "../Global/constants";
-import {
-  CheckIcon,
-  CheckIconWrapper,
-  metricConfigurationProgressSteps,
-  ProgressItemName,
-  ProgressItemWrapper,
-  ProgressSteps,
-  ProgressTooltipToast,
-} from "../Guidance";
-import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
-import {
-  MenuContainer,
-  MenuItem,
-  MobileMenuIconWrapper,
-  SubMenuContainer,
-  SubMenuItem,
-  WelcomeUser,
-} from ".";
+import { ReactComponent as TeamManagementIcon } from "../assets/data-line-icon.svg";
+import { ReactComponent as UploadedFilesIcon } from "../assets/folder-icon.svg";
+import { ReactComponent as LogoutIcon } from "../assets/logout-icon.svg";
+import { ReactComponent as AgencySettingsIcon } from "../assets/pillar-icon.svg";
+import { ReactComponent as YourAccountIcon } from "../assets/profile-icon.svg";
+import { REPORTS_LOWERCASE } from "../Global/constants";
+import { useHeaderBadge } from "../Header/hooks";
+import { useSettingsSearchParams } from "../Settings";
+import * as Styled from "./Menu.styles";
 
 const Menu: React.FC = () => {
-  const { userStore, guidanceStore, metricConfigStore, authStore, api } =
-    useStore();
-  const {
-    hasCompletedOnboarding,
-    currentTopicID,
-    getOverallMetricProgress,
-    getMetricAvailabilityFrequencyProgress,
-    getBreakdownProgress,
-    getMetricDefinitionProgress,
-    getBreakdownDefinitionProgress,
-  } = guidanceStore;
+  const { userStore, authStore, api } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
   const location = useLocation();
   const windowWidth = useWindowWidth();
+  const headerBadge = useHeaderBadge();
+
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const pathWithoutAgency = removeAgencyFromPath(location.pathname);
   const currentAgency = userStore.getAgency(agencyId);
-  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
-  const hasSystemMetricParams = !systemMetricKey.includes("undefined");
-  const currentMetric = metricConfigStore.metrics[systemMetricKey];
-  const allDisaggregationsDisabled =
-    metricConfigStore.disaggregations[systemMetricKey] &&
-    Object.values(metricConfigStore.disaggregations[systemMetricKey]).filter(
-      (disaggregation) =>
-        disaggregation.enabled === true || disaggregation.enabled === null
-    ).length === 0;
 
   const handleCloseMobileMenu = () => {
     if (windowWidth < MIN_TABLET_WIDTH && isMobileMenuOpen) {
       setIsMobileMenuOpen(false);
+    }
+  };
+
+  const usernameToInitials = () => {
+    if (userStore.name) {
+      const splitName = userStore.name.split(" ");
+      if (splitName.length > 1) {
+        return (splitName[0][0] + splitName[1][0]).toUpperCase();
+      }
+      return splitName[0][0].toUpperCase();
     }
   };
 
@@ -112,45 +90,8 @@ const Menu: React.FC = () => {
     }
   };
 
-  // Guidance
-  const isMetricConfigStep =
-    !hasCompletedOnboarding && currentTopicID === "METRIC_CONFIG";
-  const metricCompletionProgress = !hasCompletedOnboarding
-    ? getOverallMetricProgress(systemMetricKey)
-    : {};
-  const metricProgress =
-    !hasCompletedOnboarding &&
-    getMetricAvailabilityFrequencyProgress(systemMetricKey);
-  const metricDefinitionProgress =
-    !hasCompletedOnboarding && getMetricDefinitionProgress(systemMetricKey);
-  const breakdownProgress =
-    !hasCompletedOnboarding && getBreakdownProgress(systemMetricKey);
-  const breakdownDefinitionProgress =
-    !hasCompletedOnboarding && getBreakdownDefinitionProgress(systemMetricKey);
-
-  const [showMetricConfigProgressToast, setShowMetricConfigProgressToast] =
-    useState(false);
-  const [
-    metricConfigProgressToastTimeout,
-    setMetricConfigProgressToastTimeout,
-  ] = useState<NodeJS.Timer>();
-
-  const handleMetricConfigToastDisplay = () => {
-    setShowMetricConfigProgressToast(true);
-
-    if (metricConfigProgressToastTimeout) {
-      clearTimeout(metricConfigProgressToastTimeout);
-    }
-
-    const timeout = setTimeout(() => {
-      setShowMetricConfigProgressToast(false);
-    }, 3500);
-
-    setMetricConfigProgressToastTimeout(timeout);
-  };
-
   const includeStateCodeInAgencyName = userStore.userAgenciesFromMultipleStates;
-  const dropdownOptions: DropdownOption[] = userStore.userAgencies
+  const agencyDropdownOptions: DropdownOption[] = userStore.userAgencies
     ? userStore.userAgencies
         .slice()
         .sort((a, b) => a.name.localeCompare(b.name))
@@ -169,29 +110,49 @@ const Menu: React.FC = () => {
         }))
     : [];
 
-  useEffect(
-    () => {
-      if (isMetricConfigStep) handleMetricConfigToastDisplay();
+  const profileDropdownMetadata = [
+    {
+      label: "Your Account",
+      icon: <YourAccountIcon />,
+      path: "./settings/account",
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      metricProgress,
-      metricDefinitionProgress,
-      breakdownProgress,
-      breakdownDefinitionProgress,
-      currentMetric?.enabled,
-      allDisaggregationsDisabled,
-    ]
+    {
+      label: "Agency Settings",
+      icon: <AgencySettingsIcon />,
+      path: "./settings/agency-settings",
+    },
+    {
+      label: "Team Management",
+      icon: <TeamManagementIcon />,
+      path: "./settings/team-management",
+    },
+    {
+      label: "Uploaded Files",
+      icon: <UploadedFilesIcon />,
+      path: "./settings/uploaded-files",
+    },
+    {
+      label: "Logout",
+      icon: <LogoutIcon />,
+      highlightOption: true,
+      onClick: logout,
+    },
+  ];
+
+  const profileDropdownOptions: DropdownOption[] = profileDropdownMetadata.map(
+    ({ label, icon, highlightOption, path, onClick }) => ({
+      key: label,
+      label,
+      onClick: () => {
+        if (path) navigate(path);
+        if (onClick) onClick();
+        handleCloseMobileMenu();
+      },
+      highlight: highlightOption,
+      noHover: highlightOption,
+      icon,
+    })
   );
-
-  useEffect(() => {
-    const initOnboardingTopicStatuses = async () => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await guidanceStore.getOnboardingTopicsStatuses();
-    };
-
-    initOnboardingTopicStatuses();
-  }, [guidanceStore, agencyId]);
 
   useEffect(() => {
     const { body } = document;
@@ -209,179 +170,97 @@ const Menu: React.FC = () => {
   }, [windowWidth]);
 
   return (
-    <>
-      <MenuContainer isMobileMenuOpen={isMobileMenuOpen}>
-        <WelcomeUser>
-          {userStore.nameOrEmail &&
-            currentAgency?.name &&
-            `Welcome, ${userStore.nameOrEmail} at ${currentAgency.name}`}
-        </WelcomeUser>
-
-        {/* Guidance */}
-        {hasCompletedOnboarding === false && (
-          <MenuItem
-            style={{ position: "relative" }}
-            active={pathWithoutAgency === "getting-started"}
-            onClick={() => {
-              navigate(`/agency/${agencyId}/getting-started`);
-              handleCloseMobileMenu();
-            }}
-          >
-            Get Started
-            {/* Guidance: Metric Configuration Progress Toast */}
-            {isMetricConfigStep && hasSystemMetricParams && (
-              <ProgressTooltipToast showToast={showMetricConfigProgressToast}>
-                {metricConfigurationProgressSteps.map((step) => {
-                  // Don't show other 3 required steps if the metric is marked as Unavailable - because they are no longer required in this case.
-                  if (
-                    currentMetric?.enabled === false &&
-                    step !== ProgressSteps.CONFIRM_METRIC_AVAILABILITY
-                  ) {
-                    return null;
-                  }
-
-                  // When all disaggregations are disabled, the "Confirm breakdown definitions" are no longer required.
-                  if (
-                    allDisaggregationsDisabled &&
-                    step === ProgressSteps.CONFIRM_BREAKDOWN_DEFINITIONS
-                  ) {
-                    return null;
-                  }
-
-                  return (
-                    <ProgressItemWrapper key={step}>
-                      <CheckIconWrapper>
-                        {metricCompletionProgress &&
-                          metricCompletionProgress[step] && (
-                            <CheckIcon src={checkmarkIcon} alt="" />
-                          )}
-                      </CheckIconWrapper>
-                      <ProgressItemName>{step}</ProgressItemName>
-                    </ProgressItemWrapper>
-                  );
-                })}
-              </ProgressTooltipToast>
-            )}
-          </MenuItem>
-        )}
-
-        {/* Reports */}
-        <MenuItem
-          onClick={() => {
-            navigate(REPORTS_LOWERCASE);
-            handleCloseMobileMenu();
-          }}
-          active={pathWithoutAgency === REPORTS_LOWERCASE}
-        >
-          {REPORTS_CAPITALIZED}
-        </MenuItem>
-
-        {/* Data (Visualizations) */}
-        <MenuItem
-          onClick={() => {
-            if (pathWithoutAgency !== "data") navigate("data");
-            handleCloseMobileMenu();
-          }}
-          active={pathWithoutAgency === "data"}
-        >
-          Data
-        </MenuItem>
-
-        {/* Metric Config */}
-        <MenuItem
-          onClick={() => {
-            if (pathWithoutAgency === "metric-config") {
-              setSettingsSearchParams({
-                ...settingsSearchParams,
-                metric: undefined,
-              });
-            } else {
-              navigate("metric-config");
-            }
-            handleCloseMobileMenu();
-          }}
-          active={pathWithoutAgency === "metric-config"}
-        >
-          Configuration
-        </MenuItem>
-
-        {/* Learn More */}
-        {windowWidth > MIN_TABLET_WIDTH && (
-          <MenuItem>
-            <a
-              href="https://justicecounts.csgjusticecenter.org/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Learn More
-            </a>
-          </MenuItem>
-        )}
-
+    <Styled.MenuContainer isMobileMenuOpen={isMobileMenuOpen}>
+      <Styled.AgencyDropdownHeaderBadgeWrapper>
         {/* Agencies Dropdown */}
         {userStore.userAgencies && userStore.userAgencies.length > 1 && (
-          <MenuItem dropdownPadding>
-            <Dropdown
-              label="Agencies"
-              options={dropdownOptions}
-              size="small"
-              hover="label"
-              alignment={windowWidth > MIN_TABLET_WIDTH ? "right" : "left"}
-            />
-          </MenuItem>
+          <Styled.AgencyDropdownWrapper>
+            <Styled.MenuItem>
+              <Dropdown
+                label={currentAgency?.name}
+                options={agencyDropdownOptions}
+                size="small"
+                hover="label"
+                alignment="left"
+                caretPosition="right"
+                highlightIcon={<Styled.TargetIcon />}
+              />
+            </Styled.MenuItem>
+          </Styled.AgencyDropdownWrapper>
         )}
+        {headerBadge}
+      </Styled.AgencyDropdownHeaderBadgeWrapper>
 
-        {/* Settings */}
-        <MenuItem
-          onClick={() => {
-            if (windowWidth > MIN_TABLET_WIDTH) {
-              navigate("settings");
-            }
-          }}
-          active={pathWithoutAgency.startsWith("settings")}
-          isHoverDisabled={windowWidth <= MIN_TABLET_WIDTH}
-        >
-          Settings
-        </MenuItem>
+      <Styled.MenuItemsProfileWrapper>
+        {/* Home */}
+        <Styled.MenuItemsWrapper>
+          <Styled.MenuItem
+            onClick={() => navigate(`/agency/${agencyId}/`)}
+            active={pathWithoutAgency === ""}
+          >
+            Home
+          </Styled.MenuItem>
 
-        {isMobileMenuOpen && (
-          <SubMenuContainer>
-            {settingsMenuPaths.map(({ displayLabel, path }) => (
-              <SubMenuItem
-                key={path}
-                onClick={() => {
-                  navigate(`settings/${path}`);
-                  handleCloseMobileMenu();
-                }}
-              >
-                {displayLabel}
-              </SubMenuItem>
-            ))}
-          </SubMenuContainer>
-        )}
-
-        <MenuItem onClick={logout} highlight>
-          Log Out
-        </MenuItem>
-
-        <MenuItem id="upload" buttonPadding>
-          <Button
-            label="Upload Data"
+          {/* Metric Config */}
+          <Styled.MenuItem
             onClick={() => {
-              navigate("upload");
+              if (pathWithoutAgency === "metric-config") {
+                setSettingsSearchParams({
+                  ...settingsSearchParams,
+                  metric: undefined,
+                });
+              } else {
+                navigate("metric-config");
+              }
               handleCloseMobileMenu();
             }}
-            buttonColor="blue"
-            enabledDuringOnboarding
-          />
-        </MenuItem>
-      </MenuContainer>
-      <MobileMenuIconWrapper
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-      >
-        <img src={isMobileMenuOpen ? closeMenuBurger : menuBurger} alt="" />
-      </MobileMenuIconWrapper>
-    </>
+            active={pathWithoutAgency === "metric-config"}
+          >
+            Set Up Metrics
+          </Styled.MenuItem>
+
+          {/* Data Entry */}
+          <Styled.MenuItem
+            onClick={() => {
+              if (pathWithoutAgency !== "data-entry") navigate("data-entry");
+              handleCloseMobileMenu();
+            }}
+            active={
+              pathWithoutAgency === "data-entry" ||
+              pathWithoutAgency === REPORTS_LOWERCASE ||
+              pathWithoutAgency === `${REPORTS_LOWERCASE}/create`
+            }
+          >
+            Enter Data
+          </Styled.MenuItem>
+
+          {/* Data (Visualizations) */}
+          <Styled.MenuItem
+            onClick={() => {
+              if (pathWithoutAgency !== "data") navigate("data");
+              handleCloseMobileMenu();
+            }}
+            active={pathWithoutAgency === "data"}
+          >
+            Explore Data
+          </Styled.MenuItem>
+        </Styled.MenuItemsWrapper>
+        {/* Profile */}
+        <Styled.ProfileDropdownContainer>
+          <Styled.ProfileDropdownWrapper>
+            {usernameToInitials()}
+            <Styled.Caret />
+            <Dropdown
+              label=""
+              options={profileDropdownOptions}
+              size="small"
+              hover="label"
+              alignment="right"
+            />
+          </Styled.ProfileDropdownWrapper>
+        </Styled.ProfileDropdownContainer>
+      </Styled.MenuItemsProfileWrapper>
+    </Styled.MenuContainer>
   );
 };
 

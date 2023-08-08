@@ -15,6 +15,5 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./Guidance";
-export * from "./Guidance.styles";
-export * from "./types";
+export * from "./DataEntryInterstitial";
+export * from "./DataEntryInterstitial.styled";

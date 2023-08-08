@@ -34,7 +34,6 @@ export const Button = styled.div<{
   labelColor?: ButtonLabelColor;
   borderColor?: ButtonBorderColor;
   size?: ButtonSize;
-  enabledDuringOnboarding?: boolean;
   disabled?: boolean;
   noSidePadding?: boolean;
   noTopBottomPadding?: boolean;
@@ -71,7 +70,7 @@ export const Button = styled.div<{
     return "background-color: transparent";
   }};
 
-  ${({ labelColor, buttonColor, enabledDuringOnboarding }) => {
+  ${({ labelColor, buttonColor }) => {
     if (labelColor === "blue")
       return `
         color: ${palette.solid.blue};
@@ -86,8 +85,6 @@ export const Button = styled.div<{
       return `
         color: ${palette.solid.white};
       `;
-    if (enabledDuringOnboarding === false)
-      return `color: ${palette.highlight.grey8}`;
     return `color: ${palette.solid.darkgrey}`;
   }};
 
@@ -114,9 +111,7 @@ export const Button = styled.div<{
   &:hover {
     cursor: pointer;
 
-    ${({ buttonColor, enabledDuringOnboarding, noHover }) => {
-      if (enabledDuringOnboarding === false)
-        return "background-color: transparent";
+    ${({ buttonColor, noHover }) => {
       if (buttonColor) return "opacity: 0.8;";
       return !noHover && `background-color: ${palette.highlight.grey1};`;
     }}
@@ -128,6 +123,7 @@ export const Button = styled.div<{
       display: flex;
       align-items: center;
     }
+  }
 `;
 
 export const ButtonWrapper = styled.div`
