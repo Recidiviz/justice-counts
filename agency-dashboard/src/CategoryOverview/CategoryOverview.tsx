@@ -18,6 +18,7 @@
 import { ReactComponent as DownloadIcon } from "@justice-counts/common/assets/download-icon.svg";
 import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share-icon.svg";
 import { Button } from "@justice-counts/common/components/Button";
+import { CategoryOverviewLineChart } from "@justice-counts/common/components/DataViz/CategoryOverviewLineChart";
 import MetricsCategoryBarChart from "@justice-counts/common/components/DataViz/MetricsCategoryBarChart";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { useBarChart, useLineChart } from "@justice-counts/common/hooks";
