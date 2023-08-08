@@ -33,7 +33,7 @@ import { CustomCursor, CustomYAxisTick } from "./BarChartComponents";
 import Tooltip from "./Tooltip";
 import { ResponsiveBarChartProps, ResponsiveBarData, TickProps } from "./types";
 
-const MAX_BAR_SIZE = 150;
+const MAX_BAR_SIZE = 250;
 
 const NoReportedData = styled.div`
   position: absolute;

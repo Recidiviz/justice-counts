@@ -33,6 +33,14 @@ export const monthsByName = [
 ];
 
 /**
+ * @returns the year as a string
+ * @example "2022"
+ */
+export const printDateAsYear = (date: string): string => {
+  return String(new Date(date).getFullYear());
+};
+
+/**
  * @returns the month and year as a string
  * @example "March 2022"
  */
