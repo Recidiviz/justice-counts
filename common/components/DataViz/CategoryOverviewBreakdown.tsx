@@ -51,10 +51,12 @@ export const CategoryOverviewBreakdown: FunctionComponent<
           {renderPercentText(
             data[dimension]?.value,
             pipe(
-              values,
-              filter<LineChartBreakdownValue>(
-                ({ value }: LineChartBreakdownValue) => is(Number, value)
-              ),
+              values as unknown as () => LineChartBreakdownValue,
+              filter(({ value }: LineChartBreakdownValue) =>
+                is(Number, value)
+              ) as (
+                pred: LineChartBreakdownValue
+              ) => LineChartBreakdownNumericValue[],
               reduce<LineChartBreakdownNumericValue, number>(
                 (acc: number, { value }: LineChartBreakdownNumericValue) =>
                   acc + value,
