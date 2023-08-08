@@ -53,26 +53,17 @@ export type BarChartBackground = {
 };
 
 export type BarChartTooltipPayload = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  chartType: any;
   color: string;
   dataKey: string;
   fill: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  formatter: any;
   name: string;
   payload: Datapoint;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  type: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  unit: any;
   value: number;
 };
 
 export type ResponsiveBarData = Datapoint &
   BarChartBackground &
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Record<string, any> & {
+  Record<string, number | string | null> & {
     height: number;
     width: number;
     value: number[];
