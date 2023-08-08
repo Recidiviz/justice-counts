@@ -73,3 +73,23 @@ export type ResponsiveBarData = Datapoint &
     background: BarChartBackground;
     tooltipPayload: BarChartTooltipPayload;
   };
+
+export type LineChartBreakdownValue = {
+  value: number | string | null;
+  fill: string;
+};
+
+export type LineChartBreakdownNumericValue = {
+  value: number;
+  fill: string;
+};
+
+export type LineChartBreakdownProps = {
+  data: Record<keyof Datapoint, LineChartBreakdownValue>;
+  dimensions: string[];
+};
+
+export type LegendData = Record<
+  keyof Datapoint,
+  LineChartBreakdownNumericValue
+>;

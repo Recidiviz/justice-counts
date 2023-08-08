@@ -61,7 +61,7 @@ export function CategoryOverviewLineChart({
   const renderLines = () => {
     // each Recharts Bar component defines a category type in the stacked bar chart
     let lineDefinitions: JSX.Element[] = [];
-    dimensions.forEach((dimension, index) => {
+    dimensions.forEach((dimension) => {
       const newLine = (
         <Line
           key={dimension}

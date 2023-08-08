@@ -20,7 +20,6 @@ import { filter, is, pipe, reduce, values } from "ramda";
 import React, { FunctionComponent } from "react";
 
 // eslint-disable-next-line no-restricted-imports
-import { Datapoint } from "../../types";
 import { printDateAsYear } from "../../utils";
 import { palette } from "../GlobalStyles";
 import {
@@ -31,14 +30,15 @@ import {
   LegendTitle,
   LegendValue,
 } from "./CategoryOverviewBreakdown.styled";
+import {
+  LineChartBreakdownNumericValue,
+  LineChartBreakdownProps,
+  LineChartBreakdownValue,
+} from "./types";
 
-export const CategoryOverviewBreakdown: FunctionComponent<{
-  data: Record<
-    keyof Datapoint,
-    { value: number | string | null; fill: string }
-  >;
-  dimensions: string[];
-}> = ({ data, dimensions }) => (
+export const CategoryOverviewBreakdown: FunctionComponent<
+  LineChartBreakdownProps
+> = ({ data, dimensions }) => (
   <Container>
     <LegendTitle>{`Recent (${printDateAsYear(
       String(data.end_date.value)
@@ -52,12 +52,9 @@ export const CategoryOverviewBreakdown: FunctionComponent<{
             data[dimension]?.value,
             pipe(
               values,
-              filter(
-                ({ value }: { value: number | string | null; fill: string }) =>
-                  is(Number, value)
-              ),
+              filter(({ value }: LineChartBreakdownValue) => is(Number, value)),
               reduce(
-                (acc: number, { value }: { value: number; fill: string }) =>
+                (acc: number, { value }: LineChartBreakdownNumericValue) =>
                   acc + value,
                 0
               )

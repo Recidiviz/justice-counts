@@ -23,8 +23,8 @@ import MetricsCategoryBarChart from "@justice-counts/common/components/DataViz/M
 import { showToast } from "@justice-counts/common/components/Toast";
 import { useBarChart, useLineChart } from "@justice-counts/common/hooks";
 import {
-  DataVizAggregateName,
   Datapoint,
+  DataVizAggregateName,
   Metric,
 } from "@justice-counts/common/types";
 import { each } from "bluebird";

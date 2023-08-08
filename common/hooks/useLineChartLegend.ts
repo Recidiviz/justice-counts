@@ -18,6 +18,7 @@
 import { filter, head, keys, map, mergeAll, pipe, reverse } from "ramda";
 import { useEffect, useState } from "react";
 
+import { LegendData } from "../components/DataViz/types";
 import { Datapoint } from "../types";
 
 export const useLineChartLegend = (
@@ -25,13 +26,10 @@ export const useLineChartLegend = (
   dimensions: (keyof Datapoint)[],
   colorDict: Record<string, string>
 ) => {
-  const [legendData, setLegendData] =
-    useState<Record<keyof Datapoint, { value: number; fill: string }>>();
+  const [legendData, setLegendData] = useState<LegendData>();
 
   useEffect(() => {
-    const transformDataForLegend = (
-      datapoint: Datapoint
-    ): Record<keyof Datapoint, { value: number; fill: string }> =>
+    const transformDataForLegend = (datapoint: Datapoint): LegendData =>
       pipe(
         keys,
         map((dimension: keyof Datapoint) => ({
@@ -41,7 +39,7 @@ export const useLineChartLegend = (
           },
         })),
         mergeAll
-      )(datapoint) as Record<keyof Datapoint, { value: number; fill: string }>;
+      )(datapoint) as LegendData;
 
     const getLatestDatapoint = (datapoints: Datapoint[]): Datapoint =>
       pipe(
