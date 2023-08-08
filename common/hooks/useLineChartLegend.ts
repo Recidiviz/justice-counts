@@ -17,6 +17,7 @@
 
 import { filter, head, keys, map, mergeAll, pipe, reverse } from "ramda";
 import { useEffect, useState } from "react";
+
 import { Datapoint } from "../types";
 
 export const useLineChartLegend = (
@@ -27,36 +28,36 @@ export const useLineChartLegend = (
   const [legendData, setLegendData] =
     useState<Record<keyof Datapoint, { value: number; fill: string }>>();
 
-  const transformDataForLegend = (
-    datapoint: Datapoint
-  ): Record<keyof Datapoint, { value: number; fill: string }> =>
-    pipe(
-      keys,
-      map((dimension: keyof Datapoint) => ({
-        [dimension]: {
-          value: datapoint[dimension],
-          fill: colorDict[dimension],
-        },
-      })),
-      mergeAll
-    )(datapoint) as Record<keyof Datapoint, { value: number; fill: string }>;
-
-  const getLatestDatapoint = (data: Datapoint[]): Datapoint =>
-    pipe(
-      reverse as (list: readonly Datapoint[]) => Datapoint[],
-      filter<Datapoint>((datapoint: Datapoint): boolean => {
-        let hasReportedAnyMetrics = false;
-        dimensions.forEach((dimension: keyof Datapoint) => {
-          if (typeof datapoint[dimension] === "number")
-            hasReportedAnyMetrics = true;
-        });
-        return hasReportedAnyMetrics;
-      }) as (pred: Datapoint[]) => Datapoint[],
-      head
-    )(data) as Datapoint;
-
   useEffect(() => {
-    setLegendData(transformDataForLegend(getLatestDatapoint(data)));
-  }, [data]);
+    const transformDataForLegend = (
+      datapoint: Datapoint
+    ): Record<keyof Datapoint, { value: number; fill: string }> =>
+      pipe(
+        keys,
+        map((dimension: keyof Datapoint) => ({
+          [dimension]: {
+            value: datapoint[dimension],
+            fill: colorDict[dimension],
+          },
+        })),
+        mergeAll
+      )(datapoint) as Record<keyof Datapoint, { value: number; fill: string }>;
+
+    const getLatestDatapoint = (datapoints: Datapoint[]): Datapoint =>
+      pipe(
+        reverse as (list: readonly Datapoint[]) => Datapoint[],
+        filter<Datapoint>((datapoint: Datapoint): boolean => {
+          let hasReportedAnyMetrics = false;
+          dimensions.forEach((dimension: keyof Datapoint) => {
+            if (typeof datapoint[dimension] === "number")
+              hasReportedAnyMetrics = true;
+          });
+          return hasReportedAnyMetrics;
+        }) as (pred: Datapoint[]) => Datapoint[],
+        head
+      )(datapoints) as Datapoint;
+
+    setLegendData(pipe(getLatestDatapoint, transformDataForLegend)(data));
+  }, [data, colorDict, dimensions]);
   return { legendData };
 };

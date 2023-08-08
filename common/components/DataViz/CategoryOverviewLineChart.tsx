@@ -15,8 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  BreakdownsTitle,
+  Container,
+} from "@justice-counts/agency-dashboard/src/CategoryOverview/CategoryOverview.styled";
 import { filter, invertObj, mapObjIndexed, pipe, reduce } from "ramda";
-import React from "react";
+import React, { useMemo } from "react";
 import {
   CartesianGrid,
   Legend,
@@ -41,14 +45,18 @@ export function CategoryOverviewLineChart({
   data,
   dimensions,
 }: LineChartProps) {
-  const colorDict = pipe(
-    invertObj,
-    mapObjIndexed(
-      (colorName: string, fill) =>
-        dimensions[Number(colorName.replace("bar", "")) - 1]
-    ),
-    invertObj
-  )(palette.dataViz);
+  const colorDict = useMemo(
+    () =>
+      pipe(
+        invertObj,
+        mapObjIndexed(
+          (colorName: string, fill) =>
+            dimensions[Number(colorName.replace("bar", "")) - 1]
+        ),
+        invertObj
+      )(palette.dataViz),
+    [dimensions]
+  );
 
   const renderLines = () => {
     // each Recharts Bar component defines a category type in the stacked bar chart
@@ -66,11 +74,11 @@ export function CategoryOverviewLineChart({
     });
     return lineDefinitions;
   };
-
   const { legendData } = useLineChartLegend(data, dimensions, colorDict);
 
   return (
-    <>
+    <Container>
+      <BreakdownsTitle>Breakdowns</BreakdownsTitle>
       <LineChart
         width={533}
         height={500}
@@ -78,47 +86,42 @@ export function CategoryOverviewLineChart({
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid horizontal={false} />
-        {
-          <ReferenceLine
-            y={reduce(
-              (total: number, dimension: keyof Datapoint) => {
-                const reducedDatapoints = pipe(
-                  filter(
-                    (datapoint: Datapoint) =>
-                      typeof datapoint[dimension] === "number"
-                  ),
-                  reduce(
-                    (acc: number, datapoint: Datapoint): number =>
-                      Number(datapoint[dimension]) > acc
-                        ? Number(datapoint[dimension])
-                        : acc,
-                    0
-                  )
-                )(data);
-                return reducedDatapoints > total ? reducedDatapoints : total;
-              },
-              0,
-              dimensions
-            )}
-            stroke={"#ECECEC"}
-          />
-        }
-        <XAxis dataKey={(datapoint) => printDateAsYear(datapoint.start_date)} />
-        {/*<Tooltip />*/}
+        <ReferenceLine
+          y={reduce(
+            (total: number, dimension: keyof Datapoint) => {
+              const reducedDatapoints = pipe(
+                filter(
+                  (datapoint: Datapoint) =>
+                    typeof datapoint[dimension] === "number"
+                ),
+                reduce(
+                  (acc: number, datapoint: Datapoint): number =>
+                    Number(datapoint[dimension]) > acc
+                      ? Number(datapoint[dimension])
+                      : acc,
+                  0
+                )
+              )(data);
+              return reducedDatapoints > total ? reducedDatapoints : total;
+            },
+            0,
+            dimensions
+          )}
+        />
+        <XAxis dataKey={(datapoint) => printDateAsYear(datapoint.end_date)} />
+        {/* <Tooltip /> */}
         {renderLines()}
         {legendData && (
           <Legend
-            content={(props) => {
-              return (
-                <CategoryOverviewBreakdown
-                  data={legendData}
-                  dimensions={dimensions}
-                />
-              );
-            }}
+            content={
+              <CategoryOverviewBreakdown
+                data={legendData}
+                dimensions={dimensions}
+              />
+            }
           />
         )}
       </LineChart>
-    </>
+    </Container>
   );
 }

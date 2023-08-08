@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { getDatapointYear } from "@justice-counts/agency-dashboard/src/utils/formatting";
 import React, { forwardRef, useState } from "react";
 import {
   Bar,
@@ -26,7 +27,6 @@ import {
 } from "recharts";
 import styled from "styled-components/macro";
 
-import { getDatapointYear } from "../../../agency-dashboard/src/utils/formatting";
 import { rem } from "../../utils";
 import { palette } from "../GlobalStyles";
 import { CustomCursor, CustomYAxisTick } from "./BarChartComponents";
@@ -134,6 +134,7 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
             />
             {data.length !== 0 && (
               <YAxis
+                // eslint-disable-next-line react/no-unstable-nested-components
                 tick={(props: TickProps) => (
                   <CustomYAxisTick
                     y={props.y}

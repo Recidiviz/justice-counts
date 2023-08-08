@@ -152,3 +152,9 @@ export const MetricDataVizContainer = styled.div`
     cursor: pointer !important;
   }
 `;
+
+export const BreakdownsTitle = styled.h3`
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 500;
+`;

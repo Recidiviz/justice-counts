@@ -17,7 +17,9 @@
 
 import { keys, map, mergeAll, pipe } from "ramda";
 import React, { FunctionComponent } from "react";
+// eslint-disable-next-line no-restricted-imports
 import styled from "styled-components";
+
 import { Datapoint } from "../../types";
 import { formatNumberInput, printDateAsYear } from "../../utils";
 import { palette } from "../GlobalStyles";
@@ -49,7 +51,7 @@ export const CategoryOverviewBreakdown: FunctionComponent<{
       )})`}</LegendTitle>
       {dimensions.map((dimension) => (
         <LegendItem>
-          <LegendBullet color={data[dimension]?.fill}>{`▪`}</LegendBullet>
+          <LegendBullet color={data[dimension]?.fill}>▪</LegendBullet>
           <LegendName color={palette.solid.black}>{dimension}</LegendName>
           <LegendValue>
             {renderText(

@@ -16,13 +16,15 @@
 // =============================================================================
 
 import {
-  DataVizTimeRangesMap,
+  Datapoint,
   DatapointsByMetric,
+  DataVizTimeRangesMap,
   Metric,
+  UserAgency,
 } from "@justice-counts/common/types";
 import { useCallback } from "react";
+
 import { transformDataForBarChart } from "../components/DataViz/utils";
-import { Datapoint, UserAgency } from "../types";
 
 export type BarChartProps = {
   getBarChartData: (metric: Metric) => Datapoint[];
@@ -47,7 +49,8 @@ export const useBarChart = ({
             "Count"
           )
         );
-      } else return [];
+      }
+      return [];
     },
     [filterDatapoints, datapointsByMetric]
   );

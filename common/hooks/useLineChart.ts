@@ -16,15 +16,17 @@
 // =============================================================================
 
 import {
-  DataVizTimeRangesMap,
+  Datapoint,
   DatapointsByMetric,
+  DataVizTimeRangesMap,
   DimensionNamesByMetricAndDisaggregation,
   Metric,
+  UserAgency,
 } from "@justice-counts/common/types";
 import { head, keys, pipe, prop, values } from "ramda";
 import { useCallback } from "react";
+
 import { transformDataForBarChart } from "../components/DataViz/utils";
-import { Datapoint, UserAgency } from "../types";
 
 export type LineChartProps = {
   getLineChartDimensions: (metric: Metric) => string[];
@@ -65,7 +67,8 @@ export const useLineChart = ({
             "Count"
           )
         );
-      } else return [];
+      }
+      return [];
     },
     [filterDatapoints, datapointsByMetric]
   );
@@ -80,7 +83,8 @@ export const useLineChart = ({
           values,
           head
         )(dimensionNamesByMetricAndDisaggregation) as string[];
-      } else return [];
+      }
+      return [];
     },
     [dimensionNamesByMetricAndDisaggregation]
   );
