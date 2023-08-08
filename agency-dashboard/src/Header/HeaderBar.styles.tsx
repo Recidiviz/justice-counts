@@ -34,7 +34,6 @@ export const WelcomeHeaderBarContainer = styled.header`
   z-index: 3;
   background: ${palette.solid.white};
   border-bottom: 1px solid ${palette.highlight.grey5};
-  cursor: pointer;
 `;
 
 export const WelcomeLogoTitle = styled.div`
@@ -71,10 +70,6 @@ export const LogoBlock = styled.div`
   justify-content: start;
   align-items: center;
   gap: 32px;
-
-  svg {
-    cursor: pointer;
-  }
 `;
 
 export const LinksBlock = styled.div`

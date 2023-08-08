@@ -18,16 +18,13 @@
 import { ReactComponent as JCLogo } from "@justice-counts/common/assets/jc-logo-vector-new.svg";
 import { ReactComponent as JCWelcomeLogo } from "@justice-counts/common/assets/jc-no-background-logo.svg";
 import React from "react";
-import { useNavigate } from "react-router-dom";
 
 import { useStore } from "../stores";
 import * as Styled from "./HeaderBar.styles";
 
 export const WelcomeHeaderBar: React.FC = () => {
-  const navigate = useNavigate();
-
   return (
-    <Styled.WelcomeHeaderBarContainer onClick={() => navigate("/")}>
+    <Styled.WelcomeHeaderBarContainer>
       <Styled.WelcomeLogoTitle>
         <JCWelcomeLogo />
         Justice Counts
@@ -37,7 +34,6 @@ export const WelcomeHeaderBar: React.FC = () => {
 };
 
 export const HeaderBar: React.FC = () => {
-  const navigate = useNavigate();
   const { agencyDataStore } = useStore();
 
   const agencyUrl = agencyDataStore.agency?.settings.find(
@@ -47,7 +43,7 @@ export const HeaderBar: React.FC = () => {
   return (
     <Styled.HeaderBarContainer>
       <Styled.LogoBlock>
-        <JCLogo onClick={() => navigate("/")} />
+        <JCLogo />
         Overview
       </Styled.LogoBlock>
       <Styled.LinksBlock>
