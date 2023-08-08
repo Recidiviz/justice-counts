@@ -20,6 +20,7 @@ import { filter, is, pipe, reduce, values } from "ramda";
 import React, { FunctionComponent } from "react";
 
 // eslint-disable-next-line no-restricted-imports
+import { Datapoint } from "../../types";
 import { printDateAsYear } from "../../utils";
 import { palette } from "../GlobalStyles";
 import {
@@ -51,7 +52,9 @@ export const CategoryOverviewBreakdown: FunctionComponent<
           {renderPercentText(
             data[dimension]?.value,
             pipe(
-              values as unknown as () => LineChartBreakdownValue,
+              values as unknown as (
+                obj: Record<keyof Datapoint, LineChartBreakdownValue>
+              ) => LineChartBreakdownValue,
               filter(({ value }: LineChartBreakdownValue) =>
                 is(Number, value)
               ) as (
