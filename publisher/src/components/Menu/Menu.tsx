@@ -170,99 +170,97 @@ const Menu: React.FC = () => {
   }, [windowWidth]);
 
   return (
-    <>
-      <Styled.MenuContainer isMobileMenuOpen={isMobileMenuOpen}>
-        <Styled.AgencyDropdownHeaderBadgeWrapper>
-          {/* Agencies Dropdown */}
-          {userStore.userAgencies && userStore.userAgencies.length > 1 && (
-            <Styled.AgencyDropdownWrapper>
-              <Styled.MenuItem>
-                <Dropdown
-                  label={currentAgency?.name}
-                  options={agencyDropdownOptions}
-                  size="small"
-                  hover="label"
-                  alignment="left"
-                  caretPosition="right"
-                  highlightIcon={<Styled.TargetIcon />}
-                />
-              </Styled.MenuItem>
-            </Styled.AgencyDropdownWrapper>
-          )}
-          {headerBadge}
-        </Styled.AgencyDropdownHeaderBadgeWrapper>
-
-        <Styled.MenuItemsProfileWrapper>
-          {/* Home */}
-          <Styled.MenuItemsWrapper>
-            <Styled.MenuItem
-              onClick={() => navigate(`/agency/${agencyId}/`)}
-              active={pathWithoutAgency === ""}
-            >
-              Home
-            </Styled.MenuItem>
-
-            {/* Metric Config */}
-            <Styled.MenuItem
-              onClick={() => {
-                if (pathWithoutAgency === "metric-config") {
-                  setSettingsSearchParams({
-                    ...settingsSearchParams,
-                    metric: undefined,
-                  });
-                } else {
-                  navigate("metric-config");
-                }
-                handleCloseMobileMenu();
-              }}
-              active={pathWithoutAgency === "metric-config"}
-            >
-              Set Up Metrics
-            </Styled.MenuItem>
-
-            {/* Data Entry */}
-            <Styled.MenuItem
-              onClick={() => {
-                if (pathWithoutAgency !== "data-entry") navigate("data-entry");
-                handleCloseMobileMenu();
-              }}
-              active={
-                pathWithoutAgency === "data-entry" ||
-                pathWithoutAgency === REPORTS_LOWERCASE ||
-                pathWithoutAgency === `${REPORTS_LOWERCASE}/create`
-              }
-            >
-              Enter Data
-            </Styled.MenuItem>
-
-            {/* Data (Visualizations) */}
-            <Styled.MenuItem
-              onClick={() => {
-                if (pathWithoutAgency !== "data") navigate("data");
-                handleCloseMobileMenu();
-              }}
-              active={pathWithoutAgency === "data"}
-            >
-              Explore Data
-            </Styled.MenuItem>
-          </Styled.MenuItemsWrapper>
-          {/* Profile */}
-          <Styled.ProfileDropdownContainer>
-            <Styled.ProfileDropdownWrapper>
-              {usernameToInitials()}
-              <Styled.Caret />
+    <Styled.MenuContainer isMobileMenuOpen={isMobileMenuOpen}>
+      <Styled.AgencyDropdownHeaderBadgeWrapper>
+        {/* Agencies Dropdown */}
+        {userStore.userAgencies && userStore.userAgencies.length > 1 && (
+          <Styled.AgencyDropdownWrapper>
+            <Styled.MenuItem>
               <Dropdown
-                label=""
-                options={profileDropdownOptions}
+                label={currentAgency?.name}
+                options={agencyDropdownOptions}
                 size="small"
                 hover="label"
-                alignment="right"
+                alignment="left"
+                caretPosition="right"
+                highlightIcon={<Styled.TargetIcon />}
               />
-            </Styled.ProfileDropdownWrapper>
-          </Styled.ProfileDropdownContainer>
-        </Styled.MenuItemsProfileWrapper>
-      </Styled.MenuContainer>
-    </>
+            </Styled.MenuItem>
+          </Styled.AgencyDropdownWrapper>
+        )}
+        {headerBadge}
+      </Styled.AgencyDropdownHeaderBadgeWrapper>
+
+      <Styled.MenuItemsProfileWrapper>
+        {/* Home */}
+        <Styled.MenuItemsWrapper>
+          <Styled.MenuItem
+            onClick={() => navigate(`/agency/${agencyId}/`)}
+            active={pathWithoutAgency === ""}
+          >
+            Home
+          </Styled.MenuItem>
+
+          {/* Metric Config */}
+          <Styled.MenuItem
+            onClick={() => {
+              if (pathWithoutAgency === "metric-config") {
+                setSettingsSearchParams({
+                  ...settingsSearchParams,
+                  metric: undefined,
+                });
+              } else {
+                navigate("metric-config");
+              }
+              handleCloseMobileMenu();
+            }}
+            active={pathWithoutAgency === "metric-config"}
+          >
+            Set Up Metrics
+          </Styled.MenuItem>
+
+          {/* Data Entry */}
+          <Styled.MenuItem
+            onClick={() => {
+              if (pathWithoutAgency !== "data-entry") navigate("data-entry");
+              handleCloseMobileMenu();
+            }}
+            active={
+              pathWithoutAgency === "data-entry" ||
+              pathWithoutAgency === REPORTS_LOWERCASE ||
+              pathWithoutAgency === `${REPORTS_LOWERCASE}/create`
+            }
+          >
+            Enter Data
+          </Styled.MenuItem>
+
+          {/* Data (Visualizations) */}
+          <Styled.MenuItem
+            onClick={() => {
+              if (pathWithoutAgency !== "data") navigate("data");
+              handleCloseMobileMenu();
+            }}
+            active={pathWithoutAgency === "data"}
+          >
+            Explore Data
+          </Styled.MenuItem>
+        </Styled.MenuItemsWrapper>
+        {/* Profile */}
+        <Styled.ProfileDropdownContainer>
+          <Styled.ProfileDropdownWrapper>
+            {usernameToInitials()}
+            <Styled.Caret />
+            <Dropdown
+              label=""
+              options={profileDropdownOptions}
+              size="small"
+              hover="label"
+              alignment="right"
+            />
+          </Styled.ProfileDropdownWrapper>
+        </Styled.ProfileDropdownContainer>
+      </Styled.MenuItemsProfileWrapper>
+    </Styled.MenuContainer>
   );
 };
 

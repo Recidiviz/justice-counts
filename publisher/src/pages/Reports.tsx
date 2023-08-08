@@ -48,6 +48,10 @@ import {
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
 import { Loading } from "../components/Loading";
+import {
+  ResourceTypes,
+  UnauthorizedDeleteActionModal,
+} from "../components/Modals";
 import { TeamMemberNameWithBadge } from "../components/primitives";
 import {
   ActionsWrapper,
@@ -81,10 +85,6 @@ import {
   printReportTitle,
   removeSnakeCase,
 } from "../utils";
-import {
-  ResourceTypes,
-  UnauthorizedDeleteActionModal,
-} from "../components/Modals";
 
 const ReportStatusFilterOptionObject: { [key: string]: string } = {
   all_records: "All Records",

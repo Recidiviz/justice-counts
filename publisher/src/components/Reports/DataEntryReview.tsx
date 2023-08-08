@@ -133,8 +133,8 @@ const DataEntryReview = () => {
         // Sort this list of metrics so it matches the order of the metrics list on the data entry page
         .sort(
           (a, b) =>
-            metricDisplayNames?.indexOf(a.display_name) -
-            metricDisplayNames?.indexOf(b.display_name)
+            metricDisplayNames.indexOf(a.display_name) -
+            metricDisplayNames.indexOf(b.display_name)
         )
     : [];
   const record = reportStore.reportOverviews[reportID];
