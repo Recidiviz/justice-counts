@@ -27,7 +27,7 @@ import { ResponsiveBarChartProps } from "./types";
 
 const MAX_BAR_SIZE = 100;
 
-const MiniBarChart: React.FC<ResponsiveBarChartProps> = ({
+const MiniBarChart: React.FC<Omit<ResponsiveBarChartProps, "metric">> = ({
   data,
   dimensionNames,
 }) => {
