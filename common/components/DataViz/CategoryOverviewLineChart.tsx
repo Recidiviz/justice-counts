@@ -16,15 +16,16 @@
 // =============================================================================
 
 import { invertObj, mapObjIndexed, pipe } from "ramda";
-import React, { useCallback } from "react";
-import { Legend, Line, LineChart, Tooltip, XAxis } from "recharts";
+import React from "react";
+import { Legend, Line, LineChart, XAxis } from "recharts";
 
+import { useLineChartLegend } from "../../hooks";
 import { Datapoint } from "../../types";
 import { palette } from "../GlobalStyles";
 import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
 import { splitUtcString } from "./utils";
 
-type LineChartProps = {
+export type LineChartProps = {
   data: Datapoint[];
   dimensions: string[];
 };
@@ -42,7 +43,7 @@ export function CategoryOverviewLineChart({
     invertObj
   )(palette.dataViz);
 
-  const renderLines = useCallback(() => {
+  const renderLines = () => {
     // each Recharts Bar component defines a category type in the stacked bar chart
     let lineDefinitions: JSX.Element[] = [];
     dimensions.forEach((dimension, index) => {
@@ -57,7 +58,9 @@ export function CategoryOverviewLineChart({
       lineDefinitions = [newLine, ...lineDefinitions];
     });
     return lineDefinitions;
-  }, [colorDict, dimensions]);
+  };
+
+  const { legendData } = useLineChartLegend(data, dimensions, colorDict);
 
   return (
     <>
@@ -73,20 +76,20 @@ export function CategoryOverviewLineChart({
             return year;
           }}
         />
-        <Tooltip />
+        {/*<Tooltip />*/}
         {renderLines()}
-        <Legend
-          content={(props) => (
-            <CategoryOverviewBreakdown
-              names={
-                dimensions.map((item, index) => ({
-                  fill: colorDict[item],
-                  value: item,
-                })) ?? []
-              }
-            />
-          )}
-        />
+        {legendData && (
+          <Legend
+            content={(props) => {
+              return (
+                <CategoryOverviewBreakdown
+                  data={legendData}
+                  dimensions={dimensions}
+                />
+              );
+            }}
+          />
+        )}
       </LineChart>
     </>
   );

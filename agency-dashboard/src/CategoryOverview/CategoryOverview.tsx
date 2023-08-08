@@ -19,27 +19,28 @@ import { ReactComponent as DownloadIcon } from "@justice-counts/common/assets/do
 import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share-icon.svg";
 import { Button } from "@justice-counts/common/components/Button";
 import MetricsCategoryBarChart from "@justice-counts/common/components/DataViz/MetricsCategoryBarChart";
-import { transformDataForBarChart } from "@justice-counts/common/components/DataViz/utils";
 import { showToast } from "@justice-counts/common/components/Toast";
+import { useBarChart, useLineChart } from "@justice-counts/common/hooks";
 import {
   Datapoint,
+  DatapointsByMetric,
   DataVizAggregateName,
-  DataVizTimeRangesMap,
+  DimensionNamesByMetricAndDisaggregation,
   Metric,
+  UserAgency,
 } from "@justice-counts/common/types";
 import { each } from "bluebird";
 import { observer } from "mobx-react-lite";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCurrentPng } from "recharts-to-png";
+import useAsyncEffect from "use-async-effect";
 
-import { ResponsiveBarData } from "@justice-counts/common/components/DataViz/types";
 import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
 import { downloadFeedData } from "../utils/downloadHelpers";
-import { getDatapointYear } from "../utils/formatting";
 import * as Styled from "./CategoryOverview.styled";
 import { CategoryData } from "./types";
 
@@ -65,18 +66,65 @@ export const CategoryOverview = observer(() => {
   const [dataRangeFilter, setDataRangeFilter] = useState<"recent" | "all">(
     "recent"
   );
-  const [lineChartData, setLineChartData] = useState<Datapoint[]>([]);
-
-  const categoryMetrics =
-    agencyDataStore.metricsByCategory[categoryData[category].key];
-  const [selectedMetricKey, setSelectedMetricKey] = useState<string>();
-  const [selectedYear, setSelectedYear] = useState<string>();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [agency, setAgency] = useState<UserAgency>();
+  const [metricsByKey, setMetricsByKey] = useState<{
+    [metricKey: string]: Metric;
+  }>();
+  const [metricsByCategory, setMetricsByCategory] = useState<{
+    [metricKey: string]: Metric[];
+  }>();
+  const [datapointsByMetric, setDatapointsByMetric] =
+    useState<DatapointsByMetric>();
+  const [
+    dimensionNamesByMetricAndDisaggregation,
+    setDimensionNamesByMetricAndDisaggregation,
+  ] = useState<DimensionNamesByMetricAndDisaggregation>();
 
   const filterDatapoints = useCallback(
     (datapoints: Datapoint[]) => {
       return dataRangeFilter === "recent" ? datapoints.slice(-5) : datapoints;
     },
     [dataRangeFilter]
+  );
+
+  useEffect(() => {
+    setLoading(agencyDataStore.loading);
+    if (agencyDataStore.agency) setAgency(agencyDataStore.agency);
+    if (agencyDataStore.metricsByKey)
+      setMetricsByKey(agencyDataStore.metricsByKey);
+    if (agencyDataStore.metricsByCategory)
+      setMetricsByCategory(agencyDataStore.metricsByCategory);
+    if (agencyDataStore.datapointsByMetric)
+      setDatapointsByMetric(agencyDataStore.datapointsByMetric);
+    if (agencyDataStore.dimensionNamesByMetricAndDisaggregation)
+      setDimensionNamesByMetricAndDisaggregation(
+        agencyDataStore.dimensionNamesByMetricAndDisaggregation
+      );
+  }, [
+    agencyDataStore.loading,
+    agencyDataStore.agency,
+    agencyDataStore.metricsByKey,
+    agencyDataStore.metricsByCategory,
+    agencyDataStore.datapointsByMetric,
+    agencyDataStore.dimensionNamesByMetricAndDisaggregation,
+  ]);
+
+  const { getLineChartData, getLineChartDimensions } = useLineChart({
+    filterDatapoints,
+    datapointsByMetric,
+    dimensionNamesByMetricAndDisaggregation,
+    dataRangeFilter,
+  });
+
+  const { getBarChartData } = useBarChart({
+    filterDatapoints,
+    datapointsByMetric,
+  });
+
+  const categoryMetrics = useMemo(
+    () => metricsByCategory?.[categoryData[category].key],
+    [metricsByCategory, category]
   );
 
   const copyUrlToClipboard = async () => {
@@ -104,84 +152,31 @@ export const CategoryOverview = observer(() => {
   //   }
   // }, [getChartPng]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (agencyDataStore.metrics.length === 0) {
-          await agencyDataStore.fetchAgencyData(slug);
-        }
-      } catch {
-        showToast({
-          message: "Error fetching data.",
-          color: "red",
-          timeout: 4000,
-        });
-      }
-    };
-
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  useAsyncEffect(async () => {
+    try {
+      await agencyDataStore.fetchAgencyData(slug);
+    } catch {
+      showToast({
+        message: "Error fetching data.",
+        color: "red",
+        timeout: 4000,
+      });
+    }
   }, []);
 
-  const getBarChartData = useCallback(
-    (metric: Metric) => {
-      return filterDatapoints(
-        transformDataForBarChart(
-          agencyDataStore.datapointsByMetric[metric.key].aggregate,
-          DataVizTimeRangesMap.All,
-          "Count"
-        )
-      );
-    },
-    [filterDatapoints, agencyDataStore.datapointsByMetric]
-  );
-
-  const getLineChartData = useCallback(
-    (metricKey: string) => {
-      return filterDatapoints(
-        transformDataForBarChart(
-          Object.values(
-            agencyDataStore.datapointsByMetric[metricKey]?.disaggregations[
-              Object.keys(
-                agencyDataStore.datapointsByMetric[metricKey]?.disaggregations
-              )[0]
-            ]
-          ),
-          DataVizTimeRangesMap.All,
-          "Count"
-        )
-      );
-    },
-    [filterDatapoints, agencyDataStore.datapointsByMetric]
-  );
-
-  useEffect(() => {
-    console.log(selectedYear, selectedMetricKey);
-    if (selectedYear && selectedMetricKey)
-      setLineChartData(
-        getLineChartData(selectedMetricKey).filter(
-          (datapoint) => getDatapointYear(datapoint) === selectedYear
-        )
-      );
-  }, [selectedYear, selectedMetricKey]);
-
-  if (agencyDataStore.loading) {
-    return <Loading />;
-  }
-
-  const downloadMetricsData = () => {
-    categoryMetrics.forEach((categoryMetric) => {
-      const metric = agencyDataStore.metricsByKey[categoryMetric.key];
-      if (metric && agencyDataStore.agency) {
-        each(
-          metric.filenames,
-          downloadFeedData(metric.system.key, agencyDataStore.agency.id)
-        );
+  const downloadMetricsData = useCallback(() => {
+    categoryMetrics?.forEach((categoryMetric: Metric) => {
+      const metric = metricsByKey?.[categoryMetric.key];
+      if (metric && agency) {
+        each(metric.filenames, downloadFeedData(metric.system.key, agency.id));
       }
     });
-  };
+  }, [categoryMetrics, metricsByKey, agency]);
 
-  return (
+  if (loading) {
+    return <Loading />;
+  }
+  return categoryMetrics ? (
     <>
       <HeaderBar />
       <Styled.Wrapper>
@@ -225,7 +220,7 @@ export const CategoryOverview = observer(() => {
               </Styled.MetricsFilterButton>
             </Styled.MetricsFilters>
             <Styled.MetricsWrapper>
-              {categoryMetrics.map((metric) => (
+              {categoryMetrics.map((metric: Metric) => (
                 <Styled.MetricBox key={metric.key}>
                   <Styled.MetricName>{metric.display_name}</Styled.MetricName>
                   <Styled.MetricDescription>
@@ -233,26 +228,15 @@ export const CategoryOverview = observer(() => {
                   </Styled.MetricDescription>
                   <Styled.MetricDataVizContainer>
                     <MetricsCategoryBarChart
-                      width={1059}
-                      maxBarSize={193}
-                      onHoverBar={(data: ResponsiveBarData) => {
-                        console.log(data, getDatapointYear(data));
-                        setSelectedMetricKey(metric.key);
-                        setSelectedYear(getDatapointYear(data));
-                      }}
+                      width={620}
                       data={getBarChartData(metric)}
                       dimensionNames={[DataVizAggregateName]}
                       metric={metric.display_name}
                       ref={ref}
                     />
                     <CategoryOverviewLineChart
-                      data={lineChartData}
-                      dimensions={
-                        Object.values(
-                          agencyDataStore
-                            .dimensionNamesByMetricAndDisaggregation[metric.key]
-                        )[0]
-                      }
+                      data={getLineChartData(metric)}
+                      dimensions={getLineChartDimensions(metric)}
                     />
                   </Styled.MetricDataVizContainer>
                 </Styled.MetricBox>
@@ -263,5 +247,5 @@ export const CategoryOverview = observer(() => {
       </Styled.Wrapper>
       <Footer />
     </>
-  );
+  ) : null;
 });

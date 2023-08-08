@@ -143,7 +143,7 @@ export const MetricDescription = styled.div`
 export const MetricDataVizContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   flex-direction: row;
   width: 90vw;
   height: 647px;

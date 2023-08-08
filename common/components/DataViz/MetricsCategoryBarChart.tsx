@@ -88,7 +88,7 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
           dataKey="dataVizMissingData"
           stackId="a"
           fill="url(#gradient)"
-          maxBarSize={maxBarSize ?? MAX_BAR_SIZE}
+          maxBarSize={MAX_BAR_SIZE}
         />
       );
       return barDefinitions;
