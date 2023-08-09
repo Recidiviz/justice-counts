@@ -34,7 +34,6 @@ export type ButtonProps = {
   labelColor?: ButtonLabelColor;
   borderColor?: ButtonBorderColor;
   size?: ButtonSize;
-  enabledDuringOnboarding?: boolean;
   disabled?: boolean;
   noSidePadding?: boolean;
   noTopBottomPadding?: boolean;
@@ -50,7 +49,6 @@ export function Button({
   labelColor,
   borderColor,
   size,
-  enabledDuringOnboarding,
   disabled,
   noSidePadding,
   noTopBottomPadding,
@@ -66,7 +64,6 @@ export function Button({
         borderColor={borderColor}
         size={size}
         disabled={disabled}
-        enabledDuringOnboarding={enabledDuringOnboarding}
         noSidePadding={noSidePadding}
         noTopBottomPadding={noTopBottomPadding}
         noHover={noHover}

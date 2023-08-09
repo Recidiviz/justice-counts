@@ -14,7 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-import { palette } from "@justice-counts/common/components/GlobalStyles";
+import {
+  MIN_TABLET_WIDTH,
+  palette,
+} from "@justice-counts/common/components/GlobalStyles";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import React from "react";
 // eslint-disable-next-line no-restricted-imports
@@ -29,12 +32,14 @@ export type BadgeProps = {
   disabled?: boolean;
   loading?: boolean;
   noMargin?: boolean;
+  leftMargin?: number;
 };
 
 export const BadgeElement = styled.div<{
   color?: BadgeColors;
   disabled?: boolean;
   noMargin?: boolean;
+  leftMargin?: number;
 }>`
   height: 24px;
   display: flex;
@@ -61,7 +66,12 @@ export const BadgeElement = styled.div<{
   font-weight: 600;
   white-space: nowrap;
   text-transform: capitalize;
-  ${({ noMargin }) => !noMargin && `margin-left: 10px;`};
+  ${({ noMargin, leftMargin }) =>
+    !noMargin && `margin-left: ${leftMargin || 10}px;`};
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    display: none;
+  }
 `;
 
 export const reportFrequencyBadgeColors: BadgeColorMapping = {
@@ -74,10 +84,16 @@ export const Badge: React.FC<React.PropsWithChildren<BadgeProps>> = ({
   disabled,
   loading,
   noMargin,
+  leftMargin,
   children,
 }) => {
   return (
-    <BadgeElement color={color} disabled={disabled} noMargin={noMargin}>
+    <BadgeElement
+      color={color}
+      disabled={disabled}
+      noMargin={noMargin}
+      leftMargin={leftMargin}
+    >
       {children}
       {loading && <MiniLoader />}
     </BadgeElement>

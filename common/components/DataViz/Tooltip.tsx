@@ -57,7 +57,7 @@ const TooltipNameWithBottomMargin = styled(TooltipName)`
 interface TooltipProps extends RechartsTooltipProps<number, string> {
   percentOnly: boolean;
   dimensionNames: string[];
-  metric?: string;
+  metric: string;
 }
 
 const Tooltip: React.FC<TooltipProps> = ({

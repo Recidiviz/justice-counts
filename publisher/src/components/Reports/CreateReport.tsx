@@ -30,7 +30,12 @@ import {
   ReportOverview,
 } from "@justice-counts/common/types";
 import React, { useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 
 import { trackReportCreated } from "../../analytics";
 import { useStore } from "../../stores";
@@ -72,6 +77,8 @@ const CreateReport = () => {
   const { reportStore, userStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
+  const { state } = useLocation();
+
   const [createReportFormValues, setCreateReportFormValues] = useState(
     initialCreateReportFormValues
   );
@@ -197,6 +204,14 @@ const CreateReport = () => {
 
       {/* Create Report Form */}
       <Styled.CreateReportFormWrapper>
+        {state?.from === "Home" && (
+          <Styled.NoRecordsForTaskCardManualEntryMessage>
+            It looks like there are no {REPORTS_LOWERCASE} for the metric you
+            would like to manually input data for. Please create a new{" "}
+            {REPORT_LOWERCASE}.
+          </Styled.NoRecordsForTaskCardManualEntryMessage>
+        )}
+
         <Styled.CreateReportForm>
           {/* Form Title */}
           <OnePanelBackLinkContainer>

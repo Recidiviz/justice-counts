@@ -110,6 +110,12 @@ export const SystemNameContainer = styled.div<{ isSystemActive: boolean }>`
 export const SystemName = styled.span`
   white-space: nowrap;
   text-transform: capitalize;
+
+  span {
+    display: block;
+    ${typography.sizeCSS.normal}
+    color: ${palette.highlight.grey9};
+  }
 `;
 
 export const MetricsItemsContainer = styled.div<{ isSystemActive: boolean }>`

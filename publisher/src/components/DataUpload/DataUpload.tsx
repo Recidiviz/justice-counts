@@ -286,7 +286,6 @@ export const DataUpload: React.FC = observer(() => {
         onLogoClick={() => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`)}
         background={headerBackground()}
         hasBottomBorder={!!errorsWarningsMetrics}
-        label="Justice Counts"
         badge={headerBadge}
       >
         <Button

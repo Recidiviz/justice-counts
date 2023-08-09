@@ -15,14 +15,28 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
-import { Legend, Line, LineChart, Tooltip, XAxis } from "recharts";
+import {
+  BreakdownsTitle,
+  Container,
+} from "@justice-counts/agency-dashboard/src/CategoryOverview/CategoryOverview.styled";
+import { invertObj, mapObjIndexed, pipe } from "ramda";
+import React, { useMemo } from "react";
+import {
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ReferenceLine,
+  XAxis,
+} from "recharts";
 
+import { useLineChartLegend } from "../../hooks";
 import { Datapoint } from "../../types";
+import { printDateAsYear } from "../../utils";
 import { palette } from "../GlobalStyles";
-import { splitUtcString } from "./utils";
+import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
 
-type LineChartProps = {
+export type LineChartProps = {
   data: Datapoint[];
   dimensions: string[];
 };
@@ -31,15 +45,28 @@ export function CategoryOverviewLineChart({
   data,
   dimensions,
 }: LineChartProps) {
+  const colorDict = useMemo(
+    () =>
+      pipe(
+        invertObj,
+        mapObjIndexed(
+          (colorName: string, fill) =>
+            dimensions[Number(colorName.replace("bar", "")) - 1]
+        ),
+        invertObj
+      )(palette.dataViz),
+    [dimensions]
+  );
+
   const renderLines = () => {
     // each Recharts Bar component defines a category type in the stacked bar chart
     let lineDefinitions: JSX.Element[] = [];
-    dimensions.forEach((dimension, index) => {
+    dimensions.forEach((dimension) => {
       const newLine = (
         <Line
           key={dimension}
           dataKey={dimension}
-          stroke={Object.values(palette.dataViz)[index]}
+          stroke={colorDict[dimension]}
           type="monotone"
         />
       );
@@ -47,23 +74,37 @@ export function CategoryOverviewLineChart({
     });
     return lineDefinitions;
   };
+  const { legendData, referenceLineHeight } = useLineChartLegend(
+    data,
+    dimensions,
+    colorDict
+  );
 
   return (
-    <LineChart
-      width={730}
-      height={250}
-      data={data}
-      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-    >
-      <XAxis
-        dataKey={(datapoint) => {
-          const [, , , year] = splitUtcString(datapoint.start_date);
-          return year;
-        }}
-      />
-      <Tooltip />
-      <Legend />
-      {renderLines()}
-    </LineChart>
+    <Container>
+      <BreakdownsTitle>Breakdowns</BreakdownsTitle>
+      <LineChart
+        width={533}
+        height={500}
+        data={data}
+        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+      >
+        <CartesianGrid horizontal={false} />
+        <ReferenceLine y={referenceLineHeight} />
+        <XAxis dataKey={(datapoint) => printDateAsYear(datapoint.end_date)} />
+        {/* <Tooltip /> */}
+        {renderLines()}
+        {legendData && (
+          <Legend
+            content={
+              <CategoryOverviewBreakdown
+                data={legendData}
+                dimensions={dimensions}
+              />
+            }
+          />
+        )}
+      </LineChart>
+    </Container>
   );
 }

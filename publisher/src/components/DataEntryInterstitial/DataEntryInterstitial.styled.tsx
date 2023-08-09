@@ -16,54 +16,60 @@
 // =============================================================================
 
 import {
-  HEADER_BAR_HEIGHT,
-  MIN_DESKTOP_WIDTH,
+  MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-export const HeaderBar = styled.header<{ bottomBorder?: boolean }>`
+export const InterstitialContainer = styled.div`
   width: 100%;
-  height: ${HEADER_BAR_HEIGHT}px;
+  min-height: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  position: fixed;
-  top: 0;
-  z-index: 3;
-  background: ${palette.solid.white};
-  padding: 16px 0;
-
-  ${({ bottomBorder }) =>
-    bottomBorder && `border-bottom: 1px solid ${palette.highlight.grey3};`}
 `;
 
-export const LogoContainer = styled.div`
-  height: ${HEADER_BAR_HEIGHT}px;
-  width: auto;
+export const OptionBox = styled.div`
+  min-width: 424px;
+  min-height: 264px;
+  border: 0.5px solid ${palette.highlight.grey4};
   display: flex;
-  justify-content: start;
-  gap: 24px;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  transition: 0.3s ease;
+  text-align: center;
 
   &:hover {
     cursor: pointer;
-    opacity: 0.9;
+    background: ${palette.highlight.grey1};
   }
 `;
 
-export const Logo = styled.img`
-  width: 64px;
-  height: 64px;
+export const OptionsWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 64px;
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    flex-direction: column;
+
+    ${OptionBox} {
+      min-width: 374px;
+      min-height: 240px;
+    }
+  }
 `;
 
-export const LogoName = styled.div`
-  ${typography.sizeCSS.medium};
-  white-space: nowrap;
+export const OptionName = styled.div`
+  ${typography.sizeCSS.large}
+  margin-top: 18px;
+  margin-bottom: 16px;
+`;
 
-  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    display: none;
-  }
+export const OptionDescription = styled.div`
+  ${typography.sizeCSS.normal}
+  max-width: 220px;
+  color: ${palette.highlight.grey8};
 `;

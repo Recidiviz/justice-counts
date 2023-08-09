@@ -52,7 +52,6 @@ import {
   ResourceTypes,
   UnauthorizedDeleteActionModal,
 } from "../components/Modals";
-import { Onboarding } from "../components/Onboarding";
 import { TeamMemberNameWithBadge } from "../components/primitives";
 import {
   ActionsWrapper,
@@ -109,7 +108,6 @@ const Reports: React.FC = () => {
   const navigate = useNavigate();
   const windowWidth = useWindowWidth();
 
-  const [showOnboarding, setShowOnboarding] = useState(true);
   const [loadingError, setLoadingError] = useState<string | undefined>(
     undefined
   );
@@ -434,11 +432,13 @@ const Reports: React.FC = () => {
         <Modal
           title={removeRecordsModalTitle}
           description="You can’t undo this action."
-          primaryButton={{ label: "Yes, Delete", onClick: handleRemoveRecords }}
-          secondaryButton={{
-            label: "No, Cancel",
-            onClick: () => setIsRemoveRecordsModalOpen(false),
-          }}
+          buttons={[
+            { label: "Yes, Delete", onClick: handleRemoveRecords },
+            {
+              label: "No, Cancel",
+              onClick: () => setIsRemoveRecordsModalOpen(false),
+            },
+          ]}
           modalType="alert"
         />
       )}
@@ -585,15 +585,6 @@ const Reports: React.FC = () => {
         </LabelRow>
         {renderReports()}
       </Table>
-
-      {/* Onboarding */}
-      {userStore.onboardingTopicsCompleted?.reportsview === false &&
-        showOnboarding && (
-          <Onboarding
-            setShowOnboarding={setShowOnboarding}
-            topic="reportsview"
-          />
-        )}
     </>
   );
 };

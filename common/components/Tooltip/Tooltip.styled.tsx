@@ -17,12 +17,13 @@
 // eslint-disable-next-line no-restricted-imports
 import styled from "styled-components";
 
-import { palette, typography } from "../GlobalStyles";
+import { centerTextCSS, palette, typography } from "../GlobalStyles";
 import { TooltipColor, TooltipWidth } from "./types";
 
 export const TooltipContainer = styled.div<{
   tooltipColor?: TooltipColor;
   tooltipWidth?: TooltipWidth;
+  centerText?: boolean;
 }>`
   padding: 16px;
   display: flex;
@@ -34,11 +35,11 @@ export const TooltipContainer = styled.div<{
     if (tooltipWidth === "narrow") return "170px";
     return "300px";
   }};
-
   background-color: ${({ tooltipColor }) => {
     if (tooltipColor === "info") return palette.solid.blue;
     return palette.solid.darkgrey;
   }};
+  ${centerTextCSS}
 `;
 
 export const TooltipTitle = styled.span`
@@ -48,4 +49,5 @@ export const TooltipTitle = styled.span`
 export const TooltipContent = styled.span`
   ${typography.sizeCSS.normal};
   white-space: normal;
+  text-transform: none;
 `;

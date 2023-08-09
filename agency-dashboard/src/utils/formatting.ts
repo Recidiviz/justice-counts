@@ -14,5 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
+
+import { splitUtcString } from "@justice-counts/common/components/DataViz/utils";
+import { Datapoint } from "@justice-counts/common/types";
+import { formatNumberInput } from "@justice-counts/common/utils";
+
+// =============================================================================
 export const slugify = (str: string): string =>
   str?.replace(/\s/g, "-")?.toLowerCase();
+
+export const getDatapointYear = (datapoint: Datapoint) => {
+  const [, , , year] = splitUtcString(datapoint.start_date);
+  return year;
+};
+
+export const renderPercentText = (
+  val: number | string | null,
+  maxValue: number
+) => {
+  if (typeof val !== "number") {
+    return "Not Reported";
+  }
+
+  let percentText = `${val !== 0 ? Math.round((val / maxValue) * 100) : 0}%`;
+  // handle case of non-zero being rounded down to 0%
+  if (percentText === "0%" && val !== 0) {
+    percentText = "<1%";
+  }
+  return `${formatNumberInput(val.toString())} (${percentText})`;
+};

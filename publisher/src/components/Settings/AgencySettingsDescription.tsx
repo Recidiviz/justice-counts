@@ -55,6 +55,7 @@ const AgencySettingsDescription: React.FC<{
     currentAgencySettings?.find(
       (setting) => setting.setting_type === "PURPOSE_AND_FUNCTIONS"
     )?.value || "";
+  const isAgencySettingConfigured = Boolean(purposeAndFunctionsSetting);
 
   const handleSaveClick = () => {
     const updatedSettings = updateAgencySettings(
@@ -122,7 +123,9 @@ const AgencySettingsDescription: React.FC<{
       )}
 
       <AgencySettingsBlock id="description">
-        <AgencySettingsBlockTitle>Agency Information</AgencySettingsBlockTitle>
+        <AgencySettingsBlockTitle configured={isAgencySettingConfigured}>
+          Agency Information
+        </AgencySettingsBlockTitle>
         <AgencyInfoBlockDescription>
           {purposeAndFunctionsSetting || "No description added."}
         </AgencyInfoBlockDescription>
