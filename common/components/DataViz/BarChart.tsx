@@ -73,6 +73,7 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
       dimensionNames,
       percentageView,
       resizeHeight,
+      metric,
     }: ResponsiveBarChartProps,
     ref
   ) => {
@@ -178,6 +179,7 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
                 <Tooltip
                   percentOnly={!!percentageView}
                   dimensionNames={dimensionNames}
+                  metric={metric}
                 />
               }
             />

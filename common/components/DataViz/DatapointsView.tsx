@@ -207,6 +207,7 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
           }
           resizeHeight={resizeHeight}
           ref={ref}
+          metric={metricName}
         />
       );
     };

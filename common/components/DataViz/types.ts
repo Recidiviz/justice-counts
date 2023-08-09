@@ -37,7 +37,7 @@ export interface CustomYAxisTickProps extends TickProps {
 export type ResponsiveBarChartProps = {
   data: Datapoint[];
   dimensionNames: string[];
-  metric?: string;
+  metric: string;
   percentageView?: boolean;
   resizeHeight?: boolean;
   width?: string | number;
