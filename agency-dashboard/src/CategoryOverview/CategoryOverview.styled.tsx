@@ -105,7 +105,7 @@ export const MetricsFilterButton = styled.div<{ active: boolean }>`
 export const MetricsWrapper = styled.div`
   width: 100%;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
 
   @media only screen and (max-width: 1220px) {
@@ -143,11 +143,18 @@ export const MetricDescription = styled.div`
 export const MetricDataVizContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 456px;
+  justify-content: space-around;
+  flex-direction: row;
+  width: 90vw;
+  height: 647px;
 
   .recharts-bar-rectangle {
     cursor: pointer !important;
   }
+`;
+
+export const BreakdownsTitle = styled.h3`
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 500;
 `;

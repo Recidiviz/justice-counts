@@ -40,4 +40,56 @@ export type ResponsiveBarChartProps = {
   metric?: string;
   percentageView?: boolean;
   resizeHeight?: boolean;
+  width?: string | number;
+  maxBarSize?: number;
+  onHoverBar?: (data: ResponsiveBarData) => void;
 };
+
+export type BarChartBackground = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+export type BarChartTooltipPayload = {
+  color: string;
+  dataKey: string;
+  fill: string;
+  name: string;
+  payload: Datapoint;
+  value: number;
+};
+
+export type ResponsiveBarData = Datapoint &
+  BarChartBackground &
+  Record<string, number | string | null> & {
+    height: number;
+    width: number;
+    value: number[];
+    x: number;
+    y: number;
+    payload: Datapoint;
+    background: BarChartBackground;
+    tooltipPayload: BarChartTooltipPayload;
+  };
+
+export type LineChartBreakdownValue = {
+  value: number | string | null;
+  fill: string;
+};
+
+export type LineChartBreakdownNumericValue = {
+  value: number;
+  fill: string;
+};
+
+export type LineChartBreakdownProps = {
+  data: Record<keyof Datapoint, LineChartBreakdownValue>;
+  dimensions: string[];
+};
+
+export type LegendData = Record<
+  keyof Datapoint,
+  LineChartBreakdownNumericValue
+>;

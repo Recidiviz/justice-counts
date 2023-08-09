@@ -18,19 +18,21 @@
 import { ReactComponent as DownloadIcon } from "@justice-counts/common/assets/download-icon.svg";
 import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share-icon.svg";
 import { Button } from "@justice-counts/common/components/Button";
+import { CategoryOverviewLineChart } from "@justice-counts/common/components/DataViz/CategoryOverviewLineChart";
 import MetricsCategoryBarChart from "@justice-counts/common/components/DataViz/MetricsCategoryBarChart";
-import { transformDataForBarChart } from "@justice-counts/common/components/DataViz/utils";
 import { showToast } from "@justice-counts/common/components/Toast";
+import { useBarChart, useLineChart } from "@justice-counts/common/hooks";
 import {
   Datapoint,
   DataVizAggregateName,
-  DataVizTimeRangesMap,
+  Metric,
 } from "@justice-counts/common/types";
 import { each } from "bluebird";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCurrentPng } from "recharts-to-png";
+import useAsyncEffect from "use-async-effect";
 
 import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
@@ -63,9 +65,30 @@ export const CategoryOverview = observer(() => {
     "recent"
   );
 
-  const filterDatapoints = (datapoints: Datapoint[]) => {
-    return dataRangeFilter === "recent" ? datapoints.slice(-5) : datapoints;
-  };
+  const filterDatapoints = useCallback(
+    (datapoints: Datapoint[]) => {
+      return dataRangeFilter === "recent" ? datapoints.slice(-5) : datapoints;
+    },
+    [dataRangeFilter]
+  );
+
+  const { getLineChartData, getLineChartDimensions } = useLineChart({
+    filterDatapoints,
+    datapointsByMetric: agencyDataStore.datapointsByMetric,
+    dimensionNamesByMetricAndDisaggregation:
+      agencyDataStore.dimensionNamesByMetricAndDisaggregation,
+    dataRangeFilter,
+  });
+
+  const { getBarChartData } = useBarChart({
+    filterDatapoints,
+    datapointsByMetric: agencyDataStore.datapointsByMetric,
+  });
+
+  const categoryMetrics = useMemo(
+    () => agencyDataStore.metricsByCategory?.[categoryData[category].key],
+    [agencyDataStore.metricsByCategory, category]
+  );
 
   const copyUrlToClipboard = async () => {
     try {
@@ -92,35 +115,21 @@ export const CategoryOverview = observer(() => {
   //   }
   // }, [getChartPng]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (agencyDataStore.metrics.length === 0) {
-          await agencyDataStore.fetchAgencyData(slug);
-        }
-      } catch {
-        showToast({
-          message: "Error fetching data.",
-          color: "red",
-          timeout: 4000,
-        });
-      }
-    };
-
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  useAsyncEffect(async () => {
+    try {
+      await agencyDataStore.fetchAgencyData(slug);
+    } catch {
+      showToast({
+        message: "Error fetching data.",
+        color: "red",
+        timeout: 4000,
+      });
+    }
   }, []);
 
-  if (agencyDataStore.loading) {
-    return <Loading />;
-  }
-
-  const categoryMetrics =
-    agencyDataStore.metricsByCategory[categoryData[category].key];
-
-  const downloadMetricsData = () => {
-    categoryMetrics.forEach((categoryMetric) => {
-      const metric = agencyDataStore.metricsByKey[categoryMetric.key];
+  const downloadMetricsData = useCallback(() => {
+    categoryMetrics?.forEach((categoryMetric: Metric) => {
+      const metric = agencyDataStore.metricsByKey?.[categoryMetric.key];
       if (metric && agencyDataStore.agency) {
         each(
           metric.filenames,
@@ -128,9 +137,12 @@ export const CategoryOverview = observer(() => {
         );
       }
     });
-  };
+  }, [categoryMetrics, agencyDataStore.metricsByKey, agencyDataStore.agency]);
 
-  return (
+  if (agencyDataStore.loading) {
+    return <Loading />;
+  }
+  return categoryMetrics ? (
     <>
       <HeaderBar />
       <Styled.Wrapper>
@@ -174,7 +186,7 @@ export const CategoryOverview = observer(() => {
               </Styled.MetricsFilterButton>
             </Styled.MetricsFilters>
             <Styled.MetricsWrapper>
-              {categoryMetrics.map((metric) => (
+              {categoryMetrics.map((metric: Metric) => (
                 <Styled.MetricBox key={metric.key}>
                   <Styled.MetricName>{metric.display_name}</Styled.MetricName>
                   <Styled.MetricDescription>
@@ -182,43 +194,17 @@ export const CategoryOverview = observer(() => {
                   </Styled.MetricDescription>
                   <Styled.MetricDataVizContainer>
                     <MetricsCategoryBarChart
-                      data={filterDatapoints(
-                        transformDataForBarChart(
-                          agencyDataStore.datapointsByMetric[metric.key]
-                            .aggregate,
-                          DataVizTimeRangesMap.All,
-                          "Count"
-                        )
-                      )}
+                      width={620}
+                      data={getBarChartData(metric)}
                       dimensionNames={[DataVizAggregateName]}
                       metric={metric.display_name}
                       ref={ref}
                     />
+                    <CategoryOverviewLineChart
+                      data={getLineChartData(metric)}
+                      dimensions={getLineChartDimensions(metric)}
+                    />
                   </Styled.MetricDataVizContainer>
-                  {/* <CategoryOverviewLineChart */}
-                  {/*  data={filterDatapoints( */}
-                  {/*    transformDataForBarChart( */}
-                  {/*      Object.values( */}
-                  {/*        agencyDataStore.datapointsByMetric[metric.key] */}
-                  {/*          ?.disaggregations[ */}
-                  {/*          Object.keys( */}
-                  {/*            agencyDataStore.datapointsByMetric[metric.key] */}
-                  {/*              ?.disaggregations */}
-                  {/*          )[0] */}
-                  {/*        ] */}
-                  {/*      ), */}
-                  {/*      DataVizTimeRangesMap.All, */}
-                  {/*      "Count" */}
-                  {/*    ) */}
-                  {/*  )} */}
-                  {/*  dimensions={ */}
-                  {/*    Object.values( */}
-                  {/*      agencyDataStore.dimensionNamesByMetricAndDisaggregation[ */}
-                  {/*        metric.key */}
-                  {/*      ] */}
-                  {/*    )[0] */}
-                  {/*  } */}
-                  {/* /> */}
                 </Styled.MetricBox>
               ))}
             </Styled.MetricsWrapper>
@@ -227,5 +213,5 @@ export const CategoryOverview = observer(() => {
       </Styled.Wrapper>
       <Footer />
     </>
-  );
+  ) : null;
 });

@@ -15,5 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+export * from "./useBarChart";
 export * from "./useIsFooterVisible";
+export * from "./useLineChart";
+export * from "./useLineChartLegend";
 export * from "./useWindowWidth";
