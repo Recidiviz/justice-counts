@@ -13,7 +13,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^27.5.2",
-    "@types/lodash": "^4.14.186",
+    "@types/lodash": "^4.14.196",
     "@types/node": "^20.4.5",
     "@types/ramda": "^0.29.3",
     "@types/react": "^18.0.21",
