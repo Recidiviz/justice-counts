@@ -18,7 +18,7 @@
 import {
   Datapoint,
   DatapointsByMetric,
-  DataVizTimeRangesMap,
+  DataVizTimeRange,
   DimensionNamesByMetricAndDisaggregation,
   Metric,
   UserAgency,
@@ -34,7 +34,7 @@ export type LineChartProps = {
 };
 
 export type LineChartHookProps = Partial<UserAgency> & {
-  filterDatapoints: (datapoints: Datapoint[]) => Datapoint[];
+  getCurrentChartTimeRange: (isAnnual: boolean) => DataVizTimeRange;
   datapointsByMetric: DatapointsByMetric | undefined;
   dimensionNamesByMetricAndDisaggregation:
     | DimensionNamesByMetricAndDisaggregation
@@ -43,10 +43,9 @@ export type LineChartHookProps = Partial<UserAgency> & {
 };
 
 export const useLineChart = ({
-  filterDatapoints,
+  getCurrentChartTimeRange,
   datapointsByMetric,
   dimensionNamesByMetricAndDisaggregation,
-  dataRangeFilter,
 }: LineChartHookProps): LineChartProps => {
   const getLineChartData = useCallback(
     (metric: Metric) => {
@@ -55,22 +54,20 @@ export const useLineChart = ({
           keys,
           head
         )(datapointsByMetric[metric.key]?.disaggregations) as string;
-        return filterDatapoints(
-          transformDataForBarChart(
-            pipe(
-              prop(disaggregationProp) as (value: {
-                [disaggregation: string]: { [start_date: string]: Datapoint };
-              }) => object,
-              values
-            )(datapointsByMetric[metric.key]?.disaggregations) as Datapoint[],
-            DataVizTimeRangesMap.All,
-            "Count"
-          )
+        return transformDataForBarChart(
+          pipe(
+            prop(disaggregationProp) as (value: {
+              [disaggregation: string]: { [start_date: string]: Datapoint };
+            }) => object,
+            values
+          )(datapointsByMetric[metric.key]?.disaggregations) as Datapoint[],
+          getCurrentChartTimeRange(metric.custom_frequency === "ANNUAL"),
+          "Count"
         );
       }
       return [];
     },
-    [filterDatapoints, datapointsByMetric]
+    [getCurrentChartTimeRange, datapointsByMetric]
   );
 
   const getLineChartDimensions = useCallback(
