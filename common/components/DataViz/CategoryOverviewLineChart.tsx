@@ -20,30 +20,35 @@ import {
   Container,
 } from "@justice-counts/agency-dashboard/src/CategoryOverview/CategoryOverview.styled";
 import { invertObj, mapObjIndexed, pipe } from "ramda";
-import React, { useMemo } from "react";
+import React, { CSSProperties, useMemo } from "react";
 import {
   CartesianGrid,
   Legend,
   Line,
   LineChart,
   ReferenceLine,
+  Tooltip,
   XAxis,
+  YAxis,
 } from "recharts";
 
 import { useLineChartLegend } from "../../hooks";
 import { Datapoint } from "../../types";
 import { printDateAsYear } from "../../utils";
+import { formatNumberForChart } from "../../utils/helperUtils";
 import { palette } from "../GlobalStyles";
 import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
 
 export type LineChartProps = {
   data: Datapoint[];
   dimensions: string[];
+  hoveredDate: string;
 };
 
 export function CategoryOverviewLineChart({
   data,
   dimensions,
+  hoveredDate,
 }: LineChartProps) {
   const colorDict = useMemo(
     () =>
@@ -77,22 +82,42 @@ export function CategoryOverviewLineChart({
   const { legendData, referenceLineHeight } = useLineChartLegend(
     data,
     dimensions,
+    hoveredYear,
     colorDict
   );
-
+  const axisTickStyle: CSSProperties = useMemo(
+    () => ({
+      fontFamily: "Inter",
+      fontSize: 12,
+      fontWeight: 600,
+      letterSpacing: "0em",
+      textAlign: "right",
+      fill: "rgba(0, 17, 51, 0.5)",
+    }),
+    []
+  );
   return (
     <Container>
       <BreakdownsTitle>Breakdowns</BreakdownsTitle>
       <LineChart
-        width={533}
+        width={600}
         height={500}
         data={data}
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid horizontal={false} />
         <ReferenceLine y={referenceLineHeight} />
-        <XAxis dataKey={(datapoint) => printDateAsYear(datapoint.end_date)} />
-        {/* <Tooltip /> */}
+        <XAxis
+          dataKey={(datapoint) => printDateAsYear(datapoint.end_date)}
+          style={axisTickStyle}
+        />
+        <YAxis
+          type="number"
+          domain={[0, "dataMax"]}
+          tickFormatter={formatNumberForChart as (value: number) => string}
+          style={axisTickStyle}
+        />
+        {<Tooltip wrapperStyle={{ display: "none" }} />}
         {renderLines()}
         {legendData && (
           <Legend

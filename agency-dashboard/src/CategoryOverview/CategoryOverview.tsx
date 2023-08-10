@@ -22,11 +22,7 @@ import { CategoryOverviewLineChart } from "@justice-counts/common/components/Dat
 import MetricsCategoryBarChart from "@justice-counts/common/components/DataViz/MetricsCategoryBarChart";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { useBarChart, useLineChart } from "@justice-counts/common/hooks";
-import {
-  DataVizAggregateName,
-  DataVizTimeRangesMap,
-  Metric,
-} from "@justice-counts/common/types";
+import { DataVizAggregateName, Metric } from "@justice-counts/common/types";
 import { each } from "bluebird";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useMemo, useState } from "react";
@@ -64,6 +60,7 @@ export const CategoryOverview = observer(() => {
   const [dataRangeFilter, setDataRangeFilter] = useState<"recent" | "all">(
     "recent"
   );
+  const [hoveredDate, setHoveredDate] = useState<string>();
 
   const getCurrentChartTimeRange = useCallback(
     (isAnnual: boolean) => {
@@ -201,6 +198,9 @@ export const CategoryOverview = observer(() => {
                     <MetricsCategoryBarChart
                       width={620}
                       data={getBarChartData(metric)}
+                      onHoverBar={(payload) => {
+                        setHoveredDate(payload.start_date);
+                      }}
                       dimensionNames={[DataVizAggregateName]}
                       metric={metric.display_name}
                       ref={ref}
@@ -208,6 +208,7 @@ export const CategoryOverview = observer(() => {
                     <CategoryOverviewLineChart
                       data={getLineChartData(metric)}
                       dimensions={getLineChartDimensions(metric)}
+                      hoveredDate={hoveredDate}
                     />
                   </Styled.MetricDataVizContainer>
                 </Styled.MetricBox>

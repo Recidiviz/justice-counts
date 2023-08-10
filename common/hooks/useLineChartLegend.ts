@@ -33,6 +33,7 @@ import { Datapoint } from "../types";
 export const useLineChartLegend = (
   data: Datapoint[],
   dimensions: (keyof Datapoint)[],
+  hoveredYear: string | null,
   colorDict: Record<string, string>
 ) => {
   const [legendData, setLegendData] = useState<LegendData>();

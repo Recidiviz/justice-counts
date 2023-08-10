@@ -30,7 +30,7 @@ import {
   LegendName,
   LegendTitle,
   LegendValue,
-} from "./CategoryOverviewBreakdown.styled";
+} from "./CategoryOverviewBreakdown.styles";
 import {
   LineChartBreakdownNumericValue,
   LineChartBreakdownProps,
