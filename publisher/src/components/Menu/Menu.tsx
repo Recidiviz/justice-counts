@@ -34,7 +34,6 @@ import { ReactComponent as AgencySettingsIcon } from "../assets/pillar-icon.svg"
 import { ReactComponent as YourAccountIcon } from "../assets/profile-icon.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { useHeaderBadge } from "../Header/hooks";
-import { useSettingsSearchParams } from "../Settings";
 import * as Styled from "./Menu.styles";
 
 const Menu: React.FC = () => {
@@ -44,9 +43,6 @@ const Menu: React.FC = () => {
   const location = useLocation();
   const windowWidth = useWindowWidth();
   const headerBadge = useHeaderBadge();
-
-  const [settingsSearchParams, setSettingsSearchParams] =
-    useSettingsSearchParams();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const pathWithoutAgency = removeAgencyFromPath(location.pathname);
@@ -204,14 +200,7 @@ const Menu: React.FC = () => {
           {/* Metric Config */}
           <Styled.MenuItem
             onClick={() => {
-              if (pathWithoutAgency === "metric-config") {
-                setSettingsSearchParams({
-                  ...settingsSearchParams,
-                  metric: undefined,
-                });
-              } else {
-                navigate("metric-config");
-              }
+              navigate("metric-config");
               handleCloseMobileMenu();
             }}
             active={pathWithoutAgency === "metric-config"}
