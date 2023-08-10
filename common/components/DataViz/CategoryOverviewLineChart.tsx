@@ -110,20 +110,20 @@ export function CategoryOverviewLineChart({
       >
         <CartesianGrid horizontal={false} />
         <ReferenceLine y={referenceLineHeight} />
-        {map(
-          (datapoint: Datapoint) => (
-            <ReferenceLine
-              x={printDateAsYear(datapoint.start_date)}
-              onMouseEnter={() => setHoveredDate(datapoint.start_date)}
-            />
-          ),
-          pipe(
-            tail,
-            reverse<Datapoint>,
-            tail,
-            reverse<Datapoint>
-          )(data) as Datapoint[]
-        )}
+        {pipe(
+          tail,
+          reverse<Datapoint>,
+          tail,
+          reverse<Datapoint>,
+          map(
+            (datapoint: Datapoint): JSX.Element => (
+              <ReferenceLine
+                x={printDateAsYear(datapoint.start_date)}
+                onMouseEnter={() => setHoveredDate(datapoint.start_date)}
+              />
+            )
+          )
+        )(data)}
         <XAxis
           dataKey={(datapoint) => printDateAsYear(datapoint.start_date)}
           style={axisTickStyle}

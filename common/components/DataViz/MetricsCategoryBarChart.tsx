@@ -93,7 +93,6 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
       );
       return barDefinitions;
     };
-
     return (
       <>
         <ResponsiveContainer width={width} height="100%">

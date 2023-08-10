@@ -22,6 +22,7 @@ import {
   Metric,
   UserAgency,
 } from "@justice-counts/common/types";
+import { map, mergeAll, pipe } from "ramda";
 import { useCallback } from "react";
 
 import { transformDataForBarChart } from "../components/DataViz/utils";
@@ -33,17 +34,46 @@ export type BarChartProps = {
 export type BarChartHookProps = Partial<UserAgency> & {
   getCurrentChartTimeRange: (isAnnual: boolean) => DataVizTimeRange;
   datapointsByMetric: DatapointsByMetric | undefined;
+  disaggregations: string[];
 };
 
 export const useBarChart = ({
   getCurrentChartTimeRange,
   datapointsByMetric,
+  disaggregations,
 }: BarChartHookProps): BarChartProps => {
   const getBarChartData = useCallback(
     (metric: Metric) => {
       if (datapointsByMetric) {
+        const hoistDisaggregations = map((aggregateDatapoint: Datapoint) => ({
+          ...aggregateDatapoint,
+          ...(pipe(
+            map<string, { [x: string]: Datapoint }>(
+              (value: string): { [x: string]: Datapoint } => {
+                console.log(
+                  datapointsByMetric[metric.key]?.disaggregations?.[value]
+                );
+                return datapointsByMetric[metric.key]?.disaggregations?.[value]
+                  ?.length
+                  ? {
+                      [value]:
+                        datapointsByMetric[metric.key]?.disaggregations?.[
+                          value
+                        ]?.[aggregateDatapoint.start_date],
+                    }
+                  : {};
+              }
+            ),
+            mergeAll
+          )(disaggregations) as { [x: string]: Datapoint }),
+        }));
+        console.log(
+          hoistDisaggregations(datapointsByMetric[metric.key].aggregate)
+        );
         return transformDataForBarChart(
-          datapointsByMetric[metric.key].aggregate,
+          hoistDisaggregations(
+            datapointsByMetric[metric.key].aggregate
+          ) as Datapoint[],
           getCurrentChartTimeRange(metric.custom_frequency === "ANNUAL"),
           "Count"
         );

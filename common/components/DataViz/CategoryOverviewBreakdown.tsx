@@ -43,8 +43,8 @@ export const CategoryOverviewBreakdown: FunctionComponent<
   <Container>
     <LegendTitle>
       {hoveredDate
-        ? printDateAsYear(String(data.start_date.value))
-        : `Recent (${printDateAsYear(String(data.start_date.value))})`}
+        ? printDateAsYear(String(data.start_date?.value))
+        : `Recent (${printDateAsYear(String(data.start_date?.value))})`}
     </LegendTitle>
     {dimensions.map((dimension) => (
       <LegendItem>

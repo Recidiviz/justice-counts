@@ -51,6 +51,8 @@ const categoryData: CategoryData = {
   },
 };
 
+const disaggregations = ["Vacant Positions (Any Staff Type)"];
+
 export const CategoryOverview = observer(() => {
   const { slug, category } = useParams() as {
     slug: string;
@@ -89,6 +91,7 @@ export const CategoryOverview = observer(() => {
   const { getBarChartData } = useBarChart({
     getCurrentChartTimeRange,
     datapointsByMetric: agencyDataStore.datapointsByMetric,
+    disaggregations,
   });
 
   const categoryMetrics = useMemo(

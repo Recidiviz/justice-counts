@@ -25,7 +25,7 @@ export const Container = styled.ul`
   list-style-type: square;
   margin-top: 32px;
   width: 520px;
-  margin-left: 45px;
+  margin-left: 40px;
 `;
 
 export const LegendTitle = styled.p`
