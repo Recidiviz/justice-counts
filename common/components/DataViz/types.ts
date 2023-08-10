@@ -87,6 +87,7 @@ export type LineChartBreakdownNumericValue = {
 export type LineChartBreakdownProps = {
   data: Record<keyof Datapoint, LineChartBreakdownValue>;
   dimensions: string[];
+  hoveredDate: string | null;
 };
 
 export type LegendData = Record<

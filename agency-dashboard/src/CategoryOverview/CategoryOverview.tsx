@@ -22,7 +22,11 @@ import { CategoryOverviewLineChart } from "@justice-counts/common/components/Dat
 import MetricsCategoryBarChart from "@justice-counts/common/components/DataViz/MetricsCategoryBarChart";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { useBarChart, useLineChart } from "@justice-counts/common/hooks";
-import { DataVizAggregateName, Metric } from "@justice-counts/common/types";
+import {
+  DataVizAggregateName,
+  DataVizTimeRangesMap,
+  Metric,
+} from "@justice-counts/common/types";
 import { each } from "bluebird";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useMemo, useState } from "react";
@@ -209,6 +213,7 @@ export const CategoryOverview = observer(() => {
                       data={getLineChartData(metric)}
                       dimensions={getLineChartDimensions(metric)}
                       hoveredDate={hoveredDate}
+                      setHoveredDate={setHoveredDate}
                     />
                   </Styled.MetricDataVizContainer>
                 </Styled.MetricBox>

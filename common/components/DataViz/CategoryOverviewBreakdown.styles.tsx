@@ -24,6 +24,8 @@ export const Container = styled.ul`
   flex-direction: column;
   list-style-type: square;
   margin-top: 32px;
+  width: 520px;
+  margin-left: 45px;
 `;
 
 export const LegendTitle = styled.p`

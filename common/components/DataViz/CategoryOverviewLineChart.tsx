@@ -43,12 +43,14 @@ export type LineChartProps = {
   data: Datapoint[];
   dimensions: string[];
   hoveredDate: string | null;
+  setHoveredDate: (date: string | null) => void;
 };
 
 export function CategoryOverviewLineChart({
   data,
   dimensions,
   hoveredDate,
+  setHoveredDate,
 }: LineChartProps) {
   const colorDict = useMemo(
     () =>
@@ -104,12 +106,16 @@ export function CategoryOverviewLineChart({
         height={500}
         data={data}
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+        onClick={() => setHoveredDate(null)}
       >
         <CartesianGrid horizontal={false} />
         <ReferenceLine y={referenceLineHeight} />
         {map(
           (datapoint: Datapoint) => (
-            <ReferenceLine x={printDateAsYear(datapoint.end_date)} />
+            <ReferenceLine
+              x={printDateAsYear(datapoint.start_date)}
+              onMouseEnter={() => setHoveredDate(datapoint.start_date)}
+            />
           ),
           pipe(
             tail,
@@ -119,12 +125,12 @@ export function CategoryOverviewLineChart({
           )(data) as Datapoint[]
         )}
         <XAxis
-          dataKey={(datapoint) => printDateAsYear(datapoint.end_date)}
+          dataKey={(datapoint) => printDateAsYear(datapoint.start_date)}
           style={axisTickStyle}
           tickLine={true}
           ticks={[
-            printDateAsYear(data[0].end_date),
-            printDateAsYear(data[data.length - 1].end_date),
+            printDateAsYear(data[0].start_date),
+            printDateAsYear(data[data.length - 1].start_date),
           ]}
           interval="preserveStartEnd"
         />
@@ -135,7 +141,11 @@ export function CategoryOverviewLineChart({
           style={axisTickStyle}
           ticks={[0, referenceLineHeight]}
         />
-        {<Tooltip wrapperStyle={{ display: "none" }} />}
+        {
+          <Tooltip
+            wrapperStyle={{ display: "none" }}
+          /> /* This preserves dot highlighting on hover; seems useful */
+        }
         {renderLines()}
         {legendData && (
           <Legend
@@ -143,6 +153,7 @@ export function CategoryOverviewLineChart({
               <CategoryOverviewBreakdown
                 data={legendData}
                 dimensions={dimensions}
+                hoveredDate={hoveredDate}
               />
             }
           />

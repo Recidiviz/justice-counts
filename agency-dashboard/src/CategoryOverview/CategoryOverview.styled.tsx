@@ -157,5 +157,5 @@ export const BreakdownsTitle = styled.h3`
   font-size: 18px;
   line-height: 24px;
   font-weight: 500;
-  margin-left: 40px;
+  margin-left: 50px;
 `;
