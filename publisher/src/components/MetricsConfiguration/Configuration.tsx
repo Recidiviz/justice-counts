@@ -21,6 +21,7 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import indicatorAlertIcon from "../assets/indicator-alert-icon.svg";
@@ -43,14 +44,17 @@ function Configuration() {
 
   const currentAgency = userStore.getAgency(agencyId);
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
-  const metricEnabled = metrics[systemMetricKey]?.enabled;
-  const metricLabelLength = `${metrics[systemMetricKey].label}`.length;
 
   useEffect(() => {
     const footer = document.getElementById("footer");
     setIsFooterVisible(footer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metricConfigPage]);
+
+  if (!metrics[systemMetricKey]) return <NotFound />;
+
+  const metricEnabled = metrics[systemMetricKey]?.enabled;
+  const metricLabelLength = `${metrics[systemMetricKey].label}`.length;
 
   return (
     <>
