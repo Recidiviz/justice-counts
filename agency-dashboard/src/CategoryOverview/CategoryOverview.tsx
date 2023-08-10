@@ -60,7 +60,7 @@ export const CategoryOverview = observer(() => {
   const [dataRangeFilter, setDataRangeFilter] = useState<"recent" | "all">(
     "recent"
   );
-  const [hoveredDate, setHoveredDate] = useState<string>();
+  const [hoveredDate, setHoveredDate] = useState<string | null>(null);
 
   const getCurrentChartTimeRange = useCallback(
     (isAnnual: boolean) => {

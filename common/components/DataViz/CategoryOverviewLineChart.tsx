@@ -19,7 +19,7 @@ import {
   BreakdownsTitle,
   Container,
 } from "@justice-counts/agency-dashboard/src/CategoryOverview/CategoryOverview.styled";
-import { invertObj, mapObjIndexed, pipe } from "ramda";
+import { invertObj, map, mapObjIndexed, pipe, reverse, tail } from "ramda";
 import React, { CSSProperties, useMemo } from "react";
 import {
   CartesianGrid,
@@ -42,7 +42,7 @@ import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
 export type LineChartProps = {
   data: Datapoint[];
   dimensions: string[];
-  hoveredDate: string;
+  hoveredDate: string | null;
 };
 
 export function CategoryOverviewLineChart({
@@ -82,7 +82,7 @@ export function CategoryOverviewLineChart({
   const { legendData, referenceLineHeight } = useLineChartLegend(
     data,
     dimensions,
-    hoveredYear,
+    hoveredDate,
     colorDict
   );
   const axisTickStyle: CSSProperties = useMemo(
@@ -107,15 +107,33 @@ export function CategoryOverviewLineChart({
       >
         <CartesianGrid horizontal={false} />
         <ReferenceLine y={referenceLineHeight} />
+        {map(
+          (datapoint: Datapoint) => (
+            <ReferenceLine x={printDateAsYear(datapoint.end_date)} />
+          ),
+          pipe(
+            tail,
+            reverse<Datapoint>,
+            tail,
+            reverse<Datapoint>
+          )(data) as Datapoint[]
+        )}
         <XAxis
           dataKey={(datapoint) => printDateAsYear(datapoint.end_date)}
           style={axisTickStyle}
+          tickLine={true}
+          ticks={[
+            printDateAsYear(data[0].end_date),
+            printDateAsYear(data[data.length - 1].end_date),
+          ]}
+          interval="preserveStartEnd"
         />
         <YAxis
           type="number"
           domain={[0, "dataMax"]}
           tickFormatter={formatNumberForChart as (value: number) => string}
           style={axisTickStyle}
+          ticks={[0, referenceLineHeight]}
         />
         {<Tooltip wrapperStyle={{ display: "none" }} />}
         {renderLines()}
