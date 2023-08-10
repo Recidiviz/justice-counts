@@ -23,8 +23,8 @@ import MetricsCategoryBarChart from "@justice-counts/common/components/DataViz/M
 import { showToast } from "@justice-counts/common/components/Toast";
 import { useBarChart, useLineChart } from "@justice-counts/common/hooks";
 import {
-  Datapoint,
   DataVizAggregateName,
+  DataVizTimeRangesMap,
   Metric,
 } from "@justice-counts/common/types";
 import { each } from "bluebird";
@@ -65,15 +65,20 @@ export const CategoryOverview = observer(() => {
     "recent"
   );
 
-  const filterDatapoints = useCallback(
-    (datapoints: Datapoint[]) => {
-      return dataRangeFilter === "recent" ? datapoints.slice(-5) : datapoints;
+  const getCurrentChartTimeRange = useCallback(
+    (isAnnual: boolean) => {
+      if (dataRangeFilter === "recent") {
+        return isAnnual
+          ? DataVizTimeRangesMap["5 Years Ago"]
+          : DataVizTimeRangesMap["1 Year Ago"];
+      }
+      return DataVizTimeRangesMap.All;
     },
     [dataRangeFilter]
   );
 
   const { getLineChartData, getLineChartDimensions } = useLineChart({
-    filterDatapoints,
+    getCurrentChartTimeRange,
     datapointsByMetric: agencyDataStore.datapointsByMetric,
     dimensionNamesByMetricAndDisaggregation:
       agencyDataStore.dimensionNamesByMetricAndDisaggregation,
@@ -81,7 +86,7 @@ export const CategoryOverview = observer(() => {
   });
 
   const { getBarChartData } = useBarChart({
-    filterDatapoints,
+    getCurrentChartTimeRange,
     datapointsByMetric: agencyDataStore.datapointsByMetric,
   });
 

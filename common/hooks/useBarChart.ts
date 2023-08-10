@@ -18,7 +18,7 @@
 import {
   Datapoint,
   DatapointsByMetric,
-  DataVizTimeRangesMap,
+  DataVizTimeRange,
   Metric,
   UserAgency,
 } from "@justice-counts/common/types";
@@ -31,28 +31,26 @@ export type BarChartProps = {
 };
 
 export type BarChartHookProps = Partial<UserAgency> & {
-  filterDatapoints: (datapoints: Datapoint[]) => Datapoint[];
+  getCurrentChartTimeRange: (isAnnual: boolean) => DataVizTimeRange;
   datapointsByMetric: DatapointsByMetric | undefined;
 };
 
 export const useBarChart = ({
-  filterDatapoints,
+  getCurrentChartTimeRange,
   datapointsByMetric,
 }: BarChartHookProps): BarChartProps => {
   const getBarChartData = useCallback(
     (metric: Metric) => {
       if (datapointsByMetric) {
-        return filterDatapoints(
-          transformDataForBarChart(
-            datapointsByMetric[metric.key].aggregate,
-            DataVizTimeRangesMap.All,
-            "Count"
-          )
+        return transformDataForBarChart(
+          datapointsByMetric[metric.key].aggregate,
+          getCurrentChartTimeRange(metric.custom_frequency === "ANNUAL"),
+          "Count"
         );
       }
       return [];
     },
-    [filterDatapoints, datapointsByMetric]
+    [getCurrentChartTimeRange, datapointsByMetric]
   );
 
   return {

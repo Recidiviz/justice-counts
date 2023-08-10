@@ -227,18 +227,18 @@ export const AgencyOverview = observer(() => {
                             <MetricBoxGraphRange>
                               <span>
                                 {isAnnual
-                                  ? firstDatapointDate.getFullYear()
+                                  ? firstDatapointDate.getUTCFullYear()
                                   : printDateAsShortMonthYear(
                                       firstDatapointDate.getMonth() + 1,
-                                      firstDatapointDate.getFullYear()
+                                      firstDatapointDate.getUTCFullYear()
                                     )}
                               </span>
                               <span>
                                 {isAnnual
-                                  ? lastDatapointDate.getFullYear()
+                                  ? lastDatapointDate.getUTCFullYear()
                                   : printDateAsShortMonthYear(
                                       lastDatapointDate.getMonth() + 1,
-                                      lastDatapointDate.getFullYear()
+                                      lastDatapointDate.getUTCFullYear()
                                     )}
                               </span>
                             </MetricBoxGraphRange>
