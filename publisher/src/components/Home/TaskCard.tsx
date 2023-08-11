@@ -54,24 +54,22 @@ export const TaskCard: React.FC<{
                     title
                   )}-tooltip-anchor`
                 : undefined;
+            /** Which action type is this? */
+            const isSetMetricAvailabilityAction =
+              action.label ===
+              taskCardLabelsActionLinks.metricAvailability.label;
+            const isManualEntryAction =
+              action.label === taskCardLabelsActionLinks.manualEntry.label;
+            const isPublishAction =
+              action.label === taskCardLabelsActionLinks.publish.label;
+            /** Add `/review` to Publish Actions' navigation path  */
+            const reviewPagePath = isPublishAction ? "/review" : "";
 
             return (
               <Styled.TaskCardActionLink
                 id={tooltipAnchorID}
                 key={action.label}
                 onClick={() => {
-                  /** Which action type is this? */
-                  const isSetMetricAvailabilityAction =
-                    action.label ===
-                    taskCardLabelsActionLinks.metricAvailability.label;
-                  const isManualEntryAction =
-                    action.label ===
-                    taskCardLabelsActionLinks.manualEntry.label;
-                  const isPublishAction =
-                    action.label === taskCardLabelsActionLinks.publish.label;
-                  /** Add `/review` to Publish Actions' navigation path  */
-                  const reviewPagePath = isPublishAction ? "/review" : "";
-
                   if (isSetMetricAvailabilityAction) {
                     return navigate(`./${action.path + metricSettingsParams}`);
                   }

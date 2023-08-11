@@ -47,15 +47,6 @@ export const Home = observer(() => {
     updateCurrentSystemSelection,
   } = homeStore;
 
-  const hasMonthlyRecordsToPublish =
-    latestMonthlyRecordMetadata &&
-    publishMetricsTaskCardMetadatas &&
-    publishMetricsTaskCardMetadatas.MONTHLY.length > 0;
-  const hasAnnualRecordsToPublish =
-    latestAnnualRecordsMetadata &&
-    publishMetricsTaskCardMetadatas &&
-    publishMetricsTaskCardMetadatas.ANNUAL.length > 0;
-
   const welcomeUser = `Welcome${name ? `, ${name.split(" ")[0]}` : "!"}`;
   const welcomeDescription = hasCompletedAllTasks
     ? "Dashboards are updated with the latest published records"
@@ -64,6 +55,15 @@ export const Home = observer(() => {
     title: "All tasks complete",
     description: "Your data is up-to-date and published.",
   };
+
+  const hasMonthlyRecordsToPublish =
+    latestMonthlyRecordMetadata &&
+    publishMetricsTaskCardMetadatas &&
+    publishMetricsTaskCardMetadatas.MONTHLY.length > 0;
+  const hasAnnualRecordsToPublish =
+    latestAnnualRecordsMetadata &&
+    publishMetricsTaskCardMetadatas &&
+    publishMetricsTaskCardMetadatas.ANNUAL.length > 0;
 
   useEffect(() => {
     const fetchMetricsAndRecords = async () => {
@@ -127,34 +127,34 @@ export const Home = observer(() => {
                   />
                 )
               )}
+
+              {/* Publish Latest Monthly Record Card */}
+              {hasMonthlyRecordsToPublish && (
+                <TaskCard
+                  metadata={HomeStore.createPublishTaskCardMetadata(
+                    latestMonthlyRecordMetadata.reportTitle,
+                    "MONTHLY"
+                  )}
+                  reportID={latestMonthlyRecordMetadata?.id}
+                />
+              )}
+
+              {/* Publish Latest Annual Record(s) Cards */}
+              {hasAnnualRecordsToPublish &&
+                Object.values(latestAnnualRecordsMetadata).map((record) => {
+                  return (
+                    <TaskCard
+                      key={record.id}
+                      metadata={HomeStore.createPublishTaskCardMetadata(
+                        record.reportTitle,
+                        "ANNUAL"
+                      )}
+                      reportID={record.id}
+                    />
+                  );
+                })}
             </>
           )}
-
-          {/* Publish Latest Monthly Record Card */}
-          {hasMonthlyRecordsToPublish && (
-            <TaskCard
-              metadata={HomeStore.createPublishTaskCardMetadata(
-                latestMonthlyRecordMetadata.reportTitle,
-                "MONTHLY"
-              )}
-              reportID={latestMonthlyRecordMetadata?.id}
-            />
-          )}
-
-          {/* Publish Latest Annual Record(s) Cards */}
-          {hasAnnualRecordsToPublish &&
-            Object.values(latestAnnualRecordsMetadata).map((record) => {
-              return (
-                <TaskCard
-                  key={record.id}
-                  metadata={HomeStore.createPublishTaskCardMetadata(
-                    record.reportTitle,
-                    "ANNUAL"
-                  )}
-                  reportID={record.id}
-                />
-              );
-            })}
         </Styled.OpenTasksContainer>
 
         {/* Submenu */}
