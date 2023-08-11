@@ -64,9 +64,6 @@ export const useBarChart = ({
             mergeAll
           )(disaggregations) as { [x: string]: Datapoint }),
         }));
-        console.log(
-          hoistDisaggregations(datapointsByMetric[metric.key].aggregate)
-        );
         return transformDataForBarChart(
           hoistDisaggregations(
             datapointsByMetric[metric.key].aggregate
