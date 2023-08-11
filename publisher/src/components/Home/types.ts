@@ -16,13 +16,14 @@
 // =============================================================================
 
 import {
+  AgencySystems,
   Metric,
   Report,
   ReportFrequency,
   ReportStatus,
 } from "@justice-counts/common/types";
 
-export type LatestReportsAgencyMetrics = {
+export type LatestRecordsAgencyMetrics = {
   agency_metrics: Metric[];
   annual_reports: { [key: string]: Report };
   monthly_report: Report;
@@ -69,3 +70,5 @@ export type TaskCardMetadataValueConfigurationGroup = {
   };
   allMetricMetadatasWithoutValuesOrNotConfigured: TaskCardMetadata[];
 };
+
+export type SystemSelectionOptions = AgencySystems | "ALL";

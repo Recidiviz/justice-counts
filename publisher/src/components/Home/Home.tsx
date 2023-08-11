@@ -35,7 +35,7 @@ import {
   createTaskCardMetadatas,
   groupMetadatasByValueAndConfiguration,
   LatestAnnualMonthlyRecordMetadata,
-  LatestReportsAgencyMetrics,
+  LatestRecordsAgencyMetrics,
   metricEnabled,
   metricNotConfigured,
   supervisionSubsystemsWithEnabledMetrics,
@@ -45,39 +45,39 @@ import {
 import * as Styled from "./Home.styled";
 
 export const Home = observer(() => {
-  const { userStore, reportStore } = useStore();
-  const navigate = useNavigate();
+  const { userStore, reportStore, homeStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
-  const currentAgency = userStore.getAgency(agencyId);
-  const hasMultipleSystems = currentAgency && currentAgency.systems.length > 1;
-  const agencySystems: Array<AgencySystems | "ALL"> = hasMultipleSystems
-    ? ["ALL", ...Object.values(currentAgency.systems)]
-    : currentAgency?.systems || [];
+  const navigate = useNavigate();
+  const {
+    loading,
+    systemSelectionOptions,
+    currentSystemSelection,
+    agencyMetrics,
+    agencyMetricsByMetricKey,
+    enabledCurrentSystemMetrics,
+    unconfiguredCurrentSystemMetrics,
+    latestMonthlyRecordMetadata,
+    latestAnnualRecordsMetadata,
+    getLatestAnnualRecord,
+    updateCurrentSystemSelection,
+  } = homeStore;
 
-  const [loading, setLoading] = useState(true);
-  const [currentSystem, setCurrentSystem] = useState<AgencySystems | "ALL">(
-    agencySystems[0]
-  );
-  const [currentAgencyMetrics, setAgencyMetrics] = useState<Metric[]>([]);
-  const [
-    latestMonthlyAnnualRecordsMetadata,
-    setLatestMonthlyAnnualsRecordMetadata,
-  ] = useState<Partial<LatestAnnualMonthlyRecordMetadata>>();
+  // const [currentSystem, setCurrentSystem] = useState<AgencySystems | "ALL">();
+  // agencySystems[0]
+  // const [currentAgencyMetrics, setAgencyMetrics] = useState<Metric[]>([]);
+  // const [
+  //   latestMonthlyAnnualRecordsMetadata,
+  //   setLatestMonthlyAnnualsRecordMetadata,
+  // ] = useState<Partial<LatestAnnualMonthlyRecordMetadata>>();
 
-  const latestMonthlyRecord = latestMonthlyAnnualRecordsMetadata?.monthly;
-  const latestAnnualRecord = (startingMonth: number | string) =>
-    latestMonthlyAnnualRecordsMetadata?.annual?.[startingMonth];
+  // const latestMonthlyRecord = latestMonthlyAnnualRecordsMetadata?.monthly;
+  // const latestAnnualRecord = (startingMonth: number | string) =>
+  //   latestMonthlyAnnualRecordsMetadata?.annual?.[startingMonth];
   /** Does the given metric belong to the currently selected system? */
-  const metricBelongsToCurrentSystem = (metric: Metric) =>
-    currentSystem === "ALL" || metric.system.key === currentSystem;
-  const hasMultipleSystemsAndAllSystemsFilter = Boolean(
-    hasMultipleSystems && currentSystem === "ALL"
-  );
+  // const metricBelongsToCurrentSystem = (metric: Metric) =>
+  //   currentSystem === "ALL" || metric.system.key === currentSystem;
+
   /** Agency metrics by metric key */
-  const currentAgencyMetricsByMetricKey = groupBy(
-    currentAgencyMetrics,
-    (metric) => metric.key
-  );
 
   /** Task Card Metadatas */
   const allTasksCompleteTaskCardMetadata: TaskCardMetadata = {
@@ -85,31 +85,31 @@ export const Home = observer(() => {
     description: "Your data is up-to-date and published.",
   };
   const enabledMetricsTaskCardMetadata: TaskCardMetadata[] =
-    currentAgencyMetrics
-      .filter(metricEnabled)
-      .filter(metricBelongsToCurrentSystem)
-      .map((metric) =>
-        createTaskCardMetadatas(
-          currentAgencyMetricsByMetricKey,
-          metric,
-          { latestMonthlyRecord, latestAnnualRecord },
-          createDataEntryTaskCardMetadata,
-          hasMultipleSystemsAndAllSystemsFilter
-        )
-      );
+    enabledCurrentSystemMetrics.map((metric) =>
+      createTaskCardMetadatas(
+        agencyMetricsByMetricKey,
+        metric,
+        {
+          latestMonthlyRecordMetadata,
+          latestAnnualRecord: getLatestAnnualRecord,
+        },
+        createDataEntryTaskCardMetadata,
+        currentSystemSelection === "ALL"
+      )
+    );
   const unconfiguredMetricsTaskCardMetadata: TaskCardMetadata[] =
-    currentAgencyMetrics
-      .filter(metricNotConfigured)
-      .filter(metricBelongsToCurrentSystem)
-      .map((metric) =>
-        createTaskCardMetadatas(
-          currentAgencyMetricsByMetricKey,
-          metric,
-          { latestMonthlyRecord, latestAnnualRecord },
-          createConfigurationTaskCardMetadata,
-          hasMultipleSystemsAndAllSystemsFilter
-        )
-      );
+    unconfiguredCurrentSystemMetrics.map((metric) =>
+      createTaskCardMetadatas(
+        agencyMetricsByMetricKey,
+        metric,
+        {
+          latestMonthlyRecordMetadata,
+          latestAnnualRecord: getLatestAnnualRecord,
+        },
+        createConfigurationTaskCardMetadata,
+        currentSystemSelection === "ALL"
+      )
+    );
 
   /**
    * Metrics without values or not yet configured (`allMetricMetadatasWithoutValuesOrNotConfigured`) are
@@ -144,39 +144,18 @@ export const Home = observer(() => {
   const userFirstName = userStore.name?.split(" ")[0];
 
   useEffect(() => {
+    homeStore.initAgencySystemSelectionOptions(agencyId);
     const fetchMetricsAndRecords = async () => {
-      setLoading(true);
-      const {
-        agency_metrics: agencyMetrics,
-        annual_reports: annualRecords,
-        monthly_report: monthlyRecord,
-      } = (await reportStore.getLatestReportsAndMetrics(
+      (await homeStore.getLatestReportsAndMetrics(
         agencyId as string
-      )) as LatestReportsAgencyMetrics;
-
-      const hasMonthlyRecord = Object.values(monthlyRecord).length > 0;
-      const hasAnnualRecords = Object.values(annualRecords).length > 0;
-      const annualRecordsMetadata = hasAnnualRecords
-        ? createAnnualRecordsMetadata(annualRecords)
-        : undefined;
-      const monthlyRecordMetadata = hasMonthlyRecord
-        ? createMonthlyRecordMetadata(monthlyRecord)
-        : undefined;
-
-      setLatestMonthlyAnnualsRecordMetadata({
-        monthly: monthlyRecordMetadata,
-        annual: annualRecordsMetadata,
-      });
-      setAgencyMetrics(agencyMetrics);
-      setCurrentSystem(agencySystems[0]);
-      setLoading(false);
+      )) as LatestRecordsAgencyMetrics;
     };
 
     fetchMetricsAndRecords();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyId, reportStore]);
 
-  if (!currentAgencyMetrics || loading) {
+  if (!agencyMetrics || loading) {
     return <Loading />;
   }
 
@@ -188,22 +167,19 @@ export const Home = observer(() => {
       </Styled.WelcomeDescription>
 
       {/* System Selector */}
-      {hasMultipleSystems && (
+      {systemSelectionOptions.length > 1 && (
         <Styled.SystemSelectorContainer>
           <div />
           <Styled.SystemSelectorTabWrapper>
-            {agencySystems
+            {systemSelectionOptions
               ?.filter((system) =>
-                supervisionSubsystemsWithEnabledMetrics(
-                  system,
-                  currentAgencyMetrics
-                )
+                supervisionSubsystemsWithEnabledMetrics(system, agencyMetrics)
               )
               .map((system) => (
                 <Styled.SystemSelectorTab
                   key={system}
-                  selected={system === currentSystem}
-                  onClick={() => setCurrentSystem(system)}
+                  selected={system === currentSystemSelection}
+                  onClick={() => updateCurrentSystemSelection(system)}
                 >
                   {removeSnakeCase(system.toLocaleLowerCase())}
                 </Styled.SystemSelectorTab>
@@ -236,29 +212,29 @@ export const Home = observer(() => {
               {/* Publish-Ready Cards (for Monthly & Annual Records) */}
               {/* Publish latest monthly record */}
               {allMetricMetadatasWithValues.MONTHLY.length > 0 &&
-                latestMonthlyRecord && (
+                latestMonthlyRecordMetadata && (
                   <TaskCard
                     metadata={createPublishTaskCardMetadata(
-                      latestMonthlyRecord.reportTitle,
+                      latestMonthlyRecordMetadata.reportTitle,
                       "MONTHLY"
                     )}
-                    reportID={latestMonthlyRecord.id}
+                    reportID={latestMonthlyRecordMetadata.id}
                   />
                 )}
               {/* Publish latest annual record(s) */}
               {allMetricMetadatasWithValues.ANNUAL.length > 0 &&
-                latestMonthlyAnnualRecordsMetadata?.annual &&
-                Object.values(latestMonthlyAnnualRecordsMetadata.annual).map(
+                latestAnnualRecordsMetadata &&
+                Object.values(latestAnnualRecordsMetadata.annual).map(
                   (record) => {
                     /** Only display records w/ metrics that match the current system */
-                    if (
-                      Object.values(record.metrics).filter(
-                        ([metric]) =>
-                          metricBelongsToCurrentSystem(metric) &&
-                          metricEnabled(metric)
-                      )?.length === 0
-                    )
-                      return null;
+                    // if (
+                    //   Object.values(record.metrics).filter(
+                    //     ([metric]) =>
+                    //       metricBelongsToCurrentSystem(metric) &&
+                    //       metricEnabled(metric)
+                    //   )?.length === 0
+                    // )
+                    //   return null;
                     return (
                       <TaskCard
                         key={record.id}
