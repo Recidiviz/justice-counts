@@ -31,7 +31,6 @@ import {
   REPORT_LOWERCASE,
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
-import { LatestReportsAgencyMetrics } from "../components/Home";
 import { MetricSettings } from "../components/MetricsConfiguration";
 import {
   PublishReviewMetricErrors,

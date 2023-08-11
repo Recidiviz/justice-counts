@@ -144,16 +144,14 @@ export const Home = observer(() => {
   const userFirstName = userStore.name?.split(" ")[0];
 
   useEffect(() => {
-    homeStore.initAgencySystemSelectionOptions(agencyId);
     const fetchMetricsAndRecords = async () => {
+      homeStore.initAgencySystemSelectionOptions(agencyId);
       (await homeStore.getLatestReportsAndMetrics(
         agencyId as string
       )) as LatestRecordsAgencyMetrics;
     };
-
     fetchMetricsAndRecords();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [agencyId, reportStore]);
+  }, [agencyId, homeStore]);
 
   if (!agencyMetrics || loading) {
     return <Loading />;

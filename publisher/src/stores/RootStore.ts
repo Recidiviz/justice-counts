@@ -22,10 +22,10 @@ import AgencyStore from "./AgencyStore";
 import API from "./API";
 import DatapointsStore from "./DatapointsStore";
 import FormStore from "./FormStore";
+import HomeStore from "./HomeStore";
 import MetricConfigStore from "./MetricConfigStore";
 import ReportStore from "./ReportStore";
 import UserStore from "./UserStore";
-import HomeStore from "./HomeStore";
 
 const getAuthSettings = (): Auth0ClientOptions | undefined => {
   if (window.APP_CONFIG) {

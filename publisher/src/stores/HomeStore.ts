@@ -15,22 +15,22 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Metric } from "@justice-counts/common/types";
+import { groupBy } from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
-import API from "./API";
-import UserStore from "./UserStore";
-import { Metric } from "@justice-counts/common/types";
 import { REPORT_LOWERCASE } from "../components/Global/constants";
-import ReportStore from "./ReportStore";
 import {
   AnnualRecordMetadata,
+  createAnnualRecordsMetadata,
+  createMonthlyRecordMetadata,
   LatestRecordMetadata,
   LatestRecordsAgencyMetrics,
   SystemSelectionOptions,
-  createAnnualRecordsMetadata,
-  createMonthlyRecordMetadata,
 } from "../components/Home";
-import { groupBy } from "@justice-counts/common/utils";
+import API from "./API";
+import ReportStore from "./ReportStore";
+import UserStore from "./UserStore";
 
 class HomeStore {
   userStore: UserStore;
@@ -75,11 +75,13 @@ class HomeStore {
   }
 
   get enabledCurrentSystemMetrics(): Metric[] {
-    return this.filteredCurrentSystemMetrics.filter(this.enabledMetrics);
+    return this.filteredCurrentSystemMetrics.filter(HomeStore.enabledMetrics);
   }
 
   get unconfiguredCurrentSystemMetrics(): Metric[] {
-    return this.filteredCurrentSystemMetrics.filter(this.unconfiguredMetrics);
+    return this.filteredCurrentSystemMetrics.filter(
+      HomeStore.unconfiguredMetrics
+    );
   }
 
   getLatestAnnualRecord(
@@ -110,7 +112,9 @@ class HomeStore {
     currentAgencyId: string
   ): Promise<void | Error | LatestRecordsAgencyMetrics> {
     try {
-      runInAction(() => (this.loading = true));
+      runInAction(() => {
+        this.loading = true;
+      });
 
       const response = (await this.api.request({
         path: `/api/home/${currentAgencyId}`,
@@ -186,11 +190,11 @@ class HomeStore {
   }
 
   /** Filters */
-  enabledMetrics({ enabled }: Metric) {
+  static enabledMetrics({ enabled }: Metric) {
     return enabled;
   }
 
-  unconfiguredMetrics({ enabled }: Metric) {
+  static unconfiguredMetrics({ enabled }: Metric) {
     return enabled === null;
   }
 

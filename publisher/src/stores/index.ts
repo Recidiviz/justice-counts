@@ -16,8 +16,8 @@
 // =============================================================================
 
 export * from "./API";
+export * from "./HomeStore";
 export * from "./ReportStore";
 export { default as rootStore } from "./RootStore";
 export * from "./StoreProvider";
 export * from "./UserStore";
-export * from "./HomeStore";
