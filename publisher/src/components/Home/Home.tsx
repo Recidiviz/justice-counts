@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { removeSnakeCase } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -27,7 +28,6 @@ import { ReactComponent as OpenLinkIcon } from "../assets/open-link-icon.svg";
 import { Loading } from "../Loading";
 import { LatestRecordsAgencyMetrics, TaskCard, TaskCardMetadata } from ".";
 import * as Styled from "./Home.styled";
-import { removeSnakeCase } from "@justice-counts/common/utils";
 
 export const Home = observer(() => {
   const { userStore, homeStore } = useStore();
