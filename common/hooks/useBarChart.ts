@@ -50,9 +50,6 @@ export const useBarChart = ({
           ...(pipe(
             map<string, { [x: string]: Datapoint }>(
               (value: string): { [x: string]: Datapoint } => {
-                console.log(
-                  datapointsByMetric[metric.key]?.disaggregations?.[value]
-                );
                 return datapointsByMetric[metric.key]?.disaggregations?.[value]
                   ?.length
                   ? {
