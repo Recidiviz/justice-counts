@@ -51,21 +51,21 @@ class HomeStore {
 
   api: API;
 
-  loading: boolean;
-
-  systemSelectionOptions: SystemSelectionOptions[];
-
-  currentSystemSelection: SystemSelectionOptions | undefined;
+  agencyMetrics: Metric[];
 
   latestMonthlyRecordMetadata: LatestRecordMetadata | undefined;
 
   latestAnnualRecordsMetadata: AnnualRecordMetadata | undefined;
 
-  agencyMetrics: Metric[];
-
   publishMetricsTaskCardMetadatas: PublishMetricsTaskCardMetadatas | undefined;
 
   addDataConfigureMetricsTaskCardMetadatas: TaskCardMetadata[] | undefined;
+
+  systemSelectionOptions: SystemSelectionOptions[];
+
+  currentSystemSelection: SystemSelectionOptions | undefined;
+
+  loading: boolean;
 
   constructor(userStore: UserStore, api: API, reportStore: ReportStore) {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -73,14 +73,14 @@ class HomeStore {
     this.userStore = userStore;
     this.reportStore = reportStore;
     this.api = api;
-    this.loading = true;
-    this.systemSelectionOptions = [];
-    this.currentSystemSelection = undefined;
+    this.agencyMetrics = [];
     this.latestMonthlyRecordMetadata = undefined;
     this.latestAnnualRecordsMetadata = undefined;
-    this.agencyMetrics = [];
     this.publishMetricsTaskCardMetadatas = undefined;
     this.addDataConfigureMetricsTaskCardMetadatas = undefined;
+    this.systemSelectionOptions = [];
+    this.currentSystemSelection = undefined;
+    this.loading = true;
   }
 
   get agencyMetricsByMetricKey(): Record<string, Metric[]> | undefined {
@@ -88,19 +88,16 @@ class HomeStore {
     return groupBy(this.agencyMetrics, (metric) => metric.key);
   }
 
-  // Update name of this - too confusing
-  get filteredCurrentSystemMetrics(): Metric[] {
-    return this.agencyMetrics.filter(this.currentSystemMetrics);
+  get currentSystemMetrics(): Metric[] {
+    return this.agencyMetrics.filter(this.currentSelectedSystemMetrics);
   }
 
   get enabledCurrentSystemMetrics(): Metric[] {
-    return this.filteredCurrentSystemMetrics.filter(HomeStore.enabledMetrics);
+    return this.currentSystemMetrics.filter(HomeStore.enabledMetrics);
   }
 
   get unconfiguredCurrentSystemMetrics(): Metric[] {
-    return this.filteredCurrentSystemMetrics.filter(
-      HomeStore.unconfiguredMetrics
-    );
+    return this.currentSystemMetrics.filter(HomeStore.unconfiguredMetrics);
   }
 
   get enabledMetricsTaskCardMetadata(): TaskCardMetadata[] {
@@ -190,7 +187,7 @@ class HomeStore {
     });
   }
 
-  async fetchLatestReportsAndMetrics(
+  async fetchLatestReportsAndMetricsAndInitStore(
     currentAgencyId: string
   ): Promise<void | Error | LatestRecordsAgencyMetrics> {
     runInAction(() => {
@@ -510,7 +507,7 @@ class HomeStore {
     return enabled === null;
   }
 
-  currentSystemMetrics(metric: Metric) {
+  currentSelectedSystemMetrics(metric: Metric) {
     return (
       this.currentSystemSelection === "ALL" ||
       metric.system.key === this.currentSystemSelection

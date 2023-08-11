@@ -67,7 +67,7 @@ export const Home = observer(() => {
 
   useEffect(() => {
     const fetchMetricsAndRecords = async () => {
-      (await homeStore.fetchLatestReportsAndMetrics(
+      (await homeStore.fetchLatestReportsAndMetricsAndInitStore(
         agencyId as string
       )) as LatestRecordsAgencyMetrics;
       homeStore.initAgencySystemSelectionOptions(agencyId);
