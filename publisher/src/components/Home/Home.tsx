@@ -15,29 +15,18 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystems, Metric } from "@justice-counts/common/types";
-import { groupBy } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { removeSnakeCase } from "../../utils";
+import HomeStore from "../../stores/HomeStore";
 import { ReactComponent as GearIcon } from "../assets/gear-icon.svg";
 import { ReactComponent as OpenLinkIcon } from "../assets/open-link-icon.svg";
 import { Loading } from "../Loading";
 import {
-  createAnnualRecordsMetadata,
-  createConfigurationTaskCardMetadata,
-  createDataEntryTaskCardMetadata,
-  createMonthlyRecordMetadata,
-  createPublishTaskCardMetadata,
-  createTaskCardMetadatas,
-  groupMetadatasByValueAndConfiguration,
-  LatestAnnualMonthlyRecordMetadata,
   LatestRecordsAgencyMetrics,
-  metricEnabled,
-  metricNotConfigured,
   supervisionSubsystemsWithEnabledMetrics,
   TaskCard,
   TaskCardMetadata,
@@ -45,110 +34,49 @@ import {
 import * as Styled from "./Home.styled";
 
 export const Home = observer(() => {
-  const { userStore, reportStore, homeStore } = useStore();
+  const { userStore, homeStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
+
+  const { name } = userStore;
   const {
     loading,
     systemSelectionOptions,
     currentSystemSelection,
     agencyMetrics,
-    agencyMetricsByMetricKey,
-    enabledCurrentSystemMetrics,
-    unconfiguredCurrentSystemMetrics,
+    hasCompletedAllTasks,
+    addDataConfigureMetricsTaskCardMetadatas,
     latestMonthlyRecordMetadata,
     latestAnnualRecordsMetadata,
-    getLatestAnnualRecord,
+    publishMetricsTaskCardMetadatas,
     updateCurrentSystemSelection,
   } = homeStore;
 
-  // const [currentSystem, setCurrentSystem] = useState<AgencySystems | "ALL">();
-  // agencySystems[0]
-  // const [currentAgencyMetrics, setAgencyMetrics] = useState<Metric[]>([]);
-  // const [
-  //   latestMonthlyAnnualRecordsMetadata,
-  //   setLatestMonthlyAnnualsRecordMetadata,
-  // ] = useState<Partial<LatestAnnualMonthlyRecordMetadata>>();
+  const hasMonthlyRecordsToPublish =
+    latestMonthlyRecordMetadata &&
+    publishMetricsTaskCardMetadatas &&
+    publishMetricsTaskCardMetadatas.MONTHLY.length > 0;
+  const hasAnnualRecordsToPublish =
+    latestAnnualRecordsMetadata &&
+    publishMetricsTaskCardMetadatas &&
+    publishMetricsTaskCardMetadatas.ANNUAL.length > 0;
 
-  // const latestMonthlyRecord = latestMonthlyAnnualRecordsMetadata?.monthly;
-  // const latestAnnualRecord = (startingMonth: number | string) =>
-  //   latestMonthlyAnnualRecordsMetadata?.annual?.[startingMonth];
-  /** Does the given metric belong to the currently selected system? */
-  // const metricBelongsToCurrentSystem = (metric: Metric) =>
-  //   currentSystem === "ALL" || metric.system.key === currentSystem;
-
-  /** Agency metrics by metric key */
-
-  /** Task Card Metadatas */
+  const welcomeUser = `Welcome${name ? `, ${name.split(" ")[0]}` : "!"}`;
+  const welcomeDescription = hasCompletedAllTasks
+    ? "Dashboards are updated with the latest published records"
+    : "See open tasks below";
   const allTasksCompleteTaskCardMetadata: TaskCardMetadata = {
     title: "All tasks complete",
     description: "Your data is up-to-date and published.",
   };
-  const enabledMetricsTaskCardMetadata: TaskCardMetadata[] =
-    enabledCurrentSystemMetrics.map((metric) =>
-      createTaskCardMetadatas(
-        agencyMetricsByMetricKey,
-        metric,
-        {
-          latestMonthlyRecordMetadata,
-          latestAnnualRecord: getLatestAnnualRecord,
-        },
-        createDataEntryTaskCardMetadata,
-        currentSystemSelection === "ALL"
-      )
-    );
-  const unconfiguredMetricsTaskCardMetadata: TaskCardMetadata[] =
-    unconfiguredCurrentSystemMetrics.map((metric) =>
-      createTaskCardMetadatas(
-        agencyMetricsByMetricKey,
-        metric,
-        {
-          latestMonthlyRecordMetadata,
-          latestAnnualRecord: getLatestAnnualRecord,
-        },
-        createConfigurationTaskCardMetadata,
-        currentSystemSelection === "ALL"
-      )
-    );
-
-  /**
-   * Metrics without values or not yet configured (`allMetricMetadatasWithoutValuesOrNotConfigured`) are
-   * straightforwardly rendered - each metric will have its own individual task card.
-   *
-   * Metrics with values (`allMetricMetadatasWithValues`) collapse into one Publish task card for the report the
-   * metric belongs to. (e.g. adding data to metrics will remove those metric's individual task cards, and
-   * the user will see one task card with the latest report that matches that metric's frequency with a
-   * Publish action link.)
-   */
-  const {
-    allMetricMetadatasWithValues,
-    allMetricMetadatasWithoutValuesOrNotConfigured,
-  } = groupMetadatasByValueAndConfiguration([
-    ...unconfiguredMetricsTaskCardMetadata,
-    ...enabledMetricsTaskCardMetadata,
-  ]);
-
-  /**
-   * User has completed all tasks if:
-   *  1. User has configured all metrics and set them all to "Not Available"
-   *  2. User has entered values for all metrics in the latest annual and/or monthly
-   *     records and those records are published
-   */
-  const hasCompletedAllTasks =
-    allMetricMetadatasWithoutValuesOrNotConfigured.length === 0 &&
-    allMetricMetadatasWithValues.ANNUAL.length === 0 &&
-    allMetricMetadatasWithValues.MONTHLY.length === 0;
-  const welcomeDescription = !hasCompletedAllTasks
-    ? "See open tasks below"
-    : "Dashboards are updated with the latest published records";
-  const userFirstName = userStore.name?.split(" ")[0];
 
   useEffect(() => {
     const fetchMetricsAndRecords = async () => {
       homeStore.initAgencySystemSelectionOptions(agencyId);
-      (await homeStore.getLatestReportsAndMetrics(
+      (await homeStore.fetchLatestReportsAndMetrics(
         agencyId as string
       )) as LatestRecordsAgencyMetrics;
+      homeStore.updateTaskCardMetadatasToRender();
     };
     fetchMetricsAndRecords();
   }, [agencyId, homeStore]);
@@ -159,7 +87,7 @@ export const Home = observer(() => {
 
   return (
     <Styled.HomeContainer>
-      <Styled.WelcomeUser>Welcome, {userFirstName}</Styled.WelcomeUser>
+      <Styled.WelcomeUser>{welcomeUser}</Styled.WelcomeUser>
       <Styled.WelcomeDescription>
         {welcomeDescription}
       </Styled.WelcomeDescription>
@@ -190,6 +118,7 @@ export const Home = observer(() => {
       {/* Tasks & Submenu */}
       <Styled.ContentContainer>
         <Styled.LeftPanelWrapper />
+
         {/* All Open Tasks */}
         <Styled.OpenTasksContainer>
           {/* All Tasks Completed Card or Configure Metrics/Add Data/Publish Record Cards */}
@@ -198,7 +127,7 @@ export const Home = observer(() => {
           ) : (
             <>
               {/* Configure Metrics/Add Data Cards */}
-              {allMetricMetadatasWithoutValuesOrNotConfigured.map(
+              {addDataConfigureMetricsTaskCardMetadatas?.map(
                 (taskCardMetadata) => (
                   <TaskCard
                     key={JSON.stringify(taskCardMetadata)}
@@ -207,47 +136,36 @@ export const Home = observer(() => {
                   />
                 )
               )}
-              {/* Publish-Ready Cards (for Monthly & Annual Records) */}
-              {/* Publish latest monthly record */}
-              {allMetricMetadatasWithValues.MONTHLY.length > 0 &&
-                latestMonthlyRecordMetadata && (
-                  <TaskCard
-                    metadata={createPublishTaskCardMetadata(
-                      latestMonthlyRecordMetadata.reportTitle,
-                      "MONTHLY"
-                    )}
-                    reportID={latestMonthlyRecordMetadata.id}
-                  />
-                )}
-              {/* Publish latest annual record(s) */}
-              {allMetricMetadatasWithValues.ANNUAL.length > 0 &&
-                latestAnnualRecordsMetadata &&
-                Object.values(latestAnnualRecordsMetadata.annual).map(
-                  (record) => {
-                    /** Only display records w/ metrics that match the current system */
-                    // if (
-                    //   Object.values(record.metrics).filter(
-                    //     ([metric]) =>
-                    //       metricBelongsToCurrentSystem(metric) &&
-                    //       metricEnabled(metric)
-                    //   )?.length === 0
-                    // )
-                    //   return null;
-                    return (
-                      <TaskCard
-                        key={record.id}
-                        metadata={createPublishTaskCardMetadata(
-                          record.reportTitle,
-                          "ANNUAL"
-                        )}
-                        reportID={record.id}
-                      />
-                    );
-                  }
-                )}
             </>
           )}
+
+          {/* Publish Latest Monthly Record Card */}
+          {hasMonthlyRecordsToPublish && (
+            <TaskCard
+              metadata={HomeStore.createPublishTaskCardMetadata(
+                latestMonthlyRecordMetadata.reportTitle,
+                "MONTHLY"
+              )}
+              reportID={latestMonthlyRecordMetadata?.id}
+            />
+          )}
+
+          {/* Publish Latest Annual Record(s) Cards */}
+          {hasAnnualRecordsToPublish &&
+            Object.values(latestAnnualRecordsMetadata).map((record) => {
+              return (
+                <TaskCard
+                  key={record.id}
+                  metadata={HomeStore.createPublishTaskCardMetadata(
+                    record.reportTitle,
+                    "ANNUAL"
+                  )}
+                  reportID={record.id}
+                />
+              );
+            })}
         </Styled.OpenTasksContainer>
+
         {/* Submenu */}
         <Styled.Submenu>
           <Styled.SubmenuItem

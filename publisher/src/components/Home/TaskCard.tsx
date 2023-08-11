@@ -19,11 +19,8 @@ import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import {
-  replaceSpacesAndParenthesesWithHyphen,
-  TaskCardActionLinksMetadataList,
-  TaskCardMetadata,
-} from ".";
+import HomeStore from "../../stores/HomeStore";
+import { TaskCardActionLinksMetadataList, TaskCardMetadata } from ".";
 import * as Styled from "./Home.styled";
 
 export const taskCardLabelsActionLinks: TaskCardActionLinksMetadataList = {
@@ -53,7 +50,7 @@ export const TaskCard: React.FC<{
           {actionLinks.map((action) => {
             const tooltipAnchorID =
               action.path === "upload"
-                ? `${replaceSpacesAndParenthesesWithHyphen(
+                ? `${HomeStore.replaceSpacesAndParenthesesWithHyphen(
                     title
                   )}-tooltip-anchor`
                 : undefined;

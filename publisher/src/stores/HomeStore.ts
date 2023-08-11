@@ -15,18 +15,24 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Metric } from "@justice-counts/common/types";
-import { groupBy } from "@justice-counts/common/utils";
+import { Metric, Report, ReportFrequency } from "@justice-counts/common/types";
+import {
+  groupBy,
+  monthsByName,
+  printReportTitle,
+} from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
 import { REPORT_LOWERCASE } from "../components/Global/constants";
 import {
   AnnualRecordMetadata,
-  createAnnualRecordsMetadata,
-  createMonthlyRecordMetadata,
   LatestRecordMetadata,
   LatestRecordsAgencyMetrics,
+  PublishMetricsTaskCardMetadatas,
   SystemSelectionOptions,
+  taskCardLabelsActionLinks,
+  TaskCardMetadata,
+  TaskCardMetadataValueConfigurationGroup,
 } from "../components/Home";
 import API from "./API";
 import ReportStore from "./ReportStore";
@@ -51,6 +57,10 @@ class HomeStore {
 
   agencyMetrics: Metric[];
 
+  publishMetricsTaskCardMetadatas: PublishMetricsTaskCardMetadatas | undefined;
+
+  addDataConfigureMetricsTaskCardMetadatas: TaskCardMetadata[] | undefined;
+
   constructor(userStore: UserStore, api: API, reportStore: ReportStore) {
     makeAutoObservable(this, {}, { autoBind: true });
 
@@ -63,6 +73,8 @@ class HomeStore {
     this.latestMonthlyRecordMetadata = undefined;
     this.latestAnnualRecordsMetadata = undefined;
     this.agencyMetrics = [];
+    this.publishMetricsTaskCardMetadatas = undefined;
+    this.addDataConfigureMetricsTaskCardMetadatas = undefined;
   }
 
   get agencyMetricsByMetricKey(): Record<string, Metric[]> | undefined {
@@ -70,6 +82,7 @@ class HomeStore {
     return groupBy(this.agencyMetrics, (metric) => metric.key);
   }
 
+  // Update name of this - too confusing
   get filteredCurrentSystemMetrics(): Metric[] {
     return this.agencyMetrics.filter(this.currentSystemMetrics);
   }
@@ -84,9 +97,43 @@ class HomeStore {
     );
   }
 
+  get enabledMetricsTaskCardMetadata(): TaskCardMetadata[] {
+    return this.enabledCurrentSystemMetrics.map((metric) =>
+      this.createTaskCardMetadata(metric, "enabled")
+    );
+  }
+
+  get unconfiguredMetricsTaskCardMetadata(): TaskCardMetadata[] {
+    return this.unconfiguredCurrentSystemMetrics.map((metric) =>
+      this.createTaskCardMetadata(metric, "unconfigured")
+    );
+  }
+
+  get hasMultipleSystemsAndAllSystemsFilter(): boolean {
+    return (
+      this.systemSelectionOptions.length > 1 &&
+      this.currentSystemSelection === "ALL"
+    );
+  }
+
+  get hasCompletedAllTasks(): boolean {
+    /**
+     * User has completed all tasks if:
+     *  1. User has configured all metrics and set them all to "Not Available"
+     *  2. User has entered values for all metrics in the latest annual and/or monthly
+     *     records and those records are published
+     */
+    return (
+      this.addDataConfigureMetricsTaskCardMetadatas?.length === 0 &&
+      this.publishMetricsTaskCardMetadatas?.ANNUAL.length === 0 &&
+      this.publishMetricsTaskCardMetadatas?.MONTHLY.length === 0
+    );
+  }
+
   getLatestAnnualRecord(
-    startingMonth: number | string
+    startingMonth: number | string | undefined
   ): LatestRecordMetadata | undefined {
+    if (startingMonth === undefined) return undefined;
     return this.latestAnnualRecordsMetadata?.[startingMonth];
   }
 
@@ -108,14 +155,39 @@ class HomeStore {
     });
   }
 
-  async getLatestReportsAndMetrics(
+  initLatestRecordsMetadatas(
+    latestRecordsAndMetrics: LatestRecordsAgencyMetrics
+  ): void {
+    runInAction(() => {
+      const {
+        agency_metrics: agencyMetrics,
+        annual_reports: annualRecords,
+        monthly_report: monthlyRecord,
+      } = latestRecordsAndMetrics;
+      const hasMonthlyRecord = Object.values(monthlyRecord).length > 0;
+      const hasAnnualRecords = Object.values(annualRecords).length > 0;
+      const annualRecordsMetadata = hasAnnualRecords
+        ? HomeStore.createAnnualRecordsMetadata(annualRecords)
+        : undefined;
+      const monthlyRecordMetadata = hasMonthlyRecord
+        ? HomeStore.createMonthlyRecordMetadata(monthlyRecord)
+        : undefined;
+
+      runInAction(() => {
+        this.latestMonthlyRecordMetadata = monthlyRecordMetadata;
+        this.latestAnnualRecordsMetadata = annualRecordsMetadata;
+        this.agencyMetrics = agencyMetrics;
+      });
+    });
+  }
+
+  async fetchLatestReportsAndMetrics(
     currentAgencyId: string
   ): Promise<void | Error | LatestRecordsAgencyMetrics> {
+    runInAction(() => {
+      this.loading = true;
+    });
     try {
-      runInAction(() => {
-        this.loading = true;
-      });
-
       const response = (await this.api.request({
         path: `/api/home/${currentAgencyId}`,
         method: "GET",
@@ -157,39 +229,268 @@ class HomeStore {
     }
   }
 
-  initLatestRecordsMetadatas(
-    latestRecordsAndMetrics: LatestRecordsAgencyMetrics
-  ): void {
-    runInAction(() => {
-      const {
-        agency_metrics: agencyMetrics,
-        annual_reports: annualRecords,
-        monthly_report: monthlyRecord,
-      } = latestRecordsAndMetrics;
-      const hasMonthlyRecord = Object.values(monthlyRecord).length > 0;
-      const hasAnnualRecords = Object.values(annualRecords).length > 0;
-      const annualRecordsMetadata = hasAnnualRecords
-        ? createAnnualRecordsMetadata(annualRecords)
-        : undefined;
-      const monthlyRecordMetadata = hasMonthlyRecord
-        ? createMonthlyRecordMetadata(monthlyRecord)
-        : undefined;
+  updateTaskCardMetadatasToRender(): void {
+    /**
+     * Metrics without values or not yet configured (`addDataConfigureMetricsTaskCardMetadatas`) are
+     * straightforwardly rendered - each metric will have its own individual task card.
+     *
+     * Metrics with values (`publishMetricsTaskCardMetadatas`) collapse into one Publish task card for the report the
+     * metric belongs to. (e.g. adding data to metrics will remove those metric's individual task cards, and
+     * the user will see one task card with the latest report that matches that metric's frequency with a
+     * Publish action link.)
+     */
+    const {
+      publishMetricsTaskCardMetadatas,
+      addDataConfigureMetricsTaskCardMetadatas,
+    } = [
+      ...this.unconfiguredMetricsTaskCardMetadata,
+      ...this.enabledMetricsTaskCardMetadata,
+    ].reduce(
+      (acc, metric) => {
+        const { metricFrequency } = metric;
+        if (metric.hasMetricValue) {
+          if (metricFrequency && metric.status !== "PUBLISHED")
+            acc.publishMetricsTaskCardMetadatas[metricFrequency].push(metric);
+        } else {
+          acc.addDataConfigureMetricsTaskCardMetadatas.push(metric);
+        }
+        return acc;
+      },
+      {
+        publishMetricsTaskCardMetadatas: { MONTHLY: [], ANNUAL: [] },
+        addDataConfigureMetricsTaskCardMetadatas: [],
+      } as TaskCardMetadataValueConfigurationGroup
+    );
 
-      runInAction(() => {
-        this.latestMonthlyRecordMetadata = monthlyRecordMetadata;
-        this.latestAnnualRecordsMetadata = annualRecordsMetadata;
-        this.agencyMetrics = agencyMetrics;
-      });
+    runInAction(() => {
+      this.publishMetricsTaskCardMetadatas = publishMetricsTaskCardMetadatas;
+      this.addDataConfigureMetricsTaskCardMetadatas =
+        addDataConfigureMetricsTaskCardMetadatas;
     });
   }
 
   updateCurrentSystemSelection(system: SystemSelectionOptions): void {
     runInAction(() => {
       this.currentSystemSelection = system;
+      this.updateTaskCardMetadatasToRender();
     });
   }
 
+  /** Task Card Helpers */
+
+  createTaskCardMetadata(
+    metric: Metric,
+    type: "enabled" | "unconfigured"
+  ): TaskCardMetadata {
+    const metricFrequency = metric.custom_frequency || metric.frequency;
+    /**
+     * If this is a supervision subsystem (with an annual frequency) that does not have a
+     * starting month set, use the parent supervision metric's starting month, otherwise
+     * use the current metric's starting month.
+     */
+    const supervisionSubsystemParentMetricStartingMonth =
+      metric.disaggregated_by_supervision_subsystems && !metric.starting_month
+        ? this.agencyMetricsByMetricKey?.[
+            `SUPERVISION_${HomeStore.stripSystemKeyFromMetricKey(
+              metric.key,
+              metric.system.key
+            )}`
+          ]?.[0]?.starting_month
+        : undefined;
+    const startingMonth =
+      supervisionSubsystemParentMetricStartingMonth || metric.starting_month;
+    const { latestMonthlyRecordMetadata } = this;
+    const latestAnnualRecordsMetadata =
+      this.getLatestAnnualRecord(startingMonth);
+    const createTaskCard =
+      type === "enabled"
+        ? HomeStore.createDataEntryTaskCardMetadata
+        : HomeStore.createConfigurationTaskCardMetadata;
+
+    /** Create Task Card linked to the latest Monthly Record */
+    if (metricFrequency === "MONTHLY") {
+      return createTaskCard(
+        metric,
+        latestMonthlyRecordMetadata,
+        this.hasMultipleSystemsAndAllSystemsFilter
+      );
+    }
+    /** Create Task Card linked to the latest Annual Record */
+    return createTaskCard(
+      metric,
+      latestAnnualRecordsMetadata,
+      this.hasMultipleSystemsAndAllSystemsFilter
+    );
+  }
+
+  /**
+   * Creates latest monthly record metadata object to store information needed
+   * from the latest monthly record.
+   */
+  static createMonthlyRecordMetadata = (
+    monthlyRecord: Report
+  ): LatestRecordMetadata => {
+    return {
+      id: monthlyRecord.id,
+      reportTitle: HomeStore.createReportTitle(monthlyRecord),
+      metrics: groupBy(monthlyRecord.metrics, (metric: Metric) => metric.key),
+      status: monthlyRecord.status,
+    };
+  };
+
+  /**
+   * Creates latest annual record(s) metadata object(s) keyed by starting month
+   * to store information needed from the latest annual record(s).
+   */
+  static createAnnualRecordsMetadata = (annualRecords: {
+    [key: string]: Report;
+  }): AnnualRecordMetadata => {
+    const annualRecordsEntries = Object.entries(annualRecords);
+    return annualRecordsEntries.reduce((acc, [startingMonth, record]) => {
+      // Exclude annual records with no metrics assigned to them
+      if (record.metrics.length === 0) return acc;
+      const monthName = monthsByName[Number(startingMonth) - 1];
+
+      acc[startingMonth] = {
+        id: record.id,
+        reportTitle: HomeStore.createReportTitle(record, monthName),
+        metrics: groupBy(record.metrics, (metric: Metric) => metric.key),
+        status: record.status,
+      };
+
+      return acc;
+    }, {} as AnnualRecordMetadata);
+  };
+
+  /**
+   * Creates task card metadata object used to render task cards with metric config action link.
+   */
+  static createConfigurationTaskCardMetadata(
+    currentMetric: Metric,
+    recordMetadata?: LatestRecordMetadata,
+    hasMultipleSystemsAndAllSystemsFilter?: boolean
+  ): TaskCardMetadata {
+    return {
+      reportID: recordMetadata?.id,
+      title: HomeStore.formatTaskCardTitle(
+        currentMetric.display_name,
+        currentMetric.system.display_name,
+        hasMultipleSystemsAndAllSystemsFilter
+      ),
+      description: currentMetric.description,
+      actionLinks: [taskCardLabelsActionLinks.metricAvailability],
+      metricSettingsParams: `?system=${currentMetric.system.key.toLowerCase()}&metric=${currentMetric.key.toLowerCase()}`,
+      status: recordMetadata?.status,
+    };
+  }
+
+  /**
+   * Creates task card metadata object used to render metric task cards with data entry action links.
+   */
+  static createDataEntryTaskCardMetadata = (
+    currentMetric: Metric,
+    recordMetadata?: LatestRecordMetadata,
+    hasMultipleSystemsAndAllSystemsFilter?: boolean
+  ): TaskCardMetadata => {
+    const metricFrequency =
+      currentMetric.custom_frequency || currentMetric.frequency;
+    const hasMetricValue = Boolean(
+      recordMetadata?.metrics?.[currentMetric.key]?.[0]?.value
+    );
+    return {
+      reportID: recordMetadata?.id,
+      title: HomeStore.formatTaskCardTitle(
+        currentMetric.display_name,
+        currentMetric.system.display_name,
+        hasMultipleSystemsAndAllSystemsFilter
+      ),
+      description: currentMetric.description,
+      actionLinks: [
+        taskCardLabelsActionLinks.uploadData,
+        taskCardLabelsActionLinks.manualEntry,
+      ],
+      metricFrequency,
+      hasMetricValue,
+      status: recordMetadata?.status,
+      metricKey: currentMetric.key,
+    };
+  };
+
+  /**
+   * Creates task card metadata object used to render record task cards with publish action link.
+   */
+  static createPublishTaskCardMetadata(
+    reportTitle: string,
+    frequency: ReportFrequency
+  ): TaskCardMetadata {
+    return {
+      title: reportTitle,
+      description: `Publish all the data you have added for ${
+        reportTitle.split("(")[0] // Remove `(<Starting Month>)` from description for annual records
+      }`,
+      actionLinks: [taskCardLabelsActionLinks.publish],
+      metricFrequency: frequency,
+    };
+  }
+
+  /** Formatting Helpers */
+
+  /**
+   * Strips the system name from a given metric key and returns the raw metric key.
+   *
+   * @example
+   * metricKey = "PAROLE_FUNDING"
+   * systemKey = "PAROLE"
+   * returns "FUNDING"
+   */
+  static stripSystemKeyFromMetricKey(metricKey: string, systemKey: string) {
+    return metricKey.replace(`${systemKey}_`, "");
+  }
+
+  /**
+   * Formats a task card title to include the system name in parenthesis if the
+   * user has multiple systems and they are viewing all of the task cards for all
+   * of their systems (under the "All" filter)
+   * @returns "Metric" or "Metric (System Name)"
+   */
+  static formatTaskCardTitle(
+    title: string,
+    systemName: string,
+    hasMultipleSystemsAndAllSystemsFilter?: boolean
+  ) {
+    if (!hasMultipleSystemsAndAllSystemsFilter) return title;
+    return `${title} ${title.includes(systemName) ? `` : `(${systemName})`}`;
+  }
+
+  /**
+   * Creates Report Title (includes month name in parenthesis to differentiate
+   * between annual records of similar time-periods)
+   */
+  static createReportTitle = (record: Report, monthName?: string) => {
+    return monthName
+      ? `${printReportTitle(
+          record.month,
+          record.year,
+          record.frequency
+        )} (${monthName})`
+      : printReportTitle(record.month, record.year, record.frequency);
+  };
+
+  /**
+   * Replaces spaces and parenthesis with hyphen
+   * @returns string - e.g. returns "New-Cases-Parole" if provided "New Cases (Parole)"
+   */
+  static replaceSpacesAndParenthesesWithHyphen(str: string) {
+    const spaceAndParenRegex = /[\s()]+/g;
+    const leadingTrailingHyphenRegex = /^-+|-+$/g;
+    const replacedString = str.replace(spaceAndParenRegex, "-");
+    const finalString = replacedString.replace(leadingTrailingHyphenRegex, "");
+
+    return finalString;
+  }
+
   /** Filters */
+
   static enabledMetrics({ enabled }: Metric) {
     return enabled;
   }

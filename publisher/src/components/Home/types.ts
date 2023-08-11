@@ -63,12 +63,14 @@ export type LatestAnnualMonthlyRecordMetadata = {
   annual: AnnualRecordMetadata;
 };
 
+export type PublishMetricsTaskCardMetadatas = {
+  MONTHLY: TaskCardMetadata[];
+  ANNUAL: TaskCardMetadata[];
+};
+
 export type TaskCardMetadataValueConfigurationGroup = {
-  allMetricMetadatasWithValues: {
-    MONTHLY: TaskCardMetadata[];
-    ANNUAL: TaskCardMetadata[];
-  };
-  allMetricMetadatasWithoutValuesOrNotConfigured: TaskCardMetadata[];
+  publishMetricsTaskCardMetadatas: PublishMetricsTaskCardMetadatas;
+  addDataConfigureMetricsTaskCardMetadatas: TaskCardMetadata[];
 };
 
 export type SystemSelectionOptions = AgencySystems | "ALL";
