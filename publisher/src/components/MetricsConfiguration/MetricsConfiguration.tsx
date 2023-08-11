@@ -45,11 +45,7 @@ export function MetricsConfiguration() {
   };
 
   useEffect(() => {
-    const initialize = async () => {
-      await initializeMetricConfiguration();
-    };
-
-    initialize();
+    initializeMetricConfiguration();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyId]);
 
