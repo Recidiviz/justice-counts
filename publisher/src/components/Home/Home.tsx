@@ -67,10 +67,10 @@ export const Home = observer(() => {
 
   useEffect(() => {
     const fetchMetricsAndRecords = async () => {
-      homeStore.initAgencySystemSelectionOptions(agencyId);
       (await homeStore.fetchLatestReportsAndMetrics(
         agencyId as string
       )) as LatestRecordsAgencyMetrics;
+      homeStore.initAgencySystemSelectionOptions(agencyId);
       homeStore.updateTaskCardMetadatasToRender();
     };
     fetchMetricsAndRecords();

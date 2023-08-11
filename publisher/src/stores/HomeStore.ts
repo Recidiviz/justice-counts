@@ -196,6 +196,7 @@ class HomeStore {
     runInAction(() => {
       this.loading = true;
     });
+
     try {
       const response = (await this.api.request({
         path: `/api/home/${currentAgencyId}`,
@@ -224,6 +225,7 @@ class HomeStore {
         allRecords.push(latestRecordsAndMetrics.monthly_report);
       if (hasAnnualRecords) allRecords.push(...annualRecords);
       if (allRecords.length > 0) {
+        /** Load ReportStore with latest records */
         allRecords.forEach((record) =>
           this.reportStore.storeMetricDetails(record.id, record.metrics, record)
         );
