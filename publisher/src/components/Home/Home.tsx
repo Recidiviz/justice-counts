@@ -27,6 +27,7 @@ import { ReactComponent as OpenLinkIcon } from "../assets/open-link-icon.svg";
 import { Loading } from "../Loading";
 import { LatestRecordsAgencyMetrics, TaskCard, TaskCardMetadata } from ".";
 import * as Styled from "./Home.styled";
+import { removeSnakeCase } from "@justice-counts/common/utils";
 
 export const Home = observer(() => {
   const { userStore, homeStore } = useStore();
@@ -98,7 +99,7 @@ export const Home = observer(() => {
                 selected={system === currentSystemSelection}
                 onClick={() => updateCurrentSystemSelection(system)}
               >
-                {system.toLocaleLowerCase()}
+                {removeSnakeCase(system.toLocaleLowerCase())}
               </Styled.SystemSelectorTab>
             ))}
           </Styled.SystemSelectorTabWrapper>
