@@ -15,7 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Metric, Report, ReportFrequency } from "@justice-counts/common/types";
+import {
+  AgencySystems,
+  Metric,
+  Report,
+  ReportFrequency,
+  SupervisionSubsystems,
+} from "@justice-counts/common/types";
 import {
   groupBy,
   monthsByName,
@@ -140,6 +146,9 @@ class HomeStore {
   initAgencySystemSelectionOptions(agencyId: string): void {
     const currentAgency = this.userStore.getAgency(agencyId);
     const currentAgencySystems = currentAgency?.systems || [];
+    const filteredAgencySystems = currentAgencySystems.filter((system) =>
+      this.supervisionSubsystemsWithEnabledMetrics(system)
+    );
     const hasMultipleSystems = currentAgencySystems.length > 1;
     const isSuperagency = currentAgencySystems.includes("SUPERAGENCY");
 
@@ -148,8 +157,8 @@ class HomeStore {
         this.systemSelectionOptions = ["SUPERAGENCY"];
       } else {
         this.systemSelectionOptions = hasMultipleSystems
-          ? ["ALL", ...currentAgencySystems]
-          : currentAgencySystems;
+          ? ["ALL", ...filteredAgencySystems]
+          : filteredAgencySystems;
       }
       this.updateCurrentSystemSelection(this.systemSelectionOptions[0]);
     });
@@ -504,6 +513,38 @@ class HomeStore {
       this.currentSystemSelection === "ALL" ||
       metric.system.key === this.currentSystemSelection
     );
+  }
+
+  /**
+   * Filters supervision subsystems with enabled metrics.
+   *
+   * Note: used to render supervision subsystem filter options
+   * in the homepage for supervision subsystems with enabled metrics
+   * and subsequently hide the subsystem option for subsystems
+   * with no enabled metrics.
+   *
+   * @example
+   * `agencySystems` filter options: ["ALL", "SUPERVISION", "PAROLE", "PROBATION"]
+   * If "PAROLE" subsystem has no enabled metrics, then the filtered list would become
+   * ["ALL", "SUPERVISION", "PROBATION"]
+   */
+  supervisionSubsystemsWithEnabledMetrics(system: SystemSelectionOptions) {
+    const isSupervisionSubsystem = Boolean(
+      SupervisionSubsystems.includes(system.toUpperCase() as AgencySystems)
+    );
+    if (!isSupervisionSubsystem) return true;
+
+    const enabledSupervisionSubsystemMetrics = this.agencyMetrics
+      .filter(HomeStore.enabledMetrics)
+      .filter((metric) => {
+        const metricSystem = metric.system.key.toLocaleLowerCase();
+        return metricSystem === system.toLocaleLowerCase();
+      });
+
+    if (enabledSupervisionSubsystemMetrics.length > 0) {
+      return true;
+    }
+    return false;
   }
 }
 

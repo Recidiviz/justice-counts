@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./helpers";
 export * from "./Home";
 export * from "./Home.styled";
 export * from "./TaskCard";

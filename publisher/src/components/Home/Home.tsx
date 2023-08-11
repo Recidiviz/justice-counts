@@ -25,12 +25,7 @@ import HomeStore from "../../stores/HomeStore";
 import { ReactComponent as GearIcon } from "../assets/gear-icon.svg";
 import { ReactComponent as OpenLinkIcon } from "../assets/open-link-icon.svg";
 import { Loading } from "../Loading";
-import {
-  LatestRecordsAgencyMetrics,
-  supervisionSubsystemsWithEnabledMetrics,
-  TaskCard,
-  TaskCardMetadata,
-} from ".";
+import { LatestRecordsAgencyMetrics, TaskCard, TaskCardMetadata } from ".";
 import * as Styled from "./Home.styled";
 
 export const Home = observer(() => {
@@ -97,19 +92,15 @@ export const Home = observer(() => {
         <Styled.SystemSelectorContainer>
           <div />
           <Styled.SystemSelectorTabWrapper>
-            {systemSelectionOptions
-              ?.filter((system) =>
-                supervisionSubsystemsWithEnabledMetrics(system, agencyMetrics)
-              )
-              .map((system) => (
-                <Styled.SystemSelectorTab
-                  key={system}
-                  selected={system === currentSystemSelection}
-                  onClick={() => updateCurrentSystemSelection(system)}
-                >
-                  {removeSnakeCase(system.toLocaleLowerCase())}
-                </Styled.SystemSelectorTab>
-              ))}
+            {systemSelectionOptions.map((system) => (
+              <Styled.SystemSelectorTab
+                key={system}
+                selected={system === currentSystemSelection}
+                onClick={() => updateCurrentSystemSelection(system)}
+              >
+                {system.toLocaleLowerCase()}
+              </Styled.SystemSelectorTab>
+            ))}
           </Styled.SystemSelectorTabWrapper>
           <div />
         </Styled.SystemSelectorContainer>
