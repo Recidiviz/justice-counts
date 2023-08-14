@@ -229,8 +229,8 @@ class HomeStore {
       }
 
       runInAction(() => {
-        this.loading = false;
         this.hydrateStore(latestRecordsAndMetrics, currentAgencyId);
+        this.loading = false;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
