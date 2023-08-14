@@ -33,13 +33,11 @@ export type BarChartProps = {
 export type BarChartHookProps = Partial<UserAgency> & {
   getCurrentChartTimeRange: (isAnnual: boolean) => DataVizTimeRange;
   datapointsByMetric: DatapointsByMetric | undefined;
-  disaggregations: string[];
 };
 
 export const useBarChart = ({
   getCurrentChartTimeRange,
   datapointsByMetric,
-  disaggregations,
 }: BarChartHookProps): BarChartProps => {
   const getBarChartData = useCallback(
     (metric: Metric) => {
