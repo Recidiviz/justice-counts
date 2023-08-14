@@ -318,7 +318,7 @@ class HomeStore {
       } as TaskCardMetadataValueConfigurationGroup
     );
 
-    annualRecordIDsProcessed.clear(); // Clean up Map
+    annualRecordIDsProcessed.clear();
 
     runInAction(() => {
       this.publishMetricsTaskCardMetadatas = publishMetricsTaskCardMetadatas;
@@ -333,6 +333,45 @@ class HomeStore {
       this.hydrateTaskCardMetadatasToRender();
     });
   }
+
+  /**
+   * Creates latest monthly record metadata object to store information needed
+   * from the latest monthly record.
+   */
+  static createMonthlyRecordMetadata = (
+    monthlyRecord: Report
+  ): LatestRecordMetadata => {
+    return {
+      id: monthlyRecord.id,
+      recordTitle: HomeStore.createReportTitle(monthlyRecord),
+      metrics: groupBy(monthlyRecord.metrics, (metric: Metric) => metric.key),
+      status: monthlyRecord.status,
+    };
+  };
+
+  /**
+   * Creates latest annual record(s) metadata object(s) keyed by starting month
+   * to store information needed from the latest annual record(s).
+   */
+  static createAnnualRecordsMetadata = (annualRecords: {
+    [key: string]: Report;
+  }): AnnualRecordMetadata => {
+    const annualRecordsEntries = Object.entries(annualRecords);
+    return annualRecordsEntries.reduce((acc, [startingMonth, record]) => {
+      // Exclude annual records with no metrics assigned to them
+      if (record.metrics.length === 0) return acc;
+      const monthName = monthsByName[Number(startingMonth) - 1];
+
+      acc[startingMonth] = {
+        id: record.id,
+        recordTitle: HomeStore.createReportTitle(record, monthName),
+        metrics: groupBy(record.metrics, (metric: Metric) => metric.key),
+        status: record.status,
+      };
+
+      return acc;
+    }, {} as AnnualRecordMetadata);
+  };
 
   /** Task Card Helpers */
 
@@ -380,45 +419,6 @@ class HomeStore {
       this.hasMultipleSystemsAndAllSystemsFilter
     );
   }
-
-  /**
-   * Creates latest monthly record metadata object to store information needed
-   * from the latest monthly record.
-   */
-  static createMonthlyRecordMetadata = (
-    monthlyRecord: Report
-  ): LatestRecordMetadata => {
-    return {
-      id: monthlyRecord.id,
-      recordTitle: HomeStore.createReportTitle(monthlyRecord),
-      metrics: groupBy(monthlyRecord.metrics, (metric: Metric) => metric.key),
-      status: monthlyRecord.status,
-    };
-  };
-
-  /**
-   * Creates latest annual record(s) metadata object(s) keyed by starting month
-   * to store information needed from the latest annual record(s).
-   */
-  static createAnnualRecordsMetadata = (annualRecords: {
-    [key: string]: Report;
-  }): AnnualRecordMetadata => {
-    const annualRecordsEntries = Object.entries(annualRecords);
-    return annualRecordsEntries.reduce((acc, [startingMonth, record]) => {
-      // Exclude annual records with no metrics assigned to them
-      if (record.metrics.length === 0) return acc;
-      const monthName = monthsByName[Number(startingMonth) - 1];
-
-      acc[startingMonth] = {
-        id: record.id,
-        recordTitle: HomeStore.createReportTitle(record, monthName),
-        metrics: groupBy(record.metrics, (metric: Metric) => metric.key),
-        status: record.status,
-      };
-
-      return acc;
-    }, {} as AnnualRecordMetadata);
-  };
 
   /**
    * Creates task card metadata object used to render task cards with metric config action link.
