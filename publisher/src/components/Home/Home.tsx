@@ -62,7 +62,7 @@ export const Home = observer(() => {
     publishMetricsTaskCardMetadatas.ANNUAL.length > 0;
 
   useEffect(() => {
-    homeStore.fetchLatestReportsAndMetricsAndInitStore(agencyId as string);
+    homeStore.fetchLatestReportsAndMetricsAndInitStore(agencyId);
   }, [agencyId, homeStore]);
 
   if (!agencyMetrics || loading) {
