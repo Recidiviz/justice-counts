@@ -230,14 +230,21 @@ class HomeStore {
 
       runInAction(() => {
         this.loading = false;
-        /** Hydrate Store */
-        this.initLatestRecordsMetadatas(latestRecordsAndMetrics);
-        this.initAgencySystemSelectionOptions(currentAgencyId);
-        this.hydrateTaskCardMetadatasToRender();
+        this.hydrateStore(latestRecordsAndMetrics, currentAgencyId);
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
     }
+  }
+
+  hydrateStore(
+    latestRecordsAndMetrics: LatestRecordsAgencyMetrics,
+    currentAgencyId: string
+  ): void {
+    /** Hydrate Store */
+    this.initLatestRecordsMetadatas(latestRecordsAndMetrics);
+    this.initAgencySystemSelectionOptions(currentAgencyId);
+    this.hydrateTaskCardMetadatasToRender();
   }
 
   hydrateTaskCardMetadatasToRender(): void {
