@@ -64,7 +64,7 @@ export const CategoryOverview = observer(() => {
   });
   const { agencyDataStore } = useStore();
   const [dataRangeFilter, setDataRangeFilter] = useState<"recent" | "all">(
-    "recent"
+    "all"
   );
   const [hoveredDate, setHoveredDate] = useState<string | null>(null);
 

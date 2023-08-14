@@ -22,7 +22,6 @@ import {
   Metric,
   UserAgency,
 } from "@justice-counts/common/types";
-import { map, mergeAll, pipe } from "ramda";
 import { useCallback } from "react";
 
 import { transformDataForBarChart } from "../components/DataViz/utils";
@@ -45,29 +44,8 @@ export const useBarChart = ({
   const getBarChartData = useCallback(
     (metric: Metric) => {
       if (datapointsByMetric) {
-        const hoistDisaggregations = map((aggregateDatapoint: Datapoint) => ({
-          ...aggregateDatapoint,
-          ...(pipe(
-            map<string, { [x: string]: Datapoint }>(
-              (value: string): { [x: string]: Datapoint } => {
-                return datapointsByMetric[metric.key]?.disaggregations?.[value]
-                  ?.length
-                  ? {
-                      [value]:
-                        datapointsByMetric[metric.key]?.disaggregations?.[
-                          value
-                        ]?.[aggregateDatapoint.start_date],
-                    }
-                  : {};
-              }
-            ),
-            mergeAll
-          )(disaggregations) as { [x: string]: Datapoint }),
-        }));
         return transformDataForBarChart(
-          hoistDisaggregations(
-            datapointsByMetric[metric.key].aggregate
-          ) as Datapoint[],
+          datapointsByMetric[metric.key].aggregate as Datapoint[],
           getCurrentChartTimeRange(metric.custom_frequency === "ANNUAL"),
           "Count"
         );

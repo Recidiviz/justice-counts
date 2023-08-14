@@ -26,7 +26,7 @@ import {
 import { head, keys, pipe, prop, values } from "ramda";
 import { useCallback } from "react";
 
-import { transformDataForBarChart } from "../components/DataViz/utils";
+import { transformDataForLineChart } from "../components/DataViz/utils";
 
 export type LineChartProps = {
   getLineChartDimensions: (metric: Metric) => string[];
@@ -46,6 +46,7 @@ export const useLineChart = ({
   getCurrentChartTimeRange,
   datapointsByMetric,
   dimensionNamesByMetricAndDisaggregation,
+  dataRangeFilter,
 }: LineChartHookProps): LineChartProps => {
   const getLineChartData = useCallback(
     (metric: Metric) => {
@@ -54,20 +55,14 @@ export const useLineChart = ({
           keys,
           head
         )(datapointsByMetric[metric.key]?.disaggregations) as string;
-        return transformDataForBarChart(
-          pipe(
-            prop(disaggregationProp) as (value: {
-              [disaggregation: string]: { [start_date: string]: Datapoint };
-            }) => object,
-            values
-          )(datapointsByMetric[metric.key]?.disaggregations) as Datapoint[],
-          getCurrentChartTimeRange(metric.custom_frequency === "ANNUAL"),
-          "Count"
+        return transformDataForLineChart(
+          datapointsByMetric[metric.key]?.disaggregations,
+          disaggregationProp
         );
       }
       return [];
     },
-    [getCurrentChartTimeRange, datapointsByMetric]
+    [datapointsByMetric]
   );
 
   const getLineChartDimensions = useCallback(

@@ -127,7 +127,7 @@ export function CategoryOverviewLineChart({
         <XAxis
           dataKey={(datapoint) => printDateAsYear(datapoint.start_date)}
           style={axisTickStyle}
-          tickLine={true}
+          tickLine
           ticks={[
             printDateAsYear(data[0].start_date),
             printDateAsYear(data[data.length - 1].start_date),
