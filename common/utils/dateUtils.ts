@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { REPORT_CAPITALIZED } from "../../publisher/src/components/Global/constants";
 import { ReportFrequency } from "../types";
 
 export const monthsByName = [
@@ -75,7 +76,7 @@ export const printReportTitle = (
   frequency: ReportFrequency
 ): string => {
   if (frequency === "ANNUAL") {
-    return `Annual Report ${year}`;
+    return `Annual ${REPORT_CAPITALIZED} ${year}`;
   }
 
   return printDateAsMonthYear(month, year);
