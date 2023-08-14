@@ -89,7 +89,7 @@ class HomeStore {
   }
 
   get currentSystemMetrics(): Metric[] {
-    return this.agencyMetrics.filter(this.currentSelectedSystemMetrics);
+    return this.agencyMetrics.filter(this.metricsBelongToCurrentSystem);
   }
 
   get enabledCurrentSystemMetrics(): Metric[] {
@@ -562,7 +562,7 @@ class HomeStore {
     return enabled === null;
   }
 
-  currentSelectedSystemMetrics(metric: Metric) {
+  metricsBelongToCurrentSystem(metric: Metric) {
     return (
       this.currentSystemSelection === "ALL" ||
       metric.system.key === this.currentSystemSelection
