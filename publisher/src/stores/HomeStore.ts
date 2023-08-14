@@ -242,6 +242,11 @@ class HomeStore {
 
   hydrateTaskCardMetadatasToRender(): void {
     /**
+     * For Annual Record Publish Task Cards: keeps track of reportIDs we've already created a publish
+     * task card for to avoid creating duplicates.
+     */
+    const annualRecordIDsProcessed = new Map();
+    /**
      * Metrics without values or not yet configured (`addDataConfigureMetricsTaskCardMetadatas`) are
      * straightforwardly rendered - each metric will have its own individual task card.
      *
@@ -249,6 +254,11 @@ class HomeStore {
      * Publish task card for the report the metric belongs to. (e.g. adding data to metrics will remove
      * those metric's individual task cards, and the user will see one task card with the latest report
      * that matches that metric's frequency with a Publish action link.)
+     *
+     * This reducer consumes the `unconfiguredMetricsTaskCardMetadata` and `enabledMetricsTaskCardMetadata`
+     * and organizes them into two buckets:
+     *    1. `addDataConfigureMetricsTaskCardMetadatas` for individual metric add data / configure task cards
+     *    2. `publishMetricsTaskCardMetadatas` for publish record task cards
      */
     const {
       publishMetricsTaskCardMetadatas,
@@ -260,40 +270,46 @@ class HomeStore {
       (acc, taskCardMetadata) => {
         const { metricFrequency } = taskCardMetadata;
 
-        if (taskCardMetadata.hasMetricValue) {
-          if (metricFrequency && taskCardMetadata.status !== "PUBLISHED") {
-            const publishTaskCardMetadata: TaskCardMetadata[] = [];
-            if (
-              metricFrequency === "MONTHLY" &&
-              this.latestMonthlyRecordMetadata
-            ) {
-              publishTaskCardMetadata.push(
-                HomeStore.createPublishTaskCardMetadata(
-                  this.latestMonthlyRecordMetadata,
-                  "MONTHLY"
-                )
-              );
-            } else if (
-              metricFrequency === "ANNUAL" &&
-              this.latestAnnualRecordsMetadata
-            ) {
-              Object.values(this.latestAnnualRecordsMetadata).forEach(
-                (recordMetadata) =>
+        if (!taskCardMetadata.hasMetricValue) {
+          acc.addDataConfigureMetricsTaskCardMetadatas.push(taskCardMetadata);
+        } else if (metricFrequency && taskCardMetadata.status !== "PUBLISHED") {
+          const publishTaskCardMetadata: TaskCardMetadata[] = [];
+          if (
+            metricFrequency === "MONTHLY" &&
+            this.latestMonthlyRecordMetadata
+          ) {
+            publishTaskCardMetadata.push(
+              HomeStore.createPublishTaskCardMetadata(
+                this.latestMonthlyRecordMetadata,
+                "MONTHLY"
+              )
+            );
+          } else if (
+            metricFrequency === "ANNUAL" &&
+            this.latestAnnualRecordsMetadata
+          ) {
+            Object.values(this.latestAnnualRecordsMetadata).forEach(
+              (recordMetadata) => {
+                if (
+                  recordMetadata.id === taskCardMetadata.recordID &&
+                  !annualRecordIDsProcessed.get(recordMetadata.id)
+                ) {
+                  annualRecordIDsProcessed.set(recordMetadata.id, true);
                   publishTaskCardMetadata.push(
                     HomeStore.createPublishTaskCardMetadata(
                       recordMetadata,
                       "ANNUAL"
                     )
-                  )
-              );
-            }
-            acc.publishMetricsTaskCardMetadatas[metricFrequency].push(
-              ...publishTaskCardMetadata
+                  );
+                }
+              }
             );
           }
-        } else {
-          acc.addDataConfigureMetricsTaskCardMetadatas.push(taskCardMetadata);
+          acc.publishMetricsTaskCardMetadatas[metricFrequency].push(
+            ...publishTaskCardMetadata
+          );
         }
+
         return acc;
       },
       {
@@ -301,6 +317,8 @@ class HomeStore {
         addDataConfigureMetricsTaskCardMetadatas: [],
       } as TaskCardMetadataValueConfigurationGroup
     );
+
+    annualRecordIDsProcessed.clear(); // Clean up Map
 
     runInAction(() => {
       this.publishMetricsTaskCardMetadatas = publishMetricsTaskCardMetadatas;
