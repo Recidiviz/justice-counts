@@ -30,9 +30,10 @@ export type LatestRecordsAgencyMetrics = {
 };
 
 export type TaskCardMetadata = {
-  reportID?: number;
+  key: string;
   title: string;
   description: string;
+  recordID?: number;
   actionLinks?: TaskCardActionLinksMetadata[];
   metricFrequency?: ReportFrequency;
   metricSettingsParams?: string;
@@ -51,7 +52,7 @@ export type LatestRecordMetadata = {
   id: number;
   metrics: { [key: string]: Metric[] };
   status: ReportStatus;
-  reportTitle: string;
+  recordTitle: string;
 };
 
 export type AnnualRecordMetadata = {

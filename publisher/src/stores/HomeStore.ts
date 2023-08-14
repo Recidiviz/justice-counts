@@ -57,9 +57,9 @@ class HomeStore {
 
   latestAnnualRecordsMetadata: AnnualRecordMetadata | undefined;
 
-  publishMetricsTaskCardMetadatas: PublishMetricsTaskCardMetadatas | undefined;
-
   addDataConfigureMetricsTaskCardMetadatas: TaskCardMetadata[] | undefined;
+
+  publishMetricsTaskCardMetadatas: PublishMetricsTaskCardMetadatas | undefined;
 
   systemSelectionOptions: SystemSelectionOptions[];
 
@@ -76,8 +76,8 @@ class HomeStore {
     this.agencyMetrics = [];
     this.latestMonthlyRecordMetadata = undefined;
     this.latestAnnualRecordsMetadata = undefined;
-    this.publishMetricsTaskCardMetadatas = undefined;
     this.addDataConfigureMetricsTaskCardMetadatas = undefined;
+    this.publishMetricsTaskCardMetadatas = undefined;
     this.systemSelectionOptions = [];
     this.currentSystemSelection = undefined;
     this.loading = true;
@@ -209,6 +209,7 @@ class HomeStore {
       const latestRecordsAndMetrics =
         (await response.json()) as LatestRecordsAgencyMetrics;
 
+      /** Load ReportStore with latest records */
       const annualRecords = Object.values(
         latestRecordsAndMetrics.annual_reports
       );
@@ -222,7 +223,6 @@ class HomeStore {
         allRecords.push(latestRecordsAndMetrics.monthly_report);
       if (hasAnnualRecords) allRecords.push(...annualRecords);
       if (allRecords.length > 0) {
-        /** Load ReportStore with latest records */
         allRecords.forEach((record) =>
           this.reportStore.storeMetricDetails(record.id, record.metrics, record)
         );
@@ -231,21 +231,23 @@ class HomeStore {
       runInAction(() => {
         this.loading = false;
         this.initLatestRecordsMetadatas(latestRecordsAndMetrics);
+        this.initAgencySystemSelectionOptions(currentAgencyId);
+        this.hydrateTaskCardMetadatasToRender();
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
     }
   }
 
-  updateTaskCardMetadatasToRender(): void {
+  hydrateTaskCardMetadatasToRender(): void {
     /**
      * Metrics without values or not yet configured (`addDataConfigureMetricsTaskCardMetadatas`) are
      * straightforwardly rendered - each metric will have its own individual task card.
      *
-     * Metrics with values (`publishMetricsTaskCardMetadatas`) collapse into one Publish task card for the report the
-     * metric belongs to. (e.g. adding data to metrics will remove those metric's individual task cards, and
-     * the user will see one task card with the latest report that matches that metric's frequency with a
-     * Publish action link.)
+     * Metrics with values and unpublished (`publishMetricsTaskCardMetadatas`) collapse into one
+     * Publish task card for the report the metric belongs to. (e.g. adding data to metrics will remove
+     * those metric's individual task cards, and the user will see one task card with the latest report
+     * that matches that metric's frequency with a Publish action link.)
      */
     const {
       publishMetricsTaskCardMetadatas,
@@ -254,13 +256,42 @@ class HomeStore {
       ...this.unconfiguredMetricsTaskCardMetadata,
       ...this.enabledMetricsTaskCardMetadata,
     ].reduce(
-      (acc, metric) => {
-        const { metricFrequency } = metric;
-        if (metric.hasMetricValue) {
-          if (metricFrequency && metric.status !== "PUBLISHED")
-            acc.publishMetricsTaskCardMetadatas[metricFrequency].push(metric);
+      (acc, taskCardMetadata) => {
+        const { metricFrequency } = taskCardMetadata;
+
+        if (taskCardMetadata.hasMetricValue) {
+          if (metricFrequency && taskCardMetadata.status !== "PUBLISHED") {
+            const publishTaskCardMetadata: TaskCardMetadata[] = [];
+            if (
+              metricFrequency === "MONTHLY" &&
+              this.latestMonthlyRecordMetadata
+            ) {
+              publishTaskCardMetadata.push(
+                HomeStore.createPublishTaskCardMetadata(
+                  this.latestMonthlyRecordMetadata,
+                  "MONTHLY"
+                )
+              );
+            } else if (
+              metricFrequency === "ANNUAL" &&
+              this.latestAnnualRecordsMetadata
+            ) {
+              Object.values(this.latestAnnualRecordsMetadata).forEach(
+                (recordMetadata) =>
+                  publishTaskCardMetadata.push(
+                    HomeStore.createPublishTaskCardMetadata(
+                      recordMetadata,
+                      "ANNUAL"
+                    )
+                  )
+              );
+            }
+            acc.publishMetricsTaskCardMetadatas[metricFrequency].push(
+              ...publishTaskCardMetadata
+            );
+          }
         } else {
-          acc.addDataConfigureMetricsTaskCardMetadatas.push(metric);
+          acc.addDataConfigureMetricsTaskCardMetadatas.push(taskCardMetadata);
         }
         return acc;
       },
@@ -280,7 +311,7 @@ class HomeStore {
   updateCurrentSystemSelection(system: SystemSelectionOptions): void {
     runInAction(() => {
       this.currentSystemSelection = system;
-      this.updateTaskCardMetadatasToRender();
+      this.hydrateTaskCardMetadatasToRender();
     });
   }
 
@@ -340,7 +371,7 @@ class HomeStore {
   ): LatestRecordMetadata => {
     return {
       id: monthlyRecord.id,
-      reportTitle: HomeStore.createReportTitle(monthlyRecord),
+      recordTitle: HomeStore.createReportTitle(monthlyRecord),
       metrics: groupBy(monthlyRecord.metrics, (metric: Metric) => metric.key),
       status: monthlyRecord.status,
     };
@@ -361,7 +392,7 @@ class HomeStore {
 
       acc[startingMonth] = {
         id: record.id,
-        reportTitle: HomeStore.createReportTitle(record, monthName),
+        recordTitle: HomeStore.createReportTitle(record, monthName),
         metrics: groupBy(record.metrics, (metric: Metric) => metric.key),
         status: record.status,
       };
@@ -379,7 +410,8 @@ class HomeStore {
     hasMultipleSystemsAndAllSystemsFilter?: boolean
   ): TaskCardMetadata {
     return {
-      reportID: recordMetadata?.id,
+      key: currentMetric.key,
+      recordID: recordMetadata?.id,
       title: HomeStore.formatTaskCardTitle(
         currentMetric.display_name,
         currentMetric.system.display_name,
@@ -405,8 +437,10 @@ class HomeStore {
     const hasMetricValue = Boolean(
       recordMetadata?.metrics?.[currentMetric.key]?.[0]?.value
     );
+
     return {
-      reportID: recordMetadata?.id,
+      key: currentMetric.key,
+      recordID: recordMetadata?.id,
       title: HomeStore.formatTaskCardTitle(
         currentMetric.display_name,
         currentMetric.system.display_name,
@@ -428,13 +462,15 @@ class HomeStore {
    * Creates task card metadata object used to render record task cards with publish action link.
    */
   static createPublishTaskCardMetadata(
-    reportTitle: string,
+    recordMetadata: LatestRecordMetadata,
     frequency: ReportFrequency
   ): TaskCardMetadata {
     return {
-      title: reportTitle,
+      key: recordMetadata.recordTitle,
+      recordID: recordMetadata.id,
+      title: recordMetadata.recordTitle,
       description: `Publish all the data you have added for ${
-        reportTitle.split("(")[0] // Remove `(<Starting Month>)` from description for annual records
+        recordMetadata.recordTitle.split("(")[0] // Remove `(<Starting Month>)` from description for annual records
       }`,
       actionLinks: [taskCardLabelsActionLinks.publish],
       metricFrequency: frequency,

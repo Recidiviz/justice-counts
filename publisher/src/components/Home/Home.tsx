@@ -21,12 +21,10 @@ import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { removeSnakeCase } from "../../utils";
-import HomeStore from "../../stores/HomeStore";
 import { ReactComponent as GearIcon } from "../assets/gear-icon.svg";
 import { ReactComponent as OpenLinkIcon } from "../assets/open-link-icon.svg";
 import { Loading } from "../Loading";
-import { LatestRecordsAgencyMetrics, TaskCard, TaskCardMetadata } from ".";
+import { TaskCard, TaskCardMetadata } from ".";
 import * as Styled from "./Home.styled";
 
 export const Home = observer(() => {
@@ -42,8 +40,6 @@ export const Home = observer(() => {
     agencyMetrics,
     hasCompletedAllTasks,
     addDataConfigureMetricsTaskCardMetadatas,
-    latestMonthlyRecordMetadata,
-    latestAnnualRecordsMetadata,
     publishMetricsTaskCardMetadatas,
     updateCurrentSystemSelection,
   } = homeStore;
@@ -53,28 +49,20 @@ export const Home = observer(() => {
     ? "Dashboards are updated with the latest published records"
     : "See open tasks below";
   const allTasksCompleteTaskCardMetadata: TaskCardMetadata = {
+    key: "ALL_TASKS_COMPLETE",
     title: "All tasks complete",
     description: "Your data is up-to-date and published.",
   };
 
   const hasMonthlyRecordsToPublish =
-    latestMonthlyRecordMetadata &&
     publishMetricsTaskCardMetadatas &&
     publishMetricsTaskCardMetadatas.MONTHLY.length > 0;
   const hasAnnualRecordsToPublish =
-    latestAnnualRecordsMetadata &&
     publishMetricsTaskCardMetadatas &&
     publishMetricsTaskCardMetadatas.ANNUAL.length > 0;
 
   useEffect(() => {
-    const fetchMetricsAndRecords = async () => {
-      (await homeStore.fetchLatestReportsAndMetricsAndInitStore(
-        agencyId as string
-      )) as LatestRecordsAgencyMetrics;
-      homeStore.initAgencySystemSelectionOptions(agencyId);
-      homeStore.updateTaskCardMetadatasToRender();
-    };
-    fetchMetricsAndRecords();
+    homeStore.fetchLatestReportsAndMetricsAndInitStore(agencyId as string);
   }, [agencyId, homeStore]);
 
   if (!agencyMetrics || loading) {
@@ -122,9 +110,8 @@ export const Home = observer(() => {
               {addDataConfigureMetricsTaskCardMetadatas?.map(
                 (taskCardMetadata) => (
                   <TaskCard
-                    key={JSON.stringify(taskCardMetadata)}
+                    key={taskCardMetadata.key}
                     metadata={taskCardMetadata}
-                    reportID={taskCardMetadata.reportID}
                   />
                 )
               )}
@@ -132,28 +119,22 @@ export const Home = observer(() => {
               {/* Publish Latest Monthly Record Card */}
               {hasMonthlyRecordsToPublish && (
                 <TaskCard
-                  metadata={HomeStore.createPublishTaskCardMetadata(
-                    latestMonthlyRecordMetadata.reportTitle,
-                    "MONTHLY"
-                  )}
-                  reportID={latestMonthlyRecordMetadata?.id}
+                  metadata={publishMetricsTaskCardMetadatas.MONTHLY[0]}
                 />
               )}
 
               {/* Publish Latest Annual Record(s) Cards */}
               {hasAnnualRecordsToPublish &&
-                Object.values(latestAnnualRecordsMetadata).map((record) => {
-                  return (
-                    <TaskCard
-                      key={record.id}
-                      metadata={HomeStore.createPublishTaskCardMetadata(
-                        record.reportTitle,
-                        "ANNUAL"
-                      )}
-                      reportID={record.id}
-                    />
-                  );
-                })}
+                publishMetricsTaskCardMetadatas.ANNUAL.map(
+                  (taskCardMetadata) => {
+                    return (
+                      <TaskCard
+                        key={taskCardMetadata.key}
+                        metadata={taskCardMetadata}
+                      />
+                    );
+                  }
+                )}
             </>
           )}
         </Styled.OpenTasksContainer>
