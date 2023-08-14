@@ -208,25 +208,7 @@ class HomeStore {
 
       const latestRecordsAndMetrics =
         (await response.json()) as LatestRecordsAgencyMetrics;
-
-      /** Load ReportStore with latest records */
-      const annualRecords = Object.values(
-        latestRecordsAndMetrics.annual_reports
-      );
-      const hasAnnualRecords = annualRecords.length > 0;
-      const hasMonthlyRecord = Boolean(
-        latestRecordsAndMetrics.monthly_report.id
-      );
-      const allRecords = [];
-
-      if (hasMonthlyRecord)
-        allRecords.push(latestRecordsAndMetrics.monthly_report);
-      if (hasAnnualRecords) allRecords.push(...annualRecords);
-      if (allRecords.length > 0) {
-        allRecords.forEach((record) =>
-          this.reportStore.storeMetricDetails(record.id, record.metrics, record)
-        );
-      }
+      this.hydrateReportStoreWithLatestRecords(latestRecordsAndMetrics);
 
       runInAction(() => {
         this.hydrateStore(latestRecordsAndMetrics, currentAgencyId);
@@ -245,6 +227,24 @@ class HomeStore {
     this.initLatestRecordsMetadatas(latestRecordsAndMetrics);
     this.initAgencySystemSelectionOptions(currentAgencyId);
     this.hydrateTaskCardMetadatasToRender();
+  }
+
+  hydrateReportStoreWithLatestRecords(
+    latestRecordsAndMetrics: LatestRecordsAgencyMetrics
+  ): void {
+    const annualRecords = Object.values(latestRecordsAndMetrics.annual_reports);
+    const hasAnnualRecords = annualRecords.length > 0;
+    const hasMonthlyRecord = Boolean(latestRecordsAndMetrics.monthly_report.id);
+    const allRecords = [];
+
+    if (hasMonthlyRecord)
+      allRecords.push(latestRecordsAndMetrics.monthly_report);
+    if (hasAnnualRecords) allRecords.push(...annualRecords);
+    if (allRecords.length > 0) {
+      allRecords.forEach((record) =>
+        this.reportStore.storeMetricDetails(record.id, record.metrics, record)
+      );
+    }
   }
 
   hydrateTaskCardMetadatasToRender(): void {
