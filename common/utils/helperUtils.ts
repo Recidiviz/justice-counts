@@ -125,6 +125,13 @@ export const formatNumberInput = (
   return Number(cleanValue) ? Number(cleanValue).toLocaleString() : value;
 };
 
+/**
+ * Formats string version of numbers into abbreviated string format, rounded down
+ *
+ * @returns a string representation of abbreviated number
+ * @example "123,456,789" " becomes "123m"
+ */
+
 export const formatNumberForChart = (num: number): string => {
   const map = [
     { suffix: "t", threshold: 1e12 },
