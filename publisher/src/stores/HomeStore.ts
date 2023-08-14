@@ -230,6 +230,7 @@ class HomeStore {
 
       runInAction(() => {
         this.loading = false;
+        /** Hydrate Store */
         this.initLatestRecordsMetadatas(latestRecordsAndMetrics);
         this.initAgencySystemSelectionOptions(currentAgencyId);
         this.hydrateTaskCardMetadatasToRender();
