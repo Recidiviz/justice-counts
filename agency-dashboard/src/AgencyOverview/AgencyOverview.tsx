@@ -146,9 +146,9 @@ export const AgencyOverview = observer(() => {
             ))}
           </SystemChipsContainer>
           {Object.keys(orderedCategoriesMap).map((category) => {
+            const isCapacityAndCostCategory = category === "Capacity and Costs";
             const metricsByCategory =
-              agencyDataStore.metricsByCategory[category];
-            if (!metricsByCategory) return null;
+              agencyDataStore.metricsByCategory[category] || [];
             const metricsByCategoryBySystem = metricsByCategory.filter(
               (metric) => metric.system.key === currentSystem
             );
@@ -158,7 +158,8 @@ export const AgencyOverview = observer(() => {
                   (dp) => dp[DataVizAggregateName] !== null
                 ).length > 0
             );
-            const isCapacityAndCostCategory = category === "Capacity and Costs";
+
+            if (metricsWithData.length === 0) return null;
 
             return (
               <CategorizedMetricsContainer key={category}>
