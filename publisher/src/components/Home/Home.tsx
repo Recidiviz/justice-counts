@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { AgencySystems, Metric } from "@justice-counts/common/types";
-import { groupBy } from "@justice-counts/common/utils";
+import { groupBy, removeSnakeCase } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -204,7 +204,7 @@ export const Home = observer(() => {
                   selected={system === currentSystem}
                   onClick={() => setCurrentSystem(system)}
                 >
-                  {system.toLocaleLowerCase()}
+                  {removeSnakeCase(system.toLocaleLowerCase())}
                 </Styled.SystemSelectorTab>
               ))}
           </Styled.SystemSelectorTabWrapper>
