@@ -168,11 +168,12 @@ export const SubmenuItem = styled.a`
 
 export const SystemSelectorContainer = styled.div`
   ${typography.sizeCSS.normal};
+  width: 100%;
   display: flex;
   gap: 32px;
 
   & > div:nth-child(1) {
-    flex: 1 4 280px;
+    flex: 1 1 280px;
   }
   & > div:nth-child(2) {
     width: 500px;
@@ -180,17 +181,31 @@ export const SystemSelectorContainer = styled.div`
   & > div:nth-child(3) {
     flex: 1 1 280px;
   }
+
+  @media only screen and (max-width: 1024px) {
+    & > div:nth-child(1) {
+      flex: 1 1 0px;
+    }
+    & > div:nth-child(2) {
+      width: 500px;
+    }
+    & > div:nth-child(3) {
+      flex: 1 1 0px;
+    }
+  }
 `;
 
 export const SystemSelectorTabWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
+  flex-wrap: wrap;
   gap: 16px;
   margin-bottom: 24px;
 `;
 
 export const SystemSelectorTab = styled.div<{ selected?: boolean }>`
   text-transform: capitalize;
+  white-space: nowrap;
   color: ${({ selected }) =>
     selected ? palette.solid.blue : palette.solid.darkgrey};
   border-bottom: 1.5px solid
