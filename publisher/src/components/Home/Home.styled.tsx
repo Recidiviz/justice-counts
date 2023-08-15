@@ -191,6 +191,7 @@ export const SystemSelectorTabWrapper = styled.div`
 
 export const SystemSelectorTab = styled.div<{ selected?: boolean }>`
   text-transform: capitalize;
+  white-space: nowrap;
   color: ${({ selected }) =>
     selected ? palette.solid.blue : palette.solid.darkgrey};
   border-bottom: 1.5px solid
