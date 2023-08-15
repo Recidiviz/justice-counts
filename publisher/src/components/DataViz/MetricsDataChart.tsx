@@ -158,7 +158,11 @@ export const MetricsDataChart: React.FC = observer(() => {
   const metricFrequency =
     currentMetric?.custom_frequency || currentMetric?.frequency;
 
-  if (metricsBySystem[currentSystem].filter((m) => m.enabled).length === 0) {
+  if (
+    Object.values(metricsBySystem)
+      .flat()
+      .filter((m) => m.enabled).length === 0
+  ) {
     return (
       <Styled.NoEnabledMetricsMessage>
         There are no enabled metrics to view. Please go to{" "}
