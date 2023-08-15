@@ -15,93 +15,37 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { showToast } from "@justice-counts/common/components/Toast";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { SYSTEM_CAPITALIZED, SYSTEM_LOWERCASE } from "../Global/constants";
 import { Loading } from "../Loading";
 import { useSettingsSearchParams } from "../Settings";
 import MetricConfig from "./Configuration";
 import { MetricsOverview } from "./MetricsOverview";
 
 export function MetricsConfiguration() {
-  const [settingsSearchParams, setSettingsSearchParams] =
-    useSettingsSearchParams();
+  const [settingsSearchParams] = useSettingsSearchParams();
   const { agencyId } = useParams() as { agencyId: string };
-  const { userStore, metricConfigStore } = useStore();
-  const { initializeMetricConfigStoreValues, getMetricsBySystem } =
-    metricConfigStore;
+  const { metricConfigStore } = useStore();
+  const { initializeMetricConfigStoreValues } = metricConfigStore;
 
-  const { system: systemSearchParam, metric: metricSearchParam } =
-    settingsSearchParams;
+  const { metric: metricSearchParam } = settingsSearchParams;
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingErrorMessage, setLoadingErrorMessage] = useState<string>();
 
   const initializeMetricConfiguration = async () => {
     setIsLoading(true);
-
     const response = await initializeMetricConfigStoreValues(agencyId);
     if (response instanceof Error) {
       return setLoadingErrorMessage(response.message);
-    }
-
-    const currentAgency = userStore.getAgency(agencyId);
-
-    // now when agency is in the url we still have to check external link
-    // with system and metric search params in it if they belong to agency
-    // (system to agency and metric to system)
-    // if system in agency, go further, if not change system to 1st one in agency
-    if (systemSearchParam && currentAgency?.systems) {
-      const isUrlSystemParamInCurrentAgencySystems =
-        !!currentAgency?.systems.find((system) => system === systemSearchParam);
-      if (!isUrlSystemParamInCurrentAgencySystems) {
-        setSettingsSearchParams({ system: currentAgency?.systems[0] });
-        setIsLoading(false);
-        showToast({
-          message: `${SYSTEM_CAPITALIZED} "${systemSearchParam}" does not exist in "${currentAgency?.name}" agency.`,
-          color: "red",
-          timeout: 5000,
-        });
-        return;
-      }
-    }
-
-    // if system in agency go here and check if metric in system
-    // if not change system to first in agency
-    if (metricSearchParam) {
-      const isUrlMetricParamInCurrentSystem = !!getMetricsBySystem(
-        systemSearchParam
-      )?.find((metric) => metric.key === metricSearchParam);
-      if (!isUrlMetricParamInCurrentSystem) {
-        setSettingsSearchParams({ system: systemSearchParam });
-        setIsLoading(false);
-        showToast({
-          message: `Metric "${metricSearchParam}" does not exist in "${systemSearchParam}" ${SYSTEM_LOWERCASE}.`,
-          color: "red",
-          timeout: 5000,
-        });
-        return;
-      }
-    }
-
-    // if user just go to metric config page set system to 1st one in agency
-    if (!systemSearchParam) {
-      setSettingsSearchParams({
-        system: currentAgency?.systems[0],
-      });
     }
     setIsLoading(false);
   };
 
   useEffect(() => {
-    const initialize = async () => {
-      await initializeMetricConfiguration();
-    };
-
-    initialize();
+    initializeMetricConfiguration();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agencyId]);
 

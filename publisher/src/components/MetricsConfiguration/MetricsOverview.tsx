@@ -20,6 +20,7 @@ import { frequencyString } from "@justice-counts/common/utils/helperUtils";
 import React from "react";
 import { useParams } from "react-router-dom";
 
+import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/bold-right-arrow-icon.svg";
@@ -46,26 +47,30 @@ export function MetricsOverview() {
   };
 
   const currentAgency = userStore.getAgency(agencyId);
+  const currentSystem = systemSearchParam || currentAgency?.systems[0];
 
   const showSystems =
     currentAgency?.systems && currentAgency?.systems?.length > 1;
 
-  const actionRequiredMetrics = getMetricsBySystem(systemSearchParam)?.filter(
+  const actionRequiredMetrics = getMetricsBySystem(currentSystem)?.filter(
     ({ metric }) => metric.enabled === null
   );
   const hasActionRequiredMetrics =
     actionRequiredMetrics && actionRequiredMetrics.length > 0;
 
-  const availableMetrics = getMetricsBySystem(systemSearchParam)?.filter(
+  const availableMetrics = getMetricsBySystem(currentSystem)?.filter(
     ({ metric }) => metric.enabled
   );
   const hasAvailableMetrics = availableMetrics && availableMetrics.length > 0;
 
-  const unavailableMetrics = getMetricsBySystem(systemSearchParam)?.filter(
+  const unavailableMetrics = getMetricsBySystem(currentSystem)?.filter(
     ({ metric }) => metric.enabled === false
   );
   const hasUnavailableMetrics =
     unavailableMetrics && unavailableMetrics.length > 0;
+
+  if (systemSearchParam && !currentAgency?.systems.includes(systemSearchParam))
+    return <NotFound />;
 
   return (
     <Styled.Wrapper>
@@ -83,7 +88,7 @@ export function MetricsOverview() {
                 return (
                   <Styled.SystemMenuItem
                     key={system}
-                    selected={systemSearchParam === system}
+                    selected={currentSystem === system}
                     onClick={() => handleSystemClick(system)}
                   >
                     {formatSystemName(system, {
@@ -105,7 +110,7 @@ export function MetricsOverview() {
                 key={key}
                 onClick={() =>
                   setSettingsSearchParams({
-                    ...settingsSearchParams,
+                    system: currentSystem,
                     metric: key,
                   })
                 }
@@ -126,7 +131,7 @@ export function MetricsOverview() {
                 key={key}
                 onClick={() =>
                   setSettingsSearchParams({
-                    ...settingsSearchParams,
+                    system: currentSystem,
                     metric: key,
                   })
                 }
@@ -152,7 +157,7 @@ export function MetricsOverview() {
                 key={key}
                 onClick={() =>
                   setSettingsSearchParams({
-                    ...settingsSearchParams,
+                    system: currentSystem,
                     metric: key,
                   })
                 }

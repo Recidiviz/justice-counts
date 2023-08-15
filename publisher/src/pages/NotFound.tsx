@@ -23,7 +23,6 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components/macro";
 
-import { REPORTS_LOWERCASE } from "../components/Global/constants";
 import { useStore } from "../stores";
 
 const Wrapper = styled.div`
@@ -100,11 +99,7 @@ export const NotFound: React.FC = () => {
       </Text>
       <HomeButton
         onClick={() =>
-          navigate(
-            `/agency/${
-              isAgencyValid ? agencyId : defaultAgency
-            }/${REPORTS_LOWERCASE}`
-          )
+          navigate(`/agency/${isAgencyValid ? agencyId : defaultAgency}`)
         }
       >
         Home
