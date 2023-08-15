@@ -144,11 +144,9 @@ test("publishMetricsTaskCardMetadatas reflects the monthly and annual records th
     ).length > 0;
 
   expect(hasMonthlyMetricsWithValues).toEqual(true);
-  expect(hasAnnualMetricsWithValues).toEqual(true);
-
   expect(homeStore.publishMetricsTaskCardMetadatas?.MONTHLY.length).toEqual(1);
+  expect(hasAnnualMetricsWithValues).toEqual(true);
   expect(homeStore.publishMetricsTaskCardMetadatas?.ANNUAL.length).toEqual(1);
-
   expect(homeStore.publishMetricsTaskCardMetadatas?.MONTHLY[0].title).toEqual(
     "July 2023"
   );
