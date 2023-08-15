@@ -208,9 +208,9 @@ class HomeStore {
 
       const latestRecordsAndMetrics =
         (await response.json()) as LatestRecordsAgencyMetrics;
-      this.hydrateReportStoreWithLatestRecords(latestRecordsAndMetrics);
 
       runInAction(() => {
+        this.hydrateReportStoreWithLatestRecords(latestRecordsAndMetrics);
         this.hydrateStore(latestRecordsAndMetrics, currentAgencyId);
         this.loading = false;
       });
