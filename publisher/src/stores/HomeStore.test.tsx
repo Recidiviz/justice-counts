@@ -15,11 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { runInAction } from "mobx";
-import { rootStore } from ".";
-import latestRecordsAndMetricJSON from "../mocks/latestRecordsAndMetrics.json";
-import { LatestRecordsAgencyMetrics } from "../components/Home";
 import { UserAgency } from "@justice-counts/common/types";
+import { runInAction } from "mobx";
+
+import { LatestRecordsAgencyMetrics } from "../components/Home";
+import latestRecordsAndMetricJSON from "../mocks/latestRecordsAndMetrics.json";
+import { rootStore } from ".";
 
 const { homeStore, userStore } = rootStore;
 
