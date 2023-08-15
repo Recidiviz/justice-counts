@@ -18,14 +18,10 @@
 import { UserAgency } from "@justice-counts/common/types";
 import { runInAction } from "mobx";
 
-import { LatestRecordsAgencyMetrics } from "../components/Home";
-import latestRecordsAndMetricJSON from "../mocks/latestRecordsAndMetrics.json";
+import { latestRecordsAndMetrics } from "../mocks/latestRecordsAndMetrics";
 import { rootStore } from ".";
 
 const { homeStore, userStore } = rootStore;
-
-const latestRecordsAndMetrics =
-  latestRecordsAndMetricJSON as unknown as LatestRecordsAgencyMetrics;
 
 beforeEach(() => {
   runInAction(() => {
