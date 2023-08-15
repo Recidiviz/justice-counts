@@ -22,6 +22,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { removeSnakeCase } from "../../utils";
 import { ReactComponent as GearIcon } from "../assets/gear-icon.svg";
 import { ReactComponent as OpenLinkIcon } from "../assets/open-link-icon.svg";
 import { Loading } from "../Loading";
@@ -204,7 +205,7 @@ export const Home = observer(() => {
                   selected={system === currentSystem}
                   onClick={() => setCurrentSystem(system)}
                 >
-                  {system.toLocaleLowerCase().replace("_", " ")}
+                  {removeSnakeCase(system.toLocaleLowerCase())}
                 </Styled.SystemSelectorTab>
               ))}
           </Styled.SystemSelectorTabWrapper>
