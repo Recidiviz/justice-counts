@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-
+// eslint-disable-next-line import/no-relative-packages
 import { REPORT_CAPITALIZED } from "../../publisher/src/components/Global/constants";
 import { ReportFrequency } from "../types";
 
