@@ -204,7 +204,7 @@ export const Home = observer(() => {
                   selected={system === currentSystem}
                   onClick={() => setCurrentSystem(system)}
                 >
-                  {system.toLocaleLowerCase()}
+                  {system.toLocaleLowerCase().replace("_", " ")}
                 </Styled.SystemSelectorTab>
               ))}
           </Styled.SystemSelectorTabWrapper>
