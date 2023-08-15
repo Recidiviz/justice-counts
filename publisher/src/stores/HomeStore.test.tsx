@@ -51,6 +51,9 @@ test("agency metrics properly loaded", () => {
   expect(homeStore.agencyMetrics.length).toEqual(
     latestRecordsAndMetrics.agency_metrics.length
   );
+  expect(homeStore.agencyMetrics.map((metrics) => metrics.key).sort()).toEqual(
+    latestRecordsAndMetrics.agency_metrics.map((metrics) => metrics.key).sort()
+  );
   expect.hasAssertions();
 });
 
