@@ -155,6 +155,5 @@ test("publishMetricsTaskCardMetadatas reflects the monthly and annual records th
   expect(homeStore.publishMetricsTaskCardMetadatas?.ANNUAL[0].recordID).toEqual(
     5114
   );
-
   expect.hasAssertions();
 });
