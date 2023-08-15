@@ -140,54 +140,7 @@ class HomeStore {
     return this.latestAnnualRecordsMetadata?.[startingMonth];
   }
 
-  initAgencySystemSelectionOptions(agencyId: string): void {
-    const currentAgency = this.userStore.getAgency(agencyId);
-    const currentAgencySystems = currentAgency?.systems || [];
-    const filteredAgencySystems = currentAgencySystems.filter((system) =>
-      this.supervisionSubsystemsWithEnabledMetrics(system)
-    );
-    const hasMultipleSystems = currentAgencySystems.length > 1;
-    const isSuperagency = currentAgencySystems.includes("SUPERAGENCY");
-
-    runInAction(() => {
-      if (isSuperagency) {
-        this.systemSelectionOptions = ["SUPERAGENCY"];
-      } else {
-        this.systemSelectionOptions = hasMultipleSystems
-          ? ["ALL", ...filteredAgencySystems]
-          : filteredAgencySystems;
-      }
-      this.updateCurrentSystemSelection(this.systemSelectionOptions[0]);
-    });
-  }
-
-  initLatestRecordsMetadatas(
-    latestRecordsAndMetrics: LatestRecordsAgencyMetrics
-  ): void {
-    runInAction(() => {
-      const {
-        agency_metrics: agencyMetrics,
-        annual_reports: annualRecords,
-        monthly_report: monthlyRecord,
-      } = latestRecordsAndMetrics;
-      const hasMonthlyRecord = Object.values(monthlyRecord).length > 0;
-      const hasAnnualRecords = Object.values(annualRecords).length > 0;
-      const annualRecordsMetadata = hasAnnualRecords
-        ? HomeStore.createAnnualRecordsMetadata(annualRecords)
-        : undefined;
-      const monthlyRecordMetadata = hasMonthlyRecord
-        ? HomeStore.createMonthlyRecordMetadata(monthlyRecord)
-        : undefined;
-
-      runInAction(() => {
-        this.latestMonthlyRecordMetadata = monthlyRecordMetadata;
-        this.latestAnnualRecordsMetadata = annualRecordsMetadata;
-        this.agencyMetrics = agencyMetrics;
-      });
-    });
-  }
-
-  async fetchLatestReportsAndMetricsAndInitStore(
+  async fetchLatestReportsAndMetricsAndHydrateStore(
     currentAgencyId: string
   ): Promise<void | Error | LatestRecordsAgencyMetrics> {
     runInAction(() => {
@@ -219,16 +172,6 @@ class HomeStore {
     }
   }
 
-  hydrateStore(
-    latestRecordsAndMetrics: LatestRecordsAgencyMetrics,
-    currentAgencyId: string
-  ): void {
-    /** Hydrate Store */
-    this.initLatestRecordsMetadatas(latestRecordsAndMetrics);
-    this.initAgencySystemSelectionOptions(currentAgencyId);
-    this.hydrateTaskCardMetadatasToRender();
-  }
-
   hydrateReportStoreWithLatestRecords(
     latestRecordsAndMetrics: LatestRecordsAgencyMetrics
   ): void {
@@ -245,6 +188,63 @@ class HomeStore {
         this.reportStore.storeMetricDetails(record.id, record.metrics, record)
       );
     }
+  }
+
+  hydrateStore(
+    latestRecordsAndMetrics: LatestRecordsAgencyMetrics,
+    currentAgencyId: string
+  ): void {
+    /** Hydrate Store */
+    this.hydrateLatestRecordsMetadatas(latestRecordsAndMetrics);
+    this.hydrateAgencySystemSelectionOptions(currentAgencyId);
+    this.hydrateTaskCardMetadatasToRender();
+  }
+
+  hydrateAgencySystemSelectionOptions(agencyId: string): void {
+    const currentAgency = this.userStore.getAgency(agencyId);
+    const currentAgencySystems = currentAgency?.systems || [];
+    const filteredAgencySystems = currentAgencySystems.filter((system) =>
+      this.supervisionSubsystemsWithEnabledMetrics(system)
+    );
+    const hasMultipleSystems = currentAgencySystems.length > 1;
+    const isSuperagency = currentAgencySystems.includes("SUPERAGENCY");
+
+    runInAction(() => {
+      if (isSuperagency) {
+        this.systemSelectionOptions = ["SUPERAGENCY"];
+      } else {
+        this.systemSelectionOptions = hasMultipleSystems
+          ? ["ALL", ...filteredAgencySystems]
+          : filteredAgencySystems;
+      }
+      this.updateCurrentSystemSelection(this.systemSelectionOptions[0]);
+    });
+  }
+
+  hydrateLatestRecordsMetadatas(
+    latestRecordsAndMetrics: LatestRecordsAgencyMetrics
+  ): void {
+    runInAction(() => {
+      const {
+        agency_metrics: agencyMetrics,
+        annual_reports: annualRecords,
+        monthly_report: monthlyRecord,
+      } = latestRecordsAndMetrics;
+      const hasMonthlyRecord = Object.values(monthlyRecord).length > 0;
+      const hasAnnualRecords = Object.values(annualRecords).length > 0;
+      const annualRecordsMetadata = hasAnnualRecords
+        ? HomeStore.createAnnualRecordsMetadata(annualRecords)
+        : undefined;
+      const monthlyRecordMetadata = hasMonthlyRecord
+        ? HomeStore.createMonthlyRecordMetadata(monthlyRecord)
+        : undefined;
+
+      runInAction(() => {
+        this.latestMonthlyRecordMetadata = monthlyRecordMetadata;
+        this.latestAnnualRecordsMetadata = annualRecordsMetadata;
+        this.agencyMetrics = agencyMetrics;
+      });
+    });
   }
 
   hydrateTaskCardMetadatasToRender(): void {
