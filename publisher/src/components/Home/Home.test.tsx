@@ -15,17 +15,22 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 /* eslint-disable testing-library/prefer-presence-queries, testing-library/no-node-access */
-import { Metric, UserAgency } from "@justice-counts/common/types";
+import { UserAgency } from "@justice-counts/common/types";
 import { act, render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 
-import { latestRecordsAndMetrics } from "../../mocks/latestRecordsAndMetrics";
+import {
+  LAW_ENFORCEMENT_LATEST_RECORDS_METRICS,
+  rehydrateStoreWithUpdates,
+  updateMetricProps,
+} from "../../mocks/HomeMocksHelpers";
 import { rootStore, StoreProvider } from "../../stores";
 import { Home } from "./Home";
 
 const { homeStore, userStore, authStore } = rootStore;
+const mockAgencyID = "10";
 
 beforeEach(() => {
   runInAction(() => {
@@ -36,7 +41,7 @@ beforeEach(() => {
         ({
           child_agencies: [],
           fips_county_code: "",
-          id: 10,
+          id: Number(mockAgencyID),
           is_superagency: null,
           name: "Law Enforcement",
           settings: [],
@@ -47,12 +52,14 @@ beforeEach(() => {
           team: [],
         } as UserAgency)
     );
-    homeStore.hydrateReportStoreWithLatestRecords(latestRecordsAndMetrics);
-    homeStore.hydrateStore(latestRecordsAndMetrics, "10");
+    homeStore.hydrateReportStoreWithLatestRecords(
+      LAW_ENFORCEMENT_LATEST_RECORDS_METRICS
+    );
+    homeStore.hydrateStore(LAW_ENFORCEMENT_LATEST_RECORDS_METRICS, "10");
   });
 });
 
-test("the proper welcome, description, and task cards appear based on the mocked latestRecordsAndMetrics", () => {
+test("the proper welcome, description, and task cards appear based on the mocked LAW_ENFORCEMENT_LATEST_RECORDS_METRICS", () => {
   render(
     <BrowserRouter>
       <StoreProvider>
@@ -98,47 +105,6 @@ test("the proper welcome, description, and task cards appear based on the mocked
   expect(monthlyRecordTaskCard).toBeInTheDocument();
 });
 
-const updateMetricProps = (
-  metricKey: string,
-  property: string,
-  newValue: number | boolean | null,
-  typeOfRecord: "MONTHLY" | "ANNUAL",
-  startingMonth?: number
-) => {
-  act(() => {
-    runInAction(() => {
-      let updatedMetric: Metric | undefined;
-      homeStore.agencyMetrics = [
-        ...homeStore.agencyMetrics.map((metric) => {
-          if (metric.key !== metricKey) return metric;
-          updatedMetric = { ...metric, [property]: newValue };
-          return { ...metric, [property]: newValue };
-        }),
-      ];
-      if (updatedMetric === undefined) return;
-      if (
-        typeOfRecord === "MONTHLY" &&
-        homeStore.latestMonthlyRecordMetadata?.metrics
-      ) {
-        homeStore.latestMonthlyRecordMetadata.metrics[metricKey] = [
-          updatedMetric,
-        ];
-      }
-      if (
-        typeOfRecord === "ANNUAL" &&
-        startingMonth &&
-        homeStore.latestAnnualRecordsMetadata?.[startingMonth]?.metrics
-      ) {
-        homeStore.latestAnnualRecordsMetadata["1"].metrics[metricKey] = [
-          updatedMetric,
-        ];
-      }
-      homeStore.hydrateTaskCardMetadatasToRender();
-      homeStore.loading = false;
-    });
-  });
-};
-
 test("setting a metric configuration should replace the set metric availability task card with an add data task card for the metric", () => {
   render(
     <BrowserRouter>
@@ -153,6 +119,7 @@ test("setting a metric configuration should replace the set metric availability 
     })
   );
 
+  /** Check to see if Reported Crime metric has a "Set Metric Availability" task card */
   let reportedCrimeActionLinkNodes =
     screen.getByText("Reported Crime").nextSibling?.nextSibling?.childNodes;
   let reportedCrimeActionLinkText =
@@ -163,14 +130,18 @@ test("setting a metric configuration should replace the set metric availability 
 
   expect(reportedCrimeActionLinkText).toBe("Set Metric Availability");
 
-  updateMetricProps(
+  /** Mock user setting metric availability for Reported Crime metric */
+  const updatedLatestRecordsMetrics = updateMetricProps(
+    LAW_ENFORCEMENT_LATEST_RECORDS_METRICS,
     "LAW_ENFORCEMENT_REPORTED_CRIME",
     "enabled",
     true,
     "ANNUAL",
     1
   );
+  rehydrateStoreWithUpdates(homeStore, updatedLatestRecordsMetrics, "10");
 
+  /** Check to see if Reported Crime metric now has an "Upload Data"/"Manual Entry" task card */
   reportedCrimeActionLinkNodes =
     screen.getByText("Reported Crime").nextSibling?.nextSibling?.childNodes;
   reportedCrimeActionLinkText =
@@ -196,15 +167,24 @@ test("adding data to a metric should remove the add data task card for the metri
     })
   );
 
-  updateMetricProps(
+  /**
+   * Start by removing all annual metric values to ensure annual record publish task card is not in the DOM.
+   * NOTE: LAW_ENFORCEMENT_COMPLAINTS_SUSTAINED is the only metric with an annual frequency and value - and
+   * setting it to `null` should remove the annual record publish task card.
+   */
+  let updatedLatestRecordsMetrics = updateMetricProps(
+    LAW_ENFORCEMENT_LATEST_RECORDS_METRICS,
     "LAW_ENFORCEMENT_COMPLAINTS_SUSTAINED",
     "value",
     null,
     "ANNUAL",
     1
   );
+  rehydrateStoreWithUpdates(homeStore, updatedLatestRecordsMetrics, "10");
+
   expect(screen.queryByText("Annual Record 2023 (January)")).toBeNull();
 
+  /** Check to see if Funding metric (annual frequency) has an "Upload Data"/"Manual Entry" task card  */
   const fundingActionLinkNodes =
     screen.queryByText("Funding")?.nextSibling?.nextSibling?.childNodes;
   const fundingActionLinkText =
@@ -215,8 +195,21 @@ test("adding data to a metric should remove the add data task card for the metri
 
   expect(fundingActionLinkText).toBe("Upload Data Manual Entry");
 
-  updateMetricProps("LAW_ENFORCEMENT_FUNDING", "value", 500, "ANNUAL", 1);
+  /** Mock user setting adding data for Funding metric */
+  updatedLatestRecordsMetrics = updateMetricProps(
+    LAW_ENFORCEMENT_LATEST_RECORDS_METRICS,
+    "LAW_ENFORCEMENT_FUNDING",
+    "value",
+    500,
+    "ANNUAL",
+    1
+  );
+  rehydrateStoreWithUpdates(homeStore, updatedLatestRecordsMetrics, "10");
 
+  /**
+   * Check to see if adding value to Funding metric (annual frequency) created an annual record publish task card
+   * and there is no longer a Funding metric "Upload Data"/"Manual Entry" task card
+   */
   expect(
     screen.queryByText("Annual Record 2023 (January)")
   ).toBeInTheDocument();

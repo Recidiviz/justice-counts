@@ -18,7 +18,7 @@
 import { UserAgency } from "@justice-counts/common/types";
 import { runInAction } from "mobx";
 
-import { latestRecordsAndMetrics } from "../mocks/latestRecordsAndMetrics";
+import { LAW_ENFORCEMENT_LATEST_RECORDS_METRICS } from "../mocks/HomeMocksHelpers";
 import { rootStore } from ".";
 
 const { homeStore, userStore } = rootStore;
@@ -43,16 +43,20 @@ beforeEach(() => {
     );
   });
   homeStore.loading = false;
-  homeStore.hydrateReportStoreWithLatestRecords(latestRecordsAndMetrics);
-  homeStore.hydrateStore(latestRecordsAndMetrics, "10");
+  homeStore.hydrateReportStoreWithLatestRecords(
+    LAW_ENFORCEMENT_LATEST_RECORDS_METRICS
+  );
+  homeStore.hydrateStore(LAW_ENFORCEMENT_LATEST_RECORDS_METRICS, "10");
 });
 
 test("agency metrics properly loaded", () => {
   expect(homeStore.agencyMetrics.length).toEqual(
-    latestRecordsAndMetrics.agency_metrics.length
+    LAW_ENFORCEMENT_LATEST_RECORDS_METRICS.agency_metrics.length
   );
   expect(homeStore.agencyMetrics.map((metrics) => metrics.key).sort()).toEqual(
-    latestRecordsAndMetrics.agency_metrics.map((metrics) => metrics.key).sort()
+    LAW_ENFORCEMENT_LATEST_RECORDS_METRICS.agency_metrics
+      .map((metrics) => metrics.key)
+      .sort()
   );
   expect.hasAssertions();
 });
