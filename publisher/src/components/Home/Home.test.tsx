@@ -219,7 +219,7 @@ test("adding data to a metric should remove the add data task card for the metri
   expect.hasAssertions();
 });
 
-test("publishing a record should remove the associated publish record task card", () => {
+test("publishing an annual record should remove the associated annual record publish record task card", () => {
   render(
     <BrowserRouter>
       <StoreProvider>
@@ -250,5 +250,36 @@ test("publishing a record should remove the associated publish record task card"
 
   /** Check to make sure there is no longer an annual record publish task card */
   expect(screen.queryByText("Annual Record 2023 (January)")).toBeNull();
+  expect.hasAssertions();
+});
+
+test("publishing a monthly record should remove the associated monthly record publish record task card", () => {
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <Home />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+  act(() =>
+    runInAction(() => {
+      homeStore.loading = false;
+    })
+  );
+
+  /** Check to see if there is an existing monthly record publish task card */
+  expect(screen.queryByText("July 2023")).toBeInTheDocument();
+
+  /** Mock user publishing latest monthly record */
+  const updatedLatestRecordsMetrics = updateRecordProps(
+    LAW_ENFORCEMENT_LATEST_RECORDS_METRICS,
+    "status",
+    "PUBLISHED",
+    "MONTHLY"
+  );
+  rehydrateHomeStoreWithUpdates(homeStore, updatedLatestRecordsMetrics, "10");
+
+  /** Check to make sure there is no longer a monthly record publish task card */
+  expect(screen.queryByText("July 2023")).toBeNull();
   expect.hasAssertions();
 });
