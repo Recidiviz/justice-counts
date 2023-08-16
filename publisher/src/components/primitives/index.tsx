@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import { AgencyTeamMemberRole } from "@justice-counts/common/types";
 import React from "react";
 import styled from "styled-components/macro";
@@ -56,24 +55,11 @@ export const TeamMemberNameWithBadge: React.FC<{
   const isJCAdminInsideTooltip = isInsideTooltip && name === "JC Admin";
 
   return (
-    <>
-      <TeamMemberNameContainer color={badgeColor} id={badgeId}>
-        <NameContainer>{name}</NameContainer>
-        {role === AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN &&
-          !isJCAdminInsideTooltip && <StyledRecidivizAdmin id={badgeId} />}
-        {isInsideTooltip && !isLast && ","}
-      </TeamMemberNameContainer>
+    <TeamMemberNameContainer color={badgeColor} id={badgeId}>
+      <NameContainer>{name}</NameContainer>
       {role === AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN &&
-        name !== "JC Admin" &&
-        badgeId && (
-          <Tooltip
-            anchorId={badgeId}
-            content="JC Admin"
-            position="right"
-            noArrow
-            offset={6}
-          />
-        )}
-    </>
+        !isJCAdminInsideTooltip && <StyledRecidivizAdmin id={badgeId} />}
+      {isInsideTooltip && !isLast && ","}
+    </TeamMemberNameContainer>
   );
 };
