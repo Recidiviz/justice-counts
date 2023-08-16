@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-
+/* eslint-disable testing-library/prefer-presence-queries, testing-library/no-node-access */
 import { Metric, UserAgency } from "@justice-counts/common/types";
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
@@ -50,7 +50,9 @@ beforeEach(() => {
     homeStore.hydrateReportStoreWithLatestRecords(latestRecordsAndMetrics);
     homeStore.hydrateStore(latestRecordsAndMetrics, "10");
   });
+});
 
+test("the proper welcome, description, and task cards appear based on the mocked latestRecordsAndMetrics", () => {
   render(
     <BrowserRouter>
       <StoreProvider>
@@ -58,9 +60,6 @@ beforeEach(() => {
       </StoreProvider>
     </BrowserRouter>
   );
-});
-
-test("the proper welcome, description, and task cards appear based on the mocked latestRecordsAndMetrics", () => {
   act(() => {
     runInAction(() => {
       homeStore.loading = false;
@@ -141,11 +140,19 @@ const updateMetricProps = (
 };
 
 test("setting a metric configuration should replace the set metric availability task card with an add data task card for the metric", () => {
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <Home />
+      </StoreProvider>
+    </BrowserRouter>
+  );
   act(() =>
     runInAction(() => {
       homeStore.loading = false;
     })
   );
+
   let reportedCrimeActionLinkNodes =
     screen.getByText("Reported Crime").nextSibling?.nextSibling?.childNodes;
   let reportedCrimeActionLinkText =
@@ -176,6 +183,13 @@ test("setting a metric configuration should replace the set metric availability 
 });
 
 test("adding data to a metric should remove the add data task card for the metric as it should be collapsed into a publish record task card", () => {
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <Home />
+      </StoreProvider>
+    </BrowserRouter>
+  );
   act(() =>
     runInAction(() => {
       homeStore.loading = false;
