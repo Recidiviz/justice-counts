@@ -66,7 +66,7 @@ test("latestMonthlyRecordMetadata reflects the latest monthly record metadata", 
   expect(homeStore.latestMonthlyRecordMetadata?.recordTitle).toEqual(
     "July 2023"
   );
-  expect(homeStore.latestMonthlyRecordMetadata?.status).toEqual("NOT_STARTED");
+  expect(homeStore.latestMonthlyRecordMetadata?.status).toEqual("DRAFT");
   expect(homeStore.latestMonthlyRecordMetadata?.metrics).toHaveProperty(
     "LAW_ENFORCEMENT_CALLS_FOR_SERVICE"
   );
