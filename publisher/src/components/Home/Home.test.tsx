@@ -56,7 +56,10 @@ beforeEach(() => {
     homeStore.hydrateReportStoreWithLatestRecords(
       LAW_ENFORCEMENT_LATEST_RECORDS_METRICS
     );
-    homeStore.hydrateStore(LAW_ENFORCEMENT_LATEST_RECORDS_METRICS, "10");
+    homeStore.hydrateStore(
+      LAW_ENFORCEMENT_LATEST_RECORDS_METRICS,
+      mockAgencyID
+    );
   });
 });
 
@@ -140,7 +143,11 @@ test("setting a metric configuration should replace the set metric availability 
     "ANNUAL",
     1
   );
-  rehydrateHomeStoreWithUpdates(homeStore, updatedLatestRecordsMetrics, "10");
+  rehydrateHomeStoreWithUpdates(
+    homeStore,
+    updatedLatestRecordsMetrics,
+    mockAgencyID
+  );
 
   /** Check to see if Reported Crime metric now has an "Upload Data"/"Manual Entry" task card */
   reportedCrimeActionLinkNodes =
@@ -182,7 +189,11 @@ test("adding data to a metric should remove the add data task card for the metri
     "ANNUAL",
     1
   );
-  rehydrateHomeStoreWithUpdates(homeStore, updatedLatestRecordsMetrics, "10");
+  rehydrateHomeStoreWithUpdates(
+    homeStore,
+    updatedLatestRecordsMetrics,
+    mockAgencyID
+  );
 
   expect(screen.queryByText("Annual Record 2023 (January)")).toBeNull();
 
@@ -206,7 +217,11 @@ test("adding data to a metric should remove the add data task card for the metri
     "ANNUAL",
     1
   );
-  rehydrateHomeStoreWithUpdates(homeStore, updatedLatestRecordsMetrics, "10");
+  rehydrateHomeStoreWithUpdates(
+    homeStore,
+    updatedLatestRecordsMetrics,
+    mockAgencyID
+  );
 
   /**
    * Check to see if adding value to Funding metric (annual frequency) created an annual record publish task card
@@ -246,7 +261,11 @@ test("publishing an annual record should remove the associated annual record pub
     "ANNUAL",
     1
   );
-  rehydrateHomeStoreWithUpdates(homeStore, updatedLatestRecordsMetrics, "10");
+  rehydrateHomeStoreWithUpdates(
+    homeStore,
+    updatedLatestRecordsMetrics,
+    mockAgencyID
+  );
 
   /** Check to make sure there is no longer an annual record publish task card */
   expect(screen.queryByText("Annual Record 2023 (January)")).toBeNull();
@@ -277,7 +296,11 @@ test("publishing a monthly record should remove the associated monthly record pu
     "PUBLISHED",
     "MONTHLY"
   );
-  rehydrateHomeStoreWithUpdates(homeStore, updatedLatestRecordsMetrics, "10");
+  rehydrateHomeStoreWithUpdates(
+    homeStore,
+    updatedLatestRecordsMetrics,
+    mockAgencyID
+  );
 
   /** Check to make sure there is no longer a monthly record publish task card */
   expect(screen.queryByText("July 2023")).toBeNull();

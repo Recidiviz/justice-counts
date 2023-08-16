@@ -22,6 +22,7 @@ import { LAW_ENFORCEMENT_LATEST_RECORDS_METRICS } from "../mocks/HomeMocksHelper
 import { rootStore } from ".";
 
 const { homeStore, userStore } = rootStore;
+const mockAgencyID = "10";
 
 beforeEach(() => {
   runInAction(() => {
@@ -30,7 +31,7 @@ beforeEach(() => {
         ({
           child_agencies: [],
           fips_county_code: "",
-          id: 10,
+          id: Number(mockAgencyID),
           is_superagency: null,
           name: "Law Enforcement",
           settings: [],
@@ -46,7 +47,7 @@ beforeEach(() => {
   homeStore.hydrateReportStoreWithLatestRecords(
     LAW_ENFORCEMENT_LATEST_RECORDS_METRICS
   );
-  homeStore.hydrateStore(LAW_ENFORCEMENT_LATEST_RECORDS_METRICS, "10");
+  homeStore.hydrateStore(LAW_ENFORCEMENT_LATEST_RECORDS_METRICS, mockAgencyID);
 });
 
 test("agency metrics properly loaded", () => {
