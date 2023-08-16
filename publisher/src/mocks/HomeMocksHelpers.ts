@@ -69,7 +69,7 @@ export const updateRecordProps = (
   startingMonth?: number
 ) => {
   let updatedMonthlyRecord = latestRecordsAndMetrics.monthly_report;
-  let updatedAnnualRecords = latestRecordsAndMetrics.annual_reports;
+  const updatedAnnualRecords = latestRecordsAndMetrics.annual_reports;
 
   if (typeOfRecord === "MONTHLY") {
     updatedMonthlyRecord = { ...updatedMonthlyRecord, [property]: newValue };
