@@ -274,8 +274,10 @@ export const GeneralInstructions: React.FC<
       <p>
         If you choose to upload an Excel workbook, include one sheet (or tab) in
         the workbook for each Justice Counts metric defined for the{" "}
-        {SYSTEM_LOWERCASE}. If you choose to upload a set of CSV files, you will
-        need to upload one file for each metric. See the{" "}
+        {SYSTEM_LOWERCASE}. If you download the multi-tab template, it will
+        automatically only include tabs for metrics you have enabled. If you
+        choose to upload a set of CSV files, you will need to upload one file
+        for each metric. See the{" "}
         <a
           href="https://justicecounts.csgjusticecenter.org/metrics/justice-counts-metrics/"
           target="_blank"
