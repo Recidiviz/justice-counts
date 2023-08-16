@@ -560,6 +560,26 @@ class ReportStore {
     }
   }
 
+  async fetchCustomSpreadsheetBlob(
+    system: string,
+    agencyId: string
+  ): Promise<Response | Error | undefined> {
+    try {
+      const response = (await this.api.request({
+        path: `/api/template/${agencyId}/${system}`,
+        method: "GET",
+      })) as Response;
+
+      if (response.status !== 200) {
+        throw new Error("There was an issue downloading the spreadsheet.");
+      }
+
+      return response;
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
   async uploadExcelSpreadsheet(
     formData: FormData
   ): Promise<Response | Error | undefined> {

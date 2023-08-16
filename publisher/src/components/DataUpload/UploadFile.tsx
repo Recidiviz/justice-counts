@@ -49,9 +49,11 @@ export const UploadFile: React.FC<UploadFileProps> = ({
   handleFileUpload,
 }) => {
   const { userStore } = useStore();
+  const { reportStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
   const dragDropAreaRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState<boolean>(false);
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const acceptableFileTypes = [
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     "application/vnd.ms-excel",
@@ -82,7 +84,37 @@ export const UploadFile: React.FC<UploadFileProps> = ({
       handleFileUpload(files[0], userSystems[0]);
     }
   };
+  const handleDownloadSpreadsheetTemplate = async (system: string) => {
+    setIsDownloading(true);
+    const response = await reportStore.fetchCustomSpreadsheetBlob(
+      system,
+      agencyId
+    );
+    if (response instanceof Error) {
+      setIsDownloading(false);
+      return showToast({
+        message: `Failed to download. Please try again.`,
+        color: "red",
+      });
+    }
 
+    const data = await response?.blob();
+
+    if (data) {
+      const blob = new Blob([data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;",
+      });
+      const link = document.createElement("a");
+      const url = window.URL.createObjectURL(blob);
+      link.href = url;
+      link.download = system;
+      link.click();
+
+      window.URL.revokeObjectURL(url);
+      link.remove();
+      setIsDownloading(false);
+    }
+  };
   useEffect(
     () => {
       const dragDropArea = isReadOnly ? null : dragDropAreaRef.current;
@@ -132,7 +164,12 @@ export const UploadFile: React.FC<UploadFileProps> = ({
       <Instructions>
         <InstructionsTopOverlay />
         {/* General Instructions */}
-        <GeneralInstructions systems={userSystems} />
+        <GeneralInstructions
+          agencyId={agencyId}
+          systems={userSystems}
+          downloadTemplate={handleDownloadSpreadsheetTemplate}
+          isDownloading={isDownloading}
+        />
 
         {/* System Specific Instructions */}
         {userSystems?.map((system) => {
