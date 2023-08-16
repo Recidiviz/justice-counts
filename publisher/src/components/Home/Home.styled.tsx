@@ -16,24 +16,17 @@
 // =============================================================================
 
 import {
-  HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-import { FOOTER_HEIGHT_WITHOUT_MARGIN } from "../Footer";
-
-const containerHeight = `100vh - ${FOOTER_HEIGHT_WITHOUT_MARGIN}px - ${HEADER_BAR_HEIGHT}px`;
-
 export const HomeContainer = styled.div`
   width: 100%;
-  height: calc(${containerHeight});
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 80px 0;
-  overflow: auto;
 `;
 
 export const WelcomeUser = styled.div`
@@ -184,13 +177,13 @@ export const SystemSelectorContainer = styled.div`
 
   @media only screen and (max-width: 1024px) {
     & > div:nth-child(1) {
-      flex: 1 1 0px;
+      flex: 1 1 0;
     }
     & > div:nth-child(2) {
       width: 500px;
     }
     & > div:nth-child(3) {
-      flex: 1 1 0px;
+      flex: 1 1 0;
     }
   }
 `;
