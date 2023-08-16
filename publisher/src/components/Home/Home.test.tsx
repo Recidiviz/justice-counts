@@ -248,7 +248,7 @@ test("publishing a record should remove the associated publish record task card"
   );
   rehydrateHomeStoreWithUpdates(homeStore, updatedLatestRecordsMetrics, "10");
 
-  /** Check to see there is no longer an annual record publish task card */
+  /** Check to make sure there is no longer an annual record publish task card */
   expect(screen.queryByText("Annual Record 2023 (January)")).toBeNull();
   expect.hasAssertions();
 });
