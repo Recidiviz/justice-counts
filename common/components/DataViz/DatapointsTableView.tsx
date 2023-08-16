@@ -23,7 +23,6 @@ import {
   ReportFrequency,
 } from "../../types";
 import { replaceSymbolsWithDash } from "../../utils";
-import { Tooltip } from "../Tooltip";
 import {
   DatapointsMetricNameCell,
   DatapointsTableBottomBorder,
@@ -164,13 +163,6 @@ export const DatapointsTableView: React.FC<{
                     useMultiAgencyStyles={useMultiAgencyStyles}
                   >
                     {metricName}
-                    <Tooltip
-                      anchorId={replaceSymbolsWithDash(metricName)}
-                      position="bottom"
-                      content={metricName}
-                      noArrow
-                      offset={-30}
-                    />
                   </DatapointsMetricNameCell>
                 </DatapointsTableNamesRow>
               )}
@@ -202,13 +194,6 @@ export const DatapointsTableView: React.FC<{
                             onMouseLeave={() => setHoveredRowKey(null)}
                           >
                             {dimensionName}
-                            <Tooltip
-                              anchorId={replaceSymbolsWithDash(dimensionName)}
-                              position="bottom"
-                              content={dimensionName}
-                              noArrow
-                              offset={-5}
-                            />
                           </DatapointsTableNamesCell>
                         </DatapointsTableNamesRow>
                       ))}
