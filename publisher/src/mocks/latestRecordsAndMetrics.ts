@@ -252,7 +252,7 @@ export const latestRecordsAndMetrics: LatestRecordsAgencyMetrics = {
         key: "LAW_ENFORCEMENT",
       },
       unit: "REPORTED CRIMES",
-      value: 20,
+      value: null,
     },
     {
       category: "Public Safety",

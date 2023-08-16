@@ -15,14 +15,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Metric, UserAgency } from "@justice-counts/common/types";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import { StoreProvider, rootStore } from "../../stores";
-import { Home } from "./Home";
+
 import { latestRecordsAndMetrics } from "../../mocks/latestRecordsAndMetrics";
-import { UserAgency } from "@justice-counts/common/types";
+import { rootStore, StoreProvider } from "../../stores";
+import { Home } from "./Home";
 
 const { homeStore, userStore, authStore } = rootStore;
 
@@ -46,9 +47,9 @@ beforeEach(() => {
           team: [],
         } as UserAgency)
     );
+    homeStore.hydrateReportStoreWithLatestRecords(latestRecordsAndMetrics);
+    homeStore.hydrateStore(latestRecordsAndMetrics, "10");
   });
-  homeStore.hydrateReportStoreWithLatestRecords(latestRecordsAndMetrics);
-  homeStore.hydrateStore(latestRecordsAndMetrics, "10");
 
   render(
     <BrowserRouter>
@@ -59,12 +60,13 @@ beforeEach(() => {
   );
 });
 
-test("the proper welcome, description, and task cards appear based on the mocked latestRecordsAndMetrics", async () => {
-  await act(async () => {
+test("the proper welcome, description, and task cards appear based on the mocked latestRecordsAndMetrics", () => {
+  act(() => {
     runInAction(() => {
       homeStore.loading = false;
     });
   });
+
   const welcomeUser = screen.getByText("Welcome, UserFirstName");
   const welcomeDescription = screen.getByText("See open tasks below");
   const reportedCrimeTaskCard = screen.getByText("Reported Crime");
@@ -95,4 +97,114 @@ test("the proper welcome, description, and task cards appear based on the mocked
 
   expect(annualRecordTaskCard).toBeInTheDocument();
   expect(monthlyRecordTaskCard).toBeInTheDocument();
+});
+
+const updateMetricProps = (
+  metricKey: string,
+  property: string,
+  newValue: number | boolean | null,
+  typeOfRecord: "MONTHLY" | "ANNUAL",
+  startingMonth?: number
+) => {
+  act(() => {
+    runInAction(() => {
+      let updatedMetric: Metric | undefined;
+      homeStore.agencyMetrics = [
+        ...homeStore.agencyMetrics.map((metric) => {
+          if (metric.key !== metricKey) return metric;
+          updatedMetric = { ...metric, [property]: newValue };
+          return { ...metric, [property]: newValue };
+        }),
+      ];
+      if (updatedMetric === undefined) return;
+      if (
+        typeOfRecord === "MONTHLY" &&
+        homeStore.latestMonthlyRecordMetadata?.metrics
+      ) {
+        homeStore.latestMonthlyRecordMetadata.metrics[metricKey] = [
+          updatedMetric,
+        ];
+      }
+      if (
+        typeOfRecord === "ANNUAL" &&
+        startingMonth &&
+        homeStore.latestAnnualRecordsMetadata?.[startingMonth]?.metrics
+      ) {
+        homeStore.latestAnnualRecordsMetadata["1"].metrics[metricKey] = [
+          updatedMetric,
+        ];
+      }
+      homeStore.hydrateTaskCardMetadatasToRender();
+      homeStore.loading = false;
+    });
+  });
+};
+
+test("setting a metric configuration should replace the set metric availability task card with an add data task card for the metric", () => {
+  act(() =>
+    runInAction(() => {
+      homeStore.loading = false;
+    })
+  );
+  let reportedCrimeActionLinkNodes =
+    screen.getByText("Reported Crime").nextSibling?.nextSibling?.childNodes;
+  let reportedCrimeActionLinkText =
+    reportedCrimeActionLinkNodes &&
+    (reportedCrimeActionLinkNodes.length > 1
+      ? `${reportedCrimeActionLinkNodes[0].textContent} ${reportedCrimeActionLinkNodes[1].textContent}`
+      : reportedCrimeActionLinkNodes[0].textContent);
+
+  expect(reportedCrimeActionLinkText).toBe("Set Metric Availability");
+
+  updateMetricProps(
+    "LAW_ENFORCEMENT_REPORTED_CRIME",
+    "enabled",
+    true,
+    "ANNUAL",
+    1
+  );
+
+  reportedCrimeActionLinkNodes =
+    screen.getByText("Reported Crime").nextSibling?.nextSibling?.childNodes;
+  reportedCrimeActionLinkText =
+    reportedCrimeActionLinkNodes &&
+    (reportedCrimeActionLinkNodes.length > 1
+      ? `${reportedCrimeActionLinkNodes[0].textContent} ${reportedCrimeActionLinkNodes[1].textContent}`
+      : reportedCrimeActionLinkNodes[0].textContent);
+
+  expect(reportedCrimeActionLinkText).toBe("Upload Data Manual Entry");
+});
+
+test("adding data to a metric should remove the add data task card for the metric as it should be collapsed into a publish record task card", () => {
+  act(() =>
+    runInAction(() => {
+      homeStore.loading = false;
+    })
+  );
+
+  updateMetricProps(
+    "LAW_ENFORCEMENT_COMPLAINTS_SUSTAINED",
+    "value",
+    null,
+    "ANNUAL",
+    1
+  );
+  expect(screen.queryByText("Annual Record 2023 (January)")).toBeNull();
+
+  const fundingActionLinkNodes =
+    screen.queryByText("Funding")?.nextSibling?.nextSibling?.childNodes;
+  const fundingActionLinkText =
+    fundingActionLinkNodes &&
+    (fundingActionLinkNodes.length > 1
+      ? `${fundingActionLinkNodes[0].textContent} ${fundingActionLinkNodes[1].textContent}`
+      : fundingActionLinkNodes[0].textContent);
+
+  expect(fundingActionLinkText).toBe("Upload Data Manual Entry");
+
+  updateMetricProps("LAW_ENFORCEMENT_FUNDING", "value", 500, "ANNUAL", 1);
+
+  expect(
+    screen.queryByText("Annual Record 2023 (January)")
+  ).toBeInTheDocument();
+  expect(screen.queryByText("Funding")).toBeNull();
 });
