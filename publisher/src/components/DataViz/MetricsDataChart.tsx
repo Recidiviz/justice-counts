@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { ReactComponent as DownloadChartIcon } from "@justice-counts/common/assets/download-icon.svg";
+import { ReactComponent as GoToMetricConfig } from "@justice-counts/common/assets/gear-settings-icon.svg";
 import {
   Badge,
   reportFrequencyBadgeColors,
@@ -38,7 +39,6 @@ import { useCurrentPng } from "recharts-to-png";
 
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
-import { ReactComponent as GoToMetricConfig } from "../assets/goto-metric-configuration-icon.svg";
 import { ReactComponent as SwitchToChartIcon } from "../assets/switch-to-chart-icon.svg";
 import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-data-table-icon.svg";
 import { SYSTEM_CAPITALIZED, SYSTEM_LOWERCASE } from "../Global/constants";
@@ -208,7 +208,7 @@ export const MetricsDataChart: React.FC = observer(() => {
             navigate("../metric-config");
           }}
         >
-          Metric Configuration
+          Metric Settings
         </Styled.DisclaimerLink>{" "}
         to enable a metric.
       </Styled.NoEnabledMetricsMessage>
@@ -303,7 +303,7 @@ export const MetricsDataChart: React.FC = observer(() => {
                   navigate("../metric-config");
                 }}
               >
-                Metric Configuration
+                Metric Settings
               </Styled.DisclaimerLink>{" "}
               to adjust.
             </Styled.DisclaimerText>
@@ -348,7 +348,7 @@ export const MetricsDataChart: React.FC = observer(() => {
                     navigate("../metric-config");
                   }}
                 >
-                  Metric Configuration
+                  Metric Settings
                 </Styled.DisclaimerLink>{" "}
                 to adjust.
               </Styled.DisclaimerText>
@@ -381,7 +381,7 @@ export const MetricsDataChart: React.FC = observer(() => {
               }}
             >
               <GoToMetricConfig />
-              Go to Metric Configuration
+              Go to Metric Settings
             </Styled.PanelRightTopButton>
             <Styled.PanelRightTopButton onClick={handleChartDownload}>
               <DownloadChartIcon />
@@ -405,7 +405,7 @@ export const MetricsDataChart: React.FC = observer(() => {
               }}
             >
               <GoToMetricConfig />
-              Go to Metric Configuration
+              Go to Metric Settings
             </Styled.PanelRightTopButton>
           )}
         </Styled.PanelContainerRight>
