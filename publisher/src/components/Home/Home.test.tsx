@@ -23,8 +23,9 @@ import { BrowserRouter } from "react-router-dom";
 
 import {
   LAW_ENFORCEMENT_LATEST_RECORDS_METRICS,
-  rehydrateStoreWithUpdates,
+  rehydrateHomeStoreWithUpdates,
   updateMetricProps,
+  updateRecordProps,
 } from "../../mocks/HomeMocksHelpers";
 import { rootStore, StoreProvider } from "../../stores";
 import { Home } from "./Home";
@@ -139,7 +140,7 @@ test("setting a metric configuration should replace the set metric availability 
     "ANNUAL",
     1
   );
-  rehydrateStoreWithUpdates(homeStore, updatedLatestRecordsMetrics, "10");
+  rehydrateHomeStoreWithUpdates(homeStore, updatedLatestRecordsMetrics, "10");
 
   /** Check to see if Reported Crime metric now has an "Upload Data"/"Manual Entry" task card */
   reportedCrimeActionLinkNodes =
@@ -151,6 +152,7 @@ test("setting a metric configuration should replace the set metric availability 
       : reportedCrimeActionLinkNodes[0].textContent);
 
   expect(reportedCrimeActionLinkText).toBe("Upload Data Manual Entry");
+  expect.hasAssertions();
 });
 
 test("adding data to a metric should remove the add data task card for the metric as it should be collapsed into a publish record task card", () => {
@@ -180,7 +182,7 @@ test("adding data to a metric should remove the add data task card for the metri
     "ANNUAL",
     1
   );
-  rehydrateStoreWithUpdates(homeStore, updatedLatestRecordsMetrics, "10");
+  rehydrateHomeStoreWithUpdates(homeStore, updatedLatestRecordsMetrics, "10");
 
   expect(screen.queryByText("Annual Record 2023 (January)")).toBeNull();
 
@@ -204,7 +206,7 @@ test("adding data to a metric should remove the add data task card for the metri
     "ANNUAL",
     1
   );
-  rehydrateStoreWithUpdates(homeStore, updatedLatestRecordsMetrics, "10");
+  rehydrateHomeStoreWithUpdates(homeStore, updatedLatestRecordsMetrics, "10");
 
   /**
    * Check to see if adding value to Funding metric (annual frequency) created an annual record publish task card
@@ -214,4 +216,39 @@ test("adding data to a metric should remove the add data task card for the metri
     screen.queryByText("Annual Record 2023 (January)")
   ).toBeInTheDocument();
   expect(screen.queryByText("Funding")).toBeNull();
+  expect.hasAssertions();
+});
+
+test("publishing a record should remove the associated publish record task card", () => {
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <Home />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+  act(() =>
+    runInAction(() => {
+      homeStore.loading = false;
+    })
+  );
+
+  /** Check to see if there is an existing annual record publish task card */
+  expect(
+    screen.queryByText("Annual Record 2023 (January)")
+  ).toBeInTheDocument();
+
+  /** Mock user publishing latest annual record */
+  const updatedLatestRecordsMetrics = updateRecordProps(
+    LAW_ENFORCEMENT_LATEST_RECORDS_METRICS,
+    "status",
+    "PUBLISHED",
+    "ANNUAL",
+    1
+  );
+  rehydrateHomeStoreWithUpdates(homeStore, updatedLatestRecordsMetrics, "10");
+
+  /** Check to see there is no longer an annual record publish task card */
+  expect(screen.queryByText("Annual Record 2023 (January)")).toBeNull();
+  expect.hasAssertions();
 });

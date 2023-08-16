@@ -21,11 +21,15 @@ import { runInAction } from "mobx";
 import { LatestRecordsAgencyMetrics } from "../components/Home";
 import HomeStore from "../stores/HomeStore";
 
+/**
+ * Helper function that updates individual metric properties within a given
+ * mock LatestRecordsAgencyMetrics object.
+ */
 export const updateMetricProps = (
   latestRecordsAndMetrics: LatestRecordsAgencyMetrics,
   metricKey: string,
   property: string,
-  newValue: number | boolean | null,
+  newValue: Metric["value"],
   typeOfRecord: "MONTHLY" | "ANNUAL",
   startingMonth?: number
 ) => {
@@ -38,7 +42,6 @@ export const updateMetricProps = (
   const updatedAgencyMetrics = [
     ...latestRecordsAndMetrics.agency_metrics.map(updatedMetrics),
   ];
-
   if (typeOfRecord === "MONTHLY") {
     updatedMonthlyRecord.metrics =
       updatedMonthlyRecord.metrics.map(updatedMetrics);
@@ -54,7 +57,38 @@ export const updateMetricProps = (
   };
 };
 
-export const rehydrateStoreWithUpdates = (
+/**
+ * Helper function that updates individual record properties within a given
+ * mock LatestRecordsAgencyMetrics object.
+ */
+export const updateRecordProps = (
+  latestRecordsAndMetrics: LatestRecordsAgencyMetrics,
+  property: string,
+  newValue: Metric["value"],
+  typeOfRecord: "MONTHLY" | "ANNUAL",
+  startingMonth?: number
+) => {
+  let updatedMonthlyRecord = latestRecordsAndMetrics.monthly_report;
+  let updatedAnnualRecords = latestRecordsAndMetrics.annual_reports;
+
+  if (typeOfRecord === "MONTHLY") {
+    updatedMonthlyRecord = { ...updatedMonthlyRecord, [property]: newValue };
+  }
+  if (typeOfRecord === "ANNUAL" && startingMonth) {
+    updatedAnnualRecords[startingMonth] = {
+      ...updatedAnnualRecords[startingMonth],
+      [property]: newValue,
+    };
+  }
+  return {
+    agency_metrics: latestRecordsAndMetrics.agency_metrics,
+    monthly_report: updatedMonthlyRecord,
+    annual_reports: updatedAnnualRecords,
+  };
+};
+
+/** Rehydrates HomeStore with a given LatestRecordsAgencyMetrics object.  */
+export const rehydrateHomeStoreWithUpdates = (
   store: HomeStore,
   latestRecordsAndMetrics: LatestRecordsAgencyMetrics,
   agencyId: string
@@ -66,6 +100,7 @@ export const rehydrateStoreWithUpdates = (
   });
 };
 
+/** Mock LatestRecordsAgencyMetrics Objects */
 export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics =
   {
     agency_metrics: [
@@ -612,7 +647,7 @@ export const LAW_ENFORCEMENT_LATEST_RECORDS_METRICS: LatestRecordsAgencyMetrics 
         },
       ],
       month: 7,
-      status: "NOT_STARTED",
+      status: "DRAFT",
       year: 2023,
     },
   };
