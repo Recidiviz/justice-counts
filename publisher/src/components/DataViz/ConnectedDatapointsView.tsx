@@ -52,14 +52,8 @@ const ConnectedDatapointsView = forwardRef<never, ConnectedDatapointsViewProps>(
       setTimeRange,
       setDisaggregationName,
       setCountOrPercentageView,
-      setInitialStateFromSearchParams,
       resetState,
     } = dataVizStore;
-
-    useEffect(() => {
-      setInitialStateFromSearchParams();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [metric]);
 
     useEffect(() => {
       return () => {
