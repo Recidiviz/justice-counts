@@ -22,6 +22,7 @@ import {
   map,
   mergeAll,
   pipe,
+  propEq,
   reduce,
   reverse,
 } from "ramda";
@@ -33,6 +34,7 @@ import { Datapoint } from "../types";
 export const useLineChartLegend = (
   data: Datapoint[],
   dimensions: (keyof Datapoint)[],
+  hoveredDate: string | null,
   colorDict: Record<string, string>
 ) => {
   const [legendData, setLegendData] = useState<LegendData>();
@@ -64,8 +66,19 @@ export const useLineChartLegend = (
         head
       )(datapoints) as Datapoint;
 
-    setLegendData(pipe(getLatestDatapoint, transformDataForLegend)(data));
-  }, [data, colorDict, dimensions]);
+    const getHoveredDatapoint = (datapoints: Datapoint[]): Datapoint =>
+      pipe(
+        filter<Datapoint>(propEq(hoveredDate, "start_date")),
+        head
+      )(datapoints) as Datapoint;
+
+    setLegendData(
+      pipe(
+        hoveredDate ? getHoveredDatapoint : getLatestDatapoint,
+        transformDataForLegend
+      )(data)
+    );
+  }, [data, colorDict, dimensions, hoveredDate]);
 
   const referenceLineHeight = useMemo(
     () =>

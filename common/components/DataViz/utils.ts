@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { mapValues, pickBy } from "lodash";
+import { pipe, prop, values } from "ramda";
 
 import {
   Datapoint,
@@ -293,8 +294,23 @@ export const transformDataForBarChart = (
   if (dataVizViewSetting === "Percentage") {
     transformedData = transformToRelativePerchanges(transformedData);
   }
-
   return fillTimeGapsBetweenDatapoints(transformedData, monthsAgo);
+};
+
+// transforms data into the right display format for the data viz chart
+export const transformDataForLineChart = (
+  datapoints: { [disaggregation: string]: { [start_date: string]: Datapoint } },
+  disaggregationProp: keyof Datapoint
+) => {
+  const disaggregationsArray = pipe(
+    prop(disaggregationProp) as (value: {
+      [disaggregation: string]: { [start_date: string]: Datapoint };
+    }) => object,
+    values
+  )(datapoints);
+  return disaggregationsArray.length
+    ? pipe(filterNullDatapoints)(disaggregationsArray)
+    : disaggregationsArray;
 };
 
 export const transformDataForMetricInsights = (

@@ -126,6 +126,31 @@ export const formatNumberInput = (
 };
 
 /**
+ * Formats string version of numbers into abbreviated string format, rounded down
+ *
+ * @returns a string representation of abbreviated number
+ * @example "123,456,789" " becomes "123m"
+ */
+
+export const formatNumberForChart = (num: number): string => {
+  const map = [
+    { suffix: "t", threshold: 1e12 },
+    { suffix: "b", threshold: 1e9 },
+    { suffix: "m", threshold: 1e6 },
+    { suffix: "k", threshold: 1e3 },
+    { suffix: "", threshold: 1 },
+  ];
+
+  const found = map.find((x) => Math.abs(num) >= x.threshold);
+  if (found) {
+    const formatted = (num / found.threshold).toFixed() + found.suffix;
+
+    return formatted.replace(/\.0+/g, "");
+  }
+  return String(num);
+};
+
+/**
  * Sanitize by formatting and converting string input to appropriate value for backend.
  *
  * @param value input value

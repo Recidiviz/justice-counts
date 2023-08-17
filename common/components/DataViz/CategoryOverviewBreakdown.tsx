@@ -30,7 +30,7 @@ import {
   LegendName,
   LegendTitle,
   LegendValue,
-} from "./CategoryOverviewBreakdown.styled";
+} from "./CategoryOverviewBreakdown.styles";
 import {
   LineChartBreakdownNumericValue,
   LineChartBreakdownProps,
@@ -39,11 +39,13 @@ import {
 
 export const CategoryOverviewBreakdown: FunctionComponent<
   LineChartBreakdownProps
-> = ({ data, dimensions }) => (
+> = ({ data, dimensions, hoveredDate }) => (
   <Container>
-    <LegendTitle>{`Recent (${printDateAsYear(
-      String(data.end_date.value)
-    )})`}</LegendTitle>
+    <LegendTitle>
+      {hoveredDate
+        ? printDateAsYear(String(data.start_date?.value))
+        : `Recent (${printDateAsYear(String(data.start_date?.value))})`}
+    </LegendTitle>
     {dimensions.map((dimension) => (
       <LegendItem>
         <LegendBullet color={data[dimension]?.fill}>▪</LegendBullet>

@@ -62,8 +62,9 @@ export const CategoryOverview = observer(() => {
   });
   const { agencyDataStore } = useStore();
   const [dataRangeFilter, setDataRangeFilter] = useState<"recent" | "all">(
-    "recent"
+    "all"
   );
+  const [hoveredDate, setHoveredDate] = useState<string | null>(null);
 
   const getCurrentChartTimeRange = useCallback(
     (isAnnual: boolean) => {
@@ -201,6 +202,9 @@ export const CategoryOverview = observer(() => {
                     <MetricsCategoryBarChart
                       width={620}
                       data={getBarChartData(metric)}
+                      onHoverBar={(payload) => {
+                        setHoveredDate(payload.start_date);
+                      }}
                       dimensionNames={[DataVizAggregateName]}
                       metric={metric.display_name}
                       ref={ref}
@@ -208,6 +212,8 @@ export const CategoryOverview = observer(() => {
                     <CategoryOverviewLineChart
                       data={getLineChartData(metric)}
                       dimensions={getLineChartDimensions(metric)}
+                      hoveredDate={hoveredDate}
+                      setHoveredDate={setHoveredDate}
                     />
                   </Styled.MetricDataVizContainer>
                 </Styled.MetricBox>

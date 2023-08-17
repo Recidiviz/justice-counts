@@ -43,7 +43,7 @@ export const useBarChart = ({
     (metric: Metric) => {
       if (datapointsByMetric) {
         return transformDataForBarChart(
-          datapointsByMetric[metric.key].aggregate,
+          datapointsByMetric[metric.key].aggregate as Datapoint[],
           getCurrentChartTimeRange(metric.custom_frequency === "ANNUAL"),
           "Count"
         );
