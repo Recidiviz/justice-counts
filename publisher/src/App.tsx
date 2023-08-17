@@ -29,7 +29,7 @@ import { NoAgencies } from "./pages/NoAgencies";
 import { Router } from "./router";
 import { useStore } from "./stores";
 
-const DOWN_FOR_MAINTENANCE = true;
+const DOWN_FOR_MAINTENANCE = false;
 
 const App: React.FC = (): ReactElement => {
   const location = useLocation();
@@ -37,6 +37,10 @@ const App: React.FC = (): ReactElement => {
   useEffect(() => {
     trackNavigation(location.pathname + location.search);
   }, [location]);
+
+  if (DOWN_FOR_MAINTENANCE) {
+    return <MaintenancePage />;
+  }
 
   if (!userStore.userInfoLoaded)
     return (
@@ -55,34 +59,28 @@ const App: React.FC = (): ReactElement => {
 
   return (
     <AppWrapper>
-      {DOWN_FOR_MAINTENANCE ? (
-        <MaintenancePage />
-      ) : (
-        <>
-          <PageWrapper>
-            {initialAgency ? (
-              <Routes>
-                <Route
-                  path="/"
-                  element={<Navigate to={`/agency/${initialAgency}/`} />}
+      <PageWrapper>
+        {initialAgency ? (
+          <Routes>
+            <Route
+              path="/"
+              element={<Navigate to={`/agency/${initialAgency}/`} />}
+            />
+            <Route path="/agency/:agencyId/*" element={<Router />} />
+            <Route
+              path="*"
+              element={
+                <Navigate
+                  to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`}
                 />
-                <Route path="/agency/:agencyId/*" element={<Router />} />
-                <Route
-                  path="*"
-                  element={
-                    <Navigate
-                      to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`}
-                    />
-                  }
-                />
-              </Routes>
-            ) : (
-              <NoAgencies />
-            )}
-          </PageWrapper>
-          <Footer />
-        </>
-      )}
+              }
+            />
+          </Routes>
+        ) : (
+          <NoAgencies />
+        )}
+      </PageWrapper>
+      <Footer />
     </AppWrapper>
   );
 };
