@@ -24,7 +24,7 @@ import { useStore } from "../../stores";
 import { ReactComponent as GearIcon } from "../assets/gear-icon.svg";
 import { ReactComponent as OpenLinkIcon } from "../assets/open-link-icon.svg";
 import { Loading } from "../Loading";
-import { TaskCard, TaskCardMetadata } from ".";
+import { TaskCard, taskCardLabelsActionLinks, TaskCardMetadata } from ".";
 import * as Styled from "./Home.styled";
 
 export const Home = observer(() => {
@@ -32,7 +32,7 @@ export const Home = observer(() => {
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
 
-  const { name } = userStore;
+  const { name, isAgencySuperagency } = userStore;
   const {
     loading,
     systemSelectionOptions,
@@ -53,7 +53,14 @@ export const Home = observer(() => {
     title: "All tasks complete",
     description: "Your data is up-to-date and published.",
   };
+  const superagencyPinnedAddDataTaskCardMetadata: TaskCardMetadata = {
+    key: "SUPERAGENCY_UPLOAD_DATA",
+    title: "Add Data",
+    description: "Upload data in bulk for multiple agencies at once.",
+    actionLinks: [taskCardLabelsActionLinks.uploadData],
+  };
 
+  const isSuperagency = isAgencySuperagency(agencyId);
   const hasMonthlyRecordsToPublish =
     publishMetricsTaskCardMetadatas &&
     publishMetricsTaskCardMetadatas.MONTHLY.length > 0;
@@ -101,6 +108,11 @@ export const Home = observer(() => {
 
         {/* All Open Tasks */}
         <Styled.OpenTasksContainer>
+          {/* Pinned Task Card for Superagencies to bulk upload for child agencies */}
+          {isSuperagency && (
+            <TaskCard metadata={superagencyPinnedAddDataTaskCardMetadata} />
+          )}
+
           {/* All Tasks Completed Card or Configure Metrics/Add Data/Publish Record Cards */}
           {hasCompletedAllTasks ? (
             <TaskCard metadata={allTasksCompleteTaskCardMetadata} />

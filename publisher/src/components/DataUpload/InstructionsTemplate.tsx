@@ -174,6 +174,22 @@ export const systemToDetails: { [system: string]: SystemDetails } = {
       { name: "Unknown", value: 504 },
     ],
   },
+  // TODO(#) Update the values below
+  SUPERAGENCY: {
+    name: "Superagency",
+    url: "https://justicecounts.csgjusticecenter.org/metrics/sectors/",
+    metric: "",
+    metric_sheet_name: "",
+    metric_disaggregation_sheet_name: "",
+    metric_category: "",
+    metric_disaggregation: "",
+    metric_disaggregation_column_name: "",
+    metric_disaggregation_values: [
+      { name: "", value: 0 },
+      { name: "", value: 0 },
+      { name: "", value: 0 },
+    ],
+  },
 };
 
 export const GeneralInstructions: React.FC<

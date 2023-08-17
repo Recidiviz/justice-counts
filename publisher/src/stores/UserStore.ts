@@ -36,7 +36,7 @@ class UserStore {
   userInfoLoaded: boolean;
 
   constructor(authStore: AuthStore, api: API) {
-    makeAutoObservable(this);
+    makeAutoObservable(this, {}, { autoBind: true });
 
     this.authStore = authStore;
     this.api = api;
@@ -208,6 +208,13 @@ class UserStore {
 
   isUserReadOnly(agencyId: string): boolean {
     return this.getUserAgencyRole(agencyId) === AgencyTeamMemberRole.READ_ONLY;
+  }
+
+  isAgencySuperagency(agencyId: string): boolean | undefined {
+    if (agencyId) {
+      return this.userAgenciesById[agencyId]?.systems?.includes("SUPERAGENCY");
+    }
+    return undefined;
   }
 
   async updateAndRetrieveUserPermissionsAndAgencies() {
