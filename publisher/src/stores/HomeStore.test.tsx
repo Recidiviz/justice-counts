@@ -26,22 +26,21 @@ const mockAgencyID = "10";
 
 beforeEach(() => {
   runInAction(() => {
-    userStore.getAgency = jest.fn(
-      () =>
-        ({
-          child_agencies: [],
-          fips_county_code: "",
-          id: Number(mockAgencyID),
-          is_superagency: null,
-          name: "Law Enforcement",
-          settings: [],
-          state: "",
-          state_code: "",
-          super_agency_id: null,
-          systems: ["LAW_ENFORCEMENT"],
-          team: [],
-        } as UserAgency)
-    );
+    userStore.userAgencies = [
+      {
+        child_agencies: [],
+        fips_county_code: "",
+        id: Number(mockAgencyID),
+        is_superagency: null,
+        name: "Law Enforcement",
+        settings: [],
+        state: "",
+        state_code: "",
+        super_agency_id: null,
+        systems: ["LAW_ENFORCEMENT"],
+        team: [],
+      } as UserAgency,
+    ];
   });
   homeStore.loading = false;
   homeStore.hydrateReportStoreWithLatestRecords(

@@ -37,22 +37,21 @@ beforeEach(() => {
   runInAction(() => {
     authStore.user = {};
     authStore.user.name = "UserFirstName UserLastName";
-    userStore.getAgency = jest.fn(
-      () =>
-        ({
-          child_agencies: [],
-          fips_county_code: "",
-          id: Number(mockAgencyID),
-          is_superagency: null,
-          name: "Law Enforcement",
-          settings: [],
-          state: "",
-          state_code: "",
-          super_agency_id: null,
-          systems: ["LAW_ENFORCEMENT"],
-          team: [],
-        } as UserAgency)
-    );
+    userStore.userAgencies = [
+      {
+        child_agencies: [],
+        fips_county_code: "",
+        id: Number(mockAgencyID),
+        is_superagency: null,
+        name: "Law Enforcement",
+        settings: [],
+        state: "",
+        state_code: "",
+        super_agency_id: null,
+        systems: ["LAW_ENFORCEMENT"],
+        team: [],
+      } as UserAgency,
+    ];
     homeStore.hydrateReportStoreWithLatestRecords(
       LAW_ENFORCEMENT_LATEST_RECORDS_METRICS
     );
