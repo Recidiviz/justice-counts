@@ -29,7 +29,7 @@ import { NoAgencies } from "./pages/NoAgencies";
 import { Router } from "./router";
 import { useStore } from "./stores";
 
-const DOWN_FOR_MAINTENANCE = false;
+const DOWN_FOR_MAINTENANCE = true;
 
 const App: React.FC = (): ReactElement => {
   const location = useLocation();
