@@ -125,7 +125,6 @@ function ShareUploadErrorWarnings() {
           onLogoClick={() => navigate(`/agency/${agencyId}`)}
           background={headerBackground()}
           hasBottomBorder={!!errorsWarningsMetrics}
-          label="Justice Counts"
           badge={headerBadge}
         >
           <Button
