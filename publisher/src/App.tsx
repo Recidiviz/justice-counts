@@ -20,6 +20,7 @@ import React, { ReactElement, useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 import { trackNavigation } from "./analytics";
+import MaintenancePage from "./components/Auth/Maintenance";
 import Footer from "./components/Footer";
 import { AppWrapper, PageWrapper } from "./components/Forms";
 import { REPORTS_LOWERCASE } from "./components/Global/constants";
@@ -28,12 +29,18 @@ import { NoAgencies } from "./pages/NoAgencies";
 import { Router } from "./router";
 import { useStore } from "./stores";
 
+const DOWN_FOR_MAINTENANCE = false;
+
 const App: React.FC = (): ReactElement => {
   const location = useLocation();
   const { userStore } = useStore();
   useEffect(() => {
     trackNavigation(location.pathname + location.search);
   }, [location]);
+
+  if (DOWN_FOR_MAINTENANCE) {
+    return <MaintenancePage />;
+  }
 
   if (!userStore.userInfoLoaded)
     return (
