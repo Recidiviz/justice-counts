@@ -161,8 +161,14 @@ export const DisclaimerTitle = styled.div`
   ${typography.sizeCSS.small}
 `;
 
-export const DisclaimerText = styled.div`
+export const DisclaimerText = styled.div<{
+  textColor?: string;
+  topSpacing?: boolean;
+}>`
   ${typography.sizeCSS.normal}
+  ${({ topSpacing }) => topSpacing && `padding-top: 24px;`};
+  color: ${({ textColor }) =>
+    textColor === "orange" ? palette.solid.orange : palette.solid.darkgrey};
 `;
 
 export const DisclaimerLink = styled.span`

@@ -78,6 +78,7 @@ export const MetricsDataChart: React.FC = observer(() => {
     currentMetric?.custom_frequency || currentMetric?.frequency;
   const systemBelongsToAgency =
     currentSystem && currentAgency?.systems.includes(currentSystem);
+  const isSuperagency = userStore.isAgencySuperagency(agencyId);
 
   const handleChartDownload = useCallback(
     async (system: string, metric: string) => {
@@ -188,6 +189,7 @@ export const MetricsDataChart: React.FC = observer(() => {
         <Styled.PanelContainerLeft>
           <Styled.SystemsContainer>
             {Object.entries(metricsBySystem).map(([system, metrics]) => {
+              if (isSuperagency && system !== "SUPERAGENCY") return;
               const currEnabledMetrics = metrics.filter(
                 (metric) => metric.enabled
               );
@@ -308,6 +310,12 @@ export const MetricsDataChart: React.FC = observer(() => {
               </Styled.DisclaimerText>
             </Styled.MobileDisclaimerContainer>
           </Styled.MobileDatapointsControls>
+          {!isSuperagency && (
+            <Styled.DisclaimerText textColor="orange" topSpacing>
+              If you would like to view data for the agencies you manage, please
+              switch to specific agency you would like to view data for.
+            </Styled.DisclaimerText>
+          )}
           <Styled.PanelRightTopButtonsContainer>
             {dataView === ChartView.Chart &&
               !!datapointsStore.datapointsByMetric[currentMetric.key] && (
