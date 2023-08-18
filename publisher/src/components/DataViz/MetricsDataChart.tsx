@@ -26,7 +26,6 @@ import {
   DropdownOption,
 } from "@justice-counts/common/components/Dropdown";
 import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
-import { showToast } from "@justice-counts/common/components/Toast";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import { AgencySystems, ReportFrequency } from "@justice-counts/common/types";
 import { frequencyString } from "@justice-counts/common/utils/helperUtils";
@@ -36,12 +35,12 @@ import React, { useCallback, useEffect, useState } from "react";
 import { createSearchParams, useNavigate, useParams } from "react-router-dom";
 import { useCurrentPng } from "recharts-to-png";
 
+import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import { ReactComponent as GoToMetricConfig } from "../assets/goto-metric-configuration-icon.svg";
 import { ReactComponent as SwitchToChartIcon } from "../assets/switch-to-chart-icon.svg";
 import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-data-table-icon.svg";
-import { SYSTEM_CAPITALIZED, SYSTEM_LOWERCASE } from "../Global/constants";
 import { Loading } from "../Loading";
 import { useSettingsSearchParams } from "../Settings";
 import ConnectedDatapointsView from "./ConnectedDatapointsView";
@@ -67,126 +66,72 @@ export const MetricsDataChart: React.FC = observer(() => {
 
   const { system: systemSearchParam, metric: metricSearchParam } =
     settingsSearchParams;
+  const enabledMetrics = agencyMetrics.filter((metric) => metric.enabled);
+  const currentSystem = systemSearchParam || currentAgency?.systems[0];
+  const currentMetric = currentSystem
+    ? metricsBySystem[currentSystem]?.find(
+        (m) => m.key === (metricSearchParam || enabledMetrics[0].key)
+      ) || metricsBySystem[currentSystem]?.[0]
+    : undefined;
+  const metricName = currentMetric?.display_name || "";
+  const metricFrequency =
+    currentMetric?.custom_frequency || currentMetric?.frequency;
+  const systemBelongsToAgency =
+    currentSystem && currentAgency?.systems.includes(currentSystem);
 
-  const handleChartDownload = useCallback(async () => {
-    const png = await getChartPng();
+  const handleChartDownload = useCallback(
+    async (system: string, metric: string) => {
+      const png = await getChartPng();
 
-    const fileName = generateSavingFileName(
-      systemSearchParam,
-      metricSearchParam,
-      dataVizStore.disaggregationName
-    );
+      const fileName = generateSavingFileName(
+        system,
+        metric,
+        dataVizStore.disaggregationName
+      );
 
-    if (png) {
-      FileSaver.saveAs(png, fileName);
-    }
-  }, [
-    getChartPng,
-    systemSearchParam,
-    metricSearchParam,
-    dataVizStore.disaggregationName,
-  ]);
-
-  const initDataPageMetrics = async () => {
-    const result = await reportStore.initializeReportSettings(agencyId);
-    if (result instanceof Error) {
-      setIsLoading(false);
-      return setLoadingError(result.message);
-    }
-
-    const firstEnabledMetric = Object.values(result)
-      ?.flat()
-      .find((metric) => metric.enabled);
-    const defaultSystemSearchParam = firstEnabledMetric?.system.key
-      .toLowerCase()
-      .replace(" ", "_") as AgencySystems;
-    const defaultMetricSearchParam = firstEnabledMetric?.key;
-
-    // same logic as in metric config page, the only difference is
-    // there should always be metric search param
-    // -------------------------------------------
-    // Maybe instead of checking system and metric belongings better to show
-    // some kind of message that this system/metric does not belong to agency/system
-    // and propose user to reload page with default system for given agency
-    if (systemSearchParam && currentAgency?.systems) {
-      const isUrlSystemParamInCurrentAgencySystems =
-        !!currentAgency.systems.find((system) => system === systemSearchParam);
-      if (!isUrlSystemParamInCurrentAgencySystems) {
-        setSettingsSearchParams({
-          system: defaultSystemSearchParam,
-          metric: defaultMetricSearchParam,
-        });
-        setIsLoading(false);
-        showToast({
-          message: `${SYSTEM_CAPITALIZED} "${systemSearchParam}" does not exist in "${currentAgency?.name}" agency.`,
-          color: "red",
-          timeout: 5000,
-        });
-        return;
+      if (png) {
+        FileSaver.saveAs(png, fileName);
       }
-    }
+    },
+    [getChartPng, dataVizStore.disaggregationName]
+  );
 
-    if (metricSearchParam) {
-      const isUrlMetricParamInCurrentSystem = !!reportStore
-        .getMetricsBySystem(systemSearchParam)
-        ?.find((metric) => metric.key === metricSearchParam);
-      if (!isUrlMetricParamInCurrentSystem) {
-        setSettingsSearchParams({
-          system: defaultSystemSearchParam,
-          metric: defaultMetricSearchParam,
-        });
-        setIsLoading(false);
-        showToast({
-          message: `Metric "${metricSearchParam}" does not exist in "${systemSearchParam}" ${SYSTEM_LOWERCASE}.`,
-          color: "red",
-          timeout: 5000,
-        });
-        return;
-      }
-    }
-
-    if (!systemSearchParam) {
+  const dropdownOptions: DropdownOption[] = enabledMetrics.map((metric) => ({
+    key: metric.key,
+    label: (
+      <Styled.MetricsViewDropdownLabel>
+        <div>
+          {metric.display_name}
+          <span>{formatSystemName(metric.system.key)}</span>
+        </div>
+        <Badge
+          color={
+            reportFrequencyBadgeColors[metric.frequency as ReportFrequency]
+          }
+        >
+          {frequencyString(metric.frequency)?.toLowerCase()}
+        </Badge>
+      </Styled.MetricsViewDropdownLabel>
+    ),
+    onClick: () =>
       setSettingsSearchParams({
-        system: defaultSystemSearchParam,
-        metric: defaultMetricSearchParam,
-      });
-    }
-    setIsLoading(false);
-  };
-
-  const dropdownOptions: DropdownOption[] = agencyMetrics
-    .filter((metric) => metric.enabled)
-    .map((metric) => ({
-      key: metric.key,
-      label: (
-        <Styled.MetricsViewDropdownLabel>
-          <div>
-            {metric.display_name}
-            <span>{formatSystemName(metric.system.key)}</span>
-          </div>
-          <Badge
-            color={
-              reportFrequencyBadgeColors[metric.frequency as ReportFrequency]
-            }
-          >
-            {frequencyString(metric.frequency)?.toLowerCase()}
-          </Badge>
-        </Styled.MetricsViewDropdownLabel>
-      ),
-      onClick: () =>
-        setSettingsSearchParams({
-          system: metric.system.key,
-          metric: metric.key,
-        }),
-      highlight: metric.key === metricSearchParam,
-    }));
+        system: metric.system.key,
+        metric: metric.key,
+      }),
+    highlight: metric.key === metricSearchParam,
+  }));
 
   useEffect(() => {
-    datapointsStore.resetState();
     const initialize = async () => {
       setIsLoading(true);
+      datapointsStore.resetState();
       await datapointsStore.getDatapoints(Number(agencyId));
-      await initDataPageMetrics();
+      const result = await reportStore.initializeReportSettings(agencyId);
+      if (result instanceof Error) {
+        setIsLoading(false);
+        return setLoadingError(result.message);
+      }
+      setIsLoading(false);
     };
 
     initialize();
@@ -194,12 +139,33 @@ export const MetricsDataChart: React.FC = observer(() => {
   }, [agencyId]);
 
   useEffect(() => {
+    if (currentMetric && currentSystem) {
+      window.history.replaceState(
+        "",
+        "",
+        `data?system=${currentSystem.toLocaleLowerCase()}&metric=${currentMetric.key.toLocaleLowerCase()}`
+      );
+      dataVizStore.setInitialStateFromSearchParams();
+    }
+  }, [dataVizStore, metricsBySystem, currentMetric, currentSystem]);
+
+  useEffect(() => {
     if (windowWidth <= MIN_DESKTOP_WIDTH) {
       setDataView(ChartView.Chart);
     }
   }, [windowWidth]);
 
-  if (!metricSearchParam && !isLoading) {
+  if (!systemBelongsToAgency) {
+    return <NotFound />;
+  }
+  if (isLoading || !currentSystem || !currentMetric) {
+    return <Loading />;
+  }
+  if (loadingError) {
+    return <div>Error: {loadingError}</div>;
+  }
+
+  if (enabledMetrics.length === 0) {
     return (
       <Styled.NoEnabledMetricsMessage>
         There are no enabled metrics to view. Please go to{" "}
@@ -215,20 +181,6 @@ export const MetricsDataChart: React.FC = observer(() => {
     );
   }
 
-  if (isLoading || !systemSearchParam || !metricSearchParam) {
-    return <Loading />;
-  }
-
-  if (loadingError) {
-    return <div>Error: {loadingError}</div>;
-  }
-  const currentMetric = metricsBySystem[systemSearchParam].find(
-    (m) => m.key === metricSearchParam
-  );
-  const metricName = currentMetric?.display_name || "";
-  const metricFrequency =
-    currentMetric?.custom_frequency || currentMetric?.frequency;
-
   return (
     <Styled.MetricsViewContainer>
       <Styled.MetricsViewPanel>
@@ -236,7 +188,9 @@ export const MetricsDataChart: React.FC = observer(() => {
         <Styled.PanelContainerLeft>
           <Styled.SystemsContainer>
             {Object.entries(metricsBySystem).map(([system, metrics]) => {
-              const enabledMetrics = metrics.filter((metric) => metric.enabled);
+              const currEnabledMetrics = metrics.filter(
+                (metric) => metric.enabled
+              );
               const systemName = formatSystemName(metrics[0].system.key, {
                 allUserSystems: currentAgency?.systems,
               });
@@ -253,7 +207,7 @@ export const MetricsDataChart: React.FC = observer(() => {
 
               return (
                 <React.Fragment key={system}>
-                  {enabledMetrics.length > 0 ? (
+                  {currEnabledMetrics.length > 0 ? (
                     <Styled.SystemNameContainer isSystemActive>
                       <Styled.SystemName>
                         {systemNameOrSystemNameWithSpan}
@@ -270,13 +224,13 @@ export const MetricsDataChart: React.FC = observer(() => {
 
                   <Styled.MetricsItemsContainer
                     isSystemActive={
-                      system === systemSearchParam || enabledMetrics.length > 0
+                      system === currentSystem || currEnabledMetrics.length > 0
                     }
                   >
-                    {enabledMetrics.map((metric) => (
+                    {currEnabledMetrics.map((metric) => (
                       <Styled.MetricItem
                         key={metric.key}
-                        selected={metricSearchParam === metric.key}
+                        selected={currentMetric.key === metric.key}
                         onClick={() =>
                           setSettingsSearchParams({
                             system: system as AgencySystems,
@@ -314,7 +268,7 @@ export const MetricsDataChart: React.FC = observer(() => {
         <Styled.PanelContainerRight>
           <Styled.MobileDatapointsControls>
             <Styled.CurrentMetricsSystem>
-              {formatSystemName(systemSearchParam)}
+              {formatSystemName(currentSystem)}
             </Styled.CurrentMetricsSystem>
             <Styled.MetricsViewDropdownContainerFixed>
               <Dropdown
@@ -356,7 +310,7 @@ export const MetricsDataChart: React.FC = observer(() => {
           </Styled.MobileDatapointsControls>
           <Styled.PanelRightTopButtonsContainer>
             {dataView === ChartView.Chart &&
-              !!datapointsStore.datapointsByMetric[metricSearchParam] && (
+              !!datapointsStore.datapointsByMetric[currentMetric.key] && (
                 <Styled.PanelRightTopButton
                   onClick={() => setDataView(ChartView.Table)}
                 >
@@ -383,13 +337,17 @@ export const MetricsDataChart: React.FC = observer(() => {
               <GoToMetricConfig />
               Go to Metric Configuration
             </Styled.PanelRightTopButton>
-            <Styled.PanelRightTopButton onClick={handleChartDownload}>
+            <Styled.PanelRightTopButton
+              onClick={() =>
+                handleChartDownload(currentSystem, currentMetric.key)
+              }
+            >
               <DownloadChartIcon />
               Download
             </Styled.PanelRightTopButton>
           </Styled.PanelRightTopButtonsContainer>
           <ConnectedDatapointsView
-            metric={metricSearchParam}
+            metric={currentMetric.key}
             metricName={metricName}
             metricFrequency={metricFrequency}
             dataView={dataView}
