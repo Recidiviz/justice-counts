@@ -310,7 +310,7 @@ export const MetricsDataChart: React.FC = observer(() => {
               </Styled.DisclaimerText>
             </Styled.MobileDisclaimerContainer>
           </Styled.MobileDatapointsControls>
-          {!isSuperagency && (
+          {isSuperagency && (
             <Styled.DisclaimerText textColor="orange" topSpacing>
               If you would like to view data for the agencies you manage, please
               switch to specific agency you would like to view data for.
