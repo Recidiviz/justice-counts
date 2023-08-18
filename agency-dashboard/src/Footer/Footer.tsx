@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { ReactComponent as BJALogo } from "@justice-counts/common/assets/bja-logo.svg";
 import { ReactComponent as CSGLogo } from "@justice-counts/common/assets/csg-logo.svg";
 import { ReactComponent as DOJLogo } from "@justice-counts/common/assets/doj-logo.svg";
 import React from "react";
@@ -37,7 +36,6 @@ export function Footer() {
         </Styled.FooterTopInfo>
         <Styled.FooterLogos>
           <DOJLogo />
-          <BJALogo />
           <CSGLogo />
         </Styled.FooterLogos>
         <Styled.FooterBottomInfo>
