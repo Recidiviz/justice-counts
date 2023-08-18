@@ -17,6 +17,7 @@
 
 import { AgencySystems } from "@justice-counts/common/types";
 import { frequencyString } from "@justice-counts/common/utils/helperUtils";
+import { observer } from "mobx-react-lite";
 import React from "react";
 import { useParams } from "react-router-dom";
 
@@ -27,7 +28,7 @@ import { ReactComponent as RightArrowIcon } from "../assets/bold-right-arrow-ico
 import { useSettingsSearchParams } from "../Settings";
 import * as Styled from "./MetricsOverview.styled";
 
-export function MetricsOverview() {
+export const MetricsOverview = observer(() => {
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
   const { agencyId } = useParams() as { agencyId: string };
@@ -48,6 +49,10 @@ export function MetricsOverview() {
 
   const currentAgency = userStore.getAgency(agencyId);
   const currentSystem = systemSearchParam || currentAgency?.systems[0];
+
+  const isSuperagency = userStore.isAgencySuperagency(agencyId);
+
+  const isSuperagencySystem = systemSearchParam === "SUPERAGENCY";
 
   const showSystems =
     currentAgency?.systems && currentAgency?.systems?.length > 1;
@@ -100,6 +105,16 @@ export function MetricsOverview() {
         </Styled.SystemsList>
       </Styled.OverviewWrapper>
       <Styled.MetricsWrapper>
+        {isSuperagency && !isSuperagencySystem && (
+          <Styled.MetricsSection>
+            <Styled.MetricsSectionTitle textColor="blue" width={80}>
+              The settings you enter here will become the default for the
+              agencies you manage. However, each agency has the flexibility to
+              override these defaults and adapt them to their unique
+              requirements.
+            </Styled.MetricsSectionTitle>
+          </Styled.MetricsSection>
+        )}
         {hasActionRequiredMetrics && (
           <Styled.MetricsSection>
             <Styled.MetricsSectionTitle textColor="red">
@@ -171,4 +186,4 @@ export function MetricsOverview() {
       </Styled.MetricsWrapper>
     </Styled.Wrapper>
   );
-}
+});

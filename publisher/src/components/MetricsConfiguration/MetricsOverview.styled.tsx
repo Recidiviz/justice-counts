@@ -90,11 +90,23 @@ export const MetricsSection = styled.div`
   flex-direction: column;
 `;
 
-export const MetricsSectionTitle = styled.div<{ textColor?: string }>`
+export const MetricsSectionTitle = styled.div<{
+  textColor?: string;
+  width?: number;
+}>`
   ${typography.sizeCSS.medium};
+  ${({ width }) => width && `width: ${width}%;`};
+  color: ${({ textColor }) => {
+    if (textColor === "red") {
+      return palette.solid.red;
+    }
+    if (textColor === "blue") {
+      return palette.solid.blue;
+    }
+    return palette.highlight.grey9;
+  }};
+
   margin-bottom: 12px;
-  color: ${({ textColor }) =>
-    textColor === "red" ? palette.solid.red : palette.highlight.grey9};
 `;
 
 export const MetricItem = styled.div`
