@@ -114,11 +114,26 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
           height: 500,
         };
 
+    const dummyData = [
+      { date: "Jan 2022", value: 0 },
+      { date: "Feb 2022", value: 0 },
+      { date: "Mar 2022", value: 0 },
+      { date: "Apr 2022", value: 0 },
+      { date: "May 2022", value: 0 },
+      { date: "Jun 2022", value: 0 },
+      { date: "Jul 2022", value: 0 },
+      { date: "Aug 2022", value: 0 },
+      { date: "Sep 2022", value: 0 },
+      { date: "Oct 2022", value: 0 },
+      { date: "Nov 2022", value: 0 },
+      { date: "Dec 2022", value: 0 },
+    ];
+
     return (
       <ChartContainer>
         <ResponsiveContainer {...responsiveContainerProps}>
           <BarChartComponent
-            data={data}
+            data={data.length > 0 ? data : dummyData}
             barGap={0}
             barCategoryGap={0.5}
             margin={{
@@ -145,6 +160,7 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
             <CartesianGrid vertical={false} strokeDasharray="1 0" />
             <XAxis
               dataKey={(datapoint) => {
+                if (data.length === 0) return datapoint.date;
                 return getDatapointBarLabel(datapoint);
               }}
               padding={{ left: -0.5, right: -0.5 }}
