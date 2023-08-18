@@ -25,7 +25,6 @@ export const useSettingsSearchParams = (): [
   (params: SettingsSearchParams, replaceHistory?: boolean) => void
 ] => {
   const [searchParams, setSearchParams] = useSearchParams();
-
   const settingsSearchParams = getSettingsSearchParams(searchParams);
   const { system, metric } = settingsSearchParams;
   const shouldReplace = !system && !metric;

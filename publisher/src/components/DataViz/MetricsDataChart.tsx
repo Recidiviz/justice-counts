@@ -66,6 +66,18 @@ export const MetricsDataChart: React.FC = observer(() => {
 
   const { system: systemSearchParam, metric: metricSearchParam } =
     settingsSearchParams;
+  const enabledMetrics = agencyMetrics.filter((metric) => metric.enabled);
+  const currentSystem = systemSearchParam || currentAgency?.systems[0];
+  const currentMetric = currentSystem
+    ? metricsBySystem[currentSystem]?.find(
+        (m) => m.key === (metricSearchParam || enabledMetrics[0].key)
+      ) || metricsBySystem[currentSystem]?.[0]
+    : undefined;
+  const metricName = currentMetric?.display_name || "";
+  const metricFrequency =
+    currentMetric?.custom_frequency || currentMetric?.frequency;
+  const systemBelongsToAgency =
+    currentSystem && currentAgency?.systems.includes(currentSystem);
 
   const handleChartDownload = useCallback(
     async (system: string, metric: string) => {
@@ -84,32 +96,30 @@ export const MetricsDataChart: React.FC = observer(() => {
     [getChartPng, dataVizStore.disaggregationName]
   );
 
-  const dropdownOptions: DropdownOption[] = agencyMetrics
-    .filter((metric) => metric.enabled)
-    .map((metric) => ({
-      key: metric.key,
-      label: (
-        <Styled.MetricsViewDropdownLabel>
-          <div>
-            {metric.display_name}
-            <span>{formatSystemName(metric.system.key)}</span>
-          </div>
-          <Badge
-            color={
-              reportFrequencyBadgeColors[metric.frequency as ReportFrequency]
-            }
-          >
-            {frequencyString(metric.frequency)?.toLowerCase()}
-          </Badge>
-        </Styled.MetricsViewDropdownLabel>
-      ),
-      onClick: () =>
-        setSettingsSearchParams({
-          system: metric.system.key,
-          metric: metric.key,
-        }),
-      highlight: metric.key === metricSearchParam,
-    }));
+  const dropdownOptions: DropdownOption[] = enabledMetrics.map((metric) => ({
+    key: metric.key,
+    label: (
+      <Styled.MetricsViewDropdownLabel>
+        <div>
+          {metric.display_name}
+          <span>{formatSystemName(metric.system.key)}</span>
+        </div>
+        <Badge
+          color={
+            reportFrequencyBadgeColors[metric.frequency as ReportFrequency]
+          }
+        >
+          {frequencyString(metric.frequency)?.toLowerCase()}
+        </Badge>
+      </Styled.MetricsViewDropdownLabel>
+    ),
+    onClick: () =>
+      setSettingsSearchParams({
+        system: metric.system.key,
+        metric: metric.key,
+      }),
+    highlight: metric.key === metricSearchParam,
+  }));
 
   useEffect(() => {
     const initialize = async () => {
@@ -129,40 +139,33 @@ export const MetricsDataChart: React.FC = observer(() => {
   }, [agencyId]);
 
   useEffect(() => {
+    if (currentMetric && currentSystem) {
+      window.history.replaceState(
+        "",
+        "",
+        `data?system=${currentSystem.toLocaleLowerCase()}&metric=${currentMetric.key.toLocaleLowerCase()}`
+      );
+      dataVizStore.setInitialStateFromSearchParams();
+    }
+  }, [dataVizStore, metricsBySystem, currentMetric, currentSystem]);
+
+  useEffect(() => {
     if (windowWidth <= MIN_DESKTOP_WIDTH) {
       setDataView(ChartView.Chart);
     }
   }, [windowWidth]);
 
-  const currentSystem = systemSearchParam || currentAgency?.systems[0];
-
-  if (isLoading) {
-    return <Loading />;
-  }
-
-  if (systemSearchParam && !currentAgency?.systems.includes(systemSearchParam))
+  if (!systemBelongsToAgency) {
     return <NotFound />;
-
-  if (!currentSystem || !metricsBySystem[currentSystem]) {
+  }
+  if (isLoading || !currentSystem || !currentMetric) {
     return <Loading />;
   }
-
   if (loadingError) {
     return <div>Error: {loadingError}</div>;
   }
 
-  const currentMetric =
-    metricsBySystem[currentSystem].find((m) => m.key === metricSearchParam) ||
-    metricsBySystem[currentSystem][0];
-  const metricName = currentMetric?.display_name || "";
-  const metricFrequency =
-    currentMetric?.custom_frequency || currentMetric?.frequency;
-
-  if (
-    Object.values(metricsBySystem)
-      .flat()
-      .filter((m) => m.enabled).length === 0
-  ) {
+  if (enabledMetrics.length === 0) {
     return (
       <Styled.NoEnabledMetricsMessage>
         There are no enabled metrics to view. Please go to{" "}
@@ -178,13 +181,6 @@ export const MetricsDataChart: React.FC = observer(() => {
     );
   }
 
-  if (
-    systemSearchParam &&
-    metricSearchParam &&
-    !metricsBySystem[systemSearchParam].find((m) => m.key === metricSearchParam)
-  )
-    return <NotFound />;
-
   return (
     <Styled.MetricsViewContainer>
       <Styled.MetricsViewPanel>
@@ -192,7 +188,9 @@ export const MetricsDataChart: React.FC = observer(() => {
         <Styled.PanelContainerLeft>
           <Styled.SystemsContainer>
             {Object.entries(metricsBySystem).map(([system, metrics]) => {
-              const enabledMetrics = metrics.filter((metric) => metric.enabled);
+              const currEnabledMetrics = metrics.filter(
+                (metric) => metric.enabled
+              );
               const systemName = formatSystemName(metrics[0].system.key, {
                 allUserSystems: currentAgency?.systems,
               });
@@ -209,7 +207,7 @@ export const MetricsDataChart: React.FC = observer(() => {
 
               return (
                 <React.Fragment key={system}>
-                  {enabledMetrics.length > 0 ? (
+                  {currEnabledMetrics.length > 0 ? (
                     <Styled.SystemNameContainer isSystemActive>
                       <Styled.SystemName>
                         {systemNameOrSystemNameWithSpan}
@@ -226,10 +224,10 @@ export const MetricsDataChart: React.FC = observer(() => {
 
                   <Styled.MetricsItemsContainer
                     isSystemActive={
-                      system === currentSystem || enabledMetrics.length > 0
+                      system === currentSystem || currEnabledMetrics.length > 0
                     }
                   >
-                    {enabledMetrics.map((metric) => (
+                    {currEnabledMetrics.map((metric) => (
                       <Styled.MetricItem
                         key={metric.key}
                         selected={currentMetric.key === metric.key}
