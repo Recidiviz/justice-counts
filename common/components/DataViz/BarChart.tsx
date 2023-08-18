@@ -27,7 +27,7 @@ import {
 } from "recharts";
 import styled from "styled-components/macro";
 
-import { rem } from "../../utils";
+import { printDateAsShortMonthYear, rem } from "../../utils";
 import { MIN_DESKTOP_WIDTH, palette } from "../GlobalStyles";
 import { CustomCursor, CustomYAxisTick } from "./BarChartComponents";
 import Tooltip from "./Tooltip";
@@ -114,20 +114,22 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
           height: 500,
         };
 
-    const dummyData = [
-      { date: "Jan 2022", value: 0 },
-      { date: "Feb 2022", value: 0 },
-      { date: "Mar 2022", value: 0 },
-      { date: "Apr 2022", value: 0 },
-      { date: "May 2022", value: 0 },
-      { date: "Jun 2022", value: 0 },
-      { date: "Jul 2022", value: 0 },
-      { date: "Aug 2022", value: 0 },
-      { date: "Sep 2022", value: 0 },
-      { date: "Oct 2022", value: 0 },
-      { date: "Nov 2022", value: 0 },
-      { date: "Dec 2022", value: 0 },
-    ];
+    let dummyData: {
+      date: string;
+      value: number;
+    }[] = [];
+    if (data.length === 0) {
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < 12; i++) {
+        const month = new Date().getMonth() - i;
+        const year = new Date().getUTCFullYear();
+        const dummyValue = {
+          date: printDateAsShortMonthYear(month, year),
+          value: 0,
+        };
+        dummyData = [dummyValue, ...dummyData];
+      }
+    }
 
     return (
       <ChartContainer>
