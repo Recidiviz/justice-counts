@@ -233,10 +233,6 @@ export const Cell = styled.div<{ capitalize?: boolean }>`
     &:nth-child(2) {
       display: none;
     }
-
-    //&:nth-child(1) {
-    //  padding-right: unset;
-    //}
   }
 `;
 
