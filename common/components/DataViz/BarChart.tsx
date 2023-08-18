@@ -27,12 +27,12 @@ import {
 } from "recharts";
 import styled from "styled-components/macro";
 
-import { printDateAsShortMonthYear, rem } from "../../utils";
+import { rem } from "../../utils";
 import { MIN_DESKTOP_WIDTH, palette } from "../GlobalStyles";
 import { CustomCursor, CustomYAxisTick } from "./BarChartComponents";
 import Tooltip from "./Tooltip";
 import { ResponsiveBarChartProps, TickProps } from "./types";
-import { getDatapointBarLabel } from "./utils";
+import { generateDummyDataForChart, getDatapointBarLabel } from "./utils";
 
 const MAX_BAR_SIZE = 150;
 
@@ -114,28 +114,11 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
           height: 500,
         };
 
-    let dummyData: {
-      date: string;
-      value: number;
-    }[] = [];
-    if (data.length === 0) {
-      // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < 12; i++) {
-        const month = new Date().getMonth() - i;
-        const year = new Date().getUTCFullYear();
-        const dummyValue = {
-          date: printDateAsShortMonthYear(month, year),
-          value: 0,
-        };
-        dummyData = [dummyValue, ...dummyData];
-      }
-    }
-
     return (
       <ChartContainer>
         <ResponsiveContainer {...responsiveContainerProps}>
           <BarChartComponent
-            data={data.length > 0 ? data : dummyData}
+            data={data.length > 0 ? data : generateDummyDataForChart()}
             barGap={0}
             barCategoryGap={0.5}
             margin={{
