@@ -107,12 +107,12 @@ export const MetricsOverview = observer(() => {
       <Styled.MetricsWrapper>
         {isSuperagency && !isSuperagencySystem && (
           <Styled.MetricsSection>
-            <Styled.MetricsSectionTitle textColor="blue" width={80}>
+            <Styled.DisclaimerText textColor="orange" width={65}>
               The settings you enter here will become the default for the
               agencies you manage. However, each agency has the flexibility to
               override these defaults and adapt them to their unique
               requirements.
-            </Styled.MetricsSectionTitle>
+            </Styled.DisclaimerText>
           </Styled.MetricsSection>
         )}
         {hasActionRequiredMetrics && (

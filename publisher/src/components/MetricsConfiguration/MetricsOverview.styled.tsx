@@ -109,6 +109,26 @@ export const MetricsSectionTitle = styled.div<{
   margin-bottom: 12px;
 `;
 
+export const DisclaimerText = styled.div<{
+  textColor?: string;
+  width?: number;
+}>`
+  ${typography.sizeCSS.normal};
+  ${({ width }) => width && `width: ${width}%;`};
+  color: ${({ textColor }) => {
+    if (textColor === "red") {
+      return palette.solid.red;
+    }
+    if (textColor === "blue") {
+      return palette.solid.blue;
+    }
+    if (textColor === "orange") {
+      return palette.solid.orange;
+    }
+    return palette.highlight.grey9;
+  }};
+`;
+
 export const MetricItem = styled.div`
   width: 100%;
   padding: 32px 16px;
