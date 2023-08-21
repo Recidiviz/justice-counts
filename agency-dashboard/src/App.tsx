@@ -23,14 +23,29 @@ import { CategoryOverview } from "./CategoryOverview/CategoryOverview";
 import { DashboardView } from "./DashboardView";
 import { Home } from "./Home";
 import { NotFound } from "./NotFound";
+import { Protected } from "./Protected";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/agency/:slug" element={<AgencyOverview />} />
+      <Route
+        path="/agency/:slug"
+        element={
+          <Protected>
+            <AgencyOverview />
+          </Protected>
+        }
+      />
       <Route path="/agency/:slug/:category" element={<CategoryOverview />} />
-      <Route path="/agency/:slug/dashboard" element={<DashboardView />} />
+      <Route
+        path="/agency/:slug/dashboard"
+        element={
+          // <Protected>
+          <DashboardView />
+          // </Protected>
+        }
+      />
       <Route path="/404" element={<NotFound />} />
     </Routes>
   );
