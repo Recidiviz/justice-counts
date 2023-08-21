@@ -74,7 +74,7 @@ const Tooltip: React.FC<TooltipProps> = ({
 
     const renderText = (val: string | number | null, maxValue: number) => {
       if (typeof val !== "number") {
-        return "Not Reported";
+        return "Not Recorded";
       }
 
       let percentText = `${
@@ -99,7 +99,7 @@ const Tooltip: React.FC<TooltipProps> = ({
       if (datapoint.dataVizMissingData !== 0) {
         return (
           <TooltipItemContainer>
-            <TooltipName>Not reported</TooltipName>
+            <TooltipName>Not Recorded</TooltipName>
           </TooltipItemContainer>
         );
       }
