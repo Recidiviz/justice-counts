@@ -22,6 +22,7 @@ import {
   AgencySystems,
   DataVizAggregateName,
   DataVizTimeRangesMap,
+  UserAgency,
 } from "@justice-counts/common/types";
 import { printDateAsShortMonthYear } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
@@ -34,6 +35,7 @@ import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
 import { NotFound } from "../NotFound";
 import { useStore } from "../stores";
+import { isAllowListed } from "../utils/allowlist";
 import {
   AgencyDescription,
   AgencyHomepage,
@@ -69,7 +71,7 @@ const orderedCategoriesMap: {
 };
 
 // include here systems that you want users to be able to choose
-const availableSystems: AgencySystems[] = ["PRISONS"];
+const availableSystems: AgencySystems[] = ["PRISONS", "LAW_ENFORCEMENT"];
 
 export const AgencyOverview = observer(() => {
   const navigate = useNavigate();
@@ -82,6 +84,7 @@ export const AgencyOverview = observer(() => {
     agencyDataStore.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS?.value;
   const agencyHomepageUrl =
     agencyDataStore.agencySettingsBySettingType.HOMEPAGE_URL?.value;
+  const agencySystem = agencyDataStore.agency?.systems[0];
 
   useAsyncEffect(async () => {
     try {
@@ -115,8 +118,11 @@ export const AgencyOverview = observer(() => {
     metricsByAvailableCategoriesAndSystemsWithData.length === 0;
 
   if (agencyDataStore.loading) return <Loading />;
-
-  if (agencyHasNoAvailableSystemsOrHasNoData) return <NotFound />;
+  if (
+    agencyHasNoAvailableSystemsOrHasNoData ||
+    !isAllowListed(agencyDataStore.agency as UserAgency)
+  )
+    return <NotFound />;
 
   return (
     <>
@@ -135,15 +141,15 @@ export const AgencyOverview = observer(() => {
         </AgencyOverviewHeader>
         <MetricsViewContainer>
           <SystemChipsContainer>
-            {availableSystems.map((system) => (
+            {agencySystem && (
               <SystemChip
-                key={system}
-                onClick={() => setCurrentSystem(system)}
-                active={system === currentSystem}
+                key={agencySystem}
+                onClick={() => setCurrentSystem(agencySystem)}
+                active={agencySystem === currentSystem}
               >
-                {system.toLowerCase().replaceAll("_", " ")}
+                {agencySystem.toLowerCase().replaceAll("_", " ")}
               </SystemChip>
-            ))}
+            )}
           </SystemChipsContainer>
           {Object.keys(orderedCategoriesMap).map((category) => {
             const isCapacityAndCostCategory = category === "Capacity and Costs";
