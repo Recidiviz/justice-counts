@@ -27,7 +27,7 @@ import {
   updateMetricProps,
   updateRecordProps,
 } from "../../mocks/HomeMocksHelpers";
-import { StoreProvider, rootStore } from "../../stores";
+import { rootStore, StoreProvider } from "../../stores";
 import { Home } from "./Home";
 
 const { homeStore, userStore, authStore } = rootStore;
