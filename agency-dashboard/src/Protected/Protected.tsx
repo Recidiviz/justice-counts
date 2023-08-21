@@ -24,12 +24,14 @@ import useAsyncEffect from "use-async-effect";
 import { Loading } from "../Loading";
 import { NotFound } from "../NotFound";
 import { useStore } from "../stores";
+import { environment } from "../stores/API";
 import { isAllowListed } from "../utils/allowlist";
 
 export const Protected: React.FC<PropsWithChildren> = observer(
   ({ children }) => {
-    const { agencyDataStore } = useStore();
+    const { agencyDataStore, api } = useStore();
     const { slug } = useParams();
+    const isProductionEnv = api.environment === environment.PRODUCTION;
     const [loading, setLoading] = useState(true);
 
     useAsyncEffect(async () => {
@@ -48,6 +50,11 @@ export const Protected: React.FC<PropsWithChildren> = observer(
     if (loading) {
       return <Loading />;
     }
+
+    if (!isProductionEnv) {
+      return <>{children}</>;
+    }
+
     return agencyDataStore.agency && isAllowListed(agencyDataStore.agency) ? (
       <>{children}</>
     ) : (
