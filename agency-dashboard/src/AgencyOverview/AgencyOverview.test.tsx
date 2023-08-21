@@ -95,11 +95,11 @@ test("renders list of metrics", async () => {
       </MemoryRouter>
     </StoreProvider>
   );
-  await waitFor(async () => {
+  waitFor(async () => {
     const textElementFunding = await screen.findByText(/FUNDING/i);
     expect(textElementFunding).toBeInTheDocument();
   });
-  await waitFor(async () => {
+  waitFor(async () => {
     const textElementExpenses = await screen.findByText(/EXPENSES/i);
     expect(textElementExpenses).toBeInTheDocument();
   });
