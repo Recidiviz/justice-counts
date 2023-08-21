@@ -24,7 +24,7 @@ import {
   DataVizCountOrPercentageView,
   DataVizTimeRange,
 } from "../../types";
-import { formatNumberInput } from "../../utils";
+import { formatNumberInput, printDateAsShortMonthYear } from "../../utils";
 
 export const thirtyOneDaysInSeconds = 2678400000;
 export const threeHundredSixtySixDaysInSeconds = 31622400000;
@@ -447,4 +447,22 @@ export const abbreviateNumber = (num: number) => {
     return `${parseFloat((num / 1000).toFixed(1))}k`;
   }
   return num.toString();
+};
+
+export const generateDummyDataForChart = () => {
+  let dummyData: {
+    date: string;
+    value: number;
+  }[] = [];
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < 12; i++) {
+    const month = new Date().getMonth() - i;
+    const year = new Date().getUTCFullYear();
+    const dummyValue = {
+      date: printDateAsShortMonthYear(month, year),
+      value: 0,
+    };
+    dummyData = [dummyValue, ...dummyData];
+  }
+  return dummyData;
 };

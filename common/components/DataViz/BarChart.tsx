@@ -32,7 +32,7 @@ import { MIN_DESKTOP_WIDTH, palette } from "../GlobalStyles";
 import { CustomCursor, CustomYAxisTick } from "./BarChartComponents";
 import Tooltip from "./Tooltip";
 import { ResponsiveBarChartProps, TickProps } from "./types";
-import { getDatapointBarLabel } from "./utils";
+import { generateDummyDataForChart, getDatapointBarLabel } from "./utils";
 
 const MAX_BAR_SIZE = 150;
 
@@ -118,7 +118,7 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
       <ChartContainer>
         <ResponsiveContainer {...responsiveContainerProps}>
           <BarChartComponent
-            data={data}
+            data={data.length > 0 ? data : generateDummyDataForChart()}
             barGap={0}
             barCategoryGap={0.5}
             margin={{
@@ -145,6 +145,7 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
             <CartesianGrid vertical={false} strokeDasharray="1 0" />
             <XAxis
               dataKey={(datapoint) => {
+                if (data.length === 0) return datapoint.date;
                 return getDatapointBarLabel(datapoint);
               }}
               padding={{ left: -0.5, right: -0.5 }}

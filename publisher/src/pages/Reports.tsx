@@ -95,6 +95,7 @@ const ReportStatusFilterOptionObject: { [key: string]: string } = {
 
 const reportListColumnTitles = [
   REPORT_PERIOD_CAPITALIZED,
+  "Status",
   "Frequency",
   "Editors",
   "Last Modified",
@@ -330,12 +331,19 @@ const Reports: React.FC = () => {
                           report.frequency
                         )}
                       </span>
-                      <Badge color={reportStatusBadgeColors[report.status]}>
+                    </Cell>
+
+                    {/* Status */}
+                    <Cell>
+                      <Badge
+                        color={reportStatusBadgeColors[report.status]}
+                        noMargin
+                      >
                         {removeSnakeCase(report.status).toLowerCase()}
                       </Badge>
                     </Cell>
 
-                    {/* Status */}
+                    {/* Frequency */}
                     <Cell capitalize>
                       {printReportFrequency(report.month, report.frequency)}
                     </Cell>

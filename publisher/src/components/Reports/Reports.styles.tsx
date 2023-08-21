@@ -22,6 +22,7 @@ import {
 import {
   HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
+  MIN_MOBILE_WIDTH,
   MIN_TABLET_WIDTH,
   palette,
   typography,
@@ -211,19 +212,26 @@ export const Cell = styled.div<{ capitalize?: boolean }>`
   }
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    &:nth-child(2) {
+    &:nth-child(3) {
       display: none;
     }
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     ${typography.sizeCSS.normal};
-    &:nth-child(4) {
+    &:nth-child(5) {
       display: none;
     }
 
-    &:nth-child(3) {
+    &:nth-child(4) {
       padding-right: unset;
+    }
+  }
+
+  @media only screen and (max-width: ${MIN_MOBILE_WIDTH}px) {
+    ${typography.sizeCSS.normal};
+    &:nth-child(2) {
+      display: none;
     }
   }
 `;
