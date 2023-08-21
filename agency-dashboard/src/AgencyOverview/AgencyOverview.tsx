@@ -55,6 +55,7 @@ import {
   SystemChipsContainer,
 } from ".";
 
+// Only showing Capacity and Cost metrics currently
 const orderedCategoriesMap: {
   [category: string]: { label: string; description: string };
 } = {
@@ -62,22 +63,15 @@ const orderedCategoriesMap: {
     label: "Understand the Finances",
     description: "See how we’re funded and where we use those funds",
   },
-  Populations: {
-    label: "Track Population Movements",
-    description: "Observe how people move in and out of our system",
-  },
 };
-
-// include here systems that you want users to be able to choose
-const availableSystems: AgencySystems[] = ["PRISONS"];
 
 export const AgencyOverview = observer(() => {
   const navigate = useNavigate();
   const { slug } = useParams();
   const { agencyDataStore } = useStore();
-  const [currentSystem, setCurrentSystem] = useState<AgencySystems>(
-    availableSystems[0]
-  );
+  const [currentSystem, setCurrentSystem] = useState<
+    AgencySystems | undefined
+  >();
   const agencyDescription =
     agencyDataStore.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS?.value;
   const agencyHomepageUrl =
@@ -86,6 +80,7 @@ export const AgencyOverview = observer(() => {
   useAsyncEffect(async () => {
     try {
       await agencyDataStore.fetchAgencyData(slug as string);
+      setCurrentSystem(agencyDataStore.agency?.systems[0]);
     } catch (error) {
       showToast({
         message: "Error fetching data.",
@@ -95,28 +90,21 @@ export const AgencyOverview = observer(() => {
     }
   }, []);
 
-  const agencyHasAvailableSystems = agencyDataStore.agency?.systems?.some(
-    (system) => availableSystems.includes(system)
+  const metricsByAvailableCategories = agencyDataStore.metrics.filter(
+    (metric) => Object.keys(orderedCategoriesMap).includes(metric.category)
   );
-  const metricsByAvailableCategoriesAndSystems = agencyDataStore.metrics.filter(
-    (metric) =>
-      Object.keys(orderedCategoriesMap).includes(metric.category) &&
-      availableSystems.includes(metric.system.key)
-  );
-  const metricsByAvailableCategoriesAndSystemsWithData =
-    metricsByAvailableCategoriesAndSystems.filter(
+
+  const metricsByAvailableCategoriesWithData =
+    metricsByAvailableCategories.filter(
       (metric) =>
         agencyDataStore.datapointsByMetric[metric.key].aggregate.filter(
           (dp) => dp[DataVizAggregateName] !== null
         ).length > 0
     );
-  const agencyHasNoAvailableSystemsOrHasNoData =
-    !agencyHasAvailableSystems ||
-    metricsByAvailableCategoriesAndSystemsWithData.length === 0;
 
   if (agencyDataStore.loading) return <Loading />;
 
-  if (agencyHasNoAvailableSystemsOrHasNoData) return <NotFound />;
+  if (metricsByAvailableCategoriesWithData.length === 0) return <NotFound />;
 
   return (
     <>
@@ -135,7 +123,7 @@ export const AgencyOverview = observer(() => {
         </AgencyOverviewHeader>
         <MetricsViewContainer>
           <SystemChipsContainer>
-            {availableSystems.map((system) => (
+            {agencyDataStore.agency?.systems.map((system) => (
               <SystemChip
                 key={system}
                 onClick={() => setCurrentSystem(system)}
