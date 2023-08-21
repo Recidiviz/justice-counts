@@ -17,7 +17,6 @@
 
 import MiniBarChart from "@justice-counts/common/components/DataViz/MiniBarChart";
 import { transformDataForBarChart } from "@justice-counts/common/components/DataViz/utils";
-import { showToast } from "@justice-counts/common/components/Toast";
 import {
   AgencySystems,
   DataVizAggregateName,
@@ -25,9 +24,8 @@ import {
 } from "@justice-counts/common/types";
 import { printDateAsShortMonthYear } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import useAsyncEffect from "use-async-effect";
 
 import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
@@ -77,18 +75,9 @@ export const AgencyOverview = observer(() => {
   const agencyHomepageUrl =
     agencyDataStore.agencySettingsBySettingType.HOMEPAGE_URL?.value;
 
-  useAsyncEffect(async () => {
-    try {
-      await agencyDataStore.fetchAgencyData(slug as string);
-      setCurrentSystem(agencyDataStore.agency?.systems[0]);
-    } catch (error) {
-      showToast({
-        message: "Error fetching data.",
-        color: "red",
-        timeout: 4000,
-      });
-    }
-  }, []);
+  useEffect(() => {
+    setCurrentSystem(agencyDataStore.agency?.systems[0]);
+  }, [agencyDataStore]);
 
   const metricsByAvailableCategories = agencyDataStore.metrics.filter(
     (metric) => Object.keys(orderedCategoriesMap).includes(metric.category)

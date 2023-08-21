@@ -23,19 +23,16 @@ import { DatapointsView } from "@justice-counts/common/components/DataViz/Datapo
 import { MetricInsights } from "@justice-counts/common/components/DataViz/MetricInsights";
 import { transformDataForMetricInsights } from "@justice-counts/common/components/DataViz/utils";
 import { COMMON_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
-import { showToast } from "@justice-counts/common/components/Toast";
 import { DataVizTimeRangesMap } from "@justice-counts/common/types";
 import { each } from "bluebird";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import useAsyncEffect from "use-async-effect";
 
 import { LearnMoreModal, ShareModal } from "../DashboardModals";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
-import { isAllowListed } from "../utils/allowlist";
 import { downloadFeedData } from "../utils/downloadHelpers";
 import {
   BackButtonContainer,
@@ -114,7 +111,7 @@ export const DashboardView = observer(() => {
     useState<boolean>(false);
   const navigate = useNavigate();
   const { slug } = useParams();
-  const { agencyDataStore, dataVizStore, api } = useStore();
+  const { agencyDataStore, dataVizStore } = useStore();
 
   /** Prevent body from scrolling when modal is open */
   useEffect(() => {
@@ -152,28 +149,6 @@ export const DashboardView = observer(() => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useAsyncEffect(async () => {
-    try {
-      await agencyDataStore.fetchAgencyData(slug as string);
-    } catch (error) {
-      showToast({
-        message: "Error fetching data.",
-        color: "red",
-        timeout: 4000,
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (
-      api.environment === "production" &&
-      agencyDataStore?.agency &&
-      !isAllowListed(agencyDataStore.agency)
-    ) {
-      navigate("/404");
-    }
-  }, [api.environment, agencyDataStore.agency, navigate]);
 
   useEffect(() => {
     if (
