@@ -34,7 +34,7 @@ import {
 
 import { useLineChartLegend } from "../../hooks";
 import { Datapoint } from "../../types";
-import { printDateAsYear } from "../../utils";
+import { printDateAsMonthYear, printDateAsYear } from "../../utils";
 import { formatNumberForChart } from "../../utils/helperUtils";
 import { palette } from "../GlobalStyles";
 import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
@@ -130,8 +130,14 @@ export function CategoryOverviewLineChart({
           style={axisTickStyle}
           tickLine
           ticks={[
-            printDateAsYear(data[0].start_date),
-            printDateAsYear(data[data.length - 1].start_date),
+            printDateAsMonthYear(
+              new Date(data[0].start_date).getUTCMonth(),
+              new Date(data[0].start_date).getUTCFullYear()
+            ),
+            printDateAsMonthYear(
+              new Date(data[data.length - 1].start_date).getUTCMonth(),
+              new Date(data[data.length - 1].start_date).getUTCFullYear()
+            ),
           ]}
           interval="preserveStartEnd"
         />
