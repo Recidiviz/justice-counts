@@ -17,11 +17,11 @@
 
 import { renderPercentText } from "@justice-counts/agency-dashboard/src/utils/formatting";
 import {
-  Ord,
   descend,
   filter,
   is,
   map,
+  Ord,
   pipe,
   reduce,
   sort,
