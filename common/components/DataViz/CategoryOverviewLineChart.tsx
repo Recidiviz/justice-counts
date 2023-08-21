@@ -41,6 +41,7 @@ import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
 
 export type LineChartProps = {
   data: Datapoint[];
+  isFundingOrExpenses: boolean;
   dimensions: string[];
   hoveredDate: string | null;
   setHoveredDate: (date: string | null) => void;
@@ -48,6 +49,7 @@ export type LineChartProps = {
 
 export function CategoryOverviewLineChart({
   data,
+  isFundingOrExpenses,
   dimensions,
   hoveredDate,
   setHoveredDate,
@@ -64,7 +66,6 @@ export function CategoryOverviewLineChart({
       )(palette.dataViz),
     [dimensions]
   );
-
   const renderLines = () => {
     // each Recharts Bar component defines a category type in the stacked bar chart
     let lineDefinitions: JSX.Element[] = [];
@@ -152,6 +153,7 @@ export function CategoryOverviewLineChart({
             content={
               <CategoryOverviewBreakdown
                 data={legendData}
+                isFundingOrExpenses={isFundingOrExpenses}
                 dimensions={dimensions}
                 hoveredDate={hoveredDate}
               />

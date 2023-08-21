@@ -211,6 +211,10 @@ export const CategoryOverview = observer(() => {
                     />
                     <CategoryOverviewLineChart
                       data={getLineChartData(metric)}
+                      isFundingOrExpenses={
+                        metric.display_name === "Funding" ||
+                        metric.display_name === "Expenses"
+                      }
                       dimensions={getLineChartDimensions(metric)}
                       hoveredDate={hoveredDate}
                       setHoveredDate={setHoveredDate}
