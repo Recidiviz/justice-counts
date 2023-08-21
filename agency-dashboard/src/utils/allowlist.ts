@@ -18,7 +18,6 @@
 import { UserAgency } from "@justice-counts/common/types";
 
 export const ALLOW_LIST: Record<string, boolean> = {
-  "Department of Corrections [CLA DEMO]": true,
   "Puerto Rico Department of Corrections": true,
   "Louisiana Department Of Public Safety & Corrections": true,
   "Nebraska Department Of Correctional Services": true,
