@@ -27,11 +27,18 @@ import {
   updateMetricProps,
   updateRecordProps,
 } from "../../mocks/HomeMocksHelpers";
-import { rootStore, StoreProvider } from "../../stores";
+import { StoreProvider, rootStore } from "../../stores";
 import { Home } from "./Home";
 
 const { homeStore, userStore, authStore } = rootStore;
 const mockAgencyID = "10";
+
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useParams: () => ({
+    agencyId: "10",
+  }),
+}));
 
 beforeEach(() => {
   runInAction(() => {
@@ -42,7 +49,7 @@ beforeEach(() => {
         child_agencies: [],
         fips_county_code: "",
         id: Number(mockAgencyID),
-        is_superagency: null,
+        is_superagency: false,
         name: "Law Enforcement",
         settings: [],
         state: "",
@@ -304,4 +311,62 @@ test("publishing a monthly record should remove the associated monthly record pu
   /** Check to make sure there is no longer a monthly record publish task card */
   expect(screen.queryByText("July 2023")).toBeNull();
   expect.hasAssertions();
+});
+
+test("non-superagencies should NOT have pinned task card to bulk upload data for child agencies", () => {
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <Home />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+  act(() =>
+    runInAction(() => {
+      homeStore.loading = false;
+    })
+  );
+
+  /** Check to see if there is an existing superagency pinned task card */
+  expect(screen.queryByText("Add data")).toBeNull();
+});
+
+test("superagencies have pinned task card to bulk upload data for child agencies", () => {
+  runInAction(() => {
+    userStore.userAgencies = [
+      {
+        child_agencies: [],
+        fips_county_code: "",
+        id: Number(mockAgencyID),
+        is_superagency: true,
+        name: "Law Enforcement",
+        settings: [],
+        state: "",
+        state_code: "",
+        super_agency_id: null,
+        systems: ["LAW_ENFORCEMENT", "SUPERAGENCY"],
+        team: [],
+      } as UserAgency,
+    ];
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <Home />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  act(() =>
+    runInAction(() => {
+      homeStore.loading = false;
+    })
+  );
+
+  /** Check to see if there is an existing superagency pinned task card */
+  expect(screen.getByText("Add Data")).toBeInTheDocument();
+  expect(
+    screen.getByText("Upload data in bulk for multiple agencies at once.")
+  ).toBeInTheDocument();
 });

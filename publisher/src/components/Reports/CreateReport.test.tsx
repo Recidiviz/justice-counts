@@ -157,6 +157,7 @@ describe("test create report button", () => {
                 role: AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN,
               },
             ],
+            is_superagency: false,
           },
         ];
       });
