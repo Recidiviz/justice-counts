@@ -37,8 +37,22 @@ function App() {
           </Protected>
         }
       />
-      <Route path="/agency/:slug/:category" element={<CategoryOverview />} />
-      <Route path="/agency/:slug/dashboard" element={<DashboardView />} />
+      <Route
+        path="/agency/:slug/:category"
+        element={
+          <Protected>
+            <CategoryOverview />
+          </Protected>
+        }
+      />
+      <Route
+        path="/agency/:slug/dashboard"
+        element={
+          <Protected>
+            <DashboardView />
+          </Protected>
+        }
+      />
       <Route path="/404" element={<NotFound />} />
     </Routes>
   );

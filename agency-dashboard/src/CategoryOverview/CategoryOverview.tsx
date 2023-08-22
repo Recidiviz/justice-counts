@@ -32,7 +32,6 @@ import { observer } from "mobx-react-lite";
 import React, { useCallback, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCurrentPng } from "recharts-to-png";
-import useAsyncEffect from "use-async-effect";
 
 import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
@@ -52,8 +51,7 @@ const categoryData: CategoryData = {
 };
 
 export const CategoryOverview = observer(() => {
-  const { slug, category } = useParams() as {
-    slug: string;
+  const { category } = useParams() as {
     category: string;
   };
   const navigate = useNavigate();
@@ -120,18 +118,6 @@ export const CategoryOverview = observer(() => {
   //     FileSaver.saveAs(png, "data.png");
   //   }
   // }, [getChartPng]);
-
-  useAsyncEffect(async () => {
-    try {
-      await agencyDataStore.fetchAgencyData(slug);
-    } catch {
-      showToast({
-        message: "Error fetching data.",
-        color: "red",
-        timeout: 4000,
-      });
-    }
-  }, []);
 
   const downloadMetricsData = useCallback(() => {
     categoryMetrics?.forEach((categoryMetric: Metric) => {
