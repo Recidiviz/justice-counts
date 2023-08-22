@@ -50,7 +50,6 @@ export type LineChartProps = {
 export type CustomXAxisTickProps = {
   x?: number;
   y?: number;
-  stroke?: string;
   length: number;
   payload?: {
     coordinate: number;
@@ -77,7 +76,7 @@ const CustomizedAxisTick = ({
   payload,
   length,
 }: CustomXAxisTickProps) => {
-  return payload.index === length - 1 || payload.index === 0 ? (
+  return payload?.index === length - 1 || payload?.index === 0 ? (
     <g transform={`translate(${x},${y})`}>
       <text
         style={axisTickStyle}
@@ -86,7 +85,7 @@ const CustomizedAxisTick = ({
         dy={16}
         textAnchor="end"
         fill="#666"
-        transform={"translate(25, 0)"}
+        transform="translate(25, 0)"
       >
         {payload.value}
       </text>
