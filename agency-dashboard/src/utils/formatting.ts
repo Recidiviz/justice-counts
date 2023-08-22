@@ -33,7 +33,7 @@ export const renderPercentText = (
   maxValue: number
 ) => {
   if (typeof val !== "number") {
-    return "Not Reported";
+    return "Not Recorded";
   }
 
   let percentText = `${val !== 0 ? Math.round((val / maxValue) * 100) : 0}%`;

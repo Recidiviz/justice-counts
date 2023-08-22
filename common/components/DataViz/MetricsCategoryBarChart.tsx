@@ -41,7 +41,7 @@ const NoReportedData = styled.div`
   padding: 0 0 0 53px;
 
   &::after {
-    content: "No reported data for this metric.";
+    content: "No recorded data for this metric.";
   }
 `;
 
