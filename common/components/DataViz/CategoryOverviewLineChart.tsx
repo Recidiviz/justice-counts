@@ -34,7 +34,7 @@ import {
 
 import { useLineChartLegend } from "../../hooks";
 import { Datapoint } from "../../types";
-import { printDateAsMonthYear, printDateAsYear } from "../../utils";
+import { printDateAsShortMonthYear } from "../../utils";
 import { formatNumberForChart } from "../../utils/helperUtils";
 import { palette } from "../GlobalStyles";
 import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
@@ -45,6 +45,53 @@ export type LineChartProps = {
   dimensions: string[];
   hoveredDate: string | null;
   setHoveredDate: (date: string | null) => void;
+};
+
+export type CustomXAxisTickProps = {
+  x?: number;
+  y?: number;
+  stroke?: string;
+  length: number;
+  payload?: {
+    coordinate: number;
+    index: number;
+    isShow: boolean;
+    offset: number;
+    tickCoord: number;
+    value: string;
+  };
+};
+
+const axisTickStyle: CSSProperties = {
+  fontFamily: "Inter",
+  fontSize: 12,
+  fontWeight: 600,
+  letterSpacing: "0em",
+  textAlign: "right",
+  fill: "rgba(0, 17, 51, 0.5)",
+};
+
+const CustomizedAxisTick = ({
+  x,
+  y,
+  payload,
+  length,
+}: CustomXAxisTickProps) => {
+  return payload.index === length - 1 || payload.index === 0 ? (
+    <g transform={`translate(${x},${y})`}>
+      <text
+        style={axisTickStyle}
+        x={0}
+        y={0}
+        dy={16}
+        textAnchor="end"
+        fill="#666"
+        transform={"translate(25, 0)"}
+      >
+        {payload.value}
+      </text>
+    </g>
+  ) : null;
 };
 
 export function CategoryOverviewLineChart({
@@ -88,17 +135,6 @@ export function CategoryOverviewLineChart({
     hoveredDate,
     colorDict
   );
-  const axisTickStyle: CSSProperties = useMemo(
-    () => ({
-      fontFamily: "Inter",
-      fontSize: 12,
-      fontWeight: 600,
-      letterSpacing: "0em",
-      textAlign: "right",
-      fill: "rgba(0, 17, 51, 0.5)",
-    }),
-    []
-  );
   return (
     <Container>
       <BreakdownsTitle>Breakdowns</BreakdownsTitle>
@@ -119,26 +155,25 @@ export function CategoryOverviewLineChart({
           map(
             (datapoint: Datapoint): JSX.Element => (
               <ReferenceLine
-                x={printDateAsYear(datapoint.start_date)}
+                x={printDateAsShortMonthYear(
+                  new Date(datapoint.start_date).getUTCMonth(),
+                  new Date(datapoint.start_date).getUTCFullYear()
+                )}
                 onMouseEnter={() => setHoveredDate(datapoint.start_date)}
               />
             )
           )
         )(data)}
         <XAxis
-          dataKey={(datapoint) => printDateAsYear(datapoint.start_date)}
+          dataKey={(datapoint) =>
+            printDateAsShortMonthYear(
+              new Date(datapoint.start_date).getUTCMonth(),
+              new Date(datapoint.start_date).getUTCFullYear()
+            )
+          }
           style={axisTickStyle}
           tickLine
-          ticks={[
-            printDateAsMonthYear(
-              new Date(data[0].start_date).getUTCMonth(),
-              new Date(data[0].start_date).getUTCFullYear()
-            ),
-            printDateAsMonthYear(
-              new Date(data[data.length - 1].start_date).getUTCMonth(),
-              new Date(data[data.length - 1].start_date).getUTCFullYear()
-            ),
-          ]}
+          tick={<CustomizedAxisTick length={data.length} />}
           interval="preserveStartEnd"
         />
         <YAxis
