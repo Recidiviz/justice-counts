@@ -19,7 +19,7 @@ import {
   BreakdownsTitle,
   Container,
 } from "@justice-counts/agency-dashboard/src/CategoryOverview/CategoryOverview.styled";
-import { invertObj, map, mapObjIndexed, pipe, reverse, tail } from "ramda";
+import { invertObj, map, mapObjIndexed, pipe } from "ramda";
 import React, { CSSProperties, useMemo } from "react";
 import {
   CartesianGrid,
@@ -38,6 +38,7 @@ import { printDateAsShortMonthYear } from "../../utils";
 import { formatNumberForChart } from "../../utils/helperUtils";
 import { palette } from "../GlobalStyles";
 import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
+import { trimArrayEnds } from "./utils";
 
 export type LineChartProps = {
   data: Datapoint[];
@@ -147,10 +148,7 @@ export function CategoryOverviewLineChart({
         <CartesianGrid horizontal={false} />
         <ReferenceLine y={referenceLineHeight} />
         {pipe(
-          tail,
-          reverse<Datapoint>,
-          tail,
-          reverse<Datapoint>,
+          trimArrayEnds<Datapoint>,
           map(
             (datapoint: Datapoint): JSX.Element => (
               <ReferenceLine

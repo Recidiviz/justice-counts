@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { mapValues, pickBy } from "lodash";
-import { pipe, prop, values } from "ramda";
+import { pipe, prop, reverse, tail, values } from "ramda";
 
 import {
   Datapoint,
@@ -466,3 +466,7 @@ export const generateDummyDataForChart = () => {
   }
   return dummyData;
 };
+
+// Removes first and last elements in the given array
+export const trimArrayEnds: <T>(arr: T[]) => T[] = <T>(arr: T[]) =>
+  pipe(tail, reverse<T>, tail, reverse<T>)(arr);
