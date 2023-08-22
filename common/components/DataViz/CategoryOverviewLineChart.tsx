@@ -104,22 +104,24 @@ export function CategoryOverviewLineChart({
   hoveredDate,
   setHoveredDate,
 }: LineChartProps) {
-  const colorDict = useMemo(
+  const colorDict: Record<keyof Datapoint, string> = useMemo(
     () =>
-      pipe(
-        invertObj,
-        mapObjIndexed(
-          (colorName: string, fill) =>
-            dimensions[Number(colorName.replace("bar", "")) - 1]
-        ),
-        invertObj
-      )(palette.dataViz),
+      dimensions?.length
+        ? pipe(
+            invertObj,
+            mapObjIndexed(
+              (colorName: string, fill) =>
+                dimensions[Number(colorName.replace("bar", "")) - 1]
+            ),
+            invertObj
+          )(palette.dataViz)
+        : {},
     [dimensions]
   );
   const renderLines = () => {
     // each Recharts Bar component defines a category type in the stacked bar chart
     let lineDefinitions: JSX.Element[] = [];
-    dimensions.forEach((dimension) => {
+    dimensions?.forEach((dimension) => {
       const newLine = (
         <Line
           key={dimension}

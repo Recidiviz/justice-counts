@@ -216,16 +216,18 @@ export const CategoryOverview = observer(() => {
                         ref={ref}
                       />
                     </Styled.MetricDescriptionBarChartWrapper>
-                    <CategoryOverviewLineChart
-                      data={getLineChartData(metric)}
-                      isFundingOrExpenses={
-                        metric.display_name === "Funding" ||
-                        metric.display_name === "Expenses"
-                      }
-                      dimensions={getLineChartDimensions(metric)}
-                      hoveredDate={hoveredDate}
-                      setHoveredDate={setHoveredDate}
-                    />
+                    {getLineChartData(metric).length > 0 && (
+                      <CategoryOverviewLineChart
+                        data={getLineChartData(metric)}
+                        isFundingOrExpenses={
+                          metric.display_name === "Funding" ||
+                          metric.display_name === "Expenses"
+                        }
+                        dimensions={getLineChartDimensions(metric)}
+                        hoveredDate={hoveredDate}
+                        setHoveredDate={setHoveredDate}
+                      />
+                    )}
                   </Styled.MetricDataVizContainer>
                 </Styled.MetricBox>
               ))}
