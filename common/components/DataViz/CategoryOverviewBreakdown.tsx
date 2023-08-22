@@ -31,7 +31,7 @@ import React, { FunctionComponent } from "react";
 
 // eslint-disable-next-line no-restricted-imports
 import { Datapoint } from "../../types";
-import { printDateAsYear } from "../../utils";
+import { printDateAsShortMonthYear } from "../../utils";
 import { palette } from "../GlobalStyles";
 import {
   Container,
@@ -53,8 +53,14 @@ export const CategoryOverviewBreakdown: FunctionComponent<
   <Container>
     <LegendTitle>
       {hoveredDate
-        ? printDateAsYear(String(data.start_date?.value))
-        : `Recent (${printDateAsYear(String(data.start_date?.value))})`}
+        ? printDateAsShortMonthYear(
+            new Date(data.start_date?.value as string).getUTCMonth(),
+            new Date(data.start_date?.value as string).getUTCFullYear()
+          )
+        : `Recent (${printDateAsShortMonthYear(
+            new Date(data.start_date?.value as string).getUTCMonth(),
+            new Date(data.start_date?.value as string).getUTCFullYear()
+          )})`}
     </LegendTitle>
     {pipe(
       sort(
