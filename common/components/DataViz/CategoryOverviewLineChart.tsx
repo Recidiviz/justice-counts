@@ -138,7 +138,6 @@ export function CategoryOverviewLineChart({
     hoveredDate,
     colorDict
   );
-
   return (
     <Container>
       <BreakdownsTitle>Breakdowns</BreakdownsTitle>
