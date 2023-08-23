@@ -19,11 +19,8 @@ import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import {
-  replaceSpacesAndParenthesesWithHyphen,
-  TaskCardActionLinksMetadataList,
-  TaskCardMetadata,
-} from ".";
+import HomeStore from "../../stores/HomeStore";
+import { TaskCardActionLinksMetadataList, TaskCardMetadata } from ".";
 import * as Styled from "./Home.styled";
 
 export const taskCardLabelsActionLinks: TaskCardActionLinksMetadataList = {
@@ -38,11 +35,16 @@ export const taskCardLabelsActionLinks: TaskCardActionLinksMetadataList = {
 
 export const TaskCard: React.FC<{
   metadata: TaskCardMetadata;
-  reportID?: number;
-}> = ({ metadata, reportID }) => {
+}> = ({ metadata }) => {
   const navigate = useNavigate();
-  const { title, description, actionLinks, metricSettingsParams, metricKey } =
-    metadata;
+  const {
+    title,
+    description,
+    actionLinks,
+    metricSettingsParams,
+    metricKey,
+    recordID,
+  } = metadata;
 
   return (
     <Styled.TaskCardContainer key={title}>
@@ -53,34 +55,32 @@ export const TaskCard: React.FC<{
           {actionLinks.map((action) => {
             const tooltipAnchorID =
               action.path === "upload"
-                ? `${replaceSpacesAndParenthesesWithHyphen(
+                ? `${HomeStore.replaceSpacesAndParenthesesWithHyphen(
                     title
                   )}-tooltip-anchor`
                 : undefined;
+            /** Which action type is this? */
+            const isSetMetricAvailabilityAction =
+              action.label ===
+              taskCardLabelsActionLinks.metricAvailability.label;
+            const isManualEntryAction =
+              action.label === taskCardLabelsActionLinks.manualEntry.label;
+            const isPublishAction =
+              action.label === taskCardLabelsActionLinks.publish.label;
+            /** Add `/review` to Publish Actions' navigation path  */
+            const reviewPagePath = isPublishAction ? "/review" : "";
 
             return (
               <Styled.TaskCardActionLink
                 id={tooltipAnchorID}
                 key={action.label}
                 onClick={() => {
-                  /** Which action type is this? */
-                  const isSetMetricAvailabilityAction =
-                    action.label ===
-                    taskCardLabelsActionLinks.metricAvailability.label;
-                  const isManualEntryAction =
-                    action.label ===
-                    taskCardLabelsActionLinks.manualEntry.label;
-                  const isPublishAction =
-                    action.label === taskCardLabelsActionLinks.publish.label;
-                  /** Add `/review` to Publish Actions' navigation path  */
-                  const reviewPagePath = isPublishAction ? "/review" : "";
-
                   if (isSetMetricAvailabilityAction) {
                     return navigate(`./${action.path + metricSettingsParams}`);
                   }
                   if (isManualEntryAction) {
                     return navigate(
-                      `./${action.path + (reportID || `create`)}`,
+                      `./${action.path + (recordID || `create`)}`,
                       {
                         state: { scrollToMetricKey: metricKey, from: "Home" },
                       }
@@ -88,7 +88,7 @@ export const TaskCard: React.FC<{
                   }
                   if (isPublishAction) {
                     return navigate(
-                      `./${action.path + reportID + reviewPagePath}`
+                      `./${action.path + recordID + reviewPagePath}`
                     );
                   }
                   navigate(`./${action.path}`);

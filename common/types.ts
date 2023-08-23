@@ -33,7 +33,8 @@ export type AgencySystems =
   | "PAROLE"
   | "PROBATION"
   | "PRETRIAL_SUPERVISION"
-  | "OTHER_SUPERVISION";
+  | "OTHER_SUPERVISION"
+  | "SUPERAGENCY";
 
 export type AgencyTeamMember = {
   auth0_user_id: string;

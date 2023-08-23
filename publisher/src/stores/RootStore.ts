@@ -22,6 +22,7 @@ import AgencyStore from "./AgencyStore";
 import API from "./API";
 import DatapointsStore from "./DatapointsStore";
 import FormStore from "./FormStore";
+import HomeStore from "./HomeStore";
 import MetricConfigStore from "./MetricConfigStore";
 import ReportStore from "./ReportStore";
 import UserStore from "./UserStore";
@@ -58,6 +59,8 @@ class RootStore {
 
   agencyStore: AgencyStore;
 
+  homeStore: HomeStore;
+
   constructor() {
     this.authStore = new AuthStore({
       authSettings: getAuthSettings(),
@@ -70,6 +73,7 @@ class RootStore {
     this.dataVizStore = new DataVizStore();
     this.metricConfigStore = new MetricConfigStore(this.userStore, this.api);
     this.agencyStore = new AgencyStore(this.userStore, this.api);
+    this.homeStore = new HomeStore(this.userStore, this.api, this.reportStore);
   }
 }
 

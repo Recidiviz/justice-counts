@@ -16,22 +16,24 @@
 // =============================================================================
 
 import {
+  AgencySystems,
   Metric,
   Report,
   ReportFrequency,
   ReportStatus,
 } from "@justice-counts/common/types";
 
-export type LatestReportsAgencyMetrics = {
+export type LatestRecordsAgencyMetrics = {
   agency_metrics: Metric[];
   annual_reports: { [key: string]: Report };
   monthly_report: Report;
 };
 
 export type TaskCardMetadata = {
-  reportID?: number;
+  key: string;
   title: string;
   description: string;
+  recordID?: number;
   actionLinks?: TaskCardActionLinksMetadata[];
   metricFrequency?: ReportFrequency;
   metricSettingsParams?: string;
@@ -50,7 +52,7 @@ export type LatestRecordMetadata = {
   id: number;
   metrics: { [key: string]: Metric[] };
   status: ReportStatus;
-  reportTitle: string;
+  recordTitle: string;
 };
 
 export type AnnualRecordMetadata = {
@@ -62,10 +64,14 @@ export type LatestAnnualMonthlyRecordMetadata = {
   annual: AnnualRecordMetadata;
 };
 
-export type TaskCardMetadataValueConfigurationGroup = {
-  allMetricMetadatasWithValues: {
-    MONTHLY: TaskCardMetadata[];
-    ANNUAL: TaskCardMetadata[];
-  };
-  allMetricMetadatasWithoutValuesOrNotConfigured: TaskCardMetadata[];
+export type PublishMetricsTaskCardMetadatas = {
+  MONTHLY: TaskCardMetadata[];
+  ANNUAL: TaskCardMetadata[];
 };
+
+export type TaskCardMetadataValueConfigurationGroup = {
+  publishMetricsTaskCardMetadatas: PublishMetricsTaskCardMetadatas;
+  addDataConfigureMetricsTaskCardMetadatas: TaskCardMetadata[];
+};
+
+export type SystemSelectionOptions = AgencySystems | "ALL";
