@@ -52,7 +52,7 @@ export const MetricsOverview = observer(() => {
 
   const isSuperagency = userStore.isAgencySuperagency(agencyId);
 
-  const isSuperagencySystem = systemSearchParam === "SUPERAGENCY";
+  const isSuperagencySystem = currentSystem === "SUPERAGENCY";
 
   const showSystems =
     currentAgency?.systems && currentAgency?.systems?.length > 1;
@@ -107,11 +107,12 @@ export const MetricsOverview = observer(() => {
       <Styled.MetricsWrapper>
         {isSuperagency && !isSuperagencySystem && (
           <Styled.MetricsSection>
-            <Styled.DisclaimerText textColor="orange" width={65}>
-              The settings you enter here will become the default for the
-              agencies you manage. However, each agency has the flexibility to
-              override these defaults and adapt them to their unique
-              requirements.
+            <Styled.DisclaimerText>
+              Once settings have been edited, please reach out to{" "}
+              <a href="mailto:justice-counts-support@csg.org">
+                justice-counts-support@csg.org
+              </a>{" "}
+              to apply these settings to other agencies.
             </Styled.DisclaimerText>
           </Styled.MetricsSection>
         )}

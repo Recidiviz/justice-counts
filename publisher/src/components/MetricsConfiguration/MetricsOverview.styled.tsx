@@ -113,20 +113,15 @@ export const DisclaimerText = styled.div<{
   textColor?: string;
   width?: number;
 }>`
-  ${typography.sizeCSS.normal};
+  ${typography.sizeCSS.medium};
+  font-weight: 400;
   ${({ width }) => width && `width: ${width}%;`};
-  color: ${({ textColor }) => {
-    if (textColor === "red") {
-      return palette.solid.red;
-    }
-    if (textColor === "blue") {
-      return palette.solid.blue;
-    }
-    if (textColor === "orange") {
-      return palette.solid.orange;
-    }
-    return palette.highlight.grey9;
-  }};
+
+  &:before {
+    content: "*";
+    position: relative;
+    color: ${palette.solid.red};
+  }
 `;
 
 export const MetricItem = styled.div`
