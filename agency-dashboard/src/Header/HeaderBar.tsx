@@ -44,7 +44,6 @@ export const HeaderBar: React.FC = () => {
     <Styled.HeaderBarContainer>
       <Styled.LogoBlock>
         <JCLogo />
-        Overview
       </Styled.LogoBlock>
       <Styled.LinksBlock>
         {agencyUrl && (
