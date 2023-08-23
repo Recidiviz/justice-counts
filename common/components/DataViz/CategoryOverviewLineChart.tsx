@@ -48,7 +48,12 @@ export type LineChartProps = {
   isFundingOrExpenses: boolean;
   dimensions: string[];
   hoveredDate: string | null;
-  setHoveredDate: (date: string | null) => void;
+  setHoveredDate: React.Dispatch<
+    React.SetStateAction<{
+      [key: string]: string;
+    }>
+  >;
+  metricKey: string;
 };
 
 export type CustomXAxisTickProps = {
@@ -103,6 +108,7 @@ export function CategoryOverviewLineChart({
   dimensions,
   hoveredDate,
   setHoveredDate,
+  metricKey,
 }: LineChartProps) {
   const colorDict: Record<keyof Datapoint, string> = useMemo(
     () =>
@@ -150,10 +156,13 @@ export function CategoryOverviewLineChart({
         data={data}
         style={{ paddingLeft: 11 }}
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-        onClick={() => setHoveredDate(null)}
         onMouseMove={(e) => {
           if (e.activeLabel) {
-            setHoveredDate(convertShortDateToUTCDateString(e.activeLabel));
+            const activeLabel = e.activeLabel;
+            setHoveredDate((prev) => ({
+              ...prev,
+              [metricKey]: convertShortDateToUTCDateString(activeLabel),
+            }));
           }
         }}
       >
