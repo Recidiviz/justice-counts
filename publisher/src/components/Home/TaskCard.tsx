@@ -25,7 +25,8 @@ import * as Styled from "./Home.styled";
 
 export const TaskCard: React.FC<{
   metadata: TaskCardMetadata;
-}> = ({ metadata }) => {
+  isSuperagency?: boolean;
+}> = ({ metadata, isSuperagency }) => {
   const navigate = useNavigate();
   const {
     key,
@@ -44,6 +45,12 @@ export const TaskCard: React.FC<{
       {actionLinks && (
         <Styled.TaskCardActionLinksWrapper>
           {actionLinks.map((action) => {
+            // Exclude "Upload Data" action link from Superagency data entry metric task cards
+            if (
+              isSuperagency &&
+              action.label === taskCardLabelsActionLinks.uploadData.label
+            )
+              return;
             const tooltipAnchorID =
               action.path === "upload"
                 ? `${HomeStore.replaceSpacesAndParenthesesWithHyphen(

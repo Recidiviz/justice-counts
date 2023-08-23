@@ -124,6 +124,7 @@ export const Home = observer(() => {
                   <TaskCard
                     key={taskCardMetadata.key}
                     metadata={taskCardMetadata}
+                    isSuperagency={isSuperagency}
                   />
                 )
               )}
