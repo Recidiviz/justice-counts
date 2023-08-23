@@ -174,7 +174,7 @@ export interface Metric {
   contexts: MetricContext[];
   disaggregations: MetricDisaggregations[];
   filenames: string[];
-  enabled?: boolean;
+  enabled?: boolean | null;
   includes_excludes?: MetricIncludesExcludes[];
   starting_month?: number;
   frequency?: ReportFrequency;

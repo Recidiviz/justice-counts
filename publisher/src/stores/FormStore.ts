@@ -414,7 +414,7 @@ class FormStore {
     reportID: number,
     metricKey: string,
     updatedValue: string,
-    metricEnabled: boolean | undefined
+    metricEnabled: boolean | undefined | null
   ): void => {
     /**
      * Create an empty object within the property if none exist to improve access
@@ -440,7 +440,7 @@ class FormStore {
     dimensionKey: string,
     updatedValue: string,
     required: boolean,
-    metricEnabled: boolean | undefined
+    metricEnabled: boolean | undefined | null
   ): void => {
     /**
      * Create empty objects within the properties if none exist to improve access
@@ -492,7 +492,7 @@ class FormStore {
     updatedValue: string,
     required: boolean,
     contextType: string,
-    metricEnabled: boolean | undefined
+    metricEnabled: boolean | undefined | null
   ): void => {
     /**
      * Create an empty object within the property if none exist to improve access
