@@ -193,6 +193,7 @@ export const AgencyOverview = observer(() => {
                         : DataVizTimeRangesMap["1 Year Ago"],
                       "Count"
                     );
+                    if (transformedDataForChart.length === 0) return;
                     const firstDatapointDate = new Date(
                       transformedDataForChart[0].start_date
                     );
