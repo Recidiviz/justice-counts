@@ -180,6 +180,5 @@ export const convertShortDateToUTCDateString = (shortDate: string) => {
   };
   const month = shortMonthMap[monthName];
 
-  console.log(shortDate, new Date(Date.UTC(year, month)).toUTCString());
   return new Date(Date.UTC(year, month)).toUTCString();
 };
