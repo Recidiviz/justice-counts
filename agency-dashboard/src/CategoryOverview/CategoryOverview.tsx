@@ -92,7 +92,10 @@ export const CategoryOverview = observer(() => {
   });
 
   const categoryMetrics = useMemo(
-    () => agencyDataStore.metricsByCategory?.[categoryData[category].key],
+    () =>
+      categoryData[category]?.key
+        ? agencyDataStore.metricsByCategory?.[categoryData[category]?.key]
+        : [],
     [agencyDataStore.metricsByCategory, category]
   );
 
@@ -148,7 +151,7 @@ export const CategoryOverview = observer(() => {
   if (agencyDataStore.loading) {
     return <Loading />;
   }
-  return categoryMetrics ? (
+  return categoryMetrics && categoryData[category] ? (
     <>
       <HeaderBar />
       <Styled.Wrapper>
@@ -163,10 +166,10 @@ export const CategoryOverview = observer(() => {
               size="medium"
             />
             <Styled.CategoryTitle>
-              {categoryData[category].label}
+              {categoryData[category]?.label}
             </Styled.CategoryTitle>
             <Styled.CategoryDescription>
-              {categoryData[category].description}
+              {categoryData[category]?.description}
             </Styled.CategoryDescription>
             <Styled.TopBlockControls>
               <Styled.TopBlockControl onClick={downloadMetricsData}>
@@ -213,16 +216,18 @@ export const CategoryOverview = observer(() => {
                         ref={ref}
                       />
                     </Styled.MetricDescriptionBarChartWrapper>
-                    <CategoryOverviewLineChart
-                      data={getLineChartData(metric)}
-                      isFundingOrExpenses={
-                        metric.display_name === "Funding" ||
-                        metric.display_name === "Expenses"
-                      }
-                      dimensions={getLineChartDimensions(metric)}
-                      hoveredDate={hoveredDate}
-                      setHoveredDate={setHoveredDate}
-                    />
+                    {getLineChartData(metric).length > 0 && (
+                      <CategoryOverviewLineChart
+                        data={getLineChartData(metric)}
+                        isFundingOrExpenses={
+                          metric.display_name === "Funding" ||
+                          metric.display_name === "Expenses"
+                        }
+                        dimensions={getLineChartDimensions(metric)}
+                        hoveredDate={hoveredDate}
+                        setHoveredDate={setHoveredDate}
+                      />
+                    )}
                   </Styled.MetricDataVizContainer>
                 </Styled.MetricBox>
               ))}
