@@ -79,8 +79,6 @@ export const systemToTemplateSpreadsheetFileName: { [system: string]: string } =
     SUPERVISION: "SUPERVISION.xlsx",
     PAROLE: "SUPERVISION.xlsx",
     PROBATION: "SUPERVISION.xlsx",
-    // TODO(#878) Add superagency spreadsheet to assets
-    SUPERAGENCY: "SUPERAGENCY.xlsx",
   };
 
 export const DataUpload: React.FC = observer(() => {
