@@ -36,7 +36,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: start;
-  gap: 50px;
+  gap: 32px;
   width: 100%;
   padding: 0 96px;
 `;
@@ -46,7 +46,7 @@ export const TopBlock = styled.div`
   flex-direction: column;
   align-items: start;
   width: ${MIN_METRIC_BOX_WIDTH}px;
-  padding-top: 40px;
+  padding-top: 16px;
 
   & > div > div {
     min-width: unset;
@@ -60,7 +60,7 @@ export const CategoryTitle = styled.div`
 
 export const CategoryDescription = styled.div`
   ${typography.sizeCSS.normal};
-  margin-bottom: 40px;
+  margin-bottom: 16px;
 `;
 
 export const TopBlockControls = styled.div`
@@ -98,7 +98,7 @@ export const MetricsFilters = styled.div`
 export const MetricsFilterButton = styled.div<{ active: boolean }>`
   ${typography.sizeCSS.normal};
   color: ${({ active }) =>
-    active ? palette.solid.blue : palette.solid.darkgrey};
+    active ? palette.solid.blue : palette.highlight.grey9};
   cursor: pointer;
 `;
 
@@ -117,10 +117,14 @@ export const MetricsWrapper = styled.div`
 export const MetricBox = styled.div`
   width: 50%;
   min-width: ${MIN_METRIC_BOX_WIDTH}px;
-  padding: 56px 96px 56px 0;
+  padding-top: 16px;
   display: flex;
   flex-direction: column;
   align-items: start;
+
+  &:not(:first-child) {
+    padding: 100px 96px 56px 0;
+  }
 
   @media only screen and (max-width: 1220px) {
     width: 100%;
@@ -137,15 +141,13 @@ export const MetricName = styled.div`
 
 export const MetricDescription = styled.div`
   ${typography.sizeCSS.normal};
-  margin-bottom: 40px;
+  margin-bottom: 24px;
 `;
 
 export const MetricDataVizContainer = styled.div`
   display: flex;
-  align-items: center;
   justify-content: space-around;
   flex-direction: row;
-  width: 90vw;
   height: 647px;
 
   .recharts-bar-rectangle {
@@ -153,9 +155,14 @@ export const MetricDataVizContainer = styled.div`
   }
 `;
 
+export const MetricDescriptionBarChartWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
 export const BreakdownsTitle = styled.h3`
-  font-size: 18px;
-  line-height: 24px;
-  font-weight: 500;
+  ${typography.sizeCSS.medium};
   margin-left: 50px;
 `;

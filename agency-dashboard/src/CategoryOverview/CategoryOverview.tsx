@@ -160,6 +160,7 @@ export const CategoryOverview = observer(() => {
               labelColor="blue"
               noHover
               noSidePadding
+              size="medium"
             />
             <Styled.CategoryTitle>
               {categoryData[category].label}
@@ -195,20 +196,23 @@ export const CategoryOverview = observer(() => {
               {categoryMetrics.map((metric: Metric) => (
                 <Styled.MetricBox key={metric.key}>
                   <Styled.MetricName>{metric.display_name}</Styled.MetricName>
-                  <Styled.MetricDescription>
-                    {metric.description}
-                  </Styled.MetricDescription>
+
                   <Styled.MetricDataVizContainer>
-                    <MetricsCategoryBarChart
-                      width={620}
-                      data={getBarChartData(metric)}
-                      onHoverBar={(payload) => {
-                        setHoveredDate(payload.start_date);
-                      }}
-                      dimensionNames={[DataVizAggregateName]}
-                      metric={metric.display_name}
-                      ref={ref}
-                    />
+                    <Styled.MetricDescriptionBarChartWrapper>
+                      <Styled.MetricDescription>
+                        {metric.description}
+                      </Styled.MetricDescription>
+                      <MetricsCategoryBarChart
+                        width={620}
+                        data={getBarChartData(metric)}
+                        onHoverBar={(payload) => {
+                          setHoveredDate(payload.start_date);
+                        }}
+                        dimensionNames={[DataVizAggregateName]}
+                        metric={metric.display_name}
+                        ref={ref}
+                      />
+                    </Styled.MetricDescriptionBarChartWrapper>
                     <CategoryOverviewLineChart
                       data={getLineChartData(metric)}
                       isFundingOrExpenses={

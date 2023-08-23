@@ -54,11 +54,11 @@ export const CategoryOverviewBreakdown: FunctionComponent<
     <LegendTitle>
       {hoveredDate
         ? printDateAsShortMonthYear(
-            new Date(data.start_date?.value as string).getUTCMonth(),
+            new Date(data.start_date?.value as string).getUTCMonth() + 1,
             new Date(data.start_date?.value as string).getUTCFullYear()
           )
         : `Recent (${printDateAsShortMonthYear(
-            new Date(data.start_date?.value as string).getUTCMonth(),
+            new Date(data.start_date?.value as string).getUTCMonth() + 1,
             new Date(data.start_date?.value as string).getUTCFullYear()
           )})`}
     </LegendTitle>

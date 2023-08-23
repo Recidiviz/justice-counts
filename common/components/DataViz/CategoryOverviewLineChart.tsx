@@ -34,7 +34,10 @@ import {
 
 import { useLineChartLegend } from "../../hooks";
 import { Datapoint } from "../../types";
-import { printDateAsShortMonthYear } from "../../utils";
+import {
+  convertShortDateToUTCDateString,
+  printDateAsShortMonthYear,
+} from "../../utils";
 import { formatNumberForChart } from "../../utils/helperUtils";
 import { palette } from "../GlobalStyles";
 import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
@@ -135,15 +138,22 @@ export function CategoryOverviewLineChart({
     hoveredDate,
     colorDict
   );
+
   return (
     <Container>
       <BreakdownsTitle>Breakdowns</BreakdownsTitle>
       <LineChart
-        width={600}
-        height={500}
+        width={680}
+        height={550}
         data={data}
+        style={{ paddingLeft: 11 }}
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         onClick={() => setHoveredDate(null)}
+        onMouseMove={(e) => {
+          if (e.activeLabel) {
+            setHoveredDate(convertShortDateToUTCDateString(e.activeLabel));
+          }
+        }}
       >
         <CartesianGrid horizontal={false} />
         <ReferenceLine y={referenceLineHeight} />
@@ -153,10 +163,9 @@ export function CategoryOverviewLineChart({
             (datapoint: Datapoint): JSX.Element => (
               <ReferenceLine
                 x={printDateAsShortMonthYear(
-                  new Date(datapoint.start_date).getUTCMonth(),
+                  new Date(datapoint.start_date).getUTCMonth() + 1,
                   new Date(datapoint.start_date).getUTCFullYear()
                 )}
-                onMouseEnter={() => setHoveredDate(datapoint.start_date)}
               />
             )
           )
@@ -164,7 +173,7 @@ export function CategoryOverviewLineChart({
         <XAxis
           dataKey={(datapoint) =>
             printDateAsShortMonthYear(
-              new Date(datapoint.start_date).getUTCMonth(),
+              new Date(datapoint.start_date).getUTCMonth() + 1,
               new Date(datapoint.start_date).getUTCFullYear()
             )
           }
