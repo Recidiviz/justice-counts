@@ -69,7 +69,7 @@ export const CategoryOverviewBreakdown: FunctionComponent<
         )
       ),
       map((dimension: keyof Datapoint) => (
-        <LegendItem>
+        <LegendItem key={dimension}>
           <LegendBullet color={data[dimension]?.fill}>▪</LegendBullet>
           <LegendName color={palette.solid.black}>{dimension}</LegendName>
           <LegendValue>

@@ -35,6 +35,15 @@ import { ResponsiveBarChartProps, ResponsiveBarData, TickProps } from "./types";
 
 const MAX_BAR_SIZE = 150;
 
+const NoReportedDataWrapper = styled.div`
+  position: absolute;
+  width: 85%;
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 const NoReportedData = styled.div`
   position: absolute;
   background: white;
@@ -51,7 +60,7 @@ const tickStyle = {
   fill: palette.highlight.grey8,
 };
 
-const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
+const MetricsCategoryBarChart = forwardRef<never, ResponsiveBarChartProps>(
   (
     {
       data,
@@ -163,10 +172,14 @@ const ResponsiveBarChart = forwardRef<never, ResponsiveBarChartProps>(
             {renderBarDefinitions()}
           </BarChartComponent>
         </ResponsiveContainer>
-        {data.length === 0 && <NoReportedData />}
+        {data.length === 0 && (
+          <NoReportedDataWrapper>
+            <NoReportedData />
+          </NoReportedDataWrapper>
+        )}
       </>
     );
   }
 );
 
-export default ResponsiveBarChart;
+export default MetricsCategoryBarChart;
