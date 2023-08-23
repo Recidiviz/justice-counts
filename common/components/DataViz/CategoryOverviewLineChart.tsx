@@ -158,7 +158,7 @@ export function CategoryOverviewLineChart({
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         onMouseMove={(e) => {
           if (e.activeLabel) {
-            const activeLabel = e.activeLabel;
+            const { activeLabel } = e;
             setHoveredDate((prev) => ({
               ...prev,
               [metricKey]: convertShortDateToUTCDateString(activeLabel),
