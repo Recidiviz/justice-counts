@@ -16,34 +16,31 @@
 // =============================================================================
 import { makeAutoObservable, runInAction } from "mobx";
 
-import { request } from "../utils/networking";
-
 export enum environment {
   PRODUCTION = "production",
   STAGING = "staging",
   DEVELOPMENT = "development",
 }
-export interface RequestProps {
+interface RequestProps {
   path: string;
   method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   body?: FormData | Record<string, unknown>;
-  retrying?: boolean;
 }
 
 export default class API {
-  environment: string;
+  environment: string | undefined;
 
   constructor() {
     makeAutoObservable(this);
 
-    this.environment = "";
+    this.environment = undefined;
 
     this.getEnv();
   }
 
   async getEnv(): Promise<void | string> {
     try {
-      const response = (await request({
+      const response = (await API.request({
         path: "/api/env",
         method: "GET",
       })) as Response;
@@ -56,5 +53,28 @@ export default class API {
       if (error instanceof Error) return error.message;
       return String(error);
     }
+  }
+
+  static async request({
+    path,
+    method,
+    body,
+  }: RequestProps): Promise<Body | Response | string> {
+    // Files are sent as FormData and not JSON
+    const jsonOrFormDataBody =
+      body instanceof FormData ? body : JSON.stringify(body);
+    const headers: HeadersInit = {};
+
+    if (!(body instanceof FormData)) {
+      headers["Content-Type"] = "application/json";
+    }
+
+    const response = await fetch(path, {
+      body: method !== "GET" ? jsonOrFormDataBody : null,
+      method,
+      headers,
+    });
+
+    return response;
   }
 }

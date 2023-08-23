@@ -28,9 +28,9 @@ class RootStore {
   api: API;
 
   constructor() {
+    this.api = new API();
     this.agencyDataStore = new AgencyDataStore();
     this.dataVizStore = new DataVizStore();
-    this.api = new API();
   }
 }
 

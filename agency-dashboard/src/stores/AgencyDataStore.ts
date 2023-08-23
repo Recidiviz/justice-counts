@@ -26,7 +26,7 @@ import { isPositiveNumber } from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
 import { AgenciesList } from "../Home";
-import { request } from "../utils/networking";
+import API from "./API";
 
 class AgencyDataStore {
   agency: UserAgency | undefined;
@@ -161,7 +161,7 @@ class AgencyDataStore {
       runInAction(() => {
         this.loading = true;
       });
-      const response = (await request({
+      const response = (await API.request({
         path: `/api/v2/agencies/${encodeURIComponent(
           agencySlug
         )}/published_data`,
@@ -194,7 +194,7 @@ class AgencyDataStore {
         this.loading = true;
       });
 
-      const response = (await request({
+      const response = (await API.request({
         path: `/api/agencies`,
         method: "GET",
       })) as Response;
