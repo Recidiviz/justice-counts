@@ -212,7 +212,7 @@ class UserStore {
 
   isAgencySuperagency(agencyId: string): boolean | undefined {
     if (agencyId) {
-      return Boolean(this.userAgenciesById[agencyId]?.is_superagency);
+      return this.userAgenciesById[agencyId]?.is_superagency;
     }
     return undefined;
   }
