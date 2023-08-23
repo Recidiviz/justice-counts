@@ -30,7 +30,8 @@ export const getDatapointYear = (datapoint: Datapoint) => {
 
 export const renderPercentText = (
   val: number | string | null,
-  maxValue: number
+  maxValue: number,
+  isCurrency = false
 ) => {
   if (typeof val !== "number") {
     return "Not Recorded";
@@ -41,5 +42,7 @@ export const renderPercentText = (
   if (percentText === "0%" && val !== 0) {
     percentText = "<1%";
   }
-  return `${formatNumberInput(val.toString())} (${percentText})`;
+  return `${isCurrency ? "$" : ""}${formatNumberInput(
+    val.toString()
+  )} (${percentText})`;
 };

@@ -19,7 +19,7 @@ import {
   BreakdownsTitle,
   Container,
 } from "@justice-counts/agency-dashboard/src/CategoryOverview/CategoryOverview.styled";
-import { invertObj, map, mapObjIndexed, pipe, reverse, tail } from "ramda";
+import { invertObj, map, mapObjIndexed, pipe } from "ramda";
 import React, { CSSProperties, useMemo } from "react";
 import {
   CartesianGrid,
@@ -34,20 +34,72 @@ import {
 
 import { useLineChartLegend } from "../../hooks";
 import { Datapoint } from "../../types";
-import { printDateAsYear } from "../../utils";
+import {
+  convertShortDateToUTCDateString,
+  printDateAsShortMonthYear,
+} from "../../utils";
 import { formatNumberForChart } from "../../utils/helperUtils";
 import { palette } from "../GlobalStyles";
 import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
+import { trimArrayEnds } from "./utils";
 
 export type LineChartProps = {
   data: Datapoint[];
+  isFundingOrExpenses: boolean;
   dimensions: string[];
   hoveredDate: string | null;
   setHoveredDate: (date: string | null) => void;
 };
 
+export type CustomXAxisTickProps = {
+  x?: number;
+  y?: number;
+  length: number;
+  payload?: {
+    coordinate: number;
+    index: number;
+    isShow: boolean;
+    offset: number;
+    tickCoord: number;
+    value: string;
+  };
+};
+
+const axisTickStyle: CSSProperties = {
+  fontFamily: "Inter",
+  fontSize: 12,
+  fontWeight: 600,
+  letterSpacing: "0em",
+  textAlign: "right",
+  fill: "rgba(0, 17, 51, 0.5)",
+};
+
+const CustomizedAxisTick = ({
+  x,
+  y,
+  payload,
+  length,
+}: CustomXAxisTickProps) => {
+  return payload?.index === length - 1 || payload?.index === 0 ? (
+    <g transform={`translate(${x},${y})`}>
+      <text
+        style={axisTickStyle}
+        x={0}
+        y={0}
+        dy={16}
+        textAnchor="end"
+        fill="#666"
+        transform="translate(25, 0)"
+      >
+        {payload.value}
+      </text>
+    </g>
+  ) : null;
+};
+
 export function CategoryOverviewLineChart({
   data,
+  isFundingOrExpenses,
   dimensions,
   hoveredDate,
   setHoveredDate,
@@ -64,7 +116,6 @@ export function CategoryOverviewLineChart({
       )(palette.dataViz),
     [dimensions]
   );
-
   const renderLines = () => {
     // each Recharts Bar component defines a category type in the stacked bar chart
     let lineDefinitions: JSX.Element[] = [];
@@ -87,51 +138,48 @@ export function CategoryOverviewLineChart({
     hoveredDate,
     colorDict
   );
-  const axisTickStyle: CSSProperties = useMemo(
-    () => ({
-      fontFamily: "Inter",
-      fontSize: 12,
-      fontWeight: 600,
-      letterSpacing: "0em",
-      textAlign: "right",
-      fill: "rgba(0, 17, 51, 0.5)",
-    }),
-    []
-  );
+
   return (
     <Container>
       <BreakdownsTitle>Breakdowns</BreakdownsTitle>
       <LineChart
-        width={600}
-        height={500}
+        width={680}
+        height={550}
         data={data}
+        style={{ paddingLeft: 11 }}
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         onClick={() => setHoveredDate(null)}
+        onMouseMove={(e) => {
+          if (e.activeLabel) {
+            setHoveredDate(convertShortDateToUTCDateString(e.activeLabel));
+          }
+        }}
       >
         <CartesianGrid horizontal={false} />
         <ReferenceLine y={referenceLineHeight} />
         {pipe(
-          tail,
-          reverse<Datapoint>,
-          tail,
-          reverse<Datapoint>,
+          trimArrayEnds<Datapoint>,
           map(
             (datapoint: Datapoint): JSX.Element => (
               <ReferenceLine
-                x={printDateAsYear(datapoint.start_date)}
-                onMouseEnter={() => setHoveredDate(datapoint.start_date)}
+                x={printDateAsShortMonthYear(
+                  new Date(datapoint.start_date).getUTCMonth() + 1,
+                  new Date(datapoint.start_date).getUTCFullYear()
+                )}
               />
             )
           )
         )(data)}
         <XAxis
-          dataKey={(datapoint) => printDateAsYear(datapoint.start_date)}
+          dataKey={(datapoint) =>
+            printDateAsShortMonthYear(
+              new Date(datapoint.start_date).getUTCMonth() + 1,
+              new Date(datapoint.start_date).getUTCFullYear()
+            )
+          }
           style={axisTickStyle}
           tickLine
-          ticks={[
-            printDateAsYear(data[0].start_date),
-            printDateAsYear(data[data.length - 1].start_date),
-          ]}
+          tick={<CustomizedAxisTick length={data.length} />}
           interval="preserveStartEnd"
         />
         <YAxis
@@ -152,6 +200,7 @@ export function CategoryOverviewLineChart({
             content={
               <CategoryOverviewBreakdown
                 data={legendData}
+                isFundingOrExpenses={isFundingOrExpenses}
                 dimensions={dimensions}
                 hoveredDate={hoveredDate}
               />

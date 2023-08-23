@@ -77,7 +77,7 @@ export const LinksBlock = styled.div`
   flex-direction: row;
   justify-content: end;
   gap: 32px;
-  padding-right: 16px;
+  padding-right: 40px;
 `;
 
 export const Link = styled.a`
