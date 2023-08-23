@@ -93,23 +93,37 @@ export const AgencyOverview = observer(() => {
 
   if (agencyDataStore.loading) return <Loading />;
 
-  if (metricsByAvailableCategoriesWithData.length === 0) return <NotFound />;
+  const AgencyHeader = () => (
+    <AgencyOverviewHeader>
+      <AgencyTitle>{agencyDataStore.agency?.name}</AgencyTitle>
+      <AgencyDescription>
+        {agencyDescription}{" "}
+        {agencyHomepageUrl && (
+          <AgencyHomepage href={agencyHomepageUrl}>
+            Visit our Website
+          </AgencyHomepage>
+        )}
+      </AgencyDescription>
+    </AgencyOverviewHeader>
+  );
+
+  if (metricsByAvailableCategoriesWithData.length === 0) {
+    return (
+      <>
+        <HeaderBar />
+        <AgencyOverviewWrapper>
+          <AgencyHeader />
+          <div>This dashboard is currently under construction.</div>
+        </AgencyOverviewWrapper>
+      </>
+    );
+  }
 
   return (
     <>
       <HeaderBar />
       <AgencyOverviewWrapper>
-        <AgencyOverviewHeader>
-          <AgencyTitle>{agencyDataStore.agency?.name}</AgencyTitle>
-          <AgencyDescription>
-            {agencyDescription}{" "}
-            {agencyHomepageUrl && (
-              <AgencyHomepage href={agencyHomepageUrl}>
-                Visit our Website
-              </AgencyHomepage>
-            )}
-          </AgencyDescription>
-        </AgencyOverviewHeader>
+        <AgencyHeader />
         <MetricsViewContainer>
           <SystemChipsContainer>
             {agencyDataStore.agency?.systems.map((system) => (
