@@ -30,7 +30,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
-import { NotFound } from "../NotFound";
 import { useStore } from "../stores";
 import {
   AgencyDescription,
