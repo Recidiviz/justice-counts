@@ -17,6 +17,7 @@
 
 import {
   AgencySetting,
+  AgencySystems,
   DatapointsByMetric,
   DataVizAggregateName,
   Metric,
@@ -25,6 +26,7 @@ import {
 import { isPositiveNumber } from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
+import { VisibleCategoriesMetadata } from "../AgencyOverview";
 import { AgenciesList } from "../Home";
 import API from "./API";
 
@@ -36,9 +38,21 @@ class AgencyDataStore {
   loading: boolean;
 
   constructor() {
-    makeAutoObservable(this);
+    makeAutoObservable(this, {}, { autoBind: true });
     this.metrics = [];
     this.loading = true;
+  }
+
+  get agencyDescription(): string {
+    return this.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS?.value;
+  }
+
+  get agencyHomepageUrl(): string {
+    return this.agencySettingsBySettingType.HOMEPAGE_URL?.value;
+  }
+
+  get agencySystems(): AgencySystems[] | undefined {
+    return this.agency?.systems;
   }
 
   get metricsByKey(): { [metricKey: string]: Metric } {
@@ -219,6 +233,36 @@ class AgencyDataStore {
       throw error;
     }
   }
+
+  getMetricsWithDataByCategoryByCurrentSystem = (
+    category: string,
+    currentSystem: string | undefined
+  ) => {
+    const metricsByCategory = this.metricsByCategory[category];
+    const metricsByCategoryByCurrentSystem = metricsByCategory.filter(
+      (metric) => metric.system.key === currentSystem
+    );
+    const metricsWithDataByCategory = metricsByCategoryByCurrentSystem.filter(
+      (metric) =>
+        this.datapointsByMetric[metric.key].aggregate.filter(
+          (dp) => dp[DataVizAggregateName] !== null
+        ).length > 0
+    );
+
+    return metricsWithDataByCategory;
+  };
+
+  getMetricsByAvailableCategoriesWithData = (
+    visibleCategoriesMetadata: VisibleCategoriesMetadata
+  ) => {
+    return this.metrics.filter(
+      (metric) =>
+        Object.keys(visibleCategoriesMetadata).includes(metric.category) &&
+        this.datapointsByMetric[metric.key].aggregate.filter(
+          (dp) => dp[DataVizAggregateName] !== null
+        ).length > 0
+    );
+  };
 
   resetState() {
     // reset the state

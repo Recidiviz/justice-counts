@@ -22,15 +22,19 @@ import {
   DataVizAggregateName,
   DataVizTimeRangesMap,
 } from "@justice-counts/common/types";
-import { printDateAsShortMonthYear } from "@justice-counts/common/utils";
+import {
+  printDateAsShortMonthYear,
+  removeSnakeCase,
+} from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
+import { slugify } from "../utils";
 import {
   AgencyDescription,
   AgencyHomepage,
@@ -52,198 +56,185 @@ import {
   SystemChipsContainer,
 } from ".";
 
-// Only showing Capacity and Cost metrics currently
-const orderedCategoriesMap: {
+export type VisibleCategoriesMetadata = {
   [category: string]: { label: string; description: string };
-} = {
+};
+
+// Only showing Capacity and Cost metrics currently
+const visibleCategoriesMetadata: VisibleCategoriesMetadata = {
   "Capacity and Costs": {
     label: "Understand the Finances",
     description: "See how we’re funded and where we use those funds",
   },
 };
 
+const AgencyHeader = ({
+  description,
+  url,
+  name,
+}: {
+  description: string;
+  url: string;
+  name?: string;
+}) => (
+  <AgencyOverviewHeader>
+    {name && <AgencyTitle>{name}</AgencyTitle>}
+    <AgencyDescription>
+      {description}{" "}
+      {url && <AgencyHomepage href={url}>Visit our Website</AgencyHomepage>}
+    </AgencyDescription>
+  </AgencyOverviewHeader>
+);
+
 export const AgencyOverview = observer(() => {
   const navigate = useNavigate();
   const { slug } = useParams();
   const { agencyDataStore } = useStore();
-  const [currentSystem, setCurrentSystem] = useState<
-    AgencySystems | undefined
-  >();
-  const agencyDescription =
-    agencyDataStore.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS?.value;
-  const agencyHomepageUrl =
-    agencyDataStore.agencySettingsBySettingType.HOMEPAGE_URL?.value;
+  const {
+    agencyDescription,
+    agencyHomepageUrl,
+    agencySystems,
+    getMetricsWithDataByCategoryByCurrentSystem,
+    getMetricsByAvailableCategoriesWithData,
+  } = agencyDataStore;
+  const metricsByAvailableCategoriesWithData =
+    getMetricsByAvailableCategoriesWithData(visibleCategoriesMetadata);
 
-  useEffect(() => {
-    setCurrentSystem(agencyDataStore.agency?.systems[0]);
-  }, [agencyDataStore]);
-
-  const metricsByAvailableCategories = agencyDataStore.metrics.filter(
-    (metric) => Object.keys(orderedCategoriesMap).includes(metric.category)
+  const [currentSystem, setCurrentSystem] = useState<AgencySystems | undefined>(
+    agencySystems?.[0]
   );
 
-  const metricsByAvailableCategoriesWithData =
-    metricsByAvailableCategories.filter(
-      (metric) =>
-        agencyDataStore.datapointsByMetric[metric.key].aggregate.filter(
-          (dp) => dp[DataVizAggregateName] !== null
-        ).length > 0
-    );
+  const handleCategoryClick = (isClickable: boolean, category: string) => {
+    if (isClickable) {
+      navigate(`/agency/${slug}/${slugify(category)}`);
+    }
+  };
 
   if (agencyDataStore.loading) return <Loading />;
-
-  const AgencyHeader = () => (
-    <AgencyOverviewHeader>
-      <AgencyTitle>{agencyDataStore.agency?.name}</AgencyTitle>
-      <AgencyDescription>
-        {agencyDescription}{" "}
-        {agencyHomepageUrl && (
-          <AgencyHomepage href={agencyHomepageUrl}>
-            Visit our Website
-          </AgencyHomepage>
-        )}
-      </AgencyDescription>
-    </AgencyOverviewHeader>
-  );
-
-  if (metricsByAvailableCategoriesWithData.length === 0) {
-    return (
-      <>
-        <HeaderBar />
-        <AgencyOverviewWrapper>
-          <AgencyHeader />
-          <div>This dashboard is currently under construction.</div>
-        </AgencyOverviewWrapper>
-      </>
-    );
-  }
 
   return (
     <>
       <HeaderBar />
       <AgencyOverviewWrapper>
-        <AgencyHeader />
-        <MetricsViewContainer>
-          <SystemChipsContainer>
-            {agencyDataStore.agency?.systems.map((system) => (
-              <SystemChip
-                key={system}
-                onClick={() => setCurrentSystem(system)}
-                active={system === currentSystem}
-              >
-                {system.toLowerCase().replaceAll("_", " ")}
-              </SystemChip>
-            ))}
-          </SystemChipsContainer>
-          {Object.keys(orderedCategoriesMap).map((category) => {
-            const isCapacityAndCostCategory = category === "Capacity and Costs";
-            const metricsByCategory =
-              agencyDataStore.metricsByCategory[category] || [];
-            const metricsByCategoryBySystem = metricsByCategory.filter(
-              (metric) => metric.system.key === currentSystem
-            );
-            const metricsWithData = metricsByCategoryBySystem.filter(
-              (metric) =>
-                agencyDataStore.datapointsByMetric[metric.key].aggregate.filter(
-                  (dp) => dp[DataVizAggregateName] !== null
-                ).length > 0
-            );
+        <AgencyHeader
+          name={agencyDataStore.agency?.name}
+          description={agencyDescription}
+          url={agencyHomepageUrl}
+        />
 
-            if (metricsWithData.length === 0) return null;
-
-            return (
-              <CategorizedMetricsContainer key={category}>
-                <CategoryTitle
-                  onClick={() => {
-                    if (isCapacityAndCostCategory) {
-                      const categoryUrlParam = category
-                        .toLowerCase()
-                        .replaceAll(" ", "-");
-                      navigate(`/agency/${slug}/${categoryUrlParam}`);
-                    }
-                  }}
-                  hasHover={isCapacityAndCostCategory}
+        {metricsByAvailableCategoriesWithData.length === 0 ? (
+          <div>This dashboard is currently under construction.</div>
+        ) : (
+          <MetricsViewContainer>
+            {/* System Selector Chips */}
+            <SystemChipsContainer>
+              {agencySystems?.map((system) => (
+                <SystemChip
+                  key={system}
+                  onClick={() => setCurrentSystem(system)}
+                  active={system === currentSystem}
                 >
-                  {`${orderedCategoriesMap[category].label}${
-                    isCapacityAndCostCategory ? " ->" : ""
-                  }`}
-                </CategoryTitle>
-                <CategoryDescription>
-                  {orderedCategoriesMap[category].description}
-                </CategoryDescription>
-                <MetricsContainer
-                  onClick={() => {
-                    if (isCapacityAndCostCategory) {
-                      const categoryUrlParam = category
-                        .toLowerCase()
-                        .replaceAll(" ", "-");
-                      navigate(`/agency/${slug}/${categoryUrlParam}`);
-                    }
-                  }}
-                  hasHover={isCapacityAndCostCategory}
-                >
-                  {metricsWithData.map((metric) => {
-                    const data =
-                      agencyDataStore.datapointsByMetric[metric.key].aggregate;
-                    const isAnnual = metric.custom_frequency === "ANNUAL";
-                    const transformedDataForChart = transformDataForBarChart(
-                      data,
-                      isAnnual
-                        ? DataVizTimeRangesMap["5 Years Ago"]
-                        : DataVizTimeRangesMap["1 Year Ago"],
-                      "Count"
-                    );
-                    if (transformedDataForChart.length === 0) return;
-                    const firstDatapointDate = new Date(
-                      transformedDataForChart[0].start_date
-                    );
-                    const lastDatapointDate = new Date(
-                      transformedDataForChart[
-                        transformedDataForChart.length - 1
-                      ].start_date
-                    );
+                  {removeSnakeCase(system).toLocaleLowerCase()}
+                </SystemChip>
+              ))}
+            </SystemChipsContainer>
 
-                    return (
-                      <MetricBox key={metric.key}>
-                        <MetricBoxTitle>
-                          {metric.display_name.toUpperCase()}
-                        </MetricBoxTitle>
-                        <MetricBoxContentContainer>
-                          <MetricBoxGraphContainer>
-                            <MiniChartContainer>
-                              <MiniBarChart
-                                data={transformedDataForChart}
-                                dimensionNames={[DataVizAggregateName]}
-                              />
-                            </MiniChartContainer>
-                            <MetricBoxGraphRange>
-                              <span>
-                                {isAnnual
-                                  ? firstDatapointDate.getUTCFullYear()
-                                  : printDateAsShortMonthYear(
-                                      firstDatapointDate.getMonth() + 1,
-                                      firstDatapointDate.getUTCFullYear()
-                                    )}
-                              </span>
-                              <span>
-                                {isAnnual
-                                  ? lastDatapointDate.getUTCFullYear()
-                                  : printDateAsShortMonthYear(
-                                      lastDatapointDate.getMonth() + 1,
-                                      lastDatapointDate.getUTCFullYear()
-                                    )}
-                              </span>
-                            </MetricBoxGraphRange>
-                          </MetricBoxGraphContainer>
-                        </MetricBoxContentContainer>
-                      </MetricBox>
-                    );
-                  })}
-                </MetricsContainer>
-              </CategorizedMetricsContainer>
-            );
-          })}
-        </MetricsViewContainer>
+            {/* Metric Categories */}
+            {Object.keys(visibleCategoriesMetadata).map((category) => {
+              const metricsWithData =
+                getMetricsWithDataByCategoryByCurrentSystem(
+                  category,
+                  currentSystem
+                );
+              // Only render metrics with data
+              if (metricsWithData.length === 0) return null;
+              const isCapacityAndCostCategory =
+                category === "Capacity and Costs";
+
+              return (
+                <CategorizedMetricsContainer key={category}>
+                  <CategoryTitle
+                    onClick={() =>
+                      handleCategoryClick(isCapacityAndCostCategory, category)
+                    }
+                    hasHover={isCapacityAndCostCategory}
+                  >
+                    {`${visibleCategoriesMetadata[category].label}${
+                      isCapacityAndCostCategory ? " ->" : ""
+                    }`}
+                  </CategoryTitle>
+                  <CategoryDescription>
+                    {visibleCategoriesMetadata[category].description}
+                  </CategoryDescription>
+                  <MetricsContainer
+                    onClick={() =>
+                      handleCategoryClick(isCapacityAndCostCategory, category)
+                    }
+                    hasHover={isCapacityAndCostCategory}
+                  >
+                    {metricsWithData.map((metric) => {
+                      const data =
+                        agencyDataStore.datapointsByMetric[metric.key]
+                          .aggregate;
+                      const isAnnual = metric.custom_frequency === "ANNUAL";
+                      const transformedDataForChart = transformDataForBarChart(
+                        data,
+                        isAnnual
+                          ? DataVizTimeRangesMap["5 Years Ago"]
+                          : DataVizTimeRangesMap["1 Year Ago"],
+                        "Count"
+                      );
+                      const firstDatapointDate = new Date(
+                        transformedDataForChart[0].start_date
+                      );
+                      const lastDatapointDate = new Date(
+                        transformedDataForChart[
+                          transformedDataForChart.length - 1
+                        ].start_date
+                      );
+
+                      return (
+                        <MetricBox key={metric.key}>
+                          <MetricBoxTitle>
+                            {metric.display_name.toUpperCase()}
+                          </MetricBoxTitle>
+                          <MetricBoxContentContainer>
+                            <MetricBoxGraphContainer>
+                              <MiniChartContainer>
+                                <MiniBarChart
+                                  data={transformedDataForChart}
+                                  dimensionNames={[DataVizAggregateName]}
+                                />
+                              </MiniChartContainer>
+                              <MetricBoxGraphRange>
+                                <span>
+                                  {!isAnnual
+                                    ? firstDatapointDate.getUTCFullYear()
+                                    : printDateAsShortMonthYear(
+                                        firstDatapointDate.getMonth() + 1,
+                                        firstDatapointDate.getUTCFullYear()
+                                      )}
+                                </span>
+                                <span>
+                                  {!isAnnual
+                                    ? lastDatapointDate.getUTCFullYear()
+                                    : printDateAsShortMonthYear(
+                                        lastDatapointDate.getMonth() + 1,
+                                        lastDatapointDate.getUTCFullYear()
+                                      )}
+                                </span>
+                              </MetricBoxGraphRange>
+                            </MetricBoxGraphContainer>
+                          </MetricBoxContentContainer>
+                        </MetricBox>
+                      );
+                    })}
+                  </MetricsContainer>
+                </CategorizedMetricsContainer>
+              );
+            })}
+          </MetricsViewContainer>
+        )}
       </AgencyOverviewWrapper>
       <Footer />
     </>
