@@ -301,6 +301,7 @@ class AgencyDataStore {
 
     let beginDate;
     let endDate;
+
     if (firstDatapointDate) {
       const { month, year } = splitUtcString(firstDatapointDate);
       beginDate = isAnnual ? year : printDateAsMonthYear(+month, +year);
