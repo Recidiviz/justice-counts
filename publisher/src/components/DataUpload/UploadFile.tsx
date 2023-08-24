@@ -61,6 +61,9 @@ export const UploadFile: React.FC<UploadFileProps> = ({
   ];
 
   const isReadOnly = userStore.isUserReadOnly(agencyId);
+  const userSystemsExcludingSuperagency = userSystems.filter(
+    (system) => system !== "SUPERAGENCY"
+  );
 
   const handleFileUploadAttempt = (
     e: React.ChangeEvent<HTMLInputElement> | DragEvent
@@ -77,11 +80,11 @@ export const UploadFile: React.FC<UploadFileProps> = ({
     }
 
     setIsLoading(true);
-    if (userSystems.length > 1) {
+    if (userSystemsExcludingSuperagency.length > 1) {
       setIsLoading(false);
       setSelectedFile(files[0]);
     } else {
-      handleFileUpload(files[0], userSystems[0]);
+      handleFileUpload(files[0], userSystemsExcludingSuperagency[0]);
     }
   };
   const handleDownloadSpreadsheetTemplate = async (system: string) => {
@@ -166,13 +169,13 @@ export const UploadFile: React.FC<UploadFileProps> = ({
         {/* General Instructions */}
         <GeneralInstructions
           agencyId={agencyId}
-          systems={userSystems}
+          systems={userSystemsExcludingSuperagency}
           downloadTemplate={handleDownloadSpreadsheetTemplate}
           isDownloading={isDownloading}
         />
 
-        {/* System Specific Instructions */}
-        {userSystems?.map((system) => {
+        {/* System Specific Instructions (excludes Superagency systems) */}
+        {userSystemsExcludingSuperagency.map((system) => {
           const systemName = removeSnakeCase(system).toLowerCase();
           const systemTemplate = <SystemsInstructions system={system} />;
 

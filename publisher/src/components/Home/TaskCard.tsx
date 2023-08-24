@@ -20,24 +20,16 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import HomeStore from "../../stores/HomeStore";
-import { TaskCardActionLinksMetadataList, TaskCardMetadata } from ".";
+import { taskCardLabelsActionLinks, TaskCardMetadata } from ".";
 import * as Styled from "./Home.styled";
-
-export const taskCardLabelsActionLinks: TaskCardActionLinksMetadataList = {
-  publish: { label: "Publish", path: "records/" },
-  uploadData: { label: "Upload Data", path: "upload" },
-  manualEntry: { label: "Manual Entry", path: "records/" },
-  metricAvailability: {
-    label: "Set Metric Availability",
-    path: "metric-config",
-  },
-};
 
 export const TaskCard: React.FC<{
   metadata: TaskCardMetadata;
-}> = ({ metadata }) => {
+  isSuperagency?: boolean;
+}> = ({ metadata, isSuperagency }) => {
   const navigate = useNavigate();
   const {
+    key,
     title,
     description,
     actionLinks,
@@ -53,6 +45,12 @@ export const TaskCard: React.FC<{
       {actionLinks && (
         <Styled.TaskCardActionLinksWrapper>
           {actionLinks.map((action) => {
+            // Exclude "Upload Data" action link from Superagency data entry metric task cards
+            if (
+              isSuperagency &&
+              action.label === taskCardLabelsActionLinks.uploadData.label
+            )
+              return;
             const tooltipAnchorID =
               action.path === "upload"
                 ? `${HomeStore.replaceSpacesAndParenthesesWithHyphen(
@@ -67,6 +65,8 @@ export const TaskCard: React.FC<{
               action.label === taskCardLabelsActionLinks.manualEntry.label;
             const isPublishAction =
               action.label === taskCardLabelsActionLinks.publish.label;
+            const isSuperagencyAddDataTaskCard =
+              key === "SUPERAGENCY_UPLOAD_DATA";
             /** Add `/review` to Publish Actions' navigation path  */
             const reviewPagePath = isPublishAction ? "/review" : "";
 
@@ -95,7 +95,7 @@ export const TaskCard: React.FC<{
                 }}
               >
                 {action.label}
-                {tooltipAnchorID && (
+                {tooltipAnchorID && !isSuperagencyAddDataTaskCard && (
                   <Tooltip
                     anchorId={tooltipAnchorID}
                     position="top"

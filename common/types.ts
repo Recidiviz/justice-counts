@@ -94,6 +94,7 @@ export interface UserAgency {
   settings: AgencySetting[];
   systems: AgencySystems[];
   team: AgencyTeamMember[];
+  is_superagency: boolean;
 }
 
 export type ReportFrequency = "MONTHLY" | "ANNUAL";

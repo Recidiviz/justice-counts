@@ -202,12 +202,12 @@ class HomeStore {
 
   hydrateAgencySystemSelectionOptions(agencyId: string): void {
     const currentAgency = this.userStore.getAgency(agencyId);
+    const isSuperagency = this.userStore.isAgencySuperagency(agencyId);
     const currentAgencySystems = currentAgency?.systems || [];
     const filteredAgencySystems = currentAgencySystems.filter((system) =>
       this.supervisionSubsystemsWithEnabledMetrics(system)
     );
     const hasMultipleSystems = currentAgencySystems.length > 1;
-    const isSuperagency = currentAgencySystems.includes("SUPERAGENCY");
 
     runInAction(() => {
       if (isSuperagency) {

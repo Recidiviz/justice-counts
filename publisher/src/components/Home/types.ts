@@ -23,6 +23,16 @@ import {
   ReportStatus,
 } from "@justice-counts/common/types";
 
+export const taskCardLabelsActionLinks: TaskCardActionLinksMetadataList = {
+  publish: { label: "Publish", path: "records/" },
+  uploadData: { label: "Upload Data", path: "upload" },
+  manualEntry: { label: "Manual Entry", path: "records/" },
+  metricAvailability: {
+    label: "Set Metric Availability",
+    path: "metric-config",
+  },
+};
+
 export type LatestRecordsAgencyMetrics = {
   agency_metrics: Metric[];
   annual_reports: { [key: string]: Report };

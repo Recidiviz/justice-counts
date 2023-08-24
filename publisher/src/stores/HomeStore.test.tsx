@@ -31,7 +31,7 @@ beforeEach(() => {
         child_agencies: [],
         fips_county_code: "",
         id: Number(mockAgencyID),
-        is_superagency: null,
+        is_superagency: false,
         name: "Law Enforcement",
         settings: [],
         state: "",
