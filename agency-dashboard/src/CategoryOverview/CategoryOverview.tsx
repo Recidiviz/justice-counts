@@ -29,7 +29,7 @@ import {
 } from "@justice-counts/common/types";
 import { each } from "bluebird";
 import { observer } from "mobx-react-lite";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCurrentPng } from "recharts-to-png";
 
@@ -89,14 +89,6 @@ export const CategoryOverview = observer(() => {
     datapointsByMetric: agencyDataStore.datapointsByMetric,
   });
 
-  const categoryMetrics = useMemo(
-    () =>
-      categoryData[category]?.key
-        ? agencyDataStore.metricsByCategory?.[categoryData[category]?.key]
-        : [],
-    [agencyDataStore.metricsByCategory, category]
-  );
-
   const copyUrlToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
@@ -122,8 +114,17 @@ export const CategoryOverview = observer(() => {
   //   }
   // }, [getChartPng]);
 
+  const metricsByCategory =
+    agencyDataStore.metricsByCategory[categoryData[category]?.key] || [];
+  const metricsWithData = metricsByCategory.filter(
+    (metric) =>
+      agencyDataStore.datapointsByMetric[metric.key].aggregate.filter(
+        (dp) => dp[DataVizAggregateName] !== null
+      ).length > 0
+  );
+
   const downloadMetricsData = useCallback(() => {
-    categoryMetrics?.forEach((categoryMetric: Metric) => {
+    metricsWithData?.forEach((categoryMetric: Metric) => {
       const metric = agencyDataStore.metricsByKey?.[categoryMetric.key];
       if (metric && agencyDataStore.agency) {
         each(
@@ -132,12 +133,12 @@ export const CategoryOverview = observer(() => {
         );
       }
     });
-  }, [categoryMetrics, agencyDataStore.metricsByKey, agencyDataStore.agency]);
+  }, [metricsWithData, agencyDataStore.metricsByKey, agencyDataStore.agency]);
 
   if (agencyDataStore.loading) {
     return <Loading />;
   }
-  return categoryMetrics && categoryData[category] ? (
+  return metricsWithData && categoryData[category] ? (
     <>
       <HeaderBar />
       <Styled.Wrapper>
@@ -182,7 +183,7 @@ export const CategoryOverview = observer(() => {
               </Styled.MetricsFilterButton>
             </Styled.MetricsFilters>
             <Styled.MetricsWrapper>
-              {categoryMetrics.map((metric: Metric) => (
+              {metricsWithData.map((metric: Metric) => (
                 <Styled.MetricBox key={metric.key}>
                   <Styled.MetricName>{metric.display_name}</Styled.MetricName>
 
