@@ -51,6 +51,10 @@ class AgencyDataStore {
     this.loading = true;
   }
 
+  get agencyName(): string | undefined {
+    return this.agency?.name;
+  }
+
   get agencyDescription(): string {
     return this.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS?.value;
   }

@@ -63,29 +63,12 @@ const visibleCategoriesMetadata: VisibleCategoriesMetadata = {
   },
 };
 
-const AgencyHeader = ({
-  description,
-  url,
-  name,
-}: {
-  description: string;
-  url: string;
-  name?: string;
-}) => (
-  <AgencyOverviewHeader>
-    {name && <AgencyTitle>{name}</AgencyTitle>}
-    <AgencyDescription>
-      {description}{" "}
-      {url && <AgencyHomepage href={url}>Visit our Website</AgencyHomepage>}
-    </AgencyDescription>
-  </AgencyOverviewHeader>
-);
-
 export const AgencyOverview = observer(() => {
   const navigate = useNavigate();
   const { slug } = useParams();
   const { agencyDataStore } = useStore();
   const {
+    agencyName,
     agencyDescription,
     agencyHomepageUrl,
     agencySystems,
@@ -112,11 +95,17 @@ export const AgencyOverview = observer(() => {
     <>
       <HeaderBar />
       <AgencyOverviewWrapper>
-        <AgencyHeader
-          name={agencyDataStore.agency?.name}
-          description={agencyDescription}
-          url={agencyHomepageUrl}
-        />
+        <AgencyOverviewHeader>
+          <AgencyTitle>{agencyName}</AgencyTitle>
+          <AgencyDescription>
+            {agencyDescription}{" "}
+            {agencyHomepageUrl && (
+              <AgencyHomepage href={agencyHomepageUrl}>
+                Visit our Website
+              </AgencyHomepage>
+            )}
+          </AgencyDescription>
+        </AgencyOverviewHeader>
 
         {metricsByAvailableCategoriesWithData.length === 0 ? (
           <div>This dashboard is currently under construction.</div>

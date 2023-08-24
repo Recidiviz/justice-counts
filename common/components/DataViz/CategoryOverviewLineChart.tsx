@@ -173,6 +173,7 @@ export function CategoryOverviewLineChart({
           map(
             (datapoint: Datapoint): JSX.Element => (
               <ReferenceLine
+                key={datapoint.start_date}
                 x={printDateAsShortMonthYear(
                   new Date(datapoint.start_date).getUTCMonth() + 1,
                   new Date(datapoint.start_date).getUTCFullYear()
