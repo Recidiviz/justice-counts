@@ -124,7 +124,7 @@ export const AgencyOverview = observer(() => {
               ))}
             </SystemChipsContainer>
 
-            {/* Metric Categories (with data) */}
+            {/* Metric Categories (with data only) */}
             {Object.keys(visibleCategoriesMetadata).map((category) => {
               const metrics = getMetricsWithDataByCategoryByCurrentSystem(
                 category,
