@@ -62,7 +62,7 @@ export const CategoryOverview = observer(() => {
   const [dataRangeFilter, setDataRangeFilter] = useState<"recent" | "all">(
     "all"
   );
-  const [hoveredDate, setHoveredDate] = useState<string | null>(null);
+  const [hoveredDate, setHoveredDate] = useState<{ [key: string]: string }>({});
 
   const getCurrentChartTimeRange = useCallback(
     (isAnnual: boolean) => {
@@ -195,7 +195,10 @@ export const CategoryOverview = observer(() => {
                         width={620}
                         data={getBarChartData(metric)}
                         onHoverBar={(payload) => {
-                          setHoveredDate(payload.start_date);
+                          setHoveredDate((prev) => ({
+                            ...prev,
+                            [metric.key]: payload.start_date,
+                          }));
                         }}
                         dimensionNames={[DataVizAggregateName]}
                         metric={metric.display_name}
@@ -210,8 +213,9 @@ export const CategoryOverview = observer(() => {
                           metric.display_name === "Expenses"
                         }
                         dimensions={getLineChartDimensions(metric)}
-                        hoveredDate={hoveredDate}
+                        hoveredDate={hoveredDate[metric.key]}
                         setHoveredDate={setHoveredDate}
+                        metricKey={metric.key}
                       />
                     )}
                   </Styled.MetricDataVizContainer>

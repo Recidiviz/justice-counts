@@ -52,15 +52,16 @@ export const CategoryOverviewBreakdown: FunctionComponent<
 > = ({ data, isFundingOrExpenses, dimensions, hoveredDate }) => (
   <Container>
     <LegendTitle>
-      {hoveredDate
-        ? printDateAsShortMonthYear(
-            new Date(data.start_date?.value as string).getUTCMonth() + 1,
-            new Date(data.start_date?.value as string).getUTCFullYear()
-          )
-        : `Recent (${printDateAsShortMonthYear(
-            new Date(data.start_date?.value as string).getUTCMonth() + 1,
-            new Date(data.start_date?.value as string).getUTCFullYear()
-          )})`}
+      {data.start_date &&
+        (hoveredDate
+          ? printDateAsShortMonthYear(
+              new Date(data.start_date?.value as string).getUTCMonth() + 1,
+              new Date(data.start_date?.value as string).getUTCFullYear()
+            )
+          : `Recent (${printDateAsShortMonthYear(
+              new Date(data.start_date?.value as string).getUTCMonth() + 1,
+              new Date(data.start_date?.value as string).getUTCFullYear()
+            )})`)}
     </LegendTitle>
     {pipe(
       sort(
