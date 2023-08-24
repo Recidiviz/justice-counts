@@ -25,6 +25,7 @@ export const ALLOW_LIST: Record<string, boolean> = {
   "Massachusetts Department of Correction": true,
   "New York State Department of Corrections And Community Supervision": true,
   "Wisconsin Department of Corrections": true,
+  "Johnson County Prosecutor's Office": true,
 };
 
 export const isAllowListed = ({ name }: UserAgency): boolean | undefined =>
