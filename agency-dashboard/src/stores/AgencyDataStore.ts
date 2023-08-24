@@ -234,22 +234,23 @@ class AgencyDataStore {
     }
   }
 
+  metricHasDatapoints(metricKey: string): boolean {
+    return (
+      this.datapointsByMetric[metricKey].aggregate.filter(
+        (dp) => dp[DataVizAggregateName] !== null
+      ).length > 0
+    );
+  }
+
   getMetricsWithDataByCategoryByCurrentSystem = (
     category: string,
     currentSystem: string | undefined
   ) => {
-    const metricsByCategory = this.metricsByCategory[category];
-    const metricsByCategoryByCurrentSystem = metricsByCategory.filter(
-      (metric) => metric.system.key === currentSystem
-    );
-    const metricsWithDataByCategory = metricsByCategoryByCurrentSystem.filter(
+    return this.metricsByCategory[category].filter(
       (metric) =>
-        this.datapointsByMetric[metric.key].aggregate.filter(
-          (dp) => dp[DataVizAggregateName] !== null
-        ).length > 0
+        metric.system.key === currentSystem &&
+        this.metricHasDatapoints(metric.key)
     );
-
-    return metricsWithDataByCategory;
   };
 
   getMetricsByAvailableCategoriesWithData = (
@@ -258,9 +259,7 @@ class AgencyDataStore {
     return this.metrics.filter(
       (metric) =>
         Object.keys(visibleCategoriesMetadata).includes(metric.category) &&
-        this.datapointsByMetric[metric.key].aggregate.filter(
-          (dp) => dp[DataVizAggregateName] !== null
-        ).length > 0
+        this.metricHasDatapoints(metric.key)
     );
   };
 

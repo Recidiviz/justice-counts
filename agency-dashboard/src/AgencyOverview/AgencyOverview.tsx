@@ -94,6 +94,7 @@ export const AgencyOverview = observer(() => {
     agencyDescription,
     agencyHomepageUrl,
     agencySystems,
+    datapointsByMetric,
     getMetricsWithDataByCategoryByCurrentSystem,
     getMetricsByAvailableCategoriesWithData,
   } = agencyDataStore;
@@ -139,15 +140,13 @@ export const AgencyOverview = observer(() => {
               ))}
             </SystemChipsContainer>
 
-            {/* Metric Categories */}
+            {/* Metric Categories (with data) */}
             {Object.keys(visibleCategoriesMetadata).map((category) => {
-              const metricsWithData =
-                getMetricsWithDataByCategoryByCurrentSystem(
-                  category,
-                  currentSystem
-                );
-              // Only render metrics with data
-              if (metricsWithData.length === 0) return null;
+              const metrics = getMetricsWithDataByCategoryByCurrentSystem(
+                category,
+                currentSystem
+              );
+              if (metrics.length === 0) return null;
               const isCapacityAndCostCategory =
                 category === "Capacity and Costs";
 
@@ -166,22 +165,26 @@ export const AgencyOverview = observer(() => {
                   <CategoryDescription>
                     {visibleCategoriesMetadata[category].description}
                   </CategoryDescription>
+
+                  {/* Metrics Row */}
                   <MetricsContainer
                     onClick={() =>
                       handleCategoryClick(isCapacityAndCostCategory, category)
                     }
                     hasHover={isCapacityAndCostCategory}
                   >
-                    {metricsWithData.map((metric) => {
-                      const data =
-                        agencyDataStore.datapointsByMetric[metric.key]
-                          .aggregate;
-                      const isAnnual = metric.custom_frequency === "ANNUAL";
+                    {metrics.map((metric) => {
+                      const aggregateDatapoints =
+                        datapointsByMetric[metric.key].aggregate;
+                      const isAnnual = metric.custom_frequency
+                        ? metric.custom_frequency === "ANNUAL"
+                        : metric.frequency === "ANNUAL";
+                      const timeRange = isAnnual
+                        ? DataVizTimeRangesMap["5 Years Ago"]
+                        : DataVizTimeRangesMap["1 Year Ago"];
                       const transformedDataForChart = transformDataForBarChart(
-                        data,
-                        isAnnual
-                          ? DataVizTimeRangesMap["5 Years Ago"]
-                          : DataVizTimeRangesMap["1 Year Ago"],
+                        aggregateDatapoints,
+                        timeRange,
                         "Count"
                       );
                       const firstDatapointDate = new Date(
@@ -208,7 +211,7 @@ export const AgencyOverview = observer(() => {
                               </MiniChartContainer>
                               <MetricBoxGraphRange>
                                 <span>
-                                  {!isAnnual
+                                  {isAnnual
                                     ? firstDatapointDate.getUTCFullYear()
                                     : printDateAsShortMonthYear(
                                         firstDatapointDate.getMonth() + 1,
@@ -216,7 +219,7 @@ export const AgencyOverview = observer(() => {
                                       )}
                                 </span>
                                 <span>
-                                  {!isAnnual
+                                  {isAnnual
                                     ? lastDatapointDate.getUTCFullYear()
                                     : printDateAsShortMonthYear(
                                         lastDatapointDate.getMonth() + 1,
