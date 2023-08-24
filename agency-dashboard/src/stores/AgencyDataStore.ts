@@ -24,13 +24,19 @@ import {
   Metric,
   UserAgency,
 } from "@justice-counts/common/types";
-import { isPositiveNumber } from "@justice-counts/common/utils";
+import {
+  isPositiveNumber,
+  printDateAsMonthYear,
+} from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
 import { VisibleCategoriesMetadata } from "../AgencyOverview";
 import { AgenciesList } from "../Home";
 import API from "./API";
-import { transformDataForBarChart } from "@justice-counts/common/components/DataViz/utils";
+import {
+  splitUtcString,
+  transformDataForBarChart,
+} from "@justice-counts/common/components/DataViz/utils";
 
 class AgencyDataStore {
   agency: UserAgency | undefined;
@@ -289,24 +295,17 @@ class AgencyDataStore {
         ).toUTCString()
       : undefined;
 
-    // {
-    //   isAnnual
-    //     ? firstDatapointDate.getUTCFullYear()
-    //     : printDateAsShortMonthYear(
-    //         firstDatapointDate.getUTCMonth(),
-    //         firstDatapointDate.getUTCFullYear()
-    //       );
-    // }
-    // {
-    //   isAnnual
-    //     ? lastDatapointDate.getUTCFullYear()
-    //     : printDateAsShortMonthYear(
-    //         lastDatapointDate.getMonth() + 1,
-    //         lastDatapointDate.getUTCFullYear()
-    //       );
-    // }
+    let beginDate, endDate;
+    if (firstDatapointDate) {
+      const { month, year } = splitUtcString(firstDatapointDate);
+      beginDate = isAnnual ? year : printDateAsMonthYear(+month, +year);
+    }
+    if (lastDatapointDate) {
+      const { month, year } = splitUtcString(lastDatapointDate);
+      endDate = isAnnual ? year : printDateAsMonthYear(+month, +year);
+    }
 
-    return {};
+    return { beginDate, endDate, transformedDataForChart };
   };
 
   resetState() {

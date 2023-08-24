@@ -17,13 +17,8 @@
 
 import MiniBarChart from "@justice-counts/common/components/DataViz/MiniBarChart";
 import {
-  splitUtcString,
-  transformDataForBarChart,
-} from "@justice-counts/common/components/DataViz/utils";
-import {
   AgencySystems,
   DataVizAggregateName,
-  DataVizTimeRangesMap,
 } from "@justice-counts/common/types";
 import {
   printDateAsShortMonthYear,
@@ -33,11 +28,6 @@ import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { Footer } from "../Footer";
-import { HeaderBar } from "../Header";
-import { Loading } from "../Loading";
-import { useStore } from "../stores";
-import { slugify } from "../utils";
 import {
   AgencyDescription,
   AgencyHomepage,
@@ -58,6 +48,11 @@ import {
   SystemChip,
   SystemChipsContainer,
 } from ".";
+import { Footer } from "../Footer";
+import { HeaderBar } from "../Header";
+import { Loading } from "../Loading";
+import { useStore } from "../stores";
+import { slugify } from "../utils";
 
 /** "Visible Categories" are the categories of metrics we are allowing users to view */
 export type VisibleCategoriesMetadata = {
@@ -97,9 +92,9 @@ export const AgencyOverview = observer(() => {
     agencyDescription,
     agencyHomepageUrl,
     agencySystems,
-    datapointsByMetric,
     getMetricsWithDataByCategoryByCurrentSystem,
     getMetricsByAvailableCategoriesWithData,
+    getMiniChartDateRangeAndTransformedData,
   } = agencyDataStore;
   const metricsByAvailableCategoriesWithData =
     getMetricsByAvailableCategoriesWithData(visibleCategoriesMetadata);
@@ -177,55 +172,8 @@ export const AgencyOverview = observer(() => {
                     hasHover={isCapacityAndCostCategory}
                   >
                     {metrics.map((metric) => {
-                      const aggregateDatapoints =
-                        datapointsByMetric[metric.key].aggregate;
-                      const isAnnual = metric.custom_frequency
-                        ? metric.custom_frequency === "ANNUAL"
-                        : metric.frequency === "ANNUAL";
-                      const timeRange = isAnnual
-                        ? DataVizTimeRangesMap["5 Years Ago"]
-                        : DataVizTimeRangesMap["1 Year Ago"];
-                      const transformedDataForChart = transformDataForBarChart(
-                        aggregateDatapoints,
-                        timeRange,
-                        "Count"
-                      );
-                      const firstDatapointDate = new Date(
-                        transformedDataForChart[0].start_date
-                      );
-                      const lastDatapointDate = new Date(
-                        transformedDataForChart[
-                          transformedDataForChart.length - 1
-                        ].start_date
-                      );
-
-                      console.log("firstDatapointDate", firstDatapointDate);
-                      console.log("lastDatapointDate", lastDatapointDate);
-                      console.log(
-                        "firstDatapointDate.toUTCString()",
-                        splitUtcString(firstDatapointDate.toUTCString())
-                      );
-                      console.log(
-                        "lastDatapointDate.toUTCString()",
-                        splitUtcString(lastDatapointDate.toUTCString())
-                      );
-                      // console.log(
-                      //   "firstDatapointDate.getUTCFullYear()",
-                      //   firstDatapointDate.getUTCFullYear()
-                      // );
-                      // console.log(
-                      //   "lastDatapointDate.getUTCFullYear()",
-                      //   lastDatapointDate.getUTCFullYear()
-                      // );
-                      // console.log(
-                      //   "firstDatapointDate.getUTCMonth()",
-                      //   firstDatapointDate.getUTCMonth()
-                      // );
-                      // console.log(
-                      //   "lastDatapointDate.getUTCMonth()",
-                      //   lastDatapointDate.getUTCMonth()
-                      // );
-
+                      const { beginDate, endDate, transformedDataForChart } =
+                        getMiniChartDateRangeAndTransformedData(metric);
                       return (
                         <MetricBox key={metric.key}>
                           <MetricBoxTitle>
@@ -240,22 +188,8 @@ export const AgencyOverview = observer(() => {
                                 />
                               </MiniChartContainer>
                               <MetricBoxGraphRange>
-                                <span>
-                                  {isAnnual
-                                    ? firstDatapointDate.getUTCFullYear()
-                                    : printDateAsShortMonthYear(
-                                        firstDatapointDate.getMonth() + 1,
-                                        firstDatapointDate.getUTCFullYear()
-                                      )}
-                                </span>
-                                <span>
-                                  {isAnnual
-                                    ? lastDatapointDate.getUTCFullYear()
-                                    : printDateAsShortMonthYear(
-                                        lastDatapointDate.getMonth() + 1,
-                                        lastDatapointDate.getUTCFullYear()
-                                      )}
-                                </span>
+                                <span>{beginDate}</span>
+                                <span>{endDate}</span>
                               </MetricBoxGraphRange>
                             </MetricBoxGraphContainer>
                           </MetricBoxContentContainer>

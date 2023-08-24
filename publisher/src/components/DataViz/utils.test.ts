@@ -21,11 +21,11 @@ import {
   fillTimeGapsBetweenDatapoints,
   filterByTimeRange,
   filterNullDatapoints,
-  incrementMonth,
   incrementYear,
   transformData,
   transformToRelativePerchanges,
 } from "./utils";
+import { incrementMonth } from "@justice-counts/common/components/DataViz/utils";
 
 const testDatapoints: Datapoint[] = [
   {
