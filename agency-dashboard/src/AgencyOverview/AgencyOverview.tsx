@@ -150,7 +150,7 @@ export const AgencyOverview = observer(() => {
                     {visibleCategoriesMetadata[category].description}
                   </CategoryDescription>
 
-                  {/* Metrics Row */}
+                  {/* Metrics Row (w/ mini charts) */}
                   <MetricsContainer
                     onClick={() =>
                       handleCategoryClick(isCapacityAndCostCategory, category)
