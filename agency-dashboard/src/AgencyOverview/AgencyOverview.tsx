@@ -20,14 +20,16 @@ import {
   AgencySystems,
   DataVizAggregateName,
 } from "@justice-counts/common/types";
-import {
-  printDateAsShortMonthYear,
-  removeSnakeCase,
-} from "@justice-counts/common/utils";
+import { removeSnakeCase } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { Footer } from "../Footer";
+import { HeaderBar } from "../Header";
+import { Loading } from "../Loading";
+import { useStore } from "../stores";
+import { slugify } from "../utils";
 import {
   AgencyDescription,
   AgencyHomepage,
@@ -48,11 +50,6 @@ import {
   SystemChip,
   SystemChipsContainer,
 } from ".";
-import { Footer } from "../Footer";
-import { HeaderBar } from "../Header";
-import { Loading } from "../Loading";
-import { useStore } from "../stores";
-import { slugify } from "../utils";
 
 /** "Visible Categories" are the categories of metrics we are allowing users to view */
 export type VisibleCategoriesMetadata = {

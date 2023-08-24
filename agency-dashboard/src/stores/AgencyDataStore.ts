@@ -16,6 +16,10 @@
 // =============================================================================
 
 import {
+  splitUtcString,
+  transformDataForBarChart,
+} from "@justice-counts/common/components/DataViz/utils";
+import {
   AgencySetting,
   AgencySystems,
   DatapointsByMetric,
@@ -33,10 +37,6 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { VisibleCategoriesMetadata } from "../AgencyOverview";
 import { AgenciesList } from "../Home";
 import API from "./API";
-import {
-  splitUtcString,
-  transformDataForBarChart,
-} from "@justice-counts/common/components/DataViz/utils";
 
 class AgencyDataStore {
   agency: UserAgency | undefined;
@@ -289,13 +289,14 @@ class AgencyDataStore {
       : undefined;
     const lastDatapointDate = transformedDataForChart[
       transformedDataForChart.length - 1
-    ].start_date
+    ]?.start_date
       ? new Date(
           transformedDataForChart[transformedDataForChart.length - 1].start_date
         ).toUTCString()
       : undefined;
 
-    let beginDate, endDate;
+    let beginDate;
+    let endDate;
     if (firstDatapointDate) {
       const { month, year } = splitUtcString(firstDatapointDate);
       beginDate = isAnnual ? year : printDateAsMonthYear(+month, +year);
