@@ -20,6 +20,7 @@ import {
   AgencySystems,
   DatapointsByMetric,
   DataVizAggregateName,
+  DataVizTimeRangesMap,
   Metric,
   UserAgency,
 } from "@justice-counts/common/types";
@@ -29,6 +30,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { VisibleCategoriesMetadata } from "../AgencyOverview";
 import { AgenciesList } from "../Home";
 import API from "./API";
+import { transformDataForBarChart } from "@justice-counts/common/components/DataViz/utils";
 
 class AgencyDataStore {
   agency: UserAgency | undefined;
@@ -261,6 +263,50 @@ class AgencyDataStore {
         Object.keys(visibleCategoriesMetadata).includes(metric.category) &&
         this.metricHasDatapoints(metric.key)
     );
+  };
+
+  getMiniChartDateRangeAndTransformedData = (metric: Metric) => {
+    const aggregateDatapoints = this.datapointsByMetric[metric.key].aggregate;
+    const isAnnual = metric.custom_frequency
+      ? metric.custom_frequency === "ANNUAL"
+      : metric.frequency === "ANNUAL";
+    const timeRange = isAnnual
+      ? DataVizTimeRangesMap["5 Years Ago"]
+      : DataVizTimeRangesMap["1 Year Ago"];
+    const transformedDataForChart = transformDataForBarChart(
+      aggregateDatapoints,
+      timeRange,
+      "Count"
+    );
+    const firstDatapointDate = transformedDataForChart[0]?.start_date
+      ? new Date(transformedDataForChart[0].start_date).toUTCString()
+      : undefined;
+    const lastDatapointDate = transformedDataForChart[
+      transformedDataForChart.length - 1
+    ].start_date
+      ? new Date(
+          transformedDataForChart[transformedDataForChart.length - 1].start_date
+        ).toUTCString()
+      : undefined;
+
+    // {
+    //   isAnnual
+    //     ? firstDatapointDate.getUTCFullYear()
+    //     : printDateAsShortMonthYear(
+    //         firstDatapointDate.getUTCMonth(),
+    //         firstDatapointDate.getUTCFullYear()
+    //       );
+    // }
+    // {
+    //   isAnnual
+    //     ? lastDatapointDate.getUTCFullYear()
+    //     : printDateAsShortMonthYear(
+    //         lastDatapointDate.getMonth() + 1,
+    //         lastDatapointDate.getUTCFullYear()
+    //       );
+    // }
+
+    return {};
   };
 
   resetState() {

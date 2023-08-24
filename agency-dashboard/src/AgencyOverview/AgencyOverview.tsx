@@ -16,7 +16,10 @@
 // =============================================================================
 
 import MiniBarChart from "@justice-counts/common/components/DataViz/MiniBarChart";
-import { transformDataForBarChart } from "@justice-counts/common/components/DataViz/utils";
+import {
+  splitUtcString,
+  transformDataForBarChart,
+} from "@justice-counts/common/components/DataViz/utils";
 import {
   AgencySystems,
   DataVizAggregateName,
@@ -56,11 +59,11 @@ import {
   SystemChipsContainer,
 } from ".";
 
+/** "Visible Categories" are the categories of metrics we are allowing users to view */
 export type VisibleCategoriesMetadata = {
   [category: string]: { label: string; description: string };
 };
 
-// Only showing Capacity and Cost metrics currently
 const visibleCategoriesMetadata: VisibleCategoriesMetadata = {
   "Capacity and Costs": {
     label: "Understand the Finances",
@@ -195,6 +198,33 @@ export const AgencyOverview = observer(() => {
                           transformedDataForChart.length - 1
                         ].start_date
                       );
+
+                      console.log("firstDatapointDate", firstDatapointDate);
+                      console.log("lastDatapointDate", lastDatapointDate);
+                      console.log(
+                        "firstDatapointDate.toUTCString()",
+                        splitUtcString(firstDatapointDate.toUTCString())
+                      );
+                      console.log(
+                        "lastDatapointDate.toUTCString()",
+                        splitUtcString(lastDatapointDate.toUTCString())
+                      );
+                      // console.log(
+                      //   "firstDatapointDate.getUTCFullYear()",
+                      //   firstDatapointDate.getUTCFullYear()
+                      // );
+                      // console.log(
+                      //   "lastDatapointDate.getUTCFullYear()",
+                      //   lastDatapointDate.getUTCFullYear()
+                      // );
+                      // console.log(
+                      //   "firstDatapointDate.getUTCMonth()",
+                      //   firstDatapointDate.getUTCMonth()
+                      // );
+                      // console.log(
+                      //   "lastDatapointDate.getUTCMonth()",
+                      //   lastDatapointDate.getUTCMonth()
+                      // );
 
                       return (
                         <MetricBox key={metric.key}>
