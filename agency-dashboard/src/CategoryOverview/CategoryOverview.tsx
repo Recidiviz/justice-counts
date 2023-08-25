@@ -146,7 +146,7 @@ export const CategoryOverview = observer(() => {
           <Styled.TopBlock>
             <Button
               label="<- Home"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("..", { relative: "path" })}
               labelColor="blue"
               noHover
               noSidePadding
