@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { incrementMonth } from "@justice-counts/common/components/DataViz/utils";
 import { Datapoint } from "@justice-counts/common/types";
 
 import {
@@ -25,7 +26,6 @@ import {
   transformData,
   transformToRelativePerchanges,
 } from "./utils";
-import { incrementMonth } from "@justice-counts/common/components/DataViz/utils";
 
 const testDatapoints: Datapoint[] = [
   {
