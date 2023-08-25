@@ -21,6 +21,7 @@ export enum environment {
   STAGING = "staging",
   DEVELOPMENT = "development",
 }
+
 interface RequestProps {
   path: string;
   method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";

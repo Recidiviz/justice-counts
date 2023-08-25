@@ -31,6 +31,7 @@ import {
 import {
   isPositiveNumber,
   printDateAsMonthYear,
+  shortMonthsToNumbers,
 } from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
@@ -304,11 +305,15 @@ class AgencyDataStore {
 
     if (firstDatapointDate) {
       const { month, year } = splitUtcString(firstDatapointDate);
-      beginDate = isAnnual ? year : printDateAsMonthYear(+month, +year);
+      beginDate = isAnnual
+        ? year
+        : printDateAsMonthYear(shortMonthsToNumbers[month], +year);
     }
     if (lastDatapointDate) {
       const { month, year } = splitUtcString(lastDatapointDate);
-      endDate = isAnnual ? year : printDateAsMonthYear(+month, +year);
+      endDate = isAnnual
+        ? year
+        : printDateAsMonthYear(shortMonthsToNumbers[month], +year);
     }
 
     return { beginDate, endDate, transformedDataForChart };
