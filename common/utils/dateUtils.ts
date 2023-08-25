@@ -33,6 +33,21 @@ export const monthsByName = [
   "December",
 ];
 
+export const shortMonthsToNumbers: Record<string, number> = {
+  Jan: 0,
+  Feb: 1,
+  Mar: 2,
+  Apr: 3,
+  May: 4,
+  Jun: 5,
+  Jul: 6,
+  Aug: 7,
+  Sep: 8,
+  Oct: 9,
+  Nov: 10,
+  Dec: 11,
+};
+
 /**
  * @returns the year as a string
  * @example "2022"
@@ -165,21 +180,7 @@ export const convertShortDateToUTCDateString = (shortDate: string) => {
   const splitDate = shortDate.split(" ");
   const monthName = splitDate[0];
   const year = Number(splitDate[1]);
-  const shortMonthMap: Record<string, number> = {
-    Jan: 0,
-    Feb: 1,
-    Mar: 2,
-    Apr: 3,
-    May: 4,
-    Jun: 5,
-    Jul: 6,
-    Aug: 7,
-    Sep: 8,
-    Oct: 9,
-    Nov: 10,
-    Dec: 11,
-  };
-  const month = shortMonthMap[monthName];
+  const month = shortMonthsToNumbers[monthName];
 
   return new Date(Date.UTC(year, month)).toUTCString();
 };

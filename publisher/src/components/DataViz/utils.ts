@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { incrementMonth } from "@justice-counts/common/components/DataViz/utils";
 import {
   Datapoint,
   DataVizCountOrPercentageView,
@@ -55,12 +56,6 @@ const abbreviatedMonths = [
   "Dec",
 ];
 
-export const splitUtcString = (utcString: string) => {
-  // the utc string can be split like this:
-  // const [dayOfWeek, day, month, year, time, timezone] = splitUtcString(str);
-  return utcString.split(" ");
-};
-
 export const getDatapointDimensions = (datapoint: Datapoint) =>
   // gets the datapoint object minus the non-dimension keys "start_date", "end_date", "frequency", "dataVizMissingData"
   pickBy(
@@ -79,18 +74,6 @@ export const getSumOfDimensionValues = (datapoint: Datapoint) => {
     sumOfDimensions += value as number;
   });
   return sumOfDimensions;
-};
-
-// write my own month incrementer since Date.setMonth doesn't keep the date the same...
-export const incrementMonth = (date: Date) => {
-  const [, day, month, year, time, timezone] = splitUtcString(
-    date.toUTCString()
-  );
-  return new Date(
-    `${day} ${nextMonthMap.get(month)} ${
-      month === "Dec" ? Number(year) + 1 : year
-    } ${time} ${timezone}`
-  );
 };
 
 export const incrementYear = (date: Date) => {
@@ -257,11 +240,4 @@ export const transformData = (
   }
 
   return fillTimeGapsBetweenDatapoints(transformedData, monthsAgo);
-};
-
-// get insights from data
-
-export const formatDateShort = (dateStr: string) => {
-  const [, , month, year] = splitUtcString(dateStr);
-  return `${abbreviatedMonths.indexOf(month) + 1}/${year}`;
 };

@@ -33,6 +33,9 @@ export const Protected: React.FC<PropsWithChildren> = observer(
     const { agencyDataStore, api } = useStore();
     const { slug } = useParams();
     const isProductionEnv = api.environment === environment.PRODUCTION;
+    const isAllowed =
+      agencyDataStore.agency && isAllowListed(agencyDataStore.agency);
+
     const [loading, setLoading] = useState(true);
 
     useAsyncEffect(async () => {
@@ -57,10 +60,6 @@ export const Protected: React.FC<PropsWithChildren> = observer(
       return <>{children}</>;
     }
 
-    return agencyDataStore.agency && isAllowListed(agencyDataStore.agency) ? (
-      <>{children}</>
-    ) : (
-      <NotFound />
-    );
+    return isAllowed ? <>{children}</> : <NotFound />;
   }
 );

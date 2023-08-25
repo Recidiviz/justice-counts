@@ -75,9 +75,15 @@ const abbreviatedMonthsNumber: { [key: string]: string } = {
 };
 
 export const splitUtcString = (utcString: string) => {
-  // the utc string can be split like this:
-  // const [dayOfWeek, day, month, year, time, timezone] = splitUtcString(str);
-  return utcString.split(" ");
+  const [dayOfWeek, day, month, year, time, timezone] = utcString.split(" ");
+  return {
+    dayOfWeek,
+    day,
+    month,
+    year,
+    time,
+    timezone,
+  };
 };
 
 export const getDatapointDimensions = (datapoint: Datapoint) =>
@@ -125,7 +131,7 @@ export const getSumOfDimensionValues = (datapoint: Datapoint) => {
 
 // write my own month incrementer since Date.setMonth doesn't keep the date the same...
 export const incrementMonth = (date: Date) => {
-  const [, day, month, year, time, timezone] = splitUtcString(
+  const { day, month, year, time, timezone } = splitUtcString(
     date.toUTCString()
   );
   return new Date(
@@ -372,19 +378,19 @@ export const getLatestDateFormatted = (
 ) => {
   const mostRecentDate = data[data.length - 1]?.start_date;
   if (mostRecentDate) {
-    const [, , month, year] = splitUtcString(mostRecentDate);
+    const { month, year } = splitUtcString(mostRecentDate);
     return `${!isAnnual ? `${month} ` : ""}${year}`;
   }
   return "N/A";
 };
 
 export const formatDateShort = (dateStr: string) => {
-  const [, , month, year] = splitUtcString(dateStr);
+  const { month, year } = splitUtcString(dateStr);
   return `${abbreviatedMonths.indexOf(month) + 1}/${year}`;
 };
 
 export const formatDateShortMonthYear = (dateStr: string) => {
-  const [, , month, year] = splitUtcString(dateStr);
+  const { month, year } = splitUtcString(dateStr);
   return `${abbreviatedMonthsNumber[month]}/${year.slice(2)}`;
 };
 
@@ -393,7 +399,7 @@ export const formatExternalLink = (url: string) => {
 };
 
 export const getDatapointBarLabel = (datapoint: Datapoint) => {
-  const [, , month, year] = splitUtcString(datapoint.start_date);
+  const { month, year } = splitUtcString(datapoint.start_date);
   if (abbreviatedMonths.findIndex((m) => m === month) === -1) {
     // something went wrong with finding the previous month, return an error string
     return `invalid date for start date: ${datapoint.start_date}`;

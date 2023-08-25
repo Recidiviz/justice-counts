@@ -17,6 +17,7 @@
 
 import { ReactComponent as JCLogo } from "@justice-counts/common/assets/jc-logo-vector-new.svg";
 import { ReactComponent as JCWelcomeLogo } from "@justice-counts/common/assets/jc-no-background-logo.svg";
+import { observer } from "mobx-react-lite";
 import React from "react";
 
 import { useStore } from "../stores";
@@ -33,7 +34,7 @@ export const WelcomeHeaderBar: React.FC = () => {
   );
 };
 
-export const HeaderBar: React.FC = () => {
+export const HeaderBar: React.FC = observer(() => {
   const { agencyDataStore } = useStore();
 
   const agencyUrl = agencyDataStore.agency?.settings.find(
@@ -61,4 +62,4 @@ export const HeaderBar: React.FC = () => {
       </Styled.LinksBlock>
     </Styled.HeaderBarContainer>
   );
-};
+});

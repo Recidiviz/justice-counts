@@ -16,17 +16,28 @@
 // =============================================================================
 
 import {
+  splitUtcString,
+  transformDataForBarChart,
+} from "@justice-counts/common/components/DataViz/utils";
+import {
   AgencySetting,
+  AgencySystems,
   DatapointsByMetric,
   DataVizAggregateName,
+  DataVizTimeRangesMap,
   Metric,
   UserAgency,
 } from "@justice-counts/common/types";
-import { isPositiveNumber } from "@justice-counts/common/utils";
+import {
+  isPositiveNumber,
+  printDateAsMonthYear,
+  shortMonthsToNumbers,
+} from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
+import { VisibleCategoriesMetadata } from "../AgencyOverview";
 import { AgenciesList } from "../Home";
-import { request } from "../utils/networking";
+import API from "./API";
 
 class AgencyDataStore {
   agency: UserAgency | undefined;
@@ -36,9 +47,25 @@ class AgencyDataStore {
   loading: boolean;
 
   constructor() {
-    makeAutoObservable(this);
+    makeAutoObservable(this, {}, { autoBind: true });
     this.metrics = [];
     this.loading = true;
+  }
+
+  get agencyName(): string | undefined {
+    return this.agency?.name;
+  }
+
+  get agencyDescription(): string {
+    return this.agencySettingsBySettingType.PURPOSE_AND_FUNCTIONS?.value;
+  }
+
+  get agencyHomepageUrl(): string {
+    return this.agencySettingsBySettingType.HOMEPAGE_URL?.value;
+  }
+
+  get agencySystems(): AgencySystems[] | undefined {
+    return this.agency?.systems;
   }
 
   get metricsByKey(): { [metricKey: string]: Metric } {
@@ -161,7 +188,7 @@ class AgencyDataStore {
       runInAction(() => {
         this.loading = true;
       });
-      const response = (await request({
+      const response = (await API.request({
         path: `/api/v2/agencies/${encodeURIComponent(
           agencySlug
         )}/published_data`,
@@ -194,7 +221,7 @@ class AgencyDataStore {
         this.loading = true;
       });
 
-      const response = (await request({
+      const response = (await API.request({
         path: `/api/agencies`,
         method: "GET",
       })) as Response;
@@ -219,6 +246,81 @@ class AgencyDataStore {
       throw error;
     }
   }
+
+  metricHasDatapoints(metricKey: string): boolean {
+    return (
+      this.datapointsByMetric[metricKey].aggregate.filter(
+        (dp) => dp[DataVizAggregateName] !== null
+      ).length > 0
+    );
+  }
+
+  getMetricsWithDataByCategoryByCurrentSystem = (
+    category: string,
+    currentSystem: string | undefined
+  ) => {
+    return this.metricsByCategory[category].filter(
+      (metric) =>
+        metric.system.key === currentSystem &&
+        this.metricHasDatapoints(metric.key)
+    );
+  };
+
+  getMetricsByAvailableCategoriesWithData = (
+    visibleCategoriesMetadata: VisibleCategoriesMetadata
+  ) => {
+    return this.metrics.filter(
+      (metric) =>
+        Object.keys(visibleCategoriesMetadata).includes(metric.category) &&
+        this.metricHasDatapoints(metric.key)
+    );
+  };
+
+  getMiniChartDateRangeAndTransformedData = (metric: Metric) => {
+    /** Get transformed data based on datapoints and time-range */
+    const aggregateDatapoints = this.datapointsByMetric[metric.key].aggregate;
+    const isAnnual = metric.custom_frequency
+      ? metric.custom_frequency === "ANNUAL"
+      : metric.frequency === "ANNUAL";
+    const timeRange = isAnnual
+      ? DataVizTimeRangesMap["5 Years Ago"]
+      : DataVizTimeRangesMap["1 Year Ago"];
+    const transformedDataForChart = transformDataForBarChart(
+      aggregateDatapoints,
+      timeRange,
+      "Count"
+    );
+
+    /** Get first and last datapoint dates to display time-range */
+    const firstDatapointDate = transformedDataForChart[0]?.start_date
+      ? new Date(transformedDataForChart[0].start_date).toUTCString()
+      : undefined;
+    const lastDatapointDate = transformedDataForChart[
+      transformedDataForChart.length - 1
+    ]?.start_date
+      ? new Date(
+          transformedDataForChart[transformedDataForChart.length - 1].start_date
+        ).toUTCString()
+      : undefined;
+
+    let beginDate;
+    let endDate;
+
+    if (firstDatapointDate) {
+      const { month, year } = splitUtcString(firstDatapointDate);
+      beginDate = isAnnual
+        ? year
+        : printDateAsMonthYear(shortMonthsToNumbers[month], +year);
+    }
+    if (lastDatapointDate) {
+      const { month, year } = splitUtcString(lastDatapointDate);
+      endDate = isAnnual
+        ? year
+        : printDateAsMonthYear(shortMonthsToNumbers[month], +year);
+    }
+
+    return { beginDate, endDate, transformedDataForChart };
+  };
 
   resetState() {
     // reset the state

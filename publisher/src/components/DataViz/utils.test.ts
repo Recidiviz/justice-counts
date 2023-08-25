@@ -15,13 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { incrementMonth } from "@justice-counts/common/components/DataViz/utils";
 import { Datapoint } from "@justice-counts/common/types";
 
 import {
   fillTimeGapsBetweenDatapoints,
   filterByTimeRange,
   filterNullDatapoints,
-  incrementMonth,
   incrementYear,
   transformData,
   transformToRelativePerchanges,

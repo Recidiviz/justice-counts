@@ -24,7 +24,7 @@ export const slugify = (str: string): string =>
   str?.replace(/\s/g, "-")?.toLowerCase();
 
 export const getDatapointYear = (datapoint: Datapoint) => {
-  const [, , , year] = splitUtcString(datapoint.start_date);
+  const { year } = splitUtcString(datapoint.start_date);
   return year;
 };
 
