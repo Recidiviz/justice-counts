@@ -277,6 +277,7 @@ class AgencyDataStore {
   };
 
   getMiniChartDateRangeAndTransformedData = (metric: Metric) => {
+    /** Get transformed data based on datapoints and time-range */
     const aggregateDatapoints = this.datapointsByMetric[metric.key].aggregate;
     const isAnnual = metric.custom_frequency
       ? metric.custom_frequency === "ANNUAL"
@@ -289,6 +290,8 @@ class AgencyDataStore {
       timeRange,
       "Count"
     );
+
+    /** Get first and last datapoint dates to display time-range */
     const firstDatapointDate = transformedDataForChart[0]?.start_date
       ? new Date(transformedDataForChart[0].start_date).toUTCString()
       : undefined;
