@@ -42,7 +42,7 @@ export const Protected: React.FC<PropsWithChildren> = observer(
       } catch (error) {
         navigate("/404");
         showToast({
-          message: `No agency found with slugline /${slug}.`,
+          message: `No agency found with path /${slug}.`,
           color: "red",
           timeout: 4000,
         });
