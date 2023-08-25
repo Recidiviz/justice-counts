@@ -27,14 +27,22 @@ const OVERVIEW_WRAPPER_WIDTH = 470;
 export const Wrapper = styled.div`
   width: 100%;
   height: 100%;
-  padding: 56px 24px 100px 24px;
+`;
+
+export const MetricsOverviewWrapper = styled.div<{
+  isSuperagencyNotSuperagencySystem?: boolean;
+}>`
+  display: flex;
+  padding: ${({ isSuperagencyNotSuperagencySystem }) =>
+    isSuperagencyNotSuperagencySystem
+      ? `26px 24px 100px 24px`
+      : `56px 24px 100px 24px`};
 `;
 
 export const OverviewWrapper = styled.div`
-  position: fixed;
   top: ${HEADER_BAR_HEIGHT + 48}px;
   left: 24px;
-  width: ${OVERVIEW_WRAPPER_WIDTH}px;
+  max-width: ${OVERVIEW_WRAPPER_WIDTH}px;
   display: flex;
   flex-direction: column;
 `;
@@ -79,7 +87,7 @@ export const SystemMenuItem = styled.div<{ selected: boolean }>`
 
 export const MetricsWrapper = styled.div`
   width: 100%;
-  padding-left: 550px;
+  padding-left: 80px;
   display: flex;
   flex-direction: column;
   gap: 56px;
