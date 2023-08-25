@@ -491,8 +491,8 @@ export const getAnnualOrMonthlyDataVizTimeRange = (metric: Metric) => {
     : DataVizTimeRangesMap["1 Year Ago"];
 };
 
-export const getDataVizTimeRangeByMetricFrequency =
-  (dataRangeFilter?: string) => (metric: Metric) => {
+export const getDataVizTimeRangeByFilterByMetricFrequency =
+  (dataRangeFilter: string) => (metric: Metric) => {
     if (dataRangeFilter === "recent") {
       return getAnnualOrMonthlyDataVizTimeRange(metric);
     }

@@ -20,7 +20,7 @@ import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share
 import { Button } from "@justice-counts/common/components/Button";
 import { CategoryOverviewLineChart } from "@justice-counts/common/components/DataViz/CategoryOverviewLineChart";
 import MetricsCategoryBarChart from "@justice-counts/common/components/DataViz/MetricsCategoryBarChart";
-import { getDataVizTimeRangeByMetricFrequency } from "@justice-counts/common/components/DataViz/utils";
+import { getDataVizTimeRangeByFilterByMetricFrequency } from "@justice-counts/common/components/DataViz/utils";
 import { useBarChart, useLineChart } from "@justice-counts/common/hooks";
 import { DataVizAggregateName, Metric } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
@@ -78,7 +78,8 @@ export const CategoryOverview = observer(() => {
   });
 
   const { getBarChartData } = useBarChart({
-    getDataVizTimeRange: getDataVizTimeRangeByMetricFrequency(dataRangeFilter),
+    getDataVizTimeRange:
+      getDataVizTimeRangeByFilterByMetricFrequency(dataRangeFilter),
     datapointsByMetric,
   });
 
