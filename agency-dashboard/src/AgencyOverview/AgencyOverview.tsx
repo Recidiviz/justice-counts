@@ -123,11 +123,12 @@ export const AgencyOverview = observer(() => {
 
             {/* Metric Categories (with data only) */}
             {Object.keys(visibleCategoriesMetadata).map((category) => {
-              const metrics = getMetricsWithDataByCategoryByCurrentSystem(
-                category,
-                currentSystem
-              );
-              if (metrics.length === 0) return null;
+              const metricsWithData =
+                getMetricsWithDataByCategoryByCurrentSystem(
+                  category,
+                  currentSystem
+                );
+              if (metricsWithData.length === 0) return null;
               const isCapacityAndCostCategory =
                 category === "Capacity and Costs";
 
@@ -154,7 +155,7 @@ export const AgencyOverview = observer(() => {
                     }
                     hasHover={isCapacityAndCostCategory}
                   >
-                    {metrics.map((metric) => {
+                    {metricsWithData.map((metric) => {
                       const { beginDate, endDate, transformedDataForChart } =
                         getMiniChartDateRangeAndTransformedData(metric);
                       return (
