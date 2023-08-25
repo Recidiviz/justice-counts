@@ -25,6 +25,7 @@ import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { VisibleCategoriesMetadata } from "../CategoryOverview/types";
 import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
@@ -50,7 +51,6 @@ import {
   SystemChip,
   SystemChipsContainer,
 } from ".";
-import { VisibleCategoriesMetadata } from "../CategoryOverview/types";
 
 /** "Visible Categories" are the categories of metrics we are allowing users to view */
 const visibleCategoriesMetadata: VisibleCategoriesMetadata = {

@@ -31,12 +31,12 @@ export type BarChartProps = {
 };
 
 export type BarChartHookProps = Partial<UserAgency> & {
-  getCurrentChartTimeRange: (isAnnual: boolean) => DataVizTimeRange;
+  getDataVizTimeRange: (metric: Metric) => DataVizTimeRange;
   datapointsByMetric: DatapointsByMetric | undefined;
 };
 
 export const useBarChart = ({
-  getCurrentChartTimeRange,
+  getDataVizTimeRange,
   datapointsByMetric,
 }: BarChartHookProps): BarChartProps => {
   const getBarChartData = useCallback(
@@ -44,13 +44,13 @@ export const useBarChart = ({
       if (datapointsByMetric) {
         return transformDataForBarChart(
           datapointsByMetric[metric.key].aggregate as Datapoint[],
-          getCurrentChartTimeRange(metric.custom_frequency === "ANNUAL"),
+          getDataVizTimeRange(metric),
           "Count"
         );
       }
       return [];
     },
-    [getCurrentChartTimeRange, datapointsByMetric]
+    [getDataVizTimeRange, datapointsByMetric]
   );
 
   return {

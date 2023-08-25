@@ -16,6 +16,8 @@
 // =============================================================================
 
 import {
+  getAnnualOrMonthlyDataVizTimeRange,
+  isAnnualMetric,
   splitUtcString,
   transformDataForBarChart,
 } from "@justice-counts/common/components/DataViz/utils";
@@ -24,7 +26,6 @@ import {
   AgencySystems,
   DatapointsByMetric,
   DataVizAggregateName,
-  DataVizTimeRangesMap,
   Metric,
   UserAgency,
 } from "@justice-counts/common/types";
@@ -35,10 +36,10 @@ import {
 } from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
-import { AgenciesList } from "../Home";
-import API from "./API";
 import { VisibleCategoriesMetadata } from "../CategoryOverview/types";
+import { AgenciesList } from "../Home";
 import { downloadFeedData } from "../utils";
+import API from "./API";
 
 class AgencyDataStore {
   agency: UserAgency | undefined;
@@ -298,12 +299,7 @@ class AgencyDataStore {
   getMiniChartDateRangeAndTransformedData = (metric: Metric) => {
     /** Get transformed data based on datapoints and time-range */
     const aggregateDatapoints = this.datapointsByMetric[metric.key].aggregate;
-    const isAnnual = metric.custom_frequency
-      ? metric.custom_frequency === "ANNUAL"
-      : metric.frequency === "ANNUAL";
-    const timeRange = isAnnual
-      ? DataVizTimeRangesMap["5 Years Ago"]
-      : DataVizTimeRangesMap["1 Year Ago"];
+    const timeRange = getAnnualOrMonthlyDataVizTimeRange(metric);
     const transformedDataForChart = transformDataForBarChart(
       aggregateDatapoints,
       timeRange,
@@ -327,13 +323,13 @@ class AgencyDataStore {
 
     if (firstDatapointDate) {
       const { month, year } = splitUtcString(firstDatapointDate);
-      beginDate = isAnnual
+      beginDate = isAnnualMetric(metric)
         ? year
         : printDateAsMonthYear(shortMonthsToNumbers[month], +year);
     }
     if (lastDatapointDate) {
       const { month, year } = splitUtcString(lastDatapointDate);
-      endDate = isAnnual
+      endDate = isAnnualMetric(metric)
         ? year
         : printDateAsMonthYear(shortMonthsToNumbers[month], +year);
     }

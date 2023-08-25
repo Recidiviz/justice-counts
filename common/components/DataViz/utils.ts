@@ -23,6 +23,8 @@ import {
   DataVizAggregateName,
   DataVizCountOrPercentageView,
   DataVizTimeRange,
+  DataVizTimeRangesMap,
+  Metric,
 } from "../../types";
 import { formatNumberInput, printDateAsShortMonthYear } from "../../utils";
 
@@ -476,3 +478,23 @@ export const generateDummyDataForChart = () => {
 // Removes first and last elements in the given array
 export const trimArrayEnds: <T>(arr: T[]) => T[] = <T>(arr: T[]) =>
   pipe(tail, reverse<T>, tail, reverse<T>)(arr);
+
+export const isAnnualMetric = (metric: Metric) => {
+  return metric.custom_frequency
+    ? metric.custom_frequency === "ANNUAL"
+    : metric.frequency === "ANNUAL";
+};
+
+export const getAnnualOrMonthlyDataVizTimeRange = (metric: Metric) => {
+  return isAnnualMetric(metric)
+    ? DataVizTimeRangesMap["5 Years Ago"]
+    : DataVizTimeRangesMap["1 Year Ago"];
+};
+
+export const getDataVizTimeRangeByMetricFrequency =
+  (dataRangeFilter?: string) => (metric: Metric) => {
+    if (dataRangeFilter === "recent") {
+      return getAnnualOrMonthlyDataVizTimeRange(metric);
+    }
+    return DataVizTimeRangesMap.All;
+  };

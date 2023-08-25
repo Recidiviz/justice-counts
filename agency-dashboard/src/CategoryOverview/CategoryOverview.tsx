@@ -20,14 +20,11 @@ import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share
 import { Button } from "@justice-counts/common/components/Button";
 import { CategoryOverviewLineChart } from "@justice-counts/common/components/DataViz/CategoryOverviewLineChart";
 import MetricsCategoryBarChart from "@justice-counts/common/components/DataViz/MetricsCategoryBarChart";
+import { getDataVizTimeRangeByMetricFrequency } from "@justice-counts/common/components/DataViz/utils";
 import { useBarChart, useLineChart } from "@justice-counts/common/hooks";
-import {
-  DataVizAggregateName,
-  DataVizTimeRangesMap,
-  Metric,
-} from "@justice-counts/common/types";
+import { DataVizAggregateName, Metric } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCurrentPng } from "recharts-to-png";
 
@@ -75,27 +72,13 @@ export const CategoryOverview = observer(() => {
   );
   const [hoveredDate, setHoveredDate] = useState<{ [key: string]: string }>({});
 
-  const getCurrentChartTimeRange = useCallback(
-    (isAnnual: boolean) => {
-      if (dataRangeFilter === "recent") {
-        return isAnnual
-          ? DataVizTimeRangesMap["5 Years Ago"]
-          : DataVizTimeRangesMap["1 Year Ago"];
-      }
-      return DataVizTimeRangesMap.All;
-    },
-    [dataRangeFilter]
-  );
-
   const { getLineChartData, getLineChartDimensions } = useLineChart({
-    getCurrentChartTimeRange,
     datapointsByMetric,
     dimensionNamesByMetricAndDisaggregation,
-    dataRangeFilter,
   });
 
   const { getBarChartData } = useBarChart({
-    getCurrentChartTimeRange,
+    getDataVizTimeRange: getDataVizTimeRangeByMetricFrequency(dataRangeFilter),
     datapointsByMetric,
   });
 
@@ -124,6 +107,8 @@ export const CategoryOverview = observer(() => {
             <Styled.CategoryDescription>
               {visibleCategoriesMetadata[category]?.description}
             </Styled.CategoryDescription>
+
+            {/* Download/Share Buttons */}
             <Styled.TopBlockControls>
               <Styled.TopBlockControl onClick={downloadMetricsData}>
                 <DownloadIcon /> Download Data
@@ -152,11 +137,11 @@ export const CategoryOverview = observer(() => {
               </Styled.MetricsFilterButton>
             </Styled.MetricsFilters>
 
+            {/* Metric Information & Data Visualization */}
             <Styled.MetricsWrapper>
               {metricsWithData?.map((metric: Metric) => (
                 <Styled.MetricBox key={metric.key}>
                   <Styled.MetricName>{metric.display_name}</Styled.MetricName>
-                  {/* Metric Description & Data Visualization */}
                   <Styled.MetricDataVizContainer>
                     <Styled.MetricDescriptionBarChartWrapper>
                       <Styled.MetricDescription>
