@@ -18,7 +18,7 @@
 import { showToast } from "@justice-counts/common/components/Toast";
 import { observer } from "mobx-react-lite";
 import React, { PropsWithChildren, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useAsyncEffect from "use-async-effect";
 
 import { Loading } from "../Loading";
@@ -29,6 +29,7 @@ import { isAllowListed } from "../utils/allowlist";
 
 export const Protected: React.FC<PropsWithChildren> = observer(
   ({ children }) => {
+    const navigate = useNavigate();
     const { agencyDataStore, api } = useStore();
     const { slug } = useParams();
     const isProductionEnv = api.environment === environment.PRODUCTION;
@@ -39,8 +40,9 @@ export const Protected: React.FC<PropsWithChildren> = observer(
         await agencyDataStore.fetchAgencyData(slug as string);
         setLoading(false);
       } catch (error) {
+        navigate("/404");
         showToast({
-          message: "Error fetching data.",
+          message: `No agency found with path /${slug}.`,
           color: "red",
           timeout: 4000,
         });

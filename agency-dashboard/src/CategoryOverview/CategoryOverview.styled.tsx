@@ -118,12 +118,13 @@ export const MetricBox = styled.div`
   width: 50%;
   min-width: ${MIN_METRIC_BOX_WIDTH}px;
   padding-top: 16px;
+  padding-bottom: 100px;
   display: flex;
   flex-direction: column;
   align-items: start;
 
   &:not(:first-child) {
-    padding: 100px 96px 56px 0;
+    padding: 100px 96px 100px 0;
   }
 
   @media only screen and (max-width: 1220px) {
