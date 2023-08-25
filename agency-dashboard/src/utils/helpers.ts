@@ -15,6 +15,19 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export type VisibleCategoriesMetadata = {
-  [category: string]: { key?: string; label: string; description: string };
+import { showToast } from "@justice-counts/common/components/Toast";
+
+export const copyCurrentUrlToClipboard = async () => {
+  try {
+    await navigator.clipboard.writeText(window.location.href);
+    showToast({
+      message: "Link copied",
+      color: "blue",
+    });
+  } catch {
+    showToast({
+      message: "Error copying link",
+      color: "blue",
+    });
+  }
 };

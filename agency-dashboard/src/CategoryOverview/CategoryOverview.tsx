@@ -20,16 +20,11 @@ import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share
 import { Button } from "@justice-counts/common/components/Button";
 import { CategoryOverviewLineChart } from "@justice-counts/common/components/DataViz/CategoryOverviewLineChart";
 import MetricsCategoryBarChart from "@justice-counts/common/components/DataViz/MetricsCategoryBarChart";
-import { showToast } from "@justice-counts/common/components/Toast";
+import { getDataVizTimeRangeByFilterByMetricFrequency } from "@justice-counts/common/components/DataViz/utils";
 import { useBarChart, useLineChart } from "@justice-counts/common/hooks";
-import {
-  DataVizAggregateName,
-  DataVizTimeRangesMap,
-  Metric,
-} from "@justice-counts/common/types";
-import { each } from "bluebird";
+import { DataVizAggregateName, Metric } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCurrentPng } from "recharts-to-png";
 
@@ -37,11 +32,11 @@ import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
-import { downloadFeedData } from "../utils/downloadHelpers";
+import { copyCurrentUrlToClipboard } from "../utils";
 import * as Styled from "./CategoryOverview.styled";
-import { CategoryData } from "./types";
+import { VisibleCategoriesMetadata } from "./types";
 
-const categoryData: CategoryData = {
+const visibleCategoriesMetadata: VisibleCategoriesMetadata = {
   "capacity-and-costs": {
     key: "Capacity and Costs",
     label: "Capacity and Costs",
@@ -51,98 +46,53 @@ const categoryData: CategoryData = {
 };
 
 export const CategoryOverview = observer(() => {
+  const navigate = useNavigate();
+  const { agencyDataStore } = useStore();
   const { category } = useParams() as {
     category: string;
   };
-  const navigate = useNavigate();
   const [, { ref }] = useCurrentPng({
     scale: 10,
   });
-  const { agencyDataStore } = useStore();
+
+  const {
+    datapointsByMetric,
+    dimensionNamesByMetricAndDisaggregation,
+    loading,
+    downloadMetricsData,
+    getMetricsWithDataByCategory,
+  } = agencyDataStore;
+  const categoryKey = visibleCategoriesMetadata[category]?.key;
+  const metricsWithData = categoryKey
+    ? getMetricsWithDataByCategory(categoryKey)
+    : undefined;
+
   const [dataRangeFilter, setDataRangeFilter] = useState<"recent" | "all">(
     "all"
   );
   const [hoveredDate, setHoveredDate] = useState<{ [key: string]: string }>({});
 
-  const getCurrentChartTimeRange = useCallback(
-    (isAnnual: boolean) => {
-      if (dataRangeFilter === "recent") {
-        return isAnnual
-          ? DataVizTimeRangesMap["5 Years Ago"]
-          : DataVizTimeRangesMap["1 Year Ago"];
-      }
-      return DataVizTimeRangesMap.All;
-    },
-    [dataRangeFilter]
-  );
-
   const { getLineChartData, getLineChartDimensions } = useLineChart({
-    getCurrentChartTimeRange,
-    datapointsByMetric: agencyDataStore.datapointsByMetric,
-    dimensionNamesByMetricAndDisaggregation:
-      agencyDataStore.dimensionNamesByMetricAndDisaggregation,
-    dataRangeFilter,
+    datapointsByMetric,
+    dimensionNamesByMetricAndDisaggregation,
   });
 
   const { getBarChartData } = useBarChart({
-    getCurrentChartTimeRange,
-    datapointsByMetric: agencyDataStore.datapointsByMetric,
+    getDataVizTimeRange:
+      getDataVizTimeRangeByFilterByMetricFrequency(dataRangeFilter),
+    datapointsByMetric,
   });
 
-  const copyUrlToClipboard = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      showToast({
-        message: "Link copied",
-        color: "blue",
-      });
-    } catch {
-      showToast({
-        message: "Error copying link",
-        color: "blue",
-      });
-    }
-  };
-
-  // this will only download last chart since refs are the same, leave it like that for separate task for download button
-  // TODO
-  // const handleChartDownload = useCallback(async () => {
-  //   const png = await getChartPng();
-  //
-  //   if (png) {
-  //     FileSaver.saveAs(png, "data.png");
-  //   }
-  // }, [getChartPng]);
-
-  const metricsByCategory =
-    agencyDataStore.metricsByCategory[categoryData[category]?.key] || [];
-  const metricsWithData = metricsByCategory.filter(
-    (metric) =>
-      agencyDataStore.datapointsByMetric[metric.key].aggregate.filter(
-        (dp) => dp[DataVizAggregateName] !== null
-      ).length > 0
-  );
-
-  const downloadMetricsData = useCallback(() => {
-    metricsWithData?.forEach((categoryMetric: Metric) => {
-      const metric = agencyDataStore.metricsByKey?.[categoryMetric.key];
-      if (metric && agencyDataStore.agency) {
-        each(
-          metric.filenames,
-          downloadFeedData(metric.system.key, agencyDataStore.agency.id)
-        );
-      }
-    });
-  }, [metricsWithData, agencyDataStore.metricsByKey, agencyDataStore.agency]);
-
-  if (agencyDataStore.loading) {
+  if (loading) {
     return <Loading />;
   }
-  return metricsWithData && categoryData[category] ? (
+
+  return (
     <>
       <HeaderBar />
       <Styled.Wrapper>
         <Styled.Container>
+          {/* Category Information */}
           <Styled.TopBlock>
             <Button
               label="<- Home"
@@ -153,21 +103,26 @@ export const CategoryOverview = observer(() => {
               size="medium"
             />
             <Styled.CategoryTitle>
-              {categoryData[category]?.label}
+              {visibleCategoriesMetadata[category]?.label}
             </Styled.CategoryTitle>
             <Styled.CategoryDescription>
-              {categoryData[category]?.description}
+              {visibleCategoriesMetadata[category]?.description}
             </Styled.CategoryDescription>
+
+            {/* Download/Share Buttons */}
             <Styled.TopBlockControls>
               <Styled.TopBlockControl onClick={downloadMetricsData}>
                 <DownloadIcon /> Download Data
               </Styled.TopBlockControl>
-              <Styled.TopBlockControl onClick={copyUrlToClipboard}>
+              <Styled.TopBlockControl onClick={copyCurrentUrlToClipboard}>
                 <ShareIcon /> Share
               </Styled.TopBlockControl>
             </Styled.TopBlockControls>
           </Styled.TopBlock>
+
+          {/* Metrics + Data Visualizations */}
           <Styled.MetricsBlock>
+            {/* Time Range Filters */}
             <Styled.MetricsFilters>
               <Styled.MetricsFilterButton
                 active={dataRangeFilter === "recent"}
@@ -182,16 +137,19 @@ export const CategoryOverview = observer(() => {
                 All
               </Styled.MetricsFilterButton>
             </Styled.MetricsFilters>
+
+            {/* Metric Information & Data Visualization */}
             <Styled.MetricsWrapper>
-              {metricsWithData.map((metric: Metric) => (
+              {metricsWithData?.map((metric: Metric) => (
                 <Styled.MetricBox key={metric.key}>
                   <Styled.MetricName>{metric.display_name}</Styled.MetricName>
-
                   <Styled.MetricDataVizContainer>
                     <Styled.MetricDescriptionBarChartWrapper>
                       <Styled.MetricDescription>
                         {metric.description}
                       </Styled.MetricDescription>
+
+                      {/* Bar Chart */}
                       <MetricsCategoryBarChart
                         width={620}
                         data={getBarChartData(metric)}
@@ -206,6 +164,8 @@ export const CategoryOverview = observer(() => {
                         ref={ref}
                       />
                     </Styled.MetricDescriptionBarChartWrapper>
+
+                    {/* Breakdown/Disaggregation Line Chart */}
                     {getLineChartData(metric).length > 0 && (
                       <CategoryOverviewLineChart
                         data={getLineChartData(metric)}
@@ -228,5 +188,5 @@ export const CategoryOverview = observer(() => {
       </Styled.Wrapper>
       <Footer />
     </>
-  ) : null;
+  );
 });

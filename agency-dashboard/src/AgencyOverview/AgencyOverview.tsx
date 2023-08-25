@@ -25,6 +25,7 @@ import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { VisibleCategoriesMetadata } from "../CategoryOverview/types";
 import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
@@ -52,10 +53,6 @@ import {
 } from ".";
 
 /** "Visible Categories" are the categories of metrics we are allowing users to view */
-export type VisibleCategoriesMetadata = {
-  [category: string]: { label: string; description: string };
-};
-
 const visibleCategoriesMetadata: VisibleCategoriesMetadata = {
   "Capacity and Costs": {
     label: "Understand the Finances",
@@ -126,11 +123,12 @@ export const AgencyOverview = observer(() => {
 
             {/* Metric Categories (with data only) */}
             {Object.keys(visibleCategoriesMetadata).map((category) => {
-              const metrics = getMetricsWithDataByCategoryByCurrentSystem(
-                category,
-                currentSystem
-              );
-              if (metrics.length === 0) return null;
+              const metricsWithData =
+                getMetricsWithDataByCategoryByCurrentSystem(
+                  category,
+                  currentSystem
+                );
+              if (metricsWithData.length === 0) return null;
               const isCapacityAndCostCategory =
                 category === "Capacity and Costs";
 
@@ -157,7 +155,7 @@ export const AgencyOverview = observer(() => {
                     }
                     hasHover={isCapacityAndCostCategory}
                   >
-                    {metrics.map((metric) => {
+                    {metricsWithData.map((metric) => {
                       const { beginDate, endDate, transformedDataForChart } =
                         getMiniChartDateRangeAndTransformedData(metric);
                       return (

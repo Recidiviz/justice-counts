@@ -16,6 +16,8 @@
 // =============================================================================
 
 import {
+  getAnnualOrMonthlyDataVizTimeRange,
+  isAnnualMetric,
   splitUtcString,
   transformDataForBarChart,
 } from "@justice-counts/common/components/DataViz/utils";
@@ -24,7 +26,6 @@ import {
   AgencySystems,
   DatapointsByMetric,
   DataVizAggregateName,
-  DataVizTimeRangesMap,
   Metric,
   UserAgency,
 } from "@justice-counts/common/types";
@@ -35,8 +36,9 @@ import {
 } from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
-import { VisibleCategoriesMetadata } from "../AgencyOverview";
+import { VisibleCategoriesMetadata } from "../CategoryOverview/types";
 import { AgenciesList } from "../Home";
+import { downloadFeedData } from "../utils";
 import API from "./API";
 
 class AgencyDataStore {
@@ -247,6 +249,18 @@ class AgencyDataStore {
     }
   }
 
+  downloadMetricsData(): void {
+    this.metrics?.forEach((categoryMetric: Metric) => {
+      const metric = this.metricsByKey?.[categoryMetric.key];
+      if (metric && this.agency) {
+        const agencyId = this.agency.id;
+        metric.filenames.forEach((filename) =>
+          downloadFeedData(metric.system.key, agencyId)(filename)
+        );
+      }
+    });
+  }
+
   metricHasDatapoints(metricKey: string): boolean {
     return (
       this.datapointsByMetric[metricKey].aggregate.filter(
@@ -255,14 +269,20 @@ class AgencyDataStore {
     );
   }
 
+  getMetricsWithDataByCategory = (category: string) => {
+    return this.metricsByCategory[category]?.filter((metric) =>
+      this.metricHasDatapoints(metric.key)
+    );
+  };
+
   getMetricsWithDataByCategoryByCurrentSystem = (
     category: string,
     currentSystem: string | undefined
   ) => {
-    return this.metricsByCategory[category].filter(
-      (metric) =>
-        metric.system.key === currentSystem &&
-        this.metricHasDatapoints(metric.key)
+    const metricsWithDataByCategory =
+      this.getMetricsWithDataByCategory(category);
+    return metricsWithDataByCategory.filter(
+      (metric) => metric.system.key === currentSystem
     );
   };
 
@@ -279,12 +299,7 @@ class AgencyDataStore {
   getMiniChartDateRangeAndTransformedData = (metric: Metric) => {
     /** Get transformed data based on datapoints and time-range */
     const aggregateDatapoints = this.datapointsByMetric[metric.key].aggregate;
-    const isAnnual = metric.custom_frequency
-      ? metric.custom_frequency === "ANNUAL"
-      : metric.frequency === "ANNUAL";
-    const timeRange = isAnnual
-      ? DataVizTimeRangesMap["5 Years Ago"]
-      : DataVizTimeRangesMap["1 Year Ago"];
+    const timeRange = getAnnualOrMonthlyDataVizTimeRange(metric);
     const transformedDataForChart = transformDataForBarChart(
       aggregateDatapoints,
       timeRange,
@@ -308,13 +323,13 @@ class AgencyDataStore {
 
     if (firstDatapointDate) {
       const { month, year } = splitUtcString(firstDatapointDate);
-      beginDate = isAnnual
+      beginDate = isAnnualMetric(metric)
         ? year
         : printDateAsMonthYear(shortMonthsToNumbers[month], +year);
     }
     if (lastDatapointDate) {
       const { month, year } = splitUtcString(lastDatapointDate);
-      endDate = isAnnual
+      endDate = isAnnualMetric(metric)
         ? year
         : printDateAsMonthYear(shortMonthsToNumbers[month], +year);
     }

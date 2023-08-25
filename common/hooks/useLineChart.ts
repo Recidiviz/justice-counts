@@ -18,7 +18,6 @@
 import {
   Datapoint,
   DatapointsByMetric,
-  DataVizTimeRange,
   DimensionNamesByMetricAndDisaggregation,
   Metric,
   UserAgency,
@@ -34,19 +33,15 @@ export type LineChartProps = {
 };
 
 export type LineChartHookProps = Partial<UserAgency> & {
-  getCurrentChartTimeRange: (isAnnual: boolean) => DataVizTimeRange;
   datapointsByMetric: DatapointsByMetric | undefined;
   dimensionNamesByMetricAndDisaggregation:
     | DimensionNamesByMetricAndDisaggregation
     | undefined;
-  dataRangeFilter: "recent" | "all";
 };
 
 export const useLineChart = ({
-  getCurrentChartTimeRange,
   datapointsByMetric,
   dimensionNamesByMetricAndDisaggregation,
-  dataRangeFilter,
 }: LineChartHookProps): LineChartProps => {
   const getLineChartData = useCallback(
     (metric: Metric) => {
