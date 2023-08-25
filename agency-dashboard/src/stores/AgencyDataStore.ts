@@ -35,9 +35,10 @@ import {
 } from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
-import { VisibleCategoriesMetadata } from "../AgencyOverview";
 import { AgenciesList } from "../Home";
 import API from "./API";
+import { VisibleCategoriesMetadata } from "../CategoryOverview/types";
+import { downloadFeedData } from "../utils";
 
 class AgencyDataStore {
   agency: UserAgency | undefined;
@@ -247,6 +248,18 @@ class AgencyDataStore {
     }
   }
 
+  downloadMetricsData(): void {
+    this.metrics?.forEach((categoryMetric: Metric) => {
+      const metric = this.metricsByKey?.[categoryMetric.key];
+      if (metric && this.agency) {
+        const agencyId = this.agency.id;
+        metric.filenames.forEach((filename) =>
+          downloadFeedData(metric.system.key, agencyId)(filename)
+        );
+      }
+    });
+  }
+
   metricHasDatapoints(metricKey: string): boolean {
     return (
       this.datapointsByMetric[metricKey].aggregate.filter(
@@ -255,14 +268,20 @@ class AgencyDataStore {
     );
   }
 
+  getMetricsWithDataByCategory = (category: string) => {
+    return this.metricsByCategory[category]?.filter((metric) =>
+      this.metricHasDatapoints(metric.key)
+    );
+  };
+
   getMetricsWithDataByCategoryByCurrentSystem = (
     category: string,
     currentSystem: string | undefined
   ) => {
-    return this.metricsByCategory[category].filter(
-      (metric) =>
-        metric.system.key === currentSystem &&
-        this.metricHasDatapoints(metric.key)
+    const metricsWithDataByCategory =
+      this.getMetricsWithDataByCategory(category);
+    return metricsWithDataByCategory.filter(
+      (metric) => metric.system.key === currentSystem
     );
   };
 

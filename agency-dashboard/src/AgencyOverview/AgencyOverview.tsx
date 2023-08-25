@@ -50,12 +50,9 @@ import {
   SystemChip,
   SystemChipsContainer,
 } from ".";
+import { VisibleCategoriesMetadata } from "../CategoryOverview/types";
 
 /** "Visible Categories" are the categories of metrics we are allowing users to view */
-export type VisibleCategoriesMetadata = {
-  [category: string]: { label: string; description: string };
-};
-
 const visibleCategoriesMetadata: VisibleCategoriesMetadata = {
   "Capacity and Costs": {
     label: "Understand the Finances",
