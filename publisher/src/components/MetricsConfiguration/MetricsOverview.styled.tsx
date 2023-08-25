@@ -108,28 +108,10 @@ export const MetricsSectionTitle = styled.div<{
     if (textColor === "red") {
       return palette.solid.red;
     }
-    if (textColor === "blue") {
-      return palette.solid.blue;
-    }
     return palette.highlight.grey9;
   }};
 
   margin-bottom: 12px;
-`;
-
-export const DisclaimerText = styled.div<{
-  textColor?: string;
-  width?: number;
-}>`
-  ${typography.sizeCSS.medium};
-  font-weight: 400;
-  ${({ width }) => width && `width: ${width}%;`};
-
-  &:before {
-    content: "*";
-    position: relative;
-    color: ${palette.solid.red};
-  }
 `;
 
 export const MetricItem = styled.div`
