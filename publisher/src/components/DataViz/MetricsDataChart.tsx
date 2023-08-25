@@ -70,7 +70,7 @@ export const MetricsDataChart: React.FC = observer(() => {
   const currentSystem = systemSearchParam || currentAgency?.systems[0];
   const currentMetric = currentSystem
     ? metricsBySystem[currentSystem]?.find(
-        (m) => m.key === (metricSearchParam || enabledMetrics[0].key)
+        (m) => m.key === (metricSearchParam || enabledMetrics[0]?.key)
       ) || metricsBySystem[currentSystem]?.[0]
     : undefined;
   const metricName = currentMetric?.display_name || "";
