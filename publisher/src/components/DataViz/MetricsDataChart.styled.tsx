@@ -204,24 +204,31 @@ export const MobileDatapointsControls = styled.div`
   }
 `;
 
-export const CurrentMetricsSystem = styled.div`
+export const CurrentMetricsSystem = styled.div<{
+  isSuperagency?: boolean;
+}>`
   display: none;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    position: fixed;
-    top: ${HEADER_BAR_HEIGHT}px;
     display: block;
     width: calc(100% - 48px);
     ${typography.sizeCSS.medium};
     text-transform: capitalize;
     padding-bottom: 12px;
     padding-top: 24px;
+    position: fixed;
+    top: ${({ isSuperagency }) =>
+      isSuperagency
+        ? `${HEADER_BAR_HEIGHT + 76}px;`
+        : `${HEADER_BAR_HEIGHT}px`};
     z-index: 2;
     background-color: ${palette.solid.white};
   }
 `;
 
-export const MetricsViewDropdownContainerFixed = styled.div`
+export const MetricsViewDropdownContainerFixed = styled.div<{
+  isSuperagency?: boolean;
+}>`
   display: none;
   position: fixed;
   top: ${HEADER_BAR_HEIGHT + 24 + 36}px;
@@ -235,6 +242,8 @@ export const MetricsViewDropdownContainerFixed = styled.div`
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: flex;
+    ${({ isSuperagency }) =>
+      isSuperagency && `top: ${HEADER_BAR_HEIGHT + 135}px;`};
   }
 `;
 

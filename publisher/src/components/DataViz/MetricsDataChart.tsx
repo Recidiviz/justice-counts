@@ -42,6 +42,7 @@ import { formatSystemName } from "../../utils";
 import { ReactComponent as SwitchToChartIcon } from "../assets/switch-to-chart-icon.svg";
 import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-data-table-icon.svg";
 import { Loading } from "../Loading";
+import { DisclaimerBanner } from "../primitives";
 import { useSettingsSearchParams } from "../Settings";
 import ConnectedDatapointsView from "./ConnectedDatapointsView";
 import * as Styled from "./MetricsDataChart.styled";
@@ -184,6 +185,12 @@ export const MetricsDataChart: React.FC = observer(() => {
 
   return (
     <Styled.MetricsViewContainer>
+      {isSuperagency && (
+        <DisclaimerBanner fixed>
+          If you would like to view data for the agencies you manage, please
+          switch to specific agency you would like to view data for.
+        </DisclaimerBanner>
+      )}
       <Styled.MetricsViewPanel>
         {/* List Of Metrics */}
         <Styled.PanelContainerLeft>
@@ -269,10 +276,12 @@ export const MetricsDataChart: React.FC = observer(() => {
         {/* Data Visualization */}
         <Styled.PanelContainerRight>
           <Styled.MobileDatapointsControls>
-            <Styled.CurrentMetricsSystem>
+            <Styled.CurrentMetricsSystem isSuperagency={isSuperagency}>
               {formatSystemName(currentSystem)}
             </Styled.CurrentMetricsSystem>
-            <Styled.MetricsViewDropdownContainerFixed>
+            <Styled.MetricsViewDropdownContainerFixed
+              isSuperagency={isSuperagency}
+            >
               <Dropdown
                 label={
                   <>
@@ -310,12 +319,6 @@ export const MetricsDataChart: React.FC = observer(() => {
               </Styled.DisclaimerText>
             </Styled.MobileDisclaimerContainer>
           </Styled.MobileDatapointsControls>
-          {isSuperagency && (
-            <Styled.DisclaimerText textColor="orange" topSpacing>
-              If you would like to view data for the agencies you manage, please
-              switch to specific agency you would like to view data for.
-            </Styled.DisclaimerText>
-          )}
           <Styled.PanelRightTopButtonsContainer>
             {dataView === ChartView.Chart &&
               !!datapointsStore.datapointsByMetric[currentMetric.key] && (
