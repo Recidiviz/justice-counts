@@ -186,7 +186,7 @@ export const MetricsDataChart: React.FC = observer(() => {
   return (
     <Styled.MetricsViewContainer>
       {isSuperagency && (
-        <DisclaimerBanner fixed>
+        <DisclaimerBanner>
           If you would like to view data for the agencies you manage, please
           switch to specific agency you would like to view data for.
         </DisclaimerBanner>
