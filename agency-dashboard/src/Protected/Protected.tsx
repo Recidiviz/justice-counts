@@ -25,7 +25,7 @@ import { Loading } from "../Loading";
 import { NotFound } from "../NotFound";
 import { useStore } from "../stores";
 import { environment } from "../stores/API";
-import { isAllowListed } from "../utils/allowlist";
+import { isDenyListed } from "../utils/denylist";
 
 export const Protected: React.FC<PropsWithChildren> = observer(
   ({ children }) => {
@@ -33,8 +33,8 @@ export const Protected: React.FC<PropsWithChildren> = observer(
     const { agencyDataStore, api } = useStore();
     const { slug } = useParams();
     const isProductionEnv = api.environment === environment.PRODUCTION;
-    const isAllowed =
-      agencyDataStore.agency && isAllowListed(agencyDataStore.agency);
+    const isDenied =
+      agencyDataStore.agency && isDenyListed(agencyDataStore.agency);
 
     const [loading, setLoading] = useState(true);
 
@@ -60,6 +60,6 @@ export const Protected: React.FC<PropsWithChildren> = observer(
       return <>{children}</>;
     }
 
-    return isAllowed ? <>{children}</> : <NotFound />;
+    return isDenied ? <NotFound /> : <>{children}</>;
   }
 );

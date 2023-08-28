@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./allowlist";
+export * from "./denylist";
 export * from "./downloadHelpers";
 export * from "./formatting";
 export * from "./helpers";
