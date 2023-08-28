@@ -32,7 +32,7 @@ import { UserAgency } from "@justice-counts/common/types";
  *   - the purpose of this hardcoded list is to keep the existing agencies' dashboards hidden until they explicitly decide to
  *     go live with their dashboard
  */
-export const DENY_LIST = [
+export const DENY_LIST = new Set([
   "22nd judicial circuit court",
   "aberdeen police department",
   "adams county sheriff's office",
@@ -576,9 +576,9 @@ export const DENY_LIST = [
   "worthington police department",
   "wyoming department of corrections",
   "yavapai county district attorney",
-];
+]);
 
 export const isDenyListed = ({ name }: UserAgency): boolean | undefined => {
   const lowercaseName = name.toLocaleLowerCase();
-  return DENY_LIST.includes(lowercaseName);
+  return DENY_LIST.has(lowercaseName);
 };

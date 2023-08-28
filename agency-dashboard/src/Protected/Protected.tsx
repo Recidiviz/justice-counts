@@ -25,7 +25,7 @@ import { Loading } from "../Loading";
 import { NotFound } from "../NotFound";
 import { useStore } from "../stores";
 import { environment } from "../stores/API";
-import { isDenyListed } from "../utils/allowlist";
+import { isDenyListed } from "../utils/denylist";
 
 export const Protected: React.FC<PropsWithChildren> = observer(
   ({ children }) => {
