@@ -593,15 +593,3 @@ export const isDenyListed = ({ name }: UserAgency): boolean | undefined => {
   const lowercaseName = name.toLocaleLowerCase();
   return DENY_LIST[lowercaseName];
 };
-
-// DELETE after verifying these agencies are properly copied over to new deny list
-// export const ALLOW_LIST: Record<string, boolean> = {
-//   "Puerto Rico Department of Corrections": true,
-//   "Louisiana Department Of Public Safety & Corrections": true,
-//   "Nebraska Department Of Correctional Services": true,
-//   "New Hampshire Department Of Corrections": true,
-//   "Massachusetts Department of Correction": true,
-//   "New York State Department of Corrections And Community Supervision": true,
-//   "Wisconsin Department of Corrections": true,
-//   "Johnson County Prosecutor's Office": true,
-// };
