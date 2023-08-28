@@ -18,17 +18,12 @@
 import {
   HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
-  MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
 const INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH = 314;
-const STICKY_HEADER_WITH_PADDING_HEIGHT = 48;
-const DROPDOWN_WITH_MARGIN_HEIGHT = 79;
-const FIXED_HEADER_WITH_DROPDOWN_HEIGHT = 92;
-const FIXED_HEADER_WITHOUT_DROPDOWN_HEIGHT = 24;
 
 export const NoEnabledMetricsMessage = styled.div`
   min-height: 100%;
@@ -59,13 +54,6 @@ export const MetricsViewPanel = styled.div<{
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     justify-content: unset;
-  }
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    padding-top: ${({ hasSystemsDropdown }) =>
-      hasSystemsDropdown
-        ? `${FIXED_HEADER_WITH_DROPDOWN_HEIGHT + 24}px`
-        : `${FIXED_HEADER_WITHOUT_DROPDOWN_HEIGHT + 24}px`};
   }
 `;
 
@@ -216,7 +204,6 @@ export const CurrentMetricsSystem = styled.div<{
     text-transform: capitalize;
     padding-bottom: 12px;
     padding-top: 24px;
-    position: fixed;
     top: ${({ isSuperagency }) =>
       isSuperagency
         ? `${HEADER_BAR_HEIGHT + 76}px;`
@@ -247,6 +234,12 @@ export const MetricsViewDropdownContainerFixed = styled.div<{
   }
 `;
 
+export const MetricsViewDropdownContainer = styled(
+  MetricsViewDropdownContainerFixed
+)`
+  position: unset;
+`;
+
 export const MetricsViewDropdownLabel = styled.div`
   width: 100%;
   display: flex;
@@ -274,8 +267,7 @@ export const MobileDisclaimerContainer = styled(DisclaimerContainer)`
   height: auto;
   justify-content: flex-start;
   padding-bottom: 24px;
-  padding-top: ${STICKY_HEADER_WITH_PADDING_HEIGHT +
-  DROPDOWN_WITH_MARGIN_HEIGHT}px;
+  padding-top: 16px;
 `;
 
 export const PanelRightTopButtonsContainer = styled.div`

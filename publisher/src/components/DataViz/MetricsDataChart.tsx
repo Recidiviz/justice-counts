@@ -279,9 +279,7 @@ export const MetricsDataChart: React.FC = observer(() => {
             <Styled.CurrentMetricsSystem isSuperagency={isSuperagency}>
               {formatSystemName(currentSystem)}
             </Styled.CurrentMetricsSystem>
-            <Styled.MetricsViewDropdownContainerFixed
-              isSuperagency={isSuperagency}
-            >
+            <Styled.MetricsViewDropdownContainer isSuperagency={isSuperagency}>
               <Dropdown
                 label={
                   <>
@@ -301,7 +299,7 @@ export const MetricsDataChart: React.FC = observer(() => {
                 caretPosition={agencyMetrics.length > 1 ? "left" : undefined}
                 fullWidth
               />
-            </Styled.MetricsViewDropdownContainerFixed>
+            </Styled.MetricsViewDropdownContainer>
             <Styled.MobileDisclaimerContainer>
               <Styled.DisclaimerTitle>Note</Styled.DisclaimerTitle>
               <Styled.DisclaimerText>
