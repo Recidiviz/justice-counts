@@ -51,7 +51,7 @@ const NameContainer = styled.span`
 
 export const DisclaimerBanner = styled.div`
   ${typography.sizeCSS.normal}
-  width: 100;
+  width: 100%;
   height: 54px;
   background: ${palette.solid.blue};
   color: ${palette.solid.white};
@@ -64,13 +64,12 @@ export const DisclaimerBanner = styled.div`
   a:hover,
   a:visited {
     color: ${palette.solid.white};
-    display: block;
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     flex-direction: column;
     height: fit-content;
-    padding: 16px 0;
+    padding: 16px;
   }
 `;
 

@@ -18,17 +18,12 @@
 import {
   HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
-  MIN_TABLET_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
 const INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH = 314;
-const STICKY_HEADER_WITH_PADDING_HEIGHT = 48;
-const DROPDOWN_WITH_MARGIN_HEIGHT = 79;
-const FIXED_HEADER_WITH_DROPDOWN_HEIGHT = 92;
-const FIXED_HEADER_WITHOUT_DROPDOWN_HEIGHT = 24;
 
 export const NoEnabledMetricsMessage = styled.div`
   min-height: 100%;
@@ -59,13 +54,6 @@ export const MetricsViewPanel = styled.div<{
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     justify-content: unset;
-  }
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    padding-top: ${({ hasSystemsDropdown }) =>
-      hasSystemsDropdown
-        ? `${FIXED_HEADER_WITH_DROPDOWN_HEIGHT + 24}px`
-        : `${FIXED_HEADER_WITHOUT_DROPDOWN_HEIGHT + 24}px`};
   }
 `;
 
@@ -161,8 +149,14 @@ export const DisclaimerTitle = styled.div`
   ${typography.sizeCSS.small}
 `;
 
-export const DisclaimerText = styled.div`
+export const DisclaimerText = styled.div<{
+  textColor?: string;
+  topSpacing?: boolean;
+}>`
   ${typography.sizeCSS.normal}
+  ${({ topSpacing }) => topSpacing && `padding-top: 24px;`};
+  color: ${({ textColor }) =>
+    textColor === "orange" ? palette.solid.orange : palette.solid.darkgrey};
 `;
 
 export const DisclaimerLink = styled.span`
@@ -198,24 +192,30 @@ export const MobileDatapointsControls = styled.div`
   }
 `;
 
-export const CurrentMetricsSystem = styled.div`
+export const CurrentMetricsSystem = styled.div<{
+  isSuperagency?: boolean;
+}>`
   display: none;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
-    position: fixed;
-    top: ${HEADER_BAR_HEIGHT}px;
     display: block;
     width: calc(100% - 48px);
     ${typography.sizeCSS.medium};
     text-transform: capitalize;
     padding-bottom: 12px;
     padding-top: 24px;
+    top: ${({ isSuperagency }) =>
+      isSuperagency
+        ? `${HEADER_BAR_HEIGHT + 76}px;`
+        : `${HEADER_BAR_HEIGHT}px`};
     z-index: 2;
     background-color: ${palette.solid.white};
   }
 `;
 
-export const MetricsViewDropdownContainerFixed = styled.div`
+export const MetricsViewDropdownContainerFixed = styled.div<{
+  isSuperagency?: boolean;
+}>`
   display: none;
   position: fixed;
   top: ${HEADER_BAR_HEIGHT + 24 + 36}px;
@@ -229,7 +229,15 @@ export const MetricsViewDropdownContainerFixed = styled.div`
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: flex;
+    ${({ isSuperagency }) =>
+      isSuperagency && `top: ${HEADER_BAR_HEIGHT + 135}px;`};
   }
+`;
+
+export const MetricsViewDropdownContainer = styled(
+  MetricsViewDropdownContainerFixed
+)`
+  position: unset;
 `;
 
 export const MetricsViewDropdownLabel = styled.div`
@@ -259,8 +267,7 @@ export const MobileDisclaimerContainer = styled(DisclaimerContainer)`
   height: auto;
   justify-content: flex-start;
   padding-bottom: 24px;
-  padding-top: ${STICKY_HEADER_WITH_PADDING_HEIGHT +
-  DROPDOWN_WITH_MARGIN_HEIGHT}px;
+  padding-top: 16px;
 `;
 
 export const PanelRightTopButtonsContainer = styled.div`

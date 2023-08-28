@@ -42,6 +42,7 @@ import { formatSystemName } from "../../utils";
 import { ReactComponent as SwitchToChartIcon } from "../assets/switch-to-chart-icon.svg";
 import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-data-table-icon.svg";
 import { Loading } from "../Loading";
+import { DisclaimerBanner } from "../primitives";
 import { useSettingsSearchParams } from "../Settings";
 import ConnectedDatapointsView from "./ConnectedDatapointsView";
 import * as Styled from "./MetricsDataChart.styled";
@@ -78,6 +79,7 @@ export const MetricsDataChart: React.FC = observer(() => {
     currentMetric?.custom_frequency || currentMetric?.frequency;
   const systemBelongsToAgency =
     currentSystem && currentAgency?.systems.includes(currentSystem);
+  const isSuperagency = userStore.isAgencySuperagency(agencyId);
 
   const handleChartDownload = useCallback(
     async (system: string, metric: string) => {
@@ -183,11 +185,18 @@ export const MetricsDataChart: React.FC = observer(() => {
 
   return (
     <Styled.MetricsViewContainer>
+      {isSuperagency && (
+        <DisclaimerBanner>
+          If you would like to view data for the agencies you manage, please
+          switch to specific agency you would like to view data for.
+        </DisclaimerBanner>
+      )}
       <Styled.MetricsViewPanel>
         {/* List Of Metrics */}
         <Styled.PanelContainerLeft>
           <Styled.SystemsContainer>
             {Object.entries(metricsBySystem).map(([system, metrics]) => {
+              if (isSuperagency && system !== "SUPERAGENCY") return;
               const currEnabledMetrics = metrics.filter(
                 (metric) => metric.enabled
               );
@@ -267,10 +276,10 @@ export const MetricsDataChart: React.FC = observer(() => {
         {/* Data Visualization */}
         <Styled.PanelContainerRight>
           <Styled.MobileDatapointsControls>
-            <Styled.CurrentMetricsSystem>
+            <Styled.CurrentMetricsSystem isSuperagency={isSuperagency}>
               {formatSystemName(currentSystem)}
             </Styled.CurrentMetricsSystem>
-            <Styled.MetricsViewDropdownContainerFixed>
+            <Styled.MetricsViewDropdownContainer isSuperagency={isSuperagency}>
               <Dropdown
                 label={
                   <>
@@ -290,7 +299,7 @@ export const MetricsDataChart: React.FC = observer(() => {
                 caretPosition={agencyMetrics.length > 1 ? "left" : undefined}
                 fullWidth
               />
-            </Styled.MetricsViewDropdownContainerFixed>
+            </Styled.MetricsViewDropdownContainer>
             <Styled.MobileDisclaimerContainer>
               <Styled.DisclaimerTitle>Note</Styled.DisclaimerTitle>
               <Styled.DisclaimerText>
