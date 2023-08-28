@@ -17,6 +17,7 @@
 
 import { AgencySystems } from "@justice-counts/common/types";
 import { frequencyString } from "@justice-counts/common/utils/helperUtils";
+import { observer } from "mobx-react-lite";
 import React from "react";
 import { useParams } from "react-router-dom";
 
@@ -24,10 +25,11 @@ import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/bold-right-arrow-icon.svg";
+import { DisclaimerBanner } from "../primitives";
 import { useSettingsSearchParams } from "../Settings";
 import * as Styled from "./MetricsOverview.styled";
 
-export function MetricsOverview() {
+export const MetricsOverview = observer(() => {
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
   const { agencyId } = useParams() as { agencyId: string };
@@ -48,6 +50,13 @@ export function MetricsOverview() {
 
   const currentAgency = userStore.getAgency(agencyId);
   const currentSystem = systemSearchParam || currentAgency?.systems[0];
+
+  const isSuperagency = userStore.isAgencySuperagency(agencyId);
+
+  const isSuperagencySystem = currentSystem === "SUPERAGENCY";
+
+  const isSuperagencyNotSuperagencySystem =
+    isSuperagency && !isSuperagencySystem;
 
   const showSystems =
     currentAgency?.systems && currentAgency?.systems?.length > 1;
@@ -74,101 +83,114 @@ export function MetricsOverview() {
 
   return (
     <Styled.Wrapper>
-      <Styled.OverviewWrapper>
-        <Styled.OverviewHeader>Metric Settings</Styled.OverviewHeader>
-        <Styled.OverviewDescription>
-          Click on each metric to edit the availability of the metric and
-          relevant breakdown categories, as well as the definitions of each.
-        </Styled.OverviewDescription>
-        <Styled.SystemsList>
-          {showSystems &&
-            currentAgency?.systems
-              .filter((system) => getMetricsBySystem(system)?.length !== 0)
-              .map((system) => {
-                return (
-                  <Styled.SystemMenuItem
-                    key={system}
-                    selected={currentSystem === system}
-                    onClick={() => handleSystemClick(system)}
-                  >
-                    {formatSystemName(system, {
-                      allUserSystems: currentAgency?.systems,
-                    })}
-                  </Styled.SystemMenuItem>
-                );
-              })}
-        </Styled.SystemsList>
-      </Styled.OverviewWrapper>
-      <Styled.MetricsWrapper>
-        {hasActionRequiredMetrics && (
-          <Styled.MetricsSection>
-            <Styled.MetricsSectionTitle textColor="red">
-              Action required
-            </Styled.MetricsSectionTitle>
-            {actionRequiredMetrics?.map(({ key, metric }) => (
-              <Styled.MetricItem
-                key={key}
-                onClick={() =>
-                  setSettingsSearchParams({
-                    system: currentSystem,
-                    metric: key,
-                  })
-                }
-              >
-                <Styled.MetricItemName>{metric.label}</Styled.MetricItemName>
-                <RightArrowIcon />
-              </Styled.MetricItem>
-            ))}
-          </Styled.MetricsSection>
-        )}
-        {hasAvailableMetrics && (
-          <Styled.MetricsSection>
-            <Styled.MetricsSectionTitle>
-              Available Metrics
-            </Styled.MetricsSectionTitle>
-            {availableMetrics?.map(({ key, metric }) => (
-              <Styled.MetricItem
-                key={key}
-                onClick={() =>
-                  setSettingsSearchParams({
-                    system: currentSystem,
-                    metric: key,
-                  })
-                }
-              >
-                <Styled.MetricItemName>
-                  {metric.label}
-                  <span>
-                    {frequencyString(metric.customFrequency)?.toLowerCase()}
-                  </span>
-                </Styled.MetricItemName>
-                <RightArrowIcon />
-              </Styled.MetricItem>
-            ))}
-          </Styled.MetricsSection>
-        )}
-        {hasUnavailableMetrics && (
-          <Styled.MetricsSection>
-            <Styled.MetricsSectionTitle>
-              Unavailable Metrics
-            </Styled.MetricsSectionTitle>
-            {unavailableMetrics?.map(({ key, metric }) => (
-              <Styled.MetricItem
-                key={key}
-                onClick={() =>
-                  setSettingsSearchParams({
-                    system: currentSystem,
-                    metric: key,
-                  })
-                }
-              >
-                <Styled.MetricItemName>{metric.label}</Styled.MetricItemName>
-                <RightArrowIcon />
-              </Styled.MetricItem>
-            ))}
-          </Styled.MetricsSection>
-        )}
-      </Styled.MetricsWrapper>
+      {isSuperagencyNotSuperagencySystem && (
+        <DisclaimerBanner>
+          Once settings have been edited, please reach out to&nbsp;
+          <a href="mailto:justice-counts-support@csg.org">
+            justice-counts-support@csg.org
+          </a>
+          &nbsp; to apply these settings to other agencies.
+        </DisclaimerBanner>
+      )}
+      <Styled.MetricsOverviewWrapper
+        isSuperagencyNotSuperagencySystem={isSuperagencyNotSuperagencySystem}
+      >
+        <Styled.OverviewWrapper>
+          <Styled.OverviewHeader>Metric Settings</Styled.OverviewHeader>
+          <Styled.OverviewDescription>
+            Click on each metric to edit the availability of the metric and
+            relevant breakdown categories, as well as the definitions of each.
+          </Styled.OverviewDescription>
+          <Styled.SystemsList>
+            {showSystems &&
+              currentAgency?.systems
+                .filter((system) => getMetricsBySystem(system)?.length !== 0)
+                .map((system) => {
+                  return (
+                    <Styled.SystemMenuItem
+                      key={system}
+                      selected={currentSystem === system}
+                      onClick={() => handleSystemClick(system)}
+                    >
+                      {formatSystemName(system, {
+                        allUserSystems: currentAgency?.systems,
+                      })}
+                    </Styled.SystemMenuItem>
+                  );
+                })}
+          </Styled.SystemsList>
+        </Styled.OverviewWrapper>
+        <Styled.MetricsWrapper>
+          {hasActionRequiredMetrics && (
+            <Styled.MetricsSection>
+              <Styled.MetricsSectionTitle textColor="red">
+                Action required
+              </Styled.MetricsSectionTitle>
+              {actionRequiredMetrics?.map(({ key, metric }) => (
+                <Styled.MetricItem
+                  key={key}
+                  onClick={() =>
+                    setSettingsSearchParams({
+                      system: currentSystem,
+                      metric: key,
+                    })
+                  }
+                >
+                  <Styled.MetricItemName>{metric.label}</Styled.MetricItemName>
+                  <RightArrowIcon />
+                </Styled.MetricItem>
+              ))}
+            </Styled.MetricsSection>
+          )}
+          {hasAvailableMetrics && (
+            <Styled.MetricsSection>
+              <Styled.MetricsSectionTitle>
+                Available Metrics
+              </Styled.MetricsSectionTitle>
+              {availableMetrics?.map(({ key, metric }) => (
+                <Styled.MetricItem
+                  key={key}
+                  onClick={() =>
+                    setSettingsSearchParams({
+                      system: currentSystem,
+                      metric: key,
+                    })
+                  }
+                >
+                  <Styled.MetricItemName>
+                    {metric.label}
+                    <span>
+                      {frequencyString(metric.customFrequency)?.toLowerCase()}
+                    </span>
+                  </Styled.MetricItemName>
+                  <RightArrowIcon />
+                </Styled.MetricItem>
+              ))}
+            </Styled.MetricsSection>
+          )}
+          {hasUnavailableMetrics && (
+            <Styled.MetricsSection>
+              <Styled.MetricsSectionTitle>
+                Unavailable Metrics
+              </Styled.MetricsSectionTitle>
+              {unavailableMetrics?.map(({ key, metric }) => (
+                <Styled.MetricItem
+                  key={key}
+                  onClick={() =>
+                    setSettingsSearchParams({
+                      system: currentSystem,
+                      metric: key,
+                    })
+                  }
+                >
+                  <Styled.MetricItemName>{metric.label}</Styled.MetricItemName>
+                  <RightArrowIcon />
+                </Styled.MetricItem>
+              ))}
+            </Styled.MetricsSection>
+          )}
+        </Styled.MetricsWrapper>
+      </Styled.MetricsOverviewWrapper>
     </Styled.Wrapper>
   );
-}
+});

@@ -15,6 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  MIN_TABLET_WIDTH,
+  palette,
+  typography,
+} from "@justice-counts/common/components/GlobalStyles";
 import { AgencyTeamMemberRole } from "@justice-counts/common/types";
 import React from "react";
 import styled from "styled-components/macro";
@@ -42,6 +47,31 @@ const StyledRecidivizAdmin = styled(RecidivizAdmin)`
 
 const NameContainer = styled.span`
   padding: 0 !important;
+`;
+
+export const DisclaimerBanner = styled.div`
+  ${typography.sizeCSS.normal}
+  width: 100;
+  height: 54px;
+  background: ${palette.solid.blue};
+  color: ${palette.solid.white};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  a,
+  a:hover,
+  a:visited {
+    color: ${palette.solid.white};
+    display: block;
+  }
+
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    flex-direction: column;
+    height: fit-content;
+    padding: 16px 0;
+  }
 `;
 
 export const TeamMemberNameWithBadge: React.FC<{
