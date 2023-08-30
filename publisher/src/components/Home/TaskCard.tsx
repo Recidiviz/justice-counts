@@ -16,14 +16,14 @@
 // =============================================================================
 
 import { Tooltip } from "@justice-counts/common/components/Tooltip";
+import { observer } from "mobx-react-lite";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+import { useStore } from "../../stores";
 import HomeStore from "../../stores/HomeStore";
 import { taskCardLabelsActionLinks, TaskCardMetadata } from ".";
 import * as Styled from "./Home.styled";
-import { useStore } from "../../stores";
-import { observer } from "mobx-react-lite";
 
 export const TaskCard: React.FC<{
   metadata: TaskCardMetadata;
