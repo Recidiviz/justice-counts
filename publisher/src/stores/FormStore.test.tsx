@@ -15,22 +15,109 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencyTeamMemberRole } from "@justice-counts/common/types";
+import {
+  AgencyTeamMemberRole,
+  Datapoint,
+  Metric,
+} from "@justice-counts/common/types";
 import { runInAction } from "mobx";
 
-import { rootStore } from ".";
+import { StoreProvider, rootStore } from ".";
+import { BrowserRouter } from "react-router-dom";
+import DataEntryForm from "../components/Reports/DataEntryForm";
+import React from "react";
+import { screen, render, fireEvent, waitFor } from "@testing-library/react";
+import ReportDataEntry from "../components/Reports/ReportDataEntry";
+import DataEntryReview from "../components/Reports/DataEntryReview";
+
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useParams: () => ({
+    id: "0",
+    agencyId: "22",
+  }),
+}));
 
 const { reportStore, formStore } = rootStore;
+
+const mockAgencyID = 22;
+const mockReportID = 0;
+const mockProsecutionMetric: Metric = {
+  key: "PROSECUTION_STAFF",
+  system: {
+    key: "PROSECUTION",
+    display_name: "Prosecution",
+  },
+  display_name: "Staff",
+  description: "Measures the number of full-time staff employed by the agency.",
+  reporting_note: "DOCs report only correctional institution staff.",
+  enabled: true,
+  value: 1000,
+  unit: "people",
+  category: "CAPACITY_AND_COST",
+  label: "Total Staff",
+  filenames: ["total_staff"],
+  definitions: [
+    {
+      term: "full-time staff",
+      definition: "definition of full-time staff",
+    },
+  ],
+  contexts: [
+    {
+      key: "PROGRAMMATIC_OR_MEDICAL_STAFF",
+      display_name: "Does this include programmatic or medical staff?",
+      reporting_note: null,
+      required: false,
+      type: "MULTIPLE_CHOICE",
+      multiple_choice_options: ["YES", "NO"],
+      value: null,
+    },
+  ],
+  disaggregations: [
+    {
+      key: "PROSECUTION_STAFF_TYPE",
+      display_name: "Staff Types",
+      dimensions: [
+        {
+          key: "SUPPORT",
+          label: "Support",
+          value: null,
+          reporting_note: "Staff: Support",
+        },
+      ],
+      required: false,
+      helper_text: "Break down the metric by NIBRS offense types.",
+      should_sum_to_total: false,
+    },
+  ],
+};
+const mockProsecutionDatapoint: Datapoint = {
+  agency_name: "Prosecution",
+  dimension_display_name: null,
+  disaggregation_display_name: null,
+  end_date: "Sun, 01 Jan 2023 00:00:00 GMT",
+  frequency: "ANNUAL",
+  id: 0,
+  // is_published: false,
+  dataVizMissingData: 0,
+  metric_definition_key: "PROSECUTION_TOTAL_STAFF",
+  metric_display_name: "Staff",
+  old_value: null,
+  report_id: 3854,
+  start_date: "Sat, 01 Jan 2022 00:00:00 GMT",
+  value: 1000,
+};
 
 beforeEach(() => {
   runInAction(() => {
     reportStore.reportOverviews = {
-      0: {
+      [mockReportID]: {
         id: 0,
-        agency_id: 0,
+        agency_id: mockAgencyID,
         year: 2022,
-        month: 4,
-        frequency: "MONTHLY",
+        month: 1,
+        frequency: "ANNUAL",
         last_modified_at: "April 12 2022",
         last_modified_at_timestamp: null,
         editors: [
@@ -40,61 +127,7 @@ beforeEach(() => {
         status: "DRAFT",
       },
     };
-
-    reportStore.reportMetrics = {
-      0: [
-        {
-          key: "PROSECUTION_STAFF",
-          system: {
-            key: "LAW_ENFORCEMENT",
-            display_name: "Law Enforcement",
-          },
-          display_name: "Staff",
-          description:
-            "Measures the number of full-time staff employed by the agency.",
-          reporting_note: "DOCs report only correctional institution staff.",
-          value: 1000,
-          unit: "people",
-          category: "CAPACITY_AND_COST",
-          label: "Total Staff",
-          filenames: ["total_staff"],
-          definitions: [
-            {
-              term: "full-time staff",
-              definition: "definition of full-time staff",
-            },
-          ],
-          contexts: [
-            {
-              key: "PROGRAMMATIC_OR_MEDICAL_STAFF",
-              display_name: "Does this include programmatic or medical staff?",
-              reporting_note: null,
-              required: false,
-              type: "MULTIPLE_CHOICE",
-              multiple_choice_options: ["YES", "NO"],
-              value: null,
-            },
-          ],
-          disaggregations: [
-            {
-              key: "PROSECUTION_STAFF_TYPE",
-              display_name: "Staff Types",
-              dimensions: [
-                {
-                  key: "SUPPORT",
-                  label: "Support",
-                  value: null,
-                  reporting_note: "Staff: Support",
-                },
-              ],
-              required: false,
-              helper_text: "Break down the metric by NIBRS offense types.",
-              should_sum_to_total: false,
-            },
-          ],
-        },
-      ],
-    };
+    reportStore.storeMetricDetails(0, [mockProsecutionMetric]);
   });
 });
 
@@ -159,4 +192,81 @@ test("updatedReportValues maps all updated (and not updated) input values into r
       },
     ])
   );
+});
+
+test("Hmm", async () => {
+  runInAction(() => {
+    reportStore.loadingReportData = false;
+    reportStore.getMultipleReportsWithDatapoints = jest.fn(
+      (reportIDs: number[], currentAgencyId: string) =>
+        Promise.resolve([
+          {
+            id: 0,
+            agency_id: mockAgencyID,
+            frequency: "ANNUAL",
+            metrics: [mockProsecutionMetric],
+            datapoints: [mockProsecutionDatapoint],
+            year: 2022,
+            month: 1,
+            last_modified_at: "April 12 2022",
+            last_modified_at_timestamp: null,
+            editors: [
+              { name: "Editor #1", role: AgencyTeamMemberRole.AGENCY_ADMIN },
+              { name: "Editor #2", role: AgencyTeamMemberRole.CONTRIBUTOR },
+            ],
+            status: "DRAFT",
+          },
+        ])
+    );
+  });
+  /**
+   * Load the data entry form
+   * Change value
+   * Go to Publish Review
+   * Check that the value has not changed in the form store
+   * Publish
+   * Check that the value has not changed
+   */
+
+  const { rerender } = render(
+    <BrowserRouter>
+      <StoreProvider>
+        <ReportDataEntry />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const totalStaffInputNode: HTMLInputElement =
+    screen.getByLabelText("Total Staff");
+  const updatedValue = "123777";
+
+  expect(totalStaffInputNode.value).toBe("1,000");
+
+  fireEvent.change(totalStaffInputNode, { target: { value: updatedValue } });
+
+  expect(totalStaffInputNode).toBeInTheDocument();
+  expect(totalStaffInputNode.value).toBe("123,777");
+  expect(totalStaffInputNode.value.replace(",", "")).toBe(
+    formStore.metricsValues[mockReportID]["PROSECUTION_STAFF"].value
+  );
+
+  const reviewButtonNode = screen.getByText("Review");
+
+  fireEvent.click(reviewButtonNode);
+
+  // rerender(
+  //   <BrowserRouter>
+  //     <StoreProvider>
+  //       <DataEntryReview />
+  //     </StoreProvider>
+  //   </BrowserRouter>
+  // );
+
+  console.log(
+    "hi",
+    formStore.metricsValues[mockReportID]["PROSECUTION_STAFF"].value
+  );
+  await waitFor(() => screen.getByText("Review & Publish"));
+  await waitFor(() => screen.getAllByText("Staff"));
+  // const x = screen.getByText("Review & Publish");
 });
