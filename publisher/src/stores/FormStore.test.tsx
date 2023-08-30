@@ -15,20 +15,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import {
-  AgencyTeamMemberRole,
-  Datapoint,
-  Metric,
-} from "@justice-counts/common/types";
+import { AgencyTeamMemberRole, Metric } from "@justice-counts/common/types";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
-
-import { StoreProvider, rootStore } from ".";
-import { BrowserRouter } from "react-router-dom";
-import DataEntryForm from "../components/Reports/DataEntryForm";
 import React from "react";
-import { screen, render, fireEvent, waitFor } from "@testing-library/react";
-import ReportDataEntry from "../components/Reports/ReportDataEntry";
+import { BrowserRouter } from "react-router-dom";
+
 import DataEntryReview from "../components/Reports/DataEntryReview";
+import ReportDataEntry from "../components/Reports/ReportDataEntry";
+import { rootStore, StoreProvider } from ".";
 
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
@@ -91,22 +86,6 @@ const mockProsecutionMetric: Metric = {
       should_sum_to_total: false,
     },
   ],
-};
-const mockProsecutionDatapoint: Datapoint = {
-  agency_name: "Prosecution",
-  dimension_display_name: null,
-  disaggregation_display_name: null,
-  end_date: "Sun, 01 Jan 2023 00:00:00 GMT",
-  frequency: "ANNUAL",
-  id: 0,
-  // is_published: false,
-  dataVizMissingData: 0,
-  metric_definition_key: "PROSECUTION_TOTAL_STAFF",
-  metric_display_name: "Staff",
-  old_value: null,
-  report_id: 3854,
-  start_date: "Sat, 01 Jan 2022 00:00:00 GMT",
-  value: 1000,
 };
 
 beforeEach(() => {
@@ -217,7 +196,7 @@ test("The form store has the same updated value between data entry form and data
   expect(totalStaffInputNode).toBeInTheDocument();
   expect(totalStaffInputNode.value).toBe("123,777");
   expect(totalStaffInputNode.value.replace(",", "")).toBe(
-    formStore.metricsValues[mockReportID]["PROSECUTION_STAFF"].value
+    formStore.metricsValues[mockReportID].PROSECUTION_STAFF.value
   );
 
   render(
@@ -228,7 +207,7 @@ test("The form store has the same updated value between data entry form and data
     </BrowserRouter>
   );
 
-  expect(formStore.metricsValues[mockReportID]["PROSECUTION_STAFF"].value).toBe(
+  expect(formStore.metricsValues[mockReportID].PROSECUTION_STAFF.value).toBe(
     updatedValue
   );
 });
