@@ -194,40 +194,10 @@ test("updatedReportValues maps all updated (and not updated) input values into r
   );
 });
 
-test("Hmm", async () => {
+test("The form store has the same updated value between data entry form and data entry review and does not revert to previously saved values", async () => {
   runInAction(() => {
     reportStore.loadingReportData = false;
-    reportStore.getMultipleReportsWithDatapoints = jest.fn(
-      (reportIDs: number[], currentAgencyId: string) =>
-        Promise.resolve([
-          {
-            id: 0,
-            agency_id: mockAgencyID,
-            frequency: "ANNUAL",
-            metrics: [mockProsecutionMetric],
-            datapoints: [mockProsecutionDatapoint],
-            year: 2022,
-            month: 1,
-            last_modified_at: "April 12 2022",
-            last_modified_at_timestamp: null,
-            editors: [
-              { name: "Editor #1", role: AgencyTeamMemberRole.AGENCY_ADMIN },
-              { name: "Editor #2", role: AgencyTeamMemberRole.CONTRIBUTOR },
-            ],
-            status: "DRAFT",
-          },
-        ])
-    );
   });
-  /**
-   * Load the data entry form
-   * Change value
-   * Go to Publish Review
-   * Check that the value has not changed in the form store
-   * Publish
-   * Check that the value has not changed
-   */
-
   const { rerender } = render(
     <BrowserRouter>
       <StoreProvider>
@@ -250,23 +220,15 @@ test("Hmm", async () => {
     formStore.metricsValues[mockReportID]["PROSECUTION_STAFF"].value
   );
 
-  const reviewButtonNode = screen.getByText("Review");
-
-  fireEvent.click(reviewButtonNode);
-
-  // rerender(
-  //   <BrowserRouter>
-  //     <StoreProvider>
-  //       <DataEntryReview />
-  //     </StoreProvider>
-  //   </BrowserRouter>
-  // );
-
-  console.log(
-    "hi",
-    formStore.metricsValues[mockReportID]["PROSECUTION_STAFF"].value
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <DataEntryReview />
+      </StoreProvider>
+    </BrowserRouter>
   );
-  await waitFor(() => screen.getByText("Review & Publish"));
-  await waitFor(() => screen.getAllByText("Staff"));
-  // const x = screen.getByText("Review & Publish");
+
+  expect(formStore.metricsValues[mockReportID]["PROSECUTION_STAFF"].value).toBe(
+    updatedValue
+  );
 });
