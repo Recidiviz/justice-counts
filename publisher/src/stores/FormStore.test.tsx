@@ -198,7 +198,7 @@ test("The form store has the same updated value between data entry form and data
   runInAction(() => {
     reportStore.loadingReportData = false;
   });
-  const { rerender } = render(
+  render(
     <BrowserRouter>
       <StoreProvider>
         <ReportDataEntry />
