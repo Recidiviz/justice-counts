@@ -185,18 +185,20 @@ test("The form store has the same updated value between data entry form and data
     </BrowserRouter>
   );
 
+  // Confirm existing Total Staff value is 1,000
   const totalStaffInputNode: HTMLInputElement =
     screen.getByLabelText("Total Staff");
-  const updatedValue = "123777";
-
+  expect(totalStaffInputNode).toBeInTheDocument();
   expect(totalStaffInputNode.value).toBe("1,000");
 
+  // Update Total Staff value to be 123,777
+  const updatedValue = "123,777";
   fireEvent.change(totalStaffInputNode, { target: { value: updatedValue } });
 
-  expect(totalStaffInputNode).toBeInTheDocument();
-  expect(totalStaffInputNode.value).toBe("123,777");
-  expect(totalStaffInputNode.value.replace(",", "")).toBe(
-    formStore.metricsValues[mockReportID].PROSECUTION_STAFF.value
+  // Check that the updated value is 123,777 and it matches the value in the FormStore
+  expect(totalStaffInputNode.value).toBe(updatedValue);
+  expect(formStore.metricsValues[mockReportID].PROSECUTION_STAFF.value).toBe(
+    updatedValue
   );
 
   render(
@@ -207,6 +209,8 @@ test("The form store has the same updated value between data entry form and data
     </BrowserRouter>
   );
 
+  // Check after rendering the DataEntryReview page that the updated value did not change
+  // in the FormStore and that the FormStore reflects the updated value
   expect(formStore.metricsValues[mockReportID].PROSECUTION_STAFF.value).toBe(
     updatedValue
   );
