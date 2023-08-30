@@ -22,11 +22,14 @@ import { useNavigate } from "react-router-dom";
 import HomeStore from "../../stores/HomeStore";
 import { taskCardLabelsActionLinks, TaskCardMetadata } from ".";
 import * as Styled from "./Home.styled";
+import { useStore } from "../../stores";
+import { observer } from "mobx-react-lite";
 
 export const TaskCard: React.FC<{
   metadata: TaskCardMetadata;
   isSuperagency?: boolean;
-}> = ({ metadata, isSuperagency }) => {
+}> = observer(({ metadata, isSuperagency }) => {
+  const { formStore } = useStore();
   const navigate = useNavigate();
   const {
     key,
@@ -86,7 +89,17 @@ export const TaskCard: React.FC<{
                       }
                     );
                   }
-                  if (isPublishAction) {
+                  if (isPublishAction && recordID) {
+                    if (!formStore.hasFormStoreValuesLoaded(recordID)) {
+                      /**
+                       * If there are no values loaded in the FormStore for metrics and breakdowns, then we can
+                       * assume the user has not gone through the DataEntryForm and made updates, and is going directly
+                       * from the Task Card to the Publish Review page. If that is the case, the previously saved values
+                       * will be the latest values - and we will neecd to load and validate them in the FormStore in order
+                       * to render the validation checkmarks in the metrics list in the review page.
+                       */
+                      formStore.validatePreviouslySavedInputs(recordID);
+                    }
                     return navigate(
                       `./${action.path + recordID + reviewPagePath}`
                     );
@@ -110,4 +123,4 @@ export const TaskCard: React.FC<{
       )}
     </Styled.TaskCardContainer>
   );
-};
+});
