@@ -335,7 +335,6 @@ const DataEntryForm: React.FC<{
                         key={metric.key}
                         id={metric.key}
                         ref={(e: HTMLDivElement) => metricsRef.current?.push(e)}
-                        data-testid="hello"
                       >
                         <MetricSectionTitleWrapper>
                           <MetricSectionTitle>
