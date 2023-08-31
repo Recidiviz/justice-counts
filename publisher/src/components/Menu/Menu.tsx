@@ -180,6 +180,7 @@ const Menu: React.FC = () => {
                 alignment="left"
                 caretPosition="right"
                 highlightIcon={<Styled.TargetIcon />}
+                withTypeaheadSearch
               />
             </Styled.MenuItem>
           </Styled.AgencyDropdownWrapper>

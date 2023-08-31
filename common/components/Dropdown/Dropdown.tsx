@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
+import React, { useState } from "react";
 
 import dropdownCaret from "../../assets/dropdown-caret.svg";
 import * as Styled from "./Dropdown.styled";
@@ -29,7 +29,7 @@ import {
 
 type DropdownProps = {
   label: string | React.ReactNode;
-  options?: DropdownOption[];
+  options: DropdownOption[];
   size?: ToggleSize;
   disabled?: boolean;
   hover?: ToggleHover;
@@ -37,6 +37,7 @@ type DropdownProps = {
   alignment?: DropdownMenuAlignment;
   fullWidth?: boolean;
   highlightIcon?: React.ReactNode;
+  withTypeaheadSearch?: boolean;
 };
 
 /**
@@ -61,7 +62,19 @@ export function Dropdown({
   alignment,
   fullWidth,
   highlightIcon,
+  withTypeaheadSearch,
 }: DropdownProps) {
+  const [filteredOptions, setFilteredOptions] = useState(options);
+  const [inputValue, setInputValue] = useState("");
+  const optionsToRender =
+    withTypeaheadSearch && inputValue !== "" ? filteredOptions : options;
+  const handleFilteredOptions = (val: string) => {
+    const regex = new RegExp(`${val}`, `im`);
+    setFilteredOptions(() =>
+      options.filter((option) => regex.test(option.label as string))
+    );
+  };
+
   return (
     <Styled.CustomDropdown>
       <Styled.CustomDropdownToggle
@@ -92,41 +105,65 @@ export function Dropdown({
         alignment={alignment}
         menuFullWidth={fullWidth}
       >
-        {options && options.length > 1
-          ? options.map(
-              ({
-                key,
-                label: optionLabel,
-                onClick,
-                color,
-                disabled: optionDisabled,
-                highlight,
-                noHover,
-                icon,
-              }) => (
-                <Styled.CustomDropdownMenuItem
-                  key={key}
-                  onClick={onClick}
-                  color={color}
-                  disabled={optionDisabled}
-                  noHover={noHover}
-                  highlight={highlight && !highlightIcon}
+        <>
+          {withTypeaheadSearch && (
+            <Styled.CustomInputWrapper>
+              <Styled.CustomInput
+                id="dropdown-typeahead"
+                name="dropdown-typeahead"
+                type="text"
+                placeholder="Search for Agency"
+                value={inputValue}
+                onChange={(e) => {
+                  setInputValue(e.target.value);
+                  handleFilteredOptions(e.target.value);
+                }}
+              />
+            </Styled.CustomInputWrapper>
+          )}
+
+          {optionsToRender?.map(
+            ({
+              key,
+              label: optionLabel,
+              onClick,
+              color,
+              disabled: optionDisabled,
+              highlight,
+              noHover,
+              icon,
+            }) => (
+              <Styled.CustomDropdownMenuItem
+                key={key}
+                onClick={onClick}
+                color={color}
+                disabled={optionDisabled}
+                noHover={noHover}
+                highlight={highlight && !highlightIcon}
+              >
+                <Styled.OptionLabelWrapper
+                  highlightIcon={Boolean(highlightIcon)}
                 >
-                  <Styled.OptionLabelWrapper
-                    highlightIcon={Boolean(highlightIcon)}
-                  >
-                    {/**
-                     * icon: a label icon that's always visible in the dropdown menu
-                     * highlightIcon: an icon that indicates (and is only visible on) the menu option that is currently active
-                     */}
-                    {icon}
-                    {optionLabel}
-                    {highlight && highlightIcon}
-                  </Styled.OptionLabelWrapper>
-                </Styled.CustomDropdownMenuItem>
-              )
+                  {/**
+                   * icon: a label icon that's always visible in the dropdown menu
+                   * highlightIcon: an icon that indicates (and is only visible on) the menu option that is currently active
+                   */}
+                  {icon}
+                  {optionLabel}
+                  {highlight && highlightIcon}
+                </Styled.OptionLabelWrapper>
+              </Styled.CustomDropdownMenuItem>
             )
-          : undefined}
+          )}
+
+          {withTypeaheadSearch && filteredOptions.length === 0 && (
+            <Styled.NoResultsFoundWrapper>
+              <Styled.OptionLabelWrapper>
+                No Results Found
+              </Styled.OptionLabelWrapper>
+            </Styled.NoResultsFoundWrapper>
+          )}
+        </>
       </Styled.CustomDropdownMenu>
     </Styled.CustomDropdown>
   );
