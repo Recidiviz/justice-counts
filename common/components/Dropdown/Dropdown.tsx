@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import dropdownCaret from "../../assets/dropdown-caret.svg";
 import * as Styled from "./Dropdown.styled";
@@ -66,14 +66,19 @@ export function Dropdown({
 }: DropdownProps) {
   const [filteredOptions, setFilteredOptions] = useState(options);
   const [inputValue, setInputValue] = useState("");
-  const optionsToRender =
-    withTypeaheadSearch && inputValue !== "" ? filteredOptions : options;
-  const handleFilteredOptions = (val: string) => {
-    const regex = new RegExp(`${val}`, `im`);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const updateFilteredOptions = (val: string) => {
+    const regex = new RegExp(`${val}`, `i`);
     setFilteredOptions(() =>
       options.filter((option) => regex.test(option.label as string))
     );
   };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => inputRef.current?.focus(), 0);
+    return () => clearTimeout(timeout);
+  }, [inputValue]);
 
   return (
     <Styled.CustomDropdown>
@@ -109,20 +114,21 @@ export function Dropdown({
           {withTypeaheadSearch && (
             <Styled.CustomInputWrapper>
               <Styled.CustomInput
+                ref={inputRef}
                 id="dropdown-typeahead"
                 name="dropdown-typeahead"
-                type="text"
+                type="search"
                 placeholder="Search for Agency"
                 value={inputValue}
                 onChange={(e) => {
                   setInputValue(e.target.value);
-                  handleFilteredOptions(e.target.value);
+                  updateFilteredOptions(e.target.value);
                 }}
               />
             </Styled.CustomInputWrapper>
           )}
 
-          {optionsToRender?.map(
+          {filteredOptions?.map(
             ({
               key,
               label: optionLabel,
