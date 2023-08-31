@@ -71,11 +71,14 @@ export function Dropdown({
   const updateFilteredOptions = (val: string) => {
     const regex = new RegExp(`${val}`, `i`);
     setFilteredOptions(() =>
-      options.filter((option) => regex.test(option.label as string))
+      options.filter(
+        (option) => typeof option.label === "string" && regex.test(option.label)
+      )
     );
   };
 
   useEffect(() => {
+    /** Helps maintain focus on input element as the dropdown list re-renders */
     const timeout = setTimeout(() => inputRef.current?.focus(), 0);
     return () => clearTimeout(timeout);
   }, [inputValue]);
