@@ -48,7 +48,7 @@ export const TaskCard: React.FC<{
       {actionLinks && (
         <Styled.TaskCardActionLinksWrapper>
           {actionLinks.map((action) => {
-            // Exclude "Upload Data" action link from Superagency data entry metric task cards
+            /** Exclude "Upload Data" action link from Superagency data entry metric task cards */
             if (
               isSuperagency &&
               action.label === taskCardLabelsActionLinks.uploadData.label
@@ -95,7 +95,7 @@ export const TaskCard: React.FC<{
                        * If there are no values loaded in the FormStore for metrics and breakdowns, then we can
                        * assume the user has not gone through the DataEntryForm and made updates, and is going directly
                        * from the Task Card to the Publish Review page. If that is the case, the previously saved values
-                       * will be the latest values - and we will neecd to load and validate them in the FormStore in order
+                       * will be the latest values - and we will need to load and validate them in the FormStore in order
                        * to render the validation checkmarks in the metrics list in the review page.
                        */
                       formStore.validatePreviouslySavedInputs(recordID);
