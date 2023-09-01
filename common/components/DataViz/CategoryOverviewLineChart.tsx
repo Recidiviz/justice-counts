@@ -19,7 +19,7 @@ import {
   BreakdownsTitle,
   Container,
 } from "@justice-counts/agency-dashboard/src/CategoryOverview/CategoryOverview.styled";
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, useState } from "react";
 import {
   CartesianGrid,
   Legend,
@@ -106,10 +106,17 @@ export function CategoryOverviewLineChart({
   setHoveredDate,
   metricKey,
 }: LineChartProps) {
+  const [dimensionsToColor] = useState<any>(() => {
+    return dimensions.reduce((acc, dim, idx) => {
+      acc[dim] = Object.values(palette.dataViz)[idx];
+      return acc;
+    }, {});
+  });
   const { legendData, referenceLineHeight } = useLineChartLegend(
     data,
     dimensions,
-    hoveredDate
+    hoveredDate,
+    dimensionsToColor
   );
 
   return (
@@ -159,7 +166,8 @@ export function CategoryOverviewLineChart({
           <Line
             key={dimension}
             dataKey={dimension}
-            stroke={Object.values(palette.dataViz)[index]}
+            stroke={dimensionsToColor[dimension]}
+            // stroke={Object.values(palette.dataViz)[index]}
             type="monotone"
           />
         ))}

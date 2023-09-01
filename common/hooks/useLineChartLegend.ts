@@ -22,13 +22,14 @@ import { Datapoint } from "../types";
 export const useLineChartLegend = (
   datapoints: Datapoint[],
   dimensions: string[],
-  hoveredDate: string | null
+  hoveredDate: string | null,
+  dimensionsToColor: any
 ) => {
   const transformDataForLegend = (datapoint: Datapoint): LegendData => {
     const dimensionsValueFill = dimensions.reduce((acc, dim, idx) => {
       acc[dim] = {
         value: datapoint[dim] as number,
-        fill: Object.values(palette.dataViz)[idx],
+        fill: dimensionsToColor[dim],
       };
       return acc;
     }, {} as LegendData);

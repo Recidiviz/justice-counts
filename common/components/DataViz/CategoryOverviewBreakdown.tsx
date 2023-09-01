@@ -19,7 +19,6 @@ import { renderPercentText } from "@justice-counts/agency-dashboard/src/utils/fo
 import React, { FunctionComponent } from "react";
 
 // eslint-disable-next-line no-restricted-imports
-import { printDateAsShortMonthYear, shortMonthsToNumbers } from "../../utils";
 import { palette } from "../GlobalStyles";
 import {
   Container,
@@ -31,12 +30,10 @@ import {
 } from "./CategoryOverviewBreakdown.styles";
 import { LineChartBreakdownProps } from "./types";
 import { splitUtcString } from "./utils";
-import { toJS } from "mobx";
 
 export const CategoryOverviewBreakdown: FunctionComponent<
   LineChartBreakdownProps
 > = ({ data, isFundingOrExpenses, dimensions, hoveredDate }) => {
-  console.log("data in CategoryOverviewBreakdown", toJS(data));
   const { month, year } = splitUtcString(String(data.start_date));
   const displayDate = `${month} ${year}`;
   const totalDimensionValues = dimensions.reduce((acc, dim) => {
