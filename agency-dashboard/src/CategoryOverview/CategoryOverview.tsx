@@ -28,7 +28,6 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCurrentPng } from "recharts-to-png";
 
-import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
@@ -186,7 +185,6 @@ export const CategoryOverview = observer(() => {
           </Styled.MetricsBlock>
         </Styled.Container>
       </Styled.Wrapper>
-      <Footer />
     </>
   );
 });

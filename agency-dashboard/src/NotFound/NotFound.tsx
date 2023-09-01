@@ -16,7 +16,6 @@
 // =============================================================================
 import React from "react";
 
-import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
 import { NotFoundText, NotFoundTitle, NotFoundWrapper } from ".";
 
@@ -36,6 +35,5 @@ export const NotFound = () => (
         </a>
       </NotFoundText>
     </NotFoundWrapper>
-    <Footer />
   </>
 );
