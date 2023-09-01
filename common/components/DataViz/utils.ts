@@ -307,6 +307,7 @@ export const transformDataForBarChart = (
 
 // transforms data into the right display format for the data viz chart
 export const transformDataForLineChart = (
+  // REPLACE RAMDA
   datapoints: { [disaggregation: string]: { [start_date: string]: Datapoint } },
   disaggregationProp: keyof Datapoint
 ) => {
@@ -474,10 +475,6 @@ export const generateDummyDataForChart = () => {
   }
   return dummyData;
 };
-
-// Removes first and last elements in the given array
-export const trimArrayEnds: <T>(arr: T[]) => T[] = <T>(arr: T[]) =>
-  pipe(tail, reverse<T>, tail, reverse<T>)(arr);
 
 export const isAnnualMetric = (metric: Metric) => {
   return metric.custom_frequency

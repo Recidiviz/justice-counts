@@ -41,7 +41,6 @@ import {
 import { formatNumberForChart } from "../../utils/helperUtils";
 import { palette } from "../GlobalStyles";
 import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
-import { trimArrayEnds } from "./utils";
 
 export type LineChartProps = {
   data: Datapoint[];
@@ -123,16 +122,17 @@ export function CategoryOverviewLineChart({
           )(palette.dataViz)
         : {},
     [dimensions]
-  );
+  ); // DELETE
   const renderLines = () => {
     // each Recharts Bar component defines a category type in the stacked bar chart
     let lineDefinitions: JSX.Element[] = [];
-    dimensions?.forEach((dimension) => {
+    dimensions?.forEach((dimension, index) => {
       const newLine = (
         <Line
           key={dimension}
           dataKey={dimension}
-          stroke={colorDict[dimension]}
+          stroke={Object.values(palette.dataViz)[index]}
+          // stroke={colorDict[dimension]}
           type="monotone"
         />
       );
@@ -168,20 +168,6 @@ export function CategoryOverviewLineChart({
       >
         <CartesianGrid horizontal={false} />
         <ReferenceLine y={referenceLineHeight} />
-        {pipe(
-          trimArrayEnds<Datapoint>,
-          map(
-            (datapoint: Datapoint): JSX.Element => (
-              <ReferenceLine
-                key={datapoint.start_date}
-                x={printDateAsShortMonthYear(
-                  new Date(datapoint.start_date).getUTCMonth() + 1,
-                  new Date(datapoint.start_date).getUTCFullYear()
-                )}
-              />
-            )
-          )
-        )(data)}
         <XAxis
           dataKey={(datapoint) =>
             printDateAsShortMonthYear(
