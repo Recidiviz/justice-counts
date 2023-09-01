@@ -26,7 +26,6 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { VisibleCategoriesMetadata } from "../CategoryOverview/types";
-import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
@@ -187,7 +186,6 @@ export const AgencyOverview = observer(() => {
           </MetricsViewContainer>
         )}
       </AgencyOverviewWrapper>
-      <Footer />
     </>
   );
 });
