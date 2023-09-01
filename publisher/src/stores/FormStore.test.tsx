@@ -15,22 +15,88 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencyTeamMemberRole } from "@justice-counts/common/types";
+import { AgencyTeamMemberRole, Metric } from "@justice-counts/common/types";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
+import React from "react";
+import { BrowserRouter } from "react-router-dom";
 
-import { rootStore } from ".";
+import DataEntryReview from "../components/Reports/DataEntryReview";
+import ReportDataEntry from "../components/Reports/ReportDataEntry";
+import { rootStore, StoreProvider } from ".";
+
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useParams: () => ({
+    id: "0",
+    agencyId: "22",
+  }),
+}));
 
 const { reportStore, formStore } = rootStore;
+
+const mockAgencyID = 22;
+const mockReportID = 0;
+const mockProsecutionMetric: Metric = {
+  key: "PROSECUTION_STAFF",
+  system: {
+    key: "PROSECUTION",
+    display_name: "Prosecution",
+  },
+  display_name: "Staff",
+  description: "Measures the number of full-time staff employed by the agency.",
+  reporting_note: "DOCs report only correctional institution staff.",
+  enabled: true,
+  value: 1000,
+  unit: "people",
+  category: "CAPACITY_AND_COST",
+  label: "Total Staff",
+  filenames: ["total_staff"],
+  definitions: [
+    {
+      term: "full-time staff",
+      definition: "definition of full-time staff",
+    },
+  ],
+  contexts: [
+    {
+      key: "PROGRAMMATIC_OR_MEDICAL_STAFF",
+      display_name: "Does this include programmatic or medical staff?",
+      reporting_note: null,
+      required: false,
+      type: "MULTIPLE_CHOICE",
+      multiple_choice_options: ["YES", "NO"],
+      value: null,
+    },
+  ],
+  disaggregations: [
+    {
+      key: "PROSECUTION_STAFF_TYPE",
+      display_name: "Staff Types",
+      dimensions: [
+        {
+          key: "SUPPORT",
+          label: "Support",
+          value: null,
+          reporting_note: "Staff: Support",
+        },
+      ],
+      required: false,
+      helper_text: "Break down the metric by NIBRS offense types.",
+      should_sum_to_total: false,
+    },
+  ],
+};
 
 beforeEach(() => {
   runInAction(() => {
     reportStore.reportOverviews = {
-      0: {
+      [mockReportID]: {
         id: 0,
-        agency_id: 0,
+        agency_id: mockAgencyID,
         year: 2022,
-        month: 4,
-        frequency: "MONTHLY",
+        month: 1,
+        frequency: "ANNUAL",
         last_modified_at: "April 12 2022",
         last_modified_at_timestamp: null,
         editors: [
@@ -40,61 +106,7 @@ beforeEach(() => {
         status: "DRAFT",
       },
     };
-
-    reportStore.reportMetrics = {
-      0: [
-        {
-          key: "PROSECUTION_STAFF",
-          system: {
-            key: "LAW_ENFORCEMENT",
-            display_name: "Law Enforcement",
-          },
-          display_name: "Staff",
-          description:
-            "Measures the number of full-time staff employed by the agency.",
-          reporting_note: "DOCs report only correctional institution staff.",
-          value: 1000,
-          unit: "people",
-          category: "CAPACITY_AND_COST",
-          label: "Total Staff",
-          filenames: ["total_staff"],
-          definitions: [
-            {
-              term: "full-time staff",
-              definition: "definition of full-time staff",
-            },
-          ],
-          contexts: [
-            {
-              key: "PROGRAMMATIC_OR_MEDICAL_STAFF",
-              display_name: "Does this include programmatic or medical staff?",
-              reporting_note: null,
-              required: false,
-              type: "MULTIPLE_CHOICE",
-              multiple_choice_options: ["YES", "NO"],
-              value: null,
-            },
-          ],
-          disaggregations: [
-            {
-              key: "PROSECUTION_STAFF_TYPE",
-              display_name: "Staff Types",
-              dimensions: [
-                {
-                  key: "SUPPORT",
-                  label: "Support",
-                  value: null,
-                  reporting_note: "Staff: Support",
-                },
-              ],
-              required: false,
-              helper_text: "Break down the metric by NIBRS offense types.",
-              should_sum_to_total: false,
-            },
-          ],
-        },
-      ],
-    };
+    reportStore.storeMetricDetails(0, [mockProsecutionMetric]);
   });
 });
 
@@ -158,5 +170,48 @@ test("updatedReportValues maps all updated (and not updated) input values into r
         ],
       },
     ])
+  );
+});
+
+test("The form store has the same updated value between data entry form and data entry review and does not revert to previously saved values", async () => {
+  runInAction(() => {
+    reportStore.loadingReportData = false;
+  });
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <ReportDataEntry />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  // Confirm existing Total Staff value is 1,000
+  const totalStaffInputNode: HTMLInputElement =
+    screen.getByLabelText("Total Staff");
+  expect(totalStaffInputNode).toBeInTheDocument();
+  expect(totalStaffInputNode.value).toBe("1,000");
+
+  // Update Total Staff value to be 123,777
+  const updatedValue = "123,777";
+  fireEvent.change(totalStaffInputNode, { target: { value: updatedValue } });
+
+  // Check that the updated value is 123,777 and it matches the value in the FormStore
+  expect(totalStaffInputNode.value).toBe(updatedValue);
+  expect(formStore.metricsValues[mockReportID].PROSECUTION_STAFF.value).toBe(
+    updatedValue
+  );
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <DataEntryReview />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  // Check after rendering the DataEntryReview page that the updated value did not change
+  // in the FormStore and that the FormStore reflects the updated value
+  expect(formStore.metricsValues[mockReportID].PROSECUTION_STAFF.value).toBe(
+    updatedValue
   );
 });
