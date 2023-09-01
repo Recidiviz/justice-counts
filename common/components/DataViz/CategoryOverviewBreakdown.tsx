@@ -19,7 +19,7 @@ import { renderPercentText } from "@justice-counts/agency-dashboard/src/utils/fo
 import React, { FunctionComponent } from "react";
 
 // eslint-disable-next-line no-restricted-imports
-import { printDateAsShortMonthYear } from "../../utils";
+import { printDateAsShortMonthYear, shortMonthsToNumbers } from "../../utils";
 import { palette } from "../GlobalStyles";
 import {
   Container,
@@ -30,32 +30,29 @@ import {
   LegendValue,
 } from "./CategoryOverviewBreakdown.styles";
 import { LineChartBreakdownProps } from "./types";
+import { splitUtcString } from "./utils";
+import { toJS } from "mobx";
 
 export const CategoryOverviewBreakdown: FunctionComponent<
   LineChartBreakdownProps
 > = ({ data, isFundingOrExpenses, dimensions, hoveredDate }) => {
+  console.log("data in CategoryOverviewBreakdown", toJS(data));
+  const { month, year } = splitUtcString(String(data.start_date));
+  const displayDate = `${month} ${year}`;
   const totalDimensionValues = dimensions.reduce((acc, dim) => {
     const sum = acc + (data[dim].value as number); // NTS: Figure out a way to not typecast this - something is funky with the typings
     return sum;
   }, 0);
 
   const descendingByValue = (dimA: string, dimB: string) => {
-    return Number(data[dimB].value) - Number(data[dimA].value); // NTS: Figure out a way to not coerce these into numbers - why do they come up as non-numbers? Need to follow up the tree
+    return +data[dimB].value - +data[dimA].value; // NTS: Figure out a way to not coerce these into numbers - why do they come up as non-numbers? Need to follow up the tree
   };
 
   return (
     <Container>
       <LegendTitle>
         {data.start_date &&
-          (hoveredDate
-            ? printDateAsShortMonthYear(
-                new Date(data.start_date?.value as string).getUTCMonth() + 1,
-                new Date(data.start_date?.value as string).getUTCFullYear()
-              )
-            : `Recent (${printDateAsShortMonthYear(
-                new Date(data.start_date?.value as string).getUTCMonth() + 1,
-                new Date(data.start_date?.value as string).getUTCFullYear()
-              )})`)}
+          (hoveredDate ? displayDate : `Recent (${displayDate})`)}
       </LegendTitle>
 
       {dimensions.sort(descendingByValue).map((dimension) => (

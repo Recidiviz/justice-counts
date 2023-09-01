@@ -15,93 +15,54 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import {
-  filter,
-  head,
-  keys,
-  map,
-  mergeAll,
-  pipe,
-  propEq,
-  reduce,
-  reverse,
-} from "ramda";
-import { useEffect, useMemo, useState } from "react";
-
 import { LegendData } from "../components/DataViz/types";
+import { palette } from "../components/GlobalStyles";
 import { Datapoint } from "../types";
 
 export const useLineChartLegend = (
-  data: Datapoint[],
-  dimensions: (keyof Datapoint)[],
-  hoveredDate: string | null,
-  colorDict: Record<string, string>
+  datapoints: Datapoint[],
+  dimensions: string[],
+  hoveredDate: string | null
 ) => {
-  const [legendData, setLegendData] = useState<LegendData>();
+  const transformDataForLegend = (datapoint: Datapoint): LegendData => {
+    const dimensionsValueFill = dimensions.reduce((acc, dim, idx) => {
+      acc[dim] = {
+        value: datapoint[dim] as number,
+        fill: Object.values(palette.dataViz)[idx],
+      };
+      return acc;
+    }, {} as LegendData);
 
-  useEffect(() => {
-    const transformDataForLegend = (datapoint: Datapoint): LegendData =>
-      pipe(
-        keys,
-        map((dimension: keyof Datapoint) => ({
-          [dimension]: {
-            value: datapoint[dimension],
-            fill: colorDict[dimension],
-          },
-        })),
-        mergeAll
-      )(datapoint) as LegendData;
+    return { ...datapoint, ...dimensionsValueFill } as LegendData;
+  };
 
-    const getLatestDatapoint = (datapoints: Datapoint[]): Datapoint =>
-      pipe(
-        reverse as (list: readonly Datapoint[]) => Datapoint[],
-        filter<Datapoint>((datapoint: Datapoint): boolean => {
-          let hasReportedAnyMetrics = false;
-          dimensions.forEach((dimension: keyof Datapoint) => {
-            if (typeof datapoint[dimension] === "number")
-              hasReportedAnyMetrics = true;
-          });
-          return hasReportedAnyMetrics;
-        }) as (pred: Datapoint[]) => Datapoint[],
-        head
-      )(datapoints) as Datapoint;
+  const getLatestDatapoint = (datapoints: Datapoint[]): Datapoint =>
+    datapoints[datapoints.length - 1];
 
-    const getHoveredDatapoint = (datapoints: Datapoint[]): Datapoint =>
-      pipe(
-        filter<Datapoint>(propEq(hoveredDate, "start_date")),
-        head
-      )(datapoints) as Datapoint;
+  const getHoveredDatapoint = (datapoints: Datapoint[]): Datapoint =>
+    datapoints.filter((dp) => dp.start_date === hoveredDate)[0];
 
-    setLegendData(
-      pipe(
-        hoveredDate ? getHoveredDatapoint : getLatestDatapoint,
-        transformDataForLegend
-      )(data)
-    );
-  }, [data, colorDict, dimensions, hoveredDate]);
-
-  const referenceLineHeight = useMemo(
-    () =>
-      reduce(
-        (total: number, dimension: keyof Datapoint) => {
-          const reducedDatapoints = pipe(
-            filter(
-              (datapoint: Datapoint) => typeof datapoint[dimension] === "number"
-            ),
-            reduce(
-              (acc: number, datapoint: Datapoint): number =>
-                Number(datapoint[dimension]) > acc
-                  ? Number(datapoint[dimension])
-                  : acc,
-              0
-            )
-          )(data);
-          return reducedDatapoints > total ? reducedDatapoints : total;
-        },
-        0,
-        dimensions
-      ),
-    [dimensions, data]
+  const legendData = transformDataForLegend(
+    hoveredDate
+      ? getHoveredDatapoint(datapoints)
+      : getLatestDatapoint(datapoints)
   );
+
+  const maxDimensionsValuesPerRecord = datapoints.map((dp) => {
+    const {
+      start_date,
+      end_date,
+      frequency,
+      dataVizMissingData,
+      ...dimensionVals
+    } = dp;
+    const dimensionValsFlattened = Object.values(
+      dimensionVals
+    ).flat() as number[];
+    return Math.max(...dimensionValsFlattened);
+  });
+
+  const referenceLineHeight = Math.max(...maxDimensionsValuesPerRecord);
+
   return { legendData, referenceLineHeight };
 };
