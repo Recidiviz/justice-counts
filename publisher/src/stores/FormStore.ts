@@ -51,6 +51,10 @@ class FormStore {
     this.disaggregations = {};
   }
 
+  hasFormStoreValuesLoaded(recordID: number) {
+    return this.metricsValues[recordID] && this.disaggregations[recordID];
+  }
+
   validatePreviouslySavedInputs(reportID: number) {
     /** Runs validation of previously saved inputs on load */
     this.reportStore.reportMetrics[reportID].forEach((metric) => {
