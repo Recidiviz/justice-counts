@@ -75,7 +75,7 @@ export type ResponsiveBarData = Datapoint &
   };
 
 export type LineChartBreakdownValue = {
-  value: number | string | null;
+  value: number | string;
   fill: string;
 };
 

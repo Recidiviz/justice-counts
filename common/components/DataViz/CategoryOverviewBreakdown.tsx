@@ -16,21 +16,9 @@
 // =============================================================================
 
 import { renderPercentText } from "@justice-counts/agency-dashboard/src/utils/formatting";
-import {
-  descend,
-  filter,
-  is,
-  map,
-  Ord,
-  pipe,
-  reduce,
-  sort,
-  values,
-} from "ramda";
 import React, { FunctionComponent } from "react";
 
 // eslint-disable-next-line no-restricted-imports
-import { Datapoint } from "../../types";
 import { printDateAsShortMonthYear } from "../../utils";
 import { palette } from "../GlobalStyles";
 import {
@@ -41,61 +29,48 @@ import {
   LegendTitle,
   LegendValue,
 } from "./CategoryOverviewBreakdown.styles";
-import {
-  LineChartBreakdownNumericValue,
-  LineChartBreakdownProps,
-  LineChartBreakdownValue,
-} from "./types";
+import { LineChartBreakdownProps } from "./types";
 
 export const CategoryOverviewBreakdown: FunctionComponent<
   LineChartBreakdownProps
-> = ({ data, isFundingOrExpenses, dimensions, hoveredDate }) => (
-  <Container>
-    <LegendTitle>
-      {data.start_date &&
-        (hoveredDate
-          ? printDateAsShortMonthYear(
-              new Date(data.start_date?.value as string).getUTCMonth() + 1,
-              new Date(data.start_date?.value as string).getUTCFullYear()
-            )
-          : `Recent (${printDateAsShortMonthYear(
-              new Date(data.start_date?.value as string).getUTCMonth() + 1,
-              new Date(data.start_date?.value as string).getUTCFullYear()
-            )})`)}
-    </LegendTitle>
-    {pipe(
-      sort(
-        descend(
-          (dimension: keyof Datapoint) => Number(data[dimension]?.value) as Ord
-        )
-      ),
-      map((dimension: keyof Datapoint) => (
+> = ({ data, isFundingOrExpenses, dimensions, hoveredDate }) => {
+  const totalDimensionValues = dimensions.reduce((acc, dim) => {
+    const sum = acc + (data[dim].value as number); // NTS: Figure out a way to not typecast this - something is funky with the typings
+    return sum;
+  }, 0);
+
+  const descendingByValue = (dimA: string, dimB: string) => {
+    return Number(data[dimB].value) - Number(data[dimA].value); // NTS: Figure out a way to not coerce these into numbers - why do they come up as non-numbers? Need to follow up the tree
+  };
+
+  return (
+    <Container>
+      <LegendTitle>
+        {data.start_date &&
+          (hoveredDate
+            ? printDateAsShortMonthYear(
+                new Date(data.start_date?.value as string).getUTCMonth() + 1,
+                new Date(data.start_date?.value as string).getUTCFullYear()
+              )
+            : `Recent (${printDateAsShortMonthYear(
+                new Date(data.start_date?.value as string).getUTCMonth() + 1,
+                new Date(data.start_date?.value as string).getUTCFullYear()
+              )})`)}
+      </LegendTitle>
+
+      {dimensions.sort(descendingByValue).map((dimension) => (
         <LegendItem key={dimension}>
           <LegendBullet color={data[dimension]?.fill}>▪</LegendBullet>
           <LegendName color={palette.solid.black}>{dimension}</LegendName>
           <LegendValue>
             {renderPercentText(
               data[dimension]?.value,
-              pipe(
-                values as unknown as (
-                  obj: Record<keyof Datapoint, LineChartBreakdownValue>
-                ) => LineChartBreakdownValue,
-                filter(({ value }: LineChartBreakdownValue) =>
-                  is(Number, value)
-                ) as (
-                  pred: LineChartBreakdownValue
-                ) => LineChartBreakdownNumericValue[],
-                reduce<LineChartBreakdownNumericValue, number>(
-                  (acc: number, { value }: LineChartBreakdownNumericValue) =>
-                    acc + value,
-                  0
-                )
-              )(data) as number,
+              totalDimensionValues,
               isFundingOrExpenses
             )}
           </LegendValue>
         </LegendItem>
-      ))
-    )(dimensions)}
-  </Container>
-);
+      ))}
+    </Container>
+  );
+};
