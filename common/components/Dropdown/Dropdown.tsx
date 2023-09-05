@@ -79,8 +79,10 @@ export function Dropdown({
 
   useEffect(() => {
     /** Helps maintain focus on input element as the dropdown list re-renders */
-    const timeout = setTimeout(() => inputRef.current?.focus(), 0);
-    return () => clearTimeout(timeout);
+    const timeout = setTimeout(() => {
+      inputRef.current?.focus();
+      clearTimeout(timeout);
+    }, 0);
   }, [inputValue]);
 
   return (
