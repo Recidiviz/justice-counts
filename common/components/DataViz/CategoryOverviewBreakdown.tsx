@@ -41,9 +41,10 @@ export const CategoryOverviewBreakdown: FunctionComponent<
     return sum;
   }, 0);
 
-  const descendingByValue = (dimA: string, dimB: string) => {
-    return +data[dimB].value - +data[dimA].value; // NTS: Figure out a way to not coerce these into numbers - why do they come up as non-numbers? Need to follow up the tree
-  };
+  /** Dimensions sorted in descending order based on value */
+  const sortedDimensions = dimensions.sort(
+    (dimA: string, dimB: string) => +data[dimB].value - +data[dimA].value
+  ); // NTS: Figure out a way to not coerce these into numbers - why do they come up as non-numbers? Need to follow up the tree
 
   return (
     <Container>
@@ -52,7 +53,7 @@ export const CategoryOverviewBreakdown: FunctionComponent<
           (hoveredDate ? displayDate : `Recent (${displayDate})`)}
       </LegendTitle>
 
-      {dimensions.sort(descendingByValue).map((dimension) => (
+      {sortedDimensions.map((dimension) => (
         <LegendItem key={dimension}>
           <LegendBullet color={data[dimension]?.fill}>▪</LegendBullet>
           <LegendName color={palette.solid.black}>{dimension}</LegendName>
