@@ -106,17 +106,19 @@ export function CategoryOverviewLineChart({
   setHoveredDate,
   metricKey,
 }: LineChartProps) {
-  const [dimensionsToColor] = useState<any>(() => {
+  /** Creates a { [dimension]: colorFromDataVizPalette } map */
+  const [dimensionsToColorMap] = useState<Record<string, string>>(() => {
     return dimensions.reduce((acc, dim, idx) => {
       acc[dim] = Object.values(palette.dataViz)[idx];
       return acc;
-    }, {});
+    }, {} as Record<string, string>);
   });
+
   const { legendData, referenceLineHeight } = useLineChartLegend(
     data,
     dimensions,
     hoveredDate,
-    dimensionsToColor
+    dimensionsToColorMap
   );
 
   const breakdownLines = useMemo(() => {
@@ -124,7 +126,7 @@ export function CategoryOverviewLineChart({
       <Line
         key={dimension}
         dataKey={dimension}
-        stroke={dimensionsToColor[dimension]}
+        stroke={dimensionsToColorMap[dimension]}
         type="monotone"
       />
     ));
