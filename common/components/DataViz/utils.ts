@@ -19,6 +19,7 @@ import { mapValues, pickBy } from "lodash";
 
 import {
   Datapoint,
+  DatapointsByMetric,
   DataVizAggregateName,
   DataVizCountOrPercentageView,
   DataVizTimeRange,
@@ -477,3 +478,18 @@ export const getDataVizTimeRangeByFilterByMetricFrequency =
     }
     return DataVizTimeRangesMap.All;
   };
+
+export const getBarChartData = (
+  datapointsByMetric: DatapointsByMetric | undefined,
+  metric: Metric,
+  getDataVizTimeRange: (metric: Metric) => DataVizTimeRange
+): Datapoint[] => {
+  if (datapointsByMetric) {
+    return transformDataForBarChart(
+      datapointsByMetric[metric.key].aggregate as Datapoint[],
+      getDataVizTimeRange(metric),
+      "Count"
+    );
+  }
+  return [];
+};

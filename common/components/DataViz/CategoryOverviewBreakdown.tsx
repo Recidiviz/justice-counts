@@ -18,7 +18,6 @@
 import { renderPercentText } from "@justice-counts/agency-dashboard/src/utils/formatting";
 import React, { FunctionComponent } from "react";
 
-// eslint-disable-next-line no-restricted-imports
 import { palette } from "../GlobalStyles";
 import {
   Container,
@@ -37,14 +36,14 @@ export const CategoryOverviewBreakdown: FunctionComponent<
   const { month, year } = splitUtcString(String(data.start_date));
   const displayDate = `${month} ${year}`;
   const totalDimensionValues = dimensions.reduce((acc, dim) => {
-    const sum = acc + (data[dim].value as number); // NTS: Figure out a way to not typecast this - something is funky with the typings
+    const sum = acc + Number(data[dim].value);
     return sum;
   }, 0);
-
   /** Dimensions sorted in descending order based on value */
   const sortedDimensions = dimensions.sort(
-    (dimA: string, dimB: string) => +data[dimB].value - +data[dimA].value
-  ); // NTS: Figure out a way to not coerce these into numbers - why do they come up as non-numbers? Need to follow up the tree
+    (dimA: string, dimB: string) =>
+      Number(data[dimB].value) - Number(data[dimA].value)
+  );
 
   return (
     <Container>

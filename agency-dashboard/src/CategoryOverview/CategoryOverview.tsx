@@ -20,8 +20,11 @@ import { ReactComponent as ShareIcon } from "@justice-counts/common/assets/share
 import { Button } from "@justice-counts/common/components/Button";
 import { CategoryOverviewLineChart } from "@justice-counts/common/components/DataViz/CategoryOverviewLineChart";
 import MetricsCategoryBarChart from "@justice-counts/common/components/DataViz/MetricsCategoryBarChart";
-import { getDataVizTimeRangeByFilterByMetricFrequency } from "@justice-counts/common/components/DataViz/utils";
-import { useBarChart, useLineChart } from "@justice-counts/common/hooks";
+import {
+  getBarChartData,
+  getDataVizTimeRangeByFilterByMetricFrequency,
+} from "@justice-counts/common/components/DataViz/utils";
+import { useLineChart } from "@justice-counts/common/hooks";
 import { DataVizAggregateName, Metric } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
@@ -76,12 +79,6 @@ export const CategoryOverview = observer(() => {
       datapointsByMetric,
       dimensionNamesByMetricAndDisaggregation,
     });
-
-  const { getBarChartData } = useBarChart({
-    getDataVizTimeRange:
-      getDataVizTimeRangeByFilterByMetricFrequency(dataRangeFilter),
-    datapointsByMetric,
-  });
 
   if (loading) {
     return <Loading />;
@@ -140,48 +137,55 @@ export const CategoryOverview = observer(() => {
 
             {/* Metric Information & Data Visualization */}
             <Styled.MetricsWrapper>
-              {metricsWithData?.map((metric: Metric) => (
-                <Styled.MetricBox key={metric.key}>
-                  <Styled.MetricName>{metric.display_name}</Styled.MetricName>
-                  <Styled.MetricDataVizContainer>
-                    <Styled.MetricDescriptionBarChartWrapper>
-                      <Styled.MetricDescription>
-                        {metric.description}
-                      </Styled.MetricDescription>
+              {metricsWithData?.map((metric: Metric) => {
+                const barChartData = getBarChartData(
+                  datapointsByMetric,
+                  metric,
+                  getDataVizTimeRangeByFilterByMetricFrequency(dataRangeFilter)
+                );
+                return (
+                  <Styled.MetricBox key={metric.key}>
+                    <Styled.MetricName>{metric.display_name}</Styled.MetricName>
+                    <Styled.MetricDataVizContainer>
+                      <Styled.MetricDescriptionBarChartWrapper>
+                        <Styled.MetricDescription>
+                          {metric.description}
+                        </Styled.MetricDescription>
 
-                      {/* Bar Chart */}
-                      <MetricsCategoryBarChart
-                        width={620}
-                        data={getBarChartData(metric)}
-                        onHoverBar={(payload) => {
-                          setHoveredDate((prev) => ({
-                            ...prev,
-                            [metric.key]: payload.start_date,
-                          }));
-                        }}
-                        dimensionNames={[DataVizAggregateName]}
-                        metric={metric.display_name}
-                        ref={ref}
-                      />
-                    </Styled.MetricDescriptionBarChartWrapper>
+                        {/* Bar Chart */}
+                        <MetricsCategoryBarChart
+                          width={620}
+                          data={barChartData}
+                          onHoverBar={(payload) => {
+                            setHoveredDate((prev) => ({
+                              ...prev,
+                              [metric.key]: payload.start_date,
+                            }));
+                          }}
+                          dimensionNames={[DataVizAggregateName]}
+                          metric={metric.display_name}
+                          ref={ref}
+                        />
+                      </Styled.MetricDescriptionBarChartWrapper>
 
-                    {/* Breakdown/Disaggregation Line Chart */}
-                    {getLineChartDataFromMetric(metric).length > 0 && (
-                      <CategoryOverviewLineChart
-                        data={getLineChartDataFromMetric(metric)}
-                        isFundingOrExpenses={
-                          metric.display_name === "Funding" ||
-                          metric.display_name === "Expenses"
-                        }
-                        dimensions={getLineChartDimensionsFromMetric(metric)}
-                        hoveredDate={hoveredDate[metric.key]}
-                        setHoveredDate={setHoveredDate}
-                        metricKey={metric.key}
-                      />
-                    )}
-                  </Styled.MetricDataVizContainer>
-                </Styled.MetricBox>
-              ))}
+                      {/* Breakdown/Disaggregation Line Chart */}
+                      {getLineChartDataFromMetric(metric).length > 0 && (
+                        <CategoryOverviewLineChart
+                          data={getLineChartDataFromMetric(metric)}
+                          isFundingOrExpenses={
+                            metric.display_name === "Funding" ||
+                            metric.display_name === "Expenses"
+                          }
+                          dimensions={getLineChartDimensionsFromMetric(metric)}
+                          hoveredDate={hoveredDate[metric.key]}
+                          setHoveredDate={setHoveredDate}
+                          metricKey={metric.key}
+                        />
+                      )}
+                    </Styled.MetricDataVizContainer>
+                  </Styled.MetricBox>
+                );
+              })}
             </Styled.MetricsWrapper>
           </Styled.MetricsBlock>
         </Styled.Container>
