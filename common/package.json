@@ -6,8 +6,8 @@
   "author": "Recidiviz <team@recidiviz.org>",
   "license": "GNU General Public License v3",
   "dependencies": {
-    "@justice-counts/common": "*",
     "@justice-counts/agency-dashboard": "*",
+    "@justice-counts/common": "*",
     "@recidiviz/design-system": "^4.1.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -15,7 +15,6 @@
     "@types/jest": "^27.5.2",
     "@types/lodash": "^4.14.197",
     "@types/node": "^20.4.5",
-    "@types/ramda": "^0.29.3",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "@types/styled-components": "^5.1.26",
