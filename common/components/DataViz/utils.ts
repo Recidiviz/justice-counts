@@ -486,7 +486,7 @@ export const getBarChartData = (
 ): Datapoint[] => {
   if (datapointsByMetric) {
     return transformDataForBarChart(
-      datapointsByMetric[metric.key].aggregate as Datapoint[],
+      datapointsByMetric[metric.key].aggregate,
       getDataVizTimeRange(metric),
       "Count"
     );
