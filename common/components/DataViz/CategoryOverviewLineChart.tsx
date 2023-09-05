@@ -19,7 +19,7 @@ import {
   BreakdownsTitle,
   Container,
 } from "@justice-counts/agency-dashboard/src/CategoryOverview/CategoryOverview.styled";
-import React, { CSSProperties, useState } from "react";
+import React, { CSSProperties, useMemo, useState } from "react";
 import {
   CartesianGrid,
   Legend,
@@ -119,6 +119,17 @@ export function CategoryOverviewLineChart({
     dimensionsToColor
   );
 
+  const breakdownLines = useMemo(() => {
+    return dimensions.map((dimension) => (
+      <Line
+        key={dimension}
+        dataKey={dimension}
+        stroke={dimensionsToColor[dimension]}
+        type="monotone"
+      />
+    ));
+  }, [dimensions]);
+
   return (
     <Container>
       <BreakdownsTitle>Breakdowns</BreakdownsTitle>
@@ -162,15 +173,7 @@ export function CategoryOverviewLineChart({
             wrapperStyle={{ display: "none" }}
           /> /* This preserves dot highlighting on hover; seems useful */
         }
-        {dimensions.map((dimension, index) => (
-          <Line
-            key={dimension}
-            dataKey={dimension}
-            stroke={dimensionsToColor[dimension]}
-            // stroke={Object.values(palette.dataViz)[index]}
-            type="monotone"
-          />
-        ))}
+        {breakdownLines}
         {legendData && (
           <Legend
             content={
