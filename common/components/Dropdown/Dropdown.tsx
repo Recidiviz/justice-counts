@@ -37,7 +37,7 @@ type DropdownProps = {
   alignment?: DropdownMenuAlignment;
   fullWidth?: boolean;
   highlightIcon?: React.ReactNode;
-  withTypeaheadSearch?: boolean;
+  typeaheadSearch?: { placeholder: string };
 };
 
 /**
@@ -51,6 +51,8 @@ type DropdownProps = {
  * @param [Props.caretPosition] - left or right (if undefined caret is not displayed)
  * @param [Props.alignment] - alignment of the menu (right or left) if not provided then it is left by default
  * @param [Props.fullWidth] - defines if the menu width will be equal to dropdown toggle width (default is fit-content)
+ * @param [Props.highlightIcon] - icon used when an element is highlighted
+ * @param [Props.typeaheadSearch] - `true` when set, accepts custom placeholder string, and renders a typeahead search feature for the current list
  * */
 export function Dropdown({
   label,
@@ -62,7 +64,7 @@ export function Dropdown({
   alignment,
   fullWidth,
   highlightIcon,
-  withTypeaheadSearch,
+  typeaheadSearch,
 }: DropdownProps) {
   const [filteredOptions, setFilteredOptions] = useState(options);
   const [inputValue, setInputValue] = useState("");
@@ -116,14 +118,14 @@ export function Dropdown({
         menuFullWidth={fullWidth}
       >
         <>
-          {withTypeaheadSearch && (
+          {typeaheadSearch && (
             <Styled.CustomInputWrapper>
               <Styled.CustomInput
                 ref={inputRef}
                 id="dropdown-typeahead"
                 name="dropdown-typeahead"
                 type="search"
-                placeholder="Search for Agency"
+                placeholder={typeaheadSearch.placeholder}
                 value={inputValue}
                 onChange={(e) => {
                   setInputValue(e.target.value);
@@ -167,7 +169,7 @@ export function Dropdown({
             )
           )}
 
-          {withTypeaheadSearch && filteredOptions.length === 0 && (
+          {typeaheadSearch && filteredOptions.length === 0 && (
             <Styled.NoResultsFoundWrapper>
               <Styled.OptionLabelWrapper>
                 No Results Found
