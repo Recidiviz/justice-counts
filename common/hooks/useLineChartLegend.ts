@@ -16,14 +16,13 @@
 // =============================================================================
 
 import { LegendData } from "../components/DataViz/types";
-import { palette } from "../components/GlobalStyles";
 import { Datapoint } from "../types";
 
 export const useLineChartLegend = (
   datapoints: Datapoint[],
   dimensions: string[],
   hoveredDate: string | null,
-  dimensionsToColor: any
+  dimensionsToColor: Record<string, string>
 ) => {
   const transformDataForLegend = (datapoint: Datapoint): LegendData => {
     const dimensionsValueFill = dimensions.reduce((acc, dim, idx) => {
@@ -37,11 +36,11 @@ export const useLineChartLegend = (
     return { ...datapoint, ...dimensionsValueFill } as LegendData;
   };
 
-  const getLatestDatapoint = (datapoints: Datapoint[]): Datapoint =>
-    datapoints[datapoints.length - 1];
+  const getLatestDatapoint = (dps: Datapoint[]): Datapoint =>
+    dps[dps.length - 1];
 
-  const getHoveredDatapoint = (datapoints: Datapoint[]): Datapoint =>
-    datapoints.filter((dp) => dp.start_date === hoveredDate)[0];
+  const getHoveredDatapoint = (dps: Datapoint[]): Datapoint =>
+    dps.filter((dp) => dp.start_date === hoveredDate)[0];
 
   const legendData = transformDataForLegend(
     hoveredDate
@@ -51,8 +50,8 @@ export const useLineChartLegend = (
 
   const maxDimensionsValuesPerRecord = datapoints.map((dp) => {
     const {
-      start_date,
-      end_date,
+      start_date: startDate,
+      end_date: endDate,
       frequency,
       dataVizMissingData,
       ...dimensionVals

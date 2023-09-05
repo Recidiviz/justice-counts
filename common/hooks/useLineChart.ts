@@ -46,7 +46,7 @@ export const useLineChart = ({
        * NOTE: This assumes there's just one breakdown per metric. We will need to adjust this
        *       based on how we want to handle displaying metrics w/ multiple breakdowns.
        */
-      const disaggregations = datapointsByMetric[metric.key].disaggregations;
+      const { disaggregations } = datapointsByMetric[metric.key];
       const disaggregationKey = Object.keys(disaggregations)[0];
       return Object.values(disaggregations[disaggregationKey]);
     }

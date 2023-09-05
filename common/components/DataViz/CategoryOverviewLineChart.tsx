@@ -130,7 +130,7 @@ export function CategoryOverviewLineChart({
         type="monotone"
       />
     ));
-  }, [dimensions]);
+  }, [dimensions, dimensionsToColorMap]);
 
   return (
     <Container>
