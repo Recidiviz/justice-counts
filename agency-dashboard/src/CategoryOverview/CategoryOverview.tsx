@@ -71,10 +71,11 @@ export const CategoryOverview = observer(() => {
   );
   const [hoveredDate, setHoveredDate] = useState<{ [key: string]: string }>({});
 
-  const { getLineChartData, getLineChartDimensions } = useLineChart({
-    datapointsByMetric,
-    dimensionNamesByMetricAndDisaggregation,
-  });
+  const { getLineChartDataFromMetric, getLineChartDimensionsFromMetric } =
+    useLineChart({
+      datapointsByMetric,
+      dimensionNamesByMetricAndDisaggregation,
+    });
 
   const { getBarChartData } = useBarChart({
     getDataVizTimeRange:
@@ -165,14 +166,14 @@ export const CategoryOverview = observer(() => {
                     </Styled.MetricDescriptionBarChartWrapper>
 
                     {/* Breakdown/Disaggregation Line Chart */}
-                    {getLineChartData(metric).length > 0 && (
+                    {getLineChartDataFromMetric(metric).length > 0 && (
                       <CategoryOverviewLineChart
-                        data={getLineChartData(metric)}
+                        data={getLineChartDataFromMetric(metric)}
                         isFundingOrExpenses={
                           metric.display_name === "Funding" ||
                           metric.display_name === "Expenses"
                         }
-                        dimensions={getLineChartDimensions(metric)}
+                        dimensions={getLineChartDimensionsFromMetric(metric)}
                         hoveredDate={hoveredDate[metric.key]}
                         setHoveredDate={setHoveredDate}
                         metricKey={metric.key}
