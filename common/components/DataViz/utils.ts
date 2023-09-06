@@ -478,18 +478,3 @@ export const getDataVizTimeRangeByFilterByMetricFrequency =
     }
     return DataVizTimeRangesMap.All;
   };
-
-export const getBarChartData = (
-  datapointsByMetric: DatapointsByMetric | undefined,
-  metric: Metric,
-  getDataVizTimeRange: (metric: Metric) => DataVizTimeRange
-): Datapoint[] => {
-  if (datapointsByMetric) {
-    return transformDataForBarChart(
-      datapointsByMetric[metric.key].aggregate,
-      getDataVizTimeRange(metric),
-      "Count"
-    );
-  }
-  return [];
-};
