@@ -114,8 +114,12 @@ export function CategoryOverviewLineChart({
     }, {} as Record<string, string>);
   });
 
-  const { legendData, referenceLineHeight: referenceLineUpperLimit } =
-    useLineChartLegend(data, dimensions, hoveredDate, dimensionsToColorMap);
+  const { legendData, referenceLineUpperLimit } = useLineChartLegend(
+    data,
+    dimensions,
+    hoveredDate,
+    dimensionsToColorMap
+  );
 
   const breakdownLines = useMemo(() => {
     return dimensions.map((dimension) => (
