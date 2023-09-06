@@ -180,6 +180,7 @@ const Menu: React.FC = () => {
                 alignment="left"
                 caretPosition="right"
                 highlightIcon={<Styled.TargetIcon />}
+                typeaheadSearch={{ placeholder: "Search for Agency" }}
               />
             </Styled.MenuItem>
           </Styled.AgencyDropdownWrapper>

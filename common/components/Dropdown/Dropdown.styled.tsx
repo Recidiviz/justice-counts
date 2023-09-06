@@ -22,7 +22,7 @@ import {
   DropdownToggle,
 } from "@recidiviz/design-system";
 // eslint-disable-next-line no-restricted-imports
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { palette, typography } from "../GlobalStyles";
 import { ToggleHover, ToggleSize } from "./types";
@@ -94,12 +94,7 @@ export const CustomDropdownMenu = styled(DropdownMenu)<{
     menuFullWidth ? "width: 100%;" : "min-width: 293px;"}
 `;
 
-export const CustomDropdownMenuItem = styled(DropdownMenuItem)<{
-  color?: "green" | "red";
-  disabled?: boolean;
-  highlight?: boolean;
-  noHover?: boolean;
-}>`
+const customDropdownMenuItemBaseCSS = css`
   margin: 0 !important;
   width: 100%;
   min-width: 100%;
@@ -111,6 +106,15 @@ export const CustomDropdownMenuItem = styled(DropdownMenuItem)<{
   border-radius: 3px;
   text-transform: capitalize;
   ${typography.sizeCSS.normal};
+`;
+
+export const CustomDropdownMenuItem = styled(DropdownMenuItem)<{
+  color?: "green" | "red";
+  disabled?: boolean;
+  highlight?: boolean;
+  noHover?: boolean;
+}>`
+  ${customDropdownMenuItemBaseCSS}
   color: ${({ color, highlight }) => {
     if (color === "green") {
       return palette.solid.green;
@@ -173,4 +177,32 @@ export const OptionLabelWrapper = styled.div<{
   gap: 16px;
   color: inherit !important;
   ${({ highlightIcon }) => highlightIcon && "padding-left: 8px;"}
+`;
+
+export const CustomInputWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 16px 8px 16px;
+`;
+
+export const CustomInput = styled.input`
+  ${typography.sizeCSS.normal}
+  width: 100%;
+  padding: 4px 8px 4px 8px;
+  border: 1px solid ${palette.solid.lightgrey3};
+  color: ${palette.highlight.grey9};
+  background: ${palette.solid.lightgrey2};
+  border-radius: 2px;
+
+  &::placeholder {
+    color: ${palette.highlight.grey5};
+  }
+`;
+
+export const NoResultsFoundWrapper = styled.div`
+  ${customDropdownMenuItemBaseCSS}
+  color: ${palette.solid.darkgrey};
+  padding-left: 24px;
 `;

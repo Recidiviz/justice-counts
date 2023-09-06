@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import dropdownCaret from "../../assets/dropdown-caret.svg";
 import * as Styled from "./Dropdown.styled";
@@ -29,7 +29,7 @@ import {
 
 type DropdownProps = {
   label: string | React.ReactNode;
-  options?: DropdownOption[];
+  options: DropdownOption[];
   size?: ToggleSize;
   disabled?: boolean;
   hover?: ToggleHover;
@@ -37,6 +37,7 @@ type DropdownProps = {
   alignment?: DropdownMenuAlignment;
   fullWidth?: boolean;
   highlightIcon?: React.ReactNode;
+  typeaheadSearch?: { placeholder: string };
 };
 
 /**
@@ -50,6 +51,9 @@ type DropdownProps = {
  * @param [Props.caretPosition] - left or right (if undefined caret is not displayed)
  * @param [Props.alignment] - alignment of the menu (right or left) if not provided then it is left by default
  * @param [Props.fullWidth] - defines if the menu width will be equal to dropdown toggle width (default is fit-content)
+ * @param [Props.highlightIcon] - icon used when an element is highlighted
+ * @param [Props.typeaheadSearch] - { placeholder: string } - an object with customizable options - renders a typeahead search feature for
+ *                                                            the current list when set.
  * */
 export function Dropdown({
   label,
@@ -61,7 +65,29 @@ export function Dropdown({
   alignment,
   fullWidth,
   highlightIcon,
+  typeaheadSearch,
 }: DropdownProps) {
+  const [filteredOptions, setFilteredOptions] = useState(options);
+  const [inputValue, setInputValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const updateFilteredOptions = (val: string) => {
+    const regex = new RegExp(`${val}`, `i`);
+    setFilteredOptions(() =>
+      options.filter(
+        (option) => typeof option.label === "string" && regex.test(option.label)
+      )
+    );
+  };
+
+  useEffect(() => {
+    /** Helps maintain focus on input element as the dropdown list re-renders */
+    const timeout = setTimeout(() => {
+      inputRef.current?.focus();
+      clearTimeout(timeout);
+    }, 0);
+  }, [inputValue]);
+
   return (
     <Styled.CustomDropdown>
       <Styled.CustomDropdownToggle
@@ -92,41 +118,66 @@ export function Dropdown({
         alignment={alignment}
         menuFullWidth={fullWidth}
       >
-        {options && options.length > 1
-          ? options.map(
-              ({
-                key,
-                label: optionLabel,
-                onClick,
-                color,
-                disabled: optionDisabled,
-                highlight,
-                noHover,
-                icon,
-              }) => (
-                <Styled.CustomDropdownMenuItem
-                  key={key}
-                  onClick={onClick}
-                  color={color}
-                  disabled={optionDisabled}
-                  noHover={noHover}
-                  highlight={highlight && !highlightIcon}
+        <>
+          {typeaheadSearch && (
+            <Styled.CustomInputWrapper>
+              <Styled.CustomInput
+                ref={inputRef}
+                id="dropdown-typeahead"
+                name="dropdown-typeahead"
+                type="search"
+                placeholder={typeaheadSearch.placeholder}
+                value={inputValue}
+                onChange={(e) => {
+                  setInputValue(e.target.value);
+                  updateFilteredOptions(e.target.value);
+                }}
+              />
+            </Styled.CustomInputWrapper>
+          )}
+
+          {filteredOptions?.map(
+            ({
+              key,
+              label: optionLabel,
+              onClick,
+              color,
+              disabled: optionDisabled,
+              highlight,
+              noHover,
+              icon,
+            }) => (
+              <Styled.CustomDropdownMenuItem
+                key={key}
+                onClick={onClick}
+                color={color}
+                disabled={optionDisabled}
+                noHover={noHover}
+                highlight={highlight && !highlightIcon}
+              >
+                <Styled.OptionLabelWrapper
+                  highlightIcon={Boolean(highlightIcon)}
                 >
-                  <Styled.OptionLabelWrapper
-                    highlightIcon={Boolean(highlightIcon)}
-                  >
-                    {/**
-                     * icon: a label icon that's always visible in the dropdown menu
-                     * highlightIcon: an icon that indicates (and is only visible on) the menu option that is currently active
-                     */}
-                    {icon}
-                    {optionLabel}
-                    {highlight && highlightIcon}
-                  </Styled.OptionLabelWrapper>
-                </Styled.CustomDropdownMenuItem>
-              )
+                  {/**
+                   * icon: a label icon that's always visible in the dropdown menu
+                   * highlightIcon: an icon that indicates (and is only visible on) the menu option that is currently active
+                   */}
+                  {icon}
+                  {optionLabel}
+                  {highlight && highlightIcon}
+                </Styled.OptionLabelWrapper>
+              </Styled.CustomDropdownMenuItem>
             )
-          : undefined}
+          )}
+
+          {typeaheadSearch && filteredOptions.length === 0 && (
+            <Styled.NoResultsFoundWrapper>
+              <Styled.OptionLabelWrapper>
+                No Results Found
+              </Styled.OptionLabelWrapper>
+            </Styled.NoResultsFoundWrapper>
+          )}
+        </>
       </Styled.CustomDropdownMenu>
     </Styled.CustomDropdown>
   );
