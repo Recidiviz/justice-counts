@@ -16,9 +16,9 @@
 // =============================================================================
 
 import {
-  DataVizTimeRange,
   Datapoint,
   DatapointsByMetric,
+  DataVizTimeRange,
   Metric,
   UserAgency,
 } from "@justice-counts/common/types";
