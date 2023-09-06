@@ -55,7 +55,7 @@ export const MetricInsights: React.FC<{
       selfWidth={insightsWidth}
       enableHideByWidth={enableHideByWidth}
     >
-      <MetricInsight title="Year-to-Year" value={percentChange} />
+      <MetricInsight title="Percent Change" value={percentChange} />
       <MetricInsight title="Avg. Total Value" value={avgValue} />
       <MetricInsight title="Most Recent" value={mostRecentValue} />
     </MetricInsightsContainer>
