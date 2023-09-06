@@ -35,6 +35,7 @@ export type LineChartHookProps = Partial<UserAgency> & {
     | undefined;
 };
 
+/** Returns methods used to convert data into a structure line charts can consume */
 export const useLineChart = ({
   datapointsByMetric,
   dimensionNamesByMetricAndDisaggregation,

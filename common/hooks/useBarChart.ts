@@ -34,6 +34,7 @@ export type BarChartHookProps = Partial<UserAgency> & {
   datapointsByMetric: DatapointsByMetric | undefined;
 };
 
+/** Returns methods used to convert data into a structure bar charts can consume */
 export const useBarChart = ({
   getDataVizTimeRange,
   datapointsByMetric,
