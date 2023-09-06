@@ -52,7 +52,8 @@ type DropdownProps = {
  * @param [Props.alignment] - alignment of the menu (right or left) if not provided then it is left by default
  * @param [Props.fullWidth] - defines if the menu width will be equal to dropdown toggle width (default is fit-content)
  * @param [Props.highlightIcon] - icon used when an element is highlighted
- * @param [Props.typeaheadSearch] - `true` when set, accepts custom placeholder string, and renders a typeahead search feature for the current list
+ * @param [Props.typeaheadSearch] - { placeholder: string } - an object with customizable options - renders a typeahead search feature for
+ *                                                            the current list when set.
  * */
 export function Dropdown({
   label,
