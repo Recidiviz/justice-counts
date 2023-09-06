@@ -17,4 +17,5 @@
 
 export * from "./conversionUtils";
 export * from "./dateUtils";
+export * from "./downloadHelpers";
 export * from "./helperUtils";

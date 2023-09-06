@@ -22,5 +22,5 @@
   },
   "include": [
     "src"
-  ]
+, "../common/utils/downloadHelpers.ts"  ]
 }

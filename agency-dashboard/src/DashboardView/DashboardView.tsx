@@ -33,7 +33,7 @@ import { LearnMoreModal, ShareModal } from "../DashboardModals";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
-import { downloadFeedData } from "../utils/downloadHelpers";
+
 import {
   BackButtonContainer,
   Container,
@@ -49,6 +49,7 @@ import {
   RightPanelMetricOverviewContent,
   RightPanelMetricTitle,
 } from ".";
+import { downloadFeedData } from "@justice-counts/common/utils";
 
 const getScreenWidth = () =>
   window.innerWidth ||
@@ -227,10 +228,14 @@ export const DashboardView = observer(() => {
     ) {
       const metric = agencyDataStore.metricsByKey[metricKeyParam];
       if (metric) {
-        each(
-          metric.filenames,
-          downloadFeedData(metric.system.key, agencyDataStore.agency.id)
-        );
+        metric.filenames.forEach((filename) => {
+          if (agencyDataStore.agency)
+            downloadFeedData(
+              metric.system.key,
+              agencyDataStore.agency.id,
+              filename
+            );
+        });
       }
     }
   }, [agencyDataStore, metricKeyParam]);

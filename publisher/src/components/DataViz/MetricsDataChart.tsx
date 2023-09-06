@@ -29,6 +29,7 @@ import {
 import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import { AgencySystems, ReportFrequency } from "@justice-counts/common/types";
+import { downloadMetricData } from "@justice-counts/common/utils";
 import { frequencyString } from "@justice-counts/common/utils/helperUtils";
 import FileSaver from "file-saver";
 import { observer } from "mobx-react-lite";
@@ -348,7 +349,9 @@ export const MetricsDataChart: React.FC = observer(() => {
             </Styled.PanelRightTopButton>
             <Styled.PanelRightTopButton
               onClick={() =>
-                handleChartDownload(currentSystem, currentMetric.key)
+                dataView === ChartView.Chart
+                  ? handleChartDownload(currentSystem, currentMetric.key)
+                  : downloadMetricData(currentMetric, agencyId)
               }
             >
               <DownloadChartIcon />
