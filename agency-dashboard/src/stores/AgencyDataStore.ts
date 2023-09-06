@@ -39,7 +39,6 @@ import { makeAutoObservable, runInAction } from "mobx";
 
 import { VisibleCategoriesMetadata } from "../CategoryOverview/types";
 import { AgenciesList } from "../Home";
-
 import API from "./API";
 
 class AgencyDataStore {

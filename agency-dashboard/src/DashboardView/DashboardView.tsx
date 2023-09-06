@@ -24,7 +24,7 @@ import { MetricInsights } from "@justice-counts/common/components/DataViz/Metric
 import { transformDataForMetricInsights } from "@justice-counts/common/components/DataViz/utils";
 import { COMMON_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { DataVizTimeRangesMap } from "@justice-counts/common/types";
-import { each } from "bluebird";
+import { downloadFeedData } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -33,7 +33,6 @@ import { LearnMoreModal, ShareModal } from "../DashboardModals";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
-
 import {
   BackButtonContainer,
   Container,
@@ -49,7 +48,6 @@ import {
   RightPanelMetricOverviewContent,
   RightPanelMetricTitle,
 } from ".";
-import { downloadFeedData } from "@justice-counts/common/utils";
 
 const getScreenWidth = () =>
   window.innerWidth ||
