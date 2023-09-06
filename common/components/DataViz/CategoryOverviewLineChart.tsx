@@ -114,12 +114,8 @@ export function CategoryOverviewLineChart({
     }, {} as Record<string, string>);
   });
 
-  const { legendData, referenceLineHeight } = useLineChartLegend(
-    data,
-    dimensions,
-    hoveredDate,
-    dimensionsToColorMap
-  );
+  const { legendData, referenceLineHeight: referenceLineUpperLimit } =
+    useLineChartLegend(data, dimensions, hoveredDate, dimensionsToColorMap);
 
   const breakdownLines = useMemo(() => {
     return dimensions.map((dimension) => (
@@ -152,7 +148,7 @@ export function CategoryOverviewLineChart({
         }}
       >
         <CartesianGrid horizontal={false} />
-        <ReferenceLine y={referenceLineHeight} />
+        <ReferenceLine y={referenceLineUpperLimit} />
         <XAxis
           dataKey={(datapoint) => {
             const { month, year } = splitUtcString(datapoint.start_date);
@@ -168,7 +164,7 @@ export function CategoryOverviewLineChart({
           domain={[0, "dataMax"]}
           tickFormatter={formatNumberForChart as (value: number) => string}
           style={axisTickStyle}
-          ticks={[0, referenceLineHeight]}
+          ticks={[0, referenceLineUpperLimit]}
         />
         {
           <Tooltip

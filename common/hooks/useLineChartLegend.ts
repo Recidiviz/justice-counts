@@ -48,6 +48,10 @@ export const useLineChartLegend = (
       : getLatestDatapoint(datapoints)
   );
 
+  /**
+   * For each record, calculate the highest value across all dimensions to be used as the
+   * upper limit in the chart Y axis.
+   */
   const maxDimensionsValuesPerRecord = datapoints.map((dp) => {
     const {
       start_date: startDate,
@@ -62,7 +66,7 @@ export const useLineChartLegend = (
     return Math.max(...dimensionValsFlattened);
   });
 
-  const referenceLineHeight = Math.max(...maxDimensionsValuesPerRecord);
+  const referenceLineUpperLimit = Math.max(...maxDimensionsValuesPerRecord);
 
-  return { legendData, referenceLineHeight };
+  return { legendData, referenceLineUpperLimit };
 };
