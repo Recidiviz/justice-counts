@@ -82,6 +82,7 @@ export function Dropdown({
 
   useEffect(() => {
     setFilteredOptions(options);
+    if (inputValue) setInputValue("");
   }, [options]);
 
   useEffect(() => {
