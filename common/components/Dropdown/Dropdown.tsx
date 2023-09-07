@@ -67,7 +67,7 @@ export function Dropdown({
   highlightIcon,
   typeaheadSearch,
 }: DropdownProps) {
-  const [filteredOptions, setFilteredOptions] = useState(options);
+  const [filteredOptions, setFilteredOptions] = useState<DropdownOption[]>();
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -79,6 +79,10 @@ export function Dropdown({
       )
     );
   };
+
+  useEffect(() => {
+    setFilteredOptions(options);
+  }, [options]);
 
   useEffect(() => {
     /** Helps maintain focus on input element as the dropdown list re-renders */
@@ -170,7 +174,7 @@ export function Dropdown({
             )
           )}
 
-          {typeaheadSearch && filteredOptions.length === 0 && (
+          {typeaheadSearch && filteredOptions?.length === 0 && (
             <Styled.NoResultsFoundWrapper>
               <Styled.OptionLabelWrapper>
                 No Results Found
