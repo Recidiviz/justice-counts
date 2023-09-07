@@ -24,7 +24,7 @@ import { MetricInsights } from "@justice-counts/common/components/DataViz/Metric
 import { transformDataForMetricInsights } from "@justice-counts/common/components/DataViz/utils";
 import { COMMON_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { DataVizTimeRangesMap } from "@justice-counts/common/types";
-import { each } from "bluebird";
+import { downloadFeedData } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -33,7 +33,6 @@ import { LearnMoreModal, ShareModal } from "../DashboardModals";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
-import { downloadFeedData } from "../utils/downloadHelpers";
 import {
   BackButtonContainer,
   Container,
@@ -227,10 +226,14 @@ export const DashboardView = observer(() => {
     ) {
       const metric = agencyDataStore.metricsByKey[metricKeyParam];
       if (metric) {
-        each(
-          metric.filenames,
-          downloadFeedData(metric.system.key, agencyDataStore.agency.id)
-        );
+        metric.filenames.forEach((filename) => {
+          if (agencyDataStore.agency)
+            downloadFeedData(
+              metric.system.key,
+              agencyDataStore.agency.id,
+              filename
+            );
+        });
       }
     }
   }, [agencyDataStore, metricKeyParam]);

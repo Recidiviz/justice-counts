@@ -30,6 +30,7 @@ import {
   UserAgency,
 } from "@justice-counts/common/types";
 import {
+  downloadFeedData,
   isPositiveNumber,
   printDateAsMonthYear,
   shortMonthsToNumbers,
@@ -38,7 +39,6 @@ import { makeAutoObservable, runInAction } from "mobx";
 
 import { VisibleCategoriesMetadata } from "../CategoryOverview/types";
 import { AgenciesList } from "../Home";
-import { downloadFeedData } from "../utils";
 import API from "./API";
 
 class AgencyDataStore {
@@ -255,7 +255,7 @@ class AgencyDataStore {
       if (metric && this.agency) {
         const agencyId = this.agency.id;
         metric.filenames.forEach((filename) =>
-          downloadFeedData(metric.system.key, agencyId)(filename)
+          downloadFeedData(metric.system.key, agencyId, filename)
         );
       }
     });

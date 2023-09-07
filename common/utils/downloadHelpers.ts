@@ -15,11 +15,27 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export const downloadFeedData =
-  (system: string, agencyId: number) => async (filename: string) => {
-    const a = document.createElement("a");
-    a.href = `/feed/${agencyId}?system=${system}&metric=${filename}`;
-    a.setAttribute("download", `${filename}.csv`);
-    a.click();
-    a.remove();
-  };
+import { Metric } from "@justice-counts/common/types";
+
+export const downloadFeedData = async (
+  system: string,
+  agencyId: number | string,
+  filename: string
+) => {
+  const a = document.createElement("a");
+  a.href = `/feed/${agencyId}?system=${system}&metric=${filename}`;
+  a.setAttribute("download", `${filename}.csv`);
+  a.click();
+  a.remove();
+};
+
+export const downloadMetricData = (
+  metric: Metric,
+  agencyId: number | string
+) => {
+  if (metric) {
+    metric.filenames.forEach((fileName) => {
+      downloadFeedData(metric.system.key, agencyId, fileName);
+    });
+  }
+};
