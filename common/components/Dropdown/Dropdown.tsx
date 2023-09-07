@@ -82,7 +82,7 @@ export function Dropdown({
 
   useEffect(() => {
     setFilteredOptions(options);
-    if (inputValue) setInputValue("");
+    setInputValue("");
   }, [options]);
 
   useEffect(() => {
