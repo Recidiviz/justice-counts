@@ -58,6 +58,7 @@ export const PageWrapper = styled.div`
 
 export const FormWrapper = styled.div`
   flex: 0 1 ${DATA_ENTRY_WIDTH}px;
+  width: ${DATA_ENTRY_WIDTH}px;
   max-width: ${DATA_ENTRY_WIDTH}px;
   display: flex;
   flex-direction: column;
