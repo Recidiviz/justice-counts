@@ -479,3 +479,10 @@ export const ListOfModifiedRecordsContainer = styled.div`
 `;
 
 export const ModifiedRecordTitle = styled.div``;
+
+export const MiniLoaderWrapper = styled.div`
+  position: absolute;
+  z-index: 3;
+  margin-left: 15px;
+  margin-top: 8px;
+`;
