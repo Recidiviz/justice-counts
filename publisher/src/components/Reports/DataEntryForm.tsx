@@ -389,14 +389,15 @@ const DataEntryForm: React.FC<{
             )}
             {isSuperagency && reportMetrics.length === 0 && (
               <DisabledMetricsInfoWrapper>
-                No metrics have been configured yet that match this {`record's`}
-                frequency. Please go to{" "}
+                There are no metrics that match this {`record's`} frequency (
+                {reportOverview.frequency}). If you believe this is incorrect,
+                go to{" "}
                 <DisabledMetricsInfoLink
                   onClick={() => navigate(`/agency/${agencyId}/metric-config`)}
                 >
                   Set Up Metrics
                 </DisabledMetricsInfoLink>{" "}
-                to configure your metrics.
+                to adjust each {`metric's`} frequency.
               </DisabledMetricsInfoWrapper>
             )}
           </FormFieldSet>
