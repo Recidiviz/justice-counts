@@ -389,7 +389,7 @@ const DataEntryForm: React.FC<{
             )}
             {isSuperagency && reportMetrics.length === 0 && (
               <DisabledMetricsInfoWrapper>
-                No metrics have been configured yet that match this record's
+                No metrics have been configured yet that match this {`record's`}
                 frequency. Please go to{" "}
                 <DisabledMetricsInfoLink
                   onClick={() => navigate(`/agency/${agencyId}/metric-config`)}
