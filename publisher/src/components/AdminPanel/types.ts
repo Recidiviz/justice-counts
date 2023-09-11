@@ -15,5 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./AdminPanel";
-export * from "./types";
+export enum Environment {
+  STAGING = "STAGING",
+  PRODUCTION = "PRODUCTION",
+}
+
+export type EnvironmentType = Environment.STAGING | Environment.PRODUCTION;

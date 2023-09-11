@@ -15,8 +15,72 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
+import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
+import { observer } from "mobx-react-lite";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export const AdminPanel = () => {
-  return <div>AdminPanel</div>;
-};
+import { Environment, EnvironmentType } from ".";
+import * as Styled from "./AdminPanel.styles";
+import { Badge } from "@justice-counts/common/components/Badge";
+// import { useStore } from "../../stores";
+
+export const AdminPanel = observer(() => {
+  // const { api } = useStore();
+  const navigate = useNavigate();
+
+  const [currentEnvironment, setCurrentEnvironment] =
+    useState<EnvironmentType>();
+
+  return (
+    <Styled.AdminPanelWrapper>
+      <HeaderBar
+        onLogoClick={() => navigate("/admin")}
+        badge={
+          currentEnvironment && (
+            <Badge color="GREEN">{currentEnvironment}</Badge>
+          )
+        }
+        hasBottomBorder
+      >
+        Admin Panel
+      </HeaderBar>
+
+      {/* Interstitial: Staging or Production? */}
+      {!currentEnvironment && (
+        <Styled.AdminPanelEnvironmentInterstitial>
+          <Styled.InterstitialTitle>
+            Which environment would you like to update?
+          </Styled.InterstitialTitle>
+          <Styled.EnvironmentOptionsWrapper>
+            <Styled.EnvironmentOption
+              onClick={() => setCurrentEnvironment(Environment.STAGING)}
+            >
+              Staging
+            </Styled.EnvironmentOption>
+            <Styled.EnvironmentOption
+              onClick={() => setCurrentEnvironment(Environment.PRODUCTION)}
+            >
+              Production
+            </Styled.EnvironmentOption>
+          </Styled.EnvironmentOptionsWrapper>
+        </Styled.AdminPanelEnvironmentInterstitial>
+      )}
+
+      {/* Staging */}
+      {currentEnvironment === Environment.STAGING && (
+        <Styled.AdminPanelStaging>
+          <div onClick={() => setCurrentEnvironment(undefined)}>
+            Switch Environments
+          </div>
+          You are now updating within the Staging environment.
+        </Styled.AdminPanelStaging>
+      )}
+
+      {/* Production */}
+      {currentEnvironment === Environment.PRODUCTION && (
+        <Styled.AdminPanelProduction>Production</Styled.AdminPanelProduction>
+      )}
+    </Styled.AdminPanelWrapper>
+  );
+});
