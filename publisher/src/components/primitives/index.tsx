@@ -49,10 +49,11 @@ const NameContainer = styled.span`
   padding: 0 !important;
 `;
 
+export const DISCLAIMER_BANNER_HEIGHT = 54;
 export const DisclaimerBanner = styled.div`
   ${typography.sizeCSS.normal}
   width: 100%;
-  height: 54px;
+  height: ${DISCLAIMER_BANNER_HEIGHT}px;
   background: ${palette.solid.blue};
   color: ${palette.solid.white};
   display: flex;

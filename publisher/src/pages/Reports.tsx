@@ -52,7 +52,10 @@ import {
   ResourceTypes,
   UnauthorizedDeleteActionModal,
 } from "../components/Modals";
-import { TeamMemberNameWithBadge } from "../components/primitives";
+import {
+  DisclaimerBanner,
+  TeamMemberNameWithBadge,
+} from "../components/primitives";
 import {
   ActionsWrapper,
   AndOthersSpan,
@@ -108,6 +111,7 @@ const Reports: React.FC = () => {
   const { agencyId } = useParams<string>() as { agencyId: string };
   const navigate = useNavigate();
   const windowWidth = useWindowWidth();
+  const isSuperagency = userStore.isAgencySuperagency(agencyId);
 
   const [loadingError, setLoadingError] = useState<string | undefined>(
     undefined
@@ -452,6 +456,13 @@ const Reports: React.FC = () => {
       )}
 
       <ReportsHeader>
+        {isSuperagency && (
+          <DisclaimerBanner>
+            If you would like to view or add data to metrics for the child
+            agencies you manage, please switch to the specific child
+            agency&apos;s Records page.
+          </DisclaimerBanner>
+        )}
         <DesktopRecordsPageTitle>{REPORTS_CAPITALIZED}</DesktopRecordsPageTitle>
 
         {/* Filter Reports By */}
@@ -585,7 +596,7 @@ const Reports: React.FC = () => {
       </ReportsHeader>
 
       {/* Reports List Table */}
-      <Table>
+      <Table isSuperagency={isSuperagency}>
         <LabelRow>
           {reportListColumnTitles.map((title) => (
             <LabelCell key={title}>{title}</LabelCell>

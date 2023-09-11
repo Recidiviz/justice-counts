@@ -29,6 +29,8 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
+import { DISCLAIMER_BANNER_HEIGHT } from "../primitives";
+
 export const PageHeader = styled.div`
   width: 100%;
   background: ${palette.solid.white};
@@ -130,13 +132,16 @@ export const ReportsFilterDropdownContainer = styled.div`
   }
 `;
 
-export const Table = styled.div`
+export const Table = styled.div<{ isSuperagency?: boolean }>`
   width: 100%;
-  padding: 170px 0 50px 0;
+  padding: ${({ isSuperagency }) =>
+      isSuperagency ? `${170 + DISCLAIMER_BANNER_HEIGHT}px` : `170px`}
+    0 50px 0;
   overflow: auto;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    padding-top: 132px;
+    padding-top: ${({ isSuperagency }) =>
+      isSuperagency ? `${170 + DISCLAIMER_BANNER_HEIGHT}px` : `132px`};
   }
 `;
 
