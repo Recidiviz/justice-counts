@@ -67,7 +67,6 @@ export const DisclaimerBanner = styled.div`
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    flex-direction: column;
     height: fit-content;
   }
 `;
