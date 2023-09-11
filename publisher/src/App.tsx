@@ -22,6 +22,7 @@ import React, { ReactElement, useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 import { trackNavigation } from "./analytics";
+import { AdminPanel } from "./components/AdminPanel";
 import MaintenancePage from "./components/Auth/Maintenance";
 import Footer from "./components/Footer";
 import { AppWrapper, PageWrapper } from "./components/Forms";
@@ -87,6 +88,27 @@ const App: React.FC = (): ReactElement => {
               <Navigate to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`} />
             }
           />
+          <Route path="/admin" element={<AdminPanel />} />
+          {initialAgency ? (
+            <>
+              <Route
+                path="/"
+                element={<Navigate to={`/agency/${initialAgency}/`} />}
+              />
+
+              <Route path="/agency/:agencyId/*" element={<Router />} />
+              <Route
+                path="*"
+                element={
+                  <Navigate
+                    to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`}
+                  />
+                }
+              />
+            </>
+          ) : (
+            <Route path="*" element={<NoAgencies />} />
+          )}
         </Routes>
       </PageWrapper>
       <Footer />
