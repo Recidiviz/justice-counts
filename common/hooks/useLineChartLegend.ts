@@ -15,93 +15,55 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import {
-  filter,
-  head,
-  keys,
-  map,
-  mergeAll,
-  pipe,
-  propEq,
-  reduce,
-  reverse,
-} from "ramda";
-import { useEffect, useMemo, useState } from "react";
-
 import { LegendData } from "../components/DataViz/types";
 import { Datapoint } from "../types";
 
 export const useLineChartLegend = (
-  data: Datapoint[],
-  dimensions: (keyof Datapoint)[],
+  datapoints: Datapoint[],
+  dimensions: string[],
   hoveredDate: string | null,
-  colorDict: Record<string, string>
+  dimensionsToColorMap: Record<string, string>
 ) => {
-  const [legendData, setLegendData] = useState<LegendData>();
+  const transformDataForLegend = (datapoint: Datapoint): LegendData => {
+    const dimensionsValueFill = dimensions.reduce((acc, dim) => {
+      acc[dim] = {
+        value: datapoint[dim] as number,
+        fill: dimensionsToColorMap[dim],
+      };
+      return acc;
+    }, {} as LegendData);
 
-  useEffect(() => {
-    const transformDataForLegend = (datapoint: Datapoint): LegendData =>
-      pipe(
-        keys,
-        map((dimension: keyof Datapoint) => ({
-          [dimension]: {
-            value: datapoint[dimension],
-            fill: colorDict[dimension],
-          },
-        })),
-        mergeAll
-      )(datapoint) as LegendData;
+    return { ...datapoint, ...dimensionsValueFill } as LegendData;
+  };
 
-    const getLatestDatapoint = (datapoints: Datapoint[]): Datapoint =>
-      pipe(
-        reverse as (list: readonly Datapoint[]) => Datapoint[],
-        filter<Datapoint>((datapoint: Datapoint): boolean => {
-          let hasReportedAnyMetrics = false;
-          dimensions.forEach((dimension: keyof Datapoint) => {
-            if (typeof datapoint[dimension] === "number")
-              hasReportedAnyMetrics = true;
-          });
-          return hasReportedAnyMetrics;
-        }) as (pred: Datapoint[]) => Datapoint[],
-        head
-      )(datapoints) as Datapoint;
+  const getLastDatapoint = (dps: Datapoint[]): Datapoint => dps[dps.length - 1];
 
-    const getHoveredDatapoint = (datapoints: Datapoint[]): Datapoint =>
-      pipe(
-        filter<Datapoint>(propEq(hoveredDate, "start_date")),
-        head
-      )(datapoints) as Datapoint;
+  const getHoveredDatapoint = (dps: Datapoint[]): Datapoint =>
+    dps.filter((dp) => dp.start_date === hoveredDate)[0];
 
-    setLegendData(
-      pipe(
-        hoveredDate ? getHoveredDatapoint : getLatestDatapoint,
-        transformDataForLegend
-      )(data)
-    );
-  }, [data, colorDict, dimensions, hoveredDate]);
-
-  const referenceLineHeight = useMemo(
-    () =>
-      reduce(
-        (total: number, dimension: keyof Datapoint) => {
-          const reducedDatapoints = pipe(
-            filter(
-              (datapoint: Datapoint) => typeof datapoint[dimension] === "number"
-            ),
-            reduce(
-              (acc: number, datapoint: Datapoint): number =>
-                Number(datapoint[dimension]) > acc
-                  ? Number(datapoint[dimension])
-                  : acc,
-              0
-            )
-          )(data);
-          return reducedDatapoints > total ? reducedDatapoints : total;
-        },
-        0,
-        dimensions
-      ),
-    [dimensions, data]
+  const legendData = transformDataForLegend(
+    hoveredDate ? getHoveredDatapoint(datapoints) : getLastDatapoint(datapoints)
   );
-  return { legendData, referenceLineHeight };
+
+  /**
+   * For each record, calculate the highest value across all dimensions to be used as the
+   * upper limit in the chart Y axis.
+   */
+  const maxDimensionsValuesPerRecord = datapoints.map((dp) => {
+    const {
+      start_date: startDate,
+      end_date: endDate,
+      frequency,
+      dataVizMissingData,
+      ...dimensionVals
+    } = dp;
+    const dimensionValsFlattened = Object.values(
+      dimensionVals
+    ).flat() as number[];
+    return Math.max(...dimensionValsFlattened);
+  });
+
+  const referenceLineUpperLimit = Math.max(...maxDimensionsValuesPerRecord);
+
+  return { legendData, referenceLineUpperLimit };
 };

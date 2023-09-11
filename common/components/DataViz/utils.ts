@@ -16,7 +16,6 @@
 // =============================================================================
 
 import { mapValues, pickBy } from "lodash";
-import { pipe, prop, reverse, tail, values } from "ramda";
 
 import {
   Datapoint,
@@ -305,22 +304,6 @@ export const transformDataForBarChart = (
   return fillTimeGapsBetweenDatapoints(transformedData, monthsAgo);
 };
 
-// transforms data into the right display format for the data viz chart
-export const transformDataForLineChart = (
-  datapoints: { [disaggregation: string]: { [start_date: string]: Datapoint } },
-  disaggregationProp: keyof Datapoint
-) => {
-  const disaggregationsArray = pipe(
-    prop(disaggregationProp) as (value: {
-      [disaggregation: string]: { [start_date: string]: Datapoint };
-    }) => object,
-    values
-  )(datapoints);
-  return disaggregationsArray.length
-    ? pipe(filterNullDatapoints)(disaggregationsArray)
-    : disaggregationsArray;
-};
-
 export const transformDataForMetricInsights = (
   datapoints: Datapoint[],
   monthsAgo: DataVizTimeRange
@@ -474,10 +457,6 @@ export const generateDummyDataForChart = () => {
   }
   return dummyData;
 };
-
-// Removes first and last elements in the given array
-export const trimArrayEnds: <T>(arr: T[]) => T[] = <T>(arr: T[]) =>
-  pipe(tail, reverse<T>, tail, reverse<T>)(arr);
 
 export const isAnnualMetric = (metric: Metric) => {
   return metric.custom_frequency

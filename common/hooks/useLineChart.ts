@@ -22,14 +22,10 @@ import {
   Metric,
   UserAgency,
 } from "@justice-counts/common/types";
-import { head, keys, pipe, prop, values } from "ramda";
-import { useCallback } from "react";
-
-import { transformDataForLineChart } from "../components/DataViz/utils";
 
 export type LineChartProps = {
-  getLineChartDimensions: (metric: Metric) => string[];
-  getLineChartData: (metric: Metric) => Datapoint[];
+  getLineChartDimensionsFromMetric: (metric: Metric) => string[];
+  getLineChartDataFromMetric: (metric: Metric) => Datapoint[];
 };
 
 export type LineChartHookProps = Partial<UserAgency> & {
@@ -39,45 +35,41 @@ export type LineChartHookProps = Partial<UserAgency> & {
     | undefined;
 };
 
+/** Returns methods used to convert data into a structure line charts can consume */
 export const useLineChart = ({
   datapointsByMetric,
   dimensionNamesByMetricAndDisaggregation,
 }: LineChartHookProps): LineChartProps => {
-  const getLineChartData = useCallback(
-    (metric: Metric) => {
-      if (datapointsByMetric) {
-        const disaggregationProp: string = pipe(
-          keys,
-          head
-        )(datapointsByMetric[metric.key]?.disaggregations) as string;
-        return transformDataForLineChart(
-          datapointsByMetric[metric.key]?.disaggregations,
-          disaggregationProp
-        );
-      }
-      return [];
-    },
-    [datapointsByMetric]
-  );
+  const getLineChartDataFromMetric = (metric: Metric) => {
+    if (datapointsByMetric) {
+      /**
+       * Gets the first set of disaggregated datapoints.
+       * NOTE: This assumes there's just one breakdown per metric. We will need to adjust this
+       *       based on how we want to handle displaying metrics w/ multiple breakdowns.
+       */
+      const { disaggregations } = datapointsByMetric[metric.key];
+      const disaggregationKey = Object.keys(disaggregations)[0];
+      return Object.values(disaggregations[disaggregationKey]);
+    }
+    return [];
+  };
 
-  const getLineChartDimensions = useCallback(
-    (metric: Metric) => {
-      if (dimensionNamesByMetricAndDisaggregation) {
-        return pipe(
-          prop(metric.key) as (
-            value: DimensionNamesByMetricAndDisaggregation
-          ) => object,
-          values,
-          head
-        )(dimensionNamesByMetricAndDisaggregation) as string[];
-      }
-      return [];
-    },
-    [dimensionNamesByMetricAndDisaggregation]
-  );
+  const getLineChartDimensionsFromMetric = (metric: Metric) => {
+    if (dimensionNamesByMetricAndDisaggregation) {
+      /**
+       * Gets an array of dimension keys.
+       * NOTE: This assumes there's just one breakdown per metric. We will need to adjust this
+       *       based on how we want to handle displaying metrics w/ multiple breakdowns.
+       */
+      return Object.values(
+        dimensionNamesByMetricAndDisaggregation[metric.key]
+      )[0];
+    }
+    return [];
+  };
 
   return {
-    getLineChartDimensions,
-    getLineChartData,
+    getLineChartDimensionsFromMetric,
+    getLineChartDataFromMetric,
   };
 };

@@ -20,7 +20,6 @@ import { Route, Routes } from "react-router-dom";
 
 import { AgencyOverview } from "./AgencyOverview";
 import { CategoryOverview } from "./CategoryOverview/CategoryOverview";
-import { DashboardView } from "./DashboardView";
 import { Home } from "./Home";
 import { NotFound } from "./NotFound";
 import { Protected } from "./Protected";
@@ -42,14 +41,6 @@ function App() {
         element={
           <Protected>
             <CategoryOverview />
-          </Protected>
-        }
-      />
-      <Route
-        path="/agency/:slug/dashboard"
-        element={
-          <Protected>
-            <DashboardView />
           </Protected>
         }
       />

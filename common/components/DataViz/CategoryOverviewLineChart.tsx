@@ -19,8 +19,7 @@ import {
   BreakdownsTitle,
   Container,
 } from "@justice-counts/agency-dashboard/src/CategoryOverview/CategoryOverview.styled";
-import { invertObj, map, mapObjIndexed, pipe } from "ramda";
-import React, { CSSProperties, useMemo } from "react";
+import React, { CSSProperties, useMemo, useState } from "react";
 import {
   CartesianGrid,
   Legend,
@@ -34,14 +33,11 @@ import {
 
 import { useLineChartLegend } from "../../hooks";
 import { Datapoint } from "../../types";
-import {
-  convertShortDateToUTCDateString,
-  printDateAsShortMonthYear,
-} from "../../utils";
+import { convertShortDateToUTCDateString } from "../../utils";
 import { formatNumberForChart } from "../../utils/helperUtils";
 import { palette } from "../GlobalStyles";
 import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
-import { trimArrayEnds } from "./utils";
+import { splitUtcString } from "./utils";
 
 export type LineChartProps = {
   data: Datapoint[];
@@ -110,42 +106,31 @@ export function CategoryOverviewLineChart({
   setHoveredDate,
   metricKey,
 }: LineChartProps) {
-  const colorDict: Record<keyof Datapoint, string> = useMemo(
-    () =>
-      dimensions?.length
-        ? pipe(
-            invertObj,
-            mapObjIndexed(
-              (colorName: string, fill) =>
-                dimensions[Number(colorName.replace("bar", "")) - 1]
-            ),
-            invertObj
-          )(palette.dataViz)
-        : {},
-    [dimensions]
-  );
-  const renderLines = () => {
-    // each Recharts Bar component defines a category type in the stacked bar chart
-    let lineDefinitions: JSX.Element[] = [];
-    dimensions?.forEach((dimension) => {
-      const newLine = (
-        <Line
-          key={dimension}
-          dataKey={dimension}
-          stroke={colorDict[dimension]}
-          type="monotone"
-        />
-      );
-      lineDefinitions = [newLine, ...lineDefinitions];
-    });
-    return lineDefinitions;
-  };
-  const { legendData, referenceLineHeight } = useLineChartLegend(
+  /** Creates a { [dimension]: colorFromDataVizPalette } map */
+  const [dimensionsToColorMap] = useState<Record<string, string>>(() => {
+    return dimensions.reduce((acc, dim, idx) => {
+      acc[dim] = Object.values(palette.dataViz)[idx];
+      return acc;
+    }, {} as Record<string, string>);
+  });
+
+  const { legendData, referenceLineUpperLimit } = useLineChartLegend(
     data,
     dimensions,
     hoveredDate,
-    colorDict
+    dimensionsToColorMap
   );
+
+  const breakdownLines = useMemo(() => {
+    return dimensions.map((dimension) => (
+      <Line
+        key={dimension}
+        dataKey={dimension}
+        stroke={dimensionsToColorMap[dimension]}
+        type="monotone"
+      />
+    ));
+  }, [dimensions, dimensionsToColorMap]);
 
   return (
     <Container>
@@ -167,28 +152,12 @@ export function CategoryOverviewLineChart({
         }}
       >
         <CartesianGrid horizontal={false} />
-        <ReferenceLine y={referenceLineHeight} />
-        {pipe(
-          trimArrayEnds<Datapoint>,
-          map(
-            (datapoint: Datapoint): JSX.Element => (
-              <ReferenceLine
-                key={datapoint.start_date}
-                x={printDateAsShortMonthYear(
-                  new Date(datapoint.start_date).getUTCMonth() + 1,
-                  new Date(datapoint.start_date).getUTCFullYear()
-                )}
-              />
-            )
-          )
-        )(data)}
+        <ReferenceLine y={referenceLineUpperLimit} />
         <XAxis
-          dataKey={(datapoint) =>
-            printDateAsShortMonthYear(
-              new Date(datapoint.start_date).getUTCMonth() + 1,
-              new Date(datapoint.start_date).getUTCFullYear()
-            )
-          }
+          dataKey={(datapoint) => {
+            const { month, year } = splitUtcString(datapoint.start_date);
+            return `${month} ${year}`;
+          }}
           style={axisTickStyle}
           tickLine
           tick={<CustomizedAxisTick length={data.length} />}
@@ -199,14 +168,14 @@ export function CategoryOverviewLineChart({
           domain={[0, "dataMax"]}
           tickFormatter={formatNumberForChart as (value: number) => string}
           style={axisTickStyle}
-          ticks={[0, referenceLineHeight]}
+          ticks={[0, referenceLineUpperLimit]}
         />
         {
           <Tooltip
             wrapperStyle={{ display: "none" }}
           /> /* This preserves dot highlighting on hover; seems useful */
         }
-        {renderLines()}
+        {breakdownLines}
         {legendData && (
           <Legend
             content={

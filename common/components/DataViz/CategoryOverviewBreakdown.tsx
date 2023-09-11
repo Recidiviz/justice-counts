@@ -16,22 +16,8 @@
 // =============================================================================
 
 import { renderPercentText } from "@justice-counts/agency-dashboard/src/utils/formatting";
-import {
-  descend,
-  filter,
-  is,
-  map,
-  Ord,
-  pipe,
-  reduce,
-  sort,
-  values,
-} from "ramda";
 import React, { FunctionComponent } from "react";
 
-// eslint-disable-next-line no-restricted-imports
-import { Datapoint } from "../../types";
-import { printDateAsShortMonthYear } from "../../utils";
 import { palette } from "../GlobalStyles";
 import {
   Container,
@@ -41,61 +27,44 @@ import {
   LegendTitle,
   LegendValue,
 } from "./CategoryOverviewBreakdown.styles";
-import {
-  LineChartBreakdownNumericValue,
-  LineChartBreakdownProps,
-  LineChartBreakdownValue,
-} from "./types";
+import { LineChartBreakdownProps } from "./types";
+import { splitUtcString } from "./utils";
 
 export const CategoryOverviewBreakdown: FunctionComponent<
   LineChartBreakdownProps
-> = ({ data, isFundingOrExpenses, dimensions, hoveredDate }) => (
-  <Container>
-    <LegendTitle>
-      {data.start_date &&
-        (hoveredDate
-          ? printDateAsShortMonthYear(
-              new Date(data.start_date?.value as string).getUTCMonth() + 1,
-              new Date(data.start_date?.value as string).getUTCFullYear()
-            )
-          : `Recent (${printDateAsShortMonthYear(
-              new Date(data.start_date?.value as string).getUTCMonth() + 1,
-              new Date(data.start_date?.value as string).getUTCFullYear()
-            )})`)}
-    </LegendTitle>
-    {pipe(
-      sort(
-        descend(
-          (dimension: keyof Datapoint) => Number(data[dimension]?.value) as Ord
-        )
-      ),
-      map((dimension: keyof Datapoint) => (
+> = ({ data, isFundingOrExpenses, dimensions, hoveredDate }) => {
+  const { month, year } = splitUtcString(String(data.start_date));
+  const displayDate = `${month} ${year}`;
+  const totalDimensionValues = dimensions.reduce((acc, dim) => {
+    const sum = acc + Number(data[dim].value);
+    return sum;
+  }, 0);
+  /** Dimensions sorted in descending order based on value */
+  const sortedDimensions = dimensions.sort(
+    (dimA: string, dimB: string) =>
+      Number(data[dimB].value) - Number(data[dimA].value)
+  );
+
+  return (
+    <Container>
+      <LegendTitle>
+        {data.start_date &&
+          (hoveredDate ? displayDate : `Recent (${displayDate})`)}
+      </LegendTitle>
+
+      {sortedDimensions.map((dimension) => (
         <LegendItem key={dimension}>
           <LegendBullet color={data[dimension]?.fill}>▪</LegendBullet>
           <LegendName color={palette.solid.black}>{dimension}</LegendName>
           <LegendValue>
             {renderPercentText(
               data[dimension]?.value,
-              pipe(
-                values as unknown as (
-                  obj: Record<keyof Datapoint, LineChartBreakdownValue>
-                ) => LineChartBreakdownValue,
-                filter(({ value }: LineChartBreakdownValue) =>
-                  is(Number, value)
-                ) as (
-                  pred: LineChartBreakdownValue
-                ) => LineChartBreakdownNumericValue[],
-                reduce<LineChartBreakdownNumericValue, number>(
-                  (acc: number, { value }: LineChartBreakdownNumericValue) =>
-                    acc + value,
-                  0
-                )
-              )(data) as number,
+              totalDimensionValues,
               isFundingOrExpenses
             )}
           </LegendValue>
         </LegendItem>
-      ))
-    )(dimensions)}
-  </Container>
-);
+      ))}
+    </Container>
+  );
+};

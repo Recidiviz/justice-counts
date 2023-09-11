@@ -28,7 +28,6 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCurrentPng } from "recharts-to-png";
 
-import { Footer } from "../Footer";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
@@ -72,11 +71,11 @@ export const CategoryOverview = observer(() => {
   );
   const [hoveredDate, setHoveredDate] = useState<{ [key: string]: string }>({});
 
-  const { getLineChartData, getLineChartDimensions } = useLineChart({
-    datapointsByMetric,
-    dimensionNamesByMetricAndDisaggregation,
-  });
-
+  const { getLineChartDataFromMetric, getLineChartDimensionsFromMetric } =
+    useLineChart({
+      datapointsByMetric,
+      dimensionNamesByMetricAndDisaggregation,
+    });
   const { getBarChartData } = useBarChart({
     getDataVizTimeRange:
       getDataVizTimeRangeByFilterByMetricFrequency(dataRangeFilter),
@@ -166,14 +165,14 @@ export const CategoryOverview = observer(() => {
                     </Styled.MetricDescriptionBarChartWrapper>
 
                     {/* Breakdown/Disaggregation Line Chart */}
-                    {getLineChartData(metric).length > 0 && (
+                    {getLineChartDataFromMetric(metric).length > 0 && (
                       <CategoryOverviewLineChart
-                        data={getLineChartData(metric)}
+                        data={getLineChartDataFromMetric(metric)}
                         isFundingOrExpenses={
                           metric.display_name === "Funding" ||
                           metric.display_name === "Expenses"
                         }
-                        dimensions={getLineChartDimensions(metric)}
+                        dimensions={getLineChartDimensionsFromMetric(metric)}
                         hoveredDate={hoveredDate[metric.key]}
                         setHoveredDate={setHoveredDate}
                         metricKey={metric.key}
@@ -186,7 +185,6 @@ export const CategoryOverview = observer(() => {
           </Styled.MetricsBlock>
         </Styled.Container>
       </Styled.Wrapper>
-      <Footer />
     </>
   );
 });

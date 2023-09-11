@@ -22,7 +22,6 @@ import {
   Metric,
   UserAgency,
 } from "@justice-counts/common/types";
-import { useCallback } from "react";
 
 import { transformDataForBarChart } from "../components/DataViz/utils";
 
@@ -35,23 +34,21 @@ export type BarChartHookProps = Partial<UserAgency> & {
   datapointsByMetric: DatapointsByMetric | undefined;
 };
 
+/** Returns methods used to convert data into a structure bar charts can consume */
 export const useBarChart = ({
   getDataVizTimeRange,
   datapointsByMetric,
 }: BarChartHookProps): BarChartProps => {
-  const getBarChartData = useCallback(
-    (metric: Metric) => {
-      if (datapointsByMetric) {
-        return transformDataForBarChart(
-          datapointsByMetric[metric.key].aggregate as Datapoint[],
-          getDataVizTimeRange(metric),
-          "Count"
-        );
-      }
-      return [];
-    },
-    [getDataVizTimeRange, datapointsByMetric]
-  );
+  const getBarChartData = (metric: Metric) => {
+    if (datapointsByMetric) {
+      return transformDataForBarChart(
+        datapointsByMetric[metric.key].aggregate,
+        getDataVizTimeRange(metric),
+        "Count"
+      );
+    }
+    return [];
+  };
 
   return {
     getBarChartData,
