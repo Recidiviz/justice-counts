@@ -86,6 +86,7 @@ const DataEntryForm: React.FC<{
   const metricsRef = useRef<HTMLDivElement[]>([]);
 
   const currentAgency = userStore.getAgency(agencyId);
+  const isSuperagency = userStore.isAgencySuperagency(agencyId);
   const isPublished =
     reportStore.reportOverviews[reportID].status === "PUBLISHED";
 
@@ -376,7 +377,7 @@ const DataEntryForm: React.FC<{
                             navigate(`/agency/${agencyId}/metric-config`)
                           }
                         >
-                          Metric Configuration
+                          Set Up Metrics
                         </DisabledMetricsInfoLink>{" "}
                         to re-enable{" "}
                         {disabledMetricsNames.length > 1 ? "them" : "it"}.
@@ -385,6 +386,19 @@ const DataEntryForm: React.FC<{
                   </Fragment>
                 );
               }
+            )}
+            {isSuperagency && reportMetrics.length === 0 && (
+              <DisabledMetricsInfoWrapper>
+                There are no metrics that match this {`record's`} frequency (
+                {reportOverview.frequency}). If you believe this is incorrect,
+                go to{" "}
+                <DisabledMetricsInfoLink
+                  onClick={() => navigate(`/agency/${agencyId}/metric-config`)}
+                >
+                  Set Up Metrics
+                </DisabledMetricsInfoLink>{" "}
+                to adjust each {`metric's`} frequency.
+              </DisabledMetricsInfoWrapper>
             )}
           </FormFieldSet>
         </Form>
