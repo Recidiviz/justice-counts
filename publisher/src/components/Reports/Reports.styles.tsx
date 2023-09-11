@@ -141,7 +141,7 @@ export const Table = styled.div<{ isSuperagency?: boolean }>`
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     padding-top: ${({ isSuperagency }) =>
-      isSuperagency ? `${170 + DISCLAIMER_BANNER_HEIGHT}px` : `132px`};
+      isSuperagency ? `${132 + DISCLAIMER_BANNER_HEIGHT}px` : `132px`};
   }
 `;
 
