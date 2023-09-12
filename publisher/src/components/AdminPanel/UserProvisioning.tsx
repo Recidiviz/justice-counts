@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Badge } from "@justice-counts/common/components/Badge";
 import { Button } from "@justice-counts/common/components/Button";
 import { Modal } from "@justice-counts/common/components/Modal";
 import React, { useState } from "react";
@@ -103,7 +104,9 @@ export const UserProvisioning: React.FC<{ users: any[] }> = ({ users }) => {
         />
       )}
       <Styled.SettingTitleButtonWrapper>
-        <Styled.SettingsTitle>User Provisioning</Styled.SettingsTitle>
+        <Styled.SettingsTitle>
+          User Provisioning <Badge color="GREY">Staging</Badge>
+        </Styled.SettingsTitle>
         <Styled.ButtonWrapper>
           <Button
             label="+ Add New User"

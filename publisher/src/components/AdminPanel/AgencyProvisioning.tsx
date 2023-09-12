@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Badge } from "@justice-counts/common/components/Badge";
 import { Button } from "@justice-counts/common/components/Button";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
@@ -172,7 +173,7 @@ export const AgencyProvisioning: React.FC<{ agencies: any[] }> = ({
                     <input name="new-team-member" type="text" />
                     <label htmlFor="new-team-member">Add Team Member</label>
                   </Styled.InputLabelWrapper>
-                  {currentAgencyToEdit.team.map((t: any) => (
+                  {currentAgencyToEdit?.team.map((t: any) => (
                     <Styled.TeamMemberChip>
                       <Styled.ChipInnerRow>
                         <Styled.ChipName>{t.name}</Styled.ChipName>
@@ -208,7 +209,9 @@ export const AgencyProvisioning: React.FC<{ agencies: any[] }> = ({
         />
       )}
       <Styled.SettingTitleButtonWrapper>
-        <Styled.SettingsTitle>Agency Provisioning</Styled.SettingsTitle>
+        <Styled.SettingsTitle>
+          Agency Provisioning <Badge color="GREY">Staging</Badge>
+        </Styled.SettingsTitle>
         <Styled.ButtonWrapper>
           <Button
             label="+ Add New Agency"

@@ -116,6 +116,7 @@ export const SystemSelectorTab = styled.div<{ selected?: boolean }>`
 export const SettingsTitle = styled.div`
   ${typography.sizeCSS.large}
   margin-bottom: 24px;
+  display: flex;
 `;
 export const Table = styled.div`
   /* max-height: 500px;
