@@ -16,13 +16,21 @@
 // =============================================================================
 
 import {
+  HEADER_BAR_HEIGHT,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
+import { FOOTER_HEIGHT_WITHOUT_MARGIN } from "../Footer";
 
 export const AdminPanelWrapper = styled.div`
   width: 100%;
+  padding: 25px 50px;
+  max-height: calc(
+    100vh - ${HEADER_BAR_HEIGHT}px - ${FOOTER_HEIGHT_WITHOUT_MARGIN}px
+  );
+  overflow-y: auto;
+  position: relative;
 `;
 
 export const AdminPanelEnvironmentInterstitial = styled.div`
@@ -50,7 +58,7 @@ export const EnvironmentOption = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid ${palette.highlight.grey4};
+  border: 1px solid ${palette.solid.darkgrey};
   border-radius: 2px;
   color: ${palette.highlight.grey9};
 
@@ -64,3 +72,92 @@ export const EnvironmentOption = styled.div`
 export const AdminPanelStaging = styled.div``;
 
 export const AdminPanelProduction = styled.div``;
+
+export const EnvironmentSwitchWrapper = styled.div`
+  margin-bottom: 24px;
+`;
+
+export const EnvironmentSwitchButton = styled.div`
+  ${typography.sizeCSS.normal}
+  color: ${palette.solid.blue};
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.solid.darkblue};
+  }
+`;
+
+export const SettingsContainer = styled.div`
+  padding: 24px 0;
+`;
+
+export const SystemSelectorTabWrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+`;
+
+export const SystemSelectorTab = styled.div<{ selected?: boolean }>`
+  text-transform: capitalize;
+  white-space: nowrap;
+  color: ${({ selected }) =>
+    selected ? palette.solid.blue : palette.solid.darkgrey};
+  border-bottom: 1.5px solid
+    ${({ selected }) => (selected ? palette.solid.blue : "none")};
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.solid.darkblue};
+  }
+`;
+
+export const SettingsTitle = styled.div`
+  ${typography.sizeCSS.large}
+  margin-bottom: 24px;
+`;
+export const Table = styled.div`
+  /* max-height: 500px;
+  overflow-y: auto; */
+`;
+export const TableRow = styled.div<{ titleRow?: boolean }>`
+  width: 100%;
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 2fr 4fr 1fr;
+  padding: 12px 0;
+  border-bottom: 1px solid ${palette.highlight.grey4};
+
+  ${({ titleRow }) =>
+    titleRow
+      ? `
+          ${typography.sizeCSS.small}
+          color: ${palette.highlight.grey8};
+          background: ${palette.solid.white};
+          position: sticky;
+          top: -25px;
+        `
+      : `
+        ${typography.sizeCSS.normal}
+        color: ${palette.solid.darkgrey};
+  `}
+
+  &:hover {
+    ${({ titleRow }) =>
+      !titleRow &&
+      `
+        cursor: pointer;
+        background: ${palette.solid.lightgrey2};
+      `}
+  }
+`;
+export const TableCell = styled.div`
+  /* display: flex;
+  align-items: center;
+  justify-content: flex-start; */
+`;
+
+export const HeaderEnvironmentDisplay = styled.div`
+  ${typography.sizeCSS.large}
+  letter-spacing: 7px;
+`;

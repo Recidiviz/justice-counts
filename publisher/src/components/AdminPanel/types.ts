@@ -20,4 +20,11 @@ export enum Environment {
   PRODUCTION = "PRODUCTION",
 }
 
-export type EnvironmentType = Environment.STAGING | Environment.PRODUCTION;
+export enum Setting {
+  USERS = "USERS",
+  AGENCIES = "AGENCIES",
+}
+
+export type EnvironmentType = `${Environment}`;
+
+export type SettingType = `${Setting}`;
