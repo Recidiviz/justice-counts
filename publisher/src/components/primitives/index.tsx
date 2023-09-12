@@ -49,16 +49,16 @@ const NameContainer = styled.span`
   padding: 0 !important;
 `;
 
+export const DISCLAIMER_BANNER_HEIGHT = 54;
 export const DisclaimerBanner = styled.div`
   ${typography.sizeCSS.normal}
   width: 100%;
-  height: 54px;
+  min-height: ${DISCLAIMER_BANNER_HEIGHT}px;
   background: ${palette.solid.blue};
   color: ${palette.solid.white};
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
   text-align: center;
+  padding: 16px;
 
   a,
   a:hover,
@@ -67,9 +67,7 @@ export const DisclaimerBanner = styled.div`
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    flex-direction: column;
     height: fit-content;
-    padding: 16px;
   }
 `;
 

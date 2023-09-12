@@ -89,7 +89,7 @@ export const MetricsOverview = observer(() => {
           <a href="mailto:justice-counts-support@csg.org">
             justice-counts-support@csg.org
           </a>
-          &nbsp; to apply these settings to other agencies.
+          &nbsp;to apply these settings to the child agencies you manage.
         </DisclaimerBanner>
       )}
       <Styled.MetricsOverviewWrapper
