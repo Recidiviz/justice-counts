@@ -25,6 +25,7 @@ import { useNavigate } from "react-router-dom";
 import { Environment, EnvironmentType, Setting, SettingType } from ".";
 import * as Styled from "./AdminPanel.styles";
 import { Button } from "@justice-counts/common/components/Button";
+import { Modal } from "@justice-counts/common/components/Modal";
 // import { useStore } from "../../stores";
 
 export const AdminPanel = observer(() => {
@@ -54,15 +55,134 @@ export const AdminPanel = observer(() => {
   }, []);
 
   const usersTableHeaderRow = ["Auth0 ID", "Name", "Email", "Agencies"];
+  const agencyProvisioningTableHeaderRow = [
+    "Agency ID",
+    "Name",
+    "State",
+    "County",
+    "Systems",
+    "Team Members",
+    "Superagency",
+    "Child Agency",
+  ];
+  const settingOptions = [
+    {
+      key: "users",
+      label: "Users",
+      onClick: () => setCurrentSettingType(Setting.USERS),
+      selected: currentSettingType === Setting.USERS,
+    },
+    {
+      key: "agencies",
+      label: "Agencies",
+      onClick: () => setCurrentSettingType(Setting.AGENCIES),
+      selected: currentSettingType === Setting.AGENCIES,
+    },
+  ];
+
+  const [addEditUserModal, setAddEditUserModal] = useState(false);
+  const [addEditAgencyModal, setAddEditAgencyModal] = useState(false);
 
   return (
-    <Styled.AdminPanelWrapper>
+    <Styled.AdminPanelContainer>
       <HeaderBar onLogoClick={() => navigate("/admin")} hasBottomBorder>
         <Styled.HeaderEnvironmentDisplay>
           {currentEnvironment}
         </Styled.HeaderEnvironmentDisplay>
         Admin Panel
       </HeaderBar>
+
+      {/* Add New User Modal */}
+      {addEditUserModal && (
+        <Modal
+          title="Add New User"
+          description={
+            <Styled.AddNewUserModal>
+              <Styled.ModalDescription>
+                Creates a new user in Auth0 and the Justice Counts database
+              </Styled.ModalDescription>
+              <Styled.Form>
+                <Styled.InputLabelWrapper>
+                  <input name="username" type="text" />
+                  <label htmlFor="username">Name </label>
+                </Styled.InputLabelWrapper>
+                <Styled.InputLabelWrapper>
+                  <input name="email" type="text" />
+                  <label htmlFor="email">Email </label>
+                </Styled.InputLabelWrapper>
+                <Styled.InputLabelWrapper>
+                  <input name="agency" type="text" />
+                  <label htmlFor="agency">Agency </label>
+                </Styled.InputLabelWrapper>
+              </Styled.Form>
+            </Styled.AddNewUserModal>
+          }
+          buttons={[
+            {
+              label: "Cancel",
+              onClick: () => {
+                setAddEditUserModal(false);
+              },
+            },
+            { label: "Save", onClick: () => {} },
+          ]}
+        />
+      )}
+
+      {/* Add New Agency Modal */}
+      {addEditAgencyModal && (
+        <Modal
+          title="Add New Agency"
+          description={
+            <Styled.AddNewUserModal>
+              {/* <Styled.ModalDescription>
+              Creates a new user in Auth0 and the Justice Counts database
+            </Styled.ModalDescription> */}
+              <Styled.Form>
+                <Styled.InputLabelWrapper>
+                  <input name="username" type="text" />
+                  <label htmlFor="username">Name </label>
+                </Styled.InputLabelWrapper>
+                <Styled.InputLabelWrapper>
+                  <input name="systems" type="text" />
+                  <label htmlFor="systems">Systems </label>
+                </Styled.InputLabelWrapper>
+                <Styled.InputLabelWrapper>
+                  <input name="state" type="text" />
+                  <label htmlFor="state">State </label>
+                </Styled.InputLabelWrapper>
+                <Styled.InputLabelWrapper>
+                  <input name="county" type="text" />
+                  <label htmlFor="county">County </label>
+                </Styled.InputLabelWrapper>
+                <Styled.InputLabelWrapper flexRow>
+                  <input name="superagency" type="checkbox" />
+                  <label htmlFor="superagency">Superagency</label>
+                  <input name="child-agency" type="checkbox" />
+                  <label htmlFor="child-agency">Child Agency </label>
+                </Styled.InputLabelWrapper>
+                <Styled.InputLabelWrapper>
+                  <input name="child-agencies" type="text" />
+                  <label htmlFor="child-agencies">Child Agencies </label>
+                </Styled.InputLabelWrapper>
+                <Styled.InputLabelWrapper>
+                  <input name="parent-agency" type="text" />
+                  <label htmlFor="parent-agency">Parent (Super) Agency </label>
+                </Styled.InputLabelWrapper>
+              </Styled.Form>
+            </Styled.AddNewUserModal>
+          }
+          buttons={[
+            {
+              label: "Cancel",
+              onClick: () => {
+                setAddEditAgencyModal(false);
+              },
+            },
+            { label: "Save", onClick: () => {} },
+          ]}
+        />
+      )}
 
       {/* Interstitial: Staging or Production? */}
       {!currentEnvironment && (
@@ -85,9 +205,8 @@ export const AdminPanel = observer(() => {
         </Styled.AdminPanelEnvironmentInterstitial>
       )}
 
-      {/* Staging */}
-      {currentEnvironment === Environment.STAGING && (
-        <Styled.AdminPanelStaging>
+      {currentEnvironment && (
+        <Styled.AdminPanelWrapper>
           <Styled.EnvironmentSwitchWrapper>
             <Styled.EnvironmentSwitchButton
               onClick={resetEnvironmentSettingType}
@@ -95,90 +214,122 @@ export const AdminPanel = observer(() => {
               &larr; Switch Environments
             </Styled.EnvironmentSwitchButton>
           </Styled.EnvironmentSwitchWrapper>
-          <TabbedBar
-            options={[
-              {
-                key: "users",
-                label: "Users",
-                onClick: () => setCurrentSettingType(Setting.USERS),
-                selected: currentSettingType === Setting.USERS,
-              },
-              {
-                key: "agencies",
-                label: "Agencies",
-                onClick: () => setCurrentSettingType(Setting.AGENCIES),
-                selected: currentSettingType === Setting.AGENCIES,
-              },
-            ]}
-          />
-          <Styled.SettingsContainer>
-            {currentSettingType === Setting.USERS && (
-              <>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <Styled.SettingsTitle>User Provisioning</Styled.SettingsTitle>
-                  <div style={{ width: "150px", marginBottom: 20 }}>
-                    <Button
-                      label="+ Add New User"
-                      onClick={() => {}}
-                      buttonColor="blue"
-                    />
-                  </div>
-                </div>
-                <Styled.Table>
-                  <Styled.TableRow titleRow>
-                    {usersTableHeaderRow.map((cell) => (
-                      <Styled.TableCell>{cell}</Styled.TableCell>
-                    ))}
-                  </Styled.TableRow>
-                  {users.map((x) => (
-                    <Styled.TableRow>
-                      <div>{x.auth0_user_id}</div>
-                      <div>{x.name}</div>
-                      <div>{x.email}</div>
-                      <div>{x.agencies.map((a) => a.name + ", ")} agencies</div>
-                    </Styled.TableRow>
-                  ))}
-                </Styled.Table>
-              </>
-            )}
-            {currentSettingType === Setting.AGENCIES && <>Agency Settings</>}
-          </Styled.SettingsContainer>
-        </Styled.AdminPanelStaging>
-      )}
+          <TabbedBar options={settingOptions} />
 
-      {/* Production */}
-      {currentEnvironment === Environment.PRODUCTION && (
-        <Styled.AdminPanelProduction>
-          <Styled.EnvironmentSwitchButton onClick={resetEnvironmentSettingType}>
-            &larr; Switch Environments
-          </Styled.EnvironmentSwitchButton>
-          <TabbedBar
-            options={[
-              {
-                key: "users",
-                label: "Users",
-                onClick: () => setCurrentSettingType(Setting.USERS),
-                selected: currentSettingType === Setting.USERS,
-              },
-              {
-                key: "agencies",
-                label: "Agencies",
-                onClick: () => setCurrentSettingType(Setting.AGENCIES),
-                selected: currentSettingType === Setting.AGENCIES,
-              },
-            ]}
-          />
-          {currentSettingType === Setting.USERS && <>User Settings</>}
-          {currentSettingType === Setting.AGENCIES && <>Agency Settings</>}
-        </Styled.AdminPanelProduction>
+          {/* Staging */}
+          {currentEnvironment === Environment.STAGING && (
+            <Styled.SettingsContainer>
+              {currentSettingType === Setting.USERS && (
+                <>
+                  <Styled.SettingTitleButtonWrapper>
+                    <Styled.SettingsTitle>
+                      User Provisioning
+                    </Styled.SettingsTitle>
+                    <Styled.ButtonWrapper>
+                      <Button
+                        label="+ Add New User"
+                        onClick={() => {
+                          setAddEditUserModal(true);
+                        }}
+                        buttonColor="blue"
+                      />
+                    </Styled.ButtonWrapper>
+                  </Styled.SettingTitleButtonWrapper>
+                  <Styled.Table>
+                    <Styled.TableRow
+                      columnsSpacing="2fr 1.5fr 2fr 4fr"
+                      titleRow
+                    >
+                      {usersTableHeaderRow.map((cell) => (
+                        <Styled.TableCell>{cell}</Styled.TableCell>
+                      ))}
+                    </Styled.TableRow>
+                    {users.map((x) => (
+                      <Styled.TableRow
+                        columnsSpacing="2fr 1.5fr 2fr 4fr"
+                        onClick={() => setAddEditUserModal(true)}
+                      >
+                        <Styled.TableCell>{x.auth0_user_id}</Styled.TableCell>
+                        <Styled.TableCell>{x.name}</Styled.TableCell>
+                        <Styled.TableCell>{x.email}</Styled.TableCell>
+                        <Styled.TableCell>
+                          {x.agencies
+                            .sort((a, b) => a.name.localeCompare(b.name))
+                            .map((a) => (
+                              <Styled.AgencyChip>{a.name}</Styled.AgencyChip>
+                            ))}{" "}
+                          ({x.agencies.length} agencies)
+                        </Styled.TableCell>
+                      </Styled.TableRow>
+                    ))}
+                  </Styled.Table>
+                </>
+              )}
+              {currentSettingType === Setting.AGENCIES && (
+                <>
+                  <Styled.SettingTitleButtonWrapper>
+                    <Styled.SettingsTitle>
+                      Agency Provisioning
+                    </Styled.SettingsTitle>
+                    <Styled.ButtonWrapper>
+                      <Button
+                        label="+ Add New Agency"
+                        onClick={() => setAddEditAgencyModal(true)}
+                        buttonColor="blue"
+                      />
+                    </Styled.ButtonWrapper>
+                  </Styled.SettingTitleButtonWrapper>
+
+                  <Styled.Table>
+                    <Styled.TableRow
+                      columnsSpacing="1fr 4fr 1fr 1fr 3fr 4fr 1fr 1fr"
+                      titleRow
+                    >
+                      {agencyProvisioningTableHeaderRow.map((cell, idx) => (
+                        <Styled.TableCell>{cell}</Styled.TableCell>
+                      ))}
+                    </Styled.TableRow>
+                    {agencies.map((x) => (
+                      <Styled.TableRow
+                        columnsSpacing="1fr 4fr 1fr 1fr 3fr 4fr 1fr 1fr"
+                        onClick={() => setAddEditAgencyModal(true)}
+                      >
+                        <Styled.TableCell center>{x.id}</Styled.TableCell>
+                        <Styled.TableCell>{x.name}</Styled.TableCell>
+                        <Styled.TableCell>{x.state}</Styled.TableCell>
+                        <Styled.TableCell>County</Styled.TableCell>
+                        <Styled.TableCell>
+                          {x.systems.map((system) => (
+                            <Styled.AgencyChip>{system}</Styled.AgencyChip>
+                          ))}
+                        </Styled.TableCell>
+                        <Styled.TableCell>
+                          {x.team.map((t) => (
+                            <Styled.AgencyChip>{t.name}</Styled.AgencyChip>
+                          ))}
+                        </Styled.TableCell>
+                        <Styled.TableCell center>
+                          {x.is_superagency ? "Yes" : "No"}
+                        </Styled.TableCell>
+                        <Styled.TableCell center>x</Styled.TableCell>
+                      </Styled.TableRow>
+                    ))}
+                  </Styled.Table>
+                </>
+              )}
+            </Styled.SettingsContainer>
+          )}
+
+          {/* Production */}
+          {currentEnvironment === Environment.PRODUCTION && (
+            <>
+              {currentSettingType === Setting.USERS && <>User Settings</>}
+              {currentSettingType === Setting.AGENCIES && <>Agency Settings</>}
+            </>
+          )}
+        </Styled.AdminPanelWrapper>
       )}
-    </Styled.AdminPanelWrapper>
+    </Styled.AdminPanelContainer>
   );
 });
 

@@ -23,7 +23,7 @@ import {
 import styled from "styled-components/macro";
 import { FOOTER_HEIGHT_WITHOUT_MARGIN } from "../Footer";
 
-export const AdminPanelWrapper = styled.div`
+export const AdminPanelContainer = styled.div`
   width: 100%;
   padding: 25px 50px;
   max-height: calc(
@@ -58,20 +58,19 @@ export const EnvironmentOption = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid ${palette.solid.darkgrey};
+  border: 1px solid ${palette.highlight.grey8};
   border-radius: 2px;
-  color: ${palette.highlight.grey9};
+  color: ${palette.highlight.grey10};
 
   &:hover {
     cursor: pointer;
     background: ${palette.solid.lightgrey2};
     color: ${palette.solid.darkgrey};
+    border: 1px solid ${palette.solid.darkgrey};
   }
 `;
 
-export const AdminPanelStaging = styled.div``;
-
-export const AdminPanelProduction = styled.div``;
+export const AdminPanelWrapper = styled.div``;
 
 export const EnvironmentSwitchWrapper = styled.div`
   margin-bottom: 24px;
@@ -121,10 +120,15 @@ export const Table = styled.div`
   /* max-height: 500px;
   overflow-y: auto; */
 `;
-export const TableRow = styled.div<{ titleRow?: boolean }>`
+
+export const TableRow = styled.div<{
+  columnsSpacing: string;
+  titleRow?: boolean;
+}>`
   width: 100%;
   display: grid;
-  grid-template-columns: 2fr 1.5fr 2fr 4fr 1fr;
+  /* grid-template-columns: 2fr 1.5fr 2fr 4fr; */
+  grid-template-columns: ${({ columnsSpacing }) => columnsSpacing};
   padding: 12px 0;
   border-bottom: 1px solid ${palette.highlight.grey4};
 
@@ -138,8 +142,8 @@ export const TableRow = styled.div<{ titleRow?: boolean }>`
           top: -25px;
         `
       : `
-        ${typography.sizeCSS.normal}
-        color: ${palette.solid.darkgrey};
+          ${typography.sizeCSS.normal}
+          color: ${palette.solid.darkgrey};
   `}
 
   &:hover {
@@ -151,13 +155,79 @@ export const TableRow = styled.div<{ titleRow?: boolean }>`
       `}
   }
 `;
-export const TableCell = styled.div`
-  /* display: flex;
-  align-items: center;
-  justify-content: flex-start; */
+export const TableCell = styled.div<{ center?: boolean }>`
+  ${({ center }) => center && "text-align: center"};
 `;
 
 export const HeaderEnvironmentDisplay = styled.div`
   ${typography.sizeCSS.large}
   letter-spacing: 7px;
+`;
+
+export const ButtonWrapper = styled.div`
+  width: fit-content;
+`;
+
+export const SettingTitleButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const AgencyChip = styled.span`
+  display: inline-block;
+  width: fit-content;
+  height: fit-content;
+  padding: 3px 15px;
+  margin: 2px;
+  border: 1px solid ${palette.highlight.grey5};
+  border-radius: 4px;
+`;
+
+export const AddNewUserModal = styled.div`
+  padding-bottom: 24px;
+`;
+
+export const ModalDescription = styled.div`
+  ${typography.sizeCSS.small}
+  color: ${palette.highlight.grey8};
+  font-weight: 500;
+  margin-bottom: 32px;
+`;
+
+export const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+export const InputLabelWrapper = styled.div<{ flexRow?: boolean }>`
+  ${typography.sizeCSS.normal}
+  display: flex;
+  flex-direction: ${({ flexRow }) => (flexRow ? "row" : "column")};
+  align-items: flex-start;
+  justify-content: center;
+
+  input {
+    width: 100%;
+    min-width: 300px;
+    border: 1px solid ${palette.highlight.grey5};
+    border-radius: 2px;
+    padding: 5px;
+  }
+
+  input[type="checkbox"] {
+    width: fit-content;
+    min-width: fit-content;
+    margin-right: 8px;
+
+    &:not(:first-child) {
+      margin-left: 16px;
+    }
+  }
+
+  label {
+    ${typography.sizeCSS.small}
+    color: ${palette.highlight.grey8};
+  }
 `;
