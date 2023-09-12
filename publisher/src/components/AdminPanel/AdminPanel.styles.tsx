@@ -21,6 +21,7 @@ import {
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
+
 import { FOOTER_HEIGHT_WITHOUT_MARGIN } from "../Footer";
 
 export const AdminPanelContainer = styled.div`
@@ -174,7 +175,7 @@ export const SettingTitleButtonWrapper = styled.div`
   align-items: center;
 `;
 
-export const AgencyChip = styled.span`
+export const Chip = styled.span`
   display: inline-block;
   width: fit-content;
   height: fit-content;
@@ -199,14 +200,19 @@ export const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin: 16px 0;
 `;
 
-export const InputLabelWrapper = styled.div<{ flexRow?: boolean }>`
+export const InputLabelWrapper = styled.div<{
+  flexRow?: boolean;
+  topSpacing?: boolean;
+}>`
   ${typography.sizeCSS.normal}
   display: flex;
   flex-direction: ${({ flexRow }) => (flexRow ? "row" : "column")};
   align-items: flex-start;
   justify-content: center;
+  ${({ topSpacing }) => topSpacing && `margin-top: 16px`};
 
   input {
     width: 100%;
@@ -230,4 +236,51 @@ export const InputLabelWrapper = styled.div<{ flexRow?: boolean }>`
     ${typography.sizeCSS.small}
     color: ${palette.highlight.grey8};
   }
+`;
+
+export const TeamMembersRoles = styled.div`
+  width: 100%;
+  min-width: 500px;
+  overflow: auto;
+  max-height: 50vh;
+`;
+
+export const TeamMemberChip = styled.div`
+  ${typography.sizeCSS.normal}
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  border-bottom: 1px solid ${palette.highlight.grey5};
+  padding: 16px 0;
+  margin: 5px;
+`;
+
+export const ChipName = styled.div`
+  /* color: ${palette.highlight.grey8}; */
+`;
+
+export const ChipRole = styled.div`
+  color: ${palette.solid.green};
+`;
+
+export const ChipEmail = styled.div`
+  color: ${palette.highlight.grey8};
+`;
+
+export const ChipID = styled.div`
+  ${typography.sizeCSS.small}
+  margin-top: 5px;
+`;
+
+export const ChipInvitationStatus = styled.div`
+  ${typography.sizeCSS.small}
+  color: ${palette.solid.grey1};
+`;
+
+export const ChipInnerRow = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
