@@ -43,7 +43,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import {
   REPORT_LOWERCASE,
-  REPORT_PERIOD_CAPITALIZED,
+  REPORTING_PERIOD_CAPITALIZED,
   REPORTS_CAPITALIZED,
   REPORTS_LOWERCASE,
 } from "../components/Global/constants";
@@ -97,7 +97,7 @@ const ReportStatusFilterOptionObject: { [key: string]: string } = {
 };
 
 const reportListColumnTitles = [
-  REPORT_PERIOD_CAPITALIZED,
+  REPORTING_PERIOD_CAPITALIZED,
   "Status",
   "Frequency",
   "Editors",
