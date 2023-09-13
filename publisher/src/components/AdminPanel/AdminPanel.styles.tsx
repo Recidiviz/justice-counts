@@ -176,7 +176,7 @@ export const SettingTitleButtonWrapper = styled.div`
   align-items: center;
 `;
 
-export const Chip = styled.span`
+export const Chip = styled.span<{ selected?: boolean; hover?: boolean }>`
   display: inline-block;
   width: fit-content;
   height: fit-content;
@@ -184,10 +184,23 @@ export const Chip = styled.span`
   margin: 2px;
   border: 1px solid ${palette.highlight.grey5};
   border-radius: 4px;
+
+  ${({ selected }) =>
+    selected &&
+    `
+    border: 1px solid ${palette.solid.blue};
+    color: ${palette.solid.blue};
+  `}
+
+  ${({ hover }) =>
+    hover &&
+    `
+    cursor: pointer;
+  `}
 `;
 
 export const AddNewUserModal = styled.div`
-  padding-bottom: 24px;
+  /* padding-bottom: 24px; */
 `;
 
 export const ModalDescription = styled.div`
@@ -227,6 +240,7 @@ export const InputLabelWrapper = styled.div<{
     width: fit-content;
     min-width: fit-content;
     margin-right: 8px;
+    margin-top: 5px;
 
     &:not(:first-child) {
       margin-left: 16px;
@@ -236,6 +250,7 @@ export const InputLabelWrapper = styled.div<{
   label {
     ${typography.sizeCSS.small}
     color: ${palette.highlight.grey8};
+    margin-top: 5px;
   }
 `;
 
@@ -255,6 +270,26 @@ export const TeamMemberChip = styled.div`
   border-bottom: 1px solid ${palette.highlight.grey5};
   padding: 16px 0;
   margin: 5px;
+`;
+
+export const ChipContainer = styled.div<{ halfMaxHeight?: boolean }>`
+  ${typography.sizeCSS.small}
+  width: 100%;
+  min-width: 300px;
+  min-height: 28px;
+  max-height: ${({ halfMaxHeight }) => (halfMaxHeight ? 100 : 200)}px;
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid ${palette.highlight.grey5};
+  border-radius: 2px;
+  padding: 5px;
+  overflow-y: auto;
+`;
+
+export const ChipContainerLabel = styled.div`
+  ${typography.sizeCSS.small}
+  color: ${palette.highlight.grey8};
+  margin-top: 3px;
 `;
 
 export const ChipName = styled.div`
@@ -284,4 +319,31 @@ export const ChipInnerRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+`;
+
+export const ChipContainerLabelAction = styled(ChipContainerLabel)`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  span {
+    white-space: nowrap;
+  }
+`;
+
+export const ActionWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const ActionItem = styled.div<{ red?: boolean }>`
+  color: ${({ red }) => (red ? palette.solid.red : palette.solid.blue)};
+  &:hover {
+    cursor: pointer;
+    color: ${({ red }) => (red ? palette.solid.red : palette.solid.darkblue)};
+  }
 `;

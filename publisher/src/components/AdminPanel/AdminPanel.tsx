@@ -116,10 +116,10 @@ export const AdminPanel = observer(() => {
           {currentEnvironment === Environment.STAGING && (
             <Styled.SettingsContainer>
               {currentSettingType === Setting.USERS && (
-                <UserProvisioning users={users} />
+                <UserProvisioning users={users} agencies={agencies} />
               )}
               {currentSettingType === Setting.AGENCIES && (
-                <AgencyProvisioning agencies={agencies} />
+                <AgencyProvisioning agencies={agencies} systems={systems} />
               )}
             </Styled.SettingsContainer>
           )}

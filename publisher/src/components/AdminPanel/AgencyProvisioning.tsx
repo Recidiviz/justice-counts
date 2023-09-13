@@ -22,10 +22,12 @@ import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
 import React, { useState } from "react";
 
 import * as Styled from "./AdminPanel.styles";
+import { Dropdown } from "@justice-counts/common/components/Dropdown";
 
-export const AgencyProvisioning: React.FC<{ agencies: any[] }> = ({
-  agencies,
-}) => {
+export const AgencyProvisioning: React.FC<{
+  agencies: any[];
+  systems: any[];
+}> = ({ agencies, systems: systemsOptions }) => {
   const [addEditAgencyModal, setAddEditAgencyModal] = useState(false);
   const [currentAgencyToEdit, setCurrentAgencyToEdit] = useState<any>();
   const [currentSettingType, setCurrentSettingType] = useState<any>("Agency");
@@ -99,16 +101,6 @@ export const AgencyProvisioning: React.FC<{ agencies: any[] }> = ({
                   </Styled.InputLabelWrapper>
                   <Styled.InputLabelWrapper>
                     <input
-                      name="systems"
-                      type="text"
-                      defaultValue={currentAgencyToEdit?.systems}
-                      value={systems}
-                      onChange={(e) => setSystems(e.target.value)}
-                    />
-                    <label htmlFor="systems">Systems </label>
-                  </Styled.InputLabelWrapper>
-                  <Styled.InputLabelWrapper>
-                    <input
                       name="state"
                       type="text"
                       defaultValue={currentAgencyToEdit?.state}
@@ -126,6 +118,40 @@ export const AgencyProvisioning: React.FC<{ agencies: any[] }> = ({
                       onChange={(e) => setCounty(e.target.value)}
                     />
                     <label htmlFor="county">County </label>
+                  </Styled.InputLabelWrapper>
+                  <Styled.InputLabelWrapper>
+                    {/* <Styled.ChipContainer>
+                      {currentAgencyToEdit?.systems.map((system: any) => (
+                        <Styled.Chip>{system}</Styled.Chip>
+                      ))}
+                    </Styled.ChipContainer> */}
+
+                    <Dropdown
+                      label={
+                        <Styled.ChipContainer>
+                          {currentAgencyToEdit?.systems.map((system: any) => (
+                            <Styled.Chip>{system}</Styled.Chip>
+                          ))}
+                        </Styled.ChipContainer>
+                      }
+                      options={systemsOptions.map((a: any) => ({
+                        key: a,
+                        label: a,
+                        onClick: () => {},
+                      }))}
+                      fullWidth
+                    />
+                    <Styled.ChipContainerLabel>
+                      Systems
+                    </Styled.ChipContainerLabel>
+                    {/* <input
+                      name="systems"
+                      type="text"
+                      defaultValue={currentAgencyToEdit?.systems}
+                      value={systems}
+                      onChange={(e) => setSystems(e.target.value)}
+                    />
+                    <label htmlFor="systems">Systems </label> */}
                   </Styled.InputLabelWrapper>
                   <Styled.InputLabelWrapper flexRow>
                     <input
