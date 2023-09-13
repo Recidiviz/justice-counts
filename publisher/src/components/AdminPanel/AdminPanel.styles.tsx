@@ -226,6 +226,7 @@ export const InputLabelWrapper = styled.div<{
   flex-direction: ${({ flexRow }) => (flexRow ? "row" : "column")};
   align-items: flex-start;
   justify-content: center;
+  position: relative;
   ${({ topSpacing }) => topSpacing && `margin-top: 16px`};
 
   input {
@@ -272,7 +273,10 @@ export const TeamMemberChip = styled.div`
   margin: 5px;
 `;
 
-export const ChipContainer = styled.div<{ halfMaxHeight?: boolean }>`
+export const ChipContainer = styled.div<{
+  halfMaxHeight?: boolean;
+  noBorder?: boolean;
+}>`
   ${typography.sizeCSS.small}
   width: 100%;
   min-width: 300px;
@@ -280,7 +284,8 @@ export const ChipContainer = styled.div<{ halfMaxHeight?: boolean }>`
   max-height: ${({ halfMaxHeight }) => (halfMaxHeight ? 100 : 200)}px;
   display: flex;
   flex-wrap: wrap;
-  border: 1px solid ${palette.highlight.grey5};
+  border: ${({ noBorder }) =>
+    noBorder ? `none` : `1px solid ${palette.highlight.grey5}`};
   border-radius: 2px;
   padding: 5px;
   overflow-y: auto;
@@ -347,3 +352,44 @@ export const ActionItem = styled.div<{ red?: boolean }>`
     color: ${({ red }) => (red ? palette.solid.red : palette.solid.darkblue)};
   }
 `;
+
+export const StickySelectionDropdown = styled.div`
+  width: 100%;
+  max-height: 280px;
+  display: flex;
+  flex-direction: column;
+  background: ${palette.solid.white};
+  border: 1px solid ${palette.highlight.grey8};
+  border-radius: 2px;
+  position: absolute;
+  top: 30px;
+  left: 0;
+  z-index: 1;
+  overflow-y: auto;
+  box-shadow: 1px 1px 2px 1px ${palette.highlight.grey3};
+`;
+
+export const DropdownItem = styled.div<{ selected?: boolean }>`
+  ${typography.sizeCSS.normal}
+  width: 100%;
+  height: 50px;
+  padding: 16px;
+  text-align: left;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid ${palette.highlight.grey8};
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  ${({ selected }) =>
+    selected &&
+    `
+    background: ${palette.highlight.lightblue1}
+
+  `}
+`;
+
+export const ModalWrapper = styled.div``;

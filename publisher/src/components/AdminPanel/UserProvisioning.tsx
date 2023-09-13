@@ -33,7 +33,26 @@ export const UserProvisioning: React.FC<{ users: any[]; agencies: any[] }> = ({
   const [email, setEmail] = useState<any>();
   const [agencies, setAgencies] = useState<any>();
   const [selectedAgencies, setSelectedAgencies] = useState<any>([]);
+  const [selectedAgenciesToAdd, setSelectedAgenciesToAdd] = useState<any>([]);
+  const [agencyToAddInputValue, setAgencyToAddInputValue] = useState<any>("");
+  const [filteredAgencyOptions, setFilteredAgencyOptions] = useState<any>();
+  const [showDropdown, setShowDropdown] = useState<any>(false);
+
   const selectedAgenciesRef = useRef(null);
+  const addAgencyInputRef = useRef(null);
+  const dropdownRef = useRef(null);
+
+  const updateFilteredOptions = (val: string) => {
+    const regex = new RegExp(`${val}`, `i`);
+    setFilteredAgencyOptions(() =>
+      agencyOptions.filter((option) => regex.test(option.name))
+    );
+  };
+
+  useEffect(() => {
+    setFilteredAgencyOptions(agencyOptions);
+    setAgencyToAddInputValue("");
+  }, [agencyOptions]);
 
   useEffect(() => {
     if (selectedAgenciesRef.current) {
@@ -57,163 +76,191 @@ export const UserProvisioning: React.FC<{ users: any[]; agencies: any[] }> = ({
     setEmail(undefined);
     setAgencies(undefined);
     setSelectedAgencies([]);
+    setSelectedAgenciesToAdd([]);
+    setAgencyToAddInputValue("");
   };
 
   return (
     <>
       {/* Add New User Modal */}
       {addEditUserModal && (
-        <Modal
-          title={`${currentUserToEdit ? "Edit" : "Add New"} User`}
-          description={
-            <Styled.AddNewUserModal>
-              <Styled.ModalDescription>
-                Creates a new user in Auth0 and the Justice Counts database
-              </Styled.ModalDescription>
-              <Styled.Form>
-                <Styled.InputLabelWrapper>
-                  <input
-                    name="username"
-                    type="text"
-                    defaultValue={currentUserToEdit?.name}
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
-                  <label htmlFor="username">Name</label>
-                </Styled.InputLabelWrapper>
-                <Styled.InputLabelWrapper>
-                  <input
-                    name="email"
-                    type="text"
-                    defaultValue={currentUserToEdit?.email}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <label htmlFor="email">Email</label>
-                </Styled.InputLabelWrapper>
-                <Styled.InputLabelWrapper>
-                  <input
-                    name="add-agency"
-                    type="text"
-                    // value={email}
-                    // onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <label htmlFor="add-agency">Add Agency</label>
-                </Styled.InputLabelWrapper>
-                <Styled.InputLabelWrapper>
-                  <Styled.ChipContainer>
-                    {currentUserToEdit?.agencies.map((a: any) => (
-                      <Styled.Chip
-                        onClick={() =>
-                          selectedAgencies.includes(a.name)
-                            ? setSelectedAgencies((prev: any) =>
-                                prev.filter((x: any) => x !== a.name)
-                              )
-                            : setSelectedAgencies((prev: any) => [
-                                ...prev,
-                                a.name,
-                              ])
-                        }
-                        selected={selectedAgencies.includes(a.name)}
-                        hover
-                      >
-                        {a.name}
-                      </Styled.Chip>
-                    ))}
-                  </Styled.ChipContainer>
-                  {/* <Dropdown
-                    label={
-                      <Styled.ChipContainer>
-                        {currentUserToEdit?.agencies.map((a: any) => (
-                          <Styled.Chip>{a.name}</Styled.Chip>
+        <Styled.ModalWrapper
+          onClick={(e) => {
+            if (
+              e.target.parentElement !== dropdownRef.current &&
+              e.target !== addAgencyInputRef.current
+            ) {
+              setShowDropdown(false);
+            }
+          }}
+        >
+          <Modal
+            title={`${currentUserToEdit ? "Edit" : "Add New"} User`}
+            description={
+              <Styled.AddNewUserModal>
+                <Styled.ModalDescription>
+                  Creates a new user in Auth0 and the Justice Counts database
+                </Styled.ModalDescription>
+                <Styled.Form>
+                  <Styled.InputLabelWrapper>
+                    <input
+                      name="username"
+                      type="text"
+                      defaultValue={currentUserToEdit?.name}
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                    />
+                    <label htmlFor="username">Name</label>
+                  </Styled.InputLabelWrapper>
+                  <Styled.InputLabelWrapper>
+                    <input
+                      name="email"
+                      type="text"
+                      defaultValue={currentUserToEdit?.email}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <label htmlFor="email">Email</label>
+                  </Styled.InputLabelWrapper>
+                  {selectedAgenciesToAdd.length > 0 && (
+                    <Styled.InputLabelWrapper>
+                      <Styled.ChipContainer halfMaxHeight>
+                        {selectedAgenciesToAdd.map((a: any) => (
+                          <Styled.Chip>{a}</Styled.Chip>
                         ))}
                       </Styled.ChipContainer>
-                    }
-                    options={agencyOptions.map((a: any) => ({
-                      key: a.name,
-                      label: a.name,
-                      onClick: () => {},
-                    }))}
-                    fullWidth
-                  /> */}
-                  {/* <input
-                    name="agencies"
-                    type="text"
-                    defaultValue={currentUserToEdit?.agencies.map(
-                      (a: any) => a.name
-                    )}
-                    value={agencies}
-                    onChange={(e) => setAgencies(e.target.value)}
-                  /> */}
-                  {/* <Styled.ChipContainerLabel>
-                    Agencies
-                  </Styled.ChipContainerLabel> */}
-                  <Styled.ChipContainerLabelAction>
-                    <span>
-                      Agencies{" "}
-                      {currentUserToEdit?.agencies.length &&
-                        `(${currentUserToEdit?.agencies.length})`}
-                    </span>
-                    {currentUserToEdit?.agencies.length && (
-                      <Styled.ActionWrapper>
-                        <Styled.ActionItem
-                          onClick={() =>
-                            setSelectedAgencies(
-                              currentUserToEdit?.agencies.map(
-                                (x: any) => x.name
-                              )
-                            )
-                          }
-                        >
-                          Select all
-                        </Styled.ActionItem>
-                        <Styled.ActionItem red>Delete all</Styled.ActionItem>
-                      </Styled.ActionWrapper>
-                    )}
-                  </Styled.ChipContainerLabelAction>
-                </Styled.InputLabelWrapper>
-                {selectedAgencies.length > 0 && (
+                      <Styled.ChipContainerLabel>
+                        Agencies to add
+                      </Styled.ChipContainerLabel>
+                    </Styled.InputLabelWrapper>
+                  )}
                   <Styled.InputLabelWrapper>
-                    <Styled.ChipContainer
-                      halfMaxHeight
-                      ref={selectedAgenciesRef}
-                    >
-                      {selectedAgencies?.map((a: any) => (
-                        <Styled.Chip selected>{a}</Styled.Chip>
+                    {/* Typeahead */}
+                    <input
+                      name="add-agency"
+                      type="text"
+                      value={agencyToAddInputValue}
+                      onChange={(e) => {
+                        setAgencyToAddInputValue(e.target.value);
+                        updateFilteredOptions(e.target.value);
+                      }}
+                      onFocus={() => setShowDropdown(true)}
+                      // onBlur={() => setShowDropdown(false)}
+                      ref={addAgencyInputRef}
+                    />
+                    <label htmlFor="add-agency">Add Agency</label>
+                    {showDropdown && (
+                      <Styled.StickySelectionDropdown ref={dropdownRef}>
+                        {filteredAgencyOptions.map((a: any) => (
+                          <Styled.DropdownItem
+                            onClick={() => {
+                              selectedAgenciesToAdd.includes(a.name)
+                                ? setSelectedAgenciesToAdd((prev: any) =>
+                                    prev.filter((x: any) => x !== a.name)
+                                  )
+                                : setSelectedAgenciesToAdd((prev: any) => [
+                                    ...prev,
+                                    a.name,
+                                  ]);
+                            }}
+                            selected={selectedAgenciesToAdd.includes(a.name)}
+                          >
+                            {a.name}
+                          </Styled.DropdownItem>
+                        ))}
+                      </Styled.StickySelectionDropdown>
+                    )}
+                  </Styled.InputLabelWrapper>
+                  <Styled.InputLabelWrapper>
+                    <Styled.ChipContainer>
+                      {currentUserToEdit?.agencies.map((a: any) => (
+                        <Styled.Chip
+                          onClick={() =>
+                            selectedAgencies.includes(a.name)
+                              ? setSelectedAgencies((prev: any) =>
+                                  prev.filter((x: any) => x !== a.name)
+                                )
+                              : setSelectedAgencies((prev: any) => [
+                                  ...prev,
+                                  a.name,
+                                ])
+                          }
+                          selected={selectedAgencies.includes(a.name)}
+                          hover
+                        >
+                          {a.name}
+                        </Styled.Chip>
                       ))}
                     </Styled.ChipContainer>
-
                     <Styled.ChipContainerLabelAction>
-                      <span>Selected Agencies ({selectedAgencies.length})</span>
-                      <Styled.ActionWrapper>
-                        <Styled.ActionItem
-                          onClick={() => setSelectedAgencies([])}
-                        >
-                          Deselect
-                        </Styled.ActionItem>
-                        <Styled.ActionItem red>Delete</Styled.ActionItem>
-                      </Styled.ActionWrapper>
+                      <span>
+                        Agencies{" "}
+                        {currentUserToEdit?.agencies.length &&
+                          `(${currentUserToEdit?.agencies.length})`}
+                      </span>
+                      {currentUserToEdit?.agencies.length && (
+                        <Styled.ActionWrapper>
+                          <Styled.ActionItem
+                            onClick={() =>
+                              setSelectedAgencies(
+                                currentUserToEdit?.agencies.map(
+                                  (x: any) => x.name
+                                )
+                              )
+                            }
+                          >
+                            Select all
+                          </Styled.ActionItem>
+                          <Styled.ActionItem red>Delete all</Styled.ActionItem>
+                        </Styled.ActionWrapper>
+                      )}
                     </Styled.ChipContainerLabelAction>
                   </Styled.InputLabelWrapper>
-                )}
-              </Styled.Form>
-            </Styled.AddNewUserModal>
-          }
-          buttons={[
-            {
-              label: "Cancel",
-              onClick: () => {
-                resetAll();
+                  {selectedAgencies.length > 0 && (
+                    <Styled.InputLabelWrapper>
+                      <Styled.ChipContainer
+                        halfMaxHeight
+                        ref={selectedAgenciesRef}
+                      >
+                        {selectedAgencies?.map((a: any) => (
+                          <Styled.Chip selected>{a}</Styled.Chip>
+                        ))}
+                      </Styled.ChipContainer>
+
+                      <Styled.ChipContainerLabelAction>
+                        <span>
+                          Selected Agencies ({selectedAgencies.length})
+                        </span>
+                        <Styled.ActionWrapper>
+                          <Styled.ActionItem
+                            onClick={() => setSelectedAgencies([])}
+                          >
+                            Deselect
+                          </Styled.ActionItem>
+                          <Styled.ActionItem red>Delete</Styled.ActionItem>
+                        </Styled.ActionWrapper>
+                      </Styled.ChipContainerLabelAction>
+                    </Styled.InputLabelWrapper>
+                  )}
+                </Styled.Form>
+              </Styled.AddNewUserModal>
+            }
+            buttons={[
+              {
+                label: "Cancel",
+                onClick: () => {
+                  resetAll();
+                },
               },
-            },
-            {
-              label: "Save",
-              onClick: () => {
-                console.log("add save functionality");
+              {
+                label: "Save",
+                onClick: () => {
+                  console.log("add save functionality");
+                },
               },
-            },
-          ]}
-        />
+            ]}
+          />
+        </Styled.ModalWrapper>
       )}
       <Styled.SettingTitleButtonWrapper>
         <Styled.SettingsTitle>
