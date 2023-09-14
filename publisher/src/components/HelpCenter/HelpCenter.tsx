@@ -19,6 +19,7 @@ import React from "react";
 
 import logoImg from "../assets/jc-logo-vector-new.svg";
 import * as Styled from "./HelpCenter.styles";
+import { ExploreDataGuide } from "./HelpCenterGuides";
 
 export const HelpCenter = () => {
   return (
@@ -37,34 +38,9 @@ export const HelpCenter = () => {
           <Styled.Breadcrumb highlight>Explore your Data</Styled.Breadcrumb>
         </Styled.Breadcrumbs>
 
-        <h1>Explore your Data</h1>
-        <h2>Interact with your data to discover insights.</h2>
-        <p>
-          The Explore Data tab allows you to visualize the data you have
-          uploaded into Publisher. It displays both draft and published data.
-        </p>
-        <p>
-          Click <span>Explore Data</span>, the fourth item on the navigation
-          bar, to reach this page.
-        </p>
-        <h3>Interacting with the Data</h3>
-        <p>
-          Metric data can be viewed in both chart or table form. The time period
-          reflected in the chart is adjustable through the drop-downs, and
-          breakdown information may be displayed if provided. The chart is
-          downloadable as a PNG.
-        </p>
-        <h3>Toggling between Metrics</h3>
-        <p>
-          Select a preferred metric from the list on the left of the screen.
-          Only the metrics that you have set as available will be presented. To
-          show additional metrics, adjust their availability within Metric
-          Settings (link to other part of tutorial). If your agency belongs to
-          multiple sectors, each sector will be presented with its own
-          individual metrics.
-        </p>
-        <h3>Relevant Pages</h3>
+        <ExploreDataGuide />
 
+        <Styled.SectionTitle>Relevant Pages</Styled.SectionTitle>
         <Styled.RelevantPagesWrapper>
           <Styled.RelevantPageBox>
             <Styled.RelevantPageBoxTitle>

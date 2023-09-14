@@ -20,6 +20,7 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
+import { rem } from "@justice-counts/common/utils";
 import styled from "styled-components/macro";
 
 export const HelpCenterContainer = styled.div`
@@ -34,38 +35,6 @@ export const ContentWrapper = styled.div`
   max-width: 555px;
   display: flex;
   flex-direction: column;
-
-  h1 {
-    ${typography.sizeCSS.large}
-    margin-bottom: 8px;
-  }
-
-  h2 {
-    ${typography.sizeCSS.normal}
-    color: ${palette.highlight.grey8};
-    margin-bottom: 32px;
-    font-weight: 400;
-  }
-
-  h3 {
-    ${typography.sizeCSS.normal}
-    margin-top: 24px;
-    margin-bottom: 8px;
-  }
-
-  p {
-    ${typography.sizeCSS.normal}
-    margin-bottom: 32px;
-    font-weight: 400;
-  }
-
-  p:last-child {
-    margin-bottom: 56px;
-  }
-
-  span {
-    color: ${palette.solid.blue};
-  }
 `;
 
 export const NewHeader = styled.div`
@@ -108,7 +77,10 @@ export const Breadcrumbs = styled.div`
 `;
 
 export const Breadcrumb = styled.div<{ highlight?: boolean }>`
-  ${typography.sizeCSS.normal}
+  font-size: ${rem("14px")};
+  font-weight: 400;
+  line-height: 20px;
+
   color: ${({ highlight }) =>
     highlight ? palette.solid.blue : palette.highlight.grey8};
 
@@ -140,4 +112,42 @@ export const RelevantPageBoxTitle = styled.div`
 export const RelevantPageBoxDescription = styled.div`
   ${typography.sizeCSS.normal}
   font-weight: 400;
+`;
+
+/** Help Center Guides' Styling */
+
+export const Title = styled.h1`
+  ${typography.sizeCSS.large};
+  margin-bottom: 8px;
+`;
+
+export const Caption = styled.h2`
+  font-size: ${rem("14px")};
+  font-weight: 400;
+  line-height: 22px;
+  color: ${palette.highlight.grey8};
+  margin-bottom: 32px;
+`;
+
+export const SectionTitle = styled.h3`
+  ${typography.sizeCSS.normal}
+  margin-bottom: 8px;
+`;
+
+export const SectionWrapper = styled.div`
+  margin-bottom: 56px;
+`;
+
+export const SectionParagraph = styled.p`
+  ${typography.sizeCSS.normal}
+  line-height: 24px;
+  font-weight: 400;
+
+  &:not(:last-child) {
+    margin-bottom: 24px;
+  }
+`;
+
+export const BlueText = styled.span`
+  color: ${palette.solid.blue};
 `;
