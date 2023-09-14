@@ -20,7 +20,7 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import styled from "styled-components";
+import styled from "styled-components/macro";
 
 export const HelpCenterContainer = styled.div`
   display: flex;
@@ -121,6 +121,7 @@ export const Breadcrumb = styled.div<{ highlight?: boolean }>`
 export const RelevantPagesWrapper = styled.div`
   display: flex;
   gap: 16px;
+  margin-top: 8px;
 `;
 
 export const RelevantPageBox = styled.div`

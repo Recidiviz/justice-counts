@@ -24,11 +24,11 @@ import MaintenancePage from "./components/Auth/Maintenance";
 import Footer from "./components/Footer";
 import { AppWrapper, PageWrapper } from "./components/Forms";
 import { REPORTS_LOWERCASE } from "./components/Global/constants";
+import { HelpCenter } from "./components/HelpCenter";
 import { Loading } from "./components/Loading";
 import { NoAgencies } from "./pages/NoAgencies";
 import { Router } from "./router";
 import { useStore } from "./stores";
-import { HelpCenter } from "./components/HelpCenter";
 
 const DOWN_FOR_MAINTENANCE = false;
 

@@ -16,8 +16,9 @@
 // =============================================================================
 
 import React from "react";
-import * as Styled from "./HelpCenter.styles";
+
 import logoImg from "../assets/jc-logo-vector-new.svg";
+import * as Styled from "./HelpCenter.styles";
 
 export const HelpCenter = () => {
   return (
@@ -37,14 +38,14 @@ export const HelpCenter = () => {
         </Styled.Breadcrumbs>
 
         <h1>Explore your Data</h1>
-        <h2>Interact with your data to discover insights. </h2>
+        <h2>Interact with your data to discover insights.</h2>
         <p>
           The Explore Data tab allows you to visualize the data you have
-          uploaded into Publisher. It displays both draft and published data. 
+          uploaded into Publisher. It displays both draft and published data.
         </p>
         <p>
           Click <span>Explore Data</span>, the fourth item on the navigation
-          bar, to reach this page. 
+          bar, to reach this page.
         </p>
         <h3>Interacting with the Data</h3>
         <p>
@@ -60,7 +61,7 @@ export const HelpCenter = () => {
           show additional metrics, adjust their availability within Metric
           Settings (link to other part of tutorial). If your agency belongs to
           multiple sectors, each sector will be presented with its own
-          individual metrics. 
+          individual metrics.
         </p>
         <h3>Relevant Pages</h3>
 
