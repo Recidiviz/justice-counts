@@ -26,10 +26,12 @@ export const useLineChartLegend = (
 ) => {
   const transformDataForLegend = (datapoint: Datapoint): LegendData => {
     const dimensionsValueFill = dimensions.reduce((acc, dim) => {
-      acc[dim] = {
-        value: datapoint[dim] as number,
-        fill: dimensionsToColorMap[dim],
-      };
+      if (datapoint) {
+        acc[dim] = {
+          value: datapoint[dim],
+          fill: dimensionsToColorMap[dim],
+        };
+      }
       return acc;
     }, {} as LegendData);
 
@@ -38,8 +40,9 @@ export const useLineChartLegend = (
 
   const getLastDatapoint = (dps: Datapoint[]): Datapoint => dps[dps.length - 1];
 
-  const getHoveredDatapoint = (dps: Datapoint[]): Datapoint =>
-    dps.filter((dp) => dp.start_date === hoveredDate)[0];
+  const getHoveredDatapoint = (dps: Datapoint[]): Datapoint => {
+    return dps.filter((dp) => dp.start_date === hoveredDate)[0];
+  };
 
   const legendData = transformDataForLegend(
     hoveredDate ? getHoveredDatapoint(datapoints) : getLastDatapoint(datapoints)

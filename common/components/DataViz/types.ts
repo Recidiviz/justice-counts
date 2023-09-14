@@ -75,7 +75,7 @@ export type ResponsiveBarData = Datapoint &
   };
 
 export type LineChartBreakdownValue = {
-  value: number | string;
+  value?: number | string | null;
   fill: string;
 };
 
@@ -93,5 +93,5 @@ export type LineChartBreakdownProps = {
 
 export type LegendData = Record<
   keyof Datapoint,
-  LineChartBreakdownNumericValue
+  LineChartBreakdownNumericValue | LineChartBreakdownValue
 >;
