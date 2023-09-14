@@ -421,7 +421,6 @@ export const DENY_LIST = new Set([
   "perry township police department (franklin)",
   "pickerington police department",
   "pierce township police department",
-  "platte county prosecutor's office",
   "polk county attorney's office",
   "polk county district court",
   "port william police department",
