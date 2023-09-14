@@ -40,9 +40,8 @@ export const useLineChartLegend = (
 
   const getLastDatapoint = (dps: Datapoint[]): Datapoint => dps[dps.length - 1];
 
-  const getHoveredDatapoint = (dps: Datapoint[]): Datapoint => {
-    return dps.filter((dp) => dp.start_date === hoveredDate)[0];
-  };
+  const getHoveredDatapoint = (dps: Datapoint[]): Datapoint =>
+    dps.filter((dp) => dp.start_date === hoveredDate)[0];
 
   const legendData = transformDataForLegend(
     hoveredDate ? getHoveredDatapoint(datapoints) : getLastDatapoint(datapoints)
