@@ -88,6 +88,10 @@ export const Breadcrumb = styled.div<{ highlight?: boolean }>`
     content: "/";
     padding-left: 8px;
   }
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export const RelevantPagesWrapper = styled.div`
@@ -150,4 +154,37 @@ export const SectionParagraph = styled.p`
 
 export const BlueText = styled.span`
   color: ${palette.solid.blue};
+`;
+
+export const HelpCenterHome = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 75px;
+`;
+
+export const HomeTitle = styled.div`
+  ${typography.sizeCSS.title}
+`;
+
+export const GuideLinksWrapper = styled.div`
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const GuideLinksTitle = styled.div`
+  ${typography.sizeCSS.medium}
+  margin-bottom: 16px;
+`;
+
+export const GuideLink = styled.div`
+  ${typography.sizeCSS.normal}
+  color: ${palette.highlight.grey10};
+
+  &:hover {
+    cursor: pointer;
+  }
 `;

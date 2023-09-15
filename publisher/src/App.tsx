@@ -24,7 +24,7 @@ import MaintenancePage from "./components/Auth/Maintenance";
 import Footer from "./components/Footer";
 import { AppWrapper, PageWrapper } from "./components/Forms";
 import { REPORTS_LOWERCASE } from "./components/Global/constants";
-import { HelpCenter } from "./components/HelpCenter";
+import { ExploreDataGuide, HelpCenter } from "./components/HelpCenter";
 import { Loading } from "./components/Loading";
 import { NoAgencies } from "./pages/NoAgencies";
 import { Router } from "./router";
@@ -64,7 +64,14 @@ const App: React.FC = (): ReactElement => {
     <AppWrapper>
       <PageWrapper>
         <Routes>
-          <Route path="/help" element={<HelpCenter />} />
+          <Route path="help" element={<HelpCenter />}>
+            <Route path="publisher" element={<ExploreDataGuide />}>
+              <Route path="explore-data" element={<ExploreDataGuide />} />
+            </Route>
+            <Route path="dashboards" element={<ExploreDataGuide />}>
+              {/* <Route path="" element={<ExploreDataGuide />} /> */}
+            </Route>
+          </Route>
           <Route
             path="/"
             element={<Navigate to={`/agency/${initialAgency}/`} />}

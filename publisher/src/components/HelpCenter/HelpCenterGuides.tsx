@@ -57,5 +57,25 @@ export const ExploreDataGuide = () => (
         sectors, each sector will be presented with its own individual metrics.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
+
+    <Styled.SectionTitle>Relevant Pages</Styled.SectionTitle>
+    <Styled.RelevantPagesWrapper>
+      <Styled.RelevantPageBox>
+        <Styled.RelevantPageBoxTitle>
+          Agency Settings
+        </Styled.RelevantPageBoxTitle>
+        <Styled.RelevantPageBoxDescription>
+          See and edit information about your agency for the public
+        </Styled.RelevantPageBoxDescription>
+      </Styled.RelevantPageBox>
+      <Styled.RelevantPageBox>
+        <Styled.RelevantPageBoxTitle>
+          Agency Settings
+        </Styled.RelevantPageBoxTitle>
+        <Styled.RelevantPageBoxDescription>
+          See and edit information about your agency for the public
+        </Styled.RelevantPageBoxDescription>
+      </Styled.RelevantPageBox>
+    </Styled.RelevantPagesWrapper>
   </>
 );

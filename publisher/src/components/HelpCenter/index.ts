@@ -16,3 +16,4 @@
 // =============================================================================
 
 export * from "./HelpCenter";
+export * from "./HelpCenterGuides";

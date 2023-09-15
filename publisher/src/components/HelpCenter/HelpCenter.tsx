@@ -16,12 +16,44 @@
 // =============================================================================
 
 import React from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import logoImg from "../assets/jc-logo-vector-new.svg";
 import * as Styled from "./HelpCenter.styles";
-import { ExploreDataGuide } from "./HelpCenterGuides";
+
+const PathToDisplayName = {
+  help: "Home",
+  publisher: "Publisher",
+  "explore-data": "Explore your Data",
+};
+
+type PathToDisplayNameType = keyof typeof PathToDisplayName;
+
+const Breadcrumbs: React.FC<{ pathname: string }> = ({ pathname }) => {
+  const navigate = useNavigate();
+  const pathnames = pathname
+    .split("/")
+    .filter((name) => name) as PathToDisplayNameType[];
+
+  return (
+    <Styled.Breadcrumbs>
+      {pathnames.map((path, idx) => (
+        <Styled.Breadcrumb
+          highlight={idx === pathnames.length - 1}
+          onClick={() => navigate(`/help/` + path)}
+          // onClick={() => console.log(`../` + path)}
+        >
+          {PathToDisplayName[path]}
+        </Styled.Breadcrumb>
+      ))}
+    </Styled.Breadcrumbs>
+  );
+};
 
 export const HelpCenter = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   return (
     <Styled.HelpCenterContainer>
       <Styled.NewHeader>
@@ -31,34 +63,21 @@ export const HelpCenter = () => {
         </Styled.LogoContainer>
       </Styled.NewHeader>
 
+      <Styled.HelpCenterHome>
+        <Styled.HomeTitle>Justice Counts Help Center</Styled.HomeTitle>
+        <Styled.GuideLinksWrapper>
+          <Styled.GuideLinksTitle>
+            Interact with the Data
+          </Styled.GuideLinksTitle>
+          <Styled.GuideLink onClick={() => navigate("publisher/explore-data")}>
+            Explore your Data
+          </Styled.GuideLink>
+        </Styled.GuideLinksWrapper>
+      </Styled.HelpCenterHome>
+
       <Styled.ContentWrapper>
-        <Styled.Breadcrumbs>
-          <Styled.Breadcrumb>Home</Styled.Breadcrumb>
-          <Styled.Breadcrumb>Publisher</Styled.Breadcrumb>
-          <Styled.Breadcrumb highlight>Explore your Data</Styled.Breadcrumb>
-        </Styled.Breadcrumbs>
-
-        <ExploreDataGuide />
-
-        <Styled.SectionTitle>Relevant Pages</Styled.SectionTitle>
-        <Styled.RelevantPagesWrapper>
-          <Styled.RelevantPageBox>
-            <Styled.RelevantPageBoxTitle>
-              Agency Settings
-            </Styled.RelevantPageBoxTitle>
-            <Styled.RelevantPageBoxDescription>
-              See and edit information about your agency for the public
-            </Styled.RelevantPageBoxDescription>
-          </Styled.RelevantPageBox>
-          <Styled.RelevantPageBox>
-            <Styled.RelevantPageBoxTitle>
-              Agency Settings
-            </Styled.RelevantPageBoxTitle>
-            <Styled.RelevantPageBoxDescription>
-              See and edit information about your agency for the public
-            </Styled.RelevantPageBoxDescription>
-          </Styled.RelevantPageBox>
-        </Styled.RelevantPagesWrapper>
+        <Breadcrumbs pathname={location.pathname} />
+        <Outlet />
       </Styled.ContentWrapper>
     </Styled.HelpCenterContainer>
   );
