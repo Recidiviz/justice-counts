@@ -188,3 +188,26 @@ export const GuideLink = styled.div`
     cursor: pointer;
   }
 `;
+
+export const InterstitialContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+`;
+
+export const InterstitialButton = styled.div`
+  min-width: 424px;
+  min-height: 264px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 0.5px solid ${palette.highlight.grey4};
+
+  &:hover {
+    cursor: pointer;
+    background: ${palette.highlight.grey1};
+  }
+`;

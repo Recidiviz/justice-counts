@@ -16,22 +16,22 @@
 // =============================================================================
 
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-import logoImg from "../assets/jc-logo-vector-new.svg";
 import * as Styled from "./HelpCenter.styles";
 
-export const HelpCenter = () => {
-  return (
-    <Styled.HelpCenterContainer>
-      <Styled.NewHeader>
-        <Styled.LogoContainer>
-          <Styled.LogoImg src={logoImg} alt="" />
-          <Styled.Label>Justice Counts</Styled.Label>
-        </Styled.LogoContainer>
-      </Styled.NewHeader>
+export const HelpCenterPublisher = () => {
+  const navigate = useNavigate();
 
-      <Outlet />
-    </Styled.HelpCenterContainer>
+  return (
+    <Styled.HelpCenterHome>
+      <Styled.HomeTitle>Justice Counts Help Center</Styled.HomeTitle>
+      <Styled.GuideLinksWrapper>
+        <Styled.GuideLinksTitle>Interact with the Data</Styled.GuideLinksTitle>
+        <Styled.GuideLink onClick={() => navigate("explore-data")}>
+          Explore your Data
+        </Styled.GuideLink>
+      </Styled.GuideLinksWrapper>
+    </Styled.HelpCenterHome>
   );
 };

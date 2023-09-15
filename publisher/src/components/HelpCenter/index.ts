@@ -18,3 +18,5 @@
 export * from "./HelpCenter";
 export * from "./HelpCenterBreadcrumbs";
 export * from "./HelpCenterGuides";
+export * from "./HelpCenterInterstitial";
+export * from "./HelpCenterPublisher";
