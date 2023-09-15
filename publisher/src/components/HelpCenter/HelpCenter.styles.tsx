@@ -118,8 +118,6 @@ export const RelevantPageBoxDescription = styled.div`
   font-weight: 400;
 `;
 
-/** Help Center Guides' Styling */
-
 export const Title = styled.h1`
   ${typography.sizeCSS.large};
   margin-bottom: 8px;

@@ -22,7 +22,6 @@ import * as Styled from "./HelpCenter.styles";
 
 export const HelpCenterPublisher = () => {
   const navigate = useNavigate();
-
   return (
     <Styled.HelpCenterHome>
       <Styled.HomeTitle>Justice Counts Help Center</Styled.HomeTitle>
