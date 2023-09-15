@@ -41,6 +41,7 @@ export const Breadcrumbs: React.FC<{ pathname: string }> = ({ pathname }) => {
 
         return (
           <Styled.Breadcrumb
+            key={path}
             highlight={isCurrentPath}
             onClick={() => navigate(breadcrumbPath)}
           >

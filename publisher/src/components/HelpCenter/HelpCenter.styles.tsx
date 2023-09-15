@@ -71,6 +71,7 @@ export const Label = styled.div`
 `;
 
 export const Breadcrumbs = styled.div`
+  min-width: 555px;
   display: flex;
   gap: 8px;
   margin-bottom: 48px;
