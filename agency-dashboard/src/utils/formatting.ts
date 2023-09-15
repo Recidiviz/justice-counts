@@ -29,7 +29,7 @@ export const getDatapointYear = (datapoint: Datapoint) => {
 };
 
 export const renderPercentText = (
-  val: number | string | null,
+  val: number | string | null | undefined,
   maxValue: number,
   isCurrency = false
 ) => {

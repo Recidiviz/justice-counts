@@ -36,13 +36,16 @@ export const CategoryOverviewBreakdown: FunctionComponent<
   const { month, year } = splitUtcString(String(data.start_date));
   const displayDate = `${month} ${year}`;
   const totalDimensionValues = dimensions.reduce((acc, dim) => {
-    const sum = acc + Number(data[dim].value);
-    return sum;
+    if (data[dim]?.value) {
+      const sum = acc + Number(data[dim].value);
+      return sum;
+    }
+    return acc;
   }, 0);
   /** Dimensions sorted in descending order based on value */
   const sortedDimensions = dimensions.sort(
     (dimA: string, dimB: string) =>
-      Number(data[dimB].value) - Number(data[dimA].value)
+      Number(data[dimB]?.value) - Number(data[dimA]?.value)
   );
 
   return (

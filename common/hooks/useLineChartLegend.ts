@@ -26,10 +26,12 @@ export const useLineChartLegend = (
 ) => {
   const transformDataForLegend = (datapoint: Datapoint): LegendData => {
     const dimensionsValueFill = dimensions.reduce((acc, dim) => {
-      acc[dim] = {
-        value: datapoint[dim] as number,
-        fill: dimensionsToColorMap[dim],
-      };
+      if (datapoint) {
+        acc[dim] = {
+          value: datapoint[dim],
+          fill: dimensionsToColorMap[dim],
+        };
+      }
       return acc;
     }, {} as LegendData);
 
