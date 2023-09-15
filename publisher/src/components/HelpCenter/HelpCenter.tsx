@@ -19,36 +19,8 @@ import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import logoImg from "../assets/jc-logo-vector-new.svg";
+import { Breadcrumbs } from ".";
 import * as Styled from "./HelpCenter.styles";
-
-const PathToDisplayName = {
-  help: "Home",
-  publisher: "Publisher",
-  "explore-data": "Explore your Data",
-};
-
-type PathToDisplayNameType = keyof typeof PathToDisplayName;
-
-const Breadcrumbs: React.FC<{ pathname: string }> = ({ pathname }) => {
-  const navigate = useNavigate();
-  const pathnames = pathname
-    .split("/")
-    .filter((name) => name) as PathToDisplayNameType[];
-
-  return (
-    <Styled.Breadcrumbs>
-      {pathnames.map((path, idx) => (
-        <Styled.Breadcrumb
-          highlight={idx === pathnames.length - 1}
-          onClick={() => navigate(`/help/` + path)}
-          // onClick={() => console.log(`../` + path)}
-        >
-          {PathToDisplayName[path]}
-        </Styled.Breadcrumb>
-      ))}
-    </Styled.Breadcrumbs>
-  );
-};
 
 export const HelpCenter = () => {
   const navigate = useNavigate();

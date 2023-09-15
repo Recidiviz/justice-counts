@@ -16,4 +16,5 @@
 // =============================================================================
 
 export * from "./HelpCenter";
+export * from "./HelpCenterBreadcrumbs";
 export * from "./HelpCenterGuides";
