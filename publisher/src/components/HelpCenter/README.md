@@ -31,6 +31,7 @@ To add a guide within the `helpCenterGuideStructure` object, you'll need to crea
  * key: a unique String that distinguishes this guide
  * category: the section that this guide falls under in the Publisher directory page
  * label: the display name,
+ * caption: the description of the guide
  * path: URL pathname for this guide,
  * element: the guide component you created,
  * relevantGuides: a list of relevant guide keys
@@ -71,9 +72,9 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
       },
       // Add a new guide within Publisher's directory
       "new-guide-key": {
-        key: "new-guide",
         category: "Add Data",
         label: "New Guide",
+        caption: "Caption for the New Guide.",
         path: "new-guide",
         element: <NewGuide />,
         relevantGuides: ["relevant-guide-key", "relevant-guide-key"]
