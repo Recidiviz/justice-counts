@@ -18,53 +18,35 @@
 import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
+import { groupGuidesByCategory, helpCenterGuideStructure } from ".";
 import * as Styled from "./HelpCenter.styles";
 
 export const HelpCenterPublisher = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const sortedGuides = helpCenterGuideStructure.publisher.nestedGuides.sort(
+    (a, b) => a.label.localeCompare(b.label)
+  );
+  const groupedGuides = groupGuidesByCategory(sortedGuides);
+  const groupedGuidesEntries = Object.entries(groupedGuides);
 
   if (location.pathname !== "/help/publisher") return <Outlet />;
-  // NTS: dynamically render this based on new obj
+
   return (
     <Styled.HelpCenterHome>
       <Styled.HomeTitle>Justice Counts Help Center</Styled.HomeTitle>
 
       <Styled.GuideLinks>
-        {/* Account Setup */}
-        <Styled.GuideLinksWrapper>
-          <Styled.GuideLinksTitle>Account Setup</Styled.GuideLinksTitle>
-          <Styled.GuideLink onClick={() => navigate("agency-settings")}>
-            Agency Settings
-          </Styled.GuideLink>
-          <Styled.GuideLink onClick={() => navigate("set-up-metrics")}>
-            Set Up Metrics
-          </Styled.GuideLink>
-        </Styled.GuideLinksWrapper>
-
-        {/* Add Data */}
-        <Styled.GuideLinksWrapper>
-          <Styled.GuideLinksTitle>Add Data</Styled.GuideLinksTitle>
-          <Styled.GuideLink onClick={() => navigate("manual-entry")}>
-            Manual Entry
-          </Styled.GuideLink>
-          <Styled.GuideLink onClick={() => navigate("bulk-upload")}>
-            Bulk Upload
-          </Styled.GuideLink>
-          <Styled.GuideLink onClick={() => navigate("automated-bulk-upload")}>
-            Automated Bulk Upload
-          </Styled.GuideLink>
-        </Styled.GuideLinksWrapper>
-
-        {/* Interact with the Data */}
-        <Styled.GuideLinksWrapper>
-          <Styled.GuideLinksTitle>
-            Interact with the Data
-          </Styled.GuideLinksTitle>
-          <Styled.GuideLink onClick={() => navigate("explore-data")}>
-            Explore your Data
-          </Styled.GuideLink>
-        </Styled.GuideLinksWrapper>
+        {groupedGuidesEntries.map(([category, guides]) => (
+          <Styled.GuideLinksWrapper key={category}>
+            <Styled.GuideLinksTitle>{category}</Styled.GuideLinksTitle>
+            {guides.map((guide) => (
+              <Styled.GuideLink onClick={() => navigate(guide.path)}>
+                {guide.label}
+              </Styled.GuideLink>
+            ))}
+          </Styled.GuideLinksWrapper>
+        ))}
       </Styled.GuideLinks>
     </Styled.HelpCenterHome>
   );

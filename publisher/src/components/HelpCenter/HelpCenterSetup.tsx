@@ -15,12 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { groupBy } from "@justice-counts/common/utils";
 import React from "react";
 import { Route } from "react-router-dom";
 
 import {
   AccountSetupGuide,
   ExploreDataGuide,
+  GuideStructure,
   HelpCenterGuideStructure,
   HelpCenterPublisher,
 } from ".";
@@ -48,8 +50,17 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
       },
     ],
   },
-  // dashboard: {},
+  dashboard: {
+    key: "dashboard",
+    label: "Dashboard",
+    path: "dashboard",
+    element: <>Not implemented</>,
+    nestedGuides: [],
+  },
 };
+
+export const groupGuidesByCategory = (guides: GuideStructure[]) =>
+  groupBy(guides, (guide) => guide.category || "");
 
 export const helpCenterRoutes = () => {
   return Object.values(helpCenterGuideStructure).map((parentGuide) => (

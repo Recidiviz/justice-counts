@@ -19,15 +19,17 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import * as Styled from "./HelpCenter.styles";
-// NTS: dynamically render this based on new obj
+import { helpCenterGuideStructure } from "./HelpCenterSetup";
+
 export const HelpCenterInterstitial = () => {
   const navigate = useNavigate();
   return (
     <Styled.InterstitialContainer>
-      <Styled.InterstitialButton onClick={() => navigate("publisher")}>
-        Publisher
-      </Styled.InterstitialButton>
-      <Styled.InterstitialButton>Dashboards</Styled.InterstitialButton>
+      {Object.values(helpCenterGuideStructure).map((appGuide) => (
+        <Styled.InterstitialButton onClick={() => navigate(appGuide.path)}>
+          {appGuide.label}
+        </Styled.InterstitialButton>
+      ))}
     </Styled.InterstitialContainer>
   );
 };
