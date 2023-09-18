@@ -15,19 +15,24 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
-import { useNavigate } from "react-router-dom";
+export const publisherGuideCategories = [
+  "Account Setup",
+  "Add Data",
+  "Interact with the Data",
+] as const;
 
-import * as Styled from "./HelpCenter.styles";
-// NTS: dynamically render this based on new obj
-export const HelpCenterInterstitial = () => {
-  const navigate = useNavigate();
-  return (
-    <Styled.InterstitialContainer>
-      <Styled.InterstitialButton onClick={() => navigate("publisher")}>
-        Publisher
-      </Styled.InterstitialButton>
-      <Styled.InterstitialButton>Dashboards</Styled.InterstitialButton>
-    </Styled.InterstitialContainer>
-  );
+export type PublisherGuideCategory = (typeof publisherGuideCategories)[number];
+
+export type GuideStructure = {
+  key: string;
+  label: string;
+  path: string;
+  element: React.ReactNode;
+  category?: PublisherGuideCategory;
+};
+
+export type HelpCenterGuideStructure = {
+  [appGuide: string]: GuideStructure & {
+    nestedGuides: GuideStructure[];
+  };
 };

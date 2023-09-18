@@ -16,24 +16,16 @@
 // =============================================================================
 
 import React from "react";
-
 import { Route } from "react-router-dom";
-import { AccountSetupGuide, ExploreDataGuide, HelpCenterPublisher } from ".";
 
-type GuideStructureType = {
-  key: string;
-  label: string;
-  path: string;
-  element: React.ReactNode;
-};
+import {
+  AccountSetupGuide,
+  ExploreDataGuide,
+  HelpCenterGuideStructure,
+  HelpCenterPublisher,
+} from ".";
 
-type HelpCenterGuideStructureType = {
-  [appGuide: string]: GuideStructureType & {
-    nestedGuides: GuideStructureType[];
-  };
-};
-
-export const HelpCenterGuideStructure: HelpCenterGuideStructureType = {
+export const helpCenterGuideStructure: HelpCenterGuideStructure = {
   publisher: {
     key: "publisher",
     label: "Publisher",
@@ -42,12 +34,14 @@ export const HelpCenterGuideStructure: HelpCenterGuideStructureType = {
     nestedGuides: [
       {
         key: "explore-data",
+        category: "Interact with the Data",
         label: "Explore your Data",
         path: "explore-data",
         element: <ExploreDataGuide />,
       },
       {
         key: "agency-settings",
+        category: "Account Setup",
         label: "Agency Settings",
         path: "agency-settings",
         element: <AccountSetupGuide />,
@@ -57,10 +51,8 @@ export const HelpCenterGuideStructure: HelpCenterGuideStructureType = {
   // dashboard: {},
 };
 
-const guideStructureValues = Object.values(HelpCenterGuideStructure);
-
 export const helpCenterRoutes = () => {
-  return guideStructureValues.map((parentGuide) => (
+  return Object.values(helpCenterGuideStructure).map((parentGuide) => (
     <Route path={parentGuide.path} element={parentGuide.element}>
       {parentGuide.nestedGuides.map((guide) => (
         <Route path={guide.path} element={guide.element} />

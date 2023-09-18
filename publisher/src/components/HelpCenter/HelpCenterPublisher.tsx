@@ -25,7 +25,7 @@ export const HelpCenterPublisher = () => {
   const location = useLocation();
 
   if (location.pathname !== "/help/publisher") return <Outlet />;
-
+  // NTS: dynamically render this based on new obj
   return (
     <Styled.HelpCenterHome>
       <Styled.HomeTitle>Justice Counts Help Center</Styled.HomeTitle>

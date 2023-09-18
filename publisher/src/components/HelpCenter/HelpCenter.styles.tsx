@@ -169,7 +169,7 @@ export const HomeTitle = styled.div`
 `;
 
 export const GuideLinks = styled.div`
-  width: 100%;
+  width: 100vw;
   height: 100%;
   display: flex;
   justify-content: space-evenly;
@@ -179,19 +179,20 @@ export const GuideLinksWrapper = styled.div`
   width: fit-content;
   display: flex;
   flex-direction: column;
+  gap: 16px;
 `;
 
 export const GuideLinksTitle = styled.div`
   ${typography.sizeCSS.medium}
-  margin-bottom: 16px;
 `;
 
 export const GuideLink = styled.div`
   ${typography.sizeCSS.normal}
-  color: ${palette.highlight.grey10};
+  color: ${palette.solid.blue};
 
   &:hover {
     cursor: pointer;
+    color: ${palette.solid.darkblue};
   }
 `;
 
