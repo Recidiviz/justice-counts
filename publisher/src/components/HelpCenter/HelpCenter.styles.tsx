@@ -168,6 +168,13 @@ export const HomeTitle = styled.div`
   ${typography.sizeCSS.title}
 `;
 
+export const GuideLinks = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-evenly;
+`;
+
 export const GuideLinksWrapper = styled.div`
   width: fit-content;
   display: flex;

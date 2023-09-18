@@ -23,6 +23,7 @@ const PathToDisplayName = {
   help: "Home",
   publisher: "Publisher",
   "explore-data": "Explore your Data",
+  "agency-settings": "Agency Settings",
 };
 
 type PathToDisplayNameType = keyof typeof PathToDisplayName;

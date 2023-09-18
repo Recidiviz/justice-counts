@@ -25,6 +25,7 @@ import Footer from "./components/Footer";
 import { AppWrapper, PageWrapper } from "./components/Forms";
 import { REPORTS_LOWERCASE } from "./components/Global/constants";
 import {
+  AccountSetupGuide,
   ExploreDataGuide,
   GuideLayoutWithBreadcrumbs,
   HelpCenter,
@@ -77,6 +78,7 @@ const App: React.FC = (): ReactElement => {
               <Route path="publisher" element={<GuideLayoutWithBreadcrumbs />}>
                 <Route index element={<HelpCenterPublisher />} />
                 <Route path="explore-data" element={<ExploreDataGuide />} />
+                <Route path="agency-settings" element={<AccountSetupGuide />} />
               </Route>
             </Route>
           )}

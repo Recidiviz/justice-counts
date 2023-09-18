@@ -25,12 +25,43 @@ export const HelpCenterPublisher = () => {
   return (
     <Styled.HelpCenterHome>
       <Styled.HomeTitle>Justice Counts Help Center</Styled.HomeTitle>
-      <Styled.GuideLinksWrapper>
-        <Styled.GuideLinksTitle>Interact with the Data</Styled.GuideLinksTitle>
-        <Styled.GuideLink onClick={() => navigate("explore-data")}>
-          Explore your Data
-        </Styled.GuideLink>
-      </Styled.GuideLinksWrapper>
+
+      <Styled.GuideLinks>
+        {/* Account Setup */}
+        <Styled.GuideLinksWrapper>
+          <Styled.GuideLinksTitle>Account Setup</Styled.GuideLinksTitle>
+          <Styled.GuideLink onClick={() => navigate("agency-settings")}>
+            Agency Settings
+          </Styled.GuideLink>
+          <Styled.GuideLink onClick={() => navigate("set-up-metrics")}>
+            Set Up Metrics
+          </Styled.GuideLink>
+        </Styled.GuideLinksWrapper>
+
+        {/* Add Data */}
+        <Styled.GuideLinksWrapper>
+          <Styled.GuideLinksTitle>Add Data</Styled.GuideLinksTitle>
+          <Styled.GuideLink onClick={() => navigate("manual-entry")}>
+            Manual Entry
+          </Styled.GuideLink>
+          <Styled.GuideLink onClick={() => navigate("bulk-upload")}>
+            Bulk Upload
+          </Styled.GuideLink>
+          <Styled.GuideLink onClick={() => navigate("automated-bulk-upload")}>
+            Automated Bulk Upload
+          </Styled.GuideLink>
+        </Styled.GuideLinksWrapper>
+
+        {/* Interact with the Data */}
+        <Styled.GuideLinksWrapper>
+          <Styled.GuideLinksTitle>
+            Interact with the Data
+          </Styled.GuideLinksTitle>
+          <Styled.GuideLink onClick={() => navigate("explore-data")}>
+            Explore your Data
+          </Styled.GuideLink>
+        </Styled.GuideLinksWrapper>
+      </Styled.GuideLinks>
     </Styled.HelpCenterHome>
   );
 };

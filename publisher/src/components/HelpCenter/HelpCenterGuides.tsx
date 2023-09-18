@@ -92,3 +92,48 @@ export const ExploreDataGuide = () => (
     </Styled.RelevantPagesWrapper>
   </>
 );
+
+export const AccountSetupGuide = () => (
+  <>
+    <Styled.Title>Agency Settings</Styled.Title>
+    <Styled.Caption>See and edit information about your agency.</Styled.Caption>
+    <Styled.SectionWrapper>
+      <Styled.SectionParagraph>
+        Within agency settings you can update information about your agency
+        including your URL and the description of your agency.
+      </Styled.SectionParagraph>
+    </Styled.SectionWrapper>
+    <Styled.SectionWrapper>
+      <Styled.SectionParagraph>
+        {`{Screenshot of jurisdictions}`} You may also edit the jurisdictions
+        that your agency covers and specify areas included and excluded.
+      </Styled.SectionParagraph>
+    </Styled.SectionWrapper>
+    <Styled.SectionWrapper>
+      <Styled.SectionParagraph>
+        If you need to update your agency name, state, or sector, please contact
+        justice-counts-support@csg.org.
+      </Styled.SectionParagraph>
+    </Styled.SectionWrapper>
+
+    <Styled.SectionTitle>Relevant Pages</Styled.SectionTitle>
+    <Styled.RelevantPagesWrapper>
+      <Styled.RelevantPageBox>
+        <Styled.RelevantPageBoxTitle>
+          How do I configure my Metric Availability?
+        </Styled.RelevantPageBoxTitle>
+        <Styled.RelevantPageBoxDescription>
+          See and edit information about your agency for the public
+        </Styled.RelevantPageBoxDescription>
+      </Styled.RelevantPageBox>
+      <Styled.RelevantPageBox>
+        <Styled.RelevantPageBoxTitle>
+          How do I define my Metric?
+        </Styled.RelevantPageBoxTitle>
+        <Styled.RelevantPageBoxDescription>
+          See and edit information about your agency for the public
+        </Styled.RelevantPageBoxDescription>
+      </Styled.RelevantPageBox>
+    </Styled.RelevantPagesWrapper>
+  </>
+);
