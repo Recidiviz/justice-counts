@@ -23,7 +23,6 @@ import * as Styled from "./HelpCenter.styles";
 
 export const GuideLayoutWithBreadcrumbs = () => {
   const location = useLocation();
-
   return (
     <Styled.ContentWrapper>
       <Breadcrumbs pathname={location.pathname} />

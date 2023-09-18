@@ -16,12 +16,16 @@
 // =============================================================================
 
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import * as Styled from "./HelpCenter.styles";
 
 export const HelpCenterPublisher = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  if (location.pathname !== "/help/publisher") return <Outlet />;
+
   return (
     <Styled.HelpCenterHome>
       <Styled.HomeTitle>Justice Counts Help Center</Styled.HomeTitle>
