@@ -5,7 +5,8 @@ If you'd like to update one of the Help Center guides, please go to the `HelpCen
 If you'd like to add a Help Center guide, please go to the `HelpCenterGuides.tsx` file, add a functional component guide that renders the desired JSX, and update the `helpCenterGuideStructure` object in `HelpCenterSetup.tsx` and import your newly created component.
 
 ###### HelpCenterGuides.tsx
-```
+
+```jsx
 export const NewGuide = () => (
   <>
     <Styled.Title>...</Styled.Title>
@@ -41,7 +42,7 @@ To add a guide within the `helpCenterGuideStructure` object, you'll need to crea
 
 
 ###### HelpCenterSetup.tsx
-```
+```jsx
 import {
   AccountSetupGuide,
   ExploreDataGuide,
