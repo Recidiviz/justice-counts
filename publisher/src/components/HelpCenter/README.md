@@ -9,10 +9,7 @@ If you'd like to add a Help Center guide, please go to the `HelpCenterGuides.tsx
 ```jsx
 export const NewGuide = () => (
   <>
-    <Styled.Title>...</Styled.Title>
-    <Styled.Caption>
-      ...
-    </Styled.Caption>
+    <GuideTitle appKey="publisher-or-dashboard" guideKey="new-guide-key" />
 
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
@@ -24,10 +21,7 @@ export const NewGuide = () => (
     </Styled.SectionWrapper>
     ...
 
-    <Styled.SectionTitle>Relevant Pages</Styled.SectionTitle>
-    <Styled.RelevantPagesWrapper>
-      ...
-    </Styled.RelevantPagesWrapper>
+    <RelevantGuides appKey="publisher-or-dashboard" guideKey="new-guide-key" />
   </>
 );
 ```
@@ -39,6 +33,7 @@ To add a guide within the `helpCenterGuideStructure` object, you'll need to crea
  * label: the display name,
  * path: URL pathname for this guide,
  * element: the guide component you created,
+ * relevantGuides: a list of relevant guide keys
 
 
 ###### HelpCenterSetup.tsx
@@ -57,37 +52,36 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
     label: "Publisher",
     path: "publisher",
     element: <HelpCenterPublisher />,
-    nestedGuides: [
-      {
-        key: "explore-data",
+    nestedGuides: {
+      "explore-data": {
         category: "Interact with the Data",
         label: "Explore your Data",
+        caption: "Interact with your data to discover insights.",
         path: "explore-data",
         element: <ExploreDataGuide />,
+        relevantGuides: ["explore-data", "agency-settings"],
       },
-      {
-        key: "agency-settings",
+      "agency-settings": {
         category: "Account Setup",
         label: "Agency Settings",
+        caption: "See and edit information about your agency.",
         path: "agency-settings",
         element: <AccountSetupGuide />,
+        relevantGuides: ["agency-settings", "explore-data"],
       },
       // Add a new guide within Publisher's directory
-      {
+      "new-guide-key": {
         key: "new-guide",
         category: "Add Data",
         label: "New Guide",
         path: "new-guide",
         element: <NewGuide />,
+        relevantGuides: ["relevant-guide-key", "relevant-guide-key"]
       }
-    ],
+    },
   },
   dashboard: {
-    key: "dashboard",
-    label: "Dashboard",
-    path: "dashboard",
-    element: <>Not implemented</>,
-    nestedGuides: [],
+    ...
   },
 };
 ```

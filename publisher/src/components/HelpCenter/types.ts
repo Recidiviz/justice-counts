@@ -23,20 +23,21 @@ export const publisherGuideCategories = [
 
 export type PublisherGuideCategory = (typeof publisherGuideCategories)[number];
 
-export type GuideStructure = {
-  key: string;
+export type GuideStructureProps = {
   label: string;
   path: string;
   element: React.ReactNode;
 };
 
-export type GuideStructureWithCategory = GuideStructure & {
+export type GuideStructure = GuideStructureProps & {
   category: PublisherGuideCategory;
+  caption: string;
+  relevantGuides: string[];
 };
 
 export type HelpCenterGuideStructure = {
-  [appGuide: string]: GuideStructure & {
-    nestedGuides: GuideStructureWithCategory[];
+  [appKey: string]: GuideStructureProps & {
+    nestedGuides: { [key: string]: GuideStructure };
   };
 };
 

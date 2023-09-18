@@ -16,9 +16,9 @@
 // =============================================================================
 
 import React from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
-import { Breadcrumbs } from ".";
+import { Breadcrumbs, helpCenterGuideStructure } from ".";
 import * as Styled from "./HelpCenter.styles";
 
 export const GuideLayoutWithBreadcrumbs = () => {
@@ -31,12 +31,54 @@ export const GuideLayoutWithBreadcrumbs = () => {
   );
 };
 
+const GuideTitle: React.FC<{ appKey: string; guideKey: string }> = ({
+  appKey,
+  guideKey,
+}) => {
+  const guide = helpCenterGuideStructure[appKey].nestedGuides[guideKey];
+  return (
+    <>
+      <Styled.Title>{guide.label}</Styled.Title>
+      <Styled.Caption>{guide.caption}</Styled.Caption>
+    </>
+  );
+};
+
+const RelevantGuides: React.FC<{ appKey: string; guideKey: string }> = ({
+  appKey,
+  guideKey,
+}) => {
+  const navigate = useNavigate();
+  const guideKeys =
+    helpCenterGuideStructure[appKey].nestedGuides[guideKey].relevantGuides;
+  return (
+    <>
+      <Styled.SectionTitle>Relevant Pages</Styled.SectionTitle>
+      <Styled.RelevantPagesWrapper>
+        {guideKeys.map((key) => {
+          const guide = helpCenterGuideStructure.publisher.nestedGuides[key];
+          return (
+            <Styled.RelevantPageBox
+              key={key}
+              onClick={() => navigate(`../${guide.path}`)}
+            >
+              <Styled.RelevantPageBoxTitle>
+                {guide.label}
+              </Styled.RelevantPageBoxTitle>
+              <Styled.RelevantPageBoxDescription>
+                {guide.caption}
+              </Styled.RelevantPageBoxDescription>
+            </Styled.RelevantPageBox>
+          );
+        })}
+      </Styled.RelevantPagesWrapper>
+    </>
+  );
+};
+
 export const ExploreDataGuide = () => (
   <>
-    <Styled.Title>Explore your Data</Styled.Title>
-    <Styled.Caption>
-      Interact with your data to discover insights.
-    </Styled.Caption>
+    <GuideTitle appKey="publisher" guideKey="explore-data" />
 
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
@@ -70,32 +112,14 @@ export const ExploreDataGuide = () => (
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
-    <Styled.SectionTitle>Relevant Pages</Styled.SectionTitle>
-    <Styled.RelevantPagesWrapper>
-      <Styled.RelevantPageBox>
-        <Styled.RelevantPageBoxTitle>
-          Agency Settings
-        </Styled.RelevantPageBoxTitle>
-        <Styled.RelevantPageBoxDescription>
-          See and edit information about your agency for the public
-        </Styled.RelevantPageBoxDescription>
-      </Styled.RelevantPageBox>
-      <Styled.RelevantPageBox>
-        <Styled.RelevantPageBoxTitle>
-          Agency Settings
-        </Styled.RelevantPageBoxTitle>
-        <Styled.RelevantPageBoxDescription>
-          See and edit information about your agency for the public
-        </Styled.RelevantPageBoxDescription>
-      </Styled.RelevantPageBox>
-    </Styled.RelevantPagesWrapper>
+    <RelevantGuides appKey="publisher" guideKey="explore-data" />
   </>
 );
 
 export const AccountSetupGuide = () => (
   <>
-    <Styled.Title>Agency Settings</Styled.Title>
-    <Styled.Caption>See and edit information about your agency.</Styled.Caption>
+    <GuideTitle appKey="publisher" guideKey="agency-settings" />
+
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
         Within agency settings you can update information about your agency
@@ -115,24 +139,6 @@ export const AccountSetupGuide = () => (
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
-    <Styled.SectionTitle>Relevant Pages</Styled.SectionTitle>
-    <Styled.RelevantPagesWrapper>
-      <Styled.RelevantPageBox>
-        <Styled.RelevantPageBoxTitle>
-          How do I configure my Metric Availability?
-        </Styled.RelevantPageBoxTitle>
-        <Styled.RelevantPageBoxDescription>
-          See and edit information about your agency for the public
-        </Styled.RelevantPageBoxDescription>
-      </Styled.RelevantPageBox>
-      <Styled.RelevantPageBox>
-        <Styled.RelevantPageBoxTitle>
-          How do I define my Metric?
-        </Styled.RelevantPageBoxTitle>
-        <Styled.RelevantPageBoxDescription>
-          See and edit information about your agency for the public
-        </Styled.RelevantPageBoxDescription>
-      </Styled.RelevantPageBox>
-    </Styled.RelevantPagesWrapper>
+    <RelevantGuides appKey="publisher" guideKey="agency-settings" />
   </>
 );

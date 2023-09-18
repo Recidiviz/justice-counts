@@ -24,9 +24,9 @@ import * as Styled from "./HelpCenter.styles";
 export const HelpCenterPublisher = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const sortedGuides = helpCenterGuideStructure.publisher.nestedGuides.sort(
-    (a, b) => a.label.localeCompare(b.label)
-  );
+  const sortedGuides = Object.values(
+    helpCenterGuideStructure.publisher.nestedGuides
+  ).sort((a, b) => a.label.localeCompare(b.label));
   const groupedGuides = groupGuidesByCategory(sortedGuides);
 
   if (location.pathname !== `/help/${helpCenterGuideStructure.publisher.path}`)
@@ -42,7 +42,7 @@ export const HelpCenterPublisher = () => {
             <Styled.GuideLinksTitle>{category}</Styled.GuideLinksTitle>
             {guides.map((guide) => (
               <Styled.GuideLink
-                key={guide.key}
+                key={guide.path}
                 onClick={() => navigate(guide.path)}
               >
                 {guide.label}

@@ -22,7 +22,7 @@ import { Route } from "react-router-dom";
 import {
   AccountSetupGuide,
   ExploreDataGuide,
-  GuideStructureWithCategory,
+  GuideStructure,
   HelpCenterGuideStructure,
   HelpCenterPublisher,
   PathToDisplayName,
@@ -30,40 +30,40 @@ import {
 
 export const helpCenterGuideStructure: HelpCenterGuideStructure = {
   publisher: {
-    key: "publisher",
     label: "Publisher",
     path: "publisher",
     element: <HelpCenterPublisher />,
-    nestedGuides: [
-      {
-        key: "explore-data",
+    nestedGuides: {
+      "explore-data": {
         category: "Interact with the Data",
         label: "Explore your Data",
+        caption: "Interact with your data to discover insights.",
         path: "explore-data",
         element: <ExploreDataGuide />,
+        relevantGuides: ["explore-data", "agency-settings"],
       },
-      {
-        key: "agency-settings",
+      "agency-settings": {
         category: "Account Setup",
         label: "Agency Settings",
+        caption: "See and edit information about your agency.",
         path: "agency-settings",
         element: <AccountSetupGuide />,
+        relevantGuides: ["agency-settings", "explore-data"],
       },
-    ],
+    },
   },
   dashboard: {
-    key: "dashboard",
     label: "Dashboard",
     path: "dashboard",
     element: <>Not implemented</>,
-    nestedGuides: [],
+    nestedGuides: {},
   },
 };
 
 export const pathToDisplayName = Object.values(helpCenterGuideStructure).reduce(
   (acc, parentGuide) => {
     acc[parentGuide.path] = parentGuide.label;
-    parentGuide.nestedGuides.forEach((guide) => {
+    Object.values(parentGuide.nestedGuides).forEach((guide) => {
       acc[guide.path] = guide.label;
     });
     return acc;
@@ -71,18 +71,18 @@ export const pathToDisplayName = Object.values(helpCenterGuideStructure).reduce(
   { help: "Home" } as PathToDisplayName
 );
 
-export const groupGuidesByCategory = (guides: GuideStructureWithCategory[]) =>
+export const groupGuidesByCategory = (guides: GuideStructure[]) =>
   groupBy(guides, (guide) => guide.category);
 
 export const helpCenterRoutes = () => {
   return Object.values(helpCenterGuideStructure).map((parentGuide) => (
     <Route
-      key={parentGuide.key}
+      key={parentGuide.path}
       path={parentGuide.path}
       element={parentGuide.element}
     >
-      {parentGuide.nestedGuides.map((guide) => (
-        <Route key={guide.key} path={guide.path} element={guide.element} />
+      {Object.values(parentGuide.nestedGuides).map((guide) => (
+        <Route key={guide.path} path={guide.path} element={guide.element} />
       ))}
     </Route>
   ));

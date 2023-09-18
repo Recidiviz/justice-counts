@@ -107,6 +107,11 @@ export const RelevantPageBox = styled.div`
   padding: 32px 24px;
   border: 1px solid ${palette.highlight.grey3};
   border-radius: 4px;
+
+  &:hover {
+    cursor: pointer;
+    background: ${palette.highlight.grey1};
+  }
 `;
 
 export const RelevantPageBoxTitle = styled.div`
