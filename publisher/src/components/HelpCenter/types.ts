@@ -28,12 +28,15 @@ export type GuideStructure = {
   label: string;
   path: string;
   element: React.ReactNode;
-  category?: PublisherGuideCategory;
+};
+
+export type GuideStructureWithCategory = GuideStructure & {
+  category: PublisherGuideCategory;
 };
 
 export type HelpCenterGuideStructure = {
   [appGuide: string]: GuideStructure & {
-    nestedGuides: GuideStructure[];
+    nestedGuides: GuideStructureWithCategory[];
   };
 };
 

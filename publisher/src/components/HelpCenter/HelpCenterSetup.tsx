@@ -22,7 +22,7 @@ import { Route } from "react-router-dom";
 import {
   AccountSetupGuide,
   ExploreDataGuide,
-  GuideStructure,
+  GuideStructureWithCategory,
   HelpCenterGuideStructure,
   HelpCenterPublisher,
   PathToDisplayName,
@@ -71,8 +71,8 @@ export const pathToDisplayName = Object.values(helpCenterGuideStructure).reduce(
   { help: "Home" } as PathToDisplayName
 );
 
-export const groupGuidesByCategory = (guides: GuideStructure[]) =>
-  groupBy(guides, (guide) => guide.category || "");
+export const groupGuidesByCategory = (guides: GuideStructureWithCategory[]) =>
+  groupBy(guides, (guide) => guide.category);
 
 export const helpCenterRoutes = () => {
   return Object.values(helpCenterGuideStructure).map((parentGuide) => (
