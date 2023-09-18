@@ -16,9 +16,9 @@
 // =============================================================================
 /* eslint-disable simple-import-sort/exports */
 export * from "./HelpCenter";
-export * from "./HelpCenterBreadcrumbs";
 export * from "./HelpCenterGuides";
 export * from "./HelpCenterPublisher";
 export * from "./HelpCenterSetup";
+export * from "./HelpCenterBreadcrumbs";
 export * from "./HelpCenterInterstitial";
 export * from "./types";

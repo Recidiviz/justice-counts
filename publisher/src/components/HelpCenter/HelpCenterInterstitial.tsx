@@ -26,7 +26,10 @@ export const HelpCenterInterstitial = () => {
   return (
     <Styled.InterstitialContainer>
       {Object.values(helpCenterGuideStructure).map((appGuide) => (
-        <Styled.InterstitialButton onClick={() => navigate(appGuide.path)}>
+        <Styled.InterstitialButton
+          key={appGuide.key}
+          onClick={() => navigate(appGuide.path)}
+        >
           {appGuide.label}
         </Styled.InterstitialButton>
       ))}

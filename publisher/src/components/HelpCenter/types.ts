@@ -36,3 +36,5 @@ export type HelpCenterGuideStructure = {
     nestedGuides: GuideStructure[];
   };
 };
+
+export type PathToDisplayName = { [guidePath: string]: string };

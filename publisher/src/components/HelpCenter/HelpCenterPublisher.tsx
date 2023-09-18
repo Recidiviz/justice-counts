@@ -28,20 +28,23 @@ export const HelpCenterPublisher = () => {
     (a, b) => a.label.localeCompare(b.label)
   );
   const groupedGuides = groupGuidesByCategory(sortedGuides);
-  const groupedGuidesEntries = Object.entries(groupedGuides);
 
-  if (location.pathname !== "/help/publisher") return <Outlet />;
+  if (location.pathname !== `/help/${helpCenterGuideStructure.publisher.path}`)
+    return <Outlet />;
 
   return (
     <Styled.HelpCenterHome>
       <Styled.HomeTitle>Justice Counts Help Center</Styled.HomeTitle>
 
       <Styled.GuideLinks>
-        {groupedGuidesEntries.map(([category, guides]) => (
+        {Object.entries(groupedGuides).map(([category, guides]) => (
           <Styled.GuideLinksWrapper key={category}>
             <Styled.GuideLinksTitle>{category}</Styled.GuideLinksTitle>
             {guides.map((guide) => (
-              <Styled.GuideLink onClick={() => navigate(guide.path)}>
+              <Styled.GuideLink
+                key={guide.key}
+                onClick={() => navigate(guide.path)}
+              >
                 {guide.label}
               </Styled.GuideLink>
             ))}

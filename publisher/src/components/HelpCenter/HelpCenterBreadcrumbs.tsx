@@ -17,22 +17,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+import { pathToDisplayName } from ".";
 import * as Styled from "./HelpCenter.styles";
-
-const PathToDisplayName = {
-  help: "Home",
-  publisher: "Publisher",
-  "explore-data": "Explore your Data",
-  "agency-settings": "Agency Settings",
-};
-
-type PathToDisplayNameType = keyof typeof PathToDisplayName;
 
 export const Breadcrumbs: React.FC<{ pathname: string }> = ({ pathname }) => {
   const navigate = useNavigate();
-  const pathnames = pathname
-    .split("/")
-    .filter((name) => name) as PathToDisplayNameType[];
+  const pathnames = pathname.split("/").filter((name) => name);
 
   return (
     <Styled.Breadcrumbs>
@@ -46,7 +36,7 @@ export const Breadcrumbs: React.FC<{ pathname: string }> = ({ pathname }) => {
             highlight={isCurrentPath}
             onClick={() => navigate(breadcrumbPath)}
           >
-            {PathToDisplayName[path]}
+            {pathToDisplayName[path]}
           </Styled.Breadcrumb>
         );
       })}

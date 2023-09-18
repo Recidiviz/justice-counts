@@ -25,6 +25,7 @@ import {
   GuideStructure,
   HelpCenterGuideStructure,
   HelpCenterPublisher,
+  PathToDisplayName,
 } from ".";
 
 export const helpCenterGuideStructure: HelpCenterGuideStructure = {
@@ -59,14 +60,29 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
   },
 };
 
+export const pathToDisplayName = Object.values(helpCenterGuideStructure).reduce(
+  (acc, parentGuide) => {
+    acc[parentGuide.path] = parentGuide.label;
+    parentGuide.nestedGuides.forEach((guide) => {
+      acc[guide.path] = guide.label;
+    });
+    return acc;
+  },
+  { help: "Home" } as PathToDisplayName
+);
+
 export const groupGuidesByCategory = (guides: GuideStructure[]) =>
   groupBy(guides, (guide) => guide.category || "");
 
 export const helpCenterRoutes = () => {
   return Object.values(helpCenterGuideStructure).map((parentGuide) => (
-    <Route path={parentGuide.path} element={parentGuide.element}>
+    <Route
+      key={parentGuide.key}
+      path={parentGuide.path}
+      element={parentGuide.element}
+    >
       {parentGuide.nestedGuides.map((guide) => (
-        <Route path={guide.path} element={guide.element} />
+        <Route key={guide.key} path={guide.path} element={guide.element} />
       ))}
     </Route>
   ));
