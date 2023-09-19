@@ -35,7 +35,7 @@ export const Guide = () => (
   4. Import your newly created component
   5. Update the `helpCenterGuideStructure` object and create a guide object for your newly created guide under the `guides` property for either the Publisher/Dashboard app with the following properties:
         * **key**: a unique String that distinguishes this guide
-        * **category**: the section that this guide falls under in the Publisher directory page
+        * **category**: the section that this guide falls under in the Publisher directory page (use the `PublisherGuideCategories` enum)
         * **label**: the display name
         * **caption**: the description of the guide
         * **path**: URL pathname for this guide
@@ -58,11 +58,16 @@ export const NewGuide = () => (
         ...
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
+
+    <Styled.SectionWrapper>
+      <Styled.SectionTitle>...</Styled.SectionTitle>
+      <Styled.SectionParagraph>
+        ...
+      </Styled.SectionParagraph>
+    </Styled.SectionWrapper>
   </>
 );
 ```
-
-
 
 ###### HelpCenterSetup.tsx
 ```jsx

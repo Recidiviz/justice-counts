@@ -15,10 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 /* eslint-disable simple-import-sort/exports */
+export * from "./types";
 export * from "./HelpCenter";
 export * from "./HelpCenterGuides";
 export * from "./HelpCenterPublisherDirectory";
 export * from "./HelpCenterSetup";
 export * from "./HelpCenterBreadcrumbs";
 export * from "./HelpCenterInterstitial";
-export * from "./types";

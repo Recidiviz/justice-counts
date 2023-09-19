@@ -23,21 +23,23 @@ import {
   ExploreDataGuide,
   HelpCenterGuideStructure,
   HelpCenterPublisherDirectory,
+  PublisherGuideCategories,
+  SetUpMetricsGuide,
 } from ".";
 
-export enum APP_GUIDE_KEY {
+export enum AppGuideKeys {
   publisher = "publisher",
   dashboard = "dashboard",
 }
 
 export const helpCenterGuideStructure: HelpCenterGuideStructure = {
-  [APP_GUIDE_KEY.publisher]: {
+  [AppGuideKeys.publisher]: {
     label: "Publisher",
-    path: APP_GUIDE_KEY.publisher,
+    path: AppGuideKeys.publisher,
     element: <HelpCenterPublisherDirectory />,
     guides: {
       "explore-data": {
-        category: "Interact with the Data",
+        category: PublisherGuideCategories.InteractWithTheData,
         label: "Explore your Data",
         caption: "Interact with your data to discover insights.",
         path: "explore-data",
@@ -45,18 +47,27 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         relevantGuides: ["explore-data", "agency-settings"],
       },
       "agency-settings": {
-        category: "Account Setup",
+        category: PublisherGuideCategories.AccountSetup,
         label: "Agency Settings",
         caption: "See and edit information about your agency.",
         path: "agency-settings",
         element: <AccountSetupGuide />,
         relevantGuides: ["agency-settings", "explore-data"],
       },
+      "set-up-metrics": {
+        category: PublisherGuideCategories.AccountSetup,
+        label: "Set Up Metrics",
+        caption:
+          "Specify the availability, frequency and definitions of metrics and relevant breakdown categories.",
+        path: "set-up-metrics",
+        element: <SetUpMetricsGuide />,
+        relevantGuides: ["agency-settings"],
+      },
     },
   },
-  [APP_GUIDE_KEY.dashboard]: {
+  [AppGuideKeys.dashboard]: {
     label: "Dashboard",
-    path: APP_GUIDE_KEY.dashboard,
+    path: AppGuideKeys.dashboard,
     element: <>Not implemented</>,
     guides: {},
   },

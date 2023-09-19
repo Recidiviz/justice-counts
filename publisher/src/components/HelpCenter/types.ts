@@ -15,13 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export const publisherGuideCategories = [
-  "Account Setup",
-  "Add Data",
-  "Interact with the Data",
-] as const;
+export enum PublisherGuideCategories {
+  AccountSetup = "Account Setup",
+  AddData = "Add Data",
+  InteractWithTheData = "Interact with the Data",
+}
 
-export type PublisherGuideCategory = (typeof publisherGuideCategories)[number];
+export type PublisherGuideCategory = `${PublisherGuideCategories}`;
 
 export type GuideStructureProps = {
   label: string;
