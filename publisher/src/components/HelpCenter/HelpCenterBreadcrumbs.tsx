@@ -17,8 +17,19 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { pathToDisplayName } from ".";
+import { helpCenterGuideStructure, PathToDisplayName } from ".";
 import * as Styled from "./HelpCenter.styles";
+
+const pathToDisplayName = Object.values(helpCenterGuideStructure).reduce(
+  (acc, parentGuide) => {
+    acc[parentGuide.path] = parentGuide.label;
+    Object.values(parentGuide.guides).forEach((guide) => {
+      acc[guide.path] = guide.label;
+    });
+    return acc;
+  },
+  { help: "Home" } as PathToDisplayName
+);
 
 export const Breadcrumbs: React.FC<{ pathname: string }> = ({ pathname }) => {
   const navigate = useNavigate();

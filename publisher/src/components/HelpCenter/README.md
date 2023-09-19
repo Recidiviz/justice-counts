@@ -86,3 +86,5 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
   },
 };
 ```
+
+If you'd like to remove a guide, please delete the relevant guide object from within the `helpCenterGuideStructure` object in `HelpCenterSetup.tsx` and the guide component in `HelpCenterGuides.tsx`.

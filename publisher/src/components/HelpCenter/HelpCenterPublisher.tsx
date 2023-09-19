@@ -15,19 +15,20 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { groupBy } from "@justice-counts/common/utils";
 import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
-import { groupGuidesByCategory, helpCenterGuideStructure } from ".";
+import { helpCenterGuideStructure } from ".";
 import * as Styled from "./HelpCenter.styles";
 
 export const HelpCenterPublisher = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const sortedGuides = Object.values(
-    helpCenterGuideStructure.publisher.nestedGuides
+    helpCenterGuideStructure.publisher.guides
   ).sort((a, b) => a.label.localeCompare(b.label));
-  const groupedGuides = groupGuidesByCategory(sortedGuides);
+  const groupedGuides = groupBy(sortedGuides, (guide) => guide.category);
 
   if (location.pathname !== `/help/${helpCenterGuideStructure.publisher.path}`)
     return <Outlet />;

@@ -37,7 +37,7 @@ export type GuideStructure = GuideStructureProps & {
 
 export type HelpCenterGuideStructure = {
   [appKey: string]: GuideStructureProps & {
-    nestedGuides: { [key: string]: GuideStructure };
+    guides: { [key: string]: GuideStructure };
   };
 };
 

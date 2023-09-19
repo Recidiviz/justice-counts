@@ -15,32 +15,49 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { groupBy } from "@justice-counts/common/utils";
 import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
-import { Breadcrumbs, helpCenterGuideStructure } from ".";
+import { Breadcrumbs, GuideStructure, helpCenterGuideStructure } from ".";
 import * as Styled from "./HelpCenter.styles";
 
 export const GuideLayoutWithBreadcrumbs = () => {
   const location = useLocation();
+  const pathnames = location.pathname.split("/").filter((name) => name);
+  const currentAppGuideKey = pathnames[1];
+  const currentPathname = pathnames[pathnames.length - 1];
+  const guidesByPathname = groupBy(
+    Object.values(helpCenterGuideStructure[currentAppGuideKey].guides),
+    (guide: GuideStructure) => guide.path
+  );
+  const isGuideOpen = !Object.keys(helpCenterGuideStructure).includes(
+    currentPathname
+  );
+  const currentGuide = isGuideOpen
+    ? guidesByPathname[currentPathname][0]
+    : undefined;
+
   return (
     <Styled.ContentWrapper>
       <Breadcrumbs pathname={location.pathname} />
-      <Outlet />
-    </Styled.ContentWrapper>
-  );
-};
 
-const GuideTitle: React.FC<{ appKey: string; guideKey: string }> = ({
-  appKey,
-  guideKey,
-}) => {
-  const guide = helpCenterGuideStructure[appKey].nestedGuides[guideKey];
-  return (
-    <>
-      <Styled.Title>{guide.label}</Styled.Title>
-      <Styled.Caption>{guide.caption}</Styled.Caption>
-    </>
+      {currentGuide && (
+        <>
+          <Styled.Title>{currentGuide.label}</Styled.Title>
+          <Styled.Caption>{currentGuide.caption}</Styled.Caption>
+        </>
+      )}
+
+      <Outlet />
+
+      {currentGuide && (
+        <RelevantGuides
+          appKey={currentAppGuideKey}
+          guideKey={currentPathname}
+        />
+      )}
+    </Styled.ContentWrapper>
   );
 };
 
@@ -50,17 +67,17 @@ const RelevantGuides: React.FC<{ appKey: string; guideKey: string }> = ({
 }) => {
   const navigate = useNavigate();
   const guideKeys =
-    helpCenterGuideStructure[appKey].nestedGuides[guideKey].relevantGuides;
+    helpCenterGuideStructure[appKey].guides[guideKey].relevantGuides;
   return (
     <>
       <Styled.SectionTitle>Relevant Pages</Styled.SectionTitle>
       <Styled.RelevantPagesWrapper>
         {guideKeys.map((key) => {
-          const guide = helpCenterGuideStructure.publisher.nestedGuides[key];
+          const guide = helpCenterGuideStructure.publisher.guides[key];
           return (
             <Styled.RelevantPageBox
               key={key}
-              onClick={() => navigate(`../${guide.path}`)}
+              onClick={() => navigate(`../${guide.path}`, { relative: "path" })}
             >
               <Styled.RelevantPageBoxTitle>
                 {guide.label}
@@ -78,8 +95,6 @@ const RelevantGuides: React.FC<{ appKey: string; guideKey: string }> = ({
 
 export const ExploreDataGuide = () => (
   <>
-    <GuideTitle appKey="publisher" guideKey="explore-data" />
-
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
         The Explore Data tab allows you to visualize the data you have uploaded
@@ -111,15 +126,11 @@ export const ExploreDataGuide = () => (
         sectors, each sector will be presented with its own individual metrics.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
-
-    <RelevantGuides appKey="publisher" guideKey="explore-data" />
   </>
 );
 
 export const AccountSetupGuide = () => (
   <>
-    <GuideTitle appKey="publisher" guideKey="agency-settings" />
-
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
         Within agency settings you can update information about your agency
@@ -138,7 +149,5 @@ export const AccountSetupGuide = () => (
         justice-counts-support@csg.org.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
-
-    <RelevantGuides appKey="publisher" guideKey="agency-settings" />
   </>
 );
