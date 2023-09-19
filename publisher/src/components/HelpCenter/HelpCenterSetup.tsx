@@ -20,34 +20,34 @@ import { Route } from "react-router-dom";
 
 import {
   AccountSetupGuide,
+  AppGuideKeys,
+  AutomatedBulkUploadGuide,
+  BulkUploadGuide,
+  DashboardsGuide,
   ExploreDataGuide,
+  GuideCategories,
+  HelpCenterDirectory,
   HelpCenterGuideStructure,
-  HelpCenterPublisherDirectory,
-  PublisherGuideCategories,
+  ManualEntryGuide,
   SetUpMetricsGuide,
 } from ".";
-
-export enum AppGuideKeys {
-  publisher = "publisher",
-  dashboard = "dashboard",
-}
 
 export const helpCenterGuideStructure: HelpCenterGuideStructure = {
   [AppGuideKeys.publisher]: {
     label: "Publisher",
     path: AppGuideKeys.publisher,
-    element: <HelpCenterPublisherDirectory />,
+    element: <HelpCenterDirectory appGuide={AppGuideKeys.publisher} />,
     guides: {
       "explore-data": {
-        category: PublisherGuideCategories.InteractWithTheData,
+        category: GuideCategories.InteractWithTheData,
         label: "Explore your Data",
         caption: "Interact with your data to discover insights.",
         path: "explore-data",
         element: <ExploreDataGuide />,
-        relevantGuides: ["explore-data", "agency-settings"],
+        relevantGuides: ["dashboards"],
       },
       "agency-settings": {
-        category: PublisherGuideCategories.AccountSetup,
+        category: GuideCategories.AccountSetup,
         label: "Agency Settings",
         caption: "See and edit information about your agency.",
         path: "agency-settings",
@@ -55,12 +55,37 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         relevantGuides: ["agency-settings", "explore-data"],
       },
       "set-up-metrics": {
-        category: PublisherGuideCategories.AccountSetup,
+        category: GuideCategories.AccountSetup,
         label: "Set Up Metrics",
-        caption:
-          "Specify the availability, frequency and definitions of metrics and relevant breakdown categories.",
+        caption: "Manually enter your data through text fields.",
         path: "set-up-metrics",
         element: <SetUpMetricsGuide />,
+        relevantGuides: ["agency-settings"],
+      },
+      "manual-entry": {
+        category: GuideCategories.AddData,
+        label: "Manual Entry",
+        caption:
+          "Specify the availability, frequency and definitions of metrics and relevant breakdown categories.",
+        path: "manual-entry",
+        element: <ManualEntryGuide />,
+        relevantGuides: ["agency-settings"],
+      },
+      "bulk-upload": {
+        category: GuideCategories.AddData,
+        label: "Bulk Upload",
+        caption:
+          "Upload and publish data for multiple records at once using excel or csv files to expedite data sharing.",
+        path: "bulk-upload",
+        element: <BulkUploadGuide />,
+        relevantGuides: ["agency-settings"],
+      },
+      "automated-bulk-upload": {
+        category: GuideCategories.AddData,
+        label: "Automated Bulk Upload",
+        caption: "Upload Workbooks without logging-in.",
+        path: "automated-bulk-upload",
+        element: <AutomatedBulkUploadGuide />,
         relevantGuides: ["agency-settings"],
       },
     },
@@ -68,8 +93,17 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
   [AppGuideKeys.dashboard]: {
     label: "Dashboard",
     path: AppGuideKeys.dashboard,
-    element: <>Not implemented</>,
-    guides: {},
+    element: <HelpCenterDirectory appGuide={AppGuideKeys.dashboard} />,
+    guides: {
+      dashboards: {
+        category: GuideCategories.Dashboards,
+        label: "Dashboards",
+        caption: "Visualize agency data to see trends over time.",
+        path: "dashboards",
+        element: <DashboardsGuide />,
+        relevantGuides: ["explore-data"],
+      },
+    },
   },
 };
 

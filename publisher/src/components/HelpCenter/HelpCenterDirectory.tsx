@@ -19,18 +19,20 @@ import { groupBy } from "@justice-counts/common/utils";
 import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
-import { helpCenterGuideStructure } from ".";
+import { AppGuideKey, helpCenterGuideStructure } from ".";
 import * as Styled from "./HelpCenter.styles";
 
-export const HelpCenterPublisherDirectory = () => {
+export const HelpCenterDirectory: React.FC<{ appGuide: AppGuideKey }> = ({
+  appGuide,
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const sortedGuides = Object.values(
-    helpCenterGuideStructure.publisher.guides
+    helpCenterGuideStructure[appGuide].guides
   ).sort((a, b) => a.label.localeCompare(b.label));
   const groupedGuides = groupBy(sortedGuides, (guide) => guide.category);
 
-  if (location.pathname !== `/help/${helpCenterGuideStructure.publisher.path}`)
+  if (location.pathname !== `/help/${helpCenterGuideStructure[appGuide].path}`)
     return <Outlet />;
 
   return (

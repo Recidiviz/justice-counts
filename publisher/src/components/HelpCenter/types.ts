@@ -15,13 +15,21 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export enum PublisherGuideCategories {
+export enum AppGuideKeys {
+  publisher = "publisher",
+  dashboard = "dashboard",
+}
+
+export enum GuideCategories {
   AccountSetup = "Account Setup",
   AddData = "Add Data",
   InteractWithTheData = "Interact with the Data",
+  Dashboards = "Dashboards",
 }
 
-export type PublisherGuideCategory = `${PublisherGuideCategories}`;
+export type AppGuideKey = `${AppGuideKeys}`;
+
+export type GuideCategory = `${GuideCategories}`;
 
 export type GuideStructureProps = {
   label: string;
@@ -30,7 +38,7 @@ export type GuideStructureProps = {
 };
 
 export type GuideStructure = GuideStructureProps & {
-  category: PublisherGuideCategory;
+  category: GuideCategory;
   caption: string;
   relevantGuides: string[];
 };
