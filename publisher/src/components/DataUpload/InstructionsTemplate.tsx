@@ -349,6 +349,13 @@ export const GeneralInstructions: React.FC<
         value should be numeric and contain no other characters (commas are
         allowed, e.g. 1,000).
       </p>
+      <p>
+        If you are uploading data for an annual metric for a non-calendar year,
+        the value you provide in the year column represents the end year of the
+        record. For example, if you would like to upload data for fiscal year
+        that started July 1, 2020, and ended June 30, 2021, the value in the
+        year column should be 2021.
+      </p>
 
       <p>The sheets will look roughly like this:</p>
       <table>
