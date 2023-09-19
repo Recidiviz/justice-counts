@@ -22,14 +22,14 @@ import {
   AccountSetupGuide,
   ExploreDataGuide,
   HelpCenterGuideStructure,
-  HelpCenterPublisher,
+  HelpCenterPublisherDirectory,
 } from ".";
 
 export const helpCenterGuideStructure: HelpCenterGuideStructure = {
   publisher: {
     label: "Publisher",
     path: "publisher",
-    element: <HelpCenterPublisher />,
+    element: <HelpCenterPublisherDirectory />,
     guides: {
       "explore-data": {
         category: "Interact with the Data",

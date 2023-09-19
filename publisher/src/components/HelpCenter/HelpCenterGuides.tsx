@@ -15,11 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { groupBy } from "@justice-counts/common/utils";
 import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
-import { Breadcrumbs, GuideStructure, helpCenterGuideStructure } from ".";
+import {
+  Breadcrumbs,
+  GuidesByPathnameWithKey,
+  helpCenterGuideStructure,
+} from ".";
 import * as Styled from "./HelpCenter.styles";
 
 export const GuideLayoutWithBreadcrumbs = () => {
@@ -27,15 +30,17 @@ export const GuideLayoutWithBreadcrumbs = () => {
   const pathnames = location.pathname.split("/").filter((name) => name);
   const currentAppGuideKey = pathnames[1];
   const currentPathname = pathnames[pathnames.length - 1];
-  const guidesByPathname = groupBy(
-    Object.values(helpCenterGuideStructure[currentAppGuideKey].guides),
-    (guide: GuideStructure) => guide.path
-  );
+  const guidesByPathname = Object.entries(
+    helpCenterGuideStructure[currentAppGuideKey].guides
+  ).reduce((acc, [key, val]) => {
+    acc[val.path] = { key, ...val };
+    return acc;
+  }, {} as GuidesByPathnameWithKey);
   const isGuideOpen = !Object.keys(helpCenterGuideStructure).includes(
     currentPathname
   );
   const currentGuide = isGuideOpen
-    ? guidesByPathname[currentPathname][0]
+    ? guidesByPathname[currentPathname]
     : undefined;
 
   return (
@@ -54,7 +59,7 @@ export const GuideLayoutWithBreadcrumbs = () => {
       {currentGuide && (
         <RelevantGuides
           appKey={currentAppGuideKey}
-          guideKey={currentPathname}
+          guideKey={currentGuide.key}
         />
       )}
     </Styled.ContentWrapper>

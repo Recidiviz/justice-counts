@@ -37,8 +37,12 @@ export type GuideStructure = GuideStructureProps & {
 
 export type HelpCenterGuideStructure = {
   [appKey: string]: GuideStructureProps & {
-    guides: { [key: string]: GuideStructure };
+    guides: { [guideKey: string]: GuideStructure };
   };
 };
 
 export type PathToDisplayName = { [guidePath: string]: string };
+
+export type GuidesByPathnameWithKey = {
+  [path: string]: GuideStructure & { key: string };
+};

@@ -22,7 +22,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { helpCenterGuideStructure } from ".";
 import * as Styled from "./HelpCenter.styles";
 
-export const HelpCenterPublisher = () => {
+export const HelpCenterPublisherDirectory = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const sortedGuides = Object.values(
