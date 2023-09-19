@@ -1,12 +1,53 @@
 ## How to add or update Help Center Guides
 
-If you'd like to update one of the Help Center guides, please go to the `HelpCenterGuides.tsx` file, locate and update the guide (functional component) directly.
+### If you'd like to UPDATE a Help Center guide:
+  1. Go to the `HelpCenterGuides.tsx` file
+  2. Locate & update the guide (functional component) directly
 
-If you'd like to add a Help Center guide, please go to the `HelpCenterGuides.tsx` file, add a functional component guide that renders the desired JSX, then go to the `HelpCenterSetup.tsx` file, import your newly created component and update the `helpCenterGuideStructure` object.
+
+  ###### HelpCenterGuides.tsx
+
+```jsx
+... // Other guides
+
+export const Guide = () => (
+  // Make edits within here
+  <> 
+    <Styled.SectionWrapper>
+      <Styled.SectionParagraph>
+        ...
+      </Styled.SectionParagraph>
+      <Styled.SectionParagraph>
+        ...
+      </Styled.SectionParagraph>
+    </Styled.SectionWrapper>
+  </>
+);
+```
+
+---
+
+### If you'd like to ADD a Help Center guide:
+
+  1. Go to the `HelpCenterGuides.tsx` file
+  2. Add a functional component guide that renders the desired JSX
+  3. Then, go to the `HelpCenterSetup.tsx` file
+  4. Import your newly created component
+  5. Update the `helpCenterGuideStructure` object and create a guide object for your newly created guide under the `guides` property for either the Publisher/Dashboard app with the following properties:
+        * **key**: a unique String that distinguishes this guide
+        * **category**: the section that this guide falls under in the Publisher directory page
+        * **label**: the display name
+        * **caption**: the description of the guide
+        * **path**: URL pathname for this guide
+        * **element**: the guide component you created
+        * **relevantGuides**: a list of relevant guide keys
 
 ###### HelpCenterGuides.tsx
 
 ```jsx
+... // Other guides
+
+// New Guide Template
 export const NewGuide = () => (
   <>
     <Styled.SectionWrapper>
@@ -21,15 +62,7 @@ export const NewGuide = () => (
 );
 ```
 
-To add a guide within the `helpCenterGuideStructure` object, you'll need to create an object for the new guide that will go under the `guides` property for either the Publisher/Dashboard app with the following properties:
 
- * key: a unique String that distinguishes this guide
- * category: the section that this guide falls under in the Publisher directory page
- * label: the display name
- * caption: the description of the guide
- * path: URL pathname for this guide
- * element: the guide component you created
- * relevantGuides: a list of relevant guide keys
 
 ###### HelpCenterSetup.tsx
 ```jsx
@@ -65,6 +98,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         relevantGuides: ["agency-settings", "explore-data"],
       },
       // Add a new guide within Publisher's directory
+      // Template:
       "new-guide-key": {
         category: "Add Data",
         label: "New Guide",
@@ -80,5 +114,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
   },
 };
 ```
+---
 
-If you'd like to remove a guide, please delete the relevant guide object from within the `helpCenterGuideStructure` object in `HelpCenterSetup.tsx` and the guide component in `HelpCenterGuides.tsx`.
+### If you'd like to remove a Help Center guide:
+Please delete the relevant guide object from within the `helpCenterGuideStructure` object in `HelpCenterSetup.tsx` and the guide component in `HelpCenterGuides.tsx`.
