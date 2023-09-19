@@ -44,7 +44,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         caption: "Interact with your data to discover insights.",
         path: "explore-data",
         element: <ExploreDataGuide />,
-        relevantGuides: ["dashboards"],
+        relevantGuides: ["dashboard/dashboards"],
       },
       "agency-settings": {
         category: GuideCategories.AccountSetup,
@@ -101,7 +101,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         caption: "Visualize agency data to see trends over time.",
         path: "dashboards",
         element: <DashboardsGuide />,
-        relevantGuides: ["explore-data"],
+        relevantGuides: ["publisher/explore-data"],
       },
     },
   },

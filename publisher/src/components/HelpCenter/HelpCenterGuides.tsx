@@ -19,6 +19,7 @@ import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import {
+  AppGuideKey,
   Breadcrumbs,
   GuidesByPathnameWithKey,
   helpCenterGuideStructure,
@@ -32,7 +33,7 @@ export const GuideLayoutWithBreadcrumbs = () => {
    * Assumes that the pathnames will be: [<home path>, <app (publisher or dashboard)>, <specific guide>]
    * and that the path in index 1 will always be the name of the app (either `publisher` or `dashboard`)
    */
-  const currentAppGuideKey = pathnames[1];
+  const currentAppGuideKey = pathnames[1] as AppGuideKey;
   const currentPathname = pathnames[pathnames.length - 1];
   const guidesByPathname = Object.entries(
     helpCenterGuideStructure[currentAppGuideKey].guides
@@ -68,7 +69,7 @@ export const GuideLayoutWithBreadcrumbs = () => {
   );
 };
 
-const RelevantGuides: React.FC<{ appKey: string; guideKey: string }> = ({
+const RelevantGuides: React.FC<{ appKey: AppGuideKey; guideKey: string }> = ({
   appKey,
   guideKey,
 }) => {
@@ -80,13 +81,23 @@ const RelevantGuides: React.FC<{ appKey: string; guideKey: string }> = ({
       <Styled.SectionTitle>Relevant Pages</Styled.SectionTitle>
       <Styled.RelevantPagesWrapper>
         {guideKeys.map((key) => {
+          const isGuideWithinCurrentAppGuide = !key.includes("/");
+          const appGuideKey = isGuideWithinCurrentAppGuide
+            ? appKey
+            : key.split("/")[0];
+          const guideKeyBasedOnApp = isGuideWithinCurrentAppGuide
+            ? key
+            : key.split("/")[1];
           const guide =
-            helpCenterGuideStructure.publisher.guides[key] ||
-            helpCenterGuideStructure.dashboard.guides[key];
+            helpCenterGuideStructure[appGuideKey].guides[guideKeyBasedOnApp];
+          const pathToGuide = `${
+            isGuideWithinCurrentAppGuide ? `../` : `../../${appGuideKey}/`
+          }${guide.path}`;
+
           return (
             <Styled.RelevantPageBox
               key={key}
-              onClick={() => navigate(`../${guide.path}`, { relative: "path" })}
+              onClick={() => navigate(pathToGuide, { relative: "path" })}
             >
               <Styled.RelevantPageBoxTitle>
                 {guide.label}
