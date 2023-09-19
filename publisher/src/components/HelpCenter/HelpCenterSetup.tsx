@@ -25,10 +25,15 @@ import {
   HelpCenterPublisherDirectory,
 } from ".";
 
+export enum APP_GUIDE_KEY {
+  publisher = "publisher",
+  dashboard = "dashboard",
+}
+
 export const helpCenterGuideStructure: HelpCenterGuideStructure = {
-  publisher: {
+  [APP_GUIDE_KEY.publisher]: {
     label: "Publisher",
-    path: "publisher",
+    path: APP_GUIDE_KEY.publisher,
     element: <HelpCenterPublisherDirectory />,
     guides: {
       "explore-data": {
@@ -49,9 +54,9 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
       },
     },
   },
-  dashboard: {
+  [APP_GUIDE_KEY.dashboard]: {
     label: "Dashboard",
-    path: "dashboard",
+    path: APP_GUIDE_KEY.dashboard,
     element: <>Not implemented</>,
     guides: {},
   },

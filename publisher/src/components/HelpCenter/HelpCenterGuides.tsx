@@ -28,6 +28,10 @@ import * as Styled from "./HelpCenter.styles";
 export const GuideLayoutWithBreadcrumbs = () => {
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((name) => name);
+  /**
+   * Assumes that the pathnames will be: [<home path>, <app (publisher or dashboard)>, <specific guide>]
+   * and that the path in index 1 will always be the name of the app (either `publisher` or `dashboard`)
+   */
   const currentAppGuideKey = pathnames[1];
   const currentPathname = pathnames[pathnames.length - 1];
   const guidesByPathname = Object.entries(
@@ -47,20 +51,18 @@ export const GuideLayoutWithBreadcrumbs = () => {
     <Styled.ContentWrapper>
       <Breadcrumbs pathname={location.pathname} />
 
-      {currentGuide && (
+      {!currentGuide ? (
+        <Outlet />
+      ) : (
         <>
           <Styled.Title>{currentGuide.label}</Styled.Title>
           <Styled.Caption>{currentGuide.caption}</Styled.Caption>
+          <Outlet />
+          <RelevantGuides
+            appKey={currentAppGuideKey}
+            guideKey={currentGuide.key}
+          />
         </>
-      )}
-
-      <Outlet />
-
-      {currentGuide && (
-        <RelevantGuides
-          appKey={currentAppGuideKey}
-          guideKey={currentGuide.key}
-        />
       )}
     </Styled.ContentWrapper>
   );
