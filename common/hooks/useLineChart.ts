@@ -49,7 +49,9 @@ export const useLineChart = ({
        */
       const { disaggregations } = datapointsByMetric[metric.key];
       const disaggregationKey = Object.keys(disaggregations)[0];
-      return Object.values(disaggregations[disaggregationKey]);
+      return disaggregations[disaggregationKey]
+        ? Object.values(disaggregations[disaggregationKey])
+        : [];
     }
     return [];
   };
