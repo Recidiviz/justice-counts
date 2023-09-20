@@ -4,7 +4,7 @@
 ### If you'd like to UPDATE a Help Center guide:
   1. Go to the `Guides` folder in this directory
   2. Locate the guide file you'd like to update
-  2. Update the body of the component directly (using HTML/JSX/styled-components)
+  3. Update the body of the component directly (using HTML/JSX/styled-components)
 
 
   ###### ./Guides/Guide.tsx (for example)
@@ -31,10 +31,10 @@ export const Guide = () => (
 
   1. Go to the `Guides` folder in this directory
   2. Duplicate the `TEMPLATE.tsx` file
-  2. Update the file name and component name (make sure they match) and update the body of the component with the desired JSX
-  3. Then, go to the `HelpCenterSetup.tsx` file
-  4. Import your newly created component
-  5. Update the `helpCenterGuideStructure` object and create a guide object for your newly created guide under the `guides` property for either the Publisher/Dashboard app with the following properties:
+  3. Update the file name and component name (make sure they match) and update the body of the component with the desired JSX
+  4. Then, go to the `HelpCenterSetup.tsx` file
+  5. Import your newly created component
+  6. Update the `helpCenterGuideStructure` object and create a guide object for your newly created guide under the `guides` property for either the Publisher/Dashboard app with the following properties:
         * **key**: a unique String that distinguishes this guide
         * **category**: the section that this guide falls under in the Publisher directory page (use the `PublisherGuideCategories` enum)
         * **label**: the display name (will be used to render the title)
