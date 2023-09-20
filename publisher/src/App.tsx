@@ -24,6 +24,13 @@ import MaintenancePage from "./components/Auth/Maintenance";
 import Footer from "./components/Footer";
 import { AppWrapper, PageWrapper } from "./components/Forms";
 import { REPORTS_LOWERCASE } from "./components/Global/constants";
+import {
+  ExploreDataGuide,
+  GuideLayoutWithBreadcrumbs,
+  HelpCenter,
+  HelpCenterInterstitial,
+  HelpCenterPublisher,
+} from "./components/HelpCenter";
 import { Loading } from "./components/Loading";
 import { NoAgencies } from "./pages/NoAgencies";
 import { Router } from "./router";
@@ -33,10 +40,18 @@ const DOWN_FOR_MAINTENANCE = false;
 
 const App: React.FC = (): ReactElement => {
   const location = useLocation();
-  const { userStore } = useStore();
+  const { userStore, api } = useStore();
   useEffect(() => {
     trackNavigation(location.pathname + location.search);
   }, [location]);
+
+  // using this variable to indicate whether user has any agencies
+  // if true then depending on url either we
+  // go to report page with initial agency (example entering site by homepage)
+  // or we go to route associated with specific agency (like external url with specific page and maybe search params)
+  // if false then we just show user page that there are no associated agencies
+  // if user has agencies but route is out of pattern /agency/:agencyId then redirect to /agency/:initialAgencyId/reports
+  const initialAgency = userStore.getInitialAgencyId();
 
   if (DOWN_FOR_MAINTENANCE) {
     return <MaintenancePage />;
@@ -49,36 +64,34 @@ const App: React.FC = (): ReactElement => {
       </PageWrapper>
     );
 
-  // using this variable to indicate whether user has any agencies
-  // if true then depending on url either we
-  // go to report page with initial agency (example entering site by homepage)
-  // or we go to route associated with specific agency (like external url with specific page and maybe search params)
-  // if false then we just show user page that there are no associated agencies
-  // if user has agencies but route is out of pattern /agency/:agencyId then redirect to /agency/:initialAgencyId/reports
-  const initialAgency = userStore.getInitialAgencyId();
+  if (!initialAgency) return <NoAgencies />;
 
   return (
     <AppWrapper>
       <PageWrapper>
-        {initialAgency ? (
-          <Routes>
-            <Route
-              path="/"
-              element={<Navigate to={`/agency/${initialAgency}/`} />}
-            />
-            <Route path="/agency/:agencyId/*" element={<Router />} />
-            <Route
-              path="*"
-              element={
-                <Navigate
-                  to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`}
-                />
-              }
-            />
-          </Routes>
-        ) : (
-          <NoAgencies />
-        )}
+        <Routes>
+          {/* TODO(#960): Remove env check when ready to launch Help Center */}
+          {api.environment === "local" && (
+            <Route path="help" element={<HelpCenter />}>
+              <Route index element={<HelpCenterInterstitial />} />
+              <Route path="publisher" element={<GuideLayoutWithBreadcrumbs />}>
+                <Route index element={<HelpCenterPublisher />} />
+                <Route path="explore-data" element={<ExploreDataGuide />} />
+              </Route>
+            </Route>
+          )}
+          <Route
+            path="/"
+            element={<Navigate to={`/agency/${initialAgency}/`} />}
+          />
+          <Route path="/agency/:agencyId/*" element={<Router />} />
+          <Route
+            path="*"
+            element={
+              <Navigate to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`} />
+            }
+          />
+        </Routes>
       </PageWrapper>
       <Footer />
     </AppWrapper>
