@@ -103,8 +103,7 @@ export const SetUpMetricsGuide = () => (
         that definition category is included or excluded from the overall
         definition of a metric or its breakdown(s). You can also enter text in
         the free-form textbox if the categories do not adequately describe the
-        metric/breakdown. Click <strong>Save</strong>
-        to save your changes.
+        metric/breakdown. Click <strong>Save</strong> to save your changes.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
   </>

@@ -154,6 +154,10 @@ export const SectionParagraph = styled.p`
   &:not(:last-child) {
     margin-bottom: 24px;
   }
+
+  li {
+    margin-left: 16px;
+  }
 `;
 
 export const BlueText = styled.span`
