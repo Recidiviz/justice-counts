@@ -40,7 +40,7 @@ const DOWN_FOR_MAINTENANCE = false;
 
 const App: React.FC = (): ReactElement => {
   const location = useLocation();
-  const { userStore } = useStore();
+  const { userStore, api } = useStore();
   useEffect(() => {
     trackNavigation(location.pathname + location.search);
   }, [location]);
@@ -70,13 +70,16 @@ const App: React.FC = (): ReactElement => {
     <AppWrapper>
       <PageWrapper>
         <Routes>
-          <Route path="help" element={<HelpCenter />}>
-            <Route index element={<HelpCenterInterstitial />} />
-            <Route path="publisher" element={<GuideLayoutWithBreadcrumbs />}>
-              <Route index element={<HelpCenterPublisher />} />
-              <Route path="explore-data" element={<ExploreDataGuide />} />
+          {/* TODO(#960): Remove env check when ready to launch Help Center */}
+          {api.environment === "local" && (
+            <Route path="help" element={<HelpCenter />}>
+              <Route index element={<HelpCenterInterstitial />} />
+              <Route path="publisher" element={<GuideLayoutWithBreadcrumbs />}>
+                <Route index element={<HelpCenterPublisher />} />
+                <Route path="explore-data" element={<ExploreDataGuide />} />
+              </Route>
             </Route>
-          </Route>
+          )}
           <Route
             path="/"
             element={<Navigate to={`/agency/${initialAgency}/`} />}

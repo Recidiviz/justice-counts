@@ -35,7 +35,7 @@ class API {
 
   csrfToken: string;
 
-  environment: string;
+  environment?: "local" | "staging";
 
   constructor(authStore: AuthStore) {
     makeAutoObservable(this);
@@ -43,7 +43,7 @@ class API {
     this.authStore = authStore;
     this.isSessionInitialized = false;
     this.csrfToken = "";
-    this.environment = "";
+    this.environment = undefined;
 
     when(
       () => authStore.isAuthorized,
