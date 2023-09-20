@@ -37,7 +37,7 @@ export const Guide = () => (
   6. Update the `helpCenterGuideStructure` object and create a guide object for your newly created guide under the `guides` property for either the Publisher/Dashboard app with the following properties:
         * **key**: a unique String that distinguishes this guide
         * **category**: the section that this guide falls under in the Publisher directory page (use the `PublisherGuideCategories` enum)
-        * **label**: the display name (will be used to render the title)
+        * **title**: the display name (will be used to render the title)
         * **caption**: the description of the guide (will be used to render the caption)
         * **path**: URL pathname for this guide
         * **element**: the guide component you created
@@ -82,13 +82,13 @@ import { NewGuide } from "./Guides/NewGuide";
 export const helpCenterGuideStructure: HelpCenterGuideStructure = {
   publisher: {
     key: "publisher",
-    label: "Publisher",
+    title: "Publisher",
     path: "publisher",
     element: <HelpCenterPublisher />,
     guides: {
       "explore-data": {
         category: "Interact with the Data",
-        label: "Explore your Data",
+        title: "Explore your Data",
         caption: "Interact with your data to discover insights.",
         path: "explore-data",
         element: <ExploreDataGuide />,
@@ -96,17 +96,17 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
       },
       "agency-settings": {
         category: "Account Setup",
-        label: "Agency Settings",
+        title: "Agency Settings",
         caption: "See and edit information about your agency.",
         path: "agency-settings",
         element: <AccountSetupGuide />,
         relevantGuides: ["agency-settings", "explore-data"],
       },
-      // Adds a new guide within Publisher's directory
+      // The below object adds the `NewGuide` you created within Publisher's directory
       // Template:
       "new-guide-key": {
         category: "Add Data",
-        label: "New Guide",
+        title: "New Guide",
         caption: "Caption for the New Guide.",
         path: "new-guide",
         element: <NewGuide />,

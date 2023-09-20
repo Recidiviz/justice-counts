@@ -22,9 +22,9 @@ import * as Styled from "./HelpCenter.styles";
 
 const pathToDisplayName = Object.values(helpCenterGuideStructure).reduce(
   (acc, parentGuide) => {
-    acc[parentGuide.path] = parentGuide.label;
+    acc[parentGuide.path] = parentGuide.title;
     Object.values(parentGuide.guides).forEach((guide) => {
-      acc[guide.path] = guide.label;
+      acc[guide.path] = guide.title;
     });
     return acc;
   },

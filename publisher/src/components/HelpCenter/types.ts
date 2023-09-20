@@ -32,7 +32,7 @@ export type AppGuideKey = `${AppGuideKeys}`;
 export type GuideCategory = `${GuideCategories}`;
 
 export type GuideStructureProps = {
-  label: string;
+  title: string;
   path: string;
   element: React.ReactNode;
 };

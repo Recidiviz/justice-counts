@@ -30,7 +30,7 @@ export const HelpCenterInterstitial = () => {
           key={appGuide.path}
           onClick={() => navigate(appGuide.path)}
         >
-          {appGuide.label}
+          {appGuide.title}
         </Styled.InterstitialButton>
       ))}
     </Styled.InterstitialContainer>

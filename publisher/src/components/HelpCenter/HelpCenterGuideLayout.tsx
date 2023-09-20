@@ -57,7 +57,7 @@ const RelevantGuides: React.FC<{ appKey: AppGuideKey; guideKey: string }> = ({
               onClick={() => navigate(pathToGuide, { relative: "path" })}
             >
               <Styled.RelevantPageBoxTitle>
-                {guide.label}
+                {guide.title}
               </Styled.RelevantPageBoxTitle>
               <Styled.RelevantPageBoxDescription>
                 {guide.caption}
@@ -100,7 +100,7 @@ export const GuideLayoutWithBreadcrumbs = () => {
         <Outlet />
       ) : (
         <>
-          <Styled.Title>{currentGuide.label}</Styled.Title>
+          <Styled.Title>{currentGuide.title}</Styled.Title>
           <Styled.Caption>{currentGuide.caption}</Styled.Caption>
           <Outlet />
           <RelevantGuides
