@@ -19,18 +19,18 @@ import React from "react";
 import { Route } from "react-router-dom";
 
 import {
-  AccountSetupGuide,
   AppGuideKeys,
-  AutomatedBulkUploadGuide,
-  BulkUploadGuide,
-  DashboardsGuide,
-  ExploreDataGuide,
   GuideCategories,
   HelpCenterDirectory,
   HelpCenterGuideStructure,
-  ManualEntryGuide,
-  SetUpMetricsGuide,
 } from ".";
+import { AccountSetupGuide } from "./Guides/AccountSetupGuide";
+import { AutomatedBulkUploadGuide } from "./Guides/AutomaticBulkUploadGuide";
+import { BulkUploadGuide } from "./Guides/BulkUploadGuide";
+import { DashboardsGuide } from "./Guides/DashboardsGuide";
+import { ExploreDataGuide } from "./Guides/ExploreDataGuide";
+import { ManualEntryGuide } from "./Guides/ManualEntryGuide";
+import { SetUpMetricsGuide } from "./Guides/SetUpMetricsGuide";
 
 export const helpCenterGuideStructure: HelpCenterGuideStructure = {
   [AppGuideKeys.publisher]: {

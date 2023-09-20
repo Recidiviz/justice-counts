@@ -14,11 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-/* eslint-disable simple-import-sort/exports */
-export * from "./types";
-export * from "./HelpCenter";
-export * from "./HelpCenterGuideLayout";
-export * from "./HelpCenterDirectory";
-export * from "./HelpCenterSetup";
-export * from "./HelpCenterBreadcrumbs";
-export * from "./HelpCenterInterstitial";
+
+import React from "react";
+
+import * as Styled from "../HelpCenter.styles";
+
+export const NewGuide = () => (
+  <>
+    {/* Section (Concept/Navigation/etc.) */}
+    <Styled.SectionWrapper>
+      <Styled.SectionParagraph>Concept Paragraph</Styled.SectionParagraph>
+      <Styled.SectionParagraph>Navigation Paragraph</Styled.SectionParagraph>
+    </Styled.SectionWrapper>
+
+    {/* Section (Walkthrough/etc.) */}
+    <Styled.SectionWrapper>
+      <Styled.SectionTitle>[H3] Title</Styled.SectionTitle>
+      <Styled.SectionParagraph>Walkthrough Paragraph</Styled.SectionParagraph>
+    </Styled.SectionWrapper>
+  </>
+);
