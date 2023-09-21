@@ -16,29 +16,11 @@
 // =============================================================================
 
 import React from "react";
-import { Outlet, useLocation } from "react-router-dom";
 
-import { Breadcrumbs } from ".";
-import * as Styled from "./HelpCenter.styles";
-
-export const GuideLayoutWithBreadcrumbs = () => {
-  const location = useLocation();
-
-  return (
-    <Styled.ContentWrapper>
-      <Breadcrumbs pathname={location.pathname} />
-      <Outlet />
-    </Styled.ContentWrapper>
-  );
-};
+import * as Styled from "../HelpCenter.styles";
 
 export const ExploreDataGuide = () => (
   <>
-    <Styled.Title>Explore your Data</Styled.Title>
-    <Styled.Caption>
-      Interact with your data to discover insights.
-    </Styled.Caption>
-
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
         The Explore Data tab allows you to visualize the data you have uploaded
@@ -70,25 +52,5 @@ export const ExploreDataGuide = () => (
         sectors, each sector will be presented with its own individual metrics.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
-
-    <Styled.SectionTitle>Relevant Pages</Styled.SectionTitle>
-    <Styled.RelevantPagesWrapper>
-      <Styled.RelevantPageBox>
-        <Styled.RelevantPageBoxTitle>
-          Agency Settings
-        </Styled.RelevantPageBoxTitle>
-        <Styled.RelevantPageBoxDescription>
-          See and edit information about your agency for the public
-        </Styled.RelevantPageBoxDescription>
-      </Styled.RelevantPageBox>
-      <Styled.RelevantPageBox>
-        <Styled.RelevantPageBoxTitle>
-          Agency Settings
-        </Styled.RelevantPageBoxTitle>
-        <Styled.RelevantPageBoxDescription>
-          See and edit information about your agency for the public
-        </Styled.RelevantPageBoxDescription>
-      </Styled.RelevantPageBox>
-    </Styled.RelevantPagesWrapper>
   </>
 );

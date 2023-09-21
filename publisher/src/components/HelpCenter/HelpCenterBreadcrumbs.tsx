@@ -17,21 +17,23 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+import { helpCenterGuideStructure, PathToDisplayName } from ".";
 import * as Styled from "./HelpCenter.styles";
 
-const PathToDisplayName = {
-  help: "Home",
-  publisher: "Publisher",
-  "explore-data": "Explore your Data",
-};
-
-type PathToDisplayNameType = keyof typeof PathToDisplayName;
+const pathToDisplayName = Object.values(helpCenterGuideStructure).reduce(
+  (acc, parentGuide) => {
+    acc[parentGuide.path] = parentGuide.title;
+    Object.values(parentGuide.guides).forEach((guide) => {
+      acc[guide.path] = guide.title;
+    });
+    return acc;
+  },
+  { help: "Home" } as PathToDisplayName
+);
 
 export const Breadcrumbs: React.FC<{ pathname: string }> = ({ pathname }) => {
   const navigate = useNavigate();
-  const pathnames = pathname
-    .split("/")
-    .filter((name) => name) as PathToDisplayNameType[];
+  const pathnames = pathname.split("/").filter((name) => name);
 
   return (
     <Styled.Breadcrumbs>
@@ -45,7 +47,7 @@ export const Breadcrumbs: React.FC<{ pathname: string }> = ({ pathname }) => {
             highlight={isCurrentPath}
             onClick={() => navigate(breadcrumbPath)}
           >
-            {PathToDisplayName[path]}
+            {pathToDisplayName[path]}
           </Styled.Breadcrumb>
         );
       })}

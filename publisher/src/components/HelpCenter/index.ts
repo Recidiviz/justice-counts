@@ -14,9 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-
+/* eslint-disable simple-import-sort/exports */
+export * from "./types";
 export * from "./HelpCenter";
+export * from "./HelpCenterGuideLayout";
+export * from "./HelpCenterDirectory";
+export * from "./HelpCenterSetup";
 export * from "./HelpCenterBreadcrumbs";
-export * from "./HelpCenterGuides";
 export * from "./HelpCenterInterstitial";
-export * from "./HelpCenterPublisher";

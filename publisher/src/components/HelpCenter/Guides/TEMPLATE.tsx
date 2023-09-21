@@ -16,21 +16,21 @@
 // =============================================================================
 
 import React from "react";
-import { useNavigate } from "react-router-dom";
 
-import * as Styled from "./HelpCenter.styles";
+import * as Styled from "../HelpCenter.styles";
 
-export const HelpCenterPublisher = () => {
-  const navigate = useNavigate();
-  return (
-    <Styled.HelpCenterHome>
-      <Styled.HomeTitle>Justice Counts Help Center</Styled.HomeTitle>
-      <Styled.GuideLinksWrapper>
-        <Styled.GuideLinksTitle>Interact with the Data</Styled.GuideLinksTitle>
-        <Styled.GuideLink onClick={() => navigate("explore-data")}>
-          Explore your Data
-        </Styled.GuideLink>
-      </Styled.GuideLinksWrapper>
-    </Styled.HelpCenterHome>
-  );
-};
+export const NewGuide = () => (
+  <>
+    {/* Section (Concept/Navigation/etc.) */}
+    <Styled.SectionWrapper>
+      <Styled.SectionParagraph>Concept Paragraph</Styled.SectionParagraph>
+      <Styled.SectionParagraph>Navigation Paragraph</Styled.SectionParagraph>
+    </Styled.SectionWrapper>
+
+    {/* Section (Walkthrough/etc.) */}
+    <Styled.SectionWrapper>
+      <Styled.SectionTitle>[H3] Title</Styled.SectionTitle>
+      <Styled.SectionParagraph>Walkthrough Paragraph</Styled.SectionParagraph>
+    </Styled.SectionWrapper>
+  </>
+);

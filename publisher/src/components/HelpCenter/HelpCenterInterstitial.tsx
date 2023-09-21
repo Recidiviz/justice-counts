@@ -19,15 +19,20 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import * as Styled from "./HelpCenter.styles";
+import { helpCenterGuideStructure } from "./HelpCenterSetup";
 
 export const HelpCenterInterstitial = () => {
   const navigate = useNavigate();
   return (
     <Styled.InterstitialContainer>
-      <Styled.InterstitialButton onClick={() => navigate("publisher")}>
-        Publisher
-      </Styled.InterstitialButton>
-      <Styled.InterstitialButton>Dashboards</Styled.InterstitialButton>
+      {Object.values(helpCenterGuideStructure).map((appGuide) => (
+        <Styled.InterstitialButton
+          key={appGuide.path}
+          onClick={() => navigate(appGuide.path)}
+        >
+          {appGuide.title}
+        </Styled.InterstitialButton>
+      ))}
     </Styled.InterstitialContainer>
   );
 };

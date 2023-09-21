@@ -107,6 +107,11 @@ export const RelevantPageBox = styled.div`
   padding: 32px 24px;
   border: 1px solid ${palette.highlight.grey3};
   border-radius: 4px;
+
+  &:hover {
+    cursor: pointer;
+    background: ${palette.highlight.grey1};
+  }
 `;
 
 export const RelevantPageBoxTitle = styled.div`
@@ -149,6 +154,10 @@ export const SectionParagraph = styled.p`
   &:not(:last-child) {
     margin-bottom: 24px;
   }
+
+  li {
+    margin-left: 16px;
+  }
 `;
 
 export const BlueText = styled.span`
@@ -168,23 +177,31 @@ export const HomeTitle = styled.div`
   ${typography.sizeCSS.title}
 `;
 
+export const GuideLinks = styled.div`
+  width: 100vw;
+  height: 100%;
+  display: flex;
+  justify-content: space-evenly;
+`;
+
 export const GuideLinksWrapper = styled.div`
   width: fit-content;
   display: flex;
   flex-direction: column;
+  gap: 16px;
 `;
 
 export const GuideLinksTitle = styled.div`
   ${typography.sizeCSS.medium}
-  margin-bottom: 16px;
 `;
 
 export const GuideLink = styled.div`
   ${typography.sizeCSS.normal}
-  color: ${palette.highlight.grey10};
+  color: ${palette.solid.blue};
 
   &:hover {
     cursor: pointer;
+    color: ${palette.solid.darkblue};
   }
 `;
 

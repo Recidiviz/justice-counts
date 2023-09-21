@@ -25,11 +25,10 @@ import Footer from "./components/Footer";
 import { AppWrapper, PageWrapper } from "./components/Forms";
 import { REPORTS_LOWERCASE } from "./components/Global/constants";
 import {
-  ExploreDataGuide,
   GuideLayoutWithBreadcrumbs,
   HelpCenter,
   HelpCenterInterstitial,
-  HelpCenterPublisher,
+  helpCenterRoutes,
 } from "./components/HelpCenter";
 import { Loading } from "./components/Loading";
 import { NoAgencies } from "./pages/NoAgencies";
@@ -74,9 +73,8 @@ const App: React.FC = (): ReactElement => {
           {api.environment === "local" && (
             <Route path="help" element={<HelpCenter />}>
               <Route index element={<HelpCenterInterstitial />} />
-              <Route path="publisher" element={<GuideLayoutWithBreadcrumbs />}>
-                <Route index element={<HelpCenterPublisher />} />
-                <Route path="explore-data" element={<ExploreDataGuide />} />
+              <Route element={<GuideLayoutWithBreadcrumbs />}>
+                {helpCenterRoutes()}
               </Route>
             </Route>
           )}
