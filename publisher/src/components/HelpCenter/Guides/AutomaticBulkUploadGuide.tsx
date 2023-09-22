@@ -93,16 +93,18 @@ export const AutomatedBulkUploadGuide = () => (
             provide a separate workbook for each sector. To do this, first
             navigate to the directory for the sector you want to upload for{" "}
             <code>cd {`<sector name>`}</code> (e.g <code>cd PRISONS</code>). To
-            navigate back to the home directory, type <code>cd ..</code>
+            navigate back to the home directory, type <code>cd ..</code>.
           </li>
           <li>
-            Run put {`<path to file>`} to upload a file. The file path that you
-            are uploading must be absolute. For example, if your file data.xlsx
-            is in the Documents folder, the path should not be
-            ~/Documents/file.xlsx, but rather
-            /Users/JohnDoe/Documents/file.xlsx.
+            Run <code>put {`<path to file>`}</code> to upload a file. The file
+            path that you are uploading must be absolute. For example, if your
+            file <code>data.xlsx</code> is in the Documents folder, the path
+            should not be <code>~/Documents/file.xlsx</code>, but rather{" "}
+            <code>/Users/JohnDoe/Documents/file.xlsx</code>.
           </li>
-          <li>To leave sftp, type exit.</li>
+          <li>
+            To leave sftp, type <code>exit</code>.
+          </li>
         </ol>
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>

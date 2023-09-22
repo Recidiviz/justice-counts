@@ -29,6 +29,18 @@ export const HelpCenterContainer = styled.div`
   align-items: center;
   padding: 40px;
   text-align: left;
+
+  a,
+  a:visited {
+    color: ${palette.solid.blue};
+    text-decoration: none;
+    transition: 0.2s ease;
+  }
+
+  a:hover {
+    color: ${palette.solid.darkblue};
+    cursor: pointer;
+  }
 `;
 
 export const ContentWrapper = styled.div`
