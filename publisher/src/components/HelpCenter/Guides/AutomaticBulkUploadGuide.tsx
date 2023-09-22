@@ -54,17 +54,23 @@ export const AutomatedBulkUploadGuide = () => (
         has been created, do the following to connect to our SFTP server.
       </Styled.SectionParagraph>
       <Styled.SectionParagraph>
-        sftp -P 2022 YOUR_USERNAME@sftp.justice-counts.org
+        <pre>
+          <code>sftp -P 2022 YOUR_USERNAME@sftp.justice-counts.org</code>
+        </pre>
       </Styled.SectionParagraph>
       <Styled.SectionParagraph>
         When you first connect, you will see the following message:
       </Styled.SectionParagraph>
       <Styled.SectionParagraph>
-        The authenticity of host &apos;[sftp.justice-counts.org]:2022
-        ([34.139.18.35]:2022)&apos; can&apos;t be established. ED25519 key
-        fingerprint is SHA256:kFQiP3MtBSM4bLxM27ha1jklKtcdKraTk8xbE0gof64. This
-        key is not known by any other names Are you sure you want to continue
-        connecting (yes/no/[fingerprint])?
+        <pre>
+          <code>
+            The authenticity of host &apos;[sftp.justice-counts.org]:2022
+            ([34.139.18.35]:2022)&apos; can&apos;t be established. ED25519 key
+            fingerprint is SHA256:kFQiP3MtBSM4bLxM27ha1jklKtcdKraTk8xbE0gof64.
+            This key is not known by any other names Are you sure you want to
+            continue connecting (yes/no/[fingerprint])?
+          </code>
+        </pre>
       </Styled.SectionParagraph>
       <Styled.SectionParagraph>
         This is a standard message that your computer’s internal security system
@@ -78,16 +84,16 @@ export const AutomatedBulkUploadGuide = () => (
             provided for you by Justice Counts.
           </li>
           <li>
-            To see what files are currently uploaded to the SFTP server, type
-            ls. If you are uploading for the first time, nothing should be
-            listed when you run this command.
+            To see what files are currently uploaded to the SFTP server, type{" "}
+            <code>ls</code>. If you are uploading for the first time, nothing
+            should be listed when you run this command.
           </li>
           <li>
             If your agency reports for multiple sectors. You will have to
             provide a separate workbook for each sector. To do this, first
-            navigate to the directory for the sector you want to upload for cd{" "}
-            {`<sector name>`} (e.g cd PRISONS). To navigate back to the home
-            directory, type cd ..
+            navigate to the directory for the sector you want to upload for{" "}
+            <code>cd {`<sector name>`}</code> (e.g <code>cd PRISONS</code>). To
+            navigate back to the home directory, type <code>cd ..</code>
           </li>
           <li>
             Run put {`<path to file>`} to upload a file. The file path that you
