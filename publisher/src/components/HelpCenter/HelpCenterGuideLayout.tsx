@@ -93,7 +93,7 @@ export const GuideLayoutWithBreadcrumbs = () => {
     : undefined;
 
   return (
-    <Styled.ContentWrapper>
+    <Styled.ContentWrapper fixedGuideWidth={Boolean(currentGuide)}>
       <Breadcrumbs pathname={location.pathname} />
 
       {!currentGuide ? (
