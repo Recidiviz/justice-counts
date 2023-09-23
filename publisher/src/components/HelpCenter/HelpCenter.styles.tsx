@@ -24,6 +24,7 @@ import { rem } from "@justice-counts/common/utils";
 import styled from "styled-components/macro";
 
 export const HelpCenterContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -210,7 +211,7 @@ export const HelpCenterHome = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 75px;
 `;
 
@@ -219,30 +220,38 @@ export const HomeTitle = styled.div`
 `;
 
 export const GuideLinks = styled.div`
-  width: 100vw;
   height: 100%;
   display: flex;
-  justify-content: space-evenly;
+  gap: 40px;
 `;
 
 export const GuideLinksWrapper = styled.div`
-  width: fit-content;
+  ${typography.sizeCSS.normal}
+  width: 318px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
+
+  /* width: 100%; */
+  max-height: 160px;
+  position: relative;
+  background: ${palette.solid.white};
+  border-top: 1px solid ${palette.solid.lightgrey4};
+  border-radius: 0 0 4px 4px;
+  padding: 24px;
 `;
 
-export const GuideLinksTitle = styled.div`
-  ${typography.sizeCSS.medium}
-`;
+export const GuideLinksTitle = styled.div``;
 
 export const GuideLink = styled.div`
-  ${typography.sizeCSS.normal}
-  color: ${palette.solid.blue};
+  width: fit-content;
+  font-weight: 400;
+  color: ${palette.highlight.grey8};
+  border-bottom: 1px solid ${palette.highlight.grey3};
 
   &:hover {
     cursor: pointer;
-    color: ${palette.solid.darkblue};
+    border-bottom: 1px solid ${palette.highlight.grey8};
   }
 `;
 
@@ -256,8 +265,8 @@ export const InterstitialContainer = styled.div`
 `;
 
 export const InterstitialButtonContainer = styled.div`
-  min-width: 437px;
-  min-height: 367px;
+  width: 437px;
+  height: 367px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;

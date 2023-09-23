@@ -37,7 +37,9 @@ export const HelpCenterDirectory: React.FC<{ appGuide: AppGuideKey }> = ({
 
   return (
     <Styled.HelpCenterHome>
-      <Styled.HomeTitle>Justice Counts Help Center</Styled.HomeTitle>
+      <Styled.HomeTitle>
+        {helpCenterGuideStructure[appGuide].title}
+      </Styled.HomeTitle>
 
       <Styled.GuideLinks>
         {Object.entries(groupedGuides).map(([category, guides]) => (
