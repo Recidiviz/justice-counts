@@ -221,7 +221,9 @@ export const HomeTitle = styled.div`
 
 export const GuideLinks = styled.div`
   height: 100%;
+  max-width: 1122px;
   display: flex;
+  flex-wrap: wrap;
   gap: 40px;
 `;
 
