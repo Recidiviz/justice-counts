@@ -287,9 +287,18 @@ export const InterstitialContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+`;
+
+export const InterstitialButtonContainerWrapper = styled.div`
+  display: flex;
   justify-content: center;
   align-items: center;
   gap: 50px;
+  margin-top: 32px;
 `;
 
 export const InterstitialButtonContainer = styled.div`

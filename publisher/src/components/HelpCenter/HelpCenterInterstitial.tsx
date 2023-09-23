@@ -29,28 +29,35 @@ export const HelpCenterInterstitial = () => {
   const navigate = useNavigate();
   return (
     <Styled.InterstitialContainer>
-      {Object.values(helpCenterGuideStructure).map((appGuide) => (
-        <Styled.InterstitialButtonContainer
-          key={appGuide.path}
-          onClick={() => navigate(appGuide.path)}
-        >
-          {/* <PublisherThumbnail /> */}
-          <img
-            src={
-              appGuide.title === "Publisher"
-                ? publisherThumbnail
-                : dashboardThumbnail
-            }
-            alt=""
-            width="461px"
-            // height="299px"
-          />
-          <Styled.TitleCaptionWrapper>
-            <Styled.SectionTitle>{appGuide.title}</Styled.SectionTitle>
-            <Styled.Caption>{appGuide.caption}</Styled.Caption>
-          </Styled.TitleCaptionWrapper>
-        </Styled.InterstitialButtonContainer>
-      ))}
+      <Styled.HomeTitle>Justice Counts Help Center</Styled.HomeTitle>
+      <Styled.SectionParagraph>
+        How can we assist you today?
+      </Styled.SectionParagraph>
+
+      <Styled.InterstitialButtonContainerWrapper>
+        {Object.values(helpCenterGuideStructure).map((appGuide) => (
+          <Styled.InterstitialButtonContainer
+            key={appGuide.path}
+            onClick={() => navigate(appGuide.path)}
+          >
+            {/* <PublisherThumbnail /> */}
+            <img
+              src={
+                appGuide.title === "Publisher"
+                  ? publisherThumbnail
+                  : dashboardThumbnail
+              }
+              alt=""
+              width="461px"
+              // height="299px"
+            />
+            <Styled.TitleCaptionWrapper>
+              <Styled.SectionTitle>{appGuide.title}</Styled.SectionTitle>
+              <Styled.Caption>{appGuide.caption}</Styled.Caption>
+            </Styled.TitleCaptionWrapper>
+          </Styled.InterstitialButtonContainer>
+        ))}
+      </Styled.InterstitialButtonContainerWrapper>
     </Styled.InterstitialContainer>
   );
 };
