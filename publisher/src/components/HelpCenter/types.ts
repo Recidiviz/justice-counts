@@ -33,13 +33,13 @@ export type GuideCategory = `${GuideCategories}`;
 
 export type GuideStructureProps = {
   title: string;
+  caption: string;
   path: string;
   element: React.ReactNode;
 };
 
 export type GuideStructure = GuideStructureProps & {
   category: GuideCategory;
-  caption: string;
   relevantGuides: string[];
 };
 

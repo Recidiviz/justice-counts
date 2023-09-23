@@ -255,19 +255,51 @@ export const InterstitialContainer = styled.div`
   gap: 50px;
 `;
 
-export const InterstitialButton = styled.div`
-  min-width: 424px;
-  min-height: 264px;
+export const InterstitialButtonContainer = styled.div`
+  min-width: 437px;
+  min-height: 367px;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 0.5px solid ${palette.highlight.grey4};
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  background: ${palette.solid.lightgrey2};
+  border: 1px solid ${palette.solid.lightgrey4};
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.2s ease-in-out;
+
+  svg {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    transition: 0.2s ease-in-out;
+  }
 
   &:hover {
     cursor: pointer;
-    background: ${palette.highlight.grey1};
+    background: ${palette.solid.lightgrey5};
+
+    svg {
+      box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.05);
+      top: 24px;
+      left: 24px;
+    }
   }
 `;
+
+export const TitleCaptionWrapper = styled.div`
+  width: 100%;
+  max-height: 120px;
+  position: relative;
+  background: ${palette.solid.white};
+  border-top: 1px solid ${palette.solid.lightgrey4};
+  border-radius: 0 0 4px 4px;
+  padding: 24px;
+`;
+
+export const ButtonTitle = styled.div``;
+export const ButtonCaption = styled.div``;
 
 export const VideoWrapper = styled.div`
   height: 0;

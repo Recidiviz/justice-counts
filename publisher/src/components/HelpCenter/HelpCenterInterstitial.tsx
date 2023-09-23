@@ -18,6 +18,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+import { ReactComponent as DashboardThumbnail } from "../assets/hc-dashboard-help-guide-thumbnail.svg";
+import { ReactComponent as PublisherThumbnail } from "../assets/hc-publisher-help-guide-thumbnail.svg";
 import * as Styled from "./HelpCenter.styles";
 import { helpCenterGuideStructure } from "./HelpCenterSetup";
 
@@ -26,12 +28,16 @@ export const HelpCenterInterstitial = () => {
   return (
     <Styled.InterstitialContainer>
       {Object.values(helpCenterGuideStructure).map((appGuide) => (
-        <Styled.InterstitialButton
+        <Styled.InterstitialButtonContainer
           key={appGuide.path}
           onClick={() => navigate(appGuide.path)}
         >
-          {appGuide.title}
-        </Styled.InterstitialButton>
+          <PublisherThumbnail />
+          <Styled.TitleCaptionWrapper>
+            <Styled.SectionTitle>{appGuide.title}</Styled.SectionTitle>
+            <Styled.Caption>{appGuide.caption}</Styled.Caption>
+          </Styled.TitleCaptionWrapper>
+        </Styled.InterstitialButtonContainer>
       ))}
     </Styled.InterstitialContainer>
   );
