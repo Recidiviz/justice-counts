@@ -24,6 +24,7 @@ export enum GuideCategories {
   AccountSetup = "Account Setup",
   AddData = "Add Data",
   InteractWithTheData = "Interact with the Data",
+  AdvancedConcepts = "Advanced Concepts",
   Dashboards = "Dashboards",
 }
 
