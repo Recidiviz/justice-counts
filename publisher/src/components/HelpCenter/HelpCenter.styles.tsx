@@ -44,8 +44,8 @@ export const HelpCenterContainer = styled.div`
   }
 `;
 
-export const ContentWrapper = styled.div`
-  max-width: 555px;
+export const ContentWrapper = styled.div<{ fixedGuideWidth?: boolean }>`
+  ${({ fixedGuideWidth }) => fixedGuideWidth && `max-width: 555px;`}
   display: flex;
   flex-direction: column;
 `;
@@ -212,7 +212,7 @@ export const HelpCenterHome = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 75px;
+  gap: 27px;
 `;
 
 export const HomeTitle = styled.div`
@@ -228,12 +228,10 @@ export const GuideLinks = styled.div`
 export const GuideLinksWrapper = styled.div`
   ${typography.sizeCSS.normal}
   width: 318px;
+  min-height: 160px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-
-  /* width: 100%; */
-  max-height: 160px;
   position: relative;
   background: ${palette.solid.white};
   border-top: 1px solid ${palette.solid.lightgrey4};
@@ -242,6 +240,36 @@ export const GuideLinksWrapper = styled.div`
 `;
 
 export const GuideLinksTitle = styled.div``;
+
+export const TitleLinkWrapper = styled.div`
+  height: 340px;
+  display: flex;
+  align-items: flex-end;
+  background: ${palette.solid.lightgrey2};
+  border: 1px solid ${palette.solid.lightgrey4};
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.2s ease-in-out;
+
+  img {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    transition: 0.2s ease-in-out;
+  }
+
+  &:hover {
+    cursor: pointer;
+    background: ${palette.solid.lightgrey5};
+
+    img {
+      box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.05);
+      top: 24px;
+      left: 24px;
+    }
+  }
+`;
 
 export const GuideLink = styled.div`
   width: fit-content;
@@ -278,7 +306,7 @@ export const InterstitialButtonContainer = styled.div`
   overflow: hidden;
   transition: background 0.2s ease-in-out;
 
-  svg {
+  img {
     position: absolute;
     top: 32px;
     left: 32px;
@@ -289,7 +317,7 @@ export const InterstitialButtonContainer = styled.div`
     cursor: pointer;
     background: ${palette.solid.lightgrey5};
 
-    svg {
+    img {
       box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.05);
       top: 24px;
       left: 24px;

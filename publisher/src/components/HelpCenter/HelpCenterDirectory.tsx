@@ -19,6 +19,7 @@ import { groupBy } from "@justice-counts/common/utils";
 import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
+import publisherThumbnail from "../assets/hc-publisher-help-guide-thumbnail.png";
 import { AppGuideKey, helpCenterGuideStructure } from ".";
 import * as Styled from "./HelpCenter.styles";
 
@@ -43,17 +44,25 @@ export const HelpCenterDirectory: React.FC<{ appGuide: AppGuideKey }> = ({
 
       <Styled.GuideLinks>
         {Object.entries(groupedGuides).map(([category, guides]) => (
-          <Styled.GuideLinksWrapper key={category}>
-            <Styled.GuideLinksTitle>{category}</Styled.GuideLinksTitle>
-            {guides.map((guide) => (
-              <Styled.GuideLink
-                key={guide.path}
-                onClick={() => navigate(guide.path)}
-              >
-                {guide.title}
-              </Styled.GuideLink>
-            ))}
-          </Styled.GuideLinksWrapper>
+          <Styled.TitleLinkWrapper>
+            <img
+              src={publisherThumbnail}
+              alt=""
+              width="461px"
+              // height="299px"
+            />
+            <Styled.GuideLinksWrapper key={category}>
+              <Styled.GuideLinksTitle>{category}</Styled.GuideLinksTitle>
+              {guides.map((guide) => (
+                <Styled.GuideLink
+                  key={guide.path}
+                  onClick={() => navigate(guide.path)}
+                >
+                  {guide.title}
+                </Styled.GuideLink>
+              ))}
+            </Styled.GuideLinksWrapper>
+          </Styled.TitleLinkWrapper>
         ))}
       </Styled.GuideLinks>
     </Styled.HelpCenterHome>
