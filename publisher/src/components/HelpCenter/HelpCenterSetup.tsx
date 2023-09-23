@@ -35,6 +35,7 @@ import { SetUpMetricsGuide } from "./Guides/SetUpMetricsGuide";
 export const helpCenterGuideStructure: HelpCenterGuideStructure = {
   [AppGuideKeys.publisher]: {
     title: "Publisher",
+    caption: "Learn how to upload and publish your data through publisher",
     path: AppGuideKeys.publisher,
     element: <HelpCenterDirectory appGuide={AppGuideKeys.publisher} />,
     guides: {
@@ -93,6 +94,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
   },
   [AppGuideKeys.dashboard]: {
     title: "Dashboard",
+    caption: "Explore and visualize your agency’s data",
     path: AppGuideKeys.dashboard,
     element: <HelpCenterDirectory appGuide={AppGuideKeys.dashboard} />,
     guides: {
