@@ -20,24 +20,25 @@ import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import publisherThumbnail from "../assets/hc-publisher-help-guide-thumbnail.png";
-import { AppGuideKey, GuideCategories, helpCenterGuideStructure } from ".";
 import * as Styled from "./HelpCenter.styles";
+import { helpCenterGuideStructure } from "./HelpCenterSetup";
+import { AppGuideKey, GuideCategories } from "./types";
 
 const guideCategoryThumbnails = {
   [GuideCategories.AccountSetup]: (
-    <img src={publisherThumbnail} alt="" width="461px" />
+    <Styled.Thumbnail src={publisherThumbnail} alt="" />
   ),
   [GuideCategories.AddData]: (
-    <img src={publisherThumbnail} alt="" width="461px" />
+    <Styled.Thumbnail src={publisherThumbnail} alt="" />
   ),
   [GuideCategories.AdvancedConcepts]: (
-    <img src={publisherThumbnail} alt="" width="461px" />
+    <Styled.Thumbnail src={publisherThumbnail} alt="" />
   ),
   [GuideCategories.InteractWithTheData]: (
-    <img src={publisherThumbnail} alt="" width="461px" />
+    <Styled.Thumbnail src={publisherThumbnail} alt="" />
   ),
   [GuideCategories.Dashboards]: (
-    <img src={publisherThumbnail} alt="" width="461px" />
+    <Styled.Thumbnail src={publisherThumbnail} alt="" />
   ),
 };
 

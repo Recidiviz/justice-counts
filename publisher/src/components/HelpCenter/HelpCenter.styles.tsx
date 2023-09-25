@@ -362,3 +362,7 @@ export const VideoIFrame = styled.iframe`
   top: 0;
   left: 0;
 `;
+
+export const Thumbnail = styled.img`
+  width: 461px;
+`;

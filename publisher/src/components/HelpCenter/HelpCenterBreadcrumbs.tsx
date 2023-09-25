@@ -17,8 +17,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { helpCenterGuideStructure, PathToDisplayName } from ".";
 import * as Styled from "./HelpCenter.styles";
+import { helpCenterGuideStructure } from "./HelpCenterSetup";
+import { PathToDisplayName } from "./types";
 
 const pathToDisplayName = Object.values(helpCenterGuideStructure).reduce(
   (acc, parentGuide) => {

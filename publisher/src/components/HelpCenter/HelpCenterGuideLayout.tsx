@@ -18,13 +18,10 @@
 import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
-import {
-  AppGuideKey,
-  Breadcrumbs,
-  GuidesByPathnameWithKey,
-  helpCenterGuideStructure,
-} from ".";
 import * as Styled from "./HelpCenter.styles";
+import { Breadcrumbs } from "./HelpCenterBreadcrumbs";
+import { helpCenterGuideStructure } from "./HelpCenterSetup";
+import { AppGuideKey, GuidesByPathnameWithKey } from "./types";
 
 const RelevantGuides: React.FC<{ appKey: AppGuideKey; guideKey: string }> = ({
   appKey,
