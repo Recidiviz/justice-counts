@@ -20,12 +20,6 @@ import { Route } from "react-router-dom";
 
 import dashboardThumbnail from "../assets/hc-dashboard-help-guide-thumbnail.png";
 import publisherThumbnail from "../assets/hc-publisher-help-guide-thumbnail.png";
-import {
-  AppGuideKeys,
-  GuideCategories,
-  HelpCenterDirectory,
-  HelpCenterGuideStructure,
-} from ".";
 import { AccountSetupGuide } from "./Guides/AccountSetupGuide";
 import { AutomatedBulkUploadGuide } from "./Guides/AutomaticBulkUploadGuide";
 import { BulkUploadGuide } from "./Guides/BulkUploadGuide";
@@ -33,6 +27,13 @@ import { DashboardsGuide } from "./Guides/DashboardsGuide";
 import { ExploreDataGuide } from "./Guides/ExploreDataGuide";
 import { ManualEntryGuide } from "./Guides/ManualEntryGuide";
 import { SetUpMetricsGuide } from "./Guides/SetUpMetricsGuide";
+import { Thumbnail } from "./HelpCenter.styles";
+import { HelpCenterDirectory } from "./HelpCenterDirectory";
+import {
+  AppGuideKeys,
+  GuideCategories,
+  HelpCenterGuideStructure,
+} from "./types";
 
 export const helpCenterGuideStructure: HelpCenterGuideStructure = {
   [AppGuideKeys.publisher]: {
@@ -40,7 +41,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
     caption: "Learn how to upload and publish your data through publisher",
     path: AppGuideKeys.publisher,
     element: <HelpCenterDirectory appGuide={AppGuideKeys.publisher} />,
-    thumbnail: <img src={publisherThumbnail} alt="" width="461px" />,
+    thumbnail: <Thumbnail src={publisherThumbnail} alt="" width="461px" />,
 
     guides: {
       "explore-data": {
@@ -101,7 +102,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
     caption: "Explore and visualize your agency’s data",
     path: AppGuideKeys.dashboard,
     element: <HelpCenterDirectory appGuide={AppGuideKeys.dashboard} />,
-    thumbnail: <img src={dashboardThumbnail} alt="" width="461px" />,
+    thumbnail: <Thumbnail src={dashboardThumbnail} alt="" width="461px" />,
     guides: {
       dashboards: {
         category: GuideCategories.Dashboards,

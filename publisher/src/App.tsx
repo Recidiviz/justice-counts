@@ -24,12 +24,10 @@ import MaintenancePage from "./components/Auth/Maintenance";
 import Footer from "./components/Footer";
 import { AppWrapper, PageWrapper } from "./components/Forms";
 import { REPORTS_LOWERCASE } from "./components/Global/constants";
-import {
-  GuideLayoutWithBreadcrumbs,
-  HelpCenter,
-  HelpCenterInterstitial,
-  helpCenterRoutes,
-} from "./components/HelpCenter";
+import { HelpCenter } from "./components/HelpCenter/HelpCenter";
+import { GuideLayoutWithBreadcrumbs } from "./components/HelpCenter/HelpCenterGuideLayout";
+import { HelpCenterInterstitial } from "./components/HelpCenter/HelpCenterInterstitial";
+import { helpCenterRoutes } from "./components/HelpCenter/HelpCenterSetup";
 import { Loading } from "./components/Loading";
 import { NoAgencies } from "./pages/NoAgencies";
 import { Router } from "./router";
