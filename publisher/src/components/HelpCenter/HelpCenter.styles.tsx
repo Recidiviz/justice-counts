@@ -53,10 +53,26 @@ export const ContentWrapper = styled.div<{ fixedGuideWidth?: boolean }>`
 export const NewHeader = styled.div`
   width: 100%;
   height: ${HEADER_BAR_HEIGHT}px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   position: absolute;
   top: 0;
   left: 0;
   border-bottom: 1px solid ${palette.solid.offwhitenoir};
+  padding-right: 50px;
+
+  a,
+  a:visited {
+    ${typography.sizeCSS.normal}
+    font-weight: 400;
+    color: ${palette.solid.darkgrey};
+    text-decoration: none;
+  }
+
+  a:hover {
+    cursor: pointer;
+  }
 `;
 
 export const LogoContainer = styled.div`
