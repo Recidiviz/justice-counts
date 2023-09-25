@@ -29,6 +29,7 @@ export const HelpCenter = () => {
           <Styled.LogoImg src={logoImg} alt="" />
           <Styled.Label>Justice Counts</Styled.Label>
         </Styled.LogoContainer>
+        <a href="mailto:justice-counts-support@csg.org">Contact</a>
       </Styled.NewHeader>
 
       <Outlet />
