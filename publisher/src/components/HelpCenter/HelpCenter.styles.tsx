@@ -157,6 +157,8 @@ export const SectionTitle = styled.h2`
 
 export const SectionWrapper = styled.div`
   margin-bottom: 56px;
+  display: flex;
+  flex-direction: column;
 
   li {
     margin-left: 16px;
@@ -192,7 +194,7 @@ export const SectionWrapper = styled.div`
   }
 `;
 
-export const SectionParagraph = styled.p`
+export const SectionParagraph = styled.div`
   ${typography.sizeCSS.normal}
   line-height: 24px;
   font-weight: 400;
@@ -347,6 +349,7 @@ export const TitleCaptionWrapper = styled.div`
 `;
 
 export const ButtonTitle = styled.div``;
+
 export const ButtonCaption = styled.div``;
 
 export const VideoWrapper = styled.div`
@@ -365,4 +368,18 @@ export const VideoIFrame = styled.iframe`
 
 export const Thumbnail = styled.img`
   width: 461px;
+`;
+
+export const Image = styled.img<{ align?: "left" | "center" | "right" }>`
+  ${({ align }) => {
+    if (align === "center") {
+      return `margin: 0 auto;`;
+    }
+    if (align === "right") {
+      return `margin-left: auto;`;
+    }
+    if (align === "left") {
+      return `margin-right: auto;`;
+    }
+  }};
 `;
