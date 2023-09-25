@@ -18,6 +18,8 @@
 import React from "react";
 import { Route } from "react-router-dom";
 
+import dashboardThumbnail from "../assets/hc-dashboard-help-guide-thumbnail.png";
+import publisherThumbnail from "../assets/hc-publisher-help-guide-thumbnail.png";
 import {
   AppGuideKeys,
   GuideCategories,
@@ -38,6 +40,8 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
     caption: "Learn how to upload and publish your data through publisher",
     path: AppGuideKeys.publisher,
     element: <HelpCenterDirectory appGuide={AppGuideKeys.publisher} />,
+    thumbnail: <img src={publisherThumbnail} alt="" width="461px" />,
+
     guides: {
       "explore-data": {
         category: GuideCategories.InteractWithTheData,
@@ -97,6 +101,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
     caption: "Explore and visualize your agency’s data",
     path: AppGuideKeys.dashboard,
     element: <HelpCenterDirectory appGuide={AppGuideKeys.dashboard} />,
+    thumbnail: <img src={dashboardThumbnail} alt="" width="461px" />,
     guides: {
       dashboards: {
         category: GuideCategories.Dashboards,

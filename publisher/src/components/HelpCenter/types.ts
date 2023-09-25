@@ -47,6 +47,7 @@ export type GuideStructure = GuideStructureProps & {
 export type HelpCenterGuideStructure = {
   [appKey: string]: GuideStructureProps & {
     guides: { [guideKey: string]: GuideStructure };
+    thumbnail?: React.ReactNode;
   };
 };
 

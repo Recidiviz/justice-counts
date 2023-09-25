@@ -303,7 +303,7 @@ export const InterstitialButtonContainerWrapper = styled.div`
   margin-top: 32px;
 `;
 
-export const InterstitialButtonContainer = styled.div`
+export const InterstitialButtonContainer = styled.div<{ hasPath: boolean }>`
   width: 437px;
   height: 367px;
   display: flex;
@@ -325,7 +325,7 @@ export const InterstitialButtonContainer = styled.div`
   }
 
   &:hover {
-    cursor: pointer;
+    ${({ hasPath }) => hasPath && `cursor: pointer;`}
     background: ${palette.solid.lightgrey5};
 
     img {

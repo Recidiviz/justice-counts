@@ -18,10 +18,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import dashboardThumbnail from "../assets/hc-dashboard-help-guide-thumbnail.png";
-// import { ReactComponent as DashboardThumbnail } from "../assets/hc-dashboard-help-guide-thumbnail.svg";
-// import { ReactComponent as PublisherThumbnail } from "../assets/hc-publisher-help-guide-thumbnail.svg";
-import publisherThumbnail from "../assets/hc-publisher-help-guide-thumbnail.png";
 import * as Styled from "./HelpCenter.styles";
 import { helpCenterGuideStructure } from "./HelpCenterSetup";
 
@@ -38,19 +34,10 @@ export const HelpCenterInterstitial = () => {
         {Object.values(helpCenterGuideStructure).map((appGuide) => (
           <Styled.InterstitialButtonContainer
             key={appGuide.path}
+            hasPath={Boolean(appGuide.path)}
             onClick={() => navigate(appGuide.path)}
           >
-            {/* <PublisherThumbnail /> */}
-            <img
-              src={
-                appGuide.title === "Publisher"
-                  ? publisherThumbnail
-                  : dashboardThumbnail
-              }
-              alt=""
-              width="461px"
-              // height="299px"
-            />
+            {appGuide.thumbnail}
             <Styled.TitleCaptionWrapper>
               <Styled.SectionTitle>{appGuide.title}</Styled.SectionTitle>
               <Styled.Caption>{appGuide.caption}</Styled.Caption>

@@ -20,8 +20,26 @@ import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import publisherThumbnail from "../assets/hc-publisher-help-guide-thumbnail.png";
-import { AppGuideKey, helpCenterGuideStructure } from ".";
+import { AppGuideKey, GuideCategories, helpCenterGuideStructure } from ".";
 import * as Styled from "./HelpCenter.styles";
+
+const guideCategoryThumbnails = {
+  [GuideCategories.AccountSetup]: (
+    <img src={publisherThumbnail} alt="" width="461px" />
+  ),
+  [GuideCategories.AddData]: (
+    <img src={publisherThumbnail} alt="" width="461px" />
+  ),
+  [GuideCategories.AdvancedConcepts]: (
+    <img src={publisherThumbnail} alt="" width="461px" />
+  ),
+  [GuideCategories.InteractWithTheData]: (
+    <img src={publisherThumbnail} alt="" width="461px" />
+  ),
+  [GuideCategories.Dashboards]: (
+    <img src={publisherThumbnail} alt="" width="461px" />
+  ),
+};
 
 export const HelpCenterDirectory: React.FC<{ appGuide: AppGuideKey }> = ({
   appGuide,
@@ -44,14 +62,9 @@ export const HelpCenterDirectory: React.FC<{ appGuide: AppGuideKey }> = ({
 
       <Styled.GuideLinks>
         {Object.entries(groupedGuides).map(([category, guides]) => (
-          <Styled.TitleLinkWrapper>
-            <img
-              src={publisherThumbnail}
-              alt=""
-              width="461px"
-              // height="299px"
-            />
-            <Styled.GuideLinksWrapper key={category}>
+          <Styled.TitleLinkWrapper key={category}>
+            {guideCategoryThumbnails[category as GuideCategories]}
+            <Styled.GuideLinksWrapper>
               <Styled.GuideLinksTitle>{category}</Styled.GuideLinksTitle>
               {guides.map((guide) => (
                 <Styled.GuideLink
