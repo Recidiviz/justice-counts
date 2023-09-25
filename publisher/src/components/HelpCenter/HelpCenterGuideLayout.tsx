@@ -53,6 +53,7 @@ const RelevantGuides: React.FC<{ appKey: AppGuideKey; guideKey: string }> = ({
               key={key}
               onClick={() => navigate(pathToGuide, { relative: "path" })}
             >
+              {guide.icon}
               <Styled.RelevantPageBoxTitle>
                 {guide.title}
               </Styled.RelevantPageBoxTitle>

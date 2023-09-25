@@ -18,8 +18,16 @@
 import React from "react";
 import { Route } from "react-router-dom";
 
+import { ReactComponent as AgencySettingsIcon } from "../assets/hc-agency-settings-icon.svg";
+import { ReactComponent as AutomatedBulkUploadIcon } from "../assets/hc-automated-bulk-upload-icon.svg";
+import { ReactComponent as BulkUploadIcon } from "../assets/hc-bulk-upload-icon.svg";
 import dashboardThumbnail from "../assets/hc-dashboard-help-guide-thumbnail.png";
+import { ReactComponent as ExploreDataIcon } from "../assets/hc-explore-your-data-icon.svg";
+import { ReactComponent as ManualEntryIcon } from "../assets/hc-manual-entry-icon.svg";
 import publisherThumbnail from "../assets/hc-publisher-help-guide-thumbnail.png";
+import { ReactComponent as SetUpMetricsIcon } from "../assets/hc-set-up-metrics-icon.svg";
+// import { ReactComponent as SuperagenciesIcon } from "../assets/hc-superagencies-icon.svg";
+// import { ReactComponent as SupervisionDisaggregationsIcon } from "../assets/hc-supervision-disaggregations-icon.svg";
 import { AccountSetupGuide } from "./Guides/AccountSetupGuide";
 import { AutomatedBulkUploadGuide } from "./Guides/AutomaticBulkUploadGuide";
 import { BulkUploadGuide } from "./Guides/BulkUploadGuide";
@@ -50,6 +58,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         caption: "Interact with your data to discover insights.",
         path: "explore-data",
         element: <ExploreDataGuide />,
+        icon: <ExploreDataIcon />,
         relevantGuides: ["dashboard/dashboards"],
       },
       "agency-settings": {
@@ -58,6 +67,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         caption: "See and edit information about your agency.",
         path: "agency-settings",
         element: <AccountSetupGuide />,
+        icon: <AgencySettingsIcon />,
         relevantGuides: ["set-up-metrics"],
       },
       "set-up-metrics": {
@@ -65,9 +75,9 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         title: "Set Up Metrics",
         caption:
           "Specify the availability, frequency and definitions of metrics and relevant breakdown categories.",
-
         path: "set-up-metrics",
         element: <SetUpMetricsGuide />,
+        icon: <SetUpMetricsIcon />,
         relevantGuides: ["agency-settings"],
       },
       "manual-entry": {
@@ -76,6 +86,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         caption: "Manually enter your data through text fields.",
         path: "manual-entry",
         element: <ManualEntryGuide />,
+        icon: <ManualEntryIcon />,
         relevantGuides: ["bulk-upload", "automated-bulk-upload"],
       },
       "bulk-upload": {
@@ -85,6 +96,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
           "Upload and publish data for multiple records at once using excel or csv files to expedite data sharing.",
         path: "bulk-upload",
         element: <BulkUploadGuide />,
+        icon: <BulkUploadIcon />,
         relevantGuides: ["manual-entry"],
       },
       "automated-bulk-upload": {
@@ -93,6 +105,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         caption: "Upload Workbooks without logging-in.",
         path: "automated-bulk-upload",
         element: <AutomatedBulkUploadGuide />,
+        icon: <AutomatedBulkUploadIcon />,
         relevantGuides: ["manual-entry"],
       },
     },
@@ -110,6 +123,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         caption: "Visualize agency data to see trends over time.",
         path: "dashboards",
         element: <DashboardsGuide />,
+        icon: <ExploreDataIcon />,
         relevantGuides: ["publisher/explore-data"],
       },
     },
