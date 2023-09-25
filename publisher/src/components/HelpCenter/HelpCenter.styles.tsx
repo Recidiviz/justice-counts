@@ -283,21 +283,13 @@ export const TitleLinkWrapper = styled.div`
   transition: background 0.2s ease-in-out;
 
   img {
+    width: 250px;
     position: absolute;
-    top: 32px;
-    left: 32px;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0 auto;
     transition: 0.2s ease-in-out;
-  }
-
-  &:hover {
-    cursor: pointer;
-    background: ${palette.solid.lightgrey5};
-
-    img {
-      box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.05);
-      top: 24px;
-      left: 24px;
-    }
   }
 `;
 
