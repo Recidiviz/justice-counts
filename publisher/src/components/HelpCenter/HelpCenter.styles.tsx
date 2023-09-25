@@ -18,6 +18,7 @@
 import {
   HEADER_BAR_HEIGHT,
   palette,
+  TABLET_WIDTH,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import { rem } from "@justice-counts/common/utils";
@@ -232,6 +233,10 @@ export const HelpCenterHome = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 27px;
+
+  @media only screen and (max-width: ${TABLET_WIDTH}px) {
+    align-items: center;
+  }
 `;
 
 export const HomeTitle = styled.div`
@@ -244,6 +249,10 @@ export const GuideLinks = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 40px;
+
+  @media only screen and (max-width: ${TABLET_WIDTH}px) {
+    justify-content: center;
+  }
 `;
 
 export const GuideLinksWrapper = styled.div`
@@ -320,6 +329,10 @@ export const InterstitialButtonContainerWrapper = styled.div`
   align-items: center;
   gap: 50px;
   margin-top: 32px;
+
+  @media only screen and (max-width: ${TABLET_WIDTH}px) {
+    flex-direction: column;
+  }
 `;
 
 export const InterstitialButtonContainer = styled.div<{ hasPath: boolean }>`
