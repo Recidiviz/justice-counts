@@ -116,7 +116,8 @@ export const RelevantPagesWrapper = styled.div`
 
 export const RelevantPageBox = styled.div`
   width: 269px;
-  height: 184px;
+  height: 100%;
+  min-height: 184px;
   padding: 32px 24px;
   border: 1px solid ${palette.highlight.grey3};
   border-radius: 4px;
@@ -129,7 +130,7 @@ export const RelevantPageBox = styled.div`
 
 export const RelevantPageBoxTitle = styled.div`
   ${typography.sizeCSS.normal}
-  margin-bottom: 8px;
+  margin: 8px 0;
 `;
 
 export const RelevantPageBoxDescription = styled.div`

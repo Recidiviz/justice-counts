@@ -41,6 +41,7 @@ export type GuideStructureProps = {
 
 export type GuideStructure = GuideStructureProps & {
   category: GuideCategory;
+  icon: React.ReactNode;
   relevantGuides: string[];
 };
 
