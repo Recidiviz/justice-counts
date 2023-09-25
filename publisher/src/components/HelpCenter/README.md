@@ -85,6 +85,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
     title: "Publisher",
     path: "publisher",
     element: <HelpCenterPublisher />,
+    thumbnail: <Thumbnail src={publisherThumbnail} alt="" width="461px" />,
     guides: {
       "explore-data": {
         category: "Interact with the Data",
@@ -123,3 +124,51 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
 
 ### If you'd like to remove a Help Center guide:
 Please delete the relevant guide object from within the `helpCenterGuideStructure` object in `HelpCenterSetup.tsx` and the guide component in the `Guides` folder.
+
+---
+
+### Other helpful tips:
+
+  - If you want to add an image within a paragraph, use the `<Styled.Image src={importedImage} alt="" width="300px" align="center" />` tag where you can explicitly set the `width` and alignment of the image (left, center, right).
+
+    ```
+    import testScreenshot from "../../assets/test-screenshot.png";
+    import * as Styled from "../HelpCenter.styles";
+
+    export const ExploreDataGuide = () => (
+      <>
+        <Styled.SectionWrapper>
+          <Styled.SectionParagraph>
+            The Explore Data tab allows you to visualize the data you have uploaded
+            into Publisher. It displays both draft and published data.
+          </Styled.SectionParagraph>
+          <Styled.SectionParagraph>
+            Click Explore Data, the fourth item
+            on the navigation bar, to reach this page.
+          </Styled.SectionParagraph>
+          <Styled.Image src={testScreenshot} alt="" width="300px" align="center" />
+        </Styled.SectionWrapper>
+
+        ...
+      </>
+    );
+    ```
+
+    NOTE: When adding an image file, please add the file to the `justice-counts/publisher/src/components/assets` folder. Then, within the guide components (`justice-counts/publisher/src/components/HelpCenter/Guides`), you can import the image via this relative path `../../assets/your-image-here.png`.
+
+- If you want an app guide (Publisher or Dashboard) to be visible but not clickable (e.g. if a guide is not ready to be release yet, but we're OK with users seeing the guide and thumbnail for it), set the app guide `path` property to an empty string `""`.
+
+  Example:
+  ```
+  export const helpCenterGuideStructure: HelpCenterGuideStructure = {
+  publisher: {
+    key: "publisher",
+    title: "Publisher",
+    path: "", // Now, you'll still see a button for it, but it won't be clickable
+    element: <HelpCenterPublisher />,
+    thumbnail: <Thumbnail src={publisherThumbnail} alt="" width="461px" />,
+    guides: {
+      ...
+    },
+    ...
+    ```
