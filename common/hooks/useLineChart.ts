@@ -56,9 +56,9 @@ export const useLineChart = ({
               /** Filter out breakdowns that have no dimension values */
               const {
                 dataVizMissingData,
-                end_date,
+                end_date: endDate,
                 frequency,
-                start_date,
+                start_date: startDate,
                 ...dimensions
               } = disaggregation;
 
