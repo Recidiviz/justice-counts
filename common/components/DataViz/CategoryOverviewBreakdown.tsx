@@ -55,19 +55,23 @@ export const CategoryOverviewBreakdown: FunctionComponent<
           (hoveredDate ? displayDate : `Recent (${displayDate})`)}
       </LegendTitle>
 
-      {sortedDimensions.map((dimension) => (
-        <LegendItem key={dimension}>
-          <LegendBullet color={data[dimension]?.fill}>▪</LegendBullet>
-          <LegendName color={palette.solid.black}>{dimension}</LegendName>
-          <LegendValue>
-            {renderPercentText(
-              data[dimension]?.value,
-              totalDimensionValues,
-              isFundingOrExpenses
-            )}
-          </LegendValue>
-        </LegendItem>
-      ))}
+      {sortedDimensions.map((dimension) => {
+        const hasNoValue = typeof data[dimension]?.value !== "number";
+
+        return (
+          <LegendItem key={dimension} hasNoValue={hasNoValue}>
+            <LegendBullet color={data[dimension]?.fill}>▪</LegendBullet>
+            <LegendName color={palette.solid.black}>{dimension}</LegendName>
+            <LegendValue>
+              {renderPercentText(
+                data[dimension]?.value,
+                totalDimensionValues,
+                isFundingOrExpenses
+              )}
+            </LegendValue>
+          </LegendItem>
+        );
+      })}
     </Container>
   );
 };

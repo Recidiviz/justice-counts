@@ -33,10 +33,11 @@ export const LegendTitle = styled.p`
   line-height: 22px;
 `;
 
-export const LegendItem = styled.li`
+export const LegendItem = styled.li<{ hasNoValue?: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
+  ${({ hasNoValue }) => hasNoValue && `visibility: hidden;`}
 `;
 
 export const LegendBullet = styled.span<{ color: string }>`
