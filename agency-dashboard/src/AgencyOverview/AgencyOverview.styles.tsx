@@ -44,6 +44,7 @@ export const AgencyOverviewHeader = styled.div`
   padding-bottom: 96px;
   border-bottom: 1px solid ${palette.highlight.grey3};
   margin-bottom: 24px;
+  position: relative;
 `;
 
 export const AgencyTitle = styled.div`
@@ -202,4 +203,15 @@ export const MetricBoxGraphRange = styled.div`
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
+`;
+
+export const DemoLabel = styled.div`
+  ${typography.sizeCSS.medium};
+  width: fit-content;
+  position: absolute;
+  bottom: 0px;
+  color: ${palette.solid.white};
+  background: ${palette.solid.blue};
+  padding: 8px 16px;
+  margin-bottom: 28px;
 `;
