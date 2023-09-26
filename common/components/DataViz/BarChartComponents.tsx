@@ -31,7 +31,7 @@ export const CustomYAxisTick = (props: CustomYAxisTickProps) => {
   return (
     <g transform={`translate(${0},${y})`}>
       <text
-        x={rightAligned ? 60 : 0}
+        x={rightAligned ? 50 : 0}
         y={0}
         textAnchor={rightAligned ? "end" : "start"}
         fill={palette.solid.darkgrey}
