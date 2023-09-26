@@ -129,6 +129,7 @@ export function CategoryOverviewLineChart({
         dataKey={dimension}
         stroke={dimensionsToColorMap[dimension]}
         type="monotone"
+        dot={{ r: 4 }}
       />
     ));
   }, [dimensions, dimensionsToColorMap]);

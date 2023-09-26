@@ -22,6 +22,7 @@ import {
   Metric,
   UserAgency,
 } from "@justice-counts/common/types";
+import { groupBy } from "../utils";
 
 export type LineChartProps = {
   getLineChartDimensionsFromMetric: (metric: Metric) => string[];
@@ -41,6 +42,11 @@ export const useLineChart = ({
   dimensionNamesByMetricAndDisaggregation,
 }: LineChartHookProps): LineChartProps => {
   const getLineChartDataFromMetric = (metric: Metric) => {
+    const disaggregationsByDisplayName = groupBy(
+      metric.disaggregations,
+      (disaggregation) => disaggregation.display_name
+    );
+
     if (datapointsByMetric) {
       /**
        * Gets the first set of disaggregated datapoints.
@@ -48,9 +54,9 @@ export const useLineChart = ({
        *       based on how we want to handle displaying metrics w/ multiple breakdowns.
        */
       const { disaggregations } = datapointsByMetric[metric.key];
-      const disaggregationKey = Object.keys(disaggregations)[0];
+      const disaggregationDisplayName = Object.keys(disaggregations)[0];
       const disaggregationWithDimensionValues = Object.values(
-        disaggregations[disaggregationKey]
+        disaggregations[disaggregationDisplayName]
       ).filter((disaggregation) => {
         /** Filter out breakdowns that have no dimension values */
         const {
@@ -60,17 +66,20 @@ export const useLineChart = ({
           start_date: startDate,
           ...dimensions
         } = disaggregation;
-
         const hasNoValues =
           Object.values(dimensions).filter(
             (dimVal) => typeof dimVal === "number"
           ).length === 0;
+        const hasAllDisabledDimensions =
+          disaggregationsByDisplayName[
+            disaggregationDisplayName
+          ]?.[0].dimensions.find((dim) => dim.enabled) === undefined;
 
-        if (hasNoValues) return false;
+        if (hasNoValues || hasAllDisabledDimensions) return false;
         return true;
       });
 
-      return disaggregations[disaggregationKey]
+      return disaggregations[disaggregationDisplayName]
         ? disaggregationWithDimensionValues
         : [];
     }
