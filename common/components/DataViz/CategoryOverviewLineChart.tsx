@@ -139,7 +139,7 @@ export function CategoryOverviewLineChart({
           }}
         />
       ));
-  }, [dimensions, dimensionsToColorMap]);
+  }, [dimensions, dimensionsToColorMap, legendData]);
 
   return (
     <Container>

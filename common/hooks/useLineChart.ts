@@ -22,6 +22,7 @@ import {
   Metric,
   UserAgency,
 } from "@justice-counts/common/types";
+
 import { groupBy } from "../utils";
 
 export type LineChartProps = {
