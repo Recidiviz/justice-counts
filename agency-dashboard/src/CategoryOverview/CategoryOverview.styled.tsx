@@ -42,6 +42,7 @@ export const Container = styled.div`
 `;
 
 export const TopBlock = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: start;
@@ -53,7 +54,7 @@ export const TopBlock = styled.div`
 `;
 
 export const AgencyTitle = styled.div`
-  width: 70%;
+  max-width: 70%;
   ${typography.sizeCSS.headline};
   margin-bottom: 50px;
 `;
