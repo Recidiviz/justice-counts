@@ -124,7 +124,7 @@ export function CategoryOverviewLineChart({
 
   const breakdownLines = useMemo(() => {
     return dimensions
-      .filter((dimension) => legendData[dimension].enabled) // Filter out disabled dimensions
+      .filter((dimension) => legendData[dimension]?.enabled) // Filter out disabled dimensions
       .map((dimension) => (
         <Line
           key={dimension}
