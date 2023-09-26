@@ -42,11 +42,13 @@ export const CategoryOverviewBreakdown: FunctionComponent<
     }
     return acc;
   }, 0);
-  /** Dimensions sorted in descending order based on value */
-  const sortedDimensions = dimensions.sort(
-    (dimA: string, dimB: string) =>
-      Number(data[dimB]?.value) - Number(data[dimA]?.value)
-  );
+  /** Dimensions sorted in descending order based on value, and enabled status (disabled dimensions go to bottom of list) */
+  const sortedDimensions = dimensions
+    .sort(
+      (dimA: string, dimB: string) =>
+        Number(data[dimB]?.value) - Number(data[dimA]?.value)
+    )
+    .sort((_: string, dimB: string) => (data[dimB]?.enabled ? 1 : -1));
 
   return (
     <Container>
@@ -56,10 +58,10 @@ export const CategoryOverviewBreakdown: FunctionComponent<
       </LegendTitle>
 
       {sortedDimensions.map((dimension) => {
-        const hasNoValue = typeof data[dimension]?.value !== "number";
+        const isDisabled = data[dimension]?.enabled !== true;
 
         return (
-          <LegendItem key={dimension} hasNoValue={hasNoValue}>
+          <LegendItem key={dimension} hidden={isDisabled}>
             <LegendBullet color={data[dimension]?.fill}>▪</LegendBullet>
             <LegendName color={palette.solid.black}>{dimension}</LegendName>
             <LegendValue>

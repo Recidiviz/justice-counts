@@ -16,26 +16,35 @@
 // =============================================================================
 
 import { LegendData } from "../components/DataViz/types";
-import { Datapoint } from "../types";
+import { Datapoint, Metric } from "../types";
+import { groupBy } from "../utils";
 
 export const useLineChartLegend = (
   datapoints: Datapoint[],
   dimensions: string[],
   hoveredDate: string | null,
+  metric: Metric,
   dimensionsToColorMap: Record<string, string>
 ) => {
+  /** For now, only groups dimensions by label for the first disaggregation. We'll have to adjust this to handle multiple disaggregations. */
+  const dimensionsByLabel = groupBy(
+    metric.disaggregations[0].dimensions,
+    (dim) => dim.label
+  );
+
   const transformDataForLegend = (datapoint: Datapoint): LegendData => {
-    const dimensionsValueFill = dimensions.reduce((acc, dim) => {
+    const dimensionsValueFillEnabled = dimensions.reduce((acc, dim) => {
       if (datapoint) {
         acc[dim] = {
           value: datapoint[dim],
           fill: dimensionsToColorMap[dim],
+          enabled: dimensionsByLabel[dim][0].enabled,
         };
       }
       return acc;
     }, {} as LegendData);
 
-    return { ...datapoint, ...dimensionsValueFill } as LegendData;
+    return { ...datapoint, ...dimensionsValueFillEnabled } as LegendData;
   };
 
   const getLastDatapoint = (dps: Datapoint[]): Datapoint => dps[dps.length - 1];

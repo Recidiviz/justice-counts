@@ -32,7 +32,7 @@ import {
 } from "recharts";
 
 import { useLineChartLegend } from "../../hooks";
-import { Datapoint } from "../../types";
+import { Datapoint, Metric } from "../../types";
 import { convertShortDateToUTCDateString } from "../../utils";
 import { formatNumberForChart } from "../../utils/helperUtils";
 import { palette } from "../GlobalStyles";
@@ -49,7 +49,7 @@ export type LineChartProps = {
       [key: string]: string;
     }>
   >;
-  metricKey: string;
+  metric: Metric;
 };
 
 export type CustomXAxisTickProps = {
@@ -104,7 +104,7 @@ export function CategoryOverviewLineChart({
   dimensions,
   hoveredDate,
   setHoveredDate,
-  metricKey,
+  metric,
 }: LineChartProps) {
   /** Creates a { [dimension]: colorFromDataVizPalette } map */
   const [dimensionsToColorMap] = useState<Record<string, string>>(() => {
@@ -118,6 +118,7 @@ export function CategoryOverviewLineChart({
     data,
     dimensions,
     hoveredDate,
+    metric,
     dimensionsToColorMap
   );
 
@@ -146,7 +147,7 @@ export function CategoryOverviewLineChart({
             const { activeLabel } = e;
             setHoveredDate((prev) => ({
               ...prev,
-              [metricKey]: convertShortDateToUTCDateString(activeLabel),
+              [metric.key]: convertShortDateToUTCDateString(activeLabel),
             }));
           }
         }}
