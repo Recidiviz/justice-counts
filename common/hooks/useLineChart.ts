@@ -49,8 +49,28 @@ export const useLineChart = ({
        */
       const { disaggregations } = datapointsByMetric[metric.key];
       const disaggregationKey = Object.keys(disaggregations)[0];
+
       return disaggregations[disaggregationKey]
-        ? Object.values(disaggregations[disaggregationKey])
+        ? Object.values(disaggregations[disaggregationKey]).filter(
+            (disaggregation) => {
+              /** Filter out breakdowns that have no dimension values */
+              const {
+                dataVizMissingData,
+                end_date,
+                frequency,
+                start_date,
+                ...dimensions
+              } = disaggregation;
+
+              const hasNoValues =
+                Object.values(dimensions).filter(
+                  (dimVal) => typeof dimVal === "number"
+                ).length === 0;
+
+              if (hasNoValues) return false;
+              return true;
+            }
+          )
         : [];
     }
     return [];
