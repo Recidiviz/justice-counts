@@ -84,6 +84,7 @@ export type LineChartBreakdownValue = {
 export type LineChartBreakdownNumericValue = {
   value: number;
   fill: string;
+  enabled?: boolean;
 };
 
 export type LineChartBreakdownProps = {
