@@ -58,7 +58,7 @@ export const useLineChart = ({
       const disaggregationWithDimensionValues = Object.values(
         disaggregations[disaggregationDisplayName]
       ).filter((disaggregation) => {
-        /** Filter out breakdowns that have no dimension values */
+        /** Filter out breakdowns that have no dimension values or have all dimensions disabled */
         const {
           dataVizMissingData,
           end_date: endDate,
