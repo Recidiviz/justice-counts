@@ -112,7 +112,7 @@ const MetricsCategoryBarChart = forwardRef<never, ResponsiveBarChartProps>(
             margin={{
               top: 20,
               right: 0,
-              left: 0,
+              left: 15,
               bottom: 16,
             }}
             ref={ref}
