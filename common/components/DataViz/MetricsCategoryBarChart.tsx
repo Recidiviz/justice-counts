@@ -150,6 +150,7 @@ const MetricsCategoryBarChart = forwardRef<never, ResponsiveBarChartProps>(
                     percentageView={false}
                     styles={tickStyle}
                     metric={metric}
+                    rightAligned
                   />
                 )}
                 tickLine={false}
