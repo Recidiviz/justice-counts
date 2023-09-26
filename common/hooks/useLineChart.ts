@@ -50,7 +50,7 @@ export const useLineChart = ({
 
     if (datapointsByMetric) {
       /**
-       * Gets the first set of disaggregated datapoints.
+       * Gets the first set of disaggregated datapoints (if atleast one dimension is enabled).
        * NOTE: This assumes there's just one breakdown per metric. We will need to adjust this
        *       based on how we want to handle displaying metrics w/ multiple breakdowns.
        */
@@ -58,29 +58,14 @@ export const useLineChart = ({
       const disaggregationDisplayName = Object.keys(disaggregations)[0];
       const disaggregationWithDimensionValues = Object.values(
         disaggregations[disaggregationDisplayName]
-      ).filter((disaggregation) => {
-        /** Filter out breakdowns that have no dimension values or have all dimensions disabled */
-        const {
-          dataVizMissingData,
-          end_date: endDate,
-          frequency,
-          start_date: startDate,
-          ...dimensions
-        } = disaggregation;
-        const hasNoValues =
-          Object.values(dimensions).filter(
-            (dimVal) => typeof dimVal === "number"
-          ).length === 0;
-        const hasAllDisabledDimensions =
-          disaggregationsByDisplayName[
-            disaggregationDisplayName
-          ]?.[0].dimensions.find((dim) => dim.enabled) === undefined;
+      );
+      const hasAllDisabledDimensions =
+        disaggregationsByDisplayName[
+          disaggregationDisplayName
+        ]?.[0].dimensions.find((dim) => dim.enabled) === undefined;
 
-        if (hasNoValues || hasAllDisabledDimensions) return false;
-        return true;
-      });
-
-      return disaggregations[disaggregationDisplayName]
+      return !hasAllDisabledDimensions &&
+        disaggregations[disaggregationDisplayName]
         ? disaggregationWithDimensionValues
         : [];
     }
