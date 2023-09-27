@@ -32,6 +32,7 @@ import { ReactComponent as UploadedFilesIcon } from "../assets/folder-icon.svg";
 import { ReactComponent as LogoutIcon } from "../assets/logout-icon.svg";
 import { ReactComponent as AgencySettingsIcon } from "../assets/pillar-icon.svg";
 import { ReactComponent as YourAccountIcon } from "../assets/profile-icon.svg";
+import { ReactComponent as HelpCenterIcon } from "../assets/help-center-icon.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { useHeaderBadge } from "../Header/hooks";
 import * as Styled from "./Menu.styles";
@@ -129,7 +130,7 @@ const Menu: React.FC = () => {
     },
     {
       label: "Help Center",
-      icon: <YourAccountIcon />,
+      icon: <HelpCenterIcon />,
       onClick: () => window.open("/help", "_blank"),
     },
     {
