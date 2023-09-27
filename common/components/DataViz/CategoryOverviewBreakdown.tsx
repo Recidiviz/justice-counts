@@ -61,17 +61,20 @@ export const CategoryOverviewBreakdown: FunctionComponent<
         const isDisabled = data[dimension]?.enabled !== true;
 
         return (
-          <LegendItem key={dimension} hidden={isDisabled}>
-            <LegendBullet color={data[dimension]?.fill}>▪</LegendBullet>
-            <LegendName color={palette.solid.black}>{dimension}</LegendName>
-            <LegendValue>
-              {renderPercentText(
-                data[dimension]?.value,
-                totalDimensionValues,
-                isFundingOrExpenses
-              )}
-            </LegendValue>
-          </LegendItem>
+          <>
+            {/* Dimensions are only hidden from UI when they are disabled, otherwise they will visible and display their value or "Not Recorded" when there is no value */}
+            <LegendItem key={dimension} hidden={isDisabled}>
+              <LegendBullet color={data[dimension]?.fill}>▪</LegendBullet>
+              <LegendName color={palette.solid.black}>{dimension}</LegendName>
+              <LegendValue>
+                {renderPercentText(
+                  data[dimension]?.value,
+                  totalDimensionValues,
+                  isFundingOrExpenses
+                )}
+              </LegendValue>
+            </LegendItem>
+          </>
         );
       })}
     </Container>
