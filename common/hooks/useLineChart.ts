@@ -38,6 +38,7 @@ export type LineChartHookProps = Partial<UserAgency> & {
 };
 
 /** Returns methods used to convert data into a structure line charts can consume */
+/** TODO(#978) Refactor to handle multiple breakdowns */
 export const useLineChart = ({
   datapointsByMetric,
   dimensionNamesByMetricAndDisaggregation,

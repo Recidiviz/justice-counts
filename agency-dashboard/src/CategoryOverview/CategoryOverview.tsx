@@ -167,6 +167,7 @@ export const CategoryOverview = observer(() => {
                     </Styled.MetricDescriptionBarChartWrapper>
 
                     {/* Breakdown/Disaggregation Line Chart */}
+                    {/* TODO(#978) Refactor to handle multiple breakdowns */}
                     {getLineChartDataFromMetric(metric).length > 0 && (
                       <CategoryOverviewLineChart
                         data={getLineChartDataFromMetric(metric)}

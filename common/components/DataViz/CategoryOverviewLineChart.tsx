@@ -98,6 +98,7 @@ const CustomizedAxisTick = ({
   ) : null;
 };
 
+/** TODO(#978) Refactor to handle multiple breakdowns */
 export function CategoryOverviewLineChart({
   data,
   isFundingOrExpenses,
