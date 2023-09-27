@@ -169,6 +169,12 @@ export const BulkUploadGuide = () => (
         [Video?
         https://www.loom.com/share/292521d0292b42d4a3710b78cd73f6af?sid=adc431ab-166a-4f13-ba1a-ad4a333c638d]
       </Styled.SectionParagraph>
+      <Styled.VideoWrapper>
+        <Styled.VideoIFrame
+          src="https://www.loom.com/embed/292521d0292b42d4a3710b78cd73f6af?sid=21f2da86-32e1-40c4-92be-fdfef77454bc"
+          title="Loom Video"
+        />
+      </Styled.VideoWrapper>
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>
@@ -185,6 +191,12 @@ export const BulkUploadGuide = () => (
       <Styled.SectionParagraph>
         [Video? https://www.loom.com/share/10346f8af112475d9816d253a9b2bad2]
       </Styled.SectionParagraph>
+      <Styled.VideoWrapper>
+        <Styled.VideoIFrame
+          src="https://www.loom.com/embed/10346f8af112475d9816d253a9b2bad2?sid=fcad2e79-0600-4638-b241-913daeb57163"
+          title="Loom Video"
+        />
+      </Styled.VideoWrapper>
     </Styled.SectionWrapper>
   </>
 );

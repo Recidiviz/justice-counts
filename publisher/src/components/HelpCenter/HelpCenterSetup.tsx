@@ -52,12 +52,14 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         caption: "See and edit information about your agency.",
         path: "agency-settings",
         element: <AccountSetupGuide />,
-        relevantGuides: ["agency-settings", "explore-data"],
+        relevantGuides: ["set-up-metrics"],
       },
       "set-up-metrics": {
         category: GuideCategories.AccountSetup,
         title: "Set Up Metrics",
-        caption: "Manually enter your data through text fields.",
+        caption:
+          "Specify the availability, frequency and definitions of metrics and relevant breakdown categories.",
+
         path: "set-up-metrics",
         element: <SetUpMetricsGuide />,
         relevantGuides: ["agency-settings"],
@@ -65,11 +67,10 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
       "manual-entry": {
         category: GuideCategories.AddData,
         title: "Manual Entry",
-        caption:
-          "Specify the availability, frequency and definitions of metrics and relevant breakdown categories.",
+        caption: "Manually enter your data through text fields.",
         path: "manual-entry",
         element: <ManualEntryGuide />,
-        relevantGuides: ["agency-settings"],
+        relevantGuides: ["bulk-upload", "automated-bulk-upload"],
       },
       "bulk-upload": {
         category: GuideCategories.AddData,
@@ -78,7 +79,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
           "Upload and publish data for multiple records at once using excel or csv files to expedite data sharing.",
         path: "bulk-upload",
         element: <BulkUploadGuide />,
-        relevantGuides: ["agency-settings"],
+        relevantGuides: ["manual-entry"],
       },
       "automated-bulk-upload": {
         category: GuideCategories.AddData,
@@ -86,7 +87,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         caption: "Upload Workbooks without logging-in.",
         path: "automated-bulk-upload",
         element: <AutomatedBulkUploadGuide />,
-        relevantGuides: ["agency-settings"],
+        relevantGuides: ["manual-entry"],
       },
     },
   },

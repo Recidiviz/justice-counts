@@ -29,6 +29,18 @@ export const HelpCenterContainer = styled.div`
   align-items: center;
   padding: 40px;
   text-align: left;
+
+  a,
+  a:visited {
+    color: ${palette.solid.blue};
+    text-decoration: none;
+    transition: 0.2s ease;
+  }
+
+  a:hover {
+    color: ${palette.solid.darkblue};
+    cursor: pointer;
+  }
 `;
 
 export const ContentWrapper = styled.div`
@@ -129,7 +141,7 @@ export const Title = styled.h1`
   margin-bottom: 8px;
 `;
 
-export const Caption = styled.h2`
+export const Caption = styled.p`
   font-size: ${rem("14px")};
   font-weight: 400;
   line-height: 22px;
@@ -137,13 +149,46 @@ export const Caption = styled.h2`
   margin-bottom: 32px;
 `;
 
-export const SectionTitle = styled.h3`
+export const SectionTitle = styled.h2`
   ${typography.sizeCSS.normal}
   margin-bottom: 8px;
 `;
 
 export const SectionWrapper = styled.div`
   margin-bottom: 56px;
+
+  li {
+    margin-left: 16px;
+  }
+  pre {
+    background: #f5f2f0;
+    padding: 16px;
+    overflow: auto;
+
+    code {
+      color: black;
+      text-shadow: 0 1px white;
+      font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+      font-size: 0.8em;
+      text-align: left;
+      white-space: pre-wrap;
+      word-spacing: normal;
+      word-break: normal;
+      word-wrap: normal;
+      line-height: 1.5;
+      tab-size: 4;
+      hyphens: none;
+
+      span {
+        display: block;
+      }
+    }
+  }
+
+  code:not(pre > code) {
+    background: #f5f2f0;
+    padding: 3px 6px;
+  }
 `;
 
 export const SectionParagraph = styled.p`
@@ -153,10 +198,6 @@ export const SectionParagraph = styled.p`
 
   &:not(:last-child) {
     margin-bottom: 24px;
-  }
-
-  li {
-    margin-left: 16px;
   }
 `;
 
@@ -226,4 +267,18 @@ export const InterstitialButton = styled.div`
     cursor: pointer;
     background: ${palette.highlight.grey1};
   }
+`;
+
+export const VideoWrapper = styled.div`
+  height: 0;
+  position: relative;
+  padding-bottom: 56.25%;
+`;
+
+export const VideoIFrame = styled.iframe`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
 `;
