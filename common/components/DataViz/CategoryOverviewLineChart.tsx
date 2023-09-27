@@ -131,7 +131,7 @@ export function CategoryOverviewLineChart({
 
     return dimensions.map((dimension) => (
       <Line
-        hide={!dimensionsByLabel[dimension]?.[0]?.enabled}
+        hide={!dimensionsByLabel[dimension]?.[0]?.enabled} // Don't show lines for disabled dimensions
         key={dimension}
         dataKey={dimension}
         stroke={dimensionsToColorMap[dimension]}
