@@ -30,6 +30,7 @@ import {
 import { LineChartBreakdownProps } from "./types";
 import { splitUtcString } from "./utils";
 
+/** TODO(#978) Refactor to handle multiple breakdowns */
 export const CategoryOverviewBreakdown: FunctionComponent<
   LineChartBreakdownProps
 > = ({ data, isFundingOrExpenses, dimensions, hoveredDate }) => {

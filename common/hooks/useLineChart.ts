@@ -23,6 +23,8 @@ import {
   UserAgency,
 } from "@justice-counts/common/types";
 
+import { groupBy } from "../utils";
+
 export type LineChartProps = {
   getLineChartDimensionsFromMetric: (metric: Metric) => string[];
   getLineChartDataFromMetric: (metric: Metric) => Datapoint[];
@@ -36,21 +38,36 @@ export type LineChartHookProps = Partial<UserAgency> & {
 };
 
 /** Returns methods used to convert data into a structure line charts can consume */
+/** TODO(#978) Refactor to handle multiple breakdowns */
 export const useLineChart = ({
   datapointsByMetric,
   dimensionNamesByMetricAndDisaggregation,
 }: LineChartHookProps): LineChartProps => {
   const getLineChartDataFromMetric = (metric: Metric) => {
+    const disaggregationsByDisplayName = groupBy(
+      metric.disaggregations,
+      (disaggregation) => disaggregation.display_name
+    );
+
     if (datapointsByMetric) {
       /**
-       * Gets the first set of disaggregated datapoints.
+       * Gets the first set of disaggregated datapoints (if atleast one dimension is enabled).
        * NOTE: This assumes there's just one breakdown per metric. We will need to adjust this
        *       based on how we want to handle displaying metrics w/ multiple breakdowns.
        */
       const { disaggregations } = datapointsByMetric[metric.key];
-      const disaggregationKey = Object.keys(disaggregations)[0];
-      return disaggregations[disaggregationKey]
-        ? Object.values(disaggregations[disaggregationKey])
+      const disaggregationDisplayName = Object.keys(disaggregations)[0];
+      const disaggregationWithDimensionValues = Object.values(
+        disaggregations[disaggregationDisplayName]
+      );
+      const hasAllDisabledDimensions =
+        disaggregationsByDisplayName[
+          disaggregationDisplayName
+        ]?.[0].dimensions.find((dim) => dim.enabled) === undefined;
+
+      return !hasAllDisabledDimensions &&
+        disaggregations[disaggregationDisplayName]
+        ? disaggregationWithDimensionValues
         : [];
     }
     return [];

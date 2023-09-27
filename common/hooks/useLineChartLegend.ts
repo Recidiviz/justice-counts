@@ -19,6 +19,7 @@ import { LegendData } from "../components/DataViz/types";
 import { Datapoint, Metric } from "../types";
 import { groupBy } from "../utils";
 
+/** TODO(#978) Refactor to handle multiple breakdowns */
 export const useLineChartLegend = (
   datapoints: Datapoint[],
   dimensions: string[],
