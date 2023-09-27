@@ -42,11 +42,13 @@ export const CategoryOverviewBreakdown: FunctionComponent<
     }
     return acc;
   }, 0);
-  /** Dimensions sorted in descending order based on value */
-  const sortedDimensions = dimensions.sort(
-    (dimA: string, dimB: string) =>
-      Number(data[dimB]?.value) - Number(data[dimA]?.value)
-  );
+  /** Dimensions sorted in descending order based on value, and enabled status (disabled dimensions go to bottom of list) */
+  const sortedDimensions = dimensions
+    .sort(
+      (dimA: string, dimB: string) =>
+        Number(data[dimB]?.value) - Number(data[dimA]?.value)
+    )
+    .sort((_: string, dimB: string) => (data[dimB]?.enabled ? 1 : -1));
 
   return (
     <Container>
@@ -55,19 +57,26 @@ export const CategoryOverviewBreakdown: FunctionComponent<
           (hoveredDate ? displayDate : `Recent (${displayDate})`)}
       </LegendTitle>
 
-      {sortedDimensions.map((dimension) => (
-        <LegendItem key={dimension}>
-          <LegendBullet color={data[dimension]?.fill}>▪</LegendBullet>
-          <LegendName color={palette.solid.black}>{dimension}</LegendName>
-          <LegendValue>
-            {renderPercentText(
-              data[dimension]?.value,
-              totalDimensionValues,
-              isFundingOrExpenses
-            )}
-          </LegendValue>
-        </LegendItem>
-      ))}
+      {sortedDimensions.map((dimension) => {
+        const isDisabled = data[dimension]?.enabled !== true;
+
+        return (
+          <>
+            {/* Dimensions are only hidden from UI when they are disabled, otherwise they will visible and display their value or "Not Recorded" when there is no value */}
+            <LegendItem key={dimension} hidden={isDisabled}>
+              <LegendBullet color={data[dimension]?.fill}>▪</LegendBullet>
+              <LegendName color={palette.solid.black}>{dimension}</LegendName>
+              <LegendValue>
+                {renderPercentText(
+                  data[dimension]?.value,
+                  totalDimensionValues,
+                  isFundingOrExpenses
+                )}
+              </LegendValue>
+            </LegendItem>
+          </>
+        );
+      })}
     </Container>
   );
 };

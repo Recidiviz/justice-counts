@@ -177,7 +177,7 @@ export const CategoryOverview = observer(() => {
                         dimensions={getLineChartDimensionsFromMetric(metric)}
                         hoveredDate={hoveredDate[metric.key]}
                         setHoveredDate={setHoveredDate}
-                        metricKey={metric.key}
+                        metric={metric}
                       />
                     )}
                   </Styled.MetricDataVizContainer>
