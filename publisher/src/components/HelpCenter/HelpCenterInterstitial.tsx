@@ -25,14 +25,26 @@ export const HelpCenterInterstitial = () => {
   const navigate = useNavigate();
   return (
     <Styled.InterstitialContainer>
-      {Object.values(helpCenterGuideStructure).map((appGuide) => (
-        <Styled.InterstitialButton
-          key={appGuide.path}
-          onClick={() => navigate(appGuide.path)}
-        >
-          {appGuide.title}
-        </Styled.InterstitialButton>
-      ))}
+      <Styled.HomeTitle>Justice Counts Help Center</Styled.HomeTitle>
+      <Styled.SectionParagraph>
+        How can we assist you today?
+      </Styled.SectionParagraph>
+
+      <Styled.InterstitialButtonContainerWrapper>
+        {Object.values(helpCenterGuideStructure).map((appGuide) => (
+          <Styled.InterstitialButtonContainer
+            key={appGuide.path}
+            hasPath={Boolean(appGuide.path)}
+            onClick={() => navigate(appGuide.path)}
+          >
+            {appGuide.thumbnail}
+            <Styled.TitleCaptionWrapper>
+              <Styled.SectionTitle>{appGuide.title}</Styled.SectionTitle>
+              <Styled.Caption>{appGuide.caption}</Styled.Caption>
+            </Styled.TitleCaptionWrapper>
+          </Styled.InterstitialButtonContainer>
+        ))}
+      </Styled.InterstitialButtonContainerWrapper>
     </Styled.InterstitialContainer>
   );
 };

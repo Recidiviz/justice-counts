@@ -29,6 +29,7 @@ import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
 import { ReactComponent as TeamManagementIcon } from "../assets/data-line-icon.svg";
 import { ReactComponent as UploadedFilesIcon } from "../assets/folder-icon.svg";
+import { ReactComponent as HelpCenterIcon } from "../assets/help-center-icon.svg";
 import { ReactComponent as LogoutIcon } from "../assets/logout-icon.svg";
 import { ReactComponent as AgencySettingsIcon } from "../assets/pillar-icon.svg";
 import { ReactComponent as YourAccountIcon } from "../assets/profile-icon.svg";
@@ -126,6 +127,11 @@ const Menu: React.FC = () => {
       label: "Uploaded Files",
       icon: <UploadedFilesIcon />,
       path: "./settings/uploaded-files",
+    },
+    {
+      label: "Help Center",
+      icon: <HelpCenterIcon />,
+      onClick: () => window.open("/help", "_blank"),
     },
     {
       label: "Logout",

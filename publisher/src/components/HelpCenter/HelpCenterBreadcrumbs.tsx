@@ -17,8 +17,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { helpCenterGuideStructure, PathToDisplayName } from ".";
 import * as Styled from "./HelpCenter.styles";
+import { helpCenterGuideStructure } from "./HelpCenterSetup";
+import { PathToDisplayName } from "./types";
 
 const pathToDisplayName = Object.values(helpCenterGuideStructure).reduce(
   (acc, parentGuide) => {
@@ -34,6 +35,14 @@ const pathToDisplayName = Object.values(helpCenterGuideStructure).reduce(
 export const Breadcrumbs: React.FC<{ pathname: string }> = ({ pathname }) => {
   const navigate = useNavigate();
   const pathnames = pathname.split("/").filter((name) => name);
+  /**
+   * NOTE: for app guides (index 1 of the pathnames list) that only have a single guide (e.g. dashboard),
+   *       the hover and onClick effects are disabled on the breadcrumbs and because we are linking directly
+   *       from Home -> Guide as there is no need for a directory for apps with a single guide.
+   */
+  const hasOneGuideOnly =
+    helpCenterGuideStructure[pathnames[1]] &&
+    Object.values(helpCenterGuideStructure[pathnames[1]].guides).length === 1;
 
   return (
     <Styled.Breadcrumbs>
@@ -45,7 +54,11 @@ export const Breadcrumbs: React.FC<{ pathname: string }> = ({ pathname }) => {
           <Styled.Breadcrumb
             key={path}
             highlight={isCurrentPath}
-            onClick={() => navigate(breadcrumbPath)}
+            disabled={idx === 1 && hasOneGuideOnly}
+            onClick={() => {
+              if (idx === 1 && hasOneGuideOnly) return;
+              navigate(breadcrumbPath);
+            }}
           >
             {pathToDisplayName[path]}
           </Styled.Breadcrumb>

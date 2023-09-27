@@ -24,6 +24,7 @@ export enum GuideCategories {
   AccountSetup = "Account Setup",
   AddData = "Add Data",
   InteractWithTheData = "Interact with the Data",
+  AdvancedConcepts = "Advanced Concepts",
   Dashboards = "Dashboards",
 }
 
@@ -33,19 +34,21 @@ export type GuideCategory = `${GuideCategories}`;
 
 export type GuideStructureProps = {
   title: string;
+  caption: string;
   path: string;
   element: React.ReactNode;
 };
 
 export type GuideStructure = GuideStructureProps & {
   category: GuideCategory;
-  caption: string;
+  icon: React.ReactNode;
   relevantGuides: string[];
 };
 
 export type HelpCenterGuideStructure = {
   [appKey: string]: GuideStructureProps & {
     guides: { [guideKey: string]: GuideStructure };
+    thumbnail?: React.ReactNode;
   };
 };
 

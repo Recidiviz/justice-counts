@@ -30,6 +30,8 @@ export const palette = {
     lightgrey: `rgb(217, 219, 224)`,
     lightgrey2: `rgba(248, 248, 248, 1)`,
     lightgrey3: `rgba(220, 220, 220, 1)`,
+    lightgrey4: `rgba(236, 236, 236, 1)`,
+    lightgrey5: `rgba(235, 235, 235, 1)`,
     white: `rgba(255,255,255, 1)`,
     offwhite: `rgba(239, 244, 245, 1)`,
     offwhitenoir: `rgba(239, 244, 245, 1)`,

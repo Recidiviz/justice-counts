@@ -18,13 +18,10 @@
 import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
-import {
-  AppGuideKey,
-  Breadcrumbs,
-  GuidesByPathnameWithKey,
-  helpCenterGuideStructure,
-} from ".";
 import * as Styled from "./HelpCenter.styles";
+import { Breadcrumbs } from "./HelpCenterBreadcrumbs";
+import { helpCenterGuideStructure } from "./HelpCenterSetup";
+import { AppGuideKey, GuidesByPathnameWithKey } from "./types";
 
 const RelevantGuides: React.FC<{ appKey: AppGuideKey; guideKey: string }> = ({
   appKey,
@@ -56,6 +53,7 @@ const RelevantGuides: React.FC<{ appKey: AppGuideKey; guideKey: string }> = ({
               key={key}
               onClick={() => navigate(pathToGuide, { relative: "path" })}
             >
+              {guide.icon}
               <Styled.RelevantPageBoxTitle>
                 {guide.title}
               </Styled.RelevantPageBoxTitle>
@@ -72,11 +70,8 @@ const RelevantGuides: React.FC<{ appKey: AppGuideKey; guideKey: string }> = ({
 
 export const GuideLayoutWithBreadcrumbs = () => {
   const location = useLocation();
+  /** Pathnames structure: [<Home>, <App (`publisher` or `dashboard`)>, <Guide>]  */
   const pathnames = location.pathname.split("/").filter((name) => name);
-  /**
-   * Assumes that the pathnames will be: [<home path>, <app (publisher or dashboard)>, <specific guide>]
-   * and that the path in index 1 will always be the name of the app (either `publisher` or `dashboard`)
-   */
   const currentAppGuideKey = pathnames[1] as AppGuideKey;
   const currentPathname = pathnames[pathnames.length - 1];
   const guidesByPathname = Object.entries(
@@ -85,15 +80,13 @@ export const GuideLayoutWithBreadcrumbs = () => {
     acc[val.path] = { key, ...val };
     return acc;
   }, {} as GuidesByPathnameWithKey);
-  const isGuideOpen = !Object.keys(helpCenterGuideStructure).includes(
-    currentPathname
-  );
+  const isGuideOpen = pathnames.length === 3;
   const currentGuide = isGuideOpen
     ? guidesByPathname[currentPathname]
     : undefined;
 
   return (
-    <Styled.ContentWrapper>
+    <Styled.ContentWrapper fixedGuideWidth={Boolean(currentGuide)}>
       <Breadcrumbs pathname={location.pathname} />
 
       {!currentGuide ? (

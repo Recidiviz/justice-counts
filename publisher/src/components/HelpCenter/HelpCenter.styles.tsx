@@ -18,12 +18,14 @@
 import {
   HEADER_BAR_HEIGHT,
   palette,
+  TABLET_WIDTH,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import { rem } from "@justice-counts/common/utils";
 import styled from "styled-components/macro";
 
 export const HelpCenterContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,8 +45,8 @@ export const HelpCenterContainer = styled.div`
   }
 `;
 
-export const ContentWrapper = styled.div`
-  max-width: 555px;
+export const ContentWrapper = styled.div<{ fixedGuideWidth?: boolean }>`
+  ${({ fixedGuideWidth }) => fixedGuideWidth && `max-width: 555px;`}
   display: flex;
   flex-direction: column;
 `;
@@ -52,10 +54,26 @@ export const ContentWrapper = styled.div`
 export const NewHeader = styled.div`
   width: 100%;
   height: ${HEADER_BAR_HEIGHT}px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   position: absolute;
   top: 0;
   left: 0;
   border-bottom: 1px solid ${palette.solid.offwhitenoir};
+  padding-right: 50px;
+
+  a,
+  a:visited {
+    ${typography.sizeCSS.normal}
+    font-weight: 400;
+    color: ${palette.solid.darkgrey};
+    text-decoration: none;
+  }
+
+  a:hover {
+    cursor: pointer;
+  }
 `;
 
 export const LogoContainer = styled.div`
@@ -89,21 +107,34 @@ export const Breadcrumbs = styled.div`
   margin-bottom: 48px;
 `;
 
-export const Breadcrumb = styled.div<{ highlight?: boolean }>`
+export const Breadcrumb = styled.div<{
+  highlight: boolean;
+  disabled: boolean;
+}>`
   font-size: ${rem("14px")};
   font-weight: 400;
   line-height: 20px;
-
+  border-bottom: 1px solid transparent;
+  position: relative;
   color: ${({ highlight }) =>
     highlight ? palette.solid.blue : palette.highlight.grey8};
+
+  &:not(:last-child) {
+    margin-right: 12px;
+  }
 
   &:not(:last-child)::after {
     content: "/";
     padding-left: 8px;
+    position: absolute;
+    border-bottom: none;
   }
 
   &:hover {
-    cursor: pointer;
+    ${({ disabled }) => !disabled && `cursor: pointer;`};
+    border-bottom: 1px solid
+      ${({ highlight, disabled }) =>
+        highlight || disabled ? `transparent` : palette.highlight.grey8};
   }
 `;
 
@@ -115,7 +146,8 @@ export const RelevantPagesWrapper = styled.div`
 
 export const RelevantPageBox = styled.div`
   width: 269px;
-  height: 184px;
+  height: 100%;
+  min-height: 184px;
   padding: 32px 24px;
   border: 1px solid ${palette.highlight.grey3};
   border-radius: 4px;
@@ -128,7 +160,7 @@ export const RelevantPageBox = styled.div`
 
 export const RelevantPageBoxTitle = styled.div`
   ${typography.sizeCSS.normal}
-  margin-bottom: 8px;
+  margin: 8px 0;
 `;
 
 export const RelevantPageBoxDescription = styled.div`
@@ -156,6 +188,8 @@ export const SectionTitle = styled.h2`
 
 export const SectionWrapper = styled.div`
   margin-bottom: 56px;
+  display: flex;
+  flex-direction: column;
 
   li {
     margin-left: 16px;
@@ -191,7 +225,7 @@ export const SectionWrapper = styled.div`
   }
 `;
 
-export const SectionParagraph = styled.p`
+export const SectionParagraph = styled.div`
   ${typography.sizeCSS.normal}
   line-height: 24px;
   font-weight: 400;
@@ -210,8 +244,12 @@ export const HelpCenterHome = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 75px;
+  align-items: flex-start;
+  gap: 27px;
+
+  @media only screen and (max-width: ${TABLET_WIDTH}px) {
+    align-items: center;
+  }
 `;
 
 export const HomeTitle = styled.div`
@@ -219,30 +257,64 @@ export const HomeTitle = styled.div`
 `;
 
 export const GuideLinks = styled.div`
-  width: 100vw;
   height: 100%;
+  max-width: 1122px;
   display: flex;
-  justify-content: space-evenly;
+  flex-wrap: wrap;
+  gap: 40px;
+
+  @media only screen and (max-width: ${TABLET_WIDTH}px) {
+    justify-content: center;
+  }
 `;
 
 export const GuideLinksWrapper = styled.div`
-  width: fit-content;
+  ${typography.sizeCSS.normal}
+  width: 318px;
+  min-height: 160px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
+  position: relative;
+  background: ${palette.solid.white};
+  border-top: 1px solid ${palette.solid.lightgrey4};
+  border-radius: 0 0 4px 4px;
+  padding: 24px;
 `;
 
-export const GuideLinksTitle = styled.div`
-  ${typography.sizeCSS.medium}
+export const GuideLinksTitle = styled.div``;
+
+export const TitleLinkWrapper = styled.div`
+  height: 340px;
+  display: flex;
+  align-items: flex-end;
+  background: ${palette.solid.lightgrey2};
+  border: 1px solid ${palette.solid.lightgrey4};
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.2s ease-in-out;
+
+  img {
+    width: 250px;
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0 auto;
+    transition: 0.2s ease-in-out;
+  }
 `;
 
 export const GuideLink = styled.div`
-  ${typography.sizeCSS.normal}
-  color: ${palette.solid.blue};
+  width: fit-content;
+  font-weight: 400;
+  color: ${palette.highlight.grey8};
+  border-bottom: 1px solid ${palette.highlight.grey3};
 
   &:hover {
     cursor: pointer;
-    color: ${palette.solid.darkblue};
+    border-bottom: 1px solid ${palette.highlight.grey8};
   }
 `;
 
@@ -250,24 +322,70 @@ export const InterstitialContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  gap: 50px;
+  gap: 8px;
+  margin-top: 24px;
 `;
 
-export const InterstitialButton = styled.div`
-  min-width: 424px;
-  min-height: 264px;
+export const InterstitialButtonContainerWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 0.5px solid ${palette.highlight.grey4};
+  gap: 50px;
+  margin-top: 32px;
 
-  &:hover {
-    cursor: pointer;
-    background: ${palette.highlight.grey1};
+  @media only screen and (max-width: ${TABLET_WIDTH}px) {
+    flex-direction: column;
   }
 `;
+
+export const InterstitialButtonContainer = styled.div<{ hasPath: boolean }>`
+  width: 437px;
+  height: 367px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  background: ${palette.solid.lightgrey2};
+  border: 1px solid ${palette.solid.lightgrey4};
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.2s ease-in-out;
+
+  img {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    transition: 0.2s ease-in-out;
+  }
+
+  &:hover {
+    ${({ hasPath }) => hasPath && `cursor: pointer;`}
+    background: ${palette.solid.lightgrey5};
+
+    img {
+      box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.05);
+      top: 24px;
+      left: 24px;
+    }
+  }
+`;
+
+export const TitleCaptionWrapper = styled.div`
+  width: 100%;
+  max-height: 120px;
+  position: relative;
+  background: ${palette.solid.white};
+  border-top: 1px solid ${palette.solid.lightgrey4};
+  border-radius: 0 0 4px 4px;
+  padding: 24px;
+`;
+
+export const ButtonTitle = styled.div``;
+
+export const ButtonCaption = styled.div``;
 
 export const VideoWrapper = styled.div`
   height: 0;
@@ -281,4 +399,22 @@ export const VideoIFrame = styled.iframe`
   position: absolute;
   top: 0;
   left: 0;
+`;
+
+export const Thumbnail = styled.img`
+  width: 461px;
+`;
+
+export const Image = styled.img<{ align?: "left" | "center" | "right" }>`
+  ${({ align }) => {
+    if (align === "center") {
+      return `margin: 0 auto;`;
+    }
+    if (align === "right") {
+      return `margin-left: auto;`;
+    }
+    if (align === "left") {
+      return `margin-right: auto;`;
+    }
+  }};
 `;

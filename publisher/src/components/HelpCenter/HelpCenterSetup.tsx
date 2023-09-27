@@ -18,12 +18,16 @@
 import React from "react";
 import { Route } from "react-router-dom";
 
-import {
-  AppGuideKeys,
-  GuideCategories,
-  HelpCenterDirectory,
-  HelpCenterGuideStructure,
-} from ".";
+import { ReactComponent as AgencySettingsIcon } from "../assets/hc-agency-settings-icon.svg";
+import { ReactComponent as AutomatedBulkUploadIcon } from "../assets/hc-automated-bulk-upload-icon.svg";
+import { ReactComponent as BulkUploadIcon } from "../assets/hc-bulk-upload-icon.svg";
+import dashboardThumbnail from "../assets/hc-dashboard-help-guide-thumbnail.png";
+import { ReactComponent as ExploreDataIcon } from "../assets/hc-explore-your-data-icon.svg";
+import { ReactComponent as ManualEntryIcon } from "../assets/hc-manual-entry-icon.svg";
+import publisherThumbnail from "../assets/hc-publisher-help-guide-thumbnail.png";
+import { ReactComponent as SetUpMetricsIcon } from "../assets/hc-set-up-metrics-icon.svg";
+// import { ReactComponent as SuperagenciesIcon } from "../assets/hc-superagencies-icon.svg";
+// import { ReactComponent as SupervisionDisaggregationsIcon } from "../assets/hc-supervision-disaggregations-icon.svg";
 import { AccountSetupGuide } from "./Guides/AccountSetupGuide";
 import { AutomatedBulkUploadGuide } from "./Guides/AutomaticBulkUploadGuide";
 import { BulkUploadGuide } from "./Guides/BulkUploadGuide";
@@ -31,12 +35,22 @@ import { DashboardsGuide } from "./Guides/DashboardsGuide";
 import { ExploreDataGuide } from "./Guides/ExploreDataGuide";
 import { ManualEntryGuide } from "./Guides/ManualEntryGuide";
 import { SetUpMetricsGuide } from "./Guides/SetUpMetricsGuide";
+import { Thumbnail } from "./HelpCenter.styles";
+import { HelpCenterDirectory } from "./HelpCenterDirectory";
+import {
+  AppGuideKeys,
+  GuideCategories,
+  HelpCenterGuideStructure,
+} from "./types";
 
 export const helpCenterGuideStructure: HelpCenterGuideStructure = {
   [AppGuideKeys.publisher]: {
     title: "Publisher",
+    caption: "Learn how to upload and publish your data through publisher",
     path: AppGuideKeys.publisher,
     element: <HelpCenterDirectory appGuide={AppGuideKeys.publisher} />,
+    thumbnail: <Thumbnail src={publisherThumbnail} alt="" width="461px" />,
+
     guides: {
       "explore-data": {
         category: GuideCategories.InteractWithTheData,
@@ -44,6 +58,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         caption: "Interact with your data to discover insights.",
         path: "explore-data",
         element: <ExploreDataGuide />,
+        icon: <ExploreDataIcon />,
         relevantGuides: ["dashboard/dashboards"],
       },
       "agency-settings": {
@@ -52,6 +67,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         caption: "See and edit information about your agency.",
         path: "agency-settings",
         element: <AccountSetupGuide />,
+        icon: <AgencySettingsIcon />,
         relevantGuides: ["set-up-metrics"],
       },
       "set-up-metrics": {
@@ -59,9 +75,9 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         title: "Set Up Metrics",
         caption:
           "Specify the availability, frequency and definitions of metrics and relevant breakdown categories.",
-
         path: "set-up-metrics",
         element: <SetUpMetricsGuide />,
+        icon: <SetUpMetricsIcon />,
         relevantGuides: ["agency-settings"],
       },
       "manual-entry": {
@@ -70,6 +86,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         caption: "Manually enter your data through text fields.",
         path: "manual-entry",
         element: <ManualEntryGuide />,
+        icon: <ManualEntryIcon />,
         relevantGuides: ["bulk-upload", "automated-bulk-upload"],
       },
       "bulk-upload": {
@@ -79,6 +96,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
           "Upload and publish data for multiple records at once using excel or csv files to expedite data sharing.",
         path: "bulk-upload",
         element: <BulkUploadGuide />,
+        icon: <BulkUploadIcon />,
         relevantGuides: ["manual-entry"],
       },
       "automated-bulk-upload": {
@@ -87,14 +105,17 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         caption: "Upload Workbooks without logging-in.",
         path: "automated-bulk-upload",
         element: <AutomatedBulkUploadGuide />,
+        icon: <AutomatedBulkUploadIcon />,
         relevantGuides: ["manual-entry"],
       },
     },
   },
   [AppGuideKeys.dashboard]: {
     title: "Dashboard",
+    caption: "Explore and visualize your agency’s data",
     path: AppGuideKeys.dashboard,
     element: <HelpCenterDirectory appGuide={AppGuideKeys.dashboard} />,
+    thumbnail: <Thumbnail src={dashboardThumbnail} alt="" width="461px" />,
     guides: {
       dashboards: {
         category: GuideCategories.Dashboards,
@@ -102,6 +123,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         caption: "Visualize agency data to see trends over time.",
         path: "dashboards",
         element: <DashboardsGuide />,
+        icon: <ExploreDataIcon />,
         relevantGuides: ["publisher/explore-data"],
       },
     },
@@ -109,8 +131,8 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
 };
 
 /** Renders Help Center Routes */
-export const helpCenterRoutes = () => {
-  return Object.values(helpCenterGuideStructure).map((parentGuide) => (
+export const helpCenterRoutes = () =>
+  Object.values(helpCenterGuideStructure).map((parentGuide) => (
     <Route
       key={parentGuide.path}
       path={parentGuide.path}
@@ -121,4 +143,3 @@ export const helpCenterRoutes = () => {
       ))}
     </Route>
   ));
-};

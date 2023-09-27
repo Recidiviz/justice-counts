@@ -17,10 +17,30 @@
 
 import { groupBy } from "@justice-counts/common/utils";
 import React from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 
-import { AppGuideKey, helpCenterGuideStructure } from ".";
+import publisherThumbnail from "../assets/hc-publisher-help-guide-thumbnail.png";
 import * as Styled from "./HelpCenter.styles";
+import { helpCenterGuideStructure } from "./HelpCenterSetup";
+import { AppGuideKey, GuideCategories } from "./types";
+
+const guideCategoryThumbnails = {
+  [GuideCategories.AccountSetup]: (
+    <Styled.Thumbnail src={publisherThumbnail} alt="" />
+  ),
+  [GuideCategories.AddData]: (
+    <Styled.Thumbnail src={publisherThumbnail} alt="" />
+  ),
+  [GuideCategories.AdvancedConcepts]: (
+    <Styled.Thumbnail src={publisherThumbnail} alt="" />
+  ),
+  [GuideCategories.InteractWithTheData]: (
+    <Styled.Thumbnail src={publisherThumbnail} alt="" />
+  ),
+  [GuideCategories.Dashboards]: (
+    <Styled.Thumbnail src={publisherThumbnail} alt="" />
+  ),
+};
 
 export const HelpCenterDirectory: React.FC<{ appGuide: AppGuideKey }> = ({
   appGuide,
@@ -34,24 +54,30 @@ export const HelpCenterDirectory: React.FC<{ appGuide: AppGuideKey }> = ({
 
   if (location.pathname !== `/help/${helpCenterGuideStructure[appGuide].path}`)
     return <Outlet />;
+  if (sortedGuides.length === 1) return <Navigate to={sortedGuides[0].path} />;
 
   return (
     <Styled.HelpCenterHome>
-      <Styled.HomeTitle>Justice Counts Help Center</Styled.HomeTitle>
+      <Styled.HomeTitle>
+        {helpCenterGuideStructure[appGuide].title}
+      </Styled.HomeTitle>
 
       <Styled.GuideLinks>
         {Object.entries(groupedGuides).map(([category, guides]) => (
-          <Styled.GuideLinksWrapper key={category}>
-            <Styled.GuideLinksTitle>{category}</Styled.GuideLinksTitle>
-            {guides.map((guide) => (
-              <Styled.GuideLink
-                key={guide.path}
-                onClick={() => navigate(guide.path)}
-              >
-                {guide.title}
-              </Styled.GuideLink>
-            ))}
-          </Styled.GuideLinksWrapper>
+          <Styled.TitleLinkWrapper key={category}>
+            {guideCategoryThumbnails[category as GuideCategories]}
+            <Styled.GuideLinksWrapper>
+              <Styled.GuideLinksTitle>{category}</Styled.GuideLinksTitle>
+              {guides.map((guide) => (
+                <Styled.GuideLink
+                  key={guide.path}
+                  onClick={() => navigate(guide.path)}
+                >
+                  {guide.title}
+                </Styled.GuideLink>
+              ))}
+            </Styled.GuideLinksWrapper>
+          </Styled.TitleLinkWrapper>
         ))}
       </Styled.GuideLinks>
     </Styled.HelpCenterHome>
