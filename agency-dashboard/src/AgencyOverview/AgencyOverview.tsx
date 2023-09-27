@@ -69,6 +69,7 @@ export const AgencyOverview = observer(() => {
     agencyDescription,
     agencyHomepageUrl,
     agencySystems,
+    agencySystemsWithData,
     getMetricsWithDataByCategoryByCurrentSystem,
     getMetricsByAvailableCategoriesWithData,
     getMiniChartDateRangeAndTransformedData,
@@ -111,15 +112,17 @@ export const AgencyOverview = observer(() => {
           <MetricsViewContainer>
             {/* System Selector Chips */}
             <SystemChipsContainer>
-              {agencySystems?.map((system) => (
-                <SystemChip
-                  key={system}
-                  onClick={() => setCurrentSystem(system)}
-                  active={system === currentSystem}
-                >
-                  {removeSnakeCase(system).toLocaleLowerCase()}
-                </SystemChip>
-              ))}
+              {agencySystemsWithData().map((system) => {
+                return (
+                  <SystemChip
+                    key={system}
+                    onClick={() => setCurrentSystem(system)}
+                    active={system === currentSystem}
+                  >
+                    {removeSnakeCase(system).toLocaleLowerCase()}
+                  </SystemChip>
+                );
+              })}
             </SystemChipsContainer>
 
             {/* Metric Categories (with data only) */}

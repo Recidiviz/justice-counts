@@ -261,6 +261,14 @@ class AgencyDataStore {
     });
   }
 
+  agencySystemsWithData(): AgencySystems[] {
+    const agencySystems = new Set() as Set<AgencySystems>;
+    this.metrics
+      ?.filter((metric) => this.metricHasDatapoints(metric.key))
+      .forEach((metric) => agencySystems.add(metric.system.key));
+    return Array.from(agencySystems);
+  }
+
   metricHasDatapoints(metricKey: string): boolean {
     return (
       this.datapointsByMetric[metricKey].aggregate.filter(
