@@ -131,8 +131,8 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
 };
 
 /** Renders Help Center Routes */
-export const helpCenterRoutes = () => {
-  return Object.values(helpCenterGuideStructure).map((parentGuide) => (
+export const helpCenterRoutes = () =>
+  Object.values(helpCenterGuideStructure).map((parentGuide) => (
     <Route
       key={parentGuide.path}
       path={parentGuide.path}
@@ -143,4 +143,3 @@ export const helpCenterRoutes = () => {
       ))}
     </Route>
   ));
-};

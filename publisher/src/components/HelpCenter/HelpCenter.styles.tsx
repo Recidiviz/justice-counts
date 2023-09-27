@@ -107,7 +107,10 @@ export const Breadcrumbs = styled.div`
   margin-bottom: 48px;
 `;
 
-export const Breadcrumb = styled.div<{ highlight?: boolean }>`
+export const Breadcrumb = styled.div<{
+  highlight: boolean;
+  disabled: boolean;
+}>`
   font-size: ${rem("14px")};
   font-weight: 400;
   line-height: 20px;
@@ -128,10 +131,10 @@ export const Breadcrumb = styled.div<{ highlight?: boolean }>`
   }
 
   &:hover {
-    cursor: pointer;
+    ${({ disabled }) => !disabled && `cursor: pointer;`};
     border-bottom: 1px solid
-      ${({ highlight }) =>
-        highlight ? `transparent` : palette.highlight.grey8};
+      ${({ highlight, disabled }) =>
+        highlight || disabled ? `transparent` : palette.highlight.grey8};
   }
 `;
 

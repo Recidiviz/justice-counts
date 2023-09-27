@@ -17,7 +17,7 @@
 
 import { groupBy } from "@justice-counts/common/utils";
 import React from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import publisherThumbnail from "../assets/hc-publisher-help-guide-thumbnail.png";
 import * as Styled from "./HelpCenter.styles";
@@ -54,6 +54,7 @@ export const HelpCenterDirectory: React.FC<{ appGuide: AppGuideKey }> = ({
 
   if (location.pathname !== `/help/${helpCenterGuideStructure[appGuide].path}`)
     return <Outlet />;
+  if (sortedGuides.length === 1) return <Navigate to={sortedGuides[0].path} />;
 
   return (
     <Styled.HelpCenterHome>

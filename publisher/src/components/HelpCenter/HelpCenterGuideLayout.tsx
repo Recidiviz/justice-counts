@@ -70,11 +70,8 @@ const RelevantGuides: React.FC<{ appKey: AppGuideKey; guideKey: string }> = ({
 
 export const GuideLayoutWithBreadcrumbs = () => {
   const location = useLocation();
+  /** Pathnames structure: [<Home>, <App (`publisher` or `dashboard`)>, <Guide>]  */
   const pathnames = location.pathname.split("/").filter((name) => name);
-  /**
-   * Assumes that the pathnames will be: [<home path>, <app (publisher or dashboard)>, <specific guide>]
-   * and that the path in index 1 will always be the name of the app (either `publisher` or `dashboard`)
-   */
   const currentAppGuideKey = pathnames[1] as AppGuideKey;
   const currentPathname = pathnames[pathnames.length - 1];
   const guidesByPathname = Object.entries(
@@ -83,9 +80,7 @@ export const GuideLayoutWithBreadcrumbs = () => {
     acc[val.path] = { key, ...val };
     return acc;
   }, {} as GuidesByPathnameWithKey);
-  const isGuideOpen = !Object.keys(helpCenterGuideStructure).includes(
-    currentPathname
-  );
+  const isGuideOpen = pathnames.length === 3;
   const currentGuide = isGuideOpen
     ? guidesByPathname[currentPathname]
     : undefined;

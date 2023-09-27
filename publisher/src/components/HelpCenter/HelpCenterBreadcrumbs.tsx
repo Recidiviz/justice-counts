@@ -35,6 +35,9 @@ const pathToDisplayName = Object.values(helpCenterGuideStructure).reduce(
 export const Breadcrumbs: React.FC<{ pathname: string }> = ({ pathname }) => {
   const navigate = useNavigate();
   const pathnames = pathname.split("/").filter((name) => name);
+  const hasOneGuideOnly =
+    helpCenterGuideStructure[pathnames[1]] &&
+    Object.values(helpCenterGuideStructure[pathnames[1]].guides).length === 1;
 
   return (
     <Styled.Breadcrumbs>
@@ -46,7 +49,11 @@ export const Breadcrumbs: React.FC<{ pathname: string }> = ({ pathname }) => {
           <Styled.Breadcrumb
             key={path}
             highlight={isCurrentPath}
-            onClick={() => navigate(breadcrumbPath)}
+            disabled={idx === 1 && hasOneGuideOnly}
+            onClick={() => {
+              if (idx === 1 && hasOneGuideOnly) return;
+              navigate(breadcrumbPath);
+            }}
           >
             {pathToDisplayName[path]}
           </Styled.Breadcrumb>
