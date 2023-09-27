@@ -32,6 +32,7 @@ export interface CustomYAxisTickProps extends TickProps {
   percentageView: boolean;
   styles: React.CSSProperties;
   metric?: string;
+  rightAligned?: boolean;
 }
 
 export type ResponsiveBarChartProps = {

@@ -22,7 +22,7 @@ import { CustomYAxisTickProps } from "./types";
 import { abbreviateNumber } from "./utils";
 
 export const CustomYAxisTick = (props: CustomYAxisTickProps) => {
-  const { y, payload, percentageView, styles, metric } = props;
+  const { y, payload, percentageView, styles, metric, rightAligned } = props;
   const str = percentageView
     ? `${payload.value * 100}%`
     : abbreviateNumber(payload.value);
@@ -31,9 +31,9 @@ export const CustomYAxisTick = (props: CustomYAxisTickProps) => {
   return (
     <g transform={`translate(${0},${y})`}>
       <text
-        x={0}
+        x={rightAligned ? 55 : 0}
         y={0}
-        textAnchor="start"
+        textAnchor={rightAligned ? "end" : "start"}
         fill={palette.solid.darkgrey}
         style={styles}
       >
