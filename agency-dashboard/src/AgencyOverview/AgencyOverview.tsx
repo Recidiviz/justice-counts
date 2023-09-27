@@ -39,6 +39,7 @@ import {
   CategorizedMetricsContainer,
   CategoryDescription,
   CategoryTitle,
+  DemoLabel,
   MetricBox,
   MetricBoxContentContainer,
   MetricBoxGraphContainer,
@@ -101,6 +102,7 @@ export const AgencyOverview = observer(() => {
               </AgencyHomepage>
             )}
           </AgencyDescription>
+          <DemoLabel>Demo</DemoLabel>
         </AgencyOverviewHeader>
 
         {metricsByAvailableCategoriesWithData.length === 0 ? (

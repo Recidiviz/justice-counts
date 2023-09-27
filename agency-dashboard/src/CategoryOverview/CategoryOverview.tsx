@@ -55,6 +55,7 @@ export const CategoryOverview = observer(() => {
   });
 
   const {
+    agencyName,
     datapointsByMetric,
     dimensionNamesByMetricAndDisaggregation,
     loading,
@@ -101,6 +102,7 @@ export const CategoryOverview = observer(() => {
               noSidePadding
               size="medium"
             />
+            <Styled.AgencyTitle>{agencyName}</Styled.AgencyTitle>
             <Styled.CategoryTitle>
               {visibleCategoriesMetadata[category]?.label}
             </Styled.CategoryTitle>

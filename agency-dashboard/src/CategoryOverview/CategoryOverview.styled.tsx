@@ -42,15 +42,21 @@ export const Container = styled.div`
 `;
 
 export const TopBlock = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: start;
-  width: ${MIN_METRIC_BOX_WIDTH}px;
   padding-top: 16px;
 
   & > div > div {
     min-width: unset;
   }
+`;
+
+export const AgencyTitle = styled.div`
+  max-width: 70%;
+  ${typography.sizeCSS.headline};
+  margin-bottom: 50px;
 `;
 
 export const CategoryTitle = styled.div`
@@ -60,6 +66,7 @@ export const CategoryTitle = styled.div`
 
 export const CategoryDescription = styled.div`
   ${typography.sizeCSS.normal};
+  width: ${MIN_METRIC_BOX_WIDTH}px;
   margin-bottom: 16px;
 `;
 
