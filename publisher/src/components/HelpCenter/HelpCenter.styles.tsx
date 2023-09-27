@@ -111,17 +111,27 @@ export const Breadcrumb = styled.div<{ highlight?: boolean }>`
   font-size: ${rem("14px")};
   font-weight: 400;
   line-height: 20px;
-
+  border-bottom: 1px solid transparent;
+  position: relative;
   color: ${({ highlight }) =>
     highlight ? palette.solid.blue : palette.highlight.grey8};
+
+  &:not(:last-child) {
+    margin-right: 12px;
+  }
 
   &:not(:last-child)::after {
     content: "/";
     padding-left: 8px;
+    position: absolute;
+    border-bottom: none;
   }
 
   &:hover {
     cursor: pointer;
+    border-bottom: 1px solid
+      ${({ highlight }) =>
+        highlight ? `transparent` : palette.highlight.grey8};
   }
 `;
 

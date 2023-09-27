@@ -128,6 +128,11 @@ const Menu: React.FC = () => {
       path: "./settings/uploaded-files",
     },
     {
+      label: "Help Center",
+      icon: <YourAccountIcon />,
+      onClick: () => window.open("/help", "_blank"),
+    },
+    {
       label: "Logout",
       icon: <LogoutIcon />,
       highlightOption: true,
