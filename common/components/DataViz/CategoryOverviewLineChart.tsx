@@ -34,7 +34,7 @@ import {
 import { useLineChartLegend } from "../../hooks";
 import { Datapoint, Metric } from "../../types";
 import { convertShortDateToUTCDateString } from "../../utils";
-import { formatNumberForChart } from "../../utils/helperUtils";
+import { formatNumberForChart, groupBy } from "../../utils/helperUtils";
 import { palette } from "../GlobalStyles";
 import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
 import { splitUtcString } from "./utils";
@@ -124,8 +124,14 @@ export function CategoryOverviewLineChart({
   );
 
   const breakdownLines = useMemo(() => {
+    const dimensionsByLabel = groupBy(
+      metric.disaggregations[0].dimensions,
+      (dim) => dim.label
+    );
+
     return dimensions.map((dimension) => (
       <Line
+        hide={!dimensionsByLabel[dimension]?.[0]?.enabled}
         key={dimension}
         dataKey={dimension}
         stroke={dimensionsToColorMap[dimension]}
@@ -138,7 +144,7 @@ export function CategoryOverviewLineChart({
         }}
       />
     ));
-  }, [dimensions, dimensionsToColorMap]);
+  }, [metric, dimensions, dimensionsToColorMap]);
 
   return (
     <Container>

@@ -75,11 +75,6 @@ export const useLineChart = ({
 
   const getLineChartDimensionsFromMetric = (metric: Metric) => {
     if (dimensionNamesByMetricAndDisaggregation) {
-      const dimensionsByLabel = groupBy(
-        metric.disaggregations[0].dimensions,
-        (dim) => dim.label
-      );
-
       /**
        * Gets an array of dimension keys (filtering out disabled dimensions).
        * NOTE: This assumes there's just one breakdown per metric. We will need to adjust this
@@ -87,7 +82,7 @@ export const useLineChart = ({
        */
       return Object.values(
         dimensionNamesByMetricAndDisaggregation[metric.key]
-      )[0].filter((dimension) => dimensionsByLabel[dimension]?.[0]?.enabled);
+      )[0];
     }
     return [];
   };
