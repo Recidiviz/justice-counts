@@ -56,9 +56,22 @@ export const useLineChart = ({
        *       based on how we want to handle displaying metrics w/ multiple breakdowns.
        */
       const { disaggregations } = datapointsByMetric[metric.key];
+      /**
+       * Get start dates of aggregate datapoints that have a `null` value for the `Total` property
+       * so we can filter those datapoints out of the disaggregations to match the date ranges
+       * rendered in the bar charts.
+       */
+      const startDatesOfNullTotalAggregateDatapoints = datapointsByMetric[
+        metric.key
+      ].aggregate
+        .filter((dp) => dp.Total === null)
+        .map((dp) => dp.start_date);
       const disaggregationDisplayName = Object.keys(disaggregations)[0];
       const disaggregationWithDimensionValues = Object.values(
         disaggregations[disaggregationDisplayName]
+      ).filter(
+        (dp) =>
+          !startDatesOfNullTotalAggregateDatapoints.includes(dp.start_date)
       );
       const hasAllDisabledDimensions =
         disaggregationsByDisplayName[
