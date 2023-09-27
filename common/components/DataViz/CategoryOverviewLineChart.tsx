@@ -124,23 +124,21 @@ export function CategoryOverviewLineChart({
   );
 
   const breakdownLines = useMemo(() => {
-    return dimensions
-      .filter((dimension) => legendData[dimension]?.enabled) // Filter out disabled dimensions
-      .map((dimension) => (
-        <Line
-          key={dimension}
-          dataKey={dimension}
-          stroke={dimensionsToColorMap[dimension]}
-          type="monotone"
-          dot={{ r: 4 }}
-          activeDot={{
-            stroke: dimensionsToColorMap[dimension],
-            strokeWidth: 2,
-            r: 4,
-          }}
-        />
-      ));
-  }, [dimensions, dimensionsToColorMap, legendData]);
+    return dimensions.map((dimension) => (
+      <Line
+        key={dimension}
+        dataKey={dimension}
+        stroke={dimensionsToColorMap[dimension]}
+        type="monotone"
+        dot={{ r: 4 }}
+        activeDot={{
+          stroke: dimensionsToColorMap[dimension],
+          strokeWidth: 2,
+          r: 4,
+        }}
+      />
+    ));
+  }, [dimensions, dimensionsToColorMap]);
 
   return (
     <Container>
