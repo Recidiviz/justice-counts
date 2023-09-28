@@ -22,6 +22,11 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
+import {
+  SystemChip,
+  SystemChipsContainer,
+} from "../AgencyOverview/AgencyOverview.styles";
+
 const MIN_METRIC_BOX_WIDTH = 507;
 
 export const Wrapper = styled.div`
@@ -174,3 +179,13 @@ export const BreakdownsTitle = styled.h3`
   ${typography.sizeCSS.medium};
   margin-left: 50px;
 `;
+
+export const CustomSystemChipsContainer = styled(SystemChipsContainer)`
+  width: 100%;
+  max-width: 93%;
+  margin-bottom: 0;
+  padding-bottom: 24px;
+  border-bottom: 1px solid ${palette.highlight.grey4};
+`;
+
+export const CustomSystemChip = styled(SystemChip)``;
