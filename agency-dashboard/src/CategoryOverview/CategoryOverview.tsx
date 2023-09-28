@@ -129,7 +129,7 @@ export const CategoryOverview = observer(() => {
           {/* System Selector */}
           {systemsWithData.length > 1 && (
             <Styled.CustomSystemChipsContainer>
-              {agencySystemsWithData().map((system) => {
+              {systemsWithData.map((system) => {
                 return (
                   <Styled.CustomSystemChip
                     key={system}
