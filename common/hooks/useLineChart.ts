@@ -67,12 +67,14 @@ export const useLineChart = ({
         .filter((dp) => dp.Total === null)
         .map((dp) => dp.start_date);
       const disaggregationDisplayName = Object.keys(disaggregations)[0];
-      const disaggregationWithDimensionValues = Object.values(
-        disaggregations[disaggregationDisplayName]
-      ).filter(
-        (dp) =>
-          !startDatesOfNullTotalAggregateDatapoints.includes(dp.start_date)
-      );
+      const disaggregationWithDimensionValues = disaggregations[
+        disaggregationDisplayName
+      ]
+        ? Object.values(disaggregations[disaggregationDisplayName]).filter(
+            (dp) =>
+              !startDatesOfNullTotalAggregateDatapoints.includes(dp.start_date)
+          )
+        : [];
       const hasAllDisabledDimensions =
         disaggregationsByDisplayName[
           disaggregationDisplayName
