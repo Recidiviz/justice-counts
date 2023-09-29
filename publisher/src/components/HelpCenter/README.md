@@ -41,7 +41,7 @@ export const Guide = () => (
         * **caption**: the description of the guide (will be used to render the caption)
         * **path**: URL pathname for this guide
         * **element**: the guide component you created
-        * **relevantGuides**: a list of relevant guide keys
+        * **relevantGuides**: a list of relevant guide keys (empty [] will not render any relevant guides)
           * **Important note to ensure proper linking**: if a relevant guide belongs to a different app guide, please prepend `<publisher or dashboard>/` to the key. For example, if the Dashboards guide (within the Dashboard app guide) links to the Explore Data guide (within the Publisher app guide) the relevant guide key would be `publisher/explore-data`. If it links to a guide within the same app guide (e.g. Agency Settings guide links to Explore Data guide - both Publisher guides), you can just add the guide key (e.g. `explore-data`) without prepending anything.
 
 
