@@ -23,6 +23,7 @@ import MetricsCategoryBarChart from "@justice-counts/common/components/DataViz/M
 import { getDataVizTimeRangeByFilterByMetricFrequency } from "@justice-counts/common/components/DataViz/utils";
 import { useBarChart, useLineChart } from "@justice-counts/common/hooks";
 import { DataVizAggregateName, Metric } from "@justice-counts/common/types";
+import { removeSnakeCase } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -56,9 +57,11 @@ export const CategoryOverview = observer(() => {
 
   const {
     agencyName,
+    agencySystems,
     datapointsByMetric,
     dimensionNamesByMetricAndDisaggregation,
     loading,
+    agencySystemsWithData,
     downloadMetricsData,
     getMetricsWithDataByCategory,
   } = agencyDataStore;
@@ -71,6 +74,7 @@ export const CategoryOverview = observer(() => {
     "all"
   );
   const [hoveredDate, setHoveredDate] = useState<{ [key: string]: string }>({});
+  const [currentSystem, setCurrentSystem] = useState(agencySystems?.[0]);
 
   const { getLineChartDataFromMetric, getLineChartDimensionsFromMetric } =
     useLineChart({
@@ -82,6 +86,7 @@ export const CategoryOverview = observer(() => {
       getDataVizTimeRangeByFilterByMetricFrequency(dataRangeFilter),
     datapointsByMetric,
   });
+  const systemsWithData = agencySystemsWithData();
 
   if (loading) {
     return <Loading />;
@@ -121,6 +126,23 @@ export const CategoryOverview = observer(() => {
             </Styled.TopBlockControls>
           </Styled.TopBlock>
 
+          {/* System Selector */}
+          {systemsWithData.length > 1 && (
+            <Styled.CustomSystemChipsContainer>
+              {systemsWithData.map((system) => {
+                return (
+                  <Styled.CustomSystemChip
+                    key={system}
+                    onClick={() => setCurrentSystem(system)}
+                    active={system === currentSystem}
+                  >
+                    {removeSnakeCase(system).toLocaleLowerCase()}
+                  </Styled.CustomSystemChip>
+                );
+              })}
+            </Styled.CustomSystemChipsContainer>
+          )}
+
           {/* Metrics + Data Visualizations */}
           <Styled.MetricsBlock>
             {/* Time Range Filters */}
@@ -141,50 +163,52 @@ export const CategoryOverview = observer(() => {
 
             {/* Metric Information & Data Visualization */}
             <Styled.MetricsWrapper>
-              {metricsWithData?.map((metric: Metric) => (
-                <Styled.MetricBox key={metric.key}>
-                  <Styled.MetricName>{metric.display_name}</Styled.MetricName>
-                  <Styled.MetricDataVizContainer>
-                    <Styled.MetricDescriptionBarChartWrapper>
-                      <Styled.MetricDescription>
-                        {metric.description}
-                      </Styled.MetricDescription>
+              {metricsWithData
+                ?.filter((metric) => metric.system.key === currentSystem)
+                .map((metric: Metric) => (
+                  <Styled.MetricBox key={metric.key}>
+                    <Styled.MetricName>{metric.display_name}</Styled.MetricName>
+                    <Styled.MetricDataVizContainer>
+                      <Styled.MetricDescriptionBarChartWrapper>
+                        <Styled.MetricDescription>
+                          {metric.description}
+                        </Styled.MetricDescription>
 
-                      {/* Bar Chart */}
-                      <MetricsCategoryBarChart
-                        width={620}
-                        data={getBarChartData(metric)}
-                        onHoverBar={(payload) => {
-                          setHoveredDate((prev) => ({
-                            ...prev,
-                            [metric.key]: payload.start_date,
-                          }));
-                        }}
-                        dimensionNames={[DataVizAggregateName]}
-                        metric={metric.display_name}
-                        ref={ref}
-                      />
-                    </Styled.MetricDescriptionBarChartWrapper>
+                        {/* Bar Chart */}
+                        <MetricsCategoryBarChart
+                          width={620}
+                          data={getBarChartData(metric)}
+                          onHoverBar={(payload) => {
+                            setHoveredDate((prev) => ({
+                              ...prev,
+                              [metric.key]: payload.start_date,
+                            }));
+                          }}
+                          dimensionNames={[DataVizAggregateName]}
+                          metric={metric.display_name}
+                          ref={ref}
+                        />
+                      </Styled.MetricDescriptionBarChartWrapper>
 
-                    {/* Breakdown/Disaggregation Line Chart */}
-                    {/* NOTE: CategoryOverviewLineChart will not appear if all metrics are disabled or the metric itself has no breakdowns */}
-                    {/* TODO(#978) Refactor to handle multiple breakdowns */}
-                    {getLineChartDataFromMetric(metric).length > 0 && (
-                      <CategoryOverviewLineChart
-                        data={getLineChartDataFromMetric(metric)}
-                        isFundingOrExpenses={
-                          metric.display_name === "Funding" ||
-                          metric.display_name === "Expenses"
-                        }
-                        dimensions={getLineChartDimensionsFromMetric(metric)}
-                        hoveredDate={hoveredDate[metric.key]}
-                        setHoveredDate={setHoveredDate}
-                        metric={metric}
-                      />
-                    )}
-                  </Styled.MetricDataVizContainer>
-                </Styled.MetricBox>
-              ))}
+                      {/* Breakdown/Disaggregation Line Chart */}
+                      {/* NOTE: CategoryOverviewLineChart will not appear if all metrics are disabled or the metric itself has no breakdowns */}
+                      {/* TODO(#978) Refactor to handle multiple breakdowns */}
+                      {getLineChartDataFromMetric(metric).length > 0 && (
+                        <CategoryOverviewLineChart
+                          data={getLineChartDataFromMetric(metric)}
+                          isFundingOrExpenses={
+                            metric.display_name === "Funding" ||
+                            metric.display_name === "Expenses"
+                          }
+                          dimensions={getLineChartDimensionsFromMetric(metric)}
+                          hoveredDate={hoveredDate[metric.key]}
+                          setHoveredDate={setHoveredDate}
+                          metric={metric}
+                        />
+                      )}
+                    </Styled.MetricDataVizContainer>
+                  </Styled.MetricBox>
+                ))}
             </Styled.MetricsWrapper>
           </Styled.MetricsBlock>
         </Styled.Container>
