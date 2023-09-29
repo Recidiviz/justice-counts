@@ -192,8 +192,14 @@ export const SectionWrapper = styled.div`
   flex-direction: column;
 
   li {
-    margin-left: 16px;
+    margin-left: 26px;
   }
+
+  ol,
+  ul {
+    margin-top: 6px;
+  }
+
   pre {
     background: #f5f2f0;
     padding: 16px;

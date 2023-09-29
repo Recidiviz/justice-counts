@@ -26,8 +26,8 @@ import { ReactComponent as ExploreDataIcon } from "../assets/hc-explore-your-dat
 import { ReactComponent as ManualEntryIcon } from "../assets/hc-manual-entry-icon.svg";
 import publisherThumbnail from "../assets/hc-publisher-help-guide-thumbnail.png";
 import { ReactComponent as SetUpMetricsIcon } from "../assets/hc-set-up-metrics-icon.svg";
-// import { ReactComponent as SuperagenciesIcon } from "../assets/hc-superagencies-icon.svg";
-// import { ReactComponent as SupervisionDisaggregationsIcon } from "../assets/hc-supervision-disaggregations-icon.svg";
+import { ReactComponent as SuperagenciesIcon } from "../assets/hc-superagencies-icon.svg";
+import { ReactComponent as SupervisionDisaggregationsIcon } from "../assets/hc-supervision-disaggregations-icon.svg";
 import { AccountSetupGuide } from "./Guides/AccountSetupGuide";
 import { AutomatedBulkUploadGuide } from "./Guides/AutomaticBulkUploadGuide";
 import { BulkUploadGuide } from "./Guides/BulkUploadGuide";
@@ -35,6 +35,8 @@ import { DashboardsGuide } from "./Guides/DashboardsGuide";
 import { ExploreDataGuide } from "./Guides/ExploreDataGuide";
 import { ManualEntryGuide } from "./Guides/ManualEntryGuide";
 import { SetUpMetricsGuide } from "./Guides/SetUpMetricsGuide";
+import { SuperagenciesGuide } from "./Guides/SuperagenciesGuide";
+import { SupervisionDisaggregationGuide } from "./Guides/SupervisionDisaggregationGuide";
 import { Thumbnail } from "./HelpCenter.styles";
 import { HelpCenterDirectory } from "./HelpCenterDirectory";
 import {
@@ -107,6 +109,24 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         element: <AutomatedBulkUploadGuide />,
         icon: <AutomatedBulkUploadIcon />,
         relevantGuides: ["manual-entry"],
+      },
+      superagencies: {
+        category: GuideCategories.AdvancedConcepts,
+        title: "Superagencies",
+        caption: "Understand how Publisher works for Superagencies",
+        path: "superagencies",
+        element: <SuperagenciesGuide />,
+        icon: <SuperagenciesIcon />,
+        relevantGuides: [],
+      },
+      "supervision-systems-disaggregation": {
+        category: GuideCategories.AdvancedConcepts,
+        title: "Supervision systems disaggregation",
+        caption: "Extra configuration for supervision agencies using Publisher",
+        path: "supervision-systems-disaggregation",
+        element: <SupervisionDisaggregationGuide />,
+        icon: <SupervisionDisaggregationsIcon />,
+        relevantGuides: [],
       },
     },
   },
