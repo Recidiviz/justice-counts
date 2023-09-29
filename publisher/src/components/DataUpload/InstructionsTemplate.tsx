@@ -345,7 +345,7 @@ export const GeneralInstructions: React.FC<
       </p>
       <p>
         The year should be in the format 20XX. The month should either be a
-        number [1 … 12] or the full month name [January … February]. The metric
+        number [1 … 12] or the full month name [January … December]. The metric
         value should be numeric and contain no other characters (commas are
         allowed, e.g. 1,000).
       </p>
