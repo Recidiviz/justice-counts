@@ -139,7 +139,17 @@ const Menu: React.FC = () => {
       highlightOption: true,
       onClick: logout,
     },
-  ];
+  ].filter((linkMetadata) => {
+    /* TODO(#960): Remove filter when ready to launch Help Center */
+    if (
+      api.environment &&
+      !["local", "staging"].includes(api.environment) &&
+      linkMetadata.label === "Help Center"
+    ) {
+      return false;
+    }
+    return true;
+  });
 
   const profileDropdownOptions: DropdownOption[] = profileDropdownMetadata.map(
     ({ label, icon, highlightOption, path, onClick }) => ({

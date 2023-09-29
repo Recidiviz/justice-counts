@@ -68,14 +68,15 @@ const App: React.FC = (): ReactElement => {
       <PageWrapper>
         <Routes>
           {/* TODO(#960): Remove env check when ready to launch Help Center */}
-          {api.environment === "local" && (
-            <Route path="help" element={<HelpCenter />}>
-              <Route index element={<HelpCenterInterstitial />} />
-              <Route element={<GuideLayoutWithBreadcrumbs />}>
-                {helpCenterRoutes()}
+          {api.environment &&
+            ["local", "staging"].includes(api.environment) && (
+              <Route path="help" element={<HelpCenter />}>
+                <Route index element={<HelpCenterInterstitial />} />
+                <Route element={<GuideLayoutWithBreadcrumbs />}>
+                  {helpCenterRoutes()}
+                </Route>
               </Route>
-            </Route>
-          )}
+            )}
           <Route
             path="/"
             element={<Navigate to={`/agency/${initialAgency}/`} />}
