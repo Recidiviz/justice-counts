@@ -462,8 +462,8 @@ export const GeneralInstructions: React.FC<
           <tr>
             <th>year</th>
             <th>month</th>
-            <th>value</th>
             <th>offense_type</th>
+            <th>value</th>
           </tr>
         </thead>
         <tbody>
