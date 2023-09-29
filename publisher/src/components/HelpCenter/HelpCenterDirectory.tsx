@@ -19,27 +19,26 @@ import { groupBy } from "@justice-counts/common/utils";
 import React from "react";
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 
-import publisherThumbnail from "../assets/hc-publisher-help-guide-thumbnail.png";
+import accountSetupThumbnail from "../assets/hc-account-setup-thumbnail.png";
+import addDataThumbnail from "../assets/hc-add-data-thumbnail.png";
+import advancedConceptsThumbnail from "../assets/hc-advanced-concepts-thumbnail.png";
+import interactWithDataThumbnail from "../assets/hc-explore-data-thumbnail.png";
 import * as Styled from "./HelpCenter.styles";
 import { helpCenterGuideStructure } from "./HelpCenterSetup";
 import { AppGuideKey, GuideCategories } from "./types";
 
 const guideCategoryThumbnails = {
   [GuideCategories.AccountSetup]: (
-    <Styled.Thumbnail src={publisherThumbnail} alt="" />
+    <Styled.Thumbnail src={accountSetupThumbnail} alt="" />
   ),
-  [GuideCategories.AddData]: (
-    <Styled.Thumbnail src={publisherThumbnail} alt="" />
-  ),
+  [GuideCategories.AddData]: <Styled.Thumbnail src={addDataThumbnail} alt="" />,
   [GuideCategories.AdvancedConcepts]: (
-    <Styled.Thumbnail src={publisherThumbnail} alt="" />
+    <Styled.Thumbnail src={advancedConceptsThumbnail} alt="" />
   ),
   [GuideCategories.InteractWithTheData]: (
-    <Styled.Thumbnail src={publisherThumbnail} alt="" />
+    <Styled.Thumbnail src={interactWithDataThumbnail} alt="" />
   ),
-  [GuideCategories.Dashboards]: (
-    <Styled.Thumbnail src={publisherThumbnail} alt="" />
-  ),
+  [GuideCategories.Dashboards]: null,
 };
 
 export const HelpCenterDirectory: React.FC<{ appGuide: AppGuideKey }> = ({
@@ -63,22 +62,24 @@ export const HelpCenterDirectory: React.FC<{ appGuide: AppGuideKey }> = ({
       </Styled.HomeTitle>
 
       <Styled.GuideLinks>
-        {Object.entries(groupedGuides).map(([category, guides]) => (
-          <Styled.TitleLinkWrapper key={category}>
-            {guideCategoryThumbnails[category as GuideCategories]}
-            <Styled.GuideLinksWrapper>
-              <Styled.GuideLinksTitle>{category}</Styled.GuideLinksTitle>
-              {guides.map((guide) => (
-                <Styled.GuideLink
-                  key={guide.path}
-                  onClick={() => navigate(guide.path)}
-                >
-                  {guide.title}
-                </Styled.GuideLink>
-              ))}
-            </Styled.GuideLinksWrapper>
-          </Styled.TitleLinkWrapper>
-        ))}
+        {Object.entries(groupedGuides)
+          .sort(([a, _], [b, __]) => a.localeCompare(b)) // Sort guides alphabetically
+          .map(([category, guides]) => (
+            <Styled.TitleLinkWrapper key={category}>
+              {guideCategoryThumbnails[category as GuideCategories]}
+              <Styled.GuideLinksWrapper>
+                <Styled.GuideLinksTitle>{category}</Styled.GuideLinksTitle>
+                {guides.map((guide) => (
+                  <Styled.GuideLink
+                    key={guide.path}
+                    onClick={() => navigate(guide.path)}
+                  >
+                    {guide.title}
+                  </Styled.GuideLink>
+                ))}
+              </Styled.GuideLinksWrapper>
+            </Styled.TitleLinkWrapper>
+          ))}
       </Styled.GuideLinks>
     </Styled.HelpCenterHome>
   );

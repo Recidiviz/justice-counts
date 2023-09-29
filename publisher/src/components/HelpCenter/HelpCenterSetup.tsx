@@ -52,7 +52,6 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
     path: AppGuideKeys.publisher,
     element: <HelpCenterDirectory appGuide={AppGuideKeys.publisher} />,
     thumbnail: <Thumbnail src={publisherThumbnail} alt="" width="461px" />,
-
     guides: {
       "explore-data": {
         category: GuideCategories.InteractWithTheData,

@@ -24,6 +24,8 @@ import {
 import { rem } from "@justice-counts/common/utils";
 import styled from "styled-components/macro";
 
+const CONTENT_CONTAINER_WIDTH = 555;
+
 export const HelpCenterContainer = styled.div`
   width: 100%;
   display: flex;
@@ -46,7 +48,8 @@ export const HelpCenterContainer = styled.div`
 `;
 
 export const ContentWrapper = styled.div<{ fixedGuideWidth?: boolean }>`
-  ${({ fixedGuideWidth }) => fixedGuideWidth && `max-width: 555px;`}
+  ${({ fixedGuideWidth }) =>
+    fixedGuideWidth && `max-width: ${CONTENT_CONTAINER_WIDTH}px;`}
   display: flex;
   flex-direction: column;
 `;
@@ -101,7 +104,7 @@ export const Label = styled.div`
 `;
 
 export const Breadcrumbs = styled.div`
-  min-width: 555px;
+  min-width: ${CONTENT_CONTAINER_WIDTH}px;
   display: flex;
   gap: 8px;
   margin-bottom: 48px;
@@ -411,7 +414,14 @@ export const Thumbnail = styled.img`
   width: 461px;
 `;
 
+export const ImageWrapper = styled.div`
+  &:first-child {
+    margin-bottom: 26px;
+  }
+`;
+
 export const Image = styled.img<{ align?: "left" | "center" | "right" }>`
+  max-width: ${CONTENT_CONTAINER_WIDTH}px;
   ${({ align }) => {
     if (align === "center") {
       return `margin: 0 auto;`;
@@ -423,4 +433,11 @@ export const Image = styled.img<{ align?: "left" | "center" | "right" }>`
       return `margin-right: auto;`;
     }
   }};
+  margin-bottom: 6px;
+`;
+
+export const ImageCaption = styled.div`
+  ${typography.sizeCSS.small}
+  font-weight: 400;
+  color: ${palette.highlight.grey8};
 `;
