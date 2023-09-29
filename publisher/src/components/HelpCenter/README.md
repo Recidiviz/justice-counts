@@ -130,36 +130,36 @@ Please delete the relevant guide object from within the `helpCenterGuideStructur
 ### Other helpful tips:
 
   - If you want to add an image within a paragraph, use the `<Styled.ImageWrapper><Styled.Image src={importedImage} alt="" width="300px" align="center" /><Styled.ImageWrapper>` tag where you can explicitly set the `width` (max width is 555px) and alignment of the image (left, center, right).
-  - Important things to note:
-    - When adding an image file, please add the file to the `justice-counts/publisher/src/components/assets` folder. Then, within the guide components (`justice-counts/publisher/src/components/HelpCenter/Guides`), you can import the image via this relative path `../../assets/your-image-here.png`.
-    - Make sure you wrap all images within the `<Styled.ImageWrapper></Styled.ImageWrapper>`` tags to ensure proper spacing.
-    - Make sure that the `Styled.ImageWrapper` is nested within a `Styled.SectionWrapper` to ensure proper spacing.
-    - You can add a caption by adding a `<Styled.ImageCaption></Styled.ImageCaption>` directly after the image but still nested within the `Styled.ImageWrapper` (see example below)
+    - Important things to note:
+      - When adding an image file, please add the file to the `justice-counts/publisher/src/components/assets` folder. Then, within the guide components (`justice-counts/publisher/src/components/HelpCenter/Guides`), you can import the image via this relative path `../../assets/your-image-here.png`.
+      - Make sure you wrap all images within the `<Styled.ImageWrapper></Styled.ImageWrapper>`` tags to ensure proper spacing.
+      - Make sure that the `Styled.ImageWrapper` is nested within a `Styled.SectionWrapper` to ensure proper spacing.
+      - You can add a caption by adding a `<Styled.ImageCaption></Styled.ImageCaption>` directly after the image but still nested within the `Styled.ImageWrapper` (see example below)
 
-    ```
-    import testScreenshot from "../../assets/test-screenshot.png";
-    import * as Styled from "../HelpCenter.styles";
+        ```
+        import testScreenshot from "../../assets/test-screenshot.png";
+        import * as Styled from "../HelpCenter.styles";
 
-    export const ExploreDataGuide = () => (
-      <>
-        <Styled.SectionWrapper>
-          <Styled.SectionParagraph>
-            The Explore Data tab allows you to visualize the data you have uploaded
-            into Publisher. It displays both draft and published data.
-          </Styled.SectionParagraph>
-          <Styled.SectionParagraph>
-            Click Explore Data, the fourth item
-            on the navigation bar, to reach this page.
-          </Styled.SectionParagraph>
-          <Styled.ImageWrapper>
-            <Styled.Image src={testScreenshot} alt="" width="300px" align="center" />
-            <Styled.ImageCaption>Hello this is a caption</Styled.ImageCaption>
-          </Styled.ImageWrapper>
-        </Styled.SectionWrapper>
-        ...
-      </>
-    );
-    ```
+        export const ExploreDataGuide = () => (
+          <>
+            <Styled.SectionWrapper>
+              <Styled.SectionParagraph>
+                The Explore Data tab allows you to visualize the data you have uploaded
+                into Publisher. It displays both draft and published data.
+              </Styled.SectionParagraph>
+              <Styled.SectionParagraph>
+                Click Explore Data, the fourth item
+                on the navigation bar, to reach this page.
+              </Styled.SectionParagraph>
+              <Styled.ImageWrapper>
+                <Styled.Image src={testScreenshot} alt="" width="300px" align="center" />
+                <Styled.ImageCaption>Hello this is a caption</Styled.ImageCaption>
+              </Styled.ImageWrapper>
+            </Styled.SectionWrapper>
+            ...
+          </>
+        );
+        ```
 
 - If you want an app guide (Publisher or Dashboard) to be visible but not clickable (e.g. if a guide is not ready to be release yet, but we're OK with users seeing the guide and thumbnail for it), set the app guide `path` property to an empty string `""`.
 
