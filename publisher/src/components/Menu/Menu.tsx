@@ -29,7 +29,8 @@ import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
 import { ReactComponent as TeamManagementIcon } from "../assets/data-line-icon.svg";
 import { ReactComponent as UploadedFilesIcon } from "../assets/folder-icon.svg";
-import { ReactComponent as HelpCenterIcon } from "../assets/help-center-icon.svg";
+/* TODO(#960): Uncomment menu item when ready to launch Help Center */
+// import { ReactComponent as HelpCenterIcon } from "../assets/help-center-icon.svg";
 import { ReactComponent as LogoutIcon } from "../assets/logout-icon.svg";
 import { ReactComponent as AgencySettingsIcon } from "../assets/pillar-icon.svg";
 import { ReactComponent as YourAccountIcon } from "../assets/profile-icon.svg";
@@ -128,11 +129,12 @@ const Menu: React.FC = () => {
       icon: <UploadedFilesIcon />,
       path: "./settings/uploaded-files",
     },
-    {
-      label: "Help Center",
-      icon: <HelpCenterIcon />,
-      onClick: () => window.open("/help", "_blank"),
-    },
+    /* TODO(#960): Uncomment menu item when ready to launch Help Center */
+    // {
+    //   label: "Help Center",
+    //   icon: <HelpCenterIcon />,
+    //   onClick: () => window.open("/help", "_blank"),
+    // },
     {
       label: "Logout",
       icon: <LogoutIcon />,
