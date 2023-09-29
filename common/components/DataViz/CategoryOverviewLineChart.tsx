@@ -34,7 +34,7 @@ import {
 import { useLineChartLegend } from "../../hooks";
 import { Datapoint, Metric } from "../../types";
 import { convertShortDateToUTCDateString } from "../../utils";
-import { formatNumberForChart } from "../../utils/helperUtils";
+import { formatNumberForChart, groupBy } from "../../utils/helperUtils";
 import { palette } from "../GlobalStyles";
 import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
 import { splitUtcString } from "./utils";
@@ -124,23 +124,27 @@ export function CategoryOverviewLineChart({
   );
 
   const breakdownLines = useMemo(() => {
-    return dimensions
-      .filter((dimension) => legendData[dimension]?.enabled) // Filter out disabled dimensions
-      .map((dimension) => (
-        <Line
-          key={dimension}
-          dataKey={dimension}
-          stroke={dimensionsToColorMap[dimension]}
-          type="monotone"
-          dot={{ r: 4 }}
-          activeDot={{
-            stroke: dimensionsToColorMap[dimension],
-            strokeWidth: 2,
-            r: 4,
-          }}
-        />
-      ));
-  }, [dimensions, dimensionsToColorMap, legendData]);
+    const dimensionsByLabel = groupBy(
+      metric.disaggregations[0].dimensions,
+      (dim) => dim.label
+    );
+
+    return dimensions.map((dimension) => (
+      <Line
+        hide={!dimensionsByLabel[dimension]?.[0]?.enabled} // Don't show lines for disabled dimensions
+        key={dimension}
+        dataKey={dimension}
+        stroke={dimensionsToColorMap[dimension]}
+        type="monotone"
+        dot={{ r: 4 }}
+        activeDot={{
+          stroke: dimensionsToColorMap[dimension],
+          strokeWidth: 2,
+          r: 4,
+        }}
+      />
+    ));
+  }, [metric, dimensions, dimensionsToColorMap]);
 
   return (
     <Container>
