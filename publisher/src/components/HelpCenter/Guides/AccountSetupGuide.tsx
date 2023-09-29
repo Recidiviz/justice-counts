@@ -40,8 +40,11 @@ export const AccountSetupGuide = () => (
     </Styled.SectionWrapper>
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
-        If you need to update your agency name, state, or sector, please contact
-        justice-counts-support@csg.org.
+        If you need to update your agency name, state, or sector, please contact{" "}
+        <a href="mailto:justice-counts-support@csg.org">
+          justice-counts-support@csg.org
+        </a>
+        .
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
   </>
