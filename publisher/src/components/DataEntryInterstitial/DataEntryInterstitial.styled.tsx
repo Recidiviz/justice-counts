@@ -27,8 +27,8 @@ export const InterstitialContainer = styled.div`
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  margin-top: 108px;
 `;
 
 export const OptionBox = styled.div`
