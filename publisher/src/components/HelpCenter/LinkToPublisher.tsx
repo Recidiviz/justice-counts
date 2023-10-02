@@ -23,8 +23,9 @@ const LinkToPublisher: React.FC<
   PropsWithChildren & { publisherPath: string }
 > = ({ publisherPath, children }) => {
   const { userStore } = useStore();
-  const agencyID = userStore.getInitialAgencyId();
-  const url = `/agency/${agencyID}/${publisherPath}`;
+  const agencyIdLocalStorage = localStorage.getItem("agencyId");
+  const agencyId = agencyIdLocalStorage || userStore.getInitialAgencyId();
+  const url = `/agency/${agencyId}/${publisherPath}`;
 
   return (
     <a href={url} target="_blank" rel="noreferrer noopener">
