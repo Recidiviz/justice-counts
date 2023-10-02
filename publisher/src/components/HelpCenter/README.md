@@ -161,6 +161,25 @@ Please delete the relevant guide object from within the `helpCenterGuideStructur
         );
         ```
 
+- If you want to add a link from a guide to the Publisher app, the link will need to include the agency ID. All you need to do is import the `LinkToPublisher` component and wrap that around the word(s) you want to link.
+  - `publisherPath` is a prop you need to define that will be the relative path (the path after the `.../agency/<agencyId>/` and before any query params `?=...`) you want to link to in Publisher.
+    - E.g. linking to Agency Settings (Publisher URL is: `.../agency/149/settings/agency-settings`) the `publisherPath` would be `settings/agency-settings`
+    - E.g. linking to Explore Data page (Publisher URL is: `.../agency/149/data?system=...`) the `publisherPath` would be `data`
+
+  ```
+  ...
+          <Styled.SectionParagraph>
+            Click{" "}
+            <LinkToPublisher publisherPath="data">Explore Data</LinkToPublisher>,
+            the fourth item on the navigation bar, to reach this page.
+          </Styled.SectionParagraph>
+  ...
+  ```
+
+- If Prettier is breaking the lines and components up and you end up noticing that wordshavenospacing to each other, feel free to add a {" "} at the end of the line above the break (see code example above).
+
+- If apostrophes are causing issues within the components, please use `&apos;` (e.g. Don't -> Don`&apos;`t)
+
 - If you want an app guide (Publisher or Dashboard) to be visible but not clickable (e.g. if a guide is not ready to be release yet, but we're OK with users seeing the guide and thumbnail for it), set the app guide `path` property to an empty string `""`.
 
   Example:
