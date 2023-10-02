@@ -25,6 +25,8 @@ import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import { ReactComponent as RightArrowIcon } from "../assets/bold-right-arrow-icon.svg";
+import { AppGuideKeys, GuideKeys } from "../HelpCenter/types";
+import { createURLToGuide } from "../HelpCenter/utils";
 import { DisclaimerBanner } from "../primitives";
 import { useSettingsSearchParams } from "../Settings";
 import * as Styled from "./MetricsOverview.styled";
@@ -78,6 +80,11 @@ export const MetricsOverview = observer(() => {
   const hasUnavailableMetrics =
     unavailableMetrics && unavailableMetrics.length > 0;
 
+  const learnMoreURL = createURLToGuide(
+    AppGuideKeys.publisher,
+    GuideKeys.SetUpMetrics
+  );
+
   if (systemSearchParam && !currentAgency?.systems.includes(systemSearchParam))
     return <NotFound />;
 
@@ -99,7 +106,10 @@ export const MetricsOverview = observer(() => {
           <Styled.OverviewHeader>Metric Settings</Styled.OverviewHeader>
           <Styled.OverviewDescription>
             Click on each metric to edit the availability of the metric and
-            relevant breakdown categories, as well as the definitions of each.
+            relevant breakdown categories, as well as the definitions of each.{" "}
+            <a href={learnMoreURL} target="_blank" rel="noopener noreferrer">
+              Learn More
+            </a>
           </Styled.OverviewDescription>
           <Styled.SystemsList>
             {showSystems &&

@@ -56,6 +56,17 @@ export const OverviewDescription = styled.div`
   ${typography.sizeCSS.medium};
   margin-bottom: 24px;
   color: ${palette.highlight.grey10};
+
+  a,
+  a:visited {
+    color: ${palette.solid.blue};
+    text-decoration: none;
+  }
+
+  a:hover {
+    cursor: pointer;
+    color: ${palette.solid.darkblue};
+  }
 `;
 
 export const SystemsList = styled.div`

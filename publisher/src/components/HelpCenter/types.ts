@@ -28,6 +28,18 @@ export enum GuideCategories {
   Dashboards = "Dashboards",
 }
 
+export enum GuideKeys {
+  ExploreData = "explore-data",
+  AgencySettings = "agency-settings",
+  SetUpMetrics = "set-up-metrics",
+  ManualEntry = "manual-entry",
+  BulkUpload = "bulk-upload",
+  AutomatedBulkUpload = "automated-bulk-upload",
+  Superagencies = "superagencies",
+  SupervisionSystemsDisaggregation = "supervision-systems-disaggregation",
+  Dashboards = "dashboards",
+}
+
 export type AppGuideKey = `${AppGuideKeys}`;
 
 export type GuideCategory = `${GuideCategories}`;
