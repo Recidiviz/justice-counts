@@ -42,6 +42,8 @@ import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
 import { ReactComponent as SwitchToChartIcon } from "../assets/switch-to-chart-icon.svg";
 import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-data-table-icon.svg";
+import { AppGuideKeys, GuideKeys } from "../HelpCenter/types";
+import { createURLToGuide } from "../HelpCenter/utils";
 import { Loading } from "../Loading";
 import { DisclaimerBanner } from "../primitives";
 import { useSettingsSearchParams } from "../Settings";
@@ -81,6 +83,10 @@ export const MetricsDataChart: React.FC = observer(() => {
   const systemBelongsToAgency =
     currentSystem && currentAgency?.systems.includes(currentSystem);
   const isSuperagency = userStore.isAgencySuperagency(agencyId);
+  const learnMoreURL = createURLToGuide(
+    AppGuideKeys.publisher,
+    GuideKeys.ExploreData
+  );
 
   const handleChartDownload = useCallback(
     async (system: string, metric: string) => {
@@ -271,6 +277,12 @@ export const MetricsDataChart: React.FC = observer(() => {
                 Metric Settings
               </Styled.DisclaimerLink>{" "}
               to adjust.
+            </Styled.DisclaimerText>
+            <Styled.DisclaimerText topSpacing>
+              Play around with your data in the graph.{" "}
+              <a href={learnMoreURL} target="_blank" rel="noopener noreferrer">
+                Learn More
+              </a>
             </Styled.DisclaimerText>
           </Styled.DisclaimerContainer>
         </Styled.PanelContainerLeft>

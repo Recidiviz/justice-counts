@@ -157,6 +157,21 @@ export const DisclaimerText = styled.div<{
   ${({ topSpacing }) => topSpacing && `padding-top: 24px;`};
   color: ${({ textColor }) =>
     textColor === "orange" ? palette.solid.orange : palette.solid.darkgrey};
+
+  a {
+    display: block;
+  }
+
+  a,
+  a:visited {
+    color: ${palette.solid.blue};
+    text-decoration: none;
+  }
+
+  a:hover {
+    cursor: pointer;
+    color: ${palette.solid.darkblue};
+  }
 `;
 
 export const DisclaimerLink = styled.span`
