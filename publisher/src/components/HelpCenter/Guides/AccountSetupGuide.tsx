@@ -17,7 +17,6 @@
 
 import React from "react";
 
-import screenshot from "../../assets/Screenshot 2023-09-29 at 6.04.12 PM.png";
 import * as Styled from "../HelpCenter.styles";
 
 export const AccountSetupGuide = () => (
