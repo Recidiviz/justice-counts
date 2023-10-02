@@ -15,13 +15,22 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { helpCenterGuideStructure } from "./HelpCenterSetup";
-import { AppGuideKeys, GuideKeys } from "./types";
+import React, { PropsWithChildren } from "react";
 
-/** Creates URL path string to navigate from Publisher to a Help Center Guide */
-export const createURLToGuide = (
-  appGuideKey: AppGuideKeys,
-  guideKey: GuideKeys
-) => {
-  return `/help/${helpCenterGuideStructure[appGuideKey].path}/${helpCenterGuideStructure[appGuideKey].guides[guideKey].path}/`;
+import { useStore } from "../../stores";
+
+const LinkToPublisher: React.FC<
+  PropsWithChildren & { publisherPath: string }
+> = ({ publisherPath, children }) => {
+  const { userStore } = useStore();
+  const agencyID = userStore.getInitialAgencyId();
+  const url = `/agency/${agencyID}/${publisherPath}`;
+
+  return (
+    <a href={url} target="_blank" rel="noreferrer noopener">
+      {children}
+    </a>
+  );
 };
+
+export default LinkToPublisher;
