@@ -29,10 +29,6 @@ export const AccountSetupGuide = () => (
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
     <Styled.SectionWrapper>
-      <Styled.ImageWrapper>
-        <Styled.Image src={screenshot} alt="" />
-        <Styled.ImageCaption>Hello this is a caption</Styled.ImageCaption>
-      </Styled.ImageWrapper>
       <Styled.SectionParagraph>
         {`{Screenshot of jurisdictions}`} You may also edit the jurisdictions
         that your agency covers and specify areas included and excluded.

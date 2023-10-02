@@ -27,15 +27,8 @@ export const ExploreDataGuide = () => (
         into Publisher. It displays both draft and published data.
       </Styled.SectionParagraph>
       <Styled.SectionParagraph>
-        Click{" "}
-        <a
-          href="/agency/149/metric-config"
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          Explore Data
-        </a>
-        , the fourth item on the navigation bar, to reach this page.
+        Click Explore Data, the fourth item on the navigation bar, to reach this
+        page.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
