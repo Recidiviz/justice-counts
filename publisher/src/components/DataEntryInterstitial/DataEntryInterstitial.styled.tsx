@@ -26,8 +26,9 @@ export const InterstitialContainer = styled.div`
   width: 100%;
   min-height: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  margin-top: 108px;
 `;
 
 export const OptionBox = styled.div`
@@ -72,4 +73,38 @@ export const OptionDescription = styled.div`
   ${typography.sizeCSS.normal}
   max-width: 220px;
   color: ${palette.highlight.grey8};
+
+  a,
+  a:visited {
+    color: ${palette.solid.blue};
+    text-decoration: none;
+  }
+
+  a:hover {
+    cursor: pointer;
+    color: ${palette.solid.darkblue};
+  }
+`;
+
+export const Title = styled.div`
+  ${typography.sizeCSS.title}
+`;
+
+export const Caption = styled.div`
+  ${typography.sizeCSS.normal}
+  line-height: 24px;
+  font-weight: 400;
+  margin-top: 8px;
+  margin-bottom: 72px;
+
+  a,
+  a:visited {
+    color: ${palette.solid.blue};
+    text-decoration: none;
+  }
+
+  a:hover {
+    cursor: pointer;
+    color: ${palette.solid.darkblue};
+  }
 `;

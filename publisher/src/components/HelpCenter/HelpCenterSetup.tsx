@@ -26,8 +26,8 @@ import { ReactComponent as ExploreDataIcon } from "../assets/hc-explore-your-dat
 import { ReactComponent as ManualEntryIcon } from "../assets/hc-manual-entry-icon.svg";
 import publisherThumbnail from "../assets/hc-publisher-help-guide-thumbnail.png";
 import { ReactComponent as SetUpMetricsIcon } from "../assets/hc-set-up-metrics-icon.svg";
-// import { ReactComponent as SuperagenciesIcon } from "../assets/hc-superagencies-icon.svg";
-// import { ReactComponent as SupervisionDisaggregationsIcon } from "../assets/hc-supervision-disaggregations-icon.svg";
+import { ReactComponent as SuperagenciesIcon } from "../assets/hc-superagencies-icon.svg";
+import { ReactComponent as SupervisionDisaggregationsIcon } from "../assets/hc-supervision-disaggregations-icon.svg";
 import { AccountSetupGuide } from "./Guides/AccountSetupGuide";
 import { AutomatedBulkUploadGuide } from "./Guides/AutomaticBulkUploadGuide";
 import { BulkUploadGuide } from "./Guides/BulkUploadGuide";
@@ -35,11 +35,14 @@ import { DashboardsGuide } from "./Guides/DashboardsGuide";
 import { ExploreDataGuide } from "./Guides/ExploreDataGuide";
 import { ManualEntryGuide } from "./Guides/ManualEntryGuide";
 import { SetUpMetricsGuide } from "./Guides/SetUpMetricsGuide";
+import { SuperagenciesGuide } from "./Guides/SuperagenciesGuide";
+import { SupervisionDisaggregationGuide } from "./Guides/SupervisionDisaggregationGuide";
 import { Thumbnail } from "./HelpCenter.styles";
 import { HelpCenterDirectory } from "./HelpCenterDirectory";
 import {
   AppGuideKeys,
   GuideCategories,
+  GuideKeys,
   HelpCenterGuideStructure,
 } from "./types";
 
@@ -50,9 +53,8 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
     path: AppGuideKeys.publisher,
     element: <HelpCenterDirectory appGuide={AppGuideKeys.publisher} />,
     thumbnail: <Thumbnail src={publisherThumbnail} alt="" width="461px" />,
-
     guides: {
-      "explore-data": {
+      [GuideKeys.ExploreData]: {
         category: GuideCategories.InteractWithTheData,
         title: "Explore your Data",
         caption: "Interact with your data to discover insights.",
@@ -61,7 +63,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         icon: <ExploreDataIcon />,
         relevantGuides: ["dashboard/dashboards"],
       },
-      "agency-settings": {
+      [GuideKeys.AgencySettings]: {
         category: GuideCategories.AccountSetup,
         title: "Agency Settings",
         caption: "See and edit information about your agency.",
@@ -70,7 +72,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         icon: <AgencySettingsIcon />,
         relevantGuides: ["set-up-metrics"],
       },
-      "set-up-metrics": {
+      [GuideKeys.SetUpMetrics]: {
         category: GuideCategories.AccountSetup,
         title: "Set Up Metrics",
         caption:
@@ -80,7 +82,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         icon: <SetUpMetricsIcon />,
         relevantGuides: ["agency-settings"],
       },
-      "manual-entry": {
+      [GuideKeys.ManualEntry]: {
         category: GuideCategories.AddData,
         title: "Manual Entry",
         caption: "Manually enter your data through text fields.",
@@ -89,7 +91,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         icon: <ManualEntryIcon />,
         relevantGuides: ["bulk-upload", "automated-bulk-upload"],
       },
-      "bulk-upload": {
+      [GuideKeys.BulkUpload]: {
         category: GuideCategories.AddData,
         title: "Bulk Upload",
         caption:
@@ -99,7 +101,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         icon: <BulkUploadIcon />,
         relevantGuides: ["manual-entry"],
       },
-      "automated-bulk-upload": {
+      [GuideKeys.AutomatedBulkUpload]: {
         category: GuideCategories.AddData,
         title: "Automated Bulk Upload",
         caption: "Upload Workbooks without logging-in.",
@@ -107,6 +109,24 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         element: <AutomatedBulkUploadGuide />,
         icon: <AutomatedBulkUploadIcon />,
         relevantGuides: ["manual-entry"],
+      },
+      [GuideKeys.Superagencies]: {
+        category: GuideCategories.AdvancedConcepts,
+        title: "Superagencies",
+        caption: "Understand how Publisher works for Superagencies",
+        path: "superagencies",
+        element: <SuperagenciesGuide />,
+        icon: <SuperagenciesIcon />,
+        relevantGuides: [],
+      },
+      [GuideKeys.SupervisionSystemsDisaggregation]: {
+        category: GuideCategories.AdvancedConcepts,
+        title: "Supervision systems disaggregation",
+        caption: "Extra configuration for supervision agencies using Publisher",
+        path: "supervision-systems-disaggregation",
+        element: <SupervisionDisaggregationGuide />,
+        icon: <SupervisionDisaggregationsIcon />,
+        relevantGuides: [],
       },
     },
   },
@@ -117,7 +137,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
     element: <HelpCenterDirectory appGuide={AppGuideKeys.dashboard} />,
     thumbnail: <Thumbnail src={dashboardThumbnail} alt="" width="461px" />,
     guides: {
-      dashboards: {
+      [GuideKeys.Dashboards]: {
         category: GuideCategories.Dashboards,
         title: "Dashboards",
         caption: "Visualize agency data to see trends over time.",

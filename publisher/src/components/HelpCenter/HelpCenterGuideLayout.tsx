@@ -96,10 +96,12 @@ export const GuideLayoutWithBreadcrumbs = () => {
           <Styled.Title>{currentGuide.title}</Styled.Title>
           <Styled.Caption>{currentGuide.caption}</Styled.Caption>
           <Outlet />
-          <RelevantGuides
-            appKey={currentAppGuideKey}
-            guideKey={currentGuide.key}
-          />
+          {currentGuide.relevantGuides.length > 0 && (
+            <RelevantGuides
+              appKey={currentAppGuideKey}
+              guideKey={currentGuide.key}
+            />
+          )}
         </>
       )}
     </Styled.ContentWrapper>

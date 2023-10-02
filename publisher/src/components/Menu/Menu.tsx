@@ -131,7 +131,10 @@ const Menu: React.FC = () => {
     {
       label: "Help Center",
       icon: <HelpCenterIcon />,
-      onClick: () => window.open("/help", "_blank"),
+      onClick: () => {
+        localStorage.setItem("agencyId", agencyId);
+        window.open("/help", "_blank");
+      },
     },
     {
       label: "Logout",
