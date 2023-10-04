@@ -29,7 +29,7 @@ export const AutomatedBulkUploadGuide = () => (
         network.The files must be Excel workbooks or CSV sheets. The files must
         comply with our technical specification. You can find more information
         about the technical specification and download custom templates here
-        [hyperlink to Michelle’s work].
+        [hyperlink to Michelle’s work]. Test another edit
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
