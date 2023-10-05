@@ -24,10 +24,12 @@ export const AccountSetupGuide = () => (
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
         Within agency settings you can update:
-        <ul>agency users</ul>
-        <ul>agency url</ul>
-        <ul>jurisdictions covered by your agency</ul>
-
+        <ul>
+          <li>agency users</li>
+          <li>agency url</li>
+          <li>agency url</li>
+          <li>jurisdictions covered by your agency</li>
+        </ul>
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
     <Styled.SectionWrapper>
