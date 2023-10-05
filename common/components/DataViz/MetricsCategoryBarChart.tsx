@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { getDatapointYear } from "@justice-counts/agency-dashboard/src/utils/formatting";
 import React, { forwardRef, useState } from "react";
 import {
   Bar,
@@ -32,7 +31,7 @@ import { palette } from "../GlobalStyles";
 import { CustomCursor, CustomYAxisTick } from "./BarChartComponents";
 import Tooltip from "./Tooltip";
 import { ResponsiveBarChartProps, ResponsiveBarData, TickProps } from "./types";
-import { getDatapointBarLabel, getDatapointBarLabelMini } from "./utils";
+import { getDatapointBarLabelMini } from "./utils";
 
 const MAX_BAR_SIZE = 150;
 
