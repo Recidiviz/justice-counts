@@ -26,7 +26,7 @@ export const AccountSetupGuide = () => (
         Within agency settings you can update:
         <ul>
           <li>agency users</li>
-          <li>agency url</li>
+          <li>agency description</li>
           <li>agency url</li>
           <li>jurisdictions covered by your agency</li>
         </ul>
