@@ -96,7 +96,7 @@ export const SetUpMetricsGuide = () => (
             metric/breakdown.{" "}
           </li>
           <li>
-            you may also add free-form text to provide even more context on the
+            You may also add free-form text to provide even more context on the
             metric.
           </li>
         </ul>
