@@ -31,9 +31,11 @@ export const SetUpMetricsGuide = () => (
       <Styled.SectionTitle>Metric Availability</Styled.SectionTitle>
       <Styled.SectionParagraph>
         For each metric, indicate whether or not you plan to share data.
-        <ul>If you do not plan to share data for the metric, choose <strong>Not Available</strong> button. </ul>
-        <ul>If the metric is aggregated at the monthly level, choose <strong>Monthly</strong></ul>
-        <ul>If the metric is aggregated annually, choose <strong>Annually</strong> and specify the starting month of the recorded annual period</ul>
+        <ul>
+          <li>If you do not plan to share data for the metric, choose <strong>Not Available</strong> button. </li>
+          <li>If the metric is aggregated at the monthly level, choose <strong>Monthly</strong></li>
+          <li>If the metric is aggregated annually, choose <strong>Annually</strong> and specify the starting month of the recorded annual period</li>
+        </ul>
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
@@ -64,8 +66,10 @@ export const SetUpMetricsGuide = () => (
       </Styled.SectionParagraph>
       <Styled.SectionParagraph>
         Within <strong>Define Metrics</strong>, click on a metric or its breakdowns to view and edit its definition.
-        <ul>You can specify each definition individually by clicking on the toggles to the left of each category to indicate whether that category is included or excluded from the overall definition of a metric and its breakdown(s), if breakdowns are enabled. You will not need to share data for each definition category, these are simply specified so that people viewing your data understand what is or is not included in your overall metric. Alternatively, you may click on <strong>choose the Justice Counts definition</strong> to automatically select the standard Justice Counts definition for the metric/breakdown. </ul>
-        <ul>you may also add free-form text to provide even more context on the metric.</ul>
+        <ul>
+          <li>You can specify each definition individually by clicking on the toggles to the left of each category to indicate whether that category is included or excluded from the overall definition of a metric and its breakdown(s), if breakdowns are enabled. You will not need to share data for each definition category, these are simply specified so that people viewing your data understand what is or is not included in your overall metric. Alternatively, you may click on <strong>choose the Justice Counts definition</strong> to automatically select the standard Justice Counts definition for the metric/breakdown. </li>
+          <li>you may also add free-form text to provide even more context on the metric.</li>
+        </ul>
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
   </>
