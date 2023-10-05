@@ -41,7 +41,7 @@ export const SupervisionDisaggregationGuide = () => (
           </li>
           <li>
             Scroll down to <strong>Supervision Populations</strong> and click{" "}
-            <strong>Edit populations</strong>
+            <strong>Edit populations</strong>.
           </li>
         </ul>
       </Styled.SectionParagraph>
@@ -63,7 +63,7 @@ export const SupervisionDisaggregationGuide = () => (
             Under the <strong>Metric</strong> section, look for the toggle
             titled <strong>Disaggregated by Supervision Type</strong> and choose
             either <strong>Combined</strong> or
-            <strong>Disaggregated</strong>
+            <strong> Disaggregated</strong>
           </li>
         </ol>
       </Styled.SectionParagraph>
@@ -78,7 +78,7 @@ export const SupervisionDisaggregationGuide = () => (
         <ol>
           <li>
             Specify which supervision populations your agency oversees in
-            <strong>Agency Settings</strong>. If you don’t distinguish between
+            <strong> Agency Settings</strong>. If you don’t distinguish between
             different supervision populations, don’t select any of the options.
           </li>
           <li>
