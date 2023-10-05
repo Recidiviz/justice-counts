@@ -59,9 +59,8 @@ export const SetUpMetricsGuide = () => (
         categories. For example, a <strong>Staff</strong> metric could be broken
         down into{" "}
         <strong>
-          Security Staff, Management Staff, Clinical Staff, Other Staff
-        </strong>{" "}
-        . When one of more of these categories is enabled, your agency may
+          Security Staff, Management Staff, Clinical Staff, Other Staff.
+        </strong>{" "} When one of more of these categories is enabled, your agency may
         report specific data for those categories as well as the overall metric.
       </Styled.SectionParagraph>
       <Styled.SectionParagraph>
