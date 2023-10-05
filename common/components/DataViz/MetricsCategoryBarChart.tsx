@@ -131,10 +131,7 @@ const MetricsCategoryBarChart = forwardRef<never, ResponsiveBarChartProps>(
               </linearGradient>
             </defs>
             <XAxis
-              dataKey={(datapoint) => {
-                if (data.length === 0) return datapoint.date;
-                return getDatapointBarLabelMini(datapoint);
-              }}
+              dataKey={getDatapointBarLabelMini}
               padding={{ left: -0.5, right: -0.5 }}
               interval="preserveEnd"
               minTickGap={16}
