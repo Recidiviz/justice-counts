@@ -24,13 +24,15 @@ export const AutomatedBulkUploadGuide = () => (
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
         Automated Data Upload is a feature that allows you to upload data to Justice Counts with the bulk upload format without logging in to Publisher. This is done using Secure File Transfer Protocol (SFTP), which is a secure way to transfer files over a network. This can be done through the following steps:
-        <li>Export your data as a CSV or Excel file in the Justice Counts bulk upload format. </li>
-        <li>Use Secure File Transfer Protocol (SFTP) to upload your file to our server. To initiate this process, please contact{" "} 
-          <a href="mailto:justice-counts-support@csg.org">
+        <ol>
+           <li>Export your data as a CSV or Excel file in the Justice Counts bulk upload format. </li>
+          <li>Use Secure File Transfer Protocol (SFTP) to upload your file to our server. To initiate this process, please contact{" "} 
+            <a href="mailto:justice-counts-support@csg.org">
           justice-counts-support@csg.org
           </a>.
-        </li>
-        <li>Optionally, create a script to automate steps 1 and 2 to upload data at a regular cadence.</li>
+          </li>
+          <li>Optionally, create a script to automate steps 1 and 2 to upload data at a regular cadence.</li>
+        </ol>
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
