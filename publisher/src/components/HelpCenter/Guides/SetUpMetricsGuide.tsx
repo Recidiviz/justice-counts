@@ -23,7 +23,10 @@ export const SetUpMetricsGuide = () => (
   <>
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
-        The <strong>Set Up Metrics</strong> page allows you to customize the Justice Counts metrics based on whether or not you are able to share data for the metric, the frequency in which you record the data, and how your agency defines and breaks down the metric
+        The <strong>Set Up Metrics</strong> page allows you to customize the
+        Justice Counts metrics based on whether or not you are able to share
+        data for the metric, the frequency in which you record the data, and how
+        your agency defines and breaks down the metric
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
@@ -32,9 +35,19 @@ export const SetUpMetricsGuide = () => (
       <Styled.SectionParagraph>
         For each metric, indicate whether or not you plan to share data.
         <ul>
-          <li>If you do not plan to share data for the metric, choose <strong>Not Available</strong> button. </li>
-          <li>If the metric is aggregated at the monthly level, choose <strong>Monthly</strong></li>
-          <li>If the metric is aggregated annually, choose <strong>Annually</strong> and specify the starting month of the recorded annual period</li>
+          <li>
+            If you do not plan to share data for the metric, choose{" "}
+            <strong>Not Available</strong> button.{" "}
+          </li>
+          <li>
+            If the metric is aggregated at the monthly level, choose{" "}
+            <strong>Monthly</strong>
+          </li>
+          <li>
+            If the metric is aggregated annually, choose{" "}
+            <strong>Annually</strong> and specify the starting month of the
+            recorded annual period
+          </li>
         </ul>
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
@@ -42,16 +55,17 @@ export const SetUpMetricsGuide = () => (
     <Styled.SectionWrapper>
       <Styled.SectionTitle>Metric Breakdowns</Styled.SectionTitle>
       <Styled.SectionParagraph>
-        Some metrics provide the option to report specific data for breakdown categories. For example, a <strong>Staff</strong>{" "}
-        metric could be broken down into{" "}
+        Some metrics provide the option to report specific data for breakdown
+        categories. For example, a <strong>Staff</strong> metric could be broken
+        down into{" "}
         <strong>
           Security Staff, Management Staff, Clinical Staff, Other Staff
-        </strong>{" "}. When one of more of these categories is enabled, 
-        your agency may report specific data for those categories as well as the overall metric. 
+        </strong>{" "}
+        . When one of more of these categories is enabled, your agency may
+        report specific data for those categories as well as the overall metric.
       </Styled.SectionParagraph>
       <Styled.SectionParagraph>
-        While on the{" "}
-        <strong>Set Up Metrics</strong> page, look for the{" "}
+        While on the <strong>Set Up Metrics</strong> page, look for the{" "}
         <strong>Metric Breakdowns</strong> section under the{" "}
         <strong>Set metric availability</strong> heading. Click on the toggle to
         the left of a breakdown category to toggle a breakdown on/off indicating
@@ -62,13 +76,30 @@ export const SetUpMetricsGuide = () => (
     <Styled.SectionWrapper>
       <Styled.SectionTitle>Metric Definitions</Styled.SectionTitle>
       <Styled.SectionParagraph>
-        Metric definitions allow you to specify how each metric is defined for your agency. You can indicate which categories are included or excluded in a metric or breakdown.
+        Metric definitions allow you to specify how each metric is defined for
+        your agency. You can indicate which categories are included or excluded
+        in a metric or breakdown.
       </Styled.SectionParagraph>
       <Styled.SectionParagraph>
-        Within <strong>Define Metrics</strong>, click on a metric or its breakdowns to view and edit its definition.
+        Within <strong>Define Metrics</strong>, click on a metric or its
+        breakdowns to view and edit its definition.
         <ul>
-          <li>You can specify each definition individually by clicking on the toggles to the left of each category to indicate whether that category is included or excluded from the overall definition of a metric and its breakdown(s), if breakdowns are enabled. You will not need to share data for each definition category, these are simply specified so that people viewing your data understand what is or is not included in your overall metric. Alternatively, you may click on <strong>choose the Justice Counts definition</strong> to automatically select the standard Justice Counts definition for the metric/breakdown. </li>
-          <li>you may also add free-form text to provide even more context on the metric.</li>
+          <li>
+            You can specify each definition individually by clicking on the
+            toggles to the left of each category to indicate whether that
+            category is included or excluded from the overall definition of a
+            metric and its breakdown(s), if breakdowns are enabled. You will not
+            need to share data for each definition category, these are simply
+            specified so that people viewing your data understand what is or is
+            not included in your overall metric. Alternatively, you may click on{" "}
+            <strong>choose the Justice Counts definition</strong> to
+            automatically select the standard Justice Counts definition for the
+            metric/breakdown.{" "}
+          </li>
+          <li>
+            you may also add free-form text to provide even more context on the
+            metric.
+          </li>
         </ul>
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>

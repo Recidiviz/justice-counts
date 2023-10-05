@@ -23,15 +23,28 @@ export const AutomatedBulkUploadGuide = () => (
   <>
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
-        Automated Data Upload is a feature that allows you to upload data to Justice Counts with the bulk upload format without logging in to Publisher. This is done using Secure File Transfer Protocol (SFTP), which is a secure way to transfer files over a network. This can be done through the following steps:
+        Automated Data Upload is a feature that allows you to upload data to
+        Justice Counts with the bulk upload format without logging in to
+        Publisher. This is done using Secure File Transfer Protocol (SFTP),
+        which is a secure way to transfer files over a network. This can be done
+        through the following steps:
         <ol>
-           <li>Export your data as a CSV or Excel file in the Justice Counts bulk upload format. </li>
-          <li>Use Secure File Transfer Protocol (SFTP) to upload your file to our server. To initiate this process, please contact{" "} 
-            <a href="mailto:justice-counts-support@csg.org">
-          justice-counts-support@csg.org
-          </a>.
+          <li>
+            Export your data as a CSV or Excel file in the Justice Counts bulk
+            upload format.{" "}
           </li>
-          <li>Optionally, create a script to automate steps 1 and 2 to upload data at a regular cadence.</li>
+          <li>
+            Use Secure File Transfer Protocol (SFTP) to upload your file to our
+            server. To initiate this process, please contact{" "}
+            <a href="mailto:justice-counts-support@csg.org">
+              justice-counts-support@csg.org
+            </a>
+            .
+          </li>
+          <li>
+            Optionally, create a script to automate steps 1 and 2 to upload data
+            at a regular cadence.
+          </li>
         </ol>
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
@@ -39,11 +52,14 @@ export const AutomatedBulkUploadGuide = () => (
     <Styled.SectionWrapper>
       <Styled.SectionTitle>SFTP Process</Styled.SectionTitle>
       <Styled.SectionParagraph>
-        Secure File Transfer Protocol (SFTP) allows you to transfer data with a high level of security. To begin the process, contact us at <a href="mailto:justice-counts-support@csg.org">
+        Secure File Transfer Protocol (SFTP) allows you to transfer data with a
+        high level of security. To begin the process, contact us at{" "}
+        <a href="mailto:justice-counts-support@csg.org">
           justice-counts-support@csg.org
-        </a> to request a username and
-        password for our SFTP server. Once we have confirmed that your account
-        has been created, run the following command from your command line to connect to our SFTP server.
+        </a>{" "}
+        to request a username and password for our SFTP server. Once we have
+        confirmed that your account has been created, run the following command
+        from your command line to connect to our SFTP server.
       </Styled.SectionParagraph>
       <Styled.SectionParagraph>
         <pre>
@@ -72,7 +88,8 @@ export const AutomatedBulkUploadGuide = () => (
       <Styled.SectionParagraph>
         <ol>
           <li>
-            When prompted for your password, enter the password provided for you in step 1.
+            When prompted for your password, enter the password provided for you
+            in step 1.
           </li>
           <li>
             To see what files are currently uploaded to the SFTP server, type{" "}
@@ -97,7 +114,8 @@ export const AutomatedBulkUploadGuide = () => (
             To leave sftp, type <code>exit</code>.
           </li>
           <li>
-            Once you have uploaded a file, you will receive a confirmation email.
+            Once you have uploaded a file, you will receive a confirmation
+            email.
           </li>
         </ol>
       </Styled.SectionParagraph>

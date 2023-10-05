@@ -34,12 +34,15 @@ export const AccountSetupGuide = () => (
     </Styled.SectionWrapper>
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
-        When setting jurisdiction, you can specify areas that are included and excluded. 
+        When setting jurisdiction, you can specify areas that are included and
+        excluded.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
-        Some users may also have the ability to add new users to the agency, by specifying the name and email address. If you need to update your agency name, state, or sector, please contact{" "}
+        Some users may also have the ability to add new users to the agency, by
+        specifying the name and email address. If you need to update your agency
+        name, state, or sector, please contact{" "}
         <a href="mailto:justice-counts-support@csg.org">
           justice-counts-support@csg.org
         </a>

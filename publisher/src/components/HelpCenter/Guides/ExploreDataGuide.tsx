@@ -25,8 +25,10 @@ export const ExploreDataGuide = () => {
     <>
       <Styled.SectionWrapper>
         <Styled.SectionParagraph>
-          The{" "} <LinkToPublisher publisherPath="data">Explore Data</LinkToPublisher>  page allows you to visualize the data you have
-          uploaded into Publisher. It displays both draft and published data.
+          The{" "}
+          <LinkToPublisher publisherPath="data">Explore Data</LinkToPublisher>{" "}
+          page allows you to visualize the data you have uploaded into
+          Publisher. It displays both draft and published data.
         </Styled.SectionParagraph>
       </Styled.SectionWrapper>
 
@@ -46,9 +48,8 @@ export const ExploreDataGuide = () => {
           Select a preferred metric from the list on the left of the screen.
           Only the metrics that you have set as available will be presented. To
           show additional metrics, adjust their availability within Metric
-          Settings. If your agency belongs to
-          multiple sectors, each sector will be presented with its own
-          individual metrics.
+          Settings. If your agency belongs to multiple sectors, each sector will
+          be presented with its own individual metrics.
         </Styled.SectionParagraph>
       </Styled.SectionWrapper>
     </>
