@@ -75,22 +75,22 @@ export const SupervisionDisaggregationGuide = () => (
         including: parole, probation, pretrial supervision, and other. For each
         metric, you can choose to share the data for your supervision operations
         as a whole, or disaggregated by your supervision populations.
+        <ol>
+          <li>
+            Specify which supervision populations your agency oversees in
+            <strong>Agency Settings</strong>. If you don’t distinguish between
+            different supervision populations, don’t select any of the options.
+          </li>
+          <li>
+            Next, for each metric, indicate whether you will provide aggregate
+            data for all supervision populations, or whether you will provide a
+            separate count for each population. For instance, you may choose to
+            provide an aggregate number for Funding (the total funding for the
+            agency) but disaggregated numbers for Daily Population (a separate
+            count for parole and probation).
+          </li>
+        </ol>
       </Styled.SectionParagraph>
-      <ol>
-        <li>
-          Specify which supervision populations your agency oversees in
-          <strong>Agency Settings</strong>. If you don’t distinguish between
-          different supervision populations, don’t select any of the options.
-        </li>
-        <li>
-          Next, for each metric, indicate whether you will provide aggregate
-          data for all supervision populations, or whether you will provide a
-          separate count for each population. For instance, you may choose to
-          provide an aggregate number for Funding (the total funding for the
-          agency) but disaggregated numbers for Daily Population (a separate
-          count for parole and probation).
-        </li>
-      </ol>
     </Styled.SectionWrapper>
   </>
 );
