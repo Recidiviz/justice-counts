@@ -38,7 +38,7 @@ export const SuperagenciesGuide = () => (
             superagency and child agencies. From the child agency view, you can
             only enter data for that specific child agency. If you want to
             upload data for multiple child agencies, you must use the bulk
-            upload option from the superagency view, not the child agency view{" "}
+            upload option from the superagency view, not the child agency view{" "}.
           </li>
           <li>
             Superagencies may upload only capacity and costs metrics for their
