@@ -23,6 +23,23 @@ export const SupervisionDisaggregationGuide = () => (
   <>
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
+        Depending on how your agency is set up, you may track different metrics with different populations. In Publisher, you can specify what population type (parole, probation, pretrial supervision, and other) are tracked in each metric. For example, you may choose to share funding and staff as combined metrics and share admissions metrics for each population type. 
+      </Styled.SectionParagraph>
+      <Styled.SectionParagraph>
+        To configure which supervision populations your agency is responsible
+        for:
+        <ul>
+          <li>
+            Navigate to Agency Settings by clicking the icon in the top
+            right corner and selecting <strong>Agency Settings</strong> from the dropdown.
+          </li>
+          <li>
+            Scroll down to <strong>Supervision Populations</strong> and
+            click <strong>Edit populations</strong>
+          </li>
+        </ul>
+      </Styled.SectionParagraph>
+      <Styled.SectionParagraph>
         Supervision agencies may oversee one or more supervision populations,
         including: parole, probation, pretrial supervision, and other. For each
         metric, you can choose to share the data for your supervision operations
@@ -32,33 +49,15 @@ export const SupervisionDisaggregationGuide = () => (
 
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
-        To configure which supervision populations your agency is responsible
-        for: Navigate to Agency Settings (link) by clicking the icon in the top
-        right corner and selecting Agency Settings from the dropdown. Scroll
-        down to the section titled “Supervision Populations” and click “Edit
-        populations”
-        <ul>
-          <li>
-            Navigate to Agency Settings (link) by clicking the icon in the top
-            right corner and selecting Agency Settings from the dropdown.
-          </li>
-          <li>
-            Scroll down to the section titled “Supervision Populations” and
-            click “Edit populations”
-          </li>
-        </ul>
-      </Styled.SectionParagraph>
-      <Styled.SectionParagraph>
-        For each metric, to configure the supervision populations for which you
+        For each metric, configure the supervision populations for which you
         will provide data:
         <ol>
           <li>
-            Navigate to Metric Settings (link) and choose a metric Under the
-            “Metric” section, look for the toggle titled
+            Navigate to Metric Settings and choose a metric 
           </li>
           <li>
-            “Disaggregated by Supervision Type” and choose either “Combined” or
-            “Disaggregated”
+            Under the <strong>Metric</strong> section, look for the toggle titled <strong>Disaggregated by Supervision Type</strong> and choose either <strong>Combined</strong> or
+            <strong>Disaggregated</strong>
           </li>
         </ol>
       </Styled.SectionParagraph>
@@ -66,20 +65,22 @@ export const SupervisionDisaggregationGuide = () => (
 
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
-        First, specify which supervision populations your agency oversees in
-        Agency Settings. If you don’t distinguish between different supervision
+        Supervision agencies may oversee one or more supervision populations, including: parole, probation, pretrial supervision, and other. For each metric, you can choose to share the data for your supervision operations as a whole, or disaggregated by your supervision populations.
+      </Styled.SectionParagraph>
+      <ol>
+          <li>
+            Specify which supervision populations your agency oversees in
+        <strong>Agency Settings</strong>. If you don’t distinguish between different supervision
         populations, don’t select any of the options.
-      </Styled.SectionParagraph>
-      <Styled.SectionParagraph>
-        Then, for each metric, indicate whether you will provide aggregate data
+          </li>
+          <li>
+            Next, for each metric, indicate whether you will provide aggregate data
         for all supervision populations, or whether you will provide a separate
-        count for each population.
-      </Styled.SectionParagraph>
-      <Styled.SectionParagraph>
-        For instance, you may choose to provide an aggregate number for Funding
+        count for each population. For instance, you may choose to provide an aggregate number for Funding
         (the total funding for the agency) but disaggregated numbers for Daily
         Population (a separate count for parole and probation).
-      </Styled.SectionParagraph>
+          </li>
+        </ol>
     </Styled.SectionWrapper>
   </>
 );
