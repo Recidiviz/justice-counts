@@ -25,8 +25,11 @@ export const DashboardsGuide = () => (
       <Styled.SectionParagraph>
         All data shown within the Justice Counts Agency Dashboards are
         specifically published by each agency. For more information on the
-        metrics shown, see
-        https://justicecounts.csgjusticecenter.org/metrics/justice-counts-metrics/
+        metrics shown, see the{" "}
+        <a href="https://justicecounts.csgjusticecenter.org/metrics/justice-counts-metrics/">
+          Justice Counts website
+        </a>
+        .
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
     <Styled.SectionWrapper>

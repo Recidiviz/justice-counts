@@ -31,23 +31,41 @@ export const ManualEntryGuide = () => (
     <Styled.SectionWrapper>
       <Styled.SectionTitle>Edit an existing record</Styled.SectionTitle>
       <Styled.SectionParagraph>
-        For metrics with a monthly availability, choose or create a record for
-        the month and year for which you want to enter data. For metrics with an
-        annual availability, choose or create a record for the year, ensuring
-        the correct starting month is specified. Each record allows you to input
-        information for all metrics that have availability set for the specified
-        time period.
+        Some records will be automatically generated, based on the availability
+        set for metrics. Each record allows you to input information for all
+        metrics that have availability set for the specified time period.
+        <ul>
+          <li>
+            For metrics aggregated at a monthly level, choose or create a record
+            for the month and year for which you want to enter data.
+          </li>
+          <li>
+            For metrics aggregated at an annual level, choose or create a record
+            for the year, ensuring the correct standard is chosen. Calendar Year
+            spans from January 1st to December 31th of the specified year while
+            Fiscal Year spans from July 1st to June 30th of the following year.
+          </li>
+        </ul>
+      </Styled.SectionParagraph>
+      <Styled.SectionParagraph>
+        All data is saved upon input. After all data has been entered, you may
+        click <strong>Review</strong> to see a list of the reported metrics and
+        the specific data being uploaded. If this data looks correct and you are
+        ready to publish the data publicly, click <strong>Publish</strong>.
+        Otherwise, click the other options to leave the page and save the record
+        as a draft. If you would like to publish this record in the future, you
+        may access it from the records page.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>
       <Styled.SectionTitle>Creating a new record</Styled.SectionTitle>
       <Styled.SectionParagraph>
-        To create a new record, click the create record button in the top right
-        corner. Then, specify the reporting period (either month or year) and
-        the starting period for the record. Next, click create record. The
-        record will be populated with metrics that have the matching
-        availability.
+        To create a new record, click <strong>New Record</strong> in the top
+        right corner. Then, specify the record period (either month or year) and
+        the starting period for the record. Next, click{" "}
+        <strong>Create Record</strong>. The record will be ready to accept data
+        for metrics that have the matching availability.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
   </>
