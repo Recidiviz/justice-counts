@@ -65,7 +65,7 @@ export const ManualEntryGuide = () => (
         right corner. Then, specify the record period (either month or year) and
         the starting period for the record. Next, click{" "}
         <strong>Create Record</strong>. The record will be ready to accept data
-        for metrics that have the matching availability. availability.
+        for metrics that have the matching availability.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
   </>
