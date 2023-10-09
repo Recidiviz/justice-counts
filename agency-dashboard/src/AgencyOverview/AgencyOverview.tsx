@@ -68,7 +68,6 @@ export const AgencyOverview = observer(() => {
     agencyName,
     agencyDescription,
     agencyHomepageUrl,
-    agencySystems,
     agencySystemsWithData,
     getMetricsWithDataByCategoryByCurrentSystem,
     getMetricsByAvailableCategoriesWithData,
@@ -77,13 +76,21 @@ export const AgencyOverview = observer(() => {
   const metricsByAvailableCategoriesWithData =
     getMetricsByAvailableCategoriesWithData(visibleCategoriesMetadata);
 
+  const availableSystems = agencySystemsWithData(visibleCategoriesMetadata);
+
   const [currentSystem, setCurrentSystem] = useState<AgencySystems | undefined>(
-    agencySystems?.[0]
+    availableSystems[0]
   );
 
-  const handleCategoryClick = (isClickable: boolean, category: string) => {
+  const handleCategoryClick = (
+    isClickable: boolean,
+    category: string,
+    currSystem: string | undefined
+  ) => {
     if (isClickable) {
-      navigate(`/agency/${slug}/${slugify(category)}`);
+      navigate(`/agency/${slug}/${slugify(category)}`, {
+        state: { currentSystem: currSystem },
+      });
     }
   };
 
@@ -112,7 +119,7 @@ export const AgencyOverview = observer(() => {
           <MetricsViewContainer>
             {/* System Selector Chips */}
             <SystemChipsContainer>
-              {agencySystemsWithData().map((system) => {
+              {availableSystems.map((system) => {
                 return (
                   <SystemChip
                     key={system}
@@ -140,7 +147,11 @@ export const AgencyOverview = observer(() => {
                 <CategorizedMetricsContainer key={category}>
                   <CategoryTitle
                     onClick={() =>
-                      handleCategoryClick(isCapacityAndCostCategory, category)
+                      handleCategoryClick(
+                        isCapacityAndCostCategory,
+                        category,
+                        currentSystem
+                      )
                     }
                     hasHover={isCapacityAndCostCategory}
                   >
@@ -155,7 +166,11 @@ export const AgencyOverview = observer(() => {
                   {/* Metrics Row (w/ mini charts) */}
                   <MetricsContainer
                     onClick={() =>
-                      handleCategoryClick(isCapacityAndCostCategory, category)
+                      handleCategoryClick(
+                        isCapacityAndCostCategory,
+                        category,
+                        currentSystem
+                      )
                     }
                     hasHover={isCapacityAndCostCategory}
                   >

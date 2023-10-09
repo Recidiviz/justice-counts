@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { getDatapointYear } from "@justice-counts/agency-dashboard/src/utils/formatting";
 import React, { forwardRef, useState } from "react";
 import {
   Bar,
@@ -32,6 +31,7 @@ import { palette } from "../GlobalStyles";
 import { CustomCursor, CustomYAxisTick } from "./BarChartComponents";
 import Tooltip from "./Tooltip";
 import { ResponsiveBarChartProps, ResponsiveBarData, TickProps } from "./types";
+import { getDatapointBarLabelMini } from "./utils";
 
 const MAX_BAR_SIZE = 150;
 
@@ -131,7 +131,10 @@ const MetricsCategoryBarChart = forwardRef<never, ResponsiveBarChartProps>(
               </linearGradient>
             </defs>
             <XAxis
-              dataKey={getDatapointYear}
+              dataKey={(datapoint) => {
+                if (data.length === 0) return datapoint.date;
+                return getDatapointBarLabelMini(datapoint);
+              }}
               padding={{ left: -0.5, right: -0.5 }}
               interval="preserveEnd"
               minTickGap={16}

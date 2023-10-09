@@ -26,7 +26,7 @@ import { DataVizAggregateName, Metric } from "@justice-counts/common/types";
 import { removeSnakeCase } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useCurrentPng } from "recharts-to-png";
 
 import { HeaderBar } from "../Header";
@@ -54,6 +54,7 @@ export const CategoryOverview = observer(() => {
   const [, { ref }] = useCurrentPng({
     scale: 10,
   });
+  const { state } = useLocation();
 
   const {
     agencyName,
@@ -74,7 +75,9 @@ export const CategoryOverview = observer(() => {
     "all"
   );
   const [hoveredDate, setHoveredDate] = useState<{ [key: string]: string }>({});
-  const [currentSystem, setCurrentSystem] = useState(agencySystems?.[0]);
+  const [currentSystem, setCurrentSystem] = useState(
+    state.currentSystem || agencySystems?.[0]
+  );
 
   const { getLineChartDataFromMetric, getLineChartDimensionsFromMetric } =
     useLineChart({
@@ -86,7 +89,12 @@ export const CategoryOverview = observer(() => {
       getDataVizTimeRangeByFilterByMetricFrequency(dataRangeFilter),
     datapointsByMetric,
   });
-  const systemsWithData = agencySystemsWithData();
+  const systemsWithData = agencySystemsWithData({
+    "Capacity and Costs": {
+      label: "Understand the Finances",
+      description: "See how we’re funded and where we use those funds",
+    },
+  });
 
   if (loading) {
     return <Loading />;

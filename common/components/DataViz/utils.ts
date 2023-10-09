@@ -401,6 +401,13 @@ export const getDatapointBarLabel = (datapoint: Datapoint) => {
   }
   return `${month} ${year}`;
 };
+export const getDatapointBarLabelMini = (datapoint: Datapoint) => {
+  const { month, year } = splitUtcString(datapoint.start_date);
+  if (datapoint.frequency === "ANNUAL") {
+    return `${year}`;
+  }
+  return `${month} ${year}`;
+};
 
 export function generateSavingFileName(
   systemParam?: string,

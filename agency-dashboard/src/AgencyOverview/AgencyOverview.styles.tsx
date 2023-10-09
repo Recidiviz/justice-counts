@@ -40,7 +40,7 @@ export const AgencyOverviewWrapper = styled.div`
 export const AgencyOverviewHeader = styled.div`
   display: flex;
   flex-direction: row;
-  gap: 16px;
+  gap: 50px;
   padding-bottom: 96px;
   border-bottom: 1px solid ${palette.highlight.grey3};
   margin-bottom: 24px;
@@ -57,6 +57,7 @@ export const AgencyDescription = styled.div`
   flex-direction: column;
   justify-content: end;
   ${typography.sizeCSS.normal};
+  width: 50%;
 `;
 
 export const AgencyHomepage = styled.a`
