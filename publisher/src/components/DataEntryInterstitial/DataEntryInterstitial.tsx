@@ -18,6 +18,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+import { useStore } from "../../stores";
+import { showHelpCenterContent } from "../../utils/featureFlags";
 import { ReactComponent as ManualEntryIcon } from "../assets/manual-entry-icon.svg";
 import { ReactComponent as UploadFolderIcon } from "../assets/upload-folder-icon.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
@@ -26,6 +28,7 @@ import { createURLToGuide } from "../HelpCenter/utils";
 import * as Styled from ".";
 
 export const DataEntryInterstitial = () => {
+  const { api } = useStore();
   const navigate = useNavigate();
   const learnMoreURL = createURLToGuide(
     AppGuideKeys.publisher,
@@ -34,13 +37,17 @@ export const DataEntryInterstitial = () => {
 
   return (
     <Styled.InterstitialContainer>
-      <Styled.Title>Select data upload method</Styled.Title>
-      <Styled.Caption>
-        Enter data or upload a file.{" "}
-        <a href={learnMoreURL} target="_blank" rel="noopener noreferrer">
-          Learn More
-        </a>
-      </Styled.Caption>
+      {showHelpCenterContent(api.environment) && (
+        <>
+          <Styled.Title>Select data upload method</Styled.Title>
+          <Styled.Caption>
+            Enter data or upload a file.{" "}
+            <a href={learnMoreURL} target="_blank" rel="noopener noreferrer">
+              Learn More
+            </a>
+          </Styled.Caption>
+        </>
+      )}
 
       <Styled.OptionsWrapper>
         {/* Manual Entry */}

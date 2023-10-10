@@ -35,7 +35,7 @@ class API {
 
   csrfToken: string;
 
-  environment?: "local" | "staging";
+  environment?: "local" | "staging" | "production";
 
   constructor(authStore: AuthStore) {
     makeAutoObservable(this);
