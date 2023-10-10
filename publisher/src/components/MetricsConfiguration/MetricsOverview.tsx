@@ -24,6 +24,7 @@ import { useParams } from "react-router-dom";
 import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
+import { showHelpCenterContent } from "../../utils/featureFlags";
 import { ReactComponent as RightArrowIcon } from "../assets/bold-right-arrow-icon.svg";
 import { AppGuideKeys, GuideKeys } from "../HelpCenter/types";
 import { createURLToGuide } from "../HelpCenter/utils";
@@ -35,7 +36,7 @@ export const MetricsOverview = observer(() => {
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
   const { agencyId } = useParams() as { agencyId: string };
-  const { userStore, metricConfigStore } = useStore();
+  const { api, userStore, metricConfigStore } = useStore();
 
   const { getMetricsBySystem } = metricConfigStore;
 
@@ -107,9 +108,11 @@ export const MetricsOverview = observer(() => {
           <Styled.OverviewDescription>
             Click on each metric to edit the availability of the metric and
             relevant breakdown categories, as well as the definitions of each.{" "}
-            <a href={learnMoreURL} target="_blank" rel="noopener noreferrer">
-              Learn More
-            </a>
+            {showHelpCenterContent(api.environment) && (
+              <a href={learnMoreURL} target="_blank" rel="noopener noreferrer">
+                Learn More
+              </a>
+            )}
           </Styled.OverviewDescription>
           <Styled.SystemsList>
             {showSystems &&
