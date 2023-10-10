@@ -28,6 +28,7 @@ beforeEach(() => {
   runInAction(() => {
     userStore.userAgencies = [
       {
+        is_dashboard_enabled: false,
         child_agencies: [],
         fips_county_code: "",
         id: Number(mockAgencyID),

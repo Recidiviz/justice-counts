@@ -158,6 +158,7 @@ describe("test create report button", () => {
               },
             ],
             is_superagency: false,
+            is_dashboard_enabled: false,
           },
         ];
       });

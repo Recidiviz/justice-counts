@@ -95,6 +95,7 @@ export interface UserAgency {
   systems: AgencySystems[];
   team: AgencyTeamMember[];
   is_superagency: boolean;
+  is_dashboard_enabled: boolean;
 }
 
 export type ReportFrequency = "MONTHLY" | "ANNUAL";

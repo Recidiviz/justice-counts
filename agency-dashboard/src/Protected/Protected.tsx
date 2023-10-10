@@ -25,7 +25,6 @@ import { Loading } from "../Loading";
 import { NotFound } from "../NotFound";
 import { useStore } from "../stores";
 import { environment } from "../stores/API";
-import { isDenyListed } from "../utils/denylist";
 
 export const Protected: React.FC<PropsWithChildren> = observer(
   ({ children }) => {
@@ -34,7 +33,8 @@ export const Protected: React.FC<PropsWithChildren> = observer(
     const { slug } = useParams();
     const isProductionEnv = api.environment === environment.PRODUCTION;
     const isDenied =
-      agencyDataStore.agency && isDenyListed(agencyDataStore.agency);
+      agencyDataStore.agency &&
+      agencyDataStore.agency.is_dashboard_enabled !== true;
 
     const [loading, setLoading] = useState(true);
 
