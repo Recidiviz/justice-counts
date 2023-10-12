@@ -46,6 +46,7 @@ beforeEach(() => {
     authStore.user.name = "UserFirstName UserLastName";
     userStore.userAgencies = [
       {
+        is_dashboard_enabled: false,
         child_agencies: [],
         fips_county_code: "",
         id: Number(mockAgencyID),
@@ -335,6 +336,7 @@ test("superagencies have pinned task card to bulk upload data for child agencies
   runInAction(() => {
     userStore.userAgencies = [
       {
+        is_dashboard_enabled: false,
         child_agencies: [],
         fips_county_code: "",
         id: Number(mockAgencyID),
