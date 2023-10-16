@@ -22,10 +22,6 @@ export const BulkUploadGuide = () => (
   <>
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
-        Upload and publish data for multiple records at once using excel or csv
-        files to expedite data sharing.
-      </Styled.SectionParagraph>
-      <Styled.SectionParagraph>
         The Bulk Upload feature allows you to upload and publish data for
         multiple metrics and time periods at once. Users prepare excel or csv
         files containing data for metrics and time periods of interest, and
