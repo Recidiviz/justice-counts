@@ -160,10 +160,6 @@ export const BulkUploadGuide = () => (
         below. In this example, a file was previously downloaded, filled with
         data, and saved to the user’s Desktop.
       </Styled.SectionParagraph>
-      <Styled.SectionParagraph>
-        [Video?
-        https://www.loom.com/share/292521d0292b42d4a3710b78cd73f6af?sid=adc431ab-166a-4f13-ba1a-ad4a333c638d]
-      </Styled.SectionParagraph>
       <Styled.VideoWrapper>
         <Styled.VideoIFrame
           src="https://www.loom.com/embed/292521d0292b42d4a3710b78cd73f6af?sid=21f2da86-32e1-40c4-92be-fdfef77454bc"
@@ -199,9 +195,6 @@ export const BulkUploadGuide = () => (
         uploaded and which Records have been changed based on your upload. Once
         you are confident in your upload, you can either Publish your data from
         this page, or opt to exit without publishing.
-      </Styled.SectionParagraph>
-      <Styled.SectionParagraph>
-        [Video? https://www.loom.com/share/10346f8af112475d9816d253a9b2bad2]
       </Styled.SectionParagraph>
       <Styled.VideoWrapper>
         <Styled.VideoIFrame
