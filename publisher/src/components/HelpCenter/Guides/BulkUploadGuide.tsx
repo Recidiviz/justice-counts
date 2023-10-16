@@ -77,8 +77,12 @@ export const BulkUploadGuide = () => (
         Single Page with Multiple Metrics
       </Styled.SectionTitle>
       <Styled.SectionParagraph>
-        [Copy what we have in the Single Page Uploads section of the Bulk Upload
-        Instructions page]
+        As an alternative to uploading an Excel workbook with multiple pages, a
+        Single Page Upload template is also available. If you choose to upload a
+        Single Page template, the metric column is required to distinguish which
+        metric a given row in the file is associated with. Additionally, each
+        row in the file that contains data for an aggregate metric must have
+        empty cells in the breakdown_category and breakdown columns.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
@@ -116,11 +120,20 @@ export const BulkUploadGuide = () => (
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>
-      <Styled.SectionTitle>Year, Month, and Value Columns</Styled.SectionTitle>
+      <Styled.SectionTitle>Breakdown Column</Styled.SectionTitle>
       <Styled.SectionParagraph>
-        [Copy what we have in the Breakdowns section of the Bulk Upload
-        Instructions page]
+        If the metric asks you to break the value down into different categories
+        (e.g. separating out crimes by offense type), our system expects a sheet
+        that includes a column with the name of the category (e.g.
+        offense_type). Each row should specify a different value for that
+        category (e.g. person, property, drug). Your example file will contain
+        the expected naming conventions for breakdown sheets and columns. Please
+        only provide valid category names (as seen in your example file) for
+        breakdown columns. If your agency categorizes the metric differently,
+        group any unmatched data into the Other category. For example, a sheet
+        for reported_crimes_by_type might look like this:
       </Styled.SectionParagraph>
+      <Styled.SectionParagraph>[Import screenshot]</Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>
@@ -137,25 +150,11 @@ export const BulkUploadGuide = () => (
     <Styled.SectionWrapper>
       <Styled.SectionTitle>Superagency Agency Column</Styled.SectionTitle>
       <Styled.SectionParagraph>
-        [Copy what we have in the Multiple Agencies section of the Bulk Upload
-        Instructions page]
+        If you are sharing data for multiple agencies, you should also add a
+        column to each sheet titled agency. The value of this column should be
+        the name of the agency to which that row belongs. For instance:
       </Styled.SectionParagraph>
-    </Styled.SectionWrapper>
-
-    <Styled.SectionWrapper>
-      <Styled.SectionTitle>Errors and Warnings</Styled.SectionTitle>
-      <Styled.SectionParagraph>
-        Once you have uploaded a file via Bulk Upload, you may or may not see an
-        Errors and Warnings page. This page will be encountered if your Bulk
-        Upload file contains unexpected formatting or unexpected data based on
-        your agency’s Metric Settings. The Errors and Warnings page will include
-        a description of the issue(s) we encountered with your file. These
-        descriptions are intended to ensure that your data is uploaded and saved
-        properly. If you encounter this page, we encourage you to take these
-        errors and warnings into consideration, check that your uploaded file
-        and data is properly formatted, and make changes and re-upload your file
-        accordingly.
-      </Styled.SectionParagraph>
+      <Styled.SectionParagraph>[Import screenshot]</Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>
@@ -175,6 +174,23 @@ export const BulkUploadGuide = () => (
           title="Loom Video"
         />
       </Styled.VideoWrapper>
+    </Styled.SectionWrapper>
+
+    <Styled.SectionWrapper>
+      <Styled.SectionTitle>Errors and Warnings</Styled.SectionTitle>
+      <Styled.SectionParagraph>
+        Once you have uploaded a file via Bulk Upload, you may or may not see an
+        Errors and Warnings page. This page will be encountered if your Bulk
+        Upload file contains unexpected formatting or unexpected data based on
+        your agency’s Metric Settings. The Errors and Warnings page will include
+        a description of the issue(s) we encountered with your file. These
+        descriptions are intended to ensure that your data is uploaded and saved
+        properly. If you encounter this page, we encourage you to take these
+        errors and warnings into consideration, check that your uploaded file
+        and data is properly formatted, and make changes and re-upload your file
+        accordingly.
+      </Styled.SectionParagraph>
+      <Styled.SectionParagraph>[Import screenshot]</Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>
