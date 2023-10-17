@@ -53,12 +53,13 @@ import {
 } from ".";
 
 /** "Visible Categories" are the categories of metrics we are allowing users to view */
-const visibleCategoriesMetadata: VisibleCategoriesMetadata = {
-  "Capacity and Costs": {
-    label: "Understand the Finances",
-    description: "See how we’re funded and where we use those funds",
-  },
-};
+export const agencyOverviewVisibleCategoriesMetadata: VisibleCategoriesMetadata =
+  {
+    "Capacity and Costs": {
+      label: "Understand the Finances",
+      description: "See how we’re funded and where we use those funds",
+    },
+  };
 
 export const AgencyOverview = observer(() => {
   const navigate = useNavigate();
@@ -74,9 +75,13 @@ export const AgencyOverview = observer(() => {
     getMiniChartDateRangeAndTransformedData,
   } = agencyDataStore;
   const metricsByAvailableCategoriesWithData =
-    getMetricsByAvailableCategoriesWithData(visibleCategoriesMetadata);
+    getMetricsByAvailableCategoriesWithData(
+      agencyOverviewVisibleCategoriesMetadata
+    );
 
-  const availableSystems = agencySystemsWithData(visibleCategoriesMetadata);
+  const availableSystems = agencySystemsWithData(
+    agencyOverviewVisibleCategoriesMetadata
+  );
 
   const [currentSystem, setCurrentSystem] = useState<AgencySystems | undefined>(
     availableSystems[0]
@@ -133,76 +138,83 @@ export const AgencyOverview = observer(() => {
             </SystemChipsContainer>
 
             {/* Metric Categories (with data only) */}
-            {Object.keys(visibleCategoriesMetadata).map((category) => {
-              const metricsWithData =
-                getMetricsWithDataByCategoryByCurrentSystem(
-                  category,
-                  currentSystem
+            {Object.keys(agencyOverviewVisibleCategoriesMetadata).map(
+              (category) => {
+                const metricsWithData =
+                  getMetricsWithDataByCategoryByCurrentSystem(
+                    category,
+                    currentSystem
+                  );
+                if (metricsWithData.length === 0) return null;
+                const isCapacityAndCostCategory =
+                  category === "Capacity and Costs";
+
+                return (
+                  <CategorizedMetricsContainer key={category}>
+                    <CategoryTitle
+                      onClick={() =>
+                        handleCategoryClick(
+                          isCapacityAndCostCategory,
+                          category,
+                          currentSystem
+                        )
+                      }
+                      hasHover={isCapacityAndCostCategory}
+                    >
+                      {`${
+                        agencyOverviewVisibleCategoriesMetadata[category].label
+                      }${isCapacityAndCostCategory ? " ->" : ""}`}
+                    </CategoryTitle>
+                    <CategoryDescription>
+                      {
+                        agencyOverviewVisibleCategoriesMetadata[category]
+                          .description
+                      }
+                    </CategoryDescription>
+
+                    {/* Metrics Row (w/ mini charts) */}
+                    <MetricsContainer
+                      onClick={() =>
+                        handleCategoryClick(
+                          isCapacityAndCostCategory,
+                          category,
+                          currentSystem
+                        )
+                      }
+                      hasHover={isCapacityAndCostCategory}
+                    >
+                      {metricsWithData.map((metric) => {
+                        const { beginDate, endDate, transformedDataForChart } =
+                          getMiniChartDateRangeAndTransformedData(metric);
+                        const metricDisplayName = metric.display_name
+                          .toUpperCase()
+                          .split("(")[0] // Removes system name parenthesis from display name (e.g. "Staff With Caseloads (Supervision)" becomes "Staff With Caseloads")
+                          .trim();
+                        return (
+                          <MetricBox key={metric.key}>
+                            <MetricBoxTitle>{metricDisplayName}</MetricBoxTitle>
+                            <MetricBoxContentContainer>
+                              <MetricBoxGraphContainer>
+                                <MiniChartContainer>
+                                  <MiniBarChart
+                                    data={transformedDataForChart}
+                                    dimensionNames={[DataVizAggregateName]}
+                                  />
+                                </MiniChartContainer>
+                                <MetricBoxGraphRange>
+                                  <span>{beginDate}</span>
+                                  <span>{endDate}</span>
+                                </MetricBoxGraphRange>
+                              </MetricBoxGraphContainer>
+                            </MetricBoxContentContainer>
+                          </MetricBox>
+                        );
+                      })}
+                    </MetricsContainer>
+                  </CategorizedMetricsContainer>
                 );
-              if (metricsWithData.length === 0) return null;
-              const isCapacityAndCostCategory =
-                category === "Capacity and Costs";
-
-              return (
-                <CategorizedMetricsContainer key={category}>
-                  <CategoryTitle
-                    onClick={() =>
-                      handleCategoryClick(
-                        isCapacityAndCostCategory,
-                        category,
-                        currentSystem
-                      )
-                    }
-                    hasHover={isCapacityAndCostCategory}
-                  >
-                    {`${visibleCategoriesMetadata[category].label}${
-                      isCapacityAndCostCategory ? " ->" : ""
-                    }`}
-                  </CategoryTitle>
-                  <CategoryDescription>
-                    {visibleCategoriesMetadata[category].description}
-                  </CategoryDescription>
-
-                  {/* Metrics Row (w/ mini charts) */}
-                  <MetricsContainer
-                    onClick={() =>
-                      handleCategoryClick(
-                        isCapacityAndCostCategory,
-                        category,
-                        currentSystem
-                      )
-                    }
-                    hasHover={isCapacityAndCostCategory}
-                  >
-                    {metricsWithData.map((metric) => {
-                      const { beginDate, endDate, transformedDataForChart } =
-                        getMiniChartDateRangeAndTransformedData(metric);
-                      return (
-                        <MetricBox key={metric.key}>
-                          <MetricBoxTitle>
-                            {metric.display_name.toUpperCase()}
-                          </MetricBoxTitle>
-                          <MetricBoxContentContainer>
-                            <MetricBoxGraphContainer>
-                              <MiniChartContainer>
-                                <MiniBarChart
-                                  data={transformedDataForChart}
-                                  dimensionNames={[DataVizAggregateName]}
-                                />
-                              </MiniChartContainer>
-                              <MetricBoxGraphRange>
-                                <span>{beginDate}</span>
-                                <span>{endDate}</span>
-                              </MetricBoxGraphRange>
-                            </MetricBoxGraphContainer>
-                          </MetricBoxContentContainer>
-                        </MetricBox>
-                      );
-                    })}
-                  </MetricsContainer>
-                </CategorizedMetricsContainer>
-              );
-            })}
+              }
+            )}
           </MetricsViewContainer>
         )}
       </AgencyOverviewWrapper>
