@@ -17,7 +17,7 @@
     "lodash.pickby": "^4.6.0",
     "mobx": "^6.4.2",
     "mobx-persist-store": "^1.0.6",
-    "mobx-react-lite": "^4.0.5",
+    "mobx-react-lite": "^3.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-is": "^18.2.0",
@@ -26,7 +26,7 @@
     "recharts": "^2.4.0",
     "recharts-to-png": "^2.2.1",
     "styled-components": "^5.3.6",
-    "typescript": "^5.2.2"
+    "typescript": "^4.4.2"
   },
   "scripts": {
     "dev": "react-app-rewired start",
@@ -56,7 +56,7 @@
   "homepage": "/",
   "devDependencies": {
     "@auth0/auth0-spa-js": "^1.20.1",
-    "@babel/core": "^7.22.20",
+    "@babel/core": "^7.23.2",
     "@babel/plugin-syntax-flow": "^7.22.5",
     "@babel/plugin-transform-react-jsx": "^7.14.9",
     "@recidiviz/eslint-config": "^3.0.0",
@@ -93,7 +93,7 @@
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react": "^7.33.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "file-saver": "^2.0.5",
