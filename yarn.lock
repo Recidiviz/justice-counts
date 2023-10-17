@@ -4620,7 +4620,7 @@
   dependencies:
     "@storybook/global" "^5.0.0"
 
-"@storybook/client-logger@7.4.0", "@storybook/client-logger@^7.0.0-beta.0 || ^7.0.0-rc.0 || ^7.0.0":
+"@storybook/client-logger@7.4.0":
   version "7.4.0"
   resolved "https://registry.yarnpkg.com/@storybook/client-logger/-/client-logger-7.4.0.tgz#f90aa5ee29d540074f6e4890bae71836ac87273c"
   integrity sha512-4pBnf7+df1wXEVcF1civqxbrtccGGHQkfWQkJo49s53RXvF7SRTcif6XTx0V3cQV0v7I1C5mmLm0LNlmjPRP1Q==
@@ -4881,7 +4881,7 @@
   resolved "https://registry.yarnpkg.com/@storybook/global/-/global-5.0.0.tgz#b793d34b94f572c1d7d9e0f44fac4e0dbc9572ed"
   integrity sha512-FcOqPAXACP0I3oJ/ws6/rrPT9WGhu915Cg8D02a9YxLo0DE9zI+a9A5gRGvmQ09fiWPukqI8ZAEoQEdWUKMQdQ==
 
-"@storybook/instrumenter@7.0.26", "@storybook/instrumenter@^7.0.0-beta.0 || ^7.0.0-rc.0 || ^7.0.0":
+"@storybook/instrumenter@7.0.26":
   version "7.0.26"
   resolved "https://registry.yarnpkg.com/@storybook/instrumenter/-/instrumenter-7.0.26.tgz#9bc400cd6913d68b0df66d5249b0c4c30b900aff"
   integrity sha512-7Ty0LTslgkm5RyH6CqTAKhWz/cF6wq/sNdMYKwvVZHWNZ2LKMtXD0RWM2caCPruAGOQ9+52H+3s4TZGKaPSSWQ==
@@ -5128,15 +5128,13 @@
     nanoid "^3.3.1"
     read-pkg-up "^7.0.1"
 
-"@storybook/testing-library@^0.0.14-next.2":
-  version "0.0.14-next.2"
-  resolved "https://registry.yarnpkg.com/@storybook/testing-library/-/testing-library-0.0.14-next.2.tgz#458e6c7623118e24826ba73b80db0a887f3f57e8"
-  integrity sha512-i/SLSGm0o978ELok/SB4Qg1sZ3zr+KuuCkzyFqcCD0r/yf+bG35aQGkFqqxfSAdDxuQom0NO02FE+qys5Eapdg==
+"@storybook/testing-library@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@storybook/testing-library/-/testing-library-0.2.2.tgz#c8e089cc8d7354f6066fdb580fae3eedf568aa7c"
+  integrity sha512-L8sXFJUHmrlyU2BsWWZGuAjv39Jl1uAqUHdxmN42JY15M4+XCMjGlArdCCjDe1wpTSW6USYISA9axjZojgtvnw==
   dependencies:
-    "@storybook/client-logger" "^7.0.0-beta.0 || ^7.0.0-rc.0 || ^7.0.0"
-    "@storybook/instrumenter" "^7.0.0-beta.0 || ^7.0.0-rc.0 || ^7.0.0"
-    "@testing-library/dom" "^8.3.0"
-    "@testing-library/user-event" "^13.2.1"
+    "@testing-library/dom" "^9.0.0"
+    "@testing-library/user-event" "^14.4.0"
     ts-dedent "^2.2.0"
 
 "@storybook/theming@7.0.26":
@@ -5293,7 +5291,7 @@
     "@svgr/plugin-svgo" "^5.5.0"
     loader-utils "^2.0.0"
 
-"@testing-library/dom@^8.3.0", "@testing-library/dom@^8.5.0":
+"@testing-library/dom@^8.5.0":
   version "8.20.1"
   resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-8.20.1.tgz#2e52a32e46fc88369eef7eef634ac2a192decd9f"
   integrity sha512-/DiOQ5xBxgdYRC8LNk7U+RWat0S3qRLeIw3ZIkMQ9kkVlRmwD/Eg8k8CqIpD6GW7u20JIUOfMKbxtiLutpjQ4g==
@@ -5307,10 +5305,10 @@
     lz-string "^1.5.0"
     pretty-format "^27.0.2"
 
-"@testing-library/dom@^9.3.1":
-  version "9.3.1"
-  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-9.3.1.tgz#8094f560e9389fb973fe957af41bf766937a9ee9"
-  integrity sha512-0DGPd9AR3+iDTjGoMpxIkAsUihHZ3Ai6CneU6bRRrffXMgzCdlNk43jTrD2/5LT6CBb3MWTP8v510JzYtahD2w==
+"@testing-library/dom@^9.0.0", "@testing-library/dom@^9.3.1":
+  version "9.3.3"
+  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-9.3.3.tgz#108c23a5b0ef51121c26ae92eb3179416b0434f5"
+  integrity sha512-fB0R+fa3AUqbLHWyxXa2kGVtf1Fe1ZZFr0Zp6AIbIAzXb2mKbEXl+PCQNUOaq5lbTab5tfctfXRNsWXxa2f7Aw==
   dependencies:
     "@babel/code-frame" "^7.10.4"
     "@babel/runtime" "^7.12.5"
@@ -5345,17 +5343,10 @@
     "@testing-library/dom" "^8.5.0"
     "@types/react-dom" "^18.0.0"
 
-"@testing-library/user-event@^13.2.1":
-  version "13.5.0"
-  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-13.5.0.tgz#69d77007f1e124d55314a2b73fd204b333b13295"
-  integrity sha512-5Kwtbo3Y/NowpkbRuSepbyMFkZmHgD+vPzYB/RJ4oxt5Gj/avFFBYjhw27cqSVPVw/3a67NK1PbiIr9k4Gwmdg==
-  dependencies:
-    "@babel/runtime" "^7.12.5"
-
-"@testing-library/user-event@^14.4.3":
-  version "14.4.3"
-  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-14.4.3.tgz#af975e367743fa91989cd666666aec31a8f50591"
-  integrity sha512-kCUc5MEwaEMakkO5x7aoD+DLi02ehmEM2QCGWvNqAS1dV/fAvORWEjnjsEIvml59M7Y5kCkWN6fCCyPOe8OL6Q==
+"@testing-library/user-event@^14.4.0", "@testing-library/user-event@^14.4.3":
+  version "14.5.1"
+  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-14.5.1.tgz#27337d72046d5236b32fd977edee3f74c71d332f"
+  integrity sha512-UCcUKrUYGj7ClomOo2SpNVvx4/fkd/2BbIHDCle8A0ax+P3bU7yJwDBDrS6ZwdTMARWTGODX1hEsCcO+7beJjg==
 
 "@tootallnate/once@1":
   version "1.1.2"
