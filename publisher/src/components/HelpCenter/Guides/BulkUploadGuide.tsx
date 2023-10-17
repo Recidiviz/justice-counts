@@ -16,9 +16,9 @@
 // =============================================================================
 import React from "react";
 
-import * as Styled from "../HelpCenter.styles";
-import uploadingDataVideo from "../../assets/HelpCenter-BulkUpload-Uploading.mp4";
 import reviewPublishVideo from "../../assets/HelpCenter-BulkUpload-ReviewPublish.mp4";
+import uploadingDataVideo from "../../assets/HelpCenter-BulkUpload-Uploading.mp4";
+import * as Styled from "../HelpCenter.styles";
 
 export const BulkUploadGuide = () => (
   <>
@@ -97,9 +97,6 @@ export const BulkUploadGuide = () => (
 
     <Styled.SectionWrapper>
       <Styled.SectionTitle>Expected Columns</Styled.SectionTitle>
-    </Styled.SectionWrapper>
-
-    <Styled.SectionWrapper>
       <Styled.SectionTitle>Year, Month, and Value Columns</Styled.SectionTitle>
       <Styled.SectionParagraph>
         All pages are required to include <strong>year</strong> and{" "}
