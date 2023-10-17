@@ -17,6 +17,8 @@
 import React from "react";
 
 import * as Styled from "../HelpCenter.styles";
+import uploadingDataVideo from "../../assets/HelpCenter-BulkUpload-Uploading.mp4";
+import reviewPublishVideo from "../../assets/HelpCenter-BulkUpload-ReviewPublish.mp4";
 
 export const BulkUploadGuide = () => (
   <>
@@ -160,12 +162,9 @@ export const BulkUploadGuide = () => (
         below. In this example, a file was previously downloaded, filled with
         data, and saved to the user’s Desktop.
       </Styled.SectionParagraph>
-      <Styled.VideoWrapper>
-        <Styled.VideoIFrame
-          src="https://www.loom.com/embed/292521d0292b42d4a3710b78cd73f6af?sid=21f2da86-32e1-40c4-92be-fdfef77454bc"
-          title="Loom Video"
-        />
-      </Styled.VideoWrapper>
+      <Styled.Video controls>
+        <Styled.VideoSource src={uploadingDataVideo} type="video/mp4" />
+      </Styled.Video>
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>
@@ -196,12 +195,9 @@ export const BulkUploadGuide = () => (
         you are confident in your upload, you can either Publish your data from
         this page, or opt to exit without publishing.
       </Styled.SectionParagraph>
-      <Styled.VideoWrapper>
-        <Styled.VideoIFrame
-          src="https://www.loom.com/embed/10346f8af112475d9816d253a9b2bad2?sid=fcad2e79-0600-4638-b241-913daeb57163"
-          title="Loom Video"
-        />
-      </Styled.VideoWrapper>
+      <Styled.Video controls>
+        <Styled.VideoSource src={reviewPublishVideo} type="video/mp4" />
+      </Styled.Video>
     </Styled.SectionWrapper>
   </>
 );
