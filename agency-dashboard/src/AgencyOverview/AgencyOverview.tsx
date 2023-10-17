@@ -186,11 +186,13 @@ export const AgencyOverview = observer(() => {
                       {metricsWithData.map((metric) => {
                         const { beginDate, endDate, transformedDataForChart } =
                           getMiniChartDateRangeAndTransformedData(metric);
+                        const metricDisplayName = metric.display_name
+                          .toUpperCase()
+                          .split("(")[0] // Removes system name parenthesis from display name (e.g. "Staff With Caseloads (Supervision)" becomes "Staff With Caseloads")
+                          .trim();
                         return (
                           <MetricBox key={metric.key}>
-                            <MetricBoxTitle>
-                              {metric.display_name.toUpperCase()}
-                            </MetricBoxTitle>
+                            <MetricBoxTitle>{metricDisplayName}</MetricBoxTitle>
                             <MetricBoxContentContainer>
                               <MetricBoxGraphContainer>
                                 <MiniChartContainer>
