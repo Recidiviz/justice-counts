@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import * as Styled from "./HelpCenter.styles";
@@ -84,6 +84,10 @@ export const GuideLayoutWithBreadcrumbs = () => {
   const currentGuide = isGuideOpen
     ? guidesByPathname[currentPathname]
     : undefined;
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   return (
     <Styled.ContentWrapper fixedGuideWidth={Boolean(currentGuide)}>

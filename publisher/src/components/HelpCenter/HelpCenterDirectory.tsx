@@ -46,9 +46,7 @@ export const HelpCenterDirectory: React.FC<{ appGuide: AppGuideKey }> = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const sortedGuides = Object.values(
-    helpCenterGuideStructure[appGuide].guides
-  ).sort((a, b) => a.title.localeCompare(b.title));
+  const sortedGuides = Object.values(helpCenterGuideStructure[appGuide].guides);
   const groupedGuides = groupBy(sortedGuides, (guide) => guide.category);
 
   if (location.pathname !== `/help/${helpCenterGuideStructure[appGuide].path}`)
