@@ -67,7 +67,7 @@ const App: React.FC = (): ReactElement => {
   if (!initialAgency) return <NoAgencies />;
 
   return (
-    <AppWrapper noBottomPadding={location.pathname.includes("help")}>
+    <AppWrapper noBottomPadding={!location.pathname.includes("help")}>
       <PageWrapper>
         <Routes>
           {/* TODO(#960): Remove env check when ready to launch Help Center */}
