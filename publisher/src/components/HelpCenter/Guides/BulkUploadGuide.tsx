@@ -129,7 +129,7 @@ export const BulkUploadGuide = () => (
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>
-      <Styled.SectionTitle>Breakdown Column</Styled.SectionTitle>
+      <Styled.SectionTitle italics>Breakdown Column</Styled.SectionTitle>
       <Styled.SectionParagraph>
         If the metric asks you to break the value down into different categories
         (e.g. separating out crimes by offense type), our system expects a sheet
@@ -153,7 +153,9 @@ export const BulkUploadGuide = () => (
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>
-      <Styled.SectionTitle>Supervision System Column</Styled.SectionTitle>
+      <Styled.SectionTitle italics>
+        Supervision System Column
+      </Styled.SectionTitle>
       <Styled.SectionParagraph>
         If your agency is a Supervision agency that records data for other
         populations (Parole, Probation, Pretrial Supervision, Other), then each
@@ -171,7 +173,9 @@ export const BulkUploadGuide = () => (
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>
-      <Styled.SectionTitle>Superagency Agency Column</Styled.SectionTitle>
+      <Styled.SectionTitle italics>
+        Superagency Agency Column
+      </Styled.SectionTitle>
       <Styled.SectionParagraph>
         If you are sharing data for multiple agencies, you should also add a
         column to each sheet titled agency. The value of this column should be
