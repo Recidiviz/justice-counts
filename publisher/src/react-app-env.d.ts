@@ -16,3 +16,9 @@
 // =============================================================================
 
 /// <reference types="react-scripts" />
+
+// Required for TS to recognize .mp4 files (Reference: https://github.com/facebook/create-react-app/issues/6822)
+declare module "*.mp4" {
+  const src: string;
+  export default src;
+}

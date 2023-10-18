@@ -410,6 +410,10 @@ export const VideoIFrame = styled.iframe`
   left: 0;
 `;
 
+export const Video = styled.video``;
+
+export const VideoSource = styled.source``;
+
 export const Thumbnail = styled.img`
   width: 461px;
 `;
