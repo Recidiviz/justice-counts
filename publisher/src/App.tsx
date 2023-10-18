@@ -15,6 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import "./components/assets/fonts/index.css";
+
 import { observer } from "mobx-react-lite";
 import React, { ReactElement, useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
