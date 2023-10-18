@@ -140,9 +140,10 @@ export const DisclaimerContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  padding-top: 15px;
   padding-bottom: 37px;
   width: ${INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH}px;
-  height: 200px;
+  min-height: 200px;
 `;
 
 export const DisclaimerTitle = styled.div`
