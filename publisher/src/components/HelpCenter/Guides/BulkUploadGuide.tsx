@@ -16,6 +16,11 @@
 // =============================================================================
 import React from "react";
 
+import breakdownColumnScreenshot from "../../assets/hc-bulkupload-breakdowncolumn-screenshot.png";
+import errorWarningsScreenshot from "../../assets/hc-bulkupload-errorswarnings-screenshot.png";
+import superagencyColumnScreenshot from "../../assets/hc-bulkupload-superagencycolumn-screenshot.png";
+import supervisionSystemColumnScreenshot from "../../assets/hc-bulkupload-supervisionsystemcolumn-screenshot.png";
+import yearMonthValueColumnsScreenshot from "../../assets/hc-bulkupload-yearmonthvaluecolumns-screenshot.png";
 import reviewPublishVideo from "../../assets/HelpCenter-BulkUpload-ReviewPublish.mp4";
 import uploadingDataVideo from "../../assets/HelpCenter-BulkUpload-Uploading.mp4";
 import * as Styled from "../HelpCenter.styles";
@@ -97,7 +102,9 @@ export const BulkUploadGuide = () => (
 
     <Styled.SectionWrapper>
       <Styled.SectionTitle>Expected Columns</Styled.SectionTitle>
-      <Styled.SectionTitle>Year, Month, and Value Columns</Styled.SectionTitle>
+      <Styled.SectionTitle italics>
+        Year, Month, and Value Columns
+      </Styled.SectionTitle>
       <Styled.SectionParagraph>
         All pages are required to include <strong>year</strong> and{" "}
         <strong>value</strong> columns. Metrics that are configured to be
@@ -110,8 +117,15 @@ export const BulkUploadGuide = () => (
         … February]. The value should be numeric and contain no other characters
         (commas are allowed, e.g. 1,000). For example, the page should look
         roughly like this:
+        <Styled.ImageWrapper>
+          <Styled.Image
+            src={yearMonthValueColumnsScreenshot}
+            alt=""
+            width="300px"
+            align="center"
+          />
+        </Styled.ImageWrapper>
       </Styled.SectionParagraph>
-      <Styled.SectionParagraph>[Import screenshot]</Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>
@@ -127,8 +141,15 @@ export const BulkUploadGuide = () => (
         breakdown columns. If your agency categorizes the metric differently,
         group any unmatched data into the Other category. For example, a sheet
         for reported_crimes_by_type might look like this:
+        <Styled.ImageWrapper>
+          <Styled.Image
+            src={breakdownColumnScreenshot}
+            alt=""
+            width="400px"
+            align="center"
+          />
+        </Styled.ImageWrapper>
       </Styled.SectionParagraph>
-      <Styled.SectionParagraph>[Import screenshot]</Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>
@@ -138,8 +159,15 @@ export const BulkUploadGuide = () => (
         populations (Parole, Probation, Pretrial Supervision, Other), then each
         uploaded page should contain a system column. If you have only aggregate
         data, fill in the system column with &apos;ALL&apos;.
+        <Styled.ImageWrapper>
+          <Styled.Image
+            src={supervisionSystemColumnScreenshot}
+            alt=""
+            width="400px"
+            align="center"
+          />
+        </Styled.ImageWrapper>
       </Styled.SectionParagraph>
-      <Styled.SectionParagraph>[Import screenshot]</Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>
@@ -148,8 +176,15 @@ export const BulkUploadGuide = () => (
         If you are sharing data for multiple agencies, you should also add a
         column to each sheet titled agency. The value of this column should be
         the name of the agency to which that row belongs. For instance:
+        <Styled.ImageWrapper>
+          <Styled.Image
+            src={superagencyColumnScreenshot}
+            alt=""
+            width="300px"
+            align="center"
+          />
+        </Styled.ImageWrapper>
       </Styled.SectionParagraph>
-      <Styled.SectionParagraph>[Import screenshot]</Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>
@@ -177,8 +212,10 @@ export const BulkUploadGuide = () => (
         errors and warnings into consideration, check that your uploaded file
         and data is properly formatted, and make changes and re-upload your file
         accordingly.
+        <Styled.ImageWrapper>
+          <Styled.Image src={errorWarningsScreenshot} alt="" align="center" />
+        </Styled.ImageWrapper>
       </Styled.SectionParagraph>
-      <Styled.SectionParagraph>[Import screenshot]</Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>

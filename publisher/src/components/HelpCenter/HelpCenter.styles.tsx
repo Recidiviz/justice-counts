@@ -184,9 +184,15 @@ export const Caption = styled.p`
   margin-bottom: 32px;
 `;
 
-export const SectionTitle = styled.h2`
+export const SectionTitle = styled.h2<{ italics?: boolean }>`
   ${typography.sizeCSS.normal}
   margin-bottom: 8px;
+  ${({ italics }) =>
+    italics &&
+    `
+      font-weight: 400;
+      font-style: italic; 
+  `}
 `;
 
 export const SectionWrapper = styled.div`
@@ -419,6 +425,8 @@ export const Thumbnail = styled.img`
 `;
 
 export const ImageWrapper = styled.div`
+  display: flex;
+
   &:first-child {
     margin-bottom: 26px;
   }
@@ -428,7 +436,7 @@ export const Image = styled.img<{ align?: "left" | "center" | "right" }>`
   max-width: ${CONTENT_CONTAINER_WIDTH}px;
   ${({ align }) => {
     if (align === "center") {
-      return `margin: 0 auto;`;
+      return `margin: 6px auto;`;
     }
     if (align === "right") {
       return `margin-left: auto;`;
@@ -437,6 +445,7 @@ export const Image = styled.img<{ align?: "left" | "center" | "right" }>`
       return `margin-right: auto;`;
     }
   }};
+  margin-top: 6px;
   margin-bottom: 6px;
 `;
 
