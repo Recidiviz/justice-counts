@@ -23,12 +23,12 @@ export const AccountSetupGuide = () => (
   <>
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
-        Within agency settings you can update:
+        Within Agency Settings you can update:
         <ul>
-          <li>agency users</li>
-          <li>agency description</li>
-          <li>agency url</li>
-          <li>jurisdictions covered by your agency</li>
+          <li>Agency Users</li>
+          <li>Agency Description</li>
+          <li>Agency URL</li>
+          <li>Jurisdictions covered by your agency</li>
         </ul>
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
@@ -43,7 +43,11 @@ export const AccountSetupGuide = () => (
         Some users may also have the ability to add new users to the agency, by
         specifying the name and email address. If you need to update your agency
         name, state, or sector, please contact{" "}
-        <a href="mailto:justice-counts-support@csg.org">
+        <a
+          href="mailto:justice-counts-support@csg.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           justice-counts-support@csg.org
         </a>
         .
