@@ -26,7 +26,7 @@ export const SetUpMetricsGuide = () => (
         The <strong>Set Up Metrics</strong> page allows you to customize the
         Justice Counts metrics based on whether or not you are able to share
         data for the metric, the frequency in which you record the data, and how
-        your agency defines and breaks down the metric
+        your agency defines and breaks down the metric.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
@@ -37,7 +37,7 @@ export const SetUpMetricsGuide = () => (
         <ul>
           <li>
             If you do not plan to share data for the metric, choose{" "}
-            <strong>Not Available</strong> button.{" "}
+            <strong>Not Available</strong> button{" "}
           </li>
           <li>
             If the metric is aggregated at the monthly level, choose{" "}
