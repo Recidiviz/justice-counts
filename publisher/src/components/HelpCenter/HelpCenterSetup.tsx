@@ -117,7 +117,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         path: "superagencies",
         element: <SuperagenciesGuide />,
         icon: <SuperagenciesIcon />,
-        relevantGuides: [],
+        relevantGuides: ["supervision-systems-disaggregation"],
       },
       [GuideKeys.SupervisionSystemsDisaggregation]: {
         category: GuideCategories.AdvancedConcepts,
@@ -126,7 +126,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         path: "supervision-systems-disaggregation",
         element: <SupervisionDisaggregationGuide />,
         icon: <SupervisionDisaggregationsIcon />,
-        relevantGuides: [],
+        relevantGuides: ["superagencies"],
       },
     },
   },
