@@ -102,7 +102,7 @@ export const BulkUploadGuide = () => (
 
     <Styled.SectionWrapper>
       <Styled.SectionTitle>Expected Columns</Styled.SectionTitle>
-      <Styled.SectionTitle italics>
+      <Styled.SectionTitle italic>
         Year, Month, and Value Columns
       </Styled.SectionTitle>
       <Styled.SectionParagraph>
@@ -129,7 +129,7 @@ export const BulkUploadGuide = () => (
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>
-      <Styled.SectionTitle italics>Breakdown Column</Styled.SectionTitle>
+      <Styled.SectionTitle italic>Breakdown Column</Styled.SectionTitle>
       <Styled.SectionParagraph>
         If the metric asks you to break the value down into different categories
         (e.g. separating out crimes by offense type), our system expects a sheet
@@ -153,7 +153,7 @@ export const BulkUploadGuide = () => (
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>
-      <Styled.SectionTitle italics>
+      <Styled.SectionTitle italic>
         Supervision System Column
       </Styled.SectionTitle>
       <Styled.SectionParagraph>
@@ -173,7 +173,7 @@ export const BulkUploadGuide = () => (
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>
-      <Styled.SectionTitle italics>
+      <Styled.SectionTitle italic>
         Superagency Agency Column
       </Styled.SectionTitle>
       <Styled.SectionParagraph>

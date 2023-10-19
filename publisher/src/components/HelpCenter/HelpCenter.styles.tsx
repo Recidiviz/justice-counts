@@ -184,11 +184,11 @@ export const Caption = styled.p`
   margin-bottom: 32px;
 `;
 
-export const SectionTitle = styled.h2<{ italics?: boolean }>`
+export const SectionTitle = styled.h2<{ italic?: boolean }>`
   ${typography.sizeCSS.normal}
   margin-bottom: 8px;
-  ${({ italics }) =>
-    italics &&
+  ${({ italic }) =>
+    italic &&
     `
       font-weight: 400;
       font-style: italic; 
