@@ -33,7 +33,7 @@ import {
   TWO_PANEL_MAX_WIDTH,
 } from "../Reports/ReportDataEntry.styles";
 
-export const AppWrapper = styled.div<{ noBottomPadding: boolean }>`
+export const AppWrapper = styled.div`
   width: 100%;
   min-height: 100%;
   display: flex;
@@ -41,8 +41,7 @@ export const AppWrapper = styled.div<{ noBottomPadding: boolean }>`
   justify-content: space-between;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    ${({ noBottomPadding }) =>
-      !noBottomPadding && `padding-bottom: ${HEADER_BAR_HEIGHT}px;`}
+    padding-bottom: ${HEADER_BAR_HEIGHT}px;
   }
 `;
 

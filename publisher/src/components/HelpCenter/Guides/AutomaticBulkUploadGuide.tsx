@@ -36,11 +36,7 @@ export const AutomatedBulkUploadGuide = () => (
           <li>
             Use Secure File Transfer Protocol (SFTP) to upload your file to our
             server. To initiate this process, please contact{" "}
-            <a
-              href="mailto:justice-counts-support@csg.org"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="mailto:justice-counts-support@csg.org">
               justice-counts-support@csg.org
             </a>
             .
@@ -58,11 +54,7 @@ export const AutomatedBulkUploadGuide = () => (
       <Styled.SectionParagraph>
         Secure File Transfer Protocol (SFTP) allows you to transfer data with a
         high level of security. To begin the process, contact us at{" "}
-        <a
-          href="mailto:justice-counts-support@csg.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="mailto:justice-counts-support@csg.org">
           justice-counts-support@csg.org
         </a>{" "}
         to request a username and password for our SFTP server. Once we have

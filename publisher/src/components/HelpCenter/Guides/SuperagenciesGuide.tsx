@@ -64,11 +64,7 @@ export const SuperagenciesGuide = () => (
         <strong>Metrics Settings</strong> page. To configure metrics for a child
         agency, choose the relevant sector for the child agency and configure
         the metrics for that sector. Then, reach out to{" "}
-        <a
-          href="mailto:justice-counts-support@csg.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="mailto:justice-counts-support@csg.org">
           justice-counts-support@csg.org
         </a>{" "}
         and specify which child agencies you would like to apply these metrics
