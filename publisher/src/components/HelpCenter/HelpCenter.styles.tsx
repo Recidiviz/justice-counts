@@ -24,7 +24,7 @@ import {
 import { rem } from "@justice-counts/common/utils";
 import styled from "styled-components/macro";
 
-const CONTENT_CONTAINER_WIDTH = 555;
+const CONTENT_CONTAINER_WIDTH = 567;
 
 export const HelpCenterContainer = styled.div`
   width: 100%;
@@ -32,6 +32,7 @@ export const HelpCenterContainer = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 40px;
+  padding-bottom: 90px;
   text-align: left;
 
   a,
@@ -269,6 +270,7 @@ export const HelpCenterHome = styled.div`
 
 export const HomeTitle = styled.div`
   ${typography.sizeCSS.title}
+  text-align: center;
 `;
 
 export const GuideLinks = styled.div`
@@ -350,7 +352,7 @@ export const InterstitialButtonContainerWrapper = styled.div`
   gap: 50px;
   margin-top: 32px;
 
-  @media only screen and (max-width: ${TABLET_WIDTH}px) {
+  @media only screen and (max-width: ${TABLET_WIDTH + 92}px) {
     flex-direction: column;
   }
 `;
