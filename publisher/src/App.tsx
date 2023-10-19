@@ -15,6 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import "./components/assets/fonts/index.css";
+
 import { observer } from "mobx-react-lite";
 import React, { ReactElement, useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
@@ -65,7 +67,7 @@ const App: React.FC = (): ReactElement => {
   if (!initialAgency) return <NoAgencies />;
 
   return (
-    <AppWrapper>
+    <AppWrapper noBottomPadding={!location.pathname.includes("help")}>
       <PageWrapper>
         <Routes>
           {/* TODO(#960): Remove env check when ready to launch Help Center */}
