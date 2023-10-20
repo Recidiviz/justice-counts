@@ -18,12 +18,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import * as Styled from ".";
+import { ReactComponent as ManualEntryIcon } from "../assets/manual-entry-icon.svg";
+import { ReactComponent as UploadFolderIcon } from "../assets/upload-folder-icon.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { AppGuideKeys, GuideKeys } from "../HelpCenter/types";
 import { createURLToGuide } from "../HelpCenter/utils";
-import { ReactComponent as ManualEntryIcon } from "../assets/manual-entry-icon.svg";
-import { ReactComponent as UploadFolderIcon } from "../assets/upload-folder-icon.svg";
+import * as Styled from ".";
 
 export const DataEntryInterstitial = () => {
   const navigate = useNavigate();
