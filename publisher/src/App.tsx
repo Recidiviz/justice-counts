@@ -39,7 +39,7 @@ const DOWN_FOR_MAINTENANCE = false;
 
 const App: React.FC = (): ReactElement => {
   const location = useLocation();
-  const { userStore, api } = useStore();
+  const { userStore } = useStore();
   useEffect(() => {
     trackNavigation(location.pathname + location.search);
   }, [location]);
