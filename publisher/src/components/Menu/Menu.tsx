@@ -27,7 +27,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
-import { showHelpCenterContent } from "../../utils/featureFlags";
 import { ReactComponent as TeamManagementIcon } from "../assets/data-line-icon.svg";
 import { ReactComponent as UploadedFilesIcon } from "../assets/folder-icon.svg";
 import { ReactComponent as HelpCenterIcon } from "../assets/help-center-icon.svg";

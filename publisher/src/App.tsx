@@ -34,7 +34,6 @@ import { Loading } from "./components/Loading";
 import { NoAgencies } from "./pages/NoAgencies";
 import { Router } from "./router";
 import { useStore } from "./stores";
-import { showHelpCenterContent } from "./utils/featureFlags";
 
 const DOWN_FOR_MAINTENANCE = false;
 
@@ -70,15 +69,13 @@ const App: React.FC = (): ReactElement => {
     <AppWrapper noBottomPadding={location.pathname.includes("help")}>
       <PageWrapper>
         <Routes>
-          {/* TODO(#960): Remove env check when ready to launch Help Center */}
-          {showHelpCenterContent(api.environment) && (
-            <Route path="help" element={<HelpCenter />}>
-              <Route index element={<HelpCenterInterstitial />} />
-              <Route element={<GuideLayoutWithBreadcrumbs />}>
-                {helpCenterRoutes()}
-              </Route>
+          <Route path="help" element={<HelpCenter />}>
+            <Route index element={<HelpCenterInterstitial />} />
+            <Route element={<GuideLayoutWithBreadcrumbs />}>
+              {helpCenterRoutes()}
             </Route>
-          )}
+          </Route>
+
           <Route
             path="/"
             element={<Navigate to={`/agency/${initialAgency}/`} />}
