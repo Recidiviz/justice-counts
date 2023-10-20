@@ -40,7 +40,6 @@ import { useCurrentPng } from "recharts-to-png";
 import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
-import { showHelpCenterContent } from "../../utils/featureFlags";
 import { ReactComponent as SwitchToChartIcon } from "../assets/switch-to-chart-icon.svg";
 import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-data-table-icon.svg";
 import { AppGuideKeys, GuideKeys } from "../HelpCenter/types";
@@ -55,8 +54,7 @@ import { ChartView } from "./types";
 export const MetricsDataChart: React.FC = observer(() => {
   const [getChartPng, { ref }] = useCurrentPng();
   const navigate = useNavigate();
-  const { api, reportStore, userStore, datapointsStore, dataVizStore } =
-    useStore();
+  const { reportStore, userStore, datapointsStore, dataVizStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
   const { metricsBySystem, agencyMetrics } = reportStore;
   const currentAgency = userStore.getAgency(agencyId);
@@ -280,18 +278,13 @@ export const MetricsDataChart: React.FC = observer(() => {
               </Styled.DisclaimerLink>{" "}
               to adjust.
             </Styled.DisclaimerText>
-            {showHelpCenterContent(api.environment) && (
-              <Styled.DisclaimerText topSpacing>
-                Play around with your data in the graph.{" "}
-                <a
-                  href={learnMoreURL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Learn More
-                </a>
-              </Styled.DisclaimerText>
-            )}
+
+            <Styled.DisclaimerText topSpacing>
+              Play around with your data in the graph.{" "}
+              <a href={learnMoreURL} target="_blank" rel="noopener noreferrer">
+                Learn More
+              </a>
+            </Styled.DisclaimerText>
           </Styled.DisclaimerContainer>
         </Styled.PanelContainerLeft>
 

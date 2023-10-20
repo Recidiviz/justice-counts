@@ -27,7 +27,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
-import { showHelpCenterContent } from "../../utils/featureFlags";
 import { ReactComponent as TeamManagementIcon } from "../assets/data-line-icon.svg";
 import { ReactComponent as UploadedFilesIcon } from "../assets/folder-icon.svg";
 import { ReactComponent as HelpCenterIcon } from "../assets/help-center-icon.svg";
@@ -143,16 +142,7 @@ const Menu: React.FC = () => {
       highlightOption: true,
       onClick: logout,
     },
-  ].filter((linkMetadata) => {
-    /* TODO(#960): Remove filter when ready to launch Help Center */
-    if (
-      !showHelpCenterContent(api.environment) &&
-      linkMetadata.label === "Help Center"
-    ) {
-      return false;
-    }
-    return true;
-  });
+  ];
 
   const profileDropdownOptions: DropdownOption[] = profileDropdownMetadata.map(
     ({ label, icon, highlightOption, path, onClick }) => ({
