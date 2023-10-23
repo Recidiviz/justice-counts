@@ -232,7 +232,7 @@ export const filterNullDatapoints = (data: Datapoint[]) => {
 export const fillTimeGapsBetweenDatapoints = (
   data: Datapoint[],
   monthsAgo: number,
-  startingMonth?: number // For annual metrics, represents the starting month of the recording period
+  startingMonth?: number // For annual metrics, represents the starting month of the recording period:q
 ) => {
   if (data.length === 0) {
     return data;
@@ -258,6 +258,7 @@ export const fillTimeGapsBetweenDatapoints = (
     isAnnual ? startingMonth || 0 : lastDate.getMonth(),
     lastDate.getFullYear()
   );
+
   for (let i = 0; i < data.length; i += 1) {
     const currentDate = new Date(data[i].start_date);
     const timeInterval =
@@ -269,6 +270,14 @@ export const fillTimeGapsBetweenDatapoints = (
     let offset = 0;
     while (currentDate.getTime() - lastDate.getTime() > timeInterval) {
       lastDate = increment(lastDate);
+      if (startingMonth !== undefined) {
+        /**
+         * Since each loop sets `lastDate` to `currentDate`, this will explicitly re-set
+         * the month of `lastDate` to the `startingMonth` provided (if provided) and not have it
+         * default to the month of `currentDate`.
+         */
+        lastDate.setMonth(startingMonth, 1);
+      }
       dataWithGapDatapoints.splice(i + offset + totalOffset, 0, {
         start_date: lastDate.toUTCString(),
         end_date: increment(lastDate).toUTCString(),
