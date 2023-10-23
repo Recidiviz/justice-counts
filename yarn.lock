@@ -29,14 +29,14 @@
     jsonpointer "^5.0.0"
     leven "^3.1.0"
 
-"@auth0/auth0-react@^1.12.0":
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/@auth0/auth0-react/-/auth0-react-1.12.0.tgz#b55e95ba60df3e5cecf5cf7fbe961ea2e3856ef9"
-  integrity sha512-Cny2RyHvr0GrKKKV8PMh6GU0vkWNSgd6mp/YHYJynnYCs9yFduNo9hdpHPxXbdDX5CB6wc2PqK6aL8leDlnl/A==
+"@auth0/auth0-react@^2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@auth0/auth0-react/-/auth0-react-2.2.1.tgz#f1d3ff6ea9144d8bba0597e86beb5cb1d57301cb"
+  integrity sha512-4L4FZvSqIwzVk5mwWFbWzfJ4Zq11dgS0v4KIGKro5tL9dgOnBGq+Ino/1mzexPV1LJHBkfwXG4+IaPiQNz5CGg==
   dependencies:
-    "@auth0/auth0-spa-js" "^1.22.4"
+    "@auth0/auth0-spa-js" "^2.1.2"
 
-"@auth0/auth0-spa-js@^1.20.1", "@auth0/auth0-spa-js@^1.22.4":
+"@auth0/auth0-spa-js@^1.20.1":
   version "1.22.5"
   resolved "https://registry.yarnpkg.com/@auth0/auth0-spa-js/-/auth0-spa-js-1.22.5.tgz#e48be3a6abfa6f63ab6e4b869d04788b4f229f23"
   integrity sha512-6gaQcd+Eb8ZBcdQkrrm9undM7dY/rPvVdQN8s7rxxrviUCs7OopEygsfSkHf67IP4HtlCiE8dSW5/AipRUOw/A==
@@ -48,6 +48,11 @@
     fast-text-encoding "^1.0.6"
     promise-polyfill "^8.2.3"
     unfetch "^4.2.0"
+
+"@auth0/auth0-spa-js@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@auth0/auth0-spa-js/-/auth0-spa-js-2.1.2.tgz#2217db13ce0feb480a190ed165b36681bd48633c"
+  integrity sha512-xdA65Z/U7++Y7L9Uwh8Q8OVOs6qgFz+fb7GAzHFjpr1icO37B//xdzLXm7ZRgA19RWrsNe1nme3h896igJSvvw==
 
 "@aw-web-design/x-default-browser@1.4.88":
   version "1.4.88"
