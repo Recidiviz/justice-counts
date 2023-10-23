@@ -141,7 +141,7 @@ export const incrementMonth = (date: Date) => {
     } ${time} ${timezone}`
   );
 };
-
+// Test fiscal and calendar
 export const incrementYear = (date: Date) => {
   const clonedDate = new Date(date.getTime());
   clonedDate.setFullYear(clonedDate.getFullYear() + 1);
@@ -231,7 +231,8 @@ export const filterNullDatapoints = (data: Datapoint[]) => {
  */
 export const fillTimeGapsBetweenDatapoints = (
   data: Datapoint[],
-  monthsAgo: number
+  monthsAgo: number,
+  startingMonth?: number // For annual metrics, represents the starting month of the recording period
 ) => {
   if (data.length === 0) {
     return data;
@@ -254,7 +255,7 @@ export const fillTimeGapsBetweenDatapoints = (
   }
   lastDate = createGMTDate(
     1,
-    isAnnual ? 0 : lastDate.getMonth(),
+    isAnnual ? startingMonth || 0 : lastDate.getMonth(),
     lastDate.getFullYear()
   );
   for (let i = 0; i < data.length; i += 1) {
@@ -288,7 +289,8 @@ export const fillTimeGapsBetweenDatapoints = (
 export const transformDataForBarChart = (
   datapoints: Datapoint[],
   monthsAgo: DataVizTimeRange,
-  dataVizViewSetting: DataVizCountOrPercentageView
+  dataVizViewSetting: DataVizCountOrPercentageView,
+  startingMonth?: number // For annual metrics, represents the starting month of the recording period
 ) => {
   if (datapoints.length === 0) {
     return datapoints;
@@ -301,7 +303,11 @@ export const transformDataForBarChart = (
   if (dataVizViewSetting === "Percentage") {
     transformedData = transformToRelativePerchanges(transformedData);
   }
-  return fillTimeGapsBetweenDatapoints(transformedData, monthsAgo);
+  return fillTimeGapsBetweenDatapoints(
+    transformedData,
+    monthsAgo,
+    startingMonth
+  );
 };
 
 export const transformDataForMetricInsights = (
