@@ -365,7 +365,7 @@ export const MetricsDataChart: React.FC = observer(() => {
               onClick={() =>
                 dataView === ChartView.Chart
                   ? handleChartDownload(currentSystem, currentMetric.key)
-                  : downloadMetricData(currentMetric, agencyId)
+                  : downloadMetricData(currentMetric, agencyId, false)
               }
             >
               <DownloadChartIcon />
