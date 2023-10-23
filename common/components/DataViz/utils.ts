@@ -141,7 +141,7 @@ export const incrementMonth = (date: Date) => {
     } ${time} ${timezone}`
   );
 };
-// Test fiscal and calendar
+
 export const incrementYear = (date: Date) => {
   const clonedDate = new Date(date.getTime());
   clonedDate.setFullYear(clonedDate.getFullYear() + 1);
@@ -232,7 +232,7 @@ export const filterNullDatapoints = (data: Datapoint[]) => {
 export const fillTimeGapsBetweenDatapoints = (
   data: Datapoint[],
   monthsAgo: number,
-  startingMonth?: number // For annual metrics, represents the starting month of the recording period:q
+  startingMonth?: number // For annual metrics, represents the starting month of the recording period
 ) => {
   if (data.length === 0) {
     return data;
