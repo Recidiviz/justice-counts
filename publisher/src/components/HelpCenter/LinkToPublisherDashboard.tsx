@@ -36,17 +36,18 @@ export const LinkToPublisher: React.FC<
 };
 
 export const LinkToDashboard: React.FC<PropsWithChildren> = ({ children }) => {
-  const { userStore } = useStore();
+  const { api, userStore } = useStore();
   const agencyIdLocalStorage = localStorage.getItem("agencyId");
   const agencyId =
     agencyIdLocalStorage || userStore.getInitialAgencyId()?.toLocaleString();
   const agencyName = agencyId && userStore.getAgency(agencyId)?.name;
+  const isStaging = api.environment === "staging";
 
   if (!agencyName) return <>{children}</>;
 
-  const url = `https://dashboard-staging.justice-counts.org/agency/${slugify(
-    agencyName
-  )}`;
+  const url = `https://dashboard-${
+    isStaging ? "staging" : "demo"
+  }.justice-counts.org/agency/${slugify(agencyName)}`;
 
   return (
     <a href={url} target="_blank" rel="noreferrer noopener">
