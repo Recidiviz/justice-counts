@@ -237,7 +237,6 @@ export const fillTimeGapsBetweenDatapoints = (
   if (data.length === 0) {
     return data;
   }
-  console.log(startingMonth);
 
   const isAnnual = data[0].frequency === "ANNUAL";
   const increment = isAnnual ? incrementYear : incrementMonth;
@@ -259,9 +258,15 @@ export const fillTimeGapsBetweenDatapoints = (
     isAnnual ? startingMonth || 0 : lastDate.getMonth(),
     lastDate.getFullYear()
   );
-  console.log(lastDate, startingMonth);
+
   for (let i = 0; i < data.length; i += 1) {
     const currentDate = new Date(data[i].start_date);
+    /**
+     * If `startingMonth` is provided, update the month of `lastDate` to the `startingMonth`
+     * provided to sync the gap date month with the metric's configured starting month.
+     */
+    if (startingMonth !== undefined) lastDate.setMonth(startingMonth, 1);
+
     const timeInterval =
       data[0].frequency === "MONTHLY"
         ? thirtyOneDaysInSeconds
@@ -271,14 +276,6 @@ export const fillTimeGapsBetweenDatapoints = (
     let offset = 0;
     while (currentDate.getTime() - lastDate.getTime() > timeInterval) {
       lastDate = increment(lastDate);
-      if (startingMonth !== undefined) {
-        /**
-         * Since each loop sets `lastDate` to `currentDate`, this will explicitly re-set
-         * the month of `lastDate` to the `startingMonth` provided (if provided) and not have it
-         * default to the month of `currentDate`.
-         */
-        lastDate.setMonth(startingMonth, 1);
-      }
       dataWithGapDatapoints.splice(i + offset + totalOffset, 0, {
         start_date: lastDate.toUTCString(),
         end_date: increment(lastDate).toUTCString(),
@@ -291,7 +288,7 @@ export const fillTimeGapsBetweenDatapoints = (
     totalOffset += offset;
     lastDate = currentDate;
   }
-  console.log("hi", dataWithGapDatapoints);
+
   return dataWithGapDatapoints;
 };
 
