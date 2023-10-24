@@ -44,7 +44,7 @@ export const LinkToDashboard: React.FC<PropsWithChildren> = ({ children }) => {
 
   if (!agencyName) return <>{children}</>;
 
-  const url = `https://dashboard-demo.justice-counts.org/agency/${slugify(
+  const url = `https://dashboard-staging.justice-counts.org/agency/${slugify(
     agencyName
   )}`;
 
