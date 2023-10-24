@@ -255,7 +255,7 @@ class AgencyDataStore {
       if (metric && this.agency) {
         const agencyId = this.agency.id;
         metric.filenames.forEach((filename) =>
-          downloadFeedData(metric.system.key, agencyId, filename)
+          downloadFeedData(metric.system.key, agencyId, filename, true)
         );
       }
     });

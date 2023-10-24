@@ -20,10 +20,21 @@ import { Metric } from "@justice-counts/common/types";
 export const downloadFeedData = async (
   system: string,
   agencyId: number | string,
-  filename: string
+  filename: string,
+  isPublic: boolean
 ) => {
   const a = document.createElement("a");
-  a.href = `/feed/${agencyId}?system=${system}&metric=${filename}`;
+  let url = `/feed/${agencyId}?system=${system}&metric=${filename}`;
+  if (isPublic === false) {
+    // the isPublic determines where we fetch the an agency's data.
+    // If the information WILL NOT be shared publicly (i.e isPublic === false),
+    // data is requested from a protected endpoint that will return
+    // all uploaded data for an agency. If the data WILL be shared
+    // publicly, data is fetched from a public endpoint that will
+    // only return published data.
+    url = `/api${url}`;
+  }
+  a.href = url;
   a.setAttribute("download", `${filename}.csv`);
   a.click();
   a.remove();
@@ -31,11 +42,12 @@ export const downloadFeedData = async (
 
 export const downloadMetricData = (
   metric: Metric,
-  agencyId: number | string
+  agencyId: number | string,
+  isPublic: boolean
 ) => {
   if (metric) {
     metric.filenames.forEach((fileName) => {
-      downloadFeedData(metric.system.key, agencyId, fileName);
+      downloadFeedData(metric.system.key, agencyId, fileName, isPublic);
     });
   }
 };
