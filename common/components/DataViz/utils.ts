@@ -234,61 +234,103 @@ export const fillTimeGapsBetweenDatapoints = (
   monthsAgo: number,
   startingMonth?: number // For annual metrics, represents the starting month of the recording period
 ) => {
+  // Return data back if it is an empty array
   if (data.length === 0) {
     return data;
   }
-
+  console.log("data:", data);
+  // Check if the frequency of the first datapoint is annual
   const isAnnual = data[0].frequency === "ANNUAL";
+  // Choose incrementor function based on whether or not the metric is annual/monthly
   const increment = isAnnual ? incrementYear : incrementMonth;
+  // Set the empty gap bar value to be ~1/3 the height of the highest value in the bar charts
   const defaultBarValue = getHighestTotalValue(data) / 3;
+  // Clone the datapoint array
   const dataWithGapDatapoints = [...data];
+  // Creates a { Total: 0 } object
   // create the map of dimensions with zero values
   const dimensionsMap = mapValues(getDatapointDimensions(data[0]), (_) => 0);
 
   // loop through all the datapoints
   let totalOffset = 0; // whenever we insert a gap datapoint into `dataWithGapDatapoints`, increment the totalOffset
-  let lastDate = new Date();
+  // Create a new Date obj for today and call it lastDate
+  let earliestDate = new Date();
+  console.log("earliestDate when set:", earliestDate);
+
+  // If metric is annual, set the full year to be the current year minus the years ago (how far back in months the
+  // current filter is set to divided by 12 to get years back)
   if (isAnnual) {
-    lastDate.setFullYear(lastDate.getFullYear() - monthsAgo / 12);
+    earliestDate.setFullYear(earliestDate.getFullYear() - monthsAgo / 12);
   } else {
-    lastDate.setMonth(lastDate.getMonth() - monthsAgo);
+    // If metric is monthly, get the current month minus the filter's months ago
+    earliestDate.setMonth(earliestDate.getMonth() - monthsAgo);
   }
-  lastDate = createGMTDate(
+  // Create a GMT date based on the newly set years or months
+  earliestDate = createGMTDate(
     1,
-    isAnnual ? startingMonth || 0 : lastDate.getMonth(),
-    lastDate.getFullYear()
+    isAnnual ? startingMonth || 0 : earliestDate.getMonth(),
+    earliestDate.getFullYear()
   );
+  console.log("earliestDate after createGMTDate:", earliestDate);
+
+  // 1. Go through each datapoint
+  // 2. Get each datapoints start date and set it as currentDate
+  // 3. Set a time interval of 31 days or 366 days (depending on metric freq) in seconds
+  // 4. Set an offset to maintain correct insert order?
 
   for (let i = 0; i < data.length; i += 1) {
     const currentDate = new Date(data[i].start_date);
+    console.log(
+      `currentDate (${JSON.stringify(data[i])}) start date:`,
+      currentDate
+    );
     /**
-     * If `startingMonth` is provided, update the month of `lastDate` to the `startingMonth`
+     * If `startingMonth` is provided, update the month of `earliestDate` to the `startingMonth`
      * provided to sync the gap date month with the metric's configured starting month.
      */
-    if (startingMonth !== undefined) lastDate.setMonth(startingMonth, 1);
+    // if (startingMonth !== undefined) earliestDate.setMonth(startingMonth, 1);
 
     const timeInterval =
       data[0].frequency === "MONTHLY"
         ? thirtyOneDaysInSeconds
         : threeHundredSixtySixDaysInSeconds;
+    console.log("currentDate time:", currentDate.getTime());
+    console.log("earliestDate time:", earliestDate.getTime());
+    console.log("timeInterval:", timeInterval);
+    // 5. Do a loop as long as the earliestDate in milliseconds minus currentDate in milliseconds
+    //    are greater than the timeInterval (true when the # of milliseconds of earliestDate - currentDate
+    //    is greater than the 31/366 days)
+    // 6. Increment earliestDate, insert into the (current index + offset + totalOffset) index,
+    //    a new gap datapoint object with the start date as the earliestDate, and end date as
+    //    the earliestDate incremented again
+    // 7. Increment the offset by 1
+
     // this while loop can insert multiple gap datapoints between datapoints
     // so must increment this offset to maintain correct insert order
     let offset = 0;
-    while (currentDate.getTime() - lastDate.getTime() > timeInterval) {
-      lastDate = increment(lastDate);
+    while (currentDate.getTime() - earliestDate.getTime() > timeInterval) {
+      earliestDate = increment(earliestDate);
+      console.log("[In loop] earliestDate after increment:", earliestDate);
+      console.log("[In loop] Splice start index:", i + offset + totalOffset);
       dataWithGapDatapoints.splice(i + offset + totalOffset, 0, {
-        start_date: lastDate.toUTCString(),
-        end_date: increment(lastDate).toUTCString(),
+        start_date: earliestDate.toUTCString(),
+        end_date: increment(earliestDate).toUTCString(),
         dataVizMissingData: defaultBarValue,
         frequency: data[0].frequency,
         ...dimensionsMap,
       });
+      console.log(
+        "[In loop] dataWithGapDatapoints:",
+        JSON.stringify(dataWithGapDatapoints, null, 2)
+      );
       offset += 1;
     }
+    // 8. Outside of this while loop, increment the total offset by the currently incremented offset
+    // 9. Set the earliestDate to = the currentDate
     totalOffset += offset;
-    lastDate = currentDate;
+    earliestDate = currentDate;
   }
-
+  console.log("dataWithGapDatapoints:", dataWithGapDatapoints);
   return dataWithGapDatapoints;
 };
 
