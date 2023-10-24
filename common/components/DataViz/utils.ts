@@ -261,11 +261,6 @@ export const fillTimeGapsBetweenDatapoints = (
 
   for (let i = 0; i < data.length; i += 1) {
     const currentDate = new Date(data[i].start_date);
-    /**
-     * If `startingMonth` is provided, update the month of `lastDate` to the `startingMonth`
-     * provided to sync the gap date month with the metric's configured starting month.
-     */
-    if (startingMonth !== undefined) lastDate.setMonth(startingMonth, 1);
 
     const timeInterval =
       data[0].frequency === "MONTHLY"
