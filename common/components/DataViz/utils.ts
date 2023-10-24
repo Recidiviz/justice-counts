@@ -237,6 +237,7 @@ export const fillTimeGapsBetweenDatapoints = (
   if (data.length === 0) {
     return data;
   }
+  console.log(startingMonth);
 
   const isAnnual = data[0].frequency === "ANNUAL";
   const increment = isAnnual ? incrementYear : incrementMonth;
@@ -258,7 +259,7 @@ export const fillTimeGapsBetweenDatapoints = (
     isAnnual ? startingMonth || 0 : lastDate.getMonth(),
     lastDate.getFullYear()
   );
-
+  console.log(lastDate, startingMonth);
   for (let i = 0; i < data.length; i += 1) {
     const currentDate = new Date(data[i].start_date);
     const timeInterval =
@@ -290,7 +291,7 @@ export const fillTimeGapsBetweenDatapoints = (
     totalOffset += offset;
     lastDate = currentDate;
   }
-
+  console.log("hi", dataWithGapDatapoints);
   return dataWithGapDatapoints;
 };
 

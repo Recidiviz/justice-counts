@@ -376,6 +376,7 @@ export const MetricsDataChart: React.FC = observer(() => {
             metric={currentMetric.key}
             metricName={metricName}
             metricFrequency={metricFrequency}
+            metricStartingMonth={currentMetric.starting_month}
             dataView={dataView}
             ref={ref}
           />

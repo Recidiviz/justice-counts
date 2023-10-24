@@ -68,6 +68,7 @@ type DatapointsViewProps = {
   setCountOrPercentageView: (viewSetting: DataVizCountOrPercentageView) => void;
   metricName: string;
   metricFrequency?: ReportFrequency;
+  metricStartingMonth?: number;
   metricNamesByCategory?: { [key: string]: string[] };
   agencyName?: string;
   onMetricsSelect?: (metric: string) => void;
@@ -124,6 +125,7 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
       setCountOrPercentageView,
       metricName,
       metricFrequency,
+      metricStartingMonth,
       metricNamesByCategory,
       agencyName,
       onMetricsSelect,
@@ -194,12 +196,14 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
     }, [mobileSelectMetricsVisible, mobileFiltersVisible]);
 
     const renderChartForMetric = () => {
+      const startingMonth = metricStartingMonth && metricStartingMonth - 1;
       return (
         <BarChart
           data={transformDataForBarChart(
             selectedData,
             selectedTimeRangeValue,
-            countOrPercentageView
+            countOrPercentageView,
+            startingMonth
           )}
           dimensionNames={dimensionNames}
           percentageView={
