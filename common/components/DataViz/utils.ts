@@ -239,6 +239,7 @@ export const fillTimeGapsBetweenDatapoints = (
     return data;
   }
   console.log("data:", data);
+  console.log("startingMonth:", startingMonth);
   // Check if the frequency of the first datapoint is annual
   const isAnnual = data[0].frequency === "ANNUAL";
   // Choose incrementor function based on whether or not the metric is annual/monthly
@@ -284,11 +285,13 @@ export const fillTimeGapsBetweenDatapoints = (
       `currentDate (${JSON.stringify(data[i])}) start date:`,
       currentDate
     );
+
     /**
      * If `startingMonth` is provided, update the month of `earliestDate` to the `startingMonth`
      * provided to sync the gap date month with the metric's configured starting month.
      */
-    // if (startingMonth !== undefined) earliestDate.setMonth(startingMonth, 1);
+    // if (startingMonth !== undefined) currentDate.setMonth(startingMonth, 0);
+    console.log("currentDate after startingMonth set:", currentDate);
 
     const timeInterval =
       data[0].frequency === "MONTHLY"
@@ -308,6 +311,8 @@ export const fillTimeGapsBetweenDatapoints = (
     // this while loop can insert multiple gap datapoints between datapoints
     // so must increment this offset to maintain correct insert order
     let offset = 0;
+    console.log("offset:", offset);
+
     while (currentDate.getTime() - earliestDate.getTime() > timeInterval) {
       earliestDate = increment(earliestDate);
       console.log("[In loop] earliestDate after increment:", earliestDate);
