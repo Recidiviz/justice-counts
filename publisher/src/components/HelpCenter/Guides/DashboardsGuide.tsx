@@ -18,12 +18,14 @@
 import React from "react";
 
 import * as Styled from "../HelpCenter.styles";
+import { LinkToDashboard } from "../LinkToPublisherDashboard";
 
 export const DashboardsGuide = () => (
   <>
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
-        All data shown within the Justice Counts Agency Dashboards are
+        All data shown within the{" "}
+        <LinkToDashboard>Justice Counts Agency Dashboards</LinkToDashboard> are
         specifically published by each agency. For more information on the
         metrics shown, see the{" "}
         <a
@@ -39,10 +41,11 @@ export const DashboardsGuide = () => (
     <Styled.SectionWrapper>
       <Styled.SectionTitle>Home Page</Styled.SectionTitle>
       <Styled.SectionParagraph>
-        The agency dashboard home page provided an at-a-glance overview of all
-        published metrics for a particular agency. With these previews, you can
-        see general trends over time. For a more interactive view, click into
-        the individual category pages.
+        The <LinkToDashboard>agency dashboard home page</LinkToDashboard>{" "}
+        provided an at-a-glance overview of all published metrics for a
+        particular agency. With these previews, you can see general trends over
+        time. For a more interactive view, click into the individual category
+        pages.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
     <Styled.SectionWrapper>

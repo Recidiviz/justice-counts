@@ -18,15 +18,24 @@
 import React from "react";
 
 import * as Styled from "../HelpCenter.styles";
+import { LinkToPublisher } from "../LinkToPublisherDashboard";
 
 export const SetUpMetricsGuide = () => (
   <>
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
-        The <strong>Set Up Metrics</strong> page allows you to customize the
-        Justice Counts metrics based on whether or not you are able to share
-        data for the metric, the frequency in which you record the data, and how
-        your agency defines and breaks down the metric.
+        The{" "}
+        <LinkToPublisher publisherPath="metric-config">
+          Set Up Metrics
+        </LinkToPublisher>{" "}
+        page allows you to customize the Justice Counts metrics based on whether
+        or not you are able to share data for the metric, the frequency in which
+        you record the data, and how your agency defines and breaks down the
+        metric. To access, click{" "}
+        <LinkToPublisher publisherPath="metric-config">
+          Set Up Metrics
+        </LinkToPublisher>{" "}
+        on the top bar.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
@@ -36,17 +45,15 @@ export const SetUpMetricsGuide = () => (
         For each metric, indicate whether or not you plan to share data.
         <ul>
           <li>
-            If you do not plan to share data for the metric, choose{" "}
-            <strong>Not Available</strong> button{" "}
+            If you do not plan to share data for the metric, choose Not
+            Available button{" "}
           </li>
           <li>
-            If the metric is aggregated at the monthly level, choose{" "}
-            <strong>Monthly</strong>
+            If the metric is aggregated at the monthly level, choose Monthly
           </li>
           <li>
-            If the metric is aggregated annually, choose{" "}
-            <strong>Annually</strong> and specify the starting month of the
-            recorded annual period
+            If the metric is aggregated annually, choose Annually and specify
+            the starting month of the recorded annual period
           </li>
         </ul>
       </Styled.SectionParagraph>
@@ -56,20 +63,20 @@ export const SetUpMetricsGuide = () => (
       <Styled.SectionTitle>Metric Breakdowns</Styled.SectionTitle>
       <Styled.SectionParagraph>
         Some metrics provide the option to report specific data for breakdown
-        categories. For example, a <strong>Staff</strong> metric could be broken
-        down into{" "}
-        <strong>
-          Security Staff, Management Staff, Clinical Staff, Other Staff.
-        </strong>{" "}
-        When one of more of these categories is enabled, your agency may report
-        specific data for those categories as well as the overall metric.
+        categories. For example, a Staff metric could be broken down into{" "}
+        Security Staff, Management Staff, Clinical Staff, Other Staff. When one
+        of more of these categories is enabled, your agency may report specific
+        data for those categories as well as the overall metric.
       </Styled.SectionParagraph>
       <Styled.SectionParagraph>
-        While on the <strong>Set Up Metrics</strong> page, look for the{" "}
-        <strong>Metric Breakdowns</strong> section under the{" "}
-        <strong>Set metric availability</strong> heading. Click on the toggle to
-        the left of a breakdown category to toggle a breakdown on/off indicating
-        whether or not it is part of your recorded data for the overall metric.
+        While on the{" "}
+        <LinkToPublisher publisherPath="metric-config">
+          Set Up Metrics
+        </LinkToPublisher>{" "}
+        page, look for the Metric Breakdowns section under the Set metric
+        availability heading. Click on the toggle to the left of a breakdown
+        category to toggle a breakdown on/off indicating whether or not it is
+        part of your recorded data for the overall metric.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
@@ -81,8 +88,8 @@ export const SetUpMetricsGuide = () => (
         in a metric or breakdown.
       </Styled.SectionParagraph>
       <Styled.SectionParagraph>
-        Within <strong>Define Metrics</strong>, click on a metric or its
-        breakdowns to view and edit its definition.
+        Within Define Metrics, click on a metric or its breakdowns to view and
+        edit its definition.
         <ul>
           <li>
             You can specify each definition individually by clicking on the
@@ -92,9 +99,8 @@ export const SetUpMetricsGuide = () => (
             need to share data for each definition category, these are simply
             specified so that people viewing your data understand what is or is
             not included in your overall metric. Alternatively, you may click on{" "}
-            <strong>choose the Justice Counts definition</strong> to
-            automatically select the standard Justice Counts definition for the
-            metric/breakdown.{" "}
+            choose the Justice Counts definition to automatically select the
+            standard Justice Counts definition for the metric/breakdown.{" "}
           </li>
           <li>
             You may also add free-form text to provide even more context on the

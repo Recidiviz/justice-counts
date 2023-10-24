@@ -18,6 +18,7 @@
 import React from "react";
 
 import * as Styled from "../HelpCenter.styles";
+import { LinkToPublisher } from "../LinkToPublisherDashboard";
 
 export const SuperagenciesGuide = () => (
   <>
@@ -46,8 +47,9 @@ export const SuperagenciesGuide = () => (
           </li>
           <li>
             If you would like to view data for a specific agency, use the agency
-            drop down to select the proper agency and click the Explore data
-            tab.{" "}
+            drop down to select the proper agency and click the{" "}
+            <LinkToPublisher publisherPath="data">Explore data</LinkToPublisher>{" "}
+            tab.
           </li>
         </ul>
       </Styled.SectionParagraph>
@@ -61,9 +63,12 @@ export const SuperagenciesGuide = () => (
         As a superagency, you may configure metrics on behalf of your own agency
         as well as your child agencies. To configure superagency metrics, choose{" "}
         <strong>Superagency</strong> on the left hand side of the{" "}
-        <strong>Metrics Settings</strong> page. To configure metrics for a child
-        agency, choose the relevant sector for the child agency and configure
-        the metrics for that sector. Then, reach out to{" "}
+        <LinkToPublisher publisherPath="metric-config">
+          Metrics Settings
+        </LinkToPublisher>{" "}
+        page. To configure metrics for a child agency, choose the relevant
+        sector for the child agency and configure the metrics for that sector.
+        Then, reach out to{" "}
         <a
           href="mailto:justice-counts-support@csg.org"
           target="_blank"

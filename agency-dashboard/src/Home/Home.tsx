@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { slugify } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -24,7 +25,6 @@ import { Loading } from "../Loading";
 import { NotFound } from "../NotFound";
 import { useStore } from "../stores";
 import { environment } from "../stores/API";
-import { slugify } from "../utils/formatting";
 import * as Styled from "./Home.styles";
 import { AgencyMetadata } from "./types";
 

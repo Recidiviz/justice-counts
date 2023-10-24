@@ -28,7 +28,7 @@ import publisherThumbnail from "../assets/hc-publisher-help-guide-thumbnail.png"
 import { ReactComponent as SetUpMetricsIcon } from "../assets/hc-set-up-metrics-icon.svg";
 import { ReactComponent as SuperagenciesIcon } from "../assets/hc-superagencies-icon.svg";
 import { ReactComponent as SupervisionDisaggregationsIcon } from "../assets/hc-supervision-disaggregations-icon.svg";
-import { AccountSetupGuide } from "./Guides/AccountSetupGuide";
+import { AgencySettingsGuide } from "./Guides/AgencySettingsGuide";
 import { AutomatedBulkUploadGuide } from "./Guides/AutomaticBulkUploadGuide";
 import { BulkUploadGuide } from "./Guides/BulkUploadGuide";
 import { DashboardsGuide } from "./Guides/DashboardsGuide";
@@ -68,7 +68,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         title: "Agency Settings",
         caption: "See and edit information about your agency.",
         path: "agency-settings",
-        element: <AccountSetupGuide />,
+        element: <AgencySettingsGuide />,
         icon: <AgencySettingsIcon />,
         relevantGuides: ["set-up-metrics"],
       },

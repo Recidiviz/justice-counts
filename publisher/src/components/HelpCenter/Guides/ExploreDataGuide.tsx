@@ -18,7 +18,7 @@
 import React from "react";
 
 import * as Styled from "../HelpCenter.styles";
-import LinkToPublisher from "../LinkToPublisher";
+import { LinkToPublisher } from "../LinkToPublisherDashboard";
 
 export const ExploreDataGuide = () => {
   return (
@@ -28,7 +28,8 @@ export const ExploreDataGuide = () => {
           The{" "}
           <LinkToPublisher publisherPath="data">Explore Data</LinkToPublisher>{" "}
           page allows you to visualize the data you have uploaded into
-          Publisher. It displays both draft and published data.
+          Publisher. It displays both draft and published data. To access, click
+          Explore Data on the top bar.
         </Styled.SectionParagraph>
       </Styled.SectionWrapper>
 
@@ -38,7 +39,9 @@ export const ExploreDataGuide = () => {
           Metric data can be viewed in both chart or table form. The time period
           reflected in the chart is adjustable through the drop-downs, and
           breakdown information may be displayed if provided. The chart is
-          downloadable as a PNG.
+          downloadable as a PNG by clicking the download button while viewing
+          the Chart. To download the data as a CSV, click{" "}
+          <strong>Switch to Data Table</strong> and then download.
         </Styled.SectionParagraph>
       </Styled.SectionWrapper>
 

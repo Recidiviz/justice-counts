@@ -19,6 +19,9 @@ import { debounce, memoize } from "lodash";
 
 import { MetricContext } from "../types";
 
+export const slugify = (str: string): string =>
+  str?.replace(/\s/g, "-")?.toLowerCase();
+
 export const frequencyString = (frequency?: string) => {
   if (frequency === "ANNUAL") {
     return "ANNUALLY";

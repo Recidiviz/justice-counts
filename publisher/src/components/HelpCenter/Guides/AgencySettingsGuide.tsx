@@ -18,12 +18,17 @@
 import React from "react";
 
 import * as Styled from "../HelpCenter.styles";
+import { LinkToPublisher } from "../LinkToPublisherDashboard";
 
-export const AccountSetupGuide = () => (
+export const AgencySettingsGuide = () => (
   <>
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
-        Within Agency Settings you can update:
+        Within{" "}
+        <LinkToPublisher publisherPath="settings/agency-settings">
+          Agency Settings
+        </LinkToPublisher>{" "}
+        you can update:
         <ul>
           <li>Agency Users</li>
           <li>Agency Description</li>
@@ -31,18 +36,19 @@ export const AccountSetupGuide = () => (
           <li>Jurisdictions covered by your agency</li>
         </ul>
       </Styled.SectionParagraph>
+      <Styled.SectionParagraph>
+        {" "}
+        To access, select Agency Settings from the dropdown on the top right
+        corner.
+      </Styled.SectionParagraph>
     </Styled.SectionWrapper>
+
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
         When setting jurisdiction, you can specify areas that are included and
-        excluded.
-      </Styled.SectionParagraph>
-    </Styled.SectionWrapper>
-    <Styled.SectionWrapper>
-      <Styled.SectionParagraph>
-        Some users may also have the ability to add new users to the agency, by
-        specifying the name and email address. If you need to update your agency
-        name, state, or sector, please contact{" "}
+        excluded. Some users may also have the ability to add new users to the
+        agency, by specifying the name and email address. If you need to update
+        your agency name, state, or sector, please contact{" "}
         <a
           href="mailto:justice-counts-support@csg.org"
           target="_blank"

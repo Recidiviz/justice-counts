@@ -18,16 +18,20 @@
 import React from "react";
 
 import * as Styled from "../HelpCenter.styles";
+import { LinkToPublisher } from "../LinkToPublisherDashboard";
 
 export const AutomatedBulkUploadGuide = () => (
   <>
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
         Automated Data Upload is a feature that allows you to upload data to
-        Justice Counts with the bulk upload format without logging in to
-        Publisher. This is done using Secure File Transfer Protocol (SFTP),
-        which is a secure way to transfer files over a network. This can be done
-        through the following steps:
+        Justice Counts with the{" "}
+        <LinkToPublisher publisherPath="upload">
+          bulk upload format
+        </LinkToPublisher>{" "}
+        without logging in to Publisher. This is done using Secure File Transfer
+        Protocol (SFTP), which is a secure way to transfer files over a network.
+        This can be done through the following steps:
         <ol>
           <li>
             Export your data as a CSV or Excel file in the Justice Counts bulk
