@@ -240,6 +240,8 @@ export const fillTimeGapsBetweenDatapoints = (
   const isAnnual = frequency === "ANNUAL";
   // Represents how high the empty gap bars go - 1/3 of the highest value
   const defaultBarValue = getHighestTotalValue(data) / 3;
+  // Create the map of dimensions with zero values
+  const dimensionsMap = mapValues(getDatapointDimensions(data[0]), (_) => 0);
   // Sort datapoints in ascending order by start date
   const dataSortedByStartDate = data.sort(
     (a, b) => +new Date(a.start_date) - +new Date(b.start_date)
@@ -364,7 +366,7 @@ export const fillTimeGapsBetweenDatapoints = (
       ).toUTCString(),
       dataVizMissingData: defaultBarValue,
       frequency,
-      Total: 0,
+      ...dimensionsMap,
     }));
 
   // Merge `filteredDatapoints` and `gapDatapoints` and sort them in ascending order by start date
