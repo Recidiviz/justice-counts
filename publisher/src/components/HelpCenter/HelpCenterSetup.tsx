@@ -57,7 +57,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
       [GuideKeys.ExploreData]: {
         category: GuideCategories.InteractWithTheData,
         title: "Explore your Data",
-        caption: "Interact with your data to discover insights.",
+        caption: "Interact with your data to discover insights",
         path: "explore-data",
         element: <ExploreDataGuide />,
         icon: <ExploreDataIcon />,
@@ -66,7 +66,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
       [GuideKeys.AgencySettings]: {
         category: GuideCategories.AccountSetup,
         title: "Agency Settings",
-        caption: "See and edit information about your agency.",
+        caption: "See and edit information about your agency",
         path: "agency-settings",
         element: <AgencySettingsGuide />,
         icon: <AgencySettingsIcon />,
@@ -76,7 +76,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         category: GuideCategories.AccountSetup,
         title: "Set Up Metrics",
         caption:
-          "Specify the availability, frequency and definitions of metrics and relevant breakdown categories.",
+          "Specify the availability, frequency and definitions of metrics and relevant breakdown categories",
         path: "set-up-metrics",
         element: <SetUpMetricsGuide />,
         icon: <SetUpMetricsIcon />,
@@ -85,7 +85,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
       [GuideKeys.ManualEntry]: {
         category: GuideCategories.AddData,
         title: "Manual Entry",
-        caption: "Manually enter your data through text fields.",
+        caption: "Manually enter your data through text fields",
         path: "manual-entry",
         element: <ManualEntryGuide />,
         icon: <ManualEntryIcon />,
@@ -95,20 +95,20 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         category: GuideCategories.AddData,
         title: "Bulk Upload",
         caption:
-          "Upload and publish data for multiple records at once using excel or csv files to expedite data sharing.",
+          "Upload and publish data for multiple records at once using excel or csv files to expedite data sharing",
         path: "bulk-upload",
         element: <BulkUploadGuide />,
         icon: <BulkUploadIcon />,
-        relevantGuides: ["manual-entry"],
+        relevantGuides: ["automated-bulk-upload", "manual-entry"],
       },
       [GuideKeys.AutomatedBulkUpload]: {
         category: GuideCategories.AddData,
         title: "Automated Bulk Upload",
-        caption: "Upload Workbooks without logging-in.",
+        caption: "Upload Workbooks without logging-in",
         path: "automated-bulk-upload",
         element: <AutomatedBulkUploadGuide />,
         icon: <AutomatedBulkUploadIcon />,
-        relevantGuides: ["manual-entry"],
+        relevantGuides: ["bulk-upload", "manual-entry"],
       },
       [GuideKeys.Superagencies]: {
         category: GuideCategories.AdvancedConcepts,
@@ -140,7 +140,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
       [GuideKeys.Dashboards]: {
         category: GuideCategories.Dashboards,
         title: "Dashboards",
-        caption: "Visualize agency data to see trends over time.",
+        caption: "Visualize agency data to see trends over time",
         path: "dashboards",
         element: <DashboardsGuide />,
         icon: <ExploreDataIcon />,
