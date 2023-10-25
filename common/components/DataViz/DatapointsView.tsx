@@ -203,6 +203,7 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
             selectedData,
             selectedTimeRangeValue,
             countOrPercentageView,
+            metricFrequency,
             startingMonth
           )}
           dimensionNames={dimensionNames}

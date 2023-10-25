@@ -47,6 +47,7 @@ export const useBarChart = ({
         datapointsByMetric[metric.key].aggregate,
         getDataVizTimeRange(metric),
         "Count",
+        metric.custom_frequency || metric.frequency,
         startingMonth
       );
     }

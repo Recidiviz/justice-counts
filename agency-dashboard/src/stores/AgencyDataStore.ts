@@ -315,7 +315,8 @@ class AgencyDataStore {
     const transformedDataForChart = transformDataForBarChart(
       aggregateDatapoints,
       timeRange,
-      "Count"
+      "Count",
+      metric.custom_frequency || metric.frequency
     );
 
     /** Get first and last datapoint dates to display time-range */
