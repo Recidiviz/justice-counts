@@ -2049,7 +2049,6 @@ describe("fillTimeGapsBetweenDatapoints", () => {
 
 describe("transformData", () => {
   test("putting it all together", () => {
-    console.log(transformDataForBarChart(testDatapoints5, 60, "Percentage"));
     expect(
       transformDataForBarChart(testDatapoints5, 60, "Percentage")
     ).toStrictEqual(testDatapoints5Transformed);
