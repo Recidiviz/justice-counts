@@ -241,121 +241,261 @@ const printDate = (date: Date) => {
     2
   );
 };
+
 export const fillTimeGapsBetweenDatapoints = (
   data: Datapoint[],
   monthsAgo: number,
   startingMonth?: number // For annual metrics, represents the starting month of the recording period
 ) => {
-  // Return data back if it is an empty array
-  if (data.length === 0) {
-    return data;
-  }
-  console.log(":::::::::::::::::::::::::::::::::");
-  console.log("data:", data);
-  console.log("monthsAgo:", monthsAgo);
-  console.log("startingMonth:", startingMonth);
-  // Check if the frequency of the first datapoint is annual
-  const isAnnual = data[0].frequency === "ANNUAL";
-  console.log("isAnnual", isAnnual);
-  // Choose incrementor function based on whether or not the metric is annual/monthly
-  const increment = isAnnual ? incrementYear : incrementMonth;
-  // Set the empty gap bar value to be ~1/3 the height of the highest value in the bar charts
-  const defaultBarValue = getHighestTotalValue(data) / 3;
-  // Clone the datapoint array
-  const dataWithGapDatapoints = [...data];
-  // Creates a { Total: 0 } object
-  // create the map of dimensions with zero values
-  const dimensionsMap = mapValues(getDatapointDimensions(data[0]), (_) => 0);
-
-  // loop through all the datapoints
-  let totalOffset = 0; // whenever we insert a gap datapoint into `dataWithGapDatapoints`, increment the totalOffset
-  // Create a new Date obj for today and call it latestDate
-  let latestDate = new Date();
-  console.log("latestDate when set:", printDate(latestDate));
-
-  // If metric is annual, set the full year to be the current year minus the years ago (how far back in months the
-  // current filter is set to divided by 12 to get years back)
-  if (isAnnual) {
-    latestDate.setFullYear(latestDate.getFullYear() - monthsAgo / 12);
-  } else {
-    // If metric is monthly, get the current month minus the filter's months ago
-    latestDate.setMonth(latestDate.getMonth() - monthsAgo);
-  }
-  // Create a GMT date based on the newly set years or months
-  latestDate = createGMTDate(
-    1,
-    isAnnual ? startingMonth || 0 : latestDate.getMonth(),
-    latestDate.getFullYear()
+  const dataSortedByStartDate = data.sort(
+    (a, b) => new Date(a.start_date) - new Date(b.start_date)
   );
-  console.log("latestDate after createGMTDate:", printDate(latestDate));
+  const firstDatapointDate = new Date(dataSortedByStartDate[0].start_date);
+  const firstDatapointStartYear = firstDatapointDate.getUTCFullYear();
+  const firstDatapointStartMonth = firstDatapointDate.getUTCMonth();
+  const metricFrequency = data[0].frequency;
+  const isAnnual = metricFrequency === "ANNUAL";
+  const defaultBarValue = getHighestTotalValue(data) / 3;
 
-  // 1. Go through each datapoint
-  // 2. Get each datapoints start date and set it as currentDate
-  // 3. Set a time interval of 31 days or 366 days (depending on metric freq) in seconds
-  // 4. Set an offset to maintain correct insert order?
+  let referencePointDate = new Date();
+  const currentYear = new Date().getUTCFullYear();
+  const currentMonth = new Date().getUTCMonth();
 
-  for (let i = 0; i < data.length; i += 1) {
-    const currentDate = new Date(data[i].start_date);
-    console.log(
-      `currentDate start date (${JSON.stringify(data[i].start_date)}):`,
-      printDate(currentDate)
-    );
+  // If monthsAgo is not 0, these will be the starting points of the filtered time window.
+  const startingPointYear = currentYear - monthsAgo / 12;
+  const startingPointMonth = currentMonth - monthsAgo;
 
-    /**
-     * If `startingMonth` is provided, update the month of `latestDate` to the `startingMonth`
-     * provided to sync the gap date month with the metric's configured starting month.
-     */
-    // if (startingMonth !== undefined) currentDate.setMonth(startingMonth, 0);
-    console.log("currentDate after startingMonth set:", currentDate);
-
-    const timeInterval =
-      data[0].frequency === "MONTHLY"
-        ? thirtyOneDaysInSeconds
-        : threeHundredSixtySixDaysInSeconds;
-    console.log("currentDate time:", currentDate.getTime());
-    console.log("latestDate time:", latestDate.getTime());
-    console.log("timeInterval:", timeInterval);
-    // 5. Do a loop as long as the latestDate in milliseconds minus currentDate in milliseconds
-    //    are greater than the timeInterval (true when the # of milliseconds of latestDate - currentDate
-    //    is greater than the 31/366 days)
-    // 6. Increment latestDate, insert into the (current index + offset + totalOffset) index,
-    //    a new gap datapoint object with the start date as the latestDate, and end date as
-    //    the latestDate incremented again
-    // 7. Increment the offset by 1
-
-    // this while loop can insert multiple gap datapoints between datapoints
-    // so must increment this offset to maintain correct insert order
-    let offset = 0;
-    console.log("offset:", offset);
-
-    while (currentDate.getTime() - latestDate.getTime() > timeInterval) {
-      latestDate = increment(latestDate);
-      console.log(
-        "[In loop] latestDate after increment:",
-        printDate(latestDate)
-      );
-      console.log("[In loop] Splice start index:", i + offset + totalOffset);
-      dataWithGapDatapoints.splice(i + offset + totalOffset, 0, {
-        start_date: latestDate.toUTCString(),
-        end_date: increment(latestDate).toUTCString(),
-        dataVizMissingData: defaultBarValue,
-        frequency: data[0].frequency,
-        ...dimensionsMap,
-      });
-      console.log(
-        "[In loop] dataWithGapDatapoints:",
-        JSON.stringify(dataWithGapDatapoints, null, 2)
-      );
-      offset += 1;
-    }
-    // 8. Outside of this while loop, increment the total offset by the currently incremented offset
-    // 9. Set the latestDate to = the currentDate
-    totalOffset += offset;
-    latestDate = currentDate;
+  if (isAnnual) {
+    referencePointDate.setUTCFullYear(startingPointYear);
+  } else {
+    referencePointDate.setUTCMonth(startingPointMonth);
   }
-  console.log("dataWithGapDatapoints:", dataWithGapDatapoints);
+
+  const yearsMonthsArray = Array.from(
+    {
+      length: isAnnual
+        ? monthsAgo === 0
+          ? currentYear - firstDatapointStartYear
+          : monthsAgo / 12
+        : monthsAgo === 0
+        ? currentMonth -
+          firstDatapointStartMonth +
+          12 * (currentYear - firstDatapointStartYear)
+        : monthsAgo,
+    },
+    (v, i) => {
+      const date = createGMTDate(
+        1,
+        isAnnual
+          ? startingMonth || 0
+          : new Date(
+              new Date().setMonth(new Date().getMonth() - i)
+            ).getUTCMonth(),
+        isAnnual
+          ? currentYear - i
+          : new Date(
+              new Date().setMonth(new Date().getMonth() - i)
+            ).getUTCFullYear()
+      );
+
+      return date;
+    }
+  );
+
+  const filteredData = data.filter((d) => {
+    if (monthsAgo === 0) return true;
+    if (isAnnual) {
+      if (
+        new Date(d.start_date).getUTCFullYear() <
+        referencePointDate.getUTCFullYear()
+      )
+        return false;
+    } else {
+      if (
+        new Date(d.start_date).getUTCMonth() <
+          referencePointDate.getUTCMonth() &&
+        new Date(d.start_date).getUTCFullYear() <
+          referencePointDate.getUTCFullYear()
+      )
+        return false;
+    }
+    return true;
+  });
+
+  // Add a filter for yearsMonthsArray if the year and date matches a dp we already have, skip it.
+  const filteredGapDPs = yearsMonthsArray
+    .filter((date) => {
+      if (isAnnual) {
+        if (
+          filteredData
+            .map((d) => new Date(d.start_date).getUTCFullYear())
+            .includes(date.getUTCFullYear())
+        )
+          return false;
+      } else {
+        if (
+          filteredData
+            .map(
+              (d) =>
+                `${new Date(d.start_date).getUTCMonth()} ${new Date(
+                  d.start_date
+                ).getUTCFullYear()}`
+            )
+            .includes(`${date.getUTCMonth()} ${date.getUTCFullYear()}`)
+        )
+          return false;
+      }
+      return true;
+    })
+    .map((d) => {
+      if (isAnnual) {
+        return {
+          start_date: new Date(
+            createGMTDate(1, d.getUTCMonth(), d.getUTCFullYear())
+          ).toUTCString(),
+          end_date: new Date(
+            createGMTDate(1, d.getUTCMonth(), d.getUTCFullYear() + 1)
+          ).toUTCString(),
+          dataVizMissingData: defaultBarValue,
+          frequency: metricFrequency,
+          Total: 0,
+        };
+      } else {
+        return {
+          start_date: new Date(
+            createGMTDate(1, d.getUTCMonth(), d.getUTCFullYear())
+          ).toUTCString(),
+          end_date: new Date(
+            createGMTDate(1, (d.getUTCMonth() + 1) % 12, d.getUTCFullYear())
+          ).toUTCString(),
+          dataVizMissingData: defaultBarValue,
+          frequency: metricFrequency,
+          Total: 0,
+        };
+      }
+    });
+
+  const dataWithGapDatapoints = [...filteredData, ...filteredGapDPs].sort(
+    (a, b) => new Date(a.start_date) - new Date(b.start_date)
+  );
+
   return dataWithGapDatapoints;
 };
+// export const fillTimeGapsBetweenDatapoints = (
+//   data: Datapoint[],
+//   monthsAgo: number,
+//   startingMonth?: number // For annual metrics, represents the starting month of the recording period
+// ) => {
+//   // Return data back if it is an empty array
+//   if (data.length === 0) {
+//     return data;
+//   }
+//   console.log(":::::::::::::::::::::::::::::::::");
+//   console.log("data:", data);
+//   console.log("monthsAgo:", monthsAgo);
+//   console.log("startingMonth:", startingMonth);
+//   // Check if the frequency of the first datapoint is annual
+//   const isAnnual = data[0].frequency === "ANNUAL";
+//   console.log("isAnnual", isAnnual);
+//   // Choose incrementor function based on whether or not the metric is annual/monthly
+//   const increment = isAnnual ? incrementYear : incrementMonth;
+//   // Set the empty gap bar value to be ~1/3 the height of the highest value in the bar charts
+//   const defaultBarValue = getHighestTotalValue(data) / 3;
+//   // Clone the datapoint array
+//   const dataWithGapDatapoints = [...data];
+//   // Creates a { Total: 0 } object
+//   // create the map of dimensions with zero values
+//   const dimensionsMap = mapValues(getDatapointDimensions(data[0]), (_) => 0);
+
+//   // loop through all the datapoints
+//   let totalOffset = 0; // whenever we insert a gap datapoint into `dataWithGapDatapoints`, increment the totalOffset
+//   // Create a new Date obj for today and call it latestDate
+//   let latestDate = new Date();
+//   console.log("latestDate when set:", printDate(latestDate));
+
+//   // If metric is annual, set the full year to be the current year minus the years ago (how far back in months the
+//   // current filter is set to divided by 12 to get years back)
+//   if (isAnnual) {
+//     latestDate.setFullYear(latestDate.getFullYear() - monthsAgo / 12);
+//   } else {
+//     // If metric is monthly, get the current month minus the filter's months ago
+//     latestDate.setMonth(latestDate.getMonth() - monthsAgo);
+//   }
+//   // Create a GMT date based on the newly set years or months
+//   latestDate = createGMTDate(
+//     1,
+//     isAnnual ? startingMonth || 0 : latestDate.getMonth(),
+//     latestDate.getFullYear()
+//   );
+//   console.log("latestDate after createGMTDate:", printDate(latestDate));
+
+//   // 1. Go through each datapoint
+//   // 2. Get each datapoints start date and set it as currentDate
+//   // 3. Set a time interval of 31 days or 366 days (depending on metric freq) in seconds
+//   // 4. Set an offset to maintain correct insert order?
+
+//   for (let i = 0; i < data.length; i += 1) {
+//     const currentDate = new Date(data[i].start_date);
+//     console.log(
+//       `currentDate start date (${JSON.stringify(data[i].start_date)}):`,
+//       printDate(currentDate)
+//     );
+
+//     /**
+//      * If `startingMonth` is provided, update the month of `latestDate` to the `startingMonth`
+//      * provided to sync the gap date month with the metric's configured starting month.
+//      */
+//     // if (startingMonth !== undefined) currentDate.setMonth(startingMonth, 0);
+//     console.log("currentDate after startingMonth set:", currentDate);
+
+//     const timeInterval =
+//       data[0].frequency === "MONTHLY"
+//         ? thirtyOneDaysInSeconds
+//         : threeHundredSixtySixDaysInSeconds;
+//     console.log("currentDate time:", currentDate.getTime());
+//     console.log("latestDate time:", latestDate.getTime());
+//     console.log("timeInterval:", timeInterval);
+//     // 5. Do a loop as long as the latestDate in milliseconds minus currentDate in milliseconds
+//     //    are greater than the timeInterval (true when the # of milliseconds of latestDate - currentDate
+//     //    is greater than the 31/366 days)
+//     // 6. Increment latestDate, insert into the (current index + offset + totalOffset) index,
+//     //    a new gap datapoint object with the start date as the latestDate, and end date as
+//     //    the latestDate incremented again
+//     // 7. Increment the offset by 1
+
+//     // this while loop can insert multiple gap datapoints between datapoints
+//     // so must increment this offset to maintain correct insert order
+//     let offset = 0;
+//     console.log("offset:", offset);
+
+//     while (currentDate.getTime() - latestDate.getTime() > timeInterval) {
+//       latestDate = increment(latestDate);
+//       console.log(
+//         "[In loop] latestDate after increment:",
+//         printDate(latestDate)
+//       );
+//       console.log("[In loop] Splice start index:", i + offset + totalOffset);
+//       dataWithGapDatapoints.splice(i + offset + totalOffset, 0, {
+//         start_date: latestDate.toUTCString(),
+//         end_date: increment(latestDate).toUTCString(),
+//         dataVizMissingData: defaultBarValue,
+//         frequency: data[0].frequency,
+//         ...dimensionsMap,
+//       });
+//       console.log(
+//         "[In loop] dataWithGapDatapoints:",
+//         JSON.stringify(dataWithGapDatapoints, null, 2)
+//       );
+//       offset += 1;
+//     }
+//     // 8. Outside of this while loop, increment the total offset by the currently incremented offset
+//     // 9. Set the latestDate to = the currentDate
+//     totalOffset += offset;
+//     latestDate = currentDate;
+//   }
+//   console.log("dataWithGapDatapoints:", dataWithGapDatapoints);
+//   return dataWithGapDatapoints;
+// };
 
 // transforms data into the right display format for the data viz chart
 export const transformDataForBarChart = (
