@@ -266,7 +266,7 @@ export const fillTimeGapsBetweenDatapoints = (
    * Create a new reference point date object and set it to the previously calculated reference month/year
    * depending on the metric's frequency.
    */
-  let referencePointDate = new Date();
+  const referencePointDate = new Date();
   if (isAnnual) {
     referencePointDate.setUTCFullYear(referencePointYear);
   } else {
@@ -337,33 +337,37 @@ export const fillTimeGapsBetweenDatapoints = (
         filteredDatapoints
           .map((dp) => {
             const datapointStartDate = new Date(dp.start_date);
-            return `${datapointStartDate.getUTCMonth()} ${datapointStartDate.getUTCFullYear()}`;
+            return isAnnual
+              ? datapointStartDate.getUTCFullYear()
+              : `${datapointStartDate.getUTCMonth()} ${datapointStartDate.getUTCFullYear()}`;
           })
-          .includes(`${date.getUTCMonth()} ${date.getUTCFullYear()}`)
+          .includes(
+            isAnnual
+              ? date.getUTCFullYear()
+              : `${date.getUTCMonth()} ${date.getUTCFullYear()}`
+          )
       ) {
         return false;
       }
       return true;
     })
-    .map((date) => {
-      return {
-        start_date: new Date(
-          createGMTDate(1, date.getUTCMonth(), date.getUTCFullYear())
-        ).toUTCString(),
-        end_date: new Date(
-          createGMTDate(
-            1,
-            isAnnual ? date.getUTCMonth() : (date.getUTCMonth() + 1) % 12,
-            isAnnual ? date.getUTCFullYear() + 1 : date.getUTCFullYear()
-          )
-        ).toUTCString(),
-        dataVizMissingData: defaultBarValue,
-        frequency,
-        Total: 0,
-      };
-    });
+    .map((date) => ({
+      start_date: new Date(
+        createGMTDate(1, date.getUTCMonth(), date.getUTCFullYear())
+      ).toUTCString(),
+      end_date: new Date(
+        createGMTDate(
+          1,
+          isAnnual ? date.getUTCMonth() : (date.getUTCMonth() + 1) % 12,
+          isAnnual ? date.getUTCFullYear() + 1 : date.getUTCFullYear()
+        )
+      ).toUTCString(),
+      dataVizMissingData: defaultBarValue,
+      frequency,
+      Total: 0,
+    }));
 
-  // Merge `filteredDatapoitns` and `gapDatapoints` and sort them in ascending order by start date
+  // Merge `filteredDatapoints` and `gapDatapoints` and sort them in ascending order by start date
   const dataWithGapDatapoints = [...filteredDatapoints, ...gapDatapoints].sort(
     (a, b) => +new Date(a.start_date) - +new Date(b.start_date)
   );
