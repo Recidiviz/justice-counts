@@ -16,6 +16,7 @@
 // =============================================================================
 import React from "react";
 
+import bulkUploadPageScreenshot from "../../assets/hc-bulk-upload-page-screenshot.png";
 import breakdownColumnScreenshot from "../../assets/hc-bulkupload-breakdowncolumn-screenshot.png";
 import errorWarningsScreenshot from "../../assets/hc-bulkupload-errorswarnings-screenshot.png";
 import superagencyColumnScreenshot from "../../assets/hc-bulkupload-superagencycolumn-screenshot.png";
@@ -29,13 +30,15 @@ import { LinkToPublisher } from "../LinkToPublisherDashboard";
 export const BulkUploadGuide = () => (
   <>
     <Styled.SectionWrapper>
+      <Styled.ImageWrapper>
+        <Styled.Image src={bulkUploadPageScreenshot} alt="" align="center" />
+      </Styled.ImageWrapper>
       <Styled.SectionParagraph>
-        The{" "}
-        <LinkToPublisher publisherPath="upload">Bulk Upload</LinkToPublisher>{" "}
-        feature allows you to upload and publish data for multiple metrics and
-        time periods at once. Users prepare excel or csv files containing data
-        for metrics and time periods of interest, and upload those files via the
-        Uploads page. This feature is an alternative to{" "}
+        The Bulk Upload feature allows you to upload and publish data for
+        multiple metrics and time periods at once. Users prepare excel or csv
+        files containing data for metrics and time periods of interest, and
+        upload those files via the Uploads page. This feature is an alternative
+        to{" "}
         <LinkToPublisher publisherPath="records">Manual Entry</LinkToPublisher>,
         as Manual Entry only allows for one record to be uploaded at one time.
       </Styled.SectionParagraph>
