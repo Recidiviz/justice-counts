@@ -27,12 +27,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
-import { ReactComponent as TeamManagementIcon } from "../assets/data-line-icon.svg";
-import { ReactComponent as UploadedFilesIcon } from "../assets/folder-icon.svg";
-import { ReactComponent as HelpCenterIcon } from "../assets/help-center-icon.svg";
-import { ReactComponent as LogoutIcon } from "../assets/logout-icon.svg";
-import { ReactComponent as AgencySettingsIcon } from "../assets/pillar-icon.svg";
-import { ReactComponent as YourAccountIcon } from "../assets/profile-icon.svg";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { useHeaderBadge } from "../Header/hooks";
 import * as Styled from "./Menu.styles";
@@ -110,27 +104,22 @@ const Menu: React.FC = () => {
   const profileDropdownMetadata = [
     {
       label: "Your Account",
-      icon: <YourAccountIcon />,
       path: "./settings/account",
     },
     {
       label: "Agency Settings",
-      icon: <AgencySettingsIcon />,
       path: "./settings/agency-settings",
     },
     {
       label: "Team Management",
-      icon: <TeamManagementIcon />,
       path: "./settings/team-management",
     },
     {
       label: "Uploaded Files",
-      icon: <UploadedFilesIcon />,
       path: "./settings/uploaded-files",
     },
     {
       label: "Help Center",
-      icon: <HelpCenterIcon />,
       onClick: () => {
         localStorage.setItem("agencyId", agencyId);
         window.open("/help", "_blank");
@@ -138,14 +127,13 @@ const Menu: React.FC = () => {
     },
     {
       label: "Logout",
-      icon: <LogoutIcon />,
       highlightOption: true,
       onClick: logout,
     },
   ];
 
   const profileDropdownOptions: DropdownOption[] = profileDropdownMetadata.map(
-    ({ label, icon, highlightOption, path, onClick }) => ({
+    ({ label, highlightOption, path, onClick }) => ({
       key: label,
       label,
       onClick: () => {
@@ -155,7 +143,6 @@ const Menu: React.FC = () => {
       },
       highlight: highlightOption,
       noHover: highlightOption,
-      icon,
     })
   );
 
@@ -255,6 +242,8 @@ const Menu: React.FC = () => {
               size="small"
               hover="label"
               alignment="right"
+              fullWidth
+              fullHeight
             />
           </Styled.ProfileDropdownWrapper>
         </Styled.ProfileDropdownContainer>

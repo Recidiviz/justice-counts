@@ -36,6 +36,7 @@ type DropdownProps = {
   caretPosition?: ToggleCaretPosition;
   alignment?: DropdownMenuAlignment;
   fullWidth?: boolean;
+  fullHeight?: boolean;
   highlightIcon?: React.ReactNode;
   typeaheadSearch?: { placeholder: string };
 };
@@ -51,6 +52,7 @@ type DropdownProps = {
  * @param [Props.caretPosition] - left or right (if undefined caret is not displayed)
  * @param [Props.alignment] - alignment of the menu (right or left) if not provided then it is left by default
  * @param [Props.fullWidth] - defines if the menu width will be equal to dropdown toggle width (default is fit-content)
+ * @param [Props.fullHeight] - { boolean } - determines if the menu height will be restricted by a `max-height: 300px` or not (if true, no max height will be set)
  * @param [Props.highlightIcon] - icon used when an element is highlighted
  * @param [Props.typeaheadSearch] - { placeholder: string } - an object with customizable options - renders a typeahead search feature for
  *                                                            the current list when set.
@@ -64,6 +66,7 @@ export function Dropdown({
   caretPosition,
   alignment,
   fullWidth,
+  fullHeight,
   highlightIcon,
   typeaheadSearch,
 }: DropdownProps) {
@@ -122,6 +125,7 @@ export function Dropdown({
       <Styled.CustomDropdownMenu
         alignment={alignment}
         menuFullWidth={fullWidth}
+        menuFullHeight={fullHeight}
       >
         <>
           {typeaheadSearch && (

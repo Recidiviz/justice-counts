@@ -81,10 +81,11 @@ export const CustomDropdownToggleLabel = styled.div`
 
 export const CustomDropdownMenu = styled(DropdownMenu)<{
   menuFullWidth?: boolean;
+  menuFullHeight?: boolean;
 }>`
   border-radius: 3px;
   margin-top: 4px;
-  max-height: 300px;
+  max-height: ${({ menuFullHeight }) => (menuFullHeight ? `unset` : `300px`)};
   overflow-y: auto;
   z-index: 5;
   transform: unset;
