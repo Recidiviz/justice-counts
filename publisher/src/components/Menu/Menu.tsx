@@ -29,6 +29,7 @@ import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { useHeaderBadge } from "../Header/hooks";
+import { generateDashboardURL } from "../HelpCenter/LinkToPublisherDashboard";
 import * as Styled from "./Menu.styles";
 
 const Menu: React.FC = () => {
@@ -42,6 +43,8 @@ const Menu: React.FC = () => {
 
   const pathWithoutAgency = removeAgencyFromPath(location.pathname);
   const currentAgency = userStore.getAgency(agencyId);
+  const hasDashboardEnabled = currentAgency?.is_dashboard_enabled;
+  const agencyName = currentAgency?.name;
 
   const handleCloseMobileMenu = () => {
     if (windowWidth < MIN_TABLET_WIDTH && isMobileMenuOpen) {
@@ -118,6 +121,18 @@ const Menu: React.FC = () => {
       label: "Uploaded Files",
       path: "./settings/uploaded-files",
     },
+    ...(hasDashboardEnabled
+      ? [
+          {
+            label: "Agency Dashboard",
+            onClick: () =>
+              window.open(
+                generateDashboardURL(api.environment, agencyName),
+                "_blank"
+              ),
+          },
+        ]
+      : []),
     {
       label: "Help Center",
       onClick: () => {

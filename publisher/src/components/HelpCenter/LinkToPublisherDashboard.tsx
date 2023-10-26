@@ -41,13 +41,10 @@ export const LinkToDashboard: React.FC<PropsWithChildren> = ({ children }) => {
   const agencyId =
     agencyIdLocalStorage || userStore.getInitialAgencyId()?.toLocaleString();
   const agencyName = agencyId && userStore.getAgency(agencyId)?.name;
-  const isStaging = api.environment === "staging";
 
   if (!agencyName) return <>{children}</>;
 
-  const url = `https://dashboard-${
-    isStaging ? "staging" : "demo"
-  }.justice-counts.org/agency/${slugify(agencyName)}`;
+  const url = generateDashboardURL(api.environment, agencyName);
 
   return (
     <a href={url} target="_blank" rel="noreferrer noopener">
@@ -55,3 +52,11 @@ export const LinkToDashboard: React.FC<PropsWithChildren> = ({ children }) => {
     </a>
   );
 };
+
+export const generateDashboardURL = (
+  env: string | undefined,
+  agencyName: string | undefined
+) =>
+  `https://dashboard-${
+    env !== "production" ? "staging" : "demo"
+  }.justice-counts.org/agency/${slugify(agencyName || "")}`;
