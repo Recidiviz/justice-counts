@@ -17,11 +17,27 @@
 
 import React from "react";
 
+import jurisdictionsScreenshot from "../../assets/hc-agency-settings-jurisdiction-screenshot.png";
+import agencySettingsPageScreenshot from "../../assets/hc-agency-settings-page-screenshot.png";
 import * as Styled from "../HelpCenter.styles";
 import { LinkToPublisher } from "../LinkToPublisherDashboard";
 
 export const AgencySettingsGuide = () => (
   <>
+    <Styled.SectionWrapper>
+      <Styled.ImageWrapper>
+        <Styled.Image
+          src={agencySettingsPageScreenshot}
+          alt=""
+          align="center"
+        />
+      </Styled.ImageWrapper>
+      <Styled.SectionParagraph>
+        To access, select Agency Settings from the dropdown on the top right
+        corner.
+      </Styled.SectionParagraph>
+    </Styled.SectionWrapper>
+
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
         Within{" "}
@@ -36,19 +52,23 @@ export const AgencySettingsGuide = () => (
           <li>Jurisdictions covered by your agency</li>
         </ul>
       </Styled.SectionParagraph>
-      <Styled.SectionParagraph>
-        {" "}
-        To access, select Agency Settings from the dropdown on the top right
-        corner.
-      </Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
         When setting jurisdiction, you can specify areas that are included and
-        excluded. Some users may also have the ability to add new users to the
-        agency, by specifying the name and email address. If you need to update
-        your agency name, state, or sector, please contact{" "}
+        excluded.
+      </Styled.SectionParagraph>
+      <Styled.ImageWrapper>
+        <Styled.Image src={jurisdictionsScreenshot} alt="" align="center" />
+      </Styled.ImageWrapper>
+    </Styled.SectionWrapper>
+
+    <Styled.SectionWrapper>
+      <Styled.SectionParagraph>
+        Some users may also have the ability to add new users to the agency, by
+        specifying the name and email address. If you need to update your agency
+        name, state, or sector, please contact{" "}
         <a
           href="mailto:justice-counts-support@csg.org"
           target="_blank"
