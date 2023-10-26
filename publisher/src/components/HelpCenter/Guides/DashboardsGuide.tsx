@@ -45,7 +45,7 @@ export const DashboardsGuide = () => (
     <Styled.SectionWrapper>
       <Styled.SectionTitle>Home Page</Styled.SectionTitle>
       <Styled.SectionParagraph>
-        The Agency Dashboard home page provided an at-a-glance overview of all
+        The Agency Dashboard home page provides an at-a-glance overview of all
         published metrics for a particular agency. With these previews, you can
         see general trends over time. For a more interactive view, click into
         the individual category pages.
