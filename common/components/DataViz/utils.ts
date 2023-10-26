@@ -353,25 +353,27 @@ export const fillTimeGapsBetweenDatapoints = (
       }
       return true;
     })
-    .map((date) => ({
-      start_date: new Date(
-        createGMTDate(1, date.getUTCMonth(), date.getUTCFullYear())
-      ).toUTCString(),
-      end_date: new Date(
-        createGMTDate(
-          1,
-          isAnnual ? date.getUTCMonth() : (date.getUTCMonth() + 1) % 12,
-          isAnnual
-            ? date.getUTCFullYear() + 1
-            : date.getUTCMonth() === 11
-            ? date.getUTCFullYear() + 1 // Increment the year if the month is December
-            : date.getUTCFullYear()
-        )
-      ).toUTCString(),
-      dataVizMissingData: defaultBarValue,
-      frequency,
-      ...dimensionsMap,
-    }));
+    .map((date) => {
+      const endYearOrIncrementedEndYear =
+        date.getUTCMonth() === 11
+          ? date.getUTCFullYear() + 1 // Increment the year if the month is December
+          : date.getUTCFullYear();
+      return {
+        start_date: new Date(
+          createGMTDate(1, date.getUTCMonth(), date.getUTCFullYear())
+        ).toUTCString(),
+        end_date: new Date(
+          createGMTDate(
+            1,
+            isAnnual ? date.getUTCMonth() : (date.getUTCMonth() + 1) % 12,
+            isAnnual ? date.getUTCFullYear() + 1 : endYearOrIncrementedEndYear
+          )
+        ).toUTCString(),
+        dataVizMissingData: defaultBarValue,
+        frequency,
+        ...dimensionsMap,
+      };
+    });
 
   // Merge `filteredDatapoints` and `gapDatapoints` and sort them in ascending order by start date
   const dataWithGapDatapoints = [...filteredDatapoints, ...gapDatapoints].sort(
