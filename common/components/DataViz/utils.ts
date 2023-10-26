@@ -236,6 +236,10 @@ export const fillTimeGapsBetweenDatapoints = (
   metricFrequency?: ReportFrequency,
   startingMonth?: number // For annual metrics, represents the starting month of the recording period
 ) => {
+  if (data.length === 0) {
+    return data;
+  }
+
   const frequency = metricFrequency || data[0].frequency;
   const isAnnual = frequency === "ANNUAL";
   // Represents how high the empty gap bars go - 1/3 of the highest value
