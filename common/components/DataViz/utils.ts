@@ -361,7 +361,11 @@ export const fillTimeGapsBetweenDatapoints = (
         createGMTDate(
           1,
           isAnnual ? date.getUTCMonth() : (date.getUTCMonth() + 1) % 12,
-          isAnnual ? date.getUTCFullYear() + 1 : date.getUTCFullYear()
+          isAnnual
+            ? date.getUTCFullYear() + 1
+            : date.getUTCMonth() === 11
+            ? date.getUTCFullYear() + 1 // Increment the year if the month is December
+            : date.getUTCFullYear()
         )
       ).toUTCString(),
       dataVizMissingData: defaultBarValue,

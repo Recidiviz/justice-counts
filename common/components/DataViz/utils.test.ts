@@ -969,7 +969,6 @@ const testDatapoints4WithGapDatapoints2: Datapoint[] = [
     dataVizMissingData: 0,
   },
 ];
-
 const testDatapoints5: Datapoint[] = [
   {
     start_date: "Thu, 01 Aug 2019 00:00:00 GMT",
@@ -1342,7 +1341,6 @@ const testDatapoints5: Datapoint[] = [
     Unknown: null,
   },
 ];
-
 const testDatapoints5Transformed: Datapoint[] = [
   {
     start_date: "Fri, 01 Sep 2017 00:00:00 GMT",
@@ -1376,7 +1374,7 @@ const testDatapoints5Transformed: Datapoint[] = [
   },
   {
     start_date: "Fri, 01 Dec 2017 00:00:00 GMT",
-    end_date: "Sun, 01 Jan 2017 00:00:00 GMT",
+    end_date: "Mon, 01 Jan 2018 00:00:00 GMT",
     dataVizMissingData: 0.3333333333333333,
     frequency: "MONTHLY",
     Pretrial: 0,
@@ -1496,7 +1494,7 @@ const testDatapoints5Transformed: Datapoint[] = [
   },
   {
     start_date: "Sat, 01 Dec 2018 00:00:00 GMT",
-    end_date: "Mon, 01 Jan 2018 00:00:00 GMT",
+    end_date: "Tue, 01 Jan 2019 00:00:00 GMT",
     dataVizMissingData: 0.3333333333333333,
     frequency: "MONTHLY",
     Pretrial: 0,
@@ -1616,7 +1614,7 @@ const testDatapoints5Transformed: Datapoint[] = [
   },
   {
     start_date: "Sun, 01 Dec 2019 00:00:00 GMT",
-    end_date: "Tue, 01 Jan 2019 00:00:00 GMT",
+    end_date: "Wed, 01 Jan 2020 00:00:00 GMT",
     dataVizMissingData: 0.3333333333333333,
     frequency: "MONTHLY",
     Pretrial: 0,
