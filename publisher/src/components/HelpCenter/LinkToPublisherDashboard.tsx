@@ -15,11 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { slugify } from "@justice-counts/common/utils";
 import React, { PropsWithChildren } from "react";
 
 import { useStore } from "../../stores";
 
-const LinkToPublisher: React.FC<
+export const LinkToPublisher: React.FC<
   PropsWithChildren & { publisherPath: string }
 > = ({ publisherPath, children }) => {
   const { userStore } = useStore();
@@ -34,4 +35,23 @@ const LinkToPublisher: React.FC<
   );
 };
 
-export default LinkToPublisher;
+export const LinkToDashboard: React.FC<PropsWithChildren> = ({ children }) => {
+  const { api, userStore } = useStore();
+  const agencyIdLocalStorage = localStorage.getItem("agencyId");
+  const agencyId =
+    agencyIdLocalStorage || userStore.getInitialAgencyId()?.toLocaleString();
+  const agencyName = agencyId && userStore.getAgency(agencyId)?.name;
+  const isStaging = api.environment === "staging";
+
+  if (!agencyName) return <>{children}</>;
+
+  const url = `https://dashboard-${
+    isStaging ? "staging" : "demo"
+  }.justice-counts.org/agency/${slugify(agencyName)}`;
+
+  return (
+    <a href={url} target="_blank" rel="noreferrer noopener">
+      {children}
+    </a>
+  );
+};

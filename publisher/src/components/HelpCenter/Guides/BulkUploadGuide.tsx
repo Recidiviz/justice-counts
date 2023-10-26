@@ -24,23 +24,25 @@ import yearMonthValueColumnsScreenshot from "../../assets/hc-bulkupload-yearmont
 import reviewPublishVideo from "../../assets/HelpCenter-BulkUpload-ReviewPublish.mp4";
 import uploadingDataVideo from "../../assets/HelpCenter-BulkUpload-Uploading.mp4";
 import * as Styled from "../HelpCenter.styles";
+import { LinkToPublisher } from "../LinkToPublisherDashboard";
 
 export const BulkUploadGuide = () => (
   <>
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
-        The Bulk Upload feature allows you to upload and publish data for
-        multiple metrics and time periods at once. Users prepare excel or csv
-        files containing data for metrics and time periods of interest, and
-        upload those files via the Uploads page. This feature is an alternative
-        to Manual Entry, as Manual Entry only allows for one record to be
-        uploaded at one time.
+        The{" "}
+        <LinkToPublisher publisherPath="upload">Bulk Upload</LinkToPublisher>{" "}
+        feature allows you to upload and publish data for multiple metrics and
+        time periods at once. Users prepare excel or csv files containing data
+        for metrics and time periods of interest, and upload those files via the
+        Uploads page. This feature is an alternative to{" "}
+        <LinkToPublisher publisherPath="records">Manual Entry</LinkToPublisher>,
+        as Manual Entry only allows for one record to be uploaded at one time.
       </Styled.SectionParagraph>
       <Styled.SectionParagraph>
-        Select Enter Data from the navigation bar. Select the Upload File option
-        on the right to arrive on the Uploads page. Drag and drop or browse and
-        select a file to upload from your computer on the right side of the
-        page.
+        To access, click Enter Data on the top bar and select Upload File on the
+        right to arrive on the Uploads page. Drag and drop or browse and select
+        a file to upload from your computer on the right side of the page.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
 

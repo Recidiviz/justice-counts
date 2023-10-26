@@ -20,7 +20,7 @@ import {
   AgencySystems,
   DataVizAggregateName,
 } from "@justice-counts/common/types";
-import { removeSnakeCase } from "@justice-counts/common/utils";
+import { removeSnakeCase, slugify } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -29,7 +29,6 @@ import { VisibleCategoriesMetadata } from "../CategoryOverview/types";
 import { HeaderBar } from "../Header";
 import { Loading } from "../Loading";
 import { useStore } from "../stores";
-import { slugify } from "../utils";
 import {
   AgencyDescription,
   AgencyHomepage,

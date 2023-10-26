@@ -18,6 +18,7 @@
 import React from "react";
 
 import * as Styled from "../HelpCenter.styles";
+import { LinkToPublisher } from "../LinkToPublisherDashboard";
 
 export const SupervisionDisaggregationGuide = () => (
   <>
@@ -35,9 +36,12 @@ export const SupervisionDisaggregationGuide = () => (
         for:
         <ul>
           <li>
-            Navigate to Agency Settings by clicking the icon in the top right
-            corner and selecting <strong>Agency Settings</strong> from the
-            dropdown.
+            Navigate to{" "}
+            <LinkToPublisher publisherPath="settings/agency-settings">
+              Agency Settings
+            </LinkToPublisher>{" "}
+            by clicking the icon in the top right corner and selecting{" "}
+            <strong>Agency Settings</strong> from the dropdown.
           </li>
           <li>
             Scroll down to <strong>Supervision Populations</strong> and click{" "}
@@ -58,7 +62,13 @@ export const SupervisionDisaggregationGuide = () => (
         For each metric, configure the supervision populations for which you
         will provide data:
         <ol>
-          <li>Navigate to Metric Settings and choose a metric</li>
+          <li>
+            Navigate to{" "}
+            <LinkToPublisher publisherPath="metric-config">
+              Metric Settings
+            </LinkToPublisher>{" "}
+            and choose a metric
+          </li>
           <li>
             Under the <strong>Metric</strong> section, look for the toggle
             titled <strong>Disaggregated by Supervision Type</strong> and choose
@@ -77,9 +87,12 @@ export const SupervisionDisaggregationGuide = () => (
         as a whole, or disaggregated by your supervision populations.
         <ol>
           <li>
-            Specify which supervision populations your agency oversees in
-            <strong> Agency Settings</strong>. If you don’t distinguish between
-            different supervision populations, don’t select any of the options.
+            Specify which supervision populations your agency oversees in{" "}
+            <LinkToPublisher publisherPath="settings/agency-settings">
+              Agency Settings
+            </LinkToPublisher>
+            . If you don’t distinguish between different supervision
+            populations, don’t select any of the options.
           </li>
           <li>
             Next, for each metric, indicate whether you will provide aggregate

@@ -18,13 +18,16 @@
 import React from "react";
 
 import * as Styled from "../HelpCenter.styles";
+import { LinkToPublisher } from "../LinkToPublisherDashboard";
 
 export const ManualEntryGuide = () => (
   <>
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
-        Using manual entry, you can enter data for specified time periods,
-        organized as records.
+        Using{" "}
+        <LinkToPublisher publisherPath="records">Manual Entry</LinkToPublisher>,
+        you can enter data for specified time periods, organized as records. To
+        access, click Enter Data on the top bar and select Manual Entry.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
 

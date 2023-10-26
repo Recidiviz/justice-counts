@@ -290,7 +290,7 @@ export const DataUpload: React.FC = observer(() => {
       >
         <Button
           label={selectedFile || errorsWarningsMetrics ? "Close" : "Cancel"}
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("../data-entry")}
           buttonColor={
             selectedFile || errorsWarningsMetrics ? "red" : undefined
           }

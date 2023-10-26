@@ -20,8 +20,6 @@ import { Datapoint } from "@justice-counts/common/types";
 import { formatNumberInput } from "@justice-counts/common/utils";
 
 // =============================================================================
-export const slugify = (str: string): string =>
-  str?.replace(/\s/g, "-")?.toLowerCase();
 
 export const getDatapointYear = (datapoint: Datapoint) => {
   const { year } = splitUtcString(datapoint.start_date);
