@@ -969,6 +969,7 @@ const testDatapoints4WithGapDatapoints2: Datapoint[] = [
     dataVizMissingData: 0,
   },
 ];
+
 const testDatapoints5: Datapoint[] = [
   {
     start_date: "Thu, 01 Aug 2019 00:00:00 GMT",
@@ -1341,47 +1342,8 @@ const testDatapoints5: Datapoint[] = [
     Unknown: null,
   },
 ];
+
 const testDatapoints5Transformed: Datapoint[] = [
-  {
-    start_date: "Fri, 01 Sep 2017 00:00:00 GMT",
-    end_date: "Sun, 01 Oct 2017 00:00:00 GMT",
-    dataVizMissingData: 0.3333333333333333,
-    frequency: "MONTHLY",
-    Pretrial: 0,
-    Sentenced: 0,
-    "Transfer or Hold": 0,
-    Unknown: 0,
-  },
-  {
-    start_date: "Sun, 01 Oct 2017 00:00:00 GMT",
-    end_date: "Wed, 01 Nov 2017 00:00:00 GMT",
-    dataVizMissingData: 0.3333333333333333,
-    frequency: "MONTHLY",
-    Pretrial: 0,
-    Sentenced: 0,
-    "Transfer or Hold": 0,
-    Unknown: 0,
-  },
-  {
-    start_date: "Wed, 01 Nov 2017 00:00:00 GMT",
-    end_date: "Fri, 01 Dec 2017 00:00:00 GMT",
-    dataVizMissingData: 0.3333333333333333,
-    frequency: "MONTHLY",
-    Pretrial: 0,
-    Sentenced: 0,
-    "Transfer or Hold": 0,
-    Unknown: 0,
-  },
-  {
-    start_date: "Fri, 01 Dec 2017 00:00:00 GMT",
-    end_date: "Mon, 01 Jan 2018 00:00:00 GMT",
-    dataVizMissingData: 0.3333333333333333,
-    frequency: "MONTHLY",
-    Pretrial: 0,
-    Sentenced: 0,
-    "Transfer or Hold": 0,
-    Unknown: 0,
-  },
   {
     start_date: "Mon, 01 Jan 2018 00:00:00 GMT",
     end_date: "Thu, 01 Feb 2018 00:00:00 GMT",
@@ -1951,6 +1913,16 @@ const testDatapoints5Transformed: Datapoint[] = [
     Sentenced: 0.3366343968347504,
     "Transfer or Hold": 0.18409293711591884,
     Unknown: 0.16827679097567136,
+  },
+  {
+    start_date: "Sat, 01 Oct 2022 00:00:00 GMT",
+    end_date: "Tue, 01 Nov 2022 00:00:00 GMT",
+    dataVizMissingData: 0.3333333333333333,
+    frequency: "MONTHLY",
+    Pretrial: 0,
+    Sentenced: 0,
+    "Transfer or Hold": 0,
+    Unknown: 0,
   },
   {
     start_date: "Tue, 01 Nov 2022 00:00:00 GMT",

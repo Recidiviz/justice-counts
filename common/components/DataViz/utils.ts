@@ -201,6 +201,7 @@ export const transformToRelativePerchanges = (data: Datapoint[]) => {
       }
       return val;
     });
+
     return {
       ...datapoint,
       ...dimensionsPercentage,
@@ -254,11 +255,16 @@ export const fillTimeGapsBetweenDatapoints = (
   const currentDate = new Date();
   const currentMonth = currentDate.getUTCMonth();
   const currentYear = currentDate.getUTCFullYear();
-  // Get references for the earliest datapoint
+  // Get references for the earliest and latest datapoints
   const firstDatapointDate = new Date(dataSortedByStartDate[0].start_date);
   const firstDatapointStartMonth = firstDatapointDate.getUTCMonth();
   const firstDatapointStartYear = firstDatapointDate.getUTCFullYear();
-
+  const lastDatapointDate = new Date(
+    dataSortedByStartDate[dataSortedByStartDate.length - 1].start_date
+  );
+  const lastDatapointStartMonth = lastDatapointDate.getUTCMonth();
+  const lastDatapointStartYear = lastDatapointDate.getUTCFullYear();
+  const hasFutureDatapointDate = lastDatapointDate > currentDate;
   /**
    * The reference point helps us determine the beginning of the filtered time window if `monthsAgo`
    * is provided (not 0). If `monthsAgo` is 0, we will show the user all of the datapoints and no
@@ -286,11 +292,17 @@ export const fillTimeGapsBetweenDatapoints = (
 
   // If `monthsAgo` is 0, user intends to see all datapoints, the length of the array will be the months inbetween the first datapoint date and the current date
   // If `monthsAgo` is non-zero, user intends to see a specific time-range, the length of the array will be the months inbetween the current date and the # of `monthsAgo`
+  const monthlyTimeRangeFromCurrentDateOrFutureDatapointDate =
+    hasFutureDatapointDate
+      ? lastDatapointStartMonth -
+        firstDatapointStartMonth +
+        12 * (lastDatapointStartYear - firstDatapointStartYear)
+      : currentMonth -
+        firstDatapointStartMonth +
+        12 * (currentYear - firstDatapointStartYear);
   const monthlyTimeRangeLength =
     monthsAgo === 0
-      ? currentMonth -
-        firstDatapointStartMonth +
-        12 * (currentYear - firstDatapointStartYear)
+      ? monthlyTimeRangeFromCurrentDateOrFutureDatapointDate
       : monthsAgo;
 
   /**
@@ -306,9 +318,14 @@ export const fillTimeGapsBetweenDatapoints = (
     },
     (_, i) => {
       // For monthly metrics, decrement the date so we start with the current date and subtract months on each loop.
-      const decrementedDate = new Date(
-        new Date().setUTCMonth(new Date().getUTCMonth() - i)
-      );
+      const decrementedDate = hasFutureDatapointDate
+        ? new Date(
+            new Date(lastDatapointDate).setUTCMonth(
+              new Date(lastDatapointDate).getUTCMonth() - i
+            )
+          )
+        : new Date(new Date().setUTCMonth(new Date().getUTCMonth() - i));
+
       const date = createGMTDate(
         1,
         isAnnual ? startingMonth || 0 : decrementedDate.getUTCMonth(),
@@ -406,6 +423,7 @@ export const transformDataForBarChart = (
   if (dataVizViewSetting === "Percentage") {
     transformedData = transformToRelativePerchanges(transformedData);
   }
+
   return fillTimeGapsBetweenDatapoints(
     transformedData,
     monthsAgo,
