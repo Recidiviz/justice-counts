@@ -246,14 +246,14 @@ export const fillTimeGapsBetweenDatapoints = (
   const dataSortedByStartDate = data.sort(
     (a, b) => +new Date(a.start_date) - +new Date(b.start_date)
   );
-  // Get references for the earliest datapoint
-  const firstDatapointDate = new Date(dataSortedByStartDate[0].start_date);
-  const firstDatapointStartMonth = firstDatapointDate.getUTCMonth();
-  const firstDatapointStartYear = firstDatapointDate.getUTCFullYear();
   // Get references for the current date
   const currentDate = new Date();
   const currentMonth = currentDate.getUTCMonth();
   const currentYear = currentDate.getUTCFullYear();
+  // Get references for the earliest datapoint
+  const firstDatapointDate = new Date(dataSortedByStartDate[0].start_date);
+  const firstDatapointStartMonth = firstDatapointDate.getUTCMonth();
+  const firstDatapointStartYear = firstDatapointDate.getUTCFullYear();
 
   /**
    * The reference point helps us determine the beginning of the filtered time window if `monthsAgo`
