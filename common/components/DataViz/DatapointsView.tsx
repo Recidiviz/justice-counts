@@ -196,6 +196,7 @@ export const DatapointsView = forwardRef<never, DatapointsViewProps>(
     }, [mobileSelectMetricsVisible, mobileFiltersVisible]);
 
     const renderChartForMetric = () => {
+      // For annual metrics, get the starting month from the metric object (not zero-indexed) and subtract one to adapt to our zero-indexed months.
       const startingMonth = metricStartingMonth && metricStartingMonth - 1;
       return (
         <BarChart
