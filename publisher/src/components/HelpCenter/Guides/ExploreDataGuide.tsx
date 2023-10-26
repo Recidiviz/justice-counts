@@ -17,6 +17,7 @@
 
 import React from "react";
 
+import exploreDataPageScreenshot from "../../assets/hc-explore-data-page-screenshot.png";
 import * as Styled from "../HelpCenter.styles";
 import { LinkToPublisher } from "../LinkToPublisherDashboard";
 
@@ -24,12 +25,15 @@ export const ExploreDataGuide = () => {
   return (
     <>
       <Styled.SectionWrapper>
+        <Styled.ImageWrapper>
+          <Styled.Image src={exploreDataPageScreenshot} alt="" align="center" />
+        </Styled.ImageWrapper>
         <Styled.SectionParagraph>
-          The{" "}
+          The Explore Data page allows you to visualize the data you have
+          uploaded into Publisher. It displays both draft and published data. To
+          access, click{" "}
           <LinkToPublisher publisherPath="data">Explore Data</LinkToPublisher>{" "}
-          page allows you to visualize the data you have uploaded into
-          Publisher. It displays both draft and published data. To access, click
-          Explore Data on the top bar.
+          on the top bar.
         </Styled.SectionParagraph>
       </Styled.SectionWrapper>
 
