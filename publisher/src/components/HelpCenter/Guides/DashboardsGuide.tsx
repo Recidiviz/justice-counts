@@ -17,15 +17,18 @@
 
 import React from "react";
 
+import dashboardPageScreenshot from "../../assets/hc-dashboards-page-screenshot.png";
 import * as Styled from "../HelpCenter.styles";
 import { LinkToDashboard } from "../LinkToPublisherDashboard";
 
 export const DashboardsGuide = () => (
   <>
     <Styled.SectionWrapper>
+      <Styled.ImageWrapper>
+        <Styled.Image src={dashboardPageScreenshot} alt="" align="center" />
+      </Styled.ImageWrapper>
       <Styled.SectionParagraph>
-        All data shown within the{" "}
-        <LinkToDashboard>Justice Counts Agency Dashboards</LinkToDashboard> are
+        All data shown within the Justice Counts Agency Dashboards are
         specifically published by each agency. For more information on the
         metrics shown, see the{" "}
         <a
@@ -35,7 +38,8 @@ export const DashboardsGuide = () => (
         >
           Justice Counts website
         </a>
-        .
+        . To access, select <LinkToDashboard>Agency Dashboard</LinkToDashboard>{" "}
+        from the dropdown on the top right corner.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
     <Styled.SectionWrapper>
