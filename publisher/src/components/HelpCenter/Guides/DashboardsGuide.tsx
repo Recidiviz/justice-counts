@@ -45,11 +45,10 @@ export const DashboardsGuide = () => (
     <Styled.SectionWrapper>
       <Styled.SectionTitle>Home Page</Styled.SectionTitle>
       <Styled.SectionParagraph>
-        The <LinkToDashboard>agency dashboard home page</LinkToDashboard>{" "}
-        provided an at-a-glance overview of all published metrics for a
-        particular agency. With these previews, you can see general trends over
-        time. For a more interactive view, click into the individual category
-        pages.
+        The Agency Dashboard home page provided an at-a-glance overview of all
+        published metrics for a particular agency. With these previews, you can
+        see general trends over time. For a more interactive view, click into
+        the individual category pages.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
     <Styled.SectionWrapper>
