@@ -17,12 +17,17 @@
 
 import React from "react";
 
+import manualEntryPageScreenshot from "../../assets/hc-manual-entry-page-screenshot.png";
+import manualEntryRecordsScreenshot from "../../assets/hc-manual-entry-records-screenshot.png";
 import * as Styled from "../HelpCenter.styles";
 import { LinkToPublisher } from "../LinkToPublisherDashboard";
 
 export const ManualEntryGuide = () => (
   <>
     <Styled.SectionWrapper>
+      <Styled.ImageWrapper>
+        <Styled.Image src={manualEntryPageScreenshot} alt="" align="center" />
+      </Styled.ImageWrapper>
       <Styled.SectionParagraph>
         Using{" "}
         <LinkToPublisher publisherPath="records">Manual Entry</LinkToPublisher>,
@@ -37,6 +42,15 @@ export const ManualEntryGuide = () => (
         Some records will be automatically generated, based on the availability
         set for metrics. Each record allows you to input information for all
         metrics that have availability set for the specified time period.
+      </Styled.SectionParagraph>
+      <Styled.SectionParagraph>
+        <Styled.ImageWrapper>
+          <Styled.Image
+            src={manualEntryRecordsScreenshot}
+            alt=""
+            align="center"
+          />
+        </Styled.ImageWrapper>
         <ul>
           <li>
             For metrics aggregated at a monthly level, choose or create a record

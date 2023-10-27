@@ -17,21 +17,22 @@
 
 import React from "react";
 
+import setUpMetricsDefinitionsScreenshot from "../../assets/hc-set-up-metrics-definitions-screenshot.png";
+import setUpMetricsPageScreenshot from "../../assets/hc-set-up-metrics-page-screenshot.png";
 import * as Styled from "../HelpCenter.styles";
 import { LinkToPublisher } from "../LinkToPublisherDashboard";
 
 export const SetUpMetricsGuide = () => (
   <>
     <Styled.SectionWrapper>
+      <Styled.ImageWrapper>
+        <Styled.Image src={setUpMetricsPageScreenshot} alt="" align="center" />
+      </Styled.ImageWrapper>
       <Styled.SectionParagraph>
-        The{" "}
-        <LinkToPublisher publisherPath="metric-config">
-          Set Up Metrics
-        </LinkToPublisher>{" "}
-        page allows you to customize the Justice Counts metrics based on whether
-        or not you are able to share data for the metric, the frequency in which
-        you record the data, and how your agency defines and breaks down the
-        metric. To access, click{" "}
+        The Set Up Metrics page allows you to customize the Justice Counts
+        metrics based on whether or not you are able to share data for the
+        metric, the frequency in which you record the data, and how your agency
+        defines and breaks down the metric. To access, click{" "}
         <LinkToPublisher publisherPath="metric-config">
           Set Up Metrics
         </LinkToPublisher>{" "}
@@ -69,14 +70,10 @@ export const SetUpMetricsGuide = () => (
         data for those categories as well as the overall metric.
       </Styled.SectionParagraph>
       <Styled.SectionParagraph>
-        While on the{" "}
-        <LinkToPublisher publisherPath="metric-config">
-          Set Up Metrics
-        </LinkToPublisher>{" "}
-        page, look for the Metric Breakdowns section under the Set metric
-        availability heading. Click on the toggle to the left of a breakdown
-        category to toggle a breakdown on/off indicating whether or not it is
-        part of your recorded data for the overall metric.
+        While on the Set Up Metrics page, look for the Metric Breakdowns section
+        under the Set metric availability heading. Click on the toggle to the
+        left of a breakdown category to toggle a breakdown on/off indicating
+        whether or not it is part of your recorded data for the overall metric.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
@@ -86,6 +83,15 @@ export const SetUpMetricsGuide = () => (
         Metric definitions allow you to specify how each metric is defined for
         your agency. You can indicate which categories are included or excluded
         in a metric or breakdown.
+      </Styled.SectionParagraph>
+      <Styled.SectionParagraph>
+        <Styled.ImageWrapper>
+          <Styled.Image
+            src={setUpMetricsDefinitionsScreenshot}
+            alt=""
+            align="center"
+          />
+        </Styled.ImageWrapper>
       </Styled.SectionParagraph>
       <Styled.SectionParagraph>
         Within Define Metrics, click on a metric or its breakdowns to view and
