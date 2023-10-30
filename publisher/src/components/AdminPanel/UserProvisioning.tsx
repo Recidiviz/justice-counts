@@ -22,14 +22,24 @@ import { Modal } from "@justice-counts/common/components/Modal";
 import React, { useEffect, useRef, useState } from "react";
 
 import * as Styled from "./AdminPanel.styles";
+import { groupBy } from "@justice-counts/common/utils";
 
-export const UserProvisioning: React.FC<{ users: any[]; agencies: any[] }> = ({
+export const UserProvisioning: React.FC<{
+  users: any[];
+  agencies: any[];
+  isModalOpen: boolean;
+  closeModal: () => void;
+  openModal: () => void;
+}> = ({
   users,
   agencies: agencyOptions,
+  isModalOpen,
+  closeModal,
+  openModal,
 }) => {
   const [addEditUserModal, setAddEditUserModal] = useState(false);
   const [currentUserToEdit, setCurrentUserToEdit] = useState<any>();
-  const [username, setUsername] = useState<any>();
+
   const [email, setEmail] = useState<any>();
   const [agencies, setAgencies] = useState<any>();
   const [selectedAgencies, setSelectedAgencies] = useState<any>([]);
@@ -37,10 +47,15 @@ export const UserProvisioning: React.FC<{ users: any[]; agencies: any[] }> = ({
   const [agencyToAddInputValue, setAgencyToAddInputValue] = useState<any>("");
   const [filteredAgencyOptions, setFilteredAgencyOptions] = useState<any>();
   const [showDropdown, setShowDropdown] = useState<any>(false);
+  // const [isModalOpen, setIsModalOpen] = useState<any>(false);
 
   const selectedAgenciesRef = useRef(null);
   const addAgencyInputRef = useRef(null);
   const dropdownRef = useRef(null);
+  const usersById = groupBy(users, (user) => user.id);
+  const [username, setUsername] = useState<any>(
+    usersById[currentUserToEdit]?.[0].name
+  );
 
   const updateFilteredOptions = (val: string) => {
     const regex = new RegExp(`${val}`, `i`);
@@ -54,17 +69,17 @@ export const UserProvisioning: React.FC<{ users: any[]; agencies: any[] }> = ({
     setAgencyToAddInputValue("");
   }, [agencyOptions]);
 
-  useEffect(() => {
-    if (selectedAgenciesRef.current) {
-      selectedAgenciesRef.current.scroll({
-        top: selectedAgenciesRef.current.scrollHeight,
-        left: 0,
-        behavior: "smooth",
-      });
-    }
+  // useEffect(() => {
+  //   if (selectedAgenciesRef.current) {
+  //     selectedAgenciesRef.current.scroll({
+  //       top: selectedAgenciesRef.current.scrollHeight,
+  //       left: 0,
+  //       behavior: "smooth",
+  //     });
+  //   }
 
-    console.log("selectedAgenciesRef.current", selectedAgenciesRef.current);
-  }, [selectedAgencies]);
+  //   console.log("selectedAgenciesRef.current", selectedAgenciesRef.current);
+  // }, [selectedAgencies]);
 
   const usersTableHeaderRow = ["Auth0 ID", "Name", "Email", "Agencies"];
   const columnsSpacing = "2fr 1.5fr 2fr 4fr";
@@ -79,210 +94,86 @@ export const UserProvisioning: React.FC<{ users: any[]; agencies: any[] }> = ({
     setSelectedAgenciesToAdd([]);
     setAgencyToAddInputValue("");
   };
-
+  console.log(username, currentUserToEdit);
   return (
     <>
-      {/* Add New User Modal */}
-      {addEditUserModal && (
-        <Styled.ModalWrapper
-          onClick={(e) => {
-            if (
-              e.target.parentElement !== dropdownRef.current &&
-              e.target !== addAgencyInputRef.current
-            ) {
-              setShowDropdown(false);
-            }
-          }}
-        >
-          <Modal
-            title={`${currentUserToEdit ? "Edit" : "Add New"} User`}
-            description={
-              <Styled.AddNewUserModal>
-                <Styled.ModalDescription>
-                  Creates a new user in Auth0 and the Justice Counts database
-                </Styled.ModalDescription>
-                <Styled.Form>
-                  <Styled.InputLabelWrapper>
-                    <input
-                      name="username"
-                      type="text"
-                      defaultValue={currentUserToEdit?.name}
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                    />
-                    <label htmlFor="username">Name</label>
-                  </Styled.InputLabelWrapper>
-                  <Styled.InputLabelWrapper>
-                    <input
-                      name="email"
-                      type="text"
-                      defaultValue={currentUserToEdit?.email}
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <label htmlFor="email">Email</label>
-                  </Styled.InputLabelWrapper>
-                  {selectedAgenciesToAdd.length > 0 && (
-                    <Styled.InputLabelWrapper>
-                      <Styled.ChipContainer halfMaxHeight>
-                        {selectedAgenciesToAdd.map((a: any) => (
-                          <Styled.Chip>{a}</Styled.Chip>
-                        ))}
-                      </Styled.ChipContainer>
-                      <Styled.ChipContainerLabel>
-                        Agencies to add
-                      </Styled.ChipContainerLabel>
-                    </Styled.InputLabelWrapper>
-                  )}
-                  <Styled.InputLabelWrapper>
-                    {/* Typeahead */}
-                    <input
-                      name="add-agency"
-                      type="text"
-                      value={agencyToAddInputValue}
-                      onChange={(e) => {
-                        setAgencyToAddInputValue(e.target.value);
-                        updateFilteredOptions(e.target.value);
-                      }}
-                      onFocus={() => setShowDropdown(true)}
-                      // onBlur={() => setShowDropdown(false)}
-                      ref={addAgencyInputRef}
-                    />
-                    <label htmlFor="add-agency">Add Agency</label>
-                    {showDropdown && (
-                      <Styled.StickySelectionDropdown ref={dropdownRef}>
-                        {filteredAgencyOptions.map((a: any) => (
-                          <Styled.DropdownItem
-                            onClick={() => {
-                              selectedAgenciesToAdd.includes(a.name)
-                                ? setSelectedAgenciesToAdd((prev: any) =>
-                                    prev.filter((x: any) => x !== a.name)
-                                  )
-                                : setSelectedAgenciesToAdd((prev: any) => [
-                                    ...prev,
-                                    a.name,
-                                  ]);
-                            }}
-                            selected={selectedAgenciesToAdd.includes(a.name)}
-                          >
-                            {a.name}
-                          </Styled.DropdownItem>
-                        ))}
-                      </Styled.StickySelectionDropdown>
-                    )}
-                  </Styled.InputLabelWrapper>
-                  <Styled.InputLabelWrapper>
-                    <Styled.ChipContainer>
-                      {currentUserToEdit?.agencies.map((a: any) => (
-                        <Styled.Chip
-                          onClick={() =>
-                            selectedAgencies.includes(a.name)
-                              ? setSelectedAgencies((prev: any) =>
-                                  prev.filter((x: any) => x !== a.name)
-                                )
-                              : setSelectedAgencies((prev: any) => [
-                                  ...prev,
-                                  a.name,
-                                ])
-                          }
-                          selected={selectedAgencies.includes(a.name)}
-                          hover
-                        >
-                          {a.name}
-                        </Styled.Chip>
-                      ))}
-                    </Styled.ChipContainer>
-                    <Styled.ChipContainerLabelAction>
-                      <span>
-                        Agencies{" "}
-                        {currentUserToEdit?.agencies.length &&
-                          `(${currentUserToEdit?.agencies.length})`}
-                      </span>
-                      {currentUserToEdit?.agencies.length && (
-                        <Styled.ActionWrapper>
-                          <Styled.ActionItem
-                            onClick={() =>
-                              setSelectedAgencies(
-                                currentUserToEdit?.agencies.map(
-                                  (x: any) => x.name
-                                )
-                              )
-                            }
-                          >
-                            Select all
-                          </Styled.ActionItem>
-                          <Styled.ActionItem red>Delete all</Styled.ActionItem>
-                        </Styled.ActionWrapper>
-                      )}
-                    </Styled.ChipContainerLabelAction>
-                  </Styled.InputLabelWrapper>
-                  {selectedAgencies.length > 0 && (
-                    <Styled.InputLabelWrapper>
-                      <Styled.ChipContainer
-                        halfMaxHeight
-                        ref={selectedAgenciesRef}
-                      >
-                        {selectedAgencies?.map((a: any) => (
-                          <Styled.Chip selected>{a}</Styled.Chip>
-                        ))}
-                      </Styled.ChipContainer>
+      {isModalOpen && (
+        <Modal>
+          <Styled.ModalContainer>
+            {/* Current User */}
+            <Styled.ModalTitle>Edit User Information</Styled.ModalTitle>
+            <Styled.UserNameDisplay>
+              {username || usersById[currentUserToEdit][0].name}
+            </Styled.UserNameDisplay>
+            <Styled.Email>{usersById[currentUserToEdit][0].email}</Styled.Email>
+            <Styled.Email>
+              User ID: {usersById[currentUserToEdit][0].id}
+            </Styled.Email>
 
-                      <Styled.ChipContainerLabelAction>
-                        <span>
-                          Selected Agencies ({selectedAgencies.length})
-                        </span>
-                        <Styled.ActionWrapper>
-                          <Styled.ActionItem
-                            onClick={() => setSelectedAgencies([])}
-                          >
-                            Deselect
-                          </Styled.ActionItem>
-                          <Styled.ActionItem red>Delete</Styled.ActionItem>
-                        </Styled.ActionWrapper>
-                      </Styled.ChipContainerLabelAction>
-                    </Styled.InputLabelWrapper>
-                  )}
-                </Styled.Form>
-              </Styled.AddNewUserModal>
-            }
-            buttons={[
-              {
-                label: "Cancel",
-                onClick: () => {
-                  resetAll();
-                },
-              },
-              {
-                label: "Save",
-                onClick: () => {
-                  console.log("add save functionality");
-                },
-              },
-            ]}
-          />
-        </Styled.ModalWrapper>
+            <Styled.Form>
+              <Styled.InputLabelWrapper>
+                <input
+                  name="username"
+                  type="text"
+                  defaultValue={usersById[currentUserToEdit][0].name}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+                <label htmlFor="username">Name</label>
+              </Styled.InputLabelWrapper>
+              {usersById[currentUserToEdit][0].agencies.length > 0 && (
+                <Styled.InputLabelWrapper>
+                  <Styled.ChipContainer>
+                    {usersById[currentUserToEdit][0].agencies.map((a: any) => (
+                      <Styled.Chip>{a.name}</Styled.Chip>
+                    ))}
+                  </Styled.ChipContainer>
+                  <Styled.ChipContainerLabel>
+                    Agencies to add
+                  </Styled.ChipContainerLabel>
+                </Styled.InputLabelWrapper>
+              )}
+            </Styled.Form>
+            {/* <Styled.ChipContainer>
+              {usersById[currentUserToEdit][0].agencies.map((agency: any) => (
+                <Styled.Chip>{agency.name}</Styled.Chip>
+              ))}
+            </Styled.ChipContainer> */}
+            <Styled.Chip onClick={closeModal}>Close</Styled.Chip>
+          </Styled.ModalContainer>
+        </Modal>
       )}
-      <Styled.SettingTitleButtonWrapper>
-        <Styled.SettingsTitle>
-          User Provisioning <Badge color="GREY">Staging</Badge>
-        </Styled.SettingsTitle>
-        <Styled.ButtonWrapper>
-          <Button
-            label="+ Add New User"
+
+      <Styled.CardContainer>
+        {users.map((user) => (
+          <Styled.UserCard
             onClick={() => {
-              setAddEditUserModal(true);
+              openModal();
+              setCurrentUserToEdit(user.id);
             }}
-            buttonColor="blue"
-          />
-        </Styled.ButtonWrapper>
-      </Styled.SettingTitleButtonWrapper>
-      <Styled.Table>
-        <Styled.TableRow columnsSpacing={columnsSpacing} titleRow>
-          {usersTableHeaderRow.map((cell) => (
-            <Styled.TableCell>{cell}</Styled.TableCell>
-          ))}
-        </Styled.TableRow>
-        {users.map((x) => (
+          >
+            <Styled.UserNameEmailIDWrapper>
+              <Styled.UserNameEmailWrapper>
+                <Styled.UserName>{user.name}</Styled.UserName>
+                <Styled.Email>{user.email}</Styled.Email>
+              </Styled.UserNameEmailWrapper>
+              <Styled.ID>{user.id}</Styled.ID>
+            </Styled.UserNameEmailIDWrapper>
+            <Styled.AgenciesWrapper>
+              {/* <Styled.ChipContainer> */}
+              {user.agencies.map((agency: any) => (
+                <Styled.Chip>{agency.name}</Styled.Chip>
+              ))}
+              {/* </Styled.ChipContainer> */}
+            </Styled.AgenciesWrapper>
+            <Styled.NumberOfAgencies>
+              {user.agencies.length} agencies
+            </Styled.NumberOfAgencies>
+          </Styled.UserCard>
+        ))}
+      </Styled.CardContainer>
+
+      {/* {users.map((x) => (
           <Styled.TableRow
             columnsSpacing={columnsSpacing}
             onClick={() => {
@@ -302,8 +193,8 @@ export const UserProvisioning: React.FC<{ users: any[]; agencies: any[] }> = ({
               ({x.agencies.length} agencies)
             </Styled.TableCell>
           </Styled.TableRow>
-        ))}
-      </Styled.Table>
+        ))} */}
+      {/* </Styled.Table> */}
     </>
   );
 };

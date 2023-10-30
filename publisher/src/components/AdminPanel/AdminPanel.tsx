@@ -18,24 +18,21 @@
 import { Badge } from "@justice-counts/common/components/Badge";
 import { Button } from "@justice-counts/common/components/Button";
 import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
-import { Modal } from "@justice-counts/common/components/Modal";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Environment, EnvironmentType, Setting, SettingType } from ".";
+import { useStore } from "../../stores";
+import { Environment, Setting, SettingType } from ".";
 import * as Styled from "./AdminPanel.styles";
 import { AgencyProvisioning } from "./AgencyProvisioning";
 import { UserProvisioning } from "./UserProvisioning";
-// import { useStore } from "../../stores";
 
 export const AdminPanel = observer(() => {
-  // const { api } = useStore();
+  const { api } = useStore();
   const navigate = useNavigate();
 
-  const [currentEnvironment, setCurrentEnvironment] =
-    useState<EnvironmentType>();
   const [currentSettingType, setCurrentSettingType] = useState<SettingType>(
     Setting.USERS
   );
@@ -43,19 +40,58 @@ export const AdminPanel = observer(() => {
   const [users, setUsers] = useState<any[]>([]);
   const [agencies, setAgencies] = useState<any[]>([]);
   const [systems, setSystems] = useState<any[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState<any>(false);
 
-  const resetEnvironmentSettingType = () => {
-    setCurrentEnvironment(undefined);
-    setCurrentSettingType(Setting.USERS);
-  };
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
     // Mock Fetch
-    setUsers(usersResponse.users);
+    // const response = api.request({path})
+    const fetchUsers = async () => {
+      try {
+        const response = (await api.request({
+          path: `/admin/user`,
+          method: "GET",
+        })) as Response;
+        const data = await response.json();
+
+        console.log("fetchUsers response:", data);
+        setUsers(data.users);
+
+        if (response.status !== 200) {
+          throw new Error("There was an issue getting agency description.");
+        }
+      } catch (error) {
+        if (error instanceof Error) return new Error(error.message);
+      }
+    };
+
+    const fetchAgencies = async () => {
+      try {
+        const response = (await api.request({
+          path: `/admin/agency`,
+          method: "GET",
+        })) as Response;
+        const data = await response.json();
+
+        console.log("fetchAgencies response:", data);
+        setAgencies(data.agencies);
+
+        if (response.status !== 200) {
+          throw new Error("There was an issue getting agency description.");
+        }
+      } catch (error) {
+        if (error instanceof Error) return new Error(error.message);
+      }
+    };
+    fetchUsers();
+    fetchAgencies();
+    // setUsers(usersResponse.users);
     // setAgencies(agenciesResponse.agencies);
     setAgencies(agenciesResponseFull.agencies);
     setSystems(agenciesResponse.systems);
-  }, []);
+  }, [api]);
 
   const settingOptions = [
     {
@@ -76,64 +112,51 @@ export const AdminPanel = observer(() => {
     <Styled.AdminPanelContainer>
       <HeaderBar onLogoClick={() => navigate("/admin")} hasBottomBorder>
         <Styled.HeaderEnvironmentDisplay>
-          {currentEnvironment}
+          {api.environment}
         </Styled.HeaderEnvironmentDisplay>
         Admin Panel
       </HeaderBar>
 
-      {/* Interstitial: Staging or Production? */}
-      {!currentEnvironment && (
-        <Styled.AdminPanelEnvironmentInterstitial>
-          <Styled.InterstitialTitle>
-            Which environment would you like to update?
-          </Styled.InterstitialTitle>
-          <Styled.EnvironmentOptionsWrapper>
-            <Styled.EnvironmentOption
-              onClick={() => setCurrentEnvironment(Environment.STAGING)}
-            >
-              Staging
-            </Styled.EnvironmentOption>
-            <Styled.EnvironmentOption
-              onClick={() => setCurrentEnvironment(Environment.PRODUCTION)}
-            >
-              Production
-            </Styled.EnvironmentOption>
-          </Styled.EnvironmentOptionsWrapper>
-        </Styled.AdminPanelEnvironmentInterstitial>
-      )}
+      <Styled.AdminPanelWrapper>
+        <Styled.SettingsBarContainer>
+          <Styled.SettingsTitle>
+            {currentSettingType === Setting.USERS && "User Provisioning"}{" "}
+            {currentSettingType === Setting.AGENCIES && "Agency Provisioning"}{" "}
+            <Badge color="GREY">{api.environment}</Badge>
+          </Styled.SettingsTitle>
+          <Styled.SettingsBar>
+            <TabbedBar options={settingOptions} />
+            <div>Search</div>
+            <Styled.ButtonWrapper>
+              <Button
+                label="Add User"
+                onClick={() => {
+                  setIsModalOpen(true);
+                }}
+                buttonColor="blue"
+              />
+            </Styled.ButtonWrapper>
+          </Styled.SettingsBar>
+        </Styled.SettingsBarContainer>
 
-      {currentEnvironment && (
-        <Styled.AdminPanelWrapper>
-          <Styled.EnvironmentSwitchWrapper>
-            <Styled.EnvironmentSwitchButton
-              onClick={resetEnvironmentSettingType}
-            >
-              &larr; Switch Environments
-            </Styled.EnvironmentSwitchButton>
-          </Styled.EnvironmentSwitchWrapper>
-          <TabbedBar options={settingOptions} />
-
-          {/* Staging */}
-          {currentEnvironment === Environment.STAGING && (
-            <Styled.SettingsContainer>
-              {currentSettingType === Setting.USERS && (
-                <UserProvisioning users={users} agencies={agencies} />
-              )}
-              {currentSettingType === Setting.AGENCIES && (
-                <AgencyProvisioning agencies={agencies} systems={systems} />
-              )}
-            </Styled.SettingsContainer>
-          )}
-
-          {/* Production */}
-          {currentEnvironment === Environment.PRODUCTION && (
-            <>
-              {currentSettingType === Setting.USERS && <>User Settings</>}
-              {currentSettingType === Setting.AGENCIES && <>Agency Settings</>}
-            </>
-          )}
-        </Styled.AdminPanelWrapper>
-      )}
+        {/* Staging */}
+        {api.environment === Environment.STAGING && (
+          <Styled.SettingsContainer>
+            {currentSettingType === Setting.USERS && (
+              <UserProvisioning
+                users={users}
+                agencies={agencies}
+                isModalOpen={isModalOpen}
+                closeModal={closeModal}
+                openModal={openModal}
+              />
+            )}
+            {currentSettingType === Setting.AGENCIES && (
+              <AgencyProvisioning agencies={agencies} systems={systems} />
+            )}
+          </Styled.SettingsContainer>
+        )}
+      </Styled.AdminPanelWrapper>
     </Styled.AdminPanelContainer>
   );
 });

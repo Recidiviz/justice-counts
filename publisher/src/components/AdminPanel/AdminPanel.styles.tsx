@@ -23,10 +23,11 @@ import {
 import styled from "styled-components/macro";
 
 import { FOOTER_HEIGHT_WITHOUT_MARGIN } from "../Footer";
+import { rem } from "@justice-counts/common/utils";
 
 export const AdminPanelContainer = styled.div`
   width: 100%;
-  padding: 25px 50px;
+  padding-top: 25px;
   max-height: calc(
     100vh - ${HEADER_BAR_HEIGHT}px - ${FOOTER_HEIGHT_WITHOUT_MARGIN}px
   );
@@ -34,61 +35,10 @@ export const AdminPanelContainer = styled.div`
   position: relative;
 `;
 
-export const AdminPanelEnvironmentInterstitial = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const InterstitialTitle = styled.div`
-  ${typography.sizeCSS.title}
-  margin-bottom: 50px;
-`;
-
-export const EnvironmentOptionsWrapper = styled.div`
-  display: flex;
-  gap: 50px;
-`;
-
-export const EnvironmentOption = styled.div`
-  width: 200px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid ${palette.highlight.grey8};
-  border-radius: 2px;
-  color: ${palette.highlight.grey10};
-
-  &:hover {
-    cursor: pointer;
-    background: ${palette.solid.lightgrey2};
-    color: ${palette.solid.darkgrey};
-    border: 1px solid ${palette.solid.darkgrey};
-  }
-`;
-
 export const AdminPanelWrapper = styled.div``;
 
-export const EnvironmentSwitchWrapper = styled.div`
-  margin-bottom: 24px;
-`;
-
-export const EnvironmentSwitchButton = styled.div`
-  ${typography.sizeCSS.normal}
-  color: ${palette.solid.blue};
-
-  &:hover {
-    cursor: pointer;
-    color: ${palette.solid.darkblue};
-  }
-`;
-
 export const SettingsContainer = styled.div`
-  padding: 24px 0;
+  padding-top: 25px;
 `;
 
 export const SystemSelectorTabWrapper = styled.div`
@@ -111,6 +61,10 @@ export const SystemSelectorTab = styled.div<{ selected?: boolean }>`
     cursor: pointer;
     color: ${palette.solid.darkblue};
   }
+`;
+
+export const SettingsBarContainer = styled.div`
+  padding: 0 32px;
 `;
 
 export const SettingsTitle = styled.div`
@@ -170,10 +124,12 @@ export const ButtonWrapper = styled.div`
   width: fit-content;
 `;
 
-export const SettingTitleButtonWrapper = styled.div`
+export const SettingsBar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid ${palette.highlight.grey4};
+  padding-bottom: 16px;
 `;
 
 export const Chip = styled.span<{ selected?: boolean; hover?: boolean }>`
@@ -181,9 +137,9 @@ export const Chip = styled.span<{ selected?: boolean; hover?: boolean }>`
   width: fit-content;
   height: fit-content;
   padding: 3px 15px;
-  margin: 2px;
   border: 1px solid ${palette.highlight.grey5};
   border-radius: 4px;
+  box-shadow: 1px 1px 1px ${palette.highlight.grey2};
 
   ${({ selected }) =>
     selected &&
@@ -197,6 +153,10 @@ export const Chip = styled.span<{ selected?: boolean; hover?: boolean }>`
     `
     cursor: pointer;
   `}
+
+  &:not(:last-child) {
+    margin: 0 5px 5px 0;
+  }
 `;
 
 export const AddNewUserModal = styled.div`
@@ -222,6 +182,7 @@ export const InputLabelWrapper = styled.div<{
   topSpacing?: boolean;
 }>`
   ${typography.sizeCSS.normal}
+  width: 50%;
   display: flex;
   flex-direction: ${({ flexRow }) => (flexRow ? "row" : "column")};
   align-items: flex-start;
@@ -393,3 +354,113 @@ export const DropdownItem = styled.div<{ selected?: boolean }>`
 `;
 
 export const ModalWrapper = styled.div``;
+
+/** User Provisioning Styles */
+
+export const CardContainer = styled.div`
+  max-height: calc(
+    100vh - ${HEADER_BAR_HEIGHT}px - ${FOOTER_HEIGHT_WITHOUT_MARGIN}px - 189px
+  );
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 50px;
+  padding: 0 16px 16px 16px;
+  overflow-y: auto;
+`;
+
+export const UserCard = styled.div`
+  height: 250px;
+  width: 350px;
+  border: 1px solid ${palette.highlight.grey4};
+  border-radius: 3px;
+  padding: 16px;
+
+  &:hover {
+    cursor: pointer;
+    background: ${palette.highlight.grey1};
+    border: 1px solid ${palette.highlight.grey8};
+  }
+`;
+
+export const UserName = styled.div`
+  ${typography.sizeCSS.medium}
+  overflow-wrap: anywhere;
+`;
+export const Email = styled.div`
+  ${typography.sizeCSS.normal}
+  color: ${palette.highlight.grey8};
+  overflow-wrap: anywhere;
+`;
+export const ID = styled.div`
+  ${typography.sizeCSS.small}
+  color: ${palette.highlight.grey8};
+  position: relative;
+
+  &:hover::after {
+    ${typography.sizeCSS.small}
+    content: "User ID";
+    height: 20px;
+    width: fit-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+    background: ${palette.highlight.grey4};
+    position: absolute;
+    right: 0;
+    top: 16px;
+    border-radius: 3px;
+    padding: 4px 6px;
+    color: ${palette.solid.darkgrey};
+  }
+`;
+
+export const NumberOfAgencies = styled.div`
+  ${typography.sizeCSS.small}
+  font-weight: 400;
+  color: ${palette.highlight.grey9};
+  margin-top: 8px;
+`;
+
+export const AgenciesWrapper = styled.div`
+  ${typography.sizeCSS.small}
+  height: 130px;
+  width: 100%;
+  margin-top: 16px;
+  font-weight: 400;
+  border: 1px solid ${palette.highlight.grey5};
+  padding: 5px;
+  overflow-wrap: anywhere;
+  overflow-y: scroll;
+`;
+
+export const UserNameEmailWrapper = styled.div``;
+
+export const UserNameEmailIDWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+`;
+
+export const ModalContainer = styled.div`
+  height: 90vh;
+  width: 90vw;
+  background: ${palette.solid.white};
+  border-radius: 4px;
+  padding: 32px;
+`;
+
+export const ModalTitle = styled.div`
+  /* ${typography.sizeCSS.medium} */
+  margin-bottom: 28px;
+`;
+
+export const UserNameDisplay = styled.div`
+  ${typography.sizeCSS.title}
+  font-size: ${rem("48px")};
+  margin-bottom: 6px;
+  margin-left: -2px;
+`;

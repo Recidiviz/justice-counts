@@ -16,8 +16,9 @@
 // =============================================================================
 
 export enum Environment {
-  STAGING = "STAGING",
-  PRODUCTION = "PRODUCTION",
+  LOCAL = "local",
+  STAGING = "staging",
+  PRODUCTION = "production",
 }
 
 export enum Setting {

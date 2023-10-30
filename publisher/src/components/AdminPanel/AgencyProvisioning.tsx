@@ -17,12 +17,12 @@
 
 import { Badge } from "@justice-counts/common/components/Badge";
 import { Button } from "@justice-counts/common/components/Button";
+import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
 import React, { useState } from "react";
 
 import * as Styled from "./AdminPanel.styles";
-import { Dropdown } from "@justice-counts/common/components/Dropdown";
 
 export const AgencyProvisioning: React.FC<{
   agencies: any[];
@@ -137,7 +137,9 @@ export const AgencyProvisioning: React.FC<{
                       options={systemsOptions.map((a: any) => ({
                         key: a,
                         label: a,
-                        onClick: () => {},
+                        onClick: () => {
+                          new Date();
+                        },
                       }))}
                       fullWidth
                     />
@@ -234,10 +236,7 @@ export const AgencyProvisioning: React.FC<{
           ]}
         />
       )}
-      <Styled.SettingTitleButtonWrapper>
-        <Styled.SettingsTitle>
-          Agency Provisioning <Badge color="GREY">Staging</Badge>
-        </Styled.SettingsTitle>
+      <Styled.SettingsBar>
         <Styled.ButtonWrapper>
           <Button
             label="+ Add New Agency"
@@ -245,7 +244,7 @@ export const AgencyProvisioning: React.FC<{
             buttonColor="blue"
           />
         </Styled.ButtonWrapper>
-      </Styled.SettingTitleButtonWrapper>
+      </Styled.SettingsBar>
       <Styled.Table>
         <Styled.TableRow
           columnsSpacing="1fr 4fr 1fr 1fr 3fr 4fr 1fr 1fr"

@@ -88,7 +88,7 @@ const App: React.FC = (): ReactElement => {
               <Navigate to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`} />
             }
           />
-          <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/admin-panel" element={<AdminPanel />} />
           {initialAgency ? (
             <>
               <Route
