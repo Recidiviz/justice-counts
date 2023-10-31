@@ -352,8 +352,8 @@ export const fillTimeGapsBetweenDatapoints = (
         : `${datapointStartDate.getUTCMonth()} ${datapointStartDate.getUTCFullYear()}`;
     })
   );
-  const gapDatapointTimeFrames = [
-    ...new Set(
+  const gapDatapointTimeFrames = Array.from(
+    new Set(
       Array.from(timeFrameSet).filter(
         (timeFrame) =>
           !filteredDatapointTimeFrameSet.has(
@@ -362,8 +362,8 @@ export const fillTimeGapsBetweenDatapoints = (
               : `${timeFrame.getUTCMonth()} ${timeFrame.getUTCFullYear()}`
           )
       )
-    ),
-  ];
+    )
+  );
   const gapDatapoints = gapDatapointTimeFrames.map((date) => {
     const endYearOrIncrementedEndYear =
       date.getUTCMonth() === 11
