@@ -23,7 +23,6 @@ import {
 import styled from "styled-components/macro";
 
 import { FOOTER_HEIGHT_WITHOUT_MARGIN } from "../Footer";
-import { rem } from "@justice-counts/common/utils";
 
 export const AdminPanelContainer = styled.div`
   width: 100%;
@@ -63,7 +62,7 @@ export const SystemSelectorTab = styled.div<{ selected?: boolean }>`
   }
 `;
 
-export const SettingsBarContainer = styled.div`
+export const SidePaddingWrapper = styled.div`
   padding: 0 32px;
 `;
 
@@ -459,8 +458,7 @@ export const ModalTitle = styled.div`
 `;
 
 export const UserNameDisplay = styled.div`
-  ${typography.sizeCSS.title}
-  font-size: ${rem("48px")};
+  ${typography.sizeCSS.largeTitle}
   margin-bottom: 6px;
   margin-left: -2px;
 `;

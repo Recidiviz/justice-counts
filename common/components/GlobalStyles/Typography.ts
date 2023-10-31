@@ -26,6 +26,11 @@ export const typography = {
         line-height: ${rem("64px")};
         font-weight: 500;
     `,
+    largeTitle: `
+        font-size: ${rem("48px")};
+        line-height: ${rem("48px")};
+        font-weight: 500;
+    `,
     title: `
         font-size: ${rem("32px")};
         line-height: ${rem("48px")};

@@ -15,116 +15,64 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Badge } from "@justice-counts/common/components/Badge";
 import { Button } from "@justice-counts/common/components/Button";
-import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { Modal } from "@justice-counts/common/components/Modal";
-import React, { useEffect, useRef, useState } from "react";
+import { observer } from "mobx-react-lite";
+import React, { useState } from "react";
 
+import { useStore } from "../../stores";
+import { Loading } from "../Loading";
 import * as Styled from "./AdminPanel.styles";
-import { groupBy } from "@justice-counts/common/utils";
 
-export const UserProvisioning: React.FC<{
-  users: any[];
-  agencies: any[];
-  isModalOpen: boolean;
-  closeModal: () => void;
-  openModal: () => void;
-}> = ({
-  users,
-  agencies: agencyOptions,
-  isModalOpen,
-  closeModal,
-  openModal,
-}) => {
-  const [addEditUserModal, setAddEditUserModal] = useState(false);
-  const [currentUserToEdit, setCurrentUserToEdit] = useState<any>();
+export const UserProvisioning = observer(() => {
+  const { adminPanelStore } = useStore();
+  const { loading, users, usersByID } = adminPanelStore;
 
-  const [email, setEmail] = useState<any>();
-  const [agencies, setAgencies] = useState<any>();
-  const [selectedAgencies, setSelectedAgencies] = useState<any>([]);
-  const [selectedAgenciesToAdd, setSelectedAgenciesToAdd] = useState<any>([]);
-  const [agencyToAddInputValue, setAgencyToAddInputValue] = useState<any>("");
-  const [filteredAgencyOptions, setFilteredAgencyOptions] = useState<any>();
-  const [showDropdown, setShowDropdown] = useState<any>(false);
-  // const [isModalOpen, setIsModalOpen] = useState<any>(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
-  const selectedAgenciesRef = useRef(null);
-  const addAgencyInputRef = useRef(null);
-  const dropdownRef = useRef(null);
-  const usersById = groupBy(users, (user) => user.id);
-  const [username, setUsername] = useState<any>(
-    usersById[currentUserToEdit]?.[0].name
-  );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUserIDToEdit, setSelectedUserIDToEdit] = useState<
+    number | string
+  >();
 
-  const updateFilteredOptions = (val: string) => {
-    const regex = new RegExp(`${val}`, `i`);
-    setFilteredAgencyOptions(() =>
-      agencyOptions.filter((option) => regex.test(option.name))
-    );
-  };
+  const selectedUser = selectedUserIDToEdit
+    ? usersByID[selectedUserIDToEdit][0]
+    : undefined;
 
-  useEffect(() => {
-    setFilteredAgencyOptions(agencyOptions);
-    setAgencyToAddInputValue("");
-  }, [agencyOptions]);
+  const [username, setUsername] = useState(selectedUser?.name || "");
 
-  // useEffect(() => {
-  //   if (selectedAgenciesRef.current) {
-  //     selectedAgenciesRef.current.scroll({
-  //       top: selectedAgenciesRef.current.scrollHeight,
-  //       left: 0,
-  //       behavior: "smooth",
-  //     });
-  //   }
+  if (loading) {
+    return <Loading />;
+  }
 
-  //   console.log("selectedAgenciesRef.current", selectedAgenciesRef.current);
-  // }, [selectedAgencies]);
-
-  const usersTableHeaderRow = ["Auth0 ID", "Name", "Email", "Agencies"];
-  const columnsSpacing = "2fr 1.5fr 2fr 4fr";
-  console.log(agencyOptions);
-  const resetAll = () => {
-    setAddEditUserModal(false);
-    setCurrentUserToEdit(undefined);
-    setUsername(undefined);
-    setEmail(undefined);
-    setAgencies(undefined);
-    setSelectedAgencies([]);
-    setSelectedAgenciesToAdd([]);
-    setAgencyToAddInputValue("");
-  };
-  console.log(username, currentUserToEdit);
   return (
     <>
       {isModalOpen && (
         <Modal>
           <Styled.ModalContainer>
-            {/* Current User */}
             <Styled.ModalTitle>Edit User Information</Styled.ModalTitle>
             <Styled.UserNameDisplay>
-              {username || usersById[currentUserToEdit][0].name}
+              {username || selectedUser?.name}
             </Styled.UserNameDisplay>
-            <Styled.Email>{usersById[currentUserToEdit][0].email}</Styled.Email>
-            <Styled.Email>
-              User ID: {usersById[currentUserToEdit][0].id}
-            </Styled.Email>
+            <Styled.Email>{selectedUser?.email}</Styled.Email>
+            <Styled.Email>ID {selectedUser?.id}</Styled.Email>
 
             <Styled.Form>
               <Styled.InputLabelWrapper>
                 <input
                   name="username"
                   type="text"
-                  defaultValue={usersById[currentUserToEdit][0].name}
+                  defaultValue={selectedUser?.name}
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
                 <label htmlFor="username">Name</label>
               </Styled.InputLabelWrapper>
-              {usersById[currentUserToEdit][0].agencies.length > 0 && (
+              {selectedUser && selectedUser?.agencies.length > 0 && (
                 <Styled.InputLabelWrapper>
                   <Styled.ChipContainer>
-                    {usersById[currentUserToEdit][0].agencies.map((a: any) => (
+                    {selectedUser?.agencies.map((a: any) => (
                       <Styled.Chip>{a.name}</Styled.Chip>
                     ))}
                   </Styled.ChipContainer>
@@ -134,22 +82,32 @@ export const UserProvisioning: React.FC<{
                 </Styled.InputLabelWrapper>
               )}
             </Styled.Form>
-            {/* <Styled.ChipContainer>
-              {usersById[currentUserToEdit][0].agencies.map((agency: any) => (
-                <Styled.Chip>{agency.name}</Styled.Chip>
-              ))}
-            </Styled.ChipContainer> */}
             <Styled.Chip onClick={closeModal}>Close</Styled.Chip>
           </Styled.ModalContainer>
         </Modal>
       )}
 
+      <Styled.SidePaddingWrapper>
+        <Styled.SettingsBar>
+          <div>Search</div>
+          <Styled.ButtonWrapper>
+            <Button
+              label="Add User"
+              onClick={() => {
+                setIsModalOpen(true);
+              }}
+              buttonColor="blue"
+            />
+          </Styled.ButtonWrapper>
+        </Styled.SettingsBar>
+      </Styled.SidePaddingWrapper>
       <Styled.CardContainer>
         {users.map((user) => (
           <Styled.UserCard
+            key={user.email}
             onClick={() => {
               openModal();
-              setCurrentUserToEdit(user.id);
+              setSelectedUserIDToEdit(user.id);
             }}
           >
             <Styled.UserNameEmailIDWrapper>
@@ -160,11 +118,9 @@ export const UserProvisioning: React.FC<{
               <Styled.ID>{user.id}</Styled.ID>
             </Styled.UserNameEmailIDWrapper>
             <Styled.AgenciesWrapper>
-              {/* <Styled.ChipContainer> */}
               {user.agencies.map((agency: any) => (
-                <Styled.Chip>{agency.name}</Styled.Chip>
+                <Styled.Chip key={agency.name}>{agency.name}</Styled.Chip>
               ))}
-              {/* </Styled.ChipContainer> */}
             </Styled.AgenciesWrapper>
             <Styled.NumberOfAgencies>
               {user.agencies.length} agencies
@@ -172,29 +128,6 @@ export const UserProvisioning: React.FC<{
           </Styled.UserCard>
         ))}
       </Styled.CardContainer>
-
-      {/* {users.map((x) => (
-          <Styled.TableRow
-            columnsSpacing={columnsSpacing}
-            onClick={() => {
-              setCurrentUserToEdit(x);
-              setAddEditUserModal(true);
-            }}
-          >
-            <Styled.TableCell>{x.auth0_user_id}</Styled.TableCell>
-            <Styled.TableCell>{x.name}</Styled.TableCell>
-            <Styled.TableCell>{x.email}</Styled.TableCell>
-            <Styled.TableCell>
-              {x.agencies
-                .sort((a: any, b: any) => a.name.localeCompare(b.name))
-                .map((a: any) => (
-                  <Styled.Chip>{a.name}</Styled.Chip>
-                ))}{" "}
-              ({x.agencies.length} agencies)
-            </Styled.TableCell>
-          </Styled.TableRow>
-        ))} */}
-      {/* </Styled.Table> */}
     </>
   );
-};
+});

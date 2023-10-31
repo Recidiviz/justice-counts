@@ -18,6 +18,7 @@ import { Auth0ClientOptions } from "@auth0/auth0-spa-js";
 import DataVizStore from "@justice-counts/common/stores/DataVizStore";
 
 import { AuthStore } from "../components/Auth";
+import AdminPanelStore from "./AdminPanelStore";
 import AgencyStore from "./AgencyStore";
 import API from "./API";
 import DatapointsStore from "./DatapointsStore";
@@ -61,6 +62,8 @@ class RootStore {
 
   homeStore: HomeStore;
 
+  adminPanelStore: AdminPanelStore;
+
   constructor() {
     this.authStore = new AuthStore({
       authSettings: getAuthSettings(),
@@ -74,6 +77,7 @@ class RootStore {
     this.metricConfigStore = new MetricConfigStore(this.userStore, this.api);
     this.agencyStore = new AgencyStore(this.userStore, this.api);
     this.homeStore = new HomeStore(this.userStore, this.api, this.reportStore);
+    this.adminPanelStore = new AdminPanelStore(this.api);
   }
 }
 

@@ -29,3 +29,30 @@ export enum Setting {
 export type EnvironmentType = `${Environment}`;
 
 export type SettingType = `${Setting}`;
+
+export type AgencyTeamMember = {
+  auth0_user_id: string;
+  name: string;
+  email: string;
+  invitation_status: "NOT_SENT" | "PENDING" | "ACCEPTED" | "ERRORED";
+  role: string;
+};
+
+export type Agency = {
+  id: number;
+  name: string;
+  systems: string[];
+  state_code: string;
+  fips_county_code?: string;
+  team: AgencyTeamMember[];
+  super_agency_id: number;
+  is_superagency: boolean;
+};
+
+export type User = {
+  id: string;
+  auth0_user_id: string;
+  email: string;
+  name: string;
+  agencies: Agency[];
+};

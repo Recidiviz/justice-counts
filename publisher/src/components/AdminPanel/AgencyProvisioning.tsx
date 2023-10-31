@@ -20,14 +20,16 @@ import { Button } from "@justice-counts/common/components/Button";
 import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
+import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 
+import { useStore } from "../../stores";
 import * as Styled from "./AdminPanel.styles";
 
-export const AgencyProvisioning: React.FC<{
-  agencies: any[];
-  systems: any[];
-}> = ({ agencies, systems: systemsOptions }) => {
+export const AgencyProvisioning = observer(() => {
+  const { adminPanelStore } = useStore();
+  const { agencies, systems } = adminPanelStore;
+
   const [addEditAgencyModal, setAddEditAgencyModal] = useState(false);
   const [currentAgencyToEdit, setCurrentAgencyToEdit] = useState<any>();
   const [currentSettingType, setCurrentSettingType] = useState<any>("Agency");
@@ -36,7 +38,6 @@ export const AgencyProvisioning: React.FC<{
   const [tempChildAgencyChecked, setTempChildAgencyChecked] = useState(false);
 
   const [name, setName] = useState<any>();
-  const [systems, setSystems] = useState<any>();
   const [state, setState] = useState<any>();
   const [county, setCounty] = useState<any>();
 
@@ -44,7 +45,6 @@ export const AgencyProvisioning: React.FC<{
     setAddEditAgencyModal(false);
     setCurrentAgencyToEdit(undefined);
     setName(undefined);
-    setSystems(undefined);
     setState(undefined);
     setCounty(undefined);
   };
@@ -134,7 +134,7 @@ export const AgencyProvisioning: React.FC<{
                           ))}
                         </Styled.ChipContainer>
                       }
-                      options={systemsOptions.map((a: any) => ({
+                      options={systems.map((a: any) => ({
                         key: a,
                         label: a,
                         onClick: () => {
@@ -271,7 +271,7 @@ export const AgencyProvisioning: React.FC<{
           >
             <Styled.TableCell>{x.id}</Styled.TableCell>
             <Styled.TableCell>{x.name}</Styled.TableCell>
-            <Styled.TableCell>{x.state}</Styled.TableCell>
+            {/* <Styled.TableCell>{x.state}</Styled.TableCell> */}
             <Styled.TableCell>County</Styled.TableCell>
             <Styled.TableCell>
               {x.systems.map((system: string) => (
@@ -292,4 +292,4 @@ export const AgencyProvisioning: React.FC<{
       </Styled.Table>
     </>
   );
-};
+});
