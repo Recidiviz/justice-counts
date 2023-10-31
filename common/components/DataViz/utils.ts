@@ -262,27 +262,27 @@ export const fillTimeGapsBetweenDatapoints = (
   const lastDatapointDate = new Date(
     dataSortedByStartDate[dataSortedByStartDate.length - 1].start_date
   );
-  const lastDatapointStartMonth = lastDatapointDate.getUTCMonth();
-  const lastDatapointStartYear = lastDatapointDate.getUTCFullYear();
-  const hasFutureDatapointDate = lastDatapointDate > currentDate;
+  // const lastDatapointStartMonth = lastDatapointDate.getUTCMonth();
+  // const lastDatapointStartYear = lastDatapointDate.getUTCFullYear();
+  // const hasFutureDatapointDate = lastDatapointDate > currentDate;
   /**
-   * The reference point helps us determine the beginning of the filtered time window if `monthsAgo`
+   * The `timeRangeStart___` references helps us determine the beginning of the filtered time window if `monthsAgo`
    * is provided (not 0). If `monthsAgo` is 0, we will show the user all of the datapoints and no
    * longer depend on these reference points. If the `monthsAgo` is a non-zero number (for example, 60 months),
    * then we set the reference point to 5 years ago from the current date.
    */
-  const referencePointMonth = currentMonth - monthsAgo;
-  const referencePointYear = currentYear - monthsAgo / 12;
+  const timeRangeStartMonth = currentMonth - monthsAgo;
+  const timeRangeStartYear = currentYear - monthsAgo / 12;
 
   /**
    * Create a new reference point date object and set it to the previously calculated reference month/year
    * depending on the metric's frequency.
    */
-  const referencePointDate = new Date();
+  const timeRangeStartDate = new Date();
   if (isAnnual) {
-    referencePointDate.setUTCFullYear(referencePointYear);
+    timeRangeStartDate.setUTCFullYear(timeRangeStartYear);
   } else {
-    referencePointDate.setUTCMonth(referencePointMonth);
+    timeRangeStartDate.setUTCMonth(timeRangeStartMonth);
   }
 
   // If `monthsAgo` is 0, user intends to see all datapoints, the length of the array will be the years inbetween the first datapoint year and the current year
@@ -292,22 +292,16 @@ export const fillTimeGapsBetweenDatapoints = (
 
   // If `monthsAgo` is 0, user intends to see all datapoints, the length of the array will be the months inbetween the first datapoint date and the current date
   // If `monthsAgo` is non-zero, user intends to see a specific time-range, the length of the array will be the months inbetween the current date and the # of `monthsAgo`
-  const monthlyTimeRangeFromCurrentDateOrFutureDatapointDate =
-    hasFutureDatapointDate
-      ? lastDatapointStartMonth -
-        firstDatapointStartMonth +
-        12 * (lastDatapointStartYear - firstDatapointStartYear)
-      : currentMonth -
-        firstDatapointStartMonth +
-        12 * (currentYear - firstDatapointStartYear);
+  const monthlyTimeRangeFromCurrentDate =
+    currentMonth -
+    firstDatapointStartMonth +
+    12 * (currentYear - firstDatapointStartYear);
   const monthlyTimeRangeLength =
-    monthsAgo === 0
-      ? monthlyTimeRangeFromCurrentDateOrFutureDatapointDate
-      : monthsAgo;
+    monthsAgo === 0 ? monthlyTimeRangeFromCurrentDate : monthsAgo;
 
   /**
    * Create an array of dates that represent our viewing time-frame (i.e. the range of time the user filtered to - e.g. 5 years ago)
-   * If `monthsAgo` is 60 months and the metric frequency is annual, the array will look like this: [<Current Date (2023)>, <2022 Date>, <2021 Date>, <2020 Date>, <2021 Date>]
+   * If `monthsAgo` is 60 months and the metric frequency is annual, the array will look like this: [<Current Date (2023)>, <2022 Date>, <2021 Date>, <2020 Date>, <2019 Date>]
    * If `monthsAgo` is 0 months and the metric frequency is annual, the array will look like this: [<Current Date>, ...<Dates (years) inbetween> ,<First Datapoint Date>]
    * If `monthsAgo` is 12 months and the metric frequency is monthly, the array will look like this: [<Current Date>, ...<Dates (months) inbetween> , <Date 12 months ago>]
    * If `monthsAgo` is 0 months and the metric frequency is monthly, the array will look like this: [<Current Date>, ...<Dates (months) inbetween> ,<First Datapoint Date>]
@@ -318,19 +312,19 @@ export const fillTimeGapsBetweenDatapoints = (
     },
     (_, i) => {
       // For monthly metrics, decrement the date so we start with the current date and subtract months on each loop.
-      const decrementedDate = hasFutureDatapointDate
-        ? new Date(
-            new Date(lastDatapointDate).setUTCMonth(
-              new Date(lastDatapointDate).getUTCMonth() - i
-            )
-          )
-        : new Date(new Date().setUTCMonth(new Date().getUTCMonth() - i));
+      const decrementedDate = new Date(
+        new Date().getUTCFullYear(),
+        new Date().getUTCMonth(),
+        1
+      );
+      decrementedDate.setUTCMonth(decrementedDate.getUTCMonth() - i);
 
       const date = createGMTDate(
         1,
         isAnnual ? startingMonth || 0 : decrementedDate.getUTCMonth(),
         isAnnual ? currentYear - i : decrementedDate.getUTCFullYear()
       );
+
       return date;
     }
   );
@@ -341,8 +335,8 @@ export const fillTimeGapsBetweenDatapoints = (
     // If `monthsAgo` is non-zero, we filter out datapoints outside of the time-frame window
     const datapointStartDate = new Date(dp.start_date);
     if (
-      datapointStartDate.getUTCMonth() < referencePointDate.getUTCMonth() &&
-      datapointStartDate.getUTCFullYear() < referencePointDate.getUTCFullYear()
+      datapointStartDate.getUTCMonth() < timeRangeStartDate.getUTCMonth() &&
+      datapointStartDate.getUTCFullYear() < timeRangeStartDate.getUTCFullYear()
     ) {
       return false;
     }
