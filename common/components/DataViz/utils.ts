@@ -339,9 +339,9 @@ export const fillTimeGapsBetweenDatapoints = (
   });
 
   /**
-   * Create an array of gap datapoints by looping through the `timeFrameArray` and first filtering out timeframes
-   * that have existing datapoints (because they won't need a gap datapoint), then, creating a gap datapoint
-   * object for each time-frame that doesn't have an existing datapoint.
+   * Create an array of gap datapoint timeframes by computing the difference between two sets, the
+   * current viewing window timeframes' set and the datapoint timeframes' set. Then, create gap datapoint
+   * objects for each of the remaining timeframes.
    */
   const timeFrameSet = new Set(timeFrameArray);
   const filteredDatapointTimeFrameSet = new Set(
