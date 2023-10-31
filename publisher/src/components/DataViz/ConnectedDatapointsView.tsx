@@ -33,11 +33,15 @@ type ConnectedDatapointsViewProps = {
   metric: string;
   metricName: string;
   metricFrequency?: ReportFrequency;
+  metricStartingMonth?: number;
   dataView: ChartView;
 };
 
 const ConnectedDatapointsView = forwardRef<never, ConnectedDatapointsViewProps>(
-  ({ metric, metricName, metricFrequency, dataView }, ref) => {
+  (
+    { metric, metricName, metricFrequency, metricStartingMonth, dataView },
+    ref
+  ) => {
     const { datapointsStore, dataVizStore } = useStore();
     const windowWidth = useWindowWidth();
 
@@ -93,6 +97,7 @@ const ConnectedDatapointsView = forwardRef<never, ConnectedDatapointsViewProps>(
             setCountOrPercentageView={setCountOrPercentageView}
             metricName={metricName}
             metricFrequency={metricFrequency}
+            metricStartingMonth={metricStartingMonth}
             resizeHeight
             showTitle
             showBottomMetricInsights={windowWidth <= MIN_DESKTOP_WIDTH}

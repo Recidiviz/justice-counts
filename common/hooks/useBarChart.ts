@@ -40,11 +40,15 @@ export const useBarChart = ({
   datapointsByMetric,
 }: BarChartHookProps): BarChartProps => {
   const getBarChartData = (metric: Metric) => {
+    // For annual metrics, get the starting month from the metric object (not zero-indexed) and subtract one to adapt to our zero-indexed months.
+    const startingMonth = metric.starting_month && metric.starting_month - 1;
     if (datapointsByMetric) {
       return transformDataForBarChart(
         datapointsByMetric[metric.key].aggregate,
         getDataVizTimeRange(metric),
-        "Count"
+        "Count",
+        metric.custom_frequency || metric.frequency,
+        startingMonth
       );
     }
     return [];
