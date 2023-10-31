@@ -259,12 +259,7 @@ export const fillTimeGapsBetweenDatapoints = (
   const firstDatapointDate = new Date(dataSortedByStartDate[0].start_date);
   const firstDatapointStartMonth = firstDatapointDate.getUTCMonth();
   const firstDatapointStartYear = firstDatapointDate.getUTCFullYear();
-  const lastDatapointDate = new Date(
-    dataSortedByStartDate[dataSortedByStartDate.length - 1].start_date
-  );
-  // const lastDatapointStartMonth = lastDatapointDate.getUTCMonth();
-  // const lastDatapointStartYear = lastDatapointDate.getUTCFullYear();
-  // const hasFutureDatapointDate = lastDatapointDate > currentDate;
+
   /**
    * The `timeRangeStart___` references helps us determine the beginning of the filtered time window if `monthsAgo`
    * is provided (not 0). If `monthsAgo` is 0, we will show the user all of the datapoints and no
@@ -348,47 +343,48 @@ export const fillTimeGapsBetweenDatapoints = (
    * that have existing datapoints (because they won't need a gap datapoint), then, creating a gap datapoint
    * object for each time-frame that doesn't have an existing datapoint.
    */
-  const gapDatapoints = timeFrameArray
-    .filter((date) => {
-      if (
-        filteredDatapoints
-          .map((dp) => {
-            const datapointStartDate = new Date(dp.start_date);
-            return isAnnual
-              ? datapointStartDate.getUTCFullYear()
-              : `${datapointStartDate.getUTCMonth()} ${datapointStartDate.getUTCFullYear()}`;
-          })
-          .includes(
-            isAnnual
-              ? date.getUTCFullYear()
-              : `${date.getUTCMonth()} ${date.getUTCFullYear()}`
-          )
-      ) {
-        return false;
-      }
-      return true;
+  const timeFrameSet = new Set(timeFrameArray);
+  const filteredDatapointTimeFrameSet = new Set(
+    filteredDatapoints.map((dp) => {
+      const datapointStartDate = new Date(dp.start_date);
+      return isAnnual
+        ? datapointStartDate.getUTCFullYear()
+        : `${datapointStartDate.getUTCMonth()} ${datapointStartDate.getUTCFullYear()}`;
     })
-    .map((date) => {
-      const endYearOrIncrementedEndYear =
-        date.getUTCMonth() === 11
-          ? date.getUTCFullYear() + 1 // Increment the year if the month is December
-          : date.getUTCFullYear();
-      return {
-        start_date: new Date(
-          createGMTDate(1, date.getUTCMonth(), date.getUTCFullYear())
-        ).toUTCString(),
-        end_date: new Date(
-          createGMTDate(
-            1,
-            isAnnual ? date.getUTCMonth() : (date.getUTCMonth() + 1) % 12,
-            isAnnual ? date.getUTCFullYear() + 1 : endYearOrIncrementedEndYear
+  );
+  const gapDatapointTimeFrames = [
+    ...new Set(
+      Array.from(timeFrameSet).filter(
+        (timeFrame) =>
+          !filteredDatapointTimeFrameSet.has(
+            isAnnual
+              ? timeFrame.getUTCFullYear()
+              : `${timeFrame.getUTCMonth()} ${timeFrame.getUTCFullYear()}`
           )
-        ).toUTCString(),
-        dataVizMissingData: defaultBarValue,
-        frequency,
-        ...dimensionsMap,
-      };
-    });
+      )
+    ),
+  ];
+  const gapDatapoints = gapDatapointTimeFrames.map((date) => {
+    const endYearOrIncrementedEndYear =
+      date.getUTCMonth() === 11
+        ? date.getUTCFullYear() + 1 // Increment the year if the month is December
+        : date.getUTCFullYear();
+    return {
+      start_date: new Date(
+        createGMTDate(1, date.getUTCMonth(), date.getUTCFullYear())
+      ).toUTCString(),
+      end_date: new Date(
+        createGMTDate(
+          1,
+          isAnnual ? date.getUTCMonth() : (date.getUTCMonth() + 1) % 12,
+          isAnnual ? date.getUTCFullYear() + 1 : endYearOrIncrementedEndYear
+        )
+      ).toUTCString(),
+      dataVizMissingData: defaultBarValue,
+      frequency,
+      ...dimensionsMap,
+    };
+  });
 
   // Merge `filteredDatapoints` and `gapDatapoints` and sort them in ascending order by start date
   const dataWithGapDatapoints = [...filteredDatapoints, ...gapDatapoints].sort(
