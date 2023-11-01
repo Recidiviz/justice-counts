@@ -49,7 +49,12 @@ export const UserProvisioning = observer(() => {
   return (
     <>
       {isModalOpen && (
-        <Modal>
+        <Modal
+          buttons={[
+            { label: "Cancel", onClick: closeModal },
+            { label: "Save", onClick: () => console.log("Saved") },
+          ]}
+        >
           <Styled.ModalContainer>
             <Styled.ModalTitle>Edit User Information</Styled.ModalTitle>
             <Styled.UserNameDisplay>
@@ -72,12 +77,12 @@ export const UserProvisioning = observer(() => {
               {selectedUser && selectedUser?.agencies.length > 0 && (
                 <Styled.InputLabelWrapper>
                   <Styled.ChipContainer>
-                    {selectedUser?.agencies.map((a: any) => (
-                      <Styled.Chip>{a.name}</Styled.Chip>
+                    {selectedUser?.agencies.map((agency: any) => (
+                      <Styled.Chip>{agency.name}</Styled.Chip>
                     ))}
                   </Styled.ChipContainer>
                   <Styled.ChipContainerLabel>
-                    Agencies to add
+                    Agencies
                   </Styled.ChipContainerLabel>
                 </Styled.InputLabelWrapper>
               )}

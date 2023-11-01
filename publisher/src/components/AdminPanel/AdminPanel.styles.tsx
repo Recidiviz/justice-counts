@@ -132,6 +132,7 @@ export const SettingsBar = styled.div`
 `;
 
 export const Chip = styled.span<{ selected?: boolean; hover?: boolean }>`
+  font-weight: 400;
   display: inline-block;
   width: fit-content;
   height: fit-content;
@@ -429,7 +430,6 @@ export const AgenciesWrapper = styled.div`
   height: 130px;
   width: 100%;
   margin-top: 16px;
-  font-weight: 400;
   border: 1px solid ${palette.highlight.grey5};
   padding: 5px;
   overflow-wrap: anywhere;
