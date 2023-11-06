@@ -37,7 +37,7 @@ export const AdminPanelContainer = styled.div`
 export const AdminPanelWrapper = styled.div``;
 
 export const SettingsContainer = styled.div`
-  padding-top: 25px;
+  padding-top: 16px;
 `;
 
 export const SystemSelectorTabWrapper = styled.div`
@@ -116,7 +116,8 @@ export const TableCell = styled.div<{ center?: boolean }>`
 
 export const HeaderEnvironmentDisplay = styled.div`
   ${typography.sizeCSS.large}
-  letter-spacing: 7px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
 `;
 
 export const ButtonWrapper = styled.div`
@@ -126,9 +127,9 @@ export const ButtonWrapper = styled.div`
 export const SettingsBar = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   border-bottom: 1px solid ${palette.highlight.grey4};
-  padding-bottom: 16px;
+  padding: 16px 0;
 `;
 
 export const Chip = styled.span<{ selected?: boolean; hover?: boolean }>`
@@ -180,6 +181,7 @@ export const Form = styled.form`
 export const InputLabelWrapper = styled.div<{
   flexRow?: boolean;
   topSpacing?: boolean;
+  inputWidth?: number;
 }>`
   ${typography.sizeCSS.normal}
   width: 50%;
@@ -193,6 +195,7 @@ export const InputLabelWrapper = styled.div<{
   input {
     width: 100%;
     min-width: 300px;
+    ${({ inputWidth }) => inputWidth && `max-width: ${inputWidth}px`};
     border: 1px solid ${palette.highlight.grey5};
     border-radius: 2px;
     padding: 5px;
@@ -258,9 +261,7 @@ export const ChipContainerLabel = styled.div`
   margin-top: 3px;
 `;
 
-export const ChipName = styled.div`
-  /* color: ${palette.highlight.grey8}; */
-`;
+export const ChipName = styled.div``;
 
 export const ChipRole = styled.div`
   color: ${palette.solid.green};
@@ -359,29 +360,30 @@ export const ModalWrapper = styled.div``;
 
 export const CardContainer = styled.div`
   max-height: calc(
-    100vh - ${HEADER_BAR_HEIGHT}px - ${FOOTER_HEIGHT_WITHOUT_MARGIN}px - 189px
+    100vh - ${HEADER_BAR_HEIGHT}px - ${FOOTER_HEIGHT_WITHOUT_MARGIN}px - 182px
   );
   width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 16px;
-  margin-top: 50px;
-  padding: 0 16px 16px 16px;
+  padding: 32px 16px;
   overflow-y: auto;
 `;
 
 export const UserCard = styled.div`
-  height: 250px;
+  min-height: 250px;
   width: 350px;
   border: 1px solid ${palette.highlight.grey4};
   border-radius: 3px;
   padding: 16px;
+  transition: 0.2s ease;
 
   &:hover {
     cursor: pointer;
-    background: ${palette.highlight.grey1};
+    background: ${palette.highlight.lightgrey1};
     border: 1px solid ${palette.highlight.grey8};
+    box-shadow: 1px 1px 3px ${palette.highlight.grey2};
   }
 `;
 

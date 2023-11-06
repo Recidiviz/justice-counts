@@ -94,7 +94,16 @@ export const UserProvisioning = observer(() => {
 
       <Styled.SidePaddingWrapper>
         <Styled.SettingsBar>
-          <div>Search</div>
+          <Styled.InputLabelWrapper inputWidth={500}>
+            <input
+              name="search"
+              type="text"
+              defaultValue=""
+              value=""
+              onChange={(e) => console.log("search")}
+            />
+            <label htmlFor="search">Search</label>
+          </Styled.InputLabelWrapper>
           <Styled.ButtonWrapper>
             <Button
               label="Add User"
