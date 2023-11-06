@@ -43,6 +43,7 @@ export const palette = {
     green: `rgba(0, 117, 65, 0.1)`,
     lightblue1: `rgba(0, 115, 229, 0.05)`,
     lightblue2: `rgba(0, 115, 229, 0.25)`,
+    lightgrey1: `rgba(190, 190, 190, 0.1)`,
     grey1: `rgba(0, 17, 51, 0.05)`,
     grey2: `rgba(0, 17, 51, 0.1)`,
     grey3: `rgba(0, 17, 51, 0.15)`,
