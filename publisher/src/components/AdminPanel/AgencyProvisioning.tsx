@@ -30,6 +30,8 @@ export const AgencyProvisioning = observer(() => {
   const { adminPanelStore } = useStore();
   const { agencies, systems } = adminPanelStore;
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [addEditAgencyModal, setAddEditAgencyModal] = useState(false);
   const [currentAgencyToEdit, setCurrentAgencyToEdit] = useState<any>();
   const [currentSettingType, setCurrentSettingType] = useState<any>("Agency");
@@ -236,7 +238,75 @@ export const AgencyProvisioning = observer(() => {
           ]}
         />
       )}
-      <Styled.SettingsBar>
+      <Styled.SidePaddingWrapper>
+        <Styled.SettingsBar>
+          <Styled.InputLabelWrapper inputWidth={500}>
+            <input
+              name="search"
+              type="text"
+              defaultValue=""
+              value=""
+              onChange={(e) => console.log("search")}
+            />
+            <label htmlFor="search">Search</label>
+          </Styled.InputLabelWrapper>
+          <Styled.ButtonWrapper>
+            <Button
+              label="Create Agency"
+              onClick={() => {
+                setIsModalOpen(true);
+              }}
+              buttonColor="blue"
+            />
+          </Styled.ButtonWrapper>
+        </Styled.SettingsBar>
+      </Styled.SidePaddingWrapper>
+      <Styled.CardContainer>
+        {agencies.map((agency) => (
+          <Styled.UserCard
+            key={agency.id}
+            onClick={() => {
+              setIsModalOpen(true);
+              // setSelectedUserIDToEdit(user.id);
+            }}
+          >
+            <Styled.UserNameEmailIDWrapper>
+              <Styled.UserNameEmailWrapper>
+                <Styled.UserName>{agency.name}</Styled.UserName>
+                {agency.is_superagency && (
+                  <Styled.Subheader green>Superagency</Styled.Subheader>
+                )}
+              </Styled.UserNameEmailWrapper>
+              <Styled.ID type="AGENCY">{agency.id}</Styled.ID>
+            </Styled.UserNameEmailIDWrapper>
+            <Styled.AgenciesNumOfAgenciesWrapper>
+              <Styled.AgenciesWrapper>
+                {agency.team.map((team) => (
+                  <Styled.Chip key={team.name}>{team.name}</Styled.Chip>
+                ))}
+              </Styled.AgenciesWrapper>
+              <Styled.NumberOfAgenciesLiveDashboardIndicatorWrapper>
+                <Styled.NumberOfAgencies>
+                  {agency.team.length} members
+                </Styled.NumberOfAgencies>
+                <Styled.IndicatorWrapper>
+                  {agency.is_superagency && (
+                    <Styled.SuperagencyIndicator>
+                      Superagency
+                    </Styled.SuperagencyIndicator>
+                  )}
+                  {agency.is_dashboard_enabled && (
+                    <Styled.LiveDashboardIndicator>
+                      Live Dashboard
+                    </Styled.LiveDashboardIndicator>
+                  )}
+                </Styled.IndicatorWrapper>
+              </Styled.NumberOfAgenciesLiveDashboardIndicatorWrapper>
+            </Styled.AgenciesNumOfAgenciesWrapper>
+          </Styled.UserCard>
+        ))}
+      </Styled.CardContainer>
+      {/* <Styled.SettingsBar>
         <Styled.ButtonWrapper>
           <Button
             label="+ Add New Agency"
@@ -271,7 +341,7 @@ export const AgencyProvisioning = observer(() => {
           >
             <Styled.TableCell>{x.id}</Styled.TableCell>
             <Styled.TableCell>{x.name}</Styled.TableCell>
-            {/* <Styled.TableCell>{x.state}</Styled.TableCell> */}
+            <Styled.TableCell>{x.state}</Styled.TableCell>
             <Styled.TableCell>County</Styled.TableCell>
             <Styled.TableCell>
               {x.systems.map((system: string) => (
@@ -289,7 +359,7 @@ export const AgencyProvisioning = observer(() => {
             <Styled.TableCell center>No</Styled.TableCell>
           </Styled.TableRow>
         ))}
-      </Styled.Table>
+      </Styled.Table> */}
     </>
   );
 });

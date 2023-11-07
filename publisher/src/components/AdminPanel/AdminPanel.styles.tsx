@@ -446,6 +446,9 @@ export const CardContainer = styled.div`
 export const UserCard = styled.div`
   min-height: 250px;
   width: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   border: 1px solid ${palette.highlight.grey4};
   border-radius: 3px;
   padding: 16px;
@@ -474,18 +477,19 @@ export const Email = styled.div`
   ${SubheaderStyles}
 `;
 
-export const Subheader = styled.div`
+export const Subheader = styled.div<{ green?: boolean }>`
   ${SubheaderStyles}
+  ${({ green }) => green && `color: ${palette.solid.green}`}
 `;
 
-export const ID = styled.div`
+export const ID = styled.div<{ type: "USER" | "AGENCY" }>`
   ${typography.sizeCSS.small}
   color: ${palette.highlight.grey8};
   position: relative;
 
   &:hover::after {
     ${typography.sizeCSS.small}
-    content: "User ID";
+    content: "${({ type }) => (type === "USER" ? "User" : "Agency")} ID";
     height: 20px;
     width: fit-content;
     display: flex;
@@ -501,12 +505,33 @@ export const ID = styled.div`
     color: ${palette.solid.darkgrey};
   }
 `;
+export const AgenciesNumOfAgenciesWrapper = styled.div``;
+
+export const NumberOfAgenciesLiveDashboardIndicatorWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
 
 export const NumberOfAgencies = styled.div`
   ${typography.sizeCSS.small}
   font-weight: 400;
   color: ${palette.highlight.grey9};
   margin-top: 8px;
+`;
+
+export const IndicatorWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+export const LiveDashboardIndicator = styled(NumberOfAgencies)`
+  color: ${palette.solid.blue};
+`;
+
+export const SuperagencyIndicator = styled(NumberOfAgencies)`
+  color: ${palette.solid.green};
 `;
 
 export const AgenciesWrapper = styled.div`
@@ -520,7 +545,9 @@ export const AgenciesWrapper = styled.div`
   overflow-y: scroll;
 `;
 
-export const UserNameEmailWrapper = styled.div``;
+export const UserNameEmailWrapper = styled.div`
+  max-width: 260px;
+`;
 
 export const UserNameEmailIDWrapper = styled.div`
   display: flex;

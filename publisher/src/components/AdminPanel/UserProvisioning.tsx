@@ -376,7 +376,7 @@ export const UserProvisioning = observer(() => {
           </Styled.InputLabelWrapper>
           <Styled.ButtonWrapper>
             <Button
-              label="Add User"
+              label="Create User"
               onClick={() => {
                 setIsModalOpen(true);
               }}
@@ -399,7 +399,7 @@ export const UserProvisioning = observer(() => {
                 <Styled.UserName>{user.name}</Styled.UserName>
                 <Styled.Email>{user.email}</Styled.Email>
               </Styled.UserNameEmailWrapper>
-              <Styled.ID>{user.id}</Styled.ID>
+              <Styled.ID type="USER">{user.id}</Styled.ID>
             </Styled.UserNameEmailIDWrapper>
             <Styled.AgenciesWrapper>
               {user.agencies.map((agency) => (
