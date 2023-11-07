@@ -16,4 +16,5 @@
 // =============================================================================
 
 export * from "./AdminPanel";
+export * from "./SearchableListOfAgencies";
 export * from "./types";

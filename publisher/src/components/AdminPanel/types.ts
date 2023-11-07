@@ -56,3 +56,19 @@ export type User = {
   name: string;
   agencies: Agency[];
 };
+
+export const UserProvisioningActions = {
+  ADD: "ADD",
+  DELETE: "DELETE",
+} as const;
+
+export type UserProvisioningAction =
+  (typeof UserProvisioningActions)[keyof typeof UserProvisioningActions];
+
+export const AgencyListTypes = {
+  CURRENT: "CURRENT",
+  ADDED: "ADDED",
+} as const;
+
+export type AgencyListType =
+  (typeof AgencyListTypes)[keyof typeof AgencyListTypes];

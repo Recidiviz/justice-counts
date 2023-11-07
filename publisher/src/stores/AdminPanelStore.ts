@@ -52,14 +52,19 @@ class AdminPanelStore {
         path: `/admin/user`,
         method: "GET",
       })) as Response;
-      const data = await response.json();
+      const data = (await response.json()) as { users: User[] };
 
       if (response.status !== 200) {
         throw new Error("There was an issue fetching users.");
       }
 
       runInAction(() => {
-        this.users = data.users;
+        this.users = data.users.map((user) => {
+          return {
+            ...user,
+            agencies: AdminPanelStore.sortAgencies(user.agencies),
+          };
+        });
         this.loading = false;
       });
     } catch (error) {
@@ -73,20 +78,29 @@ class AdminPanelStore {
         path: `/admin/agency`,
         method: "GET",
       })) as Response;
-      const data = await response.json();
+      const data = (await response.json()) as {
+        agencies: Agency[];
+        systems: AgencySystems[];
+      };
 
       if (response.status !== 200) {
         throw new Error("There was an issue fetching agencies.");
       }
 
       runInAction(() => {
-        this.agencies = data.agencies;
+        this.agencies = AdminPanelStore.sortAgencies(data.agencies);
+        console.log("hi", this.agencies);
         this.systems = data.systems;
         this.loading = false;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
     }
+  }
+
+  /** Sorts a list of agencies in alphabetical order */
+  static sortAgencies(agencies: Agency[]) {
+    return agencies.sort((a, b) => a.name.localeCompare(b.name));
   }
 }
 

@@ -20,9 +20,10 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import styled from "styled-components/macro";
+import styled, { css } from "styled-components/macro";
 
 import { FOOTER_HEIGHT_WITHOUT_MARGIN } from "../Footer";
+import { UserProvisioningAction, UserProvisioningActions } from "./types";
 
 export const AdminPanelContainer = styled.div`
   width: 100%;
@@ -129,35 +130,7 @@ export const SettingsBar = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   border-bottom: 1px solid ${palette.highlight.grey4};
-  padding: 16px 0;
-`;
-
-export const Chip = styled.span<{ selected?: boolean; hover?: boolean }>`
-  font-weight: 400;
-  display: inline-block;
-  width: fit-content;
-  height: fit-content;
-  padding: 3px 15px;
-  border: 1px solid ${palette.highlight.grey5};
-  border-radius: 4px;
-  box-shadow: 1px 1px 1px ${palette.highlight.grey2};
-
-  ${({ selected }) =>
-    selected &&
-    `
-    border: 1px solid ${palette.solid.blue};
-    color: ${palette.solid.blue};
-  `}
-
-  ${({ hover }) =>
-    hover &&
-    `
-    cursor: pointer;
-  `}
-
-  &:not(:last-child) {
-    margin: 0 5px 5px 0;
-  }
+  padding-top: 16px;
 `;
 
 export const AddNewUserModal = styled.div`
@@ -174,8 +147,39 @@ export const ModalDescription = styled.div`
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin: 16px 0;
+  /* gap: 16px; */
+  margin: 32px 0 16px 0;
+`;
+
+export const FormActions = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  margin: 40px 0;
+`;
+
+export const ActionButton = styled.div<{ selectedColor?: string }>`
+  ${typography.sizeCSS.normal}
+  width: 200px;
+  text-align: center;
+  padding: 16px;
+  border: 1px solid ${palette.highlight.grey7};
+  border-radius: 4px;
+  ${({ selectedColor }) => {
+    if (selectedColor === "red") {
+      return `background: ${palette.highlight.red};`;
+    }
+    if (selectedColor === "green") {
+      return `background: ${palette.highlight.green};`;
+    }
+  }}
+
+  &:hover {
+    cursor: pointer;
+    background: ${palette.highlight.grey1};
+  }
 `;
 
 export const InputLabelWrapper = styled.div<{
@@ -184,12 +188,12 @@ export const InputLabelWrapper = styled.div<{
   inputWidth?: number;
 }>`
   ${typography.sizeCSS.normal}
-  width: 50%;
   display: flex;
   flex-direction: ${({ flexRow }) => (flexRow ? "row" : "column")};
   align-items: flex-start;
   justify-content: center;
   position: relative;
+  padding-bottom: 16px;
   ${({ topSpacing }) => topSpacing && `margin-top: 16px`};
 
   input {
@@ -214,8 +218,22 @@ export const InputLabelWrapper = styled.div<{
 
   label {
     ${typography.sizeCSS.small}
+    width: 100%;
+    ${({ inputWidth }) => inputWidth && `max-width: ${inputWidth}px`};
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     color: ${palette.highlight.grey8};
     margin-top: 5px;
+  }
+`;
+
+export const LabelButton = styled.div`
+  color: ${palette.solid.blue};
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.solid.darkblue};
   }
 `;
 
@@ -240,23 +258,72 @@ export const TeamMemberChip = styled.div`
 export const ChipContainer = styled.div<{
   halfMaxHeight?: boolean;
   noBorder?: boolean;
+  deleteAction?: boolean;
 }>`
   ${typography.sizeCSS.small}
   width: 100%;
   min-width: 300px;
-  min-height: 28px;
-  max-height: ${({ halfMaxHeight }) => (halfMaxHeight ? 100 : 200)}px;
+  /* min-height: 28px; */
+  /* max-height: ${({ halfMaxHeight }) => (halfMaxHeight ? 100 : 200)}px; */
+  height: ${({ halfMaxHeight }) => (halfMaxHeight ? 100 : 200)}px;
   display: flex;
   flex-wrap: wrap;
-  border: ${({ noBorder }) =>
-    noBorder ? `none` : `1px solid ${palette.highlight.grey5}`};
+  align-content: baseline;
+  border: ${({ noBorder, deleteAction }) =>
+    noBorder
+      ? `none`
+      : `1px solid ${
+          deleteAction ? palette.solid.red : palette.highlight.grey5
+        }`};
   border-radius: 2px;
   padding: 5px;
   overflow-y: auto;
+  ${({ deleteAction }) =>
+    deleteAction && `box-shadow: 1px 1px 2px ${palette.highlight.darkred}`}
+`;
+
+export const Chip = styled.span<{
+  selected?: boolean;
+  hover?: boolean;
+  selectedColor?: string;
+}>`
+  font-weight: 400;
+  display: inline-block;
+  width: fit-content;
+  height: fit-content;
+  padding: 3px 15px;
+  border: 1px solid ${palette.highlight.grey5};
+  border-radius: 4px;
+  box-shadow: 1px 1px 1px ${palette.highlight.grey2};
+
+  ${({ selected, selectedColor }) => {
+    if (selected && selectedColor) {
+      if (selectedColor === "red") {
+        return `background: ${palette.highlight.red}; border: 1px solid ${palette.solid.red};`;
+      }
+      if (selectedColor === "green") {
+        return `background: ${palette.highlight.green}; border: 1px solid ${palette.solid.green};`;
+      }
+    }
+  }}
+
+  ${({ hover }) =>
+    hover &&
+    `
+    cursor: pointer;
+  `}
+
+  &:not(:last-child) {
+    margin: 0 5px 5px 0;
+  }
 `;
 
 export const ChipContainerLabel = styled.div`
   ${typography.sizeCSS.small}
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   color: ${palette.highlight.grey8};
   margin-top: 3px;
 `;
@@ -297,6 +364,13 @@ export const ChipContainerLabelAction = styled(ChipContainerLabel)`
   span {
     white-space: nowrap;
   }
+`;
+
+export const LabelButtonsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
 `;
 
 export const ActionWrapper = styled.div`
@@ -354,8 +428,6 @@ export const DropdownItem = styled.div<{ selected?: boolean }>`
   `}
 `;
 
-export const ModalWrapper = styled.div``;
-
 /** User Provisioning Styles */
 
 export const CardContainer = styled.div`
@@ -391,11 +463,21 @@ export const UserName = styled.div`
   ${typography.sizeCSS.medium}
   overflow-wrap: anywhere;
 `;
-export const Email = styled.div`
+
+const SubheaderStyles = css`
   ${typography.sizeCSS.normal}
   color: ${palette.highlight.grey8};
   overflow-wrap: anywhere;
 `;
+
+export const Email = styled.div`
+  ${SubheaderStyles}
+`;
+
+export const Subheader = styled.div`
+  ${SubheaderStyles}
+`;
+
 export const ID = styled.div`
   ${typography.sizeCSS.small}
   color: ${palette.highlight.grey8};
@@ -446,21 +528,44 @@ export const UserNameEmailIDWrapper = styled.div`
   align-items: flex-start;
 `;
 
+export const ScrollableContainer = styled.div`
+  height: 72vh;
+  overflow-y: auto;
+  padding-bottom: 32px;
+  padding-right: 16px;
+`;
+
+export const ModalWrapper = styled.div``;
+
 export const ModalContainer = styled.div`
   height: 90vh;
-  width: 90vw;
+  width: 50vw;
   background: ${palette.solid.white};
   border-radius: 4px;
   padding: 32px;
+  position: relative;
 `;
 
 export const ModalTitle = styled.div`
-  /* ${typography.sizeCSS.medium} */
+  ${typography.sizeCSS.normal}
   margin-bottom: 28px;
 `;
+
+export const UserInformationDisplay = styled.div``;
 
 export const UserNameDisplay = styled.div`
   ${typography.sizeCSS.largeTitle}
   margin-bottom: 6px;
   margin-left: -2px;
+`;
+
+export const ModalActionButtons = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  position: absolute;
+  bottom: 32px;
+  right: 32px;
 `;

@@ -22,26 +22,91 @@ import React, { useState } from "react";
 
 import { useStore } from "../../stores";
 import { Loading } from "../Loading";
+import { SearchableListOfAgencies } from ".";
 import * as Styled from "./AdminPanel.styles";
+import {
+  AgencyListTypes,
+  UserProvisioningAction,
+  UserProvisioningActions,
+} from "./types";
 
 export const UserProvisioning = observer(() => {
   const { adminPanelStore } = useStore();
-  const { loading, users, usersByID } = adminPanelStore;
+  const { loading, users, usersByID, agencies } = adminPanelStore;
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserIDToEdit, setSelectedUserIDToEdit] = useState<
     number | string
   >();
-
   const selectedUser = selectedUserIDToEdit
     ? usersByID[selectedUserIDToEdit][0]
     : undefined;
-
   const [username, setUsername] = useState(selectedUser?.name || "");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => {
+    setUsername("");
+    setAgencySelections([]);
+    setIsModalOpen(false);
+  };
+  const modalButtons = [
+    { label: "Cancel", onClick: closeModal },
+    { label: "Save", onClick: () => console.log("Saved") },
+  ];
+  const agencyActionButtons = [
+    {
+      label: "Select All",
+      onClick: () => {
+        console.log("Select All clicked");
+      },
+    },
+    {
+      label: "Clear Selections",
+      onClick: () => {
+        console.log("Clear Selections clicked");
+        setUserProvisioningAction(undefined);
+      },
+    },
+    {
+      label: "Save Selections",
+      onClick: () => {
+        console.log("Save Selections clicked");
+        setUserProvisioningAction(undefined);
+      },
+    },
+  ];
+
+  const [userProvisioningAction, setUserProvisioningAction] =
+    useState<UserProvisioningAction>();
+  const isAddAction = userProvisioningAction === UserProvisioningActions.ADD;
+  const isDeleteAction =
+    userProvisioningAction === UserProvisioningActions.DELETE;
+
+  const [agencySelections, setAgencySelections] = useState<
+    { agencyName: string; selectionType: UserProvisioningAction }[]
+  >([]);
+
+  const updateAgencySelections = (
+    agencyName: string,
+    selectionType: UserProvisioningAction
+  ) => {
+    setAgencySelections((prev) => {
+      if (prev.some((selection) => selection.agencyName === agencyName))
+        return prev.filter((selection) => selection.agencyName !== agencyName);
+      return [...prev, { agencyName, selectionType }];
+    });
+  };
+
+  const userAgenciesAndAddedAgencies = [
+    ...(selectedUser?.agencies || []),
+    ...agencies.filter(
+      (agency) =>
+        agencySelections.some(
+          (selection) => selection.agencyName === agency.name
+        ) && !selectedUser?.agencies.some((a) => a.name === agency.name)
+    ),
+  ];
+  console.log("userAgenciesAndAddedAgencies", userAgenciesAndAddedAgencies);
   if (loading) {
     return <Loading />;
   }
@@ -49,45 +114,120 @@ export const UserProvisioning = observer(() => {
   return (
     <>
       {isModalOpen && (
-        <Modal
-          buttons={[
-            { label: "Cancel", onClick: closeModal },
-            { label: "Save", onClick: () => console.log("Saved") },
-          ]}
-        >
+        <Modal>
           <Styled.ModalContainer>
             <Styled.ModalTitle>Edit User Information</Styled.ModalTitle>
-            <Styled.UserNameDisplay>
-              {username || selectedUser?.name}
-            </Styled.UserNameDisplay>
-            <Styled.Email>{selectedUser?.email}</Styled.Email>
-            <Styled.Email>ID {selectedUser?.id}</Styled.Email>
 
-            <Styled.Form>
-              <Styled.InputLabelWrapper>
-                <input
-                  name="username"
-                  type="text"
-                  defaultValue={selectedUser?.name}
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-                <label htmlFor="username">Name</label>
-              </Styled.InputLabelWrapper>
-              {selectedUser && selectedUser?.agencies.length > 0 && (
+            {/** User Information */}
+            <Styled.ScrollableContainer>
+              <Styled.UserNameDisplay>
+                {username || selectedUser?.name}
+              </Styled.UserNameDisplay>
+              <Styled.Subheader>{selectedUser?.email}</Styled.Subheader>
+              <Styled.Subheader>ID {selectedUser?.id}</Styled.Subheader>
+
+              <Styled.Form>
                 <Styled.InputLabelWrapper>
-                  <Styled.ChipContainer>
-                    {selectedUser?.agencies.map((agency: any) => (
-                      <Styled.Chip>{agency.name}</Styled.Chip>
-                    ))}
-                  </Styled.ChipContainer>
-                  <Styled.ChipContainerLabel>
-                    Agencies
-                  </Styled.ChipContainerLabel>
+                  <input
+                    name="username"
+                    type="text"
+                    defaultValue={selectedUser?.name}
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                  <label htmlFor="username">Name</label>
                 </Styled.InputLabelWrapper>
+
+                {selectedUser && selectedUser?.agencies.length > 0 && (
+                  <SearchableListOfAgencies
+                    // agencies={selectedUser.agencies}
+                    type={AgencyListTypes.CURRENT}
+                    agencies={userAgenciesAndAddedAgencies}
+                    buttons={isDeleteAction ? agencyActionButtons : []}
+                    agencySelections={agencySelections}
+                    updateAgencySelections={updateAgencySelections}
+                    userProvisioningAction={userProvisioningAction}
+                  />
+                )}
+                <Styled.FormActions>
+                  <Styled.ActionButton
+                    selectedColor={isAddAction ? "green" : ""}
+                    onClick={() =>
+                      setUserProvisioningAction(UserProvisioningActions.ADD)
+                    }
+                  >
+                    Add Agency
+                  </Styled.ActionButton>
+                  <Styled.ActionButton
+                    selectedColor={isDeleteAction ? "red" : ""}
+                    onClick={() =>
+                      setUserProvisioningAction(UserProvisioningActions.DELETE)
+                    }
+                  >
+                    Delete Agency
+                  </Styled.ActionButton>
+                  <Styled.ActionButton>Create New Agency</Styled.ActionButton>
+                </Styled.FormActions>
+              </Styled.Form>
+              <Styled.ModalActionButtons>
+                {modalButtons.map((button, index) => (
+                  <Button
+                    label={button.label}
+                    onClick={button.onClick}
+                    buttonColor={
+                      index === modalButtons.length - 1 ? "blue" : undefined
+                    }
+                  />
+                ))}
+              </Styled.ModalActionButtons>
+
+              {/* Add Agencies (need to filter agencies user is currently a part of) */}
+              {isAddAction && (
+                <SearchableListOfAgencies
+                  type={AgencyListTypes.ADDED}
+                  agencies={agencies}
+                  buttons={isAddAction ? agencyActionButtons : []}
+                  agencySelections={agencySelections}
+                  updateAgencySelections={updateAgencySelections}
+                  userProvisioningAction={userProvisioningAction}
+                  title="Add Agency"
+                />
               )}
-            </Styled.Form>
-            <Styled.Chip onClick={closeModal}>Close</Styled.Chip>
+
+              <div>
+                <Styled.ModalTitle>Review Changes</Styled.ModalTitle>
+                {selectedUser?.name !== username && (
+                  <>
+                    <div>Name changed to</div>
+                    <div>{username}</div>
+                  </>
+                )}
+                <span>Agencies to be deleted</span>
+                <ol>
+                  {agencySelections
+                    .filter(
+                      (selection) =>
+                        selection.selectionType ===
+                        UserProvisioningActions.DELETE
+                    )
+                    .map((selection) => (
+                      <li>{selection.agencyName}</li>
+                    ))}
+                </ol>
+                <br />
+                <span>Agencies to be added</span>
+                <ol>
+                  {agencySelections
+                    .filter(
+                      (selection) =>
+                        selection.selectionType === UserProvisioningActions.ADD
+                    )
+                    .map((selection) => (
+                      <li>{selection.agencyName}</li>
+                    ))}
+                </ol>
+              </div>
+            </Styled.ScrollableContainer>
           </Styled.ModalContainer>
         </Modal>
       )}
@@ -132,7 +272,7 @@ export const UserProvisioning = observer(() => {
               <Styled.ID>{user.id}</Styled.ID>
             </Styled.UserNameEmailIDWrapper>
             <Styled.AgenciesWrapper>
-              {user.agencies.map((agency: any) => (
+              {user.agencies.map((agency) => (
                 <Styled.Chip key={agency.name}>{agency.name}</Styled.Chip>
               ))}
             </Styled.AgenciesWrapper>
