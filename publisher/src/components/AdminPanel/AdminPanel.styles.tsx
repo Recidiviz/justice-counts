@@ -196,25 +196,36 @@ export const InputLabelWrapper = styled.div<{
   display: flex;
   flex-direction: ${({ flexRow }) => (flexRow ? "row" : "column")};
   align-items: flex-start;
-  justify-content: center;
   position: relative;
   padding-bottom: 16px;
   ${({ topSpacing }) => topSpacing && `margin-top: 16px`};
 
-  input {
+  input,
+  input[type="button"] {
     width: 100%;
     min-width: 300px;
     ${({ inputWidth }) => inputWidth && `max-width: ${inputWidth}px`};
+    background: none;
+    text-align: left;
     border: 1px solid ${palette.highlight.grey5};
     border-radius: 2px;
     padding: 5px;
+  }
+
+  input[type="button"]:hover {
+    cursor: pointer;
+  }
+
+  input[type="button"]:disabled {
+    background: ${palette.highlight.grey1};
+    cursor: not-allowed;
   }
 
   input[type="checkbox"] {
     width: fit-content;
     min-width: fit-content;
     margin-right: 8px;
-    margin-top: 5px;
+    margin-top: 6.5px;
 
     &:not(:first-child) {
       margin-left: 16px;
@@ -262,6 +273,7 @@ export const TeamMemberChip = styled.div`
 
 export const ChipContainer = styled.div<{
   halfMaxHeight?: boolean;
+  fitContentHeight?: boolean;
   noBorder?: boolean;
   deleteAction?: boolean;
 }>`
@@ -269,8 +281,12 @@ export const ChipContainer = styled.div<{
   width: 100%;
   min-width: 300px;
   /* min-height: 28px; */
-  /* max-height: ${({ halfMaxHeight }) => (halfMaxHeight ? 100 : 200)}px; */
-  height: ${({ halfMaxHeight }) => (halfMaxHeight ? 100 : 200)}px;
+  ${({ fitContentHeight }) => fitContentHeight && `min-height: 28px;`}
+  height: ${({ halfMaxHeight, fitContentHeight }) => {
+    if (fitContentHeight) return `fit-content`;
+    if (halfMaxHeight) return `100px`;
+    return `200px`;
+  }};
   display: flex;
   flex-wrap: wrap;
   align-content: baseline;
@@ -292,6 +308,7 @@ export const Chip = styled.span<{
   hover?: boolean;
   selectedColor?: string;
 }>`
+  text-transform: capitalize;
   font-weight: 400;
   display: inline-block;
   width: fit-content;
@@ -587,6 +604,10 @@ export const UserNameDisplay = styled.div`
   ${typography.sizeCSS.largeTitle}
   margin-bottom: 6px;
   margin-left: -2px;
+`;
+
+export const AgencyNameDisplay = styled(UserNameDisplay)`
+  ${typography.sizeCSS.title}
 `;
 
 export const ModalActionButtons = styled.div`

@@ -82,6 +82,7 @@ export const CustomDropdownToggleLabel = styled.div`
 export const CustomDropdownMenu = styled(DropdownMenu)<{
   menuFullWidth?: boolean;
   menuFullHeight?: boolean;
+  noBoxShadow?: boolean;
 }>`
   border-radius: 3px;
   margin-top: 4px;
@@ -90,6 +91,9 @@ export const CustomDropdownMenu = styled(DropdownMenu)<{
   z-index: 5;
   transform: unset;
   transition: unset;
+  ${({ noBoxShadow }) =>
+    noBoxShadow &&
+    `box-shadow: none; border: 1px solid ${palette.highlight.grey7};`}
 
   ${({ menuFullWidth }) =>
     menuFullWidth ? "width: 100%;" : "min-width: 293px;"}

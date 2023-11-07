@@ -20,11 +20,22 @@ import { Button } from "@justice-counts/common/components/Button";
 import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
+import { removeSnakeCase } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 
 import { useStore } from "../../stores";
 import * as Styled from "./AdminPanel.styles";
+import { SearchableListOfAgencies } from "./SearchableListOfAgencies";
+import {
+  Agency,
+  FipsCountyCodeKey,
+  FipsCountyCodes,
+  StateCodeKey,
+  StateCodes,
+  UserProvisioningAction,
+  UserProvisioningActions,
+} from "./types";
 
 export const AgencyProvisioning = observer(() => {
   const { adminPanelStore } = useStore();
@@ -33,22 +44,34 @@ export const AgencyProvisioning = observer(() => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [addEditAgencyModal, setAddEditAgencyModal] = useState(false);
-  const [currentAgencyToEdit, setCurrentAgencyToEdit] = useState<any>();
+  const [currentAgencyToEdit, setCurrentAgencyToEdit] = useState<Agency>();
   const [currentSettingType, setCurrentSettingType] = useState<any>("Agency");
 
-  const [tempSuperagencyChecked, setTempSuperagencyChecked] = useState(false);
+  const [superagencyOrChildAgencyChecked, setSuperagencyOrChildAgencyChecked] =
+    useState<string>();
   const [tempChildAgencyChecked, setTempChildAgencyChecked] = useState(false);
 
   const [name, setName] = useState<any>();
-  const [state, setState] = useState<any>();
-  const [county, setCounty] = useState<any>();
+  const [stateCode, setStateCode] = useState<StateCodeKey>();
+  const [countyCode, setCountyCode] = useState<FipsCountyCodeKey>();
+
+  const modalButtons = [
+    {
+      label: "Cancel",
+      onClick: () => {
+        setIsModalOpen(false);
+        resetAll();
+      },
+    },
+    { label: "Save", onClick: () => console.log("Saved") },
+  ];
 
   const resetAll = () => {
     setAddEditAgencyModal(false);
     setCurrentAgencyToEdit(undefined);
     setName(undefined);
-    setState(undefined);
-    setCounty(undefined);
+    setStateCode(undefined);
+    setCountyCode(undefined);
   };
 
   const agencyProvisioningTableHeaderRow = [
@@ -76,19 +99,50 @@ export const AgencyProvisioning = observer(() => {
     },
   ];
 
+  const [agencySelections, setAgencySelections] = useState<
+    { id: number; agencyName: string; selectionType: UserProvisioningAction }[]
+  >([]);
+
+  const updateSuperagencySelection = (
+    id: number,
+    agencyName: string,
+    selectionType: UserProvisioningAction
+  ) => {
+    setAgencySelections(() => {
+      return [{ agencyName, selectionType, id }];
+    });
+  };
+
+  const updateChildAgencySelections = (
+    id: number,
+    agencyName: string,
+    selectionType: UserProvisioningAction
+  ) => {
+    setAgencySelections((prev) => {
+      if (prev.some((selection) => selection.agencyName === agencyName))
+        return prev.filter((selection) => selection.agencyName !== agencyName);
+      return [...prev, { agencyName, selectionType, id }];
+    });
+  };
+
   return (
     <>
       {/* Add New Agency Modal */}
-      {addEditAgencyModal && (
-        <Modal
-          title={`${currentAgencyToEdit ? "Edit" : "Add New"} Agency`}
-          description={
-            <Styled.AddNewUserModal>
-              {/* <Styled.ModalDescription>
-          Creates a new user in Auth0 and the Justice Counts database
-        </Styled.ModalDescription> */}
-              <TabbedBar options={settingOptions} />
+      {isModalOpen && (
+        <Modal>
+          <Styled.ModalContainer>
+            <Styled.ModalTitle>
+              {currentAgencyToEdit
+                ? "Edit Agency Information"
+                : "Create New Agency"}
+            </Styled.ModalTitle>
+            <Styled.AgencyNameDisplay>
+              {name || currentAgencyToEdit?.name}
+            </Styled.AgencyNameDisplay>
 
+            <TabbedBar options={settingOptions} />
+
+            <Styled.ScrollableContainer>
               {currentSettingType === "Agency" && (
                 <Styled.Form>
                   <Styled.InputLabelWrapper>
@@ -99,51 +153,125 @@ export const AgencyProvisioning = observer(() => {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                     />
-                    <label htmlFor="name">Name </label>
+                    <label htmlFor="name">Name</label>
                   </Styled.InputLabelWrapper>
-                  <Styled.InputLabelWrapper>
-                    <input
-                      name="state"
-                      type="text"
-                      defaultValue={currentAgencyToEdit?.state}
-                      value={state}
-                      onChange={(e) => setState(e.target.value)}
-                    />
-                    <label htmlFor="state">State </label>
-                  </Styled.InputLabelWrapper>
-                  <Styled.InputLabelWrapper>
-                    <input
-                      name="county"
-                      type="text"
-                      defaultValue={currentAgencyToEdit?.fips_county_code}
-                      value={county}
-                      onChange={(e) => setCounty(e.target.value)}
-                    />
-                    <label htmlFor="county">County </label>
-                  </Styled.InputLabelWrapper>
-                  <Styled.InputLabelWrapper>
-                    {/* <Styled.ChipContainer>
-                      {currentAgencyToEdit?.systems.map((system: any) => (
-                        <Styled.Chip>{system}</Styled.Chip>
-                      ))}
-                    </Styled.ChipContainer> */}
 
+                  <Styled.InputLabelWrapper>
                     <Dropdown
                       label={
-                        <Styled.ChipContainer>
+                        <input
+                          name="state"
+                          type="button"
+                          value={
+                            (stateCode && StateCodes[stateCode]) ||
+                            (currentAgencyToEdit &&
+                              StateCodes[currentAgencyToEdit.state_code])
+                          }
+                        />
+                      }
+                      options={Object.keys(StateCodes).map((code) => ({
+                        key: code,
+                        label:
+                          StateCodes[code.toLocaleLowerCase() as StateCodeKey],
+                        onClick: () => {
+                          setStateCode(
+                            code.toLocaleLowerCase() as StateCodeKey
+                          );
+                        },
+                      }))}
+                      fullWidth
+                      noBoxShadow
+                    />
+                    <label htmlFor="state">State</label>
+                  </Styled.InputLabelWrapper>
+
+                  <Styled.InputLabelWrapper>
+                    <Dropdown
+                      label={
+                        <input
+                          type="button"
+                          disabled={
+                            !stateCode && !currentAgencyToEdit?.state_code
+                          }
+                          name="county"
+                          value={
+                            (countyCode && FipsCountyCodes[countyCode]) ||
+                            (currentAgencyToEdit?.fips_county_code &&
+                              FipsCountyCodes[
+                                currentAgencyToEdit.fips_county_code
+                              ])
+                          }
+                        />
+                      }
+                      options={Object.keys(FipsCountyCodes)
+                        .filter(
+                          (code) => stateCode && code.startsWith(stateCode)
+                        )
+                        .map((fipsCountyCode) => ({
+                          key: fipsCountyCode,
+                          label:
+                            FipsCountyCodes[
+                              fipsCountyCode as FipsCountyCodeKey
+                            ],
+                          onClick: () => {
+                            setCountyCode(fipsCountyCode as FipsCountyCodeKey);
+                          },
+                        }))}
+                      fullWidth
+                      noBoxShadow
+                    />
+                    <label htmlFor="county">County</label>
+                  </Styled.InputLabelWrapper>
+                  {/* <Styled.ChipContainerLabel>Systems</Styled.ChipContainerLabel> */}
+                  {/* <input
+                      name="systems"
+                      type="text"
+                      defaultValue={currentAgencyToEdit?.systems}
+                      value={systems}
+                      onChange={(e) => setSystems(e.target.value)}
+                    />
+                    <label htmlFor="systems">Systems </label> */}
+                  {/* </Styled.InputLabelWrapper> */}
+                  {/* <Styled.InputLabelWrapper>
+                  <input
+                    name="state"
+                    type="text"
+                    defaultValue={currentAgencyToEdit?.state}
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                  />
+                  <label htmlFor="state">State</label>
+                </Styled.InputLabelWrapper> */}
+                  {/* <Styled.InputLabelWrapper>
+                  <input
+                    name="county"
+                    type="text"
+                    defaultValue={currentAgencyToEdit?.fips_county_code}
+                    value={countyCode}
+                    onChange={(e) => setCountyCode(e.target.value)}
+                  />
+                  <label htmlFor="county">County</label>
+                </Styled.InputLabelWrapper> */}
+                  <Styled.InputLabelWrapper>
+                    <Dropdown
+                      label={
+                        <Styled.ChipContainer fitContentHeight>
                           {currentAgencyToEdit?.systems.map((system: any) => (
-                            <Styled.Chip>{system}</Styled.Chip>
+                            <Styled.Chip>
+                              {removeSnakeCase(system).toLocaleLowerCase()}
+                            </Styled.Chip>
                           ))}
                         </Styled.ChipContainer>
                       }
-                      options={systems.map((a: any) => ({
-                        key: a,
-                        label: a,
+                      options={systems.map((system) => ({
+                        key: system,
+                        label: removeSnakeCase(system).toLocaleLowerCase(),
                         onClick: () => {
                           new Date();
                         },
                       }))}
                       fullWidth
+                      noBoxShadow
                     />
                     <Styled.ChipContainerLabel>
                       Systems
@@ -159,39 +287,85 @@ export const AgencyProvisioning = observer(() => {
                   </Styled.InputLabelWrapper>
                   <Styled.InputLabelWrapper flexRow>
                     <input
+                      name="dashboard"
+                      type="checkbox"
+                      // onChange={() =>
+                      //   setTempSuperagencyChecked(!tempSuperagencyChecked)
+                      // }
+                      // checked={
+                      //   currentAgencyToEdit?.is_superagency ||
+                      //   tempSuperagencyChecked
+                      // }
+                    />
+                    <label htmlFor="dashboard">Enable Dashboard</label>
+                  </Styled.InputLabelWrapper>
+                  <Styled.InputLabelWrapper flexRow inputWidth={100}>
+                    <input
                       name="superagency"
                       type="checkbox"
-                      onChange={() =>
-                        setTempSuperagencyChecked(!tempSuperagencyChecked)
-                      }
+                      onClick={() => {
+                        if (superagencyOrChildAgencyChecked === "superagency") {
+                          return setSuperagencyOrChildAgencyChecked(undefined);
+                        }
+                        setSuperagencyOrChildAgencyChecked("superagency");
+                      }}
                       checked={
                         currentAgencyToEdit?.is_superagency ||
-                        tempSuperagencyChecked
+                        superagencyOrChildAgencyChecked === "superagency"
                       }
                     />
                     <label htmlFor="superagency">Superagency</label>
                     <input
                       name="child-agency"
                       type="checkbox"
-                      onChange={() =>
-                        setTempChildAgencyChecked(!tempChildAgencyChecked)
+                      onClick={() => {
+                        if (
+                          superagencyOrChildAgencyChecked === "child-agency"
+                        ) {
+                          return setSuperagencyOrChildAgencyChecked(undefined);
+                        }
+                        setSuperagencyOrChildAgencyChecked("child-agency");
+                      }}
+                      checked={
+                        superagencyOrChildAgencyChecked === "child-agency"
                       }
-                      checked={tempChildAgencyChecked}
                     />
                     <label htmlFor="child-agency">Child Agency </label>
                   </Styled.InputLabelWrapper>
-                  {tempSuperagencyChecked && (
+                  {superagencyOrChildAgencyChecked === "child-agency" && (
                     <Styled.InputLabelWrapper>
-                      <input name="child-agencies" type="text" />
-                      <label htmlFor="child-agencies">Child Agencies </label>
+                      <Styled.ModalTitle>
+                        Select parent (super) agency
+                      </Styled.ModalTitle>
+                      <SearchableListOfAgencies
+                        agencies={agencies}
+                        type="ADDED"
+                        agencySelections={agencySelections}
+                        buttons={[]}
+                        userProvisioningAction={UserProvisioningActions.ADD}
+                        updateAgencySelections={updateSuperagencySelection}
+                      />
+                      {/* <input name="child-agencies" type="text" />
+                      <label htmlFor="child-agencies">Child Agencies </label> */}
                     </Styled.InputLabelWrapper>
                   )}
-                  {tempChildAgencyChecked && (
+                  {superagencyOrChildAgencyChecked === "superagency" && (
                     <Styled.InputLabelWrapper>
-                      <input name="parent-agency" type="text" />
+                      <Styled.ModalTitle>
+                        Select child agencies
+                      </Styled.ModalTitle>
+                      <SearchableListOfAgencies
+                        agencies={agencies}
+                        type="ADDED"
+                        agencySelections={agencySelections}
+                        buttons={[]}
+                        userProvisioningAction={UserProvisioningActions.ADD}
+                        updateAgencySelections={updateChildAgencySelections}
+                      />
+                      {/* <input name="parent-agency" type="text" />
                       <label htmlFor="parent-agency">
                         Parent (Super) Agency{" "}
-                      </label>
+                      </label> */}
                     </Styled.InputLabelWrapper>
                   )}
                 </Styled.Form>
@@ -220,23 +394,20 @@ export const AgencyProvisioning = observer(() => {
                   ))}
                 </Styled.TeamMembersRoles>
               )}
-            </Styled.AddNewUserModal>
-          }
-          buttons={[
-            {
-              label: "Cancel",
-              onClick: () => {
-                resetAll();
-              },
-            },
-            {
-              label: "Save",
-              onClick: () => {
-                console.log("add save functionality");
-              },
-            },
-          ]}
-        />
+              <Styled.ModalActionButtons>
+                {modalButtons.map((button, index) => (
+                  <Button
+                    label={button.label}
+                    onClick={button.onClick}
+                    buttonColor={
+                      index === modalButtons.length - 1 ? "blue" : undefined
+                    }
+                  />
+                ))}
+              </Styled.ModalActionButtons>
+            </Styled.ScrollableContainer>
+          </Styled.ModalContainer>
+        </Modal>
       )}
 
       <Styled.SettingsBar>
@@ -267,7 +438,11 @@ export const AgencyProvisioning = observer(() => {
             key={agency.id}
             onClick={() => {
               setIsModalOpen(true);
-              // setSelectedUserIDToEdit(user.id);
+              setCurrentAgencyToEdit(agency);
+              setCountyCode(agency.fips_county_code);
+              setStateCode(
+                agency.state_code.toLocaleLowerCase() as StateCodeKey
+              );
             }}
           >
             <Styled.UserNameEmailIDWrapper>
