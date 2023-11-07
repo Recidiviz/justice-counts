@@ -18,7 +18,7 @@
 import { Button } from "@justice-counts/common/components/Button";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import { useStore } from "../../stores";
 import { Loading } from "../Loading";
@@ -33,6 +33,8 @@ import {
 export const UserProvisioning = observer(() => {
   const { adminPanelStore } = useStore();
   const { loading, users, usersByID, agencies } = adminPanelStore;
+  const addAgencyScrollToRef = useRef<null | HTMLDivElement>(null);
+  const deleteAgencyScrollToRef = useRef<null | HTMLFormElement>(null);
 
   const [selectedUserIDToEdit, setSelectedUserIDToEdit] = useState<
     number | string
@@ -106,7 +108,7 @@ export const UserProvisioning = observer(() => {
         ) && !selectedUser?.agencies.some((a) => a.name === agency.name)
     ),
   ];
-  console.log("userAgenciesAndAddedAgencies", userAgenciesAndAddedAgencies);
+
   if (loading) {
     return <Loading />;
   }
@@ -126,7 +128,7 @@ export const UserProvisioning = observer(() => {
               <Styled.Subheader>{selectedUser?.email}</Styled.Subheader>
               <Styled.Subheader>ID {selectedUser?.id}</Styled.Subheader>
 
-              <Styled.Form>
+              <Styled.Form ref={deleteAgencyScrollToRef}>
                 <Styled.InputLabelWrapper>
                   <input
                     name="username"
@@ -149,20 +151,30 @@ export const UserProvisioning = observer(() => {
                     userProvisioningAction={userProvisioningAction}
                   />
                 )}
-                <Styled.FormActions>
+                <Styled.FormActions ref={addAgencyScrollToRef}>
                   <Styled.ActionButton
                     selectedColor={isAddAction ? "green" : ""}
-                    onClick={() =>
-                      setUserProvisioningAction(UserProvisioningActions.ADD)
-                    }
+                    onClick={(e) => {
+                      setUserProvisioningAction(UserProvisioningActions.ADD);
+                      setTimeout(
+                        () =>
+                          addAgencyScrollToRef.current?.scrollIntoView({
+                            behavior: "smooth",
+                          }),
+                        0
+                      );
+                    }}
                   >
                     Add Agency
                   </Styled.ActionButton>
                   <Styled.ActionButton
                     selectedColor={isDeleteAction ? "red" : ""}
-                    onClick={() =>
-                      setUserProvisioningAction(UserProvisioningActions.DELETE)
-                    }
+                    onClick={() => {
+                      setUserProvisioningAction(UserProvisioningActions.DELETE);
+                      deleteAgencyScrollToRef.current?.scrollIntoView({
+                        behavior: "smooth",
+                      });
+                    }}
                   >
                     Delete Agency
                   </Styled.ActionButton>
@@ -185,7 +197,12 @@ export const UserProvisioning = observer(() => {
               {isAddAction && (
                 <SearchableListOfAgencies
                   type={AgencyListTypes.ADDED}
-                  agencies={agencies}
+                  agencies={agencies.filter(
+                    (agency) =>
+                      !selectedUser?.agencies.some(
+                        (a) => a.name === agency.name
+                      )
+                  )}
                   buttons={isAddAction ? agencyActionButtons : []}
                   agencySelections={agencySelections}
                   updateAgencySelections={updateAgencySelections}

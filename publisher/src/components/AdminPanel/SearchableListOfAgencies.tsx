@@ -77,6 +77,13 @@ export const SearchableListOfAgencies: React.FC<{
     if (selectionType === UserProvisioningActions.ADD) return "green";
   };
 
+  const isNotActiveUserProvisioningAction =
+    !userProvisioningAction ||
+    (type === AgencyListTypes.CURRENT &&
+      userProvisioningAction !== UserProvisioningActions.DELETE) ||
+    (type === AgencyListTypes.ADDED &&
+      userProvisioningAction !== UserProvisioningActions.ADD);
+
   console.log("agencies", agencies);
 
   return (
@@ -90,12 +97,15 @@ export const SearchableListOfAgencies: React.FC<{
                 selected={agencySelections.some(
                   (selection) => selection.agencyName === agency.name
                 )}
-                hover={Boolean(userProvisioningAction)}
+                hover={
+                  !isNotActiveUserProvisioningAction &&
+                  Boolean(userProvisioningAction)
+                }
                 selectedColor={selectedColor(
                   agencySelectionsByName[agency.name]?.[0].selectionType
                 )}
                 onClick={() => {
-                  if (!userProvisioningAction) return;
+                  if (isNotActiveUserProvisioningAction) return;
                   updateAgencySelections(agency.name, userProvisioningAction);
                 }}
               >
