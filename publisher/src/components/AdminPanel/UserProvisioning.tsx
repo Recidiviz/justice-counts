@@ -290,7 +290,9 @@ export const UserProvisioning = observer(() => {
                 />
               )}
 
-              {(username || agencySelections.length > 0) && (
+              {((selectedUser && username) ||
+                (selectedUser && email) ||
+                agencySelections.length > 0) && (
                 <Styled.ReviewChangesContainer>
                   <Styled.ModalTitle noBottomMargin>
                     Review Changes
@@ -362,29 +364,28 @@ export const UserProvisioning = observer(() => {
         </Modal>
       )}
 
-      <Styled.SidePaddingWrapper>
-        <Styled.SettingsBar>
-          <Styled.InputLabelWrapper inputWidth={500}>
-            <input
-              name="search"
-              type="text"
-              defaultValue=""
-              value=""
-              onChange={(e) => console.log("search")}
-            />
-            <label htmlFor="search">Search</label>
-          </Styled.InputLabelWrapper>
-          <Styled.ButtonWrapper>
-            <Button
-              label="Create User"
-              onClick={() => {
-                setIsModalOpen(true);
-              }}
-              buttonColor="blue"
-            />
-          </Styled.ButtonWrapper>
-        </Styled.SettingsBar>
-      </Styled.SidePaddingWrapper>
+      <Styled.SettingsBar>
+        <Styled.InputLabelWrapper inputWidth={500}>
+          <input
+            name="search"
+            type="text"
+            defaultValue=""
+            value=""
+            onChange={(e) => console.log("search")}
+          />
+          <label htmlFor="search">Search</label>
+        </Styled.InputLabelWrapper>
+        <Styled.ButtonWrapper>
+          <Button
+            label="Create User"
+            onClick={() => {
+              setIsModalOpen(true);
+            }}
+            buttonColor="blue"
+          />
+        </Styled.ButtonWrapper>
+      </Styled.SettingsBar>
+
       <Styled.CardContainer>
         {users.map((user) => (
           <Styled.UserCard

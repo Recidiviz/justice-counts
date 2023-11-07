@@ -28,10 +28,10 @@ import { UserProvisioningAction, UserProvisioningActions } from "./types";
 export const AdminPanelContainer = styled.div`
   width: 100%;
   padding-top: 10px;
-  max-height: calc(
+  /* max-height: calc(
     100vh - ${HEADER_BAR_HEIGHT}px - ${FOOTER_HEIGHT_WITHOUT_MARGIN}px
-  );
-  overflow-y: auto;
+  ); */
+  /* overflow-y: auto; */
   position: relative;
 `;
 
@@ -131,6 +131,11 @@ export const SettingsBar = styled.div`
   align-items: flex-start;
   border-bottom: 1px solid ${palette.highlight.grey4};
   padding-top: 10px;
+  padding: 24px 32px 0 32px;
+  position: sticky;
+  top: ${HEADER_BAR_HEIGHT}px;
+  z-index: 3;
+  background: ${palette.solid.white};
 `;
 
 export const AddNewUserModal = styled.div`
@@ -431,16 +436,15 @@ export const DropdownItem = styled.div<{ selected?: boolean }>`
 /** User Provisioning Styles */
 
 export const CardContainer = styled.div`
-  max-height: calc(
+  /* max-height: calc(
     100vh - ${HEADER_BAR_HEIGHT}px - ${FOOTER_HEIGHT_WITHOUT_MARGIN}px - 167px
-  );
+  ); */
   width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 16px;
   padding: 32px 16px;
-  overflow-y: auto;
 `;
 
 export const UserCard = styled.div`
@@ -477,9 +481,8 @@ export const Email = styled.div`
   ${SubheaderStyles}
 `;
 
-export const Subheader = styled.div<{ green?: boolean }>`
+export const Subheader = styled.div`
   ${SubheaderStyles}
-  ${({ green }) => green && `color: ${palette.solid.green}`}
 `;
 
 export const ID = styled.div<{ type: "USER" | "AGENCY" }>`

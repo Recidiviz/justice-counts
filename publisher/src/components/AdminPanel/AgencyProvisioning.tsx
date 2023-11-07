@@ -238,29 +238,29 @@ export const AgencyProvisioning = observer(() => {
           ]}
         />
       )}
-      <Styled.SidePaddingWrapper>
-        <Styled.SettingsBar>
-          <Styled.InputLabelWrapper inputWidth={500}>
-            <input
-              name="search"
-              type="text"
-              defaultValue=""
-              value=""
-              onChange={(e) => console.log("search")}
-            />
-            <label htmlFor="search">Search</label>
-          </Styled.InputLabelWrapper>
-          <Styled.ButtonWrapper>
-            <Button
-              label="Create Agency"
-              onClick={() => {
-                setIsModalOpen(true);
-              }}
-              buttonColor="blue"
-            />
-          </Styled.ButtonWrapper>
-        </Styled.SettingsBar>
-      </Styled.SidePaddingWrapper>
+
+      <Styled.SettingsBar>
+        <Styled.InputLabelWrapper inputWidth={500}>
+          <input
+            name="search"
+            type="text"
+            defaultValue=""
+            value=""
+            onChange={(e) => console.log("search")}
+          />
+          <label htmlFor="search">Search</label>
+        </Styled.InputLabelWrapper>
+        <Styled.ButtonWrapper>
+          <Button
+            label="Create Agency"
+            onClick={() => {
+              setIsModalOpen(true);
+            }}
+            buttonColor="blue"
+          />
+        </Styled.ButtonWrapper>
+      </Styled.SettingsBar>
+
       <Styled.CardContainer>
         {agencies.map((agency) => (
           <Styled.UserCard
@@ -273,9 +273,6 @@ export const AgencyProvisioning = observer(() => {
             <Styled.UserNameEmailIDWrapper>
               <Styled.UserNameEmailWrapper>
                 <Styled.UserName>{agency.name}</Styled.UserName>
-                {agency.is_superagency && (
-                  <Styled.Subheader green>Superagency</Styled.Subheader>
-                )}
               </Styled.UserNameEmailWrapper>
               <Styled.ID type="AGENCY">{agency.id}</Styled.ID>
             </Styled.UserNameEmailIDWrapper>
