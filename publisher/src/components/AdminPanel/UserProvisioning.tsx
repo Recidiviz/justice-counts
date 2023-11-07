@@ -70,6 +70,7 @@ export const UserProvisioning = observer(() => {
     setUserProvisioningAction(undefined);
     setUsername("");
     setAgencySelections([]);
+    setSelectedUserIDToEdit(undefined);
     setIsModalOpen(false);
   };
   const modalButtons = [
@@ -174,15 +175,21 @@ export const UserProvisioning = observer(() => {
       {isModalOpen && (
         <Modal>
           <Styled.ModalContainer>
-            <Styled.ModalTitle>Edit User Information</Styled.ModalTitle>
+            <Styled.ModalTitle>
+              {selectedUser ? "Edit User Information" : "Create New User"}
+            </Styled.ModalTitle>
 
             {/** User Information */}
             <Styled.ScrollableContainer ref={deleteAgencyScrollToRef}>
               <Styled.UserNameDisplay>
                 {username || selectedUser?.name}
               </Styled.UserNameDisplay>
-              <Styled.Subheader>{selectedUser?.email}</Styled.Subheader>
-              <Styled.Subheader>ID {selectedUser?.id}</Styled.Subheader>
+              <Styled.Subheader>
+                {email || selectedUser?.email}
+              </Styled.Subheader>
+              {selectedUser && (
+                <Styled.Subheader>ID {selectedUser?.id}</Styled.Subheader>
+              )}
 
               <Styled.Form>
                 <Styled.InputLabelWrapper>
@@ -195,6 +202,18 @@ export const UserProvisioning = observer(() => {
                   />
                   <label htmlFor="username">Name</label>
                 </Styled.InputLabelWrapper>
+
+                {!selectedUser && (
+                  <Styled.InputLabelWrapper>
+                    <input
+                      name="email"
+                      type="text"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <label htmlFor="email">Email</label>
+                  </Styled.InputLabelWrapper>
+                )}
 
                 {selectedUser && (
                   <SearchableListOfAgencies
@@ -223,17 +242,21 @@ export const UserProvisioning = observer(() => {
                   >
                     Add Agency
                   </Styled.ActionButton>
-                  <Styled.ActionButton
-                    selectedColor={isDeleteAction ? "red" : ""}
-                    onClick={() => {
-                      setUserProvisioningAction(UserProvisioningActions.DELETE);
-                      deleteAgencyScrollToRef.current?.scrollIntoView({
-                        behavior: "smooth",
-                      });
-                    }}
-                  >
-                    Delete Agency
-                  </Styled.ActionButton>
+                  {selectedUser && (
+                    <Styled.ActionButton
+                      selectedColor={isDeleteAction ? "red" : ""}
+                      onClick={() => {
+                        setUserProvisioningAction(
+                          UserProvisioningActions.DELETE
+                        );
+                        deleteAgencyScrollToRef.current?.scrollIntoView({
+                          behavior: "smooth",
+                        });
+                      }}
+                    >
+                      Delete Agency
+                    </Styled.ActionButton>
+                  )}
                   <Styled.ActionButton>Create New Agency</Styled.ActionButton>
                 </Styled.FormActions>
               </Styled.Form>
@@ -272,12 +295,18 @@ export const UserProvisioning = observer(() => {
                   <Styled.ModalTitle noBottomMargin>
                     Review Changes
                   </Styled.ModalTitle>
-                  {username && selectedUser?.name !== username && (
-                    <Styled.ChangeLineItemWrapper>
-                      <Styled.ChangeTitle>Name changed to:</Styled.ChangeTitle>
-                      <Styled.ChangeLineItem>{username}</Styled.ChangeLineItem>
-                    </Styled.ChangeLineItemWrapper>
-                  )}
+                  {username &&
+                    selectedUser &&
+                    selectedUser?.name !== username && (
+                      <Styled.ChangeLineItemWrapper>
+                        <Styled.ChangeTitle>
+                          Name changed to:
+                        </Styled.ChangeTitle>
+                        <Styled.ChangeLineItem>
+                          {username}
+                        </Styled.ChangeLineItem>
+                      </Styled.ChangeLineItemWrapper>
+                    )}
 
                   {agencySelections.filter(
                     (selection) =>
