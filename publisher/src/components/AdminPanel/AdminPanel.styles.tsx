@@ -27,7 +27,7 @@ import { UserProvisioningAction, UserProvisioningActions } from "./types";
 
 export const AdminPanelContainer = styled.div`
   width: 100%;
-  padding-top: 25px;
+  padding-top: 10px;
   max-height: calc(
     100vh - ${HEADER_BAR_HEIGHT}px - ${FOOTER_HEIGHT_WITHOUT_MARGIN}px
   );
@@ -130,7 +130,7 @@ export const SettingsBar = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   border-bottom: 1px solid ${palette.highlight.grey4};
-  padding-top: 16px;
+  padding-top: 10px;
 `;
 
 export const AddNewUserModal = styled.div`
@@ -432,7 +432,7 @@ export const DropdownItem = styled.div<{ selected?: boolean }>`
 
 export const CardContainer = styled.div`
   max-height: calc(
-    100vh - ${HEADER_BAR_HEIGHT}px - ${FOOTER_HEIGHT_WITHOUT_MARGIN}px - 182px
+    100vh - ${HEADER_BAR_HEIGHT}px - ${FOOTER_HEIGHT_WITHOUT_MARGIN}px - 167px
   );
   width: 100%;
   display: flex;
@@ -546,9 +546,9 @@ export const ModalContainer = styled.div`
   position: relative;
 `;
 
-export const ModalTitle = styled.div`
+export const ModalTitle = styled.div<{ noBottomMargin?: boolean }>`
   ${typography.sizeCSS.normal}
-  margin-bottom: 28px;
+  margin-bottom: ${({ noBottomMargin }) => (noBottomMargin ? 0 : 28)}px;
 `;
 
 export const UserInformationDisplay = styled.div``;
@@ -568,4 +568,23 @@ export const ModalActionButtons = styled.div`
   position: absolute;
   bottom: 32px;
   right: 32px;
+`;
+
+export const ReviewChangesContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 24px 0;
+  border-top: 1px solid ${palette.highlight.grey5};
+  gap: 24px;
+`;
+
+export const ChangeLineItemWrapper = styled.div`
+  ${typography.sizeCSS.normal}
+`;
+export const ChangeLineItem = styled.div`
+  ${typography.sizeCSS.large}
+`;
+export const ChangeTitle = styled.div`
+  padding-bottom: 8px;
+  font-weight: 400;
 `;

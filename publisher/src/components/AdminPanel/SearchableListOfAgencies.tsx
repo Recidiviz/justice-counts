@@ -32,10 +32,12 @@ export const SearchableListOfAgencies: React.FC<{
   buttons: { label: string; onClick: () => void }[];
   type: AgencyListType;
   agencySelections: {
+    id: number;
     agencyName: string;
     selectionType: UserProvisioningAction;
   }[];
   updateAgencySelections: (
+    id: number,
     agencyName: string,
     selectionType: UserProvisioningAction
   ) => void;
@@ -70,6 +72,8 @@ export const SearchableListOfAgencies: React.FC<{
 
   useEffect(() => {
     setFilteredAgencies(agencies);
+    searchAgencies(inputValue); // To fix when you click on an agency after searching and make it not rerender the entire list and keep in the view of what was searched
+    // eslint-disable-next-line
   }, [agencies]);
 
   const selectedColor = (selectionType: UserProvisioningAction) => {
@@ -106,7 +110,11 @@ export const SearchableListOfAgencies: React.FC<{
                 )}
                 onClick={() => {
                   if (isNotActiveUserProvisioningAction) return;
-                  updateAgencySelections(agency.name, userProvisioningAction);
+                  updateAgencySelections(
+                    agency.id,
+                    agency.name,
+                    userProvisioningAction
+                  );
                 }}
               >
                 {agency.name}

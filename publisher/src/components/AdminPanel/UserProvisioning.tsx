@@ -34,7 +34,7 @@ export const UserProvisioning = observer(() => {
   const { adminPanelStore } = useStore();
   const { loading, users, usersByID, agencies } = adminPanelStore;
   const addAgencyScrollToRef = useRef<null | HTMLDivElement>(null);
-  const deleteAgencyScrollToRef = useRef<null | HTMLFormElement>(null);
+  const deleteAgencyScrollToRef = useRef<null | HTMLDivElement>(null);
 
   const [selectedUserIDToEdit, setSelectedUserIDToEdit] = useState<
     number | string
@@ -43,10 +43,31 @@ export const UserProvisioning = observer(() => {
     ? usersByID[selectedUserIDToEdit][0]
     : undefined;
   const [username, setUsername] = useState(selectedUser?.name || "");
+  const [email, setEmail] = useState(selectedUser?.email || "");
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const getUpdates = () => {
+    const currentAgencyIDs = selectedUser?.agencies.map((ag) => ag.id) || [];
+    const agencyIDsToDelete = agencySelections
+      .filter((s) => s.selectionType === UserProvisioningActions.DELETE)
+      .map((ag) => ag.id);
+    const agencyIDsToAdd = agencySelections
+      .filter((s) => s.selectionType === UserProvisioningActions.ADD)
+      .map((ag) => ag.id);
+    const filteredCurrentAgencyIDs = currentAgencyIDs.filter(
+      (id) => !agencyIDsToDelete.includes(id)
+    );
+    const agencyIDs = [...filteredCurrentAgencyIDs, ...agencyIDsToAdd];
+
+    return {
+      name: username,
+      agency_ids: agencyIDs,
+    };
+  };
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
+    setUserProvisioningAction(undefined);
     setUsername("");
     setAgencySelections([]);
     setIsModalOpen(false);
@@ -59,20 +80,52 @@ export const UserProvisioning = observer(() => {
     {
       label: "Select All",
       onClick: () => {
-        console.log("Select All clicked");
+        if (userProvisioningAction === UserProvisioningActions.ADD) {
+          setAgencySelections(
+            () =>
+              availableAgencies.map((agency) => ({
+                id: agency.id,
+                agencyName: agency.name,
+                selectionType: userProvisioningAction,
+              })) || []
+          );
+        }
+        if (userProvisioningAction === UserProvisioningActions.DELETE) {
+          setAgencySelections((prev) => [
+            ...prev,
+            ...(selectedUser?.agencies.map((agency) => ({
+              id: agency.id,
+              agencyName: agency.name,
+              selectionType: userProvisioningAction,
+            })) || []),
+          ]);
+        }
       },
     },
     {
       label: "Clear Selections",
       onClick: () => {
-        console.log("Clear Selections clicked");
-        setUserProvisioningAction(undefined);
+        if (userProvisioningAction === UserProvisioningActions.ADD) {
+          setAgencySelections((prev) =>
+            prev.filter(
+              (selection) =>
+                selection.selectionType !== UserProvisioningActions.ADD
+            )
+          );
+        }
+        if (userProvisioningAction === UserProvisioningActions.DELETE) {
+          setAgencySelections((prev) =>
+            prev.filter(
+              (selection) =>
+                selection.selectionType !== UserProvisioningActions.DELETE
+            )
+          );
+        }
       },
     },
     {
       label: "Save Selections",
       onClick: () => {
-        console.log("Save Selections clicked");
         setUserProvisioningAction(undefined);
       },
     },
@@ -85,27 +138,30 @@ export const UserProvisioning = observer(() => {
     userProvisioningAction === UserProvisioningActions.DELETE;
 
   const [agencySelections, setAgencySelections] = useState<
-    { agencyName: string; selectionType: UserProvisioningAction }[]
+    { id: number; agencyName: string; selectionType: UserProvisioningAction }[]
   >([]);
 
   const updateAgencySelections = (
+    id: number,
     agencyName: string,
     selectionType: UserProvisioningAction
   ) => {
     setAgencySelections((prev) => {
       if (prev.some((selection) => selection.agencyName === agencyName))
         return prev.filter((selection) => selection.agencyName !== agencyName);
-      return [...prev, { agencyName, selectionType }];
+      return [...prev, { agencyName, selectionType, id }];
     });
   };
 
+  /** All available agencies that a user is not currently connected to */
+  const availableAgencies = agencies.filter(
+    (agency) => !selectedUser?.agencies.some((a) => a.name === agency.name)
+  );
+
   const userAgenciesAndAddedAgencies = [
     ...(selectedUser?.agencies || []),
-    ...agencies.filter(
-      (agency) =>
-        agencySelections.some(
-          (selection) => selection.agencyName === agency.name
-        ) && !selectedUser?.agencies.some((a) => a.name === agency.name)
+    ...availableAgencies.filter((agency) =>
+      agencySelections.some((selection) => selection.agencyName === agency.name)
     ),
   ];
 
@@ -121,14 +177,14 @@ export const UserProvisioning = observer(() => {
             <Styled.ModalTitle>Edit User Information</Styled.ModalTitle>
 
             {/** User Information */}
-            <Styled.ScrollableContainer>
+            <Styled.ScrollableContainer ref={deleteAgencyScrollToRef}>
               <Styled.UserNameDisplay>
                 {username || selectedUser?.name}
               </Styled.UserNameDisplay>
               <Styled.Subheader>{selectedUser?.email}</Styled.Subheader>
               <Styled.Subheader>ID {selectedUser?.id}</Styled.Subheader>
 
-              <Styled.Form ref={deleteAgencyScrollToRef}>
+              <Styled.Form>
                 <Styled.InputLabelWrapper>
                   <input
                     name="username"
@@ -140,7 +196,7 @@ export const UserProvisioning = observer(() => {
                   <label htmlFor="username">Name</label>
                 </Styled.InputLabelWrapper>
 
-                {selectedUser && selectedUser?.agencies.length > 0 && (
+                {selectedUser && (
                   <SearchableListOfAgencies
                     // agencies={selectedUser.agencies}
                     type={AgencyListTypes.CURRENT}
@@ -211,39 +267,67 @@ export const UserProvisioning = observer(() => {
                 />
               )}
 
-              <div>
-                <Styled.ModalTitle>Review Changes</Styled.ModalTitle>
-                {selectedUser?.name !== username && (
-                  <>
-                    <div>Name changed to</div>
-                    <div>{username}</div>
-                  </>
-                )}
-                <span>Agencies to be deleted</span>
-                <ol>
-                  {agencySelections
-                    .filter(
-                      (selection) =>
-                        selection.selectionType ===
-                        UserProvisioningActions.DELETE
-                    )
-                    .map((selection) => (
-                      <li>{selection.agencyName}</li>
-                    ))}
-                </ol>
-                <br />
-                <span>Agencies to be added</span>
-                <ol>
-                  {agencySelections
-                    .filter(
-                      (selection) =>
-                        selection.selectionType === UserProvisioningActions.ADD
-                    )
-                    .map((selection) => (
-                      <li>{selection.agencyName}</li>
-                    ))}
-                </ol>
-              </div>
+              {(username || agencySelections.length > 0) && (
+                <Styled.ReviewChangesContainer>
+                  <Styled.ModalTitle noBottomMargin>
+                    Review Changes
+                  </Styled.ModalTitle>
+                  {username && selectedUser?.name !== username && (
+                    <Styled.ChangeLineItemWrapper>
+                      <Styled.ChangeTitle>Name changed to:</Styled.ChangeTitle>
+                      <Styled.ChangeLineItem>{username}</Styled.ChangeLineItem>
+                    </Styled.ChangeLineItemWrapper>
+                  )}
+
+                  {agencySelections.filter(
+                    (selection) =>
+                      selection.selectionType === UserProvisioningActions.DELETE
+                  ).length > 0 && (
+                    <Styled.ChangeLineItemWrapper>
+                      <Styled.ChangeTitle>
+                        Agencies to be deleted:
+                      </Styled.ChangeTitle>
+                      <Styled.ChipContainer>
+                        {agencySelections
+                          .filter(
+                            (selection) =>
+                              selection.selectionType ===
+                              UserProvisioningActions.DELETE
+                          )
+                          .map((selection) => (
+                            <Styled.Chip selected selectedColor="red">
+                              {selection.agencyName}
+                            </Styled.Chip>
+                          ))}
+                      </Styled.ChipContainer>
+                    </Styled.ChangeLineItemWrapper>
+                  )}
+
+                  {agencySelections.filter(
+                    (selection) =>
+                      selection.selectionType === UserProvisioningActions.ADD
+                  ).length > 0 && (
+                    <Styled.ChangeLineItemWrapper>
+                      <Styled.ChangeTitle>
+                        Agencies to be added:
+                      </Styled.ChangeTitle>
+                      <Styled.ChipContainer>
+                        {agencySelections
+                          .filter(
+                            (selection) =>
+                              selection.selectionType ===
+                              UserProvisioningActions.ADD
+                          )
+                          .map((selection) => (
+                            <Styled.Chip selected selectedColor="green">
+                              {selection.agencyName}
+                            </Styled.Chip>
+                          ))}
+                      </Styled.ChipContainer>
+                    </Styled.ChangeLineItemWrapper>
+                  )}
+                </Styled.ReviewChangesContainer>
+              )}
             </Styled.ScrollableContainer>
           </Styled.ModalContainer>
         </Modal>
