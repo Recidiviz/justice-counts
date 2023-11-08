@@ -20,10 +20,10 @@ import { Modal } from "@justice-counts/common/components/Modal";
 import { observer } from "mobx-react-lite";
 import React, { useRef, useState } from "react";
 
-import { SearchableListBox } from ".";
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
 import { Loading } from "../Loading";
+import { SearchableListBox } from ".";
 import * as Styled from "./AdminPanel.styles";
 import {
   SearchableListBoxAction,
@@ -223,7 +223,8 @@ export const UserProvisioning = observer(() => {
                     buttons={isDeleteAction ? agencyActionButtons : []}
                     selections={agencySelections}
                     updateSelections={updateAgencySelections}
-                    boxActionType={userProvisioningAction}
+                    // boxActionType={userProvisioningAction}
+                    boxActionType={SearchableListBoxActions.DELETE}
                   />
                 )}
                 <Styled.FormActions ref={addAgencyScrollToRef}>
@@ -263,6 +264,7 @@ export const UserProvisioning = observer(() => {
               <Styled.ModalActionButtons>
                 {modalButtons.map((button, index) => (
                   <Button
+                    key={button.label}
                     label={button.label}
                     onClick={button.onClick}
                     buttonColor={
@@ -331,7 +333,11 @@ export const UserProvisioning = observer(() => {
                               SearchableListBoxActions.DELETE
                           )
                           .map((selection) => (
-                            <Styled.Chip selected selectedColor="red">
+                            <Styled.Chip
+                              key={selection.name}
+                              selected
+                              selectedColor="red"
+                            >
                               {selection.name}
                             </Styled.Chip>
                           ))}
@@ -354,7 +360,11 @@ export const UserProvisioning = observer(() => {
                               selection.action === SearchableListBoxActions.ADD
                           )
                           .map((selection) => (
-                            <Styled.Chip selected selectedColor="green">
+                            <Styled.Chip
+                              key={selection.name}
+                              selected
+                              selectedColor="green"
+                            >
                               {selection.name}
                             </Styled.Chip>
                           ))}

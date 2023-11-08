@@ -39,12 +39,15 @@ export const SearchableListBox = ({
   const [inputValue, setInputValue] = useState("");
 
   const selectionsByName = groupBy(selections, (selection) => selection.name);
-  const isDeleteAction = boxActionType === SearchableListBoxActions.DELETE;
-  const isAddAction = boxActionType === SearchableListBoxActions.ADD;
 
   const searchList = (val: string) => {
     const regex = new RegExp(`${val}`, `i`);
-    setFilteredList(() => list.filter((option) => regex.test(option.name)));
+    setFilteredList(() =>
+      list.filter(
+        (option) =>
+          regex.test(option.name) || (option.email && regex.test(option.email))
+      )
+    );
   };
 
   useEffect(() => {
@@ -70,7 +73,9 @@ export const SearchableListBox = ({
         {metadata?.title && (
           <Styled.ModalTitle>{metadata.title}</Styled.ModalTitle>
         )}
-        <Styled.ChipContainer deleteAction={isDeleteAction}>
+
+        {/* Selection Box */}
+        <Styled.ChipContainer boxActionType={boxActionType}>
           {filteredList.length > 0 &&
             filteredList.map((listItem) => (
               <Styled.Chip
@@ -79,7 +84,7 @@ export const SearchableListBox = ({
                 )}
                 hover={
                   // !isNotActiveSearchableListBoxActions &&
-                  Boolean(SearchableListBoxActions)
+                  Boolean(boxActionType)
                 }
                 selectedColor={selectedColor(
                   selectionsByName[listItem.name]?.[0].action
@@ -87,7 +92,12 @@ export const SearchableListBox = ({
                 onClick={() => {
                   // if (isNotActiveSearchableListBoxActions) return;
                   if (boxActionType) {
-                    updateSelections(listItem.id, listItem.name, boxActionType);
+                    updateSelections(
+                      listItem.id,
+                      listItem.name,
+                      boxActionType,
+                      listItem.email
+                    );
                   }
                 }}
               >
@@ -107,6 +117,7 @@ export const SearchableListBox = ({
         </Styled.ChipContainerLabel>
       </Styled.InputLabelWrapper>
 
+      {/* Search Box */}
       <Styled.InputLabelWrapper inputWidth={300}>
         <input
           name="search-agencies"

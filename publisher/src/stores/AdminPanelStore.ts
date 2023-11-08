@@ -97,7 +97,6 @@ class AdminPanelStore {
 
       runInAction(() => {
         this.agencies = AdminPanelStore.sortAgencies(data.agencies);
-        console.log("hi", this.agencies);
         this.systems = data.systems;
         this.loading = false;
       });

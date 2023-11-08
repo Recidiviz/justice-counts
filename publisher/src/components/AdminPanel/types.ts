@@ -15,6 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { AgencyTeamMember } from "@justice-counts/common/types";
+
 export enum Environment {
   LOCAL = "local",
   STAGING = "staging",
@@ -29,14 +31,6 @@ export enum Setting {
 export type EnvironmentType = `${Environment}`;
 
 export type SettingType = `${Setting}`;
-
-export type AgencyTeamMember = {
-  auth0_user_id: string;
-  name: string;
-  email: string;
-  invitation_status: "NOT_SENT" | "PENDING" | "ACCEPTED" | "ERRORED";
-  role: string;
-};
 
 export type Agency = {
   id: number;

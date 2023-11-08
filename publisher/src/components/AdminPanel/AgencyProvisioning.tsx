@@ -20,26 +20,27 @@ import { Button } from "@justice-counts/common/components/Button";
 import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
+import { AgencyTeamMember } from "@justice-counts/common/types";
 import { removeSnakeCase } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 
 import { useStore } from "../../stores";
+import AdminPanelStore from "../../stores/AdminPanelStore";
 import * as Styled from "./AdminPanel.styles";
 import { SearchableListBox } from "./SearchableListBox";
 import {
   Agency,
   FipsCountyCodeKey,
   FipsCountyCodes,
-  StateCodeKey,
-  StateCodes,
   SearchableListBoxAction,
   SearchableListBoxActions,
+  SearchableListItem,
+  StateCodeKey,
+  StateCodes,
   UserRole,
   userRoles,
-  SearchableListItem,
 } from "./types";
-import AdminPanelStore from "../../stores/AdminPanelStore";
 
 export const AgencyProvisioning = observer(() => {
   const { adminPanelStore } = useStore();
@@ -94,12 +95,15 @@ export const AgencyProvisioning = observer(() => {
     },
   ];
 
+  const [teamMemberAction, setTeamMemberAction] =
+    useState<SearchableListBoxAction>();
+
   const [agencySelections, setAgencySelections] = useState<
     SearchableListItem[]
   >([]);
 
   const updateSuperagencySelection = (
-    id: number,
+    id: number | string,
     name: string,
     action?: SearchableListBoxAction
   ) => {
@@ -109,7 +113,7 @@ export const AgencyProvisioning = observer(() => {
   };
 
   const updateChildAgencySelections = (
-    id: number,
+    id: number | string,
     name: string,
     action?: SearchableListBoxAction
   ) => {
@@ -121,24 +125,60 @@ export const AgencyProvisioning = observer(() => {
     });
   };
 
-  const [teamMembers, setTeamMembers] = useState(
-    (currentAgencyToEdit?.team &&
-      AdminPanelStore.convertListToSearchableList(currentAgencyToEdit.team)) ||
-      []
-  );
+  const [teamMembers, setTeamMembers] = useState<SearchableListItem[]>([]);
 
-  const [selectedUsers, setSelectedUsers] = useState(
-    currentAgencyToEdit?.team || []
+  const [newTeamMembers, setNewTeamMembers] = useState<SearchableListItem[]>(
+    []
   );
+  // AdminPanelStore.convertListToSearchableList(users)
+  //   .filter((user) =>
+  //   teamMembers.some((member) => member.id === user.id)
+  // )
+  // console.log("users", users);
+  console.log("newTeamMembers", newTeamMembers);
 
-  const updateTeamMembers = (action: SearchableListBoxAction) => {
-    if (action === "ADD") {
-      setTeamMembers((prev) => [...prev, ...selectedUsers]);
-    }
+  const updateNewTeamMembers = (
+    id: number | string,
+    name: string,
+    action?: SearchableListBoxAction,
+    email?: string
+  ) => {
+    setNewTeamMembers((prev) => {
+      if (prev.some((selection) => selection.name === name))
+        return prev.filter((selection) => selection.name !== name);
+      return [...prev, { name, action, id, email }];
+    });
+    // if (teamMemberAction === SearchableListBoxActions.ADD) {
+    //   setNewTeamMembers((prev) =>
+    //     prev.map((listItem) => {
+    //       if (listItem.id === id) {
+    //         return {
+    //           id,
+    //           name,
+    //           action: SearchableListBoxActions.ADD,
+    //           email: undefined,
+    //         };
+    //       }
+    //       return listItem;
+    //     })
+    //   );
+    // }
+    // if (teamMemberAction === SearchableListBoxActions.DELETE) {
+    //   setNewTeamMembers((prev) => prev.filter((member) => member.id === id));
+    // }
   };
 
-  const updateSelectedUsers = (user: string) => {
-    console.log("hi");
+  const updateTeamMembers = (
+    id: number | string,
+    name: string,
+    action?: SearchableListBoxAction,
+    email?: string
+  ) => {
+    setTeamMembers((prev) => {
+      if (prev.some((selection) => selection.name === name))
+        return prev.filter((selection) => selection.name !== name);
+      return [...prev, { name, action, id, email }];
+    });
   };
 
   return (
@@ -244,7 +284,7 @@ export const AgencyProvisioning = observer(() => {
                       label={
                         <Styled.ChipContainer fitContentHeight>
                           {currentAgencyToEdit?.systems.map((system: any) => (
-                            <Styled.Chip>
+                            <Styled.Chip key={system}>
                               {removeSnakeCase(system).toLocaleLowerCase()}
                             </Styled.Chip>
                           ))}
@@ -344,46 +384,62 @@ export const AgencyProvisioning = observer(() => {
                 </Styled.Form>
               )}
 
-              <SearchableListBox
-                list={users}
-                boxActionType={SearchableListBoxActions.ADD}
-                selections={teamMembers}
-                buttons={[]}
-                updateSelections={updateTeamMembers}
-              />
+              <Styled.InputLabelWrapper topSpacing>
+                {teamMemberAction === SearchableListBoxActions.ADD && (
+                  <SearchableListBox
+                    list={users}
+                    boxActionType={SearchableListBoxActions.ADD}
+                    selections={newTeamMembers}
+                    buttons={[]}
+                    updateSelections={updateNewTeamMembers}
+                  />
+                )}
+
+                {teamMemberAction === SearchableListBoxActions.DELETE && (
+                  <SearchableListBox
+                    list={
+                      currentAgencyToEdit
+                        ? AdminPanelStore.convertListToSearchableList(
+                            currentAgencyToEdit?.team
+                          )
+                        : []
+                    }
+                    boxActionType={SearchableListBoxActions.DELETE}
+                    selections={teamMembers}
+                    buttons={[]}
+                    updateSelections={updateTeamMembers}
+                  />
+                )}
+              </Styled.InputLabelWrapper>
 
               {currentSettingType === "Team Members & Roles" && (
                 <>
                   <Styled.InputLabelWrapper>
                     <Styled.FormActions>
                       <Styled.ActionButton
-                      // selectedColor={isAddAction ? "green" : ""}
-                      // onClick={(e) => {
-                      //   setUserProvisioningAction(
-                      //     UserProvisioningActions.ADD
-                      //   );
-                      //   setTimeout(
-                      //     () =>
-                      //       addAgencyScrollToRef.current?.scrollIntoView({
-                      //         behavior: "smooth",
-                      //       }),
-                      //     0
-                      //   );
-                      // }}
+                        // selectedColor={isAddAction ? "green" : ""}
+                        onClick={(e) => {
+                          setTeamMemberAction(SearchableListBoxActions.ADD);
+                          // setTimeout(
+                          //   () =>
+                          //     addAgencyScrollToRef.current?.scrollIntoView({
+                          //       behavior: "smooth",
+                          //     }),
+                          //   0
+                          // );
+                        }}
                       >
                         Add User
                       </Styled.ActionButton>
 
                       <Styled.ActionButton
-                      // selectedColor={isDeleteAction ? "red" : ""}
-                      // onClick={() => {
-                      //   setUserProvisioningAction(
-                      //     UserProvisioningActions.DELETE
-                      //   );
-                      //   deleteAgencyScrollToRef.current?.scrollIntoView({
-                      //     behavior: "smooth",
-                      //   });
-                      // }}
+                        // selectedColor={isDeleteAction ? "red" : ""}
+                        onClick={() => {
+                          setTeamMemberAction(SearchableListBoxActions.DELETE);
+                          // deleteAgencyScrollToRef.current?.scrollIntoView({
+                          //   behavior: "smooth",
+                          // });
+                        }}
                       >
                         Delete User
                       </Styled.ActionButton>
@@ -392,8 +448,56 @@ export const AgencyProvisioning = observer(() => {
                     </Styled.FormActions>
                   </Styled.InputLabelWrapper>
                   <Styled.TeamMembersContainer>
+                    {/* Newly Added */}
+                    {newTeamMembers.map((t) => (
+                      <Styled.TeamMemberCard key={t.name} added>
+                        <Styled.ChipInnerRow>
+                          <div>
+                            <Styled.ChipName>{t.name}</Styled.ChipName>
+                            <Styled.ChipEmail>{t.email}</Styled.ChipEmail>
+                            {/* <Styled.ChipInvitationStatus>
+                              {t.invitation_status}
+                            </Styled.ChipInvitationStatus> */}
+                          </div>
+                          <Styled.ChipRole>
+                            <Styled.InputLabelWrapper noBottomSpacing>
+                              <Dropdown
+                                label={
+                                  <input
+                                    name="new-team-member"
+                                    type="button"
+                                    value={userRole}
+                                  />
+                                }
+                                options={userRoles.map((role) => ({
+                                  key: role,
+                                  label: removeSnakeCase(role),
+                                  onClick: () => {
+                                    setUserRole(
+                                      removeSnakeCase(role) as UserRole
+                                    );
+                                  },
+                                }))}
+                                fullWidth
+                                noBoxShadow
+                              />
+                              <label htmlFor="new-team-member">Role</label>
+                            </Styled.InputLabelWrapper>
+                          </Styled.ChipRole>
+                        </Styled.ChipInnerRow>
+                      </Styled.TeamMemberCard>
+                    ))}
+
+                    {/* Current and Deleted */}
                     {currentAgencyToEdit?.team.map((t) => (
-                      <Styled.TeamMemberCard>
+                      <Styled.TeamMemberCard
+                        key={t.name}
+                        deleted={teamMembers.some(
+                          (member) =>
+                            member.id === t.auth0_user_id &&
+                            member.action === SearchableListBoxActions.DELETE
+                        )}
+                      >
                         <Styled.ChipInnerRow>
                           <div>
                             <Styled.ChipName>{t.name}</Styled.ChipName>
@@ -413,6 +517,12 @@ export const AgencyProvisioning = observer(() => {
                                       userRole ||
                                       (t.role && removeSnakeCase(t.role))
                                     }
+                                    disabled={teamMembers.some(
+                                      (member) =>
+                                        member.id === t.auth0_user_id &&
+                                        member.action ===
+                                          SearchableListBoxActions.DELETE
+                                    )}
                                   />
                                 }
                                 options={userRoles.map((role) => ({
@@ -439,6 +549,7 @@ export const AgencyProvisioning = observer(() => {
               <Styled.ModalActionButtons>
                 {modalButtons.map((button, index) => (
                   <Button
+                    key={button.label}
                     label={button.label}
                     onClick={button.onClick}
                     buttonColor={

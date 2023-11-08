@@ -261,7 +261,10 @@ export const TeamMembersContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-export const TeamMemberCard = styled.div`
+export const TeamMemberCard = styled.div<{
+  added?: boolean;
+  deleted?: boolean;
+}>`
   ${typography.sizeCSS.normal}
   display: flex;
   flex-direction: column;
@@ -273,6 +276,9 @@ export const TeamMemberCard = styled.div`
   padding: 16px;
   margin: 5px;
 
+  ${({ added }) => added && `background: ${palette.highlight.green};`}
+  ${({ deleted }) => deleted && `background: ${palette.highlight.red};`}
+
   input[type="button"] {
     width: 210px;
   }
@@ -282,7 +288,7 @@ export const ChipContainer = styled.div<{
   halfMaxHeight?: boolean;
   fitContentHeight?: boolean;
   noBorder?: boolean;
-  deleteAction?: boolean;
+  boxActionType?: SearchableListBoxAction;
 }>`
   ${typography.sizeCSS.small}
   width: 100%;
@@ -297,17 +303,28 @@ export const ChipContainer = styled.div<{
   display: flex;
   flex-wrap: wrap;
   align-content: baseline;
-  border: ${({ noBorder, deleteAction }) =>
-    noBorder
-      ? `none`
-      : `1px solid ${
-          deleteAction ? palette.solid.red : palette.highlight.grey5
-        }`};
+  border: ${({ noBorder, boxActionType }) => {
+    if (noBorder) return `none`;
+    if (boxActionType === SearchableListBoxActions.DELETE) {
+      return `1px solid ${palette.solid.red};`;
+    }
+    if (boxActionType === SearchableListBoxActions.ADD) {
+      return `1px solid ${palette.solid.green};`;
+    }
+    return `1px solid ${palette.highlight.grey5}`;
+  }};
   border-radius: 2px;
   padding: 5px;
   overflow-y: auto;
-  ${({ deleteAction }) =>
-    deleteAction && `box-shadow: 1px 1px 2px ${palette.highlight.darkred}`}
+
+  ${({ boxActionType }) => {
+    if (boxActionType === SearchableListBoxActions.DELETE) {
+      return `box-shadow: 1px 1px 2px ${palette.highlight.red};`;
+    }
+    if (boxActionType === SearchableListBoxActions.ADD) {
+      return `box-shadow: 2px 2px 5px ${palette.highlight.green};`;
+    }
+  }}
 `;
 
 export const Chip = styled.span<{
