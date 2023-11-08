@@ -74,6 +74,16 @@ export const AgencyListTypes = {
 export type AgencyListType =
   (typeof AgencyListTypes)[keyof typeof AgencyListTypes];
 
+/** Should we get this from the backend? That's the current behavior if we want to keep one source of truth */
+export const userRoles = [
+  "AGENCY_ADMIN",
+  "JUSTICE_COUNTS_ADMIN",
+  "CONTRIBUTOR",
+  "READ_ONLY",
+] as const;
+
+export type UserRole = (typeof userRoles)[number];
+
 export const StateCodes = {
   us_ak: "Alaska",
   us_al: "Alabama",

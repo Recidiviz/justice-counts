@@ -35,6 +35,8 @@ import {
   StateCodes,
   UserProvisioningAction,
   UserProvisioningActions,
+  UserRole,
+  userRoles,
 } from "./types";
 
 export const AgencyProvisioning = observer(() => {
@@ -54,6 +56,7 @@ export const AgencyProvisioning = observer(() => {
   const [name, setName] = useState<any>();
   const [stateCode, setStateCode] = useState<StateCodeKey>();
   const [countyCode, setCountyCode] = useState<FipsCountyCodeKey>();
+  const [userRole, setUserRole] = useState<UserRole>();
 
   const modalButtons = [
     {
@@ -307,6 +310,7 @@ export const AgencyProvisioning = observer(() => {
                         if (superagencyOrChildAgencyChecked === "superagency") {
                           return setSuperagencyOrChildAgencyChecked(undefined);
                         }
+                        setAgencySelections([]);
                         setSuperagencyOrChildAgencyChecked("superagency");
                       }}
                       checked={
@@ -324,6 +328,7 @@ export const AgencyProvisioning = observer(() => {
                         ) {
                           return setSuperagencyOrChildAgencyChecked(undefined);
                         }
+                        setAgencySelections([]);
                         setSuperagencyOrChildAgencyChecked("child-agency");
                       }}
                       checked={
@@ -334,7 +339,7 @@ export const AgencyProvisioning = observer(() => {
                   </Styled.InputLabelWrapper>
                   {superagencyOrChildAgencyChecked === "child-agency" && (
                     <Styled.InputLabelWrapper>
-                      <Styled.ModalTitle>
+                      <Styled.ModalTitle noBottomMargin>
                         Select parent (super) agency
                       </Styled.ModalTitle>
                       <SearchableListOfAgencies
@@ -372,27 +377,86 @@ export const AgencyProvisioning = observer(() => {
               )}
 
               {currentSettingType === "Team Members & Roles" && (
-                <Styled.TeamMembersRoles>
-                  <Styled.InputLabelWrapper topSpacing>
-                    <input name="new-team-member" type="text" />
-                    <label htmlFor="new-team-member">Add Team Member</label>
+                <>
+                  <Styled.InputLabelWrapper>
+                    <Styled.FormActions>
+                      <Styled.ActionButton
+                      // selectedColor={isAddAction ? "green" : ""}
+                      // onClick={(e) => {
+                      //   setUserProvisioningAction(
+                      //     UserProvisioningActions.ADD
+                      //   );
+                      //   setTimeout(
+                      //     () =>
+                      //       addAgencyScrollToRef.current?.scrollIntoView({
+                      //         behavior: "smooth",
+                      //       }),
+                      //     0
+                      //   );
+                      // }}
+                      >
+                        Add User
+                      </Styled.ActionButton>
+
+                      <Styled.ActionButton
+                      // selectedColor={isDeleteAction ? "red" : ""}
+                      // onClick={() => {
+                      //   setUserProvisioningAction(
+                      //     UserProvisioningActions.DELETE
+                      //   );
+                      //   deleteAgencyScrollToRef.current?.scrollIntoView({
+                      //     behavior: "smooth",
+                      //   });
+                      // }}
+                      >
+                        Delete User
+                      </Styled.ActionButton>
+
+                      <Styled.ActionButton>Create New User</Styled.ActionButton>
+                    </Styled.FormActions>
                   </Styled.InputLabelWrapper>
-                  {currentAgencyToEdit?.team.map((t: any) => (
+                  {currentAgencyToEdit?.team.map((t) => (
                     <Styled.TeamMemberChip>
                       <Styled.ChipInnerRow>
-                        <Styled.ChipName>{t.name}</Styled.ChipName>
-                        <Styled.ChipRole>{t.role}</Styled.ChipRole>
-                      </Styled.ChipInnerRow>
-                      <Styled.ChipEmail>{t.email}</Styled.ChipEmail>
-                      <Styled.ChipInnerRow>
-                        <Styled.ChipID>{t.auth0_user_id}</Styled.ChipID>
-                        <Styled.ChipInvitationStatus>
-                          {t.invitation_status}
-                        </Styled.ChipInvitationStatus>
+                        <div>
+                          <Styled.ChipName>{t.name}</Styled.ChipName>
+                          <Styled.ChipEmail>{t.email}</Styled.ChipEmail>
+                          <Styled.ChipInvitationStatus>
+                            {t.invitation_status}
+                          </Styled.ChipInvitationStatus>
+                        </div>
+                        <Styled.ChipRole>
+                          <Styled.InputLabelWrapper
+                            inputWidth={250}
+                            noBottomSpacing
+                          >
+                            <Dropdown
+                              label={
+                                <input
+                                  name="new-team-member"
+                                  type="button"
+                                  value={userRole || removeSnakeCase(t.role)}
+                                />
+                              }
+                              options={userRoles.map((role) => ({
+                                key: role,
+                                label: removeSnakeCase(role),
+                                onClick: () => {
+                                  setUserRole(
+                                    removeSnakeCase(role) as UserRole
+                                  );
+                                },
+                              }))}
+                              fullWidth
+                              noBoxShadow
+                            />
+                            <label htmlFor="new-team-member">Role</label>
+                          </Styled.InputLabelWrapper>
+                        </Styled.ChipRole>
                       </Styled.ChipInnerRow>
                     </Styled.TeamMemberChip>
                   ))}
-                </Styled.TeamMembersRoles>
+                </>
               )}
               <Styled.ModalActionButtons>
                 {modalButtons.map((button, index) => (
@@ -478,60 +542,6 @@ export const AgencyProvisioning = observer(() => {
           </Styled.UserCard>
         ))}
       </Styled.CardContainer>
-      {/* <Styled.SettingsBar>
-        <Styled.ButtonWrapper>
-          <Button
-            label="+ Add New Agency"
-            onClick={() => setAddEditAgencyModal(true)}
-            buttonColor="blue"
-          />
-        </Styled.ButtonWrapper>
-      </Styled.SettingsBar>
-      <Styled.Table>
-        <Styled.TableRow
-          columnsSpacing="1fr 4fr 1fr 1fr 3fr 4fr 1fr 1fr"
-          titleRow
-        >
-          {agencyProvisioningTableHeaderRow.map((cell, idx) => (
-            <Styled.TableCell
-              center={[
-                agencyProvisioningTableHeaderRow.length - 1,
-                agencyProvisioningTableHeaderRow.length - 2,
-              ].includes(idx)}
-            >
-              {cell}
-            </Styled.TableCell>
-          ))}
-        </Styled.TableRow>
-        {agencies.map((x) => (
-          <Styled.TableRow
-            columnsSpacing="1fr 4fr 1fr 1fr 3fr 4fr 1fr 1fr"
-            onClick={() => {
-              setCurrentAgencyToEdit(x);
-              setAddEditAgencyModal(true);
-            }}
-          >
-            <Styled.TableCell>{x.id}</Styled.TableCell>
-            <Styled.TableCell>{x.name}</Styled.TableCell>
-            <Styled.TableCell>{x.state}</Styled.TableCell>
-            <Styled.TableCell>County</Styled.TableCell>
-            <Styled.TableCell>
-              {x.systems.map((system: string) => (
-                <Styled.Chip>{system}</Styled.Chip>
-              ))}
-            </Styled.TableCell>
-            <Styled.TableCell>
-              {x.team.map((t: any) => (
-                <Styled.Chip>{t.name}</Styled.Chip>
-              ))}
-            </Styled.TableCell>
-            <Styled.TableCell center>
-              {x.is_superagency ? "Yes" : "No"}
-            </Styled.TableCell>
-            <Styled.TableCell center>No</Styled.TableCell>
-          </Styled.TableRow>
-        ))}
-      </Styled.Table> */}
     </>
   );
 });

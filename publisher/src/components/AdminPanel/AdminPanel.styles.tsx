@@ -191,20 +191,23 @@ export const InputLabelWrapper = styled.div<{
   flexRow?: boolean;
   topSpacing?: boolean;
   inputWidth?: number;
+  noBottomSpacing?: boolean;
 }>`
   ${typography.sizeCSS.normal}
+  width: 100%;
   display: flex;
   flex-direction: ${({ flexRow }) => (flexRow ? "row" : "column")};
   align-items: flex-start;
   position: relative;
-  padding-bottom: 16px;
+  padding-bottom: ${({ noBottomSpacing }) => (noBottomSpacing ? 0 : 16)}px;
   ${({ topSpacing }) => topSpacing && `margin-top: 16px`};
 
   input,
   input[type="button"] {
     width: 100%;
     min-width: 300px;
-    ${({ inputWidth }) => inputWidth && `max-width: ${inputWidth}px`};
+    ${({ inputWidth }) =>
+      inputWidth && `min-width: unset; width: ${inputWidth}px`};
     background: none;
     text-align: left;
     border: 1px solid ${palette.highlight.grey5};
@@ -367,7 +370,9 @@ export const ChipID = styled.div`
 
 export const ChipInvitationStatus = styled.div`
   ${typography.sizeCSS.small}
-  color: ${palette.solid.grey1};
+  font-size: 10px;
+  margin-top: 5px;
+  color: ${palette.solid.green};
 `;
 
 export const ChipInnerRow = styled.div`
