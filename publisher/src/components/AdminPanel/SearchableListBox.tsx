@@ -20,7 +20,6 @@ import React, { useEffect, useState } from "react";
 
 import * as Styled from "./AdminPanel.styles";
 import {
-  Agency,
   SearchableListBoxAction,
   SearchableListBoxActions,
   SearchableListBoxProps,
@@ -34,6 +33,7 @@ export const SearchableListBox = ({
   updateSelections,
   boxActionType,
   metadata,
+  isActiveBox = true,
 }: SearchableListBoxProps) => {
   const [filteredList, setFilteredList] = useState<SearchableListItem[]>([]);
   const [inputValue, setInputValue] = useState("");
@@ -50,22 +50,17 @@ export const SearchableListBox = ({
     );
   };
 
-  useEffect(() => {
-    setFilteredList(list);
-    searchList(inputValue);
-    // eslint-disable-next-line
-  }, [list]);
-
-  const selectedColor = (actionType?: SearchableListBoxAction) => {
+  const chipColor = (actionType?: SearchableListBoxAction) => {
     if (!actionType) return;
     if (actionType === SearchableListBoxActions.DELETE) return "red";
     if (actionType === SearchableListBoxActions.ADD) return "green";
   };
 
-  // const isNotActiveSearchableListBoxActions =
-  //   !boxActionType ||
-  //   boxActionType !== SearchableListBoxActions.DELETE ||
-  //   boxActionType !== SearchableListBoxActions.ADD;
+  useEffect(() => {
+    setFilteredList(list);
+    searchList(inputValue);
+    // eslint-disable-next-line
+  }, [list]);
 
   return (
     <>
@@ -75,22 +70,22 @@ export const SearchableListBox = ({
         )}
 
         {/* Selection Box */}
-        <Styled.ChipContainer boxActionType={boxActionType}>
+        <Styled.ChipContainer
+          boxActionType={isActiveBox ? boxActionType : undefined}
+        >
           {filteredList.length > 0 &&
             filteredList.map((listItem) => (
               <Styled.Chip
+                key={listItem.id}
                 selected={selections.some(
                   (selection) => selection.name === listItem.name
                 )}
-                hover={
-                  // !isNotActiveSearchableListBoxActions &&
-                  Boolean(boxActionType)
-                }
-                selectedColor={selectedColor(
+                hover={Boolean(boxActionType && isActiveBox)}
+                selectedColor={chipColor(
                   selectionsByName[listItem.name]?.[0].action
                 )}
                 onClick={() => {
-                  // if (isNotActiveSearchableListBoxActions) return;
+                  if (!isActiveBox) return;
                   if (boxActionType) {
                     updateSelections(
                       listItem.id,
@@ -109,7 +104,7 @@ export const SearchableListBox = ({
           {metadata?.listBoxLabel}
           <Styled.LabelButtonsWrapper>
             {buttons.map((button) => (
-              <Styled.LabelButton onClick={button.onClick}>
+              <Styled.LabelButton key={button.label} onClick={button.onClick}>
                 {button.label}
               </Styled.LabelButton>
             ))}

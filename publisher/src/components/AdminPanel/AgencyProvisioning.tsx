@@ -15,12 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Badge } from "@justice-counts/common/components/Badge";
 import { Button } from "@justice-counts/common/components/Button";
 import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
-import { AgencyTeamMember } from "@justice-counts/common/types";
+import { AgencySystems } from "@justice-counts/common/types";
 import { removeSnakeCase } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
@@ -31,6 +30,8 @@ import * as Styled from "./AdminPanel.styles";
 import { SearchableListBox } from "./SearchableListBox";
 import {
   Agency,
+  AgencyProvisioningSetting,
+  AgencyProvisioningSettings,
   FipsCountyCodeKey,
   FipsCountyCodes,
   SearchableListBoxAction,
@@ -46,19 +47,31 @@ export const AgencyProvisioning = observer(() => {
   const { adminPanelStore } = useStore();
   const { agencies, systems, users } = adminPanelStore;
 
+  /** UI State */
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const [addEditAgencyModal, setAddEditAgencyModal] = useState(false);
   const [currentAgencyToEdit, setCurrentAgencyToEdit] = useState<Agency>();
-  const [currentSettingType, setCurrentSettingType] = useState<any>("Agency");
+  const [currentSettingType, setCurrentSettingType] =
+    useState<AgencyProvisioningSetting>(
+      AgencyProvisioningSettings.AGENCY_INFORMATION
+    );
 
-  const [superagencyOrChildAgencyChecked, setSuperagencyOrChildAgencyChecked] =
-    useState<string>();
-  const [tempChildAgencyChecked, setTempChildAgencyChecked] = useState(false);
-
-  const [agencyName, setAgencyName] = useState<any>();
+  const [agencyName, setAgencyName] = useState<string>();
   const [stateCode, setStateCode] = useState<StateCodeKey>();
   const [countyCode, setCountyCode] = useState<FipsCountyCodeKey>();
+  const [agencySystems, setAgencySystems] = useState<AgencySystems[]>([]);
+  const [isDashboardEnabled, setIsDashboardEnabled] = useState(false);
+  const [superagencyOrChildAgencyChecked, setSuperagencyOrChildAgencyChecked] =
+    useState<string>();
+
+  const [teamMemberAction, setTeamMemberAction] =
+    useState<SearchableListBoxAction>();
+  const [agencySelections, setAgencySelections] = useState<
+    SearchableListItem[]
+  >([]);
+  const [teamMembers, setTeamMembers] = useState<SearchableListItem[]>([]);
+  const [newTeamMembers, setNewTeamMembers] = useState<SearchableListItem[]>(
+    []
+  );
   const [userRole, setUserRole] = useState<UserRole>();
 
   const modalButtons = [
@@ -69,38 +82,33 @@ export const AgencyProvisioning = observer(() => {
         resetAll();
       },
     },
-    { label: "Save", onClick: () => console.log("Saved") },
+    { label: "Save", onClick: () => new Error("Saved") },
+  ];
+  const settingOptions = [
+    {
+      key: "agency-information",
+      label: AgencyProvisioningSettings.AGENCY_INFORMATION,
+      onClick: () =>
+        setCurrentSettingType(AgencyProvisioningSettings.AGENCY_INFORMATION),
+      selected:
+        currentSettingType === AgencyProvisioningSettings.AGENCY_INFORMATION,
+    },
+    {
+      key: "team-members-roles",
+      label: AgencyProvisioningSettings.TEAM_MEMBERS_ROLES,
+      onClick: () =>
+        setCurrentSettingType(AgencyProvisioningSettings.TEAM_MEMBERS_ROLES),
+      selected:
+        currentSettingType === AgencyProvisioningSettings.TEAM_MEMBERS_ROLES,
+    },
   ];
 
   const resetAll = () => {
-    setAddEditAgencyModal(false);
     setCurrentAgencyToEdit(undefined);
     setAgencyName(undefined);
     setStateCode(undefined);
     setCountyCode(undefined);
   };
-
-  const settingOptions = [
-    {
-      key: "agency",
-      label: "Agency",
-      onClick: () => setCurrentSettingType("Agency"),
-      selected: currentSettingType === "Agency",
-    },
-    {
-      key: "team-members-roles",
-      label: "Team Members & Roles",
-      onClick: () => setCurrentSettingType("Team Members & Roles"),
-      selected: currentSettingType === "Team Members & Roles",
-    },
-  ];
-
-  const [teamMemberAction, setTeamMemberAction] =
-    useState<SearchableListBoxAction>();
-
-  const [agencySelections, setAgencySelections] = useState<
-    SearchableListItem[]
-  >([]);
 
   const updateSuperagencySelection = (
     id: number | string,
@@ -125,18 +133,6 @@ export const AgencyProvisioning = observer(() => {
     });
   };
 
-  const [teamMembers, setTeamMembers] = useState<SearchableListItem[]>([]);
-
-  const [newTeamMembers, setNewTeamMembers] = useState<SearchableListItem[]>(
-    []
-  );
-  // AdminPanelStore.convertListToSearchableList(users)
-  //   .filter((user) =>
-  //   teamMembers.some((member) => member.id === user.id)
-  // )
-  // console.log("users", users);
-  console.log("newTeamMembers", newTeamMembers);
-
   const updateNewTeamMembers = (
     id: number | string,
     name: string,
@@ -148,24 +144,6 @@ export const AgencyProvisioning = observer(() => {
         return prev.filter((selection) => selection.name !== name);
       return [...prev, { name, action, id, email }];
     });
-    // if (teamMemberAction === SearchableListBoxActions.ADD) {
-    //   setNewTeamMembers((prev) =>
-    //     prev.map((listItem) => {
-    //       if (listItem.id === id) {
-    //         return {
-    //           id,
-    //           name,
-    //           action: SearchableListBoxActions.ADD,
-    //           email: undefined,
-    //         };
-    //       }
-    //       return listItem;
-    //     })
-    //   );
-    // }
-    // if (teamMemberAction === SearchableListBoxActions.DELETE) {
-    //   setNewTeamMembers((prev) => prev.filter((member) => member.id === id));
-    // }
   };
 
   const updateTeamMembers = (
@@ -183,10 +161,11 @@ export const AgencyProvisioning = observer(() => {
 
   return (
     <>
-      {/* Add New Agency Modal */}
+      {/* Edit/Create New Agency Modal */}
       {isModalOpen && (
         <Modal>
           <Styled.ModalContainer>
+            {/* Agency Title & Name */}
             <Styled.ModalTitle>
               {currentAgencyToEdit
                 ? "Edit Agency Information"
@@ -196,22 +175,26 @@ export const AgencyProvisioning = observer(() => {
               {agencyName || currentAgencyToEdit?.name}
             </Styled.AgencyNameDisplay>
 
+            {/* Toggle between Agency Information and Team Members & Roles */}
             <TabbedBar options={settingOptions} />
 
             <Styled.ScrollableContainer>
-              {currentSettingType === "Agency" && (
+              {/* Agency Information */}
+              {currentSettingType ===
+                AgencyProvisioningSettings.AGENCY_INFORMATION && (
                 <Styled.Form>
+                  {/* Agency Name */}
                   <Styled.InputLabelWrapper>
                     <input
                       name="name"
                       type="text"
-                      defaultValue={currentAgencyToEdit?.name}
-                      value={agencyName}
+                      value={agencyName || currentAgencyToEdit?.name || ""}
                       onChange={(e) => setAgencyName(e.target.value)}
                     />
                     <label htmlFor="name">Name</label>
                   </Styled.InputLabelWrapper>
 
+                  {/* Agency State */}
                   <Styled.InputLabelWrapper>
                     <Dropdown
                       label={
@@ -221,7 +204,8 @@ export const AgencyProvisioning = observer(() => {
                           value={
                             (stateCode && StateCodes[stateCode]) ||
                             (currentAgencyToEdit &&
-                              StateCodes[currentAgencyToEdit.state_code])
+                              StateCodes[currentAgencyToEdit.state_code]) ||
+                            ""
                           }
                         />
                       }
@@ -241,13 +225,14 @@ export const AgencyProvisioning = observer(() => {
                     <label htmlFor="state">State</label>
                   </Styled.InputLabelWrapper>
 
+                  {/* Agency County */}
                   <Styled.InputLabelWrapper>
                     <Dropdown
                       label={
                         <input
                           type="button"
                           disabled={
-                            !stateCode && !currentAgencyToEdit?.state_code
+                            !stateCode && !currentAgencyToEdit?.state_code // Disable until a state is selected
                           }
                           name="county"
                           value={
@@ -255,7 +240,8 @@ export const AgencyProvisioning = observer(() => {
                             (currentAgencyToEdit?.fips_county_code &&
                               FipsCountyCodes[
                                 currentAgencyToEdit.fips_county_code
-                              ])
+                              ]) ||
+                            ""
                           }
                         />
                       }
@@ -279,11 +265,12 @@ export const AgencyProvisioning = observer(() => {
                     <label htmlFor="county">County</label>
                   </Styled.InputLabelWrapper>
 
+                  {/* Agency Systems */}
                   <Styled.InputLabelWrapper>
                     <Dropdown
                       label={
                         <Styled.ChipContainer fitContentHeight>
-                          {currentAgencyToEdit?.systems.map((system: any) => (
+                          {agencySystems.map((system) => (
                             <Styled.Chip key={system}>
                               {removeSnakeCase(system).toLocaleLowerCase()}
                             </Styled.Chip>
@@ -292,9 +279,15 @@ export const AgencyProvisioning = observer(() => {
                       }
                       options={systems.map((system) => ({
                         key: system,
+                        highlight: agencySystems.includes(system),
                         label: removeSnakeCase(system).toLocaleLowerCase(),
                         onClick: () => {
-                          new Date();
+                          if (agencySystems.includes(system)) {
+                            return setAgencySystems((prev) =>
+                              prev.filter((sys) => sys !== system)
+                            );
+                          }
+                          setAgencySystems((prev) => [...prev, system]);
                         },
                       }))}
                       fullWidth
@@ -308,13 +301,8 @@ export const AgencyProvisioning = observer(() => {
                     <input
                       name="dashboard"
                       type="checkbox"
-                      // onChange={() =>
-                      //   setTempSuperagencyChecked(!tempSuperagencyChecked)
-                      // }
-                      // checked={
-                      //   currentAgencyToEdit?.is_superagency ||
-                      //   tempSuperagencyChecked
-                      // }
+                      onChange={() => setIsDashboardEnabled((prev) => !prev)}
+                      checked={isDashboardEnabled}
                     />
                     <label htmlFor="dashboard">Enable Dashboard</label>
                   </Styled.InputLabelWrapper>
@@ -322,7 +310,7 @@ export const AgencyProvisioning = observer(() => {
                     <input
                       name="superagency"
                       type="checkbox"
-                      onClick={() => {
+                      onChange={() => {
                         if (superagencyOrChildAgencyChecked === "superagency") {
                           return setSuperagencyOrChildAgencyChecked(undefined);
                         }
@@ -338,7 +326,7 @@ export const AgencyProvisioning = observer(() => {
                     <input
                       name="child-agency"
                       type="checkbox"
-                      onClick={() => {
+                      onChange={() => {
                         if (
                           superagencyOrChildAgencyChecked === "child-agency"
                         ) {
@@ -412,7 +400,8 @@ export const AgencyProvisioning = observer(() => {
                 )}
               </Styled.InputLabelWrapper>
 
-              {currentSettingType === "Team Members & Roles" && (
+              {currentSettingType ===
+                AgencyProvisioningSettings.TEAM_MEMBERS_ROLES && (
                 <>
                   <Styled.InputLabelWrapper>
                     <Styled.FormActions>
@@ -450,7 +439,7 @@ export const AgencyProvisioning = observer(() => {
                   <Styled.TeamMembersContainer>
                     {/* Newly Added */}
                     {newTeamMembers.map((t) => (
-                      <Styled.TeamMemberCard key={t.name} added>
+                      <Styled.TeamMemberCard key={t.id} added>
                         <Styled.ChipInnerRow>
                           <div>
                             <Styled.ChipName>{t.name}</Styled.ChipName>
@@ -466,7 +455,7 @@ export const AgencyProvisioning = observer(() => {
                                   <input
                                     name="new-team-member"
                                     type="button"
-                                    value={userRole}
+                                    value={userRole || ""}
                                   />
                                 }
                                 options={userRoles.map((role) => ({
@@ -491,7 +480,7 @@ export const AgencyProvisioning = observer(() => {
                     {/* Current and Deleted */}
                     {currentAgencyToEdit?.team.map((t) => (
                       <Styled.TeamMemberCard
-                        key={t.name}
+                        key={t.auth0_user_id}
                         deleted={teamMembers.some(
                           (member) =>
                             member.id === t.auth0_user_id &&
@@ -515,7 +504,8 @@ export const AgencyProvisioning = observer(() => {
                                     type="button"
                                     value={
                                       userRole ||
-                                      (t.role && removeSnakeCase(t.role))
+                                      (t.role && removeSnakeCase(t.role)) ||
+                                      ""
                                     }
                                     disabled={teamMembers.some(
                                       (member) =>
@@ -568,9 +558,8 @@ export const AgencyProvisioning = observer(() => {
           <input
             name="search"
             type="text"
-            defaultValue=""
             value=""
-            onChange={(e) => console.log("search")}
+            onChange={(e) => new Error("search")}
           />
           <label htmlFor="search">Search</label>
         </Styled.InputLabelWrapper>
@@ -596,6 +585,8 @@ export const AgencyProvisioning = observer(() => {
               setStateCode(
                 agency.state_code.toLocaleLowerCase() as StateCodeKey
               );
+              setIsDashboardEnabled(agency.is_dashboard_enabled);
+              setAgencySystems(agency.systems);
             }}
           >
             <Styled.UserNameEmailIDWrapper>
@@ -607,7 +598,9 @@ export const AgencyProvisioning = observer(() => {
             <Styled.AgenciesNumOfAgenciesWrapper>
               <Styled.AgenciesWrapper>
                 {agency.team.map((team) => (
-                  <Styled.Chip key={team.name}>{team.name}</Styled.Chip>
+                  <Styled.Chip key={team.auth0_user_id}>
+                    {team.name}
+                  </Styled.Chip>
                 ))}
               </Styled.AgenciesWrapper>
               <Styled.NumberOfAgenciesLiveDashboardIndicatorWrapper>

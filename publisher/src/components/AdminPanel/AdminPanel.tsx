@@ -36,11 +36,6 @@ export const AdminPanel = observer(() => {
     Setting.USERS
   );
 
-  useEffect(() => {
-    fetchUsers();
-    fetchAgencies();
-  }, [fetchUsers, fetchAgencies]);
-
   const settingOptions = [
     {
       key: "users",
@@ -55,6 +50,11 @@ export const AdminPanel = observer(() => {
       selected: currentProvisioningType === Setting.AGENCIES,
     },
   ];
+
+  useEffect(() => {
+    fetchUsers();
+    fetchAgencies();
+  }, [fetchUsers, fetchAgencies]);
 
   return (
     <Styled.AdminPanelContainer>

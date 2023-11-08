@@ -50,10 +50,6 @@ class AdminPanelStore {
     return groupBy(this.users, (user) => user.id);
   }
 
-  // get searchableAgencies() {
-
-  // }
-
   async fetchUsers() {
     try {
       const response = (await this.api.request({

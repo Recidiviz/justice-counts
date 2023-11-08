@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencyTeamMember } from "@justice-counts/common/types";
+import { AgencySystems, AgencyTeamMember } from "@justice-counts/common/types";
 
 export enum Environment {
   LOCAL = "local",
@@ -35,7 +35,7 @@ export type SettingType = `${Setting}`;
 export type Agency = {
   id: number;
   name: string;
-  systems: string[];
+  systems: AgencySystems[];
   state_code: keyof typeof StateCodes;
   fips_county_code?: keyof typeof FipsCountyCodes;
   team: AgencyTeamMember[];
@@ -51,6 +51,14 @@ export type User = {
   name: string;
   agencies: Agency[];
 };
+
+export const AgencyProvisioningSettings = {
+  AGENCY_INFORMATION: "Agency Information",
+  TEAM_MEMBERS_ROLES: "Team Members & Roles",
+} as const;
+
+export type AgencyProvisioningSetting =
+  (typeof AgencyProvisioningSettings)[keyof typeof AgencyProvisioningSettings];
 
 export const SearchableListBoxActions = {
   ADD: "ADD",
@@ -87,6 +95,7 @@ export type SearchableListBoxProps = {
     searchBoxLabel: string;
     title?: string;
   };
+  isActiveBox?: boolean;
 };
 
 // export const AgencyListTypes = {

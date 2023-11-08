@@ -47,24 +47,24 @@ export const UserProvisioning = observer(() => {
   const [email, setEmail] = useState(selectedUser?.email || "");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const getUpdates = () => {
-    const currentAgencyIDs = selectedUser?.agencies.map((ag) => ag.id) || [];
-    const agencyIDsToDelete = agencySelections
-      .filter((s) => s.action === SearchableListBoxActions.DELETE)
-      .map((ag) => ag.id);
-    const agencyIDsToAdd = agencySelections
-      .filter((s) => s.action === SearchableListBoxActions.ADD)
-      .map((ag) => ag.id);
-    const filteredCurrentAgencyIDs = currentAgencyIDs.filter(
-      (id) => !agencyIDsToDelete.includes(id)
-    );
-    const agencyIDs = [...filteredCurrentAgencyIDs, ...agencyIDsToAdd];
+  // const getUpdates = () => {
+  //   const currentAgencyIDs = selectedUser?.agencies.map((ag) => ag.id) || [];
+  //   const agencyIDsToDelete = agencySelections
+  //     .filter((s) => s.action === SearchableListBoxActions.DELETE)
+  //     .map((ag) => ag.id);
+  //   const agencyIDsToAdd = agencySelections
+  //     .filter((s) => s.action === SearchableListBoxActions.ADD)
+  //     .map((ag) => ag.id);
+  //   const filteredCurrentAgencyIDs = currentAgencyIDs.filter(
+  //     (id) => !agencyIDsToDelete.includes(id)
+  //   );
+  //   const agencyIDs = [...filteredCurrentAgencyIDs, ...agencyIDsToAdd];
 
-    return {
-      name: username,
-      agency_ids: agencyIDs,
-    };
-  };
+  //   return {
+  //     name: username,
+  //     agency_ids: agencyIDs,
+  //   };
+  // };
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
@@ -76,7 +76,7 @@ export const UserProvisioning = observer(() => {
   };
   const modalButtons = [
     { label: "Cancel", onClick: closeModal },
-    { label: "Save", onClick: () => console.log("Saved") },
+    { label: "Save", onClick: () => new Error("Saved") },
   ];
   const agencyActionButtons = [
     {
@@ -196,8 +196,7 @@ export const UserProvisioning = observer(() => {
                   <input
                     name="username"
                     type="text"
-                    defaultValue={selectedUser?.name}
-                    value={username}
+                    value={username || selectedUser?.name}
                     onChange={(e) => setUsername(e.target.value)}
                   />
                   <label htmlFor="username">Name</label>
@@ -225,6 +224,9 @@ export const UserProvisioning = observer(() => {
                     updateSelections={updateAgencySelections}
                     // boxActionType={userProvisioningAction}
                     boxActionType={SearchableListBoxActions.DELETE}
+                    isActiveBox={
+                      userProvisioningAction === SearchableListBoxActions.DELETE
+                    }
                   />
                 )}
                 <Styled.FormActions ref={addAgencyScrollToRef}>
@@ -294,6 +296,9 @@ export const UserProvisioning = observer(() => {
                     searchBoxLabel: "Search Agencies",
                     listBoxLabel: "Available Agencies",
                   }}
+                  isActiveBox={
+                    userProvisioningAction === SearchableListBoxActions.ADD
+                  }
                 />
               )}
 
@@ -334,7 +339,7 @@ export const UserProvisioning = observer(() => {
                           )
                           .map((selection) => (
                             <Styled.Chip
-                              key={selection.name}
+                              key={selection.id}
                               selected
                               selectedColor="red"
                             >
@@ -361,7 +366,7 @@ export const UserProvisioning = observer(() => {
                           )
                           .map((selection) => (
                             <Styled.Chip
-                              key={selection.name}
+                              key={selection.id}
                               selected
                               selectedColor="green"
                             >
@@ -383,9 +388,8 @@ export const UserProvisioning = observer(() => {
           <input
             name="search"
             type="text"
-            defaultValue=""
             value=""
-            onChange={(e) => console.log("search")}
+            onChange={(e) => new Error("search")}
           />
           <label htmlFor="search">Search</label>
         </Styled.InputLabelWrapper>
@@ -403,7 +407,7 @@ export const UserProvisioning = observer(() => {
       <Styled.CardContainer>
         {users.map((user) => (
           <Styled.UserCard
-            key={user.email}
+            key={user.id}
             onClick={() => {
               openModal();
               setSelectedUserIDToEdit(user.id);
@@ -418,7 +422,7 @@ export const UserProvisioning = observer(() => {
             </Styled.UserNameEmailIDWrapper>
             <Styled.AgenciesWrapper>
               {user.agencies.map((agency) => (
-                <Styled.Chip key={agency.name}>{agency.name}</Styled.Chip>
+                <Styled.Chip key={agency.id}>{agency.name}</Styled.Chip>
               ))}
             </Styled.AgenciesWrapper>
             <Styled.NumberOfAgencies>
