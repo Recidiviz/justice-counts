@@ -26,22 +26,24 @@ import React, { useState } from "react";
 
 import { useStore } from "../../stores";
 import * as Styled from "./AdminPanel.styles";
-import { SearchableListOfAgencies } from "./SearchableListOfAgencies";
+import { SearchableListBox } from "./SearchableListBox";
 import {
   Agency,
   FipsCountyCodeKey,
   FipsCountyCodes,
   StateCodeKey,
   StateCodes,
-  UserProvisioningAction,
-  UserProvisioningActions,
+  SearchableListBoxAction,
+  SearchableListBoxActions,
   UserRole,
   userRoles,
+  SearchableListItem,
 } from "./types";
+import AdminPanelStore from "../../stores/AdminPanelStore";
 
 export const AgencyProvisioning = observer(() => {
   const { adminPanelStore } = useStore();
-  const { agencies, systems } = adminPanelStore;
+  const { agencies, systems, users } = adminPanelStore;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -53,7 +55,7 @@ export const AgencyProvisioning = observer(() => {
     useState<string>();
   const [tempChildAgencyChecked, setTempChildAgencyChecked] = useState(false);
 
-  const [name, setName] = useState<any>();
+  const [agencyName, setAgencyName] = useState<any>();
   const [stateCode, setStateCode] = useState<StateCodeKey>();
   const [countyCode, setCountyCode] = useState<FipsCountyCodeKey>();
   const [userRole, setUserRole] = useState<UserRole>();
@@ -72,21 +74,11 @@ export const AgencyProvisioning = observer(() => {
   const resetAll = () => {
     setAddEditAgencyModal(false);
     setCurrentAgencyToEdit(undefined);
-    setName(undefined);
+    setAgencyName(undefined);
     setStateCode(undefined);
     setCountyCode(undefined);
   };
 
-  const agencyProvisioningTableHeaderRow = [
-    "Agency ID",
-    "Name",
-    "State",
-    "County",
-    "Systems",
-    "Team Members",
-    "Superagency",
-    "Child Agency",
-  ];
   const settingOptions = [
     {
       key: "agency",
@@ -103,29 +95,50 @@ export const AgencyProvisioning = observer(() => {
   ];
 
   const [agencySelections, setAgencySelections] = useState<
-    { id: number; agencyName: string; selectionType: UserProvisioningAction }[]
+    SearchableListItem[]
   >([]);
 
   const updateSuperagencySelection = (
     id: number,
-    agencyName: string,
-    selectionType: UserProvisioningAction
+    name: string,
+    action?: SearchableListBoxAction
   ) => {
     setAgencySelections(() => {
-      return [{ agencyName, selectionType, id }];
+      return [{ name, action, id }];
     });
   };
 
   const updateChildAgencySelections = (
     id: number,
-    agencyName: string,
-    selectionType: UserProvisioningAction
+    name: string,
+    action?: SearchableListBoxAction
   ) => {
     setAgencySelections((prev) => {
-      if (prev.some((selection) => selection.agencyName === agencyName))
-        return prev.filter((selection) => selection.agencyName !== agencyName);
-      return [...prev, { agencyName, selectionType, id }];
+      if (prev.some((selection) => selection.name === name)) {
+        return prev.filter((selection) => selection.name !== name);
+      }
+      return [...prev, { name, action, id }];
     });
+  };
+
+  const [teamMembers, setTeamMembers] = useState(
+    (currentAgencyToEdit?.team &&
+      AdminPanelStore.convertListToSearchableList(currentAgencyToEdit.team)) ||
+      []
+  );
+
+  const [selectedUsers, setSelectedUsers] = useState(
+    currentAgencyToEdit?.team || []
+  );
+
+  const updateTeamMembers = (action: SearchableListBoxAction) => {
+    if (action === "ADD") {
+      setTeamMembers((prev) => [...prev, ...selectedUsers]);
+    }
+  };
+
+  const updateSelectedUsers = (user: string) => {
+    console.log("hi");
   };
 
   return (
@@ -140,7 +153,7 @@ export const AgencyProvisioning = observer(() => {
                 : "Create New Agency"}
             </Styled.ModalTitle>
             <Styled.AgencyNameDisplay>
-              {name || currentAgencyToEdit?.name}
+              {agencyName || currentAgencyToEdit?.name}
             </Styled.AgencyNameDisplay>
 
             <TabbedBar options={settingOptions} />
@@ -153,8 +166,8 @@ export const AgencyProvisioning = observer(() => {
                       name="name"
                       type="text"
                       defaultValue={currentAgencyToEdit?.name}
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      value={agencyName}
+                      onChange={(e) => setAgencyName(e.target.value)}
                     />
                     <label htmlFor="name">Name</label>
                   </Styled.InputLabelWrapper>
@@ -225,36 +238,7 @@ export const AgencyProvisioning = observer(() => {
                     />
                     <label htmlFor="county">County</label>
                   </Styled.InputLabelWrapper>
-                  {/* <Styled.ChipContainerLabel>Systems</Styled.ChipContainerLabel> */}
-                  {/* <input
-                      name="systems"
-                      type="text"
-                      defaultValue={currentAgencyToEdit?.systems}
-                      value={systems}
-                      onChange={(e) => setSystems(e.target.value)}
-                    />
-                    <label htmlFor="systems">Systems </label> */}
-                  {/* </Styled.InputLabelWrapper> */}
-                  {/* <Styled.InputLabelWrapper>
-                  <input
-                    name="state"
-                    type="text"
-                    defaultValue={currentAgencyToEdit?.state}
-                    value={state}
-                    onChange={(e) => setState(e.target.value)}
-                  />
-                  <label htmlFor="state">State</label>
-                </Styled.InputLabelWrapper> */}
-                  {/* <Styled.InputLabelWrapper>
-                  <input
-                    name="county"
-                    type="text"
-                    defaultValue={currentAgencyToEdit?.fips_county_code}
-                    value={countyCode}
-                    onChange={(e) => setCountyCode(e.target.value)}
-                  />
-                  <label htmlFor="county">County</label>
-                </Styled.InputLabelWrapper> */}
+
                   <Styled.InputLabelWrapper>
                     <Dropdown
                       label={
@@ -279,14 +263,6 @@ export const AgencyProvisioning = observer(() => {
                     <Styled.ChipContainerLabel>
                       Systems
                     </Styled.ChipContainerLabel>
-                    {/* <input
-                      name="systems"
-                      type="text"
-                      defaultValue={currentAgencyToEdit?.systems}
-                      value={systems}
-                      onChange={(e) => setSystems(e.target.value)}
-                    />
-                    <label htmlFor="systems">Systems </label> */}
                   </Styled.InputLabelWrapper>
                   <Styled.InputLabelWrapper flexRow>
                     <input
@@ -342,39 +318,39 @@ export const AgencyProvisioning = observer(() => {
                       <Styled.ModalTitle noBottomMargin>
                         Select parent (super) agency
                       </Styled.ModalTitle>
-                      <SearchableListOfAgencies
-                        agencies={agencies}
-                        type="ADDED"
-                        agencySelections={agencySelections}
+                      <SearchableListBox
+                        list={agencies}
+                        selections={agencySelections}
                         buttons={[]}
-                        userProvisioningAction={UserProvisioningActions.ADD}
-                        updateAgencySelections={updateSuperagencySelection}
+                        boxActionType={SearchableListBoxActions.ADD}
+                        updateSelections={updateSuperagencySelection}
                       />
-                      {/* <input name="child-agencies" type="text" />
-                      <label htmlFor="child-agencies">Child Agencies </label> */}
                     </Styled.InputLabelWrapper>
                   )}
                   {superagencyOrChildAgencyChecked === "superagency" && (
                     <Styled.InputLabelWrapper>
-                      <Styled.ModalTitle>
+                      <Styled.ModalTitle noBottomMargin>
                         Select child agencies
                       </Styled.ModalTitle>
-                      <SearchableListOfAgencies
-                        agencies={agencies}
-                        type="ADDED"
-                        agencySelections={agencySelections}
+                      <SearchableListBox
+                        list={agencies}
+                        selections={agencySelections}
                         buttons={[]}
-                        userProvisioningAction={UserProvisioningActions.ADD}
-                        updateAgencySelections={updateChildAgencySelections}
+                        boxActionType={SearchableListBoxActions.ADD}
+                        updateSelections={updateChildAgencySelections}
                       />
-                      {/* <input name="parent-agency" type="text" />
-                      <label htmlFor="parent-agency">
-                        Parent (Super) Agency{" "}
-                      </label> */}
                     </Styled.InputLabelWrapper>
                   )}
                 </Styled.Form>
               )}
+
+              <SearchableListBox
+                list={users}
+                boxActionType={SearchableListBoxActions.ADD}
+                selections={teamMembers}
+                buttons={[]}
+                updateSelections={updateTeamMembers}
+              />
 
               {currentSettingType === "Team Members & Roles" && (
                 <>
@@ -415,47 +391,49 @@ export const AgencyProvisioning = observer(() => {
                       <Styled.ActionButton>Create New User</Styled.ActionButton>
                     </Styled.FormActions>
                   </Styled.InputLabelWrapper>
-                  {currentAgencyToEdit?.team.map((t) => (
-                    <Styled.TeamMemberChip>
-                      <Styled.ChipInnerRow>
-                        <div>
-                          <Styled.ChipName>{t.name}</Styled.ChipName>
-                          <Styled.ChipEmail>{t.email}</Styled.ChipEmail>
-                          <Styled.ChipInvitationStatus>
-                            {t.invitation_status}
-                          </Styled.ChipInvitationStatus>
-                        </div>
-                        <Styled.ChipRole>
-                          <Styled.InputLabelWrapper
-                            inputWidth={250}
-                            noBottomSpacing
-                          >
-                            <Dropdown
-                              label={
-                                <input
-                                  name="new-team-member"
-                                  type="button"
-                                  value={userRole || removeSnakeCase(t.role)}
-                                />
-                              }
-                              options={userRoles.map((role) => ({
-                                key: role,
-                                label: removeSnakeCase(role),
-                                onClick: () => {
-                                  setUserRole(
-                                    removeSnakeCase(role) as UserRole
-                                  );
-                                },
-                              }))}
-                              fullWidth
-                              noBoxShadow
-                            />
-                            <label htmlFor="new-team-member">Role</label>
-                          </Styled.InputLabelWrapper>
-                        </Styled.ChipRole>
-                      </Styled.ChipInnerRow>
-                    </Styled.TeamMemberChip>
-                  ))}
+                  <Styled.TeamMembersContainer>
+                    {currentAgencyToEdit?.team.map((t) => (
+                      <Styled.TeamMemberCard>
+                        <Styled.ChipInnerRow>
+                          <div>
+                            <Styled.ChipName>{t.name}</Styled.ChipName>
+                            <Styled.ChipEmail>{t.email}</Styled.ChipEmail>
+                            <Styled.ChipInvitationStatus>
+                              {t.invitation_status}
+                            </Styled.ChipInvitationStatus>
+                          </div>
+                          <Styled.ChipRole>
+                            <Styled.InputLabelWrapper noBottomSpacing>
+                              <Dropdown
+                                label={
+                                  <input
+                                    name="new-team-member"
+                                    type="button"
+                                    value={
+                                      userRole ||
+                                      (t.role && removeSnakeCase(t.role))
+                                    }
+                                  />
+                                }
+                                options={userRoles.map((role) => ({
+                                  key: role,
+                                  label: removeSnakeCase(role),
+                                  onClick: () => {
+                                    setUserRole(
+                                      removeSnakeCase(role) as UserRole
+                                    );
+                                  },
+                                }))}
+                                fullWidth
+                                noBoxShadow
+                              />
+                              <label htmlFor="new-team-member">Role</label>
+                            </Styled.InputLabelWrapper>
+                          </Styled.ChipRole>
+                        </Styled.ChipInnerRow>
+                      </Styled.TeamMemberCard>
+                    ))}
+                  </Styled.TeamMembersContainer>
                 </>
               )}
               <Styled.ModalActionButtons>

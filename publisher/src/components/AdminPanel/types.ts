@@ -58,21 +58,50 @@ export type User = {
   agencies: Agency[];
 };
 
-export const UserProvisioningActions = {
+export const SearchableListBoxActions = {
   ADD: "ADD",
   DELETE: "DELETE",
 } as const;
 
-export type UserProvisioningAction =
-  (typeof UserProvisioningActions)[keyof typeof UserProvisioningActions];
+export type SearchableListBoxAction =
+  (typeof SearchableListBoxActions)[keyof typeof SearchableListBoxActions];
 
-export const AgencyListTypes = {
-  CURRENT: "CURRENT",
-  ADDED: "ADDED",
-} as const;
+export type SearchableListBoxUpdateSelections = (
+  id: string | number,
+  name: string,
+  action?: SearchableListBoxAction,
+  email?: string
+) => void;
 
-export type AgencyListType =
-  (typeof AgencyListTypes)[keyof typeof AgencyListTypes];
+export type SearchableListItem = {
+  id: string | number;
+  name: string;
+  action?: SearchableListBoxAction;
+  email?: string;
+};
+
+export type SearchableListBoxButtons = { label: string; onClick: () => void }[];
+
+export type SearchableListBoxProps = {
+  list: SearchableListItem[];
+  buttons: SearchableListBoxButtons;
+  selections: SearchableListItem[];
+  updateSelections: SearchableListBoxUpdateSelections;
+  boxActionType?: SearchableListBoxAction;
+  metadata?: {
+    listBoxLabel: string;
+    searchBoxLabel: string;
+    title?: string;
+  };
+};
+
+// export const AgencyListTypes = {
+//   CURRENT: "CURRENT",
+//   ADDED: "ADDED",
+// } as const;
+
+// export type AgencyListType =
+//   (typeof AgencyListTypes)[keyof typeof AgencyListTypes];
 
 /** Should we get this from the backend? That's the current behavior if we want to keep one source of truth */
 export const userRoles = [

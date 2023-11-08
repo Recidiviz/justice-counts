@@ -23,7 +23,7 @@ import {
 import styled, { css } from "styled-components/macro";
 
 import { FOOTER_HEIGHT_WITHOUT_MARGIN } from "../Footer";
-import { UserProvisioningAction, UserProvisioningActions } from "./types";
+import { SearchableListBoxAction, SearchableListBoxActions } from "./types";
 
 export const AdminPanelContainer = styled.div`
   width: 100%;
@@ -205,9 +205,9 @@ export const InputLabelWrapper = styled.div<{
   input,
   input[type="button"] {
     width: 100%;
-    min-width: 300px;
+    min-width: 210px;
     ${({ inputWidth }) =>
-      inputWidth && `min-width: unset; width: ${inputWidth}px`};
+      inputWidth && `min-width: unset; width: ${inputWidth}px;`}
     background: none;
     text-align: left;
     border: 1px solid ${palette.highlight.grey5};
@@ -256,22 +256,26 @@ export const LabelButton = styled.div`
   }
 `;
 
-export const TeamMembersRoles = styled.div`
-  width: 100%;
-  min-width: 500px;
-  overflow: auto;
-  max-height: 50vh;
+export const TeamMembersContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
 `;
 
-export const TeamMemberChip = styled.div`
+export const TeamMemberCard = styled.div`
   ${typography.sizeCSS.normal}
   display: flex;
   flex-direction: column;
+  width: 250px;
   align-items: flex-start;
   justify-content: center;
-  border-bottom: 1px solid ${palette.highlight.grey5};
-  padding: 16px 0;
+  border: 1px solid ${palette.highlight.grey5};
+  border-radius: 4px;
+  padding: 16px;
   margin: 5px;
+
+  input[type="button"] {
+    width: 210px;
+  }
 `;
 
 export const ChipContainer = styled.div<{
@@ -361,6 +365,7 @@ export const ChipRole = styled.div`
 
 export const ChipEmail = styled.div`
   color: ${palette.highlight.grey8};
+  overflow-wrap: anywhere;
 `;
 
 export const ChipID = styled.div`
@@ -376,9 +381,11 @@ export const ChipInvitationStatus = styled.div`
 `;
 
 export const ChipInnerRow = styled.div`
+  min-height: 140px;
   width: 100%;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   justify-content: space-between;
 `;
 

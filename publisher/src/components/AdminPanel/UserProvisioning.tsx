@@ -20,14 +20,15 @@ import { Modal } from "@justice-counts/common/components/Modal";
 import { observer } from "mobx-react-lite";
 import React, { useRef, useState } from "react";
 
+import { SearchableListBox } from ".";
 import { useStore } from "../../stores";
+import AdminPanelStore from "../../stores/AdminPanelStore";
 import { Loading } from "../Loading";
-import { SearchableListOfAgencies } from ".";
 import * as Styled from "./AdminPanel.styles";
 import {
-  AgencyListTypes,
-  UserProvisioningAction,
-  UserProvisioningActions,
+  SearchableListBoxAction,
+  SearchableListBoxActions,
+  SearchableListItem,
 } from "./types";
 
 export const UserProvisioning = observer(() => {
@@ -49,10 +50,10 @@ export const UserProvisioning = observer(() => {
   const getUpdates = () => {
     const currentAgencyIDs = selectedUser?.agencies.map((ag) => ag.id) || [];
     const agencyIDsToDelete = agencySelections
-      .filter((s) => s.selectionType === UserProvisioningActions.DELETE)
+      .filter((s) => s.action === SearchableListBoxActions.DELETE)
       .map((ag) => ag.id);
     const agencyIDsToAdd = agencySelections
-      .filter((s) => s.selectionType === UserProvisioningActions.ADD)
+      .filter((s) => s.action === SearchableListBoxActions.ADD)
       .map((ag) => ag.id);
     const filteredCurrentAgencyIDs = currentAgencyIDs.filter(
       (id) => !agencyIDsToDelete.includes(id)
@@ -81,23 +82,23 @@ export const UserProvisioning = observer(() => {
     {
       label: "Select All",
       onClick: () => {
-        if (userProvisioningAction === UserProvisioningActions.ADD) {
+        if (userProvisioningAction === SearchableListBoxActions.ADD) {
           setAgencySelections(
             () =>
               availableAgencies.map((agency) => ({
                 id: agency.id,
-                agencyName: agency.name,
-                selectionType: userProvisioningAction,
+                name: agency.name,
+                action: userProvisioningAction,
               })) || []
           );
         }
-        if (userProvisioningAction === UserProvisioningActions.DELETE) {
+        if (userProvisioningAction === SearchableListBoxActions.DELETE) {
           setAgencySelections((prev) => [
             ...prev,
             ...(selectedUser?.agencies.map((agency) => ({
               id: agency.id,
-              agencyName: agency.name,
-              selectionType: userProvisioningAction,
+              name: agency.name,
+              action: userProvisioningAction,
             })) || []),
           ]);
         }
@@ -106,19 +107,18 @@ export const UserProvisioning = observer(() => {
     {
       label: "Clear Selections",
       onClick: () => {
-        if (userProvisioningAction === UserProvisioningActions.ADD) {
+        if (userProvisioningAction === SearchableListBoxActions.ADD) {
           setAgencySelections((prev) =>
             prev.filter(
-              (selection) =>
-                selection.selectionType !== UserProvisioningActions.ADD
+              (selection) => selection.action !== SearchableListBoxActions.ADD
             )
           );
         }
-        if (userProvisioningAction === UserProvisioningActions.DELETE) {
+        if (userProvisioningAction === SearchableListBoxActions.DELETE) {
           setAgencySelections((prev) =>
             prev.filter(
               (selection) =>
-                selection.selectionType !== UserProvisioningActions.DELETE
+                selection.action !== SearchableListBoxActions.DELETE
             )
           );
         }
@@ -133,24 +133,24 @@ export const UserProvisioning = observer(() => {
   ];
 
   const [userProvisioningAction, setUserProvisioningAction] =
-    useState<UserProvisioningAction>();
-  const isAddAction = userProvisioningAction === UserProvisioningActions.ADD;
+    useState<SearchableListBoxAction>();
+  const isAddAction = userProvisioningAction === SearchableListBoxActions.ADD;
   const isDeleteAction =
-    userProvisioningAction === UserProvisioningActions.DELETE;
+    userProvisioningAction === SearchableListBoxActions.DELETE;
 
   const [agencySelections, setAgencySelections] = useState<
-    { id: number; agencyName: string; selectionType: UserProvisioningAction }[]
+    SearchableListItem[]
   >([]);
 
   const updateAgencySelections = (
-    id: number,
-    agencyName: string,
-    selectionType: UserProvisioningAction
+    id: number | string,
+    name: string,
+    action?: SearchableListBoxAction
   ) => {
     setAgencySelections((prev) => {
-      if (prev.some((selection) => selection.agencyName === agencyName))
-        return prev.filter((selection) => selection.agencyName !== agencyName);
-      return [...prev, { agencyName, selectionType, id }];
+      if (prev.some((selection) => selection.name === name))
+        return prev.filter((selection) => selection.name !== name);
+      return [...prev, { name, action, id }];
     });
   };
 
@@ -162,7 +162,7 @@ export const UserProvisioning = observer(() => {
   const userAgenciesAndAddedAgencies = [
     ...(selectedUser?.agencies || []),
     ...availableAgencies.filter((agency) =>
-      agencySelections.some((selection) => selection.agencyName === agency.name)
+      agencySelections.some((selection) => selection.name === agency.name)
     ),
   ];
 
@@ -216,21 +216,21 @@ export const UserProvisioning = observer(() => {
                 )}
 
                 {selectedUser && (
-                  <SearchableListOfAgencies
+                  <SearchableListBox
                     // agencies={selectedUser.agencies}
-                    type={AgencyListTypes.CURRENT}
-                    agencies={userAgenciesAndAddedAgencies}
+                    // type={AgencyListTypes.CURRENT}
+                    list={userAgenciesAndAddedAgencies}
                     buttons={isDeleteAction ? agencyActionButtons : []}
-                    agencySelections={agencySelections}
-                    updateAgencySelections={updateAgencySelections}
-                    userProvisioningAction={userProvisioningAction}
+                    selections={agencySelections}
+                    updateSelections={updateAgencySelections}
+                    boxActionType={userProvisioningAction}
                   />
                 )}
                 <Styled.FormActions ref={addAgencyScrollToRef}>
                   <Styled.ActionButton
                     selectedColor={isAddAction ? "green" : ""}
                     onClick={(e) => {
-                      setUserProvisioningAction(UserProvisioningActions.ADD);
+                      setUserProvisioningAction(SearchableListBoxActions.ADD);
                       setTimeout(
                         () =>
                           addAgencyScrollToRef.current?.scrollIntoView({
@@ -247,7 +247,7 @@ export const UserProvisioning = observer(() => {
                       selectedColor={isDeleteAction ? "red" : ""}
                       onClick={() => {
                         setUserProvisioningAction(
-                          UserProvisioningActions.DELETE
+                          SearchableListBoxActions.DELETE
                         );
                         deleteAgencyScrollToRef.current?.scrollIntoView({
                           behavior: "smooth",
@@ -274,19 +274,24 @@ export const UserProvisioning = observer(() => {
 
               {/* Add Agencies (need to filter agencies user is currently a part of) */}
               {isAddAction && (
-                <SearchableListOfAgencies
-                  type={AgencyListTypes.ADDED}
-                  agencies={agencies.filter(
-                    (agency) =>
-                      !selectedUser?.agencies.some(
-                        (a) => a.name === agency.name
-                      )
+                <SearchableListBox
+                  boxActionType={SearchableListBoxActions.ADD}
+                  list={AdminPanelStore.convertListToSearchableList(
+                    agencies.filter(
+                      (agency) =>
+                        !selectedUser?.agencies.some(
+                          (a) => a.name === agency.name
+                        )
+                    )
                   )}
                   buttons={isAddAction ? agencyActionButtons : []}
-                  agencySelections={agencySelections}
-                  updateAgencySelections={updateAgencySelections}
-                  userProvisioningAction={userProvisioningAction}
-                  title="Add Agency"
+                  selections={agencySelections}
+                  updateSelections={updateAgencySelections}
+                  metadata={{
+                    title: "Add Agency",
+                    searchBoxLabel: "Search Agencies",
+                    listBoxLabel: "Available Agencies",
+                  }}
                 />
               )}
 
@@ -312,7 +317,7 @@ export const UserProvisioning = observer(() => {
 
                   {agencySelections.filter(
                     (selection) =>
-                      selection.selectionType === UserProvisioningActions.DELETE
+                      selection.action === SearchableListBoxActions.DELETE
                   ).length > 0 && (
                     <Styled.ChangeLineItemWrapper>
                       <Styled.ChangeTitle>
@@ -322,12 +327,12 @@ export const UserProvisioning = observer(() => {
                         {agencySelections
                           .filter(
                             (selection) =>
-                              selection.selectionType ===
-                              UserProvisioningActions.DELETE
+                              selection.action ===
+                              SearchableListBoxActions.DELETE
                           )
                           .map((selection) => (
                             <Styled.Chip selected selectedColor="red">
-                              {selection.agencyName}
+                              {selection.name}
                             </Styled.Chip>
                           ))}
                       </Styled.ChipContainer>
@@ -336,7 +341,7 @@ export const UserProvisioning = observer(() => {
 
                   {agencySelections.filter(
                     (selection) =>
-                      selection.selectionType === UserProvisioningActions.ADD
+                      selection.action === SearchableListBoxActions.ADD
                   ).length > 0 && (
                     <Styled.ChangeLineItemWrapper>
                       <Styled.ChangeTitle>
@@ -346,12 +351,11 @@ export const UserProvisioning = observer(() => {
                         {agencySelections
                           .filter(
                             (selection) =>
-                              selection.selectionType ===
-                              UserProvisioningActions.ADD
+                              selection.action === SearchableListBoxActions.ADD
                           )
                           .map((selection) => (
                             <Styled.Chip selected selectedColor="green">
-                              {selection.agencyName}
+                              {selection.name}
                             </Styled.Chip>
                           ))}
                       </Styled.ChipContainer>

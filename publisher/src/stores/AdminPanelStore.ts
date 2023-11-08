@@ -15,11 +15,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystems } from "@justice-counts/common/types";
+import { AgencySystems, AgencyTeamMember } from "@justice-counts/common/types";
 import { groupBy } from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
-import { Agency, User } from "../components/AdminPanel";
+import {
+  Agency,
+  SearchableListBoxAction,
+  User,
+} from "../components/AdminPanel";
 import API from "./API";
 
 class AdminPanelStore {
@@ -45,6 +49,10 @@ class AdminPanelStore {
   get usersByID() {
     return groupBy(this.users, (user) => user.id);
   }
+
+  // get searchableAgencies() {
+
+  // }
 
   async fetchUsers() {
     try {
@@ -101,6 +109,20 @@ class AdminPanelStore {
   /** Sorts a list of agencies in alphabetical order */
   static sortAgencies(agencies: Agency[]) {
     return agencies.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  static convertListToSearchableList(
+    list: Agency[] | User[] | AgencyTeamMember[],
+    action?: SearchableListBoxAction
+  ) {
+    return list.map((listItem) => {
+      return {
+        id: "auth0_user_id" in listItem ? listItem.auth0_user_id : listItem.id,
+        name: listItem.name,
+        email: "email" in listItem ? listItem.email : undefined,
+        action,
+      };
+    });
   }
 }
 
