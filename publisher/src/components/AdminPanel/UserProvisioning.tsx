@@ -18,7 +18,7 @@
 import { Button } from "@justice-counts/common/components/Button";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { observer } from "mobx-react-lite";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
@@ -153,6 +153,10 @@ export const UserProvisioning = observer(() => {
         return prev.filter((selection) => selection.name !== name);
       return [...prev, { name, action, id }];
     });
+    if (isBottom) {
+      deleteAgencyScrollToRef?.current?.scrollBy(0, -1);
+      deleteAgencyScrollToRef?.current?.scrollBy(0, 1);
+    }
   };
 
   /** All available agencies that a user is not currently connected to */
@@ -166,11 +170,26 @@ export const UserProvisioning = observer(() => {
       agencySelections.some((selection) => selection.name === agency.name)
     ),
   ];
-
+  const [isBottom, setIsBottom] = useState(false);
+  const hasChanges =
+    (selectedUser && username && username !== selectedUser.name) ||
+    (selectedUser && email && email !== selectedUser.email) ||
+    agencySelections.length > 0;
   if (loading) {
     return <Loading />;
   }
 
+  // console.log(deleteAgencyScrollToRef?.current?.scrollHeight);
+  // console.log(deleteAgencyScrollToRef?.current?.scrollTop);
+  // console.log(deleteAgencyScrollToRef?.current?.clientHeight);
+
+  // console.log(
+  //   deleteAgencyScrollToRef?.current?.scrollHeight -
+  //     deleteAgencyScrollToRef?.current?.scrollTop -
+  //     deleteAgencyScrollToRef?.current?.clientHeight
+  // );
+
+  console.log("isBottom", isBottom);
   return (
     <>
       {isModalOpen && (
@@ -189,7 +208,23 @@ export const UserProvisioning = observer(() => {
               <Styled.Subheader>ID {selectedUser?.id}</Styled.Subheader>
             )}
 
-            <Styled.ScrollableContainer ref={deleteAgencyScrollToRef}>
+            <Styled.ScrollableContainer
+              ref={deleteAgencyScrollToRef}
+              onScroll={() => {
+                if (
+                  deleteAgencyScrollToRef?.current?.scrollHeight &&
+                  deleteAgencyScrollToRef?.current?.scrollTop &&
+                  deleteAgencyScrollToRef?.current?.clientHeight &&
+                  deleteAgencyScrollToRef?.current?.scrollHeight -
+                    deleteAgencyScrollToRef?.current?.scrollTop -
+                    deleteAgencyScrollToRef?.current?.clientHeight <
+                    100
+                ) {
+                  return setIsBottom(true);
+                }
+                setIsBottom(false);
+              }}
+            >
               <Styled.Form>
                 <Styled.InputLabelWrapper>
                   <input
@@ -267,19 +302,20 @@ export const UserProvisioning = observer(() => {
                 </Styled.FormActions>
               </Styled.Form>
               <Styled.ModalActionButtons>
-                <Styled.ReviewChangesButton
-                  onClick={() => {
-                    // setTimeout(
-                    //   () =>
-                    reviewChangesRef.current?.scrollIntoView({
-                      behavior: "smooth",
-                    });
-                    //     0
-                    //   );
-                  }}
-                >
-                  Review Changes
-                </Styled.ReviewChangesButton>
+                {hasChanges && !isBottom ? (
+                  <Button
+                    key="review-changes"
+                    label="Review Changes"
+                    onClick={() => {
+                      reviewChangesRef.current?.scrollIntoView({
+                        behavior: "smooth",
+                      });
+                    }}
+                    buttonColor="orange"
+                  />
+                ) : (
+                  <div />
+                )}
                 <Styled.SaveCancelButtonsWrapper>
                   {modalButtons.map((button, index) => (
                     <Button
@@ -320,8 +356,8 @@ export const UserProvisioning = observer(() => {
                 />
               )}
 
-              {((selectedUser && username) ||
-                (selectedUser && email) ||
+              {((selectedUser && username && username !== selectedUser.name) ||
+                (selectedUser && email && email !== selectedUser.email) ||
                 agencySelections.length > 0) && (
                 <Styled.ReviewChangesContainer ref={reviewChangesRef}>
                   <Styled.ModalTitle noBottomMargin>

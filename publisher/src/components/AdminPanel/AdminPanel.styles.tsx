@@ -632,7 +632,15 @@ export const ModalActionButtons = styled.div`
   right: 32px;
 `;
 
-export const ReviewChangesButton = styled.div``;
+export const ReviewChangesButton = styled.div`
+  ${typography.sizeCSS.normal}
+  color: ${palette.solid.orange};
+
+  &:hover {
+    cursor: pointer;
+    filter: contrast(0.8);
+  }
+`;
 
 export const SaveCancelButtonsWrapper = styled.div`
   display: flex;
