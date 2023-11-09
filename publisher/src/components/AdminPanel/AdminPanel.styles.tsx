@@ -156,13 +156,13 @@ export const Form = styled.form`
   margin: 32px 0 16px 0;
 `;
 
-export const FormActions = styled.div`
+export const FormActions = styled.div<{ noTopSpacing?: boolean }>`
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 32px;
-  margin: 40px 0;
+  margin: ${({ noTopSpacing }) => (noTopSpacing ? `0 0 40px 0` : `40px 0`)};
 `;
 
 export const ActionButton = styled.div<{ selectedColor?: string }>`
@@ -174,10 +174,10 @@ export const ActionButton = styled.div<{ selectedColor?: string }>`
   border-radius: 4px;
   ${({ selectedColor }) => {
     if (selectedColor === "red") {
-      return `background: ${palette.highlight.red};`;
+      return `background: ${palette.gradient.lightred};`;
     }
     if (selectedColor === "green") {
-      return `background: ${palette.highlight.green};`;
+      return `background: ${palette.gradient.lightgreen};`;
     }
   }}
 
@@ -276,8 +276,8 @@ export const TeamMemberCard = styled.div<{
   padding: 16px;
   margin: 5px;
 
-  ${({ added }) => added && `background: ${palette.highlight.green};`}
-  ${({ deleted }) => deleted && `background: ${palette.highlight.red};`}
+  ${({ added }) => added && `background: ${palette.gradient.lightgreen};`}
+  ${({ deleted }) => deleted && `background: ${palette.gradient.lightred};`}
 
   input[type="button"] {
     width: 210px;
@@ -345,10 +345,10 @@ export const Chip = styled.span<{
   ${({ selected, selectedColor }) => {
     if (selected && selectedColor) {
       if (selectedColor === "red") {
-        return `background: ${palette.highlight.red}; border: 1px solid ${palette.solid.red};`;
+        return `background: ${palette.gradient.lightred}; border: 1px solid ${palette.solid.red};`;
       }
       if (selectedColor === "green") {
-        return `background: ${palette.highlight.green}; border: 1px solid ${palette.solid.green};`;
+        return `background: ${palette.gradient.lightgreen}; border: 1px solid ${palette.solid.green};`;
       }
     }
   }}
@@ -531,28 +531,10 @@ export const Subheader = styled.div`
   ${SubheaderStyles}
 `;
 
-export const ID = styled.div<{ type: "USER" | "AGENCY" }>`
+export const ID = styled.div`
   ${typography.sizeCSS.small}
   color: ${palette.highlight.grey8};
   position: relative;
-
-  &:hover::after {
-    ${typography.sizeCSS.small}
-    content: "${({ type }) => (type === "USER" ? "User" : "Agency")} ID";
-    height: 20px;
-    width: fit-content;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    white-space: nowrap;
-    background: ${palette.highlight.grey4};
-    position: absolute;
-    right: 0;
-    top: 16px;
-    border-radius: 3px;
-    padding: 4px 6px;
-    color: ${palette.solid.darkgrey};
-  }
 `;
 export const AgenciesNumOfAgenciesWrapper = styled.div``;
 
@@ -605,7 +587,7 @@ export const UserNameEmailIDWrapper = styled.div`
 `;
 
 export const ScrollableContainer = styled.div`
-  height: 72vh;
+  height: 61vh;
   overflow-y: auto;
   padding-bottom: 32px;
   padding-right: 16px;
@@ -640,14 +622,21 @@ export const AgencyNameDisplay = styled(UserNameDisplay)`
 `;
 
 export const ModalActionButtons = styled.div`
-  width: 100%;
+  width: calc(100% - 64px);
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 8px;
   position: absolute;
   bottom: 32px;
   right: 32px;
+`;
+
+export const ReviewChangesButton = styled.div``;
+
+export const SaveCancelButtonsWrapper = styled.div`
+  display: flex;
+  gap: 8px;
 `;
 
 export const ReviewChangesContainer = styled.div`

@@ -36,6 +36,7 @@ export const UserProvisioning = observer(() => {
   const { loading, users, usersByID, agencies } = adminPanelStore;
   const addAgencyScrollToRef = useRef<null | HTMLDivElement>(null);
   const deleteAgencyScrollToRef = useRef<null | HTMLDivElement>(null);
+  const reviewChangesRef = useRef<null | HTMLDivElement>(null);
 
   const [selectedUserIDToEdit, setSelectedUserIDToEdit] = useState<
     number | string
@@ -83,14 +84,14 @@ export const UserProvisioning = observer(() => {
       label: "Select All",
       onClick: () => {
         if (userProvisioningAction === SearchableListBoxActions.ADD) {
-          setAgencySelections(
-            () =>
-              availableAgencies.map((agency) => ({
-                id: agency.id,
-                name: agency.name,
-                action: userProvisioningAction,
-              })) || []
-          );
+          setAgencySelections((prev) => [
+            ...prev,
+            ...(availableAgencies.map((agency) => ({
+              id: agency.id,
+              name: agency.name,
+              action: userProvisioningAction,
+            })) || []),
+          ]);
         }
         if (userProvisioningAction === SearchableListBoxActions.DELETE) {
           setAgencySelections((prev) => [
@@ -180,17 +181,15 @@ export const UserProvisioning = observer(() => {
             </Styled.ModalTitle>
 
             {/** User Information */}
-            <Styled.ScrollableContainer ref={deleteAgencyScrollToRef}>
-              <Styled.UserNameDisplay>
-                {username || selectedUser?.name}
-              </Styled.UserNameDisplay>
-              <Styled.Subheader>
-                {email || selectedUser?.email}
-              </Styled.Subheader>
-              {selectedUser && (
-                <Styled.Subheader>ID {selectedUser?.id}</Styled.Subheader>
-              )}
+            <Styled.UserNameDisplay>
+              {username || selectedUser?.name}
+            </Styled.UserNameDisplay>
+            <Styled.Subheader>{email || selectedUser?.email}</Styled.Subheader>
+            {selectedUser && (
+              <Styled.Subheader>ID {selectedUser?.id}</Styled.Subheader>
+            )}
 
+            <Styled.ScrollableContainer ref={deleteAgencyScrollToRef}>
               <Styled.Form>
                 <Styled.InputLabelWrapper>
                   <input
@@ -227,6 +226,10 @@ export const UserProvisioning = observer(() => {
                     isActiveBox={
                       userProvisioningAction === SearchableListBoxActions.DELETE
                     }
+                    metadata={{
+                      searchBoxLabel: "Search Agencies",
+                      listBoxLabel: "Agencies",
+                    }}
                   />
                 )}
                 <Styled.FormActions ref={addAgencyScrollToRef}>
@@ -264,16 +267,31 @@ export const UserProvisioning = observer(() => {
                 </Styled.FormActions>
               </Styled.Form>
               <Styled.ModalActionButtons>
-                {modalButtons.map((button, index) => (
-                  <Button
-                    key={button.label}
-                    label={button.label}
-                    onClick={button.onClick}
-                    buttonColor={
-                      index === modalButtons.length - 1 ? "blue" : undefined
-                    }
-                  />
-                ))}
+                <Styled.ReviewChangesButton
+                  onClick={() => {
+                    // setTimeout(
+                    //   () =>
+                    reviewChangesRef.current?.scrollIntoView({
+                      behavior: "smooth",
+                    });
+                    //     0
+                    //   );
+                  }}
+                >
+                  Review Changes
+                </Styled.ReviewChangesButton>
+                <Styled.SaveCancelButtonsWrapper>
+                  {modalButtons.map((button, index) => (
+                    <Button
+                      key={button.label}
+                      label={button.label}
+                      onClick={button.onClick}
+                      buttonColor={
+                        index === modalButtons.length - 1 ? "blue" : undefined
+                      }
+                    />
+                  ))}
+                </Styled.SaveCancelButtonsWrapper>
               </Styled.ModalActionButtons>
 
               {/* Add Agencies (need to filter agencies user is currently a part of) */}
@@ -305,7 +323,7 @@ export const UserProvisioning = observer(() => {
               {((selectedUser && username) ||
                 (selectedUser && email) ||
                 agencySelections.length > 0) && (
-                <Styled.ReviewChangesContainer>
+                <Styled.ReviewChangesContainer ref={reviewChangesRef}>
                   <Styled.ModalTitle noBottomMargin>
                     Review Changes
                   </Styled.ModalTitle>
@@ -418,7 +436,7 @@ export const UserProvisioning = observer(() => {
                 <Styled.UserName>{user.name}</Styled.UserName>
                 <Styled.Email>{user.email}</Styled.Email>
               </Styled.UserNameEmailWrapper>
-              <Styled.ID type="USER">{user.id}</Styled.ID>
+              <Styled.ID>ID {user.id}</Styled.ID>
             </Styled.UserNameEmailIDWrapper>
             <Styled.AgenciesWrapper>
               {user.agencies.map((agency) => (

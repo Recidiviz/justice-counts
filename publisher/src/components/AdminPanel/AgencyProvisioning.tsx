@@ -174,6 +174,9 @@ export const AgencyProvisioning = observer(() => {
             <Styled.AgencyNameDisplay>
               {agencyName || currentAgencyToEdit?.name}
             </Styled.AgencyNameDisplay>
+            {currentAgencyToEdit && (
+              <Styled.Subheader>ID {currentAgencyToEdit?.id}</Styled.Subheader>
+            )}
 
             {/* Toggle between Agency Information and Team Members & Roles */}
             <TabbedBar options={settingOptions} />
@@ -297,6 +300,8 @@ export const AgencyProvisioning = observer(() => {
                       Systems
                     </Styled.ChipContainerLabel>
                   </Styled.InputLabelWrapper>
+
+                  {/* Dashboard Enabled Checkbox */}
                   <Styled.InputLabelWrapper flexRow>
                     <input
                       name="dashboard"
@@ -306,6 +311,8 @@ export const AgencyProvisioning = observer(() => {
                     />
                     <label htmlFor="dashboard">Enable Dashboard</label>
                   </Styled.InputLabelWrapper>
+
+                  {/* Superagency/Child Agency Checkbox & Search Box */}
                   <Styled.InputLabelWrapper flexRow inputWidth={100}>
                     <input
                       name="superagency"
@@ -340,6 +347,8 @@ export const AgencyProvisioning = observer(() => {
                       }
                     />
                     <label htmlFor="child-agency">Child Agency </label>
+
+                    {/* Add Superagency or Child Agency */}
                   </Styled.InputLabelWrapper>
                   {superagencyOrChildAgencyChecked === "child-agency" && (
                     <Styled.InputLabelWrapper>
@@ -352,6 +361,10 @@ export const AgencyProvisioning = observer(() => {
                         buttons={[]}
                         boxActionType={SearchableListBoxActions.ADD}
                         updateSelections={updateSuperagencySelection}
+                        metadata={{
+                          listBoxLabel: "Available Agencies",
+                          searchBoxLabel: "Search Agencies",
+                        }}
                       />
                     </Styled.InputLabelWrapper>
                   )}
@@ -366,13 +379,19 @@ export const AgencyProvisioning = observer(() => {
                         buttons={[]}
                         boxActionType={SearchableListBoxActions.ADD}
                         updateSelections={updateChildAgencySelections}
+                        metadata={{
+                          listBoxLabel: "Available Agencies",
+                          searchBoxLabel: "Search Agencies",
+                        }}
                       />
                     </Styled.InputLabelWrapper>
                   )}
                 </Styled.Form>
               )}
 
+              {/* Team Members & Roles */}
               <Styled.InputLabelWrapper topSpacing>
+                {/* Add New Team Members */}
                 {teamMemberAction === SearchableListBoxActions.ADD && (
                   <SearchableListBox
                     list={users}
@@ -380,9 +399,13 @@ export const AgencyProvisioning = observer(() => {
                     selections={newTeamMembers}
                     buttons={[]}
                     updateSelections={updateNewTeamMembers}
+                    metadata={{
+                      listBoxLabel: "Available Users",
+                      searchBoxLabel: "Search Users",
+                    }}
                   />
                 )}
-
+                {/* Delete Existing Team Members */}
                 {teamMemberAction === SearchableListBoxActions.DELETE && (
                   <SearchableListBox
                     list={
@@ -396,17 +419,26 @@ export const AgencyProvisioning = observer(() => {
                     selections={teamMembers}
                     buttons={[]}
                     updateSelections={updateTeamMembers}
+                    metadata={{
+                      listBoxLabel: "Current Team Members",
+                      searchBoxLabel: "Search Team Members",
+                    }}
                   />
                 )}
               </Styled.InputLabelWrapper>
 
+              {/* Team Member Actions (Add/Delete Users) */}
               {currentSettingType ===
                 AgencyProvisioningSettings.TEAM_MEMBERS_ROLES && (
                 <>
                   <Styled.InputLabelWrapper>
-                    <Styled.FormActions>
+                    <Styled.FormActions noTopSpacing>
                       <Styled.ActionButton
-                        // selectedColor={isAddAction ? "green" : ""}
+                        selectedColor={
+                          teamMemberAction === SearchableListBoxActions.ADD
+                            ? "green"
+                            : ""
+                        }
                         onClick={(e) => {
                           setTeamMemberAction(SearchableListBoxActions.ADD);
                           // setTimeout(
@@ -422,7 +454,11 @@ export const AgencyProvisioning = observer(() => {
                       </Styled.ActionButton>
 
                       <Styled.ActionButton
-                        // selectedColor={isDeleteAction ? "red" : ""}
+                        selectedColor={
+                          teamMemberAction === SearchableListBoxActions.DELETE
+                            ? "red"
+                            : ""
+                        }
                         onClick={() => {
                           setTeamMemberAction(SearchableListBoxActions.DELETE);
                           // deleteAgencyScrollToRef.current?.scrollIntoView({
@@ -436,8 +472,9 @@ export const AgencyProvisioning = observer(() => {
                       <Styled.ActionButton>Create New User</Styled.ActionButton>
                     </Styled.FormActions>
                   </Styled.InputLabelWrapper>
+
+                  {/* Newly Added Team Members */}
                   <Styled.TeamMembersContainer>
-                    {/* Newly Added */}
                     {newTeamMembers.map((t) => (
                       <Styled.TeamMemberCard key={t.id} added>
                         <Styled.ChipInnerRow>
@@ -477,7 +514,7 @@ export const AgencyProvisioning = observer(() => {
                       </Styled.TeamMemberCard>
                     ))}
 
-                    {/* Current and Deleted */}
+                    {/* Existing Team Members (including those marked for deletion) */}
                     {currentAgencyToEdit?.team.map((t) => (
                       <Styled.TeamMemberCard
                         key={t.auth0_user_id}
@@ -536,23 +573,31 @@ export const AgencyProvisioning = observer(() => {
                   </Styled.TeamMembersContainer>
                 </>
               )}
+
+              {/* Modal Buttons */}
               <Styled.ModalActionButtons>
-                {modalButtons.map((button, index) => (
-                  <Button
-                    key={button.label}
-                    label={button.label}
-                    onClick={button.onClick}
-                    buttonColor={
-                      index === modalButtons.length - 1 ? "blue" : undefined
-                    }
-                  />
-                ))}
+                <Styled.ReviewChangesButton>
+                  Review Changes
+                </Styled.ReviewChangesButton>
+                <Styled.SaveCancelButtonsWrapper>
+                  {modalButtons.map((button, index) => (
+                    <Button
+                      key={button.label}
+                      label={button.label}
+                      onClick={button.onClick}
+                      buttonColor={
+                        index === modalButtons.length - 1 ? "blue" : undefined
+                      }
+                    />
+                  ))}
+                </Styled.SaveCancelButtonsWrapper>
               </Styled.ModalActionButtons>
             </Styled.ScrollableContainer>
           </Styled.ModalContainer>
         </Modal>
       )}
 
+      {/* Settings Bar */}
       <Styled.SettingsBar>
         <Styled.InputLabelWrapper inputWidth={500}>
           <input
@@ -574,6 +619,7 @@ export const AgencyProvisioning = observer(() => {
         </Styled.ButtonWrapper>
       </Styled.SettingsBar>
 
+      {/* Agency Cards */}
       <Styled.CardContainer>
         {agencies.map((agency) => (
           <Styled.UserCard
@@ -592,8 +638,17 @@ export const AgencyProvisioning = observer(() => {
             <Styled.UserNameEmailIDWrapper>
               <Styled.UserNameEmailWrapper>
                 <Styled.UserName>{agency.name}</Styled.UserName>
+                {agency.state_code && (
+                  <Styled.Subheader>
+                    {
+                      StateCodes[
+                        agency.state_code.toLocaleLowerCase() as StateCodeKey
+                      ]
+                    }
+                  </Styled.Subheader>
+                )}
               </Styled.UserNameEmailWrapper>
-              <Styled.ID type="AGENCY">{agency.id}</Styled.ID>
+              <Styled.ID>ID {agency.id}</Styled.ID>
             </Styled.UserNameEmailIDWrapper>
             <Styled.AgenciesNumOfAgenciesWrapper>
               <Styled.AgenciesWrapper>

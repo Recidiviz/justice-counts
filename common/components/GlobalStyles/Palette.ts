@@ -60,6 +60,10 @@ export const palette = {
     white1: `rgba(255,255,255, 0.2)`,
     white2: `rgba(255,255,255, 0.5)`,
   },
+  gradient: {
+    lightgreen: `linear-gradient(90deg,rgba(184,255,184,.3) 0%,rgba(170,232,170,.2) 35%,rgba(216,254,216,.3) 100%)`,
+    lightred: `linear-gradient(90deg,rgba(255,184,184,.3) 0%,rgba(232,170,170,.2) 35%,rgba(254,216,216,.3) 100%)`,
+  },
   dataViz: {
     bar1: "#133158",
     bar2: "#5C8970",
