@@ -29,6 +29,7 @@ import {
   SearchableListBoxAction,
   SearchableListBoxActions,
   SearchableListItem,
+  User,
 } from "./types";
 
 export const UserProvisioning = observer(() => {
@@ -47,6 +48,28 @@ export const UserProvisioning = observer(() => {
   const [username, setUsername] = useState(selectedUser?.name || "");
   const [email, setEmail] = useState(selectedUser?.email || "");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [searchInput, setSearchInput] = useState<string>("");
+
+  const searchUsers = (val: string) => {
+    const regex = new RegExp(`${val}`, `i`);
+    setFilteredUsers(() =>
+      users.filter(
+        (option) =>
+          regex.test(option.name) ||
+          (option.email && regex.test(option.email)) ||
+          regex.test(option.id)
+        // ||
+        // option.agencies.some((agency) => regex.test(agency.name))
+      )
+    );
+  };
+
+  useEffect(() => {
+    setFilteredUsers(users);
+    searchUsers(searchInput);
+    // eslint-disable-next-line
+  }, [users]);
 
   // const getUpdates = () => {
   //   const currentAgencyIDs = selectedUser?.agencies.map((ag) => ag.id) || [];
@@ -175,6 +198,7 @@ export const UserProvisioning = observer(() => {
     (selectedUser && username && username !== selectedUser.name) ||
     (selectedUser && email && email !== selectedUser.email) ||
     agencySelections.length > 0;
+
   if (loading) {
     return <Loading />;
   }
@@ -215,9 +239,9 @@ export const UserProvisioning = observer(() => {
                   deleteAgencyScrollToRef?.current?.scrollHeight &&
                   deleteAgencyScrollToRef?.current?.scrollTop &&
                   deleteAgencyScrollToRef?.current?.clientHeight &&
-                  deleteAgencyScrollToRef?.current?.scrollHeight -
-                    deleteAgencyScrollToRef?.current?.scrollTop -
-                    deleteAgencyScrollToRef?.current?.clientHeight <
+                  (deleteAgencyScrollToRef?.current?.scrollHeight || 0) -
+                    (deleteAgencyScrollToRef?.current?.scrollTop || 0) -
+                    (deleteAgencyScrollToRef?.current?.clientHeight || 0) <
                     100
                 ) {
                   return setIsBottom(true);
@@ -356,9 +380,7 @@ export const UserProvisioning = observer(() => {
                 />
               )}
 
-              {((selectedUser && username && username !== selectedUser.name) ||
-                (selectedUser && email && email !== selectedUser.email) ||
-                agencySelections.length > 0) && (
+              {hasChanges && (
                 <Styled.ReviewChangesContainer ref={reviewChangesRef}>
                   <Styled.ModalTitle noBottomMargin>
                     Review Changes
@@ -442,8 +464,11 @@ export const UserProvisioning = observer(() => {
           <input
             name="search"
             type="text"
-            value=""
-            onChange={(e) => new Error("search")}
+            value={searchInput}
+            onChange={(e) => {
+              setSearchInput(e.target.value);
+              searchUsers(e.target.value);
+            }}
           />
           <label htmlFor="search">Search</label>
         </Styled.InputLabelWrapper>
@@ -459,7 +484,8 @@ export const UserProvisioning = observer(() => {
       </Styled.SettingsBar>
 
       <Styled.CardContainer>
-        {users.map((user) => (
+        {/* {users.map((user) => ( */}
+        {filteredUsers.map((user) => (
           <Styled.UserCard
             key={user.id}
             onClick={() => {

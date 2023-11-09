@@ -22,7 +22,7 @@ import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
 import { AgencySystems } from "@justice-counts/common/types";
 import { removeSnakeCase } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
@@ -46,6 +46,9 @@ import {
 export const AgencyProvisioning = observer(() => {
   const { adminPanelStore } = useStore();
   const { agencies, systems, users } = adminPanelStore;
+  const reviewChangesRef = useRef<null | HTMLDivElement>(null);
+  const scrollableContainerRef = useRef<null | HTMLDivElement>(null);
+  const [isBottom, setIsBottom] = useState(false);
 
   /** UI State */
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,19 +63,128 @@ export const AgencyProvisioning = observer(() => {
   const [countyCode, setCountyCode] = useState<FipsCountyCodeKey>();
   const [agencySystems, setAgencySystems] = useState<AgencySystems[]>([]);
   const [isDashboardEnabled, setIsDashboardEnabled] = useState(false);
-  const [superagencyOrChildAgencyChecked, setSuperagencyOrChildAgencyChecked] =
-    useState<string>();
+  const [isSuperagency, setIsSuperagency] = useState(false);
+  const [isChildAgency, setIsChildAgency] = useState(false);
+  const [childAgencySelections, setChildAgencySelections] = useState([]);
+  const [superagencySelection, setSuperagencySelection] = useState([]);
 
+  const [superOrChildAgencySelections, setSuperOrChildAgencySelections] =
+    useState<SearchableListItem[]>([]);
   const [teamMemberAction, setTeamMemberAction] =
     useState<SearchableListBoxAction>();
-  const [agencySelections, setAgencySelections] = useState<
-    SearchableListItem[]
-  >([]);
   const [teamMembers, setTeamMembers] = useState<SearchableListItem[]>([]);
   const [newTeamMembers, setNewTeamMembers] = useState<SearchableListItem[]>(
     []
   );
   const [userRole, setUserRole] = useState<UserRole>();
+
+  const [hasDashboardFilterSet, setHasDashboardFilterSet] = useState(false);
+  const [hasSuperagencyFilterSet, setHasSuperagencyFilterSet] = useState(false);
+
+  useEffect(() => {
+    if (hasDashboardFilterSet && hasSuperagencyFilterSet) {
+      return setFilteredAgencies(() =>
+        agencies.filter(
+          (agency) => agency.is_dashboard_enabled && agency.is_superagency
+        )
+      );
+    }
+    if (hasDashboardFilterSet) {
+      return setFilteredAgencies(() =>
+        agencies.filter((agency) => agency.is_dashboard_enabled)
+      );
+    }
+    if (hasSuperagencyFilterSet) {
+      return setFilteredAgencies(() =>
+        agencies.filter((agency) => agency.is_superagency)
+      );
+    }
+    return setFilteredAgencies(agencies);
+  }, [hasDashboardFilterSet, hasSuperagencyFilterSet, agencies]);
+
+  const hasChangedAgencyName =
+    currentAgencyToEdit &&
+    agencyName &&
+    agencyName !== currentAgencyToEdit.name;
+  const hasChangedStateCode =
+    currentAgencyToEdit &&
+    stateCode &&
+    stateCode !== currentAgencyToEdit.state_code.toLocaleLowerCase();
+  const hasChangedCountyCode =
+    currentAgencyToEdit &&
+    countyCode &&
+    countyCode !== currentAgencyToEdit.fips_county_code;
+  const hasChangedAgencySystems =
+    currentAgencyToEdit &&
+    agencySystems &&
+    (!currentAgencyToEdit.systems.every((system) =>
+      agencySystems.includes(system)
+    ) ||
+      currentAgencyToEdit.systems.length !== agencySystems.length);
+  const hasChangedDashboardEnabledStatus =
+    currentAgencyToEdit &&
+    isDashboardEnabled !== undefined &&
+    currentAgencyToEdit.is_dashboard_enabled !== isDashboardEnabled;
+  const hasChangedTeamMembers =
+    newTeamMembers.length > 0 ||
+    (currentAgencyToEdit &&
+      teamMembers &&
+      currentAgencyToEdit.team.every((user) =>
+        teamMembers.some((member) => member.email === user.email)
+      ));
+  const hasChangedRoles = Boolean(userRoles);
+  const hasChangedSuperagencyStatus =
+    (currentAgencyToEdit &&
+      Boolean(currentAgencyToEdit.is_superagency) !== isSuperagency) ||
+    (isSuperagency && superOrChildAgencySelections.length > 0); // Temporary until we surface `child_agency_ids` - will need to check this list against the current list and see if any updates were made
+  const hasChangedChildAgencyStatus =
+    currentAgencyToEdit &&
+    Boolean(currentAgencyToEdit.super_agency_id) !== isChildAgency;
+  const hasNewSuperOrChildAgencySelections =
+    (hasChangedSuperagencyStatus || hasChangedChildAgencyStatus) &&
+    superOrChildAgencySelections.length > 0;
+  console.log("isSuperagency", isSuperagency);
+  console.log("hasChangedSuperagencyStatus", hasChangedSuperagencyStatus);
+  console.log(
+    "currentAgencyToEdit.is_superagency",
+    currentAgencyToEdit?.is_superagency
+  );
+  const hasChanges =
+    hasChangedAgencyName ||
+    hasChangedStateCode ||
+    hasChangedCountyCode ||
+    hasChangedAgencySystems ||
+    hasChangedDashboardEnabledStatus ||
+    hasChangedSuperagencyStatus ||
+    hasChangedChildAgencyStatus ||
+    hasChangedTeamMembers ||
+    hasNewSuperOrChildAgencySelections;
+  // hasChangedRoles ||
+  // superOrChildAgencySelections.length > 0;
+
+  const [filteredAgencies, setFilteredAgencies] = useState<Agency[]>([]);
+  const [searchInput, setSearchInput] = useState<string>("");
+
+  const searchAgencies = (val: string) => {
+    const regex = new RegExp(`${val}`, `i`);
+    setFilteredAgencies(() =>
+      agencies.filter(
+        (option) =>
+          regex.test(option.name) ||
+          // (option.email && regex.test(option.email)) ||
+          regex.test(String(option.id)) ||
+          regex.test(StateCodes[option.state_code])
+        // ||
+        // option.agencies.some((agency) => regex.test(agency.name))
+      )
+    );
+  };
+
+  useEffect(() => {
+    setFilteredAgencies(agencies);
+    setSearchInput(searchInput);
+    // eslint-disable-next-line
+  }, [users]);
 
   const modalButtons = [
     {
@@ -108,6 +220,11 @@ export const AgencyProvisioning = observer(() => {
     setAgencyName(undefined);
     setStateCode(undefined);
     setCountyCode(undefined);
+    setAgencySystems([]);
+    setIsDashboardEnabled(false);
+    setNewTeamMembers([]);
+    setTeamMembers([]);
+    setTeamMemberAction(undefined);
   };
 
   const updateSuperagencySelection = (
@@ -115,7 +232,7 @@ export const AgencyProvisioning = observer(() => {
     name: string,
     action?: SearchableListBoxAction
   ) => {
-    setAgencySelections(() => {
+    setSuperOrChildAgencySelections(() => {
       return [{ name, action, id }];
     });
   };
@@ -125,7 +242,7 @@ export const AgencyProvisioning = observer(() => {
     name: string,
     action?: SearchableListBoxAction
   ) => {
-    setAgencySelections((prev) => {
+    setSuperOrChildAgencySelections((prev) => {
       if (prev.some((selection) => selection.name === name)) {
         return prev.filter((selection) => selection.name !== name);
       }
@@ -181,7 +298,23 @@ export const AgencyProvisioning = observer(() => {
             {/* Toggle between Agency Information and Team Members & Roles */}
             <TabbedBar options={settingOptions} />
 
-            <Styled.ScrollableContainer>
+            <Styled.ScrollableContainer
+              ref={scrollableContainerRef}
+              onScroll={() => {
+                if (
+                  scrollableContainerRef?.current?.scrollHeight &&
+                  scrollableContainerRef?.current?.scrollTop &&
+                  scrollableContainerRef?.current?.clientHeight &&
+                  (scrollableContainerRef?.current?.scrollHeight || 0) -
+                    (scrollableContainerRef?.current?.scrollTop || 0) -
+                    (scrollableContainerRef?.current?.clientHeight || 0) <
+                    100
+                ) {
+                  return setIsBottom(true);
+                }
+                setIsBottom(false);
+              }}
+            >
               {/* Agency Information */}
               {currentSettingType ===
                 AgencyProvisioningSettings.AGENCY_INFORMATION && (
@@ -318,73 +451,105 @@ export const AgencyProvisioning = observer(() => {
                       name="superagency"
                       type="checkbox"
                       onChange={() => {
-                        if (superagencyOrChildAgencyChecked === "superagency") {
-                          return setSuperagencyOrChildAgencyChecked(undefined);
-                        }
-                        setAgencySelections([]);
-                        setSuperagencyOrChildAgencyChecked("superagency");
+                        setIsSuperagency((prev) => !prev);
+                        setIsChildAgency(false);
+                        setSuperOrChildAgencySelections([]);
                       }}
-                      checked={
-                        currentAgencyToEdit?.is_superagency ||
-                        superagencyOrChildAgencyChecked === "superagency"
-                      }
+                      checked={isSuperagency}
                     />
                     <label htmlFor="superagency">Superagency</label>
                     <input
                       name="child-agency"
                       type="checkbox"
                       onChange={() => {
-                        if (
-                          superagencyOrChildAgencyChecked === "child-agency"
-                        ) {
-                          return setSuperagencyOrChildAgencyChecked(undefined);
-                        }
-                        setAgencySelections([]);
-                        setSuperagencyOrChildAgencyChecked("child-agency");
+                        setIsChildAgency((prev) => !prev);
+                        setIsSuperagency(false);
+                        setSuperOrChildAgencySelections([]);
                       }}
-                      checked={
-                        superagencyOrChildAgencyChecked === "child-agency"
-                      }
+                      checked={isChildAgency}
                     />
                     <label htmlFor="child-agency">Child Agency </label>
 
                     {/* Add Superagency or Child Agency */}
                   </Styled.InputLabelWrapper>
-                  {superagencyOrChildAgencyChecked === "child-agency" && (
-                    <Styled.InputLabelWrapper>
-                      <Styled.ModalTitle noBottomMargin>
-                        Select parent (super) agency
-                      </Styled.ModalTitle>
-                      <SearchableListBox
-                        list={agencies}
-                        selections={agencySelections}
-                        buttons={[]}
-                        boxActionType={SearchableListBoxActions.ADD}
-                        updateSelections={updateSuperagencySelection}
-                        metadata={{
-                          listBoxLabel: "Available Agencies",
-                          searchBoxLabel: "Search Agencies",
-                        }}
-                      />
-                    </Styled.InputLabelWrapper>
+
+                  {/* {isSuperagency && ( */}
+                  {isSuperagency && (
+                    <>
+                      {superOrChildAgencySelections.length > 0 && (
+                        <Styled.InputLabelWrapper>
+                          <Styled.ChipContainer fitContentHeight>
+                            {superOrChildAgencySelections.map((agency) => (
+                              <Styled.Chip
+                                selected // Update when `child_agency_ids` is surfaced - only select the ones that aren't in this list
+                                selectedColor="green"
+                              >
+                                {agency.name}
+                              </Styled.Chip>
+                            ))}
+                          </Styled.ChipContainer>
+                          <Styled.ChipContainerLabel>
+                            Child agencies
+                          </Styled.ChipContainerLabel>
+                        </Styled.InputLabelWrapper>
+                      )}
+
+                      <Styled.InputLabelWrapper>
+                        <Styled.ModalTitle noBottomMargin>
+                          Select child agencies
+                        </Styled.ModalTitle>
+                        <SearchableListBox
+                          list={agencies}
+                          selections={superOrChildAgencySelections}
+                          buttons={[]}
+                          boxActionType={SearchableListBoxActions.ADD}
+                          updateSelections={updateChildAgencySelections}
+                          metadata={{
+                            listBoxLabel: "Available Agencies",
+                            searchBoxLabel: "Search Agencies",
+                          }}
+                        />
+                      </Styled.InputLabelWrapper>
+                    </>
                   )}
-                  {superagencyOrChildAgencyChecked === "superagency" && (
-                    <Styled.InputLabelWrapper>
-                      <Styled.ModalTitle noBottomMargin>
-                        Select child agencies
-                      </Styled.ModalTitle>
-                      <SearchableListBox
-                        list={agencies}
-                        selections={agencySelections}
-                        buttons={[]}
-                        boxActionType={SearchableListBoxActions.ADD}
-                        updateSelections={updateChildAgencySelections}
-                        metadata={{
-                          listBoxLabel: "Available Agencies",
-                          searchBoxLabel: "Search Agencies",
-                        }}
-                      />
-                    </Styled.InputLabelWrapper>
+
+                  {isChildAgency && (
+                    <>
+                      {superOrChildAgencySelections.length > 0 && (
+                        <Styled.InputLabelWrapper>
+                          <Styled.ChipContainer fitContentHeight>
+                            <Styled.Chip
+                              selected={
+                                currentAgencyToEdit?.super_agency_id !==
+                                superOrChildAgencySelections[0]?.id
+                              }
+                              selectedColor="green"
+                            >
+                              {superOrChildAgencySelections[0]?.name}
+                            </Styled.Chip>
+                          </Styled.ChipContainer>
+                          <Styled.ChipContainerLabel>
+                            Parent (super) agency
+                          </Styled.ChipContainerLabel>
+                        </Styled.InputLabelWrapper>
+                      )}
+                      <Styled.InputLabelWrapper>
+                        <Styled.ModalTitle noBottomMargin>
+                          Select parent (super) agency
+                        </Styled.ModalTitle>
+                        <SearchableListBox
+                          list={agencies}
+                          selections={superOrChildAgencySelections}
+                          buttons={[]}
+                          boxActionType={SearchableListBoxActions.ADD}
+                          updateSelections={updateSuperagencySelection}
+                          metadata={{
+                            listBoxLabel: "Available Agencies",
+                            searchBoxLabel: "Search Agencies",
+                          }}
+                        />
+                      </Styled.InputLabelWrapper>
+                    </>
                   )}
                 </Styled.Form>
               )}
@@ -576,9 +741,20 @@ export const AgencyProvisioning = observer(() => {
 
               {/* Modal Buttons */}
               <Styled.ModalActionButtons>
-                <Styled.ReviewChangesButton>
-                  Review Changes
-                </Styled.ReviewChangesButton>
+                {hasChanges && !isBottom ? (
+                  <Button
+                    key="review-changes"
+                    label="Review Changes"
+                    onClick={() => {
+                      reviewChangesRef.current?.scrollIntoView({
+                        behavior: "smooth",
+                      });
+                    }}
+                    buttonColor="orange"
+                  />
+                ) : (
+                  <div />
+                )}
                 <Styled.SaveCancelButtonsWrapper>
                   {modalButtons.map((button, index) => (
                     <Button
@@ -592,6 +768,100 @@ export const AgencyProvisioning = observer(() => {
                   ))}
                 </Styled.SaveCancelButtonsWrapper>
               </Styled.ModalActionButtons>
+
+              {hasChanges && (
+                <Styled.ReviewChangesContainer ref={reviewChangesRef}>
+                  <Styled.ModalTitle noBottomMargin>
+                    Review Changes
+                  </Styled.ModalTitle>
+                  {hasChangedAgencyName && (
+                    <Styled.ChangeLineItemWrapper>
+                      <Styled.ChangeTitle>
+                        Agency name changed to:
+                      </Styled.ChangeTitle>
+                      <Styled.ChangeLineItem>
+                        {agencyName}
+                      </Styled.ChangeLineItem>
+                    </Styled.ChangeLineItemWrapper>
+                  )}
+                  {hasChangedStateCode && (
+                    <Styled.ChangeLineItemWrapper>
+                      <Styled.ChangeTitle>State changed to:</Styled.ChangeTitle>
+                      <Styled.ChangeLineItem>
+                        {StateCodes[stateCode]}
+                      </Styled.ChangeLineItem>
+                    </Styled.ChangeLineItemWrapper>
+                  )}
+                  {hasChangedCountyCode && (
+                    <Styled.ChangeLineItemWrapper>
+                      <Styled.ChangeTitle>
+                        County changed to:
+                      </Styled.ChangeTitle>
+                      <Styled.ChangeLineItem>
+                        {FipsCountyCodes[countyCode]}
+                      </Styled.ChangeLineItem>
+                    </Styled.ChangeLineItemWrapper>
+                  )}
+                  {hasChangedAgencySystems && (
+                    <Styled.ChangeLineItemWrapper>
+                      <Styled.ChangeTitle>
+                        Systems changed to:
+                      </Styled.ChangeTitle>
+                      {/* <Styled.ChangeLineItem> */}
+                      {agencySystems.map((sys) => (
+                        <Styled.Chip>
+                          {removeSnakeCase(sys.toLocaleLowerCase())}
+                        </Styled.Chip>
+                      ))}
+                      {/* </Styled.ChangeLineItem> */}
+                    </Styled.ChangeLineItemWrapper>
+                  )}
+                  {hasChangedDashboardEnabledStatus && (
+                    <Styled.ChangeLineItemWrapper>
+                      <Styled.ChangeTitle>
+                        Dashboard will be{" "}
+                        {isDashboardEnabled ? "enabled" : "disabled"}.
+                      </Styled.ChangeTitle>
+                    </Styled.ChangeLineItemWrapper>
+                  )}
+                  {hasChangedSuperagencyStatus && (
+                    <Styled.ChangeLineItemWrapper>
+                      <Styled.ChangeTitle>
+                        Agency will{" "}
+                        {isSuperagency ? " now become" : "no longer be"} a
+                        Superagency
+                        {/* {superOrChildAgencySelections.length > 0 */}
+                        {hasNewSuperOrChildAgencySelections && isSuperagency
+                          ? " with the following child agencies:"
+                          : "."}
+                      </Styled.ChangeTitle>
+                      {hasNewSuperOrChildAgencySelections &&
+                        isSuperagency &&
+                        superOrChildAgencySelections.map((agency) => (
+                          <Styled.Chip>{agency.name}</Styled.Chip>
+                        ))}
+                    </Styled.ChangeLineItemWrapper>
+                  )}
+                  {hasChangedChildAgencyStatus && (
+                    <Styled.ChangeLineItemWrapper>
+                      <Styled.ChangeTitle>
+                        Agency will{" "}
+                        {isChildAgency ? "now become" : "no longer be"} a child
+                        agency
+                        {/* {superOrChildAgencySelections.length > 0 */}
+                        {hasNewSuperOrChildAgencySelections && isChildAgency
+                          ? " of the following parent agency:"
+                          : "."}
+                      </Styled.ChangeTitle>
+                      {hasNewSuperOrChildAgencySelections &&
+                        isChildAgency &&
+                        superOrChildAgencySelections.map((agency) => (
+                          <Styled.Chip>{agency.name}</Styled.Chip>
+                        ))}
+                    </Styled.ChangeLineItemWrapper>
+                  )}
+                </Styled.ReviewChangesContainer>
+              )}
             </Styled.ScrollableContainer>
           </Styled.ModalContainer>
         </Modal>
@@ -603,10 +873,33 @@ export const AgencyProvisioning = observer(() => {
           <input
             name="search"
             type="text"
-            value=""
-            onChange={(e) => new Error("search")}
+            value={searchInput}
+            onChange={(e) => {
+              setSearchInput(e.target.value);
+              searchAgencies(e.target.value);
+            }}
           />
           <label htmlFor="search">Search</label>
+        </Styled.InputLabelWrapper>
+        <Styled.InputLabelWrapper flexRow inputWidth={100}>
+          <input
+            name="superagency-filter"
+            type="checkbox"
+            onChange={() => {
+              setHasSuperagencyFilterSet((prev) => !prev);
+            }}
+            checked={hasSuperagencyFilterSet}
+          />
+          <label htmlFor="superagency">Superagencies</label>
+          <input
+            name="live-dashboard-filter"
+            type="checkbox"
+            onChange={() => {
+              setHasDashboardFilterSet((prev) => !prev);
+            }}
+            checked={hasDashboardFilterSet}
+          />
+          <label htmlFor="live-dashboard-filter">Live Dashboards</label>
         </Styled.InputLabelWrapper>
         <Styled.ButtonWrapper>
           <Button
@@ -621,7 +914,8 @@ export const AgencyProvisioning = observer(() => {
 
       {/* Agency Cards */}
       <Styled.CardContainer>
-        {agencies.map((agency) => (
+        {/* {agencies.map((agency) => ( */}
+        {filteredAgencies.map((agency) => (
           <Styled.UserCard
             key={agency.id}
             onClick={() => {
@@ -631,8 +925,18 @@ export const AgencyProvisioning = observer(() => {
               setStateCode(
                 agency.state_code.toLocaleLowerCase() as StateCodeKey
               );
-              setIsDashboardEnabled(agency.is_dashboard_enabled);
               setAgencySystems(agency.systems);
+              setIsDashboardEnabled(agency.is_dashboard_enabled);
+              setIsSuperagency(Boolean(agency.is_superagency));
+              setIsChildAgency(Boolean(agency.super_agency_id));
+              if (agency.super_agency_id)
+                setSuperOrChildAgencySelections(
+                  AdminPanelStore.convertListToSearchableList([
+                    ...(agencies?.find(
+                      (x) => x.id === agency.super_agency_id
+                    ) || []),
+                  ])
+                );
             }}
           >
             <Styled.UserNameEmailIDWrapper>

@@ -651,6 +651,7 @@ export const ReviewChangesContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 24px 0;
+  margin-top: 24px;
   border-top: 1px solid ${palette.highlight.grey5};
   gap: 24px;
 `;
