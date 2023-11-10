@@ -138,9 +138,10 @@ export const AgencyProvisioning = observer(() => {
     newTeamMembers.length > 0 ||
     (currentAgencyToEdit &&
       teamMembers &&
-      currentAgencyToEdit.team.every((user) =>
-        teamMembers.some((member) => member.email === user.email)
+      teamMembers.some(
+        (member) => member.action === SearchableListBoxActions.DELETE
       ));
+
   const hasChangedRoles = Boolean(userRoles);
   const hasChangedSuperagencyStatus =
     (currentAgencyToEdit &&
@@ -152,6 +153,23 @@ export const AgencyProvisioning = observer(() => {
   const hasNewSuperOrChildAgencySelections =
     (hasChangedSuperagencyStatus || hasChangedChildAgencyStatus) &&
     superOrChildAgencySelections.length > 0;
+
+  console.log("hasChangedAgencyName", hasChangedAgencyName);
+
+  console.log("hasChangedStateCode", hasChangedStateCode);
+  console.log("hasChangedCountyCode", hasChangedCountyCode);
+  console.log("hasChangedAgencySystems", hasChangedAgencySystems);
+  console.log(
+    "hasChangedDashboardEnabledStatus",
+    hasChangedDashboardEnabledStatus
+  );
+  console.log("hasChangedTeamMembers", hasChangedTeamMembers);
+  console.log("hasChangedSuperagencyStatus", hasChangedSuperagencyStatus);
+  console.log("hasChangedChildAgencyStatus", hasChangedChildAgencyStatus);
+  console.log(
+    "hasNewSuperOrChildAgencySelections",
+    hasNewSuperOrChildAgencySelections
+  );
 
   const hasChanges =
     hasChangedAgencyName ||
@@ -221,6 +239,7 @@ export const AgencyProvisioning = observer(() => {
 
   const resetAll = () => {
     setCurrentAgencyToEdit(undefined);
+    setCurrentSettingType(AgencyProvisioningSettings.AGENCY_INFORMATION);
     setAgencyName(undefined);
     setStateCode([]);
     setCountyCode([]);
@@ -229,6 +248,9 @@ export const AgencyProvisioning = observer(() => {
     setNewTeamMembers([]);
     setTeamMembers([]);
     setTeamMemberAction(undefined);
+    setShowSystemSelectionBox(false);
+    setShowCountyCodeSelectionBox(false);
+    setShowStateCodeSelectionBox(false);
   };
 
   const updateSuperagencySelection = (
@@ -661,7 +683,11 @@ export const AgencyProvisioning = observer(() => {
                 {/* Add New Team Members */}
                 {teamMemberAction === SearchableListBoxActions.ADD && (
                   <SearchableListBox
-                    list={users}
+                    list={users.filter((user) =>
+                      currentAgencyToEdit?.team?.every(
+                        (member) => member.auth0_user_id !== user.auth0_user_id
+                      )
+                    )}
                     boxActionType={SearchableListBoxActions.ADD}
                     selections={newTeamMembers}
                     buttons={[]}
@@ -907,15 +933,18 @@ export const AgencyProvisioning = observer(() => {
                   {hasChangedAgencySystems && (
                     <Styled.ChangeLineItemWrapper>
                       <Styled.ChangeTitle>
-                        Systems changed to:
+                        {agencySystems.length > 0
+                          ? "Systems changed to:"
+                          : "All systems will be removed from agency."}
                       </Styled.ChangeTitle>
                       {/* <Styled.ChangeLineItem> */}
-                      {agencySystems.map((sys) => (
-                        <Styled.Chip>
-                          {/* {removeSnakeCase(sys.toLocaleLowerCase())} */}
-                          {sys.name}
-                        </Styled.Chip>
-                      ))}
+                      {agencySystems.length > 0 &&
+                        agencySystems.map((sys) => (
+                          <Styled.Chip>
+                            {/* {removeSnakeCase(sys.toLocaleLowerCase())} */}
+                            {sys.name}
+                          </Styled.Chip>
+                        ))}
                       {/* </Styled.ChangeLineItem> */}
                     </Styled.ChangeLineItemWrapper>
                   )}
@@ -961,6 +990,39 @@ export const AgencyProvisioning = observer(() => {
                         superOrChildAgencySelections.map((agency) => (
                           <Styled.Chip>{agency.name}</Styled.Chip>
                         ))}
+                    </Styled.ChangeLineItemWrapper>
+                  )}
+                  {newTeamMembers.length > 0 && (
+                    <Styled.ChangeLineItemWrapper>
+                      <Styled.ChangeTitle>
+                        New team members to be added:
+                      </Styled.ChangeTitle>
+                      <Styled.ChipContainer fitContentHeight>
+                        {newTeamMembers.map((member) => (
+                          <Styled.Chip selected selectedColor="green">
+                            {member.name}
+                          </Styled.Chip>
+                        ))}
+                      </Styled.ChipContainer>
+                    </Styled.ChangeLineItemWrapper>
+                  )}
+                  {teamMembers.length > 0 && (
+                    <Styled.ChangeLineItemWrapper>
+                      <Styled.ChangeTitle>
+                        Existing team members to be deleted:
+                      </Styled.ChangeTitle>
+                      <Styled.ChipContainer fitContentHeight>
+                        {teamMembers
+                          .filter(
+                            (member) =>
+                              member.action === SearchableListBoxActions.DELETE
+                          )
+                          .map((member) => (
+                            <Styled.Chip selected selectedColor="red">
+                              {member.name}
+                            </Styled.Chip>
+                          ))}
+                      </Styled.ChipContainer>
                     </Styled.ChangeLineItemWrapper>
                   )}
                 </Styled.ReviewChangesContainer>
