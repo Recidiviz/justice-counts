@@ -947,13 +947,16 @@ export const AgencyProvisioning = observer(() => {
                           : "All systems will be removed from agency."}
                       </Styled.ChangeTitle>
                       {/* <Styled.ChangeLineItem> */}
-                      {agencySystems.length > 0 &&
-                        agencySystems.map((sys) => (
-                          <Styled.Chip>
-                            {/* {removeSnakeCase(sys.toLocaleLowerCase())} */}
-                            {sys.name}
-                          </Styled.Chip>
-                        ))}
+                      {agencySystems.length > 0 && (
+                        <Styled.ChipContainer fitContentHeight>
+                          {agencySystems.map((sys) => (
+                            <Styled.Chip>
+                              {/* {removeSnakeCase(sys.toLocaleLowerCase())} */}
+                              {sys.name}
+                            </Styled.Chip>
+                          ))}
+                        </Styled.ChipContainer>
+                      )}
                       {/* </Styled.ChangeLineItem> */}
                     </Styled.ChangeLineItemWrapper>
                   )}
