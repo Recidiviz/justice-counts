@@ -19,7 +19,10 @@ import { Button } from "@justice-counts/common/components/Button";
 import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
-import { AgencySystems } from "@justice-counts/common/types";
+import {
+  AgencySystems,
+  AgencyTeamMemberRole,
+} from "@justice-counts/common/types";
 import { removeSnakeCase } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
@@ -84,7 +87,9 @@ export const AgencyProvisioning = observer(() => {
   const [newTeamMembers, setNewTeamMembers] = useState<SearchableListItem[]>(
     []
   );
-  const [userRole, setUserRole] = useState<UserRole>();
+  const [teamMemberRoles, setTeamMemberRoles] = useState<
+    { id: number | string; role: keyof typeof AgencyTeamMemberRole }[]
+  >([]);
 
   const [hasDashboardFilterSet, setHasDashboardFilterSet] = useState(false);
   const [hasSuperagencyFilterSet, setHasSuperagencyFilterSet] = useState(false);
@@ -142,7 +147,7 @@ export const AgencyProvisioning = observer(() => {
         (member) => member.action === SearchableListBoxActions.DELETE
       ));
 
-  const hasChangedRoles = Boolean(userRoles);
+  const hasChangedRoles = Boolean(teamMemberRoles);
   const hasChangedSuperagencyStatus =
     (currentAgencyToEdit &&
       Boolean(currentAgencyToEdit.is_superagency) !== isSuperagency) ||
@@ -280,12 +285,13 @@ export const AgencyProvisioning = observer(() => {
     id: number | string,
     name: string,
     action?: SearchableListBoxAction,
-    email?: string
+    email?: string,
+    role?: UserRole
   ) => {
     setNewTeamMembers((prev) => {
       if (prev.some((selection) => selection.name === name))
         return prev.filter((selection) => selection.name !== name);
-      return [...prev, { name, action, id, email }];
+      return [...prev, { name, action, id, email, role }];
     });
   };
 
@@ -301,6 +307,37 @@ export const AgencyProvisioning = observer(() => {
       return [...prev, { name, action, id, email }];
     });
   };
+
+  const updateTeamRoles = (id: string | number, role: AgencyTeamMemberRole) => {
+    setTeamMemberRoles((prev) => {
+      if (prev.find((member) => member.id === id)) {
+        return prev.map((member) => {
+          if (member.id === id) {
+            return { id, role };
+          }
+          return member;
+        });
+      }
+      return [...prev, { id, role }];
+    });
+  };
+
+  // const updateNewTeamRoles = (
+  //   id: string | number,
+  //   role: AgencyTeamMemberRole
+  // ) => {
+  //   setTeamMemberRoles((prev) => {
+  //     if (prev.find((member) => member.id === id)) {
+  //       return prev.map((member) => {
+  //         if (member.id === id) {
+  //           return { id, role };
+  //         }
+  //         return member;
+  //       });
+  //     }
+  //     return [...prev, { id, role }];
+  //   });
+  // };
 
   return (
     <>
@@ -407,7 +444,7 @@ export const AgencyProvisioning = observer(() => {
                         list={Object.keys(FipsCountyCodes)
                           .filter(
                             (code) =>
-                              stateCode && code.startsWith(stateCode[0].id)
+                              stateCode[0] && code.startsWith(stateCode[0].id)
                           )
                           .map((fipsCountyCode) => ({
                             id: fipsCountyCode,
@@ -435,11 +472,11 @@ export const AgencyProvisioning = observer(() => {
                     <input
                       type="button"
                       disabled={
-                        !stateCode && !currentAgencyToEdit?.state_code // Disable until a state is selected
+                        !stateCode[0] && !currentAgencyToEdit?.state_code // Disable until a state is selected
                       }
                       name="county"
                       value={
-                        (countyCode && FipsCountyCodes[countyCode[0].id]) ||
+                        (countyCode[0] && FipsCountyCodes[countyCode[0].id]) ||
                         (currentAgencyToEdit?.fips_county_code &&
                           FipsCountyCodes[
                             currentAgencyToEdit.fips_county_code
@@ -449,72 +486,10 @@ export const AgencyProvisioning = observer(() => {
                       onClick={() => setShowCountyCodeSelectionBox(true)}
                     />
                     <label htmlFor="county">County</label>
-                    {/* <Dropdown
-                      label={
-                        <input
-                          type="button"
-                          disabled={
-                            !stateCode && !currentAgencyToEdit?.state_code // Disable until a state is selected
-                          }
-                          name="county"
-                          value={
-                            (countyCode && FipsCountyCodes[countyCode]) ||
-                            (currentAgencyToEdit?.fips_county_code &&
-                              FipsCountyCodes[
-                                currentAgencyToEdit.fips_county_code
-                              ]) ||
-                            ""
-                          }
-                        />
-                      }
-                      options={Object.keys(FipsCountyCodes)
-                        .filter(
-                          (code) =>
-                            stateCode && code.startsWith(stateCode[0].id)
-                        )
-                        .map((fipsCountyCode) => ({
-                          key: fipsCountyCode,
-                          label:
-                            FipsCountyCodes[
-                              fipsCountyCode as FipsCountyCodeKey
-                            ],
-                          onClick: () => {
-                            setCountyCode(fipsCountyCode as FipsCountyCodeKey);
-                          },
-                        }))}
-                      fullWidth
-                      noBoxShadow
-                    /> */}
                   </Styled.InputLabelWrapper>
 
                   {/* Agency Systems */}
                   <Styled.InputLabelWrapper>
-                    {/* <Dropdown
-                      label={
-                        <Styled.ChipContainer fitContentHeight>
-                          {agencySystems.map((system) => (
-                            <Styled.Chip key={system}>
-                              {removeSnakeCase(system).toLocaleLowerCase()}
-                            </Styled.Chip>
-                          ))}
-                        </Styled.ChipContainer>
-                      }
-                      options={systems.map((system) => ({
-                        key: system,
-                        highlight: agencySystems.includes(system),
-                        label: removeSnakeCase(system).toLocaleLowerCase(),
-                        onClick: () => {
-                          if (agencySystems.includes(system)) {
-                            return setAgencySystems((prev) =>
-                              prev.filter((sys) => sys !== system)
-                            );
-                          }
-                          setAgencySystems((prev) => [...prev, system]);
-                        },
-                      }))}
-                      fullWidth
-                      noBoxShadow
-                    /> */}
                     {showSystemSelectionBox && (
                       <SearchableListBox
                         list={systems.map((system) => ({
@@ -683,14 +658,25 @@ export const AgencyProvisioning = observer(() => {
                 {/* Add New Team Members */}
                 {teamMemberAction === SearchableListBoxActions.ADD && (
                   <SearchableListBox
-                    list={users.filter((user) =>
-                      currentAgencyToEdit?.team?.every(
-                        (member) => member.auth0_user_id !== user.auth0_user_id
-                      )
-                    )}
+                    list={
+                      !currentAgencyToEdit?.team ||
+                      currentAgencyToEdit?.team?.length === 0
+                        ? users
+                        : users.filter((user) =>
+                            currentAgencyToEdit?.team?.every(
+                              (member) =>
+                                member.auth0_user_id !== user.auth0_user_id
+                            )
+                          )
+                    }
                     boxActionType={SearchableListBoxActions.ADD}
                     selections={newTeamMembers}
-                    buttons={[]}
+                    buttons={[
+                      {
+                        label: "Save Selections",
+                        onClick: () => setTeamMemberAction(undefined),
+                      },
+                    ]}
                     updateSelections={updateNewTeamMembers}
                     metadata={{
                       listBoxLabel: "Available Users",
@@ -710,7 +696,12 @@ export const AgencyProvisioning = observer(() => {
                     }
                     boxActionType={SearchableListBoxActions.DELETE}
                     selections={teamMembers}
-                    buttons={[]}
+                    buttons={[
+                      {
+                        label: "Save Selections",
+                        onClick: () => setTeamMemberAction(undefined),
+                      },
+                    ]}
                     updateSelections={updateTeamMembers}
                     metadata={{
                       listBoxLabel: "Current Team Members",
@@ -743,24 +734,28 @@ export const AgencyProvisioning = observer(() => {
                           // );
                         }}
                       >
-                        Add User
+                        Add Users
                       </Styled.ActionButton>
 
-                      <Styled.ActionButton
-                        selectedColor={
-                          teamMemberAction === SearchableListBoxActions.DELETE
-                            ? "red"
-                            : ""
-                        }
-                        onClick={() => {
-                          setTeamMemberAction(SearchableListBoxActions.DELETE);
-                          // deleteAgencyScrollToRef.current?.scrollIntoView({
-                          //   behavior: "smooth",
-                          // });
-                        }}
-                      >
-                        Delete User
-                      </Styled.ActionButton>
+                      {teamMembers.length > 0 && (
+                        <Styled.ActionButton
+                          selectedColor={
+                            teamMemberAction === SearchableListBoxActions.DELETE
+                              ? "red"
+                              : ""
+                          }
+                          onClick={() => {
+                            setTeamMemberAction(
+                              SearchableListBoxActions.DELETE
+                            );
+                            // deleteAgencyScrollToRef.current?.scrollIntoView({
+                            //   behavior: "smooth",
+                            // });
+                          }}
+                        >
+                          Delete Users
+                        </Styled.ActionButton>
+                      )}
 
                       <Styled.ActionButton>Create New User</Styled.ActionButton>
                     </Styled.FormActions>
@@ -785,15 +780,21 @@ export const AgencyProvisioning = observer(() => {
                                   <input
                                     name="new-team-member"
                                     type="button"
-                                    value={userRole || ""}
+                                    value={
+                                      teamMemberRoles.find((r) => r.id === t.id)
+                                        ?.role || ""
+                                    }
                                   />
                                 }
                                 options={userRoles.map((role) => ({
                                   key: role,
                                   label: removeSnakeCase(role),
                                   onClick: () => {
-                                    setUserRole(
-                                      removeSnakeCase(role) as UserRole
+                                    updateTeamRoles(
+                                      t.id,
+                                      removeSnakeCase(
+                                        role
+                                      ) as AgencyTeamMemberRole
                                     );
                                   },
                                 }))}
@@ -833,7 +834,9 @@ export const AgencyProvisioning = observer(() => {
                                     name="new-team-member"
                                     type="button"
                                     value={
-                                      userRole ||
+                                      teamMemberRoles.find(
+                                        (r) => r.id === t.auth0_user_id
+                                      )?.role ||
                                       (t.role && removeSnakeCase(t.role)) ||
                                       ""
                                     }
@@ -849,8 +852,11 @@ export const AgencyProvisioning = observer(() => {
                                   key: role,
                                   label: removeSnakeCase(role),
                                   onClick: () => {
-                                    setUserRole(
-                                      removeSnakeCase(role) as UserRole
+                                    updateTeamRoles(
+                                      t.auth0_user_id,
+                                      removeSnakeCase(
+                                        role
+                                      ) as AgencyTeamMemberRole
                                     );
                                   },
                                 }))}
@@ -967,11 +973,15 @@ export const AgencyProvisioning = observer(() => {
                           ? " with the following child agencies:"
                           : "."}
                       </Styled.ChangeTitle>
-                      {hasNewSuperOrChildAgencySelections &&
-                        isSuperagency &&
-                        superOrChildAgencySelections.map((agency) => (
-                          <Styled.Chip>{agency.name}</Styled.Chip>
-                        ))}
+                      {hasNewSuperOrChildAgencySelections && isSuperagency && (
+                        <Styled.ChipContainer fitContentHeight>
+                          {superOrChildAgencySelections.map((agency) => (
+                            <Styled.Chip selected selectedColor="green">
+                              {agency.name}
+                            </Styled.Chip>
+                          ))}
+                        </Styled.ChipContainer>
+                      )}
                     </Styled.ChangeLineItemWrapper>
                   )}
                   {hasChangedChildAgencyStatus && (
@@ -1000,7 +1010,20 @@ export const AgencyProvisioning = observer(() => {
                       <Styled.ChipContainer fitContentHeight>
                         {newTeamMembers.map((member) => (
                           <Styled.Chip selected selectedColor="green">
-                            {member.name}
+                            {member.name}{" "}
+                            {teamMemberRoles.find(
+                              (x) => x.id === member.id
+                            ) && (
+                              <>
+                                (
+                                {
+                                  teamMemberRoles.find(
+                                    (x) => x.id === member.id
+                                  )?.role
+                                }
+                                )
+                              </>
+                            )}
                           </Styled.Chip>
                         ))}
                       </Styled.ChipContainer>
@@ -1116,6 +1139,12 @@ export const AgencyProvisioning = observer(() => {
                     ) || []),
                   ])
                 );
+              setTeamMemberRoles(
+                agency.team.map((member) => ({
+                  id: member.auth0_user_id,
+                  role: removeSnakeCase(member.role),
+                }))
+              );
             }}
           >
             <Styled.UserNameEmailIDWrapper>

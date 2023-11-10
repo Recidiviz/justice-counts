@@ -72,7 +72,8 @@ export type SearchableListBoxUpdateSelections = (
   id: string | number,
   name: string,
   action?: SearchableListBoxAction,
-  email?: string
+  email?: string,
+  role?: UserRole
 ) => void;
 
 export type SearchableListItem = {
@@ -80,6 +81,7 @@ export type SearchableListItem = {
   name: string;
   action?: SearchableListBoxAction;
   email?: string;
+  role?: UserRole;
 };
 
 export type SearchableListBoxButtons = { label: string; onClick: () => void }[];

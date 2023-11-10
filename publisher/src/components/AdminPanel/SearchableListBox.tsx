@@ -85,13 +85,15 @@ export const SearchableListBox = ({
                   selectionsByName[listItem.name]?.[0].action
                 )}
                 onClick={() => {
+                  console.log("listItem", listItem);
                   if (!isActiveBox) return;
                   if (boxActionType) {
                     updateSelections(
                       listItem.id,
                       listItem.name,
                       boxActionType,
-                      listItem.email
+                      listItem.email,
+                      listItem.role
                     );
                   }
                 }}
