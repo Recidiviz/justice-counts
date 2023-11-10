@@ -59,8 +59,14 @@ export const AgencyProvisioning = observer(() => {
     );
 
   const [agencyName, setAgencyName] = useState<string>();
-  const [stateCode, setStateCode] = useState<StateCodeKey>();
-  const [countyCode, setCountyCode] = useState<FipsCountyCodeKey>();
+  // const [stateCode, setStateCode] = useState<StateCodeKey>();
+  const [stateCode, setStateCode] = useState<SearchableListItem[]>([]);
+  const [showStateCodeSelectionBox, setShowStateCodeSelectionBox] =
+    useState(false);
+  const [showCountyCodeSelectionBox, setShowCountyCodeSelectionBox] =
+    useState(false);
+  // const [countyCode, setCountyCode] = useState<FipsCountyCodeKey>();
+  const [countyCode, setCountyCode] = useState<SearchableListItem[]>([]);
   const [agencySystems, setAgencySystems] = useState<AgencySystems[]>([]);
   const [isDashboardEnabled, setIsDashboardEnabled] = useState(false);
   const [isSuperagency, setIsSuperagency] = useState(false);
@@ -108,12 +114,13 @@ export const AgencyProvisioning = observer(() => {
     agencyName !== currentAgencyToEdit.name;
   const hasChangedStateCode =
     currentAgencyToEdit &&
-    stateCode &&
-    stateCode !== currentAgencyToEdit.state_code.toLocaleLowerCase();
+    stateCode[0] &&
+    stateCode[0].id !== currentAgencyToEdit.state_code.toLocaleLowerCase();
   const hasChangedCountyCode =
     currentAgencyToEdit &&
-    countyCode &&
-    countyCode !== currentAgencyToEdit.fips_county_code;
+    countyCode[0] &&
+    countyCode[0].id !==
+      currentAgencyToEdit.fips_county_code?.toLocaleLowerCase();
   const hasChangedAgencySystems =
     currentAgencyToEdit &&
     agencySystems &&
@@ -143,12 +150,7 @@ export const AgencyProvisioning = observer(() => {
   const hasNewSuperOrChildAgencySelections =
     (hasChangedSuperagencyStatus || hasChangedChildAgencyStatus) &&
     superOrChildAgencySelections.length > 0;
-  console.log("isSuperagency", isSuperagency);
-  console.log("hasChangedSuperagencyStatus", hasChangedSuperagencyStatus);
-  console.log(
-    "currentAgencyToEdit.is_superagency",
-    currentAgencyToEdit?.is_superagency
-  );
+
   const hasChanges =
     hasChangedAgencyName ||
     hasChangedStateCode ||
@@ -218,8 +220,8 @@ export const AgencyProvisioning = observer(() => {
   const resetAll = () => {
     setCurrentAgencyToEdit(undefined);
     setAgencyName(undefined);
-    setStateCode(undefined);
-    setCountyCode(undefined);
+    setStateCode([]);
+    setCountyCode([]);
     setAgencySystems([]);
     setIsDashboardEnabled(false);
     setNewTeamMembers([]);
@@ -332,38 +334,98 @@ export const AgencyProvisioning = observer(() => {
 
                   {/* Agency State */}
                   <Styled.InputLabelWrapper>
-                    <Dropdown
-                      label={
-                        <input
-                          name="state"
-                          type="button"
-                          value={
-                            (stateCode && StateCodes[stateCode]) ||
-                            (currentAgencyToEdit &&
-                              StateCodes[currentAgencyToEdit.state_code]) ||
-                            ""
-                          }
-                        />
-                      }
-                      options={Object.keys(StateCodes).map((code) => ({
-                        key: code,
-                        label:
-                          StateCodes[code.toLocaleLowerCase() as StateCodeKey],
-                        onClick: () => {
-                          setStateCode(
+                    {showStateCodeSelectionBox && (
+                      <SearchableListBox
+                        list={Object.keys(StateCodes).map((code) => ({
+                          id: code,
+                          name: StateCodes[
                             code.toLocaleLowerCase() as StateCodeKey
-                          );
-                        },
-                      }))}
-                      fullWidth
-                      noBoxShadow
+                          ],
+                        }))}
+                        boxActionType={SearchableListBoxActions.ADD}
+                        selections={stateCode}
+                        buttons={[
+                          {
+                            label: "Close",
+                            onClick: () => setShowStateCodeSelectionBox(false),
+                          },
+                        ]}
+                        updateSelections={(id, name, action) =>
+                          setStateCode([{ id, name, action }])
+                        }
+                        metadata={{
+                          listBoxLabel: "States",
+                          searchBoxLabel: "Search States",
+                        }}
+                      />
+                    )}
+
+                    <input
+                      name="state"
+                      type="button"
+                      value={
+                        (stateCode[0] && StateCodes[stateCode[0].id]) ||
+                        (currentAgencyToEdit &&
+                          StateCodes[currentAgencyToEdit.state_code]) ||
+                        ""
+                      }
+                      onClick={() => {
+                        setShowStateCodeSelectionBox(true);
+                      }}
                     />
                     <label htmlFor="state">State</label>
                   </Styled.InputLabelWrapper>
 
                   {/* Agency County */}
                   <Styled.InputLabelWrapper>
-                    <Dropdown
+                    {showCountyCodeSelectionBox && (
+                      <SearchableListBox
+                        list={Object.keys(FipsCountyCodes)
+                          .filter(
+                            (code) =>
+                              stateCode && code.startsWith(stateCode[0].id)
+                          )
+                          .map((fipsCountyCode) => ({
+                            id: fipsCountyCode,
+                            name: FipsCountyCodes[
+                              fipsCountyCode.toLocaleLowerCase() as FipsCountyCodeKey
+                            ],
+                          }))}
+                        boxActionType={SearchableListBoxActions.ADD}
+                        selections={countyCode}
+                        buttons={[
+                          {
+                            label: "Close",
+                            onClick: () => setShowCountyCodeSelectionBox(false),
+                          },
+                        ]}
+                        updateSelections={(id, name, action) =>
+                          setCountyCode([{ id, name, action }])
+                        }
+                        metadata={{
+                          listBoxLabel: "Counties",
+                          searchBoxLabel: "Search Counties",
+                        }}
+                      />
+                    )}
+                    <input
+                      type="button"
+                      disabled={
+                        !stateCode && !currentAgencyToEdit?.state_code // Disable until a state is selected
+                      }
+                      name="county"
+                      value={
+                        (countyCode && FipsCountyCodes[countyCode[0].id]) ||
+                        (currentAgencyToEdit?.fips_county_code &&
+                          FipsCountyCodes[
+                            currentAgencyToEdit.fips_county_code
+                          ]) ||
+                        ""
+                      }
+                      onClick={() => setShowCountyCodeSelectionBox(true)}
+                    />
+                    <label htmlFor="county">County</label>
+                    {/* <Dropdown
                       label={
                         <input
                           type="button"
@@ -383,7 +445,8 @@ export const AgencyProvisioning = observer(() => {
                       }
                       options={Object.keys(FipsCountyCodes)
                         .filter(
-                          (code) => stateCode && code.startsWith(stateCode)
+                          (code) =>
+                            stateCode && code.startsWith(stateCode[0].id)
                         )
                         .map((fipsCountyCode) => ({
                           key: fipsCountyCode,
@@ -397,8 +460,7 @@ export const AgencyProvisioning = observer(() => {
                         }))}
                       fullWidth
                       noBoxShadow
-                    />
-                    <label htmlFor="county">County</label>
+                    /> */}
                   </Styled.InputLabelWrapper>
 
                   {/* Agency Systems */}
@@ -788,7 +850,7 @@ export const AgencyProvisioning = observer(() => {
                     <Styled.ChangeLineItemWrapper>
                       <Styled.ChangeTitle>State changed to:</Styled.ChangeTitle>
                       <Styled.ChangeLineItem>
-                        {StateCodes[stateCode]}
+                        {stateCode[0] && StateCodes[stateCode[0].id]}
                       </Styled.ChangeLineItem>
                     </Styled.ChangeLineItemWrapper>
                   )}
@@ -798,7 +860,7 @@ export const AgencyProvisioning = observer(() => {
                         County changed to:
                       </Styled.ChangeTitle>
                       <Styled.ChangeLineItem>
-                        {FipsCountyCodes[countyCode]}
+                        {FipsCountyCodes[countyCode[0].id]}
                       </Styled.ChangeLineItem>
                     </Styled.ChangeLineItemWrapper>
                   )}
@@ -921,10 +983,18 @@ export const AgencyProvisioning = observer(() => {
             onClick={() => {
               setIsModalOpen(true);
               setCurrentAgencyToEdit(agency);
-              setCountyCode(agency.fips_county_code);
-              setStateCode(
-                agency.state_code.toLocaleLowerCase() as StateCodeKey
-              );
+              setCountyCode([
+                {
+                  id: agency?.fips_county_code?.toLocaleLowerCase() as FipsCountyCodeKey,
+                  name: agency?.fips_county_code?.toLocaleLowerCase() as FipsCountyCodeKey,
+                },
+              ]);
+              setStateCode([
+                {
+                  id: agency?.state_code?.toLocaleLowerCase() as StateCodeKey,
+                  name: agency?.state_code?.toLocaleLowerCase() as StateCodeKey,
+                },
+              ]);
               setAgencySystems(agency.systems);
               setIsDashboardEnabled(agency.is_dashboard_enabled);
               setIsSuperagency(Boolean(agency.is_superagency));

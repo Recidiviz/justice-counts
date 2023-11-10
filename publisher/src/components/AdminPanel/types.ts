@@ -125,7 +125,7 @@ export const StateCodes = {
   us_co: "Colorado",
   us_ct: "Connecticut",
   us_dc: "District of Columbia", // Counties in DC have a fips "state" code, which is why we need it here
-  us_de: "Deleware",
+  us_de: "Delaware",
   us_fl: "Florida",
   us_ga: "Georgia",
   us_hi: "Hawaii",
