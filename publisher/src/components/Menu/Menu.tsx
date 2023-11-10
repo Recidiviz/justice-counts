@@ -92,7 +92,9 @@ const Menu: React.FC = () => {
         .map((agency) => ({
           key: agency.id,
           label: `${agency.name} ${
-            agency.state_code && includeStateCodeInAgencyName
+            agency.state_code &&
+            includeStateCodeInAgencyName &&
+            !agency.name.includes(agency.state_code.split("_")[1].toUpperCase())
               ? `(${agency.state_code.split("_")[1].toUpperCase()})`
               : ""
           }`,
