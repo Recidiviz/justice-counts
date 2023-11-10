@@ -65,9 +65,11 @@ export const AgencyProvisioning = observer(() => {
     useState(false);
   const [showCountyCodeSelectionBox, setShowCountyCodeSelectionBox] =
     useState(false);
+  const [showSystemSelectionBox, setShowSystemSelectionBox] = useState(false);
   // const [countyCode, setCountyCode] = useState<FipsCountyCodeKey>();
   const [countyCode, setCountyCode] = useState<SearchableListItem[]>([]);
-  const [agencySystems, setAgencySystems] = useState<AgencySystems[]>([]);
+  // const [agencySystems, setAgencySystems] = useState<AgencySystems[]>([]);
+  const [agencySystems, setAgencySystems] = useState<SearchableListItem[]>([]);
   const [isDashboardEnabled, setIsDashboardEnabled] = useState(false);
   const [isSuperagency, setIsSuperagency] = useState(false);
   const [isChildAgency, setIsChildAgency] = useState(false);
@@ -125,7 +127,7 @@ export const AgencyProvisioning = observer(() => {
     currentAgencyToEdit &&
     agencySystems &&
     (!currentAgencyToEdit.systems.every((system) =>
-      agencySystems.includes(system)
+      agencySystems.some((sys) => sys.id === system)
     ) ||
       currentAgencyToEdit.systems.length !== agencySystems.length);
   const hasChangedDashboardEnabledStatus =
@@ -465,7 +467,7 @@ export const AgencyProvisioning = observer(() => {
 
                   {/* Agency Systems */}
                   <Styled.InputLabelWrapper>
-                    <Dropdown
+                    {/* <Dropdown
                       label={
                         <Styled.ChipContainer fitContentHeight>
                           {agencySystems.map((system) => (
@@ -490,7 +492,45 @@ export const AgencyProvisioning = observer(() => {
                       }))}
                       fullWidth
                       noBoxShadow
-                    />
+                    /> */}
+                    {showSystemSelectionBox && (
+                      <SearchableListBox
+                        list={systems.map((system) => ({
+                          id: system,
+                          name: removeSnakeCase(system.toLocaleLowerCase()),
+                        }))}
+                        boxActionType={SearchableListBoxActions.ADD}
+                        selections={agencySystems}
+                        buttons={[
+                          {
+                            label: "Close",
+                            // onClick: () => setShowCountyCodeSelectionBox(false),
+                            onClick: () => setShowSystemSelectionBox(false),
+                          },
+                        ]}
+                        updateSelections={(id, name, action) =>
+                          setAgencySystems((prev) => {
+                            if (prev.some((sys) => sys.id === id)) {
+                              return prev.filter((sys) => sys.id !== id);
+                            }
+                            return [...prev, { id, name, action }];
+                          })
+                        }
+                        metadata={{
+                          listBoxLabel: "Systems",
+                          searchBoxLabel: "Search Systems",
+                        }}
+                      />
+                    )}
+
+                    <Styled.ChipContainer
+                      fitContentHeight
+                      onClick={() => setShowSystemSelectionBox(true)}
+                    >
+                      {agencySystems.map((system) => (
+                        <Styled.Chip key={system.id}>{system.name}</Styled.Chip>
+                      ))}
+                    </Styled.ChipContainer>
                     <Styled.ChipContainerLabel>
                       Systems
                     </Styled.ChipContainerLabel>
@@ -872,7 +912,8 @@ export const AgencyProvisioning = observer(() => {
                       {/* <Styled.ChangeLineItem> */}
                       {agencySystems.map((sys) => (
                         <Styled.Chip>
-                          {removeSnakeCase(sys.toLocaleLowerCase())}
+                          {/* {removeSnakeCase(sys.toLocaleLowerCase())} */}
+                          {sys.name}
                         </Styled.Chip>
                       ))}
                       {/* </Styled.ChangeLineItem> */}
@@ -995,7 +1036,13 @@ export const AgencyProvisioning = observer(() => {
                   name: agency?.state_code?.toLocaleLowerCase() as StateCodeKey,
                 },
               ]);
-              setAgencySystems(agency.systems);
+              setAgencySystems(
+                agency.systems.map((system) => ({
+                  id: system,
+                  name: removeSnakeCase(system.toLocaleLowerCase()),
+                  action: SearchableListBoxActions.ADD,
+                }))
+              );
               setIsDashboardEnabled(agency.is_dashboard_enabled);
               setIsSuperagency(Boolean(agency.is_superagency));
               setIsChildAgency(Boolean(agency.super_agency_id));
