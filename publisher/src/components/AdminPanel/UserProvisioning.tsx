@@ -203,17 +203,6 @@ export const UserProvisioning = observer(() => {
     return <Loading />;
   }
 
-  // console.log(deleteAgencyScrollToRef?.current?.scrollHeight);
-  // console.log(deleteAgencyScrollToRef?.current?.scrollTop);
-  // console.log(deleteAgencyScrollToRef?.current?.clientHeight);
-
-  // console.log(
-  //   deleteAgencyScrollToRef?.current?.scrollHeight -
-  //     deleteAgencyScrollToRef?.current?.scrollTop -
-  //     deleteAgencyScrollToRef?.current?.clientHeight
-  // );
-
-  console.log("isBottom", isBottom);
   return (
     <>
       {isModalOpen && (

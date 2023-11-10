@@ -19,10 +19,7 @@ import { Button } from "@justice-counts/common/components/Button";
 import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
-import {
-  AgencySystems,
-  AgencyTeamMemberRole,
-} from "@justice-counts/common/types";
+import { AgencyTeamMemberRole } from "@justice-counts/common/types";
 import { removeSnakeCase } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
@@ -62,23 +59,12 @@ export const AgencyProvisioning = observer(() => {
     );
 
   const [agencyName, setAgencyName] = useState<string>();
-  // const [stateCode, setStateCode] = useState<StateCodeKey>();
   const [stateCode, setStateCode] = useState<SearchableListItem[]>([]);
-  const [showStateCodeSelectionBox, setShowStateCodeSelectionBox] =
-    useState(false);
-  const [showCountyCodeSelectionBox, setShowCountyCodeSelectionBox] =
-    useState(false);
-  const [showSystemSelectionBox, setShowSystemSelectionBox] = useState(false);
-  // const [countyCode, setCountyCode] = useState<FipsCountyCodeKey>();
   const [countyCode, setCountyCode] = useState<SearchableListItem[]>([]);
-  // const [agencySystems, setAgencySystems] = useState<AgencySystems[]>([]);
   const [agencySystems, setAgencySystems] = useState<SearchableListItem[]>([]);
   const [isDashboardEnabled, setIsDashboardEnabled] = useState(false);
   const [isSuperagency, setIsSuperagency] = useState(false);
   const [isChildAgency, setIsChildAgency] = useState(false);
-  const [childAgencySelections, setChildAgencySelections] = useState([]);
-  const [superagencySelection, setSuperagencySelection] = useState([]);
-
   const [superOrChildAgencySelections, setSuperOrChildAgencySelections] =
     useState<SearchableListItem[]>([]);
   const [teamMemberAction, setTeamMemberAction] =
@@ -91,6 +77,13 @@ export const AgencyProvisioning = observer(() => {
     { id: number | string; role: keyof typeof AgencyTeamMemberRole }[]
   >([]);
 
+  const [showStateCodeSelectionBox, setShowStateCodeSelectionBox] =
+    useState(false);
+  const [showCountyCodeSelectionBox, setShowCountyCodeSelectionBox] =
+    useState(false);
+  const [showSystemSelectionBox, setShowSystemSelectionBox] = useState(false);
+
+  /** Filters */
   const [hasDashboardFilterSet, setHasDashboardFilterSet] = useState(false);
   const [hasSuperagencyFilterSet, setHasSuperagencyFilterSet] = useState(false);
 
@@ -151,7 +144,7 @@ export const AgencyProvisioning = observer(() => {
     teamMembers.filter(
       (member) =>
         teamMemberRoles.find((tm) => tm.id === member.id)?.role !==
-        removeSnakeCase(member.role)
+        (member.role && removeSnakeCase(member.role))
     ).length > 0;
   const hasChangedSuperagencyStatus =
     (currentAgencyToEdit &&
@@ -164,23 +157,6 @@ export const AgencyProvisioning = observer(() => {
     (hasChangedSuperagencyStatus || hasChangedChildAgencyStatus) &&
     superOrChildAgencySelections.length > 0;
 
-  console.log("hasChangedAgencyName", hasChangedAgencyName);
-
-  console.log("hasChangedStateCode", hasChangedStateCode);
-  console.log("hasChangedCountyCode", hasChangedCountyCode);
-  console.log("hasChangedAgencySystems", hasChangedAgencySystems);
-  console.log(
-    "hasChangedDashboardEnabledStatus",
-    hasChangedDashboardEnabledStatus
-  );
-  console.log("hasChangedTeamMembers", hasChangedTeamMembers);
-  console.log("hasChangedSuperagencyStatus", hasChangedSuperagencyStatus);
-  console.log("hasChangedChildAgencyStatus", hasChangedChildAgencyStatus);
-  console.log(
-    "hasNewSuperOrChildAgencySelections",
-    hasNewSuperOrChildAgencySelections
-  );
-
   const hasChanges =
     hasChangedAgencyName ||
     hasChangedStateCode ||
@@ -192,7 +168,6 @@ export const AgencyProvisioning = observer(() => {
     hasChangedTeamMembers ||
     hasNewSuperOrChildAgencySelections ||
     hasChangedRoles;
-  // superOrChildAgencySelections.length > 0;
 
   const [filteredAgencies, setFilteredAgencies] = useState<Agency[]>([]);
   const [searchInput, setSearchInput] = useState<string>("");
@@ -306,10 +281,20 @@ export const AgencyProvisioning = observer(() => {
     action?: SearchableListBoxAction,
     email?: string
   ) => {
+    console.log("updateTeamMembers - action", action);
     setTeamMembers((prev) => {
-      if (prev.some((selection) => selection.name === name))
-        return prev.filter((selection) => selection.name !== name);
-      return [...prev, { name, action, id, email }];
+      return prev.map((selection) => {
+        if (selection.id === id) {
+          return {
+            ...selection,
+            action: selection.action ? undefined : action,
+          };
+        }
+        return selection;
+      });
+      // if (prev.some((selection) => selection.name === name))
+      //   return prev.filter((selection) => selection.name !== name);
+      // return [...prev, { name, action, id, email }];
     });
   };
 
@@ -326,23 +311,6 @@ export const AgencyProvisioning = observer(() => {
       return [...prev, { id, role }];
     });
   };
-
-  // const updateNewTeamRoles = (
-  //   id: string | number,
-  //   role: AgencyTeamMemberRole
-  // ) => {
-  //   setTeamMemberRoles((prev) => {
-  //     if (prev.find((member) => member.id === id)) {
-  //       return prev.map((member) => {
-  //         if (member.id === id) {
-  //           return { id, role };
-  //         }
-  //         return member;
-  //       });
-  //     }
-  //     return [...prev, { id, role }];
-  //   });
-  // };
 
   return (
     <>
@@ -506,7 +474,6 @@ export const AgencyProvisioning = observer(() => {
                         buttons={[
                           {
                             label: "Close",
-                            // onClick: () => setShowCountyCodeSelectionBox(false),
                             onClick: () => setShowSystemSelectionBox(false),
                           },
                         ]}
@@ -577,7 +544,6 @@ export const AgencyProvisioning = observer(() => {
                     {/* Add Superagency or Child Agency */}
                   </Styled.InputLabelWrapper>
 
-                  {/* {isSuperagency && ( */}
                   {isSuperagency && (
                     <>
                       {superOrChildAgencySelections.length > 0 && (
@@ -730,35 +696,27 @@ export const AgencyProvisioning = observer(() => {
                         }
                         onClick={(e) => {
                           setTeamMemberAction(SearchableListBoxActions.ADD);
-                          // setTimeout(
-                          //   () =>
-                          //     addAgencyScrollToRef.current?.scrollIntoView({
-                          //       behavior: "smooth",
-                          //     }),
-                          //   0
-                          // );
                         }}
                       >
                         Add Users
                       </Styled.ActionButton>
 
-                      {/* {teamMembers.length > 0 && ( */}
-                      <Styled.ActionButton
-                        selectedColor={
-                          teamMemberAction === SearchableListBoxActions.DELETE
-                            ? "red"
-                            : ""
-                        }
-                        onClick={() => {
-                          setTeamMemberAction(SearchableListBoxActions.DELETE);
-                          // deleteAgencyScrollToRef.current?.scrollIntoView({
-                          //   behavior: "smooth",
-                          // });
-                        }}
-                      >
-                        Delete Users
-                      </Styled.ActionButton>
-                      {/* )} */}
+                      {teamMembers.length > 0 && (
+                        <Styled.ActionButton
+                          selectedColor={
+                            teamMemberAction === SearchableListBoxActions.DELETE
+                              ? "red"
+                              : ""
+                          }
+                          onClick={() => {
+                            setTeamMemberAction(
+                              SearchableListBoxActions.DELETE
+                            );
+                          }}
+                        >
+                          Delete Users
+                        </Styled.ActionButton>
+                      )}
 
                       <Styled.ActionButton>Create New User</Styled.ActionButton>
                     </Styled.FormActions>
@@ -946,18 +904,14 @@ export const AgencyProvisioning = observer(() => {
                           ? "Systems changed to:"
                           : "All systems will be removed from agency."}
                       </Styled.ChangeTitle>
-                      {/* <Styled.ChangeLineItem> */}
+
                       {agencySystems.length > 0 && (
                         <Styled.ChipContainer fitContentHeight>
                           {agencySystems.map((sys) => (
-                            <Styled.Chip>
-                              {/* {removeSnakeCase(sys.toLocaleLowerCase())} */}
-                              {sys.name}
-                            </Styled.Chip>
+                            <Styled.Chip>{sys.name}</Styled.Chip>
                           ))}
                         </Styled.ChipContainer>
                       )}
-                      {/* </Styled.ChangeLineItem> */}
                     </Styled.ChangeLineItemWrapper>
                   )}
                   {hasChangedDashboardEnabledStatus && (
@@ -974,7 +928,6 @@ export const AgencyProvisioning = observer(() => {
                         Agency will{" "}
                         {isSuperagency ? " now become" : "no longer be"} a
                         Superagency
-                        {/* {superOrChildAgencySelections.length > 0 */}
                         {hasNewSuperOrChildAgencySelections && isSuperagency
                           ? " with the following child agencies:"
                           : "."}
@@ -996,7 +949,6 @@ export const AgencyProvisioning = observer(() => {
                         Agency will{" "}
                         {isChildAgency ? "now become" : "no longer be"} a child
                         agency
-                        {/* {superOrChildAgencySelections.length > 0 */}
                         {hasNewSuperOrChildAgencySelections && isChildAgency
                           ? " of the following parent agency:"
                           : "."}
@@ -1061,7 +1013,7 @@ export const AgencyProvisioning = observer(() => {
                   {teamMembers.filter(
                     (member) =>
                       teamMemberRoles.find((tm) => tm.id === member.id)
-                        ?.role !== removeSnakeCase(member.role)
+                        ?.role !== (member.role && removeSnakeCase(member.role))
                   ).length > 0 && (
                     <Styled.ChangeLineItemWrapper>
                       <Styled.ChangeTitle>
@@ -1072,7 +1024,8 @@ export const AgencyProvisioning = observer(() => {
                           .filter(
                             (member) =>
                               teamMemberRoles.find((tm) => tm.id === member.id)
-                                ?.role !== removeSnakeCase(member.role)
+                                ?.role !==
+                              (member.role && removeSnakeCase(member.role))
                           )
                           .map((member) => (
                             <Styled.Chip>
@@ -1142,7 +1095,6 @@ export const AgencyProvisioning = observer(() => {
 
       {/* Agency Cards */}
       <Styled.CardContainer>
-        {/* {agencies.map((agency) => ( */}
         {filteredAgencies.map((agency) => (
           <Styled.UserCard
             key={agency.id}
