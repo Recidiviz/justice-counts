@@ -91,7 +91,7 @@ const Menu: React.FC = () => {
         .sort((a, b) => a.name.localeCompare(b.name))
         .map((agency) => {
           const stateCodeDisplayName = agency.state_code
-            .split("_")[1]
+            ?.split("_")[1]
             .toUpperCase();
           const isStateCodeInAgencyName =
             agency.name.includes(stateCodeDisplayName);
