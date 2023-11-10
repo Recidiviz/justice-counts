@@ -116,6 +116,7 @@ class AdminPanelStore {
         name: listItem.name,
         email: "email" in listItem ? listItem.email : undefined,
         action,
+        role: listItem.role,
       };
     });
   }

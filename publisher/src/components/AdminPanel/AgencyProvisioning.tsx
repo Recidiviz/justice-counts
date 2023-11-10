@@ -147,7 +147,12 @@ export const AgencyProvisioning = observer(() => {
         (member) => member.action === SearchableListBoxActions.DELETE
       ));
 
-  const hasChangedRoles = Boolean(teamMemberRoles);
+  const hasChangedRoles =
+    teamMembers.filter(
+      (member) =>
+        teamMemberRoles.find((tm) => tm.id === member.id)?.role !==
+        removeSnakeCase(member.role)
+    ).length > 0;
   const hasChangedSuperagencyStatus =
     (currentAgencyToEdit &&
       Boolean(currentAgencyToEdit.is_superagency) !== isSuperagency) ||
@@ -185,8 +190,8 @@ export const AgencyProvisioning = observer(() => {
     hasChangedSuperagencyStatus ||
     hasChangedChildAgencyStatus ||
     hasChangedTeamMembers ||
-    hasNewSuperOrChildAgencySelections;
-  // hasChangedRoles ||
+    hasNewSuperOrChildAgencySelections ||
+    hasChangedRoles;
   // superOrChildAgencySelections.length > 0;
 
   const [filteredAgencies, setFilteredAgencies] = useState<Agency[]>([]);
@@ -737,25 +742,23 @@ export const AgencyProvisioning = observer(() => {
                         Add Users
                       </Styled.ActionButton>
 
-                      {teamMembers.length > 0 && (
-                        <Styled.ActionButton
-                          selectedColor={
-                            teamMemberAction === SearchableListBoxActions.DELETE
-                              ? "red"
-                              : ""
-                          }
-                          onClick={() => {
-                            setTeamMemberAction(
-                              SearchableListBoxActions.DELETE
-                            );
-                            // deleteAgencyScrollToRef.current?.scrollIntoView({
-                            //   behavior: "smooth",
-                            // });
-                          }}
-                        >
-                          Delete Users
-                        </Styled.ActionButton>
-                      )}
+                      {/* {teamMembers.length > 0 && ( */}
+                      <Styled.ActionButton
+                        selectedColor={
+                          teamMemberAction === SearchableListBoxActions.DELETE
+                            ? "red"
+                            : ""
+                        }
+                        onClick={() => {
+                          setTeamMemberAction(SearchableListBoxActions.DELETE);
+                          // deleteAgencyScrollToRef.current?.scrollIntoView({
+                          //   behavior: "smooth",
+                          // });
+                        }}
+                      >
+                        Delete Users
+                      </Styled.ActionButton>
+                      {/* )} */}
 
                       <Styled.ActionButton>Create New User</Styled.ActionButton>
                     </Styled.FormActions>
@@ -1029,7 +1032,10 @@ export const AgencyProvisioning = observer(() => {
                       </Styled.ChipContainer>
                     </Styled.ChangeLineItemWrapper>
                   )}
-                  {teamMembers.length > 0 && (
+                  {teamMembers.filter(
+                    (member) =>
+                      member.action === SearchableListBoxActions.DELETE
+                  ).length > 0 && (
                     <Styled.ChangeLineItemWrapper>
                       <Styled.ChangeTitle>
                         Existing team members to be deleted:
@@ -1043,6 +1049,37 @@ export const AgencyProvisioning = observer(() => {
                           .map((member) => (
                             <Styled.Chip selected selectedColor="red">
                               {member.name}
+                            </Styled.Chip>
+                          ))}
+                      </Styled.ChipContainer>
+                    </Styled.ChangeLineItemWrapper>
+                  )}
+
+                  {teamMembers.filter(
+                    (member) =>
+                      teamMemberRoles.find((tm) => tm.id === member.id)
+                        ?.role !== removeSnakeCase(member.role)
+                  ).length > 0 && (
+                    <Styled.ChangeLineItemWrapper>
+                      <Styled.ChangeTitle>
+                        Team members with role updates:
+                      </Styled.ChangeTitle>
+                      <Styled.ChipContainer fitContentHeight>
+                        {teamMembers
+                          .filter(
+                            (member) =>
+                              teamMemberRoles.find((tm) => tm.id === member.id)
+                                ?.role !== removeSnakeCase(member.role)
+                          )
+                          .map((member) => (
+                            <Styled.Chip>
+                              {member.name} (
+                              {
+                                teamMemberRoles.find(
+                                  (tm) => tm.id === member.id
+                                )?.role
+                              }
+                              )
                             </Styled.Chip>
                           ))}
                       </Styled.ChipContainer>
@@ -1131,7 +1168,10 @@ export const AgencyProvisioning = observer(() => {
               setIsDashboardEnabled(agency.is_dashboard_enabled);
               setIsSuperagency(Boolean(agency.is_superagency));
               setIsChildAgency(Boolean(agency.super_agency_id));
-              if (agency.super_agency_id)
+              setTeamMembers(
+                AdminPanelStore.convertListToSearchableList(agency.team)
+              );
+              if (agency.super_agency_id) {
                 setSuperOrChildAgencySelections(
                   AdminPanelStore.convertListToSearchableList([
                     ...(agencies?.find(
@@ -1139,6 +1179,7 @@ export const AgencyProvisioning = observer(() => {
                     ) || []),
                   ])
                 );
+              }
               setTeamMemberRoles(
                 agency.team.map((member) => ({
                   id: member.auth0_user_id,
