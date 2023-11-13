@@ -493,8 +493,9 @@ export const AgencyProvisioning = observer(() => {
                     )}
 
                     <Styled.ChipContainer
-                      fitContentHeight
                       onClick={() => setShowSystemSelectionBox(true)}
+                      fitContentHeight
+                      hoverable
                     >
                       {agencySystems.map((system) => (
                         <Styled.Chip key={system.id}>{system.name}</Styled.Chip>

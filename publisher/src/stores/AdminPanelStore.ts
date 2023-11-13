@@ -21,8 +21,12 @@ import { makeAutoObservable, runInAction } from "mobx";
 
 import {
   Agency,
+  AgencyResponse,
   SearchableListBoxAction,
+  SearchableListItem,
+  SearchableListItemKey,
   User,
+  UserResponse,
 } from "../components/AdminPanel";
 import API from "./API";
 
@@ -56,19 +60,17 @@ class AdminPanelStore {
         path: `/admin/user`,
         method: "GET",
       })) as Response;
-      const data = (await response.json()) as { users: User[] };
+      const data = (await response.json()) as UserResponse;
 
       if (response.status !== 200) {
         throw new Error("There was an issue fetching users.");
       }
 
       runInAction(() => {
-        this.users = data.users.map((user) => {
-          return {
-            ...user,
-            agencies: AdminPanelStore.sortAgencies(user.agencies),
-          };
-        });
+        this.users = data.users.map((user) => ({
+          ...user,
+          agencies: AdminPanelStore.sortAgenciesAlphabetically(user.agencies),
+        }));
         this.loading = false;
       });
     } catch (error) {
@@ -82,43 +84,64 @@ class AdminPanelStore {
         path: `/admin/agency`,
         method: "GET",
       })) as Response;
-      const data = (await response.json()) as {
-        agencies: Agency[];
-        systems: AgencySystems[];
-      };
+      const data = (await response.json()) as AgencyResponse;
 
       if (response.status !== 200) {
         throw new Error("There was an issue fetching agencies.");
       }
 
       runInAction(() => {
-        this.agencies = AdminPanelStore.sortAgencies(data.agencies);
+        this.agencies = AdminPanelStore.sortAgenciesAlphabetically(
+          data.agencies
+        );
         this.systems = data.systems;
-        this.loading = false;
+        // this.loading = false;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
     }
   }
 
+  /** User Provisioning */
+
+  /** Agency Provisioning */
+
+  /** Helpers  */
+
   /** Sorts a list of agencies in alphabetical order */
-  static sortAgencies(agencies: Agency[]) {
+  static sortAgenciesAlphabetically(agencies: Agency[]) {
     return agencies.sort((a, b) => a.name.localeCompare(b.name));
   }
 
+  /** Standardizes a list of agencies, users, or team members for use with the SearchableListBox component */
   static convertListToSearchableList(
     list: Agency[] | User[] | AgencyTeamMember[],
     action?: SearchableListBoxAction
   ) {
-    return list.map((listItem) => {
-      return {
-        id: "auth0_user_id" in listItem ? listItem.auth0_user_id : listItem.id,
-        name: listItem.name,
-        email: "email" in listItem ? listItem.email : undefined,
-        action,
-        role: listItem.role,
-      };
-    });
+    return list.map((listItem) => ({
+      id: "auth0_user_id" in listItem ? listItem.auth0_user_id : listItem.id,
+      name: listItem.name,
+      email: "email" in listItem ? listItem.email : undefined,
+      action,
+      role: "role" in listItem ? listItem.role : undefined,
+    }));
+  }
+
+  static searchList(
+    val: string,
+    list: SearchableListItem[],
+    keys: SearchableListItemKey[],
+    setListState: React.Dispatch<React.SetStateAction<SearchableListItem[]>>
+  ) {
+    const regex = new RegExp(`${val}`, `i`);
+    setListState(() =>
+      list.filter((listItem) =>
+        keys.some(
+          (key) =>
+            listItem[key] && regex.test(listItem[key] as SearchableListItemKey)
+        )
+      )
+    );
   }
 }
 

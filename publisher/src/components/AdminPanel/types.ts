@@ -44,12 +44,9 @@ export type Agency = {
   is_dashboard_enabled: boolean;
 };
 
-export type User = {
-  id: string;
-  auth0_user_id: string;
-  email: string;
-  name: string;
+export type AgencyResponse = {
   agencies: Agency[];
+  systems: AgencySystems[];
 };
 
 export const AgencyProvisioningSettings = {
@@ -59,6 +56,26 @@ export const AgencyProvisioningSettings = {
 
 export type AgencyProvisioningSetting =
   (typeof AgencyProvisioningSettings)[keyof typeof AgencyProvisioningSettings];
+
+export type User = {
+  id: string;
+  auth0_user_id: string;
+  email: string;
+  name: string;
+  agencies: Agency[];
+};
+
+export type UserResponse = { users: User[] };
+
+/** Should we get this from the backend? That's the current behavior if we want to keep one source of truth */
+export const userRoles = [
+  "AGENCY_ADMIN",
+  "JUSTICE_COUNTS_ADMIN",
+  "CONTRIBUTOR",
+  "READ_ONLY",
+] as const;
+
+export type UserRole = (typeof userRoles)[number];
 
 export const SearchableListBoxActions = {
   ADD: "ADD",
@@ -84,6 +101,8 @@ export type SearchableListItem = {
   role?: UserRole;
 };
 
+export type SearchableListItemKey = keyof SearchableListItem;
+
 export type SearchableListBoxButtons = { label: string; onClick: () => void }[];
 
 export type SearchableListBoxProps = {
@@ -99,24 +118,6 @@ export type SearchableListBoxProps = {
   };
   isActiveBox?: boolean;
 };
-
-// export const AgencyListTypes = {
-//   CURRENT: "CURRENT",
-//   ADDED: "ADDED",
-// } as const;
-
-// export type AgencyListType =
-//   (typeof AgencyListTypes)[keyof typeof AgencyListTypes];
-
-/** Should we get this from the backend? That's the current behavior if we want to keep one source of truth */
-export const userRoles = [
-  "AGENCY_ADMIN",
-  "JUSTICE_COUNTS_ADMIN",
-  "CONTRIBUTOR",
-  "READ_ONLY",
-] as const;
-
-export type UserRole = (typeof userRoles)[number];
 
 export const StateCodes = {
   us_ak: "Alaska",

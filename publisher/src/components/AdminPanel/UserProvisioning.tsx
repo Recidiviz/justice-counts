@@ -35,21 +35,34 @@ import {
 export const UserProvisioning = observer(() => {
   const { adminPanelStore } = useStore();
   const { loading, users, usersByID, agencies } = adminPanelStore;
-  const addAgencyScrollToRef = useRef<null | HTMLDivElement>(null);
-  const deleteAgencyScrollToRef = useRef<null | HTMLDivElement>(null);
-  const reviewChangesRef = useRef<null | HTMLDivElement>(null);
 
-  const [selectedUserIDToEdit, setSelectedUserIDToEdit] = useState<
-    number | string
-  >();
-  const selectedUser = selectedUserIDToEdit
-    ? usersByID[selectedUserIDToEdit][0]
-    : undefined;
-  const [username, setUsername] = useState(selectedUser?.name || "");
-  const [email, setEmail] = useState(selectedUser?.email || "");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const addAgencyScrollToRef = useRef<HTMLDivElement>(null);
+  const scrollableContainerRef = useRef<HTMLDivElement>(null);
+  const reviewChangesRef = useRef<HTMLDivElement>(null);
+
+  /** The user ID of the user being edited. When `undefined`, either no user card has been clicked to edit or a new user is being created. */
+  const [selectedUserIDToEdit, setSelectedUserIDToEdit] = useState<string>();
+
+  /** The provisioning action the user wants to take - `ADD` or `DELETE` agencies */
+  const [addOrDeleteAgencyAction, setAddOrDeleteAgencyAction] =
+    useState<SearchableListBoxAction>();
+
+  /** Used for filtering a list of users based on the search input. */
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [searchInput, setSearchInput] = useState<string>("");
+
+  /** Whether or not the modal is open. */
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  /** Whether or not the user is scrolled to the bottom of the modal container. */
+  const [isBottom, setIsBottom] = useState(false);
+
+  /** Allowable  when creating or editing users */
+  const [username, setUsername] = useState<string>();
+  const [email, setEmail] = useState<string>();
+  const [agencySelections, setAgencySelections] = useState<
+    SearchableListItem[]
+  >([]);
 
   const searchUsers = (val: string) => {
     const regex = new RegExp(`${val}`, `i`);
@@ -65,11 +78,118 @@ export const UserProvisioning = observer(() => {
     );
   };
 
-  useEffect(() => {
-    setFilteredUsers(users);
-    searchUsers(searchInput);
-    // eslint-disable-next-line
-  }, [users]);
+  const openModal = () => setIsModalOpen(true);
+
+  const resetState = () => {
+    setAddOrDeleteAgencyAction(undefined);
+    setUsername("");
+    setAgencySelections([]);
+    setSelectedUserIDToEdit(undefined);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    resetState();
+  };
+
+  const modalButtons = [
+    { label: "Cancel", onClick: closeModal },
+    { label: "Save", onClick: () => new Error("Saved") },
+  ];
+  const agencyActionButtons = [
+    {
+      label: "Select All",
+      onClick: () => {
+        if (addOrDeleteAgencyAction === SearchableListBoxActions.ADD) {
+          setAgencySelections((prev) => [
+            ...prev,
+            ...(availableAgencies.map((agency) => ({
+              id: agency.id,
+              name: agency.name,
+              action: addOrDeleteAgencyAction,
+            })) || []),
+          ]);
+        }
+        if (addOrDeleteAgencyAction === SearchableListBoxActions.DELETE) {
+          setAgencySelections((prev) => [
+            ...prev,
+            ...(selectedUser?.agencies.map((agency) => ({
+              id: agency.id,
+              name: agency.name,
+              action: addOrDeleteAgencyAction,
+            })) || []),
+          ]);
+        }
+      },
+    },
+    {
+      label: "Clear Selections",
+      onClick: () => {
+        if (addOrDeleteAgencyAction === SearchableListBoxActions.ADD) {
+          setAgencySelections((prev) =>
+            prev.filter(
+              (selection) => selection.action !== SearchableListBoxActions.ADD
+            )
+          );
+        }
+        if (addOrDeleteAgencyAction === SearchableListBoxActions.DELETE) {
+          setAgencySelections((prev) =>
+            prev.filter(
+              (selection) =>
+                selection.action !== SearchableListBoxActions.DELETE
+            )
+          );
+        }
+      },
+    },
+    {
+      label: "Save Selections",
+      onClick: () => {
+        setAddOrDeleteAgencyAction(undefined);
+      },
+    },
+  ];
+
+  const updateAgencySelections = (
+    id: number | string,
+    name: string,
+    action?: SearchableListBoxAction
+  ) => {
+    setAgencySelections((prev) => {
+      if (prev.some((selection) => selection.name === name))
+        return prev.filter((selection) => selection.name !== name);
+      return [...prev, { name, action, id }];
+    });
+    if (isBottom) {
+      scrollableContainerRef?.current?.scrollBy(0, -1);
+      scrollableContainerRef?.current?.scrollBy(0, 1);
+    }
+  };
+
+  const selectedUser = selectedUserIDToEdit
+    ? usersByID[selectedUserIDToEdit][0]
+    : undefined;
+
+  const isAddAction = addOrDeleteAgencyAction === SearchableListBoxActions.ADD;
+  const isDeleteAction =
+    addOrDeleteAgencyAction === SearchableListBoxActions.DELETE;
+
+  /** All available agencies that a user is not currently connected to */
+  const availableAgencies = agencies.filter(
+    (agency) => !selectedUser?.agencies.some((a) => a.name === agency.name)
+  );
+
+  const userAgenciesAndAddedAgencies = [
+    ...(selectedUser?.agencies || []),
+    ...availableAgencies.filter((agency) =>
+      agencySelections.some((selection) => selection.name === agency.name)
+    ),
+  ];
+
+  const hasChanges =
+    (selectedUser && username && username !== selectedUser.name) ||
+    (selectedUser && email && email !== selectedUser.email) ||
+    agencySelections.length > 0;
 
   // const getUpdates = () => {
   //   const currentAgencyIDs = selectedUser?.agencies.map((ag) => ag.id) || [];
@@ -90,114 +210,11 @@ export const UserProvisioning = observer(() => {
   //   };
   // };
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => {
-    setUserProvisioningAction(undefined);
-    setUsername("");
-    setAgencySelections([]);
-    setSelectedUserIDToEdit(undefined);
-    setIsModalOpen(false);
-  };
-  const modalButtons = [
-    { label: "Cancel", onClick: closeModal },
-    { label: "Save", onClick: () => new Error("Saved") },
-  ];
-  const agencyActionButtons = [
-    {
-      label: "Select All",
-      onClick: () => {
-        if (userProvisioningAction === SearchableListBoxActions.ADD) {
-          setAgencySelections((prev) => [
-            ...prev,
-            ...(availableAgencies.map((agency) => ({
-              id: agency.id,
-              name: agency.name,
-              action: userProvisioningAction,
-            })) || []),
-          ]);
-        }
-        if (userProvisioningAction === SearchableListBoxActions.DELETE) {
-          setAgencySelections((prev) => [
-            ...prev,
-            ...(selectedUser?.agencies.map((agency) => ({
-              id: agency.id,
-              name: agency.name,
-              action: userProvisioningAction,
-            })) || []),
-          ]);
-        }
-      },
-    },
-    {
-      label: "Clear Selections",
-      onClick: () => {
-        if (userProvisioningAction === SearchableListBoxActions.ADD) {
-          setAgencySelections((prev) =>
-            prev.filter(
-              (selection) => selection.action !== SearchableListBoxActions.ADD
-            )
-          );
-        }
-        if (userProvisioningAction === SearchableListBoxActions.DELETE) {
-          setAgencySelections((prev) =>
-            prev.filter(
-              (selection) =>
-                selection.action !== SearchableListBoxActions.DELETE
-            )
-          );
-        }
-      },
-    },
-    {
-      label: "Save Selections",
-      onClick: () => {
-        setUserProvisioningAction(undefined);
-      },
-    },
-  ];
-
-  const [userProvisioningAction, setUserProvisioningAction] =
-    useState<SearchableListBoxAction>();
-  const isAddAction = userProvisioningAction === SearchableListBoxActions.ADD;
-  const isDeleteAction =
-    userProvisioningAction === SearchableListBoxActions.DELETE;
-
-  const [agencySelections, setAgencySelections] = useState<
-    SearchableListItem[]
-  >([]);
-
-  const updateAgencySelections = (
-    id: number | string,
-    name: string,
-    action?: SearchableListBoxAction
-  ) => {
-    setAgencySelections((prev) => {
-      if (prev.some((selection) => selection.name === name))
-        return prev.filter((selection) => selection.name !== name);
-      return [...prev, { name, action, id }];
-    });
-    if (isBottom) {
-      deleteAgencyScrollToRef?.current?.scrollBy(0, -1);
-      deleteAgencyScrollToRef?.current?.scrollBy(0, 1);
-    }
-  };
-
-  /** All available agencies that a user is not currently connected to */
-  const availableAgencies = agencies.filter(
-    (agency) => !selectedUser?.agencies.some((a) => a.name === agency.name)
-  );
-
-  const userAgenciesAndAddedAgencies = [
-    ...(selectedUser?.agencies || []),
-    ...availableAgencies.filter((agency) =>
-      agencySelections.some((selection) => selection.name === agency.name)
-    ),
-  ];
-  const [isBottom, setIsBottom] = useState(false);
-  const hasChanges =
-    (selectedUser && username && username !== selectedUser.name) ||
-    (selectedUser && email && email !== selectedUser.email) ||
-    agencySelections.length > 0;
+  useEffect(() => {
+    setFilteredUsers(users);
+    searchUsers(searchInput);
+    // eslint-disable-next-line
+  }, [users]);
 
   if (loading) {
     return <Loading />;
@@ -222,16 +239,13 @@ export const UserProvisioning = observer(() => {
             )}
 
             <Styled.ScrollableContainer
-              ref={deleteAgencyScrollToRef}
+              ref={scrollableContainerRef}
               onScroll={() => {
                 if (
-                  deleteAgencyScrollToRef?.current?.scrollHeight &&
-                  deleteAgencyScrollToRef?.current?.scrollTop &&
-                  deleteAgencyScrollToRef?.current?.clientHeight &&
-                  (deleteAgencyScrollToRef?.current?.scrollHeight || 0) -
-                    (deleteAgencyScrollToRef?.current?.scrollTop || 0) -
-                    (deleteAgencyScrollToRef?.current?.clientHeight || 0) <
-                    100
+                  (scrollableContainerRef?.current?.scrollHeight || 0) -
+                    (scrollableContainerRef?.current?.scrollTop || 0) -
+                    (scrollableContainerRef?.current?.clientHeight || 0) <
+                  100
                 ) {
                   return setIsBottom(true);
                 }
@@ -272,7 +286,8 @@ export const UserProvisioning = observer(() => {
                     // boxActionType={userProvisioningAction}
                     boxActionType={SearchableListBoxActions.DELETE}
                     isActiveBox={
-                      userProvisioningAction === SearchableListBoxActions.DELETE
+                      addOrDeleteAgencyAction ===
+                      SearchableListBoxActions.DELETE
                     }
                     metadata={{
                       searchBoxLabel: "Search Agencies",
@@ -284,7 +299,7 @@ export const UserProvisioning = observer(() => {
                   <Styled.ActionButton
                     selectedColor={isAddAction ? "green" : ""}
                     onClick={(e) => {
-                      setUserProvisioningAction(SearchableListBoxActions.ADD);
+                      setAddOrDeleteAgencyAction(SearchableListBoxActions.ADD);
                       setTimeout(
                         () =>
                           addAgencyScrollToRef.current?.scrollIntoView({
@@ -300,10 +315,10 @@ export const UserProvisioning = observer(() => {
                     <Styled.ActionButton
                       selectedColor={isDeleteAction ? "red" : ""}
                       onClick={() => {
-                        setUserProvisioningAction(
+                        setAddOrDeleteAgencyAction(
                           SearchableListBoxActions.DELETE
                         );
-                        deleteAgencyScrollToRef.current?.scrollIntoView({
+                        scrollableContainerRef.current?.scrollIntoView({
                           behavior: "smooth",
                         });
                       }}
@@ -364,7 +379,7 @@ export const UserProvisioning = observer(() => {
                     listBoxLabel: "Available Agencies",
                   }}
                   isActiveBox={
-                    userProvisioningAction === SearchableListBoxActions.ADD
+                    addOrDeleteAgencyAction === SearchableListBoxActions.ADD
                   }
                 />
               )}
@@ -448,6 +463,7 @@ export const UserProvisioning = observer(() => {
         </Modal>
       )}
 
+      {/* Settings Bar */}
       <Styled.SettingsBar>
         <Styled.InputLabelWrapper inputWidth={500}>
           <input
@@ -472,8 +488,8 @@ export const UserProvisioning = observer(() => {
         </Styled.ButtonWrapper>
       </Styled.SettingsBar>
 
+      {/* List of Users */}
       <Styled.CardContainer>
-        {/* {users.map((user) => ( */}
         {filteredUsers.map((user) => (
           <Styled.UserCard
             key={user.id}

@@ -24,7 +24,9 @@ import {
   SearchableListBoxActions,
   SearchableListBoxProps,
   SearchableListItem,
+  SearchableListItemKey,
 } from "./types";
+import AdminPanelStore from "../../stores/AdminPanelStore";
 
 export const SearchableListBox = ({
   list,
@@ -35,22 +37,13 @@ export const SearchableListBox = ({
   metadata,
   isActiveBox = true,
 }: SearchableListBoxProps) => {
+  const selectionsByName = groupBy(selections, (selection) => selection.name);
+  const filterOptions: SearchableListItemKey[] = ["name", "email"];
+
   const [filteredList, setFilteredList] = useState<SearchableListItem[]>([]);
   const [inputValue, setInputValue] = useState("");
 
-  const selectionsByName = groupBy(selections, (selection) => selection.name);
-
-  const searchList = (val: string) => {
-    const regex = new RegExp(`${val}`, `i`);
-    setFilteredList(() =>
-      list.filter(
-        (option) =>
-          regex.test(option.name) || (option.email && regex.test(option.email))
-      )
-    );
-  };
-
-  const chipColor = (actionType?: SearchableListBoxAction) => {
+  const getChipColor = (actionType?: SearchableListBoxAction) => {
     if (!actionType) return;
     if (actionType === SearchableListBoxActions.DELETE) return "red";
     if (actionType === SearchableListBoxActions.ADD) return "green";
@@ -58,8 +51,13 @@ export const SearchableListBox = ({
 
   useEffect(() => {
     setFilteredList(list);
-    searchList(inputValue);
-    // eslint-disable-next-line
+    AdminPanelStore.searchList(
+      inputValue,
+      list,
+      filterOptions,
+      setFilteredList
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [list]);
 
   return (
@@ -77,13 +75,6 @@ export const SearchableListBox = ({
             filteredList.map((listItem) => (
               <Styled.Chip
                 key={listItem.id}
-                selected={selections.some(
-                  (selection) => selection.name === listItem.name
-                )}
-                hover={Boolean(boxActionType && isActiveBox)}
-                selectedColor={chipColor(
-                  selectionsByName[listItem.name]?.[0].action
-                )}
                 onClick={() => {
                   if (!isActiveBox) return;
                   if (boxActionType) {
@@ -96,11 +87,17 @@ export const SearchableListBox = ({
                     );
                   }
                 }}
+                selected={Boolean(selectionsByName[listItem.name])}
+                hover={Boolean(boxActionType && isActiveBox)}
+                selectedColor={getChipColor(
+                  selectionsByName[listItem.name]?.[0].action
+                )}
               >
                 {listItem.name}
               </Styled.Chip>
             ))}
         </Styled.ChipContainer>
+
         <Styled.ChipContainerLabel>
           {metadata?.listBoxLabel}
           <Styled.LabelButtonsWrapper>
@@ -121,7 +118,12 @@ export const SearchableListBox = ({
           value={inputValue}
           onChange={(e) => {
             setInputValue(e.target.value);
-            searchList(e.target.value);
+            AdminPanelStore.searchList(
+              e.target.value,
+              list,
+              filterOptions,
+              setFilteredList
+            );
           }}
         />
         <label htmlFor="search-agencies">
@@ -129,7 +131,12 @@ export const SearchableListBox = ({
           <Styled.LabelButton
             onClick={() => {
               setInputValue("");
-              searchList("");
+              AdminPanelStore.searchList(
+                "",
+                list,
+                filterOptions,
+                setFilteredList
+              );
             }}
           >
             Clear
