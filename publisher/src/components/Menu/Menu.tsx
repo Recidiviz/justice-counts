@@ -89,19 +89,28 @@ const Menu: React.FC = () => {
     ? userStore.userAgencies
         .slice()
         .sort((a, b) => a.name.localeCompare(b.name))
-        .map((agency) => ({
-          key: agency.id,
-          label: `${agency.name} ${
-            agency.state_code && includeStateCodeInAgencyName
-              ? `(${agency.state_code.split("_")[1].toUpperCase()})`
-              : ""
-          }`,
-          onClick: () => {
-            navigate(`/agency/${agency.id}/${pathWithoutAgency}`);
-            handleCloseMobileMenu();
-          },
-          highlight: agency.id === currentAgency?.id,
-        }))
+        .map((agency) => {
+          const stateCodeDisplayName = agency.state_code
+            ?.split("_")[1]
+            .toUpperCase();
+          const isStateCodeInAgencyName =
+            agency.name.includes(stateCodeDisplayName);
+          return {
+            key: agency.id,
+            label: `${agency.name} ${
+              agency.state_code &&
+              includeStateCodeInAgencyName &&
+              !isStateCodeInAgencyName
+                ? `(${stateCodeDisplayName})`
+                : ""
+            }`,
+            onClick: () => {
+              navigate(`/agency/${agency.id}/${pathWithoutAgency}`);
+              handleCloseMobileMenu();
+            },
+            highlight: agency.id === currentAgency?.id,
+          };
+        })
     : [];
 
   const profileDropdownMetadata = [
