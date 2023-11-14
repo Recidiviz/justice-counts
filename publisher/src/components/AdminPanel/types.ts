@@ -71,7 +71,6 @@ export type User = {
 
 export type UserResponse = { users: User[] };
 
-/** Should we get this from the backend? That's the current behavior if we want to keep one source of truth */
 export const userRoles = [
   "AGENCY_ADMIN",
   "JUSTICE_COUNTS_ADMIN",
