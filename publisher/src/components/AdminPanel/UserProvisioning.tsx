@@ -43,7 +43,7 @@ export const UserProvisioning = observer(() => {
   /** The user ID of the user being edited. When `undefined`, either no user card has been clicked to edit or a new user is being created. */
   const [selectedUserIDToEdit, setSelectedUserIDToEdit] = useState<string>();
 
-  /** The provisioning action the user wants to take - `ADD` or `DELETE` agencies */
+  /** The provisioning action the user wants to take - `ADD` or `DELETE` agencies. */
   const [addOrDeleteAgencyAction, setAddOrDeleteAgencyAction] =
     useState<SearchableListBoxAction>();
 

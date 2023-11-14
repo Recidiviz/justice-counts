@@ -24,7 +24,7 @@ import { HeaderBarBackground } from "./types";
 type HeaderBarProps = {
   onLogoClick: () => void;
   children: React.ReactNode;
-  label?: string | React.ReactNode;
+  label?: string;
   badge?: React.ReactNode;
   background?: HeaderBarBackground;
   hasBottomBorder?: boolean;

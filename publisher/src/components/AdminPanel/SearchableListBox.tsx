@@ -106,7 +106,7 @@ export const SearchableListBox = ({
         </Styled.ChipContainerLabel>
       </Styled.InputLabelWrapper>
 
-      {/* Search Box */}
+      {/* Search Input */}
       <Styled.InputLabelWrapper inputWidth={300}>
         <input
           name="search-agencies"

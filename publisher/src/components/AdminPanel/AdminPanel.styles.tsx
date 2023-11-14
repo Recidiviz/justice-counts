@@ -24,6 +24,8 @@ import styled, { css } from "styled-components/macro";
 
 import { SearchableListBoxAction, SearchableListBoxActions } from "./types";
 
+/** General */
+
 export const AdminPanelContainer = styled.div`
   width: 100%;
   padding-top: 10px;
@@ -68,6 +70,8 @@ export const ScrollableContainer = styled.div`
   padding-right: 16px;
 `;
 
+/** Modal */
+
 export const ModalWrapper = styled.div``;
 
 export const ModalContainer = styled.div`
@@ -101,7 +105,8 @@ export const ModalActionButtons = styled.div`
   bottom: 32px;
   right: 32px;
 `;
-export const AddNewUserModal = styled.div``;
+
+/** Form */
 
 export const Form = styled.form`
   display: flex;

@@ -46,7 +46,7 @@ export const Tab = styled.div<{
     if (size === "medium")
       return `padding: 16px 0; ${typography.sizeCSS.medium}; font-weight: 400;`;
     if (size === "large")
-      return `padding: 16px 0; ${typography.sizeCSS.large}; font-weight: 400;`;
+      return `padding: 16px 0; ${typography.sizeCSS.large};`;
     return `padding: 8px 0; ${typography.sizeCSS.normal};`;
   }}
   &:hover {

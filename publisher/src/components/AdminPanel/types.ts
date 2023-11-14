@@ -32,6 +32,8 @@ export type EnvironmentType = `${Environment}`;
 
 export type SettingType = `${Setting}`;
 
+/** Agency Types */
+
 export type Agency = {
   id: number;
   name: string;
@@ -57,6 +59,8 @@ export const AgencyProvisioningSettings = {
 export type AgencyProvisioningSetting =
   (typeof AgencyProvisioningSettings)[keyof typeof AgencyProvisioningSettings];
 
+/** User Types */
+
 export type User = {
   id: string;
   auth0_user_id: string;
@@ -76,6 +80,8 @@ export const userRoles = [
 ] as const;
 
 export type UserRole = (typeof userRoles)[number];
+
+/** Search Feature Types */
 
 export const SearchableListBoxActions = {
   ADD: "ADD",
@@ -124,6 +130,8 @@ export type SearchableListBoxProps = {
   };
   isActiveBox?: boolean;
 };
+
+/** State and County Code Types */
 
 export const StateCodes = {
   us_ak: "Alaska",

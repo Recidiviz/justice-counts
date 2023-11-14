@@ -68,7 +68,7 @@ class AdminPanelStore {
       runInAction(() => {
         this.users = data.users.map((user) => ({
           ...user,
-          agencies: AdminPanelStore.sortAgenciesAlphabetically(user.agencies),
+          agencies: AdminPanelStore.sortAgenciesByName(user.agencies),
         }));
         this.loading = false;
       });
@@ -90,11 +90,9 @@ class AdminPanelStore {
       }
 
       runInAction(() => {
-        this.agencies = AdminPanelStore.sortAgenciesAlphabetically(
-          data.agencies
-        );
+        this.agencies = AdminPanelStore.sortAgenciesByName(data.agencies);
         this.systems = data.systems;
-        // this.loading = false;
+        this.loading = false;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
@@ -103,8 +101,14 @@ class AdminPanelStore {
 
   /** Helpers  */
 
-  /** Sorts a list of agencies in alphabetical order */
-  static sortAgenciesAlphabetically(agencies: Agency[]) {
+  /** Sorts a list of agencies in ascending/descending alphabetical order (defaults to ascending order) */
+  static sortAgenciesByName(
+    agencies: Agency[],
+    order: "ascending" | "descending" = "ascending"
+  ) {
+    if (order === "descending") {
+      return agencies.sort((a, b) => b.name.localeCompare(a.name));
+    }
     return agencies.sort((a, b) => a.name.localeCompare(b.name));
   }
 

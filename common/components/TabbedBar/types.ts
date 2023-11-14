@@ -26,4 +26,4 @@ export type TabOption = {
   indicator?: React.ReactNode;
 };
 
-export type TabbedBarSize = "medium" | "large" | "title";
+export type TabbedBarSize = "medium" | "large";
