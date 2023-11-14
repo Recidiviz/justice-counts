@@ -22,10 +22,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { Setting, SettingType } from ".";
+import { AgencyProvisioning, Setting, SettingType, UserProvisioning } from ".";
 import * as Styled from "./AdminPanel.styles";
-import { AgencyProvisioning } from "./AgencyProvisioning";
-import { UserProvisioning } from "./UserProvisioning";
 
 export const AdminPanel = observer(() => {
   const navigate = useNavigate();

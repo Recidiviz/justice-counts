@@ -26,14 +26,13 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
-import * as Styled from "./AdminPanel.styles";
-import { SearchableListBox } from "./SearchableListBox";
 import {
   Agency,
   AgencyProvisioningSetting,
   AgencyProvisioningSettings,
   FipsCountyCodeKey,
   FipsCountyCodes,
+  SearchableListBox,
   SearchableListBoxAction,
   SearchableListBoxActions,
   SearchableListItem,
@@ -41,7 +40,8 @@ import {
   StateCodes,
   UserRole,
   userRoles,
-} from "./types";
+} from ".";
+import * as Styled from "./AdminPanel.styles";
 
 export const AgencyProvisioning = observer(() => {
   const { adminPanelStore } = useStore();

@@ -23,14 +23,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
 import { Loading } from "../Loading";
-import { SearchableListBox } from ".";
-import * as Styled from "./AdminPanel.styles";
 import {
+  SearchableListBox,
   SearchableListBoxAction,
   SearchableListBoxActions,
   SearchableListItem,
   User,
-} from "./types";
+} from ".";
+import * as Styled from "./AdminPanel.styles";
 
 export const UserProvisioning = observer(() => {
   const { adminPanelStore } = useStore();
