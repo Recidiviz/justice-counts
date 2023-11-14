@@ -40,7 +40,7 @@ export const HeaderEnvironmentDisplay = styled.div`
   text-transform: uppercase;
 `;
 
-export const SettingsContainer = styled.div`
+export const ProvisioningViewContainer = styled.div`
   padding-top: 16px;
 `;
 

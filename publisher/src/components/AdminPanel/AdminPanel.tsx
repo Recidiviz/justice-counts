@@ -70,12 +70,12 @@ export const AdminPanel = observer(() => {
           <TabbedBar options={settingOptions} size="medium" />
         </Styled.SidePaddingWrapper>
 
-        <Styled.SettingsContainer>
+        <Styled.ProvisioningViewContainer>
           {currentProvisioningType === Setting.USERS && <UserProvisioning />}
           {currentProvisioningType === Setting.AGENCIES && (
             <AgencyProvisioning />
           )}
-        </Styled.SettingsContainer>
+        </Styled.ProvisioningViewContainer>
       </Styled.AdminPanelWrapper>
     </Styled.AdminPanelContainer>
   );

@@ -89,26 +89,6 @@ const App: React.FC = (): ReactElement => {
             }
           />
           <Route path="/admin-panel" element={<AdminPanel />} />
-          {initialAgency ? (
-            <>
-              <Route
-                path="/"
-                element={<Navigate to={`/agency/${initialAgency}/`} />}
-              />
-
-              <Route path="/agency/:agencyId/*" element={<Router />} />
-              <Route
-                path="*"
-                element={
-                  <Navigate
-                    to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`}
-                  />
-                }
-              />
-            </>
-          ) : (
-            <Route path="*" element={<NoAgencies />} />
-          )}
         </Routes>
       </PageWrapper>
       <Footer />
