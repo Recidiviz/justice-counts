@@ -177,6 +177,24 @@ const CreateReport = () => {
     highlight: yearValue === year,
   }));
 
+  const isFiscalYear =
+    createReportFormValues.frequency === "ANNUAL" &&
+    createReportFormValues.annualStartMonth !== 1;
+
+  const getDateRangeYear = () => {
+    if (isRecurring) {
+      if (isFiscalYear) {
+        return new Date(Date.now()).getFullYear() - 1;
+      }
+      return new Date(Date.now()).getFullYear();
+    }
+
+    if (isFiscalYear) {
+      return year - 1;
+    }
+    return year;
+  };
+
   if (userStore.isUserReadOnly(agencyId))
     return <Navigate to={`/agency/${agencyId}/${REPORTS_LOWERCASE}`} />;
 
@@ -308,7 +326,8 @@ const CreateReport = () => {
           {createReportFormValues.isRecurring === false && (
             <>
               <Styled.Heading>
-                When should this {REPORT_LOWERCASE} start?
+                When should this {REPORT_LOWERCASE}{" "}
+                {isFiscalYear ? "end" : "start"}?
               </Styled.Heading>
               <Styled.DropdownsWrapper>
                 {createReportFormValues.frequency === "MONTHLY" && (
@@ -342,7 +361,7 @@ const CreateReport = () => {
             <Styled.BoldFont>
               {printDateRangeFromMonthYear(
                 frequency === "ANNUAL" ? annualStartMonth : month,
-                isRecurring ? new Date(Date.now()).getFullYear() : year,
+                getDateRangeYear(),
                 frequency
               )}
             </Styled.BoldFont>
