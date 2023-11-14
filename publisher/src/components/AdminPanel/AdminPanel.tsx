@@ -30,22 +30,22 @@ export const AdminPanel = observer(() => {
   const { api, adminPanelStore } = useStore();
   const { fetchUsers, fetchAgencies } = adminPanelStore;
 
-  const [currentProvisioningType, setProvisioningType] = useState<SettingType>(
+  const [currentProvisioningView, setProvisioningView] = useState<SettingType>(
     Setting.USERS
   );
 
-  const settingOptions = [
+  const provisioningViewOptions = [
     {
       key: "users",
       label: "User Provisioning",
-      onClick: () => setProvisioningType(Setting.USERS),
-      selected: currentProvisioningType === Setting.USERS,
+      onClick: () => setProvisioningView(Setting.USERS),
+      selected: currentProvisioningView === Setting.USERS,
     },
     {
       key: "agencies",
       label: "Agency Provisioning",
-      onClick: () => setProvisioningType(Setting.AGENCIES),
-      selected: currentProvisioningType === Setting.AGENCIES,
+      onClick: () => setProvisioningView(Setting.AGENCIES),
+      selected: currentProvisioningView === Setting.AGENCIES,
     },
   ];
 
@@ -65,14 +65,14 @@ export const AdminPanel = observer(() => {
 
       <Styled.AdminPanelWrapper>
         <Styled.SidePaddingWrapper>
-          <TabbedBar options={settingOptions} size="medium" />
+          <TabbedBar options={provisioningViewOptions} size="medium" />
         </Styled.SidePaddingWrapper>
 
         <Styled.ProvisioningViewContainer>
-          {currentProvisioningType === Setting.USERS && (
+          {currentProvisioningView === Setting.USERS && (
             <div>User Provisioning Component</div>
           )}
-          {currentProvisioningType === Setting.AGENCIES && (
+          {currentProvisioningView === Setting.AGENCIES && (
             <div>Agency Provisioning Component</div>
           )}
         </Styled.ProvisioningViewContainer>
