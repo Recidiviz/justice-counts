@@ -22,7 +22,6 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled, { css } from "styled-components/macro";
 
-import { FOOTER_HEIGHT_WITHOUT_MARGIN } from "../Footer";
 import { SearchableListBoxAction, SearchableListBoxActions } from "./types";
 
 export const AdminPanelContainer = styled.div`
@@ -33,6 +32,12 @@ export const AdminPanelContainer = styled.div`
 
 export const AdminPanelWrapper = styled.div``;
 
+export const HeaderEnvironmentDisplay = styled.div`
+  ${typography.sizeCSS.large}
+  letter-spacing: 3px;
+  text-transform: uppercase;
+`;
+
 export const SettingsContainer = styled.div`
   padding-top: 16px;
 `;
@@ -41,20 +46,6 @@ export const SettingsTitle = styled.div`
   ${typography.sizeCSS.large}
   margin-bottom: 24px;
   display: flex;
-`;
-
-export const SidePaddingWrapper = styled.div`
-  padding: 0 32px;
-`;
-
-export const HeaderEnvironmentDisplay = styled.div`
-  ${typography.sizeCSS.large}
-  letter-spacing: 3px;
-  text-transform: uppercase;
-`;
-
-export const ButtonWrapper = styled.div`
-  width: fit-content;
 `;
 
 export const SettingsBar = styled.div`
@@ -70,7 +61,28 @@ export const SettingsBar = styled.div`
   background: ${palette.solid.white};
 `;
 
-export const AddNewUserModal = styled.div``;
+export const ScrollableContainer = styled.div`
+  height: 61vh;
+  overflow-y: auto;
+  padding-bottom: 32px;
+  padding-right: 16px;
+`;
+
+export const ModalWrapper = styled.div``;
+
+export const ModalContainer = styled.div`
+  height: 90vh;
+  width: 50vw;
+  background: ${palette.solid.white};
+  border-radius: 4px;
+  padding: 32px;
+  position: relative;
+`;
+
+export const ModalTitle = styled.div<{ noBottomMargin?: boolean }>`
+  ${typography.sizeCSS.normal}
+  margin-bottom: ${({ noBottomMargin }) => (noBottomMargin ? 0 : 28)}px;
+`;
 
 export const ModalDescription = styled.div`
   ${typography.sizeCSS.small}
@@ -78,6 +90,18 @@ export const ModalDescription = styled.div`
   font-weight: 500;
   margin-bottom: 32px;
 `;
+
+export const ModalActionButtons = styled.div`
+  width: calc(100% - 64px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  position: absolute;
+  bottom: 32px;
+  right: 32px;
+`;
+export const AddNewUserModal = styled.div``;
 
 export const Form = styled.form`
   display: flex;
@@ -185,6 +209,14 @@ export const LabelButton = styled.div`
   }
 `;
 
+export const SidePaddingWrapper = styled.div`
+  padding: 0 32px;
+`;
+
+export const ButtonWrapper = styled.div`
+  width: fit-content;
+`;
+
 export const TeamMembersContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -212,6 +244,8 @@ export const TeamMemberCard = styled.div<{
     width: 210px;
   }
 `;
+
+/** Chips */
 
 export const ChipContainer = styled.div<{
   halfMaxHeight?: boolean;
@@ -378,50 +412,9 @@ export const ActionItem = styled.div<{ red?: boolean }>`
   }
 `;
 
-export const StickySelectionDropdown = styled.div`
-  width: 100%;
-  max-height: 280px;
-  display: flex;
-  flex-direction: column;
-  background: ${palette.solid.white};
-  border: 1px solid ${palette.highlight.grey8};
-  border-radius: 2px;
-  position: absolute;
-  top: 30px;
-  left: 0;
-  z-index: 1;
-  overflow-y: auto;
-  box-shadow: 1px 1px 2px 1px ${palette.highlight.grey3};
-`;
-
-export const DropdownItem = styled.div<{ selected?: boolean }>`
-  ${typography.sizeCSS.normal}
-  width: 100%;
-  height: 50px;
-  padding: 16px;
-  text-align: left;
-
-  &:not(:last-child) {
-    border-bottom: 1px solid ${palette.highlight.grey8};
-  }
-
-  &:hover {
-    cursor: pointer;
-  }
-
-  ${({ selected }) =>
-    selected &&
-    `
-    background: ${palette.highlight.lightblue1};
-  `}
-`;
-
-/** User Provisioning Styles */
+/** Cards */
 
 export const CardContainer = styled.div`
-  /* max-height: calc(
-    100vh - ${HEADER_BAR_HEIGHT}px - ${FOOTER_HEIGHT_WITHOUT_MARGIN}px - 167px
-  ); */
   width: 100%;
   display: flex;
   flex-wrap: wrap;
@@ -523,29 +516,6 @@ export const UserNameEmailIDWrapper = styled.div`
   align-items: flex-start;
 `;
 
-export const ScrollableContainer = styled.div`
-  height: 61vh;
-  overflow-y: auto;
-  padding-bottom: 32px;
-  padding-right: 16px;
-`;
-
-export const ModalWrapper = styled.div``;
-
-export const ModalContainer = styled.div`
-  height: 90vh;
-  width: 50vw;
-  background: ${palette.solid.white};
-  border-radius: 4px;
-  padding: 32px;
-  position: relative;
-`;
-
-export const ModalTitle = styled.div<{ noBottomMargin?: boolean }>`
-  ${typography.sizeCSS.normal}
-  margin-bottom: ${({ noBottomMargin }) => (noBottomMargin ? 0 : 28)}px;
-`;
-
 export const UserInformationDisplay = styled.div``;
 
 export const UserNameDisplay = styled.div`
@@ -556,17 +526,6 @@ export const UserNameDisplay = styled.div`
 
 export const AgencyNameDisplay = styled(UserNameDisplay)`
   ${typography.sizeCSS.title}
-`;
-
-export const ModalActionButtons = styled.div`
-  width: calc(100% - 64px);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  position: absolute;
-  bottom: 32px;
-  right: 32px;
 `;
 
 export const ReviewChangesButton = styled.div`

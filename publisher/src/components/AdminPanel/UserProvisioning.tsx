@@ -57,26 +57,26 @@ export const UserProvisioning = observer(() => {
   /** Whether or not the user is scrolled to the bottom of the modal container. */
   const [isBottom, setIsBottom] = useState(false);
 
-  /** Allowable  when creating or editing users */
+  /** Allowable User Provisioning Updates - TODO come up with a better comment */
   const [username, setUsername] = useState<string>();
   const [email, setEmail] = useState<string>();
   const [agencySelections, setAgencySelections] = useState<
     SearchableListItem[]
   >([]);
 
-  const searchUsers = (val: string) => {
-    const regex = new RegExp(`${val}`, `i`);
-    setFilteredUsers(() =>
-      users.filter(
-        (option) =>
-          regex.test(option.name) ||
-          (option.email && regex.test(option.email)) ||
-          regex.test(option.id)
-        // ||
-        // option.agencies.some((agency) => regex.test(agency.name))
-      )
-    );
-  };
+  // const searchUsers = (val: string) => {
+  //   const regex = new RegExp(`${val}`, `i`);
+  //   setFilteredUsers(() =>
+  //     users.filter(
+  //       (option) =>
+  //         regex.test(option.name) ||
+  //         (option.email && regex.test(option.email)) ||
+  //         regex.test(option.id)
+  //       // ||
+  //       // option.agencies.some((agency) => regex.test(agency.name))
+  //     )
+  //   );
+  // };
 
   const openModal = () => setIsModalOpen(true);
 
@@ -149,6 +149,7 @@ export const UserProvisioning = observer(() => {
       },
     },
   ];
+  const filterOptions: (keyof User)[] = ["name", "email", "id"];
 
   const updateAgencySelections = (
     id: number | string,
@@ -211,8 +212,11 @@ export const UserProvisioning = observer(() => {
   // };
 
   useEffect(() => {
-    setFilteredUsers(users);
-    searchUsers(searchInput);
+    // setFilteredUsers(users);
+    // // searchUsers(searchInput);
+    setFilteredUsers(
+      AdminPanelStore.searchList(searchInput, users, filterOptions)
+    );
     // eslint-disable-next-line
   }, [users]);
 
@@ -472,7 +476,9 @@ export const UserProvisioning = observer(() => {
             value={searchInput}
             onChange={(e) => {
               setSearchInput(e.target.value);
-              searchUsers(e.target.value);
+              setFilteredUsers(
+                AdminPanelStore.searchList(e.target.value, users, filterOptions)
+              );
             }}
           />
           <label htmlFor="search">Search</label>

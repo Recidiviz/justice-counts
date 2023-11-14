@@ -22,9 +22,8 @@ import { makeAutoObservable, runInAction } from "mobx";
 import {
   Agency,
   AgencyResponse,
+  SearchableEntity,
   SearchableListBoxAction,
-  SearchableListItem,
-  SearchableListItemKey,
   User,
   UserResponse,
 } from "../components/AdminPanel";
@@ -102,10 +101,6 @@ class AdminPanelStore {
     }
   }
 
-  /** User Provisioning */
-
-  /** Agency Provisioning */
-
   /** Helpers  */
 
   /** Sorts a list of agencies in alphabetical order */
@@ -127,19 +122,18 @@ class AdminPanelStore {
     }));
   }
 
-  static searchList(
+  /**
+   * Returns a filtered list based on the search value `val` and the `searchByKeys` (a list of object keys to check the value against)
+   */
+  static searchList<T extends SearchableEntity>(
     val: string,
-    list: SearchableListItem[],
-    keys: SearchableListItemKey[],
-    setListState: React.Dispatch<React.SetStateAction<SearchableListItem[]>>
+    list: T[],
+    searchByKeys: (keyof T)[]
   ) {
     const regex = new RegExp(`${val}`, `i`);
-    setListState(() =>
-      list.filter((listItem) =>
-        keys.some(
-          (key) =>
-            listItem[key] && regex.test(listItem[key] as SearchableListItemKey)
-        )
+    return list.filter((listItem) =>
+      searchByKeys.some(
+        (key) => listItem[key] && regex.test(listItem[key] as string)
       )
     );
   }

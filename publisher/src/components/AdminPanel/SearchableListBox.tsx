@@ -18,6 +18,7 @@
 import { groupBy } from "lodash";
 import React, { useEffect, useState } from "react";
 
+import AdminPanelStore from "../../stores/AdminPanelStore";
 import * as Styled from "./AdminPanel.styles";
 import {
   SearchableListBoxAction,
@@ -26,7 +27,6 @@ import {
   SearchableListItem,
   SearchableListItemKey,
 } from "./types";
-import AdminPanelStore from "../../stores/AdminPanelStore";
 
 export const SearchableListBox = ({
   list,
@@ -50,12 +50,8 @@ export const SearchableListBox = ({
   };
 
   useEffect(() => {
-    setFilteredList(list);
-    AdminPanelStore.searchList(
-      inputValue,
-      list,
-      filterOptions,
-      setFilteredList
+    setFilteredList(
+      AdminPanelStore.searchList(inputValue, list, filterOptions)
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [list]);
@@ -118,11 +114,8 @@ export const SearchableListBox = ({
           value={inputValue}
           onChange={(e) => {
             setInputValue(e.target.value);
-            AdminPanelStore.searchList(
-              e.target.value,
-              list,
-              filterOptions,
-              setFilteredList
+            setFilteredList(
+              AdminPanelStore.searchList(e.target.value, list, filterOptions)
             );
           }}
         />
@@ -131,11 +124,8 @@ export const SearchableListBox = ({
           <Styled.LabelButton
             onClick={() => {
               setInputValue("");
-              AdminPanelStore.searchList(
-                "",
-                list,
-                filterOptions,
-                setFilteredList
+              setFilteredList(
+                AdminPanelStore.searchList("", list, filterOptions)
               );
             }}
           >

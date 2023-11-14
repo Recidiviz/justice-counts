@@ -281,7 +281,6 @@ export const AgencyProvisioning = observer(() => {
     action?: SearchableListBoxAction,
     email?: string
   ) => {
-    console.log("updateTeamMembers - action", action);
     setTeamMembers((prev) => {
       return prev.map((selection) => {
         if (selection.id === id) {

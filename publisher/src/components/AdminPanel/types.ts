@@ -101,6 +101,12 @@ export type SearchableListItem = {
   role?: UserRole;
 };
 
+export type SearchableEntity =
+  | Agency
+  | User
+  | AgencyTeamMember
+  | SearchableListItem;
+
 export type SearchableListItemKey = keyof SearchableListItem;
 
 export type SearchableListBoxButtons = { label: string; onClick: () => void }[];
