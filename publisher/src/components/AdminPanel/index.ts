@@ -15,14 +15,5 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-const { createProxyMiddleware } = require("http-proxy-middleware");
-
-module.exports = function (app) {
-  app.use(
-    ["/auth", "/admin", "/api", "/feed", "/app_public_config.js"],
-    createProxyMiddleware({
-      target: process.env.REACT_APP_PROXY_HOST,
-      changeOrigin: true,
-    })
-  );
-};
+export * from "./AdminPanel";
+export * from "./types";

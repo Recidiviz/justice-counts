@@ -39,10 +39,12 @@ export const palette = {
   },
   highlight: {
     red: `rgba(221, 18, 18, 0.05)`,
+    darkred: `rgba(221, 18, 18, 0.3)`,
     blue: `rgba(0, 115, 229, 0.1)`,
     green: `rgba(0, 117, 65, 0.1)`,
     lightblue1: `rgba(0, 115, 229, 0.05)`,
     lightblue2: `rgba(0, 115, 229, 0.25)`,
+    lightgrey1: `rgba(190, 190, 190, 0.1)`,
     grey1: `rgba(0, 17, 51, 0.05)`,
     grey2: `rgba(0, 17, 51, 0.1)`,
     grey3: `rgba(0, 17, 51, 0.15)`,
@@ -57,6 +59,10 @@ export const palette = {
     grey12: `rgba(0, 17, 51, 0.9)`,
     white1: `rgba(255,255,255, 0.2)`,
     white2: `rgba(255,255,255, 0.5)`,
+  },
+  gradient: {
+    lightgreen: `linear-gradient(90deg,rgba(184,255,184,.3) 0%,rgba(170,232,170,.2) 35%,rgba(216,254,216,.3) 100%)`,
+    lightred: `linear-gradient(90deg,rgba(255,184,184,.3) 0%,rgba(232,170,170,.2) 35%,rgba(254,216,216,.3) 100%)`,
   },
   dataViz: {
     bar1: "#133158",

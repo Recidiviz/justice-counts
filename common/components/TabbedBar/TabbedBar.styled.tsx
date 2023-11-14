@@ -38,20 +38,24 @@ export const Tab = styled.div<{
   align-items: center;
   color: ${({ selected }) =>
     selected ? palette.solid.blue : palette.highlight.grey7};
-  border-bottom: 3px solid ${({ selected }) =>
-    selected ? palette.solid.blue : `transparent`};
+  border-bottom: 3px solid
+    ${({ selected }) => (selected ? palette.solid.blue : `transparent`)};
   text-transform: capitalize;
 
   ${({ size }) => {
+    if (size === "medium")
+      return `padding: 16px 0; ${typography.sizeCSS.medium}; font-weight: 400;`;
     if (size === "large")
       return `padding: 16px 0; ${typography.sizeCSS.large};`;
     return `padding: 8px 0; ${typography.sizeCSS.normal};`;
   }}
+
   &:hover {
     cursor: pointer;
     color: ${({ enabled, selected }) => {
       if (enabled !== undefined && !selected)
         return enabled ? palette.solid.blue : palette.solid.darkgrey;
       return palette.solid.blue;
-    }}
+    }};
+  }
 `;
