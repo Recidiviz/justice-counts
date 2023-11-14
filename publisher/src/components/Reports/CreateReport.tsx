@@ -181,6 +181,7 @@ const CreateReport = () => {
     createReportFormValues.frequency === "ANNUAL" &&
     createReportFormValues.annualStartMonth !== 1;
 
+  /** For fiscal year records, the backend will use the selected year as the ending year and not starting year */
   const getDateRangeYear = () => {
     if (isRecurring) {
       if (isFiscalYear) {
