@@ -51,7 +51,7 @@ export const SearchableListBox = ({
 
   useEffect(() => {
     setFilteredList(
-      AdminPanelStore.searchList(inputValue, list, filterOptions)
+      AdminPanelStore.searchList(list, inputValue, filterOptions)
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [list]);
@@ -72,8 +72,7 @@ export const SearchableListBox = ({
               <Styled.Chip
                 key={listItem.id}
                 onClick={() => {
-                  if (!isActiveBox) return;
-                  if (boxActionType) {
+                  if (isActiveBox && boxActionType) {
                     updateSelections(
                       listItem.id,
                       listItem.name,
@@ -115,7 +114,7 @@ export const SearchableListBox = ({
           onChange={(e) => {
             setInputValue(e.target.value);
             setFilteredList(
-              AdminPanelStore.searchList(e.target.value, list, filterOptions)
+              AdminPanelStore.searchList(list, e.target.value, filterOptions)
             );
           }}
         />
@@ -125,7 +124,7 @@ export const SearchableListBox = ({
             onClick={() => {
               setInputValue("");
               setFilteredList(
-                AdminPanelStore.searchList("", list, filterOptions)
+                AdminPanelStore.searchList(list, "", filterOptions)
               );
             }}
           >

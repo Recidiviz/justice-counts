@@ -101,7 +101,12 @@ class AdminPanelStore {
 
   /** Helpers  */
 
-  /** Sorts a list of agencies in ascending/descending alphabetical order (defaults to ascending order) */
+  /**
+   * Sorts a list of agencies in ascending/descending alphabetical order
+   * @param agencies - The array of agency objects.
+   * @param order - The sorting order - either "ascending" or "descending". Defaults to ascending alphabetical order.
+   * @returns A sorted array of agency objects.
+   */
   static sortAgenciesByName(
     agencies: Agency[],
     order: "ascending" | "descending" = "ascending"
@@ -112,7 +117,12 @@ class AdminPanelStore {
     return agencies.sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  /** Standardizes a list of agencies, users, or team members for use with the SearchableListBox component */
+  /**
+   * Standardizes a list of agencies, users, or team members for use with the SearchableListBox component.
+   * @param list - The array of objects to standardize into a SearchableListItem structure.
+   * @param action (optional) - Mark the objects with a "ADD" or "DELETE" action.
+   * @returns A standardized list of objects to use in SearchableListBox.
+   */
   static convertListToSearchableList(
     list: Agency[] | User[] | AgencyTeamMember[],
     action?: SearchableListBoxAction
@@ -127,14 +137,18 @@ class AdminPanelStore {
   }
 
   /**
-   * Returns a filtered list based on the search value `val` and the `searchByKeys` (a list of object keys to check the value against)
+   * Returns a filtered array of objects for a given string within specified keys.
+   * @param list - The array of objects to search.
+   * @param searchInput - The string to search for.
+   * @param searchByKeys - The keys to search within each object.
+   * @returns An array of objects that match the search criteria.
    */
   static searchList<T extends SearchableEntity>(
-    val: string,
     list: T[],
+    searchInput: string,
     searchByKeys: (keyof T)[]
   ) {
-    const regex = new RegExp(`${val}`, `i`);
+    const regex = new RegExp(`${searchInput}`, `i`);
     return list.filter((listItem) =>
       searchByKeys.some(
         (key) => listItem[key] && regex.test(listItem[key] as string)

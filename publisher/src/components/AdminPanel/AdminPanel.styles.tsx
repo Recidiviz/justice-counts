@@ -106,6 +106,11 @@ export const ModalActionButtons = styled.div`
   right: 32px;
 `;
 
+export const SaveCancelButtonsWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
 /** Form */
 
 export const Form = styled.form`
@@ -533,20 +538,7 @@ export const AgencyNameDisplay = styled(UserNameDisplay)`
   ${typography.sizeCSS.title}
 `;
 
-export const ReviewChangesButton = styled.div`
-  ${typography.sizeCSS.normal}
-  color: ${palette.solid.orange};
-
-  &:hover {
-    cursor: pointer;
-    filter: contrast(0.8);
-  }
-`;
-
-export const SaveCancelButtonsWrapper = styled.div`
-  display: flex;
-  gap: 8px;
-`;
+/** Review Changes */
 
 export const ReviewChangesContainer = styled.div`
   display: flex;
@@ -568,4 +560,14 @@ export const ChangeTitle = styled.div`
 
 export const ChangeLineItem = styled.div`
   ${typography.sizeCSS.large}
+`;
+
+export const ReviewChangesButton = styled.div`
+  ${typography.sizeCSS.normal}
+  color: ${palette.solid.orange};
+
+  &:hover {
+    cursor: pointer;
+    filter: contrast(0.8);
+  }
 `;

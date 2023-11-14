@@ -215,7 +215,7 @@ export const UserProvisioning = observer(() => {
     // setFilteredUsers(users);
     // // searchUsers(searchInput);
     setFilteredUsers(
-      AdminPanelStore.searchList(searchInput, users, filterOptions)
+      AdminPanelStore.searchList(users, searchInput, filterOptions)
     );
     // eslint-disable-next-line
   }, [users]);
@@ -477,7 +477,7 @@ export const UserProvisioning = observer(() => {
             onChange={(e) => {
               setSearchInput(e.target.value);
               setFilteredUsers(
-                AdminPanelStore.searchList(e.target.value, users, filterOptions)
+                AdminPanelStore.searchList(users, e.target.value, filterOptions)
               );
             }}
           />
