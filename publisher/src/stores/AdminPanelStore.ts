@@ -63,10 +63,11 @@ class AdminPanelStore {
         throw new Error("There was an issue fetching users.");
       }
 
+      /** Hydrate store with a list of sorted users (and each of their list of agencies) from response  */
       runInAction(() => {
-        this.users = data.users.map((user) => ({
+        this.users = AdminPanelStore.sortListByName(data.users).map((user) => ({
           ...user,
-          agencies: AdminPanelStore.sortAgenciesByName(user.agencies),
+          agencies: AdminPanelStore.sortListByName(user.agencies),
         }));
         this.loading = false;
       });
@@ -87,8 +88,9 @@ class AdminPanelStore {
         throw new Error("There was an issue fetching agencies.");
       }
 
+      /** Hydrate store with a list of systems and a list of sorted agencies from response  */
       runInAction(() => {
-        this.agencies = AdminPanelStore.sortAgenciesByName(data.agencies);
+        this.agencies = AdminPanelStore.sortListByName(data.agencies);
         this.systems = data.systems;
         this.loading = false;
       });
@@ -100,19 +102,21 @@ class AdminPanelStore {
   /** Helpers  */
 
   /**
-   * Sorts a list of agencies in ascending/descending alphabetical order
-   * @param agencies - The array of agency objects.
-   * @param order - The sorting order - either "ascending" or "descending". Defaults to ascending alphabetical order.
+   * Sorts a list of agencies/users in ascending/descending alphabetical order.
+   * @param list - The array of agency/user objects.
+   * @param order - The sorting order - either "ascending" or "descending". Defaults to ascending order.
    * @returns A sorted array of agency objects.
    */
-  static sortAgenciesByName(
-    agencies: Agency[],
+  static sortListByName<T extends Agency | User>(
+    list: T[],
     order: "ascending" | "descending" = "ascending"
-  ) {
-    if (order === "descending") {
-      return agencies.sort((a, b) => b.name.localeCompare(a.name));
-    }
-    return agencies.sort((a, b) => a.name.localeCompare(b.name));
+  ): T[] {
+    return list.sort((a, b) => {
+      if (order === "descending") {
+        return b.name.localeCompare(a.name);
+      }
+      return a.name.localeCompare(b.name);
+    });
   }
 }
 
