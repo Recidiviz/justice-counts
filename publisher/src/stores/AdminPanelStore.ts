@@ -63,7 +63,7 @@ class AdminPanelStore {
         throw new Error("There was an issue fetching users.");
       }
 
-      /** Hydrate store with a list of sorted users (and each of their list of agencies) from response  */
+      /** Hydrate store with a list of sorted users (and a sorted list of their agencies) from response  */
       runInAction(() => {
         this.users = AdminPanelStore.sortListByName(data.users).map((user) => ({
           ...user,
