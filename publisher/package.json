@@ -98,6 +98,7 @@
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "file-saver": "^2.0.5",
     "jest-fetch-mock": "^3.0.3",
+    "jest-when": "^3.6.0",
     "postcss": "^8.4.31",
     "prettier": "^2.6.0",
     "react-app-rewired": "^2.2.1",
