@@ -30,6 +30,7 @@ import {
 
 export const InteractiveSearchList = ({
   list,
+  searchByKeys,
   buttons,
   selections,
   updateSelections,
@@ -38,7 +39,6 @@ export const InteractiveSearchList = ({
   isActiveBox = true,
 }: InteractiveSearchListProps) => {
   const selectionsByName = groupBy(selections, (selection) => selection.name);
-  const searchByKeys: SearchableListItemKey[] = ["name", "email"];
 
   const [filteredList, setFilteredList] = useState<SearchableListItem[]>([]);
   const [searchInputValue, setSearchInputValue] = useState("");
@@ -113,7 +113,7 @@ export const InteractiveSearchList = ({
       {/* Search Input */}
       <Styled.InputLabelWrapper inputWidth={300}>
         <input
-          name="search-agencies"
+          name="search-input"
           type="text"
           value={searchInputValue}
           onChange={(e) => {
@@ -123,7 +123,7 @@ export const InteractiveSearchList = ({
             );
           }}
         />
-        <label htmlFor="search-agencies">
+        <label htmlFor="search-input">
           {metadata?.searchBoxLabel}
           <Styled.LabelButton
             onClick={() => {
