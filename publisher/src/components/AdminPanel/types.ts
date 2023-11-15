@@ -128,6 +128,7 @@ export type InteractiveSearchListButtons = {
 
 export type InteractiveSearchListProps = {
   list: SearchableListItem[];
+  searchByKeys: SearchableListItemKey[];
   buttons: InteractiveSearchListButtons;
   selections: SearchableListItem[];
   updateSelections: InteractiveSearchListUpdateSelections;
