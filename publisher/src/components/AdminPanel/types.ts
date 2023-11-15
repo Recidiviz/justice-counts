@@ -38,12 +38,15 @@ export type Agency = {
   id: number;
   name: string;
   systems: AgencySystems[];
+  state: StateCodeValue;
   state_code: keyof typeof StateCodes;
-  fips_county_code?: keyof typeof FipsCountyCodes;
+  fips_county_code?: keyof typeof FipsCountyCodes | null;
   team: AgencyTeamMember[];
-  super_agency_id: number;
-  is_superagency: boolean;
-  is_dashboard_enabled: boolean;
+  super_agency_id: number | null;
+  is_superagency: boolean | null;
+  is_dashboard_enabled: boolean | null;
+  created_at: string | null;
+  settings: [];
 };
 
 export type AgencyResponse = {
@@ -62,7 +65,7 @@ export type AgencyProvisioningSetting =
 /** User Types */
 
 export type User = {
-  id: string;
+  id: string | number;
   auth0_user_id: string;
   email: string;
   name: string;
@@ -188,6 +191,8 @@ export const StateCodes = {
 } as const;
 
 export type StateCodeKey = keyof typeof StateCodes;
+
+export type StateCodeValue = (typeof StateCodes)[keyof typeof StateCodes];
 
 /**
  * Values were taken from `fips.csv` in the recidiviz/common/data_sets/fips.csv directory

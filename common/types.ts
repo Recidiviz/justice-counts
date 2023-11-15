@@ -40,7 +40,7 @@ export type AgencyTeamMember = {
   auth0_user_id: string;
   name: string;
   email: string;
-  invitation_status: "NOT_SENT" | "PENDING" | "ACCEPTED" | "ERRORED";
+  invitation_status: "NOT_SENT" | "PENDING" | "ACCEPTED" | "ERRORED" | null;
   role: AgencyTeamMemberRole;
 };
 
