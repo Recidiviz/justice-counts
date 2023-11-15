@@ -22,7 +22,10 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled, { css } from "styled-components/macro";
 
-import { SearchableListBoxAction, SearchableListBoxActions } from "./types";
+import {
+  InteractiveSearchListAction,
+  InteractiveSearchListActions,
+} from "./types";
 
 /** General */
 
@@ -261,7 +264,7 @@ export const ChipContainer = styled.div<{
   halfMaxHeight?: boolean;
   fitContentHeight?: boolean;
   noBorder?: boolean;
-  boxActionType?: SearchableListBoxAction;
+  boxActionType?: InteractiveSearchListAction;
   hoverable?: boolean;
 }>`
   ${typography.sizeCSS.small}
@@ -279,10 +282,10 @@ export const ChipContainer = styled.div<{
   align-content: baseline;
   border: ${({ noBorder, boxActionType }) => {
     if (noBorder) return `none`;
-    if (boxActionType === SearchableListBoxActions.DELETE) {
+    if (boxActionType === InteractiveSearchListActions.DELETE) {
       return `1px solid ${palette.solid.red};`;
     }
-    if (boxActionType === SearchableListBoxActions.ADD) {
+    if (boxActionType === InteractiveSearchListActions.ADD) {
       return `1px solid ${palette.solid.green};`;
     }
     return `1px solid ${palette.highlight.grey5}`;
@@ -292,10 +295,10 @@ export const ChipContainer = styled.div<{
   overflow-y: auto;
 
   ${({ boxActionType }) => {
-    if (boxActionType === SearchableListBoxActions.DELETE) {
+    if (boxActionType === InteractiveSearchListActions.DELETE) {
       return `box-shadow: 1px 1px 2px ${palette.highlight.red};`;
     }
-    if (boxActionType === SearchableListBoxActions.ADD) {
+    if (boxActionType === InteractiveSearchListActions.ADD) {
       return `box-shadow: 2px 2px 5px ${palette.highlight.green};`;
     }
   }}
