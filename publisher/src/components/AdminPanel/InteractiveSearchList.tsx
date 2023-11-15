@@ -64,7 +64,7 @@ export const InteractiveSearchList = ({
           <Styled.ModalTitle>{metadata.title}</Styled.ModalTitle>
         )}
 
-        {/* List of Searchable Items */}
+        {/* List of Searchable Items Container */}
         <Styled.ChipContainer
           boxActionType={isActiveBox ? boxActionType : undefined}
         >
