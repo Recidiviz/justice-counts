@@ -25,7 +25,6 @@ import {
   InteractiveSearchListActions,
   InteractiveSearchListProps,
   SearchableListItem,
-  SearchableListItemKey,
 } from "./types";
 
 export const InteractiveSearchList = ({
