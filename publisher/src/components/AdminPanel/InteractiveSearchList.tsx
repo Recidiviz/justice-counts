@@ -48,6 +48,17 @@ export const InteractiveSearchList = ({
     if (actionType === InteractiveSearchListActions.DELETE) return "red";
     if (actionType === InteractiveSearchListActions.ADD) return "green";
   };
+  const selectChip = (listItem: SearchableListItem) => {
+    if (isActiveBox && boxActionType) {
+      updateSelections({
+        id: listItem.id,
+        name: listItem.name,
+        action: boxActionType,
+        email: listItem.email,
+        role: listItem.role,
+      });
+    }
+  };
 
   useEffect(() => {
     setFilteredList(
@@ -72,17 +83,7 @@ export const InteractiveSearchList = ({
             filteredList.map((listItem) => (
               <Styled.Chip
                 key={listItem.id}
-                onClick={() => {
-                  if (isActiveBox && boxActionType) {
-                    updateSelections({
-                      id: listItem.id,
-                      name: listItem.name,
-                      action: boxActionType,
-                      email: listItem.email,
-                      role: listItem.role,
-                    });
-                  }
-                }}
+                onClick={() => selectChip(listItem)}
                 selected={Boolean(selectionsByName[listItem.name])}
                 hover={Boolean(boxActionType && isActiveBox)}
                 selectedColor={getChipColor(
