@@ -145,13 +145,13 @@ const mockAgencies = {
     {
       created_at: null,
       fips_county_code: null,
-      id: 10,
+      id: 1011,
       is_dashboard_enabled: null,
       is_superagency: null,
       name: "Super Agency",
       settings: [],
-      state: "California",
-      state_code: "us_ca",
+      state: "Arizona",
+      state_code: "us_az",
       super_agency_id: null,
       systems: ["LAW_ENFORCEMENT"],
       team: [
@@ -317,4 +317,71 @@ test("sortListByName sorts a list of users by name in explicit descending order"
   expect(sortedUsers[0].name).toBe("Percy Vere");
   expect(sortedUsers[1].name).toBe("Liz Erd");
   expect(sortedUsers[2].name).toBe("Anne Teak");
+});
+
+test("searchList returns a filtered list of users based on a string value matched against each list object's properties defined in searchByKeys param", () => {
+  /** Search value: "Per" | Search-by keys: "name" */
+  let filteredListOfUsers = AdminPanelStore.searchList(
+    adminPanelStore.users,
+    "Per",
+    ["name"]
+  );
+  expect(filteredListOfUsers.length).toBe(1);
+  expect(filteredListOfUsers[0].name).toBe("Percy Vere");
+
+  /** Search value: "er" | Search-by keys: "name" */
+  filteredListOfUsers = AdminPanelStore.searchList(
+    adminPanelStore.users,
+    "er",
+    ["name"]
+  );
+  expect(filteredListOfUsers.length).toBe(2);
+  expect(filteredListOfUsers[0].name).toBe("Liz Erd");
+  expect(filteredListOfUsers[1].name).toBe("Percy Vere");
+
+  /** Search value: "1" | Search-by keys: "name" & "id" */
+  filteredListOfUsers = AdminPanelStore.searchList(adminPanelStore.users, "1", [
+    "name",
+    "id",
+  ]);
+  expect(filteredListOfUsers.length).toBe(1);
+  expect(filteredListOfUsers[0].name).toBe("Anne Teak");
+
+  /** Search value: "x" | Search-by keys: "name" & "id" */
+  filteredListOfUsers = AdminPanelStore.searchList(adminPanelStore.users, "x", [
+    "name",
+    "id",
+  ]);
+  expect(filteredListOfUsers.length).toBe(0);
+});
+
+test("searchList returns a filtered list of agencies based on a string value matched against each list object's properties defined in searchByKeys param", () => {
+  /** Search value: "Califor" | Search-by keys: "state" */
+  let filteredListOfAgencies = AdminPanelStore.searchList(
+    adminPanelStore.agencies,
+    "Califor",
+    ["state"]
+  );
+  expect(filteredListOfAgencies.length).toBe(2);
+  expect(filteredListOfAgencies[0].name).toBe("Child Agency");
+  expect(filteredListOfAgencies[1].name).toBe("Z Agency");
+
+  /** Search value: "11" | Search-by keys: "state" & "id" */
+  filteredListOfAgencies = AdminPanelStore.searchList(
+    adminPanelStore.agencies,
+    "11",
+    ["state", "id"]
+  );
+  expect(filteredListOfAgencies.length).toBe(2);
+  expect(filteredListOfAgencies[0].name).toBe("Child Agency");
+  expect(filteredListOfAgencies[1].name).toBe("Super Agency");
+
+  /** Search value: "1011" | Search-by keys: "state" & "id" */
+  filteredListOfAgencies = AdminPanelStore.searchList(
+    adminPanelStore.agencies,
+    "1011",
+    ["state", "id"]
+  );
+  expect(filteredListOfAgencies.length).toBe(1);
+  expect(filteredListOfAgencies[0].name).toBe("Super Agency");
 });
