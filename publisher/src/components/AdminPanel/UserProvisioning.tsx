@@ -174,7 +174,6 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
     /** Validate & update email input */
     const validateAndUpdateEmail = (email: string) => {
       updateEmail(email);
-
       if (email === "" || validateEmail(email)) {
         return setEmailValidationError(undefined);
       }
