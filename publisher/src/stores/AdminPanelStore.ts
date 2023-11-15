@@ -16,7 +16,6 @@
 // =============================================================================
 
 import { AgencySystems } from "@justice-counts/common/types";
-import { groupBy } from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
 import {
@@ -45,10 +44,6 @@ class AdminPanelStore {
     this.users = [];
     this.agencies = [];
     this.systems = [];
-  }
-
-  get usersByID() {
-    return groupBy(this.users, (user) => user.id);
   }
 
   async fetchUsers() {
