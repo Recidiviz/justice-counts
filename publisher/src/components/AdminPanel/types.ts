@@ -119,6 +119,10 @@ export type SearchableEntity =
   | AgencyTeamMember
   | SearchableListItem;
 
+export type UserKey = keyof User;
+
+export type AgencyKey = keyof Agency;
+
 export type SearchableListItemKey = keyof SearchableListItem;
 
 export type InteractiveSearchListButtons = {

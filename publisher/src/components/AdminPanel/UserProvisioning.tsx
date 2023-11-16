@@ -14,9 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-/* eslint-disable simple-import-sort/exports */
-export * from "./UserProvisioningOverview";
-export * from "./AdminPanel";
-export * from "./InteractiveSearchList";
-export * from "./types";
-export * from "./UserProvisioning";
+
+import { observer } from "mobx-react-lite";
+import React from "react";
+
+import * as Styled from "./AdminPanel.styles";
+
+type UserProvisioningProps = {
+  selectedUserID?: string | number;
+  closeModal: () => void;
+};
+
+export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
+  ({ selectedUserID, closeModal }) => {
+    return (
+      <>
+        <Styled.ModalTitle>
+          {selectedUserID ? "Edit User Information" : "Create New User"}
+        </Styled.ModalTitle>
+        <Styled.ScrollableContainer onClick={closeModal}>
+          UserProvisioning
+        </Styled.ScrollableContainer>
+      </>
+    );
+  }
+);

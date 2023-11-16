@@ -16,34 +16,48 @@
 // =============================================================================
 
 import { Button } from "@justice-counts/common/components/Button";
-// import { Modal } from "@justice-counts/common/components/Modal";
+import { Modal } from "@justice-counts/common/components/Modal";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
 import { Loading } from "../Loading";
-import { User } from ".";
+import { User, UserKey, UserProvisioning } from ".";
 import * as Styled from "./AdminPanel.styles";
 
 export const UserProvisioningOverview = observer(() => {
   const { adminPanelStore } = useStore();
   const { loading, users } = adminPanelStore;
+  const searchByKeys = ["name", "email", "id"] as UserKey[];
 
   const [searchInput, setSearchInput] = useState<string>("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUserID, setSelectedUserID] = useState<string | number>();
 
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => {
+    setSelectedUserID(undefined);
+    setIsModalOpen(false);
+  };
   const searchAndFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
     setFilteredUsers(
-      AdminPanelStore.searchList(users, e.target.value, ["name", "email", "id"])
+      AdminPanelStore.searchList(users, e.target.value, searchByKeys)
     );
   };
-
-  const editUser = () => {
-    // openModal();
-    // setSelectedUserIDToEdit(user.id);
+  const editUser = (userID: string | number) => {
+    openModal();
+    setSelectedUserID(userID);
   };
+
+  useEffect(() => {
+    setFilteredUsers(
+      AdminPanelStore.searchList(users, searchInput, searchByKeys)
+    );
+    // eslint-disable-next-line
+  }, [users]);
 
   if (loading) {
     return <Loading />;
@@ -51,12 +65,20 @@ export const UserProvisioningOverview = observer(() => {
 
   return (
     <>
-      {/* <Modal>
-        <Styled.ModalContainer>Modal</Styled.ModalContainer>
-      </Modal> */}
+      {isModalOpen && (
+        <Modal>
+          <Styled.ModalContainer>
+            <UserProvisioning
+              closeModal={closeModal}
+              selectedUserID={selectedUserID}
+            />
+          </Styled.ModalContainer>
+        </Modal>
+      )}
 
       {/* Settings Bar */}
       <Styled.SettingsBar>
+        {/* Search */}
         <Styled.InputLabelWrapper inputWidth={500}>
           <input
             name="search"
@@ -64,23 +86,19 @@ export const UserProvisioningOverview = observer(() => {
             value={searchInput}
             onChange={searchAndFilter}
           />
-          <label htmlFor="search">Search</label>
+          <label htmlFor="search">Search by name, email or user ID</label>
         </Styled.InputLabelWrapper>
+
+        {/* Create User Button */}
         <Styled.ButtonWrapper>
-          <Button
-            label="Create User"
-            onClick={() => {
-              // setIsModalOpen(true);
-            }}
-            buttonColor="blue"
-          />
+          <Button label="Create User" onClick={openModal} buttonColor="blue" />
         </Styled.ButtonWrapper>
       </Styled.SettingsBar>
 
       {/* List of Users */}
       <Styled.CardContainer>
         {filteredUsers.map((user) => (
-          <Styled.UserCard key={user.id} onClick={editUser}>
+          <Styled.UserCard key={user.id} onClick={() => editUser(user.id)}>
             <Styled.UserNameEmailIDWrapper>
               <Styled.UserNameEmailWrapper>
                 <Styled.UserName>{user.name}</Styled.UserName>
