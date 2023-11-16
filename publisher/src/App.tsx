@@ -22,6 +22,7 @@ import React, { ReactElement, useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 import { trackNavigation } from "./analytics";
+import { AdminPanel, Environment } from "./components/AdminPanel";
 import MaintenancePage from "./components/Auth/Maintenance";
 import Footer from "./components/Footer";
 import { AppWrapper, PageWrapper } from "./components/Forms";
@@ -39,7 +40,7 @@ const DOWN_FOR_MAINTENANCE = false;
 
 const App: React.FC = (): ReactElement => {
   const location = useLocation();
-  const { userStore } = useStore();
+  const { userStore, api } = useStore();
   useEffect(() => {
     trackNavigation(location.pathname + location.search);
   }, [location]);
@@ -87,6 +88,9 @@ const App: React.FC = (): ReactElement => {
               <Navigate to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`} />
             }
           />
+          {api.environment === Environment.STAGING && (
+            <Route path="/admin-panel" element={<AdminPanel />} />
+          )}
         </Routes>
       </PageWrapper>
       <Footer />
