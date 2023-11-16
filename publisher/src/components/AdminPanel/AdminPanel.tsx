@@ -52,9 +52,9 @@ export const AdminPanel = observer(() => {
   useEffect(() => {
     fetchUsers();
     fetchAgencies();
-    adminPanelStore.testCreateUser();
   }, [fetchUsers, fetchAgencies, adminPanelStore]);
 
+  adminPanelStore.testCreateUser();
   const userToTest = adminPanelStore.users.find(
     (user) => user.email === "abc@abc.com"
   ); // Replace the user email with one you have locally
