@@ -103,9 +103,10 @@ class AdminPanelStore {
         body: {
           users: [
             {
-              name: "Goodbye",
-              email: "abc@abc.com",
-              agency_ids: [1, 2, 3],
+              name: "Goodbye", // Make changes here
+              email: "abc@abc.com", // Keep this to the same email you put for the `userToTest` in `AdminPanel.tsx` L59
+              agency_ids: [1, 2, 3], // Make changes here
+              // Refresh the FE to see the endpoint hit and the changes reflected.
             },
           ],
         },
