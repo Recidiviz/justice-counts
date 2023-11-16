@@ -46,7 +46,11 @@ export type Agency = {
   is_superagency: boolean | null;
   is_dashboard_enabled: boolean | null;
   created_at: string | null;
-  settings: [];
+  settings: {
+    setting_type: string;
+    value: string | null;
+    source_id: number;
+  }[];
 };
 
 export type AgencyResponse = {
