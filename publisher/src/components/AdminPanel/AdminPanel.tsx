@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { useStore } from "../../stores";
 import { Setting, SettingType } from ".";
 import * as Styled from "./AdminPanel.styles";
+import { UserProvisioningOverview } from "./UserProvisioningOverview";
 
 export const AdminPanel = observer(() => {
   const navigate = useNavigate();
@@ -69,7 +70,7 @@ export const AdminPanel = observer(() => {
 
         <Styled.ProvisioningViewContainer>
           {currentProvisioningView === Setting.USERS && (
-            <div>User Provisioning Component</div>
+            <UserProvisioningOverview />
           )}
           {currentProvisioningView === Setting.AGENCIES && (
             <div>Agency Provisioning Component</div>
