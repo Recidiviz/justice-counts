@@ -210,6 +210,7 @@ export const InputLabelWrapper = styled.div<{
     align-items: center;
     color: ${palette.highlight.grey8};
     margin-top: 5px;
+    margin-left: 5px;
   }
 `;
 
@@ -531,13 +532,13 @@ export const UserNameEmailIDWrapper = styled.div`
 
 export const UserInformationDisplay = styled.div``;
 
-export const UserNameDisplay = styled.div`
+export const NameDisplay = styled.div`
   ${typography.sizeCSS.largeTitle}
   margin-bottom: 6px;
   margin-left: -2px;
 `;
 
-export const AgencyNameDisplay = styled(UserNameDisplay)`
+export const AgencyNameDisplay = styled(NameDisplay)`
   ${typography.sizeCSS.title}
 `;
 

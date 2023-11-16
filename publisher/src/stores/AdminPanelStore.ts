@@ -25,6 +25,7 @@ import {
   User,
   UserResponse,
 } from "../components/AdminPanel";
+import { groupBy } from "../utils";
 import API from "./API";
 
 class AdminPanelStore {
@@ -45,6 +46,10 @@ class AdminPanelStore {
     this.users = [];
     this.agencies = [];
     this.systems = [];
+  }
+
+  get usersByID() {
+    return groupBy(this.users, (user) => user.id);
   }
 
   async fetchUsers() {

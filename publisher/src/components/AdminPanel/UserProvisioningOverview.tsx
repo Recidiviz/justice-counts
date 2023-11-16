@@ -29,12 +29,13 @@ import * as Styled from "./AdminPanel.styles";
 export const UserProvisioningOverview = observer(() => {
   const { adminPanelStore } = useStore();
   const { loading, users } = adminPanelStore;
-  const searchByKeys = ["name", "email", "id"] as UserKey[];
 
   const [searchInput, setSearchInput] = useState<string>("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserID, setSelectedUserID] = useState<string | number>();
+
+  const searchByKeys = ["name", "email", "id"] as UserKey[];
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
@@ -67,12 +68,10 @@ export const UserProvisioningOverview = observer(() => {
     <>
       {isModalOpen && (
         <Modal>
-          <Styled.ModalContainer>
-            <UserProvisioning
-              closeModal={closeModal}
-              selectedUserID={selectedUserID}
-            />
-          </Styled.ModalContainer>
+          <UserProvisioning
+            closeModal={closeModal}
+            selectedUserID={selectedUserID}
+          />
         </Modal>
       )}
 
@@ -81,12 +80,12 @@ export const UserProvisioningOverview = observer(() => {
         {/* Search */}
         <Styled.InputLabelWrapper inputWidth={500}>
           <input
-            name="search"
+            name="search-users"
             type="text"
             value={searchInput}
             onChange={searchAndFilter}
           />
-          <label htmlFor="search">Search by name, email or user ID</label>
+          <label htmlFor="search-users">Search by name, email or user ID</label>
         </Styled.InputLabelWrapper>
 
         {/* Create User Button */}

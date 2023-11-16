@@ -15,9 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Button } from "@justice-counts/common/components/Button";
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useState } from "react";
 
+import { useStore } from "../../stores";
 import * as Styled from "./AdminPanel.styles";
 
 type UserProvisioningProps = {
@@ -27,15 +29,79 @@ type UserProvisioningProps = {
 
 export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
   ({ selectedUserID, closeModal }) => {
+    const { adminPanelStore } = useStore();
+    const { usersByID } = adminPanelStore;
+
+    const selectedUser = selectedUserID
+      ? usersByID[selectedUserID][0]
+      : undefined;
+    const modalButtons = [
+      { label: "Cancel", onClick: closeModal },
+      { label: "Save", onClick: () => new Error("Saved") },
+    ];
+
+    const [username, setUsername] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
+
     return (
-      <>
+      <Styled.ModalContainer>
         <Styled.ModalTitle>
           {selectedUserID ? "Edit User Information" : "Create New User"}
         </Styled.ModalTitle>
-        <Styled.ScrollableContainer onClick={closeModal}>
-          UserProvisioning
+
+        {/** User Information */}
+        <Styled.NameDisplay>
+          {username || selectedUser?.name}
+        </Styled.NameDisplay>
+        <Styled.Subheader>{email || selectedUser?.email}</Styled.Subheader>
+        {selectedUser && (
+          <Styled.Subheader>ID {selectedUser?.id}</Styled.Subheader>
+        )}
+
+        <Styled.ScrollableContainer>
+          <Styled.Form>
+            <Styled.InputLabelWrapper>
+              <input
+                name="username"
+                type="text"
+                value={username || selectedUser?.name}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+              <label htmlFor="username">Name</label>
+            </Styled.InputLabelWrapper>
+
+            {/* Note: once a user has been created, the email is no longer editable */}
+            {!selectedUser && (
+              <Styled.InputLabelWrapper>
+                <input
+                  name="email"
+                  type="text"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <label htmlFor="email">Email</label>
+              </Styled.InputLabelWrapper>
+            )}
+
+            <Styled.ModalActionButtons>
+              <div />
+
+              <Styled.SaveCancelButtonsWrapper>
+                {modalButtons.map((button, index) => (
+                  <Button
+                    key={button.label}
+                    label={button.label}
+                    onClick={button.onClick}
+                    buttonColor={
+                      index === modalButtons.length - 1 ? "blue" : undefined
+                    }
+                  />
+                ))}
+              </Styled.SaveCancelButtonsWrapper>
+            </Styled.ModalActionButtons>
+          </Styled.Form>
         </Styled.ScrollableContainer>
-      </>
+      </Styled.ModalContainer>
     );
   }
 );
