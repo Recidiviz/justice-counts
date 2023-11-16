@@ -95,6 +95,32 @@ class AdminPanelStore {
     }
   }
 
+  async testCreateUser() {
+    try {
+      const response = (await this.api.request({
+        path: `/admin/user`,
+        method: "PUT",
+        body: {
+          users: [
+            {
+              name: "Goodbye",
+              email: "abc@abc.com",
+              agency_ids: [1, 2, 3],
+            },
+          ],
+        },
+      })) as Response;
+      const data = (await response.json()) as AgencyResponse;
+      console.log("Response after update:", data);
+
+      if (response.status !== 200) {
+        throw new Error("There was an issue creating a user.");
+      }
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
   /** Helpers  */
 
   /**

@@ -52,7 +52,12 @@ export const AdminPanel = observer(() => {
   useEffect(() => {
     fetchUsers();
     fetchAgencies();
-  }, [fetchUsers, fetchAgencies]);
+    adminPanelStore.testCreateUser();
+  }, [fetchUsers, fetchAgencies, adminPanelStore]);
+
+  const userToTest = adminPanelStore.users.find(
+    (user) => user.email === "abc@abc.com"
+  ); // Replace the user email with one you have locally
 
   return (
     <Styled.AdminPanelContainer>
@@ -70,7 +75,27 @@ export const AdminPanel = observer(() => {
 
         <Styled.ProvisioningViewContainer>
           {currentProvisioningView === Setting.USERS && (
-            <div>User Provisioning Component</div>
+            <div>
+              User Provisioning Component
+              <div>
+                <div style={{ border: "1px solid black", margin: "5px" }}>
+                  <div>
+                    Username:
+                    {userToTest?.name}
+                  </div>
+                  <div>
+                    Email:
+                    {userToTest?.email}
+                  </div>
+                  <div>
+                    Agency IDs:{" "}
+                    {userToTest?.agencies.map((agency) => (
+                      <span>{agency.id}, </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
           {currentProvisioningView === Setting.AGENCIES && (
             <div>Agency Provisioning Component</div>
