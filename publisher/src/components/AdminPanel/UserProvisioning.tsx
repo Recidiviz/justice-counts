@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { Button } from "@justice-counts/common/components/Button";
+import { groupBy } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 
@@ -39,19 +40,28 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
     const { adminPanelStore } = useStore();
     const { agencies, usersByID } = adminPanelStore;
 
-    const selectedUser = selectedUserID
-      ? usersByID[selectedUserID][0]
-      : undefined;
-    const modalButtons = [
-      { label: "Cancel", onClick: closeModal },
-      { label: "Save", onClick: () => new Error("Saved") },
-    ];
-
     const [username, setUsername] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [agencySelections, setAgencySelections] = useState<
       SearchableListItem[]
     >([]);
+    const [addOrDeleteAgencyAction, setAddOrDeleteAgencyAction] =
+      useState<InteractiveSearchListAction>();
+
+    const selectedUser = selectedUserID
+      ? usersByID[selectedUserID][0]
+      : undefined;
+    const selectedUserAgenciesByID = selectedUser
+      ? groupBy(selectedUser.agencies, (agency) => agency.id)
+      : undefined;
+    const modalButtons = [
+      { label: "Cancel", onClick: closeModal },
+      { label: "Save", onClick: () => new Error("Saved") },
+    ];
+    const isAddAction =
+      addOrDeleteAgencyAction === InteractiveSearchListActions.ADD;
+    const isDeleteAction =
+      addOrDeleteAgencyAction === InteractiveSearchListActions.DELETE;
 
     const updateAgencySelections: InteractiveSearchListUpdateSelections = (
       selection
@@ -64,10 +74,6 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
           { name: selection.name, action: selection.action, id: selection.id },
         ];
       });
-      // if (isBottom) {
-      //   scrollableContainerRef?.current?.scrollBy(0, -1);
-      //   scrollableContainerRef?.current?.scrollBy(0, 1);
-      // }
     };
 
     return (
@@ -111,20 +117,66 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
               </Styled.InputLabelWrapper>
             )}
 
-            <InteractiveSearchList
-              list={agencies}
-              buttons={[]}
-              selections={agencySelections}
-              updateSelections={updateAgencySelections}
-              boxActionType={InteractiveSearchListActions.DELETE}
-              isActiveBox
-              searchByKeys={["name"]}
-              metadata={{
-                searchBoxLabel: "Search Agencies",
-                listBoxLabel: "Agencies",
-              }}
-            />
+            {/* User's Agencies */}
+            {selectedUser && (
+              <InteractiveSearchList
+                list={selectedUser.agencies}
+                buttons={[]}
+                selections={agencySelections}
+                updateSelections={updateAgencySelections}
+                boxActionType={InteractiveSearchListActions.DELETE}
+                isActiveBox={isDeleteAction}
+                searchByKeys={["name"]}
+                metadata={{
+                  searchBoxLabel: "Search user's agencies",
+                  listBoxLabel: `${
+                    isDeleteAction
+                      ? `Select agencies to delete`
+                      : `User's agencies`
+                  }`,
+                }}
+              />
+            )}
 
+            {/* Add/Remove/Create New Agencies */}
+            <Styled.FormActions>
+              {/* Add Agencies Button */}
+              <Styled.ActionButton
+                buttonAction={InteractiveSearchListActions.ADD}
+                selectedColor={isAddAction ? "green" : ""}
+                onClick={(e) => {
+                  setAddOrDeleteAgencyAction((prev) =>
+                    prev === InteractiveSearchListActions.ADD
+                      ? undefined
+                      : InteractiveSearchListActions.ADD
+                  );
+                }}
+              >
+                Add Agencies
+              </Styled.ActionButton>
+
+              {/* Remove Agencies Button (note: when creating a new user, the delete action button is not necessary) */}
+              {selectedUser && (
+                <Styled.ActionButton
+                  buttonAction={InteractiveSearchListActions.DELETE}
+                  selectedColor={isDeleteAction ? "red" : ""}
+                  onClick={() => {
+                    setAddOrDeleteAgencyAction((prev) =>
+                      prev === InteractiveSearchListActions.DELETE
+                        ? undefined
+                        : InteractiveSearchListActions.DELETE
+                    );
+                  }}
+                >
+                  Delete Agencies
+                </Styled.ActionButton>
+              )}
+
+              {/* Create New Agency Button (TODO(#1058)) */}
+              <Styled.ActionButton>Create New Agency</Styled.ActionButton>
+            </Styled.FormActions>
+
+            {/* Modal Buttons */}
             <Styled.ModalActionButtons>
               <div />
               <Styled.SaveCancelButtonsWrapper>

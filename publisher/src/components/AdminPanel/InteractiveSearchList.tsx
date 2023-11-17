@@ -80,8 +80,9 @@ export const InteractiveSearchList = ({
         {/* List of Searchable Items Container */}
         <Styled.ChipContainer
           boxActionType={isActiveBox ? boxActionType : undefined}
+          fitContentHeight
         >
-          {filteredList.length > 0 &&
+          {filteredList.length > 0 ? (
             filteredList.map((listItem) => (
               <Styled.Chip
                 key={listItem.id}
@@ -94,7 +95,12 @@ export const InteractiveSearchList = ({
               >
                 {listItem.name}
               </Styled.Chip>
-            ))}
+            ))
+          ) : (
+            <Styled.ChipContainerLabel>
+              No results found
+            </Styled.ChipContainerLabel>
+          )}
         </Styled.ChipContainer>
 
         {/* List Container Label & Action Buttons */}
