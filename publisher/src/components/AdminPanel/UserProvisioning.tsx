@@ -176,6 +176,23 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
               <Styled.ActionButton>Create New Agency</Styled.ActionButton>
             </Styled.FormActions>
 
+            {/* Add Agencies List */}
+            {isAddAction && (
+              <InteractiveSearchList
+                list={agencies.filter((x) => !selectedUserAgenciesByID?.[x.id])}
+                buttons={[]}
+                selections={agencySelections}
+                updateSelections={updateAgencySelections}
+                boxActionType={InteractiveSearchListActions.ADD}
+                isActiveBox={isAddAction}
+                searchByKeys={["name"]}
+                metadata={{
+                  searchBoxLabel: "Search agencies",
+                  listBoxLabel: `Select agencies to add`,
+                }}
+              />
+            )}
+
             {/* Modal Buttons */}
             <Styled.ModalActionButtons>
               <div />

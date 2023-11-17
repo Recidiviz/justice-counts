@@ -310,7 +310,7 @@ export const ChipContainer = styled.div<{
       return `border: 1.5px solid ${palette.solid.red}; box-shadow: inset 0px 0px 6px ${palette.highlight.darkred};`;
     }
     if (boxActionType === InteractiveSearchListActions.ADD) {
-      return `box-shadow: 2px 2px 5px ${palette.highlight.green};`;
+      return `border: 1.5px solid ${palette.solid.green}; box-shadow: inset 0px 0px 6px ${palette.highlight.darkgreen};`;
     }
   }}
 
