@@ -37,10 +37,10 @@ export const InteractiveSearchList = ({
   metadata,
   isActiveBox = true,
 }: InteractiveSearchListProps) => {
-  const selectionsByName = groupBy(selections, (selection) => selection.name);
-
-  const [filteredList, setFilteredList] = useState<SearchableListItem[]>([]);
+  const [filteredList, setFilteredList] = useState<SearchableListItem[]>(list);
   const [searchInputValue, setSearchInputValue] = useState("");
+
+  const selectionsByName = groupBy(selections, (selection) => selection.name);
 
   const getChipColor = (actionType?: InteractiveSearchListAction) => {
     if (!actionType) return;
@@ -58,13 +58,16 @@ export const InteractiveSearchList = ({
       });
     }
   };
-
-  useEffect(() => {
+  const filterListBySearchValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInputValue(e.target.value);
     setFilteredList(
-      AdminPanelStore.searchList(list, searchInputValue, searchByKeys)
+      AdminPanelStore.searchList(list, e.target.value, searchByKeys)
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [list]);
+  };
+  const resetFilteredList = () => {
+    setSearchInputValue("");
+    setFilteredList(list);
+  };
 
   return (
     <>
@@ -115,23 +118,11 @@ export const InteractiveSearchList = ({
           name="search-input"
           type="text"
           value={searchInputValue}
-          onChange={(e) => {
-            setSearchInputValue(e.target.value);
-            setFilteredList(
-              AdminPanelStore.searchList(list, e.target.value, searchByKeys)
-            );
-          }}
+          onChange={filterListBySearchValue}
         />
         <label htmlFor="search-input">
           {metadata?.searchBoxLabel}
-          <Styled.LabelButton
-            onClick={() => {
-              setSearchInputValue("");
-              setFilteredList(
-                AdminPanelStore.searchList(list, "", searchByKeys)
-              );
-            }}
-          >
+          <Styled.LabelButton onClick={resetFilteredList}>
             Clear
           </Styled.LabelButton>
         </label>
