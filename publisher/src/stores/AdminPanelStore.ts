@@ -21,6 +21,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import {
   Agency,
   AgencyResponse,
+  SearchableEntity,
   User,
   UserResponse,
 } from "../components/AdminPanel";
@@ -64,7 +65,6 @@ class AdminPanelStore {
           ...user,
           agencies: AdminPanelStore.sortListByName(user.agencies),
         }));
-        this.loading = false;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
@@ -87,11 +87,18 @@ class AdminPanelStore {
       runInAction(() => {
         this.agencies = AdminPanelStore.sortListByName(data.agencies);
         this.systems = data.systems;
-        this.loading = false;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
     }
+  }
+
+  fetchUsersAndAgencies() {
+    this.fetchUsers();
+    this.fetchAgencies();
+    runInAction(() => {
+      this.loading = false;
+    });
   }
 
   /** Helpers  */
@@ -112,6 +119,26 @@ class AdminPanelStore {
       }
       return a.name.localeCompare(b.name);
     });
+  }
+
+  /**
+   * Returns a filtered array of objects for a given string within specified keys.
+   * @param list - The array of objects to search.
+   * @param searchInput - The string to search for.
+   * @param searchByKeys - The keys to search within each object.
+   * @returns An array of objects that match the search criteria.
+   */
+  static searchList<T extends SearchableEntity>(
+    list: T[],
+    searchInput: string,
+    searchByKeys: (keyof T)[]
+  ) {
+    const regex = new RegExp(`${searchInput}`, `i`);
+    return list.filter((listItem) =>
+      searchByKeys.some(
+        (key) => listItem[key] && regex.test(listItem[key] as string)
+      )
+    );
   }
 }
 

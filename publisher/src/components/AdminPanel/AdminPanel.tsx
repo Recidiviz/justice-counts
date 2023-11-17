@@ -28,7 +28,7 @@ import * as Styled from "./AdminPanel.styles";
 export const AdminPanel = observer(() => {
   const navigate = useNavigate();
   const { api, adminPanelStore } = useStore();
-  const { fetchUsers, fetchAgencies } = adminPanelStore;
+  const { fetchUsersAndAgencies } = adminPanelStore;
 
   const [currentProvisioningView, setProvisioningView] = useState<SettingType>(
     Setting.USERS
@@ -50,9 +50,8 @@ export const AdminPanel = observer(() => {
   ];
 
   useEffect(() => {
-    fetchUsers();
-    fetchAgencies();
-  }, [fetchUsers, fetchAgencies]);
+    fetchUsersAndAgencies();
+  }, [fetchUsersAndAgencies]);
 
   return (
     <Styled.AdminPanelContainer>

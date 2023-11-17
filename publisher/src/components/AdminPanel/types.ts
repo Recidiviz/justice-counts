@@ -89,26 +89,26 @@ export type UserRole = (typeof userRoles)[number];
 
 /** Search Feature Types */
 
-export const SearchableListBoxActions = {
+export const InteractiveSearchListActions = {
   ADD: "ADD",
   DELETE: "DELETE",
 } as const;
 
-export type SearchableListBoxAction =
-  (typeof SearchableListBoxActions)[keyof typeof SearchableListBoxActions];
+export type InteractiveSearchListAction =
+  (typeof InteractiveSearchListActions)[keyof typeof InteractiveSearchListActions];
 
-export type SearchableListBoxUpdateSelections = (
-  id: string | number,
-  name: string,
-  action?: SearchableListBoxAction,
-  email?: string,
-  role?: UserRole
-) => void;
+export type InteractiveSearchListUpdateSelections = (selection: {
+  id: string | number;
+  name: string;
+  action?: InteractiveSearchListAction;
+  email?: string;
+  role?: UserRole;
+}) => void;
 
 export type SearchableListItem = {
   id: string | number;
   name: string;
-  action?: SearchableListBoxAction;
+  action?: InteractiveSearchListAction;
   email?: string;
   role?: UserRole;
 };
@@ -121,14 +121,18 @@ export type SearchableEntity =
 
 export type SearchableListItemKey = keyof SearchableListItem;
 
-export type SearchableListBoxButtons = { label: string; onClick: () => void }[];
+export type InteractiveSearchListButtons = {
+  label: string;
+  onClick: () => void;
+}[];
 
-export type SearchableListBoxProps = {
+export type InteractiveSearchListProps = {
   list: SearchableListItem[];
-  buttons: SearchableListBoxButtons;
+  searchByKeys: SearchableListItemKey[];
+  buttons: InteractiveSearchListButtons;
   selections: SearchableListItem[];
-  updateSelections: SearchableListBoxUpdateSelections;
-  boxActionType?: SearchableListBoxAction;
+  updateSelections: InteractiveSearchListUpdateSelections;
+  boxActionType?: InteractiveSearchListAction;
   metadata?: {
     listBoxLabel: string;
     searchBoxLabel: string;
