@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { groupBy } from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import AdminPanelStore from "../../stores/AdminPanelStore";
 import * as Styled from "./AdminPanel.styles";
