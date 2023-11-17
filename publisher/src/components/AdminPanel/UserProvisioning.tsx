@@ -20,6 +20,13 @@ import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 
 import { useStore } from "../../stores";
+import {
+  InteractiveSearchList,
+  InteractiveSearchListAction,
+  InteractiveSearchListActions,
+  InteractiveSearchListUpdateSelections,
+  SearchableListItem,
+} from ".";
 import * as Styled from "./AdminPanel.styles";
 
 type UserProvisioningProps = {
@@ -30,7 +37,7 @@ type UserProvisioningProps = {
 export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
   ({ selectedUserID, closeModal }) => {
     const { adminPanelStore } = useStore();
-    const { usersByID } = adminPanelStore;
+    const { agencies, usersByID } = adminPanelStore;
 
     const selectedUser = selectedUserID
       ? usersByID[selectedUserID][0]
@@ -42,6 +49,26 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
 
     const [username, setUsername] = useState<string>("");
     const [email, setEmail] = useState<string>("");
+    const [agencySelections, setAgencySelections] = useState<
+      SearchableListItem[]
+    >([]);
+
+    const updateAgencySelections: InteractiveSearchListUpdateSelections = (
+      selection
+    ) => {
+      setAgencySelections((prev) => {
+        if (prev.some((sel) => sel.name === selection.name))
+          return prev.filter((sel) => sel.name !== selection.name);
+        return [
+          ...prev,
+          { name: selection.name, action: selection.action, id: selection.id },
+        ];
+      });
+      // if (isBottom) {
+      //   scrollableContainerRef?.current?.scrollBy(0, -1);
+      //   scrollableContainerRef?.current?.scrollBy(0, 1);
+      // }
+    };
 
     return (
       <Styled.ModalContainer>
@@ -60,6 +87,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
 
         <Styled.ScrollableContainer>
           <Styled.Form>
+            {/* Username Input */}
             <Styled.InputLabelWrapper>
               <input
                 name="username"
@@ -70,7 +98,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
               <label htmlFor="username">Name</label>
             </Styled.InputLabelWrapper>
 
-            {/* Note: once a user has been created, the email is no longer editable */}
+            {/* Email Input (note: once a user has been created, the email is no longer editable) */}
             {!selectedUser && (
               <Styled.InputLabelWrapper>
                 <input
@@ -83,9 +111,22 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
               </Styled.InputLabelWrapper>
             )}
 
+            <InteractiveSearchList
+              list={agencies}
+              buttons={[]}
+              selections={agencySelections}
+              updateSelections={updateAgencySelections}
+              boxActionType={InteractiveSearchListActions.DELETE}
+              isActiveBox
+              searchByKeys={["name"]}
+              metadata={{
+                searchBoxLabel: "Search Agencies",
+                listBoxLabel: "Agencies",
+              }}
+            />
+
             <Styled.ModalActionButtons>
               <div />
-
               <Styled.SaveCancelButtonsWrapper>
                 {modalButtons.map((button, index) => (
                   <Button

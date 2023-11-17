@@ -82,7 +82,7 @@ export const ModalContainer = styled.div`
   width: 50vw;
   background: ${palette.solid.white};
   border-radius: 4px;
-  padding: 32px;
+  padding: 32px 32px 100px 32px;
   position: relative;
 `;
 
@@ -210,7 +210,7 @@ export const InputLabelWrapper = styled.div<{
     align-items: center;
     color: ${palette.highlight.grey8};
     margin-top: 5px;
-    margin-left: 5px;
+    padding: 0 5px;
   }
 `;
 
@@ -358,6 +358,7 @@ export const ChipContainerLabel = styled.div`
   justify-content: space-between;
   color: ${palette.highlight.grey8};
   margin-top: 3px;
+  padding: 0 5px;
 `;
 
 export const ChipName = styled.div``;
