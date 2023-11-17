@@ -65,7 +65,6 @@ class AdminPanelStore {
           ...user,
           agencies: AdminPanelStore.sortListByName(user.agencies),
         }));
-        this.loading = false;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
@@ -88,11 +87,18 @@ class AdminPanelStore {
       runInAction(() => {
         this.agencies = AdminPanelStore.sortListByName(data.agencies);
         this.systems = data.systems;
-        this.loading = false;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
     }
+  }
+
+  fetchUsersAndAgencies() {
+    this.fetchUsers();
+    this.fetchAgencies();
+    runInAction(() => {
+      this.loading = false;
+    });
   }
 
   /** Helpers  */
