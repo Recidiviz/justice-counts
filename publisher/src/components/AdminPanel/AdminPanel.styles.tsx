@@ -151,7 +151,6 @@ export const ActionButton = styled.div<{
   &:hover {
     cursor: pointer;
     ${({ buttonAction }) => {
-      console.log(buttonAction);
       if (buttonAction === InteractiveSearchListActions.DELETE) {
         return `background: ${palette.gradient.lightred};`;
       }
@@ -358,7 +357,10 @@ export const Chip = styled.span<{
   margin: 2.5px;
 `;
 
-export const ChipContainerLabel = styled.div`
+export const ChipContainerLabel = styled.div<{
+  boxActionType?: InteractiveSearchListAction;
+  isActiveBox?: boolean;
+}>`
   ${typography.sizeCSS.small}
   width: 100%;
   display: flex;
@@ -367,6 +369,17 @@ export const ChipContainerLabel = styled.div`
   color: ${palette.highlight.grey8};
   margin-top: 3px;
   padding: 0 2.5px;
+
+  ${({ boxActionType, isActiveBox }) => {
+    if (isActiveBox) {
+      if (boxActionType === InteractiveSearchListActions.DELETE) {
+        return `color: ${palette.solid.red};`;
+      }
+      if (boxActionType === InteractiveSearchListActions.ADD) {
+        return `color: ${palette.solid.green};`;
+      }
+    }
+  }}
 `;
 
 export const ChipName = styled.div``;

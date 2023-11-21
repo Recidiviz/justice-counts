@@ -97,13 +97,16 @@ export const InteractiveSearchListActions = {
 export type InteractiveSearchListAction =
   (typeof InteractiveSearchListActions)[keyof typeof InteractiveSearchListActions];
 
-export type InteractiveSearchListUpdateSelections = (selection: {
-  id: string | number;
-  name: string;
-  action?: InteractiveSearchListAction;
-  email?: string;
-  role?: UserRole;
-}) => void;
+export type InteractiveSearchListUpdateSelections = (
+  selection: {
+    id: string | number;
+    name: string;
+    action?: InteractiveSearchListAction;
+    email?: string;
+    role?: UserRole;
+  },
+  action: InteractiveSearchListAction
+) => void;
 
 export type SearchableListItem = {
   id: string | number;
@@ -112,6 +115,8 @@ export type SearchableListItem = {
   email?: string;
   role?: UserRole;
 };
+
+export type SearchableSetIDs = Set<number>;
 
 export type SearchableEntity =
   | Agency
@@ -134,7 +139,8 @@ export type InteractiveSearchListProps = {
   list: SearchableListItem[];
   searchByKeys: SearchableListItemKey[];
   buttons: InteractiveSearchListButtons;
-  selections: SearchableListItem[];
+  // selections: SearchableListItem[];
+  selections: SearchableSetIDs;
   updateSelections: InteractiveSearchListUpdateSelections;
   boxActionType?: InteractiveSearchListAction;
   metadata?: {

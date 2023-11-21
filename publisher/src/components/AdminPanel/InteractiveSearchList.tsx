@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { groupBy } from "lodash";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import AdminPanelStore from "../../stores/AdminPanelStore";
 import * as Styled from "./AdminPanel.styles";
@@ -37,10 +37,8 @@ export const InteractiveSearchList = ({
   metadata,
   isActiveBox = true,
 }: InteractiveSearchListProps) => {
-  const [filteredList, setFilteredList] = useState<SearchableListItem[]>(list);
+  const [filteredList, setFilteredList] = useState<SearchableListItem[]>([]);
   const [searchInputValue, setSearchInputValue] = useState("");
-
-  const selectionsByName = groupBy(selections, (selection) => selection.name);
 
   const getChipColor = (actionType?: InteractiveSearchListAction) => {
     if (!actionType) return;
@@ -49,13 +47,16 @@ export const InteractiveSearchList = ({
   };
   const selectChip = (listItem: SearchableListItem) => {
     if (isActiveBox && boxActionType) {
-      updateSelections({
-        id: listItem.id,
-        name: listItem.name,
-        action: boxActionType,
-        email: listItem.email,
-        role: listItem.role,
-      });
+      updateSelections(
+        {
+          id: listItem.id,
+          name: listItem.name,
+          action: boxActionType,
+          email: listItem.email,
+          role: listItem.role,
+        },
+        boxActionType
+      );
     }
   };
   const filterListBySearchValue = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,6 +69,10 @@ export const InteractiveSearchList = ({
     setSearchInputValue("");
     setFilteredList(list);
   };
+
+  useEffect(() => {
+    setFilteredList(list);
+  }, [list]);
 
   return (
     <>
@@ -83,19 +88,24 @@ export const InteractiveSearchList = ({
           fitContentHeight
         >
           {filteredList.length > 0 ? (
-            filteredList.map((listItem) => (
-              <Styled.Chip
-                key={listItem.id}
-                onClick={() => selectChip(listItem)}
-                selected={Boolean(selectionsByName[listItem.name])}
-                hover={Boolean(boxActionType && isActiveBox)}
-                selectedColor={getChipColor(
-                  selectionsByName[listItem.name]?.[0].action
-                )}
-              >
-                {listItem.name}
-              </Styled.Chip>
-            ))
+            filteredList.map((listItem) => {
+              return (
+                <Styled.Chip
+                  key={listItem.id}
+                  onClick={() => selectChip(listItem)}
+                  selected={
+                    selections.has(+listItem.id) ||
+                    (listItem.action &&
+                      boxActionType &&
+                      listItem.action !== boxActionType)
+                  }
+                  hover={Boolean(boxActionType && isActiveBox)}
+                  selectedColor={getChipColor(listItem.action || boxActionType)}
+                >
+                  {listItem.name}
+                </Styled.Chip>
+              );
+            })
           ) : (
             <Styled.ChipContainerLabel>
               No results found
@@ -104,7 +114,10 @@ export const InteractiveSearchList = ({
         </Styled.ChipContainer>
 
         {/* List Container Label & Action Buttons */}
-        <Styled.ChipContainerLabel>
+        <Styled.ChipContainerLabel
+          boxActionType={boxActionType}
+          isActiveBox={isActiveBox}
+        >
           {metadata?.listBoxLabel}
           {buttons.length > 0 && (
             <Styled.LabelButtonsWrapper>
