@@ -23,7 +23,7 @@ import React, { useEffect, useState } from "react";
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
 import { Loading } from "../Loading";
-import { User, UserKey, UserProvisioning } from ".";
+import { User, UserKey, UserProvisioning, UserWithAgenciesByID } from ".";
 import * as Styled from "./AdminPanel.styles";
 
 export const UserProvisioningOverview = observer(() => {
@@ -31,7 +31,9 @@ export const UserProvisioningOverview = observer(() => {
   const { loading, users, resetUserProvisioningUpdates } = adminPanelStore;
 
   const [searchInput, setSearchInput] = useState<string>("");
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<UserWithAgenciesByID[]>(
+    []
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserID, setSelectedUserID] = useState<string | number>();
 
@@ -97,25 +99,30 @@ export const UserProvisioningOverview = observer(() => {
 
       {/* List of Users */}
       <Styled.CardContainer>
-        {filteredUsers.map((user) => (
-          <Styled.UserCard key={user.id} onClick={() => editUser(user.id)}>
-            <Styled.UserNameEmailIDWrapper>
-              <Styled.UserNameEmailWrapper>
-                <Styled.UserName>{user.name}</Styled.UserName>
-                <Styled.Email>{user.email}</Styled.Email>
-              </Styled.UserNameEmailWrapper>
-              <Styled.ID>ID {user.id}</Styled.ID>
-            </Styled.UserNameEmailIDWrapper>
-            <Styled.AgenciesWrapper>
-              {user.agencies.map((agency) => (
-                <Styled.Chip key={agency.id}>{agency.name}</Styled.Chip>
-              ))}
-            </Styled.AgenciesWrapper>
-            <Styled.NumberOfAgencies>
-              {user.agencies.length} agencies
-            </Styled.NumberOfAgencies>
-          </Styled.UserCard>
-        ))}
+        {filteredUsers.map((user) => {
+          const userAgencies = AdminPanelStore.objectToSortedFlatMappedValues(
+            user.agencies
+          );
+          return (
+            <Styled.UserCard key={user.id} onClick={() => editUser(user.id)}>
+              <Styled.UserNameEmailIDWrapper>
+                <Styled.UserNameEmailWrapper>
+                  <Styled.UserName>{user.name}</Styled.UserName>
+                  <Styled.Email>{user.email}</Styled.Email>
+                </Styled.UserNameEmailWrapper>
+                <Styled.ID>ID {user.id}</Styled.ID>
+              </Styled.UserNameEmailIDWrapper>
+              <Styled.AgenciesWrapper>
+                {userAgencies.map((agency) => (
+                  <Styled.Chip key={agency.id}>{agency.name}</Styled.Chip>
+                ))}
+              </Styled.AgenciesWrapper>
+              <Styled.NumberOfAgencies>
+                {userAgencies.length} agencies
+              </Styled.NumberOfAgencies>
+            </Styled.UserCard>
+          );
+        })}
       </Styled.CardContainer>
     </>
   );

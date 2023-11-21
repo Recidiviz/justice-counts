@@ -25,6 +25,7 @@ import {
   User,
   UserProvisioningUpdates,
   UserResponse,
+  UserWithAgenciesByID,
 } from "../components/AdminPanel";
 import { groupBy } from "../utils";
 import API from "./API";
@@ -34,9 +35,9 @@ class AdminPanelStore {
 
   loading: boolean;
 
-  usersByID: Record<string, User[]>;
+  usersByID: Record<string, UserWithAgenciesByID[]>;
 
-  agencies: Agency[];
+  agenciesByID: Record<string, Agency[]>;
 
   systems: AgencySystems[];
 
@@ -46,9 +47,8 @@ class AdminPanelStore {
     makeAutoObservable(this, {}, { autoBind: true });
     this.api = api;
     this.loading = true;
-    // this.users = [];
     this.usersByID = {};
-    this.agencies = [];
+    this.agenciesByID = {};
     this.systems = [];
     this.userProvisioningUpdates = {
       name: "",
@@ -57,10 +57,12 @@ class AdminPanelStore {
     };
   }
 
-  get users(): User[] {
-    return AdminPanelStore.sortListByName(
-      Object.values(this.usersByID).flatMap((user) => user)
-    );
+  get users(): UserWithAgenciesByID[] {
+    return AdminPanelStore.objectToSortedFlatMappedValues(this.usersByID);
+  }
+
+  get agencies(): Agency[] {
+    return AdminPanelStore.objectToSortedFlatMappedValues(this.agenciesByID);
   }
 
   async fetchUsers() {
@@ -80,7 +82,7 @@ class AdminPanelStore {
         this.usersByID = groupBy(
           data.users.map((user) => ({
             ...user,
-            agencies: AdminPanelStore.sortListByName(user.agencies),
+            agencies: groupBy(user.agencies, (agency) => agency.id),
           })),
           (user) => user.id
         );
@@ -104,7 +106,7 @@ class AdminPanelStore {
 
       /** Hydrate store with a list of systems and a list of sorted agencies from response  */
       runInAction(() => {
-        this.agencies = AdminPanelStore.sortListByName(data.agencies);
+        this.agenciesByID = groupBy(data.agencies, (agency) => agency.id);
         this.systems = data.systems;
       });
     } catch (error) {
@@ -142,7 +144,11 @@ class AdminPanelStore {
 
   updateUsers(userResponse: UserResponse) {
     const user = userResponse.users[0];
-    this.usersByID[user.id] = [user];
+    const userWithGroupedAgencies = {
+      ...user,
+      agencies: groupBy(user.agencies, (agency) => agency.id),
+    };
+    this.usersByID[user.id] = [userWithGroupedAgencies];
   }
 
   async saveUserProvisioningUpdates() {
@@ -172,7 +178,7 @@ class AdminPanelStore {
    * @param order - The sorting order - either "ascending" or "descending". Defaults to ascending order.
    * @returns A sorted array of agency objects.
    */
-  static sortListByName<T extends Agency | User>(
+  static sortListByName<T extends Agency | User | UserWithAgenciesByID>(
     list: T[],
     order: "ascending" | "descending" = "ascending"
   ): T[] {
@@ -201,6 +207,19 @@ class AdminPanelStore {
       searchByKeys.some(
         (key) => listItem[key] && regex.test(listItem[key] as string)
       )
+    );
+  }
+
+  /**
+   * Converts an object grouped by IDs (via the `groupBy` function) into a sorted, flat mapped array of the object's values.
+   * @param obj - The object created by the `groupBy` function to convert
+   * @returns An sorted array of the object's values
+   */
+  static objectToSortedFlatMappedValues<
+    T extends Agency | UserWithAgenciesByID
+  >(obj: Record<string, T[]>) {
+    return AdminPanelStore.sortListByName(
+      Object.values(obj).flatMap((item) => item)
     );
   }
 }

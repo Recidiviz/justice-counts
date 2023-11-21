@@ -414,6 +414,13 @@ export const ChipInnerRow = styled.div`
   justify-content: space-between;
 `;
 
+export const NoResultsFound = styled.div`
+  ${typography.sizeCSS.small}
+  font-weight: 400;
+  margin-top: 7px;
+  margin-left: 5px;
+`;
+
 export const ChipContainerLabelAction = styled(ChipContainerLabel)`
   width: 100%;
   display: flex;

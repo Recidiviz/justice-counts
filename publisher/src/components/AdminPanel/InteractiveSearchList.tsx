@@ -106,9 +106,11 @@ export const InteractiveSearchList = ({
               );
             })
           ) : (
-            <Styled.ChipContainerLabel>
-              No results found
-            </Styled.ChipContainerLabel>
+            <Styled.NoResultsFound>
+              {searchInputValue
+                ? "No results found"
+                : metadata?.listBoxEmptyLabel}
+            </Styled.NoResultsFound>
           )}
         </Styled.ChipContainer>
 

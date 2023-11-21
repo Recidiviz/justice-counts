@@ -76,6 +76,10 @@ export type User = {
   agencies: Agency[];
 };
 
+export type UserWithAgenciesByID = Omit<User, "agencies"> & {
+  agencies: Record<string, Agency[]>;
+};
+
 export type UserResponse = { users: User[] };
 
 export const userRoles = [
@@ -152,6 +156,7 @@ export type InteractiveSearchListProps = {
   metadata?: {
     listBoxLabel: string;
     searchBoxLabel: string;
+    listBoxEmptyLabel?: string;
     title?: string;
   };
   isActiveBox?: boolean;

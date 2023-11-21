@@ -21,6 +21,7 @@ import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 
 import { useStore } from "../../stores";
+import AdminPanelStore from "../../stores/AdminPanelStore";
 import {
   InteractiveSearchList,
   InteractiveSearchListAction,
@@ -40,6 +41,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
     const {
       agencies,
       usersByID,
+      agenciesByID,
       updateUsername,
       updateEmail,
       updateUserAgencies,
@@ -56,18 +58,13 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
     const [addOrDeleteAgencyAction, setAddOrDeleteAgencyAction] =
       useState<InteractiveSearchListAction>();
 
-    const agenciesByID = groupBy(agencies, (agency) => agency.id);
     const selectedUser = selectedUserID
       ? usersByID[selectedUserID][0]
       : undefined;
-    const selectedUserAgenciesByID = selectedUser
-      ? groupBy(selectedUser.agencies, (agency) => agency.id)
-      : undefined;
-    const selectedUserAgenciesIDsSet = new Set(
-      selectedUserAgenciesByID
-        ? Object.keys(selectedUserAgenciesByID).map((id) => +id)
-        : []
-    );
+    const selectedUserAgenciesIDs = selectedUser
+      ? Object.keys(selectedUser?.agencies).map((id) => +id)
+      : [];
+    const selectedUserAgenciesIDsSet = new Set(selectedUserAgenciesIDs);
     const addedAgenciesToDisplayInUserAgencies = Array.from(
       addedAgenciesIDs
     ).map((id) => ({
@@ -75,7 +72,12 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       action: InteractiveSearchListActions.ADD,
     }));
     const userAgenciesAddedAgencies = selectedUser
-      ? [...selectedUser.agencies, ...addedAgenciesToDisplayInUserAgencies]
+      ? [
+          ...AdminPanelStore.objectToSortedFlatMappedValues(
+            selectedUser.agencies
+          ),
+          ...addedAgenciesToDisplayInUserAgencies,
+        ]
       : [];
     const isAddAction =
       addOrDeleteAgencyAction === InteractiveSearchListActions.ADD;
@@ -101,41 +103,42 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       }
       return updatedSet;
     };
-    const selectDeselectAgencyToAddOrDelete: InteractiveSearchListUpdateSelections =
-      (selection) => {
-        let updatedSet: Set<number> = new Set();
-        const hasAddAction =
-          selection.action === InteractiveSearchListActions.ADD;
-        const hasDeleteAction =
-          selection.action === InteractiveSearchListActions.DELETE;
+    const updateAgencySelections: InteractiveSearchListUpdateSelections = (
+      selection
+    ) => {
+      let updatedSet: Set<number> = new Set();
+      const hasAddAction =
+        selection.action === InteractiveSearchListActions.ADD;
+      const hasDeleteAction =
+        selection.action === InteractiveSearchListActions.DELETE;
 
-        if (hasAddAction) {
-          setAddedAgenciesIDs((prev) => {
-            updatedSet = selectOrDeselectByID(prev, +selection.id);
-            return updatedSet;
-          });
-        }
-        if (hasDeleteAction) {
-          setDeletedAgenciesIDs((prev) => {
-            updatedSet = selectOrDeselectByID(prev, +selection.id);
-            return updatedSet;
-          });
-        }
+      if (hasAddAction) {
+        setAddedAgenciesIDs((prev) => {
+          updatedSet = selectOrDeselectByID(prev, +selection.id);
+          return updatedSet;
+        });
+      }
+      if (hasDeleteAction) {
+        setDeletedAgenciesIDs((prev) => {
+          updatedSet = selectOrDeselectByID(prev, +selection.id);
+          return updatedSet;
+        });
+      }
 
-        updateUserAgencies([
-          ...Array.from(selectedUserAgenciesIDsSet).filter(
-            (id) => !(hasDeleteAction ? updatedSet : deletedAgenciesIDs).has(id)
-          ),
-          ...Array.from(hasDeleteAction ? addedAgenciesIDs : updatedSet),
-        ]);
-      };
+      updateUserAgencies([
+        ...Array.from(selectedUserAgenciesIDsSet).filter(
+          (id) => !(hasDeleteAction ? updatedSet : deletedAgenciesIDs).has(id)
+        ),
+        ...Array.from(hasDeleteAction ? addedAgenciesIDs : updatedSet),
+      ]);
+    };
 
     useEffect(() => {
-      if (selectedUser && selectedUserAgenciesByID) {
+      if (selectedUser && selectedUser?.agencies) {
         updateEmail(selectedUser.email);
         updateUsername(selectedUser.name);
         updateUserAgencies(
-          Object.keys(selectedUserAgenciesByID).map((id) => +id)
+          Object.keys(selectedUser?.agencies).map((id) => +id)
         );
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -177,7 +180,8 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
               <Styled.InputLabelWrapper>
                 <input
                   name="email"
-                  type="text"
+                  type="email"
+                  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2, 4}$"
                   value={userProvisioningUpdates.email || ""}
                   onChange={(e) => updateEmail(e.target.value)}
                 />
@@ -191,7 +195,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
                 list={userAgenciesAddedAgencies}
                 buttons={[]}
                 selections={deletedAgenciesIDs}
-                updateSelections={selectDeselectAgencyToAddOrDelete}
+                updateSelections={updateAgencySelections}
                 boxActionType={InteractiveSearchListActions.DELETE}
                 isActiveBox={isDeleteAction}
                 searchByKeys={["name"]}
@@ -202,6 +206,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
                       ? `Select agencies to delete`
                       : `User's agencies`
                   }`,
+                  listBoxEmptyLabel: "User has no agencies",
                 }}
               />
             )}
@@ -212,7 +217,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
               <Styled.ActionButton
                 buttonAction={InteractiveSearchListActions.ADD}
                 selectedColor={isAddAction ? "green" : ""}
-                onClick={(e) => {
+                onClick={() => {
                   setAddOrDeleteAgencyAction((prev) =>
                     prev === InteractiveSearchListActions.ADD
                       ? undefined
@@ -248,11 +253,11 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
             {isAddAction && (
               <InteractiveSearchList
                 list={agencies.filter(
-                  (agency) => !selectedUserAgenciesByID?.[agency.id]
+                  (agency) => !selectedUserAgenciesIDsSet.has(agency.id)
                 )}
                 buttons={[]}
                 selections={addedAgenciesIDs}
-                updateSelections={selectDeselectAgencyToAddOrDelete}
+                updateSelections={updateAgencySelections}
                 boxActionType={InteractiveSearchListActions.ADD}
                 isActiveBox={isAddAction}
                 searchByKeys={["name"]}
