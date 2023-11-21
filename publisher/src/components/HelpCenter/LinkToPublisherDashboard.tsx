@@ -16,13 +16,14 @@
 // =============================================================================
 
 import { slugify } from "@justice-counts/common/utils";
+import { observer } from "mobx-react-lite";
 import React, { PropsWithChildren } from "react";
 
 import { useStore } from "../../stores";
 
 export const LinkToPublisher: React.FC<
   PropsWithChildren & { publisherPath: string }
-> = ({ publisherPath, children }) => {
+> = observer(({ publisherPath, children }) => {
   const { userStore } = useStore();
   const agencyIdLocalStorage = localStorage.getItem("agencyId");
   const agencyId = agencyIdLocalStorage || userStore.getInitialAgencyId();
@@ -33,25 +34,27 @@ export const LinkToPublisher: React.FC<
       {children}
     </a>
   );
-};
+});
 
-export const LinkToDashboard: React.FC<PropsWithChildren> = ({ children }) => {
-  const { api, userStore } = useStore();
-  const agencyIdLocalStorage = localStorage.getItem("agencyId");
-  const agencyId =
-    agencyIdLocalStorage || userStore.getInitialAgencyId()?.toLocaleString();
-  const agencyName = agencyId && userStore.getAgency(agencyId)?.name;
+export const LinkToDashboard: React.FC<PropsWithChildren> = observer(
+  ({ children }) => {
+    const { api, userStore } = useStore();
+    const agencyIdLocalStorage = localStorage.getItem("agencyId");
+    const agencyId =
+      agencyIdLocalStorage || userStore.getInitialAgencyId()?.toLocaleString();
+    const agencyName = agencyId && userStore.getAgency(agencyId)?.name;
 
-  if (!agencyName) return <>{children}</>;
+    if (!agencyName) return <>{children}</>;
 
-  const url = generateDashboardURL(api.environment, agencyName);
+    const url = generateDashboardURL(api.environment, agencyName);
 
-  return (
-    <a href={url} target="_blank" rel="noreferrer noopener">
-      {children}
-    </a>
-  );
-};
+    return (
+      <a href={url} target="_blank" rel="noreferrer noopener">
+        {children}
+      </a>
+    );
+  }
+);
 
 export const generateDashboardURL = (
   env: string | undefined,
