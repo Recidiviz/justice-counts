@@ -144,6 +144,25 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       setEmailValidationError("Please enter a valid email address");
     };
 
+    const hasNameUpdate = selectedUser
+      ? !!userProvisioningUpdates.name &&
+        userProvisioningUpdates.name !== selectedUser.name
+      : !!userProvisioningUpdates.name;
+    const hasEmailUpdate = selectedUser
+      ? !!userProvisioningUpdates.email &&
+        userProvisioningUpdates.email !== selectedUser.email
+      : !!userProvisioningUpdates.email;
+    const hasAgencyUpdates = selectedUser
+      ? addedAgenciesIDs.size > 0 || deletedAgenciesIDs.size > 0
+      : hasNameUpdate &&
+        hasEmailUpdate &&
+        (addedAgenciesIDs.size > 0 || deletedAgenciesIDs.size > 0);
+    const isSaveDisabled =
+      !!emailValidationError ||
+      (selectedUser
+        ? !hasNameUpdate && !hasEmailUpdate && !hasAgencyUpdates
+        : (hasNameUpdate && hasEmailUpdate) !== true);
+
     return (
       <Styled.ModalContainer>
         <Styled.ModalTitle>
@@ -270,6 +289,8 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
                 metadata={{
                   searchBoxLabel: "Search agencies",
                   listBoxLabel: `Select agencies to add`,
+                  listBoxEmptyLabel:
+                    "User is connected to all available agencies",
                 }}
               />
             )}
@@ -286,7 +307,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
                     buttonColor={
                       index === modalButtons.length - 1 ? "blue" : undefined
                     }
-                    disabled={button.label === "Save" && !!emailValidationError}
+                    disabled={button.label === "Save" && isSaveDisabled}
                   />
                 ))}
               </Styled.SaveCancelButtonsWrapper>
