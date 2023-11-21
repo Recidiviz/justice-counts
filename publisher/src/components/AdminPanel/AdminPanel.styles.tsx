@@ -167,6 +167,7 @@ export const InputLabelWrapper = styled.div<{
   topSpacing?: boolean;
   inputWidth?: number;
   noBottomSpacing?: boolean;
+  hasError?: boolean;
 }>`
   ${typography.sizeCSS.normal}
   width: 100%;
@@ -208,6 +209,10 @@ export const InputLabelWrapper = styled.div<{
     &:not(:first-child) {
       margin-left: 16px;
     }
+  }
+
+  input[type="email"] {
+    ${({ hasError }) => hasError && `border: 1px solid ${palette.solid.red};`};
   }
 
   label {
@@ -430,6 +435,20 @@ export const ChipContainerLabelAction = styled(ChipContainerLabel)`
   span {
     white-space: nowrap;
   }
+`;
+
+export const LabelWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const ErrorLabel = styled.div`
+  ${typography.sizeCSS.small}
+  color: ${palette.solid.red};
+  white-space: nowrap;
+  margin-top: 5px;
 `;
 
 export const LabelButtonsWrapper = styled.div`

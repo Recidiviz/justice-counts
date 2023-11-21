@@ -28,7 +28,15 @@ import * as Styled from "./AdminPanel.styles";
 
 export const UserProvisioningOverview = observer(() => {
   const { adminPanelStore } = useStore();
-  const { loading, users, resetUserProvisioningUpdates } = adminPanelStore;
+  const {
+    loading,
+    users,
+    usersByID,
+    updateEmail,
+    updateUsername,
+    updateUserAgencies,
+    resetUserProvisioningUpdates,
+  } = adminPanelStore;
 
   const [searchInput, setSearchInput] = useState<string>("");
   const [filteredUsers, setFilteredUsers] = useState<UserWithAgenciesByID[]>(
@@ -52,8 +60,12 @@ export const UserProvisioningOverview = observer(() => {
     );
   };
   const editUser = (userID: string | number) => {
-    openModal();
+    const selectedUser = usersByID[userID][0];
     setSelectedUserID(userID);
+    updateEmail(selectedUser.email);
+    updateUsername(selectedUser.name);
+    updateUserAgencies(Object.keys(selectedUser.agencies).map((id) => +id));
+    openModal();
   };
 
   useEffect(() => {

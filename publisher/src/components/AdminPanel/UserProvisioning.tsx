@@ -17,7 +17,7 @@
 
 import { Button } from "@justice-counts/common/components/Button";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
@@ -56,6 +56,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
     );
     const [addOrDeleteAgencyAction, setAddOrDeleteAgencyAction] =
       useState<InteractiveSearchListAction>();
+    const [emailValidationError, setEmailValidationError] = useState<string>();
 
     const selectedUser = selectedUserID
       ? usersByID[selectedUserID][0]
@@ -132,16 +133,16 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       ]);
     };
 
-    useEffect(() => {
-      if (selectedUser && selectedUser?.agencies) {
-        updateEmail(selectedUser.email);
-        updateUsername(selectedUser.name);
-        updateUserAgencies(
-          Object.keys(selectedUser?.agencies).map((id) => +id)
-        );
+    const validateAndUpdateEmail = (email: string) => {
+      const regex =
+        /^([A-Z0-9_+-]+\.?)*[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i;
+      updateEmail(email);
+
+      if (email === "" || regex.test(email)) {
+        return setEmailValidationError(undefined);
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedUser]);
+      setEmailValidationError("Please enter a valid email address");
+    };
 
     return (
       <Styled.ModalContainer>
@@ -176,15 +177,21 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
             {/* Email Input (note: once a user has been created, the email is no longer editable) */}
             {/* TODO: Email regex and error */}
             {!selectedUser && (
-              <Styled.InputLabelWrapper>
+              <Styled.InputLabelWrapper hasError={!!emailValidationError}>
                 <input
                   name="email"
                   type="email"
-                  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2, 4}$"
                   value={userProvisioningUpdates.email || ""}
-                  onChange={(e) => updateEmail(e.target.value)}
+                  onChange={(e) => validateAndUpdateEmail(e.target.value)}
                 />
-                <label htmlFor="email">Email</label>
+                <Styled.LabelWrapper>
+                  <label htmlFor="email">Email</label>
+                  {emailValidationError && (
+                    <Styled.ErrorLabel>
+                      {emailValidationError}
+                    </Styled.ErrorLabel>
+                  )}
+                </Styled.LabelWrapper>
               </Styled.InputLabelWrapper>
             )}
 
@@ -279,6 +286,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
                     buttonColor={
                       index === modalButtons.length - 1 ? "blue" : undefined
                     }
+                    disabled={button.label === "Save" && !!emailValidationError}
                   />
                 ))}
               </Styled.SaveCancelButtonsWrapper>

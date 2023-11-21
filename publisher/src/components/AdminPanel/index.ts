@@ -15,8 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 /* eslint-disable simple-import-sort/exports */
-export * from "./UserProvisioningOverview";
 export * from "./UserProvisioning";
+export * from "./UserProvisioningOverview";
 export * from "./AdminPanel";
 export * from "./InteractiveSearchList";
 export * from "./types";
