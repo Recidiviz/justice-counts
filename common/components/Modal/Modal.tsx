@@ -64,9 +64,7 @@ export function Modal({
 
   const Portal = (
     <Styled.OuterWrapper modalBackground={modalBackground}>
-      {children ? (
-        children
-      ) : (
+      {children || (
         <Styled.InnerWrapper modalType={modalType} centerText={centerText}>
           {modalType === "success" && <Styled.Icon src={successIcon} alt="" />}
           {modalType === "warning" && <Styled.Icon src={warningIcon} alt="" />}

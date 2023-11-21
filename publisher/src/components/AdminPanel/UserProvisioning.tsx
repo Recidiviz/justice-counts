@@ -16,7 +16,6 @@
 // =============================================================================
 
 import { Button } from "@justice-counts/common/components/Button";
-import { groupBy } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 

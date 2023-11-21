@@ -23,7 +23,7 @@ import React, { useEffect, useState } from "react";
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
 import { Loading } from "../Loading";
-import { User, UserKey, UserProvisioning, UserWithAgenciesByID } from ".";
+import { UserKey, UserProvisioning, UserWithAgenciesByID } from ".";
 import * as Styled from "./AdminPanel.styles";
 
 export const UserProvisioningOverview = observer(() => {
