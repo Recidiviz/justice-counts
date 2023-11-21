@@ -43,8 +43,7 @@ export const LinkToDashboard: React.FC<PropsWithChildren> = observer(
     const agencyId =
       agencyIdLocalStorage || userStore.getInitialAgencyId()?.toLocaleString();
     const agencyName = agencyId && userStore.getAgency(agencyId)?.name;
-    // eslint-disable-next-line
-    console.log("api.environment::", api.environment);
+
     if (!agencyName) return <>{children}</>;
 
     const url = generateDashboardURL(api.environment, agencyName);
