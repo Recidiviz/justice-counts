@@ -88,7 +88,7 @@ const App: React.FC = (): ReactElement => {
               <Navigate to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`} />
             }
           />
-          {api.environment === Environment.STAGING && (
+          {api.environment === Environment.LOCAL && (
             <Route path="/admin-panel" element={<AdminPanel />} />
           )}
         </Routes>

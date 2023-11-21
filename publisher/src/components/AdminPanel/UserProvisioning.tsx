@@ -26,7 +26,6 @@ import {
   InteractiveSearchListAction,
   InteractiveSearchListActions,
   InteractiveSearchListUpdateSelections,
-  SearchableListItem,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
 
@@ -38,17 +37,15 @@ type UserProvisioningProps = {
 export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
   ({ selectedUserID, closeModal }) => {
     const { adminPanelStore } = useStore();
-    const { agencies, usersByID } = adminPanelStore;
-
-    const [userProvisioningUpdates, setUserProvisioningUpdates] = useState<{
-      username: string;
-      email: string;
-      agencies: number[];
-    }>({
-      username: "",
-      email: selectedUserID ? usersByID[selectedUserID][0].email : "",
-      agencies: [],
-    });
+    const {
+      agencies,
+      usersByID,
+      updateUsername,
+      updateEmail,
+      updateUserAgencies,
+      saveUserProvisioningUpdates,
+      userProvisioningUpdates,
+    } = adminPanelStore;
 
     const [addedAgenciesIDs, setAddedAgenciesIDs] = useState<Set<number>>(
       new Set()
@@ -71,14 +68,29 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
         ? Object.keys(selectedUserAgenciesByID).map((id) => +id)
         : []
     );
-    const modalButtons = [
-      { label: "Cancel", onClick: closeModal },
-      { label: "Save", onClick: () => new Error("Saved") },
-    ];
+    const addedAgenciesToDisplayInUserAgencies = Array.from(
+      addedAgenciesIDs
+    ).map((id) => ({
+      ...agenciesByID[id][0],
+      action: InteractiveSearchListActions.ADD,
+    }));
+    const userAgenciesAddedAgencies = selectedUser
+      ? [...selectedUser.agencies, ...addedAgenciesToDisplayInUserAgencies]
+      : [];
     const isAddAction =
       addOrDeleteAgencyAction === InteractiveSearchListActions.ADD;
     const isDeleteAction =
       addOrDeleteAgencyAction === InteractiveSearchListActions.DELETE;
+    const modalButtons = [
+      { label: "Cancel", onClick: closeModal },
+      {
+        label: "Save",
+        onClick: async () => {
+          await saveUserProvisioningUpdates();
+          closeModal();
+        },
+      },
+    ];
 
     const selectOrDeselectByID = (prevSet: Set<number>, id: number) => {
       const updatedSet = new Set(prevSet);
@@ -91,55 +103,36 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
     };
     const selectDeselectAgencyToAddOrDelete: InteractiveSearchListUpdateSelections =
       (selection) => {
-        if (selection.action === InteractiveSearchListActions.ADD) {
+        let updatedSet: Set<number> = new Set();
+        const hasAddAction =
+          selection.action === InteractiveSearchListActions.ADD;
+        const hasDeleteAction =
+          selection.action === InteractiveSearchListActions.DELETE;
+
+        if (hasAddAction) {
           setAddedAgenciesIDs((prev) => {
-            const updatedSet = selectOrDeselectByID(prev, +selection.id);
-            setUserProvisioningUpdates((prev) => ({
-              ...prev,
-              agencies: [
-                ...Array.from(selectedUserAgenciesIDsSet).filter(
-                  (id) => !deletedAgenciesIDs.has(id)
-                ),
-                ...Array.from(updatedSet),
-              ],
-            }));
+            updatedSet = selectOrDeselectByID(prev, +selection.id);
             return updatedSet;
           });
         }
-        if (selection.action === InteractiveSearchListActions.DELETE) {
+        if (hasDeleteAction) {
           setDeletedAgenciesIDs((prev) => {
-            const updatedSet = selectOrDeselectByID(prev, +selection.id);
-            setUserProvisioningUpdates((prev) => ({
-              ...prev,
-              agencies: [
-                ...Array.from(selectedUserAgenciesIDsSet).filter(
-                  (id) => !updatedSet.has(id)
-                ),
-                ...Array.from(addedAgenciesIDs),
-              ],
-            }));
+            updatedSet = selectOrDeselectByID(prev, +selection.id);
             return updatedSet;
           });
         }
+
+        updateUserAgencies([
+          ...Array.from(selectedUserAgenciesIDsSet).filter(
+            (id) => !(hasDeleteAction ? updatedSet : deletedAgenciesIDs).has(id)
+          ),
+          ...Array.from(hasDeleteAction ? addedAgenciesIDs : updatedSet),
+        ]);
       };
 
-    const getFinalListOfAgencies = () => [
-      ...Array.from(selectedUserAgenciesIDsSet).filter(
-        (id) => !deletedAgenciesIDs.has(id)
-      ),
-      ...Array.from(addedAgenciesIDs),
-    ];
-
-    const addedAgenciesToDisplayInUserAgenciesList = Array.from(
-      addedAgenciesIDs
-    ).map((id) => ({
-      ...agenciesByID[id][0],
-      action: InteractiveSearchListActions.ADD,
-    }));
-
     useEffect(() => {
-      console.log("userProvisioningUpdates:::", userProvisioningUpdates);
-    }, [userProvisioningUpdates]);
+      if (selectedUser) updateEmail(selectedUser.email);
+    }, [selectedUser, updateEmail]);
 
     return (
       <Styled.ModalContainer>
@@ -149,7 +142,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
 
         {/** User Information */}
         <Styled.NameDisplay>
-          {userProvisioningUpdates?.username || selectedUser?.name}
+          {userProvisioningUpdates?.name || selectedUser?.name}
         </Styled.NameDisplay>
         <Styled.Subheader>
           {userProvisioningUpdates?.email || selectedUser?.email}
@@ -165,15 +158,8 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
               <input
                 name="username"
                 type="text"
-                value={
-                  userProvisioningUpdates.username || selectedUser?.name || ""
-                }
-                onChange={(e) =>
-                  setUserProvisioningUpdates((prev) => ({
-                    ...prev,
-                    username: e.target.value,
-                  }))
-                }
+                value={userProvisioningUpdates.name || selectedUser?.name || ""}
+                onChange={(e) => updateUsername(e.target.value)}
               />
               <label htmlFor="username">Name</label>
             </Styled.InputLabelWrapper>
@@ -186,12 +172,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
                   name="email"
                   type="text"
                   value={userProvisioningUpdates.email || ""}
-                  onChange={(e) =>
-                    setUserProvisioningUpdates((prev) => ({
-                      ...prev,
-                      email: e.target.value,
-                    }))
-                  }
+                  onChange={(e) => updateEmail(e.target.value)}
                 />
                 <label htmlFor="email">Email</label>
               </Styled.InputLabelWrapper>
@@ -200,10 +181,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
             {/* User's Agencies */}
             {selectedUser && (
               <InteractiveSearchList
-                list={[
-                  ...selectedUser.agencies,
-                  ...addedAgenciesToDisplayInUserAgenciesList,
-                ]}
+                list={userAgenciesAddedAgencies}
                 buttons={[]}
                 selections={deletedAgenciesIDs}
                 updateSelections={selectDeselectAgencyToAddOrDelete}

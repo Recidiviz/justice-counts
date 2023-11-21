@@ -23,6 +23,7 @@ import {
   AgencyResponse,
   SearchableEntity,
   User,
+  UserProvisioningUpdates,
   UserResponse,
 } from "../components/AdminPanel";
 import { groupBy } from "../utils";
@@ -39,6 +40,8 @@ class AdminPanelStore {
 
   systems: AgencySystems[];
 
+  userProvisioningUpdates: UserProvisioningUpdates;
+
   constructor(api: API) {
     makeAutoObservable(this, {}, { autoBind: true });
     this.api = api;
@@ -46,6 +49,11 @@ class AdminPanelStore {
     this.users = [];
     this.agencies = [];
     this.systems = [];
+    this.userProvisioningUpdates = {
+      name: "",
+      email: "",
+      agency_ids: [],
+    };
   }
 
   get usersByID() {
@@ -104,6 +112,44 @@ class AdminPanelStore {
     runInAction(() => {
       this.loading = false;
     });
+  }
+
+  /** User Provisioning */
+
+  updateUsername(username: string) {
+    this.userProvisioningUpdates.name = username;
+  }
+
+  updateEmail(email: string) {
+    this.userProvisioningUpdates.email = email;
+  }
+
+  updateUserAgencies(agencies: number[]) {
+    this.userProvisioningUpdates.agency_ids = agencies;
+  }
+
+  resetUserProvisioningUpdates() {
+    this.userProvisioningUpdates.name = "";
+    this.userProvisioningUpdates.email = "";
+    this.userProvisioningUpdates.agency_ids = [];
+  }
+
+  async saveUserProvisioningUpdates() {
+    try {
+      const response = (await this.api.request({
+        path: `/admin/user`,
+        method: "PUT",
+        body: { users: [this.userProvisioningUpdates] },
+      })) as Response;
+      const data = (await response.json()) as AgencyResponse;
+      console.log("data::", data);
+
+      if (response.status !== 200) {
+        throw new Error("There was an issue saving user provisioning updates.");
+      }
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
   }
 
   /** Helpers  */

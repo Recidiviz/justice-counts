@@ -87,6 +87,12 @@ export const userRoles = [
 
 export type UserRole = (typeof userRoles)[number];
 
+export type UserProvisioningUpdates = {
+  name: string;
+  email: string;
+  agency_ids: number[];
+};
+
 /** Search Feature Types */
 
 export const InteractiveSearchListActions = {

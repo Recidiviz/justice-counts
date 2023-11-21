@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { groupBy } from "lodash";
 import React, { useEffect, useState } from "react";
 
 import AdminPanelStore from "../../stores/AdminPanelStore";

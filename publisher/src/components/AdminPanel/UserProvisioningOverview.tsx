@@ -28,7 +28,7 @@ import * as Styled from "./AdminPanel.styles";
 
 export const UserProvisioningOverview = observer(() => {
   const { adminPanelStore } = useStore();
-  const { loading, users } = adminPanelStore;
+  const { loading, users, resetUserProvisioningUpdates } = adminPanelStore;
 
   const [searchInput, setSearchInput] = useState<string>("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
@@ -40,6 +40,7 @@ export const UserProvisioningOverview = observer(() => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     setSelectedUserID(undefined);
+    resetUserProvisioningUpdates();
     setIsModalOpen(false);
   };
   const searchAndFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
