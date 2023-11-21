@@ -131,8 +131,15 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       };
 
     useEffect(() => {
-      if (selectedUser) updateEmail(selectedUser.email);
-    }, [selectedUser, updateEmail]);
+      if (selectedUser && selectedUserAgenciesByID) {
+        updateEmail(selectedUser.email);
+        updateUsername(selectedUser.name);
+        updateUserAgencies(
+          Object.keys(selectedUserAgenciesByID).map((id) => +id)
+        );
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedUser]);
 
     return (
       <Styled.ModalContainer>

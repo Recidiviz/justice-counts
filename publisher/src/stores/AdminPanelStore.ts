@@ -34,7 +34,7 @@ class AdminPanelStore {
 
   loading: boolean;
 
-  users: User[];
+  usersByID: Record<string, User[]>;
 
   agencies: Agency[];
 
@@ -46,7 +46,8 @@ class AdminPanelStore {
     makeAutoObservable(this, {}, { autoBind: true });
     this.api = api;
     this.loading = true;
-    this.users = [];
+    // this.users = [];
+    this.usersByID = {};
     this.agencies = [];
     this.systems = [];
     this.userProvisioningUpdates = {
@@ -56,8 +57,10 @@ class AdminPanelStore {
     };
   }
 
-  get usersByID() {
-    return groupBy(this.users, (user) => user.id);
+  get users(): User[] {
+    return AdminPanelStore.sortListByName(
+      Object.values(this.usersByID).flatMap((user) => user)
+    );
   }
 
   async fetchUsers() {
@@ -72,12 +75,15 @@ class AdminPanelStore {
         throw new Error("There was an issue fetching users.");
       }
 
-      /** Hydrate store with a list of sorted users (and a sorted list of their agencies) from response  */
+      /** Hydrate store with a list of users by ID (and a sorted list of their agencies) from response  */
       runInAction(() => {
-        this.users = AdminPanelStore.sortListByName(data.users).map((user) => ({
-          ...user,
-          agencies: AdminPanelStore.sortListByName(user.agencies),
-        }));
+        this.usersByID = groupBy(
+          data.users.map((user) => ({
+            ...user,
+            agencies: AdminPanelStore.sortListByName(user.agencies),
+          })),
+          (user) => user.id
+        );
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
@@ -134,6 +140,11 @@ class AdminPanelStore {
     this.userProvisioningUpdates.agency_ids = [];
   }
 
+  updateUsers(userResponse: UserResponse) {
+    const user = userResponse.users[0];
+    this.usersByID[user.id] = [user];
+  }
+
   async saveUserProvisioningUpdates() {
     try {
       const response = (await this.api.request({
@@ -141,12 +152,13 @@ class AdminPanelStore {
         method: "PUT",
         body: { users: [this.userProvisioningUpdates] },
       })) as Response;
-      const data = (await response.json()) as AgencyResponse;
-      console.log("data::", data);
+      const userResponse = (await response.json()) as UserResponse;
 
       if (response.status !== 200) {
         throw new Error("There was an issue saving user provisioning updates.");
       }
+
+      runInAction(() => this.updateUsers(userResponse));
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
     }
