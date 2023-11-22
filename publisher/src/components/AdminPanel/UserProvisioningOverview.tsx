@@ -95,6 +95,7 @@ export const UserProvisioningOverview = observer(() => {
         {/* Search */}
         <Styled.InputLabelWrapper inputWidth={500}>
           <input
+            id="search-users"
             name="search-users"
             type="text"
             value={searchInput}

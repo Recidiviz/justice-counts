@@ -207,6 +207,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
             {/* Username Input */}
             <Styled.InputLabelWrapper>
               <input
+                id="username"
                 name="username"
                 type="text"
                 value={userProvisioningUpdates.name || selectedUser?.name || ""}
@@ -221,6 +222,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
                 hasError={Boolean(emailValidationError)}
               >
                 <input
+                  id="email"
                   name="email"
                   type="email"
                   value={userProvisioningUpdates.email || ""}
