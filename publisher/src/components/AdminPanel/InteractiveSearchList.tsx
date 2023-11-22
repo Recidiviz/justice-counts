@@ -127,7 +127,7 @@ export const InteractiveSearchList = ({
           isActiveBox={isActiveBox}
         >
           {metadata?.listBoxLabel}
-          {buttons.length > 0 && (
+          {buttons.length > 0 && isActiveBox && (
             <Styled.LabelButtonsWrapper>
               {buttons.map((button) => (
                 <Styled.LabelButton key={button.label} onClick={button.onClick}>

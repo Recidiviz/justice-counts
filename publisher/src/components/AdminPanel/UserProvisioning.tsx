@@ -67,6 +67,13 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       : [];
     const selectedUserAgenciesIDsSet = new Set(selectedUserAgenciesIDs);
 
+    /** Available agencies to select from */
+    const availableAgencies = agencies.filter(
+      (agency) => !selectedUserAgenciesIDsSet.has(agency.id)
+    );
+    const availableAgenciesIDs = availableAgencies.map((agency) => +agency.id);
+    const availableAgenciesIDsSet = new Set(availableAgenciesIDs);
+
     /** Added agencies to display within the user's agencies list */
     const addedAgenciesToDisplayInUserAgencies = Array.from(
       addedAgenciesIDs
@@ -139,6 +146,51 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
         ),
         ...Array.from(hasDeleteAction ? addedAgenciesIDs : updatedSet),
       ]);
+    };
+    const selectAll = () => {
+      if (isAddAction) {
+        setAddedAgenciesIDs(availableAgenciesIDsSet);
+        /**
+         * Final user agencies list should include all available agencies and
+         * current user agencies (excluding the deleted agencies)
+         */
+        updateUserAgencies([
+          ...Array.from(availableAgenciesIDsSet),
+          ...Array.from(selectedUserAgenciesIDsSet).filter(
+            (id) => !deletedAgenciesIDs.has(id)
+          ),
+        ]);
+      }
+      if (isDeleteAction) {
+        setDeletedAgenciesIDs(selectedUserAgenciesIDsSet);
+        /** Final user agencies list should include only the added agencies */
+        updateUserAgencies([...Array.from(addedAgenciesIDs)]);
+      }
+    };
+    const deselectAll = () => {
+      if (isAddAction) {
+        setAddedAgenciesIDs(new Set());
+        /**
+         * Final user agencies list should include only the current user
+         * agencies (excluding the deleted agencies)
+         */
+        updateUserAgencies([
+          ...Array.from(selectedUserAgenciesIDsSet).filter(
+            (id) => !deletedAgenciesIDs.has(id)
+          ),
+        ]);
+      }
+      if (isDeleteAction) {
+        setDeletedAgenciesIDs(new Set());
+        /**
+         * Final user agencies list should include the current user agencies and
+         * any added agencies
+         */
+        updateUserAgencies([
+          ...Array.from(selectedUserAgenciesIDsSet),
+          ...Array.from(addedAgenciesIDs),
+        ]);
+      }
     };
 
     /** Validate & update email input */
@@ -243,7 +295,14 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
             {selectedUser && (
               <InteractiveSearchList
                 list={userAgenciesAddedAgencies}
-                buttons={[]}
+                buttons={[
+                  { label: "Select All", onClick: selectAll },
+                  { label: "Deselect All", onClick: deselectAll },
+                  {
+                    label: "Close",
+                    onClick: () => setAddOrDeleteAgencyAction(undefined),
+                  },
+                ]}
                 selections={deletedAgenciesIDs}
                 updateSelections={updateAgencySelections}
                 boxActionType={InteractiveSearchListActions.DELETE}
@@ -302,10 +361,15 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
             {/* Add Agencies List */}
             {isAddAction && (
               <InteractiveSearchList
-                list={agencies.filter(
-                  (agency) => !selectedUserAgenciesIDsSet.has(agency.id)
-                )}
-                buttons={[]}
+                list={availableAgencies}
+                buttons={[
+                  { label: "Select All", onClick: selectAll },
+                  { label: "Deselect All", onClick: deselectAll },
+                  {
+                    label: "Close",
+                    onClick: () => setAddOrDeleteAgencyAction(undefined),
+                  },
+                ]}
                 selections={addedAgenciesIDs}
                 updateSelections={updateAgencySelections}
                 boxActionType={InteractiveSearchListActions.ADD}
