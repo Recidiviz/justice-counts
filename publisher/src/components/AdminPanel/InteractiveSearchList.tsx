@@ -58,6 +58,18 @@ export const InteractiveSearchList = ({
       );
     }
   };
+  const isChipSelected = (listItem: SearchableListItem) => {
+    /**
+     * The chip is selected (or highlighted) if it is included in the `selections` set
+     * OR if that chip's action doesn't match the `boxActionType` (this is the case when
+     * trying to show a list of added agencies [`listItem.action === 'ADD'] within a user's
+     * existing agencies [which has a `boxActionType === 'DELETE'`])
+     */
+    return (
+      selections.has(+listItem.id) ||
+      (listItem.action && boxActionType && listItem.action !== boxActionType)
+    );
+  };
   const filterListBySearchValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInputValue(e.target.value);
     setFilteredList(
@@ -92,12 +104,7 @@ export const InteractiveSearchList = ({
                 <Styled.Chip
                   key={listItem.id}
                   onClick={() => selectChip(listItem)}
-                  selected={
-                    selections.has(+listItem.id) ||
-                    (listItem.action &&
-                      boxActionType &&
-                      listItem.action !== boxActionType)
-                  }
+                  selected={isChipSelected(listItem)}
                   hover={Boolean(boxActionType && isActiveBox)}
                   selectedColor={getChipColor(listItem.action || boxActionType)}
                 >

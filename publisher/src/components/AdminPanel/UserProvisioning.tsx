@@ -58,6 +58,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       useState<InteractiveSearchListAction>();
     const [emailValidationError, setEmailValidationError] = useState<string>();
 
+    /** Selected user to edit & their agencies */
     const selectedUser = selectedUserID
       ? usersByID[selectedUserID][0]
       : undefined;
@@ -65,6 +66,8 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       ? Object.keys(selectedUser?.agencies).map((id) => +id)
       : [];
     const selectedUserAgenciesIDsSet = new Set(selectedUserAgenciesIDs);
+
+    /** Added agencies to display within the user's agencies list */
     const addedAgenciesToDisplayInUserAgencies = Array.from(
       addedAgenciesIDs
     ).map((id) => ({
@@ -79,10 +82,14 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
           ...addedAgenciesToDisplayInUserAgencies,
         ]
       : [];
+
+    /** Whether or not we are performing an add/delete action on an agencies' list */
     const isAddAction =
       addOrDeleteAgencyAction === InteractiveSearchListActions.ADD;
     const isDeleteAction =
       addOrDeleteAgencyAction === InteractiveSearchListActions.DELETE;
+
+    /** Modal Buttons (Save/Cancel) */
     const modalButtons = [
       { label: "Cancel", onClick: closeModal },
       {
@@ -94,6 +101,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       },
     ];
 
+    /** Selecting/deselecting agencies to add/delete */
     const selectOrDeselectByID = (prevSet: Set<number>, id: number) => {
       const updatedSet = new Set(prevSet);
       if (updatedSet.has(id)) {
@@ -133,6 +141,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       ]);
     };
 
+    /** Validate & update email input */
     const validateAndUpdateEmail = (email: string) => {
       const regex =
         /^([A-Z0-9_+-]+\.?)*[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i;
@@ -144,23 +153,36 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       setEmailValidationError("Please enter a valid email address");
     };
 
+    /**
+     * Existing user: an update has been made when the user has a value for `userProvisioningUpdates.name`
+     *                and it does not match the user's name before the modal was open.
+
+     * New user: an update has been made when the user has a value for `userProvisioningUpdates.name`
+     */
     const hasNameUpdate = selectedUser
-      ? !!userProvisioningUpdates.name &&
+      ? Boolean(userProvisioningUpdates.name) &&
         userProvisioningUpdates.name !== selectedUser.name
-      : !!userProvisioningUpdates.name;
-    const hasEmailUpdate = selectedUser
-      ? !!userProvisioningUpdates.email &&
-        userProvisioningUpdates.email !== selectedUser.email
-      : !!userProvisioningUpdates.email;
-    const hasAgencyUpdates = selectedUser
-      ? addedAgenciesIDs.size > 0 || deletedAgenciesIDs.size > 0
-      : hasNameUpdate &&
-        hasEmailUpdate &&
-        (addedAgenciesIDs.size > 0 || deletedAgenciesIDs.size > 0);
+      : Boolean(userProvisioningUpdates.name);
+    /**
+     * Existing user: updates cannot be made to email via the admin panel
+     * New user: an update has been made when the user has a value for `userProvisioningUpdates.email`
+     */
+    const hasEmailUpdate =
+      !selectedUser && Boolean(userProvisioningUpdates.email);
+    /**
+     * Existing & new user: an update has been made when there are agencies added to either added/deleted agencies sets
+     */
+    const hasAgencyUpdates =
+      addedAgenciesIDs.size > 0 || deletedAgenciesIDs.size > 0;
+    /**
+     * Saving is disabled if there is an email validation error OR an existing user
+     * has made no updates to either the name or agencies list, or a newly created user
+     * has no input for both name and email
+     */
     const isSaveDisabled =
-      !!emailValidationError ||
+      Boolean(emailValidationError) ||
       (selectedUser
-        ? !hasNameUpdate && !hasEmailUpdate && !hasAgencyUpdates
+        ? !hasNameUpdate && !hasAgencyUpdates
         : (hasNameUpdate && hasEmailUpdate) !== true);
 
     return (
@@ -194,9 +216,10 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
             </Styled.InputLabelWrapper>
 
             {/* Email Input (note: once a user has been created, the email is no longer editable) */}
-            {/* TODO: Email regex and error */}
             {!selectedUser && (
-              <Styled.InputLabelWrapper hasError={!!emailValidationError}>
+              <Styled.InputLabelWrapper
+                hasError={Boolean(emailValidationError)}
+              >
                 <input
                   name="email"
                   type="email"
