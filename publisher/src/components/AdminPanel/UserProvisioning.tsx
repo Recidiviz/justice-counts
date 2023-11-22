@@ -140,6 +140,13 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
         });
       }
 
+      /**
+       * The final user agency's list after:
+       *   - a DELETE selection: the user's agencies excluding selections marked for deletion
+       *                         (including the current selection) AND any added agencies
+       *   - an ADD selection: the user's agencies excluding any selections marked for deletion
+       *                       AND added agencies (including the current selection)
+       */
       updateUserAgencies([
         ...Array.from(selectedUserAgenciesIDsSet).filter(
           (id) => !(hasDeleteAction ? updatedSet : deletedAgenciesIDs).has(id)
