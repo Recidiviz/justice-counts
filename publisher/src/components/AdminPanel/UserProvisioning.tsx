@@ -144,7 +144,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
     /** Validate & update email input */
     const validateAndUpdateEmail = (email: string) => {
       const regex =
-        /^([A-Z0-9_+-]+\.?)*[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i;
+        /^([A-Z0-9_+-]\.?)*[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i;
       updateEmail(email);
 
       if (email === "" || regex.test(email)) {
