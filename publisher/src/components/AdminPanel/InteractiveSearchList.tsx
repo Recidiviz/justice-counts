@@ -61,9 +61,9 @@ export const InteractiveSearchList = ({
   const isChipSelected = (listItem: SearchableListItem) => {
     /**
      * The chip is selected (or highlighted) if it is included in the `selections` set
-     * OR if that chip's action doesn't match the `boxActionType` (this is the case when
-     * trying to show a list of added agencies [`listItem.action === 'ADD'] within a user's
-     * existing agencies [which has a `boxActionType === 'DELETE'`])
+     * OR (for styling purposes) if that chip's action doesn't match the `boxActionType`
+     * (this is the case when trying to show a list of added agencies [`listItem.action === 'ADD']
+     * within a user's existing agencies [which has a `boxActionType === 'DELETE'`])
      */
     return (
       selections.has(+listItem.id) ||
