@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { groupBy } from "@justice-counts/common/utils";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
@@ -224,4 +224,178 @@ test("Clicking on an existing user card opens the edit user modal", () => {
   expect(deleteAgenciesButton).toBeInTheDocument();
   expect(cancelButton).toBeInTheDocument();
   expect(saveButton).toBeInTheDocument();
+});
+
+test("Deleting an existing users agency deletes agency from user's agency list", async () => {
+  runInAction(() => {
+    adminPanelStore.usersByID = groupBy(
+      mockUsersResponse.users.map((user) => ({
+        ...user,
+        agencies: groupBy(user.agencies, (agency) => agency.id),
+      })),
+      (user) => user.id
+    );
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const user1Card = screen.getByText("Anne Teak");
+  fireEvent.click(user1Card);
+
+  const deleteAgenciesButton = screen.getByText("Delete Agencies");
+
+  expect(screen.queryByText("User's agencies")).not.toBeNull();
+  expect(screen.queryByText("Select agencies to delete")).toBeNull();
+
+  fireEvent.click(deleteAgenciesButton);
+
+  expect(screen.queryByText("User's agencies")).toBeNull();
+  const selectAgenciesToDeleteLabel = screen.getByText(
+    "Select agencies to delete"
+  );
+  expect(selectAgenciesToDeleteLabel).toBeInTheDocument();
+
+  let agency1Chip = screen.getAllByText("Department of X")[1];
+  fireEvent.click(agency1Chip);
+
+  // Mock successful save in the store
+  act(() => {
+    runInAction(() => {
+      const mockUserResponseAfterSave = [
+        {
+          ...mockUsersResponse.users[2],
+          agencies: mockUsersResponse.users[2].agencies.filter(
+            (agency) => agency.name !== "Department of X"
+          ),
+        },
+      ];
+      adminPanelStore.updateUsers({ users: mockUserResponseAfterSave });
+    });
+  });
+
+  fireEvent.click(user1Card);
+  agency1Chip = screen.queryAllByText("Department of X")[1];
+  expect(agency1Chip).toBeUndefined();
+});
+
+test("Adding an agency adds agency to user's agency list", async () => {
+  runInAction(() => {
+    adminPanelStore.usersByID = groupBy(
+      mockUsersResponse.users.map((user) => ({
+        ...user,
+        agencies: groupBy(user.agencies, (agency) => agency.id),
+      })),
+      (user) => user.id
+    );
+    adminPanelStore.agenciesByID = groupBy(
+      [
+        {
+          created_at: null,
+          fips_county_code: null,
+          id: 22,
+          is_dashboard_enabled: false,
+          is_superagency: false,
+          name: "Department of X",
+          settings: [],
+          state: "New York",
+          state_code: "us_ny",
+          super_agency_id: null,
+          systems: ["PRISONS", "SUPERVISION", "PAROLE", "PROBATION"],
+          team: [],
+        },
+        {
+          created_at: null,
+          fips_county_code: null,
+          id: 152,
+          is_dashboard_enabled: false,
+          is_superagency: null,
+          name: "Department of Y",
+          settings: [],
+          state: "New York",
+          state_code: "us_ny",
+          super_agency_id: null,
+          systems: ["PRISONS"],
+          team: [],
+        },
+        {
+          created_at: null,
+          fips_county_code: null,
+          id: 161,
+          is_dashboard_enabled: false,
+          is_superagency: null,
+          name: "Department of Z",
+          settings: [],
+          state: "Oregon",
+          state_code: "us_or",
+          super_agency_id: null,
+          systems: ["JAILS"],
+          team: [],
+        },
+      ],
+      (agency) => agency.id
+    );
+    const mockUserResponseAfterSave = [
+      {
+        ...mockUsersResponse.users[2],
+        agencies: mockUsersResponse.users[2].agencies.filter(
+          (agency) => agency.name !== "Department of Z"
+        ),
+      },
+    ];
+    adminPanelStore.updateUsers({ users: mockUserResponseAfterSave });
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const user1Card = screen.getByText("Anne Teak");
+  fireEvent.click(user1Card);
+
+  const addAgenciesButton = screen.getByText("Add Agencies");
+  const saveButton = screen.getByText("Save");
+
+  expect(screen.queryByText("User's agencies")).not.toBeNull();
+  expect(screen.queryByText("Select agencies to delete")).toBeNull();
+  let agency3Chip = screen.queryAllByText("Department of Z")[1];
+  expect(agency3Chip).toBeUndefined();
+
+  fireEvent.click(addAgenciesButton);
+
+  let noAvailableAgenciesLabel = screen.queryByText(
+    "User is connected to all available agencies"
+  );
+  expect(noAvailableAgenciesLabel).toBeNull();
+
+  const selectAgenciesToAddLabel = screen.getByText("Select agencies to add");
+  expect(selectAgenciesToAddLabel).toBeInTheDocument();
+  agency3Chip = screen.getByText("Department of Z");
+  expect(agency3Chip).toBeInTheDocument();
+  fireEvent.click(agency3Chip);
+
+  // Mock successful save in the store
+  act(() => {
+    runInAction(() => {
+      fireEvent.click(agency3Chip);
+      const mockUserResponseAfterSave = [mockUsersResponse.users[2]];
+      adminPanelStore.updateUsers({ users: mockUserResponseAfterSave });
+    });
+  });
+
+  agency3Chip = screen.getAllByText("Department of Z")[1];
+  noAvailableAgenciesLabel = screen.getByText(
+    "User is connected to all available agencies"
+  );
+  expect(agency3Chip).toBeInTheDocument();
+  expect(noAvailableAgenciesLabel).toBeInTheDocument();
 });
