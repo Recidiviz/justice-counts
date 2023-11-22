@@ -76,10 +76,10 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
     }));
     const userAgenciesAddedAgencies = selectedUser
       ? [
+          ...addedAgenciesToDisplayInUserAgencies,
           ...AdminPanelStore.objectToSortedFlatMappedValues(
             selectedUser.agencies
           ),
-          ...addedAgenciesToDisplayInUserAgencies,
         ]
       : [];
 

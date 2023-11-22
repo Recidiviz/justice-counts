@@ -20,7 +20,8 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import { StoreProvider, rootStore } from "../../stores";
+
+import { rootStore, StoreProvider } from "../../stores";
 import { mockUsersResponse } from "../../stores/AdminPanelStore.test";
 import { AdminPanel } from "./AdminPanel";
 
