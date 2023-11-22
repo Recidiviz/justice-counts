@@ -202,8 +202,11 @@ test("Clicking on an existing user card opens the edit user modal", () => {
 
   const editUserModalTitle = screen.getByText("Edit User Information");
   const nameInput = screen.getByLabelText("Name");
-  const userEmail = screen.getAllByText("user1@email.org")[1]; // The email address in the modal is the second one in this array
+  const userEmail = screen.getAllByText("user1@email.org")[1]; // The email address in the modal is the second one in the `getAllByText` array
   const emailInput = screen.queryByText("Email");
+  const agency1 = screen.getAllByText("Department of X")[1]; // The agency name in the modal is the second one in the `getAllByText` array
+  const agency2 = screen.getAllByText("Department of Y")[1]; // The agency name in the modal is the second one in the `getAllByText` array
+  const agency3 = screen.getAllByText("Department of Z")[1]; // The agency name in the modal is the second one in the `getAllByText` array
   const addAgenciesButton = screen.getByText("Add Agencies");
   const deleteAgenciesButton = screen.getByText("Delete Agencies");
   const cancelButton = screen.getByText("Cancel");
@@ -213,6 +216,9 @@ test("Clicking on an existing user card opens the edit user modal", () => {
   expect(nameInput).toHaveValue("Anne Teak");
   expect(userEmail).toBeInTheDocument();
   expect(emailInput).toBeNull();
+  expect(agency1).toBeInTheDocument();
+  expect(agency2).toBeInTheDocument();
+  expect(agency3).toBeInTheDocument();
   expect(addAgenciesButton).toBeInTheDocument();
   expect(deleteAgenciesButton).toBeInTheDocument();
   expect(cancelButton).toBeInTheDocument();
