@@ -35,6 +35,7 @@ import { Loading } from "./components/Loading";
 import { NoAgencies } from "./pages/NoAgencies";
 import { Router } from "./router";
 import { useStore } from "./stores";
+import { gateToAllowedEnvironment } from "./utils/featureFlags";
 
 const DOWN_FOR_MAINTENANCE = false;
 
@@ -88,9 +89,10 @@ const App: React.FC = (): ReactElement => {
               <Navigate to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`} />
             }
           />
-          {api.environment === Environment.LOCAL && (
-            <Route path="/admin-panel" element={<AdminPanel />} />
-          )}
+          {gateToAllowedEnvironment(api.environment, [
+            Environment.LOCAL,
+            Environment.STAGING,
+          ]) && <Route path="/admin-panel" element={<AdminPanel />} />}
         </Routes>
       </PageWrapper>
       <Footer />

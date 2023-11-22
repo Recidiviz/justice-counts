@@ -15,11 +15,17 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export const showHelpCenterContent = (
-  environment?: "local" | "staging" | "production"
+import { EnvironmentType } from "../components/AdminPanel";
+
+export const gateToAllowedEnvironment = (
+  currentEnvironment: EnvironmentType | undefined,
+  allowedEnvironments: EnvironmentType[]
 ): boolean => {
-  if (!environment) {
+  if (
+    !currentEnvironment ||
+    !allowedEnvironments.includes(currentEnvironment)
+  ) {
     return false;
   }
-  return ["local", "staging"].includes(environment);
+  return true;
 };
