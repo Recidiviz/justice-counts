@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { AgencyResponse, UserResponse } from "../components/AdminPanel";
+import { groupBy } from "../utils";
 import AdminPanelStore from "./AdminPanelStore";
 import API from "./API";
 
@@ -384,4 +385,17 @@ test("searchList returns a filtered list of agencies based on a string value mat
   );
   expect(filteredListOfAgencies.length).toBe(1);
   expect(filteredListOfAgencies[0].name).toBe("Super Agency");
+});
+
+test("objectToSortedFlatMappedValues returns a sorted array of a `groupBy` object's values", () => {
+  const groupedAgencies = groupBy(
+    adminPanelStore.agencies,
+    (agency) => agency.id
+  );
+  const groupedAgenciesSortedValues =
+    AdminPanelStore.objectToSortedFlatMappedValues(groupedAgencies);
+
+  expect(groupedAgenciesSortedValues[0].name).toBe("Child Agency");
+  expect(groupedAgenciesSortedValues[1].name).toBe("Super Agency");
+  expect(groupedAgenciesSortedValues[2].name).toBe("Z Agency");
 });

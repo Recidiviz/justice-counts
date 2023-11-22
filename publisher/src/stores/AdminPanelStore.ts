@@ -77,7 +77,7 @@ class AdminPanelStore {
         throw new Error("There was an issue fetching users.");
       }
 
-      /** Hydrate store with a list of users by ID (and a sorted list of their agencies) from response  */
+      /** Hydrate store with a list of users by user ID (and a list of their agencies grouped by agency ID) from response  */
       runInAction(() => {
         this.usersByID = groupBy(
           data.users.map((user) => ({
@@ -213,7 +213,7 @@ class AdminPanelStore {
   /**
    * Converts an object grouped by IDs (via the `groupBy` function) into a sorted, flat mapped array of the object's values.
    * @param obj - The object created by the `groupBy` function to convert
-   * @returns An sorted array of the object's values
+   * @returns A sorted array of the object's values
    */
   static objectToSortedFlatMappedValues<
     T extends Agency | UserWithAgenciesByID
