@@ -67,7 +67,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       : [];
     const selectedUserAgenciesIDsSet = new Set(selectedUserAgenciesIDs);
 
-    /** Available agencies to select from */
+    /** Available agencies to add from */
     const availableAgencies = agencies.filter(
       (agency) => !selectedUserAgenciesIDsSet.has(agency.id)
     );
@@ -212,6 +212,16 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       setEmailValidationError("Please enter a valid email address");
     };
 
+    /** Search List Buttons (Select All/Deselect All/Close) */
+    const interactiveSearchListButtons = [
+      { label: "Select All", onClick: selectAll },
+      { label: "Deselect All", onClick: deselectAll },
+      {
+        label: "Close",
+        onClick: () => setAddOrDeleteAgencyAction(undefined),
+      },
+    ];
+
     /**
      * Existing user: an update has been made when the user has a value for `userProvisioningUpdates.name`
      *                and it does not match the user's name before the modal was open.
@@ -302,14 +312,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
             {selectedUser && (
               <InteractiveSearchList
                 list={userAgenciesAddedAgencies}
-                buttons={[
-                  { label: "Select All", onClick: selectAll },
-                  { label: "Deselect All", onClick: deselectAll },
-                  {
-                    label: "Close",
-                    onClick: () => setAddOrDeleteAgencyAction(undefined),
-                  },
-                ]}
+                buttons={interactiveSearchListButtons}
                 selections={deletedAgenciesIDs}
                 updateSelections={updateAgencySelections}
                 boxActionType={InteractiveSearchListActions.DELETE}
@@ -369,14 +372,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
             {isAddAction && (
               <InteractiveSearchList
                 list={availableAgencies}
-                buttons={[
-                  { label: "Select All", onClick: selectAll },
-                  { label: "Deselect All", onClick: deselectAll },
-                  {
-                    label: "Close",
-                    onClick: () => setAddOrDeleteAgencyAction(undefined),
-                  },
-                ]}
+                buttons={interactiveSearchListButtons}
                 selections={addedAgenciesIDs}
                 updateSelections={updateAgencySelections}
                 boxActionType={InteractiveSearchListActions.ADD}
