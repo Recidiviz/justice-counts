@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-
+/* eslint-disable testing-library/prefer-presence-queries, prefer-destructuring */
 import { groupBy } from "@justice-counts/common/utils";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
@@ -363,7 +363,6 @@ test("Adding an agency adds agency to user's agency list", async () => {
   fireEvent.click(user1Card);
 
   const addAgenciesButton = screen.getByText("Add Agencies");
-  const saveButton = screen.getByText("Save");
 
   expect(screen.queryByText("User's agencies")).not.toBeNull();
   expect(screen.queryByText("Select agencies to delete")).toBeNull();
