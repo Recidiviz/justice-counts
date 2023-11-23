@@ -44,7 +44,6 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       updateUsername,
       updateEmail,
       updateUserAgencies,
-      saveUserProvisioningUpdates,
       userProvisioningUpdates,
     } = adminPanelStore;
 
@@ -102,7 +101,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       {
         label: "Save",
         onClick: async () => {
-          await saveUserProvisioningUpdates();
+          await saveUpdates();
           closeModal();
         },
       },
@@ -121,82 +120,36 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
     const updateAgencySelections: InteractiveSearchListUpdateSelections = (
       selection
     ) => {
-      let updatedSet: Set<number> = new Set();
       const hasAddAction =
         selection.action === InteractiveSearchListActions.ADD;
       const hasDeleteAction =
         selection.action === InteractiveSearchListActions.DELETE;
 
       if (hasAddAction) {
-        setAddedAgenciesIDs((prev) => {
-          updatedSet = selectOrDeselectByID(prev, +selection.id);
-          return updatedSet;
-        });
+        setAddedAgenciesIDs((prev) =>
+          selectOrDeselectByID(prev, +selection.id)
+        );
       }
       if (hasDeleteAction) {
-        setDeletedAgenciesIDs((prev) => {
-          updatedSet = selectOrDeselectByID(prev, +selection.id);
-          return updatedSet;
-        });
+        setDeletedAgenciesIDs((prev) =>
+          selectOrDeselectByID(prev, +selection.id)
+        );
       }
-
-      /**
-       * The final user agency's list after:
-       *   - a DELETE selection: the user's agencies excluding selections marked for deletion
-       *                         (including the current selection) AND any added agencies
-       *   - an ADD selection: the user's agencies excluding any selections marked for deletion
-       *                       AND added agencies (including the current selection)
-       */
-      updateUserAgencies([
-        ...Array.from(selectedUserAgenciesIDsSet).filter(
-          (id) => !(hasDeleteAction ? updatedSet : deletedAgenciesIDs).has(id)
-        ),
-        ...Array.from(hasDeleteAction ? addedAgenciesIDs : updatedSet),
-      ]);
     };
     const selectAll = () => {
       if (isAddAction) {
         setAddedAgenciesIDs(availableAgenciesIDsSet);
-        /**
-         * Final user agencies list should include all available agencies and
-         * current user agencies (excluding the deleted agencies)
-         */
-        updateUserAgencies([
-          ...Array.from(availableAgenciesIDsSet),
-          ...Array.from(selectedUserAgenciesIDsSet).filter(
-            (id) => !deletedAgenciesIDs.has(id)
-          ),
-        ]);
       }
       if (isDeleteAction) {
         setDeletedAgenciesIDs(selectedUserAgenciesIDsSet);
-        /** Final user agencies list should include only the added agencies */
-        updateUserAgencies([...Array.from(addedAgenciesIDs)]);
       }
     };
     const deselectAll = () => {
       if (isAddAction) {
         setAddedAgenciesIDs(new Set());
-        /**
-         * Final user agencies list should include only the current user
-         * agencies (excluding the deleted agencies)
-         */
-        updateUserAgencies([
-          ...Array.from(selectedUserAgenciesIDsSet).filter(
-            (id) => !deletedAgenciesIDs.has(id)
-          ),
-        ]);
       }
       if (isDeleteAction) {
         setDeletedAgenciesIDs(new Set());
-        /**
-         * Final user agencies list should include the current user agencies and
-         * any added agencies
-         */
-        updateUserAgencies([
-          ...Array.from(selectedUserAgenciesIDsSet),
-          ...Array.from(addedAgenciesIDs),
-        ]);
       }
     };
 
@@ -221,6 +174,20 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
         onClick: () => setAddOrDeleteAgencyAction(undefined),
       },
     ];
+
+    const saveUpdates = async () => {
+      /**
+       * The final user agency's list will be the user's agencies
+       * excluding agencies marked for deletion AND any added agencies
+       */
+      updateUserAgencies([
+        ...Array.from(addedAgenciesIDs),
+        ...Array.from(selectedUserAgenciesIDsSet).filter(
+          (id) => !deletedAgenciesIDs.has(id)
+        ),
+      ]);
+      await adminPanelStore.saveUserProvisioningUpdates();
+    };
 
     /**
      * Existing user: an update has been made when the user has a value for `userProvisioningUpdates.name`
