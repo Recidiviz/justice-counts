@@ -107,6 +107,7 @@ export const ModalActionButtons = styled.div`
 `;
 
 export const SaveCancelButtonsWrapper = styled.div`
+  position: relative;
   display: flex;
   gap: 8px;
 `;

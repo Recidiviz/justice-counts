@@ -36,7 +36,7 @@ import {
   REPORTS_LOWERCASE,
 } from "../Global/constants";
 import { useHeaderBadge } from "../Header/hooks";
-import { MiniLoaderWrapper, ReviewButtonContainer } from "../Reports";
+import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
 import {
   AgencyName,
   EmptyIcon,
@@ -251,7 +251,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
               isPublishButton,
               isPublishInProgress,
             }) => (
-              <ReviewButtonContainer>
+              <ButtonWithMiniLoaderContainer>
                 {isPublishInProgress && (
                   <MiniLoaderWrapper>
                     <MiniLoader dark />
@@ -274,7 +274,7 @@ export const ReviewMetrics: React.FC<ReviewMetricsProps> = ({
                       : undefined
                   }
                 />
-              </ReviewButtonContainer>
+              </ButtonWithMiniLoaderContainer>
             )
           )}
         </ReviewMetricsButtonsContainer>

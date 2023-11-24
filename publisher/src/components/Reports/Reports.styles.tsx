@@ -294,7 +294,7 @@ export const MiniLoaderWrapper = styled.div`
   align-items: center;
 `;
 
-export const ReviewButtonContainer = styled.div`
+export const ButtonWithMiniLoaderContainer = styled.div`
   display: flex;
   position: relative;
   align-items: center;

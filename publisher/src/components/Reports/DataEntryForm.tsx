@@ -55,7 +55,7 @@ import {
 } from "../Forms";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { useHeaderBadge } from "../Header/hooks";
-import { MiniLoaderWrapper, ReviewButtonContainer } from ".";
+import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from ".";
 import { MetricTextInput } from "./DataEntryFormComponents";
 
 const TopBarButtonsContainer = styled.div`
@@ -248,7 +248,7 @@ const DataEntryForm: React.FC<{
               disabled={isReadOnly}
             />
           ) : (
-            <ReviewButtonContainer>
+            <ButtonWithMiniLoaderContainer>
               {isSaveInProgress && (
                 <MiniLoaderWrapper>
                   <MiniLoader dark />
@@ -266,7 +266,7 @@ const DataEntryForm: React.FC<{
                 buttonColor="blue"
                 disabled={isSaveInProgress || isReadOnly}
               />
-            </ReviewButtonContainer>
+            </ButtonWithMiniLoaderContainer>
           )}
         </TopBarButtonsContainer>
       </HeaderBar>

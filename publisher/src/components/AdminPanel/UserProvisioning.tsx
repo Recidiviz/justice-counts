@@ -16,11 +16,13 @@
 // =============================================================================
 
 import { Button } from "@justice-counts/common/components/Button";
+import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
+import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
 import {
   InteractiveSearchList,
   InteractiveSearchListAction,
@@ -47,6 +49,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       userProvisioningUpdates,
     } = adminPanelStore;
 
+    const [isSaveInProgress, setIsSaveInProgress] = useState<boolean>(false);
     const [addedAgenciesIDs, setAddedAgenciesIDs] = useState<Set<number>>(
       new Set()
     );
@@ -101,7 +104,9 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       {
         label: "Save",
         onClick: async () => {
+          setIsSaveInProgress(true);
           await saveUpdates();
+          setIsSaveInProgress(false);
           closeModal();
         },
       },
@@ -216,6 +221,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
      * has no input for both name and email
      */
     const isSaveDisabled =
+      isSaveInProgress ||
       Boolean(emailValidationError) ||
       (selectedUser
         ? !hasNameUpdate && !hasAgencyUpdates
@@ -358,17 +364,25 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
             <Styled.ModalActionButtons>
               <div />
               <Styled.SaveCancelButtonsWrapper>
-                {modalButtons.map((button, index) => (
-                  <Button
-                    key={button.label}
-                    label={button.label}
-                    onClick={button.onClick}
-                    buttonColor={
-                      index === modalButtons.length - 1 ? "blue" : undefined
-                    }
-                    disabled={button.label === "Save" && isSaveDisabled}
-                  />
-                ))}
+                {modalButtons.map((button, index) => {
+                  const isSaveButton = button.label === "Save";
+                  return (
+                    <ButtonWithMiniLoaderContainer>
+                      {isSaveButton && isSaveInProgress && (
+                        <MiniLoaderWrapper>
+                          <MiniLoader dark />
+                        </MiniLoaderWrapper>
+                      )}
+                      <Button
+                        key={button.label}
+                        label={button.label}
+                        onClick={button.onClick}
+                        buttonColor={isSaveButton ? "blue" : undefined}
+                        disabled={isSaveButton && isSaveDisabled}
+                      />
+                    </ButtonWithMiniLoaderContainer>
+                  );
+                })}
               </Styled.SaveCancelButtonsWrapper>
             </Styled.ModalActionButtons>
           </Styled.Form>
