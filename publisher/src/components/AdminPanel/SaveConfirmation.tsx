@@ -14,10 +14,31 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-/* eslint-disable simple-import-sort/exports */
-export * from "./UserProvisioning";
-export * from "./UserProvisioningOverview";
-export * from "./InteractiveSearchList";
-export * from "./AdminPanel";
-export * from "./types";
-export * from "./SaveConfirmation";
+
+import React from "react";
+
+import { SaveConfirmationType } from ".";
+import * as Styled from "./AdminPanel.styles";
+
+type SaveConfirmationProps = {
+  message: string;
+  type?: SaveConfirmationType;
+};
+
+export const SaveConfirmation: React.FC<SaveConfirmationProps> = ({
+  message,
+  type,
+}) => {
+  return (
+    <Styled.SaveConfirmationContainer>
+      <Styled.MarkContainer type={type}>
+        <Styled.MarkCover type={type} />
+        <Styled.MarkWrapper>
+          <Styled.Mark type={type} />
+        </Styled.MarkWrapper>
+      </Styled.MarkContainer>
+
+      {message}
+    </Styled.SaveConfirmationContainer>
+  );
+};

@@ -28,6 +28,9 @@ import {
   InteractiveSearchListAction,
   InteractiveSearchListActions,
   InteractiveSearchListUpdateSelections,
+  SaveConfirmation,
+  SaveConfirmationType,
+  SaveConfirmationTypes,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
 
@@ -50,6 +53,10 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
     } = adminPanelStore;
 
     const [isSaveInProgress, setIsSaveInProgress] = useState<boolean>(false);
+    const [showSaveConfirmation, setShowSaveConfirmation] = useState<{
+      show: boolean;
+      type?: SaveConfirmationType;
+    }>({ show: false });
     const [addedAgenciesIDs, setAddedAgenciesIDs] = useState<Set<number>>(
       new Set()
     );
@@ -105,9 +112,32 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
         label: "Save",
         onClick: async () => {
           setIsSaveInProgress(true);
-          await saveUpdates();
-          setIsSaveInProgress(false);
-          closeModal();
+          try {
+            const responseStatus = await saveUpdates();
+            if (responseStatus === 200) {
+              setShowSaveConfirmation({
+                show: true,
+                type: SaveConfirmationTypes.SUCCESS,
+              });
+            } else {
+              setShowSaveConfirmation({
+                show: true,
+                type: SaveConfirmationTypes.ERROR,
+              });
+            }
+            setIsSaveInProgress(false);
+            setTimeout(() => {
+              setShowSaveConfirmation((prev) => ({ ...prev, show: false }));
+              if (responseStatus === 200) {
+                closeModal();
+              }
+            }, 2000);
+          } catch (error) {
+            setShowSaveConfirmation({
+              show: true,
+              type: SaveConfirmationTypes.ERROR,
+            });
+          }
         },
       },
     ];
@@ -191,7 +221,23 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
           (id) => !deletedAgenciesIDs.has(id)
         ),
       ]);
-      await adminPanelStore.saveUserProvisioningUpdates();
+      const responseStatus =
+        await adminPanelStore.saveUserProvisioningUpdates();
+      return responseStatus;
+    };
+
+    const getSaveConfirmationMessage = () => {
+      if (showSaveConfirmation.type === SaveConfirmationTypes.SUCCESS) {
+        return selectedUser
+          ? "User changes saved successfully"
+          : "User has been created successfully";
+      }
+      if (showSaveConfirmation.type === SaveConfirmationTypes.ERROR) {
+        return selectedUser
+          ? "Sorry, there was an issue saving your changes. Please try again."
+          : "Sorry, there was an issue creating a user. Please try again.";
+      }
+      return "";
     };
 
     /**
@@ -229,164 +275,175 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
 
     return (
       <Styled.ModalContainer>
-        <Styled.ModalTitle>
-          {selectedUserID ? "Edit User Information" : "Create New User"}
-        </Styled.ModalTitle>
+        {showSaveConfirmation.show ? (
+          <SaveConfirmation
+            type={showSaveConfirmation.type}
+            message={getSaveConfirmationMessage()}
+          />
+        ) : (
+          <>
+            <Styled.ModalTitle>
+              {selectedUserID ? "Edit User Information" : "Create New User"}
+            </Styled.ModalTitle>
 
-        {/** User Information */}
-        <Styled.NameDisplay>
-          {userProvisioningUpdates?.name || selectedUser?.name}
-        </Styled.NameDisplay>
-        <Styled.Subheader>
-          {userProvisioningUpdates?.email || selectedUser?.email}
-        </Styled.Subheader>
-        {selectedUser && (
-          <Styled.Subheader>ID {selectedUser?.id}</Styled.Subheader>
-        )}
-
-        <Styled.ScrollableContainer>
-          <Styled.Form>
-            {/* Username Input */}
-            <Styled.InputLabelWrapper>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                value={userProvisioningUpdates.name || selectedUser?.name || ""}
-                onChange={(e) => updateUsername(e.target.value)}
-              />
-              <label htmlFor="username">Name</label>
-            </Styled.InputLabelWrapper>
-
-            {/* Email Input (note: once a user has been created, the email is no longer editable) */}
-            {!selectedUser && (
-              <Styled.InputLabelWrapper
-                hasError={Boolean(emailValidationError)}
-              >
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={userProvisioningUpdates.email || ""}
-                  onChange={(e) => validateAndUpdateEmail(e.target.value)}
-                />
-                <Styled.LabelWrapper>
-                  <label htmlFor="email">Email</label>
-                  {emailValidationError && (
-                    <Styled.ErrorLabel>
-                      {emailValidationError}
-                    </Styled.ErrorLabel>
-                  )}
-                </Styled.LabelWrapper>
-              </Styled.InputLabelWrapper>
-            )}
-
-            {/* User's Agencies */}
+            {/** User Information */}
+            <Styled.NameDisplay>
+              {userProvisioningUpdates?.name || selectedUser?.name}
+            </Styled.NameDisplay>
+            <Styled.Subheader>
+              {userProvisioningUpdates?.email || selectedUser?.email}
+            </Styled.Subheader>
             {selectedUser && (
-              <InteractiveSearchList
-                list={userAgenciesAddedAgencies}
-                buttons={interactiveSearchListButtons}
-                selections={deletedAgenciesIDs}
-                updateSelections={updateAgencySelections}
-                boxActionType={InteractiveSearchListActions.DELETE}
-                isActiveBox={isDeleteAction}
-                searchByKeys={["name"]}
-                metadata={{
-                  searchBoxLabel: "Search user's agencies",
-                  listBoxLabel: `${
-                    isDeleteAction
-                      ? `Select agencies to delete`
-                      : `User's agencies`
-                  }`,
-                  listBoxEmptyLabel: "User has no agencies",
-                }}
-              />
+              <Styled.Subheader>ID {selectedUser?.id}</Styled.Subheader>
             )}
 
-            {/* Add/Remove/Create New Agencies */}
-            <Styled.FormActions>
-              {/* Add Agencies Button */}
-              <Styled.ActionButton
-                buttonAction={InteractiveSearchListActions.ADD}
-                selectedColor={isAddAction ? "green" : ""}
-                onClick={() => {
-                  setAddOrDeleteAgencyAction((prev) =>
-                    prev === InteractiveSearchListActions.ADD
-                      ? undefined
-                      : InteractiveSearchListActions.ADD
-                  );
-                }}
-              >
-                Add Agencies
-              </Styled.ActionButton>
+            <Styled.ScrollableContainer>
+              <Styled.Form>
+                {/* Username Input */}
+                <Styled.InputLabelWrapper>
+                  <input
+                    id="username"
+                    name="username"
+                    type="text"
+                    value={
+                      userProvisioningUpdates.name || selectedUser?.name || ""
+                    }
+                    onChange={(e) => updateUsername(e.target.value)}
+                  />
+                  <label htmlFor="username">Name</label>
+                </Styled.InputLabelWrapper>
 
-              {/* Remove Agencies Button (note: when creating a new user, the delete action button is not necessary) */}
-              {selectedUser && (
-                <Styled.ActionButton
-                  buttonAction={InteractiveSearchListActions.DELETE}
-                  selectedColor={isDeleteAction ? "red" : ""}
-                  onClick={() => {
-                    setAddOrDeleteAgencyAction((prev) =>
-                      prev === InteractiveSearchListActions.DELETE
-                        ? undefined
-                        : InteractiveSearchListActions.DELETE
-                    );
-                  }}
-                >
-                  Delete Agencies
-                </Styled.ActionButton>
-              )}
-
-              {/* Create New Agency Button (TODO(#1058)) */}
-              <Styled.ActionButton>Create New Agency</Styled.ActionButton>
-            </Styled.FormActions>
-
-            {/* Add Agencies List */}
-            {isAddAction && (
-              <InteractiveSearchList
-                list={availableAgencies}
-                buttons={interactiveSearchListButtons}
-                selections={addedAgenciesIDs}
-                updateSelections={updateAgencySelections}
-                boxActionType={InteractiveSearchListActions.ADD}
-                isActiveBox={isAddAction}
-                searchByKeys={["name"]}
-                metadata={{
-                  searchBoxLabel: "Search agencies",
-                  listBoxLabel: `Select agencies to add`,
-                  listBoxEmptyLabel:
-                    "User is connected to all available agencies",
-                }}
-              />
-            )}
-
-            {/* Modal Buttons */}
-            <Styled.ModalActionButtons>
-              <div />
-              <Styled.SaveCancelButtonsWrapper>
-                {modalButtons.map((button, index) => {
-                  const isSaveButton = button.label === "Save";
-                  return (
-                    <ButtonWithMiniLoaderContainer>
-                      {isSaveButton && isSaveInProgress && (
-                        <MiniLoaderWrapper>
-                          <MiniLoader dark />
-                        </MiniLoaderWrapper>
+                {/* Email Input (note: once a user has been created, the email is no longer editable) */}
+                {!selectedUser && (
+                  <Styled.InputLabelWrapper
+                    hasError={Boolean(emailValidationError)}
+                  >
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={userProvisioningUpdates.email || ""}
+                      onChange={(e) => validateAndUpdateEmail(e.target.value)}
+                    />
+                    <Styled.LabelWrapper>
+                      <label htmlFor="email">Email</label>
+                      {emailValidationError && (
+                        <Styled.ErrorLabel>
+                          {emailValidationError}
+                        </Styled.ErrorLabel>
                       )}
-                      <Button
-                        key={button.label}
-                        label={button.label}
-                        onClick={button.onClick}
-                        buttonColor={isSaveButton ? "blue" : undefined}
-                        disabled={isSaveButton && isSaveDisabled}
-                      />
-                    </ButtonWithMiniLoaderContainer>
-                  );
-                })}
-              </Styled.SaveCancelButtonsWrapper>
-            </Styled.ModalActionButtons>
-          </Styled.Form>
-        </Styled.ScrollableContainer>
+                    </Styled.LabelWrapper>
+                  </Styled.InputLabelWrapper>
+                )}
+
+                {/* User's Agencies */}
+                {selectedUser && (
+                  <InteractiveSearchList
+                    list={userAgenciesAddedAgencies}
+                    buttons={interactiveSearchListButtons}
+                    selections={deletedAgenciesIDs}
+                    updateSelections={updateAgencySelections}
+                    boxActionType={InteractiveSearchListActions.DELETE}
+                    isActiveBox={isDeleteAction}
+                    searchByKeys={["name"]}
+                    metadata={{
+                      searchBoxLabel: "Search user's agencies",
+                      listBoxLabel: `${
+                        isDeleteAction
+                          ? `Select agencies to delete`
+                          : `User's agencies`
+                      }`,
+                      listBoxEmptyLabel: "User has no agencies",
+                    }}
+                  />
+                )}
+
+                {/* Add/Remove/Create New Agencies */}
+                <Styled.FormActions>
+                  {/* Add Agencies Button */}
+                  <Styled.ActionButton
+                    buttonAction={InteractiveSearchListActions.ADD}
+                    selectedColor={isAddAction ? "green" : ""}
+                    onClick={() => {
+                      setAddOrDeleteAgencyAction((prev) =>
+                        prev === InteractiveSearchListActions.ADD
+                          ? undefined
+                          : InteractiveSearchListActions.ADD
+                      );
+                    }}
+                  >
+                    Add Agencies
+                  </Styled.ActionButton>
+
+                  {/* Remove Agencies Button (note: when creating a new user, the delete action button is not necessary) */}
+                  {selectedUser && (
+                    <Styled.ActionButton
+                      buttonAction={InteractiveSearchListActions.DELETE}
+                      selectedColor={isDeleteAction ? "red" : ""}
+                      onClick={() => {
+                        setAddOrDeleteAgencyAction((prev) =>
+                          prev === InteractiveSearchListActions.DELETE
+                            ? undefined
+                            : InteractiveSearchListActions.DELETE
+                        );
+                      }}
+                    >
+                      Delete Agencies
+                    </Styled.ActionButton>
+                  )}
+
+                  {/* Create New Agency Button (TODO(#1058)) */}
+                  <Styled.ActionButton>Create New Agency</Styled.ActionButton>
+                </Styled.FormActions>
+
+                {/* Add Agencies List */}
+                {isAddAction && (
+                  <InteractiveSearchList
+                    list={availableAgencies}
+                    buttons={interactiveSearchListButtons}
+                    selections={addedAgenciesIDs}
+                    updateSelections={updateAgencySelections}
+                    boxActionType={InteractiveSearchListActions.ADD}
+                    isActiveBox={isAddAction}
+                    searchByKeys={["name"]}
+                    metadata={{
+                      searchBoxLabel: "Search agencies",
+                      listBoxLabel: `Select agencies to add`,
+                      listBoxEmptyLabel:
+                        "User is connected to all available agencies",
+                    }}
+                  />
+                )}
+
+                {/* Modal Buttons */}
+                <Styled.ModalActionButtons>
+                  <div />
+                  <Styled.SaveCancelButtonsWrapper>
+                    {modalButtons.map((button, index) => {
+                      const isSaveButton = button.label === "Save";
+                      return (
+                        <ButtonWithMiniLoaderContainer>
+                          {isSaveButton && isSaveInProgress && (
+                            <MiniLoaderWrapper>
+                              <MiniLoader dark />
+                            </MiniLoaderWrapper>
+                          )}
+                          <Button
+                            key={button.label}
+                            label={button.label}
+                            onClick={button.onClick}
+                            buttonColor={isSaveButton ? "blue" : undefined}
+                            disabled={isSaveButton && isSaveDisabled}
+                          />
+                        </ButtonWithMiniLoaderContainer>
+                      );
+                    })}
+                  </Styled.SaveCancelButtonsWrapper>
+                </Styled.ModalActionButtons>
+              </Styled.Form>
+            </Styled.ScrollableContainer>
+          </>
+        )}
       </Styled.ModalContainer>
     );
   }

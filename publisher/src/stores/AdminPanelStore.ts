@@ -165,6 +165,7 @@ class AdminPanelStore {
       }
 
       runInAction(() => this.updateUsers(userResponse));
+      return response.status;
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
     }

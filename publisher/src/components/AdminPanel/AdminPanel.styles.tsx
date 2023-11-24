@@ -20,9 +20,14 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import styled, { css } from "styled-components/macro";
+import styled, { css, keyframes } from "styled-components/macro";
 
-import { InteractiveSearchListAction, InteractiveSearchListActions } from ".";
+import {
+  InteractiveSearchListAction,
+  InteractiveSearchListActions,
+  SaveConfirmationType,
+  SaveConfirmationTypes,
+} from ".";
 
 /** General */
 
@@ -622,5 +627,106 @@ export const ReviewChangesButton = styled.div`
   &:hover {
     cursor: pointer;
     filter: contrast(0.8);
+  }
+`;
+
+/** Save Confirmation */
+
+export const SaveConfirmationContainer = styled.div`
+  ${typography.sizeCSS.medium};
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+`;
+
+const grow = keyframes`
+  0% {
+    scale: 0;
+  }
+  100% {
+    scale: 1;
+  }
+`;
+
+const reveal = keyframes`
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+`;
+
+export const MarkContainer = styled.div<{ type?: SaveConfirmationType }>`
+  height: 80px;
+  width: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: ${({ type }) =>
+    type === SaveConfirmationTypes.SUCCESS
+      ? palette.solid.green
+      : palette.solid.red};
+  border-radius: 50%;
+  animation: ${grow} 0.4s ease forwards;
+  overflow-x: hidden;
+`;
+
+export const MarkCover = styled.div<{ type?: SaveConfirmationType }>`
+  background: ${({ type }) =>
+    type === SaveConfirmationTypes.SUCCESS
+      ? palette.solid.green
+      : palette.solid.red};
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  animation: ${reveal} 0.4s ease 0.2s forwards;
+`;
+
+export const MarkWrapper = styled.div`
+  overflow-x: hidden;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  position: relative;
+`;
+
+export const Mark = styled.div<{ type?: SaveConfirmationType }>`
+  height: 8px;
+  width: 40px;
+  position: absolute;
+  /* left: 25px; */
+  /* bottom: 0px; */
+  left: ${({ type }) =>
+    type === SaveConfirmationTypes.SUCCESS ? `25px` : `20px`};
+  bottom: ${({ type }) =>
+    type === SaveConfirmationTypes.SUCCESS ? `unset` : `35px`};
+  background: ${palette.solid.white};
+  rotate: -45deg;
+  border-radius: 5px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: ${({ type }) =>
+      type === SaveConfirmationTypes.SUCCESS ? `-6px` : `0px`};
+    bottom: ${({ type }) =>
+      type === SaveConfirmationTypes.SUCCESS ? `8px` : `0px`};
+    background: ${palette.solid.white};
+    width: ${({ type }) =>
+      type === SaveConfirmationTypes.SUCCESS ? `20px` : `40px`};
+    height: 8px;
+    rotate: 90deg;
+    border-radius: 5px;
   }
 `;

@@ -32,6 +32,13 @@ export type EnvironmentType = `${Environment}`;
 
 export type SettingType = `${Setting}`;
 
+export enum SaveConfirmationTypes {
+  SUCCESS = "SUCCESS",
+  ERROR = "ERROR",
+}
+
+export type SaveConfirmationType = `${SaveConfirmationTypes}`;
+
 /** Agency Types */
 
 export type Agency = {
