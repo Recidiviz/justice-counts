@@ -81,7 +81,12 @@ export const InteractiveSearchList = ({
     setFilteredList(list);
   };
 
-  useEffect(() => setFilteredList(list), [list]);
+  useEffect(() => {
+    setFilteredList(
+      AdminPanelStore.searchList(list, searchInputValue, searchByKeys)
+    );
+    // eslint-disable-next-line
+  }, [list]);
 
   return (
     <>

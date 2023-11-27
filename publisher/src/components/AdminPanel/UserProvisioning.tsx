@@ -413,7 +413,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
                     {modalButtons.map((button) => {
                       const isSaveButton = button.label === "Save";
                       return (
-                        <ButtonWithMiniLoaderContainer>
+                        <ButtonWithMiniLoaderContainer key={button.label}>
                           {isSaveButton && isSaveInProgress && (
                             <MiniLoaderWrapper>
                               <MiniLoader dark />
