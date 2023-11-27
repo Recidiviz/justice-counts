@@ -110,35 +110,17 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       { label: "Cancel", onClick: closeModal },
       {
         label: "Save",
-        onClick: async () => {
-          setIsSaveInProgress(true);
-          try {
-            const responseStatus = await saveUpdates();
-            if (responseStatus === 200) {
-              setShowSaveConfirmation({
-                show: true,
-                type: SaveConfirmationTypes.SUCCESS,
-              });
-            } else {
-              setShowSaveConfirmation({
-                show: true,
-                type: SaveConfirmationTypes.ERROR,
-              });
-            }
-            setIsSaveInProgress(false);
-            setTimeout(() => {
-              setShowSaveConfirmation((prev) => ({ ...prev, show: false }));
-              if (responseStatus === 200) {
-                closeModal();
-              }
-            }, 2000);
-          } catch (error) {
-            setShowSaveConfirmation({
-              show: true,
-              type: SaveConfirmationTypes.ERROR,
-            });
-          }
-        },
+        onClick: () => saveUpdates(),
+      },
+    ];
+
+    /** Search List Buttons (Select All/Deselect All/Close) */
+    const interactiveSearchListButtons = [
+      { label: "Select All", onClick: () => selectAll() },
+      { label: "Deselect All", onClick: () => deselectAll() },
+      {
+        label: "Close",
+        onClick: () => setAddOrDeleteAgencyAction(undefined),
       },
     ];
 
@@ -200,17 +182,8 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       setEmailValidationError("Please enter a valid email address");
     };
 
-    /** Search List Buttons (Select All/Deselect All/Close) */
-    const interactiveSearchListButtons = [
-      { label: "Select All", onClick: selectAll },
-      { label: "Deselect All", onClick: deselectAll },
-      {
-        label: "Close",
-        onClick: () => setAddOrDeleteAgencyAction(undefined),
-      },
-    ];
-
     const saveUpdates = async () => {
+      setIsSaveInProgress(true);
       /**
        * The final user agency's list will be the user's agencies
        * excluding agencies marked for deletion AND any added agencies
@@ -223,7 +196,25 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       ]);
       const responseStatus =
         await adminPanelStore.saveUserProvisioningUpdates();
-      return responseStatus;
+
+      if (responseStatus === 200) {
+        setShowSaveConfirmation({
+          show: true,
+          type: SaveConfirmationTypes.SUCCESS,
+        });
+      } else {
+        setShowSaveConfirmation({
+          show: true,
+          type: SaveConfirmationTypes.ERROR,
+        });
+      }
+      setIsSaveInProgress(false);
+
+      /** After showing the confirmation screen, either return to modal (on error) or close modal (on success) */
+      setTimeout(() => {
+        setShowSaveConfirmation((prev) => ({ ...prev, show: false }));
+        if (responseStatus === 200) closeModal();
+      }, 2000);
     };
 
     const getSaveConfirmationMessage = () => {
@@ -419,7 +410,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
                 <Styled.ModalActionButtons>
                   <div />
                   <Styled.SaveCancelButtonsWrapper>
-                    {modalButtons.map((button, index) => {
+                    {modalButtons.map((button) => {
                       const isSaveButton = button.label === "Save";
                       return (
                         <ButtonWithMiniLoaderContainer>

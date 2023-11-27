@@ -681,14 +681,19 @@ export const GraphicCover = styled.div<{ type?: SaveConfirmationType }>`
   background: ${({ type }) =>
     type === SaveConfirmationTypes.SUCCESS
       ? palette.solid.green
-      : palette.solid.red};
+      : "transparent"};
   position: absolute;
   width: 80px;
   height: 80px;
   top: 0;
   left: 0;
   z-index: 3;
-  animation: ${reveal} 0.4s ease 0.2s forwards;
+  animation: ${({ type }) =>
+    type === SaveConfirmationTypes.SUCCESS
+      ? css`
+          ${reveal} 0.4s ease 0.2s forwards
+        `
+      : `none`};
 `;
 
 export const Graphic = styled.div`
