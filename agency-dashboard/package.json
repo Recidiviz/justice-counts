@@ -5,7 +5,7 @@
   "dependencies": {
     "@justice-counts/common": "*",
     "@recidiviz/design-system": "^5.1.0",
-    "@types/bluebird": "^3.5.41",
+    "@types/bluebird": "^3.5.42",
     "bluebird": "^3.7.2",
     "file-saver": "^2.0.5",
     "http-proxy-middleware": "^2.0.6",
