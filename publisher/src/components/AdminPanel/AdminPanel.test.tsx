@@ -314,7 +314,7 @@ test("Adding an agency adds agency to user's agency list", async () => {
       })),
       (user) => user.id
     );
-    // Sets the available agencies to select from
+    /** Sets the available agencies to select from */
     adminPanelStore.agenciesByID = groupBy(
       [
         {
@@ -362,7 +362,7 @@ test("Adding an agency adds agency to user's agency list", async () => {
       ],
       (agency) => agency.id
     );
-    // Start without the "Department of Z" agency on Anne Teak's list
+    /** Start without the "Department of Z" agency on Anne Teak's list */
     const mockUserResponseAfterSave = [
       {
         ...mockUsersResponse.users[2],
