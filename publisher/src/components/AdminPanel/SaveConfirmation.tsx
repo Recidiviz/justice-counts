@@ -31,13 +31,12 @@ export const SaveConfirmation: React.FC<SaveConfirmationProps> = ({
 }) => {
   return (
     <Styled.SaveConfirmationContainer>
-      <Styled.MarkContainer type={type}>
-        <Styled.MarkCover type={type} />
-        <Styled.MarkWrapper>
-          <Styled.Mark type={type} />
-        </Styled.MarkWrapper>
-      </Styled.MarkContainer>
-
+      <Styled.GraphicContainer type={type}>
+        <Styled.GraphicCover type={type} />
+        <Styled.Graphic>
+          <Styled.GraphicLines type={type} />
+        </Styled.Graphic>
+      </Styled.GraphicContainer>
       {message}
     </Styled.SaveConfirmationContainer>
   );

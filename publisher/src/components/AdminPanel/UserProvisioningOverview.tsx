@@ -38,12 +38,12 @@ export const UserProvisioningOverview = observer(() => {
     resetUserProvisioningUpdates,
   } = adminPanelStore;
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUserID, setSelectedUserID] = useState<string | number>();
   const [searchInput, setSearchInput] = useState<string>("");
   const [filteredUsers, setFilteredUsers] = useState<UserWithAgenciesByID[]>(
     []
   );
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUserID, setSelectedUserID] = useState<string | number>();
 
   const searchByKeys = ["name", "email", "id"] as UserKey[];
 
@@ -68,9 +68,7 @@ export const UserProvisioningOverview = observer(() => {
     openModal();
   };
 
-  useEffect(() => {
-    setFilteredUsers(users);
-  }, [users]);
+  useEffect(() => setFilteredUsers(users), [users]);
 
   if (loading) {
     return <Loading />;
@@ -98,12 +96,14 @@ export const UserProvisioningOverview = observer(() => {
             value={searchInput}
             onChange={searchAndFilter}
           />
-          <label htmlFor="search-users">
-            Search by name, email or user ID{" "}
+          <Styled.LabelWrapper>
+            <label htmlFor="search-users">
+              Search by name, email or user ID
+            </label>
             <Styled.LabelButton onClick={() => setFilteredUsers(users)}>
               Clear
             </Styled.LabelButton>
-          </label>
+          </Styled.LabelWrapper>
         </Styled.InputLabelWrapper>
 
         {/* Create User Button */}

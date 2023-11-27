@@ -81,9 +81,7 @@ export const InteractiveSearchList = ({
     setFilteredList(list);
   };
 
-  useEffect(() => {
-    setFilteredList(list);
-  }, [list]);
+  useEffect(() => setFilteredList(list), [list]);
 
   return (
     <>

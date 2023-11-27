@@ -177,6 +177,8 @@ export const InputLabelWrapper = styled.div<{
 }>`
   ${typography.sizeCSS.normal}
   width: 100%;
+  ${({ inputWidth }) =>
+    inputWidth && `min-width: unset; width: ${inputWidth}px;`}
   display: flex;
   flex-direction: ${({ flexRow }) => (flexRow ? "row" : "column")};
   align-items: flex-start;
@@ -188,8 +190,6 @@ export const InputLabelWrapper = styled.div<{
   input[type="button"] {
     width: 100%;
     min-width: 210px;
-    ${({ inputWidth }) =>
-      inputWidth && `min-width: unset; width: ${inputWidth}px;`}
     background: none;
     text-align: left;
     border: 1px solid ${palette.highlight.grey5};
@@ -235,6 +235,7 @@ export const InputLabelWrapper = styled.div<{
 `;
 
 export const LabelButton = styled.div`
+  ${typography.sizeCSS.small}
   color: ${palette.solid.blue};
 
   &:hover {
@@ -661,7 +662,7 @@ const reveal = keyframes`
   }
 `;
 
-export const MarkContainer = styled.div<{ type?: SaveConfirmationType }>`
+export const GraphicContainer = styled.div<{ type?: SaveConfirmationType }>`
   height: 80px;
   width: 80px;
   display: flex;
@@ -676,7 +677,7 @@ export const MarkContainer = styled.div<{ type?: SaveConfirmationType }>`
   overflow-x: hidden;
 `;
 
-export const MarkCover = styled.div<{ type?: SaveConfirmationType }>`
+export const GraphicCover = styled.div<{ type?: SaveConfirmationType }>`
   background: ${({ type }) =>
     type === SaveConfirmationTypes.SUCCESS
       ? palette.solid.green
@@ -690,7 +691,7 @@ export const MarkCover = styled.div<{ type?: SaveConfirmationType }>`
   animation: ${reveal} 0.4s ease 0.2s forwards;
 `;
 
-export const MarkWrapper = styled.div`
+export const Graphic = styled.div`
   overflow-x: hidden;
   width: 100%;
   height: 100%;
@@ -701,12 +702,10 @@ export const MarkWrapper = styled.div`
   position: relative;
 `;
 
-export const Mark = styled.div<{ type?: SaveConfirmationType }>`
+export const GraphicLines = styled.div<{ type?: SaveConfirmationType }>`
   height: 8px;
   width: 40px;
   position: absolute;
-  /* left: 25px; */
-  /* bottom: 0px; */
   left: ${({ type }) =>
     type === SaveConfirmationTypes.SUCCESS ? `25px` : `20px`};
   bottom: ${({ type }) =>
