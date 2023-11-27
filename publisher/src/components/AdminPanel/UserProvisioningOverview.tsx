@@ -69,10 +69,7 @@ export const UserProvisioningOverview = observer(() => {
   };
 
   useEffect(() => {
-    setFilteredUsers(
-      AdminPanelStore.searchList(users, searchInput, searchByKeys)
-    );
-    // eslint-disable-next-line
+    setFilteredUsers(users);
   }, [users]);
 
   if (loading) {
@@ -93,7 +90,7 @@ export const UserProvisioningOverview = observer(() => {
       {/* Settings Bar */}
       <Styled.SettingsBar>
         {/* Search */}
-        <Styled.InputLabelWrapper inputWidth={500}>
+        <Styled.InputLabelWrapper inputWidth={400}>
           <input
             id="search-users"
             name="search-users"
@@ -101,7 +98,12 @@ export const UserProvisioningOverview = observer(() => {
             value={searchInput}
             onChange={searchAndFilter}
           />
-          <label htmlFor="search-users">Search by name, email or user ID</label>
+          <label htmlFor="search-users">
+            Search by name, email or user ID{" "}
+            <Styled.LabelButton onClick={() => setFilteredUsers(users)}>
+              Clear
+            </Styled.LabelButton>
+          </label>
         </Styled.InputLabelWrapper>
 
         {/* Create User Button */}
@@ -112,30 +114,34 @@ export const UserProvisioningOverview = observer(() => {
 
       {/* List of Users */}
       <Styled.CardContainer>
-        {filteredUsers.map((user) => {
-          const userAgencies = AdminPanelStore.objectToSortedFlatMappedValues(
-            user.agencies
-          );
-          return (
-            <Styled.UserCard key={user.id} onClick={() => editUser(user.id)}>
-              <Styled.UserNameEmailIDWrapper>
-                <Styled.UserNameEmailWrapper>
-                  <Styled.UserName>{user.name}</Styled.UserName>
-                  <Styled.Email>{user.email}</Styled.Email>
-                </Styled.UserNameEmailWrapper>
-                <Styled.ID>ID {user.id}</Styled.ID>
-              </Styled.UserNameEmailIDWrapper>
-              <Styled.AgenciesWrapper>
-                {userAgencies.map((agency) => (
-                  <Styled.Chip key={agency.id}>{agency.name}</Styled.Chip>
-                ))}
-              </Styled.AgenciesWrapper>
-              <Styled.NumberOfAgencies>
-                {userAgencies.length} agencies
-              </Styled.NumberOfAgencies>
-            </Styled.UserCard>
-          );
-        })}
+        {filteredUsers.length === 0
+          ? "No users found"
+          : filteredUsers.map((user) => {
+              const userAgencies =
+                AdminPanelStore.objectToSortedFlatMappedValues(user.agencies);
+              return (
+                <Styled.UserCard
+                  key={user.id}
+                  onClick={() => editUser(user.id)}
+                >
+                  <Styled.UserNameEmailIDWrapper>
+                    <Styled.UserNameEmailWrapper>
+                      <Styled.UserName>{user.name}</Styled.UserName>
+                      <Styled.Email>{user.email}</Styled.Email>
+                    </Styled.UserNameEmailWrapper>
+                    <Styled.ID>ID {user.id}</Styled.ID>
+                  </Styled.UserNameEmailIDWrapper>
+                  <Styled.AgenciesWrapper>
+                    {userAgencies.map((agency) => (
+                      <Styled.Chip key={agency.id}>{agency.name}</Styled.Chip>
+                    ))}
+                  </Styled.AgenciesWrapper>
+                  <Styled.NumberOfAgencies>
+                    {userAgencies.length} agencies
+                  </Styled.NumberOfAgencies>
+                </Styled.UserCard>
+              );
+            })}
       </Styled.CardContainer>
     </>
   );
