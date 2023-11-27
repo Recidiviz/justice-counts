@@ -81,12 +81,21 @@ export const InteractiveSearchList = ({
     setFilteredList(list);
   };
 
+  /** Update the filtered list if a new list is given from the parent component and apply the same search filter  */
   useEffect(() => {
     setFilteredList(
       AdminPanelStore.searchList(list, searchInputValue, searchByKeys)
     );
-    // eslint-disable-next-line
+    // Note: we only want this effect to run when there's a new `list`
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [list]);
+
+  /** Clear search input when box is toggled to/from active box  */
+  useEffect(() => {
+    resetFilteredList();
+    // Note: we only want this effect to run when `isActiveBox` changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isActiveBox]);
 
   return (
     <>
