@@ -26,9 +26,9 @@ import { Loading } from "../Loading";
 import {
   Agency,
   AgencyKey,
+  AgencyProvisioning,
   StateCodeKey,
   StateCodes,
-  UserProvisioning,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
 
@@ -94,9 +94,9 @@ export const AgencyProvisioningOverview = observer(() => {
     <>
       {isModalOpen && (
         <Modal>
-          <UserProvisioning
+          <AgencyProvisioning
             closeModal={closeModal}
-            selectedUserID={selectedAgencyID}
+            selectedIDToEdit={selectedAgencyID}
           />
         </Modal>
       )}

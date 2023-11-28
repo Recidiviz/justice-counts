@@ -39,6 +39,11 @@ export enum SaveConfirmationTypes {
 
 export type SaveConfirmationType = `${SaveConfirmationTypes}`;
 
+export type ProvisioningProps = {
+  selectedIDToEdit?: string | number;
+  closeModal: () => void;
+};
+
 /** Agency Types */
 
 export type Agency = {

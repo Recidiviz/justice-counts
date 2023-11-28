@@ -14,12 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-/* eslint-disable simple-import-sort/exports */
-export * from "./UserProvisioning";
-export * from "./AgencyProvisioning";
-export * from "./UserProvisioningOverview";
-export * from "./AgencyProvisioningOverview";
-export * from "./InteractiveSearchList";
-export * from "./AdminPanel";
-export * from "./types";
-export * from "./SaveConfirmation";
+
+import { observer } from "mobx-react-lite";
+import React from "react";
+
+import { useStore } from "../../stores";
+import { ProvisioningProps } from ".";
+
+export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
+  ({ selectedIDToEdit, closeModal }) => {
+    const { adminPanelStore } = useStore();
+    return <div>AgencyProvisioning</div>;
+  }
+);

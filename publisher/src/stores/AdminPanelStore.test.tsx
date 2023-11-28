@@ -47,6 +47,7 @@ export const mockUsersResponse = {
           state: "New York",
           state_code: "us_ny",
           super_agency_id: null,
+          child_agency_ids: [],
           systems: ["PRISONS"],
           team: [],
         },
@@ -69,6 +70,7 @@ export const mockUsersResponse = {
           state: "New York",
           state_code: "us_ny",
           super_agency_id: null,
+          child_agency_ids: [],
           systems: ["PRISONS", "SUPERVISION", "PAROLE", "PROBATION"],
           team: [],
         },
@@ -83,6 +85,7 @@ export const mockUsersResponse = {
           state: "New York",
           state_code: "us_ny",
           super_agency_id: null,
+          child_agency_ids: [],
           systems: ["PRISONS"],
           team: [],
         },
@@ -97,6 +100,7 @@ export const mockUsersResponse = {
           state: "Oregon",
           state_code: "us_or",
           super_agency_id: null,
+          child_agency_ids: [],
           systems: ["JAILS"],
           team: [],
         },
@@ -119,6 +123,7 @@ export const mockUsersResponse = {
           state: "New York",
           state_code: "us_ny",
           super_agency_id: null,
+          child_agency_ids: [],
           systems: ["PRISONS", "SUPERVISION", "PAROLE", "PROBATION"],
           team: [],
         },
@@ -133,6 +138,7 @@ export const mockUsersResponse = {
           state: "New York",
           state_code: "us_ny",
           super_agency_id: null,
+          child_agency_ids: [],
           systems: ["PRISONS"],
           team: [],
         },
@@ -154,6 +160,7 @@ export const mockAgenciesResponse = {
       state: "Arizona",
       state_code: "us_az",
       super_agency_id: null,
+      child_agency_ids: [],
       systems: ["LAW_ENFORCEMENT"],
       team: [
         {
@@ -176,6 +183,7 @@ export const mockAgenciesResponse = {
       state: "California",
       state_code: "us_ca",
       super_agency_id: 10,
+      child_agency_ids: [],
       systems: ["SUPERVISION"],
       team: [
         {
@@ -198,6 +206,7 @@ export const mockAgenciesResponse = {
       state: "California",
       state_code: "us_ca",
       super_agency_id: 10,
+      child_agency_ids: [],
       systems: ["LAW_ENFORCEMENT"],
       team: [
         {

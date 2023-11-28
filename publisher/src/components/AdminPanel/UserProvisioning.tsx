@@ -29,19 +29,15 @@ import {
   InteractiveSearchListAction,
   InteractiveSearchListActions,
   InteractiveSearchListUpdateSelections,
+  ProvisioningProps,
   SaveConfirmation,
   SaveConfirmationType,
   SaveConfirmationTypes,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
 
-type UserProvisioningProps = {
-  selectedUserID?: string | number;
-  closeModal: () => void;
-};
-
-export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
-  ({ selectedUserID, closeModal }) => {
+export const UserProvisioning: React.FC<ProvisioningProps> = observer(
+  ({ selectedIDToEdit, closeModal }) => {
     const { adminPanelStore } = useStore();
     const {
       agencies,
@@ -69,8 +65,8 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
     const [emailValidationError, setEmailValidationError] = useState<string>();
 
     /** Selected user to edit & their agencies */
-    const selectedUser = selectedUserID
-      ? usersByID[selectedUserID][0]
+    const selectedUser = selectedIDToEdit
+      ? usersByID[selectedIDToEdit][0]
       : undefined;
     const selectedUserAgenciesIDs = selectedUser
       ? Object.keys(selectedUser?.agencies).map((id) => +id)
@@ -276,7 +272,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
         ) : (
           <>
             <Styled.ModalTitle>
-              {selectedUserID ? "Edit User Information" : "Create New User"}
+              {selectedIDToEdit ? "Edit User Information" : "Create New User"}
             </Styled.ModalTitle>
 
             {/** User Information */}
