@@ -42,7 +42,7 @@ export const AgencyProvisioningOverview = observer(() => {
   const [filteredAgencies, setFilteredAgencies] = useState<Agency[]>([]);
   const [selectedAgencyID, setSelectedAgencyID] = useState<string | number>();
 
-  const searchByKeys = ["name", "email", "id"] as AgencyKey[];
+  const searchByKeys = ["name", "id", "state_code"] as AgencyKey[];
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {

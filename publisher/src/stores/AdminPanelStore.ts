@@ -22,6 +22,8 @@ import {
   Agency,
   AgencyResponse,
   SearchableEntity,
+  StateCodeKey,
+  StateCodes,
   User,
   UserProvisioningUpdates,
   UserResponse,
@@ -205,9 +207,15 @@ class AdminPanelStore {
   ) {
     const regex = new RegExp(`${searchInput}`, `i`);
     return list.filter((listItem) =>
-      searchByKeys.some(
-        (key) => listItem[key] && regex.test(listItem[key] as string)
-      )
+      searchByKeys.some((key) => {
+        if (!listItem[key]) return false;
+        if (key === "state_code" && "state_code" in listItem) {
+          const lowercaseStateCode =
+            listItem.state_code.toLocaleLowerCase() as StateCodeKey;
+          return regex.test(StateCodes[lowercaseStateCode]);
+        }
+        return regex.test(listItem[key] as string);
+      })
     );
   }
 
