@@ -66,6 +66,7 @@ export const InteractiveSearchList = ({
      * within a user's existing agencies [which has a `boxActionType === 'DELETE'`])
      */
     return (
+      selections.has(listItem.id) ||
       selections.has(+listItem.id) ||
       (listItem.action && boxActionType && listItem.action !== boxActionType)
     );

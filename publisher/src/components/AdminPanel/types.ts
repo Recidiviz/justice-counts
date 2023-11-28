@@ -151,7 +151,7 @@ export type SearchableListItem = {
   role?: UserRole;
 };
 
-export type SearchableSetIDs = Set<number>;
+export type SearchableSetIDs = Set<number | string>;
 
 export type SearchableEntity =
   | Agency

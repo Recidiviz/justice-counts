@@ -24,6 +24,7 @@ import {
   AgencyResponse,
   FipsCountyCodeKey,
   SearchableEntity,
+  SearchableListItem,
   StateCodeKey,
   StateCodes,
   User,
@@ -195,7 +196,8 @@ class AdminPanelStore {
   }
 
   updateStateCode(stateCode: StateCodeKey) {
-    this.agencyProvisioningUpdates.state_code = stateCode;
+    const lowercaseStateCode = stateCode.toLocaleLowerCase() as StateCodeKey;
+    this.agencyProvisioningUpdates.state_code = lowercaseStateCode;
   }
 
   updateCountyCode(countyCode?: FipsCountyCodeKey | null) {
@@ -239,6 +241,16 @@ class AdminPanelStore {
   }
 
   /** Helpers  */
+
+  static get searchableStates(): SearchableListItem[] {
+    return Object.keys(StateCodes).map((stateCode) => {
+      const lowercaseStateCode = stateCode.toLocaleLowerCase() as StateCodeKey;
+      return {
+        id: stateCode,
+        name: StateCodes[lowercaseStateCode],
+      };
+    });
+  }
 
   /**
    * Sorts a list of agencies/users in ascending/descending alphabetical order.
