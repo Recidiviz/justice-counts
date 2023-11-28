@@ -39,11 +39,11 @@ export const UserProvisioningOverview = observer(() => {
   } = adminPanelStore;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUserID, setSelectedUserID] = useState<string | number>();
   const [searchInput, setSearchInput] = useState<string>("");
   const [filteredUsers, setFilteredUsers] = useState<UserWithAgenciesByID[]>(
     []
   );
+  const [selectedUserID, setSelectedUserID] = useState<string | number>();
 
   const searchByKeys = ["name", "email", "id"] as UserKey[];
 
@@ -129,10 +129,7 @@ export const UserProvisioningOverview = observer(() => {
               const userAgencies =
                 AdminPanelStore.objectToSortedFlatMappedValues(user.agencies);
               return (
-                <Styled.UserCard
-                  key={user.id}
-                  onClick={() => editUser(user.id)}
-                >
+                <Styled.Card key={user.id} onClick={() => editUser(user.id)}>
                   <Styled.UserNameEmailIDWrapper>
                     <Styled.UserNameEmailWrapper>
                       <Styled.UserName>{user.name}</Styled.UserName>
@@ -148,7 +145,7 @@ export const UserProvisioningOverview = observer(() => {
                   <Styled.NumberOfAgencies>
                     {userAgencies.length} agencies
                   </Styled.NumberOfAgencies>
-                </Styled.UserCard>
+                </Styled.Card>
               );
             })}
       </Styled.CardContainer>

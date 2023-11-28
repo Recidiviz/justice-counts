@@ -492,7 +492,7 @@ export const CardContainer = styled.div`
   padding: 32px 16px;
 `;
 
-export const UserCard = styled.div`
+export const Card = styled.div`
   min-height: 250px;
   width: 350px;
   display: flex;

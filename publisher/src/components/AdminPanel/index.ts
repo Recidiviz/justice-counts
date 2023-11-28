@@ -17,6 +17,7 @@
 /* eslint-disable simple-import-sort/exports */
 export * from "./UserProvisioning";
 export * from "./UserProvisioningOverview";
+export * from "./AgencyProvisioningOverview";
 export * from "./InteractiveSearchList";
 export * from "./AdminPanel";
 export * from "./types";

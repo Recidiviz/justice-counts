@@ -138,6 +138,7 @@ export type SearchableSetIDs = Set<number>;
 export type SearchableEntity =
   | Agency
   | User
+  | UserWithAgenciesByID
   | AgencyTeamMember
   | SearchableListItem;
 
