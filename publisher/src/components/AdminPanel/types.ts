@@ -51,6 +51,7 @@ export type Agency = {
   team: AgencyTeamMember[];
   super_agency_id: number | null;
   is_superagency: boolean | null;
+  child_agency_ids: number[];
   is_dashboard_enabled: boolean | null;
   created_at: string | null;
   settings: {
@@ -72,6 +73,18 @@ export const AgencyProvisioningSettings = {
 
 export type AgencyProvisioningSetting =
   (typeof AgencyProvisioningSettings)[keyof typeof AgencyProvisioningSettings];
+
+export type AgencyProvisioningUpdates = {
+  name: string;
+  state_code: StateCodeKey | null;
+  fips_county_code?: string | null;
+  systems: AgencySystems[];
+  is_dashboard_enabled: boolean | null;
+  super_agency_id: number | null; // If this is set, then the agency is a child agency belonging to the superagency w/ this ID
+  is_superagency: boolean | null;
+  child_agency_ids: number[];
+  team: AgencyTeamMember[];
+};
 
 /** User Types */
 

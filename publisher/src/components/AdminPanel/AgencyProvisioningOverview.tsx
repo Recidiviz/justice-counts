@@ -34,8 +34,21 @@ import * as Styled from "./AdminPanel.styles";
 
 export const AgencyProvisioningOverview = observer(() => {
   const { adminPanelStore } = useStore();
-  const { loading, agencies, agenciesByID, resetUserProvisioningUpdates } =
-    adminPanelStore;
+  const {
+    loading,
+    agencies,
+    agenciesByID,
+    updateAgencyName,
+    updateStateCode,
+    updateCountyCode,
+    updateSystems,
+    updateIsDashboardEnabled,
+    updateIsSuperagency,
+    updateSuperagencyID,
+    updateChildAgencyIDs,
+    updateTeamMembers,
+    resetAgencyProvisioningUpdates,
+  } = adminPanelStore;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchInput, setSearchInput] = useState<string>("");
@@ -47,7 +60,7 @@ export const AgencyProvisioningOverview = observer(() => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     setSelectedAgencyID(undefined);
-    resetUserProvisioningUpdates();
+    resetAgencyProvisioningUpdates();
     setIsModalOpen(false);
   };
   const searchAndFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +72,15 @@ export const AgencyProvisioningOverview = observer(() => {
   const editAgency = (agencyID: string | number) => {
     const selectedAgency = agenciesByID[agencyID][0];
     setSelectedAgencyID(agencyID);
-    // Load store with agency info
+    updateAgencyName(selectedAgency.name);
+    updateStateCode(selectedAgency.state_code);
+    updateCountyCode(selectedAgency.fips_county_code);
+    updateSystems(selectedAgency.systems);
+    updateIsDashboardEnabled(selectedAgency.is_dashboard_enabled);
+    updateIsSuperagency(selectedAgency.is_superagency);
+    updateSuperagencyID(selectedAgency.super_agency_id);
+    updateChildAgencyIDs(selectedAgency.child_agency_ids);
+    updateTeamMembers(selectedAgency.team);
     openModal();
   };
 
@@ -120,9 +141,9 @@ export const AgencyProvisioningOverview = observer(() => {
                 key={agency.id}
                 onClick={() => editAgency(agency.id)}
               >
-                <Styled.UserNameEmailIDWrapper>
-                  <Styled.UserNameEmailWrapper>
-                    <Styled.UserName>{agency.name}</Styled.UserName>
+                <Styled.TopCardRowWrapper>
+                  <Styled.NameSubheaderWrapper>
+                    <Styled.Name>{agency.name}</Styled.Name>
                     {agency.state_code && (
                       <Styled.Subheader>
                         {
@@ -132,9 +153,9 @@ export const AgencyProvisioningOverview = observer(() => {
                         }
                       </Styled.Subheader>
                     )}
-                  </Styled.UserNameEmailWrapper>
+                  </Styled.NameSubheaderWrapper>
                   <Styled.ID>ID {agency.id}</Styled.ID>
-                </Styled.UserNameEmailIDWrapper>
+                </Styled.TopCardRowWrapper>
                 <Styled.AgenciesWrapper>
                   {agency.team.map((team) => (
                     <Styled.Chip key={team.auth0_user_id}>

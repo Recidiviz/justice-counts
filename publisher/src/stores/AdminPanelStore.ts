@@ -15,12 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystems } from "@justice-counts/common/types";
+import { AgencySystems, AgencyTeamMember } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction } from "mobx";
 
 import {
   Agency,
+  AgencyProvisioningUpdates,
   AgencyResponse,
+  FipsCountyCodeKey,
   SearchableEntity,
   StateCodeKey,
   StateCodes,
@@ -45,6 +47,8 @@ class AdminPanelStore {
 
   userProvisioningUpdates: UserProvisioningUpdates;
 
+  agencyProvisioningUpdates: AgencyProvisioningUpdates;
+
   constructor(api: API) {
     makeAutoObservable(this, {}, { autoBind: true });
     this.api = api;
@@ -56,6 +60,17 @@ class AdminPanelStore {
       name: "",
       email: "",
       agency_ids: [],
+    };
+    this.agencyProvisioningUpdates = {
+      name: "",
+      state_code: null,
+      fips_county_code: null,
+      systems: [],
+      is_dashboard_enabled: null,
+      super_agency_id: null,
+      is_superagency: null,
+      child_agency_ids: [],
+      team: [],
     };
   }
 
@@ -171,6 +186,56 @@ class AdminPanelStore {
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
     }
+  }
+
+  /** Agency Provisioning */
+
+  updateAgencyName(name: string) {
+    this.agencyProvisioningUpdates.name = name;
+  }
+
+  updateStateCode(stateCode: StateCodeKey) {
+    this.agencyProvisioningUpdates.state_code = stateCode;
+  }
+
+  updateCountyCode(countyCode?: FipsCountyCodeKey | null) {
+    this.agencyProvisioningUpdates.fips_county_code = countyCode;
+  }
+
+  updateSystems(systems: AgencySystems[]) {
+    this.agencyProvisioningUpdates.systems = systems;
+  }
+
+  updateIsDashboardEnabled(isDashboardEnabled: boolean | null) {
+    this.agencyProvisioningUpdates.is_dashboard_enabled = isDashboardEnabled;
+  }
+
+  updateIsSuperagency(isSuperagency: boolean | null) {
+    this.agencyProvisioningUpdates.is_superagency = isSuperagency;
+  }
+
+  updateSuperagencyID(superagencyID: number | null) {
+    this.agencyProvisioningUpdates.super_agency_id = superagencyID;
+  }
+
+  updateChildAgencyIDs(childAgencyIDs: number[]) {
+    this.agencyProvisioningUpdates.child_agency_ids = childAgencyIDs;
+  }
+
+  updateTeamMembers(team: AgencyTeamMember[]) {
+    this.agencyProvisioningUpdates.team = team;
+  }
+
+  resetAgencyProvisioningUpdates() {
+    this.agencyProvisioningUpdates.name = "";
+    this.agencyProvisioningUpdates.state_code = null;
+    this.agencyProvisioningUpdates.fips_county_code = null;
+    this.agencyProvisioningUpdates.systems = [];
+    this.agencyProvisioningUpdates.is_dashboard_enabled = null;
+    this.agencyProvisioningUpdates.super_agency_id = null;
+    this.agencyProvisioningUpdates.is_superagency = null;
+    this.agencyProvisioningUpdates.child_agency_ids = [];
+    this.agencyProvisioningUpdates.team = [];
   }
 
   /** Helpers  */

@@ -511,7 +511,7 @@ export const Card = styled.div`
   }
 `;
 
-export const UserName = styled.div`
+export const Name = styled.div`
   ${typography.sizeCSS.medium}
   overflow-wrap: anywhere;
 `;
@@ -575,14 +575,14 @@ export const AgenciesWrapper = styled.div`
   overflow-y: scroll;
 `;
 
-export const UserNameEmailWrapper = styled.div`
-  max-width: 260px;
-`;
-
-export const UserNameEmailIDWrapper = styled.div`
+export const TopCardRowWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+`;
+
+export const NameSubheaderWrapper = styled.div`
+  max-width: 260px;
 `;
 
 export const UserInformationDisplay = styled.div``;
