@@ -73,21 +73,18 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     } = adminPanelStore;
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
-    const [isSaveInProgress, setIsSaveInProgress] = useState<boolean>(false);
-    const [showSaveConfirmation, setShowSaveConfirmation] = useState<{
-      show: boolean;
-      type?: SaveConfirmationType;
-    }>({ show: false });
     const [currentSettingType, setCurrentSettingType] =
       useState<AgencyProvisioningSetting>(
         AgencyProvisioningSettings.AGENCY_INFORMATION
       );
     const [showSelectionBox, setShowSelectionBox] =
       useState<VisibleSelectionBox>();
+    const [isSaveInProgress, setIsSaveInProgress] = useState<boolean>(false);
+    const [showSaveConfirmation, setShowSaveConfirmation] = useState<{
+      show: boolean;
+      type?: SaveConfirmationType;
+    }>({ show: false });
 
-    const [isChildAgencySelected, setIsChildAgencySelected] = useState<boolean>(
-      Boolean(agencyProvisioningUpdates.super_agency_id) || false
-    );
     const [selectedSystems, setSelectedSystems] = useState<Set<AgencySystems>>(
       agencyProvisioningUpdates.systems
         ? new Set(agencyProvisioningUpdates.systems)
@@ -99,6 +96,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       agencyProvisioningUpdates.child_agency_ids
         ? new Set(agencyProvisioningUpdates.child_agency_ids)
         : new Set()
+    );
+    const [isChildAgencySelected, setIsChildAgencySelected] = useState<boolean>(
+      Boolean(agencyProvisioningUpdates.super_agency_id) || false
     );
 
     /** Selected agency to edit */
@@ -137,10 +137,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
     const isSaveDisabled = false;
 
-    const selectOrDeselectByID = (
-      prevSet: Set<AgencySystems>,
-      id: number | string | AgencySystems
-    ): Set<AgencySystems> | Set<number> => {
+    const selectOrDeselectByID = <T,>(prevSet: Set<T>, id: T): Set<T> => {
       const updatedSet = new Set(prevSet);
       if (updatedSet.has(id)) {
         updatedSet.delete(id);
@@ -323,7 +320,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       updateSelections={({ id }) => {
                         // Don't forget to consolidate and update the system selections when a user saves
                         setSelectedSystems((prev) =>
-                          selectOrDeselectByID(prev, id)
+                          selectOrDeselectByID(prev, id as AgencySystems)
                         );
                       }}
                       searchByKeys={["name"]}
@@ -437,7 +434,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         updateSelections={({ id }) => {
                           // Don't forget to consolidate and update the system selections when a user saves
                           setSelectedChildAgencyIDs((prev) =>
-                            selectOrDeselectByID(prev, id)
+                            selectOrDeselectByID(prev, +id)
                           );
                         }}
                         searchByKeys={["name"]}
@@ -506,9 +503,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         ]}
                         updateSelections={({ id }) => {
                           updateSuperagencyID(
-                            agencyProvisioningUpdates.super_agency_id === id
+                            agencyProvisioningUpdates.super_agency_id === +id
                               ? null
-                              : id
+                              : +id
                           );
                         }}
                         searchByKeys={["name"]}
