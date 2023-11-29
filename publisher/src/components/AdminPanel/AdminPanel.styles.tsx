@@ -228,6 +228,7 @@ export const InputLabelWrapper = styled.div<{
     display: flex;
     justify-content: space-between;
     align-items: center;
+    white-space: nowrap;
     color: ${palette.highlight.grey8};
     margin-top: 5px;
     padding: 0 3px;

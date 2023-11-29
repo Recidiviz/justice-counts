@@ -51,8 +51,8 @@ export type Agency = {
   name: string;
   systems: AgencySystems[];
   state: StateCodeValue;
-  state_code: keyof typeof StateCodes;
-  fips_county_code?: keyof typeof FipsCountyCodes | null;
+  state_code: keyof typeof StateCodes | null;
+  fips_county_code: keyof typeof FipsCountyCodes | null;
   team: AgencyTeamMember[];
   super_agency_id: number | null;
   is_superagency: boolean | null;
@@ -82,7 +82,7 @@ export type AgencyProvisioningSetting =
 export type AgencyProvisioningUpdates = {
   name: string;
   state_code: StateCodeKey | null;
-  fips_county_code?: string | null;
+  fips_county_code: FipsCountyCodeKey | null;
   systems: AgencySystems[];
   is_dashboard_enabled: boolean | null;
   super_agency_id: number | null; // If this is set, then the agency is a child agency belonging to the superagency w/ this ID
@@ -151,7 +151,7 @@ export type SearchableListItem = {
   role?: UserRole;
 };
 
-export type SearchableSetIDs = Set<number | string>;
+export type SearchableSetIDs = Set<number | string | AgencySystems>;
 
 export type SearchableEntity =
   | Agency

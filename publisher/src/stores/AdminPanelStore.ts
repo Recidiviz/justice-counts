@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { AgencySystems, AgencyTeamMember } from "@justice-counts/common/types";
+import { removeSnakeCase } from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
 import {
@@ -23,6 +24,7 @@ import {
   AgencyProvisioningUpdates,
   AgencyResponse,
   FipsCountyCodeKey,
+  FipsCountyCodes,
   SearchableEntity,
   SearchableListItem,
   StateCodeKey,
@@ -195,13 +197,15 @@ class AdminPanelStore {
     this.agencyProvisioningUpdates.name = name;
   }
 
-  updateStateCode(stateCode: StateCodeKey) {
-    const lowercaseStateCode = stateCode.toLocaleLowerCase() as StateCodeKey;
+  updateStateCode(stateCode: StateCodeKey | null) {
+    const lowercaseStateCode = stateCode?.toLocaleLowerCase() as StateCodeKey;
     this.agencyProvisioningUpdates.state_code = lowercaseStateCode;
   }
 
-  updateCountyCode(countyCode?: FipsCountyCodeKey | null) {
-    this.agencyProvisioningUpdates.fips_county_code = countyCode;
+  updateCountyCode(countyCode: FipsCountyCodeKey | null) {
+    const lowercaseCountyCode =
+      countyCode?.toLocaleLowerCase() as FipsCountyCodeKey;
+    this.agencyProvisioningUpdates.fips_county_code = lowercaseCountyCode;
   }
 
   updateSystems(systems: AgencySystems[]) {
@@ -241,6 +245,30 @@ class AdminPanelStore {
   }
 
   /** Helpers  */
+
+  get searchableSystems(): SearchableListItem[] {
+    return this.systems.map((system) => ({
+      id: system,
+      name: removeSnakeCase(system.toLocaleLowerCase()),
+    }));
+  }
+
+  get searchableCounties(): SearchableListItem[] {
+    return Object.keys(FipsCountyCodes)
+      .filter(
+        (code) =>
+          this.agencyProvisioningUpdates.state_code &&
+          code.startsWith(this.agencyProvisioningUpdates.state_code)
+      )
+      .map((countyCode) => {
+        const lowercaseCountyCode =
+          countyCode.toLocaleLowerCase() as FipsCountyCodeKey;
+        return {
+          id: countyCode,
+          name: FipsCountyCodes[lowercaseCountyCode],
+        };
+      });
+  }
 
   static get searchableStates(): SearchableListItem[] {
     return Object.keys(StateCodes).map((stateCode) => {
@@ -288,7 +316,7 @@ class AdminPanelStore {
         if (!listItem[key]) return false;
         if (key === "state_code" && "state_code" in listItem) {
           const lowercaseStateCode =
-            listItem.state_code.toLocaleLowerCase() as StateCodeKey;
+            listItem.state_code?.toLocaleLowerCase() as StateCodeKey;
           return regex.test(StateCodes[lowercaseStateCode]);
         }
         return regex.test(listItem[key] as string);

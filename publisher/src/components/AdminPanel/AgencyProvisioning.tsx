@@ -18,6 +18,8 @@
 import { Button } from "@justice-counts/common/components/Button";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
+import { AgencySystems } from "@justice-counts/common/types";
+import { removeSnakeCase } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 
@@ -27,6 +29,8 @@ import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
 import {
   AgencyProvisioningSetting,
   AgencyProvisioningSettings,
+  FipsCountyCodeKey,
+  FipsCountyCodes,
   InteractiveSearchList,
   InteractiveSearchListActions,
   ProvisioningProps,
@@ -37,12 +41,24 @@ import {
 } from ".";
 import * as Styled from "./AdminPanel.styles";
 
+enum VisibleSelectionBoxes {
+  STATE = "STATE",
+  COUNTY = "COUNTY",
+  SYSTEMS = "SYSTEMS",
+  SUPERAGENCY_CHILD_AGENCY = "SUPERAGENCY/CHILD AGENCY",
+}
+
+type VisibleSelectionBox = `${VisibleSelectionBoxes}`;
+
 export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
   ({ selectedIDToEdit, closeModal }) => {
     const { adminPanelStore } = useStore();
     const {
       agenciesByID,
+      systems,
       agencyProvisioningUpdates,
+      searchableCounties,
+      searchableSystems,
       updateAgencyName,
       updateStateCode,
       updateCountyCode,
@@ -64,11 +80,27 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       type?: SaveConfirmationType;
     }>({ show: false });
 
-    const [showStateCodeSelectionBox, setShowStateCodeSelectionBox] =
-      useState<boolean>(false);
+    const [showSelectionBox, setShowSelectionBox] =
+      useState<VisibleSelectionBox>();
     const [selectedStateCode, setSelectedStateCode] = useState<
       Set<StateCodeKey>
-    >(new Set());
+    >(
+      agencyProvisioningUpdates.state_code
+        ? new Set([agencyProvisioningUpdates.state_code])
+        : new Set()
+    );
+    const [selectedCountyCode, setSelectedCountyCode] = useState<
+      Set<FipsCountyCodeKey>
+    >(
+      agencyProvisioningUpdates.fips_county_code
+        ? new Set([agencyProvisioningUpdates.fips_county_code])
+        : new Set()
+    );
+    const [selectedSystems, setSelectedSystems] = useState<Set<AgencySystems>>(
+      agencyProvisioningUpdates.systems
+        ? new Set(agencyProvisioningUpdates.systems)
+        : new Set()
+    );
 
     /** Selected agency to edit */
     const selectedAgency = selectedIDToEdit
@@ -105,8 +137,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     ];
 
     const isSaveDisabled = false;
-
-    console.log(selectedAgency?.state_code);
 
     return (
       <Styled.ModalContainer>
@@ -148,9 +178,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                   <label htmlFor="agency-name">Name</label>
                 </Styled.InputLabelWrapper>
 
-                {/* Agency State */}
+                {/* Agency State Input */}
                 <Styled.InputLabelWrapper>
-                  {showStateCodeSelectionBox && (
+                  {showSelectionBox === VisibleSelectionBoxes.STATE && (
                     <InteractiveSearchList
                       list={AdminPanelStore.searchableStates}
                       boxActionType={InteractiveSearchListActions.ADD}
@@ -158,19 +188,32 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       buttons={[
                         {
                           label: "Close",
-                          onClick: () => setShowStateCodeSelectionBox(false),
+                          onClick: () => setShowSelectionBox(undefined),
                         },
                       ]}
                       updateSelections={({ id }) => {
-                        setSelectedStateCode(new Set([id as StateCodeKey]));
-                        updateStateCode(id as StateCodeKey);
+                        setSelectedStateCode((prev) =>
+                          prev.has(id as StateCodeKey)
+                            ? new Set()
+                            : new Set([id as StateCodeKey])
+                        );
+                        updateStateCode(
+                          selectedStateCode.has(id as StateCodeKey)
+                            ? null
+                            : (id as StateCodeKey)
+                        );
+                        /** Reset the county */
+                        setSelectedCountyCode(new Set());
+                        updateCountyCode(null);
                       }}
                       searchByKeys={["name"]}
                       metadata={{
-                        listBoxLabel: "States",
-                        searchBoxLabel: "Search States",
+                        listBoxLabel: "Select a state",
+                        searchBoxLabel: "Search states",
                       }}
-                      isActiveBox={showStateCodeSelectionBox}
+                      isActiveBox={
+                        showSelectionBox === VisibleSelectionBoxes.STATE
+                      }
                     />
                   )}
                   <input
@@ -179,15 +222,177 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                     value={
                       (agencyProvisioningUpdates.state_code &&
                         StateCodes[agencyProvisioningUpdates.state_code]) ||
-                      (selectedAgency &&
-                        StateCodes[selectedAgency?.state_code]) ||
                       ""
                     }
                     onClick={() => {
-                      setShowStateCodeSelectionBox(true);
+                      setShowSelectionBox(VisibleSelectionBoxes.STATE);
                     }}
                   />
                   <label htmlFor="state">State</label>
+                </Styled.InputLabelWrapper>
+
+                {/* Agency County Input */}
+                <Styled.InputLabelWrapper>
+                  {showSelectionBox === VisibleSelectionBoxes.COUNTY && (
+                    <InteractiveSearchList
+                      list={searchableCounties}
+                      boxActionType={InteractiveSearchListActions.ADD}
+                      selections={selectedCountyCode}
+                      buttons={[
+                        {
+                          label: "Close",
+                          onClick: () => setShowSelectionBox(undefined),
+                        },
+                      ]}
+                      updateSelections={({ id }) => {
+                        setSelectedCountyCode((prev) =>
+                          prev.has(id as FipsCountyCodeKey)
+                            ? new Set()
+                            : new Set([id as FipsCountyCodeKey])
+                        );
+                        updateCountyCode(
+                          selectedCountyCode.has(id as FipsCountyCodeKey)
+                            ? null
+                            : (id as FipsCountyCodeKey)
+                        );
+                      }}
+                      searchByKeys={["name"]}
+                      metadata={{
+                        listBoxLabel: "Select a county",
+                        searchBoxLabel: "Search counties",
+                      }}
+                      isActiveBox={
+                        showSelectionBox === VisibleSelectionBoxes.COUNTY
+                      }
+                    />
+                  )}
+                  <input
+                    name="county"
+                    type="button"
+                    disabled={
+                      !agencyProvisioningUpdates.state_code &&
+                      !selectedAgency?.state_code // Disable until a state is selected
+                    }
+                    value={
+                      (agencyProvisioningUpdates.fips_county_code &&
+                        FipsCountyCodes[
+                          agencyProvisioningUpdates.fips_county_code
+                        ]) ||
+                      ""
+                    }
+                    onClick={() => {
+                      setShowSelectionBox(VisibleSelectionBoxes.COUNTY);
+                    }}
+                  />
+                  <label htmlFor="state">County</label>
+                </Styled.InputLabelWrapper>
+
+                {/* Agency Systems Input */}
+                <Styled.InputLabelWrapper>
+                  {showSelectionBox === VisibleSelectionBoxes.SYSTEMS && (
+                    <InteractiveSearchList
+                      list={searchableSystems}
+                      boxActionType={InteractiveSearchListActions.ADD}
+                      selections={selectedSystems}
+                      buttons={[
+                        {
+                          label: "Close",
+                          onClick: () => setShowSelectionBox(undefined),
+                        },
+                      ]}
+                      updateSelections={({ id, name }) => {
+                        setSelectedSystems((prev) => {
+                          const clonedSet = new Set(prev);
+                          if (prev.has(id as AgencySystems)) {
+                            clonedSet.delete(id as AgencySystems);
+                            updateSystems(
+                              Array.from(selectedSystems).filter(
+                                (system) => system !== id
+                              )
+                            );
+                          } else {
+                            clonedSet.add(id as AgencySystems);
+                            updateSystems([
+                              ...Array.from(selectedSystems),
+                              id as AgencySystems,
+                            ]);
+                          }
+                          return clonedSet;
+                        });
+                      }}
+                      searchByKeys={["name"]}
+                      metadata={{
+                        listBoxLabel: "Select system(s)",
+                        searchBoxLabel: "Search systems",
+                      }}
+                      isActiveBox={
+                        showSelectionBox === VisibleSelectionBoxes.SYSTEMS
+                      }
+                    />
+                  )}
+                  <Styled.ChipContainer
+                    onClick={() =>
+                      setShowSelectionBox(VisibleSelectionBoxes.SYSTEMS)
+                    }
+                    fitContentHeight
+                    hoverable
+                  >
+                    {agencyProvisioningUpdates.systems.map((system) => (
+                      <Styled.Chip key={system}>{system}</Styled.Chip>
+                    ))}
+                  </Styled.ChipContainer>
+                  <Styled.ChipContainerLabel>Systems</Styled.ChipContainerLabel>
+                </Styled.InputLabelWrapper>
+
+                {/* Dashboard Enabled Checkbox */}
+                <Styled.InputLabelWrapper flexRow>
+                  <input
+                    name="dashboard"
+                    type="checkbox"
+                    onChange={() =>
+                      updateIsDashboardEnabled(
+                        !agencyProvisioningUpdates.is_dashboard_enabled
+                      )
+                    }
+                    checked={Boolean(
+                      agencyProvisioningUpdates.is_dashboard_enabled
+                    )}
+                  />
+                  <label htmlFor="dashboard">Dashboard enabled</label>
+                </Styled.InputLabelWrapper>
+
+                {/* Superagency/Child Agency Checkbox & Search Box */}
+                <Styled.InputLabelWrapper flexRow inputWidth={100}>
+                  <input
+                    name="superagency"
+                    type="checkbox"
+                    onChange={() => {
+                      updateIsSuperagency(
+                        !agencyProvisioningUpdates.is_superagency
+                      );
+                      updateSuperagencyID(null);
+                      // setIsSuperagency((prev) => !prev);
+                      // setIsChildAgency(false);
+                      // setSuperOrChildAgencySelections([]);
+                    }}
+                    checked={Boolean(agencyProvisioningUpdates.is_superagency)}
+                  />
+                  <label htmlFor="superagency">Superagency</label>
+                  <input
+                    name="child-agency"
+                    type="checkbox"
+                    onChange={() => {
+                      updateIsSuperagency(false);
+                      updateSuperagencyID(
+                        agencyProvisioningUpdates.super_agency_id ? null : 4
+                      );
+                      // setIsChildAgency((prev) => !prev);
+                      // setIsSuperagency(false);
+                      // setSuperOrChildAgencySelections([]);
+                    }}
+                    checked={Boolean(agencyProvisioningUpdates.super_agency_id)}
+                  />
+                  <label htmlFor="child-agency">Child Agency </label>
                 </Styled.InputLabelWrapper>
               </Styled.Form>
             </Styled.ScrollableContainer>
