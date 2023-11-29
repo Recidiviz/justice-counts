@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { rootStore } from ".";
 import { AgencyResponse, UserResponse } from "../components/AdminPanel";
 import { groupBy } from "../utils";
 import AdminPanelStore from "./AdminPanelStore";
@@ -27,6 +28,7 @@ const MockAuthStore = jest.fn(() => {
 }) as jest.Mock;
 const api = new API(MockAuthStore());
 const adminPanelStore = new AdminPanelStore(api);
+rootStore.adminPanelStore = adminPanelStore;
 
 export const mockUsersResponse = {
   users: [

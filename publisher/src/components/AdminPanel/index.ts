@@ -16,8 +16,8 @@
 // =============================================================================
 /* eslint-disable simple-import-sort/exports */
 export * from "./UserProvisioning";
-export * from "./AgencyProvisioning";
 export * from "./UserProvisioningOverview";
+export * from "./AgencyProvisioning";
 export * from "./AgencyProvisioningOverview";
 export * from "./InteractiveSearchList";
 export * from "./AdminPanel";

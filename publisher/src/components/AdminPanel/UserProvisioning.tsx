@@ -121,16 +121,6 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
       },
     ];
 
-    /** Selecting/deselecting agencies to add/delete */
-    const selectOrDeselectByID = (prevSet: Set<number>, id: number) => {
-      const updatedSet = new Set(prevSet);
-      if (updatedSet.has(id)) {
-        updatedSet.delete(id);
-      } else {
-        updatedSet.add(id);
-      }
-      return updatedSet;
-    };
     const updateAgencySelections: InteractiveSearchListUpdateSelections = (
       selection
     ) => {
@@ -141,12 +131,12 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
 
       if (hasAddAction) {
         setAddedAgenciesIDs((prev) =>
-          selectOrDeselectByID(prev, +selection.id)
+          AdminPanelStore.selectOrDeselectSetItems(prev, +selection.id)
         );
       }
       if (hasDeleteAction) {
         setDeletedAgenciesIDs((prev) =>
-          selectOrDeselectByID(prev, +selection.id)
+          AdminPanelStore.selectOrDeselectSetItems(prev, +selection.id)
         );
       }
     };

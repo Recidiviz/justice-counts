@@ -137,12 +137,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
     const isSaveDisabled = false;
 
-    const selectOrDeselectByID = <T,>(prevSet: Set<T>, id: T): Set<T> => {
-      const updatedSet = new Set(prevSet);
-      updatedSet.has(id) ? updatedSet.delete(id) : updatedSet.add(id);
-      return updatedSet;
-    };
-
     return (
       <Styled.ModalContainer>
         {showSaveConfirmation.show ? (
@@ -316,7 +310,10 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       updateSelections={({ id }) => {
                         // Don't forget to consolidate and update the system selections when a user saves
                         setSelectedSystems((prev) =>
-                          selectOrDeselectByID(prev, id as AgencySystems)
+                          AdminPanelStore.selectOrDeselectSetItems(
+                            prev,
+                            id as AgencySystems
+                          )
                         );
                       }}
                       searchByKeys={["name"]}
@@ -430,7 +427,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         updateSelections={({ id }) => {
                           // Don't forget to consolidate and update the system selections when a user saves
                           setSelectedChildAgencyIDs((prev) =>
-                            selectOrDeselectByID(prev, +id)
+                            AdminPanelStore.selectOrDeselectSetItems(prev, +id)
                           );
                         }}
                         searchByKeys={["name"]}
