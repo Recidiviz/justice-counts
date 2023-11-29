@@ -268,3 +268,9 @@ export function memoizeDebounce<F extends (...args: any[]) => any>(
 export function replaceSymbolsWithDash(value: string) {
   return value.replace(/[^A-Za-z0-9]/g, "-").toLowerCase();
 }
+
+export const validateEmail = (email: string) => {
+  return email
+    .toLowerCase()
+    .match(/^([A-Z0-9_+-]\.?)*[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i);
+};

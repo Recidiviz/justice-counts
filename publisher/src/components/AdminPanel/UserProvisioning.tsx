@@ -17,6 +17,7 @@
 
 import { Button } from "@justice-counts/common/components/Button";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
+import { validateEmail } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 
@@ -172,11 +173,9 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
 
     /** Validate & update email input */
     const validateAndUpdateEmail = (email: string) => {
-      const regex =
-        /^([A-Z0-9_+-]\.?)*[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i;
       updateEmail(email);
 
-      if (email === "" || regex.test(email)) {
+      if (email === "" || validateEmail(email)) {
         return setEmailValidationError(undefined);
       }
       setEmailValidationError("Please enter a valid email address");
