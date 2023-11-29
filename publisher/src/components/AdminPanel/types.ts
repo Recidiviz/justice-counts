@@ -244,10 +244,6 @@ export const StateCodes = {
   us_wy: "Wyoming",
 } as const;
 
-export const StateNameToStateCode = Object.fromEntries(
-  Object.entries(StateCodes).map(([k, v]) => [v, k])
-) as Record<StateCodeValue, StateCodeKey>;
-
 export type StateCodeKey = keyof typeof StateCodes;
 
 export type StateCodeValue = (typeof StateCodes)[keyof typeof StateCodes];
