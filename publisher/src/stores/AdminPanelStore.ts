@@ -37,6 +37,24 @@ import {
 import { groupBy } from "../utils";
 import API from "./API";
 
+const initialEmptyUserProvisioningUpdates = {
+  name: "",
+  email: "",
+  agency_ids: [],
+};
+
+const initialEmptyAgencyProvisioningUpdates = {
+  name: "",
+  state_code: null,
+  fips_county_code: null,
+  systems: [],
+  is_dashboard_enabled: null,
+  super_agency_id: null,
+  is_superagency: null,
+  child_agency_ids: [],
+  team: [],
+};
+
 class AdminPanelStore {
   api: API;
 
@@ -59,22 +77,8 @@ class AdminPanelStore {
     this.usersByID = {};
     this.agenciesByID = {};
     this.systems = [];
-    this.userProvisioningUpdates = {
-      name: "",
-      email: "",
-      agency_ids: [],
-    };
-    this.agencyProvisioningUpdates = {
-      name: "",
-      state_code: null,
-      fips_county_code: null,
-      systems: [],
-      is_dashboard_enabled: null,
-      super_agency_id: null,
-      is_superagency: null,
-      child_agency_ids: [],
-      team: [],
-    };
+    this.userProvisioningUpdates = initialEmptyUserProvisioningUpdates;
+    this.agencyProvisioningUpdates = initialEmptyAgencyProvisioningUpdates;
   }
 
   get users(): UserWithAgenciesByID[] {
@@ -183,9 +187,7 @@ class AdminPanelStore {
   }
 
   resetUserProvisioningUpdates() {
-    this.userProvisioningUpdates.name = "";
-    this.userProvisioningUpdates.email = "";
-    this.userProvisioningUpdates.agency_ids = [];
+    this.userProvisioningUpdates = initialEmptyUserProvisioningUpdates;
   }
 
   updateUsers(userResponse: UserResponse) {
@@ -259,15 +261,7 @@ class AdminPanelStore {
   }
 
   resetAgencyProvisioningUpdates() {
-    this.agencyProvisioningUpdates.name = "";
-    this.agencyProvisioningUpdates.state_code = null;
-    this.agencyProvisioningUpdates.fips_county_code = null;
-    this.agencyProvisioningUpdates.systems = [];
-    this.agencyProvisioningUpdates.is_dashboard_enabled = null;
-    this.agencyProvisioningUpdates.super_agency_id = null;
-    this.agencyProvisioningUpdates.is_superagency = null;
-    this.agencyProvisioningUpdates.child_agency_ids = [];
-    this.agencyProvisioningUpdates.team = [];
+    this.agencyProvisioningUpdates = initialEmptyAgencyProvisioningUpdates;
   }
 
   /** Helpers  */
