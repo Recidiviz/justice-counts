@@ -188,7 +188,7 @@ export const InputLabelWrapper = styled.div<{
 
   input,
   input[type="button"] {
-    ${typography.sizeCSS.normal}
+    font-size: 0.8rem;
     font-weight: 400;
     line-height: 1rem;
     width: 100%;
@@ -343,15 +343,16 @@ export const Chip = styled.span<{
   hover?: boolean;
   selectedColor?: string;
 }>`
+  width: fit-content;
+  height: fit-content;
   text-transform: capitalize;
   font-weight: 400;
   display: inline-block;
-  width: fit-content;
-  height: fit-content;
   padding: 3px 15px;
   border: 1px solid ${palette.highlight.grey5};
   border-radius: 4px;
   box-shadow: 1px 1px 1px ${palette.highlight.grey2};
+  margin: 2.5px;
 
   ${({ selected, selectedColor }) => {
     if (selected && selectedColor) {
@@ -369,8 +370,6 @@ export const Chip = styled.span<{
     `
     cursor: pointer;
   `}
-
-  margin: 2.5px;
 `;
 
 export const ChipContainerLabel = styled.div<{
@@ -431,10 +430,11 @@ export const ChipInnerRow = styled.div`
 `;
 
 export const EmptyListMessage = styled.div`
-  ${typography.sizeCSS.small}
+  font-size: 0.8rem;
   font-weight: 400;
+  line-height: 1rem;
   margin-top: 7px;
-  margin-left: 5px;
+  margin-left: 3px;
 `;
 
 export const ChipContainerLabelAction = styled(ChipContainerLabel)`

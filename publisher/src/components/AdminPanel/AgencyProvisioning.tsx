@@ -45,7 +45,8 @@ enum VisibleSelectionBoxes {
   STATE = "STATE",
   COUNTY = "COUNTY",
   SYSTEMS = "SYSTEMS",
-  SUPERAGENCY_CHILD_AGENCY = "SUPERAGENCY/CHILD AGENCY",
+  SUPERAGENCY = "SUPERAGENCY",
+  CHILD_AGENCIES = "CHILD AGENCIES",
 }
 
 type VisibleSelectionBox = `${VisibleSelectionBoxes}`;
@@ -54,6 +55,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
   ({ selectedIDToEdit, closeModal }) => {
     const { adminPanelStore } = useStore();
     const {
+      agencies,
       agenciesByID,
       systems,
       agencyProvisioningUpdates,
@@ -71,20 +73,30 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     } = adminPanelStore;
 
     const [isSaveInProgress, setIsSaveInProgress] = useState<boolean>(false);
-    const [currentSettingType, setCurrentSettingType] =
-      useState<AgencyProvisioningSetting>(
-        AgencyProvisioningSettings.AGENCY_INFORMATION
-      );
     const [showSaveConfirmation, setShowSaveConfirmation] = useState<{
       show: boolean;
       type?: SaveConfirmationType;
     }>({ show: false });
-
+    const [currentSettingType, setCurrentSettingType] =
+      useState<AgencyProvisioningSetting>(
+        AgencyProvisioningSettings.AGENCY_INFORMATION
+      );
     const [showSelectionBox, setShowSelectionBox] =
       useState<VisibleSelectionBox>();
+
+    const [isChildAgencySelected, setIsChildAgencySelected] = useState<boolean>(
+      Boolean(agencyProvisioningUpdates.super_agency_id) || false
+    );
     const [selectedSystems, setSelectedSystems] = useState<Set<AgencySystems>>(
       agencyProvisioningUpdates.systems
         ? new Set(agencyProvisioningUpdates.systems)
+        : new Set()
+    );
+    const [selectedChildAgencyIDs, setSelectedChildAgencyIDs] = useState<
+      Set<number>
+    >(
+      agencyProvisioningUpdates.child_agency_ids
+        ? new Set(agencyProvisioningUpdates.child_agency_ids)
         : new Set()
     );
 
@@ -127,7 +139,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const selectOrDeselectByID = (
       prevSet: Set<AgencySystems>,
       id: number | string | AgencySystems
-    ) => {
+    ): Set<AgencySystems> | Set<number> => {
       const updatedSet = new Set(prevSet);
       if (updatedSet.has(id)) {
         updatedSet.delete(id);
@@ -308,6 +320,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         },
                       ]}
                       updateSelections={({ id }) => {
+                        // Don't forget to consolidate and update the system selections when a user saves
                         setSelectedSystems((prev) =>
                           selectOrDeselectByID(prev, id)
                         );
@@ -371,29 +384,163 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         !agencyProvisioningUpdates.is_superagency
                       );
                       updateSuperagencyID(null);
-                      // setIsSuperagency((prev) => !prev);
-                      // setIsChildAgency(false);
-                      // setSuperOrChildAgencySelections([]);
+                      setIsChildAgencySelected(false);
+                      setShowSelectionBox(undefined);
                     }}
                     checked={Boolean(agencyProvisioningUpdates.is_superagency)}
                   />
                   <label htmlFor="superagency">Superagency</label>
+
                   <input
                     name="child-agency"
                     type="checkbox"
                     onChange={() => {
                       updateIsSuperagency(false);
-                      updateSuperagencyID(
-                        agencyProvisioningUpdates.super_agency_id ? null : 4
-                      );
-                      // setIsChildAgency((prev) => !prev);
-                      // setIsSuperagency(false);
-                      // setSuperOrChildAgencySelections([]);
+                      setSelectedChildAgencyIDs(new Set());
+                      setIsChildAgencySelected((prev) => !prev);
+                      setShowSelectionBox(undefined);
                     }}
-                    checked={Boolean(agencyProvisioningUpdates.super_agency_id)}
+                    checked={isChildAgencySelected}
                   />
-                  <label htmlFor="child-agency">Child Agency </label>
+                  <label htmlFor="child-agency">Child Agency</label>
                 </Styled.InputLabelWrapper>
+
+                {/* Superagency/Child Agencies list */}
+
+                {/* Superagency */}
+                {agencyProvisioningUpdates.is_superagency && (
+                  <Styled.InputLabelWrapper>
+                    {showSelectionBox ===
+                      VisibleSelectionBoxes.CHILD_AGENCIES && (
+                      <InteractiveSearchList
+                        list={agencies}
+                        boxActionType={InteractiveSearchListActions.ADD}
+                        selections={selectedChildAgencyIDs}
+                        buttons={[
+                          {
+                            label: "Select All",
+                            onClick: () =>
+                              setSelectedChildAgencyIDs(
+                                new Set(agencies.map((agency) => +agency.id))
+                              ),
+                          },
+                          {
+                            label: "Deselect All",
+                            onClick: () => setSelectedChildAgencyIDs(new Set()),
+                          },
+                          {
+                            label: "Close",
+                            onClick: () => setShowSelectionBox(undefined),
+                          },
+                        ]}
+                        updateSelections={({ id }) => {
+                          // Don't forget to consolidate and update the system selections when a user saves
+                          setSelectedChildAgencyIDs((prev) =>
+                            selectOrDeselectByID(prev, id)
+                          );
+                        }}
+                        searchByKeys={["name"]}
+                        metadata={{
+                          listBoxLabel: "Select child agencies",
+                          searchBoxLabel: "Search agencies",
+                        }}
+                        isActiveBox={
+                          showSelectionBox ===
+                          VisibleSelectionBoxes.CHILD_AGENCIES
+                        }
+                      />
+                    )}
+                    <Styled.ChipContainer
+                      onClick={() =>
+                        setShowSelectionBox(
+                          VisibleSelectionBoxes.CHILD_AGENCIES
+                        )
+                      }
+                      fitContentHeight
+                      hoverable
+                    >
+                      {selectedChildAgencyIDs.size === 0 ? (
+                        <Styled.EmptyListMessage>
+                          No child agencies selected
+                        </Styled.EmptyListMessage>
+                      ) : (
+                        Array.from(selectedChildAgencyIDs).map((agencyID) => (
+                          <Styled.Chip key={agencyID}>
+                            {agenciesByID[agencyID][0].name}
+                          </Styled.Chip>
+                        ))
+                      )}
+                    </Styled.ChipContainer>
+                    <Styled.ChipContainerLabel>
+                      Child agencies
+                    </Styled.ChipContainerLabel>
+                  </Styled.InputLabelWrapper>
+                )}
+
+                {/* Child agency */}
+                {(isChildAgencySelected ||
+                  agencyProvisioningUpdates.super_agency_id) && (
+                  <Styled.InputLabelWrapper>
+                    {showSelectionBox === VisibleSelectionBoxes.SUPERAGENCY && (
+                      <InteractiveSearchList
+                        list={agencies}
+                        boxActionType={InteractiveSearchListActions.ADD}
+                        selections={
+                          agencyProvisioningUpdates.super_agency_id
+                            ? new Set([
+                                agencyProvisioningUpdates.super_agency_id,
+                              ])
+                            : new Set()
+                        }
+                        buttons={[
+                          {
+                            label: "Close",
+                            onClick: () => setShowSelectionBox(undefined),
+                          },
+                        ]}
+                        updateSelections={({ id }) => {
+                          updateSuperagencyID(
+                            agencyProvisioningUpdates.super_agency_id === id
+                              ? null
+                              : id
+                          );
+                        }}
+                        searchByKeys={["name"]}
+                        metadata={{
+                          listBoxLabel: "Select a superagency",
+                          searchBoxLabel: "Search agencies",
+                        }}
+                        isActiveBox={
+                          showSelectionBox === VisibleSelectionBoxes.SUPERAGENCY
+                        }
+                      />
+                    )}
+                    <Styled.ChipContainer
+                      onClick={() =>
+                        setShowSelectionBox(VisibleSelectionBoxes.SUPERAGENCY)
+                      }
+                      fitContentHeight
+                      hoverable
+                    >
+                      {!agencyProvisioningUpdates.super_agency_id ? (
+                        <Styled.EmptyListMessage>
+                          No superagency selected
+                        </Styled.EmptyListMessage>
+                      ) : (
+                        <Styled.Chip>
+                          {agencyProvisioningUpdates.super_agency_id &&
+                            agenciesByID[
+                              agencyProvisioningUpdates.super_agency_id
+                            ]?.[0].name}
+                        </Styled.Chip>
+                      )}
+                    </Styled.ChipContainer>
+                    <Styled.ChipContainerLabel>
+                      Superagency
+                    </Styled.ChipContainerLabel>
+                  </Styled.InputLabelWrapper>
+                )}
+
                 {/*  */}
               </Styled.Form>
             </Styled.ScrollableContainer>

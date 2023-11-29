@@ -38,9 +38,7 @@ export const InteractiveSearchList = ({
 }: InteractiveSearchListProps) => {
   const [filteredList, setFilteredList] = useState<SearchableListItem[]>([]);
   const [searchInputValue, setSearchInputValue] = useState("");
-  console.log(
-    searchInputValue ? "No results found" : metadata?.listBoxEmptyLabel
-  );
+
   const getChipColor = (actionType?: InteractiveSearchListAction) => {
     if (!actionType) return;
     if (actionType === InteractiveSearchListActions.DELETE) return "red";
