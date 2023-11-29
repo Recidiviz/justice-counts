@@ -139,11 +139,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
     const selectOrDeselectByID = <T,>(prevSet: Set<T>, id: T): Set<T> => {
       const updatedSet = new Set(prevSet);
-      if (updatedSet.has(id)) {
-        updatedSet.delete(id);
-      } else {
-        updatedSet.add(id);
-      }
+      updatedSet.has(id) ? updatedSet.delete(id) : updatedSet.add(id);
       return updatedSet;
     };
 
