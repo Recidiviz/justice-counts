@@ -116,9 +116,16 @@ export const AgencyProvisioningOverview = observer(() => {
             <label htmlFor="search-agencies">
               Search by name, state or agency ID
             </label>
-            <Styled.LabelButton onClick={() => setFilteredAgencies(agencies)}>
-              Clear
-            </Styled.LabelButton>
+            {searchInput && (
+              <Styled.LabelButton
+                onClick={() => {
+                  setSearchInput("");
+                  setFilteredAgencies(agencies);
+                }}
+              >
+                Clear
+              </Styled.LabelButton>
+            )}
           </Styled.LabelWrapper>
         </Styled.InputLabelWrapper>
 

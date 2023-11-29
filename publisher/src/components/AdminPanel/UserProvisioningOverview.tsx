@@ -104,14 +104,16 @@ export const UserProvisioningOverview = observer(() => {
             <label htmlFor="search-users">
               Search by name, email or user ID
             </label>
-            <Styled.LabelButton
-              onClick={() => {
-                setSearchInput("");
-                setFilteredUsers(users);
-              }}
-            >
-              Clear
-            </Styled.LabelButton>
+            {searchInput && (
+              <Styled.LabelButton
+                onClick={() => {
+                  setSearchInput("");
+                  setFilteredUsers(users);
+                }}
+              >
+                Clear
+              </Styled.LabelButton>
+            )}
           </Styled.LabelWrapper>
         </Styled.InputLabelWrapper>
 
