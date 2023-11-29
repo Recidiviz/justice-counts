@@ -85,6 +85,32 @@ class AdminPanelStore {
     return AdminPanelStore.objectToSortedFlatMappedValues(this.agenciesByID);
   }
 
+  get searchableSystems(): SearchableListItem[] {
+    return this.systems.map((system) => ({
+      id: system,
+      name: removeSnakeCase(system.toLocaleLowerCase()),
+    }));
+  }
+
+  get searchableCounties(): SearchableListItem[] {
+    // Based on the currently selected `state_code`
+    if (!this.agencyProvisioningUpdates.state_code) return [];
+    return Object.keys(FipsCountyCodes)
+      .filter(
+        (countyCode) =>
+          this.agencyProvisioningUpdates.state_code &&
+          countyCode.startsWith(this.agencyProvisioningUpdates.state_code)
+      )
+      .map((countyCode) => {
+        const lowercaseCountyCode =
+          countyCode.toLocaleLowerCase() as FipsCountyCodeKey;
+        return {
+          id: countyCode,
+          name: FipsCountyCodes[lowercaseCountyCode],
+        };
+      });
+  }
+
   async fetchUsers() {
     try {
       const response = (await this.api.request({
@@ -245,30 +271,6 @@ class AdminPanelStore {
   }
 
   /** Helpers  */
-
-  get searchableSystems(): SearchableListItem[] {
-    return this.systems.map((system) => ({
-      id: system,
-      name: removeSnakeCase(system.toLocaleLowerCase()),
-    }));
-  }
-
-  get searchableCounties(): SearchableListItem[] {
-    return Object.keys(FipsCountyCodes)
-      .filter(
-        (code) =>
-          this.agencyProvisioningUpdates.state_code &&
-          code.startsWith(this.agencyProvisioningUpdates.state_code)
-      )
-      .map((countyCode) => {
-        const lowercaseCountyCode =
-          countyCode.toLocaleLowerCase() as FipsCountyCodeKey;
-        return {
-          id: countyCode,
-          name: FipsCountyCodes[lowercaseCountyCode],
-        };
-      });
-  }
 
   static get searchableStates(): SearchableListItem[] {
     return Object.keys(StateCodes).map((stateCode) => {

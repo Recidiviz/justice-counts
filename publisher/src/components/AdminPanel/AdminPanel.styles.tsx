@@ -188,13 +188,16 @@ export const InputLabelWrapper = styled.div<{
 
   input,
   input[type="button"] {
+    ${typography.sizeCSS.normal}
+    font-weight: 400;
+    line-height: 1rem;
     width: 100%;
     min-width: 210px;
     background: none;
     text-align: left;
     border: 1px solid ${palette.highlight.grey5};
     border-radius: 2px;
-    padding: 3px;
+    padding: 5px 5px 5px 8px;
   }
 
   input[type="button"]:hover {
@@ -427,7 +430,7 @@ export const ChipInnerRow = styled.div`
   justify-content: space-between;
 `;
 
-export const NoResultsFound = styled.div`
+export const EmptyListMessage = styled.div`
   ${typography.sizeCSS.small}
   font-weight: 400;
   margin-top: 7px;

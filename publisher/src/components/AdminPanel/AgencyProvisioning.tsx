@@ -82,20 +82,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
     const [showSelectionBox, setShowSelectionBox] =
       useState<VisibleSelectionBox>();
-    const [selectedStateCode, setSelectedStateCode] = useState<
-      Set<StateCodeKey>
-    >(
-      agencyProvisioningUpdates.state_code
-        ? new Set([agencyProvisioningUpdates.state_code])
-        : new Set()
-    );
-    const [selectedCountyCode, setSelectedCountyCode] = useState<
-      Set<FipsCountyCodeKey>
-    >(
-      agencyProvisioningUpdates.fips_county_code
-        ? new Set([agencyProvisioningUpdates.fips_county_code])
-        : new Set()
-    );
     const [selectedSystems, setSelectedSystems] = useState<Set<AgencySystems>>(
       agencyProvisioningUpdates.systems
         ? new Set(agencyProvisioningUpdates.systems)
@@ -137,6 +123,19 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     ];
 
     const isSaveDisabled = false;
+
+    const selectOrDeselectByID = (
+      prevSet: Set<AgencySystems>,
+      id: number | string | AgencySystems
+    ) => {
+      const updatedSet = new Set(prevSet);
+      if (updatedSet.has(id)) {
+        updatedSet.delete(id);
+      } else {
+        updatedSet.add(id);
+      }
+      return updatedSet;
+    };
 
     return (
       <Styled.ModalContainer>
@@ -184,7 +183,11 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                     <InteractiveSearchList
                       list={AdminPanelStore.searchableStates}
                       boxActionType={InteractiveSearchListActions.ADD}
-                      selections={selectedStateCode}
+                      selections={
+                        agencyProvisioningUpdates.state_code
+                          ? new Set([agencyProvisioningUpdates.state_code])
+                          : new Set()
+                      }
                       buttons={[
                         {
                           label: "Close",
@@ -192,18 +195,13 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         },
                       ]}
                       updateSelections={({ id }) => {
-                        setSelectedStateCode((prev) =>
-                          prev.has(id as StateCodeKey)
-                            ? new Set()
-                            : new Set([id as StateCodeKey])
-                        );
                         updateStateCode(
-                          selectedStateCode.has(id as StateCodeKey)
+                          agencyProvisioningUpdates.state_code ===
+                            (id as StateCodeKey)
                             ? null
                             : (id as StateCodeKey)
                         );
-                        /** Reset the county */
-                        setSelectedCountyCode(new Set());
+                        /** Reset the county code input */
                         updateCountyCode(null);
                       }}
                       searchByKeys={["name"]}
@@ -237,7 +235,13 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                     <InteractiveSearchList
                       list={searchableCounties}
                       boxActionType={InteractiveSearchListActions.ADD}
-                      selections={selectedCountyCode}
+                      selections={
+                        agencyProvisioningUpdates.fips_county_code
+                          ? new Set([
+                              agencyProvisioningUpdates.fips_county_code,
+                            ])
+                          : new Set()
+                      }
                       buttons={[
                         {
                           label: "Close",
@@ -245,13 +249,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         },
                       ]}
                       updateSelections={({ id }) => {
-                        setSelectedCountyCode((prev) =>
-                          prev.has(id as FipsCountyCodeKey)
-                            ? new Set()
-                            : new Set([id as FipsCountyCodeKey])
-                        );
                         updateCountyCode(
-                          selectedCountyCode.has(id as FipsCountyCodeKey)
+                          agencyProvisioningUpdates.fips_county_code === id
                             ? null
                             : (id as FipsCountyCodeKey)
                         );
@@ -296,29 +295,22 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       selections={selectedSystems}
                       buttons={[
                         {
+                          label: "Select All",
+                          onClick: () => setSelectedSystems(new Set(systems)),
+                        },
+                        {
+                          label: "Deselect All",
+                          onClick: () => setSelectedSystems(new Set()),
+                        },
+                        {
                           label: "Close",
                           onClick: () => setShowSelectionBox(undefined),
                         },
                       ]}
-                      updateSelections={({ id, name }) => {
-                        setSelectedSystems((prev) => {
-                          const clonedSet = new Set(prev);
-                          if (prev.has(id as AgencySystems)) {
-                            clonedSet.delete(id as AgencySystems);
-                            updateSystems(
-                              Array.from(selectedSystems).filter(
-                                (system) => system !== id
-                              )
-                            );
-                          } else {
-                            clonedSet.add(id as AgencySystems);
-                            updateSystems([
-                              ...Array.from(selectedSystems),
-                              id as AgencySystems,
-                            ]);
-                          }
-                          return clonedSet;
-                        });
+                      updateSelections={({ id }) => {
+                        setSelectedSystems((prev) =>
+                          selectOrDeselectByID(prev, id)
+                        );
                       }}
                       searchByKeys={["name"]}
                       metadata={{
@@ -337,9 +329,17 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                     fitContentHeight
                     hoverable
                   >
-                    {agencyProvisioningUpdates.systems.map((system) => (
-                      <Styled.Chip key={system}>{system}</Styled.Chip>
-                    ))}
+                    {selectedSystems.size === 0 ? (
+                      <Styled.EmptyListMessage>
+                        No systems selected
+                      </Styled.EmptyListMessage>
+                    ) : (
+                      Array.from(selectedSystems).map((system) => (
+                        <Styled.Chip key={system}>
+                          {removeSnakeCase(system.toLocaleLowerCase())}
+                        </Styled.Chip>
+                      ))
+                    )}
                   </Styled.ChipContainer>
                   <Styled.ChipContainerLabel>Systems</Styled.ChipContainerLabel>
                 </Styled.InputLabelWrapper>
@@ -394,6 +394,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                   />
                   <label htmlFor="child-agency">Child Agency </label>
                 </Styled.InputLabelWrapper>
+                {/*  */}
               </Styled.Form>
             </Styled.ScrollableContainer>
 
