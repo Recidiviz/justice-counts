@@ -21,7 +21,7 @@ import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
 import { AgencySystems } from "@justice-counts/common/types";
 import { removeSnakeCase } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
@@ -71,6 +71,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       updateChildAgencyIDs,
       updateTeamMembers,
     } = adminPanelStore;
+    const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
     const [isSaveInProgress, setIsSaveInProgress] = useState<boolean>(false);
     const [showSaveConfirmation, setShowSaveConfirmation] = useState<{
@@ -172,7 +173,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
             {/* Toggle between Agency Information and Team Members & Roles */}
             <TabbedBar options={settingOptions} />
 
-            <Styled.ScrollableContainer>
+            <Styled.ScrollableContainer ref={scrollableContainerRef}>
               <Styled.Form>
                 {/* Agency Name Input */}
                 <Styled.InputLabelWrapper>
@@ -451,11 +452,16 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       />
                     )}
                     <Styled.ChipContainer
-                      onClick={() =>
+                      onClick={() => {
                         setShowSelectionBox(
                           VisibleSelectionBoxes.CHILD_AGENCIES
-                        )
-                      }
+                        );
+                        setTimeout(
+                          () =>
+                            scrollableContainerRef.current?.scrollTo(0, 300),
+                          0
+                        );
+                      }}
                       fitContentHeight
                       hoverable
                     >
@@ -516,9 +522,17 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       />
                     )}
                     <Styled.ChipContainer
-                      onClick={() =>
-                        setShowSelectionBox(VisibleSelectionBoxes.SUPERAGENCY)
-                      }
+                      onClick={() => {
+                        setShowSelectionBox(VisibleSelectionBoxes.SUPERAGENCY);
+                        setTimeout(
+                          () =>
+                            scrollableContainerRef.current?.scrollTo(
+                              0,
+                              scrollableContainerRef.current.scrollHeight
+                            ),
+                          0
+                        );
+                      }}
                       fitContentHeight
                       hoverable
                     >
