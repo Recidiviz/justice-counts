@@ -32,6 +32,7 @@ import {
   FipsCountyCodeKey,
   FipsCountyCodes,
   InteractiveSearchList,
+  InteractiveSearchListAction,
   InteractiveSearchListActions,
   ProvisioningProps,
   SaveConfirmation,
@@ -78,6 +79,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       useState<AgencyProvisioningSetting>(
         AgencyProvisioningSettings.AGENCY_INFORMATION
       );
+    const [addOrDeleteUserAction, setAddOrDeleteUserAction] =
+      useState<InteractiveSearchListAction>();
     const [showSelectionBox, setShowSelectionBox] =
       useState<VisibleSelectionBox>();
     const [isSaveInProgress, setIsSaveInProgress] = useState<boolean>(false);
@@ -128,6 +131,12 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       : undefined;
     const agencyIDs = agencies.map((agency) => +agency.id);
 
+    /** Whether or not we are performing an add/delete action on an agencies' list */
+    const isAddUserAction =
+      addOrDeleteUserAction === InteractiveSearchListActions.ADD;
+    const isDeleteUserAction =
+      addOrDeleteUserAction === InteractiveSearchListActions.DELETE;
+
     /** Modal Buttons (Save/Cancel) */
     const modalButtons = [
       { label: "Cancel", onClick: closeModal },
@@ -141,7 +150,10 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const interactiveSearchListCloseButton = [
       {
         label: "Close",
-        onClick: () => setShowSelectionBox(undefined),
+        onClick: () => {
+          setShowSelectionBox(undefined);
+          if (addOrDeleteUserAction) setAddOrDeleteUserAction(undefined);
+        },
       },
     ];
 
@@ -158,10 +170,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           label: "Deselect All",
           onClick: () => setState(new Set()),
         },
-        {
-          label: "Close",
-          onClick: () => setShowSelectionBox(undefined),
-        },
+        interactiveSearchListCloseButton[0],
       ];
     };
 
@@ -463,6 +472,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           setSelectedChildAgencyIDs(new Set());
                           setIsChildAgencySelected((prev) => !prev);
                           setShowSelectionBox(undefined);
+                          if (isChildAgencySelected) updateSuperagencyID(null);
                         }}
                         checked={isChildAgencySelected}
                       />
@@ -608,9 +618,110 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                 )}
 
                 {/* Team Members & Roles */}
-                <Styled.InputLabelWrapper>
-                  Team Members & Roles
-                </Styled.InputLabelWrapper>
+                {currentSettingType ===
+                  AgencyProvisioningSettings.TEAM_MEMBERS_ROLES && (
+                  <>
+                    <Styled.InputLabelWrapper>
+                      {/* Add New Team Members */}
+                      {addOrDeleteUserAction ===
+                        InteractiveSearchListActions.ADD && (
+                        <InteractiveSearchList
+                          list={agencies}
+                          boxActionType={InteractiveSearchListActions.ADD}
+                          selections={selectedChildAgencyIDs}
+                          buttons={getInteractiveSearchListSelectDeselectCloseButtons(
+                            setSelectedChildAgencyIDs,
+                            new Set(agencyIDs)
+                          )}
+                          updateSelections={({ id }) => {
+                            setSelectedChildAgencyIDs((prev) =>
+                              AdminPanelStore.selectOrDeselectSetItems(
+                                prev,
+                                +id
+                              )
+                            );
+                          }}
+                          searchByKeys={["name"]}
+                          metadata={{
+                            listBoxLabel: "Select child agencies",
+                            searchBoxLabel: "Search agencies",
+                          }}
+                          isActiveBox
+                        />
+                      )}
+
+                      {/* Delete Existing Team Members */}
+                      {addOrDeleteUserAction ===
+                        InteractiveSearchListActions.DELETE && (
+                        <InteractiveSearchList
+                          list={agencies}
+                          boxActionType={InteractiveSearchListActions.DELETE}
+                          selections={selectedChildAgencyIDs}
+                          buttons={getInteractiveSearchListSelectDeselectCloseButtons(
+                            setSelectedChildAgencyIDs,
+                            new Set(agencyIDs)
+                          )}
+                          updateSelections={({ id }) => {
+                            setSelectedChildAgencyIDs((prev) =>
+                              AdminPanelStore.selectOrDeselectSetItems(
+                                prev,
+                                +id
+                              )
+                            );
+                          }}
+                          searchByKeys={["name"]}
+                          metadata={{
+                            listBoxLabel: "Select child agencies",
+                            searchBoxLabel: "Search agencies",
+                          }}
+                          isActiveBox
+                        />
+                      )}
+                    </Styled.InputLabelWrapper>
+
+                    {/* Add/Remove/Create New User */}
+                    <Styled.InputLabelWrapper>
+                      <Styled.FormActions>
+                        {/* Add Agencies Button */}
+                        <Styled.ActionButton
+                          buttonAction={InteractiveSearchListActions.ADD}
+                          selectedColor={isAddUserAction ? "green" : ""}
+                          onClick={() => {
+                            setAddOrDeleteUserAction((prev) =>
+                              prev === InteractiveSearchListActions.ADD
+                                ? undefined
+                                : InteractiveSearchListActions.ADD
+                            );
+                          }}
+                        >
+                          Add Users
+                        </Styled.ActionButton>
+
+                        {/* Remove Agencies Button (note: when creating a new user, the delete action button is not necessary) */}
+                        {selectedAgency && (
+                          <Styled.ActionButton
+                            buttonAction={InteractiveSearchListActions.DELETE}
+                            selectedColor={isDeleteUserAction ? "red" : ""}
+                            onClick={() => {
+                              setAddOrDeleteUserAction((prev) =>
+                                prev === InteractiveSearchListActions.DELETE
+                                  ? undefined
+                                  : InteractiveSearchListActions.DELETE
+                              );
+                            }}
+                          >
+                            Delete Users
+                          </Styled.ActionButton>
+                        )}
+
+                        {/* Create New User Button (TODO(#1058)) */}
+                        <Styled.ActionButton>
+                          Create New User
+                        </Styled.ActionButton>
+                      </Styled.FormActions>
+                    </Styled.InputLabelWrapper>
+                  </>
+                )}
               </Styled.Form>
             </Styled.ScrollableContainer>
 
