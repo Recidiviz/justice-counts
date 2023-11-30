@@ -232,13 +232,14 @@ class AdminPanelStore {
 
   updateStateCode(stateCode: StateCodeKey | null) {
     const lowercaseStateCode = stateCode?.toLocaleLowerCase() as StateCodeKey;
-    this.agencyProvisioningUpdates.state_code = lowercaseStateCode;
+    this.agencyProvisioningUpdates.state_code = lowercaseStateCode || null;
   }
 
   updateCountyCode(countyCode: FipsCountyCodeKey | null) {
     const lowercaseCountyCode =
       countyCode?.toLocaleLowerCase() as FipsCountyCodeKey;
-    this.agencyProvisioningUpdates.fips_county_code = lowercaseCountyCode;
+    this.agencyProvisioningUpdates.fips_county_code =
+      lowercaseCountyCode || null;
   }
 
   updateSystems(systems: AgencySystems[]) {
