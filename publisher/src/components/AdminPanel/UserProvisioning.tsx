@@ -75,7 +75,7 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
 
     /** Available agencies to add from */
     const availableAgencies = agencies.filter(
-      (agency) => !selectedUserAgenciesIDsSet.has(agency.id)
+      (agency) => !selectedUserAgenciesIDsSet.has(+agency.id)
     );
     const availableAgenciesIDs = availableAgencies.map((agency) => +agency.id);
     const availableAgenciesIDsSet = new Set(availableAgenciesIDs);

@@ -645,6 +645,7 @@ export const SaveConfirmationContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  text-align: center;
   gap: 32px;
 `;
 
@@ -672,7 +673,6 @@ export const GraphicContainer = styled.div<{ type?: SaveConfirmationType }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  text-align: center;
   background: ${({ type }) =>
     type === SaveConfirmationTypes.SUCCESS
       ? palette.solid.green

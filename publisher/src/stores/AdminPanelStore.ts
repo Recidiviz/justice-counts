@@ -17,12 +17,13 @@
 
 import { AgencySystems, AgencyTeamMember } from "@justice-counts/common/types";
 import { removeSnakeCase } from "@justice-counts/common/utils";
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable, runInAction, toJS } from "mobx";
 
 import {
   Agency,
   AgencyProvisioningUpdates,
   AgencyResponse,
+  AgencyWithTeamByID,
   FipsCountyCodeKey,
   FipsCountyCodes,
   SearchableEntity,
@@ -63,7 +64,7 @@ class AdminPanelStore {
 
   usersByID: Record<string, UserWithAgenciesByID[]>;
 
-  agenciesByID: Record<string, Agency[]>;
+  agenciesByID: Record<string, AgencyWithTeamByID[]>;
 
   systems: AgencySystems[];
 
@@ -86,7 +87,7 @@ class AdminPanelStore {
     return AdminPanelStore.objectToSortedFlatMappedValues(this.usersByID);
   }
 
-  get agencies(): Agency[] {
+  get agencies(): AgencyWithTeamByID[] {
     return AdminPanelStore.objectToSortedFlatMappedValues(this.agenciesByID);
   }
 
@@ -157,7 +158,14 @@ class AdminPanelStore {
 
       /** Hydrate store with a list of systems and a list of sorted agencies from response  */
       runInAction(() => {
-        this.agenciesByID = groupBy(data.agencies, (agency) => agency.id);
+        console.log(toJS(data.agencies));
+        this.agenciesByID = groupBy(
+          data.agencies.map((agency) => ({
+            ...agency,
+            team: groupBy(agency.team, (member) => member.user_account_id),
+          })),
+          (agency) => agency.id
+        );
         this.systems = data.systems;
       });
     } catch (error) {
@@ -272,7 +280,11 @@ class AdminPanelStore {
 
   updateAgencies(agencyResponse: Agency) {
     const agency = agencyResponse;
-    this.agenciesByID[agency.id] = [agency];
+    const agencyWithGroupedTeams = {
+      ...agency,
+      agencies: groupBy(agency.team, (member) => member.user_account_id),
+    };
+    this.agenciesByID[agency.id] = [agencyWithGroupedTeams];
   }
 
   async saveAgencyProvisioningUpdates() {
@@ -313,10 +325,9 @@ class AdminPanelStore {
    * @param order - The sorting order - either "ascending" or "descending". Defaults to ascending order.
    * @returns A sorted array of agency objects.
    */
-  static sortListByName<T extends Agency | User | UserWithAgenciesByID>(
-    list: T[],
-    order: "ascending" | "descending" = "ascending"
-  ): T[] {
+  static sortListByName<
+    T extends Agency | User | UserWithAgenciesByID | AgencyWithTeamByID
+  >(list: T[], order: "ascending" | "descending" = "ascending"): T[] {
     return list.sort((a, b) => {
       if (order === "descending") {
         return b.name.localeCompare(a.name);
@@ -357,7 +368,7 @@ class AdminPanelStore {
    * @returns A sorted array of the object's values
    */
   static objectToSortedFlatMappedValues<
-    T extends Agency | UserWithAgenciesByID
+    T extends Agency | AgencyWithTeamByID | UserWithAgenciesByID
   >(obj: Record<string, T[]>) {
     return AdminPanelStore.sortListByName(
       Object.values(obj).flatMap((item) => item)

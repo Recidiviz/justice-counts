@@ -27,6 +27,7 @@ import {
   Agency,
   AgencyKey,
   AgencyProvisioning,
+  AgencyWithTeamByID,
   StateCodeKey,
   StateCodes,
 } from ".";
@@ -53,7 +54,9 @@ export const AgencyProvisioningOverview = observer(() => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchInput, setSearchInput] = useState<string>("");
-  const [filteredAgencies, setFilteredAgencies] = useState<Agency[]>([]);
+  const [filteredAgencies, setFilteredAgencies] = useState<
+    AgencyWithTeamByID[]
+  >([]);
   const [selectedAgencyID, setSelectedAgencyID] = useState<string | number>();
 
   const searchByKeys = ["name", "id", "state_code"] as AgencyKey[];
@@ -166,14 +169,14 @@ export const AgencyProvisioningOverview = observer(() => {
                   <Styled.ID>ID {agency.id}</Styled.ID>
                 </Styled.TopCardRowWrapper>
                 <Styled.AgenciesWrapper>
-                  {agency.team.map((team) => (
+                  {Array.from(Object.values(agency.team)).map(([team]) => (
                     <Styled.Chip key={team.auth0_user_id}>
                       {team.name}
                     </Styled.Chip>
                   ))}
                 </Styled.AgenciesWrapper>
                 <Styled.NumberOfAgencies>
-                  {agency.team.length} users
+                  {Object.values(agency.team).length} users
                 </Styled.NumberOfAgencies>
               </Styled.Card>
             ))}

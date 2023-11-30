@@ -59,6 +59,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const {
       agencies,
       agenciesByID,
+      users,
       systems,
       agencyProvisioningUpdates,
       searchableCounties,
@@ -130,6 +131,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       ? agenciesByID[selectedIDToEdit][0]
       : undefined;
     const agencyIDs = agencies.map((agency) => +agency.id);
+    const availableAgencies = agencies.filter(
+      (agency) => agency.id !== selectedAgency?.id
+    );
 
     /** Whether or not we are performing an add/delete action on an agencies' list */
     const isAddUserAction =
@@ -487,7 +491,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         {showSelectionBox ===
                           VisibleSelectionBoxes.CHILD_AGENCIES && (
                           <InteractiveSearchList
-                            list={agencies}
+                            list={selectedAgency ? availableAgencies : agencies}
                             boxActionType={InteractiveSearchListActions.ADD}
                             selections={selectedChildAgencyIDs}
                             buttons={getInteractiveSearchListSelectDeselectCloseButtons(
@@ -518,14 +522,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                             setShowSelectionBox(
                               VisibleSelectionBoxes.CHILD_AGENCIES
                             );
-                            setTimeout(
-                              () =>
-                                scrollableContainerRef.current?.scrollTo(
-                                  0,
-                                  300
-                                ),
-                              0
-                            );
+                            scrollToBottom();
                           }}
                           fitContentHeight
                           hoverable
@@ -557,7 +554,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         {showSelectionBox ===
                           VisibleSelectionBoxes.SUPERAGENCY && (
                           <InteractiveSearchList
-                            list={agencies}
+                            list={selectedAgency ? availableAgencies : agencies}
                             boxActionType={InteractiveSearchListActions.ADD}
                             selections={
                               agencyProvisioningUpdates.super_agency_id
@@ -626,7 +623,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       {addOrDeleteUserAction ===
                         InteractiveSearchListActions.ADD && (
                         <InteractiveSearchList
-                          list={agencies}
+                          list={users}
                           boxActionType={InteractiveSearchListActions.ADD}
                           selections={selectedChildAgencyIDs}
                           buttons={getInteractiveSearchListSelectDeselectCloseButtons(

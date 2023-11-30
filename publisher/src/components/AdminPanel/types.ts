@@ -47,13 +47,13 @@ export type ProvisioningProps = {
 /** Agency Types */
 
 export type Agency = {
-  id: number;
+  id: string | number;
   name: string;
   systems: AgencySystems[];
   state: StateCodeValue;
   state_code: keyof typeof StateCodes | null;
   fips_county_code: keyof typeof FipsCountyCodes | null;
-  team: AgencyTeamMember[];
+  team: AgencyTeamMemberWithID[];
   super_agency_id: number | null;
   is_superagency: boolean | null;
   child_agency_ids: number[];
@@ -64,6 +64,14 @@ export type Agency = {
     value: string | null;
     source_id: number;
   }[];
+};
+
+export type AgencyTeamMemberWithID = AgencyTeamMember & {
+  user_account_id: number;
+};
+
+export type AgencyWithTeamByID = Omit<Agency, "team"> & {
+  team: Record<string, AgencyTeamMemberWithID[]>;
 };
 
 export type AgencyResponse = {
@@ -156,6 +164,7 @@ export type SearchableSetIDs = Set<number | string | AgencySystems>;
 
 export type SearchableEntity =
   | Agency
+  | AgencyWithTeamByID
   | User
   | UserWithAgenciesByID
   | AgencyTeamMember
