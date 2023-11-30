@@ -102,20 +102,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       Boolean(agencyProvisioningUpdates.super_agency_id) || false
     );
 
-    /** Selected agency to edit */
-    const selectedAgency = selectedIDToEdit
-      ? agenciesByID[selectedIDToEdit][0]
-      : undefined;
-
-    /** Modal Buttons (Save/Cancel) */
-    const modalButtons = [
-      { label: "Cancel", onClick: closeModal },
-      {
-        label: "Save",
-        onClick: () => saveAgencyProvisioningUpdates(),
-      },
-    ];
-
     /** Setting Tabs (Agency Information/Team Members) */
     const settingOptions = [
       {
@@ -135,6 +121,59 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           currentSettingType === AgencyProvisioningSettings.TEAM_MEMBERS_ROLES,
       },
     ];
+
+    /** Selected agency to edit */
+    const selectedAgency = selectedIDToEdit
+      ? agenciesByID[selectedIDToEdit][0]
+      : undefined;
+    const agencyIDs = agencies.map((agency) => +agency.id);
+
+    /** Modal Buttons (Save/Cancel) */
+    const modalButtons = [
+      { label: "Cancel", onClick: closeModal },
+      {
+        label: "Save",
+        onClick: () => saveAgencyProvisioningUpdates(),
+      },
+    ];
+
+    /** Interactive search list buttons (Select All/Deselect All/Close) */
+    const interactiveSearchListCloseButton = [
+      {
+        label: "Close",
+        onClick: () => setShowSelectionBox(undefined),
+      },
+    ];
+
+    const getInteractiveSearchListSelectDeselectCloseButtons = <T,>(
+      setState: React.Dispatch<React.SetStateAction<Set<T>>>,
+      selectAllSet: Set<T>
+    ) => {
+      return [
+        {
+          label: "Select All",
+          onClick: () => setState(selectAllSet),
+        },
+        {
+          label: "Deselect All",
+          onClick: () => setState(new Set()),
+        },
+        {
+          label: "Close",
+          onClick: () => setShowSelectionBox(undefined),
+        },
+      ];
+    };
+
+    const scrollToBottom = () =>
+      setTimeout(
+        () =>
+          scrollableContainerRef.current?.scrollTo(
+            0,
+            scrollableContainerRef.current.scrollHeight
+          ),
+        0
+      );
 
     const isSaveDisabled = false;
 
@@ -189,12 +228,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           ? new Set([agencyProvisioningUpdates.state_code])
                           : new Set()
                       }
-                      buttons={[
-                        {
-                          label: "Close",
-                          onClick: () => setShowSelectionBox(undefined),
-                        },
-                      ]}
+                      buttons={interactiveSearchListCloseButton}
                       updateSelections={({ id }) => {
                         updateStateCode(
                           agencyProvisioningUpdates.state_code ===
@@ -243,12 +277,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                             ])
                           : new Set()
                       }
-                      buttons={[
-                        {
-                          label: "Close",
-                          onClick: () => setShowSelectionBox(undefined),
-                        },
-                      ]}
+                      buttons={interactiveSearchListCloseButton}
                       updateSelections={({ id }) => {
                         updateCountyCode(
                           agencyProvisioningUpdates.fips_county_code === id
@@ -294,22 +323,11 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       list={searchableSystems}
                       boxActionType={InteractiveSearchListActions.ADD}
                       selections={selectedSystems}
-                      buttons={[
-                        {
-                          label: "Select All",
-                          onClick: () => setSelectedSystems(new Set(systems)),
-                        },
-                        {
-                          label: "Deselect All",
-                          onClick: () => setSelectedSystems(new Set()),
-                        },
-                        {
-                          label: "Close",
-                          onClick: () => setShowSelectionBox(undefined),
-                        },
-                      ]}
+                      buttons={getInteractiveSearchListSelectDeselectCloseButtons(
+                        setSelectedSystems,
+                        new Set(systems)
+                      )}
                       updateSelections={({ id }) => {
-                        // Don't forget to consolidate and update the system selections when a user saves
                         setSelectedSystems((prev) =>
                           AdminPanelStore.selectOrDeselectSetItems(
                             prev,
@@ -408,25 +426,11 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         list={agencies}
                         boxActionType={InteractiveSearchListActions.ADD}
                         selections={selectedChildAgencyIDs}
-                        buttons={[
-                          {
-                            label: "Select All",
-                            onClick: () =>
-                              setSelectedChildAgencyIDs(
-                                new Set(agencies.map((agency) => +agency.id))
-                              ),
-                          },
-                          {
-                            label: "Deselect All",
-                            onClick: () => setSelectedChildAgencyIDs(new Set()),
-                          },
-                          {
-                            label: "Close",
-                            onClick: () => setShowSelectionBox(undefined),
-                          },
-                        ]}
+                        buttons={getInteractiveSearchListSelectDeselectCloseButtons(
+                          setSelectedChildAgencyIDs,
+                          new Set(agencyIDs)
+                        )}
                         updateSelections={({ id }) => {
-                          // Don't forget to consolidate and update the system selections when a user saves
                           setSelectedChildAgencyIDs((prev) =>
                             AdminPanelStore.selectOrDeselectSetItems(prev, +id)
                           );
@@ -489,12 +493,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                               ])
                             : new Set()
                         }
-                        buttons={[
-                          {
-                            label: "Close",
-                            onClick: () => setShowSelectionBox(undefined),
-                          },
-                        ]}
+                        buttons={interactiveSearchListCloseButton}
                         updateSelections={({ id }) => {
                           updateSuperagencyID(
                             agencyProvisioningUpdates.super_agency_id === +id
@@ -515,14 +514,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                     <Styled.ChipContainer
                       onClick={() => {
                         setShowSelectionBox(VisibleSelectionBoxes.SUPERAGENCY);
-                        setTimeout(
-                          () =>
-                            scrollableContainerRef.current?.scrollTo(
-                              0,
-                              scrollableContainerRef.current.scrollHeight
-                            ),
-                          0
-                        );
+                        scrollToBottom();
                       }}
                       fitContentHeight
                       hoverable
