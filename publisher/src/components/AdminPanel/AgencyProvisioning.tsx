@@ -70,6 +70,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       updateSuperagencyID,
       updateChildAgencyIDs,
       updateTeamMembers,
+      saveAgencyProvisioningUpdates,
     } = adminPanelStore;
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
@@ -111,7 +112,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       { label: "Cancel", onClick: closeModal },
       {
         label: "Save",
-        onClick: () => null,
+        onClick: () => saveAgencyProvisioningUpdates(),
       },
     ];
 

@@ -264,6 +264,31 @@ class AdminPanelStore {
     this.agencyProvisioningUpdates = initialEmptyAgencyProvisioningUpdates;
   }
 
+  updateAgencies(agencyResponse: AgencyResponse) {
+    const agency = agencyResponse.agencies[0];
+    this.agenciesByID[agency.id] = [agency];
+  }
+
+  async saveAgencyProvisioningUpdates() {
+    try {
+      const response = (await this.api.request({
+        path: `/admin/agency`,
+        method: "PUT",
+        body: this.agencyProvisioningUpdates,
+      })) as Response;
+      const agencyResponse = (await response.json()) as AgencyResponse;
+
+      if (response.status !== 200) {
+        throw new Error("There was an issue saving user provisioning updates.");
+      }
+
+      runInAction(() => this.updateAgencies(agencyResponse));
+      return response.status;
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
   /** Helpers  */
 
   static get searchableStates(): SearchableListItem[] {
