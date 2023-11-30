@@ -264,8 +264,8 @@ class AdminPanelStore {
     this.agencyProvisioningUpdates = initialEmptyAgencyProvisioningUpdates;
   }
 
-  updateAgencies(agencyResponse: AgencyResponse) {
-    const agency = agencyResponse.agencies[0];
+  updateAgencies(agencyResponse: Agency) {
+    const agency = agencyResponse;
     this.agenciesByID[agency.id] = [agency];
   }
 
@@ -276,7 +276,7 @@ class AdminPanelStore {
         method: "PUT",
         body: this.agencyProvisioningUpdates,
       })) as Response;
-      const agencyResponse = (await response.json()) as AgencyResponse;
+      const agencyResponse = (await response.json()) as Agency;
 
       if (response.status !== 200) {
         throw new Error("There was an issue saving user provisioning updates.");
