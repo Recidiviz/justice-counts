@@ -68,6 +68,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       updateIsDashboardEnabled,
       updateIsSuperagency,
       updateSuperagencyID,
+      updateSystems,
+      updateChildAgencyIDs,
       saveAgencyProvisioningUpdates,
     } = adminPanelStore;
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
@@ -131,30 +133,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       { label: "Cancel", onClick: closeModal },
       {
         label: "Save",
-        onClick: async () => {
-          setIsSaveInProgress(true);
-          const responseStatus = await saveAgencyProvisioningUpdates();
-
-          if (responseStatus === 200) {
-            setShowSaveConfirmation({
-              show: true,
-              type: SaveConfirmationTypes.SUCCESS,
-            });
-          } else {
-            setShowSaveConfirmation({
-              show: true,
-              type: SaveConfirmationTypes.ERROR,
-            });
-          }
-          setIsSaveInProgress(false);
-
-          /** After showing the confirmation screen, either return to modal (on error) or close modal (on success) */
-          setTimeout(() => {
-            setShowSaveConfirmation((prev) => ({ ...prev, show: false }));
-            if (responseStatus === 200) closeModal();
-          }, 2000);
-          setIsSaveInProgress(false);
-        },
+        onClick: () => saveUpdates(),
       },
     ];
 
@@ -196,12 +175,59 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         0
       );
 
+    const saveUpdates = async () => {
+      setIsSaveInProgress(true);
+
+      /** Update final list of systems and child agencies */
+      updateSystems(Array.from(selectedSystems));
+      updateChildAgencyIDs(Array.from(selectedChildAgencyIDs));
+
+      const responseStatus = await saveAgencyProvisioningUpdates();
+
+      if (responseStatus === 200) {
+        setShowSaveConfirmation({
+          show: true,
+          type: SaveConfirmationTypes.SUCCESS,
+        });
+      } else {
+        setShowSaveConfirmation({
+          show: true,
+          type: SaveConfirmationTypes.ERROR,
+        });
+      }
+      setIsSaveInProgress(false);
+
+      /** After showing the confirmation screen, either return to modal (on error) or close modal (on success) */
+      setTimeout(() => {
+        setShowSaveConfirmation((prev) => ({ ...prev, show: false }));
+        if (responseStatus === 200) closeModal();
+      }, 2000);
+      setIsSaveInProgress(false);
+    };
+
+    const getSaveConfirmationMessage = () => {
+      if (showSaveConfirmation.type === SaveConfirmationTypes.SUCCESS) {
+        return selectedAgency
+          ? "Agency changes saved successfully"
+          : "Agency has been created successfully";
+      }
+      if (showSaveConfirmation.type === SaveConfirmationTypes.ERROR) {
+        return selectedAgency
+          ? "Sorry, there was an issue saving your changes. Please try again."
+          : "Sorry, there was an issue creating an agency. Please try again.";
+      }
+      return "";
+    };
+
     const isSaveDisabled = false;
 
     return (
       <Styled.ModalContainer>
         {showSaveConfirmation.show ? (
-          <SaveConfirmation type={showSaveConfirmation.type} message="" />
+          <SaveConfirmation
+            type={showSaveConfirmation.type}
+            message={getSaveConfirmationMessage()}
+          />
         ) : (
           <>
             <Styled.ModalTitle>
