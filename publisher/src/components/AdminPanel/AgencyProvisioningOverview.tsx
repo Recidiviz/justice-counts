@@ -38,6 +38,7 @@ export const AgencyProvisioningOverview = observer(() => {
     loading,
     agencies,
     agenciesByID,
+    updateAgencyID,
     updateAgencyName,
     updateStateCode,
     updateCountyCode,
@@ -72,6 +73,7 @@ export const AgencyProvisioningOverview = observer(() => {
   const editAgency = (agencyID: string | number) => {
     const selectedAgency = agenciesByID[agencyID][0];
     setSelectedAgencyID(agencyID);
+    updateAgencyID(+agencyID);
     updateAgencyName(selectedAgency.name);
     updateStateCode(selectedAgency.state_code);
     updateCountyCode(selectedAgency.fips_county_code);

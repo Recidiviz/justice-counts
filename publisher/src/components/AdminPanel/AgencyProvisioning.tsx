@@ -608,6 +608,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                 )}
 
                 {/* Team Members & Roles */}
+                <Styled.InputLabelWrapper>
+                  Team Members & Roles
+                </Styled.InputLabelWrapper>
               </Styled.Form>
             </Styled.ScrollableContainer>
 

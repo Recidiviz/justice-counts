@@ -44,6 +44,7 @@ const initialEmptyUserProvisioningUpdates = {
 };
 
 const initialEmptyAgencyProvisioningUpdates = {
+  agency_id: undefined,
   name: "",
   state_code: null,
   fips_county_code: null,
@@ -220,6 +221,10 @@ class AdminPanelStore {
   }
 
   /** Agency Provisioning */
+
+  updateAgencyID(id: number) {
+    this.agencyProvisioningUpdates.agency_id = id;
+  }
 
   updateAgencyName(name: string) {
     this.agencyProvisioningUpdates.name = name;
