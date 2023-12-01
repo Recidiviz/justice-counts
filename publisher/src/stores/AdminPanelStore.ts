@@ -272,7 +272,8 @@ class AdminPanelStore {
   }
 
   updateTeamMembers(team: AgencyTeamMemberWithID[]) {
-    this.agencyProvisioningUpdates.team = team;
+    // this.agencyProvisioningUpdates.team = team;
+    this.agencyProvisioningUpdates.team = [];
   }
 
   resetAgencyProvisioningUpdates() {

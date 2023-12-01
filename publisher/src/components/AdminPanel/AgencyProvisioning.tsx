@@ -18,7 +18,7 @@
 import { Button } from "@justice-counts/common/components/Button";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
-import { AgencySystems } from "@justice-counts/common/types";
+import { AgencySystems, AgencyTeamMember } from "@justice-counts/common/types";
 import { removeSnakeCase } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useRef, useState } from "react";
@@ -29,6 +29,7 @@ import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
 import {
   AgencyProvisioningSetting,
   AgencyProvisioningSettings,
+  AgencyTeamMemberWithID,
   FipsCountyCodeKey,
   FipsCountyCodes,
   InteractiveSearchList,
@@ -90,10 +91,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       type?: SaveConfirmationType;
     }>({ show: false });
 
-    const [selectedSystems, setSelectedSystems] = useState<Set<AgencySystems>>(
-      agencyProvisioningUpdates.systems
-        ? new Set(agencyProvisioningUpdates.systems)
-        : new Set()
+    const [isChildAgencySelected, setIsChildAgencySelected] = useState<boolean>(
+      Boolean(agencyProvisioningUpdates.super_agency_id) || false
     );
     const [selectedChildAgencyIDs, setSelectedChildAgencyIDs] = useState<
       Set<number>
@@ -102,9 +101,16 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         ? new Set(agencyProvisioningUpdates.child_agency_ids)
         : new Set()
     );
-    const [isChildAgencySelected, setIsChildAgencySelected] = useState<boolean>(
-      Boolean(agencyProvisioningUpdates.super_agency_id) || false
+    const [selectedSystems, setSelectedSystems] = useState<Set<AgencySystems>>(
+      agencyProvisioningUpdates.systems
+        ? new Set(agencyProvisioningUpdates.systems)
+        : new Set()
     );
+    const [selectedTeamMembersToAdd, setSelectedTeamMembersToAdd] = useState<
+      Set<AgencyTeamMemberWithID>
+    >(new Set());
+    const [selectedTeamMembersToDelete, setSelectedTeamMembersToDelete] =
+      useState<Set<AgencyTeamMemberWithID>>(new Set());
 
     /** Setting Tabs (Agency Information/Team Members) */
     const settingOptions = [
@@ -625,9 +631,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         <InteractiveSearchList
                           list={users}
                           boxActionType={InteractiveSearchListActions.ADD}
-                          selections={selectedChildAgencyIDs}
+                          selections={selectedTeamMembersToAdd}
                           buttons={getInteractiveSearchListSelectDeselectCloseButtons(
-                            setSelectedChildAgencyIDs,
+                            setSelectedTeamMembersToAdd,
                             new Set(agencyIDs)
                           )}
                           updateSelections={({ id }) => {
@@ -640,8 +646,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           }}
                           searchByKeys={["name"]}
                           metadata={{
-                            listBoxLabel: "Select child agencies",
-                            searchBoxLabel: "Search agencies",
+                            listBoxLabel: "Select team members to add",
+                            searchBoxLabel: "Search team members",
                           }}
                           isActiveBox
                         />
@@ -653,9 +659,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         <InteractiveSearchList
                           list={agencies}
                           boxActionType={InteractiveSearchListActions.DELETE}
-                          selections={selectedChildAgencyIDs}
+                          selections={selectedTeamMembersToDelete}
                           buttons={getInteractiveSearchListSelectDeselectCloseButtons(
-                            setSelectedChildAgencyIDs,
+                            setSelectedTeamMembersToDelete,
                             new Set(agencyIDs)
                           )}
                           updateSelections={({ id }) => {
@@ -668,8 +674,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           }}
                           searchByKeys={["name"]}
                           metadata={{
-                            listBoxLabel: "Select child agencies",
-                            searchBoxLabel: "Search agencies",
+                            listBoxLabel: "Select team members to delete",
+                            searchBoxLabel: "Search team members",
                           }}
                           isActiveBox
                         />
