@@ -272,7 +272,6 @@ class AdminPanelStore {
   }
 
   updateTeamMembers(team: AgencyTeamUpdates[]) {
-    console.log("team", team);
     this.agencyProvisioningUpdates.team = team;
   }
 

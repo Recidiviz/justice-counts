@@ -100,7 +100,7 @@ export type AgencyProvisioningUpdates = {
   team: AgencyTeamUpdates[];
 };
 
-export type AgencyTeamUpdates = { id: number; role: UserRole };
+export type AgencyTeamUpdates = { user_account_id: number; role: UserRole };
 
 /** User Types */
 

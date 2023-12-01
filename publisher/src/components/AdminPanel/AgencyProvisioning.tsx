@@ -215,12 +215,17 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       /** Update final list of systems and child agencies */
       updateSystems(Array.from(selectedSystems));
       updateChildAgencyIDs(Array.from(selectedChildAgencyIDs));
-      updateTeamMembers(
-        Object.entries(teamMemberRoleUpdates).map(([id, role]) => ({
-          id: +id,
+      updateTeamMembers([
+        ...agencyProvisioningUpdates.team.filter(
+          (member) =>
+            !selectedTeamMembersToDelete.has(member.user_account_id) &&
+            !teamMemberRoleUpdates[member.user_account_id]
+        ),
+        ...Object.entries(teamMemberRoleUpdates).map(([id, role]) => ({
+          user_account_id: +id,
           role,
-        }))
-      );
+        })),
+      ]);
 
       const responseStatus = await saveAgencyProvisioningUpdates();
 
@@ -666,6 +671,10 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                                 +id
                               )
                             );
+                            setTeamMemberRoleUpdates((prev) => ({
+                              ...prev,
+                              [id]: "READ_ONLY",
+                            }));
                           }}
                           searchByKeys={["name"]}
                           metadata={{
@@ -794,7 +803,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                                       onClick: () => {
                                         setTeamMemberRoleUpdates((prev) => ({
                                           ...prev,
-                                          [member.id]: role || "READ_ONLY",
+                                          [member.id]: role,
                                         }));
                                       },
                                     }))}
