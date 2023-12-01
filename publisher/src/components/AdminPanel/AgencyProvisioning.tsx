@@ -107,10 +107,10 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         : new Set()
     );
     const [selectedTeamMembersToAdd, setSelectedTeamMembersToAdd] = useState<
-      Set<AgencyTeamMemberWithID>
+      Set<number>
     >(new Set());
     const [selectedTeamMembersToDelete, setSelectedTeamMembersToDelete] =
-      useState<Set<AgencyTeamMemberWithID>>(new Set());
+      useState<Set<number>>(new Set());
 
     /** Setting Tabs (Agency Information/Team Members) */
     const settingOptions = [
@@ -140,6 +140,15 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const availableAgencies = agencies.filter(
       (agency) => agency.id !== selectedAgency?.id
     );
+    const availableTeamMembers = users.filter(
+      (user) => !selectedAgency?.team[user.id]
+    );
+    const currentTeamMembers = selectedAgency
+      ? Object.values(selectedAgency.team).flatMap(([member]) => ({
+          ...member,
+          id: member.user_account_id,
+        }))
+      : [];
 
     /** Whether or not we are performing an add/delete action on an agencies' list */
     const isAddUserAction =
@@ -629,15 +638,17 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       {addOrDeleteUserAction ===
                         InteractiveSearchListActions.ADD && (
                         <InteractiveSearchList
-                          list={users}
+                          list={availableTeamMembers}
                           boxActionType={InteractiveSearchListActions.ADD}
                           selections={selectedTeamMembersToAdd}
                           buttons={getInteractiveSearchListSelectDeselectCloseButtons(
                             setSelectedTeamMembersToAdd,
-                            new Set(agencyIDs)
+                            new Set(
+                              availableTeamMembers.map((member) => +member.id)
+                            )
                           )}
                           updateSelections={({ id }) => {
-                            setSelectedChildAgencyIDs((prev) =>
+                            setSelectedTeamMembersToAdd((prev) =>
                               AdminPanelStore.selectOrDeselectSetItems(
                                 prev,
                                 +id
@@ -657,15 +668,17 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       {addOrDeleteUserAction ===
                         InteractiveSearchListActions.DELETE && (
                         <InteractiveSearchList
-                          list={agencies}
+                          list={currentTeamMembers}
                           boxActionType={InteractiveSearchListActions.DELETE}
                           selections={selectedTeamMembersToDelete}
                           buttons={getInteractiveSearchListSelectDeselectCloseButtons(
                             setSelectedTeamMembersToDelete,
-                            new Set(agencyIDs)
+                            new Set(
+                              currentTeamMembers.map((member) => +member.id)
+                            )
                           )}
                           updateSelections={({ id }) => {
-                            setSelectedChildAgencyIDs((prev) =>
+                            setSelectedTeamMembersToDelete((prev) =>
                               AdminPanelStore.selectOrDeselectSetItems(
                                 prev,
                                 +id
