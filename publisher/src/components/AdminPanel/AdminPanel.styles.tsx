@@ -125,13 +125,17 @@ export const Form = styled.form`
   margin: 18px 0 16px 0;
 `;
 
-export const FormActions = styled.div<{ noTopSpacing?: boolean }>`
+export const FormActions = styled.div<{
+  noTopSpacing?: boolean;
+  noMargin?: boolean;
+}>`
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 16px;
-  margin: ${({ noTopSpacing }) => (noTopSpacing ? `0 0 40px 0` : `24px 0`)};
+  margin: ${({ noTopSpacing, noMargin }) =>
+    noTopSpacing ? `0 0 40px 0` : (noMargin && `0`) || `24px 0`};
 `;
 
 export const ActionButton = styled.div<{

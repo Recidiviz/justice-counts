@@ -550,7 +550,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                             Array.from(selectedChildAgencyIDs).map(
                               (agencyID) => (
                                 <Styled.Chip key={agencyID}>
-                                  {agenciesByID[agencyID][0].name}
+                                  {agenciesByID[agencyID]?.[0].name}
                                 </Styled.Chip>
                               )
                             )
@@ -657,6 +657,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           }}
                           searchByKeys={["name"]}
                           metadata={{
+                            listBoxEmptyLabel:
+                              "All users have been added to this agency",
                             listBoxLabel: "Select team members to add",
                             searchBoxLabel: "Search team members",
                           }}
@@ -687,6 +689,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           }}
                           searchByKeys={["name"]}
                           metadata={{
+                            listBoxEmptyLabel:
+                              "No team members have been added and saved to this agency",
                             listBoxLabel: "Select team members to delete",
                             searchBoxLabel: "Search team members",
                           }}
@@ -697,7 +701,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
                     {/* Add/Remove/Create New User */}
                     <Styled.InputLabelWrapper>
-                      <Styled.FormActions>
+                      <Styled.FormActions noMargin>
                         {/* Add Agencies Button */}
                         <Styled.ActionButton
                           buttonAction={InteractiveSearchListActions.ADD}
