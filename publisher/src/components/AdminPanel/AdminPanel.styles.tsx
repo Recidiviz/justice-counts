@@ -584,6 +584,7 @@ export const AgenciesWrapper = styled.div`
 `;
 
 export const TopCardRowWrapper = styled.div`
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;

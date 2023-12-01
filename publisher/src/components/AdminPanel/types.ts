@@ -97,8 +97,10 @@ export type AgencyProvisioningUpdates = {
   super_agency_id: number | null; // If this is set, then the agency is a child agency belonging to the superagency w/ this ID
   is_superagency: boolean | null;
   child_agency_ids: number[];
-  team: AgencyTeamMember[];
+  team: AgencyTeamUpdates[];
 };
+
+export type AgencyTeamUpdates = { id: number; role: UserRole };
 
 /** User Types */
 
@@ -129,6 +131,10 @@ export type UserProvisioningUpdates = {
   name: string;
   email: string;
   agency_ids: number[];
+};
+
+export type UserRoleUpdates = {
+  [id: number]: UserRole;
 };
 
 /** Search Feature Types */

@@ -24,6 +24,7 @@ import {
   AgencyProvisioningUpdates,
   AgencyResponse,
   AgencyTeamMemberWithID,
+  AgencyTeamUpdates,
   AgencyWithTeamByID,
   FipsCountyCodeKey,
   FipsCountyCodes,
@@ -270,9 +271,9 @@ class AdminPanelStore {
     this.agencyProvisioningUpdates.child_agency_ids = childAgencyIDs;
   }
 
-  updateTeamMembers(team: AgencyTeamMemberWithID[]) {
-    // this.agencyProvisioningUpdates.team = team;
-    this.agencyProvisioningUpdates.team = [];
+  updateTeamMembers(team: AgencyTeamUpdates[]) {
+    console.log("team", team);
+    this.agencyProvisioningUpdates.team = team;
   }
 
   resetAgencyProvisioningUpdates() {

@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { Button } from "@justice-counts/common/components/Button";
+import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
 import { AgencySystems } from "@justice-counts/common/types";
@@ -40,6 +41,8 @@ import {
   SaveConfirmationTypes,
   StateCodeKey,
   StateCodes,
+  userRoles,
+  UserRoleUpdates,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
 
@@ -72,6 +75,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       updateSuperagencyID,
       updateSystems,
       updateChildAgencyIDs,
+      updateTeamMembers,
       saveAgencyProvisioningUpdates,
     } = adminPanelStore;
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
@@ -110,6 +114,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     >(new Set());
     const [selectedTeamMembersToDelete, setSelectedTeamMembersToDelete] =
       useState<Set<number>>(new Set());
+    const [teamMemberRoleUpdates, setTeamMemberRoleUpdates] = useState<
+      UserRoleUpdates | Record<number, never>
+    >({});
 
     /** Setting Tabs (Agency Information/Team Members) */
     const settingOptions = [
@@ -208,6 +215,12 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       /** Update final list of systems and child agencies */
       updateSystems(Array.from(selectedSystems));
       updateChildAgencyIDs(Array.from(selectedChildAgencyIDs));
+      updateTeamMembers(
+        Object.entries(teamMemberRoleUpdates).map(([id, role]) => ({
+          id: +id,
+          role,
+        }))
+      );
 
       const responseStatus = await saveAgencyProvisioningUpdates();
 
@@ -739,6 +752,119 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         </Styled.ActionButton>
                       </Styled.FormActions>
                     </Styled.InputLabelWrapper>
+
+                    {/* Newly Added Team Members */}
+                    <Styled.TeamMembersContainer>
+                      {availableTeamMembers
+                        .filter((member) =>
+                          selectedTeamMembersToAdd.has(+member.id)
+                        )
+                        .map((member) => (
+                          <Styled.TeamMemberCard key={member.id} added>
+                            <Styled.ChipInnerRow>
+                              <div>
+                                <Styled.ChipName>{member.name}</Styled.ChipName>
+                                <Styled.ChipEmail>
+                                  {member.email}
+                                </Styled.ChipEmail>
+                                {/* <Styled.ChipInvitationStatus>
+                              {t.invitation_status}
+                            </Styled.ChipInvitationStatus> */}
+                              </div>
+                              <Styled.ChipRole>
+                                <Styled.InputLabelWrapper noBottomSpacing>
+                                  <Dropdown
+                                    label={
+                                      <input
+                                        name={`${member.auth0_user_id}-role`}
+                                        type="button"
+                                        value={
+                                          removeSnakeCase(
+                                            teamMemberRoleUpdates[+member.id] ||
+                                              ""
+                                          ) || "READ ONLY"
+                                        }
+                                      />
+                                    }
+                                    options={userRoles.map((role) => ({
+                                      key: role,
+                                      label: removeSnakeCase(
+                                        role.toLocaleLowerCase()
+                                      ),
+                                      onClick: () => {
+                                        setTeamMemberRoleUpdates((prev) => ({
+                                          ...prev,
+                                          [member.id]: role || "READ_ONLY",
+                                        }));
+                                      },
+                                    }))}
+                                    fullWidth
+                                    lightBoxShadow
+                                  />
+                                  <label htmlFor="new-team-member">Role</label>
+                                </Styled.InputLabelWrapper>
+                              </Styled.ChipRole>
+                            </Styled.ChipInnerRow>
+                          </Styled.TeamMemberCard>
+                        ))}
+
+                      {/* Existing Team Members */}
+                      {currentTeamMembers.map((member) => (
+                        <Styled.TeamMemberCard
+                          key={member.id}
+                          deleted={selectedTeamMembersToDelete.has(member.id)}
+                        >
+                          <Styled.ChipInnerRow>
+                            <Styled.TopCardRowWrapper>
+                              <Styled.NameSubheaderWrapper>
+                                <Styled.ChipName>{member.name}</Styled.ChipName>
+
+                                <Styled.ChipEmail>
+                                  {member.email}
+                                </Styled.ChipEmail>
+                              </Styled.NameSubheaderWrapper>
+                              <Styled.ID>ID {member.user_account_id}</Styled.ID>
+                            </Styled.TopCardRowWrapper>
+                            <Styled.ChipInvitationStatus>
+                              {member.invitation_status}
+                            </Styled.ChipInvitationStatus>
+                            <Styled.ChipRole>
+                              <Styled.InputLabelWrapper noBottomSpacing>
+                                <Dropdown
+                                  label={
+                                    <input
+                                      name={`${member.auth0_user_id}-role`}
+                                      type="button"
+                                      value={
+                                        removeSnakeCase(
+                                          teamMemberRoleUpdates[member.id] || ""
+                                        ) || removeSnakeCase(member.role)
+                                      }
+                                      disabled={selectedTeamMembersToDelete.has(
+                                        member.id
+                                      )}
+                                    />
+                                  }
+                                  options={userRoles.map((role) => ({
+                                    key: role,
+                                    label: removeSnakeCase(role),
+                                    onClick: () => {
+                                      setTeamMemberRoleUpdates((prev) => ({
+                                        ...prev,
+                                        [member.id]: role,
+                                      }));
+                                    },
+                                  }))}
+                                  fullWidth
+                                  lightBoxShadow
+                                />
+                                <label htmlFor="new-team-member">Role</label>
+                              </Styled.InputLabelWrapper>
+                            </Styled.ChipRole>
+                          </Styled.ChipInnerRow>
+                        </Styled.TeamMemberCard>
+                      ))}
+                    </Styled.TeamMembersContainer>
                   </>
                 )}
               </Styled.Form>
