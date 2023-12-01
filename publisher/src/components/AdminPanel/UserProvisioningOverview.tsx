@@ -59,6 +59,10 @@ export const UserProvisioningOverview = observer(() => {
       AdminPanelStore.searchList(users, e.target.value, searchByKeys)
     );
   };
+  /**
+   * Note: when a user is selected, we are in the context of editing a user.
+   * When there is no user selected, we are in the context of creating a new user.
+   */
   const editUser = (userID: string | number) => {
     const selectedUser = usersByID[userID][0];
     setSelectedUserID(userID);

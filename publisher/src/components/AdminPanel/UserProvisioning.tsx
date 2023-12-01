@@ -217,6 +217,10 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
     };
 
     const getSaveConfirmationMessage = () => {
+      /**
+       * When a user is selected, we are in the context of editing a user.
+       * When there is no user selected, we are in the context of creating a new user.
+       */
       if (showSaveConfirmation.type === SaveConfirmationTypes.SUCCESS) {
         return selectedUser
           ? "User changes saved successfully"
