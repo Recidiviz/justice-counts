@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { AgencyResponse, UserResponse } from "../components/AdminPanel";
+import { groupBy } from "../utils";
 import AdminPanelStore from "./AdminPanelStore";
 import API from "./API";
 
@@ -27,7 +28,7 @@ const MockAuthStore = jest.fn(() => {
 const api = new API(MockAuthStore());
 const adminPanelStore = new AdminPanelStore(api);
 
-const mockUsers = {
+export const mockUsersResponse = {
   users: [
     {
       id: 3,
@@ -140,7 +141,7 @@ const mockUsers = {
   ],
 } as UserResponse;
 
-const mockAgencies = {
+export const mockAgenciesResponse = {
   agencies: [
     {
       created_at: null,
@@ -233,13 +234,13 @@ const mockAgencies = {
 test("fetchUsers gets a list of users and stores them in the AdminPanelStore", async () => {
   global.fetch = jest.fn().mockResolvedValue({
     status: 200,
-    json: async () => mockUsers,
+    json: async () => mockUsersResponse,
   });
 
   await adminPanelStore.fetchUsers();
 
   expect(fetch).toBeCalledTimes(1);
-  expect(adminPanelStore.users.length).toBe(mockUsers.users.length);
+  expect(adminPanelStore.users.length).toBe(mockUsersResponse.users.length);
 
   /** The users should be sorted in alphabetical  order */
   expect(adminPanelStore.users[0].name).toBe("Anne Teak");
@@ -250,14 +251,18 @@ test("fetchUsers gets a list of users and stores them in the AdminPanelStore", a
 test("fetchAgencies gets a list of agencies and stores them in the AdminPanelStore", async () => {
   global.fetch = jest.fn().mockResolvedValue({
     status: 200,
-    json: async () => mockAgencies,
+    json: async () => mockAgenciesResponse,
   });
 
   await adminPanelStore.fetchAgencies();
 
   expect(fetch).toBeCalledTimes(1);
-  expect(adminPanelStore.agencies.length).toBe(mockAgencies.agencies.length);
-  expect(adminPanelStore.systems.length).toBe(mockAgencies.systems.length);
+  expect(adminPanelStore.agencies.length).toBe(
+    mockAgenciesResponse.agencies.length
+  );
+  expect(adminPanelStore.systems.length).toBe(
+    mockAgenciesResponse.systems.length
+  );
 
   /** The agencies should be sorted in alphabetical  order */
   expect(adminPanelStore.agencies[0].name).toBe("Child Agency");
@@ -266,7 +271,9 @@ test("fetchAgencies gets a list of agencies and stores them in the AdminPanelSto
 });
 
 test("sortListByName sorts a list of agencies by name in default ascending order", () => {
-  const sortedAgencies = AdminPanelStore.sortListByName(mockAgencies.agencies);
+  const sortedAgencies = AdminPanelStore.sortListByName(
+    mockAgenciesResponse.agencies
+  );
   expect(sortedAgencies[0].name).toBe("Child Agency");
   expect(sortedAgencies[1].name).toBe("Super Agency");
   expect(sortedAgencies[2].name).toBe("Z Agency");
@@ -274,7 +281,7 @@ test("sortListByName sorts a list of agencies by name in default ascending order
 
 test("sortListByName sorts a list of agencies by name in explicit ascending order", () => {
   const sortedAgencies = AdminPanelStore.sortListByName(
-    mockAgencies.agencies,
+    mockAgenciesResponse.agencies,
     "ascending"
   );
   expect(sortedAgencies[0].name).toBe("Child Agency");
@@ -284,7 +291,7 @@ test("sortListByName sorts a list of agencies by name in explicit ascending orde
 
 test("sortListByName sorts a list of agencies by name in explicity descending order", () => {
   const sortedAgencies = AdminPanelStore.sortListByName(
-    mockAgencies.agencies,
+    mockAgenciesResponse.agencies,
     "descending"
   );
   expect(sortedAgencies[0].name).toBe("Z Agency");
@@ -293,7 +300,7 @@ test("sortListByName sorts a list of agencies by name in explicity descending or
 });
 
 test("sortListByName sorts a list of users by name in default ascending order", () => {
-  const sortedUsers = AdminPanelStore.sortListByName(mockUsers.users);
+  const sortedUsers = AdminPanelStore.sortListByName(mockUsersResponse.users);
   expect(sortedUsers[0].name).toBe("Anne Teak");
   expect(sortedUsers[1].name).toBe("Liz Erd");
   expect(sortedUsers[2].name).toBe("Percy Vere");
@@ -301,7 +308,7 @@ test("sortListByName sorts a list of users by name in default ascending order", 
 
 test("sortListByName sorts a list of users by name in explicit ascending order", () => {
   const sortedUsers = AdminPanelStore.sortListByName(
-    mockUsers.users,
+    mockUsersResponse.users,
     "ascending"
   );
   expect(sortedUsers[0].name).toBe("Anne Teak");
@@ -311,7 +318,7 @@ test("sortListByName sorts a list of users by name in explicit ascending order",
 
 test("sortListByName sorts a list of users by name in explicit descending order", () => {
   const sortedUsers = AdminPanelStore.sortListByName(
-    mockUsers.users,
+    mockUsersResponse.users,
     "descending"
   );
   expect(sortedUsers[0].name).toBe("Percy Vere");
@@ -384,4 +391,27 @@ test("searchList returns a filtered list of agencies based on a string value mat
   );
   expect(filteredListOfAgencies.length).toBe(1);
   expect(filteredListOfAgencies[0].name).toBe("Super Agency");
+});
+
+test("objectToSortedFlatMappedValues returns a sorted array of a `groupBy` object's values", () => {
+  const groupedAgencies = groupBy(
+    mockAgenciesResponse.agencies,
+    (agency) => agency.id
+  );
+  const groupedAgenciesSortedValues =
+    AdminPanelStore.objectToSortedFlatMappedValues(groupedAgencies);
+
+  expect(groupedAgenciesSortedValues[0].name).toBe("Child Agency");
+  expect(groupedAgenciesSortedValues[1].name).toBe("Super Agency");
+  expect(groupedAgenciesSortedValues[2].name).toBe("Z Agency");
+
+  expect(groupedAgenciesSortedValues[0].name).toBe(
+    adminPanelStore.agencies[0].name
+  );
+  expect(groupedAgenciesSortedValues[1].name).toBe(
+    adminPanelStore.agencies[1].name
+  );
+  expect(groupedAgenciesSortedValues[2].name).toBe(
+    adminPanelStore.agencies[2].name
+  );
 });

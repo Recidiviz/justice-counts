@@ -20,12 +20,14 @@ import {
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import styled, { css } from "styled-components/macro";
+import styled, { css, keyframes } from "styled-components/macro";
 
 import {
   InteractiveSearchListAction,
   InteractiveSearchListActions,
-} from "./types";
+  SaveConfirmationType,
+  SaveConfirmationTypes,
+} from ".";
 
 /** General */
 
@@ -82,13 +84,13 @@ export const ModalContainer = styled.div`
   width: 50vw;
   background: ${palette.solid.white};
   border-radius: 4px;
-  padding: 32px;
+  padding: 32px 32px 100px 32px;
   position: relative;
 `;
 
 export const ModalTitle = styled.div<{ noBottomMargin?: boolean }>`
   ${typography.sizeCSS.normal}
-  margin-bottom: ${({ noBottomMargin }) => (noBottomMargin ? 0 : 28)}px;
+  margin-bottom: ${({ noBottomMargin }) => (noBottomMargin ? 0 : 12)}px;
 `;
 
 export const ModalDescription = styled.div`
@@ -110,6 +112,7 @@ export const ModalActionButtons = styled.div`
 `;
 
 export const SaveCancelButtonsWrapper = styled.div`
+  position: relative;
   display: flex;
   gap: 8px;
 `;
@@ -119,7 +122,7 @@ export const SaveCancelButtonsWrapper = styled.div`
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
-  margin: 32px 0 16px 0;
+  margin: 18px 0 16px 0;
 `;
 
 export const FormActions = styled.div<{ noTopSpacing?: boolean }>`
@@ -127,17 +130,21 @@ export const FormActions = styled.div<{ noTopSpacing?: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 32px;
-  margin: ${({ noTopSpacing }) => (noTopSpacing ? `0 0 40px 0` : `40px 0`)};
+  gap: 16px;
+  margin: ${({ noTopSpacing }) => (noTopSpacing ? `0 0 40px 0` : `24px 0`)};
 `;
 
-export const ActionButton = styled.div<{ selectedColor?: string }>`
-  ${typography.sizeCSS.normal}
-  width: 200px;
+export const ActionButton = styled.div<{
+  selectedColor?: string;
+  buttonAction?: InteractiveSearchListAction;
+}>`
+  ${typography.sizeCSS.small}
+
+  min-width: 145px;
   text-align: center;
-  padding: 16px;
+  padding: 12px;
   border: 1px solid ${palette.highlight.grey7};
-  border-radius: 4px;
+  border-radius: 50px;
   ${({ selectedColor }) => {
     if (selectedColor === "red") {
       return `background: ${palette.gradient.lightred};`;
@@ -149,7 +156,15 @@ export const ActionButton = styled.div<{ selectedColor?: string }>`
 
   &:hover {
     cursor: pointer;
-    background: ${palette.highlight.grey1};
+    ${({ buttonAction }) => {
+      if (buttonAction === InteractiveSearchListActions.DELETE) {
+        return `background: ${palette.gradient.lightred};`;
+      }
+      if (buttonAction === InteractiveSearchListActions.ADD) {
+        return `background: ${palette.gradient.lightgreen};`;
+      }
+      return `background: ${palette.highlight.grey1};`;
+    }}
   }
 `;
 
@@ -158,9 +173,12 @@ export const InputLabelWrapper = styled.div<{
   topSpacing?: boolean;
   inputWidth?: number;
   noBottomSpacing?: boolean;
+  hasError?: boolean;
 }>`
   ${typography.sizeCSS.normal}
   width: 100%;
+  ${({ inputWidth }) =>
+    inputWidth && `min-width: unset; width: ${inputWidth}px;`}
   display: flex;
   flex-direction: ${({ flexRow }) => (flexRow ? "row" : "column")};
   align-items: flex-start;
@@ -172,13 +190,11 @@ export const InputLabelWrapper = styled.div<{
   input[type="button"] {
     width: 100%;
     min-width: 210px;
-    ${({ inputWidth }) =>
-      inputWidth && `min-width: unset; width: ${inputWidth}px;`}
     background: none;
     text-align: left;
     border: 1px solid ${palette.highlight.grey5};
     border-radius: 2px;
-    padding: 5px;
+    padding: 3px;
   }
 
   input[type="button"]:hover {
@@ -201,6 +217,10 @@ export const InputLabelWrapper = styled.div<{
     }
   }
 
+  input[type="email"] {
+    ${({ hasError }) => hasError && `border: 1px solid ${palette.solid.red};`};
+  }
+
   label {
     ${typography.sizeCSS.small}
     width: 100%;
@@ -210,10 +230,12 @@ export const InputLabelWrapper = styled.div<{
     align-items: center;
     color: ${palette.highlight.grey8};
     margin-top: 5px;
+    padding: 0 3px;
   }
 `;
 
 export const LabelButton = styled.div`
+  ${typography.sizeCSS.small}
   color: ${palette.solid.blue};
 
   &:hover {
@@ -270,8 +292,8 @@ export const ChipContainer = styled.div<{
   ${typography.sizeCSS.small}
   width: 100%;
   min-width: 300px;
-  /* min-height: 28px; */
-  ${({ fitContentHeight }) => fitContentHeight && `min-height: 28px;`}
+  max-height: 200px;
+  ${({ fitContentHeight }) => fitContentHeight && `min-height: 41px; `}
   height: ${({ halfMaxHeight, fitContentHeight }) => {
     if (fitContentHeight) return `fit-content`;
     if (halfMaxHeight) return `100px`;
@@ -296,10 +318,10 @@ export const ChipContainer = styled.div<{
 
   ${({ boxActionType }) => {
     if (boxActionType === InteractiveSearchListActions.DELETE) {
-      return `box-shadow: 1px 1px 2px ${palette.highlight.red};`;
+      return `border: 1.5px solid ${palette.solid.red}; box-shadow: inset 0px 0px 6px ${palette.highlight.darkred};`;
     }
     if (boxActionType === InteractiveSearchListActions.ADD) {
-      return `box-shadow: 2px 2px 5px ${palette.highlight.green};`;
+      return `border: 1.5px solid ${palette.solid.green}; box-shadow: inset 0px 0px 6px ${palette.highlight.darkgreen};`;
     }
   }}
 
@@ -344,12 +366,13 @@ export const Chip = styled.span<{
     cursor: pointer;
   `}
 
-  &:not(:last-child) {
-    margin: 0 5px 5px 0;
-  }
+  margin: 2.5px;
 `;
 
-export const ChipContainerLabel = styled.div`
+export const ChipContainerLabel = styled.div<{
+  boxActionType?: InteractiveSearchListAction;
+  isActiveBox?: boolean;
+}>`
   ${typography.sizeCSS.small}
   width: 100%;
   display: flex;
@@ -357,6 +380,18 @@ export const ChipContainerLabel = styled.div`
   justify-content: space-between;
   color: ${palette.highlight.grey8};
   margin-top: 3px;
+  padding: 0 2.5px;
+
+  ${({ boxActionType, isActiveBox }) => {
+    if (isActiveBox) {
+      if (boxActionType === InteractiveSearchListActions.DELETE) {
+        return `color: ${palette.solid.red};`;
+      }
+      if (boxActionType === InteractiveSearchListActions.ADD) {
+        return `color: ${palette.solid.green};`;
+      }
+    }
+  }}
 `;
 
 export const ChipName = styled.div``;
@@ -391,6 +426,13 @@ export const ChipInnerRow = styled.div`
   justify-content: space-between;
 `;
 
+export const NoResultsFound = styled.div`
+  ${typography.sizeCSS.small}
+  font-weight: 400;
+  margin-top: 7px;
+  margin-left: 5px;
+`;
+
 export const ChipContainerLabelAction = styled(ChipContainerLabel)`
   width: 100%;
   display: flex;
@@ -400,6 +442,20 @@ export const ChipContainerLabelAction = styled(ChipContainerLabel)`
   span {
     white-space: nowrap;
   }
+`;
+
+export const LabelWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const ErrorLabel = styled.div`
+  ${typography.sizeCSS.small}
+  color: ${palette.solid.red};
+  white-space: nowrap;
+  margin-top: 5px;
 `;
 
 export const LabelButtonsWrapper = styled.div`
@@ -531,13 +587,13 @@ export const UserNameEmailIDWrapper = styled.div`
 
 export const UserInformationDisplay = styled.div``;
 
-export const UserNameDisplay = styled.div`
-  ${typography.sizeCSS.largeTitle}
-  margin-bottom: 6px;
-  margin-left: -2px;
+export const NameDisplay = styled.div`
+  ${typography.sizeCSS.title}
+  font-weight: 500;
+  line-height: 40px;
 `;
 
-export const AgencyNameDisplay = styled(UserNameDisplay)`
+export const AgencyNameDisplay = styled(NameDisplay)`
   ${typography.sizeCSS.title}
 `;
 
@@ -572,5 +628,110 @@ export const ReviewChangesButton = styled.div`
   &:hover {
     cursor: pointer;
     filter: contrast(0.8);
+  }
+`;
+
+/** Save Confirmation */
+
+export const SaveConfirmationContainer = styled.div`
+  ${typography.sizeCSS.medium};
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+`;
+
+const grow = keyframes`
+  0% {
+    scale: 0;
+  }
+  100% {
+    scale: 1;
+  }
+`;
+
+const reveal = keyframes`
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+`;
+
+export const GraphicContainer = styled.div<{ type?: SaveConfirmationType }>`
+  height: 80px;
+  width: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: ${({ type }) =>
+    type === SaveConfirmationTypes.SUCCESS
+      ? palette.solid.green
+      : palette.solid.red};
+  border-radius: 50%;
+  animation: ${grow} 0.4s ease forwards;
+  overflow-x: hidden;
+`;
+
+export const GraphicCover = styled.div<{ type?: SaveConfirmationType }>`
+  background: ${({ type }) =>
+    type === SaveConfirmationTypes.SUCCESS
+      ? palette.solid.green
+      : "transparent"};
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  animation: ${({ type }) =>
+    type === SaveConfirmationTypes.SUCCESS
+      ? css`
+          ${reveal} 0.4s ease 0.2s forwards
+        `
+      : `none`};
+`;
+
+export const Graphic = styled.div`
+  overflow-x: hidden;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  position: relative;
+`;
+
+export const GraphicLines = styled.div<{ type?: SaveConfirmationType }>`
+  height: 8px;
+  width: 40px;
+  position: absolute;
+  left: ${({ type }) =>
+    type === SaveConfirmationTypes.SUCCESS ? `25px` : `20px`};
+  bottom: ${({ type }) =>
+    type === SaveConfirmationTypes.SUCCESS ? `unset` : `35px`};
+  background: ${palette.solid.white};
+  rotate: -45deg;
+  border-radius: 5px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: ${({ type }) =>
+      type === SaveConfirmationTypes.SUCCESS ? `-6px` : `0px`};
+    bottom: ${({ type }) =>
+      type === SaveConfirmationTypes.SUCCESS ? `8px` : `0px`};
+    background: ${palette.solid.white};
+    width: ${({ type }) =>
+      type === SaveConfirmationTypes.SUCCESS ? `20px` : `40px`};
+    height: 8px;
+    rotate: 90deg;
+    border-radius: 5px;
   }
 `;

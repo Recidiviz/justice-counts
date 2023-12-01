@@ -15,17 +15,29 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { EnvironmentType } from "../components/AdminPanel";
+import React from "react";
 
-export const gateToAllowedEnvironment = (
-  currentEnvironment: EnvironmentType | undefined,
-  allowedEnvironments: EnvironmentType[]
-): boolean => {
-  if (
-    !currentEnvironment ||
-    !allowedEnvironments.includes(currentEnvironment)
-  ) {
-    return false;
-  }
-  return true;
+import { SaveConfirmationType } from ".";
+import * as Styled from "./AdminPanel.styles";
+
+type SaveConfirmationProps = {
+  message: string;
+  type?: SaveConfirmationType;
+};
+
+export const SaveConfirmation: React.FC<SaveConfirmationProps> = ({
+  message,
+  type,
+}) => {
+  return (
+    <Styled.SaveConfirmationContainer>
+      <Styled.GraphicContainer type={type}>
+        <Styled.GraphicCover type={type} />
+        <Styled.Graphic>
+          <Styled.GraphicLines type={type} />
+        </Styled.Graphic>
+      </Styled.GraphicContainer>
+      {message}
+    </Styled.SaveConfirmationContainer>
+  );
 };

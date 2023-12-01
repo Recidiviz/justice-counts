@@ -32,6 +32,13 @@ export type EnvironmentType = `${Environment}`;
 
 export type SettingType = `${Setting}`;
 
+export enum SaveConfirmationTypes {
+  SUCCESS = "SUCCESS",
+  ERROR = "ERROR",
+}
+
+export type SaveConfirmationType = `${SaveConfirmationTypes}`;
+
 /** Agency Types */
 
 export type Agency = {
@@ -76,6 +83,10 @@ export type User = {
   agencies: Agency[];
 };
 
+export type UserWithAgenciesByID = Omit<User, "agencies"> & {
+  agencies: Record<string, Agency[]>;
+};
+
 export type UserResponse = { users: User[] };
 
 export const userRoles = [
@@ -87,6 +98,12 @@ export const userRoles = [
 
 export type UserRole = (typeof userRoles)[number];
 
+export type UserProvisioningUpdates = {
+  name: string;
+  email: string;
+  agency_ids: number[];
+};
+
 /** Search Feature Types */
 
 export const InteractiveSearchListActions = {
@@ -97,13 +114,16 @@ export const InteractiveSearchListActions = {
 export type InteractiveSearchListAction =
   (typeof InteractiveSearchListActions)[keyof typeof InteractiveSearchListActions];
 
-export type InteractiveSearchListUpdateSelections = (selection: {
-  id: string | number;
-  name: string;
-  action?: InteractiveSearchListAction;
-  email?: string;
-  role?: UserRole;
-}) => void;
+export type InteractiveSearchListUpdateSelections = (
+  selection: {
+    id: string | number;
+    name: string;
+    action?: InteractiveSearchListAction;
+    email?: string;
+    role?: UserRole;
+  },
+  action: InteractiveSearchListAction
+) => void;
 
 export type SearchableListItem = {
   id: string | number;
@@ -113,11 +133,17 @@ export type SearchableListItem = {
   role?: UserRole;
 };
 
+export type SearchableSetIDs = Set<number>;
+
 export type SearchableEntity =
   | Agency
   | User
   | AgencyTeamMember
   | SearchableListItem;
+
+export type UserKey = keyof User;
+
+export type AgencyKey = keyof Agency;
 
 export type SearchableListItemKey = keyof SearchableListItem;
 
@@ -130,12 +156,13 @@ export type InteractiveSearchListProps = {
   list: SearchableListItem[];
   searchByKeys: SearchableListItemKey[];
   buttons: InteractiveSearchListButtons;
-  selections: SearchableListItem[];
+  selections: SearchableSetIDs;
   updateSelections: InteractiveSearchListUpdateSelections;
   boxActionType?: InteractiveSearchListAction;
   metadata?: {
     listBoxLabel: string;
     searchBoxLabel: string;
+    listBoxEmptyLabel?: string;
     title?: string;
   };
   isActiveBox?: boolean;

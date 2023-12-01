@@ -23,8 +23,11 @@ import {
   AgencyResponse,
   SearchableEntity,
   User,
+  UserProvisioningUpdates,
   UserResponse,
+  UserWithAgenciesByID,
 } from "../components/AdminPanel";
+import { groupBy } from "../utils";
 import API from "./API";
 
 class AdminPanelStore {
@@ -32,19 +35,34 @@ class AdminPanelStore {
 
   loading: boolean;
 
-  users: User[];
+  usersByID: Record<string, UserWithAgenciesByID[]>;
 
-  agencies: Agency[];
+  agenciesByID: Record<string, Agency[]>;
 
   systems: AgencySystems[];
+
+  userProvisioningUpdates: UserProvisioningUpdates;
 
   constructor(api: API) {
     makeAutoObservable(this, {}, { autoBind: true });
     this.api = api;
     this.loading = true;
-    this.users = [];
-    this.agencies = [];
+    this.usersByID = {};
+    this.agenciesByID = {};
     this.systems = [];
+    this.userProvisioningUpdates = {
+      name: "",
+      email: "",
+      agency_ids: [],
+    };
+  }
+
+  get users(): UserWithAgenciesByID[] {
+    return AdminPanelStore.objectToSortedFlatMappedValues(this.usersByID);
+  }
+
+  get agencies(): Agency[] {
+    return AdminPanelStore.objectToSortedFlatMappedValues(this.agenciesByID);
   }
 
   async fetchUsers() {
@@ -59,12 +77,15 @@ class AdminPanelStore {
         throw new Error("There was an issue fetching users.");
       }
 
-      /** Hydrate store with a list of sorted users (and a sorted list of their agencies) from response  */
+      /** Hydrate store with a list of users by user ID (and a list of their agencies grouped by agency ID) from response  */
       runInAction(() => {
-        this.users = AdminPanelStore.sortListByName(data.users).map((user) => ({
-          ...user,
-          agencies: AdminPanelStore.sortListByName(user.agencies),
-        }));
+        this.usersByID = groupBy(
+          data.users.map((user) => ({
+            ...user,
+            agencies: groupBy(user.agencies, (agency) => agency.id),
+          })),
+          (user) => user.id
+        );
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
@@ -85,7 +106,7 @@ class AdminPanelStore {
 
       /** Hydrate store with a list of systems and a list of sorted agencies from response  */
       runInAction(() => {
-        this.agencies = AdminPanelStore.sortListByName(data.agencies);
+        this.agenciesByID = groupBy(data.agencies, (agency) => agency.id);
         this.systems = data.systems;
       });
     } catch (error) {
@@ -101,6 +122,55 @@ class AdminPanelStore {
     });
   }
 
+  /** User Provisioning */
+
+  updateUsername(username: string) {
+    this.userProvisioningUpdates.name = username;
+  }
+
+  updateEmail(email: string) {
+    this.userProvisioningUpdates.email = email;
+  }
+
+  updateUserAgencies(agencies: number[]) {
+    this.userProvisioningUpdates.agency_ids = agencies;
+  }
+
+  resetUserProvisioningUpdates() {
+    this.userProvisioningUpdates.name = "";
+    this.userProvisioningUpdates.email = "";
+    this.userProvisioningUpdates.agency_ids = [];
+  }
+
+  updateUsers(userResponse: UserResponse) {
+    const user = userResponse.users[0];
+    const userWithGroupedAgencies = {
+      ...user,
+      agencies: groupBy(user.agencies, (agency) => agency.id),
+    };
+    this.usersByID[user.id] = [userWithGroupedAgencies];
+  }
+
+  async saveUserProvisioningUpdates() {
+    try {
+      const response = (await this.api.request({
+        path: `/admin/user`,
+        method: "PUT",
+        body: { users: [this.userProvisioningUpdates] },
+      })) as Response;
+      const userResponse = (await response.json()) as UserResponse;
+
+      if (response.status !== 200) {
+        throw new Error("There was an issue saving user provisioning updates.");
+      }
+
+      runInAction(() => this.updateUsers(userResponse));
+      return response.status;
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
   /** Helpers  */
 
   /**
@@ -109,7 +179,7 @@ class AdminPanelStore {
    * @param order - The sorting order - either "ascending" or "descending". Defaults to ascending order.
    * @returns A sorted array of agency objects.
    */
-  static sortListByName<T extends Agency | User>(
+  static sortListByName<T extends Agency | User | UserWithAgenciesByID>(
     list: T[],
     order: "ascending" | "descending" = "ascending"
   ): T[] {
@@ -138,6 +208,19 @@ class AdminPanelStore {
       searchByKeys.some(
         (key) => listItem[key] && regex.test(listItem[key] as string)
       )
+    );
+  }
+
+  /**
+   * Converts an object grouped by IDs (via the `groupBy` function) into a sorted, flat mapped array of the object's values.
+   * @param obj - The object created by the `groupBy` function to convert
+   * @returns A sorted array of the object's values
+   */
+  static objectToSortedFlatMappedValues<
+    T extends Agency | UserWithAgenciesByID
+  >(obj: Record<string, T[]>) {
+    return AdminPanelStore.sortListByName(
+      Object.values(obj).flatMap((item) => item)
     );
   }
 }

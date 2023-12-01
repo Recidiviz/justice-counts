@@ -15,8 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { groupBy } from "lodash";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import AdminPanelStore from "../../stores/AdminPanelStore";
 import * as Styled from "./AdminPanel.styles";
@@ -37,10 +36,8 @@ export const InteractiveSearchList = ({
   metadata,
   isActiveBox = true,
 }: InteractiveSearchListProps) => {
-  const [filteredList, setFilteredList] = useState<SearchableListItem[]>(list);
+  const [filteredList, setFilteredList] = useState<SearchableListItem[]>([]);
   const [searchInputValue, setSearchInputValue] = useState("");
-
-  const selectionsByName = groupBy(selections, (selection) => selection.name);
 
   const getChipColor = (actionType?: InteractiveSearchListAction) => {
     if (!actionType) return;
@@ -49,14 +46,29 @@ export const InteractiveSearchList = ({
   };
   const selectChip = (listItem: SearchableListItem) => {
     if (isActiveBox && boxActionType) {
-      updateSelections({
-        id: listItem.id,
-        name: listItem.name,
-        action: boxActionType,
-        email: listItem.email,
-        role: listItem.role,
-      });
+      updateSelections(
+        {
+          id: listItem.id,
+          name: listItem.name,
+          action: boxActionType,
+          email: listItem.email,
+          role: listItem.role,
+        },
+        boxActionType
+      );
     }
+  };
+  const isChipSelected = (listItem: SearchableListItem) => {
+    /**
+     * The chip is selected (or highlighted) if it is included in the `selections` set
+     * OR (for styling purposes) if that chip's action doesn't match the `boxActionType`
+     * (this is the case when trying to show a list of added agencies [`listItem.action === 'ADD']
+     * within a user's existing agencies [which has a `boxActionType === 'DELETE'`])
+     */
+    return (
+      selections.has(+listItem.id) ||
+      (listItem.action && boxActionType && listItem.action !== boxActionType)
+    );
   };
   const filterListBySearchValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInputValue(e.target.value);
@@ -69,6 +81,22 @@ export const InteractiveSearchList = ({
     setFilteredList(list);
   };
 
+  /** Update the filtered list if a new list is given from the parent component and apply the same search filter  */
+  useEffect(() => {
+    setFilteredList(
+      AdminPanelStore.searchList(list, searchInputValue, searchByKeys)
+    );
+    // Note: we only want this effect to run when there's a new `list`
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [list]);
+
+  /** Clear search input when box is toggled to/from active box  */
+  useEffect(() => {
+    resetFilteredList();
+    // Note: we only want this effect to run when `isActiveBox` changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isActiveBox]);
+
   return (
     <>
       <Styled.InputLabelWrapper>
@@ -80,27 +108,38 @@ export const InteractiveSearchList = ({
         {/* List of Searchable Items Container */}
         <Styled.ChipContainer
           boxActionType={isActiveBox ? boxActionType : undefined}
+          fitContentHeight
         >
-          {filteredList.length > 0 &&
-            filteredList.map((listItem) => (
-              <Styled.Chip
-                key={listItem.id}
-                onClick={() => selectChip(listItem)}
-                selected={Boolean(selectionsByName[listItem.name])}
-                hover={Boolean(boxActionType && isActiveBox)}
-                selectedColor={getChipColor(
-                  selectionsByName[listItem.name]?.[0].action
-                )}
-              >
-                {listItem.name}
-              </Styled.Chip>
-            ))}
+          {filteredList.length > 0 ? (
+            filteredList.map((listItem) => {
+              return (
+                <Styled.Chip
+                  key={listItem.id}
+                  onClick={() => selectChip(listItem)}
+                  selected={isChipSelected(listItem)}
+                  hover={Boolean(boxActionType && isActiveBox)}
+                  selectedColor={getChipColor(listItem.action || boxActionType)}
+                >
+                  {listItem.name}
+                </Styled.Chip>
+              );
+            })
+          ) : (
+            <Styled.NoResultsFound>
+              {searchInputValue
+                ? "No results found"
+                : metadata?.listBoxEmptyLabel}
+            </Styled.NoResultsFound>
+          )}
         </Styled.ChipContainer>
 
         {/* List Container Label & Action Buttons */}
-        <Styled.ChipContainerLabel>
+        <Styled.ChipContainerLabel
+          boxActionType={boxActionType}
+          isActiveBox={isActiveBox}
+        >
           {metadata?.listBoxLabel}
-          {buttons.length > 0 && (
+          {buttons.length > 0 && isActiveBox && (
             <Styled.LabelButtonsWrapper>
               {buttons.map((button) => (
                 <Styled.LabelButton key={button.label} onClick={button.onClick}>

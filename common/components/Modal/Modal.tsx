@@ -25,16 +25,17 @@ import { Button, ButtonColor } from "../Button";
 import * as Styled from "./Modal.styled";
 import { ModalBackground, ModalType } from "./types";
 
-type ModalProps = {
+type ModalProps = Partial<{
   title: string | React.ReactNode;
   description: string | React.ReactNode;
   buttons: { label: string; onClick: () => void }[];
-  modalType?: ModalType;
-  modalBackground?: ModalBackground;
-  centerText?: boolean;
-  centerButtons?: boolean;
-  mediumTitle?: boolean;
-};
+  modalType: ModalType;
+  modalBackground: ModalBackground;
+  centerText: boolean;
+  centerButtons: boolean;
+  mediumTitle: boolean;
+  children?: React.ReactNode;
+}>;
 
 export function Modal({
   title,
@@ -45,6 +46,7 @@ export function Modal({
   centerText,
   centerButtons,
   mediumTitle,
+  children,
 }: ModalProps) {
   const primaryButtonColor = (): ButtonColor => {
     if (modalType === "alert") return "red";
@@ -62,27 +64,31 @@ export function Modal({
 
   const Portal = (
     <Styled.OuterWrapper modalBackground={modalBackground}>
-      <Styled.InnerWrapper modalType={modalType} centerText={centerText}>
-        {modalType === "success" && <Styled.Icon src={successIcon} alt="" />}
-        {modalType === "warning" && <Styled.Icon src={warningIcon} alt="" />}
-        {modalType === "alert" && <Styled.Icon src={alertIcon} alt="" />}
-        <Styled.Title mediumTitle={mediumTitle}>{title}</Styled.Title>
-        <Styled.Description>{description}</Styled.Description>
-        <Styled.ButtonsContainer modalType={modalType}>
-          {buttons.map((button, index) => (
-            <Button
-              label={button.label}
-              onClick={button.onClick}
-              borderColor={
-                index === buttons.length - 1 ? undefined : "lightgrey"
-              }
-              buttonColor={
-                index === buttons.length - 1 ? primaryButtonColor() : undefined
-              }
-            />
-          ))}
-        </Styled.ButtonsContainer>
-      </Styled.InnerWrapper>
+      {children || (
+        <Styled.InnerWrapper modalType={modalType} centerText={centerText}>
+          {modalType === "success" && <Styled.Icon src={successIcon} alt="" />}
+          {modalType === "warning" && <Styled.Icon src={warningIcon} alt="" />}
+          {modalType === "alert" && <Styled.Icon src={alertIcon} alt="" />}
+          <Styled.Title mediumTitle={mediumTitle}>{title}</Styled.Title>
+          <Styled.Description>{description}</Styled.Description>
+          <Styled.ButtonsContainer modalType={modalType}>
+            {buttons?.map((button, index) => (
+              <Button
+                label={button.label}
+                onClick={button.onClick}
+                borderColor={
+                  index === buttons.length - 1 ? undefined : "lightgrey"
+                }
+                buttonColor={
+                  index === buttons.length - 1
+                    ? primaryButtonColor()
+                    : undefined
+                }
+              />
+            ))}
+          </Styled.ButtonsContainer>
+        </Styled.InnerWrapper>
+      )}
     </Styled.OuterWrapper>
   );
 

@@ -25,6 +25,7 @@ import {
   AgencyTeamMemberRole,
   FormError,
 } from "@justice-counts/common/types";
+import { validateEmail } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -78,12 +79,6 @@ export const AgencySettingsTeamManagement = observer(() => {
   const [inputsError, setInputsError] = useState<FormError | undefined>(
     undefined
   );
-
-  const validateEmail = (email: string) => {
-    // simple email validation
-    // from: https://stackoverflow.com/a/9204568
-    return email.toLowerCase().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
-  };
 
   const handleRemoveTeamMember = (email: string) => {
     removeAgencyTeamMember(email);

@@ -22,7 +22,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { Setting, SettingType } from ".";
+import { Setting, SettingType, UserProvisioningOverview } from ".";
 import * as Styled from "./AdminPanel.styles";
 
 export const AdminPanel = observer(() => {
@@ -69,7 +69,7 @@ export const AdminPanel = observer(() => {
 
         <Styled.ProvisioningViewContainer>
           {currentProvisioningView === Setting.USERS && (
-            <div>User Provisioning Component</div>
+            <UserProvisioningOverview />
           )}
           {currentProvisioningView === Setting.AGENCIES && (
             <div>Agency Provisioning Component</div>
