@@ -15,9 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { rootStore } from ".";
 import { AgencyResponse, UserResponse } from "../components/AdminPanel";
 import { groupBy } from "../utils";
+import { rootStore } from ".";
 import AdminPanelStore from "./AdminPanelStore";
 import API from "./API";
 

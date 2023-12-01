@@ -18,7 +18,7 @@
 import { Button } from "@justice-counts/common/components/Button";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
-import { AgencySystems, AgencyTeamMember } from "@justice-counts/common/types";
+import { AgencySystems } from "@justice-counts/common/types";
 import { removeSnakeCase } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useRef, useState } from "react";
@@ -29,7 +29,6 @@ import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
 import {
   AgencyProvisioningSetting,
   AgencyProvisioningSettings,
-  AgencyTeamMemberWithID,
   FipsCountyCodeKey,
   FipsCountyCodes,
   InteractiveSearchList,

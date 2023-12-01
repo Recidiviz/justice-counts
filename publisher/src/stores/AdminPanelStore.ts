@@ -15,9 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystems, AgencyTeamMember } from "@justice-counts/common/types";
+import { AgencySystems } from "@justice-counts/common/types";
 import { removeSnakeCase } from "@justice-counts/common/utils";
-import { makeAutoObservable, runInAction, toJS } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 
 import {
   Agency,
@@ -159,7 +159,6 @@ class AdminPanelStore {
 
       /** Hydrate store with a list of systems and a list of sorted agencies from response  */
       runInAction(() => {
-        console.log(toJS(data.agencies));
         this.agenciesByID = groupBy(
           data.agencies.map((agency) => ({
             ...agency,
