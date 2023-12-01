@@ -23,6 +23,7 @@ import {
   Agency,
   AgencyProvisioningUpdates,
   AgencyResponse,
+  AgencyTeamMemberWithID,
   AgencyWithTeamByID,
   FipsCountyCodeKey,
   FipsCountyCodes,
@@ -270,7 +271,7 @@ class AdminPanelStore {
     this.agencyProvisioningUpdates.child_agency_ids = childAgencyIDs;
   }
 
-  updateTeamMembers(team: AgencyTeamMember[]) {
+  updateTeamMembers(team: AgencyTeamMemberWithID[]) {
     this.agencyProvisioningUpdates.team = team;
   }
 
@@ -282,7 +283,7 @@ class AdminPanelStore {
     const agency = agencyResponse;
     const agencyWithGroupedTeams = {
       ...agency,
-      agencies: groupBy(agency.team, (member) => member.user_account_id),
+      team: groupBy(agency.team, (member) => member.user_account_id),
     };
     this.agenciesByID[agency.id] = [agencyWithGroupedTeams];
   }
@@ -326,7 +327,12 @@ class AdminPanelStore {
    * @returns A sorted array of agency objects.
    */
   static sortListByName<
-    T extends Agency | User | UserWithAgenciesByID | AgencyWithTeamByID
+    T extends
+      | Agency
+      | User
+      | UserWithAgenciesByID
+      | AgencyWithTeamByID
+      | AgencyTeamMemberWithID
   >(list: T[], order: "ascending" | "descending" = "ascending"): T[] {
     return list.sort((a, b) => {
       if (order === "descending") {
@@ -368,7 +374,11 @@ class AdminPanelStore {
    * @returns A sorted array of the object's values
    */
   static objectToSortedFlatMappedValues<
-    T extends Agency | AgencyWithTeamByID | UserWithAgenciesByID
+    T extends
+      | Agency
+      | AgencyWithTeamByID
+      | UserWithAgenciesByID
+      | AgencyTeamMemberWithID
   >(obj: Record<string, T[]>) {
     return AdminPanelStore.sortListByName(
       Object.values(obj).flatMap((item) => item)

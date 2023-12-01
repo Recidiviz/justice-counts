@@ -85,7 +85,9 @@ export const AgencyProvisioningOverview = observer(() => {
     updateIsSuperagency(selectedAgency.is_superagency);
     updateSuperagencyID(selectedAgency.super_agency_id);
     updateChildAgencyIDs(selectedAgency.child_agency_ids);
-    updateTeamMembers(selectedAgency.team);
+    updateTeamMembers(
+      AdminPanelStore.objectToSortedFlatMappedValues(selectedAgency.team)
+    );
     openModal();
   };
 
