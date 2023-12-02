@@ -162,9 +162,11 @@ export const InteractiveSearchList = ({
         />
         <label htmlFor="search-input">
           {metadata?.searchBoxLabel}
-          <Styled.LabelButton onClick={resetFilteredList}>
-            Clear
-          </Styled.LabelButton>
+          {searchInputValue && (
+            <Styled.LabelButton onClick={resetFilteredList}>
+              Clear
+            </Styled.LabelButton>
+          )}
         </label>
       </Styled.InputLabelWrapper>
     </>
