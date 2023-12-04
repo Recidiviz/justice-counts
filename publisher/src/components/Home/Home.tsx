@@ -33,7 +33,6 @@ export const Home = observer(() => {
   const navigate = useNavigate();
   const { name, isAgencySuperagency, userId } = userStore;
   userStore.updateUserAgencyPageVisit(userId, agencyId);
-
   const {
     loading,
     systemSelectionOptions,
