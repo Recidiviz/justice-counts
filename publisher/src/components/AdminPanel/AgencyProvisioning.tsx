@@ -264,7 +264,59 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       return "";
     };
 
-    const isSaveDisabled = false;
+    /** Check whether user has made certain updates */
+    const hasNameUpdate = selectedAgency
+      ? Boolean(agencyProvisioningUpdates.name) &&
+        agencyProvisioningUpdates.name !== selectedAgency.name
+      : Boolean(agencyProvisioningUpdates.name);
+    const hasStateUpdate = selectedAgency
+      ? Boolean(agencyProvisioningUpdates.state_code) &&
+        agencyProvisioningUpdates.state_code !== selectedAgency.state_code
+      : Boolean(agencyProvisioningUpdates.state_code);
+    const hasCountyUpdates =
+      Boolean(agencyProvisioningUpdates.fips_county_code) &&
+      agencyProvisioningUpdates.fips_county_code !==
+        selectedAgency?.fips_county_code;
+    const hasSystemUpdates =
+      selectedSystems.size !== agencyProvisioningUpdates.systems.length ||
+      (agencyProvisioningUpdates.systems.length > 0 &&
+        agencyProvisioningUpdates.systems.filter((system) =>
+          selectedSystems.has(system)
+        ).length === 0);
+    const hasDashboardEnabledStatusUpdate =
+      agencyProvisioningUpdates.is_dashboard_enabled !==
+      selectedAgency?.is_dashboard_enabled;
+    const hasIsSuperagencyUpdate =
+      Boolean(agencyProvisioningUpdates.is_superagency) !==
+      Boolean(selectedAgency?.is_superagency);
+    const hasChildAgencyUpdates =
+      selectedChildAgencyIDs.size !==
+        agencyProvisioningUpdates.child_agency_ids.length ||
+      (agencyProvisioningUpdates.child_agency_ids.length > 0 &&
+        agencyProvisioningUpdates.child_agency_ids.filter((id) =>
+          selectedChildAgencyIDs.has(id)
+        ).length === 0);
+    const hasSuperagencyUpdate =
+      agencyProvisioningUpdates.super_agency_id !==
+      selectedAgency?.super_agency_id;
+    const hasTeamMemberOrRoleUpdates =
+      Object.keys(teamMemberRoleUpdates).length > 0 ||
+      selectedTeamMembersToAdd.size > 0 ||
+      selectedTeamMembersToDelete.size > 0;
+
+    const isSaveDisabled =
+      isSaveInProgress ||
+      (selectedAgency
+        ? !hasNameUpdate &&
+          !hasStateUpdate &&
+          !hasCountyUpdates &&
+          !hasSystemUpdates &&
+          !hasDashboardEnabledStatusUpdate &&
+          !hasIsSuperagencyUpdate &&
+          !hasChildAgencyUpdates &&
+          !hasSuperagencyUpdate &&
+          !hasTeamMemberOrRoleUpdates
+        : !(hasNameUpdate && hasStateUpdate));
 
     return (
       <Styled.ModalContainer>
@@ -393,10 +445,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       <input
                         name="county"
                         type="button"
-                        disabled={
-                          !agencyProvisioningUpdates.state_code &&
-                          !selectedAgency?.state_code // Disable until a state is selected
-                        }
+                        disabled={!agencyProvisioningUpdates.state_code}
                         value={
                           (agencyProvisioningUpdates.fips_county_code &&
                             FipsCountyCodes[
@@ -491,6 +540,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                             !agencyProvisioningUpdates.is_superagency
                           );
                           updateSuperagencyID(null);
+                          setSelectedChildAgencyIDs(new Set());
                           setIsChildAgencySelected(false);
                           setShowSelectionBox(undefined);
                         }}
@@ -855,10 +905,17 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                                     key: role,
                                     label: removeSnakeCase(role),
                                     onClick: () => {
-                                      setTeamMemberRoleUpdates((prev) => ({
-                                        ...prev,
-                                        [member.id]: role,
-                                      }));
+                                      setTeamMemberRoleUpdates((prev) => {
+                                        if (role === member.role) {
+                                          const prevUpdates = { ...prev };
+                                          delete prevUpdates[member.id];
+                                          return prevUpdates;
+                                        }
+                                        return {
+                                          ...prev,
+                                          [member.id]: role,
+                                        };
+                                      });
                                     },
                                   }))}
                                   fullWidth
