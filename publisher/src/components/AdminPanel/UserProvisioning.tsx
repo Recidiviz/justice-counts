@@ -131,12 +131,12 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
 
       if (hasAddAction) {
         setAddedAgenciesIDs((prev) =>
-          AdminPanelStore.selectOrDeselectSetItems(prev, +selection.id)
+          AdminPanelStore.toggleAddRemoveSetItem(prev, +selection.id)
         );
       }
       if (hasDeleteAction) {
         setDeletedAgenciesIDs((prev) =>
-          AdminPanelStore.selectOrDeselectSetItems(prev, +selection.id)
+          AdminPanelStore.toggleAddRemoveSetItem(prev, +selection.id)
         );
       }
     };
@@ -181,17 +181,13 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
       const responseStatus =
         await adminPanelStore.saveUserProvisioningUpdates();
 
-      if (responseStatus === 200) {
-        setShowSaveConfirmation({
-          show: true,
-          type: SaveConfirmationTypes.SUCCESS,
-        });
-      } else {
-        setShowSaveConfirmation({
-          show: true,
-          type: SaveConfirmationTypes.ERROR,
-        });
-      }
+      setShowSaveConfirmation({
+        show: true,
+        type:
+          responseStatus === 200
+            ? SaveConfirmationTypes.SUCCESS
+            : SaveConfirmationTypes.ERROR,
+      });
 
       /** After showing the confirmation screen, either return to modal (on error) or close modal (on success) */
       setTimeout(() => {

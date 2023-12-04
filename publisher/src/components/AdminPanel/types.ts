@@ -51,8 +51,8 @@ export type Agency = {
   name: string;
   systems: AgencySystems[];
   state: StateCodeValue;
-  state_code: keyof typeof StateCodes | null;
-  fips_county_code: keyof typeof FipsCountyCodes | null;
+  state_code: StateCodeKey | null;
+  fips_county_code: FipsCountyCodeKey | null;
   team: AgencyTeamMemberWithID[];
   super_agency_id: number | null;
   is_superagency: boolean | null;
@@ -205,7 +205,7 @@ export type InteractiveSearchListProps = {
 
 /** State and County Code Types */
 
-export const StateCodes = {
+export const StateCodesToStateNames = {
   us_ak: "Alaska",
   us_al: "Alabama",
   us_ar: "Arkansas",
@@ -260,9 +260,10 @@ export const StateCodes = {
   us_wy: "Wyoming",
 } as const;
 
-export type StateCodeKey = keyof typeof StateCodes;
+export type StateCodeKey = keyof typeof StateCodesToStateNames;
 
-export type StateCodeValue = (typeof StateCodes)[keyof typeof StateCodes];
+export type StateCodeValue =
+  (typeof StateCodesToStateNames)[keyof typeof StateCodesToStateNames];
 
 /**
  * Values were taken from `fips.csv` in the recidiviz/common/data_sets/fips.csv directory

@@ -40,7 +40,7 @@ import {
   SaveConfirmationType,
   SaveConfirmationTypes,
   StateCodeKey,
-  StateCodes,
+  StateCodesToStateNames,
   userRoles,
   UserRoleUpdates,
 } from ".";
@@ -80,8 +80,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     } = adminPanelStore;
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
-    const [showSelectionBox, setShowSelectionBox] =
-      useState<VisibleSelectionBox>();
     const [isSaveInProgress, setIsSaveInProgress] = useState<boolean>(false);
     const [showSaveConfirmation, setShowSaveConfirmation] = useState<{
       show: boolean;
@@ -94,6 +92,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       );
     const [addOrDeleteUserAction, setAddOrDeleteUserAction] =
       useState<InteractiveSearchListAction>();
+    const [showSelectionBox, setShowSelectionBox] =
+      useState<VisibleSelectionBox>();
 
     const [isChildAgencySelected, setIsChildAgencySelected] = useState<boolean>(
       Boolean(agencyProvisioningUpdates.super_agency_id) || false
@@ -230,17 +230,13 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
       const responseStatus = await saveAgencyProvisioningUpdates();
 
-      if (responseStatus === 200) {
-        setShowSaveConfirmation({
-          show: true,
-          type: SaveConfirmationTypes.SUCCESS,
-        });
-      } else {
-        setShowSaveConfirmation({
-          show: true,
-          type: SaveConfirmationTypes.ERROR,
-        });
-      }
+      setShowSaveConfirmation({
+        show: true,
+        type:
+          responseStatus === 200
+            ? SaveConfirmationTypes.SUCCESS
+            : SaveConfirmationTypes.ERROR,
+      });
 
       /** After showing the confirmation screen, either return to modal (on error) or close modal (on success) */
       setTimeout(() => {
@@ -401,7 +397,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         type="button"
                         value={
                           (agencyProvisioningUpdates.state_code &&
-                            StateCodes[agencyProvisioningUpdates.state_code]) ||
+                            StateCodesToStateNames[
+                              agencyProvisioningUpdates.state_code
+                            ]) ||
                           ""
                         }
                         onClick={() => {
@@ -473,7 +471,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           )}
                           updateSelections={({ id }) => {
                             setSelectedSystems((prev) =>
-                              AdminPanelStore.selectOrDeselectSetItems(
+                              AdminPanelStore.toggleAddRemoveSetItem(
                                 prev,
                                 id as AgencySystems
                               )
@@ -586,7 +584,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                             )}
                             updateSelections={({ id }) => {
                               setSelectedChildAgencyIDs((prev) =>
-                                AdminPanelStore.selectOrDeselectSetItems(
+                                AdminPanelStore.toggleAddRemoveSetItem(
                                   prev,
                                   +id
                                 )
@@ -720,10 +718,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           )}
                           updateSelections={({ id }) => {
                             setSelectedTeamMembersToAdd((prev) =>
-                              AdminPanelStore.selectOrDeselectSetItems(
-                                prev,
-                                +id
-                              )
+                              AdminPanelStore.toggleAddRemoveSetItem(prev, +id)
                             );
                             setTeamMemberRoleUpdates((prev) => ({
                               ...prev,
@@ -756,10 +751,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           )}
                           updateSelections={({ id }) => {
                             setSelectedTeamMembersToDelete((prev) =>
-                              AdminPanelStore.selectOrDeselectSetItems(
-                                prev,
-                                +id
-                              )
+                              AdminPanelStore.toggleAddRemoveSetItem(prev, +id)
                             );
                           }}
                           searchByKeys={["name"]}

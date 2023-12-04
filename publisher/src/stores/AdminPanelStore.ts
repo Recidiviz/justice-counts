@@ -31,7 +31,7 @@ import {
   SearchableEntity,
   SearchableListItem,
   StateCodeKey,
-  StateCodes,
+  StateCodesToStateNames,
   User,
   UserProvisioningUpdates,
   UserResponse,
@@ -100,8 +100,8 @@ class AdminPanelStore {
     }));
   }
 
+  /** Returns a list of searchable counties based on the currently selected `state_code` in `agencyProvisioningUpdates` */
   get searchableCounties(): SearchableListItem[] {
-    // Based on the currently selected `state_code`
     if (!this.agencyProvisioningUpdates.state_code) return [];
     return Object.keys(FipsCountyCodes)
       .filter(
@@ -310,12 +310,15 @@ class AdminPanelStore {
 
   /** Helpers  */
 
+  /**
+   * Returns a normalized list of state codes & state name.
+   */
   static get searchableStates(): SearchableListItem[] {
-    return Object.keys(StateCodes).map((stateCode) => {
+    return Object.keys(StateCodesToStateNames).map((stateCode) => {
       const lowercaseStateCode = stateCode.toLocaleLowerCase() as StateCodeKey;
       return {
         id: stateCode,
-        name: StateCodes[lowercaseStateCode],
+        name: StateCodesToStateNames[lowercaseStateCode],
       };
     });
   }
@@ -358,11 +361,16 @@ class AdminPanelStore {
     return list.filter((listItem) =>
       searchByKeys.some((key) => {
         if (!listItem[key]) return false;
-        if (key === "state_code" && "state_code" in listItem) {
-          const lowercaseStateCode =
-            listItem.state_code?.toLocaleLowerCase() as StateCodeKey;
-          return regex.test(StateCodes[lowercaseStateCode]);
-        }
+        /**
+         * Extra step for searching state codes - since users will search by the name of the state
+         * and not by the state code itself (which is how we store this info), this will see if
+         * there's a match between the `searchInput` and the human-readable name of the state
+         */
+        // if (key === "state_code" && "state_code" in listItem) {
+        //   const lowercaseStateCode =
+        //     listItem.state_code?.toLocaleLowerCase() as StateCodeKey;
+        //   return regex.test(StateCodesToStateNames[lowercaseStateCode]);
+        // }
         return regex.test(listItem[key] as string);
       })
     );
@@ -391,7 +399,7 @@ class AdminPanelStore {
    * @param item - The item within the set to be added or removed depending on whether or not it already exists within the set
    * @returns An updated set of selected items after the addition or removal operation.
    */
-  static selectOrDeselectSetItems<T>(prevSet: Set<T>, item: T): Set<T> {
+  static toggleAddRemoveSetItem<T>(prevSet: Set<T>, item: T): Set<T> {
     const updatedSet = new Set(prevSet);
     if (updatedSet.has(item)) {
       updatedSet.delete(item);

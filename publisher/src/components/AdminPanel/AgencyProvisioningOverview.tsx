@@ -28,7 +28,7 @@ import {
   AgencyProvisioning,
   AgencyWithTeamByID,
   StateCodeKey,
-  StateCodes,
+  StateCodesToStateNames,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
 
@@ -58,7 +58,7 @@ export const AgencyProvisioningOverview = observer(() => {
   >([]);
   const [selectedAgencyID, setSelectedAgencyID] = useState<string | number>();
 
-  const searchByKeys = ["name", "id", "state_code"] as AgencyKey[];
+  const searchByKeys = ["name", "id", "state"] as AgencyKey[];
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
@@ -165,7 +165,7 @@ export const AgencyProvisioningOverview = observer(() => {
                     {agency.state_code && (
                       <Styled.Subheader>
                         {
-                          StateCodes[
+                          StateCodesToStateNames[
                             agency.state_code.toLocaleLowerCase() as StateCodeKey
                           ]
                         }
