@@ -145,7 +145,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       ? agenciesByID[selectedIDToEdit][0]
       : undefined;
 
-    /** Available agencies, team members and current team members to select from */
+    /**
+     * Available agencies, available team members (available meaning excluding the current agency/team members
+     * belonging to the current agency) and current team members to select from */
     const agencyIDs = agencies.map((agency) => +agency.id);
     const availableAgencies = agencies.filter(
       (agency) => agency.id !== selectedAgency?.id
@@ -399,7 +401,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                   AgencyProvisioningSettings.AGENCY_INFORMATION && (
                   <>
                     {/* Agency Name Input */}
-                    <Styled.InputLabelWrapper>
+                    <Styled.InputLabelWrapper required>
                       <input
                         name="agency-name"
                         type="text"
@@ -414,7 +416,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                     </Styled.InputLabelWrapper>
 
                     {/* Agency State Input */}
-                    <Styled.InputLabelWrapper>
+                    <Styled.InputLabelWrapper required>
                       {showSelectionBox === VisibleSelectionBoxes.STATE && (
                         <InteractiveSearchList
                           list={AdminPanelStore.searchableStates}

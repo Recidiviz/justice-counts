@@ -75,6 +75,27 @@ export const ScrollableContainer = styled.div`
   padding-right: 16px;
 `;
 
+export const CheckboxButton = styled.div<{ checked?: boolean }>`
+  ${typography.sizeCSS.normal}
+  width: fit-content;
+  min-width: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+  border: 1px solid ${palette.highlight.grey8};
+  white-space: nowrap;
+  color: ${palette.solid.darkgrey};
+  padding: 10px 15px;
+  background: ${({ checked }) =>
+    checked ? palette.highlight.grey2 : `transparent`};
+
+  &:hover {
+    cursor: pointer;
+    background: ${palette.highlight.grey1};
+  }
+`;
+
 /** Modal */
 
 export const ModalWrapper = styled.div``;
@@ -178,6 +199,7 @@ export const InputLabelWrapper = styled.div<{
   inputWidth?: number;
   noBottomSpacing?: boolean;
   hasError?: boolean;
+  required?: boolean;
 }>`
   ${typography.sizeCSS.normal}
   width: 100%;
@@ -240,6 +262,20 @@ export const InputLabelWrapper = styled.div<{
     margin-top: 5px;
     padding: 0 3px;
   }
+
+  ${({ required }) =>
+    required &&
+    `
+    label {
+      width: fit-content;
+    }
+
+    label::after {
+      content: "(required)"; 
+      font-weight: 400;
+      margin-left: 2px;
+    }
+`}
 `;
 
 export const LabelButton = styled.div`
@@ -258,6 +294,8 @@ export const SidePaddingWrapper = styled.div`
 
 export const ButtonWrapper = styled.div`
   width: fit-content;
+  display: flex;
+  gap: 12px;
 `;
 
 export const TeamMembersContainer = styled.div`

@@ -275,7 +275,7 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
             <Styled.ScrollableContainer>
               <Styled.Form>
                 {/* Username Input */}
-                <Styled.InputLabelWrapper>
+                <Styled.InputLabelWrapper required>
                   <input
                     id="username"
                     name="username"
@@ -292,6 +292,7 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
                 {!selectedUser && (
                   <Styled.InputLabelWrapper
                     hasError={Boolean(emailValidationError)}
+                    required
                   >
                     <input
                       id="email"

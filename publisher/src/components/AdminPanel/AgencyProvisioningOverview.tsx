@@ -50,6 +50,9 @@ export const AgencyProvisioningOverview = observer(() => {
   const [filteredAgencies, setFilteredAgencies] = useState<
     AgencyWithTeamByID[]
   >([]);
+  const [showAgenciesWithLiveDashboards, setShowAgenciesWithLiveDashboards] =
+    useState(false);
+  const [showSuperagencies, setShowSuperagencies] = useState(false);
   const [selectedAgencyID, setSelectedAgencyID] = useState<string | number>();
 
   const searchByKeys = ["name", "id", "state"] as AgencyKey[];
@@ -90,6 +93,27 @@ export const AgencyProvisioningOverview = observer(() => {
   };
 
   useEffect(() => setFilteredAgencies(agencies), [agencies]);
+
+  useEffect(() => {
+    if (showAgenciesWithLiveDashboards && showSuperagencies) {
+      return setFilteredAgencies(() =>
+        agencies.filter(
+          (agency) => agency.is_dashboard_enabled && agency.is_superagency
+        )
+      );
+    }
+    if (showAgenciesWithLiveDashboards) {
+      return setFilteredAgencies(() =>
+        agencies.filter((agency) => agency.is_dashboard_enabled)
+      );
+    }
+    if (showSuperagencies) {
+      return setFilteredAgencies(() =>
+        agencies.filter((agency) => agency.is_superagency)
+      );
+    }
+    return setFilteredAgencies(agencies);
+  }, [showAgenciesWithLiveDashboards, showSuperagencies, agencies]);
 
   if (loading) {
     return <Loading />;
@@ -134,8 +158,45 @@ export const AgencyProvisioningOverview = observer(() => {
           </Styled.LabelWrapper>
         </Styled.InputLabelWrapper>
 
-        {/* Create User Button */}
+        <Styled.InputLabelWrapper flexRow inputWidth={395}>
+          <input
+            name="superagency-filter"
+            type="checkbox"
+            onChange={() => {
+              setShowSuperagencies((prev) => !prev);
+            }}
+            checked={showSuperagencies}
+          />
+          <label htmlFor="superagency">Show superagencies</label>
+          <input
+            name="live-dashboard-filter"
+            type="checkbox"
+            onChange={() => {
+              setShowAgenciesWithLiveDashboards((prev) => !prev);
+            }}
+            checked={showAgenciesWithLiveDashboards}
+          />
+          <label htmlFor="live-dashboard-filter">
+            Show agencies with live dashboard
+          </label>
+        </Styled.InputLabelWrapper>
+
         <Styled.ButtonWrapper>
+          {/* Show Superagencies */}
+          {/* <Styled.CheckboxButton
+            onClick={() => setShowSuperagencies((prev) => !prev)}
+            checked={showSuperagencies}
+          >
+            Show Superagencies
+          </Styled.CheckboxButton> */}
+          {/* Create User Button */}
+          {/* <Styled.CheckboxButton
+            onClick={() => setShowAgenciesWithLiveDashboards((prev) => !prev)}
+            checked={showAgenciesWithLiveDashboards}
+          >
+            Show Agencies with Live Dashboards
+          </Styled.CheckboxButton> */}
+          {/* Create User Button */}
           <Button
             label="Create Agency"
             onClick={openModal}
@@ -169,9 +230,23 @@ export const AgencyProvisioningOverview = observer(() => {
                     </Styled.Chip>
                   ))}
                 </Styled.AgenciesWrapper>
-                <Styled.NumberOfAgencies>
-                  {Object.values(agency.team).length} users
-                </Styled.NumberOfAgencies>
+                <Styled.NumberOfAgenciesLiveDashboardIndicatorWrapper>
+                  <Styled.NumberOfAgencies>
+                    {Object.values(agency.team).length} users
+                  </Styled.NumberOfAgencies>
+                  <Styled.IndicatorWrapper>
+                    {agency.is_superagency && (
+                      <Styled.SuperagencyIndicator>
+                        Superagency
+                      </Styled.SuperagencyIndicator>
+                    )}
+                    {agency.is_dashboard_enabled && (
+                      <Styled.LiveDashboardIndicator>
+                        Live Dashboard
+                      </Styled.LiveDashboardIndicator>
+                    )}
+                  </Styled.IndicatorWrapper>
+                </Styled.NumberOfAgenciesLiveDashboardIndicatorWrapper>
               </Styled.Card>
             ))}
       </Styled.CardContainer>
