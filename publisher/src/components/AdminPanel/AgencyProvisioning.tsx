@@ -41,6 +41,7 @@ import {
   SaveConfirmationTypes,
   StateCodeKey,
   StateCodesToStateNames,
+  UserRoles,
   userRoles,
   UserRoleUpdates,
 } from ".";
@@ -143,6 +144,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const selectedAgency = selectedIDToEdit
       ? agenciesByID[selectedIDToEdit][0]
       : undefined;
+
+    /** Available agencies, team members and current team members to select from */
     const agencyIDs = agencies.map((agency) => +agency.id);
     const availableAgencies = agencies.filter(
       (agency) => agency.id !== selectedAgency?.id
@@ -157,7 +160,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         }))
       : [];
 
-    /** Whether or not we are performing an add/delete action on an agencies' list */
+    /** Whether or not we are performing an add/delete action on a list of users/team members */
     const isAddUserAction =
       addOrDeleteUserAction === InteractiveSearchListActions.ADD;
     const isDeleteUserAction =
@@ -182,7 +185,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         },
       },
     ];
-
     const getInteractiveSearchListSelectDeselectCloseButtons = <T,>(
       setState: React.Dispatch<React.SetStateAction<Set<T>>>,
       selectAllSet: Set<T>
@@ -199,16 +201,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         interactiveSearchListCloseButton[0],
       ];
     };
-
-    const scrollToBottom = () =>
-      setTimeout(
-        () =>
-          scrollableContainerRef.current?.scrollTo(
-            0,
-            scrollableContainerRef.current.scrollHeight
-          ),
-        0
-      );
 
     const saveUpdates = async () => {
       setIsSaveInProgress(true);
@@ -260,31 +252,84 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       return "";
     };
 
-    /** Check whether user has made certain updates */
+    const scrollToBottom = () =>
+      setTimeout(
+        () =>
+          scrollableContainerRef.current?.scrollTo(
+            0,
+            scrollableContainerRef.current.scrollHeight
+          ),
+        0
+      );
+
+    /**
+     * Check whether user has made updates to various fields to determine whether or not the 'Save' button is enabled
+     *
+     * Note: when creating a new agency, the only required fields are the `name` and `state_code`, all other fields can be
+     *       updated at a later time.
+     * */
+
+    /**
+     * Existing agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.name`
+     *                and it does not match the agency's name before the modal was open.
+     * New agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.name`
+     */
     const hasNameUpdate = selectedAgency
       ? Boolean(agencyProvisioningUpdates.name) &&
         agencyProvisioningUpdates.name !== selectedAgency.name
       : Boolean(agencyProvisioningUpdates.name);
+    /**
+     * Existing agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.state_code`
+     *                and it does not match the agency's state code before the modal was open.
+     * New agency: an update has been made when the agency has a value for `agencyProvisioningUpdates.state_code`
+     */
     const hasStateUpdate = selectedAgency
       ? Boolean(agencyProvisioningUpdates.state_code) &&
         agencyProvisioningUpdates.state_code !== selectedAgency.state_code
       : Boolean(agencyProvisioningUpdates.state_code);
+
+    /**
+     * Note: the following checks are only relevant to existing agency updates, since the 'Save' button for creating a new
+     * agency only requires the above `name` and `state_code` to be enabled.
+     */
+
+    /**
+     * An update has been made when the agency has a value for `agencyProvisioningUpdates.fips_county_code`
+     * and it does not match the agency's county code before the modal was open.
+     */
     const hasCountyUpdates =
       Boolean(agencyProvisioningUpdates.fips_county_code) &&
       agencyProvisioningUpdates.fips_county_code !==
         selectedAgency?.fips_county_code;
+    /**
+     * An update has been made when the agency's # of current systems and # of selected systems are not the same
+     * OR (if there are any current systems) the list of current systems do not match the list of selected systems.
+     */
     const hasSystemUpdates =
       selectedSystems.size !== agencyProvisioningUpdates.systems.length ||
       (agencyProvisioningUpdates.systems.length > 0 &&
         agencyProvisioningUpdates.systems.filter((system) =>
           selectedSystems.has(system)
         ).length === 0);
+    /**
+     * An update has been made when the agency's `is_dashboard_enabled` boolean flag does not match the agency's
+     * boolean flag for that property before the modal was open.
+     */
     const hasDashboardEnabledStatusUpdate =
       agencyProvisioningUpdates.is_dashboard_enabled !==
       selectedAgency?.is_dashboard_enabled;
+    /**
+     * An update has been made when the agency's `is_superagency` boolean flag does not match the agency's boolean
+     * flag for that property before the modal was open.
+     */
     const hasIsSuperagencyUpdate =
       Boolean(agencyProvisioningUpdates.is_superagency) !==
       Boolean(selectedAgency?.is_superagency);
+    /**
+     * An update has been made when the agency's # of child agency IDs and # of selected child agency IDs are not
+     * the same OR (if there are any child agency IDs) the list of current child agency IDs do not match the list
+     * of selected child agency IDs.
+     */
     const hasChildAgencyUpdates =
       selectedChildAgencyIDs.size !==
         agencyProvisioningUpdates.child_agency_ids.length ||
@@ -292,9 +337,17 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         agencyProvisioningUpdates.child_agency_ids.filter((id) =>
           selectedChildAgencyIDs.has(id)
         ).length === 0);
+    /**
+     * An update has been made when the agency's `super_agency_id` does not match the agency's superagency id before
+     * the modal was open.
+     */
     const hasSuperagencyUpdate =
       agencyProvisioningUpdates.super_agency_id !==
       selectedAgency?.super_agency_id;
+    /**
+     * An update has been made when there are role updates in the `teamMemberRoleUpdates` OR there are selected team
+     * members to add or delete
+     */
     const hasTeamMemberOrRoleUpdates =
       Object.keys(teamMemberRoleUpdates).length > 0 ||
       selectedTeamMembersToAdd.size > 0 ||
@@ -722,7 +775,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                             );
                             setTeamMemberRoleUpdates((prev) => ({
                               ...prev,
-                              [id]: "READ_ONLY",
+                              [id]: UserRoles.READ_ONLY,
                             }));
                           }}
                           searchByKeys={["name"]}
@@ -834,7 +887,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                                           removeSnakeCase(
                                             teamMemberRoleUpdates[+member.id] ||
                                               ""
-                                          ) || "READ ONLY"
+                                          ) ||
+                                          removeSnakeCase(UserRoles.READ_ONLY)
                                         }
                                       />
                                     }
@@ -874,12 +928,13 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                                 <Styled.ChipEmail>
                                   {member.email}
                                 </Styled.ChipEmail>
+                                <Styled.ChipInvitationStatus>
+                                  {member.invitation_status}
+                                </Styled.ChipInvitationStatus>
                               </Styled.NameSubheaderWrapper>
                               <Styled.ID>ID {member.user_account_id}</Styled.ID>
                             </Styled.TopCardRowWrapper>
-                            <Styled.ChipInvitationStatus>
-                              {member.invitation_status}
-                            </Styled.ChipInvitationStatus>
+
                             <Styled.ChipRole>
                               <Styled.InputLabelWrapper noBottomSpacing>
                                 <Dropdown

@@ -23,13 +23,7 @@ import React, { useEffect, useState } from "react";
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
 import { Loading } from "../Loading";
-import {
-  AgencyKey,
-  AgencyProvisioning,
-  AgencyWithTeamByID,
-  StateCodeKey,
-  StateCodesToStateNames,
-} from ".";
+import { AgencyKey, AgencyProvisioning, AgencyWithTeamByID } from ".";
 import * as Styled from "./AdminPanel.styles";
 
 export const AgencyProvisioningOverview = observer(() => {
@@ -162,14 +156,8 @@ export const AgencyProvisioningOverview = observer(() => {
                 <Styled.TopCardRowWrapper>
                   <Styled.NameSubheaderWrapper>
                     <Styled.Name>{agency.name}</Styled.Name>
-                    {agency.state_code && (
-                      <Styled.Subheader>
-                        {
-                          StateCodesToStateNames[
-                            agency.state_code.toLocaleLowerCase() as StateCodeKey
-                          ]
-                        }
-                      </Styled.Subheader>
+                    {agency.state && (
+                      <Styled.Subheader>{agency.state}</Styled.Subheader>
                     )}
                   </Styled.NameSubheaderWrapper>
                   <Styled.ID>ID {agency.id}</Styled.ID>

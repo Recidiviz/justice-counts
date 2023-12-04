@@ -118,6 +118,13 @@ export type UserWithAgenciesByID = Omit<User, "agencies"> & {
 
 export type UserResponse = { users: User[] };
 
+export enum UserRoles {
+  AGENCY_ADMIN = "AGENCY_ADMIN",
+  JUSTICE_COUNTS_ADMIN = "JUSTICE_COUNTS_ADMIN",
+  CONTRIBUTOR = "CONTRIBUTOR",
+  READ_ONLY = "READ_ONLY",
+}
+
 export const userRoles = [
   "AGENCY_ADMIN",
   "JUSTICE_COUNTS_ADMIN",
