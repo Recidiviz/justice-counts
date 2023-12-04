@@ -578,7 +578,11 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                             selections={selectedChildAgencyIDs}
                             buttons={getInteractiveSearchListSelectDeselectCloseButtons(
                               setSelectedChildAgencyIDs,
-                              new Set(agencyIDs)
+                              new Set(
+                                agencyIDs.filter(
+                                  (id) => id !== selectedAgency?.id
+                                )
+                              )
                             )}
                             updateSelections={({ id }) => {
                               setSelectedChildAgencyIDs((prev) =>
