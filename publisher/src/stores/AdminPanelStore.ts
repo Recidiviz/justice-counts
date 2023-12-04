@@ -359,10 +359,9 @@ class AdminPanelStore {
   ) {
     const regex = new RegExp(`${searchInput}`, `i`);
     return list.filter((listItem) =>
-      searchByKeys.some((key) => {
-        if (!listItem[key]) return false;
-        return regex.test(listItem[key] as string);
-      })
+      searchByKeys.some(
+        (key) => listItem[key] && regex.test(listItem[key] as string)
+      )
     );
   }
 
