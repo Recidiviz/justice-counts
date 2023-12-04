@@ -361,16 +361,6 @@ class AdminPanelStore {
     return list.filter((listItem) =>
       searchByKeys.some((key) => {
         if (!listItem[key]) return false;
-        /**
-         * Extra step for searching state codes - since users will search by the name of the state
-         * and not by the state code itself (which is how we store this info), this will see if
-         * there's a match between the `searchInput` and the human-readable name of the state
-         */
-        // if (key === "state_code" && "state_code" in listItem) {
-        //   const lowercaseStateCode =
-        //     listItem.state_code?.toLocaleLowerCase() as StateCodeKey;
-        //   return regex.test(StateCodesToStateNames[lowercaseStateCode]);
-        // }
         return regex.test(listItem[key] as string);
       })
     );
