@@ -192,12 +192,12 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
           type: SaveConfirmationTypes.ERROR,
         });
       }
-      setIsSaveInProgress(false);
 
       /** After showing the confirmation screen, either return to modal (on error) or close modal (on success) */
       setTimeout(() => {
         setShowSaveConfirmation((prev) => ({ ...prev, show: false }));
         if (responseStatus === 200) closeModal();
+        setIsSaveInProgress(false);
       }, 2000);
     };
 

@@ -80,12 +80,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     } = adminPanelStore;
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
-    const [currentSettingType, setCurrentSettingType] =
-      useState<AgencyProvisioningSetting>(
-        AgencyProvisioningSettings.AGENCY_INFORMATION
-      );
-    const [addOrDeleteUserAction, setAddOrDeleteUserAction] =
-      useState<InteractiveSearchListAction>();
     const [showSelectionBox, setShowSelectionBox] =
       useState<VisibleSelectionBox>();
     const [isSaveInProgress, setIsSaveInProgress] = useState<boolean>(false);
@@ -93,6 +87,13 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       show: boolean;
       type?: SaveConfirmationType;
     }>({ show: false });
+
+    const [currentSettingType, setCurrentSettingType] =
+      useState<AgencyProvisioningSetting>(
+        AgencyProvisioningSettings.AGENCY_INFORMATION
+      );
+    const [addOrDeleteUserAction, setAddOrDeleteUserAction] =
+      useState<InteractiveSearchListAction>();
 
     const [isChildAgencySelected, setIsChildAgencySelected] = useState<boolean>(
       Boolean(agencyProvisioningUpdates.super_agency_id) || false
@@ -212,7 +213,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const saveUpdates = async () => {
       setIsSaveInProgress(true);
 
-      /** Update final list of systems and child agencies */
+      /** Update final list of systems, child agencies, and team members */
       updateSystems(Array.from(selectedSystems));
       updateChildAgencyIDs(Array.from(selectedChildAgencyIDs));
       updateTeamMembers([
@@ -240,14 +241,13 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           type: SaveConfirmationTypes.ERROR,
         });
       }
-      setIsSaveInProgress(false);
 
       /** After showing the confirmation screen, either return to modal (on error) or close modal (on success) */
       setTimeout(() => {
         setShowSaveConfirmation((prev) => ({ ...prev, show: false }));
         if (responseStatus === 200) closeModal();
+        setIsSaveInProgress(false);
       }, 2000);
-      setIsSaveInProgress(false);
     };
 
     const getSaveConfirmationMessage = () => {
@@ -776,9 +776,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                                 <Styled.ChipEmail>
                                   {member.email}
                                 </Styled.ChipEmail>
-                                {/* <Styled.ChipInvitationStatus>
-                              {t.invitation_status}
-                            </Styled.ChipInvitationStatus> */}
                               </div>
                               <Styled.ChipRole>
                                 <Styled.InputLabelWrapper noBottomSpacing>

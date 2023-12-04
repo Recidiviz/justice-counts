@@ -36,8 +36,8 @@ export const AdminPanel = observer(() => {
   const { fetchUsersAndAgencies } = adminPanelStore;
 
   const [currentProvisioningView, setProvisioningView] = useState<SettingType>(
-    Setting.USERS
-    // Setting.AGENCIES
+    // Setting.USERS
+    Setting.AGENCIES
   );
 
   const provisioningViewOptions = [
@@ -55,9 +55,7 @@ export const AdminPanel = observer(() => {
     },
   ];
 
-  useEffect(() => {
-    fetchUsersAndAgencies();
-  }, [fetchUsersAndAgencies]);
+  useEffect(() => fetchUsersAndAgencies(), [fetchUsersAndAgencies]);
 
   return (
     <Styled.AdminPanelContainer>
