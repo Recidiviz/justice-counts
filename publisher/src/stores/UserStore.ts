@@ -246,7 +246,10 @@ class UserStore {
     }
   }
 
-  async updateUserAgencyPageVisit(userId: string, agencyId: string) {
+  async updateUserAgencyPageVisit(
+    userId: string | undefined,
+    agencyId: string
+  ) {
     try {
       const response = (await this.api.request({
         path: `/api/${userId}/${agencyId}/page_visit`,
