@@ -33,6 +33,8 @@ class UserStore {
 
   userAgencies: UserAgency[] | undefined;
 
+  userId: string | undefined;
+
   userInfoLoaded: boolean;
 
   constructor(authStore: AuthStore, api: API) {
@@ -42,6 +44,7 @@ class UserStore {
     this.api = api;
     this.userAgencies = undefined;
     this.userInfoLoaded = false;
+    this.userId = undefined;
 
     when(
       () => api.isSessionInitialized,
@@ -228,9 +231,10 @@ class UserStore {
           email_verified: this.email_verified,
         },
       })) as Response;
-      const { agencies: userAgencies } = await response.json();
+      const { agencies: userAgencies, id: userId } = await response.json();
       runInAction(() => {
         this.userAgencies = userAgencies;
+        this.userId = userId;
       });
     } catch (error) {
       if (error instanceof Error) return error.message;
@@ -239,6 +243,21 @@ class UserStore {
       runInAction(() => {
         this.userInfoLoaded = true;
       });
+    }
+  }
+
+  async updateUserAgencyPageVisit(userId: string, agencyId: string) {
+    try {
+      const response = (await this.api.request({
+        path: `/api/${userId}/${agencyId}/page_visit`,
+        method: "PUT",
+      })) as Response;
+      if (response.status !== 200) {
+        throw new Error("There was an issue...");
+      }
+    } catch (error) {
+      if (error instanceof Error) return error.message;
+      return String(error);
     }
   }
 }
