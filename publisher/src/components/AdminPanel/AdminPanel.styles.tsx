@@ -603,7 +603,16 @@ export const IndicatorWrapper = styled.div`
 `;
 
 export const LiveDashboardIndicator = styled(NumberOfAgencies)`
-  color: ${palette.solid.blue};
+  &,
+  a,
+  a:visited {
+    color: ${palette.solid.blue};
+    text-decoration: none;
+  }
+  & > a:hover {
+    color: ${palette.solid.darkblue};
+    text-decoration: underline;
+  }
 `;
 
 export const SuperagencyIndicator = styled(NumberOfAgencies)`

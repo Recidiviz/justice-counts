@@ -22,6 +22,7 @@ import React, { useEffect, useState } from "react";
 
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
+import { LinkToDashboard } from "../HelpCenter/LinkToPublisherDashboard";
 import { Loading } from "../Loading";
 import { AgencyKey, AgencyProvisioning, AgencyWithTeamByID } from ".";
 import * as Styled from "./AdminPanel.styles";
@@ -241,8 +242,10 @@ export const AgencyProvisioningOverview = observer(() => {
                       </Styled.SuperagencyIndicator>
                     )}
                     {agency.is_dashboard_enabled && (
-                      <Styled.LiveDashboardIndicator>
-                        Live Dashboard
+                      <Styled.LiveDashboardIndicator
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <LinkToDashboard>Live Dashboard</LinkToDashboard>
                       </Styled.LiveDashboardIndicator>
                     )}
                   </Styled.IndicatorWrapper>
