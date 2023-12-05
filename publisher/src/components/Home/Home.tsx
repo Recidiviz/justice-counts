@@ -31,8 +31,7 @@ export const Home = observer(() => {
   const { userStore, homeStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
-  const { name, isAgencySuperagency, userId } = userStore;
-  userStore.updateUserAgencyPageVisit(userId, agencyId);
+  const { name, isAgencySuperagency } = userStore;
   const {
     loading,
     systemSelectionOptions,
@@ -70,7 +69,8 @@ export const Home = observer(() => {
 
   useEffect(() => {
     homeStore.fetchLatestReportsAndMetricsAndHydrateStore(agencyId);
-  }, [agencyId, homeStore]);
+    userStore.updateUserAgencyPageVisit(agencyId);
+  }, [agencyId, homeStore, userStore]);
 
   if (!agencyMetrics || loading) {
     return <Loading />;
