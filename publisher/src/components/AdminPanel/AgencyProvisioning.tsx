@@ -153,6 +153,12 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const availableAgencies = agencies.filter(
       (agency) => agency.id !== selectedAgency?.id
     );
+    const availableSuperagencies = selectedAgency
+      ? availableAgencies.filter((agency) => !agency.is_superagency)
+      : agencies.filter((agency) => !agency.is_superagency);
+    const availableChildAgencies = selectedAgency
+      ? availableAgencies.filter((agency) => agency.is_superagency)
+      : agencies.filter((agency) => agency.is_superagency);
     const availableTeamMembers = users.filter(
       (user) => !selectedAgency?.team[user.id]
     );
@@ -633,7 +639,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         {showSelectionBox ===
                           VisibleSelectionBoxes.CHILD_AGENCIES && (
                           <InteractiveSearchList
-                            list={selectedAgency ? availableAgencies : agencies}
+                            list={availableChildAgencies}
                             boxActionType={InteractiveSearchListActions.ADD}
                             selections={selectedChildAgencyIDs}
                             buttons={getInteractiveSearchListSelectDeselectCloseButtons(
@@ -700,7 +706,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         {showSelectionBox ===
                           VisibleSelectionBoxes.SUPERAGENCY && (
                           <InteractiveSearchList
-                            list={selectedAgency ? availableAgencies : agencies}
+                            list={availableSuperagencies}
                             boxActionType={InteractiveSearchListActions.ADD}
                             selections={
                               agencyProvisioningUpdates.super_agency_id
@@ -720,6 +726,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                             }}
                             searchByKeys={["name"]}
                             metadata={{
+                              listBoxEmptyLabel:
+                                "There are no superagencies available to select from",
                               listBoxLabel: "Select a superagency",
                               searchBoxLabel: "Search agencies",
                             }}
