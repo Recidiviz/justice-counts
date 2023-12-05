@@ -129,13 +129,10 @@ export const UserProvisioningOverview = observer(() => {
               const userAgencies =
                 AdminPanelStore.objectToSortedFlatMappedValues(user.agencies);
               return (
-                <Styled.UserCard
-                  key={user.id}
-                  onClick={() => editUser(user.id)}
-                >
+                <Styled.Card key={user.id} onClick={() => editUser(user.id)}>
                   <Styled.UserNameEmailIDWrapper>
                     <Styled.UserNameEmailWrapper>
-                      <Styled.UserName>{user.name}</Styled.UserName>
+                      <Styled.Name>{user.name}</Styled.Name>
                       <Styled.Email>{user.email}</Styled.Email>
                     </Styled.UserNameEmailWrapper>
                     <Styled.ID>ID {user.id}</Styled.ID>
@@ -148,7 +145,7 @@ export const UserProvisioningOverview = observer(() => {
                   <Styled.NumberOfAgencies>
                     {userAgencies.length} agencies
                   </Styled.NumberOfAgencies>
-                </Styled.UserCard>
+                </Styled.Card>
               );
             })}
       </Styled.CardContainer>

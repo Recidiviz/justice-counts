@@ -125,11 +125,11 @@ export const InteractiveSearchList = ({
               );
             })
           ) : (
-            <Styled.NoResultsFound>
+            <Styled.EmptyListMessage>
               {searchInputValue
                 ? "No results found"
                 : metadata?.listBoxEmptyLabel}
-            </Styled.NoResultsFound>
+            </Styled.EmptyListMessage>
           )}
         </Styled.ChipContainer>
 
