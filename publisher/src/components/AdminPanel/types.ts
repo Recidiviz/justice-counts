@@ -84,7 +84,7 @@ export type AgencyProvisioningSetting =
   (typeof AgencyProvisioningSettings)[keyof typeof AgencyProvisioningSettings];
 
 export type AgencyProvisioningUpdates = {
-  agency_id?: number;
+  agency_id?: number | null;
   name: string;
   state_code: StateCodeKey | null;
   fips_county_code: FipsCountyCodeKey | null;

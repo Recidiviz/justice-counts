@@ -46,12 +46,12 @@ const initialEmptyUserProvisioningUpdates = {
 };
 
 const initialEmptyAgencyProvisioningUpdates = {
-  agency_id: undefined,
+  agency_id: null,
   name: "",
   state_code: null,
   fips_county_code: null,
   systems: [],
-  is_dashboard_enabled: null,
+  is_dashboard_enabled: true,
   super_agency_id: null,
   is_superagency: null,
   child_agency_ids: [],
