@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Navigate, Route, Routes, useParams } from "react-router-dom";
 
 import { DataEntryInterstitial } from "../components/DataEntryInterstitial";
@@ -41,9 +41,11 @@ export const Router = () => {
   const { agencyId } = useParams() as { agencyId: string };
   const { userStore } = useStore();
 
-  userStore.updateUserAgencyPageVisit(agencyId);
-
   const isAgencyIdInUserAgencies = userStore.getAgency(agencyId);
+
+  useEffect(() => {
+    userStore.updateUserAgencyPageVisit(agencyId);
+  });
 
   return (
     <>
