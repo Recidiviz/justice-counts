@@ -328,8 +328,9 @@ test("Adding an agency adds agency to user's agency list", async () => {
           state: "New York",
           state_code: "us_ny",
           super_agency_id: null,
+          child_agency_ids: [],
           systems: ["PRISONS", "SUPERVISION", "PAROLE", "PROBATION"],
-          team: [],
+          team: {},
         },
         {
           created_at: null,
@@ -342,8 +343,9 @@ test("Adding an agency adds agency to user's agency list", async () => {
           state: "New York",
           state_code: "us_ny",
           super_agency_id: null,
+          child_agency_ids: [],
           systems: ["PRISONS"],
-          team: [],
+          team: {},
         },
         {
           created_at: null,
@@ -356,8 +358,9 @@ test("Adding an agency adds agency to user's agency list", async () => {
           state: "Oregon",
           state_code: "us_or",
           super_agency_id: null,
+          child_agency_ids: [],
           systems: ["JAILS"],
-          team: [],
+          team: {},
         },
       ],
       (agency) => agency.id

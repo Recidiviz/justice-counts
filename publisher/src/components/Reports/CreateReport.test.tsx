@@ -150,6 +150,7 @@ describe("test create report button", () => {
             systems: [],
             team: [
               {
+                user_account_id: 21,
                 name: "Test User",
                 auth0_user_id: "0",
                 email: "test@email.com",
