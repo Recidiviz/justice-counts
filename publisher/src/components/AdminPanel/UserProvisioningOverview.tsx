@@ -38,8 +38,8 @@ export const UserProvisioningOverview = observer(() => {
     resetUserProvisioningUpdates,
   } = adminPanelStore;
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserID, setSelectedUserID] = useState<string | number>();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchInput, setSearchInput] = useState<string>("");
   const [filteredUsers, setFilteredUsers] = useState<UserWithAgenciesByID[]>(
     []
@@ -104,14 +104,16 @@ export const UserProvisioningOverview = observer(() => {
             <label htmlFor="search-users">
               Search by name, email or user ID
             </label>
-            <Styled.LabelButton
-              onClick={() => {
-                setSearchInput("");
-                setFilteredUsers(users);
-              }}
-            >
-              Clear
-            </Styled.LabelButton>
+            {searchInput && (
+              <Styled.LabelButton
+                onClick={() => {
+                  setSearchInput("");
+                  setFilteredUsers(users);
+                }}
+              >
+                Clear
+              </Styled.LabelButton>
+            )}
           </Styled.LabelWrapper>
         </Styled.InputLabelWrapper>
 
@@ -130,13 +132,13 @@ export const UserProvisioningOverview = observer(() => {
                 AdminPanelStore.objectToSortedFlatMappedValues(user.agencies);
               return (
                 <Styled.Card key={user.id} onClick={() => editUser(user.id)}>
-                  <Styled.UserNameEmailIDWrapper>
-                    <Styled.UserNameEmailWrapper>
+                  <Styled.TopCardRowWrapper>
+                    <Styled.NameSubheaderWrapper>
                       <Styled.Name>{user.name}</Styled.Name>
                       <Styled.Email>{user.email}</Styled.Email>
-                    </Styled.UserNameEmailWrapper>
+                    </Styled.NameSubheaderWrapper>
                     <Styled.ID>ID {user.id}</Styled.ID>
-                  </Styled.UserNameEmailIDWrapper>
+                  </Styled.TopCardRowWrapper>
                   <Styled.AgenciesWrapper>
                     {userAgencies.map((agency) => (
                       <Styled.Chip key={agency.id}>{agency.name}</Styled.Chip>
