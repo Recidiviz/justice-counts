@@ -642,4 +642,8 @@ test("Clicking on an existing agency card opens the edit agency modal", () => {
   expect(childAgencyChip).toBeInTheDocument();
   expect(cancelButton).toBeInTheDocument();
   expect(saveButton).toBeInTheDocument();
+
+  fireEvent.click(teamMemberRolesTab);
+  const teamMember = screen.getAllByText("Anne Teak")[0];
+  expect(teamMember).toBeInTheDocument();
 });
