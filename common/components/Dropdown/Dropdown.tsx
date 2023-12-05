@@ -35,6 +35,7 @@ type DropdownProps = {
   hover?: ToggleHover;
   caretPosition?: ToggleCaretPosition;
   alignment?: DropdownMenuAlignment;
+  lightBoxShadow?: boolean;
   fullWidth?: boolean;
   fullHeight?: boolean;
   highlightIcon?: React.ReactNode;
@@ -65,6 +66,7 @@ export function Dropdown({
   hover,
   caretPosition,
   alignment,
+  lightBoxShadow,
   fullWidth,
   fullHeight,
   highlightIcon,
@@ -126,6 +128,7 @@ export function Dropdown({
         alignment={alignment}
         menuFullWidth={fullWidth}
         menuFullHeight={fullHeight}
+        lightBoxShadow={lightBoxShadow}
       >
         <>
           {typeaheadSearch && (
