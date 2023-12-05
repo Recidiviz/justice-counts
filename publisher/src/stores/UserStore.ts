@@ -246,13 +246,10 @@ class UserStore {
     }
   }
 
-  async updateUserAgencyPageVisit(
-    userId: string | undefined,
-    agencyId: string
-  ) {
+  async updateUserAgencyPageVisit(agencyId: string) {
     try {
       const response = (await this.api.request({
-        path: `/api/${userId}/${agencyId}/page_visit`,
+        path: `/api/${this.userId}/${agencyId}/page_visit`,
         method: "PUT",
       })) as Response;
       if (response.status !== 200) {
