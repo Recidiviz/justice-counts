@@ -147,7 +147,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
     /**
      * Available agencies, available team members (available meaning excluding the current agency/team members
-     * belonging to the current agency) and current team members to select from */
+     * belonging to the current agency) and current team members to select from
+     */
     const agencyIDs = agencies.map((agency) => +agency.id);
     const availableAgencies = agencies.filter(
       (agency) => agency.id !== selectedAgency?.id
@@ -403,6 +404,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                     {/* Agency Name Input */}
                     <Styled.InputLabelWrapper required>
                       <input
+                        id="agency-name"
                         name="agency-name"
                         type="text"
                         value={
@@ -448,6 +450,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         />
                       )}
                       <input
+                        id="state"
                         name="state"
                         type="button"
                         value={
@@ -496,6 +499,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         />
                       )}
                       <input
+                        id="county"
                         name="county"
                         type="button"
                         disabled={!agencyProvisioningUpdates.state_code}
@@ -569,6 +573,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                     {/* Dashboard Enabled Checkbox */}
                     <Styled.InputLabelWrapper flexRow>
                       <input
+                        id="dashboard"
                         name="dashboard"
                         type="checkbox"
                         onChange={() =>
@@ -586,6 +591,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                     {/* Superagency/Child Agency Checkbox & Search Box */}
                     <Styled.InputLabelWrapper flexRow inputWidth={100}>
                       <input
+                        id="superagency"
                         name="superagency"
                         type="checkbox"
                         onChange={() => {
@@ -604,6 +610,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       <label htmlFor="superagency">Superagency</label>
 
                       <input
+                        id="child-agency"
                         name="child-agency"
                         type="checkbox"
                         onChange={() => {

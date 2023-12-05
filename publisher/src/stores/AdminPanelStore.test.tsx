@@ -156,13 +156,13 @@ export const mockAgenciesResponse = {
       fips_county_code: null,
       id: 1011,
       is_dashboard_enabled: null,
-      is_superagency: null,
+      is_superagency: true,
       name: "Super Agency",
       settings: [],
       state: "Arizona",
       state_code: "us_az",
       super_agency_id: null,
-      child_agency_ids: [],
+      child_agency_ids: [11],
       systems: ["LAW_ENFORCEMENT"],
       team: [
         {
@@ -209,7 +209,7 @@ export const mockAgenciesResponse = {
       settings: [],
       state: "California",
       state_code: "us_ca",
-      super_agency_id: 10,
+      super_agency_id: 1011,
       child_agency_ids: [],
       systems: ["LAW_ENFORCEMENT"],
       team: [

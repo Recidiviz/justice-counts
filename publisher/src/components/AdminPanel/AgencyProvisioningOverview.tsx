@@ -159,7 +159,8 @@ export const AgencyProvisioningOverview = observer(() => {
           </Styled.LabelWrapper>
         </Styled.InputLabelWrapper>
 
-        <Styled.InputLabelWrapper flexRow inputWidth={395}>
+        {/* Show Superagencies/Show Agencies with Live Dashboards Checkboxes */}
+        <Styled.InputLabelWrapper flexRow inputWidth={395} noBottomSpacing>
           <input
             name="superagency-filter"
             type="checkbox"
@@ -182,22 +183,8 @@ export const AgencyProvisioningOverview = observer(() => {
           </label>
         </Styled.InputLabelWrapper>
 
+        {/* Create Agency Button */}
         <Styled.ButtonWrapper>
-          {/* Show Superagencies */}
-          {/* <Styled.CheckboxButton
-            onClick={() => setShowSuperagencies((prev) => !prev)}
-            checked={showSuperagencies}
-          >
-            Show Superagencies
-          </Styled.CheckboxButton> */}
-          {/* Create User Button */}
-          {/* <Styled.CheckboxButton
-            onClick={() => setShowAgenciesWithLiveDashboards((prev) => !prev)}
-            checked={showAgenciesWithLiveDashboards}
-          >
-            Show Agencies with Live Dashboards
-          </Styled.CheckboxButton> */}
-          {/* Create User Button */}
           <Button
             label="Create Agency"
             onClick={openModal}
