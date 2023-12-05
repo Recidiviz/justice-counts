@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystems } from "@justice-counts/common/types";
+import { AgencySystems, AgencyTeamMember } from "@justice-counts/common/types";
 import { removeSnakeCase } from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
@@ -23,7 +23,6 @@ import {
   Agency,
   AgencyProvisioningUpdates,
   AgencyResponse,
-  AgencyTeamMemberWithID,
   AgencyTeamUpdates,
   AgencyWithTeamByID,
   FipsCountyCodeKey,
@@ -335,7 +334,7 @@ class AdminPanelStore {
       | User
       | UserWithAgenciesByID
       | AgencyWithTeamByID
-      | AgencyTeamMemberWithID
+      | AgencyTeamMember
   >(list: T[], order: "ascending" | "descending" = "ascending"): T[] {
     return list.sort((a, b) => {
       if (order === "descending") {
@@ -375,7 +374,7 @@ class AdminPanelStore {
       | Agency
       | AgencyWithTeamByID
       | UserWithAgenciesByID
-      | AgencyTeamMemberWithID
+      | AgencyTeamMember
   >(obj: Record<string, T[]>) {
     return AdminPanelStore.sortListByName(
       Object.values(obj).flatMap((item) => item)

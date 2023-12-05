@@ -53,7 +53,7 @@ export type Agency = {
   state: StateCodeValue;
   state_code: StateCodeKey | null;
   fips_county_code: FipsCountyCodeKey | null;
-  team: AgencyTeamMemberWithID[];
+  team: AgencyTeamMember[];
   super_agency_id: number | null;
   is_superagency: boolean | null;
   child_agency_ids: number[];
@@ -66,12 +66,8 @@ export type Agency = {
   }[];
 };
 
-export type AgencyTeamMemberWithID = AgencyTeamMember & {
-  user_account_id: number;
-};
-
 export type AgencyWithTeamByID = Omit<Agency, "team"> & {
-  team: Record<string, AgencyTeamMemberWithID[]>;
+  team: Record<string, AgencyTeamMember[]>;
 };
 
 export type AgencyResponse = {

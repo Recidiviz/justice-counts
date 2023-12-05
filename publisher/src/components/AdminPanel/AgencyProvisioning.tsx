@@ -296,7 +296,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       ? Boolean(agencyProvisioningUpdates.state_code) &&
         agencyProvisioningUpdates.state_code !== selectedAgency.state_code
       : Boolean(agencyProvisioningUpdates.state_code);
-
     /**
      * Note: the following checks are only relevant to existing agency updates, since the 'Save' button for creating a new
      * agency only requires the above `name` and `state_code` to be enabled.
@@ -439,7 +438,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                             updateStateCode(
                               agencyProvisioningUpdates.state_code ===
                                 (id as StateCodeKey)
-                                ? null
+                                ? selectedAgency?.state_code || null
                                 : (id as StateCodeKey)
                             );
                             /** Reset the county code input */
