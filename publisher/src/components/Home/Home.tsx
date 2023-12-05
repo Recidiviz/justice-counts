@@ -31,8 +31,8 @@ export const Home = observer(() => {
   const { userStore, homeStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
-  const { name, isAgencySuperagency } = userStore;
 
+  const { name, isAgencySuperagency } = userStore;
   const {
     loading,
     systemSelectionOptions,
