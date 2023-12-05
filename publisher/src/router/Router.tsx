@@ -41,8 +41,7 @@ export const Router = () => {
   const { agencyId } = useParams() as { agencyId: string };
   const { userStore } = useStore();
 
-  const { userId } = userStore;
-  userStore.updateUserAgencyPageVisit(userId, agencyId);
+  userStore.updateUserAgencyPageVisit(agencyId);
 
   const isAgencyIdInUserAgencies = userStore.getAgency(agencyId);
 
