@@ -595,3 +595,128 @@ test("Agency provisioning overview filter checkboxes properly filter superagenci
   expect(agency2).toBeNull();
   expect(agency3).toBeNull();
 });
+
+test("Clicking the `Create Agency` button opens the create agency modal", () => {
+  runInAction(() => {
+    adminPanelStore.usersByID = usersByID;
+    adminPanelStore.agenciesByID = agenciesByID;
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const agencyProvisioningTab = screen.getByText("Agency Provisioning");
+  fireEvent.click(agencyProvisioningTab);
+
+  const createUserButton = screen.getByText("Create Agency");
+  fireEvent.click(createUserButton);
+
+  const createNewAgencyModalTitle = screen.getByText("Create New Agency");
+  const editUserModalTitle = screen.queryByText("Edit Agency Information");
+  const agencyInformationTab = screen.getByText("Agency Information");
+  const teamMemberRolesTab = screen.getByText("Team Members & Roles");
+  const nameInput = screen.getByText("Name");
+  const stateInput = screen.getByText("State");
+  const countyInput = screen.getByText("County");
+  const systemsInput = screen.getByText("Systems");
+  const noSystemsSelectedMessage = screen.getByText("No systems selected");
+  const dashboardEnabledInput = screen.getByText("Dashboard enabled");
+  const superagencyInput = screen.getAllByText("Superagency")[0];
+  const childAgencyInput = screen.getAllByText("Child Agency")[0];
+  const cancelButton = screen.getByText("Cancel");
+  const saveButton = screen.getByText("Save");
+
+  expect(createNewAgencyModalTitle).toBeInTheDocument();
+  expect(editUserModalTitle).toBeNull();
+  expect(agencyInformationTab).toBeInTheDocument();
+  expect(teamMemberRolesTab).toBeInTheDocument();
+  expect(nameInput).toBeInTheDocument();
+  expect(stateInput).toBeInTheDocument();
+  expect(countyInput).toBeInTheDocument();
+  expect(systemsInput).toBeInTheDocument();
+  expect(noSystemsSelectedMessage).toBeInTheDocument();
+  expect(dashboardEnabledInput).toBeInTheDocument();
+  expect(superagencyInput).toBeInTheDocument();
+  expect(childAgencyInput).toBeInTheDocument();
+  expect(cancelButton).toBeInTheDocument();
+  expect(saveButton).toBeInTheDocument();
+  expect(getComputedStyle(saveButton).opacity).toBe("0.2"); // Indicating the button is disabled
+
+  fireEvent.click(teamMemberRolesTab);
+  const teamMember = screen.getByText("Anne Teak");
+  expect(teamMember).toBeInTheDocument();
+});
+
+test("Clicking on an existing agency card opens the edit agency modal", () => {
+  runInAction(() => {
+    adminPanelStore.usersByID = usersByID;
+    adminPanelStore.agenciesByID = agenciesByID;
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const agencyProvisioningTab = screen.getByText("Agency Provisioning");
+  fireEvent.click(agencyProvisioningTab);
+
+  const agency1Card = screen.getByText("Super Agency");
+  fireEvent.click(agency1Card);
+
+  const editAgencyModalTitle = screen.getByText("Edit Agency Information");
+  const createNewAgencyModalTitle = screen.queryByText("Create New Agency");
+  const agencyInformationTab = screen.getByText("Agency Information");
+  const teamMemberRolesTab = screen.getByText("Team Members & Roles");
+  const nameInput = screen.getByLabelText("Name");
+  const stateInput = screen.getByLabelText("State");
+  const countyInput = screen.getByText("County");
+  const systemsInput = screen.getByText("Systems");
+  const lawEnforcementSystem = screen.getByText("law enforcement");
+  const noSystemsSelectedMessage = screen.queryByText("No systems selected");
+  const noChildAgenciesSelectedMessage = screen.queryByText(
+    "No child agencies selected"
+  );
+  const dashboardEnabledInput = screen.getByText("Dashboard enabled");
+  const superagencyInput: HTMLInputElement =
+    screen.getByLabelText("Superagency");
+  const childAgencyInput: HTMLInputElement =
+    screen.getByLabelText("Child Agency");
+  const childAgencyChip = screen.getAllByText("Child Agency")[0];
+  const cancelButton = screen.getByText("Cancel");
+  const saveButton = screen.getByText("Save");
+
+  /** Expect all agency provisioning modal elements to be present */
+  expect(editAgencyModalTitle).toBeInTheDocument();
+  expect(createNewAgencyModalTitle).toBeNull();
+  expect(agencyInformationTab).toBeInTheDocument();
+  expect(teamMemberRolesTab).toBeInTheDocument();
+  expect(nameInput).toHaveValue("Super Agency");
+  expect(stateInput).toHaveValue("Arizona");
+  expect(countyInput).toBeInTheDocument();
+  expect(systemsInput).toBeInTheDocument();
+  expect(lawEnforcementSystem).toBeInTheDocument();
+  expect(noSystemsSelectedMessage).toBeNull();
+  expect(dashboardEnabledInput).toBeInTheDocument();
+  expect(superagencyInput).toBeInTheDocument();
+  expect(superagencyInput.checked).toEqual(true);
+  expect(noChildAgenciesSelectedMessage).toBeNull();
+  expect(childAgencyInput).toBeInTheDocument();
+  expect(childAgencyInput.checked).toEqual(false);
+  expect(childAgencyChip).toBeInTheDocument();
+  expect(cancelButton).toBeInTheDocument();
+  expect(saveButton).toBeInTheDocument();
+  expect(getComputedStyle(saveButton).opacity).toBe("0.2"); // Indicating the button is disabled
+
+  fireEvent.click(teamMemberRolesTab);
+  const teamMember = screen.getAllByText("Anne Teak")[0];
+  expect(teamMember).toBeInTheDocument();
+});
