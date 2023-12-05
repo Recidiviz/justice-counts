@@ -69,8 +69,7 @@ export const Home = observer(() => {
 
   useEffect(() => {
     homeStore.fetchLatestReportsAndMetricsAndHydrateStore(agencyId);
-    userStore.updateUserAgencyPageVisit(agencyId);
-  }, [agencyId, homeStore, userStore]);
+  }, [agencyId, homeStore]);
 
   if (!agencyMetrics || loading) {
     return <Loading />;
