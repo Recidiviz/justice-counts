@@ -66,6 +66,7 @@ export const InteractiveSearchList = ({
      * within a user's existing agencies [which has a `boxActionType === 'DELETE'`])
      */
     return (
+      selections.has(listItem.id) ||
       selections.has(+listItem.id) ||
       (listItem.action && boxActionType && listItem.action !== boxActionType)
     );
@@ -161,9 +162,11 @@ export const InteractiveSearchList = ({
         />
         <label htmlFor="search-input">
           {metadata?.searchBoxLabel}
-          <Styled.LabelButton onClick={resetFilteredList}>
-            Clear
-          </Styled.LabelButton>
+          {searchInputValue && (
+            <Styled.LabelButton onClick={resetFilteredList}>
+              Clear
+            </Styled.LabelButton>
+          )}
         </label>
       </Styled.InputLabelWrapper>
     </>
