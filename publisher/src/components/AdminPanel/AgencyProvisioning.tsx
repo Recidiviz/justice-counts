@@ -14,12 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
-/* eslint-disable simple-import-sort/exports */
-export * from "./UserProvisioning";
-export * from "./UserProvisioningOverview";
-export * from "./AgencyProvisioning";
-export * from "./AgencyProvisioningOverview";
-export * from "./InteractiveSearchList";
-export * from "./AdminPanel";
-export * from "./types";
-export * from "./SaveConfirmation";
+
+import React from "react";
+
+import { ProvisioningProps } from "./types";
+
+export const AgencyProvisioning: React.FC<ProvisioningProps> = () => {
+  return <div>Agency Provisioning Modal</div>;
+};

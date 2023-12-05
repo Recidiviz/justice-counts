@@ -22,7 +22,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { Setting, SettingType, UserProvisioningOverview } from ".";
+import {
+  AgencyProvisioningOverview,
+  Setting,
+  SettingType,
+  UserProvisioningOverview,
+} from ".";
 import * as Styled from "./AdminPanel.styles";
 
 export const AdminPanel = observer(() => {
@@ -49,9 +54,11 @@ export const AdminPanel = observer(() => {
     },
   ];
 
-  useEffect(() => {
-    fetchUsersAndAgencies();
-  }, [fetchUsersAndAgencies]);
+  useEffect(
+    () => fetchUsersAndAgencies(),
+    /** Refetch users and agencies when switching between User/Agency Provisioning tabs */
+    [currentProvisioningView, fetchUsersAndAgencies]
+  );
 
   return (
     <Styled.AdminPanelContainer>
@@ -72,7 +79,7 @@ export const AdminPanel = observer(() => {
             <UserProvisioningOverview />
           )}
           {currentProvisioningView === Setting.AGENCIES && (
-            <div>Agency Provisioning Component</div>
+            <AgencyProvisioningOverview />
           )}
         </Styled.ProvisioningViewContainer>
       </Styled.AdminPanelWrapper>

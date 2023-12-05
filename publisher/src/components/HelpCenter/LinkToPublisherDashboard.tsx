@@ -36,25 +36,27 @@ export const LinkToPublisher: React.FC<
   );
 });
 
-export const LinkToDashboard: React.FC<PropsWithChildren> = observer(
-  ({ children }) => {
-    const { api, userStore } = useStore();
-    const agencyIdLocalStorage = localStorage.getItem("agencyId");
-    const agencyId =
-      agencyIdLocalStorage || userStore.getInitialAgencyId()?.toLocaleString();
-    const agencyName = agencyId && userStore.getAgency(agencyId)?.name;
+export const LinkToDashboard: React.FC<
+  PropsWithChildren & { agencyID?: string }
+> = observer(({ children, agencyID }) => {
+  const { api, userStore } = useStore();
+  const agencyIdLocalStorage = localStorage.getItem("agencyId");
+  const agencyId =
+    agencyID ||
+    agencyIdLocalStorage ||
+    userStore.getInitialAgencyId()?.toLocaleString();
+  const agencyName = agencyId && userStore.getAgency(agencyId)?.name;
 
-    if (!agencyName) return <>{children}</>;
+  if (!agencyName) return <>{children}</>;
 
-    const url = generateDashboardURL(api.environment, agencyName);
+  const url = generateDashboardURL(api.environment, agencyName);
 
-    return (
-      <a href={url} target="_blank" rel="noreferrer noopener">
-        {children}
-      </a>
-    );
-  }
-);
+  return (
+    <a href={url} target="_blank" rel="noreferrer noopener">
+      {children}
+    </a>
+  );
+});
 
 export const generateDashboardURL = (
   env: string | undefined,
