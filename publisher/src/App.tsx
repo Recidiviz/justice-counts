@@ -41,7 +41,7 @@ const DOWN_FOR_MAINTENANCE = false;
 
 const App: React.FC = (): ReactElement => {
   const location = useLocation();
-  const { userStore, api } = useStore();
+  const { userStore, api, authStore } = useStore();
   useEffect(() => {
     trackNavigation(location.pathname + location.search);
   }, [location]);
@@ -89,10 +89,11 @@ const App: React.FC = (): ReactElement => {
               <Navigate to={`/agency/${initialAgency}/${REPORTS_LOWERCASE}`} />
             }
           />
-          {gateToAllowedEnvironment(api.environment, [
-            Environment.LOCAL,
-            Environment.STAGING,
-          ]) && <Route path="/admin-panel" element={<AdminPanel />} />}
+          {authStore.isGlobalJusticeCountsAdmin &&
+            gateToAllowedEnvironment(api.environment, [
+              Environment.LOCAL,
+              Environment.STAGING,
+            ]) && <Route path="/admin-panel" element={<AdminPanel />} />}
         </Routes>
       </PageWrapper>
       <Footer />
