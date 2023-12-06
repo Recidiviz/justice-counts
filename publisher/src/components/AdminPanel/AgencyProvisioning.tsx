@@ -304,6 +304,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         agencyProvisioningUpdates.state_code?.toLocaleLowerCase() !==
           selectedAgency.state_code?.toLocaleLowerCase()
       : Boolean(agencyProvisioningUpdates.state_code);
+
     /**
      * Note: the following checks are only relevant to existing agency updates, since the 'Save' button for creating a new
      * agency only requires the above `name` and `state_code` to be enabled.
