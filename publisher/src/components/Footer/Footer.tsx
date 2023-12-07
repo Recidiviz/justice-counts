@@ -26,8 +26,6 @@ import {
   FooterBottom,
   FooterBottomLogos,
   FooterBottomText,
-  FooterTop,
-  FooterTopRight,
   FooterWrapper,
 } from "./Footer.styles";
 
@@ -44,13 +42,6 @@ const Footer = () => {
         target="_blank"
         rel="noreferrer"
       >
-        <FooterTop>
-          ©2022{" "}
-          <FooterTopRight>
-            The Council of State Governments Justice Center. All Rights
-            Reserved.
-          </FooterTopRight>
-        </FooterTop>
         <FooterBottom>
           <FooterBottomText>
             This Web site is funded in part through a grant from the Bureau of
@@ -59,7 +50,8 @@ const Footer = () => {
             components operate, control, are responsible for, or necessarily
             endorse, this Web site (including, without limitation, its content,
             technical infrastructure, and policies, and any services or tools
-            provided).
+            provided). The Council of State Governments Justice Center. All
+            Rights Reserved. © 2023
           </FooterBottomText>
           <FooterBottomLogos>
             <img src={recidivizLogo} alt="" />
