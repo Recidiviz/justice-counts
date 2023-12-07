@@ -45,7 +45,7 @@ export const Router = () => {
 
   useEffect(() => {
     userStore.updateUserAgencyPageVisit(agencyId);
-  });
+  }, [userStore, agencyId]);
 
   return (
     <>
