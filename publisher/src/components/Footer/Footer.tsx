@@ -20,7 +20,7 @@ import { useLocation } from "react-router-dom";
 
 import bjaLogo from "../assets/bja-logo.svg";
 import dojLogo from "../assets/doj-logo.svg";
-import csgLogo from "../assets/footer-csg-logo.svg";
+import csgLogo from "../assets/footer-csg-logo.png";
 import recidivizLogo from "../assets/recidiviz-logo.svg";
 import {
   FooterBottom,
@@ -28,7 +28,6 @@ import {
   FooterBottomText,
   FooterTop,
   FooterTopRight,
-  FooterTopRightLogo,
   FooterWrapper,
 } from "./Footer.styles";
 
@@ -48,8 +47,8 @@ const Footer = () => {
         <FooterTop>
           ©2022{" "}
           <FooterTopRight>
-            The Council of State Governments. All Rights Reserved.{" "}
-            <FooterTopRightLogo src={csgLogo} alt="" />
+            The Council of State Governments Justice Center. All Rights
+            Reserved.
           </FooterTopRight>
         </FooterTop>
         <FooterBottom>
@@ -66,6 +65,7 @@ const Footer = () => {
             <img src={recidivizLogo} alt="" />
             <img src={bjaLogo} alt="" />
             <img src={dojLogo} alt="" />
+            <img src={csgLogo} alt="" style={{ width: "110px" }} />
           </FooterBottomLogos>
         </FooterBottom>
       </a>
