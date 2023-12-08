@@ -48,6 +48,7 @@ import {
   SaveConfirmationTypes,
   SelectionInputBoxType,
   SelectionInputBoxTypes,
+  Setting,
   StateCodeKey,
   StateCodesToStateNames,
   userRoles,
@@ -56,7 +57,12 @@ import {
 import * as Styled from "./AdminPanel.styles";
 
 export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
-  ({ selectedIDToEdit, closeModal }) => {
+  ({
+    selectedIDToEdit,
+    activeSecondaryModal,
+    openSecondaryModal,
+    closeModal,
+  }) => {
     const { adminPanelStore } = useStore();
     const {
       users,
@@ -170,6 +176,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           })),
         ]
       : [];
+
+    console.log("availableTeamMembers", availableTeamMembers);
+    console.log("currentTeamMembers", currentTeamMembers);
 
     /** Whether or not we are performing an add/delete action on a list of users/team members */
     const isAddUserAction =
@@ -438,7 +447,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     }, [selectedAgency, agencyProvisioningUpdates, getCSGTeamMembersIDToRoles]);
 
     return (
-      <Styled.ModalContainer>
+      <Styled.ModalContainer offScreen={activeSecondaryModal === Setting.USERS}>
         {showSaveConfirmation.show ? (
           <SaveConfirmation
             type={showSaveConfirmation.type}
@@ -950,9 +959,11 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         )}
 
                         {/* Create New User Button (TODO(#1058)) */}
-                        <Styled.ActionButton>
-                          Create New User
-                        </Styled.ActionButton>
+                        {activeSecondaryModal !== Setting.AGENCIES && (
+                          <Styled.ActionButton onClick={openSecondaryModal}>
+                            Create New User
+                          </Styled.ActionButton>
+                        )}
                       </Styled.FormActions>
                     </Styled.InputLabelWrapper>
 

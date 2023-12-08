@@ -36,11 +36,17 @@ import {
   SaveConfirmation,
   SaveConfirmationType,
   SaveConfirmationTypes,
+  Setting,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
 
 export const UserProvisioning: React.FC<ProvisioningProps> = observer(
-  ({ selectedIDToEdit, closeModal }) => {
+  ({
+    selectedIDToEdit,
+    activeSecondaryModal,
+    openSecondaryModal,
+    closeModal,
+  }) => {
     const { adminPanelStore } = useStore();
     const {
       agencies,
@@ -252,7 +258,9 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
         : (hasNameUpdate && hasEmailUpdate) !== true);
 
     return (
-      <Styled.ModalContainer>
+      <Styled.ModalContainer
+        offScreen={activeSecondaryModal === Setting.AGENCIES}
+      >
         {showSaveConfirmation.show ? (
           <SaveConfirmation
             type={showSaveConfirmation.type}
@@ -372,7 +380,11 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
                   )}
 
                   {/* Create New Agency Button (TODO(#1058)) */}
-                  <Styled.ActionButton>Create New Agency</Styled.ActionButton>
+                  {activeSecondaryModal !== Setting.USERS && (
+                    <Styled.ActionButton onClick={openSecondaryModal}>
+                      Create New Agency
+                    </Styled.ActionButton>
+                  )}
                 </Styled.FormActions>
 
                 {/* Add Agencies List */}
