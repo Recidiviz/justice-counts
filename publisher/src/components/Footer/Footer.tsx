@@ -20,15 +20,12 @@ import { useLocation } from "react-router-dom";
 
 import bjaLogo from "../assets/bja-logo.svg";
 import dojLogo from "../assets/doj-logo.svg";
-import csgLogo from "../assets/footer-csg-logo.svg";
+import csgLogo from "../assets/footer-csg-logo.png";
 import recidivizLogo from "../assets/recidiviz-logo.svg";
 import {
   FooterBottom,
   FooterBottomLogos,
   FooterBottomText,
-  FooterTop,
-  FooterTopRight,
-  FooterTopRightLogo,
   FooterWrapper,
 } from "./Footer.styles";
 
@@ -45,13 +42,6 @@ const Footer = () => {
         target="_blank"
         rel="noreferrer"
       >
-        <FooterTop>
-          ©2022{" "}
-          <FooterTopRight>
-            The Council of State Governments. All Rights Reserved.{" "}
-            <FooterTopRightLogo src={csgLogo} alt="" />
-          </FooterTopRight>
-        </FooterTop>
         <FooterBottom>
           <FooterBottomText>
             This Web site is funded in part through a grant from the Bureau of
@@ -60,12 +50,14 @@ const Footer = () => {
             components operate, control, are responsible for, or necessarily
             endorse, this Web site (including, without limitation, its content,
             technical infrastructure, and policies, and any services or tools
-            provided).
+            provided). The Council of State Governments Justice Center. All
+            Rights Reserved. © {new Date().getUTCFullYear()}
           </FooterBottomText>
           <FooterBottomLogos>
             <img src={recidivizLogo} alt="" />
             <img src={bjaLogo} alt="" />
             <img src={dojLogo} alt="" />
+            <img src={csgLogo} alt="" style={{ height: "24px" }} />
           </FooterBottomLogos>
         </FooterBottom>
       </a>

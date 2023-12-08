@@ -22,7 +22,7 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-export const FOOTER_HEIGHT_WITHOUT_MARGIN = 82;
+export const FOOTER_HEIGHT_WITHOUT_MARGIN = 64;
 export const FOOTER_HEIGHT_WITH_MARGIN = FOOTER_HEIGHT_WITHOUT_MARGIN + 60;
 
 export const FooterWrapper = styled.footer<{ isPageDataUpload?: boolean }>`

@@ -25,9 +25,8 @@ import {
 import styled from "styled-components/macro";
 
 import { rem } from "../../utils";
+import { FOOTER_HEIGHT_WITHOUT_MARGIN } from "../Footer";
 import { OpacityGradient } from "../Forms";
-
-const FOOTER_HEIGHT = 144;
 
 export const DataUploadContainer = styled.div`
   width: 100%;
@@ -435,7 +434,7 @@ export const BlueText = styled.span`
 
 export const DataUploadLoading = styled.div`
   width: 100%;
-  height: calc(100vh - ${FOOTER_HEIGHT}px);
+  height: calc(100vh - ${FOOTER_HEIGHT_WITHOUT_MARGIN}px);
   display: flex;
   flex-direction: column;
   justify-content: center;
