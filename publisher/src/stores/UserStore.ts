@@ -253,7 +253,7 @@ class UserStore {
         method: "PUT",
       })) as Response;
       if (response.status !== 200) {
-        throw new Error("There was an issue...");
+        throw new Error("There was an issue updating the user/agency visit.");
       }
     } catch (error) {
       if (error instanceof Error) return error.message;
