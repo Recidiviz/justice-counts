@@ -51,7 +51,7 @@ const Footer = () => {
             endorse, this Web site (including, without limitation, its content,
             technical infrastructure, and policies, and any services or tools
             provided). The Council of State Governments Justice Center. All
-            Rights Reserved. © 2023
+            Rights Reserved. © {new Date().getUTCFullYear()}
           </FooterBottomText>
           <FooterBottomLogos>
             <img src={recidivizLogo} alt="" />
