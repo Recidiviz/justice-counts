@@ -57,7 +57,7 @@ const Footer = () => {
             <img src={recidivizLogo} alt="" />
             <img src={bjaLogo} alt="" />
             <img src={dojLogo} alt="" />
-            <img src={csgLogo} alt="" style={{ width: "110px" }} />
+            <img src={csgLogo} alt="" style={{ height: "24px" }} />
           </FooterBottomLogos>
         </FooterBottom>
       </a>
