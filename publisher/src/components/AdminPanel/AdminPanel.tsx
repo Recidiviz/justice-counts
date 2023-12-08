@@ -55,7 +55,9 @@ export const AdminPanel = observer(() => {
   ];
 
   useEffect(
-    () => fetchUsersAndAgencies(),
+    () => {
+      fetchUsersAndAgencies();
+    },
     /** Refetch users and agencies when switching between User/Agency Provisioning tabs */
     [currentProvisioningView, fetchUsersAndAgencies]
   );

@@ -190,9 +190,8 @@ class AdminPanelStore {
     }
   }
 
-  fetchUsersAndAgencies() {
-    this.fetchUsers();
-    this.fetchAgencies();
+  async fetchUsersAndAgencies() {
+    await Promise.all([this.fetchUsers(), this.fetchAgencies()]);
     runInAction(() => {
       this.loading = false;
     });
