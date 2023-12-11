@@ -407,17 +407,6 @@ function MetricAvailability({ goToDefineMetrics }: MetricAvailabilityProps) {
                   </RadioButtonsWrapper>
                 </Styled.SettingRow>
               )}
-            {metricEnabled && (
-              <Styled.LeftAlignedButtonWrapper>
-                <Button
-                  label="Define Metric ->"
-                  onClick={goToDefineMetrics}
-                  labelColor="blue"
-                  noHover
-                  noSidePadding
-                />
-              </Styled.LeftAlignedButtonWrapper>
-            )}
           </Styled.SettingRowsContainer>
           {hasDisaggregations && (
             <Styled.BreakdownsSection disabled={!metricEnabled}>
@@ -524,16 +513,18 @@ function MetricAvailability({ goToDefineMetrics }: MetricAvailabilityProps) {
                   </Styled.DimensionsContainer>
                 );
               })}
-              {metricEnabled && (
-                <Button
-                  label="Define Metric Breakdowns ->"
-                  onClick={goToDefineMetrics}
-                  labelColor="blue"
-                  noHover
-                  noSidePadding
-                />
-              )}
             </Styled.BreakdownsSection>
+          )}
+          {metricEnabled && (
+            <Styled.LeftAlignedButtonWrapper>
+              <Button
+                label="Define Metrics ->"
+                onClick={goToDefineMetrics}
+                labelColor="blue"
+                noHover
+                noSidePadding
+              />
+            </Styled.LeftAlignedButtonWrapper>
           )}
         </Styled.InnerWrapper>
       </Styled.Wrapper>
