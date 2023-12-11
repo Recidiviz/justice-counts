@@ -40,7 +40,10 @@ const usersByID = groupBy(
 const agenciesByID = groupBy(
   mockAgenciesResponse.agencies.map((agency) => ({
     ...agency,
-    team: groupBy(agency.team, (member) => member.user_account_id),
+    team: groupBy(
+      agency.team,
+      (member) => member.user_account_id || member.auth0_user_id
+    ),
   })),
   (agency) => agency.id
 );
