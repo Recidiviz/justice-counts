@@ -22,7 +22,7 @@
     "react-dom": "^18.2.0",
     "react-is": "^18.2.0",
     "react-router-dom": "^6",
-    "react-tooltip": "^5.24.0",
+    "react-tooltip": "^5.25.0",
     "recharts": "^2.4.0",
     "recharts-to-png": "^2.3.0",
     "styled-components": "^5.3.6",
