@@ -513,16 +513,20 @@ function MetricAvailability({ goToDefineMetrics }: MetricAvailabilityProps) {
                   </Styled.DimensionsContainer>
                 );
               })}
-              {metricEnabled && (
-                <Button
-                  label="Define Metrics ->"
-                  onClick={goToDefineMetrics}
-                  labelColor="blue"
-                  noHover
-                  noSidePadding
-                />
-              )}
             </Styled.BreakdownsSection>
+          )}
+          {metricEnabled && (
+            <Styled.LeftAlignedButtonWrapper>
+              <Button
+                label={`Define Metric ${
+                  hasDisaggregations ? `and Breakdowns ` : ``
+                }->`}
+                onClick={goToDefineMetrics}
+                labelColor="blue"
+                noHover
+                noSidePadding
+              />
+            </Styled.LeftAlignedButtonWrapper>
           )}
         </Styled.InnerWrapper>
       </Styled.Wrapper>

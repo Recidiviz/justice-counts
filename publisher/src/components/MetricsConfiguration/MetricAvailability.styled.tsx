@@ -84,7 +84,7 @@ export const SettingRowsContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 64px;
+  margin-bottom: 32px;
 `;
 
 export const SettingRow = styled.div`
@@ -169,6 +169,11 @@ export const MonthSelectionDropdownContainer = styled.div<{
         background-color: ${palette.solid.darkblue};
       }
     `};
+`;
+
+export const LeftAlignedButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;
 `;
 
 export const BreakdownsSection = styled.div<{ disabled: boolean }>`
