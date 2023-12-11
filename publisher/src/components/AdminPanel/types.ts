@@ -39,18 +39,24 @@ export enum SaveConfirmationTypes {
 
 export type SaveConfirmationType = `${SaveConfirmationTypes}`;
 
+export type ProvisioningProps = {
+  selectedIDToEdit?: string | number;
+  closeModal: () => void;
+};
+
 /** Agency Types */
 
 export type Agency = {
-  id: number;
+  id: string | number;
   name: string;
   systems: AgencySystems[];
   state: StateCodeValue;
-  state_code: keyof typeof StateCodes;
-  fips_county_code?: keyof typeof FipsCountyCodes | null;
+  state_code: StateCodeKey | null;
+  fips_county_code: FipsCountyCodeKey | null;
   team: AgencyTeamMember[];
   super_agency_id: number | null;
   is_superagency: boolean | null;
+  child_agency_ids: number[];
   is_dashboard_enabled: boolean | null;
   created_at: string | null;
   settings: {
@@ -58,6 +64,10 @@ export type Agency = {
     value: string | null;
     source_id: number;
   }[];
+};
+
+export type AgencyWithTeamByID = Omit<Agency, "team"> & {
+  team: Record<string, AgencyTeamMember[]>;
 };
 
 export type AgencyResponse = {
@@ -72,6 +82,21 @@ export const AgencyProvisioningSettings = {
 
 export type AgencyProvisioningSetting =
   (typeof AgencyProvisioningSettings)[keyof typeof AgencyProvisioningSettings];
+
+export type AgencyProvisioningUpdates = {
+  agency_id?: number;
+  name: string;
+  state_code: StateCodeKey | null;
+  fips_county_code: FipsCountyCodeKey | null;
+  systems: AgencySystems[];
+  is_dashboard_enabled: boolean | null;
+  super_agency_id: number | null; // If this is set, then the agency is a child agency belonging to the superagency w/ this ID
+  is_superagency: boolean | null;
+  child_agency_ids: number[];
+  team: AgencyTeamUpdates[];
+};
+
+export type AgencyTeamUpdates = { user_account_id: number; role: UserRole };
 
 /** User Types */
 
@@ -89,6 +114,13 @@ export type UserWithAgenciesByID = Omit<User, "agencies"> & {
 
 export type UserResponse = { users: User[] };
 
+export enum UserRoles {
+  AGENCY_ADMIN = "AGENCY_ADMIN",
+  JUSTICE_COUNTS_ADMIN = "JUSTICE_COUNTS_ADMIN",
+  CONTRIBUTOR = "CONTRIBUTOR",
+  READ_ONLY = "READ_ONLY",
+}
+
 export const userRoles = [
   "AGENCY_ADMIN",
   "JUSTICE_COUNTS_ADMIN",
@@ -102,6 +134,10 @@ export type UserProvisioningUpdates = {
   name: string;
   email: string;
   agency_ids: number[];
+};
+
+export type UserRoleUpdates = {
+  [id: number]: UserRole;
 };
 
 /** Search Feature Types */
@@ -137,7 +173,9 @@ export type SearchableSetKeys = Set<number | string>;
 
 export type SearchableEntity =
   | Agency
+  | AgencyWithTeamByID
   | User
+  | UserWithAgenciesByID
   | AgencyTeamMember
   | SearchableListItem;
 
@@ -170,7 +208,7 @@ export type InteractiveSearchListProps = {
 
 /** State and County Code Types */
 
-export const StateCodes = {
+export const StateCodesToStateNames = {
   us_ak: "Alaska",
   us_al: "Alabama",
   us_ar: "Arkansas",
@@ -225,9 +263,10 @@ export const StateCodes = {
   us_wy: "Wyoming",
 } as const;
 
-export type StateCodeKey = keyof typeof StateCodes;
+export type StateCodeKey = keyof typeof StateCodesToStateNames;
 
-export type StateCodeValue = (typeof StateCodes)[keyof typeof StateCodes];
+export type StateCodeValue =
+  (typeof StateCodesToStateNames)[keyof typeof StateCodesToStateNames];
 
 /**
  * Values were taken from `fips.csv` in the recidiviz/common/data_sets/fips.csv directory

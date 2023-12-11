@@ -37,6 +37,7 @@ export type AgencySystems =
   | "SUPERAGENCY";
 
 export type AgencyTeamMember = {
+  user_account_id: number | null;
   auth0_user_id: string;
   name: string;
   email: string;

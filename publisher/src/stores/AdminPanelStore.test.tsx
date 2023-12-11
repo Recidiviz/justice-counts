@@ -17,6 +17,7 @@
 
 import { AgencyResponse, UserResponse } from "../components/AdminPanel";
 import { groupBy } from "../utils";
+import { rootStore } from ".";
 import AdminPanelStore from "./AdminPanelStore";
 import API from "./API";
 
@@ -27,6 +28,7 @@ const MockAuthStore = jest.fn(() => {
 }) as jest.Mock;
 const api = new API(MockAuthStore());
 const adminPanelStore = new AdminPanelStore(api);
+rootStore.adminPanelStore = adminPanelStore;
 
 export const mockUsersResponse = {
   users: [
@@ -47,6 +49,7 @@ export const mockUsersResponse = {
           state: "New York",
           state_code: "us_ny",
           super_agency_id: null,
+          child_agency_ids: [],
           systems: ["PRISONS"],
           team: [],
         },
@@ -69,6 +72,7 @@ export const mockUsersResponse = {
           state: "New York",
           state_code: "us_ny",
           super_agency_id: null,
+          child_agency_ids: [],
           systems: ["PRISONS", "SUPERVISION", "PAROLE", "PROBATION"],
           team: [],
         },
@@ -83,6 +87,7 @@ export const mockUsersResponse = {
           state: "New York",
           state_code: "us_ny",
           super_agency_id: null,
+          child_agency_ids: [],
           systems: ["PRISONS"],
           team: [],
         },
@@ -97,6 +102,7 @@ export const mockUsersResponse = {
           state: "Oregon",
           state_code: "us_or",
           super_agency_id: null,
+          child_agency_ids: [],
           systems: ["JAILS"],
           team: [],
         },
@@ -119,6 +125,7 @@ export const mockUsersResponse = {
           state: "New York",
           state_code: "us_ny",
           super_agency_id: null,
+          child_agency_ids: [],
           systems: ["PRISONS", "SUPERVISION", "PAROLE", "PROBATION"],
           team: [],
         },
@@ -133,6 +140,7 @@ export const mockUsersResponse = {
           state: "New York",
           state_code: "us_ny",
           super_agency_id: null,
+          child_agency_ids: [],
           systems: ["PRISONS"],
           team: [],
         },
@@ -148,12 +156,13 @@ export const mockAgenciesResponse = {
       fips_county_code: null,
       id: 1011,
       is_dashboard_enabled: null,
-      is_superagency: null,
+      is_superagency: true,
       name: "Super Agency",
       settings: [],
       state: "Arizona",
       state_code: "us_az",
       super_agency_id: null,
+      child_agency_ids: [11],
       systems: ["LAW_ENFORCEMENT"],
       team: [
         {
@@ -162,6 +171,7 @@ export const mockAgenciesResponse = {
           invitation_status: null,
           name: "Anne Teak",
           role: "JUSTICE_COUNTS_ADMIN",
+          user_account_id: 1,
         },
       ],
     },
@@ -176,6 +186,7 @@ export const mockAgenciesResponse = {
       state: "California",
       state_code: "us_ca",
       super_agency_id: 10,
+      child_agency_ids: [],
       systems: ["SUPERVISION"],
       team: [
         {
@@ -184,6 +195,7 @@ export const mockAgenciesResponse = {
           invitation_status: null,
           name: "Liz Erd",
           role: "JUSTICE_COUNTS_ADMIN",
+          user_account_id: 2,
         },
       ],
     },
@@ -197,7 +209,8 @@ export const mockAgenciesResponse = {
       settings: [],
       state: "California",
       state_code: "us_ca",
-      super_agency_id: 10,
+      super_agency_id: 1011,
+      child_agency_ids: [],
       systems: ["LAW_ENFORCEMENT"],
       team: [
         {
@@ -206,6 +219,7 @@ export const mockAgenciesResponse = {
           invitation_status: null,
           name: "Liz Erd",
           role: "JUSTICE_COUNTS_ADMIN",
+          user_account_id: 2,
         },
       ],
     },

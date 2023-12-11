@@ -15,13 +15,22 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystems } from "@justice-counts/common/types";
+import { AgencySystems, AgencyTeamMember } from "@justice-counts/common/types";
+import { removeSnakeCase } from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
 import {
   Agency,
+  AgencyProvisioningUpdates,
   AgencyResponse,
+  AgencyTeamUpdates,
+  AgencyWithTeamByID,
+  FipsCountyCodeKey,
+  FipsCountyCodes,
   SearchableEntity,
+  SearchableListItem,
+  StateCodeKey,
+  StateCodesToStateNames,
   User,
   UserProvisioningUpdates,
   UserResponse,
@@ -30,6 +39,25 @@ import {
 import { groupBy } from "../utils";
 import API from "./API";
 
+const initialEmptyUserProvisioningUpdates = {
+  name: "",
+  email: "",
+  agency_ids: [],
+};
+
+const initialEmptyAgencyProvisioningUpdates = {
+  agency_id: undefined,
+  name: "",
+  state_code: null,
+  fips_county_code: null,
+  systems: [],
+  is_dashboard_enabled: null,
+  super_agency_id: null,
+  is_superagency: null,
+  child_agency_ids: [],
+  team: [],
+};
+
 class AdminPanelStore {
   api: API;
 
@@ -37,11 +65,13 @@ class AdminPanelStore {
 
   usersByID: Record<string, UserWithAgenciesByID[]>;
 
-  agenciesByID: Record<string, Agency[]>;
+  agenciesByID: Record<string, AgencyWithTeamByID[]>;
 
   systems: AgencySystems[];
 
   userProvisioningUpdates: UserProvisioningUpdates;
+
+  agencyProvisioningUpdates: AgencyProvisioningUpdates;
 
   constructor(api: API) {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -50,19 +80,42 @@ class AdminPanelStore {
     this.usersByID = {};
     this.agenciesByID = {};
     this.systems = [];
-    this.userProvisioningUpdates = {
-      name: "",
-      email: "",
-      agency_ids: [],
-    };
+    this.userProvisioningUpdates = initialEmptyUserProvisioningUpdates;
+    this.agencyProvisioningUpdates = initialEmptyAgencyProvisioningUpdates;
   }
 
   get users(): UserWithAgenciesByID[] {
     return AdminPanelStore.objectToSortedFlatMappedValues(this.usersByID);
   }
 
-  get agencies(): Agency[] {
+  get agencies(): AgencyWithTeamByID[] {
     return AdminPanelStore.objectToSortedFlatMappedValues(this.agenciesByID);
+  }
+
+  get searchableSystems(): SearchableListItem[] {
+    return this.systems.map((system) => ({
+      id: system,
+      name: removeSnakeCase(system.toLocaleLowerCase()),
+    }));
+  }
+
+  /** Returns a list of searchable counties based on the currently selected `state_code` in `agencyProvisioningUpdates` */
+  get searchableCounties(): SearchableListItem[] {
+    if (!this.agencyProvisioningUpdates.state_code) return [];
+    return Object.keys(FipsCountyCodes)
+      .filter(
+        (countyCode) =>
+          this.agencyProvisioningUpdates.state_code &&
+          countyCode.startsWith(this.agencyProvisioningUpdates.state_code)
+      )
+      .map((countyCode) => {
+        const lowercaseCountyCode =
+          countyCode.toLocaleLowerCase() as FipsCountyCodeKey;
+        return {
+          id: countyCode,
+          name: FipsCountyCodes[lowercaseCountyCode],
+        };
+      });
   }
 
   async fetchUsers() {
@@ -77,7 +130,7 @@ class AdminPanelStore {
         throw new Error("There was an issue fetching users.");
       }
 
-      /** Hydrate store with a list of users by user ID (and a list of their agencies grouped by agency ID) from response  */
+      /** Hydrate store with a list of users grouped by user ID (and a list of their agencies grouped by agency ID) from response  */
       runInAction(() => {
         this.usersByID = groupBy(
           data.users.map((user) => ({
@@ -104,9 +157,21 @@ class AdminPanelStore {
         throw new Error("There was an issue fetching agencies.");
       }
 
-      /** Hydrate store with a list of systems and a list of sorted agencies from response  */
+      /**
+       * Hydrate store with a list of systems and a list of agencies grouped by agency ID (and a list of
+       * their team members grouped by user ID) from response
+       */
       runInAction(() => {
-        this.agenciesByID = groupBy(data.agencies, (agency) => agency.id);
+        this.agenciesByID = groupBy(
+          data.agencies.map((agency) => ({
+            ...agency,
+            team: groupBy(
+              agency.team,
+              (member) => member.user_account_id || member.auth0_user_id
+            ),
+          })),
+          (agency) => agency.id
+        );
         this.systems = data.systems;
       });
     } catch (error) {
@@ -137,9 +202,7 @@ class AdminPanelStore {
   }
 
   resetUserProvisioningUpdates() {
-    this.userProvisioningUpdates.name = "";
-    this.userProvisioningUpdates.email = "";
-    this.userProvisioningUpdates.agency_ids = [];
+    this.userProvisioningUpdates = initialEmptyUserProvisioningUpdates;
   }
 
   updateUsers(userResponse: UserResponse) {
@@ -171,7 +234,104 @@ class AdminPanelStore {
     }
   }
 
+  /** Agency Provisioning */
+
+  updateAgencyID(id: number) {
+    this.agencyProvisioningUpdates.agency_id = id;
+  }
+
+  updateAgencyName(name: string) {
+    this.agencyProvisioningUpdates.name = name;
+  }
+
+  updateStateCode(stateCode: StateCodeKey) {
+    const lowercaseStateCode = stateCode?.toLocaleLowerCase() as StateCodeKey;
+    this.agencyProvisioningUpdates.state_code = lowercaseStateCode;
+  }
+
+  updateCountyCode(countyCode: FipsCountyCodeKey | null) {
+    const lowercaseCountyCode =
+      countyCode?.toLocaleLowerCase() as FipsCountyCodeKey;
+    this.agencyProvisioningUpdates.fips_county_code =
+      lowercaseCountyCode || null;
+  }
+
+  updateSystems(systems: AgencySystems[]) {
+    this.agencyProvisioningUpdates.systems = systems;
+  }
+
+  updateIsDashboardEnabled(isDashboardEnabled: boolean | null) {
+    this.agencyProvisioningUpdates.is_dashboard_enabled = isDashboardEnabled;
+  }
+
+  updateIsSuperagency(isSuperagency: boolean | null) {
+    this.agencyProvisioningUpdates.is_superagency = isSuperagency;
+  }
+
+  updateSuperagencyID(superagencyID: number | null) {
+    this.agencyProvisioningUpdates.super_agency_id = superagencyID;
+  }
+
+  updateChildAgencyIDs(childAgencyIDs: number[]) {
+    this.agencyProvisioningUpdates.child_agency_ids = childAgencyIDs;
+  }
+
+  updateTeamMembers(team: AgencyTeamUpdates[]) {
+    this.agencyProvisioningUpdates.team = team;
+  }
+
+  resetAgencyProvisioningUpdates() {
+    this.agencyProvisioningUpdates = initialEmptyAgencyProvisioningUpdates;
+  }
+
+  updateAgencies(agencyResponse: Agency) {
+    const agency = agencyResponse;
+    const agencyWithGroupedTeams = {
+      ...agency,
+      team: groupBy(
+        agency.team,
+        (member) => member.user_account_id || member.auth0_user_id
+      ),
+    };
+    this.agenciesByID[agency.id] = [agencyWithGroupedTeams];
+  }
+
+  async saveAgencyProvisioningUpdates() {
+    try {
+      const response = (await this.api.request({
+        path: `/admin/agency`,
+        method: "PUT",
+        body: this.agencyProvisioningUpdates,
+      })) as Response;
+      const agencyResponse = (await response.json()) as Agency;
+
+      if (response.status !== 200) {
+        throw new Error(
+          "There was an issue saving agency provisioning updates."
+        );
+      }
+
+      runInAction(() => this.updateAgencies(agencyResponse));
+      return response.status;
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
   /** Helpers  */
+
+  /**
+   * Returns a normalized list of state codes & state name.
+   */
+  static get searchableStates(): SearchableListItem[] {
+    return Object.keys(StateCodesToStateNames).map((stateCode) => {
+      const lowercaseStateCode = stateCode.toLocaleLowerCase() as StateCodeKey;
+      return {
+        id: stateCode,
+        name: StateCodesToStateNames[lowercaseStateCode],
+      };
+    });
+  }
 
   /**
    * Sorts a list of agencies/users in ascending/descending alphabetical order.
@@ -179,10 +339,14 @@ class AdminPanelStore {
    * @param order - The sorting order - either "ascending" or "descending". Defaults to ascending order.
    * @returns A sorted array of agency objects.
    */
-  static sortListByName<T extends Agency | User | UserWithAgenciesByID>(
-    list: T[],
-    order: "ascending" | "descending" = "ascending"
-  ): T[] {
+  static sortListByName<
+    T extends
+      | Agency
+      | User
+      | UserWithAgenciesByID
+      | AgencyWithTeamByID
+      | AgencyTeamMember
+  >(list: T[], order: "ascending" | "descending" = "ascending"): T[] {
     return list.sort((a, b) => {
       if (order === "descending") {
         return b.name.localeCompare(a.name);
@@ -217,7 +381,11 @@ class AdminPanelStore {
    * @returns A sorted array of the object's values
    */
   static objectToSortedFlatMappedValues<
-    T extends Agency | UserWithAgenciesByID
+    T extends
+      | Agency
+      | AgencyWithTeamByID
+      | UserWithAgenciesByID
+      | AgencyTeamMember
   >(obj: Record<string, T[]>) {
     return AdminPanelStore.sortListByName(
       Object.values(obj).flatMap((item) => item)

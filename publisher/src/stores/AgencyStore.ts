@@ -326,6 +326,7 @@ class AgencyStore {
 
   inviteTeamMember = (name: string, email: string) => {
     const newTeamMember: AgencyTeamMember = {
+      user_account_id: null,
       auth0_user_id: "",
       name,
       email,

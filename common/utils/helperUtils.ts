@@ -274,3 +274,19 @@ export const validateEmail = (email: string) => {
     .toLowerCase()
     .match(/^([A-Z0-9_+-]\.?)*[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i);
 };
+
+/**
+ * Updates a set of selections by either adding or removing a specified item.
+ * @param prevSet - The previous set of selected items to update
+ * @param item - The item within the set to be added or removed depending on whether or not it already exists within the set
+ * @returns An updated set of selected items after the addition or removal operation.
+ */
+export const toggleAddRemoveSetItem = <T>(prevSet: Set<T>, item: T): Set<T> => {
+  const updatedSet = new Set(prevSet);
+  if (updatedSet.has(item)) {
+    updatedSet.delete(item);
+  } else {
+    updatedSet.add(item);
+  }
+  return updatedSet;
+};
