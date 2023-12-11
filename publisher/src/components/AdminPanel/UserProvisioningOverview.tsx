@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { Button } from "@justice-counts/common/components/Button";
+import { DelayedRender } from "@justice-counts/common/components/DelayedRender";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -109,12 +110,14 @@ export const UserProvisioningOverview = observer(() => {
 
           {/* Opens a secondary modal to create a new agency while in the middle of the create/edit user flow */}
           {activeSecondaryModal === Setting.AGENCIES && (
-            <Modal>
-              <AgencyProvisioning
-                closeModal={closeModal}
-                activeSecondaryModal={activeSecondaryModal}
-              />
-            </Modal>
+            <DelayedRender delay={300}>
+              <Modal>
+                <AgencyProvisioning
+                  closeModal={closeModal}
+                  activeSecondaryModal={activeSecondaryModal}
+                />
+              </Modal>
+            </DelayedRender>
           )}
         </>
       )}

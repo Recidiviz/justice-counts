@@ -33,6 +33,7 @@ import {
   UserProvisioning,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
+import { DelayedRender } from "@justice-counts/common/components/DelayedRender";
 
 export const AgencyProvisioningOverview = observer(() => {
   const { adminPanelStore } = useStore();
@@ -154,12 +155,14 @@ export const AgencyProvisioningOverview = observer(() => {
 
           {/* Opens a secondary modal to create a new agency while in the middle of the create/edit user flow */}
           {activeSecondaryModal === Setting.USERS && (
-            <Modal>
-              <UserProvisioning
-                closeModal={closeModal}
-                activeSecondaryModal={activeSecondaryModal}
-              />
-            </Modal>
+            <DelayedRender delay={300}>
+              <Modal>
+                <UserProvisioning
+                  closeModal={closeModal}
+                  activeSecondaryModal={activeSecondaryModal}
+                />
+              </Modal>
+            </DelayedRender>
           )}
         </>
       )}
