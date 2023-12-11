@@ -18,7 +18,10 @@
 import { Button } from "@justice-counts/common/components/Button";
 import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
-import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
+import {
+  TabOption,
+  TabbedBar,
+} from "@justice-counts/common/components/TabbedBar";
 import {
   AgencySystem,
   AgencySystems,
@@ -126,7 +129,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     >({});
 
     /** Setting Tabs (Agency Information/Team Members) */
-    const settingOptions = [
+    const settingOptions: TabOption[] = [
       {
         key: "agency-information",
         label: AgencyProvisioningSettings.AGENCY_INFORMATION,
@@ -135,14 +138,25 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         selected:
           currentSettingType === AgencyProvisioningSettings.AGENCY_INFORMATION,
       },
-      {
-        key: "team-members-roles",
-        label: AgencyProvisioningSettings.TEAM_MEMBERS_ROLES,
-        onClick: () =>
-          setCurrentSettingType(AgencyProvisioningSettings.TEAM_MEMBERS_ROLES),
-        selected:
-          currentSettingType === AgencyProvisioningSettings.TEAM_MEMBERS_ROLES,
-      },
+      /**
+       * Hide the Team Member & Roles tab if we are in the secondary modal b/c it is not
+       * necessary in that flow.
+       */
+      ...(activeSecondaryModal !== Setting.AGENCIES
+        ? [
+            {
+              key: "team-members-roles",
+              label: AgencyProvisioningSettings.TEAM_MEMBERS_ROLES,
+              onClick: () =>
+                setCurrentSettingType(
+                  AgencyProvisioningSettings.TEAM_MEMBERS_ROLES
+                ),
+              selected:
+                currentSettingType ===
+                AgencyProvisioningSettings.TEAM_MEMBERS_ROLES,
+            },
+          ]
+        : []),
     ];
 
     /** Selected agency to edit */
@@ -176,9 +190,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           })),
         ]
       : [];
-
-    console.log("availableTeamMembers", availableTeamMembers);
-    console.log("currentTeamMembers", currentTeamMembers);
 
     /** Whether or not we are performing an add/delete action on a list of users/team members */
     const isAddUserAction =
@@ -959,11 +970,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         )}
 
                         {/* Create New User Button (TODO(#1058)) */}
-                        {activeSecondaryModal !== Setting.AGENCIES && (
-                          <Styled.ActionButton onClick={openSecondaryModal}>
-                            Create New User
-                          </Styled.ActionButton>
-                        )}
+                        <Styled.ActionButton onClick={openSecondaryModal}>
+                          Create New User
+                        </Styled.ActionButton>
                       </Styled.FormActions>
                     </Styled.InputLabelWrapper>
 

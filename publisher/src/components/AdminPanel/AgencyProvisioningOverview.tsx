@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { Button } from "@justice-counts/common/components/Button";
+import { DelayedRender } from "@justice-counts/common/components/DelayedRender";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -33,7 +34,6 @@ import {
   UserProvisioning,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
-import { DelayedRender } from "@justice-counts/common/components/DelayedRender";
 
 export const AgencyProvisioningOverview = observer(() => {
   const { adminPanelStore } = useStore();
@@ -52,6 +52,7 @@ export const AgencyProvisioningOverview = observer(() => {
     updateChildAgencyIDs,
     updateTeamMembers,
     resetAgencyProvisioningUpdates,
+    resetUserProvisioningUpdates,
   } = adminPanelStore;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -76,6 +77,7 @@ export const AgencyProvisioningOverview = observer(() => {
       resetAgencyProvisioningUpdates();
       setIsModalOpen(false);
     } else {
+      resetUserProvisioningUpdates();
       setActiveSecondaryModal(undefined);
     }
   };

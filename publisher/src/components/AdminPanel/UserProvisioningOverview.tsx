@@ -45,6 +45,7 @@ export const UserProvisioningOverview = observer(() => {
     updateUserAgencies,
     updateUserAccountId,
     resetUserProvisioningUpdates,
+    resetAgencyProvisioningUpdates,
   } = adminPanelStore;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -62,10 +63,11 @@ export const UserProvisioningOverview = observer(() => {
   const openSecondaryModal = () => setActiveSecondaryModal(Setting.AGENCIES);
   const closeModal = () => {
     if (!activeSecondaryModal) {
-      setSelectedUserID(undefined);
       resetUserProvisioningUpdates();
+      setSelectedUserID(undefined);
       setIsModalOpen(false);
     } else {
+      resetAgencyProvisioningUpdates();
       setActiveSecondaryModal(undefined);
     }
   };
