@@ -125,13 +125,17 @@ export const Form = styled.form`
   margin: 18px 0 16px 0;
 `;
 
-export const FormActions = styled.div<{ noTopSpacing?: boolean }>`
+export const FormActions = styled.div<{
+  noTopSpacing?: boolean;
+  noMargin?: boolean;
+}>`
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 16px;
-  margin: ${({ noTopSpacing }) => (noTopSpacing ? `0 0 40px 0` : `24px 0`)};
+  margin: ${({ noTopSpacing, noMargin }) =>
+    noTopSpacing ? `0 0 40px 0` : (noMargin && `0`) || `24px 0`};
 `;
 
 export const ActionButton = styled.div<{
@@ -174,6 +178,7 @@ export const InputLabelWrapper = styled.div<{
   inputWidth?: number;
   noBottomSpacing?: boolean;
   hasError?: boolean;
+  required?: boolean;
 }>`
   ${typography.sizeCSS.normal}
   width: 100%;
@@ -190,11 +195,14 @@ export const InputLabelWrapper = styled.div<{
   input[type="button"] {
     width: 100%;
     min-width: 210px;
+    font-size: 0.8rem;
+    font-weight: 400;
+    line-height: 1rem;
     background: none;
     text-align: left;
     border: 1px solid ${palette.highlight.grey5};
     border-radius: 2px;
-    padding: 3px;
+    padding: 5px 5px 5px 8px;
   }
 
   input[type="button"]:hover {
@@ -231,7 +239,21 @@ export const InputLabelWrapper = styled.div<{
     color: ${palette.highlight.grey8};
     margin-top: 5px;
     padding: 0 3px;
+    white-space: nowrap;
   }
+
+  ${({ required }) =>
+    required &&
+    `
+      label {
+        width: fit-content;
+      }
+      label::after {
+        content: "(required)"; 
+        font-weight: 400;
+        margin-left: 2px;
+      }
+    `}
 `;
 
 export const LabelButton = styled.div`
@@ -250,6 +272,8 @@ export const SidePaddingWrapper = styled.div`
 
 export const ButtonWrapper = styled.div`
   width: fit-content;
+  display: flex;
+  gap: 12px;
 `;
 
 export const TeamMembersContainer = styled.div`
@@ -339,15 +363,16 @@ export const Chip = styled.span<{
   hover?: boolean;
   selectedColor?: string;
 }>`
+  width: fit-content;
+  height: fit-content;
   text-transform: capitalize;
   font-weight: 400;
   display: inline-block;
-  width: fit-content;
-  height: fit-content;
   padding: 3px 15px;
   border: 1px solid ${palette.highlight.grey5};
   border-radius: 4px;
   box-shadow: 1px 1px 1px ${palette.highlight.grey2};
+  margin: 2.5px;
 
   ${({ selected, selectedColor }) => {
     if (selected && selectedColor) {
@@ -426,11 +451,12 @@ export const ChipInnerRow = styled.div`
   justify-content: space-between;
 `;
 
-export const NoResultsFound = styled.div`
-  ${typography.sizeCSS.small}
+export const EmptyListMessage = styled.div`
+  font-size: 0.8rem;
   font-weight: 400;
+  line-height: 1rem;
   margin-top: 7px;
-  margin-left: 5px;
+  margin-left: 3px;
 `;
 
 export const ChipContainerLabelAction = styled(ChipContainerLabel)`
@@ -492,7 +518,7 @@ export const CardContainer = styled.div`
   padding: 32px 16px;
 `;
 
-export const UserCard = styled.div`
+export const Card = styled.div`
   min-height: 250px;
   width: 350px;
   display: flex;
@@ -511,7 +537,7 @@ export const UserCard = styled.div`
   }
 `;
 
-export const UserName = styled.div`
+export const Name = styled.div`
   ${typography.sizeCSS.medium}
   overflow-wrap: anywhere;
 `;
@@ -557,7 +583,17 @@ export const IndicatorWrapper = styled.div`
 `;
 
 export const LiveDashboardIndicator = styled(NumberOfAgencies)`
-  color: ${palette.solid.blue};
+  &,
+  a,
+  a:visited {
+    color: ${palette.solid.blue};
+    text-decoration: none;
+  }
+
+  & > a:hover {
+    color: ${palette.solid.darkblue};
+    text-decoration: underline;
+  }
 `;
 
 export const SuperagencyIndicator = styled(NumberOfAgencies)`
@@ -575,14 +611,15 @@ export const AgenciesWrapper = styled.div`
   overflow-y: scroll;
 `;
 
-export const UserNameEmailWrapper = styled.div`
-  max-width: 260px;
-`;
-
-export const UserNameEmailIDWrapper = styled.div`
+export const TopCardRowWrapper = styled.div`
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+`;
+
+export const NameSubheaderWrapper = styled.div`
+  max-width: 260px;
 `;
 
 export const UserInformationDisplay = styled.div``;
@@ -642,6 +679,7 @@ export const SaveConfirmationContainer = styled.div`
   justify-content: center;
   align-items: center;
   gap: 32px;
+  text-align: center;
 `;
 
 const grow = keyframes`

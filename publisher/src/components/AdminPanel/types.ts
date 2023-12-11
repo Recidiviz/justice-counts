@@ -133,7 +133,7 @@ export type SearchableListItem = {
   role?: UserRole;
 };
 
-export type SearchableSetIDs = Set<number>;
+export type SearchableSetKeys = Set<number | string>;
 
 export type SearchableEntity =
   | Agency
@@ -156,7 +156,7 @@ export type InteractiveSearchListProps = {
   list: SearchableListItem[];
   searchByKeys: SearchableListItemKey[];
   buttons: InteractiveSearchListButtons;
-  selections: SearchableSetIDs;
+  selections: SearchableSetKeys;
   updateSelections: InteractiveSearchListUpdateSelections;
   boxActionType?: InteractiveSearchListAction;
   metadata?: {
