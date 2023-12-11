@@ -518,7 +518,9 @@ function MetricAvailability({ goToDefineMetrics }: MetricAvailabilityProps) {
           {metricEnabled && (
             <Styled.LeftAlignedButtonWrapper>
               <Button
-                label="Define Metrics ->"
+                label={`Define Metric ${
+                  hasDisaggregations ? `and Breakdowns ` : ``
+                }->`}
                 onClick={goToDefineMetrics}
                 labelColor="blue"
                 noHover
