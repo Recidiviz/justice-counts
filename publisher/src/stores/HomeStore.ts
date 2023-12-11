@@ -16,7 +16,7 @@
 // =============================================================================
 
 import {
-  AgencySystems,
+  AgencySystem,
   Metric,
   Report,
   ReportFrequency,
@@ -591,7 +591,7 @@ class HomeStore {
    */
   supervisionSubsystemsWithEnabledMetrics(system: SystemSelectionOptions) {
     const isSupervisionSubsystem = Boolean(
-      SupervisionSubsystems.includes(system.toUpperCase() as AgencySystems)
+      SupervisionSubsystems.includes(system.toUpperCase() as AgencySystem)
     );
     if (!isSupervisionSubsystem) return true;
 

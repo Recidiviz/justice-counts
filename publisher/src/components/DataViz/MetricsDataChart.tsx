@@ -28,7 +28,7 @@ import {
 } from "@justice-counts/common/components/Dropdown";
 import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { useWindowWidth } from "@justice-counts/common/hooks";
-import { AgencySystems, ReportFrequency } from "@justice-counts/common/types";
+import { AgencySystem, ReportFrequency } from "@justice-counts/common/types";
 import { downloadMetricData } from "@justice-counts/common/utils";
 import { frequencyString } from "@justice-counts/common/utils/helperUtils";
 import FileSaver from "file-saver";
@@ -250,7 +250,7 @@ export const MetricsDataChart: React.FC = observer(() => {
                         selected={currentMetric.key === metric.key}
                         onClick={() =>
                           setSettingsSearchParams({
-                            system: system as AgencySystems,
+                            system: system as AgencySystem,
                             metric: metric.key,
                           })
                         }

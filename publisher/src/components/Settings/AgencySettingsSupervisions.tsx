@@ -17,7 +17,7 @@
 
 import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
 import { Button } from "@justice-counts/common/components/Button";
-import { AgencySystems } from "@justice-counts/common/types";
+import { AgencySystem } from "@justice-counts/common/types";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -39,7 +39,7 @@ import {
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
-const supervisionAgencySystems: { label: string; value: AgencySystems }[] = [
+const supervisionAgencySystems: { label: string; value: AgencySystem }[] = [
   { label: "Parole", value: "PAROLE" },
   {
     label: "Probation",
@@ -88,12 +88,12 @@ export const AgencySettingsSupervisions: React.FC<{
     removeEditMode();
   };
 
-  const handleSetSupervisionSystemsToSave = (value: AgencySystems) => {
+  const handleSetSupervisionSystemsToSave = (value: AgencySystem) => {
     if (isSettingInEditMode) {
       setSupervisionSystemsToSave(systemsToSave(value));
     }
   };
-  const systemsToSave = (systemToToggle: AgencySystems): AgencySystems[] => {
+  const systemsToSave = (systemToToggle: AgencySystem): AgencySystem[] => {
     if (!supervisionSystemsToSave) return [systemToToggle];
     return supervisionSystemsToSave.includes(systemToToggle)
       ? supervisionSystemsToSave.filter((system) => system !== systemToToggle)
@@ -154,7 +154,7 @@ export const AgencySettingsSupervisions: React.FC<{
                     type="checkbox"
                     checked={
                       supervisionSystemsToSave?.includes(
-                        value as AgencySystems
+                        value as AgencySystem
                       ) || false
                     }
                     onChange={() => handleSetSupervisionSystemsToSave(value)}

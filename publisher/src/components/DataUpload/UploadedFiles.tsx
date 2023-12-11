@@ -23,7 +23,7 @@ import {
 import { Button } from "@justice-counts/common/components/Button";
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
-  AgencySystems,
+  AgencySystem,
   AgencyTeamMemberRole,
 } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
@@ -64,7 +64,7 @@ export const UploadedFileRow: React.FC<{
     badgeText: string;
     dateUploaded: string;
     dateIngested: string;
-    system?: AgencySystems;
+    system?: AgencySystem;
     uploadedByName: string;
     uploadedByRole: AgencyTeamMemberRole;
   };
@@ -287,7 +287,7 @@ export const UploadedFiles: React.FC = observer(() => {
       system: formatSystemName(file.system, {
         allUserSystems: currentAgency?.systems,
         hideCombined: true,
-      }) as AgencySystems,
+      }) as AgencySystem,
       uploadedByName: file.uploaded_by_v2.name,
       uploadedByRole: file.uploaded_by_v2.role,
     };

@@ -20,6 +20,7 @@ import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
 import {
+  AgencySystem,
   AgencySystems,
   AgencyTeamMemberRole,
 } from "@justice-counts/common/types";
@@ -104,7 +105,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         ? new Set(agencyProvisioningUpdates.child_agency_ids)
         : new Set()
     );
-    const [selectedSystems, setSelectedSystems] = useState<Set<AgencySystems>>(
+    const [selectedSystems, setSelectedSystems] = useState<Set<AgencySystem>>(
       agencyProvisioningUpdates.systems
         ? new Set(agencyProvisioningUpdates.systems)
         : new Set()
@@ -197,16 +198,24 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     ];
     const getInteractiveSearchListSelectDeselectCloseButtons = <T,>(
       setState: React.Dispatch<React.SetStateAction<Set<T>>>,
-      selectAllSet: Set<T>
+      selectAllSet: Set<T>,
+      selectAllCallback?: () => void,
+      deselectAllCallback?: () => void
     ) => {
       return [
         {
           label: "Select All",
-          onClick: () => setState(selectAllSet),
+          onClick: () => {
+            setState(selectAllSet);
+            if (selectAllCallback) selectAllCallback();
+          },
         },
         {
           label: "Deselect All",
-          onClick: () => setState(new Set()),
+          onClick: () => {
+            setState(new Set());
+            if (deselectAllCallback) deselectAllCallback();
+          },
         },
         interactiveSearchListCloseButton[0],
       ];
@@ -369,7 +378,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       Object.keys(teamMemberRoleUpdates).length > 0 ||
       selectedTeamMembersToAdd.size > 0 ||
       selectedTeamMembersToDelete.size > 0;
-
     /**
      * Saving is disabled if saving is in progress OR an existing agency has made no updates to either the name, state,
      * county, systems, dashboard enabled checkbox, superagency checkbox and child agencies, child agency's superagency
@@ -563,9 +571,18 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           selections={selectedSystems}
                           buttons={getInteractiveSearchListSelectDeselectCloseButtons(
                             setSelectedSystems,
-                            new Set(systems)
+                            new Set(systems),
+                            () => updateIsSuperagency(true),
+                            () => updateIsSuperagency(false)
                           )}
                           updateSelections={({ id }) => {
+                            if (id === AgencySystems.SUPERAGENCY) {
+                              if (agencyProvisioningUpdates.is_superagency) {
+                                updateIsSuperagency(false);
+                              } else {
+                                updateIsSuperagency(true);
+                              }
+                            }
                             setSelectedSystems((prev) =>
                               toggleAddRemoveSetItem(prev, id as AgencySystems)
                             );
@@ -632,6 +649,16 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           updateIsSuperagency(
                             !agencyProvisioningUpdates.is_superagency
                           );
+                          /** Add/remove SUPERAGENCY system when superagency checkmark is toggled */
+                          setSelectedSystems((prev) => {
+                            const clonedPrevSet = new Set(prev);
+                            if (agencyProvisioningUpdates.is_superagency) {
+                              clonedPrevSet.add(AgencySystems.SUPERAGENCY);
+                            } else {
+                              clonedPrevSet.delete(AgencySystems.SUPERAGENCY);
+                            }
+                            return clonedPrevSet;
+                          });
                           updateSuperagencyID(null);
                           setSelectedChildAgencyIDs(new Set());
                           setIsChildAgencySelected(false);
@@ -652,6 +679,14 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           setSelectedChildAgencyIDs(new Set());
                           setIsChildAgencySelected((prev) => !prev);
                           setShowSelectionBox(undefined);
+                          /** Add/remove SUPERAGENCY system when superagency checkmark is toggled */
+                          if (selectedSystems.has(AgencySystems.SUPERAGENCY)) {
+                            setSelectedSystems((prev) => {
+                              const clonedPrevSet = new Set(prev);
+                              clonedPrevSet.delete(AgencySystems.SUPERAGENCY);
+                              return clonedPrevSet;
+                            });
+                          }
                           if (isChildAgencySelected) updateSuperagencyID(null);
                         }}
                         checked={isChildAgencySelected}

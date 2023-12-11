@@ -17,7 +17,7 @@
 
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
-  AgencySystems,
+  AgencySystem,
   FormError,
   Metric,
   MetricConfigurationSettings,
@@ -169,7 +169,7 @@ class MetricConfigStore {
     });
   };
 
-  getMetricsBySystem = (systemName: AgencySystems | undefined) => {
+  getMetricsBySystem = (systemName: AgencySystem | undefined) => {
     if (systemName) {
       const metrics = Object.entries(this.metrics).reduce(
         (filteredMetrics, [systemMetricKey, metric]) => {
@@ -353,7 +353,7 @@ class MetricConfigStore {
   };
 
   initializeMetric = (
-    system: AgencySystems,
+    system: AgencySystem,
     metricKey: string,
     metricInfo: MetricInfo
   ) => {
@@ -366,7 +366,7 @@ class MetricConfigStore {
   };
 
   initializeMetricDefinitionSetting = (
-    system: AgencySystems,
+    system: AgencySystem,
     metricKey: string,
     includesExcludesKey: string,
     metricDefinitionSettings: MetricConfigurationSettings[]
@@ -397,7 +397,7 @@ class MetricConfigStore {
   };
 
   initializeDisaggregation = (
-    system: AgencySystems,
+    system: AgencySystem,
     metricKey: string,
     disaggregationKey: string,
     disaggregationData: Pick<MetricDisaggregations, "display_name" | "enabled">
@@ -416,7 +416,7 @@ class MetricConfigStore {
   };
 
   initializeDimension = (
-    system: AgencySystems,
+    system: AgencySystem,
     metricKey: string,
     disaggregationKey: string,
     dimensionKey: string,
@@ -462,7 +462,7 @@ class MetricConfigStore {
   };
 
   initializeDimensionDefinitionSetting = (
-    system: AgencySystems,
+    system: AgencySystem,
     metricKey: string,
     disaggregationKey: string,
     dimensionKey: string,
@@ -514,7 +514,7 @@ class MetricConfigStore {
   };
 
   initializeDimensionContexts = (
-    system: AgencySystems,
+    system: AgencySystem,
     metricKey: string,
     disaggregationKey: string,
     dimensionKey: string,
@@ -548,7 +548,7 @@ class MetricConfigStore {
   };
 
   initializeContext = (
-    system: AgencySystems,
+    system: AgencySystem,
     metricKey: string,
     contextKey: string,
     contextData: {
@@ -572,7 +572,7 @@ class MetricConfigStore {
   };
 
   updateMetricEnabledStatus = (
-    system: AgencySystems,
+    system: AgencySystem,
     metricKey: string,
     enabledStatus: boolean
   ): MetricSettings => {
@@ -592,7 +592,7 @@ class MetricConfigStore {
   };
 
   updateMetricReportFrequency = (
-    system: AgencySystems,
+    system: AgencySystem,
     metricKey: string,
     update: ReportFrequencyUpdate
   ) => {
@@ -619,7 +619,7 @@ class MetricConfigStore {
 
   /** Allows a supervision agency to specify whether or not a metric is reported as disaggregated by supervision subsystems */
   updateDisaggregatedBySupervisionSubsystems = (
-    system: AgencySystems,
+    system: AgencySystem,
     metricKey: string,
     status: boolean
   ) => {
@@ -639,7 +639,7 @@ class MetricConfigStore {
   };
 
   updateMetricDefinitionSetting = (
-    system: AgencySystems,
+    system: AgencySystem,
     metricKey: string,
     includesExcludesKey: string,
     settingKey: string,
@@ -663,7 +663,7 @@ class MetricConfigStore {
   };
 
   updateDisaggregationEnabledStatus = (
-    system: AgencySystems,
+    system: AgencySystem,
     metricKey: string,
     disaggregationKey: string,
     enabledStatus: boolean
@@ -704,7 +704,7 @@ class MetricConfigStore {
   };
 
   updateDimensionEnabledStatus = (
-    system: AgencySystems,
+    system: AgencySystem,
     metricKey: string,
     disaggregationKey: string,
     dimensionKey: string,
@@ -765,7 +765,7 @@ class MetricConfigStore {
   };
 
   updateDimensionContexts = (
-    system: AgencySystems,
+    system: AgencySystem,
     metricKey: string,
     disaggregationKey: string,
     dimensionKey: string,
@@ -805,7 +805,7 @@ class MetricConfigStore {
   };
 
   updateDimensionDefinitionSetting = (
-    system: AgencySystems,
+    system: AgencySystem,
     metricKey: string,
     disaggregationKey: string,
     dimensionKey: string,
@@ -846,7 +846,7 @@ class MetricConfigStore {
   };
 
   updateContextValue = (
-    system: AgencySystems,
+    system: AgencySystem,
     metricKey: string,
     contextKey: string,
     contextType: MetricContext["type"] | undefined,
@@ -880,7 +880,7 @@ class MetricConfigStore {
     };
   };
 
-  getEthnicitiesByRace = (system: AgencySystems, metricKey: string) => {
+  getEthnicitiesByRace = (system: AgencySystem, metricKey: string) => {
     const systemMetricKey = MetricConfigStore.getSystemMetricKey(
       system,
       metricKey
@@ -911,7 +911,7 @@ class MetricConfigStore {
   updateAllRaceEthnicitiesToDefaultState = (
     state: StateKeys,
     gridStates: RaceEthnicitiesGridStates,
-    system: AgencySystems,
+    system: AgencySystem,
     metricKey: string
   ): UpdatedDisaggregation => {
     const ethnicitiesByRace = this.getEthnicitiesByRace(system, metricKey);
@@ -994,7 +994,7 @@ class MetricConfigStore {
     enabled: boolean,
     state: StateKeys,
     gridStates: RaceEthnicitiesGridStates,
-    system: AgencySystems,
+    system: AgencySystem,
     metricKey: string
   ): UpdatedDisaggregation => {
     const ethnicitiesByRace = this.getEthnicitiesByRace(system, metricKey);
@@ -1045,7 +1045,7 @@ class MetricConfigStore {
     racesStatusObject: { [key: string]: boolean },
     state: StateKeys,
     gridStates: RaceEthnicitiesGridStates,
-    system: AgencySystems,
+    system: AgencySystem,
     metricKey: string
   ): UpdatedDisaggregation => {
     const ethnicitiesByRace = this.getEthnicitiesByRace(system, metricKey);

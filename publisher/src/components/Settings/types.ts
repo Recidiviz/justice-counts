@@ -15,10 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystems } from "@justice-counts/common/types";
+import { AgencySystem } from "@justice-counts/common/types";
 
 export type SettingsSearchParams = {
-  system?: AgencySystems;
+  system?: AgencySystem;
   metric?: string;
 };
 

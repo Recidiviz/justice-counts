@@ -16,7 +16,7 @@
 // =============================================================================
 
 import {
-  AgencySystems,
+  AgencySystem,
   AgencyTeamMember,
   AgencyTeamMemberRole,
 } from "@justice-counts/common/types";
@@ -73,7 +73,7 @@ class AdminPanelStore {
 
   agenciesByID: Record<string, AgencyWithTeamByID[]>;
 
-  systems: AgencySystems[];
+  systems: AgencySystem[];
 
   userProvisioningUpdates: UserProvisioningUpdates;
 
@@ -266,7 +266,7 @@ class AdminPanelStore {
       lowercaseCountyCode || null;
   }
 
-  updateSystems(systems: AgencySystems[]) {
+  updateSystems(systems: AgencySystem[]) {
     this.agencyProvisioningUpdates.systems = systems;
   }
 

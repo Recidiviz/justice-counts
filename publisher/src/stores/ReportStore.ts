@@ -16,7 +16,7 @@
 // =============================================================================
 
 import {
-  AgencySystems,
+  AgencySystem,
   Metric,
   Report,
   ReportOverview,
@@ -456,7 +456,7 @@ class ReportStore {
     return metricsBySystem;
   };
 
-  getMetricsBySystem = (system: AgencySystems | undefined) => {
+  getMetricsBySystem = (system: AgencySystem | undefined) => {
     if (system) {
       return this.metricsBySystem[system];
     }
