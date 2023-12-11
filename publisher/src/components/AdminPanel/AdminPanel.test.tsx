@@ -22,11 +22,31 @@ import React from "react";
 import { BrowserRouter } from "react-router-dom";
 
 import { rootStore, StoreProvider } from "../../stores";
-import { mockUsersResponse } from "../../stores/AdminPanelStore.test";
+import {
+  mockAgenciesResponse,
+  mockUsersResponse,
+} from "../../stores/AdminPanelStore.test";
 import { AdminPanel } from "./AdminPanel";
 
 const { adminPanelStore } = rootStore;
 const mockAgencyID = "10";
+const usersByID = groupBy(
+  mockUsersResponse.users.map((user) => ({
+    ...user,
+    agencies: groupBy(user.agencies, (agency) => agency.id),
+  })),
+  (user) => user.id
+);
+const agenciesByID = groupBy(
+  mockAgenciesResponse.agencies.map((agency) => ({
+    ...agency,
+    team: groupBy(
+      agency.team,
+      (member) => member.user_account_id || member.auth0_user_id
+    ),
+  })),
+  (agency) => agency.id
+);
 
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
@@ -37,13 +57,7 @@ jest.mock("react-router-dom", () => ({
 
 test("AdminPanel renders with the expected elements in the default User Provisioning view", async () => {
   runInAction(() => {
-    adminPanelStore.usersByID = groupBy(
-      mockUsersResponse.users.map((user) => ({
-        ...user,
-        agencies: groupBy(user.agencies, (agency) => agency.id),
-      })),
-      (user) => user.id
-    );
+    adminPanelStore.usersByID = usersByID;
   });
 
   render(
@@ -85,15 +99,11 @@ test("AdminPanel renders with the expected elements in the default User Provisio
   expect(createUserButton).toBeInTheDocument();
 });
 
+/** User Provisioning */
+
 test("User provisioning overview search box properly searches and filters the list of users", () => {
   runInAction(() => {
-    adminPanelStore.usersByID = groupBy(
-      mockUsersResponse.users.map((user) => ({
-        ...user,
-        agencies: groupBy(user.agencies, (agency) => agency.id),
-      })),
-      (user) => user.id
-    );
+    adminPanelStore.usersByID = usersByID;
   });
 
   render(
@@ -144,13 +154,7 @@ test("User provisioning overview search box properly searches and filters the li
 
 test("Clicking the `Create User` button opens the create user modal", () => {
   runInAction(() => {
-    adminPanelStore.usersByID = groupBy(
-      mockUsersResponse.users.map((user) => ({
-        ...user,
-        agencies: groupBy(user.agencies, (agency) => agency.id),
-      })),
-      (user) => user.id
-    );
+    adminPanelStore.usersByID = usersByID;
   });
 
   render(
@@ -181,13 +185,7 @@ test("Clicking the `Create User` button opens the create user modal", () => {
 
 test("Clicking on an existing user card opens the edit user modal", () => {
   runInAction(() => {
-    adminPanelStore.usersByID = groupBy(
-      mockUsersResponse.users.map((user) => ({
-        ...user,
-        agencies: groupBy(user.agencies, (agency) => agency.id),
-      })),
-      (user) => user.id
-    );
+    adminPanelStore.usersByID = usersByID;
   });
 
   render(
@@ -235,13 +233,7 @@ test("Clicking on an existing user card opens the edit user modal", () => {
 
 test("Deleting an existing users agency deletes agency from user's agency list", async () => {
   runInAction(() => {
-    adminPanelStore.usersByID = groupBy(
-      mockUsersResponse.users.map((user) => ({
-        ...user,
-        agencies: groupBy(user.agencies, (agency) => agency.id),
-      })),
-      (user) => user.id
-    );
+    adminPanelStore.usersByID = usersByID;
   });
 
   render(
@@ -307,13 +299,7 @@ test("Deleting an existing users agency deletes agency from user's agency list",
 
 test("Adding an agency adds agency to user's agency list", async () => {
   runInAction(() => {
-    adminPanelStore.usersByID = groupBy(
-      mockUsersResponse.users.map((user) => ({
-        ...user,
-        agencies: groupBy(user.agencies, (agency) => agency.id),
-      })),
-      (user) => user.id
-    );
+    adminPanelStore.usersByID = usersByID;
     /** Sets the available agencies to select from */
     adminPanelStore.agenciesByID = groupBy(
       [
@@ -440,4 +426,172 @@ test("Adding an agency adds agency to user's agency list", async () => {
   );
   expect(agency3Chip).toBeInTheDocument();
   expect(noAvailableAgenciesLabel).toBeInTheDocument();
+});
+
+/** Agency Provisioning */
+
+test("AdminPanel renders with the expected elements in the Agency Provisioning view", async () => {
+  runInAction(() => {
+    adminPanelStore.usersByID = usersByID;
+    adminPanelStore.agenciesByID = agenciesByID;
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const agencyProvisioningTab = screen.getByText("Agency Provisioning");
+  fireEvent.click(agencyProvisioningTab);
+
+  const agencyProvisioningSearchBox = screen.getByText(
+    "Search by name, state or agency ID"
+  );
+  const userProvisioningSearchBox = screen.queryByText(
+    "Search by name, email or user ID"
+  );
+  const superagenciesFilterCheckbox = screen.getByText("Show superagencies");
+  const liveDashboardsFilterCheckbox = screen.getByText(
+    "Show agencies with live dashboard"
+  );
+  const arizonaStateText = screen.getByText("Arizona");
+  const californiaStateText = screen.getAllByText("California")[0];
+  const createAgencyButton = screen.getByText("Create Agency");
+  const createUserButton = screen.queryByText("Create User");
+
+  expect(agencyProvisioningSearchBox).toBeInTheDocument();
+  expect(userProvisioningSearchBox).toBeNull();
+  expect(superagenciesFilterCheckbox).toBeInTheDocument();
+  expect(liveDashboardsFilterCheckbox).toBeInTheDocument();
+  expect(createAgencyButton).toBeInTheDocument();
+  expect(createUserButton).toBeNull();
+  expect(arizonaStateText).toBeInTheDocument();
+  expect(californiaStateText).toBeInTheDocument();
+});
+
+test("Agency provisioning overview search box properly searches and filters the list of agencies", () => {
+  runInAction(() => {
+    adminPanelStore.usersByID = usersByID;
+    adminPanelStore.agenciesByID = agenciesByID;
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const agencyProvisioningTab = screen.getByText("Agency Provisioning");
+  fireEvent.click(agencyProvisioningTab);
+
+  const searchBox = screen.getByLabelText(
+    "Search by name, state or agency ID",
+    {
+      selector: "input",
+    }
+  );
+  let agency1: HTMLElement | null = screen.getByText("Super Agency");
+  let agency2: HTMLElement | null = screen.getByText("Z Agency");
+  let agency3: HTMLElement | null = screen.getByText("Child Agency");
+
+  // Search by name
+  fireEvent.change(searchBox, { target: { value: "Sup" } });
+
+  expect(searchBox).toHaveValue("Sup");
+  expect(agency1).toBeInTheDocument();
+  expect(agency2).not.toBeInTheDocument();
+  expect(agency3).not.toBeInTheDocument();
+
+  // Search by state
+  fireEvent.change(searchBox, { target: { value: "California" } });
+  agency1 = screen.queryByText("Super Agency");
+  agency2 = screen.getByText("Z Agency");
+  agency3 = screen.getByText("Child Agency");
+
+  expect(searchBox).toHaveValue("California");
+  expect(agency1).toBeNull();
+  expect(agency2).toBeInTheDocument();
+  expect(agency3).toBeInTheDocument();
+
+  // Search by ID
+  fireEvent.change(searchBox, { target: { value: "11" } });
+  agency1 = screen.getByText("Super Agency");
+  agency2 = screen.queryByText("Z Agency");
+  agency3 = screen.getByText("Child Agency");
+
+  expect(searchBox).toHaveValue("11");
+  expect(agency1).toBeInTheDocument();
+  expect(agency2).toBeNull();
+  expect(agency3).toBeInTheDocument();
+});
+
+test("Agency provisioning overview filter checkboxes properly filter superagencies and/or agencies with live dashboards", () => {
+  runInAction(() => {
+    adminPanelStore.usersByID = usersByID;
+    adminPanelStore.agenciesByID = agenciesByID;
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const agencyProvisioningTab = screen.getByText("Agency Provisioning");
+  fireEvent.click(agencyProvisioningTab);
+
+  const showSuperagenciesCheckbox: HTMLInputElement =
+    screen.getByLabelText("Show superagencies");
+  const showAgenciesWithLiveDashboardsCheckbox: HTMLInputElement =
+    screen.getByLabelText("Show agencies with live dashboard");
+
+  /** Expect both checkboxes to be unchecked initially */
+  expect(showSuperagenciesCheckbox.checked).toEqual(false);
+  expect(showAgenciesWithLiveDashboardsCheckbox.checked).toEqual(false);
+
+  /** Check "Show superagencies" checkbox */
+  fireEvent.click(showSuperagenciesCheckbox);
+  expect(showSuperagenciesCheckbox.checked).toEqual(true);
+
+  let agency1 = screen.getByText("Super Agency");
+  let agency2 = screen.queryByText("Z Agency");
+  let agency3 = screen.queryByText("Child Agency");
+
+  expect(agency1).toBeInTheDocument();
+  expect(agency2).toBeNull();
+  expect(agency3).toBeNull();
+
+  /** Uncheck "Show superagencies" checkbox and check "Show agencies with live dashboard" checkbox */
+  fireEvent.click(showSuperagenciesCheckbox);
+  fireEvent.click(showAgenciesWithLiveDashboardsCheckbox);
+  expect(showSuperagenciesCheckbox.checked).toEqual(false);
+  expect(showAgenciesWithLiveDashboardsCheckbox.checked).toEqual(true);
+
+  agency1 = screen.getByText("Super Agency");
+  agency2 = screen.getByText("Z Agency");
+  agency3 = screen.queryByText("Child Agency");
+
+  expect(agency1).toBeInTheDocument();
+  expect(agency2).toBeInTheDocument();
+  expect(agency3).toBeNull();
+
+  /** Check "Show superagencies" checkbox and keep "Show agencies with live dashboard" checkbox checked */
+  fireEvent.click(showSuperagenciesCheckbox);
+  expect(showSuperagenciesCheckbox.checked).toEqual(true);
+  expect(showAgenciesWithLiveDashboardsCheckbox.checked).toEqual(true);
+
+  agency1 = screen.getByText("Super Agency");
+  agency2 = screen.queryByText("Z Agency");
+  agency3 = screen.queryByText("Child Agency");
+
+  expect(agency1).toBeInTheDocument();
+  expect(agency2).toBeNull();
+  expect(agency3).toBeNull();
 });

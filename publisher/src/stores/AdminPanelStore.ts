@@ -51,7 +51,7 @@ const initialEmptyAgencyProvisioningUpdates = {
   state_code: null,
   fips_county_code: null,
   systems: [],
-  is_dashboard_enabled: null,
+  is_dashboard_enabled: true,
   super_agency_id: null,
   is_superagency: null,
   child_agency_ids: [],
@@ -244,7 +244,7 @@ class AdminPanelStore {
     this.agencyProvisioningUpdates.name = name;
   }
 
-  updateStateCode(stateCode: StateCodeKey) {
+  updateStateCode(stateCode: StateCodeKey | null) {
     const lowercaseStateCode = stateCode?.toLocaleLowerCase() as StateCodeKey;
     this.agencyProvisioningUpdates.state_code = lowercaseStateCode;
   }

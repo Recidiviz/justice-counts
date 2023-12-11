@@ -17,7 +17,10 @@
 
 import { Button } from "@justice-counts/common/components/Button";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
-import { validateEmail } from "@justice-counts/common/utils";
+import {
+  toggleAddRemoveSetItem,
+  validateEmail,
+} from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 
@@ -29,19 +32,15 @@ import {
   InteractiveSearchListAction,
   InteractiveSearchListActions,
   InteractiveSearchListUpdateSelections,
+  ProvisioningProps,
   SaveConfirmation,
   SaveConfirmationType,
   SaveConfirmationTypes,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
 
-type UserProvisioningProps = {
-  selectedUserID?: string | number;
-  closeModal: () => void;
-};
-
-export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
-  ({ selectedUserID, closeModal }) => {
+export const UserProvisioning: React.FC<ProvisioningProps> = observer(
+  ({ selectedIDToEdit, closeModal }) => {
     const { adminPanelStore } = useStore();
     const {
       agencies,
@@ -69,8 +68,8 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
     const [emailValidationError, setEmailValidationError] = useState<string>();
 
     /** Selected user to edit & their agencies */
-    const selectedUser = selectedUserID
-      ? usersByID[selectedUserID][0]
+    const selectedUser = selectedIDToEdit
+      ? usersByID[selectedIDToEdit][0]
       : undefined;
     const selectedUserAgenciesIDs = selectedUser
       ? Object.keys(selectedUser?.agencies).map((id) => +id)
@@ -125,16 +124,6 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       },
     ];
 
-    /** Selecting/deselecting agencies to add/delete */
-    const selectOrDeselectByID = (prevSet: Set<number>, id: number) => {
-      const updatedSet = new Set(prevSet);
-      if (updatedSet.has(id)) {
-        updatedSet.delete(id);
-      } else {
-        updatedSet.add(id);
-      }
-      return updatedSet;
-    };
     const updateAgencySelections: InteractiveSearchListUpdateSelections = (
       selection
     ) => {
@@ -145,12 +134,12 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
 
       if (hasAddAction) {
         setAddedAgenciesIDs((prev) =>
-          selectOrDeselectByID(prev, +selection.id)
+          toggleAddRemoveSetItem(prev, +selection.id)
         );
       }
       if (hasDeleteAction) {
         setDeletedAgenciesIDs((prev) =>
-          selectOrDeselectByID(prev, +selection.id)
+          toggleAddRemoveSetItem(prev, +selection.id)
         );
       }
     };
@@ -174,7 +163,6 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
     /** Validate & update email input */
     const validateAndUpdateEmail = (email: string) => {
       updateEmail(email);
-
       if (email === "" || validateEmail(email)) {
         return setEmailValidationError(undefined);
       }
@@ -196,23 +184,19 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
       const responseStatus =
         await adminPanelStore.saveUserProvisioningUpdates();
 
-      if (responseStatus === 200) {
-        setShowSaveConfirmation({
-          show: true,
-          type: SaveConfirmationTypes.SUCCESS,
-        });
-      } else {
-        setShowSaveConfirmation({
-          show: true,
-          type: SaveConfirmationTypes.ERROR,
-        });
-      }
-      setIsSaveInProgress(false);
+      setShowSaveConfirmation({
+        show: true,
+        type:
+          responseStatus === 200
+            ? SaveConfirmationTypes.SUCCESS
+            : SaveConfirmationTypes.ERROR,
+      });
 
       /** After showing the confirmation screen, either return to modal (on error) or close modal (on success) */
       setTimeout(() => {
         setShowSaveConfirmation((prev) => ({ ...prev, show: false }));
         if (responseStatus === 200) closeModal();
+        setIsSaveInProgress(false);
       }, 2000);
     };
 
@@ -277,7 +261,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
         ) : (
           <>
             <Styled.ModalTitle>
-              {selectedUserID ? "Edit User Information" : "Create New User"}
+              {selectedIDToEdit ? "Edit User Information" : "Create New User"}
             </Styled.ModalTitle>
 
             {/** User Information */}
@@ -294,7 +278,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
             <Styled.ScrollableContainer>
               <Styled.Form>
                 {/* Username Input */}
-                <Styled.InputLabelWrapper>
+                <Styled.InputLabelWrapper required>
                   <input
                     id="username"
                     name="username"
@@ -311,6 +295,7 @@ export const UserProvisioning: React.FC<UserProvisioningProps> = observer(
                 {!selectedUser && (
                   <Styled.InputLabelWrapper
                     hasError={Boolean(emailValidationError)}
+                    required
                   >
                     <input
                       id="email"

@@ -84,7 +84,7 @@ export const UserProvisioningOverview = observer(() => {
         <Modal>
           <UserProvisioning
             closeModal={closeModal}
-            selectedUserID={selectedUserID}
+            selectedIDToEdit={selectedUserID}
           />
         </Modal>
       )}
