@@ -380,7 +380,7 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
                       </Styled.ActionButton>
                     )}
 
-                    {/* Create New Agency Button (TODO(#1058)) */}
+                    {/* Create New Agency Button */}
                     <Styled.ActionButton onClick={openSecondaryModal}>
                       Create New Agency
                     </Styled.ActionButton>
