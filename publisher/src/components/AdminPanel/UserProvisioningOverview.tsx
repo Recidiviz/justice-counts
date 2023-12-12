@@ -35,6 +35,7 @@ export const UserProvisioningOverview = observer(() => {
     updateEmail,
     updateUsername,
     updateUserAgencies,
+    updateUserAccountId,
     resetUserProvisioningUpdates,
   } = adminPanelStore;
 
@@ -66,6 +67,7 @@ export const UserProvisioningOverview = observer(() => {
   const editUser = (userID: string | number) => {
     const selectedUser = usersByID[userID][0];
     setSelectedUserID(userID);
+    updateUserAccountId(+userID);
     updateEmail(selectedUser.email);
     updateUsername(selectedUser.name);
     updateUserAgencies(Object.keys(selectedUser.agencies).map((id) => +id));
