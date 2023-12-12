@@ -27,6 +27,8 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { removeAgencyFromPath } from "../../utils";
+import { gateToAllowedEnvironment } from "../../utils/featureFlags";
+import { Environment } from "../AdminPanel";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { useHeaderBadge } from "../Header/hooks";
 import { generateDashboardURL } from "../HelpCenter/LinkToPublisherDashboard";
@@ -149,6 +151,18 @@ const Menu: React.FC = () => {
         window.open("/help", "_blank");
       },
     },
+    ...(authStore.isGlobalJusticeCountsAdmin &&
+    gateToAllowedEnvironment(api.environment, [
+      Environment.LOCAL,
+      Environment.STAGING,
+    ])
+      ? [
+          {
+            label: "Admin Panel",
+            onClick: () => window.open("/admin-panel", "_blank"),
+          },
+        ]
+      : []),
     {
       label: "Logout",
       highlightOption: true,

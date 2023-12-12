@@ -26,8 +26,8 @@ import qs from "qs";
 
 import { identify } from "../../analytics";
 
-export const APP_METADATA_CLAIM =
-  "https://dashboard.recidiviz.org/app_metadata";
+export const AUTH0_NAMESPACE_ROLES = "https://dashboard.recidiviz.org/roles";
+export const GLOBAL_JUSTICE_COUNTS_ADMIN_ROLE = "justice-counts-admin";
 
 interface AuthStoreProps {
   authSettings: Auth0ClientOptions | undefined;
@@ -52,6 +52,18 @@ export class AuthStore {
     this.authClient = undefined;
     this.isAuthorized = false;
     this.isLoading = true;
+  }
+
+  get userAuth0Roles(): string[] {
+    return this.user?.[AUTH0_NAMESPACE_ROLES] || [];
+  }
+
+  /**
+   * Refers to administrator role w/ user & agency provisioning privileges separate
+   * from Publisher's "Justice Counts Admin" role.
+   *  */
+  get isGlobalJusticeCountsAdmin(): boolean {
+    return this.userAuth0Roles.includes(GLOBAL_JUSTICE_COUNTS_ADMIN_ROLE);
   }
 
   private get auth0Client(): Promise<Auth0Client> {
