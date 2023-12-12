@@ -138,8 +138,6 @@ export const userRoles = [
   "READ_ONLY",
 ] as const;
 
-// export type AgencyTeamMemberRole = (typeof userRoles)[number];
-
 export type UserProvisioningUpdates = {
   name: string;
   email: string;

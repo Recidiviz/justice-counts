@@ -38,12 +38,12 @@ export const UserProvisioningOverview = observer(() => {
     resetUserProvisioningUpdates,
   } = adminPanelStore;
 
+  const [selectedUserID, setSelectedUserID] = useState<string | number>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchInput, setSearchInput] = useState<string>("");
   const [filteredUsers, setFilteredUsers] = useState<UserWithAgenciesByID[]>(
     []
   );
-  const [selectedUserID, setSelectedUserID] = useState<string | number>();
 
   const searchByKeys = ["name", "email", "id"] as UserKey[];
 
