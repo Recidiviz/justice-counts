@@ -58,7 +58,10 @@ export class AuthStore {
     return this.user?.[AUTH0_NAMESPACE_ROLES] || [];
   }
 
-  /** Refers to administrator role outside of Publisher w/ user & agency provisioning privileges */
+  /**
+   * Refers to administrator role w/ user & agency provisioning privileges separate
+   * from Publisher's "Justice Counts Admin" role.
+   *  */
   get isGlobalJusticeCountsAdmin(): boolean {
     return this.userAuth0Roles.includes(GLOBAL_JUSTICE_COUNTS_ADMIN_ROLE);
   }
