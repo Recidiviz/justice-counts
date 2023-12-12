@@ -288,6 +288,26 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       );
 
     /**
+     * Special handling for checking/unchecking an agency as a superagency. When an agency is checked as a superagency,
+     * the "Superagency" system should be added to the agency. When an agency is no longer checked as a superagency,
+     * the "Superagency" system should be removed from the agency.
+     */
+    const updateSuperagencyStatusAndSystems = () => {
+      const updatedSystemsSet = new Set(selectedSystems);
+      if (agencyProvisioningUpdates.is_superagency) {
+        updatedSystemsSet.delete(AgencySystems.SUPERAGENCY);
+        setSelectedSystems(updatedSystemsSet);
+        updateIsSuperagency(false);
+        return;
+      }
+      updatedSystemsSet.add(AgencySystems.SUPERAGENCY);
+      setSelectedSystems(updatedSystemsSet);
+      updateIsSuperagency(true);
+      setIsChildAgencySelected(false);
+      updateSuperagencyID(null);
+    };
+
+    /**
      * Check whether user has made updates to various fields to determine whether or not the 'Save' button is enabled/disabled
      *
      * Note: when creating a new agency, the only required fields are the `name` and `state_code`, all other fields can be
@@ -572,16 +592,18 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           buttons={getInteractiveSearchListSelectDeselectCloseButtons(
                             setSelectedSystems,
                             new Set(systems),
-                            () => updateIsSuperagency(true),
+                            () => {
+                              updateIsSuperagency(true);
+                              updateSuperagencyID(null);
+                              setIsChildAgencySelected(false);
+                              setSelectedChildAgencyIDs(new Set());
+                            },
                             () => updateIsSuperagency(false)
                           )}
                           updateSelections={({ id }) => {
                             if (id === AgencySystems.SUPERAGENCY) {
-                              if (agencyProvisioningUpdates.is_superagency) {
-                                updateIsSuperagency(false);
-                              } else {
-                                updateIsSuperagency(true);
-                              }
+                              updateSuperagencyStatusAndSystems();
+                              return;
                             }
                             setSelectedSystems((prev) =>
                               toggleAddRemoveSetItem(prev, id as AgencySystems)
@@ -646,19 +668,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         name="superagency"
                         type="checkbox"
                         onChange={() => {
-                          updateIsSuperagency(
-                            !agencyProvisioningUpdates.is_superagency
-                          );
-                          /** Add/remove SUPERAGENCY system when superagency checkmark is toggled */
-                          setSelectedSystems((prev) => {
-                            const clonedPrevSet = new Set(prev);
-                            if (agencyProvisioningUpdates.is_superagency) {
-                              clonedPrevSet.add(AgencySystems.SUPERAGENCY);
-                            } else {
-                              clonedPrevSet.delete(AgencySystems.SUPERAGENCY);
-                            }
-                            return clonedPrevSet;
-                          });
+                          updateSuperagencyStatusAndSystems();
                           updateSuperagencyID(null);
                           setSelectedChildAgencyIDs(new Set());
                           setIsChildAgencySelected(false);
@@ -675,19 +685,16 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         name="child-agency"
                         type="checkbox"
                         onChange={() => {
-                          updateIsSuperagency(false);
-                          setSelectedChildAgencyIDs(new Set());
                           setIsChildAgencySelected((prev) => !prev);
+                          setSelectedChildAgencyIDs(new Set());
                           setShowSelectionBox(undefined);
-                          /** Add/remove SUPERAGENCY system when superagency checkmark is toggled */
-                          if (selectedSystems.has(AgencySystems.SUPERAGENCY)) {
-                            setSelectedSystems((prev) => {
-                              const clonedPrevSet = new Set(prev);
-                              clonedPrevSet.delete(AgencySystems.SUPERAGENCY);
-                              return clonedPrevSet;
-                            });
+
+                          if (agencyProvisioningUpdates.is_superagency) {
+                            updateSuperagencyStatusAndSystems();
                           }
-                          if (isChildAgencySelected) updateSuperagencyID(null);
+                          if (isChildAgencySelected) {
+                            updateSuperagencyID(null);
+                          }
                         }}
                         checked={isChildAgencySelected}
                       />
