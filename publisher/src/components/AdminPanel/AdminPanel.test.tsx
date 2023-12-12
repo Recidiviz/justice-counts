@@ -55,6 +55,10 @@ jest.mock("react-router-dom", () => ({
   }),
 }));
 
+beforeEach(() => {
+  adminPanelStore.loading = false;
+});
+
 test("AdminPanel renders with the expected elements in the default User Provisioning view", async () => {
   runInAction(() => {
     adminPanelStore.usersByID = usersByID;

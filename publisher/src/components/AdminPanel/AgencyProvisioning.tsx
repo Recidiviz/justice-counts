@@ -19,8 +19,8 @@ import { Button } from "@justice-counts/common/components/Button";
 import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import {
-  TabOption,
   TabbedBar,
+  TabOption,
 } from "@justice-counts/common/components/TabbedBar";
 import {
   AgencySystem,
