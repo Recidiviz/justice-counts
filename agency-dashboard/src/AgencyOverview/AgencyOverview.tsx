@@ -17,7 +17,7 @@
 
 import MiniBarChart from "@justice-counts/common/components/DataViz/MiniBarChart";
 import {
-  AgencySystems,
+  AgencySystem,
   DataVizAggregateName,
 } from "@justice-counts/common/types";
 import { removeSnakeCase, slugify } from "@justice-counts/common/utils";
@@ -82,7 +82,7 @@ export const AgencyOverview = observer(() => {
     agencyOverviewVisibleCategoriesMetadata
   );
 
-  const [currentSystem, setCurrentSystem] = useState<AgencySystems | undefined>(
+  const [currentSystem, setCurrentSystem] = useState<AgencySystem | undefined>(
     availableSystems[0]
   );
 
