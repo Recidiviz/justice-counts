@@ -669,10 +669,11 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         type="checkbox"
                         onChange={() => {
                           updateSuperagencyStatusAndSystems();
+                          setShowSelectionBox(undefined);
+                          // Reset child agency selections
                           updateSuperagencyID(null);
                           setSelectedChildAgencyIDs(new Set());
                           setIsChildAgencySelected(false);
-                          setShowSelectionBox(undefined);
                         }}
                         checked={Boolean(
                           agencyProvisioningUpdates.is_superagency
@@ -688,11 +689,12 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           setIsChildAgencySelected((prev) => !prev);
                           setSelectedChildAgencyIDs(new Set());
                           setShowSelectionBox(undefined);
-
                           if (agencyProvisioningUpdates.is_superagency) {
+                            // Uncheck Superagency checkbox and remove Superagency system
                             updateSuperagencyStatusAndSystems();
                           }
                           if (isChildAgencySelected) {
+                            // Reset selected superagency ID when unchecked
                             updateSuperagencyID(null);
                           }
                         }}
