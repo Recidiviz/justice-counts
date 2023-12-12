@@ -32,6 +32,7 @@ export const UserProvisioningOverview = observer(() => {
     loading,
     users,
     usersByID,
+    updateUserID,
     updateEmail,
     updateUsername,
     updateUserAgencies,
@@ -66,6 +67,7 @@ export const UserProvisioningOverview = observer(() => {
   const editUser = (userID: string | number) => {
     const selectedUser = usersByID[userID][0];
     setSelectedUserID(userID);
+    updateUserID(selectedUser.id);
     updateEmail(selectedUser.email);
     updateUsername(selectedUser.name);
     updateUserAgencies(Object.keys(selectedUser.agencies).map((id) => +id));

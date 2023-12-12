@@ -40,6 +40,7 @@ import { groupBy } from "../utils";
 import API from "./API";
 
 const initialEmptyUserProvisioningUpdates = {
+  user_account_id: null,
   name: "",
   email: "",
   agency_ids: [],
@@ -188,6 +189,10 @@ class AdminPanelStore {
   }
 
   /** User Provisioning */
+
+  updateUserID(userAccountID: string | number) {
+    this.userProvisioningUpdates.user_account_id = userAccountID;
+  }
 
   updateUsername(username: string) {
     this.userProvisioningUpdates.name = username;
