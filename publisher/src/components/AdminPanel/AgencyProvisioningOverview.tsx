@@ -157,7 +157,7 @@ export const AgencyProvisioningOverview = observer(() => {
 
           {/* Opens a secondary modal to create a new agency while in the middle of the create/edit user flow */}
           {activeSecondaryModal === Setting.USERS && (
-            <DelayedRender delay={300}>
+            <DelayedRender delay={250}>
               <Modal>
                 <UserProvisioning
                   closeModal={closeModal}
