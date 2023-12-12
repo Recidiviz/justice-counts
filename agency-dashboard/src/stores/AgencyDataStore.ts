@@ -23,7 +23,7 @@ import {
 } from "@justice-counts/common/components/DataViz/utils";
 import {
   AgencySetting,
-  AgencySystems,
+  AgencySystem,
   DatapointsByMetric,
   DataVizAggregateName,
   Metric,
@@ -66,7 +66,7 @@ class AgencyDataStore {
     return this.agencySettingsBySettingType.HOMEPAGE_URL?.value;
   }
 
-  get agencySystems(): AgencySystems[] | undefined {
+  get agencySystems(): AgencySystem[] | undefined {
     return this.agency?.systems;
   }
 
@@ -263,8 +263,8 @@ class AgencyDataStore {
 
   agencySystemsWithData(
     visibleCategoriesMetadata: VisibleCategoriesMetadata
-  ): AgencySystems[] {
-    const agencySystems = new Set() as Set<AgencySystems>;
+  ): AgencySystem[] {
+    const agencySystems = new Set() as Set<AgencySystem>;
     const metricsWithData = this.getMetricsByAvailableCategoriesWithData(
       visibleCategoriesMetadata
     );
