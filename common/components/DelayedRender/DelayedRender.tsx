@@ -26,7 +26,7 @@ export const DelayedRender: React.FC<{ delay: number } & PropsWithChildren> = ({
   useEffect(() => {
     const timeout = setTimeout(() => setDelayed(false), delay);
     return () => clearTimeout(timeout);
-  }, []);
+  }, [delay]);
 
   return !delayed ? children : null;
 };
