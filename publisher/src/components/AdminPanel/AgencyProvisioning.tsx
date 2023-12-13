@@ -292,14 +292,16 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
      * the "Superagency" system should be added to the agency. When an agency is no longer checked as a superagency,
      * the "Superagency" system should be removed from the agency.
      */
-    const updateSuperagencyStatusAndSystems = () => {
+    const toggleSuperagencyStatusAndSystems = () => {
       const updatedSystemsSet = new Set(selectedSystems);
+      // If "Superagency" is currently checked, uncheck it and remove the "Superagency" system
       if (agencyProvisioningUpdates.is_superagency) {
         updatedSystemsSet.delete(AgencySystems.SUPERAGENCY);
         setSelectedSystems(updatedSystemsSet);
         updateIsSuperagency(false);
         return;
       }
+      // If "Superagency" is not currently checked, check it and add the "Superagency" system
       updatedSystemsSet.add(AgencySystems.SUPERAGENCY);
       setSelectedSystems(updatedSystemsSet);
       updateIsSuperagency(true);
@@ -602,7 +604,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           )}
                           updateSelections={({ id }) => {
                             if (id === AgencySystems.SUPERAGENCY) {
-                              updateSuperagencyStatusAndSystems();
+                              toggleSuperagencyStatusAndSystems();
                               return;
                             }
                             setSelectedSystems((prev) =>
@@ -668,7 +670,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         name="superagency"
                         type="checkbox"
                         onChange={() => {
-                          updateSuperagencyStatusAndSystems();
+                          toggleSuperagencyStatusAndSystems();
                           setShowSelectionBox(undefined);
                           // Reset child agency selections
                           updateSuperagencyID(null);
@@ -691,7 +693,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           setShowSelectionBox(undefined);
                           if (agencyProvisioningUpdates.is_superagency) {
                             // Uncheck Superagency checkbox and remove Superagency system
-                            updateSuperagencyStatusAndSystems();
+                            toggleSuperagencyStatusAndSystems();
                           }
                           if (isChildAgencySelected) {
                             // Reset selected superagency ID when unchecked
