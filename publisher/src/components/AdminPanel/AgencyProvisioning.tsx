@@ -466,22 +466,24 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           />
         ) : (
           <>
-            <Styled.ModalTitle>
-              {selectedIDToEdit
-                ? "Edit Agency Information"
-                : "Create New Agency"}
-            </Styled.ModalTitle>
+            <Styled.ModalHeader>
+              <Styled.ModalTitle>
+                {selectedIDToEdit
+                  ? "Edit Agency Information"
+                  : "Create New Agency"}
+              </Styled.ModalTitle>
 
-            {/** User Information */}
-            <Styled.NameDisplay>
-              {agencyProvisioningUpdates?.name || selectedAgency?.name}
-            </Styled.NameDisplay>
-            {selectedAgency && (
-              <Styled.Subheader>ID {selectedAgency?.id}</Styled.Subheader>
-            )}
+              {/** User Information */}
+              <Styled.NameDisplay>
+                {agencyProvisioningUpdates?.name || selectedAgency?.name}
+              </Styled.NameDisplay>
+              {selectedAgency && (
+                <Styled.Subheader>ID {selectedAgency?.id}</Styled.Subheader>
+              )}
 
-            {/* Toggle between Agency Information and Team Members & Roles */}
-            <TabbedBar options={settingOptions} />
+              {/* Toggle between Agency Information and Team Members & Roles */}
+              <TabbedBar options={settingOptions} />
+            </Styled.ModalHeader>
 
             <Styled.ScrollableContainer ref={scrollableContainerRef}>
               <Styled.Form>

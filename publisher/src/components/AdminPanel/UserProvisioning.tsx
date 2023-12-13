@@ -266,20 +266,22 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
           />
         ) : (
           <>
-            <Styled.ModalTitle>
-              {selectedIDToEdit ? "Edit User Information" : "Create New User"}
-            </Styled.ModalTitle>
+            <Styled.ModalHeader>
+              <Styled.ModalTitle>
+                {selectedIDToEdit ? "Edit User Information" : "Create New User"}
+              </Styled.ModalTitle>
 
-            {/** User Information */}
-            <Styled.NameDisplay>
-              {userProvisioningUpdates?.name || selectedUser?.name}
-            </Styled.NameDisplay>
-            <Styled.Subheader>
-              {userProvisioningUpdates?.email || selectedUser?.email}
-            </Styled.Subheader>
-            {selectedUser && (
-              <Styled.Subheader>ID {selectedUser?.id}</Styled.Subheader>
-            )}
+              {/** User Information */}
+              <Styled.NameDisplay>
+                {userProvisioningUpdates?.name || selectedUser?.name}
+              </Styled.NameDisplay>
+              <Styled.Subheader>
+                {userProvisioningUpdates?.email || selectedUser?.email}
+              </Styled.Subheader>
+              {selectedUser && (
+                <Styled.Subheader>ID {selectedUser?.id}</Styled.Subheader>
+              )}
+            </Styled.ModalHeader>
 
             <Styled.ScrollableContainer>
               <Styled.Form>
@@ -403,34 +405,34 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
                     }}
                   />
                 )}
-
-                {/* Modal Buttons */}
-                <Styled.ModalActionButtons>
-                  <div />
-                  <Styled.SaveCancelButtonsWrapper>
-                    {modalButtons.map((button) => {
-                      const isSaveButton = button.label === "Save";
-                      return (
-                        <ButtonWithMiniLoaderContainer key={button.label}>
-                          {isSaveButton && isSaveInProgress && (
-                            <MiniLoaderWrapper>
-                              <MiniLoader dark />
-                            </MiniLoaderWrapper>
-                          )}
-                          <Button
-                            key={button.label}
-                            label={button.label}
-                            onClick={button.onClick}
-                            buttonColor={isSaveButton ? "blue" : undefined}
-                            disabled={isSaveButton && isSaveDisabled}
-                          />
-                        </ButtonWithMiniLoaderContainer>
-                      );
-                    })}
-                  </Styled.SaveCancelButtonsWrapper>
-                </Styled.ModalActionButtons>
               </Styled.Form>
             </Styled.ScrollableContainer>
+
+            {/* Modal Buttons */}
+            <Styled.ModalActionButtons>
+              <div />
+              <Styled.SaveCancelButtonsWrapper>
+                {modalButtons.map((button) => {
+                  const isSaveButton = button.label === "Save";
+                  return (
+                    <ButtonWithMiniLoaderContainer key={button.label}>
+                      {isSaveButton && isSaveInProgress && (
+                        <MiniLoaderWrapper>
+                          <MiniLoader dark />
+                        </MiniLoaderWrapper>
+                      )}
+                      <Button
+                        key={button.label}
+                        label={button.label}
+                        onClick={button.onClick}
+                        buttonColor={isSaveButton ? "blue" : undefined}
+                        disabled={isSaveButton && isSaveDisabled}
+                      />
+                    </ButtonWithMiniLoaderContainer>
+                  );
+                })}
+              </Styled.SaveCancelButtonsWrapper>
+            </Styled.ModalActionButtons>
           </>
         )}
       </Styled.ModalContainer>

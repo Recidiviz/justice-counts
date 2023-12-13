@@ -69,7 +69,7 @@ export const SettingsBar = styled.div`
 `;
 
 export const ScrollableContainer = styled.div`
-  height: 61vh;
+  height: 100%;
   overflow-y: auto;
   padding-bottom: 32px;
   padding-right: 16px;
@@ -84,10 +84,18 @@ export const ModalContainer = styled.div<{ offScreen?: boolean }>`
   width: 50vw;
   background: ${palette.solid.white};
   border-radius: 4px;
-  padding: 32px 32px 100px 32px;
+  padding: 32px;
   position: relative;
   transform: ${({ offScreen }) => (offScreen ? `translateX(-70vw)` : `none`)};
   transition: transform 0.6s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
+export const ModalHeader = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 export const ModalTitle = styled.div<{ noBottomMargin?: boolean }>`
@@ -103,14 +111,17 @@ export const ModalDescription = styled.div`
 `;
 
 export const ModalActionButtons = styled.div`
-  width: calc(100% - 64px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* width: calc(100% - 64px);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   position: absolute;
   bottom: 32px;
-  right: 32px;
+  right: 32px; */
 `;
 
 export const SaveCancelButtonsWrapper = styled.div`
