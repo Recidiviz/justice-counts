@@ -233,7 +233,7 @@ export const AgencyProvisioningOverview = observer(() => {
           </Styled.LabelWrapper>
         </Styled.InputLabelWrapper>
 
-        {/* Show Superagencies/Show Agencies with Live Dashboards Checkboxes */}
+        {/* Filter by Superagencies/Agencies with Live Dashboards Checkboxes */}
         <Styled.InputLabelWrapper flexRow inputWidth={395} noBottomSpacing>
           <input
             id="superagency-filter"
@@ -244,7 +244,7 @@ export const AgencyProvisioningOverview = observer(() => {
             }}
             checked={showSuperagencies}
           />
-          <label htmlFor="superagency-filter">Show superagencies</label>
+          <label htmlFor="superagency-filter">Filter by superagencies</label>
           <input
             id="live-dashboard-filter"
             name="live-dashboard-filter"
@@ -255,7 +255,7 @@ export const AgencyProvisioningOverview = observer(() => {
             checked={showAgenciesWithLiveDashboards}
           />
           <label htmlFor="live-dashboard-filter">
-            Show agencies with live dashboard
+            Filter by agencies with live dashboard
           </label>
         </Styled.InputLabelWrapper>
 
