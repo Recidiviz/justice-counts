@@ -15,7 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystems, AgencyTeamMember } from "@justice-counts/common/types";
+import {
+  AgencySystems,
+  AgencyTeamMember,
+  AgencyTeamMemberRole,
+} from "@justice-counts/common/types";
 import { removeSnakeCase } from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
@@ -25,6 +29,7 @@ import {
   AgencyResponse,
   AgencyTeamUpdates,
   AgencyWithTeamByID,
+  Environment,
   FipsCountyCodeKey,
   FipsCountyCodes,
   SearchableEntity,
@@ -34,6 +39,7 @@ import {
   User,
   UserProvisioningUpdates,
   UserResponse,
+  UserRoleUpdates,
   UserWithAgenciesByID,
 } from "../components/AdminPanel";
 import { groupBy } from "../utils";
@@ -46,7 +52,7 @@ const initialEmptyUserProvisioningUpdates = {
 };
 
 const initialEmptyAgencyProvisioningUpdates = {
-  agency_id: undefined,
+  agency_id: null,
   name: "",
   state_code: null,
   fips_county_code: null,
@@ -90,6 +96,10 @@ class AdminPanelStore {
 
   get agencies(): AgencyWithTeamByID[] {
     return AdminPanelStore.objectToSortedFlatMappedValues(this.agenciesByID);
+  }
+
+  get csgUsers(): UserWithAgenciesByID[] {
+    return this.users.filter((user) => user.email.includes("@csg.org"));
   }
 
   get searchableSystems(): SearchableListItem[] {
@@ -278,6 +288,29 @@ class AdminPanelStore {
 
   updateTeamMembers(team: AgencyTeamUpdates[]) {
     this.agencyProvisioningUpdates.team = team;
+  }
+
+  /**
+   * Returns a { [id]: <AgencyTeamMemberRole> } object of CSG users with their default roles
+   * to be consumed by `AgencyProvisioning` component to auto-add CSG users when creating a
+   * new agency.
+   */
+  getCSGTeamMembersIDToRoles(agencyName: string): UserRoleUpdates {
+    let role: AgencyTeamMemberRole;
+    const isStagingEnv = this.api.environment === Environment.STAGING;
+    const isDemoAgency =
+      agencyName.includes("DEMO") ||
+      agencyName.includes("Department of Corrections");
+    if (isStagingEnv || isDemoAgency) {
+      role = AgencyTeamMemberRole.AGENCY_ADMIN;
+    } else {
+      role = AgencyTeamMemberRole.READ_ONLY;
+    }
+
+    return this.csgUsers.reduce((acc, user) => {
+      acc[+user.id] = role;
+      return acc;
+    }, {} as UserRoleUpdates);
   }
 
   resetAgencyProvisioningUpdates() {

@@ -720,3 +720,129 @@ test("Clicking on an existing agency card opens the edit agency modal", () => {
   const teamMember = screen.getAllByText("Anne Teak")[0];
   expect(teamMember).toBeInTheDocument();
 });
+
+test("Team members tab renders with add/remove buttons and users who are connected to the agency", () => {
+  runInAction(() => {
+    adminPanelStore.usersByID = usersByID;
+    adminPanelStore.agenciesByID = agenciesByID;
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const agencyProvisioningTab = screen.getByText("Agency Provisioning");
+  fireEvent.click(agencyProvisioningTab);
+
+  const agency1Card = screen.getByText("Super Agency");
+  fireEvent.click(agency1Card);
+
+  const teamMemberRolesTab = screen.getByText("Team Members & Roles");
+  fireEvent.click(teamMemberRolesTab);
+
+  const addUsersButton = screen.getByText("Add Users");
+  const deleteUsersButton = screen.getByText("Delete Users");
+  const teamMember = screen.getByText("user1@email.org");
+
+  expect(teamMember).toBeInTheDocument();
+  expect(addUsersButton).toBeInTheDocument();
+  expect(deleteUsersButton).toBeInTheDocument();
+});
+
+test("Adding a user adds a card to the list of team members", () => {
+  runInAction(() => {
+    adminPanelStore.usersByID = usersByID;
+    adminPanelStore.agenciesByID = agenciesByID;
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const agencyProvisioningTab = screen.getByText("Agency Provisioning");
+  fireEvent.click(agencyProvisioningTab);
+
+  const agency1Card = screen.getByText("Super Agency");
+  fireEvent.click(agency1Card);
+
+  const teamMemberRolesTab = screen.getByText("Team Members & Roles");
+  fireEvent.click(teamMemberRolesTab);
+
+  const addUsersButton = screen.getByText("Add Users");
+  fireEvent.click(addUsersButton);
+
+  const selectTeamMembersToAddLabel = screen.getByText(
+    "Select team members to add"
+  );
+  const existingTeamMember1 = screen.getByText("user1@email.org");
+  const teamMember2 = screen.getAllByText("Liz Erd")[2];
+  const teamMember3 = screen.getByText("Percy Vere");
+
+  expect(selectTeamMembersToAddLabel).toBeInTheDocument();
+  expect(existingTeamMember1).toBeInTheDocument();
+  expect(teamMember2).toBeInTheDocument();
+  expect(teamMember3).toBeInTheDocument();
+  expect(addUsersButton).toBeInTheDocument();
+
+  fireEvent.click(teamMember2);
+  /** Expect Liz Erd (user2@email.org) to be added to the team members list  */
+  const teamMember2Email = screen.getByText("user2@email.org");
+  expect(teamMember2Email).toBeInTheDocument();
+});
+
+test("Deleting a user deletes a card to the list of team members", () => {
+  runInAction(() => {
+    adminPanelStore.usersByID = usersByID;
+    adminPanelStore.agenciesByID = agenciesByID;
+  });
+
+  render(
+    <BrowserRouter>
+      <StoreProvider>
+        <AdminPanel />
+      </StoreProvider>
+    </BrowserRouter>
+  );
+
+  const agencyProvisioningTab = screen.getByText("Agency Provisioning");
+  fireEvent.click(agencyProvisioningTab);
+
+  const agency1Card = screen.getByText("Super Agency");
+  fireEvent.click(agency1Card);
+
+  const teamMemberRolesTab = screen.getByText("Team Members & Roles");
+  fireEvent.click(teamMemberRolesTab);
+
+  const deleteUsersButton = screen.getByText("Delete Users");
+  fireEvent.click(deleteUsersButton);
+
+  const selectTeamMembersToAddLabel = screen.getByText(
+    "Select team members to delete"
+  );
+  const existingTeamMember1 = screen.getByText("user1@email.org");
+  const existingTeamMember1ChipToDelete = screen.queryAllByText("Anne Teak")[1];
+  const teamMember2 = screen.queryAllByText("Liz Erd")[2];
+  const teamMember3 = screen.queryByText("Percy Vere");
+
+  expect(selectTeamMembersToAddLabel).toBeInTheDocument();
+  expect(existingTeamMember1).toBeInTheDocument();
+  expect(teamMember2).toBeUndefined();
+  expect(teamMember3).toBeNull();
+  expect(deleteUsersButton).toBeInTheDocument();
+
+  /** Expect the role input to be disabled after clicking on Anne Teak to delete  */
+  const existingTeamMember1Role = screen.getByDisplayValue(
+    "JUSTICE COUNTS ADMIN"
+  );
+  expect(existingTeamMember1Role).not.toBeDisabled();
+  fireEvent.click(existingTeamMember1ChipToDelete);
+  expect(existingTeamMember1Role).toBeDisabled();
+});

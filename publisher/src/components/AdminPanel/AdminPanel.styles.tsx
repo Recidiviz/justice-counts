@@ -279,6 +279,7 @@ export const ButtonWrapper = styled.div`
 export const TeamMembersContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
+  margin-top: 12px;
 `;
 
 export const TeamMemberCard = styled.div<{

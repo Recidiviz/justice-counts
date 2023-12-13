@@ -15,7 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystems, AgencyTeamMember } from "@justice-counts/common/types";
+import {
+  AgencySystems,
+  AgencyTeamMember,
+  AgencyTeamMemberRole,
+} from "@justice-counts/common/types";
 
 export enum Environment {
   LOCAL = "local",
@@ -108,7 +112,7 @@ export type AgencyProvisioningUpdates = {
 
 export type AgencyTeamUpdates = {
   user_account_id: number | null;
-  role: UserRole;
+  role: AgencyTeamMemberRole;
 };
 
 /** User Types */
@@ -127,13 +131,6 @@ export type UserWithAgenciesByID = Omit<User, "agencies"> & {
 
 export type UserResponse = { users: User[] };
 
-export enum UserRoles {
-  AGENCY_ADMIN = "AGENCY_ADMIN",
-  JUSTICE_COUNTS_ADMIN = "JUSTICE_COUNTS_ADMIN",
-  CONTRIBUTOR = "CONTRIBUTOR",
-  READ_ONLY = "READ_ONLY",
-}
-
 export const userRoles = [
   "AGENCY_ADMIN",
   "JUSTICE_COUNTS_ADMIN",
@@ -141,7 +138,7 @@ export const userRoles = [
   "READ_ONLY",
 ] as const;
 
-export type UserRole = (typeof userRoles)[number];
+// export type AgencyTeamMemberRole = (typeof userRoles)[number];
 
 export type UserProvisioningUpdates = {
   name: string;
@@ -150,7 +147,7 @@ export type UserProvisioningUpdates = {
 };
 
 export type UserRoleUpdates = {
-  [id: number]: UserRole;
+  [id: number]: AgencyTeamMemberRole;
 };
 
 /** Search Feature Types */
@@ -169,7 +166,7 @@ export type InteractiveSearchListUpdateSelections = (
     name: string;
     action?: InteractiveSearchListAction;
     email?: string;
-    role?: UserRole;
+    role?: AgencyTeamMemberRole;
   },
   action: InteractiveSearchListAction
 ) => void;
@@ -179,7 +176,7 @@ export type SearchableListItem = {
   name: string;
   action?: InteractiveSearchListAction;
   email?: string;
-  role?: UserRole;
+  role?: AgencyTeamMemberRole;
 };
 
 export type SearchableSetKeys = Set<number | string>;
