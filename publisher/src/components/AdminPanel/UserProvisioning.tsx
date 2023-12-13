@@ -96,14 +96,12 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
       ...agenciesByID[id][0],
       action: InteractiveSearchListActions.ADD,
     }));
-    const userAgenciesAddedAgencies = selectedUser
-      ? [
-          ...addedAgenciesToDisplayInUserAgencies,
-          ...AdminPanelStore.objectToSortedFlatMappedValues(
-            selectedUser.agencies
-          ),
-        ]
-      : [];
+    const userAgenciesAddedAgencies = [
+      ...addedAgenciesToDisplayInUserAgencies,
+      ...(selectedUser
+        ? AdminPanelStore.objectToSortedFlatMappedValues(selectedUser.agencies)
+        : []),
+    ];
 
     /** Whether or not we are performing an add/delete action on an agencies' list */
     const isAddAction =
@@ -324,7 +322,7 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
                 )}
 
                 {/* User's Agencies */}
-                {selectedUser && (
+                {activeSecondaryModal !== Setting.USERS && (
                   <InteractiveSearchList
                     list={userAgenciesAddedAgencies}
                     buttons={interactiveSearchListButtons}
