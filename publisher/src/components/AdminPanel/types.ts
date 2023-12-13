@@ -139,6 +139,7 @@ export const userRoles = [
 ] as const;
 
 export type UserProvisioningUpdates = {
+  user_account_id?: number | string | null;
   name: string;
   email: string;
   agency_ids: number[];
