@@ -635,8 +635,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           }}
                           searchByKeys={["name"]}
                           metadata={{
-                            listBoxLabel: "Select system(s)",
-                            searchBoxLabel: "Search systems",
+                            listBoxLabel: "Select sector(s)",
+                            searchBoxLabel: "Search sectors",
                           }}
                           isActiveBox={
                             showSelectionBox === SelectionInputBoxTypes.SYSTEMS
@@ -663,7 +663,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         )}
                       </Styled.ChipContainer>
                       <Styled.ChipContainerLabel>
-                        Systems
+                        Sectors
                       </Styled.ChipContainerLabel>
                     </Styled.InputLabelWrapper>
 
