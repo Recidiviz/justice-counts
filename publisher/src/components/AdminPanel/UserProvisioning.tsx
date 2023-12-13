@@ -62,6 +62,7 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
     const [showSaveConfirmation, setShowSaveConfirmation] = useState<{
       show: boolean;
       type?: SaveConfirmationType;
+      errorMessage?: string;
     }>({ show: false });
     const [addedAgenciesIDs, setAddedAgenciesIDs] = useState<Set<number>>(
       new Set()
@@ -185,21 +186,25 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
           (id) => !deletedAgenciesIDs.has(id)
         ),
       ]);
-      const responseStatus =
-        await adminPanelStore.saveUserProvisioningUpdates();
+      const response = await adminPanelStore.saveUserProvisioningUpdates();
 
       setShowSaveConfirmation({
         show: true,
         type:
-          responseStatus === 200
+          response && "status" in response && response.status === 200
             ? SaveConfirmationTypes.SUCCESS
             : SaveConfirmationTypes.ERROR,
+        errorMessage:
+          response && "description" in response
+            ? response.description
+            : undefined,
       });
 
       /** After showing the confirmation screen, either return to modal (on error) or close modal (on success) */
       setTimeout(() => {
         setShowSaveConfirmation((prev) => ({ ...prev, show: false }));
-        if (responseStatus === 200) closeModal();
+        if (response && "status" in response && response.status === 200)
+          closeModal();
         setIsSaveInProgress(false);
       }, 2000);
     };
@@ -262,7 +267,9 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
         {showSaveConfirmation.show ? (
           <SaveConfirmation
             type={showSaveConfirmation.type}
-            message={getSaveConfirmationMessage()}
+            message={
+              showSaveConfirmation.errorMessage || getSaveConfirmationMessage()
+            }
           />
         ) : (
           <>

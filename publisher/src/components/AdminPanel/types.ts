@@ -60,6 +60,8 @@ export enum SelectionInputBoxTypes {
 
 export type SelectionInputBoxType = `${SelectionInputBoxTypes}`;
 
+export type ErrorResponse = { code: string; description: string };
+
 /** Agency Types */
 
 export type Agency = {

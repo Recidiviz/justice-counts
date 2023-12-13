@@ -93,6 +93,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const [showSaveConfirmation, setShowSaveConfirmation] = useState<{
       show: boolean;
       type?: SaveConfirmationType;
+      errorMessage?: string;
     }>({ show: false });
 
     const [currentSettingType, setCurrentSettingType] =
@@ -257,20 +258,29 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         })),
       ]);
 
-      const responseStatus = await saveAgencyProvisioningUpdates();
+      const response = await saveAgencyProvisioningUpdates();
 
       setShowSaveConfirmation({
         show: true,
         type:
-          responseStatus === 200
+          response && "status" in response && response.status === 200
             ? SaveConfirmationTypes.SUCCESS
             : SaveConfirmationTypes.ERROR,
+        errorMessage:
+          response && "description" in response
+            ? response.description
+            : undefined,
       });
 
       /** After showing the confirmation screen, either return to modal (on error) or close modal (on success) */
       setTimeout(() => {
-        setShowSaveConfirmation((prev) => ({ ...prev, show: false }));
-        if (responseStatus === 200) closeModal();
+        setShowSaveConfirmation((prev) => ({
+          ...prev,
+          show: false,
+          errorMessage: undefined,
+        }));
+        if (response && "status" in response && response.status === 200)
+          closeModal();
         setIsSaveInProgress(false);
       }, 2000);
     };
@@ -454,7 +464,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         {showSaveConfirmation.show ? (
           <SaveConfirmation
             type={showSaveConfirmation.type}
-            message={getSaveConfirmationMessage()}
+            message={
+              showSaveConfirmation.errorMessage || getSaveConfirmationMessage()
+            }
           />
         ) : (
           <>
