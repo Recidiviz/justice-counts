@@ -218,24 +218,16 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     ];
     const getInteractiveSearchListSelectDeselectCloseButtons = <T,>(
       setState: React.Dispatch<React.SetStateAction<Set<T>>>,
-      selectAllSet: Set<T>,
-      selectAllCallback?: () => void,
-      deselectAllCallback?: () => void
+      selectAllSet: Set<T>
     ) => {
       return [
         {
           label: "Select All",
-          onClick: () => {
-            setState(selectAllSet);
-            if (selectAllCallback) selectAllCallback();
-          },
+          onClick: () => setState(selectAllSet),
         },
         {
           label: "Deselect All",
-          onClick: () => {
-            setState(new Set());
-            if (deselectAllCallback) deselectAllCallback();
-          },
+          onClick: () => setState(new Set()),
         },
         interactiveSearchListCloseButton[0],
       ];
@@ -615,20 +607,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           selections={selectedSystems}
                           buttons={getInteractiveSearchListSelectDeselectCloseButtons(
                             setSelectedSystems,
-                            new Set(systems),
-                            () => {
-                              updateIsSuperagency(true);
-                              updateSuperagencyID(null);
-                              setIsChildAgencySelected(false);
-                              setSelectedChildAgencyIDs(new Set());
-                            },
-                            () => updateIsSuperagency(false)
+                            new Set(systems)
                           )}
                           updateSelections={({ id }) => {
-                            if (id === AgencySystems.SUPERAGENCY) {
-                              toggleSuperagencyStatusAndSystems();
-                              return;
-                            }
                             setSelectedSystems((prev) =>
                               toggleAddRemoveSetItem(prev, id as AgencySystems)
                             );
