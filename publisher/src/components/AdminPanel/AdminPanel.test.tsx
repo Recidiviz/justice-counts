@@ -457,9 +457,11 @@ test("AdminPanel renders with the expected elements in the Agency Provisioning v
   const userProvisioningSearchBox = screen.queryByText(
     "Search by name, email or user ID"
   );
-  const superagenciesFilterCheckbox = screen.getByText("Show superagencies");
+  const superagenciesFilterCheckbox = screen.getByText(
+    "Filter by superagencies"
+  );
   const liveDashboardsFilterCheckbox = screen.getByText(
-    "Show agencies with live dashboard"
+    "Filter by agencies with live dashboard"
   );
   const arizonaStateText = screen.getByText("Arizona");
   const californiaStateText = screen.getAllByText("California")[0];
@@ -551,16 +553,17 @@ test("Agency provisioning overview filter checkboxes properly filter superagenci
   const agencyProvisioningTab = screen.getByText("Agency Provisioning");
   fireEvent.click(agencyProvisioningTab);
 
-  const showSuperagenciesCheckbox: HTMLInputElement =
-    screen.getByLabelText("Show superagencies");
+  const showSuperagenciesCheckbox: HTMLInputElement = screen.getByLabelText(
+    "Filter by superagencies"
+  );
   const showAgenciesWithLiveDashboardsCheckbox: HTMLInputElement =
-    screen.getByLabelText("Show agencies with live dashboard");
+    screen.getByLabelText("Filter by agencies with live dashboard");
 
   /** Expect both checkboxes to be unchecked initially */
   expect(showSuperagenciesCheckbox.checked).toEqual(false);
   expect(showAgenciesWithLiveDashboardsCheckbox.checked).toEqual(false);
 
-  /** Check "Show superagencies" checkbox */
+  /** Check "Filter by superagencies" checkbox */
   fireEvent.click(showSuperagenciesCheckbox);
   expect(showSuperagenciesCheckbox.checked).toEqual(true);
 
@@ -572,7 +575,7 @@ test("Agency provisioning overview filter checkboxes properly filter superagenci
   expect(agency2).toBeNull();
   expect(agency3).toBeNull();
 
-  /** Uncheck "Show superagencies" checkbox and check "Show agencies with live dashboard" checkbox */
+  /** Uncheck "Filter by superagencies" checkbox and check "Filter by agencies with live dashboard" checkbox */
   fireEvent.click(showSuperagenciesCheckbox);
   fireEvent.click(showAgenciesWithLiveDashboardsCheckbox);
   expect(showSuperagenciesCheckbox.checked).toEqual(false);
@@ -586,7 +589,7 @@ test("Agency provisioning overview filter checkboxes properly filter superagenci
   expect(agency2).toBeInTheDocument();
   expect(agency3).toBeNull();
 
-  /** Check "Show superagencies" checkbox and keep "Show agencies with live dashboard" checkbox checked */
+  /** Check "Filter by superagencies" checkbox and keep "Filter by agencies with live dashboard" checkbox checked */
   fireEvent.click(showSuperagenciesCheckbox);
   expect(showSuperagenciesCheckbox.checked).toEqual(true);
   expect(showAgenciesWithLiveDashboardsCheckbox.checked).toEqual(true);
@@ -627,7 +630,7 @@ test("Clicking the `Create Agency` button opens the create agency modal", () => 
   const nameInput = screen.getByText("Name");
   const stateInput = screen.getByText("State");
   const countyInput = screen.getByText("County");
-  const systemsInput = screen.getByText("Systems");
+  const systemsInput = screen.getByText("Sectors");
   const noSystemsSelectedMessage = screen.getByText("No systems selected");
   const dashboardEnabledInput = screen.getByText("Dashboard enabled");
   const superagencyInput = screen.getAllByText("Superagency")[0];
@@ -683,7 +686,7 @@ test("Clicking on an existing agency card opens the edit agency modal", () => {
   const nameInput = screen.getByLabelText("Name");
   const stateInput = screen.getByLabelText("State");
   const countyInput = screen.getByText("County");
-  const systemsInput = screen.getByText("Systems");
+  const systemsInput = screen.getByText("Sectors");
   const lawEnforcementSystem = screen.getByText("law enforcement");
   const noSystemsSelectedMessage = screen.queryByText("No systems selected");
   const noChildAgenciesSelectedMessage = screen.queryByText(
