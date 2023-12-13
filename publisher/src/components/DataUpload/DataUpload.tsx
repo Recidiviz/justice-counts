@@ -21,7 +21,7 @@ import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
-  AgencySystems,
+  AgencySystem,
   AgencyTeamMemberRole,
   ReportOverview,
   SupervisionSubsystems,
@@ -64,7 +64,7 @@ export type UploadedFile = {
     name: string;
     role: AgencyTeamMemberRole;
   };
-  system: AgencySystems;
+  system: AgencySystem;
   status: UploadedFileStatus | null;
 };
 
@@ -109,7 +109,7 @@ export const DataUpload: React.FC = observer(() => {
     useState<ErrorsWarningsMetrics>();
   const [selectedFile, setSelectedFile] = useState<File>();
   const [selectedSystem, setSelectedSystem] = useState<
-    AgencySystems | undefined
+    AgencySystem | undefined
   >();
   const [newAndUpdatedReports, setNewAndUpdatedReports] = useState<{
     newReports: ReportOverview[];
@@ -131,7 +131,7 @@ export const DataUpload: React.FC = observer(() => {
 
   const handleFileUpload = async (
     file: File,
-    system: AgencySystems
+    system: AgencySystem
   ): Promise<void> => {
     if (file && system && agencyId) {
       setSelectedFile(file);
@@ -198,7 +198,7 @@ export const DataUpload: React.FC = observer(() => {
     }
   };
 
-  const handleSystemSelection = (file: File, system: AgencySystems) => {
+  const handleSystemSelection = (file: File, system: AgencySystem) => {
     setIsLoading(true);
     setSelectedSystem(system);
     handleFileUpload(file, system);

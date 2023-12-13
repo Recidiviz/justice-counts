@@ -16,7 +16,7 @@
 // =============================================================================
 
 import {
-  AgencySystems,
+  AgencySystem,
   AgencyTeamMember,
   AgencyTeamMemberRole,
 } from "@justice-counts/common/types";
@@ -63,7 +63,7 @@ export type SelectionInputBoxType = `${SelectionInputBoxTypes}`;
 export type Agency = {
   id: string | number;
   name: string;
-  systems: AgencySystems[];
+  systems: AgencySystem[];
   state: StateCodeValue;
   state_code: StateCodeKey | null;
   fips_county_code: FipsCountyCodeKey | null;
@@ -86,7 +86,7 @@ export type AgencyWithTeamByID = Omit<Agency, "team"> & {
 
 export type AgencyResponse = {
   agencies: Agency[];
-  systems: AgencySystems[];
+  systems: AgencySystem[];
 };
 
 export const AgencyProvisioningSettings = {
@@ -102,7 +102,7 @@ export type AgencyProvisioningUpdates = {
   name: string;
   state_code: StateCodeKey | null;
   fips_county_code: FipsCountyCodeKey | null;
-  systems: AgencySystems[];
+  systems: AgencySystem[];
   is_dashboard_enabled: boolean | null;
   super_agency_id: number | null; // If this is set, then the agency is a child agency belonging to the superagency w/ this ID
   is_superagency: boolean | null;
@@ -137,8 +137,6 @@ export const userRoles = [
   "CONTRIBUTOR",
   "READ_ONLY",
 ] as const;
-
-// export type AgencyTeamMemberRole = (typeof userRoles)[number];
 
 export type UserProvisioningUpdates = {
   name: string;

@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystems } from "@justice-counts/common/types";
+import { AgencySystem } from "@justice-counts/common/types";
 import React from "react";
 
 import { removeSnakeCase } from "../../utils";
@@ -32,8 +32,8 @@ import {
 
 type SystemSelectionProps = {
   selectedFile: File;
-  userSystems: AgencySystems[];
-  handleSystemSelection: (file: File, system: AgencySystems) => void;
+  userSystems: AgencySystem[];
+  handleSystemSelection: (file: File, system: AgencySystem) => void;
 };
 
 export const SystemSelection: React.FC<SystemSelectionProps> = ({

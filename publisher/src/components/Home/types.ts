@@ -16,7 +16,7 @@
 // =============================================================================
 
 import {
-  AgencySystems,
+  AgencySystem,
   Metric,
   Report,
   ReportFrequency,
@@ -84,4 +84,4 @@ export type TaskCardMetadataValueConfigurationGroup = {
   addDataConfigureMetricsTaskCardMetadatas: TaskCardMetadata[];
 };
 
-export type SystemSelectionOptions = AgencySystems | "ALL";
+export type SystemSelectionOptions = AgencySystem | "ALL";

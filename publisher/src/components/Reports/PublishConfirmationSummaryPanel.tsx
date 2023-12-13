@@ -16,7 +16,7 @@
 // =============================================================================
 
 import errorIcon from "@justice-counts/common/assets/status-error-icon.png";
-import { AgencySystems, Metric } from "@justice-counts/common/types";
+import { AgencySystem, Metric } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { useParams } from "react-router-dom";
@@ -82,7 +82,7 @@ const PublishConfirmationSummaryPanel: React.FC<{
             <React.Fragment key={system}>
               {showMetricSectionTitles && (
                 <MetricSummarySectionTitle>
-                  {formatSystemName(system as AgencySystems, {
+                  {formatSystemName(system as AgencySystem, {
                     allUserSystems: currentAgency?.systems,
                   })}
                 </MetricSummarySectionTitle>

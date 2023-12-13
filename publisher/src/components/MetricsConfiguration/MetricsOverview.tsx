@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystems } from "@justice-counts/common/types";
+import { AgencySystem } from "@justice-counts/common/types";
 import { frequencyString } from "@justice-counts/common/utils/helperUtils";
 import { observer } from "mobx-react-lite";
 import React from "react";
@@ -41,7 +41,7 @@ export const MetricsOverview = observer(() => {
 
   const { system: systemSearchParam } = settingsSearchParams;
 
-  const handleSystemClick = (option: AgencySystems) => {
+  const handleSystemClick = (option: AgencySystem) => {
     setSettingsSearchParams(
       {
         system: option,

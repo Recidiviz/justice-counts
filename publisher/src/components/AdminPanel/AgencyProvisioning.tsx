@@ -20,6 +20,7 @@ import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
 import {
+  AgencySystem,
   AgencySystems,
   AgencyTeamMemberRole,
 } from "@justice-counts/common/types";
@@ -104,7 +105,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         ? new Set(agencyProvisioningUpdates.child_agency_ids)
         : new Set()
     );
-    const [selectedSystems, setSelectedSystems] = useState<Set<AgencySystems>>(
+    const [selectedSystems, setSelectedSystems] = useState<Set<AgencySystem>>(
       agencyProvisioningUpdates.systems
         ? new Set(agencyProvisioningUpdates.systems)
         : new Set()
@@ -197,16 +198,24 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     ];
     const getInteractiveSearchListSelectDeselectCloseButtons = <T,>(
       setState: React.Dispatch<React.SetStateAction<Set<T>>>,
-      selectAllSet: Set<T>
+      selectAllSet: Set<T>,
+      selectAllCallback?: () => void,
+      deselectAllCallback?: () => void
     ) => {
       return [
         {
           label: "Select All",
-          onClick: () => setState(selectAllSet),
+          onClick: () => {
+            setState(selectAllSet);
+            if (selectAllCallback) selectAllCallback();
+          },
         },
         {
           label: "Deselect All",
-          onClick: () => setState(new Set()),
+          onClick: () => {
+            setState(new Set());
+            if (deselectAllCallback) deselectAllCallback();
+          },
         },
         interactiveSearchListCloseButton[0],
       ];
@@ -279,6 +288,28 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       );
 
     /**
+     * Special handling for checking/unchecking an agency as a superagency. When an agency is checked as a superagency,
+     * the "Superagency" system should be added to the agency. When an agency is no longer checked as a superagency,
+     * the "Superagency" system should be removed from the agency.
+     */
+    const toggleSuperagencyStatusAndSystems = () => {
+      const updatedSystemsSet = new Set(selectedSystems);
+      // If "Superagency" is currently checked, uncheck it and remove the "Superagency" system
+      if (agencyProvisioningUpdates.is_superagency) {
+        updatedSystemsSet.delete(AgencySystems.SUPERAGENCY);
+        setSelectedSystems(updatedSystemsSet);
+        updateIsSuperagency(false);
+        return;
+      }
+      // If "Superagency" is not currently checked, check it and add the "Superagency" system
+      updatedSystemsSet.add(AgencySystems.SUPERAGENCY);
+      setSelectedSystems(updatedSystemsSet);
+      updateIsSuperagency(true);
+      setIsChildAgencySelected(false);
+      updateSuperagencyID(null);
+    };
+
+    /**
      * Check whether user has made updates to various fields to determine whether or not the 'Save' button is enabled/disabled
      *
      * Note: when creating a new agency, the only required fields are the `name` and `state_code`, all other fields can be
@@ -304,6 +335,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         agencyProvisioningUpdates.state_code?.toLocaleLowerCase() !==
           selectedAgency.state_code?.toLocaleLowerCase()
       : Boolean(agencyProvisioningUpdates.state_code);
+
     /**
      * Note: the following checks are only relevant to existing agency updates, since the 'Save' button for creating a new
      * agency only requires the above `name` and `state_code` to be enabled.
@@ -368,7 +400,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       Object.keys(teamMemberRoleUpdates).length > 0 ||
       selectedTeamMembersToAdd.size > 0 ||
       selectedTeamMembersToDelete.size > 0;
-
     /**
      * Saving is disabled if saving is in progress OR an existing agency has made no updates to either the name, state,
      * county, systems, dashboard enabled checkbox, superagency checkbox and child agencies, child agency's superagency
@@ -562,9 +593,20 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           selections={selectedSystems}
                           buttons={getInteractiveSearchListSelectDeselectCloseButtons(
                             setSelectedSystems,
-                            new Set(systems)
+                            new Set(systems),
+                            () => {
+                              updateIsSuperagency(true);
+                              updateSuperagencyID(null);
+                              setIsChildAgencySelected(false);
+                              setSelectedChildAgencyIDs(new Set());
+                            },
+                            () => updateIsSuperagency(false)
                           )}
                           updateSelections={({ id }) => {
+                            if (id === AgencySystems.SUPERAGENCY) {
+                              toggleSuperagencyStatusAndSystems();
+                              return;
+                            }
                             setSelectedSystems((prev) =>
                               toggleAddRemoveSetItem(prev, id as AgencySystems)
                             );
@@ -628,13 +670,12 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         name="superagency"
                         type="checkbox"
                         onChange={() => {
-                          updateIsSuperagency(
-                            !agencyProvisioningUpdates.is_superagency
-                          );
+                          toggleSuperagencyStatusAndSystems();
+                          setShowSelectionBox(undefined);
+                          // Reset child agency selections
                           updateSuperagencyID(null);
                           setSelectedChildAgencyIDs(new Set());
                           setIsChildAgencySelected(false);
-                          setShowSelectionBox(undefined);
                         }}
                         checked={Boolean(
                           agencyProvisioningUpdates.is_superagency
@@ -647,11 +688,17 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         name="child-agency"
                         type="checkbox"
                         onChange={() => {
-                          updateIsSuperagency(false);
-                          setSelectedChildAgencyIDs(new Set());
                           setIsChildAgencySelected((prev) => !prev);
+                          setSelectedChildAgencyIDs(new Set());
                           setShowSelectionBox(undefined);
-                          if (isChildAgencySelected) updateSuperagencyID(null);
+                          if (agencyProvisioningUpdates.is_superagency) {
+                            // Uncheck Superagency checkbox and remove Superagency system
+                            toggleSuperagencyStatusAndSystems();
+                          }
+                          if (isChildAgencySelected) {
+                            // Reset selected superagency ID when unchecked
+                            updateSuperagencyID(null);
+                          }
                         }}
                         checked={isChildAgencySelected}
                       />

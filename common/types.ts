@@ -22,19 +22,22 @@ export enum AgencyTeamMemberRole {
   READ_ONLY = "READ_ONLY",
 }
 
-export type AgencySystems =
-  | "LAW_ENFORCEMENT"
-  | "PROSECUTION"
-  | "DEFENSE"
-  | "COURTS_AND_PRETRIAL"
-  | "JAILS"
-  | "PRISONS"
-  | "SUPERVISION"
-  | "PAROLE"
-  | "PROBATION"
-  | "PRETRIAL_SUPERVISION"
-  | "OTHER_SUPERVISION"
-  | "SUPERAGENCY";
+export enum AgencySystems {
+  LAW_ENFORCEMENT = "LAW_ENFORCEMENT",
+  PROSECUTION = "PROSECUTION",
+  DEFENSE = "DEFENSE",
+  COURTS_AND_PRETRIAL = "COURTS_AND_PRETRIAL",
+  JAILS = "JAILS",
+  PRISONS = "PRISONS",
+  SUPERVISION = "SUPERVISION",
+  PAROLE = "PAROLE",
+  PROBATION = "PROBATION",
+  PRETRIAL_SUPERVISION = "PRETRIAL_SUPERVISION",
+  OTHER_SUPERVISION = "OTHER_SUPERVISION",
+  SUPERAGENCY = "SUPERAGENCY",
+}
+
+export type AgencySystem = `${AgencySystems}`;
 
 export type AgencyTeamMember = {
   user_account_id: number | null;
@@ -45,9 +48,9 @@ export type AgencyTeamMember = {
   role: AgencyTeamMemberRole;
 };
 
-export const SupervisionSystem: AgencySystems = "SUPERVISION";
+export const SupervisionSystem: AgencySystem = "SUPERVISION";
 
-export const SupervisionSubsystems: AgencySystems[] = [
+export const SupervisionSubsystems: AgencySystem[] = [
   "PAROLE",
   "PROBATION",
   "PRETRIAL_SUPERVISION",
@@ -83,7 +86,7 @@ export interface PublicUserAgency {
   id: number;
   name: string;
   settings: AgencySetting[];
-  systems: AgencySystems[];
+  systems: AgencySystem[];
 }
 
 export interface UserAgency {
@@ -93,7 +96,7 @@ export interface UserAgency {
   state: string;
   state_code: string;
   settings: AgencySetting[];
-  systems: AgencySystems[];
+  systems: AgencySystem[];
   team: AgencyTeamMember[];
   is_superagency: boolean;
   is_dashboard_enabled: boolean;
@@ -161,7 +164,7 @@ export type MetricConfigurationSettings = {
 export interface Metric {
   key: string;
   system: {
-    key: AgencySystems;
+    key: AgencySystem;
     display_name: string;
   };
   custom_frequency?: ReportFrequency;

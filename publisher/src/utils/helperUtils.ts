@@ -16,7 +16,7 @@
 // =============================================================================
 
 import {
-  AgencySystems,
+  AgencySystem,
   MetricContext,
   ReportEditor,
   SupervisionSubsystems,
@@ -254,7 +254,7 @@ export function removeAgencyFromPath(location: string) {
  */
 
 export const formatSystemName = (
-  systemName: AgencySystems,
+  systemName: AgencySystem,
   options?: FormatSystemNameOptions
 ) => {
   if (
@@ -274,7 +274,7 @@ export const formatSystemName = (
 };
 
 type FormatSystemNameOptions = {
-  allUserSystems?: AgencySystems[];
+  allUserSystems?: AgencySystem[];
   hideCombined?: boolean;
 };
 

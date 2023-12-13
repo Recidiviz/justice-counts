@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystems } from "@justice-counts/common/types";
+import { AgencySystem } from "@justice-counts/common/types";
 
 import { SettingsSearchParams } from "./types";
 
@@ -30,7 +30,7 @@ export const getSettingsSearchParams = (
   params: URLSearchParams
 ): SettingsSearchParams => {
   const system =
-    (params.get("system")?.toUpperCase() as AgencySystems) || undefined;
+    (params.get("system")?.toUpperCase() as AgencySystem) || undefined;
   const metric = params.get("metric")?.toUpperCase() || undefined;
 
   return { system, metric };

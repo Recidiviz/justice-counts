@@ -19,7 +19,7 @@ import { Button } from "@justice-counts/common/components/Button";
 import { HeaderBar } from "@justice-counts/common/components/HeaderBar";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import { showToast } from "@justice-counts/common/components/Toast";
-import { AgencySystems, Report } from "@justice-counts/common/types";
+import { AgencySystem, Report } from "@justice-counts/common/types";
 import { runInAction } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useRef, useState } from "react";
@@ -325,7 +325,7 @@ const DataEntryForm: React.FC<{
                   <Fragment key={system}>
                     {showMetricSectionTitles && (
                       <MetricSystemTitle firstTitle={systemIndex === 0}>
-                        {formatSystemName(system as AgencySystems, {
+                        {formatSystemName(system as AgencySystem, {
                           allUserSystems: currentAgency?.systems,
                         })}
                       </MetricSystemTitle>

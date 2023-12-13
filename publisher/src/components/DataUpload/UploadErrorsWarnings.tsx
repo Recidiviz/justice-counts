@@ -17,7 +17,7 @@
 
 import checkIcon from "@justice-counts/common/assets/status-check-icon.png";
 import { Button } from "@justice-counts/common/components/Button";
-import { AgencySystems, ReportOverview } from "@justice-counts/common/types";
+import { AgencySystem, ReportOverview } from "@justice-counts/common/types";
 import React, { Fragment } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -55,7 +55,7 @@ import {
 
 type UploadErrorsWarningsProps = {
   errorsWarningsMetrics: ErrorsWarningsMetrics;
-  selectedSystem: AgencySystems | undefined;
+  selectedSystem: AgencySystem | undefined;
   resetToNewUpload: () => void;
   fileName?: string;
   newAndUpdatedReports: {

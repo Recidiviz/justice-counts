@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { showToast } from "@justice-counts/common/components/Toast";
-import { AgencySystems } from "@justice-counts/common/types";
+import { AgencySystem } from "@justice-counts/common/types";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -36,10 +36,10 @@ import {
 } from ".";
 
 type UploadFileProps = {
-  userSystems: AgencySystems[];
+  userSystems: AgencySystem[];
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedFile: React.Dispatch<React.SetStateAction<File | undefined>>;
-  handleFileUpload: (file: File, system: AgencySystems) => Promise<void>;
+  handleFileUpload: (file: File, system: AgencySystem) => Promise<void>;
 };
 
 export const UploadFile: React.FC<UploadFileProps> = ({

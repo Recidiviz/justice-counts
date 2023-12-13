@@ -18,7 +18,7 @@
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
   AgencySetting,
-  AgencySystems as AgencySystem,
+  AgencySystem,
   AgencyTeamMember,
   AgencyTeamMemberRole,
   UserAgency,
