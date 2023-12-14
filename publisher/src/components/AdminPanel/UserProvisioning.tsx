@@ -173,8 +173,8 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
         return;
       }
       /**
-       * If the user hasn't made additional edits after all agencies have been added,
-       * deselect all agencies if the email input is no longer a CSG email.
+       * If the user hasn't removed any agencies from the list after all agencies have
+       * been added, deselect all agencies if the email input is no longer a CSG email.
        */
       if (addedAgenciesIDs.size === availableAgenciesIDsSet.size) {
         setAddedAgenciesIDs(new Set());
