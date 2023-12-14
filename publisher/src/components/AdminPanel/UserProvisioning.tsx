@@ -165,10 +165,27 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
       }
     };
 
+    /** Adds all agencies to newly created CSG users  */
+    const updateAgenciesForCSGUsers = (email: string) => {
+      const isCSGUserEmail = email.includes("@csg.org");
+      if (isCSGUserEmail) {
+        setAddedAgenciesIDs(availableAgenciesIDsSet);
+        return;
+      }
+      /**
+       * If the user hasn't made additional edits after all agencies have been added,
+       * deselect all agencies if the email input is no longer a CSG email.
+       */
+      if (addedAgenciesIDs.size === availableAgenciesIDsSet.size) {
+        setAddedAgenciesIDs(new Set());
+      }
+    };
+
     /** Validate & update email input */
     const validateAndUpdateEmail = (email: string) => {
       updateEmail(email);
       if (email === "" || validateEmail(email)) {
+        updateAgenciesForCSGUsers(email);
         return setEmailValidationError(undefined);
       }
       setEmailValidationError("Please enter a valid email address");
