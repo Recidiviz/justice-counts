@@ -181,7 +181,10 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
       }
     };
 
-    /** Validate & update email input */
+    /**
+     * Validate & update email input
+     * Note: if user is a member of CSG, this will also add all agencies to the user list
+     */
     const validateAndUpdateEmail = (email: string) => {
       updateEmail(email);
       if (email === "" || validateEmail(email)) {
