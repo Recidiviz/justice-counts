@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { Button } from "@justice-counts/common/components/Button";
+import { DelayedRender } from "@justice-counts/common/components/DelayedRender";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -24,7 +25,14 @@ import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
 import { LinkToDashboard } from "../HelpCenter/LinkToPublisherDashboard";
 import { Loading } from "../Loading";
-import { AgencyKey, AgencyProvisioning, AgencyWithTeamByID } from ".";
+import {
+  AgencyKey,
+  AgencyProvisioning,
+  AgencyWithTeamByID,
+  Setting,
+  SettingType,
+  UserProvisioning,
+} from ".";
 import * as Styled from "./AdminPanel.styles";
 
 export const AgencyProvisioningOverview = observer(() => {
@@ -44,6 +52,7 @@ export const AgencyProvisioningOverview = observer(() => {
     updateChildAgencyIDs,
     updateTeamMembers,
     resetAgencyProvisioningUpdates,
+    resetUserProvisioningUpdates,
   } = adminPanelStore;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -55,14 +64,22 @@ export const AgencyProvisioningOverview = observer(() => {
     useState(false);
   const [showSuperagencies, setShowSuperagencies] = useState(false);
   const [selectedAgencyID, setSelectedAgencyID] = useState<string | number>();
+  const [activeSecondaryModal, setActiveSecondaryModal] =
+    useState<SettingType>();
 
   const searchByKeys = ["name", "id", "state"] as AgencyKey[];
 
   const openModal = () => setIsModalOpen(true);
+  const openSecondaryModal = () => setActiveSecondaryModal(Setting.USERS);
   const closeModal = () => {
-    setSelectedAgencyID(undefined);
-    resetAgencyProvisioningUpdates();
-    setIsModalOpen(false);
+    if (!activeSecondaryModal) {
+      setSelectedAgencyID(undefined);
+      resetAgencyProvisioningUpdates();
+      setIsModalOpen(false);
+    } else {
+      resetUserProvisioningUpdates();
+      setActiveSecondaryModal(undefined);
+    }
   };
   const searchAndFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
@@ -128,12 +145,28 @@ export const AgencyProvisioningOverview = observer(() => {
   return (
     <>
       {isModalOpen && (
-        <Modal>
-          <AgencyProvisioning
-            closeModal={closeModal}
-            selectedIDToEdit={selectedAgencyID}
-          />
-        </Modal>
+        <>
+          <Modal>
+            <AgencyProvisioning
+              closeModal={closeModal}
+              selectedIDToEdit={selectedAgencyID}
+              activeSecondaryModal={activeSecondaryModal}
+              openSecondaryModal={openSecondaryModal}
+            />
+          </Modal>
+
+          {/* Opens a secondary modal to create a new agency while in the middle of the create/edit user flow */}
+          {activeSecondaryModal === Setting.USERS && (
+            <DelayedRender delay={250}>
+              <Modal>
+                <UserProvisioning
+                  closeModal={closeModal}
+                  activeSecondaryModal={activeSecondaryModal}
+                />
+              </Modal>
+            </DelayedRender>
+          )}
+        </>
       )}
 
       {/* Settings Bar */}

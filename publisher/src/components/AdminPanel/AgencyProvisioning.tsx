@@ -18,7 +18,10 @@
 import { Button } from "@justice-counts/common/components/Button";
 import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
-import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
+import {
+  TabbedBar,
+  TabOption,
+} from "@justice-counts/common/components/TabbedBar";
 import {
   AgencySystem,
   AgencySystems,
@@ -48,6 +51,7 @@ import {
   SaveConfirmationTypes,
   SelectionInputBoxType,
   SelectionInputBoxTypes,
+  Setting,
   StateCodeKey,
   StateCodesToStateNames,
   userRoles,
@@ -56,7 +60,12 @@ import {
 import * as Styled from "./AdminPanel.styles";
 
 export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
-  ({ selectedIDToEdit, closeModal }) => {
+  ({
+    selectedIDToEdit,
+    activeSecondaryModal,
+    openSecondaryModal,
+    closeModal,
+  }) => {
     const { adminPanelStore } = useStore();
     const {
       users,
@@ -120,7 +129,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     >({});
 
     /** Setting Tabs (Agency Information/Team Members) */
-    const settingOptions = [
+    const settingOptions: TabOption[] = [
       {
         key: "agency-information",
         label: AgencyProvisioningSettings.AGENCY_INFORMATION,
@@ -129,14 +138,25 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         selected:
           currentSettingType === AgencyProvisioningSettings.AGENCY_INFORMATION,
       },
-      {
-        key: "team-members-roles",
-        label: AgencyProvisioningSettings.TEAM_MEMBERS_ROLES,
-        onClick: () =>
-          setCurrentSettingType(AgencyProvisioningSettings.TEAM_MEMBERS_ROLES),
-        selected:
-          currentSettingType === AgencyProvisioningSettings.TEAM_MEMBERS_ROLES,
-      },
+      /**
+       * Hide the Team Member & Roles tab if we are in the secondary modal b/c it is not
+       * necessary in that flow.
+       */
+      ...(activeSecondaryModal !== Setting.AGENCIES
+        ? [
+            {
+              key: "team-members-roles",
+              label: AgencyProvisioningSettings.TEAM_MEMBERS_ROLES,
+              onClick: () =>
+                setCurrentSettingType(
+                  AgencyProvisioningSettings.TEAM_MEMBERS_ROLES
+                ),
+              selected:
+                currentSettingType ===
+                AgencyProvisioningSettings.TEAM_MEMBERS_ROLES,
+            },
+          ]
+        : []),
     ];
 
     /** Selected agency to edit */
@@ -438,7 +458,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     }, [selectedAgency, agencyProvisioningUpdates, getCSGTeamMembersIDToRoles]);
 
     return (
-      <Styled.ModalContainer>
+      <Styled.ModalContainer offScreen={activeSecondaryModal === Setting.USERS}>
         {showSaveConfirmation.show ? (
           <SaveConfirmation
             type={showSaveConfirmation.type}
@@ -949,8 +969,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           </Styled.ActionButton>
                         )}
 
-                        {/* Create New User Button (TODO(#1058)) */}
-                        <Styled.ActionButton>
+                        {/* Create New User Button */}
+                        <Styled.ActionButton onClick={openSecondaryModal}>
                           Create New User
                         </Styled.ActionButton>
                       </Styled.FormActions>

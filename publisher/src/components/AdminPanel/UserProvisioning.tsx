@@ -36,11 +36,17 @@ import {
   SaveConfirmation,
   SaveConfirmationType,
   SaveConfirmationTypes,
+  Setting,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
 
 export const UserProvisioning: React.FC<ProvisioningProps> = observer(
-  ({ selectedIDToEdit, closeModal }) => {
+  ({
+    selectedIDToEdit,
+    activeSecondaryModal,
+    openSecondaryModal,
+    closeModal,
+  }) => {
     const { adminPanelStore } = useStore();
     const {
       agencies,
@@ -90,14 +96,12 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
       ...agenciesByID[id][0],
       action: InteractiveSearchListActions.ADD,
     }));
-    const userAgenciesAddedAgencies = selectedUser
-      ? [
-          ...addedAgenciesToDisplayInUserAgencies,
-          ...AdminPanelStore.objectToSortedFlatMappedValues(
-            selectedUser.agencies
-          ),
-        ]
-      : [];
+    const userAgenciesAddedAgencies = [
+      ...addedAgenciesToDisplayInUserAgencies,
+      ...(selectedUser
+        ? AdminPanelStore.objectToSortedFlatMappedValues(selectedUser.agencies)
+        : []),
+    ];
 
     /** Whether or not we are performing an add/delete action on an agencies' list */
     const isAddAction =
@@ -252,7 +256,9 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
         : (hasNameUpdate && hasEmailUpdate) !== true);
 
     return (
-      <Styled.ModalContainer>
+      <Styled.ModalContainer
+        offScreen={activeSecondaryModal === Setting.AGENCIES}
+      >
         {showSaveConfirmation.show ? (
           <SaveConfirmation
             type={showSaveConfirmation.type}
@@ -316,7 +322,7 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
                 )}
 
                 {/* User's Agencies */}
-                {selectedUser && (
+                {activeSecondaryModal !== Setting.USERS && (
                   <InteractiveSearchList
                     list={userAgenciesAddedAgencies}
                     buttons={interactiveSearchListButtons}
@@ -338,42 +344,46 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
                 )}
 
                 {/* Add/Remove/Create New Agencies */}
-                <Styled.FormActions>
-                  {/* Add Agencies Button */}
-                  <Styled.ActionButton
-                    buttonAction={InteractiveSearchListActions.ADD}
-                    selectedColor={isAddAction ? "green" : ""}
-                    onClick={() => {
-                      setAddOrDeleteAgencyAction((prev) =>
-                        prev === InteractiveSearchListActions.ADD
-                          ? undefined
-                          : InteractiveSearchListActions.ADD
-                      );
-                    }}
-                  >
-                    Add Agencies
-                  </Styled.ActionButton>
-
-                  {/* Remove Agencies Button (note: when creating a new user, the delete action button is not necessary) */}
-                  {selectedUser && (
+                {activeSecondaryModal !== Setting.USERS && (
+                  <Styled.FormActions>
+                    {/* Add Agencies Button */}
                     <Styled.ActionButton
-                      buttonAction={InteractiveSearchListActions.DELETE}
-                      selectedColor={isDeleteAction ? "red" : ""}
+                      buttonAction={InteractiveSearchListActions.ADD}
+                      selectedColor={isAddAction ? "green" : ""}
                       onClick={() => {
                         setAddOrDeleteAgencyAction((prev) =>
-                          prev === InteractiveSearchListActions.DELETE
+                          prev === InteractiveSearchListActions.ADD
                             ? undefined
-                            : InteractiveSearchListActions.DELETE
+                            : InteractiveSearchListActions.ADD
                         );
                       }}
                     >
-                      Delete Agencies
+                      Add Agencies
                     </Styled.ActionButton>
-                  )}
 
-                  {/* Create New Agency Button (TODO(#1058)) */}
-                  <Styled.ActionButton>Create New Agency</Styled.ActionButton>
-                </Styled.FormActions>
+                    {/* Remove Agencies Button (note: when creating a new user, the delete action button is not necessary) */}
+                    {selectedUser && (
+                      <Styled.ActionButton
+                        buttonAction={InteractiveSearchListActions.DELETE}
+                        selectedColor={isDeleteAction ? "red" : ""}
+                        onClick={() => {
+                          setAddOrDeleteAgencyAction((prev) =>
+                            prev === InteractiveSearchListActions.DELETE
+                              ? undefined
+                              : InteractiveSearchListActions.DELETE
+                          );
+                        }}
+                      >
+                        Delete Agencies
+                      </Styled.ActionButton>
+                    )}
+
+                    {/* Create New Agency Button */}
+                    <Styled.ActionButton onClick={openSecondaryModal}>
+                      Create New Agency
+                    </Styled.ActionButton>
+                  </Styled.FormActions>
+                )}
 
                 {/* Add Agencies List */}
                 {isAddAction && (

@@ -79,13 +79,15 @@ export const ScrollableContainer = styled.div`
 
 export const ModalWrapper = styled.div``;
 
-export const ModalContainer = styled.div`
+export const ModalContainer = styled.div<{ offScreen?: boolean }>`
   height: 90vh;
   width: 50vw;
   background: ${palette.solid.white};
   border-radius: 4px;
   padding: 32px 32px 100px 32px;
   position: relative;
+  transform: ${({ offScreen }) => (offScreen ? `translateX(-70vw)` : `none`)};
+  transition: transform 0.6s ease;
 `;
 
 export const ModalTitle = styled.div<{ noBottomMargin?: boolean }>`

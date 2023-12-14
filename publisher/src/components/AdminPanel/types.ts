@@ -45,6 +45,8 @@ export type SaveConfirmationType = `${SaveConfirmationTypes}`;
 
 export type ProvisioningProps = {
   selectedIDToEdit?: string | number;
+  activeSecondaryModal?: SettingType;
+  openSecondaryModal?: () => void;
   closeModal: () => void;
 };
 

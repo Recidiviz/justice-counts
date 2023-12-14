@@ -36,7 +36,7 @@ export const InteractiveSearchList = ({
   metadata,
   isActiveBox = true,
 }: InteractiveSearchListProps) => {
-  const [filteredList, setFilteredList] = useState<SearchableListItem[]>([]);
+  const [filteredList, setFilteredList] = useState<SearchableListItem[]>(list);
   const [searchInputValue, setSearchInputValue] = useState("");
 
   const getChipColor = (actionType?: InteractiveSearchListAction) => {
