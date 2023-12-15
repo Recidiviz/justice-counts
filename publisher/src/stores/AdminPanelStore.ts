@@ -237,8 +237,9 @@ class AdminPanelStore {
         | UserResponse
         | ErrorResponse;
 
-      if ("status" in userResponse && userResponse.status === 200) {
+      if (response.status === 200) {
         runInAction(() => this.updateUsers(userResponse as UserResponse));
+        return response;
       }
 
       return userResponse;
@@ -321,8 +322,9 @@ class AdminPanelStore {
       })) as Response;
       const agencyResponse = (await response.json()) as Agency | ErrorResponse;
 
-      if ("status" in agencyResponse && agencyResponse.status === 200) {
+      if (response.status === 200) {
         runInAction(() => this.updateAgencies(agencyResponse as Agency));
+        return response;
       }
 
       return agencyResponse;
