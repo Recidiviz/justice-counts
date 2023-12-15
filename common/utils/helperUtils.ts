@@ -270,9 +270,11 @@ export function replaceSymbolsWithDash(value: string) {
 }
 
 export const validateEmail = (email: string) => {
-  return email
-    .toLowerCase()
-    .match(/^([A-Z0-9_+-]\.?)*[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i);
+  return Boolean(
+    email
+      .toLowerCase()
+      .match(/^([A-Z0-9_+-]\.?)*[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i)
+  );
 };
 
 /**
@@ -289,4 +291,8 @@ export const toggleAddRemoveSetItem = <T>(prevSet: Set<T>, item: T): Set<T> => {
     updatedSet.add(item);
   }
   return updatedSet;
+};
+
+export const isCSGOrRecidivizUserByEmail = (email: string) => {
+  return email.includes("@csg.org") || email.includes("@recidiviz.org");
 };

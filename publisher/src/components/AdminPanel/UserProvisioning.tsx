@@ -18,6 +18,7 @@
 import { Button } from "@justice-counts/common/components/Button";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
 import {
+  isCSGOrRecidivizUserByEmail,
   toggleAddRemoveSetItem,
   validateEmail,
 } from "@justice-counts/common/utils";
@@ -165,16 +166,20 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
       }
     };
 
-    /** Adds all agencies to newly created CSG users  */
-    const updateAgenciesForCSGUsers = (email: string) => {
-      const isCSGUserEmail = email.includes("@csg.org");
-      if (isCSGUserEmail) {
+    /** Adds all agencies to newly created CSG/Recidiviz users  */
+    const addAllAgenciesForCSGOrRecidivizUsers = (
+      email: string,
+      isValidEmail: boolean
+    ) => {
+      const isCSGOrRecidivizUser = isCSGOrRecidivizUserByEmail(email);
+      if (isCSGOrRecidivizUser && isValidEmail) {
         setAddedAgenciesIDs(availableAgenciesIDsSet);
+        setAddOrDeleteAgencyAction(InteractiveSearchListActions.ADD);
         return;
       }
       /**
        * If the user hasn't removed any agencies from the list after all agencies have
-       * been added, deselect all agencies if the email input is no longer a CSG email.
+       * been added, deselect all agencies if the email input is no longer a Recidiviz/CSG email.
        */
       if (addedAgenciesIDs.size === availableAgenciesIDsSet.size) {
         setAddedAgenciesIDs(new Set());
@@ -186,9 +191,10 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
      * Note: if user is a member of CSG, this will also add all agencies to the user list
      */
     const validateAndUpdateEmail = (email: string) => {
+      const isValidEmail = validateEmail(email);
       updateEmail(email);
-      if (email === "" || validateEmail(email)) {
-        updateAgenciesForCSGUsers(email);
+      addAllAgenciesForCSGOrRecidivizUsers(email, isValidEmail);
+      if (email === "" || isValidEmail) {
         return setEmailValidationError(undefined);
       }
       setEmailValidationError("Please enter a valid email address");
