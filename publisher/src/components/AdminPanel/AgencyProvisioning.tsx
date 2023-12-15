@@ -452,16 +452,17 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         agencyName: string
       ): UserRoleUpdates => {
         let role: AgencyTeamMemberRole;
-        console.log("agencyName", agencyName);
         const isStagingEnv = api.environment === Environment.STAGING;
         const isDemoAgency =
           agencyName.includes("DEMO") ||
           agencyName === "Department of Corrections";
+
         if (isStagingEnv || isDemoAgency) {
           role = AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN;
         } else {
           role = AgencyTeamMemberRole.READ_ONLY;
         }
+
         return csgAndRecidivizUsers.reduce((acc, user) => {
           acc[+user.id] = role;
           return acc;
