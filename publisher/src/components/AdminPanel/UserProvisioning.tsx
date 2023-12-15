@@ -62,6 +62,7 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
     const [showSaveConfirmation, setShowSaveConfirmation] = useState<{
       show: boolean;
       type?: SaveConfirmationType;
+      errorMessage?: string;
     }>({ show: false });
     const [addedAgenciesIDs, setAddedAgenciesIDs] = useState<Set<number>>(
       new Set()
@@ -185,21 +186,25 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
           (id) => !deletedAgenciesIDs.has(id)
         ),
       ]);
-      const responseStatus =
-        await adminPanelStore.saveUserProvisioningUpdates();
+      const response = await adminPanelStore.saveUserProvisioningUpdates();
 
       setShowSaveConfirmation({
         show: true,
         type:
-          responseStatus === 200
+          response && "status" in response && response.status === 200
             ? SaveConfirmationTypes.SUCCESS
             : SaveConfirmationTypes.ERROR,
+        errorMessage:
+          response && "description" in response
+            ? response.description
+            : undefined,
       });
 
       /** After showing the confirmation screen, either return to modal (on error) or close modal (on success) */
       setTimeout(() => {
         setShowSaveConfirmation((prev) => ({ ...prev, show: false }));
-        if (responseStatus === 200) closeModal();
+        if (response && "status" in response && response.status === 200)
+          closeModal();
         setIsSaveInProgress(false);
       }, 2000);
     };
@@ -262,24 +267,28 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
         {showSaveConfirmation.show ? (
           <SaveConfirmation
             type={showSaveConfirmation.type}
-            message={getSaveConfirmationMessage()}
+            message={
+              showSaveConfirmation.errorMessage || getSaveConfirmationMessage()
+            }
           />
         ) : (
           <>
-            <Styled.ModalTitle>
-              {selectedIDToEdit ? "Edit User Information" : "Create New User"}
-            </Styled.ModalTitle>
+            <Styled.ModalHeader>
+              <Styled.ModalTitle>
+                {selectedIDToEdit ? "Edit User Information" : "Create New User"}
+              </Styled.ModalTitle>
 
-            {/** User Information */}
-            <Styled.NameDisplay>
-              {userProvisioningUpdates?.name || selectedUser?.name}
-            </Styled.NameDisplay>
-            <Styled.Subheader>
-              {userProvisioningUpdates?.email || selectedUser?.email}
-            </Styled.Subheader>
-            {selectedUser && (
-              <Styled.Subheader>ID {selectedUser?.id}</Styled.Subheader>
-            )}
+              {/** User Information */}
+              <Styled.NameDisplay>
+                {userProvisioningUpdates?.name || selectedUser?.name}
+              </Styled.NameDisplay>
+              <Styled.Subheader>
+                {userProvisioningUpdates?.email || selectedUser?.email}
+              </Styled.Subheader>
+              {selectedUser && (
+                <Styled.Subheader>ID {selectedUser?.id}</Styled.Subheader>
+              )}
+            </Styled.ModalHeader>
 
             <Styled.ScrollableContainer>
               <Styled.Form>
@@ -403,34 +412,34 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
                     }}
                   />
                 )}
-
-                {/* Modal Buttons */}
-                <Styled.ModalActionButtons>
-                  <div />
-                  <Styled.SaveCancelButtonsWrapper>
-                    {modalButtons.map((button) => {
-                      const isSaveButton = button.label === "Save";
-                      return (
-                        <ButtonWithMiniLoaderContainer key={button.label}>
-                          {isSaveButton && isSaveInProgress && (
-                            <MiniLoaderWrapper>
-                              <MiniLoader dark />
-                            </MiniLoaderWrapper>
-                          )}
-                          <Button
-                            key={button.label}
-                            label={button.label}
-                            onClick={button.onClick}
-                            buttonColor={isSaveButton ? "blue" : undefined}
-                            disabled={isSaveButton && isSaveDisabled}
-                          />
-                        </ButtonWithMiniLoaderContainer>
-                      );
-                    })}
-                  </Styled.SaveCancelButtonsWrapper>
-                </Styled.ModalActionButtons>
               </Styled.Form>
             </Styled.ScrollableContainer>
+
+            {/* Modal Buttons */}
+            <Styled.ModalActionButtons>
+              <div />
+              <Styled.SaveCancelButtonsWrapper>
+                {modalButtons.map((button) => {
+                  const isSaveButton = button.label === "Save";
+                  return (
+                    <ButtonWithMiniLoaderContainer key={button.label}>
+                      {isSaveButton && isSaveInProgress && (
+                        <MiniLoaderWrapper>
+                          <MiniLoader dark />
+                        </MiniLoaderWrapper>
+                      )}
+                      <Button
+                        key={button.label}
+                        label={button.label}
+                        onClick={button.onClick}
+                        buttonColor={isSaveButton ? "blue" : undefined}
+                        disabled={isSaveButton && isSaveDisabled}
+                      />
+                    </ButtonWithMiniLoaderContainer>
+                  );
+                })}
+              </Styled.SaveCancelButtonsWrapper>
+            </Styled.ModalActionButtons>
           </>
         )}
       </Styled.ModalContainer>

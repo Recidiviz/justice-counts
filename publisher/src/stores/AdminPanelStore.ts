@@ -30,6 +30,7 @@ import {
   AgencyTeamUpdates,
   AgencyWithTeamByID,
   Environment,
+  ErrorResponse,
   FipsCountyCodeKey,
   FipsCountyCodes,
   SearchableEntity,
@@ -235,16 +236,20 @@ class AdminPanelStore {
         method: "PUT",
         body: { users: [this.userProvisioningUpdates] },
       })) as Response;
-      const userResponse = (await response.json()) as UserResponse;
+      const userResponse = (await response.json()) as
+        | UserResponse
+        | ErrorResponse;
 
-      if (response.status !== 200) {
-        throw new Error("There was an issue saving user provisioning updates.");
+      if ("status" in userResponse && userResponse.status === 200) {
+        runInAction(() => this.updateUsers(userResponse as UserResponse));
       }
 
-      runInAction(() => this.updateUsers(userResponse));
-      return response.status;
+      return userResponse;
     } catch (error) {
-      if (error instanceof Error) return new Error(error.message);
+      if (error instanceof Error)
+        return new Error(
+          "There was an issue saving user provisioning updates."
+        );
     }
   }
 
@@ -340,18 +345,18 @@ class AdminPanelStore {
         method: "PUT",
         body: this.agencyProvisioningUpdates,
       })) as Response;
-      const agencyResponse = (await response.json()) as Agency;
+      const agencyResponse = (await response.json()) as Agency | ErrorResponse;
 
-      if (response.status !== 200) {
-        throw new Error(
-          "There was an issue saving agency provisioning updates."
-        );
+      if ("status" in agencyResponse && agencyResponse.status === 200) {
+        runInAction(() => this.updateAgencies(agencyResponse as Agency));
       }
 
-      runInAction(() => this.updateAgencies(agencyResponse));
-      return response.status;
+      return agencyResponse;
     } catch (error) {
-      if (error instanceof Error) return new Error(error.message);
+      if (error instanceof Error)
+        return new Error(
+          "There was an issue saving agency provisioning updates."
+        );
     }
   }
 

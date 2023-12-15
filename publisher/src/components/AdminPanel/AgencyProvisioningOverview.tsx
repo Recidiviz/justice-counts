@@ -19,7 +19,7 @@ import { Button } from "@justice-counts/common/components/Button";
 import { DelayedRender } from "@justice-counts/common/components/DelayedRender";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
@@ -57,9 +57,8 @@ export const AgencyProvisioningOverview = observer(() => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchInput, setSearchInput] = useState<string>("");
-  const [filteredAgencies, setFilteredAgencies] = useState<
-    AgencyWithTeamByID[]
-  >([]);
+  const [filteredAgencies, setFilteredAgencies] =
+    useState<AgencyWithTeamByID[]>(agencies);
   const [showAgenciesWithLiveDashboards, setShowAgenciesWithLiveDashboards] =
     useState(false);
   const [showSuperagencies, setShowSuperagencies] = useState(false);
@@ -68,6 +67,21 @@ export const AgencyProvisioningOverview = observer(() => {
     useState<SettingType>();
 
   const searchByKeys = ["name", "id", "state"] as AgencyKey[];
+  const superagenciesAndAgenciesWithLiveDashboards = useMemo(
+    () =>
+      agencies.filter(
+        (agency) => agency.is_dashboard_enabled && agency.is_superagency
+      ),
+    [agencies]
+  );
+  const superagencies = useMemo(
+    () => agencies.filter((agency) => agency.is_superagency),
+    [agencies]
+  );
+  const agenciesWithLiveDashboards = useMemo(
+    () => agencies.filter((agency) => agency.is_dashboard_enabled),
+    [agencies]
+  );
 
   const openModal = () => setIsModalOpen(true);
   const openSecondaryModal = () => setActiveSecondaryModal(Setting.USERS);
@@ -83,6 +97,29 @@ export const AgencyProvisioningOverview = observer(() => {
   };
   const searchAndFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
+    if (showAgenciesWithLiveDashboards && showSuperagencies) {
+      return setFilteredAgencies(
+        AdminPanelStore.searchList(
+          superagenciesAndAgenciesWithLiveDashboards,
+          e.target.value,
+          searchByKeys
+        )
+      );
+    }
+    if (showAgenciesWithLiveDashboards) {
+      return setFilteredAgencies(
+        AdminPanelStore.searchList(
+          agenciesWithLiveDashboards,
+          e.target.value,
+          searchByKeys
+        )
+      );
+    }
+    if (showSuperagencies) {
+      return setFilteredAgencies(
+        AdminPanelStore.searchList(superagencies, e.target.value, searchByKeys)
+      );
+    }
     setFilteredAgencies(
       AdminPanelStore.searchList(agencies, e.target.value, searchByKeys)
     );
@@ -119,24 +156,23 @@ export const AgencyProvisioningOverview = observer(() => {
   useEffect(() => {
     setSearchInput("");
     if (showAgenciesWithLiveDashboards && showSuperagencies) {
-      return setFilteredAgencies(() =>
-        agencies.filter(
-          (agency) => agency.is_dashboard_enabled && agency.is_superagency
-        )
-      );
+      return setFilteredAgencies(superagenciesAndAgenciesWithLiveDashboards);
     }
     if (showAgenciesWithLiveDashboards) {
-      return setFilteredAgencies(() =>
-        agencies.filter((agency) => agency.is_dashboard_enabled)
-      );
+      return setFilteredAgencies(agenciesWithLiveDashboards);
     }
     if (showSuperagencies) {
-      return setFilteredAgencies(() =>
-        agencies.filter((agency) => agency.is_superagency)
-      );
+      return setFilteredAgencies(superagencies);
     }
     return setFilteredAgencies(agencies);
-  }, [showAgenciesWithLiveDashboards, showSuperagencies, agencies]);
+  }, [
+    showAgenciesWithLiveDashboards,
+    showSuperagencies,
+    agencies,
+    superagenciesAndAgenciesWithLiveDashboards,
+    agenciesWithLiveDashboards,
+    superagencies,
+  ]);
 
   if (loading) {
     return <Loading />;
@@ -197,7 +233,7 @@ export const AgencyProvisioningOverview = observer(() => {
           </Styled.LabelWrapper>
         </Styled.InputLabelWrapper>
 
-        {/* Show Superagencies/Show Agencies with Live Dashboards Checkboxes */}
+        {/* Filter by Superagencies/Agencies with Live Dashboards Checkboxes */}
         <Styled.InputLabelWrapper flexRow inputWidth={395} noBottomSpacing>
           <input
             id="superagency-filter"
@@ -208,7 +244,7 @@ export const AgencyProvisioningOverview = observer(() => {
             }}
             checked={showSuperagencies}
           />
-          <label htmlFor="superagency-filter">Show superagencies</label>
+          <label htmlFor="superagency-filter">Filter by superagencies</label>
           <input
             id="live-dashboard-filter"
             name="live-dashboard-filter"
@@ -219,7 +255,7 @@ export const AgencyProvisioningOverview = observer(() => {
             checked={showAgenciesWithLiveDashboards}
           />
           <label htmlFor="live-dashboard-filter">
-            Show agencies with live dashboard
+            Filter by agencies with live dashboard
           </label>
         </Styled.InputLabelWrapper>
 

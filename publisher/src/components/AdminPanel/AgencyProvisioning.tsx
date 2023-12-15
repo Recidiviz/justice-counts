@@ -93,6 +93,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const [showSaveConfirmation, setShowSaveConfirmation] = useState<{
       show: boolean;
       type?: SaveConfirmationType;
+      errorMessage?: string;
     }>({ show: false });
 
     const [currentSettingType, setCurrentSettingType] =
@@ -218,24 +219,16 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     ];
     const getInteractiveSearchListSelectDeselectCloseButtons = <T,>(
       setState: React.Dispatch<React.SetStateAction<Set<T>>>,
-      selectAllSet: Set<T>,
-      selectAllCallback?: () => void,
-      deselectAllCallback?: () => void
+      selectAllSet: Set<T>
     ) => {
       return [
         {
           label: "Select All",
-          onClick: () => {
-            setState(selectAllSet);
-            if (selectAllCallback) selectAllCallback();
-          },
+          onClick: () => setState(selectAllSet),
         },
         {
           label: "Deselect All",
-          onClick: () => {
-            setState(new Set());
-            if (deselectAllCallback) deselectAllCallback();
-          },
+          onClick: () => setState(new Set()),
         },
         interactiveSearchListCloseButton[0],
       ];
@@ -265,20 +258,29 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         })),
       ]);
 
-      const responseStatus = await saveAgencyProvisioningUpdates();
+      const response = await saveAgencyProvisioningUpdates();
 
       setShowSaveConfirmation({
         show: true,
         type:
-          responseStatus === 200
+          response && "status" in response && response.status === 200
             ? SaveConfirmationTypes.SUCCESS
             : SaveConfirmationTypes.ERROR,
+        errorMessage:
+          response && "description" in response
+            ? response.description
+            : undefined,
       });
 
       /** After showing the confirmation screen, either return to modal (on error) or close modal (on success) */
       setTimeout(() => {
-        setShowSaveConfirmation((prev) => ({ ...prev, show: false }));
-        if (responseStatus === 200) closeModal();
+        setShowSaveConfirmation((prev) => ({
+          ...prev,
+          show: false,
+          errorMessage: undefined,
+        }));
+        if (response && "status" in response && response.status === 200)
+          closeModal();
         setIsSaveInProgress(false);
       }, 2000);
     };
@@ -462,26 +464,30 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         {showSaveConfirmation.show ? (
           <SaveConfirmation
             type={showSaveConfirmation.type}
-            message={getSaveConfirmationMessage()}
+            message={
+              showSaveConfirmation.errorMessage || getSaveConfirmationMessage()
+            }
           />
         ) : (
           <>
-            <Styled.ModalTitle>
-              {selectedIDToEdit
-                ? "Edit Agency Information"
-                : "Create New Agency"}
-            </Styled.ModalTitle>
+            <Styled.ModalHeader>
+              <Styled.ModalTitle>
+                {selectedIDToEdit
+                  ? "Edit Agency Information"
+                  : "Create New Agency"}
+              </Styled.ModalTitle>
 
-            {/** User Information */}
-            <Styled.NameDisplay>
-              {agencyProvisioningUpdates?.name || selectedAgency?.name}
-            </Styled.NameDisplay>
-            {selectedAgency && (
-              <Styled.Subheader>ID {selectedAgency?.id}</Styled.Subheader>
-            )}
+              {/** User Information */}
+              <Styled.NameDisplay>
+                {agencyProvisioningUpdates?.name || selectedAgency?.name}
+              </Styled.NameDisplay>
+              {selectedAgency && (
+                <Styled.Subheader>ID {selectedAgency?.id}</Styled.Subheader>
+              )}
 
-            {/* Toggle between Agency Information and Team Members & Roles */}
-            <TabbedBar options={settingOptions} />
+              {/* Toggle between Agency Information and Team Members & Roles */}
+              <TabbedBar options={settingOptions} />
+            </Styled.ModalHeader>
 
             <Styled.ScrollableContainer ref={scrollableContainerRef}>
               <Styled.Form>
@@ -613,28 +619,17 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           selections={selectedSystems}
                           buttons={getInteractiveSearchListSelectDeselectCloseButtons(
                             setSelectedSystems,
-                            new Set(systems),
-                            () => {
-                              updateIsSuperagency(true);
-                              updateSuperagencyID(null);
-                              setIsChildAgencySelected(false);
-                              setSelectedChildAgencyIDs(new Set());
-                            },
-                            () => updateIsSuperagency(false)
+                            new Set(systems)
                           )}
                           updateSelections={({ id }) => {
-                            if (id === AgencySystems.SUPERAGENCY) {
-                              toggleSuperagencyStatusAndSystems();
-                              return;
-                            }
                             setSelectedSystems((prev) =>
                               toggleAddRemoveSetItem(prev, id as AgencySystems)
                             );
                           }}
                           searchByKeys={["name"]}
                           metadata={{
-                            listBoxLabel: "Select system(s)",
-                            searchBoxLabel: "Search systems",
+                            listBoxLabel: "Select sector(s)",
+                            searchBoxLabel: "Search sectors",
                           }}
                           isActiveBox={
                             showSelectionBox === SelectionInputBoxTypes.SYSTEMS
@@ -661,7 +656,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         )}
                       </Styled.ChipContainer>
                       <Styled.ChipContainerLabel>
-                        Systems
+                        Sectors
                       </Styled.ChipContainerLabel>
                     </Styled.InputLabelWrapper>
 
