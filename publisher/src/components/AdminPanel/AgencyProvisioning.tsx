@@ -40,6 +40,7 @@ import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
 import {
   AgencyProvisioningSetting,
   AgencyProvisioningSettings,
+  Environment,
   FipsCountyCodeKey,
   FipsCountyCodes,
   InteractiveSearchList,
@@ -66,7 +67,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     openSecondaryModal,
     closeModal,
   }) => {
-    const { adminPanelStore } = useStore();
+    const { adminPanelStore, api } = useStore();
     const {
       users,
       agencies,
@@ -75,6 +76,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       agencyProvisioningUpdates,
       searchableCounties,
       searchableSystems,
+      csgAndRecidivizUsers,
       updateAgencyName,
       updateStateCode,
       updateCountyCode,
@@ -84,7 +86,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       updateSystems,
       updateChildAgencyIDs,
       updateTeamMembers,
-      getCSGTeamMembersIDToRoles,
       saveAgencyProvisioningUpdates,
     } = adminPanelStore;
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
@@ -443,21 +444,51 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
     /** Automatically adds CSG users to a newly created agency with the proper roles */
     useEffect(() => {
-      const csgTeamMembers = getCSGTeamMembersIDToRoles(
+      /**
+       * Returns a map of CSG & Recidiviz users' ids to their default roles to auto-add them
+       * to a newly created agency.
+       */
+      const getCSGAndRecidivizUserIDsToRoles = (
+        agencyName: string
+      ): UserRoleUpdates => {
+        let role: AgencyTeamMemberRole;
+        console.log("agencyName", agencyName);
+        const isStagingEnv = api.environment === Environment.STAGING;
+        const isDemoAgency =
+          agencyName.includes("DEMO") ||
+          agencyName === "Department of Corrections";
+        if (isStagingEnv || isDemoAgency) {
+          role = AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN;
+        } else {
+          role = AgencyTeamMemberRole.READ_ONLY;
+        }
+        return csgAndRecidivizUsers.reduce((acc, user) => {
+          acc[+user.id] = role;
+          return acc;
+        }, {} as UserRoleUpdates);
+      };
+
+      const csgRecidivizTeamMembers = getCSGAndRecidivizUserIDsToRoles(
         agencyProvisioningUpdates.name
       );
       if (!selectedAgency) {
         setSelectedTeamMembersToAdd(
-          new Set(Object.keys(csgTeamMembers).map((id) => +id))
+          new Set(Object.keys(csgRecidivizTeamMembers).map((id) => +id))
         );
         setTeamMemberRoleUpdates((prev) => {
           return {
             ...prev,
-            ...getCSGTeamMembersIDToRoles(agencyProvisioningUpdates.name),
+            ...csgRecidivizTeamMembers,
           };
         });
       }
-    }, [selectedAgency, agencyProvisioningUpdates, getCSGTeamMembersIDToRoles]);
+    }, [
+      selectedAgency,
+      agencyProvisioningUpdates.name,
+      api,
+      adminPanelStore,
+      csgAndRecidivizUsers,
+    ]);
 
     return (
       <Styled.ModalContainer offScreen={activeSecondaryModal === Setting.USERS}>

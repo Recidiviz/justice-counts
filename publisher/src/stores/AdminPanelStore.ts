@@ -15,11 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import {
-  AgencySystem,
-  AgencyTeamMember,
-  AgencyTeamMemberRole,
-} from "@justice-counts/common/types";
+import { AgencySystem, AgencyTeamMember } from "@justice-counts/common/types";
 import { removeSnakeCase } from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
@@ -29,7 +25,6 @@ import {
   AgencyResponse,
   AgencyTeamUpdates,
   AgencyWithTeamByID,
-  Environment,
   ErrorResponse,
   FipsCountyCodeKey,
   FipsCountyCodes,
@@ -40,7 +35,6 @@ import {
   User,
   UserProvisioningUpdates,
   UserResponse,
-  UserRoleUpdates,
   UserWithAgenciesByID,
 } from "../components/AdminPanel";
 import { groupBy } from "../utils";
@@ -100,8 +94,11 @@ class AdminPanelStore {
     return AdminPanelStore.objectToSortedFlatMappedValues(this.agenciesByID);
   }
 
-  get csgUsers(): UserWithAgenciesByID[] {
-    return this.users.filter((user) => user.email.includes("@csg.org"));
+  get csgAndRecidivizUsers(): UserWithAgenciesByID[] {
+    return this.users.filter(
+      (user) =>
+        user.email.includes("@csg.org") || user.email.includes("@recidiviz.org")
+    );
   }
 
   get searchableSystems(): SearchableListItem[] {
@@ -297,29 +294,6 @@ class AdminPanelStore {
 
   updateTeamMembers(team: AgencyTeamUpdates[]) {
     this.agencyProvisioningUpdates.team = team;
-  }
-
-  /**
-   * Returns a { [id]: <AgencyTeamMemberRole> } object of CSG users with their default roles
-   * to be consumed by `AgencyProvisioning` component to auto-add CSG users when creating a
-   * new agency.
-   */
-  getCSGTeamMembersIDToRoles(agencyName: string): UserRoleUpdates {
-    let role: AgencyTeamMemberRole;
-    const isStagingEnv = this.api.environment === Environment.STAGING;
-    const isDemoAgency =
-      agencyName.includes("DEMO") ||
-      agencyName.includes("Department of Corrections");
-    if (isStagingEnv || isDemoAgency) {
-      role = AgencyTeamMemberRole.AGENCY_ADMIN;
-    } else {
-      role = AgencyTeamMemberRole.READ_ONLY;
-    }
-
-    return this.csgUsers.reduce((acc, user) => {
-      acc[+user.id] = role;
-      return acc;
-    }, {} as UserRoleUpdates);
   }
 
   resetAgencyProvisioningUpdates() {
