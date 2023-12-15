@@ -431,7 +431,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           !hasTeamMemberOrRoleUpdates
         : !(hasNameUpdate && hasStateUpdate));
 
-    /** Automatically adds CSG users to a newly created agency with the proper roles */
+    /** Automatically adds CSG and Recidiviz users to a newly created agency with the proper roles */
     useEffect(() => {
       /**
        * Returns a map of CSG & Recidiviz users' ids to their default roles to auto-add them
