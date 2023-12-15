@@ -114,14 +114,7 @@ export const ModalActionButtons = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* width: calc(100% - 64px);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  position: absolute;
-  bottom: 32px;
-  right: 32px; */
+  padding-top: 16px;
 `;
 
 export const SaveCancelButtonsWrapper = styled.div`
