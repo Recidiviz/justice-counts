@@ -28,6 +28,7 @@ import {
   AgencyTeamMemberRole,
 } from "@justice-counts/common/types";
 import {
+  isCSGOrRecidivizUserByEmail,
   removeSnakeCase,
   toggleAddRemoveSetItem,
 } from "@justice-counts/common/utils";
@@ -77,6 +78,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       searchableCounties,
       searchableSystems,
       csgAndRecidivizUsers,
+      csgAndRecidivizDefaultRole,
       updateAgencyName,
       updateStateCode,
       updateCountyCode,
@@ -433,34 +435,20 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
     /** Automatically adds CSG and Recidiviz users to a newly created agency with the proper roles */
     useEffect(() => {
+      if (api.environment === Environment.STAGING) return;
+
       /**
-       * Returns a map of CSG & Recidiviz users' ids to their default roles to auto-add them
+       * A map of CSG & Recidiviz users' ids to their default roles to auto-add them
        * to a newly created agency.
        */
-      const getCSGAndRecidivizUserIDsToRoles = (
-        agencyName: string
-      ): UserRoleUpdates => {
-        let role: AgencyTeamMemberRole;
-        const isStagingEnv = api.environment === Environment.STAGING;
-        const isDemoAgency =
-          agencyName.includes("DEMO") ||
-          agencyName === "Department of Corrections";
-
-        if (isStagingEnv || isDemoAgency) {
-          role = AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN;
-        } else {
-          role = AgencyTeamMemberRole.READ_ONLY;
-        }
-
-        return csgAndRecidivizUsers.reduce((acc, user) => {
-          acc[+user.id] = role;
+      const csgRecidivizTeamMembers = csgAndRecidivizUsers.reduce(
+        (acc, user) => {
+          acc[+user.id] = csgAndRecidivizDefaultRole;
           return acc;
-        }, {} as UserRoleUpdates);
-      };
-
-      const csgRecidivizTeamMembers = getCSGAndRecidivizUserIDsToRoles(
-        agencyProvisioningUpdates.name
+        },
+        {} as UserRoleUpdates
       );
+
       if (!selectedAgency) {
         setSelectedTeamMembersToAdd(
           new Set(Object.keys(csgRecidivizTeamMembers).map((id) => +id))
@@ -474,10 +462,10 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       }
     }, [
       selectedAgency,
-      agencyProvisioningUpdates.name,
-      api,
       adminPanelStore,
+      api,
       csgAndRecidivizUsers,
+      csgAndRecidivizDefaultRole,
     ]);
 
     return (
@@ -893,7 +881,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                               availableTeamMembers.map((member) => +member.id)
                             )
                           )}
-                          updateSelections={({ id }) => {
+                          updateSelections={({ id, email }) => {
                             setSelectedTeamMembersToAdd((prev) =>
                               toggleAddRemoveSetItem(prev, +id)
                             );
@@ -905,7 +893,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                               }
                               return {
                                 ...prev,
-                                [id]: AgencyTeamMemberRole.AGENCY_ADMIN,
+                                [id]: isCSGOrRecidivizUserByEmail(email)
+                                  ? csgAndRecidivizDefaultRole
+                                  : AgencyTeamMemberRole.AGENCY_ADMIN,
                               };
                             });
                           }}

@@ -15,7 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { AgencySystem, AgencyTeamMember } from "@justice-counts/common/types";
+import {
+  AgencySystem,
+  AgencyTeamMember,
+  AgencyTeamMemberRole,
+} from "@justice-counts/common/types";
 import { removeSnakeCase } from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
@@ -25,6 +29,7 @@ import {
   AgencyResponse,
   AgencyTeamUpdates,
   AgencyWithTeamByID,
+  Environment,
   ErrorResponse,
   FipsCountyCodeKey,
   FipsCountyCodes,
@@ -99,6 +104,27 @@ class AdminPanelStore {
       (user) =>
         user.email.includes("@csg.org") || user.email.includes("@recidiviz.org")
     );
+  }
+
+  /**
+   * Returns the default role for CSG/Recidiviz users based on the agency's name and
+   * current environment.
+   * Production environment: READ_ONLY is the default role
+   * Staging environment or DEMO agencies: JUSTICE_COUNTS_ADMIN is the default role
+   */
+  get csgAndRecidivizDefaultRole(): AgencyTeamMemberRole {
+    const agencyName = this.agencyProvisioningUpdates.name;
+    if (!agencyName) return AgencyTeamMemberRole.READ_ONLY;
+
+    const isStagingEnv = this.api.environment === Environment.STAGING;
+    const isDemoAgency =
+      agencyName.includes("DEMO") || agencyName === "Department of Corrections";
+
+    if (isStagingEnv || isDemoAgency) {
+      return AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN;
+    }
+
+    return AgencyTeamMemberRole.READ_ONLY;
   }
 
   get searchableSystems(): SearchableListItem[] {

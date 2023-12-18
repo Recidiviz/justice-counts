@@ -293,6 +293,7 @@ export const toggleAddRemoveSetItem = <T>(prevSet: Set<T>, item: T): Set<T> => {
   return updatedSet;
 };
 
-export const isCSGOrRecidivizUserByEmail = (email: string) => {
+export const isCSGOrRecidivizUserByEmail = (email?: string) => {
+  if (!email) return false;
   return email.includes("@csg.org") || email.includes("@recidiviz.org");
 };
