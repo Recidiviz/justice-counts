@@ -114,14 +114,7 @@ export const ModalActionButtons = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* width: calc(100% - 64px);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  position: absolute;
-  bottom: 32px;
-  right: 32px; */
+  padding-top: 16px;
 `;
 
 export const SaveCancelButtonsWrapper = styled.div`
@@ -182,6 +175,18 @@ export const ActionButton = styled.div<{
       }
       return `background: ${palette.highlight.grey1};`;
     }}
+  }
+`;
+
+export const InputLabelContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+
+  @media only screen and (max-width: 1024px) {
+    flex-direction: column;
+    gap: 6px;
+    padding: 0 16px;
   }
 `;
 

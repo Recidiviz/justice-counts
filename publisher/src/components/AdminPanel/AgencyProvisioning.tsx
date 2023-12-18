@@ -28,6 +28,7 @@ import {
   AgencyTeamMemberRole,
 } from "@justice-counts/common/types";
 import {
+  isCSGOrRecidivizUserByEmail,
   removeSnakeCase,
   toggleAddRemoveSetItem,
 } from "@justice-counts/common/utils";
@@ -66,7 +67,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     openSecondaryModal,
     closeModal,
   }) => {
-    const { adminPanelStore } = useStore();
+    const { adminPanelStore, api } = useStore();
     const {
       users,
       agencies,
@@ -75,6 +76,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       agencyProvisioningUpdates,
       searchableCounties,
       searchableSystems,
+      csgAndRecidivizUsers,
+      csgAndRecidivizDefaultRole,
       updateAgencyName,
       updateStateCode,
       updateCountyCode,
@@ -84,7 +87,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       updateSystems,
       updateChildAgencyIDs,
       updateTeamMembers,
-      getCSGTeamMembersIDToRoles,
       saveAgencyProvisioningUpdates,
     } = adminPanelStore;
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
@@ -139,25 +141,14 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         selected:
           currentSettingType === AgencyProvisioningSettings.AGENCY_INFORMATION,
       },
-      /**
-       * Hide the Team Member & Roles tab if we are in the secondary modal b/c it is not
-       * necessary in that flow.
-       */
-      ...(activeSecondaryModal !== Setting.AGENCIES
-        ? [
-            {
-              key: "team-members-roles",
-              label: AgencyProvisioningSettings.TEAM_MEMBERS_ROLES,
-              onClick: () =>
-                setCurrentSettingType(
-                  AgencyProvisioningSettings.TEAM_MEMBERS_ROLES
-                ),
-              selected:
-                currentSettingType ===
-                AgencyProvisioningSettings.TEAM_MEMBERS_ROLES,
-            },
-          ]
-        : []),
+      {
+        key: "team-members-roles",
+        label: AgencyProvisioningSettings.TEAM_MEMBERS_ROLES,
+        onClick: () =>
+          setCurrentSettingType(AgencyProvisioningSettings.TEAM_MEMBERS_ROLES),
+        selected:
+          currentSettingType === AgencyProvisioningSettings.TEAM_MEMBERS_ROLES,
+      },
     ];
 
     /** Selected agency to edit */
@@ -441,23 +432,38 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           !hasTeamMemberOrRoleUpdates
         : !(hasNameUpdate && hasStateUpdate));
 
-    /** Automatically adds CSG users to a newly created agency with the proper roles */
+    /** Automatically adds CSG and Recidiviz users to a newly created agency with the proper roles */
     useEffect(() => {
-      const csgTeamMembers = getCSGTeamMembersIDToRoles(
-        agencyProvisioningUpdates.name
+      /**
+       * A map of CSG & Recidiviz users' ids to their default roles to auto-add them
+       * to a newly created agency.
+       */
+      const csgRecidivizTeamMembers = csgAndRecidivizUsers.reduce(
+        (acc, user) => {
+          acc[+user.id] = csgAndRecidivizDefaultRole;
+          return acc;
+        },
+        {} as UserRoleUpdates
       );
+
       if (!selectedAgency) {
         setSelectedTeamMembersToAdd(
-          new Set(Object.keys(csgTeamMembers).map((id) => +id))
+          new Set(Object.keys(csgRecidivizTeamMembers).map((id) => +id))
         );
         setTeamMemberRoleUpdates((prev) => {
           return {
             ...prev,
-            ...getCSGTeamMembersIDToRoles(agencyProvisioningUpdates.name),
+            ...csgRecidivizTeamMembers,
           };
         });
       }
-    }, [selectedAgency, agencyProvisioningUpdates, getCSGTeamMembersIDToRoles]);
+    }, [
+      selectedAgency,
+      adminPanelStore,
+      api,
+      csgAndRecidivizUsers,
+      csgAndRecidivizDefaultRole,
+    ]);
 
     return (
       <Styled.ModalContainer offScreen={activeSecondaryModal === Setting.USERS}>
@@ -872,7 +878,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                               availableTeamMembers.map((member) => +member.id)
                             )
                           )}
-                          updateSelections={({ id }) => {
+                          updateSelections={({ id, email }) => {
                             setSelectedTeamMembersToAdd((prev) =>
                               toggleAddRemoveSetItem(prev, +id)
                             );
@@ -884,7 +890,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                               }
                               return {
                                 ...prev,
-                                [id]: AgencyTeamMemberRole.AGENCY_ADMIN,
+                                [id]: isCSGOrRecidivizUserByEmail(email)
+                                  ? csgAndRecidivizDefaultRole
+                                  : AgencyTeamMemberRole.AGENCY_ADMIN,
                               };
                             });
                           }}
@@ -930,46 +938,48 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                     </Styled.InputLabelWrapper>
 
                     {/* Add/Remove/Create New User */}
-                    <Styled.InputLabelWrapper>
-                      <Styled.FormActions noMargin>
-                        {/* Add Agencies Button */}
-                        <Styled.ActionButton
-                          buttonAction={InteractiveSearchListActions.ADD}
-                          selectedColor={isAddUserAction ? "green" : ""}
-                          onClick={() => {
-                            setAddOrDeleteUserAction((prev) =>
-                              prev === InteractiveSearchListActions.ADD
-                                ? undefined
-                                : InteractiveSearchListActions.ADD
-                            );
-                          }}
-                        >
-                          Add Users
-                        </Styled.ActionButton>
-
-                        {/* Remove Agencies Button (note: when creating a new user, the delete action button is not necessary) */}
-                        {selectedAgency && (
+                    {activeSecondaryModal !== Setting.AGENCIES && (
+                      <Styled.InputLabelWrapper>
+                        <Styled.FormActions noMargin>
+                          {/* Add Agencies Button */}
                           <Styled.ActionButton
-                            buttonAction={InteractiveSearchListActions.DELETE}
-                            selectedColor={isDeleteUserAction ? "red" : ""}
+                            buttonAction={InteractiveSearchListActions.ADD}
+                            selectedColor={isAddUserAction ? "green" : ""}
                             onClick={() => {
                               setAddOrDeleteUserAction((prev) =>
-                                prev === InteractiveSearchListActions.DELETE
+                                prev === InteractiveSearchListActions.ADD
                                   ? undefined
-                                  : InteractiveSearchListActions.DELETE
+                                  : InteractiveSearchListActions.ADD
                               );
                             }}
                           >
-                            Delete Users
+                            Add Users
                           </Styled.ActionButton>
-                        )}
 
-                        {/* Create New User Button */}
-                        <Styled.ActionButton onClick={openSecondaryModal}>
-                          Create New User
-                        </Styled.ActionButton>
-                      </Styled.FormActions>
-                    </Styled.InputLabelWrapper>
+                          {/* Remove Agencies Button (note: when creating a new user, the delete action button is not necessary) */}
+                          {selectedAgency && (
+                            <Styled.ActionButton
+                              buttonAction={InteractiveSearchListActions.DELETE}
+                              selectedColor={isDeleteUserAction ? "red" : ""}
+                              onClick={() => {
+                                setAddOrDeleteUserAction((prev) =>
+                                  prev === InteractiveSearchListActions.DELETE
+                                    ? undefined
+                                    : InteractiveSearchListActions.DELETE
+                                );
+                              }}
+                            >
+                              Delete Users
+                            </Styled.ActionButton>
+                          )}
+
+                          {/* Create New User Button */}
+                          <Styled.ActionButton onClick={openSecondaryModal}>
+                            Create New User
+                          </Styled.ActionButton>
+                        </Styled.FormActions>
+                      </Styled.InputLabelWrapper>
+                    )}
 
                     {/* Newly Added Team Members */}
                     <Styled.TeamMembersContainer>

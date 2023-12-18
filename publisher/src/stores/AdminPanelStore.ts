@@ -40,7 +40,6 @@ import {
   User,
   UserProvisioningUpdates,
   UserResponse,
-  UserRoleUpdates,
   UserWithAgenciesByID,
 } from "../components/AdminPanel";
 import { groupBy } from "../utils";
@@ -100,8 +99,30 @@ class AdminPanelStore {
     return AdminPanelStore.objectToSortedFlatMappedValues(this.agenciesByID);
   }
 
-  get csgUsers(): UserWithAgenciesByID[] {
-    return this.users.filter((user) => user.email.includes("@csg.org"));
+  get csgAndRecidivizUsers(): UserWithAgenciesByID[] {
+    return this.users.filter(
+      (user) =>
+        user.email.includes("@csg.org") || user.email.includes("@recidiviz.org")
+    );
+  }
+
+  /**
+   * Returns the default role for CSG/Recidiviz users based on the agency's name and
+   * current environment.
+   * Production environment: READ_ONLY is the default role
+   * Staging environment or DEMO agencies: JUSTICE_COUNTS_ADMIN is the default role
+   */
+  get csgAndRecidivizDefaultRole(): AgencyTeamMemberRole {
+    const isStagingEnv = this.api.environment === Environment.STAGING;
+    const agencyName = this.agencyProvisioningUpdates.name;
+    const isDemoAgency =
+      agencyName.includes("DEMO") || agencyName === "Department of Corrections";
+
+    if (isStagingEnv || isDemoAgency) {
+      return AgencyTeamMemberRole.JUSTICE_COUNTS_ADMIN;
+    }
+
+    return AgencyTeamMemberRole.READ_ONLY;
   }
 
   get searchableSystems(): SearchableListItem[] {
@@ -240,8 +261,9 @@ class AdminPanelStore {
         | UserResponse
         | ErrorResponse;
 
-      if ("status" in userResponse && userResponse.status === 200) {
+      if (response.status === 200) {
         runInAction(() => this.updateUsers(userResponse as UserResponse));
+        return response;
       }
 
       return userResponse;
@@ -299,29 +321,6 @@ class AdminPanelStore {
     this.agencyProvisioningUpdates.team = team;
   }
 
-  /**
-   * Returns a { [id]: <AgencyTeamMemberRole> } object of CSG users with their default roles
-   * to be consumed by `AgencyProvisioning` component to auto-add CSG users when creating a
-   * new agency.
-   */
-  getCSGTeamMembersIDToRoles(agencyName: string): UserRoleUpdates {
-    let role: AgencyTeamMemberRole;
-    const isStagingEnv = this.api.environment === Environment.STAGING;
-    const isDemoAgency =
-      agencyName.includes("DEMO") ||
-      agencyName.includes("Department of Corrections");
-    if (isStagingEnv || isDemoAgency) {
-      role = AgencyTeamMemberRole.AGENCY_ADMIN;
-    } else {
-      role = AgencyTeamMemberRole.READ_ONLY;
-    }
-
-    return this.csgUsers.reduce((acc, user) => {
-      acc[+user.id] = role;
-      return acc;
-    }, {} as UserRoleUpdates);
-  }
-
   resetAgencyProvisioningUpdates() {
     this.agencyProvisioningUpdates = initialEmptyAgencyProvisioningUpdates;
   }
@@ -347,8 +346,9 @@ class AdminPanelStore {
       })) as Response;
       const agencyResponse = (await response.json()) as Agency | ErrorResponse;
 
-      if ("status" in agencyResponse && agencyResponse.status === 200) {
+      if (response.status === 200) {
         runInAction(() => this.updateAgencies(agencyResponse as Agency));
+        return response;
       }
 
       return agencyResponse;
