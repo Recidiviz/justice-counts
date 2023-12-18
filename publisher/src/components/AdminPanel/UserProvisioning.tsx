@@ -29,7 +29,6 @@ import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
 import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
 import {
-  Environment,
   InteractiveSearchList,
   InteractiveSearchListAction,
   InteractiveSearchListActions,
@@ -49,7 +48,7 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
     openSecondaryModal,
     closeModal,
   }) => {
-    const { adminPanelStore, api } = useStore();
+    const { adminPanelStore } = useStore();
     const {
       agencies,
       usersByID,
@@ -191,10 +190,8 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
     const validateAndUpdateEmail = (email: string) => {
       const isValidEmail = validateEmail(email);
       updateEmail(email);
-      /* In production environment if user is a member of CSG or Recidiviz, add all agencies to the user list */
-      if (api.environment !== Environment.STAGING) {
-        addAllAgenciesForCSGOrRecidivizUsers(email, isValidEmail);
-      }
+      addAllAgenciesForCSGOrRecidivizUsers(email, isValidEmail);
+
       if (email === "" || isValidEmail) {
         return setEmailValidationError(undefined);
       }

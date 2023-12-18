@@ -41,7 +41,6 @@ import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
 import {
   AgencyProvisioningSetting,
   AgencyProvisioningSettings,
-  Environment,
   FipsCountyCodeKey,
   FipsCountyCodes,
   InteractiveSearchList,
@@ -435,8 +434,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
     /** Automatically adds CSG and Recidiviz users to a newly created agency with the proper roles */
     useEffect(() => {
-      if (api.environment === Environment.STAGING) return;
-
       /**
        * A map of CSG & Recidiviz users' ids to their default roles to auto-add them
        * to a newly created agency.
