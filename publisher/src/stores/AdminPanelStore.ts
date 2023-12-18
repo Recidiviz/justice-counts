@@ -113,10 +113,8 @@ class AdminPanelStore {
    * Staging environment or DEMO agencies: JUSTICE_COUNTS_ADMIN is the default role
    */
   get csgAndRecidivizDefaultRole(): AgencyTeamMemberRole {
-    const agencyName = this.agencyProvisioningUpdates.name;
-    if (!agencyName) return AgencyTeamMemberRole.READ_ONLY;
-
     const isStagingEnv = this.api.environment === Environment.STAGING;
+    const agencyName = this.agencyProvisioningUpdates.name;
     const isDemoAgency =
       agencyName.includes("DEMO") || agencyName === "Department of Corrections";
 
