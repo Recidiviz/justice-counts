@@ -178,6 +178,18 @@ export const ActionButton = styled.div<{
   }
 `;
 
+export const InputLabelContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+
+  @media only screen and (max-width: 1024px) {
+    flex-direction: column;
+    gap: 6px;
+    padding: 0 16px;
+  }
+`;
+
 export const InputLabelWrapper = styled.div<{
   flexRow?: boolean;
   topSpacing?: boolean;

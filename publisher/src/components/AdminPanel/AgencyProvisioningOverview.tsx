@@ -234,30 +234,34 @@ export const AgencyProvisioningOverview = observer(() => {
         </Styled.InputLabelWrapper>
 
         {/* Filter by Superagencies/Agencies with Live Dashboards Checkboxes */}
-        <Styled.InputLabelWrapper flexRow inputWidth={395} noBottomSpacing>
-          <input
-            id="superagency-filter"
-            name="superagency-filter"
-            type="checkbox"
-            onChange={() => {
-              setShowSuperagencies((prev) => !prev);
-            }}
-            checked={showSuperagencies}
-          />
-          <label htmlFor="superagency-filter">Filter by superagencies</label>
-          <input
-            id="live-dashboard-filter"
-            name="live-dashboard-filter"
-            type="checkbox"
-            onChange={() => {
-              setShowAgenciesWithLiveDashboards((prev) => !prev);
-            }}
-            checked={showAgenciesWithLiveDashboards}
-          />
-          <label htmlFor="live-dashboard-filter">
-            Filter by agencies with live dashboard
-          </label>
-        </Styled.InputLabelWrapper>
+        <Styled.InputLabelContainer>
+          <Styled.InputLabelWrapper flexRow noBottomSpacing>
+            <input
+              id="superagency-filter"
+              name="superagency-filter"
+              type="checkbox"
+              onChange={() => {
+                setShowSuperagencies((prev) => !prev);
+              }}
+              checked={showSuperagencies}
+            />
+            <label htmlFor="superagency-filter">Filter by superagencies</label>
+          </Styled.InputLabelWrapper>
+          <Styled.InputLabelWrapper flexRow noBottomSpacing>
+            <input
+              id="live-dashboard-filter"
+              name="live-dashboard-filter"
+              type="checkbox"
+              onChange={() => {
+                setShowAgenciesWithLiveDashboards((prev) => !prev);
+              }}
+              checked={showAgenciesWithLiveDashboards}
+            />
+            <label htmlFor="live-dashboard-filter">
+              Filter by agencies with live dashboard
+            </label>
+          </Styled.InputLabelWrapper>
+        </Styled.InputLabelContainer>
 
         {/* Create Agency Button */}
         <Styled.ButtonWrapper>
