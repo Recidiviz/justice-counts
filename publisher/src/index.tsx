@@ -18,13 +18,51 @@
 import "react-tooltip/dist/react-tooltip.css";
 
 import { GlobalStyle } from "@justice-counts/common/components/GlobalStyles";
+import * as Sentry from "@sentry/react";
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
+import {
+  BrowserRouter,
+  createRoutesFromChildren,
+  matchRoutes,
+  useLocation,
+  useNavigationType,
+} from "react-router-dom";
 
 import App from "./App";
 import AuthWall from "./components/Auth";
 import { StoreProvider } from "./stores";
+
+Sentry.init({
+  dsn: "https://3e8c790dbf0c407b8c039b91c7af9abc@o432474.ingest.sentry.io/4504532096516096",
+  integrations: [
+    new Sentry.BrowserTracing({
+      routingInstrumentation: Sentry.reactRouterV6Instrumentation(
+        React.useEffect,
+        useLocation,
+        useNavigationType,
+        createRoutesFromChildren,
+        matchRoutes
+      ),
+    }),
+    new Sentry.Replay(),
+  ],
+
+  // Set tracesSampleRate to 1.0 to capture 100%
+  // of transactions for performance monitoring.
+  tracesSampleRate: 1.0,
+
+  // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
+  tracePropagationTargets: [
+    "localhost",
+    /^https:\/\/publisher\.justice-counts\.org\/api/,
+  ],
+
+  // Capture Replay for 10% of all sessions,
+  // plus for 100% of sessions with an error
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1.0,
+});
 
 // load analytics
 window.analytics = window.analytics || [];
