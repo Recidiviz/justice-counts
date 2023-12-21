@@ -54,7 +54,10 @@ export const AccountSettings = () => {
           value={name}
           onChange={(e) => {
             setName((prev) => e.target.value.trimStart() || prev);
-            debouncedSave(e.target.value.trimStart() || name, undefined);
+            debouncedSave(
+              e.target.value.trimStart() || userStore?.name,
+              undefined
+            );
           }}
         />
         <Input
@@ -62,8 +65,11 @@ export const AccountSettings = () => {
           label="Email"
           value={email}
           onChange={(e) => {
-            setEmail((prev) => e.target.value || prev);
-            debouncedSave(undefined, e.target.value || email);
+            setEmail((prev) => e.target.value.trimStart() || prev);
+            debouncedSave(
+              undefined,
+              e.target.value.trimStart() || userStore?.email
+            );
           }}
         />
       </AccountSettingsInputsWrapper>
