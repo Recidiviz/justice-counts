@@ -253,7 +253,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         })),
       ]);
 
-      const response = await saveAgencyProvisioningUpdates();
+      /** Refetch when changes are made to superagency or child agencies so all related agencies are updated */
+      const shouldRefetch = hasSuperagencyUpdate || hasChildAgencyUpdates;
+      const response = await saveAgencyProvisioningUpdates(shouldRefetch);
 
       setShowSaveConfirmation({
         show: true,

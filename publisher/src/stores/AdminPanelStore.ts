@@ -337,7 +337,7 @@ class AdminPanelStore {
     this.agenciesByID[agency.id] = [agencyWithGroupedTeams];
   }
 
-  async saveAgencyProvisioningUpdates() {
+  async saveAgencyProvisioningUpdates(refetch?: boolean) {
     try {
       const response = (await this.api.request({
         path: `/admin/agency`,
@@ -347,7 +347,12 @@ class AdminPanelStore {
       const agencyResponse = (await response.json()) as Agency | ErrorResponse;
 
       if (response.status === 200) {
-        runInAction(() => this.updateAgencies(agencyResponse as Agency));
+        if (!refetch) {
+          runInAction(() => this.updateAgencies(agencyResponse as Agency));
+        } else {
+          await this.fetchUsersAndAgencies();
+        }
+
         return response;
       }
 
