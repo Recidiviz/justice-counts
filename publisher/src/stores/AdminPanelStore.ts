@@ -222,7 +222,7 @@ class AdminPanelStore {
   /** User Provisioning */
 
   updateUsername(username: string) {
-    this.userProvisioningUpdates.name = username;
+    this.userProvisioningUpdates.name = username.trimStart();
   }
 
   updateEmail(email: string) {
