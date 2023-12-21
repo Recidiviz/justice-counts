@@ -517,37 +517,37 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                     </Styled.InputLabelWrapper>
 
                     {/* Agency State Input */}
+                    {showSelectionBox === SelectionInputBoxTypes.STATE && (
+                      <InteractiveSearchList
+                        list={AdminPanelStore.searchableStates}
+                        boxActionType={InteractiveSearchListActions.ADD}
+                        selections={
+                          agencyProvisioningUpdates.state_code
+                            ? new Set([agencyProvisioningUpdates.state_code])
+                            : new Set()
+                        }
+                        buttons={interactiveSearchListCloseButton}
+                        updateSelections={({ id }) => {
+                          updateStateCode(
+                            agencyProvisioningUpdates.state_code ===
+                              (id as StateCodeKey)
+                              ? selectedAgency?.state_code || null
+                              : (id as StateCodeKey)
+                          );
+                          /** Reset the county code input */
+                          updateCountyCode(null);
+                        }}
+                        searchByKeys={["name"]}
+                        metadata={{
+                          listBoxLabel: "Select a state",
+                          searchBoxLabel: "Search states",
+                        }}
+                        isActiveBox={
+                          showSelectionBox === SelectionInputBoxTypes.STATE
+                        }
+                      />
+                    )}
                     <Styled.InputLabelWrapper required>
-                      {showSelectionBox === SelectionInputBoxTypes.STATE && (
-                        <InteractiveSearchList
-                          list={AdminPanelStore.searchableStates}
-                          boxActionType={InteractiveSearchListActions.ADD}
-                          selections={
-                            agencyProvisioningUpdates.state_code
-                              ? new Set([agencyProvisioningUpdates.state_code])
-                              : new Set()
-                          }
-                          buttons={interactiveSearchListCloseButton}
-                          updateSelections={({ id }) => {
-                            updateStateCode(
-                              agencyProvisioningUpdates.state_code ===
-                                (id as StateCodeKey)
-                                ? selectedAgency?.state_code || null
-                                : (id as StateCodeKey)
-                            );
-                            /** Reset the county code input */
-                            updateCountyCode(null);
-                          }}
-                          searchByKeys={["name"]}
-                          metadata={{
-                            listBoxLabel: "Select a state",
-                            searchBoxLabel: "Search states",
-                          }}
-                          isActiveBox={
-                            showSelectionBox === SelectionInputBoxTypes.STATE
-                          }
-                        />
-                      )}
                       <input
                         id="state"
                         name="state"
@@ -567,36 +567,36 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                     </Styled.InputLabelWrapper>
 
                     {/* Agency County Input */}
+                    {showSelectionBox === SelectionInputBoxTypes.COUNTY && (
+                      <InteractiveSearchList
+                        list={searchableCounties}
+                        boxActionType={InteractiveSearchListActions.ADD}
+                        selections={
+                          agencyProvisioningUpdates.fips_county_code
+                            ? new Set([
+                                agencyProvisioningUpdates.fips_county_code,
+                              ])
+                            : new Set()
+                        }
+                        buttons={interactiveSearchListCloseButton}
+                        updateSelections={({ id }) => {
+                          updateCountyCode(
+                            agencyProvisioningUpdates.fips_county_code === id
+                              ? null
+                              : (id as FipsCountyCodeKey)
+                          );
+                        }}
+                        searchByKeys={["name"]}
+                        metadata={{
+                          listBoxLabel: "Select a county",
+                          searchBoxLabel: "Search counties",
+                        }}
+                        isActiveBox={
+                          showSelectionBox === SelectionInputBoxTypes.COUNTY
+                        }
+                      />
+                    )}
                     <Styled.InputLabelWrapper>
-                      {showSelectionBox === SelectionInputBoxTypes.COUNTY && (
-                        <InteractiveSearchList
-                          list={searchableCounties}
-                          boxActionType={InteractiveSearchListActions.ADD}
-                          selections={
-                            agencyProvisioningUpdates.fips_county_code
-                              ? new Set([
-                                  agencyProvisioningUpdates.fips_county_code,
-                                ])
-                              : new Set()
-                          }
-                          buttons={interactiveSearchListCloseButton}
-                          updateSelections={({ id }) => {
-                            updateCountyCode(
-                              agencyProvisioningUpdates.fips_county_code === id
-                                ? null
-                                : (id as FipsCountyCodeKey)
-                            );
-                          }}
-                          searchByKeys={["name"]}
-                          metadata={{
-                            listBoxLabel: "Select a county",
-                            searchBoxLabel: "Search counties",
-                          }}
-                          isActiveBox={
-                            showSelectionBox === SelectionInputBoxTypes.COUNTY
-                          }
-                        />
-                      )}
                       <input
                         id="county"
                         name="county"
@@ -617,31 +617,31 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                     </Styled.InputLabelWrapper>
 
                     {/* Agency Systems Input */}
+                    {showSelectionBox === SelectionInputBoxTypes.SYSTEMS && (
+                      <InteractiveSearchList
+                        list={searchableSystems}
+                        boxActionType={InteractiveSearchListActions.ADD}
+                        selections={selectedSystems}
+                        buttons={getInteractiveSearchListSelectDeselectCloseButtons(
+                          setSelectedSystems,
+                          new Set(systems)
+                        )}
+                        updateSelections={({ id }) => {
+                          setSelectedSystems((prev) =>
+                            toggleAddRemoveSetItem(prev, id as AgencySystems)
+                          );
+                        }}
+                        searchByKeys={["name"]}
+                        metadata={{
+                          listBoxLabel: "Select sector(s)",
+                          searchBoxLabel: "Search sectors",
+                        }}
+                        isActiveBox={
+                          showSelectionBox === SelectionInputBoxTypes.SYSTEMS
+                        }
+                      />
+                    )}
                     <Styled.InputLabelWrapper>
-                      {showSelectionBox === SelectionInputBoxTypes.SYSTEMS && (
-                        <InteractiveSearchList
-                          list={searchableSystems}
-                          boxActionType={InteractiveSearchListActions.ADD}
-                          selections={selectedSystems}
-                          buttons={getInteractiveSearchListSelectDeselectCloseButtons(
-                            setSelectedSystems,
-                            new Set(systems)
-                          )}
-                          updateSelections={({ id }) => {
-                            setSelectedSystems((prev) =>
-                              toggleAddRemoveSetItem(prev, id as AgencySystems)
-                            );
-                          }}
-                          searchByKeys={["name"]}
-                          metadata={{
-                            listBoxLabel: "Select sector(s)",
-                            searchBoxLabel: "Search sectors",
-                          }}
-                          isActiveBox={
-                            showSelectionBox === SelectionInputBoxTypes.SYSTEMS
-                          }
-                        />
-                      )}
                       <Styled.ChipContainer
                         onClick={() =>
                           setShowSelectionBox(SelectionInputBoxTypes.SYSTEMS)
