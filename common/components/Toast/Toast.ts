@@ -46,7 +46,6 @@ const getToastStyles = (color?: ToastColor, positionNextToIcon?: boolean) => {
   const toastStyles = `
       width: auto;
       max-width: 400px;
-      height: ${HEADER_BAR_HEIGHT - 1}px;
       display: flex;
       align-items: center;
       background-color: ${toastBackgroundColor};
