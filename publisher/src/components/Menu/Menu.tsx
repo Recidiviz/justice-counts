@@ -61,7 +61,7 @@ const Menu: React.FC = () => {
       if (splitName.length > 1) {
         return (splitName[0][0] + splitName[1][0]).toUpperCase();
       }
-      return splitName[0][0].toUpperCase();
+      return splitName[0][0]?.toUpperCase();
     }
   };
 
