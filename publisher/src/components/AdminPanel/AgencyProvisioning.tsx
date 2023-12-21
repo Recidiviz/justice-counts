@@ -210,12 +210,16 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     ];
     const getInteractiveSearchListSelectDeselectCloseButtons = <T,>(
       setState: React.Dispatch<React.SetStateAction<Set<T>>>,
-      selectAllSet: Set<T>
+      selectAllSet: Set<T>,
+      selectAllCallback?: () => void
     ) => {
       return [
         {
           label: "Select All",
-          onClick: () => setState(selectAllSet),
+          onClick: () => {
+            setState(selectAllSet);
+            if (selectAllCallback) selectAllCallback();
+          },
         },
         {
           label: "Deselect All",
@@ -876,7 +880,26 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                             setSelectedTeamMembersToAdd,
                             new Set(
                               availableTeamMembers.map((member) => +member.id)
-                            )
+                            ),
+                            () => {
+                              setTeamMemberRoleUpdates((prev) => {
+                                return {
+                                  ...prev,
+                                  ...availableTeamMembers.reduce(
+                                    (acc, member) => {
+                                      acc[+member.id] =
+                                        isCSGOrRecidivizUserByEmail(
+                                          member.email
+                                        )
+                                          ? csgAndRecidivizDefaultRole
+                                          : AgencyTeamMemberRole.AGENCY_ADMIN;
+                                      return acc;
+                                    },
+                                    {} as UserRoleUpdates
+                                  ),
+                                };
+                              });
+                            }
                           )}
                           updateSelections={({ id, email }) => {
                             setSelectedTeamMembersToAdd((prev) =>
