@@ -204,21 +204,29 @@ const Menu: React.FC = () => {
     <Styled.MenuContainer isMobileMenuOpen={isMobileMenuOpen}>
       <Styled.AgencyDropdownHeaderBadgeWrapper>
         {/* Agencies Dropdown */}
-        {userStore.userAgencies && userStore.userAgencies.length > 1 && (
-          <Styled.AgencyDropdownWrapper>
-            <Styled.MenuItem>
-              <Dropdown
-                label={currentAgency?.name}
-                options={agencyDropdownOptions}
-                size="small"
-                hover="label"
-                alignment="left"
-                caretPosition="right"
-                highlightIcon={<Styled.TargetIcon />}
-                typeaheadSearch={{ placeholder: "Search for Agency" }}
-              />
-            </Styled.MenuItem>
-          </Styled.AgencyDropdownWrapper>
+        {userStore.userAgencies && (
+          <>
+            {userStore.userAgencies.length < 2 ? (
+              <Styled.SingleAgencyHeader>
+                {currentAgency?.name}
+              </Styled.SingleAgencyHeader>
+            ) : (
+              <Styled.AgencyDropdownWrapper>
+                <Styled.MenuItem>
+                  <Dropdown
+                    label={currentAgency?.name}
+                    options={agencyDropdownOptions}
+                    size="small"
+                    hover="label"
+                    alignment="left"
+                    caretPosition="right"
+                    highlightIcon={<Styled.TargetIcon />}
+                    typeaheadSearch={{ placeholder: "Search for Agency" }}
+                  />
+                </Styled.MenuItem>
+              </Styled.AgencyDropdownWrapper>
+            )}
+          </>
         )}
         {headerBadge}
       </Styled.AgencyDropdownHeaderBadgeWrapper>
