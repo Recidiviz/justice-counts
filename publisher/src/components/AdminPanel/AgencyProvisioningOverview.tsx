@@ -94,6 +94,8 @@ export const AgencyProvisioningOverview = observer(() => {
       resetUserProvisioningUpdates();
       setActiveSecondaryModal(undefined);
     }
+    setSearchInput("");
+    setFilteredAgencies(agencies);
   };
   const searchAndFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);

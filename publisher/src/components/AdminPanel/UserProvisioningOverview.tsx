@@ -19,7 +19,7 @@ import { Button } from "@justice-counts/common/components/Button";
 import { DelayedRender } from "@justice-counts/common/components/DelayedRender";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
@@ -30,7 +30,6 @@ import {
   SettingType,
   UserKey,
   UserProvisioning,
-  UserWithAgenciesByID,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
 
@@ -54,11 +53,13 @@ export const UserProvisioningOverview = observer(() => {
     useState<SettingType>();
 
   const [searchInput, setSearchInput] = useState<string>("");
-  const [filteredUsers, setFilteredUsers] = useState<UserWithAgenciesByID[]>(
-    []
-  );
 
   const searchByKeys = ["name", "email", "id"] as UserKey[];
+  const filteredUsers = AdminPanelStore.searchList(
+    users,
+    searchInput,
+    searchByKeys
+  );
 
   const openModal = () => setIsModalOpen(true);
   const openSecondaryModal = () => setActiveSecondaryModal(Setting.AGENCIES);
@@ -71,12 +72,10 @@ export const UserProvisioningOverview = observer(() => {
       resetAgencyProvisioningUpdates();
       setActiveSecondaryModal(undefined);
     }
+    setSearchInput("");
   };
   const searchAndFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
-    setFilteredUsers(
-      AdminPanelStore.searchList(users, e.target.value, searchByKeys)
-    );
   };
   /**
    * Note: when a user is selected, we are in the context of editing a user.
@@ -91,8 +90,6 @@ export const UserProvisioningOverview = observer(() => {
     updateUserAgencies(Object.keys(selectedUser.agencies).map((id) => +id));
     openModal();
   };
-
-  useEffect(() => setFilteredUsers(users), [users]);
 
   if (loading) {
     return <Loading />;
@@ -144,7 +141,6 @@ export const UserProvisioningOverview = observer(() => {
               <Styled.LabelButton
                 onClick={() => {
                   setSearchInput("");
-                  setFilteredUsers(users);
                 }}
               >
                 Clear
