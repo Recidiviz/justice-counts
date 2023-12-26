@@ -95,6 +95,14 @@ function MetricAvailability({ goToDefineMetrics }: MetricAvailabilityProps) {
     .map((system) => system.toLowerCase());
   const hasEnabledSupervisionSubsystems =
     enabledSupervisionSubsystems && enabledSupervisionSubsystems.length > 0;
+  const isSupervisionMetricAndDisaggregatedBySupervisionSubsystems =
+    disaggregatedBySupervisionSubsystems &&
+    systemSearchParam &&
+    !SupervisionSubsystems.includes(systemSearchParam);
+  const isSupervisionSubsystemMetricAndNotDisaggregatedBySubsystems =
+    !disaggregatedBySupervisionSubsystems &&
+    systemSearchParam &&
+    SupervisionSubsystems.includes(systemSearchParam);
 
   const handleUpdateMetricEnabledStatus = (enabledStatus: boolean) => {
     if (systemSearchParam && metricSearchParam) {
@@ -249,7 +257,13 @@ function MetricAvailability({ goToDefineMetrics }: MetricAvailabilityProps) {
                   </Styled.SettingTooltip>
                 </Styled.InfoIconWrapper>
               </Styled.SettingName>
-              <RadioButtonsWrapper disabled={isReadOnly}>
+              <RadioButtonsWrapper
+                disabled={
+                  isReadOnly ||
+                  isSupervisionMetricAndDisaggregatedBySupervisionSubsystems ||
+                  isSupervisionSubsystemMetricAndNotDisaggregatedBySubsystems
+                }
+              >
                 <RadioButton
                   type="radio"
                   id="metric-config-not-available"
