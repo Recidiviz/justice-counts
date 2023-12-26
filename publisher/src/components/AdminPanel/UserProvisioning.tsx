@@ -354,25 +354,6 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
                   </Styled.InputLabelWrapper>
                 )}
 
-                {/* Add Agencies List */}
-                {isAddAction && (
-                  <InteractiveSearchList
-                    list={availableAgencies}
-                    buttons={interactiveSearchListButtons}
-                    selections={addedAgenciesIDs}
-                    updateSelections={updateAgencySelections}
-                    boxActionType={InteractiveSearchListActions.ADD}
-                    isActiveBox={isAddAction}
-                    searchByKeys={["name"]}
-                    metadata={{
-                      searchBoxLabel: "Search agencies",
-                      listBoxLabel: `Select agencies to add`,
-                      listBoxEmptyLabel:
-                        "User is connected to all available agencies",
-                    }}
-                  />
-                )}
-
                 {/* User's Agencies */}
                 {activeSecondaryModal !== Setting.USERS && (
                   <InteractiveSearchList
@@ -391,6 +372,25 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
                           : `User's agencies`
                       }`,
                       listBoxEmptyLabel: "User has no agencies",
+                    }}
+                  />
+                )}
+
+                {/* Add Agencies List */}
+                {isAddAction && (
+                  <InteractiveSearchList
+                    list={availableAgencies}
+                    buttons={interactiveSearchListButtons}
+                    selections={addedAgenciesIDs}
+                    updateSelections={updateAgencySelections}
+                    boxActionType={InteractiveSearchListActions.ADD}
+                    isActiveBox={isAddAction}
+                    searchByKeys={["name"]}
+                    metadata={{
+                      searchBoxLabel: "Search agencies",
+                      listBoxLabel: `Select agencies to add`,
+                      listBoxEmptyLabel:
+                        "User is connected to all available agencies",
                     }}
                   />
                 )}
