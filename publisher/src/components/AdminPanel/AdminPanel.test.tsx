@@ -503,7 +503,7 @@ test("Agency provisioning overview search box properly searches and filters the 
   );
   let agency1: HTMLElement | null = screen.getByText("Super Agency");
   let agency2: HTMLElement | null = screen.getByText("Z Agency");
-  let agency3: HTMLElement | null = screen.getByText("Child Agency");
+  let agency3: HTMLElement | null = screen.getByText("M Child Agency");
 
   // Search by name
   fireEvent.change(searchBox, { target: { value: "Sup" } });
@@ -517,7 +517,7 @@ test("Agency provisioning overview search box properly searches and filters the 
   fireEvent.change(searchBox, { target: { value: "California" } });
   agency1 = screen.queryByText("Super Agency");
   agency2 = screen.getByText("Z Agency");
-  agency3 = screen.getByText("Child Agency");
+  agency3 = screen.getByText("M Child Agency");
 
   expect(searchBox).toHaveValue("California");
   expect(agency1).toBeNull();
@@ -569,7 +569,7 @@ test("Agency provisioning overview filter checkboxes properly filter superagenci
 
   let agency1 = screen.getByText("Super Agency");
   let agency2 = screen.queryByText("Z Agency");
-  let agency3 = screen.queryByText("Child Agency");
+  let agency3 = screen.queryByText("M Child Agency");
 
   expect(agency1).toBeInTheDocument();
   expect(agency2).toBeNull();
@@ -583,7 +583,7 @@ test("Agency provisioning overview filter checkboxes properly filter superagenci
 
   agency1 = screen.getByText("Super Agency");
   agency2 = screen.getByText("Z Agency");
-  agency3 = screen.queryByText("Child Agency");
+  agency3 = screen.queryByText("M Child Agency");
 
   expect(agency1).toBeInTheDocument();
   expect(agency2).toBeInTheDocument();
@@ -596,7 +596,7 @@ test("Agency provisioning overview filter checkboxes properly filter superagenci
 
   agency1 = screen.getByText("Super Agency");
   agency2 = screen.queryByText("Z Agency");
-  agency3 = screen.queryByText("Child Agency");
+  agency3 = screen.queryByText("M Child Agency");
 
   expect(agency1).toBeInTheDocument();
   expect(agency2).toBeNull();
@@ -697,7 +697,7 @@ test("Clicking on an existing agency card opens the edit agency modal", () => {
     screen.getByLabelText("Superagency");
   const childAgencyInput: HTMLInputElement =
     screen.getByLabelText("Child Agency");
-  const childAgencyChip = screen.getAllByText("Child Agency")[0];
+  const childAgencyChip = screen.getAllByText("M Child Agency")[0];
   const cancelButton = screen.getByText("Cancel");
   const saveButton = screen.getByText("Save");
 
