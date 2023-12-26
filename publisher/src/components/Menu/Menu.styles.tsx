@@ -180,6 +180,17 @@ export const AgencyDropdownWrapper = styled.div`
   }
 `;
 
+export const SingleAgencyHeader = styled.div`
+  height: ${HEADER_BAR_HEIGHT}px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: ${palette.solid.darkgrey};
+  color: ${palette.solid.white};
+  margin: auto 0;
+  padding: 16px;
+`;
+
 export const ProfileDropdownContainer = styled.div`
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     height: ${HEADER_BAR_HEIGHT}px;
