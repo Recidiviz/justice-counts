@@ -21,18 +21,17 @@ import { Modal } from "@justice-counts/common/components/Modal";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 
-import {
-  AgencyKey,
-  AgencyProvisioning,
-  AgencyWithTeamByID,
-  Setting,
-  SettingType,
-  UserProvisioning,
-} from ".";
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
 import { LinkToDashboard } from "../HelpCenter/LinkToPublisherDashboard";
 import { Loading } from "../Loading";
+import {
+  AgencyKey,
+  AgencyProvisioning,
+  Setting,
+  SettingType,
+  UserProvisioning,
+} from ".";
 import * as Styled from "./AdminPanel.styles";
 
 export const AgencyProvisioningOverview = observer(() => {
@@ -57,8 +56,6 @@ export const AgencyProvisioningOverview = observer(() => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchInput, setSearchInput] = useState<string>("");
-  // const [filteredAgencies, setFilteredAgencies] =
-  //   useState<AgencyWithTeamByID[]>(agencies);
   const [showAgenciesWithLiveDashboards, setShowAgenciesWithLiveDashboards] =
     useState(false);
   const [showSuperagencies, setShowSuperagencies] = useState(false);
