@@ -313,6 +313,11 @@ export const AgencyProvisioningOverview = observer(() => {
                         Superagency
                       </Styled.SuperagencyIndicator>
                     )}
+                    {agency.super_agency_id && (
+                      <Styled.ChildAgencyIndicator>
+                        Child Agency
+                      </Styled.ChildAgencyIndicator>
+                    )}
                     {agency.is_dashboard_enabled && (
                       <Styled.LiveDashboardIndicator
                         onClick={(e) => e.stopPropagation()}

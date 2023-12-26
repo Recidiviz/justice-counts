@@ -619,6 +619,10 @@ export const SuperagencyIndicator = styled(NumberOfAgencies)`
   color: ${palette.solid.green};
 `;
 
+export const ChildAgencyIndicator = styled(NumberOfAgencies)`
+  color: ${palette.solid.orange};
+`;
+
 export const AgenciesWrapper = styled.div`
   ${typography.sizeCSS.small}
   height: 130px;
