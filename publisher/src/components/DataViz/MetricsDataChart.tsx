@@ -155,7 +155,17 @@ export const MetricsDataChart: React.FC = observer(() => {
         `data?system=${currentSystem.toLocaleLowerCase()}&metric=${currentMetric.key.toLocaleLowerCase()}`
       );
       dataVizStore.setInitialStateFromSearchParams();
+      setSettingsSearchParams({
+        system: currentSystem,
+        metric: currentMetric.key,
+      });
     }
+    /**
+     * Disable eslint rule requiring adding `setSettingsSearchParams` as dependency
+     * as it is recreated every render & this effect does not need to depend on it.
+     * All other dependencies are required.
+     */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataVizStore, metricsBySystem, currentMetric, currentSystem]);
 
   useEffect(() => {
