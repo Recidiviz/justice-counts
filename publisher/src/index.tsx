@@ -33,6 +33,7 @@ import App from "./App";
 import AuthWall from "./components/Auth";
 import { StoreProvider } from "./stores";
 
+// Initialize Sentry
 Sentry.init({
   dsn: "https://3e8c790dbf0c407b8c039b91c7af9abc@o432474.ingest.sentry.io/4504532096516096",
   integrations: [
