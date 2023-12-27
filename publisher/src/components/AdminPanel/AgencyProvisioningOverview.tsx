@@ -100,7 +100,7 @@ export const AgencyProvisioningOverview = observer(() => {
 
   const openModal = () => setIsModalOpen(true);
   const openSecondaryModal = () => setActiveSecondaryModal(Setting.USERS);
-  const closeModal = () => {
+  const closeModal = (resetSearchInput?: boolean) => {
     if (!activeSecondaryModal) {
       setSelectedAgencyID(undefined);
       resetAgencyProvisioningUpdates();
@@ -109,7 +109,7 @@ export const AgencyProvisioningOverview = observer(() => {
       resetUserProvisioningUpdates();
       setActiveSecondaryModal(undefined);
     }
-    setSearchInput("");
+    if (resetSearchInput) setSearchInput("");
   };
   const searchAndFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);

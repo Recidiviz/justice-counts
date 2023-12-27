@@ -191,7 +191,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
     /** Modal Buttons (Save/Cancel) */
     const modalButtons = [
-      { label: "Cancel", onClick: closeModal },
+      { label: "Cancel", onClick: () => closeModal() },
       {
         label: "Save",
         onClick: () => saveUpdates(),
@@ -277,7 +277,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           errorMessage: undefined,
         }));
         if (response && "status" in response && response.status === 200)
-          closeModal();
+          closeModal(true);
         setIsSaveInProgress(false);
       }, 2000);
     };

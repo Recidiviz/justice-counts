@@ -63,7 +63,7 @@ export const UserProvisioningOverview = observer(() => {
 
   const openModal = () => setIsModalOpen(true);
   const openSecondaryModal = () => setActiveSecondaryModal(Setting.AGENCIES);
-  const closeModal = () => {
+  const closeModal = (resetSearchInput?: boolean) => {
     if (!activeSecondaryModal) {
       resetUserProvisioningUpdates();
       setSelectedUserID(undefined);
@@ -72,7 +72,9 @@ export const UserProvisioningOverview = observer(() => {
       resetAgencyProvisioningUpdates();
       setActiveSecondaryModal(undefined);
     }
-    setSearchInput("");
+    if (resetSearchInput) {
+      setSearchInput("");
+    }
   };
   const searchAndFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
