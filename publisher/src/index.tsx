@@ -53,7 +53,10 @@ Sentry.init({
   tracesSampleRate: 1.0,
 
   // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
-  tracePropagationTargets: [/^https:\/\/publisher\.justice-counts\.org\/api/],
+  tracePropagationTargets: [
+    /^https:\/\/publisher-staging\.justice-counts\.org\/api/,
+    /^https:\/\/publisher\.justice-counts\.org\/api/,
+  ],
 
   // Capture Replay for 10% of all sessions,
   // plus for 100% of sessions with an error
