@@ -205,7 +205,7 @@ export const mockAgenciesResponse = {
       id: 11,
       is_dashboard_enabled: null,
       is_superagency: null,
-      name: "Child Agency",
+      name: "M Child Agency",
       settings: [],
       state: "California",
       state_code: "us_ca",
@@ -279,7 +279,7 @@ test("fetchAgencies gets a list of agencies and stores them in the AdminPanelSto
   );
 
   /** The agencies should be sorted in alphabetical  order */
-  expect(adminPanelStore.agencies[0].name).toBe("Child Agency");
+  expect(adminPanelStore.agencies[0].name).toBe("M Child Agency");
   expect(adminPanelStore.agencies[1].name).toBe("Super Agency");
   expect(adminPanelStore.agencies[2].name).toBe("Z Agency");
 });
@@ -288,7 +288,7 @@ test("sortListByName sorts a list of agencies by name in default ascending order
   const sortedAgencies = AdminPanelStore.sortListByName(
     mockAgenciesResponse.agencies
   );
-  expect(sortedAgencies[0].name).toBe("Child Agency");
+  expect(sortedAgencies[0].name).toBe("M Child Agency");
   expect(sortedAgencies[1].name).toBe("Super Agency");
   expect(sortedAgencies[2].name).toBe("Z Agency");
 });
@@ -298,7 +298,7 @@ test("sortListByName sorts a list of agencies by name in explicit ascending orde
     mockAgenciesResponse.agencies,
     "ascending"
   );
-  expect(sortedAgencies[0].name).toBe("Child Agency");
+  expect(sortedAgencies[0].name).toBe("M Child Agency");
   expect(sortedAgencies[1].name).toBe("Super Agency");
   expect(sortedAgencies[2].name).toBe("Z Agency");
 });
@@ -310,7 +310,7 @@ test("sortListByName sorts a list of agencies by name in explicity descending or
   );
   expect(sortedAgencies[0].name).toBe("Z Agency");
   expect(sortedAgencies[1].name).toBe("Super Agency");
-  expect(sortedAgencies[2].name).toBe("Child Agency");
+  expect(sortedAgencies[2].name).toBe("M Child Agency");
 });
 
 test("sortListByName sorts a list of users by name in default ascending order", () => {
@@ -384,7 +384,7 @@ test("searchList returns a filtered list of agencies based on a string value mat
     ["state"]
   );
   expect(filteredListOfAgencies.length).toBe(2);
-  expect(filteredListOfAgencies[0].name).toBe("Child Agency");
+  expect(filteredListOfAgencies[0].name).toBe("M Child Agency");
   expect(filteredListOfAgencies[1].name).toBe("Z Agency");
 
   /** Search value: "11" | Search-by keys: "state" & "id" */
@@ -394,7 +394,7 @@ test("searchList returns a filtered list of agencies based on a string value mat
     ["state", "id"]
   );
   expect(filteredListOfAgencies.length).toBe(2);
-  expect(filteredListOfAgencies[0].name).toBe("Child Agency");
+  expect(filteredListOfAgencies[0].name).toBe("M Child Agency");
   expect(filteredListOfAgencies[1].name).toBe("Super Agency");
 
   /** Search value: "1011" | Search-by keys: "state" & "id" */
@@ -415,7 +415,7 @@ test("objectToSortedFlatMappedValues returns a sorted array of a `groupBy` objec
   const groupedAgenciesSortedValues =
     AdminPanelStore.objectToSortedFlatMappedValues(groupedAgencies);
 
-  expect(groupedAgenciesSortedValues[0].name).toBe("Child Agency");
+  expect(groupedAgenciesSortedValues[0].name).toBe("M Child Agency");
   expect(groupedAgenciesSortedValues[1].name).toBe("Super Agency");
   expect(groupedAgenciesSortedValues[2].name).toBe("Z Agency");
 
