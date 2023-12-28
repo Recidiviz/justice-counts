@@ -21,6 +21,7 @@ import createAuth0Client, {
   GetTokenSilentlyOptions,
   User,
 } from "@auth0/auth0-spa-js";
+import * as Sentry from "@sentry/react";
 import { makeAutoObservable, runInAction } from "mobx";
 import qs from "qs";
 
@@ -145,6 +146,7 @@ export class AuthStore {
       }
       return Promise.reject(new Error("No auth client initialized."));
     } catch (error) {
+      Sentry.captureException(error);
       throw new Error(`Unable to retrieve token - ${error}`);
     }
   }

@@ -9,6 +9,7 @@
     "@auth0/auth0-react": "^2.2.3",
     "@justice-counts/common": "*",
     "@recidiviz/design-system": "^5.1.0",
+    "@sentry/react": "^7.89.0",
     "@types/file-saver": "^2.0.5",
     "file-saver": "^2.0.5",
     "http-proxy-middleware": "^2.0.6",
