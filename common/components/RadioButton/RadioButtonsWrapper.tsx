@@ -24,18 +24,20 @@ import {
 import { WrapperSpacing } from "./types";
 
 type RadioButtonsWrapperProps = {
+  id?: string;
   children: React.ReactNode;
   spacing?: WrapperSpacing;
   disabled?: boolean;
 };
 
 export function RadioButtonsWrapper({
+  id,
   children,
   spacing,
   disabled,
 }: RadioButtonsWrapperProps) {
   return (
-    <Wrapper spacing={spacing}>
+    <Wrapper spacing={spacing} id={id}>
       <RadioButtonsFieldset disabled={disabled}>
         {children}
       </RadioButtonsFieldset>

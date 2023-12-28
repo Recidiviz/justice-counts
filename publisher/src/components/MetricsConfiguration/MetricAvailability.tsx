@@ -26,6 +26,7 @@ import {
   RadioButtonsWrapper,
 } from "@justice-counts/common/components/RadioButton";
 import { ToggleSwitch } from "@justice-counts/common/components/ToggleSwitch";
+import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import {
   SupervisionSubsystems,
   SupervisionSystem,
@@ -95,6 +96,23 @@ function MetricAvailability({ goToDefineMetrics }: MetricAvailabilityProps) {
     .map((system) => system.toLowerCase());
   const hasEnabledSupervisionSubsystems =
     enabledSupervisionSubsystems && enabledSupervisionSubsystems.length > 0;
+  const isSupervisionMetricAndDisaggregatedBySupervisionSubsystems =
+    disaggregatedBySupervisionSubsystems &&
+    systemSearchParam &&
+    !SupervisionSubsystems.includes(systemSearchParam);
+  const isSupervisionSubsystemMetricAndSubsystemsCombined =
+    !disaggregatedBySupervisionSubsystems &&
+    systemSearchParam &&
+    SupervisionSubsystems.includes(systemSearchParam);
+
+  const getDisaggregatedBySupervisionSubtypeTooltipMsg = () => {
+    if (isSupervisionMetricAndDisaggregatedBySupervisionSubsystems) {
+      return `This metric is marked as 'Disaggregated'. Please adjust the availability on the disaggregated metrics or update the 'Disaggregated by Supervision Type' to 'Combined'.`;
+    }
+    if (isSupervisionSubsystemMetricAndSubsystemsCombined) {
+      return `This metric is marked as 'Combined'. Please adjust the availability on the combined metric or update the 'Disaggregated by Supervision Type' to 'Disaggregated'.`;
+    }
+  };
 
   const handleUpdateMetricEnabledStatus = (enabledStatus: boolean) => {
     if (systemSearchParam && metricSearchParam) {
@@ -249,7 +267,14 @@ function MetricAvailability({ goToDefineMetrics }: MetricAvailabilityProps) {
                   </Styled.SettingTooltip>
                 </Styled.InfoIconWrapper>
               </Styled.SettingName>
-              <RadioButtonsWrapper disabled={isReadOnly}>
+              <RadioButtonsWrapper
+                id="availability-buttons-wrapper"
+                disabled={
+                  isReadOnly ||
+                  isSupervisionMetricAndDisaggregatedBySupervisionSubsystems ||
+                  isSupervisionSubsystemMetricAndSubsystemsCombined
+                }
+              >
                 <RadioButton
                   type="radio"
                   id="metric-config-not-available"
@@ -292,6 +317,14 @@ function MetricAvailability({ goToDefineMetrics }: MetricAvailabilityProps) {
                   }
                 />
               </RadioButtonsWrapper>
+              {(isSupervisionMetricAndDisaggregatedBySupervisionSubsystems ||
+                isSupervisionSubsystemMetricAndSubsystemsCombined) && (
+                <Tooltip
+                  anchorId="availability-buttons-wrapper"
+                  position="top"
+                  content={getDisaggregatedBySupervisionSubtypeTooltipMsg()}
+                />
+              )}
             </Styled.SettingRow>
             {metricEnabled && customFrequency === "ANNUAL" && (
               <Styled.SettingRow>
