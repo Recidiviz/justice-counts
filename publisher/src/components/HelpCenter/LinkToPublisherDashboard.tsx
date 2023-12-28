@@ -37,15 +37,15 @@ export const LinkToPublisher: React.FC<
 });
 
 export const LinkToDashboard: React.FC<
-  PropsWithChildren & { agencyID?: string }
-> = observer(({ children, agencyID }) => {
+  PropsWithChildren & { agencyID?: string; name?: string }
+> = observer(({ children, agencyID, name }) => {
   const { api, userStore } = useStore();
   const agencyIdLocalStorage = localStorage.getItem("agencyId");
   const agencyId =
     agencyID ||
     agencyIdLocalStorage ||
     userStore.getInitialAgencyId()?.toLocaleString();
-  const agencyName = agencyId && userStore.getAgency(agencyId)?.name;
+  const agencyName = name || (agencyId && userStore.getAgency(agencyId)?.name);
 
   if (!agencyName) return <>{children}</>;
 
