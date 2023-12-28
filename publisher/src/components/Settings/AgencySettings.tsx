@@ -28,6 +28,7 @@ import {
 } from "./AgencySettings.styles";
 import { AgencySettingsBasicInfo } from "./AgencySettingsBasicInfo";
 import AgencySettingsDescription from "./AgencySettingsDescription";
+import { AgencySettingsEmailNotifications } from "./AgencySettingsEmailNotifications";
 import { AgencySettingsJurisdictions } from "./AgencySettingsJurisdictions";
 import { AgencySettingsSupervisions } from "./AgencySettingsSupervisions";
 import AgencySettingsUrl from "./AgencySettingsURL";
@@ -81,6 +82,7 @@ export const AgencySettings: React.FC = observer(() => {
       <AgencySettingsTitle />
       <AgencySettingsContent>
         <AgencySettingsBasicInfo />
+        <AgencySettingsEmailNotifications />
         <AgencySettingsDescription
           settingProps={generateSettingProps(ActiveSetting.Description)}
         />
