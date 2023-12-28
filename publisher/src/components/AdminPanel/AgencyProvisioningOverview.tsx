@@ -19,7 +19,7 @@ import { Button } from "@justice-counts/common/components/Button";
 import { DelayedRender } from "@justice-counts/common/components/DelayedRender";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { observer } from "mobx-react-lite";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState } from "react";
 
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
@@ -28,7 +28,6 @@ import { Loading } from "../Loading";
 import {
   AgencyKey,
   AgencyProvisioning,
-  AgencyWithTeamByID,
   Setting,
   SettingType,
   UserProvisioning,
@@ -57,8 +56,6 @@ export const AgencyProvisioningOverview = observer(() => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchInput, setSearchInput] = useState<string>("");
-  const [filteredAgencies, setFilteredAgencies] =
-    useState<AgencyWithTeamByID[]>(agencies);
   const [showAgenciesWithLiveDashboards, setShowAgenciesWithLiveDashboards] =
     useState(false);
   const [showSuperagencies, setShowSuperagencies] = useState(false);
@@ -67,25 +64,43 @@ export const AgencyProvisioningOverview = observer(() => {
     useState<SettingType>();
 
   const searchByKeys = ["name", "id", "state"] as AgencyKey[];
-  const superagenciesAndAgenciesWithLiveDashboards = useMemo(
-    () =>
-      agencies.filter(
-        (agency) => agency.is_dashboard_enabled && agency.is_superagency
-      ),
-    [agencies]
+  const superagenciesAndAgenciesWithLiveDashboards = agencies.filter(
+    (agency) => agency.is_dashboard_enabled && agency.is_superagency
   );
-  const superagencies = useMemo(
-    () => agencies.filter((agency) => agency.is_superagency),
-    [agencies]
+  const superagencies = agencies.filter((agency) => agency.is_superagency);
+  const agenciesWithLiveDashboards = agencies.filter(
+    (agency) => agency.is_dashboard_enabled
   );
-  const agenciesWithLiveDashboards = useMemo(
-    () => agencies.filter((agency) => agency.is_dashboard_enabled),
-    [agencies]
-  );
+
+  const getFilteredAgencies = () => {
+    if (showAgenciesWithLiveDashboards && showSuperagencies) {
+      return AdminPanelStore.searchList(
+        superagenciesAndAgenciesWithLiveDashboards,
+        searchInput,
+        searchByKeys
+      );
+    }
+    if (showAgenciesWithLiveDashboards) {
+      return AdminPanelStore.searchList(
+        agenciesWithLiveDashboards,
+        searchInput,
+        searchByKeys
+      );
+    }
+    if (showSuperagencies) {
+      return AdminPanelStore.searchList(
+        superagencies,
+        searchInput,
+        searchByKeys
+      );
+    }
+    return AdminPanelStore.searchList(agencies, searchInput, searchByKeys);
+  };
+  const filteredAgencies = getFilteredAgencies();
 
   const openModal = () => setIsModalOpen(true);
   const openSecondaryModal = () => setActiveSecondaryModal(Setting.USERS);
-  const closeModal = () => {
+  const closeModal = (resetSearchInput?: boolean) => {
     if (!activeSecondaryModal) {
       setSelectedAgencyID(undefined);
       resetAgencyProvisioningUpdates();
@@ -94,35 +109,10 @@ export const AgencyProvisioningOverview = observer(() => {
       resetUserProvisioningUpdates();
       setActiveSecondaryModal(undefined);
     }
+    if (resetSearchInput) setSearchInput("");
   };
   const searchAndFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
-    if (showAgenciesWithLiveDashboards && showSuperagencies) {
-      return setFilteredAgencies(
-        AdminPanelStore.searchList(
-          superagenciesAndAgenciesWithLiveDashboards,
-          e.target.value,
-          searchByKeys
-        )
-      );
-    }
-    if (showAgenciesWithLiveDashboards) {
-      return setFilteredAgencies(
-        AdminPanelStore.searchList(
-          agenciesWithLiveDashboards,
-          e.target.value,
-          searchByKeys
-        )
-      );
-    }
-    if (showSuperagencies) {
-      return setFilteredAgencies(
-        AdminPanelStore.searchList(superagencies, e.target.value, searchByKeys)
-      );
-    }
-    setFilteredAgencies(
-      AdminPanelStore.searchList(agencies, e.target.value, searchByKeys)
-    );
   };
   const editAgency = (agencyID: string | number) => {
     const selectedAgency = agenciesByID[agencyID][0];
@@ -146,33 +136,6 @@ export const AgencyProvisioningOverview = observer(() => {
     );
     openModal();
   };
-
-  useEffect(() => setFilteredAgencies(agencies), [agencies]);
-
-  /**
-   * Filters the list of agencies to display all agencies that are superagencies or
-   * agencies that have live dashboards or both based on the selected checkbox in the Settings Bar.
-   */
-  useEffect(() => {
-    setSearchInput("");
-    if (showAgenciesWithLiveDashboards && showSuperagencies) {
-      return setFilteredAgencies(superagenciesAndAgenciesWithLiveDashboards);
-    }
-    if (showAgenciesWithLiveDashboards) {
-      return setFilteredAgencies(agenciesWithLiveDashboards);
-    }
-    if (showSuperagencies) {
-      return setFilteredAgencies(superagencies);
-    }
-    return setFilteredAgencies(agencies);
-  }, [
-    showAgenciesWithLiveDashboards,
-    showSuperagencies,
-    agencies,
-    superagenciesAndAgenciesWithLiveDashboards,
-    agenciesWithLiveDashboards,
-    superagencies,
-  ]);
 
   if (loading) {
     return <Loading />;
@@ -224,7 +187,6 @@ export const AgencyProvisioningOverview = observer(() => {
               <Styled.LabelButton
                 onClick={() => {
                   setSearchInput("");
-                  setFilteredAgencies(agencies);
                 }}
               >
                 Clear

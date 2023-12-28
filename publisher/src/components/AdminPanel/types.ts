@@ -47,7 +47,7 @@ export type ProvisioningProps = {
   selectedIDToEdit?: string | number;
   activeSecondaryModal?: SettingType;
   openSecondaryModal?: () => void;
-  closeModal: () => void;
+  closeModal: (resetSearchInput?: boolean) => void;
 };
 
 export enum SelectionInputBoxTypes {

@@ -414,7 +414,12 @@ class AdminPanelStore {
     searchInput: string,
     searchByKeys: (keyof T)[]
   ) {
-    const regex = new RegExp(`${searchInput}`, `i`);
+    // Escape special characters in search input
+    const sanitizedSearchInput = searchInput.replace(
+      /[.*+?^${}()|[\]\\]/g,
+      "\\$&"
+    );
+    const regex = new RegExp(`${sanitizedSearchInput}`, `i`);
     return list.filter((listItem) =>
       searchByKeys.some(
         (key) => listItem[key] && regex.test(listItem[key] as string)
