@@ -413,7 +413,7 @@ export const Chip = styled.span<{
   margin: 2.5px;
 `;
 
-export const ChipContainerLabel = styled.div<{
+export const ChipContainerLabel = styled.label<{
   boxActionType?: InteractiveSearchListAction;
   isActiveBox?: boolean;
 }>`

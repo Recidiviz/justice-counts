@@ -378,6 +378,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         agencyProvisioningUpdates.systems.filter((system) =>
           selectedSystems.has(system)
         ).length === 0);
+    const hasSystems = selectedSystems.size > 0;
     /**
      * An update has been made when the agency's `is_dashboard_enabled` boolean flag does not match the agency's
      * boolean flag for that property before the modal was open.
@@ -426,6 +427,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
      */
     const isSaveDisabled =
       isSaveInProgress ||
+      !hasSystems ||
       (selectedAgency
         ? !hasNameUpdate &&
           !hasStateUpdate &&
@@ -436,7 +438,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           !hasChildAgencyUpdates &&
           !hasSuperagencyUpdate &&
           !hasTeamMemberOrRoleUpdates
-        : !(hasNameUpdate && hasStateUpdate));
+        : !(hasNameUpdate && hasStateUpdate && hasSystems));
 
     /** Automatically adds CSG and Recidiviz users to a newly created agency with the proper roles */
     useEffect(() => {
@@ -647,7 +649,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         }
                       />
                     )}
-                    <Styled.InputLabelWrapper>
+                    <Styled.InputLabelWrapper required>
                       <Styled.ChipContainer
                         onClick={() =>
                           setShowSelectionBox(SelectionInputBoxTypes.SYSTEMS)
@@ -657,7 +659,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                       >
                         {selectedSystems.size === 0 ? (
                           <Styled.EmptyListMessage>
-                            No systems selected
+                            No sectors selected
                           </Styled.EmptyListMessage>
                         ) : (
                           Array.from(selectedSystems).map((system) => (
