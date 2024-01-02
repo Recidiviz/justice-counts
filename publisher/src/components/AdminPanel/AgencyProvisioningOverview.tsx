@@ -284,7 +284,10 @@ export const AgencyProvisioningOverview = observer(() => {
                       <Styled.LiveDashboardIndicator
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <LinkToDashboard agencyID={String(agency.id)}>
+                        <LinkToDashboard
+                          agencyID={String(agency.id)}
+                          name={agency.name}
+                        >
                           Live Dashboard
                         </LinkToDashboard>
                       </Styled.LiveDashboardIndicator>
