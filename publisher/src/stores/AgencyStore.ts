@@ -109,7 +109,6 @@ class AgencyStore {
       if (response.status !== 200) {
         throw new Error("There was an issue getting agency description.");
       }
-      console.log("IN getAgencySettings");
       const responseJson = (await response.json()) as {
         settings: AgencySetting[];
         jurisdictions: {
@@ -122,9 +121,6 @@ class AgencyStore {
         if (this.currentAgency) {
           this.currentAgency.settings = responseJson.settings;
           this.jurisdictions = responseJson.jurisdictions;
-          console.log(
-            `updating isUserSubscribedToEmails to ${responseJson.is_subscribed_to_emails}`
-          );
           this.isUserSubscribedToEmails = responseJson.is_subscribed_to_emails;
         }
       });
@@ -264,8 +260,7 @@ class AgencyStore {
 
   updateIsUserSubscribedToEmails = async (
     isUserSubscribedToEmails: boolean
-  ): Promise<boolean> => {
-    // console.log("OK ABOUT TO UPDATE: ", isUserSubscribedToEmails);
+  ): Promise<void> => {
     const response = (await this.api.request({
       path: `/api/agency/${this.currentAgencyId}/subscription/${this.userStore.userId}`,
       body: { is_subscribed: isUserSubscribedToEmails },
@@ -277,14 +272,12 @@ class AgencyStore {
         color: "red",
         timeout: 4000,
       });
-      return this.isUserSubscribedToEmails;
+      return;
     }
 
     runInAction(() => {
       this.isUserSubscribedToEmails = isUserSubscribedToEmails;
-      // console.log("HEREE IN RUN IN ACTION", this.isUserSubscribedToEmails);
     });
-    return isUserSubscribedToEmails;
   };
 
   removeAgencyTeamMemberRequest = async (

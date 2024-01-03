@@ -82,7 +82,10 @@ export const AgencySettings: React.FC = observer(() => {
       <AgencySettingsTitle />
       <AgencySettingsContent>
         <AgencySettingsBasicInfo />
-        <AgencySettingsEmailNotifications />
+        {userStore.isJusticeCountsAdmin(agencyId) && (
+          // TODO(#26282):Un-gate this feature after playtesting
+          <AgencySettingsEmailNotifications />
+        )}
         <AgencySettingsDescription
           settingProps={generateSettingProps(ActiveSetting.Description)}
         />

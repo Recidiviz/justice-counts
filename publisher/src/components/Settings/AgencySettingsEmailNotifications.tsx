@@ -17,7 +17,7 @@
 
 import { ToggleSwitch } from "@justice-counts/common/components/ToggleSwitch";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React from "react";
 
 import { useStore } from "../../stores";
 import {
@@ -29,20 +29,25 @@ import {
 
 export const AgencySettingsEmailNotifications: React.FC = observer(() => {
   const { agencyStore } = useStore();
-  const { updateIsUserSubscribedToEmails } = agencyStore;
-
-  const [isUserSubscribedToEmails, setIsUserSubscribedToEmails] = useState(
-    agencyStore.isUserSubscribedToEmails
-  );
+  const { updateIsUserSubscribedToEmails, isUserSubscribedToEmails } =
+    agencyStore;
 
   const handleSubscribeUnsubscribe = () => {
-    setIsUserSubscribedToEmails(!isUserSubscribedToEmails);
     updateIsUserSubscribedToEmails(!isUserSubscribedToEmails);
   };
-  console.log("CURRENT VALUE", isUserSubscribedToEmails);
+
   return (
     <AgencySettingsBlock id="email">
-      <AgencySettingsBlockTitle>Email Settings</AgencySettingsBlockTitle>
+      <AgencySettingsBlockTitle>
+        Email Settings
+        <EditButtonContainer>
+          <ToggleSwitch
+            checked={isUserSubscribedToEmails}
+            onChange={handleSubscribeUnsubscribe}
+            label={isUserSubscribedToEmails ? "Subscribed" : "Unsubscribed"}
+          />
+        </EditButtonContainer>
+      </AgencySettingsBlockTitle>
       <AgencySettingsBlockDescription>
         This toggle will only affect your email settings for{" "}
         {agencyStore.currentAgency?.name ??
@@ -50,13 +55,6 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
         . When you unsubscribe you will no longer receive any emails for this
         agency.
       </AgencySettingsBlockDescription>
-      <EditButtonContainer>
-        <ToggleSwitch
-          checked={!!isUserSubscribedToEmails}
-          onChange={handleSubscribeUnsubscribe}
-          label={isUserSubscribedToEmails ? "Subscribed" : "Unsubscribed"}
-        />
-      </EditButtonContainer>
     </AgencySettingsBlock>
   );
 });
