@@ -17,15 +17,19 @@
 // eslint-disable-next-line no-restricted-imports
 import styled from "styled-components";
 
-import { palette } from "../GlobalStyles";
+import { palette, typography } from "../GlobalStyles";
 
-export const ToggleSwitchContainer = styled.div`
+export const ToggleSwitchContainer = styled.div<{ checked?: boolean }>`
+  ${typography.sizeCSS.normal};
   display: flex;
   align-items: center;
   padding: 8px 0;
+  gap: 8px;
+  color: ${({ checked }) =>
+    checked ? palette.solid.darkgrey : palette.highlight.grey7};
 `;
 
-export const ToggleSwitchLabel = styled.label`
+export const ToggleSwitchWrapper = styled.label`
   position: relative;
   display: inline-block;
   width: 38px;

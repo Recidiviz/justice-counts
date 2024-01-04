@@ -19,4 +19,5 @@ export type ToggleSwitchProps = {
   checked: boolean;
   onChange: () => void;
   disabled?: boolean;
+  label?: string;
 };

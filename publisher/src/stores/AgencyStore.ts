@@ -46,6 +46,8 @@ class AgencyStore {
 
   loadingSettings: boolean;
 
+  isUserSubscribedToEmails: boolean;
+
   constructor(userStore: UserStore, api: API) {
     makeAutoObservable(this);
 
@@ -54,6 +56,7 @@ class AgencyStore {
     this.currentAgencyId = undefined;
     this.jurisdictions = { included: [], excluded: [] };
     this.loadingSettings = true;
+    this.isUserSubscribedToEmails = false;
   }
 
   get currentAgency(): UserAgency | undefined {
@@ -106,18 +109,19 @@ class AgencyStore {
       if (response.status !== 200) {
         throw new Error("There was an issue getting agency description.");
       }
-
       const responseJson = (await response.json()) as {
         settings: AgencySetting[];
         jurisdictions: {
           included: string[];
           excluded: string[];
         };
+        is_subscribed_to_emails: boolean;
       };
       runInAction(() => {
         if (this.currentAgency) {
           this.currentAgency.settings = responseJson.settings;
           this.jurisdictions = responseJson.jurisdictions;
+          this.isUserSubscribedToEmails = responseJson.is_subscribed_to_emails;
         }
       });
     } catch (error) {
@@ -252,6 +256,28 @@ class AgencyStore {
     this.jurisdictions = jurisdictions;
 
     return { jurisdictions };
+  };
+
+  updateIsUserSubscribedToEmails = async (
+    isUserSubscribedToEmails: boolean
+  ): Promise<void> => {
+    const response = (await this.api.request({
+      path: `/api/agency/${this.currentAgencyId}/subscription/${this.userStore.userId}`,
+      body: { is_subscribed: isUserSubscribedToEmails },
+      method: "PUT",
+    })) as Response;
+    if (response.status !== 200) {
+      showToast({
+        message: `Failed to update email subscription.`,
+        color: "red",
+        timeout: 4000,
+      });
+      return;
+    }
+
+    runInAction(() => {
+      this.isUserSubscribedToEmails = isUserSubscribedToEmails;
+    });
   };
 
   removeAgencyTeamMemberRequest = async (
