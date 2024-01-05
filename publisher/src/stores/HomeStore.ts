@@ -468,7 +468,7 @@ class HomeStore {
       key: currentMetric.key,
       recordID: recordMetadata?.id,
       title: HomeStore.formatTaskCardTitle(
-        currentMetric.display_name,
+        `Upload ${currentMetric.display_name} Metric`,
         currentMetric.system.display_name,
         hasMultipleSystemsAndAllSystemsFilter
       ),

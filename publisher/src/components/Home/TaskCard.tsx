@@ -48,7 +48,7 @@ export const TaskCard: React.FC<{
       {actionLinks && (
         <Styled.TaskCardActionLinksWrapper>
           {actionLinks.map((action) => {
-            /** Exclude "Upload Data" action link from Superagency data entry metric task cards */
+            /** Exclude "Bulk Upload" action link from Superagency data entry metric task cards */
             if (
               isSuperagency &&
               action.label === taskCardLabelsActionLinks.uploadData.label
