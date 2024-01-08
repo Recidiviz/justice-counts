@@ -90,9 +90,9 @@ test("the proper welcome, description, and task cards appear based on the mocked
   const useOfForceIncidentsTaskCard = screen.getByText(
     "Use of Force Incidents"
   );
-  const fundingTaskCard = screen.getByText("Funding");
-  const expensesTaskCard = screen.getByText("Expenses");
-  const staffTaskCard = screen.getByText("Staff");
+  const fundingTaskCard = screen.getByText("Upload Funding Metric");
+  const expensesTaskCard = screen.getByText("Upload Expenses Metric");
+  const staffTaskCard = screen.getByText("Upload Staff Metric");
   const annualRecordTaskCard = screen.getByText("Annual Record 2023 (January)");
   const monthlyRecordTaskCard = screen.getByText("July 2023");
   const metricConfigTaskCards = screen.getAllByText("Set Metric Availability");
@@ -156,16 +156,17 @@ test("setting a metric configuration should replace the set metric availability 
     mockAgencyID
   );
 
-  /** Check to see if Reported Crime metric now has an "Upload Data"/"Manual Entry" task card */
-  reportedCrimeActionLinkNodes =
-    screen.getByText("Reported Crime").nextSibling?.nextSibling?.childNodes;
+  /** Check to see if Reported Crime metric now has an "Bulk Upload"/"Manual Entry" task card */
+  reportedCrimeActionLinkNodes = screen.getByText(
+    "Upload Reported Crime Metric"
+  ).nextSibling?.nextSibling?.childNodes;
   reportedCrimeActionLinkText =
     reportedCrimeActionLinkNodes &&
     (reportedCrimeActionLinkNodes.length > 1
       ? `${reportedCrimeActionLinkNodes[0].textContent} ${reportedCrimeActionLinkNodes[1].textContent}`
       : reportedCrimeActionLinkNodes[0].textContent);
 
-  expect(reportedCrimeActionLinkText).toBe("Upload Data Manual Entry");
+  expect(reportedCrimeActionLinkText).toBe("Bulk Upload Manual Entry");
   expect.hasAssertions();
 });
 
@@ -204,16 +205,16 @@ test("adding data to a metric should remove the add data task card for the metri
 
   expect(screen.queryByText("Annual Record 2023 (January)")).toBeNull();
 
-  /** Check to see if Funding metric (annual frequency) has an "Upload Data"/"Manual Entry" task card  */
-  const fundingActionLinkNodes =
-    screen.queryByText("Funding")?.nextSibling?.nextSibling?.childNodes;
+  /** Check to see if Funding metric (annual frequency) has an "Bulk Upload"/"Manual Entry" task card  */
+  const fundingActionLinkNodes = screen.queryByText("Upload Funding Metric")
+    ?.nextSibling?.nextSibling?.childNodes;
   const fundingActionLinkText =
     fundingActionLinkNodes &&
     (fundingActionLinkNodes.length > 1
       ? `${fundingActionLinkNodes[0].textContent} ${fundingActionLinkNodes[1].textContent}`
       : fundingActionLinkNodes[0].textContent);
 
-  expect(fundingActionLinkText).toBe("Upload Data Manual Entry");
+  expect(fundingActionLinkText).toBe("Bulk Upload Manual Entry");
 
   /** Mock user setting adding data for Funding metric */
   updatedLatestRecordsMetrics = updateMetricProps(
@@ -232,12 +233,12 @@ test("adding data to a metric should remove the add data task card for the metri
 
   /**
    * Check to see if adding value to Funding metric (annual frequency) created an annual record publish task card
-   * and there is no longer a Funding metric "Upload Data"/"Manual Entry" task card
+   * and there is no longer a Funding metric "Bulk Upload"/"Manual Entry" task card
    */
   expect(
     screen.queryByText("Annual Record 2023 (January)")
   ).toBeInTheDocument();
-  expect(screen.queryByText("Funding")).toBeNull();
+  expect(screen.queryByText("Upload Funding Metric")).toBeNull();
   expect.hasAssertions();
 });
 

@@ -107,13 +107,17 @@ test("latestAnnualRecordsMetadata reflects the latest annual record(s)' metadata
 });
 
 test("addDataConfigureMetricsTaskCardMetadatas reflects the metrics that are unconfigured or missing data", () => {
-  const enabledUnconfiguredMetricDisplayNames = [
-    ...homeStore.enabledCurrentSystemMetrics,
-    ...homeStore.unconfiguredCurrentSystemMetrics,
-  ]
+  const enabledMetrics = [...homeStore.enabledCurrentSystemMetrics]
     .filter((metric) => metric.enabled === null || metric.value === null)
-    .map((metric) => metric.display_name)
-    .sort();
+    .map((metric) => `Upload ${metric.display_name} Metric`);
+
+  const unconfiguredMetrics = [...homeStore.unconfiguredCurrentSystemMetrics]
+    .filter((metric) => metric.enabled === null || metric.value === null)
+    .map((metric) => metric.display_name);
+  const enabledUnconfiguredMetricDisplayNames = [
+    ...enabledMetrics,
+    ...unconfiguredMetrics,
+  ].sort();
   expect(homeStore.addDataConfigureMetricsTaskCardMetadatas?.length).toEqual(5);
   expect(
     homeStore.addDataConfigureMetricsTaskCardMetadatas
