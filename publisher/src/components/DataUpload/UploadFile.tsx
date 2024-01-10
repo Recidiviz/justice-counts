@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { showToast } from "@justice-counts/common/components/Toast";
-import { AgencySystem } from "@justice-counts/common/types";
+import { AgencySystem, AgencySystems } from "@justice-counts/common/types";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -61,9 +61,6 @@ export const UploadFile: React.FC<UploadFileProps> = ({
   ];
 
   const isReadOnly = userStore.isUserReadOnly(agencyId);
-  const userSystemsExcludingSuperagency = userSystems.filter(
-    (system) => system !== "SUPERAGENCY"
-  );
 
   const handleFileUploadAttempt = (
     e: React.ChangeEvent<HTMLInputElement> | DragEvent
@@ -80,11 +77,11 @@ export const UploadFile: React.FC<UploadFileProps> = ({
     }
 
     setIsLoading(true);
-    if (userSystemsExcludingSuperagency.length > 1) {
+    if (userSystems.length > 1) {
       setIsLoading(false);
       setSelectedFile(files[0]);
     } else {
-      handleFileUpload(files[0], userSystemsExcludingSuperagency[0]);
+      handleFileUpload(files[0], userSystems[0]);
     }
   };
   const handleDownloadSpreadsheetTemplate = async (
@@ -173,23 +170,25 @@ export const UploadFile: React.FC<UploadFileProps> = ({
         {/* General Instructions */}
         <GeneralInstructions
           agencyId={agencyId}
-          systems={userSystemsExcludingSuperagency}
+          systems={userSystems}
           downloadTemplate={handleDownloadSpreadsheetTemplate}
           isDownloading={isDownloading}
         />
 
         {/* System Specific Instructions (excludes Superagency systems) */}
-        {userSystemsExcludingSuperagency.map((system) => {
-          const systemName = removeSnakeCase(system).toLowerCase();
-          const systemTemplate = <SystemsInstructions system={system} />;
+        {userSystems
+          .filter((system) => system !== AgencySystems.SUPERAGENCY)
+          .map((system) => {
+            const systemName = removeSnakeCase(system).toLowerCase();
+            const systemTemplate = <SystemsInstructions system={system} />;
 
-          return (
-            <Fragment key={systemName}>
-              <h2>{systemName}</h2>
-              {systemTemplate}
-            </Fragment>
-          );
-        })}
+            return (
+              <Fragment key={systemName}>
+                <h2>{systemName}</h2>
+                {systemTemplate}
+              </Fragment>
+            );
+          })}
       </Instructions>
 
       <DragDropContainer ref={dragDropAreaRef} dragging={dragging}>

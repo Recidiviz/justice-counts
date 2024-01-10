@@ -186,6 +186,9 @@ export const GeneralInstructions: React.FC<
     React.useState<{
       [key: string]: boolean;
     }>({});
+  const userSystemsExcludingSuperagency = systems.filter(
+    (system) => system !== "SUPERAGENCY"
+  );
 
   const fetchTemplate = async (
     isSinglePageTemplate: boolean,
@@ -304,7 +307,7 @@ export const GeneralInstructions: React.FC<
         {REPORTING_LOWERCASE} data for. Your agency is responsible for{" "}
         {REPORTING_LOWERCASE} data for:{" "}
         {/* replace last comma with "and": https://stackoverflow.com/a/41035407 */}
-        {systems
+        {userSystemsExcludingSuperagency
           .map((system) => systemToDetails[system].name)
           .join(", ")
           .replace(/,(?!.*,)/gim, " and")}
@@ -410,7 +413,7 @@ export const GeneralInstructions: React.FC<
         pages or multiple CSV files, a Single Page Upload template is also
         available (see the{" "}
         <i>
-          {systems
+          {userSystemsExcludingSuperagency
             .map((system) => systemToDetails[system].name)
             .join(", ")
             .replace(/,(?!.*,)/gim, " and")}{" "}
