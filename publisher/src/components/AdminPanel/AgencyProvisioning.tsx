@@ -378,7 +378,14 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         agencyProvisioningUpdates.systems.filter((system) =>
           selectedSystems.has(system)
         ).length === 0);
-    const hasSystems = selectedSystems.size > 0;
+
+    const hasSystems =
+      selectedSystems.size > 0 &&
+      // Exclude Superagency system from consideration.
+      !(
+        selectedSystems.size === 1 &&
+        selectedSystems.has(AgencySystems.SUPERAGENCY)
+      );
     /**
      * An update has been made when the agency's `is_dashboard_enabled` boolean flag does not match the agency's
      * boolean flag for that property before the modal was open.
