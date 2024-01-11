@@ -211,7 +211,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const getInteractiveSearchListSelectDeselectCloseButtons = <T,>(
       setState: React.Dispatch<React.SetStateAction<Set<T>>>,
       selectAllSet: Set<T>,
-      selectAllCallback?: () => void
+      selectAllCallback?: () => void,
+      deselectAllSetOverride?: Set<T>
     ) => {
       return [
         {
@@ -223,7 +224,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         },
         {
           label: "Deselect All",
-          onClick: () => setState(new Set()),
+          onClick: () => setState(deselectAllSetOverride || new Set()),
         },
         interactiveSearchListCloseButton[0],
       ];
@@ -639,7 +640,13 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         selections={selectedSystems}
                         buttons={getInteractiveSearchListSelectDeselectCloseButtons(
                           setSelectedSystems,
-                          new Set(systems)
+                          agencyProvisioningUpdates.is_superagency
+                            ? new Set([...systems, AgencySystems.SUPERAGENCY])
+                            : new Set(systems),
+                          undefined,
+                          agencyProvisioningUpdates.is_superagency
+                            ? new Set([AgencySystems.SUPERAGENCY])
+                            : undefined
                         )}
                         updateSelections={({ id }) => {
                           setSelectedSystems((prev) =>
