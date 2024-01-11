@@ -16,7 +16,7 @@
 // =============================================================================
 
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
-import { AgencySystems } from "@justice-counts/common/types";
+import { AgencySystem, AgencySystems } from "@justice-counts/common/types";
 import React from "react";
 
 import { removeSnakeCase } from "../../utils";
@@ -39,7 +39,7 @@ import { MiniLoaderWrapper } from "./DataUpload.styles";
 
 export type GeneralInstructionsTemplateParams = {
   agencyId: string;
-  systems: string[];
+  systems: AgencySystem[];
   downloadTemplate: (
     system: string,
     isSinglePageTemplate: boolean
@@ -48,7 +48,7 @@ export type GeneralInstructionsTemplateParams = {
 };
 
 export type SystemsInstructionsTemplateParams = {
-  system: string;
+  system: AgencySystem;
 };
 
 type SystemDetails = {
@@ -189,6 +189,11 @@ export const GeneralInstructions: React.FC<
     }>({});
   const superagencyDisplayName = "Superagency";
 
+  const getSystemDisplayName = (system: AgencySystem) =>
+    system === AgencySystems.SUPERAGENCY
+      ? superagencyDisplayName
+      : systemToDetails[system].name;
+
   const fetchTemplate = async (
     isSinglePageTemplate: boolean,
     system: string
@@ -307,11 +312,7 @@ export const GeneralInstructions: React.FC<
         {REPORTING_LOWERCASE} data for:{" "}
         {/* replace last comma with "and": https://stackoverflow.com/a/41035407 */}
         {systems
-          .map((system) =>
-            system === AgencySystems.SUPERAGENCY
-              ? superagencyDisplayName
-              : systemToDetails[system].name
-          )
+          .map(getSystemDisplayName)
           .join(", ")
           .replace(/,(?!.*,)/gim, " and")}
         .
@@ -417,11 +418,7 @@ export const GeneralInstructions: React.FC<
         available (see the{" "}
         <i>
           {systems
-            .map((system) =>
-              system === AgencySystems.SUPERAGENCY
-                ? superagencyDisplayName
-                : systemToDetails[system].name
-            )
+            .map(getSystemDisplayName)
             .join(", ")
             .replace(/,(?!.*,)/gim, " and")}{" "}
           Single Page
