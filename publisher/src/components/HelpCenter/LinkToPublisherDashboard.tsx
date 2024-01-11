@@ -22,11 +22,12 @@ import React, { PropsWithChildren } from "react";
 import { useStore } from "../../stores";
 
 export const LinkToPublisher: React.FC<
-  PropsWithChildren & { publisherPath: string }
-> = observer(({ publisherPath, children }) => {
+  PropsWithChildren & { publisherPath: string; agencyID?: string }
+> = observer(({ publisherPath, agencyID, children }) => {
   const { userStore } = useStore();
   const agencyIdLocalStorage = localStorage.getItem("agencyId");
-  const agencyId = agencyIdLocalStorage || userStore.getInitialAgencyId();
+  const agencyId =
+    agencyID || agencyIdLocalStorage || userStore.getInitialAgencyId();
   const url = `/agency/${agencyId}/${publisherPath}`;
 
   return (
