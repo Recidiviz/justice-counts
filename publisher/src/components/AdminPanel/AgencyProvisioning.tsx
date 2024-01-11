@@ -640,12 +640,12 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         selections={selectedSystems}
                         buttons={getInteractiveSearchListSelectDeselectCloseButtons(
                           setSelectedSystems,
-                          // If superagencies is checked, include the Superagency sector when user selects all
+                          // If Superagency is checked, include the Superagency sector when user selects all
                           agencyProvisioningUpdates.is_superagency
                             ? new Set([...systems, AgencySystems.SUPERAGENCY])
                             : new Set(systems),
                           undefined,
-                          // If superagencies is checked, still include the Superagency sector when user deselects all
+                          // If Superagency is checked, still include the Superagency sector when user deselects all
                           agencyProvisioningUpdates.is_superagency
                             ? new Set([AgencySystems.SUPERAGENCY])
                             : undefined
