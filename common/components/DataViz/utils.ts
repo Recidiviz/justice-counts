@@ -243,6 +243,9 @@ export const fillTimeGapsBetweenDatapoints = (
 
   const frequency = metricFrequency || data[0].frequency;
   const isAnnual = frequency === "ANNUAL";
+  const isNonCalendarYear = startingMonth !== 0;
+  console.log("isNonCalendarYear", isNonCalendarYear);
+  console.log("startingMonth", startingMonth);
   // Represents how high the empty gap bars go - 1/3 of the highest value
   const defaultBarValue = getHighestTotalValue(data) / 3;
   // Create the map of dimensions with zero values
@@ -317,7 +320,11 @@ export const fillTimeGapsBetweenDatapoints = (
       const date = createGMTDate(
         1,
         isAnnual ? startingMonth || 0 : decrementedDate.getUTCMonth(),
-        isAnnual ? currentYear - i : decrementedDate.getUTCFullYear()
+        isAnnual
+          ? isNonCalendarYear
+            ? currentYear - 1 - i
+            : currentYear - i
+          : decrementedDate.getUTCFullYear()
       );
 
       return date;
@@ -348,22 +355,29 @@ export const fillTimeGapsBetweenDatapoints = (
     filteredDatapoints.map((dp) => {
       const datapointStartDate = new Date(dp.start_date);
       return isAnnual
-        ? datapointStartDate.getUTCFullYear()
+        ? datapointStartDate.getUTCMonth() !== 0
+          ? datapointStartDate.getUTCFullYear() + 1
+          : datapointStartDate.getUTCFullYear()
         : `${datapointStartDate.getUTCMonth()} ${datapointStartDate.getUTCFullYear()}`;
     })
   );
+  console.log("timeFrameSet", timeFrameSet);
+  console.log("filteredDatapointTimeFrameSet", filteredDatapointTimeFrameSet);
   const gapDatapointTimeFrames = Array.from(
     new Set(
       Array.from(timeFrameSet).filter(
         (timeFrame) =>
           !filteredDatapointTimeFrameSet.has(
             isAnnual
-              ? timeFrame.getUTCFullYear()
+              ? isNonCalendarYear
+                ? timeFrame.getUTCFullYear() + 1
+                : timeFrame.getUTCFullYear()
               : `${timeFrame.getUTCMonth()} ${timeFrame.getUTCFullYear()}`
           )
       )
     )
   );
+  console.log("gapDatapointTimeFrames", gapDatapointTimeFrames);
   const gapDatapoints = gapDatapointTimeFrames.map((date) => {
     const endYearOrIncrementedEndYear =
       date.getUTCMonth() === 11
@@ -385,7 +399,7 @@ export const fillTimeGapsBetweenDatapoints = (
       ...dimensionsMap,
     };
   });
-
+  console.log("gapDatapoints", gapDatapoints);
   // Merge `filteredDatapoints` and `gapDatapoints` and sort them in ascending order by start date
   const dataWithGapDatapoints = [...filteredDatapoints, ...gapDatapoints].sort(
     (a, b) => +new Date(a.start_date) - +new Date(b.start_date)
@@ -522,6 +536,9 @@ export const getDatapointBarLabel = (datapoint: Datapoint) => {
 export const getDatapointBarLabelMini = (datapoint: Datapoint) => {
   const { month, year } = splitUtcString(datapoint.start_date);
   if (datapoint.frequency === "ANNUAL") {
+    if (month !== "Jan") {
+      return `${+year + 1}`;
+    }
     return `${year}`;
   }
   return `${month} ${year}`;
