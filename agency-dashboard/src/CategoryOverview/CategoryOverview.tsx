@@ -184,6 +184,10 @@ export const CategoryOverview = observer(() => {
                           width={620}
                           data={getBarChartData(metric)}
                           onHoverBar={(payload) => {
+                            console.log(
+                              "CategoryOverview > payload.start_date:",
+                              payload.start_date
+                            );
                             setHoveredDate((prev) => ({
                               ...prev,
                               [metric.key]: payload.start_date,

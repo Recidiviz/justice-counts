@@ -37,7 +37,7 @@ import { convertShortDateToUTCDateString } from "../../utils";
 import { formatNumberForChart, groupBy } from "../../utils/helperUtils";
 import { palette } from "../GlobalStyles";
 import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
-import { splitUtcString } from "./utils";
+import { abbreviatedMonths, splitUtcString } from "./utils";
 
 export type LineChartProps = {
   data: Datapoint[];
@@ -158,9 +158,18 @@ export function CategoryOverviewLineChart({
         onMouseMove={(e) => {
           if (e.activeLabel) {
             const { activeLabel } = e;
+            const [shortMonth, year] = activeLabel.split(" ");
+            const startingMonthIndex = abbreviatedMonths.indexOf(shortMonth);
+            const startingMonth = abbreviatedMonths[startingMonthIndex + 1];
+            const startingYear = +year - 1;
+            console.log(activeLabel);
             setHoveredDate((prev) => ({
               ...prev,
-              [metric.key]: convertShortDateToUTCDateString(activeLabel),
+              [metric.key]: convertShortDateToUTCDateString(
+                startingMonthIndex !== 0
+                  ? `${startingMonth} ${startingYear}`
+                  : activeLabel
+              ),
             }));
           }
         }}
@@ -169,7 +178,19 @@ export function CategoryOverviewLineChart({
         <ReferenceLine y={referenceLineUpperLimit} />
         <XAxis
           dataKey={(datapoint) => {
-            const { month, year } = splitUtcString(datapoint.start_date);
+            const { month, year } = splitUtcString(
+              // new Date(datapoint.start_date).getUTCMonth() !== 0
+              //   ? datapoint.end_date
+              //   :
+
+              datapoint.start_date
+            );
+            if (month !== "Jan") {
+              const startingMonthIndex = abbreviatedMonths.indexOf(month);
+              const startingMonth = abbreviatedMonths[startingMonthIndex - 1];
+              // return "Jul 2023";
+              return `${startingMonth} ${+year + 1}`;
+            }
             return `${month} ${year}`;
           }}
           style={axisTickStyle}
