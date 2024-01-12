@@ -244,8 +244,7 @@ export const fillTimeGapsBetweenDatapoints = (
   const frequency = metricFrequency || data[0].frequency;
   const isAnnual = frequency === "ANNUAL";
   const isNonCalendarYear = startingMonth !== 0;
-  console.log("isNonCalendarYear", isNonCalendarYear);
-  console.log("startingMonth", startingMonth);
+
   // Represents how high the empty gap bars go - 1/3 of the highest value
   const defaultBarValue = getHighestTotalValue(data) / 3;
   // Create the map of dimensions with zero values
@@ -321,10 +320,12 @@ export const fillTimeGapsBetweenDatapoints = (
         1,
         isAnnual ? startingMonth || 0 : decrementedDate.getUTCMonth(),
         // Since non-calendar year (e.g. fiscal year) datapoints will be displayed by end year (start year + 1)
-        // instead of start year, we need to go back an extra year to counter balance the +1 forward shift
+        // instead of start year, we need to go back an extra year to counter balance the +1 forward shift, otherwise
+        // a current year (2024) will be displayed as 2025 and there will be a missing year between the earliest
+        // datapoint and the earliest gap datapoint.
         isAnnual
           ? isNonCalendarYear
-            ? currentYear - 1 - i
+            ? currentYear - i - 1
             : currentYear - i
           : decrementedDate.getUTCFullYear()
       );
@@ -363,8 +364,7 @@ export const fillTimeGapsBetweenDatapoints = (
         : `${datapointStartDate.getUTCMonth()} ${datapointStartDate.getUTCFullYear()}`;
     })
   );
-  console.log("timeFrameSet", timeFrameSet);
-  console.log("filteredDatapointTimeFrameSet", filteredDatapointTimeFrameSet);
+
   const gapDatapointTimeFrames = Array.from(
     new Set(
       Array.from(timeFrameSet).filter(
@@ -379,7 +379,7 @@ export const fillTimeGapsBetweenDatapoints = (
       )
     )
   );
-  console.log("gapDatapointTimeFrames", gapDatapointTimeFrames);
+
   const gapDatapoints = gapDatapointTimeFrames.map((date) => {
     const endYearOrIncrementedEndYear =
       date.getUTCMonth() === 11
@@ -401,7 +401,7 @@ export const fillTimeGapsBetweenDatapoints = (
       ...dimensionsMap,
     };
   });
-  console.log("gapDatapoints", gapDatapoints);
+
   // Merge `filteredDatapoints` and `gapDatapoints` and sort them in ascending order by start date
   const dataWithGapDatapoints = [...filteredDatapoints, ...gapDatapoints].sort(
     (a, b) => +new Date(a.start_date) - +new Date(b.start_date)
