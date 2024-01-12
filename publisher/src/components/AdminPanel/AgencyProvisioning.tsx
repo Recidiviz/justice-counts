@@ -26,6 +26,7 @@ import {
   AgencySystem,
   AgencySystems,
   AgencyTeamMemberRole,
+  SupervisionSubsystems,
 } from "@justice-counts/common/types";
 import {
   isCSGOrRecidivizUserByEmail,
@@ -635,9 +636,37 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                           new Set(systems)
                         )}
                         updateSelections={({ id }) => {
-                          setSelectedSystems((prev) =>
-                            toggleAddRemoveSetItem(prev, id as AgencySystems)
-                          );
+                          setSelectedSystems((prev) => {
+                            const currentSystems = prev;
+                            /**
+                             * Special handling for Supervision & subpopulation sectors:
+                             *  - If the user selects a supervision subpopulation and they have not explicitly selected the Supervision
+                             *    sector, auto-add the Supervision sector.
+                             *  - If the user de-selects the Supervision sector, then auto-de-select all selected supervision subpopulation
+                             *    sectors
+                             */
+                            if (
+                              SupervisionSubsystems.includes(
+                                id as AgencySystem
+                              ) &&
+                              !currentSystems.has(AgencySystems.SUPERVISION)
+                            ) {
+                              currentSystems.add(AgencySystems.SUPERVISION);
+                            }
+                            if (
+                              id === AgencySystems.SUPERVISION &&
+                              currentSystems.has(AgencySystems.SUPERVISION)
+                            ) {
+                              SupervisionSubsystems.forEach((subsystem) =>
+                                currentSystems.delete(subsystem)
+                              );
+                            }
+
+                            return toggleAddRemoveSetItem(
+                              currentSystems,
+                              id as AgencySystems
+                            );
+                          });
                         }}
                         searchByKeys={["name"]}
                         metadata={{
