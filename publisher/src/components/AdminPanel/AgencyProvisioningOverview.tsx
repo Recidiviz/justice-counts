@@ -23,7 +23,10 @@ import React, { useState } from "react";
 
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
-import { LinkToDashboard } from "../HelpCenter/LinkToPublisherDashboard";
+import {
+  LinkToDashboard,
+  LinkToPublisher,
+} from "../HelpCenter/LinkToPublisherDashboard";
 import { Loading } from "../Loading";
 import {
   AgencyKey,
@@ -281,7 +284,7 @@ export const AgencyProvisioningOverview = observer(() => {
                       </Styled.ChildAgencyIndicator>
                     )}
                     {agency.is_dashboard_enabled && (
-                      <Styled.LiveDashboardIndicator
+                      <Styled.DashboardPublisherLinkIndicator
                         onClick={(e) => e.stopPropagation()}
                       >
                         <LinkToDashboard
@@ -290,8 +293,18 @@ export const AgencyProvisioningOverview = observer(() => {
                         >
                           Live Dashboard
                         </LinkToDashboard>
-                      </Styled.LiveDashboardIndicator>
+                      </Styled.DashboardPublisherLinkIndicator>
                     )}
+                    <Styled.DashboardPublisherLinkIndicator
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <LinkToPublisher
+                        publisherPath=""
+                        agencyID={String(agency.id)}
+                      >
+                        Publisher
+                      </LinkToPublisher>
+                    </Styled.DashboardPublisherLinkIndicator>
                   </Styled.IndicatorWrapper>
                 </Styled.NumberOfAgenciesLiveDashboardIndicatorWrapper>
               </Styled.Card>

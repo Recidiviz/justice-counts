@@ -601,7 +601,7 @@ export const IndicatorWrapper = styled.div`
   gap: 8px;
 `;
 
-export const LiveDashboardIndicator = styled(NumberOfAgencies)`
+export const DashboardPublisherLinkIndicator = styled(NumberOfAgencies)`
   &,
   a,
   a:visited {
