@@ -320,6 +320,8 @@ export const fillTimeGapsBetweenDatapoints = (
       const date = createGMTDate(
         1,
         isAnnual ? startingMonth || 0 : decrementedDate.getUTCMonth(),
+        // Since non-calendar year (e.g. fiscal year) datapoints will be displayed by end year (start year + 1)
+        // instead of start year, we need to go back an extra year to counter balance the +1 forward shift
         isAnnual
           ? isNonCalendarYear
             ? currentYear - 1 - i
