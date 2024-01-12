@@ -212,7 +212,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     const getInteractiveSearchListSelectDeselectCloseButtons = <T,>(
       setState: React.Dispatch<React.SetStateAction<Set<T>>>,
       selectAllSet: Set<T>,
-      selectAllCallback?: () => void
+      selectAllCallback?: () => void,
+      deselectAllSetOverride?: Set<T>
     ) => {
       return [
         {
@@ -224,7 +225,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         },
         {
           label: "Deselect All",
-          onClick: () => setState(new Set()),
+          onClick: () => setState(deselectAllSetOverride || new Set()),
         },
         interactiveSearchListCloseButton[0],
       ];
@@ -379,7 +380,14 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         agencyProvisioningUpdates.systems.filter((system) =>
           selectedSystems.has(system)
         ).length === 0);
-    const hasSystems = selectedSystems.size > 0;
+
+    const hasSystems =
+      selectedSystems.size > 0 &&
+      // Exclude Superagency system from consideration.
+      !(
+        selectedSystems.size === 1 &&
+        selectedSystems.has(AgencySystems.SUPERAGENCY)
+      );
     /**
      * An update has been made when the agency's `is_dashboard_enabled` boolean flag does not match the agency's
      * boolean flag for that property before the modal was open.
@@ -633,7 +641,15 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         selections={selectedSystems}
                         buttons={getInteractiveSearchListSelectDeselectCloseButtons(
                           setSelectedSystems,
-                          new Set(systems)
+                          // If Superagency is checked, include the Superagency sector when user selects all
+                          agencyProvisioningUpdates.is_superagency
+                            ? new Set([...systems, AgencySystems.SUPERAGENCY])
+                            : new Set(systems),
+                          undefined,
+                          // If Superagency is checked, still include the Superagency sector when user deselects all
+                          agencyProvisioningUpdates.is_superagency
+                            ? new Set([AgencySystems.SUPERAGENCY])
+                            : undefined
                         )}
                         updateSelections={({ id }) => {
                           setSelectedSystems((prev) => {
