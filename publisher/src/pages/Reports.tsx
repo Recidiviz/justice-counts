@@ -37,6 +37,7 @@ import {
 import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import { ReportOverview, ReportStatus } from "@justice-counts/common/types";
+import { groupBy } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -161,25 +162,6 @@ const Reports: React.FC = () => {
     return false;
   };
 
-  const renderReportYearRow = (
-    filteredReports: ReportOverview[],
-    currentIndex: number,
-    currentReportYear: number
-  ): JSX.Element | undefined => {
-    const indexIsLessThanListOfReports =
-      currentIndex + 1 < filteredReports.length;
-    const nextReportYear =
-      indexIsLessThanListOfReports && filteredReports[currentIndex + 1].year;
-
-    if (indexIsLessThanListOfReports && nextReportYear !== currentReportYear) {
-      return (
-        <Row noHover isRowReportYear>
-          {nextReportYear}
-        </Row>
-      );
-    }
-  };
-
   const handleRemoveRecords = () => {
     if (!isJCAdmin) return;
     reportStore.deleteReports(selectedRecords, agencyId);
@@ -218,6 +200,13 @@ const Reports: React.FC = () => {
             (report) => normalizeString(report.status) === reportsFilter
           ),
     [reportStore.reportOverviewList, reportsFilter]
+  );
+  const filteredReportsMemoizedByReportYears = groupBy(
+    filteredReportsMemoized,
+    (report) =>
+      report.frequency === "ANNUAL" && report.month !== 1
+        ? report.year + 1
+        : report.year
   );
 
   const isPublishDisabled =
@@ -290,138 +279,179 @@ const Reports: React.FC = () => {
     return (
       <>
         {filteredReportsMemoized.length > 0 ? (
-          filteredReportsMemoized.map(
-            (report: ReportOverview, index: number) => {
-              const filteredReportEditors = filterJCAdminEditors(
-                report.editors
-              );
-              return (
-                <Fragment key={report.id}>
-                  <Row
-                    onClick={() => {
-                      if (!bulkAction) {
-                        navigate(`${report.id}`);
-                      } else {
-                        addOrRemoveSelectedRecords(
-                          report.id,
-                          isRecordDisabledForSelection(
-                            report.status,
-                            bulkAction
-                          )
-                        );
-                      }
-                    }}
-                    selected={bulkAction && selectedRecords.includes(report.id)}
-                  >
-                    {/* Report Period */}
-                    <Cell id="report_period">
-                      {bulkAction &&
-                        !isRecordDisabledForSelection(
-                          report.status,
-                          bulkAction
-                        ) && (
-                          <>
-                            {selectedRecords.includes(report.id) ? (
-                              <SelectedCheckmark src={checkmarkIcon} alt="" />
-                            ) : (
-                              <EmptySelectionCircle />
-                            )}
-                          </>
-                        )}
-                      <span>
-                        {printReportTitle(
-                          report.month,
-                          report.year,
-                          report.frequency
-                        )}
-                      </span>
-                    </Cell>
-
-                    {/* Status */}
-                    <Cell>
-                      <Badge
-                        color={reportStatusBadgeColors[report.status]}
-                        noMargin
-                      >
-                        {removeSnakeCase(report.status).toLowerCase()}
-                      </Badge>
-                    </Cell>
-
-                    {/* Frequency */}
-                    <Cell capitalize>
-                      {printReportFrequency(report.month, report.frequency)}
-                    </Cell>
-
-                    {/* Editors */}
-                    <Cell>
-                      {filteredReportEditors.length === 0 ? (
-                        "-"
-                      ) : (
-                        <EditorsContentCellContainer id={`record-${report.id}`}>
-                          {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
-                          <TeamMemberNameWithBadge
-                            name={filteredReportEditors[0].name}
-                            badgeId={`admin-${report.id}`}
-                            role={filteredReportEditors[0].role}
-                          />
-                          {filteredReportEditors.length > 1 ? (
-                            <AndOthersSpan>{`& ${
-                              filteredReportEditors.length - 1
-                            } other${
-                              filteredReportEditors.length > 2 ? "s" : ""
-                            }`}</AndOthersSpan>
-                          ) : null}
-                        </EditorsContentCellContainer>
-                      )}
-
-                      {filteredReportEditors.length > 1 && (
-                        <Tooltip
-                          anchorId={`record-${report.id}`}
-                          position="bottom"
-                          content={
-                            <EditorsTooltipContainer>
-                              {filteredReportEditors.map((editor, idx) => (
-                                <React.Fragment key={editor.name}>
-                                  {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
-                                  <TeamMemberNameWithBadge
-                                    name={editor.name}
-                                    badgeColor={palette.solid.white}
-                                    role={editor.role}
-                                    isInsideTooltip
-                                    isLast={
-                                      idx === filteredReportEditors.length - 1
-                                    }
-                                  />
-                                </React.Fragment>
-                              ))}
-                            </EditorsTooltipContainer>
-                          }
-                          noArrow
-                          tooltipColor="info"
-                        />
-                      )}
-                    </Cell>
-
-                    {/* Last Modified */}
-                    <Cell>
-                      {!report.last_modified_at
-                        ? "-"
-                        : printElapsedDaysMonthsYearsSinceDate(
-                            report.last_modified_at
-                          )}
-                    </Cell>
+          Object.entries(filteredReportsMemoizedByReportYears)
+            .sort(
+              ([reportYearA], [reportYearB]) =>
+                Number(reportYearB) - Number(reportYearA)
+            )
+            .map(([reportYear, reports]) => (
+              <>
+                {new Date().getUTCFullYear() !== Number(reportYear) && (
+                  <Row noHover isRowReportYear>
+                    {reportYear}
                   </Row>
+                )}
 
-                  {/* Report Year Marker */}
-                  {renderReportYearRow(
-                    filteredReportsMemoized,
-                    index,
-                    report.year
-                  )}
-                </Fragment>
-              );
-            }
-          )
+                {reports
+                  // .sort((a, _) => (a.frequency === "ANNUAL" ? -1 : 1))
+                  .sort((a, b) => {
+                    const dateA = new Date(a.year, a.month - 1).getTime();
+                    const dateB = new Date(b.year, b.month - 1).getTime();
+                    if (a.year === b.year) {
+                      // Annual reports should always be sorted before Monthly reports,
+                      // regardless of their month
+                      if (a.frequency === "ANNUAL") {
+                        if (a.month <= b.month) {
+                          return 1;
+                        }
+                        return -1;
+                      }
+                      if (b.frequency === "ANNUAL") {
+                        return 1;
+                      }
+                    }
+                    return a.frequency === "ANNUAL"
+                      ? dateA - dateB
+                      : dateB - dateA;
+                  })
+                  .map((report: ReportOverview) => {
+                    const filteredReportEditors = filterJCAdminEditors(
+                      report.editors
+                    );
+                    return (
+                      <Fragment key={report.id}>
+                        <Row
+                          onClick={() => {
+                            if (!bulkAction) {
+                              navigate(`${report.id}`);
+                            } else {
+                              addOrRemoveSelectedRecords(
+                                report.id,
+                                isRecordDisabledForSelection(
+                                  report.status,
+                                  bulkAction
+                                )
+                              );
+                            }
+                          }}
+                          selected={
+                            bulkAction && selectedRecords.includes(report.id)
+                          }
+                        >
+                          {/* Report Period */}
+                          <Cell id="report_period">
+                            {bulkAction &&
+                              !isRecordDisabledForSelection(
+                                report.status,
+                                bulkAction
+                              ) && (
+                                <>
+                                  {selectedRecords.includes(report.id) ? (
+                                    <SelectedCheckmark
+                                      src={checkmarkIcon}
+                                      alt=""
+                                    />
+                                  ) : (
+                                    <EmptySelectionCircle />
+                                  )}
+                                </>
+                              )}
+                            <span>
+                              {printReportTitle(
+                                report.month,
+                                report.year,
+                                report.frequency
+                              )}
+                            </span>
+                          </Cell>
+
+                          {/* Status */}
+                          <Cell>
+                            <Badge
+                              color={reportStatusBadgeColors[report.status]}
+                              noMargin
+                            >
+                              {removeSnakeCase(report.status).toLowerCase()}
+                            </Badge>
+                          </Cell>
+
+                          {/* Frequency */}
+                          <Cell capitalize>
+                            {printReportFrequency(
+                              report.month,
+                              report.frequency
+                            )}
+                          </Cell>
+
+                          {/* Editors */}
+                          <Cell>
+                            {filteredReportEditors.length === 0 ? (
+                              "-"
+                            ) : (
+                              <EditorsContentCellContainer
+                                id={`record-${report.id}`}
+                              >
+                                {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
+                                <TeamMemberNameWithBadge
+                                  name={filteredReportEditors[0].name}
+                                  badgeId={`admin-${report.id}`}
+                                  role={filteredReportEditors[0].role}
+                                />
+                                {filteredReportEditors.length > 1 ? (
+                                  <AndOthersSpan>{`& ${
+                                    filteredReportEditors.length - 1
+                                  } other${
+                                    filteredReportEditors.length > 2 ? "s" : ""
+                                  }`}</AndOthersSpan>
+                                ) : null}
+                              </EditorsContentCellContainer>
+                            )}
+
+                            {filteredReportEditors.length > 1 && (
+                              <Tooltip
+                                anchorId={`record-${report.id}`}
+                                position="bottom"
+                                content={
+                                  <EditorsTooltipContainer>
+                                    {filteredReportEditors.map(
+                                      (editor, idx) => (
+                                        <React.Fragment key={editor.name}>
+                                          {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
+                                          <TeamMemberNameWithBadge
+                                            name={editor.name}
+                                            badgeColor={palette.solid.white}
+                                            role={editor.role}
+                                            isInsideTooltip
+                                            isLast={
+                                              idx ===
+                                              filteredReportEditors.length - 1
+                                            }
+                                          />
+                                        </React.Fragment>
+                                      )
+                                    )}
+                                  </EditorsTooltipContainer>
+                                }
+                                noArrow
+                                tooltipColor="info"
+                              />
+                            )}
+                          </Cell>
+
+                          {/* Last Modified */}
+                          <Cell>
+                            {!report.last_modified_at
+                              ? "-"
+                              : printElapsedDaysMonthsYearsSinceDate(
+                                  report.last_modified_at
+                                )}
+                          </Cell>
+                        </Row>
+                      </Fragment>
+                    );
+                  })}
+              </>
+            ))
         ) : (
           <NoReportsDisplay>
             No {REPORTS_LOWERCASE} to display. Create a {REPORT_LOWERCASE}?
