@@ -88,6 +88,31 @@ export const splitUtcString = (utcString: string) => {
   };
 };
 
+/**
+ * Given a short month string and a year string, returns a metadata object that contains the
+ * adjusted reference month, year and display date string based on whether or not the given
+ * month begins in January.
+ *
+ * This is to ensure we display non-calendar year dates by their end date, and calendar year
+ * dates by their start date.
+ *
+ * - For calendar year inputs (e.g. monthStr = "Jan", yearStr = "2024"), it will return the
+ *   same date metadata as the input which in our example would be:
+ *     { month: "Jan", year: "2024", displayDate: "Jan 2024"}`.
+ * - For non-calendar year inputs (e.g. monthStr = "Jul", yearStr = "2024" - representing a
+ *   Jul 2024 - Jun 2025 time period), it will return the date metadata that represents the end
+ *   of this non-calendar year time period, which in our example would be:
+ *     { month: "Jun", year: "2025", displayDate: "Jun 2025"}
+ *
+ * @param {string} monthStr - short month string
+ * @param {string} yearStr - year string
+ * @returns {object} - an object representing the adjusted/non-adjusted date metadata:
+ *                     {
+ *                        month: {string} - short month string, same as input for calendar year, previous month for non-calendar year,
+ *                        year: {number} - year number, same as input for calendar year, next/following year for non-calendar year,,
+ *                        displayDate: {string} - adjusted date displayed as short month and year string (e.g. "Jan 2024")
+ *                     }
+ */
 export const getMonthYearBasedOnStartingMonthStr = ({
   monthStr,
   yearStr,
@@ -111,6 +136,19 @@ export const getMonthYearBasedOnStartingMonthStr = ({
   };
 };
 
+/**
+ * Given a short month string and a year string, returns a short month and year string representing
+ * the start date from the given input.
+ *
+ * - For calendar year inputs (e.g. monthStr = "Jan", yearStr = "2024"), it will return the same date as the input
+ * which in our example would be "Jan 2024".
+ * - For non-calendar year inputs (e.g. monthStr = "Jul", yearStr = "2024"), it will return the date that represents
+ * the beginning of this non-calendar year time period, which in our example would be "Jun 2023".
+ *
+ * @param {string} monthStr - short month string
+ * @param {string} yearStr - year string
+ * @returns {string} - "<short month> <year>" string
+ */
 export const getShortStartDateStrFromDisplayDate = ({
   monthStr,
   yearStr,

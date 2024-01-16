@@ -2022,7 +2022,7 @@ describe("getMonthYearBasedOnStartingMonthStr", () => {
 });
 
 describe("getShortStartDateStrFromDisplayDate", () => {
-  test("returns start date string from a given display date", () => {
+  test("returns start date string from a given display date (calendar year returns same date, non-calendar year returns the beginning of the non-calendar year period)", () => {
     const calendarYearStartDate = getShortStartDateStrFromDisplayDate({
       monthStr: "Jan",
       yearStr: "2024",
