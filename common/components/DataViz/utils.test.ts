@@ -1969,7 +1969,6 @@ describe("filterNullDatapoints", () => {
 
 describe("fillTimeGapsBetweenDatapoints", () => {
   test("fillTimeGapsBetweenDatapoints adds datapoints between data", () => {
-    console.log(fillTimeGapsBetweenDatapoints(testDatapoints4, 0, "ANNUAL", 0));
     expect(
       fillTimeGapsBetweenDatapoints(testDatapoints4, 0, "ANNUAL", 0)
     ).toStrictEqual(testDatapoints4WithGapDatapoints);
@@ -1983,10 +1982,6 @@ describe("fillTimeGapsBetweenDatapoints", () => {
 
 describe("transformData", () => {
   test("putting it all together", () => {
-    console.log(
-      "::::",
-      transformDataForBarChart(testDatapoints5, 60, "Percentage")
-    );
     expect(
       transformDataForBarChart(testDatapoints5, 60, "Percentage")
     ).toStrictEqual(testDatapoints5Transformed);
