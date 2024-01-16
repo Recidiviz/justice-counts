@@ -200,7 +200,7 @@ class AgencyDataStore {
         const result = await response.json();
         runInAction(() => {
           this.agency = result.agency;
-          this.metrics = result.metrics.filter((metric) => metric.enabled);
+          this.metrics = result.metrics;
         });
       } else {
         const error = await response.json();
