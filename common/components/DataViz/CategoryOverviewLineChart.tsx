@@ -37,7 +37,11 @@ import { convertShortDateToUTCDateString } from "../../utils";
 import { formatNumberForChart, groupBy } from "../../utils/helperUtils";
 import { palette } from "../GlobalStyles";
 import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
-import { abbreviatedMonths, splitUtcString } from "./utils";
+import {
+  abbreviatedMonths,
+  getMonthYearBasedOnMonth,
+  splitUtcString,
+} from "./utils";
 
 export type LineChartProps = {
   data: Datapoint[];
@@ -158,18 +162,14 @@ export function CategoryOverviewLineChart({
         onMouseMove={(e) => {
           if (e.activeLabel) {
             const { activeLabel } = e;
-            const [shortMonth, year] = activeLabel.split(" ");
-            const startingMonthIndex = abbreviatedMonths.indexOf(shortMonth);
-            const startingMonth = abbreviatedMonths[startingMonthIndex + 1];
-            const startingYear = +year - 1;
-            console.log(activeLabel);
+            const [month, year] = activeLabel.split(" ");
+            const { startDate } = getMonthYearBasedOnMonth({
+              monthStr: month,
+              yearStr: year,
+            });
             setHoveredDate((prev) => ({
               ...prev,
-              [metric.key]: convertShortDateToUTCDateString(
-                startingMonthIndex !== 0
-                  ? `${startingMonth} ${startingYear}`
-                  : activeLabel
-              ),
+              [metric.key]: convertShortDateToUTCDateString(startDate),
             }));
           }
         }}
@@ -178,20 +178,12 @@ export function CategoryOverviewLineChart({
         <ReferenceLine y={referenceLineUpperLimit} />
         <XAxis
           dataKey={(datapoint) => {
-            const { month, year } = splitUtcString(
-              // new Date(datapoint.start_date).getUTCMonth() !== 0
-              //   ? datapoint.end_date
-              //   :
-
-              datapoint.start_date
-            );
-            if (month !== "Jan") {
-              const startingMonthIndex = abbreviatedMonths.indexOf(month);
-              const startingMonth = abbreviatedMonths[startingMonthIndex - 1];
-              // return "Jul 2023";
-              return `${startingMonth} ${+year + 1}`;
-            }
-            return `${month} ${year}`;
+            const { month, year } = splitUtcString(datapoint.start_date);
+            const { displayDate } = getMonthYearBasedOnMonth({
+              monthStr: month,
+              yearStr: year,
+            });
+            return displayDate;
           }}
           style={axisTickStyle}
           tickLine

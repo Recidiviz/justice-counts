@@ -88,6 +88,35 @@ export const splitUtcString = (utcString: string) => {
   };
 };
 
+export const getMonthYearBasedOnMonth = ({
+  monthStr,
+  yearStr,
+}: {
+  monthStr: string;
+  yearStr: string;
+  monthIndex?: number;
+}) => {
+  const monthIndex = abbreviatedMonths.indexOf(monthStr);
+  const prevMonth = abbreviatedMonths[monthIndex - 1];
+  const nextMonth = abbreviatedMonths[monthIndex + 1];
+  const finalMonth = monthStr !== "Jan" ? prevMonth : monthStr;
+
+  const year = Number(yearStr);
+  const incrementedYear = year + 1;
+  const finalYear =
+    finalMonth !== abbreviatedMonths[0] ? incrementedYear : year;
+
+  const startDate =
+    monthStr !== "Jan" ? `${nextMonth} ${year - 1}` : `${monthStr} ${yearStr}`;
+
+  return {
+    month: finalMonth,
+    year: finalYear,
+    startDate,
+    displayDate: `${finalMonth} ${finalYear}`,
+  };
+};
+
 export const getDatapointDimensions = (datapoint: Datapoint) =>
   // gets the datapoint object minus the non-dimension keys "start_date", "end_date", "frequency", "dataVizMissingData"
   pickBy(
@@ -243,7 +272,7 @@ export const fillTimeGapsBetweenDatapoints = (
 
   const frequency = metricFrequency || data[0].frequency;
   const isAnnual = frequency === "ANNUAL";
-  const isNonCalendarYear = startingMonth !== 0;
+  const isNonCalendarYearMetric = startingMonth !== 0;
 
   // Represents how high the empty gap bars go - 1/3 of the highest value
   const defaultBarValue = getHighestTotalValue(data) / 3;
@@ -324,7 +353,7 @@ export const fillTimeGapsBetweenDatapoints = (
         // a current year (2024) will be displayed as 2025 and there will be a missing year between the earliest
         // datapoint and the earliest gap datapoint.
         isAnnual
-          ? isNonCalendarYear
+          ? isNonCalendarYearMetric
             ? currentYear - i - 1
             : currentYear - i
           : decrementedDate.getUTCFullYear()
@@ -371,7 +400,7 @@ export const fillTimeGapsBetweenDatapoints = (
         (timeFrame) =>
           !filteredDatapointTimeFrameSet.has(
             isAnnual
-              ? isNonCalendarYear
+              ? isNonCalendarYearMetric
                 ? timeFrame.getUTCFullYear() + 1
                 : timeFrame.getUTCFullYear()
               : `${timeFrame.getUTCMonth()} ${timeFrame.getUTCFullYear()}`
@@ -538,10 +567,12 @@ export const getDatapointBarLabel = (datapoint: Datapoint) => {
 export const getDatapointBarLabelMini = (datapoint: Datapoint) => {
   const { month, year } = splitUtcString(datapoint.start_date);
   if (datapoint.frequency === "ANNUAL") {
-    if (month !== "Jan") {
-      return `${+year + 1}`;
-    }
-    return `${year}`;
+    const { year: adjustedYear } = getMonthYearBasedOnMonth({
+      monthStr: month,
+      yearStr: year,
+    });
+
+    return `${adjustedYear}`;
   }
   return `${month} ${year}`;
 };
