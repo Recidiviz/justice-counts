@@ -28,11 +28,7 @@ import {
   LegendValue,
 } from "./CategoryOverviewBreakdown.styles";
 import { LineChartBreakdownProps } from "./types";
-import {
-  abbreviatedMonths,
-  getMonthYearBasedOnMonth,
-  splitUtcString,
-} from "./utils";
+import { getMonthYearBasedOnMonth, splitUtcString } from "./utils";
 
 /** TODO(#978) Refactor to handle multiple breakdowns */
 export const CategoryOverviewBreakdown: FunctionComponent<
