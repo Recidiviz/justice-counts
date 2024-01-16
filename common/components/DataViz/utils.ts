@@ -393,18 +393,18 @@ export const fillTimeGapsBetweenDatapoints = (
       );
       decrementedDate.setUTCMonth(decrementedDate.getUTCMonth() - i);
 
+      // Since non-calendar year (e.g. fiscal year) datapoints will be displayed by end year (start year + 1)
+      // instead of start year, we need to go back an extra year to counter balance the +1 forward shift, otherwise
+      // a current year (2024) will be displayed as 2025 and there will be a missing year between the earliest
+      // datapoint and the earliest gap datapoint.
+      const decrementedYear = isNonCalendarYearMetric
+        ? currentYear - i - 1
+        : currentYear - i;
+
       const date = createGMTDate(
         1,
         isAnnual ? startingMonth || 0 : decrementedDate.getUTCMonth(),
-        // Since non-calendar year (e.g. fiscal year) datapoints will be displayed by end year (start year + 1)
-        // instead of start year, we need to go back an extra year to counter balance the +1 forward shift, otherwise
-        // a current year (2024) will be displayed as 2025 and there will be a missing year between the earliest
-        // datapoint and the earliest gap datapoint.
-        isAnnual
-          ? isNonCalendarYearMetric
-            ? currentYear - i - 1
-            : currentYear - i
-          : decrementedDate.getUTCFullYear()
+        isAnnual ? decrementedYear : decrementedDate.getUTCFullYear()
       );
 
       return date;
@@ -444,16 +444,16 @@ export const fillTimeGapsBetweenDatapoints = (
 
   const gapDatapointTimeFrames = Array.from(
     new Set(
-      Array.from(timeFrameSet).filter(
-        (timeFrame) =>
-          !filteredDatapointTimeFrameSet.has(
-            isAnnual
-              ? isNonCalendarYearMetric
-                ? timeFrame.getUTCFullYear() + 1 // Increment gap year (+1) if the metric frequency is not calendar year
-                : timeFrame.getUTCFullYear()
-              : `${timeFrame.getUTCMonth()} ${timeFrame.getUTCFullYear()}`
-          )
-      )
+      Array.from(timeFrameSet).filter((timeFrame) => {
+        const currentTimeFrameYear = isNonCalendarYearMetric
+          ? timeFrame.getUTCFullYear() + 1 // Increment gap year (+1) if the metric frequency is not calendar year
+          : timeFrame.getUTCFullYear();
+        return !filteredDatapointTimeFrameSet.has(
+          isAnnual
+            ? currentTimeFrameYear
+            : `${timeFrame.getUTCMonth()} ${timeFrame.getUTCFullYear()}`
+        );
+      })
     )
   );
 
