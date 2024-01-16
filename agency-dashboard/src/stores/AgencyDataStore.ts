@@ -201,6 +201,7 @@ class AgencyDataStore {
         runInAction(() => {
           this.agency = result.agency;
           this.metrics = (result.metrics as Metric[]).filter(
+            // Filter out disabled metrics
             (metric) => metric.enabled
           );
         });
