@@ -1969,19 +1969,24 @@ describe("filterNullDatapoints", () => {
 
 describe("fillTimeGapsBetweenDatapoints", () => {
   test("fillTimeGapsBetweenDatapoints adds datapoints between data", () => {
-    expect(fillTimeGapsBetweenDatapoints(testDatapoints4, 0)).toStrictEqual(
-      testDatapoints4WithGapDatapoints
-    );
+    console.log(fillTimeGapsBetweenDatapoints(testDatapoints4, 0, "ANNUAL", 0));
+    expect(
+      fillTimeGapsBetweenDatapoints(testDatapoints4, 0, "ANNUAL", 0)
+    ).toStrictEqual(testDatapoints4WithGapDatapoints);
   });
   test("fillTimeGapsBetweenDatapoints adds datapoints between data plus additional earlier month padding", () => {
-    expect(fillTimeGapsBetweenDatapoints(testDatapoints4, 120)).toStrictEqual(
-      testDatapoints4WithGapDatapoints2
-    );
+    expect(
+      fillTimeGapsBetweenDatapoints(testDatapoints4, 120, "ANNUAL", 0)
+    ).toStrictEqual(testDatapoints4WithGapDatapoints2);
   });
 });
 
 describe("transformData", () => {
   test("putting it all together", () => {
+    console.log(
+      "::::",
+      transformDataForBarChart(testDatapoints5, 60, "Percentage")
+    );
     expect(
       transformDataForBarChart(testDatapoints5, 60, "Percentage")
     ).toStrictEqual(testDatapoints5Transformed);

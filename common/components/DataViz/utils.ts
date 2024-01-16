@@ -320,7 +320,7 @@ export const fillTimeGapsBetweenDatapoints = (
 
   const frequency = metricFrequency || data[0].frequency;
   const isAnnual = frequency === "ANNUAL";
-  const isNonCalendarYearMetric = startingMonth !== 0;
+  const isNonCalendarYearMetric = isAnnual && startingMonth !== 0;
 
   // Represents how high the empty gap bars go - 1/3 of the highest value
   const defaultBarValue = getHighestTotalValue(data) / 3;
@@ -448,10 +448,13 @@ export const fillTimeGapsBetweenDatapoints = (
         const currentTimeFrameYear = isNonCalendarYearMetric
           ? timeFrame.getUTCFullYear() + 1 // Increment gap year (+1) if the metric frequency is not calendar year
           : timeFrame.getUTCFullYear();
+
         return !filteredDatapointTimeFrameSet.has(
           isAnnual
             ? currentTimeFrameYear
-            : `${timeFrame.getUTCMonth()} ${timeFrame.getUTCFullYear()}`
+            : `${
+                abbreviatedMonths[timeFrame.getUTCMonth()]
+              } ${timeFrame.getUTCFullYear()}`
         );
       })
     )
