@@ -200,7 +200,10 @@ class AgencyDataStore {
         const result = await response.json();
         runInAction(() => {
           this.agency = result.agency;
-          this.metrics = result.metrics;
+          this.metrics = (result.metrics as Metric[]).filter(
+            // Filter out disabled metrics
+            (metric) => metric.enabled
+          );
         });
       } else {
         const error = await response.json();
