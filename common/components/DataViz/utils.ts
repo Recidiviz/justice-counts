@@ -385,12 +385,12 @@ export const fillTimeGapsBetweenDatapoints = (
   const timeFrameSet = new Set(timeFrameArray);
   const filteredDatapointTimeFrameSet = new Set(
     filteredDatapoints.map((dp) => {
-      const datapointStartDate = new Date(dp.start_date);
-      return isAnnual
-        ? datapointStartDate.getUTCMonth() !== 0
-          ? datapointStartDate.getUTCFullYear() + 1
-          : datapointStartDate.getUTCFullYear()
-        : `${datapointStartDate.getUTCMonth()} ${datapointStartDate.getUTCFullYear()}`;
+      const { month, year } = splitUtcString(dp.start_date);
+      const { year: adjustedYear } = getMonthYearBasedOnMonth({
+        monthStr: month,
+        yearStr: year,
+      });
+      return isAnnual ? adjustedYear : `${month} ${year}`;
     })
   );
 
@@ -401,7 +401,7 @@ export const fillTimeGapsBetweenDatapoints = (
           !filteredDatapointTimeFrameSet.has(
             isAnnual
               ? isNonCalendarYearMetric
-                ? timeFrame.getUTCFullYear() + 1
+                ? timeFrame.getUTCFullYear() + 1 // Increment gap year (+1) if the metric frequency is not calendar year
                 : timeFrame.getUTCFullYear()
               : `${timeFrame.getUTCMonth()} ${timeFrame.getUTCFullYear()}`
           )
