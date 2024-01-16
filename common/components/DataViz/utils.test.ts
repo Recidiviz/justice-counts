@@ -20,6 +20,8 @@ import {
   fillTimeGapsBetweenDatapoints,
   filterByTimeRange,
   filterNullDatapoints,
+  getMonthYearBasedOnStartingMonthStr,
+  getShortStartDateStrFromDisplayDate,
   incrementMonth,
   incrementYear,
   transformDataForBarChart,
@@ -1983,5 +1985,53 @@ describe("transformData", () => {
     expect(
       transformDataForBarChart(testDatapoints5, 60, "Percentage")
     ).toStrictEqual(testDatapoints5Transformed);
+  });
+});
+
+describe("getMonthYearBasedOnStartingMonthStr", () => {
+  test("returns same month and year given as input when the month is January", () => {
+    const { month, year, displayDate } = getMonthYearBasedOnStartingMonthStr({
+      monthStr: "Jan",
+      yearStr: "2024",
+    });
+    expect(month).toBe("Jan");
+    expect(year).toBe(2024);
+    expect(displayDate).toBe("Jan 2024");
+  });
+  test("returns adjusted month and year given as input when the month is not January", () => {
+    const { month, year, displayDate } = getMonthYearBasedOnStartingMonthStr({
+      monthStr: "Jul",
+      yearStr: "2024",
+    });
+    expect(month).toBe("Jun");
+    expect(year).toBe(2025);
+    expect(displayDate).toBe("Jun 2025");
+
+    const {
+      month: monthTwo,
+      year: yearTwo,
+      displayDate: displayDateTwo,
+    } = getMonthYearBasedOnStartingMonthStr({
+      monthStr: "Feb",
+      yearStr: "2021",
+    });
+    expect(monthTwo).toBe("Jan");
+    expect(yearTwo).toBe(2022);
+    expect(displayDateTwo).toBe("Jan 2022");
+  });
+});
+
+describe("getShortStartDateStrFromDisplayDate", () => {
+  test("returns start date string from a given display date", () => {
+    const calendarYearStartDate = getShortStartDateStrFromDisplayDate({
+      monthStr: "Jan",
+      yearStr: "2024",
+    });
+    expect(calendarYearStartDate).toBe("Jan 2024");
+    const nonCalendarYearStartDate = getShortStartDateStrFromDisplayDate({
+      monthStr: "Feb",
+      yearStr: "2024",
+    });
+    expect(nonCalendarYearStartDate).toBe("Mar 2023");
   });
 });

@@ -28,14 +28,14 @@ import {
   LegendValue,
 } from "./CategoryOverviewBreakdown.styles";
 import { LineChartBreakdownProps } from "./types";
-import { getMonthYearBasedOnMonth, splitUtcString } from "./utils";
+import { getMonthYearBasedOnStartingMonthStr, splitUtcString } from "./utils";
 
 /** TODO(#978) Refactor to handle multiple breakdowns */
 export const CategoryOverviewBreakdown: FunctionComponent<
   LineChartBreakdownProps
 > = ({ data, isFundingOrExpenses, dimensions, hoveredDate }) => {
   const { month, year } = splitUtcString(String(data.start_date));
-  const { displayDate } = getMonthYearBasedOnMonth({
+  const { displayDate } = getMonthYearBasedOnStartingMonthStr({
     monthStr: month,
     yearStr: year,
   });

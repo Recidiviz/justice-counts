@@ -88,7 +88,7 @@ export const splitUtcString = (utcString: string) => {
   };
 };
 
-export const getMonthYearBasedOnMonth = ({
+export const getMonthYearBasedOnStartingMonthStr = ({
   monthStr,
   yearStr,
 }: {
@@ -98,23 +98,33 @@ export const getMonthYearBasedOnMonth = ({
 }) => {
   const monthIndex = abbreviatedMonths.indexOf(monthStr);
   const prevMonth = abbreviatedMonths[monthIndex - 1];
-  const nextMonth = abbreviatedMonths[monthIndex + 1];
   const finalMonth = monthStr !== "Jan" ? prevMonth : monthStr;
 
   const year = Number(yearStr);
   const incrementedYear = year + 1;
-  const finalYear =
-    finalMonth !== abbreviatedMonths[0] ? incrementedYear : year;
-
-  const startDate =
-    monthStr !== "Jan" ? `${nextMonth} ${year - 1}` : `${monthStr} ${yearStr}`;
+  const finalYear = monthStr !== abbreviatedMonths[0] ? incrementedYear : year;
 
   return {
     month: finalMonth,
     year: finalYear,
-    startDate,
     displayDate: `${finalMonth} ${finalYear}`,
   };
+};
+
+export const getShortStartDateStrFromDisplayDate = ({
+  monthStr,
+  yearStr,
+}: {
+  monthStr: string;
+  yearStr: string;
+}) => {
+  const monthIndex = abbreviatedMonths.indexOf(monthStr);
+  const nextMonth = abbreviatedMonths[monthIndex + 1];
+  const year = Number(yearStr);
+  const startDate =
+    monthStr !== "Jan" ? `${nextMonth} ${year - 1}` : `${monthStr} ${yearStr}`;
+
+  return startDate;
 };
 
 export const getDatapointDimensions = (datapoint: Datapoint) =>
@@ -386,7 +396,7 @@ export const fillTimeGapsBetweenDatapoints = (
   const filteredDatapointTimeFrameSet = new Set(
     filteredDatapoints.map((dp) => {
       const { month, year } = splitUtcString(dp.start_date);
-      const { year: adjustedYear } = getMonthYearBasedOnMonth({
+      const { year: adjustedYear } = getMonthYearBasedOnStartingMonthStr({
         monthStr: month,
         yearStr: year,
       });
@@ -567,7 +577,7 @@ export const getDatapointBarLabel = (datapoint: Datapoint) => {
 export const getDatapointBarLabelMini = (datapoint: Datapoint) => {
   const { month, year } = splitUtcString(datapoint.start_date);
   if (datapoint.frequency === "ANNUAL") {
-    const { year: adjustedYear } = getMonthYearBasedOnMonth({
+    const { year: adjustedYear } = getMonthYearBasedOnStartingMonthStr({
       monthStr: month,
       yearStr: year,
     });

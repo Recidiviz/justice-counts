@@ -38,8 +38,8 @@ import { formatNumberForChart, groupBy } from "../../utils/helperUtils";
 import { palette } from "../GlobalStyles";
 import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
 import {
-  abbreviatedMonths,
-  getMonthYearBasedOnMonth,
+  getMonthYearBasedOnStartingMonthStr,
+  getShortStartDateStrFromDisplayDate,
   splitUtcString,
 } from "./utils";
 
@@ -163,7 +163,7 @@ export function CategoryOverviewLineChart({
           if (e.activeLabel) {
             const { activeLabel } = e;
             const [month, year] = activeLabel.split(" ");
-            const { startDate } = getMonthYearBasedOnMonth({
+            const startDate = getShortStartDateStrFromDisplayDate({
               monthStr: month,
               yearStr: year,
             });
@@ -179,7 +179,7 @@ export function CategoryOverviewLineChart({
         <XAxis
           dataKey={(datapoint) => {
             const { month, year } = splitUtcString(datapoint.start_date);
-            const { displayDate } = getMonthYearBasedOnMonth({
+            const { displayDate } = getMonthYearBasedOnStartingMonthStr({
               monthStr: month,
               yearStr: year,
             });
