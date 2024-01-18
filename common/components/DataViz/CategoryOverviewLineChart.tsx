@@ -38,7 +38,7 @@ import { formatNumberForChart, groupBy } from "../../utils/helperUtils";
 import { palette } from "../GlobalStyles";
 import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
 import {
-  getMonthYearBasedOnStartingMonthStr,
+  getDisplayMonthYearBasedOnStartingMonthStr,
   getShortStartDateStrFromDisplayDate,
   splitUtcString,
 } from "./utils";
@@ -179,7 +179,7 @@ export function CategoryOverviewLineChart({
         <XAxis
           dataKey={(datapoint) => {
             const { month, year } = splitUtcString(datapoint.start_date);
-            const { displayDate } = getMonthYearBasedOnStartingMonthStr({
+            const { displayDate } = getDisplayMonthYearBasedOnStartingMonthStr({
               monthStr: month,
               yearStr: year,
             });

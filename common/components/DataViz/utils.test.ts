@@ -20,7 +20,7 @@ import {
   fillTimeGapsBetweenDatapoints,
   filterByTimeRange,
   filterNullDatapoints,
-  getMonthYearBasedOnStartingMonthStr,
+  getDisplayMonthYearBasedOnStartingMonthStr,
   getShortStartDateStrFromDisplayDate,
   incrementMonth,
   incrementYear,
@@ -1988,21 +1988,23 @@ describe("transformData", () => {
   });
 });
 
-describe("getMonthYearBasedOnStartingMonthStr", () => {
+describe("getDisplayMonthYearBasedOnStartingMonthStr", () => {
   test("returns same month and year given as input when the month is January", () => {
-    const { month, year, displayDate } = getMonthYearBasedOnStartingMonthStr({
-      monthStr: "Jan",
-      yearStr: "2024",
-    });
+    const { month, year, displayDate } =
+      getDisplayMonthYearBasedOnStartingMonthStr({
+        monthStr: "Jan",
+        yearStr: "2024",
+      });
     expect(month).toBe("Jan");
     expect(year).toBe(2024);
     expect(displayDate).toBe("Jan 2024");
   });
   test("returns adjusted month and year given as input when the month is not January", () => {
-    const { month, year, displayDate } = getMonthYearBasedOnStartingMonthStr({
-      monthStr: "Jul",
-      yearStr: "2024",
-    });
+    const { month, year, displayDate } =
+      getDisplayMonthYearBasedOnStartingMonthStr({
+        monthStr: "Jul",
+        yearStr: "2024",
+      });
     expect(month).toBe("Jun");
     expect(year).toBe(2025);
     expect(displayDate).toBe("Jun 2025");
@@ -2011,7 +2013,7 @@ describe("getMonthYearBasedOnStartingMonthStr", () => {
       month: monthTwo,
       year: yearTwo,
       displayDate: displayDateTwo,
-    } = getMonthYearBasedOnStartingMonthStr({
+    } = getDisplayMonthYearBasedOnStartingMonthStr({
       monthStr: "Feb",
       yearStr: "2021",
     });

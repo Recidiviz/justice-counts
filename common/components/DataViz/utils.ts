@@ -113,7 +113,7 @@ export const splitUtcString = (utcString: string) => {
  *                        displayDate: {string} - adjusted date displayed as short month and year string (e.g. "Jan 2024")
  *                     }
  */
-export const getMonthYearBasedOnStartingMonthStr = ({
+export const getDisplayMonthYearBasedOnStartingMonthStr = ({
   monthStr,
   yearStr,
 }: {
@@ -127,7 +127,7 @@ export const getMonthYearBasedOnStartingMonthStr = ({
 
   const year = Number(yearStr);
   const incrementedYear = year + 1;
-  const finalYear = monthStr !== abbreviatedMonths[0] ? incrementedYear : year;
+  const finalYear = monthStr !== "Jan" ? incrementedYear : year;
 
   return {
     month: finalMonth,
@@ -143,7 +143,7 @@ export const getMonthYearBasedOnStartingMonthStr = ({
  * - For calendar year inputs (e.g. monthStr = "Jan", yearStr = "2024"), it will return the same date as the input
  * which in our example would be "Jan 2024".
  * - For non-calendar year inputs (e.g. monthStr = "Jul", yearStr = "2024"), it will return the date that represents
- * the beginning of this non-calendar year time period, which in our example would be "Jun 2023".
+ * the beginning of this non-calendar year time period, which in our example would be "Aug 2023".
  *
  * @param {string} monthStr - short month string
  * @param {string} yearStr - year string
@@ -434,10 +434,12 @@ export const fillTimeGapsBetweenDatapoints = (
   const filteredDatapointTimeFrameSet = new Set(
     filteredDatapoints.map((dp) => {
       const { month, year } = splitUtcString(dp.start_date);
-      const { year: adjustedYear } = getMonthYearBasedOnStartingMonthStr({
-        monthStr: month,
-        yearStr: year,
-      });
+      const { year: adjustedYear } = getDisplayMonthYearBasedOnStartingMonthStr(
+        {
+          monthStr: month,
+          yearStr: year,
+        }
+      );
       return isAnnual ? adjustedYear : `${month} ${year}`;
     })
   );
@@ -618,7 +620,7 @@ export const getDatapointBarLabel = (datapoint: Datapoint) => {
 export const getDatapointBarLabelMini = (datapoint: Datapoint) => {
   const { month, year } = splitUtcString(datapoint.start_date);
   if (datapoint.frequency === "ANNUAL") {
-    const { year: adjustedYear } = getMonthYearBasedOnStartingMonthStr({
+    const { year: adjustedYear } = getDisplayMonthYearBasedOnStartingMonthStr({
       monthStr: month,
       yearStr: year,
     });
