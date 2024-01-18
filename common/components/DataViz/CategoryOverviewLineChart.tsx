@@ -37,7 +37,11 @@ import { convertShortDateToUTCDateString } from "../../utils";
 import { formatNumberForChart, groupBy } from "../../utils/helperUtils";
 import { palette } from "../GlobalStyles";
 import { CategoryOverviewBreakdown } from "./CategoryOverviewBreakdown";
-import { splitUtcString } from "./utils";
+import {
+  getDisplayMonthYearBasedOnStartingMonthStr,
+  getShortStartDateStrFromDisplayDate,
+  splitUtcString,
+} from "./utils";
 
 export type LineChartProps = {
   data: Datapoint[];
@@ -158,9 +162,14 @@ export function CategoryOverviewLineChart({
         onMouseMove={(e) => {
           if (e.activeLabel) {
             const { activeLabel } = e;
+            const [month, year] = activeLabel.split(" ");
+            const startDate = getShortStartDateStrFromDisplayDate({
+              monthStr: month,
+              yearStr: year,
+            });
             setHoveredDate((prev) => ({
               ...prev,
-              [metric.key]: convertShortDateToUTCDateString(activeLabel),
+              [metric.key]: convertShortDateToUTCDateString(startDate),
             }));
           }
         }}
@@ -170,7 +179,11 @@ export function CategoryOverviewLineChart({
         <XAxis
           dataKey={(datapoint) => {
             const { month, year } = splitUtcString(datapoint.start_date);
-            return `${month} ${year}`;
+            const { displayDate } = getDisplayMonthYearBasedOnStartingMonthStr({
+              monthStr: month,
+              yearStr: year,
+            });
+            return displayDate;
           }}
           style={axisTickStyle}
           tickLine

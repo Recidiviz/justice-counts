@@ -88,6 +88,83 @@ export const splitUtcString = (utcString: string) => {
   };
 };
 
+/**
+ * Given a short month string and a year string, returns a metadata object that contains the
+ * adjusted reference month, year and display date string based on whether or not the given
+ * month begins in January.
+ *
+ * This is to ensure we display non-calendar year dates by their end date, and calendar year
+ * dates by their start date.
+ *
+ * - For calendar year inputs (e.g. monthStr = "Jan", yearStr = "2024"), it will return the
+ *   same date metadata as the input which in our example would be:
+ *     { month: "Jan", year: "2024", displayDate: "Jan 2024"}`.
+ * - For non-calendar year inputs (e.g. monthStr = "Jul", yearStr = "2024" - representing a
+ *   Jul 2024 - Jun 2025 time period), it will return the date metadata that represents the end
+ *   of this non-calendar year time period, which in our example would be:
+ *     { month: "Jun", year: "2025", displayDate: "Jun 2025"}
+ *
+ * @param {string} monthStr - short month string
+ * @param {string} yearStr - year string
+ * @returns {object} - an object representing the adjusted/non-adjusted date metadata:
+ *                     {
+ *                        month: {string} - short month string, same as input for calendar year, previous month for non-calendar year,
+ *                        year: {number} - year number, same as input for calendar year, next/following year for non-calendar year,,
+ *                        displayDate: {string} - adjusted date displayed as short month and year string (e.g. "Jan 2024")
+ *                     }
+ */
+export const getDisplayMonthYearBasedOnStartingMonthStr = ({
+  monthStr,
+  yearStr,
+}: {
+  monthStr: string;
+  yearStr: string;
+  monthIndex?: number;
+}) => {
+  const monthIndex = abbreviatedMonths.indexOf(monthStr);
+  const prevMonth = abbreviatedMonths[monthIndex - 1];
+  const finalMonth = monthStr !== "Jan" ? prevMonth : monthStr;
+
+  const year = Number(yearStr);
+  const incrementedYear = year + 1;
+  const finalYear = monthStr !== "Jan" ? incrementedYear : year;
+
+  return {
+    month: finalMonth,
+    year: finalYear,
+    displayDate: `${finalMonth} ${finalYear}`,
+  };
+};
+
+/**
+ * Given a short month string and a year string, returns a short month and year string representing
+ * the start date from the given input.
+ *
+ * - For calendar year inputs (e.g. monthStr = "Jan", yearStr = "2024"), it will return the same date as the input
+ * which in our example would be "Jan 2024".
+ * - For non-calendar year inputs (e.g. monthStr = "Jul", yearStr = "2024"), it will return the date that represents
+ * the beginning of this non-calendar year time period, which in our example would be "Aug 2023".
+ *
+ * @param {string} monthStr - short month string
+ * @param {string} yearStr - year string
+ * @returns {string} - "<short month> <year>" string
+ */
+export const getShortStartDateStrFromDisplayDate = ({
+  monthStr,
+  yearStr,
+}: {
+  monthStr: string;
+  yearStr: string;
+}) => {
+  const monthIndex = abbreviatedMonths.indexOf(monthStr);
+  const nextMonth = abbreviatedMonths[monthIndex + 1];
+  const year = Number(yearStr);
+  const startDate =
+    monthStr !== "Jan" ? `${nextMonth} ${year - 1}` : `${monthStr} ${yearStr}`;
+
+  return startDate;
+};
+
 export const getDatapointDimensions = (datapoint: Datapoint) =>
   // gets the datapoint object minus the non-dimension keys "start_date", "end_date", "frequency", "dataVizMissingData"
   pickBy(
@@ -243,6 +320,8 @@ export const fillTimeGapsBetweenDatapoints = (
 
   const frequency = metricFrequency || data[0].frequency;
   const isAnnual = frequency === "ANNUAL";
+  const isNonCalendarYearMetric = isAnnual && startingMonth !== 0;
+
   // Represents how high the empty gap bars go - 1/3 of the highest value
   const defaultBarValue = getHighestTotalValue(data) / 3;
   // Create the map of dimensions with zero values
@@ -314,10 +393,18 @@ export const fillTimeGapsBetweenDatapoints = (
       );
       decrementedDate.setUTCMonth(decrementedDate.getUTCMonth() - i);
 
+      // Since non-calendar year (e.g. fiscal year) datapoints will be displayed by end year (start year + 1)
+      // instead of start year, we need to go back an extra year to counter balance the +1 forward shift, otherwise
+      // a current year (2024) will be displayed as 2025 and there will be a missing year between the earliest
+      // datapoint and the earliest gap datapoint.
+      const decrementedYear = isNonCalendarYearMetric
+        ? currentYear - i - 1
+        : currentYear - i;
+
       const date = createGMTDate(
         1,
         isAnnual ? startingMonth || 0 : decrementedDate.getUTCMonth(),
-        isAnnual ? currentYear - i : decrementedDate.getUTCFullYear()
+        isAnnual ? decrementedYear : decrementedDate.getUTCFullYear()
       );
 
       return date;
@@ -346,24 +433,35 @@ export const fillTimeGapsBetweenDatapoints = (
   const timeFrameSet = new Set(timeFrameArray);
   const filteredDatapointTimeFrameSet = new Set(
     filteredDatapoints.map((dp) => {
-      const datapointStartDate = new Date(dp.start_date);
-      return isAnnual
-        ? datapointStartDate.getUTCFullYear()
-        : `${datapointStartDate.getUTCMonth()} ${datapointStartDate.getUTCFullYear()}`;
+      const { month, year } = splitUtcString(dp.start_date);
+      const { year: adjustedYear } = getDisplayMonthYearBasedOnStartingMonthStr(
+        {
+          monthStr: month,
+          yearStr: year,
+        }
+      );
+      return isAnnual ? adjustedYear : `${month} ${year}`;
     })
   );
+
   const gapDatapointTimeFrames = Array.from(
     new Set(
-      Array.from(timeFrameSet).filter(
-        (timeFrame) =>
-          !filteredDatapointTimeFrameSet.has(
-            isAnnual
-              ? timeFrame.getUTCFullYear()
-              : `${timeFrame.getUTCMonth()} ${timeFrame.getUTCFullYear()}`
-          )
-      )
+      Array.from(timeFrameSet).filter((timeFrame) => {
+        const currentTimeFrameYear = isNonCalendarYearMetric
+          ? timeFrame.getUTCFullYear() + 1 // Increment gap year (+1) if the metric frequency is not calendar year
+          : timeFrame.getUTCFullYear();
+
+        return !filteredDatapointTimeFrameSet.has(
+          isAnnual
+            ? currentTimeFrameYear
+            : `${
+                abbreviatedMonths[timeFrame.getUTCMonth()]
+              } ${timeFrame.getUTCFullYear()}`
+        );
+      })
     )
   );
+
   const gapDatapoints = gapDatapointTimeFrames.map((date) => {
     const endYearOrIncrementedEndYear =
       date.getUTCMonth() === 11
@@ -522,7 +620,12 @@ export const getDatapointBarLabel = (datapoint: Datapoint) => {
 export const getDatapointBarLabelMini = (datapoint: Datapoint) => {
   const { month, year } = splitUtcString(datapoint.start_date);
   if (datapoint.frequency === "ANNUAL") {
-    return `${year}`;
+    const { year: adjustedYear } = getDisplayMonthYearBasedOnStartingMonthStr({
+      monthStr: month,
+      yearStr: year,
+    });
+
+    return `${adjustedYear}`;
   }
   return `${month} ${year}`;
 };
