@@ -261,9 +261,13 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       ]);
 
       /** If `isCopySuperagencyMetricSettingsSelected` is true, then trigger the copying process */
-      if (agencyProvisioningUpdates.super_agency_id && userStore.email) {
+      if (
+        agencyProvisioningUpdates.is_superagency &&
+        userStore.email &&
+        hasChildAgencies
+      ) {
         copySuperagencyMetricSettingsToChildAgencies(
-          String(agencyProvisioningUpdates.super_agency_id),
+          String(agencyProvisioningUpdates.agency_id),
           userStore.email,
           ["ALL"]
         );
@@ -428,6 +432,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         agencyProvisioningUpdates.child_agency_ids.filter((id) =>
           selectedChildAgencyIDs.has(id)
         ).length === 0);
+    const hasChildAgencies = selectedChildAgencyIDs.size > 0;
     /**
      * An update has been made when the agency's `super_agency_id` does not match the agency's superagency id before
      * the modal was open.
@@ -449,19 +454,20 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
      * selection, and team member additions/deletions/role updates, or a newly created agency has no input for both name and state.
      */
     const isSaveDisabled =
-      isSaveInProgress ||
-      !hasSystems ||
-      (selectedAgency
-        ? !hasNameUpdate &&
-          !hasStateUpdate &&
-          !hasCountyUpdates &&
-          !hasSystemUpdates &&
-          !hasDashboardEnabledStatusUpdate &&
-          !hasIsSuperagencyUpdate &&
-          !hasChildAgencyUpdates &&
-          !hasSuperagencyUpdate &&
-          !hasTeamMemberOrRoleUpdates
-        : !(hasNameUpdate && hasStateUpdate && hasSystems));
+      !isCopySuperagencyMetricSettingsSelected && // Allows user to save if this is all they do is select that they want to copy superagency metric settings
+      (isSaveInProgress ||
+        !hasSystems ||
+        (selectedAgency
+          ? !hasNameUpdate &&
+            !hasStateUpdate &&
+            !hasCountyUpdates &&
+            !hasSystemUpdates &&
+            !hasDashboardEnabledStatusUpdate &&
+            !hasIsSuperagencyUpdate &&
+            !hasChildAgencyUpdates &&
+            !hasSuperagencyUpdate &&
+            !hasTeamMemberOrRoleUpdates
+          : !(hasNameUpdate && hasStateUpdate && hasSystems)));
 
     /** Automatically adds CSG and Recidiviz users to a newly created agency with the proper roles */
     useEffect(() => {
@@ -857,32 +863,33 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                             Child agencies
                           </Styled.ChipContainerLabel>
                         </Styled.InputLabelWrapper>
-                        <Styled.InputLabelWrapper flexRow>
-                          <input
-                            id="copy-superagency-metric-settings"
-                            name="copy-superagency-metric-settings"
-                            type="checkbox"
-                            onChange={() =>
-                              setIsCopySuperagencyMetricSettingsSelected(
-                                (prev) => !prev
-                              )
-                            }
-                            checked={isCopySuperagencyMetricSettingsSelected}
-                            disabled={!hasSystems}
-                          />
-                          <label htmlFor="copy-superagency-metric-settings">
-                            Copy metric settings to child agencies
-                          </label>
-                          {isCopySuperagencyMetricSettingsSelected && (
-                            <Styled.WarningMessage>
-                              Warning! This action cannot be undone. After
-                              clicking <strong>Save</strong>, the copying
-                              process will begin and you will receive an email
-                              confirmation once the metrics settings have been
-                              copied over.
-                            </Styled.WarningMessage>
-                          )}
-                        </Styled.InputLabelWrapper>
+                        {hasSystems && hasChildAgencies && (
+                          <Styled.InputLabelWrapper flexRow>
+                            <input
+                              id="copy-superagency-metric-settings"
+                              name="copy-superagency-metric-settings"
+                              type="checkbox"
+                              onChange={() =>
+                                setIsCopySuperagencyMetricSettingsSelected(
+                                  (prev) => !prev
+                                )
+                              }
+                              checked={isCopySuperagencyMetricSettingsSelected}
+                            />
+                            <label htmlFor="copy-superagency-metric-settings">
+                              Copy metric settings to child agencies
+                            </label>
+                            {isCopySuperagencyMetricSettingsSelected && (
+                              <Styled.WarningMessage>
+                                Warning! This action cannot be undone. After
+                                clicking <strong>Save</strong>, the copying
+                                process will begin and you will receive an email
+                                confirmation once the metrics settings have been
+                                copied over.
+                              </Styled.WarningMessage>
+                            )}
+                          </Styled.InputLabelWrapper>
+                        )}
                       </>
                     )}
 
