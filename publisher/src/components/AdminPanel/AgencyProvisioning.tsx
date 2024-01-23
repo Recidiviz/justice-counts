@@ -260,8 +260,12 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         })),
       ]);
 
-      /** If `isCopySuperagencyMetricSettingsSelected` is true, then trigger the copying process */
+      /**
+       * If `isCopySuperagencyMetricSettingsSelected` is true (and that it's a superagency w/ child agencies,
+       * and there is a valid user email), then trigger the copying process
+       */
       if (
+        isCopySuperagencyMetricSettingsSelected &&
         agencyProvisioningUpdates.is_superagency &&
         userStore.email &&
         hasChildAgencies

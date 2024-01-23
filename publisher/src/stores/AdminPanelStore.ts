@@ -222,7 +222,7 @@ class AdminPanelStore {
   async copySuperagencyMetricSettingsToChildAgencies(
     superagencyID: string,
     userEmail: string,
-    metricDefinitionKeySubset: string[]
+    metricDefinitionKeySubset: string[] // A list of metric definition keys for future use to update a subset of metrics
   ) {
     try {
       const response = (await this.api.request({
