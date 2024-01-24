@@ -35,7 +35,7 @@ jobs:
         run: |
           gcloud --quiet builds triggers run Deploy-to-playtesting \
           --branch=main \
-          --substitutions _SERVICE_NAME="publisher-web",_URL_TAG="test",_SUBDIRECTORY=playtesting,_FRONTEND_URL=https://github.com/Recidiviz/justice-counts/archive/main.tar.gz
+          --substitutions _SERVICE_NAME="publisher-web",_URL_TAG="test",_SUBDIRECTORY=playtesting,_FRONTEND_URL=https://github.com/Recidiviz/justice-counts/archive/${{ steps.extract_branch.outputs.branch }}.tar.gz
 
       # --substitutions _SERVICE_NAME=${{ github.event.inputs.service_name }},_URL_TAG=${{ github.event.inputs.url_tag }},_SUBDIRECTORY=playtesting,_FRONTEND_URL=https://github.com/Recidiviz/justice-counts/archive/main.tar.gz
      
