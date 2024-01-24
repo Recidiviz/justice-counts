@@ -45,6 +45,7 @@ jobs:
         id: extract_branch
       - name: Start Deploy-to-playtesting Cloud Build trigger
         run: |
+          gcloud config set account justice-counts-staging@justice-counts-staging.iam.gserviceaccount.com
           gcloud auth print-access-token
           gcloud --quiet builds triggers run Deploy-to-playtesting \
           --branch=${{ steps.extract_branch.outputs.branch }} \
