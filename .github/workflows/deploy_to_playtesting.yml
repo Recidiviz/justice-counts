@@ -3,20 +3,6 @@ name: Deploy to Playtest
 on:
   pull_request:
     types: [opened, synchronize]
-  # workflow_dispatch:
-  #   inputs:
-  #     service_name:
-  #       description: "Service name."
-  #       required: true
-  #       default: "publisher-web"
-  #       type: choice
-  #       options:
-  #         - publisher-web
-  #         - agency-dashboard-web
-  #     url_tag:
-  #       description: "Playtest URL tag. Must first be a registered Publisher Auth0 URL."
-  #       required: true
-  #       default: "test"
 
 jobs:
   playtest:
