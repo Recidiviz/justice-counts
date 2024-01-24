@@ -335,7 +335,7 @@ export const UploadErrorsWarnings: React.FC<UploadErrorsWarningsProps> = ({
         </span>{" "}
         {SYSTEM_LOWERCASE} (
         <a href={`/assets/${systemFileName}`} download={systemFileName}>
-          download example
+          download template
         </a>
         )
       </>

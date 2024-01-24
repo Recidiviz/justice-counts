@@ -234,12 +234,12 @@ export const GeneralInstructions: React.FC<
         automation on our end to easily upload this data into our platform.
       </p>
 
-      <h3>Examples</h3>
+      <h3>Templates</h3>
 
       <p>
-        Example spreadsheets can be found below. We suggest that you download
-        the example and review it, and then read the instructions below for more
-        details.
+        Template spreadsheets can be found below. We suggest that you download
+        the template and review it, and then read the instructions below for
+        more details.
       </p>
 
       <ButtonWrapper>
@@ -336,9 +336,9 @@ export const GeneralInstructions: React.FC<
       <p>
         If you are uploading an Excel workbook, we require that each sheet is
         given a standard name.{" "}
-        <b>Refer to your example file for the valid sheet names. </b> If you are
-        uploading a set of CSV files, their filenames names should also exactly
-        match these sheet names (e.g. admissions.csv).
+        <b>Refer to your template file for the valid sheet names. </b> If you
+        are uploading a set of CSV files, their filenames names should also
+        exactly match these sheet names (e.g. admissions.csv).
       </p>
       <p>
         All sheets will have columns for <i>year</i> and <i>value</i>. Monthly
@@ -446,14 +446,14 @@ export const GeneralInstructions: React.FC<
       <p>
         We require that each sheet and column is given a standard name.{" "}
         <b>
-          Refer to your example file for the name of the new sheet, the name of
+          Refer to your template file for the name of the new sheet, the name of
           the new column for category names, and the valid values for this
           column.
         </b>
       </p>
       <p>
         <b>
-          Please only provide valid category names (as seen in your example
+          Please only provide valid category names (as seen in your template
           file) in the new column.{" "}
         </b>
         If your agency categorizes the metric differently, group any unmatched
