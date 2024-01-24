@@ -221,6 +221,7 @@ class AdminPanelStore {
 
   async copySuperagencyMetricSettingsToChildAgencies(
     superagencyID: string,
+    agencyName: string,
     userEmail: string,
     metricDefinitionKeySubset: string[] // A list of metric definition keys for future use to update a subset of metrics
   ) {
@@ -229,6 +230,7 @@ class AdminPanelStore {
         path: `/admin/agency/${superagencyID}/child-agency/copy`,
         method: "POST",
         body: {
+          agency_name: agencyName,
           user_email: userEmail,
           metric_definition_key_subset: metricDefinitionKeySubset,
         },

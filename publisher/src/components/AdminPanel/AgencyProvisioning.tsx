@@ -272,6 +272,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       ) {
         copySuperagencyMetricSettingsToChildAgencies(
           String(agencyProvisioningUpdates.agency_id),
+          agencyProvisioningUpdates.name,
           userStore.email,
           ["ALL"]
         );
