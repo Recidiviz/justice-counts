@@ -21,8 +21,8 @@ on:
 jobs:
   playtest:
     permissions:
-      contents: read
-      id-token: write
+      contents: 'read'
+      id-token: 'write'
     name: Deploy to Playtest
     runs-on: ubuntu-latest
     steps:
@@ -37,13 +37,14 @@ jobs:
       - uses: google-github-actions/setup-gcloud@v1
         with:
           version: latest
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
       - name: Extract Branch Name
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
       - name: Start Deploy-to-playtesting Cloud Build trigger
         run: |
-          gcloud auth login
           gcloud --quiet builds triggers run Deploy-to-playtesting \
           --branch=${{ steps.extract_branch.outputs.branch }} \
           --substitutions _SERVICE_NAME="publisher-web",_URL_TAG="test",_SUBDIRECTORY=playtesting,_FRONTEND_URL=https://github.com/Recidiviz/justice-counts/archive/main.tar.gz
