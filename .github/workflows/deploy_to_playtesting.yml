@@ -32,7 +32,7 @@ jobs:
         uses: "google-github-actions/auth@v2"
         with:
           service_account: justice-counts-staging@justice-counts-staging.iam.gserviceaccount.com
-          workload_identity_provider: justice-counts-staging@justice-counts-staging.iam.gserviceaccount.com
+          workload_identity_provider: projects/840995502642/locations/global/workloadIdentityPools/github/
           project_id: "justice-counts-staging"
       - uses: google-github-actions/setup-gcloud@v1
         with:
