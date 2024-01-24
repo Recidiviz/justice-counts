@@ -458,7 +458,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
      * selection, and team member additions/deletions/role updates, or a newly created agency has no input for both name and state.
      */
     const isSaveDisabled =
-      !isCopySuperagencyMetricSettingsSelected && // Allows user to save if this is all they do is select that they want to copy superagency metric settings
+      !isCopySuperagencyMetricSettingsSelected && // Allows user to save if all they do is select that they want to copy superagency metric settings
       (isSaveInProgress ||
         !hasSystems ||
         (selectedAgency
@@ -881,7 +881,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                               checked={isCopySuperagencyMetricSettingsSelected}
                             />
                             <label htmlFor="copy-superagency-metric-settings">
-                              Copy metric settings to child agencies
+                              Copy all metric settings to child agencies
                             </label>
                             {isCopySuperagencyMetricSettingsSelected && (
                               <Styled.WarningMessage>
