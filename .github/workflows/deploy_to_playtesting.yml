@@ -49,5 +49,5 @@ jobs:
       - name: Bot Comment
         if: ${{ success() }}
         run: gh pr comment ${{ steps.extract_branch.outputs.branch }} -b "Playtest deployment was successfully triggered. Full deployment usually takes 5 minutes. Your playtest link is https://${{ github.event.inputs.url_tag }}---publisher-web-b47yvyxs3q-uc.a.run.app/"
-        env:
-          GITHUB_TOKEN: ${{secrets.HELPERBOT_TOKEN}}
+        # env:
+        #   GITHUB_TOKEN: ${{secrets.HELPERBOT_TOKEN}}
