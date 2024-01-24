@@ -22,6 +22,7 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled, { css, keyframes } from "styled-components/macro";
 
+import { ReactComponent as TrashSVG } from "../assets/icons8-trash.svg";
 import {
   InteractiveSearchListAction,
   InteractiveSearchListActions,
@@ -75,6 +76,29 @@ export const ScrollableContainer = styled.div`
   padding-right: 16px;
 `;
 
+export const TrashIcon = styled(TrashSVG)`
+  width: 24px;
+  position: absolute;
+  bottom: 10px;
+  right: 16px;
+  display: none;
+
+  fill: ${palette.solid.red};
+  border: 1px solid ${palette.solid.red};
+  border-radius: 3px;
+  margin-top: 3px;
+  padding: 0 4px;
+  transition: 0.2s ease;
+
+  div:hover > & {
+    display: block;
+  }
+
+  &:hover {
+    background: ${palette.highlight.red};
+  }
+`;
+
 /** Modal */
 
 export const ModalWrapper = styled.div``;
@@ -115,6 +139,7 @@ export const ModalActionButtons = styled.div`
   align-items: center;
   justify-content: space-between;
   padding-top: 16px;
+  border-top: 1px solid ${palette.highlight.grey2};
 `;
 
 export const SaveCancelButtonsWrapper = styled.div`
@@ -547,6 +572,7 @@ export const Card = styled.div`
   border-radius: 3px;
   padding: 16px;
   transition: 0.2s ease;
+  position: relative;
 
   &:hover {
     cursor: pointer;

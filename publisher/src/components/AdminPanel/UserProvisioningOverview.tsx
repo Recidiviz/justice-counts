@@ -51,6 +51,8 @@ export const UserProvisioningOverview = observer(() => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeSecondaryModal, setActiveSecondaryModal] =
     useState<SettingType>();
+  const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
+    useState<boolean>(false);
 
   const [searchInput, setSearchInput] = useState<string>("");
 
@@ -124,6 +126,28 @@ export const UserProvisioningOverview = observer(() => {
         </>
       )}
 
+      {/* Delete User Confirmation Modal */}
+      {showDeleteConfirmationModal && (
+        <Modal
+          modalType="alert"
+          title="Are you sure you want to delete this user?"
+          buttons={[
+            {
+              label: "Cancel",
+              onClick: () => {
+                setShowDeleteConfirmationModal(false);
+              },
+            },
+            {
+              label: "Yes, delete user",
+              onClick: () => {
+                console.log("Call delete endpoint");
+              },
+            },
+          ]}
+        />
+      )}
+
       {/* Settings Bar */}
       <Styled.SettingsBar>
         {/* Search */}
@@ -178,9 +202,16 @@ export const UserProvisioningOverview = observer(() => {
                       <Styled.Chip key={agency.id}>{agency.name}</Styled.Chip>
                     ))}
                   </Styled.AgenciesWrapper>
+
                   <Styled.NumberOfAgencies>
                     {userAgencies.length} agencies
                   </Styled.NumberOfAgencies>
+                  <Styled.TrashIcon
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowDeleteConfirmationModal(true);
+                    }}
+                  />
                 </Styled.Card>
               );
             })}
