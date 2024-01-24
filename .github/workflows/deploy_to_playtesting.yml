@@ -41,13 +41,16 @@ jobs:
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
-      # - name: Start Deploy-to-playtesting Cloud Build trigger
-      #   run: |
-      #     gcloud --quiet builds triggers run Deploy-to-playtesting \
-      #     --branch=${{ steps.extract_branch.outputs.branch }} \
-      #     --substitutions _SERVICE_NAME=${{ github.event.inputs.service_name }},_URL_TAG=${{ github.event.inputs.url_tag }},_SUBDIRECTORY=playtesting,_FRONTEND_URL=https://github.com/Recidiviz/justice-counts/archive/main.tar.gz
-      - name: Bot Comment
-        if: ${{ success() }}
-        run: gh pr comment ${{ steps.extract_branch.outputs.branch }} -b "Playtest deployment was successfully triggered. Full deployment usually takes 5 minutes. Your playtest link is https://${{ github.event.inputs.url_tag }}---publisher-web-b47yvyxs3q-uc.a.run.app/"
+      - name: Start Deploy-to-playtesting Cloud Build trigger
+        run: |
+          gcloud --quiet builds triggers run Deploy-to-playtesting \
+          --branch=${{ steps.extract_branch.outputs.branch }} \
+          --substitutions _SERVICE_NAME="publisher-web",_URL_TAG="test",_SUBDIRECTORY=playtesting,_FRONTEND_URL=https://github.com/Recidiviz/justice-counts/archive/main.tar.gz
+
+      # --substitutions _SERVICE_NAME=${{ github.event.inputs.service_name }},_URL_TAG=${{ github.event.inputs.url_tag }},_SUBDIRECTORY=playtesting,_FRONTEND_URL=https://github.com/Recidiviz/justice-counts/archive/main.tar.gz
+     
+      # - name: Bot Comment
+      #   if: ${{ success() }}
+      #   run: gh pr comment ${{ steps.extract_branch.outputs.branch }} -b "Playtest deployment was successfully triggered. Full deployment usually takes 5 minutes. Your playtest link is https://${{ github.event.inputs.url_tag }}---publisher-web-b47yvyxs3q-uc.a.run.app/"
         # env:
         #   GITHUB_TOKEN: ${{secrets.HELPERBOT_TOKEN}}
