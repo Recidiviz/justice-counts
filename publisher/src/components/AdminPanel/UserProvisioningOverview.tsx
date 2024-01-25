@@ -24,6 +24,7 @@ import React, { useState } from "react";
 
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
+import { gateToAllowedEnvironment } from "../../utils/featureFlags";
 import { Loading } from "../Loading";
 import {
   AgencyProvisioning,
@@ -35,7 +36,6 @@ import {
   UserWithAgenciesByID,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
-import { gateToAllowedEnvironment } from "../../utils/featureFlags";
 
 export const UserProvisioningOverview = observer(() => {
   const { adminPanelStore, api } = useStore();
