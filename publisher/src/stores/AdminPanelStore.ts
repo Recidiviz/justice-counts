@@ -291,9 +291,7 @@ class AdminPanelStore {
       return response;
     } catch (error) {
       if (error instanceof Error)
-        return new Error(
-          "There was an issue saving user provisioning updates."
-        );
+        return new Error(`There was an issue deleting user ID ${userID}.`);
     }
   }
 
