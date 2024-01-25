@@ -1,8 +1,20 @@
 name: Deploy to Playtest
 
 on:
-  pull_request:
-    types: [opened, synchronize]
+  workflow_dispatch:
+    inputs:
+      service_name:
+        description: "Service name."
+        required: true
+        default: "publisher-web"
+        type: choice
+        options:
+          - publisher-web
+          - agency-dashboard-web
+      url_tag:
+        description: "Playtest URL tag. Must first be a registered Publisher Auth0 URL."
+        required: true
+        default: "test"
 
 jobs:
   playtest:
@@ -32,10 +44,9 @@ jobs:
         run: |
           gcloud --quiet builds triggers run Deploy-to-playtesting \
           --branch=main \
-          --substitutions _SERVICE_NAME="publisher-web",_URL_TAG="test",_SUBDIRECTORY=playtesting,_FRONTEND_URL=https://github.com/Recidiviz/justice-counts/archive/${{ steps.extract_branch.outputs.branch }}.tar.gz
-      # --substitutions _SERVICE_NAME=${{ github.event.inputs.service_name }},_URL_TAG=${{ github.event.inputs.url_tag }},_SUBDIRECTORY=playtesting,_FRONTEND_URL=https://github.com/Recidiviz/justice-counts/archive/main.tar.gz
+          --substitutions _SERVICE_NAME=${{ github.event.inputs.service_name }},_URL_TAG=${{ github.event.inputs.url_tag }},_SUBDIRECTORY=playtesting,_FRONTEND_URL=https://github.com/Recidiviz/justice-counts/archive/${{ steps.extract_branch.outputs.branch }}.tar.gz
       - name: Bot Comment
         if: ${{ success() }}
-        run: gh pr comment ${{ steps.extract_branch.outputs.branch }} -b "Playtest deployment was successfully triggered. Full deployment usually takes 5 minutes. Your playtest link is https://${{ github.event.inputs.url_tag }}---publisher-web-b47yvyxs3q-uc.a.run.app/"
+        run: gh pr comment ${{ steps.extract_branch.outputs.branch }} -b "Playtest deployment was successfully triggered. Full deployment usually takes 5 minutes. Your playtest link is https://${{ github.event.inputs.url_tag }}---${{ github.event.inputs.service_name }}-b47yvyxs3q-uc.a.run.app/"
         env:
           GITHUB_TOKEN: ${{secrets.GH_HELPERBOT_TOKEN}}
