@@ -228,10 +228,10 @@ export const UserProvisioningOverview = observer(() => {
                       <Styled.Chip key={agency.id}>{agency.name}</Styled.Chip>
                     ))}
                   </Styled.AgenciesWrapper>
-
                   <Styled.NumberOfAgencies>
                     {userAgencies.length} agencies
                   </Styled.NumberOfAgencies>
+                  {/* Delete Users Button */}
                   <Styled.TrashIcon
                     onClick={(e) => {
                       e.stopPropagation();
