@@ -100,6 +100,7 @@ export interface UserAgency {
   team: AgencyTeamMember[];
   is_superagency: boolean;
   is_dashboard_enabled: boolean;
+  super_agency_id: number | null | undefined;
 }
 
 export type ReportFrequency = "MONTHLY" | "ANNUAL";

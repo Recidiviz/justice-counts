@@ -54,6 +54,11 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
           "the agency you are currently viewing"}
         . When you unsubscribe you will no longer receive any emails for this
         agency.
+        <br />
+        <br />
+        These email reminders will currently be sent on the 15th of each month.
+        In an upcoming release, you will be able to choose when the email
+        reminders are sent.
       </AgencySettingsBlockDescription>
     </AgencySettingsBlock>
   );
