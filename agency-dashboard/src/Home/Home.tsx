@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { slugify } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -67,9 +66,7 @@ export const Home = observer(() => {
         {agenciesMetadataSortedByName.map((agency) => (
           <Styled.AgencyDetailsWrapper
             key={agency.id}
-            onClick={() =>
-              navigate(`/agency/${encodeURIComponent(slugify(agency.name))}`)
-            }
+            onClick={() => navigate(`/agency/${encodeURI(agency.name)}`)}
           >
             <Styled.AgencyName>{agency.name}</Styled.AgencyName>
             <Styled.NumberOfPublishedMetrics>

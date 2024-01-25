@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { slugify } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { PropsWithChildren } from "react";
 
@@ -65,4 +64,4 @@ export const generateDashboardURL = (
 ) =>
   `https://dashboard-${
     env !== "production" ? "staging" : "demo"
-  }.justice-counts.org/agency/${slugify(agencyName || "")}`;
+  }.justice-counts.org/agency/${encodeURI(agencyName || "")}`;
