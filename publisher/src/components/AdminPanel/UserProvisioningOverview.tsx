@@ -99,13 +99,22 @@ export const UserProvisioningOverview = observer(() => {
     updateUserAgencies(Object.keys(selectedUser.agencies).map((id) => +id));
     openModal();
   };
-  const handleDeleteUser = (userID: string | number) => {
-    deleteUser(String(userID));
-    showToast({
-      message: `${usersByID[userID][0].name} has been deleted.`,
-      check: true,
-    });
+  const handleDeleteUser = async (userID: string | number) => {
     setDeleteConfirmation({ show: false });
+    const response = (await deleteUser(String(userID))) as Response;
+
+    if (response.status !== 200) {
+      showToast({
+        message: `${usersByID[userID][0].name} has been deleted.`,
+        check: true,
+      });
+      return;
+    }
+    showToast({
+      message: `${usersByID[userID][0].name} could not be deleted. Please reach out to a Recidiviz team member for assistance.`,
+      color: "red",
+      timeout: 3500,
+    });
   };
 
   if (loading) {

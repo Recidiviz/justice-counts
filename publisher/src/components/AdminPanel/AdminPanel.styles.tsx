@@ -77,12 +77,11 @@ export const ScrollableContainer = styled.div`
 `;
 
 export const TrashIcon = styled(TrashSVG)`
+  display: none;
   width: 24px;
   position: absolute;
   bottom: 10px;
   right: 16px;
-  display: none;
-
   fill: ${palette.solid.red};
   border: 1px solid ${palette.solid.red};
   border-radius: 3px;
