@@ -27,6 +27,7 @@ import AdminPanelStore from "../../stores/AdminPanelStore";
 import { Loading } from "../Loading";
 import {
   AgencyProvisioning,
+  Environment,
   Setting,
   SettingType,
   UserKey,
@@ -34,9 +35,10 @@ import {
   UserWithAgenciesByID,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
+import { gateToAllowedEnvironment } from "../../utils/featureFlags";
 
 export const UserProvisioningOverview = observer(() => {
-  const { adminPanelStore } = useStore();
+  const { adminPanelStore, api } = useStore();
   const {
     loading,
     users,
@@ -232,12 +234,18 @@ export const UserProvisioningOverview = observer(() => {
                     {userAgencies.length} agencies
                   </Styled.NumberOfAgencies>
                   {/* Delete Users Button */}
-                  <Styled.TrashIcon
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDeleteConfirmation({ show: true, user });
-                    }}
-                  />
+                  {/* TODO(#1156) - Ungate feature */}
+                  {gateToAllowedEnvironment(api.environment, [
+                    Environment.LOCAL,
+                    Environment.STAGING,
+                  ]) && (
+                    <Styled.TrashIcon
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteConfirmation({ show: true, user });
+                      }}
+                    />
+                  )}
                 </Styled.Card>
               );
             })}
