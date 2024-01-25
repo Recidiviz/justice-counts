@@ -14,29 +14,30 @@ jobs:
     steps:
       - name: Checkout
         uses: "actions/checkout@v4"
-      - name: Authorize Github Actions
-        uses: "google-github-actions/auth@v2"
-        with:
-          service_account: ${{ secrets.JUSTICE_COUNTS_WIP_SERVICE_ACCOUNT }}
-          workload_identity_provider: ${{ secrets.JUSTICE_COUNTS_WIP_ID }}
-          project_id: "justice-counts-staging"
-      - uses: google-github-actions/setup-gcloud@v1
-        with:
-          version: latest
+      # - name: Authorize Github Actions
+      #   uses: "google-github-actions/auth@v2"
+      #   with:
+      #     service_account: ${{ secrets.JUSTICE_COUNTS_WIP_SERVICE_ACCOUNT }}
+      #     workload_identity_provider: ${{ secrets.JUSTICE_COUNTS_WIP_ID }}
+      #     project_id: "justice-counts-staging"
+      # - uses: google-github-actions/setup-gcloud@v1
+      #   with:
+      #     version: latest
       - name: Extract Branch Name
         shell: bash
         run: |
           echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
-      - name: Start Deploy-to-playtesting Cloud Build trigger
-        run: |
-          gcloud --quiet builds triggers run Deploy-to-playtesting \
-          --branch=main \
-          --substitutions _SERVICE_NAME="publisher-web",_URL_TAG="test",_SUBDIRECTORY=playtesting,_FRONTEND_URL=https://github.com/Recidiviz/justice-counts/archive/${{ steps.extract_branch.outputs.branch }}.tar.gz
-      # --substitutions _SERVICE_NAME=${{ github.event.inputs.service_name }},_URL_TAG=${{ github.event.inputs.url_tag }},_SUBDIRECTORY=playtesting,_FRONTEND_URL=https://github.com/Recidiviz/justice-counts/archive/main.tar.gz
+      - name: Bot Comment
+        # if: ${{ success() }}
+        run: gh pr comment ${{ steps.extract_branch.outputs.branch }} -b "Playtest deployment was successfully triggered."
+        env:
+          GITHUB_TOKEN: ${{secrets.GH_HELPERBOT_TOKEN}}
+
+      # - name: Start Deploy-to-playtesting Cloud Build trigger
+      #   run: |
+      #     gcloud --quiet builds triggers run Deploy-to-playtesting \
+      #     --branch=main \
+      #     --substitutions _SERVICE_NAME="publisher-web",_URL_TAG="test",_SUBDIRECTORY=playtesting,_FRONTEND_URL=https://github.com/Recidiviz/justice-counts/archive/${{ steps.extract_branch.outputs.branch }}.tar.gz
+      # # --substitutions _SERVICE_NAME=${{ github.event.inputs.service_name }},_URL_TAG=${{ github.event.inputs.url_tag }},_SUBDIRECTORY=playtesting,_FRONTEND_URL=https://github.com/Recidiviz/justice-counts/archive/main.tar.gz
      
-      # - name: Bot Comment
-      #   if: ${{ success() }}
-      #   run: gh pr comment ${{ steps.extract_branch.outputs.branch }} -b "Playtest deployment was successfully triggered. Full deployment usually takes 5 minutes. Your playtest link is https://${{ github.event.inputs.url_tag }}---publisher-web-b47yvyxs3q-uc.a.run.app/"
-        # env:
-        #   GITHUB_TOKEN: ${{secrets.HELPERBOT_TOKEN}}
