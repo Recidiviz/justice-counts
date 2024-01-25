@@ -38,6 +38,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
+import { gateToAllowedEnvironment } from "../../utils/featureFlags";
 import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from "../Reports";
 import {
   AgencyProvisioningSetting,
@@ -61,7 +62,6 @@ import {
   UserRoleUpdates,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
-import { gateToAllowedEnvironment } from "../../utils/featureFlags";
 
 export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
   ({
