@@ -870,6 +870,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                             Child agencies
                           </Styled.ChipContainerLabel>
                         </Styled.InputLabelWrapper>
+                        {/* TODO(#1155) - Ungate feature */}
                         {gateToAllowedEnvironment(api.environment, [
                           Environment.LOCAL,
                           Environment.STAGING,
