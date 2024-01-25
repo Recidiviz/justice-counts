@@ -18,6 +18,7 @@
 import { Button } from "@justice-counts/common/components/Button";
 import { DelayedRender } from "@justice-counts/common/components/DelayedRender";
 import { Modal } from "@justice-counts/common/components/Modal";
+import { showToast } from "@justice-counts/common/components/Toast";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 
@@ -30,6 +31,7 @@ import {
   SettingType,
   UserKey,
   UserProvisioning,
+  UserWithAgenciesByID,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
 
@@ -45,14 +47,17 @@ export const UserProvisioningOverview = observer(() => {
     updateUserAccountId,
     resetUserProvisioningUpdates,
     resetAgencyProvisioningUpdates,
+    deleteUser,
   } = adminPanelStore;
 
   const [selectedUserID, setSelectedUserID] = useState<string | number>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeSecondaryModal, setActiveSecondaryModal] =
     useState<SettingType>();
-  const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
-    useState<boolean>(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+    show: boolean;
+    user?: UserWithAgenciesByID;
+  }>({ show: false });
 
   const [searchInput, setSearchInput] = useState<string>("");
 
@@ -94,6 +99,14 @@ export const UserProvisioningOverview = observer(() => {
     updateUserAgencies(Object.keys(selectedUser.agencies).map((id) => +id));
     openModal();
   };
+  const handleDeleteUser = (userID: string | number) => {
+    deleteUser(String(userID));
+    showToast({
+      message: `${usersByID[userID][0].name} has been deleted.`,
+      check: true,
+    });
+    setDeleteConfirmation({ show: false });
+  };
 
   if (loading) {
     return <Loading />;
@@ -127,24 +140,28 @@ export const UserProvisioningOverview = observer(() => {
       )}
 
       {/* Delete User Confirmation Modal */}
-      {showDeleteConfirmationModal && (
+      {deleteConfirmation.show && (
         <Modal
           modalType="alert"
-          title="Are you sure you want to delete this user?"
+          title={`Are you sure you want to delete ${deleteConfirmation.user?.name}?`}
+          description="This action cannot be undone."
           buttons={[
             {
               label: "Cancel",
               onClick: () => {
-                setShowDeleteConfirmationModal(false);
+                setDeleteConfirmation({ show: false });
               },
             },
             {
               label: "Yes, delete user",
               onClick: () => {
-                console.log("Call delete endpoint");
+                if (deleteConfirmation.user) {
+                  handleDeleteUser(deleteConfirmation.user.id);
+                }
               },
             },
           ]}
+          centerText
         />
       )}
 
@@ -209,7 +226,7 @@ export const UserProvisioningOverview = observer(() => {
                   <Styled.TrashIcon
                     onClick={(e) => {
                       e.stopPropagation();
-                      setShowDeleteConfirmationModal(true);
+                      setDeleteConfirmation({ show: true, user });
                     }}
                   />
                 </Styled.Card>

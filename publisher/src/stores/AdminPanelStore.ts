@@ -275,6 +275,28 @@ class AdminPanelStore {
     }
   }
 
+  async deleteUser(userID: string) {
+    try {
+      const response = (await this.api.request({
+        path: `/admin/user/${userID}`,
+        method: "DELETE",
+      })) as Response;
+      if (response.status === 200) {
+        runInAction(() => {
+          const updatedUsersByID = { ...this.usersByID };
+          delete updatedUsersByID[userID];
+          this.usersByID = updatedUsersByID;
+        });
+      }
+      return response;
+    } catch (error) {
+      if (error instanceof Error)
+        return new Error(
+          "There was an issue saving user provisioning updates."
+        );
+    }
+  }
+
   /** Agency Provisioning */
 
   updateAgencyID(id: number) {
