@@ -103,7 +103,7 @@ export const UserProvisioningOverview = observer(() => {
     setDeleteConfirmation({ show: false });
     const response = (await deleteUser(String(userID))) as Response;
 
-    if (response.status !== 200) {
+    if (response.status === 200) {
       showToast({
         message: `${usersByID[userID][0].name} has been deleted.`,
         check: true,
