@@ -278,6 +278,11 @@ class AgencyStore {
     runInAction(() => {
       this.isUserSubscribedToEmails = isUserSubscribedToEmails;
     });
+    showToast({
+      message: `Email settings updated`,
+      check: true,
+      timeout: 4000,
+    });
   };
 
   removeAgencyTeamMemberRequest = async (
