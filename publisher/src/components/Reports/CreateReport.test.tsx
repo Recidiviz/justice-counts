@@ -159,6 +159,7 @@ describe("test create report button", () => {
               },
             ],
             is_superagency: false,
+            super_agency_id: null,
             is_dashboard_enabled: false,
           },
         ];

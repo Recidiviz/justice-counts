@@ -82,10 +82,11 @@ export const AgencySettings: React.FC = observer(() => {
       <AgencySettingsTitle />
       <AgencySettingsContent>
         <AgencySettingsBasicInfo />
-        {userStore.isJusticeCountsAdmin(agencyId) && (
-          // TODO(#26282):Un-gate this feature after playtesting
-          <AgencySettingsEmailNotifications />
-        )}
+        {/* TODO(#26632) Un-gate toggle once functionality for superagencies / child agencies is implemented  */}
+        {agencyStore.currentAgency?.is_superagency !== true &&
+          agencyStore.currentAgency?.super_agency_id === null && (
+            <AgencySettingsEmailNotifications />
+          )}
         <AgencySettingsDescription
           settingProps={generateSettingProps(ActiveSetting.Description)}
         />
