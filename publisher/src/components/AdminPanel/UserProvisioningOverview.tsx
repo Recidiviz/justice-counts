@@ -22,23 +22,21 @@ import { showToast } from "@justice-counts/common/components/Toast";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 
-import { useStore } from "../../stores";
-import AdminPanelStore from "../../stores/AdminPanelStore";
-import { gateToAllowedEnvironment } from "../../utils/featureFlags";
-import { Loading } from "../Loading";
 import {
   AgencyProvisioning,
-  Environment,
   Setting,
   SettingType,
   UserKey,
   UserProvisioning,
   UserWithAgenciesByID,
 } from ".";
+import { useStore } from "../../stores";
+import AdminPanelStore from "../../stores/AdminPanelStore";
+import { Loading } from "../Loading";
 import * as Styled from "./AdminPanel.styles";
 
 export const UserProvisioningOverview = observer(() => {
-  const { adminPanelStore, api } = useStore();
+  const { adminPanelStore } = useStore();
   const {
     loading,
     users,
@@ -234,18 +232,12 @@ export const UserProvisioningOverview = observer(() => {
                     {userAgencies.length} agencies
                   </Styled.NumberOfAgencies>
                   {/* Delete Users Button */}
-                  {/* TODO(#1156) - Ungate feature */}
-                  {gateToAllowedEnvironment(api.environment, [
-                    Environment.LOCAL,
-                    Environment.STAGING,
-                  ]) && (
-                    <Styled.TrashIcon
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setDeleteConfirmation({ show: true, user });
-                      }}
-                    />
-                  )}
+                  <Styled.TrashIcon
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleteConfirmation({ show: true, user });
+                    }}
+                  />
                 </Styled.Card>
               );
             })}
