@@ -22,6 +22,9 @@ import { showToast } from "@justice-counts/common/components/Toast";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 
+import { useStore } from "../../stores";
+import AdminPanelStore from "../../stores/AdminPanelStore";
+import { Loading } from "../Loading";
 import {
   AgencyProvisioning,
   Setting,
@@ -30,9 +33,6 @@ import {
   UserProvisioning,
   UserWithAgenciesByID,
 } from ".";
-import { useStore } from "../../stores";
-import AdminPanelStore from "../../stores/AdminPanelStore";
-import { Loading } from "../Loading";
 import * as Styled from "./AdminPanel.styles";
 
 export const UserProvisioningOverview = observer(() => {
