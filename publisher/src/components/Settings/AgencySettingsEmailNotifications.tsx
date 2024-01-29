@@ -56,9 +56,10 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
         agency.
         <br />
         <br />
-        These email reminders will currently be sent on the 15th of each month.
-        In an upcoming release, you will be able to choose when the email
-        reminders are sent.
+        Emails from Justice Counts include 1) an email on the 15th of each month
+        listing the metrics you have enabled which still need data uploaded and
+        2) confirmation emails that your Automated Bulk Upload attempts were
+        processed by Publisher.
       </AgencySettingsBlockDescription>
     </AgencySettingsBlock>
   );
