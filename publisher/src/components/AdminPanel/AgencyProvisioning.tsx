@@ -870,41 +870,34 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                             Child agencies
                           </Styled.ChipContainerLabel>
                         </Styled.InputLabelWrapper>
-                        {/* TODO(#1155) - Ungate feature */}
-                        {gateToAllowedEnvironment(api.environment, [
-                          Environment.LOCAL,
-                          Environment.STAGING,
-                        ]) &&
-                          hasSystems &&
-                          hasChildAgencies && (
-                            <Styled.InputLabelWrapper flexRow>
-                              <input
-                                id="copy-superagency-metric-settings"
-                                name="copy-superagency-metric-settings"
-                                type="checkbox"
-                                onChange={() =>
-                                  setIsCopySuperagencyMetricSettingsSelected(
-                                    (prev) => !prev
-                                  )
-                                }
-                                checked={
-                                  isCopySuperagencyMetricSettingsSelected
-                                }
-                              />
-                              <label htmlFor="copy-superagency-metric-settings">
-                                Copy all metric settings to child agencies
-                              </label>
-                              {isCopySuperagencyMetricSettingsSelected && (
-                                <Styled.WarningMessage>
-                                  Warning! This action cannot be undone. After
-                                  clicking <strong>Save</strong>, the copying
-                                  process will begin and you will receive an
-                                  email confirmation once the metrics settings
-                                  have been copied over.
-                                </Styled.WarningMessage>
-                              )}
-                            </Styled.InputLabelWrapper>
-                          )}
+
+                        {hasSystems && hasChildAgencies && (
+                          <Styled.InputLabelWrapper flexRow>
+                            <input
+                              id="copy-superagency-metric-settings"
+                              name="copy-superagency-metric-settings"
+                              type="checkbox"
+                              onChange={() =>
+                                setIsCopySuperagencyMetricSettingsSelected(
+                                  (prev) => !prev
+                                )
+                              }
+                              checked={isCopySuperagencyMetricSettingsSelected}
+                            />
+                            <label htmlFor="copy-superagency-metric-settings">
+                              Copy all metric settings to child agencies
+                            </label>
+                            {isCopySuperagencyMetricSettingsSelected && (
+                              <Styled.WarningMessage>
+                                Warning! This action cannot be undone. After
+                                clicking <strong>Save</strong>, the copying
+                                process will begin and you will receive an email
+                                confirmation once the metrics settings have been
+                                copied over.
+                              </Styled.WarningMessage>
+                            )}
+                          </Styled.InputLabelWrapper>
+                        )}
                       </>
                     )}
 
