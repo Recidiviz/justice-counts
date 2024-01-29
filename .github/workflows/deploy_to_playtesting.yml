@@ -45,8 +45,13 @@ jobs:
           gcloud --quiet builds triggers run Deploy-to-playtesting \
           --branch=main \
           --substitutions _SERVICE_NAME=${{ github.event.inputs.service_name }},_URL_TAG=${{ github.event.inputs.url_tag }},_SUBDIRECTORY=playtesting,_FRONTEND_URL=https://github.com/Recidiviz/justice-counts/archive/${{ steps.extract_branch.outputs.branch }}.tar.gz
-      - name: Bot Comment
+      - name: Bot Comment on Success
         if: ${{ success() }}
-        run: gh pr comment ${{ steps.extract_branch.outputs.branch }} -b "Playtest deployment was successfully triggered. Full deployment usually takes 5 minutes. Your playtest link is https://${{ github.event.inputs.url_tag }}---${{ github.event.inputs.service_name }}-b47yvyxs3q-uc.a.run.app/"
+        run: gh pr comment ${{ steps.extract_branch.outputs.branch }} -b "@${{ github.triggering_actor }} successfully triggered a playtest deployment. Full deployment usually takes 5 minutes. Your playtest link is https://${{ github.event.inputs.url_tag }}---${{ github.event.inputs.service_name }}-b47yvyxs3q-uc.a.run.app/"
+        env:
+          GITHUB_TOKEN: ${{secrets.GH_HELPERBOT_TOKEN}}
+      - name: Bot Comment on Failure
+        if: ${{ failure() }}
+        run: gh pr comment ${{ steps.extract_branch.outputs.branch }} -b "@${{ github.triggering_actor }} Playtest deployment failed. See workflow failure logs at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         env:
           GITHUB_TOKEN: ${{secrets.GH_HELPERBOT_TOKEN}}
