@@ -57,8 +57,8 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
         <br />
         <br />
         Emails from Justice Counts include 1) an email on the 15th of each month
-        listing the metrics you have enabled which still need data uploaded 2)
-        confirmation emails that your Automated Bulk Upload attempts were
+        listing the metrics you have enabled which still need data uploaded and
+        2) confirmation emails that your Automated Bulk Upload attempts were
         processed by Publisher.
       </AgencySettingsBlockDescription>
     </AgencySettingsBlock>
