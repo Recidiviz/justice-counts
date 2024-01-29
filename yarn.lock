@@ -5814,10 +5814,10 @@
   resolved "https://registry.yarnpkg.com/@types/aria-query/-/aria-query-5.0.1.tgz#3286741fb8f1e1580ac28784add4c7a1d49bdfbc"
   integrity sha512-XTIieEY+gvJ39ChLcB4If5zHtPxt3Syj5rgZR+e1ctpmK8NjPf0zFqsz4JpLJT0xla9GFDKjy8Cpu331nrmE1Q==
 
-"@types/auth0@^2.34.13":
-  version "2.35.6"
-  resolved "https://registry.yarnpkg.com/@types/auth0/-/auth0-2.35.6.tgz#33235422ed2af90b9ce25f37ad7c7972b2193b2d"
-  integrity sha512-ghys5KhcFS3Kt2QP5T0LIhezAUalVPYgtcmu+akKGIL9TQNXW9WvlOlnFIjyOlKIpH2+plGg0RlrtEtxGYCUeA==
+"@types/auth0@^3.3.10":
+  version "3.3.10"
+  resolved "https://registry.yarnpkg.com/@types/auth0/-/auth0-3.3.10.tgz#6c483d7ebe6e3eb1fb44d5c27aecbe49ad0b200d"
+  integrity sha512-9tS0Y2igWxw+Dx5uCHkIUCu6tG0oRkwpE322dOJPwZMLXQMx49n/gDmUz7YJSe1iVjrWW+ffVYmlPShVIEwjkg==
 
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.14":
   version "7.1.19"
