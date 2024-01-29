@@ -821,3 +821,9 @@ export const GraphicLines = styled.div<{ type?: SaveConfirmationType }>`
     border-radius: 5px;
   }
 `;
+
+export const WarningMessage = styled.p`
+  ${typography.sizeCSS.small}
+  color: ${palette.solid.red};
+  margin-top: 5px;
+`;

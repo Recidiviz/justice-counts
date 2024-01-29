@@ -219,6 +219,32 @@ class AdminPanelStore {
     });
   }
 
+  async copySuperagencyMetricSettingsToChildAgencies(
+    superagencyID: string,
+    agencyName: string,
+    userEmail: string,
+    metricDefinitionKeySubset: string[] // A list of metric definition keys for future use to update a subset of metrics
+  ) {
+    try {
+      const response = (await this.api.request({
+        path: `/admin/agency/${superagencyID}/child-agency/copy`,
+        method: "POST",
+        body: {
+          agency_name: agencyName,
+          user_email: userEmail,
+          metric_definition_key_subset: metricDefinitionKeySubset,
+        },
+      })) as Response;
+
+      return response;
+    } catch (error) {
+      if (error instanceof Error)
+        return new Error(
+          "There was an issue copying metric settings from superagency to child agencies."
+        );
+    }
+  }
+
   /** User Provisioning */
 
   updateUsername(username: string) {
