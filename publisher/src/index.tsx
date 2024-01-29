@@ -18,16 +18,9 @@
 import "react-tooltip/dist/react-tooltip.css";
 
 import { GlobalStyle } from "@justice-counts/common/components/GlobalStyles";
-import * as Sentry from "@sentry/react";
 import React from "react";
 import { createRoot } from "react-dom/client";
-import {
-  BrowserRouter,
-  createRoutesFromChildren,
-  matchRoutes,
-  useLocation,
-  useNavigationType,
-} from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 
 import App from "./App";
 import AuthWall from "./components/Auth";
