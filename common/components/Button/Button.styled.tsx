@@ -29,17 +29,6 @@ import {
   ButtonSize,
 } from "./types";
 
-const buttonColorToBackgroundColor = {
-  blue: palette.solid.blue,
-  green: palette.solid.green,
-  red: palette.solid.red,
-  orange: palette.solid.orange,
-};
-
-const labelButtonColorToTextColor = {
-  default: palette.solid.darkgrey,
-};
-
 export const Button = styled.div<{
   buttonColor?: ButtonColor;
   labelColor?: ButtonLabelColor;
@@ -50,6 +39,7 @@ export const Button = styled.div<{
   noTopBottomPadding?: boolean;
   noHover?: boolean;
 }>`
+  ${({ size }) => typography.sizeCSS[size || "normal"]};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -58,26 +48,14 @@ export const Button = styled.div<{
   white-space: nowrap;
   min-width: 80px;
   pointer-events: ${({ disabled }) => disabled && "none"};
-
   background-color: ${({ buttonColor, disabled }) => {
-    if (disabled) {
-      return palette.highlight.grey3;
-    }
-    return buttonColor
-      ? buttonColorToBackgroundColor[buttonColor]
-      : "transparent";
+    if (disabled) return palette.highlight.grey3;
+    return buttonColor ? palette.solid[buttonColor] : "transparent";
   }};
   color: ${({ labelColor, buttonColor }) => {
-    if (labelColor === "blue") {
-      return palette.solid.blue;
-    }
-    if (labelColor === "red") {
-      return palette.solid.red;
-    }
-    if (labelColor === "white" || buttonColor) {
-      return palette.solid.white;
-    }
-    return labelButtonColorToTextColor.default;
+    if (labelColor) return palette.solid[labelColor];
+    if (buttonColor) return palette.solid.white;
+    return palette.solid.darkgrey;
   }};
   border: ${({ borderColor }) => {
     if (borderColor === "white") {
@@ -88,14 +66,7 @@ export const Button = styled.div<{
     }
     return "none";
   }};
-
-  ${({ size }) =>
-    size ? typography.sizeCSS[size] : typography.sizeCSS.normal};
-  ${({ size }) => {
-    if (size === "medium") return "padding: 16px 32px";
-    return "padding: 10px 15px";
-  }};
-
+  padding: ${({ size }) => (size === "medium" ? "16px 32px" : "10px 15px")};
   ${({ noSidePadding }) =>
     noSidePadding && "padding-left: 0; padding-right: 0;"}
   ${({ noTopBottomPadding }) =>
@@ -103,10 +74,9 @@ export const Button = styled.div<{
   
   &:hover {
     cursor: pointer;
-
-    color: ${({ labelColor }) => {
+    ${({ labelColor }) => {
       if (labelColor === "blue") {
-        return palette.solid.darkblue;
+        return `color: ${palette.solid.darkblue}`;
       }
     }};
     ${({ buttonColor, noHover }) => {
