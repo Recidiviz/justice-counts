@@ -29,6 +29,17 @@ import {
   ButtonSize,
 } from "./types";
 
+const buttonColorToBackgroundColor = {
+  blue: palette.solid.blue,
+  green: palette.solid.green,
+  red: palette.solid.red,
+  orange: palette.solid.orange,
+};
+
+const labelButtonColorToTextColor = {
+  default: palette.solid.darkgrey,
+};
+
 export const Button = styled.div<{
   buttonColor?: ButtonColor;
   labelColor?: ButtonLabelColor;
@@ -46,54 +57,36 @@ export const Button = styled.div<{
   gap: 8px;
   white-space: nowrap;
   min-width: 80px;
-
   pointer-events: ${({ disabled }) => disabled && "none"};
-  opacity: ${({ disabled }) => disabled && "0.2"};
 
-  ${({ buttonColor }) => {
-    if (buttonColor === "blue")
-      return `
-        background-color: ${palette.solid.blue};
-      `;
-    if (buttonColor === "green")
-      return `
-        background-color: ${palette.solid.green};
-      `;
-    if (buttonColor === "red")
-      return `
-        background-color: ${palette.solid.red};
-      `;
-    if (buttonColor === "orange")
-      return `
-        background-color: ${palette.solid.orange};
-      `;
-    return "background-color: transparent";
+  background-color: ${({ buttonColor, disabled }) => {
+    if (disabled) {
+      return palette.highlight.grey3;
+    }
+    return buttonColor
+      ? buttonColorToBackgroundColor[buttonColor]
+      : "transparent";
   }};
-
-  ${({ labelColor, buttonColor }) => {
-    if (labelColor === "blue")
-      return `
-        color: ${palette.solid.blue};
-      `;
-    if (labelColor === "red")
-      return `
-        color: ${palette.solid.red};
-      `;
-    // maybe remove button color later if there would be colored buttons without white label
-    // current designs require only white color for label inside colored buttons
-    if (labelColor === "white" || buttonColor)
-      return `
-        color: ${palette.solid.white};
-      `;
-    return `color: ${palette.solid.darkgrey}`;
+  color: ${({ labelColor, buttonColor }) => {
+    if (labelColor === "blue") {
+      return palette.solid.blue;
+    }
+    if (labelColor === "red") {
+      return palette.solid.red;
+    }
+    if (labelColor === "white" || buttonColor) {
+      return palette.solid.white;
+    }
+    return labelButtonColorToTextColor.default;
   }};
-
-  ${({ borderColor }) => {
-    if (borderColor === "white")
-      return `border: 1px solid ${palette.solid.white}`;
-    if (borderColor === "lightgrey")
-      return `border: 1px solid ${palette.highlight.grey4}`;
-    return "border: none";
+  border: ${({ borderColor }) => {
+    if (borderColor === "white") {
+      return `1px solid ${palette.solid.white}`;
+    }
+    if (borderColor === "lightgrey") {
+      return `1px solid ${palette.highlight.grey4}`;
+    }
+    return "none";
   }};
 
   ${({ size }) =>
@@ -111,9 +104,14 @@ export const Button = styled.div<{
   &:hover {
     cursor: pointer;
 
+    color: ${({ labelColor }) => {
+      if (labelColor === "blue") {
+        return palette.solid.darkblue;
+      }
+    }};
     ${({ buttonColor, noHover }) => {
       if (buttonColor) return "opacity: 0.8;";
-      return !noHover && `background-color: ${palette.highlight.grey1};`;
+      return !noHover && `background-color: ${palette.highlight.grey4};`;
     }}
     a {
       ${typography.sizeCSS.small};
