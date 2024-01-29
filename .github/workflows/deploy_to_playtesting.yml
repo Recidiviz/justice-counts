@@ -42,7 +42,7 @@ jobs:
         id: extract_branch
       - name: Start Deploy-to-playtesting Cloud Build trigger
         run: |
-          gcloud --quiet builds triggers run Deploy-to-playtesting \
+          gcloud --quiet builds triggers run Deploy-to-playtestin \
           --branch=main \
           --substitutions _SERVICE_NAME=${{ github.event.inputs.service_name }},_URL_TAG=${{ github.event.inputs.url_tag }},_SUBDIRECTORY=playtesting,_FRONTEND_URL=https://github.com/Recidiviz/justice-counts/archive/${{ steps.extract_branch.outputs.branch }}.tar.gz
       - name: Bot Comment on Success
