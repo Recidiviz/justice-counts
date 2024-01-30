@@ -205,3 +205,55 @@ export const TooltipLink = styled.span`
     cursor: pointer;
   }
 `;
+
+// New Input Styling
+
+export const NewInputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+export const NewInput = styled.input<{
+  error: boolean;
+  multiline: boolean;
+  disabled: boolean;
+}>`
+  ${typography.body}
+  height: ${({ multiline }) => (multiline ? `200px` : `32px`)};
+  width: 318px;
+  padding: 8px 12px;
+  border: 1px solid
+    ${({ error }) => (error ? palette.solid.red : palette.highlight.grey5)};
+  border-radius: 2px;
+  text-align: left;
+  color: ${palette.highlight.grey8};
+  background-color: ${({ disabled }) =>
+    disabled ? palette.solid.lightgrey2 : `transparent`};
+
+  &:focus {
+    outline: transparent;
+    border: 1px solid
+      ${({ error }) => (error ? palette.solid.red : palette.solid.blue)};
+    color: ${palette.solid.darkgrey};
+  }
+`;
+
+export const NewInputLabel = styled.label<{ error: boolean }>`
+  ${typography.body}
+  ${({ error }) =>
+    error &&
+    `
+    &:after {
+      content: "*";
+      display: inline;
+      color: ${palette.solid.red};
+    }
+  `};
+`;
+
+export const ErrorMessage = styled.div`
+  ${typography.body}
+  color: ${palette.solid.red};
+  margin-top: -4px;
+`;
