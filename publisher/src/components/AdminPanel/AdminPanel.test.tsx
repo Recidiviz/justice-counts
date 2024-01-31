@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 /* eslint-disable testing-library/prefer-presence-queries, prefer-destructuring */
+import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { groupBy } from "@justice-counts/common/utils";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
@@ -27,7 +28,6 @@ import {
   mockUsersResponse,
 } from "../../stores/AdminPanelStore.test";
 import { AdminPanel } from "./AdminPanel";
-import { palette } from "@justice-counts/common/components/GlobalStyles";
 
 const { adminPanelStore } = rootStore;
 const mockAgencyID = "10";

@@ -81,7 +81,7 @@ export const Button = styled.div<{
     }};
     ${({ buttonColor, noHover }) => {
       if (buttonColor) return "opacity: 0.8;";
-      return !noHover && `background-color: ${palette.highlight.grey4};`;
+      return !noHover && `background-color: ${palette.solid.lightgrey2};`;
     }}
     a {
       ${typography.sizeCSS.small};
