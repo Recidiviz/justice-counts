@@ -181,6 +181,8 @@ export const AgencyDropdownWrapper = styled.div`
 `;
 
 export const SingleAgencyHeader = styled.div`
+  ${typography.sizeCSS.normal}
+  font-family: "Public Sans";
   height: ${HEADER_BAR_HEIGHT}px;
   display: flex;
   align-items: center;

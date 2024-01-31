@@ -71,6 +71,7 @@ export const CustomDropdownToggleCaret = styled.img<{ size?: ToggleSize }>`
 `;
 
 export const CustomDropdownToggleLabel = styled.div`
+  ${typography.sizeCSS.normal}
   width: 100%;
   display: flex;
   flex-direction: row;
