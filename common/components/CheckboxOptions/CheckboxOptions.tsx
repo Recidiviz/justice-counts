@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2024 Recidiviz, Inc.
+// Copyright (C) 2023 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
 // =============================================================================
 
 import React from "react";
+
 import * as Styled from "./CheckboxOptions.styles";
 
 export type CheckboxOption = { key: string; label: string; checked: boolean };

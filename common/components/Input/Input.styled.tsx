@@ -26,6 +26,8 @@ import {
   InputTextSize,
 } from "./types";
 
+/** TODO(#1169/#1170) Replace existing input styles with new styles */
+
 export const InputWrapper = styled.div<{ noBottomMargin?: boolean }>`
   position: relative;
   display: flex;
@@ -206,8 +208,6 @@ export const TooltipLink = styled.span`
     cursor: pointer;
   }
 `;
-
-// New Input Styling
 
 export const NewInputWrapper = styled.div`
   display: flex;

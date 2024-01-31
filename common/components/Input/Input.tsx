@@ -183,6 +183,8 @@ export function Input({
   );
 }
 
+/** TODO(#1170) Replace existing Input component with new Input component */
+
 export function NewInput({
   label,
   name,
