@@ -100,3 +100,28 @@ export const RadioButtonLabel = styled.label<{
       disabled ? "none" : palette.highlight.grey1};
   }
 `;
+
+export const NewRadioButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &:not(:last-child) {
+    margin-right: 32px;
+  }
+`;
+
+export const NewRadioButtonInput = styled.input<{
+  disabled?: boolean;
+}>`
+  width: 16px;
+  height: 16px;
+`;
+
+export const NewRadioButtonLabel = styled.label<{
+  buttonSize?: RadioButtonSize;
+  disabled?: boolean;
+}>`
+  ${typography.body}
+  white-space: nowrap;
+`;
