@@ -55,6 +55,7 @@ import {
 } from "../Forms";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { useHeaderBadge } from "../Header/hooks";
+import { SingleAgencyHeader } from "../Menu/Menu.styles";
 import { ButtonWithMiniLoaderContainer, MiniLoaderWrapper } from ".";
 import { MetricTextInput } from "./DataEntryFormComponents";
 
@@ -223,7 +224,12 @@ const DataEntryForm: React.FC<{
       <HeaderBar
         onLogoClick={() => navigate(`/agency/${agencyId}`)}
         hasBottomBorder
-        badge={headerBadge}
+        badge={
+          <>
+            <SingleAgencyHeader>{currentAgency?.name}</SingleAgencyHeader>
+            {headerBadge}
+          </>
+        }
       >
         <TopBarButtonsContainer>
           <Button
