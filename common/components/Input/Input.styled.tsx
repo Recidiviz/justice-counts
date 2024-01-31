@@ -127,7 +127,8 @@ export const InputLabel = styled.label<InputLabelProps>`
       : typography.sizeCSS
           .large} /* If persistLabel is false, the label is visible only when the input has no value
    * If persistLabel is true, when the input has value, show the label above the value
-   */ ${({ persistLabel, inputHasValue }) =>
+   */ 
+   ${({ persistLabel, inputHasValue }) =>
     !persistLabel && inputHasValue && "display: none;"}
 
   min-height: 50px;
