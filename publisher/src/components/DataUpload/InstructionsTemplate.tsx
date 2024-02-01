@@ -39,7 +39,7 @@ import {
   CustomOrGenericTemplateRadioButtons,
   InputLabelWrapper,
   MiniLoaderWrapper,
-  TemplateFormatDescription,
+  TemplateDescription,
 } from "./DataUpload.styles";
 
 export type GeneralInstructionsTemplateParams = {
@@ -285,12 +285,12 @@ export const GeneralInstructions: React.FC<
         </InputLabelWrapper>
       </CustomOrGenericTemplateRadioButtons>
 
-      <TemplateFormatDescription>
+      <TemplateDescription>
         Templates{" "}
         {genericOrCustomTemplates === TemplateType.CUSTOM
           ? "containing only available metrics"
           : "containing all metrics"}
-      </TemplateFormatDescription>
+      </TemplateDescription>
 
       <ButtonWrapper>
         {templateFormats.map((templateType) => {

@@ -501,7 +501,7 @@ export const InputLabelWrapper = styled.div`
   gap: 8px;
 `;
 
-export const TemplateFormatDescription = styled.div`
+export const TemplateDescription = styled.div`
   ${typography.sizeCSS.normal}
   color: ${palette.highlight.grey9};
 `;
