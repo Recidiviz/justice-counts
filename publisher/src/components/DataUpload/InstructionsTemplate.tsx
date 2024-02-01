@@ -186,6 +186,11 @@ export const systemToDetails: { [system: string]: SystemDetails } = {
   },
 };
 
+enum TemplateType {
+  CUSTOM = "CUSTOM",
+  GENERIC = "GENERIC",
+}
+
 export const GeneralInstructions: React.FC<
   GeneralInstructionsTemplateParams
 > = ({ agencyId, systems, downloadTemplate, isDownloading }) => {
@@ -198,8 +203,7 @@ export const GeneralInstructions: React.FC<
    * Custom templates contain sheet tabs for enabled metrics only
    */
   const [genericOrCustomTemplates, setGenericOrCustomTemplates] =
-    React.useState<"GENERIC" | "CUSTOM">("CUSTOM");
-
+    React.useState<`${TemplateType}`>(TemplateType.CUSTOM);
   const superagencyDisplayName = "Superagency";
   const templateFormats = ["MULTI", "SINGLE"];
 
@@ -264,8 +268,8 @@ export const GeneralInstructions: React.FC<
             id="custom-templates"
             name="custom-templates"
             type="radio"
-            checked={genericOrCustomTemplates === "CUSTOM"}
-            onChange={() => setGenericOrCustomTemplates("CUSTOM")}
+            checked={genericOrCustomTemplates === TemplateType.CUSTOM}
+            onChange={() => setGenericOrCustomTemplates(TemplateType.CUSTOM)}
           />
           <label htmlFor="custom-templates">Custom Templates</label>
         </InputLabelWrapper>
@@ -274,8 +278,8 @@ export const GeneralInstructions: React.FC<
             id="generic-templates"
             name="generic-templates"
             type="radio"
-            checked={genericOrCustomTemplates === "GENERIC"}
-            onChange={() => setGenericOrCustomTemplates("GENERIC")}
+            checked={genericOrCustomTemplates === TemplateType.GENERIC}
+            onChange={() => setGenericOrCustomTemplates(TemplateType.GENERIC)}
           />
           <label htmlFor="generic-templates">Generic Templates</label>
         </InputLabelWrapper>
@@ -283,7 +287,7 @@ export const GeneralInstructions: React.FC<
 
       <TemplateFormatDescription>
         Templates{" "}
-        {genericOrCustomTemplates === "CUSTOM"
+        {genericOrCustomTemplates === TemplateType.CUSTOM
           ? "containing only available metrics"
           : "containing all metrics"}
       </TemplateFormatDescription>
@@ -291,7 +295,8 @@ export const GeneralInstructions: React.FC<
       <ButtonWrapper>
         {templateFormats.map((templateType) => {
           const isSinglePageTemplate = templateType === "SINGLE";
-          const isGenericTemplate = genericOrCustomTemplates === "GENERIC";
+          const isGenericTemplate =
+            genericOrCustomTemplates === TemplateType.GENERIC;
 
           return (
             <>
@@ -300,7 +305,7 @@ export const GeneralInstructions: React.FC<
                 const systemNameWithTemplateType = `${systemName} ${
                   isSinglePageTemplate ? "Single Page" : ""
                 } ${
-                  genericOrCustomTemplates === "CUSTOM"
+                  genericOrCustomTemplates === TemplateType.CUSTOM
                     ? "[Custom Template]"
                     : "[Generic Template]"
                 }`;
