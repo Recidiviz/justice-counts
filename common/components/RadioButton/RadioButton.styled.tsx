@@ -20,6 +20,8 @@ import styled from "styled-components";
 import { palette, typography } from "../GlobalStyles";
 import { RadioButtonSize, WrapperSpacing } from "./types";
 
+/** TODO(#1167) Replace existing radio button styles with new styles */
+
 export const RadioButtonsWrapper = styled.form<{
   spacing?: WrapperSpacing;
 }>`
@@ -99,4 +101,29 @@ export const RadioButtonLabel = styled.label<{
     background-color: ${({ disabled }) =>
       disabled ? "none" : palette.highlight.grey1};
   }
+`;
+
+export const NewRadioButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &:not(:last-child) {
+    margin-right: 32px;
+  }
+`;
+
+export const NewRadioButtonInput = styled.input<{
+  disabled?: boolean;
+}>`
+  width: 16px;
+  height: 16px;
+`;
+
+export const NewRadioButtonLabel = styled.label<{
+  buttonSize?: RadioButtonSize;
+  disabled?: boolean;
+}>`
+  ${typography.body}
+  white-space: nowrap;
 `;

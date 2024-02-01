@@ -57,6 +57,34 @@ export const typography = {
         font-weight: 600;
     `,
   },
+  body: `
+    font-family: Inter;
+    font-size: ${rem("14px")};
+    font-weight: 400;
+    line-height: ${rem("20px")};
+    letter-spacing: 0em;
+  `,
+  bodyEmphasized: `
+    font-family: Inter;
+    font-size: ${rem("14px")};
+    font-weight: 500;
+    line-height: ${rem("20px")};
+    letter-spacing: 0em;
+  `,
+  caption: `
+    font-family: Inter;
+    font-size: ${rem("11px")};
+    font-weight: 600;
+    line-height: ${rem("16px")};
+    letter-spacing: ${rem("1.5px")};
+  `,
+  paragraph: `
+    font-family: Inter;
+    font-size: ${rem("14px")};
+    font-weight: 400;
+    line-height: ${rem("24px")};
+    letter-spacing: 0em;
+  `,
 };
 
 export const centerTextCSS = ({ centerText }: { centerText?: boolean }) =>

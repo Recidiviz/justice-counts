@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 /* eslint-disable testing-library/prefer-presence-queries, prefer-destructuring */
+import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { groupBy } from "@justice-counts/common/utils";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
@@ -652,7 +653,9 @@ test("Clicking the `Create Agency` button opens the create agency modal", () => 
   expect(childAgencyInput).toBeInTheDocument();
   expect(cancelButton).toBeInTheDocument();
   expect(saveButton).toBeInTheDocument();
-  expect(getComputedStyle(saveButton).opacity).toBe("0.2"); // Indicating the button is disabled
+  expect(getComputedStyle(saveButton).backgroundColor).toBe(
+    palette.highlight.grey3
+  ); // Indicating the button is disabled
 
   fireEvent.click(teamMemberRolesTab);
   const teamMember = screen.getByText("Anne Teak");
@@ -721,7 +724,9 @@ test("Clicking on an existing agency card opens the edit agency modal", () => {
   expect(childAgencyChip).toBeInTheDocument();
   expect(cancelButton).toBeInTheDocument();
   expect(saveButton).toBeInTheDocument();
-  expect(getComputedStyle(saveButton).opacity).toBe("0.2"); // Indicating the button is disabled
+  expect(getComputedStyle(saveButton).backgroundColor).toBe(
+    palette.highlight.grey3
+  ); // Indicating the button is disabled
 
   fireEvent.click(teamMemberRolesTab);
   const teamMember = screen.getAllByText("Anne Teak")[0];

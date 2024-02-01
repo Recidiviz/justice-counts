@@ -39,6 +39,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   notReportedIconTooltip?: NotReportedIconTooltipProps;
   isPlaceholderVisible?: boolean;
   textSize?: InputTextSize;
+  hideLabel?: boolean;
 }
 
 export function Input({
@@ -179,5 +180,43 @@ export function Input({
         </Styled.LabelChipPosition>
       )}
     </Styled.InputWrapper>
+  );
+}
+
+/** TODO(#1170) Replace existing Input component with new Input component */
+
+export function NewInput({
+  label,
+  name,
+  value,
+  disabled,
+  error,
+  type,
+  multiline,
+  metricKey,
+  hideLabel,
+  ...props
+}: InputProps) {
+  return (
+    <Styled.NewInputWrapper>
+      {!hideLabel && (
+        <Styled.NewInputLabel htmlFor={`input-${name}`} error={Boolean(error)}>
+          {label}
+        </Styled.NewInputLabel>
+      )}
+      <Styled.NewInput
+        {...props}
+        id={`input-${name}`}
+        data-metric-key={metricKey}
+        name={name}
+        type={type}
+        value={value}
+        as={multiline ? "textarea" : "input"}
+        multiline={Boolean(multiline)}
+        disabled={Boolean(disabled)}
+        error={Boolean(error)}
+      />
+      {error && <Styled.ErrorMessage>{error.message}</Styled.ErrorMessage>}
+    </Styled.NewInputWrapper>
   );
 }
