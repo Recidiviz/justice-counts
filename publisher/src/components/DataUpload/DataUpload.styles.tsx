@@ -485,3 +485,23 @@ export const MiniLoaderWrapper = styled.div`
   margin-left: 15px;
   margin-top: 8px;
 `;
+
+export const CustomOrGenericTemplateRadioButtons = styled.div`
+  ${typography.sizeCSS.normal}
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin: 16px 0 8px 0;
+`;
+
+export const InputLabelWrapper = styled.div`
+  ${typography.sizeCSS.normal}
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const TemplateDescription = styled.div`
+  ${typography.sizeCSS.normal}
+  color: ${palette.highlight.grey9};
+`;

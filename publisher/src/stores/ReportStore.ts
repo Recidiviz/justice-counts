@@ -522,11 +522,12 @@ class ReportStore {
   async fetchCustomSpreadsheetBlob(
     system: string,
     isSinglePageTemplate: boolean,
-    agencyId: string
+    agencyId: string,
+    isGenericTemplate: boolean
   ): Promise<Response | Error | undefined> {
     try {
       const response = (await this.api.request({
-        path: `/api/template/${agencyId}/${system}?singlePage=${isSinglePageTemplate.toString()}`,
+        path: `/api/template/${agencyId}/${system}?singlePage=${isSinglePageTemplate.toString()}&isGeneric=${isGenericTemplate}`,
         method: "GET",
       })) as Response;
 

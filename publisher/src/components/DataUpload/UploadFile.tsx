@@ -86,13 +86,15 @@ export const UploadFile: React.FC<UploadFileProps> = ({
   };
   const handleDownloadSpreadsheetTemplate = async (
     system: string,
-    isSinglePageTemplate: boolean
+    isSinglePageTemplate: boolean,
+    isGenericTemplate: boolean
   ) => {
     setIsDownloading(true);
     const response = await reportStore.fetchCustomSpreadsheetBlob(
       system,
       isSinglePageTemplate,
-      agencyId
+      agencyId,
+      isGenericTemplate
     );
     if (response instanceof Error) {
       setIsDownloading(false);
