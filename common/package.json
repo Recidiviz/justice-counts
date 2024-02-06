@@ -50,7 +50,7 @@
     "@storybook/addon-links": "^7.5.3",
     "@storybook/blocks": "^7.4.0",
     "@storybook/react": "^7.0.26",
-    "@storybook/react-webpack5": "^7.5.3",
+    "@storybook/react-webpack5": "^7.6.12",
     "@storybook/testing-library": "^0.2.2",
     "babel-jest": "^29.2.1",
     "eslint-plugin-storybook": "^0.6.13",
