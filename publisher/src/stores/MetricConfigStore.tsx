@@ -1059,7 +1059,7 @@ class MetricConfigStore {
         console.log("enabled", enabled);
         console.log(
           "ethnicitiesByRace[race][ethnicity].enabled",
-          ethnicitiesByRace[race][ethnicity].enabled
+          isCurrentRaceEthnicityEnabled
         );
         console.log(
           "gridStates[state][race][ethnicity]",
