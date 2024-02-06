@@ -1052,14 +1052,25 @@ class MetricConfigStore {
 
     Object.entries(racesStatusObject).forEach(([race, enabled]) =>
       ethnicities.forEach((ethnicity) => {
+        const isCurrentRaceEthnicityEnabled = Boolean(
+          ethnicitiesByRace[race][ethnicity].enabled
+        );
+        console.log(race, ethnicity);
+        console.log("enabled", enabled);
+        console.log(
+          "ethnicitiesByRace[race][ethnicity].enabled",
+          ethnicitiesByRace[race][ethnicity].enabled
+        );
+        console.log(
+          "gridStates[state][race][ethnicity]",
+          gridStates[state][race][ethnicity]
+        );
         /** No update if intended update matches the current state (e.g. enabling an already enabled dimension) */
-        if (Boolean(ethnicitiesByRace[race][ethnicity].enabled) === enabled)
-          return;
+        if (isCurrentRaceEthnicityEnabled === enabled) return;
         /** No update if enabling a disabled dimension that is not available to the user to edit (determined by current grid state) */
         if (
           enabled &&
-          Boolean(ethnicitiesByRace[race][ethnicity].enabled) ===
-            gridStates[state][race][ethnicity]
+          isCurrentRaceEthnicityEnabled === gridStates[state][race][ethnicity]
         )
           return;
 
