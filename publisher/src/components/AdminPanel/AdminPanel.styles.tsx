@@ -216,6 +216,7 @@ export const InputLabelContainer = styled.div`
 
 export const InputLabelWrapper = styled.div<{
   flexRow?: boolean;
+  wrapLabelText?: boolean;
   topSpacing?: boolean;
   inputWidth?: number;
   noBottomSpacing?: boolean;
@@ -281,7 +282,8 @@ export const InputLabelWrapper = styled.div<{
     color: ${palette.highlight.grey8};
     margin-top: 5px;
     padding: 0 3px;
-    white-space: nowrap;
+    white-space: ${({ wrapLabelText }) =>
+      wrapLabelText ? "normal" : "nowrap"};
   }
 
   ${({ required }) =>
@@ -822,8 +824,21 @@ export const GraphicLines = styled.div<{ type?: SaveConfirmationType }>`
   }
 `;
 
-export const WarningMessage = styled.p`
+export const WarningMessage = styled.div`
   ${typography.sizeCSS.small}
+  max-width: 350px;
   color: ${palette.solid.red};
   margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid ${palette.solid.red};
+  border-radius: 4px;
+  padding: 16px;
+  margin-left: 12px;
+
+  p {
+    text-align: center;
+  }
 `;

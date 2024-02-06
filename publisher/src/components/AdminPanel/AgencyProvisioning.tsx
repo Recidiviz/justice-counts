@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import alertIcon from "@justice-counts/common/assets/alert-icon.png";
 import { Button } from "@justice-counts/common/components/Button";
 import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { MiniLoader } from "@justice-counts/common/components/MiniLoader";
@@ -870,7 +871,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         </Styled.InputLabelWrapper>
 
                         {hasSystems && hasChildAgencies && (
-                          <Styled.InputLabelWrapper flexRow>
+                          <Styled.InputLabelWrapper flexRow wrapLabelText>
                             <input
                               id="copy-superagency-metric-settings"
                               name="copy-superagency-metric-settings"
@@ -883,15 +884,21 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                               checked={isCopySuperagencyMetricSettingsSelected}
                             />
                             <label htmlFor="copy-superagency-metric-settings">
-                              Copy all metric settings to child agencies
+                              Copy all metric settings to child agencies across
+                              all sectors
                             </label>
                             {isCopySuperagencyMetricSettingsSelected && (
                               <Styled.WarningMessage>
-                                Warning! This action cannot be undone. After
-                                clicking <strong>Save</strong>, the copying
-                                process will begin and you will receive an email
-                                confirmation once the metrics settings have been
-                                copied over.
+                                <img src={alertIcon} alt="" width="24px" />
+                                <p>
+                                  WARNING! This action cannot be undone. This
+                                  will OVERWRITE all metric settings in all
+                                  child agencies. After clicking{" "}
+                                  <strong>Save</strong>, the copying process
+                                  will begin and you will receive an email
+                                  confirmation once the metrics settings have
+                                  been copied over.
+                                </p>
                               </Styled.WarningMessage>
                             )}
                           </Styled.InputLabelWrapper>
