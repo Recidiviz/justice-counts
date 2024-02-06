@@ -1052,19 +1052,14 @@ class MetricConfigStore {
 
     Object.entries(racesStatusObject).forEach(([race, enabled]) =>
       ethnicities.forEach((ethnicity) => {
+        /**
+         * This must be a boolean because the initial R&E states are `null` and we need to do a boolean to boolean comparison
+         * between the current R&E enabled value and the `gridStates` enabled values (which are exclusively boolean)
+         */
         const isCurrentRaceEthnicityEnabled = Boolean(
           ethnicitiesByRace[race][ethnicity].enabled
         );
-        console.log(race, ethnicity);
-        console.log("enabled", enabled);
-        console.log(
-          "ethnicitiesByRace[race][ethnicity].enabled",
-          isCurrentRaceEthnicityEnabled
-        );
-        console.log(
-          "gridStates[state][race][ethnicity]",
-          gridStates[state][race][ethnicity]
-        );
+
         /** No update if intended update matches the current state (e.g. enabling an already enabled dimension) */
         if (isCurrentRaceEthnicityEnabled === enabled) return;
         /** No update if enabling a disabled dimension that is not available to the user to edit (determined by current grid state) */
