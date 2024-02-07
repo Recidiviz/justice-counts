@@ -27,7 +27,6 @@ const MAX_MODAL_FORM_HEIGHT_WITH_PADDINGS = 587 + 24 * 2;
 export const Wrapper = styled.div`
   position: fixed;
   top: 0;
-  padding: 24px;
   width: 100%;
   height: 100%;
   background-color: ${palette.highlight.grey2};
@@ -47,7 +46,7 @@ export const Content = styled.div`
   max-width: 582px;
   height: 640px;
   max-height: 640px;
-  padding-top: 24px;
+  padding: 32px 0;
   background-color: ${palette.solid.white};
   position: relative;
   border-radius: 3px;
@@ -55,16 +54,16 @@ export const Content = styled.div`
 
 export const ScrollableInnerWrapper = styled.div`
   width: 100%;
-  height: calc(100% - 104px);
-  padding: 0 32px 32px 32px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  padding: 0 40px 48px 40px;
 `;
 
 export const Header = styled.div`
-  ${typography.sizeCSS.normal};
-  margin-bottom: 4px;
+  ${typography.bodyEmphasized};
+  margin-bottom: 8px;
 `;
 
 export const Title = styled.div`
@@ -75,9 +74,9 @@ export const Title = styled.div`
 `;
 
 export const Description = styled.div`
-  ${typography.sizeCSS.normal};
+  ${typography.body};
   color: ${palette.highlight.grey8};
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 `;
 
 export const ToggleSwitchesList = styled.fieldset<{
@@ -116,12 +115,12 @@ export const BottomButtonsContainer = styled.div`
 
 // race ethnicities
 export const SpecifyEthnicityPrompt = styled.div`
-  ${typography.sizeCSS.normal};
+  ${typography.body};
   margin-bottom: 20px;
 `;
 
 export const ToggleSwitchesListHeader = styled.div`
-  ${typography.sizeCSS.normal};
+  ${typography.body};
   margin-bottom: 24px;
 `;
 

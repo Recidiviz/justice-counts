@@ -34,19 +34,19 @@ export function RadioButton({
   ...props
 }: RadioButtonProps) {
   return (
-    <Styled.RadioButtonWrapper>
-      <Styled.RadioButtonInput
+    <Styled.NewRadioButtonWrapper>
+      <Styled.NewRadioButtonInput
         disabled={disabled}
         {...props}
         data-metric-key={metricKey}
       />
-      <Styled.RadioButtonLabel
+      <Styled.NewRadioButtonLabel
         buttonSize={buttonSize}
         disabled={disabled}
         htmlFor={props.id}
       >
         {label}
-      </Styled.RadioButtonLabel>
-    </Styled.RadioButtonWrapper>
+      </Styled.NewRadioButtonLabel>
+    </Styled.NewRadioButtonWrapper>
   );
 }

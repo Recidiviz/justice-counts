@@ -56,7 +56,6 @@ export const CalloutBox = styled.div`
   margin-bottom: 27px;
   border-radius: 2px;
   border: 1px solid ${palette.solid.blue};
-  box-shadow: 0 2px 4px rgba(0, 115, 229, 0.25);
   transition: 0.2s ease;
 
   svg {
@@ -66,13 +65,14 @@ export const CalloutBox = styled.div`
 
   &:hover {
     cursor: pointer;
-    background-color: ${palette.highlight.blue};
+    background-color: ${palette.solid.lightgrey2};
   }
 `;
 
 export const GridHeaderContainer = styled.div`
   ${typography.sizeCSS.small}
-  color: ${palette.highlight.grey5};
+  font-weight: 500;
+  color: ${palette.highlight.grey8};
   width: 100%;
   display: flex;
   align-items: center;
@@ -85,7 +85,7 @@ export const GridRaceHeader = styled.div`
 `;
 export const GridEthnicitiesHeader = styled.div`
   display: flex;
-  gap: 7px;
+  gap: 30px;
   justify-content: space-between;
 `;
 
@@ -111,7 +111,7 @@ export const EthnicityName = styled.div`
 `;
 
 export const Description = styled.div`
-  ${typography.sizeCSS.normal}
+  ${typography.body}
   span {
     color: ${palette.solid.blue};
   }
@@ -122,6 +122,7 @@ export const RaceEthnicitiesTable = styled.div`
 `;
 
 export const RaceEthnicitiesRow = styled.div`
+  ${typography.body}
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -137,7 +138,7 @@ export const RaceCell = styled.div``;
 export const EthnicitiesRow = styled.div`
   display: flex;
   margin-right: 28px;
-  gap: 70px;
+  gap: 90px;
 `;
 export const EthnicityCell = styled.div<{ enabled?: boolean }>`
   width: 20px;
