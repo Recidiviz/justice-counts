@@ -17,6 +17,7 @@
 // eslint-disable-next-line no-restricted-imports
 import styled from "styled-components";
 
+import { rem } from "../../utils";
 import { centerTextCSS, palette, typography } from "../GlobalStyles";
 import { TooltipColor, TooltipWidth } from "./types";
 
@@ -43,11 +44,12 @@ export const TooltipContainer = styled.div<{
 `;
 
 export const TooltipTitle = styled.span`
-  ${typography.sizeCSS.medium};
+  ${typography.body};
 `;
 
 export const TooltipContent = styled.span`
-  ${typography.sizeCSS.normal};
+  ${typography.body};
+  font-size: ${rem("13px")};
   white-space: normal;
   text-transform: none;
 `;

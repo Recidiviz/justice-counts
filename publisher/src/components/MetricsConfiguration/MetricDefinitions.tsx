@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import blueCheckIcon from "@justice-counts/common/assets/status-check-icon.png";
 import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import { MetricConfigurationSettings } from "@justice-counts/common/types";
 import { replaceSymbolsWithDash } from "@justice-counts/common/utils";
@@ -92,42 +91,24 @@ function MetricDefinitions() {
       )}
       <Styled.Wrapper>
         <Styled.InnerWrapper>
-          <Styled.Header>
-            <Styled.HeaderNumber>2</Styled.HeaderNumber>
-            <Styled.HeaderLabel>Define Metrics</Styled.HeaderLabel>
-          </Styled.Header>
-          <Styled.Description>
-            Click into each of the metrics and breakdowns below to configure its
-            definition. Learn more about how to define metrics and breakdowns in
-            the{" "}
-            <a
-              href="https://justicecounts.csgjusticecenter.org/metrics/technical-implementation-guides/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Technical Implementation Guide.
-            </a>
-          </Styled.Description>
           <Styled.Section>
             <Styled.SectionTitle>Primary Metric</Styled.SectionTitle>
-            <Styled.SectionItem
-              id="metric-total"
-              onClick={() => setIsSettingsModalOpen(true)}
-            >
-              <Styled.SectionItemLabel>
-                {metricHasDefinitionSelected() && (
-                  <img src={blueCheckIcon} alt="" />
-                )}
+            <Styled.SectionItem id="metric-total">
+              <Styled.SectionItemLabel
+                actionRequired={!metricHasDefinitionSelected()}
+              >
                 {metrics[systemMetricKey]?.label} (Total)
               </Styled.SectionItemLabel>
-              <span>View / Edit</span>
+              <Styled.EditButton onClick={() => setIsSettingsModalOpen(true)}>
+                Edit
+              </Styled.EditButton>
               <Tooltip
                 anchorId="metric-total"
-                position="bottom"
+                position="top"
                 content={metrics[systemMetricKey]?.description}
                 title={`${metrics[systemMetricKey]?.label} (Total)`}
                 noArrow
-                offset={-5}
+                offset={-115}
               />
             </Styled.SectionItem>
           </Styled.Section>
@@ -202,26 +183,28 @@ function MetricDefinitions() {
                     <Styled.SectionItem
                       id={replaceSymbolsWithDash(key)}
                       key={key}
-                      onClick={() => {
-                        setActiveDisaggregationKey(disaggregationKey);
-                        setActiveDimensionKey(key);
-                        setIsSettingsModalOpen(true);
-                      }}
                     >
-                      <Styled.SectionItemLabel>
-                        {hasEnabledDefinition && (
-                          <img src={blueCheckIcon} alt="" />
-                        )}
+                      <Styled.SectionItemLabel
+                        actionRequired={!hasEnabledDefinition}
+                      >
                         {dimension.label}
                       </Styled.SectionItemLabel>
-                      <span>View / Edit</span>
+                      <Styled.EditButton
+                        onClick={() => {
+                          setActiveDisaggregationKey(disaggregationKey);
+                          setActiveDimensionKey(key);
+                          setIsSettingsModalOpen(true);
+                        }}
+                      >
+                        Edit
+                      </Styled.EditButton>
                       <Tooltip
                         anchorId={replaceSymbolsWithDash(key)}
-                        position="bottom"
+                        position="top"
                         content={dimension.description}
                         title={dimension.label}
                         noArrow
-                        offset={-5}
+                        offset={-115}
                       />
                     </Styled.SectionItem>
                   );

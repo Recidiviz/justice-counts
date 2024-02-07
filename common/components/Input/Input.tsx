@@ -40,6 +40,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   isPlaceholderVisible?: boolean;
   textSize?: InputTextSize;
   hideLabel?: boolean;
+  fullWidth?: boolean;
 }
 
 export function Input({
@@ -195,6 +196,7 @@ export function NewInput({
   multiline,
   metricKey,
   hideLabel,
+  fullWidth,
   ...props
 }: InputProps) {
   return (
@@ -215,6 +217,7 @@ export function NewInput({
         multiline={Boolean(multiline)}
         disabled={Boolean(disabled)}
         error={Boolean(error)}
+        fullWidth={fullWidth}
       />
       {error && <Styled.ErrorMessage>{error.message}</Styled.ErrorMessage>}
     </Styled.NewInputWrapper>

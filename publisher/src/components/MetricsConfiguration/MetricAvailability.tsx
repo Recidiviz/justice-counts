@@ -210,7 +210,7 @@ function MetricAvailability({
     });
 
   const disaggregationsOptions = [
-    ...(activeDisaggregationKeys.length > 1
+    ...(activeDisaggregationKeys?.length > 1
       ? [
           {
             key: "show_all",

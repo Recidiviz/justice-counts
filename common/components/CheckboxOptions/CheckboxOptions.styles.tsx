@@ -34,7 +34,7 @@ export const CheckboxLabel = styled.div`
 `;
 
 export const Checkbox = styled.input`
-  width: 16px;
-  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
   border: 1px solid red;
 `;
