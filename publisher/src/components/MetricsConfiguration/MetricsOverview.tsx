@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
 import { AgencySystem } from "@justice-counts/common/types";
 import { frequencyString } from "@justice-counts/common/utils/helperUtils";
 import { observer } from "mobx-react-lite";
@@ -85,6 +86,18 @@ export const MetricsOverview = observer(() => {
     GuideKeys.SetUpMetrics
   );
 
+  const systemTabOptions =
+    currentAgency?.systems
+      .filter((system) => getMetricsBySystem(system)?.length !== 0)
+      .map((system) => {
+        return {
+          key: system,
+          label: formatSystemName(system),
+          onClick: () => handleSystemClick(system),
+          selected: currentSystem === system,
+        };
+      }) || [];
+
   if (systemSearchParam && !currentAgency?.systems.includes(systemSearchParam))
     return <NotFound />;
 
@@ -108,98 +121,92 @@ export const MetricsOverview = observer(() => {
             Click on each metric to edit the availability of the metric and
             relevant breakdown categories, as well as the definitions of each.{" "}
             <a href={learnMoreURL} target="_blank" rel="noopener noreferrer">
-              Learn More
+              Learn more
             </a>
           </Styled.OverviewDescription>
-          <Styled.SystemsList>
-            {showSystems &&
-              currentAgency?.systems
-                .filter((system) => getMetricsBySystem(system)?.length !== 0)
-                .map((system) => {
-                  return (
-                    <Styled.SystemMenuItem
-                      key={system}
-                      selected={currentSystem === system}
-                      onClick={() => handleSystemClick(system)}
-                    >
-                      {formatSystemName(system, {
-                        allUserSystems: currentAgency?.systems,
-                      })}
-                    </Styled.SystemMenuItem>
-                  );
-                })}
-          </Styled.SystemsList>
+
+          {/* System Selection */}
+          {showSystems && (
+            <Styled.TabbedBarWrapper>
+              <TabbedBar options={systemTabOptions} />
+            </Styled.TabbedBarWrapper>
+          )}
+
+          <Styled.MetricsWrapper>
+            {hasActionRequiredMetrics && (
+              <Styled.MetricsSection>
+                <Styled.MetricsSectionTitle isAlertCaption>
+                  Action required
+                </Styled.MetricsSectionTitle>
+                {actionRequiredMetrics?.map(({ key, metric }) => (
+                  <Styled.MetricItem
+                    key={key}
+                    onClick={() =>
+                      setSettingsSearchParams({
+                        system: currentSystem,
+                        metric: key,
+                      })
+                    }
+                  >
+                    <Styled.MetricItemName actionRequired>
+                      {metric.label}
+                    </Styled.MetricItemName>
+                    <RightArrowIcon width="16px" height="16px" />
+                  </Styled.MetricItem>
+                ))}
+              </Styled.MetricsSection>
+            )}
+            {hasAvailableMetrics && (
+              <Styled.MetricsSection>
+                <Styled.MetricsSectionTitle>
+                  Available
+                </Styled.MetricsSectionTitle>
+                {availableMetrics?.map(({ key, metric }) => (
+                  <Styled.MetricItem
+                    key={key}
+                    onClick={() =>
+                      setSettingsSearchParams({
+                        system: currentSystem,
+                        metric: key,
+                      })
+                    }
+                  >
+                    <Styled.MetricItemName>
+                      {metric.label}
+                      <span>
+                        {frequencyString(metric.customFrequency)?.toLowerCase()}
+                      </span>
+                    </Styled.MetricItemName>
+                    <RightArrowIcon width="16px" height="16px" />
+                  </Styled.MetricItem>
+                ))}
+              </Styled.MetricsSection>
+            )}
+            {hasUnavailableMetrics && (
+              <Styled.MetricsSection>
+                <Styled.MetricsSectionTitle>
+                  Unavailable Metrics
+                </Styled.MetricsSectionTitle>
+                {unavailableMetrics?.map(({ key, metric }) => (
+                  <Styled.MetricItem
+                    key={key}
+                    onClick={() =>
+                      setSettingsSearchParams({
+                        system: currentSystem,
+                        metric: key,
+                      })
+                    }
+                  >
+                    <Styled.MetricItemName>
+                      {metric.label}
+                    </Styled.MetricItemName>
+                    <RightArrowIcon width="16px" height="16px" />
+                  </Styled.MetricItem>
+                ))}
+              </Styled.MetricsSection>
+            )}
+          </Styled.MetricsWrapper>
         </Styled.OverviewWrapper>
-        <Styled.MetricsWrapper>
-          {hasActionRequiredMetrics && (
-            <Styled.MetricsSection>
-              <Styled.MetricsSectionTitle textColor="red">
-                Action required
-              </Styled.MetricsSectionTitle>
-              {actionRequiredMetrics?.map(({ key, metric }) => (
-                <Styled.MetricItem
-                  key={key}
-                  onClick={() =>
-                    setSettingsSearchParams({
-                      system: currentSystem,
-                      metric: key,
-                    })
-                  }
-                >
-                  <Styled.MetricItemName>{metric.label}</Styled.MetricItemName>
-                  <RightArrowIcon />
-                </Styled.MetricItem>
-              ))}
-            </Styled.MetricsSection>
-          )}
-          {hasAvailableMetrics && (
-            <Styled.MetricsSection>
-              <Styled.MetricsSectionTitle>
-                Available Metrics
-              </Styled.MetricsSectionTitle>
-              {availableMetrics?.map(({ key, metric }) => (
-                <Styled.MetricItem
-                  key={key}
-                  onClick={() =>
-                    setSettingsSearchParams({
-                      system: currentSystem,
-                      metric: key,
-                    })
-                  }
-                >
-                  <Styled.MetricItemName>
-                    {metric.label}
-                    <span>
-                      {frequencyString(metric.customFrequency)?.toLowerCase()}
-                    </span>
-                  </Styled.MetricItemName>
-                  <RightArrowIcon />
-                </Styled.MetricItem>
-              ))}
-            </Styled.MetricsSection>
-          )}
-          {hasUnavailableMetrics && (
-            <Styled.MetricsSection>
-              <Styled.MetricsSectionTitle>
-                Unavailable Metrics
-              </Styled.MetricsSectionTitle>
-              {unavailableMetrics?.map(({ key, metric }) => (
-                <Styled.MetricItem
-                  key={key}
-                  onClick={() =>
-                    setSettingsSearchParams({
-                      system: currentSystem,
-                      metric: key,
-                    })
-                  }
-                >
-                  <Styled.MetricItemName>{metric.label}</Styled.MetricItemName>
-                  <RightArrowIcon />
-                </Styled.MetricItem>
-              ))}
-            </Styled.MetricsSection>
-          )}
-        </Styled.MetricsWrapper>
       </Styled.MetricsOverviewWrapper>
     </Styled.Wrapper>
   );

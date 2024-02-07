@@ -35,6 +35,7 @@ export const typography = {
         font-size: ${rem("32px")};
         line-height: ${rem("48px")};
         font-weight: 600;
+        letter-spacing: -0.02em;
     `,
     large: `
         font-size: ${rem("24px")};
