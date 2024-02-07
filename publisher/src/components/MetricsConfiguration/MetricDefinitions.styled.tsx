@@ -58,6 +58,11 @@ export const SectionItem = styled(MetricsOverview.MetricItem)`
 
 export const SectionItemLabel = styled(MetricsOverview.MetricItemName)``;
 
+export const DropdownSpacer = styled.div`
+  padding: 16px 0;
+  border-bottom: 1px solid ${palette.solid.lightgrey4};
+`;
+
 export const EditButton = styled.div`
   ${typography.body}
   color: ${palette.solid.blue};

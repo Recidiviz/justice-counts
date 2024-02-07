@@ -44,9 +44,9 @@ export const Wrapper = styled.div`
 
 export const Content = styled.div`
   width: 480px;
-  height: 640px;
-  max-height: 640px;
-  padding: 32px 0;
+  height: fit-content;
+  max-height: 750px;
+  padding: 16px 0;
   background-color: ${palette.solid.white};
   position: relative;
   border-radius: 3px;
@@ -54,11 +54,12 @@ export const Content = styled.div`
 
 export const ScrollableInnerWrapper = styled.div`
   width: 100%;
-  height: 100%;
+  max-height: 624px;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  padding: 0 40px 64px 40px;
+  padding: 24px 40px 64px 40px;
+  border-top: 1px solid ${palette.highlight.grey3};
 `;
 
 export const CloseButton = styled.div`
@@ -76,7 +77,7 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
   padding: 0 40px;
 `;
 
@@ -124,7 +125,7 @@ export const BottomButtonsContainer = styled.div`
   position: absolute;
   bottom: 0;
   width: 100%;
-  padding: 32px;
+  padding: 16px 40px;
   display: flex;
   flex-direction: row;
   justify-content: end;
@@ -132,6 +133,7 @@ export const BottomButtonsContainer = styled.div`
   align-items: center;
   background-color: ${palette.solid.white};
   z-index: 2;
+  border-top: 1px solid ${palette.highlight.grey3};
 `;
 
 // race ethnicities

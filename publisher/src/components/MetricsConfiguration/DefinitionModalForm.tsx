@@ -19,6 +19,7 @@ import { Button } from "@justice-counts/common/components/Button";
 import { CheckboxOptions } from "@justice-counts/common/components/CheckboxOptions";
 import { NewInput } from "@justice-counts/common/components/Input";
 import {
+  AgencySystem,
   MetricConfigurationSettings,
   MetricConfigurationSettingsOptions,
 } from "@justice-counts/common/types";
@@ -27,7 +28,7 @@ import React, { ChangeEvent, Fragment, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
+import MetricConfigStore from "../../stores/MetricConfigStore";
 import * as Styled from "./ModalForm.styled";
 import {
   ContextsByContextKey,
@@ -38,16 +39,17 @@ import {
 type DefinitionModalFormProps = {
   activeDisaggregationKey?: string;
   activeDimensionKey?: string;
+  systemMetricKey: string;
   closeModal: () => void;
 };
 
 function DefinitionModalForm({
   activeDisaggregationKey,
   activeDimensionKey,
+  systemMetricKey,
   closeModal,
 }: DefinitionModalFormProps) {
   const { agencyId } = useParams() as { agencyId: string };
-  const [settingsSearchParams] = useSettingsSearchParams();
   const { metricConfigStore, userStore } = useStore();
   const {
     metrics,
@@ -67,9 +69,11 @@ function DefinitionModalForm({
   const isReadOnly = userStore.isUserReadOnly(agencyId);
 
   // system and metric keys
-  const { system: systemSearchParam, metric: metricSearchParam } =
-    settingsSearchParams;
-  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
+  const { system: systemSearchParam, metricKey: metricSearchParam } =
+    MetricConfigStore.splitSystemMetricKey(systemMetricKey) as {
+      system: AgencySystem;
+      metricKey: string;
+    };
 
   // definitions
   const isMetricDefinitionSettings = !activeDimensionKey;

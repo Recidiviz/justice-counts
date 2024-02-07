@@ -18,13 +18,12 @@
 import { Button } from "@justice-counts/common/components/Button";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
 import { useIsFooterVisible } from "@justice-counts/common/hooks";
+import { SupervisionSubsystems } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 
 import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
-import { formatSystemName } from "../../utils";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import * as Styled from "./Configuration.styled";
 import MetricAvailability from "./MetricAvailability";
@@ -32,12 +31,11 @@ import MetricDefinitions from "./MetricDefinitions";
 import RaceEthnicitiesModalForm from "./RaceEthnicitiesModalForm";
 
 function Configuration() {
-  const { agencyId } = useParams() as { agencyId: string };
   const [isFooterVisible, setIsFooterVisible] = useIsFooterVisible();
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
   const { system: systemSearchParam } = settingsSearchParams;
-  const { metricConfigStore, userStore } = useStore();
+  const { metricConfigStore } = useStore();
   const { metrics } = metricConfigStore;
   const [metricConfigPage, setMetricConfigPage] = useState<
     "availability" | "definitions"
@@ -45,7 +43,6 @@ function Configuration() {
   const [isRaceEthnicityModalOpen, setIsRaceEthnicityModalOpen] =
     useState(false);
 
-  const currentAgency = userStore.getAgency(agencyId);
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
 
   useEffect(() => {
@@ -60,7 +57,11 @@ function Configuration() {
       : "unset";
   }, [isRaceEthnicityModalOpen]);
 
-  if (!metrics[systemMetricKey]) return <NotFound />;
+  if (
+    !metrics[systemMetricKey] ||
+    (systemSearchParam && SupervisionSubsystems.includes(systemSearchParam)) // Case: when user types in supervision subsystem in params
+  )
+    return <NotFound />;
 
   const configurationOptions = [
     {
@@ -101,13 +102,7 @@ function Configuration() {
           </Styled.MetricName>
           <Styled.Description>
             {metrics[systemMetricKey]?.description}
-            <span>
-              Sector:{" "}
-              {systemSearchParam &&
-                formatSystemName(systemSearchParam, {
-                  allUserSystems: currentAgency?.systems,
-                })}
-            </span>
+            <span>Sector: {systemSearchParam?.toLocaleLowerCase()}</span>
           </Styled.Description>
 
           <TabbedBar options={configurationOptions} />
