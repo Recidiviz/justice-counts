@@ -9,7 +9,7 @@
     "@justice-counts/agency-dashboard": "*",
     "@justice-counts/common": "*",
     "@recidiviz/design-system": "^5.1.0",
-    "@testing-library/jest-dom": "^6.4.1",
+    "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^27.5.2",
