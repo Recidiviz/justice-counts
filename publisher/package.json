@@ -63,7 +63,7 @@
     "@recidiviz/eslint-config": "^3.0.0",
     "@recidiviz/tsconfig": "^2.0.0",
     "@testing-library/dom": "^9.3.1",
-    "@testing-library/jest-dom": "^6.4.1",
+    "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
     "@types/auth0": "^3.3.10",
