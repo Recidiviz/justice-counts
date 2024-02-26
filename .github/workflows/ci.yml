@@ -18,7 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
         with:
+          node-version: "16"
           # This clones the repo and checks out the SHA that triggered this action.
           # We set fetch-depth 0 to fetch all branches and history so that merge-base
           # is guaranteed to be able to find the common ancestor with the base branch.
