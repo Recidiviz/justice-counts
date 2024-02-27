@@ -1202,7 +1202,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                                         removeSnakeCase(
                                           teamMemberRoleUpdates[+member.id] ||
                                             ""
-                                        ) || removeSnakeCase(member.role)
+                                        ) || removeSnakeCase(member.role || "")
                                       }
                                       disabled={selectedTeamMembersToDelete.has(
                                         +member.id
