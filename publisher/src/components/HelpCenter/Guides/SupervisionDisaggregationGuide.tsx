@@ -70,9 +70,10 @@ export const SupervisionDisaggregationGuide = () => (
             and choose a metric
           </li>
           <li>
-            Under the <strong>Metric</strong> section, look for the toggle
-            titled <strong>Disaggregated by Supervision Type</strong> and choose
-            either <strong>Combined</strong> or
+            Under the <strong>Metric Disaggregation</strong> section, look for
+            the section titled{" "}
+            <strong>Disaggregated by Supervision Type</strong> and choose either{" "}
+            <strong>Combined</strong> or
             <strong> Disaggregated</strong>
           </li>
         </ol>
