@@ -168,8 +168,11 @@ function RaceEthnicitiesModalForm({
   return (
     <Styled.Wrapper>
       <Styled.Content>
+        <Styled.Header>
+          Race & Ethnicity Form{" "}
+          <Styled.CloseButton onClick={closeModal}>&#10005;</Styled.CloseButton>
+        </Styled.Header>
         <Styled.ScrollableInnerWrapper>
-          <Styled.Header>Race & Ethnicity Form</Styled.Header>
           <Styled.Description>
             {RACE_ETHNICITIES_DESCRIPTION}
           </Styled.Description>
@@ -203,7 +206,7 @@ function RaceEthnicitiesModalForm({
             Which of the following categories does your case management system
             capture for race?
           </Styled.ToggleSwitchesListHeader>
-          <Styled.ToggleSwitchesList>
+          <Styled.CheckboxWrapper>
             <CheckboxOptions
               options={raceEthnicityOptions}
               onChange={({ key, checked }) => {
@@ -219,10 +222,9 @@ function RaceEthnicitiesModalForm({
               content="The Justice Counts data model requires the Unknown Race category to be turned on if the Hispanic or Latino Race category is turned on."
               noArrow
             />
-          </Styled.ToggleSwitchesList>
+          </Styled.CheckboxWrapper>
         </Styled.ScrollableInnerWrapper>
         <Styled.BottomButtonsContainer>
-          <Button label="Cancel" onClick={closeModal} />
           <Button
             label="Save"
             onClick={() => {

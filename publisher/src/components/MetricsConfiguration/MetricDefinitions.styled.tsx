@@ -22,6 +22,7 @@ import {
 import styled from "styled-components/macro";
 
 import * as MetricAvailability from "./MetricAvailability.styled";
+import * as MetricsOverview from "./MetricsOverview.styled";
 
 export const Wrapper = styled(MetricAvailability.Wrapper)``;
 
@@ -42,47 +43,27 @@ export const Description = styled(MetricAvailability.Description)`
   }
 `;
 
-export const Section = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 12px;
-`;
+export const Section = styled(MetricsOverview.MetricsSection)``;
 
-export const SectionTitle = styled.div`
-  ${typography.sizeCSS.normal};
-  margin-bottom: 8px;
-`;
+export const SectionTitle = styled(MetricsOverview.MetricsSectionTitle)``;
 
-export const SectionItem = styled.div`
-  width: 100%;
-  padding: 16px 10px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid ${palette.highlight.grey4};
-  position: relative;
-  cursor: pointer;
-
-  & > span {
-    ${typography.sizeCSS.normal};
-    color: ${palette.solid.blue};
-  }
+export const SectionItem = styled(MetricsOverview.MetricItem)`
+  padding-right: 0;
 
   &:hover {
-    background-color: ${palette.highlight.lightblue1};
+    background: none;
+    cursor: unset;
   }
 `;
 
-export const SectionItemLabel = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-  ${typography.sizeCSS.medium};
+export const SectionItemLabel = styled(MetricsOverview.MetricItemName)``;
 
-  img {
-    width: 20px;
-    height: 20px;
+export const EditButton = styled.div`
+  ${typography.body}
+  color: ${palette.solid.blue};
+
+  &:hover {
+    color: ${palette.solid.darkblue};
+    cursor: pointer;
   }
 `;

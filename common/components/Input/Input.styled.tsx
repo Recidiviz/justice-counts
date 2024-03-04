@@ -219,10 +219,11 @@ export const NewInput = styled.input<{
   error: boolean;
   multiline: boolean;
   disabled: boolean;
+  fullWidth?: boolean;
 }>`
   ${typography.body}
   height: ${({ multiline }) => (multiline ? `200px` : `32px`)};
-  width: 318px;
+  width: ${({ fullWidth }) => (fullWidth ? `100%` : `318px`)};
   padding: 8px 12px;
   border: 1px solid
     ${({ error }) => (error ? palette.solid.red : palette.highlight.grey5)};
@@ -237,6 +238,10 @@ export const NewInput = styled.input<{
     border: 1px solid
       ${({ error }) => (error ? palette.solid.red : palette.solid.blue)};
     color: ${palette.solid.darkgrey};
+  }
+
+  &::placeholder {
+    color: ${palette.highlight.grey8};
   }
 `;
 

@@ -27,6 +27,7 @@ const MAX_MODAL_FORM_HEIGHT_WITH_PADDINGS = 587 + 24 * 2;
 export const Wrapper = styled.div`
   position: fixed;
   top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   background-color: ${palette.highlight.grey2};
@@ -42,8 +43,7 @@ export const Wrapper = styled.div`
 `;
 
 export const Content = styled.div`
-  width: 582px;
-  max-width: 582px;
+  width: 480px;
   height: 640px;
   max-height: 640px;
   padding: 32px 0;
@@ -58,12 +58,26 @@ export const ScrollableInnerWrapper = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  padding: 0 40px 48px 40px;
+  padding: 0 40px 64px 40px;
+`;
+
+export const CloseButton = styled.div`
+  font-size: 18px;
+  color: ${palette.highlight.grey8};
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.highlight.grey10};
+  }
 `;
 
 export const Header = styled.div`
-  ${typography.bodyEmphasized};
+  ${typography.sizeCSS.normal};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 8px;
+  padding: 0 40px;
 `;
 
 export const Title = styled.div`
@@ -75,19 +89,26 @@ export const Title = styled.div`
 
 export const Description = styled.div`
   ${typography.body};
-  color: ${palette.highlight.grey8};
+  line-height: 24px;
   margin-bottom: 24px;
 `;
 
-export const ToggleSwitchesList = styled.fieldset<{
+export const CheckboxWrapper = styled.fieldset<{
   disabled?: boolean;
 }>`
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 32px;
   border: none;
   ${({ disabled }) => disabled && "opacity: 0.6; pointer-events: none"};
+
+  p {
+    ${typography.bodyEmphasized};
+    margin-bottom: 8px;
+
+    &:not(:first-child) {
+      margin-top: 8px;
+    }
+  }
 `;
 
 export const ToggleSwitchWrapper = styled.div<{ enabled?: boolean }>`
@@ -132,7 +153,9 @@ export const ChooseDefaultSettings = styled.span<{ disabled?: boolean }>`
   ${({ disabled }) => disabled && `pointer-events: none`};
 `;
 
-export const ContextContainer = styled.div``;
+export const ContextContainer = styled.div`
+  margin-bottom: 48px;
+`;
 
 export const ContextLabel = styled.div`
   ${typography.sizeCSS.normal};

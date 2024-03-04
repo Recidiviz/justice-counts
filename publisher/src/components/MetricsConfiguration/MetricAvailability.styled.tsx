@@ -201,6 +201,7 @@ export const BreakdownsOption = styled.div<{ active: boolean }>`
 `;
 
 export const DimensionsContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: start;
