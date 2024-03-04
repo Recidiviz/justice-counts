@@ -22,7 +22,7 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-const OVERVIEW_WRAPPER_WIDTH = 470;
+const OVERVIEW_WRAPPER_WIDTH = 676;
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -33,29 +33,30 @@ export const MetricsOverviewWrapper = styled.div<{
   isSuperagencyNotSuperagencySystem?: boolean;
 }>`
   display: flex;
-  padding: ${({ isSuperagencyNotSuperagencySystem }) =>
-    isSuperagencyNotSuperagencySystem
-      ? `26px 24px 100px 24px`
-      : `56px 24px 100px 24px`};
+  flex-direction: column;
+  align-items: center;
+  margin-top: 48px;
+  margin-bottom: 144px;
 `;
 
 export const OverviewWrapper = styled.div`
   top: ${HEADER_BAR_HEIGHT + 48}px;
   left: 24px;
+  width: 100%;
   max-width: ${OVERVIEW_WRAPPER_WIDTH}px;
   display: flex;
   flex-direction: column;
 `;
 
 export const OverviewHeader = styled.div`
-  ${typography.sizeCSS.headline};
+  ${typography.sizeCSS.title};
   margin-bottom: 16px;
 `;
 
 export const OverviewDescription = styled.div`
-  ${typography.sizeCSS.medium};
-  margin-bottom: 24px;
-  color: ${palette.highlight.grey10};
+  ${typography.body};
+  max-width: 470px;
+  margin-bottom: 32px;
 
   a,
   a:visited {
@@ -88,9 +89,9 @@ export const SystemMenuItem = styled.div<{ selected: boolean }>`
   white-space: nowrap;
   text-overflow: ellipsis;
   text-transform: capitalize;
-  cursor: pointer;
 
   &:hover {
+    cursor: pointer;
     color: ${({ selected }) =>
       selected ? palette.solid.darkgrey : palette.highlight.grey10};
   }
@@ -98,10 +99,8 @@ export const SystemMenuItem = styled.div<{ selected: boolean }>`
 
 export const MetricsWrapper = styled.div`
   width: 100%;
-  padding-left: 80px;
   display: flex;
   flex-direction: column;
-  gap: 56px;
 `;
 
 export const MetricsSection = styled.div`
@@ -110,29 +109,40 @@ export const MetricsSection = styled.div`
 `;
 
 export const MetricsSectionTitle = styled.div<{
-  textColor?: string;
+  isAlertCaption?: boolean;
   width?: number;
 }>`
-  ${typography.sizeCSS.medium};
+  ${typography.caption};
   ${({ width }) => width && `width: ${width}%;`};
-  color: ${({ textColor }) => {
-    if (textColor === "red") {
-      return palette.solid.red;
-    }
-    return palette.highlight.grey9;
-  }};
+  color: ${({ isAlertCaption }) =>
+    isAlertCaption ? palette.solid.red : palette.solid.darkgrey};
+  text-transform: uppercase;
+  border-top: 1px solid ${palette.solid.lightgrey4};
+  border-bottom: 1px solid ${palette.solid.lightgrey4};
+  padding: 8px;
+  background: ${palette.solid.lightgrey2};
 
-  margin-bottom: 12px;
+  ${MetricsSection}:first-child > & {
+    margin-top: 16px;
+  }
 `;
 
 export const MetricItem = styled.div`
   width: 100%;
-  padding: 32px 16px;
+  padding: 24px 16px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid ${palette.highlight.grey4};
+
+  &:not(:last-child) {
+    border-bottom: 1px solid ${palette.solid.lightgrey4};
+  }
+
+  ${MetricsSection}:last-child > &:last-child {
+    border-bottom: 1px solid ${palette.solid.lightgrey4};
+  }
+
   cursor: pointer;
 
   svg {
@@ -145,21 +155,39 @@ export const MetricItem = styled.div`
   }
 
   &:hover {
-    background-color: ${palette.highlight.grey1};
+    background-color: ${palette.solid.lightgrey2};
   }
 `;
 
-export const MetricItemName = styled.div`
+export const MetricItemName = styled.div<{ actionRequired?: boolean }>`
+  ${typography.body}
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 16px;
-  ${typography.sizeCSS.title};
-  line-height: 39px;
+  flex-direction: column;
+  position: relative;
 
   span {
-    ${typography.sizeCSS.normal};
-    color: ${palette.highlight.grey10};
+    margin-top: 4px;
+    color: ${palette.highlight.grey8};
     text-transform: capitalize;
+  }
+
+  ${({ actionRequired }) =>
+    actionRequired &&
+    `
+      &::after {
+        content: "*";
+        position: absolute;
+        right: -7px;
+        color: ${palette.solid.red};
+      }
+  `}
+`;
+
+export const TabbedBarWrapper = styled.div`
+  width: ${OVERVIEW_WRAPPER_WIDTH}px;
+
+  div {
+    flex-flow: wrap;
+    gap: 8px 16px;
   }
 `;
