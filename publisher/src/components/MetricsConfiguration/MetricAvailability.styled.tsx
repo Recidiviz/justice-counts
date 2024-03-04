@@ -18,6 +18,7 @@
 import {
   CustomDropdown,
   CustomDropdownMenu,
+  CustomDropdownMenuItem,
   CustomDropdownToggle,
   CustomDropdownToggleLabel,
 } from "@justice-counts/common/components/Dropdown";
@@ -29,49 +30,27 @@ import styled from "styled-components/macro";
 
 export const Wrapper = styled.div`
   width: 100%;
-  padding-left: 574px;
 `;
 
 export const InnerWrapper = styled.div`
-  width: 754px;
-  padding: 72px 0 64px 0;
   display: flex;
   flex-direction: column;
 `;
 
 export const Header = styled.div`
+  ${typography.bodyEmphasized};
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 16px;
-  margin-bottom: 16px;
-`;
-
-export const HeaderNumber = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 32.5px;
-  height: 32.5px;
-  margin-top: 2px;
-  border: 0.5px solid ${palette.highlight.grey4};
-  border-radius: 100%;
-  font-family: ${typography.family};
-  font-size: 16.25px;
-  line-height: 22px;
-  color: ${palette.solid.white};
-  background-color: ${palette.solid.blue};
-`;
-
-export const HeaderLabel = styled.div`
-  ${typography.sizeCSS.title};
-  font-size: 42px;
+  margin-bottom: 8px;
+  margin-top: 48px;
 `;
 
 export const Description = styled.div`
-  ${typography.sizeCSS.medium};
-  color: ${palette.highlight.grey10};
-  margin-bottom: 40px;
+  ${typography.body};
+  color: ${palette.highlight.grey8};
+  margin-bottom: 48px;
 `;
 
 export const MetricSettingsSectionTitle = styled.div`
@@ -79,30 +58,27 @@ export const MetricSettingsSectionTitle = styled.div`
   margin-bottom: 16px;
 `;
 
-export const SettingRowsContainer = styled.div`
+export const SettingsContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 32px;
 `;
 
-export const SettingRow = styled.div`
+export const Setting = styled.div`
   width: 100%;
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
   gap: 16px;
+  margin-bottom: 48px;
 `;
 
 export const SettingName = styled.div`
-  width: 45%;
-  min-width: 45%;
+  ${typography.body};
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 6px;
-  ${typography.sizeCSS.medium};
 `;
 
 export const InfoIconWrapper = styled.div`
@@ -117,6 +93,7 @@ export const SettingTooltip = styled.div`
   display: none;
   position: absolute;
   left: 32px;
+  bottom: 0px;
   background-color: ${palette.solid.black};
   border-radius: 3px;
   color: ${palette.solid.white};
@@ -134,6 +111,7 @@ export const SettingTooltip = styled.div`
 export const MonthSelectionDropdownContainer = styled.div<{
   checked?: boolean;
 }>`
+  max-width: 275px;
   display: flex;
   flex: 1 1 0;
   border-radius: 3px;
@@ -144,31 +122,26 @@ export const MonthSelectionDropdownContainer = styled.div<{
   }
 
   & ${CustomDropdownToggle} {
-    padding: 9px 16px;
+    padding: 8px 16px;
   }
 
   & ${CustomDropdownToggleLabel} {
-    justify-content: center;
+    ${typography.body}
     gap: 8px;
   }
 
   & ${CustomDropdownMenu} {
     max-height: calc(55px * 4);
+    box-shadow: none;
+    border: 1px solid ${palette.highlight.grey4};
+    margin-top: 8px;
   }
 
-  ${({ checked }) =>
-    checked &&
-    `
-      background-color: ${palette.solid.blue};
-      
-      & ${CustomDropdownToggleLabel} {
-        color: ${palette.solid.white};
-      };
-      
-      &:hover {
-        background-color: ${palette.solid.darkblue};
-      }
-    `};
+  & ${CustomDropdownMenuItem} {
+    ${typography.body}
+    border: none;
+    padding: 12px 16px;
+  }
 `;
 
 export const LeftAlignedButtonWrapper = styled.div`
@@ -182,20 +155,25 @@ export const BreakdownsSection = styled.div<{ disabled: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: start;
+  padding-top: 48px;
+  border-top: 1px solid ${palette.solid.lightgrey4};
 
   ${({ disabled }) => disabled && "pointer-events: none; opacity: 0.5"};
 `;
 
 export const BreakdownsSectionTitle = styled(MetricSettingsSectionTitle)`
+  ${typography.bodyEmphasized}
   margin-bottom: 8px;
 `;
 
 export const BreakdownsSectionDescription = styled(Description)`
+  ${typography.body}
   margin-bottom: 24px;
-  color: ${palette.solid.darkgrey};
+  color: ${palette.highlight.grey8};
 `;
 
 export const BreakdownsOptionsContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: row;
   gap: 8px;
@@ -203,13 +181,13 @@ export const BreakdownsOptionsContainer = styled.div`
 `;
 
 export const BreakdownsOption = styled.div<{ active: boolean }>`
+  ${typography.body};
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 4px 8px;
   border-radius: 20px;
   text-transform: capitalize;
-  ${typography.sizeCSS.small};
   color: ${({ active }) =>
     active ? palette.solid.white : palette.solid.darkgrey};
   background-color: ${({ active }) =>
@@ -226,17 +204,23 @@ export const DimensionsContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: start;
-  margin-bottom: 16px;
+  margin-bottom: 48px;
+
+  &:last-child {
+    margin-bottom: 38px;
+  }
 `;
 
 export const DimensionsHeader = styled.div`
-  ${typography.sizeCSS.normal};
+  ${typography.body};
   display: flex;
   flex-direction: row;
   gap: 11px;
+  margin-bottom: 16px;
 `;
 
 export const SelectAllDimensions = styled.span<{ disabled?: boolean }>`
+  ${typography.body}
   display: inline-block;
   cursor: pointer;
   color: ${({ disabled }) =>

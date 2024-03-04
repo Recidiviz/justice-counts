@@ -29,9 +29,9 @@ export const InnerWrapper = styled(MetricAvailability.InnerWrapper)``;
 
 export const Header = styled(MetricAvailability.Header)``;
 
-export const HeaderNumber = styled(MetricAvailability.HeaderNumber)``;
+export const HeaderNumber = styled.div``;
 
-export const HeaderLabel = styled(MetricAvailability.HeaderLabel)``;
+export const HeaderLabel = styled.div``;
 
 export const Description = styled(MetricAvailability.Description)`
   margin-bottom: 36px;

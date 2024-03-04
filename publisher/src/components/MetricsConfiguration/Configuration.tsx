@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { Button } from "@justice-counts/common/components/Button";
+import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
 import { useIsFooterVisible } from "@justice-counts/common/hooks";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
@@ -24,11 +25,11 @@ import { useParams } from "react-router-dom";
 import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
 import { formatSystemName } from "../../utils";
-import indicatorAlertIcon from "../assets/indicator-alert-icon.svg";
 import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
 import * as Styled from "./Configuration.styled";
 import MetricAvailability from "./MetricAvailability";
 import MetricDefinitions from "./MetricDefinitions";
+import RaceEthnicitiesModalForm from "./RaceEthnicitiesModalForm";
 
 function Configuration() {
   const { agencyId } = useParams() as { agencyId: string };
@@ -41,6 +42,8 @@ function Configuration() {
   const [metricConfigPage, setMetricConfigPage] = useState<
     "availability" | "definitions"
   >("availability");
+  const [isRaceEthnicityModalOpen, setIsRaceEthnicityModalOpen] =
+    useState(false);
 
   const currentAgency = userStore.getAgency(agencyId);
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
@@ -51,76 +54,79 @@ function Configuration() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metricConfigPage]);
 
+  useEffect(() => {
+    document.body.style.overflow = isRaceEthnicityModalOpen
+      ? "hidden"
+      : "unset";
+  }, [isRaceEthnicityModalOpen]);
+
   if (!metrics[systemMetricKey]) return <NotFound />;
 
-  const metricEnabled = metrics[systemMetricKey]?.enabled;
-  const metricLabelLength = `${metrics[systemMetricKey].label}`.length;
+  const configurationOptions = [
+    {
+      key: "configure_metrics",
+      label: "Configure Metrics",
+      onClick: () => setMetricConfigPage("availability"),
+      selected: metricConfigPage === "availability",
+    },
+    {
+      key: "define_metrics",
+      label: "Define Metrics",
+      onClick: () => setMetricConfigPage("definitions"),
+      selected: metricConfigPage === "definitions",
+    },
+  ];
 
   return (
-    <>
-      <Styled.MetricSettingsSideBar isFooterVisible={isFooterVisible}>
-        <Button
-          label="<- Back to All Metrics"
-          onClick={() =>
-            setSettingsSearchParams({
-              ...settingsSearchParams,
-              metric: undefined,
-            })
-          }
-          labelColor="blue"
-          noSidePadding
-          noHover
-          size="medium"
-        />
-        <Styled.MetricName isNameLong={metricLabelLength > 20}>
-          {metrics[systemMetricKey]?.label}
-        </Styled.MetricName>
-        <Styled.Description>
-          {metrics[systemMetricKey]?.description}
-          <span>
-            Sector:{" "}
-            {systemSearchParam &&
-              formatSystemName(systemSearchParam, {
-                allUserSystems: currentAgency?.systems,
-              })}
-          </span>
-        </Styled.Description>
-        <Styled.Menu>
-          <Styled.MenuItem>
-            <Styled.MenuItemNumber>1</Styled.MenuItemNumber>
-            <Styled.MenuItemLabel
-              onClick={() => setMetricConfigPage("availability")}
-              active={metricConfigPage === "availability"}
-            >
-              Set metric availability
-            </Styled.MenuItemLabel>
-          </Styled.MenuItem>
-          <Styled.MenuItem>
-            <Styled.MenuItemNumber disabled={!metricEnabled}>
-              2
-            </Styled.MenuItemNumber>
-            <Styled.MenuItemLabel
-              onClick={() => setMetricConfigPage("definitions")}
-              active={metricConfigPage === "definitions"}
-              disabled={!metricEnabled}
-            >
-              Define metrics
-            </Styled.MenuItemLabel>
-          </Styled.MenuItem>
-        </Styled.Menu>
-        {metricEnabled === null && (
-          <Styled.MetricIndicator isAlert>
-            <img src={indicatorAlertIcon} alt="" /> Configuration required
-          </Styled.MetricIndicator>
+    <Styled.MetricConfigurationContainer>
+      <Styled.MetricConfigurationWrapper>
+        <Styled.ButtonPositionWrapper>
+          <Button
+            label="<- Metrics"
+            onClick={() =>
+              setSettingsSearchParams({
+                ...settingsSearchParams,
+                metric: undefined,
+              })
+            }
+            labelColor="blue"
+            noSidePadding
+            noHover
+          />
+        </Styled.ButtonPositionWrapper>
+
+        <Styled.MetricInformation isFooterVisible={isFooterVisible}>
+          <Styled.MetricName>
+            {metrics[systemMetricKey]?.label}
+          </Styled.MetricName>
+          <Styled.Description>
+            {metrics[systemMetricKey]?.description}
+            <span>
+              Sector:{" "}
+              {systemSearchParam &&
+                formatSystemName(systemSearchParam, {
+                  allUserSystems: currentAgency?.systems,
+                })}
+            </span>
+          </Styled.Description>
+
+          <TabbedBar options={configurationOptions} />
+        </Styled.MetricInformation>
+        {metricConfigPage === "availability" && (
+          <MetricAvailability
+            goToDefineMetrics={() => setMetricConfigPage("definitions")}
+            setIsRaceEthnicityModalOpen={setIsRaceEthnicityModalOpen}
+          />
         )}
-      </Styled.MetricSettingsSideBar>
-      {metricConfigPage === "availability" && (
-        <MetricAvailability
-          goToDefineMetrics={() => setMetricConfigPage("definitions")}
+        {metricConfigPage === "definitions" && <MetricDefinitions />}
+      </Styled.MetricConfigurationWrapper>
+
+      {isRaceEthnicityModalOpen && (
+        <RaceEthnicitiesModalForm
+          closeModal={() => setIsRaceEthnicityModalOpen(false)}
         />
       )}
-      {metricConfigPage === "definitions" && <MetricDefinitions />}
-    </>
+    </Styled.MetricConfigurationContainer>
   );
 }
 

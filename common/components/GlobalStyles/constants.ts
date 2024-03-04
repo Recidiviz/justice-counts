@@ -23,3 +23,5 @@ export const COMMON_DESKTOP_WIDTH = 1366;
 export const MIN_MOBILE_WIDTH = 512;
 export const MIN_TABLET_WIDTH = 860;
 export const MIN_DESKTOP_WIDTH = 1200;
+
+export const MAIN_PANEL_WIDTH = 676;

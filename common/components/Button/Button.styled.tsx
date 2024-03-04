@@ -39,7 +39,7 @@ export const Button = styled.div<{
   noTopBottomPadding?: boolean;
   noHover?: boolean;
 }>`
-  ${({ size }) => typography.sizeCSS[size || "normal"]};
+  ${({ size }) => (size ? typography.sizeCSS[size] : typography.body)};
   display: flex;
   justify-content: center;
   align-items: center;

@@ -25,9 +25,14 @@ export const CheckboxOptionsWrapper = styled.div`
   gap: 8px;
   margin-bottom: 16px;
 `;
+
 export const CheckboxLabel = styled.div`
   ${typography.body}
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `;
+
 export const Checkbox = styled.input`
   width: 16px;
   height: 16px;
