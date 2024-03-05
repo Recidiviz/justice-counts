@@ -27,8 +27,9 @@ import { sortRaces } from "./utils";
 
 export const RaceEthnicitiesGrid: React.FC<{
   disaggregationEnabled: boolean;
+  isMetricEnabled: boolean;
   onClick: () => void;
-}> = observer(({ disaggregationEnabled, onClick }) => {
+}> = observer(({ disaggregationEnabled, isMetricEnabled, onClick }) => {
   const [settingsSearchParams] = useSettingsSearchParams();
   const { metricConfigStore } = useStore();
   const { getEthnicitiesByRace } = metricConfigStore;
@@ -45,7 +46,14 @@ export const RaceEthnicitiesGrid: React.FC<{
     <Styled.RaceEthnicitiesBreakdownContainer
       disaggregationEnabled={disaggregationEnabled}
     >
-      <Styled.CalloutBox onClick={onClick}>
+      <Styled.CalloutBox
+        onClick={() => {
+          if (isMetricEnabled) {
+            onClick();
+          }
+        }}
+        isMetricEnabled={isMetricEnabled}
+      >
         <Styled.Description>
           Answer the questions on the <span>Race and Ethnicity</span> form; the
           grid below will reflect your responses.
