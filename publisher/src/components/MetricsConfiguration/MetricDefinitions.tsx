@@ -174,11 +174,11 @@ function MetricDefinitions() {
               </Styled.EditButton>
               <Tooltip
                 anchorId="metric-total"
-                position="top"
+                position="top-end"
                 content={metrics[activeSystemMetricKey]?.description}
                 title={`${metrics[activeSystemMetricKey]?.label} (Total)`}
                 noArrow
-                offset={-113}
+                offset={0}
               />
             </Styled.SectionItem>
           </Styled.Section>
@@ -272,11 +272,11 @@ function MetricDefinitions() {
                       </Styled.EditButton>
                       <Tooltip
                         anchorId={replaceSymbolsWithDash(key)}
-                        position="top"
+                        position="top-end"
                         content={dimension.description}
                         title={dimension.label}
                         noArrow
-                        offset={-115}
+                        offset={0}
                       />
                     </Styled.SectionItem>
                   );
