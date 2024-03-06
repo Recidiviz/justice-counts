@@ -82,14 +82,6 @@ function MetricAvailability({
   // For when a user selects "Other" for Starting Month and has made no dropdown selection
   const [showCustomYearDropdownOverride, setShowCustomYearDropdownOverride] =
     useState<boolean>();
-  const [
-    selectedSupervisionSubsystemAvailability,
-    setSelectedSupervisionSubsystemAvailability,
-  ] = useState(systemSearchParam);
-  const [
-    selectedSupervisionSubsystemBreakdown,
-    setSelectedSupervisionSubsystemBreakdown,
-  ] = useState(systemSearchParam);
 
   const isReadOnly = userStore.isUserReadOnly(agencyId);
   const currentAgency = userStore.getAgency(agencyId);
@@ -99,6 +91,23 @@ function MetricAvailability({
   const isSupervisionSystem = systemSearchParam === AgencySystems.SUPERVISION;
   const hasSupervisionSubsystems =
     agencySupervisionSubsystems && agencySupervisionSubsystems.length > 0;
+
+  const [
+    selectedSupervisionSubsystemAvailability,
+    setSelectedSupervisionSubsystemAvailability,
+  ] = useState(
+    hasSupervisionSubsystems
+      ? agencySupervisionSubsystems[0]
+      : systemSearchParam
+  );
+  const [
+    selectedSupervisionSubsystemBreakdown,
+    setSelectedSupervisionSubsystemBreakdown,
+  ] = useState(
+    hasSupervisionSubsystems
+      ? agencySupervisionSubsystems[0]
+      : systemSearchParam
+  );
 
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const activeAvailabilitySystemMetricKey =
@@ -174,12 +183,6 @@ function MetricAvailability({
     });
 
   const supervisionSubsystemBreakdownDropdownOptions = [
-    {
-      key: "SUPERVISION",
-      label: "Supervision (Combined)",
-      onClick: () => setSelectedSupervisionSubsystemBreakdown("SUPERVISION"),
-      highlight: selectedSupervisionSubsystemBreakdown === "SUPERVISION",
-    },
     ...(agencySupervisionSubsystems?.map((system) => {
       return {
         key: system,
@@ -191,15 +194,6 @@ function MetricAvailability({
   ];
 
   const supervisionSubsystemAvailabilityDropdownOptions = [
-    {
-      key: "SUPERVISION",
-      label: "Supervision (Combined)",
-      onClick: () => {
-        setShowCustomYearDropdownOverride(undefined);
-        setSelectedSupervisionSubsystemAvailability("SUPERVISION");
-      },
-      highlight: selectedSupervisionSubsystemAvailability === "SUPERVISION",
-    },
     ...(agencySupervisionSubsystems?.map((system) => {
       return {
         key: system,
@@ -433,14 +427,10 @@ function MetricAvailability({
               isSupervisionMetricAndDisaggregatedBySupervisionSubsystems && (
                 <Styled.DropdownV2Container>
                   <Dropdown
-                    label={
-                      selectedSupervisionSubsystemAvailability === "SUPERVISION"
-                        ? "Supervision (Combined)"
-                        : removeSnakeCase(
-                            selectedSupervisionSubsystemAvailability?.toLocaleLowerCase() ||
-                              ""
-                          )
-                    }
+                    label={removeSnakeCase(
+                      selectedSupervisionSubsystemAvailability?.toLocaleLowerCase() ||
+                        ""
+                    )}
                     options={supervisionSubsystemAvailabilityDropdownOptions}
                     size="small"
                     hover="background"
@@ -631,14 +621,10 @@ function MetricAvailability({
             {disaggregatedBySupervisionSubsystems && (
               <Styled.DropdownV2Container>
                 <Dropdown
-                  label={
-                    selectedSupervisionSubsystemBreakdown === "SUPERVISION"
-                      ? "Supervision (Combined)"
-                      : removeSnakeCase(
-                          selectedSupervisionSubsystemBreakdown?.toLocaleLowerCase() ||
-                            ""
-                        )
-                  }
+                  label={removeSnakeCase(
+                    selectedSupervisionSubsystemBreakdown?.toLocaleLowerCase() ||
+                      ""
+                  )}
                   options={supervisionSubsystemBreakdownDropdownOptions}
                   size="small"
                   hover="background"

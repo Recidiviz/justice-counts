@@ -54,6 +54,11 @@ function MetricDefinitions() {
     contexts,
     dimensionContexts,
   } = metricConfigStore;
+  const currentAgency = userStore.getAgency(agencyId);
+  const agencySupervisionSubsystems = currentAgency?.systems.filter((system) =>
+    SupervisionSubsystems.includes(system)
+  );
+
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [activeDisaggregationKey, setActiveDisaggregationKey] = useState<
     string | undefined
@@ -61,15 +66,17 @@ function MetricDefinitions() {
   const [activeDimensionKey, setActiveDimensionKey] = useState<
     string | undefined
   >(undefined);
-  const [
-    selectedSupervisionSubsystemBreakdown,
-    setSelectedSupervisionSubsystemBreakdown,
-  ] = useState(settingsSearchParams.system);
+  const [selectedSupervisionSubsystem, setSelectedSupervisionSubsystem] =
+    useState(
+      agencySupervisionSubsystems && agencySupervisionSubsystems.length > 0
+        ? agencySupervisionSubsystems[0]
+        : settingsSearchParams.system
+    );
 
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const activeSystemMetricKey = replaceSystemMetricKeyWithNewSystem(
     systemMetricKey,
-    selectedSupervisionSubsystemBreakdown as AgencySystem
+    selectedSupervisionSubsystem as AgencySystem
   );
 
   const activeDisaggregationKeys =
@@ -96,24 +103,13 @@ function MetricDefinitions() {
     );
   };
 
-  const currentAgency = userStore.getAgency(agencyId);
-  const agencySupervisionSubsystems = currentAgency?.systems.filter((system) =>
-    SupervisionSubsystems.includes(system)
-  );
-
   const supervisionSubsystemDropdownOptions = [
-    {
-      key: "SUPERVISION",
-      label: "Supervision (Combined)",
-      onClick: () => setSelectedSupervisionSubsystemBreakdown("SUPERVISION"),
-      highlight: selectedSupervisionSubsystemBreakdown === "SUPERVISION",
-    },
     ...(agencySupervisionSubsystems?.map((system) => {
       return {
         key: system,
         label: removeSnakeCase(system.toLocaleLowerCase()),
-        onClick: () => setSelectedSupervisionSubsystemBreakdown(system),
-        highlight: selectedSupervisionSubsystemBreakdown === system,
+        onClick: () => setSelectedSupervisionSubsystem(system),
+        highlight: selectedSupervisionSubsystem === system,
       };
     }) || []),
   ];
@@ -144,10 +140,10 @@ function MetricDefinitions() {
               <MetricAvailability.DropdownV2Container>
                 <Dropdown
                   label={
-                    selectedSupervisionSubsystemBreakdown === "SUPERVISION"
+                    selectedSupervisionSubsystem === "SUPERVISION"
                       ? "Supervision (Combined)"
                       : removeSnakeCase(
-                          selectedSupervisionSubsystemBreakdown?.toLocaleLowerCase() ||
+                          selectedSupervisionSubsystem?.toLocaleLowerCase() ||
                             ""
                         )
                   }
