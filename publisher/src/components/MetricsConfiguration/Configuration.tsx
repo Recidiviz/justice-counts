@@ -19,6 +19,7 @@ import { Button } from "@justice-counts/common/components/Button";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
 import { useIsFooterVisible } from "@justice-counts/common/hooks";
 import { SupervisionSubsystems } from "@justice-counts/common/types";
+import { removeSnakeCase } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 
@@ -102,7 +103,10 @@ function Configuration() {
           </Styled.MetricName>
           <Styled.Description>
             {metrics[systemMetricKey]?.description}
-            <span>Sector: {systemSearchParam?.toLocaleLowerCase()}</span>
+            <span>
+              Sector:{" "}
+              {removeSnakeCase(systemSearchParam?.toLocaleLowerCase() || "")}
+            </span>
           </Styled.Description>
 
           <TabbedBar options={configurationOptions} />
