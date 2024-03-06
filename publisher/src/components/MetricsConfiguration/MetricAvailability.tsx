@@ -141,7 +141,7 @@ function MetricAvailability({
   } = MetricConfigStore.splitSystemMetricKey(
     activeBreakdownSystemMetricKey
   ) as { system: AgencySystem; metricKey: string };
-  console.log(activeAvailabilitySystemMetricKey);
+
   const {
     defaultFrequency,
     customFrequency,
