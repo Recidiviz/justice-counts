@@ -163,15 +163,16 @@ function MetricDefinitions() {
           )}
           <Styled.Section>
             <Styled.SectionTitle>Primary Metric</Styled.SectionTitle>
-            <Styled.SectionItem id="metric-total">
+            <Styled.SectionItem
+              id="metric-total"
+              onClick={() => setIsSettingsModalOpen(true)}
+            >
               <Styled.SectionItemLabel
                 actionRequired={!metricHasDefinitionSelected()}
               >
                 {metrics[activeSystemMetricKey]?.label} (Total)
               </Styled.SectionItemLabel>
-              <Styled.EditButton onClick={() => setIsSettingsModalOpen(true)}>
-                Edit
-              </Styled.EditButton>
+              <Styled.EditButton>Edit</Styled.EditButton>
               <Tooltip
                 anchorId="metric-total"
                 position="top-end"
@@ -255,21 +256,18 @@ function MetricDefinitions() {
                     <Styled.SectionItem
                       id={replaceSymbolsWithDash(key)}
                       key={key}
+                      onClick={() => {
+                        setActiveDisaggregationKey(disaggregationKey);
+                        setActiveDimensionKey(key);
+                        setIsSettingsModalOpen(true);
+                      }}
                     >
                       <Styled.SectionItemLabel
                         actionRequired={!hasEnabledDefinition}
                       >
                         {dimension.label}
                       </Styled.SectionItemLabel>
-                      <Styled.EditButton
-                        onClick={() => {
-                          setActiveDisaggregationKey(disaggregationKey);
-                          setActiveDimensionKey(key);
-                          setIsSettingsModalOpen(true);
-                        }}
-                      >
-                        Edit
-                      </Styled.EditButton>
+                      <Styled.EditButton>Edit</Styled.EditButton>
                       <Tooltip
                         anchorId={replaceSymbolsWithDash(key)}
                         position="top-end"

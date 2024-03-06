@@ -51,8 +51,8 @@ export const SectionItem = styled(MetricsOverview.MetricItem)`
   padding-right: 0;
 
   &:hover {
-    background: none;
-    cursor: unset;
+    background-color: ${palette.solid.lightgrey2};
+    cursor: pointer;
   }
 `;
 
@@ -66,9 +66,4 @@ export const DropdownSpacer = styled.div`
 export const EditButton = styled.div`
   ${typography.body}
   color: ${palette.solid.blue};
-
-  &:hover {
-    color: ${palette.solid.darkblue};
-    cursor: pointer;
-  }
 `;
