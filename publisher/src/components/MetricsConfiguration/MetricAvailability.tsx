@@ -96,7 +96,7 @@ function MetricAvailability({
     selectedSupervisionSubsystemAvailability,
     setSelectedSupervisionSubsystemAvailability,
   ] = useState(
-    hasSupervisionSubsystems
+    isSupervisionSystem && hasSupervisionSubsystems
       ? agencySupervisionSubsystems[0]
       : systemSearchParam
   );
@@ -104,7 +104,7 @@ function MetricAvailability({
     selectedSupervisionSubsystemBreakdown,
     setSelectedSupervisionSubsystemBreakdown,
   ] = useState(
-    hasSupervisionSubsystems
+    isSupervisionSystem && hasSupervisionSubsystems
       ? agencySupervisionSubsystems[0]
       : systemSearchParam
   );
@@ -141,7 +141,7 @@ function MetricAvailability({
   } = MetricConfigStore.splitSystemMetricKey(
     activeBreakdownSystemMetricKey
   ) as { system: AgencySystem; metricKey: string };
-
+  console.log(activeAvailabilitySystemMetricKey);
   const {
     defaultFrequency,
     customFrequency,
@@ -202,9 +202,7 @@ function MetricAvailability({
           setShowCustomYearDropdownOverride(undefined);
           setSelectedSupervisionSubsystemAvailability(system);
         },
-        highlight:
-          selectedSupervisionSubsystemAvailability?.toLocaleLowerCase() ===
-          system,
+        highlight: selectedSupervisionSubsystemAvailability === system,
       };
     }) || []),
   ];
