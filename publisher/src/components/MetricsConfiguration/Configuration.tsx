@@ -74,8 +74,10 @@ function Configuration() {
     {
       key: "define_metrics",
       label: "Define Metrics",
-      onClick: () => setMetricConfigPage("definitions"),
+      onClick: () =>
+        metrics[systemMetricKey].enabled && setMetricConfigPage("definitions"),
       selected: metricConfigPage === "definitions",
+      enabled: Boolean(metrics[systemMetricKey].enabled),
     },
   ];
 
