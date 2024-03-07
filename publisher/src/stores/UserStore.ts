@@ -238,6 +238,7 @@ class UserStore {
       runInAction(() => {
         this.userAgencies = userAgencies;
         this.userId = userId;
+        this.userInfoLoaded = true;
       });
     } catch (error) {
       runInAction(() => {
