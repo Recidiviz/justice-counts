@@ -110,6 +110,7 @@ function MetricAvailability({
   );
 
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
+  console.log("systemMetricKey", systemMetricKey);
   const activeAvailabilitySystemMetricKey =
     hasSupervisionSubsystems &&
     systemSearchParam &&
@@ -141,6 +142,12 @@ function MetricAvailability({
   } = MetricConfigStore.splitSystemMetricKey(
     activeBreakdownSystemMetricKey
   ) as { system: AgencySystem; metricKey: string };
+
+  console.log(
+    "activeAvailabilitySystemMetricKey",
+    activeAvailabilitySystemMetricKey
+  );
+  console.log("activeBreakdownSystemMetricKey", activeBreakdownSystemMetricKey);
 
   const {
     defaultFrequency,
@@ -201,6 +208,11 @@ function MetricAvailability({
         onClick: () => {
           setShowCustomYearDropdownOverride(undefined);
           setSelectedSupervisionSubsystemAvailability(system);
+          setTimeout(
+            () =>
+              console.log(metrics[activeAvailabilitySystemMetricKey], system),
+            1000
+          );
         },
         highlight: selectedSupervisionSubsystemAvailability === system,
       };
@@ -365,7 +377,7 @@ function MetricAvailability({
                       onChange={() =>
                         handleSupervisionDisaggregationSelection(true)
                       }
-                      checked={disaggregatedBySupervisionSubsystems}
+                      checked={Boolean(disaggregatedBySupervisionSubsystems)}
                     />
                   </RadioButtonsWrapper>
                 </Styled.Setting>

@@ -31,10 +31,12 @@ export const replaceSystemMetricKeyWithNewSystem = (
   systemMetricKey: string,
   newSystem: AgencySystem
 ) => {
-  const { system } = MetricConfigStore.splitSystemMetricKey(systemMetricKey);
-  return systemMetricKey
-    .replace(system.toLocaleUpperCase(), newSystem.toLocaleUpperCase())
-    .replace(system.toLocaleUpperCase(), newSystem.toLocaleUpperCase());
+  const { system, metricKey } =
+    MetricConfigStore.splitSystemMetricKey(systemMetricKey);
+  return getActiveSystemMetricKey({
+    system: newSystem,
+    metric: metricKey.replace(system, newSystem),
+  });
 };
 
 export const getSettingsSearchParams = (
