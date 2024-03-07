@@ -37,6 +37,8 @@ class UserStore {
 
   userInfoLoaded: boolean;
 
+  loadingError: boolean;
+
   constructor(authStore: AuthStore, api: API) {
     makeAutoObservable(this, {}, { autoBind: true });
 
@@ -45,6 +47,7 @@ class UserStore {
     this.userAgencies = undefined;
     this.userInfoLoaded = false;
     this.userId = undefined;
+    this.loadingError = false;
 
     when(
       () => api.isSessionInitialized,
@@ -237,12 +240,11 @@ class UserStore {
         this.userId = userId;
       });
     } catch (error) {
+      runInAction(() => {
+        this.loadingError = true;
+      });
       if (error instanceof Error) return error.message;
       return String(error);
-    } finally {
-      runInAction(() => {
-        this.userInfoLoaded = true;
-      });
     }
   }
 

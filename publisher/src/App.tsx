@@ -32,6 +32,7 @@ import { GuideLayoutWithBreadcrumbs } from "./components/HelpCenter/HelpCenterGu
 import { HelpCenterInterstitial } from "./components/HelpCenter/HelpCenterInterstitial";
 import { helpCenterRoutes } from "./components/HelpCenter/HelpCenterSetup";
 import { Loading } from "./components/Loading";
+import { LoadingError } from "./components/Loading/LoadingError";
 import { NoAgencies } from "./pages/NoAgencies";
 import { Router } from "./router";
 import { useStore } from "./stores";
@@ -55,6 +56,14 @@ const App: React.FC = (): ReactElement => {
 
   if (DOWN_FOR_MAINTENANCE) {
     return <MaintenancePage />;
+  }
+
+  if (userStore.loadingError) {
+    return (
+      <PageWrapper>
+        <LoadingError />
+      </PageWrapper>
+    );
   }
 
   if (!userStore.userInfoLoaded)
