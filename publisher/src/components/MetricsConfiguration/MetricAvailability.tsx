@@ -110,7 +110,6 @@ function MetricAvailability({
   );
 
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
-  console.log("systemMetricKey", systemMetricKey);
   const activeAvailabilitySystemMetricKey =
     hasSupervisionSubsystems &&
     systemSearchParam &&
@@ -143,23 +142,13 @@ function MetricAvailability({
     activeBreakdownSystemMetricKey
   ) as { system: AgencySystem; metricKey: string };
 
-  console.log(
-    "activeAvailabilitySystemMetricKey",
-    activeAvailabilitySystemMetricKey
-  );
-  console.log("activeBreakdownSystemMetricKey", activeBreakdownSystemMetricKey);
+  const { defaultFrequency, customFrequency, startingMonth } =
+    metrics[activeAvailabilitySystemMetricKey];
 
-  const {
-    defaultFrequency,
-    customFrequency,
-    startingMonth,
-    disaggregatedBySupervisionSubsystems,
-  } = metrics[activeAvailabilitySystemMetricKey];
-
-  const isSupervisionMetricAndDisaggregatedBySupervisionSubsystems =
-    disaggregatedBySupervisionSubsystems &&
-    systemSearchParam &&
-    !SupervisionSubsystems.includes(systemSearchParam);
+  // Note: check the main overall Supervision system (via the original `systemMetricKey`) to determine whether or not it is disaggregated
+  const isSupervisionSystemDisaggregatedBySubsystems =
+    systemSearchParam === AgencySystems.SUPERVISION &&
+    metrics[systemMetricKey].disaggregatedBySupervisionSubsystems;
 
   const metricEnabled = metrics[activeAvailabilitySystemMetricKey]?.enabled;
   const customOrDefaultFrequency = customFrequency || defaultFrequency;
@@ -208,11 +197,6 @@ function MetricAvailability({
         onClick: () => {
           setShowCustomYearDropdownOverride(undefined);
           setSelectedSupervisionSubsystemAvailability(system);
-          setTimeout(
-            () =>
-              console.log(metrics[activeAvailabilitySystemMetricKey], system),
-            1000
-          );
         },
         highlight: selectedSupervisionSubsystemAvailability === system,
       };
@@ -366,7 +350,7 @@ function MetricAvailability({
                       onChange={() =>
                         handleSupervisionDisaggregationSelection(false)
                       }
-                      checked={!disaggregatedBySupervisionSubsystems}
+                      checked={!isSupervisionSystemDisaggregatedBySubsystems}
                     />
                     <RadioButton
                       type="radio"
@@ -377,12 +361,14 @@ function MetricAvailability({
                       onChange={() =>
                         handleSupervisionDisaggregationSelection(true)
                       }
-                      checked={Boolean(disaggregatedBySupervisionSubsystems)}
+                      checked={Boolean(
+                        isSupervisionSystemDisaggregatedBySubsystems
+                      )}
                     />
                   </RadioButtonsWrapper>
                 </Styled.Setting>
               )}
-            {disaggregatedBySupervisionSubsystems &&
+            {isSupervisionSystemDisaggregatedBySubsystems &&
               hasSupervisionSubsystems && (
                 <Styled.Setting>
                   <Styled.SettingName>
@@ -430,11 +416,11 @@ function MetricAvailability({
           <Styled.Header>Metric Availability</Styled.Header>
           <Styled.Description>
             Select how frequently data will be shared
-            {isSupervisionMetricAndDisaggregatedBySupervisionSubsystems &&
+            {isSupervisionSystemDisaggregatedBySubsystems &&
               `. Select which subpopulation you are configuring through the dropdown.`}
             {isSupervisionSystem &&
               hasSupervisionSubsystems &&
-              isSupervisionMetricAndDisaggregatedBySupervisionSubsystems && (
+              isSupervisionSystemDisaggregatedBySubsystems && (
                 <Styled.DropdownV2Container>
                   <Dropdown
                     label={removeSnakeCase(
@@ -468,7 +454,7 @@ function MetricAvailability({
               id="availability-buttons-wrapper"
               disabled={
                 isReadOnly ||
-                (isSupervisionMetricAndDisaggregatedBySupervisionSubsystems &&
+                (isSupervisionSystemDisaggregatedBySubsystems &&
                   selectedSupervisionSubsystemAvailability ===
                     systemSearchParam)
               }
@@ -515,7 +501,7 @@ function MetricAvailability({
                 }
               />
             </RadioButtonsWrapper>
-            {isSupervisionMetricAndDisaggregatedBySupervisionSubsystems &&
+            {isSupervisionSystemDisaggregatedBySubsystems &&
               activeAvailabilitySystemKey === AgencySystems.SUPERVISION && (
                 <Tooltip
                   anchorId="availability-buttons-wrapper"
@@ -624,11 +610,11 @@ function MetricAvailability({
             <Styled.BreakdownsSectionDescription>
               Select the categories that your agency will share as breakdowns of{" "}
               {metrics[systemMetricKey]?.label}
-              {isSupervisionMetricAndDisaggregatedBySupervisionSubsystems &&
+              {isSupervisionSystemDisaggregatedBySubsystems &&
                 `. Select which subpopulation you are configuring through the dropdown.`}
             </Styled.BreakdownsSectionDescription>
 
-            {disaggregatedBySupervisionSubsystems && (
+            {isSupervisionSystemDisaggregatedBySubsystems && (
               <Styled.DropdownV2Container>
                 <Dropdown
                   label={removeSnakeCase(
@@ -648,7 +634,7 @@ function MetricAvailability({
             {disaggregationsOptions.length > 1 && (
               <Styled.BreakdownsOptionsContainer
                 disaggregatedBySupervisionSubsystems={Boolean(
-                  disaggregatedBySupervisionSubsystems
+                  isSupervisionSystemDisaggregatedBySubsystems
                 )}
               >
                 <TabbedBar options={disaggregationsOptions} />
@@ -678,7 +664,7 @@ function MetricAvailability({
                 <Styled.DimensionsContainer
                   key={disaggregationKey}
                   isDisaggregatedBySupervisionSubsystemsSingleDisaggregation={
-                    disaggregatedBySupervisionSubsystems &&
+                    isSupervisionSystemDisaggregatedBySubsystems &&
                     disaggregationsOptions.length <= 1
                   }
                 >
@@ -700,9 +686,9 @@ function MetricAvailability({
                       <Styled.DimensionsListFieldset
                         disabled={
                           isReadOnly ||
-                          (!disaggregatedBySupervisionSubsystems &&
+                          (!isSupervisionSystemDisaggregatedBySubsystems &&
                             !metricEnabled) ||
-                          (disaggregatedBySupervisionSubsystems &&
+                          (isSupervisionSystemDisaggregatedBySubsystems &&
                             !metrics[activeBreakdownSystemMetricKey].enabled)
                         }
                       >
