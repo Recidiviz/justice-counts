@@ -21,6 +21,7 @@ import {
   BadgeColors,
 } from "@justice-counts/common/components/Badge";
 import { Button } from "@justice-counts/common/components/Button";
+import { Modal } from "@justice-counts/common/components/Modal";
 import { showToast } from "@justice-counts/common/components/Toast";
 import {
   AgencySystem,
@@ -86,6 +87,8 @@ export const UploadedFileRow: React.FC<{
     const { reportStore, userStore } = useStore();
     const [isDownloading, setIsDownloading] = useState(false);
     const [rowHovered, setRowHovered] = useState(false);
+    const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] =
+      useState(false);
     const { agencyId } = useParams() as { agencyId: string };
 
     const isReadOnly = userStore.isUserReadOnly(agencyId);
@@ -145,88 +148,109 @@ export const UploadedFileRow: React.FC<{
     );
 
     return (
-      <ExtendedRow
-        selected={selected}
-        onClick={() => id && handleDownload(id, name)}
-        onMouseOver={() => setRowHovered(true)}
-        onMouseLeave={() => setRowHovered(false)}
-      >
-        {/* Filename */}
-        <UploadedFilesCell>
-          {rowHovered && id && <DownloadIcon src={downloadIcon} alt="" />}
-          <span>{name}</span>
-          <Badge
-            color={badgeColor}
-            loading={isDownloading || badgeText === "Uploading"}
-          >
-            {isDownloading ? "Downloading" : badgeText}
-          </Badge>
-        </UploadedFilesCell>
-
-        {/* Date Uploaded */}
-        <UploadedFilesCell capitalize>
-          <UploadedContainer>
-            {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
-            <TeamMemberNameWithBadge
-              name={uploadedByName}
-              badgeId={id?.toString()}
-              role={uploadedByRole}
-            />
-            <DateUploaded>{`/ ${dateUploaded}`}</DateUploaded>
-          </UploadedContainer>
-        </UploadedFilesCell>
-
-        {/* Date Ingested */}
-        <UploadedFilesCell capitalize>
-          <span>{dateIngested}</span>
-        </UploadedFilesCell>
-
-        {rowHovered && id && (
-          <ActionsContainer onClick={(e) => e.stopPropagation()}>
-            {userStore.isJusticeCountsAdmin(agencyId) && (
-              <>
-                {(badgeText === "processed" || badgeText === "error") && (
-                  <Button
-                    label="Mark as Pending"
-                    onClick={() => updateUploadedFileStatus(id, "UPLOADED")}
-                    labelColor="blue"
-                  />
-                )}
-                {(badgeText === "pending" || badgeText === "error") && (
-                  <Button
-                    label="Mark as Processed"
-                    onClick={() => updateUploadedFileStatus(id, "INGESTED")}
-                    labelColor="blue"
-                  />
-                )}
-                {badgeText !== "error" && (
-                  <Button
-                    label="Mark as Error"
-                    onClick={() => updateUploadedFileStatus(id, "ERRORED")}
-                    labelColor="blue"
-                  />
-                )}
-              </>
-            )}
-            {!isReadOnly && (
-              <Button
-                label="Delete"
-                onClick={() =>
-                  isJCAdmin
-                    ? deleteUploadedFile(id)
-                    : setIsUnauthorizedRemoveFileModalOpen(true)
-                }
-                labelColor="red"
-              />
-            )}
-          </ActionsContainer>
+      <>
+        {isDeleteConfirmationModalOpen && (
+          <Modal
+            title="Data from deleted file will still exist in records"
+            description="Deleting this file will only remove it from the list of uploaded files. In order to remove data from the Justice Counts dashboard and publisher, you must delete the data directly within records."
+            buttons={[
+              {
+                label: "Cancel",
+                onClick: () => setIsDeleteConfirmationModalOpen(false),
+              },
+              {
+                label: "Confirm",
+                onClick: () => id && deleteUploadedFile(id),
+              },
+            ]}
+          />
         )}
 
-        <UploadedFilesCell capitalize>
-          {/* System */}
-          <span>{system}</span>
-        </UploadedFilesCell>
-      </ExtendedRow>
+        <ExtendedRow
+          selected={selected}
+          onClick={() => id && handleDownload(id, name)}
+          onMouseOver={() => setRowHovered(true)}
+          onMouseLeave={() => setRowHovered(false)}
+        >
+          {/* Filename */}
+          <UploadedFilesCell>
+            {rowHovered && id && <DownloadIcon src={downloadIcon} alt="" />}
+            <span>{name}</span>
+            <Badge
+              color={badgeColor}
+              loading={isDownloading || badgeText === "Uploading"}
+            >
+              {isDownloading ? "Downloading" : badgeText}
+            </Badge>
+          </UploadedFilesCell>
+
+          {/* Date Uploaded */}
+          <UploadedFilesCell capitalize>
+            <UploadedContainer>
+              {/* TODO(#334) Hook up admin badges rendering to team member roles API */}
+              <TeamMemberNameWithBadge
+                name={uploadedByName}
+                badgeId={id?.toString()}
+                role={uploadedByRole}
+              />
+              <DateUploaded>{`/ ${dateUploaded}`}</DateUploaded>
+            </UploadedContainer>
+          </UploadedFilesCell>
+
+          {/* Date Ingested */}
+          <UploadedFilesCell capitalize>
+            <span>{dateIngested}</span>
+          </UploadedFilesCell>
+
+          {rowHovered && id && (
+            <ActionsContainer onClick={(e) => e.stopPropagation()}>
+              {userStore.isJusticeCountsAdmin(agencyId) && (
+                <>
+                  {(badgeText === "processed" || badgeText === "error") && (
+                    <Button
+                      label="Mark as Pending"
+                      onClick={() => updateUploadedFileStatus(id, "UPLOADED")}
+                      labelColor="blue"
+                    />
+                  )}
+                  {(badgeText === "pending" || badgeText === "error") && (
+                    <Button
+                      label="Mark as Processed"
+                      onClick={() => updateUploadedFileStatus(id, "INGESTED")}
+                      labelColor="blue"
+                    />
+                  )}
+                  {badgeText !== "error" && (
+                    <Button
+                      label="Mark as Error"
+                      onClick={() => updateUploadedFileStatus(id, "ERRORED")}
+                      labelColor="blue"
+                    />
+                  )}
+                </>
+              )}
+              {!isReadOnly && (
+                <Button
+                  label="Delete"
+                  onClick={() => {
+                    if (!isJCAdmin) {
+                      setIsUnauthorizedRemoveFileModalOpen(true);
+                    } else if (!isDeleteConfirmationModalOpen) {
+                      setIsDeleteConfirmationModalOpen(true);
+                    }
+                  }}
+                  labelColor="red"
+                />
+              )}
+            </ActionsContainer>
+          )}
+
+          <UploadedFilesCell capitalize>
+            {/* System */}
+            <span>{system}</span>
+          </UploadedFilesCell>
+        </ExtendedRow>
+      </>
     );
   }
 );
