@@ -54,10 +54,17 @@ function MetricDefinitions() {
     contexts,
     dimensionContexts,
   } = metricConfigStore;
+  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const currentAgency = userStore.getAgency(agencyId);
-  const agencySupervisionSubsystems = currentAgency?.systems.filter((system) =>
-    SupervisionSubsystems.includes(system)
-  );
+  const agencySupervisionSubsystems = currentAgency?.systems
+    .filter((system) => SupervisionSubsystems.includes(system))
+    .filter((system) => {
+      const currentSystemMetricKey = replaceSystemMetricKeyWithNewSystem(
+        systemMetricKey,
+        system
+      );
+      return Boolean(metrics[currentSystemMetricKey].enabled);
+    });
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [activeDisaggregationKey, setActiveDisaggregationKey] = useState<
@@ -73,12 +80,10 @@ function MetricDefinitions() {
         : settingsSearchParams.system
     );
 
-  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const activeSystemMetricKey = replaceSystemMetricKeyWithNewSystem(
     systemMetricKey,
     selectedSupervisionSubsystem as AgencySystem
   );
-
   const activeDisaggregationKeys =
     disaggregations[activeSystemMetricKey] &&
     Object.keys(disaggregations[activeSystemMetricKey]);
@@ -134,8 +139,7 @@ function MetricDefinitions() {
       )}
       <Styled.Wrapper>
         <Styled.InnerWrapper>
-          {metrics[activeSystemMetricKey]
-            .disaggregatedBySupervisionSubsystems && (
+          {metrics[systemMetricKey].disaggregatedBySupervisionSubsystems && (
             <Styled.DropdownSpacer>
               <MetricAvailability.DropdownV2Container>
                 <Dropdown

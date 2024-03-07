@@ -18,14 +18,22 @@
 import { Button } from "@justice-counts/common/components/Button";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
 import { useIsFooterVisible } from "@justice-counts/common/hooks";
-import { SupervisionSubsystems } from "@justice-counts/common/types";
+import {
+  AgencySystems,
+  SupervisionSubsystems,
+} from "@justice-counts/common/types";
 import { removeSnakeCase } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
-import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
+import {
+  getActiveSystemMetricKey,
+  replaceSystemMetricKeyWithNewSystem,
+  useSettingsSearchParams,
+} from "../Settings";
 import * as Styled from "./Configuration.styled";
 import MetricAvailability from "./MetricAvailability";
 import MetricDefinitions from "./MetricDefinitions";
@@ -36,7 +44,8 @@ function Configuration() {
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
   const { system: systemSearchParam } = settingsSearchParams;
-  const { metricConfigStore } = useStore();
+  const { metricConfigStore, userStore } = useStore();
+  const { agencyId } = useParams() as { agencyId: string };
   const { metrics } = metricConfigStore;
   const [metricConfigPage, setMetricConfigPage] = useState<
     "availability" | "definitions"
@@ -45,6 +54,25 @@ function Configuration() {
     useState(false);
 
   const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
+  const currentAgency = userStore.getAgency(agencyId);
+  const agencySupervisionSubsystems = currentAgency?.systems
+    .filter((system) => SupervisionSubsystems.includes(system))
+    .filter((system) => {
+      const currentSystemMetricKey = replaceSystemMetricKeyWithNewSystem(
+        systemMetricKey,
+        system
+      );
+      return Boolean(metrics[currentSystemMetricKey].enabled);
+    });
+  const hasSupervisionMetricAndEnabledSubsystems =
+    systemSearchParam === AgencySystems.SUPERVISION &&
+    agencySupervisionSubsystems &&
+    agencySupervisionSubsystems.length > 0;
+  const isMetricEnabledOrSupervisionDisaggregatedBySubsystems = Boolean(
+    (hasSupervisionMetricAndEnabledSubsystems &&
+      metrics[systemMetricKey].disaggregatedBySupervisionSubsystems) ||
+      metrics[systemMetricKey].enabled
+  );
 
   useEffect(() => {
     const footer = document.getElementById("footer");
@@ -75,9 +103,10 @@ function Configuration() {
       key: "define_metrics",
       label: "Define Metrics",
       onClick: () =>
-        metrics[systemMetricKey].enabled && setMetricConfigPage("definitions"),
+        isMetricEnabledOrSupervisionDisaggregatedBySubsystems &&
+        setMetricConfigPage("definitions"),
       selected: metricConfigPage === "definitions",
-      enabled: Boolean(metrics[systemMetricKey].enabled),
+      enabled: isMetricEnabledOrSupervisionDisaggregatedBySubsystems,
     },
   ];
 
