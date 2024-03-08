@@ -63,7 +63,7 @@ function MetricDefinitions() {
         systemMetricKey,
         system
       );
-      return Boolean(metrics[currentSystemMetricKey].enabled);
+      return Boolean(metrics[currentSystemMetricKey]?.enabled);
     });
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);

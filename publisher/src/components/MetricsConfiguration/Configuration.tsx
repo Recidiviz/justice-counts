@@ -62,7 +62,7 @@ function Configuration() {
         systemMetricKey,
         system
       );
-      return Boolean(metrics[currentSystemMetricKey].enabled);
+      return Boolean(metrics[currentSystemMetricKey]?.enabled);
     });
   const hasSupervisionMetricAndEnabledSubsystems =
     systemSearchParam === AgencySystems.SUPERVISION &&
