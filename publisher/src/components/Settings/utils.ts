@@ -17,6 +17,7 @@
 
 import { AgencySystem } from "@justice-counts/common/types";
 
+import MetricConfigStore from "../../stores/MetricConfigStore";
 import { SettingsSearchParams } from "./types";
 
 export const getActiveSystemMetricKey = ({
@@ -24,6 +25,18 @@ export const getActiveSystemMetricKey = ({
   metric,
 }: SettingsSearchParams): string => {
   return `${system?.toUpperCase()}-${metric}`;
+};
+
+export const replaceSystemMetricKeyWithNewSystem = (
+  systemMetricKey: string,
+  newSystem: AgencySystem
+) => {
+  const { system, metricKey } =
+    MetricConfigStore.splitSystemMetricKey(systemMetricKey);
+  return getActiveSystemMetricKey({
+    system: newSystem,
+    metric: metricKey.replace(system, newSystem),
+  });
 };
 
 export const getSettingsSearchParams = (

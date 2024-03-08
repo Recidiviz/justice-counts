@@ -19,17 +19,25 @@ import styled from "styled-components/macro";
 
 import { typography } from "../GlobalStyles";
 
+export const CheckboxContainer = styled.div``;
+
 export const CheckboxOptionsWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 16px;
 `;
+
 export const CheckboxLabel = styled.div`
   ${typography.body}
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: capitalize;
 `;
+
 export const Checkbox = styled.input`
-  width: 16px;
-  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
   border: 1px solid red;
 `;

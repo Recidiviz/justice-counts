@@ -27,7 +27,7 @@ const MAX_MODAL_FORM_HEIGHT_WITH_PADDINGS = 587 + 24 * 2;
 export const Wrapper = styled.div`
   position: fixed;
   top: 0;
-  padding: 24px;
+  left: 0;
   width: 100%;
   height: 100%;
   background-color: ${palette.highlight.grey2};
@@ -43,11 +43,10 @@ export const Wrapper = styled.div`
 `;
 
 export const Content = styled.div`
-  width: 582px;
-  max-width: 582px;
-  height: 640px;
-  max-height: 640px;
-  padding-top: 24px;
+  width: 480px;
+  height: fit-content;
+  max-height: 750px;
+  padding: 16px 0;
   background-color: ${palette.solid.white};
   position: relative;
   border-radius: 3px;
@@ -55,16 +54,31 @@ export const Content = styled.div`
 
 export const ScrollableInnerWrapper = styled.div`
   width: 100%;
-  height: calc(100% - 104px);
-  padding: 0 32px 32px 32px;
+  max-height: 624px;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  padding: 24px 40px 64px 40px;
+  border-top: 1px solid ${palette.highlight.grey3};
+`;
+
+export const CloseButton = styled.div`
+  font-size: 18px;
+  color: ${palette.highlight.grey8};
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.highlight.grey10};
+  }
 `;
 
 export const Header = styled.div`
   ${typography.sizeCSS.normal};
-  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 0 40px;
 `;
 
 export const Title = styled.div`
@@ -75,20 +89,27 @@ export const Title = styled.div`
 `;
 
 export const Description = styled.div`
-  ${typography.sizeCSS.normal};
-  color: ${palette.highlight.grey8};
-  margin-bottom: 16px;
+  ${typography.body};
+  line-height: 24px;
+  margin-bottom: 24px;
 `;
 
-export const ToggleSwitchesList = styled.fieldset<{
+export const CheckboxWrapper = styled.fieldset<{
   disabled?: boolean;
 }>`
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 32px;
   border: none;
   ${({ disabled }) => disabled && "opacity: 0.6; pointer-events: none"};
+
+  p {
+    ${typography.bodyEmphasized};
+    margin-bottom: 8px;
+
+    &:not(:first-child) {
+      margin-top: 8px;
+    }
+  }
 `;
 
 export const ToggleSwitchWrapper = styled.div<{ enabled?: boolean }>`
@@ -104,7 +125,7 @@ export const BottomButtonsContainer = styled.div`
   position: absolute;
   bottom: 0;
   width: 100%;
-  padding: 32px;
+  padding: 16px 40px;
   display: flex;
   flex-direction: row;
   justify-content: end;
@@ -112,16 +133,17 @@ export const BottomButtonsContainer = styled.div`
   align-items: center;
   background-color: ${palette.solid.white};
   z-index: 2;
+  border-top: 1px solid ${palette.highlight.grey3};
 `;
 
 // race ethnicities
 export const SpecifyEthnicityPrompt = styled.div`
-  ${typography.sizeCSS.normal};
+  ${typography.body};
   margin-bottom: 20px;
 `;
 
 export const ToggleSwitchesListHeader = styled.div`
-  ${typography.sizeCSS.normal};
+  ${typography.body};
   margin-bottom: 24px;
 `;
 
@@ -133,7 +155,9 @@ export const ChooseDefaultSettings = styled.span<{ disabled?: boolean }>`
   ${({ disabled }) => disabled && `pointer-events: none`};
 `;
 
-export const ContextContainer = styled.div``;
+export const ContextContainer = styled.div`
+  margin-bottom: 48px;
+`;
 
 export const ContextLabel = styled.div`
   ${typography.sizeCSS.normal};

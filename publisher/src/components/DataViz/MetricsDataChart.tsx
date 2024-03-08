@@ -28,7 +28,12 @@ import {
 } from "@justice-counts/common/components/Dropdown";
 import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
 import { useWindowWidth } from "@justice-counts/common/hooks";
-import { AgencySystem, ReportFrequency } from "@justice-counts/common/types";
+import {
+  AgencySystem,
+  AgencySystems,
+  ReportFrequency,
+  SupervisionSubsystems,
+} from "@justice-counts/common/types";
 import { downloadMetricData } from "@justice-counts/common/utils";
 import { frequencyString } from "@justice-counts/common/utils/helperUtils";
 import FileSaver from "file-saver";
@@ -70,6 +75,23 @@ export const MetricsDataChart: React.FC = observer(() => {
 
   const { system: systemSearchParam, metric: metricSearchParam } =
     settingsSearchParams;
+  /**
+   * When navigating from Explore Data to Metric Settings, if it is a supervision subsystem,
+   * then use the "SUPERVISION" system and metric params to redirect to the correct Metric Settings page
+   *
+   * Context: supervision subsystems no longer have their own metric settings page and are now configured
+   * under the "SUPERVISION" system metric settings page
+   */
+  const supervisionSubsystemRedirectSearchParams =
+    systemSearchParam && SupervisionSubsystems.includes(systemSearchParam)
+      ? {
+          system: AgencySystems.SUPERVISION,
+          metric: metricSearchParam?.replaceAll(
+            systemSearchParam,
+            AgencySystems.SUPERVISION
+          ),
+        }
+      : settingsSearchParams;
   const enabledMetrics = agencyMetrics.filter((metric) => metric.enabled);
   const currentSystem = systemSearchParam || currentAgency?.systems[0];
   const currentMetric = currentSystem
@@ -364,7 +386,9 @@ export const MetricsDataChart: React.FC = observer(() => {
               onClick={() => {
                 navigate({
                   pathname: "../metric-config",
-                  search: `?${createSearchParams(settingsSearchParams)}`,
+                  search: `?${createSearchParams(
+                    supervisionSubsystemRedirectSearchParams
+                  )}`,
                 });
               }}
             >
@@ -395,7 +419,9 @@ export const MetricsDataChart: React.FC = observer(() => {
               onClick={() => {
                 navigate({
                   pathname: "../metric-config",
-                  search: `?${createSearchParams(settingsSearchParams)}`,
+                  search: `?${createSearchParams(
+                    supervisionSubsystemRedirectSearchParams
+                  )}`,
                 });
               }}
             >

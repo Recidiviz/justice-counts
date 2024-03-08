@@ -26,6 +26,7 @@ export const TabsContainer = styled.div`
   flex-direction: row;
   align-items: center;
   gap: 16px;
+  border-bottom: 1px solid ${palette.solid.lightgrey4};
 `;
 
 export const Tab = styled.div<{
@@ -37,24 +38,25 @@ export const Tab = styled.div<{
   flex-direction: row;
   align-items: center;
   color: ${({ selected }) =>
-    selected ? palette.solid.blue : palette.highlight.grey7};
-  border-bottom: 3px solid
+    selected ? palette.solid.blue : palette.highlight.grey8};
+  border-bottom: 2px solid
     ${({ selected }) => (selected ? palette.solid.blue : `transparent`)};
   text-transform: capitalize;
+  margin-bottom: -1px;
 
   ${({ size }) => {
     if (size === "medium")
       return `padding: 16px 0; ${typography.sizeCSS.medium}; font-weight: 400;`;
     if (size === "large")
       return `padding: 16px 0; ${typography.sizeCSS.large};`;
-    return `padding: 8px 0; ${typography.sizeCSS.normal};`;
+    return `padding: 10px 0; ${typography.bodyEmphasized};`;
   }}
 
   &:hover {
-    cursor: pointer;
+    cursor: ${({ enabled }) => (enabled === false ? `default` : `pointer`)};
     color: ${({ enabled, selected }) => {
       if (enabled !== undefined && !selected)
-        return enabled ? palette.solid.blue : palette.solid.darkgrey;
+        return enabled ? palette.solid.blue : palette.highlight.grey8;
       return palette.solid.blue;
     }};
   }

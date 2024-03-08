@@ -16,29 +16,41 @@
 // =============================================================================
 
 import {
-  HEADER_BAR_HEIGHT,
+  MAIN_PANEL_WIDTH,
   palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-const METRIC_SETTINGS_MENU_TOP_PADDING = HEADER_BAR_HEIGHT + 32;
+export const MetricConfigurationContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 0;
+`;
 
-export const MetricSettingsSideBar = styled.div<{
-  isFooterVisible?: boolean;
-}>`
-  position: fixed;
-  top: ${METRIC_SETTINGS_MENU_TOP_PADDING}px;
-  left: 24px;
+export const MetricConfigurationWrapper = styled.div`
+  width: ${MAIN_PANEL_WIDTH}px;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  width: 424px;
-  height: ${({ isFooterVisible }) =>
-    isFooterVisible
-      ? `calc(100vh - ${METRIC_SETTINGS_MENU_TOP_PADDING + 96}px)`
-      : `calc(100vh - ${METRIC_SETTINGS_MENU_TOP_PADDING + 24}px)`};
-  transition: height 0.5s ease-in-out;
+  justify-content: center;
+  position: relative;
+`;
+
+export const ButtonPositionWrapper = styled.div`
+  position: absolute;
+  left: -144px;
+  top: 0;
+`;
+
+export const MetricInformation = styled.div<{
+  isFooterVisible?: boolean;
+}>`
+  display: flex;
+  flex-direction: column;
 `;
 
 export const SystemName = styled.div`
@@ -48,24 +60,20 @@ export const SystemName = styled.div`
   cursor: pointer;
 `;
 
-export const MetricName = styled.div<{ isNameLong?: boolean }>`
-  ${({ isNameLong }) => {
-    if (isNameLong) {
-      return `font-family: ${typography.family}; font-size: 48px; line-height: 48px; font-weight: 500;`;
-    }
-    return typography.sizeCSS.headline;
-  }}
-  margin-bottom: 24px;
+export const MetricName = styled.div`
+  ${typography.sizeCSS.title}
+  margin-bottom: 8px;
   width: 100%;
 `;
 
 export const Description = styled.div`
-  ${typography.sizeCSS.medium};
-  color: ${palette.highlight.grey10};
-  margin-bottom: 32px;
+  ${typography.body};
+  line-height: 24px;
+  max-width: 437px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  margin-bottom: 40px;
+  gap: 24px;
 
   span {
     text-transform: capitalize;

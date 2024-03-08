@@ -70,10 +70,10 @@ export const SetUpMetricsGuide = () => (
         data for those categories as well as the overall metric.
       </Styled.SectionParagraph>
       <Styled.SectionParagraph>
-        While on the Set Up Metrics page, look for the Metric Breakdowns section
-        under the Set metric availability heading. Click on the toggle to the
-        left of a breakdown category to toggle a breakdown on/off indicating
-        whether or not it is part of your recorded data for the overall metric.
+        While on the Set Up Metrics page, look for the Metric Breakdowns
+        section. Click on the checkbox to the left of a breakdown category to
+        switch a breakdown on/off indicating whether or not it is part of your
+        recorded data for the overall metric.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
@@ -94,12 +94,12 @@ export const SetUpMetricsGuide = () => (
         </Styled.ImageWrapper>
       </Styled.SectionParagraph>
       <Styled.SectionParagraph>
-        Within Define Metrics, click on a metric or its breakdowns to view and
-        edit its definition.
+        Within the Define Metrics tab, click on a metric or its breakdowns to
+        view and edit its definition.
         <ul>
           <li>
             You can specify each definition individually by clicking on the
-            toggles to the left of each category to indicate whether that
+            checkboxes to the left of each category to indicate whether that
             category is included or excluded from the overall definition of a
             metric and its breakdown(s), if breakdowns are enabled. You will not
             need to share data for each definition category, these are simply

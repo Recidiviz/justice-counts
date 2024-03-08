@@ -16,9 +16,10 @@
 // =============================================================================
 
 import { Button } from "@justice-counts/common/components/Button";
-import { Input } from "@justice-counts/common/components/Input";
-import { ToggleSwitch } from "@justice-counts/common/components/ToggleSwitch";
+import { CheckboxOptions } from "@justice-counts/common/components/CheckboxOptions";
+import { NewInput } from "@justice-counts/common/components/Input";
 import {
+  AgencySystem,
   MetricConfigurationSettings,
   MetricConfigurationSettingsOptions,
 } from "@justice-counts/common/types";
@@ -27,7 +28,7 @@ import React, { ChangeEvent, Fragment, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
+import MetricConfigStore from "../../stores/MetricConfigStore";
 import * as Styled from "./ModalForm.styled";
 import {
   ContextsByContextKey,
@@ -38,16 +39,17 @@ import {
 type DefinitionModalFormProps = {
   activeDisaggregationKey?: string;
   activeDimensionKey?: string;
+  systemMetricKey: string;
   closeModal: () => void;
 };
 
 function DefinitionModalForm({
   activeDisaggregationKey,
   activeDimensionKey,
+  systemMetricKey,
   closeModal,
 }: DefinitionModalFormProps) {
   const { agencyId } = useParams() as { agencyId: string };
-  const [settingsSearchParams] = useSettingsSearchParams();
   const { metricConfigStore, userStore } = useStore();
   const {
     metrics,
@@ -67,9 +69,11 @@ function DefinitionModalForm({
   const isReadOnly = userStore.isUserReadOnly(agencyId);
 
   // system and metric keys
-  const { system: systemSearchParam, metric: metricSearchParam } =
-    settingsSearchParams;
-  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
+  const { system: systemSearchParam, metricKey: metricSearchParam } =
+    MetricConfigStore.splitSystemMetricKey(systemMetricKey) as {
+      system: AgencySystem;
+      metricKey: string;
+    };
 
   // definitions
   const isMetricDefinitionSettings = !activeDimensionKey;
@@ -330,13 +334,13 @@ function DefinitionModalForm({
   return (
     <Styled.Wrapper>
       <Styled.Content>
+        <Styled.Header>
+          {isMetricDefinitionSettings
+            ? metrics[systemMetricKey]?.label
+            : currentDimension?.label}
+          <Styled.CloseButton onClick={closeModal}>&#10005;</Styled.CloseButton>
+        </Styled.Header>
         <Styled.ScrollableInnerWrapper>
-          <Styled.Header>Definition</Styled.Header>
-          <Styled.Title>
-            {isMetricDefinitionSettings
-              ? `${metrics[systemMetricKey]?.label} (Total)`
-              : currentDimension?.label}
-          </Styled.Title>
           {hasNoSettingsAndNoContext && (
             <Styled.Description>
               There are no definitions to configure for this{" "}
@@ -348,49 +352,48 @@ function DefinitionModalForm({
               Indicate which of the following categories your agency considers
               to be part of this{" "}
               {isMetricDefinitionSettings ? `metric` : `breakdown`}. You are not
-              required to share data for these specific categories. Or,{" "}
+              required to share data for these specific categories. Or, choose
+              the{" "}
               <Styled.ChooseDefaultSettings
                 onClick={handleChooseDefaults}
                 disabled={isReadOnly}
               >
-                choose the Justice Counts definition.
+                Justice Counts definition.
               </Styled.ChooseDefaultSettings>
             </Styled.Description>
           )}
           {currentSettings && (
-            <Styled.ToggleSwitchesList disabled={isReadOnly}>
+            <Styled.CheckboxWrapper disabled={isReadOnly}>
               {Object.entries(currentSettings).map(
                 ([includesExcludesKey, value]) => {
                   return (
                     <Fragment key={includesExcludesKey}>
-                      {includesExcludesKey !== "NO_DESCRIPTION" &&
-                        includesExcludesKey}
-                      {Object.entries(value.settings).map(
-                        ([settingKey, setting]) => {
-                          return (
-                            <Styled.ToggleSwitchWrapper
-                              key={settingKey}
-                              enabled={setting.included === "Yes"}
-                            >
-                              <ToggleSwitch
-                                checked={setting.included === "Yes"}
-                                onChange={() =>
-                                  handleChangeDefinitionIncluded(
-                                    includesExcludesKey,
-                                    settingKey
-                                  )
-                                }
-                              />
-                              {setting.label}
-                            </Styled.ToggleSwitchWrapper>
-                          );
+                      <p>
+                        {includesExcludesKey !== "NO_DESCRIPTION" &&
+                          includesExcludesKey}
+                      </p>
+                      <CheckboxOptions
+                        options={Object.entries(value.settings).map(
+                          ([settingKey, setting]) => {
+                            return {
+                              key: settingKey,
+                              label: setting.label as string,
+                              checked: setting.included === "Yes",
+                            };
+                          }
+                        )}
+                        onChange={({ key }) =>
+                          handleChangeDefinitionIncluded(
+                            includesExcludesKey,
+                            key
+                          )
                         }
-                      )}
+                      />
                     </Fragment>
                   );
                 }
               )}
-            </Styled.ToggleSwitchesList>
+            </Styled.CheckboxWrapper>
           )}
 
           <Styled.ContextContainer>
@@ -399,16 +402,17 @@ function DefinitionModalForm({
               Object.entries(currentContexts).map(([key, { label, value }]) => {
                 return (
                   <Fragment key={key}>
-                    <Styled.ContextLabel>{label}</Styled.ContextLabel>
-                    <Input
+                    <NewInput
                       type="text"
                       name={key}
                       id={key}
                       label=""
+                      placeholder={label}
                       value={value}
                       multiline
                       onChange={(e) => handleContextValueChange(e, key)}
                       disabled={isReadOnly}
+                      fullWidth
                     />
                   </Fragment>
                 );
@@ -416,11 +420,6 @@ function DefinitionModalForm({
           </Styled.ContextContainer>
         </Styled.ScrollableInnerWrapper>
         <Styled.BottomButtonsContainer>
-          <Button
-            label={isReadOnly || hasNoSettingsAndNoContext ? "Close" : "Cancel"}
-            onClick={closeModal}
-            buttonColor={hasNoSettingsAndNoContext ? "red" : undefined}
-          />
           {!isReadOnly && !hasNoSettingsAndNoContext && (
             <Button
               label="Save"

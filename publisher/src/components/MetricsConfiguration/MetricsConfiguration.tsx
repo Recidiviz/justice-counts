@@ -21,7 +21,7 @@ import { useParams } from "react-router-dom";
 import { useStore } from "../../stores";
 import { Loading } from "../Loading";
 import { useSettingsSearchParams } from "../Settings";
-import MetricConfig from "./Configuration";
+import Configuration from "./Configuration";
 import { MetricsOverview } from "./MetricsOverview";
 
 export function MetricsConfiguration() {
@@ -57,5 +57,5 @@ export function MetricsConfiguration() {
     return <div>Error: {loadingErrorMessage}</div>;
   }
 
-  return metricSearchParam ? <MetricConfig /> : <MetricsOverview />;
+  return metricSearchParam ? <Configuration /> : <MetricsOverview />;
 }
