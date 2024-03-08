@@ -53,7 +53,7 @@ export const Tab = styled.div<{
   }}
 
   &:hover {
-    cursor: ${({ enabled }) => (enabled ? `pointer` : `default`)};
+    cursor: ${({ enabled }) => (enabled === false ? `default` : `pointer`)};
     color: ${({ enabled, selected }) => {
       if (enabled !== undefined && !selected)
         return enabled ? palette.solid.blue : palette.highlight.grey8;
