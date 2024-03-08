@@ -89,4 +89,4 @@ export const typography = {
 };
 
 export const centerTextCSS = ({ centerText }: { centerText?: boolean }) =>
-  centerText && `text-align: center;`;
+  centerText ? `text-align: center;` : `text-align: left;`;

@@ -191,6 +191,7 @@ export const AgencySettingsTeamManagement = observer(() => {
         ]}
         modalType="alert"
         modalBackground="opaque"
+        centerText
       />
     );
   }

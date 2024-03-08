@@ -44,14 +44,20 @@ export const OuterWrapper = styled.div<{
 export const InnerWrapper = styled.div<{
   modalType?: ModalType;
   centerText?: boolean;
+  customPadding?: string;
 }>`
   background-color: ${palette.solid.white};
   width: 100%;
   max-width: 582px;
-  padding: ${({ modalType }) => (modalType ? "80px 24px 24px 24px" : "24px")};
+  padding: ${({ modalType, customPadding }) =>
+    customPadding !== undefined
+      ? customPadding
+      : modalType
+      ? "80px 24px 24px 24px"
+      : "24px"};
   display: flex;
   flex-direction: column;
-  align-items: center;
+  ${({ centerText }) => centerText && `align-items: center;`};
   border-radius: 3px;
   ${centerTextCSS}
 `;
@@ -73,12 +79,11 @@ export const Title = styled.div<{ mediumTitle?: boolean }>`
   }
 `;
 
-export const Description = styled.div`
+export const Description = styled.div<{ centerText?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   ${typography.sizeCSS.normal};
-  text-align: center;
 `;
 
 export const ButtonsContainer = styled.div<{

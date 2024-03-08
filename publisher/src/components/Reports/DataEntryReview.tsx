@@ -178,6 +178,7 @@ const DataEntryReview = () => {
           description="You can view the published data in the Data tab."
           buttons={createPublishSuccessModalButtons(agencyId, navigate)}
           modalType="success"
+          centerText
         />
       )}
       {loadingDatapoints ? (

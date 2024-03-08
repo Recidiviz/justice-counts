@@ -163,6 +163,7 @@ export const UploadedFileRow: React.FC<{
                 onClick: () => id && deleteUploadedFile(id),
               },
             ]}
+            customPadding="32px"
           />
         )}
 
