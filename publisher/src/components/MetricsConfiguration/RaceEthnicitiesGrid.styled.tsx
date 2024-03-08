@@ -47,7 +47,7 @@ export const RaceEthnicitiesBreakdownContainer = styled.div<{
   }
 `;
 
-export const CalloutBox = styled.div`
+export const CalloutBox = styled.div<{ isMetricEnabled: boolean }>`
   width: 100%;
   height: 100%;
   display: flex;
@@ -67,6 +67,17 @@ export const CalloutBox = styled.div`
     cursor: pointer;
     background-color: ${palette.solid.lightgrey2};
   }
+
+  ${({ isMetricEnabled }) =>
+    !isMetricEnabled &&
+    `
+      opacity: 0.7;
+
+      &:hover {
+        cursor: unset;  
+        background-color: unset;
+      }
+  `}
 `;
 
 export const GridHeaderContainer = styled.div`

@@ -39,22 +39,28 @@ export const CheckboxOptions: React.FC<CheckboxOptionsProps> = ({
   options,
   onChange,
 }) => {
-  return options.map(
-    ({ key, label, checked, disabled, icon, onChangeOverride }) => (
-      <Styled.CheckboxOptionsWrapper key={key}>
-        <Styled.Checkbox
-          id={key}
-          type="checkbox"
-          checked={checked}
-          onChange={() =>
-            onChangeOverride ? onChangeOverride() : onChange({ key, checked })
-          }
-          disabled={disabled}
-        />
-        <Styled.CheckboxLabel>
-          {label} {icon}
-        </Styled.CheckboxLabel>
-      </Styled.CheckboxOptionsWrapper>
-    )
+  return (
+    <Styled.CheckboxContainer>
+      {options.map(
+        ({ key, label, checked, disabled, icon, onChangeOverride }) => (
+          <Styled.CheckboxOptionsWrapper key={key}>
+            <Styled.Checkbox
+              id={key}
+              type="checkbox"
+              checked={checked}
+              onChange={() =>
+                onChangeOverride
+                  ? onChangeOverride()
+                  : onChange({ key, checked })
+              }
+              disabled={disabled}
+            />
+            <Styled.CheckboxLabel>
+              {label} {icon}
+            </Styled.CheckboxLabel>
+          </Styled.CheckboxOptionsWrapper>
+        )
+      )}
+    </Styled.CheckboxContainer>
   );
 };

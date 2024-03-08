@@ -15,21 +15,36 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { Tooltip } from "@justice-counts/common/components/Tooltip";
-import { MetricConfigurationSettings } from "@justice-counts/common/types";
-import { replaceSymbolsWithDash } from "@justice-counts/common/utils";
+import {
+  AgencySystem,
+  MetricConfigurationSettings,
+  SupervisionSubsystems,
+} from "@justice-counts/common/types";
+import {
+  removeSnakeCase,
+  replaceSymbolsWithDash,
+} from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { getActiveSystemMetricKey, useSettingsSearchParams } from "../Settings";
+import {
+  getActiveSystemMetricKey,
+  replaceSystemMetricKeyWithNewSystem,
+  useSettingsSearchParams,
+} from "../Settings";
 import { RACE_ETHNICITY_DISAGGREGATION_KEY } from "./constants";
 import DefinitionModalForm from "./DefinitionModalForm";
+import * as MetricAvailability from "./MetricAvailability.styled";
 import * as Styled from "./MetricDefinitions.styled";
 
 function MetricDefinitions() {
   const [settingsSearchParams] = useSettingsSearchParams();
-  const { metricConfigStore } = useStore();
+  const { agencyId } = useParams() as { agencyId: string };
+  const { metricConfigStore, userStore } = useStore();
   const {
     metrics,
     dimensions,
@@ -39,6 +54,18 @@ function MetricDefinitions() {
     contexts,
     dimensionContexts,
   } = metricConfigStore;
+  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
+  const currentAgency = userStore.getAgency(agencyId);
+  const agencySupervisionSubsystems = currentAgency?.systems
+    .filter((system) => SupervisionSubsystems.includes(system))
+    .filter((system) => {
+      const currentSystemMetricKey = replaceSystemMetricKeyWithNewSystem(
+        systemMetricKey,
+        system
+      );
+      return Boolean(metrics[currentSystemMetricKey]?.enabled);
+    });
+
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [activeDisaggregationKey, setActiveDisaggregationKey] = useState<
     string | undefined
@@ -46,23 +73,32 @@ function MetricDefinitions() {
   const [activeDimensionKey, setActiveDimensionKey] = useState<
     string | undefined
   >(undefined);
+  const [selectedSupervisionSubsystem, setSelectedSupervisionSubsystem] =
+    useState(
+      agencySupervisionSubsystems && agencySupervisionSubsystems.length > 0
+        ? agencySupervisionSubsystems[0]
+        : settingsSearchParams.system
+    );
 
-  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
+  const activeSystemMetricKey = replaceSystemMetricKeyWithNewSystem(
+    systemMetricKey,
+    selectedSupervisionSubsystem as AgencySystem
+  );
   const activeDisaggregationKeys =
-    disaggregations[systemMetricKey] &&
-    Object.keys(disaggregations[systemMetricKey]);
+    disaggregations[activeSystemMetricKey] &&
+    Object.keys(disaggregations[activeSystemMetricKey]);
 
   const metricHasDefinitionSelected = () => {
     /** Top-level Metric Definitions */
-    if (!metricDefinitionSettings[systemMetricKey]) return true;
+    if (!metricDefinitionSettings[activeSystemMetricKey]) return true;
     const metricSettings = Object.values(
-      metricDefinitionSettings[systemMetricKey]
+      metricDefinitionSettings[activeSystemMetricKey]
     ).reduce((acc, metricSetting) => {
       return { ...acc, ...metricSetting.settings };
     }, {} as { [settingKey: string]: Partial<MetricConfigurationSettings> });
     /** Top-level metric context key will always be "INCLUDES_EXCLUDES_DESCRIPTION" */
     const hasContextValue = Boolean(
-      contexts[systemMetricKey].INCLUDES_EXCLUDES_DESCRIPTION.value
+      contexts[activeSystemMetricKey].INCLUDES_EXCLUDES_DESCRIPTION.value
     );
     return (
       hasContextValue ||
@@ -71,6 +107,17 @@ function MetricDefinitions() {
       )
     );
   };
+
+  const supervisionSubsystemDropdownOptions = [
+    ...(agencySupervisionSubsystems?.map((system) => {
+      return {
+        key: system,
+        label: removeSnakeCase(system.toLocaleLowerCase()),
+        onClick: () => setSelectedSupervisionSubsystem(system),
+        highlight: selectedSupervisionSubsystem === system,
+      };
+    }) || []),
+  ];
 
   useEffect(() => {
     document.body.style.overflow = isSettingsModalOpen ? "hidden" : "unset";
@@ -87,36 +134,60 @@ function MetricDefinitions() {
             setActiveDisaggregationKey(undefined);
             setActiveDimensionKey(undefined);
           }}
+          systemMetricKey={activeSystemMetricKey}
         />
       )}
       <Styled.Wrapper>
         <Styled.InnerWrapper>
+          {metrics[systemMetricKey].disaggregatedBySupervisionSubsystems && (
+            <Styled.DropdownSpacer>
+              <MetricAvailability.DropdownV2Container>
+                <Dropdown
+                  label={
+                    selectedSupervisionSubsystem === "SUPERVISION"
+                      ? "Supervision (Combined)"
+                      : removeSnakeCase(
+                          selectedSupervisionSubsystem?.toLocaleLowerCase() ||
+                            ""
+                        )
+                  }
+                  options={supervisionSubsystemDropdownOptions}
+                  size="small"
+                  hover="background"
+                  alignment="right"
+                  caretPosition="right"
+                  fullWidth
+                />
+              </MetricAvailability.DropdownV2Container>
+            </Styled.DropdownSpacer>
+          )}
           <Styled.Section>
             <Styled.SectionTitle>Primary Metric</Styled.SectionTitle>
-            <Styled.SectionItem id="metric-total">
+            <Styled.SectionItem
+              id="metric-total"
+              onClick={() => setIsSettingsModalOpen(true)}
+            >
               <Styled.SectionItemLabel
                 actionRequired={!metricHasDefinitionSelected()}
               >
-                {metrics[systemMetricKey]?.label} (Total)
+                {metrics[activeSystemMetricKey]?.label} (Total)
               </Styled.SectionItemLabel>
-              <Styled.EditButton onClick={() => setIsSettingsModalOpen(true)}>
-                Edit
-              </Styled.EditButton>
+              <Styled.EditButton>Edit</Styled.EditButton>
               <Tooltip
                 anchorId="metric-total"
-                position="top"
-                content={metrics[systemMetricKey]?.description}
-                title={`${metrics[systemMetricKey]?.label} (Total)`}
+                position="top-end"
+                content={metrics[activeSystemMetricKey]?.description}
+                title={`${metrics[activeSystemMetricKey]?.label} (Total)`}
                 noArrow
-                offset={-115}
+                offset={0}
               />
             </Styled.SectionItem>
           </Styled.Section>
           {activeDisaggregationKeys?.map((disaggregationKey) => {
             const currentDisaggregation =
-              disaggregations[systemMetricKey][disaggregationKey];
+              disaggregations[activeSystemMetricKey][disaggregationKey];
             const currentEnabledDimensions = Object.entries(
-              dimensions[systemMetricKey][disaggregationKey]
+              dimensions[activeSystemMetricKey][disaggregationKey]
             ).filter(([_, dimension]) => dimension.enabled);
 
             if (
@@ -134,14 +205,16 @@ function MetricDefinitions() {
                 {currentEnabledDimensions.map(([key, dimension]) => {
                   let hasEnabledDefinition = false;
                   const currentDimensionDefinitionSettings =
-                    dimensionDefinitionSettings[systemMetricKey][
+                    dimensionDefinitionSettings[activeSystemMetricKey][
                       disaggregationKey
                     ][key];
                   const hasSettings = Boolean(
                     currentDimensionDefinitionSettings
                   );
                   const dimensionContext =
-                    dimensionContexts[systemMetricKey][disaggregationKey][key];
+                    dimensionContexts[activeSystemMetricKey][disaggregationKey][
+                      key
+                    ];
                   const hasContext = Boolean(dimensionContext);
                   /**
                    * Dimension-level context key will be either "INCLUDES_EXCLUDES_DESCRIPTION"
@@ -183,28 +256,25 @@ function MetricDefinitions() {
                     <Styled.SectionItem
                       id={replaceSymbolsWithDash(key)}
                       key={key}
+                      onClick={() => {
+                        setActiveDisaggregationKey(disaggregationKey);
+                        setActiveDimensionKey(key);
+                        setIsSettingsModalOpen(true);
+                      }}
                     >
                       <Styled.SectionItemLabel
                         actionRequired={!hasEnabledDefinition}
                       >
                         {dimension.label}
                       </Styled.SectionItemLabel>
-                      <Styled.EditButton
-                        onClick={() => {
-                          setActiveDisaggregationKey(disaggregationKey);
-                          setActiveDimensionKey(key);
-                          setIsSettingsModalOpen(true);
-                        }}
-                      >
-                        Edit
-                      </Styled.EditButton>
+                      <Styled.EditButton>Edit</Styled.EditButton>
                       <Tooltip
                         anchorId={replaceSymbolsWithDash(key)}
-                        position="top"
+                        position="top-end"
                         content={dimension.description}
                         title={dimension.label}
                         noArrow
-                        offset={-115}
+                        offset={0}
                       />
                     </Styled.SectionItem>
                   );

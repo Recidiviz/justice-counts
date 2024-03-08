@@ -16,7 +16,10 @@
 // =============================================================================
 
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
-import { AgencySystem } from "@justice-counts/common/types";
+import {
+  AgencySystem,
+  SupervisionSubsystems,
+} from "@justice-counts/common/types";
 import { frequencyString } from "@justice-counts/common/utils/helperUtils";
 import { observer } from "mobx-react-lite";
 import React from "react";
@@ -89,6 +92,7 @@ export const MetricsOverview = observer(() => {
   const systemTabOptions =
     currentAgency?.systems
       .filter((system) => getMetricsBySystem(system)?.length !== 0)
+      .filter((system) => !SupervisionSubsystems.includes(system))
       .map((system) => {
         return {
           key: system,

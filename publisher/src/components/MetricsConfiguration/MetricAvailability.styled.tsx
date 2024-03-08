@@ -49,6 +49,9 @@ export const Header = styled.div`
 
 export const Description = styled.div`
   ${typography.body};
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   color: ${palette.highlight.grey8};
   margin-bottom: 48px;
 `;
@@ -58,18 +61,19 @@ export const MetricSettingsSectionTitle = styled.div`
   margin-bottom: 16px;
 `;
 
-export const SettingsContainer = styled.div`
+export const SettingsContainer = styled.div<{ borderTop?: boolean }>`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  ${({ borderTop }) =>
+    borderTop && `border-top: 1px solid ${palette.solid.lightgrey4};`}
 `;
 
 export const Setting = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
   margin-bottom: 48px;
 `;
 
@@ -108,13 +112,15 @@ export const SettingTooltip = styled.div`
   }
 `;
 
-export const MonthSelectionDropdownContainer = styled.div<{
+export const DropdownV2Container = styled.div<{
   checked?: boolean;
+  marginTop?: boolean;
 }>`
-  max-width: 275px;
+  width: 275px;
   display: flex;
   flex: 1 1 0;
   border-radius: 3px;
+  ${({ marginTop }) => marginTop && "margin-top: 8px;"};
 
   & ${CustomDropdown} {
     border: 1px solid ${palette.highlight.grey4};
@@ -127,6 +133,7 @@ export const MonthSelectionDropdownContainer = styled.div<{
 
   & ${CustomDropdownToggleLabel} {
     ${typography.body}
+    text-transform: capitalize;
     gap: 8px;
   }
 
@@ -172,12 +179,16 @@ export const BreakdownsSectionDescription = styled(Description)`
   color: ${palette.highlight.grey8};
 `;
 
-export const BreakdownsOptionsContainer = styled.div`
+export const BreakdownsOptionsContainer = styled.div<{
+  disaggregatedBySupervisionSubsystems?: boolean;
+}>`
   width: 100%;
   display: flex;
   flex-direction: row;
   gap: 8px;
   margin-bottom: 32px;
+  ${({ disaggregatedBySupervisionSubsystems }) =>
+    disaggregatedBySupervisionSubsystems ? `margin-top: 32px` : 0};
 `;
 
 export const BreakdownsOption = styled.div<{ active: boolean }>`
@@ -200,12 +211,18 @@ export const BreakdownsOption = styled.div<{ active: boolean }>`
   }
 `;
 
-export const DimensionsContainer = styled.div`
+export const DimensionsContainer = styled.div<{
+  isDisaggregatedBySupervisionSubsystemsSingleDisaggregation?: boolean;
+}>`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: start;
   margin-bottom: 48px;
+  margin-top: ${({
+    isDisaggregatedBySupervisionSubsystemsSingleDisaggregation,
+  }) =>
+    isDisaggregatedBySupervisionSubsystemsSingleDisaggregation ? `48px` : 0};
 
   &:last-child {
     margin-bottom: 38px;
