@@ -84,6 +84,7 @@ function MetricAvailability({
     useState<boolean>();
 
   const isReadOnly = userStore.isUserReadOnly(agencyId);
+  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const currentAgency = userStore.getAgency(agencyId);
   const agencySupervisionSubsystems = currentAgency?.systems.filter((system) =>
     SupervisionSubsystems.includes(system)
@@ -91,6 +92,10 @@ function MetricAvailability({
   const isSupervisionSystem = systemSearchParam === AgencySystems.SUPERVISION;
   const hasSupervisionSubsystems =
     agencySupervisionSubsystems && agencySupervisionSubsystems.length > 0;
+  // Note: check the main overall Supervision system (via the original `systemMetricKey`) to determine whether or not it is disaggregated
+  const isSupervisionSystemDisaggregatedBySubsystems =
+    systemSearchParam === AgencySystems.SUPERVISION &&
+    metrics[systemMetricKey].disaggregatedBySupervisionSubsystems;
 
   const [
     selectedSupervisionSubsystemAvailability,
@@ -109,9 +114,9 @@ function MetricAvailability({
       : systemSearchParam
   );
 
-  const systemMetricKey = getActiveSystemMetricKey(settingsSearchParams);
   const activeAvailabilitySystemMetricKey =
     hasSupervisionSubsystems &&
+    isSupervisionSystemDisaggregatedBySubsystems &&
     systemSearchParam &&
     selectedSupervisionSubsystemAvailability
       ? replaceSystemMetricKeyWithNewSystem(
@@ -128,6 +133,7 @@ function MetricAvailability({
 
   const activeBreakdownSystemMetricKey =
     hasSupervisionSubsystems &&
+    isSupervisionSystemDisaggregatedBySubsystems &&
     systemSearchParam &&
     selectedSupervisionSubsystemBreakdown
       ? replaceSystemMetricKeyWithNewSystem(
@@ -144,11 +150,6 @@ function MetricAvailability({
 
   const { defaultFrequency, customFrequency, startingMonth } =
     metrics[activeAvailabilitySystemMetricKey];
-
-  // Note: check the main overall Supervision system (via the original `systemMetricKey`) to determine whether or not it is disaggregated
-  const isSupervisionSystemDisaggregatedBySubsystems =
-    systemSearchParam === AgencySystems.SUPERVISION &&
-    metrics[systemMetricKey].disaggregatedBySupervisionSubsystems;
 
   const metricEnabled = metrics[activeAvailabilitySystemMetricKey]?.enabled;
   const customOrDefaultFrequency = customFrequency || defaultFrequency;
@@ -347,9 +348,15 @@ function MetricAvailability({
                       name="supervision-subsystem"
                       label="Combined"
                       value="All Populations / Combined"
-                      onChange={() =>
-                        handleSupervisionDisaggregationSelection(false)
-                      }
+                      onChange={() => {
+                        handleSupervisionDisaggregationSelection(false);
+                        setSelectedSupervisionSubsystemAvailability(
+                          systemSearchParam
+                        );
+                        setSelectedSupervisionSubsystemBreakdown(
+                          systemSearchParam
+                        );
+                      }}
                       checked={!isSupervisionSystemDisaggregatedBySubsystems}
                     />
                     <RadioButton
@@ -358,9 +365,15 @@ function MetricAvailability({
                       name="supervision-subsystem"
                       label="Disaggregated"
                       value="Disaggregated"
-                      onChange={() =>
-                        handleSupervisionDisaggregationSelection(true)
-                      }
+                      onChange={() => {
+                        handleSupervisionDisaggregationSelection(true);
+                        setSelectedSupervisionSubsystemAvailability(
+                          agencySupervisionSubsystems[0]
+                        );
+                        setSelectedSupervisionSubsystemBreakdown(
+                          agencySupervisionSubsystems[0]
+                        );
+                      }}
                       checked={Boolean(
                         isSupervisionSystemDisaggregatedBySubsystems
                       )}
