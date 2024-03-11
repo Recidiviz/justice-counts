@@ -41,6 +41,22 @@ export const OuterWrapper = styled.div<{
   }};
 `;
 
+const innerWrapperPadding = ({
+  modalType,
+  customPadding,
+}: {
+  modalType?: ModalType;
+  customPadding?: string;
+}) => {
+  if (customPadding !== undefined) {
+    return customPadding;
+  }
+  if (modalType) {
+    return "80px 24px 24px 24px";
+  }
+  return "24px";
+};
+
 export const InnerWrapper = styled.div<{
   modalType?: ModalType;
   centerText?: boolean;
@@ -49,12 +65,7 @@ export const InnerWrapper = styled.div<{
   background-color: ${palette.solid.white};
   width: 100%;
   max-width: 582px;
-  padding: ${({ modalType, customPadding }) =>
-    customPadding !== undefined
-      ? customPadding
-      : modalType
-      ? "80px 24px 24px 24px"
-      : "24px"};
+  padding: ${innerWrapperPadding};
   display: flex;
   flex-direction: column;
   ${({ centerText }) => centerText && `align-items: center;`};
