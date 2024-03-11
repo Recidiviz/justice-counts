@@ -525,7 +525,7 @@ function MetricAvailability({
           </Styled.Setting>
 
           {/* Annual Frequency Starting Month */}
-          {metricEnabled && customFrequency === "ANNUAL" && (
+          {metricEnabled && customOrDefaultFrequency === "ANNUAL" && (
             <Styled.Setting>
               <Styled.SettingName>
                 Starting Month{" "}
