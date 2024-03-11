@@ -44,9 +44,9 @@ const RelevantGuides: React.FC<{ appKey: AppGuideKey; guideKey: string }> = ({
             : key.split("/")[1];
           const guide =
             helpCenterGuideStructure[appGuideKey].guides[guideKeyBasedOnApp];
-          const pathToGuide = `${
-            isGuideWithinCurrentAppGuide ? `../` : `../../${appGuideKey}/`
-          }${guide.path}`;
+          const pathToGuide = `../${
+            isGuideWithinCurrentAppGuide ? "" : "../"
+          }help/${appGuideKey}/${guide.path}`;
 
           return (
             <Styled.RelevantPageBox
