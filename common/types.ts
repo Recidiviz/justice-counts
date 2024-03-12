@@ -107,6 +107,10 @@ export type ReportFrequency = "MONTHLY" | "ANNUAL";
 
 export type ReportStatus = "NOT_STARTED" | "DRAFT" | "PUBLISHED";
 
+export type MetricKeyToFrequency = {
+  [key: string]: { frequency?: ReportFrequency; starting_month?: number };
+};
+
 export interface ReportEditor {
   name: string;
   role: AgencyTeamMemberRole;

@@ -61,21 +61,6 @@ class DatapointsStore extends BaseDatapointsStore {
     this.disposers.forEach((disposer) => disposer());
   };
 
-  get metricKeyToFrequency() {
-    return this.reportStore.agencyMetrics.reduce(
-      (acc, metric) => {
-        acc[metric.key] = {
-          frequency: metric.custom_frequency || metric.frequency,
-          starting_month: metric.starting_month,
-        };
-        return acc;
-      },
-      {} as {
-        [key: string]: { frequency?: ReportFrequency; starting_month?: number };
-      }
-    );
-  }
-
   async getDatapoints(agencyId: number): Promise<void | Error> {
     this.loading = true;
     try {
@@ -90,13 +75,15 @@ class DatapointsStore extends BaseDatapointsStore {
             const hasMatchingFrequency =
               dp.metric_definition_key &&
               dp.frequency ===
-                this.metricKeyToFrequency[dp.metric_definition_key].frequency;
+                this.reportStore.metricKeyToFrequency[dp.metric_definition_key]
+                  .frequency;
             const hasMatchingStartingMonth =
               (hasMatchingFrequency && dp.frequency === "MONTHLY") ||
               (dp.metric_definition_key &&
                 new Date(dp.start_date).getUTCMonth() + 1 ===
-                  this.metricKeyToFrequency[dp.metric_definition_key]
-                    .starting_month);
+                  this.reportStore.metricKeyToFrequency[
+                    dp.metric_definition_key
+                  ].starting_month);
 
             return hasMatchingFrequency && hasMatchingStartingMonth;
           });

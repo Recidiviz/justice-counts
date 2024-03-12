@@ -18,7 +18,9 @@
 import {
   AgencySystem,
   Metric,
+  MetricKeyToFrequency,
   Report,
+  ReportFrequency,
   ReportOverview,
   ReportStatus,
   UpdatedMetricsValues,
@@ -103,6 +105,16 @@ class ReportStore {
 
   get agencyMetrics(): Metric[] {
     return Object.values(this.metricsBySystem).flatMap((metric) => metric);
+  }
+
+  get metricKeyToFrequency(): MetricKeyToFrequency {
+    return this.agencyMetrics.reduce((acc, metric) => {
+      acc[metric.key] = {
+        frequency: metric.custom_frequency || metric.frequency,
+        starting_month: metric.starting_month,
+      };
+      return acc;
+    }, {} as MetricKeyToFrequency);
   }
 
   storeMetricDetails(
