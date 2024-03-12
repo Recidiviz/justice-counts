@@ -70,6 +70,7 @@ const ConnectedDatapointsView = forwardRef<never, ConnectedDatapointsViewProps>(
       datapointsStore.dimensionNamesByMetricAndDisaggregation[metric];
 
     if (
+      dimensionNamesByDisaggregation &&
       Object.keys(
         datapointsStore.dimensionNamesByMetricAndDisaggregation[metric]
       ).includes("Race / Ethnicity")
