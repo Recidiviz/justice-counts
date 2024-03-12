@@ -20,7 +20,6 @@ import {
   Metric,
   MetricKeyToFrequency,
   Report,
-  ReportFrequency,
   ReportOverview,
   ReportStatus,
   UpdatedMetricsValues,

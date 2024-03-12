@@ -16,7 +16,7 @@
 // =============================================================================
 
 import BaseDatapointsStore from "@justice-counts/common/stores/BaseDatapointsStore";
-import { Datapoint, ReportFrequency } from "@justice-counts/common/types";
+import { Datapoint } from "@justice-counts/common/types";
 import {
   IReactionDisposer,
   makeObservable,
@@ -72,13 +72,14 @@ class DatapointsStore extends BaseDatapointsStore {
         const result = await response.json();
         runInAction(() => {
           this.rawDatapoints = result.datapoints.filter((dp: Datapoint) => {
+            // Filter out datapoints that do not match the currently set metric frequency
             const hasMatchingFrequency =
               dp.metric_definition_key &&
               dp.frequency ===
                 this.reportStore.metricKeyToFrequency[dp.metric_definition_key]
                   .frequency;
             const hasMatchingStartingMonth =
-              (hasMatchingFrequency && dp.frequency === "MONTHLY") ||
+              (hasMatchingFrequency && dp.frequency === "MONTHLY") || // If the frequency is "MONTHLY", there is no starting month - so we can consider this a match
               (dp.metric_definition_key &&
                 new Date(dp.start_date).getUTCMonth() + 1 ===
                   this.reportStore.metricKeyToFrequency[
