@@ -16,7 +16,7 @@
 // =============================================================================
 
 import BaseDatapointsStore from "@justice-counts/common/stores/BaseDatapointsStore";
-import { ReportFrequency } from "@justice-counts/common/types";
+import { Datapoint, ReportFrequency } from "@justice-counts/common/types";
 import {
   IReactionDisposer,
   makeObservable,
@@ -86,16 +86,18 @@ class DatapointsStore extends BaseDatapointsStore {
       if (response.status === 200) {
         const result = await response.json();
         runInAction(() => {
-          this.rawDatapoints = result.datapoints.filter((dp: any) => {
+          this.rawDatapoints = result.datapoints.filter((dp: Datapoint) => {
             const hasMatchingFrequency =
+              dp.metric_definition_key &&
               dp.frequency ===
-              this.metricKeyToFrequency[dp.metric_definition_key].frequency;
+                this.metricKeyToFrequency[dp.metric_definition_key].frequency;
             const hasMatchingStartingMonth =
               (hasMatchingFrequency && dp.frequency === "MONTHLY") ||
-              new Date(dp.start_date).getUTCMonth() + 1 ===
-                this.metricKeyToFrequency[dp.metric_definition_key]
-                  .starting_month;
-            console.log(hasMatchingFrequency && hasMatchingStartingMonth);
+              (dp.metric_definition_key &&
+                new Date(dp.start_date).getUTCMonth() + 1 ===
+                  this.metricKeyToFrequency[dp.metric_definition_key]
+                    .starting_month);
+
             return hasMatchingFrequency && hasMatchingStartingMonth;
           });
           this.dimensionNamesByMetricAndDisaggregation =

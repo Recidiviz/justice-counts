@@ -156,12 +156,16 @@ export const MetricsDataChart: React.FC = observer(() => {
     const initialize = async () => {
       setIsLoading(true);
       datapointsStore.resetState();
-      await datapointsStore.getDatapoints(Number(agencyId));
       const result = await reportStore.initializeReportSettings(agencyId);
       if (result instanceof Error) {
         setIsLoading(false);
         return setLoadingError(result.message);
       }
+      /**
+       * Wait for `initializeReportSettings` so we can look up each metric frequency
+       * to filter out datapoints w/ frequencies that do not match the currently set frequency
+       */
+      await datapointsStore.getDatapoints(Number(agencyId));
       setIsLoading(false);
     };
 
