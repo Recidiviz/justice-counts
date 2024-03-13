@@ -18,7 +18,6 @@
 import {
   AgencySystem,
   Metric,
-  MetricKeyToFrequency,
   Report,
   ReportOverview,
   ReportStatus,

@@ -162,11 +162,16 @@ export function CategoryOverviewLineChart({
         onMouseMove={(e) => {
           if (e.activeLabel) {
             const { activeLabel } = e;
+            const metricFrequency = metric.custom_frequency || metric.frequency;
             const [month, year] = activeLabel.split(" ");
-            const startDate = getShortStartDateStrFromDisplayDate({
-              monthStr: month,
-              yearStr: year,
-            });
+            const startDate =
+              metricFrequency === "MONTHLY"
+                ? activeLabel
+                : getShortStartDateStrFromDisplayDate({
+                    monthStr: month,
+                    yearStr: year,
+                  });
+
             setHoveredDate((prev) => ({
               ...prev,
               [metric.key]: convertShortDateToUTCDateString(startDate),
@@ -182,6 +187,7 @@ export function CategoryOverviewLineChart({
             const { displayDate } = getDisplayMonthYearBasedOnStartingMonthStr({
               monthStr: month,
               yearStr: year,
+              isMonthlyFrequency: datapoint.frequency === "MONTHLY",
             });
             return displayDate;
           }}

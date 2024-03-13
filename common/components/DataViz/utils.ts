@@ -25,6 +25,7 @@ import {
   DataVizTimeRangesMap,
   Metric,
   MetricKeyToFrequency,
+  RawDatapoint,
   ReportFrequency,
 } from "../../types";
 import { formatNumberInput, printDateAsShortMonthYear } from "../../utils";
@@ -117,11 +118,20 @@ export const splitUtcString = (utcString: string) => {
 export const getDisplayMonthYearBasedOnStartingMonthStr = ({
   monthStr,
   yearStr,
+  isMonthlyFrequency,
 }: {
   monthStr: string;
   yearStr: string;
-  monthIndex?: number;
+  isMonthlyFrequency?: boolean;
 }) => {
+  if (isMonthlyFrequency) {
+    return {
+      month: monthStr,
+      year: yearStr,
+      displayDate: `${monthStr} ${yearStr}`,
+    };
+  }
+
   const monthIndex = abbreviatedMonths.indexOf(monthStr);
   const prevMonth = abbreviatedMonths[monthIndex - 1];
   const finalMonth = monthStr !== "Jan" ? prevMonth : monthStr;
@@ -720,7 +730,7 @@ export const getMetricKeyToFrequencyMap = (
 };
 
 export const datapointMatchingMetricFrequency = (
-  dp: Datapoint,
+  dp: Datapoint | RawDatapoint,
   metricKeyToFrequency: MetricKeyToFrequency
 ) => {
   // Filter out datapoints that do not match the currently set metric frequency

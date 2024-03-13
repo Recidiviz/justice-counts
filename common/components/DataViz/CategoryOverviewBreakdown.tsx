@@ -41,8 +41,8 @@ export const CategoryOverviewBreakdown: FunctionComponent<
   const { displayDate } = getDisplayMonthYearBasedOnStartingMonthStr({
     monthStr: month,
     yearStr: year,
+    isMonthlyFrequency: data.frequency === "MONTHLY",
   });
-
   const totalDimensionValues = dimensions.reduce((acc, dim) => {
     if (data[dim]?.value) {
       const sum = acc + Number(data[dim].value);
