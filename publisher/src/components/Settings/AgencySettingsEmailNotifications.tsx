@@ -58,7 +58,6 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
   };
 
   const saveOffsetDays = (offsetDays: string, inputError: boolean) => {
-    console.log("inputError", inputError);
     if (!inputError) {
       updateEmailSubscriptionDetails(true, Number(offsetDays));
     }
