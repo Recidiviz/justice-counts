@@ -591,3 +591,24 @@ export const AddIcon = styled.img`
   width: 16px;
   margin-right: 0;
 `;
+
+export const DescriptionSection = styled.div`
+  margin-top: 24px;
+`;
+
+export const InputWrapper = styled.span<{ error?: boolean }>`
+  input {
+    width: 59px;
+    padding: 8px 0;
+    text-align: center;
+    border: 1px solid
+      ${({ error }) => (error ? palette.solid.red : palette.highlight.grey4)};
+    border-radius: 2px;
+  }
+`;
+
+export const ErrorMessage = styled.div`
+  ${typography.sizeCSS.small}
+  color: ${palette.solid.red};
+  margin-top: 8px;
+`;

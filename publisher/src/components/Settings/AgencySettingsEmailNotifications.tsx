@@ -17,20 +17,33 @@
 
 import { ToggleSwitch } from "@justice-counts/common/components/ToggleSwitch";
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useState } from "react";
 
 import { useStore } from "../../stores";
 import {
   AgencySettingsBlock,
   AgencySettingsBlockDescription,
   AgencySettingsBlockTitle,
+  DescriptionSection,
   EditButtonContainer,
+  ErrorMessage,
+  InputWrapper,
 } from "./AgencySettings.styles";
 
 export const AgencySettingsEmailNotifications: React.FC = observer(() => {
   const { agencyStore } = useStore();
   const { updateIsUserSubscribedToEmails, isUserSubscribedToEmails } =
     agencyStore;
+
+  const [reminderEmailOffsetDays, setReminderEmailOffsetDays] = useState("1");
+
+  const offsetDate = new Date();
+  offsetDate.setDate(offsetDate.getDate() + Number(reminderEmailOffsetDays));
+
+  const inputError =
+    Number.isNaN(Number(reminderEmailOffsetDays)) ||
+    Number(reminderEmailOffsetDays) <= 0 ||
+    Number(reminderEmailOffsetDays) > 1000;
 
   const handleSubscribeUnsubscribe = () => {
     updateIsUserSubscribedToEmails(!isUserSubscribedToEmails);
@@ -56,10 +69,30 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
         agency.
         <br />
         <br />
-        Emails from Justice Counts include 1) an email on the 15th of each month
-        listing the metrics you have enabled which still need data uploaded and
-        2) confirmation emails that your Automated Bulk Upload attempts were
-        processed by Publisher.
+        Emails from Justice Counts will include a list of the metrics you have
+        enabled which still need data uploaded and confirmation emails that your
+        Automated Bulk Upload attempts were processed by Publisher.
+        <DescriptionSection>
+          Schedule metric upload reminder emails{" "}
+          <InputWrapper error={Boolean(inputError)}>
+            <input
+              type="text"
+              value={reminderEmailOffsetDays}
+              onChange={(e) => setReminderEmailOffsetDays(e.target.value)}
+            />
+          </InputWrapper>{" "}
+          days after the end of the most recent reporting period.
+        </DescriptionSection>
+        {inputError && (
+          <ErrorMessage>Please enter a number between 1-1000</ErrorMessage>
+        )}
+        {!inputError && (
+          <DescriptionSection>
+            Your next email is scheduled to send on{" "}
+            {offsetDate.toLocaleDateString("en-US")}.
+          </DescriptionSection>
+        )}
+        {}
       </AgencySettingsBlockDescription>
     </AgencySettingsBlock>
   );
