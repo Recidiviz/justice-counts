@@ -48,6 +48,8 @@ class AgencyStore {
 
   isUserSubscribedToEmails: boolean;
 
+  daysAfterTimePeriodToSendEmail: number | null;
+
   constructor(userStore: UserStore, api: API) {
     makeAutoObservable(this);
 
@@ -57,6 +59,7 @@ class AgencyStore {
     this.jurisdictions = { included: [], excluded: [] };
     this.loadingSettings = true;
     this.isUserSubscribedToEmails = false;
+    this.daysAfterTimePeriodToSendEmail = null;
   }
 
   get currentAgency(): UserAgency | undefined {
@@ -116,12 +119,15 @@ class AgencyStore {
           excluded: string[];
         };
         is_subscribed_to_emails: boolean;
+        days_after_time_period_to_send_email: number;
       };
       runInAction(() => {
         if (this.currentAgency) {
           this.currentAgency.settings = responseJson.settings;
           this.jurisdictions = responseJson.jurisdictions;
           this.isUserSubscribedToEmails = responseJson.is_subscribed_to_emails;
+          this.daysAfterTimePeriodToSendEmail =
+            responseJson.days_after_time_period_to_send_email;
         }
       });
     } catch (error) {
@@ -258,12 +264,16 @@ class AgencyStore {
     return { jurisdictions };
   };
 
-  updateIsUserSubscribedToEmails = async (
-    isUserSubscribedToEmails: boolean
+  updateEmailSubscriptionDetails = async (
+    isUserSubscribedToEmails: boolean,
+    daysAfterTimePeriodToSendEmail: number
   ): Promise<void> => {
     const response = (await this.api.request({
       path: `/api/agency/${this.currentAgencyId}/subscription/${this.userStore.userId}`,
-      body: { is_subscribed: isUserSubscribedToEmails },
+      body: {
+        is_subscribed: isUserSubscribedToEmails,
+        days_after_time_period_to_send_email: daysAfterTimePeriodToSendEmail,
+      },
       method: "PUT",
     })) as Response;
     if (response.status !== 200) {
@@ -277,6 +287,7 @@ class AgencyStore {
 
     runInAction(() => {
       this.isUserSubscribedToEmails = isUserSubscribedToEmails;
+      this.daysAfterTimePeriodToSendEmail = daysAfterTimePeriodToSendEmail;
     });
     showToast({
       message: `Email settings updated`,

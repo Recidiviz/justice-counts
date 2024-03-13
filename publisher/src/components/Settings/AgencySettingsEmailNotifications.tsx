@@ -17,7 +17,7 @@
 
 import { ToggleSwitch } from "@justice-counts/common/components/ToggleSwitch";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import { useStore } from "../../stores";
 import {
@@ -29,25 +29,43 @@ import {
   ErrorMessage,
   InputWrapper,
 } from "./AgencySettings.styles";
+import { debounce } from "lodash";
 
 export const AgencySettingsEmailNotifications: React.FC = observer(() => {
   const { agencyStore } = useStore();
-  const { updateIsUserSubscribedToEmails, isUserSubscribedToEmails } =
-    agencyStore;
+  const {
+    updateEmailSubscriptionDetails,
+    isUserSubscribedToEmails,
+    daysAfterTimePeriodToSendEmail,
+  } = agencyStore;
 
-  const [reminderEmailOffsetDays, setReminderEmailOffsetDays] = useState("1");
+  const [reminderEmailOffsetDays, setReminderEmailOffsetDays] =
+    useState<string>();
 
+  const currentOffsetDays =
+    reminderEmailOffsetDays || daysAfterTimePeriodToSendEmail || "";
   const offsetDate = new Date();
-  offsetDate.setDate(offsetDate.getDate() + Number(reminderEmailOffsetDays));
+  offsetDate.setDate(offsetDate.getDate() + Number(currentOffsetDays));
 
-  const inputError =
-    Number.isNaN(Number(reminderEmailOffsetDays)) ||
-    Number(reminderEmailOffsetDays) <= 0 ||
-    Number(reminderEmailOffsetDays) > 1000;
+  const isInvalidInput = (value: string | number | null) =>
+    Number.isNaN(Number(value)) || Number(value) <= 0 || Number(value) > 1000;
 
   const handleSubscribeUnsubscribe = () => {
-    updateIsUserSubscribedToEmails(!isUserSubscribedToEmails);
+    updateEmailSubscriptionDetails(
+      !isUserSubscribedToEmails,
+      Number(currentOffsetDays)
+    );
   };
+
+  const saveOffsetDays = (offsetDays: string, inputError: boolean) => {
+    if (!inputError) {
+      updateEmailSubscriptionDetails(true, Number(offsetDays));
+    }
+  };
+
+  const debouncedSaveOffsetDays = useRef(
+    debounce(saveOffsetDays, 1500)
+  ).current;
 
   return (
     <AgencySettingsBlock id="email">
@@ -72,21 +90,30 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
         Emails from Justice Counts will include a list of the metrics you have
         enabled which still need data uploaded and confirmation emails that your
         Automated Bulk Upload attempts were processed by Publisher.
-        <DescriptionSection>
-          Schedule metric upload reminder emails{" "}
-          <InputWrapper error={Boolean(inputError)}>
-            <input
-              type="text"
-              value={reminderEmailOffsetDays}
-              onChange={(e) => setReminderEmailOffsetDays(e.target.value)}
-            />
-          </InputWrapper>{" "}
-          days after the end of the most recent reporting period.
-        </DescriptionSection>
-        {inputError && (
+        {isUserSubscribedToEmails && (
+          <DescriptionSection>
+            Schedule metric upload reminder emails{" "}
+            <InputWrapper error={Boolean(isInvalidInput(currentOffsetDays))}>
+              <input
+                type="text"
+                value={currentOffsetDays}
+                onChange={(e) => {
+                  const currentValueOrDefault = e.target.value || "15";
+                  setReminderEmailOffsetDays(currentValueOrDefault);
+                  debouncedSaveOffsetDays(
+                    currentValueOrDefault,
+                    isInvalidInput(currentValueOrDefault)
+                  );
+                }}
+              />
+            </InputWrapper>{" "}
+            days after the end of the most recent reporting period.
+          </DescriptionSection>
+        )}
+        {isUserSubscribedToEmails && isInvalidInput(currentOffsetDays) && (
           <ErrorMessage>Please enter a number between 1-1000</ErrorMessage>
         )}
-        {!inputError && (
+        {isUserSubscribedToEmails && !isInvalidInput(currentOffsetDays) && (
           <DescriptionSection>
             Your next email is scheduled to send on{" "}
             {offsetDate.toLocaleDateString("en-US")}.
