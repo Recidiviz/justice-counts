@@ -47,8 +47,8 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
   const offsetDate = new Date();
   offsetDate.setDate(offsetDate.getDate() + Number(currentOffsetDays));
 
-  const isInvalidInput = (value: string | number | null) =>
-    Number.isNaN(Number(value)) || Number(value) <= 0 || Number(value) > 1000;
+  const isValidInput = (value: string | number | null) =>
+    Number(value) > 0 && Number(value) <= 1000;
 
   const handleSubscribeUnsubscribe = () => {
     updateEmailSubscriptionDetails(
@@ -58,6 +58,7 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
   };
 
   const saveOffsetDays = (offsetDays: string, inputError: boolean) => {
+    console.log("inputError", inputError);
     if (!inputError) {
       updateEmailSubscriptionDetails(true, Number(offsetDays));
     }
@@ -93,7 +94,7 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
         {isUserSubscribedToEmails && (
           <DescriptionSection>
             Schedule metric upload reminder emails{" "}
-            <InputWrapper error={Boolean(isInvalidInput(currentOffsetDays))}>
+            <InputWrapper error={!isValidInput(currentOffsetDays)}>
               <input
                 type="text"
                 value={currentOffsetDays}
@@ -102,7 +103,7 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
                   setReminderEmailOffsetDays(currentValueOrDefault);
                   debouncedSaveOffsetDays(
                     currentValueOrDefault,
-                    isInvalidInput(currentValueOrDefault)
+                    !isValidInput(currentValueOrDefault)
                   );
                 }}
               />
@@ -110,10 +111,10 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
             days after the end of the most recent reporting period.
           </DescriptionSection>
         )}
-        {isUserSubscribedToEmails && isInvalidInput(currentOffsetDays) && (
+        {isUserSubscribedToEmails && !isValidInput(currentOffsetDays) && (
           <ErrorMessage>Please enter a number between 1-1000</ErrorMessage>
         )}
-        {isUserSubscribedToEmails && !isInvalidInput(currentOffsetDays) && (
+        {isUserSubscribedToEmails && isValidInput(currentOffsetDays) && (
           <DescriptionSection>
             Your next email is scheduled to send on{" "}
             {offsetDate.toLocaleDateString("en-US")}.
