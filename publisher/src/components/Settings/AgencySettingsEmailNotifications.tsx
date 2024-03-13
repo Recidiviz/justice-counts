@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { ToggleSwitch } from "@justice-counts/common/components/ToggleSwitch";
+import { debounce } from "lodash";
 import { observer } from "mobx-react-lite";
 import React, { useRef, useState } from "react";
 
@@ -29,7 +30,6 @@ import {
   ErrorMessage,
   InputWrapper,
 } from "./AgencySettings.styles";
-import { debounce } from "lodash";
 
 export const AgencySettingsEmailNotifications: React.FC = observer(() => {
   const { agencyStore } = useStore();
