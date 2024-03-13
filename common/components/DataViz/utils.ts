@@ -742,7 +742,6 @@ export const datapointMatchingMetricFrequency = (
     (dp.metric_definition_key &&
       new Date(dp.start_date).getUTCMonth() + 1 ===
         metricKeyToFrequency[dp.metric_definition_key].starting_month);
-  console.log("dp", dp);
-  console.log("metricKeyToFrequency", metricKeyToFrequency);
+
   return hasMatchingFrequency && hasMatchingStartingMonth;
 };
