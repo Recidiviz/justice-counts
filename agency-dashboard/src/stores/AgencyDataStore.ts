@@ -16,7 +16,9 @@
 // =============================================================================
 
 import {
+  datapointMatchingMetricFrequency,
   getAnnualOrMonthlyDataVizTimeRange,
+  getMetricKeyToFrequencyMap,
   isAnnualMetric,
   splitUtcString,
   transformDataForBarChart,
@@ -121,29 +123,36 @@ class AgencyDataStore {
    * See the DatapointsByMetric type for details.
    */
   get datapointsByMetric(): DatapointsByMetric {
+    const metricKeyToFrequencyMap = getMetricKeyToFrequencyMap(this.metrics);
     const result: DatapointsByMetric = {};
     this.metrics.forEach((metric) => {
       result[metric.key] = {
         aggregate: [],
         disaggregations: {},
       };
-      metric.datapoints?.forEach((dp) => {
-        const sanitizedValue =
-          dp.value !== null && isPositiveNumber(dp.value)
-            ? Number(dp.value)
-            : null;
-        result[dp.metric_definition_key].aggregate.push({
-          [DataVizAggregateName]: sanitizedValue,
-          start_date: dp.start_date,
-          end_date: dp.end_date,
-          frequency: dp.frequency,
-          dataVizMissingData: 0,
+      metric.datapoints
+        ?.filter((dp) =>
+          datapointMatchingMetricFrequency(dp, metricKeyToFrequencyMap)
+        )
+        .forEach((dp) => {
+          const sanitizedValue =
+            dp.value !== null && isPositiveNumber(dp.value)
+              ? Number(dp.value)
+              : null;
+          result[dp.metric_definition_key].aggregate.push({
+            [DataVizAggregateName]: sanitizedValue,
+            start_date: dp.start_date,
+            end_date: dp.end_date,
+            frequency: dp.frequency,
+            dataVizMissingData: 0,
+          });
         });
-      });
       metric.disaggregations.forEach((disaggregation) => {
         result[metric.key].disaggregations[disaggregation.display_name] = {};
         disaggregation.dimensions.forEach((dimension) => {
           dimension.datapoints?.forEach((dp) => {
+            if (!datapointMatchingMetricFrequency(dp, metricKeyToFrequencyMap))
+              return;
             if (dp.dimension_display_name) {
               const sanitizedValue =
                 dp.value !== null && isPositiveNumber(dp.value)
