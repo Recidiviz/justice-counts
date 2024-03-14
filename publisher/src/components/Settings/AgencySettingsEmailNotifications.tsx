@@ -54,7 +54,7 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
   const handleSubscribeUnsubscribe = () => {
     updateEmailSubscriptionDetails(
       !isUserSubscribedToEmails,
-      Number(currentOffsetDays)
+      Number(currentOffsetDays) || 15
     );
   };
 
