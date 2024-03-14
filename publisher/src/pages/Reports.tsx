@@ -500,6 +500,7 @@ const Reports: React.FC = () => {
             },
           ]}
           modalType="alert"
+          centerText
         />
       )}
 
