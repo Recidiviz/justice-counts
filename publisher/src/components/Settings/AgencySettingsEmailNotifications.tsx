@@ -45,7 +45,8 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
   const currentOffsetDays =
     reminderEmailOffsetDays || daysAfterTimePeriodToSendEmail || "";
   const offsetDate = new Date();
-  offsetDate.setDate(offsetDate.getDate() + Number(currentOffsetDays));
+  offsetDate.setDate(0); // Set to end of previous month (end of previous reporting period)
+  offsetDate.setDate(offsetDate.getDate() + Number(currentOffsetDays)); // Set offset days
 
   const isValidInput = (value: string | number | null) =>
     Number(value) > 0 && Number(value) <= 1000;
@@ -80,35 +81,47 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
         </EditButtonContainer>
       </AgencySettingsBlockTitle>
       <AgencySettingsBlockDescription>
-        This toggle will only affect your email settings for{" "}
-        {agencyStore.currentAgency?.name ??
-          "the agency you are currently viewing"}
-        . When you unsubscribe you will no longer receive any emails for this
-        agency.
-        <br />
-        <br />
-        Emails from Justice Counts will include a list of the metrics you have
-        enabled which still need data uploaded and confirmation emails that your
-        Automated Bulk Upload attempts were processed by Publisher.
+        <DescriptionSection>
+          This toggle affects your email settings for{" "}
+          {agencyStore.currentAgency?.name ??
+            "the agency you are currently viewing"}
+          . If you subscribe, you will receive the following emails:
+          <ul>
+            <li>Reminders to upload data to Publisher each month</li>
+            <li>
+              Confirmations that Automated Bulk Upload attempts were processed
+              by Publisher
+            </li>
+          </ul>
+        </DescriptionSection>
+
         {isUserSubscribedToEmails && (
-          <DescriptionSection>
-            Schedule metric upload reminder emails{" "}
-            <InputWrapper error={!isValidInput(currentOffsetDays)}>
-              <input
-                type="text"
-                value={currentOffsetDays}
-                onChange={(e) => {
-                  const currentValueOrDefault = e.target.value || "15";
-                  setReminderEmailOffsetDays(currentValueOrDefault);
-                  debouncedSaveOffsetDays(
-                    currentValueOrDefault,
-                    !isValidInput(currentValueOrDefault)
-                  );
-                }}
-              />
-            </InputWrapper>{" "}
-            days after the end of the most recent reporting period.
-          </DescriptionSection>
+          <>
+            <DescriptionSection>
+              Below, you can choose how soon after the end of each reporting
+              period to receive an upload data reminder email. For instance, if
+              you enter 15, you would receive a reminder to upload any missing
+              data for the month of March on April 15th.
+            </DescriptionSection>
+            <DescriptionSection>
+              Enter the number of days after the end of the reporting period to
+              receive a reminder email:
+              <InputWrapper error={!isValidInput(currentOffsetDays)}>
+                <input
+                  type="text"
+                  value={currentOffsetDays}
+                  onChange={(e) => {
+                    const currentValueOrDefault = e.target.value || "15";
+                    setReminderEmailOffsetDays(currentValueOrDefault);
+                    debouncedSaveOffsetDays(
+                      currentValueOrDefault,
+                      !isValidInput(currentValueOrDefault)
+                    );
+                  }}
+                />
+              </InputWrapper>
+            </DescriptionSection>
+          </>
         )}
         {isUserSubscribedToEmails && !isValidInput(currentOffsetDays) && (
           <ErrorMessage>Please enter a number between 1-1000</ErrorMessage>

@@ -593,7 +593,13 @@ export const AddIcon = styled.img`
 `;
 
 export const DescriptionSection = styled.div`
-  margin-top: 24px;
+  &:not(:first-child) {
+    margin-top: 24px;
+  }
+
+  ul {
+    margin-left: 24px;
+  }
 `;
 
 export const InputWrapper = styled.span<{ error?: boolean }>`
