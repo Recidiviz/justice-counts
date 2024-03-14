@@ -717,6 +717,7 @@ export const getDataVizTimeRangeByFilterByMetricFrequency =
     return DataVizTimeRangesMap.All;
   };
 
+/** Given a list of metrics, returns an object of metric keys and their corresponding frequency & starting month  */
 export const getMetricKeyToFrequencyMap = (
   metrics: Metric[]
 ): MetricKeyToFrequency => {
@@ -729,11 +730,22 @@ export const getMetricKeyToFrequencyMap = (
   }, {} as MetricKeyToFrequency);
 };
 
+/**
+ * Used to filter out datapoints that do not match the metric's current frequency
+ * @returns `true` or `false` based on whether the datapoint matches the metric's frequency
+ */
 export const datapointMatchingMetricFrequency = (
   dp: Datapoint | RawDatapoint,
   metricKeyToFrequency: MetricKeyToFrequency
 ) => {
-  // Filter out datapoints that do not match the currently set metric frequency
+  // Filter out old datapoints from sectors that are no longer a part of the agency (small edge-case)
+  if (
+    dp.metric_definition_key &&
+    !metricKeyToFrequency[dp.metric_definition_key]
+  ) {
+    return false;
+  }
+
   const hasMatchingFrequency =
     dp.metric_definition_key &&
     dp.frequency === metricKeyToFrequency[dp.metric_definition_key].frequency;

@@ -131,6 +131,7 @@ class AgencyDataStore {
         disaggregations: {},
       };
       metric.datapoints
+        // Filter out datapoints that do not match the metric's current frequency
         ?.filter((dp) =>
           datapointMatchingMetricFrequency(dp, metricKeyToFrequencyMap)
         )
@@ -151,6 +152,7 @@ class AgencyDataStore {
         result[metric.key].disaggregations[disaggregation.display_name] = {};
         disaggregation.dimensions.forEach((dimension) => {
           dimension.datapoints?.forEach((dp) => {
+            // Filter out breakdown datapoints that do not match the metric's current frequency
             if (!datapointMatchingMetricFrequency(dp, metricKeyToFrequencyMap))
               return;
             if (dp.dimension_display_name) {

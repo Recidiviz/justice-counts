@@ -78,14 +78,9 @@ class DatapointsStore extends BaseDatapointsStore {
           const metricKeyToFrequency = getMetricKeyToFrequencyMap(
             this.reportStore.agencyMetrics
           );
-          this.rawDatapoints = result.datapoints.filter((dp: Datapoint) => {
-            if (
-              dp.metric_definition_key &&
-              !metricKeyToFrequency[dp.metric_definition_key]
-            )
-              return false; // Filters out datapoints that are a system
-            return datapointMatchingMetricFrequency(dp, metricKeyToFrequency);
-          });
+          this.rawDatapoints = result.datapoints.filter((dp: Datapoint) =>
+            datapointMatchingMetricFrequency(dp, metricKeyToFrequency)
+          );
           this.dimensionNamesByMetricAndDisaggregation =
             result.dimension_names_by_metric_and_disaggregation;
         });
