@@ -55,9 +55,9 @@ export const DataEntryInterstitial = () => {
         {/* Upload File */}
         <Styled.OptionBox onClick={() => navigate("../upload")}>
           <UploadFolderIcon />
-          <Styled.OptionName>Upload File</Styled.OptionName>
+          <Styled.OptionName>Bulk Upload</Styled.OptionName>
           <Styled.OptionDescription>
-            Drag a spreadsheet and upload in bulk
+            Download templates and upload in bulk
           </Styled.OptionDescription>
         </Styled.OptionBox>
       </Styled.OptionsWrapper>
