@@ -126,13 +126,6 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
         {isUserSubscribedToEmails && !isValidInput(currentOffsetDays) && (
           <ErrorMessage>Please enter a number between 1-1000</ErrorMessage>
         )}
-        {isUserSubscribedToEmails && isValidInput(currentOffsetDays) && (
-          <DescriptionSection>
-            Your next email is scheduled to send on{" "}
-            {offsetDate.toLocaleDateString("en-US")}.
-          </DescriptionSection>
-        )}
-        {}
       </AgencySettingsBlockDescription>
     </AgencySettingsBlock>
   );
