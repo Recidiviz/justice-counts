@@ -34,6 +34,7 @@ type ModalProps = Partial<{
   centerText: boolean;
   centerButtons: boolean;
   mediumTitle: boolean;
+  customPadding?: string;
   children?: React.ReactNode;
 }>;
 
@@ -46,6 +47,7 @@ export function Modal({
   centerText,
   centerButtons,
   mediumTitle,
+  customPadding,
   children,
 }: ModalProps) {
   const primaryButtonColor = (): ButtonColor => {
@@ -65,7 +67,11 @@ export function Modal({
   const Portal = (
     <Styled.OuterWrapper modalBackground={modalBackground}>
       {children || (
-        <Styled.InnerWrapper modalType={modalType} centerText={centerText}>
+        <Styled.InnerWrapper
+          modalType={modalType}
+          centerText={centerText}
+          customPadding={customPadding}
+        >
           {modalType === "success" && <Styled.Icon src={successIcon} alt="" />}
           {modalType === "warning" && <Styled.Icon src={warningIcon} alt="" />}
           {modalType === "alert" && <Styled.Icon src={alertIcon} alt="" />}

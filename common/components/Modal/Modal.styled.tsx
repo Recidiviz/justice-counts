@@ -41,17 +41,34 @@ export const OuterWrapper = styled.div<{
   }};
 `;
 
+const innerWrapperPadding = ({
+  modalType,
+  customPadding,
+}: {
+  modalType?: ModalType;
+  customPadding?: string;
+}) => {
+  if (customPadding !== undefined) {
+    return customPadding;
+  }
+  if (modalType) {
+    return "80px 24px 24px 24px";
+  }
+  return "24px";
+};
+
 export const InnerWrapper = styled.div<{
   modalType?: ModalType;
   centerText?: boolean;
+  customPadding?: string;
 }>`
   background-color: ${palette.solid.white};
   width: 100%;
   max-width: 582px;
-  padding: ${({ modalType }) => (modalType ? "80px 24px 24px 24px" : "24px")};
+  padding: ${innerWrapperPadding};
   display: flex;
   flex-direction: column;
-  align-items: center;
+  ${({ centerText }) => centerText && `align-items: center;`};
   border-radius: 3px;
   ${centerTextCSS}
 `;
@@ -73,12 +90,11 @@ export const Title = styled.div<{ mediumTitle?: boolean }>`
   }
 `;
 
-export const Description = styled.div`
+export const Description = styled.div<{ centerText?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
   ${typography.sizeCSS.normal};
-  text-align: center;
 `;
 
 export const ButtonsContainer = styled.div<{

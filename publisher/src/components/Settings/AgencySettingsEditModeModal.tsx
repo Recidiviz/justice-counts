@@ -84,6 +84,7 @@ export const AgencySettingsEditModeModal: React.FC<{
             { label: "Leave", onClick: handleCancelModalConfirm },
             { label: "Cancel", onClick: closeCancelModal },
           ]}
+          centerText
         />
       )}
     </>
