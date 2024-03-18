@@ -110,11 +110,10 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
                   type="text"
                   value={currentOffsetDays || ""}
                   onChange={(e) => {
-                    const currentValueOrDefault = e.target.value;
-                    setReminderEmailOffsetDays(currentValueOrDefault);
+                    setReminderEmailOffsetDays(e.target.value);
                     debouncedSaveOffsetDays(
-                      currentValueOrDefault,
-                      !isValidInput(currentValueOrDefault)
+                      e.target.value,
+                      !isValidInput(e.target.value)
                     );
                   }}
                 />
