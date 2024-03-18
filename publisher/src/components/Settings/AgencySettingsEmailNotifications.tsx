@@ -43,10 +43,9 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
     useState<string>();
 
   const currentOffsetDays =
-    reminderEmailOffsetDays || daysAfterTimePeriodToSendEmail || "";
-  const offsetDate = new Date();
-  offsetDate.setDate(0); // Set to end of previous month (end of previous reporting period)
-  offsetDate.setDate(offsetDate.getDate() + Number(currentOffsetDays)); // Set offset days
+    reminderEmailOffsetDays === ""
+      ? ""
+      : reminderEmailOffsetDays || daysAfterTimePeriodToSendEmail;
 
   const isValidInput = (value: string | number | null) =>
     Number(value) > 0 && Number(value) <= 1000;
@@ -54,7 +53,7 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
   const handleSubscribeUnsubscribe = () => {
     updateEmailSubscriptionDetails(
       !isUserSubscribedToEmails,
-      Number(currentOffsetDays) || 15
+      Number(currentOffsetDays)
     );
   };
 
@@ -109,9 +108,9 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
               <InputWrapper error={!isValidInput(currentOffsetDays)}>
                 <input
                   type="text"
-                  value={currentOffsetDays}
+                  value={currentOffsetDays || ""}
                   onChange={(e) => {
-                    const currentValueOrDefault = e.target.value || "15";
+                    const currentValueOrDefault = e.target.value;
                     setReminderEmailOffsetDays(currentValueOrDefault);
                     debouncedSaveOffsetDays(
                       currentValueOrDefault,
