@@ -15,7 +15,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  datapointMatchingMetricFrequency,
+  getMetricKeyToFrequencyMap,
+} from "@justice-counts/common/components/DataViz/utils";
 import BaseDatapointsStore from "@justice-counts/common/stores/BaseDatapointsStore";
+import { Datapoint, Metric } from "@justice-counts/common/types";
 import {
   IReactionDisposer,
   makeObservable,
@@ -25,6 +30,7 @@ import {
 } from "mobx";
 
 import API from "./API";
+import ReportStore from "./ReportStore";
 import UserStore from "./UserStore";
 
 class DatapointsStore extends BaseDatapointsStore {
@@ -32,9 +38,11 @@ class DatapointsStore extends BaseDatapointsStore {
 
   api: API;
 
+  reportStore: ReportStore;
+
   disposers: IReactionDisposer[] = [];
 
-  constructor(userStore: UserStore, api: API) {
+  constructor(userStore: UserStore, api: API, reportStore: ReportStore) {
     super();
     makeObservable(this, {
       // inherited
@@ -42,10 +50,12 @@ class DatapointsStore extends BaseDatapointsStore {
       // new
       api: observable,
       userStore: observable,
+      reportStore: observable,
     });
 
     this.api = api;
     this.userStore = userStore;
+    this.reportStore = reportStore;
     this.rawDatapoints = [];
     this.dimensionNamesByMetricAndDisaggregation = {};
     this.loading = true;
@@ -55,7 +65,10 @@ class DatapointsStore extends BaseDatapointsStore {
     this.disposers.forEach((disposer) => disposer());
   };
 
-  async getDatapoints(agencyId: number): Promise<void | Error> {
+  async getDatapoints(
+    agencyId: number,
+    agencyMetrics: Metric[]
+  ): Promise<void | Error> {
     this.loading = true;
     try {
       const response = (await this.api.request({
@@ -65,7 +78,12 @@ class DatapointsStore extends BaseDatapointsStore {
       if (response.status === 200) {
         const result = await response.json();
         runInAction(() => {
-          this.rawDatapoints = result.datapoints;
+          const metricKeyToFrequency = getMetricKeyToFrequencyMap(
+            this.reportStore.agencyMetrics
+          );
+          this.rawDatapoints = result.datapoints.filter((dp: Datapoint) =>
+            datapointMatchingMetricFrequency(dp, metricKeyToFrequency)
+          );
           this.dimensionNamesByMetricAndDisaggregation =
             result.dimension_names_by_metric_and_disaggregation;
         });

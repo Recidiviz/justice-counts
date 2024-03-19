@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { Datapoint } from "../../types";
+import { Datapoint, ReportFrequency } from "../../types";
 
 export interface TickProps {
   y: number;
@@ -88,7 +88,9 @@ export type LineChartBreakdownNumericValue = {
 };
 
 export type LineChartBreakdownProps = {
-  data: Record<keyof Datapoint, LineChartBreakdownValue>;
+  data: Record<keyof Datapoint, LineChartBreakdownValue> & {
+    frequency?: ReportFrequency;
+  };
   isFundingOrExpenses: boolean;
   dimensions: string[];
   hoveredDate: string | null;

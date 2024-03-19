@@ -24,6 +24,8 @@ import {
   DataVizTimeRange,
   DataVizTimeRangesMap,
   Metric,
+  MetricKeyToFrequency,
+  RawDatapoint,
   ReportFrequency,
 } from "../../types";
 import { formatNumberInput, printDateAsShortMonthYear } from "../../utils";
@@ -116,11 +118,20 @@ export const splitUtcString = (utcString: string) => {
 export const getDisplayMonthYearBasedOnStartingMonthStr = ({
   monthStr,
   yearStr,
+  isMonthlyFrequency,
 }: {
   monthStr: string;
   yearStr: string;
-  monthIndex?: number;
+  isMonthlyFrequency?: boolean;
 }) => {
+  if (isMonthlyFrequency) {
+    return {
+      month: monthStr,
+      year: yearStr,
+      displayDate: `${monthStr} ${yearStr}`,
+    };
+  }
+
   const monthIndex = abbreviatedMonths.indexOf(monthStr);
   const prevMonth = abbreviatedMonths[monthIndex - 1];
   const finalMonth = monthStr !== "Jan" ? prevMonth : monthStr;
@@ -705,3 +716,44 @@ export const getDataVizTimeRangeByFilterByMetricFrequency =
     }
     return DataVizTimeRangesMap.All;
   };
+
+/** Given a list of metrics, returns an object of metric keys and their corresponding frequency & starting month  */
+export const getMetricKeyToFrequencyMap = (
+  metrics: Metric[]
+): MetricKeyToFrequency => {
+  return metrics.reduce((acc, metric) => {
+    acc[metric.key] = {
+      frequency: metric.custom_frequency || metric.frequency,
+      starting_month: metric.starting_month,
+    };
+    return acc;
+  }, {} as MetricKeyToFrequency);
+};
+
+/**
+ * Used to filter out datapoints that do not match the metric's current frequency
+ * @returns `true` or `false` based on whether the datapoint matches the metric's frequency
+ */
+export const datapointMatchingMetricFrequency = (
+  dp: Datapoint | RawDatapoint,
+  metricKeyToFrequency: MetricKeyToFrequency
+) => {
+  // Filter out old datapoints from sectors that are no longer a part of the agency (small edge-case)
+  if (
+    dp.metric_definition_key &&
+    !metricKeyToFrequency[dp.metric_definition_key]
+  ) {
+    return false;
+  }
+
+  const hasMatchingFrequency =
+    dp.metric_definition_key &&
+    dp.frequency === metricKeyToFrequency[dp.metric_definition_key].frequency;
+  const hasMatchingStartingMonth =
+    (hasMatchingFrequency && dp.frequency === "MONTHLY") || // If the frequency is "MONTHLY", there is no starting month - so we can consider this a match
+    (dp.metric_definition_key &&
+      new Date(dp.start_date).getUTCMonth() + 1 ===
+        metricKeyToFrequency[dp.metric_definition_key].starting_month);
+
+  return hasMatchingFrequency && hasMatchingStartingMonth;
+};
