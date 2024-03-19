@@ -165,7 +165,13 @@ export const MetricsDataChart: React.FC = observer(() => {
        * Wait for `initializeReportSettings` so we can look up each metric frequency
        * to filter out datapoints w/ frequencies that do not match the currently set frequency
        */
-      await datapointsStore.getDatapoints(Number(agencyId));
+      const fetchedAgencyMetrics = Object.values(result).flatMap(
+        (metric) => metric
+      );
+      await datapointsStore.getDatapoints(
+        Number(agencyId),
+        fetchedAgencyMetrics
+      );
       setIsLoading(false);
     };
 

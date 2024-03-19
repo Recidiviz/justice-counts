@@ -19,6 +19,7 @@ import {
   DatapointsByMetric,
   DataVizAggregateName,
   DimensionNamesByMetricAndDisaggregation,
+  Metric,
   RawDatapoint,
   RawDatapointsByMetric,
   UnitedRaceEthnicityKeys,
@@ -160,7 +161,10 @@ abstract class DatapointsStore {
     }, {});
   };
 
-  abstract getDatapoints(agencyId: number): Promise<void | Error>;
+  abstract getDatapoints(
+    agencyId: number,
+    agencyMetrics?: Metric[]
+  ): Promise<void | Error>;
 
   resetState() {
     runInAction(() => {

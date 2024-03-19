@@ -20,7 +20,7 @@ import {
   getMetricKeyToFrequencyMap,
 } from "@justice-counts/common/components/DataViz/utils";
 import BaseDatapointsStore from "@justice-counts/common/stores/BaseDatapointsStore";
-import { Datapoint } from "@justice-counts/common/types";
+import { Datapoint, Metric } from "@justice-counts/common/types";
 import {
   IReactionDisposer,
   makeObservable,
@@ -65,7 +65,10 @@ class DatapointsStore extends BaseDatapointsStore {
     this.disposers.forEach((disposer) => disposer());
   };
 
-  async getDatapoints(agencyId: number): Promise<void | Error> {
+  async getDatapoints(
+    agencyId: number,
+    agencyMetrics: Metric[]
+  ): Promise<void | Error> {
     this.loading = true;
     try {
       const response = (await this.api.request({
