@@ -397,13 +397,17 @@ export const MetricsDataChart: React.FC = observer(() => {
             </Styled.PanelRightTopButton>
             <Styled.PanelRightTopButton
               onClick={() =>
-                dataView === ChartView.Chart
-                  ? handleChartDownload(currentSystem, currentMetric.key)
-                  : downloadMetricData(currentMetric, agencyId, false)
+                handleChartDownload(currentSystem, currentMetric.key)
               }
             >
               <DownloadChartIcon />
-              Download
+              Download Graph
+            </Styled.PanelRightTopButton>
+            <Styled.PanelRightTopButton
+              onClick={() => downloadMetricData(currentMetric, agencyId, false)}
+            >
+              <DownloadChartIcon />
+              Download Data
             </Styled.PanelRightTopButton>
           </Styled.PanelRightTopButtonsContainer>
           <ConnectedDatapointsView
