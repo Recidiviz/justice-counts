@@ -322,24 +322,21 @@ function MetricAvailability({
           <Styled.SettingsContainer>
             <Styled.Header>Metric Disaggregation</Styled.Header>
             <Styled.Description>
-              Disaggregate your metrics by sector
+              <p>Disaggregate your metrics by sector</p>
+              <p>
+                For Supervision metrics, you can choose to share the data for
+                your supervision operations as a whole, or disaggregated by your
+                supervision populations (parole, probation, dual, etc).
+              </p>
             </Styled.Description>
+
             {systemSearchParam &&
               hasSupervisionSubsystems &&
               (systemSearchParam === SupervisionSystem ||
                 SupervisionSubsystems.includes(systemSearchParam)) && (
                 <Styled.Setting>
                   <Styled.SettingName>
-                    Disaggregated by Supervision Type{" "}
-                    <Styled.InfoIconWrapper>
-                      <img src={infoIcon} alt="" width="12px" />
-                      <Styled.SettingTooltip>
-                        For Supervision metrics, you can choose to share the
-                        data for your supervision operations as a whole, or
-                        disaggregated by your supervision populations (parole,
-                        probation, dual, etc).
-                      </Styled.SettingTooltip>
-                    </Styled.InfoIconWrapper>
+                    Disaggregated by Supervision Type
                   </Styled.SettingName>
                   <RadioButtonsWrapper disabled={isReadOnly}>
                     <RadioButton
