@@ -16,25 +16,64 @@
 // =============================================================================
 
 import { ToggleSwitch } from "@justice-counts/common/components/ToggleSwitch";
+import { debounce } from "lodash";
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useRef, useState } from "react";
 
 import { useStore } from "../../stores";
+import { gateToAllowedEnvironment } from "../../utils/featureFlags";
+import { Environment } from "../AdminPanel";
 import {
   AgencySettingsBlock,
   AgencySettingsBlockDescription,
   AgencySettingsBlockTitle,
+  DescriptionSection,
   EditButtonContainer,
+  ErrorMessage,
+  InputWrapper,
 } from "./AgencySettings.styles";
 
 export const AgencySettingsEmailNotifications: React.FC = observer(() => {
-  const { agencyStore } = useStore();
-  const { updateIsUserSubscribedToEmails, isUserSubscribedToEmails } =
-    agencyStore;
+  const { agencyStore, api } = useStore();
+  const {
+    updateEmailSubscriptionDetails,
+    isUserSubscribedToEmails,
+    daysAfterTimePeriodToSendEmail,
+  } = agencyStore;
+
+  const [reminderEmailOffsetDays, setReminderEmailOffsetDays] =
+    useState<string>();
+
+  const currentOffsetDays =
+    reminderEmailOffsetDays === ""
+      ? ""
+      : reminderEmailOffsetDays || daysAfterTimePeriodToSendEmail;
+
+  const isValidInput = (value: string | number | null) =>
+    Number(value) > 0 && Number(value) <= 1000;
 
   const handleSubscribeUnsubscribe = () => {
-    updateIsUserSubscribedToEmails(!isUserSubscribedToEmails);
+    updateEmailSubscriptionDetails(
+      !isUserSubscribedToEmails,
+      /* TODO(#1251) Ungate feature */
+      gateToAllowedEnvironment(api.environment, [
+        Environment.LOCAL,
+        Environment.STAGING,
+      ])
+        ? Number(currentOffsetDays)
+        : daysAfterTimePeriodToSendEmail
+    );
   };
+
+  const saveOffsetDays = (offsetDays: string, inputError: boolean) => {
+    if (!inputError) {
+      updateEmailSubscriptionDetails(true, Number(offsetDays));
+    }
+  };
+
+  const debouncedSaveOffsetDays = useRef(
+    debounce(saveOffsetDays, 1500)
+  ).current;
 
   return (
     <AgencySettingsBlock id="email">
@@ -49,17 +88,58 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
         </EditButtonContainer>
       </AgencySettingsBlockTitle>
       <AgencySettingsBlockDescription>
-        This toggle will only affect your email settings for{" "}
-        {agencyStore.currentAgency?.name ??
-          "the agency you are currently viewing"}
-        . When you unsubscribe you will no longer receive any emails for this
-        agency.
-        <br />
-        <br />
-        Emails from Justice Counts include 1) an email on the 15th of each month
-        listing the metrics you have enabled which still need data uploaded and
-        2) confirmation emails that your Automated Bulk Upload attempts were
-        processed by Publisher.
+        <DescriptionSection>
+          This toggle affects your email settings for{" "}
+          {agencyStore.currentAgency?.name ??
+            "the agency you are currently viewing"}
+          . If you subscribe, you will receive the following emails:
+          <ul>
+            <li>Reminders to upload data to Publisher each month</li>
+            <li>
+              Confirmations that Automated Bulk Upload attempts were processed
+              by Publisher
+            </li>
+          </ul>
+        </DescriptionSection>
+
+        {/* TODO(#1251) Ungate feature */}
+        {gateToAllowedEnvironment(api.environment, [
+          Environment.LOCAL,
+          Environment.STAGING,
+        ]) && (
+          <>
+            {isUserSubscribedToEmails && (
+              <>
+                <DescriptionSection>
+                  Below, you can choose how soon after the end of each reporting
+                  period to receive an upload data reminder email. For instance,
+                  if you enter 15, you would receive a reminder to upload any
+                  missing data for the month of March on April 15th.
+                </DescriptionSection>
+                <DescriptionSection>
+                  Enter the number of days after the end of the reporting period
+                  to receive a reminder email:
+                  <InputWrapper error={!isValidInput(currentOffsetDays)}>
+                    <input
+                      type="text"
+                      value={currentOffsetDays || ""}
+                      onChange={(e) => {
+                        setReminderEmailOffsetDays(e.target.value);
+                        debouncedSaveOffsetDays(
+                          e.target.value,
+                          !isValidInput(e.target.value)
+                        );
+                      }}
+                    />
+                  </InputWrapper>
+                </DescriptionSection>
+              </>
+            )}
+            {isUserSubscribedToEmails && !isValidInput(currentOffsetDays) && (
+              <ErrorMessage>Please enter a number between 1-1000</ErrorMessage>
+            )}
+          </>
+        )}
       </AgencySettingsBlockDescription>
     </AgencySettingsBlock>
   );
