@@ -266,7 +266,7 @@ class AgencyStore {
 
   updateEmailSubscriptionDetails = async (
     isUserSubscribedToEmails: boolean,
-    daysAfterTimePeriodToSendEmail: number
+    daysAfterTimePeriodToSendEmail: number | null
   ): Promise<void> => {
     const response = (await this.api.request({
       path: `/api/agency/${this.currentAgencyId}/subscription/${this.userStore.userId}`,
