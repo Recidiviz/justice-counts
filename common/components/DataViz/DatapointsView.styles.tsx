@@ -96,13 +96,13 @@ export const DatapointsViewContainer = styled.div<{
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  position: sticky;
+  top: calc(${HEADER_BAR_HEIGHT}px + 50px);
   ${({ maxHeightViewport }) =>
     maxHeightViewport && `max-height: calc(100vh - ${HEADER_BAR_HEIGHT}px)`}
 `;
 
 export const DatapointsViewHeaderWrapper = styled.div`
-  position: sticky;
-  top: 50px;
   background-color: ${palette.solid.white};
   z-index: 2;
 

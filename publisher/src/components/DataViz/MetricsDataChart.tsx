@@ -26,7 +26,10 @@ import {
   Dropdown,
   DropdownOption,
 } from "@justice-counts/common/components/Dropdown";
-import { MIN_DESKTOP_WIDTH } from "@justice-counts/common/components/GlobalStyles";
+import {
+  HEADER_BAR_HEIGHT,
+  MIN_DESKTOP_WIDTH,
+} from "@justice-counts/common/components/GlobalStyles";
 import { useWindowWidth } from "@justice-counts/common/hooks";
 import {
   AgencySystem,
@@ -39,6 +42,7 @@ import { frequencyString } from "@justice-counts/common/utils/helperUtils";
 import FileSaver from "file-saver";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import { createSearchParams, useNavigate, useParams } from "react-router-dom";
 import { useCurrentPng } from "recharts-to-png";
 
@@ -64,6 +68,8 @@ export const MetricsDataChart: React.FC = observer(() => {
   const { metricsBySystem, agencyMetrics } = reportStore;
   const currentAgency = userStore.getAgency(agencyId);
   const windowWidth = useWindowWidth();
+  const topShadow = useInView();
+  const bottomShadow = useInView();
 
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
@@ -245,6 +251,12 @@ export const MetricsDataChart: React.FC = observer(() => {
         {/* List Of Metrics */}
         <Styled.PanelContainerLeft>
           <Styled.SystemsContainer>
+            <div ref={topShadow.ref} />
+            <Styled.ScrollShadow
+              show={!topShadow.inView}
+              side="top"
+              offset={HEADER_BAR_HEIGHT}
+            />
             {Object.entries(metricsBySystem).map(([system, metrics]) => {
               if (isSuperagency && system !== "SUPERAGENCY") return;
               const currEnabledMetrics = metrics.filter(
@@ -304,6 +316,8 @@ export const MetricsDataChart: React.FC = observer(() => {
                 </React.Fragment>
               );
             })}
+            <div ref={bottomShadow.ref} />
+            <Styled.ScrollShadow show={!bottomShadow.inView} side="bottom" />
           </Styled.SystemsContainer>
           <Styled.DisclaimerContainer>
             <Styled.DisclaimerTitle>Note</Styled.DisclaimerTitle>
