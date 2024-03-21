@@ -19,12 +19,12 @@ import {
   HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
   palette,
+  PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
 const INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH = 314;
-export const PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT = 50;
 
 export const NoEnabledMetricsMessage = styled.div`
   min-height: 100%;

@@ -20,9 +20,9 @@ import {
   MIN_DESKTOP_WIDTH,
   MIN_TABLET_WIDTH,
   palette,
+  PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
-import { PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT } from "@justice-counts/publisher/src/components/DataViz/MetricsDataChart.styled";
 import { Dropdown, DropdownMenuItem } from "@recidiviz/design-system";
 import React from "react";
 // eslint-disable-next-line no-restricted-imports
