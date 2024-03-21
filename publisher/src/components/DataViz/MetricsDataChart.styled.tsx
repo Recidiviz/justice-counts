@@ -24,6 +24,7 @@ import {
 import styled from "styled-components/macro";
 
 const INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH = 314;
+export const PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT = 50;
 
 export const NoEnabledMetricsMessage = styled.div`
   min-height: 100%;
@@ -287,7 +288,7 @@ export const PanelRightTopButtonsContainer = styled.div`
   display: flex;
   flex-direction: row;
   gap: 16px;
-  height: 50px;
+  height: ${PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT}px;
   padding: 24px 0 4px 0;
   position: sticky;
   top: ${HEADER_BAR_HEIGHT}px;
