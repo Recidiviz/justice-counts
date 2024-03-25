@@ -19,6 +19,7 @@ import {
   HEADER_BAR_HEIGHT,
   MIN_DESKTOP_WIDTH,
   palette,
+  PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
@@ -35,7 +36,6 @@ export const MetricsViewContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  overflow-y: hidden;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     justify-content: start;
@@ -50,7 +50,6 @@ export const MetricsViewPanel = styled.div<{
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
-  overflow-y: auto;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     justify-content: unset;
@@ -187,7 +186,6 @@ export const PanelContainerRight = styled.div`
   display: flex;
   position: relative;
   flex-direction: column;
-  overflow: auto;
   padding-right: 24px;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
@@ -290,10 +288,10 @@ export const PanelRightTopButtonsContainer = styled.div`
   display: flex;
   flex-direction: row;
   gap: 16px;
-  height: 50px;
+  height: ${PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT}px;
   padding: 24px 0 4px 0;
   position: sticky;
-  top: 0;
+  top: ${HEADER_BAR_HEIGHT}px;
   background-color: ${palette.solid.white};
   z-index: 2;
 
@@ -312,4 +310,24 @@ export const PanelRightTopButton = styled.div`
   &:hover {
     opacity: 0.5;
   }
+`;
+
+export const ScrollShadow = styled.div<{
+  show: boolean;
+  side: "top" | "bottom";
+  offset?: number;
+}>`
+  background: linear-gradient(
+    ${({ side }) => (side === "top" ? 180 : 360)}deg,
+    #ffffff 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+  position: fixed;
+  opacity: ${({ show }) => (show ? 1 : 0)};
+  transition: all 200ms ease;
+  ${({ side }) => side}: ${({ offset }) => offset || 0}px;
+  width: ${INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH}px;
+  height: 200px;
+  z-index: 101;
 `;

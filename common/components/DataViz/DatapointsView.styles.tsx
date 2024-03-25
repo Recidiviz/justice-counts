@@ -20,6 +20,7 @@ import {
   MIN_DESKTOP_WIDTH,
   MIN_TABLET_WIDTH,
   palette,
+  PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import { Dropdown, DropdownMenuItem } from "@recidiviz/design-system";
@@ -28,6 +29,10 @@ import React from "react";
 import styled from "styled-components";
 
 import { CustomDropdown } from "../Dropdown";
+
+const FOOTER_CONTAINER_HEIGHT = 52;
+const DATAPOINTS_VIEW_CONTAINER_TOP_OFFSET =
+  HEADER_BAR_HEIGHT + PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT;
 
 export const MetricHeaderWrapper = styled.div`
   display: flex;
@@ -96,13 +101,16 @@ export const DatapointsViewContainer = styled.div<{
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  position: sticky;
+  top: ${DATAPOINTS_VIEW_CONTAINER_TOP_OFFSET}px;
   ${({ maxHeightViewport }) =>
-    maxHeightViewport && `max-height: calc(100vh - ${HEADER_BAR_HEIGHT}px)`}
+    maxHeightViewport &&
+    `max-height: calc(100vh - ${
+      DATAPOINTS_VIEW_CONTAINER_TOP_OFFSET + FOOTER_CONTAINER_HEIGHT
+    }px)`}
 `;
 
 export const DatapointsViewHeaderWrapper = styled.div`
-  position: sticky;
-  top: 50px;
   background-color: ${palette.solid.white};
   z-index: 2;
 

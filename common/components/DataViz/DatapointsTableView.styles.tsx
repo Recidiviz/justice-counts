@@ -18,13 +18,18 @@
 // eslint-disable-next-line no-restricted-imports
 import styled from "styled-components";
 
-import { palette, typography } from "../GlobalStyles";
+import {
+  HEADER_BAR_HEIGHT,
+  palette,
+  PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT,
+  typography,
+} from "../GlobalStyles";
 
 export const DatapointsTableViewTitleWrapper = styled.div`
   padding: 5px 0 14px 0;
   border-bottom: 1px solid ${palette.highlight.grey9};
   position: sticky;
-  top: 50px;
+  top: ${PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT + HEADER_BAR_HEIGHT}px;
   background-color: ${palette.solid.white};
   z-index: 2;
 `;
@@ -35,6 +40,8 @@ export const DatapointsTableContainer = styled.div<{
   width: 100%;
   display: flex;
   flex-direction: row;
+  position: sticky;
+  top: ${PANEL_RIGHT_TOP_BUTTONS_CONTAINER_HEIGHT + HEADER_BAR_HEIGHT + 100}px;
   padding: ${({ useDataPageStyles }) =>
     useDataPageStyles ? "0 15px 0 15px" : "0"};
 
