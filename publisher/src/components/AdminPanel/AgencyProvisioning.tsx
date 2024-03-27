@@ -68,6 +68,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     activeSecondaryModal,
     openSecondaryModal,
     closeModal,
+    secondaryCreatedId,
+    setSecondaryCreatedId,
   }) => {
     const { adminPanelStore, api, userStore } = useStore();
     const {
@@ -302,8 +304,12 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           show: false,
           errorMessage: undefined,
         }));
-        if (response && "status" in response && response.status === 200)
+        if (response && "status" in response && response.status === 200) {
+          if (setSecondaryCreatedId) {
+            setSecondaryCreatedId(360); // example agency id
+          }
           closeModal(true);
+        }
         setIsSaveInProgress(false);
       }, 2000);
     };
@@ -500,12 +506,18 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           };
         });
       }
+
+      if (secondaryCreatedId)
+        setSelectedTeamMembersToAdd((prev) =>
+          toggleAddRemoveSetItem(prev, +secondaryCreatedId)
+        );
     }, [
       selectedAgency,
       adminPanelStore,
       api,
       csgAndRecidivizUsers,
       csgAndRecidivizDefaultRole,
+      secondaryCreatedId,
     ]);
 
     return (

@@ -23,7 +23,7 @@ import {
   validateEmail,
 } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
@@ -47,6 +47,8 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
     activeSecondaryModal,
     openSecondaryModal,
     closeModal,
+    secondaryCreatedId,
+    setSecondaryCreatedId,
   }) => {
     const { adminPanelStore } = useStore();
     const {
@@ -104,6 +106,13 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
         ? AdminPanelStore.objectToSortedFlatMappedValues(selectedUser.agencies)
         : []),
     ];
+
+    useEffect(() => {
+      if (secondaryCreatedId)
+        setAddedAgenciesIDs((prev) =>
+          toggleAddRemoveSetItem(prev, +secondaryCreatedId)
+        );
+    }, [secondaryCreatedId]);
 
     /** Whether or not we are performing an add/delete action on an agencies' list */
     const isAddAction =
@@ -227,8 +236,12 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
       /** After showing the confirmation screen, either return to modal (on error) or close modal (on success) */
       setTimeout(() => {
         setShowSaveConfirmation((prev) => ({ ...prev, show: false }));
-        if (response && "status" in response && response.status === 200)
+        if (response && "status" in response && response.status === 200) {
+          if (setSecondaryCreatedId) {
+            setSecondaryCreatedId(4184); // example user id
+          }
           closeModal(true);
+        }
         setIsSaveInProgress(false);
       }, 2000);
     };
