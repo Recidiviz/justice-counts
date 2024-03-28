@@ -17,6 +17,6 @@
 
 import styled from "styled-components/macro";
 
-export const GlobalTitle= styled.div``;
+export const GlobalTitle = styled.div``;
 
-export const GlobalDescription= styled.div``;
+export const GlobalDescription = styled.div``;
