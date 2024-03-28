@@ -237,8 +237,10 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
       setTimeout(() => {
         setShowSaveConfirmation((prev) => ({ ...prev, show: false }));
         if (response && "status" in response && response.status === 200) {
-          if (setSecondaryCreatedId) {
-            setSecondaryCreatedId(4184); // example user id
+          const userResponse = adminPanelStore.createdUserResponse;
+          if (setSecondaryCreatedId && userResponse) {
+            const createdUserId = userResponse.users[0].id;
+            setSecondaryCreatedId(createdUserId);
           }
           closeModal(true);
         }

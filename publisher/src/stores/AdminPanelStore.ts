@@ -80,6 +80,8 @@ class AdminPanelStore {
 
   agencyProvisioningUpdates: AgencyProvisioningUpdates;
 
+  userResponse?: UserResponse;
+
   constructor(api: API) {
     makeAutoObservable(this, {}, { autoBind: true });
     this.api = api;
@@ -149,6 +151,10 @@ class AdminPanelStore {
           name: FipsCountyCodes[lowercaseCountyCode],
         };
       });
+  }
+
+  get createdUserResponse(): UserResponse | undefined {
+    return this.userResponse;
   }
 
   async fetchUsers() {
@@ -247,6 +253,10 @@ class AdminPanelStore {
 
   /** User Provisioning */
 
+  setCreatedUserResponse(userResponse: UserResponse) {
+    this.userResponse = userResponse;
+  }
+
   updateUsername(username: string) {
     this.userProvisioningUpdates.name = username.trimStart();
   }
@@ -288,7 +298,10 @@ class AdminPanelStore {
         | ErrorResponse;
 
       if (response.status === 200) {
-        runInAction(() => this.updateUsers(userResponse as UserResponse));
+        runInAction(() => {
+          this.updateUsers(userResponse as UserResponse);
+          this.setCreatedUserResponse(userResponse as UserResponse);
+        });
         return response;
       }
 
