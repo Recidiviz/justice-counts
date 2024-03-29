@@ -19,5 +19,6 @@ export * from "./AccountSettings";
 export * from "./AgencySettings";
 export * from "./hooks";
 export * from "./Settings.styles";
+export * from "./SettingsMenu";
 export * from "./types";
 export * from "./utils";

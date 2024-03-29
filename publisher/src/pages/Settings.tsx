@@ -16,22 +16,47 @@
 // =============================================================================
 
 import React from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 
+import { UploadedFiles } from "../components/DataUpload";
 import {
   AccountSettings,
   AgencySettings,
   ContentDisplay,
   SettingsContainer,
+  SettingsMenu,
 } from "../components/Settings";
 import { AgencySettingsTeamManagement } from "../components/Settings/AgencySettingsTeamManagement";
+
+export const settingsMenuPaths = [
+  { displayLabel: "Your Account", path: "account" },
+  { displayLabel: "Agency Settings", path: "agency-settings" },
+  { displayLabel: "Team Management", path: "team-management" },
+  { displayLabel: "Uploaded Files", path: "uploaded-files" },
+];
+
+export type ListOfMetricsForNavigation = {
+  key: string;
+  display_name: string;
+};
 
 const Settings = () => {
   return (
     <SettingsContainer>
+      <SettingsMenu />
+
       <ContentDisplay>
-        <AccountSettings />
-        <AgencySettings />
-        <AgencySettingsTeamManagement />
+        <Routes>
+          <Route path="/" element={<Navigate to="account" replace />} />
+          <Route path="/account" element={<AccountSettings />} />
+          <Route path="/agency-settings" element={<AgencySettings />} />
+          <Route
+            path="/team-management"
+            element={<AgencySettingsTeamManagement />}
+          />
+          <Route path="/uploaded-files" element={<UploadedFiles />} />
+          <Route path="*" element={<Navigate to="account" />} />
+        </Routes>
       </ContentDisplay>
     </SettingsContainer>
   );
