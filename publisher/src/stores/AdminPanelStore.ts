@@ -82,6 +82,8 @@ class AdminPanelStore {
 
   userResponse?: UserResponse;
 
+  agencyResponse?: Agency;
+
   constructor(api: API) {
     makeAutoObservable(this, {}, { autoBind: true });
     this.api = api;
@@ -155,6 +157,10 @@ class AdminPanelStore {
 
   get createdUserResponse(): UserResponse | undefined {
     return this.userResponse;
+  }
+
+  get createdAgencyResponse(): Agency | undefined {
+    return this.agencyResponse;
   }
 
   async fetchUsers() {
@@ -336,6 +342,10 @@ class AdminPanelStore {
 
   /** Agency Provisioning */
 
+  setCreatedAgencyResponse(agencyResponse: Agency) {
+    this.agencyResponse = agencyResponse;
+  }
+
   updateAgencyID(id: number) {
     this.agencyProvisioningUpdates.agency_id = id;
   }
@@ -406,6 +416,10 @@ class AdminPanelStore {
       const agencyResponse = (await response.json()) as Agency | ErrorResponse;
 
       if (response.status === 200) {
+        runInAction(() =>
+          this.setCreatedAgencyResponse(agencyResponse as Agency)
+        );
+
         if (!refetch) {
           runInAction(() => this.updateAgencies(agencyResponse as Agency));
         } else {

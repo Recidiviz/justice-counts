@@ -305,8 +305,10 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           errorMessage: undefined,
         }));
         if (response && "status" in response && response.status === 200) {
-          if (setSecondaryCreatedId) {
-            setSecondaryCreatedId(360); // example agency id
+          const agencyResponse = adminPanelStore.createdAgencyResponse;
+          if (setSecondaryCreatedId && agencyResponse) {
+            const createdAgencyId = agencyResponse.id;
+            setSecondaryCreatedId(createdAgencyId);
           }
           closeModal(true);
         }
