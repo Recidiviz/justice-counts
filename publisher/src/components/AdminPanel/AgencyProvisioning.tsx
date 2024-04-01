@@ -68,6 +68,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     activeSecondaryModal,
     openSecondaryModal,
     closeModal,
+    secondaryCreatedId,
+    setSecondaryCreatedId,
   }) => {
     const { adminPanelStore, api, userStore } = useStore();
     const {
@@ -302,8 +304,15 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           show: false,
           errorMessage: undefined,
         }));
-        if (response && "status" in response && response.status === 200)
+        if (response && "status" in response && response.status === 200) {
+          const agencyResponse = adminPanelStore.createdAgencyResponse;
+          if (setSecondaryCreatedId && agencyResponse) {
+            /** If this view is the secondary create modal, then we'll store the newly created ID for the purpose of auto-adding after creation */
+            const createdAgencyId = agencyResponse.id;
+            setSecondaryCreatedId(createdAgencyId);
+          }
           closeModal(true);
+        }
         setIsSaveInProgress(false);
       }, 2000);
     };
@@ -500,12 +509,19 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           };
         });
       }
+
+      /** Here we are making the auto-adding if something was created via the secondary modal */
+      if (secondaryCreatedId)
+        setSelectedTeamMembersToAdd((prev) =>
+          toggleAddRemoveSetItem(prev, +secondaryCreatedId)
+        );
     }, [
       selectedAgency,
       adminPanelStore,
       api,
       csgAndRecidivizUsers,
       csgAndRecidivizDefaultRole,
+      secondaryCreatedId,
     ]);
 
     return (

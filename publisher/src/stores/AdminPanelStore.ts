@@ -80,6 +80,10 @@ class AdminPanelStore {
 
   agencyProvisioningUpdates: AgencyProvisioningUpdates;
 
+  userResponse?: UserResponse;
+
+  agencyResponse?: Agency;
+
   constructor(api: API) {
     makeAutoObservable(this, {}, { autoBind: true });
     this.api = api;
@@ -149,6 +153,14 @@ class AdminPanelStore {
           name: FipsCountyCodes[lowercaseCountyCode],
         };
       });
+  }
+
+  get createdUserResponse(): UserResponse | undefined {
+    return this.userResponse;
+  }
+
+  get createdAgencyResponse(): Agency | undefined {
+    return this.agencyResponse;
   }
 
   async fetchUsers() {
@@ -247,6 +259,10 @@ class AdminPanelStore {
 
   /** User Provisioning */
 
+  setCreatedUserResponse(userResponse: UserResponse) {
+    this.userResponse = userResponse;
+  }
+
   updateUsername(username: string) {
     this.userProvisioningUpdates.name = username.trimStart();
   }
@@ -288,7 +304,10 @@ class AdminPanelStore {
         | ErrorResponse;
 
       if (response.status === 200) {
-        runInAction(() => this.updateUsers(userResponse as UserResponse));
+        runInAction(() => {
+          this.updateUsers(userResponse as UserResponse);
+          this.setCreatedUserResponse(userResponse as UserResponse);
+        });
         return response;
       }
 
@@ -322,6 +341,10 @@ class AdminPanelStore {
   }
 
   /** Agency Provisioning */
+
+  setCreatedAgencyResponse(agencyResponse: Agency) {
+    this.agencyResponse = agencyResponse;
+  }
 
   updateAgencyID(id: number) {
     this.agencyProvisioningUpdates.agency_id = id;
@@ -393,6 +416,10 @@ class AdminPanelStore {
       const agencyResponse = (await response.json()) as Agency | ErrorResponse;
 
       if (response.status === 200) {
+        runInAction(() =>
+          this.setCreatedAgencyResponse(agencyResponse as Agency)
+        );
+
         if (!refetch) {
           runInAction(() => this.updateAgencies(agencyResponse as Agency));
         } else {
