@@ -107,6 +107,7 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
         : []),
     ];
 
+    /** Here we are making the auto-adding if something was created via the secondary modal */
     useEffect(() => {
       if (secondaryCreatedId)
         setAddedAgenciesIDs((prev) =>
@@ -239,6 +240,7 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
         if (response && "status" in response && response.status === 200) {
           const userResponse = adminPanelStore.createdUserResponse;
           if (setSecondaryCreatedId && userResponse) {
+            /** If this view is the secondary create modal, then we'll store the newly created ID for the purpose of auto-adding after creation */
             const createdUserId = userResponse.users[0].id;
             setSecondaryCreatedId(createdUserId);
           }
