@@ -25,6 +25,8 @@ import { makeAutoObservable, runInAction } from "mobx";
 
 import {
   Agency,
+  AgencyMetric,
+  AgencyMetricResponse,
   AgencyProvisioningUpdates,
   AgencyResponse,
   AgencyTeamUpdates,
@@ -76,6 +78,8 @@ class AdminPanelStore {
 
   systems: AgencySystem[];
 
+  metrics: AgencyMetric[];
+
   userProvisioningUpdates: UserProvisioningUpdates;
 
   agencyProvisioningUpdates: AgencyProvisioningUpdates;
@@ -91,6 +95,7 @@ class AdminPanelStore {
     this.usersByID = {};
     this.agenciesByID = {};
     this.systems = [];
+    this.metrics = [];
     this.userProvisioningUpdates = initialEmptyUserProvisioningUpdates;
     this.agencyProvisioningUpdates = initialEmptyAgencyProvisioningUpdates;
   }
@@ -133,6 +138,13 @@ class AdminPanelStore {
     return this.systems.map((system) => ({
       id: system,
       name: removeSnakeCase(system.toLocaleLowerCase()),
+    }));
+  }
+
+  get searchableMetrics(): SearchableListItem[] {
+    return this.metrics.map((metric) => ({
+      id: metric.key,
+      ...metric,
     }));
   }
 
@@ -218,6 +230,26 @@ class AdminPanelStore {
           (agency) => agency.id
         );
         this.systems = data.systems;
+      });
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
+  async fetchAgencyMetrics(agencyID: string) {
+    try {
+      const response = (await this.api.request({
+        path: `/admin/agency/${agencyID}`,
+        method: "GET",
+      })) as Response;
+      const data = (await response.json()) as AgencyMetricResponse;
+
+      if (response.status !== 200) {
+        throw new Error("There was an issue fetching agency metrics.");
+      }
+
+      runInAction(() => {
+        this.metrics = data.metrics;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
