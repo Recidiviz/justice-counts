@@ -1058,9 +1058,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                                           (metricKey) => (
                                             <Styled.Chip key={metricKey}>
                                               {
-                                                metrics.find(
+                                                searchableMetrics.find(
                                                   (metric) =>
-                                                    metric.key === metricKey
+                                                    metric.id === metricKey
                                                 )?.name
                                               }
                                             </Styled.Chip>
