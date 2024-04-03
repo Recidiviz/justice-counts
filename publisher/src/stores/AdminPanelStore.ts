@@ -144,6 +144,7 @@ class AdminPanelStore {
   get searchableMetrics(): SearchableListItem[] {
     return this.metrics.map((metric) => ({
       id: metric.key,
+      sectors: metric.sector,
       ...metric,
     }));
   }

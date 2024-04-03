@@ -192,6 +192,7 @@ export type InteractiveSearchListUpdateSelections = (
 export type SearchableListItem = {
   id: string | number;
   name: string;
+  sectors?: string | string[];
   action?: InteractiveSearchListAction;
   email?: string;
   role?: AgencyTeamMemberRole;
