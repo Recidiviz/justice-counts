@@ -49,7 +49,7 @@ export const LinkToDashboard: React.FC<
 
   if (!agencyName) return <>{children}</>;
 
-  const url = generateDashboardURL(api.environment, agencyName);
+  const url = generateDashboardURL(api.environment, agencyId, agencyName);
 
   return (
     <a href={url} target="_blank" rel="noreferrer noopener">
@@ -60,8 +60,9 @@ export const LinkToDashboard: React.FC<
 
 export const generateDashboardURL = (
   env: string | undefined,
+  agencyId: string | undefined,
   agencyName: string | undefined
 ) =>
   `https://dashboard-${
     env !== "production" ? "staging" : "demo"
-  }.justice-counts.org/agency/${encodeURI(agencyName || "")}`;
+  }.justice-counts.org/agency/${agencyId}/${encodeURI(agencyName || "")}`;
