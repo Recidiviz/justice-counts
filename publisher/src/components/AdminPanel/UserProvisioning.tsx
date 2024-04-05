@@ -37,6 +37,7 @@ import {
   SaveConfirmation,
   SaveConfirmationType,
   SaveConfirmationTypes,
+  SearchableListItem,
   Setting,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
@@ -132,7 +133,11 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
 
     /** Search List Buttons (Select All/Deselect All/Close) */
     const interactiveSearchListButtons = [
-      { label: "Select All", onClick: () => selectAll() },
+      {
+        label: "Select All",
+        onClick: (filteredList: SearchableListItem[] | undefined) =>
+          selectAll(filteredList),
+      },
       { label: "Deselect All", onClick: () => deselectAll() },
       {
         label: "Close",
@@ -159,12 +164,20 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
         );
       }
     };
-    const selectAll = () => {
+    const selectAll = (filteredList: SearchableListItem[] | undefined) => {
       if (isAddAction) {
         setAddedAgenciesIDs(availableAgenciesIDsSet);
       }
       if (isDeleteAction) {
         setDeletedAgenciesIDs(selectedUserAgenciesIDsSet);
+      }
+      if (filteredList) {
+        const filteredSet = new Set(
+          Array.from(availableAgenciesIDsSet).filter((item) => {
+            return filteredList.some((obj) => obj.id === item);
+          })
+        );
+        setAddedAgenciesIDs(filteredSet);
       }
     };
     const deselectAll = () => {

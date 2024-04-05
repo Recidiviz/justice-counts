@@ -52,6 +52,7 @@ import {
   SaveConfirmation,
   SaveConfirmationType,
   SaveConfirmationTypes,
+  SearchableListItem,
   SelectionInputBoxType,
   SelectionInputBoxTypes,
   Setting,
@@ -226,8 +227,16 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       return [
         {
           label: "Select All",
-          onClick: () => {
+          onClick: (filteredList: SearchableListItem[] | undefined) => {
             setState(selectAllSet);
+            if (filteredList) {
+              const filteredSet = new Set(
+                Array.from(selectAllSet).filter((item) => {
+                  return filteredList.some((obj) => obj.id === item);
+                })
+              );
+              setState(filteredSet);
+            }
             if (selectAllCallback) selectAllCallback();
           },
         },
