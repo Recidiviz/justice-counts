@@ -35,33 +35,47 @@ export const AccountSettingsTitle = styled.h1`
   ${typography.sizeCSS.title};
   margin-top: 4px;
   padding-bottom: 14px;
-
-  &::before {
-    content: "Account";
-  }
+  background-color: darkred;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     ${typography.sizeCSS.medium};
     margin: 0;
     padding: 0 0 24px 0;
-
-    &::before {
-      content: "Settings > Your Account";
-    }
   }
 `;
 
 export const AccountSettingsInputsWrapper = styled.div`
   display: flex;
+  flex-direction: row;
   gap: 10px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #ececec;
 
   div {
-    width: 100%;
-    margin-bottom: 16px;
+    flex-direction: column;
+    margin: 0;
+    a {
+      color: ${palette.highlight.grey9};
+    }
+  }
+
+  input {
+    padding-left: 0;
+    border: none;
+    background-color: inherit;
+    ${typography.body};
+    color: ${palette.highlight.grey9};
+  }
+
+  label {
+    ${typography.body};
+    color: black;
+    left: 0;
   }
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
     gap: 0;
+    margin-left: 0px;
   }
 `;

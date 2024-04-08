@@ -22,7 +22,6 @@ import React, { useRef } from "react";
 import { useStore } from "../../stores";
 import {
   AccountSettingsInputsWrapper,
-  AccountSettingsTitle,
   AccountSettingsWrapper,
 } from "./AccountSettings.styles";
 
@@ -44,34 +43,42 @@ export const AccountSettings = () => {
 
   return (
     <AccountSettingsWrapper>
-      <AccountSettingsTitle />
-
       <AccountSettingsInputsWrapper>
-        <Input
-          style={{ marginBottom: "0" }}
-          persistLabel
-          label="Full Name"
-          value={name}
-          onChange={(e) => {
-            setName((prev) => e.target.value.trimStart() || prev);
-            debouncedSave(
-              e.target.value.trimStart() || userStore?.name,
-              undefined
-            );
-          }}
-        />
-        <Input
-          persistLabel
-          label="Email"
-          value={email}
-          onChange={(e) => {
-            setEmail((prev) => e.target.value.trimStart() || prev);
-            debouncedSave(
-              undefined,
-              e.target.value.trimStart() || userStore?.email
-            );
-          }}
-        />
+        <div>
+          <Input
+            style={{ marginBottom: "0" }}
+            persistLabel
+            label=" Name"
+            value={name}
+            onChange={(e) => {
+              setName((prev) => e.target.value.trimStart() || prev);
+              debouncedSave(
+                e.target.value.trimStart() || userStore?.name,
+                undefined
+              );
+            }}
+          />
+          <span>
+            <a href="./namemodal">Edit</a>
+          </span>
+        </div>
+        <div>
+          <Input
+            persistLabel
+            label="Email"
+            value={email}
+            onChange={(e) => {
+              setEmail((prev) => e.target.value.trimStart() || prev);
+              debouncedSave(
+                undefined,
+                e.target.value.trimStart() || userStore?.email
+              );
+            }}
+          />
+          <span>
+            <a href="./emailmodal">Edit</a>
+          </span>
+        </div>
       </AccountSettingsInputsWrapper>
     </AccountSettingsWrapper>
   );

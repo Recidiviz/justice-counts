@@ -31,13 +31,48 @@ import { SETTINGS_MENU_WITH_PADDINGS_WIDTH } from "./Settings.styles";
 const AGENCY_SETTINGS_CONTAINER_WIDTH = 644;
 const STICKY_RESPONSIVE_HEADER_WITH_PADDING_HEIGHT = 48;
 
+// my code here
+
+export const AgencySettingsSectionRow = styled.div<{ capitalize?: boolean }>`
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  flex-direction: row;
+  line-height: 32px;
+
+  //@media goes here
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    flex-direction: column;
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+    color: ${palette.highlight.grey9};
+
+    span {
+      color: black;
+    }
+
+    //  Todo: ask about the need for the capitalize(BasicInfoRow),
+    //   because the figma doesn't show a difference in label
+    //    text and data. Also ask about the message that appears
+    //    at the end of the section "*If any of the above looks incorrect, contact the Justice Counts team
+    //    at justice-counts-support@csg.org."
+    //  Todo: ask Michael how to add the edit padding or or margins
+    //  and how to add the underline functionality on tab buttons
+    //  TODO: ask the def of superagencies
+  }
+`;
+
+// end of my code
+
 export const AgencySettingsWrapper = styled.div`
   height: 100%;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-right: ${SETTINGS_MENU_WITH_PADDINGS_WIDTH - 24}px;
   justify-content: center;
   padding-bottom: 50px;
   z-index: 1;
@@ -81,10 +116,6 @@ export const AgencySettingsTitle = styled.div`
   font-weight: 500;
   margin-bottom: 24px;
 
-  &::before {
-    content: "Agency Settings";
-  }
-
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     ${typography.sizeCSS.medium};
     width: 100%;
@@ -93,10 +124,6 @@ export const AgencySettingsTitle = styled.div`
     padding: 24px 0;
     background-color: ${palette.solid.white};
     z-index: 2;
-
-    &::before {
-      content: "Settings > Agency Settings";
-    }
   }
 `;
 
@@ -106,14 +133,14 @@ export const AgencySettingsBlock = styled.div<{
   position: relative;
   display: flex;
   flex-direction: column;
-
-  border: ${({ withBorder }) => withBorder && "1px solid #DCDDDF"};
   width: 100%;
-  padding: ${({ withBorder }) => (withBorder ? "32px" : "32px 0")};
+  //logic here
+  padding-bottom: ${({ withBorder }) => (withBorder ? "24px" : "none")};
+  border-bottom: ${({ withBorder }) =>
+    withBorder ? "1px solid #ECECEC" : "none"};
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     width: 100%;
-    padding: ${({ withBorder }) => (withBorder ? "32px" : "8px 0")};
   }
 `;
 
@@ -121,27 +148,23 @@ export const AgencySettingsBlockTitle = styled.div<{
   isEditModeActive?: boolean;
   configured?: boolean;
 }>`
-  ${typography.sizeCSS.large};
+  ${typography.body};
   margin-bottom: ${({ isEditModeActive }) =>
     isEditModeActive ? "8px" : "16px"};
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  //TODO: is the logic on this bottom margin neccs according
+  //to the figma
 
-  ${({ configured }) =>
-    configured === false &&
-    `
-    &::after {
-      ${typography.sizeCSS.small}
-      content: "Action Required";
-      color: ${palette.solid.red};
-    } 
-  `}
+  span {
+    color: #dd1212;
+  }
 `;
 
 export const AgencySettingsBlockDescription = styled.div`
-  ${typography.sizeCSS.normal};
+  ${typography.body};
   margin-bottom: 16px;
+  color: ${palette.highlight.grey9};
 `;
 
 export const AgencySettingsBlockSubDescription = styled(
@@ -153,10 +176,14 @@ export const AgencySettingsBlockSubDescription = styled(
   margin-top: ${({ hasTopMargin }) => (hasTopMargin ? "24px" : "0")};
 `;
 
+// TODO: Ask shall I get rid of this block description as it is not
+// on the figma
+
 export const AgencyInfoBlockDescription = styled.div<{
   hasTopMargin?: boolean;
 }>`
   ${typography.sizeCSS.normal};
+  color: ${palette.highlight.grey9};
   margin-bottom: 16px;
   margin-top: ${({ hasTopMargin }) => hasTopMargin && "24px"};
 `;
@@ -166,8 +193,7 @@ export const AgencyInfoLink = styled.a`
 `;
 
 export const AgencySettingsInfoRow = styled.div<{ hasHover?: boolean }>`
-  ${typography.sizeCSS.medium};
-  padding: 0 8px;
+  ${typography.body};
   height: 54px;
   min-height: 54px;
   border-bottom: 1px solid #dcdddf;
@@ -201,9 +227,8 @@ export const AgencyInfoTextAreaWordCounter = styled.div<{ isRed: boolean }>`
 export const EditButtonContainer = styled.div<{ hasTopMargin?: boolean }>`
   display: flex;
   flex-direction: row;
-  justify-content: end;
-  align-items: center;
-  margin-top: 16px;
+
+  //TODO: ask about how to apply button styling here
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     justify-content: start;
@@ -237,12 +262,17 @@ export const BasicInfoBlockDescription = styled(AgencySettingsBlockDescription)`
 `;
 
 export const BasicInfoRow = styled.div<{ capitalize?: boolean }>`
-  ${typography.sizeCSS.large};
+  ${typography.body};
   line-height: 32px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-bottom: 24px;
+  color: ${palette.highlight.grey9};
+
+  span {
+    color: black;
+  }
 
   ${({ capitalize }) => capitalize && `text-transform: capitalize;`}
   span {
@@ -442,8 +472,14 @@ export const EditTeamMemberMenuItem = styled.div`
 
 // Supervisions
 export const SupervisionSystemRow = styled(AgencySettingsInfoRow)`
+  ${typography.body};
   justify-content: start;
   gap: 12px;
+  color: ${palette.highlight.grey9};
+  border: none;
+
+  //  TODO: ask Michael how to implement the 'included' functionality
+  //  map only displays label and value ex: value='PAROLE' label='Parole'
 `;
 
 // Jurisdictions
@@ -508,11 +544,12 @@ export const JurisdictionsSearchResult = styled.div<{ hasAction?: boolean }>`
 `;
 
 export const JurisdictionAreaType = styled.div`
-  ${typography.sizeCSS.normal};
+  ${typography.body};
   display: flex;
   align-items: center;
   gap: 16px;
   text-transform: capitalize;
+  color: ${palette.highlight.grey9};
 `;
 
 export const JurisdictionsListArea = styled.div`
@@ -525,6 +562,8 @@ export const JurisdictionsListArea = styled.div`
 
 export const JurisdictionsInfoRow = styled(AgencySettingsInfoRow)`
   text-transform: capitalize;
+  ${typography.body};
+  border: none;
 `;
 
 export const JurisdictionCheckBlock = styled.div`

@@ -140,8 +140,7 @@ export const AgencySettingsSupervisions: React.FC<{
             </AgencySettingsBlockTitle>
             <AgencySettingsBlockDescription>
               Select the supervision populations that your agency is responsible
-              for. This enables disaggregating data by selected population
-              types.
+              for.
             </AgencySettingsBlockDescription>
             {supervisionAgencySystems.map(({ label, value }) => (
               <SupervisionSystemRow
@@ -176,13 +175,24 @@ export const AgencySettingsSupervisions: React.FC<{
         </AgencySettingsEditModeModal>
       )}
 
-      <AgencySettingsBlock id="supervisions">
+      <AgencySettingsBlock withBorder id="supervisions">
         <AgencySettingsBlockTitle>
           Supervision Populations
+          {isAdmin && (
+            <EditButtonContainer hasTopMargin>
+              <Button
+                label={<>Edit</>}
+                onClick={openSetting}
+                labelColor="blue"
+                noSidePadding
+                noHover
+              />
+            </EditButtonContainer>
+          )}
         </AgencySettingsBlockTitle>
         <AgencySettingsBlockDescription>
           These are the supervision populations that your agency is responsible
-          for. This enables disaggregating data by selected population types.
+          for.
         </AgencySettingsBlockDescription>
         {systemsToDisplayInReadMode.length > 0 ? (
           systemsToDisplayInReadMode.map(({ label, value }) => (
@@ -192,21 +202,6 @@ export const AgencySettingsSupervisions: React.FC<{
           <AgencyInfoBlockDescription hasTopMargin>
             No supervision populations selected.
           </AgencyInfoBlockDescription>
-        )}
-        {isAdmin && (
-          <EditButtonContainer hasTopMargin>
-            <Button
-              label={
-                <>
-                  Edit populations <EditArrowImage src={rightArrow} alt="" />
-                </>
-              }
-              onClick={openSetting}
-              labelColor="blue"
-              noSidePadding
-              noHover
-            />
-          </EditButtonContainer>
         )}
       </AgencySettingsBlock>
     </>

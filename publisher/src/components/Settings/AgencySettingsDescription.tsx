@@ -124,19 +124,16 @@ const AgencySettingsDescription: React.FC<{
 
       <AgencySettingsBlock id="description">
         <AgencySettingsBlockTitle configured={isAgencySettingConfigured}>
-          Agency Information
+          Agency Description <span>*</span>
         </AgencySettingsBlockTitle>
         <AgencyInfoBlockDescription>
-          {purposeAndFunctionsSetting || "No description added."}
+          {purposeAndFunctionsSetting ||
+            "Write a description of your agency to go on your public facing dashboard"}
         </AgencyInfoBlockDescription>
         {allowEdit && (
           <EditButtonContainer>
             <Button
-              label={
-                <>
-                  Edit description <EditArrowImage src={rightArrow} alt="" />
-                </>
-              }
+              label={<>Edit</>}
               onClick={() => {
                 setInfoText(purposeAndFunctionsSetting);
                 openSetting();

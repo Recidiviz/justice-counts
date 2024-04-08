@@ -18,23 +18,14 @@
 import {
   MIN_TABLET_WIDTH,
   palette,
+  // palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
+import { TabContentProps } from "./TabContent";
+
 export const SETTINGS_MENU_WITH_PADDINGS_WIDTH = 288;
-
-export const SettingsContainer = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: flex-start;
-  padding: 48px 24px 0 24px;
-  position: relative;
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    padding-top: 24px;
-  }
-`;
 
 export const ContentDisplay = styled.div`
   height: 100%;
@@ -44,61 +35,83 @@ export const ContentDisplay = styled.div`
   flex: 10 10 auto;
   overflow-x: auto;
   margin-left: ${SETTINGS_MENU_WITH_PADDINGS_WIDTH - 24}px;
+  padding-top: 24px;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     margin-left: 0;
   }
 `;
 
-export const SettingsMenuContainer = styled.div`
-  ${typography.sizeCSS.headline}
-  width: 240px;
-  display: flex;
-  flex: 0 0 auto;
-  flex-direction: column;
-  gap: 16px;
-  margin-right: 24px;
-  z-index: 2;
-  position: fixed;
+// This line down is the tabbed stuff that I am working on
+export const SettingsHeader = styled.div`
+  //padding-left: 45px;
+`;
+
+export const SettingsTitle = styled.h1`
+  ${typography.sizeCSS.title};
+  margin-top: 4px;
+  margin-bottom: 24px;
+  padding-bottom: 14px;
+  width: 644px;
+
+  &::before {
+    content: "Settings";
+  }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    display: none;
+    ${typography.sizeCSS.medium};
+    margin: 0;
+    padding: 0 0 24px 0;
+
+    &::before {
+      content: "Settings";
+    }
+  }
+`;
+export const SettingsTabBlock = styled.div`
+  border-bottom: 1px solid #ececec;
+  width: 644px;
+  height: fit-content;
+  flex-direction: column;
+`;
+export const SettingsTabContent = styled.div<TabContentProps>`
+  display: ${(props) => (props.isActive ? "block" : "none")};
+  height: 100%;
+`;
+
+export const SettingsTitleString = styled.div`
+  ${typography.body};
+
+  a:link {
+    text-decoration: none;
   }
 `;
 
-export const MenuItem = styled.div<{ selected?: boolean }>`
-  ${typography.sizeCSS.large}
-  width: fit-content;
-  padding-bottom: 4px;
-  color: ${({ selected }) =>
-    selected ? palette.solid.darkgrey : palette.highlight.grey10};
-  border-bottom: 2px solid
-    ${({ selected }) => (selected ? palette.solid.blue : `transparent`)};
-  transition: color 0.2s ease;
+export const SettingsTabContainer = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 10 10 auto;
+  overflow-x: auto;
+  ${typography.body};
 
-  &:hover {
-    cursor: pointer;
-    color: ${({ selected }) => !selected && palette.solid.darkgrey};
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    margin-left: 0;
   }
 `;
 
-export const SubMenuListContainer = styled.div``;
-
-export const SubMenuListItem = styled.div<{ activeSection?: boolean }>`
-  ${typography.sizeCSS.normal}
-  width: fit-content;
-  color: ${({ activeSection }) =>
-    activeSection ? palette.solid.darkgrey : palette.highlight.grey8};
-  max-width: 238px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  border-bottom: 2px solid
-    ${({ activeSection }) =>
-      activeSection ? palette.solid.blue : `transparent`};
-
-  &:hover {
-    cursor: pointer;
-    color: ${palette.solid.darkgrey};
-  }
+export const TabButton = styled.button<{ isActive: boolean }>`
+  margin-right: 10px;
+  background: inherit;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  cursor: pointer;
+  ${typography.body};
+  color: ${palette.highlight.grey9};
+  border-bottom: ${(props) => (props.isActive ? "2px solid blue" : "none")};
 `;
+//  End of this set of efforts

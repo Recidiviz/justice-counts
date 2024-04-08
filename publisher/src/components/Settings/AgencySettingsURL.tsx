@@ -126,9 +126,9 @@ const AgencySettingsUrl: React.FC<{
         </AgencySettingsEditModeModal>
       )}
 
-      <AgencySettingsBlock id="homepage_url">
+      <AgencySettingsBlock withBorder id="homepage_url">
         <AgencySettingsBlockTitle configured={isAgencySettingConfigured}>
-          Agency Homepage URL
+          Agency URL <span>*</span>
         </AgencySettingsBlockTitle>
         <AgencyInfoBlockDescription>
           {homepageUrlSetting ? (
@@ -143,17 +143,13 @@ const AgencySettingsUrl: React.FC<{
               }
             </AgencyInfoLink>
           ) : (
-            "No homepage URL provided."
+            "Enter your agency's URL"
           )}
         </AgencyInfoBlockDescription>
         {allowEdit && (
           <EditButtonContainer>
             <Button
-              label={
-                <>
-                  Edit URL <EditArrowImage src={rightArrow} alt="" />
-                </>
-              }
+              label={<>Edit</>}
               onClick={() => {
                 setUrlText(homepageUrlSetting);
                 openSetting();

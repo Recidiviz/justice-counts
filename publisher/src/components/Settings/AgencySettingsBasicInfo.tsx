@@ -22,6 +22,8 @@ import { formatSystemName } from "../../utils";
 import { SYSTEM_CAPITALIZED, SYSTEMS_CAPITALIZED } from "../Global/constants";
 import {
   AgencySettingsBlock,
+  AgencySettingsInfoRow,
+  AgencySettingsSectionRow,
   BasicInfoBlockDescription,
   BasicInfoRow,
 } from "./AgencySettings.styles";
@@ -32,33 +34,28 @@ export const AgencySettingsBasicInfo = () => {
 
   return (
     <AgencySettingsBlock id="basic-info" withBorder>
-      <BasicInfoRow>
-        <span>Agency Name</span>
-        {currentAgency?.name}
-      </BasicInfoRow>
-      <BasicInfoRow>
-        <span>State</span>
-        {currentAgency?.state}
-      </BasicInfoRow>
-      <BasicInfoRow capitalize>
-        <span>
-          {currentAgencySystems && currentAgencySystems.length > 1
-            ? SYSTEMS_CAPITALIZED
-            : SYSTEM_CAPITALIZED}
-        </span>
-        {currentAgencySystems
-          ?.map((system) =>
-            formatSystemName(system, { allUserSystems: currentAgencySystems })
-          )
-          .join(", ")}
-      </BasicInfoRow>
-      <BasicInfoBlockDescription>
-        *If any of the above looks incorrect, contact the Justice Counts team at{" "}
-        <a href="mailto:justice-counts-support@csg.org">
-          justice-counts-support@csg.org
-        </a>
-        .
-      </BasicInfoBlockDescription>
+      <AgencySettingsSectionRow capitalize>
+        <div>
+          <span>Agency Name</span>
+          {currentAgency?.name}
+        </div>
+        <div>
+          <span>State</span>
+          {currentAgency?.state}
+        </div>
+        <div>
+          <span>
+            {currentAgencySystems && currentAgencySystems.length > 1
+              ? SYSTEMS_CAPITALIZED
+              : SYSTEM_CAPITALIZED}
+          </span>
+          {currentAgencySystems
+            ?.map((system) =>
+              formatSystemName(system, { allUserSystems: currentAgencySystems })
+            )
+            .join(", ")}
+        </div>
+      </AgencySettingsSectionRow>
     </AgencySettingsBlock>
   );
 };

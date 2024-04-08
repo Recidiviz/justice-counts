@@ -442,10 +442,22 @@ export const AgencySettingsJurisdictions: React.FC<{
       <AgencySettingsBlock id="jurisdictions">
         <AgencySettingsBlockTitle configured={isAgencySettingConfigured}>
           Jurisdictions
+          {allowEdit && (
+            <EditButtonContainer hasTopMargin>
+              <Button
+                label={<>Edit</>}
+                onClick={openSetting}
+                labelColor="blue"
+                noSidePadding
+                noHover
+              />
+            </EditButtonContainer>
+          )}
         </AgencySettingsBlockTitle>
 
         <AgencySettingsBlockDescription>
-          The following are within the agency’s jurisdiction.
+          Add counties, states, or counties subdivisions that correspond with
+          your agency.
         </AgencySettingsBlockDescription>
         {!includedJurisdictionsIds.length &&
           !excludedJurisdictionsIds.length && (
@@ -481,21 +493,6 @@ export const AgencySettingsJurisdictions: React.FC<{
             </JurisdictionAreaType>
           </JurisdictionsInfoRow>
         ))}
-        {allowEdit && (
-          <EditButtonContainer hasTopMargin>
-            <Button
-              label={
-                <>
-                  Edit jurisdictions <EditArrowImage src={rightArrow} alt="" />
-                </>
-              }
-              onClick={openSetting}
-              labelColor="blue"
-              noSidePadding
-              noHover
-            />
-          </EditButtonContainer>
-        )}
       </AgencySettingsBlock>
     </>
   );
