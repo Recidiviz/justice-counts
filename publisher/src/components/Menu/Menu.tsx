@@ -33,7 +33,7 @@ import { generateDashboardURL } from "../HelpCenter/LinkToPublisherDashboard";
 import * as Styled from "./Menu.styles";
 
 const Menu: React.FC = () => {
-  const { userStore, authStore, api } = useStore();
+  const { userStore, authStore, api, agencyStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
   const location = useLocation();
@@ -193,6 +193,13 @@ const Menu: React.FC = () => {
       setIsMobileMenuOpen(false);
     }
   }, [windowWidth]);
+
+  useEffect(() => {
+    const superagencyId = userStore.isAgencySuperagency(agencyId)
+      ? agencyId
+      : undefined;
+    agencyStore.updateChildAgencies(superagencyId);
+  }, [agencyId, agencyStore, userStore]);
 
   return (
     <Styled.MenuContainer isMobileMenuOpen={isMobileMenuOpen}>

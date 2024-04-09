@@ -21,11 +21,13 @@ import {
   AgencySystem,
   AgencyTeamMember,
   AgencyTeamMemberRole,
+  ChildAgency,
   UserAgency,
 } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction } from "mobx";
 
 import { SYSTEMS_LOWERCASE } from "../components/Global/constants";
+import { ChildAgenciesRecord } from "../components/Home";
 import { AgencySettingType } from "../components/Settings";
 import API from "./API";
 import UserStore from "./UserStore";
@@ -50,6 +52,8 @@ class AgencyStore {
 
   daysAfterTimePeriodToSendEmail: number | null;
 
+  childAgencies: ChildAgency[];
+
   constructor(userStore: UserStore, api: API) {
     makeAutoObservable(this);
 
@@ -60,11 +64,19 @@ class AgencyStore {
     this.loadingSettings = true;
     this.isUserSubscribedToEmails = false;
     this.daysAfterTimePeriodToSendEmail = null;
+    this.childAgencies = [];
   }
 
   get currentAgency(): UserAgency | undefined {
     if (this.currentAgencyId !== undefined) {
       return this.userStore.getAgency(this.currentAgencyId);
+    }
+    return undefined;
+  }
+
+  get superagencyChildAgencies(): ChildAgency[] | undefined {
+    if (this.childAgencies.length > 0) {
+      return this.childAgencies;
     }
     return undefined;
   }
@@ -129,6 +141,27 @@ class AgencyStore {
           this.daysAfterTimePeriodToSendEmail =
             responseJson.days_after_time_period_to_send_email;
         }
+      });
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
+  async getChildAgencies(superagencyId: string): Promise<void | Error> {
+    try {
+      const response = (await this.api.request({
+        path: `/api/agencies/${superagencyId}/children`,
+        method: "GET",
+      })) as Response;
+
+      if (response.status !== 200) {
+        throw new Error(
+          "There was an issue getting superagency children agencies."
+        );
+      }
+      const responseJson = (await response.json()) as ChildAgenciesRecord;
+      runInAction(() => {
+        this.childAgencies = responseJson.child_agencies;
       });
     } catch (error) {
       if (error instanceof Error) return new Error(error.message);
@@ -244,6 +277,14 @@ class AgencyStore {
     }
     return { settings: newSettings };
   };
+
+  updateChildAgencies(superagencyId: string | undefined) {
+    if (superagencyId) {
+      this.getChildAgencies(superagencyId);
+    } else {
+      this.childAgencies = [];
+    }
+  }
 
   updateAgencySystems = (
     systems: AgencySystem[]
