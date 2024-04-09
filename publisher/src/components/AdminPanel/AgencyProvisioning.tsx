@@ -183,9 +183,14 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     );
 
     /** A list of superagencies and child agencies to select from */
-    const childAgencies = availableAgencies.filter(
-      (agency) => !agency.is_superagency
-    );
+    const childAgencies = availableAgencies
+      .filter((agency) => !agency.is_superagency)
+      .map((agency) => ({
+        ...agency,
+        sectors: agency.systems.map((system) =>
+          removeSnakeCase(system.toLocaleLowerCase())
+        ),
+      }));
     const superagencies = availableAgencies.filter(
       (agency) => agency.is_superagency
     );
@@ -956,7 +961,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                                               toggleAddRemoveSetItem(prev, +id)
                                           );
                                         }}
-                                        searchByKeys={["name"]}
+                                        searchByKeys={["name", "sectors"]}
                                         metadata={{
                                           listBoxLabel:
                                             "Select child agencies to copy",
@@ -1022,7 +1027,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                                             )
                                           );
                                         }}
-                                        searchByKeys={["name"]}
+                                        searchByKeys={["name", "sectors"]}
                                         metadata={{
                                           listBoxLabel:
                                             "Select metrics to copy",
@@ -1053,9 +1058,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                                           (metricKey) => (
                                             <Styled.Chip key={metricKey}>
                                               {
-                                                metrics.find(
+                                                searchableMetrics.find(
                                                   (metric) =>
-                                                    metric.key === metricKey
+                                                    metric.id === metricKey
                                                 )?.name
                                               }
                                             </Styled.Chip>

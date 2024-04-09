@@ -143,8 +143,10 @@ class AdminPanelStore {
 
   get searchableMetrics(): SearchableListItem[] {
     return this.metrics.map((metric) => ({
-      id: metric.key,
       ...metric,
+      id: metric.key,
+      sectors: metric.sector,
+      name: `${metric.name}: ${metric.sector.toLocaleLowerCase()}`,
     }));
   }
 
