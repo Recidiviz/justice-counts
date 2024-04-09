@@ -231,10 +231,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
             setState(selectAllSet);
             if (filteredList) {
               const filteredSet = new Set(
-                Array.from(selectAllSet).filter((item) => {
-                  return filteredList.some((obj) => obj.id === item);
-                })
-              );
+                filteredList.map((obj) => obj.id)
+              ) as Set<T>;
               setState(filteredSet);
             }
             if (selectAllCallback) selectAllCallback();

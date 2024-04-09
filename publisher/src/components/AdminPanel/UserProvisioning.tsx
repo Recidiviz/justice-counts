@@ -173,10 +173,8 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
       }
       if (filteredList) {
         const filteredSet = new Set(
-          Array.from(availableAgenciesIDsSet).filter((item) => {
-            return filteredList.some((obj) => obj.id === item);
-          })
-        );
+          filteredList.map((obj) => obj.id)
+        ) as Set<number>;
         setAddedAgenciesIDs(filteredSet);
       }
     };
