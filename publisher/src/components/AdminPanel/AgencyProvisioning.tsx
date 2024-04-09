@@ -546,6 +546,12 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       isCopySuperagencyMetricSettingsSelected,
     ]);
 
+    useEffect(() => {
+      setSelectedMetricsKeys(
+        new Set(searchableMetrics.map((metric) => String(metric.id)))
+      );
+    }, [searchableMetrics]);
+
     const selectedChildAgencies = childAgencies.filter((agency) =>
       selectedChildAgencyIDs.has(Number(agency.id))
     );
