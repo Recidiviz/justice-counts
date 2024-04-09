@@ -38,7 +38,7 @@ export type LatestRecordsAgencyMetrics = {
   agency_metrics: Metric[];
   annual_reports: { [key: string]: Report };
   monthly_report: Report;
-} & ChildAgenciesRecord;
+};
 
 export type ChildAgenciesRecord = {
   child_agencies: ChildAgency[];
