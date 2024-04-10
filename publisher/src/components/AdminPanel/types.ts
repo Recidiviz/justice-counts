@@ -202,7 +202,7 @@ export type SearchableListItemKey = keyof SearchableListItem;
 
 export type InteractiveSearchListButtons = {
   label: string;
-  onClick: () => void;
+  onClick: (filteredList?: SearchableListItem[]) => void;
 }[];
 
 export type InteractiveSearchListProps = {
