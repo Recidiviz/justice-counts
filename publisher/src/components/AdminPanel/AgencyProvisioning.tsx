@@ -553,6 +553,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       isCopySuperagencyMetricSettingsSelected,
     ]);
 
+    /** Here we are making the auto-selecting all metrics by default */
     useEffect(() => {
       setSelectedMetricsKeys(
         new Set(searchableMetrics.map((metric) => String(metric.id)))
@@ -991,12 +992,12 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                                         setShowSelectionBox(
                                           SelectionInputBoxTypes.COPY_CHILD_AGENCIES
                                         );
-                                        scrollToBottom();
                                       }}
                                       fitContentHeight
                                       hoverable
                                     >
-                                      {selectedChildAgencyIDs.size === 0 ? (
+                                      {selectedChildAgencyIDsToCopy.size ===
+                                      0 ? (
                                         <Styled.EmptyListMessage>
                                           No child agencies selected to copy
                                         </Styled.EmptyListMessage>
@@ -1057,7 +1058,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                                         setShowSelectionBox(
                                           SelectionInputBoxTypes.COPY_AGENCY_METRICS
                                         );
-                                        scrollToBottom();
                                       }}
                                       fitContentHeight
                                       hoverable
