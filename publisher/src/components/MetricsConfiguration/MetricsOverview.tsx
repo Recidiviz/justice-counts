@@ -15,6 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  Dropdown,
+  DropdownOption,
+} from "@justice-counts/common/components/Dropdown";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
 import {
   AgencySystem,
@@ -22,7 +26,7 @@ import {
 } from "@justice-counts/common/types";
 import { frequencyString } from "@justice-counts/common/utils/helperUtils";
 import { observer } from "mobx-react-lite";
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { NotFound } from "../../pages/NotFound";
@@ -39,9 +43,11 @@ export const MetricsOverview = observer(() => {
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
   const { agencyId } = useParams() as { agencyId: string };
-  const { userStore, metricConfigStore } = useStore();
+  const { userStore, metricConfigStore, agencyStore } = useStore();
 
   const { getMetricsBySystem } = metricConfigStore;
+
+  const { superagencyChildAgencies } = agencyStore;
 
   const { system: systemSearchParam } = settingsSearchParams;
 
@@ -56,6 +62,10 @@ export const MetricsOverview = observer(() => {
 
   const currentAgency = userStore.getAgency(agencyId);
   const currentSystem = systemSearchParam || currentAgency?.systems[0];
+
+  const [selectedChildAgency, setSelectedChildAgency] = useState<
+    string | undefined
+  >(superagencyChildAgencies && superagencyChildAgencies[0].name);
 
   const isSuperagency = userStore.isAgencySuperagency(agencyId);
 
@@ -102,6 +112,16 @@ export const MetricsOverview = observer(() => {
         };
       }) || [];
 
+  const childAgenciesDropdownOptions: DropdownOption[] =
+    superagencyChildAgencies
+      ? superagencyChildAgencies.map((agency) => ({
+          key: agency.id,
+          label: agency.name,
+          onClick: () => setSelectedChildAgency(agency.name),
+          highlight: agency.name === selectedChildAgency,
+        }))
+      : [];
+
   if (systemSearchParam && !currentAgency?.systems.includes(systemSearchParam))
     return <NotFound />;
 
@@ -128,6 +148,20 @@ export const MetricsOverview = observer(() => {
               Learn more
             </a>
           </Styled.OverviewDescription>
+
+          {childAgenciesDropdownOptions.length > 0 && (
+            <Styled.DropdownWrapper>
+              <Dropdown
+                label={selectedChildAgency}
+                options={childAgenciesDropdownOptions}
+                size="small"
+                caretPosition="right"
+                fullWidth
+                typeaheadSearch={{ placeholder: "Search for Child Agency" }}
+                customClearSearchButton="Clear"
+              />
+            </Styled.DropdownWrapper>
+          )}
 
           {/* System Selection */}
           {showSystems && (
