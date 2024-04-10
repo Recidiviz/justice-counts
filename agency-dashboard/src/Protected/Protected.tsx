@@ -30,27 +30,39 @@ export const Protected: React.FC<PropsWithChildren> = observer(
   ({ children }) => {
     const navigate = useNavigate();
     const { agencyDataStore, api } = useStore();
-    const { slug } = useParams();
+    const { agencyId, slug } = useParams();
     const isProductionEnv = api.environment === environment.PRODUCTION;
     const isDenied =
-      agencyDataStore.agency &&
-      agencyDataStore.agency.is_dashboard_enabled !== true;
-
+      (agencyDataStore.agency &&
+        agencyDataStore.agency.is_dashboard_enabled !== true) ||
+      !agencyId;
     const [loading, setLoading] = useState(true);
 
     useAsyncEffect(async () => {
       try {
-        await agencyDataStore.fetchAgencyData(slug as string);
-        setLoading(false);
+        if (!agencyId) {
+          setLoading(false);
+          showToast({
+            message: `No agency ID was specified in the URL path.`,
+            color: "red",
+            timeout: 4000,
+          });
+        } else {
+          await agencyDataStore.fetchAgencyData(
+            parseInt(agencyId),
+            slug as string
+          );
+          setLoading(false);
+        }
       } catch (error) {
         navigate("/404");
         showToast({
-          message: `No agency found with path /${slug}.`,
+          message: `No agency found with path ${agencyId}/${slug}.`,
           color: "red",
           timeout: 4000,
         });
       }
-    }, [slug]);
+    }, [agencyId, slug]);
 
     if (loading) {
       return <Loading />;

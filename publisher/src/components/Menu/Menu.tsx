@@ -137,7 +137,7 @@ const Menu: React.FC = () => {
             label: "Agency Dashboard",
             onClick: () =>
               window.open(
-                generateDashboardURL(api.environment, agencyName),
+                generateDashboardURL(api.environment, agencyId, agencyName),
                 "_blank"
               ),
           },

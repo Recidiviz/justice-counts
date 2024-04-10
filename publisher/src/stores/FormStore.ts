@@ -356,7 +356,8 @@ class FormStore {
             dimensionKey
           ].error;
         } else {
-          delete this.metricsValues[reportID][metricKey].error;
+          // TODO(#28666) Investigate why metricKey is undefined for certain records
+          delete this.metricsValues[reportID]?.[metricKey]?.error;
         }
       }
     };
