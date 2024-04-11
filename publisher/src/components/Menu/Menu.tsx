@@ -202,8 +202,6 @@ const Menu: React.FC = () => {
     agencyStore.loadChildAgencies(superagencyId);
   }, [agencyId, agencyStore, userStore]);
 
-  console.log(agencyStore.superagencyChildAgencies);
-
   return (
     <Styled.MenuContainer isMobileMenuOpen={isMobileMenuOpen}>
       <Styled.AgencyDropdownHeaderBadgeWrapper>
