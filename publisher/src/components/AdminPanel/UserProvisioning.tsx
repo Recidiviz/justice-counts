@@ -108,7 +108,7 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
         : []),
     ];
 
-    /** Here we are making the auto-adding if something was created via the secondary modal */
+    /** Here we are making the auto-adding if agency was created via the secondary modal */
     useEffect(() => {
       if (secondaryCreatedId)
         setAddedAgenciesIDs((prev) =>

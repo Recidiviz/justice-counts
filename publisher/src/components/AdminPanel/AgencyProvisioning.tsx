@@ -517,11 +517,18 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         });
       }
 
-      /** Here we are making the auto-adding if something was created via the secondary modal */
-      if (secondaryCreatedId)
+      /** Here we are making the auto-adding if user was created via the secondary modal */
+      if (secondaryCreatedId) {
         setSelectedTeamMembersToAdd((prev) =>
           toggleAddRemoveSetItem(prev, +secondaryCreatedId)
         );
+        setTeamMemberRoleUpdates((prev) => {
+          return {
+            ...prev,
+            [secondaryCreatedId]: csgAndRecidivizDefaultRole,
+          };
+        });
+      }
     }, [
       selectedAgency,
       adminPanelStore,
