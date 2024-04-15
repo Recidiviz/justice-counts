@@ -21,7 +21,6 @@ import {
   AccountSettings,
   AgencySettings,
   ContentDisplay,
-  SettingsHeader,
   SettingsTabBlock,
   SettingsTabContainer,
   SettingsTitle,
@@ -33,24 +32,19 @@ import { TabContent } from "../components/Settings/TabContent";
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
-  const [isActive, setIsActive] = useState<boolean>(false);
 
   const handleClick = (tabNumber: number) => {
-    console.log("test");
     setActiveTab(tabNumber);
-    setIsActive(true);
   };
 
   return (
     <ContentDisplay>
-      <SettingsHeader>
         <SettingsTitle>
           <SettingsTitleString>
             Edit you account settings or manage your team members
             <a href="./this/test">&nbsp;Learn More</a>
           </SettingsTitleString>
         </SettingsTitle>
-      </SettingsHeader>
       <SettingsTabContainer>
         <SettingsTabBlock>
           <TabButton isActive={activeTab === 0} onClick={() => handleClick(0)}>

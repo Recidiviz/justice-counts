@@ -22,10 +22,7 @@ import { formatSystemName } from "../../utils";
 import { SYSTEM_CAPITALIZED, SYSTEMS_CAPITALIZED } from "../Global/constants";
 import {
   AgencySettingsBlock,
-  AgencySettingsInfoRow,
   AgencySettingsSectionRow,
-  BasicInfoBlockDescription,
-  BasicInfoRow,
 } from "./AgencySettings.styles";
 
 export const AgencySettingsBasicInfo = () => {
@@ -33,7 +30,7 @@ export const AgencySettingsBasicInfo = () => {
   const { currentAgency, currentAgencySystems } = agencyStore;
 
   return (
-    <AgencySettingsBlock id="basic-info" withBorder>
+    <AgencySettingsBlock id="basic-info">
       <AgencySettingsSectionRow capitalize>
         <div>
           <span>Agency Name</span>

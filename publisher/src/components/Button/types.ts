@@ -15,14 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-
-import { typography } from "@justice-counts/common/components/GlobalStyles";
-import styled from "styled-components/macro";
-
-export const GlobalTitle = styled.div`
-  ${typography.sizeCSS.title};
-`;
-
-export const GlobalDescription = styled.div`
-  ${typography.paragraph};
-`;
+export type ButtonColor = "blue" | "green" | "red" | "orange";
+export type ButtonLabelColor = "white" | "blue" | "red";
+export type ButtonBorderColor = "white" | "lightgrey";
+export type ButtonSize = "medium";

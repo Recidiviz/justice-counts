@@ -18,7 +18,6 @@
 import {
   MIN_TABLET_WIDTH,
   palette,
-  // palette,
   typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
@@ -32,19 +31,14 @@ export const ContentDisplay = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  flex: 10 10 auto;
+  margin:auto;
   overflow-x: auto;
-  margin-left: ${SETTINGS_MENU_WITH_PADDINGS_WIDTH - 24}px;
   padding-top: 24px;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     margin-left: 0;
+    padding: 24px;
   }
-`;
-
-// This line down is the tabbed stuff that I am working on
-export const SettingsHeader = styled.div`
-  //padding-left: 45px;
 `;
 
 export const SettingsTitle = styled.h1`
@@ -52,7 +46,7 @@ export const SettingsTitle = styled.h1`
   margin-top: 4px;
   margin-bottom: 24px;
   padding-bottom: 14px;
-  width: 644px;
+  width: 100%;
 
   &::before {
     content: "Settings";
@@ -62,7 +56,6 @@ export const SettingsTitle = styled.h1`
     ${typography.sizeCSS.medium};
     margin: 0;
     padding: 0 0 24px 0;
-
     &::before {
       content: "Settings";
     }
@@ -70,7 +63,7 @@ export const SettingsTitle = styled.h1`
 `;
 export const SettingsTabBlock = styled.div`
   border-bottom: 1px solid #ececec;
-  width: 644px;
+  width: 100%;
   height: fit-content;
   flex-direction: column;
 `;
@@ -84,6 +77,7 @@ export const SettingsTitleString = styled.div`
 
   a:link {
     text-decoration: none;
+      color: #0073E5;
   }
 `;
 
@@ -112,6 +106,6 @@ export const TabButton = styled.button<{ isActive: boolean }>`
   cursor: pointer;
   ${typography.body};
   color: ${palette.highlight.grey9};
-  border-bottom: ${(props) => (props.isActive ? "2px solid blue" : "none")};
+  border-bottom: ${(props) => (props.isActive ? "2px solid #0073E5" : "none")};
 `;
-//  End of this set of efforts
+

@@ -49,13 +49,14 @@ export const AccountSettingsInputsWrapper = styled.div`
   flex-direction: row;
   gap: 10px;
   padding-bottom: 24px;
+  padding-top: 24px;
   border-bottom: 1px solid #ececec;
 
   div {
     flex-direction: column;
     margin: 0;
     a {
-      color: ${palette.highlight.grey9};
+      color: #0073E5;
     }
   }
 
@@ -71,6 +72,13 @@ export const AccountSettingsInputsWrapper = styled.div`
     ${typography.body};
     color: black;
     left: 0;
+  }
+
+  span {
+    padding-left: 8px;
+    a {
+      text-decoration: none;
+    }
   }
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {

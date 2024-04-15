@@ -36,12 +36,10 @@ const STICKY_RESPONSIVE_HEADER_WITH_PADDING_HEIGHT = 48;
 export const AgencySettingsSectionRow = styled.div<{ capitalize?: boolean }>`
   height: 100%;
   display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
   flex-direction: row;
   line-height: 32px;
-
-  //@media goes here
+  gap: 60px;
+    
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
   }
@@ -54,19 +52,8 @@ export const AgencySettingsSectionRow = styled.div<{ capitalize?: boolean }>`
     span {
       color: black;
     }
-
-    //  Todo: ask about the need for the capitalize(BasicInfoRow),
-    //   because the figma doesn't show a difference in label
-    //    text and data. Also ask about the message that appears
-    //    at the end of the section "*If any of the above looks incorrect, contact the Justice Counts team
-    //    at justice-counts-support@csg.org."
-    //  Todo: ask Michael how to add the edit padding or or margins
-    //  and how to add the underline functionality on tab buttons
-    //  TODO: ask the def of superagencies
   }
 `;
-
-// end of my code
 
 export const AgencySettingsWrapper = styled.div`
   height: 100%;
@@ -75,6 +62,7 @@ export const AgencySettingsWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   padding-bottom: 50px;
+  padding-top: 24px;
   z-index: 1;
 
   @media only screen and (max-width: ${AGENCY_SETTINGS_CONTAINER_WIDTH +
@@ -115,6 +103,7 @@ export const AgencySettingsTitle = styled.div`
   ${typography.sizeCSS.title};
   font-weight: 500;
   margin-bottom: 24px;
+  background-color: purple;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     ${typography.sizeCSS.medium};
@@ -134,13 +123,14 @@ export const AgencySettingsBlock = styled.div<{
   display: flex;
   flex-direction: column;
   width: 100%;
-  //logic here
   padding-bottom: ${({ withBorder }) => (withBorder ? "24px" : "none")};
   border-bottom: ${({ withBorder }) =>
     withBorder ? "1px solid #ECECEC" : "none"};
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     width: 100%;
+    flex-direction: column;
+    word-wrap: normal;  
   }
 `;
 
@@ -149,13 +139,9 @@ export const AgencySettingsBlockTitle = styled.div<{
   configured?: boolean;
 }>`
   ${typography.body};
-  margin-bottom: ${({ isEditModeActive }) =>
-    isEditModeActive ? "8px" : "16px"};
   display: flex;
-  align-items: center;
-  //TODO: is the logic on this bottom margin neccs according
-  //to the figma
-
+  line-height: 32px;
+    
   span {
     color: #dd1212;
   }
@@ -163,7 +149,7 @@ export const AgencySettingsBlockTitle = styled.div<{
 
 export const AgencySettingsBlockDescription = styled.div`
   ${typography.body};
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   color: ${palette.highlight.grey9};
 `;
 
@@ -176,15 +162,11 @@ export const AgencySettingsBlockSubDescription = styled(
   margin-top: ${({ hasTopMargin }) => (hasTopMargin ? "24px" : "0")};
 `;
 
-// TODO: Ask shall I get rid of this block description as it is not
-// on the figma
-
 export const AgencyInfoBlockDescription = styled.div<{
   hasTopMargin?: boolean;
 }>`
   ${typography.sizeCSS.normal};
   color: ${palette.highlight.grey9};
-  margin-bottom: 16px;
   margin-top: ${({ hasTopMargin }) => hasTopMargin && "24px"};
 `;
 
@@ -227,21 +209,13 @@ export const AgencyInfoTextAreaWordCounter = styled.div<{ isRed: boolean }>`
 export const EditButtonContainer = styled.div<{ hasTopMargin?: boolean }>`
   display: flex;
   flex-direction: row;
-
-  //TODO: ask about how to apply button styling here
-
+  
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     justify-content: start;
     margin-top: ${({ hasTopMargin }) => (hasTopMargin ? "16px" : "0")};
   }
 `;
 
-export const EditArrowImage = styled.img`
-  width: 15px;
-  height: 10px;
-  filter: invert(47%) sepia(90%) saturate(6984%) hue-rotate(199deg)
-    brightness(100%) contrast(101%);
-`;
 
 export const EditModeButtonsContainer = styled.div<{ noMargin?: boolean }>`
   display: flex;
@@ -252,32 +226,20 @@ export const EditModeButtonsContainer = styled.div<{ noMargin?: boolean }>`
 `;
 
 // Basic Info
-export const BasicInfoBlockDescription = styled(AgencySettingsBlockDescription)`
-  margin-bottom: 0;
 
-  a {
-    color: ${palette.solid.blue};
-    text-decoration: none;
-  }
+// BasicInfoBlockTitle is for the Supervision Populations and Jurisdictions sections
+export const BasicInfoBlockTitle = styled(AgencySettingsBlockTitle)`
+  justify-content: space-between;
 `;
 
-export const BasicInfoRow = styled.div<{ capitalize?: boolean }>`
-  ${typography.body};
-  line-height: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 24px;
-  color: ${palette.highlight.grey9};
+// email
 
-  span {
-    color: black;
-  }
+export const EmailEditButtonContainer = styled(EditButtonContainer)`
+    div{
+        padding: 0;
+        
+    }
 
-  ${({ capitalize }) => capitalize && `text-transform: capitalize;`}
-  span {
-    ${typography.sizeCSS.small};
-  }
 `;
 
 // Team
@@ -471,16 +433,15 @@ export const EditTeamMemberMenuItem = styled.div`
 `;
 
 // Supervisions
-export const SupervisionSystemRow = styled(AgencySettingsInfoRow)`
+export const SupervisionSystemRow = styled(AgencySettingsInfoRow)<{isMainPgData?:boolean,}>`
   ${typography.body};
-  justify-content: start;
+  justify-content: space-between;
   gap: 12px;
-  color: ${palette.highlight.grey9};
+  color: ${({isMainPgData})=> isMainPgData ? "black" : palette.highlight.grey9};
   border: none;
-
-  //  TODO: ask Michael how to implement the 'included' functionality
-  //  map only displays label and value ex: value='PAROLE' label='Parole'
 `;
+
+
 
 // Jurisdictions
 export const JurisdictionsInputWrapper = styled.div`
@@ -566,6 +527,15 @@ export const JurisdictionsInfoRow = styled(AgencySettingsInfoRow)`
   border: none;
 `;
 
+export const JurisdictionsInfoCol = styled.div`
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    span{
+        color: ${palette.highlight.grey9};
+    }
+`;
+
 export const JurisdictionCheckBlock = styled.div`
   ${typography.sizeCSS.normal};
   text-transform: capitalize;
@@ -632,16 +602,25 @@ export const AddIcon = styled.img`
 `;
 
 export const DescriptionSection = styled.div`
+  ${typography.body};
+  color: black;
+  margin-bottom: 10px;
+   
+    
   &:not(:first-child) {
     margin-top: 24px;
   }
-
   ul {
     margin-left: 24px;
   }
+  
+  input{
+      margin-top: 16px;
+  }
+    
 `;
 
-export const InputWrapper = styled.span<{ error?: boolean }>`
+export const InputWrapper = styled.span<{ error?: boolean, isSectionEnd?:boolean }>`
   input {
     width: 59px;
     padding: 8px 0;

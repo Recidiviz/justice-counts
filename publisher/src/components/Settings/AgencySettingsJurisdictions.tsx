@@ -18,7 +18,6 @@
 /* eslint-disable camelcase */
 import addIcon from "@justice-counts/common/assets/add-icon.svg";
 import blackCheck from "@justice-counts/common/assets/black-check-icon.svg";
-import { Button } from "@justice-counts/common/components/Button";
 import mappedJurisdictionsJSONData from "@justice-counts/common/fips_with_county_subdivisions.json";
 import { Jurisdiction } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
@@ -26,7 +25,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import rightArrow from "../assets/right-arrow.svg";
+import { Button } from "../Button";
 import { SettingProps } from "./AgencySettings";
 import {
   AddIcon,
@@ -34,23 +33,22 @@ import {
   AgencySettingsBlock,
   AgencySettingsBlockDescription,
   AgencySettingsBlockSubDescription,
-  AgencySettingsBlockTitle,
+  BasicInfoBlockTitle,
   BlueCheckIcon,
   Checkbox,
   CheckboxWrapper,
-  EditArrowImage,
   EditButtonContainer,
   EditModeButtonsContainer,
   JurisdictionAreaType,
   JurisdictionCheckBlock,
   JurisdictionsEditModeFooter,
-  JurisdictionsEditModeFooterLeftBlock,
+  JurisdictionsEditModeFooterLeftBlock, JurisdictionsInfoCol,
   JurisdictionsInfoRow,
   JurisdictionsInputWrapper,
   JurisdictionsListArea,
   JurisdictionsSearchBar,
   JurisdictionsSearchResult,
-  JurisdictionsSearchResultContainer,
+  JurisdictionsSearchResultContainer
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
@@ -244,11 +242,11 @@ export const AgencySettingsJurisdictions: React.FC<{
           handleCancelModalConfirm={handleModalConfirm}
         >
           <>
-            <AgencySettingsBlockTitle isEditModeActive>
+            <BasicInfoBlockTitle isEditModeActive>
               {isExclusionsViewActive
                 ? "Which jurisdiction should be excluded?"
                 : "Jurisdictions"}
-            </AgencySettingsBlockTitle>
+            </BasicInfoBlockTitle>
             <AgencySettingsBlockDescription>
               Add counties, states, or counties subdivisions that{" "}
               {isExclusionsViewActive && "DO NOT"} correspond with your agency.
@@ -440,10 +438,10 @@ export const AgencySettingsJurisdictions: React.FC<{
       )}
 
       <AgencySettingsBlock id="jurisdictions">
-        <AgencySettingsBlockTitle configured={isAgencySettingConfigured}>
+        <BasicInfoBlockTitle configured={isAgencySettingConfigured}>
           Jurisdictions
           {allowEdit && (
-            <EditButtonContainer hasTopMargin>
+            <EditButtonContainer>
               <Button
                 label={<>Edit</>}
                 onClick={openSetting}
@@ -453,7 +451,7 @@ export const AgencySettingsJurisdictions: React.FC<{
               />
             </EditButtonContainer>
           )}
-        </AgencySettingsBlockTitle>
+        </BasicInfoBlockTitle>
 
         <AgencySettingsBlockDescription>
           Add counties, states, or counties subdivisions that correspond with
@@ -465,32 +463,32 @@ export const AgencySettingsJurisdictions: React.FC<{
               No jurisdictions added.
             </AgencyInfoBlockDescription>
           )}
-        {includedJurisdictionsIds.length > 0 && (
-          <AgencySettingsBlockSubDescription>
-            Areas included
-          </AgencySettingsBlockSubDescription>
-        )}
         {includedJurisdictionsIds.map((id) => (
           <JurisdictionsInfoRow key={id}>
-            {mappedJurisdictionsData[id].name}
-            <JurisdictionAreaType>
-              {removeUnderscore(mappedJurisdictionsData[id].type)}
-            </JurisdictionAreaType>
+            <JurisdictionsInfoCol>
+              <div>{mappedJurisdictionsData[id].name}</div>
+              <div>
+                <span>{removeUnderscore(mappedJurisdictionsData[id].type)}</span>
+              </div>
+            </JurisdictionsInfoCol>
+            <JurisdictionsInfoCol>
+              <div>Included</div>
+            </JurisdictionsInfoCol>
           </JurisdictionsInfoRow>
         ))}
-        {excludedJurisdictionsIds.length > 0 && (
-          <AgencySettingsBlockSubDescription
-            hasTopMargin={includedJurisdictionsIds.length > 0}
-          >
-            Areas excluded
-          </AgencySettingsBlockSubDescription>
-        )}
         {excludedJurisdictionsIds.map((id) => (
           <JurisdictionsInfoRow key={id}>
-            {mappedJurisdictionsData[id].name}
-            <JurisdictionAreaType>
-              {removeUnderscore(mappedJurisdictionsData[id].type)}
-            </JurisdictionAreaType>
+            <JurisdictionsInfoCol>
+              <div>
+                {mappedJurisdictionsData[id].name}
+              </div>
+              <div>
+                <span>{removeUnderscore(mappedJurisdictionsData[id].type)}</span>
+              </div>
+            </JurisdictionsInfoCol>
+            <JurisdictionsInfoCol>
+              <div>Excluded</div>
+            </JurisdictionsInfoCol>
           </JurisdictionsInfoRow>
         ))}
       </AgencySettingsBlock>

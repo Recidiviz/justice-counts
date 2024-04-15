@@ -15,14 +15,37 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+export type InputProps = {
+  error?: string;
+  placeholder?: string;
+  isPlaceholderVisible?: boolean;
+  multiline?: boolean;
+  persistLabel?: boolean;
+  notReporting?: boolean;
+  textSize?: InputTextSize;
+};
 
-import { typography } from "@justice-counts/common/components/GlobalStyles";
-import styled from "styled-components/macro";
+export type InputLabelProps = {
+  inputHasValue?: boolean;
+  isDisabled?: boolean;
+  error?: string;
+  persistLabel?: boolean;
+  notReporting?: boolean;
+};
 
-export const GlobalTitle = styled.div`
-  ${typography.sizeCSS.title};
-`;
+export type ErrorLabelProps = {
+  isDisabled?: boolean;
+  error?: string;
+  multiline?: boolean;
+  textSize?: InputTextSize;
+};
 
-export const GlobalDescription = styled.div`
-  ${typography.paragraph};
-`;
+export type NotReportedIconTooltipProps = {
+  size?: number;
+  lighter?: boolean;
+  tooltipText?: string;
+  tooltipLinkLabel?: string;
+  tooltipLink?: () => void;
+};
+
+export type InputTextSize = "small";
