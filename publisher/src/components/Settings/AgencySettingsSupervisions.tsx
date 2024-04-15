@@ -62,8 +62,8 @@ export const AgencySettingsSupervisions: React.FC<{
   const isAdmin =
     userStore.isAgencyAdmin(agencyId) ||
     userStore.isJusticeCountsAdmin(agencyId);
-  const systemsToDisplayInReadMode = supervisionAgencySystems.filter((system) =>
-    currentAgencySystems
+  const systemsToDisplayInReadMode = supervisionAgencySystems.filter(
+    (system) => currentAgencySystems
   );
 
   const handleSaveClick = () => {
@@ -194,14 +194,16 @@ export const AgencySettingsSupervisions: React.FC<{
         </AgencySettingsBlockDescription>
         {systemsToDisplayInReadMode.length > 0 ? (
           systemsToDisplayInReadMode.map(({ label, value }) => {
-
-            const isIncluded = supervisionSystemsToSave?.includes(value as AgencySystem);
+            const isIncluded = supervisionSystemsToSave?.includes(
+              value as AgencySystem
+            );
             return (
-            <SupervisionSystemRow isMainPgData={isIncluded} key={value}>
-              {label}
-              <div>{isIncluded && "Included" || "Not Included"}</div>
-            </SupervisionSystemRow>
-          )})
+              <SupervisionSystemRow isMainPgData={isIncluded} key={value}>
+                {label}
+                <div>{(isIncluded && "Included") || "Not Included"}</div>
+              </SupervisionSystemRow>
+            );
+          })
         ) : (
           <AgencyInfoBlockDescription hasTopMargin>
             No supervision populations selected.

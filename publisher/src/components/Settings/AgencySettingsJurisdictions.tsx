@@ -42,13 +42,14 @@ import {
   JurisdictionAreaType,
   JurisdictionCheckBlock,
   JurisdictionsEditModeFooter,
-  JurisdictionsEditModeFooterLeftBlock, JurisdictionsInfoCol,
+  JurisdictionsEditModeFooterLeftBlock,
+  JurisdictionsInfoCol,
   JurisdictionsInfoRow,
   JurisdictionsInputWrapper,
   JurisdictionsListArea,
   JurisdictionsSearchBar,
   JurisdictionsSearchResult,
-  JurisdictionsSearchResultContainer
+  JurisdictionsSearchResultContainer,
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
@@ -468,7 +469,9 @@ export const AgencySettingsJurisdictions: React.FC<{
             <JurisdictionsInfoCol>
               <div>{mappedJurisdictionsData[id].name}</div>
               <div>
-                <span>{removeUnderscore(mappedJurisdictionsData[id].type)}</span>
+                <span>
+                  {removeUnderscore(mappedJurisdictionsData[id].type)}
+                </span>
               </div>
             </JurisdictionsInfoCol>
             <JurisdictionsInfoCol>
@@ -479,11 +482,11 @@ export const AgencySettingsJurisdictions: React.FC<{
         {excludedJurisdictionsIds.map((id) => (
           <JurisdictionsInfoRow key={id}>
             <JurisdictionsInfoCol>
+              <div>{mappedJurisdictionsData[id].name}</div>
               <div>
-                {mappedJurisdictionsData[id].name}
-              </div>
-              <div>
-                <span>{removeUnderscore(mappedJurisdictionsData[id].type)}</span>
+                <span>
+                  {removeUnderscore(mappedJurisdictionsData[id].type)}
+                </span>
               </div>
             </JurisdictionsInfoCol>
             <JurisdictionsInfoCol>

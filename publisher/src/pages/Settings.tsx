@@ -39,12 +39,12 @@ const Settings = () => {
 
   return (
     <ContentDisplay>
-        <SettingsTitle>
-          <SettingsTitleString>
-            Edit you account settings or manage your team members
-            <a href="./this/test">&nbsp;Learn More</a>
-          </SettingsTitleString>
-        </SettingsTitle>
+      <SettingsTitle>
+        <SettingsTitleString>
+          Edit you account settings or manage your team members
+          <a href="./this/test">&nbsp;Learn More</a>
+        </SettingsTitleString>
+      </SettingsTitle>
       <SettingsTabContainer>
         <SettingsTabBlock>
           <TabButton isActive={activeTab === 0} onClick={() => handleClick(0)}>

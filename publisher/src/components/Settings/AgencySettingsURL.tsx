@@ -54,8 +54,6 @@ const AgencySettingsUrl: React.FC<{
       (setting) => setting.setting_type === "HOMEPAGE_URL"
     )?.value || "";
 
-
-
   const isAgencySettingConfigured = Boolean(homepageUrlSetting);
 
   const handleSaveClick = () => {

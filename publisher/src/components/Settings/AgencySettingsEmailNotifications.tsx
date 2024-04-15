@@ -22,7 +22,7 @@ import React, { useRef, useState } from "react";
 import { useStore } from "../../stores";
 import { gateToAllowedEnvironment } from "../../utils/featureFlags";
 import { Environment } from "../AdminPanel";
-import {NewInput} from "../Input"
+import { NewInput } from "../Input";
 import {
   AgencySettingsBlock,
   AgencySettingsBlockDescription,
@@ -77,9 +77,7 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
 
   return (
     <AgencySettingsBlock withBorder id="email">
-      <AgencySettingsBlockTitle>
-        Email Reminders
-      </AgencySettingsBlockTitle>
+      <AgencySettingsBlockTitle>Email Reminders</AgencySettingsBlockTitle>
       <AgencySettingsBlockDescription>
         <DescriptionSection>
           This toggle affects your email settings for{" "}
@@ -101,37 +99,40 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
           Environment.STAGING,
         ]) && (
           <>
-                <DescriptionSection>
-                  Below, you can choose how soon after the end of each reporting
-                  period to receive an upload data reminder email. For instance,
-                  if you enter 15, you would receive a reminder to upload any
-                  missing data for the month of March on April 15th.
-                </DescriptionSection>
-                <EmailEditButtonContainer>
-                  <NewInput
-                    type="checkbox"
-                    checked={isUserSubscribedToEmails}
-                    onChange={handleSubscribeUnsubscribe}
-                    label="Send me emails"
-                  />
-                </EmailEditButtonContainer>
-                <DescriptionSection>
-                  Enter the number of days after the end of the reporting period
-                  to receive a reminder email:
-                  <InputWrapper isSectionEnd error={!isValidInput(currentOffsetDays)}>
-                    <input
-                      type="text"
-                      value={currentOffsetDays || ""}
-                      onChange={(e) => {
-                        setReminderEmailOffsetDays(e.target.value);
-                        debouncedSaveOffsetDays(
-                          e.target.value,
-                          !isValidInput(e.target.value)
-                        );
-                      }}
-                    />
-                  </InputWrapper>
-                </DescriptionSection>
+            <DescriptionSection>
+              Below, you can choose how soon after the end of each reporting
+              period to receive an upload data reminder email. For instance, if
+              you enter 15, you would receive a reminder to upload any missing
+              data for the month of March on April 15th.
+            </DescriptionSection>
+            <EmailEditButtonContainer>
+              <NewInput
+                type="checkbox"
+                checked={isUserSubscribedToEmails}
+                onChange={handleSubscribeUnsubscribe}
+                label="Send me emails"
+              />
+            </EmailEditButtonContainer>
+            <DescriptionSection>
+              Enter the number of days after the end of the reporting period to
+              receive a reminder email:
+              <InputWrapper
+                isSectionEnd
+                error={!isValidInput(currentOffsetDays)}
+              >
+                <input
+                  type="text"
+                  value={currentOffsetDays || ""}
+                  onChange={(e) => {
+                    setReminderEmailOffsetDays(e.target.value);
+                    debouncedSaveOffsetDays(
+                      e.target.value,
+                      !isValidInput(e.target.value)
+                    );
+                  }}
+                />
+              </InputWrapper>
+            </DescriptionSection>
             {isUserSubscribedToEmails && !isValidInput(currentOffsetDays) && (
               <ErrorMessage>Please enter a number between 1-1000</ErrorMessage>
             )}

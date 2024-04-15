@@ -31,7 +31,7 @@ export const ContentDisplay = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  margin:auto;
+  margin: auto;
   overflow-x: auto;
   padding-top: 24px;
 
@@ -77,7 +77,7 @@ export const SettingsTitleString = styled.div`
 
   a:link {
     text-decoration: none;
-      color: #0073E5;
+    color: #0073e5;
   }
 `;
 
@@ -108,4 +108,3 @@ export const TabButton = styled.button<{ isActive: boolean }>`
   color: ${palette.highlight.grey9};
   border-bottom: ${(props) => (props.isActive ? "2px solid #0073E5" : "none")};
 `;
-

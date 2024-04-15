@@ -39,7 +39,7 @@ export const AgencySettingsSectionRow = styled.div<{ capitalize?: boolean }>`
   flex-direction: row;
   line-height: 32px;
   gap: 60px;
-    
+
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
   }
@@ -214,7 +214,6 @@ export const EditButtonContainer = styled.div<{ hasTopMargin?: boolean }>`
   }
 `;
 
-
 export const EditModeButtonsContainer = styled.div<{ noMargin?: boolean }>`
   display: flex;
   flex-direction: row;
@@ -233,11 +232,9 @@ export const BasicInfoBlockTitle = styled(AgencySettingsBlockTitle)`
 // email
 
 export const EmailEditButtonContainer = styled(EditButtonContainer)`
-    div {
-        padding: 0;
-        
-    }
-
+  div {
+    padding: 0;
+  }
 `;
 
 // Team
@@ -431,15 +428,16 @@ export const EditTeamMemberMenuItem = styled.div`
 `;
 
 // Supervisions
-export const SupervisionSystemRow = styled(AgencySettingsInfoRow)<{isMainPgData?:boolean,}>`
+export const SupervisionSystemRow = styled(AgencySettingsInfoRow)<{
+  isMainPgData?: boolean;
+}>`
   ${typography.body};
   justify-content: space-between;
   gap: 12px;
-  color: ${({isMainPgData})=> isMainPgData ? "black" : palette.highlight.grey9};
+  color: ${({ isMainPgData }) =>
+    isMainPgData ? "black" : palette.highlight.grey9};
   border: none;
 `;
-
-
 
 // Jurisdictions
 export const JurisdictionsInputWrapper = styled.div`
@@ -526,12 +524,12 @@ export const JurisdictionsInfoRow = styled(AgencySettingsInfoRow)`
 `;
 
 export const JurisdictionsInfoCol = styled.div`
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    span{
-        color: ${palette.highlight.grey9};
-    }
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  span {
+    color: ${palette.highlight.grey9};
+  }
 `;
 
 export const JurisdictionCheckBlock = styled.div`
@@ -603,22 +601,23 @@ export const DescriptionSection = styled.div`
   ${typography.body};
   color: black;
   margin-bottom: 10px;
-   
-    
+
   &:not(:first-child) {
     margin-top: 24px;
   }
   ul {
     margin-left: 24px;
   }
-  
-  input{
-      margin-top: 16px;
+
+  input {
+    margin-top: 16px;
   }
-    
 `;
 
-export const InputWrapper = styled.span<{ error?: boolean, isSectionEnd?:boolean }>`
+export const InputWrapper = styled.span<{
+  error?: boolean;
+  isSectionEnd?: boolean;
+}>`
   input {
     width: 59px;
     padding: 8px 0;
