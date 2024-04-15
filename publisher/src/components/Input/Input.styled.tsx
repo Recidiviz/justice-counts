@@ -18,7 +18,7 @@
 // eslint-disable-next-line no-restricted-imports
 import {
   palette,
-  typography
+  typography,
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
@@ -216,7 +216,7 @@ export const NewInputWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap:8px;
+  gap: 8px;
   color: black;
 `;
 

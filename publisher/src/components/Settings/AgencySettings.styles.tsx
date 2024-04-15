@@ -130,7 +130,7 @@ export const AgencySettingsBlock = styled.div<{
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     width: 100%;
     flex-direction: column;
-    word-wrap: normal;  
+    word-wrap: normal;
   }
 `;
 
@@ -141,7 +141,6 @@ export const AgencySettingsBlockTitle = styled.div<{
   ${typography.body};
   display: flex;
   line-height: 32px;
-    
   span {
     color: #dd1212;
   }
@@ -209,7 +208,6 @@ export const AgencyInfoTextAreaWordCounter = styled.div<{ isRed: boolean }>`
 export const EditButtonContainer = styled.div<{ hasTopMargin?: boolean }>`
   display: flex;
   flex-direction: row;
-  
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     justify-content: start;
     margin-top: ${({ hasTopMargin }) => (hasTopMargin ? "16px" : "0")};
@@ -235,7 +233,7 @@ export const BasicInfoBlockTitle = styled(AgencySettingsBlockTitle)`
 // email
 
 export const EmailEditButtonContainer = styled(EditButtonContainer)`
-    div{
+    div {
         padding: 0;
         
     }

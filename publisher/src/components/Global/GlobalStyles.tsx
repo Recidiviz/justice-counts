@@ -15,7 +15,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-
 import { typography } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 

@@ -56,7 +56,7 @@ export const AccountSettingsInputsWrapper = styled.div`
     flex-direction: column;
     margin: 0;
     a {
-      color: #0073E5;
+      color: #0073e5;
     }
   }
 
