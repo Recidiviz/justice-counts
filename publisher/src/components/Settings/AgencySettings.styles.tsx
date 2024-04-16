@@ -616,7 +616,6 @@ export const DescriptionSection = styled.div`
 
 export const InputWrapper = styled.span<{
   error?: boolean;
-  isSectionEnd?: boolean;
 }>`
   input {
     width: 59px;

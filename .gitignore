@@ -155,3 +155,6 @@ yalc.lock
 
 # ESLint Cache
 .eslintcache
+
+#Webstorm config settings
+.idea
