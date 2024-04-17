@@ -42,19 +42,6 @@ export const AccountSettings = () => {
   const debouncedSave = useRef(_debounce(saveNameEmailChange, 1500)).current;
 
   return (
-    /** TODO:
-     * logic here that question isEditMode(and probably differs between NameEdit or EmailEdit
-     *  This logic should determine based off of the value provided, which modal to display
-     *
-     *  the onclick handler of the modal should refer to the saveNameEmailChange function as its
-     *    event handler and it should be passed the value of the nameUpdate of emailUpdate
-     *
-     *    Best Example of functionality: AgencySettingURL.tsx modal
-     *
-     *  The modal should have a cancel and save button similar to most modals already used on the page
-     *
-     */
-
     <AccountSettingsWrapper>
       <AccountSettingsInputsWrapper>
         <div>

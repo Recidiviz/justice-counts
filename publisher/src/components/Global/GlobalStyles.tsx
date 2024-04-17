@@ -24,4 +24,5 @@ export const GlobalTitle = styled.div`
 
 export const GlobalDescription = styled.div`
   ${typography.paragraph};
+  margin-bottom: 24px;
 `;
