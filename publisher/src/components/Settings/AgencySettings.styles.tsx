@@ -226,9 +226,8 @@ export const BasicInfoBlockTitle = styled(AgencySettingsBlockTitle)`
 `;
 
 export const EmailEditButtonContainer = styled(EditButtonContainer)`
-  div {
-    padding: 0;
-  }
+  margin-top: 24px;
+  margin-bottom: 24px;
 `;
 
 // Team
