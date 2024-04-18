@@ -826,7 +826,7 @@ export const GraphicLines = styled.div<{ type?: SaveConfirmationType }>`
 
 export const WarningMessage = styled.div`
   ${typography.sizeCSS.small}
-  max-width: 350px;
+  max-width: 750px;
   color: ${palette.solid.red};
   display: flex;
   flex-direction: column;
@@ -835,7 +835,7 @@ export const WarningMessage = styled.div`
   border: 1px solid ${palette.solid.red};
   border-radius: 4px;
   padding: 16px;
-  margin: 5px auto;
+  margin: 5px auto 16px;
 
   p {
     text-align: center;

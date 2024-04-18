@@ -300,7 +300,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           String(agencyProvisioningUpdates.agency_id),
           agencyProvisioningUpdates.name,
           userStore.email,
-          Array.from(selectedMetricsKeys)
+          Array.from(selectedMetricsKeys),
+          Array.from(selectedChildAgencyIDsToCopy).map((id) => String(id))
         );
       }
 
@@ -950,6 +951,18 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                             {isCopySuperagencyMetricSettingsSelected &&
                               hasChildAgencyMetrics && (
                                 <>
+                                  <Styled.WarningMessage>
+                                    <img src={alertIcon} alt="" width="24px" />
+                                    <p>
+                                      WARNING! This action cannot be undone.
+                                      This will OVERWRITE metric settings in
+                                      child agencies. After clicking{" "}
+                                      <strong>Save</strong>, the copying process
+                                      will begin and you will receive an email
+                                      confirmation once the metrics settings
+                                      have been copied over.
+                                    </p>
+                                  </Styled.WarningMessage>
                                   <Styled.InputLabelWrapper>
                                     {showSelectionBox ===
                                       SelectionInputBoxTypes.COPY_CHILD_AGENCIES && (
@@ -1085,18 +1098,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                                       Metrics to copy
                                     </Styled.ChipContainerLabel>
                                   </Styled.InputLabelWrapper>
-                                  <Styled.WarningMessage>
-                                    <img src={alertIcon} alt="" width="24px" />
-                                    <p>
-                                      WARNING! This action cannot be undone.
-                                      This will OVERWRITE metric settings in
-                                      child agencies. After clicking{" "}
-                                      <strong>Save</strong>, the copying process
-                                      will begin and you will receive an email
-                                      confirmation once the metrics settings
-                                      have been copied over.
-                                    </p>
-                                  </Styled.WarningMessage>
                                 </>
                               )}
                           </>

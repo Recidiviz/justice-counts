@@ -17,6 +17,7 @@
 
 import {
   AgencySystem,
+  AgencySystems,
   AgencyTeamMember,
   AgencyTeamMemberRole,
 } from "@justice-counts/common/types";
@@ -142,12 +143,14 @@ class AdminPanelStore {
   }
 
   get searchableMetrics(): SearchableListItem[] {
-    return this.metrics.map((metric) => ({
-      ...metric,
-      id: metric.key,
-      sectors: metric.sector,
-      name: `${metric.name}: ${metric.sector.toLocaleLowerCase()}`,
-    }));
+    return this.metrics
+      .filter((metric) => metric.sector !== AgencySystems.SUPERAGENCY)
+      .map((metric) => ({
+        ...metric,
+        id: metric.key,
+        sectors: metric.sector,
+        name: `${metric.name}: ${metric.sector.toLocaleLowerCase()}`,
+      }));
   }
 
   /** Returns a list of searchable counties based on the currently selected `state_code` in `agencyProvisioningUpdates` */
@@ -269,7 +272,8 @@ class AdminPanelStore {
     superagencyID: string,
     agencyName: string,
     userEmail: string,
-    metricDefinitionKeySubset: string[] // A list of metric definition keys for future use to update a subset of metrics
+    metricDefinitionKeySubset: string[], // A list of metric definition keys for future use to update a subset of metrics
+    childAgenciesIdSubset: string[] // A list of child agencies ids for future use to update a subset of metrics
   ) {
     try {
       const response = (await this.api.request({
@@ -279,6 +283,7 @@ class AdminPanelStore {
           agency_name: agencyName,
           user_email: userEmail,
           metric_definition_key_subset: metricDefinitionKeySubset,
+          child_agencies_key_subset: childAgenciesIdSubset,
         },
       })) as Response;
 
