@@ -516,8 +516,16 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           };
         });
       }
+    }, [
+      selectedAgency,
+      adminPanelStore,
+      api,
+      csgAndRecidivizUsers,
+      csgAndRecidivizDefaultRole,
+    ]);
 
-      /** Here we are making the auto-adding if user was created via the secondary modal */
+    /** Here we are making the auto-adding if user was created via the secondary modal */
+    useEffect(() => {
       if (secondaryCreatedId) {
         setSelectedTeamMembersToAdd((prev) =>
           toggleAddRemoveSetItem(prev, +secondaryCreatedId)
@@ -529,14 +537,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           };
         });
       }
-    }, [
-      selectedAgency,
-      adminPanelStore,
-      api,
-      csgAndRecidivizUsers,
-      csgAndRecidivizDefaultRole,
-      secondaryCreatedId,
-    ]);
+    }, [secondaryCreatedId, csgAndRecidivizDefaultRole]);
 
     return (
       <Styled.ModalContainer offScreen={activeSecondaryModal === Setting.USERS}>
