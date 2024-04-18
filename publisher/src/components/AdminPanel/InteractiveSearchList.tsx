@@ -142,11 +142,24 @@ export const InteractiveSearchList = ({
           {metadata?.listBoxLabel}
           {buttons.length > 0 && isActiveBox && (
             <Styled.LabelButtonsWrapper>
-              {buttons.map((button) => (
-                <Styled.LabelButton key={button.label} onClick={button.onClick}>
-                  {button.label}
-                </Styled.LabelButton>
-              ))}
+              {buttons.map((button) => {
+                const isFilteredSelectAllEnabled =
+                  button.label === "Select All" && !!searchInputValue;
+                return (
+                  <Styled.LabelButton
+                    key={button.label}
+                    onClick={() => {
+                      if (isFilteredSelectAllEnabled) {
+                        button.onClick(filteredList);
+                      } else {
+                        button.onClick();
+                      }
+                    }}
+                  >
+                    {button.label} {isFilteredSelectAllEnabled && "(filtered)"}
+                  </Styled.LabelButton>
+                );
+              })}
             </Styled.LabelButtonsWrapper>
           )}
         </Styled.ChipContainerLabel>
