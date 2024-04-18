@@ -44,7 +44,7 @@ export const ContentDisplay = styled.div`
 export const SettingsTitle = styled.h1`
   ${typography.sizeCSS.title};
   margin-top: 4px;
-  margin-bottom: 24px;
+  margin-bottom: 8px;
   padding-bottom: 14px;
   width: 100%;
 
@@ -62,7 +62,7 @@ export const SettingsTitle = styled.h1`
   }
 `;
 export const SettingsTabBlock = styled.div`
-  border-bottom: 1px solid #ececec;
+  border-bottom: 1px solid ${palette.solid.lightgrey4};
   width: 100%;
   height: fit-content;
   flex-direction: column;
@@ -77,7 +77,7 @@ export const SettingsTitleString = styled.div`
 
   a:link {
     text-decoration: none;
-    color: #0073e5;
+    color: ${palette.solid.blue};
   }
 `;
 
@@ -106,5 +106,6 @@ export const TabButton = styled.button<{ isActive: boolean }>`
   cursor: pointer;
   ${typography.body};
   color: ${palette.highlight.grey9};
-  border-bottom: ${(props) => (props.isActive ? "2px solid #0073E5" : "none")};
+  border-bottom: ${(props) =>
+    props.isActive ? `2px solid ${palette.solid.blue}` : "none"};
 `;

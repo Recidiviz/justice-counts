@@ -31,8 +31,6 @@ import { SETTINGS_MENU_WITH_PADDINGS_WIDTH } from "./Settings.styles";
 const AGENCY_SETTINGS_CONTAINER_WIDTH = 644;
 const STICKY_RESPONSIVE_HEADER_WITH_PADDING_HEIGHT = 48;
 
-// my code here
-
 export const AgencySettingsSectionRow = styled.div<{ capitalize?: boolean }>`
   height: 100%;
   display: flex;
@@ -50,7 +48,7 @@ export const AgencySettingsSectionRow = styled.div<{ capitalize?: boolean }>`
     color: ${palette.highlight.grey9};
 
     span {
-      color: black;
+      color: ${palette.solid.black};
     }
   }
 `;
@@ -103,7 +101,6 @@ export const AgencySettingsTitle = styled.div`
   ${typography.sizeCSS.title};
   font-weight: 500;
   margin-bottom: 24px;
-  background-color: purple;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     ${typography.sizeCSS.medium};
@@ -125,7 +122,7 @@ export const AgencySettingsBlock = styled.div<{
   width: 100%;
   padding-bottom: ${({ withBorder }) => (withBorder ? "24px" : "none")};
   border-bottom: ${({ withBorder }) =>
-    withBorder ? "1px solid #ECECEC" : "none"};
+    withBorder ? `1px solid ${palette.solid.lightgrey4}` : "none"};
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     width: 100%;
@@ -142,7 +139,7 @@ export const AgencySettingsBlockTitle = styled.div<{
   display: flex;
   line-height: 32px;
   span {
-    color: #dd1212;
+    color: ${palette.highlight.red};
   }
 `;
 
@@ -164,20 +161,21 @@ export const AgencySettingsBlockSubDescription = styled(
 export const AgencyInfoBlockDescription = styled.div<{
   hasTopMargin?: boolean;
 }>`
-  ${typography.sizeCSS.normal};
+  ${typography.paragraph};
   color: ${palette.highlight.grey9};
   margin-top: ${({ hasTopMargin }) => hasTopMargin && "24px"};
 `;
 
 export const AgencyInfoLink = styled.a`
   color: ${palette.solid.blue};
+  ${typography.paragraph};
 `;
 
 export const AgencySettingsInfoRow = styled.div<{ hasHover?: boolean }>`
   ${typography.body};
   height: 54px;
   min-height: 54px;
-  border-bottom: 1px solid #dcdddf;
+  border-bottom: 1px solid ${palette.highlight.grey9};
   display: flex;
   flex-direction: row;
   gap: 60px;
@@ -190,7 +188,7 @@ export const AgencySettingsInfoRow = styled.div<{ hasHover?: boolean }>`
   span {
     ${typography.sizeCSS.normal};
     text-align: end;
-    color: #5d606b;
+    color: ${palette.highlight.grey9};
   }
 `;
 
@@ -206,11 +204,11 @@ export const AgencyInfoTextAreaWordCounter = styled.div<{ isRed: boolean }>`
 `;
 
 export const EditButtonContainer = styled.div<{ hasTopMargin?: boolean }>`
+  ${typography.body};
   display: flex;
   flex-direction: row;
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     justify-content: start;
-    margin-top: ${({ hasTopMargin }) => (hasTopMargin ? "16px" : "0")};
   }
 `;
 
@@ -224,12 +222,11 @@ export const EditModeButtonsContainer = styled.div<{ noMargin?: boolean }>`
 
 // Basic Info
 
-// BasicInfoBlockTitle is for the Supervision Populations and Jurisdictions sections
 export const BasicInfoBlockTitle = styled(AgencySettingsBlockTitle)`
+  ${typography.body};
   justify-content: space-between;
+  align-items: center;
 `;
-
-// email
 
 export const EmailEditButtonContainer = styled(EditButtonContainer)`
   div {

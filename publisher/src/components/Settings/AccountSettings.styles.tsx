@@ -35,7 +35,7 @@ export const AccountSettingsTitle = styled.h1`
   ${typography.sizeCSS.title};
   margin-top: 4px;
   padding-bottom: 14px;
-  background-color: darkred;
+  background-color: ${palette.solid.red};
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     ${typography.sizeCSS.medium};
@@ -50,13 +50,13 @@ export const AccountSettingsInputsWrapper = styled.div`
   gap: 10px;
   padding-bottom: 24px;
   padding-top: 24px;
-  border-bottom: 1px solid #ececec;
+  border-bottom: 1px solid ${palette.solid.lightgrey4};
 
   div {
     flex-direction: column;
     margin: 0;
     a {
-      color: #0073e5;
+      color: ${palette.solid.blue};
     }
   }
 
