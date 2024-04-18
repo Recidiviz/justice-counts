@@ -116,6 +116,7 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
             <DescriptionSection>
               Enter the number of days after the end of the reporting period to
               receive a reminder email:
+              <br />
               <InputWrapper error={!isValidInput(currentOffsetDays)}>
                 <input
                   type="text"

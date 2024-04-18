@@ -596,7 +596,7 @@ export const AddIcon = styled.img`
 
 export const DescriptionSection = styled.div`
   ${typography.body};
-  color: black;
+  color: ${palette.solid.black};
   margin-bottom: 10px;
 
   &:not(:first-child) {
@@ -605,7 +605,6 @@ export const DescriptionSection = styled.div`
   ul {
     margin-left: 24px;
   }
-
   input {
     margin-top: 16px;
   }
