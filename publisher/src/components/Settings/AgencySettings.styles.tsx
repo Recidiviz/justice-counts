@@ -36,23 +36,20 @@ export const AgencySettingsSectionRow = styled.div<{ capitalize?: boolean }>`
   display: flex;
   flex-direction: row;
   line-height: 32px;
-  gap: 60px;
-
+  gap: 48px;
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
   }
-
-  div {
-    display: flex;
-    flex-direction: column;
-    color: ${palette.highlight.grey9};
-
-    span {
-      color: ${palette.solid.black};
-    }
-  }
 `;
 
+export const AgencySettingsSectionColumn = styled.div`
+  flex-direction: column;
+  color: ${palette.highlight.grey9};
+`;
+
+export const AgencySettingsSectionColumnLabel = styled.div`
+  color: ${palette.solid.black};
+`;
 export const AgencySettingsWrapper = styled.div`
   height: 100%;
   overflow-y: auto;

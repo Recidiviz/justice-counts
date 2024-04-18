@@ -41,7 +41,7 @@ const Settings = () => {
     <ContentDisplay>
       <SettingsTitle>
         <SettingsTitleString>
-          Edit you account settings or manage your team members
+          Edit you account settings or manage your team members.
           <a href="./this/test">&nbsp;Learn More</a>
         </SettingsTitleString>
       </SettingsTitle>

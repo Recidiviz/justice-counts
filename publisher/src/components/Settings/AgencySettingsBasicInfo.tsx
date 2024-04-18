@@ -22,6 +22,8 @@ import { formatSystemName } from "../../utils";
 import { SYSTEM_CAPITALIZED, SYSTEMS_CAPITALIZED } from "../Global/constants";
 import {
   AgencySettingsBlock,
+  AgencySettingsSectionColumn,
+  AgencySettingsSectionColumnLabel,
   AgencySettingsSectionRow,
 } from "./AgencySettings.styles";
 
@@ -32,26 +34,30 @@ export const AgencySettingsBasicInfo = () => {
   return (
     <AgencySettingsBlock id="basic-info">
       <AgencySettingsSectionRow capitalize>
-        <div>
-          <span>Agency Name</span>
+        <AgencySettingsSectionColumn>
+          <AgencySettingsSectionColumnLabel>
+            Agency Name
+          </AgencySettingsSectionColumnLabel>
           {currentAgency?.name}
-        </div>
-        <div>
-          <span>State</span>
+        </AgencySettingsSectionColumn>
+        <AgencySettingsSectionColumn>
+          <AgencySettingsSectionColumnLabel>
+            State
+          </AgencySettingsSectionColumnLabel>
           {currentAgency?.state}
-        </div>
-        <div>
-          <span>
+        </AgencySettingsSectionColumn>
+        <AgencySettingsSectionColumn>
+          <AgencySettingsSectionColumnLabel>
             {currentAgencySystems && currentAgencySystems.length > 1
               ? SYSTEMS_CAPITALIZED
               : SYSTEM_CAPITALIZED}
-          </span>
+          </AgencySettingsSectionColumnLabel>
           {currentAgencySystems
             ?.map((system) =>
               formatSystemName(system, { allUserSystems: currentAgencySystems })
             )
             .join(", ")}
-        </div>
+        </AgencySettingsSectionColumn>
       </AgencySettingsSectionRow>
     </AgencySettingsBlock>
   );
