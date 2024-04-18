@@ -526,13 +526,11 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
     /** Here we are making the auto-adding if user was created via the secondary modal */
     useEffect(() => {
-      if (secondaryCreatedId) {
+      const newMember = users.find((user) => user.id === secondaryCreatedId);
+      if (secondaryCreatedId && newMember) {
         setSelectedTeamMembersToAdd((prev) =>
           toggleAddRemoveSetItem(prev, +secondaryCreatedId)
         );
-        const newMember = users.filter(
-          (user) => user.id === secondaryCreatedId
-        )[0];
         setTeamMemberRoleUpdates((prev) => {
           return {
             ...prev,
