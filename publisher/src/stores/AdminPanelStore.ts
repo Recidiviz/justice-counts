@@ -273,7 +273,7 @@ class AdminPanelStore {
     agencyName: string,
     userEmail: string,
     metricDefinitionKeySubset: string[], // A list of metric definition keys for future use to update a subset of metrics
-    childAgenciesIdSubset: string[] // A list of child agencies ids for future use to update a subset of metrics
+    childAgencyIdSubset: string[] // A list of child agencies ids for future use to update a subset of metrics
   ) {
     try {
       const response = (await this.api.request({
@@ -283,7 +283,7 @@ class AdminPanelStore {
           agency_name: agencyName,
           user_email: userEmail,
           metric_definition_key_subset: metricDefinitionKeySubset,
-          child_agencies_key_subset: childAgenciesIdSubset,
+          child_agency_id_subset: childAgencyIdSubset,
         },
       })) as Response;
 
