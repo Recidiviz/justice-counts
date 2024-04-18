@@ -530,14 +530,19 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         setSelectedTeamMembersToAdd((prev) =>
           toggleAddRemoveSetItem(prev, +secondaryCreatedId)
         );
+        const newMember = users.filter(
+          (user) => user.id === secondaryCreatedId
+        )[0];
         setTeamMemberRoleUpdates((prev) => {
           return {
             ...prev,
-            [secondaryCreatedId]: csgAndRecidivizDefaultRole,
+            [secondaryCreatedId]: isCSGOrRecidivizUserByEmail(newMember.email)
+              ? csgAndRecidivizDefaultRole
+              : AgencyTeamMemberRole.AGENCY_ADMIN,
           };
         });
       }
-    }, [secondaryCreatedId, csgAndRecidivizDefaultRole]);
+    }, [users, secondaryCreatedId, csgAndRecidivizDefaultRole]);
 
     return (
       <Styled.ModalContainer offScreen={activeSecondaryModal === Setting.USERS}>
