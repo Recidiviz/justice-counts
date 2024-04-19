@@ -201,7 +201,7 @@ export const CustomInput = styled.input<{
   width: 100%;
   padding: 4px 10px;
   border: 1px solid ${palette.solid.lightgrey3};
-  color: ${palette.highlight.grey9};
+  color: ${palette.solid.darkgrey};
   background: ${palette.solid.lightgrey2};
   border-radius: 2px;
 
