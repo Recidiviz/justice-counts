@@ -52,6 +52,7 @@ import {
   SaveConfirmation,
   SaveConfirmationType,
   SaveConfirmationTypes,
+  SearchableListItem,
   SelectionInputBoxType,
   SelectionInputBoxTypes,
   Setting,
@@ -226,8 +227,14 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       return [
         {
           label: "Select All",
-          onClick: () => {
+          onClick: (filteredList: SearchableListItem[] | undefined) => {
             setState(selectAllSet);
+            if (filteredList) {
+              const filteredSet = new Set(
+                filteredList.map((obj) => obj.id)
+              ) as Set<T>;
+              setState(filteredSet);
+            }
             if (selectAllCallback) selectAllCallback();
           },
         },
@@ -509,20 +516,31 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           };
         });
       }
-
-      /** Here we are making the auto-adding if something was created via the secondary modal */
-      if (secondaryCreatedId)
-        setSelectedTeamMembersToAdd((prev) =>
-          toggleAddRemoveSetItem(prev, +secondaryCreatedId)
-        );
     }, [
       selectedAgency,
       adminPanelStore,
       api,
       csgAndRecidivizUsers,
       csgAndRecidivizDefaultRole,
-      secondaryCreatedId,
     ]);
+
+    /** Here we are making the auto-adding if user was created via the secondary modal */
+    useEffect(() => {
+      const newMember = users.find((user) => user.id === secondaryCreatedId);
+      if (secondaryCreatedId && newMember) {
+        setSelectedTeamMembersToAdd((prev) =>
+          toggleAddRemoveSetItem(prev, +secondaryCreatedId)
+        );
+        setTeamMemberRoleUpdates((prev) => {
+          return {
+            ...prev,
+            [secondaryCreatedId]: isCSGOrRecidivizUserByEmail(newMember.email)
+              ? csgAndRecidivizDefaultRole
+              : AgencyTeamMemberRole.AGENCY_ADMIN,
+          };
+        });
+      }
+    }, [users, secondaryCreatedId, csgAndRecidivizDefaultRole]);
 
     return (
       <Styled.ModalContainer offScreen={activeSecondaryModal === Setting.USERS}>

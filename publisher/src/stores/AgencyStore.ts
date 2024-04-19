@@ -155,9 +155,7 @@ class AgencyStore {
       })) as Response;
 
       if (response.status !== 200) {
-        throw new Error(
-          "There was an issue getting superagency children agencies."
-        );
+        throw new Error("There was an issue getting a list of child agencies.");
       }
       const responseJson = (await response.json()) as ChildAgenciesRecord;
       runInAction(() => {
@@ -278,7 +276,7 @@ class AgencyStore {
     return { settings: newSettings };
   };
 
-  updateChildAgencies(superagencyId: string | undefined) {
+  loadChildAgencies(superagencyId: string | undefined) {
     if (superagencyId) {
       this.getChildAgencies(superagencyId);
     } else {
