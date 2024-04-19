@@ -488,12 +488,19 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       selectedTeamMembersToAdd.size > 0 ||
       selectedTeamMembersToDelete.size > 0;
     /**
+     * An update has been made when there are child agencies or metrics selected to copy
+     */
+    const hasChildAgenciesCopyUpdates = selectedChildAgencyIDsToCopy.size > 0;
+    const hasMetricsCopyUpdates = selectedMetricsKeys.size > 0;
+    /**
      * Saving is disabled if saving is in progress OR an existing agency has made no updates to either the name, state,
      * county, systems, dashboard enabled checkbox, superagency checkbox and child agencies, child agency's superagency
      * selection, and team member additions/deletions/role updates, or a newly created agency has no input for both name and state.
      */
     const isSaveDisabled =
-      !isCopySuperagencyMetricSettingsSelected && // Allows user to save if all they do is select that they want to copy superagency metric settings
+      (!isCopySuperagencyMetricSettingsSelected ||
+        !hasChildAgenciesCopyUpdates ||
+        !hasMetricsCopyUpdates) && // Not allows user to save if they want to copy superagency metric settings, but there are no child agencies or metrics selected to copy
       (isSaveInProgress ||
         !hasSystems ||
         (selectedAgency
