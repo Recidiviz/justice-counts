@@ -103,6 +103,12 @@ export interface UserAgency {
   super_agency_id: number | null | undefined;
 }
 
+export type ChildAgency = {
+  id: number;
+  name: string;
+  systems: AgencySystem[];
+};
+
 export type ReportFrequency = "MONTHLY" | "ANNUAL";
 
 export type ReportStatus = "NOT_STARTED" | "DRAFT" | "PUBLISHED";
