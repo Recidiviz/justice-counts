@@ -534,12 +534,6 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         });
       }
 
-      /** Here we are making the auto-adding if something was created via the secondary modal */
-      if (secondaryCreatedId)
-        setSelectedTeamMembersToAdd((prev) =>
-          toggleAddRemoveSetItem(prev, +secondaryCreatedId)
-        );
-
       if (isCopySuperagencyMetricSettingsSelected && selectedIDToEdit) {
         adminPanelStore.fetchAgencyMetrics(String(selectedIDToEdit));
       }
@@ -553,6 +547,24 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       selectedIDToEdit,
       isCopySuperagencyMetricSettingsSelected,
     ]);
+
+    /** Here we are making the auto-adding if user was created via the secondary modal */
+    useEffect(() => {
+      const newMember = users.find((user) => user.id === secondaryCreatedId);
+      if (secondaryCreatedId && newMember) {
+        setSelectedTeamMembersToAdd((prev) =>
+          toggleAddRemoveSetItem(prev, +secondaryCreatedId)
+        );
+        setTeamMemberRoleUpdates((prev) => {
+          return {
+            ...prev,
+            [secondaryCreatedId]: isCSGOrRecidivizUserByEmail(newMember.email)
+              ? csgAndRecidivizDefaultRole
+              : AgencyTeamMemberRole.AGENCY_ADMIN,
+          };
+        });
+      }
+    }, [users, secondaryCreatedId, csgAndRecidivizDefaultRole]);
 
     /** Here we are making the auto-selecting all metrics by default */
     useEffect(() => {
