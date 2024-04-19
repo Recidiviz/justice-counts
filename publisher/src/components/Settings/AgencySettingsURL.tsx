@@ -28,6 +28,7 @@ import {
   AgencyInfoBlockDescription,
   AgencyInfoLink,
   AgencyInfoTextAreaLabel,
+  AgencySettingActionRequiredIndicator,
   AgencySettingsBlock,
   AgencySettingsBlockTitle,
   EditButtonContainer,
@@ -127,7 +128,14 @@ const AgencySettingsUrl: React.FC<{
 
       <AgencySettingsBlock withBorder id="homepage_url">
         <AgencySettingsBlockTitle configured={isAgencySettingConfigured}>
-          Agency URL <span>*</span>
+          Agency URL
+          {homepageUrlSetting ? (
+            ""
+          ) : (
+            <AgencySettingActionRequiredIndicator>
+              *
+            </AgencySettingActionRequiredIndicator>
+          )}
         </AgencySettingsBlockTitle>
         <AgencyInfoBlockDescription>
           {homepageUrlSetting ? (

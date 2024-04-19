@@ -27,6 +27,7 @@ import {
   AgencyInfoBlockDescription,
   AgencyInfoTextAreaLabel,
   AgencyInfoTextAreaWordCounter,
+  AgencySettingActionRequiredIndicator,
   AgencySettingsBlock,
   AgencySettingsBlockTitle,
   EditButtonContainer,
@@ -122,7 +123,14 @@ const AgencySettingsDescription: React.FC<{
 
       <AgencySettingsBlock id="description">
         <AgencySettingsBlockTitle configured={isAgencySettingConfigured}>
-          Agency Description <span>*</span>
+          Agency Description
+          {infoText ? (
+            ""
+          ) : (
+            <AgencySettingActionRequiredIndicator>
+              *
+            </AgencySettingActionRequiredIndicator>
+          )}
         </AgencySettingsBlockTitle>
         <AgencyInfoBlockDescription>
           {purposeAndFunctionsSetting ||

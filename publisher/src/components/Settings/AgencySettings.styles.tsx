@@ -135,9 +135,10 @@ export const AgencySettingsBlockTitle = styled.div<{
   ${typography.body};
   display: flex;
   line-height: 32px;
-  span {
-    color: ${palette.highlight.red};
-  }
+`;
+
+export const AgencySettingActionRequiredIndicator = styled.div`
+  color: ${palette.solid.red};
 `;
 
 export const AgencySettingsBlockDescription = styled.div`
