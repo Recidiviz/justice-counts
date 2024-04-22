@@ -24,6 +24,7 @@ import {
 import styled from "styled-components/macro";
 
 export const AccountSettingsWrapper = styled.div`
+  flex-direction: row;
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: flex;
     flex-direction: column;
@@ -52,18 +53,10 @@ export const AccountSettingsInputsWrapper = styled.div`
   padding-top: 24px;
   border-bottom: 1px solid ${palette.solid.lightgrey4};
 
-  div {
-    flex-direction: column;
-    margin: 0;
-    a {
-      color: ${palette.solid.blue};
-    }
-  }
-
   input {
     padding-left: 0;
     border: none;
-    background-color: inherit;
+    background-color: initial;
     ${typography.body};
     color: ${palette.highlight.grey9};
   }
@@ -71,11 +64,9 @@ export const AccountSettingsInputsWrapper = styled.div`
   label {
     ${typography.body};
     color: black;
-    left: 0;
   }
 
   span {
-    padding-left: 8px;
     a {
       text-decoration: none;
     }
@@ -83,6 +74,33 @@ export const AccountSettingsInputsWrapper = styled.div`
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
+    gap: 0;
+    margin-left: 0px;
+  }
+`;
+
+export const AccountSettingsInputsCol = styled.div`
+  flex-direction: column;
+  margin: 0;
+  div {
+    flex-direction: column;
+    align-items: start;
+
+    label {
+      flex-direction: row;
+    }
+
+    input {
+      flex-direction: row;
+    }
+  }
+
+  a {
+    color: ${palette.solid.blue};
+  }
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    flex-direction: row;
     gap: 0;
     margin-left: 0px;
   }

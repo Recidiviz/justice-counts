@@ -39,6 +39,7 @@ export const AgencySettingsSectionRow = styled.div<{ capitalize?: boolean }>`
   gap: 48px;
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
+    gap: unset;
   }
 `;
 
@@ -205,6 +206,10 @@ export const EditButtonContainer = styled.div<{ hasTopMargin?: boolean }>`
   ${typography.body};
   display: flex;
   flex-direction: row;
+  input {
+    height: unset !important;
+    width: unset !important;
+  }
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     justify-content: start;
   }

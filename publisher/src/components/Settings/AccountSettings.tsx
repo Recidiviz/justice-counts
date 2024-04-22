@@ -15,12 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { NewInput } from "@justice-counts/common/components/Input";
 import { debounce as _debounce } from "lodash";
 import React, { useRef } from "react";
 
 import { useStore } from "../../stores";
-import { Input } from "../Input";
 import {
+  AccountSettingsInputsCol,
   AccountSettingsInputsWrapper,
   AccountSettingsWrapper,
 } from "./AccountSettings.styles";
@@ -44,8 +45,8 @@ export const AccountSettings = () => {
   return (
     <AccountSettingsWrapper>
       <AccountSettingsInputsWrapper>
-        <div>
-          <Input
+        <AccountSettingsInputsCol>
+          <NewInput
             style={{ marginBottom: "0" }}
             persistLabel
             label=" Name"
@@ -61,9 +62,9 @@ export const AccountSettings = () => {
           <span>
             <a href="./namemodal">Edit</a>
           </span>
-        </div>
-        <div>
-          <Input
+        </AccountSettingsInputsCol>
+        <AccountSettingsInputsCol>
+          <NewInput
             persistLabel
             label="Email"
             value={email}
@@ -78,7 +79,7 @@ export const AccountSettings = () => {
           <span>
             <a href="./emailmodal">Edit</a>
           </span>
-        </div>
+        </AccountSettingsInputsCol>
       </AccountSettingsInputsWrapper>
     </AccountSettingsWrapper>
   );

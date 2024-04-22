@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { NewInput } from "@justice-counts/common/components/Input";
 import { debounce } from "lodash";
 import { observer } from "mobx-react-lite";
 import React, { useRef, useState } from "react";
@@ -22,7 +23,6 @@ import React, { useRef, useState } from "react";
 import { useStore } from "../../stores";
 import { gateToAllowedEnvironment } from "../../utils/featureFlags";
 import { Environment } from "../AdminPanel";
-import { NewInput } from "../Input";
 import {
   AgencySettingsBlock,
   AgencySettingsBlockDescription,
@@ -111,6 +111,7 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
                 checked={isUserSubscribedToEmails}
                 onChange={handleSubscribeUnsubscribe}
                 label="Send me emails"
+                overrideNewInputWrapper
               />
             </EmailEditButtonContainer>
             <DescriptionSection>
