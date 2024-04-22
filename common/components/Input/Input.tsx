@@ -41,6 +41,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   textSize?: InputTextSize;
   hideLabel?: boolean;
   fullWidth?: boolean;
+  overrideNewInputWrapper?: boolean;
 }
 
 export function Input({
@@ -197,10 +198,11 @@ export function NewInput({
   metricKey,
   hideLabel,
   fullWidth,
+  overrideNewInputWrapper,
   ...props
 }: InputProps) {
   return (
-    <Styled.NewInputWrapper>
+    <Styled.NewInputWrapper overrideNewInputWrapper={overrideNewInputWrapper}>
       {!hideLabel && (
         <Styled.NewInputLabel htmlFor={`input-${name}`} error={Boolean(error)}>
           {label}
