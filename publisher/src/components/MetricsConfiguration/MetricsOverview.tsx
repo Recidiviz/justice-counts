@@ -113,6 +113,22 @@ export const MetricsOverview = observer(() => {
     (childAgency) => childAgency.id === currentAgency?.id
   );
 
+  const userSuperagency = userStore.userAgencies?.find(
+    (agency) => agency.is_superagency
+  );
+
+  const superagencyDropdownOptions: DropdownOption[] =
+    userSuperagency && isChildAgency
+      ? [
+          {
+            key: userSuperagency.id,
+            label: `${userSuperagency.name} (Superagency)`,
+            onClick: () =>
+              navigate(`/agency/${userSuperagency.id}/metric-config`),
+          },
+        ]
+      : [];
+
   const childAgenciesDropdownOptions: DropdownOption[] =
     superagencyChildAgencies
       ? superagencyChildAgencies
@@ -159,11 +175,14 @@ export const MetricsOverview = observer(() => {
                   label={
                     isSuperagency ? "Select Child Agency" : currentAgency?.name
                   }
-                  options={childAgenciesDropdownOptions}
+                  options={[
+                    ...superagencyDropdownOptions,
+                    ...childAgenciesDropdownOptions,
+                  ]}
                   size="small"
                   caretPosition="right"
                   fullWidth
-                  typeaheadSearch={{ placeholder: "Search for Child Agency" }}
+                  typeaheadSearch={{ placeholder: "Search for Agency" }}
                   customClearSearchButton="Clear"
                 />
               </Styled.DropdownWrapper>

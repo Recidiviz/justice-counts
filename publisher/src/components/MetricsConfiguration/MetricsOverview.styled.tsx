@@ -202,7 +202,7 @@ export const DropdownWrapper = styled.div`
   padding-bottom: 14px;
 
   & ${CustomDropdown} {
-    width: 300px;
+    width: 400px;
     border: 1px solid ${palette.highlight.grey2};
     padding: 0 12px;
   }
