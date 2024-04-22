@@ -54,6 +54,7 @@ import { ReactComponent as SwitchToDataTableIcon } from "../assets/switch-to-dat
 import { AppGuideKeys, GuideKeys } from "../HelpCenter/types";
 import { createURLToGuide } from "../HelpCenter/utils";
 import { Loading } from "../Loading";
+import { ChildAgenciesDropdown } from "../MetricsConfiguration/ChildAgenciesDropdown";
 import { DisclaimerBanner } from "../primitives";
 import { useSettingsSearchParams } from "../Settings";
 import ConnectedDatapointsView from "./ConnectedDatapointsView";
@@ -250,6 +251,7 @@ export const MetricsDataChart: React.FC = observer(() => {
       <Styled.MetricsViewPanel>
         {/* List Of Metrics */}
         <Styled.PanelContainerLeft>
+          <ChildAgenciesDropdown view="data" />
           <Styled.SystemsContainer>
             <div ref={topShadow.ref} />
             <Styled.ScrollShadow

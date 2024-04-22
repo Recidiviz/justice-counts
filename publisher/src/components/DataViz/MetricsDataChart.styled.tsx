@@ -64,7 +64,7 @@ export const PanelContainerLeft = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 46px 0 0 24px;
+  padding: 46px 24px 0;
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: none;
