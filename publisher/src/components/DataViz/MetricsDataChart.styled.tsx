@@ -56,6 +56,16 @@ export const MetricsViewPanel = styled.div<{
   }
 `;
 
+export const DisclaimerContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-top: 15px;
+  padding-bottom: 37px;
+  width: ${INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH}px;
+  min-height: 200px;
+`;
+
 export const PanelContainerLeft = styled.div`
   width: 25%;
   min-width: calc(314px + 24px + 95px);
@@ -63,8 +73,11 @@ export const PanelContainerLeft = styled.div`
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   padding: 46px 24px 0;
+
+  & > ${DisclaimerContainer} {
+    margin-top: auto;
+  }
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     display: none;
@@ -133,16 +146,6 @@ export const MetricItem = styled.div<{ selected?: boolean }>`
     cursor: pointer;
     color: ${({ selected }) => !selected && palette.solid.darkgrey};
   }
-`;
-
-export const DisclaimerContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding-top: 15px;
-  padding-bottom: 37px;
-  width: ${INNER_PANEL_LEFT_CONTAINER_MAX_WIDTH}px;
-  min-height: 200px;
 `;
 
 export const DisclaimerTitle = styled.div`
