@@ -207,8 +207,11 @@ export const EditButtonContainer = styled.div<{ hasTopMargin?: boolean }>`
   display: flex;
   flex-direction: row;
   input {
-    height: unset !important;
-    width: unset !important;
+    height: unset;
+    width: unset;
+  }
+  div {
+    min-width: unset;
   }
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     justify-content: start;

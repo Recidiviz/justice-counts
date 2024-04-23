@@ -16,12 +16,12 @@
 // =============================================================================
 
 import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
+import { Button } from "@justice-counts/common/components/Button";
 import { AgencySystem } from "@justice-counts/common/types";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { Button } from "../Button";
 import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,

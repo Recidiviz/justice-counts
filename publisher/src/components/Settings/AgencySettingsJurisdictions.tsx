@@ -18,6 +18,7 @@
 /* eslint-disable camelcase */
 import addIcon from "@justice-counts/common/assets/add-icon.svg";
 import blackCheck from "@justice-counts/common/assets/black-check-icon.svg";
+import { Button } from "@justice-counts/common/components/Button";
 import mappedJurisdictionsJSONData from "@justice-counts/common/fips_with_county_subdivisions.json";
 import { Jurisdiction } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
@@ -25,7 +26,6 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { Button } from "../Button";
 import { SettingProps } from "./AgencySettings";
 import {
   AddIcon,
