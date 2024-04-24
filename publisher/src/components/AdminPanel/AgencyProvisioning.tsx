@@ -498,22 +498,22 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
      * selection, and team member additions/deletions/role updates, or a newly created agency has no input for both name and state.
      */
     const isSaveDisabled =
-      (!isCopySuperagencyMetricSettingsSelected ||
-        !hasChildAgenciesCopyUpdates ||
-        !hasMetricsCopyUpdates) && // Not allows user to save if they want to copy superagency metric settings, but there are no child agencies or metrics selected to copy
-      (isSaveInProgress ||
-        !hasSystems ||
-        (selectedAgency
-          ? !hasNameUpdate &&
-            !hasStateUpdate &&
-            !hasCountyUpdates &&
-            !hasSystemUpdates &&
-            !hasDashboardEnabledStatusUpdate &&
-            !hasIsSuperagencyUpdate &&
-            !hasChildAgencyUpdates &&
-            !hasSuperagencyUpdate &&
-            !hasTeamMemberOrRoleUpdates
-          : !(hasNameUpdate && hasStateUpdate && hasSystems)));
+      !hasChildAgenciesCopyUpdates ||
+      !hasMetricsCopyUpdates || // Not allows user to save if they want to copy superagency metric settings, but there are no child agencies or metrics selected to copy
+      (!isCopySuperagencyMetricSettingsSelected &&
+        (isSaveInProgress ||
+          !hasSystems ||
+          (selectedAgency
+            ? !hasNameUpdate &&
+              !hasStateUpdate &&
+              !hasCountyUpdates &&
+              !hasSystemUpdates &&
+              !hasDashboardEnabledStatusUpdate &&
+              !hasIsSuperagencyUpdate &&
+              !hasChildAgencyUpdates &&
+              !hasSuperagencyUpdate &&
+              !hasTeamMemberOrRoleUpdates
+            : !(hasNameUpdate && hasStateUpdate && hasSystems))));
 
     /** Automatically adds CSG and Recidiviz users to a newly created agency with the proper roles */
     useEffect(() => {
