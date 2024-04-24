@@ -39,6 +39,7 @@ import * as Styled from "./MetricsOverview.styled";
 export const MetricsOverview = observer(() => {
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
+
   const { agencyId } = useParams() as { agencyId: string };
   const { userStore, metricConfigStore } = useStore();
 
