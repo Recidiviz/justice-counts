@@ -15,6 +15,10 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import {
+  Dropdown,
+  DropdownOption,
+} from "@justice-counts/common/components/Dropdown";
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
 import {
   AgencySystem,
@@ -23,7 +27,7 @@ import {
 import { frequencyString } from "@justice-counts/common/utils/helperUtils";
 import { observer } from "mobx-react-lite";
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { NotFound } from "../../pages/NotFound";
 import { useStore } from "../../stores";
@@ -33,17 +37,18 @@ import { AppGuideKeys, GuideKeys } from "../HelpCenter/types";
 import { createURLToGuide } from "../HelpCenter/utils";
 import { DisclaimerBanner } from "../primitives";
 import { useSettingsSearchParams } from "../Settings";
-import { ChildAgenciesDropdown } from "./ChildAgenciesDropdown";
 import * as Styled from "./MetricsOverview.styled";
 
 export const MetricsOverview = observer(() => {
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
-
+  const navigate = useNavigate();
   const { agencyId } = useParams() as { agencyId: string };
-  const { userStore, metricConfigStore } = useStore();
+  const { userStore, metricConfigStore, agencyStore } = useStore();
 
   const { getMetricsBySystem } = metricConfigStore;
+
+  const { superagencyChildAgencies } = agencyStore;
 
   const { system: systemSearchParam } = settingsSearchParams;
 
@@ -104,6 +109,38 @@ export const MetricsOverview = observer(() => {
         };
       }) || [];
 
+  const isChildAgency = superagencyChildAgencies?.find(
+    (childAgency) => childAgency.id === currentAgency?.id
+  );
+
+  const userSuperagency = userStore.userAgencies?.find(
+    (agency) => agency.is_superagency
+  );
+
+  const superagencyDropdownOptions: DropdownOption[] =
+    userSuperagency && isChildAgency
+      ? [
+          {
+            key: userSuperagency.id,
+            label: `${userSuperagency.name} (Superagency)`,
+            onClick: () =>
+              navigate(`/agency/${userSuperagency.id}/metric-config`),
+          },
+        ]
+      : [];
+
+  const childAgenciesDropdownOptions: DropdownOption[] =
+    superagencyChildAgencies
+      ? superagencyChildAgencies
+          .map((agency) => ({
+            key: agency.id,
+            label: agency.name,
+            onClick: () => navigate(`/agency/${agency.id}/metric-config`),
+            highlight: agency.id === currentAgency?.id,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label))
+      : [];
+
   if (systemSearchParam && !currentAgency?.systems.includes(systemSearchParam))
     return <NotFound />;
 
@@ -131,7 +168,25 @@ export const MetricsOverview = observer(() => {
             </a>
           </Styled.OverviewDescription>
 
-          <ChildAgenciesDropdown view="metric-config" />
+          {childAgenciesDropdownOptions.length > 0 &&
+            (isSuperagency || isChildAgency) && (
+              <Styled.DropdownWrapper>
+                <Dropdown
+                  label={
+                    isSuperagency ? "Select Child Agency" : currentAgency?.name
+                  }
+                  options={[
+                    ...superagencyDropdownOptions,
+                    ...childAgenciesDropdownOptions,
+                  ]}
+                  size="small"
+                  caretPosition="right"
+                  fullWidth
+                  typeaheadSearch={{ placeholder: "Search for Agency" }}
+                  customClearSearchButton="Clear"
+                />
+              </Styled.DropdownWrapper>
+            )}
 
           {/* System Selection */}
           {showSystems && (
