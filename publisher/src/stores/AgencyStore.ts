@@ -279,6 +279,8 @@ class AgencyStore {
   loadChildAgencies(superagencyId: string | undefined) {
     if (superagencyId) {
       this.getChildAgencies(superagencyId);
+    } else {
+      this.childAgencies = [];
     }
   }
 
