@@ -87,9 +87,7 @@ export const AgencySettings: React.FC = observer(() => {
           settingProps={generateSettingProps(ActiveSetting.HomepageUrl)}
         />
         {/* TODO(#26632) Un-gate toggle once functionality for superagencies / child agencies is implemented  */}
-        {agencyStore.currentAgency?.super_agency_id === null && (
-          <AgencySettingsEmailNotifications />
-        )}
+        <AgencySettingsEmailNotifications />
         {isAgencySupervision && (
           <AgencySettingsSupervisions
             settingProps={generateSettingProps(ActiveSetting.Supervisions)}

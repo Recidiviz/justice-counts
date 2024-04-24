@@ -15,7 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { NewInput } from "@justice-counts/common/components/Input";
+import { CheckboxOptions } from "@justice-counts/common/components/CheckboxOptions";
 import { debounce } from "lodash";
 import { observer } from "mobx-react-lite";
 import React, { useRef, useState } from "react";
@@ -40,7 +40,6 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
     isUserSubscribedToEmails,
     daysAfterTimePeriodToSendEmail,
   } = agencyStore;
-
   const [reminderEmailOffsetDays, setReminderEmailOffsetDays] =
     useState<string>();
 
@@ -106,12 +105,15 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
               data for the month of March on April 15th.
             </DescriptionSection>
             <EmailEditButtonContainer>
-              <NewInput
-                type="checkbox"
-                checked={isUserSubscribedToEmails}
-                onChange={handleSubscribeUnsubscribe}
-                label="Send me emails"
-                overrideNewInputWrapper
+              <CheckboxOptions
+                options={[
+                  {
+                    key: "emailReminder",
+                    label: "Send me emails",
+                    checked: isUserSubscribedToEmails,
+                  },
+                ]}
+                onChange={() => handleSubscribeUnsubscribe()}
               />
             </EmailEditButtonContainer>
             <DescriptionSection>
