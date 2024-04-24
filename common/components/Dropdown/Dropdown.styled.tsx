@@ -194,18 +194,34 @@ export const CustomInputWrapper = styled.div`
   padding: 20px 16px 8px 16px;
 `;
 
-export const CustomInput = styled.input`
+export const CustomInput = styled.input<{
+  customClearButton?: boolean;
+}>`
   ${typography.sizeCSS.normal}
   width: 100%;
-  padding: 4px 8px 4px 8px;
+  padding: 4px 10px;
   border: 1px solid ${palette.solid.lightgrey3};
-  color: ${palette.highlight.grey9};
+  color: ${palette.solid.darkgrey};
   background: ${palette.solid.lightgrey2};
   border-radius: 2px;
 
   &::placeholder {
     color: ${palette.highlight.grey5};
   }
+
+  ${({ customClearButton }) =>
+    customClearButton &&
+    `&::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+  }`}
+`;
+
+export const CustomClearButton = styled.button`
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: ${palette.highlight.grey8};
+  cursor: pointer;
 `;
 
 export const NoResultsFoundWrapper = styled.div`

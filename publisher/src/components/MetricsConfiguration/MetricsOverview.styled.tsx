@@ -16,6 +16,12 @@
 // =============================================================================
 
 import {
+  CustomDropdown,
+  CustomDropdownMenu,
+  CustomInput,
+  CustomInputWrapper,
+} from "@justice-counts/common/components/Dropdown";
+import {
   HEADER_BAR_HEIGHT,
   palette,
   typography,
@@ -56,7 +62,7 @@ export const OverviewHeader = styled.div`
 export const OverviewDescription = styled.div`
   ${typography.body};
   max-width: 470px;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 
   a,
   a:visited {
@@ -189,5 +195,28 @@ export const TabbedBarWrapper = styled.div`
   div {
     flex-flow: wrap;
     gap: 8px 16px;
+  }
+`;
+
+export const DropdownWrapper = styled.div`
+  padding-bottom: 14px;
+
+  & ${CustomDropdown} {
+    width: 400px;
+    border: 1px solid ${palette.highlight.grey2};
+    padding: 0 12px;
+  }
+  & ${CustomDropdownMenu} {
+    box-shadow: none;
+    border: 1px solid ${palette.highlight.grey2};
+  }
+  & ${CustomInputWrapper} {
+    padding: 12px 16px;
+    border-bottom: 1px solid ${palette.highlight.grey2};
+  }
+  & ${CustomInput} {
+    border: 0;
+    outline: 0;
+    background: transparent;
   }
 `;
