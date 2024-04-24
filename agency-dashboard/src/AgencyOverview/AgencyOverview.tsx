@@ -65,6 +65,7 @@ export const AgencyOverview = observer(() => {
   const { slug } = useParams();
   const { agencyDataStore } = useStore();
   const {
+    agency,
     agencyName,
     agencyDescription,
     agencyHomepageUrl,
@@ -91,8 +92,8 @@ export const AgencyOverview = observer(() => {
     category: string,
     currSystem: string | undefined
   ) => {
-    if (isClickable) {
-      navigate(`/agency/${slug}/${slugify(category)}`, {
+    if (isClickable && agency?.id) {
+      navigate(`/agency/${agency.id}/${slug}/${slugify(category)}`, {
         state: { currentSystem: currSystem },
       });
     }
