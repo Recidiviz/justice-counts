@@ -43,9 +43,10 @@ export const AgencySettingsSectionRow = styled.div<{ capitalize?: boolean }>`
   }
 `;
 
-export const AgencySettingsSectionColumn = styled.div`
+export const AgencySettingsSectionColumn = styled.div<{ capitalize?: boolean }>`
   flex-direction: column;
   color: ${palette.highlight.grey9};
+  ${({ capitalize }) => capitalize && `text-transform: capitalize;`}
 `;
 
 export const AgencySettingsSectionColumnLabel = styled.div`
@@ -234,7 +235,7 @@ export const BasicInfoBlockTitle = styled(AgencySettingsBlockTitle)`
   align-items: center;
 `;
 
-export const EmailEditButtonContainer = styled(EditButtonContainer)`
+export const CheckboxSpacingWrapper = styled.div`
   margin-top: 24px;
   margin-bottom: 24px;
 `;

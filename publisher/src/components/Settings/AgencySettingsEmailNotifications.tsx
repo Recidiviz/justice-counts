@@ -27,8 +27,8 @@ import {
   AgencySettingsBlock,
   AgencySettingsBlockDescription,
   AgencySettingsBlockTitle,
+  CheckboxSpacingWrapper,
   DescriptionSection,
-  EmailEditButtonContainer,
   ErrorMessage,
   InputWrapper,
 } from "./AgencySettings.styles";
@@ -104,7 +104,7 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
               you enter 15, you would receive a reminder to upload any missing
               data for the month of March on April 15th.
             </DescriptionSection>
-            <EmailEditButtonContainer>
+            <CheckboxSpacingWrapper>
               <CheckboxOptions
                 options={[
                   {
@@ -115,7 +115,7 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
                 ]}
                 onChange={() => handleSubscribeUnsubscribe()}
               />
-            </EmailEditButtonContainer>
+            </CheckboxSpacingWrapper>
             <DescriptionSection>
               Enter the number of days after the end of the reporting period to
               receive a reminder email:

@@ -46,7 +46,7 @@ export const AgencySettingsBasicInfo = () => {
           </AgencySettingsSectionColumnLabel>
           {currentAgency?.state}
         </AgencySettingsSectionColumn>
-        <AgencySettingsSectionColumn>
+        <AgencySettingsSectionColumn capitalize>
           <AgencySettingsSectionColumnLabel>
             {currentAgencySystems && currentAgencySystems.length > 1
               ? SYSTEMS_CAPITALIZED
