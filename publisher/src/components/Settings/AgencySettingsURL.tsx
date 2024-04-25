@@ -129,9 +129,7 @@ const AgencySettingsUrl: React.FC<{
       <AgencySettingsBlock withBorder id="homepage_url">
         <AgencySettingsBlockTitle configured={isAgencySettingConfigured}>
           Agency URL
-          {homepageUrlSetting ? (
-            ""
-          ) : (
+          {!homepageUrlSetting && (
             <AgencySettingActionRequiredIndicator>
               *
             </AgencySettingActionRequiredIndicator>

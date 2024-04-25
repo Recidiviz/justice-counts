@@ -124,9 +124,7 @@ const AgencySettingsDescription: React.FC<{
       <AgencySettingsBlock id="description">
         <AgencySettingsBlockTitle configured={isAgencySettingConfigured}>
           Agency Description
-          {infoText ? (
-            ""
-          ) : (
+          {!infoText && (
             <AgencySettingActionRequiredIndicator>
               *
             </AgencySettingActionRequiredIndicator>
