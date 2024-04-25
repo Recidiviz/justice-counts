@@ -276,10 +276,8 @@ class AgencyStore {
     return { settings: newSettings };
   };
 
-  loadChildAgencies(superagencyId: string | undefined) {
-    if (superagencyId) {
-      this.getChildAgencies(superagencyId);
-    }
+  loadChildAgencies(superagencyId: string) {
+    this.getChildAgencies(superagencyId);
   }
 
   updateAgencySystems = (

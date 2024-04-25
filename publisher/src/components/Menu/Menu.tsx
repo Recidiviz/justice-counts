@@ -196,9 +196,11 @@ const Menu: React.FC = () => {
 
   /* Here we're getting and storing a list of child agencies if the user is in a superagency. * */
   useEffect(() => {
-    const superagencyId = currentAgency?.super_agency_id ?? agencyId;
-    agencyStore.loadChildAgencies(String(superagencyId));
-  }, [agencyId, currentAgency, agencyStore]);
+    const superagencyId = userStore.isAgencySuperagency(agencyId)
+      ? agencyId
+      : currentAgency?.super_agency_id;
+    if (superagencyId) agencyStore.loadChildAgencies(String(superagencyId));
+  }, [agencyId, currentAgency, agencyStore, userStore]);
 
   return (
     <Styled.MenuContainer isMobileMenuOpen={isMobileMenuOpen}>
