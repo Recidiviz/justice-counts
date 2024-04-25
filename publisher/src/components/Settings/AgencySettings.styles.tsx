@@ -432,13 +432,13 @@ export const EditTeamMemberMenuItem = styled.div`
 
 // Supervisions
 export const SupervisionSystemRow = styled(AgencySettingsInfoRow)<{
-  isMainPgData?: boolean;
+  isSupervisionPopulationIncluded?: boolean;
 }>`
   ${typography.body};
   justify-content: space-between;
   gap: 12px;
-  color: ${({ isMainPgData }) =>
-    isMainPgData ? "black" : palette.highlight.grey9};
+  color: ${({ isSupervisionPopulationIncluded }) =>
+    isSupervisionPopulationIncluded ? "black" : palette.highlight.grey9};
   border: none;
 `;
 

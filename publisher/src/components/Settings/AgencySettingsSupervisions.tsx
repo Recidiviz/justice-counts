@@ -198,7 +198,10 @@ export const AgencySettingsSupervisions: React.FC<{
               value as AgencySystem
             );
             return (
-              <SupervisionSystemRow isMainPgData={isIncluded} key={value}>
+              <SupervisionSystemRow
+                isSupervisionPopulationIncluded={isIncluded}
+                key={value}
+              >
                 {label}
                 <div>{(isIncluded && "Included") || "Not Included"}</div>
               </SupervisionSystemRow>
