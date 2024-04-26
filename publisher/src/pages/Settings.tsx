@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
 import React, { useState } from "react";
 
 import {
@@ -25,14 +26,15 @@ import {
   SettingsTabContainer,
   SettingsTitle,
   SettingsTitleString,
-  TabButton,
 } from "../components/Settings";
 import { AgencySettingsTeamManagement } from "../components/Settings/AgencySettingsTeamManagement";
 import { TabContent } from "../components/Settings/TabContent";
 
 const Settings = () => {
-  const [activeTab, setActiveTab] = useState<number>(0);
-
+  const enum tabOptions {
+    ACCOUNT = "Account",
+    TEAM_MEMBERS = "Team Members",
+  }
   const [currentSettingsView, setcurrentSettingsView] = useState("Account");
   const settingsViewOptions = [
     {
@@ -44,13 +46,10 @@ const Settings = () => {
     {
       key: "teamMembers",
       label: "Team Members",
-      onClick: () => setcurrentSettingsView("TeamMembers"),
-      selected: currentSettingsView === "TeamMembers",
+      onClick: () => setcurrentSettingsView("Team Members"),
+      selected: currentSettingsView === "Team Members",
     },
   ];
-  const handleClick = (tabNumber: number) => {
-    setActiveTab(tabNumber);
-  };
 
   return (
     <ContentDisplay>
@@ -62,19 +61,16 @@ const Settings = () => {
       </SettingsTitle>
       <SettingsTabContainer>
         <SettingsTabBlock>
-          <TabButton isActive={activeTab === 0} onClick={() => handleClick(0)}>
-            Account
-          </TabButton>
-          <TabButton isActive={activeTab === 1} onClick={() => handleClick(1)}>
-            Team Members
-          </TabButton>
+          <TabbedBar options={settingsViewOptions} />
         </SettingsTabBlock>
         <SettingsTabBlock>
-          <TabContent isActive={activeTab === 0}>
+          <TabContent isActive={currentSettingsView === tabOptions.ACCOUNT}>
             <AccountSettings />
             <AgencySettings />
           </TabContent>
-          <TabContent isActive={activeTab === 1}>
+          <TabContent
+            isActive={currentSettingsView === tabOptions.TEAM_MEMBERS}
+          >
             <AgencySettingsTeamManagement />
           </TabContent>
         </SettingsTabBlock>

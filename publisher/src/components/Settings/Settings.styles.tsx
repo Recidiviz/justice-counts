@@ -96,16 +96,3 @@ export const SettingsTabContainer = styled.div`
     margin-left: 0;
   }
 `;
-
-export const TabButton = styled.button<{ isActive: boolean }>`
-  margin-right: 10px;
-  background: inherit;
-  border-left: none;
-  border-right: none;
-  border-top: none;
-  cursor: pointer;
-  ${typography.body};
-  color: ${palette.highlight.grey9};
-  border-bottom: ${(props) =>
-    props.isActive ? `2px solid ${palette.solid.blue}` : "none"};
-`;
