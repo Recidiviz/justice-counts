@@ -348,8 +348,8 @@ export const MetricsDataChart: React.FC = observer(() => {
 
         {/* Data Visualization */}
         <Styled.PanelContainerRight>
-          <ChildAgenciesDropdown view="data" />
           <Styled.MobileDatapointsControls>
+            <ChildAgenciesDropdown view="data" />
             <Styled.CurrentMetricsSystem isSuperagency={isSuperagency}>
               {formatSystemName(currentSystem)}
             </Styled.CurrentMetricsSystem>
