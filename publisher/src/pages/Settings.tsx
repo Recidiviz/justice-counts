@@ -33,6 +33,21 @@ import { TabContent } from "../components/Settings/TabContent";
 const Settings = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
 
+  const [currentSettingsView, setcurrentSettingsView] = useState("Account");
+  const settingsViewOptions = [
+    {
+      key: "account",
+      label: "Account",
+      onClick: () => setcurrentSettingsView("Account"),
+      selected: currentSettingsView === "Account",
+    },
+    {
+      key: "teamMembers",
+      label: "Team Members",
+      onClick: () => setcurrentSettingsView("TeamMembers"),
+      selected: currentSettingsView === "TeamMembers",
+    },
+  ];
   const handleClick = (tabNumber: number) => {
     setActiveTab(tabNumber);
   };
