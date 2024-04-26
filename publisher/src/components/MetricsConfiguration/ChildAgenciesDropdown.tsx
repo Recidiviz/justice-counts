@@ -38,9 +38,8 @@ export const ChildAgenciesDropdown: React.FC<{
   const isSuperagency = userStore.isAgencySuperagency(agencyId);
   const superagencyId = currentAgency?.super_agency_id ?? agencyId;
 
-  const isChildAgency = superagencyChildAgencies?.find(
-    (childAgency) => childAgency.id === currentAgency?.id
-  );
+  const isChildAgency =
+    !currentAgency?.is_superagency && !!currentAgency?.super_agency_id;
 
   const currentSuperagency = userStore.userAgencies?.find(
     (agency) => agency.id === superagencyId

@@ -155,6 +155,14 @@ class AgencyStore {
       })) as Response;
 
       if (response.status !== 200) {
+        runInAction(() => {
+          this.childAgencies = [];
+        });
+        showToast({
+          message: `There was an issue getting a list of child agencies.`,
+          color: "red",
+          timeout: 4000,
+        });
         throw new Error("There was an issue getting a list of child agencies.");
       }
       const responseJson = (await response.json()) as ChildAgenciesRecord;
@@ -275,10 +283,6 @@ class AgencyStore {
     }
     return { settings: newSettings };
   };
-
-  loadChildAgencies(superagencyId: string) {
-    this.getChildAgencies(superagencyId);
-  }
 
   updateAgencySystems = (
     systems: AgencySystem[]

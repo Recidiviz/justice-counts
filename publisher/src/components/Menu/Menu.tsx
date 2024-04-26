@@ -199,7 +199,7 @@ const Menu: React.FC = () => {
     const superagencyId = userStore.isAgencySuperagency(agencyId)
       ? agencyId
       : currentAgency?.super_agency_id;
-    if (superagencyId) agencyStore.loadChildAgencies(String(superagencyId));
+    if (superagencyId) agencyStore.getChildAgencies(String(superagencyId));
   }, [agencyId, currentAgency, agencyStore, userStore]);
 
   return (

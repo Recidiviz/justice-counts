@@ -21,16 +21,23 @@ import {
   CustomInput,
   CustomInputWrapper,
 } from "@justice-counts/common/components/Dropdown";
-import { palette } from "@justice-counts/common/components/GlobalStyles";
+import {
+  MIN_DESKTOP_WIDTH,
+  palette,
+} from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
 export const DropdownWrapper = styled.div`
-  padding-bottom: 14px;
+  padding-bottom: 10px;
   & ${CustomDropdown} {
     width: 100%;
     max-width: 360px;
     border: 1px solid ${palette.highlight.grey2};
     padding: 0 12px;
+
+    @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+      max-width: unset;
+    }
   }
   & ${CustomDropdownMenu} {
     box-shadow: none;
