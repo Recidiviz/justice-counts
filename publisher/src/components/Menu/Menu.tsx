@@ -198,9 +198,14 @@ const Menu: React.FC = () => {
   useEffect(() => {
     const superagencyId = userStore.isAgencySuperagency(agencyId)
       ? agencyId
-      : undefined;
-    agencyStore.loadChildAgencies(superagencyId);
-  }, [agencyId, agencyStore, userStore]);
+      : currentAgency?.super_agency_id;
+    const userHasAccessToSuperagency = userStore.userAgencies?.find(
+      (agency) => agency.id === Number(superagencyId)
+    );
+
+    if (superagencyId && userHasAccessToSuperagency)
+      agencyStore.getChildAgencies(String(superagencyId));
+  }, [agencyId, currentAgency, agencyStore, userStore]);
 
   return (
     <Styled.MenuContainer isMobileMenuOpen={isMobileMenuOpen}>

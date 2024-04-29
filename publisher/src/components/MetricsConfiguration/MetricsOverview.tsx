@@ -33,6 +33,7 @@ import { AppGuideKeys, GuideKeys } from "../HelpCenter/types";
 import { createURLToGuide } from "../HelpCenter/utils";
 import { DisclaimerBanner } from "../primitives";
 import { useSettingsSearchParams } from "../Settings";
+import { ChildAgenciesDropdown } from "./ChildAgenciesDropdown";
 import * as Styled from "./MetricsOverview.styled";
 
 export const MetricsOverview = observer(() => {
@@ -128,6 +129,8 @@ export const MetricsOverview = observer(() => {
               Learn more
             </a>
           </Styled.OverviewDescription>
+
+          <ChildAgenciesDropdown view="metric-config" />
 
           {/* System Selection */}
           {showSystems && (
