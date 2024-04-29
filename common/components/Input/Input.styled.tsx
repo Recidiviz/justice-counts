@@ -209,17 +209,8 @@ export const TooltipLink = styled.span`
   }
 `;
 
-export const NewInputWrapper = styled.div<{
-  overrideNewInputWrapper?: boolean;
-}>`
+export const NewInputWrapper = styled.div`
   display: flex;
-  flex-direction: ${({ overrideNewInputWrapper }) =>
-    overrideNewInputWrapper ? `row` : `column`};
-  align-items: ${({ overrideNewInputWrapper }) =>
-    overrideNewInputWrapper ? `center` : `initial`};
-  color: ${({ overrideNewInputWrapper }) =>
-    overrideNewInputWrapper ? `black` : `initial`};
-  gap: 8px;
 `;
 
 export const NewInput = styled.input<{

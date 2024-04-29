@@ -198,11 +198,10 @@ export function NewInput({
   metricKey,
   hideLabel,
   fullWidth,
-  overrideNewInputWrapper,
   ...props
 }: InputProps) {
   return (
-    <Styled.NewInputWrapper overrideNewInputWrapper={overrideNewInputWrapper}>
+    <Styled.NewInputWrapper>
       {!hideLabel && (
         <Styled.NewInputLabel htmlFor={`input-${name}`} error={Boolean(error)}>
           {label}
