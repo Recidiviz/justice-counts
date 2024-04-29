@@ -44,6 +44,7 @@ export const AgencySettingsSectionRow = styled.div<{ capitalize?: boolean }>`
 `;
 
 export const AgencySettingsSectionColumn = styled.div<{ capitalize?: boolean }>`
+  min-width: 150px;
   flex-direction: column;
   color: ${palette.highlight.grey9};
   ${({ capitalize }) => capitalize && `text-transform: capitalize;`}
@@ -438,7 +439,9 @@ export const SupervisionSystemRow = styled(AgencySettingsInfoRow)<{
   justify-content: space-between;
   gap: 12px;
   color: ${({ isSupervisionPopulationIncluded }) =>
-    isSupervisionPopulationIncluded ? "black" : palette.highlight.grey9};
+    isSupervisionPopulationIncluded
+      ? palette.solid.black
+      : palette.highlight.grey9};
   border: none;
 `;
 

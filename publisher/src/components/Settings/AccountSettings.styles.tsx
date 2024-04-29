@@ -63,7 +63,7 @@ export const AccountSettingsInputsWrapper = styled.div`
 
   label {
     ${typography.body};
-    color: black;
+    color: ${palette.solid.black};
   }
 
   span {

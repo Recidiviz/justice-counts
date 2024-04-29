@@ -33,15 +33,15 @@ import { TabContent } from "../components/Settings/TabContent";
 const Settings = () => {
   const enum tabOptions {
     ACCOUNT = "Account",
-    TEAM_MEMBERS = "Team Members",
+    TEAM_MEMBERS = "Team_Members",
   }
   const [currentSettingsView, setcurrentSettingsView] = useState("Account");
   const settingsViewOptions = [
     {
-      key: "account",
-      label: "Account",
-      onClick: () => setcurrentSettingsView("Account"),
-      selected: currentSettingsView === "Account",
+      key: tabOptions.ACCOUNT.toLowerCase(),
+      label: tabOptions.ACCOUNT,
+      onClick: () => setcurrentSettingsView(tabOptions.ACCOUNT),
+      selected: currentSettingsView === tabOptions.ACCOUNT,
     },
     {
       key: "teamMembers",
