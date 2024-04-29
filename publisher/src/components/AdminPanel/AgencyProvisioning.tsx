@@ -497,22 +497,28 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
      * county, systems, dashboard enabled checkbox, superagency checkbox and child agencies, child agency's superagency
      * selection, and team member additions/deletions/role updates, or a newly created agency has no input for both name and state.
      */
-    const isSaveDisabled =
-      (isCopySuperagencyMetricSettingsSelected &&
-        (!hasChildAgenciesCopyUpdates || !hasMetricsCopyUpdates)) || // Not allows user to save if they want to copy superagency metric settings, but there are no child agencies or metrics selected to copy
-      isSaveInProgress ||
-      !hasSystems ||
-      (selectedAgency
-        ? !hasNameUpdate &&
-          !hasStateUpdate &&
-          !hasCountyUpdates &&
-          !hasSystemUpdates &&
-          !hasDashboardEnabledStatusUpdate &&
-          !hasIsSuperagencyUpdate &&
-          !hasChildAgencyUpdates &&
-          !hasSuperagencyUpdate &&
-          !hasTeamMemberOrRoleUpdates
-        : !(hasNameUpdate && hasStateUpdate && hasSystems));
+    const hasCopySuperagencyMetricSettingsUpdates =
+      hasChildAgenciesCopyUpdates && hasMetricsCopyUpdates;
+    const hasAgencyInfoUpdates =
+      hasNameUpdate ||
+      hasStateUpdate ||
+      hasCountyUpdates ||
+      hasSystemUpdates ||
+      hasDashboardEnabledStatusUpdate ||
+      hasIsSuperagencyUpdate ||
+      hasChildAgencyUpdates ||
+      hasSuperagencyUpdate ||
+      hasTeamMemberOrRoleUpdates;
+    const hasRequiredCreateAgencyFields =
+      hasNameUpdate && hasStateUpdate && hasSystems;
+
+    const isSaveDisabled = isCopySuperagencyMetricSettingsSelected
+      ? !hasCopySuperagencyMetricSettingsUpdates
+      : isSaveInProgress ||
+        !hasSystems ||
+        (selectedAgency
+          ? !hasAgencyInfoUpdates
+          : !hasRequiredCreateAgencyFields);
 
     /** Automatically adds CSG and Recidiviz users to a newly created agency with the proper roles */
     useEffect(() => {
