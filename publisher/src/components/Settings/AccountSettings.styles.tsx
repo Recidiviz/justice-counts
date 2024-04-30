@@ -80,8 +80,10 @@ export const AccountSettingsInputsWrapper = styled.div`
 `;
 
 export const AccountSettingsInputsCol = styled.div`
+  display: flex;
   flex-direction: column;
   margin: 0;
+  gap: 0;
   div {
     flex-direction: column;
     align-items: start;
