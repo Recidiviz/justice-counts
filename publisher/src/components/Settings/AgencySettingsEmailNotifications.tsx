@@ -116,24 +116,26 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
                 onChange={() => handleSubscribeUnsubscribe()}
               />
             </CheckboxSpacingWrapper>
-            <DescriptionSection>
-              Enter the number of days after the end of the reporting period to
-              receive a reminder email:
-              <br />
-              <InputWrapper error={!isValidInput(currentOffsetDays)}>
-                <input
-                  type="text"
-                  value={currentOffsetDays || ""}
-                  onChange={(e) => {
-                    setReminderEmailOffsetDays(e.target.value);
-                    debouncedSaveOffsetDays(
-                      e.target.value,
-                      !isValidInput(e.target.value)
-                    );
-                  }}
-                />
-              </InputWrapper>
-            </DescriptionSection>
+            {isUserSubscribedToEmails && (
+              <DescriptionSection>
+                Enter the number of days after the end of the reporting period
+                to receive a reminder email:
+                <br />
+                <InputWrapper error={!isValidInput(currentOffsetDays)}>
+                  <input
+                    type="text"
+                    value={currentOffsetDays || ""}
+                    onChange={(e) => {
+                      setReminderEmailOffsetDays(e.target.value);
+                      debouncedSaveOffsetDays(
+                        e.target.value,
+                        !isValidInput(e.target.value)
+                      );
+                    }}
+                  />
+                </InputWrapper>
+              </DescriptionSection>
+            )}
             {isUserSubscribedToEmails && !isValidInput(currentOffsetDays) && (
               <ErrorMessage>Please enter a number between 1-1000</ErrorMessage>
             )}
