@@ -351,7 +351,7 @@ class AdminPanelStore {
   }
 
   updateAgencyName(name: string) {
-    this.agencyProvisioningUpdates.name = name.trim();
+    this.agencyProvisioningUpdates.name = name.trim().replaceAll(/s+/, " ");
   }
 
   updateStateCode(stateCode: StateCodeKey | null) {
