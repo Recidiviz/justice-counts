@@ -62,8 +62,8 @@ export const AgencySettingsSupervisions: React.FC<{
   const isAdmin =
     userStore.isAgencyAdmin(agencyId) ||
     userStore.isJusticeCountsAdmin(agencyId);
-  const systemsToDisplayInReadMode = supervisionAgencySystems.filter((system) =>
-    currentAgencySystems?.includes(system.value)
+  const systemsToDisplayInReadMode = supervisionAgencySystems.filter(
+    (system) => currentAgencySystems
   );
 
   const handleSaveClick = () => {
@@ -203,7 +203,7 @@ export const AgencySettingsSupervisions: React.FC<{
                 key={value}
               >
                 {label}
-                <div>{(isIncluded && "Included") || "Not Included"}</div>
+                <div>{isIncluded ? "Included" : "Not Included"}</div>
               </SupervisionSystemRow>
             );
           })
