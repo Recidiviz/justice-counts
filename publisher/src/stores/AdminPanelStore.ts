@@ -465,7 +465,7 @@ class AdminPanelStore {
       | User
       | UserWithAgenciesByID
       | AgencyWithTeamByID
-      | AgencyTeamMember,
+      | AgencyTeamMember
   >(list: T[], order: "ascending" | "descending" = "ascending"): T[] {
     return list.sort((a, b) => {
       if (order === "descending") {
@@ -510,7 +510,7 @@ class AdminPanelStore {
       | Agency
       | AgencyWithTeamByID
       | UserWithAgenciesByID
-      | AgencyTeamMember,
+      | AgencyTeamMember
   >(obj: Record<string, T[]>) {
     return AdminPanelStore.sortListByName(
       Object.values(obj).flatMap((item) => item)
