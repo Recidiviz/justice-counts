@@ -18,6 +18,8 @@
 import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
 import React, { useState } from "react";
 
+import { AppGuideKeys, GuideKeys } from "../components/HelpCenter/types";
+import { createURLToGuide } from "../components/HelpCenter/utils";
 import {
   AccountSettings,
   AgencySettings,
@@ -36,6 +38,10 @@ enum tabOptions {
   TEAM_MEMBERS = "Team_Members",
 }
 const Settings = () => {
+  const learnMoreURL = createURLToGuide(
+    AppGuideKeys.publisher,
+    GuideKeys.SetUpMetrics
+  );
   const [currentSettingsView, setcurrentSettingsView] = useState("Account");
   const settingsViewOptions = [
     {
@@ -58,7 +64,9 @@ const Settings = () => {
         <SettingsTitle>Settings</SettingsTitle>
         <SettingsSubTitle>
           Edit you account settings or manage your team members.
-          <a href="./this/test">&nbsp;Learn More</a>
+          <a href={learnMoreURL} target="_blank" rel="noopener noreferrer">
+            &nbsp;Learn More
+          </a>
         </SettingsSubTitle>
       </SettingsTitleContainer>
       <SettingsTabContainer>

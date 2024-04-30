@@ -62,7 +62,7 @@ export const SettingsTitle = styled.h1`
 export const SettingsSubTitle = styled.div`
   ${typography.body};
 
-  a:link {
+  a {
     text-decoration: none;
     color: ${palette.solid.blue};
   }
