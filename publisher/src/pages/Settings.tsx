@@ -31,11 +31,10 @@ import { AgencySettingsTeamManagement } from "../components/Settings/AgencySetti
 import { TabContent } from "../components/Settings/TabContent";
 
 const Settings = () => {
-  const enum tabOptions {
+  enum tabOptions {
     ACCOUNT = "Account",
     TEAM_MEMBERS = "Team_Members",
   }
-  console.log(tabOptions.TEAM_MEMBERS.toLowerCase());
   const [currentSettingsView, setcurrentSettingsView] = useState("Account");
   const settingsViewOptions = [
     {
