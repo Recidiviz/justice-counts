@@ -45,7 +45,7 @@ const Settings = () => {
     },
     {
       key: tabOptions.TEAM_MEMBERS.toLowerCase(),
-      label: tabOptions.TEAM_MEMBERS,
+      label: tabOptions.TEAM_MEMBERS.replace("_", " "),
       onClick: () => setcurrentSettingsView(tabOptions.TEAM_MEMBERS),
       selected: currentSettingsView === tabOptions.TEAM_MEMBERS,
     },
