@@ -35,6 +35,7 @@ const Settings = () => {
     ACCOUNT = "Account",
     TEAM_MEMBERS = "Team_Members",
   }
+  console.log(tabOptions.TEAM_MEMBERS.toLowerCase());
   const [currentSettingsView, setcurrentSettingsView] = useState("Account");
   const settingsViewOptions = [
     {
@@ -44,10 +45,10 @@ const Settings = () => {
       selected: currentSettingsView === tabOptions.ACCOUNT,
     },
     {
-      key: "teamMembers",
-      label: "Team Members",
-      onClick: () => setcurrentSettingsView("Team Members"),
-      selected: currentSettingsView === "Team Members",
+      key: tabOptions.TEAM_MEMBERS.toLowerCase(),
+      label: tabOptions.TEAM_MEMBERS,
+      onClick: () => setcurrentSettingsView(tabOptions.TEAM_MEMBERS),
+      selected: currentSettingsView === tabOptions.TEAM_MEMBERS,
     },
   ];
 
