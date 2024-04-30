@@ -62,9 +62,6 @@ export const AgencySettingsSupervisions: React.FC<{
   const isAdmin =
     userStore.isAgencyAdmin(agencyId) ||
     userStore.isJusticeCountsAdmin(agencyId);
-  const systemsToDisplayInReadMode = supervisionAgencySystems.filter(
-    (system) => currentAgencySystems
-  );
 
   const handleSaveClick = () => {
     if (supervisionSystemsToSave) {
@@ -193,8 +190,8 @@ export const AgencySettingsSupervisions: React.FC<{
           These are the supervision populations that your agency is responsible
           for.
         </AgencySettingsBlockDescription>
-        {systemsToDisplayInReadMode.length > 0 ? (
-          systemsToDisplayInReadMode.map(({ label, value }) => {
+        {supervisionAgencySystems.length > 0 ? (
+          supervisionAgencySystems.map(({ label, value }) => {
             const isIncluded = supervisionSystemsToSave?.includes(
               value as AgencySystem
             );
