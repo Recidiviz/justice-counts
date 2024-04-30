@@ -41,24 +41,30 @@ export const ContentDisplay = styled.div`
   }
 `;
 
-export const SettingsTitle = styled.h1`
-  ${typography.sizeCSS.title};
+export const SettingsTitleContainer = styled.div`
   margin-top: 4px;
   margin-bottom: 8px;
   padding-bottom: 14px;
   width: 100%;
-
-  &::before {
-    content: "Settings";
-  }
-
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    ${typography.sizeCSS.medium};
     margin: 0;
     padding: 0 0 24px 0;
-    &::before {
-      content: "Settings";
-    }
+  }
+`;
+
+export const SettingsTitle = styled.h1`
+  ${typography.sizeCSS.title};
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    ${typography.sizeCSS.medium};
+  }
+`;
+
+export const SettingsSubTitle = styled.div`
+  ${typography.body};
+
+  a:link {
+    text-decoration: none;
+    color: ${palette.solid.blue};
   }
 `;
 export const SettingsTabBlock = styled.div`
@@ -70,15 +76,6 @@ export const SettingsTabBlock = styled.div`
 export const SettingsTabContent = styled.div<TabContentProps>`
   display: ${(props) => (props.isActive ? "block" : "none")};
   height: 100%;
-`;
-
-export const SettingsTitleString = styled.div`
-  ${typography.body};
-
-  a:link {
-    text-decoration: none;
-    color: ${palette.solid.blue};
-  }
 `;
 
 export const SettingsTabContainer = styled.div`

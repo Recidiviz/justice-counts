@@ -22,10 +22,11 @@ import {
   AccountSettings,
   AgencySettings,
   ContentDisplay,
+  SettingsSubTitle,
   SettingsTabBlock,
   SettingsTabContainer,
   SettingsTitle,
-  SettingsTitleString,
+  SettingsTitleContainer,
 } from "../components/Settings";
 import { AgencySettingsTeamManagement } from "../components/Settings/AgencySettingsTeamManagement";
 import { TabContent } from "../components/Settings/TabContent";
@@ -53,12 +54,13 @@ const Settings = () => {
 
   return (
     <ContentDisplay>
-      <SettingsTitle>
-        <SettingsTitleString>
+      <SettingsTitleContainer>
+        <SettingsTitle>Settings</SettingsTitle>
+        <SettingsSubTitle>
           Edit you account settings or manage your team members.
           <a href="./this/test">&nbsp;Learn More</a>
-        </SettingsTitleString>
-      </SettingsTitle>
+        </SettingsSubTitle>
+      </SettingsTitleContainer>
       <SettingsTabContainer>
         <SettingsTabBlock>
           <TabbedBar options={settingsViewOptions} />
