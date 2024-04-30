@@ -145,6 +145,7 @@ export const AgencySettingsSupervisions: React.FC<{
                 key={value}
                 hasHover={isSettingInEditMode}
                 onClick={() => handleSetSupervisionSystemsToSave(value)}
+                isModal
               >
                 <CheckboxWrapper>
                   <Checkbox

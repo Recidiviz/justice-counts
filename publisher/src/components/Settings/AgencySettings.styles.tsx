@@ -434,9 +434,10 @@ export const EditTeamMemberMenuItem = styled.div`
 // Supervisions
 export const SupervisionSystemRow = styled(AgencySettingsInfoRow)<{
   isSupervisionPopulationIncluded?: boolean;
+  isModal?: boolean;
 }>`
   ${typography.body};
-  justify-content: space-between;
+  justify-content: ${({ isModal }) => (isModal ? "left" : "space-between")};
   gap: 12px;
   color: ${({ isSupervisionPopulationIncluded }) =>
     isSupervisionPopulationIncluded
