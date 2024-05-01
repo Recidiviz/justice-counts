@@ -42,18 +42,18 @@ const Settings = () => {
     AppGuideKeys.publisher,
     GuideKeys.SetUpMetrics
   );
-  const [currentSettingsView, setcurrentSettingsView] = useState("Account");
+  const [currentSettingsView, setCurrentSettingsView] = useState("Account");
   const settingsViewOptions = [
     {
       key: tabOptions.ACCOUNT.toLowerCase(),
       label: tabOptions.ACCOUNT,
-      onClick: () => setcurrentSettingsView(tabOptions.ACCOUNT),
+      onClick: () => setCurrentSettingsView(tabOptions.ACCOUNT),
       selected: currentSettingsView === tabOptions.ACCOUNT,
     },
     {
       key: tabOptions.TEAM_MEMBERS.toLowerCase(),
       label: tabOptions.TEAM_MEMBERS,
-      onClick: () => setcurrentSettingsView(tabOptions.TEAM_MEMBERS),
+      onClick: () => setCurrentSettingsView(tabOptions.TEAM_MEMBERS),
       selected: currentSettingsView === tabOptions.TEAM_MEMBERS,
     },
   ];
