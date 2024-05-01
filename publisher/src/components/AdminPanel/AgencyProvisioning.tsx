@@ -93,6 +93,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       updateChildAgencyIDs,
       updateTeamMembers,
       saveAgencyProvisioningUpdates,
+      saveAgencyName,
       copySuperagencyMetricSettingsToChildAgencies,
     } = adminPanelStore;
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
@@ -248,6 +249,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
     const saveUpdates = async () => {
       setIsSaveInProgress(true);
+
+      // Update final agency name
+      saveAgencyName(agencyProvisioningUpdates.name);
 
       /** Update final list of systems, child agencies, and team members */
       updateSystems(Array.from(selectedSystems));

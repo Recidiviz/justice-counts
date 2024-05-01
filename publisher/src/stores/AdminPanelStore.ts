@@ -354,6 +354,10 @@ class AdminPanelStore {
     this.agencyProvisioningUpdates.name = name;
   }
 
+  saveAgencyName(name: string) {
+    this.agencyProvisioningUpdates.name = name.trim().replaceAll(/\s+/gi, " ");
+  }
+
   updateStateCode(stateCode: StateCodeKey | null) {
     const lowercaseStateCode = stateCode?.toLocaleLowerCase() as StateCodeKey;
     this.agencyProvisioningUpdates.state_code = lowercaseStateCode;
