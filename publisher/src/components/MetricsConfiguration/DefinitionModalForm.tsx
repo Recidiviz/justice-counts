@@ -362,6 +362,21 @@ function DefinitionModalForm({
               </Styled.ChooseDefaultSettings>
             </Styled.Description>
           )}
+
+          <Styled.Description>
+            <Styled.Subtitle>
+              {isMetricDefinitionSettings
+                ? metrics[systemMetricKey]?.label
+                : currentDimension?.label}{" "}
+              description
+            </Styled.Subtitle>
+            <p>
+              {isMetricDefinitionSettings
+                ? metrics[systemMetricKey]?.description
+                : currentDimension?.description}
+            </p>
+          </Styled.Description>
+
           {currentSettings && (
             <Styled.CheckboxWrapper disabled={isReadOnly}>
               {Object.entries(currentSettings).map(
