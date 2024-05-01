@@ -152,10 +152,10 @@ export const MetricsOverview = observer(() => {
         return acc;
       },
       {
-        actionRequiredMetrics: [] as MetricInfo[],
-        availableMetrics: [] as MetricInfo[],
-        unavailableMetrics: [] as MetricInfo[],
-      }
+        actionRequiredMetrics: [],
+        availableMetrics: [],
+        unavailableMetrics: [],
+      } as { [key: string]: MetricInfo[] }
     ) ?? {};
 
   const hasActionRequiredMetrics =
