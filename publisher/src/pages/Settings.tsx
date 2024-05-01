@@ -35,7 +35,7 @@ import { TabContent } from "../components/Settings/TabContent";
 
 enum tabOptions {
   ACCOUNT = "Account",
-  TEAM_MEMBERS = "Team_Members",
+  TEAM_MEMBERS = "Team Members",
 }
 const Settings = () => {
   const learnMoreURL = createURLToGuide(
@@ -52,7 +52,7 @@ const Settings = () => {
     },
     {
       key: tabOptions.TEAM_MEMBERS.toLowerCase(),
-      label: tabOptions.TEAM_MEMBERS.replace("_", " "),
+      label: tabOptions.TEAM_MEMBERS,
       onClick: () => setcurrentSettingsView(tabOptions.TEAM_MEMBERS),
       selected: currentSettingsView === tabOptions.TEAM_MEMBERS,
     },
