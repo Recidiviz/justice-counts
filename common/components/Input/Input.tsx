@@ -41,7 +41,6 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   textSize?: InputTextSize;
   hideLabel?: boolean;
   fullWidth?: boolean;
-  overrideNewInputWrapper?: boolean;
 }
 
 export function Input({
