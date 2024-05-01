@@ -82,41 +82,86 @@ export const MetricsOverview = observer(() => {
 
   const metricsByCurrentSystem = getMetricsBySystem(currentSystem);
 
-  const generateIsMetricStatus = (status: boolean | null) => {
-    return ({ key, metric }: { key: string; metric: MetricInfo }) => {
-      if (
-        !(
-          hasSupervisionSubsystems &&
-          metric.disaggregatedBySupervisionSubsystems
-        )
-      ) {
-        return metric.enabled === status;
-      }
-
-      return agencySupervisionSubsystems.find((subsystem) => {
-        const replacedSystemMetricKey = replaceSystemMetricKeyWithNewSystem(
-          `SUPERVISION-${key}`,
-          subsystem
-        );
-        return metrics[replacedSystemMetricKey].enabled === status;
-      });
-    };
+  const hasSupervisionSubsystemWithEnabledStatus = (
+    status: boolean | null,
+    metricKey: string | undefined
+  ) => {
+    if (!metricKey) return undefined;
+    return agencySupervisionSubsystems?.find((subsystem) => {
+      const replacedSystemMetricKey = replaceSystemMetricKeyWithNewSystem(
+        `SUPERVISION-${metricKey}`,
+        subsystem
+      );
+      return metrics[replacedSystemMetricKey].enabled === status;
+    });
   };
-  const isMetricEnabled = generateIsMetricStatus(true);
-  const isMetricDisabled = generateIsMetricStatus(false);
-  const isMetricUntouched = generateIsMetricStatus(null);
 
-  const actionRequiredMetrics =
-    metricsByCurrentSystem?.filter(isMetricUntouched);
+  const { actionRequiredMetrics, availableMetrics, unavailableMetrics } =
+    metricsByCurrentSystem?.reduce(
+      (acc, metric) => {
+        // Default grouping for agencies without supervision subsystems
+        if (
+          !(
+            hasSupervisionSubsystems &&
+            metric.disaggregatedBySupervisionSubsystems
+          )
+        ) {
+          if (metric.enabled) {
+            acc.availableMetrics.push(metric);
+            return acc;
+          }
+          if (metric.enabled === false) {
+            acc.unavailableMetrics.push(metric);
+            return acc;
+          }
+          if (metric.enabled === null) {
+            acc.actionRequiredMetrics.push(metric);
+            return acc;
+          }
+        }
+
+        /**
+         * For supervision agencies w/ subsystems w/ disaggregated metrics, we need to do
+         * an extra check of all of the subsystems' metric enabled status.
+         *
+         * `actionRequiredMetrics` will include the metrics if at least one subsystem has the metric as `null` (untouched)
+         *     - currently, we will never reach this case as disaggregating a metric by default enables the subsystem metrics
+         * `availableMetrics` will include the metric if at least one subsystem has the metric enabled
+         * `unavailableMetrics` will include the metric if ALL of the subsystems have the metric disabled
+         *
+         */
+        const hasSubsystemsWithEnabledMetrics =
+          hasSupervisionSubsystemWithEnabledStatus(true, metric.key);
+        const hasSubsystemsWithDisabledMetrics =
+          hasSupervisionSubsystemWithEnabledStatus(false, metric.key);
+        const hasSubsystemsWithUntoucheddMetrics =
+          hasSupervisionSubsystemWithEnabledStatus(null, metric.key);
+
+        if (hasSubsystemsWithEnabledMetrics) {
+          acc.availableMetrics.push(metric);
+          return acc;
+        }
+        if (hasSubsystemsWithDisabledMetrics) {
+          acc.unavailableMetrics.push(metric);
+          return acc;
+        }
+        if (hasSubsystemsWithUntoucheddMetrics) {
+          acc.actionRequiredMetrics.push(metric);
+          return acc;
+        }
+        return acc;
+      },
+      {
+        actionRequiredMetrics: [] as MetricInfo[],
+        availableMetrics: [] as MetricInfo[],
+        unavailableMetrics: [] as MetricInfo[],
+      }
+    ) ?? {};
 
   const hasActionRequiredMetrics =
     actionRequiredMetrics && actionRequiredMetrics.length > 0;
 
-  const availableMetrics = metricsByCurrentSystem?.filter(isMetricEnabled);
-
   const hasAvailableMetrics = availableMetrics && availableMetrics.length > 0;
-
-  const unavailableMetrics = metricsByCurrentSystem?.filter(isMetricDisabled);
 
   const hasUnavailableMetrics =
     unavailableMetrics && unavailableMetrics.length > 0;
@@ -181,13 +226,13 @@ export const MetricsOverview = observer(() => {
                 <Styled.MetricsSectionTitle isAlertCaption>
                   Action required
                 </Styled.MetricsSectionTitle>
-                {actionRequiredMetrics?.map(({ key, metric }) => (
+                {actionRequiredMetrics?.map((metric) => (
                   <Styled.MetricItem
-                    key={key}
+                    key={metric.key}
                     onClick={() =>
                       setSettingsSearchParams({
                         system: currentSystem,
-                        metric: key,
+                        metric: metric.key,
                       })
                     }
                   >
@@ -204,13 +249,13 @@ export const MetricsOverview = observer(() => {
                 <Styled.MetricsSectionTitle>
                   Available
                 </Styled.MetricsSectionTitle>
-                {availableMetrics?.map(({ key, metric }) => (
+                {availableMetrics?.map((metric) => (
                   <Styled.MetricItem
-                    key={key}
+                    key={metric.key}
                     onClick={() =>
                       setSettingsSearchParams({
                         system: currentSystem,
-                        metric: key,
+                        metric: metric.key,
                       })
                     }
                   >
@@ -232,13 +277,13 @@ export const MetricsOverview = observer(() => {
                 <Styled.MetricsSectionTitle>
                   Unavailable Metrics
                 </Styled.MetricsSectionTitle>
-                {unavailableMetrics?.map(({ key, metric }) => (
+                {unavailableMetrics?.map((metric) => (
                   <Styled.MetricItem
-                    key={key}
+                    key={metric.key}
                     onClick={() =>
                       setSettingsSearchParams({
                         system: currentSystem,
-                        metric: key,
+                        metric: metric.key,
                       })
                     }
                   >

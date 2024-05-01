@@ -176,15 +176,12 @@ class MetricConfigStore {
             MetricConfigStore.splitSystemMetricKey(systemMetricKey);
 
           if (system.toLowerCase() === systemName.toLowerCase()) {
-            filteredMetrics.push({ key: metricKey, metric });
+            filteredMetrics.push({ key: metricKey, ...metric });
           }
 
           return filteredMetrics;
         },
-        [] as {
-          key: string;
-          metric: MetricInfo;
-        }[]
+        [] as MetricInfo[]
       );
 
       return metrics;
