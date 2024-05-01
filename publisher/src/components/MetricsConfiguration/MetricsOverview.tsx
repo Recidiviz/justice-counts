@@ -82,6 +82,40 @@ export const MetricsOverview = observer(() => {
 
   const metricsByCurrentSystem = getMetricsBySystem(currentSystem);
 
+  const getMetricFrequency = (metric: MetricInfo) => {
+    if (
+      !(hasSupervisionSubsystems && metric.disaggregatedBySupervisionSubsystems)
+    ) {
+      return metric.customFrequency || metric.defaultFrequency;
+    }
+
+    const firstEnabledSupervisionSubsystem = agencySupervisionSubsystems?.find(
+      (subsystem) => {
+        const replacedSystemMetricKey = replaceSystemMetricKeyWithNewSystem(
+          `SUPERVISION-${metric.key}`,
+          subsystem
+        );
+        return metrics[replacedSystemMetricKey].enabled;
+      }
+    );
+
+    const firstEnabledSupervisionSubsystemMetricKey =
+      firstEnabledSupervisionSubsystem &&
+      replaceSystemMetricKeyWithNewSystem(
+        `SUPERVISION-${metric.key}`,
+        firstEnabledSupervisionSubsystem
+      );
+    const firstEnabledSupervisionSubsystemMetric =
+      firstEnabledSupervisionSubsystemMetricKey
+        ? metrics[firstEnabledSupervisionSubsystemMetricKey]
+        : {};
+
+    return (
+      firstEnabledSupervisionSubsystemMetric.customFrequency ||
+      firstEnabledSupervisionSubsystemMetric.defaultFrequency
+    );
+  };
+
   const hasSupervisionSubsystemWithEnabledStatus = (
     status: boolean | null,
     metricKey: string | undefined
@@ -263,7 +297,7 @@ export const MetricsOverview = observer(() => {
                       {metric.label}
                       <span>
                         {frequencyString(
-                          metric.customFrequency || metric.defaultFrequency
+                          getMetricFrequency(metric)
                         )?.toLowerCase()}
                       </span>
                     </Styled.MetricItemName>
