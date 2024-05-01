@@ -32,17 +32,22 @@ import { ReactComponent as RightArrowIcon } from "../assets/bold-right-arrow-ico
 import { AppGuideKeys, GuideKeys } from "../HelpCenter/types";
 import { createURLToGuide } from "../HelpCenter/utils";
 import { DisclaimerBanner } from "../primitives";
-import { useSettingsSearchParams } from "../Settings";
+import {
+  replaceSystemMetricKeyWithNewSystem,
+  useSettingsSearchParams,
+} from "../Settings";
 import { ChildAgenciesDropdown } from "./ChildAgenciesDropdown";
 import * as Styled from "./MetricsOverview.styled";
+import { MetricInfo } from "./types";
 
 export const MetricsOverview = observer(() => {
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
+
   const { agencyId } = useParams() as { agencyId: string };
   const { userStore, metricConfigStore } = useStore();
 
-  const { getMetricsBySystem } = metricConfigStore;
+  const { metrics, getMetricsBySystem } = metricConfigStore;
 
   const { system: systemSearchParam } = settingsSearchParams;
 
@@ -58,6 +63,13 @@ export const MetricsOverview = observer(() => {
   const currentAgency = userStore.getAgency(agencyId);
   const currentSystem = systemSearchParam || currentAgency?.systems[0];
 
+  const agencySupervisionSubsystems = currentAgency?.systems.filter((system) =>
+    SupervisionSubsystems.includes(system)
+  );
+
+  const hasSupervisionSubsystems =
+    agencySupervisionSubsystems && agencySupervisionSubsystems.length > 0;
+
   const isSuperagency = userStore.isAgencySuperagency(agencyId);
 
   const isSuperagencySystem = currentSystem === "SUPERAGENCY";
@@ -68,20 +80,44 @@ export const MetricsOverview = observer(() => {
   const showSystems =
     currentAgency?.systems && currentAgency?.systems?.length > 1;
 
-  const actionRequiredMetrics = getMetricsBySystem(currentSystem)?.filter(
-    ({ metric }) => metric.enabled === null
-  );
+  const metricsByCurrentSystem = getMetricsBySystem(currentSystem);
+
+  const generateIsMetricStatus = (status: boolean | null) => {
+    return ({ key, metric }: { key: string; metric: MetricInfo }) => {
+      if (
+        !(
+          hasSupervisionSubsystems &&
+          metric.disaggregatedBySupervisionSubsystems
+        )
+      ) {
+        return metric.enabled === status;
+      }
+
+      return agencySupervisionSubsystems.find((subsystem) => {
+        const replacedSystemMetricKey = replaceSystemMetricKeyWithNewSystem(
+          `SUPERVISION-${key}`,
+          subsystem
+        );
+        return metrics[replacedSystemMetricKey].enabled === status;
+      });
+    };
+  };
+  const isMetricEnabled = generateIsMetricStatus(true);
+  const isMetricDisabled = generateIsMetricStatus(false);
+  const isMetricUntouched = generateIsMetricStatus(null);
+
+  const actionRequiredMetrics =
+    metricsByCurrentSystem?.filter(isMetricUntouched);
+
   const hasActionRequiredMetrics =
     actionRequiredMetrics && actionRequiredMetrics.length > 0;
 
-  const availableMetrics = getMetricsBySystem(currentSystem)?.filter(
-    ({ metric }) => metric.enabled
-  );
+  const availableMetrics = metricsByCurrentSystem?.filter(isMetricEnabled);
+
   const hasAvailableMetrics = availableMetrics && availableMetrics.length > 0;
 
-  const unavailableMetrics = getMetricsBySystem(currentSystem)?.filter(
-    ({ metric }) => metric.enabled === false
-  );
+  const unavailableMetrics = metricsByCurrentSystem?.filter(isMetricDisabled);
+
   const hasUnavailableMetrics =
     unavailableMetrics && unavailableMetrics.length > 0;
 
@@ -181,7 +217,9 @@ export const MetricsOverview = observer(() => {
                     <Styled.MetricItemName>
                       {metric.label}
                       <span>
-                        {frequencyString(metric.customFrequency)?.toLowerCase()}
+                        {frequencyString(
+                          metric.customFrequency || metric.defaultFrequency
+                        )?.toLowerCase()}
                       </span>
                     </Styled.MetricItemName>
                     <RightArrowIcon width="16px" height="16px" />

@@ -25,7 +25,6 @@ import {
   MetricContext,
   MetricDisaggregationDimensions,
   MetricDisaggregations,
-  ReportFrequency,
 } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction } from "mobx";
 
@@ -184,13 +183,7 @@ class MetricConfigStore {
         },
         [] as {
           key: string;
-          metric: {
-            enabled?: boolean | null;
-            label?: string;
-            description?: Metric["description"];
-            defaultFrequency?: ReportFrequency;
-            customFrequency?: Metric["custom_frequency"];
-          };
+          metric: MetricInfo;
         }[]
       );
 
