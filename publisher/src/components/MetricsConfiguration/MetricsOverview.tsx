@@ -82,6 +82,7 @@ export const MetricsOverview = observer(() => {
 
   const metricsByCurrentSystem = getMetricsBySystem(currentSystem);
 
+  // Returns a given metric frequency accounting for supervision agencies disaggregated by subsystems
   const getMetricFrequency = (metric: MetricInfo) => {
     // Default frequencies (custom or default) for agencies without supervision subsystems
     if (
@@ -92,7 +93,7 @@ export const MetricsOverview = observer(() => {
 
     /**
      * For supervision agencies w/ subsystems and disaggregated metrics, we find the first
-     * enabled subsystem and use its custom/default frequency.
+     * enabled subsystem and use its custom/default frequency
      */
     const firstEnabledSupervisionSubsystem = agencySupervisionSubsystems?.find(
       (subsystem) => {
@@ -121,12 +122,16 @@ export const MetricsOverview = observer(() => {
     );
   };
 
+  /**
+   * Returns a boolean that indicates whether or not a supervision subsystem's metric's
+   * enabled status matches the `status` argument provided to the function
+   */
   const hasSupervisionSubsystemWithEnabledStatus = (
     status: boolean | null,
     metricKey: string | undefined
   ) => {
     if (!metricKey) return undefined;
-    return agencySupervisionSubsystems?.find((subsystem) => {
+    return !!agencySupervisionSubsystems?.find((subsystem) => {
       const replacedSystemMetricKey = replaceSystemMetricKeyWithNewSystem(
         `SUPERVISION-${metricKey}`,
         subsystem
