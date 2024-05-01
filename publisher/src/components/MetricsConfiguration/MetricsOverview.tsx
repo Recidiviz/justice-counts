@@ -123,8 +123,8 @@ export const MetricsOverview = observer(() => {
   };
 
   /**
-   * Returns a boolean that indicates whether or not a supervision subsystem's metric's
-   * enabled status matches the `status` argument provided to the function
+   * Returns a boolean that indicates whether or not a supervision agency has a
+   * subsystem metric with an enabled status matching the `status` argument provided
    */
   const hasSupervisionSubsystemWithEnabledStatus = (
     status: boolean | null,
