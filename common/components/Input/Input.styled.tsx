@@ -211,6 +211,8 @@ export const TooltipLink = styled.span`
 
 export const NewInputWrapper = styled.div`
   display: flex;
+  flex-direction: column;
+  gap: 8px;
 `;
 
 export const NewInput = styled.input<{
