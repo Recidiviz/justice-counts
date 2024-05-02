@@ -25,7 +25,6 @@ import {
   MetricContext,
   MetricDisaggregationDimensions,
   MetricDisaggregations,
-  ReportFrequency,
 } from "@justice-counts/common/types";
 import { makeAutoObservable, runInAction } from "mobx";
 
@@ -177,21 +176,12 @@ class MetricConfigStore {
             MetricConfigStore.splitSystemMetricKey(systemMetricKey);
 
           if (system.toLowerCase() === systemName.toLowerCase()) {
-            filteredMetrics.push({ key: metricKey, metric });
+            filteredMetrics.push({ key: metricKey, ...metric });
           }
 
           return filteredMetrics;
         },
-        [] as {
-          key: string;
-          metric: {
-            enabled?: boolean | null;
-            label?: string;
-            description?: Metric["description"];
-            defaultFrequency?: ReportFrequency;
-            customFrequency?: Metric["custom_frequency"];
-          };
-        }[]
+        [] as MetricInfo[]
       );
 
       return metrics;

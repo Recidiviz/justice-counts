@@ -23,8 +23,8 @@ export const slugify = (str: string): string =>
   str?.replace(/\s/g, "-")?.toLowerCase();
 
 export const frequencyString = (frequency?: string) => {
-  if (frequency === "ANNUAL") {
-    return "ANNUALLY";
+  if (frequency?.includes("ANNUAL")) {
+    return frequency.replaceAll("ANNUAL", "ANNUALLY");
   }
   return frequency;
 };
