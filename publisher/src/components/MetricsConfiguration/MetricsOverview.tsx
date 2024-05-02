@@ -20,7 +20,10 @@ import {
   AgencySystem,
   SupervisionSubsystems,
 } from "@justice-counts/common/types";
-import { frequencyString } from "@justice-counts/common/utils/helperUtils";
+import {
+  frequencyString,
+  removeSnakeCase,
+} from "@justice-counts/common/utils/helperUtils";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { useParams } from "react-router-dom";
@@ -82,44 +85,37 @@ export const MetricsOverview = observer(() => {
 
   const metricsByCurrentSystem = getMetricsBySystem(currentSystem);
 
-  // Returns a given metric frequency accounting for supervision agencies disaggregated by subsystems
+  // Returns a given metric frequency(ies) accounting for supervision agencies disaggregated by subsystems
   const getMetricFrequency = (metric: MetricInfo) => {
     // Default frequencies (custom or default) for agencies without supervision subsystems
     if (
       !(hasSupervisionSubsystems && metric.disaggregatedBySupervisionSubsystems)
     ) {
-      return metric.customFrequency || metric.defaultFrequency;
+      return [metric.customFrequency || metric.defaultFrequency];
     }
 
     /**
-     * For supervision agencies w/ subsystems and disaggregated metrics, we find the first
-     * enabled subsystem and use its custom/default frequency
+     * For supervision agencies w/ subsystems and disaggregated metrics, we find all
+     * enabled subsystems and return a list of them by subsystem
      */
-    const firstEnabledSupervisionSubsystem = agencySupervisionSubsystems?.find(
-      (subsystem) => {
+    const supervisionSubsystemMetricFrequencies =
+      agencySupervisionSubsystems?.reduce((acc, subsystem) => {
         const replacedSystemMetricKey = replaceSystemMetricKeyWithNewSystem(
           `SUPERVISION-${metric.key}`,
           subsystem
         );
-        return metrics[replacedSystemMetricKey].enabled;
-      }
-    );
+        if (metrics[replacedSystemMetricKey].enabled) {
+          const frequency =
+            metrics[replacedSystemMetricKey].customFrequency ||
+            metrics[replacedSystemMetricKey].defaultFrequency;
+          acc.push(
+            `${frequency} (${removeSnakeCase(subsystem).toLocaleLowerCase()})`
+          );
+        }
+        return acc;
+      }, [] as string[]);
 
-    const firstEnabledSupervisionSubsystemMetricKey =
-      firstEnabledSupervisionSubsystem &&
-      replaceSystemMetricKeyWithNewSystem(
-        `SUPERVISION-${metric.key}`,
-        firstEnabledSupervisionSubsystem
-      );
-    const firstEnabledSupervisionSubsystemMetric =
-      firstEnabledSupervisionSubsystemMetricKey
-        ? metrics[firstEnabledSupervisionSubsystemMetricKey]
-        : {};
-
-    return (
-      firstEnabledSupervisionSubsystemMetric.customFrequency ||
-      firstEnabledSupervisionSubsystemMetric.defaultFrequency
-    );
+    return supervisionSubsystemMetricFrequencies;
   };
 
   /**
@@ -293,27 +289,28 @@ export const MetricsOverview = observer(() => {
                 <Styled.MetricsSectionTitle>
                   Available
                 </Styled.MetricsSectionTitle>
-                {availableMetrics?.map((metric) => (
-                  <Styled.MetricItem
-                    key={metric.key}
-                    onClick={() =>
-                      setSettingsSearchParams({
-                        system: currentSystem,
-                        metric: metric.key,
-                      })
-                    }
-                  >
-                    <Styled.MetricItemName>
-                      {metric.label}
-                      <span>
-                        {frequencyString(
-                          getMetricFrequency(metric)
-                        )?.toLowerCase()}
-                      </span>
-                    </Styled.MetricItemName>
-                    <RightArrowIcon width="16px" height="16px" />
-                  </Styled.MetricItem>
-                ))}
+                {availableMetrics?.map((metric) => {
+                  const frequency = getMetricFrequency(metric);
+                  return (
+                    <Styled.MetricItem
+                      key={metric.key}
+                      onClick={() =>
+                        setSettingsSearchParams({
+                          system: currentSystem,
+                          metric: metric.key,
+                        })
+                      }
+                    >
+                      <Styled.MetricItemName>
+                        {metric.label}
+                        <span>
+                          {frequencyString(frequency.join(", "))?.toLowerCase()}
+                        </span>
+                      </Styled.MetricItemName>
+                      <RightArrowIcon width="16px" height="16px" />
+                    </Styled.MetricItem>
+                  );
+                })}
               </Styled.MetricsSection>
             )}
             {hasUnavailableMetrics && (
