@@ -330,14 +330,18 @@ function DefinitionModalForm({
         activeDimensionKey
       ]) ||
     undefined;
+  const displayLabel = isMetricDefinitionSettings
+    ? metrics[systemMetricKey]?.label
+    : currentDimension?.label;
+  const displayDescription = isMetricDefinitionSettings
+    ? metrics[systemMetricKey]?.description
+    : currentDimension?.description;
 
   return (
     <Styled.Wrapper>
       <Styled.Content>
         <Styled.Header>
-          {isMetricDefinitionSettings
-            ? metrics[systemMetricKey]?.label
-            : currentDimension?.label}
+          {displayLabel}
           <Styled.CloseButton onClick={closeModal}>&#10005;</Styled.CloseButton>
         </Styled.Header>
         <Styled.ScrollableInnerWrapper>
@@ -362,6 +366,12 @@ function DefinitionModalForm({
               </Styled.ChooseDefaultSettings>
             </Styled.Description>
           )}
+
+          <Styled.Description>
+            <Styled.Subtitle>{displayLabel} description</Styled.Subtitle>
+            <p>{displayDescription}</p>
+          </Styled.Description>
+
           {currentSettings && (
             <Styled.CheckboxWrapper disabled={isReadOnly}>
               {Object.entries(currentSettings).map(
