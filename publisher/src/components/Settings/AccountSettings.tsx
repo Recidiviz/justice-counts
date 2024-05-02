@@ -15,72 +15,100 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Button } from "@justice-counts/common/components/Button";
 import { NewInput } from "@justice-counts/common/components/Input";
+import { Modal } from "@justice-counts/common/components/Modal";
 import { debounce as _debounce } from "lodash";
 import React, { useRef } from "react";
 
 import { useStore } from "../../stores";
 import {
-  AccountSettingsInputsCol,
   AccountSettingsInputsWrapper,
+  AccountSettingsSectionCol,
+  AccountSettingsSectionData,
+  AccountSettingsSectionLabel,
   AccountSettingsWrapper,
 } from "./AccountSettings.styles";
+import { EditButtonContainer } from "./AgencySettings.styles";
 
 export const AccountSettings = () => {
   const { userStore } = useStore();
   const [email, setEmail] = React.useState<string>(userStore?.email || "");
   const [name, setName] = React.useState<string>(userStore?.name || "");
+  const [isSettingInEditMode, setIsSettingInEditMode] =
+    React.useState<boolean>(false);
 
+  const onClickClose = () => {
+    setIsSettingInEditMode(!isSettingInEditMode);
+  };
   const saveNameEmailChange = (nameUpdate?: string, emailUpdate?: string) => {
-    if (nameUpdate) {
-      return userStore.updateUserNameAndEmail(nameUpdate, email);
-    }
-    if (emailUpdate) {
-      return userStore.updateUserNameAndEmail(name, emailUpdate);
+    if (nameUpdate || emailUpdate) {
+      setIsSettingInEditMode(!isSettingInEditMode);
+      return userStore.updateUserNameAndEmail(
+        nameUpdate ?? name,
+        emailUpdate ?? email
+      );
     }
   };
 
   const debouncedSave = useRef(_debounce(saveNameEmailChange, 1500)).current;
 
   return (
-    <AccountSettingsWrapper>
-      <AccountSettingsInputsWrapper>
-        <AccountSettingsInputsCol>
-          <NewInput
-            style={{ marginBottom: "0" }}
-            persistLabel
-            label=" Name"
-            value={name}
-            onChange={(e) => {
-              setName((prev) => e.target.value.trimStart() || prev);
-              debouncedSave(
-                e.target.value.trimStart() || userStore?.name,
-                undefined
-              );
-            }}
-          />
-          <span>
-            <a href="./namemodal">Edit</a>
-          </span>
-        </AccountSettingsInputsCol>
-        <AccountSettingsInputsCol>
-          <NewInput
-            persistLabel
-            label="Email"
-            value={email}
-            onChange={(e) => {
-              setEmail((prev) => e.target.value.trimStart() || prev);
-              debouncedSave(
-                undefined,
-                e.target.value.trimStart() || userStore?.email
-              );
-            }}
-          />
-          <span>
-            <a href="./emailmodal">Edit</a>
-          </span>
-        </AccountSettingsInputsCol>
-      </AccountSettingsInputsWrapper>
-    </AccountSettingsWrapper>
+    <>
+      {isSettingInEditMode && (
+        <Modal
+          title="Name"
+          description={
+            <AccountSettingsInputsWrapper>
+              <NewInput
+                style={{ marginBottom: "0" }}
+                persistLabel
+                label="Full Name"
+                value={name}
+                onChange={(e) => {
+                  setName(() => e.target.value.trimStart());
+                }}
+              />
+            </AccountSettingsInputsWrapper>
+          }
+          buttons={[
+            {
+              label: "Save",
+              onClick: () => {
+                saveNameEmailChange(name);
+                setIsSettingInEditMode(!isSettingInEditMode);
+              },
+            },
+          ]}
+          modalBackground="opaque"
+          onClickClose={onClickClose}
+        />
+      )}
+
+      <AccountSettingsWrapper>
+        <AccountSettingsInputsWrapper>
+          <AccountSettingsSectionCol>
+            <AccountSettingsSectionLabel>Name</AccountSettingsSectionLabel>
+            <AccountSettingsSectionData>{name}</AccountSettingsSectionData>
+            <EditButtonContainer>
+              <Button
+                label={<>Edit</>}
+                onClick={() => {
+                  setIsSettingInEditMode(true);
+                }}
+                labelColor="blue"
+                noSidePadding
+                noTopBottomPadding
+                noHover
+              />
+            </EditButtonContainer>
+          </AccountSettingsSectionCol>
+          <AccountSettingsSectionCol>
+            <AccountSettingsSectionLabel>Email</AccountSettingsSectionLabel>
+            <AccountSettingsSectionData>{email}</AccountSettingsSectionData>
+          </AccountSettingsSectionCol>
+        </AccountSettingsInputsWrapper>
+      </AccountSettingsWrapper>
+    </>
   );
 };

@@ -19,6 +19,7 @@ import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 
 import alertIcon from "../../assets/alert-icon.png";
+import xCloseLg from "../../assets/close-icon-lg.svg";
 import successIcon from "../../assets/success-icon.png";
 import warningIcon from "../../assets/warning-icon.svg";
 import { Button, ButtonColor } from "../Button";
@@ -36,6 +37,7 @@ type ModalProps = Partial<{
   mediumTitle: boolean;
   customPadding?: string;
   children?: React.ReactNode;
+  onClickClose?: () => void | undefined;
 }>;
 
 export function Modal({
@@ -49,6 +51,7 @@ export function Modal({
   mediumTitle,
   customPadding,
   children,
+  onClickClose,
 }: ModalProps) {
   const primaryButtonColor = (): ButtonColor => {
     if (modalType === "alert") return "red";
@@ -65,7 +68,7 @@ export function Modal({
   }, []);
 
   const Portal = (
-    <Styled.OuterWrapper modalBackground={modalBackground}>
+    <Styled.OuterWrapper {...{ modalBackground, onClickClose }}>
       {children || (
         <Styled.InnerWrapper
           modalType={modalType}
@@ -75,7 +78,15 @@ export function Modal({
           {modalType === "success" && <Styled.Icon src={successIcon} alt="" />}
           {modalType === "warning" && <Styled.Icon src={warningIcon} alt="" />}
           {modalType === "alert" && <Styled.Icon src={alertIcon} alt="" />}
-          <Styled.Title mediumTitle={mediumTitle}>{title}</Styled.Title>
+          <Styled.ModalTitleWrapper>
+            <Styled.Title mediumTitle={mediumTitle}>{title}</Styled.Title>
+            {onClickClose && (
+              <Button
+                label={<img src={xCloseLg} alt="X" />}
+                onClick={onClickClose}
+              />
+            )}
+          </Styled.ModalTitleWrapper>
           <Styled.Description>{description}</Styled.Description>
           <Styled.ButtonsContainer modalType={modalType}>
             {buttons?.map((button, index) => (

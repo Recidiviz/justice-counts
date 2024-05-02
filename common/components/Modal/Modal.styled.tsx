@@ -116,3 +116,9 @@ export const ButtonsContainer = styled.div<{
     margin-left: auto;
   }
 `;
+
+export const ModalTitleWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
