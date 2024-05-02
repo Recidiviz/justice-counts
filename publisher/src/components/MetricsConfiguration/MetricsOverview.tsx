@@ -96,7 +96,7 @@ export const MetricsOverview = observer(() => {
 
     /**
      * For supervision agencies w/ subsystems and disaggregated metrics, we find all
-     * enabled subsystems and return a list of them by subsystem
+     * enabled subsystems and return a list of their frequency and subsystem name.
      */
     const supervisionSubsystemMetricFrequencies =
       agencySupervisionSubsystems?.reduce((acc, subsystem) => {
