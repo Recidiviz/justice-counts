@@ -330,13 +330,13 @@ function DefinitionModalForm({
         activeDimensionKey
       ]) ||
     undefined;
-
   const displayLabel = isMetricDefinitionSettings
     ? metrics[systemMetricKey]?.label
     : currentDimension?.label;
   const displayDescription = isMetricDefinitionSettings
     ? metrics[systemMetricKey]?.description
     : currentDimension?.description;
+
   return (
     <Styled.Wrapper>
       <Styled.Content>
