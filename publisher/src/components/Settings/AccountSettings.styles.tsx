@@ -44,7 +44,6 @@ export const AccountSettingsTitle = styled.h1`
     padding: 0 0 24px 0;
   }
 `;
-
 export const AccountSettingsInputsWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -53,48 +52,19 @@ export const AccountSettingsInputsWrapper = styled.div`
   padding-top: 24px;
   border-bottom: 1px solid ${palette.solid.lightgrey4};
 
-  input {
-    padding-left: 0;
-    border: none;
-    background-color: initial;
-    ${typography.body};
-    color: ${palette.highlight.grey9};
-  }
-
-  label {
-    ${typography.body};
-    color: ${palette.solid.black};
-  }
-
-  span {
-    a {
-      text-decoration: none;
-    }
-  }
-
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
     gap: 0;
-    margin-left: 0px;
+    margin-left: 0;
   }
 `;
 
-export const AccountSettingsInputsCol = styled.div`
-  display: flex;
+export const AccountSettingsSectionCol = styled.div`
   flex-direction: column;
   margin: 0;
-  gap: 0;
   div {
     flex-direction: column;
     align-items: start;
-
-    label {
-      flex-direction: row;
-    }
-
-    input {
-      flex-direction: row;
-    }
   }
 
   a {
@@ -104,6 +74,17 @@ export const AccountSettingsInputsCol = styled.div`
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: row;
     gap: 0;
-    margin-left: 0px;
+    margin-left: 0;
   }
+`;
+
+export const AccountSettingsSectionLabel = styled.div`
+  flex-direction: row;
+  margin-bottom: 16px;
+`;
+
+export const AccountSettingsSectionData = styled.div`
+  flex-direction: row;
+  margin-bottom: 16px;
+  color: ${palette.highlight.grey9};
 `;
