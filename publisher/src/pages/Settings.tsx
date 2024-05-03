@@ -40,9 +40,11 @@ enum tabOptions {
 const Settings = () => {
   const learnMoreURL = createURLToGuide(
     AppGuideKeys.publisher,
-    GuideKeys.SetUpMetrics
+    GuideKeys.AgencySettings
   );
-  const [currentSettingsView, setCurrentSettingsView] = useState("Account");
+  const [currentSettingsView, setCurrentSettingsView] = useState(
+    tabOptions.ACCOUNT
+  );
   const settingsViewOptions = [
     {
       key: tabOptions.ACCOUNT.toLowerCase(),
