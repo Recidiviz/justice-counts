@@ -17,6 +17,7 @@
 
 import {
   AgencySystem,
+  AgencySystems,
   AgencyTeamMember,
   AgencyTeamMemberRole,
 } from "@justice-counts/common/types";
@@ -25,6 +26,8 @@ import { makeAutoObservable, runInAction } from "mobx";
 
 import {
   Agency,
+  AgencyMetric,
+  AgencyMetricResponse,
   AgencyProvisioningUpdates,
   AgencyResponse,
   AgencyTeamUpdates,
@@ -76,6 +79,8 @@ class AdminPanelStore {
 
   systems: AgencySystem[];
 
+  metrics: AgencyMetric[];
+
   userProvisioningUpdates: UserProvisioningUpdates;
 
   agencyProvisioningUpdates: AgencyProvisioningUpdates;
@@ -91,6 +96,7 @@ class AdminPanelStore {
     this.usersByID = {};
     this.agenciesByID = {};
     this.systems = [];
+    this.metrics = [];
     this.userProvisioningUpdates = initialEmptyUserProvisioningUpdates;
     this.agencyProvisioningUpdates = initialEmptyAgencyProvisioningUpdates;
   }
@@ -134,6 +140,17 @@ class AdminPanelStore {
       id: system,
       name: removeSnakeCase(system.toLocaleLowerCase()),
     }));
+  }
+
+  get searchableMetrics(): SearchableListItem[] {
+    return this.metrics
+      .filter((metric) => metric.sector !== AgencySystems.SUPERAGENCY)
+      .map((metric) => ({
+        ...metric,
+        id: metric.key,
+        sectors: metric.sector,
+        name: `${metric.name}: ${metric.sector.toLocaleLowerCase()}`,
+      }));
   }
 
   /** Returns a list of searchable counties based on the currently selected `state_code` in `agencyProvisioningUpdates` */
@@ -224,6 +241,26 @@ class AdminPanelStore {
     }
   }
 
+  async fetchAgencyMetrics(agencyID: string) {
+    try {
+      const response = (await this.api.request({
+        path: `/admin/agency/${agencyID}`,
+        method: "GET",
+      })) as Response;
+      const data = (await response.json()) as AgencyMetricResponse;
+
+      if (response.status !== 200) {
+        throw new Error("There was an issue fetching agency metrics.");
+      }
+
+      runInAction(() => {
+        this.metrics = data.metrics;
+      });
+    } catch (error) {
+      if (error instanceof Error) return new Error(error.message);
+    }
+  }
+
   async fetchUsersAndAgencies() {
     await Promise.all([this.fetchUsers(), this.fetchAgencies()]);
     runInAction(() => {
@@ -235,7 +272,8 @@ class AdminPanelStore {
     superagencyID: string,
     agencyName: string,
     userEmail: string,
-    metricDefinitionKeySubset: string[] // A list of metric definition keys for future use to update a subset of metrics
+    metricDefinitionKeySubset: string[], // A list of metric definition keys for future use to update a subset of metrics
+    childAgencyIdSubset: string[] // A list of child agencies ids for future use to update a subset of metrics
   ) {
     try {
       const response = (await this.api.request({
@@ -245,6 +283,7 @@ class AdminPanelStore {
           agency_name: agencyName,
           user_email: userEmail,
           metric_definition_key_subset: metricDefinitionKeySubset,
+          child_agency_id_subset: childAgencyIdSubset,
         },
       })) as Response;
 

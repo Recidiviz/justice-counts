@@ -58,6 +58,8 @@ export enum SelectionInputBoxTypes {
   SYSTEMS = "SYSTEMS",
   SUPERAGENCY = "SUPERAGENCY",
   CHILD_AGENCIES = "CHILD AGENCIES",
+  COPY_CHILD_AGENCIES = "COPY CHILD AGENCIES",
+  COPY_AGENCY_METRICS = "COPY AGENCY METRICS",
 }
 
 export type SelectionInputBoxType = `${SelectionInputBoxTypes}`;
@@ -86,6 +88,12 @@ export type Agency = {
   }[];
 };
 
+export type AgencyMetric = {
+  key: string;
+  name: string;
+  sector: string;
+};
+
 export type AgencyWithTeamByID = Omit<Agency, "team"> & {
   team: Record<string, AgencyTeamMember[]>;
 };
@@ -93,6 +101,11 @@ export type AgencyWithTeamByID = Omit<Agency, "team"> & {
 export type AgencyResponse = {
   agencies: Agency[];
   systems: AgencySystem[];
+};
+
+export type AgencyMetricResponse = {
+  agency: Agency;
+  metrics: AgencyMetric[];
 };
 
 export const AgencyProvisioningSettings = {
@@ -179,6 +192,7 @@ export type InteractiveSearchListUpdateSelections = (
 export type SearchableListItem = {
   id: string | number;
   name: string;
+  sectors?: string | string[];
   action?: InteractiveSearchListAction;
   email?: string;
   role?: AgencyTeamMemberRole;
