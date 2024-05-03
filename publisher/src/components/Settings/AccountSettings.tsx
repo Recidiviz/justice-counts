@@ -37,13 +37,14 @@ export const AccountSettings = () => {
   const [name, setName] = React.useState<string>(userStore?.name || "");
   const [isSettingInEditMode, setIsSettingInEditMode] =
     React.useState<boolean>(false);
-
+  const [editType, setEditType] = React.useState<string>("");
   const onClickClose = () => {
     setIsSettingInEditMode(!isSettingInEditMode);
   };
   const saveNameEmailChange = (nameUpdate?: string, emailUpdate?: string) => {
     if (nameUpdate || emailUpdate) {
       setIsSettingInEditMode(!isSettingInEditMode);
+      setEditType("");
       return userStore.updateUserNameAndEmail(
         nameUpdate ?? name,
         emailUpdate ?? email
@@ -55,7 +56,7 @@ export const AccountSettings = () => {
 
   return (
     <>
-      {isSettingInEditMode && (
+      {isSettingInEditMode && editType === "name" && (
         <Modal
           title="Name"
           description={
@@ -76,7 +77,35 @@ export const AccountSettings = () => {
               label: "Save",
               onClick: () => {
                 saveNameEmailChange(name);
-                setIsSettingInEditMode(!isSettingInEditMode);
+              },
+            },
+          ]}
+          modalBackground="opaque"
+          onClickClose={onClickClose}
+        />
+      )}
+
+      {isSettingInEditMode && editType === "email" && (
+        <Modal
+          title="Email"
+          description={
+            <AccountSettingsInputsWrapper>
+              <NewInput
+                style={{ marginBottom: "0" }}
+                persistLabel
+                label="Email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(() => e.target.value.trimStart());
+                }}
+              />
+            </AccountSettingsInputsWrapper>
+          }
+          buttons={[
+            {
+              label: "Save",
+              onClick: () => {
+                saveNameEmailChange(email);
               },
             },
           ]}
@@ -95,6 +124,7 @@ export const AccountSettings = () => {
                 label={<>Edit</>}
                 onClick={() => {
                   setIsSettingInEditMode(true);
+                  setEditType("name");
                 }}
                 labelColor="blue"
                 noSidePadding
@@ -106,6 +136,19 @@ export const AccountSettings = () => {
           <AccountSettingsSectionCol>
             <AccountSettingsSectionLabel>Email</AccountSettingsSectionLabel>
             <AccountSettingsSectionData>{email}</AccountSettingsSectionData>
+            <EditButtonContainer>
+              <Button
+                label={<>Edit</>}
+                onClick={() => {
+                  setIsSettingInEditMode(true);
+                  setEditType("email");
+                }}
+                labelColor="blue"
+                noSidePadding
+                noTopBottomPadding
+                noHover
+              />
+            </EditButtonContainer>
           </AccountSettingsSectionCol>
         </AccountSettingsInputsWrapper>
       </AccountSettingsWrapper>
