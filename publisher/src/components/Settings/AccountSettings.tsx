@@ -45,10 +45,12 @@ export const AccountSettings = () => {
     if (nameUpdate || emailUpdate) {
       setIsSettingInEditMode(!isSettingInEditMode);
       setEditType("");
-      return userStore.updateUserNameAndEmail(
-        nameUpdate ?? name,
-        emailUpdate ?? email
-      );
+      if (nameUpdate) {
+        return userStore.updateUserNameAndEmail(nameUpdate, email);
+      }
+      if (emailUpdate) {
+        return userStore.updateUserNameAndEmail(name, emailUpdate);
+      }
     }
   };
 
@@ -60,11 +62,10 @@ export const AccountSettings = () => {
         <Modal
           title="Name"
           description={
-            <AccountSettingsInputsWrapper>
+            <AccountSettingsInputsWrapper noBorderBottom>
               <NewInput
                 style={{ marginBottom: "0" }}
                 persistLabel
-                label="Full Name"
                 value={name}
                 onChange={(e) => {
                   setName(() => e.target.value.trimStart());
@@ -89,11 +90,10 @@ export const AccountSettings = () => {
         <Modal
           title="Email"
           description={
-            <AccountSettingsInputsWrapper>
+            <AccountSettingsInputsWrapper noBorderBottom>
               <NewInput
                 style={{ marginBottom: "0" }}
                 persistLabel
-                label="Email"
                 value={email}
                 onChange={(e) => {
                   setEmail(() => e.target.value.trimStart());
@@ -105,7 +105,7 @@ export const AccountSettings = () => {
             {
               label: "Save",
               onClick: () => {
-                saveNameEmailChange(email);
+                saveNameEmailChange(undefined, email);
               },
             },
           ]}

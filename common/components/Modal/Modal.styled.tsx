@@ -117,8 +117,19 @@ export const ButtonsContainer = styled.div<{
   }
 `;
 
-export const ModalTitleWrapper = styled.div`
+export const ModalTitleWrapper = styled.div<{
+  agencySettingsConfigs?: boolean;
+}>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  position: ${({ agencySettingsConfigs }) =>
+    agencySettingsConfigs ? "relative" : "initial"};
+
+  ${({ agencySettingsConfigs }) =>
+    agencySettingsConfigs ? typography.bodyEmphasized : ""};
+  top: ${({ agencySettingsConfigs }) =>
+    agencySettingsConfigs ? "32px" : "initial"};
+  left: ${({ agencySettingsConfigs }) =>
+    agencySettingsConfigs ? "40px" : "initial"};
 `;

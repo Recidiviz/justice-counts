@@ -28,7 +28,7 @@ import * as Styled from "./Input.styled";
 import { InputTextSize, NotReportedIconTooltipProps } from "./types";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label: string;
+  label?: string;
   noBottomMargin?: boolean;
   error?: FormError;
   valueLabel?: string;
