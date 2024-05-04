@@ -44,13 +44,16 @@ export const AccountSettingsTitle = styled.h1`
     padding: 0 0 24px 0;
   }
 `;
-export const AccountSettingsInputsWrapper = styled.div`
+export const AccountSettingsInputsWrapper = styled.div<{
+  noBorderBottom?: boolean;
+}>`
   display: flex;
   flex-direction: row;
   gap: 10px;
   padding-bottom: 24px;
   padding-top: 24px;
-  border-bottom: 1px solid ${palette.solid.lightgrey4};
+  border-bottom: ${({ noBorderBottom }) =>
+    noBorderBottom ? "none" : `1px solid ${palette.solid.lightgrey4}`};
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
@@ -62,6 +65,7 @@ export const AccountSettingsInputsWrapper = styled.div`
 export const AccountSettingsSectionCol = styled.div`
   flex-direction: column;
   margin: 0;
+  min-width: 150px;
   div {
     flex-direction: column;
     align-items: start;

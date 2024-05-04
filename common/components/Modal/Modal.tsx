@@ -78,7 +78,7 @@ export function Modal({
           {modalType === "success" && <Styled.Icon src={successIcon} alt="" />}
           {modalType === "warning" && <Styled.Icon src={warningIcon} alt="" />}
           {modalType === "alert" && <Styled.Icon src={alertIcon} alt="" />}
-          <Styled.ModalTitleWrapper>
+          <Styled.ModalTitleWrapper agencySettingsConfigs>
             <Styled.Title mediumTitle={mediumTitle}>{title}</Styled.Title>
             {onClickClose && (
               <Button
