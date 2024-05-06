@@ -18,8 +18,8 @@
 import { Button } from "@justice-counts/common/components/Button";
 import { NewInput } from "@justice-counts/common/components/Input";
 import { Modal } from "@justice-counts/common/components/Modal";
-import { debounce as _debounce } from "lodash";
-import React, { useRef } from "react";
+// import { debounce as _debounce } from "lodash";
+import React from "react";
 
 import { useStore } from "../../stores";
 import {
@@ -54,7 +54,7 @@ export const AccountSettings = () => {
     }
   };
 
-  const debouncedSave = useRef(_debounce(saveNameEmailChange, 1500)).current;
+  // const debouncedSave = useRef(_debounce(saveNameEmailChange, 1500)).current;
 
   return (
     <>
@@ -91,7 +91,7 @@ export const AccountSettings = () => {
         <Modal
           title="Email"
           description={
-            <AccountSettingsInputsWrapper noBorderBottom>
+            <AccountSettingsInputsWrapper agencySettingsConfigs>
               <NewInput
                 style={{ marginBottom: "0" }}
                 persistLabel
@@ -112,6 +112,7 @@ export const AccountSettings = () => {
           ]}
           modalBackground="opaque"
           onClickClose={onClickClose}
+          agencySettingsConfigs
         />
       )}
 
