@@ -62,7 +62,7 @@ export const AccountSettings = () => {
         <Modal
           title="Name"
           description={
-            <AccountSettingsInputsWrapper noBorderBottom>
+            <AccountSettingsInputsWrapper agencySettingsConfigs>
               <NewInput
                 style={{ marginBottom: "0" }}
                 persistLabel
@@ -83,6 +83,7 @@ export const AccountSettings = () => {
           ]}
           modalBackground="opaque"
           onClickClose={onClickClose}
+          agencySettingsConfigs
         />
       )}
 
