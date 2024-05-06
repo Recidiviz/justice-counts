@@ -22,8 +22,9 @@ import { formatSystemName } from "../../utils";
 import { SYSTEM_CAPITALIZED, SYSTEMS_CAPITALIZED } from "../Global/constants";
 import {
   AgencySettingsBlock,
-  BasicInfoBlockDescription,
-  BasicInfoRow,
+  AgencySettingsSectionColumn,
+  AgencySettingsSectionColumnLabel,
+  AgencySettingsSectionRow,
 } from "./AgencySettings.styles";
 
 export const AgencySettingsBasicInfo = () => {
@@ -31,34 +32,33 @@ export const AgencySettingsBasicInfo = () => {
   const { currentAgency, currentAgencySystems } = agencyStore;
 
   return (
-    <AgencySettingsBlock id="basic-info" withBorder>
-      <BasicInfoRow>
-        <span>Agency Name</span>
-        {currentAgency?.name}
-      </BasicInfoRow>
-      <BasicInfoRow>
-        <span>State</span>
-        {currentAgency?.state}
-      </BasicInfoRow>
-      <BasicInfoRow capitalize>
-        <span>
-          {currentAgencySystems && currentAgencySystems.length > 1
-            ? SYSTEMS_CAPITALIZED
-            : SYSTEM_CAPITALIZED}
-        </span>
-        {currentAgencySystems
-          ?.map((system) =>
-            formatSystemName(system, { allUserSystems: currentAgencySystems })
-          )
-          .join(", ")}
-      </BasicInfoRow>
-      <BasicInfoBlockDescription>
-        *If any of the above looks incorrect, contact the Justice Counts team at{" "}
-        <a href="mailto:justice-counts-support@csg.org">
-          justice-counts-support@csg.org
-        </a>
-        .
-      </BasicInfoBlockDescription>
+    <AgencySettingsBlock id="basic-info">
+      <AgencySettingsSectionRow capitalize>
+        <AgencySettingsSectionColumn>
+          <AgencySettingsSectionColumnLabel>
+            Agency Name
+          </AgencySettingsSectionColumnLabel>
+          {currentAgency?.name}
+        </AgencySettingsSectionColumn>
+        <AgencySettingsSectionColumn>
+          <AgencySettingsSectionColumnLabel>
+            State
+          </AgencySettingsSectionColumnLabel>
+          {currentAgency?.state}
+        </AgencySettingsSectionColumn>
+        <AgencySettingsSectionColumn capitalize>
+          <AgencySettingsSectionColumnLabel>
+            {currentAgencySystems && currentAgencySystems.length > 1
+              ? SYSTEMS_CAPITALIZED
+              : SYSTEM_CAPITALIZED}
+          </AgencySettingsSectionColumnLabel>
+          {currentAgencySystems
+            ?.map((system) =>
+              formatSystemName(system, { allUserSystems: currentAgencySystems })
+            )
+            .join(", ")}
+        </AgencySettingsSectionColumn>
+      </AgencySettingsSectionRow>
     </AgencySettingsBlock>
   );
 };

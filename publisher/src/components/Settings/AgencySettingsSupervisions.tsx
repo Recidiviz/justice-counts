@@ -22,17 +22,15 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import rightArrow from "../assets/right-arrow.svg";
 import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,
   AgencySettingsBlock,
   AgencySettingsBlockDescription,
-  AgencySettingsBlockTitle,
+  BasicInfoBlockTitle,
   BlueCheckIcon,
   Checkbox,
   CheckboxWrapper,
-  EditArrowImage,
   EditButtonContainer,
   EditModeButtonsContainer,
   SupervisionSystemRow,
@@ -64,9 +62,6 @@ export const AgencySettingsSupervisions: React.FC<{
   const isAdmin =
     userStore.isAgencyAdmin(agencyId) ||
     userStore.isJusticeCountsAdmin(agencyId);
-  const systemsToDisplayInReadMode = supervisionAgencySystems.filter((system) =>
-    currentAgencySystems?.includes(system.value)
-  );
 
   const handleSaveClick = () => {
     if (supervisionSystemsToSave) {
@@ -135,19 +130,19 @@ export const AgencySettingsSupervisions: React.FC<{
           handleCancelModalConfirm={handleModalConfirm}
         >
           <>
-            <AgencySettingsBlockTitle isEditModeActive>
+            <BasicInfoBlockTitle isEditModeActive>
               Supervision Populations
-            </AgencySettingsBlockTitle>
+            </BasicInfoBlockTitle>
             <AgencySettingsBlockDescription>
               Select the supervision populations that your agency is responsible
-              for. This enables disaggregating data by selected population
-              types.
+              for.
             </AgencySettingsBlockDescription>
             {supervisionAgencySystems.map(({ label, value }) => (
               <SupervisionSystemRow
                 key={value}
                 hasHover={isSettingInEditMode}
                 onClick={() => handleSetSupervisionSystemsToSave(value)}
+                isModal
               >
                 <CheckboxWrapper>
                   <Checkbox
@@ -176,37 +171,44 @@ export const AgencySettingsSupervisions: React.FC<{
         </AgencySettingsEditModeModal>
       )}
 
-      <AgencySettingsBlock id="supervisions">
-        <AgencySettingsBlockTitle>
+      <AgencySettingsBlock withBorder id="supervisions">
+        <BasicInfoBlockTitle>
           Supervision Populations
-        </AgencySettingsBlockTitle>
+          {isAdmin && (
+            <EditButtonContainer hasTopMargin>
+              <Button
+                label={<>Edit</>}
+                onClick={openSetting}
+                labelColor="blue"
+                noSidePadding
+                noHover
+              />
+            </EditButtonContainer>
+          )}
+        </BasicInfoBlockTitle>
         <AgencySettingsBlockDescription>
           These are the supervision populations that your agency is responsible
-          for. This enables disaggregating data by selected population types.
+          for.
         </AgencySettingsBlockDescription>
-        {systemsToDisplayInReadMode.length > 0 ? (
-          systemsToDisplayInReadMode.map(({ label, value }) => (
-            <SupervisionSystemRow key={value}>{label}</SupervisionSystemRow>
-          ))
+        {supervisionAgencySystems.length > 0 ? (
+          supervisionAgencySystems.map(({ label, value }) => {
+            const isIncluded = supervisionSystemsToSave?.includes(
+              value as AgencySystem
+            );
+            return (
+              <SupervisionSystemRow
+                isSupervisionPopulationIncluded={isIncluded}
+                key={value}
+              >
+                {label}
+                <div>{isIncluded ? "Included" : "Not Included"}</div>
+              </SupervisionSystemRow>
+            );
+          })
         ) : (
           <AgencyInfoBlockDescription hasTopMargin>
             No supervision populations selected.
           </AgencyInfoBlockDescription>
-        )}
-        {isAdmin && (
-          <EditButtonContainer hasTopMargin>
-            <Button
-              label={
-                <>
-                  Edit populations <EditArrowImage src={rightArrow} alt="" />
-                </>
-              }
-              onClick={openSetting}
-              labelColor="blue"
-              noSidePadding
-              noHover
-            />
-          </EditButtonContainer>
         )}
       </AgencySettingsBlock>
     </>

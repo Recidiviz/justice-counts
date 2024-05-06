@@ -22,15 +22,14 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import rightArrow from "../assets/right-arrow.svg";
 import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,
   AgencyInfoTextAreaLabel,
   AgencyInfoTextAreaWordCounter,
+  AgencySettingActionRequiredIndicator,
   AgencySettingsBlock,
   AgencySettingsBlockTitle,
-  EditArrowImage,
   EditButtonContainer,
   EditModeButtonsContainer,
 } from "./AgencySettings.styles";
@@ -124,19 +123,21 @@ const AgencySettingsDescription: React.FC<{
 
       <AgencySettingsBlock id="description">
         <AgencySettingsBlockTitle configured={isAgencySettingConfigured}>
-          Agency Information
+          Agency Description
+          {!purposeAndFunctionsSetting && (
+            <AgencySettingActionRequiredIndicator>
+              *
+            </AgencySettingActionRequiredIndicator>
+          )}
         </AgencySettingsBlockTitle>
         <AgencyInfoBlockDescription>
-          {purposeAndFunctionsSetting || "No description added."}
+          {purposeAndFunctionsSetting ||
+            "Write a description of your agency to go on your public facing dashboard"}
         </AgencyInfoBlockDescription>
         {allowEdit && (
           <EditButtonContainer>
             <Button
-              label={
-                <>
-                  Edit description <EditArrowImage src={rightArrow} alt="" />
-                </>
-              }
+              label={<>Edit</>}
               onClick={() => {
                 setInfoText(purposeAndFunctionsSetting);
                 openSetting();

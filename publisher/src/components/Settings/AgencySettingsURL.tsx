@@ -23,15 +23,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import rightArrow from "../assets/right-arrow.svg";
 import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,
   AgencyInfoLink,
   AgencyInfoTextAreaLabel,
+  AgencySettingActionRequiredIndicator,
   AgencySettingsBlock,
   AgencySettingsBlockTitle,
-  EditArrowImage,
   EditButtonContainer,
   EditModeButtonsContainer,
 } from "./AgencySettings.styles";
@@ -55,6 +54,7 @@ const AgencySettingsUrl: React.FC<{
     currentAgencySettings?.find(
       (setting) => setting.setting_type === "HOMEPAGE_URL"
     )?.value || "";
+
   const isAgencySettingConfigured = Boolean(homepageUrlSetting);
 
   const handleSaveClick = () => {
@@ -126,9 +126,14 @@ const AgencySettingsUrl: React.FC<{
         </AgencySettingsEditModeModal>
       )}
 
-      <AgencySettingsBlock id="homepage_url">
+      <AgencySettingsBlock withBorder id="homepage_url">
         <AgencySettingsBlockTitle configured={isAgencySettingConfigured}>
-          Agency Homepage URL
+          Agency URL
+          {!homepageUrlSetting && (
+            <AgencySettingActionRequiredIndicator>
+              *
+            </AgencySettingActionRequiredIndicator>
+          )}
         </AgencySettingsBlockTitle>
         <AgencyInfoBlockDescription>
           {homepageUrlSetting ? (
@@ -143,17 +148,13 @@ const AgencySettingsUrl: React.FC<{
               }
             </AgencyInfoLink>
           ) : (
-            "No homepage URL provided."
+            "Enter your agency's URL"
           )}
         </AgencyInfoBlockDescription>
         {allowEdit && (
           <EditButtonContainer>
             <Button
-              label={
-                <>
-                  Edit URL <EditArrowImage src={rightArrow} alt="" />
-                </>
-              }
+              label={<>Edit</>}
               onClick={() => {
                 setUrlText(homepageUrlSetting);
                 openSetting();

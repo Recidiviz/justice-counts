@@ -15,14 +15,20 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { typography } from "@justice-counts/common/components/GlobalStyles";
-import styled from "styled-components/macro";
+import React from "react";
 
-export const GlobalTitle = styled.div`
-  ${typography.sizeCSS.title};
-`;
+import { SettingsTabContent } from "./Settings.styles";
 
-export const GlobalDescription = styled.div`
-  ${typography.paragraph};
-  margin-bottom: 24px;
-`;
+export type TabContentProps = {
+  isActive: boolean;
+  children?: React.ReactNode;
+};
+
+export const TabContent: React.FC<TabContentProps> = ({
+  isActive,
+  children,
+}) => {
+  return (
+    <SettingsTabContent isActive={isActive}>{children}</SettingsTabContent>
+  );
+};

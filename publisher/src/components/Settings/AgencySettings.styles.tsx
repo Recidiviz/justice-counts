@@ -31,15 +31,36 @@ import { SETTINGS_MENU_WITH_PADDINGS_WIDTH } from "./Settings.styles";
 const AGENCY_SETTINGS_CONTAINER_WIDTH = 644;
 const STICKY_RESPONSIVE_HEADER_WITH_PADDING_HEIGHT = 48;
 
+export const AgencySettingsSectionRow = styled.div<{ capitalize?: boolean }>`
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  line-height: 32px;
+  gap: 48px;
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    flex-direction: column;
+    gap: unset;
+  }
+`;
+
+export const AgencySettingsSectionColumn = styled.div<{ capitalize?: boolean }>`
+  min-width: 150px;
+  flex-direction: column;
+  color: ${palette.highlight.grey9};
+  ${({ capitalize }) => capitalize && `text-transform: capitalize;`}
+`;
+
+export const AgencySettingsSectionColumnLabel = styled.div`
+  color: ${palette.solid.black};
+`;
 export const AgencySettingsWrapper = styled.div`
   height: 100%;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-right: ${SETTINGS_MENU_WITH_PADDINGS_WIDTH - 24}px;
   justify-content: center;
   padding-bottom: 50px;
+  padding-top: 24px;
   z-index: 1;
 
   @media only screen and (max-width: ${AGENCY_SETTINGS_CONTAINER_WIDTH +
@@ -81,10 +102,6 @@ export const AgencySettingsTitle = styled.div`
   font-weight: 500;
   margin-bottom: 24px;
 
-  &::before {
-    content: "Agency Settings";
-  }
-
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     ${typography.sizeCSS.medium};
     width: 100%;
@@ -93,10 +110,6 @@ export const AgencySettingsTitle = styled.div`
     padding: 24px 0;
     background-color: ${palette.solid.white};
     z-index: 2;
-
-    &::before {
-      content: "Settings > Agency Settings";
-    }
   }
 `;
 
@@ -106,14 +119,15 @@ export const AgencySettingsBlock = styled.div<{
   position: relative;
   display: flex;
   flex-direction: column;
-
-  border: ${({ withBorder }) => withBorder && "1px solid #DCDDDF"};
   width: 100%;
-  padding: ${({ withBorder }) => (withBorder ? "32px" : "32px 0")};
+  padding-bottom: ${({ withBorder }) => (withBorder ? "24px" : "none")};
+  border-bottom: ${({ withBorder }) =>
+    withBorder ? `1px solid ${palette.solid.lightgrey4}` : "none"};
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     width: 100%;
-    padding: ${({ withBorder }) => (withBorder ? "32px" : "8px 0")};
+    flex-direction: column;
+    word-wrap: normal;
   }
 `;
 
@@ -121,27 +135,19 @@ export const AgencySettingsBlockTitle = styled.div<{
   isEditModeActive?: boolean;
   configured?: boolean;
 }>`
-  ${typography.sizeCSS.large};
-  margin-bottom: ${({ isEditModeActive }) =>
-    isEditModeActive ? "8px" : "16px"};
+  ${typography.body};
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  line-height: 32px;
+`;
 
-  ${({ configured }) =>
-    configured === false &&
-    `
-    &::after {
-      ${typography.sizeCSS.small}
-      content: "Action Required";
-      color: ${palette.solid.red};
-    } 
-  `}
+export const AgencySettingActionRequiredIndicator = styled.div`
+  color: ${palette.solid.red};
 `;
 
 export const AgencySettingsBlockDescription = styled.div`
-  ${typography.sizeCSS.normal};
-  margin-bottom: 16px;
+  ${typography.body};
+  margin-bottom: 8px;
+  color: ${palette.highlight.grey9};
 `;
 
 export const AgencySettingsBlockSubDescription = styled(
@@ -156,21 +162,21 @@ export const AgencySettingsBlockSubDescription = styled(
 export const AgencyInfoBlockDescription = styled.div<{
   hasTopMargin?: boolean;
 }>`
-  ${typography.sizeCSS.normal};
-  margin-bottom: 16px;
+  ${typography.paragraph};
+  color: ${palette.highlight.grey9};
   margin-top: ${({ hasTopMargin }) => hasTopMargin && "24px"};
 `;
 
 export const AgencyInfoLink = styled.a`
   color: ${palette.solid.blue};
+  ${typography.paragraph};
 `;
 
 export const AgencySettingsInfoRow = styled.div<{ hasHover?: boolean }>`
-  ${typography.sizeCSS.medium};
-  padding: 0 8px;
+  ${typography.body};
   height: 54px;
   min-height: 54px;
-  border-bottom: 1px solid #dcdddf;
+  border-bottom: 1px solid ${palette.highlight.grey9};
   display: flex;
   flex-direction: row;
   gap: 60px;
@@ -183,7 +189,7 @@ export const AgencySettingsInfoRow = styled.div<{ hasHover?: boolean }>`
   span {
     ${typography.sizeCSS.normal};
     text-align: end;
-    color: #5d606b;
+    color: ${palette.highlight.grey9};
   }
 `;
 
@@ -199,23 +205,19 @@ export const AgencyInfoTextAreaWordCounter = styled.div<{ isRed: boolean }>`
 `;
 
 export const EditButtonContainer = styled.div<{ hasTopMargin?: boolean }>`
+  ${typography.body};
   display: flex;
   flex-direction: row;
-  justify-content: end;
-  align-items: center;
-  margin-top: 16px;
-
+  input {
+    height: unset;
+    width: unset;
+  }
+  div {
+    min-width: unset;
+  }
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     justify-content: start;
-    margin-top: ${({ hasTopMargin }) => (hasTopMargin ? "16px" : "0")};
   }
-`;
-
-export const EditArrowImage = styled.img`
-  width: 15px;
-  height: 10px;
-  filter: invert(47%) sepia(90%) saturate(6984%) hue-rotate(199deg)
-    brightness(100%) contrast(101%);
 `;
 
 export const EditModeButtonsContainer = styled.div<{ noMargin?: boolean }>`
@@ -227,27 +229,16 @@ export const EditModeButtonsContainer = styled.div<{ noMargin?: boolean }>`
 `;
 
 // Basic Info
-export const BasicInfoBlockDescription = styled(AgencySettingsBlockDescription)`
-  margin-bottom: 0;
 
-  a {
-    color: ${palette.solid.blue};
-    text-decoration: none;
-  }
+export const BasicInfoBlockTitle = styled(AgencySettingsBlockTitle)`
+  ${typography.body};
+  justify-content: space-between;
+  align-items: center;
 `;
 
-export const BasicInfoRow = styled.div<{ capitalize?: boolean }>`
-  ${typography.sizeCSS.large};
-  line-height: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+export const CheckboxSpacingWrapper = styled.div`
+  margin-top: 24px;
   margin-bottom: 24px;
-
-  ${({ capitalize }) => capitalize && `text-transform: capitalize;`}
-  span {
-    ${typography.sizeCSS.small};
-  }
 `;
 
 // Team
@@ -441,9 +432,18 @@ export const EditTeamMemberMenuItem = styled.div`
 `;
 
 // Supervisions
-export const SupervisionSystemRow = styled(AgencySettingsInfoRow)`
-  justify-content: start;
+export const SupervisionSystemRow = styled(AgencySettingsInfoRow)<{
+  isSupervisionPopulationIncluded?: boolean;
+  isModal?: boolean;
+}>`
+  ${typography.body};
+  justify-content: ${({ isModal }) => (isModal ? "left" : "space-between")};
   gap: 12px;
+  color: ${({ isSupervisionPopulationIncluded }) =>
+    isSupervisionPopulationIncluded
+      ? palette.solid.black
+      : palette.highlight.grey9};
+  border: none;
 `;
 
 // Jurisdictions
@@ -508,11 +508,12 @@ export const JurisdictionsSearchResult = styled.div<{ hasAction?: boolean }>`
 `;
 
 export const JurisdictionAreaType = styled.div`
-  ${typography.sizeCSS.normal};
+  ${typography.body};
   display: flex;
   align-items: center;
   gap: 16px;
   text-transform: capitalize;
+  color: ${palette.highlight.grey9};
 `;
 
 export const JurisdictionsListArea = styled.div`
@@ -525,6 +526,17 @@ export const JurisdictionsListArea = styled.div`
 
 export const JurisdictionsInfoRow = styled(AgencySettingsInfoRow)`
   text-transform: capitalize;
+  ${typography.body};
+  border: none;
+`;
+
+export const JurisdictionsInfoCol = styled.div`
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  span {
+    color: ${palette.highlight.grey9};
+  }
 `;
 
 export const JurisdictionCheckBlock = styled.div`
@@ -593,16 +605,24 @@ export const AddIcon = styled.img`
 `;
 
 export const DescriptionSection = styled.div`
+  ${typography.body};
+  color: ${palette.solid.black};
+  margin-bottom: 10px;
+
   &:not(:first-child) {
     margin-top: 24px;
   }
-
   ul {
     margin-left: 24px;
   }
+  input {
+    margin-top: 16px;
+  }
 `;
 
-export const InputWrapper = styled.span<{ error?: boolean }>`
+export const InputWrapper = styled.span<{
+  error?: boolean;
+}>`
   input {
     width: 59px;
     padding: 8px 0;

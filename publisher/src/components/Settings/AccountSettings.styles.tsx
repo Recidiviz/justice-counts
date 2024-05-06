@@ -24,6 +24,7 @@ import {
 import styled from "styled-components/macro";
 
 export const AccountSettingsWrapper = styled.div`
+  flex-direction: row;
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: flex;
     flex-direction: column;
@@ -35,33 +36,74 @@ export const AccountSettingsTitle = styled.h1`
   ${typography.sizeCSS.title};
   margin-top: 4px;
   padding-bottom: 14px;
-
-  &::before {
-    content: "Account";
-  }
+  background-color: ${palette.solid.red};
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     ${typography.sizeCSS.medium};
     margin: 0;
     padding: 0 0 24px 0;
-
-    &::before {
-      content: "Settings > Your Account";
-    }
   }
 `;
 
 export const AccountSettingsInputsWrapper = styled.div`
   display: flex;
+  flex-direction: row;
   gap: 10px;
+  padding-bottom: 24px;
+  padding-top: 24px;
+  border-bottom: 1px solid ${palette.solid.lightgrey4};
 
-  div {
-    width: 100%;
-    margin-bottom: 16px;
+  input {
+    padding-left: 0;
+    border: none;
+    background-color: initial;
+    ${typography.body};
+    color: ${palette.highlight.grey9};
+  }
+
+  label {
+    ${typography.body};
+    color: ${palette.solid.black};
+  }
+
+  span {
+    a {
+      text-decoration: none;
+    }
   }
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
     gap: 0;
+    margin-left: 0px;
+  }
+`;
+
+export const AccountSettingsInputsCol = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  gap: 0;
+  div {
+    flex-direction: column;
+    align-items: start;
+
+    label {
+      flex-direction: row;
+    }
+
+    input {
+      flex-direction: row;
+    }
+  }
+
+  a {
+    color: ${palette.solid.blue};
+  }
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    flex-direction: row;
+    gap: 0;
+    margin-left: 0px;
   }
 `;
