@@ -38,6 +38,7 @@ export const Button = styled.div<{
   noSidePadding?: boolean;
   noTopBottomPadding?: boolean;
   noHover?: boolean;
+  agencySettingsConfigs?: boolean;
 }>`
   ${({ size }) => (size ? typography.sizeCSS[size] : typography.body)};
   display: flex;
@@ -46,7 +47,8 @@ export const Button = styled.div<{
   border-radius: 3px;
   gap: 8px;
   white-space: nowrap;
-  min-width: 80px;
+  min-width: ${({ agencySettingsConfigs }) =>
+    agencySettingsConfigs ? "unset" : "80px"};
   pointer-events: ${({ disabled }) => disabled && "none"};
   background-color: ${({ buttonColor, disabled }) => {
     if (disabled) return palette.highlight.grey3;
@@ -66,7 +68,17 @@ export const Button = styled.div<{
     }
     return "none";
   }};
-  padding: ${({ size }) => (size === "medium" ? "16px 32px" : "10px 15px")};
+
+  padding: ${({ size, agencySettingsConfigs }) => {
+    if (agencySettingsConfigs) {
+      return "0";
+    }
+    if (size) {
+      return "16px 32px";
+    }
+    return "10px 15px";
+  }};
+
   ${({ noSidePadding }) =>
     noSidePadding && "padding-left: 0; padding-right: 0;"}
   ${({ noTopBottomPadding }) =>

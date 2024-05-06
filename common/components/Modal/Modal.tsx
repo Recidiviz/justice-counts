@@ -38,6 +38,7 @@ type ModalProps = Partial<{
   customPadding?: string;
   children?: React.ReactNode;
   onClickClose?: () => void | undefined;
+  agencySettingsConfigs?: boolean;
 }>;
 
 export function Modal({
@@ -52,6 +53,7 @@ export function Modal({
   customPadding,
   children,
   onClickClose,
+  agencySettingsConfigs,
 }: ModalProps) {
   const primaryButtonColor = (): ButtonColor => {
     if (modalType === "alert") return "red";
@@ -68,7 +70,9 @@ export function Modal({
   }, []);
 
   const Portal = (
-    <Styled.OuterWrapper {...{ modalBackground, onClickClose }}>
+    <Styled.OuterWrapper
+      {...{ modalBackground, onClickClose, agencySettingsConfigs }}
+    >
       {children || (
         <Styled.InnerWrapper
           modalType={modalType}
@@ -79,11 +83,17 @@ export function Modal({
           {modalType === "warning" && <Styled.Icon src={warningIcon} alt="" />}
           {modalType === "alert" && <Styled.Icon src={alertIcon} alt="" />}
           <Styled.ModalTitleWrapper agencySettingsConfigs>
-            <Styled.Title mediumTitle={mediumTitle}>{title}</Styled.Title>
+            <Styled.Title
+              mediumTitle={mediumTitle}
+              agencySettingsConfigs={agencySettingsConfigs}
+            >
+              {title}
+            </Styled.Title>
             {onClickClose && (
               <Button
                 label={<img src={xCloseLg} alt="X" />}
                 onClick={onClickClose}
+                agencySettingsConfigs
               />
             )}
           </Styled.ModalTitleWrapper>
