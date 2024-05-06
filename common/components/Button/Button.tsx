@@ -39,6 +39,7 @@ export type ButtonProps = {
   noTopBottomPadding?: boolean;
   noHover?: boolean;
   tooltipMsg?: string;
+  agencySettingsConfigs?: boolean;
 };
 
 export function Button({
@@ -54,6 +55,7 @@ export function Button({
   noTopBottomPadding,
   noHover,
   tooltipMsg,
+  agencySettingsConfigs,
 }: ButtonProps) {
   return (
     <Styled.ButtonWrapper id={id}>
@@ -67,6 +69,7 @@ export function Button({
         noSidePadding={noSidePadding}
         noTopBottomPadding={noTopBottomPadding}
         noHover={noHover}
+        agencySettingsConfigs={agencySettingsConfigs}
       >
         {label}
       </Styled.Button>

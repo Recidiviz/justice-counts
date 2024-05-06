@@ -79,11 +79,15 @@ export const Icon = styled.img`
   margin-bottom: 24px;
 `;
 
-export const Title = styled.div<{ mediumTitle?: boolean }>`
+export const Title = styled.div<{
+  mediumTitle?: boolean;
+  agencySettingsConfigs?: boolean;
+}>`
   ${({ mediumTitle }) =>
     mediumTitle ? typography.sizeCSS.medium : typography.sizeCSS.large};
+  margin-top: ${({ agencySettingsConfigs }) =>
+    agencySettingsConfigs ? "16px" : "initial"};
   margin-bottom: 16px;
-
   a {
     color: ${palette.solid.blue};
     text-decoration: none;
@@ -123,13 +127,6 @@ export const ModalTitleWrapper = styled.div<{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  position: ${({ agencySettingsConfigs }) =>
-    agencySettingsConfigs ? "relative" : "initial"};
-
   ${({ agencySettingsConfigs }) =>
     agencySettingsConfigs ? typography.bodyEmphasized : ""};
-  top: ${({ agencySettingsConfigs }) =>
-    agencySettingsConfigs ? "32px" : "initial"};
-  left: ${({ agencySettingsConfigs }) =>
-    agencySettingsConfigs ? "40px" : "initial"};
 `;
