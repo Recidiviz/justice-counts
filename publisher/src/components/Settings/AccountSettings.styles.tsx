@@ -49,21 +49,49 @@ export const AccountSettingsInputsWrapper = styled.div<{
   noBorderBottom?: boolean;
   agencySettingsConfigs?: boolean;
 }>`
-  min-width: ${({ agencySettingsConfigs }) =>
-    agencySettingsConfigs ? "534px" : "unset"};
-  min-height: ${({ agencySettingsConfigs }) =>
-    agencySettingsConfigs ? "36px" : "initial"};
   display: flex;
   flex-direction: row;
   gap: 10px;
-  padding-bottom: 24px;
-  padding-top: 24px;
-  border: ${({ agencySettingsConfigs }) =>
-      agencySettingsConfigs ? "1px solid" : "initial"}
-    ${({ error }) => (error ? palette.solid.red : palette.highlight.grey5)};
+  ${({ agencySettingsConfigs }) => {
+    if (agencySettingsConfigs) {
+      return (
+        "height: 36px; min-height: initial; min-width: 534px; " +
+        `label {
+                display: none;
+                }
+                div {
+                  width: 100%;
+                  input {
+                    ${typography.body}
+                    color: ${palette.solid.black};
+                    width: 100%;
+                    padding: 0;
+                    border: none;
+                  }
+        }`
+      );
+    }
+  }};
+
+  padding: ${({ agencySettingsConfigs }) =>
+    agencySettingsConfigs ? "8px 16px" : "24px 0"};
+  border: ${({ agencySettingsConfigs, error }) => {
+    let borderStringValue = "";
+    if (agencySettingsConfigs) {
+      borderStringValue = "1px solid ";
+      if (error) {
+        borderStringValue += palette.solid.red;
+      } else {
+        borderStringValue += palette.highlight.grey5;
+      }
+    } else {
+      return "initial";
+    }
+
+    return borderStringValue;
+  }};
   border-bottom: ${({ noBorderBottom }) =>
     noBorderBottom ? "none" : `1px solid ${palette.highlight.grey5}`};
-
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
     gap: 0;
