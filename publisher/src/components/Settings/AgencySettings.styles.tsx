@@ -134,8 +134,8 @@ export const AgencySettingsBlock = styled.div<{
 export const AgencySettingsBlockTitle = styled.div<{
   isEditModeActive?: boolean;
   configured?: boolean;
+  agencySettingsConfigs?: boolean;
 }>`
-  ${typography.body};
   display: flex;
   line-height: 32px;
 `;
@@ -193,9 +193,18 @@ export const AgencySettingsInfoRow = styled.div<{ hasHover?: boolean }>`
   }
 `;
 
-export const AgencyInfoTextAreaLabel = styled.label`
-  margin-bottom: 16px;
-  ${typography.sizeCSS.normal};
+export const AgencyInfoTextAreaLabel = styled.label<{
+  agencyDescriptionConfigs?: boolean;
+}>`
+  ${({ agencyDescriptionConfigs }) => {
+    if (agencyDescriptionConfigs) {
+      return (
+        `align-self: flex-start; margin-top: 12px; margin-bottom: 24px;` +
+        `${typography.body};`
+      );
+    }
+    return `margin-bottom: 16px; ${typography.sizeCSS.normal};`;
+  }};
 `;
 
 export const AgencyInfoTextAreaWordCounter = styled.div<{ isRed: boolean }>`

@@ -48,6 +48,7 @@ export const AccountSettingsInputsWrapper = styled.div<{
   error?: boolean;
   noBorderBottom?: boolean;
   agencySettingsConfigs?: boolean;
+  agencyDescriptionConfigs?: boolean;
 }>`
   display: flex;
   flex-direction: row;
@@ -72,14 +73,43 @@ export const AccountSettingsInputsWrapper = styled.div<{
       );
     }
   }};
-
-  padding: ${({ agencySettingsConfigs }) =>
-    agencySettingsConfigs ? "8px 16px" : "24px 0"};
-  border: ${({ agencySettingsConfigs, error }) => {
-    let borderStringValue = "";
+  ${({ agencyDescriptionConfigs }) => {
+    if (agencyDescriptionConfigs) {
+      return (
+        "height: 179px; min-height: 179px; min-width: 534px;" +
+        `label {
+                display: none;
+                }
+                div {
+                  width: 100%;
+                  textarea {
+                    margin-top: 8px;
+                    margin-left: 16px;
+                    margin-right: 16px;
+                    ${typography.body}
+                    color: ${palette.solid.black};
+                    width: 95%;
+                    padding: 0;
+                    border: none;
+                  }
+        }`
+      );
+    }
+  }};
+  padding: ${({ agencySettingsConfigs, agencyDescriptionConfigs }) => {
     if (agencySettingsConfigs) {
+      return "8px 16px";
+    }
+    if (agencyDescriptionConfigs) {
+      return "padding: 0";
+    }
+    return "24px 0";
+  }};
+  border: ${({ agencySettingsConfigs, agencyDescriptionConfigs, error }) => {
+    let borderStringValue = "";
+    if (agencySettingsConfigs || agencyDescriptionConfigs) {
       borderStringValue = "1px solid ";
-      if (error) {
+      if (agencySettingsConfigs && error) {
         borderStringValue += palette.solid.red;
       } else {
         borderStringValue += palette.highlight.grey5;
