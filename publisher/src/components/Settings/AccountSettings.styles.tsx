@@ -45,15 +45,24 @@ export const AccountSettingsTitle = styled.h1`
   }
 `;
 export const AccountSettingsInputsWrapper = styled.div<{
+  error?: boolean;
   noBorderBottom?: boolean;
+  agencySettingsConfigs?: boolean;
 }>`
+  min-width: ${({ agencySettingsConfigs }) =>
+    agencySettingsConfigs ? "534px" : "unset"};
+  min-height: ${({ agencySettingsConfigs }) =>
+    agencySettingsConfigs ? "36px" : "initial"};
   display: flex;
   flex-direction: row;
   gap: 10px;
   padding-bottom: 24px;
   padding-top: 24px;
+  border: ${({ agencySettingsConfigs }) =>
+      agencySettingsConfigs ? "1px solid" : "initial"}
+    ${({ error }) => (error ? palette.solid.red : palette.highlight.grey5)};
   border-bottom: ${({ noBorderBottom }) =>
-    noBorderBottom ? "none" : `1px solid ${palette.solid.lightgrey4}`};
+    noBorderBottom ? "none" : `1px solid ${palette.highlight.grey5}`};
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
