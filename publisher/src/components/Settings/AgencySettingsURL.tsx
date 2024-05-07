@@ -17,22 +17,22 @@
 
 import { Button } from "@justice-counts/common/components/Button";
 import { formatExternalLink } from "@justice-counts/common/components/DataViz/utils";
-import { Input } from "@justice-counts/common/components/Input";
+import { NewInput } from "@justice-counts/common/components/Input";
+import { Modal } from "@justice-counts/common/components/Modal";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { AccountSettingsInputsWrapper } from "./AccountSettings.styles";
 import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,
   AgencyInfoLink,
-  AgencyInfoTextAreaLabel,
   AgencySettingActionRequiredIndicator,
   AgencySettingsBlock,
   AgencySettingsBlockTitle,
   EditButtonContainer,
-  EditModeButtonsContainer,
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
@@ -99,30 +99,34 @@ const AgencySettingsUrl: React.FC<{
           closeCancelModal={() => setIsConfirmModalOpen(false)}
           handleCancelModalConfirm={handleModalConfirm}
         >
-          <>
-            <AgencySettingsBlockTitle isEditModeActive>
-              Agency Homepage URL
-            </AgencySettingsBlockTitle>
-            <AgencyInfoTextAreaLabel>
-              Provide a link to your agency&apos;s website.
-            </AgencyInfoTextAreaLabel>
-            <Input
-              name="homepage-url"
-              label=""
-              placeholder="URL of agency (e.g., https://doc.iowa.gov/)"
-              isPlaceholderVisible
-              onChange={(e) => setUrlText(e.target.value)}
-              value={urlText}
-            />
-            <EditModeButtonsContainer noMargin>
-              <Button label="Cancel" onClick={handleCancelClick} />
-              <Button
-                label="Save"
-                onClick={handleSaveClick}
-                buttonColor="blue"
-              />
-            </EditModeButtonsContainer>
-          </>
+          <Modal
+            title="Agency URL"
+            description={
+              <AccountSettingsInputsWrapper agencySettingsConfigs>
+                <NewInput
+                  style={{ marginBottom: "0" }}
+                  persistLabel
+                  value={urlText}
+                  placeholder="URL of agency (e.g., https://doc.iowa.gov/)"
+                  isPlaceholderVisible
+                  onChange={(e) => {
+                    setUrlText(() => e.target.value.trimStart());
+                  }}
+                />
+              </AccountSettingsInputsWrapper>
+            }
+            buttons={[
+              {
+                label: "Save",
+                onClick: () => {
+                  handleSaveClick();
+                },
+              },
+            ]}
+            modalBackground="opaque"
+            onClickClose={handleCancelClick}
+            agencySettingsConfigs
+          />
         </AgencySettingsEditModeModal>
       )}
 
