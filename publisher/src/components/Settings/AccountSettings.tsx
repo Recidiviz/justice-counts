@@ -18,8 +18,10 @@
 import { Button } from "@justice-counts/common/components/Button";
 import { NewInput } from "@justice-counts/common/components/Input";
 import { Modal } from "@justice-counts/common/components/Modal";
+import { validateEmail } from "@justice-counts/common/utils/helperUtils";
 // import { debounce as _debounce } from "lodash";
 import React from "react";
+import { Simulate } from "react-dom/test-utils";
 
 import { useStore } from "../../stores";
 import {
@@ -38,18 +40,27 @@ export const AccountSettings = () => {
   const [isSettingInEditMode, setIsSettingInEditMode] =
     React.useState<boolean>(false);
   const [editType, setEditType] = React.useState<string>("");
+  const [isEmailValid, setIsEmailValid] = React.useState(true);
   const onClickClose = () => {
     setIsSettingInEditMode(!isSettingInEditMode);
   };
+
+  const editModeAndTypeUpdate = () => {
+    setIsSettingInEditMode(!isSettingInEditMode);
+    setEditType("");
+  };
   const saveNameEmailChange = (nameUpdate?: string, emailUpdate?: string) => {
     if (nameUpdate || emailUpdate) {
-      setIsSettingInEditMode(!isSettingInEditMode);
-      setEditType("");
       if (nameUpdate) {
+        editModeAndTypeUpdate();
         return userStore.updateUserNameAndEmail(nameUpdate, email);
       }
       if (emailUpdate) {
-        return userStore.updateUserNameAndEmail(name, emailUpdate);
+        if (validateEmail(emailUpdate)) {
+          editModeAndTypeUpdate();
+          return userStore.updateUserNameAndEmail(name, emailUpdate);
+        }
+        setIsEmailValid(false);
       }
     }
   };
@@ -91,7 +102,10 @@ export const AccountSettings = () => {
         <Modal
           title="Email"
           description={
-            <AccountSettingsInputsWrapper agencySettingsConfigs>
+            <AccountSettingsInputsWrapper
+              agencySettingsConfigs
+              error={isEmailValid}
+            >
               <NewInput
                 style={{ marginBottom: "0" }}
                 persistLabel

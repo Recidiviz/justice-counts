@@ -120,8 +120,16 @@ export const AccountSettingsInputsWrapper = styled.div<{
 
     return borderStringValue;
   }};
-  border-bottom: ${({ noBorderBottom }) =>
-    noBorderBottom ? "none" : `1px solid ${palette.highlight.grey5}`};
+  border-bottom: ${({ noBorderBottom, error }) => {
+    if (noBorderBottom) {
+      return "none";
+    }
+    if (error) {
+      return `1px solid ${palette.solid.red}`;
+    }
+
+    return `1px solid ${palette.highlight.grey5}`;
+  }};
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
     gap: 0;
