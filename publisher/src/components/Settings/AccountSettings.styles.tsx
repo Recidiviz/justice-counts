@@ -69,6 +69,9 @@ export const AccountSettingsInputsWrapper = styled.div<{
                     padding: 0;
                     border: none;
                   }
+                  div{
+                    margin-left: -18px;
+                  }
         }`
       );
     }

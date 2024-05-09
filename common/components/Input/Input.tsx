@@ -41,6 +41,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   textSize?: InputTextSize;
   hideLabel?: boolean;
   fullWidth?: boolean;
+  agencySettingsConfigs?: boolean;
 }
 
 export function Input({
@@ -197,6 +198,7 @@ export function NewInput({
   metricKey,
   hideLabel,
   fullWidth,
+  agencySettingsConfigs,
   ...props
 }: InputProps) {
   return (
@@ -219,7 +221,11 @@ export function NewInput({
         error={Boolean(error)}
         fullWidth={fullWidth}
       />
-      {error && <Styled.ErrorMessage>{error.message}</Styled.ErrorMessage>}
+      {error && (
+        <Styled.ErrorMessage agencySettingsConfigs>
+          {error.message}
+        </Styled.ErrorMessage>
+      )}
     </Styled.NewInputWrapper>
   );
 }

@@ -21,8 +21,8 @@ import { Modal } from "@justice-counts/common/components/Modal";
 import { validateEmail } from "@justice-counts/common/utils/helperUtils";
 // import { debounce as _debounce } from "lodash";
 import React from "react";
-import { Simulate } from "react-dom/test-utils";
 
+// import { Simulate } from "react-dom/test-utils";
 import { useStore } from "../../stores";
 import {
   AccountSettingsInputsWrapper,
@@ -33,6 +33,11 @@ import {
 } from "./AccountSettings.styles";
 import { EditButtonContainer } from "./AgencySettings.styles";
 
+enum EditType {
+  Name_edit = "name",
+  Email_edit = "email",
+}
+
 export const AccountSettings = () => {
   const { userStore } = useStore();
   const [email, setEmail] = React.useState<string>(userStore?.email || "");
@@ -41,12 +46,18 @@ export const AccountSettings = () => {
     React.useState<boolean>(false);
   const [editType, setEditType] = React.useState<string>("");
   const [isEmailValid, setIsEmailValid] = React.useState(true);
+  const [errorMsg, setErrorMsg] = React.useState<
+    { message: string } | undefined
+  >(undefined);
   const onClickClose = () => {
     setIsSettingInEditMode(!isSettingInEditMode);
   };
 
   const editModeAndTypeUpdate = () => {
     setIsSettingInEditMode(!isSettingInEditMode);
+    if (editType === EditType.Email_edit) {
+      setErrorMsg(undefined);
+    }
     setEditType("");
   };
   const saveNameEmailChange = (nameUpdate?: string, emailUpdate?: string) => {
@@ -57,9 +68,11 @@ export const AccountSettings = () => {
       }
       if (emailUpdate) {
         if (validateEmail(emailUpdate)) {
+          setIsEmailValid(true);
           editModeAndTypeUpdate();
           return userStore.updateUserNameAndEmail(name, emailUpdate);
         }
+        setErrorMsg({ message: "Invalid Email" });
         setIsEmailValid(false);
       }
     }
@@ -81,6 +94,7 @@ export const AccountSettings = () => {
                 onChange={(e) => {
                   setName(() => e.target.value.trimStart());
                 }}
+                agencySettingsConfigs
               />
             </AccountSettingsInputsWrapper>
           }
@@ -104,12 +118,13 @@ export const AccountSettings = () => {
           description={
             <AccountSettingsInputsWrapper
               agencySettingsConfigs
-              error={isEmailValid}
+              error={!isEmailValid}
             >
               <NewInput
                 style={{ marginBottom: "0" }}
                 persistLabel
                 value={email}
+                error={errorMsg}
                 onChange={(e) => {
                   setEmail(() => e.target.value.trimStart());
                 }}
@@ -140,7 +155,7 @@ export const AccountSettings = () => {
                 label={<>Edit</>}
                 onClick={() => {
                   setIsSettingInEditMode(true);
-                  setEditType("name");
+                  setEditType(EditType.Name_edit);
                 }}
                 labelColor="blue"
                 noSidePadding
@@ -157,7 +172,7 @@ export const AccountSettings = () => {
                 label={<>Edit</>}
                 onClick={() => {
                   setIsSettingInEditMode(true);
-                  setEditType("email");
+                  setEditType(EditType.Email_edit);
                 }}
                 labelColor="blue"
                 noSidePadding
