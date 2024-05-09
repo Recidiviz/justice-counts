@@ -279,12 +279,6 @@ export const validateEmail = (email: string | undefined) => {
       .match(/^([A-Z0-9_+-]\.?)*[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\.)+[A-Z]{2,}$/i)
   );
 };
-
-export const validateAgencyURL = (url: string) => {
-  const urlRegex = /^(?:https?|ftp):\/\/[\w.-]+\.[a-zA-Z]{2,}(?:\/\S*)?$/;
-  return urlRegex.test(url);
-};
-
 /**
  * Updates a set of selections by either adding or removing a specified item.
  * @param prevSet - The previous set of selected items to update
