@@ -281,11 +281,9 @@ export const validateEmail = (email: string | undefined) => {
 };
 
 export const validateAgencyURL = (url: string) => {
-  // Regular expression for email validation
-  const emailRegex = /^[^\s@]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  // Test the email against the regex pattern
-  return emailRegex.test(url);
-}
+  const urlRegex = /^(?:https?|ftp):\/\/[\w.-]+\.[a-zA-Z]{2,}(?:\/\S*)?$/;
+  return urlRegex.test(url);
+};
 
 /**
  * Updates a set of selections by either adding or removing a specified item.
@@ -307,4 +305,3 @@ export const isCSGOrRecidivizUserByEmail = (email?: string) => {
   if (!email) return false;
   return email.includes("@csg.org") || email.includes("@recidiviz.org");
 };
-

@@ -19,6 +19,7 @@ import { Button } from "@justice-counts/common/components/Button";
 import { formatExternalLink } from "@justice-counts/common/components/DataViz/utils";
 import { NewInput } from "@justice-counts/common/components/Input";
 import { Modal } from "@justice-counts/common/components/Modal";
+import { validateAgencyURL } from "@justice-counts/common/utils/helperUtils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -112,6 +113,7 @@ const AgencySettingsUrl: React.FC<{
                   onChange={(e) => {
                     setUrlText(() => e.target.value.trimStart());
                   }}
+                  agencySettingsConfigs
                 />
               </AccountSettingsInputsWrapper>
             }
