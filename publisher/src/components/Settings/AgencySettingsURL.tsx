@@ -62,19 +62,19 @@ const AgencySettingsUrl: React.FC<{
     { message: string } | undefined
   >(undefined);
   const handleSaveClick = () => {
-    if (!validateAgencyURL(urlText)) {
-      setIsURLValid(false);
-      setErrorMsg({ message: "Invalid Email" });
+    if (validateAgencyURL(urlText) || urlText === "") {
+      const updatedSettings = updateAgencySettings(
+        "HOMEPAGE_URL",
+        urlText,
+        parseInt(agencyId)
+      );
+      setErrorMsg(undefined);
+      saveAgencySettings(updatedSettings, agencyId);
+      removeEditMode();
       return;
     }
-    const updatedSettings = updateAgencySettings(
-      "HOMEPAGE_URL",
-      urlText,
-      parseInt(agencyId)
-    );
-    setErrorMsg(undefined);
-    saveAgencySettings(updatedSettings, agencyId);
-    removeEditMode();
+    setIsURLValid(false);
+    setErrorMsg({ message: "Invalid Email" });
   };
   const handleCancelClick = () => {
     if (homepageUrlSetting === urlText) {
