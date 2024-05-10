@@ -281,8 +281,7 @@ export const validateEmail = (email: string | undefined) => {
 };
 
 export const validateAgencyURL = (url: string) => {
-  const urlRegex =
-    /^(?:(?:https?|ftp):\/\/)?(?:[\w.-]{1,63}\.){1,}[a-zA-Z]{2,}(?:\/\S*)?$/;
+  const urlRegex = /^(?:(?:https?|ftp):\/\/)?[\w.-]+\.[a-zA-Z]{2,}(?:\/\S*)?$/;
   return urlRegex.test(url);
 };
 
