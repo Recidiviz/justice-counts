@@ -19,7 +19,7 @@ import { Button } from "@justice-counts/common/components/Button";
 import { formatExternalLink } from "@justice-counts/common/components/DataViz/utils";
 import { NewInput } from "@justice-counts/common/components/Input";
 import { Modal } from "@justice-counts/common/components/Modal";
-// import { validateAgencyURL } from "@justice-counts/common/utils/helperUtils";
+import { validateAgencyURL } from "@justice-counts/common/utils/helperUtils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -57,13 +57,22 @@ const AgencySettingsUrl: React.FC<{
     )?.value || "";
 
   const isAgencySettingConfigured = Boolean(homepageUrlSetting);
-
+  const [isURLValid, setIsURLValid] = React.useState(true);
+  const [errorMsg, setErrorMsg] = React.useState<
+    { message: string } | undefined
+  >(undefined);
   const handleSaveClick = () => {
+    if (!validateAgencyURL(urlText)) {
+      setIsURLValid(false);
+      setErrorMsg({ message: "Invalid Email" });
+      return;
+    }
     const updatedSettings = updateAgencySettings(
       "HOMEPAGE_URL",
       urlText,
       parseInt(agencyId)
     );
+    setErrorMsg(undefined);
     saveAgencySettings(updatedSettings, agencyId);
     removeEditMode();
   };
@@ -103,11 +112,15 @@ const AgencySettingsUrl: React.FC<{
           <Modal
             title="Agency URL"
             description={
-              <AccountSettingsInputsWrapper agencySettingsConfigs>
+              <AccountSettingsInputsWrapper
+                agencySettingsConfigs
+                error={!isURLValid}
+              >
                 <NewInput
                   style={{ marginBottom: "0" }}
                   persistLabel
                   value={urlText}
+                  error={errorMsg}
                   placeholder="URL of agency (e.g., https://doc.iowa.gov/)"
                   isPlaceholderVisible
                   onChange={(e) => {
