@@ -49,12 +49,15 @@ export const AccountSettings = () => {
     { message: string } | undefined
   >(undefined);
   const onClickClose = () => {
+    setEmail(userStore?.email || "");
+    editModeAndTypeUpdate();
+    setName(userStore?.name || "");
     setIsSettingInEditMode(!isSettingInEditMode);
   };
-
   const editModeAndTypeUpdate = () => {
     setIsSettingInEditMode(!isSettingInEditMode);
     if (editType === EditType.Email_edit) {
+      setIsEmailValid(true);
       setErrorMsg(undefined);
     }
     setEditType("");
@@ -66,7 +69,6 @@ export const AccountSettings = () => {
     }
     if (emailUpdate) {
       if (validateEmail(emailUpdate)) {
-        setIsEmailValid(true);
         editModeAndTypeUpdate();
         return userStore.updateUserNameAndEmail(name, emailUpdate);
       }

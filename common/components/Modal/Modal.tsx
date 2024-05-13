@@ -70,9 +70,7 @@ export function Modal({
   }, []);
 
   const Portal = (
-    <Styled.OuterWrapper
-      {...{ modalBackground, onClickClose, agencySettingsConfigs }}
-    >
+    <Styled.OuterWrapper {...{ modalBackground }}>
       {children || (
         <Styled.InnerWrapper
           modalType={modalType}

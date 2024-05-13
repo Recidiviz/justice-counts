@@ -61,6 +61,10 @@ const AgencySettingsUrl: React.FC<{
   const [errorMsg, setErrorMsg] = React.useState<
     { message: string } | undefined
   >(undefined);
+  const resetErrorHandlingValues = () => {
+    setIsURLValid(true);
+    setErrorMsg(undefined);
+  };
   const handleSaveClick = () => {
     if (validateAgencyURL(urlText) || urlText === "") {
       const updatedSettings = updateAgencySettings(
@@ -68,7 +72,7 @@ const AgencySettingsUrl: React.FC<{
         urlText,
         parseInt(agencyId)
       );
-      setErrorMsg(undefined);
+      resetErrorHandlingValues();
       saveAgencySettings(updatedSettings, agencyId);
       removeEditMode();
       return;
