@@ -19,10 +19,8 @@ import { Button } from "@justice-counts/common/components/Button";
 import { NewInput } from "@justice-counts/common/components/Input";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { validateEmail } from "@justice-counts/common/utils/helperUtils";
-// import { debounce as _debounce } from "lodash";
 import React from "react";
 
-// import { Simulate } from "react-dom/test-utils";
 import { useStore } from "../../stores";
 import {
   AccountSettingsInputsWrapper,
@@ -30,6 +28,7 @@ import {
   AccountSettingsSectionData,
   AccountSettingsSectionLabel,
   AccountSettingsWrapper,
+  AgencySettingsModalInputWrapperSmall,
 } from "./AccountSettings.styles";
 import { EditButtonContainer } from "./AgencySettings.styles";
 
@@ -61,32 +60,27 @@ export const AccountSettings = () => {
     setEditType("");
   };
   const saveNameEmailChange = (nameUpdate?: string, emailUpdate?: string) => {
-    if (nameUpdate || emailUpdate) {
-      if (nameUpdate) {
+    if (nameUpdate) {
+      editModeAndTypeUpdate();
+      return userStore.updateUserNameAndEmail(nameUpdate, email);
+    }
+    if (emailUpdate) {
+      if (validateEmail(emailUpdate)) {
+        setIsEmailValid(true);
         editModeAndTypeUpdate();
-        return userStore.updateUserNameAndEmail(nameUpdate, email);
+        return userStore.updateUserNameAndEmail(name, emailUpdate);
       }
-      if (emailUpdate) {
-        if (validateEmail(emailUpdate)) {
-          setIsEmailValid(true);
-          editModeAndTypeUpdate();
-          return userStore.updateUserNameAndEmail(name, emailUpdate);
-        }
-        setErrorMsg({ message: "Invalid Email" });
-        setIsEmailValid(false);
-      }
+      setErrorMsg({ message: "Invalid Email" });
+      setIsEmailValid(false);
     }
   };
-
-  // const debouncedSave = useRef(_debounce(saveNameEmailChange, 1500)).current;
-
   return (
     <>
-      {isSettingInEditMode && editType === "name" && (
+      {isSettingInEditMode && editType === EditType.Name_edit && (
         <Modal
           title="Name"
           description={
-            <AccountSettingsInputsWrapper agencySettingsConfigs>
+            <AgencySettingsModalInputWrapperSmall>
               <NewInput
                 style={{ marginBottom: "0" }}
                 persistLabel
@@ -96,7 +90,7 @@ export const AccountSettings = () => {
                 }}
                 agencySettingsConfigs
               />
-            </AccountSettingsInputsWrapper>
+            </AgencySettingsModalInputWrapperSmall>
           }
           buttons={[
             {
@@ -112,14 +106,11 @@ export const AccountSettings = () => {
         />
       )}
 
-      {isSettingInEditMode && editType === "email" && (
+      {isSettingInEditMode && editType === EditType.Email_edit && (
         <Modal
           title="Email"
           description={
-            <AccountSettingsInputsWrapper
-              agencySettingsConfigs
-              error={!isEmailValid}
-            >
+            <AgencySettingsModalInputWrapperSmall error={!isEmailValid}>
               <NewInput
                 style={{ marginBottom: "0" }}
                 persistLabel
@@ -129,7 +120,7 @@ export const AccountSettings = () => {
                   setEmail(() => e.target.value.trimStart());
                 }}
               />
-            </AccountSettingsInputsWrapper>
+            </AgencySettingsModalInputWrapperSmall>
           }
           buttons={[
             {

@@ -24,7 +24,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { AccountSettingsInputsWrapper } from "./AccountSettings.styles";
+import { AgencySettingsModalInputWrapperLarge } from "./AccountSettings.styles";
 import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,
@@ -92,7 +92,7 @@ const AgencySettingsDescription: React.FC<{
                 <AgencyInfoTextAreaLabel agencyDescriptionConfigs>
                   This description will go on your public-facing dashboard.
                 </AgencyInfoTextAreaLabel>
-                <AccountSettingsInputsWrapper agencyDescriptionConfigs>
+                <AgencySettingsModalInputWrapperLarge>
                   <NewInput
                     style={{ marginBottom: "0" }}
                     persistLabel
@@ -103,7 +103,7 @@ const AgencySettingsDescription: React.FC<{
                     maxLength={750}
                     onChange={(e) => setInfoText(e.target.value)}
                   />
-                </AccountSettingsInputsWrapper>
+                </AgencySettingsModalInputWrapperLarge>
               </>
             }
             buttons={[

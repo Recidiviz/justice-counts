@@ -44,95 +44,113 @@ export const AccountSettingsTitle = styled.h1`
     padding: 0 0 24px 0;
   }
 `;
-export const AccountSettingsInputsWrapper = styled.div<{
+export const AccountSettingsInputsWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  padding-bottom: 24px;
+  padding-top: 24px;
+  border-bottom: 1px solid ${palette.solid.lightgrey4};
+
+  input {
+    padding-left: 0;
+    border: none;
+    background-color: initial;
+    ${typography.body};
+    color: ${palette.highlight.grey9};
+  }
+
+  label {
+    ${typography.body};
+    color: ${palette.solid.black};
+  }
+
+  span {
+    a {
+      text-decoration: none;
+    }
+  }
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    flex-direction: column;
+    gap: 0;
+    margin-left: 0px;
+  }
+`;
+
+export const AgencySettingsModalInputWrapperSmall = styled.div<{
   error?: boolean;
-  noBorderBottom?: boolean;
-  agencySettingsConfigs?: boolean;
-  agencyDescriptionConfigs?: boolean;
 }>`
   display: flex;
   flex-direction: row;
   gap: 10px;
-  ${({ agencySettingsConfigs }) => {
-    if (agencySettingsConfigs) {
-      return (
-        "height: 36px; min-height: initial; min-width: 534px; " +
-        `label {
-                display: none;
-                }
-                div {
-                  width: 100%;
-                  input {
-                    ${typography.body}
-                    color: ${palette.solid.black};
-                    width: 100%;
-                    padding: 0;
-                    border: none;
-                  }
-                  div{
-                    margin-left: -18px;
-                  }
-        }`
-      );
-    }
-  }};
-  ${({ agencyDescriptionConfigs }) => {
-    if (agencyDescriptionConfigs) {
-      return (
-        "height: 179px; min-height: 179px; min-width: 534px;" +
-        `label {
-                display: none;
-                }
-                div {
-                  width: 100%;
-                  textarea {
-                    margin-top: 8px;
-                    margin-left: 16px;
-                    margin-right: 16px;
-                    ${typography.body}
-                    color: ${palette.solid.black};
-                    width: 95%;
-                    padding: 0;
-                    border: none;
-                  }
-        }`
-      );
-    }
-  }};
-  padding: ${({ agencySettingsConfigs, agencyDescriptionConfigs }) => {
-    if (agencySettingsConfigs) {
-      return "8px 16px";
-    }
-    if (agencyDescriptionConfigs) {
-      return "padding: 0";
-    }
-    return "24px 0";
-  }};
-  border: ${({ agencySettingsConfigs, agencyDescriptionConfigs, error }) => {
-    let borderStringValue = "";
-    if (agencySettingsConfigs || agencyDescriptionConfigs) {
-      borderStringValue = "1px solid ";
-      if (agencySettingsConfigs && error) {
-        borderStringValue += palette.solid.red;
-      } else {
-        borderStringValue += palette.highlight.grey5;
+  height: 36px;
+  min-height: initial;
+  min-width: 534px;
+  padding: 8px 16px;
+  border: ${({ error }) =>
+    error
+      ? `1px solid ${palette.solid.red}`
+      : `1px solid ${palette.highlight.grey5}`};
+  label {
+    display: none;
+  }
+
+  div {
+    width: 100%;
+
+    input {
+      ${typography.body}
+      color: ${palette.solid.black};
+      width: 100%;
+      padding: 0;
+      border: none;
+      &:focus {
+        border: none;
       }
-    } else {
-      return "initial";
     }
+    div {
+      margin-left: -18px;
+    }
+  }
 
-    return borderStringValue;
-  }};
-  border-bottom: ${({ noBorderBottom, error }) => {
-    if (noBorderBottom) {
-      return "none";
-    }
-    if (error) {
-      return `1px solid ${palette.solid.red}`;
-    }
+  *:focus {
+    outline: none;
+  }
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    flex-direction: column;
+    gap: 0;
+    margin-left: 0;
+  }
+`;
 
-    return `1px solid ${palette.highlight.grey5}`;
-  }};
+export const AgencySettingsModalInputWrapperLarge = styled.div`
+  height: 179px;
+  min-height: 179px;
+  min-width: 534px;
+  padding: 0;
+  border: 1px solid ${palette.highlight.grey5};
+  label {
+    display: none;
+  }
+
+  div {
+    width: 100%;
+
+    textarea {
+      margin-top: 8px;
+      margin-left: 16px;
+      margin-right: 16px;
+      ${typography.body}
+      color: ${palette.solid.black};
+      width: 95%;
+      padding: 0;
+      border: none;
+      &:focus {
+        border: none;
+      }
+    }
+  }
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
     gap: 0;

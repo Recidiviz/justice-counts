@@ -25,7 +25,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import { AccountSettingsInputsWrapper } from "./AccountSettings.styles";
+import { AgencySettingsModalInputWrapperSmall } from "./AccountSettings.styles";
 import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,
@@ -112,10 +112,7 @@ const AgencySettingsUrl: React.FC<{
           <Modal
             title="Agency URL"
             description={
-              <AccountSettingsInputsWrapper
-                agencySettingsConfigs
-                error={!isURLValid}
-              >
+              <AgencySettingsModalInputWrapperSmall error={!isURLValid}>
                 <NewInput
                   style={{ marginBottom: "0" }}
                   persistLabel
@@ -128,7 +125,7 @@ const AgencySettingsUrl: React.FC<{
                   }}
                   agencySettingsConfigs
                 />
-              </AccountSettingsInputsWrapper>
+              </AgencySettingsModalInputWrapperSmall>
             }
             buttons={[
               {
