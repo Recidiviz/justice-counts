@@ -269,10 +269,7 @@ export function replaceSymbolsWithDash(value: string) {
   return value.replace(/[^A-Za-z0-9]/g, "-").toLowerCase();
 }
 
-export const validateEmail = (email: string | undefined) => {
-  if (email === undefined) {
-    return false;
-  }
+export const validateEmail = (email: string) => {
   return Boolean(
     email
       .toLowerCase()

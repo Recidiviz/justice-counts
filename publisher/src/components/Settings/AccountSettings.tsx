@@ -78,68 +78,70 @@ export const AccountSettings = () => {
   };
   return (
     <>
-      {isSettingInEditMode && editType === EditType.Name_edit && (
-        <Modal
-          title="Name"
-          description={
-            <AgencySettingsModalInputWrapperSmall>
-              <NewInput
-                style={{ marginBottom: "0" }}
-                persistLabel
-                value={name}
-                onChange={(e) => {
-                  setName(() => e.target.value.trimStart());
-                }}
-                agencySettingsConfigs
-                fullWidth
-              />
-            </AgencySettingsModalInputWrapperSmall>
-          }
-          buttons={[
-            {
-              label: "Save",
-              onClick: () => {
-                saveNameEmailChange(name);
-              },
-            },
-          ]}
-          modalBackground="opaque"
-          onClickClose={onClickClose}
-          agencySettingsConfigs
-        />
+      {isSettingInEditMode && (
+        <>
+          {editType === EditType.Name_edit && (
+            <Modal
+              title="Name"
+              description={
+                <AgencySettingsModalInputWrapperSmall>
+                  <NewInput
+                    style={{ marginBottom: "0" }}
+                    persistLabel
+                    value={name}
+                    onChange={(e) => {
+                      setName(() => e.target.value.trimStart());
+                    }}
+                    agencySettingsConfigs
+                    fullWidth
+                  />
+                </AgencySettingsModalInputWrapperSmall>
+              }
+              buttons={[
+                {
+                  label: "Save",
+                  onClick: () => {
+                    saveNameEmailChange(name);
+                  },
+                },
+              ]}
+              modalBackground="opaque"
+              onClickClose={onClickClose}
+              agencySettingsConfigs
+            />
+          )}
+          {editType === EditType.Email_edit && (
+            <Modal
+              title="Email"
+              description={
+                <AgencySettingsModalInputWrapperSmall error={!isEmailValid}>
+                  <NewInput
+                    style={{ marginBottom: "0" }}
+                    persistLabel
+                    value={email}
+                    error={errorMsg}
+                    onChange={(e) => {
+                      setEmail(() => e.target.value.trimStart());
+                    }}
+                    fullWidth
+                  />
+                </AgencySettingsModalInputWrapperSmall>
+              }
+              buttons={[
+                {
+                  label: "Save",
+                  onClick: () => {
+                    saveNameEmailChange(undefined, email);
+                  },
+                },
+              ]}
+              modalBackground="opaque"
+              onClickClose={onClickClose}
+              agencySettingsConfigs
+            />
+          )}
+        </>
       )}
-
-      {isSettingInEditMode && editType === EditType.Email_edit && (
-        <Modal
-          title="Email"
-          description={
-            <AgencySettingsModalInputWrapperSmall error={!isEmailValid}>
-              <NewInput
-                style={{ marginBottom: "0" }}
-                persistLabel
-                value={email}
-                error={errorMsg}
-                onChange={(e) => {
-                  setEmail(() => e.target.value.trimStart());
-                }}
-                fullWidth
-              />
-            </AgencySettingsModalInputWrapperSmall>
-          }
-          buttons={[
-            {
-              label: "Save",
-              onClick: () => {
-                saveNameEmailChange(undefined, email);
-              },
-            },
-          ]}
-          modalBackground="opaque"
-          onClickClose={onClickClose}
-          agencySettingsConfigs
-        />
-      )}
-
       <AccountSettingsWrapper>
         <AccountSettingsInputsWrapper>
           <AccountSettingsSectionCol>
