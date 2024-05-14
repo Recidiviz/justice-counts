@@ -394,7 +394,10 @@ class AdminPanelStore {
   }
 
   saveAgencyName(name: string) {
-    this.agencyProvisioningUpdates.name = name.trim().replaceAll(/\s+/gi, " ");
+    this.agencyProvisioningUpdates.name = name
+      .trim()
+      .replaceAll(/\s+/gi, " ")
+      .replaceAll("’", "'");
   }
 
   updateStateCode(stateCode: StateCodeKey | null) {
