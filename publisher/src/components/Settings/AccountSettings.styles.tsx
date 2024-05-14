@@ -81,17 +81,7 @@ export const AccountSettingsInputsWrapper = styled.div`
 export const AgencySettingsModalInputWrapperSmall = styled.div<{
   error?: boolean;
 }>`
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  height: 36px;
-  min-height: initial;
-  min-width: 534px;
-  padding: 8px 16px;
-  border: ${({ error }) =>
-    error
-      ? `1px solid ${palette.solid.red}`
-      : `1px solid ${palette.highlight.grey5}`};
+  width: 100%;
   label {
     display: none;
   }
@@ -102,20 +92,11 @@ export const AgencySettingsModalInputWrapperSmall = styled.div<{
     input {
       ${typography.body}
       color: ${palette.solid.black};
-      width: 100%;
-      padding: 0;
-      border: none;
-      &:focus {
-        border: none;
-      }
+      border: ${({ error }) =>
+        error
+          ? `1px solid ${palette.solid.red}`
+          : `1px solid ${palette.highlight.grey5}`};
     }
-    div {
-      margin-left: -18px;
-    }
-  }
-
-  *:focus {
-    outline: none;
   }
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
@@ -125,30 +106,15 @@ export const AgencySettingsModalInputWrapperSmall = styled.div<{
 `;
 
 export const AgencySettingsModalInputWrapperLarge = styled.div`
-  height: 179px;
   min-height: 179px;
-  min-width: 534px;
-  padding: 0;
-  border: 1px solid ${palette.highlight.grey5};
+  width: 100%;
   label {
     display: none;
   }
-
   div {
-    width: 100%;
-
     textarea {
-      margin-top: 8px;
-      margin-left: 16px;
-      margin-right: 16px;
       ${typography.body}
       color: ${palette.solid.black};
-      width: 95%;
-      padding: 0;
-      border: none;
-      &:focus {
-        border: none;
-      }
     }
   }
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {

@@ -91,6 +91,7 @@ export const AccountSettings = () => {
                   setName(() => e.target.value.trimStart());
                 }}
                 agencySettingsConfigs
+                fullWidth
               />
             </AgencySettingsModalInputWrapperSmall>
           }
@@ -121,6 +122,7 @@ export const AccountSettings = () => {
                 onChange={(e) => {
                   setEmail(() => e.target.value.trimStart());
                 }}
+                fullWidth
               />
             </AgencySettingsModalInputWrapperSmall>
           }

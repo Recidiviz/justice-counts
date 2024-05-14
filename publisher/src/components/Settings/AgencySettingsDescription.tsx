@@ -102,6 +102,7 @@ const AgencySettingsDescription: React.FC<{
                     multiline
                     maxLength={750}
                     onChange={(e) => setInfoText(e.target.value)}
+                    fullWidth
                   />
                 </AgencySettingsModalInputWrapperLarge>
               </>

@@ -263,5 +263,4 @@ export const ErrorMessage = styled.div<{ agencySettingsConfigs?: boolean }>`
   color: ${palette.solid.red};
   margin-top: ${({ agencySettingsConfigs }) =>
     agencySettingsConfigs ? "8px" : "-4px"};
-  margin-left: -8px;
 `;

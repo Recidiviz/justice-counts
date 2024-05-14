@@ -128,6 +128,7 @@ const AgencySettingsUrl: React.FC<{
                     setUrlText(() => e.target.value.trimStart());
                   }}
                   agencySettingsConfigs
+                  fullWidth
                 />
               </AgencySettingsModalInputWrapperSmall>
             }
