@@ -200,7 +200,11 @@ export const AgencyInfoTextAreaLabel = styled.label<{
     if (agencyDescriptionConfigs) {
       return (
         `align-self: flex-start; margin-top: 12px; margin-bottom: 24px;` +
-        `${typography.body};`
+        `${typography.body};` +
+        ` a {
+            text-decoration: none;
+            color: ${palette.solid.blue};
+          }`
       );
     }
     return `margin-bottom: 16px; ${typography.sizeCSS.normal};`;
@@ -578,8 +582,13 @@ export const CheckboxWrapper = styled.div`
   z-index: 1;
 `;
 
-export const Checkbox = styled.input`
-  appearance: none;
+export const CheckboxLabelWrapper = styled.div`
+  color: ${palette.solid.black};
+`;
+
+export const Checkbox = styled.input<{ supervisionConfigs?: boolean }>`
+  appearance: ${({ supervisionConfigs }) =>
+    supervisionConfigs ? "auto" : "none"};
   width: 20px;
   height: 20px;
   background: transparent;

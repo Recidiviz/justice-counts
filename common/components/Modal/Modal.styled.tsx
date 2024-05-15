@@ -108,7 +108,6 @@ export const ButtonsContainer = styled.div<{
   width: 100%;
   display: flex;
   gap: 12px;
-
   ${({ modalType, centerButtons }) => {
     if (centerButtons) return "justify-content: center; margin-top: 72px;";
     if (modalType) return "justify-content: space-between; margin-top: 72px;";
@@ -118,6 +117,19 @@ export const ButtonsContainer = styled.div<{
   & > div:last-child {
     justify-content: unset;
     margin-left: auto;
+  }
+`;
+
+export const UnsavedChangesButtonsContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  gap: 16px;
+  margin-top: 24px;
+  & > div:first-child {
+    div {
+      border: none;
+    }
   }
 `;
 

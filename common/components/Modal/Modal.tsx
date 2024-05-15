@@ -25,6 +25,7 @@ import warningIcon from "../../assets/warning-icon.svg";
 import { Button, ButtonColor } from "../Button";
 import * as Styled from "./Modal.styled";
 import { ModalBackground, ModalType } from "./types";
+import { UnsavedChangesButtonsContainer } from "./Modal.styled";
 
 type ModalProps = Partial<{
   title: string | React.ReactNode;
@@ -39,6 +40,7 @@ type ModalProps = Partial<{
   children?: React.ReactNode;
   onClickClose?: () => void | undefined;
   agencySettingsConfigs?: boolean;
+  unsavedChangesConfigs?: boolean;
 }>;
 
 export function Modal({
@@ -54,6 +56,7 @@ export function Modal({
   children,
   onClickClose,
   agencySettingsConfigs,
+  unsavedChangesConfigs,
 }: ModalProps) {
   const primaryButtonColor = (): ButtonColor => {
     if (modalType === "alert") return "red";
@@ -96,7 +99,8 @@ export function Modal({
             )}
           </Styled.ModalTitleWrapper>
           <Styled.Description>{description}</Styled.Description>
-          <Styled.ButtonsContainer modalType={modalType}>
+          {!unsavedChangesConfigs && (
+            <Styled.ButtonsContainer modalType={modalType}>
             {buttons?.map((button, index) => (
               <Button
                 label={button.label}
@@ -112,6 +116,25 @@ export function Modal({
               />
             ))}
           </Styled.ButtonsContainer>
+          )}
+          {unsavedChangesConfigs && (
+            <Styled.UnsavedChangesButtonsContainer>
+              {buttons?.map((button, index) => (
+                <Button
+                  label={button.label}
+                  onClick={button.onClick}
+                  borderColor={
+                    index === buttons.length - 1 ? undefined : "lightgrey"
+                  }
+                  buttonColor={
+                    index === buttons.length - 1
+                      ? primaryButtonColor()
+                      : undefined
+                  }
+                />
+              ))}
+            </Styled.UnsavedChangesButtonsContainer>
+          )}
         </Styled.InnerWrapper>
       )}
     </Styled.OuterWrapper>
