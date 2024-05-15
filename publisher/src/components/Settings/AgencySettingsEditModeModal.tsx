@@ -82,7 +82,7 @@ export const AgencySettingsEditModeModal: React.FC<{
         <Modal
           title="Unsaved changes"
           description={
-            <AgencySettingsModalInputWrapperSmall>
+            <AgencySettingsModalInputWrapperSmall unsavedChanges>
               You have unsaved changes, would you like to leave anyway?
             </AgencySettingsModalInputWrapperSmall>
           }

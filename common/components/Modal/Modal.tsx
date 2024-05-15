@@ -25,7 +25,6 @@ import warningIcon from "../../assets/warning-icon.svg";
 import { Button, ButtonColor } from "../Button";
 import * as Styled from "./Modal.styled";
 import { ModalBackground, ModalType } from "./types";
-import { UnsavedChangesButtonsContainer } from "./Modal.styled";
 
 type ModalProps = Partial<{
   title: string | React.ReactNode;
@@ -101,21 +100,21 @@ export function Modal({
           <Styled.Description>{description}</Styled.Description>
           {!unsavedChangesConfigs && (
             <Styled.ButtonsContainer modalType={modalType}>
-            {buttons?.map((button, index) => (
-              <Button
-                label={button.label}
-                onClick={button.onClick}
-                borderColor={
-                  index === buttons.length - 1 ? undefined : "lightgrey"
-                }
-                buttonColor={
-                  index === buttons.length - 1
-                    ? primaryButtonColor()
-                    : undefined
-                }
-              />
-            ))}
-          </Styled.ButtonsContainer>
+              {buttons?.map((button, index) => (
+                <Button
+                  label={button.label}
+                  onClick={button.onClick}
+                  borderColor={
+                    index === buttons.length - 1 ? undefined : "lightgrey"
+                  }
+                  buttonColor={
+                    index === buttons.length - 1
+                      ? primaryButtonColor()
+                      : undefined
+                  }
+                />
+              ))}
+            </Styled.ButtonsContainer>
           )}
           {unsavedChangesConfigs && (
             <Styled.UnsavedChangesButtonsContainer>

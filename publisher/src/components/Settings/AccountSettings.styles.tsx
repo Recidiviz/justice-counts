@@ -74,14 +74,17 @@ export const AccountSettingsInputsWrapper = styled.div`
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
     gap: 0;
-    margin-left: 0px;
+    margin-left: 0;
   }
 `;
 
 export const AgencySettingsModalInputWrapperSmall = styled.div<{
   error?: boolean;
+  unsavedChanges?: boolean;
 }>`
   width: 100%;
+  ${({ unsavedChanges }) =>
+    unsavedChanges ? `${typography.body}` : "initial"};
   label {
     display: none;
   }
