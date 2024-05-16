@@ -37,7 +37,6 @@ import {
   AgencyInfoBlockDescription,
   AgencySettingsBlock,
   AgencySettingsBlockDescription,
-  AgencySettingsBlockSubDescription,
   BasicInfoBlockTitle,
   BlueCheckIcon,
   Checkbox,
@@ -46,7 +45,6 @@ import {
   EditModeButtonsContainer,
   JurisdictionCheckBlock,
   JurisdictionsEditModeFooter,
-  JurisdictionsEditModeFooterLeftBlock,
   JurisdictionsInfoCol,
   JurisdictionsInfoRow,
   JurisdictionsInputWrapper,
@@ -265,8 +263,9 @@ export const AgencySettingsJurisdictions: React.FC<{
                         id="include"
                         name="exclusionsView"
                         label="Include"
-                        // value=""
-                        // onChange={setIsExclusionsViewActive()}
+                        onClick={() =>
+                          setIsExclusionsViewActive(!isExclusionsViewActive)
+                        }
                         defaultChecked={!isExclusionsViewActive}
                         buttonSize="large"
                       />
@@ -275,9 +274,9 @@ export const AgencySettingsJurisdictions: React.FC<{
                         id="exclude"
                         name="exclusionsView"
                         label="Exclude"
-                        // value=""
-                        // onChange={updateFrequency}
-                        // onChange={}
+                        onClick={() =>
+                          setIsExclusionsViewActive(!isExclusionsViewActive)
+                        }
                         defaultChecked={isExclusionsViewActive}
                         buttonSize="large"
                       />
@@ -338,20 +337,25 @@ export const AgencySettingsJurisdictions: React.FC<{
                     ))}
                 </JurisdictionsInputWrapper>
                 {!isExclusionsViewActive && (
-                  <>
-                    <AgencySettingsBlockSubDescription>
-                      Areas included
-                    </AgencySettingsBlockSubDescription>
-                    <JurisdictionsListArea>
-                      {editedIncludedJurisdictionsIds.map((id) => (
-                        <JurisdictionsInfoRow
-                          key={id}
-                          hasHover
-                          onClick={() => handleCheckedJurisdictionsIds(id)}
-                        >
-                          {mappedJurisdictionsData[id].name}
+                  <JurisdictionsListArea>
+                    {editedIncludedJurisdictionsIds.map((id) => (
+                      <JurisdictionsInfoRow
+                        key={id}
+                        hasHover
+                        onClick={() => handleCheckedJurisdictionsIds(id)}
+                      >
+                        <JurisdictionsInfoCol>
+                          <div>{mappedJurisdictionsData[id].name}</div>
+                          <div>
+                            <span>
+                              {removeUnderscore(
+                                mappedJurisdictionsData[id].type
+                              )}
+                            </span>
+                          </div>
+                        </JurisdictionsInfoCol>
+                        <JurisdictionsInfoCol>
                           <JurisdictionCheckBlock>
-                            {removeUnderscore(mappedJurisdictionsData[id].type)}
                             <CheckboxWrapper>
                               <Checkbox
                                 type="checkbox"
@@ -359,30 +363,36 @@ export const AgencySettingsJurisdictions: React.FC<{
                                 onChange={() =>
                                   handleCheckedJurisdictionsIds(id)
                                 }
+                                squareCheckboxConfigs
                               />
                               <BlueCheckIcon src={blackCheck} alt="" enabled />
                             </CheckboxWrapper>
                           </JurisdictionCheckBlock>
-                        </JurisdictionsInfoRow>
-                      ))}
-                    </JurisdictionsListArea>
-                  </>
+                        </JurisdictionsInfoCol>
+                      </JurisdictionsInfoRow>
+                    ))}
+                  </JurisdictionsListArea>
                 )}
                 {isExclusionsViewActive && (
-                  <>
-                    <AgencySettingsBlockSubDescription>
-                      Areas excluded
-                    </AgencySettingsBlockSubDescription>
-                    <JurisdictionsListArea>
-                      {editedExcludedJurisdictionsIds.map((id) => (
-                        <JurisdictionsInfoRow
-                          key={id}
-                          hasHover
-                          onClick={() => handleCheckedJurisdictionsIds(id)}
-                        >
-                          {mappedJurisdictionsData[id].name}
+                  <JurisdictionsListArea>
+                    {editedExcludedJurisdictionsIds.map((id) => (
+                      <JurisdictionsInfoRow
+                        key={id}
+                        hasHover
+                        onClick={() => handleCheckedJurisdictionsIds(id)}
+                      >
+                        <JurisdictionsInfoCol>
+                          <div>{mappedJurisdictionsData[id].name}</div>
+                          <div>
+                            <span>
+                              {removeUnderscore(
+                                mappedJurisdictionsData[id].type
+                              )}
+                            </span>
+                          </div>
+                        </JurisdictionsInfoCol>
+                        <JurisdictionsInfoCol>
                           <JurisdictionCheckBlock>
-                            {removeUnderscore(mappedJurisdictionsData[id].type)}
                             <CheckboxWrapper>
                               <Checkbox
                                 type="checkbox"
@@ -390,55 +400,17 @@ export const AgencySettingsJurisdictions: React.FC<{
                                 onChange={() =>
                                   handleCheckedJurisdictionsIds(id)
                                 }
+                                squareCheckboxConfigs
                               />
                               <BlueCheckIcon src={blackCheck} alt="" enabled />
                             </CheckboxWrapper>
                           </JurisdictionCheckBlock>
-                        </JurisdictionsInfoRow>
-                      ))}
-                    </JurisdictionsListArea>
-                  </>
+                        </JurisdictionsInfoCol>
+                      </JurisdictionsInfoRow>
+                    ))}
+                  </JurisdictionsListArea>
                 )}
                 <JurisdictionsEditModeFooter>
-                  {isExclusionsViewActive ? (
-                    <JurisdictionsEditModeFooterLeftBlock>
-                      {hasInclusions
-                        ? `${editedIncludedJurisdictionsIds.length} ${
-                            editedIncludedJurisdictionsIds.length > 1
-                              ? "areas"
-                              : "area"
-                          } included`
-                        : "Need to declare included areas?"}
-                      <Button
-                        label={hasInclusions ? "View and Edit" : "Add them"}
-                        onClick={() =>
-                          setIsExclusionsViewActive(!isExclusionsViewActive)
-                        }
-                        labelColor="blue"
-                        noSidePadding
-                        noHover
-                      />
-                    </JurisdictionsEditModeFooterLeftBlock>
-                  ) : (
-                    <JurisdictionsEditModeFooterLeftBlock>
-                      {hasExclusions
-                        ? `${editedExcludedJurisdictionsIds.length} ${
-                            editedExcludedJurisdictionsIds.length > 1
-                              ? "areas"
-                              : "area"
-                          } excluded`
-                        : "Need to declare excluded areas?"}
-                      <Button
-                        label={hasExclusions ? "View and Edit" : "Add them"}
-                        onClick={() =>
-                          setIsExclusionsViewActive(!isExclusionsViewActive)
-                        }
-                        labelColor="blue"
-                        noSidePadding
-                        noHover
-                      />
-                    </JurisdictionsEditModeFooterLeftBlock>
-                  )}
                   {checkedJurisdictionsIds.length === 0 ? (
                     <EditModeButtonsContainer>
                       <Button label="Cancel" onClick={handleCancelClick} />

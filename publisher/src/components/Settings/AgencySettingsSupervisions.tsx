@@ -173,7 +173,7 @@ export const AgencySettingsSupervisions: React.FC<{
                           onChange={() =>
                             handleSetSupervisionSystemsToSave(value)
                           }
-                          supervisionConfigs
+                          squareCheckboxConfigs
                         />
                         <BlueCheckIcon src={blueCheck} alt="" enabled />
                       </CheckboxWrapper>

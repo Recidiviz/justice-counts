@@ -150,15 +150,6 @@ export const AgencySettingsBlockDescription = styled.div`
   color: ${palette.highlight.grey9};
 `;
 
-export const AgencySettingsBlockSubDescription = styled(
-  AgencySettingsBlockDescription
-)<{ hasTopMargin?: boolean }>`
-  ${typography.sizeCSS.small};
-  font-weight: 500;
-  padding: 0 8px;
-  margin-top: ${({ hasTopMargin }) => (hasTopMargin ? "24px" : "0")};
-`;
-
 export const AgencyInfoBlockDescription = styled.div<{
   hasTopMargin?: boolean;
 }>`
@@ -553,15 +544,11 @@ export const JurisdictionCheckBlock = styled.div`
 export const JurisdictionsEditModeFooter = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-`;
-
-export const JurisdictionsEditModeFooterLeftBlock = styled.div`
-  ${typography.sizeCSS.normal};
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-top: 16px;
+  border-top: 1px solid ${palette.highlight.grey5};
+  margin-right: -24px;
+  margin-left: -24px;
+  justify-content: flex-end;
+  padding-right: 24px;
 `;
 
 export const CheckboxWrapper = styled.div`
@@ -574,9 +561,9 @@ export const CheckboxLabelWrapper = styled.div`
   color: ${palette.solid.black};
 `;
 
-export const Checkbox = styled.input<{ supervisionConfigs?: boolean }>`
-  appearance: ${({ supervisionConfigs }) =>
-    supervisionConfigs ? "auto" : "none"};
+export const Checkbox = styled.input<{ squareCheckboxConfigs?: boolean }>`
+  appearance: ${({ squareCheckboxConfigs }) =>
+    squareCheckboxConfigs ? "auto" : "none"};
   width: 20px;
   height: 20px;
   background: transparent;

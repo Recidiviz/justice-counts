@@ -78,7 +78,7 @@ const AgencySettingsUrl: React.FC<{
       return;
     }
     setIsURLValid(false);
-    setErrorMsg({ message: "Invalid Email" });
+    setErrorMsg({ message: "Invalid URL" });
   };
   const handleCancelClick = () => {
     if (homepageUrlSetting === urlText) {
