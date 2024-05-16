@@ -52,7 +52,7 @@ export const AccountSettings = () => {
     setEmail(userStore?.email || "");
     editModeAndTypeUpdate();
     setName(userStore?.name || "");
-    setIsSettingInEditMode(!isSettingInEditMode);
+    setIsSettingInEditMode(false);
   };
   const editModeAndTypeUpdate = () => {
     setIsSettingInEditMode(!isSettingInEditMode);
