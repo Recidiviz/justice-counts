@@ -40,6 +40,7 @@ type ModalProps = Partial<{
   onClickClose?: () => void | undefined;
   agencySettingsConfigs?: boolean;
   unsavedChangesConfigs?: boolean;
+  jurisdictionsSettingsConfigs?: boolean;
 }>;
 
 export function Modal({
@@ -56,6 +57,7 @@ export function Modal({
   onClickClose,
   agencySettingsConfigs,
   unsavedChangesConfigs,
+  jurisdictionsSettingsConfigs,
 }: ModalProps) {
   const primaryButtonColor = (): ButtonColor => {
     if (modalType === "alert") return "red";
@@ -97,7 +99,11 @@ export function Modal({
               />
             )}
           </Styled.ModalTitleWrapper>
-          <Styled.Description>{description}</Styled.Description>
+          <Styled.Description
+            jurisdictionsSettingsConfigs={jurisdictionsSettingsConfigs}
+          >
+            {description}
+          </Styled.Description>
           {!unsavedChangesConfigs && (
             <Styled.ButtonsContainer modalType={modalType}>
               {buttons?.map((button, index) => (

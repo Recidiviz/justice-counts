@@ -463,24 +463,23 @@ export const SupervisionSystemRow = styled(AgencySettingsInfoRow)<{
 export const JurisdictionsInputWrapper = styled.div`
   position: relative;
 `;
-
+export const JurisdictionsSearchBarContainer = styled.div`
+  border-top: 1px solid ${palette.highlight.grey5};
+  border-bottom: 1px solid ${palette.highlight.grey5};
+  margin-left: -24px;
+  margin-right: -24px;
+  padding: 40px 24px;
+`;
 export const JurisdictionsSearchBar = styled.input<{
   value: string | undefined;
 }>`
   ${typography.sizeCSS.normal};
   padding: 12px 13px;
   width: 100%;
-  background-image: url(${searchIcon});
-  background-position: left 16px top 50%;
-  background-repeat: no-repeat;
   margin-bottom: 24px;
-  text-indent: 24px;
-  background-color: ${({ value }) =>
-    value ? palette.highlight.lightblue1 : palette.highlight.grey1};
-  border: none;
-  border-bottom: 1px solid
-    ${({ value }) => (value ? palette.solid.blue : palette.highlight.grey9)};
-  min-width: 266px;
+  text-indent: 12px;
+  border: 1px solid ${palette.highlight.grey5};
+  //min-width: 266px;
   caret-color: ${palette.solid.blue};
 
   &:focus {

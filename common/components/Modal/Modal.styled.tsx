@@ -83,8 +83,15 @@ export const Title = styled.div<{
   mediumTitle?: boolean;
   agencySettingsConfigs?: boolean;
 }>`
-  ${({ mediumTitle }) =>
-    mediumTitle ? typography.sizeCSS.medium : typography.sizeCSS.large};
+  ${({ mediumTitle, agencySettingsConfigs }) => {
+    if (mediumTitle) {
+      return `${typography.sizeCSS.medium}`;
+    }
+    if (agencySettingsConfigs) {
+      return `${typography.bodyEmphasized}`;
+    }
+    return `${typography.sizeCSS.large}`;
+  }};
   margin-top: ${({ agencySettingsConfigs }) =>
     agencySettingsConfigs ? "16px" : "initial"};
   margin-bottom: 16px;
@@ -94,10 +101,20 @@ export const Title = styled.div<{
   }
 `;
 
-export const Description = styled.div<{ centerText?: boolean }>`
+export const Description = styled.div<{
+  centerText?: boolean;
+  jurisdictionsSettingsConfigs?: boolean;
+}>`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: ${({ centerText, jurisdictionsSettingsConfigs }) => {
+    if (centerText) {
+      return `align-items: center;`;
+    }
+    if (jurisdictionsSettingsConfigs) {
+      return `align-items: unset;`;
+    }
+  }};
   ${typography.sizeCSS.normal};
 `;
 
@@ -140,5 +157,5 @@ export const ModalTitleWrapper = styled.div<{
   flex-direction: row;
   justify-content: space-between;
   ${({ agencySettingsConfigs }) =>
-    agencySettingsConfigs ? typography.bodyEmphasized : ""};
+    agencySettingsConfigs ? `${typography.bodyEmphasized}` : ""};
 `;
