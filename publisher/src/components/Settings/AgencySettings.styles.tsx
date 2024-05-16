@@ -24,7 +24,7 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-import searchIcon from "../assets/search-icon.png";
+// import searchIcon from "../assets/search-icon.png";
 import { SETTINGS_MENU_WITH_PADDINGS_WIDTH } from "./Settings.styles";
 
 // Common
@@ -476,10 +476,8 @@ export const JurisdictionsSearchBar = styled.input<{
   ${typography.sizeCSS.normal};
   padding: 12px 13px;
   width: 100%;
-  margin-bottom: 24px;
   text-indent: 12px;
   border: 1px solid ${palette.highlight.grey5};
-  //min-width: 266px;
   caret-color: ${palette.solid.blue};
 
   &:focus {
@@ -490,12 +488,12 @@ export const JurisdictionsSearchBar = styled.input<{
 export const JurisdictionsSearchResultContainer = styled.div`
   position: absolute;
   z-index: 5;
-  width: ${AGENCY_SETTINGS_CONTAINER_WIDTH}px;
+  width: 100%;
   padding: 8px 0;
   overflow-y: auto;
   max-height: 270px;
   background-color: ${palette.solid.white};
-  top: 55px;
+  top: 135px;
   display: flex;
   flex-direction: column;
   box-shadow: 0 0 1px rgba(23, 28, 43, 0.1), 0 4px 8px rgba(23, 28, 43, 0.04),
@@ -517,15 +515,6 @@ export const JurisdictionsSearchResult = styled.div<{ hasAction?: boolean }>`
   &:hover {
     background-color: ${palette.solid.offwhite};
   }
-`;
-
-export const JurisdictionAreaType = styled.div`
-  ${typography.body};
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  text-transform: capitalize;
-  color: ${palette.highlight.grey9};
 `;
 
 export const JurisdictionsListArea = styled.div`

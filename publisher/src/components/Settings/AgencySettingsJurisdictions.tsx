@@ -20,6 +20,10 @@ import addIcon from "@justice-counts/common/assets/add-icon.svg";
 import blackCheck from "@justice-counts/common/assets/black-check-icon.svg";
 import { Button } from "@justice-counts/common/components/Button";
 import { Modal } from "@justice-counts/common/components/Modal";
+import {
+  RadioButton,
+  RadioButtonsWrapper,
+} from "@justice-counts/common/components/RadioButton";
 import mappedJurisdictionsJSONData from "@justice-counts/common/fips_with_county_subdivisions.json";
 import { Jurisdiction } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
@@ -40,7 +44,6 @@ import {
   CheckboxWrapper,
   EditButtonContainer,
   EditModeButtonsContainer,
-  JurisdictionAreaType,
   JurisdictionCheckBlock,
   JurisdictionsEditModeFooter,
   JurisdictionsEditModeFooterLeftBlock,
@@ -59,6 +62,12 @@ const mappedJurisdictionsData = mappedJurisdictionsJSONData as unknown as {
   [id: string]: Jurisdiction;
 };
 
+const radioWrapperSpacing = {
+  top: 0,
+  right: 0,
+  bottom: 16,
+  left: 0,
+};
 export const AgencySettingsJurisdictions: React.FC<{
   settingProps: SettingProps;
 }> = observer(({ settingProps }) => {
@@ -250,6 +259,29 @@ export const AgencySettingsJurisdictions: React.FC<{
               <>
                 <JurisdictionsInputWrapper>
                   <JurisdictionsSearchBarContainer>
+                    <RadioButtonsWrapper spacing={radioWrapperSpacing}>
+                      <RadioButton
+                        type="radio"
+                        id="include"
+                        name="exclusionsView"
+                        label="Include"
+                        // value=""
+                        // onChange={setIsExclusionsViewActive()}
+                        defaultChecked={!isExclusionsViewActive}
+                        buttonSize="large"
+                      />
+                      <RadioButton
+                        type="radio"
+                        id="exclude"
+                        name="exclusionsView"
+                        label="Exclude"
+                        // value=""
+                        // onChange={updateFrequency}
+                        // onChange={}
+                        defaultChecked={isExclusionsViewActive}
+                        buttonSize="large"
+                      />
+                    </RadioButtonsWrapper>
                     <JurisdictionsSearchBar
                       placeholder="Select County"
                       value={inputValue}
@@ -276,11 +308,17 @@ export const AgencySettingsJurisdictions: React.FC<{
                               hasAction
                               onClick={() => handleAddArea(result.id)}
                             >
-                              {result.name}
-                              <JurisdictionAreaType>
-                                {removeUnderscore(result.type)}{" "}
-                                <AddIcon src={addIcon} alt="" />
-                              </JurisdictionAreaType>
+                              <JurisdictionsInfoCol>
+                                <div>{result.name}</div>
+                                <div>
+                                  <span>{removeUnderscore(result.type)}</span>
+                                </div>
+                              </JurisdictionsInfoCol>
+                              <JurisdictionsInfoCol>
+                                <div>
+                                  <AddIcon src={addIcon} alt="" />
+                                </div>
+                              </JurisdictionsInfoCol>
                             </JurisdictionsSearchResult>
                           ))}
                         {!!inputValue &&
@@ -435,14 +473,6 @@ export const AgencySettingsJurisdictions: React.FC<{
                 </JurisdictionsEditModeFooter>
               </>
             }
-            buttons={[
-              {
-                label: "Save",
-                onClick: () => {
-                  handleSaveClick();
-                },
-              },
-            ]}
             modalBackground="opaque"
             onClickClose={handleCancelClick}
             agencySettingsConfigs
