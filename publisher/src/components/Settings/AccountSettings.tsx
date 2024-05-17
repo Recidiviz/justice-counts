@@ -43,33 +43,34 @@ export const AccountSettings = () => {
   const [name, setName] = React.useState<string>(userStore?.name || "");
   const [isSettingInEditMode, setIsSettingInEditMode] =
     React.useState<boolean>(false);
-  const [editType, setEditType] = React.useState<string>("");
+  const [editType, setEditType] = React.useState<string | undefined>(undefined);
   const [isEmailValid, setIsEmailValid] = React.useState(true);
   const [errorMsg, setErrorMsg] = React.useState<
     { message: string } | undefined
   >(undefined);
   const onClickClose = () => {
     setEmail(userStore?.email || "");
-    editModeAndTypeUpdate();
+    resetEditModeTypeStates();
     setName(userStore?.name || "");
     setIsSettingInEditMode(false);
   };
-  const editModeAndTypeUpdate = () => {
-    setIsSettingInEditMode(!isSettingInEditMode);
-    if (editType === EditType.Email_edit) {
-      setIsEmailValid(true);
-      setErrorMsg(undefined);
-    }
-    setEditType("");
+  const resetEditModeTypeStates = () => {
+    setIsSettingInEditMode(false);
+    setEditType(undefined);
+  };
+  const validateUpdateEmailErrorStates = () => {
+    setIsEmailValid(true);
+    setErrorMsg(undefined);
   };
   const saveNameEmailChange = (nameUpdate?: string, emailUpdate?: string) => {
     if (nameUpdate) {
-      editModeAndTypeUpdate();
+      resetEditModeTypeStates();
       return userStore.updateUserNameAndEmail(nameUpdate, email);
     }
     if (emailUpdate) {
       if (validateEmail(emailUpdate)) {
-        editModeAndTypeUpdate();
+        validateUpdateEmailErrorStates();
+        resetEditModeTypeStates();
         return userStore.updateUserNameAndEmail(name, emailUpdate);
       }
       setErrorMsg({ message: "Invalid Email" });
