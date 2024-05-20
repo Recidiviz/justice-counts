@@ -57,28 +57,27 @@ const AgencySettingsUrl: React.FC<{
     )?.value || "";
 
   const isAgencySettingConfigured = Boolean(homepageUrlSetting);
-  const [isURLValid, setIsURLValid] = React.useState(true);
   const [errorMsg, setErrorMsg] = React.useState<
     { message: string } | undefined
   >(undefined);
-  const resetErrorHandlingValues = () => {
-    setIsURLValid(true);
-    setErrorMsg(undefined);
+  const checkValidEmailSetResetErrorMsg = () => {
+    if (validateAgencyURL(urlText) || urlText === "") {
+      setErrorMsg(undefined);
+      return true;
+    }
+    setErrorMsg({ message: "Invalid URL" });
+    return false;
   };
   const handleSaveClick = () => {
-    if (validateAgencyURL(urlText) || urlText === "") {
+    if (checkValidEmailSetResetErrorMsg()) {
       const updatedSettings = updateAgencySettings(
         "HOMEPAGE_URL",
         urlText,
         parseInt(agencyId)
       );
-      resetErrorHandlingValues();
       saveAgencySettings(updatedSettings, agencyId);
       removeEditMode();
-      return;
     }
-    setIsURLValid(false);
-    setErrorMsg({ message: "Invalid URL" });
   };
   const handleCancelClick = () => {
     if (homepageUrlSetting === urlText) {
@@ -116,7 +115,9 @@ const AgencySettingsUrl: React.FC<{
           <Modal
             title="Agency URL"
             description={
-              <AgencySettingsModalInputWrapperSmall error={!isURLValid}>
+              <AgencySettingsModalInputWrapperSmall
+                error={!validateAgencyURL(urlText)}
+              >
                 <NewInput
                   style={{ marginBottom: "0" }}
                   persistLabel
@@ -126,6 +127,7 @@ const AgencySettingsUrl: React.FC<{
                   isPlaceholderVisible
                   onChange={(e) => {
                     setUrlText(() => e.target.value.trimStart());
+                    checkValidEmailSetResetErrorMsg();
                   }}
                   agencySettingsConfigs
                   fullWidth
@@ -143,6 +145,8 @@ const AgencySettingsUrl: React.FC<{
             modalBackground="opaque"
             onClickClose={handleCancelClick}
             agencySettingsConfigs
+            agencySettingsAndJurisdictionsTitleConfigs
+            customPadding="24px 40px 24px 40px"
           />
         </AgencySettingsEditModeModal>
       )}

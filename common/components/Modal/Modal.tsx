@@ -17,7 +17,6 @@
 
 import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
-
 import alertIcon from "../../assets/alert-icon.png";
 import xCloseLg from "../../assets/close-icon-lg.svg";
 import successIcon from "../../assets/success-icon.png";
@@ -37,10 +36,12 @@ type ModalProps = Partial<{
   mediumTitle: boolean;
   customPadding?: string;
   children?: React.ReactNode;
-  onClickClose?: () => void | undefined;
+  onClickClose?: () => void;
   agencySettingsConfigs?: boolean;
   unsavedChangesConfigs?: boolean;
   jurisdictionsSettingsConfigs?: boolean;
+  agencySettingsAndJurisdictionsTitleConfigs?: boolean;
+  noBottomDiv?: boolean;
 }>;
 
 export function Modal({
@@ -55,9 +56,10 @@ export function Modal({
   customPadding,
   children,
   onClickClose,
-  agencySettingsConfigs,
   unsavedChangesConfigs,
   jurisdictionsSettingsConfigs,
+  agencySettingsAndJurisdictionsTitleConfigs,
+  noBottomDiv,
 }: ModalProps) {
   const primaryButtonColor = (): ButtonColor => {
     if (modalType === "alert") return "red";
@@ -74,34 +76,35 @@ export function Modal({
   }, []);
 
   const Portal = (
-    <Styled.OuterWrapper {...{ modalBackground }}>
+    <Styled.OuterWrapper modalBackground={modalBackground}>
       {children || (
         <Styled.InnerWrapper
           modalType={modalType}
           centerText={centerText}
           customPadding={customPadding}
+          noBottomDiv={noBottomDiv}
         >
           {modalType === "success" && <Styled.Icon src={successIcon} alt="" />}
           {modalType === "warning" && <Styled.Icon src={warningIcon} alt="" />}
           {modalType === "alert" && <Styled.Icon src={alertIcon} alt="" />}
-          <Styled.ModalTitleWrapper agencySettingsConfigs>
-            <Styled.Title
-              mediumTitle={mediumTitle}
-              agencySettingsConfigs={agencySettingsConfigs}
-            >
-              {title}
-            </Styled.Title>
+          <Styled.ModalTitleWrapper typographyBodyEmphasized>
+            {agencySettingsAndJurisdictionsTitleConfigs && (
+              <Styled.AgencySettingsAndJurisdictionsTitle>
+                {title}
+              </Styled.AgencySettingsAndJurisdictionsTitle>
+            )}
+            {!agencySettingsAndJurisdictionsTitleConfigs && (
+              <Styled.Title mediumTitle={mediumTitle}>{title}</Styled.Title>
+            )}
             {onClickClose && (
               <Button
-                label={<img src={xCloseLg} alt="X" />}
+                label={<img src={xCloseLg} alt="Close Button" />}
                 onClick={onClickClose}
                 agencySettingsConfigs
               />
             )}
           </Styled.ModalTitleWrapper>
-          <Styled.Description
-            jurisdictionsSettingsConfigs={jurisdictionsSettingsConfigs}
-          >
+          <Styled.Description unsetTextAlignment={jurisdictionsSettingsConfigs}>
             {description}
           </Styled.Description>
           {!unsavedChangesConfigs && (

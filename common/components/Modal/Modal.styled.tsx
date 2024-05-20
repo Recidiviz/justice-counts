@@ -61,6 +61,7 @@ export const InnerWrapper = styled.div<{
   modalType?: ModalType;
   centerText?: boolean;
   customPadding?: string;
+  noBottomDiv?: boolean;
 }>`
   background-color: ${palette.solid.white};
   width: 100%;
@@ -71,6 +72,11 @@ export const InnerWrapper = styled.div<{
   ${({ centerText }) => centerText && `align-items: center;`};
   border-radius: 3px;
   ${centerTextCSS}
+  ${({ noBottomDiv }) => {
+    if (noBottomDiv) {
+      return `& > div:last-child {display: none;}`;
+    }
+  }};
 `;
 
 export const Icon = styled.img`
@@ -81,20 +87,23 @@ export const Icon = styled.img`
 
 export const Title = styled.div<{
   mediumTitle?: boolean;
-  agencySettingsConfigs?: boolean;
 }>`
-  ${({ mediumTitle, agencySettingsConfigs }) => {
-    if (mediumTitle) {
-      return `${typography.sizeCSS.medium}`;
-    }
-    if (agencySettingsConfigs) {
-      return `${typography.bodyEmphasized}`;
-    }
-    return `${typography.sizeCSS.large}`;
-  }};
-  margin-top: ${({ agencySettingsConfigs }) =>
-    agencySettingsConfigs ? "16px" : "initial"};
+  ${({ mediumTitle }) =>
+    mediumTitle
+      ? `${typography.sizeCSS.medium}`
+      : `${typography.sizeCSS.large}`};
+  margin-top: 16px;
   margin-bottom: 16px;
+  a {
+    color: ${palette.solid.blue};
+    text-decoration: none;
+  }
+`;
+
+export const AgencySettingsAndJurisdictionsTitle = styled.div`
+  ${typography.bodyEmphasized}
+  margin-bottom: 16px;
+  margin-top: 16px;
   a {
     color: ${palette.solid.blue};
     text-decoration: none;
@@ -103,15 +112,15 @@ export const Title = styled.div<{
 
 export const Description = styled.div<{
   centerText?: boolean;
-  jurisdictionsSettingsConfigs?: boolean;
+  unsetTextAlignment?: boolean;
 }>`
   display: flex;
   flex-direction: column;
-  align-items: ${({ centerText, jurisdictionsSettingsConfigs }) => {
+  align-items: ${({ centerText, unsetTextAlignment }) => {
     if (centerText) {
       return `align-items: center;`;
     }
-    if (jurisdictionsSettingsConfigs) {
+    if (unsetTextAlignment) {
       return `align-items: unset;`;
     }
   }};
@@ -151,11 +160,11 @@ export const UnsavedChangesButtonsContainer = styled.div`
 `;
 
 export const ModalTitleWrapper = styled.div<{
-  agencySettingsConfigs?: boolean;
+  typographyBodyEmphasized?: boolean;
 }>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  ${({ agencySettingsConfigs }) =>
-    agencySettingsConfigs ? `${typography.bodyEmphasized}` : ""};
+  ${({ typographyBodyEmphasized }) =>
+    typographyBodyEmphasized ? `${typography.bodyEmphasized}` : ""};
 `;

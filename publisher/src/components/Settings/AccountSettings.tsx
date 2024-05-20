@@ -58,23 +58,26 @@ export const AccountSettings = () => {
     setIsSettingInEditMode(false);
     setEditType(undefined);
   };
-  const validateUpdateEmailErrorStates = () => {
+
+  const checkValidEmailUpdateErrorStates = (updateEmail?: string) => {
+    if (!updateEmail || !validateEmail(updateEmail)) {
+      setErrorMsg({ message: "Invalid Email" });
+      setIsEmailValid(false);
+      return false;
+    }
+
     setIsEmailValid(true);
     setErrorMsg(undefined);
+    return true;
   };
   const saveNameEmailChange = (nameUpdate?: string, emailUpdate?: string) => {
     if (nameUpdate) {
       resetEditModeTypeStates();
       return userStore.updateUserNameAndEmail(nameUpdate, email);
     }
-    if (emailUpdate) {
-      if (validateEmail(emailUpdate)) {
-        validateUpdateEmailErrorStates();
-        resetEditModeTypeStates();
-        return userStore.updateUserNameAndEmail(name, emailUpdate);
-      }
-      setErrorMsg({ message: "Invalid Email" });
-      setIsEmailValid(false);
+    if (checkValidEmailUpdateErrorStates(emailUpdate)) {
+      resetEditModeTypeStates();
+      return userStore.updateUserNameAndEmail(name, String(emailUpdate));
     }
   };
   return (
@@ -109,6 +112,8 @@ export const AccountSettings = () => {
               modalBackground="opaque"
               onClickClose={onClickClose}
               agencySettingsConfigs
+              agencySettingsAndJurisdictionsTitleConfigs
+              customPadding="24px 40px 40px 24px"
             />
           )}
           {editType === EditType.Email_edit && (
@@ -123,6 +128,7 @@ export const AccountSettings = () => {
                     error={errorMsg}
                     onChange={(e) => {
                       setEmail(() => e.target.value.trimStart());
+                      checkValidEmailUpdateErrorStates(email);
                     }}
                     fullWidth
                   />
@@ -139,6 +145,8 @@ export const AccountSettings = () => {
               modalBackground="opaque"
               onClickClose={onClickClose}
               agencySettingsConfigs
+              agencySettingsAndJurisdictionsTitleConfigs
+              customPadding="24px 40px 24px 40px"
             />
           )}
         </>

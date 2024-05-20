@@ -222,7 +222,7 @@ export function NewInput({
         fullWidth={fullWidth}
       />
       {error && (
-        <Styled.ErrorMessage agencySettingsConfigs>
+        <Styled.ErrorMessage settingsCustomMargin>
           {error.message}
         </Styled.ErrorMessage>
       )}

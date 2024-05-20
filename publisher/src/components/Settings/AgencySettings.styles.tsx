@@ -24,7 +24,6 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-// import searchIcon from "../assets/search-icon.png";
 import { SETTINGS_MENU_WITH_PADDINGS_WIDTH } from "./Settings.styles";
 
 // Common
@@ -189,14 +188,15 @@ export const AgencyInfoTextAreaLabel = styled.label<{
 }>`
   ${({ agencyDescriptionConfigs }) => {
     if (agencyDescriptionConfigs) {
-      return (
-        `align-self: flex-start; margin-top: 12px; margin-bottom: 24px;` +
-        `${typography.body};` +
-        ` a {
+      return `align-self: 
+         flex-start; 
+         margin-top: 12px; 
+         margin-bottom: 24px;
+         ${typography.body};
+         a {
             text-decoration: none;
             color: ${palette.solid.blue};
-          }`
-      );
+          }`;
     }
     return `margin-bottom: 16px; ${typography.sizeCSS.normal};`;
   }};
@@ -457,9 +457,10 @@ export const JurisdictionsInputWrapper = styled.div`
 export const JurisdictionsSearchBarContainer = styled.div`
   border-top: 1px solid ${palette.highlight.grey5};
   border-bottom: 1px solid ${palette.highlight.grey5};
-  margin-left: -24px;
-  margin-right: -24px;
-  padding: 40px 24px;
+  margin-left: -40px;
+  margin-right: -40px;
+  padding: 40px 40px;
+  margin-bottom: 24px;
 `;
 export const JurisdictionsSearchBar = styled.input<{
   value: string | undefined;
@@ -545,8 +546,8 @@ export const JurisdictionsEditModeFooter = styled.div`
   display: flex;
   flex-direction: row;
   border-top: 1px solid ${palette.highlight.grey5};
-  margin-right: -24px;
-  margin-left: -24px;
+  margin-right: -40px;
+  margin-left: -40px;
   justify-content: flex-end;
   padding-right: 24px;
 `;
@@ -561,7 +562,9 @@ export const CheckboxLabelWrapper = styled.div`
   color: ${palette.solid.black};
 `;
 
-export const Checkbox = styled.input<{ squareCheckboxConfigs?: boolean }>`
+export const Checkbox = styled.input<{
+  squareCheckboxConfigs?: boolean;
+}>`
   appearance: ${({ squareCheckboxConfigs }) =>
     squareCheckboxConfigs ? "auto" : "none"};
   width: 20px;
@@ -569,7 +572,6 @@ export const Checkbox = styled.input<{ squareCheckboxConfigs?: boolean }>`
   background: transparent;
   border: 1px solid ${palette.highlight.grey6};
   border-radius: 100%;
-
   &:hover {
     cursor: pointer;
   }

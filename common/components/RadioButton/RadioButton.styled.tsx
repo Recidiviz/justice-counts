@@ -24,7 +24,6 @@ import { RadioButtonSize, WrapperSpacing } from "./types";
 
 export const RadioButtonsWrapper = styled.form<{
   spacing?: WrapperSpacing;
-  jurisdictionsSettingsConfigs?: boolean;
 }>`
   width: 100%;
   margin: ${({ spacing }) =>

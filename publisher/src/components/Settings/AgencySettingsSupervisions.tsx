@@ -194,6 +194,8 @@ export const AgencySettingsSupervisions: React.FC<{
             modalBackground="opaque"
             onClickClose={handleCancelClick}
             agencySettingsConfigs
+            agencySettingsAndJurisdictionsTitleConfigs
+            customPadding="24px 40px 24px 40px"
           />
         </AgencySettingsEditModeModal>
       )}

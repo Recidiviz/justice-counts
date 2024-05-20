@@ -258,9 +258,9 @@ export const NewInputLabel = styled.label<{ error: boolean }>`
   `};
 `;
 
-export const ErrorMessage = styled.div<{ agencySettingsConfigs?: boolean }>`
+export const ErrorMessage = styled.div<{ settingsCustomMargin?: boolean }>`
   ${typography.body}
   color: ${palette.solid.red};
-  margin-top: ${({ agencySettingsConfigs }) =>
-    agencySettingsConfigs ? "8px" : "-4px"};
+  margin-top: ${({ settingsCustomMargin }) =>
+    settingsCustomMargin ? "8px" : "-4px"};
 `;

@@ -18,7 +18,6 @@
 import { Button } from "@justice-counts/common/components/Button";
 import { NewInput } from "@justice-counts/common/components/Input";
 import { Modal } from "@justice-counts/common/components/Modal";
-// import { info } from "autoprefixer";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -118,6 +117,8 @@ const AgencySettingsDescription: React.FC<{
             modalBackground="opaque"
             onClickClose={handleCancelClick}
             agencySettingsConfigs
+            agencySettingsAndJurisdictionsTitleConfigs
+            customPadding="24px 40px 24px 40px"
           />
         </AgencySettingsEditModeModal>
       )}

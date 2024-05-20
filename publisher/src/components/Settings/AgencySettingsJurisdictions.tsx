@@ -61,7 +61,7 @@ const mappedJurisdictionsData = mappedJurisdictionsJSONData as unknown as {
 };
 
 const radioWrapperSpacing = {
-  top: 0,
+  top: -8,
   right: 0,
   bottom: 16,
   left: 0,
@@ -92,8 +92,6 @@ export const AgencySettingsJurisdictions: React.FC<{
   const [checkedJurisdictionsIds, setCheckedJurisdictionsIds] = useState<
     string[]
   >([]);
-
-  const checkedAreasCount = checkedJurisdictionsIds.length;
   const hasInclusions = includedJurisdictionsIds.length > 0;
   const hasExclusions = excludedJurisdictionsIds.length > 0;
   const isAgencySettingConfigured = hasInclusions || hasExclusions;
@@ -430,13 +428,11 @@ export const AgencySettingsJurisdictions: React.FC<{
                         noHover
                       />
                       <Button
-                        label={`Remove ${checkedAreasCount} ${
-                          checkedAreasCount > 1 ? "areas" : "area"
-                        }`}
+                        label="Remove"
                         onClick={() =>
                           handleRemoveJurisdictions(checkedJurisdictionsIds)
                         }
-                        labelColor="red"
+                        buttonColor="blue"
                         noSidePadding
                         noHover
                       />
@@ -449,6 +445,9 @@ export const AgencySettingsJurisdictions: React.FC<{
             onClickClose={handleCancelClick}
             agencySettingsConfigs
             jurisdictionsSettingsConfigs
+            agencySettingsAndJurisdictionsTitleConfigs
+            customPadding="8px 40px 16px 40px"
+            noBottomDiv
           />
         </AgencySettingsEditModeModal>
       )}

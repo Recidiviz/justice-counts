@@ -94,6 +94,7 @@ export const AgencySettingsEditModeModal: React.FC<{
           onClickClose={closeCancelModal}
           agencySettingsConfigs
           unsavedChangesConfigs
+          agencySettingsAndJurisdictionsTitleConfigs
         />
       )}
     </>
