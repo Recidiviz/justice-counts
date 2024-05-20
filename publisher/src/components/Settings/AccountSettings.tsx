@@ -58,17 +58,11 @@ export const AccountSettings = () => {
     setIsSettingInEditMode(false);
     setEditType(undefined);
   };
-
-  const checkValidEmailUpdateErrorStates = (updateEmail?: string) => {
-    if (!updateEmail || !validateEmail(updateEmail)) {
-      setErrorMsg({ message: "Invalid Email" });
-      setIsEmailValid(false);
-      return false;
-    }
-
-    setIsEmailValid(true);
-    setErrorMsg(undefined);
-    return true;
+  const checkValidEmailUpdateErrorStates = (emailUpdate?: string) => {
+    const isValid: boolean = validateEmail(emailUpdate || "");
+    setIsEmailValid(isValid);
+    setErrorMsg((!isValid && { message: "Invalid Email" }) || undefined);
+    return isValid;
   };
   const saveNameEmailChange = (nameUpdate?: string, emailUpdate?: string) => {
     if (nameUpdate) {
@@ -127,8 +121,9 @@ export const AccountSettings = () => {
                     value={email}
                     error={errorMsg}
                     onChange={(e) => {
-                      setEmail(() => e.target.value.trimStart());
-                      checkValidEmailUpdateErrorStates(email);
+                      const emailUpdate = e.target.value.trimStart();
+                      setEmail(emailUpdate);
+                      checkValidEmailUpdateErrorStates(emailUpdate);
                     }}
                     fullWidth
                   />

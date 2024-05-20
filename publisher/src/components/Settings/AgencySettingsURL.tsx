@@ -60,16 +60,13 @@ const AgencySettingsUrl: React.FC<{
   const [errorMsg, setErrorMsg] = React.useState<
     { message: string } | undefined
   >(undefined);
-  const checkValidEmailSetResetErrorMsg = () => {
-    if (validateAgencyURL(urlText) || urlText === "") {
-      setErrorMsg(undefined);
-      return true;
-    }
-    setErrorMsg({ message: "Invalid URL" });
-    return false;
+  const checkValidURLSetResetErrorMsg = (urlUpdate: string) => {
+    const isValid: boolean = validateAgencyURL(urlUpdate || "");
+    setErrorMsg((!isValid && { message: "Invalid URL" }) || undefined);
+    return isValid;
   };
   const handleSaveClick = () => {
-    if (checkValidEmailSetResetErrorMsg()) {
+    if (checkValidURLSetResetErrorMsg(urlText)) {
       const updatedSettings = updateAgencySettings(
         "HOMEPAGE_URL",
         urlText,
@@ -126,8 +123,9 @@ const AgencySettingsUrl: React.FC<{
                   placeholder="URL of agency (e.g., https://doc.iowa.gov/)"
                   isPlaceholderVisible
                   onChange={(e) => {
-                    setUrlText(() => e.target.value.trimStart());
-                    checkValidEmailSetResetErrorMsg();
+                    const urlUpdate = e.target.value.trimStart();
+                    setUrlText(urlUpdate);
+                    checkValidURLSetResetErrorMsg(urlUpdate);
                   }}
                   agencySettingsConfigs
                   fullWidth

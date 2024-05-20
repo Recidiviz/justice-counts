@@ -158,7 +158,7 @@ export const AgencySettingsSupervisions: React.FC<{
                   {supervisionAgencySystems.map(({ label, value }) => (
                     <SupervisionSystemRow
                       key={value}
-                      hasHover={isSettingInEditMode}
+                      hasHover={false}
                       onClick={() => handleSetSupervisionSystemsToSave(value)}
                       isModal
                     >

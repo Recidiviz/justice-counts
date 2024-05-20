@@ -174,8 +174,9 @@ export const AgencySettingsInfoRow = styled.div<{ hasHover?: boolean }>`
   align-items: center;
 
   ${({ hasHover }) =>
-    hasHover &&
-    `&:hover {cursor: pointer; background-color: ${palette.highlight.grey2}}`}
+    hasHover
+      ? `&:hover {cursor: pointer; background-color: ${palette.highlight.grey2}}`
+      : `&:hover {cursor: pointer; background-color: none}}`};
   span {
     ${typography.sizeCSS.normal};
     text-align: end;

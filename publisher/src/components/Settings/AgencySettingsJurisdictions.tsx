@@ -339,7 +339,7 @@ export const AgencySettingsJurisdictions: React.FC<{
                     {editedIncludedJurisdictionsIds.map((id) => (
                       <JurisdictionsInfoRow
                         key={id}
-                        hasHover
+                        hasHover={false}
                         onClick={() => handleCheckedJurisdictionsIds(id)}
                       >
                         <JurisdictionsInfoCol>
