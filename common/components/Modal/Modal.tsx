@@ -17,6 +17,7 @@
 
 import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
+
 import alertIcon from "../../assets/alert-icon.png";
 import xCloseLg from "../../assets/close-icon-lg.svg";
 import successIcon from "../../assets/success-icon.png";
