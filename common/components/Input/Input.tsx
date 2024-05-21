@@ -42,6 +42,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   hideLabel?: boolean;
   fullWidth?: boolean;
   agencySettingsConfigs?: boolean;
+  settingsCustomMargin?: boolean;
 }
 
 export function Input({
@@ -199,6 +200,7 @@ export function NewInput({
   hideLabel,
   fullWidth,
   agencySettingsConfigs,
+  settingsCustomMargin,
   ...props
 }: InputProps) {
   return (
@@ -222,7 +224,7 @@ export function NewInput({
         fullWidth={fullWidth}
       />
       {error && (
-        <Styled.ErrorMessage settingsCustomMargin>
+        <Styled.ErrorMessage settingsCustomMargin={settingsCustomMargin}>
           {error.message}
         </Styled.ErrorMessage>
       )}

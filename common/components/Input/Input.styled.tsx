@@ -262,5 +262,5 @@ export const ErrorMessage = styled.div<{ settingsCustomMargin?: boolean }>`
   ${typography.body}
   color: ${palette.solid.red};
   margin-top: ${({ settingsCustomMargin }) =>
-    settingsCustomMargin ? "8px" : "-4px"};
+    settingsCustomMargin ? "-4px" : "8px"};
 `;

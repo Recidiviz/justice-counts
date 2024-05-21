@@ -61,7 +61,7 @@ export const AccountSettings = () => {
   const checkValidEmailUpdateErrorStates = (emailUpdate?: string) => {
     const isValid: boolean = validateEmail(emailUpdate || "");
     setIsEmailValid(isValid);
-    setErrorMsg((!isValid && { message: "Invalid Email" }) || undefined);
+    setErrorMsg(!isValid ? { message: "Invalid Email" } : undefined);
     return isValid;
   };
   const saveNameEmailChange = (nameUpdate?: string, emailUpdate?: string) => {
@@ -126,6 +126,7 @@ export const AccountSettings = () => {
                       checkValidEmailUpdateErrorStates(emailUpdate);
                     }}
                     fullWidth
+                    settingsCustomMargin
                   />
                 </AgencySettingsModalInputWrapperSmall>
               }

@@ -61,8 +61,8 @@ const AgencySettingsUrl: React.FC<{
     { message: string } | undefined
   >(undefined);
   const checkValidURLSetResetErrorMsg = (urlUpdate: string) => {
-    const isValid: boolean = validateAgencyURL(urlUpdate || "");
-    setErrorMsg((!isValid && { message: "Invalid URL" }) || undefined);
+    const isValid = urlUpdate === "" || validateAgencyURL(urlUpdate);
+    setErrorMsg(!isValid ? { message: "Invalid URL" } : undefined);
     return isValid;
   };
   const handleSaveClick = () => {
@@ -113,7 +113,7 @@ const AgencySettingsUrl: React.FC<{
             title="Agency URL"
             description={
               <AgencySettingsModalInputWrapperSmall
-                error={!validateAgencyURL(urlText)}
+                error={urlText !== "" && !validateAgencyURL(urlText)}
               >
                 <NewInput
                   style={{ marginBottom: "0" }}
@@ -129,6 +129,7 @@ const AgencySettingsUrl: React.FC<{
                   }}
                   agencySettingsConfigs
                   fullWidth
+                  settingsCustomMargin
                 />
               </AgencySettingsModalInputWrapperSmall>
             }

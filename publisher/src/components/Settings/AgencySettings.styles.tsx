@@ -133,7 +133,6 @@ export const AgencySettingsBlock = styled.div<{
 export const AgencySettingsBlockTitle = styled.div<{
   isEditModeActive?: boolean;
   configured?: boolean;
-  agencySettingsConfigs?: boolean;
 }>`
   display: flex;
   line-height: 32px;
@@ -173,10 +172,7 @@ export const AgencySettingsInfoRow = styled.div<{ hasHover?: boolean }>`
   justify-content: space-between;
   align-items: center;
 
-  ${({ hasHover }) =>
-    hasHover
-      ? `&:hover {cursor: pointer; background-color: ${palette.highlight.grey2}}`
-      : `&:hover {cursor: pointer; background-color: none}}`};
+  ${({ hasHover }) => hasHover && `&:hover {cursor: pointer;}`}
   span {
     ${typography.sizeCSS.normal};
     text-align: end;
