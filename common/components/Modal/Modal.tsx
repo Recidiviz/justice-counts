@@ -19,6 +19,7 @@ import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 
 import alertIcon from "../../assets/alert-icon.png";
+import xCloseLg from "../../assets/close-icon-lg.svg";
 import successIcon from "../../assets/success-icon.png";
 import warningIcon from "../../assets/warning-icon.svg";
 import { Button, ButtonColor } from "../Button";
@@ -36,6 +37,12 @@ type ModalProps = Partial<{
   mediumTitle: boolean;
   customPadding?: string;
   children?: React.ReactNode;
+  onClickClose?: () => void;
+  agencySettingsConfigs?: boolean;
+  unsavedChangesConfigs?: boolean;
+  jurisdictionsSettingsConfigs?: boolean;
+  agencySettingsAndJurisdictionsTitleConfigs?: boolean;
+  noBottomDiv?: boolean;
 }>;
 
 export function Modal({
@@ -49,6 +56,11 @@ export function Modal({
   mediumTitle,
   customPadding,
   children,
+  onClickClose,
+  unsavedChangesConfigs,
+  jurisdictionsSettingsConfigs,
+  agencySettingsAndJurisdictionsTitleConfigs,
+  noBottomDiv,
 }: ModalProps) {
   const primaryButtonColor = (): ButtonColor => {
     if (modalType === "alert") return "red";
@@ -71,28 +83,67 @@ export function Modal({
           modalType={modalType}
           centerText={centerText}
           customPadding={customPadding}
+          noBottomDiv={noBottomDiv}
         >
           {modalType === "success" && <Styled.Icon src={successIcon} alt="" />}
           {modalType === "warning" && <Styled.Icon src={warningIcon} alt="" />}
           {modalType === "alert" && <Styled.Icon src={alertIcon} alt="" />}
-          <Styled.Title mediumTitle={mediumTitle}>{title}</Styled.Title>
-          <Styled.Description>{description}</Styled.Description>
-          <Styled.ButtonsContainer modalType={modalType}>
-            {buttons?.map((button, index) => (
+          <Styled.ModalTitleWrapper typographyBodyEmphasized>
+            {agencySettingsAndJurisdictionsTitleConfigs && (
+              <Styled.AgencySettingsAndJurisdictionsTitle>
+                {title}
+              </Styled.AgencySettingsAndJurisdictionsTitle>
+            )}
+            {!agencySettingsAndJurisdictionsTitleConfigs && (
+              <Styled.Title mediumTitle={mediumTitle}>{title}</Styled.Title>
+            )}
+            {onClickClose && (
               <Button
-                label={button.label}
-                onClick={button.onClick}
-                borderColor={
-                  index === buttons.length - 1 ? undefined : "lightgrey"
-                }
-                buttonColor={
-                  index === buttons.length - 1
-                    ? primaryButtonColor()
-                    : undefined
-                }
+                label={<img src={xCloseLg} alt="Close Button" />}
+                onClick={onClickClose}
+                agencySettingsConfigs
               />
-            ))}
-          </Styled.ButtonsContainer>
+            )}
+          </Styled.ModalTitleWrapper>
+          <Styled.Description unsetTextAlignment={jurisdictionsSettingsConfigs}>
+            {description}
+          </Styled.Description>
+          {!unsavedChangesConfigs && (
+            <Styled.ButtonsContainer modalType={modalType}>
+              {buttons?.map((button, index) => (
+                <Button
+                  label={button.label}
+                  onClick={button.onClick}
+                  borderColor={
+                    index === buttons.length - 1 ? undefined : "lightgrey"
+                  }
+                  buttonColor={
+                    index === buttons.length - 1
+                      ? primaryButtonColor()
+                      : undefined
+                  }
+                />
+              ))}
+            </Styled.ButtonsContainer>
+          )}
+          {unsavedChangesConfigs && (
+            <Styled.UnsavedChangesButtonsContainer>
+              {buttons?.map((button, index) => (
+                <Button
+                  label={button.label}
+                  onClick={button.onClick}
+                  borderColor={
+                    index === buttons.length - 1 ? undefined : "lightgrey"
+                  }
+                  buttonColor={
+                    index === buttons.length - 1
+                      ? primaryButtonColor()
+                      : undefined
+                  }
+                />
+              ))}
+            </Styled.UnsavedChangesButtonsContainer>
+          )}
         </Styled.InnerWrapper>
       )}
     </Styled.OuterWrapper>

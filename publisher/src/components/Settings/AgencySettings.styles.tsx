@@ -24,7 +24,6 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
-import searchIcon from "../assets/search-icon.png";
 import { SETTINGS_MENU_WITH_PADDINGS_WIDTH } from "./Settings.styles";
 
 // Common
@@ -135,7 +134,6 @@ export const AgencySettingsBlockTitle = styled.div<{
   isEditModeActive?: boolean;
   configured?: boolean;
 }>`
-  ${typography.body};
   display: flex;
   line-height: 32px;
 `;
@@ -148,15 +146,6 @@ export const AgencySettingsBlockDescription = styled.div`
   ${typography.body};
   margin-bottom: 8px;
   color: ${palette.highlight.grey9};
-`;
-
-export const AgencySettingsBlockSubDescription = styled(
-  AgencySettingsBlockDescription
-)<{ hasTopMargin?: boolean }>`
-  ${typography.sizeCSS.small};
-  font-weight: 500;
-  padding: 0 8px;
-  margin-top: ${({ hasTopMargin }) => (hasTopMargin ? "24px" : "0")};
 `;
 
 export const AgencyInfoBlockDescription = styled.div<{
@@ -183,9 +172,7 @@ export const AgencySettingsInfoRow = styled.div<{ hasHover?: boolean }>`
   justify-content: space-between;
   align-items: center;
 
-  ${({ hasHover }) =>
-    hasHover &&
-    `&:hover {cursor: pointer; background-color: ${palette.highlight.grey2}}`}
+  ${({ hasHover }) => hasHover && `&:hover {cursor: pointer;}`}
   span {
     ${typography.sizeCSS.normal};
     text-align: end;
@@ -193,9 +180,23 @@ export const AgencySettingsInfoRow = styled.div<{ hasHover?: boolean }>`
   }
 `;
 
-export const AgencyInfoTextAreaLabel = styled.label`
-  margin-bottom: 16px;
-  ${typography.sizeCSS.normal};
+export const AgencyInfoTextAreaLabel = styled.label<{
+  agencyDescriptionConfigs?: boolean;
+}>`
+  ${({ agencyDescriptionConfigs }) => {
+    if (agencyDescriptionConfigs) {
+      return `align-self: 
+         flex-start; 
+         margin-top: 12px; 
+         margin-bottom: 24px;
+         ${typography.body};
+         a {
+            text-decoration: none;
+            color: ${palette.solid.blue};
+          }`;
+    }
+    return `margin-bottom: 16px; ${typography.sizeCSS.normal};`;
+  }};
 `;
 
 export const AgencyInfoTextAreaWordCounter = styled.div<{ isRed: boolean }>`
@@ -450,24 +451,22 @@ export const SupervisionSystemRow = styled(AgencySettingsInfoRow)<{
 export const JurisdictionsInputWrapper = styled.div`
   position: relative;
 `;
-
+export const JurisdictionsSearchBarContainer = styled.div`
+  border-top: 1px solid ${palette.highlight.grey5};
+  border-bottom: 1px solid ${palette.highlight.grey5};
+  margin-left: -40px;
+  margin-right: -40px;
+  padding: 40px 40px;
+  margin-bottom: 24px;
+`;
 export const JurisdictionsSearchBar = styled.input<{
   value: string | undefined;
 }>`
   ${typography.sizeCSS.normal};
   padding: 12px 13px;
   width: 100%;
-  background-image: url(${searchIcon});
-  background-position: left 16px top 50%;
-  background-repeat: no-repeat;
-  margin-bottom: 24px;
-  text-indent: 24px;
-  background-color: ${({ value }) =>
-    value ? palette.highlight.lightblue1 : palette.highlight.grey1};
-  border: none;
-  border-bottom: 1px solid
-    ${({ value }) => (value ? palette.solid.blue : palette.highlight.grey9)};
-  min-width: 266px;
+  text-indent: 12px;
+  border: 1px solid ${palette.highlight.grey5};
   caret-color: ${palette.solid.blue};
 
   &:focus {
@@ -478,12 +477,12 @@ export const JurisdictionsSearchBar = styled.input<{
 export const JurisdictionsSearchResultContainer = styled.div`
   position: absolute;
   z-index: 5;
-  width: ${AGENCY_SETTINGS_CONTAINER_WIDTH}px;
+  width: 100%;
   padding: 8px 0;
   overflow-y: auto;
   max-height: 270px;
   background-color: ${palette.solid.white};
-  top: 55px;
+  top: 135px;
   display: flex;
   flex-direction: column;
   box-shadow: 0 0 1px rgba(23, 28, 43, 0.1), 0 4px 8px rgba(23, 28, 43, 0.04),
@@ -505,15 +504,6 @@ export const JurisdictionsSearchResult = styled.div<{ hasAction?: boolean }>`
   &:hover {
     background-color: ${palette.solid.offwhite};
   }
-`;
-
-export const JurisdictionAreaType = styled.div`
-  ${typography.body};
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  text-transform: capitalize;
-  color: ${palette.highlight.grey9};
 `;
 
 export const JurisdictionsListArea = styled.div`
@@ -552,15 +542,11 @@ export const JurisdictionCheckBlock = styled.div`
 export const JurisdictionsEditModeFooter = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-`;
-
-export const JurisdictionsEditModeFooterLeftBlock = styled.div`
-  ${typography.sizeCSS.normal};
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-top: 16px;
+  border-top: 1px solid ${palette.highlight.grey5};
+  margin-right: -40px;
+  margin-left: -40px;
+  justify-content: flex-end;
+  padding-right: 24px;
 `;
 
 export const CheckboxWrapper = styled.div`
@@ -569,14 +555,20 @@ export const CheckboxWrapper = styled.div`
   z-index: 1;
 `;
 
-export const Checkbox = styled.input`
-  appearance: none;
+export const CheckboxLabelWrapper = styled.div`
+  color: ${palette.solid.black};
+`;
+
+export const Checkbox = styled.input<{
+  squareCheckboxConfigs?: boolean;
+}>`
+  appearance: ${({ squareCheckboxConfigs }) =>
+    squareCheckboxConfigs ? "auto" : "none"};
   width: 20px;
   height: 20px;
   background: transparent;
   border: 1px solid ${palette.highlight.grey6};
   border-radius: 100%;
-
   &:hover {
     cursor: pointer;
   }

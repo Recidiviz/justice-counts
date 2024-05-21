@@ -21,6 +21,8 @@ import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components/macro";
 
+import { AgencySettingsModalInputWrapperSmall } from "./AccountSettings.styles";
+
 // z-index 101 to be above all
 const EditModalOuterWrapper = styled.div`
   position: fixed;
@@ -79,12 +81,20 @@ export const AgencySettingsEditModeModal: React.FC<{
       {isConfirmModalOpen && (
         <Modal
           title="Unsaved changes"
-          description="You have unsaved changes, would like to leave anyway?"
+          description={
+            <AgencySettingsModalInputWrapperSmall unsavedChanges>
+              You have unsaved changes, would you like to leave anyway?
+            </AgencySettingsModalInputWrapperSmall>
+          }
           buttons={[
-            { label: "Leave", onClick: handleCancelModalConfirm },
             { label: "Cancel", onClick: closeCancelModal },
+            { label: "Leave", onClick: handleCancelModalConfirm },
           ]}
-          centerText
+          modalBackground="opaque"
+          onClickClose={closeCancelModal}
+          agencySettingsConfigs
+          unsavedChangesConfigs
+          agencySettingsAndJurisdictionsTitleConfigs
         />
       )}
     </>

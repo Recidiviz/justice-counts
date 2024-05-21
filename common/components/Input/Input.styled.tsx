@@ -258,8 +258,9 @@ export const NewInputLabel = styled.label<{ error: boolean }>`
   `};
 `;
 
-export const ErrorMessage = styled.div`
+export const ErrorMessage = styled.div<{ settingsCustomMargin?: boolean }>`
   ${typography.body}
   color: ${palette.solid.red};
-  margin-top: -4px;
+  margin-top: ${({ settingsCustomMargin }) =>
+    settingsCustomMargin ? "-4px" : "8px"};
 `;

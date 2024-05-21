@@ -44,7 +44,6 @@ export const AccountSettingsTitle = styled.h1`
     padding: 0 0 24px 0;
   }
 `;
-
 export const AccountSettingsInputsWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -75,26 +74,66 @@ export const AccountSettingsInputsWrapper = styled.div`
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
     gap: 0;
-    margin-left: 0px;
+    margin-left: 0;
   }
 `;
 
-export const AccountSettingsInputsCol = styled.div`
-  display: flex;
+export const AgencySettingsModalInputWrapperSmall = styled.div<{
+  error?: boolean;
+  unsavedChanges?: boolean;
+}>`
+  width: 100%;
+  ${({ unsavedChanges }) =>
+    unsavedChanges ? `${typography.body}` : "initial"};
+  label {
+    display: none;
+  }
+
+  div {
+    width: 100%;
+
+    input {
+      ${typography.body}
+      color: ${palette.solid.black};
+      border: ${({ error }) =>
+        error
+          ? `1px solid ${palette.solid.red}`
+          : `1px solid ${palette.highlight.grey5}`};
+    }
+  }
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    flex-direction: column;
+    gap: 0;
+    margin-left: 0;
+  }
+`;
+
+export const AgencySettingsModalInputWrapperLarge = styled.div`
+  min-height: 179px;
+  width: 100%;
+  label {
+    display: none;
+  }
+  div {
+    textarea {
+      ${typography.body}
+      color: ${palette.solid.black};
+    }
+  }
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    flex-direction: column;
+    gap: 0;
+    margin-left: 0;
+  }
+`;
+
+export const AccountSettingsSectionCol = styled.div`
   flex-direction: column;
   margin: 0;
-  gap: 0;
+  min-width: 150px;
   div {
     flex-direction: column;
     align-items: start;
-
-    label {
-      flex-direction: row;
-    }
-
-    input {
-      flex-direction: row;
-    }
   }
 
   a {
@@ -104,6 +143,17 @@ export const AccountSettingsInputsCol = styled.div`
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: row;
     gap: 0;
-    margin-left: 0px;
+    margin-left: 0;
   }
+`;
+
+export const AccountSettingsSectionLabel = styled.div`
+  flex-direction: row;
+  margin-bottom: 16px;
+`;
+
+export const AccountSettingsSectionData = styled.div`
+  flex-direction: row;
+  margin-bottom: 16px;
+  color: ${palette.highlight.grey9};
 `;

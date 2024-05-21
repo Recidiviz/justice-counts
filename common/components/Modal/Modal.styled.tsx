@@ -61,6 +61,7 @@ export const InnerWrapper = styled.div<{
   modalType?: ModalType;
   centerText?: boolean;
   customPadding?: string;
+  noBottomDiv?: boolean;
 }>`
   background-color: ${palette.solid.white};
   width: 100%;
@@ -71,6 +72,11 @@ export const InnerWrapper = styled.div<{
   ${({ centerText }) => centerText && `align-items: center;`};
   border-radius: 3px;
   ${centerTextCSS}
+  ${({ noBottomDiv }) => {
+    if (noBottomDiv) {
+      return `& > div:last-child {display: none;}`;
+    }
+  }};
 `;
 
 export const Icon = styled.img`
@@ -79,21 +85,45 @@ export const Icon = styled.img`
   margin-bottom: 24px;
 `;
 
-export const Title = styled.div<{ mediumTitle?: boolean }>`
+export const Title = styled.div<{
+  mediumTitle?: boolean;
+}>`
   ${({ mediumTitle }) =>
-    mediumTitle ? typography.sizeCSS.medium : typography.sizeCSS.large};
+    mediumTitle
+      ? `${typography.sizeCSS.medium}`
+      : `${typography.sizeCSS.large}`};
+  margin-top: 16px;
   margin-bottom: 16px;
-
   a {
     color: ${palette.solid.blue};
     text-decoration: none;
   }
 `;
 
-export const Description = styled.div<{ centerText?: boolean }>`
+export const AgencySettingsAndJurisdictionsTitle = styled.div`
+  ${typography.bodyEmphasized}
+  margin-bottom: 16px;
+  margin-top: 16px;
+  a {
+    color: ${palette.solid.blue};
+    text-decoration: none;
+  }
+`;
+
+export const Description = styled.div<{
+  centerText?: boolean;
+  unsetTextAlignment?: boolean;
+}>`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: ${({ centerText, unsetTextAlignment }) => {
+    if (centerText) {
+      return `align-items: center;`;
+    }
+    if (unsetTextAlignment) {
+      return `align-items: unset;`;
+    }
+  }};
   ${typography.sizeCSS.normal};
 `;
 
@@ -104,7 +134,6 @@ export const ButtonsContainer = styled.div<{
   width: 100%;
   display: flex;
   gap: 12px;
-
   ${({ modalType, centerButtons }) => {
     if (centerButtons) return "justify-content: center; margin-top: 72px;";
     if (modalType) return "justify-content: space-between; margin-top: 72px;";
@@ -115,4 +144,27 @@ export const ButtonsContainer = styled.div<{
     justify-content: unset;
     margin-left: auto;
   }
+`;
+
+export const UnsavedChangesButtonsContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  gap: 16px;
+  margin-top: 24px;
+  & > div:first-child {
+    div {
+      border: none;
+    }
+  }
+`;
+
+export const ModalTitleWrapper = styled.div<{
+  typographyBodyEmphasized?: boolean;
+}>`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  ${({ typographyBodyEmphasized }) =>
+    typographyBodyEmphasized ? `${typography.bodyEmphasized}` : ""};
 `;

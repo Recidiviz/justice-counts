@@ -19,6 +19,11 @@
 import addIcon from "@justice-counts/common/assets/add-icon.svg";
 import blackCheck from "@justice-counts/common/assets/black-check-icon.svg";
 import { Button } from "@justice-counts/common/components/Button";
+import { Modal } from "@justice-counts/common/components/Modal";
+import {
+  RadioButton,
+  RadioButtonsWrapper,
+} from "@justice-counts/common/components/RadioButton";
 import mappedJurisdictionsJSONData from "@justice-counts/common/fips_with_county_subdivisions.json";
 import { Jurisdiction } from "@justice-counts/common/types";
 import { observer } from "mobx-react-lite";
@@ -32,22 +37,20 @@ import {
   AgencyInfoBlockDescription,
   AgencySettingsBlock,
   AgencySettingsBlockDescription,
-  AgencySettingsBlockSubDescription,
   BasicInfoBlockTitle,
   BlueCheckIcon,
   Checkbox,
   CheckboxWrapper,
   EditButtonContainer,
   EditModeButtonsContainer,
-  JurisdictionAreaType,
   JurisdictionCheckBlock,
   JurisdictionsEditModeFooter,
-  JurisdictionsEditModeFooterLeftBlock,
   JurisdictionsInfoCol,
   JurisdictionsInfoRow,
   JurisdictionsInputWrapper,
   JurisdictionsListArea,
   JurisdictionsSearchBar,
+  JurisdictionsSearchBarContainer,
   JurisdictionsSearchResult,
   JurisdictionsSearchResultContainer,
 } from "./AgencySettings.styles";
@@ -57,6 +60,12 @@ const mappedJurisdictionsData = mappedJurisdictionsJSONData as unknown as {
   [id: string]: Jurisdiction;
 };
 
+const radioWrapperSpacing = {
+  top: -8,
+  right: 0,
+  bottom: 16,
+  left: 0,
+};
 export const AgencySettingsJurisdictions: React.FC<{
   settingProps: SettingProps;
 }> = observer(({ settingProps }) => {
@@ -83,8 +92,6 @@ export const AgencySettingsJurisdictions: React.FC<{
   const [checkedJurisdictionsIds, setCheckedJurisdictionsIds] = useState<
     string[]
   >([]);
-
-  const checkedAreasCount = checkedJurisdictionsIds.length;
   const hasInclusions = includedJurisdictionsIds.length > 0;
   const hasExclusions = excludedJurisdictionsIds.length > 0;
   const isAgencySettingConfigured = hasInclusions || hasExclusions;
@@ -242,199 +249,205 @@ export const AgencySettingsJurisdictions: React.FC<{
           closeCancelModal={() => setIsConfirmModalOpen(false)}
           handleCancelModalConfirm={handleModalConfirm}
         >
-          <>
-            <BasicInfoBlockTitle isEditModeActive>
-              {isExclusionsViewActive
-                ? "Which jurisdiction should be excluded?"
-                : "Jurisdictions"}
-            </BasicInfoBlockTitle>
-            <AgencySettingsBlockDescription>
-              Add counties, states, or counties subdivisions that{" "}
-              {isExclusionsViewActive && "DO NOT"} correspond with your agency.
-            </AgencySettingsBlockDescription>
-            <JurisdictionsInputWrapper>
-              <JurisdictionsSearchBar
-                placeholder="Type in the name of your jurisdiction (for example, Thurston County)"
-                value={inputValue}
-                onChange={(e) => {
-                  setInputValue(e.target.value);
-                  getSearch(e.target.value);
-                }}
-              />
-              {!!inputValue &&
-                (searchResult.length === 0 ? (
-                  <JurisdictionsSearchResultContainer>
-                    <JurisdictionsSearchResult>
-                      No matches
-                    </JurisdictionsSearchResult>
-                  </JurisdictionsSearchResultContainer>
-                ) : (
-                  <JurisdictionsSearchResultContainer>
-                    {searchResult
-                      .slice(0, totalSearchResultsShow)
-                      .map((result) => (
-                        <JurisdictionsSearchResult
-                          key={result.id}
-                          hasAction
-                          onClick={() => handleAddArea(result.id)}
-                        >
-                          {result.name}
-                          <JurisdictionAreaType>
-                            {removeUnderscore(result.type)}{" "}
-                            <AddIcon src={addIcon} alt="" />
-                          </JurisdictionAreaType>
+          <Modal
+            title="Jurisdictions"
+            description={
+              <>
+                <JurisdictionsInputWrapper>
+                  <JurisdictionsSearchBarContainer>
+                    <RadioButtonsWrapper spacing={radioWrapperSpacing}>
+                      <RadioButton
+                        type="radio"
+                        id="include"
+                        name="exclusionsView"
+                        label="Include"
+                        onClick={() =>
+                          setIsExclusionsViewActive(!isExclusionsViewActive)
+                        }
+                        defaultChecked={!isExclusionsViewActive}
+                        buttonSize="large"
+                      />
+                      <RadioButton
+                        type="radio"
+                        id="exclude"
+                        name="exclusionsView"
+                        label="Exclude"
+                        onClick={() =>
+                          setIsExclusionsViewActive(!isExclusionsViewActive)
+                        }
+                        defaultChecked={isExclusionsViewActive}
+                        buttonSize="large"
+                      />
+                    </RadioButtonsWrapper>
+                    <JurisdictionsSearchBar
+                      placeholder="Select County"
+                      value={inputValue}
+                      onChange={(e) => {
+                        setInputValue(e.target.value);
+                        getSearch(e.target.value);
+                      }}
+                    />
+                  </JurisdictionsSearchBarContainer>
+                  {!!inputValue &&
+                    (searchResult.length === 0 ? (
+                      <JurisdictionsSearchResultContainer>
+                        <JurisdictionsSearchResult>
+                          No matches
                         </JurisdictionsSearchResult>
-                      ))}
-                    {!!inputValue &&
-                      searchResult.length > totalSearchResultsShow && (
-                        <Button
-                          label="See More"
-                          onClick={() =>
-                            setTotalSearchResultsShow(
-                              totalSearchResultsShow + 10
-                            )
-                          }
-                          labelColor="blue"
-                          noHover
-                        />
-                      )}
-                  </JurisdictionsSearchResultContainer>
-                ))}
-            </JurisdictionsInputWrapper>
-
-            {!isExclusionsViewActive && (
-              <>
-                <AgencySettingsBlockSubDescription>
-                  Areas included
-                </AgencySettingsBlockSubDescription>
-                <JurisdictionsListArea>
-                  {editedIncludedJurisdictionsIds.map((id) => (
-                    <JurisdictionsInfoRow
-                      key={id}
-                      hasHover
-                      onClick={() => handleCheckedJurisdictionsIds(id)}
-                    >
-                      {mappedJurisdictionsData[id].name}
-                      <JurisdictionCheckBlock>
-                        {removeUnderscore(mappedJurisdictionsData[id].type)}
-                        <CheckboxWrapper>
-                          <Checkbox
-                            type="checkbox"
-                            checked={checkedJurisdictionsIds.includes(id)}
-                            onChange={() => handleCheckedJurisdictionsIds(id)}
-                          />
-                          <BlueCheckIcon src={blackCheck} alt="" enabled />
-                        </CheckboxWrapper>
-                      </JurisdictionCheckBlock>
-                    </JurisdictionsInfoRow>
-                  ))}
-                </JurisdictionsListArea>
+                      </JurisdictionsSearchResultContainer>
+                    ) : (
+                      <JurisdictionsSearchResultContainer>
+                        {searchResult
+                          .slice(0, totalSearchResultsShow)
+                          .map((result) => (
+                            <JurisdictionsSearchResult
+                              key={result.id}
+                              hasAction
+                              onClick={() => handleAddArea(result.id)}
+                            >
+                              <JurisdictionsInfoCol>
+                                <div>{result.name}</div>
+                                <div>
+                                  <span>{removeUnderscore(result.type)}</span>
+                                </div>
+                              </JurisdictionsInfoCol>
+                              <JurisdictionsInfoCol>
+                                <div>
+                                  <AddIcon src={addIcon} alt="" />
+                                </div>
+                              </JurisdictionsInfoCol>
+                            </JurisdictionsSearchResult>
+                          ))}
+                        {!!inputValue &&
+                          searchResult.length > totalSearchResultsShow && (
+                            <Button
+                              label="See More"
+                              onClick={() =>
+                                setTotalSearchResultsShow(
+                                  totalSearchResultsShow + 10
+                                )
+                              }
+                              labelColor="blue"
+                              noHover
+                            />
+                          )}
+                      </JurisdictionsSearchResultContainer>
+                    ))}
+                </JurisdictionsInputWrapper>
+                {!isExclusionsViewActive && (
+                  <JurisdictionsListArea>
+                    {editedIncludedJurisdictionsIds.map((id) => (
+                      <JurisdictionsInfoRow
+                        key={id}
+                        hasHover={false}
+                        onClick={() => handleCheckedJurisdictionsIds(id)}
+                      >
+                        <JurisdictionsInfoCol>
+                          <div>{mappedJurisdictionsData[id].name}</div>
+                          <div>
+                            <span>
+                              {removeUnderscore(
+                                mappedJurisdictionsData[id].type
+                              )}
+                            </span>
+                          </div>
+                        </JurisdictionsInfoCol>
+                        <JurisdictionsInfoCol>
+                          <JurisdictionCheckBlock>
+                            <CheckboxWrapper>
+                              <Checkbox
+                                type="checkbox"
+                                checked={checkedJurisdictionsIds.includes(id)}
+                                onChange={() =>
+                                  handleCheckedJurisdictionsIds(id)
+                                }
+                                squareCheckboxConfigs
+                              />
+                              <BlueCheckIcon src={blackCheck} alt="" enabled />
+                            </CheckboxWrapper>
+                          </JurisdictionCheckBlock>
+                        </JurisdictionsInfoCol>
+                      </JurisdictionsInfoRow>
+                    ))}
+                  </JurisdictionsListArea>
+                )}
+                {isExclusionsViewActive && (
+                  <JurisdictionsListArea>
+                    {editedExcludedJurisdictionsIds.map((id) => (
+                      <JurisdictionsInfoRow
+                        key={id}
+                        hasHover={false}
+                        onClick={() => handleCheckedJurisdictionsIds(id)}
+                      >
+                        <JurisdictionsInfoCol>
+                          <div>{mappedJurisdictionsData[id].name}</div>
+                          <div>
+                            <span>
+                              {removeUnderscore(
+                                mappedJurisdictionsData[id].type
+                              )}
+                            </span>
+                          </div>
+                        </JurisdictionsInfoCol>
+                        <JurisdictionsInfoCol>
+                          <JurisdictionCheckBlock>
+                            <CheckboxWrapper>
+                              <Checkbox
+                                type="checkbox"
+                                checked={checkedJurisdictionsIds.includes(id)}
+                                onChange={() =>
+                                  handleCheckedJurisdictionsIds(id)
+                                }
+                                squareCheckboxConfigs
+                              />
+                              <BlueCheckIcon src={blackCheck} alt="" enabled />
+                            </CheckboxWrapper>
+                          </JurisdictionCheckBlock>
+                        </JurisdictionsInfoCol>
+                      </JurisdictionsInfoRow>
+                    ))}
+                  </JurisdictionsListArea>
+                )}
+                <JurisdictionsEditModeFooter>
+                  {checkedJurisdictionsIds.length === 0 ? (
+                    <EditModeButtonsContainer>
+                      <Button
+                        label="Save"
+                        onClick={handleSaveClick}
+                        buttonColor="blue"
+                      />
+                    </EditModeButtonsContainer>
+                  ) : (
+                    <EditModeButtonsContainer>
+                      <Button
+                        label="Cancel"
+                        onClick={() => setCheckedJurisdictionsIds([])}
+                        labelColor="blue"
+                        noSidePadding
+                        noHover
+                      />
+                      <Button
+                        label="Remove"
+                        onClick={() =>
+                          handleRemoveJurisdictions(checkedJurisdictionsIds)
+                        }
+                        buttonColor="blue"
+                        noSidePadding
+                        noHover
+                      />
+                    </EditModeButtonsContainer>
+                  )}
+                </JurisdictionsEditModeFooter>
               </>
-            )}
-
-            {isExclusionsViewActive && (
-              <>
-                <AgencySettingsBlockSubDescription>
-                  Areas excluded
-                </AgencySettingsBlockSubDescription>
-                <JurisdictionsListArea>
-                  {editedExcludedJurisdictionsIds.map((id) => (
-                    <JurisdictionsInfoRow
-                      key={id}
-                      hasHover
-                      onClick={() => handleCheckedJurisdictionsIds(id)}
-                    >
-                      {mappedJurisdictionsData[id].name}
-                      <JurisdictionCheckBlock>
-                        {removeUnderscore(mappedJurisdictionsData[id].type)}
-                        <CheckboxWrapper>
-                          <Checkbox
-                            type="checkbox"
-                            checked={checkedJurisdictionsIds.includes(id)}
-                            onChange={() => handleCheckedJurisdictionsIds(id)}
-                          />
-                          <BlueCheckIcon src={blackCheck} alt="" enabled />
-                        </CheckboxWrapper>
-                      </JurisdictionCheckBlock>
-                    </JurisdictionsInfoRow>
-                  ))}
-                </JurisdictionsListArea>
-              </>
-            )}
-
-            <JurisdictionsEditModeFooter>
-              {isExclusionsViewActive ? (
-                <JurisdictionsEditModeFooterLeftBlock>
-                  {hasInclusions
-                    ? `${editedIncludedJurisdictionsIds.length} ${
-                        editedIncludedJurisdictionsIds.length > 1
-                          ? "areas"
-                          : "area"
-                      } included`
-                    : "Need to declare included areas?"}
-                  <Button
-                    label={hasInclusions ? "View and Edit" : "Add them"}
-                    onClick={() =>
-                      setIsExclusionsViewActive(!isExclusionsViewActive)
-                    }
-                    labelColor="blue"
-                    noSidePadding
-                    noHover
-                  />
-                </JurisdictionsEditModeFooterLeftBlock>
-              ) : (
-                <JurisdictionsEditModeFooterLeftBlock>
-                  {hasExclusions
-                    ? `${editedExcludedJurisdictionsIds.length} ${
-                        editedExcludedJurisdictionsIds.length > 1
-                          ? "areas"
-                          : "area"
-                      } excluded`
-                    : "Need to declare excluded areas?"}
-                  <Button
-                    label={hasExclusions ? "View and Edit" : "Add them"}
-                    onClick={() =>
-                      setIsExclusionsViewActive(!isExclusionsViewActive)
-                    }
-                    labelColor="blue"
-                    noSidePadding
-                    noHover
-                  />
-                </JurisdictionsEditModeFooterLeftBlock>
-              )}
-              {checkedJurisdictionsIds.length === 0 ? (
-                <EditModeButtonsContainer>
-                  <Button label="Cancel" onClick={handleCancelClick} />
-                  <Button
-                    label="Save"
-                    onClick={handleSaveClick}
-                    buttonColor="blue"
-                  />
-                </EditModeButtonsContainer>
-              ) : (
-                <EditModeButtonsContainer>
-                  <Button
-                    label="Cancel"
-                    onClick={() => setCheckedJurisdictionsIds([])}
-                    labelColor="blue"
-                    noSidePadding
-                    noHover
-                  />
-                  <Button
-                    label={`Remove ${checkedAreasCount} ${
-                      checkedAreasCount > 1 ? "areas" : "area"
-                    }`}
-                    onClick={() =>
-                      handleRemoveJurisdictions(checkedJurisdictionsIds)
-                    }
-                    labelColor="red"
-                    noSidePadding
-                    noHover
-                  />
-                </EditModeButtonsContainer>
-              )}
-            </JurisdictionsEditModeFooter>
-          </>
+            }
+            modalBackground="opaque"
+            onClickClose={handleCancelClick}
+            agencySettingsConfigs
+            jurisdictionsSettingsConfigs
+            agencySettingsAndJurisdictionsTitleConfigs
+            customPadding="8px 40px 16px 40px"
+            noBottomDiv
+          />
         </AgencySettingsEditModeModal>
       )}
 

@@ -17,22 +17,23 @@
 
 import { Button } from "@justice-counts/common/components/Button";
 import { formatExternalLink } from "@justice-counts/common/components/DataViz/utils";
-import { Input } from "@justice-counts/common/components/Input";
+import { NewInput } from "@justice-counts/common/components/Input";
+import { Modal } from "@justice-counts/common/components/Modal";
+import { validateAgencyURL } from "@justice-counts/common/utils/helperUtils";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { AgencySettingsModalInputWrapperSmall } from "./AccountSettings.styles";
 import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,
   AgencyInfoLink,
-  AgencyInfoTextAreaLabel,
   AgencySettingActionRequiredIndicator,
   AgencySettingsBlock,
   AgencySettingsBlockTitle,
   EditButtonContainer,
-  EditModeButtonsContainer,
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
@@ -56,15 +57,24 @@ const AgencySettingsUrl: React.FC<{
     )?.value || "";
 
   const isAgencySettingConfigured = Boolean(homepageUrlSetting);
-
+  const [errorMsg, setErrorMsg] = React.useState<
+    { message: string } | undefined
+  >(undefined);
+  const checkValidURLSetResetErrorMsg = (urlUpdate: string) => {
+    const isValid = urlUpdate === "" || validateAgencyURL(urlUpdate);
+    setErrorMsg(!isValid ? { message: "Invalid URL" } : undefined);
+    return isValid;
+  };
   const handleSaveClick = () => {
-    const updatedSettings = updateAgencySettings(
-      "HOMEPAGE_URL",
-      urlText,
-      parseInt(agencyId)
-    );
-    saveAgencySettings(updatedSettings, agencyId);
-    removeEditMode();
+    if (checkValidURLSetResetErrorMsg(urlText)) {
+      const updatedSettings = updateAgencySettings(
+        "HOMEPAGE_URL",
+        urlText,
+        parseInt(agencyId)
+      );
+      saveAgencySettings(updatedSettings, agencyId);
+      removeEditMode();
+    }
   };
   const handleCancelClick = () => {
     if (homepageUrlSetting === urlText) {
@@ -72,6 +82,7 @@ const AgencySettingsUrl: React.FC<{
     } else {
       setIsConfirmModalOpen(true);
     }
+    setErrorMsg(undefined);
   };
   const handleModalConfirm = () => {
     setUrlText(homepageUrlSetting || "");
@@ -99,30 +110,44 @@ const AgencySettingsUrl: React.FC<{
           closeCancelModal={() => setIsConfirmModalOpen(false)}
           handleCancelModalConfirm={handleModalConfirm}
         >
-          <>
-            <AgencySettingsBlockTitle isEditModeActive>
-              Agency Homepage URL
-            </AgencySettingsBlockTitle>
-            <AgencyInfoTextAreaLabel>
-              Provide a link to your agency&apos;s website.
-            </AgencyInfoTextAreaLabel>
-            <Input
-              name="homepage-url"
-              label=""
-              placeholder="URL of agency (e.g., https://doc.iowa.gov/)"
-              isPlaceholderVisible
-              onChange={(e) => setUrlText(e.target.value)}
-              value={urlText}
-            />
-            <EditModeButtonsContainer noMargin>
-              <Button label="Cancel" onClick={handleCancelClick} />
-              <Button
-                label="Save"
-                onClick={handleSaveClick}
-                buttonColor="blue"
-              />
-            </EditModeButtonsContainer>
-          </>
+          <Modal
+            title="Agency URL"
+            description={
+              <AgencySettingsModalInputWrapperSmall
+                error={urlText !== "" && !validateAgencyURL(urlText)}
+              >
+                <NewInput
+                  style={{ marginBottom: "0" }}
+                  persistLabel
+                  value={urlText}
+                  error={errorMsg}
+                  placeholder="URL of agency (e.g., https://doc.iowa.gov/)"
+                  isPlaceholderVisible
+                  onChange={(e) => {
+                    const urlUpdate = e.target.value.trimStart();
+                    setUrlText(urlUpdate);
+                    checkValidURLSetResetErrorMsg(urlUpdate);
+                  }}
+                  agencySettingsConfigs
+                  fullWidth
+                  settingsCustomMargin
+                />
+              </AgencySettingsModalInputWrapperSmall>
+            }
+            buttons={[
+              {
+                label: "Save",
+                onClick: () => {
+                  handleSaveClick();
+                },
+              },
+            ]}
+            modalBackground="opaque"
+            onClickClose={handleCancelClick}
+            agencySettingsConfigs
+            agencySettingsAndJurisdictionsTitleConfigs
+            customPadding="24px 40px 24px 40px"
+          />
         </AgencySettingsEditModeModal>
       )}
 

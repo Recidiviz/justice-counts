@@ -15,72 +15,176 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Button } from "@justice-counts/common/components/Button";
 import { NewInput } from "@justice-counts/common/components/Input";
-import { debounce as _debounce } from "lodash";
-import React, { useRef } from "react";
+import { Modal } from "@justice-counts/common/components/Modal";
+import { validateEmail } from "@justice-counts/common/utils/helperUtils";
+import React from "react";
 
 import { useStore } from "../../stores";
 import {
-  AccountSettingsInputsCol,
   AccountSettingsInputsWrapper,
+  AccountSettingsSectionCol,
+  AccountSettingsSectionData,
+  AccountSettingsSectionLabel,
   AccountSettingsWrapper,
+  AgencySettingsModalInputWrapperSmall,
 } from "./AccountSettings.styles";
+import { EditButtonContainer } from "./AgencySettings.styles";
+
+enum EditType {
+  Name_edit = "name",
+  Email_edit = "email",
+}
 
 export const AccountSettings = () => {
   const { userStore } = useStore();
   const [email, setEmail] = React.useState<string>(userStore?.email || "");
   const [name, setName] = React.useState<string>(userStore?.name || "");
-
+  const [isSettingInEditMode, setIsSettingInEditMode] =
+    React.useState<boolean>(false);
+  const [editType, setEditType] = React.useState<string | undefined>(undefined);
+  const [isEmailValid, setIsEmailValid] = React.useState(true);
+  const [errorMsg, setErrorMsg] = React.useState<
+    { message: string } | undefined
+  >(undefined);
+  const onClickClose = () => {
+    setEmail(userStore?.email || "");
+    resetEditModeTypeStates();
+    setName(userStore?.name || "");
+    setIsSettingInEditMode(false);
+  };
+  const resetEditModeTypeStates = () => {
+    setIsSettingInEditMode(false);
+    setEditType(undefined);
+  };
+  const checkValidEmailUpdateErrorStates = (emailUpdate?: string) => {
+    const isValid: boolean = validateEmail(emailUpdate || "");
+    setIsEmailValid(isValid);
+    setErrorMsg(!isValid ? { message: "Invalid Email" } : undefined);
+    return isValid;
+  };
   const saveNameEmailChange = (nameUpdate?: string, emailUpdate?: string) => {
     if (nameUpdate) {
+      resetEditModeTypeStates();
       return userStore.updateUserNameAndEmail(nameUpdate, email);
     }
-    if (emailUpdate) {
-      return userStore.updateUserNameAndEmail(name, emailUpdate);
+    if (checkValidEmailUpdateErrorStates(emailUpdate)) {
+      resetEditModeTypeStates();
+      return userStore.updateUserNameAndEmail(name, String(emailUpdate));
     }
   };
-
-  const debouncedSave = useRef(_debounce(saveNameEmailChange, 1500)).current;
-
   return (
-    <AccountSettingsWrapper>
-      <AccountSettingsInputsWrapper>
-        <AccountSettingsInputsCol>
-          <NewInput
-            style={{ marginBottom: "0" }}
-            persistLabel
-            label=" Name"
-            value={name}
-            onChange={(e) => {
-              setName((prev) => e.target.value.trimStart() || prev);
-              debouncedSave(
-                e.target.value.trimStart() || userStore?.name,
-                undefined
-              );
-            }}
-          />
-          <span>
-            <a href="./namemodal">Edit</a>
-          </span>
-        </AccountSettingsInputsCol>
-        <AccountSettingsInputsCol>
-          <NewInput
-            persistLabel
-            label="Email"
-            value={email}
-            onChange={(e) => {
-              setEmail((prev) => e.target.value.trimStart() || prev);
-              debouncedSave(
-                undefined,
-                e.target.value.trimStart() || userStore?.email
-              );
-            }}
-          />
-          <span>
-            <a href="./emailmodal">Edit</a>
-          </span>
-        </AccountSettingsInputsCol>
-      </AccountSettingsInputsWrapper>
-    </AccountSettingsWrapper>
+    <>
+      {isSettingInEditMode && (
+        <>
+          {editType === EditType.Name_edit && (
+            <Modal
+              title="Name"
+              description={
+                <AgencySettingsModalInputWrapperSmall>
+                  <NewInput
+                    style={{ marginBottom: "0" }}
+                    persistLabel
+                    value={name}
+                    onChange={(e) => {
+                      setName(() => e.target.value.trimStart());
+                    }}
+                    agencySettingsConfigs
+                    fullWidth
+                  />
+                </AgencySettingsModalInputWrapperSmall>
+              }
+              buttons={[
+                {
+                  label: "Save",
+                  onClick: () => {
+                    saveNameEmailChange(name);
+                  },
+                },
+              ]}
+              modalBackground="opaque"
+              onClickClose={onClickClose}
+              agencySettingsConfigs
+              agencySettingsAndJurisdictionsTitleConfigs
+              customPadding="24px 40px 40px 24px"
+            />
+          )}
+          {editType === EditType.Email_edit && (
+            <Modal
+              title="Email"
+              description={
+                <AgencySettingsModalInputWrapperSmall error={!isEmailValid}>
+                  <NewInput
+                    style={{ marginBottom: "0" }}
+                    persistLabel
+                    value={email}
+                    error={errorMsg}
+                    onChange={(e) => {
+                      const emailUpdate = e.target.value.trimStart();
+                      setEmail(emailUpdate);
+                      checkValidEmailUpdateErrorStates(emailUpdate);
+                    }}
+                    fullWidth
+                    settingsCustomMargin
+                  />
+                </AgencySettingsModalInputWrapperSmall>
+              }
+              buttons={[
+                {
+                  label: "Save",
+                  onClick: () => {
+                    saveNameEmailChange(undefined, email);
+                  },
+                },
+              ]}
+              modalBackground="opaque"
+              onClickClose={onClickClose}
+              agencySettingsConfigs
+              agencySettingsAndJurisdictionsTitleConfigs
+              customPadding="24px 40px 24px 40px"
+            />
+          )}
+        </>
+      )}
+      <AccountSettingsWrapper>
+        <AccountSettingsInputsWrapper>
+          <AccountSettingsSectionCol>
+            <AccountSettingsSectionLabel>Name</AccountSettingsSectionLabel>
+            <AccountSettingsSectionData>{name}</AccountSettingsSectionData>
+            <EditButtonContainer>
+              <Button
+                label={<>Edit</>}
+                onClick={() => {
+                  setIsSettingInEditMode(true);
+                  setEditType(EditType.Name_edit);
+                }}
+                labelColor="blue"
+                noSidePadding
+                noTopBottomPadding
+                noHover
+              />
+            </EditButtonContainer>
+          </AccountSettingsSectionCol>
+          <AccountSettingsSectionCol>
+            <AccountSettingsSectionLabel>Email</AccountSettingsSectionLabel>
+            <AccountSettingsSectionData>{email}</AccountSettingsSectionData>
+            <EditButtonContainer>
+              <Button
+                label={<>Edit</>}
+                onClick={() => {
+                  setIsSettingInEditMode(true);
+                  setEditType(EditType.Email_edit);
+                }}
+                labelColor="blue"
+                noSidePadding
+                noTopBottomPadding
+                noHover
+              />
+            </EditButtonContainer>
+          </AccountSettingsSectionCol>
+        </AccountSettingsInputsWrapper>
+      </AccountSettingsWrapper>
+    </>
   );
 };
