@@ -411,7 +411,6 @@ export const AgencySettingsJurisdictions: React.FC<{
                 <JurisdictionsEditModeFooter>
                   {checkedJurisdictionsIds.length === 0 ? (
                     <EditModeButtonsContainer>
-                      <Button label="Cancel" onClick={handleCancelClick} />
                       <Button
                         label="Save"
                         onClick={handleSaveClick}

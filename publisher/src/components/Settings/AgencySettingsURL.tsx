@@ -82,6 +82,7 @@ const AgencySettingsUrl: React.FC<{
     } else {
       setIsConfirmModalOpen(true);
     }
+    setErrorMsg(undefined);
   };
   const handleModalConfirm = () => {
     setUrlText(homepageUrlSetting || "");
