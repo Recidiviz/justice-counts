@@ -16,27 +16,24 @@
 // =============================================================================
 
 import { Button } from "@justice-counts/common/components/Button";
-import { Input } from "@justice-counts/common/components/Input";
+import { NewInput } from "@justice-counts/common/components/Input";
+import { Modal } from "@justice-counts/common/components/Modal";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import rightArrow from "../assets/right-arrow.svg";
+import { AgencySettingsModalInputWrapperLarge } from "./AccountSettings.styles";
 import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,
   AgencyInfoTextAreaLabel,
-  AgencyInfoTextAreaWordCounter,
+  AgencySettingActionRequiredIndicator,
   AgencySettingsBlock,
   AgencySettingsBlockTitle,
-  EditArrowImage,
   EditButtonContainer,
-  EditModeButtonsContainer,
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
-
-const MAX_DESCRIPTION_CHARACTERS = 750;
 
 const AgencySettingsDescription: React.FC<{
   settingProps: SettingProps;
@@ -78,7 +75,6 @@ const AgencySettingsDescription: React.FC<{
     setIsConfirmModalOpen(false);
     removeEditMode();
   };
-
   return (
     <>
       {isSettingInEditMode && (
@@ -88,55 +84,62 @@ const AgencySettingsDescription: React.FC<{
           closeCancelModal={() => setIsConfirmModalOpen(false)}
           handleCancelModalConfirm={handleModalConfirm}
         >
-          <>
-            <AgencySettingsBlockTitle isEditModeActive>
-              Agency Information
-            </AgencySettingsBlockTitle>
-            <AgencyInfoTextAreaLabel>
-              Briefly describe your agency’s purpose and functions. This text
-              will be displayed in the About page of the public-facing
-              dashboard.
-            </AgencyInfoTextAreaLabel>
-            <Input
-              name="basic-info-description"
-              label=""
-              onChange={(e) => setInfoText(e.target.value)}
-              placeholder="Enter agency description..."
-              isPlaceholderVisible
-              multiline
-              value={infoText}
-              maxLength={750}
-            />
-            <AgencyInfoTextAreaWordCounter isRed={infoText.length >= 750}>
-              {infoText.length}/{MAX_DESCRIPTION_CHARACTERS} characters
-            </AgencyInfoTextAreaWordCounter>
-            <EditModeButtonsContainer noMargin>
-              <Button label="Cancel" onClick={handleCancelClick} />
-              <Button
-                label="Save"
-                onClick={handleSaveClick}
-                buttonColor="blue"
-              />
-            </EditModeButtonsContainer>
-          </>
+          <Modal
+            title="Agency Description"
+            description={
+              <>
+                <AgencyInfoTextAreaLabel agencyDescriptionConfigs>
+                  This description will go on your public-facing dashboard.
+                </AgencyInfoTextAreaLabel>
+                <AgencySettingsModalInputWrapperLarge>
+                  <NewInput
+                    style={{ marginBottom: "0" }}
+                    persistLabel
+                    value={infoText}
+                    placeholder="Write a description of your agency"
+                    isPlaceholderVisible
+                    multiline
+                    maxLength={750}
+                    onChange={(e) => setInfoText(e.target.value)}
+                    fullWidth
+                  />
+                </AgencySettingsModalInputWrapperLarge>
+              </>
+            }
+            buttons={[
+              {
+                label: "Save",
+                onClick: () => {
+                  handleSaveClick();
+                },
+              },
+            ]}
+            modalBackground="opaque"
+            onClickClose={handleCancelClick}
+            agencySettingsConfigs
+            agencySettingsAndJurisdictionsTitleConfigs
+            customPadding="24px 40px 24px 40px"
+          />
         </AgencySettingsEditModeModal>
       )}
 
       <AgencySettingsBlock id="description">
         <AgencySettingsBlockTitle configured={isAgencySettingConfigured}>
-          Agency Information
+          Agency Description
+          {!purposeAndFunctionsSetting && (
+            <AgencySettingActionRequiredIndicator>
+              *
+            </AgencySettingActionRequiredIndicator>
+          )}
         </AgencySettingsBlockTitle>
         <AgencyInfoBlockDescription>
-          {purposeAndFunctionsSetting || "No description added."}
+          {purposeAndFunctionsSetting ||
+            "Write a description of your agency to go on your public facing dashboard"}
         </AgencyInfoBlockDescription>
         {allowEdit && (
           <EditButtonContainer>
             <Button
-              label={
-                <>
-                  Edit description <EditArrowImage src={rightArrow} alt="" />
-                </>
-              }
+              label={<>Edit</>}
               onClick={() => {
                 setInfoText(purposeAndFunctionsSetting);
                 openSetting();

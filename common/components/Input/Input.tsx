@@ -28,7 +28,7 @@ import * as Styled from "./Input.styled";
 import { InputTextSize, NotReportedIconTooltipProps } from "./types";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label: string;
+  label?: string;
   noBottomMargin?: boolean;
   error?: FormError;
   valueLabel?: string;
@@ -41,6 +41,8 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   textSize?: InputTextSize;
   hideLabel?: boolean;
   fullWidth?: boolean;
+  agencySettingsConfigs?: boolean;
+  settingsCustomMargin?: boolean;
 }
 
 export function Input({
@@ -197,6 +199,8 @@ export function NewInput({
   metricKey,
   hideLabel,
   fullWidth,
+  agencySettingsConfigs,
+  settingsCustomMargin,
   ...props
 }: InputProps) {
   return (
@@ -219,7 +223,11 @@ export function NewInput({
         error={Boolean(error)}
         fullWidth={fullWidth}
       />
-      {error && <Styled.ErrorMessage>{error.message}</Styled.ErrorMessage>}
+      {error && (
+        <Styled.ErrorMessage settingsCustomMargin={settingsCustomMargin}>
+          {error.message}
+        </Styled.ErrorMessage>
+      )}
     </Styled.NewInputWrapper>
   );
 }

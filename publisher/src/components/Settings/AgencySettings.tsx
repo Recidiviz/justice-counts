@@ -23,7 +23,6 @@ import { useStore } from "../../stores";
 import { ContainedLoader } from "../Loading";
 import {
   AgencySettingsContent,
-  AgencySettingsTitle,
   AgencySettingsWrapper,
 } from "./AgencySettings.styles";
 import { AgencySettingsBasicInfo } from "./AgencySettingsBasicInfo";
@@ -79,19 +78,15 @@ export const AgencySettings: React.FC = observer(() => {
 
   return (
     <AgencySettingsWrapper>
-      <AgencySettingsTitle />
       <AgencySettingsContent>
         <AgencySettingsBasicInfo />
-        {/* TODO(#26632) Un-gate toggle once functionality for superagencies / child agencies is implemented  */}
-        {agencyStore.currentAgency?.super_agency_id === null && (
-          <AgencySettingsEmailNotifications />
-        )}
         <AgencySettingsDescription
           settingProps={generateSettingProps(ActiveSetting.Description)}
         />
         <AgencySettingsUrl
           settingProps={generateSettingProps(ActiveSetting.HomepageUrl)}
         />
+        <AgencySettingsEmailNotifications />
         {isAgencySupervision && (
           <AgencySettingsSupervisions
             settingProps={generateSettingProps(ActiveSetting.Supervisions)}

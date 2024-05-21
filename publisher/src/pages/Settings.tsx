@@ -15,50 +15,79 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import React from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { TabbedBar } from "@justice-counts/common/components/TabbedBar";
+import React, { useState } from "react";
 
-import { UploadedFiles } from "../components/DataUpload";
+import { AppGuideKeys, GuideKeys } from "../components/HelpCenter/types";
+import { createURLToGuide } from "../components/HelpCenter/utils";
 import {
   AccountSettings,
   AgencySettings,
   ContentDisplay,
-  SettingsContainer,
-  SettingsMenu,
+  SettingsSubTitle,
+  SettingsTabBlock,
+  SettingsTabContainer,
+  SettingsTitle,
+  SettingsTitleContainer,
 } from "../components/Settings";
 import { AgencySettingsTeamManagement } from "../components/Settings/AgencySettingsTeamManagement";
+import { TabContent } from "../components/Settings/TabContent";
 
-export const settingsMenuPaths = [
-  { displayLabel: "Your Account", path: "account" },
-  { displayLabel: "Agency Settings", path: "agency-settings" },
-  { displayLabel: "Team Management", path: "team-management" },
-  { displayLabel: "Uploaded Files", path: "uploaded-files" },
-];
-
-export type ListOfMetricsForNavigation = {
-  key: string;
-  display_name: string;
-};
-
+enum tabOptions {
+  ACCOUNT = "Account",
+  TEAM_MEMBERS = "Team Members",
+}
 const Settings = () => {
-  return (
-    <SettingsContainer>
-      <SettingsMenu />
+  const learnMoreURL = createURLToGuide(
+    AppGuideKeys.publisher,
+    GuideKeys.AgencySettings
+  );
+  const [currentSettingsView, setCurrentSettingsView] = useState(
+    tabOptions.ACCOUNT
+  );
+  const settingsViewOptions = [
+    {
+      key: tabOptions.ACCOUNT.toLowerCase(),
+      label: tabOptions.ACCOUNT,
+      onClick: () => setCurrentSettingsView(tabOptions.ACCOUNT),
+      selected: currentSettingsView === tabOptions.ACCOUNT,
+    },
+    {
+      key: tabOptions.TEAM_MEMBERS.toLowerCase(),
+      label: tabOptions.TEAM_MEMBERS,
+      onClick: () => setCurrentSettingsView(tabOptions.TEAM_MEMBERS),
+      selected: currentSettingsView === tabOptions.TEAM_MEMBERS,
+    },
+  ];
 
-      <ContentDisplay>
-        <Routes>
-          <Route path="/" element={<Navigate to="account" replace />} />
-          <Route path="/account" element={<AccountSettings />} />
-          <Route path="/agency-settings" element={<AgencySettings />} />
-          <Route
-            path="/team-management"
-            element={<AgencySettingsTeamManagement />}
-          />
-          <Route path="/uploaded-files" element={<UploadedFiles />} />
-          <Route path="*" element={<Navigate to="account" />} />
-        </Routes>
-      </ContentDisplay>
-    </SettingsContainer>
+  return (
+    <ContentDisplay>
+      <SettingsTitleContainer>
+        <SettingsTitle>Settings</SettingsTitle>
+        <SettingsSubTitle>
+          Edit you account settings or manage your team members.
+          <a href={learnMoreURL} target="_blank" rel="noopener noreferrer">
+            &nbsp;Learn More
+          </a>
+        </SettingsSubTitle>
+      </SettingsTitleContainer>
+      <SettingsTabContainer>
+        <SettingsTabBlock>
+          <TabbedBar options={settingsViewOptions} />
+        </SettingsTabBlock>
+        <SettingsTabBlock>
+          <TabContent isActive={currentSettingsView === tabOptions.ACCOUNT}>
+            <AccountSettings />
+            <AgencySettings />
+          </TabContent>
+          <TabContent
+            isActive={currentSettingsView === tabOptions.TEAM_MEMBERS}
+          >
+            <AgencySettingsTeamManagement />
+          </TabContent>
+        </SettingsTabBlock>
+      </SettingsTabContainer>
+    </ContentDisplay>
   );
 };
 

@@ -24,6 +24,7 @@ import {
 import styled from "styled-components/macro";
 
 export const AccountSettingsWrapper = styled.div`
+  flex-direction: row;
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     display: flex;
     flex-direction: column;
@@ -35,33 +36,124 @@ export const AccountSettingsTitle = styled.h1`
   ${typography.sizeCSS.title};
   margin-top: 4px;
   padding-bottom: 14px;
-
-  &::before {
-    content: "Account";
-  }
+  background-color: ${palette.solid.red};
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     ${typography.sizeCSS.medium};
     margin: 0;
     padding: 0 0 24px 0;
-
-    &::before {
-      content: "Settings > Your Account";
-    }
   }
 `;
-
 export const AccountSettingsInputsWrapper = styled.div`
   display: flex;
+  flex-direction: row;
   gap: 10px;
+  padding-bottom: 24px;
+  padding-top: 24px;
+  border-bottom: 1px solid ${palette.solid.lightgrey4};
 
-  div {
-    width: 100%;
-    margin-bottom: 16px;
+  input {
+    padding-left: 0;
+    border: none;
+    background-color: initial;
+    ${typography.body};
+    color: ${palette.highlight.grey9};
+  }
+
+  label {
+    ${typography.body};
+    color: ${palette.solid.black};
+  }
+
+  span {
+    a {
+      text-decoration: none;
+    }
   }
 
   @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
     flex-direction: column;
     gap: 0;
+    margin-left: 0;
   }
+`;
+
+export const AgencySettingsModalInputWrapperSmall = styled.div<{
+  error?: boolean;
+  unsavedChanges?: boolean;
+}>`
+  width: 100%;
+  ${({ unsavedChanges }) =>
+    unsavedChanges ? `${typography.body}` : "initial"};
+  label {
+    display: none;
+  }
+
+  div {
+    width: 100%;
+
+    input {
+      ${typography.body}
+      color: ${palette.solid.black};
+      border: ${({ error }) =>
+        error
+          ? `1px solid ${palette.solid.red}`
+          : `1px solid ${palette.highlight.grey5}`};
+    }
+  }
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    flex-direction: column;
+    gap: 0;
+    margin-left: 0;
+  }
+`;
+
+export const AgencySettingsModalInputWrapperLarge = styled.div`
+  min-height: 179px;
+  width: 100%;
+  label {
+    display: none;
+  }
+  div {
+    textarea {
+      ${typography.body}
+      color: ${palette.solid.black};
+    }
+  }
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    flex-direction: column;
+    gap: 0;
+    margin-left: 0;
+  }
+`;
+
+export const AccountSettingsSectionCol = styled.div`
+  flex-direction: column;
+  margin: 0;
+  min-width: 150px;
+  div {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  a {
+    color: ${palette.solid.blue};
+  }
+
+  @media only screen and (max-width: ${MIN_DESKTOP_WIDTH}px) {
+    flex-direction: row;
+    gap: 0;
+    margin-left: 0;
+  }
+`;
+
+export const AccountSettingsSectionLabel = styled.div`
+  flex-direction: row;
+  margin-bottom: 16px;
+`;
+
+export const AccountSettingsSectionData = styled.div`
+  flex-direction: row;
+  margin-bottom: 16px;
+  color: ${palette.highlight.grey9};
 `;

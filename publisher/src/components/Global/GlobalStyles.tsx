@@ -15,9 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-export * from "./AccountSettings";
-export * from "./AgencySettings";
-export * from "./hooks";
-export * from "./Settings.styles";
-export * from "./types";
-export * from "./utils";
+import { typography } from "@justice-counts/common/components/GlobalStyles";
+import styled from "styled-components/macro";
+
+export const GlobalTitle = styled.div`
+  ${typography.sizeCSS.title};
+`;
+
+export const GlobalDescription = styled.div`
+  ${typography.paragraph};
+  margin-bottom: 24px;
+`;

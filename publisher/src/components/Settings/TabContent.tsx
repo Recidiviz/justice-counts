@@ -15,32 +15,20 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
-import { observer } from "mobx-react-lite";
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 
-import { settingsMenuPaths } from "../../pages/Settings";
-import { removeAgencyFromPath } from "../../utils";
-import { MenuItem, SettingsMenuContainer } from ".";
+import { SettingsTabContent } from "./Settings.styles";
 
-export const SettingsMenu: React.FC = observer(() => {
-  const location = useLocation();
-  const navigate = useNavigate();
+export type TabContentProps = {
+  isActive: boolean;
+  children?: React.ReactNode;
+};
 
+export const TabContent: React.FC<TabContentProps> = ({
+  isActive,
+  children,
+}) => {
   return (
-    <SettingsMenuContainer>
-      {/* TODO remove that when team management is finished */}
-      {settingsMenuPaths.map(({ displayLabel, path }) => (
-        <MenuItem
-          key={path}
-          selected={
-            removeAgencyFromPath(location.pathname) === `settings/${path}`
-          }
-          onClick={() => navigate(path)}
-        >
-          {displayLabel}
-        </MenuItem>
-      ))}
-    </SettingsMenuContainer>
+    <SettingsTabContent isActive={isActive}>{children}</SettingsTabContent>
   );
-});
+};

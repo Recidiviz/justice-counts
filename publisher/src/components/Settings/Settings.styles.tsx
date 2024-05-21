@@ -22,83 +22,74 @@ import {
 } from "@justice-counts/common/components/GlobalStyles";
 import styled from "styled-components/macro";
 
+import { TabContentProps } from "./TabContent";
+
 export const SETTINGS_MENU_WITH_PADDINGS_WIDTH = 288;
-
-export const SettingsContainer = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: flex-start;
-  padding: 48px 24px 0 24px;
-  position: relative;
-
-  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    padding-top: 24px;
-  }
-`;
 
 export const ContentDisplay = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  flex: 10 10 auto;
+  margin: auto;
   overflow-x: auto;
-  margin-left: ${SETTINGS_MENU_WITH_PADDINGS_WIDTH - 24}px;
+  padding-top: 24px;
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     margin-left: 0;
+    padding: 24px;
   }
 `;
 
-export const SettingsMenuContainer = styled.div`
-  ${typography.sizeCSS.headline}
-  width: 240px;
-  display: flex;
-  flex: 0 0 auto;
+export const SettingsTitleContainer = styled.div`
+  margin-top: 4px;
+  margin-bottom: 8px;
+  padding-bottom: 14px;
+  width: 100%;
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    margin: 0;
+    padding: 0 0 24px 0;
+  }
+`;
+
+export const SettingsTitle = styled.h1`
+  ${typography.sizeCSS.title};
+  @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    ${typography.sizeCSS.medium};
+  }
+`;
+
+export const SettingsSubTitle = styled.div`
+  ${typography.body};
+
+  a {
+    text-decoration: none;
+    color: ${palette.solid.blue};
+  }
+`;
+export const SettingsTabBlock = styled.div`
+  border-bottom: 1px solid ${palette.solid.lightgrey4};
+  width: 100%;
+  height: fit-content;
   flex-direction: column;
-  gap: 16px;
-  margin-right: 24px;
-  z-index: 2;
-  position: fixed;
+`;
+export const SettingsTabContent = styled.div<TabContentProps>`
+  display: ${(props) => (props.isActive ? "block" : "none")};
+  height: 100%;
+`;
+
+export const SettingsTabContainer = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 10 10 auto;
+  overflow-x: auto;
+  ${typography.body};
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
-    display: none;
-  }
-`;
-
-export const MenuItem = styled.div<{ selected?: boolean }>`
-  ${typography.sizeCSS.large}
-  width: fit-content;
-  padding-bottom: 4px;
-  color: ${({ selected }) =>
-    selected ? palette.solid.darkgrey : palette.highlight.grey10};
-  border-bottom: 2px solid
-    ${({ selected }) => (selected ? palette.solid.blue : `transparent`)};
-  transition: color 0.2s ease;
-
-  &:hover {
-    cursor: pointer;
-    color: ${({ selected }) => !selected && palette.solid.darkgrey};
-  }
-`;
-
-export const SubMenuListContainer = styled.div``;
-
-export const SubMenuListItem = styled.div<{ activeSection?: boolean }>`
-  ${typography.sizeCSS.normal}
-  width: fit-content;
-  color: ${({ activeSection }) =>
-    activeSection ? palette.solid.darkgrey : palette.highlight.grey8};
-  max-width: 238px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  border-bottom: 2px solid
-    ${({ activeSection }) =>
-      activeSection ? palette.solid.blue : `transparent`};
-
-  &:hover {
-    cursor: pointer;
-    color: ${palette.solid.darkgrey};
+    margin-left: 0;
   }
 `;

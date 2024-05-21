@@ -116,16 +116,8 @@ const Menu: React.FC = () => {
 
   const profileDropdownMetadata = [
     {
-      label: "Your Account",
-      path: "./settings/account",
-    },
-    {
-      label: "Agency Settings",
-      path: "./settings/agency-settings",
-    },
-    {
-      label: "Team Management",
-      path: "./settings/team-management",
+      label: "Settings",
+      path: "./settings",
     },
     {
       label: "Uploaded Files",

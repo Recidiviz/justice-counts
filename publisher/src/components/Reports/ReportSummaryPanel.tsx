@@ -38,7 +38,6 @@ import {
 import { MetricSummarySectionTitle, Title } from "../Forms";
 import { REPORT_CAPITALIZED } from "../Global/constants";
 import { TeamMemberNameWithBadge } from "../primitives";
-import { SubMenuListItem } from "../Settings";
 import HelperText from "./HelperText";
 import { useCheckMetricForErrors } from "./hooks";
 import {
@@ -114,10 +113,22 @@ export const ReportSummarySection = styled.a`
   }
 `;
 
-export const MetricDisplayName = styled(SubMenuListItem)`
+export const MetricDisplayName = styled.div<{ activeSection?: boolean }>`
+  ${typography.sizeCSS.normal}
+  width: fit-content;
+  color: ${({ activeSection }) =>
+    activeSection ? palette.solid.darkgrey : palette.highlight.grey8};
+  max-width: 238px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   border-bottom: 2px solid
     ${({ activeSection }) =>
       activeSection ? palette.solid.blue : `transparent`};
+  &:hover {
+    cursor: pointer;
+    color: ${palette.solid.darkgrey};
+  }
 `;
 
 export const ReportStatusIcon = styled.div<{

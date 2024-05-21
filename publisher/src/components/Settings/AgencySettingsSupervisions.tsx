@@ -17,28 +17,35 @@
 
 import blueCheck from "@justice-counts/common/assets/status-check-icon.png";
 import { Button } from "@justice-counts/common/components/Button";
+import { Modal } from "@justice-counts/common/components/Modal";
 import { AgencySystem } from "@justice-counts/common/types";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
-import rightArrow from "../assets/right-arrow.svg";
+import { AppGuideKeys, GuideKeys } from "../HelpCenter/types";
+import { createURLToGuide } from "../HelpCenter/utils";
+import { AgencySettingsModalInputWrapperLarge } from "./AccountSettings.styles";
 import { SettingProps } from "./AgencySettings";
 import {
   AgencyInfoBlockDescription,
+  AgencyInfoTextAreaLabel,
   AgencySettingsBlock,
   AgencySettingsBlockDescription,
-  AgencySettingsBlockTitle,
+  BasicInfoBlockTitle,
   BlueCheckIcon,
   Checkbox,
+  CheckboxLabelWrapper,
   CheckboxWrapper,
-  EditArrowImage,
   EditButtonContainer,
-  EditModeButtonsContainer,
   SupervisionSystemRow,
 } from "./AgencySettings.styles";
 import { AgencySettingsEditModeModal } from "./AgencySettingsEditModeModal";
 
+const learnMoreURL = createURLToGuide(
+  AppGuideKeys.publisher,
+  GuideKeys.SupervisionSystemsDisaggregation
+);
 const supervisionAgencySystems: { label: string; value: AgencySystem }[] = [
   { label: "Parole", value: "PAROLE" },
   {
@@ -64,9 +71,6 @@ export const AgencySettingsSupervisions: React.FC<{
   const isAdmin =
     userStore.isAgencyAdmin(agencyId) ||
     userStore.isJusticeCountsAdmin(agencyId);
-  const systemsToDisplayInReadMode = supervisionAgencySystems.filter((system) =>
-    currentAgencySystems?.includes(system.value)
-  );
 
   const handleSaveClick = () => {
     if (supervisionSystemsToSave) {
@@ -134,79 +138,106 @@ export const AgencySettingsSupervisions: React.FC<{
           closeCancelModal={() => setIsConfirmModalOpen(false)}
           handleCancelModalConfirm={handleModalConfirm}
         >
-          <>
-            <AgencySettingsBlockTitle isEditModeActive>
-              Supervision Populations
-            </AgencySettingsBlockTitle>
-            <AgencySettingsBlockDescription>
-              Select the supervision populations that your agency is responsible
-              for. This enables disaggregating data by selected population
-              types.
-            </AgencySettingsBlockDescription>
-            {supervisionAgencySystems.map(({ label, value }) => (
-              <SupervisionSystemRow
-                key={value}
-                hasHover={isSettingInEditMode}
-                onClick={() => handleSetSupervisionSystemsToSave(value)}
-              >
-                <CheckboxWrapper>
-                  <Checkbox
-                    type="checkbox"
-                    checked={
-                      supervisionSystemsToSave?.includes(
-                        value as AgencySystem
-                      ) || false
-                    }
-                    onChange={() => handleSetSupervisionSystemsToSave(value)}
-                  />
-                  <BlueCheckIcon src={blueCheck} alt="" enabled />
-                </CheckboxWrapper>
-                {label}
-              </SupervisionSystemRow>
-            ))}
-            <EditModeButtonsContainer>
-              <Button label="Cancel" onClick={handleCancelClick} />
-              <Button
-                label="Save"
-                onClick={handleSaveClick}
-                buttonColor="blue"
-              />
-            </EditModeButtonsContainer>
-          </>
+          <Modal
+            title="Supervision Populations"
+            description={
+              <>
+                <AgencyInfoTextAreaLabel agencyDescriptionConfigs>
+                  Select the supervision populations that your agency is
+                  responsible for. This enables disaggregating data by selected
+                  population types.
+                  <a
+                    href={learnMoreURL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    &nbsp;Learn More
+                  </a>
+                </AgencyInfoTextAreaLabel>
+                <AgencySettingsModalInputWrapperLarge>
+                  {supervisionAgencySystems.map(({ label, value }) => (
+                    <SupervisionSystemRow
+                      key={value}
+                      hasHover={false}
+                      onClick={() => handleSetSupervisionSystemsToSave(value)}
+                      isModal
+                    >
+                      <CheckboxWrapper>
+                        <Checkbox
+                          type="checkbox"
+                          checked={
+                            supervisionSystemsToSave?.includes(
+                              value as AgencySystem
+                            ) || false
+                          }
+                          onChange={() =>
+                            handleSetSupervisionSystemsToSave(value)
+                          }
+                          squareCheckboxConfigs
+                        />
+                        <BlueCheckIcon src={blueCheck} alt="" enabled />
+                      </CheckboxWrapper>
+                      <CheckboxLabelWrapper>{label}</CheckboxLabelWrapper>
+                    </SupervisionSystemRow>
+                  ))}
+                </AgencySettingsModalInputWrapperLarge>
+              </>
+            }
+            buttons={[
+              {
+                label: "Save",
+                onClick: () => {
+                  handleSaveClick();
+                },
+              },
+            ]}
+            modalBackground="opaque"
+            onClickClose={handleCancelClick}
+            agencySettingsConfigs
+            agencySettingsAndJurisdictionsTitleConfigs
+            customPadding="24px 40px 24px 40px"
+          />
         </AgencySettingsEditModeModal>
       )}
 
-      <AgencySettingsBlock id="supervisions">
-        <AgencySettingsBlockTitle>
+      <AgencySettingsBlock withBorder id="supervisions">
+        <BasicInfoBlockTitle>
           Supervision Populations
-        </AgencySettingsBlockTitle>
+          {isAdmin && (
+            <EditButtonContainer hasTopMargin>
+              <Button
+                label={<>Edit</>}
+                onClick={openSetting}
+                labelColor="blue"
+                noSidePadding
+                noHover
+              />
+            </EditButtonContainer>
+          )}
+        </BasicInfoBlockTitle>
         <AgencySettingsBlockDescription>
           These are the supervision populations that your agency is responsible
-          for. This enables disaggregating data by selected population types.
+          for.
         </AgencySettingsBlockDescription>
-        {systemsToDisplayInReadMode.length > 0 ? (
-          systemsToDisplayInReadMode.map(({ label, value }) => (
-            <SupervisionSystemRow key={value}>{label}</SupervisionSystemRow>
-          ))
+        {supervisionAgencySystems.length > 0 ? (
+          supervisionAgencySystems.map(({ label, value }) => {
+            const isIncluded = supervisionSystemsToSave?.includes(
+              value as AgencySystem
+            );
+            return (
+              <SupervisionSystemRow
+                isSupervisionPopulationIncluded={isIncluded}
+                key={value}
+              >
+                {label}
+                <div>{isIncluded ? "Included" : "Not Included"}</div>
+              </SupervisionSystemRow>
+            );
+          })
         ) : (
           <AgencyInfoBlockDescription hasTopMargin>
             No supervision populations selected.
           </AgencyInfoBlockDescription>
-        )}
-        {isAdmin && (
-          <EditButtonContainer hasTopMargin>
-            <Button
-              label={
-                <>
-                  Edit populations <EditArrowImage src={rightArrow} alt="" />
-                </>
-              }
-              onClick={openSetting}
-              labelColor="blue"
-              noSidePadding
-              noHover
-            />
-          </EditButtonContainer>
         )}
       </AgencySettingsBlock>
     </>
