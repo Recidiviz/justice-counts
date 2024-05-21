@@ -15,9 +15,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { Icon, IconSVG } from "@recidiviz/design-system";
 import React, { useEffect, useRef, useState } from "react";
 
 import dropdownCaret from "../../assets/dropdown-caret.svg";
+import { palette } from "../GlobalStyles";
 import * as Styled from "./Dropdown.styled";
 import {
   DropdownMenuAlignment,
@@ -40,6 +42,7 @@ type DropdownProps = {
   fullHeight?: boolean;
   highlightIcon?: React.ReactNode;
   typeaheadSearch?: { placeholder: string };
+  customClearSearchButton?: string;
 };
 
 /**
@@ -71,6 +74,7 @@ export function Dropdown({
   fullHeight,
   highlightIcon,
   typeaheadSearch,
+  customClearSearchButton,
 }: DropdownProps) {
   const [filteredOptions, setFilteredOptions] = useState<DropdownOption[]>();
   const [inputValue, setInputValue] = useState("");
@@ -133,8 +137,17 @@ export function Dropdown({
         <>
           {typeaheadSearch && (
             <Styled.CustomInputWrapper>
+              {customClearSearchButton && (
+                <Icon
+                  color={palette.highlight.grey8}
+                  kind={IconSVG.Search}
+                  width={20}
+                  rotate={270}
+                />
+              )}
               <Styled.CustomInput
                 ref={inputRef}
+                customClearButton={Boolean(customClearSearchButton)}
                 id="dropdown-typeahead"
                 name="dropdown-typeahead"
                 type="search"
@@ -145,6 +158,17 @@ export function Dropdown({
                   updateFilteredOptions(e.target.value);
                 }}
               />
+              {customClearSearchButton && (
+                <Styled.CustomClearButton
+                  type="button"
+                  onClick={() => {
+                    setInputValue("");
+                    updateFilteredOptions("");
+                  }}
+                >
+                  {customClearSearchButton}
+                </Styled.CustomClearButton>
+              )}
             </Styled.CustomInputWrapper>
           )}
 

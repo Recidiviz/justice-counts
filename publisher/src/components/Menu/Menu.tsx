@@ -33,7 +33,7 @@ import { generateDashboardURL } from "../HelpCenter/LinkToPublisherDashboard";
 import * as Styled from "./Menu.styles";
 
 const Menu: React.FC = () => {
-  const { userStore, authStore, api } = useStore();
+  const { userStore, authStore, api, agencyStore } = useStore();
   const { agencyId } = useParams() as { agencyId: string };
   const navigate = useNavigate();
   const location = useLocation();
@@ -129,7 +129,7 @@ const Menu: React.FC = () => {
             label: "Agency Dashboard",
             onClick: () =>
               window.open(
-                generateDashboardURL(api.environment, agencyName),
+                generateDashboardURL(api.environment, agencyId, agencyName),
                 "_blank"
               ),
           },
@@ -185,6 +185,19 @@ const Menu: React.FC = () => {
       setIsMobileMenuOpen(false);
     }
   }, [windowWidth]);
+
+  /* Here we're getting and storing a list of child agencies if the user is in a superagency. * */
+  useEffect(() => {
+    const superagencyId = userStore.isAgencySuperagency(agencyId)
+      ? agencyId
+      : currentAgency?.super_agency_id;
+    const userHasAccessToSuperagency = userStore.userAgencies?.find(
+      (agency) => agency.id === Number(superagencyId)
+    );
+
+    if (superagencyId && userHasAccessToSuperagency)
+      agencyStore.getChildAgencies(String(superagencyId));
+  }, [agencyId, currentAgency, agencyStore, userStore]);
 
   return (
     <Styled.MenuContainer isMobileMenuOpen={isMobileMenuOpen}>

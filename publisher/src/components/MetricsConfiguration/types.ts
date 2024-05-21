@@ -48,6 +48,7 @@ export type MetricSettings = {
 };
 
 export type MetricInfo = {
+  key?: string;
   enabled?: boolean | null;
   label?: string;
   description?: Metric["description"];

@@ -23,7 +23,7 @@ import {
   validateEmail,
 } from "@justice-counts/common/utils";
 import { observer } from "mobx-react-lite";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useStore } from "../../stores";
 import AdminPanelStore from "../../stores/AdminPanelStore";
@@ -37,6 +37,7 @@ import {
   SaveConfirmation,
   SaveConfirmationType,
   SaveConfirmationTypes,
+  SearchableListItem,
   Setting,
 } from ".";
 import * as Styled from "./AdminPanel.styles";
@@ -47,6 +48,8 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
     activeSecondaryModal,
     openSecondaryModal,
     closeModal,
+    secondaryCreatedId,
+    setSecondaryCreatedId,
   }) => {
     const { adminPanelStore } = useStore();
     const {
@@ -105,6 +108,14 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
         : []),
     ];
 
+    /** Here we are making the auto-adding if agency was created via the secondary modal */
+    useEffect(() => {
+      if (secondaryCreatedId)
+        setAddedAgenciesIDs((prev) =>
+          toggleAddRemoveSetItem(prev, +secondaryCreatedId)
+        );
+    }, [secondaryCreatedId]);
+
     /** Whether or not we are performing an add/delete action on an agencies' list */
     const isAddAction =
       addOrDeleteAgencyAction === InteractiveSearchListActions.ADD;
@@ -122,7 +133,11 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
 
     /** Search List Buttons (Select All/Deselect All/Close) */
     const interactiveSearchListButtons = [
-      { label: "Select All", onClick: () => selectAll() },
+      {
+        label: "Select All",
+        onClick: (filteredList: SearchableListItem[] | undefined) =>
+          selectAll(filteredList),
+      },
       { label: "Deselect All", onClick: () => deselectAll() },
       {
         label: "Close",
@@ -149,12 +164,18 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
         );
       }
     };
-    const selectAll = () => {
+    const selectAll = (filteredList: SearchableListItem[] | undefined) => {
       if (isAddAction) {
         setAddedAgenciesIDs(availableAgenciesIDsSet);
       }
       if (isDeleteAction) {
         setDeletedAgenciesIDs(selectedUserAgenciesIDsSet);
+      }
+      if (filteredList) {
+        const filteredSet = new Set(
+          filteredList.map((obj) => obj.id)
+        ) as Set<number>;
+        setAddedAgenciesIDs(filteredSet);
       }
     };
     const deselectAll = () => {
@@ -227,8 +248,15 @@ export const UserProvisioning: React.FC<ProvisioningProps> = observer(
       /** After showing the confirmation screen, either return to modal (on error) or close modal (on success) */
       setTimeout(() => {
         setShowSaveConfirmation((prev) => ({ ...prev, show: false }));
-        if (response && "status" in response && response.status === 200)
+        if (response && "status" in response && response.status === 200) {
+          const userResponse = adminPanelStore.createdUserResponse;
+          if (setSecondaryCreatedId && userResponse) {
+            /** If this view is the secondary create modal, then we'll store the newly created ID for the purpose of auto-adding after creation */
+            const createdUserId = userResponse.users[0].id;
+            setSecondaryCreatedId(createdUserId);
+          }
           closeModal(true);
+        }
         setIsSaveInProgress(false);
       }, 2000);
     };

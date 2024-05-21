@@ -65,6 +65,7 @@ export const AgencyProvisioningOverview = observer(() => {
   const [selectedAgencyID, setSelectedAgencyID] = useState<string | number>();
   const [activeSecondaryModal, setActiveSecondaryModal] =
     useState<SettingType>();
+  const [userId, setUserId] = useState<string | number>();
 
   const searchByKeys = ["name", "id", "state"] as AgencyKey[];
   const superagenciesAndAgenciesWithLiveDashboards = agencies.filter(
@@ -103,6 +104,7 @@ export const AgencyProvisioningOverview = observer(() => {
 
   const openModal = () => setIsModalOpen(true);
   const openSecondaryModal = () => setActiveSecondaryModal(Setting.USERS);
+  const setSecondaryCreatedId = (id: string | number) => setUserId(id);
   const closeModal = (resetSearchInput?: boolean) => {
     if (!activeSecondaryModal) {
       setSelectedAgencyID(undefined);
@@ -154,6 +156,7 @@ export const AgencyProvisioningOverview = observer(() => {
               selectedIDToEdit={selectedAgencyID}
               activeSecondaryModal={activeSecondaryModal}
               openSecondaryModal={openSecondaryModal}
+              secondaryCreatedId={userId}
             />
           </Modal>
 
@@ -164,6 +167,7 @@ export const AgencyProvisioningOverview = observer(() => {
                 <UserProvisioning
                   closeModal={closeModal}
                   activeSecondaryModal={activeSecondaryModal}
+                  setSecondaryCreatedId={setSecondaryCreatedId}
                 />
               </Modal>
             </DelayedRender>

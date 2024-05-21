@@ -20,7 +20,10 @@ import {
   AgencySystem,
   SupervisionSubsystems,
 } from "@justice-counts/common/types";
-import { frequencyString } from "@justice-counts/common/utils/helperUtils";
+import {
+  frequencyString,
+  removeSnakeCase,
+} from "@justice-counts/common/utils/helperUtils";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { useParams } from "react-router-dom";
@@ -32,16 +35,22 @@ import { ReactComponent as RightArrowIcon } from "../assets/bold-right-arrow-ico
 import { AppGuideKeys, GuideKeys } from "../HelpCenter/types";
 import { createURLToGuide } from "../HelpCenter/utils";
 import { DisclaimerBanner } from "../primitives";
-import { useSettingsSearchParams } from "../Settings";
+import {
+  replaceSystemMetricKeyWithNewSystem,
+  useSettingsSearchParams,
+} from "../Settings";
+import { ChildAgenciesDropdown } from "./ChildAgenciesDropdown";
 import * as Styled from "./MetricsOverview.styled";
+import { MetricInfo } from "./types";
 
 export const MetricsOverview = observer(() => {
   const [settingsSearchParams, setSettingsSearchParams] =
     useSettingsSearchParams();
+
   const { agencyId } = useParams() as { agencyId: string };
   const { userStore, metricConfigStore } = useStore();
 
-  const { getMetricsBySystem } = metricConfigStore;
+  const { metrics, getMetricsBySystem } = metricConfigStore;
 
   const { system: systemSearchParam } = settingsSearchParams;
 
@@ -57,6 +66,13 @@ export const MetricsOverview = observer(() => {
   const currentAgency = userStore.getAgency(agencyId);
   const currentSystem = systemSearchParam || currentAgency?.systems[0];
 
+  const agencySupervisionSubsystems = currentAgency?.systems.filter((system) =>
+    SupervisionSubsystems.includes(system)
+  );
+
+  const hasSupervisionSubsystems =
+    agencySupervisionSubsystems && agencySupervisionSubsystems.length > 0;
+
   const isSuperagency = userStore.isAgencySuperagency(agencyId);
 
   const isSuperagencySystem = currentSystem === "SUPERAGENCY";
@@ -67,20 +83,126 @@ export const MetricsOverview = observer(() => {
   const showSystems =
     currentAgency?.systems && currentAgency?.systems?.length > 1;
 
-  const actionRequiredMetrics = getMetricsBySystem(currentSystem)?.filter(
-    ({ metric }) => metric.enabled === null
-  );
+  const metricsByCurrentSystem = getMetricsBySystem(currentSystem);
+
+  // Returns a given metric frequency(ies) accounting for supervision agencies disaggregated by subsystems
+  const getMetricFrequency = (metric: MetricInfo) => {
+    // Default frequencies (custom or default) for agencies without supervision subsystems
+    if (
+      !(hasSupervisionSubsystems && metric.disaggregatedBySupervisionSubsystems)
+    ) {
+      return [metric.customFrequency || metric.defaultFrequency];
+    }
+
+    /**
+     * For supervision agencies w/ subsystems and disaggregated metrics, we find all
+     * enabled subsystems and return a list of their frequency and subsystem name.
+     */
+    const supervisionSubsystemMetricFrequencies =
+      agencySupervisionSubsystems?.reduce((acc, subsystem) => {
+        const replacedSystemMetricKey = replaceSystemMetricKeyWithNewSystem(
+          `SUPERVISION-${metric.key}`,
+          subsystem
+        );
+        if (metrics[replacedSystemMetricKey].enabled) {
+          const frequency =
+            metrics[replacedSystemMetricKey].customFrequency ||
+            metrics[replacedSystemMetricKey].defaultFrequency;
+          acc.push(
+            `${frequency} (${removeSnakeCase(subsystem).toLocaleLowerCase()})`
+          );
+        }
+        return acc;
+      }, [] as string[]);
+
+    return supervisionSubsystemMetricFrequencies;
+  };
+
+  /**
+   * Returns a boolean that indicates whether or not a supervision agency has a
+   * subsystem metric with an enabled status matching the `status` argument provided
+   */
+  const hasSupervisionSubsystemWithEnabledStatus = (
+    status: boolean | null,
+    metricKey: string | undefined
+  ) => {
+    if (!metricKey) return undefined;
+    return !!agencySupervisionSubsystems?.find((subsystem) => {
+      const replacedSystemMetricKey = replaceSystemMetricKeyWithNewSystem(
+        `SUPERVISION-${metricKey}`,
+        subsystem
+      );
+      return metrics[replacedSystemMetricKey].enabled === status;
+    });
+  };
+
+  const { actionRequiredMetrics, availableMetrics, unavailableMetrics } =
+    metricsByCurrentSystem?.reduce(
+      (acc, metric) => {
+        // Default grouping for agencies without supervision subsystems
+        if (
+          !(
+            hasSupervisionSubsystems &&
+            metric.disaggregatedBySupervisionSubsystems
+          )
+        ) {
+          if (metric.enabled) {
+            acc.availableMetrics.push(metric);
+            return acc;
+          }
+          if (metric.enabled === false) {
+            acc.unavailableMetrics.push(metric);
+            return acc;
+          }
+          if (metric.enabled === null) {
+            acc.actionRequiredMetrics.push(metric);
+            return acc;
+          }
+        }
+
+        /**
+         * For supervision agencies w/ subsystems and disaggregated metrics, we need to do
+         * an extra check of all of the subsystems' metric enabled status.
+         *
+         * `actionRequiredMetrics` will include the metrics if at least one subsystem has the metric as `null` (untouched)
+         *     - currently, we will never reach this case as disaggregating a metric by default enables the subsystem metrics
+         * `availableMetrics` will include the metric if at least one subsystem has the metric enabled
+         * `unavailableMetrics` will include the metric if ALL of the subsystems have the metric disabled
+         *
+         */
+        const hasSubsystemsWithEnabledMetrics =
+          hasSupervisionSubsystemWithEnabledStatus(true, metric.key);
+        const hasSubsystemsWithDisabledMetrics =
+          hasSupervisionSubsystemWithEnabledStatus(false, metric.key);
+        const hasSubsystemsWithUntoucheddMetrics =
+          hasSupervisionSubsystemWithEnabledStatus(null, metric.key);
+
+        if (hasSubsystemsWithEnabledMetrics) {
+          acc.availableMetrics.push(metric);
+          return acc;
+        }
+        if (hasSubsystemsWithDisabledMetrics) {
+          acc.unavailableMetrics.push(metric);
+          return acc;
+        }
+        if (hasSubsystemsWithUntoucheddMetrics) {
+          acc.actionRequiredMetrics.push(metric);
+          return acc;
+        }
+        return acc;
+      },
+      {
+        actionRequiredMetrics: [],
+        availableMetrics: [],
+        unavailableMetrics: [],
+      } as { [key: string]: MetricInfo[] }
+    ) ?? {};
+
   const hasActionRequiredMetrics =
     actionRequiredMetrics && actionRequiredMetrics.length > 0;
 
-  const availableMetrics = getMetricsBySystem(currentSystem)?.filter(
-    ({ metric }) => metric.enabled
-  );
   const hasAvailableMetrics = availableMetrics && availableMetrics.length > 0;
 
-  const unavailableMetrics = getMetricsBySystem(currentSystem)?.filter(
-    ({ metric }) => metric.enabled === false
-  );
   const hasUnavailableMetrics =
     unavailableMetrics && unavailableMetrics.length > 0;
 
@@ -129,6 +251,8 @@ export const MetricsOverview = observer(() => {
             </a>
           </Styled.OverviewDescription>
 
+          <ChildAgenciesDropdown view="metric-config" />
+
           {/* System Selection */}
           {showSystems && (
             <Styled.TabbedBarWrapper>
@@ -142,13 +266,13 @@ export const MetricsOverview = observer(() => {
                 <Styled.MetricsSectionTitle isAlertCaption>
                   Action required
                 </Styled.MetricsSectionTitle>
-                {actionRequiredMetrics?.map(({ key, metric }) => (
+                {actionRequiredMetrics?.map((metric) => (
                   <Styled.MetricItem
-                    key={key}
+                    key={metric.key}
                     onClick={() =>
                       setSettingsSearchParams({
                         system: currentSystem,
-                        metric: key,
+                        metric: metric.key,
                       })
                     }
                   >
@@ -165,25 +289,28 @@ export const MetricsOverview = observer(() => {
                 <Styled.MetricsSectionTitle>
                   Available
                 </Styled.MetricsSectionTitle>
-                {availableMetrics?.map(({ key, metric }) => (
-                  <Styled.MetricItem
-                    key={key}
-                    onClick={() =>
-                      setSettingsSearchParams({
-                        system: currentSystem,
-                        metric: key,
-                      })
-                    }
-                  >
-                    <Styled.MetricItemName>
-                      {metric.label}
-                      <span>
-                        {frequencyString(metric.customFrequency)?.toLowerCase()}
-                      </span>
-                    </Styled.MetricItemName>
-                    <RightArrowIcon width="16px" height="16px" />
-                  </Styled.MetricItem>
-                ))}
+                {availableMetrics?.map((metric) => {
+                  const frequency = getMetricFrequency(metric);
+                  return (
+                    <Styled.MetricItem
+                      key={metric.key}
+                      onClick={() =>
+                        setSettingsSearchParams({
+                          system: currentSystem,
+                          metric: metric.key,
+                        })
+                      }
+                    >
+                      <Styled.MetricItemName>
+                        {metric.label}
+                        <span>
+                          {frequencyString(frequency.join(", "))?.toLowerCase()}
+                        </span>
+                      </Styled.MetricItemName>
+                      <RightArrowIcon width="16px" height="16px" />
+                    </Styled.MetricItem>
+                  );
+                })}
               </Styled.MetricsSection>
             )}
             {hasUnavailableMetrics && (
@@ -191,13 +318,13 @@ export const MetricsOverview = observer(() => {
                 <Styled.MetricsSectionTitle>
                   Unavailable Metrics
                 </Styled.MetricsSectionTitle>
-                {unavailableMetrics?.map(({ key, metric }) => (
+                {unavailableMetrics?.map((metric) => (
                   <Styled.MetricItem
-                    key={key}
+                    key={metric.key}
                     onClick={() =>
                       setSettingsSearchParams({
                         system: currentSystem,
-                        metric: key,
+                        metric: metric.key,
                       })
                     }
                   >

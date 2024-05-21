@@ -66,7 +66,9 @@ export const Home = observer(() => {
         {agenciesMetadataSortedByName.map((agency) => (
           <Styled.AgencyDetailsWrapper
             key={agency.id}
-            onClick={() => navigate(`/agency/${encodeURI(agency.name)}`)}
+            onClick={() =>
+              navigate(`/agency/${agency.id}/${encodeURI(agency.name)}`)
+            }
           >
             <Styled.AgencyName>{agency.name}</Styled.AgencyName>
             <Styled.NumberOfPublishedMetrics>

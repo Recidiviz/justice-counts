@@ -88,6 +88,12 @@ export const Title = styled.div`
   text-transform: capitalize;
 `;
 
+export const Subtitle = styled.div`
+  ${typography.bodyEmphasized};
+  text-transform: capitalize;
+  margin-bottom: 4px;
+`;
+
 export const Description = styled.div`
   ${typography.body};
   line-height: 24px;

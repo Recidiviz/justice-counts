@@ -56,7 +56,7 @@ export const OverviewHeader = styled.div`
 export const OverviewDescription = styled.div`
   ${typography.body};
   max-width: 470px;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 
   a,
   a:visited {

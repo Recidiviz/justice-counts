@@ -52,6 +52,7 @@ import {
   SaveConfirmation,
   SaveConfirmationType,
   SaveConfirmationTypes,
+  SearchableListItem,
   SelectionInputBoxType,
   SelectionInputBoxTypes,
   Setting,
@@ -68,16 +69,20 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     activeSecondaryModal,
     openSecondaryModal,
     closeModal,
+    secondaryCreatedId,
+    setSecondaryCreatedId,
   }) => {
     const { adminPanelStore, api, userStore } = useStore();
     const {
       users,
       agencies,
       agenciesByID,
+      metrics,
       systems,
       agencyProvisioningUpdates,
       searchableCounties,
       searchableSystems,
+      searchableMetrics,
       csgAndRecidivizUsers,
       csgAndRecidivizDefaultRole,
       updateAgencyName,
@@ -90,6 +95,7 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       updateChildAgencyIDs,
       updateTeamMembers,
       saveAgencyProvisioningUpdates,
+      saveAgencyName,
       copySuperagencyMetricSettingsToChildAgencies,
     } = adminPanelStore;
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
@@ -120,10 +126,19 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
         ? new Set(agencyProvisioningUpdates.child_agency_ids)
         : new Set()
     );
+    const [selectedChildAgencyIDsToCopy, setSelectedChildAgencyIDsToCopy] =
+      useState<Set<number>>(
+        agencyProvisioningUpdates.child_agency_ids
+          ? new Set(agencyProvisioningUpdates.child_agency_ids)
+          : new Set()
+      );
     const [selectedSystems, setSelectedSystems] = useState<Set<AgencySystem>>(
       agencyProvisioningUpdates.systems
         ? new Set(agencyProvisioningUpdates.systems)
         : new Set()
+    );
+    const [selectedMetricsKeys, setSelectedMetricsKeys] = useState<Set<string>>(
+      new Set()
     );
     const [selectedTeamMembersToAdd, setSelectedTeamMembersToAdd] = useState<
       Set<number>
@@ -170,9 +185,14 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
     );
 
     /** A list of superagencies and child agencies to select from */
-    const childAgencies = availableAgencies.filter(
-      (agency) => !agency.is_superagency
-    );
+    const childAgencies = availableAgencies
+      .filter((agency) => !agency.is_superagency)
+      .map((agency) => ({
+        ...agency,
+        sectors: agency.systems.map((system) =>
+          removeSnakeCase(system.toLocaleLowerCase())
+        ),
+      }));
     const superagencies = availableAgencies.filter(
       (agency) => agency.is_superagency
     );
@@ -224,8 +244,14 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       return [
         {
           label: "Select All",
-          onClick: () => {
+          onClick: (filteredList: SearchableListItem[] | undefined) => {
             setState(selectAllSet);
+            if (filteredList) {
+              const filteredSet = new Set(
+                filteredList.map((obj) => obj.id)
+              ) as Set<T>;
+              setState(filteredSet);
+            }
             if (selectAllCallback) selectAllCallback();
           },
         },
@@ -239,6 +265,9 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
 
     const saveUpdates = async () => {
       setIsSaveInProgress(true);
+
+      // Update final agency name
+      saveAgencyName(agencyProvisioningUpdates.name);
 
       /** Update final list of systems, child agencies, and team members */
       updateSystems(Array.from(selectedSystems));
@@ -275,7 +304,8 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           String(agencyProvisioningUpdates.agency_id),
           agencyProvisioningUpdates.name,
           userStore.email,
-          ["ALL"]
+          Array.from(selectedMetricsKeys),
+          Array.from(selectedChildAgencyIDsToCopy).map((id) => String(id))
         );
       }
 
@@ -302,8 +332,15 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           show: false,
           errorMessage: undefined,
         }));
-        if (response && "status" in response && response.status === 200)
+        if (response && "status" in response && response.status === 200) {
+          const agencyResponse = adminPanelStore.createdAgencyResponse;
+          if (setSecondaryCreatedId && agencyResponse) {
+            /** If this view is the secondary create modal, then we'll store the newly created ID for the purpose of auto-adding after creation */
+            const createdAgencyId = agencyResponse.id;
+            setSecondaryCreatedId(createdAgencyId);
+          }
           closeModal(true);
+        }
         setIsSaveInProgress(false);
       }, 2000);
     };
@@ -455,25 +492,37 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
       selectedTeamMembersToAdd.size > 0 ||
       selectedTeamMembersToDelete.size > 0;
     /**
+     * An update has been made when there are child agencies or metrics selected to copy
+     */
+    const hasChildAgenciesCopyUpdates = selectedChildAgencyIDsToCopy.size > 0;
+    const hasMetricsCopyUpdates = selectedMetricsKeys.size > 0;
+    /**
      * Saving is disabled if saving is in progress OR an existing agency has made no updates to either the name, state,
      * county, systems, dashboard enabled checkbox, superagency checkbox and child agencies, child agency's superagency
      * selection, and team member additions/deletions/role updates, or a newly created agency has no input for both name and state.
      */
-    const isSaveDisabled =
-      !isCopySuperagencyMetricSettingsSelected && // Allows user to save if all they do is select that they want to copy superagency metric settings
-      (isSaveInProgress ||
+    const hasCopySuperagencyMetricSettingsUpdates =
+      hasChildAgenciesCopyUpdates && hasMetricsCopyUpdates;
+    const hasAgencyInfoUpdates =
+      hasNameUpdate ||
+      hasStateUpdate ||
+      hasCountyUpdates ||
+      hasSystemUpdates ||
+      hasDashboardEnabledStatusUpdate ||
+      hasIsSuperagencyUpdate ||
+      hasChildAgencyUpdates ||
+      hasSuperagencyUpdate ||
+      hasTeamMemberOrRoleUpdates;
+    const hasRequiredCreateAgencyFields =
+      hasNameUpdate && hasStateUpdate && hasSystems;
+
+    const isSaveDisabled = isCopySuperagencyMetricSettingsSelected
+      ? !hasCopySuperagencyMetricSettingsUpdates
+      : isSaveInProgress ||
         !hasSystems ||
         (selectedAgency
-          ? !hasNameUpdate &&
-            !hasStateUpdate &&
-            !hasCountyUpdates &&
-            !hasSystemUpdates &&
-            !hasDashboardEnabledStatusUpdate &&
-            !hasIsSuperagencyUpdate &&
-            !hasChildAgencyUpdates &&
-            !hasSuperagencyUpdate &&
-            !hasTeamMemberOrRoleUpdates
-          : !(hasNameUpdate && hasStateUpdate && hasSystems)));
+          ? !hasAgencyInfoUpdates
+          : !hasRequiredCreateAgencyFields);
 
     /** Automatically adds CSG and Recidiviz users to a newly created agency with the proper roles */
     useEffect(() => {
@@ -500,13 +549,50 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
           };
         });
       }
+
+      if (isCopySuperagencyMetricSettingsSelected && selectedIDToEdit) {
+        adminPanelStore.fetchAgencyMetrics(String(selectedIDToEdit));
+      }
     }, [
       selectedAgency,
       adminPanelStore,
       api,
       csgAndRecidivizUsers,
       csgAndRecidivizDefaultRole,
+      secondaryCreatedId,
+      selectedIDToEdit,
+      isCopySuperagencyMetricSettingsSelected,
     ]);
+
+    /** Here we are making the auto-adding if user was created via the secondary modal */
+    useEffect(() => {
+      const newMember = users.find((user) => user.id === secondaryCreatedId);
+      if (secondaryCreatedId && newMember) {
+        setSelectedTeamMembersToAdd((prev) =>
+          toggleAddRemoveSetItem(prev, +secondaryCreatedId)
+        );
+        setTeamMemberRoleUpdates((prev) => {
+          return {
+            ...prev,
+            [secondaryCreatedId]: isCSGOrRecidivizUserByEmail(newMember.email)
+              ? csgAndRecidivizDefaultRole
+              : AgencyTeamMemberRole.AGENCY_ADMIN,
+          };
+        });
+      }
+    }, [users, secondaryCreatedId, csgAndRecidivizDefaultRole]);
+
+    /** Here we are making the auto-selecting all metrics by default */
+    useEffect(() => {
+      setSelectedMetricsKeys(
+        new Set(searchableMetrics.map((metric) => String(metric.id)))
+      );
+    }, [searchableMetrics]);
+
+    const selectedChildAgencies = childAgencies.filter((agency) =>
+      selectedChildAgencyIDs.has(Number(agency.id))
+    );
+    const hasChildAgencyMetrics = metrics.length > 0;
 
     return (
       <Styled.ModalContainer offScreen={activeSecondaryModal === Setting.USERS}>
@@ -871,37 +957,178 @@ export const AgencyProvisioning: React.FC<ProvisioningProps> = observer(
                         </Styled.InputLabelWrapper>
 
                         {hasSystems && hasChildAgencies && (
-                          <Styled.InputLabelWrapper flexRow wrapLabelText>
-                            <input
-                              id="copy-superagency-metric-settings"
-                              name="copy-superagency-metric-settings"
-                              type="checkbox"
-                              onChange={() =>
-                                setIsCopySuperagencyMetricSettingsSelected(
-                                  (prev) => !prev
-                                )
-                              }
-                              checked={isCopySuperagencyMetricSettingsSelected}
-                            />
-                            <label htmlFor="copy-superagency-metric-settings">
-                              Copy all metric settings to child agencies across
-                              all sectors
-                            </label>
-                            {isCopySuperagencyMetricSettingsSelected && (
-                              <Styled.WarningMessage>
-                                <img src={alertIcon} alt="" width="24px" />
-                                <p>
-                                  WARNING! This action cannot be undone. This
-                                  will OVERWRITE all metric settings in all
-                                  child agencies. After clicking{" "}
-                                  <strong>Save</strong>, the copying process
-                                  will begin and you will receive an email
-                                  confirmation once the metrics settings have
-                                  been copied over.
-                                </p>
-                              </Styled.WarningMessage>
-                            )}
-                          </Styled.InputLabelWrapper>
+                          <>
+                            <Styled.InputLabelWrapper flexRow wrapLabelText>
+                              <input
+                                id="copy-superagency-metric-settings"
+                                name="copy-superagency-metric-settings"
+                                type="checkbox"
+                                onChange={() => {
+                                  setIsCopySuperagencyMetricSettingsSelected(
+                                    (prev) => !prev
+                                  );
+                                }}
+                                checked={
+                                  isCopySuperagencyMetricSettingsSelected
+                                }
+                              />
+                              <label htmlFor="copy-superagency-metric-settings">
+                                Copy metric settings to child agencies
+                              </label>
+                            </Styled.InputLabelWrapper>
+                            {isCopySuperagencyMetricSettingsSelected &&
+                              hasChildAgencyMetrics && (
+                                <>
+                                  <Styled.WarningMessage>
+                                    <img src={alertIcon} alt="" width="24px" />
+                                    <p>
+                                      WARNING! This action cannot be undone.
+                                      This will OVERWRITE metric settings in
+                                      child agencies. After clicking{" "}
+                                      <strong>Save</strong>, the copying process
+                                      will begin and you will receive an email
+                                      confirmation once the metrics settings
+                                      have been copied over.
+                                    </p>
+                                  </Styled.WarningMessage>
+                                  <Styled.InputLabelWrapper>
+                                    {showSelectionBox ===
+                                      SelectionInputBoxTypes.COPY_CHILD_AGENCIES && (
+                                      <InteractiveSearchList
+                                        list={selectedChildAgencies}
+                                        boxActionType={
+                                          InteractiveSearchListActions.ADD
+                                        }
+                                        selections={
+                                          selectedChildAgencyIDsToCopy
+                                        }
+                                        buttons={getInteractiveSearchListSelectDeselectCloseButtons(
+                                          setSelectedChildAgencyIDsToCopy,
+                                          new Set(
+                                            selectedChildAgencies.map(
+                                              (agency) => +agency.id
+                                            )
+                                          )
+                                        )}
+                                        updateSelections={({ id }) => {
+                                          setSelectedChildAgencyIDsToCopy(
+                                            (prev) =>
+                                              toggleAddRemoveSetItem(prev, +id)
+                                          );
+                                        }}
+                                        searchByKeys={["name", "sectors"]}
+                                        metadata={{
+                                          listBoxLabel:
+                                            "Select child agencies to copy",
+                                          searchBoxLabel: "Search agencies",
+                                        }}
+                                        isActiveBox={
+                                          showSelectionBox ===
+                                          SelectionInputBoxTypes.COPY_CHILD_AGENCIES
+                                        }
+                                      />
+                                    )}
+                                    <Styled.ChipContainer
+                                      onClick={() => {
+                                        setShowSelectionBox(
+                                          SelectionInputBoxTypes.COPY_CHILD_AGENCIES
+                                        );
+                                      }}
+                                      fitContentHeight
+                                      hoverable
+                                    >
+                                      {selectedChildAgencyIDsToCopy.size ===
+                                      0 ? (
+                                        <Styled.EmptyListMessage>
+                                          No child agencies selected to copy
+                                        </Styled.EmptyListMessage>
+                                      ) : (
+                                        Array.from(
+                                          selectedChildAgencyIDsToCopy
+                                        ).map((agencyID) => (
+                                          <Styled.Chip key={agencyID}>
+                                            {agenciesByID[agencyID]?.[0].name}
+                                          </Styled.Chip>
+                                        ))
+                                      )}
+                                    </Styled.ChipContainer>
+                                    <Styled.ChipContainerLabel>
+                                      Child agencies to copy
+                                    </Styled.ChipContainerLabel>
+                                  </Styled.InputLabelWrapper>
+
+                                  <Styled.InputLabelWrapper>
+                                    {showSelectionBox ===
+                                      SelectionInputBoxTypes.COPY_AGENCY_METRICS && (
+                                      <InteractiveSearchList
+                                        list={searchableMetrics}
+                                        boxActionType={
+                                          InteractiveSearchListActions.ADD
+                                        }
+                                        selections={selectedMetricsKeys}
+                                        buttons={getInteractiveSearchListSelectDeselectCloseButtons(
+                                          setSelectedMetricsKeys,
+                                          new Set(
+                                            searchableMetrics.map((metric) =>
+                                              String(metric.id)
+                                            )
+                                          )
+                                        )}
+                                        updateSelections={({ id }) => {
+                                          setSelectedMetricsKeys((prev) =>
+                                            toggleAddRemoveSetItem(
+                                              prev,
+                                              String(id)
+                                            )
+                                          );
+                                        }}
+                                        searchByKeys={["name", "sectors"]}
+                                        metadata={{
+                                          listBoxLabel:
+                                            "Select metrics to copy",
+                                          searchBoxLabel: "Search metrics",
+                                        }}
+                                        isActiveBox={
+                                          showSelectionBox ===
+                                          SelectionInputBoxTypes.COPY_AGENCY_METRICS
+                                        }
+                                      />
+                                    )}
+                                    <Styled.ChipContainer
+                                      onClick={() => {
+                                        setShowSelectionBox(
+                                          SelectionInputBoxTypes.COPY_AGENCY_METRICS
+                                        );
+                                      }}
+                                      fitContentHeight
+                                      hoverable
+                                    >
+                                      {selectedMetricsKeys.size === 0 ? (
+                                        <Styled.EmptyListMessage>
+                                          No metrics selected to copy
+                                        </Styled.EmptyListMessage>
+                                      ) : (
+                                        Array.from(selectedMetricsKeys).map(
+                                          (metricKey) => (
+                                            <Styled.Chip key={metricKey}>
+                                              {
+                                                searchableMetrics.find(
+                                                  (metric) =>
+                                                    metric.id === metricKey
+                                                )?.name
+                                              }
+                                            </Styled.Chip>
+                                          )
+                                        )
+                                      )}
+                                    </Styled.ChipContainer>
+                                    <Styled.ChipContainerLabel>
+                                      Metrics to copy
+                                    </Styled.ChipContainerLabel>
+                                  </Styled.InputLabelWrapper>
+                                </>
+                              )}
+                          </>
                         )}
                       </>
                     )}
