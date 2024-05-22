@@ -72,7 +72,7 @@ export const Home = observer(() => {
           >
             <Styled.AgencyName>{agency.name}</Styled.AgencyName>
             <Styled.NumberOfPublishedMetrics>
-              <span>{agency.number_of_published_records}</span> published
+              <span>{agency.number_of_published_records}</span> published{" "}
               {agency.number_of_published_records === 1 ? "record" : "records"}
             </Styled.NumberOfPublishedMetrics>
           </Styled.AgencyDetailsWrapper>
