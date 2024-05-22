@@ -53,7 +53,7 @@ export const SettingsGuide = () => (
 
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
-        When setting jurisdiction, you can specify areas that are included and
+        When setting jurisdictions, you can specify areas that are included and
         excluded.
       </Styled.SectionParagraph>
       <Styled.ImageWrapper>
