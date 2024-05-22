@@ -40,7 +40,7 @@ enum tabOptions {
 const Settings = () => {
   const learnMoreURL = createURLToGuide(
     AppGuideKeys.publisher,
-    GuideKeys.AgencySettings
+    GuideKeys.Settings
   );
   const [currentSettingsView, setCurrentSettingsView] = useState(
     tabOptions.ACCOUNT

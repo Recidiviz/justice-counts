@@ -30,7 +30,7 @@ export enum GuideCategories {
 
 export enum GuideKeys {
   ExploreData = "explore-data",
-  AgencySettings = "agency-settings",
+  Settings = "settings",
   SetUpMetrics = "set-up-metrics",
   ManualEntry = "manual-entry",
   BulkUpload = "bulk-upload",
