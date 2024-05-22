@@ -36,7 +36,6 @@ export const AccountSettingsTitle = styled.h1`
   ${typography.sizeCSS.title};
   margin-top: 4px;
   padding-bottom: 14px;
-  background-color: ${palette.solid.red};
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
     ${typography.sizeCSS.medium};
