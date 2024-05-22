@@ -18,7 +18,7 @@
 import React from "react";
 
 import jurisdictionsScreenshot from "../../assets/hc-agency-settings-jurisdiction-screenshot.png";
-import settingsPageScreenshot from "../../assets/hc-agency-settings-page-screenshot1.png";
+import settingsPageScreenshot from "../../assets/hc-settings-page-screenshot.png";
 import * as Styled from "../HelpCenter.styles";
 import { LinkToPublisher } from "../LinkToPublisherDashboard";
 
