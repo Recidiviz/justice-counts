@@ -404,6 +404,7 @@ function MetricAvailability({
                         key: subsystemMetricKey,
                         label: removeSnakeCase(subsystem.toLocaleLowerCase()),
                         checked: Boolean(metrics[subsystemMetricKey]?.enabled),
+                        disabled: isReadOnly,
                       };
                     })}
                     onChange={({ key, checked }) => {
