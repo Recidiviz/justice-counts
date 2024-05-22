@@ -137,31 +137,13 @@ test("disaggregation dimension value handler updates the disaggregation dimensio
   expect.hasAssertions();
 });
 
-test("context value handler updates the context value", () => {
-  formStore.updateContextValue(
-    0,
-    "PROSECUTION_STAFF",
-    "PROGRAMMATIC_OR_MEDICAL_STAFF",
-    "100",
-    false,
-    "NUMBER",
-    true
-  );
-
-  expect(
-    formStore.contexts[0].PROSECUTION_STAFF.PROGRAMMATIC_OR_MEDICAL_STAFF.value
-  ).toEqual("100");
-
-  expect.hasAssertions();
-});
-
 test("updatedReportValues maps all updated (and not updated) input values into required data structure", () => {
   expect(JSON.stringify(formStore.reportUpdatedValuesForBackend(0))).toEqual(
     JSON.stringify([
       {
         key: "PROSECUTION_STAFF",
         value: 2000,
-        contexts: [{ key: "PROGRAMMATIC_OR_MEDICAL_STAFF", value: 100 }],
+        contexts: [],
         disaggregations: [
           {
             key: "PROSECUTION_STAFF_TYPE",

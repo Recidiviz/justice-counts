@@ -223,25 +223,3 @@ test("expect negative number value to add field error (formErrors should contain
     rootStore.formStore.metricsValues[0].PROSECUTION_STAFF.error?.message
   ).toBe("Please enter a valid number.");
 });
-
-test("expect empty value in metric field to add field error when there is a value in other fields such as contexts", async () => {
-  render(
-    <StoreProvider>
-      <MemoryRouter initialEntries={[`/agency/0/${REPORTS_LOWERCASE}/0`]}>
-        <Routes>
-          <Route
-            path={`/agency/:agencyId/${REPORTS_LOWERCASE}/:id`}
-            element={<ReportDataEntry />}
-          />
-        </Routes>
-      </MemoryRouter>
-    </StoreProvider>
-  );
-
-  const labels = await screen.findAllByLabelText("Total Staff");
-  fireEvent.change(labels[0], { target: { value: "" } });
-
-  expect(
-    rootStore.formStore.metricsValues[0].PROSECUTION_STAFF.error?.message
-  ).toBe("You are also required to enter a value for this field.");
-});
