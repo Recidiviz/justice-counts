@@ -154,11 +154,9 @@ export const Home = observer(() => {
 
         {/* Submenu */}
         <Styled.Submenu>
-          <Styled.SubmenuItem
-            onClick={() => navigate("./settings/agency-settings")}
-          >
+          <Styled.SubmenuItem onClick={() => navigate("./settings")}>
             <GearIcon />
-            Agency Settings
+            Settings
           </Styled.SubmenuItem>
           <Styled.SubmenuItem
             href="https://justicecounts.csgjusticecenter.org/"

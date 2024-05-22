@@ -18,38 +18,35 @@
 import React from "react";
 
 import jurisdictionsScreenshot from "../../assets/hc-agency-settings-jurisdiction-screenshot.png";
-import agencySettingsPageScreenshot from "../../assets/hc-agency-settings-page-screenshot.png";
+import settingsPageScreenshot from "../../assets/hc-agency-settings-page-screenshot1.png";
 import * as Styled from "../HelpCenter.styles";
 import { LinkToPublisher } from "../LinkToPublisherDashboard";
 
-export const AgencySettingsGuide = () => (
+export const SettingsGuide = () => (
   <>
     <Styled.SectionWrapper>
       <Styled.ImageWrapper>
-        <Styled.Image
-          src={agencySettingsPageScreenshot}
-          alt=""
-          align="center"
-        />
+        <Styled.Image src={settingsPageScreenshot} alt="" align="center" />
       </Styled.ImageWrapper>
       <Styled.SectionParagraph>
-        To access, select Agency Settings from the dropdown on the top right
-        corner.
+        To access, select Settings from the dropdown on the top right corner.
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
 
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
         Within{" "}
-        <LinkToPublisher publisherPath="settings/agency-settings">
-          Agency Settings
-        </LinkToPublisher>{" "}
-        you can update:
+        <LinkToPublisher publisherPath="settings">Settings</LinkToPublisher> you
+        can update:
         <ul>
           <li>Agency Users</li>
           <li>Agency Description</li>
           <li>Agency URL</li>
+          <li>Email Reminders</li>
           <li>Jurisdictions covered by your agency</li>
+          <li>
+            Supervision populations covered by your agency (if applicable)
+          </li>
         </ul>
       </Styled.SectionParagraph>
     </Styled.SectionWrapper>
@@ -67,8 +64,8 @@ export const AgencySettingsGuide = () => (
     <Styled.SectionWrapper>
       <Styled.SectionParagraph>
         Some users may also have the ability to add new users to the agency, by
-        specifying the name and email address. If you need to update your agency
-        name, state, or sector, please contact{" "}
+        specifying the name and email address via the Team Members tab. If you
+        need to update your agency name, state, or sector, please contact{" "}
         <a
           href="mailto:justice-counts-support@csg.org"
           target="_blank"

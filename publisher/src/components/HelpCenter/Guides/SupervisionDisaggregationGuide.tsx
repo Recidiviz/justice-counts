@@ -37,11 +37,9 @@ export const SupervisionDisaggregationGuide = () => (
         <ul>
           <li>
             Navigate to{" "}
-            <LinkToPublisher publisherPath="settings/agency-settings">
-              Agency Settings
-            </LinkToPublisher>{" "}
+            <LinkToPublisher publisherPath="settings">Settings</LinkToPublisher>{" "}
             by clicking the icon in the top right corner and selecting{" "}
-            <strong>Agency Settings</strong> from the dropdown.
+            <strong>Settings</strong> from the dropdown.
           </li>
           <li>
             Scroll down to <strong>Supervision Populations</strong> and click{" "}
@@ -89,9 +87,7 @@ export const SupervisionDisaggregationGuide = () => (
         <ol>
           <li>
             Specify which supervision populations your agency oversees in{" "}
-            <LinkToPublisher publisherPath="settings/agency-settings">
-              Agency Settings
-            </LinkToPublisher>
+            <LinkToPublisher publisherPath="settings">Settings</LinkToPublisher>
             . If you don’t distinguish between different supervision
             populations, don’t select any of the options.
           </li>

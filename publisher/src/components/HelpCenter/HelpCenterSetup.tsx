@@ -18,7 +18,7 @@
 import React from "react";
 import { Route } from "react-router-dom";
 
-import { ReactComponent as AgencySettingsIcon } from "../assets/hc-agency-settings-icon.svg";
+import { ReactComponent as SettingsIcon } from "../assets/hc-agency-settings-icon.svg";
 import { ReactComponent as AutomatedBulkUploadIcon } from "../assets/hc-automated-bulk-upload-icon.svg";
 import { ReactComponent as BulkUploadIcon } from "../assets/hc-bulk-upload-icon.svg";
 import dashboardThumbnail from "../assets/hc-dashboard-help-guide-thumbnail.png";
@@ -28,12 +28,12 @@ import publisherThumbnail from "../assets/hc-publisher-help-guide-thumbnail.png"
 import { ReactComponent as SetUpMetricsIcon } from "../assets/hc-set-up-metrics-icon.svg";
 import { ReactComponent as SuperagenciesIcon } from "../assets/hc-superagencies-icon.svg";
 import { ReactComponent as SupervisionDisaggregationsIcon } from "../assets/hc-supervision-disaggregations-icon.svg";
-import { AgencySettingsGuide } from "./Guides/AgencySettingsGuide";
 import { AutomatedBulkUploadGuide } from "./Guides/AutomaticBulkUploadGuide";
 import { BulkUploadGuide } from "./Guides/BulkUploadGuide";
 import { DashboardsGuide } from "./Guides/DashboardsGuide";
 import { ExploreDataGuide } from "./Guides/ExploreDataGuide";
 import { ManualEntryGuide } from "./Guides/ManualEntryGuide";
+import { SettingsGuide } from "./Guides/SettingsGuide";
 import { SetUpMetricsGuide } from "./Guides/SetUpMetricsGuide";
 import { SuperagenciesGuide } from "./Guides/SuperagenciesGuide";
 import { SupervisionDisaggregationGuide } from "./Guides/SupervisionDisaggregationGuide";
@@ -63,13 +63,13 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         icon: <ExploreDataIcon />,
         relevantGuides: ["dashboard/dashboards"],
       },
-      [GuideKeys.AgencySettings]: {
+      [GuideKeys.Settings]: {
         category: GuideCategories.AccountSetup,
-        title: "Agency Settings",
-        caption: "See and edit information about your agency",
-        path: "agency-settings",
-        element: <AgencySettingsGuide />,
-        icon: <AgencySettingsIcon />,
+        title: "Settings",
+        caption: "See and edit information about your account and agency",
+        path: "settings",
+        element: <SettingsGuide />,
+        icon: <SettingsIcon />,
         relevantGuides: ["set-up-metrics"],
       },
       [GuideKeys.SetUpMetrics]: {
@@ -80,7 +80,7 @@ export const helpCenterGuideStructure: HelpCenterGuideStructure = {
         path: "set-up-metrics",
         element: <SetUpMetricsGuide />,
         icon: <SetUpMetricsIcon />,
-        relevantGuides: ["agency-settings"],
+        relevantGuides: ["settings"],
       },
       [GuideKeys.ManualEntry]: {
         category: GuideCategories.AddData,
