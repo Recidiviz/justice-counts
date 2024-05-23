@@ -19,7 +19,7 @@ import React, { useEffect } from "react";
 import { Navigate, Route, Routes, useParams } from "react-router-dom";
 
 import { DataEntryInterstitial } from "../components/DataEntryInterstitial";
-import { DataUpload } from "../components/DataUpload";
+import { DataUpload, UploadedFiles } from "../components/DataUpload";
 import ShareSpreadsheetReview from "../components/DataUpload/ShareSpreadsheet";
 import ShareUploadErrorWarnings from "../components/DataUpload/ShareUploadErrorWarnings";
 import UploadSpreadsheetReview from "../components/DataUpload/UploadSpreadsheet";
@@ -72,6 +72,7 @@ export const Router = () => {
           />
           <Route path="/data" element={<MetricsDataChart />} />
           <Route path="/metric-config" element={<MetricsConfiguration />} />
+          <Route path="/settings/uploaded-files" element={<UploadedFiles />} />
           <Route path="/settings/*" element={<Settings />} />
           <Route path="/upload" element={<DataUpload />} />
           <Route path="/data-entry" element={<DataEntryInterstitial />} />

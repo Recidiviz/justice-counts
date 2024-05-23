@@ -35,17 +35,17 @@ export const UploadedFilesTitle = styled(AccountSettingsTitle)`
   }
 
   @media only screen and (max-width: ${MIN_TABLET_WIDTH}px) {
+    width: 80%;
     ${typography.sizeCSS.medium};
     border-bottom: 1px solid ${palette.highlight.grey9};
     position: fixed;
     top: ${HEADER_BAR_HEIGHT}px;
     padding: 24px 0;
     z-index: 2;
-    width: calc(100% - 48px);
     background-color: ${palette.solid.white};
 
     &::before {
-      content: "Settings > Uploaded Files";
+      content: "Uploaded Files";
     }
   }
 `;
@@ -163,6 +163,8 @@ export const UploadedFilesTable = styled(Table)`
 `;
 
 export const UploadedFilesWrapper = styled.div`
+  width: 80%;
+  margin-top: 52px;
   position: relative;
   overflow-y: auto;
 `;
