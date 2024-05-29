@@ -21,8 +21,6 @@ import { observer } from "mobx-react-lite";
 import React, { useRef, useState } from "react";
 
 import { useStore } from "../../stores";
-import { gateToAllowedEnvironment } from "../../utils/featureFlags";
-import { Environment } from "../AdminPanel";
 import {
   AgencySettingsBlock,
   AgencySettingsBlockDescription,
@@ -34,7 +32,7 @@ import {
 } from "./AgencySettings.styles";
 
 export const AgencySettingsEmailNotifications: React.FC = observer(() => {
-  const { agencyStore, api } = useStore();
+  const { agencyStore } = useStore();
   const {
     updateEmailSubscriptionDetails,
     isUserSubscribedToEmails,
@@ -54,13 +52,7 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
   const handleSubscribeUnsubscribe = () => {
     updateEmailSubscriptionDetails(
       !isUserSubscribedToEmails,
-      /* TODO(#1251) Ungate feature */
-      gateToAllowedEnvironment(api.environment, [
-        Environment.LOCAL,
-        Environment.STAGING,
-      ])
-        ? Number(currentOffsetDays)
-        : daysAfterTimePeriodToSendEmail
+      Number(currentOffsetDays)
     );
   };
 
@@ -92,54 +84,46 @@ export const AgencySettingsEmailNotifications: React.FC = observer(() => {
           </ul>
         </DescriptionSection>
 
-        {/* TODO(#1251) Ungate feature */}
-        {gateToAllowedEnvironment(api.environment, [
-          Environment.LOCAL,
-          Environment.STAGING,
-        ]) && (
-          <>
-            <DescriptionSection>
-              Below, you can choose how soon after the end of each reporting
-              period to receive an upload data reminder email. For instance, if
-              you enter 15, you would receive a reminder to upload any missing
-              data for the month of March on April 15th.
-            </DescriptionSection>
-            <CheckboxSpacingWrapper>
-              <CheckboxOptions
-                options={[
-                  {
-                    key: "emailReminder",
-                    label: "Send me emails",
-                    checked: isUserSubscribedToEmails,
-                  },
-                ]}
-                onChange={() => handleSubscribeUnsubscribe()}
+        <DescriptionSection>
+          Below, you can choose how soon after the end of each reporting period
+          to receive an upload data reminder email. For instance, if you enter
+          15, you would receive a reminder to upload any missing data for the
+          month of March on April 15th.
+        </DescriptionSection>
+        <CheckboxSpacingWrapper>
+          <CheckboxOptions
+            options={[
+              {
+                key: "emailReminder",
+                label: "Send me emails",
+                checked: isUserSubscribedToEmails,
+              },
+            ]}
+            onChange={() => handleSubscribeUnsubscribe()}
+          />
+        </CheckboxSpacingWrapper>
+        {isUserSubscribedToEmails && (
+          <DescriptionSection>
+            Enter the number of days after the end of the reporting period to
+            receive a reminder email:
+            <br />
+            <InputWrapper error={!isValidInput(currentOffsetDays)}>
+              <input
+                type="text"
+                value={currentOffsetDays || ""}
+                onChange={(e) => {
+                  setReminderEmailOffsetDays(e.target.value);
+                  debouncedSaveOffsetDays(
+                    e.target.value,
+                    !isValidInput(e.target.value)
+                  );
+                }}
               />
-            </CheckboxSpacingWrapper>
-            {isUserSubscribedToEmails && (
-              <DescriptionSection>
-                Enter the number of days after the end of the reporting period
-                to receive a reminder email:
-                <br />
-                <InputWrapper error={!isValidInput(currentOffsetDays)}>
-                  <input
-                    type="text"
-                    value={currentOffsetDays || ""}
-                    onChange={(e) => {
-                      setReminderEmailOffsetDays(e.target.value);
-                      debouncedSaveOffsetDays(
-                        e.target.value,
-                        !isValidInput(e.target.value)
-                      );
-                    }}
-                  />
-                </InputWrapper>
-              </DescriptionSection>
-            )}
-            {isUserSubscribedToEmails && !isValidInput(currentOffsetDays) && (
-              <ErrorMessage>Please enter a number between 1-1000</ErrorMessage>
-            )}
-          </>
+            </InputWrapper>
+          </DescriptionSection>
+        )}
+        {isUserSubscribedToEmails && !isValidInput(currentOffsetDays) && (
+          <ErrorMessage>Please enter a number between 1-1000</ErrorMessage>
         )}
       </AgencySettingsBlockDescription>
     </AgencySettingsBlock>
