@@ -82,20 +82,6 @@ class FormStore {
           }
         });
       });
-
-      metric.contexts.forEach((context) => {
-        if (context.value !== null && context.value !== undefined) {
-          this.updateContextValue(
-            reportID,
-            metric.key,
-            context.key,
-            normalizeToString(context.value),
-            context.required,
-            context.type,
-            metric.enabled
-          );
-        }
-      });
     });
   }
 
@@ -141,7 +127,6 @@ class FormStore {
     const updatedMetrics = this.reportStore.reportMetrics[reportID]?.map(
       (metric) => {
         const metricValues = this.metricsValues[reportID]?.[metric.key];
-        const contexts = this.contexts[reportID]?.[metric.key];
         const disaggregationForMetric =
           this.disaggregations[reportID]?.[metric.key];
         const metricIsEmpty = this.isMetricEmpty(reportID, metric.key);
@@ -173,38 +158,7 @@ class FormStore {
           ...metric,
           value: sanitizeInputValue(metricValues?.value, metric.value),
           error: metricError,
-          contexts: metric.contexts.map((context) => {
-            /** Touch & validate context field */
-            if (metricValues?.value !== "") {
-              this.updateContextValue(
-                reportID,
-                metric.key,
-                context.key,
-                normalizeToString(contexts?.[context.key]?.value) ||
-                  normalizeToString(context.value),
-                context.required,
-                context.type,
-                metric.enabled
-              );
-            }
-
-            const contextError =
-              this.contexts[reportID]?.[metric.key]?.[context.key]?.error;
-
-            if (contextError) {
-              errorFound = true;
-            }
-
-            return {
-              ...context,
-              value: sanitizeInputValue(
-                contexts?.[context.key]?.value,
-                context.value,
-                context.type
-              ),
-              error: contextError,
-            };
-          }),
+          contexts: metric.contexts,
           disaggregations: metric.disaggregations.map((disaggregation) => {
             return {
               ...disaggregation,
@@ -277,19 +231,6 @@ class FormStore {
         contexts: [],
         disaggregations: [],
       };
-
-      metric.contexts.forEach((context) => {
-        const contextValue = sanitizeInputValue(
-          this.contexts[reportID]?.[metric.key]?.[context.key]?.value,
-          context.value,
-          context.type
-        );
-
-        combinedMetricValues.contexts.push({
-          key: context.key,
-          value: contextValue,
-        });
-      });
 
       metric.disaggregations.forEach((disaggregation) => {
         combinedMetricValues.disaggregations.push({
@@ -486,45 +427,6 @@ class FormStore {
         metricKey,
         disaggregationKey,
         dimensionKey
-      );
-    }
-  };
-
-  updateContextValue = (
-    reportID: number,
-    metricKey: string,
-    contextKey: string,
-    updatedValue: string,
-    required: boolean,
-    contextType: string,
-    metricEnabled: boolean | undefined | null
-  ): void => {
-    /**
-     * Create an empty object within the property if none exist to improve access
-     * speed and to help with isolating re-renders for each form component.
-     */
-    if (!this.contexts[reportID]) {
-      this.contexts[reportID] = {};
-    }
-
-    if (!this.contexts[reportID][metricKey]) {
-      this.contexts[reportID][metricKey] = {};
-    }
-
-    if (!this.contexts[reportID][metricKey][contextKey]) {
-      this.contexts[reportID][metricKey][contextKey] = {};
-    }
-
-    this.contexts[reportID][metricKey][contextKey].value = updatedValue;
-
-    if (metricEnabled) {
-      this.validate(
-        contextType,
-        updatedValue,
-        required,
-        reportID,
-        metricKey,
-        contextKey
       );
     }
   };

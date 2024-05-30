@@ -18,7 +18,6 @@
 import { Input } from "@justice-counts/common/components/Input";
 import {
   Metric,
-  MetricContext,
   MetricDisaggregationDimensions,
   MetricDisaggregations,
 } from "@justice-counts/common/types";
@@ -154,71 +153,6 @@ export const DisaggregationDimensionTextInput = observer(
           tooltipLinkLabel: "Settings",
           tooltipLink: () => navigate(`/agency/${agencyId}/metric-config`),
         }}
-      />
-    );
-  }
-);
-
-interface AdditionalContextInputsProps extends MetricTextInputProps {
-  context: MetricContext;
-  contextIndex: number;
-}
-
-export const AdditionalContextInput = observer(
-  ({
-    reportID,
-    metric,
-    context,
-    contextIndex,
-    disabled,
-    updateFieldDescription,
-    clearFieldDescription,
-  }: AdditionalContextInputsProps) => {
-    const { formStore } = useStore();
-    const { contexts, updateContextValue } = formStore;
-    const getContextValue = () => {
-      if (
-        contexts?.[reportID]?.[metric.key]?.[context.key]?.value !== undefined
-      ) {
-        return context.type === "NUMBER"
-          ? formatNumberInput(
-              contexts[reportID]?.[metric.key][context.key].value
-            )
-          : contexts[reportID]?.[metric.key][context.key].value;
-      }
-
-      return metric.contexts[contextIndex].value?.toString() || "";
-    };
-    const contextValue = getContextValue();
-
-    const handleContextChange = (
-      e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-    ) =>
-      updateContextValue(
-        reportID,
-        metric.key,
-        context.key,
-        e.target.value,
-        context.required,
-        context.type,
-        metric.enabled
-      );
-
-    return (
-      <Input
-        type="text"
-        metricKey={metric.key}
-        name={context.key}
-        id={context.key}
-        label="Type here..."
-        onChange={handleContextChange}
-        value={contextValue}
-        multiline={context.type === "TEXT"}
-        error={contexts?.[reportID]?.[metric.key]?.[context.key]?.error}
-        required={context.required}
-        onFocus={updateFieldDescription}
-        onBlur={clearFieldDescription}
-        disabled={disabled}
       />
     );
   }
