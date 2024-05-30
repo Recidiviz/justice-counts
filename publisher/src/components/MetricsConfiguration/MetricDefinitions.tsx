@@ -19,6 +19,7 @@ import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import {
   AgencySystem,
+  AgencySystems,
   MetricConfigurationSettings,
   SupervisionSubsystems,
 } from "@justice-counts/common/types";
@@ -80,10 +81,13 @@ function MetricDefinitions() {
         : settingsSearchParams.system
     );
 
-  const activeSystemMetricKey = replaceSystemMetricKeyWithNewSystem(
-    systemMetricKey,
-    selectedSupervisionSubsystem as AgencySystem
-  );
+  const activeSystemMetricKey =
+    settingsSearchParams.system === AgencySystems.SUPERVISION
+      ? replaceSystemMetricKeyWithNewSystem(
+          systemMetricKey,
+          selectedSupervisionSubsystem as AgencySystem
+        )
+      : systemMetricKey;
   const activeDisaggregationKeys =
     disaggregations[activeSystemMetricKey] &&
     Object.keys(disaggregations[activeSystemMetricKey]);
