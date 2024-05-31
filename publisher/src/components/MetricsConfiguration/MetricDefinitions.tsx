@@ -19,6 +19,7 @@ import { Dropdown } from "@justice-counts/common/components/Dropdown";
 import { Tooltip } from "@justice-counts/common/components/Tooltip";
 import {
   AgencySystem,
+  AgencySystems,
   MetricConfigurationSettings,
   SupervisionSubsystems,
 } from "@justice-counts/common/types";
@@ -73,17 +74,25 @@ function MetricDefinitions() {
   const [activeDimensionKey, setActiveDimensionKey] = useState<
     string | undefined
   >(undefined);
-  const [selectedSupervisionSubsystem, setSelectedSupervisionSubsystem] =
+  const [selectedSupervisionOrSubsystem, setSelectedSupervisionOrSubsystem] =
     useState(
       agencySupervisionSubsystems && agencySupervisionSubsystems.length > 0
         ? agencySupervisionSubsystems[0]
         : settingsSearchParams.system
     );
 
-  const activeSystemMetricKey = replaceSystemMetricKeyWithNewSystem(
-    systemMetricKey,
-    selectedSupervisionSubsystem as AgencySystem
-  );
+  /**
+   * For non-supervision systems, the `activeSystemMetricKey` will match the `systemMetricKey`.
+   * For supervision systems, the `activeSystemMetricKey` will either be the supervision system-metric key
+   * if the metric is combined or a supervision subsystem system-metric key if the metric is disaggregated.
+   */
+  const activeSystemMetricKey =
+    settingsSearchParams.system === AgencySystems.SUPERVISION
+      ? replaceSystemMetricKeyWithNewSystem(
+          systemMetricKey,
+          selectedSupervisionOrSubsystem as AgencySystem
+        )
+      : systemMetricKey;
   const activeDisaggregationKeys =
     disaggregations[activeSystemMetricKey] &&
     Object.keys(disaggregations[activeSystemMetricKey]);
@@ -113,8 +122,8 @@ function MetricDefinitions() {
       return {
         key: system,
         label: removeSnakeCase(system.toLocaleLowerCase()),
-        onClick: () => setSelectedSupervisionSubsystem(system),
-        highlight: selectedSupervisionSubsystem === system,
+        onClick: () => setSelectedSupervisionOrSubsystem(system),
+        highlight: selectedSupervisionOrSubsystem === system,
       };
     }) || []),
   ];
@@ -144,10 +153,10 @@ function MetricDefinitions() {
               <MetricAvailability.DropdownV2Container>
                 <Dropdown
                   label={
-                    selectedSupervisionSubsystem === "SUPERVISION"
+                    selectedSupervisionOrSubsystem === "SUPERVISION"
                       ? "Supervision (Combined)"
                       : removeSnakeCase(
-                          selectedSupervisionSubsystem?.toLocaleLowerCase() ||
+                          selectedSupervisionOrSubsystem?.toLocaleLowerCase() ||
                             ""
                         )
                   }
