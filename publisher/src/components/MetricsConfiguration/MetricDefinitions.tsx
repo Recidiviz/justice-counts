@@ -74,18 +74,23 @@ function MetricDefinitions() {
   const [activeDimensionKey, setActiveDimensionKey] = useState<
     string | undefined
   >(undefined);
-  const [selectedSupervisionSubsystem, setSelectedSupervisionSubsystem] =
+  const [selectedSupervisionOrSubsystem, setSelectedSupervisionOrSubsystem] =
     useState(
       agencySupervisionSubsystems && agencySupervisionSubsystems.length > 0
         ? agencySupervisionSubsystems[0]
         : settingsSearchParams.system
     );
 
+  /**
+   * For non-supervision systems, the `activeSystemMetricKey` will match the `systemMetricKey`.
+   * For supervision systems, the `activeSystemMetricKey` will either be the supervision system-metric key
+   * if the metric is combined or a supervision subsystem system-metric key if the metric is disaggregated.
+   */
   const activeSystemMetricKey =
     settingsSearchParams.system === AgencySystems.SUPERVISION
       ? replaceSystemMetricKeyWithNewSystem(
           systemMetricKey,
-          selectedSupervisionSubsystem as AgencySystem
+          selectedSupervisionOrSubsystem as AgencySystem
         )
       : systemMetricKey;
   const activeDisaggregationKeys =
@@ -97,9 +102,12 @@ function MetricDefinitions() {
     if (!metricDefinitionSettings[activeSystemMetricKey]) return true;
     const metricSettings = Object.values(
       metricDefinitionSettings[activeSystemMetricKey]
-    ).reduce((acc, metricSetting) => {
-      return { ...acc, ...metricSetting.settings };
-    }, {} as { [settingKey: string]: Partial<MetricConfigurationSettings> });
+    ).reduce(
+      (acc, metricSetting) => {
+        return { ...acc, ...metricSetting.settings };
+      },
+      {} as { [settingKey: string]: Partial<MetricConfigurationSettings> }
+    );
     /** Top-level metric context key will always be "INCLUDES_EXCLUDES_DESCRIPTION" */
     const hasContextValue = Boolean(
       contexts[activeSystemMetricKey].INCLUDES_EXCLUDES_DESCRIPTION.value
@@ -117,8 +125,8 @@ function MetricDefinitions() {
       return {
         key: system,
         label: removeSnakeCase(system.toLocaleLowerCase()),
-        onClick: () => setSelectedSupervisionSubsystem(system),
-        highlight: selectedSupervisionSubsystem === system,
+        onClick: () => setSelectedSupervisionOrSubsystem(system),
+        highlight: selectedSupervisionOrSubsystem === system,
       };
     }) || []),
   ];
@@ -148,10 +156,10 @@ function MetricDefinitions() {
               <MetricAvailability.DropdownV2Container>
                 <Dropdown
                   label={
-                    selectedSupervisionSubsystem === "SUPERVISION"
+                    selectedSupervisionOrSubsystem === "SUPERVISION"
                       ? "Supervision (Combined)"
                       : removeSnakeCase(
-                          selectedSupervisionSubsystem?.toLocaleLowerCase() ||
+                          selectedSupervisionOrSubsystem?.toLocaleLowerCase() ||
                             ""
                         )
                   }
