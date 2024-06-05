@@ -18,6 +18,7 @@
 import { Button } from "@justice-counts/common/components/Button";
 import { DelayedRender } from "@justice-counts/common/components/DelayedRender";
 import { Modal } from "@justice-counts/common/components/Modal";
+import { showToast } from "@justice-counts/common/components/Toast";
 import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 
@@ -31,6 +32,7 @@ import { Loading } from "../Loading";
 import {
   AgencyKey,
   AgencyProvisioning,
+  AgencyWithTeamByID,
   Setting,
   SettingType,
   UserProvisioning,
@@ -55,6 +57,7 @@ export const AgencyProvisioningOverview = observer(() => {
     updateTeamMembers,
     resetAgencyProvisioningUpdates,
     resetUserProvisioningUpdates,
+    deleteAgency,
   } = adminPanelStore;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -66,6 +69,10 @@ export const AgencyProvisioningOverview = observer(() => {
   const [activeSecondaryModal, setActiveSecondaryModal] =
     useState<SettingType>();
   const [userId, setUserId] = useState<string | number>();
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+    show: boolean;
+    agency?: AgencyWithTeamByID;
+  }>({ show: false });
 
   const searchByKeys = ["name", "id", "state"] as AgencyKey[];
   const superagenciesAndAgenciesWithLiveDashboards = agencies.filter(
@@ -141,6 +148,23 @@ export const AgencyProvisioningOverview = observer(() => {
     );
     openModal();
   };
+  const handleDeleteAgency = async (agencyID: string | number) => {
+    setDeleteConfirmation({ show: false });
+    const response = (await deleteAgency(String(agencyID))) as Response;
+
+    if (response.status === 200) {
+      showToast({
+        message: `${agenciesByID[agencyID][0].name} has been deleted.`,
+        check: true,
+      });
+      return;
+    }
+    showToast({
+      message: `${agenciesByID[agencyID][0].name} could not be deleted. Please reach out to a Recidiviz team member for assistance.`,
+      color: "red",
+      timeout: 3500,
+    });
+  };
 
   if (loading) {
     return <Loading />;
@@ -173,6 +197,32 @@ export const AgencyProvisioningOverview = observer(() => {
             </DelayedRender>
           )}
         </>
+      )}
+
+      {/* Delete Agency Confirmation Modal */}
+      {deleteConfirmation.show && (
+        <Modal
+          modalType="alert"
+          title={`Are you sure you want to delete ${deleteConfirmation.agency?.name}?`}
+          description="This action cannot be undone."
+          buttons={[
+            {
+              label: "Cancel",
+              onClick: () => {
+                setDeleteConfirmation({ show: false });
+              },
+            },
+            {
+              label: "Yes, delete agency",
+              onClick: () => {
+                if (deleteConfirmation.agency) {
+                  handleDeleteAgency(deleteConfirmation.agency.id);
+                }
+              },
+            },
+          ]}
+          centerText
+        />
       )}
 
       {/* Settings Bar */}
@@ -311,6 +361,13 @@ export const AgencyProvisioningOverview = observer(() => {
                     </Styled.DashboardPublisherLinkIndicator>
                   </Styled.IndicatorWrapper>
                 </Styled.NumberOfAgenciesLiveDashboardIndicatorWrapper>
+                {/* Delete Agency Button */}
+                <Styled.TrashIcon
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDeleteConfirmation({ show: true, agency });
+                  }}
+                />
               </Styled.Card>
             ))}
       </Styled.CardContainer>
