@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { Icon, IconSVG } from "@recidiviz/design-system";
+import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 
 import dropdownCaret from "../../assets/dropdown-caret.svg";
@@ -28,7 +29,6 @@ import {
   ToggleHover,
   ToggleSize,
 } from "./types";
-import _ from "lodash";
 
 type DropdownProps = {
   label: string | React.ReactNode;
