@@ -84,7 +84,8 @@ export function Dropdown({
   const updateFilteredOptions = (val: string) => {
     const regex = new RegExp(`${val}`, `i`);
     const normalizedOptions =
-      "id" in options[0] ? options : _.uniqBy(options, "id");
+      "id" in options[0] && val !== "" ? _.uniqBy(options, "id") : options;
+
     setFilteredOptions(() =>
       normalizedOptions.filter(
         (option) => typeof option.label === "string" && regex.test(option.label)

@@ -80,6 +80,7 @@ export const ChildAgenciesDropdown: React.FC<{
         (acc, [key, agencies]) => {
           const groupTitle = [
             {
+              id: "groupTitle",
               key,
               label: key,
               onClick: noop,
