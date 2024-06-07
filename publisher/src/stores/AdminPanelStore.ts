@@ -379,6 +379,26 @@ class AdminPanelStore {
     }
   }
 
+  async deleteAgency(agencyID: string) {
+    try {
+      const response = (await this.api.request({
+        path: `/admin/agency/${agencyID}`,
+        method: "DELETE",
+      })) as Response;
+      if (response.status === 200) {
+        runInAction(() => {
+          const updatedAgenciesByID = { ...this.agenciesByID };
+          delete updatedAgenciesByID[agencyID];
+          this.agenciesByID = updatedAgenciesByID;
+        });
+      }
+      return response;
+    } catch (error) {
+      if (error instanceof Error)
+        return new Error(`There was an issue deleting agency ID ${agencyID}.`);
+    }
+  }
+
   /** Agency Provisioning */
 
   setCreatedAgencyResponse(agencyResponse: Agency) {

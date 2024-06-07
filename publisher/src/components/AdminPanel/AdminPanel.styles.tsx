@@ -612,8 +612,7 @@ export const AgenciesNumOfAgenciesWrapper = styled.div``;
 export const NumberOfAgenciesLiveDashboardIndicatorWrapper = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
 `;
 
 export const NumberOfAgencies = styled.div`
