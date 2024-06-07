@@ -86,7 +86,7 @@ export function Dropdown({
     const normalizedOptions =
       "id" in options[0] && val !== ""
         ? _.uniqBy(
-            options.filter((option) => !option["groupTitle"]),
+            options.filter((option) => !option.groupTitle),
             "id"
           )
         : options;
