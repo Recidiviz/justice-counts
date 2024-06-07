@@ -36,4 +36,5 @@ export type DropdownOption = {
   highlight?: boolean;
   noHover?: boolean;
   icon?: React.ReactNode;
+  groupTitle?: boolean;
 };

@@ -182,6 +182,7 @@ export function Dropdown({
               highlight,
               noHover,
               icon,
+              groupTitle,
             }) => (
               <Styled.CustomDropdownMenuItem
                 key={key}
@@ -190,6 +191,7 @@ export function Dropdown({
                 disabled={optionDisabled}
                 noHover={noHover}
                 highlight={highlight && !highlightIcon}
+                groupTitle={groupTitle}
               >
                 <Styled.OptionLabelWrapper
                   highlightIcon={Boolean(highlightIcon)}

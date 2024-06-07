@@ -19,12 +19,26 @@ import {
   Dropdown,
   DropdownOption,
 } from "@justice-counts/common/components/Dropdown";
+import { ChildAgency } from "@justice-counts/common/types";
+import { noop } from "lodash";
 import { observer } from "mobx-react-lite";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import * as Styled from "./ChildAgenciesDropdown.styled";
+
+const groupBySystems = (childAgencies: ChildAgency[] | undefined) => {
+  return childAgencies?.reduce<Record<string, ChildAgency[]>>((acc, agency) => {
+    agency.systems.forEach((system) => {
+      if (!acc[system]) {
+        acc[system] = [];
+      }
+      acc[system].push(agency);
+    });
+    return acc;
+  }, {});
+};
 
 export const ChildAgenciesDropdown: React.FC<{
   view: string;
@@ -48,6 +62,8 @@ export const ChildAgenciesDropdown: React.FC<{
     (agency) => agency.id === superagencyId
   );
 
+  const childAgenciesBySystem = groupBySystems(superagencyChildAgencies);
+
   const superagencyDropdownOptions: DropdownOption[] =
     currentSuperagency && isChildAgency
       ? [
@@ -59,17 +75,32 @@ export const ChildAgenciesDropdown: React.FC<{
         ]
       : [];
 
-  const childAgenciesDropdownOptions: DropdownOption[] =
-    superagencyChildAgencies
-      ? superagencyChildAgencies
-          .map((agency) => ({
-            key: agency.id,
-            label: agency.name,
-            onClick: () => navigate(`/agency/${agency.id}/${view}`),
-            highlight: agency.id === currentAgency?.id,
-          }))
-          .sort((a, b) => a.label.localeCompare(b.label))
-      : [];
+  const childAgenciesDropdownOptions: DropdownOption[] = childAgenciesBySystem
+    ? Object.entries(childAgenciesBySystem).reduce<DropdownOption[]>(
+        (acc, [key, agencies]) => {
+          const groupTitle = [
+            {
+              key,
+              label: key,
+              onClick: noop,
+              groupTitle: true,
+            },
+          ];
+
+          const agencyGroup = agencies
+            .map((agency) => ({
+              key: `${agency.id}_${key}`,
+              label: agency.name,
+              onClick: () => navigate(`/agency/${agency.id}/${view}`),
+              highlight: agency.id === currentAgency?.id,
+            }))
+            .sort((a, b) => a.label.localeCompare(b.label));
+
+          return [...groupTitle, ...agencyGroup, ...acc];
+        },
+        []
+      )
+    : [];
 
   return (
     childAgenciesDropdownOptions.length > 0 &&
