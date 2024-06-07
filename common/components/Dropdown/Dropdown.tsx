@@ -90,7 +90,6 @@ export function Dropdown({
             "id"
           )
         : options;
-    console.log("hi", normalizedOptions);
     setFilteredOptions(() =>
       normalizedOptions.filter(
         (option) => typeof option.label === "string" && regex.test(option.label)
