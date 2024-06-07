@@ -89,6 +89,7 @@ export const ChildAgenciesDropdown: React.FC<{
 
           const agencyGroup = agencies
             .map((agency) => ({
+              id: agency.id,
               key: `${agency.id}_${key}`,
               label: agency.name,
               onClick: () => navigate(`/agency/${agency.id}/${view}`),

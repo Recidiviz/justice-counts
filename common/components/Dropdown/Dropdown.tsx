@@ -28,6 +28,7 @@ import {
   ToggleHover,
   ToggleSize,
 } from "./types";
+import _ from "lodash";
 
 type DropdownProps = {
   label: string | React.ReactNode;
@@ -82,8 +83,10 @@ export function Dropdown({
 
   const updateFilteredOptions = (val: string) => {
     const regex = new RegExp(`${val}`, `i`);
+    const normalizedOptions =
+      "id" in options[0] ? options : _.uniqBy(options, "id");
     setFilteredOptions(() =>
-      options.filter(
+      normalizedOptions.filter(
         (option) => typeof option.label === "string" && regex.test(option.label)
       )
     );
