@@ -18,6 +18,7 @@
 import {
   CustomDropdown,
   CustomDropdownMenu,
+  CustomDropdownMenuItem,
   CustomInput,
   CustomInputWrapper,
 } from "@justice-counts/common/components/Dropdown";
@@ -51,5 +52,9 @@ export const DropdownWrapper = styled.div`
     border: 0;
     outline: 0;
     background: transparent;
+  }
+  & ${CustomDropdownMenuItem} {
+    padding: 10px 16px;
+    border-bottom: 0;
   }
 `;

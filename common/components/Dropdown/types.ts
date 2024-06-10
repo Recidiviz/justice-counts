@@ -28,6 +28,7 @@ export type DropdownMenuAlignment = "left" | "right";
 type DropdownOptionTextColor = "green" | "red";
 
 export type DropdownOption = {
+  id?: string | number;
   key: string | number;
   label: string | React.ReactNode;
   onClick: () => void;
@@ -36,4 +37,5 @@ export type DropdownOption = {
   highlight?: boolean;
   noHover?: boolean;
   icon?: React.ReactNode;
+  groupTitle?: boolean;
 };
