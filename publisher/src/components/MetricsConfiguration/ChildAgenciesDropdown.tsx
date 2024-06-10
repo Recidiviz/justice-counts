@@ -69,6 +69,7 @@ export const ChildAgenciesDropdown: React.FC<{
     currentSuperagency && isChildAgency
       ? [
           {
+            id: currentSuperagency.id,
             key: currentSuperagency.id,
             label: `${currentSuperagency.name} (Superagency)`,
             onClick: () => navigate(`/agency/${currentSuperagency.id}/${view}`),
@@ -81,6 +82,7 @@ export const ChildAgenciesDropdown: React.FC<{
         (acc, [key, agencies]) => {
           const groupTitle = [
             {
+              id: "groupTitle",
               key,
               label: removeSnakeCase(key),
               onClick: noop,
@@ -90,6 +92,7 @@ export const ChildAgenciesDropdown: React.FC<{
 
           const agencyGroup = agencies
             .map((agency) => ({
+              id: agency.id,
               key: `${agency.id}_${key}`,
               label: agency.name,
               onClick: () => navigate(`/agency/${agency.id}/${view}`),

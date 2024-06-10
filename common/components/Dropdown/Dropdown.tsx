@@ -16,6 +16,7 @@
 // =============================================================================
 
 import { Icon, IconSVG } from "@recidiviz/design-system";
+import _ from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 
 import dropdownCaret from "../../assets/dropdown-caret.svg";
@@ -82,8 +83,15 @@ export function Dropdown({
 
   const updateFilteredOptions = (val: string) => {
     const regex = new RegExp(`${val}`, `i`);
+    const normalizedOptions =
+      "id" in options[0] && val !== ""
+        ? _.uniqBy(
+            options.filter((option) => !option.groupTitle),
+            "id"
+          )
+        : options;
     setFilteredOptions(() =>
-      options.filter(
+      normalizedOptions.filter(
         (option) => typeof option.label === "string" && regex.test(option.label)
       )
     );
