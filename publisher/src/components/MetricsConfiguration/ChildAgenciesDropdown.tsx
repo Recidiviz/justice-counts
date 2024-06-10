@@ -43,7 +43,8 @@ const groupBySystems = (childAgencies: ChildAgency[] | undefined) => {
 
 export const ChildAgenciesDropdown: React.FC<{
   view: string;
-}> = observer(({ view }) => {
+  metricSearchParam?: string;
+}> = observer(({ view, metricSearchParam }) => {
   const navigate = useNavigate();
   const { agencyId } = useParams() as { agencyId: string };
   const { userStore, agencyStore } = useStore();
@@ -95,7 +96,12 @@ export const ChildAgenciesDropdown: React.FC<{
               id: agency.id,
               key: `${agency.id}_${key}`,
               label: agency.name,
-              onClick: () => navigate(`/agency/${agency.id}/${view}`),
+              onClick: () =>
+                navigate(
+                  `/agency/${
+                    agency.id
+                  }/${view}?system=${key.toLocaleLowerCase()}&metric=${metricSearchParam?.toLocaleLowerCase()}`
+                ),
               highlight: agency.id === currentAgency?.id,
             }))
             .sort((a, b) => a.label.localeCompare(b.label));
