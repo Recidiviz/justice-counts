@@ -68,6 +68,7 @@ export const ChildAgenciesDropdown: React.FC<{
     currentSuperagency && isChildAgency
       ? [
           {
+            id: currentSuperagency.id,
             key: currentSuperagency.id,
             label: `${currentSuperagency.name} (Superagency)`,
             onClick: () => navigate(`/agency/${currentSuperagency.id}/${view}`),
