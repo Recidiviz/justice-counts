@@ -26,6 +26,7 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { removeSnakeCase } from "../../utils";
 import * as Styled from "./ChildAgenciesDropdown.styled";
 
 const groupBySystems = (childAgencies: ChildAgency[] | undefined) => {
@@ -81,7 +82,7 @@ export const ChildAgenciesDropdown: React.FC<{
           const groupTitle = [
             {
               key,
-              label: key,
+              label: removeSnakeCase(key),
               onClick: noop,
               groupTitle: true,
             },
