@@ -15,14 +15,30 @@ jobs:
         uses: dependabot/fetch-metadata@v1
         with:
           github-token: "${{ secrets.HELPERBOT_TOKEN }}"
+      - name: Check if auto-merge is allowed
+        id: check-auto-merge
+        if: |
+          steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
+          steps.metadata.outputs.update-type == 'version-update:semver-patch' &&
+          steps.metadata.outputs.dependency-names != ''
+        run: |
+          echo "Dependencies:"
+          echo "${{ steps.metadata.outputs.dependency-names }}"
+          if echo "${{ steps.metadata.outputs.dependency-names }}" | grep -q 'babel'; then
+            echo "@babel packages found. Skipping auto-merge."
+            echo "::set-output name=allow_auto_merge::false"
+          else
+            echo "No babel packages found. Continuing auto-merge."
+            echo "::set-output name=allow_auto_merge::true"
+          fi
       - name: Auto-approve for Dependabot PRs
-        if: steps.metadata.outputs.update-type == 'version-update:semver-minor' || steps.metadata.outputs.update-type == 'version-update:semver-patch'
+        if: steps.check-auto-merge.outputs.allow_auto_merge == 'true'
         run: gh pr review --approve -b "@Recidiviz/justice-counts - HelperBot is automatically approving this Dependabot PR since it is a patch or minor version update." "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
           GITHUB_TOKEN: ${{secrets.HELPERBOT_TOKEN}}
       - name: Enable auto-merge for Dependabot PRs
-        if: steps.metadata.outputs.update-type == 'version-update:semver-minor' || steps.metadata.outputs.update-type == 'version-update:semver-patch'
+        if: steps.check-auto-merge.outputs.allow_auto_merge == 'true'
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
