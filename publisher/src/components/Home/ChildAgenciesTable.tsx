@@ -1,0 +1,229 @@
+// Recidiviz - a data platform for criminal justice reform
+// Copyright (C) 2024 Recidiviz, Inc.
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+// =============================================================================
+
+import { showToast } from "@justice-counts/common/components/Toast";
+import { ChildAgency } from "@justice-counts/common/types";
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  PaginationState,
+  useReactTable,
+} from "@tanstack/react-table";
+import { snakeCase, startCase } from "lodash";
+import React, { useState } from "react";
+
+import { ReactComponent as CopyIcon } from "../assets/copy-icon.svg";
+import { ReactComponent as EditIcon } from "../assets/edit-icon.svg";
+import { ReactComponent as SortIcon } from "../assets/sort-icon.svg";
+import { ChildAgenciesDropdown } from "../MetricsConfiguration/ChildAgenciesDropdown";
+import * as Styled from "./ChildAgenciesTable.styled";
+import EditModal from "./EditModal";
+
+type ChildAgenciesTableProps = {
+  data: ChildAgency[];
+};
+
+const columnHelper = createColumnHelper<ChildAgency>();
+
+const columns = [
+  columnHelper.accessor("name", {
+    header: () => "Child Agency",
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor("custom_child_agency_name", {
+    header: () => "Upload ID",
+    cell: function Cell(info) {
+      const [showEditIcons, setShowEditIcons] = useState(false);
+      const [showEditModal, setShowEditModal] = useState(false);
+
+      const uploadId = info.getValue();
+      const childAgencyId = info.row.original.id;
+
+      const copyIdToClipboard = async (id: string) => {
+        try {
+          await navigator.clipboard.writeText(id);
+          showToast({
+            message: "Upload ID copied!",
+            check: true,
+          });
+        } catch {
+          showToast({
+            message: "Error copying Upload ID",
+            color: "red",
+          });
+        }
+      };
+
+      return (
+        <Styled.EditableCell
+          onMouseEnter={() => setShowEditIcons(true)}
+          onMouseLeave={() => setShowEditIcons(false)}
+        >
+          {uploadId || <Styled.Null>–</Styled.Null>}
+          {showEditIcons && (
+            <Styled.EditIcons>
+              {uploadId && (
+                <Styled.IconButton
+                  id={`${snakeCase(uploadId)}_copy-button`}
+                  label={<CopyIcon />}
+                  tooltipMsg="Copy"
+                  onClick={() => copyIdToClipboard(uploadId)}
+                />
+              )}
+              <Styled.IconButton
+                id={`${snakeCase(uploadId)}_edit-button`}
+                label={<EditIcon />}
+                tooltipMsg="Edit"
+                onClick={() => setShowEditModal(true)}
+              />
+            </Styled.EditIcons>
+          )}
+          {showEditModal && (
+            <EditModal
+              title="Upload ID"
+              defaultValue={uploadId}
+              childAgencyId={childAgencyId}
+              closeModal={() => setShowEditModal(false)}
+            />
+          )}
+        </Styled.EditableCell>
+      );
+    },
+  }),
+  columnHelper.accessor("systems", {
+    header: () => "Sectors",
+    enableSorting: false,
+    cell: (info) => {
+      const systems = info.getValue();
+
+      const isHideSystems = systems.length > 3;
+      const visibleSystemsCount = 2;
+      const visibleSystems = isHideSystems
+        ? systems.slice(0, visibleSystemsCount)
+        : systems;
+
+      return (
+        <>
+          {visibleSystems.map((system) => (
+            <Styled.CustomPill key={system}>
+              {startCase(system.toLocaleLowerCase())}
+            </Styled.CustomPill>
+          ))}
+          {isHideSystems && (
+            <Styled.CustomPill>
+              + {systems.length - visibleSystemsCount} more
+            </Styled.CustomPill>
+          )}
+        </>
+      );
+    },
+  }),
+];
+
+const ChildAgenciesTable = ({ data }: ChildAgenciesTableProps) => {
+  const [pagination, setPagination] = React.useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 15,
+  });
+
+  const table = useReactTable({
+    data,
+    columns,
+    getSortedRowModel: getSortedRowModel(),
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
+    autoResetPageIndex: false,
+    state: {
+      pagination,
+    },
+  });
+
+  const totalRowsCount = data.length;
+  const hasPagination = totalRowsCount > pagination.pageSize;
+  const pageStart =
+    table.getState().pagination.pageIndex * pagination.pageSize + 1;
+  const pageEnd = Math.min(
+    (table.getState().pagination.pageIndex + 1) * pagination.pageSize,
+    totalRowsCount
+  );
+  const pagePrompt =
+    pageStart === pageEnd ? pageEnd : `${pageStart} – ${pageEnd}`;
+
+  return (
+    <Styled.Wrapper>
+      <Styled.TableMenu>
+        <ChildAgenciesDropdown view="data" />
+        {hasPagination && (
+          <Styled.Pagination>
+            <Styled.Pages>
+              {pagePrompt} <span>of</span> {totalRowsCount}
+            </Styled.Pages>
+            <Styled.PaginationButton
+              label="Previous"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            />
+            <Styled.PaginationButton
+              label="Next"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            />
+          </Styled.Pagination>
+        )}
+      </Styled.TableMenu>
+      <Styled.Table>
+        <Styled.TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <Styled.TR key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <Styled.TH key={header.id} colSpan={header.colSpan}>
+                  <Styled.SortableHeader
+                    sortable={header.column.getCanSort()}
+                    onClick={header.column.getToggleSortingHandler()}
+                  >
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                    {header.column.getCanSort() && <SortIcon />}
+                  </Styled.SortableHeader>
+                </Styled.TH>
+              ))}
+            </Styled.TR>
+          ))}
+        </Styled.TableHeader>
+        <Styled.TableBody>
+          {table.getRowModel().rows.map((row) => (
+            <Styled.TR key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <Styled.TD key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </Styled.TD>
+              ))}
+            </Styled.TR>
+          ))}
+        </Styled.TableBody>
+      </Styled.Table>
+    </Styled.Wrapper>
+  );
+};
+
+export default ChildAgenciesTable;

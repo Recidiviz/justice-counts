@@ -51,15 +51,19 @@ export const Button = styled.div<{
     agencySettingsConfigs ? "unset" : "80px"};
   pointer-events: ${({ disabled }) => disabled && "none"};
   background-color: ${({ buttonColor, disabled }) => {
-    if (disabled) return palette.highlight.grey3;
+    if (disabled) return palette.highlight.grey1;
     return buttonColor ? palette.solid[buttonColor] : "transparent";
   }};
-  color: ${({ labelColor, buttonColor }) => {
+  color: ${({ labelColor, buttonColor, disabled }) => {
     if (labelColor) return palette.solid[labelColor];
     if (buttonColor) return palette.solid.white;
+    if (disabled) return palette.highlight.grey8;
     return palette.solid.darkgrey;
   }};
-  border: ${({ borderColor }) => {
+  border: ${({ borderColor, disabled }) => {
+    if (disabled) {
+      return `1px solid transparent`;
+    }
     if (borderColor === "white") {
       return `1px solid ${palette.solid.white}`;
     }

@@ -17,6 +17,7 @@
 
 import {
   AgencySystem,
+  ChildAgency,
   Metric,
   Report,
   ReportFrequency,
@@ -67,6 +68,8 @@ class HomeStore {
 
   loading: boolean;
 
+  childAgencies: ChildAgency[];
+
   constructor(userStore: UserStore, api: API, reportStore: ReportStore) {
     makeAutoObservable(this, {}, { autoBind: true });
 
@@ -81,6 +84,7 @@ class HomeStore {
     this.systemSelectionOptions = [];
     this.currentSystemSelection = undefined;
     this.loading = true;
+    this.childAgencies = [];
   }
 
   get agencyMetricsByMetricKey(): Record<string, Metric[]> | undefined {
@@ -229,6 +233,7 @@ class HomeStore {
         agency_metrics: agencyMetrics,
         annual_reports: annualRecords,
         monthly_report: monthlyRecord,
+        child_agencies: childAgencies,
       } = latestRecordsAndMetrics;
       const hasMonthlyRecord = Object.values(monthlyRecord).length > 0;
       const hasAnnualRecords = Object.values(annualRecords).length > 0;
@@ -243,6 +248,7 @@ class HomeStore {
         this.latestMonthlyRecordMetadata = monthlyRecordMetadata;
         this.latestAnnualRecordsMetadata = annualRecordsMetadata;
         this.agencyMetrics = agencyMetrics;
+        this.childAgencies = childAgencies;
       });
     });
   }

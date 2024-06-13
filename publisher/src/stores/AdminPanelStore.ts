@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 
+import { showToast } from "@justice-counts/common/components/Toast";
 import {
   AgencySystem,
   AgencySystems,
@@ -88,6 +89,8 @@ class AdminPanelStore {
   userResponse?: UserResponse;
 
   agencyResponse?: Agency;
+
+  childAgencyUploadId?: string;
 
   constructor(api: API) {
     makeAutoObservable(this, {}, { autoBind: true });
@@ -178,6 +181,10 @@ class AdminPanelStore {
 
   get createdAgencyResponse(): Agency | undefined {
     return this.agencyResponse;
+  }
+
+  get childAgencyCustomName(): string | undefined {
+    return this.childAgencyUploadId;
   }
 
   async fetchUsers() {
@@ -502,6 +509,37 @@ class AdminPanelStore {
           "There was an issue saving agency provisioning updates."
         );
     }
+  }
+
+  async saveChildAgencyUploadIdUpdate(
+    childAgencyId: string,
+    uploadId?: string
+  ) {
+    const response = (await this.api.request({
+      path: `/admin/agency/${childAgencyId}/custom-name`,
+      method: "PUT",
+      body: {
+        custom_child_agency_name: uploadId ?? null,
+      },
+    })) as Response;
+
+    if (response.status !== 200) {
+      showToast({
+        message: `Failed to update Upload ID.`,
+        color: "red",
+        timeout: 4000,
+      });
+      return;
+    }
+
+    runInAction(() => {
+      this.childAgencyUploadId = uploadId;
+    });
+    showToast({
+      message: `Upload ID saved`,
+      check: true,
+      timeout: 4000,
+    });
   }
 
   /** Helpers  */
