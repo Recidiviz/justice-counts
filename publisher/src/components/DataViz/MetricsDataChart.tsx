@@ -196,7 +196,7 @@ export const MetricsDataChart: React.FC = observer(() => {
       dataVizStore.setInitialStateFromSearchParams();
       setSettingsSearchParams({
         system: currentSystem,
-        metric: currentMetric.key,
+        metric: currentMetric.enabled ? currentMetric.key : undefined,
       });
     }
     /**
@@ -251,7 +251,10 @@ export const MetricsDataChart: React.FC = observer(() => {
       <Styled.MetricsViewPanel>
         {/* List Of Metrics */}
         <Styled.PanelContainerLeft>
-          <ChildAgenciesDropdown view="data" />
+          <ChildAgenciesDropdown
+            view="data"
+            metricSearchParam={metricSearchParam}
+          />
           <Styled.SystemsContainer>
             <div ref={topShadow.ref} />
             <Styled.ScrollShadow
