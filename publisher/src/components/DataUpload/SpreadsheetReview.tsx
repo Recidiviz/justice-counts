@@ -19,11 +19,12 @@ import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { Modal } from "@justice-counts/common/components/Modal";
 import { showToast } from "@justice-counts/common/components/Toast";
 import { ReportOverview } from "@justice-counts/common/types";
-import { printReportTitle } from "@justice-counts/common/utils";
+import { groupBy } from "@justice-counts/common/utils";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
+import { printReportTitle } from "../../utils";
 import { REPORTS_LOWERCASE } from "../Global/constants";
 import { VIEW_PUBLISHED_DATA_DESCRIPTION } from "../Reports/constants";
 import {
@@ -34,6 +35,8 @@ import {
   ReviewMetrics,
 } from "../ReviewMetrics";
 import {
+  BlueText,
+  ExistingRecordsWrapper,
   ListOfModifiedRecordsContainer,
   ModifiedRecordTitle,
 } from "./DataUpload.styles";
@@ -67,8 +70,17 @@ export function SpreadsheetReview({
     ...(updatedReports || []),
     ...(unchangedReports || []),
   ];
-  const hasExistingAndNewRecords =
-    existingReports.length > 0 && newReports.length > 0;
+  const hasExistingRecords = existingReports.length > 0;
+  const groupedExistingRecordsByAgencyName = groupBy(
+    existingReports,
+    (record) => record.agency_name as string
+  );
+  const groupedExistingRecordsByAgencyNameEntries = Object.entries(
+    groupedExistingRecordsByAgencyName
+  );
+  const hasMultiAgencyExistingRecords =
+    groupedExistingRecordsByAgencyNameEntries.length > 1;
+
   const existingAndNewRecords = [...existingReports, ...newReports];
   const existingAndNewRecordIDs = existingAndNewRecords.map(
     (record) => record.id
@@ -178,7 +190,7 @@ export function SpreadsheetReview({
             name: "Publish",
             buttonColor: "green",
             onClick: () =>
-              hasExistingAndNewRecords
+              hasExistingRecords
                 ? setExistingReportWarningOpen(true)
                 : publishMultipleRecords(),
             isPublishButton: true,
@@ -198,11 +210,28 @@ export function SpreadsheetReview({
       The following existing reports will also be published. Are you sure you
       want to proceed?
       <ListOfModifiedRecordsContainer>
-        {existingReports?.map((record) => (
-          <ModifiedRecordTitle key={record.id}>
-            {printReportTitle(record.month, record.year, record.frequency)}
-          </ModifiedRecordTitle>
-        ))}
+        {groupedExistingRecordsByAgencyNameEntries.map(
+          ([agencyName, records]) => {
+            return (
+              <ExistingRecordsWrapper>
+                {/* Agency Name Header (only for records ) */}
+                {hasMultiAgencyExistingRecords && (
+                  <BlueText>{agencyName}</BlueText>
+                )}
+                {/* List of Existing Records */}
+                {records.map((record) => (
+                  <ModifiedRecordTitle key={record.id}>
+                    {printReportTitle(
+                      record.month,
+                      record.year,
+                      record.frequency
+                    )}
+                  </ModifiedRecordTitle>
+                ))}
+              </ExistingRecordsWrapper>
+            );
+          }
+        )}
       </ListOfModifiedRecordsContainer>
     </>
   );

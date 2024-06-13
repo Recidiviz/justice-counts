@@ -470,7 +470,7 @@ export const ExtendedOpacityGradient = styled(OpacityGradient)`
 
 export const ListOfModifiedRecordsContainer = styled.div`
   width: 100%;
-  max-height: 120px;
+  max-height: 130px;
   overflow: auto;
   margin-top: 15px;
   padding: 0 15px;
@@ -478,6 +478,10 @@ export const ListOfModifiedRecordsContainer = styled.div`
 `;
 
 export const ModifiedRecordTitle = styled.div``;
+
+export const ExistingRecordsWrapper = styled.div`
+  margin-bottom: 8px;
+`;
 
 export const MiniLoaderWrapper = styled.div`
   position: absolute;

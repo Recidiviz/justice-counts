@@ -85,7 +85,7 @@ export const printDateAsShortMonthYear = (
  * @returns either "Annual Report [YEAR]" or "[MONTH] [YEAR]" as a string depending on frequency
  * @example "Annual Report 2022" or "March 2022"
  */
-export const printReportTitle = (
+export const printShortReportTitle = (
   month: number,
   year: number,
   frequency: ReportFrequency
