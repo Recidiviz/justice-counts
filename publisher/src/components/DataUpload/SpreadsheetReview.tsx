@@ -35,6 +35,7 @@ import {
 } from "../ReviewMetrics";
 import {
   BlueText,
+  ExistingRecordsWrapper,
   ListOfModifiedRecordsContainer,
   ModifiedRecordTitle,
 } from "./DataUpload.styles";
@@ -211,7 +212,7 @@ export function SpreadsheetReview({
         {groupedExistingRecordsByAgencyNameEntries.map(
           ([agencyName, records]) => {
             return (
-              <>
+              <ExistingRecordsWrapper>
                 {/* Agency Name Header (only for records ) */}
                 {hasMultiAgencyExistingRecords && (
                   <BlueText>{agencyName}</BlueText>
@@ -226,7 +227,7 @@ export function SpreadsheetReview({
                     )}
                   </ModifiedRecordTitle>
                 ))}
-              </>
+              </ExistingRecordsWrapper>
             );
           }
         )}
