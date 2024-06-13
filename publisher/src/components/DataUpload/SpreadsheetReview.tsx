@@ -25,6 +25,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useStore } from "../../stores";
 import { REPORTS_LOWERCASE } from "../Global/constants";
+import { VIEW_PUBLISHED_DATA_DESCRIPTION } from "../Reports/constants";
 import {
   createPublishSuccessModalButtons,
   DatapointsByMetricNameByAgencyName,
@@ -239,7 +240,7 @@ export function SpreadsheetReview({
       {isSuccessModalOpen && (
         <Modal
           title={successModalTitle}
-          description="You can view the published data in the Data tab."
+          description={VIEW_PUBLISHED_DATA_DESCRIPTION}
           buttons={createPublishSuccessModalButtons(
             agencyId as string,
             navigate
