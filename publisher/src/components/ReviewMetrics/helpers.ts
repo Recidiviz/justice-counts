@@ -35,11 +35,11 @@ export const createPublishSuccessModalButtons = (
     onClick: () => navigate(`/agency/${agencyId}`),
   },
   {
-    label: "View Data",
-    onClick: () => navigate(`/agency/${agencyId}/data`),
-  },
-  {
     label: `Go to ${REPORTS_CAPITALIZED}`,
     onClick: () => navigate(`/agency/${agencyId}/${REPORTS_LOWERCASE}`),
+  },
+  {
+    label: "View Data",
+    onClick: () => navigate(`/agency/${agencyId}/data`),
   },
 ];
