@@ -188,9 +188,6 @@ export const MetricsDataChart: React.FC = observer(() => {
 
   useEffect(() => {
     if (currentMetric && currentSystem) {
-      const isMetricEnabled = enabledMetrics.some(
-        (metric) => metric.key === currentMetric.key
-      );
       window.history.replaceState(
         "",
         "",
@@ -199,7 +196,7 @@ export const MetricsDataChart: React.FC = observer(() => {
       dataVizStore.setInitialStateFromSearchParams();
       setSettingsSearchParams({
         system: currentSystem,
-        metric: isMetricEnabled ? currentMetric.key : undefined,
+        metric: currentMetric.enabled ? currentMetric.key : undefined,
       });
     }
     /**
