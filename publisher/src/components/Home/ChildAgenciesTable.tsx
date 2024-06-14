@@ -45,7 +45,16 @@ const columnHelper = createColumnHelper<ChildAgency>();
 const columns = [
   columnHelper.accessor("name", {
     header: () => "Child Agency",
-    cell: (info) => info.getValue(),
+    cell: (info) => {
+      const childAgencyName = info.getValue();
+      const childAgencyId = info.row.original.id;
+
+      return (
+        <Styled.CustomLink to={`/agency/${childAgencyId}`}>
+          {childAgencyName}
+        </Styled.CustomLink>
+      );
+    },
   }),
   columnHelper.accessor("custom_child_agency_name", {
     header: () => "Upload ID",
@@ -150,19 +159,21 @@ const ChildAgenciesTable = ({ data }: ChildAgenciesTableProps) => {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
-    autoResetPageIndex: false,
+    initialState: {
+      sorting: [{ id: "name", desc: false }],
+    },
     state: {
       pagination,
     },
   });
 
-  const totalRowsCount = data.length;
-  const hasPagination = totalRowsCount > pagination.pageSize;
+  const totalRowCount = table.getRowCount();
+  const hasPagination = totalRowCount > pagination.pageSize;
   const pageStart =
     table.getState().pagination.pageIndex * pagination.pageSize + 1;
   const pageEnd = Math.min(
     (table.getState().pagination.pageIndex + 1) * pagination.pageSize,
-    totalRowsCount
+    totalRowCount
   );
   const pagePrompt =
     pageStart === pageEnd ? pageEnd : `${pageStart} – ${pageEnd}`;
@@ -174,7 +185,7 @@ const ChildAgenciesTable = ({ data }: ChildAgenciesTableProps) => {
         {hasPagination && (
           <Styled.Pagination>
             <Styled.Pages>
-              {pagePrompt} <span>of</span> {totalRowsCount}
+              {pagePrompt} <span>of</span> {totalRowCount}
             </Styled.Pages>
             <Styled.PaginationButton
               label="Previous"

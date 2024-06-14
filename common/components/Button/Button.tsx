@@ -77,7 +77,7 @@ export function Button({
         {label}
       </Styled.Button>
       {tooltipMsg && id && (
-        <Tooltip anchorId={id} position="bottom" content={tooltipMsg} />
+        <Tooltip anchorId={id} position="bottom" content={tooltipMsg} noArrow />
       )}
     </Styled.ButtonWrapper>
   );

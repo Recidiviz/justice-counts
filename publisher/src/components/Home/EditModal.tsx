@@ -48,6 +48,7 @@ const EditModal = ({
           <Styled.CloseButton onClick={closeModal}>&#10005;</Styled.CloseButton>
         </Styled.ModalHeader>
         <Styled.Input
+          placeholder="Enter custom name"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
         />
@@ -56,7 +57,11 @@ const EditModal = ({
           <Button
             label="Save"
             onClick={() => {
-              saveChildAgencyUploadIdUpdate(String(childAgencyId), inputValue);
+              saveChildAgencyUploadIdUpdate(
+                String(childAgencyId),
+                inputValue,
+                defaultValue
+              );
               closeModal();
             }}
             buttonColor="blue"

@@ -44,7 +44,7 @@ const getToastStyles = (color?: ToastColor, positionNextToIcon?: boolean) => {
     `;
   const toastStyles = `
       width: auto;
-      max-width: 400px;
+      max-width: 500px;
       display: flex;
       align-items: center;
       background-color: ${toastBackgroundColor};
@@ -59,8 +59,29 @@ const getToastStyles = (color?: ToastColor, positionNextToIcon?: boolean) => {
       margin-right: 8px;
       ${typography.sizeCSS.normal}
     `;
+  const buttonsWrapperStyles = `
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-left: 56px;
+    `;
+  const buttonStyles = `
+      background: transparent;
+      border: unset;
+      outline: unset;
+      ${typography.caption}
+      color: ${palette.solid.white};
+      text-transform: uppercase;
+      cursor: pointer;
+    `;
 
-  return { wrapperStyles, toastStyles, checkIconStyles };
+  return {
+    wrapperStyles,
+    toastStyles,
+    checkIconStyles,
+    buttonsWrapperStyles,
+    buttonStyles,
+  };
 };
 const animationTransform = [{ opacity: "0%" }, { opacity: "100%" }];
 const animationTransformReverse = [{ opacity: "100%" }, { opacity: "0%" }];
@@ -75,6 +96,7 @@ type ToastColor = "blue" | "red" | "grey";
 type ToastParams = {
   message: string;
   check?: boolean;
+  buttons?: { label: string; fn: () => void }[];
   color?: ToastColor;
   timeout?: number;
   preventOverride?: boolean;
@@ -94,15 +116,19 @@ export const showToast = (params: ToastParams) => {
   const {
     message,
     check,
+    buttons,
     color,
     timeout,
     preventOverride,
     positionNextToIcon,
   } = toastParams;
-  const { wrapperStyles, toastStyles, checkIconStyles } = getToastStyles(
-    color,
-    positionNextToIcon
-  );
+  const {
+    wrapperStyles,
+    toastStyles,
+    checkIconStyles,
+    buttonsWrapperStyles,
+    buttonStyles,
+  } = getToastStyles(color, positionNextToIcon);
 
   const activeToast = document.querySelector("#toast");
 
@@ -129,6 +155,21 @@ export const showToast = (params: ToastParams) => {
 
   toastElementWrapper.appendChild(toastElement);
   if (check) toastElement.prepend(checkIcon);
+
+  if (buttons && buttons.length) {
+    const buttonElementsWrapper = document.createElement(`div`);
+    buttonElementsWrapper.style.cssText = buttonsWrapperStyles;
+    toastElement.appendChild(buttonElementsWrapper);
+    buttons.map((button) => {
+      const buttonElement = document.createElement(`button`);
+      buttonElement.style.cssText = buttonStyles;
+      buttonElement.innerText = button.label;
+      buttonElementsWrapper.appendChild(buttonElement);
+      buttonElement.onclick = button.fn;
+      // eslint-disable-next-line no-useless-return
+      return;
+    });
+  }
 
   document.body.appendChild(toastElementWrapper);
 

@@ -123,8 +123,9 @@ export const CustomPill = styled(Pill).attrs({
   padding: 0 ${rem(spacing.sm)};
 `;
 
-export const StyledLink = styled(Link)`
+export const CustomLink = styled(Link)`
   color: inherit !important;
+  text-decoration: none;
 
   &:hover {
     border-bottom: 1px solid ${palette.solid.darkblue2};

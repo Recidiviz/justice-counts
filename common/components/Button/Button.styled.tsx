@@ -55,9 +55,9 @@ export const Button = styled.div<{
     return buttonColor ? palette.solid[buttonColor] : "transparent";
   }};
   color: ${({ labelColor, buttonColor, disabled }) => {
+    if (disabled) return palette.highlight.grey8;
     if (labelColor) return palette.solid[labelColor];
     if (buttonColor) return palette.solid.white;
-    if (disabled) return palette.highlight.grey8;
     return palette.solid.darkgrey;
   }};
   border: ${({ borderColor, disabled }) => {
