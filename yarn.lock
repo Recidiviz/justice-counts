@@ -14626,10 +14626,10 @@ react-toast-notifications@^2.4.3:
     "@emotion/core" "^10.0.14"
     react-transition-group "^4.4.1"
 
-react-tooltip@^5.26.3:
-  version "5.26.3"
-  resolved "https://registry.yarnpkg.com/react-tooltip/-/react-tooltip-5.26.3.tgz#bcb9a53e15bdbf9ae007ddf8bf413a317a637054"
-  integrity sha512-MpYAws8CEHUd/RC4GaDCdoceph/T4KHM5vS5Dbk8FOmLMvvIht2ymP2htWdrke7K6lqPO8rz8+bnwWUIXeDlzg==
+react-tooltip@^5.27.0:
+  version "5.27.0"
+  resolved "https://registry.yarnpkg.com/react-tooltip/-/react-tooltip-5.27.0.tgz#d502d1055b259c26b10ebfc6d925621f2afd3119"
+  integrity sha512-JXROcdfCEbCqkAkh8LyTSP3guQ0dG53iY2E2o4fw3D8clKzziMpE6QG6CclDaHELEKTzpMSeAOsdtg0ahoQosw==
   dependencies:
     "@floating-ui/dom" "^1.6.1"
     classnames "^2.3.0"
@@ -15190,7 +15190,7 @@ saxes@^5.0.1:
   dependencies:
     xmlchars "^2.2.0"
 
-scheduler@^0.23.0, scheduler@^0.23.2:
+scheduler@^0.23.2:
   version "0.23.2"
   resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.23.2.tgz#414ba64a3b282892e944cf2108ecc078d115cdc3"
   integrity sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==
