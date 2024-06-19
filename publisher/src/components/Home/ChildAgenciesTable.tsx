@@ -17,6 +17,7 @@
 
 import { showToast } from "@justice-counts/common/components/Toast";
 import { ChildAgency } from "@justice-counts/common/types";
+import { TooltipTrigger } from "@recidiviz/design-system";
 import {
   createColumnHelper,
   flexRender,
@@ -141,9 +142,15 @@ const columns = [
             </Styled.CustomPill>
           ))}
           {hasOverflowSystems && (
-            <Styled.CustomPill>
-              + {systems.length - visibleSystemsCount} more
-            </Styled.CustomPill>
+            <TooltipTrigger
+              contents={systems.slice(visibleSystemsCount).map((system) => (
+                <div>{startCase(system.toLocaleLowerCase())}</div>
+              ))}
+            >
+              <Styled.CustomPill>
+                + {systems.length - visibleSystemsCount} more
+              </Styled.CustomPill>
+            </TooltipTrigger>
           )}
         </>
       );
