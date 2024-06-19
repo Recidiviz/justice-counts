@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2024 Recidiviz, Inc.
+// Copyright (C) 2023 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -61,8 +61,8 @@ const columns = [
     cell: function Cell(info) {
       const [showEditIcons, setShowEditIcons] = useState(false);
       const [showEditModal, setShowEditModal] = useState(false);
+      const [uploadId, setUploadId] = useState(info.getValue());
 
-      const uploadId = info.getValue();
       const childAgencyId = info.row.original.id;
 
       const copyIdToClipboard = async (id: string) => {
@@ -86,29 +86,34 @@ const columns = [
           onMouseLeave={() => setShowEditIcons(false)}
         >
           {uploadId || <Styled.Null>–</Styled.Null>}
-          {showEditIcons && (
-            <Styled.EditIcons>
-              {uploadId && (
+          <Styled.EditIcons>
+            {showEditIcons && (
+              <>
+                {uploadId && (
+                  <Styled.IconButton
+                    id={`${snakeCase(uploadId)}_copy-button`}
+                    label={<CopyIcon />}
+                    tooltipMsg="Copy"
+                    onClick={() => copyIdToClipboard(uploadId)}
+                  />
+                )}
                 <Styled.IconButton
-                  id={`${snakeCase(uploadId)}_copy-button`}
-                  label={<CopyIcon />}
-                  tooltipMsg="Copy"
-                  onClick={() => copyIdToClipboard(uploadId)}
+                  id={`${snakeCase(uploadId)}_edit-button`}
+                  label={<EditIcon />}
+                  tooltipMsg="Edit"
+                  onClick={() => setShowEditModal(true)}
                 />
-              )}
-              <Styled.IconButton
-                id={`${snakeCase(uploadId)}_edit-button`}
-                label={<EditIcon />}
-                tooltipMsg="Edit"
-                onClick={() => setShowEditModal(true)}
-              />
-            </Styled.EditIcons>
-          )}
+              </>
+            )}
+          </Styled.EditIcons>
           {showEditModal && (
             <EditModal
               title="Upload ID"
               defaultValue={uploadId}
               childAgencyId={childAgencyId}
+              setUpdatedUploadId={(updatedUploadId) =>
+                setUploadId(updatedUploadId)
+              }
               closeModal={() => setShowEditModal(false)}
             />
           )}
@@ -122,9 +127,9 @@ const columns = [
     cell: (info) => {
       const systems = info.getValue();
 
-      const isHideSystems = systems.length > 3;
+      const hasOverflowSystems = systems.length > 3;
       const visibleSystemsCount = 2;
-      const visibleSystems = isHideSystems
+      const visibleSystems = hasOverflowSystems
         ? systems.slice(0, visibleSystemsCount)
         : systems;
 
@@ -135,7 +140,7 @@ const columns = [
               {startCase(system.toLocaleLowerCase())}
             </Styled.CustomPill>
           ))}
-          {isHideSystems && (
+          {hasOverflowSystems && (
             <Styled.CustomPill>
               + {systems.length - visibleSystemsCount} more
             </Styled.CustomPill>

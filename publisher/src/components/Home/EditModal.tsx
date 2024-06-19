@@ -1,5 +1,5 @@
 // Recidiviz - a data platform for criminal justice reform
-// Copyright (C) 2024 Recidiviz, Inc.
+// Copyright (C) 2023 Recidiviz, Inc.
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
 
 import { Button } from "@justice-counts/common/components/Button";
 import { Modal } from "@justice-counts/common/components/Modal";
+import { showToast } from "@justice-counts/common/components/Toast";
+import { observer } from "mobx-react-lite";
 import React, { useState } from "react";
 
 import { useStore } from "../../stores";
@@ -27,6 +29,7 @@ type EditModalProps = {
   childAgencyId: number;
   defaultValue?: string;
   closeModal: () => void;
+  setUpdatedUploadId: (updatedUploadId?: string) => void;
 };
 
 const EditModal = ({
@@ -34,11 +37,54 @@ const EditModal = ({
   defaultValue,
   childAgencyId,
   closeModal,
+  setUpdatedUploadId,
 }: EditModalProps) => {
   const [inputValue, setInputValue] = useState(defaultValue ?? "");
 
   const { adminPanelStore } = useStore();
-  const { saveChildAgencyUploadIdUpdate } = adminPanelStore;
+  const { saveChildAgencyUploadIdUpdate, undoChildAgencyUploadIdUpdate } =
+    adminPanelStore;
+
+  const undoUploadIdValueUpdate = async () => {
+    const undoResponse = await undoChildAgencyUploadIdUpdate(
+      String(childAgencyId),
+      defaultValue
+    );
+    if (
+      undoResponse &&
+      "status" in undoResponse &&
+      undoResponse.status === 200
+    ) {
+      setUpdatedUploadId(defaultValue);
+    }
+  };
+
+  const updateUploadIdValue = async () => {
+    const updateResponse = await saveChildAgencyUploadIdUpdate(
+      String(childAgencyId),
+      inputValue
+    );
+
+    if (
+      updateResponse &&
+      "status" in updateResponse &&
+      updateResponse.status === 200
+    ) {
+      showToast({
+        message: `Upload ID saved`,
+        check: true,
+        buttons: [
+          {
+            label: "undo",
+            fn: undoUploadIdValueUpdate,
+          },
+        ],
+        timeout: 5000,
+      });
+      setUpdatedUploadId(inputValue);
+      closeModal();
+    }
+  };
 
   return (
     <Modal>
@@ -56,14 +102,7 @@ const EditModal = ({
           <Button label="Cancel" onClick={closeModal} borderColor="lightgrey" />
           <Button
             label="Save"
-            onClick={() => {
-              saveChildAgencyUploadIdUpdate(
-                String(childAgencyId),
-                inputValue,
-                defaultValue
-              );
-              closeModal();
-            }}
+            onClick={updateUploadIdValue}
             buttonColor="blue"
           />
         </Styled.ButtonsContainer>
@@ -72,4 +111,4 @@ const EditModal = ({
   );
 };
 
-export default EditModal;
+export default observer(EditModal);

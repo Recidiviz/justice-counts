@@ -160,14 +160,12 @@ export const showToast = (params: ToastParams) => {
     const buttonElementsWrapper = document.createElement(`div`);
     buttonElementsWrapper.style.cssText = buttonsWrapperStyles;
     toastElement.appendChild(buttonElementsWrapper);
-    buttons.map((button) => {
+    buttons.forEach((button) => {
       const buttonElement = document.createElement(`button`);
       buttonElement.style.cssText = buttonStyles;
       buttonElement.innerText = button.label;
       buttonElementsWrapper.appendChild(buttonElement);
       buttonElement.onclick = button.fn;
-      // eslint-disable-next-line no-useless-return
-      return;
     });
   }
 

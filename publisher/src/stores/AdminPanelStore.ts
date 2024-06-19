@@ -511,77 +511,73 @@ class AdminPanelStore {
     }
   }
 
-  private async undoChildAgencyUploadIdUpdate(
+  async undoChildAgencyUploadIdUpdate(
     childAgencyId: string,
     previousValue?: string
   ) {
-    const response = (await this.api.request({
-      path: `/admin/agency/${childAgencyId}/custom-name`,
-      method: "PUT",
-      body: {
-        custom_child_agency_name: previousValue ?? null,
-      },
-    })) as Response;
+    try {
+      const response = (await this.api.request({
+        path: `/admin/agency/${childAgencyId}/custom-name`,
+        method: "PUT",
+        body: {
+          custom_child_agency_name: previousValue ?? null,
+        },
+      })) as Response;
 
-    if (response.status !== 200) {
-      showToast({
-        message: `Failed to undo Upload ID change`,
-        color: "red",
+      if (response.status !== 200) {
+        showToast({
+          message: `Failed to undo Upload ID change`,
+          color: "red",
+        });
+        return;
+      }
+
+      runInAction(() => {
+        this.childAgencyUploadId = previousValue;
       });
-      return;
+
+      showToast({
+        message: `Upload ID change undone`,
+        check: true,
+      });
+
+      return response;
+    } catch (error) {
+      if (error instanceof Error)
+        return new Error("There was an issue undoing agency Upload ID change");
     }
-
-    runInAction(() => {
-      this.childAgencyUploadId = previousValue;
-    });
-
-    showToast({
-      message: `Upload ID change undone`,
-      check: true,
-    });
   }
 
   async saveChildAgencyUploadIdUpdate(
     childAgencyId: string,
-    uploadId?: string,
-    previousValue?: string
+    uploadId?: string
   ) {
-    const response = (await this.api.request({
-      path: `/admin/agency/${childAgencyId}/custom-name`,
-      method: "PUT",
-      body: {
-        custom_child_agency_name: uploadId ?? null,
-      },
-    })) as Response;
+    try {
+      const response = (await this.api.request({
+        path: `/admin/agency/${childAgencyId}/custom-name`,
+        method: "PUT",
+        body: {
+          custom_child_agency_name: uploadId ?? null,
+        },
+      })) as Response;
 
-    if (response.status !== 200) {
-      showToast({
-        message: `Failed to update Upload ID`,
-        color: "red",
+      if (response.status !== 200) {
+        showToast({
+          message: `Failed to update Upload ID`,
+          color: "red",
+        });
+        return;
+      }
+
+      runInAction(() => {
+        this.childAgencyUploadId = uploadId;
       });
-      return;
+
+      return response;
+    } catch (error) {
+      if (error instanceof Error)
+        return new Error("There was an issue updating agency Upload ID");
     }
-
-    runInAction(() => {
-      this.childAgencyUploadId = uploadId;
-    });
-
-    showToast({
-      message: `Upload ID saved`,
-      check: true,
-      buttons: [
-        {
-          label: "undo",
-          fn: () =>
-            this.undoChildAgencyUploadIdUpdate(childAgencyId, previousValue),
-        },
-        {
-          label: "update page",
-          fn: () => window.location.reload(),
-        },
-      ],
-      timeout: 5000,
-    });
   }
 
   /** Helpers  */
