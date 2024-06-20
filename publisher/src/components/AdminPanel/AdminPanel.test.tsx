@@ -17,9 +17,9 @@
 /* eslint-disable testing-library/prefer-presence-queries, prefer-destructuring */
 import { palette } from "@justice-counts/common/components/GlobalStyles";
 import { groupBy } from "@justice-counts/common/utils";
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
-import React from "react";
+import React, { act } from "react";
 import { BrowserRouter } from "react-router-dom";
 
 import { rootStore, StoreProvider } from "../../stores";

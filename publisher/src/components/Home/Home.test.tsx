@@ -16,9 +16,9 @@
 // =============================================================================
 /* eslint-disable testing-library/prefer-presence-queries, testing-library/no-node-access */
 import { UserAgency } from "@justice-counts/common/types";
-import { act, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
-import React from "react";
+import React, { act } from "react";
 import { BrowserRouter } from "react-router-dom";
 
 import {
@@ -333,7 +333,7 @@ test("non-superagencies should NOT have pinned task card to bulk upload data for
   expect(screen.queryByText("Add data")).toBeNull();
 });
 
-test("superagencies have pinned task card to bulk upload data for child agencies", () => {
+test("superagencies have table with child agencies", () => {
   runInAction(() => {
     userStore.userAgencies = [
       {
@@ -367,9 +367,7 @@ test("superagencies have pinned task card to bulk upload data for child agencies
     })
   );
 
-  /** Check to see if there is an existing superagency pinned task card */
-  expect(screen.getByText("Add Data")).toBeInTheDocument();
   expect(
-    screen.getByText("Upload data in bulk for multiple agencies at once.")
+    screen.getByText("Browse your child agencies below")
   ).toBeInTheDocument();
 });

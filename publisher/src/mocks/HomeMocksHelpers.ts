@@ -15,8 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 // =============================================================================
 import { Metric } from "@justice-counts/common/types";
-import { act } from "@testing-library/react";
 import { runInAction } from "mobx";
+import { act } from "react";
 
 import { LatestRecordsAgencyMetrics } from "../components/Home";
 import HomeStore from "../stores/HomeStore";

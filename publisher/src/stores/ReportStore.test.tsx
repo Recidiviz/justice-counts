@@ -16,9 +16,9 @@
 // =============================================================================
 
 import { ReportOverview } from "@justice-counts/common/types";
-import { act, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { runInAction } from "mobx";
-import React from "react";
+import React, { act } from "react";
 
 import mockJSON from "../mocks/reportOverviews.json";
 import Reports from "../pages/Reports";
