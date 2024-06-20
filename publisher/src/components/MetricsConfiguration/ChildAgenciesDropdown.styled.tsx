@@ -33,6 +33,7 @@ export const DropdownWrapper = styled.div`
   & ${CustomDropdown} {
     width: 100%;
     max-width: 420px;
+    min-width: 350px;
     border: 1px solid ${palette.highlight.grey2};
     padding: 0 12px;
 
