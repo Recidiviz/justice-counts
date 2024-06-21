@@ -27,6 +27,11 @@ import { UploadedMetric } from "./types";
 function UploadSpreadsheet() {
   const { agencyId } = useParams();
   const { state } = useLocation();
+
+  if (!state) {
+    return <Navigate to={`/agency/${agencyId}/upload`} replace />;
+  }
+
   const {
     uploadedMetrics,
     fileName,

@@ -34,6 +34,7 @@ import {
   ReviewMetric,
   ReviewMetrics,
 } from "../ReviewMetrics";
+import { VIEW_PUBLISHED_DATA_DESCRIPTION } from "./constants";
 import { ReviewWrapper } from "./ReportDataEntry.styles";
 
 const BulkActionReview = () => {
@@ -198,7 +199,7 @@ const BulkActionReview = () => {
   );
   const modalDescription =
     action === "publish"
-      ? "You can view the published data in the Data tab."
+      ? VIEW_PUBLISHED_DATA_DESCRIPTION
       : "Data has been successfully unpublished.";
 
   return (

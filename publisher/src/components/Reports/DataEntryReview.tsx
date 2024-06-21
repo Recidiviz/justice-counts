@@ -34,6 +34,7 @@ import {
   ReviewMetric,
   ReviewMetrics,
 } from "../ReviewMetrics";
+import { VIEW_PUBLISHED_DATA_DESCRIPTION } from "./constants";
 import { useCheckMetricForErrors } from "./hooks";
 import { ReviewWrapper } from "./ReportDataEntry.styles";
 
@@ -175,7 +176,7 @@ const DataEntryReview = () => {
       {isSuccessModalOpen && (
         <Modal
           title="Data published!"
-          description="You can view the published data in the Data tab."
+          description={VIEW_PUBLISHED_DATA_DESCRIPTION}
           buttons={createPublishSuccessModalButtons(agencyId, navigate)}
           modalType="success"
           centerText

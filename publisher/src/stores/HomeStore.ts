@@ -26,7 +26,7 @@ import {
 import {
   groupBy,
   monthsByName,
-  printReportTitle,
+  printShortReportTitle,
 } from "@justice-counts/common/utils";
 import { makeAutoObservable, runInAction } from "mobx";
 
@@ -544,12 +544,12 @@ class HomeStore {
    */
   static createReportTitle = (record: Report, monthName?: string) => {
     return monthName
-      ? `${printReportTitle(
+      ? `${printShortReportTitle(
           record.month,
           record.year,
           record.frequency
         )} (${monthName})`
-      : printReportTitle(record.month, record.year, record.frequency);
+      : printShortReportTitle(record.month, record.year, record.frequency);
   };
 
   /**
